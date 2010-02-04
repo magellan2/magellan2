@@ -15,35 +15,34 @@ package magellan.library.utils.replacers;
 
 import magellan.library.utils.Resources;
 
-
 /**
  * An addition operator summing the given numbers.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class AdditionOperator extends AbstractOperator {
-	/**
-	 * Creates a new AdditionOperator object.
-	 */
-	public AdditionOperator() {
-		super(2);
-	}
+  /**
+   * Creates a new AdditionOperator object.
+   */
+  public AdditionOperator() {
+    super(2);
+  }
 
-	/**
-	 * Adds two numbers given as arguments.
-	 * 
-	 */
-	@Override
+  /**
+   * Adds two numbers given as arguments.
+   */
+  @Override
   public Object compute(Object numbers[]) {
-		return new Float(((Number) numbers[0]).floatValue() + ((Number) numbers[1]).floatValue());
-	}
+    return new Float(((Number) numbers[0]).floatValue() + ((Number) numbers[1]).floatValue());
+  }
 
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   @Override
   public String getDescription() {
-    return Resources.get("util.replacers.additionoperator.description")+"\n\n"+super.getDescription();
+    return Resources.get("util.replacers.additionoperator.description") + "\n\n"
+        + super.getDescription();
   }
 }

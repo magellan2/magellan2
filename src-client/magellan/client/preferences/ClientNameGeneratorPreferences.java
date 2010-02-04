@@ -42,8 +42,8 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.NameGenerator;
 import magellan.library.utils.Resources;
 
-
- public class ClientNameGeneratorPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter, ActionListener {
+public class ClientNameGeneratorPreferences extends AbstractPreferencesAdapter implements
+    PreferencesAdapter, ActionListener {
   protected JCheckBox active;
   protected JTextField fileField;
   protected Properties settings;
@@ -63,12 +63,13 @@ import magellan.library.utils.Resources;
   private Component getNameGeneratorPanel(JPanel help) {
     help.setLayout(new GridBagLayout());
 
-    GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1, 0,
-                            GridBagConstraints.WEST,
-                            GridBagConstraints.HORIZONTAL,
-                            new Insets(2, 10, 1, 10), 0, 0);
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, new Insets(2, 10, 1, 10), 0, 0);
 
-    active = new JCheckBox(Resources.get("util.namegenerator.prefs.active"), NameGenerator.getInstance().isActive());
+    active =
+        new JCheckBox(Resources.get("util.namegenerator.prefs.active"), NameGenerator.getInstance()
+            .isActive());
     help.add(active, c);
 
     c.gridy++;
@@ -87,9 +88,9 @@ import magellan.library.utils.Resources;
     return help;
   }
 
-      public void initPreferences() {
-          // TODO: implement it
-      }
+  public void initPreferences() {
+    // TODO: implement it
+  }
 
   /**
    * DOCUMENT-ME
@@ -99,7 +100,7 @@ import magellan.library.utils.Resources;
     settings.setProperty("NameGenerator.Source", fileField.getText());
     NameGenerator.getInstance().setEnabled(available);
 
-    if(available) {
+    if (available) {
       settings.setProperty("NameGenerator.active", "true");
     } else {
       settings.remove("NameGenerator.active");
@@ -110,8 +111,6 @@ import magellan.library.utils.Resources;
 
   /**
    * DOCUMENT-ME
-   *
-   * 
    */
   public Component getComponent() {
     return this;
@@ -119,8 +118,6 @@ import magellan.library.utils.Resources;
 
   /**
    * DOCUMENT-ME
-   *
-   * 
    */
   public String getTitle() {
     return Resources.get("util.namegenerator.prefs.title");
@@ -128,18 +125,16 @@ import magellan.library.utils.Resources;
 
   /**
    * DOCUMENT-ME
-   *
-   * 
    */
   public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
     String s = settings.getProperty("NameGenerator.Source");
 
-    if(s == null) {
+    if (s == null) {
       s = ".";
     } else {
       int i = s.lastIndexOf(File.separatorChar);
 
-      if(i > 0) {
+      if (i > 0) {
         s = s.substring(0, i);
       } else {
         s = ".";
@@ -149,7 +144,7 @@ import magellan.library.utils.Resources;
     JFileChooser f = new JFileChooser(s);
     int ret = f.showOpenDialog(this);
 
-    if(ret == JFileChooser.APPROVE_OPTION) {
+    if (ret == JFileChooser.APPROVE_OPTION) {
       fileField.setText(f.getSelectedFile().toString());
     }
   }

@@ -19,129 +19,100 @@ import java.util.Properties;
 
 import magellan.library.UnitContainer;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public class UnitContainerCommentNodeWrapper implements CellObject, SupportsClipboard {
-	private String comment = null;
-	private UnitContainer uc = null;
-	private List<String> iconNames = null;
+  private String comment = null;
+  private UnitContainer uc = null;
+  private List<String> iconNames = null;
 
-	/**
-	 * Creates a new BorderNodeWrapper object.
-	 *
-	 * 
-	 */
-	public UnitContainerCommentNodeWrapper(UnitContainer uc,String comment) {
-		this.comment = comment;
-		this.uc=uc;
-	}
+  /**
+   * Creates a new BorderNodeWrapper object.
+   */
+  public UnitContainerCommentNodeWrapper(UnitContainer uc, String comment) {
+    this.comment = comment;
+    this.uc = uc;
+  }
 
-	
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String toString() {
-		return this.comment;
-	}
+    return comment;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public List<String> getIconNames() {
-		if(iconNames == null) {
-			iconNames = Collections.singletonList("comment_marker");
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public List<String> getIconNames() {
+    if (iconNames == null) {
+      iconNames = Collections.singletonList("comment_marker");
+    }
 
-		return iconNames;
-	}
+    return iconNames;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean emphasized() {
-		return false;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean emphasized() {
+    return false;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	public void propertiesChanged() {
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void propertiesChanged() {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
-		return null;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public NodeWrapperDrawPolicy init(Properties settings, String prefix,
-									  NodeWrapperDrawPolicy adapter) {
-		return null;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public NodeWrapperDrawPolicy init(Properties settings, String prefix,
+      NodeWrapperDrawPolicy adapter) {
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getClipboardValue() {
-		if(comment != null) {
-			return comment;
-		} else {
-			return "";
-		}
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public String getClipboardValue() {
+    if (comment != null)
+      return comment;
+    else
+      return "";
+  }
 
+  /**
+   * @return the comment
+   */
+  public String getComment() {
+    return comment;
+  }
 
-	/**
-	 * @return the comment
-	 */
-	public String getComment() {
-		return comment;
-	}
+  /**
+   * @param comment the comment to set
+   */
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
 
-
-	/**
-	 * @param comment the comment to set
-	 */
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
-
-
-
-	/**
-	 * @return the uc
-	 */
-	public UnitContainer getUnitContainer() {
-		return uc;
-	}
+  /**
+   * @return the uc
+   */
+  public UnitContainer getUnitContainer() {
+    return uc;
+  }
 }

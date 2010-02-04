@@ -24,30 +24,30 @@ import java.util.zip.GZIPOutputStream;
 
 /**
  * A <code>GZipFileType</code> represents a file compressed with gzip.
- *
+ * 
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public class GZipFileType extends FileType {
-	GZipFileType(File aFile, boolean readonly) throws IOException {
-		super(aFile, readonly);
-	}
+  GZipFileType(File aFile, boolean readonly) throws IOException {
+    super(aFile, readonly);
+  }
 
-	@Override
+  @Override
   protected InputStream createInputStream() throws IOException {
-		return new GZIPInputStream(new FileInputStream(filename));
-	}
+    return new GZIPInputStream(new FileInputStream(filename));
+  }
 
-	@Override
+  @Override
   protected OutputStream createOutputStream() throws IOException {
-		return new GZIPOutputStream(new FileOutputStream(filename));
-	}
-    
-    /**
-     * @see FileType#getInnerName()
-     */
-    @Override
-    public String getInnerName() {
-        return getName().substring(0,getName().indexOf(FileType.GZIP));
-    }
+    return new GZIPOutputStream(new FileOutputStream(filename));
+  }
+
+  /**
+   * @see FileType#getInnerName()
+   */
+  @Override
+  public String getInnerName() {
+    return getName().substring(0, getName().indexOf(FileType.GZIP));
+  }
 }

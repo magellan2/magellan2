@@ -26,24 +26,21 @@ package magellan.library.gamebinding;
 import magellan.library.Message;
 
 /**
- * An interface defining the render Method each MessageRenderer should have.
- * A Message Renderer should only be used to render ONE Message. This allows
- * to store parsing information in an implementing class.
- * A constructor should get all general background information. This would be 
- * generally a GameData object.  
- *
+ * An interface defining the render Method each MessageRenderer should have. A Message Renderer
+ * should only be used to render ONE Message. This allows to store parsing information in an
+ * implementing class. A constructor should get all general background information. This would be
+ * generally a GameData object.
+ * 
  * @author Ralf Duckstein
  * @version 1.0, 02.12.2007
  */
 public interface MessageRenderer {
-  
+
   /**
    * Renders a Message
    * 
    * @param msg The Message to render
-   * 
-   * @return the rendered String. This should be stored in the msg.text from 
-   * the calling method.
+   * @return the rendered String. This should be stored in the msg.text from the calling method.
    */
   public String renderMessage(Message msg);
 }

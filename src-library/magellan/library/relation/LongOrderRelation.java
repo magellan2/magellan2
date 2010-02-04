@@ -15,7 +15,7 @@ package magellan.library.relation;
 
 /**
  * A marker interface for long orders.
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */

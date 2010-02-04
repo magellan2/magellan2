@@ -30,79 +30,72 @@ import magellan.library.rules.Date;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
-
 /**
  * This renderer renders borders, like streets, coasts and the like.
- *
  */
 public class BorderCellRenderer extends ImageCellRenderer {
   private static int noRandomImages = -1;
-  
+
   // for border specific region images
-  int[] bitMaskArray = {1,2,4,8,16,32,64,128};
-  
+  int[] bitMaskArray = { 1, 2, 4, 8, 16, 32, 64, 128 };
+
   // the border type names we can handle in renderOtherBorders
-  String[] borderTypes = {"FEUERWAND","IRRLICHTER"};
+  String[] borderTypes = { "FEUERWAND", "IRRLICHTER" };
 
-  
   /**
-	 * Creates a new BorderCellRenderer object.
-	 *
-	 * 
-	 * 
-	 */
-	public BorderCellRenderer(CellGeometry geo, MagellanContext context ) {
-		super(geo, context);
-	}
+   * Creates a new BorderCellRenderer object.
+   */
+  public BorderCellRenderer(CellGeometry geo, MagellanContext context) {
+    super(geo, context);
+  }
 
-	/**
-	 * Renders all borders (streets, firewalls, coasts and others.
-	 * 
-	 * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
-	 */
-	@Override
+  /**
+   * Renders all borders (streets, firewalls, coasts and others.
+   * 
+   * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
+   */
+  @Override
   public void render(Object obj, boolean active, boolean selected) {
-		if(obj instanceof Region) {
-			Region r = (Region) obj;
-			Collection<Border> borders = r.borders();
+    if (obj instanceof Region) {
+      Region r = (Region) obj;
+      Collection<Border> borders = r.borders();
 
-			if(!borders.isEmpty()) {
-				// since border objects are rare initialization is
-				// done as late as possible
-				Point pos = null;
-				Dimension size = null;
-		    {
-		      CoordinateID c = r.getCoordinate();
-		      pos = new Point(cellGeo.getImagePosition(c.x, c.y));
-		      pos.translate(-offset.x, -offset.y);
-		      size = cellGeo.getImageSize();
-		    }
+      if (!borders.isEmpty()) {
+        // since border objects are rare initialization is
+        // done as late as possible
+        Point pos = null;
+        Dimension size = null;
+        {
+          CoordinateID c = r.getCoordinate();
+          pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+          pos.translate(-offset.x, -offset.y);
+          size = cellGeo.getImageSize();
+        }
 
-				for(Border b : r.borders()) {
-					if(magellan.library.utils.Umlaut.normalize(b.getType()).equals("STRASSE") &&
-						   (b.getDirection() != magellan.library.utils.Direction.DIR_INVALID)) {
-						Image img = (b.getBuildRatio() == 100) ? getImage("Strasse" + b.getDirection())
-														  : getImage("Strasse_incomplete" +
-																	 b.getDirection());
+        for (Border b : r.borders()) {
+          if (magellan.library.utils.Umlaut.normalize(b.getType()).equals("STRASSE")
+              && (b.getDirection() != magellan.library.utils.Direction.DIR_INVALID)) {
+            Image img =
+                (b.getBuildRatio() == 100) ? getImage("Strasse" + b.getDirection())
+                    : getImage("Strasse_incomplete" + b.getDirection());
 
-						if(img == null) {
-							img = getImage("Strasse" + b.getDirection());
-						}
+            if (img == null) {
+              img = getImage("Strasse" + b.getDirection());
+            }
 
-						if(img != null) {
-							graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
-						}
-					} else {
-					  renderOtherBorders(b,r);
+            if (img != null) {
+              graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
+            }
+          } else {
+            renderOtherBorders(b, r);
           }
-          
-				}
-			}
-			renderCoastals(r);
-		}
-	}
 
-  
+        }
+      }
+      renderCoastals(r);
+    }
+  }
+
   /**
    * Deals with more (classic) borders without percentage in {@link #borderTypes}.
    * 
@@ -118,12 +111,12 @@ public class BorderCellRenderer extends ImageCellRenderer {
       pos.translate(-offset.x, -offset.y);
       size = cellGeo.getImageSize();
     }
-    
+
     // size of array of type names
-    int bMax = this.borderTypes.length;
+    int bMax = borderTypes.length;
     // loop through them
     for (int i = 0; i < bMax; i++) {
-      String actBorderTypeName = this.borderTypes[i];
+      String actBorderTypeName = borderTypes[i];
       if (magellan.library.utils.Umlaut.normalize(b.getType()).equals(actBorderTypeName)
           && (b.getDirection() != magellan.library.utils.Direction.DIR_INVALID)) {
         Image img = getImage("" + actBorderTypeName.toLowerCase() + b.getDirection());
@@ -135,21 +128,18 @@ public class BorderCellRenderer extends ImageCellRenderer {
     }
   }
 
-
   /**
    * Adds some coastal things to ocean regions depending on season and direction of non-ocean
    * 
    * @param r
    */
   private void renderCoastals(Region r) {
-    if (!r.getRegionType().isOcean()) {
+    if (!r.getRegionType().isOcean())
       // no ocean
       return;
-    }
-    if (r.getCoastBitMap() == null) {
+    if (r.getCoastBitMap() == null)
       // no coast
       return;
-    }
 
     // lets look for the directions
     int bitArray = r.getCoastBitMap().intValue();
@@ -176,48 +166,57 @@ public class BorderCellRenderer extends ImageCellRenderer {
     if ((bitArray & bitMaskArray[6]) > 0) {
       imageNumber += 2;
     }
-    if (imageNumber!=0){
+    if (imageNumber != 0) {
       String imageNameDefault = "ocean_nocoast";
       drawMyImage(imageNameDefault, r, imageNumber, false);
     }
   }
 
-	private void drawMyImage(String imageNameDefault, Region r, int randomImageNumber, boolean errorIfNotFound){
-	  CoordinateID c = null;
+  private void drawMyImage(String imageNameDefault, Region r, int randomImageNumber,
+      boolean errorIfNotFound) {
+    CoordinateID c = null;
     Point pos = null;
     Dimension size = null;
-	  String imageName = imageNameDefault;
+    String imageName = imageNameDefault;
     Image img = null;
     // first try a season specific icon, if preferences say so!
     // FIXME shouldn't access getData() from here
-    if (r.getData().getDate() != null && this.isUseSeasonImages()) {
+    if (r.getData().getDate() != null && isUseSeasonImages()) {
       switch (r.getData().getDate().getSeason()) {
-        case Date.SPRING: imageName+="_spring"; break;
-        case Date.SUMMER: imageName+="_summer"; break;
-        case Date.AUTUMN: imageName+="_autumn"; break;
-        case Date.WINTER: imageName+="_winter"; break;
+      case Date.SPRING:
+        imageName += "_spring";
+        break;
+      case Date.SUMMER:
+        imageName += "_summer";
+        break;
+      case Date.AUTUMN:
+        imageName += "_autumn";
+        break;
+      case Date.WINTER:
+        imageName += "_winter";
+        break;
       }
     }
     String seasonalImageName = imageName;
     // first first we try to add a random number 0..3 to the seasonal
-    if (randomImageNumber!=BorderCellRenderer.noRandomImages){
+    if (randomImageNumber != BorderCellRenderer.noRandomImages) {
       imageName = seasonalImageName + "_" + randomImageNumber;
-      img = getImage(imageName,false);
-      if (img==null){
-        // fall-back: if no randomized image is found we try just the 
+      img = getImage(imageName, false);
+      if (img == null) {
+        // fall-back: if no randomized image is found we try just the
         // seasonal one...
-        imageName=seasonalImageName;
+        imageName = seasonalImageName;
       }
     }
     // seasonal always without error msg
-    img = getImage(imageName,false);
-    
+    img = getImage(imageName, false);
+
     // if we cannot find it, try a default icon.
     if (img == null) {
-      imageName = imageNameDefault; 
-      img = getImage(imageName,errorIfNotFound);
+      imageName = imageNameDefault;
+      img = getImage(imageName, errorIfNotFound);
     }
-    if(img != null) {
+    if (img != null) {
       c = r.getCoordinate();
       pos = new Point(cellGeo.getImagePosition(c.x, c.y));
       pos.translate(-offset.x, -offset.y);
@@ -226,17 +225,17 @@ public class BorderCellRenderer extends ImageCellRenderer {
     } else {
       // log.warn("RegionImageCellRenderer.render(): image is null (" + imageName + ")");
     }
-	}
-	
-	/**
-	 * Returns {@link Mapper#PLANE_BORDER}.
-	 * 
-	 * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
-	 */
-	@Override
+  }
+
+  /**
+   * Returns {@link Mapper#PLANE_BORDER}.
+   * 
+   * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
+   */
+  @Override
   public int getPlaneIndex() {
-		return Mapper.PLANE_BORDER;
-	}
+    return Mapper.PLANE_BORDER;
+  }
 
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getName()
@@ -246,7 +245,6 @@ public class BorderCellRenderer extends ImageCellRenderer {
     return Resources.get("map.bordercellrenderer.name");
   }
 
-  
   /**
    * This Preferences dialog does nothing...
    */
@@ -258,11 +256,9 @@ public class BorderCellRenderer extends ImageCellRenderer {
 
     /**
      * Creates a new Preferences object.
-     *
-     * 
      */
     public Preferences(BorderCellRenderer r) {
-      this.source = r;
+      source = r;
       init();
     }
 
@@ -270,14 +266,14 @@ public class BorderCellRenderer extends ImageCellRenderer {
     }
 
     public void initPreferences() {
-        
+
     }
 
     /**
      * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
      */
     public void applyPreferences() {
-      
+
     }
 
     /**
@@ -295,16 +291,16 @@ public class BorderCellRenderer extends ImageCellRenderer {
     }
   }
 
-
   public boolean isUseSeasonImages() {
     // return useSeasonImages;
-    return (Boolean.valueOf(settings.getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES,
-        Boolean.TRUE.toString()))).booleanValue();
+    return (Boolean.valueOf(settings.getProperty(
+        PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, Boolean.TRUE.toString())))
+        .booleanValue();
   }
-  
+
   @Override
   public PreferencesAdapter getPreferencesAdapter() {
     return new Preferences(this);
   }
-  
+
 }

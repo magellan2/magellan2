@@ -136,10 +136,11 @@ public class ProgressBarUI implements UserInterface, ActionListener {
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
   public void setMaximum(int progressmaximum) {
-    if (progressmaximum <= 0)
+    if (progressmaximum <= 0) {
       dlg.progressBar.setIndeterminate(true);
-    else
+    } else {
       dlg.progressBar.setMaximum(progressmaximum);
+    }
   }
 
   /**
@@ -156,10 +157,11 @@ public class ProgressBarUI implements UserInterface, ActionListener {
    * @see magellan.library.utils.UserInterface#show()
    */
   public synchronized void show() {
-    if (delay > 0)
+    if (delay > 0) {
       timer.restart();
-    else if (!showing)
+    } else if (!showing) {
       doShow();
+    }
   }
 
   /**
@@ -179,7 +181,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
       public void run() {
         if (!ready) {
           showing = true;
-          ProgressBarUI.this.dlg.setVisible(true);
+          dlg.setVisible(true);
         }
       }
     })).start();
@@ -344,9 +346,10 @@ public class ProgressBarUI implements UserInterface, ActionListener {
 
     protected void init(ClosingListener listener) {
       if (listener == null) {
-        closingListener = getDefaultClosingListener(ProgressDlg.this);
-      } else
+        closingListener = ProgressBarUI.getDefaultClosingListener(ProgressDlg.this);
+      } else {
         closingListener = listener;
+      }
 
       initComponents();
       setLocationRelativeTo(getParent());

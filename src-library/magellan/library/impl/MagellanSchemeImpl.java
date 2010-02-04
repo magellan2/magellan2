@@ -19,37 +19,32 @@ import java.util.List;
 import magellan.library.CoordinateID;
 import magellan.library.Scheme;
 
-
 /**
  * A class encapsulating a scheme object indicating the position of a region in the 'Astralraum'
  * relative to the standard Eressea map.
  */
 public class MagellanSchemeImpl extends MagellanNamedImpl implements Scheme {
-	/**
-	 * Create a new Scheme object with the specified unique ID.
-	 *
-	 * 
-	 */
-	public MagellanSchemeImpl(CoordinateID id) {
-		super(id);
-	}
+  /**
+   * Create a new Scheme object with the specified unique ID.
+   */
+  public MagellanSchemeImpl(CoordinateID id) {
+    super(id);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String toString() {
-		return getName() + " (" + this.id.toString() + ")";
-	}
-	
-	/**
-   * Returns the coordinate of this region. This method is only a type-safe short cut for
-   * retrieving and converting the ID object of this region.
+    return getName() + " (" + id.toString() + ")";
+  }
+
+  /**
+   * Returns the coordinate of this region. This method is only a type-safe short cut for retrieving
+   * and converting the ID object of this region.
    */
   public CoordinateID getCoordinate() {
-          return this.getID();
+    return getID();
   }
 
   /**
@@ -91,7 +86,7 @@ public class MagellanSchemeImpl extends MagellanNamedImpl implements Scheme {
    * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
    */
   @Override
-  public CoordinateID getID(){
+  public CoordinateID getID() {
     return (CoordinateID) super.getID();
   }
 }

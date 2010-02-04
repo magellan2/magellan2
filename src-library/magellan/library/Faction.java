@@ -20,60 +20,59 @@ import java.util.Map;
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
 
-
 /**
  * A class representing a faction in Eressea.
  */
 public interface Faction extends UnitContainer {
 
-	/** Any faction has this trust level if not otherwise specified. */
-	public static final int TL_DEFAULT = 0;
+  /** Any faction has this trust level if not otherwise specified. */
+  public static final int TL_DEFAULT = 0;
 
-	/**
-	 * This trust level indicates that units of this faction may receive new orders and similar
-	 * privileges.
-	 */
-	public static final int TL_PRIVILEGED = 100;
-
-	/**
-   * Returns <code>true</code> iff this faction has trustlevel at least
-   * {@value #TL_PRIVILEGED}TL_PRIVILEGED
+  /**
+   * This trust level indicates that units of this faction may receive new orders and similar
+   * privileges.
    */
-	public boolean isPrivileged();
+  public static final int TL_PRIVILEGED = 100;
 
-	/**
-	 * Assigns this faction a locale indicating the language of its report and the orders.
-	 */
-	public void setLocale(Locale l);
+  /**
+   * Returns <code>true</code> iff this faction has trustlevel at least {@value #TL_PRIVILEGED}
+   * TL_PRIVILEGED
+   */
+  public boolean isPrivileged();
 
-	/**
-	 * Returns the locale of this faction indicating the language of its report and orders.
-	 * 
-	 * @return My return <code>null</code>.
-	 */
-	public Locale getLocale();
+  /**
+   * Assigns this faction a locale indicating the language of its report and the orders.
+   */
+  public void setLocale(Locale l);
 
-	/**
-	 * Sets the faction dependent prefix for the race name.
-	 */
-	public void setRaceNamePrefix(String prefix);
+  /**
+   * Returns the locale of this faction indicating the language of its report and orders.
+   * 
+   * @return My return <code>null</code>.
+   */
+  public Locale getLocale();
 
-	/**
-	 * Returns the faction dependent prefix for the race name.
-	 * 
-	 * @return May return <code>null</code>
-	 */
-	public String getRaceNamePrefix();
+  /**
+   * Sets the faction dependent prefix for the race name.
+   */
+  public void setRaceNamePrefix(String prefix);
 
-	/**
-	 * Returns the race of this faction. This method is an alias for the getType() method.
-	 */
-	public Race getRace();
-  
-	/**
-	 * Returns a string representation of this faction.
-	 */
-	public String toString();
+  /**
+   * Returns the faction dependent prefix for the race name.
+   * 
+   * @return May return <code>null</code>
+   */
+  public String getRaceNamePrefix();
+
+  /**
+   * Returns the race of this faction. This method is an alias for the getType() method.
+   */
+  public Race getRace();
+
+  /**
+   * Returns a string representation of this faction.
+   */
+  public String toString();
 
   /**
    * Returns the value of age.
@@ -84,7 +83,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of age.
-   *
+   * 
    * @param age The value for age.
    */
   public void setAge(int age);
@@ -98,16 +97,16 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of allies.
-   *
+   * 
    * @param allies The value for allies. May be <code>null</code>.
    */
   public void setAllies(Map<EntityID, Alliance> allies);
-  
+
   /**
    * Returns the alliance this faction is a member of or <code>null</code>.
    */
   public AllianceGroup getAlliance();
-  
+
   /**
    * Sets the alliance this faction is a member of.
    */
@@ -122,7 +121,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of averageScore.
-   *
+   * 
    * @param averageScore The value for averageScore.
    */
   public void setAverageScore(int averageScore);
@@ -136,7 +135,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of battles.
-   *
+   * 
    * @param battles The value for battles.
    */
   public void setBattles(List<Battle> battles);
@@ -150,7 +149,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of email.
-   *
+   * 
    * @param email The value for email.
    */
   public void setEmail(String email);
@@ -164,7 +163,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of errors.
-   *
+   * 
    * @param errors The value for errors.
    */
   public void setErrors(List<String> errors);
@@ -178,7 +177,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of groups.
-   *
+   * 
    * @param groups The value for groups.
    */
   public void setGroups(Map<IntegerID, Group> groups);
@@ -192,7 +191,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of hasGiveAlliance.
-   *
+   * 
    * @param hasGiveAlliance The value for hasGiveAlliance.
    */
   public void setHasGiveAlliance(boolean hasGiveAlliance);
@@ -206,7 +205,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of heroes.
-   *
+   * 
    * @param heroes The value for heroes.
    */
   public void setHeroes(int heroes);
@@ -220,7 +219,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of maxHeroes.
-   *
+   * 
    * @param maxHeroes The value for maxHeroes.
    */
   public void setMaxHeroes(int maxHeroes);
@@ -234,11 +233,11 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of maxMigrants.
-   *
+   * 
    * @param maxMigrants The value for maxMigrants.
    */
   public void setMaxMigrants(int maxMigrants);
-  
+
   /**
    * Returns the value of messages.
    * 
@@ -248,7 +247,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of messages.
-   *
+   * 
    * @param messages The value for messages.
    */
   public void setMessages(List<Message> messages);
@@ -262,7 +261,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of migrants.
-   *
+   * 
    * @param migrants The value for migrants.
    */
   public void setMigrants(int migrants);
@@ -276,7 +275,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of options.
-   *
+   * 
    * @param options The value for options.
    */
   public void setOptions(Options options);
@@ -290,7 +289,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of password.
-   *
+   * 
    * @param password The value for password.
    */
   public void setPassword(String password);
@@ -304,7 +303,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of persons.
-   *
+   * 
    * @param persons The value for persons.
    */
   public void setPersons(int persons);
@@ -318,7 +317,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of score.
-   *
+   * 
    * @param score The value for score.
    */
   public void setScore(int score);
@@ -332,7 +331,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of spellSchool.
-   *
+   * 
    * @param spellSchool The value for spellSchool.
    */
   public void setSpellSchool(String spellSchool);
@@ -346,7 +345,7 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of trustLevel.
-   *
+   * 
    * @param trustLevel The value for trustLevel.
    */
   public void setTrustLevel(int trustLevel);
@@ -360,28 +359,26 @@ public interface Faction extends UnitContainer {
 
   /**
    * Sets the value of trustLevelSetByUser.
-   *
+   * 
    * @param trustLevelSetByUser The value for trustLevelSetByUser.
    */
   public void setTrustLevelSetByUser(boolean trustLevelSetByUser);
-  
-  
+
   /**
-   * Indicates, if one priviliged faction has set the "GIVE" right
-   * to this faction.
-   * used for showing unit capacity only for items of such factions
+   * Indicates, if one priviliged faction has set the "GIVE" right to this faction. used for showing
+   * unit capacity only for items of such factions
    */
   public boolean hasGiveAlliance();
-  
+
   /**
-   * Sets the faction treasury for this faction. If the value is
-   * negative or zero, this attribute is disabled (default).
+   * Sets the faction treasury for this faction. If the value is negative or zero, this attribute is
+   * disabled (default).
    */
   public void setTreasury(int silver);
-  
+
   /**
-   * Returns the faction treasury for this faction. This value
-   * can be negative - that means this attribute is disabled (default).
+   * Returns the faction treasury for this faction. This value can be negative - that means this
+   * attribute is disabled (default).
    */
   public int getTreasury();
 

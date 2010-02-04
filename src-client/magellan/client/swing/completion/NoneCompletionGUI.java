@@ -27,120 +27,100 @@ import magellan.client.completion.AutoCompletion;
 import magellan.library.completion.Completion;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class NoneCompletionGUI extends AbstractCompletionGUI {
-	protected Completion last = null;
-	protected boolean offering = false;
+  protected Completion last = null;
+  protected boolean offering = false;
 
-	/**
-	 * Creates new NoneCompletionGUI
-	 */
-	public NoneCompletionGUI() {
-	}
+  /**
+   * Creates new NoneCompletionGUI
+   */
+  public NoneCompletionGUI() {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean editorMayLoseFocus() {
-		return false;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean editorMayLoseFocus() {
+    return false;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean editorMayUpdateCaret() {
-		return false;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean editorMayUpdateCaret() {
+    return false;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Completion getSelectedCompletion() {
-		return last;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public Completion getSelectedCompletion() {
+    return last;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int[] getSpecialKeys() {
-		return null;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int[] getSpecialKeys() {
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void init(AutoCompletion autoCompletion) {
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void init(AutoCompletion autoCompletion) {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean isOfferingCompletion() {
-		return offering;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean isOfferingCompletion() {
+    return offering;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * @see magellan.client.swing.completion.CompletionGUI#offerCompletion(javax.swing.text.JTextComponent, java.util.Collection, java.lang.String)
-	 */
-	public void offerCompletion(javax.swing.text.JTextComponent jTextComponent,
-								java.util.Collection<Completion> collection, java.lang.String str) {
-		last = collection.iterator().next();
-		offering = true;
-	}
+  /**
+   * DOCUMENT-ME
+   * 
+   * @see magellan.client.swing.completion.CompletionGUI#offerCompletion(javax.swing.text.JTextComponent,
+   *      java.util.Collection, java.lang.String)
+   */
+  public void offerCompletion(javax.swing.text.JTextComponent jTextComponent,
+      java.util.Collection<Completion> collection, java.lang.String str) {
+    last = collection.iterator().next();
+    offering = true;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-	public void cycleCompletion(JTextComponent editor, Collection<Completion> completions, String stub,
-								int index) {
-		Iterator<Completion> it = completions.iterator();
+  /**
+   * DOCUMENT-ME
+   */
+  public void cycleCompletion(JTextComponent editor, Collection<Completion> completions,
+      String stub, int index) {
+    Iterator<Completion> it = completions.iterator();
 
-		for(int i = 0; i <= index; i++) {
-			last = it.next();
-		}
-	}
+    for (int i = 0; i <= index; i++) {
+      last = it.next();
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void specialKeyPressed(int param) {
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void specialKeyPressed(int param) {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	public void stopOffer() {
-		offering = false;
-	}
-  
+  /**
+   * DOCUMENT-ME
+   */
+  public void stopOffer() {
+    offering = false;
+  }
+
   /**
    */
   @Override

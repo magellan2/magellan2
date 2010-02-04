@@ -17,89 +17,73 @@ import magellan.library.StringID;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 203 $
  */
 public class OptionCategory extends ObjectType {
-	private int bitMask = 0;
-	private boolean isActive = false;
-	private boolean isOrder = false;
+  private int bitMask = 0;
+  private boolean isActive = false;
+  private boolean isOrder = false;
 
-	/**
-	 * Creates a new OptionCategory object.
-	 *
-	 * 
-	 */
-	public OptionCategory(StringID id) {
-		super(id);
-	}
+  /**
+   * Creates a new OptionCategory object.
+   */
+  public OptionCategory(StringID id) {
+    super(id);
+  }
 
-	/**
-	 * copy constructor
-	 *
-	 * 
-	 */
-	public OptionCategory(OptionCategory orig) {
-		super(orig.getID());
-		bitMask = orig.bitMask;
-		isActive = orig.isActive;
-		isOrder = orig.isOrder;
-	}
+  /**
+   * copy constructor
+   */
+  public OptionCategory(OptionCategory orig) {
+    super(orig.getID());
+    bitMask = orig.bitMask;
+    isActive = orig.isActive;
+    isOrder = orig.isOrder;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setBitMask(int mask) {
-		this.bitMask = mask;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setBitMask(int mask) {
+    bitMask = mask;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getBitMask() {
-		return this.bitMask;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int getBitMask() {
+    return bitMask;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setActive(boolean bool) {
-		this.isActive = bool;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setActive(boolean bool) {
+    isActive = bool;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean isActive() {
-		return this.isActive;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean isActive() {
+    return isActive;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setOrder(boolean bool) {
-		this.isOrder = bool;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setOrder(boolean bool) {
+    isOrder = bool;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean isOrder() {
-		return this.isOrder;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean isOrder() {
+    return isOrder;
+  }
 
   /**
    * Returns the id uniquely identifying this object.

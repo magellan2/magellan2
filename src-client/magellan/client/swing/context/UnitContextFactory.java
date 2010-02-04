@@ -22,29 +22,25 @@ import magellan.client.swing.tree.UnitNodeWrapper;
 import magellan.library.GameData;
 import magellan.library.Unit;
 
-
 /**
  * Context Factory for unit contexts.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class UnitContextFactory implements ContextFactory {
-	/**
+  /**
 	 * 
 	 */
-	public JPopupMenu createContextMenu(EventDispatcher dispatcher,
-            GameData data, Object argument,
-            SelectionEvent selectedObjects,
-            DefaultMutableTreeNode node) {
-		if(argument instanceof Unit) {
-			return new UnitContextMenu((Unit) argument, selectedObjects==null?null:selectedObjects.getSelectedObjects(),
-									   dispatcher, data);
-		} else if(argument instanceof UnitNodeWrapper) {
-			return new UnitContextMenu(((UnitNodeWrapper) argument).getUnit(), selectedObjects==null?null:selectedObjects.getSelectedObjects(),
-									   dispatcher, data);
-		}
+  public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
+      SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
+    if (argument instanceof Unit)
+      return new UnitContextMenu((Unit) argument, selectedObjects == null ? null : selectedObjects
+          .getSelectedObjects(), dispatcher, data);
+    else if (argument instanceof UnitNodeWrapper)
+      return new UnitContextMenu(((UnitNodeWrapper) argument).getUnit(), selectedObjects == null
+          ? null : selectedObjects.getSelectedObjects(), dispatcher, data);
 
-		return null;
-	}
+    return null;
+  }
 }

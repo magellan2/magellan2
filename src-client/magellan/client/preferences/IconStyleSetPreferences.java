@@ -91,8 +91,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
    * Creates a new Stylesets object.
    */
   public IconStyleSetPreferences() {
-    this.setLayout(new GridBagLayout());
-    this.setBorder(new TitledBorder(Resources.get("tree.iconadapter.styles.title")));
+    setLayout(new GridBagLayout());
+    setBorder(new TitledBorder(Resources.get("tree.iconadapter.styles.title")));
 
     // left: "add" & "remove" buttons + styleset combobox
     JPanel p = new JPanel(new FlowLayout(FlowLayout.LEADING));
@@ -180,16 +180,20 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
       nodeMap.clear();
     }
 
-    DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeObject("SIMPLE",
-                                        Resources.get("tree.iconadapter.styles.simple")));
+    DefaultMutableTreeNode node =
+        new DefaultMutableTreeNode(new TreeObject("SIMPLE", Resources
+            .get("tree.iconadapter.styles.simple")));
     DefaultMutableTreeNode firstNode = node;
     newRoot.add(node);
     nodeMap.put("SIMPLE", node);
-    node = new DefaultMutableTreeNode(new TreeObject("MAIN", Resources.get("tree.iconadapter.styles.main")));
+    node =
+        new DefaultMutableTreeNode(new TreeObject("MAIN", Resources
+            .get("tree.iconadapter.styles.main")));
     newRoot.add(node);
     nodeMap.put("MAIN", node);
-    node = new DefaultMutableTreeNode(new TreeObject("ADDITIONAL",
-                             Resources.get("tree.iconadapter.styles.additional")));
+    node =
+        new DefaultMutableTreeNode(new TreeObject("ADDITIONAL", Resources
+            .get("tree.iconadapter.styles.additional")));
     newRoot.add(node);
     nodeMap.put("MAIN", node);
 
@@ -229,10 +233,11 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     treeModel.setRoot(newRoot);
 
     Map<String, GraphicsStyleset> oldCopies = new HashMap<String, GraphicsStyleset>(stylesetCopies);
-    Map<String, GraphicsStyleset> oldOriginals = new HashMap<String, GraphicsStyleset>(stylesetOriginals);
+    Map<String, GraphicsStyleset> oldOriginals =
+        new HashMap<String, GraphicsStyleset>(stylesetOriginals);
     stylesetCopies.clear();
     stylesetOriginals.clear();
-    
+
     for (int i = 0; i < 3; i++) {
       String key = null;
 
@@ -258,16 +263,16 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     }
 
     if ((stylesetNames != null) && (stylesetNames.size() > 0)) {
-      for (String name : stylesetNames){
+      for (String name : stylesetNames) {
 
-        if (oldCopies.containsKey(name)){
+        if (oldCopies.containsKey(name)) {
           stylesetOriginals.put(name, oldOriginals.get(name));
           stylesetCopies.put(name, oldCopies.get(name));
         } else {
           stylesetCopies.put(name, CellRenderer.getStylesets().get(name).clone());
           stylesetOriginals.put(name, CellRenderer.getStylesets().get(name));
         }
-          
+
       }
     }
 
@@ -318,23 +323,23 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
    * 
    */
   protected void addStyleset() {
-    String name = JOptionPane.showInputDialog(this, Resources.get("tree.iconadapter.styles.add.text"));
+    String name =
+        JOptionPane.showInputDialog(this, Resources.get("tree.iconadapter.styles.add.text"));
 
-    if (name == null) {
+    if (name == null)
       return;
-    }
 
     name = name.trim();
 
-    if (name.equals("")) {
+    if (name.equals(""))
       return;
-    }
 
     if (stylesetCopies.containsKey(name))
       return;
 
     if (!stylesets.isSelectionEmpty()) {
-      TreeObject obj = (TreeObject) ((DefaultMutableTreeNode) stylesets.getSelectionPath()
+      TreeObject obj =
+          (TreeObject) ((DefaultMutableTreeNode) stylesets.getSelectionPath()
               .getLastPathComponent()).getUserObject();
       name = obj.name + "." + name;
     }
@@ -370,10 +375,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
    */
   protected void removeStyleset() {
     if (!stylesets.isSelectionEmpty()) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) stylesets.getSelectionPath()
-                                      .getLastPathComponent();
+      DefaultMutableTreeNode node =
+          (DefaultMutableTreeNode) stylesets.getSelectionPath().getLastPathComponent();
       TreeObject obj = (TreeObject) node.getUserObject();
-      
+
       stylesetCopies.remove(obj.name);
       stylesetOriginals.remove(obj.name);
 
@@ -391,16 +396,16 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     if (stylesets.isSelectionEmpty()) {
       removeButton.setEnabled(false);
     } else {
-      TreeObject obj = (TreeObject) ((DefaultMutableTreeNode) e.getPath()
-                                   .getLastPathComponent()).getUserObject();
+      TreeObject obj =
+          (TreeObject) ((DefaultMutableTreeNode) e.getPath().getLastPathComponent())
+              .getUserObject();
 
       if (obj != null) {
         apply(obj.name);
 
         boolean removeEnabled = true;
 
-        if(obj.name.equals("SIMPLE") || obj.name.equals("MAIN") ||
-             obj.name.equals("ADDITIONAL")) {
+        if (obj.name.equals("SIMPLE") || obj.name.equals("MAIN") || obj.name.equals("ADDITIONAL")) {
           removeEnabled = false;
         }
 
@@ -427,13 +432,13 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
 
     GraphicsStyleset shownSet = styleSetPanel.set;
     styleSetPanel.setVisible(false);
-    for (String name : stylesetCopies.keySet()){
+    for (String name : stylesetCopies.keySet()) {
       styleSetPanel.show(stylesetCopies.get(name));
       styleSetPanel.apply(stylesetOriginals.get(name));
     }
     styleSetPanel.setVisible(true);
     styleSetPanel.show(shownSet);
-    
+
     CellRenderer.saveStylesets();
   }
 
@@ -472,8 +477,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
        * Creates a new DirectionPanel object.
        */
       public DirectionPanel() {
-        this.setLayout(new GridLayout(3, 3));
-        this.buttons = new AbstractButton[9];
+        setLayout(new GridLayout(3, 3));
+        buttons = new AbstractButton[9];
 
         ButtonGroup gr = new ButtonGroup();
 
@@ -557,8 +562,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
         }
 
         buttons[(j * 3) + i].doClick();
-        this.horiz = set.getHorizontalPos();
-        this.vertic = set.getVerticalPos();
+        horiz = set.getHorizontalPos();
+        vertic = set.getVerticalPos();
       }
 
       /**
@@ -582,8 +587,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
         }
 
         StringTokenizer st = new StringTokenizer(e.getActionCommand(), ";");
-        this.horiz = Integer.parseInt(st.nextToken());
-        this.vertic = Integer.parseInt(st.nextToken());
+        horiz = Integer.parseInt(st.nextToken());
+        vertic = Integer.parseInt(st.nextToken());
       }
 
       /**
@@ -620,7 +625,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
        * Creates a new FontPanel object.
        */
       public FontPanel() {
-        this.setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
         GridBagConstraints con = new GridBagConstraints();
         con.gridwidth = 1;
@@ -633,11 +638,11 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
         String fontNa[] = null;
 
         try {
-          fontNa = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                        .getAvailableFontFamilyNames();
+          fontNa = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         } catch (NullPointerException e) {
           // FIXME(pavkovic) 2003.03.17: This is bad!
-          log.error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
+          log
+              .error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
           fontNa = new String[0];
         }
 
@@ -720,7 +725,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
        * Creates a new ColorPanel object.
        */
       public ColorPanel() {
-        this.setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
         GridBagConstraints con = new GridBagConstraints();
         con.fill = GridBagConstraints.NONE;
@@ -733,8 +738,9 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
         for (int i = 0; i < 4; i++) {
           con.gridx = 0;
           con.gridy = i;
-          this.add(boxes[i] = new JCheckBox(Resources.get("tree.iconadapter.styles.color." +
-                                String.valueOf(i))), con);
+          this.add(boxes[i] =
+              new JCheckBox(Resources.get("tree.iconadapter.styles.color." + String.valueOf(i))),
+              con);
           con.gridx = 1;
           this.add(buttons[i] = new JButton(" "), con);
           buttons[i].addActionListener(this);
@@ -814,7 +820,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
        */
       public void actionPerformed(ActionEvent e) {
         JButton source = (JButton) e.getSource();
-        Color col = JColorChooser.showDialog(this, Resources.get("tree.iconadapter.colorchooser.title"),
+        Color col =
+            JColorChooser.showDialog(this, Resources.get("tree.iconadapter.colorchooser.title"),
                 source.getBackground());
 
         if (col != null) {
@@ -836,7 +843,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
      */
     public StylesetPanel(GraphicsStyleset set) {
       this.set = set;
-      this.setLayout(new GridBagLayout());
+      setLayout(new GridBagLayout());
 
       GridBagConstraints con = new GridBagConstraints();
       con.fill = GridBagConstraints.BOTH;
@@ -846,7 +853,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
 
       // font
       JPanel p = new JPanel(new GridBagLayout());
-      fontEnabled = new JCheckBox(Resources.get("tree.iconadapter.icontext.text.font"), set.getFont() != null);
+      fontEnabled =
+          new JCheckBox(Resources.get("tree.iconadapter.icontext.text.font"), set.getFont() != null);
       con.fill = GridBagConstraints.NONE;
       con.gridx = 0;
       con.gridwidth = 1;
@@ -891,10 +899,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
      * @param newSet
      */
     public void show(GraphicsStyleset newSet) {
-      apply(this.set);
-      this.set=newSet;
+      apply(set);
+      set = newSet;
 
-      fontEnabled.setSelected(newSet.getFont()!=null);
+      fontEnabled.setSelected(newSet.getFont() != null);
 
       font.setStyleset(newSet);
 
@@ -907,10 +915,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
      * Applies the settings of the panel to <code>this.set</code>.
      */
     public void apply() {
-      apply(this.set);
+      apply(set);
 
     }
-    
+
     /**
      * Applies the settings of the panel to <code>resultSet</code>.
      */

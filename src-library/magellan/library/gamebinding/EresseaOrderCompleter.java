@@ -73,16 +73,14 @@ import magellan.library.utils.logging.Logger;
  * with any of the cmpltX methods. They are solely called by the internal <tt>OrderParser</tt>.
  */
 public class EresseaOrderCompleter implements Completer {
-  private static final Logger                 log                       =
-                                                                            Logger
-                                                                                .getInstance(EresseaOrderCompleter.class);
-  private static final Comparator<Completion> prioComp                  = new PrioComp();
-  private OrderParser                         parser                    = null;
-  private List<Completion>                    completions               = null;
-  private GameData                            data                      = null;
-  private Region                              region                    = null;
-  private Unit                                unit                      = null;
-  private CompleterSettingsProvider           completerSettingsProvider = null;
+  private static final Logger log = Logger.getInstance(EresseaOrderCompleter.class);
+  private static final Comparator<Completion> prioComp = new PrioComp();
+  private OrderParser parser = null;
+  private List<Completion> completions = null;
+  private GameData data = null;
+  private Region region = null;
+  private Unit unit = null;
+  private CompleterSettingsProvider completerSettingsProvider = null;
 
   /**
    * Returns the value of completerSettingsProvider.
@@ -100,12 +98,12 @@ public class EresseaOrderCompleter implements Completer {
    * @param gd The <tt>GameData</tt> this completer uses as context.
    */
   public EresseaOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
-    this.completerSettingsProvider = ac;
-    this.completions = new LinkedList<Completion>();
-    this.data = gd;
+    completerSettingsProvider = ac;
+    completions = new LinkedList<Completion>();
+    data = gd;
 
     if (data != null) {
-      parser = new EresseaOrderParser(this.data, this);
+      parser = new EresseaOrderParser(data, this);
     } else {
       parser = new EresseaOrderParser(null, this);
     }
@@ -128,11 +126,10 @@ public class EresseaOrderCompleter implements Completer {
 
     final List<OrderToken> tokens = getParser().getTokens();
 
-    if ((tokens.size() > 1) && (tokens.get(tokens.size() - 2).ttype == OrderToken.TT_COMMENT)) {
+    if ((tokens.size() > 1) && (tokens.get(tokens.size() - 2).ttype == OrderToken.TT_COMMENT))
       return Collections.emptyList();
-    } else {
+    else
       return crop(completions, tokens);
-    }
   }
 
   public OrderParser getParser() {
@@ -150,16 +147,16 @@ public class EresseaOrderCompleter implements Completer {
   public List<Completion> crop(List<Completion> list, List<OrderToken> tokens) {
     List<Completion> ret = new LinkedList<Completion>();
     int start = 0;
-    final String stub = getStub(tokens);
+    final String stub = EresseaOrderCompleter.getStub(tokens);
 
     if (stub.length() > 0) {
       // filter list
       Collections.sort(list, new IgnrCsComp());
       start = Collections.binarySearch(list, stub, new IgnrCsComp());
 
-      if (start == (-list.size() - 1)) {
+      if (start == (-list.size() - 1))
         return ret;
-      } else {
+      else {
         if (start < 0) {
           start = Math.abs(start) - 1;
         }
@@ -1263,7 +1260,7 @@ public class EresseaOrderCompleter implements Completer {
     }
 
     if (c2 != cost && data.getGameSpecificStuff().getName().equalsIgnoreCase("eressea")) {
-      log.error("assertion error getSkillCost()");
+      EresseaOrderCompleter.log.error("assertion error getSkillCost()");
     }
     return c2;
   }
@@ -1885,9 +1882,8 @@ public class EresseaOrderCompleter implements Completer {
    * vorangegangener Parameter
    */
   public void cmpltZaubereSpruch(Spell spell) {
-    if (spell == null || spell.getSyntax() == null) {
+    if (spell == null || spell.getSyntax() == null)
       return;
-    }
     if (spell.getSyntax().contains("k")) {
       addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REGION), " "));
       addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " "));
@@ -1926,7 +1922,7 @@ public class EresseaOrderCompleter implements Completer {
               && (spell.getOnOcean() || !ocean || u.getRace().equals(
                   data.rules.getRace(EresseaConstants.R_MEERMENSCHEN))) && (!combat ^ (spell
               .getType().toLowerCase().indexOf("combat") > -1)))) {
-        final String spellName = this.data.getTranslation(spell);
+        final String spellName = data.getTranslation(spell);
 
         completions.add(new Completion(opening + spellName + closing));
       }
@@ -1951,7 +1947,7 @@ public class EresseaOrderCompleter implements Completer {
               // this spell
               || (spell.getIsFamiliar() && (spell.getLevel() <= maxlevel))) {
             // seems to be a spell usable by a familar
-            final String spellName = this.data.getTranslation(spell);
+            final String spellName = data.getTranslation(spell);
 
             completions.add(new Completion(spellName, opening + spellName + closing, " "));
           }
@@ -2427,24 +2423,22 @@ public class EresseaOrderCompleter implements Completer {
    * Returns the last word in the list of tokens.
    */
   public static String getStub(List<OrderToken> tokens) {
-    if (tokens.size() == 0) {
+    if (tokens.size() == 0)
       throw new IllegalArgumentException();
-    }
-    if (tokens.size() == 1) {
+    if (tokens.size() == 1)
       return "";
-    } else {
+    else {
       final OrderToken lastWord = tokens.get(tokens.size() - 2);
-      if (lastWord.followedBySpace() || lastWord.ttype == OrderToken.TT_PERSIST) {
+      if (lastWord.followedBySpace() || lastWord.ttype == OrderToken.TT_PERSIST)
         return "";
-      } else if (lastWord.ttype == OrderToken.TT_CLOSING_QUOTE) {
+      else if (lastWord.ttype == OrderToken.TT_CLOSING_QUOTE)
         return tokens.get(tokens.size() - 4).getText() + tokens.get(tokens.size() - 3).getText()
             + lastWord.getText();
-      } else if (tokens.size() > 2
-          && tokens.get(tokens.size() - 3).ttype == OrderToken.TT_OPENING_QUOTE) {
+      else if (tokens.size() > 2
+          && tokens.get(tokens.size() - 3).ttype == OrderToken.TT_OPENING_QUOTE)
         return tokens.get(tokens.size() - 3).getText() + lastWord.getText();
-      } else {
+      else
         return lastWord.getText();
-      }
     }
   }
 
@@ -2479,9 +2473,8 @@ public class EresseaOrderCompleter implements Completer {
    */
   protected boolean hasSkills(Unit u, int level) {
     for (final Skill s : u.getModifiedSkills()) {
-      if (s.getLevel() >= level) {
+      if (s.getLevel() >= level)
         return true;
-      }
     }
     return false;
   }
@@ -2530,33 +2523,30 @@ public class EresseaOrderCompleter implements Completer {
      * Compares Strings or completions case insensitively.
      */
     public int compare(Object o1, Object o2) {
-      if (o1 instanceof String && o2 instanceof String) {
+      if (o1 instanceof String && o2 instanceof String)
         return ((String) o1).compareToIgnoreCase((String) o2);
-      } else if (o1 instanceof Completion && o2 instanceof Completion) {
+      else if (o1 instanceof Completion && o2 instanceof Completion) {
         final Completion c1 = (Completion) o1;
         final Completion c2 = (Completion) o2;
 
-        if (c1.getName() == null) {
+        if (c1.getName() == null)
           return (c2.getName() == null) ? 0 : 1;
-        } else {
+        else
           return (c2.getName() == null) ? (-1) : c1.getName().compareToIgnoreCase(c2.getName());
-        }
       } else if (o1 instanceof Completion && o2 instanceof String) {
         final String s1 = ((Completion) o1).getName();
         final String s2 = (String) o2;
-        if (s1 == null) {
+        if (s1 == null)
           return 0;
-        } else {
+        else
           return s1.compareToIgnoreCase(s2);
-        }
       } else if (o1 instanceof String && o2 instanceof Completion) {
         final String s1 = (String) o1;
         final String s2 = ((Completion) o2).getName();
-        if (s2 == null) {
+        if (s2 == null)
           return 0;
-        } else {
+        else
           return s2.compareToIgnoreCase(s1);
-        }
       }
 
       return 0;
@@ -2590,12 +2580,12 @@ public class EresseaOrderCompleter implements Completer {
    *      java.lang.String, java.util.List)
    */
   public List<Completion> getCompletions(Unit u, String line, List<Completion> old) {
-    if (true || (old == null) || (old.size() == 0)) {
+    if (true || (old == null) || (old.size() == 0))
       return this.getCompletions(u, line);
-    } else {
+    else {
       getParser().read(new StringReader(line));
       final List<OrderToken> tokens = getParser().getTokens();
-      return this.crop(old, tokens);
+      return crop(old, tokens);
     }
   }
 

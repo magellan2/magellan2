@@ -56,35 +56,36 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
   public Integer getMaxEntertain(Region region) {
     int maxsize = 0;
     Building maxCastle = null;
-    for (Building building : region.buildings()){
-      if (building.getType() instanceof CastleType){
-        if (building.getSize()>maxsize){
+    for (Building building : region.buildings()) {
+      if (building.getType() instanceof CastleType) {
+        if (building.getSize() > maxsize) {
           maxCastle = building;
           maxsize = building.getSize();
         }
       }
     }
     float rate = 0;
-    if (maxCastle==null)
+    if (maxCastle == null) {
       rate = 0;
-    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Wachstube")))
+    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Wachstube"))) {
       rate = .5f;
-    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Wachturm")))
+    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Wachturm"))) {
       rate = 1;
-    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Befestigung")))
+    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Befestigung"))) {
       rate = 1;
-    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Turm")))
+    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Turm"))) {
       rate = 2;
-    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Burg")))
+    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Burg"))) {
       rate = 3;
-    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Festung")))
+    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Festung"))) {
       rate = 4;
-    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Zitadelle")))
+    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Zitadelle"))) {
       rate = 5;
-    
-    rate = Math.min(rate, region.getMorale()/2f);
-    
-    return region.getMourning()==1?0:(int) (rate*region.getSilver()/100);
+    }
+
+    rate = Math.min(rate, region.getMorale() / 2f);
+
+    return region.getMourning() == 1 ? 0 : (int) (rate * region.getSilver() / 100);
   }
 
   /**
@@ -136,7 +137,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
   public int getWage(Region region, Race race) {
     if (race.equals(getRules().getRace(EresseaConstants.R_GOBLINS)))
       return 6;
-    else if (race.getRecruitmentCosts()>0)
+    else if (race.getRecruitmentCosts() > 0)
       return 10;
     else
       return -1;
@@ -144,23 +145,24 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
 
   @Override
   public int getShipRange(Ship s) {
-    if (s.getSpeed() != -1 && s.getModifiedOwnerUnit() == s.getOwnerUnit()) {
-        return s.getSpeed();
-    }
-    
+    if (s.getSpeed() != -1 && s.getModifiedOwnerUnit() == s.getOwnerUnit())
+      return s.getSpeed();
+
     // Reichweite (bei Schaden aufrunden)
     int rad = s.getShipType().getRange();
 
     if (s.getModifiedOwnerUnit() != null) {
-      if ( s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
+      if (s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
         rad += s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus();
       }
 
-      Skill sailing = s.getModifiedOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
-      if (sailing !=null)
-        rad += sailing.getLevel()/7;
+      Skill sailing =
+          s.getModifiedOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
+      if (sailing != null) {
+        rad += sailing.getLevel() / 7;
+      }
     }
-    
+
     // rad = rad*(100.0-damageRatio)/100.0
     rad =
         new BigDecimal(rad).multiply(new BigDecimal(100 - s.getDamageRatio())).divide(

@@ -25,10 +25,9 @@ import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas Gampe
  * @author Ilja Pavkovic
  * @version $Revision: 305 $
@@ -38,78 +37,75 @@ public class OptionAction extends MenuAction {
 
   private List<PreferencesFactory> adapters;
 
-	/**
-	 * This timer object is used to rebuild the PreferencesDialog in background. If the
-	 * actionPerformed method is called the dialog will be discarded and recreated
-	 */
-	private Timer t;
+  /**
+   * This timer object is used to rebuild the PreferencesDialog in background. If the
+   * actionPerformed method is called the dialog will be discarded and recreated
+   */
+  private Timer t;
 
-	/**
-	 * Creates a new OptionAction object.
-	 *
-	 * @param client
-	 * @param adapters Either PreferencesAdapter or PreferencesFactory (???)
-	 */
-	public OptionAction(Client client, List<PreferencesFactory> adapters) {
+  /**
+   * Creates a new OptionAction object.
+   * 
+   * @param client
+   * @param adapters Either PreferencesAdapter or PreferencesFactory (???)
+   */
+  public OptionAction(Client client, List<PreferencesFactory> adapters) {
     super(client);
-		this.adapters = adapters;
-		initTimer();
-	}
+    this.adapters = adapters;
+    initTimer();
+  }
 
-	PreferencesDialog dialog = null;
+  PreferencesDialog dialog = null;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		if(dialog == null) {
-			buildDialog();
-		}
+    if (dialog == null) {
+      buildDialog();
+    }
 
-		dialog.setVisible(true);
-		dialog = null;
-	}
+    dialog.setVisible(true);
+    dialog = null;
+  }
 
-	private void initTimer() {
-		t = new Timer("OptionScheduler", true);
-		t.scheduleAtFixedRate(new TimerTask() {
-				@Override
-        public void run() {
-					buildDialog();
-				}
-			}, 1000, 1000);
-	}
+  private void initTimer() {
+    t = new Timer("OptionScheduler", true);
+    t.scheduleAtFixedRate(new TimerTask() {
+      @Override
+      public void run() {
+        buildDialog();
+      }
+    }, 1000, 1000);
+  }
 
-	private void buildDialog() {
-	  if(dialog != null) {
-	    return;
-	  }
+  private void buildDialog() {
+    if (dialog != null)
+      return;
 
-	  PreferencesDialog pd = new PreferencesDialog(client, true, client.getProperties(), adapters);
+    PreferencesDialog pd = new PreferencesDialog(client, true, client.getProperties(), adapters);
 
-	  if(dialog == null) {
-	    dialog = pd;
-	  }
-	}
+    if (dialog == null) {
+      dialog = pd;
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	public void updateLaF() {
-		if(dialog != null) {
-			dialog.updateLaF();
-		}
-	}
-  
+  /**
+   * DOCUMENT-ME
+   */
+  public void updateLaF() {
+    if (dialog != null) {
+      dialog.updateLaF();
+    }
+  }
+
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.optionaction.accelerator",false);
+    return Resources.get("actions.optionaction.accelerator", false);
   }
 
   /**
@@ -117,7 +113,7 @@ public class OptionAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.optionaction.mnemonic",false);
+    return Resources.get("actions.optionaction.mnemonic", false);
   }
 
   /**
@@ -130,6 +126,6 @@ public class OptionAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.optionaction.tooltip",false);
+    return Resources.get("actions.optionaction.tooltip", false);
   }
 }

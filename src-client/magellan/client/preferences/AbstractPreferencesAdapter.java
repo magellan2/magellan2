@@ -35,9 +35,8 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 /**
- * This class is a helper class for creating PreferencesAdapters or
- * ExtendedPreferencesAdapters. It provides a method for adding groups of
- * options with the same layout.
+ * This class is a helper class for creating PreferencesAdapters or ExtendedPreferencesAdapters. It
+ * provides a method for adding groups of options with the same layout.
  * 
  * @author stm
  * @version 1.0, Jul 29, 2008
@@ -76,12 +75,12 @@ public abstract class AbstractPreferencesAdapter extends JPanel {
    * Called by addPanel if necessary.
    */
   protected void initLayout() {
-    this.setLayout(new BorderLayout());
+    setLayout(new BorderLayout());
     content = new JPanel(new GridBagLayout());
 
-    gridBagConstraints = new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
-        GridBagConstraints.FIRST_LINE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0),
-        0, 0);
+    gridBagConstraints =
+        new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.FIRST_LINE_START,
+            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
 
     initialized = true;
     this.add(content, BorderLayout.NORTH);
@@ -94,45 +93,48 @@ public abstract class AbstractPreferencesAdapter extends JPanel {
    * @return The panel that was created
    */
   public JPanel addPanel(String title) {
-    if (!initialized)
+    if (!initialized) {
       initLayout();
+    }
     currentPanel = new JPanel();
     initCurrentPanel(title);
-    
+
     return currentPanel;
   }
-  
+
   public JPanel addPanel(String title, LayoutManager layout) {
-    if (!initialized)
+    if (!initialized) {
       initLayout();
+    }
     currentPanel = new JPanel(layout);
     initCurrentPanel(title);
-    
-    return currentPanel;    
+
+    return currentPanel;
   }
 
-  protected void initCurrentPanel(String title){
-    if (title != null)
+  protected void initCurrentPanel(String title) {
+    if (title != null) {
       currentPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), title));
-    else
+    } else {
       currentPanel.setBorder(BorderFactory.createEtchedBorder());
+    }
     content.add(currentPanel, gridBagConstraints);
     gridBagConstraints.gridy++;
   }
-  
+
   /**
    * Adds the given component instead of a new JPanel.
    * 
    * @param component
    */
   public void addComponent(Component component) {
-    if (!initialized)
+    if (!initialized) {
       initLayout();
+    }
 
     currentPanel = null;
     content.add(component, gridBagConstraints);
     gridBagConstraints.gridy++;
   }
-
 
 }

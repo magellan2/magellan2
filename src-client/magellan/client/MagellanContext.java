@@ -23,103 +23,102 @@ import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Resources;
 import magellan.library.utils.replacers.ReplacerHelp;
 
-
 /**
  * This class keeps all anchors to global resources e.g. EventDispatcher, Properties...<br>
  */
 public class MagellanContext implements MagellanEnvironment {
-    private Properties settings;
-    private Properties completionSettings;
-    private EventDispatcher dispatcher;
-    private GameData data;
-    private Client client;
-    
-	public MagellanContext(Client client) {
-        this.client = client;
-	}
-    
-    public Client getClient() {
-        return client;
-    }
-    
-	/** 
-	 * Returns the properties of Magellan.
-	 */
-	public Properties getProperties() {
-		return settings;
-	}
+  private Properties settings;
+  private Properties completionSettings;
+  private EventDispatcher dispatcher;
+  private GameData data;
+  private Client client;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setProperties(Properties p) {
-		settings = p;
-	}
+  public MagellanContext(Client client) {
+    this.client = client;
+  }
 
-	/** 
-	 * Returns the EventDispatcher of Magellan.
-	 */
-	public EventDispatcher getEventDispatcher() {
-		return dispatcher;
-	}
+  public Client getClient() {
+    return client;
+  }
 
-	public void setEventDispatcher(EventDispatcher d) {
-		dispatcher = d;
-        dispatcher.setMagellanContext(this);
-	}
+  /**
+   * Returns the properties of Magellan.
+   */
+  public Properties getProperties() {
+    return settings;
+  }
 
-    /** 
-     * Returns the current GameData.
-     */
-    public GameData getGameData() {
-        return data;
-    }
+  /**
+   * DOCUMENT-ME
+   */
+  public void setProperties(Properties p) {
+    settings = p;
+  }
 
-    public void setGameData(GameData d) {
-        data = d;
-    }
+  /**
+   * Returns the EventDispatcher of Magellan.
+   */
+  public EventDispatcher getEventDispatcher() {
+    return dispatcher;
+  }
 
-    ImageFactory imageFactory = null;
-    
-    public ImageFactory getImageFactory() {
-        return imageFactory;
-    }
+  public void setEventDispatcher(EventDispatcher d) {
+    dispatcher = d;
+    dispatcher.setMagellanContext(this);
+  }
 
-    private ReplacerHelp replacerHelp;
-    public ReplacerHelp getReplacerHelp() {
-        return replacerHelp;
-    }
-    /** 
-	 * Initializes global resources.
-	 */
-	public synchronized void init() {
-		//ResourcePathClassLoader.init(settings); // init resource class with new settings
-		
-		// init the translations with the loaded settings
+  /**
+   * Returns the current GameData.
+   */
+  public GameData getGameData() {
+    return data;
+  }
+
+  public void setGameData(GameData d) {
+    data = d;
+  }
+
+  ImageFactory imageFactory = null;
+
+  public ImageFactory getImageFactory() {
+    return imageFactory;
+  }
+
+  private ReplacerHelp replacerHelp;
+
+  public ReplacerHelp getReplacerHelp() {
+    return replacerHelp;
+  }
+
+  /**
+   * Initializes global resources.
+   */
+  public synchronized void init() {
+    // ResourcePathClassLoader.init(settings); // init resource class with new settings
+
+    // init the translations with the loaded settings
     Resources.getInstance();
-   
+
     // init the static resource paths
     Resources.initStaticPaths(settings);
-    
+
     // init the idbaseconverter
-		IDBaseConverter.init();
+    IDBaseConverter.init();
 
-		NameGenerator.init(settings);
+    NameGenerator.init(settings);
 
-		// inits ImageFactory
-        imageFactory = new ImageFactory(getEventDispatcher());
-        
-        // inits ReplacerHelp
-        replacerHelp = new ReplacerHelp(getEventDispatcher(),getGameData());
-    }
+    // inits ImageFactory
+    imageFactory = new ImageFactory(getEventDispatcher());
 
-    public Properties getCompletionProperties() {
-        return completionSettings;
-    }
+    // inits ReplacerHelp
+    replacerHelp = new ReplacerHelp(getEventDispatcher(), getGameData());
+  }
 
-    public void setCompletionProperties(Properties completionSettings2) {
-        completionSettings = completionSettings2;
-    }
+  public Properties getCompletionProperties() {
+    return completionSettings;
+  }
+
+  public void setCompletionProperties(Properties completionSettings2) {
+    completionSettings = completionSettings2;
+  }
 }

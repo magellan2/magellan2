@@ -43,17 +43,14 @@ public class UnitRoutePlanner {
    * Returns <code>true</code> if this unit can move at all and is of a privileged faction.
    */
   public static boolean canPlan(Unit unit) {
-    if (unit.getRegion() == null) {
+    if (unit.getRegion() == null)
       return false;
-    }
 
-    if (getModifiedRadius(unit, false) < 1) {
+    if (UnitRoutePlanner.getModifiedRadius(unit, false) < 1)
       return false;
-    }
 
-    if (unit.getFaction() != null) {
+    if (unit.getFaction() != null)
       return unit.getFaction().isPrivileged();
-    }
 
     return false;
   }
@@ -88,9 +85,8 @@ public class UnitRoutePlanner {
       }
     }
 
-    if (island.size() == 0) {
+    if (island.size() == 0)
       return false;
-    }
 
     picker.initialize(data, island, true);
     // get the data:
@@ -105,8 +101,8 @@ public class UnitRoutePlanner {
       if (v.replaceOrders()) {
         unit.setOrders(orders);
       } else {
-        for (Iterator<String> iter = orders.iterator(); iter.hasNext();) {
-          unit.addOrder(iter.next(), false, 0);
+        for (String string : orders) {
+          unit.addOrder(string, false, 0);
         }
       }
 
@@ -121,8 +117,8 @@ public class UnitRoutePlanner {
             if (v.replaceOrders()) {
               u.setOrders(orders);
             } else {
-              for (Iterator<String> iter = orders.iterator(); iter.hasNext();) {
-                u.addOrder(iter.next(), false, 0);
+              for (String string : orders) {
+                u.addOrder(string, false, 0);
               }
             }
           }
@@ -143,18 +139,20 @@ public class UnitRoutePlanner {
    * @param destination The target region
    * @param ui The parent component for message panes
    * @param makeSingle If this is <code>false</code>, a return trip is constructed
-   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so that the ship's range is not exceeded.
-   * @param makeRoute If this is <code>true</code>, ROUTE commands are produced, as opposed to NACH commands.
+   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so
+   *          that the ship's range is not exceeded.
+   * @param makeRoute If this is <code>true</code>, ROUTE commands are produced, as opposed to NACH
+   *          commands.
    * @param useVorlage If this is <code>true</code>, Vorlage meta commands are produced.
    * @return The list of new orders.
    */
   public List<String> getOrders(Unit unit, GameData data, CoordinateID start,
-      CoordinateID destination, Component ui, boolean makeSingle, boolean useRange, 
+      CoordinateID destination, Component ui, boolean makeSingle, boolean useRange,
       boolean makeRoute, boolean useVorlage) {
     // find a path
     Map<ID, RegionType> excludeMap = Regions.getOceanRegionTypes(data.rules);
 
-    int speed = getModifiedRadius(unit, true);
+    int speed = UnitRoutePlanner.getModifiedRadius(unit, true);
     List<Region> path = Regions.getLandPath(data, start, destination, excludeMap, speed, speed);
 
     if (path == null || path.size() <= 1) {
@@ -210,8 +208,9 @@ public class UnitRoutePlanner {
     }
 
     public void increase(Region region, Region region2) {
-      if (!Regions.isCompleteRoadConnection(region, region2))
+      if (!Regions.isCompleteRoadConnection(region, region2)) {
         onlyStreets = false;
+      }
       steps++;
     }
 
@@ -219,7 +218,7 @@ public class UnitRoutePlanner {
      * @see magellan.library.utils.RoutePlanner.Costs#isExhausted()
      */
     public boolean isExhausted() {
-      return steps >= getModifiedRadius(unit, onlyStreets);
+      return steps >= UnitRoutePlanner.getModifiedRadius(unit, onlyStreets);
     }
 
     public void reset() {

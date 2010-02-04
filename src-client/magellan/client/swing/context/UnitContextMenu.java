@@ -79,9 +79,8 @@ public class UnitContextMenu extends JPopupMenu {
   private Properties settings;
 
   /**
-   * The selected Units (that are a subset of the selected objects in the
-   * overview tree). Notice: this.unit does not need to be element of this
-   * collection!
+   * The selected Units (that are a subset of the selected objects in the overview tree). Notice:
+   * this.unit does not need to be element of this collection!
    */
   private Collection<Unit> selectedUnits;
 
@@ -90,23 +89,19 @@ public class UnitContextMenu extends JPopupMenu {
   /**
    * Creates new UnitContextMenu
    * 
-   * @param unit
-   *          last selected unit - is not required to be in selected objects
-   * @param selectedObjects
-   *          null or Collection of selected objects
-   * @param dispatcher
-   *          EventDispatcher
-   * @param data
-   *          the actual GameData or World
+   * @param unit last selected unit - is not required to be in selected objects
+   * @param selectedObjects null or Collection of selected objects
+   * @param dispatcher EventDispatcher
+   * @param data the actual GameData or World
    */
   public UnitContextMenu(Unit unit, Collection<?> selectedObjects, EventDispatcher dispatcher,
       GameData data) {
     super(unit.toString());
     this.unit = unit;
     this.data = data;
-    this.gameSpecStuff = data.rules.getGameSpecificStuff();
+    gameSpecStuff = data.rules.getGameSpecificStuff();
     this.dispatcher = dispatcher;
-    this.settings = dispatcher.getMagellanContext().getProperties();
+    settings = dispatcher.getMagellanContext().getProperties();
 
     if (selectedObjects != null) {
       // tree selection
@@ -124,8 +119,8 @@ public class UnitContextMenu extends JPopupMenu {
     selectedUnits = ContextAction.filterObjects(selectedObjects, Unit.class);
 
     JMenuItem unitString = new JMenuItem(getCaption());
-//    if (selectedObjects.contains(unit))
-//      unitString.setEnabled(false);
+    // if (selectedObjects.contains(unit))
+    // unitString.setEnabled(false);
     unitString.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         dispatcher.fire(SelectionEvent.create(UnitContextMenu.this, unit));
@@ -160,10 +155,10 @@ public class UnitContextMenu extends JPopupMenu {
 
     // route planning menus
     JMenuItem planRoute = getPlanRoute();
-    if (planRoute!=null)
+    if (planRoute != null) {
       add(planRoute);
+    }
 
-    
     // this part for both (but only for selectedUnits)
 
     if (getComponentCount() > 0) {
@@ -210,9 +205,9 @@ public class UnitContextMenu extends JPopupMenu {
     }
 
     // select selected units in overview
-    if (this.selectedUnits.size() > 0) {
+    if (selectedUnits.size() > 0) {
       JMenuItem selectUnits = null;
-      if (this.selectedUnits.size() == 1) {
+      if (selectedUnits.size() == 1) {
         selectUnits =
             new JMenuItem(Resources
                 .get("context.unitcontextmenu.setasunitselection_singular.caption"));
@@ -307,8 +302,7 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   /**
-   * Searchs for Context Menu Providers in the plugins and adds them to the
-   * menu.
+   * Searchs for Context Menu Providers in the plugins and adds them to the menu.
    */
   private Collection<UnitContextMenuProvider> getContextMenuProviders() {
     Collection<UnitContextMenuProvider> cmpList = new ArrayList<UnitContextMenuProvider>();
@@ -414,10 +408,9 @@ public class UnitContextMenu extends JPopupMenu {
               + teacher.toString());
       add(removeFromTeachersList);
       removeFromTeachersList.addActionListener(new RemoveUnitFromTeachersListAction(unit, teacher,
-          this.data));
+          data));
     }
 
-    
     // plan ship route
     if ((unit.getShip() != null) && unit.equals(unit.getShip().getModifiedOwnerUnit())) {
       JMenuItem planShipRoute =
@@ -434,22 +427,21 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   /**
-   * Sets the selected Units as selected Units in Overview 
+   * Sets the selected Units as selected Units in Overview
    * 
    * @author Fiete
    */
   private void event_selectUnits() {
-    if (this.selectedUnits.size() > 1) {
-      dispatcher.fire(SelectionEvent.create(this, this.selectedUnits.iterator().next(), this.selectedUnits));
+    if (selectedUnits.size() > 1) {
+      dispatcher.fire(SelectionEvent.create(this, selectedUnits.iterator().next(), selectedUnits));
     }
-    if (this.selectedUnits.size() == 1) {
-      dispatcher.fire(SelectionEvent.create(this, this.selectedUnits.iterator().next()));
+    if (selectedUnits.size() == 1) {
+      dispatcher.fire(SelectionEvent.create(this, selectedUnits.iterator().next()));
     }
   }
 
   /**
-   * Gives an order (optionally replacing the existing ones) to the selected
-   * units.
+   * Gives an order (optionally replacing the existing ones) to the selected units.
    */
   private void event_addOrder() {
     GiveOrderDialog giveOderDialog =
@@ -571,9 +563,9 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   private String showInputDialog(String message, List<String> values) {
-    if (1 == 2) {
+    if (1 == 2)
       return JOptionPane.showInputDialog(message);
-    } else {
+    else {
 
       // the combo box (add/modify items if you like to)
       JComboBox comboBox = new JComboBox(values.toArray());
@@ -821,27 +813,26 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   /**
-   * Checks whether the selectedUnits contain at least one Unit-object, that
-   * belongs to a privileged faction.
+   * Checks whether the selectedUnits contain at least one Unit-object, that belongs to a privileged
+   * faction.
    */
   private boolean containsPrivilegedUnit() {
     for (Unit u : selectedUnits) {
-      if (magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
+      if (magellan.library.utils.Units.isPrivilegedAndNoSpy(u))
         return true;
-      }
     }
 
     return false;
   }
 
   private boolean isEditAll() {
-    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS, Boolean.FALSE.toString()).equals("true");
+    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS,
+        Boolean.FALSE.toString()).equals("true");
   }
 
   private GameSpecificStuff getGameSpecifiStuff() {
     return gameSpecStuff;
   }
-
 
   private class RemoveUnitFromTeachersListAction implements ActionListener {
     private Unit student;
@@ -851,18 +842,16 @@ public class UnitContextMenu extends JPopupMenu {
     private GameData gameData;
 
     /**
-     * Creates a new RemoveUnitFromTeachersListAction object, which shall remove
-     * the student ID from the teacher's TEACHING orders.
+     * Creates a new RemoveUnitFromTeachersListAction object, which shall remove the student ID from
+     * the teacher's TEACHING orders.
      * 
-     * @param student
-     *          The affected student Unit
-     * @param teacher
-     *          The affected teacher Unit
+     * @param student The affected student Unit
+     * @param teacher The affected teacher Unit
      */
     public RemoveUnitFromTeachersListAction(Unit student, Unit teacher, GameData data) {
       this.student = student;
       this.teacher = teacher;
-      this.gameData = data;
+      gameData = data;
     }
 
     /**

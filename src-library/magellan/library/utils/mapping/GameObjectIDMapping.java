@@ -27,13 +27,13 @@ import magellan.library.CoordinateID;
 import magellan.library.GameData;
 
 /**
- * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
  */
 
 public class GameObjectIDMapping implements DataMapping {
   private static GameObjectIDMapping singleton = new GameObjectIDMapping();
+
   public static GameObjectIDMapping getSingleton() {
     return GameObjectIDMapping.singleton;
   }
@@ -42,27 +42,23 @@ public class GameObjectIDMapping implements DataMapping {
   public String toString() {
     return "GameObjectID";
   }
-  
+
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
     CoordinateID translation = RegionIDMapping.getSingleton().getMapping(fromData, toData, level);
-    if (translation != null ) {
+    if (translation != null)
       return translation;
-    }
-    
+
     translation = BuildingIDMapping.getSingleton().getMapping(fromData, toData, level);
-    if (translation != null ) {
+    if (translation != null)
       return translation;
-    }
 
     translation = ShipIDMapping.getSingleton().getMapping(fromData, toData, level);
-    if (translation != null ) {
+    if (translation != null)
       return translation;
-    }
 
     translation = UnitIDMapping.getSingleton().getMapping(fromData, toData, level);
-    if (translation != null ) {
+    if (translation != null)
       return translation;
-    }
 
     return null;
   }

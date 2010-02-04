@@ -142,17 +142,16 @@ public class FindDialog extends InternationalizedDataDialog implements
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent s) {
-    if ((s == null) || (s.getSelectedObjects() == null)) {
+    if ((s == null) || (s.getSelectedObjects() == null))
       return;
-    }
 
     if (s.getSelectionType() == SelectionEvent.ST_REGIONS) {
       // some regions on the map were selected or deselected
       // it is assumed that selections of this type contain only regions
       selectedRegions.clear();
 
-      for (Iterator<?> iter = s.getSelectedObjects().iterator(); iter.hasNext();) {
-        Region r = (Region) iter.next();
+      for (Object name2 : s.getSelectedObjects()) {
+        Region r = (Region) name2;
         selectedRegions.add(r);
       }
     }
@@ -165,8 +164,8 @@ public class FindDialog extends InternationalizedDataDialog implements
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
-    this.data = e.getGameData();
-    this.selectedRegions.clear();
+    data = e.getGameData();
+    selectedRegions.clear();
   }
 
   /**
@@ -175,15 +174,14 @@ public class FindDialog extends InternationalizedDataDialog implements
    * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
    */
   public void valueChanged(javax.swing.event.ListSelectionEvent e) {
-    if (e.getValueIsAdjusting()) {
+    if (e.getValueIsAdjusting())
       return;
-    }
 
     Object o = resultList.getSelectedValue();
 
     if (o != null) {
       if (o instanceof RegionWrapper) {
-        dispatcher.fire(SelectionEvent.create(this, ((RegionWrapper) o).getRegion() ));
+        dispatcher.fire(SelectionEvent.create(this, ((RegionWrapper) o).getRegion()));
       } else if (o instanceof UnitWrapper) {
         dispatcher.fire(SelectionEvent.create(this, ((UnitWrapper) o).getUnit()));
       } else {
@@ -344,7 +342,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     JButton findButton = new JButton(Resources.get("finddialog.btn.find"));
     findButton.setDefaultCapable(true);
     findButton.addActionListener(findListener);
-    this.getRootPane().setDefaultButton(findButton);
+    getRootPane().setDefaultButton(findButton);
 
     JButton cancelButton = new JButton(Resources.get("finddialog.btn.close"));
     cancelButton.addActionListener(new ActionListener() {
@@ -518,8 +516,8 @@ public class FindDialog extends InternationalizedDataDialog implements
         txtPattern.removeAllItems();
         history = save;
 
-        for (Iterator<String> iter = history.iterator(); iter.hasNext();) {
-          txtPattern.addItem(iter.next());
+        for (String string : history) {
+          txtPattern.addItem(string);
         }
 
         txtPattern.setSelectedIndex(0);
@@ -586,9 +584,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     // determine the items to search
     if (addUnits.isSelected() == true) {
       // items.addAll(data.units().values()); TempUnits were forgotten...
-      for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
-        Unit u = iter.next();
-
+      for (Unit u : data.units().values()) {
         if ((selectedRegions == null) || selectedRegions.isEmpty()
             || selectedRegions.contains(u.getRegion())) {
           if (addOnlyUnconfirmedUnits.isSelected()) {
@@ -623,9 +619,7 @@ public class FindDialog extends InternationalizedDataDialog implements
       if ((selectedRegions == null) || selectedRegions.isEmpty()) {
         items.addAll(data.buildings().values());
       } else {
-        for (Iterator<Building> iter = data.buildings().values().iterator(); iter.hasNext();) {
-          Building b = iter.next();
-
+        for (Building b : data.buildings().values()) {
           if (selectedRegions.contains(b.getRegion())) {
             items.add(b);
           }
@@ -637,9 +631,7 @@ public class FindDialog extends InternationalizedDataDialog implements
       if ((selectedRegions == null) || selectedRegions.isEmpty()) {
         items.addAll(data.ships().values());
       } else {
-        for (Iterator<Ship> iter = data.ships().values().iterator(); iter.hasNext();) {
-          Ship s = iter.next();
-
+        for (Ship s : data.ships().values()) {
           if (selectedRegions.contains(s.getRegion())) {
             items.add(s);
           }
@@ -654,9 +646,7 @@ public class FindDialog extends InternationalizedDataDialog implements
         if ((selectedRegions == null) || selectedRegions.isEmpty()) {
           items.addAll(traitors);
         } else {
-          for (Iterator<Unit> iter = traitors.iterator(); iter.hasNext();) {
-            Unit u = iter.next();
-
+          for (Unit u : traitors) {
             if (selectedRegions.contains(u.getRegion())) {
               items.add(u);
             }
@@ -715,8 +705,9 @@ public class FindDialog extends InternationalizedDataDialog implements
    */
   private boolean match(String name, Collection<Pattern> patterns) {
     if (name != null) {
-      if (!chkCase.isSelected())
+      if (!chkCase.isSelected()) {
         name = name.toLowerCase();
+      }
 
       for (Pattern p : patterns) {
         if (p.matcher(name).matches())
@@ -734,9 +725,8 @@ public class FindDialog extends InternationalizedDataDialog implements
    * @return
    */
   private boolean filterId(Unique item, Collection<Pattern> patterns) {
-    if (patterns.size() == 0) {
+    if (patterns.size() == 0)
       return true;
-    }
 
     boolean retVal = false;
     String id = getID(item);
@@ -763,17 +753,16 @@ public class FindDialog extends InternationalizedDataDialog implements
    * @return
    */
   private boolean filterItem(Unique item, Collection<Pattern> patterns) {
-    if (patterns.size() == 0) {
+    if (patterns.size() == 0)
       return true;
-    }
 
     boolean retVal = false;
 
     if (item instanceof Unit) {
       Unit u = (Unit) item;
 
-      for (Iterator<Item> iterator = u.getItems().iterator(); iterator.hasNext();) {
-        String name = getName((iterator.next()).getItemType());
+      for (Item item2 : u.getItems()) {
+        String name = getName((item2).getItemType());
         if (match(name, patterns))
           return true;
       }
@@ -785,9 +774,9 @@ public class FindDialog extends InternationalizedDataDialog implements
   private String getID(Object item) {
     ID id = ((Unique) item).getID();
 
-    if (id != null) {
+    if (id != null)
       return id.toString();
-    } else {
+    else {
       FindDialog.log.error("Found Unique without id: " + item);
 
       return "";
@@ -864,9 +853,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     Collection<String> cmds = getCmds(item);
 
     if (cmds != null) {
-      for (Iterator<String> cmdsIter = cmds.iterator(); cmdsIter.hasNext();) {
-        String cmd = cmdsIter.next();
-
+      for (String cmd : cmds) {
         if (match(cmd, patterns))
           return true;
       }
@@ -878,9 +865,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   private Collection<Unit> getAllTraitors() {
     Collection<Unit> retVal = new LinkedList<Unit>();
 
-    for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
-      Unit unit = iter.next();
-
+    for (Unit unit : data.units().values()) {
       if (unit.isSpy()) {
         retVal.add(unit);
       }
@@ -917,8 +902,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     Collection<Object> msgs = getMessages(item);
 
     if (msgs != null) {
-      for (Iterator<Object> msgsIter = msgs.iterator(); msgsIter.hasNext();) {
-        Object o = msgsIter.next();
+      for (Object o : msgs) {
         String msg = "";
 
         if (o instanceof String) {

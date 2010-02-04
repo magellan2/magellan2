@@ -80,8 +80,9 @@ public class CollectionFilters {
   public static <T> Collection<T> filter(Collection<?> oldCollection, Class<T> type) {
     Collection<T> result = new HashSet<T>();
     for (Object o : oldCollection) {
-      if (type.isInstance(o))
+      if (type.isInstance(o)) {
         result.add(type.cast(o));
+      }
     }
     return result;
   }
@@ -98,8 +99,9 @@ public class CollectionFilters {
   public static <T> Collection<T> filter(Object[] oldCollection, Class<T> type) {
     Collection<T> result = new HashSet<T>();
     for (Object o : oldCollection) {
-      if (type.isInstance(o))
+      if (type.isInstance(o)) {
         result.add(type.cast(o));
+      }
     }
     return result;
   }
@@ -112,10 +114,12 @@ public class CollectionFilters {
    * @param newCollection
    * @param type
    */
-  public static <T> void filter(Collection<?> oldCollection, Collection<T> newCollection, Class<T> type) {
+  public static <T> void filter(Collection<?> oldCollection, Collection<T> newCollection,
+      Class<T> type) {
     for (Object o : oldCollection) {
-      if (type.isInstance(o))
+      if (type.isInstance(o)) {
         newCollection.add(type.cast(o));
+      }
     }
   }
 
@@ -128,11 +132,10 @@ public class CollectionFilters {
    * @return
    */
   public static <T> Iterator<T> getValueIterator(Class<T> class1, Map<?, ?> map) {
-    if (map != null) {
-      return getIterator(class1, map.values());
-    } else {
+    if (map != null)
+      return CollectionFilters.getIterator(class1, map.values());
+    else
       return new ClassIterator<T>(class1, Collections.emptyList().iterator());
-    }
   }
 
   /**
@@ -144,11 +147,10 @@ public class CollectionFilters {
    * @return
    */
   public static <T> Iterator<T> getKeyIterator(Class<T> class1, Map<?, ?> map) {
-    if (map != null) {
-      return getIterator(class1, map.keySet());
-    } else {
+    if (map != null)
+      return CollectionFilters.getIterator(class1, map.keySet());
+    else
       return new ClassIterator<T>(class1, Collections.emptyList().iterator());
-    }
   }
 
   /**
@@ -160,11 +162,10 @@ public class CollectionFilters {
    * @return
    */
   public static <T> Iterator<T> getIterator(Class<T> class1, Collection<?> coll) {
-    if (coll != null) {
+    if (coll != null)
       return new ClassIterator<T>(class1, Collections.unmodifiableCollection(coll).iterator());
-    } else {
+    else
       return new ClassIterator<T>(class1, Collections.emptyList().iterator());
-    }
   }
 
   /**
@@ -182,13 +183,11 @@ public class CollectionFilters {
      * @throws NullPointerException DOCUMENT-ME
      */
     public ClassIterator(Class<T> c, Iterator<?> i) {
-      if (c == null) {
+      if (c == null)
         throw new NullPointerException();
-      }
 
-      if (i == null) {
+      if (i == null)
         throw new NullPointerException();
-      }
 
       givenClass = c;
       givenIterator = i;
@@ -211,9 +210,8 @@ public class CollectionFilters {
     public T next() {
       possiblyMoveToNext();
 
-      if (currentObject == null) {
+      if (currentObject == null)
         throw new NoSuchElementException();
-      }
 
       T ret = currentObject;
       currentObject = null;
@@ -222,9 +220,8 @@ public class CollectionFilters {
     }
 
     private void possiblyMoveToNext() {
-      if (currentObject != null) {
+      if (currentObject != null)
         return;
-      }
 
       try {
         Object newObject = null;
@@ -235,8 +232,9 @@ public class CollectionFilters {
 
           if (!givenClass.isInstance(newObject)) {
             newObject = null;
-          } else
+          } else {
             currentObject = givenClass.cast(newObject);
+          }
         }
 
       } catch (NoSuchElementException e) {
@@ -267,8 +265,9 @@ public class CollectionFilters {
       public int size() {
         int size = 0;
         for (Object o : values) {
-          if (class1.isInstance(o))
+          if (class1.isInstance(o)) {
             size++;
+          }
         }
         return size;
       }

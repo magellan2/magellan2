@@ -37,7 +37,7 @@ public class E3AOrderParser extends EresseaOrderParser {
    */
   public E3AOrderParser(GameData data, E3AOrderCompleter cc) {
     super(data, cc);
-    this.completer = cc;
+    completer = cc;
   }
 
   @Override
@@ -46,8 +46,8 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     // TODO
     removeCommand(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH));
-// removeCommand(Resources.getOrderTranslation(EresseaConstants.O_FACTION));
-// removeCommand(Resources.getOrderTranslation(EresseaConstants.O_REGION));
+    // removeCommand(Resources.getOrderTranslation(EresseaConstants.O_FACTION));
+    // removeCommand(Resources.getOrderTranslation(EresseaConstants.O_REGION));
     // removeCommand(Resources.getOrderTranslation(EresseaConstants.O_GROW));
 
     removeCommand(Resources.getOrderTranslation(EresseaConstants.O_SPY));
@@ -69,20 +69,20 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     removeCommand(Resources.getOrderTranslation(EresseaConstants.O_SABOTAGE));
 
-// removeCommand(Resources.getOrderTranslation(EresseaConstants.O_SIEGE));
+    // removeCommand(Resources.getOrderTranslation(EresseaConstants.O_SIEGE));
 
     // TODO?
     addCommand(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE), new AllianzReader());
     addCommand(Resources.getOrderTranslation(E3AConstants.O_PAY), new BezahleReader());
     // addCommand(Resources.getOrderTranslation(E3AConstants.O_GIVE), new GibReader());
-    addCommand(Resources.getOrderTranslation(E3AConstants.O_MAKE), new E3MacheReader());
-    addCommand(Resources.getOrderTranslation(E3AConstants.O_RECRUIT), new RekrutiereReader());
+    addCommand(Resources.getOrderTranslation(EresseaConstants.O_MAKE), new E3MacheReader());
+    addCommand(Resources.getOrderTranslation(EresseaConstants.O_RECRUIT), new RekrutiereReader());
     // addCommand(Resources.getOrderTranslation(E3AConstants.O_LEARNMAGIC), new XYZReader());
   }
 
   @Override
   public E3AOrderCompleter getCompleter() {
-    return this.completer;
+    return completer;
   }
 
   // ************* ALLIANZ
@@ -143,7 +143,8 @@ public class E3AOrderParser extends EresseaOrderParser {
 
       if (isID(t.getText(), false)) {
         t.ttype = OrderToken.TT_ID;
-        Faction faction = getData().getFaction(EntityID.createEntityID(t.getText(), getData().base));
+        Faction faction =
+            getData().getFaction(EntityID.createEntityID(t.getText(), getData().base));
         retVal = faction != null && checkNextFinal();
       } else {
         unexpected(t);
@@ -157,7 +158,7 @@ public class E3AOrderParser extends EresseaOrderParser {
     }
   }
 
-//************* BENENNE
+  // ************* BENENNE
   protected class BenenneReader extends EresseaOrderParser.BenenneReader {
     @Override
     public boolean read(OrderToken token) {
@@ -199,7 +200,7 @@ public class E3AOrderParser extends EresseaOrderParser {
     }
   }
 
-  //************* BEZAHLE
+  // ************* BEZAHLE
   protected class BezahleReader extends OrderHandler {
     @Override
     public boolean read(OrderToken token) {
@@ -212,7 +213,7 @@ public class E3AOrderParser extends EresseaOrderParser {
         retVal = readBewacheNicht(t);
       } else {
         retVal = false;
-        
+
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
@@ -239,8 +240,6 @@ public class E3AOrderParser extends EresseaOrderParser {
     }
   }
 
-  
-  
   // ************* REKRUTIERE
   protected class RekrutiereReader extends OrderHandler {
     @Override
@@ -300,5 +299,5 @@ public class E3AOrderParser extends EresseaOrderParser {
     }
     return null;
   }
-  
+
 }

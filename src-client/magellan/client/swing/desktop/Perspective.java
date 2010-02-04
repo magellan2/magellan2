@@ -16,15 +16,15 @@ package magellan.client.swing.desktop;
 import javax.swing.JPanel;
 
 /**
- * A perspective is a composite view with a menubar 
- *
+ * A perspective is a composite view with a menubar
+ * 
  * @author Ilja Pavkovic
  * @version $Revision: 241 $
  */
 public interface Perspective {
-	/*
-	 * A Perspective holds informations about the desktop view
-	 */
+  /*
+   * A Perspective holds informations about the desktop view
+   */
 
-	public JPanel getJPanel();
+  public JPanel getJPanel();
 }

@@ -35,6 +35,7 @@ import magellan.library.utils.Score;
 
 public class SavedTranslationsMapping implements DataMapping {
   private static SavedTranslationsMapping singleton = new SavedTranslationsMapping();
+
   public static SavedTranslationsMapping getSingleton() {
     return SavedTranslationsMapping.singleton;
   }
@@ -45,12 +46,13 @@ public class SavedTranslationsMapping implements DataMapping {
   }
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
-    Map<CoordinateID, Score<CoordinateID>> translationMap = new Hashtable<CoordinateID, Score<CoordinateID>>();
-    
+    Map<CoordinateID, Score<CoordinateID>> translationMap =
+        new Hashtable<CoordinateID, Score<CoordinateID>>();
+
     // compare all saved translations in both reports
     // special handling for owner faction may be required
     // if not saved -> owner faction has 0,0 in this level
-    
+
     for (Faction faction : fromData.factions().values()) {
       EntityID fid = faction.getID();
       CoordinateID fromTrans = fromData.getCoordinateTranslation(fid, level);
@@ -67,11 +69,10 @@ public class SavedTranslationsMapping implements DataMapping {
         score.addScore(1);
       }
     }
-    
-    if (translationMap.size() > 0) {
+
+    if (translationMap.size() > 0)
       return Collections.max(translationMap.values()).getKey();
-    } else {
+    else
       return null;
-    }
   }
 }

@@ -17,70 +17,62 @@ import java.util.Comparator;
 
 import magellan.library.Unit;
 
-
 /**
  * A comparator imposing an ordering on Unit objects by comparing their health status
- * 
  * <p>
  * Note: this comparator imposes orderings that are inconsistent with equals.
  * </p>
- * 
  * <p>
  * In order to overcome the inconsistency with equals this comparator allows the introduction of a
  * sub-comparator which is applied in cases of equality.
  * </p>
- *
+ * 
  * @author Ulrich Küster
  */
 public class UnitHealthComparator implements Comparator<Unit> {
-	protected Comparator<? super Unit> subCmp = null;
+  protected Comparator<? super Unit> subCmp = null;
 
-	/**
-	 * Creates a new UnitHealthComparator object.
-	 *
-	 * @param subComparator if two units have the same health-status, this sub-comparator is
-	 * 		  applied if it is not <tt>null</tt>.
-	 */
-	public UnitHealthComparator(Comparator<? super Unit> subComparator) {
-		subCmp = subComparator;
-	}
+  /**
+   * Creates a new UnitHealthComparator object.
+   * 
+   * @param subComparator if two units have the same health-status, this sub-comparator is applied
+   *          if it is not <tt>null</tt>.
+   */
+  public UnitHealthComparator(Comparator<? super Unit> subComparator) {
+    subCmp = subComparator;
+  }
 
-	/**
-	 * Compares its two arguments for order according to the health-status
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public int compare(Unit u1, Unit u2) {
-		int retVal = 0;
-		String health1 = u1.getHealth();
-		String health2 = u2.getHealth();
+  /**
+   * Compares its two arguments for order according to the health-status
+   */
+  public int compare(Unit u1, Unit u2) {
+    int retVal = 0;
+    String health1 = u1.getHealth();
+    String health2 = u2.getHealth();
 
-		if(health1 == null){
-		  if (health2 != null)
-		    retVal = Integer.MIN_VALUE;
-		  else
-		    return 0;
-		} else if(health2 == null) {
-			retVal = Integer.MAX_VALUE;
-		} else {
-			// the alphabetical sorting is not very pretty
-			// this is a try to create a better order
-			// (healthy, tired, wounded, heavily wounded)
-			if(health1.equalsIgnoreCase("schwer verwundet")) {
-				health1 = "z" + health1;
-			}
+    if (health1 == null) {
+      if (health2 != null) {
+        retVal = Integer.MIN_VALUE;
+      } else
+        return 0;
+    } else if (health2 == null) {
+      retVal = Integer.MAX_VALUE;
+    } else {
+      // the alphabetical sorting is not very pretty
+      // this is a try to create a better order
+      // (healthy, tired, wounded, heavily wounded)
+      if (health1.equalsIgnoreCase("schwer verwundet")) {
+        health1 = "z" + health1;
+      }
 
-			if(health2.equalsIgnoreCase("schwer verwundet")) {
-				health2 = "z" + health2;
-			}
+      if (health2.equalsIgnoreCase("schwer verwundet")) {
+        health2 = "z" + health2;
+      }
 
-			retVal = health1.compareToIgnoreCase(health2);
-		}
+      retVal = health1.compareToIgnoreCase(health2);
+    }
 
-		return ((retVal == 0) && (subCmp != null)) ? subCmp.compare(u1, u2) : retVal;
-	}
+    return ((retVal == 0) && (subCmp != null)) ? subCmp.compare(u1, u2) : retVal;
+  }
 
 }

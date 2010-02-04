@@ -37,24 +37,25 @@ import magellan.library.utils.Score;
 
 public class RegionNameMapping implements DataMapping {
   private static RegionNameMapping singleton = new RegionNameMapping();
+
   public static RegionNameMapping getSingleton() {
     return RegionNameMapping.singleton;
   }
-  
+
   @Override
   public String toString() {
     return "RegionName";
   }
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
-    Map<CoordinateID, Score<CoordinateID>> translationMap = new Hashtable<CoordinateID, Score<CoordinateID>>();
-    
+    Map<CoordinateID, Score<CoordinateID>> translationMap =
+        new Hashtable<CoordinateID, Score<CoordinateID>>();
+
     // Create HashMap of regions in toData
     Map<String, Collection<Region>> regionMap = new HashMap<String, Collection<Region>>();
     for (Region region : toData.regions().values()) {
-      if ((region.getCoordinate().z == level) && 
-          (region.getName() != null) && 
-          (region.getName().length()>0) ) {
+      if ((region.getCoordinate().z == level) && (region.getName() != null)
+          && (region.getName().length() > 0)) {
         Collection<Region> regions = regionMap.get(region.getName());
         if (regions == null) {
           regions = new HashSet<Region>();
@@ -63,22 +64,21 @@ public class RegionNameMapping implements DataMapping {
         regions.add(region);
       }
     }
-    
+
     // loop regions in fromData
     for (Region region : fromData.regions().values()) {
       CoordinateID coord = region.getCoordinate();
-  
-      if ((coord.z == level) && 
-          (region.getName() != null) && 
-          (region.getName().length()>0) ) {
+
+      if ((coord.z == level) && (region.getName() != null) && (region.getName().length() > 0)) {
 
         Collection<Region> result = regionMap.get(region.getName());
         if (result != null) {
           for (Region foundRegion : result) {
             if (foundRegion != null) {
               CoordinateID foundCoord = foundRegion.getCoordinate();
-              CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, level);
-              
+              CoordinateID translation =
+                  new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, level);
+
               Score<CoordinateID> score = translationMap.get(translation);
               if (score == null) {
                 score = new Score<CoordinateID>(translation);
@@ -91,10 +91,9 @@ public class RegionNameMapping implements DataMapping {
       }
     }
 
-    if (translationMap.size() > 0) {
+    if (translationMap.size() > 0)
       return Collections.max(translationMap.values()).getKey();
-    } else {
+    else
       return null;
-    }
   }
 }

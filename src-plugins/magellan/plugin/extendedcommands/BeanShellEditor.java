@@ -33,56 +33,55 @@ import javax.swing.text.EditorKit;
 import javax.swing.text.StyledEditorKit;
 
 /**
- * A TextArea for BeanShell-Skripts. Including Syntax-Highlighting 
- *
- * @author Thoralf Rickert 
+ * A TextArea for BeanShell-Skripts. Including Syntax-Highlighting
+ * 
+ * @author Thoralf Rickert
  */
-public class BeanShellEditor extends JEditorPane { 
+public class BeanShellEditor extends JEditorPane {
   protected BeanShellSyntaxDocument document = null;
   protected int charWidth = 0;
-  
+
   public static final int TAB_WIDTH = 2;
-  
+
   /**
-   * Create the TextArea 
-   */ 
-  public BeanShellEditor() { 
-    charWidth = getFontMetrics(getFont()).charWidth( 'w' );
-    
+   * Create the TextArea
+   */
+  public BeanShellEditor() {
+    charWidth = getFontMetrics(getFont()).charWidth('w');
+
     document = new BeanShellSyntaxDocument();
     document.setTabs(charWidth, BeanShellEditor.TAB_WIDTH);
     setDocument(document);
-    
-    EditorKit editorKit = new StyledEditorKit() { 
+
+    EditorKit editorKit = new StyledEditorKit() {
       @Override
-      public Document createDefaultDocument() { 
+      public Document createDefaultDocument() {
         BeanShellSyntaxDocument document = new BeanShellSyntaxDocument();
         document.setTabs(charWidth, BeanShellEditor.TAB_WIDTH);
         return document;
-      } 
-    }; 
+      }
+    };
 
     setEditorKitForContentType("text/beanshell", editorKit);
-    setContentType("text/beanshell"); 
-  } 
-  
+    setContentType("text/beanshell");
+  }
+
   /**
-   * Override to get no Line-Wraps 
+   * Override to get no Line-Wraps
    */
   @Override
-  public boolean getScrollableTracksViewportWidth() { 
-    if (getParent() instanceof JViewport) { 
-      JViewport port = (JViewport) getParent(); 
-      TextUI ui = getUI(); 
-      int w = port.getWidth(); 
-      
-//      Dimension min = ui.getMinimumSize(this); 
-//      Dimension max = ui.getMaximumSize(this); 
-      Dimension pref = ui.getPreferredSize(this); 
-      if ((w >= pref.width)) { 
-        return true; 
-      } 
-    } 
-    return false; 
-  } 
+  public boolean getScrollableTracksViewportWidth() {
+    if (getParent() instanceof JViewport) {
+      JViewport port = (JViewport) getParent();
+      TextUI ui = getUI();
+      int w = port.getWidth();
+
+      // Dimension min = ui.getMinimumSize(this);
+      // Dimension max = ui.getMaximumSize(this);
+      Dimension pref = ui.getPreferredSize(this);
+      if ((w >= pref.width))
+        return true;
+    }
+    return false;
+  }
 }

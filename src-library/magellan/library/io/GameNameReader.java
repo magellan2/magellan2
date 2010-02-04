@@ -20,29 +20,27 @@ import magellan.library.io.file.FileType;
 import magellan.library.io.xml.XMLGameNameIO;
 import magellan.library.utils.logging.Logger;
 
-
 /**
- *
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public class GameNameReader {
   private static final Logger log = Logger.getInstance(GameNameReader.class);
 
-	/**
-	 * Tries to read the game name from the file. 
-	 *
-	 * @param filetype A report or rules file
-	 * @return The name of the game or <code>null</code> if it couldn't be found.
-	 */
-	public static String getGameName(FileType filetype) {
-		try {
-			String gameName = new CRGameNameIO().getGameName(filetype);
+  /**
+   * Tries to read the game name from the file.
+   * 
+   * @param filetype A report or rules file
+   * @return The name of the game or <code>null</code> if it couldn't be found.
+   */
+  public static String getGameName(FileType filetype) {
+    try {
+      String gameName = new CRGameNameIO().getGameName(filetype);
 
-			return (gameName != null) ? gameName : new XMLGameNameIO().getGameName(filetype);
-		} catch(IOException e) {
+      return (gameName != null) ? gameName : new XMLGameNameIO().getGameName(filetype);
+    } catch (IOException e) {
       GameNameReader.log.error(e);
-			return null;
-		}
-	}
+      return null;
+    }
+  }
 }

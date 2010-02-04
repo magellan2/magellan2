@@ -21,102 +21,94 @@ import magellan.library.StringID;
 
 /**
  * Stores attributes for a type of castle, that is, a building that influences the peasants.
- *
+ * 
  * @author $Author: $
  * @version $Revision: 203 $
  */
 public class CastleType extends BuildingType {
-	private int minSize;
-	private int wage = -1;
-	private int tax = -1;
+  private int minSize;
+  private int wage = -1;
+  private int tax = -1;
 
   protected ItemType stone;
 
-	/**
-	 * Creates a new CastleType object.
-	 *
-	 * 
-	 */
-	public CastleType(StringID id) {
-		super(id);
-	}
-	
-	public void init(ItemType stone){
-	  this.stone = stone;
-	}
+  /**
+   * Creates a new CastleType object.
+   */
+  public CastleType(StringID id) {
+    super(id);
+  }
 
-	/**
-	 * Sets the wage of peasants that this castle type implies.
-	 *
-	 * @param w
-	 */
-	public void setPeasantWage(int w) {
-		wage = w;
-	}
+  public void init(ItemType stone) {
+    this.stone = stone;
+  }
 
-	/**
+  /**
+   * Sets the wage of peasants that this castle type implies.
+   * 
+   * @param w
+   */
+  public void setPeasantWage(int w) {
+    wage = w;
+  }
+
+  /**
    * Returns the wage of peasants that this castle type implies.
-	 * 
-	 */
-	public int getPeasantWage() {
-		return wage;
-	}
+   */
+  public int getPeasantWage() {
+    return wage;
+  }
 
-	/**
-	 * Sets the tax (in percent) that this castle type's owners get from trade.
-	 * 
-	 * @param t
-	 */
-	public void setTradeTax(int t) {
-		tax = t;
-	}
+  /**
+   * Sets the tax (in percent) that this castle type's owners get from trade.
+   * 
+   * @param t
+   */
+  public void setTradeTax(int t) {
+    tax = t;
+  }
 
-	/**
+  /**
    * Returns the tax (in percent) that this castle type's owners get from trade.
-	 * 
-	 */
-	public int getTradeTax() {
-		return tax;
-	}
+   */
+  public int getTradeTax() {
+    return tax;
+  }
 
-	/**
-	 * Sets the minimum size of a building to qualify as this type. 
-	 */
-	public void setMinSize(int s) {
-		this.minSize = s;
-	}
+  /**
+   * Sets the minimum size of a building to qualify as this type.
+   */
+  public void setMinSize(int s) {
+    minSize = s;
+  }
 
-	/**
-	 * Returns the minimum size of this type.
-	 */
-	public int getMinSize() {
-		return minSize;
-	}
+  /**
+   * Returns the minimum size of this type.
+   */
+  public int getMinSize() {
+    return minSize;
+  }
 
-	/**
-	 * Imposes a natural ordering on CastleType objects according to their minimum size attribute.
-	 * If obj is an instance of class BuildingType the return value reflects the natural ordering
-	 * of the ids of this object and obj.
-	 *
-	 */
-	@Override
+  /**
+   * Imposes a natural ordering on CastleType objects according to their minimum size attribute. If
+   * obj is an instance of class BuildingType the return value reflects the natural ordering of the
+   * ids of this object and obj.
+   */
+  @Override
   public int compareTo(Object obj) {
-		if(obj instanceof CastleType) {
-			CastleType c = (CastleType) obj;
+    if (obj instanceof CastleType) {
+      CastleType c = (CastleType) obj;
 
-			if(this.minSize < c.minSize) {
-				return -1;
-			}
+      if (minSize < c.minSize)
+        return -1;
 
-			if(this.minSize > c.minSize) {
-				return 1;
-			}
+      if (minSize > c.minSize)
+        return 1;
 
-			return 0;
-		} else {
-			return super.compareTo(obj);
-		}
-	}
+      return 0;
+    } else
+      return super.compareTo(obj);
+  }
 
   protected boolean fallBackMaterial = true;
 
@@ -143,9 +135,8 @@ public class CastleType extends BuildingType {
         return new Item(new ItemType(id), 1);
       else
         return null;
-    } else {
+    } else
       return super.getRawMaterial(id);
-    }
   }
 
   /**

@@ -26,8 +26,8 @@ package magellan.library.utils.mapping;
 import magellan.library.CoordinateID;
 
 /**
- * Represents the relation between two map levels by some coordinate transformation.
- * Currently translation and scaling is allowed
+ * Represents the relation between two map levels by some coordinate transformation. Currently
+ * translation and scaling is allowed
  * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
@@ -40,46 +40,43 @@ public class LevelRelation extends CoordinateID {
 
   public LevelRelation(CoordinateID c) {
     super(c);
-    this.fromLevel = c.z; 
+    fromLevel = c.z;
   }
-  
+
   public LevelRelation(CoordinateID c, int scaleX, int scaleY, int fromLevel) {
     super(c);
-    this.scaleX = scaleX; 
-    this.scaleY = scaleY; 
-    this.fromLevel = fromLevel; 
+    this.scaleX = scaleX;
+    this.scaleY = scaleY;
+    this.fromLevel = fromLevel;
   }
 
   public LevelRelation(int translateX, int translateY, int toLevel) {
     super(translateX, translateY, toLevel);
-    this.fromLevel = toLevel; 
+    fromLevel = toLevel;
   }
 
-  public LevelRelation(int translateX, int translateY, int toLevel, int scaleX, int scaleY, int fromLevel) {
+  public LevelRelation(int translateX, int translateY, int toLevel, int scaleX, int scaleY,
+      int fromLevel) {
     super(translateX, translateY, toLevel);
-    this.scaleX = scaleX; 
-    this.scaleY = scaleY; 
-    this.fromLevel = fromLevel; 
+    this.scaleX = scaleX;
+    this.scaleY = scaleY;
+    this.fromLevel = fromLevel;
   }
-  
+
   public CoordinateID getRelatedCoordinate(CoordinateID c) {
-    if (c == null) {
+    if (c == null)
       return null;
-    }
-    if (c.z != fromLevel) {
+    if (c.z != fromLevel)
       return null;
-    }
     return new CoordinateID(c.x * scaleX + x, c.y * scaleY + y, z);
   }
-  
+
   public CoordinateID getInverseRelatedCoordinate(CoordinateID c) {
-    if (c == null) {
+    if (c == null)
       return null;
-    }
-    if (c.z != z) {
+    if (c.z != z)
       return null;
-    }
-    return new CoordinateID((c.x - x ) / scaleX, (c.y - y ) / scaleY, fromLevel);
+    return new CoordinateID((c.x - x) / scaleX, (c.y - y) / scaleY, fromLevel);
   }
 
   @Override
@@ -87,27 +84,26 @@ public class LevelRelation extends CoordinateID {
     if (o instanceof CoordinateID) {
       if (super.equals(o)) {
         if (o instanceof LevelRelation) {
-          LevelRelation l = (LevelRelation)o;
+          LevelRelation l = (LevelRelation) o;
           return (scaleX == l.scaleX) && (scaleX == l.scaleY) && (fromLevel == l.fromLevel);
         } else {
-          CoordinateID c = (CoordinateID)o;
-          return (scaleX == 1) && (scaleX == 1) && (fromLevel == c.z); 
+          CoordinateID c = (CoordinateID) o;
+          return (scaleX == 1) && (scaleX == 1) && (fromLevel == c.z);
         }
-      } else { 
+      } else
         return false;
-      }
-    } else { 
+    } else
       return false;
-    }
   }
-  
+
   @Override
   public int hashCode() {
     return (super.hashCode() << 4) ^ fromLevel;
   }
-  
+
   @Override
   public String toString() {
-    return "trans([0, 0, " + fromLevel + "] -> [" + x + ", " + y + ", " + z + "]) scale(" + scaleX + ", " + scaleY + ")"; 
+    return "trans([0, 0, " + fromLevel + "] -> [" + x + ", " + y + ", " + z + "]) scale(" + scaleX
+        + ", " + scaleY + ")";
   }
 }

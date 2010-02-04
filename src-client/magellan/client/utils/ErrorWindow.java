@@ -51,18 +51,17 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
- * This class provides an error window for presenting any error message on the
- * screen. It is very important in this class to prevent a method to throw any
- * error or exception (maximum error handling and error robustness).<br>
+ * This class provides an error window for presenting any error message on the screen. It is very
+ * important in this class to prevent a method to throw any error or exception (maximum error
+ * handling and error robustness).<br>
  * <br>
- * <b>ToDo:</b> Replace the extends to JDialog or something like that to enable
- * modal behavior. Also make it possible to set the window on top of any other
- * window...and so on...
+ * <b>ToDo:</b> Replace the extends to JDialog or something like that to enable modal behavior. Also
+ * make it possible to set the window on top of any other window...and so on...
  * 
  * @author Thoralf Rickert
  * @version 0.1
  */
-public class ErrorWindow extends JDialog implements ActionListener,WindowCloseable {
+public class ErrorWindow extends JDialog implements ActionListener, WindowCloseable {
   private static final Logger log = Logger.getInstance(ErrorWindow.class);
 
   private static final String SHOW_DETAILS_BUTTON = Resources.get("buttons.details.more");
@@ -92,13 +91,11 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   protected int ySize = 0;
 
   protected boolean actionPerformed = false;
-  
+
   protected boolean showCancel = true;
-  
+
   private static enum ActionCommand {
-    CANCEL,
-    DETAILS,
-    OK;
+    CANCEL, DETAILS, OK;
   }
 
   // **********************************************************************
@@ -111,9 +108,8 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   // **********************************************************************
   /**
-   * @param message
-   *          is a user friendly message with a question that the user can
-   *          answer with "OK" or "Cancel".
+   * @param message is a user friendly message with a question that the user can answer with "OK" or
+   *          "Cancel".
    */
 
   public ErrorWindow(String message) {
@@ -122,12 +118,9 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   // **********************************************************************
   /**
-   * @param message
-   *          is a user friendly message with a question that the user can
-   *          answer with "OK" or "Cancel".
-   * @param throwable
-   *          is an occured exception or error, that couldn't be served or
-   *          catched.
+   * @param message is a user friendly message with a question that the user can answer with "OK" or
+   *          "Cancel".
+   * @param throwable is an occured exception or error, that couldn't be served or catched.
    */
 
   public ErrorWindow(String message, Throwable throwable) {
@@ -136,9 +129,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   // **********************************************************************
   /**
-   * @param throwable
-   *          is an occured exception or error, that couldn't be served or
-   *          catched.
+   * @param throwable is an occured exception or error, that couldn't be served or catched.
    */
 
   public ErrorWindow(Throwable throwable) {
@@ -150,14 +141,10 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   // **********************************************************************
   /**
-   * @param message
-   *          is a user friendly message with a question that the user can
-   *          answer with "OK" or "Cancel".
-   * @param description
-   *          is a longer description of the error for experts.
-   * @param throwable
-   *          is an occured exception or error, that couldn't be served or
-   *          catched.
+   * @param message is a user friendly message with a question that the user can answer with "OK" or
+   *          "Cancel".
+   * @param description is a longer description of the error for experts.
+   * @param throwable is an occured exception or error, that couldn't be served or catched.
    */
 
   public ErrorWindow(String message, String description, Throwable throwable) {
@@ -166,16 +153,11 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   // **********************************************************************
   /**
-   * @param owner
-   *          is the parent window where the error occured.
-   * @param message
-   *          is a user friendly message with a question that the user can
-   *          answer with "OK" or "Cancel".
-   * @param description
-   *          is a longer description of the error for experts.
-   * @param throwable
-   *          is an occured exception or error, that couldn't be served or
-   *          catched.
+   * @param owner is the parent window where the error occured.
+   * @param message is a user friendly message with a question that the user can answer with "OK" or
+   *          "Cancel".
+   * @param description is a longer description of the error for experts.
+   * @param throwable is an occured exception or error, that couldn't be served or catched.
    */
 
   public ErrorWindow(Frame owner, String message, String description, Throwable throwable) {
@@ -189,16 +171,11 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   // **********************************************************************
   /**
-   * @param owner
-   *          is the parent window where the error occured.
-   * @param message
-   *          is a user friendly message with a question that the user can
-   *          answer with "OK" or "Cancel".
-   * @param description
-   *          is a longer description of the error for experts.
-   * @param throwable
-   *          is an occured exception or error, that couldn't be served or
-   *          catched.
+   * @param owner is the parent window where the error occured.
+   * @param message is a user friendly message with a question that the user can answer with "OK" or
+   *          "Cancel".
+   * @param description is a longer description of the error for experts.
+   * @param throwable is an occured exception or error, that couldn't be served or catched.
    */
 
   public ErrorWindow(Dialog owner, String message, String description, Throwable throwable) {
@@ -213,9 +190,8 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   /**
    * Sets the error message of an error inside this dialog.
    * 
-   * @param message
-   *          is a user friendly message with a question that the user can
-   *          answer with "OK" or "Cancel".
+   * @param message is a user friendly message with a question that the user can answer with "OK" or
+   *          "Cancel".
    */
 
   public void setErrorMessage(String message) {
@@ -226,12 +202,9 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   /**
    * Sets the error message and description of an error inside this dialog.
    * 
-   * @param message
-   *          is a user friendly message with a question that the user can
-   *          answer with "OK" or "Cancel".
-   * @param throwable
-   *          is an occured exception or error, that couldn't be served or
-   *          catched.
+   * @param message is a user friendly message with a question that the user can answer with "OK" or
+   *          "Cancel".
+   * @param throwable is an occured exception or error, that couldn't be served or catched.
    */
 
   public void setErrorMessage(String message, Throwable throwable) {
@@ -242,11 +215,9 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   /**
    * Sets the error message and description of an error inside this dialog.
    * 
-   * @param message
-   *          is a user friendly message with a question that the user can
-   *          answer with "OK" or "Cancel".
-   * @param description
-   *          is a longer description of the error for experts.
+   * @param message is a user friendly message with a question that the user can answer with "OK" or
+   *          "Cancel".
+   * @param description is a longer description of the error for experts.
    */
 
   public void setErrorMessage(String message, String description) {
@@ -257,14 +228,10 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   /**
    * Sets the error message and description of an error inside this dialog.
    * 
-   * @param message
-   *          is a user friendly message with a question that the user can
-   *          answer with "OK" or "Cancel".
-   * @param description
-   *          is a longer description of the error for experts.
-   * @param throwable
-   *          is an occured exception or error, that couldn't be served or
-   *          catched.
+   * @param message is a user friendly message with a question that the user can answer with "OK" or
+   *          "Cancel".
+   * @param description is a longer description of the error for experts.
+   * @param throwable is an occured exception or error, that couldn't be served or catched.
    */
 
   public void setErrorMessage(String message, String description, Throwable throwable) {
@@ -290,7 +257,6 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     errorDescription.setText(sb.toString());
   }
 
-
   /**
    * Liefert den StackTrace als String zurück.
    */
@@ -306,8 +272,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
       return "";
     }
   }
-  
-  
+
   // **********************************************************************
   /**
    */
@@ -326,15 +291,14 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     okButton.setRequestFocusEnabled(false);
     okButton.setActionCommand(ActionCommand.OK.toString());
     okButton.addActionListener(this);
-//    okButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    // okButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     buttonPanel.add(okButton);
-
 
     cancelButton = new JButton(Resources.get("button.quit"));
     cancelButton.setRequestFocusEnabled(false);
     cancelButton.setActionCommand(ActionCommand.CANCEL.toString());
     cancelButton.addActionListener(this);
-//    cancelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    // cancelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     buttonPanel.add(cancelButton);
 
     buttonPanel.add(Box.createRigidArea(new Dimension(1, 10)));
@@ -343,7 +307,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     detailsButton.setRequestFocusEnabled(false);
     detailsButton.setActionCommand(ActionCommand.DETAILS.toString());
     detailsButton.addActionListener(this);
-//    detailsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    // detailsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     buttonPanel.add(detailsButton);
 
     errorMessage = new TextArea();
@@ -388,36 +352,36 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     ErrorWindow.log.debug("User selected action '" + cmd + "'");
 
     switch (cmd) {
-      case OK: {
-        // close window
-        this.close();
-        actionPerformed = true;
-        break;
-      }
-      case CANCEL: {
-        // close window
-        this.close();
-        // and exit???
-        if (shutdownOnCancel) {
-          if (cleanShutdown) {
-            System.exit(0);
-          } else {
-            System.exit(1);
-          }
-        }
-        actionPerformed = true;
-        break;
-      }
-      case DETAILS: {
-        // check details state
-        if (isDetailed()) {
-          hideDetails();
+    case OK: {
+      // close window
+      close();
+      actionPerformed = true;
+      break;
+    }
+    case CANCEL: {
+      // close window
+      close();
+      // and exit???
+      if (shutdownOnCancel) {
+        if (cleanShutdown) {
+          System.exit(0);
         } else {
-          showDetails();
+          System.exit(1);
         }
-        repaint();
-        break;
       }
+      actionPerformed = true;
+      break;
+    }
+    case DETAILS: {
+      // check details state
+      if (isDetailed()) {
+        hideDetails();
+      } else {
+        showDetails();
+      }
+      repaint();
+      break;
+    }
     }
   }
 
@@ -437,7 +401,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   public void open() {
     ErrorWindow.log.debug("Open Window");
     setVisible(true);
-    this.toFront();
+    toFront();
 
     LittleObserver observer = new LittleObserver();
     try {
@@ -461,13 +425,12 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   protected boolean isDetailed() {
     String currentDetailsButtonText = detailsButton.getText();
-    if (currentDetailsButtonText.equals(ErrorWindow.SHOW_DETAILS_BUTTON)) {
+    if (currentDetailsButtonText.equals(ErrorWindow.SHOW_DETAILS_BUTTON))
       return false;
-    } else if (currentDetailsButtonText.equals(ErrorWindow.HIDE_DETAILS_BUTTON)) {
+    else if (currentDetailsButtonText.equals(ErrorWindow.HIDE_DETAILS_BUTTON))
       return true;
-    } else {
+    else
       return false;
-    }
   }
 
   // **********************************************************************
@@ -493,7 +456,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     pack();
     validate();
   }
-  
+
   // **********************************************************************
   /**
    * Whether to stop the application with a System.exit(0) or not.
@@ -502,13 +465,10 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   public void setShutdownOnCancel(boolean shutdownOnCancel) {
     this.shutdownOnCancel = shutdownOnCancel;
   }
-  
-
 
   // **********************************************************************
   /**
-   * This method sets the window dimension and positions the window to the
-   * center of the screen.
+   * This method sets the window dimension and positions the window to the center of the screen.
    */
 
   public void setWindowSize(int xSize, int ySize) {
@@ -542,11 +502,9 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   }
 
   /**
-   * @param cleanShutdown
-   *          Wenn der Wert wahr ist, dann wird ein sauberer Shutdown
-   *          durchgeführt und ErrorWindow.shutdown aufgerufen. Wenn der Wert
-   *          falsch ist, dann wird direkt System.exit aufgerufen und nur noch
-   *          der Start-ShutdownHook Prozess wird gestartet.
+   * @param cleanShutdown Wenn der Wert wahr ist, dann wird ein sauberer Shutdown durchgeführt und
+   *          ErrorWindow.shutdown aufgerufen. Wenn der Wert falsch ist, dann wird direkt
+   *          System.exit aufgerufen und nur noch der Start-ShutdownHook Prozess wird gestartet.
    */
   public void setCleanShutdown(boolean cleanShutdown) {
     this.cleanShutdown = cleanShutdown;
@@ -554,10 +512,10 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 }
 
 /**
- * Dies ist ein Bugfix für JTextArea in Verbindung mit JScrollPane. Nach dem
- * Einfügen von Text wird die CaretPosition auf 0 gesetzt, um den Textinhalt von
- * oben nach unten lesen zu können. Außerdem wird beim Disablen die Farbe der
- * Komponente geändert und nicht wirklich disabled (weil sieht scheiße aus...)
+ * Dies ist ein Bugfix für JTextArea in Verbindung mit JScrollPane. Nach dem Einfügen von Text wird
+ * die CaretPosition auf 0 gesetzt, um den Textinhalt von oben nach unten lesen zu können. Außerdem
+ * wird beim Disablen die Farbe der Komponente geändert und nicht wirklich disabled (weil sieht
+ * scheiße aus...)
  * 
  * @author Thoralf Rickert
  * @version 29.10.2003
@@ -590,9 +548,9 @@ class TextArea extends JTextArea {
 }
 
 /**
- * This class can be used from any Frame or Window. It is useful to implement an
- * external WindowAdapter to close a window. The using window class should add
- * an instance of this class to the the list of listener.
+ * This class can be used from any Frame or Window. It is useful to implement an external
+ * WindowAdapter to close a window. The using window class should add an instance of this class to
+ * the the list of listener.
  * 
  * @author Thoralf Rickert
  * @version 0.1
@@ -604,13 +562,12 @@ class WindowClosingDispatcher extends WindowAdapter {
 
   // **********************************************************************
   /**
-   * This constructor creates an dispatcher for the window closing event. You
-   * should call {@link #setListener(WindowCloseable)} to set the instance of
-   * the window that should be used.
+   * This constructor creates an dispatcher for the window closing event. You should call
+   * {@link #setListener(WindowCloseable)} to set the instance of the window that should be used.
    */
 
   public WindowClosingDispatcher() {
-    this.listener = null;
+    listener = null;
   }
 
   // **********************************************************************
@@ -634,7 +591,7 @@ class WindowClosingDispatcher extends WindowAdapter {
    */
 
   public WindowCloseable getListener() {
-    return this.listener;
+    return listener;
   }
 
   // **********************************************************************
@@ -646,15 +603,16 @@ class WindowClosingDispatcher extends WindowAdapter {
     if (listener != null) {
       listener.windowClosing();
     } else {
-      Logger.getInstance(this.getClass().getName()).error("WindowClosingDispatcher.windowClosing() failed (listener=null)");
+      Logger.getInstance(this.getClass().getName()).error(
+          "WindowClosingDispatcher.windowClosing() failed (listener=null)");
     }
   }
 }
 
 /**
- * This interface represents a Java AWT or Swing window that can be closed. A
- * class that implements this interface has the method {@link #windowClosing()}
- * that will be used if the window must be closed.
+ * This interface represents a Java AWT or Swing window that can be closed. A class that implements
+ * this interface has the method {@link #windowClosing()} that will be used if the window must be
+ * closed.
  * 
  * @author Thoralf Rickert
  * @version 0.1
@@ -664,21 +622,19 @@ interface WindowCloseable {
 
   // **********************************************************************
   /**
-   * This method will be called from the
-   * {@link WindowClosingDispatcher} if the user wants to close
-   * the window (f.e. by using the system independent close function (the X in
-   * the window title) or ALT+F4 on MS Windows and some X-Windows
-   * WindowManagers).
+   * This method will be called from the {@link WindowClosingDispatcher} if the user wants to close
+   * the window (f.e. by using the system independent close function (the X in the window title) or
+   * ALT+F4 on MS Windows and some X-Windows WindowManagers).
    */
 
   public void windowClosing();
 }
 
 /**
- * Dies ist ein Bugfix für JEditorPane in Verbindung mit JScrollPane. Nach dem
- * Einfügen von Text wird die CaretPosition auf 0 gesetzt, um den Textinhalt von
- * oben nach unten lesen zu können. Außerdem wird beim Disablen die Farbe der
- * Komponente geändert und nicht wirklich disabled (weil sieht scheiße aus...)
+ * Dies ist ein Bugfix für JEditorPane in Verbindung mit JScrollPane. Nach dem Einfügen von Text
+ * wird die CaretPosition auf 0 gesetzt, um den Textinhalt von oben nach unten lesen zu können.
+ * Außerdem wird beim Disablen die Farbe der Komponente geändert und nicht wirklich disabled (weil
+ * sieht scheiße aus...)
  * 
  * @author Thoralf Rickert
  * @version 29.10.2003

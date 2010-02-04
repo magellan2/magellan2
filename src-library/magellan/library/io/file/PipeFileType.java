@@ -41,12 +41,12 @@ import magellan.library.utils.Encoding;
 public class PipeFileType extends FileType {
 
   private static int SERIAL = 0;
-  
+
   private PipedOutputStream outputStream;
   private PipedInputStream inputStream;
-  
+
   private String encoding = Encoding.DEFAULT.toString();
-  
+
   private final int serial = PipeFileType.SERIAL++;
 
   public PipeFileType() throws IOException {
@@ -76,15 +76,14 @@ public class PipeFileType extends FileType {
     return this;
   }
 
-
   @Override
   public Writer createWriter(String encoding) throws IOException {
-    return new BufferedWriter(new OutputStreamWriter(outputStream,encoding));
+    return new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
   }
 
   @Override
   public Reader createReader() throws IOException {
-    return new BufferedReader(new InputStreamReader(inputStream,encoding));
+    return new BufferedReader(new InputStreamReader(inputStream, encoding));
   }
 
   @Override
@@ -92,10 +91,10 @@ public class PipeFileType extends FileType {
     return encoding;
   }
 
-  public void setEncoding(String _encoding){
-    this.encoding = _encoding;
+  public void setEncoding(String _encoding) {
+    encoding = _encoding;
   }
-  
+
   @Override
   public File getFile() throws IOException {
     return null;
@@ -143,12 +142,12 @@ public class PipeFileType extends FileType {
 
   @Override
   public void setReadonly(boolean readonly) {
-    
+
   }
 
   @Override
   public String toString() {
-    return "PIPE"+serial ;
+    return "PIPE" + serial;
   }
 
 }

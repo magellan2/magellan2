@@ -25,196 +25,155 @@ import javax.swing.Icon;
 import magellan.library.Region;
 import magellan.library.utils.StringFactory;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
-	private Region region = null;
-	private List<GraphicsElement> GEs = null;
-	private int amount = Integer.MIN_VALUE;
+  private Region region = null;
+  private List<GraphicsElement> GEs = null;
+  private int amount = Integer.MIN_VALUE;
 
-	/**
-	 * Creates a new RegionNodeWrapper object.
-	 *
-	 * 
-	 */
-	public RegionNodeWrapper(Region r) {
-		this(r, Integer.MIN_VALUE);
-	}
+  /**
+   * Creates a new RegionNodeWrapper object.
+   */
+  public RegionNodeWrapper(Region r) {
+    this(r, Integer.MIN_VALUE);
+  }
 
-	/**
-	 * Creates a new RegionNodeWrapper object.
-	 *
-	 * 
-	 * 
-	 */
-	public RegionNodeWrapper(Region r, int amount) {
-		this.region = r;
-		this.amount = amount;
-	}
+  /**
+   * Creates a new RegionNodeWrapper object.
+   */
+  public RegionNodeWrapper(Region r, int amount) {
+    region = r;
+    this.amount = amount;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Region getRegion() {
-		return region;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public Region getRegion() {
+    return region;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setAmount(int amount) {
-		this.amount = amount;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setAmount(int amount) {
+    this.amount = amount;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getAmount() {
-		return this.amount;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int getAmount() {
+    return amount;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String toString() {
-		return (amount > Integer.MIN_VALUE) ? (region.toString() + ": " + amount) : region.toString();
-	}
+    return (amount > Integer.MIN_VALUE) ? (region.toString() + ": " + amount) : region.toString();
+  }
 
-	// pavkovic 2003.10.01: prevent multiple Lists to be generated for nearly static code
-	private static Map<Object,List<String>> iconNamesLists = new Hashtable<Object, List<String>>();
+  // pavkovic 2003.10.01: prevent multiple Lists to be generated for nearly static code
+  private static Map<Object, List<String>> iconNamesLists = new Hashtable<Object, List<String>>();
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public List<String> getIconNames() {
-		Object key = region.getType().getID();
-		List<String> iconNames = RegionNodeWrapper.iconNamesLists.get(key);
+  /**
+   * DOCUMENT-ME
+   */
+  public List<String> getIconNames() {
+    Object key = region.getType().getID();
+    List<String> iconNames = RegionNodeWrapper.iconNamesLists.get(key);
 
-		if(iconNames == null) {
-			// in this situation init the region
-			region.refreshUnitRelations();
+    if (iconNames == null) {
+      // in this situation init the region
+      region.refreshUnitRelations();
 
-			iconNames = Collections.singletonList(StringFactory.getFactory().intern(key.toString()));
-			RegionNodeWrapper.iconNamesLists.put(key, iconNames);
-		}
+      iconNames = Collections.singletonList(StringFactory.getFactory().intern(key.toString()));
+      RegionNodeWrapper.iconNamesLists.put(key, iconNames);
+    }
 
-		return iconNames;
-	}
+    return iconNames;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	public void propertiesChanged() {
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void propertiesChanged() {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public List<GraphicsElement> getGraphicsElements() {
-		if(GEs == null) {
-		  // TODO do this in background thread!
-			// in this situation init the region
-			region.refreshUnitRelations();
+  /**
+   * DOCUMENT-ME
+   */
+  public List<GraphicsElement> getGraphicsElements() {
+    if (GEs == null) {
+      // TODO do this in background thread!
+      // in this situation init the region
+      region.refreshUnitRelations();
 
-			GraphicsElement ge = new RegionGraphicsElement(toString(), null, null,
-														   region.getType().getID().toString());
-			ge.setTooltip(region.getType().getName());
-			ge.setType(GraphicsElement.MAIN);
+      GraphicsElement ge =
+          new RegionGraphicsElement(toString(), null, null, region.getType().getID().toString());
+      ge.setTooltip(region.getType().getName());
+      ge.setType(GraphicsElement.MAIN);
 
-			GEs = Collections.singletonList(ge);
-		}
+      GEs = Collections.singletonList(ge);
+    }
 
-		return GEs;
-	}
+    return GEs;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean reverseOrder() {
-		return false;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean reverseOrder() {
+    return false;
+  }
 
-	protected class RegionGraphicsElement extends GraphicsElement {
-		/**
-		 * Creates a new RegionGraphicsElement object.
-		 *
-		 * 
-		 * 
-		 * 
-		 * 
-		 */
-		public RegionGraphicsElement(Object o, Icon i, Image im, String s) {
-			super(o, i, im, s);
-			setType(GraphicsElement.MAIN);
-		}
+  protected class RegionGraphicsElement extends GraphicsElement {
+    /**
+     * Creates a new RegionGraphicsElement object.
+     */
+    public RegionGraphicsElement(Object o, Icon i, Image im, String s) {
+      super(o, i, im, s);
+      setType(GraphicsElement.MAIN);
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		@Override
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
     public boolean isEmphasized() {
-			return emphasized();
-		}
-	}
+      return emphasized();
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getClipboardValue() {
-		if(region != null) {
-			return region.toString();
-		} else {
-			return toString();
-		}
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public String getClipboardValue() {
+    if (region != null)
+      return region.toString();
+    else
+      return toString();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
-		return null;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public NodeWrapperDrawPolicy init(Properties settings, String prefix,
-									  NodeWrapperDrawPolicy adapter) {
-		return null;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public NodeWrapperDrawPolicy init(Properties settings, String prefix,
+      NodeWrapperDrawPolicy adapter) {
+    return null;
+  }
 }

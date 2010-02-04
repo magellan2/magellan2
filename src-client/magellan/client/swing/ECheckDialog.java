@@ -29,85 +29,87 @@ import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
 
-
 /**
  * A dialog wrapper for the ECheck panel.
  */
 public class ECheckDialog extends InternationalizedDataDialog {
-	private ECheckPanel pnlECheck = null;
+  private ECheckPanel pnlECheck = null;
 
-	/**
-	 * Create a new ECheckDialog object as a dialog with a parent window.
-	 */
-	public ECheckDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData, Properties p) {
-		this(owner, modal, ed, initData, p, null);
-	}
+  /**
+   * Create a new ECheckDialog object as a dialog with a parent window.
+   */
+  public ECheckDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData,
+      Properties p) {
+    this(owner, modal, ed, initData, p, null);
+  }
 
-	/**
-	 * Create a new ECheckDialog object as a dialog with a parent window.
-	 */
-	public ECheckDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData,
-						Properties p, Collection<Region> regions) {
-		super(owner, modal, ed, initData, p);
-		init(regions);
-	}
+  /**
+   * Create a new ECheckDialog object as a dialog with a parent window.
+   */
+  public ECheckDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData,
+      Properties p, Collection<Region> regions) {
+    super(owner, modal, ed, initData, p);
+    init(regions);
+  }
 
-	private void init(Collection<Region> regions) {
-		if(regions == null) {
-			pnlECheck = new ECheckPanel(dispatcher, data, settings);
-		} else {
-			pnlECheck = new ECheckPanel(dispatcher, data, settings, regions);
-		}
+  private void init(Collection<Region> regions) {
+    if (regions == null) {
+      pnlECheck = new ECheckPanel(dispatcher, data, settings);
+    } else {
+      pnlECheck = new ECheckPanel(dispatcher, data, settings, regions);
+    }
 
-		setContentPane(getMainPane());
-		setTitle(Resources.get("echeckdialog.window.title"));
+    setContentPane(getMainPane());
+    setTitle(Resources.get("echeckdialog.window.title"));
 
-		int width = Integer.parseInt(settings.getProperty("ECheckDialog.width", "500"));
-		int height = Integer.parseInt(settings.getProperty("ECheckDialog.height", "300"));
-		this.setSize(width, height);
+    int width = Integer.parseInt(settings.getProperty("ECheckDialog.width", "500"));
+    int height = Integer.parseInt(settings.getProperty("ECheckDialog.height", "300"));
+    this.setSize(width, height);
 
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = Integer.parseInt(settings.getProperty("ECheckDialog.x",
-													  ((screen.width - getWidth()) / 2) + ""));
-		int y = Integer.parseInt(settings.getProperty("ECheckDialog.y",
-													  ((screen.height - getHeight()) / 2) + ""));
-		this.setLocation(x, y);
-		pnlECheck.setSelRegionsOnly(Boolean.valueOf(settings.getProperty("ECheckDialog.includeSelRegionsOnly",
-																	 "false")).booleanValue());
-		pnlECheck.setConfirmedOnly(Boolean.valueOf(settings.getProperty("ECheckDialog.confirmedOnly",
-																	"false")).booleanValue());
-	}
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    int x =
+        Integer.parseInt(settings.getProperty("ECheckDialog.x", ((screen.width - getWidth()) / 2)
+            + ""));
+    int y =
+        Integer.parseInt(settings.getProperty("ECheckDialog.y", ((screen.height - getHeight()) / 2)
+            + ""));
+    this.setLocation(x, y);
+    pnlECheck.setSelRegionsOnly(Boolean.valueOf(
+        settings.getProperty("ECheckDialog.includeSelRegionsOnly", "false")).booleanValue());
+    pnlECheck.setConfirmedOnly(Boolean.valueOf(
+        settings.getProperty("ECheckDialog.confirmedOnly", "false")).booleanValue());
+  }
 
-	private Container getMainPane() {
-		JPanel mainPanel = new JPanel(new BorderLayout(6, 0));
-		mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
-		mainPanel.add(pnlECheck, BorderLayout.CENTER);
+  private Container getMainPane() {
+    JPanel mainPanel = new JPanel(new BorderLayout(6, 0));
+    mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
+    mainPanel.add(pnlECheck, BorderLayout.CENTER);
 
-		return mainPanel;
-	}
+    return mainPanel;
+  }
 
-	private void storeSettings() {
-		settings.setProperty("ECheckDialog.x", String.valueOf(getX()));
-		settings.setProperty("ECheckDialog.y", String.valueOf(getY()));
-		settings.setProperty("ECheckDialog.width", String.valueOf(getWidth()));
-		settings.setProperty("ECheckDialog.height", String.valueOf(getHeight()));
-		settings.setProperty("ECheckDialog.includeSelRegionsOnly",
-							 String.valueOf(pnlECheck.getSelRegionsOnly()));
-		settings.setProperty("ECheckDialog.confirmedOnly",
-							 String.valueOf(pnlECheck.getConfirmedOnly()));
-	}
+  private void storeSettings() {
+    settings.setProperty("ECheckDialog.x", String.valueOf(getX()));
+    settings.setProperty("ECheckDialog.y", String.valueOf(getY()));
+    settings.setProperty("ECheckDialog.width", String.valueOf(getWidth()));
+    settings.setProperty("ECheckDialog.height", String.valueOf(getHeight()));
+    settings.setProperty("ECheckDialog.includeSelRegionsOnly", String.valueOf(pnlECheck
+        .getSelRegionsOnly()));
+    settings
+        .setProperty("ECheckDialog.confirmedOnly", String.valueOf(pnlECheck.getConfirmedOnly()));
+  }
 
-	@Override
+  @Override
   protected void quit() {
-		storeSettings();
-		pnlECheck.quit();
-		super.quit();
-	}
+    storeSettings();
+    pnlECheck.quit();
+    super.quit();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	public void exec() {
-		pnlECheck.runECheck();
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void exec() {
+    pnlECheck.runECheck();
+  }
 }

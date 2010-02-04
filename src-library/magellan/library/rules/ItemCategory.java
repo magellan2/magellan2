@@ -22,46 +22,39 @@ import magellan.library.StringID;
 
 /**
  * A category is a group that an item can belong to, e.g. "weapons", "luxury goods" etc.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class ItemCategory extends Category {
-	/**
-	 * Creates new ItemCategory
-	 *
-	 * 
-	 */
-	public ItemCategory(StringID id) {
-		super(id);
-	}
+  /**
+   * Creates new ItemCategory
+   */
+  public ItemCategory(StringID id) {
+    super(id);
+  }
 
-	/**
-	 * Creates a new ItemCategory object.
-	 *
-	 * 
-	 * 
-	 */
-	public ItemCategory(StringID id, Category parent) {
-		super(id, parent);
-	}
+  /**
+   * Creates a new ItemCategory object.
+   */
+  public ItemCategory(StringID id, Category parent) {
+    super(id, parent);
+  }
 
-	/**
-	 * Returns <code>true</code> if o is an ItemType and (transitively) belongs to this category. 
-	 * 
-	 */
-	@Override
+  /**
+   * Returns <code>true</code> if o is an ItemType and (transitively) belongs to this category.
+   */
+  @Override
   public boolean isInstance(Object o) {
-		if(o instanceof ItemType) {
-			ItemType it = (ItemType) o;
+    if (o instanceof ItemType) {
+      ItemType it = (ItemType) o;
 
-			if(it.getCategory() != null) {
-				return it.getCategory().isDescendant(this);
-			}
-		}
+      if (it.getCategory() != null)
+        return it.getCategory().isDescendant(this);
+    }
 
-		return false;
-	}
+    return false;
+  }
 
   /**
    * Returns the id uniquely identifying this object.

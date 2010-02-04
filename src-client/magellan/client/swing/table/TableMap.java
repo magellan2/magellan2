@@ -65,114 +65,89 @@ import javax.swing.table.TableModel;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public class TableMap extends AbstractTableModel implements TableModelListener {
-	protected TableModel model;
+  protected TableModel model;
 
-	private TableMap(){
-	  super();
-	}
-	
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public TableModel getModel() {
-		return model;
-	}
+  private TableMap() {
+    super();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setModel(TableModel model) {
-		this.model = model;
-		model.addTableModelListener(this);
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public TableModel getModel() {
+    return model;
+  }
 
-	// By default, Implement TableModel by forwarding all messages 
-	// to the model. 
-	public Object getValueAt(int aRow, int aColumn) {
-		return model.getValueAt(aRow, aColumn);
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setModel(TableModel model) {
+    this.model = model;
+    model.addTableModelListener(this);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 */
-	@Override
+  // By default, Implement TableModel by forwarding all messages
+  // to the model.
+  public Object getValueAt(int aRow, int aColumn) {
+    return model.getValueAt(aRow, aColumn);
+  }
+
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void setValueAt(Object aValue, int aRow, int aColumn) {
-		model.setValueAt(aValue, aRow, aColumn);
-	}
+    model.setValueAt(aValue, aRow, aColumn);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getRowCount() {
-		return (model == null) ? 0 : model.getRowCount();
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int getRowCount() {
+    return (model == null) ? 0 : model.getRowCount();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getColumnCount() {
-		return (model == null) ? 0 : model.getColumnCount();
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int getColumnCount() {
+    return (model == null) ? 0 : model.getColumnCount();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String getColumnName(int aColumn) {
-		return model.getColumnName(aColumn);
-	}
+    return model.getColumnName(aColumn);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public Class<?> getColumnClass(int aColumn) {
-		return model.getColumnClass(aColumn);
-	}
+    return model.getColumnClass(aColumn);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public boolean isCellEditable(int row, int column) {
-		return model.isCellEditable(row, column);
-	}
+    return model.isCellEditable(row, column);
+  }
 
-	//
-	// Implementation of the TableModelListener interface, 
-	//
-	// By default forward all events to all the listeners. 
-	public void tableChanged(TableModelEvent e) {
-		fireTableChanged(e);
-	}
+  //
+  // Implementation of the TableModelListener interface,
+  //
+  // By default forward all events to all the listeners.
+  public void tableChanged(TableModelEvent e) {
+    fireTableChanged(e);
+  }
 }

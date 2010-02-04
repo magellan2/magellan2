@@ -61,58 +61,56 @@ import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.comparator.SkillTypeRankComparator;
 
-
 /**
+ * Panel for maintainig the SkillTypeList for sorting after skillType
  * 
- * Panel for maintainig the SkillTypeList for sorting after 
- * skillType
- *
  * @author ...
  * @version 1.0, 20.11.2007
  */
- public class RegionOverviewSkillPreferences extends JPanel implements PreferencesAdapter {
+public class RegionOverviewSkillPreferences extends JPanel implements PreferencesAdapter {
 
-   
-   private JList skillList = null;
-   private JButton upButton = null;
-   private JButton downButton = null;
-   private JButton refreshListButton = null;
-   
-   private SkillTypeComparator skillTypeComparator = null;
-   
-   private Properties settings;
+  private JList skillList = null;
+  private JButton upButton = null;
+  private JButton downButton = null;
+  private JButton refreshListButton = null;
+
+  private SkillTypeComparator skillTypeComparator = null;
+
+  private Properties settings;
 
   /**
    * Creates a new SkillPreferences object.
    */
-  public RegionOverviewSkillPreferences(EventDispatcher dispatcher, ImageFactory imageFactory, Properties settings, GameData data) {
-    this.setLayout(new BorderLayout());
-    this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.skillorder")));
+  public RegionOverviewSkillPreferences(EventDispatcher dispatcher, ImageFactory imageFactory,
+      Properties settings, GameData data) {
+    setLayout(new BorderLayout());
+    setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("emapoverviewpanel.prefs.skillorder")));
     this.settings = settings;
-    
+
     skillList = new JList();
     skillList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    skillList.setCellRenderer(new MyCellRenderer(data,imageFactory));
+    skillList.setCellRenderer(new MyCellRenderer(data, imageFactory));
     // entries for List are updated in initPreferences
-    
+
     this.add(new JScrollPane(skillList), BorderLayout.CENTER);
 
     JPanel buttons = new JPanel(new GridBagLayout());
-    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 1, 2, 1), 0, 0);
-    
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, new Insets(0, 1, 2, 1), 0, 0);
+
     upButton = new JButton(Resources.get("emapoverviewpanel.prefs.upbutton.caption"));
     upButton.setPreferredSize(new Dimension(110, 40));
     upButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0)) {
+        if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0))
           return;
-        }
 
         int selIndices[] = skillList.getSelectedIndices();
 
-        if (selIndices.length == 0) {
+        if (selIndices.length == 0)
           return;
-        }
 
         List<Object> newData = new LinkedList<Object>();
         ListModel oldData = skillList.getModel();
@@ -158,15 +156,13 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
     downButton.setPreferredSize(new Dimension(110, 40));
     downButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0)) {
+        if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0))
           return;
-        }
 
         int selIndices[] = skillList.getSelectedIndices();
 
-        if (selIndices.length == 0) {
+        if (selIndices.length == 0)
           return;
-        }
 
         List<Object> newData = new LinkedList<Object>();
         ListModel oldData = skillList.getModel();
@@ -221,35 +217,35 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
 
     final GameData fData = data;
 
-    refreshListButton = new JButton(Resources.get("emapoverviewpanel.prefs.refreshlistbutton.caption"));
+    refreshListButton =
+        new JButton(Resources.get("emapoverviewpanel.prefs.refreshlistbutton.caption"));
     refreshListButton.setPreferredSize(new Dimension(110, 40));
     refreshListButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0)) {
+        if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0))
           return;
-        }
 
         ListModel listData = skillList.getModel();
         List<SkillType> v = new LinkedList<SkillType>();
 
         for (int index = 0; index < listData.getSize(); index++) {
-          v.add((SkillType)listData.getElementAt(index));
+          v.add((SkillType) listData.getElementAt(index));
         }
-        
-        if (skillTypeComparator==null){
+
+        if (skillTypeComparator == null) {
           skillTypeComparator = new SkillTypeComparator(fData);
         }
-        
-        Collections.sort(v,skillTypeComparator);
+
+        Collections.sort(v, skillTypeComparator);
         skillList.setListData(v.toArray());
       }
     });
     buttons.add(refreshListButton, c);
 
     this.add(buttons, BorderLayout.EAST);
-    
-    // FIXME(stm) this call is strictly not necessary 
-    this.initPreferences();
+
+    // FIXME(stm) this call is strictly not necessary
+    initPreferences();
   }
 
   /**
@@ -266,7 +262,7 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
 
   /**
    * fills the values
-   *
+   * 
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
@@ -279,10 +275,11 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
         v.add(type);
       }
 
-      Collections.sort(v, new SkillTypeRankComparator(new NameComparator(IDComparator.DEFAULT), settings));
+      Collections.sort(v, new SkillTypeRankComparator(new NameComparator(IDComparator.DEFAULT),
+          settings));
       skillList.setListData(v.toArray());
-      
-      if (v.size()>0){
+
+      if (v.size() > 0) {
         setEnabled(true);
       } else {
         setEnabled(false);
@@ -293,7 +290,6 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
   }
 
   /**
-   * 
    * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
   public Component getComponent() {
@@ -301,7 +297,6 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
   }
 
   /**
-   * 
    * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
@@ -309,7 +304,6 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
   }
 
   /**
-   * 
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
@@ -321,87 +315,86 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
 
     }
   }
-  
 
   /**
-   * 
    * An extra cell renderer to display the skills in the list
-   *
+   * 
    * @author ...
    * @version 1.0, 20.11.2007
    */
   private class MyCellRenderer extends JLabel implements ListCellRenderer {
     // we need a reference to the translations
-    private GameData data=null;
+    private GameData data = null;
     // we need a reference to the ImageFactory
-    private ImageFactory imageFactory=null;
-    
+    private ImageFactory imageFactory = null;
+
     /**
      * Constructs a new extra cell renderer for our skill list
+     * 
      * @param _data
      * @param _imageFactory
      */
-     
-    public MyCellRenderer(GameData _data, ImageFactory _imageFactory){
-      this.data = _data;
-      this.imageFactory = _imageFactory;
+
+    public MyCellRenderer(GameData _data, ImageFactory _imageFactory) {
+      data = _data;
+      imageFactory = _imageFactory;
     }
-    
+
     /**
      * returns the JLabel to display in our skill list
-     * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+     * 
+     * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList,
+     *      java.lang.Object, int, boolean, boolean)
      */
-    public Component getListCellRendererComponent(
-      JList list,
-      Object value,            // value to display
-      int index,               // cell index
-      boolean isSelected,      // is the cell selected
-      boolean cellHasFocus)    // the list and the cell have the focus
+    public Component getListCellRendererComponent(JList list, Object value, // value to display
+        int index, // cell index
+        boolean isSelected, // is the cell selected
+        boolean cellHasFocus) // the list and the cell have the focus
     {
-        String s = value.toString();
-        String normalizedIconName = Umlaut.convertUmlauts(s).toLowerCase();
-        s = this.data.getTranslation(s);
-        setText(s);
-        setIcon(this.imageFactory.loadImageIcon(normalizedIconName));
-        if (isSelected) {
-          setBackground(list.getSelectionBackground());
-            setForeground(list.getSelectionForeground());
-        } else {
-              setBackground(list.getBackground());
-              setForeground(list.getForeground());
-        }
-        setEnabled(list.isEnabled());
-        setFont(list.getFont());
-        setOpaque(true);
-        return this;
+      String s = value.toString();
+      String normalizedIconName = Umlaut.convertUmlauts(s).toLowerCase();
+      s = data.getTranslation(s);
+      setText(s);
+      setIcon(imageFactory.loadImageIcon(normalizedIconName));
+      if (isSelected) {
+        setBackground(list.getSelectionBackground());
+        setForeground(list.getSelectionForeground());
+      } else {
+        setBackground(list.getBackground());
+        setForeground(list.getForeground());
+      }
+      setEnabled(list.isEnabled());
+      setFont(list.getFont());
+      setOpaque(true);
+      return this;
     }
-}
+  }
 
-/**
- * 
- * a small comparator to compare translated skillNames
- *
- * @author ...
- * @version 1.0, 20.11.2007
- */  
-private class SkillTypeComparator implements Comparator<SkillType> {
-  
-  // Reference to Translations
-  private GameData data=null;
-  
   /**
-   * constructs new Comparator
-   * @param _data
+   * a small comparator to compare translated skillNames
+   * 
+   * @author ...
+   * @version 1.0, 20.11.2007
    */
-  public SkillTypeComparator(GameData _data){
-    this.data = _data;
+  private class SkillTypeComparator implements Comparator<SkillType> {
+
+    // Reference to Translations
+    private GameData data = null;
+
+    /**
+     * constructs new Comparator
+     * 
+     * @param _data
+     */
+    public SkillTypeComparator(GameData _data) {
+      data = _data;
+    }
+
+    public int compare(SkillType o1, SkillType o2) {
+      String s1 = data.getTranslation(o1.getName());
+      String s2 = data.getTranslation(o2.getName());
+      return s1.compareToIgnoreCase(s2);
+    }
   }
-  
-  public int compare(SkillType o1,SkillType o2){
-    String s1 = data.getTranslation(o1.getName());
-    String s2 = data.getTranslation(o2.getName());
-    return s1.compareToIgnoreCase(s2);
-  }
-}
-  
+
 }

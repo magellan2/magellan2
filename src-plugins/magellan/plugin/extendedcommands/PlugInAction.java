@@ -25,40 +25,32 @@ package magellan.plugin.extendedcommands;
 
 import java.awt.event.ActionEvent;
 
-
 /**
  * An enum for all action types in this plugin.
- *
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
 public enum PlugInAction {
-  EXECUTE_ALL("mainmenu.execute"),
-  SAVE_ALL("mainmenu.save"),
-  LIBRARY_EDIT("mainmenu.library"),
-  CLEAR("mainmenu.clear"),
-  EXPORT("mainmenu.export"),
-  IMPORT("mainmenu.import"),
-  UNKNOWN("");
-  
+  EXECUTE_ALL("mainmenu.execute"), SAVE_ALL("mainmenu.save"), LIBRARY_EDIT("mainmenu.library"),
+  CLEAR("mainmenu.clear"), EXPORT("mainmenu.export"), IMPORT("mainmenu.import"), UNKNOWN("");
+
   private String id;
-  
+
   private PlugInAction(String id) {
     this.id = id;
   }
-  
+
   public String getID() {
     return id;
   }
-  
+
   public static PlugInAction getAction(ActionEvent e) {
-    if (e == null) {
+    if (e == null)
       return UNKNOWN;
-    }
     for (PlugInAction action : PlugInAction.values()) {
-      if (action.id.equalsIgnoreCase(e.getActionCommand())) {
+      if (action.id.equalsIgnoreCase(e.getActionCommand()))
         return action;
-      }
     }
     return UNKNOWN;
   }

@@ -26,15 +26,16 @@ package magellan.library.utils.mapping;
 import magellan.library.GameData;
 
 /**
- * This is a simple mapping that assumes no translation and no scaling. Thus 
- * the same coordinates <x,y> in different level are related to each other.
+ * This is a simple mapping that assumes no translation and no scaling. Thus the same coordinates
+ * <x,y> in different level are related to each other.
  * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
-**/
+ **/
 
 public class EasyLevelMapping implements LevelMapping {
   private static EasyLevelMapping singleton = new EasyLevelMapping();
+
   public static EasyLevelMapping getSingleton() {
     return EasyLevelMapping.singleton;
   }

@@ -18,22 +18,18 @@ import javax.swing.KeyStroke;
 /**
  * An interface for extended short-cut tasks. An extended short-cut is one that redirects the
  * following short-cut to a given listener.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface ExtendedShortcutListener extends ShortcutListener {
-	/**
-	 * Returns whether the given stroke is for an extended short-cut.
-	 *
-	 * 
-	 */
-	public boolean isExtendedShortcut(KeyStroke stroke);
+  /**
+   * Returns whether the given stroke is for an extended short-cut.
+   */
+  public boolean isExtendedShortcut(KeyStroke stroke);
 
-	/**
-	 * Returns the listener responsible for the sub-short-cuts
-	 *
-	 * 
-	 */
-	public ShortcutListener getExtendedShortcutListener(KeyStroke stroke);
+  /**
+   * Returns the listener responsible for the sub-short-cuts
+   */
+  public ShortcutListener getExtendedShortcutListener(KeyStroke stroke);
 }

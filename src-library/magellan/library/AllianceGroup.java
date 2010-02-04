@@ -45,9 +45,8 @@ public class AllianceGroup {
    * @throws NullPointerException if the faction parameter is null.
    */
   public AllianceGroup(EntityID id, String name) {
-    if (id == null) {
+    if (id == null)
       throw new NullPointerException();
-    }
 
     this.id = id;
     this.name = name;
@@ -117,8 +116,9 @@ public class AllianceGroup {
    * Adds a faction to the list of factions beloning to this alliance.
    */
   public void addFaction(Faction faction) {
-    if (factions == null)
+    if (factions == null) {
       factions = new HashSet<ID>();
+    }
     factions.add(faction.getID());
   }
 

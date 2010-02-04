@@ -23,8 +23,8 @@ import magellan.library.Unit;
 /**
  * DOCUMENT ME!
  * 
- * @author Ulrich Küster A simple nodewrapper wrapping a list of units allowing
- *         acces to them via getUnits().
+ * @author Ulrich Küster A simple nodewrapper wrapping a list of units allowing acces to them via
+ *         getUnits().
  */
 public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   // identifies that this UnitListNodeWrapper contains a list of units that are
@@ -66,11 +66,10 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
    * @param units
    * @param icons
    */
-  public UnitListNodeWrapper(String text, String clipboardValue, Collection<Unit> units,
-      String icon) {
-    this(text, clipboardValue, units, icon==null?null:Collections.singleton(icon));
+  public UnitListNodeWrapper(String text, String clipboardValue, Collection<Unit> units, String icon) {
+    this(text, clipboardValue, units, icon == null ? null : Collections.singleton(icon));
   }
-  
+
   public UnitListNodeWrapper(String text, String clipboardValue, Collection<Unit> units,
       Collection<String> icons) {
     this(text, clipboardValue, units);
@@ -104,11 +103,10 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
    * DOCUMENT-ME
    */
   public String getClipboardValue() {
-    if (clipboardValue == null) {
+    if (clipboardValue == null)
       return toString();
-    } else {
+    else
       return clipboardValue;
-    }
   }
 
   public Collection<String> getIconNames() {
@@ -124,8 +122,8 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * Controls whether the tree cell renderer should display this item more
-   * noticeably than other nodes.
+   * Controls whether the tree cell renderer should display this item more noticeably than other
+   * nodes.
    */
   public boolean emphasized() {
     return false;

@@ -20,39 +20,31 @@ package magellan.library.utils.replacers;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class SimpleStringReplacer implements Replacer {
-	protected String string;
+  protected String string;
 
-	/**
-	 * Creates new SimpleStringReplacer
-	 *
-	 * 
-	 */
-	public SimpleStringReplacer(String string) {
-		this.string = string;
-	}
+  /**
+   * Creates new SimpleStringReplacer
+   */
+  public SimpleStringReplacer(String string) {
+    this.string = string;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Object getReplacement(Object o) {
-		return string;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public Object getReplacement(Object o) {
+    return string;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getDescription() {
-		return "simple string";
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public String getDescription() {
+    return "simple string";
+  }
 }

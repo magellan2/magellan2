@@ -55,10 +55,11 @@ public class Units {
   // items without category
   private StatItemContainer catLessContainer = null;
   /**
-   * A Map&lt;ItemCategory, StatItemContainer&gt; mapping the item categories to
-   * containers with items of the corresponding category.
+   * A Map&lt;ItemCategory, StatItemContainer&gt; mapping the item categories to containers with
+   * items of the corresponding category.
    */
-  private final Map<ItemCategory, StatItemContainer> itemCategoriesMap = new Hashtable<ItemCategory, StatItemContainer>();
+  private final Map<ItemCategory, StatItemContainer> itemCategoriesMap =
+      new Hashtable<ItemCategory, StatItemContainer>();
 
   private static ItemType silberbeutel = new ItemType(StringID.create("Silberbeutel"));
   private static ItemType silberkassette = new ItemType(StringID.create("Silberkassette"));
@@ -82,11 +83,10 @@ public class Units {
   }
 
   /**
-   * Calculates the amounts of all items of all units and records the amount in
-   * the itemCategoriesMap.
+   * Calculates the amounts of all items of all units and records the amount in the
+   * itemCategoriesMap.
    * 
-   * @param units
-   *          All items of all units in this Collection are accounted for.
+   * @param units All items of all units in this Collection are accounted for.
    * @return The sorted list of categories.
    */
   public Collection<StatItemContainer> categorizeUnitItems(Collection<Unit> units) {
@@ -99,13 +99,8 @@ public class Units {
     clearItemContainers();
 
     // iterate over all units...
-    for (final Iterator<Unit> it = units.iterator(); it.hasNext();) {
-      final Unit u = it.next();
-
-      // ...and their items
-      for (final Iterator<Item> i = u.getModifiedItems().iterator(); i.hasNext();) {
-        final Item item = i.next();
-
+    for (Unit u : units) {
+      for (Item item : u.getModifiedItems()) {
         // get the container this item is stored in
         final Map<ID, StatItem> container = getItemContainer(item.getItemType());
 
@@ -122,7 +117,8 @@ public class Units {
         // silver
         int amount = item.getAmount();
 
-        if (item.getItemType().equals(Units.silberbeutel) || item.getItemType().equals(Units.silberkassette)) {
+        if (item.getItemType().equals(Units.silberbeutel)
+            || item.getItemType().equals(Units.silberkassette)) {
           amount *= u.getPersons();
         }
 
@@ -130,9 +126,9 @@ public class Units {
 
         // try to remember unmodifiedAmount
         final Item unmodifiedItem = u.getItem(item.getItemType());
-        int unmodifiedAmount=0;
-        if (unmodifiedItem!=null){
-          unmodifiedAmount=unmodifiedItem.getAmount();
+        int unmodifiedAmount = 0;
+        if (unmodifiedItem != null) {
+          unmodifiedAmount = unmodifiedItem.getAmount();
         }
         stored.setUnmodifiedAmount(stored.getUnmodifiedAmount() + unmodifiedAmount);
 
@@ -143,42 +139,34 @@ public class Units {
       }
     }
 
-    final List<StatItemContainer> sortedCategories = new LinkedList<StatItemContainer>(itemCategoriesMap.values());
+    final List<StatItemContainer> sortedCategories =
+        new LinkedList<StatItemContainer>(itemCategoriesMap.values());
     Collections.sort(sortedCategories);
 
     return sortedCategories;
   }
 
-
-
   /**
-   * This method takes all items carried by units in the units Collection and
-   * sorts them by their category. Then it adds the non-empty categories to the
-   * specified parent node and puts the corresponding items in each category
-   * node. Optionally, the units carrying an item are listed as child nodes of
-   * the respective item nodes.
+   * This method takes all items carried by units in the units Collection and sorts them by their
+   * category. Then it adds the non-empty categories to the specified parent node and puts the
+   * corresponding items in each category node. Optionally, the units carrying an item are listed as
+   * child nodes of the respective item nodes.
    * 
-   * @param units
-   *          a collection of Unit objects carrying items.
-   * @param parentNode
-   *          a tree node to add the new nodes to.
-   * @param itemComparator
-   *          a comparator to sort the items with. If itemComparator is null the
-   *          items are sorted by name.
-   * @param unitComparator
-   *          a comparator to sort the units with. If unitComparator is null the
-   *          units are sorted by the amount of the item carried underneath
-   *          which they appear.
-   * @param showUnits
-   *          if true each item node gets child nodes containing the unit(s)
-   *          carrying that item.
-   * @return a collection of DefaultMutableTreeNode objects with user objects of
-   *         class ItemCategory or null if the categorization of the items
-   *         failed.
+   * @param units a collection of Unit objects carrying items.
+   * @param parentNode a tree node to add the new nodes to.
+   * @param itemComparator a comparator to sort the items with. If itemComparator is null the items
+   *          are sorted by name.
+   * @param unitComparator a comparator to sort the units with. If unitComparator is null the units
+   *          are sorted by the amount of the item carried underneath which they appear.
+   * @param showUnits if true each item node gets child nodes containing the unit(s) carrying that
+   *          item.
+   * @return a collection of DefaultMutableTreeNode objects with user objects of class ItemCategory
+   *         or null if the categorization of the items failed.
    */
   public Collection<TreeNode> addCategorizedUnitItems(Collection<Unit> units,
       DefaultMutableTreeNode parentNode, Comparator<Item> itemComparator,
-      Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory, ContextFactory reserveContextFactory) {
+      Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory,
+      ContextFactory reserveContextFactory) {
 
     DefaultMutableTreeNode categoryNode = null;
     final Collection<TreeNode> categoryNodes = new LinkedList<TreeNode>();
@@ -191,24 +179,20 @@ public class Units {
       return null;
     }
 
-    for (final Iterator<StatItemContainer> contIter = listOfCategorizedItems.iterator(); contIter
-    .hasNext();) {
-      final StatItemContainer currentCategoryMap = contIter.next();
-
+    for (StatItemContainer currentCategoryMap : listOfCategorizedItems) {
       if (currentCategoryMap.size() > 0) {
 
         final String catIconName =
-          magellan.library.utils.Umlaut
-          .convertUmlauts(currentCategoryMap.getCategory().getName());
+            magellan.library.utils.Umlaut
+                .convertUmlauts(currentCategoryMap.getCategory().getName());
         final String nodeName = Resources.get("util.units." + catIconName);
         final ItemCategoryNodeWrapper wrapper =
-          new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
+            new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
         wrapper.setIcons(catIconName);
         categoryNode = new DefaultMutableTreeNode(wrapper);
 
         /**
-         * catNode = new
-         * DefaultMutableTreeNode(factory.createSimpleNodeWrapper(wrapper,
+         * catNode = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(wrapper,
          * catIconName));
          */
         parentNode.add(categoryNode);
@@ -229,9 +213,9 @@ public class Units {
         if (units.size() == 1) {
           u = units.iterator().next();
         }
-        for (final Iterator<StatItem> iter = sortedItems.iterator(); iter.hasNext();) {
-          final StatItem currentItem = iter.next();
-          addItemNode(currentItem, categoryNode, u, units, unitComparator, showUnits, factory, reserveContextFactory);
+        for (StatItem currentItem : sortedItems) {
+          addItemNode(currentItem, categoryNode, u, units, unitComparator, showUnits, factory,
+              reserveContextFactory);
           catNumber += currentItem.getAmount();
           unmodifiedCatNumber += currentItem.getUnmodifiedAmount();
         }
@@ -273,7 +257,8 @@ public class Units {
       Collection<Unit> units, Comparator<Unit> unitComparator, boolean showUnits,
       NodeWrapperFactory factory, ContextFactory reserveContextFactory) {
 
-    final ItemNodeWrapper itemNodeWrapper = factory.createItemNodeWrapper(u, currentItem,currentItem.getUnmodifiedAmount());
+    final ItemNodeWrapper itemNodeWrapper =
+        factory.createItemNodeWrapper(u, currentItem, currentItem.getUnmodifiedAmount());
     final DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(itemNodeWrapper);
 
     categoryNode.add(itemNode);
@@ -293,13 +278,15 @@ public class Units {
         icons.add("reserve");
 
         final UnitRelationNodeWrapper reserveNodeWrapper =
-          factory.createRelationNodeWrapper(rrel, factory.createSimpleNodeWrapper(text.toString(), icons));
+            factory.createRelationNodeWrapper(rrel, factory.createSimpleNodeWrapper(
+                text.toString(), icons));
         itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
 
         addItemNode = true;
       }
 
-      for (final ItemTransferRelation currentRelation : u.getItemTransferRelations(currentItem.getItemType())) {
+      for (final ItemTransferRelation currentRelation : u.getItemTransferRelations(currentItem
+          .getItemType())) {
         final StringBuffer prefix = new StringBuffer(currentRelation.amount).append(" ");
         if (currentRelation.warning) {
           itemNodeWrapper.setWarningFlag(true);
@@ -319,17 +306,19 @@ public class Units {
           u2 = currentRelation.source;
         }
 
-        if (u2!=null){
+        if (u2 != null) {
           final UnitNodeWrapper giveNodeWrapper =
-            factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2.getModifiedPersons());
+              factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2
+                  .getModifiedPersons());
           giveNodeWrapper.setReverseOrder(true);
           giveNodeWrapper.setAdditionalIcon(addIcon);
 
-          final UnitRelationNodeWrapper relationWrapper = factory.createRelationNodeWrapper(currentRelation, giveNodeWrapper);
+          final UnitRelationNodeWrapper relationWrapper =
+              factory.createRelationNodeWrapper(currentRelation, giveNodeWrapper);
 
-//        if (currentRelation.warning) {
-//          giveNodeWrapper.setAdditionalIcon("warnung");
-//        }
+          // if (currentRelation.warning) {
+          // giveNodeWrapper.setAdditionalIcon("warnung");
+          // }
           itemNode.add(new DefaultMutableTreeNode(relationWrapper));
 
           addItemNode = true;
@@ -344,8 +333,7 @@ public class Units {
     if (showUnits && (currentItem.units != null)) {
       Collections.sort(currentItem.units, new UnitWrapperComparator(unitComparator));
 
-      for (final Iterator<UnitWrapper> it = currentItem.units.iterator(); it.hasNext();) {
-        final UnitWrapper uw = it.next();
+      for (UnitWrapper uw : currentItem.units) {
         itemNode.add(new DefaultMutableTreeNode(factory.createUnitNodeWrapper(uw.getUnit(), uw
             .getAmount())));
       }
@@ -359,7 +347,7 @@ public class Units {
     /** DOCUMENT-ME */
     public List<UnitWrapper> units = new LinkedList<UnitWrapper>();
 
-    private int unmodifiedAmount=0;
+    private int unmodifiedAmount = 0;
 
     /**
      * Creates a new StatItem object.
@@ -372,7 +360,7 @@ public class Units {
      * DOCUMENT-ME
      */
     public int compareTo(StatItem o) {
-      return this.getItemType().getName().compareTo((o).getItemType().getName());
+      return getItemType().getName().compareTo((o).getItemType().getName());
     }
 
     /**
@@ -386,7 +374,7 @@ public class Units {
 
     /**
      * Sets the value of unmodifiedAmount.
-     *
+     * 
      * @param unmodifiedAmount The value for unmodifiedAmount.
      */
     public void setUnmodifiedAmount(int unmodifiedAmount) {
@@ -435,11 +423,10 @@ public class Units {
     @Override
     public String toString() {
       if (number > -1) {
-        if (unmodifiedNumber > -1 && unmodifiedNumber!=number){
+        if (unmodifiedNumber > -1 && unmodifiedNumber != number)
           return unit.toString() + ": " + unmodifiedNumber + " (" + number + ")";
-        } else {
+        else
           return unit.toString() + ": " + number;
-        }
       }
 
       return unit.toString();
@@ -456,7 +443,7 @@ public class Units {
 
     /**
      * Sets the value of unmodifiedNumber.
-     *
+     * 
      * @param unmodifiedNumber The value for unmodifiedNumber.
      */
     public void setUnmodifiedAmount(int unmodifiedNumber) {
@@ -479,27 +466,26 @@ public class Units {
      * getAmout() values are compared.
      */
     public int compare(UnitWrapper o1, UnitWrapper o2) {
-      if (unitCmp != null) {
+      if (unitCmp != null)
         return unitCmp.compare(o1.getUnit(), o2.getUnit());
-      } else {
+      else
         return o2.getAmount() - o1.getAmount();
-      }
     }
 
-//    /**
-//     * DOCUMENT-ME
-//     */
-//    @Override
-//    public boolean equals(Object o) {
-//      return false;
-//    }
+    // /**
+    // * DOCUMENT-ME
+    // */
+    // @Override
+    // public boolean equals(Object o) {
+    // return false;
+    // }
   }
 
   /**
-   * This will be a Map&lt;ItemType.id, StatItem&gt;, which is a Map of items of
-   * one category.
+   * This will be a Map&lt;ItemType.id, StatItem&gt;, which is a Map of items of one category.
    */
-  private static class StatItemContainer extends Hashtable<ID, StatItem> implements Comparable<StatItemContainer> {
+  private static class StatItemContainer extends Hashtable<ID, StatItem> implements
+      Comparable<StatItemContainer> {
     private ItemCategory category = null;
 
     /**
@@ -520,7 +506,7 @@ public class Units {
      * DOCUMENT-ME
      */
     public int compareTo(StatItemContainer o) {
-      return this.category.compareTo(o.getCategory());
+      return category.compareTo(o.getCategory());
     }
   }
 
@@ -541,21 +527,18 @@ public class Units {
   /**
    * Returns the Container for the specified items type.
    * 
-   * @param type
-   *          The item whose category you want.
+   * @param type The item whose category you want.
    * @return The Container if items of type <code>type</code>.
    */
   private StatItemContainer getItemContainer(ItemType type) {
-    if ((type.getCategory() == null) || (itemCategoriesMap.get(type.getCategory()) == null)) {
+    if ((type.getCategory() == null) || (itemCategoriesMap.get(type.getCategory()) == null))
       return catLessContainer;
-    }
 
     return itemCategoriesMap.get(type.getCategory());
   }
 
   private void clearItemContainers() {
-    for (final Iterator<StatItemContainer> iter = itemCategoriesMap.values().iterator(); iter.hasNext();) {
-      final StatItemContainer sic = iter.next();
+    for (StatItemContainer sic : itemCategoriesMap.values()) {
       sic.clear();
     }
   }
@@ -565,15 +548,14 @@ public class Units {
    * 
    * @see GiveOrderDialog#showGiveOrderDialog()
    * @param s A string array with the following values: <br/>
-   *       [0] : The order that was given <br/>
-   *       [1] : A String representative of the boolean value for "Replace orders" <br/>
-   *       [2] : A String representative of the boolean value for "Keep comments" <br/>
-   *       [3] : One of {@link GiveOrderDialog#FIRST_POS}, {@link GiveOrderDialog#LAST_POS}
+   *          [0] : The order that was given <br/>
+   *          [1] : A String representative of the boolean value for "Replace orders" <br/>
+   *          [2] : A String representative of the boolean value for "Keep comments" <br/>
+   *          [3] : One of {@link GiveOrderDialog#FIRST_POS}, {@link GiveOrderDialog#LAST_POS}
    */
   public static void addOrders(Unit u, String[] s) {
-    if (s == null || s.length != 4) {
+    if (s == null || s.length != 4)
       throw new IllegalArgumentException("expecting exactly 4 arguments");
-    }
 
     if (s[0] != null) {
       final boolean replace = Boolean.valueOf(s[1]).booleanValue();
@@ -586,16 +568,14 @@ public class Units {
           final Collection<String> oldOrders = u.getOrders();
           final List<String> newOrders = new LinkedList<String>();
 
-          for (final Iterator<String> iterator = oldOrders.iterator(); iterator.hasNext();) {
-            final String order = iterator.next();
-
+          for (String order : oldOrders) {
             if (order.trim().startsWith("//") || order.trim().startsWith(";")) {
               newOrders.add(order);
             }
           }
 
           if (position.equals(GiveOrderDialog.FIRST_POS)) {
-            for (int i = newOrderArray.length-1; i>=0; --i) {
+            for (int i = newOrderArray.length - 1; i >= 0; --i) {
               newOrders.add(0, newOrderArray[i]);
             }
           } else {
@@ -614,7 +594,7 @@ public class Units {
         }
       } else {
         if (position.equals(GiveOrderDialog.FIRST_POS)) {
-          for (int i = newOrderArray.length-1; i>=0; --i) {
+          for (int i = newOrderArray.length - 1; i >= 0; --i) {
             u.addOrderAt(0, newOrderArray[i], true);
           }
         } else {
@@ -626,21 +606,19 @@ public class Units {
     }
   }
 
-
   /**
    * Modifies <code>u</code>'s orders as specified in <code>s</code>.
    * 
    * @see RemoveOrderDialog#showDialog()
    * @param s A string array with the following values: <br/>
-   *         [0] : The order fragment that was given <br/>
-   *         [1] : One of {@link RemoveOrderDialog#BEGIN_ACTION},
-   *         {@link RemoveOrderDialog#CONTAINS_ACTION} <br/>
-   *         [2] : "true" if case should not be ignored
+   *          [0] : The order fragment that was given <br/>
+   *          [1] : One of {@link RemoveOrderDialog#BEGIN_ACTION},
+   *          {@link RemoveOrderDialog#CONTAINS_ACTION} <br/>
+   *          [2] : "true" if case should not be ignored
    */
   public static void removeOrders(Unit u, String[] s) {
-    if (s == null || s.length != 3) {
+    if (s == null || s.length != 3)
       throw new IllegalArgumentException("expecting exactly 3 arguments");
-    }
 
     if (s[0] != null) {
       final String pattern = s[0];
@@ -650,19 +628,19 @@ public class Units {
       final Collection<String> oldOrders = u.getOrders();
       final List<String> newOrders = new LinkedList<String>();
 
-      for (final Iterator<String> iterator = oldOrders.iterator(); iterator.hasNext();) {
-        final String order = iterator.next();
+      for (String order : oldOrders) {
         String casedOrder;
-        if (matchCase.equals("false"))
+        if (matchCase.equals("false")) {
           casedOrder = order.toLowerCase();
-        else
+        } else {
           casedOrder = order;
-        if (!((mode.equals(RemoveOrderDialog.BEGIN_ACTION) && casedOrder.startsWith(pattern))
-            || (mode.equals(RemoveOrderDialog.CONTAINS_ACTION) && casedOrder.contains(pattern))))
+        }
+        if (!((mode.equals(RemoveOrderDialog.BEGIN_ACTION) && casedOrder.startsWith(pattern)) || (mode
+            .equals(RemoveOrderDialog.CONTAINS_ACTION) && casedOrder.contains(pattern)))) {
           newOrders.add(order);
+        }
       }
       u.setOrders(newOrders);
     }
   }
 }
-

@@ -18,18 +18,16 @@ import magellan.library.impl.MagellanNamedImpl;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 203 $
  */
 public abstract class ObjectType extends MagellanNamedImpl {
-	/**
-	 * Creates a new ObjectType object.
-	 *
-	 * 
-	 */
-	public ObjectType(ID id) {
-		super(id);
-	}
+  /**
+   * Creates a new ObjectType object.
+   */
+  public ObjectType(ID id) {
+    super(id);
+  }
 
 }

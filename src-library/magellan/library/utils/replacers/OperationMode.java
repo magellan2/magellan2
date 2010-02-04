@@ -15,36 +15,32 @@ package magellan.library.utils.replacers;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class OperationMode extends EnvironmentPart {
-	protected boolean nullEqualsZero = false;
+  protected boolean nullEqualsZero = false;
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void reset() {
-		nullEqualsZero = false;
-	}
+    nullEqualsZero = false;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean isNullEqualsZero() {
-		return nullEqualsZero;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean isNullEqualsZero() {
+    return nullEqualsZero;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setNullEqualsZero(boolean bool) {
-		nullEqualsZero = bool;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setNullEqualsZero(boolean bool) {
+    nullEqualsZero = bool;
+  }
 }

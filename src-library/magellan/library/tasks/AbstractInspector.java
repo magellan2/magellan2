@@ -30,7 +30,7 @@ import magellan.library.utils.logging.Logger;
 public abstract class AbstractInspector implements Inspector {
   private static final Logger log = Logger.getInstance(AbstractInspector.class);
 
-  public static final String SUPPRESS_LINE_PREFIX = SUPPRESS_PREFIX + "Line";
+  public static final String SUPPRESS_LINE_PREFIX = Inspector.SUPPRESS_PREFIX + "Line";
 
   private GameData data;
 
@@ -80,12 +80,13 @@ public abstract class AbstractInspector implements Inspector {
           }
         }
         for (int l = p.getLine() - 2; l >= 0; --l) {
-          if (l >= unit.getOrders().size())
-            log.error("error in wrong line: " + unit + " " + l);
+          if (l >= unit.getOrders().size()) {
+            AbstractInspector.log.error("error in wrong line: " + unit + " " + l);
+          }
           String line = unit.getOrders().get(l);
-          if (!line.startsWith(SUPPRESS_PREFIX))
+          if (!line.startsWith(Inspector.SUPPRESS_PREFIX)) {
             break;
-          else if (isSuppressMarkerFor(line, p, true)) {
+          } else if (isSuppressMarkerFor(line, p, true)) {
             it.remove();
             break;
           }
@@ -112,8 +113,9 @@ public abstract class AbstractInspector implements Inspector {
     for (ProblemType p : getTypes()) {
       boolean found = false;
       for (String order : u.getOrders())
-        if (order.equals(getSuppressUnitComment(p)))
+        if (order.equals(getSuppressUnitComment(p))) {
           found = true;
+        }
       if (!found)
         return false;
     }
@@ -200,22 +202,23 @@ public abstract class AbstractInspector implements Inspector {
   public Unit suppress(Problem p) {
     if (p.getOwner() == null)
       return null;
-    if (p.getLine() >= 0)
+    if (p.getLine() >= 0) {
       p.getOwner().addOrderAt(p.getLine() - 1, getSuppressLineComment(p.getType()), true);
-    else
+    } else {
       p.getOwner().addOrderAt(0, getSuppressUnitComment(p.getType()));
+    }
     return p.getOwner();
   }
 
   protected String getSuppressUnitComment(ProblemType p) {
-    StringBuffer sb = new StringBuffer(SUPPRESS_PREFIX);
+    StringBuffer sb = new StringBuffer(Inspector.SUPPRESS_PREFIX);
     sb.append(" ");
     sb.append(p.getName());
     return sb.toString();
   }
 
   protected String getSuppressLineComment(ProblemType p) {
-    StringBuffer sb = new StringBuffer(SUPPRESS_LINE_PREFIX);
+    StringBuffer sb = new StringBuffer(AbstractInspector.SUPPRESS_LINE_PREFIX);
     sb.append(" ");
     sb.append(p.getName());
     return sb.toString();
@@ -227,27 +230,30 @@ public abstract class AbstractInspector implements Inspector {
     for (String o : u.getOrders()) {
       boolean match = false;
       for (ProblemType p : getTypes()) {
-        if (o.equals(getSuppressLineComment(p)) || o.equals(getSuppressUnitComment(p)))
+        if (o.equals(getSuppressLineComment(p)) || o.equals(getSuppressUnitComment(p))) {
           match = true;
+        }
       }
-      if (match)
+      if (match) {
         changed = true;
-      else
+      } else {
         newOrders.add(o);
+      }
     }
-    if (changed)
+    if (changed) {
       u.setOrders(newOrders);
+    }
   }
 
   public void setGameData(GameData gameData) {
-    this.data = gameData;
-    this.gameSpecStuff = data.getGameSpecificStuff();
+    data = gameData;
+    gameSpecStuff = data.getGameSpecificStuff();
   }
 
   public GameData getData() {
     return data;
   }
-  
+
   public GameSpecificStuff getGameSpecificStuff() {
     return gameSpecStuff;
   }

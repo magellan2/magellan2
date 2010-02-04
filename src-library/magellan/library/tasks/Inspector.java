@@ -30,38 +30,32 @@ public interface Inspector {
   public static final String SUPPRESS_PREFIX = "; @suppressProblem";
 
   /**
-   * Reviews a unit and returns a list of <tt>Problem</tt> objects associated
-   * with it.
+   * Reviews a unit and returns a list of <tt>Problem</tt> objects associated with it.
    */
   public List<Problem> reviewUnit(Unit u);
 
   /**
-   * Reviews a unit and returns the list of <tt>Problem</tt> objects which are
-   * of the given type.
+   * Reviews a unit and returns the list of <tt>Problem</tt> objects which are of the given type.
    * 
-   * @param u
-   *          The unit to review
-   * @param severity
-   *          The type of problems to filter, e.g. Severity.INFORMATION
+   * @param u The unit to review
+   * @param severity The type of problems to filter, e.g. Severity.INFORMATION
    */
   public List<Problem> reviewUnit(Unit u, Severity severity);
 
   /**
-   * Reviews a region and returns a list of <code>Problem</code> objects
-   * associated with it.
+   * Reviews a region and returns a list of <code>Problem</code> objects associated with it.
    */
   public List<Problem> reviewRegion(Region r);
 
   /**
-   * Reviews a region and returns the list of <tt>Problem</tt> objects which
-   * are of the given type.
+   * Reviews a region and returns the list of <tt>Problem</tt> objects which are of the given type.
    */
   public List<Problem> reviewRegion(Region r, Severity severity);
 
   /**
-   * Modifies the orders such that this problem is not listed by the inspector
-   * in the future, i.e. by adding a comment to the source unit's orders. Note
-   * that it is in the responsibility of the caller to fire OrderChangedEvents.
+   * Modifies the orders such that this problem is not listed by the inspector in the future, i.e.
+   * by adding a comment to the source unit's orders. Note that it is in the responsibility of the
+   * caller to fire OrderChangedEvents.
    * 
    * @param problem
    * @return Returns a unit whose orders were changed
@@ -75,10 +69,8 @@ public interface Inspector {
    */
   public void unSuppress(Unit u);
 
-
   /**
    * Returns all ProblemTypes this Inspector may return.
-   * 
    */
   public Collection<ProblemType> getTypes();
 

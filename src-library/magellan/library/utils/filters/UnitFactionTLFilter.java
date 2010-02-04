@@ -18,72 +18,57 @@ import magellan.library.Unit;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class UnitFactionTLFilter extends UnitFilter {
-	protected int minTL;
-	protected int maxTL;
+  protected int minTL;
+  protected int maxTL;
 
-	/**
-	 * Creates a new UnitFactionTLFilter object.
-	 *
-	 * 
-	 * 
-	 */
-	public UnitFactionTLFilter(int minTL, int maxTL) {
-		this.minTL = minTL;
-		this.maxTL = maxTL;
-	}
+  /**
+   * Creates a new UnitFactionTLFilter object.
+   */
+  public UnitFactionTLFilter(int minTL, int maxTL) {
+    this.minTL = minTL;
+    this.maxTL = maxTL;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public boolean acceptUnit(Unit u) {
-		Faction f = u.getFaction();
+    Faction f = u.getFaction();
 
-		return (f != null) && (minTL <= f.getTrustLevel()) && (f.getTrustLevel() <= maxTL);
-	}
+    return (f != null) && (minTL <= f.getTrustLevel()) && (f.getTrustLevel() <= maxTL);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getMinTL() {
-		return minTL;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int getMinTL() {
+    return minTL;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getMaxTL() {
-		return maxTL;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int getMaxTL() {
+    return maxTL;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setMinTL(int minTL) {
-		this.minTL = minTL;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setMinTL(int minTL) {
+    this.minTL = minTL;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setMaxTL(int maxTL) {
-		this.maxTL = maxTL;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setMaxTL(int maxTL) {
+    this.maxTL = maxTL;
+  }
 }

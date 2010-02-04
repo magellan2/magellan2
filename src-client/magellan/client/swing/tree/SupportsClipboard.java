@@ -15,14 +15,12 @@ package magellan.client.swing.tree;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Ulrich Küster
  */
 public interface SupportsClipboard {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getClipboardValue();
+  /**
+   * DOCUMENT-ME
+   */
+  public String getClipboardValue();
 }

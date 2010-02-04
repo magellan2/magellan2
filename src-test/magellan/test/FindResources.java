@@ -35,16 +35,15 @@ import java.util.Locale;
 import magellan.library.utils.Resources;
 
 /**
- * This class finds all resource keys used in this
- * application. They are identified by the String
+ * This class finds all resource keys used in this application. They are identified by the String
  * "Resources.get("
- *
+ * 
  * @author ...
  * @version 1.0, 28.05.2007
  */
 public class FindResources {
   private static final String KEY = "Resources.get(";
-  
+
   private static List<String> resourceKeys = new ArrayList<String>();
 
   /**
@@ -55,39 +54,39 @@ public class FindResources {
     FindResources.findResources(new File("."));
     Collections.sort(FindResources.resourceKeys);
     System.out.println("----end----");
-    
+
     Enumeration<String> keys = Resources.getInstance().getKeys(Locale.GERMANY);
-    
+
     // okay, we could do this in ONE loop but I want to sort them by
     // priority...
     System.out.println("----okay----");
-    
+
     while (keys.hasMoreElements()) {
       String key = keys.nextElement();
       for (String v : FindResources.resourceKeys) {
         if (key.equals(v)) {
-          System.out.println("[green]  "+key);
+          System.out.println("[green]  " + key);
           break;
         }
       }
     }
-    
+
     System.out.println("----maybe----");
     while (keys.hasMoreElements()) {
       String key = keys.nextElement();
       boolean found = false;
       for (String v : FindResources.resourceKeys) {
         if (key.startsWith(v)) {
-          System.out.println("[yellow] "+key + " (vs. "+v+")");
+          System.out.println("[yellow] " + key + " (vs. " + v + ")");
           found = true;
           break;
         }
       }
       if (!found) {
-        System.out.println("[red]    "+key);
+        System.out.println("[red]    " + key);
       }
     }
-    
+
     System.out.println("----unused----");
     while (keys.hasMoreElements()) {
       String key = keys.nextElement();
@@ -99,12 +98,11 @@ public class FindResources {
         }
       }
       if (!found) {
-        System.out.println("[red]    "+key);
+        System.out.println("[red]    " + key);
       }
     }
   }
-  
-  
+
   public static void findResources(File root) throws Exception {
     if (root.isDirectory()) {
       File[] files = root.listFiles();
@@ -112,9 +110,8 @@ public class FindResources {
         FindResources.findResources(file);
       }
     } else {
-      if (root.getName().equals("FindResources.java")) {
+      if (root.getName().equals("FindResources.java"))
         return;
-      }
       if (root.getName().endsWith(".java")) {
         FindResources.scanFile(root);
       }
@@ -126,36 +123,37 @@ public class FindResources {
     LineNumberReader reader = new LineNumberReader(fr);
     String line;
     while ((line = reader.readLine()) != null) {
-      if (line.indexOf(FindResources.KEY)>=0) {
+      if (line.indexOf(FindResources.KEY) >= 0) {
         // Found call... now extract the information...
         FindResources.extractResourceKey(line);
       }
     }
   }
-  
+
   public static String extractResourceKey(String line) {
-    
+
     int index = line.indexOf(FindResources.KEY);
-    
-    if (line.indexOf(FindResources.KEY,index+FindResources.KEY.length())>0) {
-      FindResources.extractResourceKey(line.substring(line.indexOf(FindResources.KEY,index+FindResources.KEY.length())));
+
+    if (line.indexOf(FindResources.KEY, index + FindResources.KEY.length()) > 0) {
+      FindResources.extractResourceKey(line.substring(line.indexOf(FindResources.KEY, index
+          + FindResources.KEY.length())));
     }
-    
-    line = line.substring(index+FindResources.KEY.length());
-    
-    if (line.indexOf(")")>=0) {
-      line = line.substring(0,line.indexOf(")"));
+
+    line = line.substring(index + FindResources.KEY.length());
+
+    if (line.indexOf(")") >= 0) {
+      line = line.substring(0, line.indexOf(")"));
     }
-    
+
     line = line.trim();
     if (line.startsWith("\"")) {
-      line = line.substring(1,line.indexOf("\"",2));
+      line = line.substring(1, line.indexOf("\"", 2));
     }
-    
+
     if (!FindResources.resourceKeys.contains(line)) {
       FindResources.resourceKeys.add(line);
     }
-    
+
     return line;
   }
 }

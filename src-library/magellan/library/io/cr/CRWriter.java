@@ -100,7 +100,7 @@ public class CRWriter extends BufferedWriter {
    */
   public CRWriter(GameData data, UserInterface ui, Writer out) {
     super(out);
-    this.world = data;
+    world = data;
     this.ui = ui;
     if (this.ui == null) {
       ui = new NullUserInterface();
@@ -115,9 +115,10 @@ public class CRWriter extends BufferedWriter {
    * @param encoding The name of a supported {@link java.nio.charset.Charset </code>charset<code>}
    * @throws IOException If the file cannot be opened for writing.
    */
-  public CRWriter(GameData data, UserInterface ui, FileType fileType, String encoding) throws IOException {
+  public CRWriter(GameData data, UserInterface ui, FileType fileType, String encoding)
+      throws IOException {
     super(fileType.createWriter(encoding));
-    this.world = data;
+    world = data;
     this.ui = ui;
     this.encoding = encoding;
     if (this.ui == null) {
@@ -134,10 +135,10 @@ public class CRWriter extends BufferedWriter {
    * @param numberOfBackups
    * @throws IOException If the file cannot be opened for writing.
    */
-  public CRWriter(GameData data, UserInterface ui, FileType fileType, String encoding, int numberOfBackups)
-      throws IOException {
+  public CRWriter(GameData data, UserInterface ui, FileType fileType, String encoding,
+      int numberOfBackups) throws IOException {
     super(fileType.createWriter(encoding, numberOfBackups));
-    this.world = data;
+    world = data;
     this.ui = ui;
     this.encoding = encoding;
     if (this.ui == null) {
@@ -306,12 +307,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeMessages(List<Message> list) throws IOException {
-    if (list == null) {
+    if (list == null)
       return;
-    }
 
-    for (Iterator<Message> iter = list.iterator(); iter.hasNext();) {
-      writeMessage(iter.next());
+    for (Message message : list) {
+      writeMessage(message);
     }
   }
 
@@ -321,9 +321,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeMessage(Message msg) throws IOException {
-    if (msg == null) {
+    if (msg == null)
       return;
-    }
 
     write("MESSAGE " + msg.getID());
     newLine();
@@ -338,8 +337,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (msg.getAttributes() != null) {
-      for (Iterator<String> iter = msg.getAttributes().keySet().iterator(); iter.hasNext();) {
-        String key = iter.next();
+      for (String key : msg.getAttributes().keySet()) {
         String value = msg.getAttributes().get(key);
 
         try {
@@ -369,9 +367,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeMessageBlock(String blockName, Collection<Message> data) throws IOException {
-    if ((data == null) || data.isEmpty()) {
+    if ((data == null) || data.isEmpty())
       return;
-    }
 
     write(blockName);
     newLine();
@@ -385,12 +382,10 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeMessageSequence(Collection<Message> data) throws IOException {
-    if ((data == null) || data.isEmpty()) {
+    if ((data == null) || data.isEmpty())
       return;
-    }
 
-    for (Iterator<Message> iter = data.iterator(); iter.hasNext();) {
-      Message msg = iter.next();
+    for (Message msg : data) {
       writeQuotedString(msg.getText());
     }
   }
@@ -402,12 +397,10 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeStringSequence(Collection<String> data) throws IOException {
-    if ((data == null) || data.isEmpty()) {
+    if ((data == null) || data.isEmpty())
       return;
-    }
 
-    for (Iterator<String> iter = data.iterator(); iter.hasNext();) {
-      String str = iter.next();
+    for (String str : data) {
       writeQuotedString(str);
     }
   }
@@ -421,9 +414,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeStringBlock(String blockName, Collection<String> data) throws IOException {
-    if ((data == null) || data.isEmpty()) {
+    if ((data == null) || data.isEmpty())
       return;
-    }
 
     write(blockName);
     newLine();
@@ -432,13 +424,13 @@ public class CRWriter extends BufferedWriter {
 
   /**
    * Write the VERSION block for the specified game data to the underyling
-   * @param world 
    * 
+   * @param world
    * @throws IOException If an I/O error occurs.
    */
   public void writeVersion(GameData world) throws IOException {
     // write("VERSION 65");
-    write ("VERSION " + world.version);
+    write("VERSION " + world.version);
     newLine();
 
     // The Echecker of German Atlantis has problems with the locale line
@@ -522,12 +514,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeSpells(Map<?, Spell> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
-    for (Iterator<Spell> iter = map.values().iterator(); iter.hasNext();) {
-      write(iter.next());
+    for (Spell spell : map.values()) {
+      write(spell);
     }
   }
 
@@ -537,9 +528,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void write(Spell spell) throws IOException {
-    if (spell.getBlockID() == -1) {
+    if (spell.getBlockID() == -1)
       return;
-    }
 
     write("ZAUBER " + spell.getBlockID());
     newLine();
@@ -597,12 +587,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writePotions(Map<? extends ID, Potion> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
-    for (Iterator<Potion> iter = map.values().iterator(); iter.hasNext();) {
-      write(iter.next());
+    for (Potion potion : map.values()) {
+      write(potion);
     }
   }
 
@@ -636,8 +625,7 @@ public class CRWriter extends BufferedWriter {
       write("ZUTATEN");
       newLine();
 
-      for (Iterator<Item> iter = ingredients.iterator(); iter.hasNext();) {
-        Item i = iter.next();
+      for (Item i : ingredients) {
         writeQuotedString(i.getItemType().getID().toString());
       }
     }
@@ -654,9 +642,8 @@ public class CRWriter extends BufferedWriter {
    * @see magellan.library.Spell
    */
   public void writeSpellComponents(Map<String, String> comps) throws IOException {
-    if (comps == null) {
+    if (comps == null)
       return;
-    }
 
     Iterator<String> iter = comps.keySet().iterator();
 
@@ -688,8 +675,7 @@ public class CRWriter extends BufferedWriter {
     write("OPTIONEN");
     newLine();
 
-    for (Iterator<OptionCategory> iter = options.options().iterator(); iter.hasNext();) {
-      OptionCategory o = iter.next();
+    for (OptionCategory o : options.options()) {
       write((o.isActive() ? "1" : "0") + ";" + o.getID().toString());
       newLine();
     }
@@ -704,12 +690,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeGroups(Map<? extends ID, Group> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
-    for (Iterator<Group> i = map.values().iterator(); i.hasNext();) {
-      writeGroup(i.next());
+    for (Group group : map.values()) {
+      writeGroup(group);
     }
   }
 
@@ -719,9 +704,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeGroup(Group group) throws IOException {
-    if (group == null) {
+    if (group == null)
       return;
-    }
 
     write("GRUPPE " + group.getID());
     newLine();
@@ -751,12 +735,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeAlliances(Map<EntityID, Alliance> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
-    for (Iterator<Alliance> iter = map.values().iterator(); iter.hasNext();) {
-      write(iter.next());
+    for (Alliance alliance : map.values()) {
+      write(alliance);
     }
   }
 
@@ -766,9 +749,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void write(Alliance alliance) throws IOException {
-    if (alliance == null) {
+    if (alliance == null)
       return;
-    }
 
     Faction f = alliance.getFaction();
     write("ALLIANZ " + (f.getID()).intValue());
@@ -790,12 +772,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeBattles(List<Battle> list) throws IOException {
-    if (list == null) {
+    if (list == null)
       return;
-    }
 
-    for (Iterator<Battle> iter = list.iterator(); iter.hasNext();) {
-      write(iter.next());
+    for (Battle battle : list) {
+      write(battle);
     }
   }
 
@@ -805,9 +786,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void write(Battle battle) throws IOException {
-    if (battle == null) {
+    if (battle == null)
       return;
-    }
 
     if (!battle.isBattleSpec()) {
       write("BATTLE " + battle.getID().toString(" "));
@@ -831,8 +811,9 @@ public class CRWriter extends BufferedWriter {
       newLine();
       write(alliance.getLeader().intValue() + ";leader");
       newLine();
-      if (alliance.getName() != null)
+      if (alliance.getName() != null) {
         writeQuotedTag(alliance.getName(), "name");
+      }
     }
   }
 
@@ -845,9 +826,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeFactions(Map<EntityID, Faction> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
     // write owner first
     Faction ownerFaction = null;
@@ -876,9 +856,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeFaction(Faction faction) throws IOException {
-    if ((faction.getID()).intValue() == -1) {
+    if ((faction.getID()).intValue() == -1)
       return;
-    }
 
     write("PARTEI " + (faction.getID()).intValue());
     newLine();
@@ -1011,16 +990,15 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeShips(Collection<Ship> ships) throws IOException {
-    if (ships == null) {
+    if (ships == null)
       return;
-    }
 
     List<Ship> sorted = new ArrayList<Ship>(ships);
     Comparator<Ship> sortIndexComparator = new SortIndexComparator<Ship>(IDComparator.DEFAULT);
     Collections.sort(sorted, sortIndexComparator);
 
-    for (Iterator<Ship> iter = sorted.iterator(); iter.hasNext();) {
-      writeShip(iter.next());
+    for (Ship ship : sorted) {
+      writeShip(ship);
     }
   }
 
@@ -1117,17 +1095,16 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException
    */
   public void writeBuildings(Collection<Building> buildings) throws IOException {
-    if (buildings == null) {
+    if (buildings == null)
       return;
-    }
 
     List<Building> sorted = new ArrayList<Building>(buildings);
     Comparator<Building> sortIndexComparator =
         new SortIndexComparator<Building>(IDComparator.DEFAULT);
     Collections.sort(sorted, sortIndexComparator);
 
-    for (Iterator<Building> iter = sorted.iterator(); iter.hasNext();) {
-      writeBuilding(iter.next());
+    for (Building building : sorted) {
+      writeBuilding(building);
     }
   }
 
@@ -1137,9 +1114,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeBuilding(Building building) throws IOException {
-    if (building == null) {
+    if (building == null)
       return;
-    }
 
     UnitContainerType type = building.getType();
     write("BURG " + (building.getID()).intValue());
@@ -1234,9 +1210,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeOrders(List<String> list) throws IOException {
-    if ((list == null) || list.isEmpty()) {
+    if ((list == null) || list.isEmpty())
       return;
-    }
 
     write("COMMANDS");
     newLine();
@@ -1254,9 +1229,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeUnitSpells(Map<? extends ID, Spell> spells) throws IOException {
-    if (spells == null) {
+    if (spells == null)
       return;
-    }
 
     Iterator<Spell> i = spells.values().iterator();
 
@@ -1278,9 +1252,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeUnitCombatSpells(Map<? extends ID, CombatSpell> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
     Iterator<CombatSpell> i = map.values().iterator();
 
@@ -1357,16 +1330,14 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeUnits(Collection<Unit> units) throws IOException {
-    if (units == null) {
+    if (units == null)
       return;
-    }
 
     List<Unit> sorted = new ArrayList<Unit>(units);
     Comparator<Unit> sortIndexComparator = new SortIndexComparator<Unit>(IDComparator.DEFAULT);
     Collections.sort(sorted, sortIndexComparator);
 
-    for (Iterator<Unit> iter = sorted.iterator(); iter.hasNext();) {
-      Unit u = iter.next();
+    for (Unit u : sorted) {
       writeUnit(u);
     }
   }
@@ -1385,9 +1356,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeUnit(Unit unit) throws IOException {
-    if (unit instanceof TempUnit || !shallExportUnit(unit)) {
+    if (unit instanceof TempUnit || !shallExportUnit(unit))
       return;
-    }
 
     unitsWritten++;
     write("EINHEIT " + (unit.getID()).intValue());
@@ -1570,16 +1540,19 @@ public class CRWriter extends BufferedWriter {
     //
     // writeOrders(unit.orders);
     // writeStringSequence(unit.getTempOrders());
-    if (getIncludeOrders())
+    if (getIncludeOrders()) {
       writeOrders(unit.getCompleteOrders());
-    if (getIncludeSkills())
+    }
+    if (getIncludeSkills()) {
       writeSkills(unit.getSkills().iterator(), unit.getPersons());
+    }
     if (getIncludeUnitDetails()) {
       writeUnitSpells(unit.getSpells());
       writeUnitCombatSpells(unit.getCombatSpells());
     }
-    if (getIncludeItems())
+    if (getIncludeItems()) {
       writeItems(unit.getItems().iterator());
+    }
 
     if (!serverConformance) {
       writeAttributes(unit);
@@ -1594,9 +1567,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writePrices(Map<? extends ID, LuxuryPrice> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
     Iterator<LuxuryPrice> i = map.values().iterator();
 
@@ -1618,9 +1590,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeOldPrices(Map<? extends ID, LuxuryPrice> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
     Iterator<LuxuryPrice> i = map.values().iterator();
 
@@ -1651,9 +1622,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeBorders(Collection<Border> c) throws IOException {
-    if (c == null) {
+    if (c == null)
       return;
-    }
 
     Iterator<Border> i = c.iterator();
 
@@ -1686,9 +1656,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeRegions(Map<CoordinateID, Region> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
     writeRegions(map.values());
   }
@@ -1700,18 +1669,15 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeRegions(Collection<Region> regions) throws IOException {
-    if (regions == null) {
+    if (regions == null)
       return;
-    }
 
     if (ui != null) {
       ui.setMaximum(regions.size());
     }
     int counter = 0;
 
-    for (Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
-      Region region = iter.next();
-
+    for (Region region : regions) {
       if (ui != null) {
         if (region.getName() != null) {
           ui.setProgress(Resources.get("crwriterdialog.progress.07a", new Object[] { region
@@ -1741,9 +1707,8 @@ public class CRWriter extends BufferedWriter {
     // Fiete 20070117
     // Exception: Magellan-added Regions to show TheVoid
     // these regions should not be written
-    if (region.getRegionType().equals(world.rules.getRegionType("Leere"))) {
+    if (region.getRegionType().equals(world.rules.getRegionType("Leere")))
       return;
-    }
 
     write("REGION " + region.getID().toString(" "));
     newLine();
@@ -1786,8 +1751,7 @@ public class CRWriter extends BufferedWriter {
       writeQuotedTag(region.getIsland().getID().toString(), "Insel");
     }
 
-    if (!serverConformance
-        && world.getSelectedRegionCoordinates().containsKey(region.getID())) {
+    if (!serverConformance && world.getSelectedRegionCoordinates().containsKey(region.getID())) {
       write("1;ejcIsSelected");
       newLine();
     }
@@ -1956,7 +1920,7 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-      if (!serverConformance && region.getData().getActiveRegion()==region) {
+      if (!serverConformance && region.getData().getActiveRegion() == region) {
         write("1;aktiveRegion");
         newLine();
       }
@@ -2022,12 +1986,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException passes a IOException from streamwriter
    */
   private void writeSigns(Collection<Sign> signs) throws IOException {
-    if (signs == null || signs.isEmpty()) {
+    if (signs == null || signs.isEmpty())
       return;
-    }
     int counter = 1;
-    for (Iterator<Sign> iter = signs.iterator(); iter.hasNext();) {
-      writeSign(iter.next(), counter);
+    for (Sign sign : signs) {
+      writeSign(sign, counter);
       counter++;
     }
   }
@@ -2051,12 +2014,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeSchemes(Collection<Scheme> schemes) throws IOException {
-    if ((schemes == null) || schemes.isEmpty()) {
+    if ((schemes == null) || schemes.isEmpty())
       return;
-    }
 
-    for (Iterator<Scheme> iter = schemes.iterator(); iter.hasNext();) {
-      writeScheme(iter.next());
+    for (Scheme scheme : schemes) {
+      writeScheme(scheme);
     }
   }
 
@@ -2080,12 +2042,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeRegionResources(Collection<RegionResource> resources) throws IOException {
-    if ((resources == null) || resources.isEmpty()) {
+    if ((resources == null) || resources.isEmpty())
       return;
-    }
 
-    for (Iterator<RegionResource> iter = resources.iterator(); iter.hasNext();) {
-      writeRegionResource(iter.next());
+    for (RegionResource regionResource : resources) {
+      writeRegionResource(regionResource);
     }
   }
 
@@ -2123,12 +2084,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeMsgTypes(Map<? extends ID, MessageType> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
-    for (Iterator<MessageType> iter = map.values().iterator(); iter.hasNext();) {
-      writeMessageType(iter.next());
+    for (MessageType messageType : map.values()) {
+      writeMessageType(messageType);
     }
   }
 
@@ -2166,11 +2126,9 @@ public class CRWriter extends BufferedWriter {
     }
   }
 
-  public synchronized void writeSynchronously() throws IOException,
-      NullPointerException {
-    if (world == null) {
+  public synchronized void writeSynchronously() throws IOException, NullPointerException {
+    if (world == null)
       throw new NullPointerException("CRWriter.write(GameData): argument world is null");
-    }
     savingInProgress = true;
 
     if (ui != null) {
@@ -2194,11 +2152,9 @@ public class CRWriter extends BufferedWriter {
    * 
    * @param world the game data to write.
    */
-  public synchronized Thread writeAsynchronously() throws IOException,
-      NullPointerException {
-    if (world == null) {
+  public synchronized Thread writeAsynchronously() throws IOException, NullPointerException {
+    if (world == null)
       throw new NullPointerException("CRWriter.write(GameData): argument world is null");
-    }
     savingInProgress = true;
 
     Thread t = null;
@@ -2222,9 +2178,10 @@ public class CRWriter extends BufferedWriter {
       }
     });
     t.start();
-    
-    if (false) // debugging
+
+    if (false) {
       doWrite();
+    }
 
     return t;
   }
@@ -2244,9 +2201,8 @@ public class CRWriter extends BufferedWriter {
    */
   @Override
   public void close() throws IOException {
-    if (savingInProgress) {
+    if (savingInProgress)
       return;
-    }
     super.close();
   }
 
@@ -2262,7 +2218,7 @@ public class CRWriter extends BufferedWriter {
       CRWriter.log.warn("Encodings differ while writing CR: writer users " + encoding
           + ", gamadata is set to " + world.getEncoding() + ", setting charset to:"
           + world.getEncoding());
-      this.encoding = world.getEncoding();
+      encoding = world.getEncoding();
     }
     if (ui != null) {
       ui.setMaximum(11);
@@ -2345,19 +2301,16 @@ public class CRWriter extends BufferedWriter {
         if (world.units().size() != unitsWritten) {
           int homelessUnitsCounter = 0;
 
-          for (Iterator<Unit> iter = world.units().values().iterator(); iter.hasNext();) {
-            Unit u = iter.next();
-
+          for (Unit u : world.units().values()) {
             if (u.getRegion() == null) {
               homelessUnitsCounter++;
             }
           }
 
-          if ((world.units().size() - homelessUnitsCounter) != unitsWritten) {
+          if ((world.units().size() - homelessUnitsCounter) != unitsWritten)
             throw new IOException("Although there are "
                 + (world.units().size() - homelessUnitsCounter) + " units, only " + unitsWritten
                 + " were written!");
-          }
         }
       }
     }
@@ -2391,16 +2344,16 @@ public class CRWriter extends BufferedWriter {
   private boolean includeRegions = true;
 
   /**
-   * Returns whether {@link #write()} writes information about the regions in data to
-   * the underlying stream.
+   * Returns whether {@link #write()} writes information about the regions in data to the underlying
+   * stream.
    */
   public boolean getIncludeRegions() {
-    return this.includeRegions;
+    return includeRegions;
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about the regions in data to
-   * the underlying stream.
+   * Toggles whether {@link #write()} writes information about the regions in data to the underlying
+   * stream.
    */
   public void setIncludeRegions(boolean includeRegions) {
     this.includeRegions = includeRegions;
@@ -2409,16 +2362,16 @@ public class CRWriter extends BufferedWriter {
   private boolean includeBuildings = true;
 
   /**
-   * Returns whether {@link #write()} writes information about the buildings in data to
-   * the underlying stream.
+   * Returns whether {@link #write()} writes information about the buildings in data to the
+   * underlying stream.
    */
   public boolean getIncludeBuildings() {
-    return this.includeBuildings;
+    return includeBuildings;
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about the buildings in data to
-   * the underlying stream.
+   * Toggles whether {@link #write()} writes information about the buildings in data to the
+   * underlying stream.
    */
   public void setIncludeBuildings(boolean includeBuildings) {
     this.includeBuildings = includeBuildings;
@@ -2427,16 +2380,16 @@ public class CRWriter extends BufferedWriter {
   private boolean includeShips = true;
 
   /**
-   * Returns whether {@link #write()} writes information about the ships in data to the
-   * underlying stream.
+   * Returns whether {@link #write()} writes information about the ships in data to the underlying
+   * stream.
    */
   public boolean getIncludeShips() {
-    return this.includeShips;
+    return includeShips;
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about the ships in data to the
-   * underlying stream.
+   * Toggles whether {@link #write()} writes information about the ships in data to the underlying
+   * stream.
    */
   public void setIncludeShips(boolean includeShips) {
     this.includeShips = includeShips;
@@ -2445,16 +2398,16 @@ public class CRWriter extends BufferedWriter {
   private boolean includeUnits = true;
 
   /**
-   * Returns whether {@link #write()} writes information about the units in data to the
-   * underlying stream.
+   * Returns whether {@link #write()} writes information about the units in data to the underlying
+   * stream.
    */
   public boolean getIncludeUnits() {
-    return this.includeUnits;
+    return includeUnits;
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about the units in data to the
-   * underlying stream.
+   * Toggles whether {@link #write()} writes information about the units in data to the underlying
+   * stream.
    */
   public void setIncludeUnits(boolean includeUnits) {
     this.includeUnits = includeUnits;
@@ -2463,8 +2416,8 @@ public class CRWriter extends BufferedWriter {
   private boolean includeUnitDetails = true;
 
   /**
-   * Toggles whether {@link #write()} writes information about the unit skills in data
-   * to the underlying stream.
+   * Toggles whether {@link #write()} writes information about the unit skills in data to the
+   * underlying stream.
    * 
    * @param newValue
    */
@@ -2482,8 +2435,8 @@ public class CRWriter extends BufferedWriter {
   private boolean includeSkills = true;
 
   /**
-   * Toggles whether {@link #write()} writes information about the unit skills in data
-   * to the underlying stream.
+   * Toggles whether {@link #write()} writes information about the unit skills in data to the
+   * underlying stream.
    * 
    * @param newValue
    */
@@ -2501,8 +2454,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeOrders = true;
 
   /**
-   * Toggles whether {@link #write()} writes the units' orders in data to the
-   * underlying stream.
+   * Toggles whether {@link #write()} writes the units' orders in data to the underlying stream.
    * 
    * @param newValue
    */
@@ -2520,8 +2472,8 @@ public class CRWriter extends BufferedWriter {
   private boolean includeItems = true;
 
   /**
-   * Toggles whether {@link #write()} writes information about the unit skills in data
-   * to the underlying stream.
+   * Toggles whether {@link #write()} writes information about the unit skills in data to the
+   * underlying stream.
    * 
    * @param newValue
    */
@@ -2539,16 +2491,16 @@ public class CRWriter extends BufferedWriter {
   private boolean includeRegionDetails = true;
 
   /**
-   * Returns whether {@link #write()} writes detailed information about the regions in
-   * data to the underlying stream.
+   * Returns whether {@link #write()} writes detailed information about the regions in data to the
+   * underlying stream.
    */
   public boolean getIncludeRegionDetails() {
-    return this.includeRegionDetails;
+    return includeRegionDetails;
   }
 
   /**
-   * Toggles whether {@link #write()} writes detailed information about the regions in
-   * data to the underlying stream.
+   * Toggles whether {@link #write()} writes detailed information about the regions in data to the
+   * underlying stream.
    */
   public void setIncludeRegionDetails(boolean includeRegionDetails) {
     this.includeRegionDetails = includeRegionDetails;
@@ -2557,16 +2509,14 @@ public class CRWriter extends BufferedWriter {
   private boolean includeIslands = true;
 
   /**
-   * Returns whether {@link #write()} writes information about islands to the
-   * underlying stream.
+   * Returns whether {@link #write()} writes information about islands to the underlying stream.
    */
   public boolean getIncludeIslands() {
-    return this.includeIslands;
+    return includeIslands;
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about islands to the
-   * underlying stream.
+   * Toggles whether {@link #write()} writes information about islands to the underlying stream.
    */
   public void setIncludeIslands(boolean includeIslands) {
     this.includeIslands = includeIslands;
@@ -2575,16 +2525,16 @@ public class CRWriter extends BufferedWriter {
   private boolean includeMessages = true;
 
   /**
-   * Returns whether {@link #write()} writes messages contained in the game data to the
-   * underlying stream.
+   * Returns whether {@link #write()} writes messages contained in the game data to the underlying
+   * stream.
    */
   public boolean getIncludeMessages() {
-    return this.includeMessages;
+    return includeMessages;
   }
 
   /**
-   * Toggles whether {@link #write()} writes messages contained in the game data to the
-   * underlying stream.
+   * Toggles whether {@link #write()} writes messages contained in the game data to the underlying
+   * stream.
    */
   public void setIncludeMessages(boolean includeMessages) {
     this.includeMessages = includeMessages;
@@ -2593,16 +2543,16 @@ public class CRWriter extends BufferedWriter {
   private boolean exportHotspots = true;
 
   /**
-   * Returns whether {@link #write()} writes Hotspots contained in the game data to the
-   * underlying stream.
+   * Returns whether {@link #write()} writes Hotspots contained in the game data to the underlying
+   * stream.
    */
   public boolean getExportHotspots() {
-    return this.exportHotspots;
+    return exportHotspots;
   }
 
   /**
-   * Toggles whether {@link #write()} writes Hotspots contained in the game data to the
-   * underlying stream.
+   * Toggles whether {@link #write()} writes Hotspots contained in the game data to the underlying
+   * stream.
    */
   public void setExportHotspots(boolean exportHotspots) {
     this.exportHotspots = exportHotspots;
@@ -2611,16 +2561,16 @@ public class CRWriter extends BufferedWriter {
   private boolean includeSpellsAndPotions = true;
 
   /**
-   * Returns whether {@link #write()} writes messages contained in the game data to the
-   * underlying stream.
+   * Returns whether {@link #write()} writes messages contained in the game data to the underlying
+   * stream.
    */
   public boolean getIncludeSpellsAndPotions() {
-    return this.includeSpellsAndPotions;
+    return includeSpellsAndPotions;
   }
 
   /**
-   * Toggles whether {@link #write()} writes messages contained in the game data to the
-   * underlying stream.
+   * Toggles whether {@link #write()} writes messages contained in the game data to the underlying
+   * stream.
    */
   public void setIncludeSpellsAndPotions(boolean includeSpellsAndPotions) {
     this.includeSpellsAndPotions = includeSpellsAndPotions;
@@ -2629,16 +2579,16 @@ public class CRWriter extends BufferedWriter {
   private boolean serverConformance = false;
 
   /**
-   * Returns whether {@link #write()} writes a cr that is compatible with cr's
-   * generated by the Eressea server, i.e. not including JavaClient specific data.
+   * Returns whether {@link #write()} writes a cr that is compatible with cr's generated by the
+   * Eressea server, i.e. not including JavaClient specific data.
    */
   public boolean getServerConformance() {
-    return this.serverConformance;
+    return serverConformance;
   }
 
   /**
-   * Toggles whether {@link #write()} writes a cr that is compatible with cr's
-   * generated by the Eressea server, i.e. not including JavaClient specific data.
+   * Toggles whether {@link #write()} writes a cr that is compatible with cr's generated by the
+   * Eressea server, i.e. not including JavaClient specific data.
    */
   public void setServerConformance(boolean serverConformance) {
     this.serverConformance = serverConformance;
@@ -2653,12 +2603,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeIslands(Map<IntegerID, Island> map) throws IOException {
-    if (map == null) {
+    if (map == null)
       return;
-    }
 
-    for (Iterator<Island> iter = map.values().iterator(); iter.hasNext();) {
-      write(iter.next());
+    for (Island island : map.values()) {
+      write(island);
     }
   }
 
@@ -2668,9 +2617,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void write(Island island) throws IOException {
-    if (island == null) {
+    if (island == null)
       return;
-    }
 
     write("ISLAND " + island.getID());
     newLine();
@@ -2694,12 +2642,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeHotSpots(Map<? extends ID, HotSpot> hotSpots) throws IOException {
-    if (hotSpots == null) {
+    if (hotSpots == null)
       return;
-    }
 
-    for (Iterator<HotSpot> iter = hotSpots.values().iterator(); iter.hasNext();) {
-      write(iter.next());
+    for (HotSpot hotSpot : hotSpots.values()) {
+      write(hotSpot);
     }
   }
 
@@ -2709,9 +2656,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void write(HotSpot h) throws IOException {
-    if (h == null) {
+    if (h == null)
       return;
-    }
 
     write("HOTSPOT " + h.getID().toString(" "));
     newLine();
@@ -2725,7 +2671,7 @@ public class CRWriter extends BufferedWriter {
    * Returns the regions this object writes to the underlying stream.
    */
   public Collection<Region> getRegions() {
-    return this.regions;
+    return regions;
   }
 
   /**
@@ -2743,7 +2689,7 @@ public class CRWriter extends BufferedWriter {
    * Returns the units this object writes to the underlying stream.
    */
   public Collection<Unit> getUnits() {
-    return this.units;
+    return units;
   }
 
   /**
@@ -2761,15 +2707,13 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeTranslations(Translations m) throws IOException {
-    if ((m == null) || (m.size() == 0)) {
+    if ((m == null) || (m.size() == 0))
       return;
-    }
 
     write("TRANSLATION");
     newLine();
 
-    for (Iterator<String> iter = m.getKeyTreeSet().iterator(); iter.hasNext();) {
-      String key = iter.next();
+    for (String key : m.getKeyTreeSet()) {
       String value = m.getTranslation(key, TranslationType.sourceCR);
       if (value != null) {
         writeQuotedTag(value, key);

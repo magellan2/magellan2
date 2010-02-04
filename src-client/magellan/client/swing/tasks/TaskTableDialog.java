@@ -24,71 +24,64 @@ import magellan.client.swing.InternationalizedDataDialog;
 import magellan.library.GameData;
 import magellan.library.utils.Resources;
 
-
 /**
  * A dialog wrapper for the TaskTable panel.
  */
 public class TaskTableDialog extends InternationalizedDataDialog {
-	private TaskTablePanel panel = null;
+  private TaskTablePanel panel = null;
 
-	/**
-	 * Create a new TaskTableDialog object as a dialog with a parent window.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-	public TaskTableDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData,
-						   Properties p) {
-		super(owner, modal, ed, initData, p);
-		init();
+  /**
+   * Create a new TaskTableDialog object as a dialog with a parent window.
+   */
+  public TaskTableDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData,
+      Properties p) {
+    super(owner, modal, ed, initData, p);
+    init();
 
-		//pack();
-	}
+    // pack();
+  }
 
-	private void init() {
-		setContentPane(getMainPane());
-		setTitle(Resources.get("tasks.tasktabledialog.window.title"));
+  private void init() {
+    setContentPane(getMainPane());
+    setTitle(Resources.get("tasks.tasktabledialog.window.title"));
 
-		int width = Integer.parseInt(settings.getProperty("TaskTableDialog.width", "500"));
-		int height = Integer.parseInt(settings.getProperty("TaskTableDialog.height", "300"));
-		this.setSize(width, height);
+    int width = Integer.parseInt(settings.getProperty("TaskTableDialog.width", "500"));
+    int height = Integer.parseInt(settings.getProperty("TaskTableDialog.height", "300"));
+    this.setSize(width, height);
 
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = Integer.parseInt(settings.getProperty("TaskTableDialog.x",
-													  ((screen.width - getWidth()) / 2) + ""));
-		int y = Integer.parseInt(settings.getProperty("TaskTableDialog.y",
-													  ((screen.height - getHeight()) / 2) + ""));
-		this.setLocation(x, y);
-	}
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    int x =
+        Integer.parseInt(settings.getProperty("TaskTableDialog.x",
+            ((screen.width - getWidth()) / 2) + ""));
+    int y =
+        Integer.parseInt(settings.getProperty("TaskTableDialog.y",
+            ((screen.height - getHeight()) / 2) + ""));
+    this.setLocation(x, y);
+  }
 
-	private Container getMainPane() {
-		if(panel == null) {
-			panel = new TaskTablePanel(dispatcher, data, settings);
-		}
+  private Container getMainPane() {
+    if (panel == null) {
+      panel = new TaskTablePanel(dispatcher, data, settings);
+    }
 
-		return panel;
+    return panel;
 
-		/*
-		JPanel mainPanel = new JPanel();
-		mainPanel.add(panel);
-		return mainPanel;
-		*/
-	}
+    /*
+     * JPanel mainPanel = new JPanel(); mainPanel.add(panel); return mainPanel;
+     */
+  }
 
-	private void storeSettings() {
-		settings.setProperty("TaskTableDialog.x", getX() + "");
-		settings.setProperty("TaskTableDialog.y", getY() + "");
-		settings.setProperty("TaskTableDialog.width", getWidth() + "");
-		settings.setProperty("TaskTableDialog.height", getHeight() + "");
-	}
+  private void storeSettings() {
+    settings.setProperty("TaskTableDialog.x", getX() + "");
+    settings.setProperty("TaskTableDialog.y", getY() + "");
+    settings.setProperty("TaskTableDialog.width", getWidth() + "");
+    settings.setProperty("TaskTableDialog.height", getHeight() + "");
+  }
 
-	@Override
+  @Override
   protected void quit() {
-		storeSettings();
-		panel.quit();
-		super.quit();
-	}
+    storeSettings();
+    panel.quit();
+    super.quit();
+  }
 }

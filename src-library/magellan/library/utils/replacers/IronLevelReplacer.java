@@ -19,35 +19,28 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Fiete
  * @version 1.0
  */
 public class IronLevelReplacer extends AbstractRegionReplacer {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public Object getRegionReplacement(Region region) {
     // FIXME shouldn't access rules this way. However, Replacers should work with their default
     // constructor. Hmmm...
-		ItemType ironType = region.getData().rules.getItemType(EresseaConstants.I_RIRON);
-		if (ironType==null){
-			return null;
-		}
-		RegionResource ironResource = region.getResource(ironType);
-		if (ironResource==null){
-			return null;
-		}
-		return new Integer(ironResource.getSkillLevel());
-	}
+    ItemType ironType = region.getData().rules.getItemType(EresseaConstants.I_RIRON);
+    if (ironType == null)
+      return null;
+    RegionResource ironResource = region.getResource(ironType);
+    if (ironResource == null)
+      return null;
+    return new Integer(ironResource.getSkillLevel());
+  }
 
   public String getDescription() {
     return Resources.get("util.replacers.ironlevelreplacer.description");

@@ -22,27 +22,25 @@ import java.util.EventObject;
 
 /**
  * Event which remembers its creation time.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public abstract class TimeStampedEvent extends EventObject {
-	private long timestamp;
+  private long timestamp;
 
-	/**
-	 * Creates new TimeStampedEvent
-	 *
-	 * 
-	 */
-	public TimeStampedEvent(Object source) {
-		super(source);
-		timestamp = System.currentTimeMillis();
-	}
+  /**
+   * Creates new TimeStampedEvent
+   */
+  public TimeStampedEvent(Object source) {
+    super(source);
+    timestamp = System.currentTimeMillis();
+  }
 
-	/**
-	 * Returns the time when the event was created. 
-	 */
-	public long getTimestamp() {
-		return timestamp;
-	}
+  /**
+   * Returns the time when the event was created.
+   */
+  public long getTimestamp() {
+    return timestamp;
+  }
 }

@@ -24,7 +24,6 @@
 package magellan.library.gamebinding;
 
 /**
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
@@ -37,7 +36,6 @@ public class AllanonPostProcessor extends EresseaPostProcessor {
   protected AllanonPostProcessor() {
     super();
   }
-  
 
   /**
    * 

@@ -30,38 +30,56 @@ import magellan.library.utils.Utils;
 import org.w3c.dom.Element;
 
 /**
- * This is a container for a script. It contains some informations about
- * a beanshell script:
- * 
- * 1. of course the script text itself
- * 2. the unit or unitcontainer number
- * 3. the last known cursor position (or null)
+ * This is a container for a script. It contains some informations about a beanshell script:<br/>
+ * 1. of course the script text itself<br/>
+ * 2. the unit or unitcontainer number<br/>
+ * 3. the last known cursor position (or null)<br/>
  * 4. the priority of this script inside the group of scripts of the same type
- *
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 12.04.2008
  */
 public class Script implements Cloneable {
+  /**
+   * A script of unknown type.
+   */
   public static final int SCRIPTTYPE_UNKNOWN = 0;
+  /**
+   * A library script.
+   */
   public static final int SCRIPTTYPE_LIBRARY = 1;
+  /**
+   * A unit container's script.
+   */
   public static final int SCRIPTTYPE_CONTAINER = 2;
+  /**
+   * A unit's script.
+   */
   public static final int SCRIPTTYPE_UNIT = 4;
-  
+
   private String script = null;
   private int cursor = 0;
   private Priority priority = Priority.NORMAL;
   private String containerId = null;
   private ContainerType type = ContainerType.UNKNOWN;
   private int scripttype = Script.SCRIPTTYPE_UNKNOWN;
-  
+
+  /**
+   * Creates a new script
+   */
   public Script(String containerId, int scripttype, ContainerType type, String script) {
     this.containerId = containerId;
     this.scripttype = scripttype;
     this.type = type;
     this.script = script;
   }
-  
-  
+
+  /**
+   * Creates a script from an XML document block. This can currently be a "library", "container", or
+   * "unit" block.
+   * 
+   * @see #toXML(PrintWriter)
+   */
   public Script(Element node) {
     if (node == null) {
       return;
@@ -72,7 +90,7 @@ public class Script implements Cloneable {
       cursor = getCursor(node);
       containerId = null;
       scripttype = Script.SCRIPTTYPE_LIBRARY;
-      
+
     } else if (node.getNodeName().equalsIgnoreCase("container")) {
       script = Utils.getCData(node);
       priority = getPriority(node);
@@ -80,20 +98,19 @@ public class Script implements Cloneable {
       containerId = getContainerId(node);
       type = getContainerType(node);
       scripttype = Script.SCRIPTTYPE_CONTAINER;
-      
+
     } else if (node.getNodeName().equalsIgnoreCase("unit")) {
       script = Utils.getCData(node);
       priority = getPriority(node);
       cursor = getCursor(node);
       containerId = getContainerId(node);
       scripttype = Script.SCRIPTTYPE_UNIT;
-      
+
     } else {
       throw new IllegalArgumentException("Unknown Script type");
     }
   }
-  
-  
+
   /**
    * Returns the priority of this script
    */
@@ -122,7 +139,7 @@ public class Script implements Cloneable {
   private String getContainerId(Element node) {
     return node.getAttribute("id");
   }
-  
+
   /**
    * Returns the last known cursor position.
    */
@@ -134,13 +151,12 @@ public class Script implements Cloneable {
       } catch (Exception e) {
         cursor = 0;
       }
-      if (cursor<0) {
+      if (cursor < 0) {
         cursor = 0;
       }
     }
     return cursor;
   }
-
 
   /**
    * Returns the value of script.
@@ -151,16 +167,14 @@ public class Script implements Cloneable {
     return script;
   }
 
-
   /**
    * Sets the value of script.
-   *
+   * 
    * @param script The value for script.
    */
   public void setScript(String script) {
     this.script = script;
   }
-
 
   /**
    * Returns the value of cursor.
@@ -171,16 +185,14 @@ public class Script implements Cloneable {
     return cursor;
   }
 
-
   /**
    * Sets the value of cursor.
-   *
+   * 
    * @param cursor The value for cursor.
    */
   public void setCursor(int cursor) {
     this.cursor = cursor;
   }
-
 
   /**
    * Returns the value of priority.
@@ -191,16 +203,14 @@ public class Script implements Cloneable {
     return priority;
   }
 
-
   /**
    * Sets the value of priority.
-   *
+   * 
    * @param priority The value for priority.
    */
   public void setPriority(Priority priority) {
     this.priority = priority;
   }
-
 
   /**
    * Returns the value of containerId.
@@ -211,16 +221,14 @@ public class Script implements Cloneable {
     return containerId;
   }
 
-
   /**
    * Sets the value of containerId.
-   *
+   * 
    * @param containerId The value for containerId.
    */
   public void setContainerId(String containerId) {
     this.containerId = containerId;
   }
-
 
   /**
    * Returns the value of type.
@@ -231,46 +239,52 @@ public class Script implements Cloneable {
     return type;
   }
 
-
   /**
    * Sets the value of type.
-   *
+   * 
    * @param type The value for type.
    */
   public void setType(ContainerType type) {
     this.type = type;
   }
-  
+
+  /**
+   * Writes this block as XML.
+   * 
+   * @see #Script(Element)
+   */
   public void toXML(PrintWriter writer) {
     switch (scripttype) {
-      case SCRIPTTYPE_LIBRARY: {
-        writer.print("<library cursor=\""+getCursor()+"\">");
-        writer.print("<![CDATA[");
-        writer.print(script);
-        writer.println("]]></library>");
-        break;
-      }
-      case SCRIPTTYPE_CONTAINER: {
-        writer.print(" <container id=\""+containerId+"\" type=\""+type+"\" cursor=\""+getCursor()+"\" priority=\""+getPriority()+"\">");
-        writer.println("<![CDATA["+script+"]]></container>");
-        break;
-      }
-      case SCRIPTTYPE_UNIT: {
-        writer.print(" <unit id=\""+containerId+"\" cursor=\""+getCursor()+"\" priority=\""+getPriority()+"\">");
-        writer.println("<![CDATA["+script+"]]></unit>");
-        break;
-      }
+    case SCRIPTTYPE_LIBRARY: {
+      writer.print("<library cursor=\"" + getCursor() + "\">");
+      writer.print("<![CDATA[");
+      writer.print(script);
+      writer.println("]]></library>");
+      break;
+    }
+    case SCRIPTTYPE_CONTAINER: {
+      writer.print(" <container id=\"" + containerId + "\" type=\"" + type + "\" cursor=\""
+          + getCursor() + "\" priority=\"" + getPriority() + "\">");
+      writer.println("<![CDATA[" + script + "]]></container>");
+      break;
+    }
+    case SCRIPTTYPE_UNIT: {
+      writer.print(" <unit id=\"" + containerId + "\" cursor=\"" + getCursor() + "\" priority=\""
+          + getPriority() + "\">");
+      writer.println("<![CDATA[" + script + "]]></unit>");
+      break;
+    }
     }
   }
-  
+
   /**
    * @see java.lang.Object#clone()
    */
   @Override
   public Object clone() {
-    Script script = new Script(this.containerId,this.scripttype,this.type,this.script);
-    script.setCursor(this.cursor);
-    script.setPriority(this.priority);
+    Script script = new Script(containerId, scripttype, type, this.script);
+    script.setCursor(cursor);
+    script.setPriority(priority);
     return script;
   }
 }

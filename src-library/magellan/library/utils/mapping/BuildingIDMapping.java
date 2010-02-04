@@ -34,29 +34,30 @@ import magellan.library.Region;
 import magellan.library.utils.Score;
 
 /**
- * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
  */
 
 public class BuildingIDMapping implements DataMapping {
   private static BuildingIDMapping singleton = new BuildingIDMapping();
+
   public static BuildingIDMapping getSingleton() {
     return BuildingIDMapping.singleton;
   }
-  
+
   @Override
   public String toString() {
     return "BuildingID";
   }
-  
+
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
-    Map<CoordinateID, Score<CoordinateID>> translationMap = new Hashtable<CoordinateID, Score<CoordinateID>>();
-     
+    Map<CoordinateID, Score<CoordinateID>> translationMap =
+        new Hashtable<CoordinateID, Score<CoordinateID>>();
+
     // loop regions in fromData
     for (Region region : fromData.regions().values()) {
       CoordinateID coord = region.getCoordinate();
-  
+
       if (coord.z == level) {
         for (Building building : region.buildings()) {
           Building sameBuilding = toData.getBuilding(building.getID());
@@ -64,8 +65,9 @@ public class BuildingIDMapping implements DataMapping {
             Region sameRegion = sameBuilding.getRegion();
             if (sameRegion != null) {
               CoordinateID foundCoord = sameRegion.getCoordinate();
-              CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y);
-              
+              CoordinateID translation =
+                  new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y);
+
               Score<CoordinateID> score = translationMap.get(translation);
               if (score == null) {
                 score = new Score<CoordinateID>(translation);
@@ -78,10 +80,9 @@ public class BuildingIDMapping implements DataMapping {
       }
     }
 
-    if (translationMap.size() > 0) {
+    if (translationMap.size() > 0)
       return Collections.max(translationMap.values()).getKey();
-    } else {
+    else
       return null;
-    }
   }
 }

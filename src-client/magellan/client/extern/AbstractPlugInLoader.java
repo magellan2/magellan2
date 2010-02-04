@@ -32,8 +32,8 @@ import magellan.library.utils.ResourcePathClassLoader;
 import magellan.library.utils.logging.Logger;
 
 /**
- * Loads all external modules that can be found. Please see
- * com.eressea.extern.ExternalModule for documentation.
+ * Loads all external modules that can be found. Please see com.eressea.extern.ExternalModule for
+ * documentation.
  * 
  * @author Ulrich Küster
  * @author Thoralf Rickert
@@ -43,24 +43,24 @@ public abstract class AbstractPlugInLoader<T> {
 
   /**
    * Searches the resource paths for classes that implement the interface
-   * com.eressea.extern.ExternalModule. Returns them as Collection of Class
-   * objects.
+   * com.eressea.extern.ExternalModule. Returns them as Collection of Class objects.
    */
   public abstract Collection<Class<T>> getExternalModuleClasses(Properties settings);
 
   /**
    * 
    */
-  protected Collection<String> getPathsFromResourcePathClassLoader(ResourcePathClassLoader resLoader, Properties settings) {
+  protected Collection<String> getPathsFromResourcePathClassLoader(
+      ResourcePathClassLoader resLoader, Properties settings) {
     Collection<String> paths = new ArrayList<String>();
 
     for (URL url : resLoader.getPaths()) {
-      
+
       String path = null;
       try {
-        path = URLDecoder.decode(url.getFile(),"UTF-8");
+        path = URLDecoder.decode(url.getFile(), "UTF-8");
       } catch (Exception exception) {
-        AbstractPlugInLoader.log.error("",exception);
+        AbstractPlugInLoader.log.error("", exception);
         continue;
       }
 
@@ -69,7 +69,6 @@ public abstract class AbstractPlugInLoader<T> {
       } else if (path.startsWith("file:/")) {
         path = path.substring(5, path.length());
       }
-
 
       if (path.endsWith("!/")) {
         path = path.substring(0, path.length() - 2);
@@ -80,7 +79,7 @@ public abstract class AbstractPlugInLoader<T> {
 
     return paths;
   }
-  
+
   /**
    * 
    */
@@ -89,7 +88,9 @@ public abstract class AbstractPlugInLoader<T> {
 
     // String classpath = System.getProperty("java.class.path");
     // classpath += System.getProperty("path.separator")+path;
-    StringTokenizer st = new StringTokenizer(System.getProperty("java.class.path"), System.getProperty("path.separator"));
+    StringTokenizer st =
+        new StringTokenizer(System.getProperty("java.class.path"), System
+            .getProperty("path.separator"));
 
     while (st.hasMoreTokens()) {
       paths.add(st.nextToken());
@@ -101,14 +102,18 @@ public abstract class AbstractPlugInLoader<T> {
   /**
    * 
    */
-  protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader, Class<?> externalModuleClass, String path) {
-    return getClassesFromPath(resLoader, externalModuleClass, path, null, getLastCapitalizedString(externalModuleClass.getName()).toLowerCase() + ".class");
+  protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader,
+      Class<?> externalModuleClass, String path) {
+    return getClassesFromPath(resLoader, externalModuleClass, path, null, getLastCapitalizedString(
+        externalModuleClass.getName()).toLowerCase()
+        + ".class");
   }
 
   /**
    * 
    */
-  protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader, Class<?> externalModuleClass, String path, String packagePrefix, String postfix) {
+  protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader,
+      Class<?> externalModuleClass, String path, String packagePrefix, String postfix) {
     Collection<Class<T>> classes = new ArrayList<Class<T>>();
 
     try {
@@ -120,12 +125,14 @@ public abstract class AbstractPlugInLoader<T> {
           // add files or subdirectories to search list
           File newPaths[] = file.listFiles();
 
-          for (int i = 0; i < newPaths.length; i++) {
+          for (File newPath : newPaths) {
             // add in first position
             String newPrefix = packagePrefix == null ? "" : packagePrefix + file.getName() + ".";
-            classes.addAll(getClassesFromPath(resLoader, externalModuleClass, newPaths[i].getAbsolutePath(), newPrefix, postfix));
+            classes.addAll(getClassesFromPath(resLoader, externalModuleClass, newPath
+                .getAbsolutePath(), newPrefix, postfix));
           }
-        } else if (file.getName().toLowerCase().endsWith(".jar") || file.getName().toLowerCase().endsWith(".zip")) {
+        } else if (file.getName().toLowerCase().endsWith(".jar")
+            || file.getName().toLowerCase().endsWith(".zip")) {
           AbstractPlugInLoader.log.info("Searching " + file.getAbsolutePath() + "...");
 
           ZipFile zip = new ZipFile(file);
@@ -142,9 +149,9 @@ public abstract class AbstractPlugInLoader<T> {
               Class<?> foundClass = resLoader.loadClass(name);
               Class<?> interfaces[] = foundClass.getInterfaces();
               boolean found = false;
-              
+
               for (Class<?> ainterface : interfaces) {
-                AbstractPlugInLoader.log.debug("interface: "+ainterface.getName());
+                AbstractPlugInLoader.log.debug("interface: " + ainterface.getName());
               }
 
               for (int i = 0; (i < interfaces.length) && !found; i++) {
@@ -153,7 +160,7 @@ public abstract class AbstractPlugInLoader<T> {
                   break;
                 }
               }
-              
+
               if (found) {
                 // found a class that implements ExternalModule
                 // TODO this cast is... probably okay
@@ -178,8 +185,8 @@ public abstract class AbstractPlugInLoader<T> {
 
           Class<?> interfaces[] = foundClass.getInterfaces();
 
-          for (int i = 0; i < interfaces.length; i++) {
-            if (interfaces[i].equals(externalModuleClass)) {
+          for (Class<?> interface1 : interfaces) {
+            if (interface1.equals(externalModuleClass)) {
               // found a class that implements ExternalModule
               // TODO this cast is... probably okay
               classes.add((Class<T>) foundClass);
@@ -206,17 +213,19 @@ public abstract class AbstractPlugInLoader<T> {
   /**
    * 
    */
-  protected Collection<Class<T>> getExternalModuleClasses(Properties settings, Class<?> externalModuleClass) {
+  protected Collection<Class<T>> getExternalModuleClasses(Properties settings,
+      Class<?> externalModuleClass) {
     Collection<Class<T>> classes = new HashSet<Class<T>>();
 
     ResourcePathClassLoader resLoader = new ResourcePathClassLoader(settings);
 
     // pathes to search
     Collection<String> paths = new ArrayList<String>();
-    
+
     // a) read possible paths from ResourcePathClassLoader
     // b) read property java.class.path and iterate over the entries
-    if (settings.getProperty("ExternalModuleLoader.searchResourcePathClassLoader", "true").equals("true")) {
+    if (settings.getProperty("ExternalModuleLoader.searchResourcePathClassLoader", "true").equals(
+        "true")) {
       paths.addAll(getPathsFromResourcePathClassLoader(resLoader, settings));
     }
 
@@ -225,9 +234,10 @@ public abstract class AbstractPlugInLoader<T> {
     }
 
     // search explicit the magellan dir for the magellan-plugins.jar
-    paths.add(settings.getProperty("plugin.helper.magellandir") + File.separator + "magellan-plugins.jar");    
-    
-    for (String path : paths){
+    paths.add(settings.getProperty("plugin.helper.magellandir") + File.separator
+        + "magellan-plugins.jar");
+
+    for (String path : paths) {
       classes.addAll(getClassesFromPath(resLoader, externalModuleClass, path));
     }
 
@@ -235,8 +245,8 @@ public abstract class AbstractPlugInLoader<T> {
   }
 
   /**
-   * delivers last capitalized String, e.g.: for input "StringBuffer.class" this
-   * function returns "Buffer.class"
+   * delivers last capitalized String, e.g.: for input "StringBuffer.class" this function returns
+   * "Buffer.class"
    */
   protected String getLastCapitalizedString(String aString) {
     StringCharacterIterator iter = new StringCharacterIterator(aString);
@@ -244,7 +254,8 @@ public abstract class AbstractPlugInLoader<T> {
     for (char c = iter.last(); c != CharacterIterator.DONE; c = iter.previous()) {
       if ((c >= 'A') && (c <= 'Z')) {
         if (AbstractPlugInLoader.log.isDebugEnabled()) {
-          AbstractPlugInLoader.log.debug("ExternalModuleLoader.getLastCapitalizedString(" + aString + "): " + aString.substring(iter.getIndex()));
+          AbstractPlugInLoader.log.debug("ExternalModuleLoader.getLastCapitalizedString(" + aString
+              + "): " + aString.substring(iter.getIndex()));
         }
 
         return aString.substring(iter.getIndex());

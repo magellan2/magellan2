@@ -22,22 +22,18 @@ import javax.swing.JMenuItem;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface ContextChangeable {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public JMenuItem getContextAdapter();
+  /**
+   * DOCUMENT-ME
+   */
+  public JMenuItem getContextAdapter();
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setContextObserver(ContextObserver co);
+  /**
+   * DOCUMENT-ME
+   */
+  public void setContextObserver(ContextObserver co);
 }

@@ -24,20 +24,19 @@
 package magellan.library.utils;
 
 /**
- * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
  */
 
-public class Score<K> implements Comparable<Score<K>>{
+public class Score<K> implements Comparable<Score<K>> {
   private K key;
   private int score = 0;
   private String type;
-  
-  public Score(K key){
+
+  public Score(K key) {
     this(key, 0);
   }
-  
+
   public Score(K key, int score) {
     this(key, score, null);
   }
@@ -55,7 +54,7 @@ public class Score<K> implements Comparable<Score<K>>{
   public int getScore() {
     return this.score;
   }
-  
+
   public int addScore(int add) {
     return this.score += add;
   }
@@ -75,9 +74,9 @@ public class Score<K> implements Comparable<Score<K>>{
   public int compareTo(Score<K> s) {
     return score > s.getScore() ? 1 : (score < s.getScore() ? -1 : 0);
   }
-    
+
   @Override
   public String toString() {
-    return type+": "+key.toString()+" = "+score;
+    return type + ": " + key.toString() + " = " + score;
   }
 }

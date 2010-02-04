@@ -17,41 +17,31 @@ import magellan.library.Unit;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author unknown
  * @version 1.0
  */
 public abstract class AbstractUnitReplacer implements Replacer {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Object getReplacement(Object r) {
-		if(r instanceof Unit) {
-			return getUnitReplacement((Unit) r);
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public Object getReplacement(Object r) {
+    if (r instanceof Unit)
+      return getUnitReplacement((Unit) r);
 
-		return null;
-	}
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public abstract Object getUnitReplacement(Unit r);
+  /**
+   * DOCUMENT-ME
+   */
+  public abstract Object getUnitReplacement(Unit r);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *//*
-	public String getDescription() {
-		return magellan.library.utils.Translations.getTranslation(this, "description");
-	}*/
+  /**
+   * DOCUMENT-ME
+   */
+  /*
+   * public String getDescription() { return
+   * magellan.library.utils.Translations.getTranslation(this, "description"); }
+   */
 }

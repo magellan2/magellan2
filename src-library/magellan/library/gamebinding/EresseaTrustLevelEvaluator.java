@@ -17,37 +17,31 @@ import magellan.library.Alliance;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public class EresseaTrustLevelEvaluator {
-	private EresseaTrustLevelEvaluator() {
-	}
+  private EresseaTrustLevelEvaluator() {
+  }
 
-	private static final EresseaTrustLevelEvaluator singleton = new EresseaTrustLevelEvaluator();
+  private static final EresseaTrustLevelEvaluator singleton = new EresseaTrustLevelEvaluator();
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static EresseaTrustLevelEvaluator getSingleton() {
-		return EresseaTrustLevelEvaluator.singleton;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public static EresseaTrustLevelEvaluator getSingleton() {
+    return EresseaTrustLevelEvaluator.singleton;
+  }
 
-	/**
-	 * A method to convert an alliance into a trustlevel. This method should be uses when Magellan
-	 * calculates trust levels on its own.
-	 *
-	 * 
-	 *
-	 * 
-	 *
-	 * @deprecated
-	 */
-	@Deprecated
+  /**
+   * A method to convert an alliance into a trustlevel. This method should be uses when Magellan
+   * calculates trust levels on its own.
+   * 
+   * @deprecated
+   */
+  @Deprecated
   public int getTrustLevel(Alliance alliance) {
-		return alliance.getTrustLevel();
-	}
+    return alliance.getTrustLevel();
+  }
 }

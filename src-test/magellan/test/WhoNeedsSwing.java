@@ -28,8 +28,8 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 
 /**
- * This class tries to test the  
- *
+ * This class tries to test the
+ * 
  * @author ...
  * @version 1.0, 30.04.2007
  */
@@ -40,9 +40,9 @@ public class WhoNeedsSwing {
    */
   public static void main(String[] args) throws Exception {
     WhoNeedsSwing.verify(new File("src-backend/"));
-    
+
   }
-  
+
   private static void verify(File root) throws Exception {
     if (root.isDirectory()) {
       File[] files = root.listFiles();
@@ -65,7 +65,7 @@ public class WhoNeedsSwing {
       }
       reader.close();
     }
-    
+
   }
 
 }

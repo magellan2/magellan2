@@ -39,47 +39,45 @@ import magellan.library.utils.mapping.SchemeOverlapMapping;
 import magellan.library.utils.mapping.UnitIDMapping;
 
 /**
- * 
- * @author 
+ * @author
  * @version 1.1, 21.05.2008
  */
 
 public class E3AMapMergeEvaluator extends EresseaMapMergeEvaluator {
-  protected E3AMapMergeEvaluator(Rules rules){
+  protected E3AMapMergeEvaluator(Rules rules) {
     super(rules);
   }
-  
+
   @Override
   public Collection<DataMapping> getDataMappingVariants(int level) {
-    if (level == E3AMapMergeEvaluator.ASTRAL_LAYER) {
+    if (level == EresseaMapMergeEvaluator.ASTRAL_LAYER) {
       Collection<DataMapping> variants = new ArrayList<DataMapping>(3);
       variants.add(RegionIDMapping.getSingleton());
       variants.add(SchemeNameMapping.getSingleton());
       variants.add(UnitIDMapping.getSingleton());
-      return variants;     
-    } 
+      return variants;
+    }
     return super.getDataMappingVariants(level);
   }
-  
+
   @Override
   public Collection<LevelMapping> getLevelMappingVariants(int fromLevel, int toLevel) {
-    if ((fromLevel == E3AMapMergeEvaluator.ASTRAL_LAYER) && (toLevel == E3AMapMergeEvaluator.REAL_LAYER)) {
+    if ((fromLevel == EresseaMapMergeEvaluator.ASTRAL_LAYER)
+        && (toLevel == EresseaMapMergeEvaluator.REAL_LAYER)) {
       Collection<LevelMapping> variants = new ArrayList<LevelMapping>(2);
       variants.add(SchemeOverlapMapping.getSingleton());
       variants.add(SchemeExtendMapping.getSingleton());
       return variants;
-    } else {
+    } else
       return null;
-    }
   }
 
   @Override
   public MappingEvaluator getMappingEvaluator(int level) {
-    if (level == E3AMapMergeEvaluator.ASTRAL_LAYER) {
+    if (level == EresseaMapMergeEvaluator.ASTRAL_LAYER)
       return AstralMappingEvaluator.getSingleton();
-    } else {
+    else
       return super.getMappingEvaluator(level);
-    }
   }
-   
+
 }

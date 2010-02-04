@@ -89,17 +89,16 @@ import magellan.library.utils.comparator.SortIndexComparator;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 import magellan.library.utils.logging.Logger;
 
-
 /**
- * 
- *
  * @author $Author: $
  * @version $Revision: 389 $
  */
-public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRegion, Sorted, Taggable {
+public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRegion, Sorted,
+    Taggable {
   private static final Logger log = Logger.getInstance(MagellanUnitImpl.class);
   private static final String CONFIRMEDTEMPCOMMENT = ";" + OrderWriter.CONFIRMEDTEMP;
-  private static final String TAG_PREFIX_TEMP=";"+"ejcTagTemp "; // grammar for ejcTag: ";ejcTempTag tag numbervalue|'stringvalue'"
+  private static final String TAG_PREFIX_TEMP = ";" + "ejcTagTemp "; // grammar for ejcTag:
+  // ";ejcTempTag tag numbervalue|'stringvalue'"
 
   /** The private description of the unit. */
   private String privDesc = null; // private description
@@ -110,21 +109,20 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /** The real race of the (daemon) unit */
   private Race realRace = null;
 
-  /** unitID of the "father"-mage
-   *  or mother.mage...
-   * */
+  /**
+   * unitID of the "father"-mage or mother.mage...
+   */
   private ID familiarmageID = null;
 
   /** The weight in silver */
   private int weight = -1;
 
-  /** an object encapsulation  the orders of this unit as <tt>String</tt> objects */
+  /** an object encapsulation the orders of this unit as <tt>String</tt> objects */
   private final Orders ordersObject = new Orders();
 
   /** Comments modifiable by the user. The comments are represented as String objects. */
-  /** analog to comments in unitcontainer**/
+  /** analog to comments in unitcontainer **/
   private List<String> comments = null;
-
 
   /**
    * @see magellan.library.Unit#ordersAreNull()
@@ -156,21 +154,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Clears the orders and possibly refreshes the relations
-   *
+   * 
    * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void clearOrders(boolean refreshRelations) {
     ordersObject.clearOrders();
 
-    if(refreshRelations) {
+    if (refreshRelations) {
       refreshRelations();
     }
   }
 
   /**
    * Removes the order at position <tt>i</tt> and refreshes the relations
-   *
-   * 
    */
   public void removeOrderAt(int i) {
     removeOrderAt(i, true);
@@ -178,21 +174,20 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Removes the order at position <tt>i</tt> and possibly refreshes the relations
-   *
    * 
    * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void removeOrderAt(int i, boolean refreshRelations) {
     ordersObject.removeOrderAt(i);
 
-    if(refreshRelations) {
+    if (refreshRelations) {
       refreshRelations(i);
     }
   }
 
   /**
    * Adds the order at position <tt>i</tt> and refreshes the relations
-   *
+   * 
    * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
    * @param newOrders
    */
@@ -202,26 +197,26 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Adds the order at position <tt>i</tt> and possibly refreshes the relations
-   *
+   * 
    * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
    * @param newOrders
    * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void addOrderAt(int i, String newOrders, boolean refreshRelations) {
-    if (i<0) {
+    if (i < 0) {
       ordersObject.addOrder(newOrders);
     } else {
       ordersObject.addOrderAt(i, newOrders);
     }
 
-    if(refreshRelations) {
+    if (refreshRelations) {
       refreshRelations(i);
     }
   }
 
   /**
    * Adds the order and refreshes the relations
-   *
+   * 
    * @param newOrders
    */
   public void addOrders(String newOrders) {
@@ -230,7 +225,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Adds the order and possibly refreshes the relations
-   *
+   * 
    * @param newOrders
    * @param refreshRelations if true also refresh the relations of the unit.
    */
@@ -240,7 +235,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Adds the orders and refreshes the relations
-   *
+   * 
    * @param newOrders
    */
   public void addOrders(Collection<String> newOrders) {
@@ -249,21 +244,21 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Adds the orders and possibly refreshes the relations
-   *
+   * 
    * @param newOrders
    * @param refreshRelations If true also refresh the relations of the unit
    */
   public void addOrders(Collection<String> newOrders, boolean refreshRelations) {
     final int newPos = ordersObject.addOrders(newOrders);
 
-    if(refreshRelations) {
+    if (refreshRelations) {
       refreshRelations(newPos);
     }
   }
 
   /**
    * Sets the orders and refreshes the relations
-   *
+   * 
    * @param newOrders
    */
   public void setOrders(Collection<String> newOrders) {
@@ -272,28 +267,25 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the orders and possibly refreshes the relations
-   *
+   * 
    * @param newOrders
    * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void setOrders(Collection<String> newOrders, boolean refreshRelations) {
     ordersObject.setOrders(newOrders);
 
-    if(refreshRelations) {
+    if (refreshRelations) {
       refreshRelations();
     }
   }
 
   /**
    * Delivers a readonly collection of alle orders of this unit.
-   *
-   * 
    */
   public List<String> getOrders() {
     final List<String> orders = ordersObject.getOrders();
-    if (orders != null) {
+    if (orders != null)
       return Collections.unmodifiableList(orders);
-    }
     return Collections.emptyList();
   }
 
@@ -336,20 +328,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /** DOCUMENT-ME */
   private boolean isStarving = false; // hunger-Tag
 
-
   // (stm 09-06-08) had to get rid of the soft reference again as it leads to problems with
   // updates of unit relations.
-//	/**
-//	 * The cache object containing cached information that may be not related enough to be
-//	 * encapsulated as a function and is time consuming to gather.
-//	 */
-//  protected SoftReference<Cache> cacheReference = null;
+  // /**
+  // * The cache object containing cached information that may be not related enough to be
+  // * encapsulated as a function and is time consuming to gather.
+  // */
+  // protected SoftReference<Cache> cacheReference = null;
 
   private Cache cache;
 
   /**
-   * Messages directly sent to this unit. The list contains instances of class <tt>Message</tt>
-   * with type -1 and only the text set.
+   * Messages directly sent to this unit. The list contains instances of class <tt>Message</tt> with
+   * type -1 and only the text set.
    */
   private List<Message> unitMessages = null;
 
@@ -365,14 +356,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   private boolean ordersConfirmed = false;
 
   /** DOCUMENT-ME */
-  private Map<StringID,Skill> skills = null; // maps SkillType.getID() objects to Skill objects
+  private Map<StringID, Skill> skills = null; // maps SkillType.getID() objects to Skill objects
   private boolean skillsCopied = false;
 
   /**
    * The items carried by this unit. The keys are the IDs of the item's type, the values are the
    * Item objects themselves.
    */
-  private Map<StringID,Item> items = null;
+  private Map<StringID, Item> items = null;
 
   /**
    * The spells known to this unit. The keys are the IDs of the spells, the values are the Spell
@@ -381,9 +372,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   private Map<ID, Spell> spells = null;
 
   /**
-   * Contains the spells this unit has set for use in a combat. This map contains data if a unit
-   * has a magic skill and has actively set combat spells. The values in this map are objects of
-   * type CombatSpell, the keys are their ids.
+   * Contains the spells this unit has set for use in a combat. This map contains data if a unit has
+   * a magic skill and has actively set combat spells. The values in this map are objects of type
+   * CombatSpell, the keys are their ids.
    */
   private Map<ID, CombatSpell> combatSpells = null;
 
@@ -392,28 +383,28 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the group this unit belongs to.
-   *
+   * 
    * @param g the group of the unit
    */
   public void setGroup(Group g) {
-    if(this.group != null) {
-      this.group.removeUnit(this.getID());
+    if (group != null) {
+      group.removeUnit(getID());
     }
 
-    this.group = g;
+    group = g;
 
-    if(this.group != null) {
-      this.group.addUnit(this);
+    if (group != null) {
+      group.addUnit(this);
     }
   }
 
   /**
    * Returns the group this unit belongs to.
-   *
+   * 
    * @return the group this unit belongs to
    */
   public Group getGroup() {
-    return this.group;
+    return group;
   }
 
   /** The previous id of this unit. */
@@ -421,17 +412,17 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets an alias id for this unit.
-   *
+   * 
    * @param id the alias id for this unit
    */
   public void setAlias(UnitID id) {
-    this.alias = id;
+    alias = id;
   }
 
   /**
    * Returns the alias, i.e. the id of this unit it had in the last turn (e.g. after a NUMMER
    * order).
-   *
+   * 
    * @return the alias or null, if the id did not change.
    */
   public UnitID getAlias() {
@@ -449,77 +440,71 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Indicates that this unit belongs to a different faction than it pretends to. A unit cannot
    * disguise itself as a different faction and at the same time be a spy of another faction,
-   * therefore, setting this attribute to true results in having the guiseFaction attribute set
-   * to null.
+   * therefore, setting this attribute to true results in having the guiseFaction attribute set to
+   * null.
    */
   private boolean isSpy = false;
 
   /**
-   * Sets whether is unit really belongs to its unit or only pretends to do so.  A unit cannot
+   * Sets whether is unit really belongs to its unit or only pretends to do so. A unit cannot
    * disguise itself as a different faction and at the same time be a spy of another faction,
-   * therefore, setting this attribute to true results in having the guiseFaction attribute set
-   * to null.
+   * therefore, setting this attribute to true results in having the guiseFaction attribute set to
+   * null.
    */
   public void setSpy(boolean bool) {
-    this.isSpy = bool;
+    isSpy = bool;
 
-    if(this.isSpy) {
-      this.setGuiseFaction(null);
+    if (isSpy) {
+      setGuiseFaction(null);
     }
   }
 
   /**
-   * Returns whether this unit only pretends to belong to its faction.  A unit cannot
-   * disguise itself as a different faction and at the same time be a spy of another faction.
-   *
+   * Returns whether this unit only pretends to belong to its faction. A unit cannot disguise itself
+   * as a different faction and at the same time be a spy of another faction.
+   * 
    * @return true if the unit is identified as spy
    */
   public boolean isSpy() {
-    return this.isSpy;
+    return isSpy;
   }
 
   /**
-   * If this unit is disguised and pretends to belong to a different faction this field holds
-   * that faction, else it is null.
+   * If this unit is disguised and pretends to belong to a different faction this field holds that
+   * faction, else it is null.
    */
   private Faction guiseFaction = null;
 
   /**
-   * Sets the faction this unit pretends to belong to. A unit cannot disguise itself as a
-   * different faction and at the same time be a spy of another faction, therefore, setting a
-   * value other than null results in having the spy attribute set to false.
-   *
-   * 
+   * Sets the faction this unit pretends to belong to. A unit cannot disguise itself as a different
+   * faction and at the same time be a spy of another faction, therefore, setting a value other than
+   * null results in having the spy attribute set to false.
    */
   public void setGuiseFaction(Faction f) {
-    this.guiseFaction = f;
+    guiseFaction = f;
 
-    if(f != null) {
-      this.setSpy(false);
+    if (f != null) {
+      setSpy(false);
     }
   }
 
   /**
    * Returns the faction this unit pretends to belong to. If the unit is not disguised null is
-   * returned. A unit cannot disguise itself as a
-   * different faction and at the same time be a spy of another faction.
-   *
-   * 
+   * returned. A unit cannot disguise itself as a different faction and at the same time be a spy of
+   * another faction.
    */
   public Faction getGuiseFaction() {
-    return this.guiseFaction;
+    return guiseFaction;
   }
 
   /**
    * Adds an item to the unit. If the unit already has an item of the same type, the item is
    * overwritten with the specified item object.
-   *
    * 
-   *
    * @return the specified item i.
    */
   public Item addItem(Item i) {
-    if(items == null) {
+    if (items == null) {
       items = new OrderedHashtable<StringID, Item>();
     }
 
@@ -534,21 +519,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the temp id this unit had before becoming a real unit.
-   *
-   * 
    */
   public void setTempID(UnitID id) {
-    this.tempID = id;
+    tempID = id;
   }
 
   /**
    * Returns the id the unit had when it was still a temp unit. This id is only set in the turn
    * after the unit turned from a temp unit into to a real unit.
-   *
+   * 
    * @return the temp id or null, if this unit was no temp unit in the previous turn.
    */
   public UnitID getTempID() {
-    return this.tempID;
+    return tempID;
   }
 
   /** The region this unit is currently in. */
@@ -557,27 +540,23 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Sets the region this unit is in. If this unit already has a different region set it removes
    * itself from the collection of units in that region.
-   *
-   * 
    */
   public void setRegion(Region r) {
-    if(r != getRegion()) {
-      if(this.region != null) {
-        this.region.removeUnit(this.getID());
+    if (r != getRegion()) {
+      if (region != null) {
+        region.removeUnit(getID());
       }
 
-      if(r != null) {
+      if (r != null) {
         r.addUnit(this);
       }
 
-      this.region = r;
+      region = r;
     }
   }
 
   /**
    * Returns the region this unit is staying in.
-   *
-   * 
    */
   public Region getRegion() {
     return region;
@@ -589,16 +568,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Sets the faction for this unit. If this unit already has a different faction set it removes
    * itself from the collection of units in that faction.
-   *
-   * 
    */
   public void setFaction(Faction faction) {
-    if(faction != getFaction()) {
-      if(this.faction != null) {
-        this.faction.removeUnit(this.getID());
+    if (faction != getFaction()) {
+      if (this.faction != null) {
+        this.faction.removeUnit(getID());
       }
 
-      if(faction != null) {
+      if (faction != null) {
         faction.addUnit(this);
       }
 
@@ -608,8 +585,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns the faction this unit belongs to.
-   *
-   * 
    */
   public Faction getFaction() {
     return faction;
@@ -621,25 +596,21 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Sets the building this unit is staying in. If the unit already is in another building this
    * method removes it from the unit collection of that building.
-   *
-   * 
    */
   public void setBuilding(Building building) {
-    if(this.building != null) {
-      this.building.removeUnit(this.getID());
+    if (this.building != null) {
+      this.building.removeUnit(getID());
     }
 
     this.building = building;
 
-    if(this.building != null) {
+    if (this.building != null) {
       this.building.addUnit(this);
     }
   }
 
   /**
    * Returns the building this unit is staying in.
-   *
-   * 
    */
   public Building getBuilding() {
     return building;
@@ -651,25 +622,21 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Sets the ship this unit is on. If the unit already is on another ship this method removes it
    * from the unit collection of that ship.
-   *
-   * 
    */
   public void setShip(Ship ship) {
-    if(this.ship != null) {
-      this.ship.removeUnit(this.getID());
+    if (this.ship != null) {
+      this.ship.removeUnit(getID());
     }
 
     this.ship = ship;
 
-    if(this.ship != null) {
+    if (this.ship != null) {
       this.ship.addUnit(this);
     }
   }
 
   /**
    * Returns the ship this unit is on.
-   *
-   * 
    */
   public Ship getShip() {
     return ship;
@@ -680,17 +647,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets an index indicating how instances of class are sorted in the report.
-   *
-   * 
    */
   public void setSortIndex(int index) {
-    this.sortIndex = index;
+    sortIndex = index;
   }
 
   /**
    * Returns an index indicating how instances of class are sorted in the report.
-   *
-   * 
    */
   public int getSortIndex() {
     return sortIndex;
@@ -701,49 +664,42 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the unit dependent prefix for the race name.
-   *
-   * 
    */
   public void setRaceNamePrefix(String prefix) {
-    this.raceNamePrefix = prefix;
+    raceNamePrefix = prefix;
   }
 
   /**
    * Returns the unit dependent prefix for the race name.
-   *
-   * 
    */
   public String getRaceNamePrefix() {
-    return this.raceNamePrefix;
+    return raceNamePrefix;
   }
 
   /**
-   * Returns the name of this unit's race including the prefixes of itself, its faction and group
-   * if it has such and those prefixes are set.
-   *
+   * Returns the name of this unit's race including the prefixes of itself, its faction and group if
+   * it has such and those prefixes are set.
+   * 
    * @param data The GameData
-   *
    * @return the name or null if this unit's race or its name is not set.
    */
   public String getRaceName(GameData data) {
     Race tempRace = getDisguiseRace();
-    if (tempRace==null)
+    if (tempRace == null) {
       tempRace = getRace();
-    if(tempRace != null) {
-      if(this.getRaceNamePrefix() != null) {
-        return data.getTranslation(this.getRaceNamePrefix()) +
-        tempRace.getName().toLowerCase();
-      } else {
-        if((this.group != null) && (this.group.getRaceNamePrefix() != null)) {
-          return data.getTranslation(this.group.getRaceNamePrefix()) +
-          tempRace.getName().toLowerCase();
-        } else {
-          if((this.faction != null) && (this.faction.getRaceNamePrefix() != null)) {
-            return data.getTranslation(this.faction.getRaceNamePrefix()) +
-            tempRace.getName().toLowerCase();
-          } else {
+    }
+    if (tempRace != null) {
+      if (getRaceNamePrefix() != null)
+        return data.getTranslation(getRaceNamePrefix()) + tempRace.getName().toLowerCase();
+      else {
+        if ((group != null) && (group.getRaceNamePrefix() != null))
+          return data.getTranslation(group.getRaceNamePrefix()) + tempRace.getName().toLowerCase();
+        else {
+          if ((faction != null) && (faction.getRaceNamePrefix() != null))
+            return data.getTranslation(faction.getRaceNamePrefix())
+                + tempRace.getName().toLowerCase();
+          else
             return tempRace.getName();
-          }
         }
       }
     }
@@ -752,42 +708,37 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * @return The String of the RealRace. If no RealRace is known( = null)
-   * the normal raceName is returned.
+   * @return The String of the RealRace. If no RealRace is known( = null) the normal raceName is
+   *         returned.
    */
-  public String getSimpleRealRaceName(){
-    if (this.realRace==null) {
+  public String getSimpleRealRaceName() {
+    if (realRace == null)
       return getSimpleRaceName();
-    } else {
-      return this.realRace.getName();
-    }
+    else
+      return realRace.getName();
   }
 
   /**
-   * Delivers the info "typ" from CR
-   * without any prefixes and translations
-   * used for displaying the according race icon
+   * Delivers the info "typ" from CR without any prefixes and translations used for displaying the
+   * according race icon
    * 
    * @return Name of the race
    */
-  public String getSimpleRaceName(){
-    return this.race.getName();
+  public String getSimpleRaceName() {
+    return race.getName();
   }
 
-
   /** A map containing all temp units created by this unit. */
-  private Map<ID,TempUnit> tempUnits = null;
+  private Map<ID, TempUnit> tempUnits = null;
 
   /** A collection view of the temp units. */
   private Collection<TempUnit> tempUnitCollection = null;
 
   /**
    * Returns the child temp units created by this unit's orders.
-   *
-   * 
    */
   public Collection<TempUnit> tempUnits() {
-    if(tempUnitCollection == null) {
+    if (tempUnitCollection == null) {
       if (tempUnits != null && tempUnits.values() != null) {
         tempUnitCollection = Collections.unmodifiableCollection(tempUnits.values());
       } else {
@@ -800,28 +751,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Return the child temp unit with the specified ID.
-   *
-   * 
-   *
-   * 
    */
   public Unit getTempUnit(ID key) {
-    if(tempUnits != null) {
+    if (tempUnits != null)
       return tempUnits.get(key);
-    }
 
     return null;
   }
 
   /**
    * Adds a temp unit to this unit.
-   *
-   * 
-   *
-   * 
    */
   private TempUnit addTemp(TempUnit u) {
-    if(tempUnits == null) {
+    if (tempUnits == null) {
       tempUnits = new Hashtable<ID, TempUnit>();
 
       // enforce the creation of a new collection view
@@ -835,18 +777,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Removes a temp unit from the list of child temp units created by this unit's orders.
-   *
-   * 
-   *
-   * 
    */
   private MagellanUnitImpl removeTemp(ID key) {
     MagellanUnitImpl ret = null;
 
-    if(tempUnits != null) {
+    if (tempUnits != null) {
       ret = (MagellanUnitImpl) tempUnits.remove(key);
 
-      if(tempUnits.isEmpty()) {
+      if (tempUnits.isEmpty()) {
         tempUnits = null;
       }
     }
@@ -859,29 +797,26 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * not perform clean-up like deleteTemp() does.
    */
   public void clearTemps() {
-    if(tempUnits != null) {
+    if (tempUnits != null) {
       tempUnits.clear();
       tempUnits = null;
     }
   }
 
   /**
-   * Returns all orders including the orders necessary to issue the creation of all the child
-   * temp units of this unit.
-   *
-   * 
+   * Returns all orders including the orders necessary to issue the creation of all the child temp
+   * units of this unit.
    */
   public List<String> getCompleteOrders() {
     return getCompleteOrders(false);
   }
 
   /**
-   * Returns all orders including the orders necessary to issue the creation of all the child
-   * temp units of this unit.
+   * Returns all orders including the orders necessary to issue the creation of all the child temp
+   * units of this unit.
    * 
-   * @param writeUnitTagsAsVorlageComment If this is <code>true</code>, unit tags are
-   *   also added as Vorlage comments
-   * 
+   * @param writeUnitTagsAsVorlageComment If this is <code>true</code>, unit tags are also added as
+   *          Vorlage comments
    */
   public List<String> getCompleteOrders(boolean writeUnitTagsAsVorlageComment) {
     final List<String> cmds = new LinkedList<String>();
@@ -889,10 +824,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       cmds.addAll(ordersObject.getOrders());
     }
 
-    if(writeUnitTagsAsVorlageComment && this.hasTags()) {
-      for(final Iterator<String> tagIter = this.getTagMap().keySet().iterator(); tagIter.hasNext(); ) {
-        final String tag = tagIter.next();
-        cmds.add("// #after 1 { #tag EINHEIT "+tag.replace(' ','~')+" '"+this.getTag(tag)+"' }");
+    if (writeUnitTagsAsVorlageComment && hasTags()) {
+      for (String tag : getTagMap().keySet()) {
+        cmds
+            .add("// #after 1 { #tag EINHEIT " + tag.replace(' ', '~') + " '" + getTag(tag) + "' }");
       }
     }
 
@@ -903,28 +838,24 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns the orders necessary to issue the creation of all the child temp units of this unit.
-   *
-   * 
    */
   protected List<String> getTempOrders(boolean writeUnitTagsAsVorlageComment) {
     final List<String> cmds = new LinkedList<String>();
 
-    for(final Iterator<TempUnit> iter = tempUnits().iterator(); iter.hasNext();) {
-      final TempUnit u = iter.next();
-      cmds.add(Resources.getOrderTranslation(EresseaConstants.O_MAKE) + " " +
-          Resources.getOrderTranslation(EresseaConstants.O_TEMP) + " " + u.getID().toString());
+    for (TempUnit u : tempUnits()) {
+      cmds.add(Resources.getOrderTranslation(EresseaConstants.O_MAKE) + " "
+          + Resources.getOrderTranslation(EresseaConstants.O_TEMP) + " " + u.getID().toString());
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
-      if(u.isOrdersConfirmed()) {
+      if (u.isOrdersConfirmed()) {
         cmds.add(MagellanUnitImpl.CONFIRMEDTEMPCOMMENT);
       }
 
-      if(u.hasTags()) {
+      if (u.hasTags()) {
         final Map<String, String> tempUnitTags = u.getTagMap();
-        for(final Iterator<String> tagIter=u.getTagMap().keySet().iterator(); tagIter.hasNext(); ) {
-          final String tag = tagIter.next();
+        for (String tag : u.getTagMap().keySet()) {
           final String value = tempUnitTags.get(tag);
-          cmds.add(MagellanUnitImpl.TAG_PREFIX_TEMP+tag+" "+value.replace(' ','~'));
+          cmds.add(MagellanUnitImpl.TAG_PREFIX_TEMP + tag + " " + value.replace(' ', '~'));
         }
       }
 
@@ -935,61 +866,58 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Creates a new temp unit with this unit as the parent. The temp unit is fully initialised,
-   * i.e. it is added to the region units collection in the specified game data,it inherits the
-   * faction, building or ship, region, faction stealth status, group, race and combat status
-   * settings and adds itself to the corresponding unit collections.
-   *
+   * Creates a new temp unit with this unit as the parent. The temp unit is fully initialised, i.e.
+   * it is added to the region units collection in the specified game data,it inherits the faction,
+   * building or ship, region, faction stealth status, group, race and combat status settings and
+   * adds itself to the corresponding unit collections.
    * 
-   *
-   * 
-   *
    * @throws IllegalArgumentException If <code>key</code> is negative
    */
   public TempUnit createTemp(UnitID key) {
-    if((key).intValue() >= 0) {
-      throw new IllegalArgumentException("Unit.createTemp(): cannot create temp unit with non-negative ID.");
-    }
+    if ((key).intValue() >= 0)
+      throw new IllegalArgumentException(
+          "Unit.createTemp(): cannot create temp unit with non-negative ID.");
 
     final TempUnit t = MagellanFactory.createTempUnit(key, this);
-    this.addTemp(t);
+    addTemp(t);
     t.setPersons(0);
-    t.setHideFaction(this.hideFaction);
-    t.setCombatStatus(this.combatStatus);
+    t.setHideFaction(hideFaction);
+    t.setCombatStatus(combatStatus);
     t.setOrdersConfirmed(false);
 
-    if(this.race != null) {
-      t.setRace(this.race);
+    if (race != null) {
+      t.setRace(race);
     }
 
-    if(this.realRace != null) {
-      t.setRealRace(this.realRace);
+    if (realRace != null) {
+      t.setRealRace(realRace);
     }
 
-    if(this.getRegion() != null) {
-      t.setRegion(this.getRegion());
+    if (getRegion() != null) {
+      t.setRegion(getRegion());
     }
 
-    if(this.getShip() != null) {
-      t.setShip(this.getShip());
-    } else if(this.getBuilding() != null) {
-      t.setBuilding(this.getBuilding());
+    if (getShip() != null) {
+      t.setShip(getShip());
+    } else if (getBuilding() != null) {
+      t.setBuilding(getBuilding());
     }
 
-    if(this.getFaction() != null) {
-      t.setFaction(this.getFaction());
+    if (getFaction() != null) {
+      t.setFaction(getFaction());
     }
 
-    if(this.group != null) {
-      t.setGroup(this.group);
+    if (group != null) {
+      t.setGroup(group);
     }
 
     // add to tempunits in gamedata
-    if((this.getRegion() != null) && (this.getRegion().getData() != null)) {
+    if ((getRegion() != null) && (getRegion().getData() != null)) {
       // FIXME unit shouldn't access getData()
-      this.getRegion().getData().tempUnits().put(t.getID(), t);
+      getRegion().getData().tempUnits().put(t.getID(), t);
     } else {
-      MagellanUnitImpl.log.warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
+      MagellanUnitImpl.log
+          .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
     }
 
     return t;
@@ -997,14 +925,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Removes a temp unit with this unit as the parent completely from the game data.
-   *
-   * 
-   * 
    */
   public void deleteTemp(ID key, GameData data) {
-    final TempUnit t = (TempUnit) this.removeTemp(key);
+    final TempUnit t = (TempUnit) removeTemp(key);
 
-    if(t != null) {
+    if (t != null) {
       t.clearOrders();
       t.refreshRelations();
 
@@ -1019,15 +944,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
       t.clearCache();
 
-
       t.setParent(null);
       data.tempUnits().remove(key);
 
       // enforce refreshing of unit relations in the whole region
-      if(this.getRegion() != null) {
-        this.getRegion().refreshUnitRelations(true);
+      if (getRegion() != null) {
+        getRegion().refreshUnitRelations(true);
       }
-
 
     }
   }
@@ -1036,7 +959,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Resets the cache of this unit to its uninitalized state.
    */
   private void invalidateCache() {
-    if(hasCache()) {
+    if (hasCache()) {
       final Cache cache1 = getCache();
       cache1.modifiedName = null;
       cache1.modifiedSkills = null;
@@ -1056,7 +979,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   @Override
   public String getModifiedName() {
     final Cache cache1 = getCache();
-    if(cache1.modifiedName == null) {
+    if (cache1.modifiedName == null) {
       cache1.modifiedName = super.getModifiedName();
     }
     return cache1.modifiedName != null ? cache1.modifiedName : getName();
@@ -1064,16 +987,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns a Collection over the relations this unit has to other units. The iterator returns
-   * <tt>UnitRelation</tt> objects. An empty iterator is returned if the relations have not been
-   * set up so far or if there are no relations. To have the relations to other units properly
-   * set up the refreshRelations() method has to be invoked.
-   *
-   * 
+   * <tt>UnitRelation</tt> objects. An empty iterator is returned if the relations have not been set
+   * up so far or if there are no relations. To have the relations to other units properly set up
+   * the refreshRelations() method has to be invoked.
    */
   @Override
   protected Collection<UnitRelation> getRelations() {
     final Cache cache1 = getCache();
-    if(cache1.relations == null) {
+    if (cache1.relations == null) {
       cache1.relations = new ArrayList<UnitRelation>();
     }
     return cache1.relations;
@@ -1094,7 +1015,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   @Override
   public UnitRelation removeRelation(UnitRelation rel) {
     final UnitRelation ret = super.removeRelation(rel);
-    if(ret != null) {
+    if (ret != null) {
       invalidateCache();
     }
     return ret;
@@ -1102,17 +1023,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * deliver all directly related units
-   *
-   * 
    */
   public void getRelatedUnits(Collection<Unit> units) {
     units.add(this);
 
-    for(final Iterator<InterUnitRelation> iter = this.getRelations(InterUnitRelation.class).iterator(); iter.hasNext();) {
-      final InterUnitRelation iur = iter.next();
+    for (InterUnitRelation iur : this.getRelations(InterUnitRelation.class)) {
       units.add(iur.source);
 
-      if(iur.target != null) {
+      if (iur.target != null) {
         units.add(iur.target);
       }
     }
@@ -1121,30 +1039,28 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Recursively retrieves all units that are related to this unit via one of the specified
    * relations (excatly, not as subclasses).
-   *
+   * 
    * @param units all units gathered so far to prevent loops.
-   * @param relations a set of classes naming the types of relations that are eligible for
-   * 		  regarding a unit as related to some other unit.
+   * @param relations a set of classes naming the types of relations that are eligible for regarding
+   *          a unit as related to some other unit.
    */
   public void getRelatedUnits(Set<Unit> units, Set<UnitRelation.ID> relations) {
     units.add(this);
 
-    for(final Iterator<UnitRelation> iter = this.getRelations().iterator(); iter.hasNext();) {
-      final UnitRelation rel = iter.next();
-
-      if(relations.contains(UnitRelation.getClassID(rel.getClass()))) {
+    for (UnitRelation rel : this.getRelations()) {
+      if (relations.contains(UnitRelation.getClassID(rel.getClass()))) {
         final Unit src = rel.source;
         Unit target = null;
 
-        if(rel instanceof InterUnitRelation) {
+        if (rel instanceof InterUnitRelation) {
           target = ((InterUnitRelation) rel).target;
         }
 
-        if(units.add(src)) {
+        if (units.add(src)) {
           src.getRelatedUnits(units, relations);
         }
 
-        if(units.add(target) && target!=null) {
+        if (units.add(target) && target != null) {
           target.getRelatedUnits(units, relations);
         }
       }
@@ -1158,19 +1074,16 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @return A list of coordinates, empty list means no movement
    */
   public List<CoordinateID> getModifiedMovement() {
-    if(this.ordersAreNull()) {
+    if (ordersAreNull())
       return Collections.emptyList();
-    }
 
     final List<MovementRelation> movementRelations = getRelations(MovementRelation.class);
 
-    if(movementRelations.isEmpty()) {
+    if (movementRelations.isEmpty())
       return Collections.emptyList();
-    }
 
     return Collections.unmodifiableList((movementRelations.iterator().next()).movement);
   }
-
 
   /**
    * @see magellan.library.Unit#getModifiedShip()
@@ -1194,12 +1107,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public Skill getModifiedSkill(SkillType type) {
     Skill s = null;
 
-    if(!hasCache() || (getCache().modifiedSkills == null)) {
+    if (!hasCache() || (getCache().modifiedSkills == null)) {
       // the cache is invalid, refresh
       refreshModifiedSkills();
     }
 
-    if(hasCache() && (getCache().modifiedSkills != null)) {
+    if (hasCache() && (getCache().modifiedSkills != null)) {
       s = getCache().modifiedSkills.get(type.getID());
     }
 
@@ -1207,32 +1120,29 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Returns the skills of this unit as they would appear after the orders for person transfers
-   * are processed.
-   *
-   * 
+   * Returns the skills of this unit as they would appear after the orders for person transfers are
+   * processed.
    */
   public Collection<Skill> getModifiedSkills() {
     final Cache cache1 = getCache();
-    if(!hasCache() || (cache1.modifiedSkills == null)) {
+    if (!hasCache() || (cache1.modifiedSkills == null)) {
       refreshModifiedSkills();
     }
 
-    if(hasCache() && (cache1.modifiedSkills != null)) {
-      if (cache1.modifiedSkills.values() != null) {
+    if (hasCache() && (cache1.modifiedSkills != null)) {
+      if (cache1.modifiedSkills.values() != null)
         return Collections.unmodifiableCollection(cache1.modifiedSkills.values());
-      } else {
+      else
         return Collections.emptyList();
-      }
     }
 
     return Collections.emptyList();
   }
 
   /**
-   * Updates the cache with the skills of this unit as they would appear after the orders for
-   * person transfers are processed. If the cache object or the modified skills field is still
-   * null after invoking this function, the skill modifications cannot be determined accurately.
+   * Updates the cache with the skills of this unit as they would appear after the orders for person
+   * transfers are processed. If the cache object or the modified skills field is still null after
+   * invoking this function, the skill modifications cannot be determined accurately.
    */
   private synchronized void refreshModifiedSkills() {
     final Cache cache1 = getCache();
@@ -1243,14 +1153,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     // you don't want to clear THAT
     // that also means that this should be the only place where
     // cache.modifiedSkills is modified
-    if((cache1.modifiedSkills != null) && (cache1.modifiedSkills != this.skills)) {
+    if ((cache1.modifiedSkills != null) && (cache1.modifiedSkills != skills)) {
       cache1.modifiedSkills.clear();
     }
 
     // if there are no relations, cache.modfiedSkills can point
     // directly to the skills and we can bail out
-    if(getRelations().isEmpty()) {
-      cache1.modifiedSkills = this.skills;
+    if (getRelations().isEmpty()) {
+      cache1.modifiedSkills = skills;
 
       return;
     }
@@ -1259,19 +1169,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     final Set<Unit> relatedUnits = new HashSet<Unit>();
     final Set<UnitRelation.ID> relationTypes = new HashSet<UnitRelation.ID>();
     relationTypes.add(UnitRelation.getClassID(PersonTransferRelation.class));
-    relationTypes.add(RecruitmentRelation.getClassID(RecruitmentRelation.class));
+    relationTypes.add(UnitRelation.getClassID(RecruitmentRelation.class));
     this.getRelatedUnits(relatedUnits, relationTypes);
 
     /* sort related units according to report order */
     final List<Unit> sortedUnits = new LinkedList<Unit>(relatedUnits);
-    Collections.sort(sortedUnits,
-        new LinearUnitTempUnitComparator(new SortIndexComparator<Unit>(null)));
+    Collections.sort(sortedUnits, new LinearUnitTempUnitComparator(new SortIndexComparator<Unit>(
+        null)));
 
     /* clone units with all aspects relevant for skills */
-    final Map<ID,MagellanUnitImpl> clones = new Hashtable<ID, MagellanUnitImpl>();
+    final Map<ID, MagellanUnitImpl> clones = new Hashtable<ID, MagellanUnitImpl>();
 
-    for(final Iterator<Unit> iter = relatedUnits.iterator(); iter.hasNext();) {
-      final MagellanUnitImpl u = (MagellanUnitImpl) iter.next();
+    for (Unit unit : relatedUnits) {
+      final MagellanUnitImpl u = (MagellanUnitImpl) unit;
       MagellanUnitImpl clone = null;
 
       try {
@@ -1283,13 +1193,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
         clone.isStarving = u.isStarving;
         clone.isHero = u.isHero;
 
-        for(final Iterator<Skill> skillIter = u.getSkills().iterator(); skillIter.hasNext();) {
-          final Skill s = skillIter.next();
-          clone.addSkill(new Skill(s.getSkillType(), s.getPoints(), s.getLevel(),
-              clone.persons, s.noSkillPoints()));
+        for (Skill s : u.getSkills()) {
+          clone.addSkill(new Skill(s.getSkillType(), s.getPoints(), s.getLevel(), clone.persons, s
+              .noSkillPoints()));
         }
         clones.put(clone.getID(), clone);
-      } catch(final CloneNotSupportedException e) {
+      } catch (final CloneNotSupportedException e) {
         // won't fail
       }
 
@@ -1297,19 +1206,18 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
     // now modify the skills according to changes introduced by the relations
 
-    /* indicates that a skill is lost through person transfers or
-		 recruiting. May not be Integer.MIN_VALUE to avoid wrap-
-		 around effects but should also be fairly negative so no
-		 modifier can push it up to positive values.*/
+    /*
+     * indicates that a skill is lost through person transfers or recruiting. May not be
+     * Integer.MIN_VALUE to avoid wrap- around effects but should also be fairly negative so no
+     * modifier can push it up to positive values.
+     */
     final int lostSkillLevel = (Integer.MIN_VALUE / 2);
 
-    for(final Iterator<Unit> unitIter = sortedUnits.iterator(); unitIter.hasNext();) {
-      final MagellanUnitImpl srcUnit = (MagellanUnitImpl) unitIter.next();
+    for (Unit unit : sortedUnits) {
+      final MagellanUnitImpl srcUnit = (MagellanUnitImpl) unit;
 
-      for(final Iterator<UnitRelation> relationIter = srcUnit.getRelations().iterator(); relationIter.hasNext();) {
-        final UnitRelation unitRel = relationIter.next();
-
-        if(!(unitRel.source.equals(srcUnit)) || !(unitRel instanceof PersonTransferRelation)) {
+      for (UnitRelation unitRel : srcUnit.getRelations()) {
+        if (!(unitRel.source.equals(srcUnit)) || !(unitRel instanceof PersonTransferRelation)) {
           continue;
         }
 
@@ -1319,104 +1227,107 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
         final Unit targetClone = clones.get(targetUnit.getID());
         final int transferredPersons = Math.max(0, Math.min(srcClone.getPersons(), rel.amount));
 
-        if(transferredPersons == 0) {
+        if (transferredPersons == 0) {
           continue;
         }
 
         /* modify the target clone */
-        /* first modify all skills that are available in the
-				 target clone */
-        for(final Iterator<Skill> targetSkills = targetClone.getSkills().iterator(); targetSkills.hasNext();) {
-          final Skill targetSkill = targetSkills.next();
+        /*
+         * first modify all skills that are available in the target clone
+         */
+        for (Skill targetSkill : targetClone.getSkills()) {
           Skill srcSkill = srcClone.getSkill(targetSkill.getSkillType());
           final int skillModifier = targetSkill.getModifier(targetClone);
 
-          if(srcSkill == null) {
-            /* skill exists only in the target clone, this
-						 is equivalent to a target skill at 0.
-						 Level is set to lostSkillLevel to avoid
-						 confusion about level modifiers in case of
-						 noSkillPoints. If skill points are relevant
-						 this value is ignored anyway. */
-            srcSkill = new Skill(targetSkill.getSkillType(), 0, lostSkillLevel,
-                srcClone.getPersons(), targetSkill.noSkillPoints());
+          if (srcSkill == null) {
+            /*
+             * skill exists only in the target clone, this is equivalent to a target skill at 0.
+             * Level is set to lostSkillLevel to avoid confusion about level modifiers in case of
+             * noSkillPoints. If skill points are relevant this value is ignored anyway.
+             */
+            srcSkill =
+                new Skill(targetSkill.getSkillType(), 0, lostSkillLevel, srcClone.getPersons(),
+                    targetSkill.noSkillPoints());
           }
 
-          if(targetSkill.noSkillPoints()) {
-            /* Math.max(0, ...) guarantees that the true
-						 skill level cannot drop below 0. This also
-						 important to handle the Integer.MIN_VALUE
-						 case below */
-            final int transferredSkillFactor = Math.max(0, srcSkill.getLevel() -
-                skillModifier) * transferredPersons;
-            final int targetSkillFactor = Math.max(0, targetSkill.getLevel() - skillModifier) * targetClone.getPersons();
-            final int newSkillLevel = (int) (((float) (transferredSkillFactor +
-                targetSkillFactor)) / (float) (transferredPersons +
-                    targetClone.getPersons()));
+          if (targetSkill.noSkillPoints()) {
+            /*
+             * Math.max(0, ...) guarantees that the true skill level cannot drop below 0. This also
+             * important to handle the Integer.MIN_VALUE case below
+             */
+            final int transferredSkillFactor =
+                Math.max(0, srcSkill.getLevel() - skillModifier) * transferredPersons;
+            final int targetSkillFactor =
+                Math.max(0, targetSkill.getLevel() - skillModifier) * targetClone.getPersons();
+            final int newSkillLevel =
+                (int) (((float) (transferredSkillFactor + targetSkillFactor)) / (float) (transferredPersons + targetClone
+                    .getPersons()));
 
-            /* newSkillLevel == 0 means that that the skill
-						 is lost by this transfer but we may not set
-						 the skill level to 0 + skillModifier since
-						 this would indicate an existing skill
-						 depending on the modifier. Thus
-						 lostSkillLevel is used to distinctly
-						 mark the staleness of this skill. */
+            /*
+             * newSkillLevel == 0 means that that the skill is lost by this transfer but we may not
+             * set the skill level to 0 + skillModifier since this would indicate an existing skill
+             * depending on the modifier. Thus lostSkillLevel is used to distinctly mark the
+             * staleness of this skill.
+             */
             targetSkill.setLevel((newSkillLevel > 0) ? (newSkillLevel + skillModifier)
                 : lostSkillLevel);
           } else {
-            targetSkill.setPoints(targetSkill.getPoints() +
-                (int) (( srcSkill.getPoints() *  transferredPersons) / (float) srcClone.getPersons()));
+            targetSkill.setPoints(targetSkill.getPoints()
+                + (int) ((srcSkill.getPoints() * transferredPersons) / (float) srcClone
+                    .getPersons()));
           }
         }
 
-        /* now modify the skills that only exist in the source
-				 clone */
-        for(final Iterator<Skill> srcCloneSkills = srcClone.getSkills().iterator(); srcCloneSkills.hasNext();) {
-          final Skill srcSkill = srcCloneSkills.next();
+        /*
+         * now modify the skills that only exist in the source clone
+         */
+        for (Skill srcSkill : srcClone.getSkills()) {
           Skill targetSkill = targetClone.getSkill(srcSkill.getSkillType());
 
-          if(targetSkill == null) {
-            /* skill exists only in the source clone, this
-						 is equivalent to a source skill at 0.
-						 Level is set to lostSkillLevel to avoid
-						 confusion about level modifiers in case of
-						 noSkillPoints. If skill points are relevant
-						 this value is ignored anyway. */
-            targetSkill = new Skill(srcSkill.getSkillType(), 0, lostSkillLevel,
-                targetClone.getPersons(), srcSkill.noSkillPoints());
+          if (targetSkill == null) {
+            /*
+             * skill exists only in the source clone, this is equivalent to a source skill at 0.
+             * Level is set to lostSkillLevel to avoid confusion about level modifiers in case of
+             * noSkillPoints. If skill points are relevant this value is ignored anyway.
+             */
+            targetSkill =
+                new Skill(srcSkill.getSkillType(), 0, lostSkillLevel, targetClone.getPersons(),
+                    srcSkill.noSkillPoints());
             targetClone.addSkill(targetSkill);
 
-            if(srcSkill.noSkillPoints()) {
-              /* Math.max(0, ...) guarantees that the true
-							 skill level cannot drop below 0. This also
-							 important to handle the lostSkillLevel
-							 case below */
+            if (srcSkill.noSkillPoints()) {
+              /*
+               * Math.max(0, ...) guarantees that the true skill level cannot drop below 0. This
+               * also important to handle the lostSkillLevel case below
+               */
               final int skillModifier = srcSkill.getModifier(srcClone);
-              final int transferredSkillFactor = Math.max(0,
-                  srcSkill.getLevel() -
-                  skillModifier) * transferredPersons;
-              final int newSkillLevel = (int) (((float) transferredSkillFactor) / (float) (transferredPersons +
-                  targetClone.getPersons()));
+              final int transferredSkillFactor =
+                  Math.max(0, srcSkill.getLevel() - skillModifier) * transferredPersons;
+              final int newSkillLevel =
+                  (int) (((float) transferredSkillFactor) / (float) (transferredPersons + targetClone
+                      .getPersons()));
 
-              /* newSkillLevel == 0 means that that the skill
-							 is lost by this transfer but we may not set
-							 the skill level to 0 + skillModifier since
-							 this would indicate an existing skill
-							 depending on the modifier. Thus
-							 lostSkillLevel is used to distinctly
-							 mark the staleness of this skill. */
-              targetSkill.setLevel((newSkillLevel > 0)
-                  ? (newSkillLevel + skillModifier) : lostSkillLevel);
+              /*
+               * newSkillLevel == 0 means that that the skill is lost by this transfer but we may
+               * not set the skill level to 0 + skillModifier since this would indicate an existing
+               * skill depending on the modifier. Thus lostSkillLevel is used to distinctly mark the
+               * staleness of this skill.
+               */
+              targetSkill.setLevel((newSkillLevel > 0) ? (newSkillLevel + skillModifier)
+                  : lostSkillLevel);
             } else {
-              final int newSkillPoints = (int) (srcSkill.getPoints() * ( transferredPersons / (float) srcClone.getPersons()));
+              final int newSkillPoints =
+                  (int) (srcSkill.getPoints() * (transferredPersons / (float) srcClone.getPersons()));
               targetSkill.setPoints(newSkillPoints);
             }
           }
 
-          /* modify the skills in the source clone (no extra
-					 loop for this) */
-          if(!srcSkill.noSkillPoints()) {
-            final int transferredSkillPoints = (int) ((srcSkill.getPoints() * transferredPersons) / (float) srcClone.getPersons());
+          /*
+           * modify the skills in the source clone (no extra loop for this)
+           */
+          if (!srcSkill.noSkillPoints()) {
+            final int transferredSkillPoints =
+                (int) ((srcSkill.getPoints() * transferredPersons) / (float) srcClone.getPersons());
             srcSkill.setPoints(srcSkill.getPoints() - transferredSkillPoints);
           }
         }
@@ -1427,34 +1338,35 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     }
 
     /* modify the skills according to recruitment */
-    final MagellanUnitImpl clone = clones.get(this.getID());
+    final MagellanUnitImpl clone = clones.get(getID());
 
     /* update the person and level information in all clone skills */
-    if(clone.getSkills().size() > 0) {
+    if (clone.getSkills().size() > 0) {
       cache1.modifiedSkills = new Hashtable<StringID, Skill>();
 
-      for(final Iterator<Skill> cloneSkills = clone.getSkills().iterator(); cloneSkills.hasNext();) {
-        final Skill skill = cloneSkills.next();
+      for (Skill skill : clone.getSkills()) {
         skill.setPersons(clone.persons);
 
-        /* When skill points are relevant, all we did up to
-				 now, was to keep track of these while the skill
-				 level was ignored - update it now */
-        if(!skill.noSkillPoints()) {
+        /*
+         * When skill points are relevant, all we did up to now, was to keep track of these while
+         * the skill level was ignored - update it now
+         */
+        if (!skill.noSkillPoints()) {
           skill.setLevel(skill.getLevel(clone, false));
         } else {
-          /* If skill points are not relevant we always
-					 take skill modifiers into account but we marked
-					 'lost' skills by Integer.MIN_VALUE which has to
-					 be fixed here */
-          if(skill.getLevel() == lostSkillLevel) {
+          /*
+           * If skill points are not relevant we always take skill modifiers into account but we
+           * marked 'lost' skills by Integer.MIN_VALUE which has to be fixed here
+           */
+          if (skill.getLevel() == lostSkillLevel) {
             skill.setLevel(0);
           }
         }
 
-        /* inject clone skills into real unit (no extra loop for
-				 this */
-        if((skill.getPoints() > 0) || (skill.getLevel() > 0)) {
+        /*
+         * inject clone skills into real unit (no extra loop for this
+         */
+        if ((skill.getPoints() > 0) || (skill.getLevel() > 0)) {
           cache1.modifiedSkills.put(skill.getSkillType().getID(), skill);
         }
       }
@@ -1463,37 +1375,28 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns the unit container this belongs to. (ship, building or null)
-   *
-   * 
    */
   public UnitContainer getUnitContainer() {
-    if(getShip() != null) {
+    if (getShip() != null)
       return getShip();
-    }
-    if(getBuilding() != null) {
+    if (getBuilding() != null)
       return getBuilding();
-    }
     return null;
   }
 
   /**
    * Returns the modified unit container this unit belongs to. (ship, building or null)
-   *
-   * 
    */
   public UnitContainer getModifiedUnitContainer() {
-    for(final Iterator<UnitContainerRelation> iter = getRelations(UnitContainerRelation.class).iterator(); iter.hasNext();) {
-      final UnitContainerRelation ucr = iter.next();
-
-      if(ucr instanceof EnterRelation) {
+    for (UnitContainerRelation ucr : getRelations(UnitContainerRelation.class)) {
+      if (ucr instanceof EnterRelation)
         // fast return: first EnterRelation wins
         return ucr.target;
-        // } else if(ucr instanceof LeaveRelation && ucr.target.equals(getShip())) {
-      } else if(ucr instanceof LeaveRelation && ucr.target.equals(getUnitContainer())) {
+      // } else if(ucr instanceof LeaveRelation && ucr.target.equals(getShip())) {
+      else if (ucr instanceof LeaveRelation && ucr.target.equals(getUnitContainer()))
         // fast return: first LeaveRelation wins
         // we only left our container
         return null;
-      }
     }
 
     // we stayed in our ship
@@ -1502,25 +1405,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns the skill of the specified type if the unit has such a skill, else null is returned.
-   *
-   * 
-   *
-   * 
    */
   public Skill getSkill(SkillType type) {
     return (skills != null) ? (Skill) skills.get(type.getID()) : null;
   }
 
   /**
-   * Adds a skill to unit's collection of skills. If the unit already has a skill of the same
-   * type it is overwritten with the the new skill object.
-   *
+   * Adds a skill to unit's collection of skills. If the unit already has a skill of the same type
+   * it is overwritten with the the new skill object.
    * 
-   *
    * @return the specified skill s.
    */
   public Skill addSkill(Skill s) {
-    if(skills == null) {
+    if (skills == null) {
       skills = new OrderedHashtable<StringID, Skill>(11);
     }
 
@@ -1531,15 +1428,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns all skills this unit has.
-   *
+   * 
    * @return a collection of Skill objects.
    */
   public Collection<Skill> getSkills() {
-    if (this.skills != null && this.skills.values() != null) {
-      return Collections.unmodifiableCollection(this.skills.values());
-    } else {
+    if (skills != null && skills.values() != null)
+      return Collections.unmodifiableCollection(skills.values());
+    else
       return Collections.emptyList();
-    }
   }
 
   public boolean isSkillsCopied() {
@@ -1555,11 +1451,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public void clearSkills() {
     final Cache cache1 = getCache();
-    if(skills != null) {
+    if (skills != null) {
       skills.clear();
       skills = null;
 
-      if(hasCache() && (cache1.modifiedSkills != null)) {
+      if (hasCache() && (cache1.modifiedSkills != null)) {
         cache1.modifiedSkills.clear();
         cache1.modifiedSkills = null;
       }
@@ -1568,22 +1464,21 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns all the items this unit possesses.
-   *
+   * 
    * @return a collection of Item objects.
    */
   public Collection<Item> getItems() {
-    if (this.items != null && this.items.values() != null) {
-      return Collections.unmodifiableCollection(this.items.values());
-    } else {
+    if (items != null && items.values() != null)
+      return Collections.unmodifiableCollection(items.values());
+    else
       return Collections.emptyList();
-    }
   }
 
-  public void setItems(Map<StringID,Item> items) {
+  public void setItems(Map<StringID, Item> items) {
     this.items = items;
   }
 
-  public Map<StringID,Item> getItemMap() {
+  public Map<StringID, Item> getItemMap() {
     return items;
   }
 
@@ -1591,7 +1486,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Removes all items from this unit.
    */
   public void clearItems() {
-    if(items != null) {
+    if (items != null) {
       items.clear();
       items = null;
       invalidateCache();
@@ -1600,23 +1495,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns the item of the specified type as it would appear after the orders of this unit have
-   * been processed, i.e. the amount of the item might be modified by transfer orders. If the
-   * unit does not have an item of the specified type nor is given one by some other unit, null
-   * is returned.
-   *
-   * 
-   *
-   * 
+   * been processed, i.e. the amount of the item might be modified by transfer orders. If the unit
+   * does not have an item of the specified type nor is given one by some other unit, null is
+   * returned.
    */
   public Item getModifiedItem(ItemType type) {
     Item i = null;
 
     final Cache cache1 = getCache();
-    if(!hasCache() || (cache1.modifiedItems == null)) {
+    if (!hasCache() || (cache1.modifiedItems == null)) {
       refreshModifiedItems();
     }
 
-    if(hasCache() && (cache1.modifiedItems != null)) {
+    if (hasCache() && (cache1.modifiedItems != null)) {
       i = cache1.modifiedItems.get(type.getID());
     }
 
@@ -1632,10 +1523,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public Collection<ReserveRelation> getItemReserveRelations(ItemType itemType) {
     final List<ReserveRelation> ret = new ArrayList<ReserveRelation>(getRelations().size());
 
-    for(final Iterator<ReserveRelation> iter = getRelations(ReserveRelation.class).iterator(); iter.hasNext();) {
-      final ReserveRelation rel = iter.next();
-
-      if(rel.itemType.equals(itemType)) {
+    for (ReserveRelation rel : getRelations(ReserveRelation.class)) {
+      if (rel.itemType.equals(itemType)) {
         ret.add(rel);
       }
     }
@@ -1645,18 +1534,15 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns a collection of the itemrelations concerning the given Item.
-   *
    * 
-   *
    * @return a collection of ItemTransferRelation objects.
    */
   public List<ItemTransferRelation> getItemTransferRelations(ItemType type) {
-    final List<ItemTransferRelation> ret = new ArrayList<ItemTransferRelation>(getRelations().size());
+    final List<ItemTransferRelation> ret =
+        new ArrayList<ItemTransferRelation>(getRelations().size());
 
-    for(final Iterator<ItemTransferRelation> iter = getRelations(ItemTransferRelation.class).iterator(); iter.hasNext();) {
-      final ItemTransferRelation rel = iter.next();
-
-      if(rel.itemType.equals(type)) {
+    for (ItemTransferRelation rel : getRelations(ItemTransferRelation.class)) {
+      if (rel.itemType.equals(type)) {
         ret.add(rel);
       }
     }
@@ -1666,13 +1552,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns a collection of the personrelations associated with this unit
-   *
+   * 
    * @return a collection of PersonTransferRelation objects.
    */
   public List<PersonTransferRelation> getPersonTransferRelations() {
     final List<PersonTransferRelation> ret = getRelations(PersonTransferRelation.class);
 
-    if(MagellanUnitImpl.log.isDebugEnabled()) {
+    if (MagellanUnitImpl.log.isDebugEnabled()) {
       MagellanUnitImpl.log.debug("Unit.getPersonTransferRelations for " + this);
       MagellanUnitImpl.log.debug(ret);
     }
@@ -1683,20 +1569,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Returns the items of this unit as they would appear after the orders of this unit have been
    * processed.
-   *
+   * 
    * @return a collection of Item objects.
    */
   public Collection<Item> getModifiedItems() {
     final Cache cache1 = getCache();
-    if(!hasCache() || (cache1.modifiedItems == null)) {
+    if (!hasCache() || (cache1.modifiedItems == null)) {
       refreshModifiedItems();
     }
 
-    if (cache1.modifiedItems != null && cache1.modifiedItems.values() != null) {
+    if (cache1.modifiedItems != null && cache1.modifiedItems.values() != null)
       return Collections.unmodifiableCollection(cache1.modifiedItems.values());
-    } else {
+    else
       return Collections.emptyList();
-    }
   }
 
   /**
@@ -1706,40 +1591,34 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   private synchronized void refreshModifiedItems() {
     final Cache cache1 = getCache();
     // 0. clear existing data structures
-    if(hasCache() && (cache1.modifiedItems != null)) {
+    if (hasCache() && (cache1.modifiedItems != null)) {
       cache1.modifiedItems.clear();
     }
 
-
-    if(cache1.modifiedItems == null) {
-      cache1.modifiedItems = new Hashtable<StringID, Item>(getItems().size()+1);
+    if (cache1.modifiedItems == null) {
+      cache1.modifiedItems = new Hashtable<StringID, Item>(getItems().size() + 1);
     }
 
     // 1. check whether there is anything to do at all
-    if(((items == null) || (items.size() == 0)) && getRelations().isEmpty()) {
+    if (((items == null) || (items.size() == 0)) && getRelations().isEmpty())
       return;
-    }
 
     // 2. clone items
-    for(final Iterator<Item> iter = getItems().iterator(); iter.hasNext();) {
-      final Item i = iter.next();
-      cache1.modifiedItems.put(i.getItemType().getID(),
-          new Item(i.getItemType(), i.getAmount()));
+    for (Item i : getItems()) {
+      cache1.modifiedItems.put(i.getItemType().getID(), new Item(i.getItemType(), i.getAmount()));
     }
 
     // 3a. now check relations for possible modifications; RESERVE orders first
-    for(final Iterator<UnitRelation> iter = getRelations().iterator(); iter.hasNext();) {
-      final UnitRelation rel = iter.next();
-
-      if(rel instanceof ReserveRelation) {
+    for (UnitRelation rel : getRelations()) {
+      if (rel instanceof ReserveRelation) {
         final ReserveRelation itr = (ReserveRelation) rel;
         Item modifiedItem = cache1.modifiedItems.get(itr.itemType.getID());
 
-        if(modifiedItem != null) { // the transferred item can be found among this unit's items
+        if (modifiedItem != null) { // the transferred item can be found among this unit's items
           // nothing to do
         } else { // the transferred item is not among the items the unit already has
 
-          if(this.equals(itr.source)) {
+          if (equals(itr.source)) {
             modifiedItem = new Item(itr.itemType, -itr.amount);
           } else {
             modifiedItem = new Item(itr.itemType, itr.amount);
@@ -1750,23 +1629,21 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       }
     }
     // 3b. now check relations for possible modifications; GIVE orders second
-    for(final Iterator<UnitRelation> iter = getRelations().iterator(); iter.hasNext();) {
-      final UnitRelation rel = iter.next();
-
-      if(rel instanceof ItemTransferRelation) {
+    for (UnitRelation rel : getRelations()) {
+      if (rel instanceof ItemTransferRelation) {
         final ItemTransferRelation itr = (ItemTransferRelation) rel;
         Item modifiedItem = cache1.modifiedItems.get(itr.itemType.getID());
 
-        if(modifiedItem != null) { // the transferred item can be found among this unit's items
+        if (modifiedItem != null) { // the transferred item can be found among this unit's items
 
-          if(this.equals(itr.source)) {
+          if (equals(itr.source)) {
             modifiedItem.setAmount(modifiedItem.getAmount() - itr.amount);
           } else {
             modifiedItem.setAmount(modifiedItem.getAmount() + itr.amount);
           }
         } else { // the transferred item is not among the items the unit already has
 
-          if(this.equals(itr.source)) {
+          if (equals(itr.source)) {
             modifiedItem = new Item(itr.itemType, -itr.amount);
           } else {
             modifiedItem = new Item(itr.itemType, itr.amount);
@@ -1777,23 +1654,22 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       }
     }
 
-    /* 4. iterate again to mimick that recruit orders are
-		 processed after give orders, not very nice but probably not
-		 very expensive */
-    for(final Iterator<UnitRelation> iter = getRelations().iterator(); iter.hasNext();) {
-      final UnitRelation rel = iter.next();
-
-      if(rel instanceof RecruitmentRelation) {
+    /*
+     * 4. iterate again to mimick that recruit orders are processed after give orders, not very nice
+     * but probably not very expensive
+     */
+    for (UnitRelation rel : getRelations()) {
+      if (rel instanceof RecruitmentRelation) {
         final RecruitmentRelation rr = (RecruitmentRelation) rel;
 
         final Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_USILVER);
 
-        if(modifiedItem != null) {
+        if (modifiedItem != null) {
           final Race recruitmentRace = rr.race;
 
-          if((recruitmentRace != null) && (recruitmentRace.getRecruitmentCosts() > 0)) {
-            modifiedItem.setAmount(modifiedItem.getAmount() -
-                (rr.amount * recruitmentRace.getRecruitmentCosts()));
+          if ((recruitmentRace != null) && (recruitmentRace.getRecruitmentCosts() > 0)) {
+            modifiedItem.setAmount(modifiedItem.getAmount()
+                - (rr.amount * recruitmentRace.getRecruitmentCosts()));
           }
         }
       }
@@ -1810,18 +1686,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Returns the number of persons in this unit as it would be after the orders of this and other
    * units have been processed since it may be modified by transfer orders.
-   *
-   * 
    */
   public int getModifiedPersons() {
     final Cache cache1 = getCache();
-    if(cache1.modifiedPersons == -1) {
-      cache1.modifiedPersons = this.getPersons();
+    if (cache1.modifiedPersons == -1) {
+      cache1.modifiedPersons = getPersons();
 
-      for(final Iterator<PersonTransferRelation> iter = getPersonTransferRelations().iterator(); iter.hasNext();) {
-        final PersonTransferRelation ptr = iter.next();
-
-        if(this.equals(ptr.source)) {
+      for (PersonTransferRelation ptr : getPersonTransferRelations()) {
+        if (equals(ptr.source)) {
           cache1.modifiedPersons -= ptr.amount;
         } else {
           cache1.modifiedPersons += ptr.amount;
@@ -1834,17 +1706,15 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns the new Combat Status of this unit as it would be after the orders of this unit
-   * 
    */
   public int getModifiedCombatStatus() {
     final Cache cache1 = getCache();
-    if(cache1.modifiedCombatStatus == -2) {
-      cache1.modifiedCombatStatus = this.getCombatStatus();
+    if (cache1.modifiedCombatStatus == -2) {
+      cache1.modifiedCombatStatus = getCombatStatus();
       // we only need to check relations for units, we know the
       // tha actual combat status - do we?
-      if (cache1.modifiedCombatStatus>-1){
-        for(final Iterator<CombatStatusRelation> iter = getRelations(CombatStatusRelation.class).iterator(); iter.hasNext();) {
-          final CombatStatusRelation rel = iter.next();
+      if (cache1.modifiedCombatStatus > -1) {
+        for (CombatStatusRelation rel : getRelations(CombatStatusRelation.class)) {
           cache1.modifiedCombatStatus = rel.newCombatStatus;
         }
       }
@@ -1854,17 +1724,16 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Returns the new (expected) guard value of this unit as it would be after the orders of this unit
-   * (and the unit is still allive next turn)
-   * (@TODO: do we need a region.getModifiedGuards - List? guess and hope not)
+   * Returns the new (expected) guard value of this unit as it would be after the orders of this
+   * unit (and the unit is still allive next turn) (@TODO: do we need a region.getModifiedGuards -
+   * List? guess and hope not)
    */
   public int getModifiedGuard() {
     final Cache cache1 = getCache();
-    if(cache1.modifiedGuard == -1) {
-      cache1.modifiedGuard = this.getGuard();
+    if (cache1.modifiedGuard == -1) {
+      cache1.modifiedGuard = getGuard();
 
-      for(final Iterator<GuardRegionRelation> iter = getRelations(GuardRegionRelation.class).iterator(); iter.hasNext();) {
-        final GuardRegionRelation rel = iter.next();
+      for (GuardRegionRelation rel : getRelations(GuardRegionRelation.class)) {
         cache1.modifiedGuard = rel.guard;
       }
     }
@@ -1873,19 +1742,17 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns the new Unaided status of this unit as it would be after the orders of this unit
-   * 
    */
   public boolean getModifiedUnaided() {
     final Cache cache1 = getCache();
-    if(!cache1.modifiedUnaidedValidated) {
+    if (!cache1.modifiedUnaidedValidated) {
       cache1.modifiedUnaidedValidated = true;
-      cache1.modifiedUnaided = this.isUnaided();
+      cache1.modifiedUnaided = isUnaided();
       // we only need to check relations for units, we know the
       // tha actual combat status - do we?
-      if (this.getCombatStatus()>-1){
-        for(final Iterator<CombatStatusRelation> iter = getRelations(CombatStatusRelation.class).iterator(); iter.hasNext();) {
-          final CombatStatusRelation rel = iter.next();
-          if (rel.newUnaidedSet){
+      if (getCombatStatus() > -1) {
+        for (CombatStatusRelation rel : getRelations(CombatStatusRelation.class)) {
+          if (rel.newUnaidedSet) {
             cache1.modifiedUnaided = rel.newUnaided;
           }
         }
@@ -1895,7 +1762,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     return cache1.modifiedUnaided;
   }
 
-
   /**
    * @return true if weight is well known and NOT evaluated by Magellan
    */
@@ -1904,17 +1770,16 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Returns the initial overall weight of this unit (persons and items)
-   * in silver. If this information is available from the report we use
-   * this. Otherwise we call the game specific weight calculation.
-   *
+   * Returns the initial overall weight of this unit (persons and items) in silver. If this
+   * information is available from the report we use this. Otherwise we call the game specific
+   * weight calculation.
+   * 
    * @return the initial weight of the unit
    * @deprecated use {@link MovementEvaluator#getWeight(Unit)}
    */
   @Deprecated
   public int getWeight() {
-    return getRegion().getData().getGameSpecificStuff()
-    .getMovementEvaluator().getWeight(this);
+    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getWeight(this);
   }
 
   /**
@@ -1925,41 +1790,41 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Returns the maximum payload in silver of this unit when it travels by horse. Horses, carts
-   * and persons are taken into account for this calculation. If the unit has a sufficient skill
-   * in horse riding but there are too many carts for the horses, the weight of the additional
-   * carts are also already considered.
-   *
+   * Returns the maximum payload in silver of this unit when it travels by horse. Horses, carts and
+   * persons are taken into account for this calculation. If the unit has a sufficient skill in
+   * horse riding but there are too many carts for the horses, the weight of the additional carts
+   * are also already considered.
+   * 
    * @return the payload in silver, CAP_NO_HORSES if the unit does not possess horses or
-   * 		   CAP_UNSKILLED if the unit is not sufficiently skilled in horse riding to travel on
-   * 		   horseback.
+   *         CAP_UNSKILLED if the unit is not sufficiently skilled in horse riding to travel on
+   *         horseback.
    * @deprecated use {@link MovementEvaluator#getPayloadOnHorse(Unit)}
    */
   @Deprecated
   public int getPayloadOnHorse() {
-    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
-    .getPayloadOnHorse(this);
+    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(
+        this);
   }
 
   /**
-   * Returns the maximum payload in silver of this unit when it travels on foot. Horses, carts
-   * and persons are taken into account for this calculation. If the unit has a sufficient skill
-   * in horse riding but there are too many carts for the horses, the weight of the additional
-   * carts are also already considered. The calculation also takes into account that trolls can
-   * tow carts.
-   *
-   * @return the payload in silver, CAP_UNSKILLED if the unit is not sufficiently skilled in
-   * 		   horse riding to travel on horseback.
+   * Returns the maximum payload in silver of this unit when it travels on foot. Horses, carts and
+   * persons are taken into account for this calculation. If the unit has a sufficient skill in
+   * horse riding but there are too many carts for the horses, the weight of the additional carts
+   * are also already considered. The calculation also takes into account that trolls can tow carts.
+   * 
+   * @return the payload in silver, CAP_UNSKILLED if the unit is not sufficiently skilled in horse
+   *         riding to travel on horseback.
    * @deprecated use {@link MovementEvaluator#getPayloadOnFoot(Unit)}
    */
   @Deprecated
   public int getPayloadOnFoot() {
-    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(this);
+    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(
+        this);
   }
 
   /**
    * Returns the weight of all items of this unit that are not horses or carts in silver
-   *
+   * 
    * @deprecated use {@link MovementEvaluator#getLoad(Unit)}
    */
   @Deprecated
@@ -1968,21 +1833,21 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Returns the weight of all items of this unit that are not horses or carts in silver based
-   * on the modified items.
-   *
+   * Returns the weight of all items of this unit that are not horses or carts in silver based on
+   * the modified items.
+   * 
    * @deprecated use {@link MovementEvaluator#getModifiedLoad(Unit)}
    */
   @Deprecated
   public int getModifiedLoad() {
     return getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
-    .getModifiedLoad(this);
+        .getModifiedLoad(this);
   }
 
   /**
-   * Returns the number of regions this unit is able to travel within one turn based on the
-   * riding skill, horses, carts and load of this unit.
-   *
+   * Returns the number of regions this unit is able to travel within one turn based on the riding
+   * skill, horses, carts and load of this unit.
+   * 
    * @deprecated use {@link MovementEvaluator#getRadius(Unit)}
    */
   @Deprecated
@@ -1991,9 +1856,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Returns the overall weight (persons, items) of this unit in silver by
-   * calling the game specific calculation for the modified weight.
-   * Generally this should take care of modified persons and modified items.
+   * Returns the overall weight (persons, items) of this unit in silver by calling the game specific
+   * calculation for the modified weight. Generally this should take care of modified persons and
+   * modified items.
    * 
    * @return the modified weight of the unit
    * @deprecated use {@link MovementEvaluator#getModifiedWeight(Unit)}
@@ -2006,16 +1871,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns all units this unit is transporting as passengers.
-   *
+   * 
    * @return A Collection of transported <code>Unit</code>s
    */
   public Collection<Unit> getPassengers() {
     final Collection<Unit> passengers = new LinkedList<Unit>();
 
-    for(final Iterator<TransportRelation> iter = getRelations(TransportRelation.class).iterator(); iter.hasNext();) {
-      final TransportRelation tr = iter.next();
-
-      if(this.equals(tr.source)) {
+    for (TransportRelation tr : getRelations(TransportRelation.class)) {
+      if (equals(tr.source)) {
         passengers.add(tr.target);
       }
     }
@@ -2024,18 +1887,16 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Returns all units indicating by their orders that they would transport this unit as a
-   * passenger (if there is more than one such unit, that is a semantical error of course).
-   *
+   * Returns all units indicating by their orders that they would transport this unit as a passenger
+   * (if there is more than one such unit, that is a semantical error of course).
+   * 
    * @return A Collection of <code>Unit</code>s carrying this one
    */
   public Collection<Unit> getCarriers() {
     final Collection<Unit> carriers = new LinkedList<Unit>();
 
-    for(final Iterator<TransportRelation> iter = getRelations(TransportRelation.class).iterator(); iter.hasNext();) {
-      final TransportRelation tr = iter.next();
-
-      if(this.equals(tr.target)) {
+    for (TransportRelation tr : getRelations(TransportRelation.class)) {
+      if (equals(tr.target)) {
         carriers.add(tr.source);
       }
     }
@@ -2045,16 +1906,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns a Collection of all the units that are taught by this unit.
-   *
+   * 
    * @return A Collection of <code>Unit</code>s taught by this unit
    */
   public Collection<Unit> getPupils() {
     final Collection<Unit> pupils = new LinkedList<Unit>();
-    for(final Iterator<TeachRelation> iter = getRelations(TeachRelation.class).iterator(); iter.hasNext();) {
-      final TeachRelation tr = iter.next();
-
-      if(this.equals(tr.source)) {
-        if(tr.target != null) {
+    for (TeachRelation tr : getRelations(TeachRelation.class)) {
+      if (equals(tr.source)) {
+        if (tr.target != null) {
           pupils.add(tr.target);
         }
       }
@@ -2064,16 +1923,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns a Collection of all the units that are teaching this unit.
-   *
+   * 
    * @return A Collection of <code>Unit</code>s teaching this unit
    */
   public Collection<Unit> getTeachers() {
     final Collection<Unit> teachers = new LinkedList<Unit>();
-    for(final Iterator<TeachRelation> iter = getRelations(TeachRelation.class).iterator(); iter.hasNext();) {
-      final TeachRelation tr = iter.next();
-
-      if(this.equals(tr.target)) {
-        if(tr.source != null) {
+    for (TeachRelation tr : getRelations(TeachRelation.class)) {
+      if (equals(tr.target)) {
+        if (tr.source != null) {
           teachers.add(tr.source);
         }
       }
@@ -2087,11 +1944,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public Collection<Unit> getAttackVictims() {
     final Collection<Unit> ret = new LinkedList<Unit>();
 
-
-    for(final Iterator<AttackRelation> iter = getRelations(AttackRelation.class).iterator(); iter.hasNext();) {
-      final AttackRelation ar = iter.next();
-
-      if(ar.source.equals(this)) {
+    for (AttackRelation ar : getRelations(AttackRelation.class)) {
+      if (ar.source.equals(this)) {
         ret.add(ar.target);
       }
     }
@@ -2105,10 +1959,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public Collection<Unit> getAttackAggressors() {
     final Collection<Unit> ret = new LinkedList<Unit>();
 
-    for(final Iterator<AttackRelation> iter = getRelations(AttackRelation.class).iterator(); iter.hasNext();) {
-      final AttackRelation ar = iter.next();
-
-      if(ar.target.equals(this)) {
+    for (AttackRelation ar : getRelations(AttackRelation.class)) {
+      if (ar.target.equals(this)) {
         ret.add(ar.source);
       }
     }
@@ -2118,29 +1970,25 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * remove relations that are originating from us with a line number &gt;= <tt>from</tt>
-   *
-   * 
    */
   private void removeRelationsOriginatingFromUs(int from) {
     final Collection<UnitRelation> deathRow = new LinkedList<UnitRelation>();
 
-    for(final Iterator<UnitRelation> iter = getRelations().iterator(); iter.hasNext();) {
-      final UnitRelation r = iter.next();
-
-      if(this.equals(r.origin) && (r.line >= from)) {
-        if(r instanceof InterUnitRelation) {
-          if(((InterUnitRelation) r).target != null) {
+    for (UnitRelation r : getRelations()) {
+      if (equals(r.origin) && (r.line >= from)) {
+        if (r instanceof InterUnitRelation) {
+          if (((InterUnitRelation) r).target != null) {
             // remove relations in target units
-            if(((InterUnitRelation) r).target.equals(this)) {
+            if (((InterUnitRelation) r).target.equals(this)) {
               ((InterUnitRelation) r).source.removeRelation(r);
             } else {
               ((InterUnitRelation) r).target.removeRelation(r);
             }
           }
         } else {
-          if(r instanceof UnitContainerRelation) {
+          if (r instanceof UnitContainerRelation) {
             // remove relations in target unit containers
-            if(((UnitContainerRelation) r).target != null) {
+            if (((UnitContainerRelation) r).target != null) {
               ((UnitContainerRelation) r).target.removeRelation(r);
             }
           }
@@ -2151,42 +1999,39 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       }
     }
 
-    for(final Iterator<UnitRelation> iter = deathRow.iterator(); iter.hasNext();) {
-      this.removeRelation(iter.next());
+    for (UnitRelation unitRelation : deathRow) {
+      removeRelation(unitRelation);
     }
   }
 
   // FIXME "No relation of a unit can affect an object outside the region". This might not be true
   // any more for familiars or ZAUBERE.
   /**
-   * Parses the orders of this unit and detects relations between units established by those
-   * orders. When does this method have to be called? No relation of a unit can affect an object
-   * outside the region that unit is in. So when all relations regarding a certain unit as
-   * target or source need to be determined, this method has to be called for each unit in the
-   * same region. Since relations are defined by unit orders, modified orders may lead to
-   * different relations. Therefore refreshRelations() has to be invoked on a unit after its
-   * orders were modified.
-   *
+   * Parses the orders of this unit and detects relations between units established by those orders.
+   * When does this method have to be called? No relation of a unit can affect an object outside the
+   * region that unit is in. So when all relations regarding a certain unit as target or source need
+   * to be determined, this method has to be called for each unit in the same region. Since
+   * relations are defined by unit orders, modified orders may lead to different relations.
+   * Therefore refreshRelations() has to be invoked on a unit after its orders were modified.
    */
   public void refreshRelations() {
     refreshRelations(1);
   }
 
   /**
-   * Parses the orders of this unit <i>beginning at the <code>from</code>th order</i> and
-   * detects relations between units established by those orders. When does this method have to be
-   * called? No relation of a unit can affect an object outside the region that unit is in. So
-   * when all relations regarding a certain unit as target or source need to be determined, this
-   * method has to be called for each unit in the same region. Since relations are defined by unit
-   * orders, modified orders may lead to different relations. Therefore refreshRelations() has to
-   * be invoked on a unit after its orders were modified.
+   * Parses the orders of this unit <i>beginning at the <code>from</code>th order</i> and detects
+   * relations between units established by those orders. When does this method have to be called?
+   * No relation of a unit can affect an object outside the region that unit is in. So when all
+   * relations regarding a certain unit as target or source need to be determined, this method has
+   * to be called for each unit in the same region. Since relations are defined by unit orders,
+   * modified orders may lead to different relations. Therefore refreshRelations() has to be invoked
+   * on a unit after its orders were modified.
    * 
    * @param from Start from this line
    */
   public synchronized void refreshRelations(int from) {
-    if(ordersObject.ordersAreNull() || (getRegion() == null)) {
+    if (ordersObject.ordersAreNull() || (getRegion() == null))
       return;
-    }
 
     invalidateCache();
     removeRelationsOriginatingFromUs(from);
@@ -2196,35 +2041,34 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   private void addAndSpreadRelations(Collection<UnitRelation> newRelations) {
-    if(MagellanUnitImpl.log.isDebugEnabled()) {
+    if (MagellanUnitImpl.log.isDebugEnabled()) {
       MagellanUnitImpl.log.debug("Relations for " + this);
       MagellanUnitImpl.log.debug(newRelations);
     }
 
-    for(final Iterator<UnitRelation> iter = newRelations.iterator(); iter.hasNext();) {
-      final UnitRelation r = iter.next();
-      this.addRelation(r);
+    for (UnitRelation r : newRelations) {
+      addRelation(r);
 
-      if(r.source != this) {
+      if (r.source != this) {
         r.source.addRelation(r);
 
         continue;
       }
 
-      if(r instanceof InterUnitRelation) {
+      if (r instanceof InterUnitRelation) {
         final InterUnitRelation iur = (InterUnitRelation) r;
 
-        if((iur.target != null) && (iur.target != this)) {
+        if ((iur.target != null) && (iur.target != this)) {
           iur.target.addRelation(r);
         }
 
         continue;
       }
 
-      if(r instanceof UnitContainerRelation) {
+      if (r instanceof UnitContainerRelation) {
         final UnitContainerRelation ucr = (UnitContainerRelation) r;
 
-        if(ucr.target != null) {
+        if (ucr.target != null) {
           ucr.target.addRelation(r);
         }
 
@@ -2235,8 +2079,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns a String representation of this unit.
-   *
-   * 
    */
   @Override
   public String toString() {
@@ -2245,36 +2087,32 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * @param withName
-   * 
    */
   public String toString(boolean withName) {
-    if(withName) {
+    if (withName) {
       String myName = getModifiedName();
-      if(myName == null) {
+      if (myName == null) {
         myName = getName();
       }
-      if(myName == null) {
-        myName = Resources.get("unit.unit")+ " "+toString(false);
+      if (myName == null) {
+        myName = Resources.get("unit.unit") + " " + toString(false);
       }
-      return myName + " ("+toString(false)+")";
-    } else {
+      return myName + " (" + toString(false) + ")";
+    } else
       return id.toString();
-    }
   }
 
   /**
    * Kinda obvious, right?
-   *
-   * 
    */
   public MagellanUnitImpl(UnitID id) {
     super(id);
   }
 
   /**
-   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by
-   * the operation.
-   *
+   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
+   * operation.
+   * 
    * @return <tt>true</tt> if the order was successfully added.
    */
   public boolean addOrder(String order) {
@@ -2282,47 +2120,42 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by
-   * the operation.
-   *
+   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
+   * operation.
+   * 
    * @param order the order to add.
-   * @param replace if <tt>true</tt>, the order replaces any other of the unit's orders of the
-   * 		  same type. If <tt>false</tt> the order is simply added.
+   * @param replace if <tt>true</tt>, the order replaces any other of the unit's orders of the same
+   *          type. If <tt>false</tt> the order is simply added.
    * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
-   * 		  specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should
-   * 		  be replaced but not all "BENENNE" orders.
-   *
+   *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
+   *          replaced but not all "BENENNE" orders.
    * @return <tt>true</tt> if the order was successfully added.
    */
   public boolean addOrder(String order, boolean replace, int length) {
-    if((order == null) || order.trim().equals("") ||
-        (replace && (length < 1))) {
+    if ((order == null) || order.trim().equals("") || (replace && (length < 1)))
       return false;
-    }
 
-    if (replace)
+    if (replace) {
       removeOrder(order, length);
+    }
 
     addOrderAt(-1, order);
 
     return true;
   }
 
-
   /**
    * Removes orders that match the given order up to a given length.
    * 
    * @param order pattern to remove
    * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
-   *      specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should
-   *      be replaced but not all "BENENNE" orders.
-   *
+   *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
+   *          replaced but not all "BENENNE" orders.
    * @return <tt>true</tt> if at least one order was removed
    */
   public boolean removeOrder(String order, int length) {
-    if((order == null) || order.trim().equals("")) {
+    if ((order == null) || order.trim().equals(""))
       return false;
-    }
 
     // parse order until there are enough match tokens
     int tokenCounter = 0;
@@ -2330,40 +2163,40 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     OrderTokenizer ct = new OrderTokenizer(new StringReader(order));
     OrderToken t = ct.getNextToken();
 
-    while((t.ttype != OrderToken.TT_EOC) && (tokenCounter++ < length)) {
+    while ((t.ttype != OrderToken.TT_EOC) && (tokenCounter++ < length)) {
       matchTokens.add(t);
       t = ct.getNextToken();
     }
 
     // order does not contain enough match tokens, abort
-    if(matchTokens.size() < length) {
+    if (matchTokens.size() < length)
       return false;
-    }
 
     boolean result = false;
 
     // if replace, delete matching orders first
-    if(!this.ordersAreNull()) {
+    if (!ordersAreNull()) {
       boolean tempBlock = false;
 
       // cycle through this unit's orders
-      for(final ListIterator<String> cmds = ordersObject.getOrders().listIterator(); cmds.hasNext();) {
+      for (final ListIterator<String> cmds = ordersObject.getOrders().listIterator(); cmds
+          .hasNext();) {
         final String cmd = cmds.next();
         ct = new OrderTokenizer(new StringReader(cmd));
         t = ct.getNextToken();
 
         // skip empty orders and comments
-        if((OrderToken.TT_EOC == t.ttype) || (OrderToken.TT_COMMENT == t.ttype)) {
+        if ((OrderToken.TT_EOC == t.ttype) || (OrderToken.TT_COMMENT == t.ttype)) {
           continue;
         }
 
-        if(false == tempBlock) {
-          if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE))) {
+        if (false == tempBlock) {
+          if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE))) {
             t = ct.getNextToken();
 
-            if(OrderToken.TT_EOC == t.ttype) {
+            if (OrderToken.TT_EOC == t.ttype) {
               continue;
-            } else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+            } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
               tempBlock = true;
 
               continue;
@@ -2372,12 +2205,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
             // compare the current unit order and tokens of the one to add
             boolean removeOrder = true;
 
-            for(final Iterator<OrderToken> iter = matchTokens.iterator();
-            iter.hasNext() && (t.ttype != OrderToken.TT_EOC);) {
+            for (final Iterator<OrderToken> iter = matchTokens.iterator(); iter.hasNext()
+                && (t.ttype != OrderToken.TT_EOC);) {
               final OrderToken matchToken = iter.next();
 
-              if(!(t.equalsToken(matchToken.getText()) ||
-                  matchToken.equalsToken(t.getText()))) {
+              if (!(t.equalsToken(matchToken.getText()) || matchToken.equalsToken(t.getText()))) {
                 removeOrder = false;
 
                 break;
@@ -2386,15 +2218,15 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
               t = ct.getNextToken();
             }
 
-            if(removeOrder) {
+            if (removeOrder) {
               cmds.remove();
-              result  = true;
+              result = true;
             }
 
             continue;
           }
         } else {
-          if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END))) {
+          if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END))) {
             tempBlock = false;
 
             continue;
@@ -2406,79 +2238,78 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects
-   * and removes the corresponding orders from this unit. Uses the default order locale to parse
-   * the orders.
-   *
+   * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
+   * removes the corresponding orders from this unit. Uses the default order locale to parse the
+   * orders.
+   * 
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
-   * 		  the report) which is incremented with each new temp unit.
-   *
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units
-   * 		   read from this unit's orders.
+   *          the report) which is incremented with each new temp unit.
+   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   *         from this unit's orders.
    */
   public int extractTempUnits(int tempSortIndex) {
     return extractTempUnits(tempSortIndex, Locales.getOrderLocale());
   }
 
   /**
-   * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects
-   * and removes the corresponding orders from this unit.
-   *
+   * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
+   * removes the corresponding orders from this unit.
+   * 
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
-   * 		  the report) which is incremented with each new temp unit.
+   *          the report) which is incremented with each new temp unit.
    * @param locale the locale to parse the orders with.
-   *
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units
-   * 		   read from this unit's orders.
+   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   *         from this unit's orders.
    */
   public int extractTempUnits(int tempSortIndex, Locale locale) {
-    if(!this.ordersAreNull()) {
+    if (!ordersAreNull()) {
       TempUnit tempUnit = null;
 
-      for(final Iterator<String> cmdIterator = ordersObject.getOrders().iterator(); cmdIterator.hasNext();) {
+      for (final Iterator<String> cmdIterator = ordersObject.getOrders().iterator(); cmdIterator
+          .hasNext();) {
         final String line = cmdIterator.next();
         final OrderTokenizer ct = new OrderTokenizer(new StringReader(line));
         OrderToken token = ct.getNextToken();
 
-        if(tempUnit == null) {
-          if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE, locale))) {
+        if (tempUnit == null) {
+          if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE, locale))) {
             token = ct.getNextToken();
 
-            if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP, locale))) {
+            if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP, locale))) {
               token = ct.getNextToken();
 
               try {
-                final int base = (this.getID()).getRadix();
+                final int base = (getID()).getRadix();
                 final int idInt = IDBaseConverter.parse(token.getText(), base);
                 final UnitID orderTempID = UnitID.createUnitID(idInt * -1, base);
 
-                if(this.getRegion()==null || this.getRegion().getUnit(orderTempID) == null) {
-                  tempUnit = this.createTemp(orderTempID);
+                if (getRegion() == null || getRegion().getUnit(orderTempID) == null) {
+                  tempUnit = createTemp(orderTempID);
                   tempUnit.setSortIndex(++tempSortIndex);
                   cmdIterator.remove();
                   token = ct.getNextToken();
 
-                  if(token.ttype != OrderToken.TT_EOC) {
+                  if (token.ttype != OrderToken.TT_EOC) {
                     tempUnit.addOrders(Resources.getOrderTranslation(EresseaConstants.O_NAME,
-                        locale) + " " +
-                        Resources.getOrderTranslation(EresseaConstants.O_UNIT,
-                            locale) + " " +
-                            token.getText(), false);
+                        locale)
+                        + " "
+                        + Resources.getOrderTranslation(EresseaConstants.O_UNIT, locale)
+                        + " " + token.getText(), false);
                   }
                 } else {
-                  MagellanUnitImpl.log.warn("Unit.extractTempUnits(): region " + this.getRegion() +
-                      " already contains a temp unit with the id " + orderTempID +
-                      ". This temp unit remains in the orders of its parent " +
-                  "unit instead of being created as a unit in its own right.");
+                  MagellanUnitImpl.log.warn("Unit.extractTempUnits(): region " + getRegion()
+                      + " already contains a temp unit with the id " + orderTempID
+                      + ". This temp unit remains in the orders of its parent "
+                      + "unit instead of being created as a unit in its own right.");
                 }
-              } catch(final NumberFormatException e) {
+              } catch (final NumberFormatException e) {
               }
             }
           }
         } else {
           cmdIterator.remove();
 
-          if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END, locale))) {
+          if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END, locale))) {
             tempUnit = null;
           } else {
             scanTempOrder(tempUnit, line);
@@ -2492,30 +2323,30 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   private void scanTempOrder(TempUnit tempUnit, String line) {
     boolean scanned = false;
-    if(MagellanUnitImpl.CONFIRMEDTEMPCOMMENT.equals(line.trim())) {
+    if (MagellanUnitImpl.CONFIRMEDTEMPCOMMENT.equals(line.trim())) {
       tempUnit.setOrdersConfirmed(true);
       scanned = true;
     }
-    if(!scanned && line.trim().startsWith(MagellanUnitImpl.TAG_PREFIX_TEMP)) {
+    if (!scanned && line.trim().startsWith(MagellanUnitImpl.TAG_PREFIX_TEMP)) {
       String tag = null;
       String value = null;
       final StringTokenizer st = new StringTokenizer(line);
-      if(st.hasMoreTokens()) {
+      if (st.hasMoreTokens()) {
         // ignore TAG_PREFIX_TEMP
         st.nextToken();
       }
-      if(st.hasMoreTokens()) {
+      if (st.hasMoreTokens()) {
         tag = st.nextToken();
       }
-      if(st.hasMoreTokens()) {
-        value = st.nextToken().replace('~',' ');
+      if (st.hasMoreTokens()) {
+        value = st.nextToken().replace('~', ' ');
       }
-      if(tag != null && value != null) {
-        tempUnit.putTag(tag,value);
+      if (tag != null && value != null) {
+        tempUnit.putTag(tag, value);
         scanned = true;
       }
     }
-    if(!scanned) {
+    if (!scanned) {
       tempUnit.addOrders(line, false);
     }
   }
@@ -2535,11 +2366,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @see magellan.library.utils.Taggable#putTag(java.lang.String, java.lang.String)
    */
   public String putTag(String tag, String value) {
-    if (tag.equals("$tm_trigger")){
+    if (tag.equals("$tm_trigger")) {
       // (new ExtendedTests()).test(this);
     }
 
-    if(tagMap == null) {
+    if (tagMap == null) {
       tagMap = new HashMap<String, String>();
     }
 
@@ -2550,9 +2381,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @see magellan.library.utils.Taggable#getTag(java.lang.String)
    */
   public String getTag(String tag) {
-    if(tagMap == null) {
+    if (tagMap == null)
       return null;
-    }
 
     return tagMap.get(tag);
   }
@@ -2561,9 +2391,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @see magellan.library.utils.Taggable#removeTag(java.lang.String)
    */
   public String removeTag(String tag) {
-    if(tagMap == null) {
+    if (tagMap == null)
       return null;
-    }
 
     return tagMap.remove(tag);
   }
@@ -2572,9 +2401,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @see magellan.library.utils.Taggable#containsTag(java.lang.String)
    */
   public boolean containsTag(String tag) {
-    if(tagMap == null) {
+    if (tagMap == null)
       return false;
-    }
 
     return tagMap.containsKey(tag);
   }
@@ -2582,8 +2410,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * @see magellan.library.utils.Taggable#getTagMap()
    */
-  public Map<String,String> getTagMap() {
-    if(tagMap == null) {
+  public Map<String, String> getTagMap() {
+    if (tagMap == null) {
       tagMap = new TagMap();
     }
 
@@ -2596,7 +2424,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public boolean hasTags() {
     return (tagMap != null) && !tagMap.isEmpty();
   }
-
 
   /**
    * a (hopefully) small class for handling orders in the Unit object
@@ -2629,11 +2456,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     public int addOrders(Collection<String> newOrders) {
       final int oldSize = getSize();
 
-      if(newOrders == null) {
+      if (newOrders == null)
         return oldSize;
-      }
 
-      if(orders == null) {
+      if (orders == null) {
         orders = new ArrayList<String>(newOrders.size());
       }
 
@@ -2654,13 +2480,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     }
 
     /**
-     * Returns the collection of orders which is backed by the orders and <i>not</i>
-     * immutable and may be <code>null</code>.
+     * Returns the collection of orders which is backed by the orders and <i>not</i> immutable and
+     * may be <code>null</code>.
      */
     public List<String> getOrders() {
-      if (orders == null) {
+      if (orders == null)
         return null;
-      }
       return orders;
     }
 
@@ -2676,7 +2501,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
      * Deletes all orders.
      */
     public void clearOrders() {
-      if(orders != null) {
+      if (orders != null) {
         orders.clear();
       }
     }
@@ -2690,11 +2515,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
     /**
      * Inserts the specified order at the end.
-     *
+     * 
      * @param newOrders
      */
     public void addOrder(String newOrders) {
-      if(orders == null) {
+      if (orders == null) {
         orders = new ArrayList<String>(1);
       }
 
@@ -2703,12 +2528,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
     /**
      * Inserts the specified order at the specified position.
-     *
+     * 
      * @param i An index between 0 and getOrders().getSize() (inclusively)
      * @param newOrders
      */
     public void addOrderAt(int i, String newOrders) {
-      if(orders == null) {
+      if (orders == null) {
         orders = new ArrayList<String>(1);
       }
 
@@ -2716,17 +2541,15 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     }
 
     /**
-     * Removes the order at the specified position. Shifts any subsequent
-     * elements to the left (subtracts one from their indices).
+     * Removes the order at the specified position. Shifts any subsequent elements to the left
+     * (subtracts one from their indices).
      * 
-     * @param index
-     *          the index of the element to removed. The first order is 0!
-     * @throws IndexOutOfBoundsException
-     *           if the index is out of range (index &lt; 0 || index &gt;=
+     * @param index the index of the element to removed. The first order is 0!
+     * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt;=
      *           getSize()).
      */
     public void removeOrderAt(int i) {
-      if(orders == null) {
+      if (orders == null) {
         orders = new ArrayList<String>(1);
       }
 
@@ -2735,8 +2558,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
     /**
      * Returns <code>true</code> if orders have been added and
-     * <code>setOrdersChanged(<code>false</code>)</code> has not been
-     * called subsequently. Or if
+     * <code>setOrdersChanged(<code>false</code>)</code> has not been called subsequently. Or if
      * <code>setOrdersChanged(<code>true</code>)</code> has been called.
      */
     public boolean ordersHaveChanged() {
@@ -2762,7 +2584,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of aura.
-   *
+   * 
    * @param aura The value for aura.
    */
   public void setAura(int aura) {
@@ -2780,7 +2602,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of auraMax.
-   *
+   * 
    * @param auraMax The value for auraMax.
    */
   public void setAuraMax(int auraMax) {
@@ -2790,9 +2612,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * @see magellan.library.HasCache#hasCache()
    */
-  public boolean hasCache(){
-//    return cacheReference!=null && cacheReference.get()!=null;
-    return cache!=null;
+  public boolean hasCache() {
+    // return cacheReference!=null && cacheReference.get()!=null;
+    return cache != null;
   }
 
   /**
@@ -2801,46 +2623,46 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @return Returns cache.
    */
   public Cache getCache() {
-//    Cache c;
-//    if (cacheReference!=null && (c = cacheReference.get())!=null)
-//      return c;
-//    else{
-//      c = new Cache();
-//      cacheReference = new SoftReference<Cache>(c);
-//      return c;
-//    }
-    if (cache==null)
+    // Cache c;
+    // if (cacheReference!=null && (c = cacheReference.get())!=null)
+    // return c;
+    // else{
+    // c = new Cache();
+    // cacheReference = new SoftReference<Cache>(c);
+    // return c;
+    // }
+    if (cache == null) {
       cache = new Cache();
+    }
     return cache;
   }
 
   /**
    * Sets the value of cache.
-   *
+   * 
    * @param cache The value for cache.
    */
   public void setCache(Cache cache) {
-//    cacheReference = new SoftReference<Cache>(cache);
+    // cacheReference = new SoftReference<Cache>(cache);
     this.cache = cache;
   }
 
   /**
    * @see magellan.library.Unit#clearCache()
    */
-  public void clearCache(){
-//    if (cacheReference==null)
-//      return;
-//    Cache c = cacheReference.get();
-//    if (c!=null)
-//      c.clear();
-//    cacheReference.clear();
-//    cacheReference = null;
-    if (cache==null)
+  public void clearCache() {
+    // if (cacheReference==null)
+    // return;
+    // Cache c = cacheReference.get();
+    // if (c!=null)
+    // c.clear();
+    // cacheReference.clear();
+    // cacheReference = null;
+    if (cache == null)
       return;
     cache.clear();
-    cache=null;
+    cache = null;
   }
-
 
   /**
    * @see magellan.library.HasCache#addCacheHandler(magellan.library.utils.CacheHandler)
@@ -2852,19 +2674,17 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * @see magellan.library.Unit#getOrderEditor()
    */
-  public CacheableOrderEditor getOrderEditor(){
+  public CacheableOrderEditor getOrderEditor() {
     final Cache cache1 = getCache();
-    if(hasCache() && cache1.orderEditor != null) {
+    if (hasCache() && cache1.orderEditor != null)
       return cache1.orderEditor;
-    } else {
+    else
       return null;
-    }
   }
 
-  public void setOrderEditor(CacheableOrderEditor editor){
-    getCache().orderEditor=editor;
+  public void setOrderEditor(CacheableOrderEditor editor) {
+    getCache().orderEditor = editor;
   }
-
 
   /**
    * Returns the value of combatSpells.
@@ -2877,7 +2697,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of combatSpells.
-   *
+   * 
    * @param combatSpells The value for combatSpells.
    */
   public void setCombatSpells(Map<ID, CombatSpell> combatSpells) {
@@ -2895,7 +2715,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of combatStatus.
-   *
+   * 
    * @param combatStatus The value for combatStatus.
    */
   public void setCombatStatus(int combatStatus) {
@@ -2913,7 +2733,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of comments.
-   *
+   * 
    * @param comments The value for comments.
    */
   public void setComments(List<String> comments) {
@@ -2931,7 +2751,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of effects.
-   *
+   * 
    * @param effects The value for effects.
    */
   public void setEffects(List<String> effects) {
@@ -2949,7 +2769,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of familiarmageID.
-   *
+   * 
    * @param familiarmageID The value for familiarmageID.
    */
   public void setFamiliarmageID(ID familiarmageID) {
@@ -2967,7 +2787,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of follows.
-   *
+   * 
    * @param follows The value for follows.
    */
   public void setFollows(Unit follows) {
@@ -2985,7 +2805,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of guard.
-   *
+   * 
    * @param guard The value for guard.
    */
   public void setGuard(int guard) {
@@ -3003,7 +2823,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of health.
-   *
+   * 
    * @param health The value for health.
    */
   public void setHealth(String health) {
@@ -3021,7 +2841,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of hideFaction.
-   *
+   * 
    * @param hideFaction The value for hideFaction.
    */
   public void setHideFaction(boolean hideFaction) {
@@ -3039,7 +2859,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of isHero.
-   *
+   * 
    * @param isHero The value for isHero.
    */
   public void setHero(boolean isHero) {
@@ -3057,7 +2877,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of isStarving.
-   *
+   * 
    * @param isStarving The value for isStarving.
    */
   public void setStarving(boolean isStarving) {
@@ -3075,7 +2895,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of ordersConfirmed.
-   *
+   * 
    * @param ordersConfirmed The value for ordersConfirmed.
    */
   public void setOrdersConfirmed(boolean ordersConfirmed) {
@@ -3093,7 +2913,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of privDesc.
-   *
+   * 
    * @param privDesc The value for privDesc.
    */
   public void setPrivDesc(String privDesc) {
@@ -3104,7 +2924,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @see magellan.library.Unit#getRace()
    */
   public Race getRace() {
-    if (realRace!=null)
+    if (realRace != null)
       return realRace;
     else
       return race;
@@ -3112,7 +2932,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of race.
-   *
+   * 
    * @param race The value for race.
    */
   public void setRace(Race race) {
@@ -3123,7 +2943,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @see magellan.library.Unit#getDisguiseRace()
    */
   public Race getDisguiseRace() {
-    if (realRace!=null)
+    if (realRace != null)
       return race;
     else
       return null;
@@ -3131,7 +2951,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of realRace.
-   *
+   * 
    * @param realRace The value for realRace.
    */
   public void setRealRace(Race realRace) {
@@ -3149,7 +2969,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of siege.
-   *
+   * 
    * @param siege The value for siege.
    */
   public void setSiege(Building siege) {
@@ -3167,7 +2987,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of spells.
-   *
+   * 
    * @param spells The value for spells.
    */
   public void setSpells(Map<ID, Spell> spells) {
@@ -3185,7 +3005,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of stealth.
-   *
+   * 
    * @param stealth The value for stealth.
    */
   public void setStealth(int stealth) {
@@ -3203,7 +3023,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of unaided.
-   *
+   * 
    * @param unaided The value for unaided.
    */
   public void setUnaided(boolean unaided) {
@@ -3221,7 +3041,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of unitMessages.
-   *
+   * 
    * @param unitMessages The value for unitMessages.
    */
   public void setUnitMessages(List<Message> unitMessages) {
@@ -3230,7 +3050,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of persons.
-   *
+   * 
    * @param persons The value for persons.
    */
   public void setPersons(int persons) {
@@ -3239,7 +3059,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of skills.
-   *
+   * 
    * @param skills The value for skills.
    */
   public void setSkills(Map<StringID, Skill> skills) {
@@ -3248,7 +3068,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Sets the value of weight.
-   *
+   * 
    * @param weight The value for weight.
    */
   public void setWeight(int weight) {
@@ -3261,25 +3081,21 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * this function inspects travelthru an travelthruship to find the movement in the past
-   *
    * 
-   *
    * @return List of coordinates from start to end region.
    */
   public List<CoordinateID> getPastMovement(GameData data) {
     final Cache cache1 = getCache();
-    if(cache1.movementPath == null) {
+    if (cache1.movementPath == null) {
       // the result may be null!
       cache1.movementPath = Regions.getMovement(data, this);
     }
 
-    if(cache1.movementPath == null) {
+    if (cache1.movementPath == null)
       return Collections.emptyList();
-    } else {
+    else
       return Collections.unmodifiableList(cache1.movementPath);
-    }
   }
-
 
   /**
    * Checks if the unit's movement was passive (transported or shipped).
@@ -3288,30 +3104,31 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public boolean isPastMovementPassive() {
     final Cache cache1 = getCache();
-    if(cache1.movementPathIsPassive == null) {
+    if (cache1.movementPathIsPassive == null) {
       cache1.movementPathIsPassive = evaluatePastMovementPassive() ? Boolean.TRUE : Boolean.FALSE;
     }
 
     return cache1.movementPathIsPassive.booleanValue();
   }
 
-  private static final MessageType transportMessageType = new MessageType(IntegerID.create(891175669));
+  private static final MessageType transportMessageType =
+      new MessageType(IntegerID.create(891175669));
 
   private boolean evaluatePastMovementPassive() {
     final Unit u = this;
-    if(u.getShip() != null) {
-      if(u.equals(u.getShip().getOwnerUnit())) {
+    if (u.getShip() != null) {
+      if (u.equals(u.getShip().getOwnerUnit())) {
         // unit is on ship and the owner
-        if(log.isDebugEnabled()) {
-          log.debug("PathCellRenderer(" + u + "):false on ship");
+        if (MagellanUnitImpl.log.isDebugEnabled()) {
+          MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):false on ship");
         }
 
         return false;
       }
 
       // unit is on a ship and not the owner
-      if(log.isDebugEnabled()) {
-        log.debug("PathCellRenderer(" + u + "):true on ship");
+      if (MagellanUnitImpl.log.isDebugEnabled()) {
+        MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):true on ship");
       }
 
       return true;
@@ -3319,57 +3136,58 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
     // we assume a transportation to be passive, if
     // there is no message of type 891175669
-    if(u.getFaction() == null) {
-      if(log.isDebugEnabled()) {
-        log.debug("PathCellRenderer(" + u + "):false no faction");
+    if (u.getFaction() == null) {
+      if (MagellanUnitImpl.log.isDebugEnabled()) {
+        MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):false no faction");
       }
 
       return false;
     }
 
-    if(u.getFaction().getMessages() == null) {
+    if (u.getFaction().getMessages() == null) {
       // faction has no message at all
-      if(log.isDebugEnabled()) {
-        log.debug("PathCellRenderer(" + u + "):false no faction");
+      if (MagellanUnitImpl.log.isDebugEnabled()) {
+        MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):false no faction");
       }
 
       return true;
     }
 
-    for(final Iterator<Message> iter = u.getFaction().getMessages().iterator(); iter.hasNext();) {
-      final Message m = iter.next();
+    for (Message m : u.getFaction().getMessages()) {
+      if (false) {
+        if (MagellanUnitImpl.log.isDebugEnabled()) {
+          if (MagellanUnitImpl.transportMessageType.equals(m.getMessageType())) {
+            MagellanUnitImpl.log.debug("PathCellRenderer(" + u + ") Message " + m);
 
-      if(false) {
-        if(log.isDebugEnabled()) {
-          if(transportMessageType.equals(m.getMessageType())) {
-            log.debug("PathCellRenderer(" + u + ") Message " + m);
-
-            if((m.getAttributes() != null) && (m.getAttributes().get("unit") != null)) {
-              log.debug("PathCellRenderer(" + u + ") Unit   " +
-                  m.getAttributes().get("unit"));
-              // FIXME actually it should be creatUnitID(*, 10, data.base), but it doesn't matter here
-              log.debug("PathCellRenderer(" + u + ") UnitID " +
-                  UnitID.createUnitID(m.getAttributes().get("unit"), 10));
+            if ((m.getAttributes() != null) && (m.getAttributes().get("unit") != null)) {
+              MagellanUnitImpl.log.debug("PathCellRenderer(" + u + ") Unit   "
+                  + m.getAttributes().get("unit"));
+              // FIXME actually it should be creatUnitID(*, 10, data.base), but it doesn't matter
+              // here
+              MagellanUnitImpl.log.debug("PathCellRenderer(" + u + ") UnitID "
+                  + UnitID.createUnitID(m.getAttributes().get("unit"), 10));
             }
           }
         }
       }
 
-      if(transportMessageType.equals(m.getMessageType()) && (m.getAttributes() != null) &&
-          (m.getAttributes().get("unit") != null) &&
-          u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) { // FIXME 10, data.base
+      if (MagellanUnitImpl.transportMessageType.equals(m.getMessageType())
+          && (m.getAttributes() != null) && (m.getAttributes().get("unit") != null)
+          && u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) { // FIXME
+        // 10,
+        // data.base
         // found a transport message; this is only valid in
         // units with active movement
-        if(log.isDebugEnabled()) {
-          log.debug("PathCellRenderer(" + u + "):false with message " + m);
+        if (MagellanUnitImpl.log.isDebugEnabled()) {
+          MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):false with message " + m);
         }
 
         return false;
       }
     }
 
-    if(log.isDebugEnabled()) {
-      log.debug("PathCellRenderer(" + u + "):true with messages");
+    if (MagellanUnitImpl.log.isDebugEnabled()) {
+      MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):true with messages");
     }
 
     return true;
@@ -3379,9 +3197,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Returns the id uniquely identifying this object.
    */
   @Override
-  public UnitID getID(){
+  public UnitID getID() {
     return (UnitID) super.getID();
   }
 
 }
-

@@ -29,11 +29,11 @@ import magellan.library.utils.CacheHandler;
 public interface HasCache {
 
   /**
-   * Returns <code>false</code> if this unit does not have a cache. The
-   * reverse is not always true:<br/> If this method returns <code>false</code>,
-   * a subsequent call to getCache() will always create a new cache.<br/> If
-   * this method returns <code>true</code>, a subsequent call to getCache()
-   * may or may not create a new cache.<br/>
+   * Returns <code>false</code> if this unit does not have a cache. The reverse is not always true:<br/>
+   * If this method returns <code>false</code>, a subsequent call to getCache() will always create a
+   * new cache.<br/>
+   * If this method returns <code>true</code>, a subsequent call to getCache() may or may not create
+   * a new cache.<br/>
    * 
    * @return
    */
@@ -48,7 +48,7 @@ public interface HasCache {
 
   /**
    * Sets the value of cache.
-   *
+   * 
    * @param cache The value for cache.
    */
   public abstract void setCache(Cache cache);

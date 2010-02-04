@@ -17,10 +17,8 @@ package magellan.library;
  * An interface for all objects to be uniquely identifiable by a different object.
  */
 public interface Unique {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public ID getID();
+  /**
+   * DOCUMENT-ME
+   */
+  public ID getID();
 }

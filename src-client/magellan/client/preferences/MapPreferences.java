@@ -38,7 +38,8 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
-public class MapPreferences extends AbstractPreferencesAdapter implements ExtendedPreferencesAdapter {
+public class MapPreferences extends AbstractPreferencesAdapter implements
+    ExtendedPreferencesAdapter {
 
   // The source component to configure
   private MapperPanel source = null;
@@ -46,18 +47,17 @@ public class MapPreferences extends AbstractPreferencesAdapter implements Extend
   // GUI elements
   private PreferencesAdapter prefMapper = null;
   private List<PreferencesAdapter> subAdapter;
-  
+
   private JCheckBox showNavigation;
   private JCheckBox useSeasonImages;
 
   /**
    * Creates a new MapperPanelPreferences object.
    * 
-   * @param m
-   *          DOCUMENT-ME
+   * @param m DOCUMENT-ME
    */
   public MapPreferences(MapperPanel m) {
-    this.source = m;
+    source = m;
     prefMapper = source.getMapper().getPreferencesAdapter();
 
     subAdapter = new ArrayList<PreferencesAdapter>(2);
@@ -66,8 +66,6 @@ public class MapPreferences extends AbstractPreferencesAdapter implements Extend
 
   /**
    * DOCUMENT-ME
-   * 
-   * 
    */
   public List<PreferencesAdapter> getChildren() {
     return subAdapter;
@@ -75,17 +73,22 @@ public class MapPreferences extends AbstractPreferencesAdapter implements Extend
 
   /**
    * DOCUMENT-ME
-   * 
-   * 
    */
   public Component getComponent() {
-    JPanel erg = addPanel(Resources.get("map.mapperpanelpreferences.border.caption"), new BorderLayout());
-    
-    showNavigation = new JCheckBox(Resources.get("mapperpanel.prefs.details.chk.shownavigation"), source.getContext().getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true"));
-    useSeasonImages = new JCheckBox(Resources.get("map.bordercellrenderer.useseasonimages"), source.getContext().getProperties().getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, "true").equals("true"));
-    erg.add(showNavigation,BorderLayout.WEST);
-    erg.add(useSeasonImages,BorderLayout.SOUTH);
-    
+    JPanel erg =
+        addPanel(Resources.get("map.mapperpanelpreferences.border.caption"), new BorderLayout());
+
+    showNavigation =
+        new JCheckBox(Resources.get("mapperpanel.prefs.details.chk.shownavigation"), source
+            .getContext().getProperties()
+            .getProperty("MapperPannel.Details.showNavigation", "true").equals("true"));
+    useSeasonImages =
+        new JCheckBox(Resources.get("map.bordercellrenderer.useseasonimages"), source.getContext()
+            .getProperties().getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES,
+                "true").equals("true"));
+    erg.add(showNavigation, BorderLayout.WEST);
+    erg.add(useSeasonImages, BorderLayout.SOUTH);
+
     addComponent(prefMapper.getComponent());
     return this;
   }
@@ -102,33 +105,35 @@ public class MapPreferences extends AbstractPreferencesAdapter implements Extend
     prefMapper.applyPreferences();
 
     boolean needUpdate = false;
-    
-    if (showNavigation.isSelected()!= source.getContext().getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true")){
+
+    if (showNavigation.isSelected() != source.getContext().getProperties().getProperty(
+        "MapperPannel.Details.showNavigation", "true").equals("true")) {
       // we have a change here
-      source.getContext().getProperties().setProperty("MapperPannel.Details.showNavigation", showNavigation.isSelected() ? "true" : "false");
-      needUpdate=true;
+      source.getContext().getProperties().setProperty("MapperPannel.Details.showNavigation",
+          showNavigation.isSelected() ? "true" : "false");
+      needUpdate = true;
     }
-    if (useSeasonImages.isSelected()!= source.getContext().getProperties().getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, "true").equals("true")){
+    if (useSeasonImages.isSelected() != source.getContext().getProperties().getProperty(
+        PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, "true").equals("true")) {
       // we have a change here
-      source.getContext().getProperties().setProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, useSeasonImages.isSelected() ? "true" : "false");
-      needUpdate=true;
+      source.getContext().getProperties().setProperty(
+          PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES,
+          useSeasonImages.isSelected() ? "true" : "false");
+      needUpdate = true;
     }
-    
-    if (needUpdate){
-      source.getContext().getEventDispatcher().fire(new GameDataEvent(this,source.getGameData()));
+
+    if (needUpdate) {
+      source.getContext().getEventDispatcher().fire(new GameDataEvent(this, source.getGameData()));
     } else {
       source.getMapper().repaint(100);
     }
-    
+
   }
 
   /**
    * DOCUMENT-ME
-   * 
-   * 
    */
   public String getTitle() {
     return Resources.get("mapperpanel.prefs.title");
   }
 }
-

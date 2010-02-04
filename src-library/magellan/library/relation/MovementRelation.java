@@ -18,32 +18,30 @@ import java.util.List;
 import magellan.library.CoordinateID;
 import magellan.library.Unit;
 
-
 /**
  * A relation indicating a movement of a unit.
  */
 public class MovementRelation extends UnitRelation implements LongOrderRelation {
-	/** This list consists of the reached coordinates (starting with the current region) */
-	public final List<CoordinateID> movement;
-
-	/**
-	 * Creates a new MovementRelation object.
-	 *
-	 * @param s The source unit
-	 * @param m The list of region coordinates
-	 * @param line The line in the source's orders
-	 */
-	public MovementRelation(Unit u, List<CoordinateID> m, int line) {
-		super(u, line);
-		this.movement = m;
-	}
-
+  /** This list consists of the reached coordinates (starting with the current region) */
+  public final List<CoordinateID> movement;
 
   /**
-	 * @see magellan.library.relation.UnitRelation#toString()
-	 */
-	@Override
+   * Creates a new MovementRelation object.
+   * 
+   * @param s The source unit
+   * @param m The list of region coordinates
+   * @param line The line in the source's orders
+   */
+  public MovementRelation(Unit u, List<CoordinateID> m, int line) {
+    super(u, line);
+    movement = m;
+  }
+
+  /**
+   * @see magellan.library.relation.UnitRelation#toString()
+   */
+  @Override
   public String toString() {
-		return super.toString() + "@MOVEMENT=" + movement;
-	}
+    return super.toString() + "@MOVEMENT=" + movement;
+  }
 }

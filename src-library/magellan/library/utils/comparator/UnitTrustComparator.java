@@ -17,49 +17,41 @@ import java.util.Comparator;
 
 import magellan.library.Unit;
 
-
 /**
  * A comparator imposing an ordering on Unit objects by comparing their health status
- * 
  * <p>
  * Note: this comparator imposes orderings that are inconsistent with equals.
  * </p>
- * 
  * <p>
  * In order to overcome the inconsistency with equals this comparator allows the introduction of a
  * sub-comparator which is applied in cases of equality.
  * </p>
- *
+ * 
  * @author Ulrich Küster
  */
 public class UnitTrustComparator implements Comparator<Unit> {
-	protected Comparator<? super Unit> subCmp = null;
+  protected Comparator<? super Unit> subCmp = null;
 
-	/**
-	 * Creates a new UnitTrustComparator object.
-	 *
-	 * @param subComparator if two units have the same health-status, this sub-comparator is
-	 * 		  applied if it is not <tt>null</tt>.
-	 */
-	public UnitTrustComparator(Comparator<? super Unit> subComparator) {
-		subCmp = subComparator;
-	}
+  /**
+   * Creates a new UnitTrustComparator object.
+   * 
+   * @param subComparator if two units have the same health-status, this sub-comparator is applied
+   *          if it is not <tt>null</tt>.
+   */
+  public UnitTrustComparator(Comparator<? super Unit> subComparator) {
+    subCmp = subComparator;
+  }
 
-	/** DOCUMENT-ME */
-	public static final UnitTrustComparator DEFAULT_COMPARATOR = new UnitTrustComparator(null);
+  /** DOCUMENT-ME */
+  public static final UnitTrustComparator DEFAULT_COMPARATOR = new UnitTrustComparator(null);
 
-	/**
-	 * Compares its two arguments for order according to the health-status
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public int compare(Unit o1, Unit o2) {
-		int ret = FactionTrustComparator.DEFAULT_COMPARATOR.compare(o1.getFaction(),o2.getFaction());
+  /**
+   * Compares its two arguments for order according to the health-status
+   */
+  public int compare(Unit o1, Unit o2) {
+    int ret = FactionTrustComparator.DEFAULT_COMPARATOR.compare(o1.getFaction(), o2.getFaction());
 
-		// if equality found, ask sub comparator
-		return ((ret == 0) && (subCmp != null)) ? subCmp.compare(o1, o2) : ret;
-	}
+    // if equality found, ask sub comparator
+    return ((ret == 0) && (subCmp != null)) ? subCmp.compare(o1, o2) : ret;
+  }
 }

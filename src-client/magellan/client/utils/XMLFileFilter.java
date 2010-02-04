@@ -31,7 +31,7 @@ import magellan.library.utils.Resources;
 
 /**
  * Accepts XML files.
- *
+ * 
  * @author ...
  * @version 1.0, 29.11.2007
  */
@@ -42,10 +42,10 @@ public class XMLFileFilter extends FileFilter {
    */
   @Override
   public boolean accept(File f) {
-    if (f==null) {
+    if (f == null)
       return false;
-    }
-    return (f.getName().toLowerCase().endsWith(Resources.get("eresseafilefilter.dock.extension").toLowerCase()));
+    return (f.getName().toLowerCase().endsWith(Resources.get("eresseafilefilter.dock.extension")
+        .toLowerCase()));
   }
 
   /**

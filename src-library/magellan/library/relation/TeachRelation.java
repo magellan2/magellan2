@@ -19,26 +19,26 @@ import magellan.library.Unit;
  * A relation indicating that the source unit has a LEHREN order for the target unit.
  */
 public class TeachRelation extends InterUnitRelation implements LongOrderRelation {
-	/**
-	 * Creates a new TeachRelation object.
-	 *
-	 * @param s The source unit
-	 * @param t The target unit
-	 * @param line The line in the source's orders
-	 */
-	public TeachRelation(Unit s, Unit t, int line) {
-		super(s, t, line);
-	}
+  /**
+   * Creates a new TeachRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target unit
+   * @param line The line in the source's orders
+   */
+  public TeachRelation(Unit s, Unit t, int line) {
+    super(s, t, line);
+  }
 
-	/**
-	 * Creates a new TeachRelation object.
-	 *
-	 * @param s The source unit
-	 * @param t The target unit
-	 * @param line The line in the source's orders
-	 * @param w <code>true</code> iff this relation causes a warning
-	 */
-	public TeachRelation(Unit s, Unit t, int line, boolean w) {
-		super(s, t, line, w);
-	}
+  /**
+   * Creates a new TeachRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target unit
+   * @param line The line in the source's orders
+   * @param w <code>true</code> iff this relation causes a warning
+   */
+  public TeachRelation(Unit s, Unit t, int line, boolean w) {
+    super(s, t, line, w);
+  }
 }

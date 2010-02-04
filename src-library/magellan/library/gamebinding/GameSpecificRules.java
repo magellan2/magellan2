@@ -29,11 +29,10 @@ import magellan.library.Unit;
 import magellan.library.rules.Race;
 import magellan.library.rules.UnitContainerType;
 
-
 /**
- * This interface must be implemented to create game specific
- * rule informations like maxWorkers, maxEntertainers and so on.
- *
+ * This interface must be implemented to create game specific rule informations like maxWorkers,
+ * maxEntertainers and so on.
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 19.04.2009
  */
@@ -43,30 +42,27 @@ public interface GameSpecificRules {
    * Returns the amount of max workers in a specific region.
    */
   public Integer getMaxWorkers(Region region);
-  
-  
+
   /**
    * Returns the amount of max entertainment in a specific region.
    */
   public Integer getMaxEntertain(Region region);
-  
+
   /**
    * Returns the amount of max entertainment in a specific region.
    */
   public Integer getMaxOldEntertain(Region region);
-  
+
   /**
-   * Returns true, if the given ship is really a ship, because
-   * f.e. in Allanon a Karawane is marked as a ship, but it's
-   * travelling on land.
+   * Returns true, if the given ship is really a ship, because f.e. in Allanon a Karawane is marked
+   * as a ship, but it's travelling on land.
    */
   public boolean isShip(Ship ship);
-  
+
   /**
    * This method checks if a ship can land in a specific region
    */
   public boolean canLandInRegion(Ship ship, Region region);
-
 
   /**
    * Returns the current maximum range of a ship.
@@ -74,45 +70,42 @@ public interface GameSpecificRules {
   public int getShipRange(Ship s);
 
   /**
-   * Returns the wage for <code>race</code> in <code>region</code> or -1 if unknown or not applicable. 
+   * Returns the wage for <code>race</code> in <code>region</code> or -1 if unknown or not
+   * applicable.
    */
   public int getWage(Region region, Race race);
-
 
   /**
    * Returns the amount of silver that peasants need to survive.
    */
   public int getPeasantMaintenance(Region region);
 
-
   /**
    * Returns the amount of students that one teacher can teach.
    */
   public int getTeachFactor();
-
 
   /**
    * Returns the number of silver pieces per weight unit (GE).
    */
   public int getSilverPerWeightUnit();
 
-
   /**
    * Returns true if the type is a castle (Befestigung, Turm, ...)
    */
   public boolean isCastle(UnitContainerType type);
 
-
   /**
    * Returns the maximum number of horses the unit can handle while walking.
-   * @param u 
+   * 
+   * @param u
    */
   public int getMaxHorsesWalking(Unit u);
 
-
   /**
    * Returns the maximum number of horses the unit can handle while riding.
-   * @param u 
+   * 
+   * @param u
    */
   public int getMaxHorsesRiding(Unit u);
 

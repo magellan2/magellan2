@@ -17,25 +17,24 @@ import java.util.Properties;
 
 import magellan.client.event.EventDispatcher;
 
-
 /**
- * This class keeps all anchors to global resources e.g. EventDispatcher, Properties, perhaps different stuff<br>
+ * This class keeps all anchors to global resources e.g. EventDispatcher, Properties, perhaps
+ * different stuff<br>
  */
 public interface MagellanEnvironment {
 
-	/** 
-	 * Returns the properties of Magellan.
-	 */
-	public Properties getProperties();
-	
-	/** 
-	 * Returns the EventDispatcher of Magellan.
-	 */
-	public EventDispatcher getEventDispatcher();
-	
-	/** 
-	 * Initializes global resources.
-	 */
-	public void init();
-}
+  /**
+   * Returns the properties of Magellan.
+   */
+  public Properties getProperties();
 
+  /**
+   * Returns the EventDispatcher of Magellan.
+   */
+  public EventDispatcher getEventDispatcher();
+
+  /**
+   * Initializes global resources.
+   */
+  public void init();
+}

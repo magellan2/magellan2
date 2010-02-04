@@ -20,46 +20,44 @@ import magellan.client.actions.MenuAction;
 import magellan.client.swing.SetOriginDialog;
 import magellan.library.utils.Resources;
 
-
 /**
  * Changes the origin.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class SetOriginAction extends MenuAction {
 
-	/**
-	 * Creates a new SetOriginAction object.
-	 *
-	 * @param client
-	 */
-	public SetOriginAction(Client client) {
-        super(client);
-	}
+  /**
+   * Creates a new SetOriginAction object.
+   * 
+   * @param client
+   */
+  public SetOriginAction(Client client) {
+    super(client);
+  }
 
-	/**
-	 * Opens the SetOriginDialog, waits for user input
-	 * if approved, then setOrigin of class Client is called
-	 * sets the new Origin
-	 *
-	 * @param e 
-	 */
-	@Override
+  /**
+   * Opens the SetOriginDialog, waits for user input if approved, then setOrigin of class Client is
+   * called sets the new Origin
+   * 
+   * @param e
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		SetOriginDialog dialog = new SetOriginDialog(client, client.getDispatcher(), client.getData());
-		dialog.setVisible(true);
-		if (dialog.approved()){
-			client.setOrigin(dialog.getNewOrigin());
-		}
-	}
+    SetOriginDialog dialog = new SetOriginDialog(client, client.getDispatcher(), client.getData());
+    dialog.setVisible(true);
+    if (dialog.approved()) {
+      client.setOrigin(dialog.getNewOrigin());
+    }
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.setoriginaction.accelerator",false);
+    return Resources.get("actions.setoriginaction.accelerator", false);
   }
 
   /**
@@ -67,7 +65,7 @@ public class SetOriginAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.setoriginaction.mnemonic",false);
+    return Resources.get("actions.setoriginaction.mnemonic", false);
   }
 
   /**
@@ -80,6 +78,6 @@ public class SetOriginAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.setoriginaction.tooltip",false);
+    return Resources.get("actions.setoriginaction.tooltip", false);
   }
 }

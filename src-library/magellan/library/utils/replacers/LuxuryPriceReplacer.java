@@ -20,54 +20,48 @@ import magellan.library.Region;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author unknown
  * @version 1.0
  */
 public class LuxuryPriceReplacer extends AbstractParameterReplacer {
-	/**
-	 * Creates a new LuxuryPriceReplacer object.
-	 */
-	public LuxuryPriceReplacer() {
-		super(1);
-	}
+  /**
+   * Creates a new LuxuryPriceReplacer object.
+   */
+  public LuxuryPriceReplacer() {
+    super(1);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Object getReplacement(Object o) {
-		if(o instanceof Region) {
-			Region r = (Region) o;
+  /**
+   * DOCUMENT-ME
+   */
+  public Object getReplacement(Object o) {
+    if (o instanceof Region) {
+      Region r = (Region) o;
 
-			if(r.getPrices() == null) {
-				return null;
-			}
+      if (r.getPrices() == null)
+        return null;
 
-			String luxury = getParameter(0, o).toString();
-			Iterator<LuxuryPrice> it = r.getPrices().values().iterator();
+      String luxury = getParameter(0, o).toString();
+      Iterator<LuxuryPrice> it = r.getPrices().values().iterator();
 
-			while(it.hasNext()) {
-				LuxuryPrice lp = it.next();
-				ItemType ity = lp.getItemType();
+      while (it.hasNext()) {
+        LuxuryPrice lp = it.next();
+        ItemType ity = lp.getItemType();
 
-				if(ity.getName().equals(luxury) || ity.getID().toString().equals(luxury)) {
-					return new Integer(lp.getPrice());
-				}
-			}
-		}
+        if (ity.getName().equals(luxury) || ity.getID().toString().equals(luxury))
+          return new Integer(lp.getPrice());
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
   @Override
   public String getDescription() {
-    return Resources.get("util.replacers.luxurypricereplacer.description")+"\n\n"+super.getDescription();
+    return Resources.get("util.replacers.luxurypricereplacer.description") + "\n\n"
+        + super.getDescription();
   }
 }

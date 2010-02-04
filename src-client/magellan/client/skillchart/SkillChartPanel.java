@@ -338,9 +338,9 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
   public String getToolTip(int i) {
     SkillType type = (SkillType) skills.getSelectedItem();
 
-    if ((type == null) || (i >= skillStats.getKnownSkills(type).size())) {
+    if ((type == null) || (i >= skillStats.getKnownSkills(type).size()))
       return null;
-    } else {
+    else {
       Skill skill = skillStats.getKnownSkills(type).get(i);
       String retVal =
           Resources.get("skillchart.skillchartpanel.labeltext.totalpersons")

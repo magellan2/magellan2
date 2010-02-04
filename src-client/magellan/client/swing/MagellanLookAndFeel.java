@@ -40,537 +40,484 @@ import magellan.library.utils.Colors;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas Gampe
  * @author Ilja Pavkovic
  * @version 1.0
  */
 public class MagellanLookAndFeel {
-	private static final Logger log = Logger.getInstance(MagellanLookAndFeel.class);
+  private static final Logger log = Logger.getInstance(MagellanLookAndFeel.class);
 
-	private static File magellanDirectory=null;
-	
-	
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static void loadBackground(Properties settings) {
-		String s = settings.getProperty("MagLookAndFeel.Background");
+  private static File magellanDirectory = null;
 
-		if(s != null) {
-			Color col = null;
+  /**
+   * DOCUMENT-ME
+   */
+  public static void loadBackground(Properties settings) {
+    String s = settings.getProperty("MagLookAndFeel.Background");
 
-			try {
-				col = Colors.decode(s);
-			} catch(RuntimeException exc) {
-			}
+    if (s != null) {
+      Color col = null;
 
-			if(col != null) {
-				MagellanLookAndFeel.setBackground(col, settings);
-			}
-		}
-	}
+      try {
+        col = Colors.decode(s);
+      } catch (RuntimeException exc) {
+      }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 */
-	public static void setBackground(Color col, Properties settings) {
-		if(col.equals(MetalLookAndFeel.getWindowBackground())) {
-			return;
-		}
+      if (col != null) {
+        MagellanLookAndFeel.setBackground(col, settings);
+      }
+    }
+  }
 
-		MetalTheme mt = new MagMetalTheme(col);
-		MetalLookAndFeel.setCurrentTheme(mt);
+  /**
+   * DOCUMENT-ME
+   */
+  public static void setBackground(Color col, Properties settings) {
+    if (col.equals(MetalLookAndFeel.getWindowBackground()))
+      return;
 
-		DesktopEnvironment.updateLaF();
-		DesktopEnvironment.repaintAll();
+    MetalTheme mt = new MagMetalTheme(col);
+    MetalLookAndFeel.setCurrentTheme(mt);
 
-		if(settings != null) {
-			if(!col.equals(Color.white)) {
-				settings.setProperty("MagLookAndFeel.Background", Colors.encode(col));
-			} else {
-				settings.remove("MagLookAndFeel.Background");
-			}
-		}
-	}
+    DesktopEnvironment.updateLaF();
+    DesktopEnvironment.repaintAll();
 
-	protected static class MagMetalTheme extends DefaultMetalTheme {
-		protected ColorUIResource magDesktopColor;
+    if (settings != null) {
+      if (!col.equals(Color.white)) {
+        settings.setProperty("MagLookAndFeel.Background", Colors.encode(col));
+      } else {
+        settings.remove("MagLookAndFeel.Background");
+      }
+    }
+  }
 
-		/**
-		 * Creates a new MagMetalTheme object.
-		 *
-		 * 
-		 */
-		public MagMetalTheme(Color col) {
-			magDesktopColor = new ColorUIResource(col);
-		}
+  protected static class MagMetalTheme extends DefaultMetalTheme {
+    protected ColorUIResource magDesktopColor;
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		@Override
+    /**
+     * Creates a new MagMetalTheme object.
+     */
+    public MagMetalTheme(Color col) {
+      magDesktopColor = new ColorUIResource(col);
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
     public ColorUIResource getWindowBackground() {
-			return magDesktopColor;
-		}
-	}
+      return magDesktopColor;
+    }
+  }
 
-	/**
-	 * Function determines if name of current look and feel corresponds to given laf name.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public static boolean equals(String laf) {
-		return UIManager.getLookAndFeel().getName().equals(laf);
-	}
+  /**
+   * Function determines if name of current look and feel corresponds to given laf name.
+   */
+  public static boolean equals(String laf) {
+    return UIManager.getLookAndFeel().getName().equals(laf);
+  }
 
-	/** a static variable to initialize look and feels only once */
-	private static Map<String,MagLookAndFeelWrapper> lafCache;
+  /** a static variable to initialize look and feels only once */
+  private static Map<String, MagLookAndFeelWrapper> lafCache;
 
-	/**
-	 * Delivers a Map (String, MagLookAndFeelWrapper) of possibly useable look and feel
-	 * implementations
-	 *
-	 * 
-	 */
-	public static Map<String,MagLookAndFeelWrapper> getLookAndFeels() {
-		if(MagellanLookAndFeel.lafCache == null) {
-			Map<String,MagLookAndFeelWrapper> lookAndFeels = new Hashtable<String, MagLookAndFeelWrapper>();
+  /**
+   * Delivers a Map (String, MagLookAndFeelWrapper) of possibly useable look and feel
+   * implementations
+   */
+  public static Map<String, MagLookAndFeelWrapper> getLookAndFeels() {
+    if (MagellanLookAndFeel.lafCache == null) {
+      Map<String, MagLookAndFeelWrapper> lookAndFeels =
+          new Hashtable<String, MagLookAndFeelWrapper>();
 
-			//Map defaultMap   = CollectionFactory.createTreeMap();
-			try {
-			  
-			  // Trying to find plaf.ini
-			  File plafFile = new File("etc/plaf.ini");
-			  if (!plafFile.exists()){
-			    // use magDir
-			    plafFile = new File(MagellanLookAndFeel.magellanDirectory,"etc/plaf.ini");
-			    if (!plafFile.exists()){
-			      // OK give up here
-			      MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini");
-			      return null;
-			    }
-			  }
-			  
-				FileInputStream ir = new FileInputStream(plafFile);
+      // Map defaultMap = CollectionFactory.createTreeMap();
+      try {
 
-				if(ir != null) {
-					Properties plaf_ini = new Properties();
-					plaf_ini.load(ir);
-					ir.close();
+        // Trying to find plaf.ini
+        File plafFile = new File("etc/plaf.ini");
+        if (!plafFile.exists()) {
+          // use magDir
+          plafFile = new File(MagellanLookAndFeel.magellanDirectory, "etc/plaf.ini");
+          if (!plafFile.exists()) {
+            // OK give up here
+            MagellanLookAndFeel.log
+                .error("MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini");
+            return null;
+          }
+        }
 
-					String s = (String) plaf_ini.get("plaf.count");
-					int plafCount = 0;
+        FileInputStream ir = new FileInputStream(plafFile);
 
-					if(s != null) {
-						plafCount = Integer.parseInt(s);
-					}
+        if (ir != null) {
+          Properties plaf_ini = new Properties();
+          plaf_ini.load(ir);
+          ir.close();
 
-					for(int i = 0; i < plafCount; i++) {
-						String name = plaf_ini.getProperty("plaf.name." + i);
-						String clazz = plaf_ini.getProperty("plaf.class." + i);
-						String theme = plaf_ini.getProperty("plaf.themepack." + i);
-						String jre = plaf_ini.getProperty("plaf.jre." + i, "1.3");
+          String s = (String) plaf_ini.get("plaf.count");
+          int plafCount = 0;
 
-						if((name != null) && (clazz != null)) {
-							try {
-								Class<?> c = Class.forName(clazz);
-								LookAndFeel laf = (LookAndFeel) c.newInstance();
+          if (s != null) {
+            plafCount = Integer.parseInt(s);
+          }
 
-								if(laf.isSupportedLookAndFeel()) {
-									if(MagellanLookAndFeel.checkJREIsRunning(jre)) {
-										if((theme == null) || MagellanLookAndFeel.canLoadSkinLFThemepack(theme)) {
-											MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name +
-													  "," + clazz + "): " + laf.getID());
-											lookAndFeels.put(name,
-															 new MagLookAndFeelWrapper(name, laf,
-																					   theme));
+          for (int i = 0; i < plafCount; i++) {
+            String name = plaf_ini.getProperty("plaf.name." + i);
+            String clazz = plaf_ini.getProperty("plaf.class." + i);
+            String theme = plaf_ini.getProperty("plaf.themepack." + i);
+            String jre = plaf_ini.getProperty("plaf.jre." + i, "1.3");
 
-											//defaultMap.put(prio,name);
-										}
-									}
-								}
-							} catch(ClassNotFoundException e) {
-								if(MagellanLookAndFeel.log.isDebugEnabled()) {
-									MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name + "," +
-											  clazz + "): class not found.");
-								}
-							} catch(InstantiationException e) {
-								MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeel(" + name + "," +
-										  clazz + "): unable to instantiate.");
-							} catch(IllegalAccessException e) {
-								MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeel(" + name + "," +
-										  clazz + "): unable to access instantiation method.");
-							}
-						}
-					}
-				}
-			} catch(IOException ioe) {
-				MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini",
-						  ioe);
-			}
+            if ((name != null) && (clazz != null)) {
+              try {
+                Class<?> c = Class.forName(clazz);
+                LookAndFeel laf = (LookAndFeel) c.newInstance();
 
-			synchronized(MagellanLookAndFeel.class) {
-				MagellanLookAndFeel.lafCache = lookAndFeels;
+                if (laf.isSupportedLookAndFeel()) {
+                  if (MagellanLookAndFeel.checkJREIsRunning(jre)) {
+                    if ((theme == null) || MagellanLookAndFeel.canLoadSkinLFThemepack(theme)) {
+                      MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name
+                          + "," + clazz + "): " + laf.getID());
+                      lookAndFeels.put(name, new MagLookAndFeelWrapper(name, laf, theme));
 
-				//defaultLafCache = new LinkedList();
-				//for(Iterator iter=defaultMap.keySet().iterator(); iter.hasNext(); ) {
-				//	defaultLafCache.add(defaultMap.get(iter.next()));
-				//}
-			}
-		}
+                      // defaultMap.put(prio,name);
+                    }
+                  }
+                }
+              } catch (ClassNotFoundException e) {
+                if (MagellanLookAndFeel.log.isDebugEnabled()) {
+                  MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name + ","
+                      + clazz + "): class not found.");
+                }
+              } catch (InstantiationException e) {
+                MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeel(" + name + ","
+                    + clazz + "): unable to instantiate.");
+              } catch (IllegalAccessException e) {
+                MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeel(" + name + ","
+                    + clazz + "): unable to access instantiation method.");
+              }
+            }
+          }
+        }
+      } catch (IOException ioe) {
+        MagellanLookAndFeel.log.error(
+            "MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini", ioe);
+      }
 
-		return Collections.unmodifiableMap(MagellanLookAndFeel.lafCache);
-	}
+      synchronized (MagellanLookAndFeel.class) {
+        MagellanLookAndFeel.lafCache = lookAndFeels;
 
-	private static boolean checkJREIsRunning(String jre) {
-		if(jre.startsWith("1.4")) {
-			return JVMUtilities.JRE_1_4_PLUS;
-		}
+        // defaultLafCache = new LinkedList();
+        // for(Iterator iter=defaultMap.keySet().iterator(); iter.hasNext(); ) {
+        // defaultLafCache.add(defaultMap.get(iter.next()));
+        // }
+      }
+    }
 
-		return JVMUtilities.JRE_1_3_PLUS;
-	}
+    return Collections.unmodifiableMap(MagellanLookAndFeel.lafCache);
+  }
 
-	private static Class<?> getSkinLFClass() throws ClassNotFoundException {
-		return Class.forName("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
-	}
+  private static boolean checkJREIsRunning(String jre) {
+    if (jre.startsWith("1.4"))
+      return JVMUtilities.JRE_1_4_PLUS;
 
-	private static Class<?> getClearLookManagerClass() throws ClassNotFoundException {
-		return Class.forName("com.jgoodies.clearlook.ClearLookManager");
-	}
+    return JVMUtilities.JRE_1_3_PLUS;
+  }
 
-	private static Class<?> getClearLookModeClass() throws ClassNotFoundException {
-		return Class.forName("com.jgoodies.clearlook.ClearLookMode");
-	}
+  private static Class<?> getSkinLFClass() throws ClassNotFoundException {
+    return Class.forName("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static boolean enableClearLookDebug() {
-		return MagellanLookAndFeel.enableClearLook("DEBUG");
-	}
+  private static Class<?> getClearLookManagerClass() throws ClassNotFoundException {
+    return Class.forName("com.jgoodies.clearlook.ClearLookManager");
+  }
 
-	// 	public static boolean enableClearLookVerbose() {
-	// 		return enableClearLook("VERBOSE");
-	// 	}
-	static {
-		//MagellanLookAndFeel.enableClearLookDebug();
-	}
+  private static Class<?> getClearLookModeClass() throws ClassNotFoundException {
+    return Class.forName("com.jgoodies.clearlook.ClearLookMode");
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static boolean enableClearLookOn() {
-		return MagellanLookAndFeel.enableClearLook("ON");
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public static boolean enableClearLookDebug() {
+    return MagellanLookAndFeel.enableClearLook("DEBUG");
+  }
 
-	private static boolean enableClearLook(String fieldName) {
-		try {
-			// call method public static void ClearLookManager.setMode(fieldName)
-			// fieldName may be "ON", "OFF", "VERBOSE" or "DEBUG"
-			MagellanLookAndFeel.getClearLookManagerClass().getMethod("setMode", new Class[] { MagellanLookAndFeel.getClearLookModeClass() })
-				.invoke(null, new Object[] { MagellanLookAndFeel.getClearLookModeClass().getField(fieldName).get(null) });
+  // public static boolean enableClearLookVerbose() {
+  // return enableClearLook("VERBOSE");
+  // }
+  static {
+    // MagellanLookAndFeel.enableClearLookDebug();
+  }
 
-			if(MagellanLookAndFeel.log.isDebugEnabled()) {
-				MagellanLookAndFeel.log.debug("Enabled ClearLookDebug.");
-			}
+  /**
+   * DOCUMENT-ME
+   */
+  public static boolean enableClearLookOn() {
+    return MagellanLookAndFeel.enableClearLook("ON");
+  }
 
-			return true;
-		} catch(ClassNotFoundException e) {
-			MagellanLookAndFeel.log.error(e);
-		} catch(IllegalAccessException e) {
-			MagellanLookAndFeel.log.error(e);
-		} catch(NoSuchFieldException e) {
-			MagellanLookAndFeel.log.error(e);
-		} catch(NoSuchMethodException e) {
-			MagellanLookAndFeel.log.error(e);
-		} catch(InvocationTargetException e) {
-			MagellanLookAndFeel.log.error(e);
-		} catch(Error e) {
-			MagellanLookAndFeel.log.error(e);
-		}
+  private static boolean enableClearLook(String fieldName) {
+    try {
+      // call method public static void ClearLookManager.setMode(fieldName)
+      // fieldName may be "ON", "OFF", "VERBOSE" or "DEBUG"
+      MagellanLookAndFeel.getClearLookManagerClass().getMethod("setMode",
+          new Class[] { MagellanLookAndFeel.getClearLookModeClass() })
+          .invoke(
+              null,
+              new Object[] { MagellanLookAndFeel.getClearLookModeClass().getField(fieldName).get(
+                  null) });
 
-		if(MagellanLookAndFeel.log.isDebugEnabled()) {
-			MagellanLookAndFeel.log.debug("Failed to invoke ClearLookDebug.");
-		}
+      if (MagellanLookAndFeel.log.isDebugEnabled()) {
+        MagellanLookAndFeel.log.debug("Enabled ClearLookDebug.");
+      }
 
-		return false;
-	}
+      return true;
+    } catch (ClassNotFoundException e) {
+      MagellanLookAndFeel.log.error(e);
+    } catch (IllegalAccessException e) {
+      MagellanLookAndFeel.log.error(e);
+    } catch (NoSuchFieldException e) {
+      MagellanLookAndFeel.log.error(e);
+    } catch (NoSuchMethodException e) {
+      MagellanLookAndFeel.log.error(e);
+    } catch (InvocationTargetException e) {
+      MagellanLookAndFeel.log.error(e);
+    } catch (Error e) {
+      MagellanLookAndFeel.log.error(e);
+    }
 
-	/**
-	 * This is a special function to test if a themepack for skinlf is loadable.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	private static boolean canLoadSkinLFThemepack(String themepack) {
-		return MagellanLookAndFeel.loadSkinLFThemepack(themepack) != null;
-	}
+    if (MagellanLookAndFeel.log.isDebugEnabled()) {
+      MagellanLookAndFeel.log.debug("Failed to invoke ClearLookDebug.");
+    }
 
-	/**
-	 * This is a special function to test if a themepack for skinlf is loadable.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	private static Object loadSkinLFThemepack(String themepack) {
-		try {
-			// call method public static Skin SkinLookAndFeel.loadThemePack(String themepack)
-			return MagellanLookAndFeel.getSkinLFClass().getMethod("loadThemePack", new Class[] { String.class }).invoke(null,
-																									new Object[] {
-																										themepack
-																									});
-		} catch(ClassNotFoundException e) {
-			
-		} catch(IllegalAccessException e) {
-			MagellanLookAndFeel.log.error("MagellanLookAndfeel.loadSkinLFThemepack(" + themepack +
-					  "): unable to access instantiation method.");
-		} catch(NoSuchMethodException e) {
-			MagellanLookAndFeel.log.error("MagellanLookAndfeel.loadSkinLFThemepack(" + themepack +
-					  "): unable to find method loadThemePack.");
-		} catch(InvocationTargetException e) {
-			MagellanLookAndFeel.log.error("MagellanLookAndfeel.loadSkinLFThemepack(" + themepack +
-					  "): InvocationTargetException.", e);
-		} catch(Error e) {
-			MagellanLookAndFeel.log.error("MagellanLookAndfeel.loadSkinLFThemepack(" + themepack +
-					  "): error thrown while loading.", e);
-		}
+    return false;
+  }
 
-		return null;
-	}
+  /**
+   * This is a special function to test if a themepack for skinlf is loadable.
+   */
+  private static boolean canLoadSkinLFThemepack(String themepack) {
+    return MagellanLookAndFeel.loadSkinLFThemepack(themepack) != null;
+  }
 
-	private static boolean prepareSkinLFTheme(String themepack) {
-		try {
-			Object skin = MagellanLookAndFeel.loadSkinLFThemepack(themepack);
+  /**
+   * This is a special function to test if a themepack for skinlf is loadable.
+   */
+  private static Object loadSkinLFThemepack(String themepack) {
+    try {
+      // call method public static Skin SkinLookAndFeel.loadThemePack(String themepack)
+      return MagellanLookAndFeel.getSkinLFClass().getMethod("loadThemePack",
+          new Class[] { String.class }).invoke(null, new Object[] { themepack });
+    } catch (ClassNotFoundException e) {
 
-			// call method public static Skin SkinLookAndFeel.setSkin(Skin skin)
-			Class<?> cSkin = Class.forName("com.l2fprod.gui.plaf.skin.Skin");
-			MagellanLookAndFeel.getSkinLFClass().getMethod("setSkin", new Class[] { cSkin }).invoke(null,
-																				new Object[] { skin });
+    } catch (IllegalAccessException e) {
+      MagellanLookAndFeel.log.error("MagellanLookAndfeel.loadSkinLFThemepack(" + themepack
+          + "): unable to access instantiation method.");
+    } catch (NoSuchMethodException e) {
+      MagellanLookAndFeel.log.error("MagellanLookAndfeel.loadSkinLFThemepack(" + themepack
+          + "): unable to find method loadThemePack.");
+    } catch (InvocationTargetException e) {
+      MagellanLookAndFeel.log.error("MagellanLookAndfeel.loadSkinLFThemepack(" + themepack
+          + "): InvocationTargetException.", e);
+    } catch (Error e) {
+      MagellanLookAndFeel.log.error("MagellanLookAndfeel.loadSkinLFThemepack(" + themepack
+          + "): error thrown while loading.", e);
+    }
 
-			return true;
-		} catch(ClassNotFoundException e) {
-			
-		} catch(IllegalAccessException e) {
-			MagellanLookAndFeel.log.error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to access instantiation method.");
-		} catch(NoSuchMethodException e) {
-			MagellanLookAndFeel.log.error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to find method setSkin.");
-		} catch(InvocationTargetException e) {
-			MagellanLookAndFeel.log.error("MagellanLookAndfeel.prepareSkinLFTheme(): InvocationTargetException.");
-		}
+    return null;
+  }
 
-		return false;
-	}
+  private static boolean prepareSkinLFTheme(String themepack) {
+    try {
+      Object skin = MagellanLookAndFeel.loadSkinLFThemepack(themepack);
 
-	/**
-	 * boolean
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public static boolean setLookAndFeel(String laf) {
-		if(laf == null) {
-			return false;
-		}
+      // call method public static Skin SkinLookAndFeel.setSkin(Skin skin)
+      Class<?> cSkin = Class.forName("com.l2fprod.gui.plaf.skin.Skin");
+      MagellanLookAndFeel.getSkinLFClass().getMethod("setSkin", new Class[] { cSkin }).invoke(null,
+          new Object[] { skin });
 
-		LookAndFeel old = UIManager.getLookAndFeel();
-		LookAndFeel olaf = MagellanLookAndFeel.getLookAndFeels().get(laf);
+      return true;
+    } catch (ClassNotFoundException e) {
 
-		if(olaf == null) {
-			MagellanLookAndFeel.log.error("Could not switch look and feel to " + laf + ")" + olaf);
+    } catch (IllegalAccessException e) {
+      MagellanLookAndFeel.log
+          .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to access instantiation method.");
+    } catch (NoSuchMethodException e) {
+      MagellanLookAndFeel.log
+          .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to find method setSkin.");
+    } catch (InvocationTargetException e) {
+      MagellanLookAndFeel.log
+          .error("MagellanLookAndfeel.prepareSkinLFTheme(): InvocationTargetException.");
+    }
 
-			return false;
-		}
+    return false;
+  }
 
-		try {
-			UIManager.setLookAndFeel(olaf);
-		} catch(Exception e) {
-			MagellanLookAndFeel.log.info("Could not switch look and feel to " + laf + "(" + olaf + ")");
+  /**
+   * boolean
+   */
+  public static boolean setLookAndFeel(String laf) {
+    if (laf == null)
+      return false;
 
-			if(MagellanLookAndFeel.log.isDebugEnabled()) {
-				MagellanLookAndFeel.log.debug("Could not switch look and feel to " + laf + "(" + olaf + ")", e);
-			}
+    LookAndFeel old = UIManager.getLookAndFeel();
+    LookAndFeel olaf = MagellanLookAndFeel.getLookAndFeels().get(laf);
 
-			try {
-				UIManager.setLookAndFeel(old);
-			} catch(UnsupportedLookAndFeelException ue) {
-			}
+    if (olaf == null) {
+      MagellanLookAndFeel.log.error("Could not switch look and feel to " + laf + ")" + olaf);
 
-			return false;
-		}
+      return false;
+    }
 
-		try {
-			MagellanLookAndFeel.log.info("MagellanLookAndfeel.setLookAndFeel(" + laf + "): " +
-					 UIManager.getLookAndFeel().getClass() + ", " +
-					 UIManager.getLookAndFeel().getName() + ", " +
-					 UIManager.getLookAndFeel().getID());
-		} catch(Exception e) {
-		}
+    try {
+      UIManager.setLookAndFeel(olaf);
+    } catch (Exception e) {
+      MagellanLookAndFeel.log.info("Could not switch look and feel to " + laf + "(" + olaf + ")");
 
-		return true;
-	}
+      if (MagellanLookAndFeel.log.isDebugEnabled()) {
+        MagellanLookAndFeel.log.debug(
+            "Could not switch look and feel to " + laf + "(" + olaf + ")", e);
+      }
 
-	/**
-	 * Function delivers a sorted list of look and feel names
-	 *
-	 * 
-	 */
-	public static List<String> getLookAndFeelNames() {
-		List<String> s = new ArrayList<String>();
-		s.addAll(MagellanLookAndFeel.getLookAndFeels().keySet());
-		Collections.sort(s);
+      try {
+        UIManager.setLookAndFeel(old);
+      } catch (UnsupportedLookAndFeelException ue) {
+      }
 
-		return s;
-	}
+      return false;
+    }
 
-	/**
-	 * a wrapper class for two purposes: a) storing a possible themepack name b) adjust name of the
-	 * look and feel to given string
-	 */
-	private static class MagLookAndFeelWrapper extends BasicLookAndFeel {
-		private String name;
-		private String theme;
-		private LookAndFeel delegateTo;
+    try {
+      MagellanLookAndFeel.log.info("MagellanLookAndfeel.setLookAndFeel(" + laf + "): "
+          + UIManager.getLookAndFeel().getClass() + ", " + UIManager.getLookAndFeel().getName()
+          + ", " + UIManager.getLookAndFeel().getID());
+    } catch (Exception e) {
+    }
 
-		/**
-		 * Creates a new MagLookAndFeelWrapper object.
-		 *
-		 * 
-		 * 
-		 * 
-		 */
-		public MagLookAndFeelWrapper(String name, LookAndFeel laf, String theme) {
-			this.name = name;
-			this.delegateTo = laf;
-			this.theme = theme;
-		}
+    return true;
+  }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public String getTheme() {
-			return theme;
-		}
+  /**
+   * Function delivers a sorted list of look and feel names
+   */
+  public static List<String> getLookAndFeelNames() {
+    List<String> s = new ArrayList<String>();
+    s.addAll(MagellanLookAndFeel.getLookAndFeels().keySet());
+    Collections.sort(s);
 
-		//delegation of all methods
+    return s;
+  }
 
-		/*
-		// @since 1.4
-		public void provideErrorFeedback(Component component) {
-		    delegateTo.provideErrorFeedback(component);
-		}
-		*/
-		@Override
+  /**
+   * a wrapper class for two purposes: a) storing a possible themepack name b) adjust name of the
+   * look and feel to given string
+   */
+  private static class MagLookAndFeelWrapper extends BasicLookAndFeel {
+    private String name;
+    private String theme;
+    private LookAndFeel delegateTo;
+
+    /**
+     * Creates a new MagLookAndFeelWrapper object.
+     */
+    public MagLookAndFeelWrapper(String name, LookAndFeel laf, String theme) {
+      this.name = name;
+      delegateTo = laf;
+      this.theme = theme;
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public String getTheme() {
+      return theme;
+    }
+
+    // delegation of all methods
+
+    /*
+     * // @since 1.4 public void provideErrorFeedback(Component component) {
+     * delegateTo.provideErrorFeedback(component); }
+     */
+    @Override
     public String getID() {
-			// NO delegation
-			return delegateTo.getID();
-		}
+      // NO delegation
+      return delegateTo.getID();
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		@Override
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
     public String getName() {
-			// NO delegation
-			return name;
-		}
+      // NO delegation
+      return name;
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		@Override
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
     public String getDescription() {
-			return delegateTo.getDescription();
-		}
+      return delegateTo.getDescription();
+    }
 
-		/*
-		//  @since 1.4
-		public boolean getSupportsWindowDecorations() {
-		    return false;
-		}
-		*/
-		@Override
+    /*
+     * // @since 1.4 public boolean getSupportsWindowDecorations() { return false; }
+     */
+    @Override
     public boolean isNativeLookAndFeel() {
-			return delegateTo.isNativeLookAndFeel();
-		}
+      return delegateTo.isNativeLookAndFeel();
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		@Override
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
     public boolean isSupportedLookAndFeel() {
-			return delegateTo.isSupportedLookAndFeel();
-		}
+      return delegateTo.isSupportedLookAndFeel();
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 */
-		@Override
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
     public void initialize() {
-			if(theme != null) {
-				MagellanLookAndFeel.prepareSkinLFTheme(theme);
+      if (theme != null) {
+        MagellanLookAndFeel.prepareSkinLFTheme(theme);
 
-				// do some skinlf initialitation
-			}
+        // do some skinlf initialitation
+      }
 
-			delegateTo.initialize();
-		}
+      delegateTo.initialize();
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 */
-		@Override
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
     public void uninitialize() {
-			delegateTo.uninitialize();
-		}
+      delegateTo.uninitialize();
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		@Override
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
     public UIDefaults getDefaults() {
-			return delegateTo.getDefaults();
-		}
+      return delegateTo.getDefaults();
+    }
 
-		/*
-		public String toString() {
-		    return "[" + getDescription() + " - " + getClass().getName() + "]";
-		}
-		*/
-	}
+    /*
+     * public String toString() { return "[" + getDescription() + " - " + getClass().getName() +
+     * "]"; }
+     */
+  }
 
   /**
    * Sets the value of magellanDirectory.
-   *
+   * 
    * @param magellanDirectory The value for magellanDirectory.
    */
   public static void setMagellanDirectory(File magellanDirectory) {

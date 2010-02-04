@@ -39,16 +39,15 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
- * This plugin allows it to control the state of all faction to a group based
- * on a table layout. This plugin provides a dock which contains a table. The
- * column contains the groups. The rows are the factions. In the cells you can
- * find the help state of a group for a faction.
- *
+ * This plugin allows it to control the state of all faction to a group based on a table layout.
+ * This plugin provides a dock which contains a table. The column contains the groups. The rows are
+ * the factions. In the cells you can find the help state of a group for a faction.
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 25.09.2008
  */
 public class GroupEditorPlugIn implements MagellanPlugIn {
-  private static Logger log = null; 
+  private static Logger log = null;
   private GroupEditorDock dock = null;
 
   /**
@@ -56,9 +55,9 @@ public class GroupEditorPlugIn implements MagellanPlugIn {
    */
   public void init(Client client, Properties properties) {
     GroupEditorPlugIn.log = Logger.getInstance(GroupEditorPlugIn.class);
-    Resources.getInstance().initialize(Client.getSettingsDirectory(),"groupeditor_");
-    this.dock = new GroupEditorDock(client);
-    log.info(getName()+" initialized...(Client)");
+    Resources.getInstance().initialize(Client.getSettingsDirectory(), "groupeditor_");
+    dock = new GroupEditorDock(client);
+    GroupEditorPlugIn.log.info(getName() + " initialized...(Client)");
   }
 
   /**

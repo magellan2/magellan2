@@ -17,41 +17,31 @@ import magellan.library.Region;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author unknown
  * @version 1.0
  */
 public abstract class AbstractRegionReplacer implements Replacer {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Object getReplacement(Object r) {
-		if((r instanceof Region)) {
-			return getRegionReplacement((Region) r);
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public Object getReplacement(Object r) {
+    if ((r instanceof Region))
+      return getRegionReplacement((Region) r);
 
-		return null;
-	}
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public abstract Object getRegionReplacement(Region r);
+  /**
+   * DOCUMENT-ME
+   */
+  public abstract Object getRegionReplacement(Region r);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *//*
-	public String getDescription() {
-		return magellan.library.utils.Translations.getTranslation(this, "description");
-	}*/
+  /**
+   * DOCUMENT-ME
+   */
+  /*
+   * public String getDescription() { return
+   * magellan.library.utils.Translations.getTranslation(this, "description"); }
+   */
 }

@@ -44,12 +44,10 @@ import javax.swing.event.HyperlinkListener;
 import magellan.client.Client;
 import magellan.library.utils.Resources;
 
-
 /**
- * This is a dialog to edit the script/commands for a given unit.
+ * This is a dialog to edit the script/commands for a given unit. TODO Save dialog positions (size,
+ * location, slider position)
  * 
- * TODO Save dialog positions (size, location, slider position)
- *
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
@@ -63,11 +61,11 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
   private JButton browserButton = null;
   private List<URL> history = new ArrayList<URL>();
   private int pos = 0;
-  
+
   public HelpDock() {
     init();
   }
-  
+
   protected void init() {
     setLayout(new BorderLayout());
 
@@ -80,9 +78,9 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
     help.setCaretPosition(0);
     JScrollPane scrollPane = new JScrollPane(help);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-    
-    helpPanel.add(scrollPane,BorderLayout.CENTER);
-    
+
+    helpPanel.add(scrollPane, BorderLayout.CENTER);
+
     JPanel helpButtonPanel = new JPanel(new FlowLayout());
     homeButton = new JButton("Home");
     homeButton.setEnabled(false);
@@ -106,9 +104,9 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
       browserButton.addActionListener(this);
       helpButtonPanel.add(browserButton);
     }
-    helpPanel.add(helpButtonPanel,BorderLayout.NORTH);
-    
-    add(helpPanel,BorderLayout.CENTER);
+    helpPanel.add(helpButtonPanel, BorderLayout.NORTH);
+
+    add(helpPanel, BorderLayout.CENTER);
   }
 
   /**
@@ -128,7 +126,8 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
         pos--;
         try {
           help.setPage(history.get(pos));
-        } catch (Exception exception) {}
+        } catch (Exception exception) {
+        }
         forwardButton.setEnabled(true);
         if (pos == 0) {
           backwardButton.setEnabled(false);
@@ -143,9 +142,10 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
         pos++;
         try {
           help.setPage(history.get(pos));
-        } catch (Exception exception) {}
+        } catch (Exception exception) {
+        }
         backwardButton.setEnabled(true);
-        if (pos == history.size()-1) {
+        if (pos == history.size() - 1) {
           forwardButton.setEnabled(false);
         }
       }
@@ -153,7 +153,7 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
       try {
         // Loads the new page represented by link clicked
         URI uri = help.getPage().toURI();
-        
+
         // only in Java6 available, so we try to load it.
         // otherwise, we do nothing...
         Class<?> c = Class.forName("java.awt.Desktop");
@@ -161,8 +161,7 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
           Object desktop = c.getMethod("getDesktop").invoke(null);
           c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
         }
-      }
-      catch (Exception exc) {
+      } catch (Exception exc) {
         // we do nothing here...
       }
     }
@@ -175,20 +174,19 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
       try {
         // Loads the new page represented by link clicked
-        URL url = e.getURL() ;
-        help.setPage(url) ;
+        URL url = e.getURL();
+        help.setPage(url);
         pos++;
-        history.add(pos,url);
+        history.add(pos, url);
         backwardButton.setEnabled(true);
         if (!homeButton.isEnabled()) {
           homeButton.setEnabled(true);
         }
-      }
-      catch (Exception exc) {
+      } catch (Exception exc) {
       }
     }
   }
-  
+
   public boolean isBrowserAvailable() {
     try {
       // only in Java6 available, so we try to load it.
@@ -202,13 +200,15 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
       return false;
     }
   }
-  
+
   /**
    * Sets the homepage.
    */
   protected void goHome() {
     File path = null;
-    path = new File(Client.getSettingsDirectory(),Resources.get("extended_commands.help.dialog.overview"));
+    path =
+        new File(Client.getSettingsDirectory(), Resources
+            .get("extended_commands.help.dialog.overview"));
     if (!path.exists()) {
       path = new File(Resources.get("extended_commands.help.dialog.overview"));
     }
@@ -225,7 +225,7 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
         help.setText("Unable to locate help files...");
       }
     } catch (Exception e) {
-      help.setText("Unable to locate help files...\n"+e.getMessage());
+      help.setText("Unable to locate help files...\n" + e.getMessage());
     }
   }
 }

@@ -28,10 +28,15 @@ import magellan.library.CoordinateID;
 public interface RoutingDialogData {
 
   public boolean useVorlage();
+
   public boolean replaceOrders();
+
   public CoordinateID getDestination();
+
   public boolean useRange();
+
   public boolean makeRoute();
+
   public boolean makeSingle();
 
 }

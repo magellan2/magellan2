@@ -98,8 +98,7 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
 
     c.gridy++;
     chkCompact =
-        new JCheckBox(Resources.get("emapdetailspanel.prefs.compact"), source
-            .isCompactLayout());
+        new JCheckBox(Resources.get("emapdetailspanel.prefs.compact"), source.isCompactLayout());
     help.add(chkCompact, c);
 
     return help;

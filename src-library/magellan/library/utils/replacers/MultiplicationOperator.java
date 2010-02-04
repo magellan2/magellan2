@@ -15,36 +15,34 @@ package magellan.library.utils.replacers;
 
 import magellan.library.utils.Resources;
 
-
-
 /**
  * An multiplication operator.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class MultiplicationOperator extends AbstractOperator {
-	/**
-	 * Creates a new MultiplicationOperator object.
-	 */
-	public MultiplicationOperator() {
-		super(2);
-	}
+  /**
+   * Creates a new MultiplicationOperator object.
+   */
+  public MultiplicationOperator() {
+    super(2);
+  }
 
-	/**
-	 * Multiplies two numbers given as arguments.
-	 * 
-	 */
-	@Override
+  /**
+   * Multiplies two numbers given as arguments.
+   */
+  @Override
   public Object compute(Object numbers[]) {
-		return new Float(((Number) numbers[0]).floatValue() * ((Number) numbers[1]).floatValue());
-	}
+    return new Float(((Number) numbers[0]).floatValue() * ((Number) numbers[1]).floatValue());
+  }
 
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   @Override
   public String getDescription() {
-    return Resources.get("util.replacers.multiplicationoperator.description")+"\n\n"+super.getDescription();
+    return Resources.get("util.replacers.multiplicationoperator.description") + "\n\n"
+        + super.getDescription();
   }
 }

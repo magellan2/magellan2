@@ -25,7 +25,7 @@ package magellan.library.utils;
 
 /**
  * This is a wrapper for all possible encodings in the system.
- *
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 13.08.2007
  */
@@ -36,13 +36,13 @@ public enum Encoding {
   UTF8("UTF-8"),
   /** ISO-8859 Encoding */
   ISO("ISO-8859-1");
-  
+
   private String encoding;
-  
+
   private Encoding(String encoding) {
     this.encoding = encoding;
   }
-  
+
   /**
    * @see java.lang.Enum#toString()
    */
@@ -50,20 +50,17 @@ public enum Encoding {
   public String toString() {
     return encoding;
   }
-  
+
   /**
-   * Tries to find the corresponding Encoding enum to
-   * it's name representation.
+   * Tries to find the corresponding Encoding enum to it's name representation.
    */
   public static Encoding getEncoding(String encoding) {
-    if (encoding == null) {
+    if (encoding == null)
       return null;
-    }
     Encoding[] values = Encoding.values();
     for (Encoding e : values) {
-      if (e.toString().equalsIgnoreCase(encoding)) {
+      if (e.toString().equalsIgnoreCase(encoding))
         return e;
-      }
     }
     return null;
   }

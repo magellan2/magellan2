@@ -24,17 +24,16 @@ import magellan.library.completion.OrderParser;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesReader;
 
-
 /**
  * All the stuff needed for Eressea.
- *
+ * 
  * @author $Author: $
  * @version $Revision: 242 $
  */
 public class EresseaSpecificStuff implements GameSpecificStuff {
 
   private static final String name = "Eressea";
-  
+
   private Rules rules;
   private GameSpecificRules gamespecificRules;
   private MapMergeEvaluator mapMergeEvaluator;
@@ -55,102 +54,106 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   public EresseaSpecificStuff() {
     try {
-      this.rules = new RulesReader().readRules(getName());
+      rules = new RulesReader().readRules(getName());
     } catch (IOException e) {
-      this.rules = null;
-      throw new RuntimeException(getName()+" rules not readable", e);
+      rules = null;
+      throw new RuntimeException(getName() + " rules not readable", e);
     }
   }
-  
+
   /**
-	 * This is a callback interface to let the  GameSpecificStuff create the GameData object.
-	 *
-	 * @see magellan.library.gamebinding.GameSpecificStuff#createGameData(java.lang.String)
-	 */
-	public GameData createGameData(String name) {
-		return new CompleteData(rules, name);
-	}
+   * This is a callback interface to let the GameSpecificStuff create the GameData object.
+   * 
+   * @see magellan.library.gamebinding.GameSpecificStuff#createGameData(java.lang.String)
+   */
+  public GameData createGameData(String name) {
+    return new CompleteData(rules, name);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getGameDataIO()
    */
-	public GameDataIO getGameDataIO() {
-		return null;
-	}
+  public GameDataIO getGameDataIO() {
+    return null;
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#postProcess(magellan.library.GameData)
    */
-	public void postProcess(GameData data) {
-		EresseaPostProcessor.getSingleton().postProcess(data);
-	}
+  public void postProcess(GameData data) {
+    EresseaPostProcessor.getSingleton().postProcess(data);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#postProcessAfterTrustlevelChange(magellan.library.GameData)
    */
-	public void postProcessAfterTrustlevelChange(GameData data) {
-		EresseaPostProcessor.getSingleton().postProcessAfterTrustlevelChange(data);
-	}
+  public void postProcessAfterTrustlevelChange(GameData data) {
+    EresseaPostProcessor.getSingleton().postProcessAfterTrustlevelChange(data);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
-	public OrderChanger getOrderChanger() {
-	  if (orderChanger == null)
-	    orderChanger = new EresseaOrderChanger(getRules());
+  public OrderChanger getOrderChanger() {
+    if (orderChanger == null) {
+      orderChanger = new EresseaOrderChanger(getRules());
+    }
     return orderChanger;
-	}
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getRelationFactory()
    */
-	public RelationFactory getRelationFactory() {
-	  if (relationFactory == null)
-	    relationFactory =  new EresseaRelationFactory(getRules());
-	  return relationFactory;
-	}
+  public RelationFactory getRelationFactory() {
+    if (relationFactory == null) {
+      relationFactory = new EresseaRelationFactory(getRules());
+    }
+    return relationFactory;
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getMovementEvaluator()
    */
-	public MovementEvaluator getMovementEvaluator() {
-	  if (movementEvaluator == null) {
+  public MovementEvaluator getMovementEvaluator() {
+    if (movementEvaluator == null) {
       movementEvaluator = new EresseaMovementEvaluator(rules);
     }
     return movementEvaluator;
-	}
+  }
 
   /**
-   * @see magellan.library.gamebinding.GameSpecificStuff#getCompleter(magellan.library.GameData, magellan.library.completion.CompleterSettingsProvider)
+   * @see magellan.library.gamebinding.GameSpecificStuff#getCompleter(magellan.library.GameData,
+   *      magellan.library.completion.CompleterSettingsProvider)
    */
   public Completer getCompleter(GameData data, CompleterSettingsProvider csp) {
-		return new EresseaOrderCompleter(data, csp);
-	}
+    return new EresseaOrderCompleter(data, csp);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
    */
-	public OrderParser getOrderParser(GameData data) {
-		return new EresseaOrderParser(data);
-	}
-  
+  public OrderParser getOrderParser(GameData data) {
+    return new EresseaOrderParser(data);
+  }
+
   /**
    * Delivers the Eressea specific Message Renderer (as of CR VERSION 41)
-   * @param data - A GameData object to enrich the messages with names of units, regions ,...
-   * @return the new EresseaMessageRenderer for rendering ONE message 
    * 
+   * @param data - A GameData object to enrich the messages with names of units, regions ,...
+   * @return the new EresseaMessageRenderer for rendering ONE message
    * @see magellan.library.gamebinding.GameSpecificStuff#getMessageRenderer(magellan.library.GameData)
    */
   public MessageRenderer getMessageRenderer(GameData data) {
     return new EresseaMessageRenderer(data);
   }
-  
+
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getMapMergeEvaluator()
    */
   public MapMergeEvaluator getMapMergeEvaluator() {
-    if (mapMergeEvaluator==null)
+    if (mapMergeEvaluator == null) {
       mapMergeEvaluator = new EresseaMapMergeEvaluator(rules);
+    }
     return mapMergeEvaluator;
   }
 
@@ -165,12 +168,13 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getGameSpecificRules()
    */
   public GameSpecificRules getGameSpecificRules() {
-    if (gamespecificRules == null)
+    if (gamespecificRules == null) {
       gamespecificRules = new EresseaGameSpecificRules(rules);
+    }
     return gamespecificRules;
   }
 
   public String getName() {
-    return name;
+    return EresseaSpecificStuff.name;
   }
 }

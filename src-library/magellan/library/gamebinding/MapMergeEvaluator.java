@@ -57,8 +57,8 @@ import magellan.library.utils.mapping.UnitIDMapping;
 public class MapMergeEvaluator {
   public Collection<DataMapping> getDataMappingVariants(int level) {
     Collection<DataMapping> variants = new ArrayList<DataMapping>();
-    // this is a summarization of all XXXIDMapping classes     
-//    variants.add(GameObjectIDMapping.getSingleton());
+    // this is a summarization of all XXXIDMapping classes
+    // variants.add(GameObjectIDMapping.getSingleton());
     // for testing purposes we use all on it's own
     variants.add(RegionIDMapping.getSingleton());
     variants.add(BuildingIDMapping.getSingleton());
@@ -76,40 +76,43 @@ public class MapMergeEvaluator {
     variants.add(EasyLevelMapping.getSingleton());
     return variants;
   }
-  
+
   public MappingEvaluator getMappingEvaluator(int level) {
     // by default all layers are checked by terrain only
     return TerrainMappingEvaluator.getSingleton();
   }
-  
+
   /**
-   * This is the main function that should be called from outside to
-   * retrieve possible mappings.
+   * This is the main function that should be called from outside to retrieve possible mappings.
+   * 
    * @param fromData - GameData
-   * @param toData   - GameData
-   * @param level    - the level/layer in which the mapping should be estimated
+   * @param toData - GameData
+   * @param level - the level/layer in which the mapping should be estimated
    */
-  public final Collection<Score<CoordinateID>> getDataMappings(GameData fromData, GameData toData, int level) {
+  public final Collection<Score<CoordinateID>> getDataMappings(GameData fromData, GameData toData,
+      int level) {
     return getDataMappings(fromData, toData, level, null);
   }
-  
-  public final Collection<Score<CoordinateID>> getDataMappings(GameData fromData, GameData toData, int level, Collection<CoordinateID> otherLevels) {
+
+  public final Collection<Score<CoordinateID>> getDataMappings(GameData fromData, GameData toData,
+      int level, Collection<CoordinateID> otherLevels) {
     Collection<DataMapping> mappingVariants = getDataMappingVariants(level);
-    if (mappingVariants == null) {
+    if (mappingVariants == null)
       return null;
-    }
-    
-    Map<CoordinateID,Score<CoordinateID>> mappings = new HashMap<CoordinateID,Score<CoordinateID>>(1);
+
+    Map<CoordinateID, Score<CoordinateID>> mappings =
+        new HashMap<CoordinateID, Score<CoordinateID>>(1);
     for (DataMapping dm : mappingVariants) {
       CoordinateID mapping = dm.getMapping(fromData, toData, level);
       if (mapping != null) {
         Score<CoordinateID> score;
         if (!mappings.containsKey(mapping)) {
-          score = getMappingEvaluator(level).getRatedMapping(fromData, toData, mapping, dm.toString());
+          score =
+              getMappingEvaluator(level).getRatedMapping(fromData, toData, mapping, dm.toString());
           mappings.put(mapping, score);
         } else {
           score = mappings.get(mapping);
-          score.setType(score.getType()+", "+dm.toString());
+          score.setType(score.getType() + ", " + dm.toString());
         }
       }
     }
@@ -120,11 +123,13 @@ public class MapMergeEvaluator {
         if (mapping != null) {
           Score<CoordinateID> score;
           if (!mappings.containsKey(mapping)) {
-            score = getMappingEvaluator(level).getRatedMapping(fromData, toData, mapping, "Transitive("+otherMapping.z+")");
+            score =
+                getMappingEvaluator(level).getRatedMapping(fromData, toData, mapping,
+                    "Transitive(" + otherMapping.z + ")");
             mappings.put(mapping, score);
           } else {
             score = mappings.get(mapping);
-            score.setType(score.getType()+", Transitive("+otherMapping.z+")");
+            score.setType(score.getType() + ", Transitive(" + otherMapping.z + ")");
           }
         }
       }
@@ -133,10 +138,9 @@ public class MapMergeEvaluator {
   }
 
   /**
-   * This method should not be called directly, as results of calling this
-   * method are cached in the corresponding GameData object.
-   * Please call data.getLevelRelation(fromLevel, toLevel) instead.
-   *
+   * This method should not be called directly, as results of calling this method are cached in the
+   * corresponding GameData object. Please call data.getLevelRelation(fromLevel, toLevel) instead.
+   * 
    * @param data
    * @param fromLevel
    * @param toLevel
@@ -144,15 +148,13 @@ public class MapMergeEvaluator {
    */
   public final LevelRelation getLevelRelation(GameData data, int fromLevel, int toLevel) {
     Collection<LevelMapping> mappingVariants = getLevelMappingVariants(fromLevel, toLevel);
-    if (mappingVariants == null) {
+    if (mappingVariants == null)
       return null;
-    }
-    
+
     for (LevelMapping dm : mappingVariants) {
       LevelRelation relation = dm.getMapping(data, fromLevel, toLevel);
-      if (relation != null) {
+      if (relation != null)
         return relation;
-      }
     }
     return null;
   }
@@ -163,18 +165,18 @@ public class MapMergeEvaluator {
       layers.add(Integer.valueOf(region.getCoordinate().z));
     }
     return layers;
-  }  
-  
-  public final CoordinateID getTransitivMapping(GameData fromData, GameData toData, int layer, CoordinateID mapping) {
+  }
+
+  public final CoordinateID getTransitivMapping(GameData fromData, GameData toData, int layer,
+      CoordinateID mapping) {
     // first chance
     LevelRelation fromLR = fromData.getLevelRelation(layer, mapping.z);
     LevelRelation toLR = toData.getLevelRelation(layer, mapping.z);
     if ((fromLR != null) && (toLR != null)) {
       CoordinateID c = new CoordinateID(mapping.x + fromLR.x, mapping.y + fromLR.y, mapping.z);
       CoordinateID cNew = toLR.getInverseRelatedCoordinate(c);
-      if (cNew != null) {
+      if (cNew != null)
         return cNew;
-      }
     }
     // second chance - maybe we have a relation in the other direction
 
@@ -183,13 +185,13 @@ public class MapMergeEvaluator {
     if ((fromLR != null) && (toLR != null)) {
       CoordinateID cNew = fromLR.getRelatedCoordinate(mapping);
       if (cNew != null) {
-        cNew.x-=toLR.x;
-        cNew.y-=toLR.y;
+        cNew.x -= toLR.x;
+        cNew.y -= toLR.y;
         return cNew;
       }
     }
-        
+
     return null;
   }
-  
+
 }

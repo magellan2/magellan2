@@ -21,94 +21,81 @@ import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Ulrich Küster A class providing useful methods on handling factions' trustlevels
  */
 public class TrustLevels {
-	/**
-	 * recalculates the default-trustlevel based on the alliances of all privileged factions in the
-	 * given GameData-Object.
-	 *
-	 * 
-	 */
-	public static void recalculateTrustLevels(GameData data) {
-		if(data.factions() != null) {
-			// first reset all trustlevel, that were not set by the user
-			// but by Magellan itself to TL_DEFAULT
-			for(Iterator<Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
-				Faction f = iter.next();
+  /**
+   * recalculates the default-trustlevel based on the alliances of all privileged factions in the
+   * given GameData-Object.
+   */
+  public static void recalculateTrustLevels(GameData data) {
+    if (data.factions() != null) {
+      // first reset all trustlevel, that were not set by the user
+      // but by Magellan itself to TL_DEFAULT
+      for (Faction f : data.factions().values()) {
+        if (!f.isTrustLevelSetByUser()) {
+          f.setTrustLevel(Faction.TL_DEFAULT);
+        }
 
-				if(!f.isTrustLevelSetByUser()) {
-					f.setTrustLevel(Faction.TL_DEFAULT);
-				}
-				
-				f.setHasGiveAlliance(false);
-			}
+        f.setHasGiveAlliance(false);
+      }
 
-			for(Iterator<Faction> factions = data.factions().values().iterator(); factions.hasNext();) {
-				Faction f = factions.next();
+      for (Faction f : data.factions().values()) {
+        if ((f.getPassword() != null) && !f.isTrustLevelSetByUser()) { // password set
+          f.setTrustLevel(Faction.TL_PRIVILEGED);
+        }
 
-				if((f.getPassword() != null) && !f.isTrustLevelSetByUser()) { // password set
-					f.setTrustLevel(Faction.TL_PRIVILEGED);
-				}
+        if (f.getID().equals(EntityID.createEntityID(-1, data.base))) { // monster or disguised
 
-				if(f.getID().equals(EntityID.createEntityID(-1,data.base))) { // monster or disguised
+          if (!f.isTrustLevelSetByUser()) {
+            f.setTrustLevel(-20);
+          }
+        } else if (f.getID().equals(EntityID.createEntityID(0, data.base))) { // faction disguised
 
-					if(!f.isTrustLevelSetByUser()) {
-						f.setTrustLevel(-20);
-					}
-				} else if(f.getID().equals(EntityID.createEntityID(0,data.base))) { // faction disguised
+          if (!f.isTrustLevelSetByUser()) {
+            f.setTrustLevel(-100);
+          }
+        } else if (f.isPrivileged() && (f.getAllies() != null)) { // privileged
 
-					if(!f.isTrustLevelSetByUser()) {
-						f.setTrustLevel(-100);
-					}
-				} else if(f.isPrivileged() && (f.getAllies() != null)) { // privileged
+          Iterator<Map.Entry<EntityID, Alliance>> iter = f.getAllies().entrySet().iterator();
 
-					Iterator<Map.Entry<EntityID, Alliance>> iter = f.getAllies().entrySet().iterator();
+          while (iter.hasNext()) {
+            Alliance alliance = (iter.next()).getValue();
 
-					while(iter.hasNext()) {
-						Alliance alliance = (iter.next()).getValue();
+            // update the trustlevel of the allied factions if their
+            // trustlevels were not set by the user
+            Faction ally = alliance.getFaction();
 
-						// update the trustlevel of the allied factions if their
-						// trustlevels were not set by the user
-						Faction ally = alliance.getFaction();
+            if (!ally.isTrustLevelSetByUser()) {
+              ally.setTrustLevel(Math.max(ally.getTrustLevel(), alliance.getTrustLevel()));
+            }
+            /**
+             * FIXME not really fine..but bitmask 8 means "GIVE" Fiete
+             */
+            if (alliance.getState(8)) {
+              ally.setHasGiveAlliance(true);
+            }
+          }
+        }
+      }
+    }
 
-						if(!ally.isTrustLevelSetByUser()) {
-							ally.setTrustLevel(Math.max(ally.getTrustLevel(), alliance.getTrustLevel()));
-						}
-						/**
-						 * FIXME not really fine..but bitmask 8 means "GIVE"
-						 * Fiete
-						 */
-						if (alliance.getState(8)){
-							ally.setHasGiveAlliance(true);
-						}
-					}
-				}
-			}
-		}
+    data.postProcessAfterTrustlevelChange();
+  }
 
-		data.postProcessAfterTrustlevelChange();
-	}
+  /**
+   * determines if the specified gamedata contains trust levels, that were set by the user
+   * explicitly or read from CR (which means the same)
+   */
+  public static boolean containsTrustLevelsSetByUser(GameData data) {
+    for (Faction faction : data.factions().values()) {
+      if ((faction).isTrustLevelSetByUser())
+        return true;
+    }
 
-	/**
-	 * determines if the specified gamedata contains trust levels, that were set by the user
-	 * explicitly or read from CR (which means the same)
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public static boolean containsTrustLevelsSetByUser(GameData data) {
-		for(Iterator<Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
-			if((iter.next()).isTrustLevelSetByUser()) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+    return false;
+  }
 }

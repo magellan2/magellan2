@@ -33,7 +33,7 @@ import magellan.client.swing.preferences.PreferencesFactory;
 
 /**
  * Creates an adapter for settings concerning plugins.
- *
+ * 
  * @author ...
  * @version 1.0, Feb 19, 2008
  */
@@ -42,8 +42,8 @@ public class PluginSettingsFactory implements PreferencesFactory {
   private Collection<MagellanPlugIn> plugins;
 
   public PluginSettingsFactory(Collection<MagellanPlugIn> plugIns, Properties properties) {
-    this.settings = properties;
-    this.plugins = plugIns;
+    settings = properties;
+    plugins = plugIns;
   }
 
   /**

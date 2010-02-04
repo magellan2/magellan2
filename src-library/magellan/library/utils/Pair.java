@@ -29,12 +29,13 @@ package magellan.library.utils;
  * @author Thoralf Rickert
  * @version 1.0, 26.04.2007
  */
-public class Pair<K,V> {
+public class Pair<K, V> {
   private K key;
   private V value;
-  
-  public Pair() {}
-  
+
+  public Pair() {
+  }
+
   public Pair(K key, V value) {
     this.key = key;
     this.value = value;
@@ -51,7 +52,7 @@ public class Pair<K,V> {
 
   /**
    * Sets the value of key.
-   *
+   * 
    * @param key The value for key.
    */
   public void setKey(K key) {
@@ -69,12 +70,11 @@ public class Pair<K,V> {
 
   /**
    * Sets the value of value.
-   *
+   * 
    * @param value The value for value.
    */
   public void setValue(V value) {
     this.value = value;
   }
-  
-  
+
 }

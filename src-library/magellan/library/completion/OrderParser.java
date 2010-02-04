@@ -20,25 +20,24 @@ import magellan.library.utils.OrderToken;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public interface OrderParser {
-	/**
-	 * Parses one line of text from the specified stream by tokenizing it and checking the syntax.
-	 *
-	 * @param in the stream to read the order from.
-	 *
-	 * @return <tt>true</tt> if the syntax of the order read is valid, <tt>false</tt> else.
-	 */
-	public boolean read(Reader in);
+  /**
+   * Parses one line of text from the specified stream by tokenizing it and checking the syntax.
+   * 
+   * @param in the stream to read the order from.
+   * @return <tt>true</tt> if the syntax of the order read is valid, <tt>false</tt> else.
+   */
+  public boolean read(Reader in);
 
-	/**
-	 * Returns the tokens read by the parser.
-	 *
-	 * @return all <tt>OrderToken</tt> object produced by the underlying <tt>OrderTokenizer</tt> by
-	 * 		   reading a order.
-	 */
-	public List<OrderToken> getTokens();
+  /**
+   * Returns the tokens read by the parser.
+   * 
+   * @return all <tt>OrderToken</tt> object produced by the underlying <tt>OrderTokenizer</tt> by
+   *         reading a order.
+   */
+  public List<OrderToken> getTokens();
 }

@@ -24,46 +24,36 @@ import magellan.library.IntegerID;
  * A class encapsulating a hot spot, which represents a region of interest on the map.
  */
 public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
-	private CoordinateID center = null;
+  private CoordinateID center = null;
 
-	/**
-	 * Create a new HotSpot object with the specified unique id.
-	 *
-	 * 
-	 */
-	public MagellanHotSpotImpl(IntegerID id) {
-		super(id);
-	}
+  /**
+   * Create a new HotSpot object with the specified unique id.
+   */
+  public MagellanHotSpotImpl(IntegerID id) {
+    super(id);
+  }
 
-	/**
-	 * Returns the ID in the center of the region of interest this HotSpot points to.
-	 *
-	 * 
-	 */
-	public CoordinateID getCenter() {
-		return center;
-	}
+  /**
+   * Returns the ID in the center of the region of interest this HotSpot points to.
+   */
+  public CoordinateID getCenter() {
+    return center;
+  }
 
-	/**
-	 * Set the ID the is at the center of the region of interest this HotSpot object should point
-	 * to.
-	 *
-	 * 
-	 */
-	public void setCenter(CoordinateID center) {
-		this.center = center;
-	}
+  /**
+   * Set the ID the is at the center of the region of interest this HotSpot object should point to.
+   */
+  public void setCenter(CoordinateID center) {
+    this.center = center;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String toString() {
-		return getName();
-	}
-	
+    return getName();
+  }
 
   /**
    * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
@@ -104,7 +94,7 @@ public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
    * @see magellan.library.Identifiable#getID()
    */
   @Override
-  public IntegerID getID(){
+  public IntegerID getID() {
     return (IntegerID) super.getID();
   }
 }

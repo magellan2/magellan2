@@ -35,66 +35,56 @@ import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.GameData;
 
 /**
- * This is the interface that a Magellan PlugIn has to
- * implement in order to be available in the Magellan
- * Client.
- *
+ * This is the interface that a Magellan PlugIn has to implement in order to be available in the
+ * Magellan Client.
+ * 
  * @author Thoralf Rickert
  * @author Fiete
  * @version 1.0, 28.05.2007
  */
 public interface MagellanPlugIn {
   /**
-   * Returns the Name of the PlugIn. This name will
-   * be presented to the user in the options panel.
+   * Returns the Name of the PlugIn. This name will be presented to the user in the options panel.
    */
   public String getName();
-  
+
   /**
-   * This method is called during client start up
-   * procedure. You can use this method to initialize
+   * This method is called during client start up procedure. You can use this method to initialize
    * your PlugIn (load preferences and so on...)
    * 
-   * @param client     the main application
+   * @param client the main application
    * @param properties the already loaded configuration
    */
   public void init(Client client, Properties properties);
-  
+
   /**
-   * This method is called everytime the user has load a
-   * file into Magellan (open or add). You should use
-   * this method to load report specific informations.
+   * This method is called everytime the user has load a file into Magellan (open or add). You
+   * should use this method to load report specific informations.
    * 
    * @param data the loaded and merged gamedata
    */
   public void init(GameData data);
-  
+
   /**
-   * Returns the menu items that should be added to the
-   * Magellan PlugIn menu. You can return multiple menu
-   * items for every kind of action that is available
-   * in your PlugIn.
+   * Returns the menu items that should be added to the Magellan PlugIn menu. You can return
+   * multiple menu items for every kind of action that is available in your PlugIn.
    */
   public List<JMenuItem> getMenuItems();
-  
+
   /**
-   * This method is called whenever the application
-   * stops.
+   * This method is called whenever the application stops.
    */
   public void quit(boolean storeSettings);
-  
+
   /**
-   * This method is used to find out, if the plugin 
-   * has a preferences dialog that should be used
-   * inside the options window of Magellan. If you
-   * don't want to build a preferences dialog return
+   * This method is used to find out, if the plugin has a preferences dialog that should be used
+   * inside the options window of Magellan. If you don't want to build a preferences dialog return
    * null.
    */
   public PreferencesFactory getPreferencesProvider();
 
   /**
-   * Returns a list of dock elements or null, if the
-   * plugin has no docks.
+   * Returns a list of dock elements or null, if the plugin has no docks.
    */
   public Map<String, Component> getDocks();
 }

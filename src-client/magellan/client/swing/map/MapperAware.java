@@ -14,17 +14,15 @@
 package magellan.client.swing.map;
 
 /**
- * Simple interface to get connected to a mapper. Should be used by renderers which want to set
- * some Mapper properties.
- *
+ * Simple interface to get connected to a mapper. Should be used by renderers which want to set some
+ * Mapper properties.
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface MapperAware {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setMapper(Mapper mapper);
+  /**
+   * DOCUMENT-ME
+   */
+  public void setMapper(Mapper mapper);
 }

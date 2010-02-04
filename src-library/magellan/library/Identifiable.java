@@ -18,37 +18,36 @@ package magellan.library;
  */
 public interface Identifiable extends Unique, Comparable<Object>, Cloneable {
 
-	/**
-	 * Returns the id uniquely identifying this object.
-	 */
-	public ID getID();
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public ID getID();
 
-	/**
-	 * Returns a copy of this object identified by a copy of the orignial's id. I.e., the following
-	 * statement holds true: this.getID() != this.clone().getID()
-	 *
-	 * @throws CloneNotSupportedException DOCUMENT-ME
-	 */
-	public Object clone() throws CloneNotSupportedException;
+  /**
+   * Returns a copy of this object identified by a copy of the orignial's id. I.e., the following
+   * statement holds true: this.getID() != this.clone().getID()
+   * 
+   * @throws CloneNotSupportedException DOCUMENT-ME
+   */
+  public Object clone() throws CloneNotSupportedException;
 
-	/**
-	 * Indicates that this object is to be regarded as equal to some other object. Especially with
-	 * implementing sub classes of Identifiable, equality will often be established through the
-	 * equality of ids.
-	 */
-	public boolean equals(Object o);
+  /**
+   * Indicates that this object is to be regarded as equal to some other object. Especially with
+   * implementing sub classes of Identifiable, equality will often be established through the
+   * equality of ids.
+   */
+  public boolean equals(Object o);
 
-	/**
-	 * As we want to use the hashCode/equals contract we need to force the implementation of 
-	 * hashCode.
-	 *
-	 * @return the hashCode of the current object
-	 */
-	public int hashCode();
+  /**
+   * As we want to use the hashCode/equals contract we need to force the implementation of hashCode.
+   * 
+   * @return the hashCode of the current object
+   */
+  public int hashCode();
 
-	/**
-	 * Imposes a natural ordering on Identifiable objects. Especially with implementing sub classes
-	 * of Identifiable, such orderings will often be established by the natural order of ids.
-	 */
-	public int compareTo(Object o);
+  /**
+   * Imposes a natural ordering on Identifiable objects. Especially with implementing sub classes of
+   * Identifiable, such orderings will often be established by the natural order of ids.
+   */
+  public int compareTo(Object o);
 }

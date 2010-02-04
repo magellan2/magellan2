@@ -34,26 +34,26 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 389 $
  */
 public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship, HasRegion {
-  private static final Logger log                = Logger.getInstance(MagellanShipImpl.class);
+  private static final Logger log = Logger.getInstance(MagellanShipImpl.class);
 
   /** The shore the ship is lying. */
-  protected int               shoreId            = -1;                                        // 0
-                                                                                               // =
-                                                                                               // northwest,
-                                                                                               // 1
-                                                                                               // =
-                                                                                               // northeast,
-                                                                                               // etc.
+  protected int shoreId = -1; // 0
+  // =
+  // northwest,
+  // 1
+  // =
+  // northeast,
+  // etc.
   // -1 = every direction
 
   /**
    * The size of this ship. While the ship is being built, size &lt;= getType().getMaxSize() is
    * true. After the ship is finished, size equals getType().getMaxSize().
    */
-  protected int               size               = -1;
+  protected int size = -1;
 
   /** The ratio to which degree this ship is damaged. Values range from 0 to 100. */
-  protected int               damageRatio        = 0;
+  protected int damageRatio = 0;
 
   /**
    * The weight of the units and items on this ship in GE.
@@ -61,7 +61,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * @deprecated replaced by cargo
    */
   @Deprecated
-  protected int               deprecatedLoad     = -1;
+  protected int deprecatedLoad = -1;
 
   /**
    * The maximum payload of this ship in GE. 0 &lt;= capacity &lt;= getType().getCapacity() if the
@@ -70,19 +70,19 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * @deprecated replaced by capacity
    */
   @Deprecated
-  protected int               deprecatedCapacity = -1;
+  protected int deprecatedCapacity = -1;
 
   /** the weight of the units and items on this ship in silver */
-  protected int               cargo              = -1;
+  protected int cargo = -1;
 
   /**
    * The maximum payload of this ship in silver. 0 &lt;= capacity &lt;= getType().getCapacity() if
    * the ship is damaged.
    */
-  protected int               capacity           = -1;
+  protected int capacity = -1;
 
   /** The maximum capacity for persons &lt;=getType().getMaxPersons() */
-  protected int               maxPersons         = -1;
+  protected int maxPersons = -1;
 
   /**
    * Creates a new Ship object.
@@ -97,7 +97,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   /** The region this ship is in. */
   private Region region = null;
 
-  private int    speed  = -1;
+  private int speed = -1;
 
   /**
    * Sets the region this ship is in and notifies region about it.
@@ -140,9 +140,8 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * @return Returns the maximum capacity with respect to damages of the ship in silver
    */
   public int getMaxCapacity() {
-    if (capacity != -1) {
+    if (capacity != -1)
       return capacity;
-    }
     return (deprecatedCapacity != -1) ? deprecatedCapacity * 100 : getMaxCapacity(getShipType()
         .getCapacity() * 100);
   }
@@ -166,14 +165,12 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * @return Returns the cargo load of this ship
    */
   public int getCargo() {
-    if (cargo != -1) {
+    if (cargo != -1)
       return cargo;
-    }
-    if (deprecatedLoad != -1) {
+    if (deprecatedLoad != -1)
       return deprecatedLoad * 100;
-    } else {
+    else
       return -1;
-    }
   }
 
   /**
@@ -252,7 +249,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   public String toString(boolean printExtended) {
     final StringBuffer sb = new StringBuffer();
 
-    sb.append(getName()).append(" (").append(this.getID().toString()).append(")");
+    sb.append(getName()).append(" (").append(getID().toString()).append(")");
 
     if (printExtended) {
       sb.append(", ").append(getType());

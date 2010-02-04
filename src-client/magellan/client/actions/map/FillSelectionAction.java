@@ -7,8 +7,6 @@
 
 package magellan.client.actions.map;
 
-import java.util.Iterator;
-
 import magellan.client.Client;
 import magellan.library.CoordinateID;
 
@@ -60,9 +58,7 @@ public class FillSelectionAction extends AbstractSelectionAction {
       }
     }
 
-    for (Iterator<CoordinateID> iter = client.getData().regions().keySet().iterator(); iter.hasNext();) {
-      CoordinateID c = iter.next();
-
+    for (CoordinateID c : client.getData().regions().keySet()) {
       if ((c.z == client.getLevel()) && (c.x <= maxX) && (c.x >= minX) && (c.y <= maxY)
           && (c.y >= minY)) {
         getSelectedRegions().put(c, client.getData().regions().get(c));

@@ -13,58 +13,55 @@
 
 package magellan.library;
 
-
 /**
  * class for a region sign based on our own representation in the CR.
+ * 
  * @author Fiete
- *
  * @see magellan.library.Region#getSigns()
  */
-public class Sign  {
+public class Sign {
 
-	/** The type of this border. */
-	private String text = null;
+  /** The type of this border. */
+  private String text = null;
 
-	/**
-	 * Create a new <tt>Sign</tt> object
-	 */
-	public Sign() {
-	}
+  /**
+   * Create a new <tt>Sign</tt> object
+   */
+  public Sign() {
+  }
 
-	/**
-	 * Create a new <tt>Sign</tt> object initialized to the specified values.
-	 *
-	 * @param text the text of the sign object
-	 * 
-	 */
-	public Sign(String text) {
-		this.text = text;
-	}
+  /**
+   * Create a new <tt>Sign</tt> object initialized to the specified values.
+   * 
+   * @param text the text of the sign object
+   */
+  public Sign(String text) {
+    this.text = text;
+  }
 
-	/**
-	 * Return a string representation of this <tt>Sign</tt> object.
-	 *
-	 * @return Sign object as string.
-	 */
-	@Override
+  /**
+   * Return a string representation of this <tt>Sign</tt> object.
+   * 
+   * @return Sign object as string.
+   */
+  @Override
   public String toString() {
-		if (this.text!=null){
-			return this.text;
-		}
-		return "undef";
-	}
+    if (text != null)
+      return text;
+    return "undef";
+  }
 
-	/**
-	 * @return the text
-	 */
-	public String getText() {
-		return text;
-	}
+  /**
+   * @return the text
+   */
+  public String getText() {
+    return text;
+  }
 
-	/**
-	 * @param text the text to set
-	 */
-	public void setText(String text) {
-		this.text = text;
-	}
+  /**
+   * @param text the text to set
+   */
+  public void setText(String text) {
+    this.text = text;
+  }
 }

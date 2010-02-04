@@ -27,7 +27,6 @@ import magellan.library.CoordinateID;
 import magellan.library.GameData;
 
 /**
- * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
  */

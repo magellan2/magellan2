@@ -18,16 +18,14 @@ package magellan.client.swing.preferences;
  * options are opened new preferences adapters should be built. To make this more modular this
  * interface should be used. The class building the preferences dialog (at the moment the menu
  * action) should know what to do.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface PreferencesFactory {
-	/**
-	 * Creates the component for the preferences.
-   * 
-   * If you return a {@link ExtendedPreferencesAdapter} the dialog is
-   * able to generate subentries inside the options dialog. 
-	 */
-	public PreferencesAdapter createPreferencesAdapter();
+  /**
+   * Creates the component for the preferences. If you return a {@link ExtendedPreferencesAdapter}
+   * the dialog is able to generate subentries inside the options dialog.
+   */
+  public PreferencesAdapter createPreferencesAdapter();
 }

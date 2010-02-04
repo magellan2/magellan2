@@ -20,42 +20,42 @@ import java.util.Properties;
  * An interface serving as an abstraction layer between a tree cell renderer and the user object to
  * render. Implementations of this interface mainly can decide what information of the user object
  * they want to encode as icons.
- *
+ * 
  * @author Sebastian
  * @version 1.0
  */
 public interface CellObject {
-	NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter);
+  NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter);
 
-	NodeWrapperDrawPolicy init(Properties settings, String prefix, NodeWrapperDrawPolicy adapter);
+  NodeWrapperDrawPolicy init(Properties settings, String prefix, NodeWrapperDrawPolicy adapter);
 
-	/**
-	 * Notifies this object that the draw policy may have changed. So it may have to recalculate its
-	 * appearance.
-	 */
-	void propertiesChanged();
+  /**
+   * Notifies this object that the draw policy may have changed. So it may have to recalculate its
+   * appearance.
+   */
+  void propertiesChanged();
 
-	/**
-	 * Returns a list of String objects that denote the file name (without the extension) of the
-	 * icons to be displayed by the tree cell renderer. A return value of <code>null</code> is
-	 * valid to indicate that no icons shall be displayed.
-	 *
-	 * @return list of iconnames or null if no icons shall be displayed.
-	 */
-	Collection<String> getIconNames();
+  /**
+   * Returns a list of String objects that denote the file name (without the extension) of the icons
+   * to be displayed by the tree cell renderer. A return value of <code>null</code> is valid to
+   * indicate that no icons shall be displayed.
+   * 
+   * @return list of iconnames or null if no icons shall be displayed.
+   */
+  Collection<String> getIconNames();
 
-	/**
-	 * Controls whether the tree cell renderer should display this item more noticeably than other
-	 * nodes.
-	 *
-	 * @return true if this item shall be displayed emphasized, false otherwise
-	 */
-	boolean emphasized();
+  /**
+   * Controls whether the tree cell renderer should display this item more noticeably than other
+   * nodes.
+   * 
+   * @return true if this item shall be displayed emphasized, false otherwise
+   */
+  boolean emphasized();
 
-	/**
-	 * This enforces the toString method
-	 *
-	 * @return String representation of this CellObject
-	 */
-	String toString();
+  /**
+   * This enforces the toString method
+   * 
+   * @return String representation of this CellObject
+   */
+  String toString();
 }

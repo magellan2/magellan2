@@ -31,7 +31,7 @@ import magellan.library.Faction;
 
 /**
  * Displays a alliance node with alliance as icon and text.
- *
+ * 
  * @author ...
  * @version 1.0, Jan 13, 2008
  */
@@ -48,11 +48,10 @@ public class AllianceNodeWrapper extends FactionNodeWrapper {
   @Override
   public String toString() {
     Alliance a = getAlliance(getFaction().getID());
-    if (a==null) {
+    if (a == null)
       return null;
-    } else {
+    else
       return a.toString();
-    }
   }
 
 }

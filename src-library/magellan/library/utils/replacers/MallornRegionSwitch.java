@@ -16,34 +16,26 @@ package magellan.library.utils.replacers;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
 
-
 /**
  * A switch that reacts if the given region is a mallorn region.
  * 
- *
  * @author Fiete
  * @version 1.0
  */
 public class MallornRegionSwitch extends AbstractRegionSwitch {
-	
 
-
-	/**
-	 * Compares the region's type with the ID given in the constructor.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Compares the region's type with the ID given in the constructor.
+   */
+  @Override
   public boolean isSwitchingRegion(Region r) {
-		return r.isMallorn();
-	}
+    return r.isMallorn();
+  }
 
-	/**
-	 * @see magellan.library.utils.replacers.Replacer#getDescription()
-	 */
-	public String getDescription() {
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
+  public String getDescription() {
     return Resources.get("util.replacers.mallornregion.description");
   }
 }

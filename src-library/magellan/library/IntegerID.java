@@ -39,7 +39,6 @@ public class IntegerID implements ID {
 
   /**
    * Returns a (possibly) new IntegerID object.
-   * 
    */
   public static synchronized IntegerID create(int o) {
     IntegerID id = IntegerID.idMap.get(o);

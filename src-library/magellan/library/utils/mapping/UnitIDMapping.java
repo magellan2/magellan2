@@ -30,10 +30,11 @@ import magellan.library.Unit;
 
 public class UnitIDMapping implements DataMapping {
   private static UnitIDMapping singleton = new UnitIDMapping();
+
   public static UnitIDMapping getSingleton() {
     return UnitIDMapping.singleton;
   }
-  
+
   @Override
   public String toString() {
     return "UnitID";
@@ -41,23 +42,22 @@ public class UnitIDMapping implements DataMapping {
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
     // create possible translations by same unit in both reports from same turn!
-    if ((fromData.getDate()==null) || (!fromData.getDate().equals(toData.getDate()))) {
+    if ((fromData.getDate() == null) || (!fromData.getDate().equals(toData.getDate())))
       return null;
-    }
-    
+
     for (Region region : fromData.regions().values()) {
       if (region.getCoordinate().z == level) {
         for (Unit unit : region.units()) {
           Unit sameUnit = toData.getUnit(unit.getID());
-          
+
           if (sameUnit != null) {
             // match found
             Region sameRegion = sameUnit.getRegion();
             if (sameRegion != null) {
               CoordinateID sameCoord = sameRegion.getCoordinate();
-              if (sameCoord.z == level) {
-                return new CoordinateID(sameCoord.x - region.getCoordinate().x , sameCoord.y - region.getCoordinate().y, level);
-              }
+              if (sameCoord.z == level)
+                return new CoordinateID(sameCoord.x - region.getCoordinate().x, sameCoord.y
+                    - region.getCoordinate().y, level);
             }
           }
         }

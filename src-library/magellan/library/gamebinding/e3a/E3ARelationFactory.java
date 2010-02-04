@@ -16,7 +16,6 @@ package magellan.library.gamebinding.e3a;
 import magellan.library.Rules;
 import magellan.library.gamebinding.EresseaRelationFactory;
 
-
 /**
  * DOCUMENT-ME
  * 

@@ -180,12 +180,12 @@ public class CRParser implements RulesIO, GameDataIO {
     final String number = "[\\+\\-]?\\d+";
     final String astral = Resources.get("rules.astralspacecoordinate");
     final Matcher matcher =
-      Pattern.compile(
-          "\\((" + number + ")\\,\\ ?(" + number + ")(\\,\\ ?((" + number + ")|" + astral
-          + "))?\\)").matcher(string);
+        Pattern.compile(
+            "\\((" + number + ")\\,\\ ?(" + number + ")(\\,\\ ?((" + number + ")|" + astral
+                + "))?\\)").matcher(string);
     while (matcher.find()) {
       final String candi = matcher.group();
-// candi=candi.replaceAll(astral,
+      // candi=candi.replaceAll(astral,
       // world.getGameSpecificStuff().getGameSpecificRules().getAstralSpacePlane());
       final CoordinateID coord = CoordinateID.parse(candi.substring(1, candi.length() - 1), ",");
       if (coord != null) {
@@ -211,14 +211,13 @@ public class CRParser implements RulesIO, GameDataIO {
     String helper = "";
     boolean didSomething = false;
     result = result.replace("\"", "");
-    if (result.length() < 3) {
+    if (result.length() < 3)
       return string;
-    }
     if (result.indexOf(",") > 0) {
       // Split it
       final String[] s = result.split(",");
-      for (int i = 0; i < s.length; i++) {
-        String sC = s[i];
+      for (String element : s) {
+        String sC = element;
         CoordinateID c = CoordinateID.parse(sC, " ");
         if (c != null) {
           // we got valid coordinates - translate it
@@ -241,9 +240,8 @@ public class CRParser implements RulesIO, GameDataIO {
       }
     }
 
-    if (!didSomething) {
+    if (!didSomething)
       return string;
-    }
 
     return helper;
   }
@@ -545,8 +543,8 @@ public class CRParser implements RulesIO, GameDataIO {
 
         if (spell == null) {
           CRParser.log
-          .warn("CRParser.parseUnitCombatSpells(): a combat spell refers to an unknown spell (line "
-              + sc.lnr + ")");
+              .warn("CRParser.parseUnitCombatSpells(): a combat spell refers to an unknown spell (line "
+                  + sc.lnr + ")");
           spell = MagellanFactory.createSpell(spellID, world);
           spell.setName(sc.argv[0]);
           world.addSpell(spell);
@@ -614,7 +612,7 @@ public class CRParser implements RulesIO, GameDataIO {
               // check for ;regions
               if (sc.argv[1].equalsIgnoreCase("regions")) {
                 // special dealing
-                msg.getAttributes().put(sc.argv[1], this.originTranslateRegions(sc.argv[0]));
+                msg.getAttributes().put(sc.argv[1], originTranslateRegions(sc.argv[0]));
               } else {
                 msg.getAttributes().put(sc.argv[1], sc.argv[0]);
               }
@@ -642,7 +640,8 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   private List<Battle> parseBattles(List<Battle> list) throws IOException {
     while (!sc.eof && sc.argv[0].startsWith("BATTLE ")) {
-      final CoordinateID c = CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
+      final CoordinateID c =
+          CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
       if (c == null) {
         unknown("BATTLE", true);
         break;
@@ -671,7 +670,8 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   private List<Battle> parseBattleSpecs(List<Battle> list) throws IOException {
     while (!sc.eof && sc.argv[0].startsWith("BATTLESPEC ")) {
-      final CoordinateID c = CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
+      final CoordinateID c =
+          CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
       if (c == null) {
         unknown("BATTLESPEC", true);
         continue;
@@ -702,7 +702,8 @@ public class CRParser implements RulesIO, GameDataIO {
 
       // not adding spell immediately is required here, please do not change this, unless you really
       // know, what you're doing!
-      final SpellBuilder spell = new SpellBuilder(id, world); // MagellanFactory.createSpell(id, world);
+      final SpellBuilder spell = new SpellBuilder(id, world); // MagellanFactory.createSpell(id,
+      // world);
       spell.setBlockID((id).intValue());
       sc.getNextToken(); // skip ZAUBER nr
 
@@ -756,7 +757,7 @@ public class CRParser implements RulesIO, GameDataIO {
       }
 
       if (spell.getName() == null) {
-        log.warn("found spell without name:" +spell.toString());
+        CRParser.log.warn("found spell without name:" + spell.toString());
       } else {
         world.addSpell(spell.construct());
       }
@@ -933,7 +934,7 @@ public class CRParser implements RulesIO, GameDataIO {
         }
 
         if ((world.base <= 0) || (world.base > 36)) {
-          log.warn("invalid base: " + world.base);
+          CRParser.log.warn("invalid base: " + world.base);
           world.base = 10;
         }
         /**
@@ -946,7 +947,7 @@ public class CRParser implements RulesIO, GameDataIO {
               && (world.base != 36)) {
             // this should not happen
             CRParser.log
-            .error("BASE ERROR !! read report could have not base36 !! Changed to base36.");
+                .error("BASE ERROR !! read report could have not base36 !! Changed to base36.");
             world.base = 36;
           }
         }
@@ -1115,7 +1116,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseRaceSkillBonuses(): in line " + sc.lnr
             + ": unable to convert skill bonus " + sc.argv[0]
-                                                           + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
+            + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1136,7 +1137,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseRaceTerrainSkillBonuses(): in line " + sc.lnr
             + ": unable to convert skill bonus " + sc.argv[0]
-                                                           + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
+            + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1192,7 +1193,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("makeskill")) {
         makeSkill =
-          new Skill(rules.getSkillType(StringID.create(sc.argv[0]), true), 0, 0, 0, false);
+            new Skill(rules.getSkillType(StringID.create(sc.argv[0]), true), 0, 0, 0, false);
         itemType.setMakeSkill(makeSkill);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("makeskilllevel")) {
@@ -1219,7 +1220,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("useskill")) {
         final Skill useSkill =
-          new Skill(rules.getSkillType(StringID.create(sc.argv[0]), true), 0, 1, 0, false);
+            new Skill(rules.getSkillType(StringID.create(sc.argv[0]), true), 0, 1, 0, false);
         itemType.setUseSkill(useSkill);
         sc.getNextToken();
         // darcduck - 20.11.2007 added magic bag tag that indicates if an item can be stored in the
@@ -1277,7 +1278,7 @@ public class CRParser implements RulesIO, GameDataIO {
         try {
           skillType.setCost(Integer.parseInt(sc.argv[0]));
         } catch (final NumberFormatException e) {
-          log.error(e);
+          CRParser.log.error(e);
           unknown("SKILL", false);
         }
         sc.getNextToken();
@@ -1302,7 +1303,7 @@ public class CRParser implements RulesIO, GameDataIO {
         try {
           skillType.setCost(Integer.parseInt(sc.argv[1]), Integer.parseInt(sc.argv[0]));
         } catch (final NumberFormatException e) {
-          log.error(e);
+          CRParser.log.error(e);
           unknown("SKILL", false);
         }
         sc.getNextToken();
@@ -1350,8 +1351,8 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("maxsize")) {
         shipType.setMaxSize(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
-// } else if(sc.isBlock && sc.argv[0].equals("TALENTBONI")) {
-// parseBuildingSkillBonuses(shipType, rules);
+        // } else if(sc.isBlock && sc.argv[0].equals("TALENTBONI")) {
+        // parseBuildingSkillBonuses(shipType, rules);
       } else if (sc.isBlock && sc.argv[0].equals("RAWMATERIALS")) {
         parseBuildingRawMaterials(shipType, rules);
       } else if (sc.isBlock && sc.argv[0].equals("MAINTENANCE")) {
@@ -1439,7 +1440,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseBuildingSkillBonuses(): in line " + sc.lnr
             + ": unable to convert skill bonus " + sc.argv[0]
-                                                           + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
+            + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1457,7 +1458,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseBuildingRawMaterials(): in line " + sc.lnr
             + ": unable to convert item amount " + sc.argv[0]
-                                                           + " to an integer. Ignoring amount for item " + sc.argv[1]);
+            + " to an integer. Ignoring amount for item " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1475,7 +1476,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseBuildingMaintenance(): in line " + sc.lnr
             + ": unable to convert item amount " + sc.argv[0]
-                                                           + " to an integer. Ignoring amount for item " + sc.argv[1]);
+            + " to an integer. Ignoring amount for item " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1678,8 +1679,8 @@ public class CRParser implements RulesIO, GameDataIO {
 
   private void parseCoordinateTransformation() throws IOException {
     final EntityID id =
-      EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring("COORDTRANS".length() + 1)),
-          world.base);
+        EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring("COORDTRANS".length() + 1)),
+            world.base);
     sc.getNextToken();
 
     CoordinateID translation = null;
@@ -1739,7 +1740,8 @@ public class CRParser implements RulesIO, GameDataIO {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("name")) {
         cat.setName(sc.argv[0]);
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("parent")) {
-        final AllianceCategory parent = rules.getAllianceCategory(StringID.create(sc.argv[0]), false);
+        final AllianceCategory parent =
+            rules.getAllianceCategory(StringID.create(sc.argv[0]), false);
         cat.setParent(parent);
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("bitmask")) {
         cat.setBitMask(Integer.parseInt(sc.argv[0]));
@@ -1756,7 +1758,7 @@ public class CRParser implements RulesIO, GameDataIO {
   /**
    * This is the new version, the old is called "ALLIERTE" Heuristic for end of block detection:
    * There are no subblocks in one ALLIANZ block.
-   *
+   * 
    * @param allies A map with existing alliances or <code>null</code>.
    * @return The (modified) <code>allies</code> map
    * @throws IOException If an I/O error occurs
@@ -1766,7 +1768,8 @@ public class CRParser implements RulesIO, GameDataIO {
       allies = new OrderedHashtable<EntityID, Alliance>();
     }
 
-    final EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(8)), world.base);
+    final EntityID id =
+        EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(8)), world.base);
     sc.getNextToken();
 
     int state = -1;
@@ -1798,7 +1801,8 @@ public class CRParser implements RulesIO, GameDataIO {
    * There are no subblocks in one ALLIANZ block.
    */
   private AllianceGroup parseAlliance2() throws IOException {
-    final EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(9)), world.base);
+    final EntityID id =
+        EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(9)), world.base);
     final AllianceGroup alliance = new AllianceGroup(id);
     sc.getNextToken();
 
@@ -1855,7 +1859,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Parse the FACTION block with all its subblocks. Heuristic for block termination: - Terminate on
    * another PARTEI block (without warning) - Terminate on another id block (without warning) -
    * Terminate on any other unknown block (with warning)
-   *
+   * 
    * @param sortIndex
    * @return The resulting faction
    * @throws IOException If an I/O error occurs
@@ -1864,7 +1868,8 @@ public class CRParser implements RulesIO, GameDataIO {
     Race type = null;
     int raceRecruit = -1;
     int groupSortIndex = 0;
-    final EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(7)), world.base);
+    final EntityID id =
+        EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(7)), world.base);
     sc.getNextToken(); // skip PARTEI nr
 
     final Faction faction = getAddFaction(id);
@@ -1909,7 +1914,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if ((sc.argc == 2)
           && (sc.argv[1].equalsIgnoreCase("Typ") || sc.argv[1].equalsIgnoreCase("Typus") || sc.argv[1]
-                                                                                                    .equalsIgnoreCase("race"))) {
+              .equalsIgnoreCase("race"))) {
         type = world.rules.getRace(StringID.create(sc.argv[0]), true);
         faction.setType(type);
         sc.getNextToken();
@@ -1984,9 +1989,9 @@ public class CRParser implements RulesIO, GameDataIO {
         faction.setAllies(parseAlliance(faction.getAllies())); // newer syntax
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("alliance")) { // even newer syntax
         final EntityID alliance = EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base);
-        if (world.getAllianceGroup(alliance)==null)
-          log.error("unknown alliance for faction "+faction);
-        else{
+        if (world.getAllianceGroup(alliance) == null) {
+          CRParser.log.error("unknown alliance for faction " + faction);
+        } else {
           world.getAllianceGroup(alliance).addFaction(faction);
           faction.setAlliance(world.getAllianceGroup(alliance));
         }
@@ -2046,8 +2051,8 @@ public class CRParser implements RulesIO, GameDataIO {
     return options;
   }
 
-  private Map<IntegerID, Group> parseGroup(Map<IntegerID, Group> groups, Faction faction, int sortIndex)
-  throws IOException {
+  private Map<IntegerID, Group> parseGroup(Map<IntegerID, Group> groups, Faction faction,
+      int sortIndex) throws IOException {
     final IntegerID id = IntegerID.create(sc.argv[0].substring(7));
     Group group = null;
 
@@ -2144,8 +2149,8 @@ public class CRParser implements RulesIO, GameDataIO {
       }
 
       final Skill skill =
-        new Skill(world.rules.getSkillType(StringID.create(sc.argv[1]), true), points, level,
-            unit.getPersons(), world.noSkillPoints);
+          new Skill(world.rules.getSkillType(StringID.create(sc.argv[1]), true), points, level,
+              unit.getPersons(), world.noSkillPoints);
       skill.setChangeLevel(change);
       skill.setLevelChanged(changed);
       unit.addSkill(skill);
@@ -2165,8 +2170,8 @@ public class CRParser implements RulesIO, GameDataIO {
 
     while (!sc.eof && (sc.argc == 2)) {
       final Item item =
-        new Item(world.rules.getItemType(StringID.create(sc.argv[1]), true), Integer
-            .parseInt(sc.argv[0]));
+          new Item(world.rules.getItemType(StringID.create(sc.argv[1]), true), Integer
+              .parseInt(sc.argv[0]));
       if (unit != null) {
         unit.addItem(item);
       }
@@ -2183,8 +2188,8 @@ public class CRParser implements RulesIO, GameDataIO {
 
     while (!sc.eof && (sc.argc == 2)) {
       final Item item =
-        new Item(world.rules.getItemType(StringID.create(sc.argv[1]), true), Integer
-            .parseInt(sc.argv[0]));
+          new Item(world.rules.getItemType(StringID.create(sc.argv[1]), true), Integer
+              .parseInt(sc.argv[0]));
       if (unitcontainer != null) {
         unitcontainer.addItem(item);
       }
@@ -2193,8 +2198,7 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   private int parseUnit(Region region, int sortIndex) throws IOException {
-    final Unit unit =
-      getAddUnit(UnitID.createUnitID(sc.argv[0].substring(8), 10, world.base));
+    final Unit unit = getAddUnit(UnitID.createUnitID(sc.argv[0].substring(8), 10, world.base));
     EntityID factionID = EntityID.createEntityID(-1, world.base);
     ID groupID = null;
 
@@ -2264,14 +2268,15 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Silber")) {
         final int money = Integer.parseInt(sc.argv[0]);
-        final Item item = new Item(world.rules.getItemType(EresseaConstants.I_USILVER, true), money);
+        final Item item =
+            new Item(world.rules.getItemType(EresseaConstants.I_USILVER, true), money);
         unit.addItem(item);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Burg")) {
         Integer.parseInt(sc.argv[0]);
 
         final Building b =
-          getAddBuilding(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+            getAddBuilding(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
 
         if (unit.getBuilding() != b) {
           unit.setBuilding(b);
@@ -2279,7 +2284,8 @@ public class CRParser implements RulesIO, GameDataIO {
 
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Schiff")) {
-        final Ship s = getAddShip(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+        final Ship s =
+            getAddShip(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
 
         if (unit.getShip() != s) {
           unit.setShip(s);
@@ -2346,7 +2352,7 @@ public class CRParser implements RulesIO, GameDataIO {
          */
       } else if ((sc.argc == 2)
           && (sc.argv[1].equalsIgnoreCase("verkleidung") || sc.argv[1]
-                                                                    .equalsIgnoreCase("anderepartei"))) {
+              .equalsIgnoreCase("anderepartei"))) {
         final EntityID fid = EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base);
 
         /*
@@ -2480,7 +2486,8 @@ public class CRParser implements RulesIO, GameDataIO {
   /*
    * Syntax: value;item Example: 24;Balsam < 0: offered in this region > 0: demanded in this region
    */
-  private Map<StringID, LuxuryPrice> parsePrices(Map<StringID, LuxuryPrice> prices) throws IOException {
+  private Map<StringID, LuxuryPrice> parsePrices(Map<StringID, LuxuryPrice> prices)
+      throws IOException {
     sc.getNextToken(); // skip PREISE
 
     while (!sc.eof && (sc.argc == 2)) {
@@ -2504,7 +2511,8 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   private void parseShip(Region region, int sortIndex) throws IOException {
-    final EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(7)), world.base);
+    final EntityID id =
+        EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(7)), world.base);
     sc.getNextToken(); // skip "SCHIFF nr"
 
     final Ship ship = getAddShip(id);
@@ -2529,7 +2537,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Partei")) {
         if ((ship.getOwnerUnit() != null) && (ship.getOwnerUnit().getFaction() == null)) {
           final Faction f =
-            world.getFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+              world.getFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
           ship.getOwnerUnit().setFaction(f);
         }
 
@@ -2554,12 +2562,13 @@ public class CRParser implements RulesIO, GameDataIO {
         ship.setCargo(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("capacity")) {
-        if (version == 65)
+        if (version == 65) {
           // in E3 this tag was overloaded with the max number of persons (see Eressea bug #1645)!
           ship.setMaxPersons(Integer.parseInt(sc.argv[0]));
-        else
+        } else {
           // in version 65 everything was back to normal
           ship.setCapacity(Integer.parseInt(sc.argv[0]));
+        }
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Ladung")) {
         ship.setDeprecatedLoad(Integer.parseInt(sc.argv[0]));
@@ -2588,7 +2597,8 @@ public class CRParser implements RulesIO, GameDataIO {
    *
    */
   private void parseBuilding(Region region, int sortIndex) throws IOException {
-    final EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(5)), world.base);
+    final EntityID id =
+        EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(5)), world.base);
     sc.getNextToken(); // skip "BURG nr"
 
     final Building bld = getAddBuilding(id);
@@ -2619,8 +2629,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Partei")) {
         if ((bld.getOwnerUnit() != null) && (bld.getOwnerUnit().getFaction() == null)) {
-          final Faction f =
-            world.getFaction(EntityID.createEntityID(sc.argv[0], 10, world.base));
+          final Faction f = world.getFaction(EntityID.createEntityID(sc.argv[0], 10, world.base));
           bld.getOwnerUnit().setFaction(f);
         }
         sc.getNextToken();
@@ -2689,7 +2698,7 @@ public class CRParser implements RulesIO, GameDataIO {
           b.setDirection(Integer.parseInt(sc.argv[0]));
         } catch (final NumberFormatException e) {
           final String dirNames[] =
-          { "Nordwesten", "Nordosten", "Osten", "Südosten", "Südwesten", "Westen" };
+              { "Nordwesten", "Nordosten", "Osten", "Südosten", "Südwesten", "Westen" };
 
           for (int i = 0; i < dirNames.length; i++) {
             if (sc.argv[0].equalsIgnoreCase(dirNames[i])) {
@@ -2774,7 +2783,8 @@ public class CRParser implements RulesIO, GameDataIO {
     int unitSortIndex = 0;
     int shipSortIndex = 0;
     int buildingSortIndex = 0;
-    final CoordinateID c = CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
+    final CoordinateID c =
+        CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
 
     if (c == null) {
       unknown("REGION", true);
@@ -2821,7 +2831,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
           if (island == null) {
             CRParser.log.warn("CRParser.parseRegion(): unknown island " + sc.argv[0]
-                                                                                  + " with region " + region + " in line " + sc.lnr + ", creating it dynamically.");
+                + " with region " + region + " in line " + sc.lnr + ", creating it dynamically.");
             island = new MagellanIslandImpl(islandID, world);
             island.setName(islandID.toString());
             world.addIsland(island);
@@ -2830,7 +2840,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
         } catch (final NumberFormatException nfe) {
           CRParser.log.warn("CRParser.parseRegion(): unknown island " + sc.argv[0]
-                                                                                + " with region " + region + " in line " + sc.lnr);
+              + " with region " + region + " in line " + sc.lnr);
         }
 
         sc.getNextToken();
@@ -2850,8 +2860,8 @@ public class CRParser implements RulesIO, GameDataIO {
         } catch (final IllegalArgumentException e) {
           // can happen in StringID constructor if sc.argv[0] == ""
           CRParser.log
-          .warn("CRParser.parseRegion(): found region without a valid region type in line "
-              + sc.lnr);
+              .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                  + sc.lnr);
         }
 
         // regions doesn't have name if name == type; e.g. "Ozean"=="Ozean"
@@ -2860,20 +2870,20 @@ public class CRParser implements RulesIO, GameDataIO {
             // could set region name here...
           } else {
             CRParser.log
-            .warn("CRParser.parseRegion(): found region type without a valid name in line "
-                + sc.lnr);
+                .warn("CRParser.parseRegion(): found region type without a valid name in line "
+                    + sc.lnr);
           }
         } else {
           CRParser.log
-          .warn("CRParser.parseRegion(): found region without a valid region type in line "
-              + sc.lnr);
+              .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                  + sc.lnr);
         }
 
         iValidateFlags |= 1;
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("owner")) {
         final Faction f =
-          world.getFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+            world.getFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
         region.setOwnerFaction(f);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("morale")) {
@@ -3118,9 +3128,9 @@ public class CRParser implements RulesIO, GameDataIO {
             // if later a ;runde tag is found, date is overwritten
             // added for testing. we onyl do this, if the report has NO
             // "Konfiguartion" tag...we assume than, its coming from the server...
-// if (this.configuration.equalsIgnoreCase("standard")){
+            // if (this.configuration.equalsIgnoreCase("standard")){
             r.setDate(world.getDate().getDate());
-// }
+            // }
           }
         }
 
@@ -3151,7 +3161,8 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   private void parseScheme(Region region) throws IOException {
-    final CoordinateID c = CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
+    final CoordinateID c =
+        CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
     if (c == null) {
       unknown("SCHEMEN", true);
       return;
@@ -3205,7 +3216,7 @@ public class CRParser implements RulesIO, GameDataIO {
     ui.setProgress(Resources.get("progressdialog.loadcr.step01"), 1);
     ui.show();
     try {
-      this.world = data;
+      world = data;
       sc = new Scanner(in);
       sc.getNextToken();
       boolean oome = false;
@@ -3239,17 +3250,17 @@ public class CRParser implements RulesIO, GameDataIO {
         if (!MemoryManagment.isFreeMemory() || oome) {
           // we have a problem..
           // like in startup of client..we reset the data
-          this.world = new MissingData();
+          world = new MissingData();
           // marking the problem
-          this.world.outOfMemory = true;
+          world.outOfMemory = true;
 
           ui.ready();
           // end exit
-          return this.world;
+          return world;
         }
 
       }
-      this.world.setMaxSortIndex(++regionSortIndex);
+      world.setMaxSortIndex(++regionSortIndex);
     } catch (final RuntimeException e) {
       ui.ready();
       throw e;
@@ -3258,7 +3269,7 @@ public class CRParser implements RulesIO, GameDataIO {
     ui.ready();
 
     CRParser.log.info("Done reading.");
-    return this.world;
+    return world;
   }
 
   private void setOwner(GameData newData) {
@@ -3273,8 +3284,8 @@ public class CRParser implements RulesIO, GameDataIO {
         final Set<Integer> layers = new HashSet<Integer>();
         for (final CoordinateID coord : newData.regions().keySet()) {
           if (!layers.contains(coord.z)) {
-            newData.setCoordinateTranslation(firstFaction2.getID(), new CoordinateID(0,
-                0, coord.z));
+            newData
+                .setCoordinateTranslation(firstFaction2.getID(), new CoordinateID(0, 0, coord.z));
             layers.add(coord.z);
           }
         }

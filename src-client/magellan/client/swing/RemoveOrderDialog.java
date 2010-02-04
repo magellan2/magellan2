@@ -34,8 +34,8 @@ import javax.swing.border.BevelBorder;
 import magellan.library.utils.Resources;
 
 /**
- * A Dialog that asks the user for a string input. Returns all orders containing
- * or beginning with that string.
+ * A Dialog that asks the user for a string input. Returns all orders containing or beginning with
+ * that string.
  * 
  * @author stm
  */
@@ -65,18 +65,20 @@ public class RemoveOrderDialog extends InternationalizedDialog {
         new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
             new Insets(3, 3, 3, 3), 0, 0);
 
-    c.gridwidth=2;
+    c.gridwidth = 2;
     JLabel captionLabel = new JLabel(caption);
     captionLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
     captionLabel.setHorizontalAlignment(SwingConstants.CENTER);
     captionLabel.setHorizontalTextPosition(SwingConstants.CENTER);
     cp.add(captionLabel, c);
 
-    c.gridwidth=1;
+    c.gridwidth = 1;
 
-    JRadioButton beginButton = new JRadioButton(Resources.get("removeorderdialog.radio.begins.title"));
+    JRadioButton beginButton =
+        new JRadioButton(Resources.get("removeorderdialog.radio.begins.title"));
     beginButton.setActionCommand(RemoveOrderDialog.BEGIN_ACTION);
-    JRadioButton containsButton = new JRadioButton(Resources.get("removeorderdialog.radio.contains.title"));
+    JRadioButton containsButton =
+        new JRadioButton(Resources.get("removeorderdialog.radio.contains.title"));
     containsButton.setActionCommand(RemoveOrderDialog.CONTAINS_ACTION);
     position = new ButtonGroup();
     position.add(beginButton);
@@ -145,7 +147,7 @@ public class RemoveOrderDialog extends InternationalizedDialog {
     final String retVal[] = new String[3];
     ActionListener okButtonAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        retVal[0] = RemoveOrderDialog.this.order.getText();
+        retVal[0] = order.getText();
         retVal[1] = String.valueOf(position.getSelection().getActionCommand());
         retVal[2] = String.valueOf(caseBox.isSelected());
         quit();

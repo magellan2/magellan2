@@ -24,7 +24,7 @@ public class SimpleProblem implements Problem {
   protected Region region;
   protected Unit owner;
   protected Faction faction;
-  protected Object objectt;
+  protected Object object;
   protected Inspector inspector;
   protected String message;
   protected int line;
@@ -46,15 +46,14 @@ public class SimpleProblem implements Problem {
    */
   public SimpleProblem(Severity severity, ProblemType type, Region region, Unit owner,
       Faction faction, Object object, Inspector inspector, String message, int line) {
-    if (object == null || inspector == null || message == null) {
+    if (object == null || inspector == null || message == null)
       throw new NullPointerException();
-    }
     this.severity = severity;
     this.type = type;
     this.region = region;
     this.owner = owner;
     this.faction = faction;
-    this.objectt = object;
+    this.object = object;
     this.inspector = inspector;
     this.message = message;
     this.line = line;
@@ -75,7 +74,7 @@ public class SimpleProblem implements Problem {
    * @see magellan.library.tasks.Problem#getObject()
    */
   public Object getObject() {
-    return objectt;
+    return object;
   }
 
   /**

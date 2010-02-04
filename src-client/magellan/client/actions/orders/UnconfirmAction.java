@@ -20,43 +20,37 @@ import magellan.client.EMapOverviewPanel;
 import magellan.client.actions.MenuAction;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class UnconfirmAction extends MenuAction {
-	private EMapOverviewPanel target;
+  private EMapOverviewPanel target;
 
-	/**
-	 * Creates a new UnconfirmAction object.
-	 *
-	 * 
-	 * 
-	 */
-	public UnconfirmAction(Client client, EMapOverviewPanel e) {
-        super(client);
-		target = e;
-	}
+  /**
+   * Creates a new UnconfirmAction object.
+   */
+  public UnconfirmAction(Client client, EMapOverviewPanel e) {
+    super(client);
+    target = e;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		target.shortCut_N();
-	}
+    target.shortCut_N();
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.unconfirmaction.accelerator",false);
+    return Resources.get("actions.unconfirmaction.accelerator", false);
   }
 
   /**
@@ -64,7 +58,7 @@ public class UnconfirmAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.unconfirmaction.mnemonic",false);
+    return Resources.get("actions.unconfirmaction.mnemonic", false);
   }
 
   /**
@@ -77,6 +71,6 @@ public class UnconfirmAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.unconfirmaction.tooltip",false);
+    return Resources.get("actions.unconfirmaction.tooltip", false);
   }
 }

@@ -17,27 +17,20 @@ import java.util.List;
 
 import magellan.library.Unit;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public interface TempUnitFactory {
-	/**
-	 * Returns the orders necessary to issue the creation of all the child temp units of this unit.
-	 *
-	 * 
-	 */
-	public List<?> getTempOrders(Unit unit);
+  /**
+   * Returns the orders necessary to issue the creation of all the child temp units of this unit.
+   */
+  public List<?> getTempOrders(Unit unit);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public List<?> extractTempUnits(Unit unit);
+  /**
+   * DOCUMENT-ME
+   */
+  public List<?> extractTempUnits(Unit unit);
 }

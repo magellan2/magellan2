@@ -26,7 +26,6 @@ package magellan.library.gamebinding;
 import magellan.library.Rules;
 
 /**
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
@@ -38,5 +37,5 @@ public class AllanonOrderChanger extends EresseaOrderChanger {
   protected AllanonOrderChanger(Rules rules) {
     super(rules);
   }
-  
+
 }

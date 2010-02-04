@@ -17,17 +17,13 @@ package magellan.library.utils;
  * An interface for all objects that are sorted.
  */
 public interface Sorted {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setSortIndex(int index);
+  /**
+   * DOCUMENT-ME
+   */
+  public void setSortIndex(int index);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getSortIndex();
+  /**
+   * DOCUMENT-ME
+   */
+  public int getSortIndex();
 }

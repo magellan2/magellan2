@@ -18,48 +18,44 @@ import magellan.library.event.TimeStampedEvent;
 
 /**
  * An event indicating that a temporary unit was created or deleted.
- *
+ * 
  * @see TempUnitListener
  * @see EventDispatcher
  */
 public class TempUnitEvent extends TimeStampedEvent {
-	/** An event indicating that a temp unit was created. */
-	public static final int CREATED = 1;
+  /** An event indicating that a temp unit was created. */
+  public static final int CREATED = 1;
 
-	/** An event indicating that a temp unit is about to be deleted. */
-	public static final int DELETING = 2;
-  
-	private magellan.library.TempUnit tempUnit = null;
-	private int eventType = 0;
+  /** An event indicating that a temp unit is about to be deleted. */
+  public static final int DELETING = 2;
 
-	/**
-	 * Creates an event object.
-	 *
-	 * @param source the object that originated the event.
-	 * @param temp the temporary unit affected by this event.
-	 * @param type specifies whether the temp unit was created or is being deleted.
-	 */
-	public TempUnitEvent(Object source, magellan.library.TempUnit temp, int type) {
-		super(source);
-		this.tempUnit = temp;
-		this.eventType = type;
-	}
+  private magellan.library.TempUnit tempUnit = null;
+  private int eventType = 0;
 
-	/**
-	 * Returns the temporary unit affected.
-	 *
-	 * 
-	 */
-	public TempUnit getTempUnit() {
-		return tempUnit;
-	}
+  /**
+   * Creates an event object.
+   * 
+   * @param source the object that originated the event.
+   * @param temp the temporary unit affected by this event.
+   * @param type specifies whether the temp unit was created or is being deleted.
+   */
+  public TempUnitEvent(Object source, magellan.library.TempUnit temp, int type) {
+    super(source);
+    tempUnit = temp;
+    eventType = type;
+  }
 
-	/**
-	 * Returns whether the temp unit was created or deleted.
-	 *
-	 * 
-	 */
-	public int getType() {
-		return eventType;
-	}
+  /**
+   * Returns the temporary unit affected.
+   */
+  public TempUnit getTempUnit() {
+    return tempUnit;
+  }
+
+  /**
+   * Returns whether the temp unit was created or deleted.
+   */
+  public int getType() {
+    return eventType;
+  }
 }

@@ -15,44 +15,40 @@ package magellan.library.utils.replacers;
 
 import magellan.library.utils.Resources;
 
-
-
 /**
  * An division operator.
- * 
  * <p>
  * A Divide By Zero returns <i>null</i>.
  * </p>
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class DivisionOperator extends AbstractOperator {
-	/**
-	 * Creates a new DivisionOperator object.
-	 */
-	public DivisionOperator() {
-		super(2);
-	}
+  /**
+   * Creates a new DivisionOperator object.
+   */
+  public DivisionOperator() {
+    super(2);
+  }
 
-	/**
-	 * Divides the first argument number by the second.
-	 * 
-	 */
-	@Override
+  /**
+   * Divides the first argument number by the second.
+   */
+  @Override
   public Object compute(Object numbers[]) {
-		if(((Number) numbers[1]).floatValue() == 0) {
-			return null;
-		}
+    if (((Number) numbers[1]).floatValue() == 0)
+      return null;
 
-		return new Float(((Number) numbers[0]).floatValue() / ((Number) numbers[1]).floatValue());
-	}
+    return new Float(((Number) numbers[0]).floatValue() / ((Number) numbers[1]).floatValue());
+  }
 
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   @Override
   public String getDescription() {
-    return Resources.get("util.replacers.divisionoperator.description")+"\n\n"+super.getDescription();
+    return Resources.get("util.replacers.divisionoperator.description") + "\n\n"
+        + super.getDescription();
   }
 }

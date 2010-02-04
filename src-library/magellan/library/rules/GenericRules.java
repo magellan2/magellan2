@@ -75,26 +75,28 @@ public class GenericRules implements Rules {
   protected <T extends ObjectType> T getObjectType(Class<T> class1, ID id, boolean add) {
     Map<String, T> map = getMap(class1);
     Map<String, T> mapNames = getNamesMap(class1);
-    T objectType = getObjectType(map, mapNames, id.toString());
+    T objectType = GenericRules.getObjectType(map, mapNames, id.toString());
 
     if ((objectType == null) && add) {
       try {
         Constructor<T> constructor = null;
-        for (Class<?> idclass : new Class<?>[] { ID.class, StringID.class, CoordinateID.class, IntegerID.class, EntityID.class, UnitID.class }) {
+        for (Class<?> idclass : new Class<?>[] { ID.class, StringID.class, CoordinateID.class,
+            IntegerID.class, EntityID.class, UnitID.class }) {
           try {
             constructor = class1.getConstructor(idclass);
           } catch (Exception e) {
-            
+
           }
-          if (constructor!=null)
+          if (constructor != null) {
             break;
+          }
         }
-        addObjectType(objectType = constructor.newInstance(id), map, mapNames);// new
+        GenericRules.addObjectType(objectType = constructor.newInstance(id), map, mapNames);// new
         // T(id),
         // mapT,
         // mapTNames);
       } catch (Exception e) {
-        log.error("class has no constructor C(ID)");
+        GenericRules.log.error("class has no constructor C(ID)");
         throw new RuntimeException(e);
       }
       objectType.setName(id.toString());
@@ -137,9 +139,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getRegionType(java.lang.String, boolean)
    */
   public RegionType getRegionType(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getRegionType(StringID.create(id), add);
   }
@@ -189,9 +190,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getShipType(java.lang.String, boolean)
    */
   public ShipType getShipType(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getShipType(StringID.create(id), add);
   }
@@ -206,7 +206,7 @@ public class GenericRules implements Rules {
   public Collection<BuildingType> getBuildingTypes() {
     return new CompoundCollection<BuildingType>(getMap(CastleType.class).values(), getMap(
         BuildingType.class).values());
-// return getMap(BuildingType.class).values();
+    // return getMap(BuildingType.class).values();
   }
 
   /**
@@ -234,9 +234,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getBuildingType(java.lang.String, boolean)
    */
   public BuildingType getBuildingType(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getBuildingType(StringID.create(id), add);
   }
@@ -264,15 +263,15 @@ public class GenericRules implements Rules {
    */
   public CastleType getCastleType(StringID id, boolean add) {
     BuildingType t = getBuildingType(id, false);
-    if (t==null && add){
+    if (t == null && add) {
       t = new CastleType(id);
-      addObjectType(t, getMap(BuildingType.class), getNamesMap(BuildingType.class));
+      GenericRules.addObjectType(t, getMap(BuildingType.class), getNamesMap(BuildingType.class));
     }
     if (t instanceof CastleType)
       return (CastleType) t;
     else
       return null;
-// return getObjectType(CastleType.class, id, add);
+    // return getObjectType(CastleType.class, id, add);
   }
 
   /**
@@ -286,9 +285,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getCastleType(java.lang.String, boolean)
    */
   public CastleType getCastleType(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getCastleType(StringID.create(id), add);
   }
@@ -331,9 +329,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getRace(java.lang.String, boolean)
    */
   public Race getRace(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getRace(StringID.create(id), add);
   }
@@ -376,9 +373,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getItemType(java.lang.String, boolean)
    */
   public ItemType getItemType(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getItemType(StringID.create(id), add);
   }
@@ -421,9 +417,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getAllianceCategory(java.lang.String, boolean)
    */
   public AllianceCategory getAllianceCategory(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getAllianceCategory(StringID.create(id), add);
   }
@@ -466,9 +461,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getOptionCategory(java.lang.String, boolean)
    */
   public OptionCategory getOptionCategory(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getOptionCategory(StringID.create(id), add);
   }
@@ -511,9 +505,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getSkillCategory(java.lang.String, boolean)
    */
   public SkillCategory getSkillCategory(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getSkillCategory(StringID.create(id), add);
   }
@@ -556,9 +549,8 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getItemCategory(java.lang.String, boolean)
    */
   public ItemCategory getItemCategory(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getItemCategory(StringID.create(id), add);
   }
@@ -593,7 +585,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getSkillType(magellan.library.ID, boolean)
    */
   public SkillType getSkillType(StringID id, boolean add) {
-    return getObjectType(SkillType.class, id, add); 
+    return getObjectType(SkillType.class, id, add);
   }
 
   /**
@@ -609,9 +601,8 @@ public class GenericRules implements Rules {
    * is returned.
    */
   public SkillType getSkillType(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getSkillType(StringID.create(id), add);
   }
@@ -621,9 +612,8 @@ public class GenericRules implements Rules {
   }
 
   public MagellanSpellImpl getSpell(String id, boolean add) {
-    if ((id == null) || id.equals("")) {
+    if ((id == null) || id.equals(""))
       return null;
-    }
 
     return getSpell(StringID.create(id), add);
   }
@@ -652,36 +642,32 @@ public class GenericRules implements Rules {
   protected ObjectType changeName(ID id, String name) {
     ObjectType ot = null;
 
-    ot = changeName(id, name, getMap(RegionType.class), getNamesMap(RegionType.class));
-    if (ot != null) {
+    ot = GenericRules.changeName(id, name, getMap(RegionType.class), getNamesMap(RegionType.class));
+    if (ot != null)
       return ot;
-    }
 
-    ot = changeName(id, name, getMap(ShipType.class), getNamesMap(ShipType.class));
-    if (ot != null) {
+    ot = GenericRules.changeName(id, name, getMap(ShipType.class), getNamesMap(ShipType.class));
+    if (ot != null)
       return ot;
-    }
 
-    ot = changeName(id, name, getMap(BuildingType.class), getNamesMap(BuildingType.class));
-    if (ot != null) {
+    ot =
+        GenericRules.changeName(id, name, getMap(BuildingType.class),
+            getNamesMap(BuildingType.class));
+    if (ot != null)
       return ot;
-    }
 
-    ot = changeName(id, name, getMap(CastleType.class), getNamesMap(CastleType.class));
-    if (ot != null) {
+    ot = GenericRules.changeName(id, name, getMap(CastleType.class), getNamesMap(CastleType.class));
+    if (ot != null)
       return ot;
-    }
 
-    ot = changeName(id, name, getMap(Race.class), getNamesMap(Race.class));
-    if (ot != null) {
+    ot = GenericRules.changeName(id, name, getMap(Race.class), getNamesMap(Race.class));
+    if (ot != null)
       return ot;
-    }
 
-    ot = changeName(id, name, getMap(ItemType.class), getNamesMap(ItemType.class));
+    ot = GenericRules.changeName(id, name, getMap(ItemType.class), getNamesMap(ItemType.class));
 
-    if (ot != null) {
+    if (ot != null)
       return ot;
-    }
 
     // pavkovic 2004.03.17: Don't change the name of alliance and option category
     // ot = changeName(id, name, getMap(AllianceCategory.class),
@@ -693,30 +679,31 @@ public class GenericRules implements Rules {
     // if(ot != null) {
     // return ot;
     // }
-    ot = changeName(id, name, getMap(ItemCategory.class), getNamesMap(ItemCategory.class));
+    ot =
+        GenericRules.changeName(id, name, getMap(ItemCategory.class),
+            getNamesMap(ItemCategory.class));
 
-    if (ot != null) {
+    if (ot != null)
       return ot;
-    }
-
-    ot = changeName(id, name, getMap(SkillCategory.class), getNamesMap(SkillCategory.class));
-
-    if (ot != null) {
-      return ot;
-    }
-
-    ot = changeName(id, name, getMap(SkillType.class), getNamesMap(SkillType.class));
-
-    if (ot != null) {
-      return ot;
-    }
 
     ot =
-        changeName(id, name, getMap(MagellanSpellImpl.class), getNamesMap(MagellanSpellImpl.class));
+        GenericRules.changeName(id, name, getMap(SkillCategory.class),
+            getNamesMap(SkillCategory.class));
 
-    if (ot != null) {
+    if (ot != null)
       return ot;
-    }
+
+    ot = GenericRules.changeName(id, name, getMap(SkillType.class), getNamesMap(SkillType.class));
+
+    if (ot != null)
+      return ot;
+
+    ot =
+        GenericRules.changeName(id, name, getMap(MagellanSpellImpl.class),
+            getNamesMap(MagellanSpellImpl.class));
+
+    if (ot != null)
+      return ot;
 
     return null;
   }
@@ -732,7 +719,7 @@ public class GenericRules implements Rules {
     if (ot != null) {
       mapObjectTypeNames.remove(Umlaut.normalize(ot.getName()));
       ot.setName(name);
-      addObjectType(ot, mapObjectType, mapObjectTypeNames);
+      GenericRules.addObjectType(ot, mapObjectType, mapObjectTypeNames);
     }
 
     return null;
@@ -744,9 +731,9 @@ public class GenericRules implements Rules {
    * druing build.xml, but not in eclipse:
    * 
    * <pre>
-	* [javac] /export/home/i11pc226/steffen/workspace/Magellan2/src-library/magellan/library/rules/GenericRules.java:714: <T>addObject(T,java.util.Map<java.lang.String,? super T>,java.util.Map<java.lang.String,? super T>) in magellan.library.rules.GenericRules cannot be applied to (T,java.util.Map<java.lang.String,T>,java.util.Map<java.lang.String,T>)
-  * [javac]       addObject(ot, mapObjectType, mapObjectTypeNames);
-	* </pre>
+   * [javac] /export/home/i11pc226/steffen/workspace/Magellan2/src-library/magellan/library/rules/GenericRules.java:714: <T>addObject(T,java.util.Map<java.lang.String,? super T>,java.util.Map<java.lang.String,? super T>) in magellan.library.rules.GenericRules cannot be applied to (T,java.util.Map<java.lang.String,T>,java.util.Map<java.lang.String,T>)
+   * [javac]       addObject(ot, mapObjectType, mapObjectTypeNames);
+   * </pre>
    */
 
   /**
@@ -754,7 +741,7 @@ public class GenericRules implements Rules {
    */
   protected static <T extends ObjectType> void addObjectType(T o, Map<String, T> mapObjectType,
       Map<String, T> mapObjectTypeNames) {
-// private static ObjectType addObject(ObjectType o, Map<String,ObjectType> mapObjectType,
+    // private static ObjectType addObject(ObjectType o, Map<String,ObjectType> mapObjectType,
     // Map<String,ObjectType> mapObjectTypeNames) {
     if (GenericRules.log.isDebugEnabled()) {
       GenericRules.log.debug("GenericRules.addObject(" + o.getClass().toString() + "," + o.getID()
@@ -778,9 +765,9 @@ public class GenericRules implements Rules {
       String name) {
     String normName = Umlaut.normalize(name);
 
-    if (names.containsKey(normName)) {
+    if (names.containsKey(normName))
       return names.get(normName);
-    } else {
+    else {
       for (T ot : objects.values()) {
         if (Umlaut.normalize(ot.getName()).equals(normName)) {
           names.put(normName, ot);
@@ -874,8 +861,8 @@ public class GenericRules implements Rules {
     private Collection<? extends T> collection1;
     private Collection<? extends T> collection2;
 
-// public CompoundCollection(){
-// }
+    // public CompoundCollection(){
+    // }
 
     public CompoundCollection(Collection<? extends T> collection1,
         Collection<? extends T> collection2) {

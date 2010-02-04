@@ -24,8 +24,8 @@
 package magellan.library.gamebinding;
 
 /**
- * This class should implement Mappings special to Allanon. Currently no special mapping
- * are known therefore the generic MapMergeEvaluator would also fit for Allanon. 
+ * This class should implement Mappings special to Allanon. Currently no special mapping are known
+ * therefore the generic MapMergeEvaluator would also fit for Allanon.
  * 
  * @author Thoralf Rickert, Ralf Duckstein
  * @version 1.0.1, 19.05.2008
@@ -39,7 +39,7 @@ public class AllanonMapMergeEvaluator extends MapMergeEvaluator {
   protected AllanonMapMergeEvaluator() {
     super();
   }
-  
+
   /**
    * 
    */

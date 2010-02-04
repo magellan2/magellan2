@@ -50,7 +50,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   private EQueue queue;
 
   private static final int infoMilliSeks = 5000;
-  
+
   /**
    * Creates a new dispatcher
    */
@@ -63,7 +63,7 @@ public class EventDispatcher implements EventDispatcherInterface {
       notifierIsAliveOnList[i] = false;
     }
     assert listenerss.size() == EventDispatcher.PRIORITIES.length;
-    
+
     queue = new EQueue();
 
     Thread t = new Thread(new EManager(), "EventDispatcher");
@@ -73,10 +73,8 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   /**
-   * Returns the Magellan Context.
-   * 
-   * TR: This method was deprecated. But I don't know what to do 
-   * if I need the magellan context.
+   * Returns the Magellan Context. TR: This method was deprecated. But I don't know what to do if I
+   * need the magellan context.
    */
   public MagellanContext getMagellanContext() {
     return context;
@@ -104,7 +102,9 @@ public class EventDispatcher implements EventDispatcherInterface {
       // TODO maybe should do this asynchronously in AWT
       // clone list before changing
       listenerss.set(pos, cloneList(listenerss.get(pos)));
-      log.warn("The following exception shall be reported to bugzilla!", new Exception("It is not allowed to add a listener during a listener run (queue: "+pos+", new listener: "+obj.getClass().getName()));
+      EventDispatcher.log.warn("The following exception shall be reported to bugzilla!",
+          new Exception("It is not allowed to add a listener during a listener run (queue: " + pos
+              + ", new listener: " + obj.getClass().getName()));
     }
 
     listenerss.get(pos).add(obj);
@@ -116,7 +116,9 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAlive) {
       // clone list before changing
       listenerss.set(pos, cloneList(listenerss.get(pos)));
-      log.warn("The following exception shall be reported to bugzilla!", new Exception("It is not allowed to add a listener during a listener run (queue: "+pos+", new listener: "+obj.getClass().getName()));
+      EventDispatcher.log.warn("The following exception shall be reported to bugzilla!",
+          new Exception("It is not allowed to add a listener during a listener run (queue: " + pos
+              + ", new listener: " + obj.getClass().getName()));
     }
 
     listenerss.get(pos).add(0, obj);
@@ -124,12 +126,11 @@ public class EventDispatcher implements EventDispatcherInterface {
     checkManyListeners(pos);
   }
 
-
   private void checkManyListeners(int pos) {
     // issue a warning if there are too many listeners (possible memory leak)
-    if (listenerss.get(pos).size()>magnitude){
-      log.warn("many listeners in pos "+pos+": "+listenerss.get(pos).size());
-      magnitude*=2;
+    if (listenerss.get(pos).size() > magnitude) {
+      EventDispatcher.log.warn("many listeners in pos " + pos + ": " + listenerss.get(pos).size());
+      magnitude *= 2;
     }
   }
 
@@ -137,7 +138,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAlive) {
       // clone list before changing
       listenerss.set(pos, cloneList(listenerss.get(pos)));
-//      log.warn("The following exception shall be reported to bugzilla!", new Exception());
+      // log.warn("The following exception shall be reported to bugzilla!", new Exception());
     }
 
     return listenerss.get(pos).remove(l);
@@ -146,8 +147,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Adds a listener for selection events.
    * 
-   * @param l
-   *          the listener to add.
+   * @param l the listener to add.
    * @see SelectionEvent
    */
   public void addSelectionListener(SelectionListener l) {
@@ -155,8 +155,8 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   /**
-   * Adds the given selection listener to the front of all registered listeners.
-   * Warning: The order will change if another listener is added with priority.
+   * Adds the given selection listener to the front of all registered listeners. Warning: The order
+   * will change if another listener is added with priority.
    */
   public void addPrioritySelectionListener(SelectionListener l) {
     addPriorityListener(EventDispatcher.SELECTION, l);
@@ -165,8 +165,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Removes the specified listener for selection events.
    * 
-   * @param l
-   *          the listener to remove.
+   * @param l the listener to remove.
    * @return true if this list contained the specified element.
    * @see SelectionEvent
    */
@@ -177,8 +176,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Adds a listener for game data events.
    * 
-   * @param l
-   *          the listener to add.
+   * @param l the listener to add.
    * @see GameDataEvent
    */
   public void addGameDataListener(GameDataListener l) {
@@ -186,8 +184,8 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   /**
-   * Adds the given game-data listener to the front of all registered listeners.
-   * Warning: The order will change if another listener is added with priority.
+   * Adds the given game-data listener to the front of all registered listeners. Warning: The order
+   * will change if another listener is added with priority.
    */
   public void addPriorityGameDataListener(GameDataListener l) {
     addPriorityListener(EventDispatcher.GAMEDATA, l);
@@ -196,8 +194,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Removes the specified listener for game data events.
    * 
-   * @param l
-   *          the listener to remove.
+   * @param l the listener to remove.
    * @return true if this list contained the specified element.
    * @see GameDataEvent
    */
@@ -208,8 +205,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Adds a listener for temp unit events.
    * 
-   * @param l
-   *          the listener to add.
+   * @param l the listener to add.
    * @see TempUnitEvent
    */
   public void addTempUnitListener(TempUnitListener l) {
@@ -217,8 +213,8 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   /**
-   * Adds the given temp-unit listener to the front of all registered listeners.
-   * Warning: The order will change if another listener is added with priority.
+   * Adds the given temp-unit listener to the front of all registered listeners. Warning: The order
+   * will change if another listener is added with priority.
    */
   public void addPriorityTempUnitListener(TempUnitListener l) {
     addPriorityListener(EventDispatcher.TEMPUNIT, l);
@@ -227,8 +223,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Removes the specified listener for temp unit events.
    * 
-   * @param l
-   *          the listener to remove.
+   * @param l the listener to remove.
    * @return true if this list contained the specified element.
    * @see TempUnitEvent
    */
@@ -239,8 +234,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Adds a listener for unit orders events.
    * 
-   * @param l
-   *          the listener to add.
+   * @param l the listener to add.
    * @see UnitOrdersEvent
    */
   public void addUnitOrdersListener(UnitOrdersListener l) {
@@ -248,9 +242,8 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   /**
-   * Adds the given unit-orders listener to the front of all registered
-   * listeners. Warning: The order will change if another listener is added with
-   * priority.
+   * Adds the given unit-orders listener to the front of all registered listeners. Warning: The
+   * order will change if another listener is added with priority.
    */
   public void addPriorityUnitOrdersListener(UnitOrdersListener l) {
     addPriorityListener(EventDispatcher.UNITORDERS, l);
@@ -259,8 +252,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Removes the specified listener for unit order events.
    * 
-   * @param l
-   *          the listener to remove.
+   * @param l the listener to remove.
    * @return true if this list contained the specified element.
    * @see UnitOrdersEvent
    */
@@ -271,8 +263,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Removes the specified listener from all event queues
    * 
-   * @param o
-   *          the listener to remove.
+   * @param o the listener to remove.
    * @return true if one of the list contained the specified element.
    */
   public boolean removeAllListeners(Object o) {
@@ -281,7 +272,9 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (o instanceof GameDataListener) {
       if (removeGameDataListener((GameDataListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
-          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale GameDataListener entry for " + o.getClass());
+          EventDispatcher.log
+              .debug("EventDispatcher.removeAllListeners: stale GameDataListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -291,7 +284,9 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (o instanceof TempUnitListener) {
       if (removeTempUnitListener((TempUnitListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
-          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale TempUnitListener entry for " + o.getClass());
+          EventDispatcher.log
+              .debug("EventDispatcher.removeAllListeners: stale TempUnitListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -301,7 +296,9 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (o instanceof UnitOrdersListener) {
       if (removeUnitOrdersListener((UnitOrdersListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
-          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale UnitOrdersListener entry for " + o.getClass());
+          EventDispatcher.log
+              .debug("EventDispatcher.removeAllListeners: stale UnitOrdersListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -311,7 +308,9 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (o instanceof SelectionListener) {
       if (removeSelectionListener((SelectionListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
-          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale SelectionListener entry for " + o.getClass());
+          EventDispatcher.log
+              .debug("EventDispatcher.removeAllListeners: stale SelectionListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -321,7 +320,9 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (o instanceof OrderConfirmListener) {
       if (removeOrderConfirmListener((OrderConfirmListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
-          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale OrderConfirmListener entry for " + o.getClass());
+          EventDispatcher.log
+              .debug("EventDispatcher.removeAllListeners: stale OrderConfirmListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -334,8 +335,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Adds a listener for order confirm events.
    * 
-   * @param l
-   *          the listener to add.
+   * @param l the listener to add.
    * @see OrderConfirmEvent
    */
   public void addOrderConfirmListener(OrderConfirmListener l) {
@@ -343,9 +343,8 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   /**
-   * Adds the given order-confirm listener to the front of all registered
-   * listeners. Warning: The order will change if another listener is added with
-   * priority.
+   * Adds the given order-confirm listener to the front of all registered listeners. Warning: The
+   * order will change if another listener is added with priority.
    */
   public void addPriorityOrderConfirmListener(OrderConfirmListener l) {
     addPriorityListener(EventDispatcher.ORDERCONFIRM, l);
@@ -354,8 +353,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Removes the specified listener for order confirm events.
    * 
-   * @param l
-   *          the listener to remove.
+   * @param l the listener to remove.
    * @return true if this list contained the specified element.
    * @see OrderConfirmEvent
    */
@@ -366,15 +364,15 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Forwards an event to all registered listeners for this event type.
    * <p>
-   * If synchronous is false, the forwarding is done asynchronously in a
-   * separate dispatcher thread. If the fire method is called before the
-   * dispatcher thread has finished the previous request, it is stopped and
-   * starts forwarding the new event.
+   * If synchronous is false, the forwarding is done asynchronously in a separate dispatcher thread.
+   * If the fire method is called before the dispatcher thread has finished the previous request, it
+   * is stopped and starts forwarding the new event.
    * </p>
    */
   public void fire(EventObject e, boolean synchronous) {
     if (EventDispatcher.log.isDebugEnabled()) {
-      EventDispatcher.log.debug("EventDispatcher(" + e + "," + synchronous + "): fired event ", new Exception());
+      EventDispatcher.log.debug("EventDispatcher(" + e + "," + synchronous + "): fired event ",
+          new Exception());
     }
 
     if (synchronous) {
@@ -385,31 +383,28 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   /**
-   * Asynchronously forwards an event to all registered listeners for this event
-   * type.
+   * Asynchronously forwards an event to all registered listeners for this event type.
    */
   public void fire(EventObject e) {
     fire(e, false);
   }
 
   /**
-   * Returns the number of events that were passed to this dispatcher for
-   * forwarding.
+   * Returns the number of events that were passed to this dispatcher for forwarding.
    */
   public int getEventsFired() {
     return eventsFired;
   }
 
   /**
-   * Returns the number of events that were actually forwarded to event
-   * listeners.
+   * Returns the number of events that were actually forwarded to event listeners.
    */
   public int getEventsDispatched() {
     return eventsDispatched;
   }
 
   private class EManager implements Runnable {
-    
+
     /**
      * @see java.lang.Runnable#run()
      */
@@ -429,9 +424,8 @@ public class EventDispatcher implements EventDispatcherInterface {
           // of course the waiting time should be bounded
 
           /*
-           * Note: I think it's better to use a priority system. Some events
-           * should not be interrupted like GameDataEvents since data integrity
-           * would be lost. Andreas
+           * Note: I think it's better to use a priority system. Some events should not be
+           * interrupted like GameDataEvents since data integrity would be lost. Andreas
            */
           if (notifierIsAlive) {
             if (prio < lastPriority) { // interrupt the old notifier
@@ -481,7 +475,6 @@ public class EventDispatcher implements EventDispatcherInterface {
      * Returns the next EventObject. Waits for it if <code>block==true</code>.
      * 
      * @throws InterruptedException As in {@link Object#wait()}
-     *           
      */
     public synchronized EventObject waitFor() throws InterruptedException {
       if (block) {
@@ -522,7 +515,7 @@ public class EventDispatcher implements EventDispatcherInterface {
       }
 
       objects.add(index, o);
-      this.notifyAll();
+      notifyAll();
     }
   }
 
@@ -551,7 +544,7 @@ public class EventDispatcher implements EventDispatcherInterface {
      * Creates a new Notifier object.
      */
     public Notifier(EventObject e) {
-      this.event = e;
+      event = e;
     }
 
     /**
@@ -566,16 +559,18 @@ public class EventDispatcher implements EventDispatcherInterface {
       long timeWatchStart = 0;
       long timeWatchEnd = 0;
       notifierIsAlive = true;
-      
+
       // the for loops are duplicated for each event type to
       // avoid a lot of expensive class casts and instanceof
       // operations
       if (event instanceof SelectionEvent) {
         SelectionEvent e = (SelectionEvent) event;
-        
+
         notifierIsAliveOnList[EventDispatcher.SELECTION] = true;
 
-        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.SELECTION).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.SELECTION).iterator(); iter
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -585,16 +580,18 @@ public class EventDispatcher implements EventDispatcherInterface {
               timeWatchStart = System.currentTimeMillis();
               ((SelectionListener) o).selectionChanged(e);
               timeWatchEnd = System.currentTimeMillis();
-              if ((timeWatchEnd-timeWatchStart) > EventDispatcher.infoMilliSeks){
-                EventDispatcher.log.info("Notify took " + (timeWatchEnd-timeWatchStart) + "ms for SELECTION-notify from " + event.getSource().getClass().getName() + " in " + ((SelectionListener) o).getClass().getName());
+              if ((timeWatchEnd - timeWatchStart) > EventDispatcher.infoMilliSeks) {
+                EventDispatcher.log.info("Notify took " + (timeWatchEnd - timeWatchStart)
+                    + "ms for SELECTION-notify from " + event.getSource().getClass().getName()
+                    + " in " + ((SelectionListener) o).getClass().getName());
               }
             } catch (Exception ex) {
               EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
           }
 
-          if (EventDispatcher.this.stopNotification) {
-            EventDispatcher.this.stopNotification = false;
+          if (stopNotification) {
+            stopNotification = false;
           }
         }
         notifierIsAliveOnList[EventDispatcher.SELECTION] = false;
@@ -603,7 +600,9 @@ public class EventDispatcher implements EventDispatcherInterface {
 
         notifierIsAliveOnList[EventDispatcher.ORDERCONFIRM] = true;
 
-        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.ORDERCONFIRM).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.ORDERCONFIRM).iterator(); iter
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -616,8 +615,8 @@ public class EventDispatcher implements EventDispatcherInterface {
             }
           }
 
-          if (EventDispatcher.this.stopNotification) {
-            EventDispatcher.this.stopNotification = false;
+          if (stopNotification) {
+            stopNotification = false;
           }
         }
 
@@ -627,7 +626,9 @@ public class EventDispatcher implements EventDispatcherInterface {
 
         notifierIsAliveOnList[EventDispatcher.UNITORDERS] = true;
 
-        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.UNITORDERS).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.UNITORDERS).iterator(); iter
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -641,8 +642,8 @@ public class EventDispatcher implements EventDispatcherInterface {
 
           }
 
-          if (EventDispatcher.this.stopNotification) {
-            EventDispatcher.this.stopNotification = false;
+          if (stopNotification) {
+            stopNotification = false;
           }
         }
 
@@ -652,7 +653,9 @@ public class EventDispatcher implements EventDispatcherInterface {
 
         notifierIsAliveOnList[EventDispatcher.TEMPUNIT] = true;
 
-        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.TEMPUNIT).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.TEMPUNIT).iterator(); iter
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -673,8 +676,8 @@ public class EventDispatcher implements EventDispatcherInterface {
 
           }
 
-          if (EventDispatcher.this.stopNotification) {
-            EventDispatcher.this.stopNotification = false;
+          if (stopNotification) {
+            stopNotification = false;
           }
         }
 
@@ -683,8 +686,10 @@ public class EventDispatcher implements EventDispatcherInterface {
         GameDataEvent e = (GameDataEvent) event;
 
         notifierIsAliveOnList[EventDispatcher.GAMEDATA] = true;
-        
-        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.GAMEDATA).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.GAMEDATA).iterator(); iter
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -694,16 +699,18 @@ public class EventDispatcher implements EventDispatcherInterface {
               timeWatchStart = System.currentTimeMillis();
               ((GameDataListener) o).gameDataChanged(e);
               timeWatchEnd = System.currentTimeMillis();
-              if ((timeWatchEnd-timeWatchStart) > EventDispatcher.infoMilliSeks){
-                EventDispatcher.log.info("Notify took " + (timeWatchEnd-timeWatchStart) + "ms for GAMEDATA-notify from " + event.getSource().getClass().getName() + " in " + ((GameDataListener) o).getClass().getName());
+              if ((timeWatchEnd - timeWatchStart) > EventDispatcher.infoMilliSeks) {
+                EventDispatcher.log.info("Notify took " + (timeWatchEnd - timeWatchStart)
+                    + "ms for GAMEDATA-notify from " + event.getSource().getClass().getName()
+                    + " in " + ((GameDataListener) o).getClass().getName());
               }
             } catch (Exception ex) {
               EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
           }
 
-          if (EventDispatcher.this.stopNotification) {
-            EventDispatcher.this.stopNotification = false;
+          if (stopNotification) {
+            stopNotification = false;
           }
         }
         notifierIsAliveOnList[EventDispatcher.GAMEDATA] = false;

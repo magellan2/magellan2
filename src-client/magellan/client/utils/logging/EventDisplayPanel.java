@@ -14,42 +14,38 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
 
-
 /**
  * @author pavkovic
- *
  */
 public class EventDisplayPanel extends JPanel implements UnitOrdersListener {
-	JTextArea area;
-	EventDispatcher dispatcher;
-	
-	public EventDisplayPanel(EventDispatcher d) {
-		super();
-		init(d);
-	}
+  JTextArea area;
+  EventDispatcher dispatcher;
 
-	private void init(EventDispatcher d) {	
-		dispatcher = d;
-		d.addUnitOrdersListener(this);
-		initGUI();
-	}
-	
-	private void initGUI() {
-		this.setLayout(new BorderLayout());
-		
-		area = new JTextArea();
-		area.setText("");
-		this.add(new JScrollPane(area),BorderLayout.CENTER);
-	}
-	
-	public void unitOrdersChanged(UnitOrdersEvent e) {
-		area.setText(area.getText()+e.toString()+'\n');
-	}
+  public EventDisplayPanel(EventDispatcher d) {
+    super();
+    init(d);
+  }
 
+  private void init(EventDispatcher d) {
+    dispatcher = d;
+    d.addUnitOrdersListener(this);
+    initGUI();
+  }
+
+  private void initGUI() {
+    setLayout(new BorderLayout());
+
+    area = new JTextArea();
+    area.setText("");
+    this.add(new JScrollPane(area), BorderLayout.CENTER);
+  }
+
+  public void unitOrdersChanged(UnitOrdersEvent e) {
+    area.setText(area.getText() + e.toString() + '\n');
+  }
 
   /**
-  protected String getString(String key) {
-    return Resources.get("utils.logging.eventdisplaypanel.",key);
-  }
-  */
+   * protected String getString(String key) { return
+   * Resources.get("utils.logging.eventdisplaypanel.",key); }
+   */
 }

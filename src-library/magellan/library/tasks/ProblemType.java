@@ -23,14 +23,14 @@
 // 
 package magellan.library.tasks;
 
-
 public class ProblemType {
 
   private String name;
   private String group;
   private String description;
   private String message;
-//  private Inspector inspector;
+
+  // private Inspector inspector;
 
   /**
    * name, group and description describe the problem and are used in preferences for selection.
@@ -50,26 +50,25 @@ public class ProblemType {
   public ProblemType(String name, String group, String description, String message) {
     if (name == null)
       throw new NullPointerException();
-//    if (!Pattern.matches("[A-Za-z‹¸÷ˆƒ‰][A-Za-z‹¸÷ˆƒ‰ﬂ0-9-_ .]*", name))
-//      throw new IllegalArgumentException("invalid problem type name " + name);
+    // if (!Pattern.matches("[A-Za-z‹¸÷ˆƒ‰][A-Za-z‹¸÷ˆƒ‰ﬂ0-9-_ .]*", name))
+    // throw new IllegalArgumentException("invalid problem type name " + name);
     this.name = name;
     this.group = group;
     this.description = description;
     this.message = message;
-//    this.inspector = inspector;
+    // this.inspector = inspector;
   }
 
   /**
    * Returns a localized, human-readable name of this problem.
-   * 
    */
   public String getName() {
     return name;
   }
 
   /**
-   * Returns an identifier for a group of ProblemTypes this ProblemType belongs to or <code>null</code>.
-   * 
+   * Returns an identifier for a group of ProblemTypes this ProblemType belongs to or
+   * <code>null</code>.
    */
   public String getGroup() {
     return group;
@@ -77,14 +76,13 @@ public class ProblemType {
 
   /**
    * Returns a localized, human-readable description of the type or <code>null</code>
-   * 
    */
   public String getDescription() {
     return description;
   }
 
   /**
-   * Returns the message for this type or <code>null</code> (if the message depends on more than 
+   * Returns the message for this type or <code>null</code> (if the message depends on more than
    * just the type.
    * 
    * @return
@@ -98,9 +96,9 @@ public class ProblemType {
    * 
    * @return
    */
-//  public Inspector getInspector() {
-//    return inspector;
-//  }
+  // public Inspector getInspector() {
+  // return inspector;
+  // }
 
   @Override
   public String toString() {

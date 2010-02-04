@@ -24,83 +24,72 @@ import magellan.client.utils.SimpleInternalFrame;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public class InternalFrame extends JPanel {
-	private SimpleInternalFrame sif;
-	private Component content;
+  private SimpleInternalFrame sif;
+  private Component content;
 
-	/**
-	 * Creates a new InternalFrame object.
-	 */
-	public InternalFrame() {
-		this("");
-	}
+  /**
+   * Creates a new InternalFrame object.
+   */
+  public InternalFrame() {
+    this("");
+  }
 
-	/**
-	 * Creates a new InternalFrame object.
-	 *
-	 * 
-	 */
-	public InternalFrame(String title) {
-		this(title, null);
-	}
+  /**
+   * Creates a new InternalFrame object.
+   */
+  public InternalFrame(String title) {
+    this(title, null);
+  }
 
-	/**
-	 * Creates a new InternalFrame object.
-	 *
-	 * 
-	 * 
-	 */
-	public InternalFrame(String title, Component content) {
-		super(new BorderLayout());
-		//sif = new SimpleInternalFrame(title);
-		//add(sif);
+  /**
+   * Creates a new InternalFrame object.
+   */
+  public InternalFrame(String title, Component content) {
+    super(new BorderLayout());
+    // sif = new SimpleInternalFrame(title);
+    // add(sif);
 
-		if(content != null) {
-			setContent(content);
-		}
-	}
+    if (content != null) {
+      setContent(content);
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setContent(Component content) {
-		if(content != null) {
-			if(sif == null ) {
-				if(this.content != null) {
-					remove(this.content);
-				}
-				this.content = content;
-				add(content);
-				setBorder(BorderFactory.createLineBorder(Color.gray));
-				//setBorder(BorderFactory.createEtchedBorder());
-			} else {
-				this.setBorder(BorderFactory.createEmptyBorder());
-				sif.setContent(content);
-			}
-		}
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setContent(Component content) {
+    if (content != null) {
+      if (sif == null) {
+        if (this.content != null) {
+          remove(this.content);
+        }
+        this.content = content;
+        add(content);
+        setBorder(BorderFactory.createLineBorder(Color.gray));
+        // setBorder(BorderFactory.createEtchedBorder());
+      } else {
+        setBorder(BorderFactory.createEmptyBorder());
+        sif.setContent(content);
+      }
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Component getContent() {
-		return sif.getContent();
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public Component getContent() {
+    return sif.getContent();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setTitle(String title) {
-		sif.setTitle(title);
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setTitle(String title) {
+    sif.setTitle(title);
+  }
 }

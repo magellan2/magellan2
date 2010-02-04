@@ -28,7 +28,8 @@ import magellan.client.swing.context.ContextFactory;
  * @author $Author: $
  * @version $Revision: 259 $
  */
-public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, SupportsClipboard, Changeable {
+public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, SupportsClipboard,
+    Changeable {
   protected static final List<String> defaultIcon = Collections.singletonList("simpledefault");
   protected List<String> icons;
   protected List<String> returnIcons;
@@ -41,19 +42,19 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
   protected Object contextArgument = null;
   protected int amount = -1;
 
-//  /**
-//   * Creates new SimpleNodeWrapper
-//   */
-//  public SimpleNodeWrapper(Object obj, String icon, String clipboardValue) {
-//    this(obj, obj == null ? "" : obj.toString(), icon, clipboardValue);
-//  }
-//
-//  /**
-//   * Creates new SimpleNodeWrapper
-//   */
-//  public SimpleNodeWrapper(Object obj, Collection<String> icons, String clipboardValue) {
-//    this(obj, obj == null ? "" : obj.toString(), icons, clipboardValue);
-//  }
+  // /**
+  // * Creates new SimpleNodeWrapper
+  // */
+  // public SimpleNodeWrapper(Object obj, String icon, String clipboardValue) {
+  // this(obj, obj == null ? "" : obj.toString(), icon, clipboardValue);
+  // }
+  //
+  // /**
+  // * Creates new SimpleNodeWrapper
+  // */
+  // public SimpleNodeWrapper(Object obj, Collection<String> icons, String clipboardValue) {
+  // this(obj, obj == null ? "" : obj.toString(), icons, clipboardValue);
+  // }
 
   /**
    * @param obj
@@ -74,7 +75,7 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
   }
 
   /**
-   * Creates new SimpleNodeWrapper. 
+   * Creates new SimpleNodeWrapper.
    * 
    * @param obj
    * @param text
@@ -82,22 +83,22 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
    * @param clipboardValue
    */
   public SimpleNodeWrapper(Object obj, String text, String icon, String clipboardValue) {
-    this(obj, text, icon==null?null:Collections.singletonList(icon), clipboardValue);
+    this(obj, text, icon == null ? null : Collections.singletonList(icon), clipboardValue);
   }
 
   /**
-   * Creates new SimpleNodeWrapper. If <code>icon == null</code>, a default icon is displayed. If 
-   * <code>clipboardValue == null</code>, the text is returned as clipboard value. 
+   * Creates new SimpleNodeWrapper. If <code>icon == null</code>, a default icon is displayed. If
+   * <code>clipboardValue == null</code>, the text is returned as clipboard value.
    * 
    * @param obj
-   * @param text 
+   * @param text
    * @param icons may be <code>null</code> meaning no icons
    * @param clipboardValue may be <code>null</code>
    */
   public SimpleNodeWrapper(Object obj, String text, Collection<String> icons, String clipboardValue) {
-    this.object = obj;
+    object = obj;
     this.text = text;
-    this.icons = icons==null?null:new ArrayList<String>(icons);
+    this.icons = icons == null ? null : new ArrayList<String>(icons);
     this.clipboardValue = clipboardValue;
   }
 
@@ -112,16 +113,16 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
    * Creates a new SimpleNodeWrapper object.
    */
   public SimpleNodeWrapper(Object obj, String icon) {
-    this(obj, obj == null ? "" : obj.toString(), icon==null?null:Collections.singletonList(icon), null);
+    this(obj, obj == null ? "" : obj.toString(), icon == null ? null : Collections
+        .singletonList(icon), null);
   }
 
   /**
    * DOCUMENT-ME
    */
   public boolean isShowingIcons() {
-    if (adapter != null) {
+    if (adapter != null)
       return adapter.properties[0];
-    }
 
     return showIcons;
   }
@@ -159,14 +160,14 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
    * @param i
    */
   public void setAmount(int i) {
-    this.amount = i;
+    amount = i;
   }
 
   /**
    * DOCUMENT-ME
    */
   public int getAmount() {
-    return this.amount;
+    return amount;
   }
 
   /**
@@ -174,11 +175,10 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
    */
   @Override
   public String toString() {
-    if (amount == -1) {
+    if (amount == -1)
       return text;
-    } else {
+    else
       return text + ": " + amount;
-    }
   }
 
   /**
@@ -195,11 +195,10 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
    * DOCUMENT-ME
    */
   public String getClipboardValue() {
-    if (clipboardValue == null) {
+    if (clipboardValue == null)
       return toString();
-    } else {
+    else
       return clipboardValue;
-    }
   }
 
   protected NodeWrapperDrawPolicy createSimpleDrawPolicy(Properties settings, String prefix) {
@@ -207,9 +206,7 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
         "simple.showIcon", "true" } }, new String[] { "icons.text" }, 0, "tree.simplenodewrapper.");
   }
 
-
   /**
-   * 
    * @see magellan.client.swing.tree.Changeable#getContextFactory()
    */
   public ContextFactory getContextFactory() {

@@ -23,49 +23,39 @@ import magellan.library.StringID;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class SkillCategory extends Category {
-	/**
-	 * Creates new ItemCategory
-	 *
-	 * 
-	 */
-	public SkillCategory(StringID id) {
-		super(id);
-	}
+  /**
+   * Creates new ItemCategory
+   */
+  public SkillCategory(StringID id) {
+    super(id);
+  }
 
-	/**
-	 * Creates a new SkillCategory object.
-	 *
-	 * 
-	 * 
-	 */
-	public SkillCategory(ID id, Category parent) {
-		super(id, parent);
-	}
+  /**
+   * Creates a new SkillCategory object.
+   */
+  public SkillCategory(ID id, Category parent) {
+    super(id, parent);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public boolean isInstance(Object o) {
-		if(o instanceof SkillType) {
-			SkillType st = (SkillType) o;
+    if (o instanceof SkillType) {
+      SkillType st = (SkillType) o;
 
-			if(st.getCategory() != null) {
-				return st.getCategory().isDescendant(this);
-			}
-		}
+      if (st.getCategory() != null)
+        return st.getCategory().isDescendant(this);
+    }
 
-		return false;
-	}
+    return false;
+  }
 
   /**
    * Returns the id uniquely identifying this object.

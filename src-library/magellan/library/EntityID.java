@@ -47,8 +47,9 @@ public class EntityID extends IntegerID {
     EntityID id = EntityID.idMap.get(value);
 
     if (id == null || id.radix != radix) {
-      if (id != null)
-        log.warn("changing radix of id " + id);
+      if (id != null) {
+        EntityID.log.warn("changing radix of id " + id);
+      }
 
       id = new EntityID(value, radix);
       EntityID.idMap.put(value, id);
@@ -62,7 +63,7 @@ public class EntityID extends IntegerID {
    * radix. Effectively the same as calling createEntityID(s, radix, radix).
    */
   public static EntityID createEntityID(String s, int radix) {
-    return createEntityID(s, radix, radix);
+    return EntityID.createEntityID(s, radix, radix);
   }
 
   /**
@@ -94,7 +95,7 @@ public class EntityID extends IntegerID {
    */
   @Override
   public String toString() {
-    return IDBaseConverter.toString(this.intValue(), radix);
+    return IDBaseConverter.toString(intValue(), radix);
   }
 
   /**
@@ -105,9 +106,8 @@ public class EntityID extends IntegerID {
    */
   @Override
   public boolean equals(Object o) {
-    if (o == null) {
+    if (o == null)
       return false;
-    }
     try {
       return (this == o) || id == ((EntityID) o).id;
     } catch (ClassCastException e) {

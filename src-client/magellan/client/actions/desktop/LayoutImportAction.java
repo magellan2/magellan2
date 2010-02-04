@@ -47,7 +47,7 @@ public class LayoutImportAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.accelerator",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.accelerator", false);
   }
 
   /**
@@ -55,7 +55,7 @@ public class LayoutImportAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.mnemonic",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.mnemonic", false);
   }
 
   /**

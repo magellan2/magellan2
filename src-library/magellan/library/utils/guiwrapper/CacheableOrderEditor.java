@@ -34,9 +34,8 @@ import javax.swing.border.Border;
 import javax.swing.event.CaretListener;
 
 /**
- * This is a wrapper for the OrderEditor that is part of the
- * Client package.
- *
+ * This is a wrapper for the OrderEditor that is part of the Client package.
+ * 
  * @author ...
  * @version 1.0, 27.04.2007
  */
@@ -51,7 +50,7 @@ public interface CacheableOrderEditor {
    * Refresh the editor's contents.
    */
   public void reloadOrders();
-  
+
   //
   // Swing specific methods
   //
@@ -78,6 +77,6 @@ public interface CacheableOrderEditor {
   public void setCursor(Cursor cursor);
 
   public Rectangle getBounds();
-  
+
   public void fireOrdersChangedEvent();
 }

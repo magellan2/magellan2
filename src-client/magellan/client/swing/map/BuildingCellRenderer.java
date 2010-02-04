@@ -42,59 +42,59 @@ import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
-
 /**
  * A renderer for Building objects.
  */
-public class BuildingCellRenderer extends ImageCellRenderer{
-  
-	/**
-	 * Creates a new BuildingCellRenderer object.
-	 */
-	public BuildingCellRenderer(CellGeometry geo, MagellanContext context) {
-		super(geo, context);
-	}
+public class BuildingCellRenderer extends ImageCellRenderer {
+
+  /**
+   * Creates a new BuildingCellRenderer object.
+   */
+  public BuildingCellRenderer(CellGeometry geo, MagellanContext context) {
+    super(geo, context);
+  }
 
   /**
    * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
    */
   @Override
-	public void render(Object obj, boolean active, boolean selected) {
-		if(obj instanceof Region) {
-			Region region = (Region) obj;
+  public void render(Object obj, boolean active, boolean selected) {
+    if (obj instanceof Region) {
+      Region region = (Region) obj;
 
-			Iterator<Building> iter = region.buildings().iterator();
+      Iterator<Building> iter = region.buildings().iterator();
 
-			if(iter.hasNext()) {
-				CoordinateID coordinate = region.getCoordinate();
-				Point pos = new Point(cellGeo.getImagePosition(coordinate.x, coordinate.y));
-				pos.translate(-offset.x, -offset.y);
+      if (iter.hasNext()) {
+        CoordinateID coordinate = region.getCoordinate();
+        Point pos = new Point(cellGeo.getImagePosition(coordinate.x, coordinate.y));
+        pos.translate(-offset.x, -offset.y);
 
-				Dimension size = cellGeo.getImageSize();
-        
-				while(iter.hasNext()) {
-					Building b = iter.next();
-					UnitContainerType type = b.getType();
+        Dimension size = cellGeo.getImageSize();
 
-					if(type != null && isEnabled(region,type)) {
-						Image img = getImage(type.getID().toString());
+        while (iter.hasNext()) {
+          Building b = iter.next();
+          UnitContainerType type = b.getType();
 
-						if(img != null) {
-							graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
-						}
-					}
-				}
-			}
-		}
-	}
-  
+          if (type != null && isEnabled(region, type)) {
+            Image img = getImage(type.getID().toString());
+
+            if (img != null) {
+              graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
+            }
+          }
+        }
+      }
+    }
+  }
+
   /**
-   * This method checks, if the given containtertype is in the rules
-   * and if it has a properties settings to not render it (default:true)
+   * This method checks, if the given containtertype is in the rules and if it has a properties
+   * settings to not render it (default:true)
    */
   protected boolean isEnabled(Region region, UnitContainerType containerType) {
     // that should be enough...
-    return PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(),PropertiesHelper.BUILDINGRENDERER_RENDER+containerType.getID(),true);
+    return PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(),
+        PropertiesHelper.BUILDINGRENDERER_RENDER + containerType.getID(), true);
   }
 
   /**
@@ -104,14 +104,14 @@ public class BuildingCellRenderer extends ImageCellRenderer{
   public PreferencesAdapter getPreferencesAdapter() {
     return new BuildingCellRendererPreferences(this, settings);
   }
-  
+
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
    */
   @Override
-	public int getPlaneIndex() {
-		return Mapper.PLANE_BUILDING;
-	}
+  public int getPlaneIndex() {
+    return Mapper.PLANE_BUILDING;
+  }
 
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getName()
@@ -120,58 +120,60 @@ public class BuildingCellRenderer extends ImageCellRenderer{
   public String getName() {
     return Resources.get("map.buildingcellrenderer.name");
   }
-  
+
   /**
-   * 
    * This is the inner class used for the preferences
-   *
+   * 
    * @author Thoralf Rickert
    * @version 1.0, 28.02.2008
    */
-  
+
   protected class BuildingCellRendererPreferences extends JPanel implements PreferencesAdapter {
     protected BuildingCellRenderer source = null;
     protected GameData data = null;
     protected List<JCheckBox> buildings;
     private Properties settings;
-    
+
     /**
      * Creates a new BuildingCellRendererPreferences object.
      */
     protected BuildingCellRendererPreferences(MapCellRenderer source, Properties settings) {
       super(new BorderLayout());
-      this.source = (BuildingCellRenderer)source;
+      this.source = (BuildingCellRenderer) source;
       this.settings = settings;
     }
-      
-    protected void initGUI(){ 
+
+    protected void initGUI() {
       JPanel panel = new JPanel(new SpringLayout());
-      panel.setBorder(new TitledBorder(new EtchedBorder(), Resources.get("building.renderer.show.caption")));
-      
-      
+      panel.setBorder(new TitledBorder(new EtchedBorder(), Resources
+          .get("building.renderer.show.caption")));
+
       buildings = new ArrayList<JCheckBox>();
-      
+
       // arrange one box for each building type in a grid
       if (data != null) {
         int i = 0;
-        for (BuildingType type : data.rules.getBuildingTypes()){
-          
-          boolean selected = PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(),PropertiesHelper.BUILDINGRENDERER_RENDER+type.getID(),true);
-          
-          JCheckBox box = new JCheckBox(Resources.get("building.renderer.show",type.getName()),selected);
+        for (BuildingType type : data.rules.getBuildingTypes()) {
+
+          boolean selected =
+              PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(),
+                  PropertiesHelper.BUILDINGRENDERER_RENDER + type.getID(), true);
+
+          JCheckBox box =
+              new JCheckBox(Resources.get("building.renderer.show", type.getName()), selected);
           box.setActionCommand(type.getID().toString());
           buildings.add(box);
           panel.add(box);
 
           // add slack components
-          if (++i%5==0){
+          if (++i % 5 == 0) {
             panel.add(new JPanel());
           }
         }
       }
       SpringUtilities.makeCompactGrid(panel, 0, 6, 3, 3, 3, 3);
-      
-      this.add(panel,BorderLayout.CENTER);
+
+      this.add(panel, BorderLayout.CENTER);
     }
 
     /**
@@ -181,7 +183,8 @@ public class BuildingCellRenderer extends ImageCellRenderer{
       for (JCheckBox box : buildings) {
         boolean selected = box.isSelected();
         String id = box.getActionCommand();
-        settings.setProperty(PropertiesHelper.BUILDINGRENDERER_RENDER+id,Boolean.toString(selected));
+        settings.setProperty(PropertiesHelper.BUILDINGRENDERER_RENDER + id, Boolean
+            .toString(selected));
       }
     }
 
@@ -203,8 +206,8 @@ public class BuildingCellRenderer extends ImageCellRenderer{
      * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
      */
     public void initPreferences() {
-      this.removeAll();
-      this.data = Client.INSTANCE.getData();
+      removeAll();
+      data = Client.INSTANCE.getData();
       initGUI();
     }
   }

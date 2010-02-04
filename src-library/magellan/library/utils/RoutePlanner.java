@@ -23,7 +23,6 @@
 // 
 package magellan.library.utils;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,21 +60,21 @@ public class RoutePlanner {
     order.append(localCommand).append(" ");
 
     int size = orders.size();
-    
+
     String temp = ""; // saves whether a closing bracket must be added: "}"
 
     List<Region> curPath = new LinkedList<Region>();
 
     // iterate through path
-    for (Iterator<Region> iter = path.iterator(); iter.hasNext();) {
-      curPath.add(iter.next());
+    for (Region region : path) {
+      curPath.add(region);
 
       if (curPath.size() > 1) {
         // add one movement order
         String dir = Regions.getDirections(curPath);
 
         if (dir != null) {
-          if (dir.length()==0 || costs.isExhausted()) {
+          if (dir.length() == 0 || costs.isExhausted()) {
             // begin new order
             costs.reset();
 
@@ -84,8 +83,8 @@ public class RoutePlanner {
               order.append(temp);
               orders.add(order.toString());
               order =
-                  new StringBuilder("// #after ").append(orders.size()-size).append(" { ").append(localCommand)
-                      .append(" ");
+                  new StringBuilder("// #after ").append(orders.size() - size).append(" { ")
+                      .append(localCommand).append(" ");
               temp = "}";
             } else {
               if (makeRoute) {
@@ -97,8 +96,9 @@ public class RoutePlanner {
                 order = new StringBuilder("// ").append(localCommand).append(" ");
               }
             }
-          } else
+          } else {
             costs.increase(curPath.get(curPath.size() - 2), curPath.get(curPath.size() - 1));
+          }
 
           order.append(dir).append(" ");
         }
@@ -118,7 +118,7 @@ public class RoutePlanner {
       orders.add(order.toString());
     }
 
-    return orders.size()-size;
+    return orders.size() - size;
   }
 
   public interface Costs {

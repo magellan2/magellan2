@@ -28,8 +28,7 @@ import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
- * FIXME This class is currenty not working because of reconstruction
- * DOCUMENT-ME
+ * FIXME This class is currenty not working because of reconstruction DOCUMENT-ME
  * 
  * @author $Author: $
  * @version $Revision: 305 $
@@ -57,12 +56,12 @@ public class HelpAction extends MenuAction {
       ClassLoader loader = new ResourcePathClassLoader(client.getProperties());
       String language = client.getProperties().getProperty("locales.gui", "");
       if (!Utils.isEmpty(language)) {
-        language = "_"+language;
+        language = "_" + language;
       }
-      
-      URL hsURL = loader.getResource("help/magellan"+language+".hs");
+
+      URL hsURL = loader.getResource("help/magellan" + language + ".hs");
       if (hsURL == null) {
-        hsURL = loader.getResource("magellan"+language+".hs");
+        hsURL = loader.getResource("magellan" + language + ".hs");
       }
       if (hsURL == null) {
         hsURL = loader.getResource("help/magellan.hs");
@@ -71,50 +70,60 @@ public class HelpAction extends MenuAction {
         hsURL = loader.getResource("magellan.hs");
       }
       if (hsURL == null) {
-        JOptionPane.showMessageDialog(client, Resources.get("actions.helpaction.msg.helpsetnotfound.text"));
+        JOptionPane.showMessageDialog(client, Resources
+            .get("actions.helpaction.msg.helpsetnotfound.text"));
         return;
       }
-      
-      HelpAction.log.info("URL: "+hsURL);
+
+      HelpAction.log.info("URL: " + hsURL);
 
       Class<?> helpSetClass = null;
       Class<?> helpBrokerClass = null;
 
-      if (this.helpBroker == null) {
+      if (helpBroker == null) {
         try {
-          helpSetClass = Class.forName("javax.help.HelpSet", true, ClassLoader.getSystemClassLoader());
-          Class.forName("javax.help.CSH$DisplayHelpFromSource", true, ClassLoader.getSystemClassLoader());
-          helpBrokerClass = Class.forName("javax.help.HelpBroker", true, ClassLoader.getSystemClassLoader());
+          helpSetClass =
+              Class.forName("javax.help.HelpSet", true, ClassLoader.getSystemClassLoader());
+          Class.forName("javax.help.CSH$DisplayHelpFromSource", true, ClassLoader
+              .getSystemClassLoader());
+          helpBrokerClass =
+              Class.forName("javax.help.HelpBroker", true, ClassLoader.getSystemClassLoader());
         } catch (ClassNotFoundException ex) {
-          JOptionPane.showMessageDialog(client, Resources.get("actions.helpaction.msg.javahelpnotfound.text"));
+          JOptionPane.showMessageDialog(client, Resources
+              .get("actions.helpaction.msg.javahelpnotfound.text"));
 
           return;
         }
 
-        Class<?> helpSetConstructorSignature[] = { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
-        Constructor<?> helpSetConstructor = helpSetClass.getConstructor(helpSetConstructorSignature);
+        Class<?> helpSetConstructorSignature[] =
+            { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
+        Constructor<?> helpSetConstructor =
+            helpSetClass.getConstructor(helpSetConstructorSignature);
         Object helpSetConstructorArgs[] = { loader, hsURL };
 
         // this calls new javax.help.Helpset(ClassLoader, URL)
         Object helpSet = helpSetConstructor.newInstance(helpSetConstructorArgs);
 
-        Method helpSetCreateHelpBrokerMethod = helpSetClass.getMethod("createHelpBroker", (Class[])null);
+        Method helpSetCreateHelpBrokerMethod =
+            helpSetClass.getMethod("createHelpBroker", (Class[]) null);
 
         // this calls new javax.help.Helpset.createHelpBroker()
-        this.helpBroker = helpSetCreateHelpBrokerMethod.invoke(helpSet, (Object[])null);
+        helpBroker = helpSetCreateHelpBrokerMethod.invoke(helpSet, (Object[]) null);
 
-        Method initPresentationMethod = helpBrokerClass.getMethod("initPresentation", (Class[])null);
+        Method initPresentationMethod =
+            helpBrokerClass.getMethod("initPresentation", (Class[]) null);
         // this calls new javax.help.HelpBroker.initPresentation()
-        initPresentationMethod.invoke(this.helpBroker, (Object[])null);
+        initPresentationMethod.invoke(helpBroker, (Object[]) null);
 
       }
 
       Class<?> setDisplayedMethodSignature[] = { boolean.class };
-      Method setDisplayedMethod = this.helpBroker.getClass().getMethod("setDisplayed", setDisplayedMethodSignature);
+      Method setDisplayedMethod =
+          helpBroker.getClass().getMethod("setDisplayed", setDisplayedMethodSignature);
       Object setDisplayedMethodArgs[] = { Boolean.TRUE };
 
       // this calls new javax.help.HelpBroker.setDisplayed(true)
-      setDisplayedMethod.invoke(this.helpBroker, setDisplayedMethodArgs);
+      setDisplayedMethod.invoke(helpBroker, setDisplayedMethodArgs);
     } catch (Exception ex) {
       HelpAction.log.error(ex);
     }

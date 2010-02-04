@@ -49,8 +49,9 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   public void cmplt() {
     // add completions, that were defined by the user in the option pane
     // and can be accessed by CompleterSettingsProvider.getSelfDefinedCompletions()
-    for (Completion selfDef : getCompleterSettingsProvider().getSelfDefinedCompletions())
+    for (Completion selfDef : getCompleterSettingsProvider().getSelfDefinedCompletions()) {
       addCompletion(selfDef);
+    }
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_WORK)));
     addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE), " "));
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ATTACK), " "));
@@ -101,7 +102,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
         || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
             getUnit()))) {
       addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_PAY) + " "
-          + Resources.getOrderTranslation(E3AConstants.O_NOT)));
+          + Resources.getOrderTranslation(EresseaConstants.O_NOT)));
     }
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MESSAGE), " "));
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DEFAULT),
@@ -114,10 +115,10 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RIDE), " "));
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW), " "));
 
-// if (hasSkill(getUnit(), EresseaConstants.S_KRAEUTERKUNDE, 7)) {
-// addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
-// + Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
-// }
+    // if (hasSkill(getUnit(), EresseaConstants.S_KRAEUTERKUNDE, 7)) {
+    // addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
+    // + Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
+    // }
 
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GIVE), " "));
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROUP), " "));
@@ -206,7 +207,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       }
     }
 
-// addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROW), " "));
+    // addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROW), " "));
   }
 
   @Override
@@ -216,7 +217,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   }
 
   public void cmpltBezahle() {
-    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_NOT)));
+    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
   }
 
   @Override
@@ -246,10 +247,12 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
 
   public void cmpltRekrutiereAmount() {
     for (Race r : getData().rules.getRaces()) {
-      if (r.getRecruitmentName() != null)
+      if (r.getRecruitmentName() != null) {
         addCompletion(new Completion(r.getRecruitmentName()));
+      }
     }
-// addCompletion(new Completion(Resources.get("gamebinding.e3a.e3aordercompleter.race"), "", ""));
+    // addCompletion(new Completion(Resources.get("gamebinding.e3a.e3aordercompleter.race"), "",
+    // ""));
   }
 
   public void cmpltAllianz() {

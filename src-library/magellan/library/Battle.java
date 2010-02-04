@@ -15,41 +15,38 @@ package magellan.library;
 
 import java.util.List;
 
-
-
 /**
  * Container class for a battle.
  */
 public interface Battle extends Identifiable {
-	/**
-	 * Get the messages of this battle.
-	 *
-	 * @return a reference to the list of messages stored for this battle. This value is never
-	 * 		   null.
-	 */
-	public List<Message> messages();
+  /**
+   * Get the messages of this battle.
+   * 
+   * @return a reference to the list of messages stored for this battle. This value is never null.
+   */
+  public List<Message> messages();
 
-	/**
-	 * Sets whether the CR representation of this battle is a standard BATTLE block or a BATTLESPEC
-	 * block.
-	 *
-	 * @param bool set true to mark it as BATTLESPEC block, false to mark as standard BATTLE block.
-	 */
-	public void setBattleSpec(boolean bool);
+  /**
+   * Sets whether the CR representation of this battle is a standard BATTLE block or a BATTLESPEC
+   * block.
+   * 
+   * @param bool set true to mark it as BATTLESPEC block, false to mark as standard BATTLE block.
+   */
+  public void setBattleSpec(boolean bool);
 
-	/**
-	 * Check if the Battle object is a BATTLESPEC or BATTLE block.
-	 *
-	 * @return true if the CR representation of this battle is a BATTLESPEC block, false if it's a
-	 * 		   standard BATTLE block.
-	 */
-	public boolean isBattleSpec();
-	
+  /**
+   * Check if the Battle object is a BATTLESPEC or BATTLE block.
+   * 
+   * @return true if the CR representation of this battle is a BATTLESPEC block, false if it's a
+   *         standard BATTLE block.
+   */
+  public boolean isBattleSpec();
+
   /**
    * Returns the id uniquely identifying this object.
-   *
+   * 
    * @see magellan.library.Identifiable#getID()
    */
   public CoordinateID getID();
-	
+
 }

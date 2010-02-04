@@ -25,18 +25,14 @@ package magellan.library.gamebinding;
 
 import magellan.library.Rules;
 
-
-
 /**
-*
-* @author Thoralf Rickert
-* @version 1.0, 17.04.2008
-*/
+ * @author Thoralf Rickert
+ * @version 1.0, 17.04.2008
+ */
 public class AllanonRelationFactory extends EresseaRelationFactory {
 
   /**
-   * @param rules 
-   * 
+   * @param rules
    */
   protected AllanonRelationFactory(Rules rules) {
     super(rules);

@@ -92,22 +92,20 @@ public class ExtendedCommandsHelper {
    * Returns the unit with the given Unit-ID in the current region.
    */
   public Unit getUnitInRegion(String unitId) {
-    if (unit != null) {
+    if (unit != null)
       return unit.getRegion().getUnit(UnitID.createUnitID(unitId, world.base));
-    } else {
+    else
       return world.getUnit(UnitID.createUnitID(unitId, world.base));
-    }
   }
 
   /**
    * Returns the unit with the given Unit-ID in the current region.
    */
   public Unit getUnitInRegion(Region region, String unitId) {
-    if (region != null) {
+    if (region != null)
       return region.getUnit(UnitID.createUnitID(unitId, world.base));
-    } else {
+    else
       return null;
-    }
   }
 
   /**
@@ -126,9 +124,8 @@ public class ExtendedCommandsHelper {
     Collection<Item> items = unit.getItems();
     if (items != null) {
       for (Item item : items) {
-        if (item.getItemType().getName().equalsIgnoreCase(itemTypeName)) {
+        if (item.getItemType().getName().equalsIgnoreCase(itemTypeName))
           return item.getAmount();
-        }
       }
     }
     return 0;
@@ -138,14 +135,12 @@ public class ExtendedCommandsHelper {
    * Returns the luxury item for the given unit that you can purchase.
    */
   public ItemType getRegionLuxuryItem(Region region) {
-    if (region == null) {
+    if (region == null)
       return null;
-    }
     Map<StringID, LuxuryPrice> prices = region.getPrices();
     for (LuxuryPrice price : prices.values()) {
-      if (price.getPrice() < 0) {
+      if (price.getPrice() < 0)
         return price.getItemType();
-      }
     }
     return null;
   }
@@ -172,9 +167,8 @@ public class ExtendedCommandsHelper {
     Collection<Skill> skills = unit.getSkills();
     if (skills != null) {
       for (Skill skill : skills) {
-        if (skill.getSkillType().getName().equalsIgnoreCase(skillName)) {
+        if (skill.getSkillType().getName().equalsIgnoreCase(skillName))
           return skill.getLevel();
-        }
       }
     }
     return 0;
@@ -191,9 +185,8 @@ public class ExtendedCommandsHelper {
    * Adds an order to the given unit.
    */
   public void addOrder(Unit unit, String order) {
-    if (unit == null) {
+    if (unit == null)
       return;
-    }
     unit.addOrder(order, false, 0);
   }
 
@@ -208,9 +201,8 @@ public class ExtendedCommandsHelper {
    * Sets the command for the given unit and replaces all given commands.
    */
   public void setOrder(Unit unit, String order) {
-    if (unit == null) {
+    if (unit == null)
       return;
-    }
     List<String> orders = new ArrayList<String>();
     orders.add(order);
     unit.setOrders(orders);
@@ -302,8 +294,9 @@ public class ExtendedCommandsHelper {
       return orders.get(0);
 
     StringBuilder result = new StringBuilder();
-    for (String order : orders)
+    for (String order : orders) {
       result.append(order).append("\n");
+    }
     return result.toString();
   }
 
@@ -340,8 +333,9 @@ public class ExtendedCommandsHelper {
       return orders.get(0);
 
     StringBuilder result = new StringBuilder();
-    for (String order : orders)
+    for (String order : orders) {
       result.append(order).append("\n");
+    }
     return result.toString();
   }
 
@@ -365,8 +359,9 @@ public class ExtendedCommandsHelper {
     if (orders == null)
       return configuration;
     for (String order : orders) {
-      if (order == null)
+      if (order == null) {
         continue;
+      }
       if (order.startsWith("// extcmds:")) {
         // okay, we found a line with the configuration
         String line = order.substring("// extcmds:".length() + 1);

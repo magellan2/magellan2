@@ -22,7 +22,7 @@ import java.util.Map;
  * @author $Author: $
  * @version $Revision: 305 $
  */
-public interface Island extends Described,Addeable {
+public interface Island extends Described, Addeable {
   /**
    * Returns a String representation of this Island object.
    */
@@ -39,18 +39,17 @@ public interface Island extends Described,Addeable {
   public Region getRegion(ID key);
 
   /**
-   * Informs this container that a region was added or removed. It is mandatory
-   * that this function is called every time a region is added or removed from
-   * this container for keeping the objects returned by the getRegion() and
-   * regions() methods consistent.
+   * Informs this container that a region was added or removed. It is mandatory that this function
+   * is called every time a region is added or removed from this container for keeping the objects
+   * returned by the getRegion() and regions() methods consistent.
    */
   public void invalidateRegions();
-  
+
   /**
    * Sets the Map of regions. This shall solely called by GameData.postProcess.
    */
-  public void setRegions(Map<CoordinateID,Region> r);
-  
+  public void setRegions(Map<CoordinateID, Region> r);
+
   /**
    * @see magellan.library.Identifiable#getID()
    */

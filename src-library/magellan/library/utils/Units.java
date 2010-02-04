@@ -28,7 +28,6 @@ import java.lang.ref.SoftReference;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import magellan.library.Faction;
@@ -52,7 +51,7 @@ public class Units {
 
   private static long recount = 0;
   private static GameData data;
-  
+
   private static GameDataListener gameDataListener = new GameDataListener() {
 
     /**
@@ -61,11 +60,16 @@ public class Units {
      * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
      */
     public void gameDataChanged(GameDataEvent e) {
-      log.info("Units cache recalculated "+recount+" times for "+(data!=null&&data.regions()!=null?data.regions().size():"?")+" regions.");
-      recount = 0;
-      data = e.getGameData();
-      containerPrivItems.clear();
-      containerAllItems.clear();
+      Units.log
+          .info("Units cache recalculated "
+              + Units.recount
+              + " times for "
+              + (Units.data != null && Units.data.regions() != null ? Units.data.regions().size()
+                  : "?") + " regions.");
+      Units.recount = 0;
+      Units.data = e.getGameData();
+      Units.containerPrivItems.clear();
+      Units.containerAllItems.clear();
     }
   };
 
@@ -73,7 +77,7 @@ public class Units {
    * Returns a {@link GameDataListener} that clears cached data when new data is loaded.
    */
   public static GameDataListener getGameDataListener() {
-    return gameDataListener;
+    return Units.gameDataListener;
   }
 
   /**
@@ -108,10 +112,10 @@ public class Units {
     SkillType sailingSkillType = s.getData().rules.getSkillType(EresseaConstants.S_SEGELN, true);
     int sailingSkillAmount = 0;
     // pavkovic 2003.10.03: use modifiedUnits to reflect FUTURE value?
-    Collection<Unit> modUnits = s.modifiedUnits(); // the collection of units on the ship in the next turn
+    Collection<Unit> modUnits = s.modifiedUnits(); // the collection of units on the ship in the
+    // next turn
 
-    for (Iterator<Unit> sailors = modUnits.iterator(); sailors.hasNext();) {
-      Unit u = sailors.next();
+    for (Unit u : modUnits) {
       Skill sailingSkill = u.getModifiedSkill(sailingSkillType);
 
       if (sailingSkill != null) {
@@ -148,7 +152,7 @@ public class Units {
    * silver yield one silver item of amount 10 here.
    */
   public static Collection<Item> getContainerPrivilegedUnitItems(UnitContainer container) {
-    return getContainerUnitItems(container, containerPrivItems, privFilter);
+    return Units.getContainerUnitItems(container, Units.containerPrivItems, Units.privFilter);
   }
 
   /**
@@ -157,7 +161,7 @@ public class Units {
    * of amount 10 here.
    */
   public static Collection<Item> getContainerAllUnitItems(UnitContainer container) {
-    return getContainerUnitItems(container, containerAllItems, allFilter);
+    return Units.getContainerUnitItems(container, Units.containerAllItems, Units.allFilter);
   }
 
   /**
@@ -168,17 +172,17 @@ public class Units {
   protected static Collection<Item> getContainerUnitItems(UnitContainer container,
       Map<UnitContainer, Reference<Map<ID, Item>>> map, UnitFilter filter) {
     Map<ID, Item> result = null;
-    if (map.containsKey(container)){
+    if (map.containsKey(container)) {
       result = map.get(container).get();
-      if (result == null){
+      if (result == null) {
         // debugging
         result = null;
-        recount++;
+        Units.recount++;
       }
     }
 
     if (result == null) {
-      result = calculateItems(container, map, filter);
+      result = Units.calculateItems(container, map, filter);
     }
 
     return Collections.unmodifiableCollection(result.values());
@@ -195,9 +199,7 @@ public class Units {
       Map<UnitContainer, Reference<Map<ID, Item>>> map, UnitFilter filter) {
     Map<ID, Item> result = new HashMap<ID, Item>();
 
-    for (Iterator<Unit> iter = container.units().iterator(); iter.hasNext();) {
-      Unit u = iter.next();
-
+    for (Unit u : container.units()) {
       // if(u.getFaction().isPrivileged()) {
       if (filter.acceptUnit(u)) {
         for (Item item : u.getItems()) {
@@ -222,7 +224,7 @@ public class Units {
    * region.
    */
   public static Item getContainerPrivilegedUnitItem(UnitContainer container, ItemType type) {
-    return getContainerUnitItem(container, type, containerPrivItems, privFilter);
+    return Units.getContainerUnitItem(container, type, Units.containerPrivItems, Units.privFilter);
   }
 
   /**
@@ -230,18 +232,19 @@ public class Units {
    * identified by the item type or <code>null</code> if no such item exists in the region.
    */
   public static Item getContainerAllUnitItem(UnitContainer container, ItemType type) {
-    return getContainerUnitItem(container, type, containerAllItems, allFilter);
+    return Units.getContainerUnitItem(container, type, Units.containerAllItems, Units.allFilter);
   }
 
   protected static Item getContainerUnitItem(UnitContainer container, ItemType type,
       Map<UnitContainer, Reference<Map<ID, Item>>> map, UnitFilter filter) {
-    if (!map.containsKey(container))
-      calculateItems(container, map, filter);
+    if (!map.containsKey(container)) {
+      Units.calculateItems(container, map, filter);
+    }
 
     Map<ID, Item> resultMap = map.get(container).get();
-    if (resultMap == null){
-      resultMap = calculateItems(container, map, filter);
-      recount++;
+    if (resultMap == null) {
+      resultMap = Units.calculateItems(container, map, filter);
+      Units.recount++;
     }
 
     return resultMap.get(type.getID());

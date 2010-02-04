@@ -63,256 +63,266 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
 
-
 /**
- * A context menu for UnitContainers like ships or buildings. Providing copy
- * ID and copy ID+name.
- *
- * @author Ulrich Küster 
+ * A context menu for UnitContainers like ships or buildings. Providing copy ID and copy ID+name.
+ * 
+ * @author Ulrich Küster
  */
 public class UnitContainerContextMenu extends JPopupMenu {
   private static final NumberFormat weightNumberFormat = NumberFormat.getNumberInstance();
-	private UnitContainer uc;
-	private EventDispatcher dispatcher;
-	private GameData data;
-	private Properties settings;
-	private Collection<?> selectedObjects;
+  private UnitContainer uc;
+  private EventDispatcher dispatcher;
+  private GameData data;
+  private Properties settings;
+  private Collection<?> selectedObjects;
 
-	/**
-	 * Creates a new UnitContainerContextMenu object.
-	 */
-	public UnitContainerContextMenu(UnitContainer uc, EventDispatcher dispatcher, GameData data,
-									Properties settings,Collection<?> selectedObjects) {
-		super(uc.toString());
-		this.uc = uc;
-		this.dispatcher = dispatcher;
-		this.data = data;
-		this.settings = settings;
-		this.selectedObjects = selectedObjects;
+  /**
+   * Creates a new UnitContainerContextMenu object.
+   */
+  public UnitContainerContextMenu(UnitContainer uc, EventDispatcher dispatcher, GameData data,
+      Properties settings, Collection<?> selectedObjects) {
+    super(uc.toString());
+    this.uc = uc;
+    this.dispatcher = dispatcher;
+    this.data = data;
+    this.settings = settings;
+    this.selectedObjects = selectedObjects;
 
-		initMenu();
-	}
+    initMenu();
+  }
 
-	private void initMenu() {
-		JMenuItem name = new JMenuItem(getCaption());
-//		if (selectedObjects.contains(uc))
-//		  name.setEnabled(false);
-		name.addActionListener(new ActionListener() {
+  private void initMenu() {
+    JMenuItem name = new JMenuItem(getCaption());
+    // if (selectedObjects.contains(uc))
+    // name.setEnabled(false);
+    name.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        dispatcher.fire(SelectionEvent.create(UnitContainerContextMenu.this, uc, SelectionEvent.ST_DEFAULT));
+        dispatcher.fire(SelectionEvent.create(UnitContainerContextMenu.this, uc,
+            SelectionEvent.ST_DEFAULT));
       }
     });
-		add(name);
+    add(name);
 
     if (!selectedObjects.contains(uc))
       return;
 
-		JMenuItem copyID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyid.caption"));
-		copyID.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					copyID();
-				}
-			});
-		add(copyID);
-    
-    JMenuItem copyName = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyname.caption"));
-    copyName.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          copyName();
-        }
-      });
-    add(copyName);
-    
+    JMenuItem copyID =
+        new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyid.caption"));
+    copyID.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        copyID();
+      }
+    });
+    add(copyID);
 
-		JMenuItem copyNameID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyidandname.caption"));
-		copyNameID.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					copyNameID();
-				}
-			});
-		add(copyNameID);
+    JMenuItem copyName =
+        new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyname.caption"));
+    copyName.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        copyName();
+      }
+    });
+    add(copyName);
+
+    JMenuItem copyNameID =
+        new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyidandname.caption"));
+    copyNameID.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        copyNameID();
+      }
+    });
+    add(copyNameID);
 
     // context.unitcontainercontextmenu.menu.copyidandnameanduid.caption
-		if (uc instanceof Region){
-      Region r = (Region)uc;
-      if (r.getUID()>0){
-        JMenuItem copyNameRegionID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copynameanduid.caption"));
+    if (uc instanceof Region) {
+      Region r = (Region) uc;
+      if (r.getUID() > 0) {
+        JMenuItem copyNameRegionID =
+            new JMenuItem(Resources
+                .get("context.unitcontainercontextmenu.menu.copynameanduid.caption"));
         copyNameRegionID.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              copyNameRegionID();
-            }
-          });
+          public void actionPerformed(ActionEvent e) {
+            copyNameRegionID();
+          }
+        });
         add(copyNameRegionID);
-        
-        JMenuItem copyNameIDRegionID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyidandnameanduid.caption"));
+
+        JMenuItem copyNameIDRegionID =
+            new JMenuItem(Resources
+                .get("context.unitcontainercontextmenu.menu.copyidandnameanduid.caption"));
         copyNameIDRegionID.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              copyNameIDRegionID();
-            }
-          });
+          public void actionPerformed(ActionEvent e) {
+            copyNameIDRegionID();
+          }
+        });
         add(copyNameIDRegionID);
       }
 
-      JMenuItem addToIsland = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.addToIsland.caption"));
+      JMenuItem addToIsland =
+          new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.addToIsland.caption"));
       addToIsland.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            addToIsland();
-          }
-        });
+        public void actionPerformed(ActionEvent e) {
+          addToIsland();
+        }
+      });
       add(addToIsland);
 
-      JMenuItem removeFromIsland = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.removeFromIsland.caption"));
+      JMenuItem removeFromIsland =
+          new JMenuItem(Resources
+              .get("context.unitcontainercontextmenu.menu.removeFromIsland.caption"));
       removeFromIsland.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            removeFromIsland();
-          }
-        });
+        public void actionPerformed(ActionEvent e) {
+          removeFromIsland();
+        }
+      });
       add(removeFromIsland);
-		}
-    
-		
-		if(uc instanceof Ship) {
-	    addSeparator();
-			JMenuItem planShipRoute = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.planshiproute.caption"));
-			planShipRoute.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						planShipRoute();
-					}
-				});
-			planShipRoute.setEnabled(ShipRoutePlanner.canPlan((Ship) uc));
-			add(planShipRoute);
-		} else if(uc instanceof Faction) {
-	    addSeparator();
-			JMenuItem copyMail = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copymail.caption"));
-			copyMail.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						copyMail();
-					}
-				});
+    }
 
-			JMenuItem factionStats = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.factionstats.caption"));
-			factionStats.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						factionStats();
-					}
-				});
-			add(copyMail);
-			add(factionStats);
-		}
-		
-		// check, if we have ships in the selection...
-		// we want to offer: give orders to ship-captns
-		boolean shipsInSelection = false;
-		if (this.selectedObjects!=null){
-			for (Iterator<?> iter = this.selectedObjects.iterator();iter.hasNext();){
-				Object o = iter.next();
-				if (o instanceof Ship) {
-					shipsInSelection = true;
-					break;
-				}
-			}
-		}
-		if (shipsInSelection){
-			JMenuItem shipOrders = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.shiporders.caption"));
-			shipOrders.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					event_addShipOrder();
-				}
-			});
-			add(shipOrders);
-			
-			JMenuItem shipList = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.shiplist.caption"));
+    if (uc instanceof Ship) {
+      addSeparator();
+      JMenuItem planShipRoute =
+          new JMenuItem(Resources
+              .get("context.unitcontainercontextmenu.menu.planshiproute.caption"));
+      planShipRoute.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          planShipRoute();
+        }
+      });
+      planShipRoute.setEnabled(ShipRoutePlanner.canPlan((Ship) uc));
+      add(planShipRoute);
+    } else if (uc instanceof Faction) {
+      addSeparator();
+      JMenuItem copyMail =
+          new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copymail.caption"));
+      copyMail.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          copyMail();
+        }
+      });
+
+      JMenuItem factionStats =
+          new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.factionstats.caption"));
+      factionStats.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          factionStats();
+        }
+      });
+      add(copyMail);
+      add(factionStats);
+    }
+
+    // check, if we have ships in the selection...
+    // we want to offer: give orders to ship-captns
+    boolean shipsInSelection = false;
+    if (selectedObjects != null) {
+      for (Object o : selectedObjects) {
+        if (o instanceof Ship) {
+          shipsInSelection = true;
+          break;
+        }
+      }
+    }
+    if (shipsInSelection) {
+      JMenuItem shipOrders =
+          new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.shiporders.caption"));
+      shipOrders.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          event_addShipOrder();
+        }
+      });
+      add(shipOrders);
+
+      JMenuItem shipList =
+          new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.shiplist.caption"));
       shipList.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           event_shipList();
         }
       });
       add(shipList);
-		}
-		
+    }
+
     initContextMenuProviders(uc);
-	}
-  
+  }
+
   protected void removeFromIsland() {
     boolean changed = false;
-    for (Object o : selectedObjects){
-      if (o instanceof Region){
+    for (Object o : selectedObjects) {
+      if (o instanceof Region) {
         changed = true;
         ((Region) o).setIsland(null);
       }
     }
-    if (changed)
-      dispatcher.fire(new GameDataEvent(this,data));
+    if (changed) {
+      dispatcher.fire(new GameDataEvent(this, data));
+    }
   }
 
   public Island newIsland = null;
 
-	protected class AddToIslandDialog extends InternationalizedDialog {
-	  private JComboBox islandBox;
-	  private JButton ok;
-	  private JButton cancel;
+  protected class AddToIslandDialog extends InternationalizedDialog {
+    private JComboBox islandBox;
+    private JButton ok;
+    private JButton cancel;
 
-	  
-	  /**
-	   * Creates a new GiveOrderDialog object.
-	   *
-	   * 
-	   */
-	  public AddToIslandDialog(Frame owner, String caption) {
-	    super(owner, true);
-	    setTitle(Resources.get("addtoislanddialog.window.title"));
+    /**
+     * Creates a new GiveOrderDialog object.
+     */
+    public AddToIslandDialog(Frame owner, String caption) {
+      super(owner, true);
+      setTitle(Resources.get("addtoislanddialog.window.title"));
 
-	    Container cp = getContentPane();
-	    cp.setLayout(new GridBagLayout());
+      Container cp = getContentPane();
+      cp.setLayout(new GridBagLayout());
 
-	    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-	        GridBagConstraints.BOTH,
-	        new Insets(3, 3, 3, 3), 0, 0);
+      GridBagConstraints c =
+          new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+              GridBagConstraints.BOTH, new Insets(3, 3, 3, 3), 0, 0);
 
-	    c.gridwidth=2;
-	    JLabel captionLabel = new JLabel(caption);
-	    captionLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
-	    captionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	    captionLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-	    cp.add(captionLabel, c);
+      c.gridwidth = 2;
+      JLabel captionLabel = new JLabel(caption);
+      captionLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
+      captionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+      captionLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+      cp.add(captionLabel, c);
 
-	    c.gridwidth=1;
-	    c.gridy++;
+      c.gridwidth = 1;
+      c.gridy++;
 
-	    cp.add(new JLabel(Resources.get("addtoislanddialog.window.message")), c);
+      cp.add(new JLabel(Resources.get("addtoislanddialog.window.message")), c);
 
-	    List<Island> islandList = new ArrayList<Island>(data.islands().size()+2);
+      List<Island> islandList = new ArrayList<Island>(data.islands().size() + 2);
       newIsland.setName(Resources.get("addtoislanddialog.newisland.caption"));
-	   
-	    islandList.add(newIsland);
-	    islandList.addAll(data.islands().values());
-	    islandBox = new JComboBox(islandList.toArray());
 
-	    c.gridx=1;
-	    cp.add(islandBox, c);
-	    
-	    c.gridx=0;
-	    
-	    ok = new JButton(Resources.get("giveorderdialog.btn.ok.caption"));
-	    ok.setMnemonic(Resources.get("giveorderdialog.btn.ok.mnemonic").charAt(0));
+      islandList.add(newIsland);
+      islandList.addAll(data.islands().values());
+      islandBox = new JComboBox(islandList.toArray());
 
-	    // actionListener is added in the show() method
-	    c.gridy++;
-	    c.anchor = GridBagConstraints.EAST;
-	    cp.add(ok, c);
+      c.gridx = 1;
+      cp.add(islandBox, c);
 
-	    cancel = new JButton(Resources.get("giveorderdialog.btn.cancel.caption"));
-	    cancel.setMnemonic(Resources.get("giveorderdialog.btn.cancel.mnemonic").charAt(0));
-	    cancel.addActionListener(new ActionListener() {
-	      public void actionPerformed(ActionEvent e) {
-	        quit();
-	      }
-	    });
-	    c.gridx = 1;
-	    c.anchor = GridBagConstraints.WEST;
-	    cp.add(cancel, c);
+      c.gridx = 0;
 
-	  }
+      ok = new JButton(Resources.get("giveorderdialog.btn.ok.caption"));
+      ok.setMnemonic(Resources.get("giveorderdialog.btn.ok.mnemonic").charAt(0));
+
+      // actionListener is added in the show() method
+      c.gridy++;
+      c.anchor = GridBagConstraints.EAST;
+      cp.add(ok, c);
+
+      cancel = new JButton(Resources.get("giveorderdialog.btn.cancel.caption"));
+      cancel.setMnemonic(Resources.get("giveorderdialog.btn.cancel.mnemonic").charAt(0));
+      cancel.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          quit();
+        }
+      });
+      c.gridx = 1;
+      c.anchor = GridBagConstraints.WEST;
+      cp.add(cancel, c);
+
+    }
 
     public Island showDialog() {
       final Island[] retVal = new Island[1];
@@ -332,27 +342,28 @@ public class UnitContainerContextMenu extends JPopupMenu {
       return retVal[0];
     }
 
-	}
-	
+  }
+
   protected void addToIsland() {
-    for (int i=1; newIsland == null ;++i){
-      if (data.getIsland(IntegerID.create(i))==null){
+    for (int i = 1; newIsland == null; ++i) {
+      if (data.getIsland(IntegerID.create(i)) == null) {
         newIsland = MagellanFactory.createIsland(IntegerID.create(i), data);
       }
     }
-    AddToIslandDialog dialog = new AddToIslandDialog(JOptionPane.getFrameForComponent(this), getCaption());
+    AddToIslandDialog dialog =
+        new AddToIslandDialog(JOptionPane.getFrameForComponent(this), getCaption());
     Island island = dialog.showDialog();
-    if (island!=null){
-      if (island==newIsland) {
+    if (island != null) {
+      if (island == newIsland) {
         data.addIsland(newIsland);
         island.setName(island.getID().toString());
       }
-      for (Object o : selectedObjects){
-        if (o instanceof Region){
+      for (Object o : selectedObjects) {
+        if (o instanceof Region) {
           ((Region) o).setIsland(island);
         }
       }
-      dispatcher.fire(new GameDataEvent(this,data));
+      dispatcher.fire(new GameDataEvent(this, data));
     }
   }
 
@@ -365,7 +376,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
     if (!cmpList.isEmpty()) {
       addSeparator();
     }
-    
+
     for (UnitContainerContextMenuProvider cmp : cmpList) {
       add(cmp.createContextMenu(dispatcher, data, unitContainer, selectedObjects));
     }
@@ -376,25 +387,25 @@ public class UnitContainerContextMenu extends JPopupMenu {
    * Searchs for Context Menu Providers in the plugins and adds them to the menu.
    */
   private Collection<UnitContainerContextMenuProvider> getContextMenuProviders() {
-    Collection<UnitContainerContextMenuProvider> cmpList = new ArrayList<UnitContainerContextMenuProvider>();
+    Collection<UnitContainerContextMenuProvider> cmpList =
+        new ArrayList<UnitContainerContextMenuProvider>();
     for (MagellanPlugIn plugIn : Client.INSTANCE.getPlugIns()) {
       if (plugIn instanceof UnitContainerContextMenuProvider) {
-        cmpList.add((UnitContainerContextMenuProvider)plugIn);
+        cmpList.add((UnitContainerContextMenuProvider) plugIn);
       }
     }
     return cmpList;
   }
 
-
-	/**
-	 * Copies the ID of the UnitContainer to the clipboard.
-	 */
-	private void copyID() {
+  /**
+   * Copies the ID of the UnitContainer to the clipboard.
+   */
+  private void copyID() {
     StringBuffer idString = new StringBuffer("");
 
     for (Iterator<?> iter = selectedObjects.iterator(); iter.hasNext();) {
       Object o = iter.next();
-      if (o instanceof Identifiable){
+      if (o instanceof Identifiable) {
         Identifiable idf = (Identifiable) o;
         idString.append(idf.getID());
         if (iter.hasNext()) {
@@ -406,20 +417,19 @@ public class UnitContainerContextMenu extends JPopupMenu {
     StringSelection strSel = new StringSelection(idString.toString());
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
-	}
+  }
 
-	/**
-	 * Copies name and id to the sytem clipboard.
-	 */
-	private void copyNameID() {
+  /**
+   * Copies name and id to the sytem clipboard.
+   */
+  private void copyNameID() {
     StringBuffer idString = new StringBuffer("");
 
-    for (Iterator<?> iter = selectedObjects.iterator(); iter.hasNext();) {
-      Object o = iter.next();
-      if (o instanceof Named){
-        idString.append(((Named)o).getName());
+    for (Object o : selectedObjects) {
+      if (o instanceof Named) {
+        idString.append(((Named) o).getName());
         idString.append(" (");
-        idString.append(((Named)o).getID());
+        idString.append(((Named) o).getID());
         idString.append(")\n");
       }
     }
@@ -427,18 +437,17 @@ public class UnitContainerContextMenu extends JPopupMenu {
     StringSelection strSel = new StringSelection(idString.toString());
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
-	}
-  
+  }
+
   /**
    * Copies name to the sytem clipboard.
    */
   private void copyName() {
     StringBuffer idString = new StringBuffer("");
 
-    for (Iterator<?> iter = selectedObjects.iterator(); iter.hasNext();) {
-      Object o = iter.next();
-      if (o instanceof Named){
-        idString.append(((Named)o).getName() + "\n");
+    for (Object o : selectedObjects) {
+      if (o instanceof Named) {
+        idString.append(((Named) o).getName() + "\n");
       }
     }
 
@@ -451,85 +460,90 @@ public class UnitContainerContextMenu extends JPopupMenu {
    * Copies name and id and regionID to the sytem clipboard.
    */
   private void copyNameIDRegionID() {
-    Region r = (Region)uc;
-    StringSelection strSel = new StringSelection(uc.toString() + " (" + Integer.toString((int)r.getUID(), data.base).replace("l","L") + ")");
+    Region r = (Region) uc;
+    StringSelection strSel =
+        new StringSelection(uc.toString() + " ("
+            + Integer.toString((int) r.getUID(), data.base).replace("l", "L") + ")");
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
   }
-  
+
   /**
    * Copies name and id and regionID to the sytem clipboard.
    */
   private void copyNameRegionID() {
-    Region r = (Region)uc;
-    StringSelection strSel = new StringSelection(r.getName() + " (" + Integer.toString((int)r.getUID(), data.base).replace("l","L") + ")");
+    Region r = (Region) uc;
+    StringSelection strSel =
+        new StringSelection(r.getName() + " ("
+            + Integer.toString((int) r.getUID(), data.base).replace("l", "L") + ")");
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
   }
-  
-	/**
-	 * Copies the mailadress of a faction to the clipboard.
-	 */
-	private void copyMail() {
-		Faction f = (Faction) uc;
 
-		// pavkovic 2002.11.12: creating mail addresses in a form like: Noeskadu <noeskadu@gmx.de>
-		StringSelection strSel = new StringSelection(f.getName() + " <" + f.getEmail() + ">");
-		Clipboard cb = getToolkit().getSystemClipboard();
-		cb.setContents(strSel, null);
-	}
+  /**
+   * Copies the mailadress of a faction to the clipboard.
+   */
+  private void copyMail() {
+    Faction f = (Faction) uc;
 
-	/**
-	 * Calls the factionstats
-	 */
-	private void factionStats() {
-		FactionStatsDialog d = new FactionStatsDialog(JOptionPane.getFrameForComponent(this),
-													  false, dispatcher, data, settings,
-													  (Faction) uc);
-		d.setVisible(true);
-	}
+    // pavkovic 2002.11.12: creating mail addresses in a form like: Noeskadu <noeskadu@gmx.de>
+    StringSelection strSel = new StringSelection(f.getName() + " <" + f.getEmail() + ">");
+    Clipboard cb = getToolkit().getSystemClipboard();
+    cb.setContents(strSel, null);
+  }
 
-	/**
-	 * Plans a route for a ship (typically over several weeks)
-	 *
-	 * @see ShipRoutingDialog
-	 */
-	private void planShipRoute() {
+  /**
+   * Calls the factionstats
+   */
+  private void factionStats() {
+    FactionStatsDialog d =
+        new FactionStatsDialog(JOptionPane.getFrameForComponent(this), false, dispatcher, data,
+            settings, (Faction) uc);
+    d.setVisible(true);
+  }
+
+  /**
+   * Plans a route for a ship (typically over several weeks)
+   * 
+   * @see ShipRoutingDialog
+   */
+  private void planShipRoute() {
     Unit unit =
         (new ShipRoutePlanner()).planShipRoute((Ship) uc, data, this, new RoutingDialog(JOptionPane
             .getFrameForComponent(this), data, false));
 
-		if(unit != null) {
-			dispatcher.fire(new UnitOrdersEvent(this, unit));
-		}
-	}
-
-	/**
-	 * Gives an order (optional replacing the existing ones) to the selected units.
-	 * Gives the orders only to actual captns of selected ships
-	 */
-	private void event_addShipOrder() {
-		GiveOrderDialog giveOderDialog = new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
-		String s[] = giveOderDialog.showGiveOrderDialog();
-		for(Iterator<?> iter = this.selectedObjects.iterator(); iter.hasNext();) {
-			Object o = iter.next();
-			if (o instanceof Ship){
-				Ship ship = (Ship)o;
-				Unit u = ship.getModifiedOwnerUnit();
-
-				if(u!=null && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))) {
-					magellan.client.utils.Units.addOrders(u, s);
-					dispatcher.fire(new UnitOrdersEvent(this, u));
-				}
-			}
-		}
-	}
-	
-  private boolean isEditAll(){
-    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS, Boolean.FALSE.toString()).equals("true");
+    if (unit != null) {
+      dispatcher.fire(new UnitOrdersEvent(this, unit));
+    }
   }
 
-	/**
+  /**
+   * Gives an order (optional replacing the existing ones) to the selected units. Gives the orders
+   * only to actual captns of selected ships
+   */
+  private void event_addShipOrder() {
+    GiveOrderDialog giveOderDialog =
+        new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
+    String s[] = giveOderDialog.showGiveOrderDialog();
+    for (Object o : selectedObjects) {
+      if (o instanceof Ship) {
+        Ship ship = (Ship) o;
+        Unit u = ship.getModifiedOwnerUnit();
+
+        if (u != null && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))) {
+          magellan.client.utils.Units.addOrders(u, s);
+          dispatcher.fire(new UnitOrdersEvent(this, u));
+        }
+      }
+    }
+  }
+
+  private boolean isEditAll() {
+    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS,
+        Boolean.FALSE.toString()).equals("true");
+  }
+
+  /**
    * Copies Info about selected ships to the clipboard
    */
   private void event_shipList() {
@@ -537,28 +551,33 @@ public class UnitContainerContextMenu extends JPopupMenu {
     int cntShips = 0;
     int cntActModifiedLoad = 0;
     int cntMaxLoad = 0;
-    for(Iterator<?> iter = this.selectedObjects.iterator(); iter.hasNext();) {
-      Object o = iter.next();
-      if (o instanceof Ship){
-        Ship ship = (Ship)o;
+    for (Object o : selectedObjects) {
+      if (o instanceof Ship) {
+        Ship ship = (Ship) o;
         cntShips++;
-        cntActModifiedLoad+=ship.getModifiedLoad();
+        cntActModifiedLoad += ship.getModifiedLoad();
         cntMaxLoad += ship.getMaxCapacity();
-        s+=ship.toString(true);
-        s+=":";
-        s+=UnitContainerContextMenu.weightNumberFormat.format(new Float((ship.getMaxCapacity()-ship.getModifiedLoad()) / 100.0F));
-        s+="\n";
+        s += ship.toString(true);
+        s += ":";
+        s +=
+            UnitContainerContextMenu.weightNumberFormat.format(new Float(
+                (ship.getMaxCapacity() - ship.getModifiedLoad()) / 100.0F));
+        s += "\n";
       }
     }
-    if (cntShips>0){
-      s+=cntShips + " ships with " + UnitContainerContextMenu.weightNumberFormat.format(new Float((cntMaxLoad - cntActModifiedLoad) / 100.0F)) + " free space.";
-      s+="\n";
+    if (cntShips > 0) {
+      s +=
+          cntShips
+              + " ships with "
+              + UnitContainerContextMenu.weightNumberFormat.format(new Float(
+                  (cntMaxLoad - cntActModifiedLoad) / 100.0F)) + " free space.";
+      s += "\n";
     } else {
-      s="no ships.";
+      s = "no ships.";
     }
     StringSelection strSel = new StringSelection(s);
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
   }
-	
+
 }

@@ -39,13 +39,13 @@ public class LayoutDeleteAction extends MenuAction {
   public LayoutDeleteAction() {
     super(Client.INSTANCE);
   }
-  
+
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.delete.accelerator",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.delete.accelerator", false);
   }
 
   /**
@@ -53,7 +53,7 @@ public class LayoutDeleteAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.delete.mnemonic",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.delete.mnemonic", false);
   }
 
   /**
@@ -77,7 +77,10 @@ public class LayoutDeleteAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    int answer = JOptionPane.showConfirmDialog(Client.INSTANCE, Resources.get("desktop.magellandesktop.msg.layout.delete.caption"), Resources.get("desktop.magellandesktop.msg.layout.delete.title"), JOptionPane.YES_NO_OPTION);
+    int answer =
+        JOptionPane.showConfirmDialog(Client.INSTANCE, Resources
+            .get("desktop.magellandesktop.msg.layout.delete.caption"), Resources
+            .get("desktop.magellandesktop.msg.layout.delete.title"), JOptionPane.YES_NO_OPTION);
     if (answer == JOptionPane.YES_OPTION) {
       DockingFrameworkBuilder.getInstance().deleteCurrentLayout();
     }

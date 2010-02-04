@@ -45,9 +45,8 @@ public class Islands {
    */
   public static Map<IntegerID, Island> getIslands(UserInterface ui, Rules rules,
       Map<CoordinateID, Region> regions, Map<IntegerID, Island> islands, GameData data) {
-    if ((regions == null) || (regions.size() == 0)) {
+    if ((regions == null) || (regions.size() == 0))
       return new Hashtable<IntegerID, Island>();
-    }
 
     if (islands == null) {
       islands = new Hashtable<IntegerID, Island>();
@@ -120,8 +119,8 @@ public class Islands {
    * 
    * @param regions all regions that could possibly belong to the island.
    * @param r a region forming an island with its neighbouring regions.
-   * @return a map containing all regions that can be reached from region r via any number of regions
-   *         that are not of type ocean.
+   * @return a map containing all regions that can be reached from region r via any number of
+   *         regions that are not of type ocean.
    */
   public static Map<CoordinateID, Region> getIsland(Rules rules, Map<CoordinateID, Region> regions,
       Region r) {

@@ -33,13 +33,12 @@ import magellan.library.GameData;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.relation.PersonTransferRelation;
-import magellan.library.relation.UnitRelation;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Resources;
 
 public class SkillInspector extends AbstractInspector {
   /** The singleton instance. */
-//  public static final SkillInspector INSPECTOR = new SkillInspector();
+  // public static final SkillInspector INSPECTOR = new SkillInspector();
 
   /**
    * Returns a (singleton) instance.
@@ -55,8 +54,9 @@ public class SkillInspector extends AbstractInspector {
   static {
     String message = Resources.get("tasks.skillinspector.skilldecrease.message");
     String typeName = Resources.get("tasks.skillinspector.skilldecrease.name", false);
-    if (typeName == null)
+    if (typeName == null) {
       typeName = message;
+    }
     String description = Resources.get("tasks.skillinspector.skilldecrease.description", false);
     String group = Resources.get("tasks.skillinspector.skilldecrease.group", false);
     SKILLDECREASE = new ProblemType(typeName, group, description, message);
@@ -71,59 +71,57 @@ public class SkillInspector extends AbstractInspector {
    */
   @Override
   public List<Problem> reviewUnit(Unit u, Severity severity) {
-    if (severity != Severity.WARNING) {
+    if (severity != Severity.WARNING)
       return Collections.emptyList();
-    }
 
     // check all person transfer relations
     List<Problem> problems = new ArrayList<Problem>(2);
     for (PersonTransferRelation relation : u.getRelations(PersonTransferRelation.class)) {
-        Unit u1 = relation.source;
-        Unit u2 = relation.target;
-        if (u1 != u)
-          break;
-        List<Skill> skills = new LinkedList<Skill>(u1.getModifiedSkills());
-        skills.addAll(u2.getModifiedSkills());
-        for (Skill skill : skills) {
-          Skill skill1 = u1.getSkill(skill.getSkillType());
-          Skill skill2 = u2.getSkill(skill.getSkillType());
-          // if a skill of the source unit is higher than the target unit, issue a warning at the
-          // source
-          if (skill1 != null) {
-            if (skill2 == null || skill1.getLevel() > skill2.getLevel()) {
-              // when passing persons to an empty unit, no warning is necessary
-              // except when multiple units pass persons to the empty unit
-              // this is not perfect yet:
-              if (u2.getPersons() > 0
-                  || (u2.getRelations(PersonTransferRelation.class).size() > 1)) {
-                problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u, this,
-                    relation.line));
-                break;
-              }
-            }
-          }
-          // if a skill of the target unit is higher than the source unit, issue a warning at the
-          // target
-          if (skill2 != null) {
-            if (skill1 == null || skill2.getLevel() > skill1.getLevel()) {
-              problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u
-                  .getRegion(), u, u.getFaction(), u2, this, SKILLDECREASE.getMessage(),
-                  relation.line));
+      Unit u1 = relation.source;
+      Unit u2 = relation.target;
+      if (u1 != u) {
+        break;
+      }
+      List<Skill> skills = new LinkedList<Skill>(u1.getModifiedSkills());
+      skills.addAll(u2.getModifiedSkills());
+      for (Skill skill : skills) {
+        Skill skill1 = u1.getSkill(skill.getSkillType());
+        Skill skill2 = u2.getSkill(skill.getSkillType());
+        // if a skill of the source unit is higher than the target unit, issue a warning at the
+        // source
+        if (skill1 != null) {
+          if (skill2 == null || skill1.getLevel() > skill2.getLevel()) {
+            // when passing persons to an empty unit, no warning is necessary
+            // except when multiple units pass persons to the empty unit
+            // this is not perfect yet:
+            if (u2.getPersons() > 0 || (u2.getRelations(PersonTransferRelation.class).size() > 1)) {
+              problems.add(ProblemFactory.createProblem(Severity.WARNING,
+                  SkillInspector.SKILLDECREASE, u, this, relation.line));
               break;
             }
           }
         }
-      
+        // if a skill of the target unit is higher than the source unit, issue a warning at the
+        // target
+        if (skill2 != null) {
+          if (skill1 == null || skill2.getLevel() > skill1.getLevel()) {
+            problems.add(ProblemFactory.createProblem(Severity.WARNING,
+                SkillInspector.SKILLDECREASE, u.getRegion(), u, u.getFaction(), u2, this,
+                SkillInspector.SKILLDECREASE.getMessage(), relation.line));
+            break;
+          }
+        }
+      }
+
     }
 
-    if (problems.isEmpty()) {
+    if (problems.isEmpty())
       return Collections.emptyList();
-    } else {
+    else
       return problems;
-    }
   }
 
   public Collection<ProblemType> getTypes() {
-    return Collections.singletonList(SKILLDECREASE);
+    return Collections.singletonList(SkillInspector.SKILLDECREASE);
   }
 }

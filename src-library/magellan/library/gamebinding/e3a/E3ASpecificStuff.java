@@ -32,16 +32,15 @@ import magellan.library.gamebinding.RelationFactory;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesReader;
 
-
 /**
  * All the stuff needed for E2K9.
- *
+ * 
  * @author $Author: $
  * @version $Revision: 242 $
  */
 public class E3ASpecificStuff implements GameSpecificStuff {
   private static final String name = "E3";
-  
+
   private Rules rules;
   private MovementEvaluator movementEvaluator;
   private GameSpecificRules gameSpecificRules;
@@ -62,98 +61,100 @@ public class E3ASpecificStuff implements GameSpecificStuff {
 
   public E3ASpecificStuff() {
     try {
-      this.rules = new RulesReader().readRules(getName());
+      rules = new RulesReader().readRules(getName());
     } catch (IOException e) {
-      this.rules = null;
+      rules = null;
       throw new RuntimeException("Eressea rules not readable", e);
     }
   }
 
   /**
-	 * This is a callback interface to let the  GameSpecificStuff create the GameData object.
+   * This is a callback interface to let the GameSpecificStuff create the GameData object.
    * 
    * @param name The game name (like "Eressea", "E3", ...)
-	 */
-	public GameData createGameData(String name) {
-		return new CompleteData(getRules(), name);
-	}
+   */
+  public GameData createGameData(String name) {
+    return new CompleteData(getRules(), name);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getGameDataIO()
    */
-	public GameDataIO getGameDataIO() {
-		return null;
-	}
+  public GameDataIO getGameDataIO() {
+    return null;
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#postProcess(magellan.library.GameData)
    */
-	public void postProcess(GameData data) {
-		E3APostProcessor.getSingleton().postProcess(data);
-	}
+  public void postProcess(GameData data) {
+    E3APostProcessor.getSingleton().postProcess(data);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#postProcessAfterTrustlevelChange(magellan.library.GameData)
    */
-	public void postProcessAfterTrustlevelChange(GameData data) {
-	  E3APostProcessor.getSingleton().postProcessAfterTrustlevelChange(data);
-	}
+  public void postProcessAfterTrustlevelChange(GameData data) {
+    E3APostProcessor.getSingleton().postProcessAfterTrustlevelChange(data);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
-	public OrderChanger getOrderChanger() {
-    if (orderChanger == null)
+  public OrderChanger getOrderChanger() {
+    if (orderChanger == null) {
       orderChanger = new E3AOrderChanger(getRules());
+    }
     return orderChanger;
-	}
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getRelationFactory()
    */
-	public RelationFactory getRelationFactory() {
+  public RelationFactory getRelationFactory() {
     if (relationFactory == null) {
       relationFactory = new E3ARelationFactory(getRules());
     }
 
     return relationFactory;
-	}
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getMovementEvaluator()
    */
-	public MovementEvaluator getMovementEvaluator() {
+  public MovementEvaluator getMovementEvaluator() {
     if (movementEvaluator == null) {
       movementEvaluator = new E3AMovementEvaluator(rules);
     }
     return movementEvaluator;
-	}
+  }
 
   /**
-   * @see magellan.library.gamebinding.GameSpecificStuff#getCompleter(magellan.library.GameData, magellan.library.completion.CompleterSettingsProvider)
+   * @see magellan.library.gamebinding.GameSpecificStuff#getCompleter(magellan.library.GameData,
+   *      magellan.library.completion.CompleterSettingsProvider)
    */
   public Completer getCompleter(GameData data, CompleterSettingsProvider csp) {
-		return new E3AOrderCompleter(data, csp);
-	}
+    return new E3AOrderCompleter(data, csp);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
    */
-	public OrderParser getOrderParser(GameData data) {
-		return new E3AOrderParser(data);
-	}
-  
+  public OrderParser getOrderParser(GameData data) {
+    return new E3AOrderParser(data);
+  }
+
   /**
    * Delivers the Eressea specific Message Renderer (as of CR VERSION 41)
-   * @param data - A GameData object to enrich the messages with names of units, regions ,...
-   * @return the new EresseaMessageRenderer for rendering ONE message 
    * 
+   * @param data - A GameData object to enrich the messages with names of units, regions ,...
+   * @return the new EresseaMessageRenderer for rendering ONE message
    * @see magellan.library.gamebinding.GameSpecificStuff#getMessageRenderer(magellan.library.GameData)
    */
   public MessageRenderer getMessageRenderer(GameData data) {
     return new E3AMessageRenderer(data);
   }
-  
+
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getMapMergeEvaluator()
    */
@@ -176,12 +177,13 @@ public class E3ASpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getGameSpecificRules()
    */
   public GameSpecificRules getGameSpecificRules() {
-    if (gameSpecificRules==null)
+    if (gameSpecificRules == null) {
       gameSpecificRules = new E3AGameSpecificRules(rules);
+    }
     return gameSpecificRules;
   }
 
   public String getName() {
-    return name;
+    return E3ASpecificStuff.name;
   }
 }

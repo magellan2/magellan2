@@ -25,340 +25,283 @@ import magellan.library.Unit;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.comparator.SkillComparator;
 
-
 /**
  * DOCUMENT ME!
- *
- * @author Ulrich Küster a class for holding statistic information about units and their skills
- * 		   like number of persons with a specified skill or total skillpoints or things like that.
- * 		   Units can be added by a call to the addUnit-Method but not removed.
+ * 
+ * @author Ulrich Küster a class for holding statistic information about units and their skills like
+ *         number of persons with a specified skill or total skillpoints or things like that. Units
+ *         can be added by a call to the addUnit-Method but not removed.
  */
 public class SkillStats {
-	/**
-	 * Default constructor
-	 */
-	public SkillStats() {
-	}
+  /**
+   * Default constructor
+   */
+  public SkillStats() {
+  }
 
-	/**
-	 * Constructor that initialize the internal data with the given units
-	 *
-	 * 
-	 */
-	public SkillStats(List<Unit> units) {
-		for(Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
-			addUnit(iter.next());
-		}
-	}
+  /**
+   * Constructor that initialize the internal data with the given units
+   */
+  public SkillStats(List<Unit> units) {
+    for (Unit unit : units) {
+      addUnit(unit);
+    }
+  }
 
-	// maps skillTypes to SkillStorage-Objects
-	private Map<SkillType,SkillStorage> skillData = new Hashtable<SkillType, SkillStorage>();
+  // maps skillTypes to SkillStorage-Objects
+  private Map<SkillType, SkillStorage> skillData = new Hashtable<SkillType, SkillStorage>();
 
-	/**
-	 * returns a List containing the units with the specified skill at the specified level
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public List<Unit> getUnits(Skill skill) {
-		SkillStorage skillStorage = skillData.get(skill.getSkillType());
+  /**
+   * returns a List containing the units with the specified skill at the specified level
+   */
+  public List<Unit> getUnits(Skill skill) {
+    SkillStorage skillStorage = skillData.get(skill.getSkillType());
 
-		if(skillStorage == null) {
-			return Collections.emptyList();
-		} else {
-			Map<Integer,UnitVector> levelTable = skillStorage.levelTable;
-			UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
+    if (skillStorage == null)
+      return Collections.emptyList();
+    else {
+      Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
+      UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
 
-			if(uv == null) {
-				return Collections.emptyList();
-			} else {
-				return uv.units;
-			}
-		}
-	}
+      if (uv == null)
+        return Collections.emptyList();
+      else
+        return uv.units;
+    }
+  }
 
-	/**
-	 * returns the number of persons that master the specified skill at exact that level, specified
-	 * in the skill Object. That means, a call with a skill-Object containing let's say skilllevel
-	 * 5, will not consider persons, that master this skill at a higher level
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int getPersonNumber(Skill skill) {
-		SkillStorage skillStorage = skillData.get(skill.getSkillType());
+  /**
+   * returns the number of persons that master the specified skill at exact that level, specified in
+   * the skill Object. That means, a call with a skill-Object containing let's say skilllevel 5,
+   * will not consider persons, that master this skill at a higher level
+   */
+  public int getPersonNumber(Skill skill) {
+    SkillStorage skillStorage = skillData.get(skill.getSkillType());
 
-		if(skillStorage == null) {
-			return 0;
-		} else {
-			Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
-			UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
+    if (skillStorage == null)
+      return 0;
+    else {
+      Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
+      UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
 
-			if(uv == null) {
-				return 0;
-			} else {
-				return uv.personCounter;
-			}
-		}
-	}
+      if (uv == null)
+        return 0;
+      else
+        return uv.personCounter;
+    }
+  }
 
-	/**
-	 * returns the total number of days learned yet the specified SkillType
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int getSkillPointsNumber(SkillType skillType) {
-		SkillStorage skillStorage = skillData.get(skillType);
+  /**
+   * returns the total number of days learned yet the specified SkillType
+   */
+  public int getSkillPointsNumber(SkillType skillType) {
+    SkillStorage skillStorage = skillData.get(skillType);
 
-		if(skillStorage == null) {
-			return 0;
-		} else {
-			return skillStorage.skillPointCounter;
-		}
-	}
+    if (skillStorage == null)
+      return 0;
+    else
+      return skillStorage.skillPointCounter;
+  }
 
-	/**
-	 * just like getSkillPointsNumber(SkillType) but limited to a single level
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int getSkillPointsNumber(Skill skill) {
-		int retVal = 0;
+  /**
+   * just like getSkillPointsNumber(SkillType) but limited to a single level
+   */
+  public int getSkillPointsNumber(Skill skill) {
+    int retVal = 0;
 
-		for(Iterator<Unit> iter = getUnits(skill).iterator(); iter.hasNext();) {
-			Unit u = iter.next();
-			retVal += u.getSkill(skill.getSkillType()).getPoints();
-		}
+    for (Unit u : getUnits(skill)) {
+      retVal += u.getSkill(skill.getSkillType()).getPoints();
+    }
 
-		return retVal;
-	}
+    return retVal;
+  }
 
-	/**
-	 * returns the total number of skilllevel of the specified SkillType
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int getSkillLevelNumber(SkillType skillType) {
-		SkillStorage skillStorage = skillData.get(skillType);
+  /**
+   * returns the total number of skilllevel of the specified SkillType
+   */
+  public int getSkillLevelNumber(SkillType skillType) {
+    SkillStorage skillStorage = skillData.get(skillType);
 
-		if(skillStorage == null) {
-			return 0;
-		} else {
-			return skillStorage.skillLevelCounter;
-		}
-	}
+    if (skillStorage == null)
+      return 0;
+    else
+      return skillStorage.skillLevelCounter;
+  }
 
-	/**
-	 * just like getSkillLevelNumber(SkillType) but limited to a level
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int getSkillLevelNumber(Skill skill) {
-		int retVal = 0;
+  /**
+   * just like getSkillLevelNumber(SkillType) but limited to a level
+   */
+  public int getSkillLevelNumber(Skill skill) {
+    int retVal = 0;
 
-		for(Iterator<Unit> iter = getUnits(skill).iterator(); iter.hasNext();) {
-			Unit u = iter.next();
-			retVal += (u.getPersons() * skill.getLevel());
-		}
+    for (Unit u : getUnits(skill)) {
+      retVal += (u.getPersons() * skill.getLevel());
+    }
 
-		return retVal;
-	}
+    return retVal;
+  }
 
-	/**
-	 * returns the total number of persons that master the specified SkillType at any level (also
-	 * level 0, as long as they have more than zero skillpoints of this skillType)
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int getPersonNumber(SkillType skillType) {
-		SkillStorage skillStorage = skillData.get(skillType);
+  /**
+   * returns the total number of persons that master the specified SkillType at any level (also
+   * level 0, as long as they have more than zero skillpoints of this skillType)
+   */
+  public int getPersonNumber(SkillType skillType) {
+    SkillStorage skillStorage = skillData.get(skillType);
 
-		if(skillStorage == null) {
-			return 0;
-		} else {
-			return skillStorage.personCounter;
-		}
-	}
+    if (skillStorage == null)
+      return 0;
+    else
+      return skillStorage.personCounter;
+  }
 
-	/**
-	 * returns a sorted Collection containing the existing entries (type Skill) for the specified
-	 * SkillType in the internal data. If type == null returns a Collection containing all
-	 * existing entries (for all skilltypes)
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public List<Skill> getKnownSkills(SkillType type) {
-		if(type == null) {
-			List<Skill> v = new LinkedList<Skill>();
+  /**
+   * returns a sorted Collection containing the existing entries (type Skill) for the specified
+   * SkillType in the internal data. If type == null returns a Collection containing all existing
+   * entries (for all skilltypes)
+   */
+  public List<Skill> getKnownSkills(SkillType type) {
+    if (type == null) {
+      List<Skill> v = new LinkedList<Skill>();
 
-			for(Iterator<SkillType> iter = skillData.keySet().iterator(); iter.hasNext();) {
-				type = iter.next();
+      for (Iterator<SkillType> iter = skillData.keySet().iterator(); iter.hasNext();) {
+        type = iter.next();
 
-				SkillStorage skillStorage = skillData.get(type);
+        SkillStorage skillStorage = skillData.get(type);
 
-				for(Iterator<Integer> i = skillStorage.levelTable.keySet().iterator(); i.hasNext();) {
-					Integer level = i.next();
-					v.add(new Skill(type, 1, level.intValue(), 1, false));
-				}
-			}
+        for (Integer level : skillStorage.levelTable.keySet()) {
+          v.add(new Skill(type, 1, level.intValue(), 1, false));
+        }
+      }
 
-			Collections.sort(v, new SkillComparator());
+      Collections.sort(v, new SkillComparator());
 
-			return v;
-		} else {
-			SkillStorage skillStorage = skillData.get(type);
+      return v;
+    } else {
+      SkillStorage skillStorage = skillData.get(type);
 
-			if(skillStorage == null) {
-				return Collections.emptyList();
-			} else {
-				Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
-				List<Skill> v = new LinkedList<Skill>();
+      if (skillStorage == null)
+        return Collections.emptyList();
+      else {
+        Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
+        List<Skill> v = new LinkedList<Skill>();
 
-				for(Iterator<Integer> iter = levelTable.keySet().iterator(); iter.hasNext();) {
-					int level = (iter.next()).intValue();
-					v.add(new Skill(type, Skill.getPointsAtLevel(level), level, 1, false));
-				}
+        for (Integer integer : levelTable.keySet()) {
+          int level = (integer).intValue();
+          v.add(new Skill(type, Skill.getPointsAtLevel(level), level, 1, false));
+        }
 
-				Collections.sort(v, new SkillComparator());
+        Collections.sort(v, new SkillComparator());
 
-				return v;
-			}
-		}
-	}
+        return v;
+      }
+    }
+  }
 
-	/**
-	 * returns an Collection containing the known SkillTypes in the internal data.
-	 *
-	 * 
-	 */
-	public List<SkillType> getKnownSkillTypes() {
-		List<SkillType> v = new LinkedList<SkillType>();
+  /**
+   * returns an Collection containing the known SkillTypes in the internal data.
+   */
+  public List<SkillType> getKnownSkillTypes() {
+    List<SkillType> v = new LinkedList<SkillType>();
 
-		for(Iterator<SkillType> iter = skillData.keySet().iterator(); iter.hasNext();) {
-			SkillType type = iter.next();
+    for (SkillType type : skillData.keySet()) {
+      if (!v.contains(type)) {
+        v.add(type);
+      }
+    }
 
-			if(!v.contains(type)) {
-				v.add(type);
-			}
-		}
+    Collections.sort(v);
 
-		Collections.sort(v);
+    return v;
+  }
 
-		return v;
-	}
+  /**
+   * returns the lowest level of the specified skillType known in the internal data
+   */
+  public int getLowestKnownSkillLevel(SkillType type) {
+    SkillStorage skillStorage = skillData.get(type);
 
-	/**
-	 * returns the lowest level of the specified skillType known in the internal data
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int getLowestKnownSkillLevel(SkillType type) {
-		SkillStorage skillStorage = skillData.get(type);
+    if (skillStorage == null)
+      return 0;
+    else {
+      Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
+      int retVal = Integer.MAX_VALUE;
 
-		if(skillStorage == null) {
-			return 0;
-		} else {
-			Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
-			int retVal = Integer.MAX_VALUE;
+      for (Integer integer : levelTable.keySet()) {
+        int i = (integer).intValue();
 
-			for(Iterator<Integer> iter = levelTable.keySet().iterator(); iter.hasNext();) {
-				int i = (iter.next()).intValue();
+        if (i < retVal) {
+          retVal = i;
+        }
+      }
 
-				if(i < retVal) {
-					retVal = i;
-				}
-			}
+      return retVal;
+    }
+  }
 
-			return retVal;
-		}
-	}
+  /**
+   * returns the highest level of the specified skillType known in the internal data
+   */
+  public int getHighestKnownSkillLevel(SkillType type) {
+    SkillStorage skillStorage = skillData.get(type);
 
-	/**
-	 * returns the highest level of the specified skillType known in the internal data
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int getHighestKnownSkillLevel(SkillType type) {
-		SkillStorage skillStorage = skillData.get(type);
+    if (skillStorage == null)
+      return 0;
+    else {
+      Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
+      int retVal = Integer.MIN_VALUE;
 
-		if(skillStorage == null) {
-			return 0;
-		} else {
-			Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
-			int retVal = Integer.MIN_VALUE;
+      for (Integer integer : levelTable.keySet()) {
+        int i = (integer).intValue();
 
-			for(Iterator<Integer> iter = levelTable.keySet().iterator(); iter.hasNext();) {
-				int i = (iter.next()).intValue();
+        if (i > retVal) {
+          retVal = i;
+        }
+      }
 
-				if(i > retVal) {
-					retVal = i;
-				}
-			}
+      return retVal;
+    }
+  }
 
-			return retVal;
-		}
-	}
+  /**
+   * adds a unit to the internal statistics
+   */
+  public void addUnit(Unit u) {
+    for (Skill skill : u.getSkills()) {
+      SkillStorage skillStorage = skillData.get(skill.getSkillType());
 
-	/**
-	 * adds a unit to the internal statistics
-	 *
-	 * 
-	 */
-	public void addUnit(Unit u) {
-		for(Iterator<Skill> iter = u.getSkills().iterator(); iter.hasNext();) {
-			Skill skill = iter.next();
-			SkillStorage skillStorage = skillData.get(skill.getSkillType());
+      if (skillStorage == null) {
+        skillStorage = new SkillStorage();
+        skillData.put(skill.getSkillType(), skillStorage);
+      }
 
-			if(skillStorage == null) {
-				skillStorage = new SkillStorage();
-				skillData.put(skill.getSkillType(), skillStorage);
-			}
+      Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
+      UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
 
-			Map<Integer,UnitVector> levelTable = skillStorage.levelTable;
-			UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
+      if (uv == null) {
+        uv = new UnitVector();
+        levelTable.put(new Integer(skill.getLevel()), uv);
+      }
 
-			if(uv == null) {
-				uv = new UnitVector();
-				levelTable.put(new Integer(skill.getLevel()), uv);
-			}
+      uv.units.add(u);
+      uv.personCounter += u.getPersons();
+      skillStorage.personCounter += u.getPersons();
+      skillStorage.skillPointCounter += u.getSkill(skill.getSkillType()).getPoints();
+      skillStorage.skillLevelCounter +=
+          (u.getSkill(skill.getSkillType()).getLevel() * u.getPersons());
+    }
+  }
 
-			uv.units.add(u);
-			uv.personCounter += u.getPersons();
-			skillStorage.personCounter += u.getPersons();
-			skillStorage.skillPointCounter += u.getSkill(skill.getSkillType()).getPoints();
-			skillStorage.skillLevelCounter += (u.getSkill(skill.getSkillType()).getLevel() * u.getPersons());
-		}
-	}
+  // inner helper classes
+  private class UnitVector {
+    int personCounter = 0;
+    List<Unit> units = new LinkedList<Unit>();
+  }
 
-	// inner helper classes
-	private class UnitVector {
-		int personCounter = 0;
-		List<Unit> units = new LinkedList<Unit>();
-	}
-
-	private class SkillStorage {
-		// maps level (Integerobjects) to UnitVector-Objects
-		Map<Integer,UnitVector> levelTable = new Hashtable<Integer, UnitVector>();
-		int skillPointCounter = 0;
-		int personCounter = 0;
-		int skillLevelCounter = 0;
-	}
+  private class SkillStorage {
+    // maps level (Integerobjects) to UnitVector-Objects
+    Map<Integer, UnitVector> levelTable = new Hashtable<Integer, UnitVector>();
+    int skillPointCounter = 0;
+    int personCounter = 0;
+    int skillLevelCounter = 0;
+  }
 }

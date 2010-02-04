@@ -29,196 +29,171 @@ import magellan.library.Message;
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
 
-
 /**
  * A class representing a faction in Eressea.
  */
 public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Faction {
-	/* Implementation note on trust levels:
-	 * Trust levels have been introduced to replace the inherently
-	 * wrong concept of owner factions. This way there can for
-	 * example be more than one faction that can edit its units'
-	 * orders.
-	 * TL_DEFAULT must keep a value of 0, so this equivalent to a
-	 * faction without a specified trust level. Trust levels
-	 * expressing an increased amount trust or privileges should get
-	 * ascending positive numbers, and the other way round with
-	 * negative trust levels.
-	 * Therefore comparisons for trust levels should in most cases be
-	 * 'greater than' or 'less than' relations rather than absolute
-	 * comparisons.
-	 */
+  /*
+   * Implementation note on trust levels: Trust levels have been introduced to replace the
+   * inherently wrong concept of owner factions. This way there can for example be more than one
+   * faction that can edit its units' orders. TL_DEFAULT must keep a value of 0, so this equivalent
+   * to a faction without a specified trust level. Trust levels expressing an increased amount trust
+   * or privileges should get ascending positive numbers, and the other way round with negative
+   * trust levels. Therefore comparisons for trust levels should in most cases be 'greater than' or
+   * 'less than' relations rather than absolute comparisons.
+   */
 
-	/**
-	 * The password of this faction required for authentication of orders sent to the Eressea
-	 * server.
-	 */
-	protected String password = null;
+  /**
+   * The password of this faction required for authentication of orders sent to the Eressea server.
+   */
+  protected String password = null;
 
-	/** The email address of the Faction */
+  /** The email address of the Faction */
   protected String email = null;
 
-	/** Optionen */
+  /** Optionen */
   protected Options options = null;
 
-	/** Punkte */
+  /** Punkte */
   protected int score = -1;
 
-	/** Durchschnittlicher Punktestand */
+  /** Durchschnittlicher Punktestand */
   protected int averageScore = -1;
 
-	/** Personen */
+  /** Personen */
   protected int persons = -1;
 
-	/** aktuelle Migranten */
+  /** aktuelle Migranten */
   protected int migrants = -1;
 
-	/** erlaubte Migranten */
+  /** erlaubte Migranten */
   protected int maxMigrants = -1;
 
-	/** Magiegebite */
+  /** Magiegebite */
   protected String spellSchool = null; // Magiegebiet
 
-	/**
-	 * Indicates to what amount this faction can be trusted. It also influences the privileges of
-	 * this faction (e.g. being able to edit its units' orders).
-	 */
+  /**
+   * Indicates to what amount this faction can be trusted. It also influences the privileges of this
+   * faction (e.g. being able to edit its units' orders).
+   */
   private int trustLevel = Faction.TL_DEFAULT;
-	
-	/**
-	 * Indicates, if one priviliged faction has set the "GIVE" right
-	 * to this faction.
-	 * used for showing unit capacity only for items of such factions
-	 */
-	protected boolean hasGiveAlliance = false;
-	
-	/**
-	 * taken from the cr: actual amount of heroes (Fiete)
-	 */
+
+  /**
+   * Indicates, if one priviliged faction has set the "GIVE" right to this faction. used for showing
+   * unit capacity only for items of such factions
+   */
+  protected boolean hasGiveAlliance = false;
+
+  /**
+   * taken from the cr: actual amount of heroes (Fiete)
+   */
   protected int heroes = -1;
-	
-	/**
-	 * taken from the cr: actual max amount of heroes (Fiete)
-	 */
+
+  /**
+   * taken from the cr: actual max amount of heroes (Fiete)
+   */
   protected int maxHeroes = -1;
-	
-	/**
-	 * taken from the cr: actual age of faction (Fiete)
-	 */
+
+  /**
+   * taken from the cr: actual age of faction (Fiete)
+   */
   protected int age = -1;
 
-	/**
-	 * 
-	 * @see magellan.library.Faction#isPrivileged()
-	 */
-	public boolean isPrivileged() {
-		return trustLevel >= Faction.TL_PRIVILEGED;
-	}
+  /**
+   * @see magellan.library.Faction#isPrivileged()
+   */
+  public boolean isPrivileged() {
+    return trustLevel >= Faction.TL_PRIVILEGED;
+  }
 
-	/**
-	 * true: indicates that this trustlevel was explicitly set by the user or read from a CR-file
-	 * false: indicates that this is either a default level or was calculated by Magellan based on
-	 * the alliances of the privileged factions.
-	 */
-	public boolean trustLevelSetByUser = false;
+  /**
+   * true: indicates that this trustlevel was explicitly set by the user or read from a CR-file
+   * false: indicates that this is either a default level or was calculated by Magellan based on the
+   * alliances of the privileged factions.
+   */
+  public boolean trustLevelSetByUser = false;
 
-	/** contains all messages for this faction as <tt>Message</tt> objects */
+  /** contains all messages for this faction as <tt>Message</tt> objects */
   protected List<Message> messages = null;
 
-	/** contains error messages for this faction as <tt>String</tt> objects */
+  /** contains error messages for this faction as <tt>String</tt> objects */
   protected List<String> errors = null;
 
-	/** contains the battles, this faction had in the current round, as <tt>Battle</tt> objects */
+  /** contains the battles, this faction had in the current round, as <tt>Battle</tt> objects */
   protected List<Battle> battles = null;
 
-	/**
-	 * The allies of this faction are stored in this map with the faction ID of the ally as key and
-	 * an <tt>Alliance</tt> object as value.
-	 */
-  protected Map<EntityID,Alliance> allies = null;
+  /**
+   * The allies of this faction are stored in this map with the faction ID of the ally as key and an
+   * <tt>Alliance</tt> object as value.
+   */
+  protected Map<EntityID, Alliance> allies = null;
 
-	/**
-	 * The different groups in this faction. The map contains <tt>ID</tt> objects with the group id
-	 * as keys and <tt>Group</tt> objects as values.
-	 */
-  protected Map<IntegerID,Group> groups = null;
+  /**
+   * The different groups in this faction. The map contains <tt>ID</tt> objects with the group id as
+   * keys and <tt>Group</tt> objects as values.
+   */
+  protected Map<IntegerID, Group> groups = null;
 
-	/** The country code indicating the locale for this faction. */
-	private Locale locale = null;
-	
-	/** The treasury of this faction. If the value is zero this feature is not set. */
-	protected int factionTreasury = 0;
+  /** The country code indicating the locale for this faction. */
+  private Locale locale = null;
 
-	/**
-	 * Creates a new Faction object with the specified id on top of the specified game data object.
-	 *
-	 * 
-	 * 
-	 */
-	public MagellanFactionImpl(EntityID id, GameData data) {
-		super(id, data);
-	}
+  /** The treasury of this faction. If the value is zero this feature is not set. */
+  protected int factionTreasury = 0;
 
-	/**
-	 * Assigns this faction a locale indicating the language of its report and the orders.
-	 *
-	 * 
-	 */
-	public void setLocale(Locale l) {
-		this.locale = l;
-	}
+  /**
+   * Creates a new Faction object with the specified id on top of the specified game data object.
+   */
+  public MagellanFactionImpl(EntityID id, GameData data) {
+    super(id, data);
+  }
 
-	/**
-	 * Returns the locale of this faction indicating the language of its report and orders.
-	 *
-	 * 
-	 */
-	public Locale getLocale() {
-		return this.locale;
-	}
+  /**
+   * Assigns this faction a locale indicating the language of its report and the orders.
+   */
+  public void setLocale(Locale l) {
+    locale = l;
+  }
 
-	/** A faction dependent prefix to be prepended to this faction's race name. */
-	private String raceNamePrefix = null;
+  /**
+   * Returns the locale of this faction indicating the language of its report and orders.
+   */
+  public Locale getLocale() {
+    return locale;
+  }
+
+  /** A faction dependent prefix to be prepended to this faction's race name. */
+  private String raceNamePrefix = null;
 
   private AllianceGroup alliance;
 
-	/**
-	 * Sets the faction dependent prefix for the race name.
-	 *
-	 * 
-	 */
-	public void setRaceNamePrefix(String prefix) {
-		this.raceNamePrefix = prefix;
-	}
+  /**
+   * Sets the faction dependent prefix for the race name.
+   */
+  public void setRaceNamePrefix(String prefix) {
+    raceNamePrefix = prefix;
+  }
 
-	/**
-	 * Returns the faction dependent prefix for the race name.
-	 *
-	 * 
-	 */
-	public String getRaceNamePrefix() {
-		return this.raceNamePrefix;
-	}
+  /**
+   * Returns the faction dependent prefix for the race name.
+   */
+  public String getRaceNamePrefix() {
+    return raceNamePrefix;
+  }
 
-	/**
-	 * Returns the race of this faction. This method is an alias for the getType() method.
-	 *
-	 * 
-	 */
-	public Race getRace() {
-		return (Race) this.getType();
-	}
+  /**
+   * Returns the race of this faction. This method is an alias for the getType() method.
+   */
+  public Race getRace() {
+    return (Race) getType();
+  }
 
-	/**
-	 * Returns a string representation of this faction.
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Returns a string representation of this faction.
+   */
+  @Override
   public String toString() {
-		return getName() + " (" + this.getID() + ")";
-	}
-
+    return getName() + " (" + getID() + ")";
+  }
 
   /**
    * Returns the value of age.
@@ -231,7 +206,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of age.
-   *
+   * 
    * @param age The value for age.
    */
   public void setAge(int age) {
@@ -249,7 +224,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of allies.
-   *
+   * 
    * @param allies The value for allies.
    */
   public void setAllies(Map<EntityID, Alliance> allies) {
@@ -281,7 +256,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of averageScore.
-   *
+   * 
    * @param averageScore The value for averageScore.
    */
   public void setAverageScore(int averageScore) {
@@ -299,7 +274,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of battles.
-   *
+   * 
    * @param battles The value for battles.
    */
   public void setBattles(List<Battle> battles) {
@@ -317,7 +292,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of email.
-   *
+   * 
    * @param email The value for email.
    */
   public void setEmail(String email) {
@@ -335,7 +310,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of errors.
-   *
+   * 
    * @param errors The value for errors.
    */
   public void setErrors(List<String> errors) {
@@ -353,7 +328,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of groups.
-   *
+   * 
    * @param groups The value for groups.
    */
   public void setGroups(Map<IntegerID, Group> groups) {
@@ -380,7 +355,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of hasGiveAlliance.
-   *
+   * 
    * @param hasGiveAlliance The value for hasGiveAlliance.
    */
   public void setHasGiveAlliance(boolean hasGiveAlliance) {
@@ -398,7 +373,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of heroes.
-   *
+   * 
    * @param heroes The value for heroes.
    */
   public void setHeroes(int heroes) {
@@ -416,7 +391,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of maxHeroes.
-   *
+   * 
    * @param maxHeroes The value for maxHeroes.
    */
   public void setMaxHeroes(int maxHeroes) {
@@ -434,7 +409,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of maxMigrants.
-   *
+   * 
    * @param maxMigrants The value for maxMigrants.
    */
   public void setMaxMigrants(int maxMigrants) {
@@ -452,7 +427,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of messages.
-   *
+   * 
    * @param messages The value for messages.
    */
   public void setMessages(List<Message> messages) {
@@ -470,7 +445,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of migrants.
-   *
+   * 
    * @param migrants The value for migrants.
    */
   public void setMigrants(int migrants) {
@@ -488,7 +463,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of options.
-   *
+   * 
    * @param options The value for options.
    */
   public void setOptions(Options options) {
@@ -506,7 +481,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of password.
-   *
+   * 
    * @param password The value for password.
    */
   public void setPassword(String password) {
@@ -524,7 +499,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of persons.
-   *
+   * 
    * @param persons The value for persons.
    */
   public void setPersons(int persons) {
@@ -542,7 +517,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of score.
-   *
+   * 
    * @param score The value for score.
    */
   public void setScore(int score) {
@@ -560,7 +535,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of spellSchool.
-   *
+   * 
    * @param spellSchool The value for spellSchool.
    */
   public void setSpellSchool(String spellSchool) {
@@ -578,7 +553,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of trustLevel.
-   *
+   * 
    * @param trustLevel The value for trustLevel.
    */
   public void setTrustLevel(int trustLevel) {
@@ -596,13 +571,13 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
   /**
    * Sets the value of trustLevelSetByUser.
-   *
+   * 
    * @param trustLevelSetByUser The value for trustLevelSetByUser.
    */
   public void setTrustLevelSetByUser(boolean trustLevelSetByUser) {
     this.trustLevelSetByUser = trustLevelSetByUser;
   }
-  
+
   /**
    * @see magellan.library.Faction#getTreasury()
    */
@@ -614,16 +589,15 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    * @see magellan.library.Faction#setTreasury(int)
    */
   public void setTreasury(int silver) {
-    this.factionTreasury = silver;
+    factionTreasury = silver;
   }
 
-  
   /**
    * Returns the id uniquely identifying this object.
    */
   @Override
-  public EntityID getID(){
-    return (EntityID) super.getID(); 
+  public EntityID getID() {
+    return (EntityID) super.getID();
   }
 
 }

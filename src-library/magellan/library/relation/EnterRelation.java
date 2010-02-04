@@ -20,14 +20,14 @@ import magellan.library.UnitContainer;
  * A relation indicating that a unit enters a unit container.
  */
 public class EnterRelation extends UnitContainerRelation {
-	/**
-	 * Creates a new EnterRelation object.
-	 *
-	 * @param s The source unit
-	 * @param t The target container
-	 * @param line The line in the source's orders
-	 */
-	public EnterRelation(Unit s, UnitContainer t, int line) {
-		super(s, t, line);
-	}
+  /**
+   * Creates a new EnterRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target container
+   * @param line The line in the source's orders
+   */
+  public EnterRelation(Unit s, UnitContainer t, int line) {
+    super(s, t, line);
+  }
 }

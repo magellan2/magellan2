@@ -23,16 +23,13 @@ import java.awt.event.MouseEvent;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface ContextListener {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 */
-	public void contextFailed(Component c, MouseEvent e);
+  /**
+   * DOCUMENT-ME
+   */
+  public void contextFailed(Component c, MouseEvent e);
 }

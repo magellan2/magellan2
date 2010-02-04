@@ -27,54 +27,48 @@ import com.jrefinery.chart.JFreeChartPanel;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Ulrich Küster extended for use with tooltips
  */
 public class SkillChartJFreeChartPanel extends JFreeChartPanel {
-	// the SkillChartPanel object this JFreeChartPanel is inside
-	private SkillChartPanel skillChartPanel;
+  // the SkillChartPanel object this JFreeChartPanel is inside
+  private SkillChartPanel skillChartPanel;
 
-	/**
-	 * Full constructor: returns a panel containing the specified chart.
-	 *
-	 * @param chart The chart to display in the panel;
-	 * 
-	 */
-	public SkillChartJFreeChartPanel(JFreeChart chart, SkillChartPanel skillChartPanel) {
-		super(chart);
-		this.chart = chart;
-		this.skillChartPanel = skillChartPanel;
-		this.chart.addChangeListener(this);
-		setPreferredSize(new Dimension(480, 320));
-		ToolTipManager.sharedInstance().registerComponent(this);
-	}
+  /**
+   * Full constructor: returns a panel containing the specified chart.
+   * 
+   * @param chart The chart to display in the panel;
+   */
+  public SkillChartJFreeChartPanel(JFreeChart chart, SkillChartPanel skillChartPanel) {
+    super(chart);
+    this.chart = chart;
+    this.skillChartPanel = skillChartPanel;
+    this.chart.addChangeListener(this);
+    setPreferredSize(new Dimension(480, 320));
+    ToolTipManager.sharedInstance().registerComponent(this);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String getToolTipText(MouseEvent e) {
-		Vector<Rectangle2D> barAreas = ((VerticalBarPlot) chart.getPlot()).getBarAreas();
+    Vector<Rectangle2D> barAreas = ((VerticalBarPlot) chart.getPlot()).getBarAreas();
 
-		if(barAreas.size() == 0) {
-			return "";
-		} else {
-			Point p = e.getPoint();
-			int i = barAreas.size() - 1;
+    if (barAreas.size() == 0)
+      return "";
+    else {
+      Point p = e.getPoint();
+      int i = barAreas.size() - 1;
 
-			for(Iterator<Rectangle2D> iter = barAreas.iterator(); iter.hasNext(); i--) {
-				Rectangle2D rec = iter.next();
+      for (Iterator<Rectangle2D> iter = barAreas.iterator(); iter.hasNext(); i--) {
+        Rectangle2D rec = iter.next();
 
-				if(rec.contains(p)) {
-					return skillChartPanel.getToolTip(i);
-				}
-			}
+        if (rec.contains(p))
+          return skillChartPanel.getToolTip(i);
+      }
 
-			return "";
-		}
-	}
+      return "";
+    }
+  }
 }

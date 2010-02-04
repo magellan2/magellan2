@@ -39,7 +39,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   public UnitRelationNodeWrapper2(UnitRelation rel, CellObject2 innerNode) {
     super(rel, null);
     this.innerNode = innerNode;
-    this.relation = rel;
+    relation = rel;
   }
 
   /**
@@ -59,7 +59,8 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   }
 
   /**
-   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, magellan.client.swing.tree.NodeWrapperDrawPolicy)
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   @Override
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
@@ -67,7 +68,8 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   }
 
   /**
-   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String, magellan.client.swing.tree.NodeWrapperDrawPolicy)
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   @Override
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
@@ -114,10 +116,10 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   public ContextFactory getContextFactory() {
     return contextFactory;
   }
-  
+
   @Override
-  public void setContextFactory(ContextFactory factory){
-    this.contextFactory = factory;
+  public void setContextFactory(ContextFactory factory) {
+    contextFactory = factory;
   }
 
   /**
@@ -126,7 +128,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
    * @see java.lang.Object#toString()
    */
   @Override
-  public String toString(){
+  public String toString() {
     return innerNode.toString();
   }
 
@@ -137,7 +139,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   public boolean reverseOrder() {
     return innerNode.reverseOrder();
   }
-  
+
   @Override
   public CellObject getInnerNode() {
     return innerNode;

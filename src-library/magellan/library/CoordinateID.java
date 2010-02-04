@@ -20,132 +20,107 @@ import java.util.StringTokenizer;
  * components.
  */
 public class CoordinateID implements ID {
-	/**
-	 * The x-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value
-	 * of this CoordinateID!
-	 */
-	public int x;
+  /**
+   * The x-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
+   * this CoordinateID!
+   */
+  public int x;
 
-	/**
-	 * The y-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value
-	 * of this CoordinateID!
-	 */
-	public int y;
+  /**
+   * The y-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
+   * this CoordinateID!
+   */
+  public int y;
 
-	/**
-	 * The z-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value
-	 * of this CoordinateID!
-	 */
-	public int z;
+  /**
+   * The z-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
+   * this CoordinateID!
+   */
+  public int z;
 
-	/**
-	 * Create a new CoordinateID with a z-value of 0.
-	 *
-	 * 
-	 * 
-	 */
-	public CoordinateID(int x, int y) {
-		this.x = x;
-		this.y = y;
-		this.z = 0;
-	}
+  /**
+   * Create a new CoordinateID with a z-value of 0.
+   */
+  public CoordinateID(int x, int y) {
+    this.x = x;
+    this.y = y;
+    z = 0;
+  }
 
-	/**
-	 * Creates a new CoordinateID object.
-	 *
-	 * 
-	 * 
-	 * 
-	 */
-	public CoordinateID(int x, int y, int z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+  /**
+   * Creates a new CoordinateID object.
+   */
+  public CoordinateID(int x, int y, int z) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
 
-	/**
-	 * Creates a new CoordinateID object.
-	 *
-	 * 
-	 */
-	public CoordinateID(CoordinateID c) {
-		this.x = c.x;
-		this.y = c.y;
-		this.z = c.z;
-	}
+  /**
+   * Creates a new CoordinateID object.
+   */
+  public CoordinateID(CoordinateID c) {
+    x = c.x;
+    y = c.y;
+    z = c.z;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public boolean equals(Object o) {
-	  if (o==null) {
+    if (o == null)
+      return false;
+    try {
+      CoordinateID c = (CoordinateID) o;
+
+      return ((c == this) || ((x == c.x) && (y == c.y) && (z == c.z)));
+    } catch (ClassCastException e) {
       return false;
     }
-		try {
-			CoordinateID c = (CoordinateID) o;
-			
-			return ((c == this) || ((x == c.x) && (y == c.y) && (z == c.z)));
-		} catch(ClassCastException e) {
-			return false;
-		}
-	}
+  }
 
-	/**
-	 * Returns a String representation of this corrdinate. The x, y and z components are seperated
-	 * by semicolon with a blank and the z component is ommitted if it equals 0.
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Returns a String representation of this corrdinate. The x, y and z components are seperated by
+   * semicolon with a blank and the z component is ommitted if it equals 0.
+   */
+  @Override
   public String toString() {
-		return toString(", ", false);
-	}
+    return toString(", ", false);
+  }
 
-	/**
-	 * Returns a String representation of this CoordinateID consisting of the x, y and, if not 0, z
-	 * coordinates delimited by delim.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public String toString(String delim) {
-		return toString(delim, false);
-	}
+  /**
+   * Returns a String representation of this CoordinateID consisting of the x, y and, if not 0, z
+   * coordinates delimited by delim.
+   */
+  public String toString(String delim) {
+    return toString(delim, false);
+  }
 
-	/**
-	 * Returns a String representation of this CoordinateID. The x, y and z components are seperated
-	 * by the specified string and the z component is ommitted if it equals 0 and forceZ is false.
-	 *
-	 * @param delim the string to delimit the x, y and z components.
-	 * @param forceZ if true, the z component is only included if it is not 0, else the z component
-	 * 		  is always included.
-	 *
-	 * 
-	 */
-	public String toString(String delim, boolean forceZ) {
-		if(!forceZ && (z == 0)) {
-			return x + delim + y;
-		} else {
-			return x + delim + y + delim + z;
-		}
-	}
+  /**
+   * Returns a String representation of this CoordinateID. The x, y and z components are seperated
+   * by the specified string and the z component is ommitted if it equals 0 and forceZ is false.
+   * 
+   * @param delim the string to delimit the x, y and z components.
+   * @param forceZ if true, the z component is only included if it is not 0, else the z component is
+   *          always included.
+   */
+  public String toString(String delim, boolean forceZ) {
+    if (!forceZ && (z == 0))
+      return x + delim + y;
+    else
+      return x + delim + y + delim + z;
+  }
 
-	/**
-	 * Returns a hash code value for this CoordinateID. The value depends on the x, y and z values,
-	 * so be careful when modifying these values.
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Returns a hash code value for this CoordinateID. The value depends on the x, y and z values, so
+   * be careful when modifying these values.
+   */
+  @Override
   public int hashCode() {
-		return (x << 12) ^ (y << 6) ^ z;
-	}
+    return (x << 12) ^ (y << 6) ^ z;
+  }
 
   /**
    * Creates a new <tt>CoordinateID</tt> object from a string containing the coordinates separated
@@ -159,109 +134,99 @@ public class CoordinateID implements ID {
    * @param delim The delimiters of the coordinates. See java.util.StringTokenizer
    * @return The CoordinateID as read from coord; <code>null</code> if parsing failed
    */
-	public static CoordinateID parse(String coords, String delim) {
-		CoordinateID c = null;
+  public static CoordinateID parse(String coords, String delim) {
+    CoordinateID c = null;
 
-		if(coords != null) {
-			StringTokenizer st = new StringTokenizer(coords, delim);
+    if (coords != null) {
+      StringTokenizer st = new StringTokenizer(coords, delim);
 
-			if(st.countTokens() == 2) {
-				try {
-					c = new CoordinateID(Integer.parseInt(st.nextToken().trim()),
-									   Integer.parseInt(st.nextToken().trim()));
-				} catch(NumberFormatException e) {
-					c = null;
-				}
-			} else if(st.countTokens() == 3) {
-				try {
-					c = new CoordinateID(Integer.parseInt(st.nextToken().trim()),
-									   Integer.parseInt(st.nextToken().trim()),
-									   Integer.parseInt(st.nextToken().trim()));
-				} catch(NumberFormatException e) {
-					c = null;
-				}
-			}
-		}
+      if (st.countTokens() == 2) {
+        try {
+          c =
+              new CoordinateID(Integer.parseInt(st.nextToken().trim()), Integer.parseInt(st
+                  .nextToken().trim()));
+        } catch (NumberFormatException e) {
+          c = null;
+        }
+      } else if (st.countTokens() == 3) {
+        try {
+          c =
+              new CoordinateID(Integer.parseInt(st.nextToken().trim()), Integer.parseInt(st
+                  .nextToken().trim()), Integer.parseInt(st.nextToken().trim()));
+        } catch (NumberFormatException e) {
+          c = null;
+        }
+      }
+    }
 
-		return c;
-	}
+    return c;
+  }
 
-	/**
-	 * Translates this CoordinateID by c.x on the x-axis and c.y on the y-axis and c.z on the z-axis.
-	 * Be careful when using this method on a coordinate used as a key in a hash map: modifying
-	 * the x, y and z values changes the hash value.
-	 *
-	 * @param c the relative CoordinateID to translate the current one by.
-	 *
-	 * @return this.
-	 */
-	public CoordinateID translate(CoordinateID c) {
-		x += c.x;
-		y += c.y;
-		z += c.z;
-
-		return this;
-	}
-
-	/**
-   * Translates this CoordinateID by -c.x on the x-axis and -c.y on the y-axis and -c.z on the z-axis.
-   * Be careful when using this method on a coordinate used as a key in a hash map: modifying
-   * the x, y and z values changes the hash value.
-   *
+  /**
+   * Translates this CoordinateID by c.x on the x-axis and c.y on the y-axis and c.z on the z-axis.
+   * Be careful when using this method on a coordinate used as a key in a hash map: modifying the x,
+   * y and z values changes the hash value.
+   * 
    * @param c the relative CoordinateID to translate the current one by.
-   *
    * @return this.
    */
-	public CoordinateID subtract(CoordinateID c) {
+  public CoordinateID translate(CoordinateID c) {
+    x += c.x;
+    y += c.y;
+    z += c.z;
+
+    return this;
+  }
+
+  /**
+   * Translates this CoordinateID by -c.x on the x-axis and -c.y on the y-axis and -c.z on the
+   * z-axis. Be careful when using this method on a coordinate used as a key in a hash map:
+   * modifying the x, y and z values changes the hash value.
+   * 
+   * @param c the relative CoordinateID to translate the current one by.
+   * @return this.
+   */
+  public CoordinateID subtract(CoordinateID c) {
     x -= c.x;
     y -= c.y;
     z -= c.z;
-	  return this;
-	}
+    return this;
+  }
 
-	/**
-	 * Creates the distance coordinate from this coordinate to the given coordinate 
-	 * 
-	 */
-	public CoordinateID createDistanceCoordinate(CoordinateID to) {
-		return new CoordinateID(to.x - this.x, to.y - this.y, to.z - this.z);
-	}
+  /**
+   * Creates the distance coordinate from this coordinate to the given coordinate
+   */
+  public CoordinateID createDistanceCoordinate(CoordinateID to) {
+    return new CoordinateID(to.x - x, to.y - y, to.z - z);
+  }
 
-	/**
-	 * Defines the natural ordering of coordinates which is: Iff the z coordinates differ their
-	 * difference is returend. Iff the y coordinates differ their difference is returend. Else the
-	 * difference of the x coordinates is returned.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int compareTo(Object o) {
-		CoordinateID c = (CoordinateID) o;
+  /**
+   * Defines the natural ordering of coordinates which is: Iff the z coordinates differ their
+   * difference is returend. Iff the y coordinates differ their difference is returend. Else the
+   * difference of the x coordinates is returned.
+   */
+  public int compareTo(Object o) {
+    CoordinateID c = (CoordinateID) o;
 
-		if(!this.equals(c)) {
-			if(this.z != c.z) {
-				return this.z - c.z;
-			} else if(this.y != c.y) {
-				return (c.y - this.y);
-			} else {
-				return (this.x - c.x);
-			}
-		} else {
-			return 0;
-		}
-	}
+    if (!equals(c)) {
+      if (z != c.z)
+        return z - c.z;
+      else if (y != c.y)
+        return (c.y - y);
+      else
+        return (x - c.x);
+    } else
+      return 0;
+  }
 
-	/**
-	 * Returns a copy of this CoordinateID object.
-	 *
-	 * 
-	 *
-	 * @throws CloneNotSupportedException DOCUMENT-ME
-	 */
-	@Override
+  /**
+   * Returns a copy of this CoordinateID object.
+   * 
+   * @throws CloneNotSupportedException DOCUMENT-ME
+   */
+  @Override
   public CoordinateID clone() throws CloneNotSupportedException {
-	  // FIXME (stm): return this?
-		return (CoordinateID) super.clone();
-	}
+    // FIXME (stm): return this?
+    return (CoordinateID) super.clone();
+  }
 }

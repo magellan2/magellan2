@@ -19,132 +19,106 @@ import java.util.Properties;
 
 import magellan.library.Potion;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 259 $
  */
 public class PotionNodeWrapper implements CellObject, SupportsClipboard {
-	private Potion potion = null;
-    private String name = null;
-    private String postfix = null;
-    /*
-     * We want Icons besides PotionNodes
-     */
-    protected List<String> icon;
+  private Potion potion = null;
+  private String name = null;
+  private String postfix = null;
+  /*
+   * We want Icons besides PotionNodes
+   */
+  protected List<String> icon;
 
-	/**
-	 * Creates a new PotionNodeWrapper object.
-	 *
-	 * 
-	 */
-	public PotionNodeWrapper(Potion p) {
-		this(p, null);
-	}
+  /**
+   * Creates a new PotionNodeWrapper object.
+   */
+  public PotionNodeWrapper(Potion p) {
+    this(p, null);
+  }
 
-	/**
-	 * Creates a new PotionNodeWrapper object.
-	 *
-	 * 
-	 * 
-	 */
-	public PotionNodeWrapper(Potion p, String postfix) {
-        this(p, p.getName(),postfix);
-    }
-    public PotionNodeWrapper(Potion p, String name, String postfix) {
-        this.potion = p;
-        this.name = name;
-        this.postfix = postfix;
-	}
+  /**
+   * Creates a new PotionNodeWrapper object.
+   */
+  public PotionNodeWrapper(Potion p, String postfix) {
+    this(p, p.getName(), postfix);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Potion getPotion() {
-		return potion;
-	}
+  public PotionNodeWrapper(Potion p, String name, String postfix) {
+    potion = p;
+    this.name = name;
+    this.postfix = postfix;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  public Potion getPotion() {
+    return potion;
+  }
+
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String toString() {
-	    return postfix == null ? name : (name+postfix);	}
+    return postfix == null ? name : (name + postfix);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public List<String> getIconNames() {
-	  if(icon == null) {
+  /**
+   * DOCUMENT-ME
+   */
+  public List<String> getIconNames() {
+    if (icon == null) {
       icon = new ArrayList<String>(1);
 
-      if(potion != null) {
+      if (potion != null) {
         icon.add("items/" + potion.getName());
       }
     }
 
     return icon;
-	}
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean emphasized() {
-		return false;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean emphasized() {
+    return false;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	public void propertiesChanged() {
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void propertiesChanged() {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getClipboardValue() {
-		if(potion != null) {
-			return potion.getName();
-		} else {
-			return toString();
-		}
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public String getClipboardValue() {
+    if (potion != null)
+      return potion.getName();
+    else
+      return toString();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
-		return null;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public NodeWrapperDrawPolicy init(Properties settings, String prefix,
-									  NodeWrapperDrawPolicy adapter) {
-		return null;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public NodeWrapperDrawPolicy init(Properties settings, String prefix,
+      NodeWrapperDrawPolicy adapter) {
+    return null;
+  }
 }

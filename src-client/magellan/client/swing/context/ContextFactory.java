@@ -20,24 +20,23 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.library.GameData;
 
-
 /**
  * Interface for automated context menu creation.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface ContextFactory {
-	/**
-	 * Creates an appropriate context menu
-	 * 
-	 * @param dispatcher The responsible event dispatcher.
-	 * @param data The data
-	 * @param argument The object for which the context menu should be created
-	 * @param selection Additional selected objects
-	 * @param node
-	 * @return
-	 */
-	public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument, 
-	    SelectionEvent selection, DefaultMutableTreeNode node);
+  /**
+   * Creates an appropriate context menu
+   * 
+   * @param dispatcher The responsible event dispatcher.
+   * @param data The data
+   * @param argument The object for which the context menu should be created
+   * @param selection Additional selected objects
+   * @param node
+   * @return
+   */
+  public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
+      SelectionEvent selection, DefaultMutableTreeNode node);
 }

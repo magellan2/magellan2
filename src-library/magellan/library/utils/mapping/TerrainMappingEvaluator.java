@@ -32,6 +32,7 @@ import magellan.library.utils.Score;
 
 public class TerrainMappingEvaluator extends MappingEvaluator {
   private static TerrainMappingEvaluator singleton = new TerrainMappingEvaluator();
+
   public static TerrainMappingEvaluator getSingleton() {
     return TerrainMappingEvaluator.singleton;
   }
@@ -39,70 +40,72 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
   public static final double PERCENT_MISMATCHES = 0.02;
 
   @Override
-  protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData, CoordinateID mapping) {
+  protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData,
+      CoordinateID mapping) {
 
-    int maxTerrainMismatches = (int) (Math.max(fromData.regions().size(), toData.regions().size()) * TerrainMappingEvaluator.PERCENT_MISMATCHES);
-    
+    int maxTerrainMismatches =
+        (int) (Math.max(fromData.regions().size(), toData.regions().size()) * TerrainMappingEvaluator.PERCENT_MISMATCHES);
+
     RegionType forestTerrain = fromData.rules.getRegionType(StringID.create("Wald"));
     RegionType plainTerrain = fromData.rules.getRegionType(StringID.create("Ebene"));
     RegionType oceanTerrain = fromData.rules.getRegionType(StringID.create("Ozean"));
     RegionType glacierTerrain = fromData.rules.getRegionType(StringID.create("Gletscher"));
-    RegionType activeVolcanoTerrain = fromData.rules.getRegionType(StringID.create("Aktiver Vulkan"));
+    RegionType activeVolcanoTerrain =
+        fromData.rules.getRegionType(StringID.create("Aktiver Vulkan"));
     RegionType volcanoTerrain = fromData.rules.getRegionType(StringID.create("Vulkan"));
-    
+
     int mismatches = 0;
     int score = 0;
-  
-      /* for each translation we have to compare the regions' terrains */
+
+    /* for each translation we have to compare the regions' terrains */
     for (Region region : fromData.regions().values()) {
       if ((region.getType() == null) || region.getType().equals(RegionType.unknown)) {
         continue;
       }
 
       CoordinateID c = region.getCoordinate();
-  
+
       /*
-       * do the translation and find the corresponding region in the report
-       * data
+       * do the translation and find the corresponding region in the report data
        */
       if (c.z == mapping.z) {
         CoordinateID translatedCoord = new CoordinateID(c.x, c.y, 0);
         translatedCoord.translate(mapping);
         Region sameRegion = toData.regions().get(translatedCoord);
-  
+
         /*
-         * the hit count for the current translation must only be modified, if
-         * there actually are regions to be compared and their terrains are
-         * valid
+         * the hit count for the current translation must only be modified, if there actually are
+         * regions to be compared and their terrains are valid
          */
 
-        if ((sameRegion != null) && (sameRegion.getType() != null) && !(sameRegion.getType().equals(RegionType.unknown))) {
+        if ((sameRegion != null) && (sameRegion.getType() != null)
+            && !(sameRegion.getType().equals(RegionType.unknown))) {
           if (region.getType().equals(sameRegion.getType())) {
             score++;
           } else {
             /*
-             * now we have a mismatch. If the reports are from the same turn,
-             * terrains may not differ at all. If the reports are from
-             * different turns, some terrains can be transformed.
+             * now we have a mismatch. If the reports are from the same turn, terrains may not
+             * differ at all. If the reports are from different turns, some terrains can be
+             * transformed.
              */
             if ((fromData.getDate() != null) && fromData.getDate().equals(toData.getDate())) {
               mismatches++;
               score--;
             } else {
-              if (!(((forestTerrain != null) && (plainTerrain != null) && 
-                  ((forestTerrain.equals(region.getType()) && plainTerrain.equals(sameRegion.getType())) || 
-                      (plainTerrain.equals(region.getType()) && forestTerrain.equals(sameRegion.getType())))) || 
-                      ((oceanTerrain != null) && (glacierTerrain != null) && 
-                          ((oceanTerrain.equals(region.getType()) && glacierTerrain.equals(sameRegion.getType())) || 
-                              (glacierTerrain.equals(region.getType()) && oceanTerrain.equals(sameRegion.getType())))) || 
-                              ((activeVolcanoTerrain != null) && (volcanoTerrain != null) && 
-                                  ((activeVolcanoTerrain.equals(region.getType()) && volcanoTerrain.equals(sameRegion.getType())) || 
-                                      (volcanoTerrain.equals(region.getType()) && activeVolcanoTerrain.equals(sameRegion.getType())))))) {
+              if (!(((forestTerrain != null) && (plainTerrain != null) && ((forestTerrain
+                  .equals(region.getType()) && plainTerrain.equals(sameRegion.getType())) || (plainTerrain
+                  .equals(region.getType()) && forestTerrain.equals(sameRegion.getType()))))
+                  || ((oceanTerrain != null) && (glacierTerrain != null) && ((oceanTerrain
+                      .equals(region.getType()) && glacierTerrain.equals(sameRegion.getType())) || (glacierTerrain
+                      .equals(region.getType()) && oceanTerrain.equals(sameRegion.getType())))) || ((activeVolcanoTerrain != null)
+                  && (volcanoTerrain != null) && ((activeVolcanoTerrain.equals(region.getType()) && volcanoTerrain
+                  .equals(sameRegion.getType())) || (volcanoTerrain.equals(region.getType()) && activeVolcanoTerrain
+                  .equals(sameRegion.getType())))))) {
                 mismatches++;
                 score--;
-              } 
+              }
             }
-  
+
             if (mismatches > maxTerrainMismatches) {
               break;
             }
@@ -112,5 +115,5 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
     }
     return new Score<CoordinateID>(mapping, score);
   }
- 
+
 }

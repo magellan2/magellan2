@@ -18,22 +18,20 @@ import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
 
-
 /**
  * All the stuff needed for Allanon.
- *
+ * 
  * @author $Author: $
  * @version $Revision: 242 $
  */
 public class AllanonSpecificStuff extends EresseaSpecificStuff {
   private static final String name = "Allanon";
-  
+
   private MovementEvaluator movementEvaluator;
   private GameSpecificRules gameSpecificRules;
   private AllanonRelationFactory relationFactory;
 
   private OrderChanger orderChanger;
-
 
   public AllanonSpecificStuff() {
     super();
@@ -42,81 +40,83 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#postProcess(magellan.library.GameData)
    */
-	@Override
+  @Override
   public void postProcess(GameData data) {
-		AllanonPostProcessor.getSingleton().postProcess(data);
-	}
+    AllanonPostProcessor.getSingleton().postProcess(data);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#postProcessAfterTrustlevelChange(magellan.library.GameData)
    */
-	@Override
+  @Override
   public void postProcessAfterTrustlevelChange(GameData data) {
-	  AllanonPostProcessor.getSingleton().postProcessAfterTrustlevelChange(data);
-	}
+    AllanonPostProcessor.getSingleton().postProcessAfterTrustlevelChange(data);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
-	@Override
+  @Override
   public OrderChanger getOrderChanger() {
-    if (orderChanger == null)
+    if (orderChanger == null) {
       orderChanger = new AllanonOrderChanger(getRules());
+    }
     return orderChanger;
-	}
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getRelationFactory()
    */
-	@Override
+  @Override
   public RelationFactory getRelationFactory() {
-		if (relationFactory == null) {
+    if (relationFactory == null) {
       relationFactory = new AllanonRelationFactory(getRules());
     }
 
     return relationFactory;
-	}
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getMovementEvaluator()
    */
-	@Override
+  @Override
   public MovementEvaluator getMovementEvaluator() {
-	  if (movementEvaluator == null) {
+    if (movementEvaluator == null) {
       movementEvaluator = new AllanonMovementEvaluator(getRules());
     }
 
     return movementEvaluator;
-	}
+  }
 
   /**
-   * @see magellan.library.gamebinding.GameSpecificStuff#getCompleter(magellan.library.GameData, magellan.library.completion.CompleterSettingsProvider)
+   * @see magellan.library.gamebinding.GameSpecificStuff#getCompleter(magellan.library.GameData,
+   *      magellan.library.completion.CompleterSettingsProvider)
    */
   @Override
   public Completer getCompleter(GameData data, CompleterSettingsProvider csp) {
-		return new AllanonOrderCompleter(data, csp);
-	}
+    return new AllanonOrderCompleter(data, csp);
+  }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
    */
-	@Override
+  @Override
   public OrderParser getOrderParser(GameData data) {
-		return new AllanonOrderParser(data);
-	}
-  
+    return new AllanonOrderParser(data);
+  }
+
   /**
    * Delivers the Allanon specific Message Renderer (as of CR VERSION 41)
-   * @param data - A GameData object to enrich the messages with names of units, regions ,...
-   * @return the new AllanonMessageRenderer for rendering ONE message 
    * 
+   * @param data - A GameData object to enrich the messages with names of units, regions ,...
+   * @return the new AllanonMessageRenderer for rendering ONE message
    * @see magellan.library.gamebinding.GameSpecificStuff#getMessageRenderer(magellan.library.GameData)
    */
   @Override
   public MessageRenderer getMessageRenderer(GameData data) {
     return new AllanonMessageRenderer(data);
   }
-  
+
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getMapMergeEvaluator()
    */
@@ -124,7 +124,7 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   public MapMergeEvaluator getMapMergeEvaluator() {
     return AllanonMapMergeEvaluator.getSingleton();
   }
-  
+
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderWriter()
    */
@@ -144,10 +144,10 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
 
     return gameSpecificRules;
   }
-  
+
   @Override
   public String getName() {
-    return name ;
+    return AllanonSpecificStuff.name;
   }
-  
+
 }

@@ -17,18 +17,20 @@ import magellan.library.Unit;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public interface Problem {  
-  
-  enum Severity { INFORMATION, WARNING, ERROR }
+public interface Problem {
+
+  enum Severity {
+    INFORMATION, WARNING, ERROR
+  }
 
   /**
-   * Returns the severity of the problem. Current supported types are INFORMATION, WARNING, and ERROR.
+   * Returns the severity of the problem. Current supported types are INFORMATION, WARNING, and
+   * ERROR.
    */
   public Severity getSeverity();
 
   /**
    * Returns the type of the problem.
-   * 
    */
   public ProblemType getType();
 
@@ -56,7 +58,6 @@ public interface Problem {
    */
   public Faction getFaction();
 
-  
   /**
    * Returns the value of region.
    * 
@@ -65,7 +66,7 @@ public interface Problem {
   public Region getRegion();
 
   /**
-   * Returns a unit responsible for this problem. 
+   * Returns a unit responsible for this problem.
    * 
    * @return Returns owner.
    */

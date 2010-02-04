@@ -21,7 +21,7 @@ import java.io.IOException;
  * files.
  */
 public class UnknownFileType extends FileType {
-	UnknownFileType(File aFile, boolean readonly) throws IOException {
-		super(aFile, readonly);
-	}
+  UnknownFileType(File aFile, boolean readonly) throws IOException {
+    super(aFile, readonly);
+  }
 }

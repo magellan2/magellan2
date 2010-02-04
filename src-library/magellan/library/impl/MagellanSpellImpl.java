@@ -8,13 +8,11 @@
 package magellan.library.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.GameData;
-import magellan.library.IntegerID;
 import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.gamebinding.EresseaConstants;
@@ -29,36 +27,38 @@ import magellan.library.utils.logging.Logger;
  */
 public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   private static final Logger log = Logger.getInstance(MagellanSpellImpl.class);
-  
+
   public class Component implements Spell.Component {
     private String name;
     private int amount;
-    private boolean leveldependant; 
-    
-    public Component(String name, String ingredients){
+    private boolean leveldependant;
+
+    public Component(String name, String ingredients) {
       this.name = name;
       try {
-        this.amount = Integer.parseInt(ingredients.substring(0, ingredients.indexOf(" ")));
-      } catch (Exception e){
-        log.error(e.toString()+" unexpected spell component "+ingredients+";"+name);
+        amount = Integer.parseInt(ingredients.substring(0, ingredients.indexOf(" ")));
+      } catch (Exception e) {
+        MagellanSpellImpl.log.error(e.toString() + " unexpected spell component " + ingredients
+            + ";" + name);
       }
       try {
-        this.leveldependant = 1==Integer.parseInt(ingredients.substring(ingredients.indexOf(" ")+1));
-      } catch (Exception e){
-        log.error(e.toString()+" unexpected spell component "+ingredients+";"+name);
+        leveldependant = 1 == Integer.parseInt(ingredients.substring(ingredients.indexOf(" ") + 1));
+      } catch (Exception e) {
+        MagellanSpellImpl.log.error(e.toString() + " unexpected spell component " + ingredients
+            + ";" + name);
       }
     }
-    
+
     public int getAmount() {
       return amount;
     }
 
     public ItemType getItem() {
-      if (name.equalsIgnoreCase(AURA) || name.equalsIgnoreCase(PERMANENT_AURA)){
+      if (name.equalsIgnoreCase(magellan.library.Spell.Component.AURA)
+          || name.equalsIgnoreCase(magellan.library.Spell.Component.PERMANENT_AURA))
         return null;
-      } else {
+      else
         return data.rules.getItemType(name, false);
-      }
     }
 
     public String getName() {
@@ -68,14 +68,14 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
     public boolean isLevelDependent() {
       return leveldependant;
     }
-    
+
     @Override
     public String toString() {
-      return amount+" "+name+(leveldependant?"*Stufe":"");
+      return amount + " " + name + (leveldependant ? "*Stufe" : "");
     }
-    
+
   }
-  
+
   private int blockID = -1; // this is the id of the ZAUBER block in the cr
   private int level = -1; // a mage's level has to be at least this value to be able to cast this
   // spell
@@ -125,7 +125,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   // FIXME(stm) I don't like this reference to GameData here
   public MagellanSpellImpl(StringID id, GameData _data) {
     super(id);
-    this.data = _data;
+    data = _data;
   }
 
   /**
@@ -147,7 +147,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * Sets the integer serving as the block id in the cr.
    */
   public void setBlockID(int id) {
-    this.blockID = id;
+    blockID = id;
   }
 
   /**
@@ -184,7 +184,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * Returns the class attribute of this spell.
    */
   public String getType() {
-    return this.type;
+    return type;
   }
 
   /**
@@ -263,15 +263,15 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   }
 
   public List<? extends Spell.Component> getParsedComponents() {
-//    if (parsedComponents==null){
-      parsedComponents = new ArrayList<Component>(getComponents().size());
-      for (String name : getComponents().keySet()){
-        parsedComponents.add(new Component(name, getComponents().get(name)));
-      }
-//    }
+    // if (parsedComponents==null){
+    parsedComponents = new ArrayList<Component>(getComponents().size());
+    for (String name : getComponents().keySet()) {
+      parsedComponents.add(new Component(name, getComponents().get(name)));
+    }
+    // }
     return parsedComponents;
   }
-  
+
   /**
    * @see magellan.library.Spell#setComponents(java.util.Map)
    */
@@ -343,11 +343,10 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * Returns a name for this spell's type.
    */
   public String getTypeName() {
-    if (this.type != null) {
-      return Resources.get("spell." + this.type);
-    } else {
+    if (type != null)
+      return Resources.get("spell." + type);
+    else
       return Resources.get("spell.unspecified");
-    }
   }
 
   /**
@@ -379,7 +378,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
      */
     // and maybe we can use this kwowledge for open problems to we
     // built an little private function here
-    if (this.isAuraLevelDependend()) {
+    if (isAuraLevelDependend()) {
       retVal.append("[").append(Resources.getOrderTranslation(EresseaConstants.O_LEVEL)).append(
           " n]");
     }
@@ -389,16 +388,16 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
       retVal.append(" ");
     }
 
-    String spellName = this.getName();
+    String spellName = getName();
 
     retVal.append("\"").append(spellName).append("\"");
 
     // Syntax
-    if (this.getSpellSyntax() != null && this.getSpellSyntax().toString() != null) {
+    if (getSpellSyntax() != null && getSpellSyntax().toString() != null) {
       if (retVal.length() > 0) {
         retVal.append(" ");
       }
-      retVal.append(this.getSpellSyntax().toString());
+      retVal.append(getSpellSyntax().toString());
     }
 
     // if nothing was added, return null
@@ -408,10 +407,11 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
       // pr?fix:
       StringBuffer oldRetVal = retVal;
       retVal = new StringBuffer("Syntax: ");
-      if (getType().contains("combat"))
+      if (getType().contains("combat")) {
         retVal.append(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL));
-      else
+      } else {
         retVal.append(Resources.getOrderTranslation(EresseaConstants.O_CAST));
+      }
 
       retVal.append(" ").append(oldRetVal.toString());
     }
@@ -427,22 +427,19 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    */
   private boolean isAuraLevelDependend() {
     boolean retval = false;
-    if (this.components == null || this.components.size() == 0) {
+    if (components == null || components.size() == 0)
       return false;
-    }
-    for (Iterator<String> iter = this.components.keySet().iterator(); iter.hasNext();) {
-      String key = iter.next();
-      String val = this.components.get(key);
+    for (String key : components.keySet()) {
+      String val = components.get(key);
       if (key.equalsIgnoreCase("Aura")) {
         int blankPos = val.indexOf(" ");
         if ((blankPos > 0) && (blankPos < val.length())) {
           String getLevelAtDays = val.substring(blankPos + 1, val.length());
-          if (getLevelAtDays.equals("1")) {
+          if (getLevelAtDays.equals("1"))
             return true;
-          } else {
+          else
             // return here, asuming, no other "aura" component will be found
             return false;
-          }
         }
       }
     }
@@ -469,16 +466,15 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * @return a SpellSyntax object or <code>null</code>
    */
   public SpellSyntax getSpellSyntax() {
-    if (this.syntax == null || this.syntax.length() == 0) {
+    if (syntax == null || syntax.length() == 0)
       return null;
-    }
 
     // creating a new one if it does not exists
-    if (this.spellSyntax == null) {
-      this.spellSyntax = new SpellSyntax(this.syntax);
+    if (spellSyntax == null) {
+      spellSyntax = new SpellSyntax(syntax);
     }
 
-    return this.spellSyntax;
+    return spellSyntax;
   }
 
   /**

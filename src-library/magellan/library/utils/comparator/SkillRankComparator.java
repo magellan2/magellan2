@@ -21,86 +21,75 @@ import magellan.library.ID;
 import magellan.library.Skill;
 import magellan.library.rules.SkillType;
 
-
 /**
- * A comparator imposing an ordering on Skill objects by comparing their user
- * modifiable ranking. (In case of skill objects the skill's type is compared).
- * 
+ * A comparator imposing an ordering on Skill objects by comparing their user modifiable ranking.
+ * (In case of skill objects the skill's type is compared).
  * <p>
  * Note: this comparator can impose orderings that are inconsistent with equals.
  * </p>
- * 
  * <p>
  * In order to overcome the inconsistency with equals this comparator allows the introduction of a
  * sub-comparator which is applied in cases of equality. I.e. if the two compared objects have the
- * same rank and they would be regarded as equal by this comparator, instead of 0 the result of
- * the sub-comparator's comparison is returned.
+ * same rank and they would be regarded as equal by this comparator, instead of 0 the result of the
+ * sub-comparator's comparison is returned.
  * </p>
- *
+ * 
  * @author Ulrich Küster
  */
 public class SkillRankComparator implements Comparator<Skill> {
-	private final Comparator<? super Skill> subCmp;
-	private final Properties settings;
+  private final Comparator<? super Skill> subCmp;
+  private final Properties settings;
 
-	// avoid unnecessary object creation
-	private SkillType s1;
+  // avoid unnecessary object creation
+  private SkillType s1;
 
-	// avoid unnecessary object creation
-	private SkillType s2;
+  // avoid unnecessary object creation
+  private SkillType s2;
 
-	/**
-	 * To reduces memory consumption the ranks of the various skills are cached. Keys are
-	 * SkillTypeIDs, values are Integers.
-	 */
-	private Hashtable<ID,Integer> skillRanks = new Hashtable<ID, Integer>();
+  /**
+   * To reduces memory consumption the ranks of the various skills are cached. Keys are
+   * SkillTypeIDs, values are Integers.
+   */
+  private Hashtable<ID, Integer> skillRanks = new Hashtable<ID, Integer>();
 
-	/**
-	 * Creates a new SkillTypeRankComparator object.
-	 *
-	 * 
-	 * 
-	 */
-	public SkillRankComparator(Comparator<? super Skill> subComparator, Properties settings) {
-		this.subCmp = subComparator;
+  /**
+   * Creates a new SkillTypeRankComparator object.
+   */
+  public SkillRankComparator(Comparator<? super Skill> subComparator, Properties settings) {
+    subCmp = subComparator;
 
-		if(settings == null) {
-			this.settings = new Properties();
-		} else {
-			this.settings = settings;
-		}
-	}
+    if (settings == null) {
+      this.settings = new Properties();
+    } else {
+      this.settings = settings;
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public int compare(Skill o1, Skill o2) {
-	  s1 = o1.getSkillType();
-	  s2 = o2.getSkillType();
-	  
-		int retVal = getValue(s1) - getValue(s2);
+  /**
+   * DOCUMENT-ME
+   */
+  public int compare(Skill o1, Skill o2) {
+    s1 = o1.getSkillType();
+    s2 = o2.getSkillType();
 
-		if((retVal == 0) && (subCmp != null)) {
-			retVal = subCmp.compare(o1, o2);
-		}
+    int retVal = getValue(s1) - getValue(s2);
 
-		return retVal;
-	}
+    if ((retVal == 0) && (subCmp != null)) {
+      retVal = subCmp.compare(o1, o2);
+    }
 
-	private int getValue(SkillType s) {
-		Integer retVal = skillRanks.get(s.getID());
+    return retVal;
+  }
 
-		if(retVal == null) {
-			String prop = settings.getProperty("ClientPreferences.compareValue." + s.getID(), "-1");
-			retVal = new Integer(Integer.parseInt(prop));
-			skillRanks.put(s.getID(), retVal);
-		}
+  private int getValue(SkillType s) {
+    Integer retVal = skillRanks.get(s.getID());
 
-		return retVal.intValue();
-	}
+    if (retVal == null) {
+      String prop = settings.getProperty("ClientPreferences.compareValue." + s.getID(), "-1");
+      retVal = new Integer(Integer.parseInt(prop));
+      skillRanks.put(s.getID(), retVal);
+    }
+
+    return retVal.intValue();
+  }
 }

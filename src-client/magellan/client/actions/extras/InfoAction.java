@@ -20,40 +20,37 @@ import magellan.client.actions.MenuAction;
 import magellan.client.swing.InfoDialog;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class InfoAction extends MenuAction {
 
-	/**
-	 * Creates a new InfoAction object.
-	 *
-	 * @param client
-	 */
-	public InfoAction(Client client) {
+  /**
+   * Creates a new InfoAction object.
+   * 
+   * @param client
+   */
+  public InfoAction(Client client) {
     super(client);
-	}
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		new InfoDialog(client).setVisible(true);
-	}
+    new InfoDialog(client).setVisible(true);
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.infoaction.accelerator",false);
+    return Resources.get("actions.infoaction.accelerator", false);
   }
 
   /**
@@ -61,7 +58,7 @@ public class InfoAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.infoaction.mnemonic",false);
+    return Resources.get("actions.infoaction.mnemonic", false);
   }
 
   /**
@@ -74,7 +71,7 @@ public class InfoAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.infoaction.tooltip",false);
+    return Resources.get("actions.infoaction.tooltip", false);
   }
 
 }

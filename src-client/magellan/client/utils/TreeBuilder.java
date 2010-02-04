@@ -26,7 +26,6 @@ package magellan.client.utils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,7 @@ import magellan.library.utils.comparator.RegionIslandComparator;
 public class TreeBuilder {
   private Properties settings;
   private NodeWrapperFactory nodeWrapperFactory;
-  
+
   /** Units are interesting. */
   public static final int UNITS = 1;
 
@@ -70,18 +69,19 @@ public class TreeBuilder {
   public static final int CREATE_ISLANDS = 16384;
 
   /** the mode controls which elements are displayed */
-  private int displayMode = TreeBuilder.UNITS | TreeBuilder.BUILDINGS | TreeBuilder.SHIPS | TreeBuilder.COMMENTS;
+  private int displayMode =
+      TreeBuilder.UNITS | TreeBuilder.BUILDINGS | TreeBuilder.SHIPS | TreeBuilder.COMMENTS;
 
   // TODO hides fields form EmapOverviewPanel! */
-  private Map<ID,TreeNode> regionNodes;
-  private Map<ID,TreeNode> unitNodes;
-  private Map<ID,TreeNode> buildingNodes;
-  private Map<ID,TreeNode> shipNodes;
+  private Map<ID, TreeNode> regionNodes;
+  private Map<ID, TreeNode> unitNodes;
+  private Map<ID, TreeNode> buildingNodes;
+  private Map<ID, TreeNode> shipNodes;
   private Map<EntityID, Alliance> activeAlliances;
   private Comparator<? super Unit> unitComparator;
   private int treeStructure[];
   private boolean sortShipUnderUnitParent = true;
-  
+
   /**
    * Creates a new treebuilder.
    */
@@ -96,7 +96,7 @@ public class TreeBuilder {
    * @param mode
    */
   public void setDisplayMode(int mode) {
-    this.displayMode = mode;
+    displayMode = mode;
   }
 
   /**
@@ -120,35 +120,35 @@ public class TreeBuilder {
   /**
    * DOCUMENT-ME
    */
-  public void setRegionNodes(Map<ID,TreeNode> regions) {
+  public void setRegionNodes(Map<ID, TreeNode> regions) {
     regionNodes = regions;
   }
 
   /**
    * DOCUMENT-ME
    */
-  public void setUnitNodes(Map<ID,TreeNode> units) {
+  public void setUnitNodes(Map<ID, TreeNode> units) {
     unitNodes = units;
   }
 
   /**
    * DOCUMENT-ME
    */
-  public void setBuildingNodes(Map<ID,TreeNode> buildings) {
+  public void setBuildingNodes(Map<ID, TreeNode> buildings) {
     buildingNodes = buildings;
   }
 
   /**
    * DOCUMENT-ME
    */
-  public void setShipNodes(Map<ID,TreeNode> ships) {
+  public void setShipNodes(Map<ID, TreeNode> ships) {
     shipNodes = ships;
   }
 
   /**
    * DOCUMENT-ME
    */
-  public void setActiveAlliances(Map<EntityID,Alliance> alliances) {
+  public void setActiveAlliances(Map<EntityID, Alliance> alliances) {
     activeAlliances = alliances;
   }
 
@@ -170,36 +170,37 @@ public class TreeBuilder {
    * Sort a collection of regions in a specific order.
    */
   private Collection<Region> sortRegions(Collection<Region> regions) {
-    if ((Boolean.valueOf(settings.getProperty("EMapOverviewPanel.sortRegions", "true"))).booleanValue()) {
-      if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates")) {
+    if ((Boolean.valueOf(settings.getProperty("EMapOverviewPanel.sortRegions", "true")))
+        .booleanValue()) {
+      if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals(
+          "coordinates")) {
         List<Region> sortedRegions = new LinkedList<Region>(regions);
         Collections.sort(sortedRegions, IDComparator.DEFAULT);
 
         return sortedRegions;
-      } else if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("islands")) {
+      } else if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates")
+          .equals("islands")) {
         List<Region> sortedRegions = new LinkedList<Region>(regions);
         Comparator<Unique> idCmp = IDComparator.DEFAULT;
-        Collections.sort(sortedRegions, new RegionIslandComparator(new NameComparator(idCmp), idCmp, idCmp));
+        Collections.sort(sortedRegions, new RegionIslandComparator(new NameComparator(idCmp),
+            idCmp, idCmp));
 
         return sortedRegions;
-      } else {
+      } else
         return regions;
-      }
-    } else {
+    } else
       return regions;
-    }
   }
-
 
   /**
    * DOCUMENT-ME
    */
   public void buildTree(DefaultMutableTreeNode rootNode, GameData data) {
-    if (data == null) {
+    if (data == null)
       return;
-    }
 
-    buildTree(rootNode, sortRegions(data.regions().values()), data.units().values(), regionNodes, unitNodes, buildingNodes, shipNodes, unitComparator, activeAlliances, treeStructure, data);
+    buildTree(rootNode, sortRegions(data.regions().values()), data.units().values(), regionNodes,
+        unitNodes, buildingNodes, shipNodes, unitComparator, activeAlliances, treeStructure, data);
   }
 
   /**
@@ -208,8 +209,8 @@ public class TreeBuilder {
   public void buildTree(DefaultMutableTreeNode rootNode, Collection<Region> regionCollection,
       Collection<Unit> units, Map<ID, TreeNode> regionNodes, Map<ID, TreeNode> unitNodes,
       Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes,
-      Comparator<? super Unit> unitSorting, Map<EntityID, Alliance> activeAlliances, int treeStructure[],
-      GameData data) {
+      Comparator<? super Unit> unitSorting, Map<EntityID, Alliance> activeAlliances,
+      int treeStructure[], GameData data) {
     boolean unitInteresting = (getDisplayMode() & TreeBuilder.UNITS) != 0;
     boolean buildingInteresting = (getDisplayMode() & TreeBuilder.BUILDINGS) != 0;
     boolean shipInteresting = (getDisplayMode() & TreeBuilder.SHIPS) != 0;
@@ -221,9 +222,7 @@ public class TreeBuilder {
     Island curIsland = null;
 
     TreeHelper treehelper = new TreeHelper();
-    for (Iterator<Region> regions = regionCollection.iterator(); regions.hasNext();) {
-      Region r = regions.next();
-
+    for (Region r : regionCollection) {
       // check preferences if we want to include this region
       if (!((unitInteresting && !r.units().isEmpty())
           || (buildingInteresting && !r.buildings().isEmpty())
@@ -247,7 +246,8 @@ public class TreeBuilder {
         if (r.getIsland() != null) {
           if (!r.getIsland().equals(curIsland)) {
             curIsland = r.getIsland();
-            islandNode = new DefaultMutableTreeNode(nodeWrapperFactory.createIslandNodeWrapper(curIsland));
+            islandNode =
+                new DefaultMutableTreeNode(nodeWrapperFactory.createIslandNodeWrapper(curIsland));
             rootNode.add(islandNode);
           }
         } else {
@@ -265,11 +265,10 @@ public class TreeBuilder {
     }
 
     // add the homeless
-    DefaultMutableTreeNode n = new DefaultMutableTreeNode(Resources.get("emapoverviewpanel.node.regionlessunits"));
+    DefaultMutableTreeNode n =
+        new DefaultMutableTreeNode(Resources.get("emapoverviewpanel.node.regionlessunits"));
 
-    for (Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
-      Unit un = iter.next();
-
+    for (Unit un : units) {
       if (un.getRegion() == null) {
         n.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(un)));
       }

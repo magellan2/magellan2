@@ -173,13 +173,13 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * Creates a new MultiEditorOrderEditorList object.
    */
-  public MultiEditorOrderEditorList(EventDispatcher dispatcher, GameData data,
-      Properties settings, UndoManager undoMgr) {
+  public MultiEditorOrderEditorList(EventDispatcher dispatcher, GameData data, Properties settings,
+      UndoManager undoMgr) {
     super(dispatcher, data, settings);
-    
+
     // beware: an OrderParser is likely not thread-safe. so we better call it only from the
     // EventDispatchThread...
-    this.parser = data.getGameSpecificStuff().getOrderParser(data);
+    parser = data.getGameSpecificStuff().getOrderParser(data);
 
     loadListProperty();
 
@@ -220,10 +220,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     // update the color of the editor when the order confirmation status changes
     dispatcher.addOrderConfirmListener(new OrderConfirmListener() {
       public void orderConfirmationChanged(OrderConfirmEvent e) {
-        if (!this.equals(e.getSource())) {
-          for (Iterator<Unit> iter = e.getUnits().iterator(); iter.hasNext();) {
-            Unit u = iter.next();
-
+        if (!equals(e.getSource())) {
+          for (Unit u : e.getUnits()) {
             if (getEditor(u) != null) {
               if (u.equals(currentUnit)) {
                 // u is active unit
@@ -253,14 +251,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   public void gameDataChanged(GameDataEvent e) {
     setGameData(e.getGameData());
   }
-  
+
   /**
    * @see magellan.client.swing.InternationalizedDataPanel#setGameData(magellan.library.GameData)
    */
   @Override
-  public void setGameData(GameData d){
+  public void setGameData(GameData d) {
     super.setGameData(d);
-    this.parser = data.getGameSpecificStuff().getOrderParser(d);
+    parser = data.getGameSpecificStuff().getOrderParser(d);
     initContent();
     if (!multiEditorLayout) {
       initSingleEditor();
@@ -299,12 +297,10 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     standardBgColorConfirmed =
         Colors.decode(settings.getProperty("OrderEditor.standardBackgroundColorConfirmed",
             "255,204,0"));
-    errorBgColor =
-      Colors.decode(settings.getProperty("OrderEditor.errorBgColor",
-          "255,128,0"));
+    errorBgColor = Colors.decode(settings.getProperty("OrderEditor.errorBgColor", "255,128,0"));
   }
 
-//  private boolean swingGlitch =false;
+  // private boolean swingGlitch =false;
 
   /**
    * @see javax.swing.JComponent#paint(java.awt.Graphics)
@@ -314,15 +310,15 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     super.paint(g);
 
     // stm: this does not make sense any more
-//    if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
-//      MultiEditorOrderEditorList.log.debug("paint! [" + swingGlitch + "]");
-//    }
-//
-//    // we are in a situation AFTER painting (hopefully!)
-//    if (swingGlitch) {
-//      swingGlitch = false;
-//      SwingUtilities.invokeLater(swingGlitchThread);
-//    }
+    // if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
+    // MultiEditorOrderEditorList.log.debug("paint! [" + swingGlitch + "]");
+    // }
+    //
+    // // we are in a situation AFTER painting (hopefully!)
+    // if (swingGlitch) {
+    // swingGlitch = false;
+    // SwingUtilities.invokeLater(swingGlitchThread);
+    // }
   }
 
   /**
@@ -369,8 +365,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         if (currentUnit != null) {
           currentUnit.setOrderEditor(null);
           deselectEditor(editorSingelton);
-          editorSingelton.setBorder(new TitledBorder(
-              MultiEditorOrderEditorList.standardBorder, ""));
+          editorSingelton
+              .setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, ""));
           currentUnit = null;
           editorSingelton.setUnit(null);
           editorSingelton.setEditable(false);
@@ -390,35 +386,36 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Ensures that the correct editors are loaded and selected for the active
-   * object.
+   * Ensures that the correct editors are loaded and selected for the active object.
    * 
    * @param activeObject
    */
   private void loadEditors(SelectionEvent se) {
     List<Object> context = null;
-    if (se.getActiveObject()!=null)
+    if (se.getActiveObject() != null) {
       context = se.getContexts().iterator().next();
-    
+    }
+
     Island newIsland = null;
     Region newRegion = null;
     Faction newFaction = null;
     Object activeObject = null;
-    if (context!=null){
-      for (Object o : context){
-        if (o instanceof Island)
+    if (context != null) {
+      for (Object o : context) {
+        if (o instanceof Island) {
           newIsland = (Island) o;
-        if (o instanceof Region)
+        }
+        if (o instanceof Region) {
           newRegion = (Region) o;
-        if (o instanceof Faction)
+        }
+        if (o instanceof Faction) {
           newFaction = (Faction) o;
-        
-        activeObject  = o;
+        }
+
+        activeObject = o;
       }
     }
-    
-    
-    
+
     Unit newUnit = null;
     if (activeObject != null) {
       if (activeObject instanceof Unit
@@ -462,11 +459,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Sets appearance for editor corresponding to <code>newUnit</code> in
-   * multieditor mode.
+   * Sets appearance for editor corresponding to <code>newUnit</code> in multieditor mode.
    * 
-   * @param newUnit
-   *          If <code>null</code>, no editor is selected.
+   * @param newUnit If <code>null</code>, no editor is selected.
    */
   private void selectEditor(Unit newUnit) {
     if (getEditor(currentUnit) != null) {
@@ -475,7 +470,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     if (newUnit != null) {
       selectEditor(newUnit, getEditor(newUnit));
     }
-    this.currentUnit = newUnit;
+    currentUnit = newUnit;
     if (newUnit != null) {
       // this.currentFaction=newUnit.getFaction();
       // this.currentIsland=newUnit.getRegion().getIsland();
@@ -486,17 +481,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * Sets appearance of an editor acording to the state of a unit.
    * 
-   * @param newUnit
-   *          Must not be <code>null</code>.
+   * @param newUnit Must not be <code>null</code>.
    * @param editor
    */
   private void selectEditor(Unit newUnit, OrderEditor editor) {
-    if (newUnit == null) {
+    if (newUnit == null)
       throw new NullPointerException();
-    }
     if (editor != null) {
-      editor.setBorder(new TitledBorder(MultiEditorOrderEditorList.activeBorder, newUnit
-          .toString()
+      editor.setBorder(new TitledBorder(MultiEditorOrderEditorList.activeBorder, newUnit.toString()
           + ": " + newUnit.getPersons()));
 
       if (newUnit.isOrdersConfirmed()) {
@@ -531,8 +523,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * Reset editor border to normal.
    * 
-   * @param editor
-   *          Must not be <code>null</code>.
+   * @param editor Must not be <code>null</code>.
    */
   private void deselectEditor(OrderEditor editor) {
     editor.setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, currentUnit
@@ -569,7 +560,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       // loadEditors(currentUnit.getRegion().getIsland(),
       // currentUnit.getRegion(), currentUnit.getFaction(), currentUnit);
 
-      this.revalidate();
+      revalidate();
 
       if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
         MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.tempUnitCreated: "
@@ -595,7 +586,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   public void tempUnitDeleting(TempUnitEvent e) {
     if (multiEditorLayout) {
       removeUnit(e.getTempUnit(), null);
-      this.revalidate();
+      revalidate();
     }
   }
 
@@ -613,10 +604,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           Unit u = getNextUnit();
           if (u != null) {
             /*
-             * refreshing the relations here is necessary because this is the
-             * only place where a different unit is selected and the focusLost
-             * event in the order editor does not occur before the selection
-             * event
+             * refreshing the relations here is necessary because this is the only place where a
+             * different unit is selected and the focusLost event in the order editor does not occur
+             * before the selection event
              */
             if (getEditor(currentUnit) != null && getEditor(currentUnit).isModified()) {
               currentUnit.refreshRelations();
@@ -631,10 +621,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           u = getPreviousUnit();
           if (u != null) {
             /*
-             * refreshing the relations here is necessary because this is the
-             * only place where a different unit is selected and the focusLost
-             * event in the order editor does not occur before the selection
-             * event
+             * refreshing the relations here is necessary because this is the only place where a
+             * different unit is selected and the focusLost event in the order editor does not occur
+             * before the selection event
              */
             if (getEditor(currentUnit) != null && getEditor(currentUnit).isModified()) {
               currentUnit.refreshRelations();
@@ -695,7 +684,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
         // Right click -> UnitContextMenu (Fiete)
         Unit u = editor.getUnit();
-        if (this.currentUnit != null) {
+        if (currentUnit != null) {
           if (u != null) {
             JPopupMenu unitContextMenu =
                 editor.getContextFactory().createContextMenu(dispatcher, data, u, null, null);
@@ -770,9 +759,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
       if (data.units() != null) {
-        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = iter.next();
-
+        for (Unit u : data.units().values()) {
           if (getEditor(u) != null) {
             getEditor(u).setUseSyntaxHighlighting(bool);
           }
@@ -784,8 +771,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Return the color of the specified token style used for syntax highlighting
-   * in the editor.
+   * Return the color of the specified token style used for syntax highlighting in the editor.
    */
   public Color getTokenColor(String styleName) {
     return Colors.decode(settings.getProperty("OrderEditor.styles." + styleName + ".color",
@@ -793,8 +779,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Set the color of the specified token style used for syntax highlighting in
-   * the editor.
+   * Set the color of the specified token style used for syntax highlighting in the editor.
    */
   public void setTokenColor(String styleName, Color color) {
     settings.setProperty("OrderEditor.styles." + styleName + ".color", Colors.encode(color));
@@ -802,9 +787,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     if (multiEditorLayout) {
 
       if (data.units() != null) {
-        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = iter.next();
-
+        for (Unit u : data.units().values()) {
           if (getEditor(u) != null) {
             getEditor(u).setTokenColor(styleName, color);
           }
@@ -828,9 +811,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
       if (data.units() != null) {
-        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = iter.next();
-
+        for (Unit u : data.units().values()) {
           if (getEditor(u) != null) {
             getEditor(u).setErrorBackround(c);
           }
@@ -841,7 +822,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       editorSingelton.setErrorBackround(c);
     }
   }
-
 
   /**
    * Returns the background color for editors.
@@ -861,12 +841,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
       if (data.units() != null) {
-        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = iter.next();
-
+        for (Unit u : data.units().values()) {
           if (getEditor(u) != null) {
-            if (!u.isOrdersConfirmed() && u!=currentUnit)
+            if (!u.isOrdersConfirmed() && u != currentUnit) {
               getEditor(u).setBackground(c);
+            }
           }
         }
       }
@@ -891,12 +870,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
       if (data.units() != null) {
-        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = iter.next();
-
+        for (Unit u : data.units().values()) {
           if (getEditor(u) != null) {
-            if (u.isOrdersConfirmed() && u!=currentUnit)
+            if (u.isOrdersConfirmed() && u != currentUnit) {
               getEditor(u).setBackground(c);
+            }
           }
         }
       }
@@ -918,8 +896,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       activeBgColor = c;
       settings.setProperty("OrderEditor.activeBackgroundColor", Colors.encode(c));
     }
-    if (currentUnit!=null && getEditor(currentUnit)!=null  && !currentUnit.isOrdersConfirmed())
+    if (currentUnit != null && getEditor(currentUnit) != null && !currentUnit.isOrdersConfirmed()) {
       getEditor(currentUnit).setBackground(c);
+    }
   }
 
   /**
@@ -937,8 +916,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       activeBgColorConfirmed = c;
       settings.setProperty("OrderEditor.activeBackgroundColorConfirmed", Colors.encode(c));
     }
-    if (currentUnit!=null && getEditor(currentUnit)!=null && currentUnit.isOrdersConfirmed())
+    if (currentUnit != null && getEditor(currentUnit) != null && currentUnit.isOrdersConfirmed()) {
       getEditor(currentUnit).setBackground(c);
+    }
   }
 
   /**
@@ -951,9 +931,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * Does initialization (of content resp. editor) for the specified mode.
    * 
-   * @param multi
-   *          If <code>true</code> multi editor layout is initialized, else
-   *          single editor mode.
+   * @param multi If <code>true</code> multi editor layout is initialized, else single editor mode.
    */
   public void setMultiEditorLayout(boolean multi) {
     if (multi != multiEditorLayout) {
@@ -988,14 +966,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Returns <code>true</code> if temp/confirmation buttons should be shown. 
+   * Returns <code>true</code> if temp/confirmation buttons should be shown.
    */
   public boolean isHideButtons() {
     return hideButtons;
   }
 
   /**
-   * Sets and applies if temp/confirmation buttons should be shown. 
+   * Sets and applies if temp/confirmation buttons should be shown.
    */
   public void setHideButtons(boolean bool) {
     if (bool != hideButtons) {
@@ -1019,8 +997,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Removes the Adapters for Key-, Caret- & Focusevents from the given
-   * JTextComponents.
+   * Removes the Adapters for Key-, Caret- & Focusevents from the given JTextComponents.
    */
   private void removeListeners(JTextComponent j) {
     j.removeFocusListener(focusAdapter);
@@ -1034,24 +1011,23 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Removes the Adapters for Key-, Caret- & Focusevents from all sub-components
-   * that are JTextComponents.
+   * Removes the Adapters for Key-, Caret- & Focusevents from all sub-components that are
+   * JTextComponents.
    */
   private void removeListenersFromAll() {
     Component c[] = content.getComponents();
 
     if ((c != null) && (c.length > 0)) {
-      for (int i = 0; i < c.length; i++) {
-        if (c[i] instanceof JTextComponent) {
-          removeListeners((JTextComponent) c[i]);
+      for (Component element : c) {
+        if (element instanceof JTextComponent) {
+          removeListeners((JTextComponent) element);
         }
       }
     }
   }
 
   /**
-   * Adds the Adapters for Key-, Caret- & Focusevents to the given
-   * JTextComponents.
+   * Adds the Adapters for Key-, Caret- & Focusevents to the given JTextComponents.
    */
   private void addListeners(OrderEditor j) {
     j.addFocusListener(focusAdapter);
@@ -1062,8 +1038,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * @param type
-   *          A mode constant
+   * @param type A mode constant
    * @return True iff current listMode is of <code>type</code>
    */
   private boolean isListMode(int type) {
@@ -1071,8 +1046,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Load editors belonging to the specified island and faction depending on
-   * listMode.
+   * Load editors belonging to the specified island and faction depending on listMode.
    * 
    * @param r
    * @param f
@@ -1098,8 +1072,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Load editors belonging to the specified region and faction depending on
-   * listMode.
+   * Load editors belonging to the specified region and faction depending on listMode.
    * 
    * @param r
    * @param f
@@ -1159,9 +1132,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Loads and displays the editors that best correspond to the selected
-   * entities. This depends on the current
-   * {@link MultiEditorOrderEditorList#listMode}. <code>
+   * Loads and displays the editors that best correspond to the selected entities. This depends on
+   * the current {@link MultiEditorOrderEditorList#listMode}. <code>
    *                   listMode (ISLAND/REGION/FACTION)
    *  selected:        000    100     010     001    110      101             011            111
    *  island           empty  island  empty   empty  island  island          empty           island
@@ -1195,9 +1167,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Adds editors for all units in privileged factions that are in the specified
-   * list to this component and removes unused ones. OrderEditors are created if
-   * necessary, else the cached version are used.
+   * Adds editors for all units in privileged factions that are in the specified list to this
+   * component and removes unused ones. OrderEditors are created if necessary, else the cached
+   * version are used.
    */
   private void loadEditors(List<Unit> unitsToShow) {
     clearUnits();
@@ -1210,25 +1182,24 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       addListeners(editor);
     }
 
-    this.invalidate();
-    this.validate();
+    invalidate();
+    validate();
   }
 
   /**
    * Returns the cached editor for a unit.
    * 
-   * @param u
-   *          A unit, may be <code>null</code>.
+   * @param u A unit, may be <code>null</code>.
    * @return The cached editor for <code>u</code> or null if none exists
    */
   private OrderEditor getEditor(Unit u) {
     if (u != null) {
       CacheableOrderEditor ce = u.getOrderEditor();
       if (ce != null) {
-        if (ce instanceof OrderEditor) {
+        if (ce instanceof OrderEditor)
           return (OrderEditor) ce;
-        } else {
-          log.error("wrong type of editor!");
+        else {
+          MultiEditorOrderEditorList.log.error("wrong type of editor!");
         }
       }
     }
@@ -1250,14 +1221,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   // }
 
   /**
-   * Removes the specified unit from the content. This includes removing editor
-   * and listeners for it and the unit itself from <code>units</code>.
+   * Removes the specified unit from the content. This includes removing editor and listeners for it
+   * and the unit itself from <code>units</code>.
    * 
    * @param u
-   * @param it
-   *          An iterator on <code>units</code>. If not <code>null</code>, the
-   *          unit is removed via this iterator, if <code>null</code> it is
-   *          removed via <code>units.remove</code>.
+   * @param it An iterator on <code>units</code>. If not <code>null</code>, the unit is removed via
+   *          this iterator, if <code>null</code> it is removed via <code>units.remove</code>.
    */
   private void removeUnit(Unit u, Iterator<Unit> it) {
     if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
@@ -1266,8 +1235,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     JTextComponent c = getEditor(u);
     synchronized (content) {
       if (c == null) {
-        MultiEditorOrderEditorList.log
-            .error(this.getClass() + ": unit already removed; " + u);
+        MultiEditorOrderEditorList.log.error(this.getClass() + ": unit already removed; " + u);
       } else {
         content.remove(c);
         removeListeners(c);
@@ -1277,20 +1245,18 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       } else {
         units.remove(u);
       }
-      if (content.getComponentCount() == 0 && this.content.hasFocus()) {
+      if (content.getComponentCount() == 0 && content.hasFocus()) {
         this.requestFocus();
       }
     }
   }
 
   /**
-   * Adds the specified unit to the content. This includes creating and adding a
-   * new order editor and updating the internal data structures. If possible,
-   * the new editor is inserted at the right position in the unit order, else it
-   * is inserted at the end.
+   * Adds the specified unit to the content. This includes creating and adding a new order editor
+   * and updating the internal data structures. If possible, the new editor is inserted at the right
+   * position in the unit order, else it is inserted at the end.
    * 
-   * @param u
-   *          The unit for the new editor.
+   * @param u The unit for the new editor.
    */
   private void addUnit(Unit u) {
     if (!units.contains(u)) {
@@ -1320,59 +1286,51 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * @return The unit following on currentUnit in the unit sorting of
-   *         {@link EMapOverviewPanel}
+   * @return The unit following on currentUnit in the unit sorting of {@link EMapOverviewPanel}
    */
   protected Unit getNextUnit() {
     return getNextUnit(currentUnit);
   }
 
   /**
-   * @return The unit following on u in the unit sorting of
-   *         {@link EMapOverviewPanel}
+   * @return The unit following on u in the unit sorting of {@link EMapOverviewPanel}
    */
   protected Unit getNextUnit(Unit u) {
     Iterator<Unit> it = units.tailSet(u).iterator();
-    if (!it.hasNext()) {
+    if (!it.hasNext())
       return null;
-    }
     it.next(); // skip the currentUnit
-    if (it.hasNext()) {
+    if (it.hasNext())
       return it.next();
-    } else {
+    else
       return null;
-      // return ( units.get(units.indexOf(currentUnit) + 1));
-    }
+    // return ( units.get(units.indexOf(currentUnit) + 1));
   }
 
   /**
-   * @return The unit preceding the currentUnit in the unit sorting of
-   *         {@link EMapOverviewPanel}
+   * @return The unit preceding the currentUnit in the unit sorting of {@link EMapOverviewPanel}
    */
   private Unit getPreviousUnit() {
     return getPreviousUnit(currentUnit);
   }
 
   /**
-   * @return The unit preceding on <code>u</code> in the unit sorting of
-   *         {@link EMapOverviewPanel}
+   * @return The unit preceding on <code>u</code> in the unit sorting of {@link EMapOverviewPanel}
    */
   private Unit getPreviousUnit(Unit u) {
     SortedSet<Unit> pre = units.headSet(u);
-    if (pre.isEmpty()) {
+    if (pre.isEmpty())
       return null;
-    } else {
+    else
       return pre.last();
-    }
   }
 
   /**
    * Builds and attaches the order editor for and to the given unit.
    */
   private OrderEditor buildOrderEditor(Unit u) {
-    if (u == null) {
+    if (u == null)
       return null;
-    }
     CacheableOrderEditor cEditor = getEditor(u);
     if (cEditor == null || !(cEditor instanceof OrderEditor)) {
       OrderEditor editor = new OrderEditor(data, settings, undoMgr, dispatcher, parser);
@@ -1413,15 +1371,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Performs the clean-up necessary to put the editor list into a state without
-   * units and editors
+   * Performs the clean-up necessary to put the editor list into a state without units and editors
    */
   private void clearUnits() {
     MultiEditorOrderEditorList.log.debug("clearUnits called");
     if (multiEditorLayout) {
       synchronized (content) {
         if (units != null) {
-          for (Unit u: units){
+          for (Unit u : units) {
             u.setOrderEditor(null);
           }
           units.clear();
@@ -1439,8 +1396,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         }
       }
 
-      if (editorSingelton!=null && editorSingelton.getUnit()!=null)
+      if (editorSingelton != null && editorSingelton.getUnit() != null) {
         editorSingelton.getUnit().setOrderEditor(null);
+      }
       editorSingelton.setUnit(null);
       editorSingelton.setEditable(false);
       removeListeners(editorSingelton);
@@ -1515,14 +1473,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    */
   public JTextComponent getCurrentEditor() {
     if (multiEditorLayout) {
-      if (getEditor(currentUnit) != null) {
+      if (getEditor(currentUnit) != null)
         return getEditor(currentUnit);
-      } else {
+      else
         return null;
-      }
-    } else {
+    } else
       return editorSingelton;
-    }
   }
 
   /**
@@ -1597,12 +1553,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     @Override
     public void keyPressed(KeyEvent e) {
       // first external listeners
-      for (Iterator<KeyListener> iter = source.keyListeners.iterator(); iter.hasNext();) {
-        (iter.next()).keyPressed(e);
+      for (KeyListener keyListener2 : source.keyListeners) {
+        (keyListener2).keyPressed(e);
 
-        if (e.isConsumed()) {
+        if (e.isConsumed())
           return;
-        }
       }
 
       // now the source
@@ -1615,12 +1570,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     @Override
     public void keyReleased(KeyEvent e) {
       // first external listeners
-      for (Iterator<KeyListener> iter = source.keyListeners.iterator(); iter.hasNext();) {
-        (iter.next()).keyReleased(e);
+      for (KeyListener keyListener2 : source.keyListeners) {
+        (keyListener2).keyReleased(e);
 
-        if (e.isConsumed()) {
+        if (e.isConsumed())
           return;
-        }
       }
 
       // now the source
@@ -1633,12 +1587,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     @Override
     public void keyTyped(KeyEvent e) {
       // first external listeners
-      for (Iterator<KeyListener> iter = source.keyListeners.iterator(); iter.hasNext();) {
-        (iter.next()).keyTyped(e);
+      for (KeyListener keyListener2 : source.keyListeners) {
+        (keyListener2).keyTyped(e);
 
-        if (e.isConsumed()) {
+        if (e.isConsumed())
           return;
-        }
       }
 
       // now the source
@@ -1665,8 +1618,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       source.focusGained(e);
 
       // then external listeners
-      for (Iterator<FocusListener> iter = source.focusListeners.iterator(); iter.hasNext();) {
-        (iter.next()).focusGained(e);
+      for (FocusListener focusListener2 : source.focusListeners) {
+        (focusListener2).focusGained(e);
       }
     }
 
@@ -1676,8 +1629,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     @Override
     public void focusLost(FocusEvent e) {
       // first external listeners
-      for (Iterator<FocusListener> iter = source.focusListeners.iterator(); iter.hasNext();) {
-        (iter.next()).focusLost(e);
+      for (FocusListener focusListener2 : source.focusListeners) {
+        (focusListener2).focusLost(e);
       }
 
       // now the source
@@ -1699,8 +1652,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
      * @see javax.swing.event.CaretListener#caretUpdate(javax.swing.event.CaretEvent)
      */
     public void caretUpdate(CaretEvent e) {
-      for (Iterator<CaretListener> iter = source.caretListeners.iterator(); iter.hasNext();) {
-        (iter.next()).caretUpdate(e);
+      for (CaretListener caretListener : source.caretListeners) {
+        (caretListener).caretUpdate(e);
       }
     }
   }
@@ -1872,8 +1825,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       btnDeleteTempUnit.addActionListener(this);
       btnDeleteTempUnit.setEnabled(false);
 
-      this.setLayout(new GridBagLayout());
-      this.setBorder(new EmptyBorder(4, 4, 4, 4));
+      setLayout(new GridBagLayout());
+      setBorder(new EmptyBorder(4, 4, 4, 4));
 
       GridBagConstraints c = new GridBagConstraints();
 
@@ -1896,10 +1849,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       // update the check box when the order confirmation status changes
       dispatcher.addOrderConfirmListener(new OrderConfirmListener() {
         public void orderConfirmationChanged(OrderConfirmEvent e) {
-          if (!this.equals(e.getSource())) {
-            for (Iterator<Unit> iter = e.getUnits().iterator(); iter.hasNext();) {
-              Unit u = iter.next();
-
+          if (!equals(e.getSource())) {
+            for (Unit u : e.getUnits()) {
               if (u.equals(currentUnit)) {
                 checkOrderConfirm.setSelected(u.isOrdersConfirmed());
 
@@ -1983,7 +1934,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         // views
 
         if (dialog == null) {
-          dialog = new TempUnitDialog((Frame) this.getTopLevelAncestor(), this, settings);
+          dialog = new TempUnitDialog((Frame) getTopLevelAncestor(), this, settings);
         }
 
         // ask the user for a valid id repeatedly
@@ -2001,10 +1952,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           if (dialog.isApproved()) {
             String tempID = dialog.getID();
 
-            if ((tempID == null) || tempID.trim().equals("")) {
+            if ((tempID == null) || tempID.trim().equals(""))
               // JOptionPane.show...
               return;
-            }
 
             try {
               int realNewIDInt = IDBaseConverter.parse(tempID, data.base);
@@ -2129,10 +2079,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                   .get("completion.multieditorordereditorlist.msg.invalidtempid.title"),
                   JOptionPane.ERROR_MESSAGE);
             }
-          } else {
+          } else
             // dialog canceled
             return;
-          }
         }
       }
     }
@@ -2185,26 +2134,25 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * A simple JPanel that implements the Scrollable interface and is used to
-   * hold the order editors.
+   * A simple JPanel that implements the Scrollable interface and is used to hold the order editors.
    */
   private class ScrollPanel extends JPanel implements Scrollable {
     /**
      * DOCUMENT-ME
-     *
+     * 
      * @see javax.swing.Scrollable#getPreferredScrollableViewportSize()
      */
     public Dimension getPreferredScrollableViewportSize() {
-      return this.getPreferredSize();
+      return getPreferredSize();
     }
 
     /**
-     * If the parent of this component is an instance of JViewport this method
-     * returns the maximum of the original preferred size and the viewport size.
+     * If the parent of this component is an instance of JViewport this method returns the maximum
+     * of the original preferred size and the viewport size.
      */
     @Override
     public Dimension getPreferredSize() {
-      Container parent = this.getParent();
+      Container parent = getParent();
 
       // this special case has become necessary with the
       // implementation of the Scrollable interface
@@ -2215,9 +2163,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         psize.height = Math.max(psize.height, viewport.getHeight());
 
         return psize;
-      } else {
+      } else
         return super.getPreferredSize();
-      }
     }
 
     /**
@@ -2225,12 +2172,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
      */
     public int getScrollableUnitIncrement(java.awt.Rectangle visibleRect, int orientation,
         int direction) {
-      if (orientation == SwingConstants.HORIZONTAL) {
+      if (orientation == SwingConstants.HORIZONTAL)
         return visibleRect.width / 5;
-      } else {
-        if (!MultiEditorOrderEditorList.this.isMultiEditorLayout()) {
+      else {
+        if (!isMultiEditorLayout())
           return visibleRect.height / 10;
-        }
         Component lastVisibleComponent = null;
         Component nextComponent = null;
 
@@ -2238,16 +2184,16 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           lastVisibleComponent = this.getComponentAt(visibleRect.x, visibleRect.y);
 
           if (lastVisibleComponent != null) {
-            if (visibleRect.y > lastVisibleComponent.getY()) {
+            if (visibleRect.y > lastVisibleComponent.getY())
               // component is not fully visible
               return visibleRect.y - lastVisibleComponent.getY();
-            } else {
+            else {
               // component is fully visible, get next component
-              List<Component> components = Arrays.asList(this.getComponents());
+              List<Component> components = Arrays.asList(getComponents());
               int count = components.indexOf(lastVisibleComponent) - 1;
 
-              if ((count >= 0) && (count < this.getComponentCount())) {
-                nextComponent = this.getComponent(count);
+              if ((count >= 0) && (count < getComponentCount())) {
+                nextComponent = getComponent(count);
 
                 return nextComponent.getHeight();
               }
@@ -2259,17 +2205,17 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
           if (lastVisibleComponent != null) {
             if ((visibleRect.y + visibleRect.height) < (lastVisibleComponent.getY() + lastVisibleComponent
-                .getHeight())) {
+                .getHeight()))
               // component is not fully visible
               return (lastVisibleComponent.getY() + lastVisibleComponent.getHeight())
                   - visibleRect.y - visibleRect.height;
-            } else {
+            else {
               // component is fully visible, get next component
-              List<Component> components = Arrays.asList(this.getComponents());
+              List<Component> components = Arrays.asList(getComponents());
               int count = components.indexOf(lastVisibleComponent) + 1;
 
-              if ((count >= 0) && (count < this.getComponentCount())) {
-                nextComponent = this.getComponent(count);
+              if ((count >= 0) && (count < getComponentCount())) {
+                nextComponent = getComponent(count);
 
                 return nextComponent.getHeight();
               }
@@ -2287,11 +2233,10 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
      */
     public int getScrollableBlockIncrement(java.awt.Rectangle visibleRect, int orientation,
         int direction) {
-      if (orientation == SwingConstants.HORIZONTAL) {
+      if (orientation == SwingConstants.HORIZONTAL)
         return visibleRect.width;
-      } else {
+      else
         return visibleRect.height;
-      }
     }
 
     /**
@@ -2335,12 +2280,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     return completion;
   }
 
-
   /**
    * Return whether syntax highlighting is enabled or disabled.
    */
   public static boolean getUseSyntaxHighlighting(Properties settings) {
-    return (Boolean.valueOf(settings.getProperty("OrderEditor.highlightSyntax", "true")).booleanValue());
+    return (Boolean.valueOf(settings.getProperty("OrderEditor.highlightSyntax", "true"))
+        .booleanValue());
   }
 
 }

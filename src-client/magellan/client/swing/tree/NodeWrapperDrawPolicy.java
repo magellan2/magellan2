@@ -17,21 +17,17 @@ import magellan.client.swing.preferences.PreferencesFactory;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author SirBacon
  */
 public interface NodeWrapperDrawPolicy extends PreferencesFactory {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void addCellObject(CellObject co);
+  /**
+   * DOCUMENT-ME
+   */
+  public void addCellObject(CellObject co);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getTitle();
+  /**
+   * DOCUMENT-ME
+   */
+  public String getTitle();
 }

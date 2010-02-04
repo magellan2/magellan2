@@ -19,33 +19,26 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Fiete
  * @version 1.0
  */
 public class IronReplacer extends AbstractRegionReplacer {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public Object getRegionReplacement(Region region) {
-		ItemType ironType = region.getData().rules.getItemType(EresseaConstants.I_RIRON);
-		if (ironType==null){
-			return new Integer(0);
-		}
-		RegionResource ironResource = region.getResource(ironType);
-		if (ironResource==null){
-			return new Integer(0);
-		}
-		return new Integer(ironResource.getAmount());
-	}
+    ItemType ironType = region.getData().rules.getItemType(EresseaConstants.I_RIRON);
+    if (ironType == null)
+      return new Integer(0);
+    RegionResource ironResource = region.getResource(ironType);
+    if (ironResource == null)
+      return new Integer(0);
+    return new Integer(ironResource.getAmount());
+  }
 
   public String getDescription() {
     return Resources.get("util.replacers.ironreplacer.description");

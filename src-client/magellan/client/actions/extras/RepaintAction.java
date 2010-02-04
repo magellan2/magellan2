@@ -19,40 +19,37 @@ import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class RepaintAction extends MenuAction {
 
-	/**
-	 * Creates a new RepaintAction object.
-	 *
-	 * @param client
-	 */
-	public RepaintAction(Client client) {
+  /**
+   * Creates a new RepaintAction object.
+   * 
+   * @param client
+   */
+  public RepaintAction(Client client) {
     super(client);
-	}
+  }
 
-	/**
-	 * Called when the extras->repaint menu is selected.
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Called when the extras->repaint menu is selected.
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		client.getDesktop().repaintAllComponents();
-	}
+    client.getDesktop().repaintAllComponents();
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.repaintaction.accelerator",false);
+    return Resources.get("actions.repaintaction.accelerator", false);
   }
 
   /**
@@ -60,7 +57,7 @@ public class RepaintAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.repaintaction.mnemonic",false);
+    return Resources.get("actions.repaintaction.mnemonic", false);
   }
 
   /**
@@ -73,6 +70,6 @@ public class RepaintAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.repaintaction.tooltip",false);
+    return Resources.get("actions.repaintaction.tooltip", false);
   }
 }

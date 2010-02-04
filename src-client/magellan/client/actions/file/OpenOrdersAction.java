@@ -39,28 +39,27 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class OpenOrdersAction extends MenuAction implements GameDataListener {
-	private static final Logger log = Logger.getInstance(OpenOrdersAction.class);
+  private static final Logger log = Logger.getInstance(OpenOrdersAction.class);
 
-	/**
-	 * Creates a new OpenOrdersAction object.
-	 *
-	 * @param client
-	 */
-	public OpenOrdersAction(Client client) {
-        super(client);
-        setEnabled(false);
-        client.getDispatcher().addGameDataListener(this);
-	}
+  /**
+   * Creates a new OpenOrdersAction object.
+   * 
+   * @param client
+   */
+  public OpenOrdersAction(Client client) {
+    super(client);
+    setEnabled(false);
+    client.getDispatcher().addGameDataListener(this);
+  }
 
-	/**
+  /**
    * Asks for a txt file to be opened and tries to add the orders from it.
    */
   @Override
@@ -77,11 +76,11 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
       loadAsynchronously(acc, fc);
     }
 
-		// repaint since command confirmation status may have changed
-		client.getDesktop().repaint(EMapOverviewPanel.IDENTIFIER);
-	}
+    // repaint since command confirmation status may have changed
+    client.getDesktop().repaint(EMapOverviewPanel.IDENTIFIER);
+  }
 
-	protected void loadAsynchronously(final OpenOrdersAccessory acc, final JFileChooser fc) {
+  protected void loadAsynchronously(final OpenOrdersAccessory acc, final JFileChooser fc) {
     final ProgressBarUI ui = new ProgressBarUI(client);
 
     ui.show();
@@ -97,7 +96,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
         r.setAutoConfirm(acc.getAutoConfirm());
         r.ignoreSemicolonComments(acc.getIgnoreSemicolonComments());
         r.setDoNotOverwriteConfirmedOrders(acc.getDoNotOverwriteConfirmedOrders());
-        
+
         // we clone later the hole gamedata, we do not need to
         // refresh the UnitRelations now
         r.setRefreshUnitRelations(false);
@@ -148,24 +147,25 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
     }).start();
   }
 
-  /* (non-Javadoc)
-	 * @see com.eressea.event.GameDataListener#gameDataChanged(com.eressea.event.GameDataEvent)
-	 */
-	public void gameDataChanged(GameDataEvent e) {
-		int i = e.getGameData().regions().size();
-		if (i>0) {
-			setEnabled(true);
-		} else {
-			setEnabled(false);
-		}
-	}
-	
+  /*
+   * (non-Javadoc)
+   * @see com.eressea.event.GameDataListener#gameDataChanged(com.eressea.event.GameDataEvent)
+   */
+  public void gameDataChanged(GameDataEvent e) {
+    int i = e.getGameData().regions().size();
+    if (i > 0) {
+      setEnabled(true);
+    } else {
+      setEnabled(false);
+    }
+  }
+
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.openordersaction.accelerator",false);
+    return Resources.get("actions.openordersaction.accelerator", false);
   }
 
   /**
@@ -173,7 +173,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.openordersaction.mnemonic",false);
+    return Resources.get("actions.openordersaction.mnemonic", false);
   }
 
   /**
@@ -186,7 +186,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.openordersaction.tooltip",false);
+    return Resources.get("actions.openordersaction.tooltip", false);
   }
-  
+
 }

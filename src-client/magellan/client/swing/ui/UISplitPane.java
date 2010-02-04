@@ -22,73 +22,66 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 271 $
  */
 public class UISplitPane extends JSplitPane {
-	private boolean dividerIsLine;
+  private boolean dividerIsLine;
 
-	/**
-	 * Creates a new UISplitPane object.
-	 *
-	 * 
-	 */
-	public UISplitPane(int orientation) {
-		this(orientation, false);
-	}
+  /**
+   * Creates a new UISplitPane object.
+   */
+  public UISplitPane(int orientation) {
+    this(orientation, false);
+  }
 
-	/**
-	 * Creates a new UISplitPane object.
-	 *
-	 * 
-	 * 
-	 */
-	public UISplitPane(int orientation, boolean dividerIsLine) {
-		/* This class tries to remove the divider border of a JSplitPane */
-		super(orientation);
-		this.dividerIsLine = dividerIsLine;
-		setBorder(BorderFactory.createEmptyBorder());
-		changeDividerBorder();
+  /**
+   * Creates a new UISplitPane object.
+   */
+  public UISplitPane(int orientation, boolean dividerIsLine) {
+    /* This class tries to remove the divider border of a JSplitPane */
+    super(orientation);
+    this.dividerIsLine = dividerIsLine;
+    setBorder(BorderFactory.createEmptyBorder());
+    changeDividerBorder();
 
-		if(dividerIsLine) {
-			this.setDividerSize(1);
-		}
-	}
+    if (dividerIsLine) {
+      setDividerSize(1);
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void updateUI() {
-		/* take care of UI changes */
-		super.updateUI();
-		changeDividerBorder();
-	}
+    /* take care of UI changes */
+    super.updateUI();
+    changeDividerBorder();
+  }
 
-	private void changeDividerBorder() {
-		if(getUI() instanceof BasicSplitPaneUI) {
-			((BasicSplitPaneUI) getUI()).getDivider().setBorder(getChangedBorder());
-		}
-	}
+  private void changeDividerBorder() {
+    if (getUI() instanceof BasicSplitPaneUI) {
+      ((BasicSplitPaneUI) getUI()).getDivider().setBorder(getChangedBorder());
+    }
+  }
 
-	private Border getChangedBorder() {
-		if(dividerIsLine) {
-			if(this.getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
-				return BorderFactory.createMatteBorder(0, 0, 0, 1, Color.black); // EAST
-			} else {
-				return BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black); // NORTH
-			}
-		} else {
-			return BorderFactory.createEmptyBorder();
-		}
-	}
+  private Border getChangedBorder() {
+    if (dividerIsLine) {
+      if (getOrientation() == JSplitPane.HORIZONTAL_SPLIT)
+        return BorderFactory.createMatteBorder(0, 0, 0, 1, Color.black); // EAST
+      else
+        return BorderFactory.createMatteBorder(1, 0, 0, 0, Color.black); // NORTH
+    } else
+      return BorderFactory.createEmptyBorder();
+  }
 
-	// 	private static class SingleLineBorder {
-	// 		public final static int EAST = 0;
-	// 		private int orientation;
-	// 		public SingleLineBorder(int o) {
-	// 			orientation = o;
-	// 		}
-	// 	}
+  // private static class SingleLineBorder {
+  // public final static int EAST = 0;
+  // private int orientation;
+  // public SingleLineBorder(int o) {
+  // orientation = o;
+  // }
+  // }
 }

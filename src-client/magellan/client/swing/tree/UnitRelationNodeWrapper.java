@@ -36,7 +36,7 @@ public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, C
   private ContextFactory contextFactory;
 
   public UnitRelationNodeWrapper(UnitRelation rel, CellObject innerNode) {
-    this.relation = rel;
+    relation = rel;
     this.innerNode = innerNode;
   }
 
@@ -55,14 +55,16 @@ public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, C
   }
 
   /**
-   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, magellan.client.swing.tree.NodeWrapperDrawPolicy)
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return null;
   }
 
   /**
-   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String, magellan.client.swing.tree.NodeWrapperDrawPolicy)
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {
@@ -103,9 +105,9 @@ public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, C
   public ContextFactory getContextFactory() {
     return contextFactory;
   }
-  
-  public void setContextFactory(ContextFactory factory){
-    this.contextFactory = factory;
+
+  public void setContextFactory(ContextFactory factory) {
+    contextFactory = factory;
   }
 
   /**
@@ -114,7 +116,7 @@ public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, C
    * @see java.lang.Object#toString()
    */
   @Override
-  public String toString(){
+  public String toString() {
     return innerNode.toString();
   }
 

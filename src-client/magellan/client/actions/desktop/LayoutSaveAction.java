@@ -47,7 +47,7 @@ public class LayoutSaveAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.accelerator",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.accelerator", false);
   }
 
   /**
@@ -55,7 +55,7 @@ public class LayoutSaveAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.mnemonic",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.mnemonic", false);
   }
 
   /**
@@ -80,8 +80,10 @@ public class LayoutSaveAction extends MenuAction {
   @Override
   public void menuActionPerformed(ActionEvent e) {
     try {
-      DockingFrameworkBuilder.getInstance().write(new File(Client.getSettingsDirectory(),MagellanDesktop.DOCKING_LAYOUT_FILE));
-      JOptionPane.showMessageDialog(Client.INSTANCE, Resources.get("desktop.magellandesktop.msg.layout.save.caption"));
+      DockingFrameworkBuilder.getInstance().write(
+          new File(Client.getSettingsDirectory(), MagellanDesktop.DOCKING_LAYOUT_FILE));
+      JOptionPane.showMessageDialog(Client.INSTANCE, Resources
+          .get("desktop.magellandesktop.msg.layout.save.caption"));
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }

@@ -69,14 +69,12 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
 /**
- * 
  * Provides Panel (Extended Preferences Adapter) for Preferences
- *
+ * 
  * @author ...
  * @version 1.0, 20.11.2007
  */
 public class RegionOverviewPreferences extends JPanel implements ExtendedPreferencesAdapter {
-  
 
   private EMapOverviewPanel overviewPanel = null;
   private Properties settings;
@@ -110,23 +108,20 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
   public JRadioButton useBestSkill = null;
 
   /**
-   * if true, regiontree will contain regions without own units but with
-   * buildings known in it
+   * if true, regiontree will contain regions without own units but with buildings known in it
    */
   public JCheckBox chkRegionTreeBuilder_withBuildings = null;
 
   /**
-   * if true, regiontree will contain regions without own units but with Ships
-   * known in it
+   * if true, regiontree will contain regions without own units but with Ships known in it
    */
   public JCheckBox chkRegionTreeBuilder_withShips = null;
 
   /**
-   * if true, regiontree will contain regions without own units but with
-   * Comments known in it
+   * if true, regiontree will contain regions without own units but with Comments known in it
    */
   public JCheckBox chkRegionTreeBuilder_withComments = null;
-  
+
   // use the topmost skill in (selfdefined) skilltype-list to sort it
 
   /** DOCUMENT-ME */
@@ -144,19 +139,21 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
   /**
    * Creates a new EMapOverviewPreferences object.
    * 
-   * @param settings
-   *          DOCUMENT-ME
+   * @param settings DOCUMENT-ME
    */
   public RegionOverviewPreferences(EMapOverviewPanel parent, Properties settings, GameData data) {
     this.settings = settings;
     overviewPanel = parent;
     chkSortRegions = new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortregions"));
 
-    chkSortShipUnderUnitParent = new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortShipUnderUnitParent"));
+    chkSortShipUnderUnitParent =
+        new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortShipUnderUnitParent"));
 
-    rdbSortRegionsCoordinates = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbycoordinates"));
+    rdbSortRegionsCoordinates =
+        new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbycoordinates"));
 
-    rdbSortRegionsIslands = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbyislands"));
+    rdbSortRegionsIslands =
+        new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbyislands"));
 
     ButtonGroup regionSortButtons = new ButtonGroup();
     regionSortButtons.add(rdbSortRegionsCoordinates);
@@ -164,40 +161,65 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     JPanel pnlRegionSortButtons = new JPanel();
     pnlRegionSortButtons.setLayout(new BoxLayout(pnlRegionSortButtons, BoxLayout.Y_AXIS));
-    pnlRegionSortButtons.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.regionsorting")));
+    pnlRegionSortButtons.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("emapoverviewpanel.prefs.regionsorting")));
     pnlRegionSortButtons.add(chkSortRegions);
     pnlRegionSortButtons.add(rdbSortRegionsCoordinates);
     pnlRegionSortButtons.add(rdbSortRegionsIslands);
 
     chkDisplayIslands = new JCheckBox(Resources.get("emapoverviewpanel.prefs.showislands"));
 
-    chkRegionTreeBuilder_withBuildings = new JCheckBox(Resources.get("emapoverviewpanel.prefs.treebuildings"));
-    chkRegionTreeBuilder_withShips = new JCheckBox(Resources.get("emapoverviewpanel.prefs.treeships"));
-    chkRegionTreeBuilder_withComments = new JCheckBox(Resources.get("emapoverviewpanel.prefs.treecomments"));
+    chkRegionTreeBuilder_withBuildings =
+        new JCheckBox(Resources.get("emapoverviewpanel.prefs.treebuildings"));
+    chkRegionTreeBuilder_withShips =
+        new JCheckBox(Resources.get("emapoverviewpanel.prefs.treeships"));
+    chkRegionTreeBuilder_withComments =
+        new JCheckBox(Resources.get("emapoverviewpanel.prefs.treecomments"));
 
     JPanel pnlTreeStructure = new JPanel();
     pnlTreeStructure.setLayout(new GridBagLayout());
 
-    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
-    pnlTreeStructure.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.treeStructure")));
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
+            GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
+    pnlTreeStructure.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("emapoverviewpanel.prefs.treeStructure")));
 
     JPanel elementsPanel = new JPanel();
     elementsPanel.setLayout(new BorderLayout(0, 0));
-    elementsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.treeStructure.available")));
+    elementsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("emapoverviewpanel.prefs.treeStructure.available")));
 
     DefaultListModel elementsListModel = new DefaultListModel();
-    elementsListModel.add(TreeHelper.FACTION, Resources.get("emapoverviewpanel.prefs.treeStructure.element.faction"));
-    elementsListModel.add(TreeHelper.GUISE_FACTION, Resources.get("emapoverviewpanel.prefs.treeStructure.element.guisefaction"));
-    elementsListModel.add(TreeHelper.GROUP, Resources.get("emapoverviewpanel.prefs.treeStructure.element.group"));
-    elementsListModel.add(TreeHelper.COMBAT_STATUS, Resources.get("emapoverviewpanel.prefs.treeStructure.element.combat"));
-    elementsListModel.add(TreeHelper.HEALTH, Resources.get("emapoverviewpanel.prefs.treeStructure.element.health"));
-    elementsListModel.add(TreeHelper.FACTION_DISGUISE_STATUS, Resources.get("emapoverviewpanel.prefs.treeStructure.element.factiondisguise"));
-    elementsListModel.add(TreeHelper.TRUSTLEVEL, Resources.get("emapoverviewpanel.prefs.treeStructure.element.trustlevel"));
-    elementsListModel.add(TreeHelper.TAGGABLE, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING }));
-    elementsListModel.add(TreeHelper.TAGGABLE2, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING2 }));
-    elementsListModel.add(TreeHelper.TAGGABLE3, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING3 }));
-    elementsListModel.add(TreeHelper.TAGGABLE4, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING4 }));
-    elementsListModel.add(TreeHelper.TAGGABLE5, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING5 }));
+    elementsListModel.add(TreeHelper.FACTION, Resources
+        .get("emapoverviewpanel.prefs.treeStructure.element.faction"));
+    elementsListModel.add(TreeHelper.GUISE_FACTION, Resources
+        .get("emapoverviewpanel.prefs.treeStructure.element.guisefaction"));
+    elementsListModel.add(TreeHelper.GROUP, Resources
+        .get("emapoverviewpanel.prefs.treeStructure.element.group"));
+    elementsListModel.add(TreeHelper.COMBAT_STATUS, Resources
+        .get("emapoverviewpanel.prefs.treeStructure.element.combat"));
+    elementsListModel.add(TreeHelper.HEALTH, Resources
+        .get("emapoverviewpanel.prefs.treeStructure.element.health"));
+    elementsListModel.add(TreeHelper.FACTION_DISGUISE_STATUS, Resources
+        .get("emapoverviewpanel.prefs.treeStructure.element.factiondisguise"));
+    elementsListModel.add(TreeHelper.TRUSTLEVEL, Resources
+        .get("emapoverviewpanel.prefs.treeStructure.element.trustlevel"));
+    elementsListModel.add(TreeHelper.TAGGABLE, Resources.get(
+        "emapoverviewpanel.prefs.treeStructure.element.taggable",
+        new Object[] { CRParser.TAGGABLE_STRING }));
+    elementsListModel.add(TreeHelper.TAGGABLE2, Resources.get(
+        "emapoverviewpanel.prefs.treeStructure.element.taggable",
+        new Object[] { CRParser.TAGGABLE_STRING2 }));
+    elementsListModel.add(TreeHelper.TAGGABLE3, Resources.get(
+        "emapoverviewpanel.prefs.treeStructure.element.taggable",
+        new Object[] { CRParser.TAGGABLE_STRING3 }));
+    elementsListModel.add(TreeHelper.TAGGABLE4, Resources.get(
+        "emapoverviewpanel.prefs.treeStructure.element.taggable",
+        new Object[] { CRParser.TAGGABLE_STRING4 }));
+    elementsListModel.add(TreeHelper.TAGGABLE5, Resources.get(
+        "emapoverviewpanel.prefs.treeStructure.element.taggable",
+        new Object[] { CRParser.TAGGABLE_STRING5 }));
 
     elementsList = new JList(elementsListModel);
 
@@ -206,7 +228,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     JPanel usePanel = new JPanel();
     usePanel.setLayout(new GridBagLayout());
-    usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.treeStructure.use")));
+    usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("emapoverviewpanel.prefs.treeStructure.use")));
 
     useList = new JList();
     useList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -228,9 +251,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         int pos = useList.getSelectedIndex();
         DefaultListModel model = (DefaultListModel) useList.getModel();
 
-        if (pos == 0) {
+        if (pos == 0)
           return;
-        }
 
         Object o = model.elementAt(pos);
         model.remove(pos);
@@ -248,9 +270,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         int pos = useList.getSelectedIndex();
         DefaultListModel model = (DefaultListModel) useList.getModel();
 
-        if (pos == (model.getSize() - 1)) {
+        if (pos == (model.getSize() - 1))
           return;
-        }
 
         Object o = model.elementAt(pos);
         model.remove(pos);
@@ -306,8 +327,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         DefaultListModel model = (DefaultListModel) useList.getModel();
         Object selection[] = useList.getSelectedValues();
 
-        for (int i = 0; i < selection.length; i++) {
-          model.removeElement(selection[i]);
+        for (Object element : selection) {
+          model.removeElement(element);
         }
       }
     });
@@ -358,8 +379,11 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     JPanel pnlUnitSort = new JPanel();
     pnlUnitSort.setLayout(new GridBagLayout());
-    c = new GridBagConstraints(0, 0, 1, 1, 0.1, 0.1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
-    pnlUnitSort.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.unitsorting")));
+    c =
+        new GridBagConstraints(0, 0, 1, 1, 0.1, 0.1, GridBagConstraints.WEST,
+            GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+    pnlUnitSort.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("emapoverviewpanel.prefs.unitsorting")));
     pnlUnitSort.add(rdbSortUnitsUnsorted, c);
     c.gridy = 1;
     pnlUnitSort.add(rdbSortUnitsSkills, c);
@@ -373,7 +397,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     c.insets = new Insets(0, 0, 0, 0);
     pnlUnitSort.add(rdbSortUnitsNames, c);
 
-    this.setLayout(new GridBagLayout());
+    setLayout(new GridBagLayout());
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 0;
     c.gridy = 0;
@@ -430,7 +454,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     this.add(pnlUnitSort, c);
 
     JPanel help = new JPanel(new GridLayout(1, 2));
-    help.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.expand.title")));
+    help.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("emapoverviewpanel.prefs.expand.title")));
     help.add(ePanel = new ExpandPanel()); // , BorderLayout.WEST);
     help.add(cPanel = new CollapsePanel()); // , BorderLayout.EAST);
     c.gridy++;
@@ -442,27 +467,33 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
             .getMagellanContext().getImageFactory(), settings, data));
   }
 
-  
-  
-  
   /*
    * (non-Javadoc)
-   * 
    * @see com.eressea.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
-    chkSortRegions.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortRegions", true));
-    chkSortShipUnderUnitParent.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortShipUnderUnitParent", true));
+    chkSortRegions.setSelected(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.sortRegions", true));
+    chkSortShipUnderUnitParent.setSelected(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.sortShipUnderUnitParent", true));
 
-    chkRegionTreeBuilder_withBuildings.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithBuildings", true));
-    chkRegionTreeBuilder_withShips.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithShips", true));
-    chkRegionTreeBuilder_withComments.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithComments", true));
+    chkRegionTreeBuilder_withBuildings.setSelected(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.treeBuilderWithBuildings", true));
+    chkRegionTreeBuilder_withShips.setSelected(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.treeBuilderWithShips", true));
+    chkRegionTreeBuilder_withComments.setSelected(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.treeBuilderWithComments", true));
 
-    rdbSortRegionsCoordinates.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates"));
-    rdbSortRegionsIslands.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("islands"));
-    chkDisplayIslands.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.displayIslands", true));
+    rdbSortRegionsCoordinates.setSelected(settings.getProperty(
+        "EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates"));
+    rdbSortRegionsIslands.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria",
+        "coordinates").equals("islands"));
+    chkDisplayIslands.setSelected(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.displayIslands", true));
 
-    String criteria = settings.getProperty("EMapOverviewPanel.treeStructure", " " + TreeHelper.FACTION + " " + TreeHelper.GROUP);
+    String criteria =
+        settings.getProperty("EMapOverviewPanel.treeStructure", " " + TreeHelper.FACTION + " "
+            + TreeHelper.GROUP);
 
     DefaultListModel model2 = new DefaultListModel();
 
@@ -481,12 +512,16 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     }
     useList.setModel(model2);
 
-    rdbSortUnitsUnsorted.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("unsorted"));
-    rdbSortUnitsSkills.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("skills"));
-    useBestSkill.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.useBestSkill", true));
+    rdbSortUnitsUnsorted.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria",
+        "skills").equals("unsorted"));
+    rdbSortUnitsSkills.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria",
+        "skills").equals("skills"));
+    useBestSkill.setSelected(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.useBestSkill", true));
     useTopmostSkill.setSelected(!useBestSkill.isSelected());
 
-    rdbSortUnitsNames.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("names"));
+    rdbSortUnitsNames.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria",
+        "skills").equals("names"));
 
     // FIXME (stm) this is strictly not necessary
     skillSort.initPreferences();
@@ -496,15 +531,20 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
    * DOCUMENT-ME
    */
   public void applyPreferences() {
-    settings.setProperty("EMapOverviewPanel.sortRegions", String.valueOf(chkSortRegions.isSelected()));
+    settings.setProperty("EMapOverviewPanel.sortRegions", String.valueOf(chkSortRegions
+        .isSelected()));
 
-    settings.setProperty("EMapOverviewPanel.sortShipUnderUnitParent", String.valueOf(chkSortShipUnderUnitParent.isSelected()));
+    settings.setProperty("EMapOverviewPanel.sortShipUnderUnitParent", String
+        .valueOf(chkSortShipUnderUnitParent.isSelected()));
 
-    settings.setProperty("EMapOverviewPanel.treeBuilderWithBuildings", String.valueOf(chkRegionTreeBuilder_withBuildings.isSelected()));
+    settings.setProperty("EMapOverviewPanel.treeBuilderWithBuildings", String
+        .valueOf(chkRegionTreeBuilder_withBuildings.isSelected()));
 
-    settings.setProperty("EMapOverviewPanel.treeBuilderWithShips", String.valueOf(chkRegionTreeBuilder_withShips.isSelected()));
+    settings.setProperty("EMapOverviewPanel.treeBuilderWithShips", String
+        .valueOf(chkRegionTreeBuilder_withShips.isSelected()));
 
-    settings.setProperty("EMapOverviewPanel.treeBuilderWithComments", String.valueOf(chkRegionTreeBuilder_withComments.isSelected()));
+    settings.setProperty("EMapOverviewPanel.treeBuilderWithComments", String
+        .valueOf(chkRegionTreeBuilder_withComments.isSelected()));
 
     // workaround to support EMapOverviewPanel.filters
     int newFilter = TreeBuilder.UNITS;
@@ -526,7 +566,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       settings.setProperty("EMapOverviewPanel.sortRegionsCriteria", "islands");
     }
 
-    settings.setProperty("EMapOverviewPanel.displayIslands", String.valueOf(chkDisplayIslands.isSelected()));
+    settings.setProperty("EMapOverviewPanel.displayIslands", String.valueOf(chkDisplayIslands
+        .isSelected()));
 
     if (rdbSortUnitsUnsorted.isSelected()) {
       settings.setProperty("EMapOverviewPanel.sortUnitsCriteria", "unsorted");
@@ -536,7 +577,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       settings.setProperty("EMapOverviewPanel.sortUnitsCriteria", "names");
     }
 
-    settings.setProperty("EMapOverviewPanel.useBestSkill", String.valueOf(useBestSkill.isSelected()));
+    settings.setProperty("EMapOverviewPanel.useBestSkill", String
+        .valueOf(useBestSkill.isSelected()));
 
     DefaultListModel useListModel = (DefaultListModel) useList.getModel();
     StringBuffer definition = new StringBuffer("");
@@ -560,22 +602,24 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     overviewPanel.rebuildTree();
   }
-  
+
   /**
    * Saves the settings about the collapsing
    */
   protected void saveCollapseProperty() {
-    settings.setProperty("EMapOverviewPanel.CollapseMode", String.valueOf(overviewPanel.getCollapseMode()));
+    settings.setProperty("EMapOverviewPanel.CollapseMode", String.valueOf(overviewPanel
+        .getCollapseMode()));
   }
-  
+
   /**
    * Saves the settings about the expanding
    */
   protected void saveExpandProperties() {
-    settings.setProperty("EMapOverviewPanel.ExpandMode", String.valueOf(overviewPanel.getExpandMode()));
-    settings.setProperty("EMapOverviewPanel.ExpandTrustlevel", String.valueOf(overviewPanel.getExpandTrustLevel()));
+    settings.setProperty("EMapOverviewPanel.ExpandMode", String.valueOf(overviewPanel
+        .getExpandMode()));
+    settings.setProperty("EMapOverviewPanel.ExpandTrustlevel", String.valueOf(overviewPanel
+        .getExpandTrustLevel()));
   }
-
 
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
@@ -612,14 +656,17 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     public ExpandPanel() {
       super(new GridBagLayout());
 
-      GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+      GridBagConstraints con =
+          new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST,
+              GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
       radioButtons = new JRadioButton[3];
 
       ButtonGroup group = new ButtonGroup();
 
       boolean expanded = (overviewPanel.getExpandMode() & EMapOverviewPanel.EXPAND_FLAG) != 0;
 
-      radioButtons[0] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.none"), !expanded);
+      radioButtons[0] =
+          new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.none"), !expanded);
       group.add(radioButtons[0]);
       this.add(radioButtons[0], con);
 
@@ -628,12 +675,16 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       this.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.fill = GridBagConstraints.NONE;
 
-      radioButtons[1] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.faction"), (expanded && ((overviewPanel.getExpandMode() >> 2) == 0)));
+      radioButtons[1] =
+          new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.faction"),
+              (expanded && ((overviewPanel.getExpandMode() >> 2) == 0)));
       group.add(radioButtons[1]);
       con.gridy++;
       this.add(radioButtons[1], con);
 
-      radioButtons[2] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.full"), (expanded && ((overviewPanel.getExpandMode() >> 2) == 3)));
+      radioButtons[2] =
+          new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.full"),
+              (expanded && ((overviewPanel.getExpandMode() >> 2) == 3)));
       group.add(radioButtons[2]);
       con.gridy++;
       this.add(radioButtons[2], con);
@@ -677,8 +728,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     }
 
     protected void registerListener() {
-      for (int i = 0; i < radioButtons.length; i++) {
-        radioButtons[i].addActionListener(this);
+      for (JRadioButton radioButton : radioButtons) {
+        radioButton.addActionListener(this);
       }
     }
 
@@ -687,15 +738,18 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
      */
     public void apply() {
       if (radioButtons[0].isSelected()) {
-        overviewPanel.setExpandMode(overviewPanel.getExpandMode() & (0xFFFFFFFF ^ EMapOverviewPanel.EXPAND_FLAG));
+        overviewPanel.setExpandMode(overviewPanel.getExpandMode()
+            & (0xFFFFFFFF ^ EMapOverviewPanel.EXPAND_FLAG));
       } else {
         overviewPanel.setExpandMode(overviewPanel.getExpandMode() | EMapOverviewPanel.EXPAND_FLAG);
       }
 
       if (checkBox.isSelected()) {
-        overviewPanel.setExpandMode(overviewPanel.getExpandMode() | EMapOverviewPanel.EXPAND_IFINSIDE_FLAG);
+        overviewPanel.setExpandMode(overviewPanel.getExpandMode()
+            | EMapOverviewPanel.EXPAND_IFINSIDE_FLAG);
       } else {
-        overviewPanel.setExpandMode(overviewPanel.getExpandMode() & (0xFFFFFFFF ^ EMapOverviewPanel.EXPAND_IFINSIDE_FLAG));
+        overviewPanel.setExpandMode(overviewPanel.getExpandMode()
+            & (0xFFFFFFFF ^ EMapOverviewPanel.EXPAND_IFINSIDE_FLAG));
       }
 
       int i = overviewPanel.getExpandMode() >> 2;
@@ -706,7 +760,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         i = 3;
       }
 
-      overviewPanel.setExpandMode((overviewPanel.getExpandMode() & (EMapOverviewPanel.EXPAND_FLAG | EMapOverviewPanel.EXPAND_IFINSIDE_FLAG)) | (i << 2));
+      overviewPanel
+          .setExpandMode((overviewPanel.getExpandMode() & (EMapOverviewPanel.EXPAND_FLAG | EMapOverviewPanel.EXPAND_IFINSIDE_FLAG))
+              | (i << 2));
 
       try {
         overviewPanel.setExpandTrustLevel(Integer.parseInt(trustlevel.getText()));
@@ -719,8 +775,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     /**
      * DOCUMENT-ME
      * 
-     * @param actionEvent
-     *          DOCUMENT-ME
+     * @param actionEvent DOCUMENT-ME
      */
     public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
       checkBox.setEnabled(actionEvent.getSource() != radioButtons[0]);
@@ -738,16 +793,19 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     public CollapsePanel() {
       super(new GridBagLayout());
 
-      this.setBorder(new LeftBorder());
+      setBorder(new LeftBorder());
 
-      GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 3, 0, 0), 0, 0);
+      GridBagConstraints con =
+          new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST,
+              GridBagConstraints.NONE, new Insets(0, 3, 0, 0), 0, 0);
       radioButtons = new JRadioButton[3];
 
       ButtonGroup group = new ButtonGroup();
 
       boolean collapse = (overviewPanel.getCollapseMode() & EMapOverviewPanel.COLLAPSE_FLAG) != 0;
 
-      radioButtons[0] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.none"), !collapse);
+      radioButtons[0] =
+          new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.none"), !collapse);
       group.add(radioButtons[0]);
       this.add(radioButtons[0], con);
 
@@ -758,18 +816,24 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       con.insets.left = 3;
       con.fill = GridBagConstraints.NONE;
 
-      radioButtons[1] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.faction"), (collapse && ((overviewPanel.getCollapseMode() >> 2) == 0)));
+      radioButtons[1] =
+          new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.faction"),
+              (collapse && ((overviewPanel.getCollapseMode() >> 2) == 0)));
       group.add(radioButtons[1]);
       con.gridy++;
       this.add(radioButtons[1], con);
 
-      radioButtons[2] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.full"), (collapse && ((overviewPanel.getCollapseMode() >> 2) == 3)));
+      radioButtons[2] =
+          new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.full"),
+              (collapse && ((overviewPanel.getCollapseMode() >> 2) == 3)));
       group.add(radioButtons[2]);
       con.gridy++;
       this.add(radioButtons[2], con);
 
       con.gridy++;
-      checkBox = new JCheckBox(Resources.get("emapoverviewpanel.prefs.collapse.onlyautoexpanded"), (overviewPanel.getCollapseMode() & EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED) != 0);
+      checkBox =
+          new JCheckBox(Resources.get("emapoverviewpanel.prefs.collapse.onlyautoexpanded"),
+              (overviewPanel.getCollapseMode() & EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED) != 0);
       this.add(checkBox, con);
 
       // to make it equally high to ePanel
@@ -777,25 +841,23 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       this.add(Box.createVerticalStrut(checkBox.getPreferredSize().height + 5), con);
 
       /*
-       * con.gridx = 0; con.gridheight = con.gridy + 1; con.gridy = 0;
-       * con.fill = GridBagConstraints.VERTICAL; JComponent c = new
-       * JSeparator(JSeparator.VERTICAL); c.setMaximumSize(new Dimension(3,
-       * 1000)); this.add(c, con);
+       * con.gridx = 0; con.gridheight = con.gridy + 1; con.gridy = 0; con.fill =
+       * GridBagConstraints.VERTICAL; JComponent c = new JSeparator(JSeparator.VERTICAL);
+       * c.setMaximumSize(new Dimension(3, 1000)); this.add(c, con);
        */
       registerListener();
     }
 
     protected void registerListener() {
-      for (int i = 0; i < radioButtons.length; i++) {
-        radioButtons[i].addActionListener(this);
+      for (JRadioButton radioButton : radioButtons) {
+        radioButton.addActionListener(this);
       }
     }
 
     /**
      * DOCUMENT-ME
      * 
-     * @param actionEvent
-     *          DOCUMENT-ME
+     * @param actionEvent DOCUMENT-ME
      */
     public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
       checkBox.setEnabled(actionEvent.getSource() != radioButtons[0]);
@@ -806,15 +868,19 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
      */
     public void apply() {
       if (radioButtons[0].isSelected()) {
-        overviewPanel.setCollapseMode(overviewPanel.getCollapseMode() & (0xFFFFFFFF ^ EMapOverviewPanel.COLLAPSE_FLAG));
+        overviewPanel.setCollapseMode(overviewPanel.getCollapseMode()
+            & (0xFFFFFFFF ^ EMapOverviewPanel.COLLAPSE_FLAG));
       } else {
-        overviewPanel.setCollapseMode(overviewPanel.getCollapseMode() | EMapOverviewPanel.COLLAPSE_FLAG);
+        overviewPanel.setCollapseMode(overviewPanel.getCollapseMode()
+            | EMapOverviewPanel.COLLAPSE_FLAG);
       }
 
       if (checkBox.isSelected()) {
-        overviewPanel.setCollapseMode(overviewPanel.getCollapseMode() | EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED);
+        overviewPanel.setCollapseMode(overviewPanel.getCollapseMode()
+            | EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED);
       } else {
-        overviewPanel.setCollapseMode(overviewPanel.getCollapseMode() & (0xFFFFFFFF ^ EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED));
+        overviewPanel.setCollapseMode(overviewPanel.getCollapseMode()
+            & (0xFFFFFFFF ^ EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED));
       }
 
       int i = overviewPanel.getCollapseMode() >> 2;
@@ -825,7 +891,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         i = 3;
       }
 
-      overviewPanel.setCollapseMode((overviewPanel.getCollapseMode() & (EMapOverviewPanel.COLLAPSE_FLAG | EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED)) | (i << 2));
+      overviewPanel
+          .setCollapseMode((overviewPanel.getCollapseMode() & (EMapOverviewPanel.COLLAPSE_FLAG | EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED))
+              | (i << 2));
 
       saveCollapseProperty();
     }

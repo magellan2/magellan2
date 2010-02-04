@@ -61,12 +61,11 @@ import net.infonode.tabbedpanel.titledtab.TitledTabProperties;
 import net.infonode.util.Direction;
 
 /**
- * This is a factory for popup creation in a infonode docking environment.
- * It is actually a copy of the WindowMenuUtil class and contains localization
- * strings for the menu items...(this is currently now supported in the
- * infonode framework).
- *
- * @author Thoralf Rickert, 
+ * This is a factory for popup creation in a infonode docking environment. It is actually a copy of
+ * the WindowMenuUtil class and contains localization strings for the menu items...(this is
+ * currently now supported in the infonode framework).
+ * 
+ * @author Thoralf Rickert,
  * @version 1.0, 20.06.2007
  */
 public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
@@ -77,10 +76,11 @@ public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
     final Direction[] directions = Direction.getDirections();
 
     for (int i = 0; i < directions.length; i++) {
-      MagellanPopupMenuFactory.ARROW_ICONS[i] = new ArrowIcon(InternalDockingUtil.DEFAULT_BUTTON_ICON_SIZE + 1, directions[i]);
+      MagellanPopupMenuFactory.ARROW_ICONS[i] =
+          new ArrowIcon(InternalDockingUtil.DEFAULT_BUTTON_ICON_SIZE + 1, directions[i]);
     }
   }
-  
+
   public MagellanPopupMenuFactory(ViewFactoryManager viewFactoryManager) {
     this.viewFactoryManager = viewFactoryManager;
   }
@@ -97,16 +97,16 @@ public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
         menu.addSeparator();
       }
 
-      //if (addTabItems) {
-        MagellanPopupMenuFactory.addTabOrientationMenuItems(menu, window);
-        MagellanPopupMenuFactory.addTabDirectionMenuItems(menu, window);
-        menu.addSeparator();
-     // }
+      // if (addTabItems) {
+      MagellanPopupMenuFactory.addTabOrientationMenuItems(menu, window);
+      MagellanPopupMenuFactory.addTabDirectionMenuItems(menu, window);
+      menu.addSeparator();
+      // }
 
-     // if (addSplitWindowItems) {
-        MagellanPopupMenuFactory.addSplitWindowMenuItems(menu, window);
-        menu.addSeparator();
-     // }
+      // if (addSplitWindowItems) {
+      MagellanPopupMenuFactory.addSplitWindowMenuItems(menu, window);
+      menu.addSeparator();
+      // }
     }
 
     MagellanPopupMenuFactory.addNewViewMenuItems(menu, window, viewFactoryManager);
@@ -117,21 +117,28 @@ public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
 
   /**
    * 
-   */  
+   */
   private static void addWindowMenuItems(JPopupMenu menu, DockingWindow window) {
-    menu.add(new MagellanPopupAction(UndockWithAbortWindowAction.INSTANCE.getAction(window).toSwingAction(),Resources.get("dock.popup.undock")));
-    menu.add(new MagellanPopupAction(DockWithAbortWindowAction.INSTANCE.getAction(window).toSwingAction(),Resources.get("dock.popup.dock")));
-    menu.add(new MagellanPopupAction(RestoreWithAbortWindowAction.INSTANCE.getAction(window).toSwingAction(),Resources.get("dock.popup.restore")));
-    menu.add(new MagellanPopupAction(MinimizeWithAbortWindowAction.INSTANCE.getAction(window).toSwingAction(),Resources.get("dock.popup.minimize")));
+    menu.add(new MagellanPopupAction(UndockWithAbortWindowAction.INSTANCE.getAction(window)
+        .toSwingAction(), Resources.get("dock.popup.undock")));
+    menu.add(new MagellanPopupAction(DockWithAbortWindowAction.INSTANCE.getAction(window)
+        .toSwingAction(), Resources.get("dock.popup.dock")));
+    menu.add(new MagellanPopupAction(RestoreWithAbortWindowAction.INSTANCE.getAction(window)
+        .toSwingAction(), Resources.get("dock.popup.restore")));
+    menu.add(new MagellanPopupAction(MinimizeWithAbortWindowAction.INSTANCE.getAction(window)
+        .toSwingAction(), Resources.get("dock.popup.minimize")));
 
     if (window instanceof TabWindow) {
-      menu.add(new MagellanPopupAction(MaximizeWithAbortWindowAction.INSTANCE.getAction(window).toSwingAction(),Resources.get("dock.popup.maximize")));
+      menu.add(new MagellanPopupAction(MaximizeWithAbortWindowAction.INSTANCE.getAction(window)
+          .toSwingAction(), Resources.get("dock.popup.maximize")));
     }
 
-    menu.add(new MagellanPopupAction(CloseWithAbortWindowAction.INSTANCE.getAction(window).toSwingAction(),Resources.get("dock.popup.close")));
+    menu.add(new MagellanPopupAction(CloseWithAbortWindowAction.INSTANCE.getAction(window)
+        .toSwingAction(), Resources.get("dock.popup.close")));
 
     if (window.getWindowParent() instanceof AbstractTabWindow) {
-      menu.add(new MagellanPopupAction(CloseOthersWindowAction.INSTANCE.getAction(window).toSwingAction(),Resources.get("dock.popup.close_others")));
+      menu.add(new MagellanPopupAction(CloseOthersWindowAction.INSTANCE.getAction(window)
+          .toSwingAction(), Resources.get("dock.popup.close_others")));
     }
 
     JMenu moveToMenu = MagellanPopupMenuFactory.getMoveToMenuItems(window);
@@ -147,17 +154,19 @@ public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
   private static void addTabOrientationMenuItems(JPopupMenu menu, DockingWindow window) {
     final AbstractTabWindow tabWindow = MagellanPopupMenuFactory.getTabWindowFor(window);
 
-    if (tabWindow == null || tabWindow instanceof WindowBar) {
+    if (tabWindow == null || tabWindow instanceof WindowBar)
       return;
-    }
 
     JMenu orientationMenu = new JMenu(Resources.get("dock.popup.tab_orientation"));
-    TabbedPanelProperties properties = tabWindow.getTabWindowProperties().getTabbedPanelProperties();
+    TabbedPanelProperties properties =
+        tabWindow.getTabWindowProperties().getTabbedPanelProperties();
     final Direction[] directions = Direction.getDirections();
 
     for (int i = 0; i < directions.length; i++) {
       final Direction dir = directions[i];
-      JMenuItem item = orientationMenu.add(new JMenuItem(Resources.get("dock.direction."+dir.getName()), MagellanPopupMenuFactory.ARROW_ICONS[i]));
+      JMenuItem item =
+          orientationMenu.add(new JMenuItem(Resources.get("dock.direction." + dir.getName()),
+              MagellanPopupMenuFactory.ARROW_ICONS[i]));
       item.setEnabled(dir != properties.getTabAreaOrientation());
       item.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -172,25 +181,27 @@ public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
   private static void addTabDirectionMenuItems(JPopupMenu menu, DockingWindow window) {
     final AbstractTabWindow tabWindow = MagellanPopupMenuFactory.getTabWindowFor(window);
 
-    if (tabWindow == null) {
+    if (tabWindow == null)
       return;
-    }
 
     JMenu directionMenu = new JMenu(Resources.get("dock.popup.tab_direction"));
     TitledTabProperties properties = TitledTabProperties.getDefaultProperties();
-    properties.addSuperObject(tabWindow.getTabWindowProperties().getTabProperties().getTitledTabProperties());
+    properties.addSuperObject(tabWindow.getTabWindowProperties().getTabProperties()
+        .getTitledTabProperties());
     final Direction[] directions = Direction.getDirections();
 
     for (int i = 0; i < directions.length; i++) {
       final Direction dir = directions[i];
 
       if (dir != Direction.LEFT) {
-        JMenuItem item = directionMenu.add(new JMenuItem(Resources.get("dock.direction."+dir.getName()), MagellanPopupMenuFactory.ARROW_ICONS[i]));
+        JMenuItem item =
+            directionMenu.add(new JMenuItem(Resources.get("dock.direction." + dir.getName()),
+                MagellanPopupMenuFactory.ARROW_ICONS[i]));
         item.setEnabled(dir != properties.getNormalProperties().getDirection());
         item.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            tabWindow.getTabWindowProperties().getTabProperties().getTitledTabProperties().getNormalProperties()
-                .setDirection(dir);
+            tabWindow.getTabWindowProperties().getTabProperties().getTitledTabProperties()
+                .getNormalProperties().setDirection(dir);
           }
         });
       }
@@ -223,11 +234,12 @@ public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
 
       splitMenu.addSeparator();
 
-      splitMenu.add(Resources.get("dock.popup.flip_orientation")).addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          ((SplitWindow) window).setHorizontal(!((SplitWindow) window).isHorizontal());
-        }
-      });
+      splitMenu.add(Resources.get("dock.popup.flip_orientation")).addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              ((SplitWindow) window).setHorizontal(!((SplitWindow) window).isHorizontal());
+            }
+          });
 
       splitMenu.add(Resources.get("dock.popup.mirror")).addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -240,56 +252,50 @@ public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
       menu.add(splitMenu);
     }
   }
-  
 
-  private static void addNewViewMenuItems(JPopupMenu menu, final DockingWindow window, ViewFactoryManager viewManager) {
+  private static void addNewViewMenuItems(JPopupMenu menu, final DockingWindow window,
+      ViewFactoryManager viewManager) {
     ViewFactory[] viewFactories = viewManager.getViewFactories();
 
-    if (viewFactories.length == 0) {
+    if (viewFactories.length == 0)
       return;
-    }
 
     JMenu viewsPopup = new JMenu(Resources.get("dock.popup.show_view"));
 
-    for (int i = 0; i < viewFactories.length; i++) {
-      final ViewFactory vf = viewFactories[i];
+    for (final ViewFactory vf : viewFactories) {
+      viewsPopup.add(new JMenuItem(vf.getTitle(), vf.getIcon())).addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              View view = vf.createView();
 
-      viewsPopup.add(new JMenuItem(vf.getTitle(), vf.getIcon())).addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          View view = vf.createView();
+              if (view.getRootWindow() == window.getRootWindow())
+                return;
 
-          if (view.getRootWindow() == window.getRootWindow()) {
-            return;
-          }
+              view.restore();
 
-          view.restore();
+              if (view.getRootWindow() == window.getRootWindow())
+                return;
 
-          if (view.getRootWindow() == window.getRootWindow()) {
-            return;
-          }
+              if (window instanceof RootWindow) {
+                ((RootWindow) window).setWindow(view);
+              } else {
+                AbstractTabWindow tabWindow = MagellanPopupMenuFactory.getTabWindowFor(window);
 
-          if (window instanceof RootWindow) {
-            ((RootWindow) window).setWindow(view);
-          } else {
-            AbstractTabWindow tabWindow = MagellanPopupMenuFactory.getTabWindowFor(window);
-
-            if (tabWindow != null) {
-              tabWindow.addTab(view);
+                if (tabWindow != null) {
+                  tabWindow.addTab(view);
+                }
+              }
             }
-          }
-        }
-      });
+          });
     }
 
     menu.add(viewsPopup);
   }
 
   private static AbstractTabWindow getTabWindowFor(DockingWindow window) {
-    return (AbstractTabWindow)
-        (window instanceof AbstractTabWindow ? window :
-         window.getWindowParent() != null && window.getWindowParent() instanceof AbstractTabWindow ?
-         window.getWindowParent() :
-         null);
+    return (AbstractTabWindow) (window instanceof AbstractTabWindow ? window : window
+        .getWindowParent() != null
+        && window.getWindowParent() instanceof AbstractTabWindow ? window.getWindowParent() : null);
   }
 
   private static JMenu getMoveToMenuItems(final DockingWindow window) {
@@ -302,8 +308,11 @@ public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
       for (int i = 0; i < 4; i++) {
         final Direction dir = directions[i];
 
-        if (!DockingUtil.isAncestor(root.getWindowBar(dir), window) && root.getWindowBar(dir).isEnabled()) {
-          moveToMenu.add(new JMenuItem(Resources.get("dock.direction."+dir.getName()), MagellanPopupMenuFactory.ARROW_ICONS[i])).addActionListener(new ActionListener() {
+        if (!DockingUtil.isAncestor(root.getWindowBar(dir), window)
+            && root.getWindowBar(dir).isEnabled()) {
+          moveToMenu.add(
+              new JMenuItem(Resources.get("dock.direction." + dir.getName()),
+                  MagellanPopupMenuFactory.ARROW_ICONS[i])).addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               root.getWindowBar(dir).addTab(window);
             }
@@ -319,9 +328,9 @@ public class MagellanPopupMenuFactory implements WindowPopupMenuFactory {
 
 class MagellanPopupAction extends AbstractAction {
   private AbstractAction superAction = null;
-  
+
   public MagellanPopupAction(Action superAction, String name) {
-    this.superAction = (AbstractAction)superAction;
+    this.superAction = (AbstractAction) superAction;
     putValue(Action.NAME, name);
   }
 
@@ -395,6 +404,5 @@ class MagellanPopupAction extends AbstractAction {
   public void setEnabled(boolean newValue) {
     superAction.setEnabled(newValue);
   }
-  
-  
+
 }

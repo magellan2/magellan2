@@ -20,41 +20,38 @@ import magellan.client.actions.MenuAction;
 import magellan.client.swing.JVorlage;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class VorlageAction extends MenuAction {
 
-	/**
-	 * Creates a new VorlageAction object.
-	 *
-	 * @param client
-	 */
-	public VorlageAction(Client client) {
-        super(client);
-	}
+  /**
+   * Creates a new VorlageAction object.
+   * 
+   * @param client
+   */
+  public VorlageAction(Client client) {
+    super(client);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		JVorlage v = new JVorlage(client, true, client.getProperties());
-		v.setVisible(true);
-	}
+    JVorlage v = new JVorlage(client, true, client.getProperties());
+    v.setVisible(true);
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.vorlageaction.accelerator",false);
+    return Resources.get("actions.vorlageaction.accelerator", false);
   }
 
   /**
@@ -62,7 +59,7 @@ public class VorlageAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.vorlageaction.mnemonic",false);
+    return Resources.get("actions.vorlageaction.mnemonic", false);
   }
 
   /**
@@ -75,6 +72,6 @@ public class VorlageAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.vorlageaction.tooltip",false);
+    return Resources.get("actions.vorlageaction.tooltip", false);
   }
 }

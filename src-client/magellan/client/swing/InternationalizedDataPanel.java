@@ -61,14 +61,14 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
    */
   public InternationalizedDataPanel(MagellanContext context) {
     this.context = context;
-    this.dispatcher = context.getEventDispatcher();
+    dispatcher = context.getEventDispatcher();
 
-    if (this.dispatcher != null) {
-      this.dispatcher.addGameDataListener(this);
+    if (dispatcher != null) {
+      dispatcher.addGameDataListener(this);
     }
 
-    this.data = context.getGameData();
-    this.settings = context.getProperties();
+    data = context.getGameData();
+    settings = context.getProperties();
   }
 
   /**
@@ -82,7 +82,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
    * Should be called if this dialog is no longer needed.
    */
   public void quit() {
-    if (this.dispatcher != null) {
+    if (dispatcher != null) {
       dispatcher.removeGameDataListener(this);
 
       // remove stale listeners
@@ -108,17 +108,17 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
 
   /**
    * Sets the value of data.
-   *
+   * 
    * @param data The value for data.
    */
   public void setGameData(GameData data) {
     this.data = data;
   }
-  
+
   // TODO(stm) listeners almost never get properly removed. We could remove this from the dispatcher
   // whenever this component is no longer used, but where?
-//  @Override
-//  public void removeNotify() {
-//    super.removeNotify();
-//  }
+  // @Override
+  // public void removeNotify() {
+  // super.removeNotify();
+  // }
 }

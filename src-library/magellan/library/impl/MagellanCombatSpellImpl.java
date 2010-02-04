@@ -32,7 +32,7 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
 
   /**
    * Creates a new CombatSpell object with the specified id.
-   *
+   * 
    * @param id the if of the spell.
    */
   public MagellanCombatSpellImpl(IntegerID id) {
@@ -41,7 +41,7 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
 
   /**
    * Get the actuell spell to be cast in combat.
-   *
+   * 
    * @return the spell to be cast.
    */
   public Spell getSpell() {
@@ -50,7 +50,7 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
 
   /**
    * Specify the actual spell of this CombatSpell.
-   *
+   * 
    * @param spell the spell that shall be cast in combat.
    */
   public void setSpell(Spell spell) {
@@ -59,16 +59,16 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
 
   /**
    * Retrieve the unit that has this combat spell set as a combat spell.
-   *
+   * 
    * @return the casting unit.
    */
   public Unit getUnit() {
-    return this.unit;
+    return unit;
   }
 
   /**
    * Sets the unit which has this combat spell set as a combat spell.
-   *
+   * 
    * @param unit the casting unit.
    */
   public void setUnit(Unit unit) {
@@ -77,18 +77,18 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
 
   /**
    * Gets the level at which the unit wants to cast this spell.
-   *
+   * 
    * @return the level of the spell to be casted.
    */
   public int getCastingLevel() {
-    return this.castingLevel;
+    return castingLevel;
   }
 
   /**
    * Sets a level at which the unit wants to cast this spell.
-   *
-   * @param castingLevel this value must be greater than 0 and  not greater than the unit's magic
-   * 		  skill level.
+   * 
+   * @param castingLevel this value must be greater than 0 and not greater than the unit's magic
+   *          skill level.
    */
   public void setCastingLevel(int castingLevel) {
     this.castingLevel = castingLevel;
@@ -96,16 +96,14 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
 
   /**
    * Returns a String representation of this combat spell.
-   *
+   * 
    * @return combat spell object as string.
    */
   @Override
   public String toString() {
     return (getSpell() == null) ? ""
-        : (getSpell().getTypeName() + ", " + getCastingLevel() + ": " +
-            getSpell().toString());
+        : (getSpell().getTypeName() + ", " + getCastingLevel() + ": " + getSpell().toString());
   }
-
 
   /**
    * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
@@ -146,7 +144,7 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
    * @see magellan.library.Identifiable#getID()
    */
   @Override
-  public IntegerID getID(){
+  public IntegerID getID() {
     return (IntegerID) super.getID();
   }
 }

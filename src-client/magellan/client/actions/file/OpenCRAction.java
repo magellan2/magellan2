@@ -46,14 +46,14 @@ public class OpenCRAction extends MenuAction {
   @Override
   public void menuActionPerformed(ActionEvent e) {
     int response = client.askToSave();
-    if (response == JOptionPane.CANCEL_OPTION) {
+    if (response == JOptionPane.CANCEL_OPTION)
       return;
-    }
 
     File file = OpenCRAction.getFileFromFileChooser(client);
 
-    if (file != null)
+    if (file != null) {
       client.loadCRThread(response == JOptionPane.YES_OPTION, file);
+    }
   }
 
   /**

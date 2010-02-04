@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -46,68 +45,63 @@ import magellan.library.utils.Taggable;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * The implementation of UnitContainer of the Magellan client.
- *
+ * 
  * @author $Author: $
  * @version $Revision: 389 $
  */
-public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl implements UnitContainer, Sorted, Taggable {
-	private static final Logger log = Logger.getInstance(MagellanUnitContainerImpl.class);
-	private UnitContainerType type = null;
-	private Unit owner = null;
+public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl implements
+    UnitContainer, Sorted, Taggable {
+  private static final Logger log = Logger.getInstance(MagellanUnitContainerImpl.class);
+  private UnitContainerType type = null;
+  private Unit owner = null;
   private Unit ownerUnit = null;
 
+  /**
+   * A list containing <tt>String</tt> objects, specifying effects on this <tt>UnitContainer</tt>
+   * object.
+   */
+  protected List<String> effects = null;
 
-	/**
-	 * A list containing <tt>String</tt> objects, specifying  effects on this
-	 * <tt>UnitContainer</tt> object.
-	 */
-	protected List<String> effects = null;
+  // TODO hm, could be private, too, just to prevent it to be null
+  // but that probably consumes a lot of memory
 
-	// TODO hm, could be private, too, just to prevent it to be null
-	// but that probably consumes a lot of memory
+  /** Comments modifiable by the user. The comments are represented as String objects. */
+  protected List<String> comments = null;
 
-	/** Comments modifiable by the user. The comments are represented as String objects. */
-	protected List<String> comments = null;
+  /** The game data this unit capsule refers to. */
+  protected GameData data = null;
 
-	/** The game data this unit capsule refers to. */
-	protected GameData data = null;
+  // (stm 09-06-08) had to get rid of the soft reference again as it leads to problems with
+  // updates of unit relations.
+  // /**
+  // * The cache object containing cached information that may be not related enough to be
+  // * encapsulated as a function and is time consuming to gather.
+  // */
+  // protected SoftReference<Cache> cacheReference = null;
 
+  protected Cache cache;
 
-	// (stm 09-06-08) had to get rid of the soft reference again as it leads to problems with 
-	// updates of unit relations.
-//	/**
-//	 * The cache object containing cached information that may be not related enough to be
-//	 * encapsulated as a function and is time consuming to gather.
-//	 */
-//	protected SoftReference<Cache> cacheReference = null;
+  /**
+   * The items carried by this UnitContainer. The keys are the IDs of the item's type, the values
+   * are the Item objects themselves.
+   */
+  protected Map<ID, Item> items = null;
 
-	protected Cache cache;
+  /**
+   * A map storing all unknown tags for all UnitContainer objects. Keys are IDs of these objects,
+   * values are Maps(should be TagMaps).
+   */
+  private Map<String, String> tagMap = null;
 
-	/**
-	 * The items carried by this UnitContainer. The keys are the IDs of the item's type, the values are the
-	 * Item objects themselves.
-	 */
-	protected Map<ID,Item> items = null;
-
-	/**
-	 * A map storing all unknown tags for all UnitContainer objects. Keys are IDs of these objects,
-	 * values are Maps(should be TagMaps).
-	 */
-	private Map<String, String> tagMap = null;
-
-	/**
-	 * Creates a new UnitContainer object.
-	 *
-	 * 
-	 * 
-	 */
-	public MagellanUnitContainerImpl(ID id, GameData data) {
-		super(id);
-		this.data = data;
-	}
+  /**
+   * Creates a new UnitContainer object.
+   */
+  public MagellanUnitContainerImpl(ID id, GameData data) {
+    super(id);
+    this.data = data;
+  }
 
   /**
    * @see magellan.library.UnitContainer#getOwner()
@@ -115,6 +109,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   public Unit getOwner() {
     return owner;
   }
+
   /**
    * @see magellan.library.UnitContainer#setOwner(magellan.library.Unit)
    */
@@ -123,385 +118,359 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   }
 
   /**
-   * Tries to return the new owner.
-   * TODO: not yet fail-proof
+   * Tries to return the new owner. TODO: not yet fail-proof
+   * 
    * @return
    */
-  public Unit getModifiedOwnerUnit(){
+  public Unit getModifiedOwnerUnit() {
     Unit oldOwner = getOwnerUnit();
     if (oldOwner == null)
       return null;
-    
-    if (oldOwner.getRelations(LeaveRelation.class).isEmpty()){
-      // if the current owner does not leave container and gives command to a unit who will be on 
+
+    if (oldOwner.getRelations(LeaveRelation.class).isEmpty()) {
+      // if the current owner does not leave container and gives command to a unit who will be on
       // the ship, this is the new owner.
       Unit newOwner = oldOwner;
       List<ControlRelation> commands = oldOwner.getRelations(ControlRelation.class);
-      for (UnitRelation ur : commands){
-        if (ur.source == oldOwner && ((ControlRelation) ur).target.getModifiedShip()==oldOwner.getShip())
+      for (UnitRelation ur : commands) {
+        if (ur.source == oldOwner
+            && ((ControlRelation) ur).target.getModifiedShip() == oldOwner.getShip()) {
           newOwner = ((ControlRelation) ur).target;
-        else
+        } else {
           newOwner = null;
+        }
       }
       return newOwner;
-    } else 
+    } else
       // otherwise it's unclear
       return null;
   }
-  
-	/**
-	 * Adds an item to the UnitContainer. If the UnitContainer already has an item of the same type, the item is
-	 * overwritten with the specified item object.
-	 *
-	 * 
-	 *
-	 * @return the specified item i.
-	 */
-	public Item addItem(Item i) {
-		if(items == null) {
-			items = new OrderedHashtable<ID, Item>();
-		}
 
-		items.put(i.getItemType().getID(), i);
-
-		return i;
-	}
-
-	/**
-	 * Returns all the items this container possesses.
-	 *
-	 * @return a collection of Item objects.
-	 */
-	public Collection<Item> getItems() {
-    if (this.items != null && this.items.values() != null) {
-      return Collections.unmodifiableCollection(this.items.values());
-    } else {
-      return Collections.emptyList();
+  /**
+   * Adds an item to the UnitContainer. If the UnitContainer already has an item of the same type,
+   * the item is overwritten with the specified item object.
+   * 
+   * @return the specified item i.
+   */
+  public Item addItem(Item i) {
+    if (items == null) {
+      items = new OrderedHashtable<ID, Item>();
     }
-	}
 
-	/**
-	 * @see magellan.library.UnitContainer#setType(magellan.library.rules.UnitContainerType)
-	 */
-	public void setType(UnitContainerType t) {
-		if(t != null) {
-			this.type = t;
-		} else {
-			throw new IllegalArgumentException("UnitContainer.setType(): invalid type specified!");
-		}
-	}
+    items.put(i.getItemType().getID(), i);
 
-	/**
-	 * Returns the associated GameData
-	 *
-	 * 
-	 */
-	public GameData getData() {
-		return data;
-	}
+    return i;
+  }
 
-	/**
-	 * returns the type of the UnitContainer
-	 *
-	 * 
-	 */
-	public UnitContainerType getType() {
-		return type;
-	}
+  /**
+   * Returns all the items this container possesses.
+   * 
+   * @return a collection of Item objects.
+   */
+  public Collection<Item> getItems() {
+    if (items != null && items.values() != null)
+      return Collections.unmodifiableCollection(items.values());
+    else
+      return Collections.emptyList();
+  }
 
-	// units are sorted in unit containers with this index
-	private int sortIndex = -1;
+  /**
+   * @see magellan.library.UnitContainer#setType(magellan.library.rules.UnitContainerType)
+   */
+  public void setType(UnitContainerType t) {
+    if (t != null) {
+      type = t;
+    } else
+      throw new IllegalArgumentException("UnitContainer.setType(): invalid type specified!");
+  }
 
-	/**
-	 * Sets an index indicating how instances of class are sorted in the report.
-	 *
-	 * 
-	 */
-	public void setSortIndex(int index) {
-		this.sortIndex = index;
-	}
+  /**
+   * Returns the associated GameData
+   */
+  public GameData getData() {
+    return data;
+  }
 
-	/**
-	 * Returns an index indicating how instances of class are sorted in the report.
-	 *
-	 * 
-	 */
-	public int getSortIndex() {
-		return sortIndex;
-	}
+  /**
+   * returns the type of the UnitContainer
+   */
+  public UnitContainerType getType() {
+    return type;
+  }
 
-	/** All units that are in this container. */
-	private Map<ID,Unit> units = null;
+  // units are sorted in unit containers with this index
+  private int sortIndex = -1;
 
-	/** Provides a collection view of the unit map. */
-	private Collection<Unit> unitCollection = null;
+  /**
+   * Sets an index indicating how instances of class are sorted in the report.
+   */
+  public void setSortIndex(int index) {
+    sortIndex = index;
+  }
 
-	/**
-	 * Returns an unmodifiable collection of all the units in this container.
-	 */
-	public Collection<Unit> units() {
-		// note that there is a consistency problem here. If units is
-		// null now we create an empty collection, but if units are
-		// added later we have to create a new collection object
-		// see addUnit()
-		if(units == null) {
-			return Collections.emptyList();
-		}
+  /**
+   * Returns an index indicating how instances of class are sorted in the report.
+   */
+  public int getSortIndex() {
+    return sortIndex;
+  }
 
-		if(unitCollection == null) {
+  /** All units that are in this container. */
+  private Map<ID, Unit> units = null;
+
+  /** Provides a collection view of the unit map. */
+  private Collection<Unit> unitCollection = null;
+
+  /**
+   * Returns an unmodifiable collection of all the units in this container.
+   */
+  public Collection<Unit> units() {
+    // note that there is a consistency problem here. If units is
+    // null now we create an empty collection, but if units are
+    // added later we have to create a new collection object
+    // see addUnit()
+    if (units == null)
+      return Collections.emptyList();
+
+    if (unitCollection == null) {
       if (units != null && units.values() != null) {
         unitCollection = Collections.unmodifiableCollection(units.values());
       } else {
-			  unitCollection = Collections.emptyList();
+        unitCollection = Collections.emptyList();
       }
-		}
-
-		return unitCollection;
-	}
-
-	/**
-	 * Retrieve a unit in this container by id.
-	 */
-	public Unit getUnit(ID key) {
-		if(units != null) {
-			return units.get(key);
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Adds a unit to this container. This method should only be invoked by Unit.setXXX() methods.
-	 *
-	 * 
-	 */
-	public void addUnit(Unit u) {
-		if(units == null) {
-			units = new OrderedHashtable<ID, Unit>();
-
-			// enforce the creation of a new collection view:
-			unitCollection = null;
-		}
-
-		units.put(u.getID(), u);
-	}
-
-	/**
-	 * Removes a unit from this container. This method should only be invoked by Unit.setXXX()
-	 * methods.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Unit removeUnit(ID key) {
-		if(units != null) {
-			Unit u = units.remove(key);
-
-			if(units.isEmpty()) {
-				units = null;
-			}
-
-			return u;
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * @see magellan.library.UnitContainer#modifiedUnits()
-	 */
-	public Collection<Unit> modifiedUnits() {
-		if(!hasCache() || (getCache().modifiedContainerUnits == null)) {
-			refreshModifiedUnits();
-		}
-
-		if(hasCache() && (getCache().modifiedContainerUnits != null)) {
-      if (getCache().modifiedContainerUnits.values() != null) {
-        return Collections.unmodifiableCollection(getCache().modifiedContainerUnits.values());
-      } else {
-        return Collections.emptyList();
-      }
-		} else {
-			return Collections.emptyList();
-		}
-	}
-
-
-	@Override
-	protected Collection<UnitRelation> getRelations() {
-	  if(getCache().relations == null) {
-	    getCache().relations = new ArrayList<UnitRelation>();
-	  }
-	  return getCache().relations;
-	}
-
-	/**
-	 *  @see magellan.library.UnitContainer#getModifiedUnit(magellan.library.ID)
-	 */  
-	public Unit getModifiedUnit(ID key) {
-	  if(!hasCache() || (getCache().modifiedContainerUnits == null)) {
-	    refreshModifiedUnits();
-	  }
-
-	  if(getCache().modifiedContainerUnits == null) {
-	    return null;
-	  }
-
-	  return getCache().modifiedContainerUnits.get(key);
-	}
-
-	private void refreshModifiedUnits() {
-	  Cache cache = getCache();
-
-		// be careful when clearing modifiedContainerUnits, it could
-		// be the normal units
-		if(cache.modifiedContainerUnits == units) {
-			cache.modifiedContainerUnits = null;
-		}
-
-		if(cache.modifiedContainerUnits != null) {
-			cache.modifiedContainerUnits.clear();
-		}
-
-		// if this unit container does not have relations the
-		// modified units equal the normal units
-		if(cache.relations == null) {
-			if(cache.modifiedContainerUnits != units) {
-				if(cache.modifiedContainerUnits != null) {
-					cache.modifiedContainerUnits.clear();
-				}
-
-				cache.modifiedContainerUnits = units;
-			}
-
-			return;
-		}
-
-		if(cache.modifiedContainerUnits == null) {
-			cache.modifiedContainerUnits = new Hashtable<ID, Unit>();
-		}
-
-		if(units != null) {
-			cache.modifiedContainerUnits.putAll(units);
-		}
-
-		for(Iterator<UnitRelation> iter = cache.relations.iterator(); iter.hasNext();) {
-			UnitRelation rel = iter.next();
-
-			if(rel instanceof UnitContainerRelation) {
-				UnitContainerRelation ucr = (UnitContainerRelation) rel;
-
-				if(this.equals(ucr.target)) {
-					if(ucr instanceof EnterRelation) {
-						cache.modifiedContainerUnits.put(ucr.source.getID(), ucr.source);
-					} else if(ucr instanceof LeaveRelation) {
-						cache.modifiedContainerUnits.remove(ucr.source.getID());
-					}
-				} else {
-					MagellanUnitContainerImpl.log.info("UnitContainer.refreshModifiedUnits(): unit container " + this +
-							 " has a relation associated that does not point to it!");
-				}
-			} else {
-				MagellanUnitContainerImpl.log.info("UnitContainer.refreshModifiedUnits(): unit container " + this +
-						 " contains a relation that is not a UnitContainerRelation object!");
-			}
-		}
-	}
-
-	/**
-	 * @see magellan.library.impl.MagellanNamedImpl#toString()
-	 */
-	@Override
-  public String toString() {
-		return getName() + " (" + id + "), " + type;
-	}
-
-	/**
-	 * @see magellan.library.UnitContainer#setOwnerUnit(magellan.library.Unit)
-	 */
-	public void setOwnerUnit(Unit unit) {
-		this.ownerUnit = unit;
-	}
-
-	/**
-	 * Returns the unit owning this UnitContainer. If this UnitContainer is an instance of class
-	 * Ship or Building the normal owning unit is returned (or null, if there is none). In case of
-	 * a Region, the OwnerUnit of the largest castle is returned. In case of a Faction, null is
-	 * returned.
-	 * 
-	 * @see magellan.library.UnitContainer#getOwnerUnit()
-	 */
-	public Unit getOwnerUnit() {
-		if((owner == null) && this instanceof Region) {
-			int bSize = 0;
-
-			for(Iterator<Building> iter = ((Region) this).buildings().iterator(); iter.hasNext();) {
-				Building b = iter.next();
-
-				if(b.getType() instanceof CastleType) {
-					if(b.getSize() > bSize) {
-						bSize = b.getSize();
-						ownerUnit = b.getOwnerUnit();
-					}
-				}
-			}
-		}
-
-		return owner!=null?owner:ownerUnit;
-	}
-
-	/**
-	 * @see magellan.library.impl.MagellanRelatedImpl#addRelation(magellan.library.relation.UnitRelation)
-	 */
-	@Override
-  public void addRelation(UnitRelation rel) {
-	  Cache cache = getCache();
-	  
-		if(cache.relations == null) {
-			cache.relations = new LinkedList<UnitRelation>();
-		}
-
-		cache.relations.add(rel);
-
-		invalidateCache();
-
-	}
-
-	private void invalidateCache() {
-	  if (hasCache()){
-	    getCache().modifiedName = null;
-	    getCache().modifiedContainerUnits = null;
-	  }
-	}
-    
-    /**
-     * @see magellan.library.Named#getModifiedName()
-     */
-    @Override
-    public String getModifiedName() {
-        if(getCache().modifiedName == null) {
-          getCache().modifiedName = super.getModifiedName();
-        }
-        return getCache().modifiedName != null ? getCache().modifiedName : getName(); 
     }
 
-	/**
-	 * @see magellan.library.impl.MagellanRelatedImpl#removeRelation(magellan.library.relation.UnitRelation)
-	 */
-	@Override
+    return unitCollection;
+  }
+
+  /**
+   * Retrieve a unit in this container by id.
+   */
+  public Unit getUnit(ID key) {
+    if (units != null)
+      return units.get(key);
+    else
+      return null;
+  }
+
+  /**
+   * Adds a unit to this container. This method should only be invoked by Unit.setXXX() methods.
+   */
+  public void addUnit(Unit u) {
+    if (units == null) {
+      units = new OrderedHashtable<ID, Unit>();
+
+      // enforce the creation of a new collection view:
+      unitCollection = null;
+    }
+
+    units.put(u.getID(), u);
+  }
+
+  /**
+   * Removes a unit from this container. This method should only be invoked by Unit.setXXX()
+   * methods.
+   */
+  public Unit removeUnit(ID key) {
+    if (units != null) {
+      Unit u = units.remove(key);
+
+      if (units.isEmpty()) {
+        units = null;
+      }
+
+      return u;
+    } else
+      return null;
+  }
+
+  /**
+   * @see magellan.library.UnitContainer#modifiedUnits()
+   */
+  public Collection<Unit> modifiedUnits() {
+    if (!hasCache() || (getCache().modifiedContainerUnits == null)) {
+      refreshModifiedUnits();
+    }
+
+    if (hasCache() && (getCache().modifiedContainerUnits != null)) {
+      if (getCache().modifiedContainerUnits.values() != null)
+        return Collections.unmodifiableCollection(getCache().modifiedContainerUnits.values());
+      else
+        return Collections.emptyList();
+    } else
+      return Collections.emptyList();
+  }
+
+  @Override
+  protected Collection<UnitRelation> getRelations() {
+    if (getCache().relations == null) {
+      getCache().relations = new ArrayList<UnitRelation>();
+    }
+    return getCache().relations;
+  }
+
+  /**
+   * @see magellan.library.UnitContainer#getModifiedUnit(magellan.library.ID)
+   */
+  public Unit getModifiedUnit(ID key) {
+    if (!hasCache() || (getCache().modifiedContainerUnits == null)) {
+      refreshModifiedUnits();
+    }
+
+    if (getCache().modifiedContainerUnits == null)
+      return null;
+
+    return getCache().modifiedContainerUnits.get(key);
+  }
+
+  private void refreshModifiedUnits() {
+    Cache cache = getCache();
+
+    // be careful when clearing modifiedContainerUnits, it could
+    // be the normal units
+    if (cache.modifiedContainerUnits == units) {
+      cache.modifiedContainerUnits = null;
+    }
+
+    if (cache.modifiedContainerUnits != null) {
+      cache.modifiedContainerUnits.clear();
+    }
+
+    // if this unit container does not have relations the
+    // modified units equal the normal units
+    if (cache.relations == null) {
+      if (cache.modifiedContainerUnits != units) {
+        if (cache.modifiedContainerUnits != null) {
+          cache.modifiedContainerUnits.clear();
+        }
+
+        cache.modifiedContainerUnits = units;
+      }
+
+      return;
+    }
+
+    if (cache.modifiedContainerUnits == null) {
+      cache.modifiedContainerUnits = new Hashtable<ID, Unit>();
+    }
+
+    if (units != null) {
+      cache.modifiedContainerUnits.putAll(units);
+    }
+
+    for (UnitRelation rel : cache.relations) {
+      if (rel instanceof UnitContainerRelation) {
+        UnitContainerRelation ucr = (UnitContainerRelation) rel;
+
+        if (equals(ucr.target)) {
+          if (ucr instanceof EnterRelation) {
+            cache.modifiedContainerUnits.put(ucr.source.getID(), ucr.source);
+          } else if (ucr instanceof LeaveRelation) {
+            cache.modifiedContainerUnits.remove(ucr.source.getID());
+          }
+        } else {
+          MagellanUnitContainerImpl.log
+              .info("UnitContainer.refreshModifiedUnits(): unit container " + this
+                  + " has a relation associated that does not point to it!");
+        }
+      } else {
+        MagellanUnitContainerImpl.log.info("UnitContainer.refreshModifiedUnits(): unit container "
+            + this + " contains a relation that is not a UnitContainerRelation object!");
+      }
+    }
+  }
+
+  /**
+   * @see magellan.library.impl.MagellanNamedImpl#toString()
+   */
+  @Override
+  public String toString() {
+    return getName() + " (" + id + "), " + type;
+  }
+
+  /**
+   * @see magellan.library.UnitContainer#setOwnerUnit(magellan.library.Unit)
+   */
+  public void setOwnerUnit(Unit unit) {
+    ownerUnit = unit;
+  }
+
+  /**
+   * Returns the unit owning this UnitContainer. If this UnitContainer is an instance of class Ship
+   * or Building the normal owning unit is returned (or null, if there is none). In case of a
+   * Region, the OwnerUnit of the largest castle is returned. In case of a Faction, null is
+   * returned.
+   * 
+   * @see magellan.library.UnitContainer#getOwnerUnit()
+   */
+  public Unit getOwnerUnit() {
+    if ((owner == null) && this instanceof Region) {
+      int bSize = 0;
+
+      for (Building b : ((Region) this).buildings()) {
+        if (b.getType() instanceof CastleType) {
+          if (b.getSize() > bSize) {
+            bSize = b.getSize();
+            ownerUnit = b.getOwnerUnit();
+          }
+        }
+      }
+    }
+
+    return owner != null ? owner : ownerUnit;
+  }
+
+  /**
+   * @see magellan.library.impl.MagellanRelatedImpl#addRelation(magellan.library.relation.UnitRelation)
+   */
+  @Override
+  public void addRelation(UnitRelation rel) {
+    Cache cache = getCache();
+
+    if (cache.relations == null) {
+      cache.relations = new LinkedList<UnitRelation>();
+    }
+
+    cache.relations.add(rel);
+
+    invalidateCache();
+
+  }
+
+  private void invalidateCache() {
+    if (hasCache()) {
+      getCache().modifiedName = null;
+      getCache().modifiedContainerUnits = null;
+    }
+  }
+
+  /**
+   * @see magellan.library.Named#getModifiedName()
+   */
+  @Override
+  public String getModifiedName() {
+    if (getCache().modifiedName == null) {
+      getCache().modifiedName = super.getModifiedName();
+    }
+    return getCache().modifiedName != null ? getCache().modifiedName : getName();
+  }
+
+  /**
+   * @see magellan.library.impl.MagellanRelatedImpl#removeRelation(magellan.library.relation.UnitRelation)
+   */
+  @Override
   public UnitRelation removeRelation(UnitRelation rel) {
-		UnitRelation r = null;
+    UnitRelation r = null;
 
-		if(hasCache() && (getCache().relations != null)) {
-			if(getCache().relations.remove(rel)) {
-				r = rel;
-                invalidateCache();
-			}
-		}
+    if (hasCache() && (getCache().relations != null)) {
+      if (getCache().relations.remove(rel)) {
+        r = rel;
+        invalidateCache();
+      }
+    }
 
-		return r;
-	}
+    return r;
+  }
 
   /**
    * @see magellan.library.utils.Taggable#deleteAllTags()
@@ -514,7 +483,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * @see magellan.library.utils.Taggable#putTag(java.lang.String, java.lang.String)
    */
   public String putTag(String tag, String value) {
-    if(tagMap == null) {
+    if (tagMap == null) {
       tagMap = new HashMap<String, String>();
     }
 
@@ -525,9 +494,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * @see magellan.library.utils.Taggable#getTag(java.lang.String)
    */
   public String getTag(String tag) {
-    if(tagMap == null) {
+    if (tagMap == null)
       return null;
-    }
 
     return tagMap.get(tag);
   }
@@ -536,9 +504,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * @see magellan.library.utils.Taggable#removeTag(java.lang.String)
    */
   public String removeTag(String tag) {
-    if(tagMap == null) {
+    if (tagMap == null)
       return null;
-    }
 
     return tagMap.remove(tag);
   }
@@ -547,9 +514,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * @see magellan.library.utils.Taggable#containsTag(java.lang.String)
    */
   public boolean containsTag(String tag) {
-    if(tagMap == null) {
+    if (tagMap == null)
       return false;
-    }
 
     return tagMap.containsKey(tag);
   }
@@ -557,8 +523,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   /**
    * @see magellan.library.utils.Taggable#getTagMap()
    */
-  public Map<String,String> getTagMap() {
-    if(tagMap == null) {
+  public Map<String, String> getTagMap() {
+    if (tagMap == null) {
       tagMap = new TagMap();
     }
 
@@ -572,7 +538,6 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     return (tagMap != null) && !tagMap.isEmpty();
   }
 
-
   /**
    * Returns the value of comments.
    * 
@@ -584,7 +549,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 
   /**
    * Sets the value of comments.
-   *
+   * 
    * @param comments The value for comments.
    */
   public void setComments(List<String> comments) {
@@ -602,68 +567,67 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 
   /**
    * Sets the value of effects.
-   *
+   * 
    * @param effects The value for effects.
    */
   public void setEffects(List<String> effects) {
     this.effects = effects;
   }
 
-
   /**
    * @see magellan.library.HasCache#hasCache()
    */
-  public boolean hasCache(){
-//    return cacheReference!=null && cacheReference.get()!=null;
-    return cache!=null;
+  public boolean hasCache() {
+    // return cacheReference!=null && cacheReference.get()!=null;
+    return cache != null;
   }
-  
+
   /**
    * Returns the value of cache.
    * 
    * @return Returns cache.
    */
   public Cache getCache() {
-//    Cache c;
-//    if (cacheReference!=null && (c = cacheReference.get())!=null)
-//      return c;
-//    else{
-//      c = new Cache();
-//      cacheReference = new SoftReference<Cache>(c);
-//      return c;
-//    }
-    if (cache==null)
+    // Cache c;
+    // if (cacheReference!=null && (c = cacheReference.get())!=null)
+    // return c;
+    // else{
+    // c = new Cache();
+    // cacheReference = new SoftReference<Cache>(c);
+    // return c;
+    // }
+    if (cache == null) {
       cache = new Cache();
+    }
     return cache;
   }
 
   /**
    * Sets the value of cache.
-   *
+   * 
    * @param cache The value for cache.
    */
   public void setCache(Cache cache) {
-//    cacheReference = new SoftReference<Cache>(cache);
+    // cacheReference = new SoftReference<Cache>(cache);
     this.cache = cache;
   }
 
   /**
    * @see magellan.library.Unit#clearCache()
    */
-  public void clearCache(){
-//    if (cacheReference==null)
-//      return;
-//    Cache c = cacheReference.get();
-//    if (c!=null)
-//      c.clear();
-//    cacheReference.clear();
-//    cacheReference = null;
-    if (cache==null)
+  public void clearCache() {
+    // if (cacheReference==null)
+    // return;
+    // Cache c = cacheReference.get();
+    // if (c!=null)
+    // c.clear();
+    // cacheReference.clear();
+    // cacheReference = null;
+    if (cache == null)
       return;
     cache.clear();
-    cache=null;
+    cache = null;
   }
-  
 
   /**
    * @see magellan.library.HasCache#addCacheHandler(magellan.library.utils.CacheHandler)
@@ -677,17 +641,16 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * 
    * @return
    */
-  public CacheableOrderEditor getOrderEditor(){
+  public CacheableOrderEditor getOrderEditor() {
     Cache cache = getCache();
-    if(hasCache() && cache.orderEditor != null) {
+    if (hasCache() && cache.orderEditor != null)
       return cache.orderEditor;
-    } else {
+    else
       return null;
-    }
   }
 
-  public void setOrderEditor(CacheableOrderEditor editor){
-    getCache().orderEditor=editor;
+  public void setOrderEditor(CacheableOrderEditor editor) {
+    getCache().orderEditor = editor;
   }
 
 }

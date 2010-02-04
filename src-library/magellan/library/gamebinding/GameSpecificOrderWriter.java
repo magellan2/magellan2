@@ -24,32 +24,27 @@
 package magellan.library.gamebinding;
 
 /**
- * This is an interface for a game specific order writer.
+ * This is an interface for a game specific order writer. At the beginning it is used for changing
+ * ECHECK to ACHECK if the game is Allanon instead of Eressea...
  * 
- * At the beginning it is used for changing ECHECK to ACHECK if
- * the game is Allanon instead of Eressea...
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
 public interface GameSpecificOrderWriter {
   /**
-   * Returns true, if this game specific order writer uses
-   * a syntax check tool like ECheck. 
+   * Returns true, if this game specific order writer uses a syntax check tool like ECheck.
    */
   public boolean useChecker();
-  
+
   /**
-   * Returns the name of the Syntax Checker like
-   * "ECheck" or "ACheck".
+   * Returns the name of the Syntax Checker like "ECheck" or "ACheck".
    */
   public String getCheckerName();
-  
+
   /**
-   * Returns a list of default parameters for the
-   * Syntax Checker. The parameters are used, if no
+   * Returns a list of default parameters for the Syntax Checker. The parameters are used, if no
    * parameters are set.
    */
   public String getCheckerDefaultParameter();
-  
+
 }

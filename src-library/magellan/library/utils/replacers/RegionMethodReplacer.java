@@ -18,92 +18,83 @@ import java.lang.reflect.Method;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author unknown
  * @version 1.0
  */
 public class RegionMethodReplacer extends AbstractRegionReplacer {
-	/** DOCUMENT-ME */
-	public static final int MODE_ALL = 0;
+  /** DOCUMENT-ME */
+  public static final int MODE_ALL = 0;
 
-	/** DOCUMENT-ME */
-	public static final int MODE_NON_NEGATIVE = 1;
+  /** DOCUMENT-ME */
+  public static final int MODE_NON_NEGATIVE = 1;
 
-	/** DOCUMENT-ME */
-	public static final int MODE_POSITIVE = 2;
-	protected Method method;
-	protected int mode;
+  /** DOCUMENT-ME */
+  public static final int MODE_POSITIVE = 2;
+  protected Method method;
+  protected int mode;
 
-	/**
-	 * Creates a new RegionMethodReplacer object.
-	 *
-	 * 
-	 * 
-	 *
-	 * @throws RuntimeException DOCUMENT-ME
-	 */
-	public RegionMethodReplacer(String method, int mode) {
-		try {
-			this.method = Class.forName("magellan.library.impl.MagellanRegionImpl").getMethod(method);
-		} catch(Exception exc) {
-			throw new RuntimeException("Error retrieving region method " + method);
-		}
+  /**
+   * Creates a new RegionMethodReplacer object.
+   * 
+   * @throws RuntimeException DOCUMENT-ME
+   */
+  public RegionMethodReplacer(String method, int mode) {
+    try {
+      this.method = Class.forName("magellan.library.impl.MagellanRegionImpl").getMethod(method);
+    } catch (Exception exc) {
+      throw new RuntimeException("Error retrieving region method " + method);
+    }
 
-		this.mode = mode;
-	}
+    this.mode = mode;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public Object getRegionReplacement(Region r) {
-		try {
-			Object o = method.invoke(r, (Object[])null);
-			
-			if(o != null) {
-				if(!(o instanceof Number)) {
-					return o;
-				}
+    try {
+      Object o = method.invoke(r, (Object[]) null);
 
-				Number n = (Number) o;
+      if (o != null) {
+        if (!(o instanceof Number))
+          return o;
 
-				switch(mode) {
-  				case MODE_ALL:
-  					return o;
-  
-  				case MODE_NON_NEGATIVE:
-  
-  					if(n.doubleValue() >= 0) {
-  						return o;
-  					}
-  
-  					break;
-  
-  				case MODE_POSITIVE:
-  
-  					if(n.doubleValue() > 0) {
-  						return o;
-  					}
-  
-  					break;
-  
-  				default:
-  					break;
-				}
-			}
-		} catch(Exception exc) {
-		}
+        Number n = (Number) o;
 
-		return null;
-	}
-	public String getDescription() {
-    return Resources.get("util.replacers.regionmethodreplacer."+(this.method!=null?this.method.getName():"")+".description");
-	}
+        switch (mode) {
+        case MODE_ALL:
+          return o;
+
+        case MODE_NON_NEGATIVE:
+
+          if (n.doubleValue() >= 0)
+            return o;
+
+          break;
+
+        case MODE_POSITIVE:
+
+          if (n.doubleValue() > 0)
+            return o;
+
+          break;
+
+        default:
+          break;
+        }
+      }
+    } catch (Exception exc) {
+    }
+
+    return null;
+  }
+
+  public String getDescription() {
+    return Resources.get("util.replacers.regionmethodreplacer."
+        + (method != null ? method.getName() : "") + ".description");
+  }
 }

@@ -13,119 +13,114 @@
 
 package magellan.library.rules;
 
-
 import java.util.Collection;
 import java.util.HashSet;
 
 import magellan.library.StringID;
 
 /**
- * This class contains an alliance category. 
- *
+ * This class contains an alliance category.
+ * 
  * @author $Author: $
  * @version $Revision: 271 $
  */
 public class AllianceCategory extends ObjectType {
-	private int bitMask = -1;
+  private int bitMask = -1;
 
-	// TODO: This *may* be a normal Category. Emulate the basic features
-	private AllianceCategory parent = null;
-	private Collection<AllianceCategory> children = null;
-	
-	public AllianceCategory getParent() {
-		return parent;
-	}
+  // TODO: This *may* be a normal Category. Emulate the basic features
+  private AllianceCategory parent = null;
+  private Collection<AllianceCategory> children = null;
 
-	public void setParent(AllianceCategory p) {
-		if(parent != p) {
-			if (parent != null) {
-				parent.removeChild(this);
-			}
-			
-			parent = p;
-			
-			if(p != null) {
-				parent.addChild(this);
-			}
-		}
-	}
-	public boolean hasChildren() {
-		return (children != null) && (children.size() > 0);
-	}
+  public AllianceCategory getParent() {
+    return parent;
+  }
 
-	public Collection<AllianceCategory> getChildren() {
-		if(children == null) {
-			children = new HashSet<AllianceCategory>();
-		}
+  public void setParent(AllianceCategory p) {
+    if (parent != p) {
+      if (parent != null) {
+        parent.removeChild(this);
+      }
 
-		return children;
-	}
+      parent = p;
 
-	public void addChild(AllianceCategory ic) {
-		getChildren().add(ic);
-	}
+      if (p != null) {
+        parent.addChild(this);
+      }
+    }
+  }
 
-	protected void removeChild(AllianceCategory ic) {
-		if(hasChildren()) {
-			getChildren().remove(ic);
-		}
-	}
+  public boolean hasChildren() {
+    return (children != null) && (children.size() > 0);
+  }
 
+  public Collection<AllianceCategory> getChildren() {
+    if (children == null) {
+      children = new HashSet<AllianceCategory>();
+    }
 
-	/**
-	 * Creates a new AllianceCategory object.
-	 *
-	 * 
-	 */
-	public AllianceCategory(StringID id) {
-		super(id);
-	}
+    return children;
+  }
 
-	/**
-	 * copy constructor
-	 *
-	 * 
-	 */
-	public AllianceCategory(AllianceCategory orig) {
-		super(orig.getID());
-		bitMask = orig.bitMask;
-	}
+  public void addChild(AllianceCategory ic) {
+    getChildren().add(ic);
+  }
+
+  protected void removeChild(AllianceCategory ic) {
+    if (hasChildren()) {
+      getChildren().remove(ic);
+    }
+  }
 
   /**
-   * Sets the bitmask of this category. Each category should have a unique bit. Alliances use 
+   * Creates a new AllianceCategory object.
+   */
+  public AllianceCategory(StringID id) {
+    super(id);
+  }
+
+  /**
+   * copy constructor
+   */
+  public AllianceCategory(AllianceCategory orig) {
+    super(orig.getID());
+    bitMask = orig.bitMask;
+  }
+
+  /**
+   * Sets the bitmask of this category. Each category should have a unique bit. Alliances use
    * combinations of bits as their bitmask.
    */
-	public void setBitMask(int mask) {
-		this.bitMask = mask;
-	}
+  public void setBitMask(int mask) {
+    bitMask = mask;
+  }
 
-	/**
-	 * Returns the bitmask of this category. Each category should have a unique bit. Alliances use 
-	 * combinations of bits as their bitmask.
-	 */
-	public int getBitMask() {
-		return this.bitMask;
-	}
+  /**
+   * Returns the bitmask of this category. Each category should have a unique bit. Alliances use
+   * combinations of bits as their bitmask.
+   */
+  public int getBitMask() {
+    return bitMask;
+  }
 
-	/**
-	 * Compares this category to another one according to the bitmask values.
-	 * 
-	 * @see magellan.library.impl.MagellanIdentifiableImpl#compareTo(java.lang.Object)
-	 */
-	@Override
+  /**
+   * Compares this category to another one according to the bitmask values.
+   * 
+   * @see magellan.library.impl.MagellanIdentifiableImpl#compareTo(java.lang.Object)
+   */
+  @Override
   public int compareTo(Object o) {
-		int anotherBitMask = ((AllianceCategory) o).bitMask;
+    int anotherBitMask = ((AllianceCategory) o).bitMask;
 
-		return (bitMask < anotherBitMask) ? (-1) : ((bitMask == anotherBitMask) ? 0 : 1);
-	}
+    return (bitMask < anotherBitMask) ? (-1) : ((bitMask == anotherBitMask) ? 0 : 1);
+  }
 
-	/**
-	 * @see magellan.library.impl.MagellanNamedImpl#toString()
-	 */
-	@Override
+  /**
+   * @see magellan.library.impl.MagellanNamedImpl#toString()
+   */
+  @Override
   public String toString() {
-		return "AllianceCategory[name=" + getName() + ", bitMask=" + bitMask + "]";
-	}
+    return "AllianceCategory[name=" + getName() + ", bitMask=" + bitMask + "]";
+  }
 
   /**
    * Returns the id uniquely identifying this object.

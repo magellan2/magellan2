@@ -26,14 +26,13 @@ package magellan.library.gamebinding;
 import magellan.library.GameData;
 
 /**
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
 public class AllanonMessageRenderer extends EresseaMessageRenderer {
   /**
    * The Constructor
-   *  
+   * 
    * @param gd - The GameData - required for a lot of functions
    */
   public AllanonMessageRenderer(GameData gd) {

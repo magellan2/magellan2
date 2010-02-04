@@ -43,7 +43,7 @@ import magellan.library.utils.Resources;
 
 /**
  * Renders a background image behind the regions.
- *
+ * 
  * @author darcduck
  * @version 1.0, 17.12.2007
  */
@@ -59,9 +59,9 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
    */
   public BackgroundImageRenderer(CellGeometry geo, MagellanContext context) {
     super(geo, context);
-    this.filename =
+    filename =
         context.getProperties().getProperty("map.backgroundimagerenderer.image", "background");
-    setImage(loadImage(this.filename));
+    setImage(loadImage(filename));
   }
 
   /**
@@ -73,27 +73,26 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
   }
 
   protected Image loadImage(String filename) {
-    
+
     ImageIcon icon = null;
-    if ((new File(filename)).exists()){
-      icon = this.context.getImageFactory().loadImage(filename);
+    if ((new File(filename)).exists()) {
+      icon = context.getImageFactory().loadImage(filename);
     }
     if (icon == null) {
-      icon = this.context.getImageFactory().loadImage("etc/images/map/background/"+filename);
+      icon = context.getImageFactory().loadImage("etc/images/map/background/" + filename);
     }
-    if (icon != null) {
+    if (icon != null)
       return icon.getImage();
-    }
     return null;
   }
-  
+
   protected void setImage(Image img) {
     this.img = img;
-    this.imgWidth = this.img.getWidth(null);
-    this.imgHeight = this.img.getHeight(null);
+    imgWidth = this.img.getWidth(null);
+    imgHeight = this.img.getHeight(null);
     // TODO repaint!?
   }
-  
+
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
    */
@@ -107,15 +106,15 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
    */
   @Override
   public void render(Object obj, boolean active, boolean selected) {
-    if (img != null && imgWidth>0 && imgHeight>0) { 
-      int x1 = (int) Math.ceil(offset.x/imgWidth)-1;
-      int x2 = (int) Math.ceil((offset.x+offset.width)/imgWidth);   
-      int y1 = (int) Math.ceil(offset.y/imgHeight)-1;   
-      int y2 = (int) Math.ceil((offset.y+offset.height)/imgHeight);
-  
-      for (int x=x1; x<=x2; x++) {
-        for (int y=y1; y<=y2; y++) {
-          graphics.drawImage(img, -offset.x+x*imgWidth, -offset.y+y*imgHeight, null);
+    if (img != null && imgWidth > 0 && imgHeight > 0) {
+      int x1 = (int) Math.ceil(offset.x / imgWidth) - 1;
+      int x2 = (int) Math.ceil((offset.x + offset.width) / imgWidth);
+      int y1 = (int) Math.ceil(offset.y / imgHeight) - 1;
+      int y2 = (int) Math.ceil((offset.y + offset.height) / imgHeight);
+
+      for (int x = x1; x <= x2; x++) {
+        for (int y = y1; y <= y2; y++) {
+          graphics.drawImage(img, -offset.x + x * imgWidth, -offset.y + y * imgHeight, null);
         }
       }
     }
@@ -140,16 +139,16 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
   }
 
   /**
-   * 
    * This is the inner class used for the preferences
-   *
+   * 
    * @author darcduck
    * @version 1.0, 20.12.2007
    */
-  
-  protected class BackgroundImagePreferences extends JPanel implements PreferencesAdapter, ActionListener {
+
+  protected class BackgroundImagePreferences extends JPanel implements PreferencesAdapter,
+      ActionListener {
     protected BackgroundImageRenderer source = null;
-    private Image img = null; 
+    private Image img = null;
     private String filename = null;
     private PreferencesImagePanel imgPanel = new PreferencesImagePanel();
 
@@ -158,30 +157,31 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
      */
     protected BackgroundImagePreferences(MapCellRenderer source) {
       super(new BorderLayout());
-      this.source = (BackgroundImageRenderer)source;
-      this.filename = BackgroundImageRenderer.this.filename;
-      this.img = BackgroundImageRenderer.this.img;
-      this.imgPanel.setImage(this.img);
+      this.source = (BackgroundImageRenderer) source;
+      filename = BackgroundImageRenderer.this.filename;
+      img = BackgroundImageRenderer.this.img;
+      imgPanel.setImage(img);
 
       JPanel jpbtn = new JPanel();
       JButton btnopen = new JButton(Resources.get("map.backgroundimagerenderer.prefs.open"));
       btnopen.addActionListener(this);
       jpbtn.add(btnopen);
       this.add(jpbtn, BorderLayout.NORTH);
-      this.add(this.imgPanel, BorderLayout.CENTER);
+      this.add(imgPanel, BorderLayout.CENTER);
     }
-    
+
     public void initPreferences() {
-        // TODO: implement it
+      // TODO: implement it
     }
 
     /**
      * DOCUMENT-ME
      */
     public void applyPreferences() {
-      BackgroundImageRenderer.this.setImage(this.img);
-      if (this.filename != null) {
-        BackgroundImageRenderer.this.context.getProperties().setProperty("map.backgroundimagerenderer.image", this.filename);  
+      setImage(img);
+      if (filename != null) {
+        BackgroundImageRenderer.this.context.getProperties().setProperty(
+            "map.backgroundimagerenderer.image", filename);
       }
     }
 
@@ -198,44 +198,44 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
     public String getTitle() {
       return getName();
     }
-    
+
     public void actionPerformed(ActionEvent e) {
       File folder = null;
-      if (this.filename != null) {
-        folder = (new File(this.filename)).getParentFile();
+      if (filename != null) {
+        folder = (new File(filename)).getParentFile();
       }
-      if (folder==null || !folder.exists())
+      if (folder == null || !folder.exists()) {
         folder = magellan.client.Client.getMagellanDirectory();
+      }
       JFileChooser jfc = new JFileChooser(folder);
       int ret = jfc.showOpenDialog(null);
 
-      if(ret == JFileChooser.APPROVE_OPTION) {
+      if (ret == JFileChooser.APPROVE_OPTION) {
         java.io.File f = jfc.getSelectedFile();
-        this.filename = f.getAbsolutePath();
-        this.img = BackgroundImageRenderer.this.loadImage(this.filename);
-        this.imgPanel.setImage(this.img);
-      }  
+        filename = f.getAbsolutePath();
+        img = loadImage(filename);
+        imgPanel.setImage(img);
+      }
       validate();
       repaint();
     }
 
     /**
-     * 
      * The JPanel where the image is pained centered.
-     *
+     * 
      * @author darcduck
      * @version 1.0, 20.12.2007
      */
     protected class PreferencesImagePanel extends JPanel {
       private Image img = null;
-      
+
       protected PreferencesImagePanel() {
       }
-      
+
       protected void setImage(Image img) {
         this.img = img;
       }
-      
+
       @Override
       public void paintComponent(Graphics g) {
         if (img != null) {
@@ -244,7 +244,7 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
           int height = img.getHeight(null);
           g.setColor(getBackground());
           g.fillRect(0, 0, size.width, size.height);
-          g.drawImage(img, (size.width-width)/2, (size.height-height)/2, null);
+          g.drawImage(img, (size.width - width) / 2, (size.height - height) / 2, null);
         }
       }
 
@@ -253,9 +253,8 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
        */
       @Override
       public Dimension getPreferredSize() {
-        if (img != null) {
-          return new Dimension(img.getWidth(null),img.getHeight(null));
-        }
+        if (img != null)
+          return new Dimension(img.getWidth(null), img.getHeight(null));
         return super.getPreferredSize();
       }
 

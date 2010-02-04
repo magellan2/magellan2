@@ -100,8 +100,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * @param context The magellan context holding Client-Global informations
    */
   public AutoCompletion(MagellanContext context) {
-    this.settings = context.getProperties();
-    this.completionSettings = context.getCompletionProperties();
+    settings = context.getProperties();
+    completionSettings = context.getCompletionProperties();
     context.getEventDispatcher().addSelectionListener(this);
     context.getEventDispatcher().addGameDataListener(this);
 
@@ -157,7 +157,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       time = 150;
     }
 
-    completerKeys = new int[numKeys][2]; // cycle forward, cycle backward, complete,
+    completerKeys = new int[AutoCompletion.numKeys][2]; // cycle forward, cycle backward, complete,
     // break
 
     String cycleForward = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD);
@@ -248,9 +248,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * of available GUIs is chosen.
    */
   protected void loadComplete() {
-    if (completionGUIs.size() == 0) {
+    if (completionGUIs.size() == 0)
       return;
-    }
 
     if (activeGUI == null) {
       setCurrentGUI(completionGUIs.get(0));
@@ -385,16 +384,14 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   protected void offerCompletion(JTextComponent j, boolean manual) {
     if (!enableAutoCompletion || (currentGUI == null) || (completer == null) || (j == null)
-        || (completer == null) || !j.isVisible()) {
+        || (completer == null) || !j.isVisible())
       return;
-    }
 
     // find the piece of text
     String line = AutoCompletion.getCurrentLine(j);
 
-    if (line == null) {
+    if (line == null)
       return;
-    }
 
     if ((line.length() == 0)
         || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\n'))
@@ -409,8 +406,9 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       // if Space typed, delete old completions to enforce new parsing
       completions = null;
     }
-    if (completions == null)
+    if (completions == null) {
       currentGUI.stopOffer();
+    }
 
     // remember CaretPosition
     lastCaretPosition = j.getCaretPosition();
@@ -531,9 +529,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * Selects the next completion in the list, if available.
    */
   public void cycleForward() {
-    if ((completions == null) || (completions.size() == 1) || (editors == null)) {
+    if ((completions == null) || (completions.size() == 1) || (editors == null))
       return;
-    }
 
     completionIndex++;
     completionIndex %= completions.size();
@@ -548,9 +545,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * Selects the previous completion in the list, if available.
    */
   public void cycleBackward() {
-    if ((completions == null) || (completions.size() == 1) || (editors == null)) {
+    if ((completions == null) || (completions.size() == 1) || (editors == null))
       return;
-    }
 
     completionIndex--;
 
@@ -570,17 +566,16 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * Inserts <code>completion</code> into the current editor at the current position.
    */
   public void insertCompletion(Completion completion) {
-    if (!enableAutoCompletion) {
+    if (!enableAutoCompletion)
       return;
-    }
 
     completions = null;
 
     if (currentGUI != null) {
       currentGUI.stopOffer();
     }
-    if (editors==null)
-    	return;
+    if (editors == null)
+      return;
 
     JTextComponent j = editors.getCurrentEditor();
     int caretPos = j.getCaretPosition();
@@ -599,12 +594,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if (caretPos != j.getText().length()) {
       // add additional blank if we are inside the line
       char c = j.getText().charAt(caretPos);
-      if (!Character.isWhitespace(c))
+      if (!Character.isWhitespace(c)) {
         newLine += " ";
+      }
     }
     try {
-      j.getDocument().remove(lineBounds[0], caretPos-lineBounds[0]);
-      j.getDocument().insertString(lineBounds[0], newLine, SIMPLEATTRIBUTESET);
+      j.getDocument().remove(lineBounds[0], caretPos - lineBounds[0]);
+      j.getDocument().insertString(lineBounds[0], newLine, AutoCompletion.SIMPLEATTRIBUTESET);
       j.getCaret().setDot(lineBounds[0] + newLine.length() - completion.getCursorOffset());
 
       // pavkovic 2003.03.04: enforce focus request
@@ -622,9 +618,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     int offset = j.getCaretPosition();
     int lineBounds[] = AutoCompletion.getCurrentLineBounds(j.getText(), offset);
 
-    if (lineBounds[0] < 0) {
+    if (lineBounds[0] < 0)
       return null;
-    }
 
     lineBounds[1] = Math.min(offset, lineBounds[1]) - lineBounds[0];
 
@@ -691,9 +686,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * Handles special keys to control the GUI, mainly.
    */
   public void keyPressed(java.awt.event.KeyEvent e) {
-    if (!enableAutoCompletion || (currentGUI == null) || !currentGUI.isOfferingCompletion()) {
+    if (!enableAutoCompletion || (currentGUI == null) || !currentGUI.isOfferingCompletion())
       return;
-    }
 
     int code = e.getKeyCode();
     int modifiers = e.getModifiers();
@@ -731,14 +725,11 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       return;
     }
 
-    if ((completerKeys[3][0] == modifiers) && (completerKeys[3][1] == code)) {
-
+    if ((completerKeys[3][0] == modifiers) && (completerKeys[3][1] == code))
       return;
-    }
 
-    if (!plain) {
+    if (!plain)
       return;
-    }
     if (!Character.isLetterOrDigit(e.getKeyChar())) {
       currentGUI.stopOffer();
     }
@@ -746,8 +737,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     int keys[] = currentGUI.getSpecialKeys();
 
     if (keys != null) {
-      for (int i = 0; i < keys.length; i++) {
-        if (code == keys[i]) {
+      for (int key : keys) {
+        if (code == key) {
           currentGUI.specialKeyPressed(code);
           e.consume();
         }
@@ -774,7 +765,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     timer.stop();
 
-    if (enableAutoCompletion && !hotKeyMode && editors!=null) {
+    if (enableAutoCompletion && !hotKeyMode && editors != null) {
       offerCompletion(editors.getCurrentEditor(), false);
     }
   }
@@ -790,13 +781,14 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     if (enableAutoCompletion && (currentGUI != null) && !currentGUI.editorMayUpdateCaret()) {
-// currentGUI.stopOffer();
+      // currentGUI.stopOffer();
       if (currentGUI.isOfferingCompletion()) {
         SwingUtilities.invokeLater(new Runnable() {
 
           public void run() {
-          	if (editors!=null)
-          	  offerCompletion(editors.getCurrentEditor(), false);
+            if (editors != null) {
+              offerCompletion(editors.getCurrentEditor(), false);
+            }
           }
         });
 
@@ -975,15 +967,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   public List<Completion> getSelfDefinedCompletions() {
     List<Completion> retVal = new Vector<Completion>();
 
-    for (Iterator<String> iter = selfDefinedCompletions.keySet().iterator(); iter.hasNext();) {
-      String name = iter.next();
+    for (String name : selfDefinedCompletions.keySet()) {
       String value = selfDefinedCompletions.get(name);
       Completion c = new Completion(name, value, "", 1);
       retVal.add(c);
     }
 
-    for (Iterator<String> iter = selfDefinedCompletions2.keySet().iterator(); iter.hasNext();) {
-      String name = iter.next();
+    for (String name : selfDefinedCompletions2.keySet()) {
       String value = selfDefinedCompletions2.get(name);
       Completion c = new Completion(name, value, "", 1);
       retVal.add(c);

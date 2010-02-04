@@ -25,7 +25,6 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,77 +47,77 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.guiwrapper.RoutingDialogData;
 import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
 
-
 /**
  * A dialog to fetch a destination region (usually for a ship). Out of the knowledge of this
- * destination region magellan can create respective orders that move the ship to that region. It
- * is also possible, to determine, if ship range shall be considered, whether Vorlage-meta-orders
- * shall be created if the destination region can not be reached in one week and if the captain's
- * orders shall be replaced.
- *
+ * destination region magellan can create respective orders that move the ship to that region. It is
+ * also possible, to determine, if ship range shall be considered, whether Vorlage-meta-orders shall
+ * be created if the destination region can not be reached in one week and if the captain's orders
+ * shall be replaced.
+ * 
  * @author Ulrich Küster
  */
 public class RoutingDialog extends InternationalizedDialog implements RoutingDialogDataPicker {
-	private JButton ok;
-	private JButton cancel;
-	private JCheckBox createRoute;
-	private JCheckBox createSingleTrip;
-	private JCheckBox considerShipRange;
-	private JCheckBox createVorlageOrders;
-	private JCheckBox replaceOrdersBox;
-	private List<Region> regionList;
-	private JComboBox regions;
-	private JTextField regionName;
-	private JTextField xCor;
-	private JTextField yCor;
+  private JButton ok;
+  private JButton cancel;
+  private JCheckBox createRoute;
+  private JCheckBox createSingleTrip;
+  private JCheckBox considerShipRange;
+  private JCheckBox createVorlageOrders;
+  private JCheckBox replaceOrdersBox;
+  private List<Region> regionList;
+  private JComboBox regions;
+  private JTextField regionName;
+  private JTextField xCor;
+  private JTextField yCor;
 
-	/**
-	 * Creates a new RoutingDialog object.
-	 */
-	public RoutingDialog(Frame owner, GameData data, boolean initializeRegions) {
-		this(owner, data, data.regions().values(), true, initializeRegions);
-	}
+  /**
+   * Creates a new RoutingDialog object.
+   */
+  public RoutingDialog(Frame owner, GameData data, boolean initializeRegions) {
+    this(owner, data, data.regions().values(), true, initializeRegions);
+  }
 
-	/**
-	 * Creates a new RoutingDialog object.
-	 */
-	public RoutingDialog(Frame owner, GameData data, Collection<Region> destRegions) {
-		this(owner, data, destRegions, true, true);
-	}
+  /**
+   * Creates a new RoutingDialog object.
+   */
+  public RoutingDialog(Frame owner, GameData data, Collection<Region> destRegions) {
+    this(owner, data, destRegions, true, true);
+  }
 
-	/**
-	 * Creates a new RoutingDialog object.
-	 *
-	 * @param owner
-	 * @param data
-	 * @param destRegions
-	 * @param excludeUnnamed
-	 * @param initializeRegions If this is false, {@link #initialize(GameData, Collection, boolean)} <em>must</em> be called manually! 
-	 *
-	 */
-	public RoutingDialog(Frame owner, GameData data, Collection<Region> destRegions, boolean excludeUnnamed, boolean initializeRegions) {
-		super(owner, true);
-		setTitle(Resources.get("routingdialog.window.title"));
+  /**
+   * Creates a new RoutingDialog object.
+   * 
+   * @param owner
+   * @param data
+   * @param destRegions
+   * @param excludeUnnamed
+   * @param initializeRegions If this is false, {@link #initialize(GameData, Collection, boolean)}
+   *          <em>must</em> be called manually!
+   */
+  public RoutingDialog(Frame owner, GameData data, Collection<Region> destRegions,
+      boolean excludeUnnamed, boolean initializeRegions) {
+    super(owner, true);
+    setTitle(Resources.get("routingdialog.window.title"));
 
     if (initializeRegions) {
-      initialize(data,destRegions,excludeUnnamed);
+      initialize(data, destRegions, excludeUnnamed);
     }
-	}
-  
+  }
+
   public void initialize(GameData data, Collection<Region> destRegions, boolean excludeUnnamed) {
     Container cp = getContentPane();
     cp.setLayout(new GridBagLayout());
 
-    GridBagConstraints c = new GridBagConstraints(0, 0, 4, 1, 0, 0.2,
-                            GridBagConstraints.CENTER,
-                            GridBagConstraints.BOTH,
-                            new Insets(1, 3, 1, 3), 0, 0);
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 4, 1, 0, 0.2, GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH, new Insets(1, 3, 1, 3), 0, 0);
 
     JPanel destSelect = new JPanel();
     destSelect.setLayout(new GridBagLayout());
-    destSelect.setBorder(BorderFactory.createTitledBorder(Resources.get("routingdialog.window.message"))); //BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+    destSelect.setBorder(BorderFactory.createTitledBorder(Resources
+        .get("routingdialog.window.message"))); // BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
-    //destSelect.add(new JLabel(Resources.get("routingdialog.window.message")), c);
+    // destSelect.add(new JLabel(Resources.get("routingdialog.window.message")), c);
     c.gridwidth = 1;
     destSelect.add(new JLabel(Resources.get("routingdialog.xcoor")), c);
 
@@ -142,8 +141,8 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     c.gridx = 0;
     c.gridwidth = 4;
     destSelect.add(new JSeparator(SwingConstants.HORIZONTAL));
-    
-    if(destRegions != null) {
+
+    if (destRegions != null) {
       c.gridy = 2;
 
       JPanel temp = new JPanel();
@@ -155,49 +154,50 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
       regionName = new JTextField();
       temp.add(regionName, BorderLayout.CENTER);
       regionName.getDocument().addDocumentListener(new DocumentListener() {
-          public void insertUpdate(DocumentEvent e) {
-            int i = Collections.binarySearch(regionList, regionName.getText(),
-                             new RegionNameComparator());
+        public void insertUpdate(DocumentEvent e) {
+          int i =
+              Collections
+                  .binarySearch(regionList, regionName.getText(), new RegionNameComparator());
 
-            if(i < 0) {
-              i = -i - 1;
-            }
-
-            regions.setSelectedIndex(i);
+          if (i < 0) {
+            i = -i - 1;
           }
 
-          public void removeUpdate(DocumentEvent e) {
-            int i = Collections.binarySearch(regionList, regionName.getText(),
-                             new RegionNameComparator());
+          regions.setSelectedIndex(i);
+        }
 
-            if(i < 0) {
-              i = -i - 1;
-            }
+        public void removeUpdate(DocumentEvent e) {
+          int i =
+              Collections
+                  .binarySearch(regionList, regionName.getText(), new RegionNameComparator());
 
-            regions.setSelectedIndex(i);
+          if (i < 0) {
+            i = -i - 1;
           }
 
-          public void changedUpdate(DocumentEvent e) {
-            int i = Collections.binarySearch(regionList, regionName.getText(),
-                             new RegionNameComparator());
+          regions.setSelectedIndex(i);
+        }
 
-            if(i < 0) {
-              i = -i - 1;
-            }
+        public void changedUpdate(DocumentEvent e) {
+          int i =
+              Collections
+                  .binarySearch(regionList, regionName.getText(), new RegionNameComparator());
 
-            regions.setSelectedIndex(i);
+          if (i < 0) {
+            i = -i - 1;
           }
-        });
+
+          regions.setSelectedIndex(i);
+        }
+      });
 
       c.gridx = 0;
       c.gridwidth = 4;
       c.gridy = 3;
       regionList = new LinkedList<Region>();
 
-      for(Iterator<Region> iter = destRegions.iterator(); iter.hasNext();) {
-        Region r = iter.next();
-
-        if(!excludeUnnamed || ((r.getName() != null) && (!"".equals(r.getName())))) {
+      for (Region r : destRegions) {
+        if (!excludeUnnamed || ((r.getName() != null) && (!"".equals(r.getName())))) {
           regionList.add(r);
         }
       }
@@ -206,13 +206,13 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
       regions = new JComboBox(regionList.toArray());
       regions.setPreferredSize(new Dimension(300, 25));
       regions.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Region r = (Region) regions.getSelectedItem();
-            CoordinateID co = r.getCoordinate();
-            xCor.setText(co.x + "");
-            yCor.setText(co.y + "");
-          }
-        });
+        public void actionPerformed(ActionEvent e) {
+          Region r = (Region) regions.getSelectedItem();
+          CoordinateID co = r.getCoordinate();
+          xCor.setText(co.x + "");
+          yCor.setText(co.y + "");
+        }
+      });
       destSelect.add(regions, c);
     }
 
@@ -221,7 +221,8 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     c.gridwidth = 2;
     cp.add(destSelect, c);
 
-    createSingleTrip = new JCheckBox(Resources.get("routingdialog.radiobtn.createsingletrip.title"));
+    createSingleTrip =
+        new JCheckBox(Resources.get("routingdialog.radiobtn.createsingletrip.title"));
     createRoute = new JCheckBox(Resources.get("routingdialog.radiobtn.createroute.title"));
 
     createRoute.addActionListener(new ActionListener() {
@@ -239,23 +240,24 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     c.gridy++;
     cp.add(createSingleTrip, c);
 
-//    c.insets.left = 30;
+    // c.insets.left = 30;
     c.gridy++;
 
     considerShipRange = new JCheckBox(Resources.get("routingdialog.chkbox.considerrange.title"));
     considerShipRange.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          if(considerShipRange.isSelected()) {
-            createVorlageOrders.setEnabled(true);
-          } else {
-            createVorlageOrders.setEnabled(false);
-          }
+      public void actionPerformed(ActionEvent e) {
+        if (considerShipRange.isSelected()) {
+          createVorlageOrders.setEnabled(true);
+        } else {
+          createVorlageOrders.setEnabled(false);
         }
-      });
+      }
+    });
     cp.add(considerShipRange, c);
 
     c.gridy++;
-    createVorlageOrders = new JCheckBox(Resources.get("routingdialog.chkbox.createvorlageorders.title"));
+    createVorlageOrders =
+        new JCheckBox(Resources.get("routingdialog.chkbox.createvorlageorders.title"));
     cp.add(createVorlageOrders, c);
 
     c.gridy++;
@@ -273,136 +275,136 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     cancel = new JButton(Resources.get("routingdialog.cancelbutton.text"));
     cancel.setMnemonic(Resources.get("routingdialog.cancelbutton.mnemonic").charAt(0));
     cancel.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          quit();
-        }
-      });
+      public void actionPerformed(ActionEvent e) {
+        quit();
+      }
+    });
     cp.add(cancel, c);
   }
 
-	/**
-	 * Shows the dialog and returns the above explained values
-	 *
-	 * @return A RetValue or <code>null</code> if no destination has been selected
-	 */
-	public RetValue showRoutingDialog() {
-		final RetValue retVal = new RetValue(null, false, false, false, false, false);
-		ActionListener okButtonAction = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int x = 0;
-				int y = 0;
+  /**
+   * Shows the dialog and returns the above explained values
+   * 
+   * @return A RetValue or <code>null</code> if no destination has been selected
+   */
+  public RetValue showRoutingDialog() {
+    final RetValue retVal = new RetValue(null, false, false, false, false, false);
+    ActionListener okButtonAction = new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        int x = 0;
+        int y = 0;
 
-				try {
-					x = Integer.parseInt(xCor.getText());
-					y = Integer.parseInt(yCor.getText());
-					retVal.dest = new CoordinateID(x, y);
-					retVal.makeRoute = createRoute.isSelected();
-					retVal.useRange = considerShipRange.isSelected();
-					retVal.useVorlage = createVorlageOrders.isSelected();
-					retVal.replaceOrders = replaceOrdersBox.isSelected();
-					retVal.makeSingle = createSingleTrip.isSelected();
-				} catch(NumberFormatException exc) {
-				}
+        try {
+          x = Integer.parseInt(xCor.getText());
+          y = Integer.parseInt(yCor.getText());
+          retVal.dest = new CoordinateID(x, y);
+          retVal.makeRoute = createRoute.isSelected();
+          retVal.useRange = considerShipRange.isSelected();
+          retVal.useVorlage = createVorlageOrders.isSelected();
+          retVal.replaceOrders = replaceOrdersBox.isSelected();
+          retVal.makeSingle = createSingleTrip.isSelected();
+        } catch (NumberFormatException exc) {
+        }
 
-				quit();
-			}
-		};
+        quit();
+      }
+    };
 
-		ok.addActionListener(okButtonAction);
-		pack();
-		setLocationRelativeTo(getOwner());
+    ok.addActionListener(okButtonAction);
+    pack();
+    setLocationRelativeTo(getOwner());
     setVisible(true);
 
-		if(retVal.dest == null) {
-			return null;
-		} else {
-			return retVal;
-		}
-	}
+    if (retVal.dest == null)
+      return null;
+    else
+      return retVal;
+  }
 
-	/**
-	 * Just to order regions by their names.
-	 */
-	private class RegionNameComparator implements Comparator<Object> {
-		/**
-		 * Compares two regions by name.
-		 */
-		public int compare(Object o1, Object o2) {
-			String n1 = "";
-			String n2 = "";
+  /**
+   * Just to order regions by their names.
+   */
+  private class RegionNameComparator implements Comparator<Object> {
+    /**
+     * Compares two regions by name.
+     */
+    public int compare(Object o1, Object o2) {
+      String n1 = "";
+      String n2 = "";
 
-			if(o1 instanceof Region) {
-				Region r1 = (Region) o1;
-				n1 = r1.getName();
+      if (o1 instanceof Region) {
+        Region r1 = (Region) o1;
+        n1 = r1.getName();
 
-				if(n1 == null) {
-					n1 = r1.getCoordinate().toString();
-				}
-			} else {
-				n1 = o1.toString();
-			}
+        if (n1 == null) {
+          n1 = r1.getCoordinate().toString();
+        }
+      } else {
+        n1 = o1.toString();
+      }
 
-			if(o2 instanceof Region) {
-				Region r2 = (Region) o2;
-				n2 = r2.getName();
+      if (o2 instanceof Region) {
+        Region r2 = (Region) o2;
+        n2 = r2.getName();
 
-				if(n2 == null) {
-					n2 = r2.getCoordinate().toString();
-				}
-			} else {
-				n2 = o2.toString();
-			}
+        if (n2 == null) {
+          n2 = r2.getCoordinate().toString();
+        }
+      } else {
+        n2 = o2.toString();
+      }
 
-			return n1.compareToIgnoreCase(n2);
-		}
-	}
+      return n1.compareToIgnoreCase(n2);
+    }
+  }
 
-	/**
-	 * Represents the result of the dialog. This is basically a tuple consisting of <br/> 
-	 * <code>dest</code> - the destination coordinate<br/>
-	 * <code>makeRoute</code> - whether to construct a route rather than a simple path<br/>
-	 * <code>useRange</code> - whether to consider the ship range<br/>
-	 * <code>useVorlage</code> - whether to create Vorlage orders<br/>
-	 * <code>replaceOrders</code> - whether to replace the unit's orders  
-	 *
-	 * @author $Author: $
-	 * @version $Revision: 389 $
-	 */
-	public class RetValue implements RoutingDialogData {
-		/** The coordinates of the destination */
-		public CoordinateID dest;
+  /**
+   * Represents the result of the dialog. This is basically a tuple consisting of <br/>
+   * <code>dest</code> - the destination coordinate<br/>
+   * <code>makeRoute</code> - whether to construct a route rather than a simple path<br/>
+   * <code>useRange</code> - whether to consider the ship range<br/>
+   * <code>useVorlage</code> - whether to create Vorlage orders<br/>
+   * <code>replaceOrders</code> - whether to replace the unit's orders
+   * 
+   * @author $Author: $
+   * @version $Revision: 389 $
+   */
+  public class RetValue implements RoutingDialogData {
+    /** The coordinates of the destination */
+    public CoordinateID dest;
 
-		/** whether to create a route rather than a simple path */
-		public boolean makeRoute;
+    /** whether to create a route rather than a simple path */
+    public boolean makeRoute;
 
-		/** whether to consider the ship's range */
-		public boolean useRange;
+    /** whether to consider the ship's range */
+    public boolean useRange;
 
-		/** whether to create Vorlage orders */
-		public boolean useVorlage;
+    /** whether to create Vorlage orders */
+    public boolean useVorlage;
 
-		/** whether to replace the unit's orders */
-		public boolean replaceOrders;
+    /** whether to replace the unit's orders */
+    public boolean replaceOrders;
 
     public boolean makeSingle;
 
-		/**
-		 * Creates a new RetValue object.
-		 *
-		 * @param d The destination
-		 * @param route whether to create a route rather than a simple path
-		 * @param range whether to consider the ship's range
-		 * @param vorlage whether to create Vorlage orders
-		 * @param replace whether to replace the unit's orders
-		 */
-		public RetValue(CoordinateID d, boolean route, boolean range, boolean vorlage, boolean replace, boolean single) {
-		  this.dest = d;
-			this.makeRoute = route;
-			this.useRange = range;
-			this.useVorlage = vorlage;
-			this.replaceOrders = replace;
-			this.makeSingle = single;
-		}
+    /**
+     * Creates a new RetValue object.
+     * 
+     * @param d The destination
+     * @param route whether to create a route rather than a simple path
+     * @param range whether to consider the ship's range
+     * @param vorlage whether to create Vorlage orders
+     * @param replace whether to replace the unit's orders
+     */
+    public RetValue(CoordinateID d, boolean route, boolean range, boolean vorlage, boolean replace,
+        boolean single) {
+      dest = d;
+      makeRoute = route;
+      useRange = range;
+      useVorlage = vorlage;
+      replaceOrders = replace;
+      makeSingle = single;
+    }
 
     public CoordinateID getDestination() {
       return dest;
@@ -427,5 +429,5 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     public boolean makeSingle() {
       return makeSingle;
     }
-	}
+  }
 }

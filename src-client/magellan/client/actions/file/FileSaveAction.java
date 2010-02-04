@@ -17,51 +17,46 @@ import magellan.client.Client;
 import magellan.library.io.file.FileType;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class FileSaveAction extends FileSaveAsAction {
-	// pavkovic 2003.05.20: this object is essentially doing the same as FileSaveAsAction
-	/**
-	 * The standard constructor.
-	 *
-	 * @param parent The client object for this action.
-	 */
-	public FileSaveAction(Client parent) {
-		super(parent);
-	}
+  // pavkovic 2003.05.20: this object is essentially doing the same as FileSaveAsAction
+  /**
+   * The standard constructor.
+   * 
+   * @param parent The client object for this action.
+   */
+  public FileSaveAction(Client parent) {
+    super(parent);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String getIconName() {
-		return "save_edit";
-	}
+    return "save_edit";
+  }
 
-	/**
-	 * This function delivers the target file. In FileSaveAction use  the possibly well known
-	 * FileType of the gamedata object
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * This function delivers the target file. In FileSaveAction use the possibly well known FileType
+   * of the gamedata object
+   */
+  @Override
   protected FileType getFile() {
-		return (client.getData() == null) ? null : (client.getData().getFileType());
-	}
+    return (client.getData() == null) ? null : (client.getData().getFileType());
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.filesaveaction.accelerator",false);
+    return Resources.get("actions.filesaveaction.accelerator", false);
   }
 
   /**
@@ -69,7 +64,7 @@ public class FileSaveAction extends FileSaveAsAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.filesaveaction.mnemonic",false);
+    return Resources.get("actions.filesaveaction.mnemonic", false);
   }
 
   /**
@@ -80,9 +75,8 @@ public class FileSaveAction extends FileSaveAsAction {
     return Resources.get("actions.filesaveaction.name");
   }
 
-
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.filesaveaction.tooltip",false);
+    return Resources.get("actions.filesaveaction.tooltip", false);
   }
 }

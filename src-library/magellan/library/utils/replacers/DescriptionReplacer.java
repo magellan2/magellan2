@@ -21,57 +21,46 @@ package magellan.library.utils.replacers;
 import magellan.library.Described;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class DescriptionReplacer implements Replacer {
-	protected boolean mode;
+  protected boolean mode;
 
-	/**
-	 * Creates a new DescriptionReplacer object.
-	 */
-	public DescriptionReplacer() {
-		this(true);
-	}
+  /**
+   * Creates a new DescriptionReplacer object.
+   */
+  public DescriptionReplacer() {
+    this(true);
+  }
 
-	/**
-	 * Creates new TagReplacer
-	 *
-	 * 
-	 */
-	public DescriptionReplacer(boolean mode) {
-		this.mode = mode;
-	}
+  /**
+   * Creates new TagReplacer
+   */
+  public DescriptionReplacer(boolean mode) {
+    this.mode = mode;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Object getReplacement(Object o) {
-		if(o instanceof Described) {
-			return ((Described) o).getDescription();
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public Object getReplacement(Object o) {
+    if (o instanceof Described)
+      return ((Described) o).getDescription();
 
-		if(mode) {
-			return Replacer.EMPTY;
-		}
+    if (mode)
+      return Replacer.EMPTY;
 
-		return null;
-	}
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getDescription() {
-		return Resources.get("util.replacers.descriptionreplacer.description");
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public String getDescription() {
+    return Resources.get("util.replacers.descriptionreplacer.description");
+  }
 }

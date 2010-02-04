@@ -38,6 +38,7 @@ import magellan.library.utils.Score;
 
 public class SchemeNameMapping implements DataMapping {
   private static SchemeNameMapping singleton = new SchemeNameMapping();
+
   public static SchemeNameMapping getSingleton() {
     return SchemeNameMapping.singleton;
   }
@@ -48,14 +49,14 @@ public class SchemeNameMapping implements DataMapping {
   }
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
-    Map<CoordinateID, Score<CoordinateID>> translationMap = new Hashtable<CoordinateID, Score<CoordinateID>>();
-    
+    Map<CoordinateID, Score<CoordinateID>> translationMap =
+        new Hashtable<CoordinateID, Score<CoordinateID>>();
+
     // Create HashMap of regions in toData
     Map<String, Collection<Region>> regionMap = new HashMap<String, Collection<Region>>();
     for (Region region : toData.regions().values()) {
-      if ((region.getCoordinate().z == level) && 
-          (region.schemes() != null) && 
-          (region.schemes().size() > 0) ) {
+      if ((region.getCoordinate().z == level) && (region.schemes() != null)
+          && (region.schemes().size() > 0)) {
         for (Scheme scheme : region.schemes()) {
           if ((scheme.getName() != null) && (scheme.getName().length() > 0)) {
             Collection<Region> regions = regionMap.get(scheme.getName());
@@ -68,14 +69,12 @@ public class SchemeNameMapping implements DataMapping {
         }
       }
     }
-    
+
     // loop regions in fromData
     for (Region region : fromData.regions().values()) {
       CoordinateID coord = region.getCoordinate();
-  
-      if ((coord.z == level) && 
-          (region.schemes() != null) && 
-          (region.schemes().size() > 0) ) {
+
+      if ((coord.z == level) && (region.schemes() != null) && (region.schemes().size() > 0)) {
 
         for (Scheme scheme : region.schemes()) {
           if ((scheme.getName() != null) && (scheme.getName().length() > 0)) {
@@ -85,8 +84,9 @@ public class SchemeNameMapping implements DataMapping {
               for (Region foundRegion : result) {
                 if (foundRegion != null) {
                   CoordinateID foundCoord = foundRegion.getCoordinate();
-                  CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, level);
-            
+                  CoordinateID translation =
+                      new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, level);
+
                   Score<CoordinateID> score = translationMap.get(translation);
                   if (score == null) {
                     score = new Score<CoordinateID>(translation);
@@ -101,10 +101,9 @@ public class SchemeNameMapping implements DataMapping {
       }
     }
 
-    if (translationMap.size() > 0) {
+    if (translationMap.size() > 0)
       return Collections.max(translationMap.values()).getKey();
-    } else {
+    else
       return null;
-    }
   }
 }

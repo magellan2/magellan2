@@ -17,18 +17,17 @@ import java.io.IOException;
 
 import magellan.library.io.file.FileType;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public interface GameNameIO {
-	/**
-	 * Returns the game data found in the given FileType.
-	 *
-	 * @return A String representing the name of the game.
-	 */
-	public String getGameName(FileType file) throws IOException;
+  /**
+   * Returns the game data found in the given FileType.
+   * 
+   * @return A String representing the name of the game.
+   */
+  public String getGameName(FileType file) throws IOException;
 }

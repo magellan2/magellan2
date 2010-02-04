@@ -36,7 +36,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * Executes all scripts for all units and containers.
- *
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 12.04.2008
  */
@@ -46,13 +46,13 @@ public class ExecutionThread extends Thread {
   private Client client = null;
   private UserInterface ui = null;
   private ExtendedCommands commands = null;
-  
+
   public ExecutionThread(Client client, UserInterface ui, ExtendedCommands commands) {
     this.client = client;
     this.ui = ui;
     this.commands = commands;
   }
-  
+
   /**
    * @see java.lang.Thread#run()
    */
@@ -60,36 +60,36 @@ public class ExecutionThread extends Thread {
   public void run() {
     List<Unit> units = commands.getUnitsWithCommands();
     List<UnitContainer> containers = commands.getUnitContainersWithCommands();
-    
+
     GameData data = client.getData();
-    
-    ui.setMaximum(units.size()+containers.size());
+
+    ui.setMaximum(units.size() + containers.size());
     ui.show();
-    
+
     int counter = 0;
-    
+
     ExecutionThread.log.info("Executing commands for all configured containers...");
-    Collections.sort(containers,new ContainerPriorityComparator());
-    
+    Collections.sort(containers, new ContainerPriorityComparator());
+
     for (UnitContainer container : containers) {
       commands.execute(data, container);
       ui.setProgress(container.getName(), counter++);
     }
-    
+
     ExecutionThread.log.info("Executing commands for all configured units...");
-    Collections.sort(units,new UnitPriorityComparator());
-    
+    Collections.sort(units, new UnitPriorityComparator());
+
     for (Unit unit : units) {
       commands.execute(data, unit);
       ui.setProgress(unit.getName(), counter++);
     }
-    
+
     ui.ready();
   }
 
   /**
    * Compares two containers with their script priorities
-   *
+   * 
    * @author Thoralf Rickert
    * @version 1.0, 12.04.2008
    */
@@ -100,12 +100,12 @@ public class ExecutionThread extends Thread {
       Script s2 = commands.getCommands(o2);
       return s1.getPriority().compareTo(s2.getPriority());
     }
-    
+
   }
 
   /**
    * Compares two units with their script priorities
-   *
+   * 
    * @author Thoralf Rickert
    * @version 1.0, 12.04.2008
    */
@@ -116,7 +116,6 @@ public class ExecutionThread extends Thread {
       Script s2 = commands.getCommands(o2);
       return s1.getPriority().compareTo(s2.getPriority());
     }
-    
+
   }
 }
-

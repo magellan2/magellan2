@@ -19,231 +19,215 @@ import java.util.zip.ZipFile;
 
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * Small class for start-up help. Two search functions: The Magellan directory and the settings
  * file.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class MagellanFinder {
-	private static final Logger log = Logger.getInstance(MagellanFinder.class);
+  private static final Logger log = Logger.getInstance(MagellanFinder.class);
 
   /**
    * Tries to create/read the settings file in <code>settDir</code> (first),
    * <code>magDirector</code> (second), the user's home directory (third) or the current director
    * (last). The first valid location is returned.
    */
-	public static File findSettingsDirectory(File magDirectory, File settDir) {
-		File settFileDir = settDir;
-		File magFile = null;
+  public static File findSettingsDirectory(File magDirectory, File settDir) {
+    File settFileDir = settDir;
+    File magFile = null;
 
-		if((settFileDir != null) && !settFileDir.equals(magDirectory)) {
-			magFile = new File(settFileDir, "magellan.ini");
+    if ((settFileDir != null) && !settFileDir.equals(magDirectory)) {
+      magFile = new File(settFileDir, "magellan.ini");
 
-			if(magFile.exists() && !magFile.isDirectory() && magFile.canWrite()) {
-				return settFileDir;
-			}
-		}
+      if (magFile.exists() && !magFile.isDirectory() && magFile.canWrite())
+        return settFileDir;
+    }
 
-		settFileDir = magDirectory;
-		magFile = new File(settFileDir, "magellan.ini");
-		MagellanFinder.log.info("Searching for Magellan configuration:");
+    settFileDir = magDirectory;
+    magFile = new File(settFileDir, "magellan.ini");
+    MagellanFinder.log.info("Searching for Magellan configuration:");
 
-		StringBuffer msg = new StringBuffer();
-		msg.append(settFileDir + "...");
+    StringBuffer msg = new StringBuffer();
+    msg.append(settFileDir + "...");
 
-		if(!settFileDir.exists() || !settFileDir.canWrite() || !magFile.exists()) {
-			msg.append("Not found.");
-			MagellanFinder.log.info(msg);
-			msg = new StringBuffer();
-			settFileDir = new File(System.getProperty("user.home"));
-			msg.append(settFileDir + "...");
-			magFile = new File(settFileDir, "magellan.ini");
+    if (!settFileDir.exists() || !settFileDir.canWrite() || !magFile.exists()) {
+      msg.append("Not found.");
+      MagellanFinder.log.info(msg);
+      msg = new StringBuffer();
+      settFileDir = new File(System.getProperty("user.home"));
+      msg.append(settFileDir + "...");
+      magFile = new File(settFileDir, "magellan.ini");
 
-			if(!magFile.exists()) {
-				msg.append("Not found.");
-				MagellanFinder.log.info(msg);
-				msg = new StringBuffer();
-				settFileDir = new File(".");
+      if (!magFile.exists()) {
+        msg.append("Not found.");
+        MagellanFinder.log.info(msg);
+        msg = new StringBuffer();
+        settFileDir = new File(".");
 
-				if(!settFileDir.isDirectory()) {
-					settFileDir.getParentFile();
-				}
+        if (!settFileDir.isDirectory()) {
+          settFileDir.getParentFile();
+        }
 
-				msg.append(settFileDir + "...");
-				magFile = new File(settFileDir, "magellan.ini");
+        msg.append(settFileDir + "...");
+        magFile = new File(settFileDir, "magellan.ini");
 
-				if(magFile.exists()) {
-					msg.append("Found");
-					MagellanFinder.log.info(msg);
-					msg = new StringBuffer();
-				}
-			} else {
-				msg.append("Found");
-				MagellanFinder.log.info(msg);
-				msg = new StringBuffer();
-			}
-		} else {
-			msg.append("Found");
-			MagellanFinder.log.info(msg);
-			msg = new StringBuffer();
-		}
+        if (magFile.exists()) {
+          msg.append("Found");
+          MagellanFinder.log.info(msg);
+          msg = new StringBuffer();
+        }
+      } else {
+        msg.append("Found");
+        MagellanFinder.log.info(msg);
+        msg = new StringBuffer();
+      }
+    } else {
+      msg.append("Found");
+      MagellanFinder.log.info(msg);
+      msg = new StringBuffer();
+    }
 
-		if(!magFile.exists()) {
-			msg.append("Not found.\nUsing default directory " + magDirectory.getAbsolutePath() + ".");
-			MagellanFinder.log.info(msg);
-			settFileDir = magDirectory;
-		} else {
-			MagellanFinder.log.info("Using directory '" + settFileDir.getAbsolutePath() + "'.");
-			MagellanFinder.log.info(msg);
-		}
+    if (!magFile.exists()) {
+      msg.append("Not found.\nUsing default directory " + magDirectory.getAbsolutePath() + ".");
+      MagellanFinder.log.info(msg);
+      settFileDir = magDirectory;
+    } else {
+      MagellanFinder.log.info("Using directory '" + settFileDir.getAbsolutePath() + "'.");
+      MagellanFinder.log.info(msg);
+    }
 
-		return settFileDir;
-	}
+    return settFileDir;
+  }
 
-	/**
-	 * Searches for Magellan. This method scans the CLASSPATH and searches for JARs containing
-	 * "magellan.client.Client" or corresponding directory structures.
-	 *
-	 * 
-	 */
-	public static File findMagellanDirectory() {
-		String classPath = System.getProperty("java.class.path", ".");
-		StringTokenizer st = new StringTokenizer(classPath, File.pathSeparator);
+  /**
+   * Searches for Magellan. This method scans the CLASSPATH and searches for JARs containing
+   * "magellan.client.Client" or corresponding directory structures.
+   */
+  public static File findMagellanDirectory() {
+    String classPath = System.getProperty("java.class.path", ".");
+    StringTokenizer st = new StringTokenizer(classPath, File.pathSeparator);
 
-		while(st.hasMoreTokens()) {
-			String token = st.nextToken();
+    while (st.hasMoreTokens()) {
+      String token = st.nextToken();
 
-			// search for a jar
-			try {
-				if(token.endsWith(".jar") && MagellanFinder.checkJar(token)) {
-					File file = new File(MagellanFinder.extractDir(token));
-					MagellanFinder.log.info("Magellan directory: " + file + "(found JAR)");
+      // search for a jar
+      try {
+        if (token.endsWith(".jar") && MagellanFinder.checkJar(token)) {
+          File file = new File(MagellanFinder.extractDir(token));
+          MagellanFinder.log.info("Magellan directory: " + file + "(found JAR)");
 
-					return file;
-				} else {
-					File file = new File(token);
+          return file;
+        } else {
+          File file = new File(token);
 
-					if(!file.isDirectory()) {
-						file = file.getParentFile();
-					}
+          if (!file.isDirectory()) {
+            file = file.getParentFile();
+          }
 
-					if(file.isDirectory()) {
-						File list[] = file.listFiles();
+          if (file.isDirectory()) {
+            File list[] = file.listFiles();
 
-						if(list.length > 0) {
-							for(int i = 0; i < list.length; i++) {
-								if(MagellanFinder.checkJar(list[i])) {
-									MagellanFinder.log.info("Magellan directory: " + file + "(found JAR)");
+            if (list.length > 0) {
+              for (File element : list) {
+                if (MagellanFinder.checkJar(element)) {
+                  MagellanFinder.log.info("Magellan directory: " + file + "(found JAR)");
 
-									return file;
-								}
-							}
-						}
-					}
-				}
-			} catch(Exception exc) {
-			}
+                  return file;
+                }
+              }
+            }
+          }
+        }
+      } catch (Exception exc) {
+      }
 
-			// search for the class
-			try {
-				File file = new File(token);
+      // search for the class
+      try {
+        File file = new File(token);
 
-				if(!file.isDirectory()) {
-					file = file.getParentFile();
-				}
+        if (!file.isDirectory()) {
+          file = file.getParentFile();
+        }
 
-				File dir = new File(file, "magellan");
+        File dir = new File(file, "magellan");
 
-				if(dir.isDirectory()) {
-					dir = new File(dir, "client");
+        if (dir.isDirectory()) {
+          dir = new File(dir, "client");
 
-					if(dir.isDirectory()) {
-						String list[] = dir.list();
+          if (dir.isDirectory()) {
+            String list[] = dir.list();
 
-						if(list.length > 0) {
-							for(int i = 0; i < list.length; i++) {
-								if(list[i].equals("Client.class")) {
-									MagellanFinder.log.info("Magellan directory: " + file +
-											 "(found magellan.client.Client class)");
+            if (list.length > 0) {
+              for (String element : list) {
+                if (element.equals("Client.class")) {
+                  MagellanFinder.log.info("Magellan directory: " + file
+                      + "(found magellan.client.Client class)");
 
-									return file;
-								}
-							}
-						}
-					}
-				}
-			} catch(Exception exc2) {
-			}
-		}
+                  return file;
+                }
+              }
+            }
+          }
+        }
+      } catch (Exception exc2) {
+      }
+    }
 
-		return new File(".");
-	}
+    return new File(".");
+  }
 
-	/**
-	 * Extracts the directory out of the given file. If any error occurs, the current
-	 * directory(".") is returned.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	protected static String extractDir(String file) {
-		try {
-			File f = new File(file);
+  /**
+   * Extracts the directory out of the given file. If any error occurs, the current directory(".")
+   * is returned.
+   */
+  protected static String extractDir(String file) {
+    try {
+      File f = new File(file);
 
-			if(!f.isDirectory()) {
-				f = f.getParentFile();
-			}
+      if (!f.isDirectory()) {
+        f = f.getParentFile();
+      }
 
-			return f.toString();
-		} catch(Exception exc) {
-		}
+      return f.toString();
+    } catch (Exception exc) {
+    }
 
-		try {
-			return new File(".").getAbsoluteFile().toString();
-		} catch(Exception exc2) {
-		}
+    try {
+      return new File(".").getAbsoluteFile().toString();
+    } catch (Exception exc2) {
+    }
 
-		return ".";
-	}
+    return ".";
+  }
 
-	/**
-	 * Checks if the given file is a zip and contains a "com/eressea/demo/Client.class". These are
-	 * the conditions for the file to be a valid magellan Java Archive (JAR).
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	protected static boolean checkJar(String file) {
-		return MagellanFinder.checkJar(new File(file));
-	}
+  /**
+   * Checks if the given file is a zip and contains a "com/eressea/demo/Client.class". These are the
+   * conditions for the file to be a valid magellan Java Archive (JAR).
+   */
+  protected static boolean checkJar(String file) {
+    return MagellanFinder.checkJar(new File(file));
+  }
 
-	/**
-	 * Checks if the given file is a zip and contains a "magellan/client/Client.class". These are
-	 * the conditions for the file to be a valid magellan Java Archive (JAR).
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	protected static boolean checkJar(File file) {
-		try {
-			ZipFile zipped = new ZipFile(file);
+  /**
+   * Checks if the given file is a zip and contains a "magellan/client/Client.class". These are the
+   * conditions for the file to be a valid magellan Java Archive (JAR).
+   */
+  protected static boolean checkJar(File file) {
+    try {
+      ZipFile zipped = new ZipFile(file);
 
-			if(zipped.getInputStream(zipped.getEntry("magellan/client/Client.class")) != null) {
-				zipped.close();
+      if (zipped.getInputStream(zipped.getEntry("magellan/client/Client.class")) != null) {
+        zipped.close();
 
-				return true;
-			}
+        return true;
+      }
 
-			zipped.close();
-		} catch(Exception inner) {
-		}
+      zipped.close();
+    } catch (Exception inner) {
+    }
 
-		return false;
-	}
+    return false;
+  }
 }

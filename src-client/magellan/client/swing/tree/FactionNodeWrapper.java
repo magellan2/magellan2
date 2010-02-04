@@ -53,8 +53,8 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
     if (f == null)
       throw new NullPointerException();
     this.activeAlliances = activeAlliances;
-    this.faction = f;
-    this.region = r;
+    faction = f;
+    region = r;
   }
 
   /**
@@ -90,7 +90,7 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
    * Returns the amount associated with this node.
    */
   public int getAmount() {
-    return this.amount;
+    return amount;
   }
 
   /**
@@ -98,11 +98,10 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
    */
   @Override
   public String toString() {
-    if (amount == -1) {
+    if (amount == -1)
       return faction.toString();
-    } else {
+    else
       return faction.toString() + ": " + amount;
-    }
   }
 
   /** to stay compatible to CellObject */
@@ -232,11 +231,10 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
    * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
-    if (faction != null) {
+    if (faction != null)
       return faction.getName();
-    } else {
+    else
       return toString();
-    }
   }
 
   /**

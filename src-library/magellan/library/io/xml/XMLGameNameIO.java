@@ -18,27 +18,22 @@ import java.io.IOException;
 import magellan.library.io.GameNameIO;
 import magellan.library.io.file.FileType;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 260 $
  */
 public class XMLGameNameIO implements GameNameIO {
-	public XMLGameNameIO() {
-	}
+  public XMLGameNameIO() {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 *
-	 * @throws IOException DOCUMENT-ME
-	 */
-	public String getGameName(FileType filetype) throws IOException {
-		return null;
-	}
+  /**
+   * DOCUMENT-ME
+   * 
+   * @throws IOException DOCUMENT-ME
+   */
+  public String getGameName(FileType filetype) throws IOException {
+    return null;
+  }
 }

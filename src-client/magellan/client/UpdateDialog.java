@@ -72,7 +72,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
   public UpdateDialog(Client c, String lastVersion, String currentVersion) {
     super(c, true);
-    this.client = c;
+    client = c;
     this.lastVersion = lastVersion;
     this.currentVersion = currentVersion;
 
@@ -81,8 +81,8 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     setText();
 
     // center
-    this.setLocation((getToolkit().getScreenSize().width - this.getWidth()) / 2, (getToolkit()
-        .getScreenSize().height - this.getHeight()) / 2);
+    this.setLocation((getToolkit().getScreenSize().width - getWidth()) / 2, (getToolkit()
+        .getScreenSize().height - getHeight()) / 2);
   }
 
   private void setText() {
@@ -105,9 +105,8 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       text.append(Resources.get("updatedialog.downgradewarning", new Object[] { lastVersion,
           currentVersion }));
       showFile("RELEASENOTES.txt");
-    } else {
+    } else
       throw new IllegalArgumentException("???");
-    }
     text.append(Resources.get("updatedialog.infotext"));
     text.append(Resources.get("updatedialog.htmlfooter"));
 
@@ -121,15 +120,14 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     setModal(true);
     setTitle(Resources.get("updatedialog.window.caption"));
 
-//    Icon icon = MagellanImages.ABOUT_MAGELLAN;
+    // Icon icon = MagellanImages.ABOUT_MAGELLAN;
 
-//    JLabel magellanImage = new JLabel();
-//    magellanImage.setIcon(icon);
-//    magellanImage.setText("");
-//    magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
-//    mainPanel.setBackground(MagellanImages.background);
-//    mainPanel.setForeground(MagellanImages.foreground);
-
+    // JLabel magellanImage = new JLabel();
+    // magellanImage.setIcon(icon);
+    // magellanImage.setText("");
+    // magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
+    // mainPanel.setBackground(MagellanImages.background);
+    // mainPanel.setForeground(MagellanImages.foreground);
 
     versionInfo = new JEditorPane();
     versionInfo.setBackground(MagellanImages.background);
@@ -149,9 +147,9 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
     releaseText.setBackground(MagellanImages.background);
     releaseText.setForeground(Color.BLACK);
-//    releaseText.setFont(releaseText.getFont().deriveFont(releaseText.getFont().getSize()*1.2f));
-//    Font font = releaseText.getFont();
-//    releaseText.setContentType("text/html");
+    // releaseText.setFont(releaseText.getFont().deriveFont(releaseText.getFont().getSize()*1.2f));
+    // Font font = releaseText.getFont();
+    // releaseText.setContentType("text/html");
     releaseText.setEditable(false);
     releaseText.setCaretPosition(0);
     releaseNotesPane = new JScrollPane(releaseText);
@@ -199,7 +197,8 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     });
 
     // RELEASENOTES Button
-    final JButton btn_RELEASENOTES = new JButton(Resources.get("updatedialog.btn.RELEASENOTES.caption"));
+    final JButton btn_RELEASENOTES =
+        new JButton(Resources.get("updatedialog.btn.RELEASENOTES.caption"));
     btn_RELEASENOTES.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         showFile("RELEASENOTES.txt");
@@ -209,8 +208,8 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     buttonPanel.add(btn_OK);
     buttonPanel.add(btn_Quit);
 
-//    buttonPanel.add(Box.createHorizontalGlue());
-//    buttonPanel.add(Box.createHorizontalStrut(50));
+    // buttonPanel.add(Box.createHorizontalGlue());
+    // buttonPanel.add(Box.createHorizontalStrut(50));
 
     btn_README.setAlignmentX(Component.RIGHT_ALIGNMENT);
     btn_CHANGELOG.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -224,8 +223,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     buttonPanel2.add(btn_CHANGELOG);
     buttonPanel2.add(Box.createHorizontalGlue());
 
-
-//  mainPanel.add(magellanImage);
+    // mainPanel.add(magellanImage);
     mainPanel.add(scrollPane);
     mainPanel.add(buttonPanel2);
     mainPanel.add(releaseNotesPane);
@@ -257,14 +255,15 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       final BufferedReader reader = new BufferedReader(new FileReader(file));
       final StringBuilder result = new StringBuilder();
       String line;
-      while ((line = reader.readLine()) != null)
+      while ((line = reader.readLine()) != null) {
         result.append(line).append("\n");
+      }
       return result.toString();
     } catch (final FileNotFoundException e) {
-      log.error(e);
+      UpdateDialog.log.error(e);
       return Resources.get("updatedialog.fnfecxeption.message", file.toString());
     } catch (final Exception e) {
-      log.error(e);
+      UpdateDialog.log.error(e);
       return Resources.get("updatedialog.exception.message") + e.toString();
     }
   }

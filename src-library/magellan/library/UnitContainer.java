@@ -17,7 +17,6 @@ import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 
 /**
  * A unit container is a structure that contains units, like a region, building etc.
- * 
  */
 public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
 
@@ -133,7 +132,6 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
    * In case of a Faction, null is returned.
    */
   public Unit getModifiedOwnerUnit();
-
 
   /**
    * Returns the value of comments.

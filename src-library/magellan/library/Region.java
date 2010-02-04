@@ -13,11 +13,9 @@ import java.util.Map;
 
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
-import magellan.library.utils.Units;
 
 /**
  * Represents a region of a report.
- * 
  */
 public interface Region extends UnitContainer {
 
@@ -29,27 +27,35 @@ public interface Region extends UnitContainer {
    * 4..qualified unit in region (->visibility=null)
    */
   public enum Visibility {
-    NULL, NEIGHBOR, LIGHTHOUSE, TRAVEL, UNIT;
+    /**
+     * 0..very poor - no info (->visibility=null)<br />
+     */
+    NULL,
+    /**
+     * 1..neighbour
+     */
+    NEIGHBOR,
+    /**
+     * 2..lighthouse
+     */
+    LIGHTHOUSE,
+    /**
+     * 3..travel
+     */
+    TRAVEL,
+    /**
+     * 4..qualified unit in region (->visibility=null)
+     */
+    UNIT;
 
+    /**
+     * Returns the greater of the two visibilities. The order of visibilities is
+     * <code>UNIT > TRAVEL > LIGHTHOUSE > NEIGHBOR > NULL </code>.
+     */
     public static Visibility getMax(Visibility vis1, Visibility vis2) {
-      return vis1.ordinal() > vis2.ordinal() ? vis1 : vis2;
+      return vis1.ordinal() >= vis2.ordinal() ? vis1 : vis2;
     }
 
-    public boolean lessEqual(Visibility otherVis) {
-      return this.ordinal() <= otherVis.ordinal();
-    }
-
-    public boolean lessThan(Visibility otherVis) {
-      return this.ordinal() < otherVis.ordinal();
-    }
-
-    public boolean greaterEqual(Visibility otherVis) {
-      return otherVis.lessEqual(this);
-    }
-
-    public boolean greaterThan(Visibility otherVis) {
-      return otherVis.lessThan(this);
-    }
   }
 
   /**
@@ -58,7 +64,8 @@ public interface Region extends UnitContainer {
   public boolean fogOfWar();
 
   /**
-   * DOCUMENT-ME
+   * Sets the fog of war property. 1 means fog of war "on", 0 means "off" and -1 will re-compute the
+   * fog from privileged units in the region.
    */
   public void setFogOfWar(int fog);
 
@@ -99,7 +106,7 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets a string constant indicating why this region is visible. This should only be used when
-   * writing/reading a CR. Otherwise use {@link #setVisibilityy(Visibility)}.
+   * writing/reading a CR. Otherwise use {@link #setVisibility(Visibility)}.
    * 
    * @param vis a String object or null to indicate that the visibility cannot be determined.
    */
@@ -151,7 +158,7 @@ public interface Region extends UnitContainer {
    * Removes any reference to the Resource with ItemType type.
    * 
    * @param type
-   * @return
+   * @return The resource that was removed if any, <code>null</code> otherwise
    */
   public RegionResource removeResource(ItemType type);
 
@@ -265,7 +272,8 @@ public interface Region extends UnitContainer {
    * The amount of the items of a particular item type are added up, so two units with 5 pieces of
    * silver yield one silver item of amount 10 here.
    * 
-   * @deprecated Use {@link Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)}
+   * @deprecated Use
+   *             {@link magellan.library.utils.Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)}
    *             instead.
    */
   @Deprecated
@@ -276,7 +284,9 @@ public interface Region extends UnitContainer {
    * particular item type are added up, so two units with 5 pieces of silver yield one silver item
    * of amount 10 here.
    * 
-   * @deprecated Use {@link Units#getContainerAllUnitItems(magellan.library.UnitContainer)} instead.
+   * @deprecated Use
+   *             {@link magellan.library.utils.Units#getContainerAllUnitItems(magellan.library.UnitContainer)}
+   *             instead.
    */
   @Deprecated
   public Collection<Item> allItems();
@@ -286,7 +296,7 @@ public interface Region extends UnitContainer {
    * <code>null</code> if no such item exists in the region.
    * 
    * @deprecated Use
-   *             {@link Units#getContainerPrivilegedUnitItem(magellan.library.UnitContainer, ItemType)}
+   *             {@link magellan.library.utils.Units#getContainerPrivilegedUnitItem(magellan.library.UnitContainer, ItemType)}
    *             instead.
    */
   @Deprecated
@@ -351,7 +361,7 @@ public interface Region extends UnitContainer {
    * @see magellan.library.Identifiable#getID()
    */
   public CoordinateID getID();
-  
+
   /**
    * Returns the RegionType of this region. This method is only a type-safe short cut for retrieving
    * and converting the RegionType of this region.
@@ -374,17 +384,17 @@ public interface Region extends UnitContainer {
   public void refreshUnitRelations(boolean forceRefresh);
 
   /**
-   * add guarding Unit to region
+   * Add guarding Unit to region.
    */
   public void addGuard(Unit u);
 
   /**
-   * get The List of guarding Units
+   * Get The List of guarding Units.
    */
   public List<Unit> getGuards();
 
   /**
-   * DOCUMENT-ME
+   * Get the unit with the given ID if it's in the region, <code>null</code> otherwise.
    */
   public Unit getUnit(ID key);
 
@@ -422,14 +432,18 @@ public interface Region extends UnitContainer {
   public Collection<Sign> getSigns();
 
   /**
-   * @param signLines the signLines to set
+   * Adds a sign to the region.
    */
-  public void setSigns(List<Sign> signLines);
-
   public void addSign(Sign s);
 
+  /**
+   * Add all signs in c to the region.
+   */
   public void addSigns(Collection<Sign> c);
 
+  /**
+   * Remove all signs
+   */
   public void clearSigns();
 
   /**

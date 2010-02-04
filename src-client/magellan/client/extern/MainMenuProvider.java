@@ -26,20 +26,18 @@ package magellan.client.extern;
 import javax.swing.JMenu;
 
 /**
- * 
  * To be instantiated by plugins which want to have an entry in the main menu
- *
+ * 
  * @author Fiete
  * @version 1.0, 21.10.2008
  */
-public interface MainMenuProvider extends MagellanPlugIn{
-  
+public interface MainMenuProvider extends MagellanPlugIn {
+
   /**
    * returns the menu entry fro the main menu
    * 
    * @return the Menu
    */
   public JMenu getJMenu();
-  
-  
+
 }

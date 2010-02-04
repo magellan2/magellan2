@@ -24,88 +24,84 @@ import magellan.client.Client;
 import magellan.client.utils.ErrorWindow;
 import magellan.client.utils.FileHistory;
 
-
 /**
  * The action for loading files from the history in the file menu.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class FileHistoryAction extends AbstractAction {
-	private File file;
-	private FileHistory history;
+  private File file;
+  private FileHistory history;
 
-	/**
-	 * Creates a new FileHistoryAction object.
-	 *
-	 * 
-	 * 
-	 */
-	public FileHistoryAction(FileHistory hist, File cr) {
-		file = cr;
-		history = hist;
-		init();
-	}
+  /**
+   * Creates a new FileHistoryAction object.
+   */
+  public FileHistoryAction(FileHistory hist, File cr) {
+    file = cr;
+    history = hist;
+    init();
+  }
 
-	private void init() {
-		// format the text
-		StringBuffer path = new StringBuffer();
-		path.append("...").append(File.separatorChar).append(file.getName());
+  private void init() {
+    // format the text
+    StringBuffer path = new StringBuffer();
+    path.append("...").append(File.separatorChar).append(file.getName());
 
-		File parent = file.getParentFile();
+    File parent = file.getParentFile();
 
-		while((parent != null) && ((path.length() + parent.getName().length()) < 30)) {
-			path.insert(4, File.separatorChar).insert(4, parent.getName());
-			parent = parent.getParentFile();
-		}
+    while ((parent != null) && ((path.length() + parent.getName().length()) < 30)) {
+      path.insert(4, File.separatorChar).insert(4, parent.getName());
+      parent = parent.getParentFile();
+    }
 
-		putValue(Action.NAME, path.toString());
+    putValue(Action.NAME, path.toString());
 
-		// tool tip text
-		try {
-			putValue(Action.SHORT_DESCRIPTION, file.getCanonicalPath());
-		} catch(IOException e) {
-			putValue(Action.SHORT_DESCRIPTION, path.toString());
-		}
-	}
-
-	/**
-	 * Loads the file that was selected.
-	 *
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent e) {
+    // tool tip text
     try {
-  		history.loadFile(file);
+      putValue(Action.SHORT_DESCRIPTION, file.getCanonicalPath());
+    } catch (IOException e) {
+      putValue(Action.SHORT_DESCRIPTION, path.toString());
+    }
+  }
+
+  /**
+   * Loads the file that was selected.
+   * 
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public void actionPerformed(ActionEvent e) {
+    try {
+      history.loadFile(file);
     } catch (Throwable t) {
-      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);
+      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t.getMessage(), "", t);
       errorWindow.setVisible(true);
     }
-	}
+  }
 
-	/**
-	 * Returns the associated file. 
-	 */
-	public File getFile() {
-		return file;
-	}
+  /**
+   * Returns the associated file.
+   */
+  public File getFile() {
+    return file;
+  }
 
-	/**
-	 * Two actions are equal if their files are equal.
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
+  /**
+   * Two actions are equal if their files are equal.
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
   public boolean equals(Object o) {
-		try {
-			return o != null && file.equals(((FileHistoryAction) o).getFile());
-		} catch(ClassCastException e) {
-			return false;
-		}
-	}
-	
-	@Override
-	public int hashCode() {
-	  return file==null?42:file.hashCode();
-	}
+    try {
+      return o != null && file.equals(((FileHistoryAction) o).getFile());
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return file == null ? 42 : file.hashCode();
+  }
 }

@@ -40,13 +40,15 @@ public class SpringUtilities {
     if (rows < 0 || cols < 0 || rows + cols == 0)
       throw new IllegalArgumentException();
 
-    if (parent.getComponentCount()==0)
+    if (parent.getComponentCount() == 0)
       return;
 
-    if (rows == 0)
-      rows = getOtherGridValue(parent.getComponentCount(), cols);
-    if (cols == 0)
-      cols = getOtherGridValue(parent.getComponentCount(), cols);
+    if (rows == 0) {
+      rows = SpringUtilities.getOtherGridValue(parent.getComponentCount(), cols);
+    }
+    if (cols == 0) {
+      cols = SpringUtilities.getOtherGridValue(parent.getComponentCount(), cols);
+    }
 
     SpringLayout layout;
     try {
@@ -57,7 +59,7 @@ public class SpringUtilities {
     }
 
     int max = rows * cols;
-    for (int i=parent.getComponentCount(); i<max; ++i){
+    for (int i = parent.getComponentCount(); i < max; ++i) {
       parent.add(new JPanel());
     }
 
@@ -65,7 +67,7 @@ public class SpringUtilities {
     Spring yPadSpring = Spring.constant(yPad);
     Spring initialXSpring = Spring.constant(initialX);
     Spring initialYSpring = Spring.constant(initialY);
-    
+
     // Calculate Springs that are the max of the width/height so that all
     // cells have the same size.
     Spring maxWidthSpring = layout.getConstraints(parent.getComponent(0)).getWidth();
@@ -150,13 +152,15 @@ public class SpringUtilities {
     if (rows < 0 || cols < 0 || rows + cols == 0)
       throw new IllegalArgumentException();
 
-    if (parent.getComponentCount()==0)
+    if (parent.getComponentCount() == 0)
       return;
-    
-    if (rows == 0)
-      rows = getOtherGridValue(parent.getComponentCount(), cols);
-    if (cols == 0)
-      cols = getOtherGridValue(parent.getComponentCount(), cols);
+
+    if (rows == 0) {
+      rows = SpringUtilities.getOtherGridValue(parent.getComponentCount(), cols);
+    }
+    if (cols == 0) {
+      cols = SpringUtilities.getOtherGridValue(parent.getComponentCount(), cols);
+    }
 
     SpringLayout layout;
     try {
@@ -167,7 +171,7 @@ public class SpringUtilities {
     }
 
     int max = rows * cols;
-    for (int i=parent.getComponentCount(); i<max; ++i){
+    for (int i = parent.getComponentCount(); i < max; ++i) {
       parent.add(new JPanel());
     }
 

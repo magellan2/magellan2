@@ -211,7 +211,7 @@ public enum Direction {
   public static Direction toDirection(int dir) {
     if (dir < 0 || dir > 5)
       return INVALID;
-    return directions.get(dir + 1);
+    return directions.get(dir);
   }
 
   /**

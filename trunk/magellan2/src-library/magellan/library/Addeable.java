@@ -27,14 +27,18 @@ import java.util.List;
 
 /**
  * This interface marks an object as addeable. It can be used to add an attribute
- *
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 12.04.2009
  */
 public interface Addeable {
   public void addAttribute(String key, String value);
+
   public List<String> getAttributeKeys();
+
   public String getAttribute(String key);
+
   public boolean containsAttribute(String key);
+
   public int getAttributeSize();
 }

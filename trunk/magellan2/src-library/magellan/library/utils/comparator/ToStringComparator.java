@@ -16,17 +16,15 @@ package magellan.library.utils.comparator;
 import java.util.Comparator;
 
 /**
- * A comparator imposing an ordering on named objects by comparing their names
- * alphabetically.
+ * A comparator imposing an ordering on named objects by comparing their names alphabetically.
  * <p>
  * Note: this comparator imposes orderings that are inconsistent with equals.
  * </p>
  * <p>
- * In order to overcome the inconsistency with equals this comparator allows the
- * introduction of a sub-comparator which is applied in cases of equality. I.e.
- * if the two compared objects have the same name and they would be regarded as
- * equal by this comparator, instead of 0 the result of the sub-comparator's
- * comparison is returned.
+ * In order to overcome the inconsistency with equals this comparator allows the introduction of a
+ * sub-comparator which is applied in cases of equality. I.e. if the two compared objects have the
+ * same name and they would be regarded as equal by this comparator, instead of 0 the result of the
+ * sub-comparator's comparison is returned.
  * </p>
  */
 public class ToStringComparator<T extends Object> implements Comparator<T> {
@@ -38,8 +36,7 @@ public class ToStringComparator<T extends Object> implements Comparator<T> {
   /**
    * Creates a new NameComparator object.
    * 
-   * @param sameNameSubComparator
-   *          if two objects with the same name are compared, this
+   * @param sameNameSubComparator if two objects with the same name are compared, this
    *          sub-comparator is applied if it is not <tt>null</tt>.
    */
   public ToStringComparator(Comparator<? super Object> sameStringSubComparator) {
@@ -49,14 +46,11 @@ public class ToStringComparator<T extends Object> implements Comparator<T> {
   /**
    * Compares its two arguments for order according to their names.
    * 
-   * @param o1
-   *          an instance of interface Named.
-   * @param o2
-   *          an instance of interface Named.
-   * @return the lexical difference of <tt>o1</tt>'s and <tt>o2</tt>'s
-   *         names as returned by String.compareTo(). If the names are equal and
-   *         a sub-comparator was specified, the result of that sub-comparator's
-   *         comparison is returned.
+   * @param o1 an instance of interface Named.
+   * @param o2 an instance of interface Named.
+   * @return the lexical difference of <tt>o1</tt>'s and <tt>o2</tt>'s names as returned by
+   *         String.compareTo(). If the names are equal and a sub-comparator was specified, the
+   *         result of that sub-comparator's comparison is returned.
    */
   public int compare(T o1, T o2) {
     String n1 = o1.toString();

@@ -15,15 +15,13 @@ package magellan.client.swing.tree;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface TreeUpdate {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void updateTree(Object src);
+  /**
+   * DOCUMENT-ME
+   */
+  public void updateTree(Object src);
 }

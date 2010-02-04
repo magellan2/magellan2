@@ -25,80 +25,75 @@ import javax.swing.JDialog;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.logging.Logger;
 
-
 /**
- * A JDialog which should be used as base clase for all Magellan dialogs. The "Internationalized"
- * in the name is somewhat obsolete since the localization method was changed.
- *
+ * A JDialog which should be used as base clase for all Magellan dialogs. The "Internationalized" in
+ * the name is somewhat obsolete since the localization method was changed.
  */
 public abstract class InternationalizedDialog extends JDialog {
-	private static final Logger log = Logger.getInstance(InternationalizedDialog.class);
+  private static final Logger log = Logger.getInstance(InternationalizedDialog.class);
 
-	/**
-	 * Creates a new InternationalizedDialog object.
-	 *
-	 * @param owner the <code>Frame</code> from which the dialog is displayed
-	 * @param modal <code>true</code> for a modal dialog, false for one that allows others windows to be 
-	 * active at the same time
-	 */
-	public InternationalizedDialog(Frame owner, boolean modal) {
-		super(owner, modal);
-		initDialog();
-	}
+  /**
+   * Creates a new InternationalizedDialog object.
+   * 
+   * @param owner the <code>Frame</code> from which the dialog is displayed
+   * @param modal <code>true</code> for a modal dialog, false for one that allows others windows to
+   *          be active at the same time
+   */
+  public InternationalizedDialog(Frame owner, boolean modal) {
+    super(owner, modal);
+    initDialog();
+  }
 
-	/**
-	 * Creates a new InternationalizedDialog object.
-	 *
-	 * 
-	 * 
-	 */
-	public InternationalizedDialog(Dialog owner, boolean modal) {
-		super(owner, modal);
-		initDialog();
-	}
+  /**
+   * Creates a new InternationalizedDialog object.
+   */
+  public InternationalizedDialog(Dialog owner, boolean modal) {
+    super(owner, modal);
+    initDialog();
+  }
 
-	@Override
+  @Override
   protected void processKeyEvent(KeyEvent e) {
-		super.processKeyEvent(e);
+    super.processKeyEvent(e);
 
-		if((e.getID() == KeyEvent.KEY_PRESSED) && (e.getKeyCode() == KeyEvent.VK_ESCAPE)) {
-			quit();
-		}
-	}
+    if ((e.getID() == KeyEvent.KEY_PRESSED) && (e.getKeyCode() == KeyEvent.VK_ESCAPE)) {
+      quit();
+    }
+  }
 
-	protected void initDialog() {
-		// call setFocusableWindowState (true) on java 1.4 while staying compatible with Java 1.3
-		JVMUtilities.setFocusableWindowState(this, true);
+  protected void initDialog() {
+    // call setFocusableWindowState (true) on java 1.4 while staying compatible with Java 1.3
+    JVMUtilities.setFocusableWindowState(this, true);
 
-		addKeyListener(new KeyAdapter() {
-				@Override
-        public void keyPressed(KeyEvent e) {
-					if(InternationalizedDialog.log.isDebugEnabled()) {
-						InternationalizedDialog.log.debug("InternationalizedDialog.KeyEvent :" + e);
-					}
+    addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if (InternationalizedDialog.log.isDebugEnabled()) {
+          InternationalizedDialog.log.debug("InternationalizedDialog.KeyEvent :" + e);
+        }
 
-					if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-						quit();
-					}
-				}
-			});
-		addWindowListener(new WindowAdapter() {
-				@Override
-        public void windowClosing(WindowEvent e) {
-					if(InternationalizedDialog.log.isDebugEnabled()) {
-						InternationalizedDialog.log.debug("InternationalizedDialog.WindowEvent :" + e);
-					}
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+          quit();
+        }
+      }
+    });
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        if (InternationalizedDialog.log.isDebugEnabled()) {
+          InternationalizedDialog.log.debug("InternationalizedDialog.WindowEvent :" + e);
+        }
 
-					quit();
-				}
-			});
-	}
+        quit();
+      }
+    });
+  }
 
-	protected void quit() {
-		if(InternationalizedDialog.log.isDebugEnabled()) {
-			InternationalizedDialog.log.debug("InternationalizedDialog.quit called. (" + this + ")");
-		}
+  protected void quit() {
+    if (InternationalizedDialog.log.isDebugEnabled()) {
+      InternationalizedDialog.log.debug("InternationalizedDialog.quit called. (" + this + ")");
+    }
 
-		dispose();
-	}
+    dispose();
+  }
 }

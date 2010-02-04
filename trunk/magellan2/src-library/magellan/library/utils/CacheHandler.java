@@ -13,15 +13,14 @@
 
 package magellan.library.utils;
 
-
 /**
  * An interface to be implemented by all classes that want to be notified about cache clean-up.
  */
 public interface CacheHandler {
-	/**
-	 * Called if a cache is cleared. 
-	 * 
-	 * @param c The cache that is going to be cleared.
-	 */
-	public void clearCache(Cache c);
+  /**
+   * Called if a cache is cleared.
+   * 
+   * @param c The cache that is going to be cleared.
+   */
+  public void clearCache(Cache c);
 }

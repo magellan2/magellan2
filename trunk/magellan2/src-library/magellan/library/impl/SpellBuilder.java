@@ -70,10 +70,11 @@ public class SpellBuilder {
       throw new RuntimeException("spell construction incomplete");
 
     MagellanSpellImpl result = new MagellanSpellImpl(StringID.create(name), data);
-    if (spell.getAttributeSize() > 0)
+    if (spell.getAttributeSize() > 0) {
       for (String key : spell.getAttributeKeys()) {
         result.addAttribute(key, spell.getAttribute(key));
       }
+    }
 
     result.setBlockID(id.intValue());
     result.setComponents(spell.getComponents());

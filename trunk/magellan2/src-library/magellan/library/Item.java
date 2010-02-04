@@ -21,71 +21,68 @@ import magellan.library.rules.ItemType;
  * sub-classing the respective interfaces.
  */
 public class Item {
-	private ItemType type;
-	private int amount;
+  private ItemType type;
+  private int amount;
 
-	/**
-	 * Creates a new item of the specified type and with the specified amount.
-	 *
-	 * @throws NullPointerException if <code>type==null</code>
-	 */
-	public Item(ItemType type, int amount) {
-		if(type != null) {
-			this.type = type;
-			this.amount = amount;
-		} else {
-			throw new NullPointerException("Item.Item(): specified item type is null!");
-		}
-	}
+  /**
+   * Creates a new item of the specified type and with the specified amount.
+   * 
+   * @throws NullPointerException if <code>type==null</code>
+   */
+  public Item(ItemType type, int amount) {
+    if (type != null) {
+      this.type = type;
+      this.amount = amount;
+    } else
+      throw new NullPointerException("Item.Item(): specified item type is null!");
+  }
 
-	/**
-	 * Sets the amount. 
-	 */
-	public void setAmount(int amount) {
-		this.amount = amount;
-	}
+  /**
+   * Sets the amount.
+   */
+  public void setAmount(int amount) {
+    this.amount = amount;
+  }
 
-	/**
-	 * Returns the amount, i.e. the number of entities this item represents. 
-	 */
-	public int getAmount() {
-		return amount;
-	}
+  /**
+   * Returns the amount, i.e. the number of entities this item represents.
+   */
+  public int getAmount() {
+    return amount;
+  }
 
-	/**
-	 *
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
+  /**
+   * @see java.lang.Object#toString()
+   */
+  @Override
   public String toString() {
-		return type.toString();
-	}
+    return type.toString();
+  }
 
-	/**
-	 * Returns the type of this item.
-	 */
-	public ItemType getItemType() {
-		return type;
-	}
-
-	/**
+  /**
    * Returns the type of this item.
-	 *
-	 * @deprecated Use getItemType() instead
-	 */
-	@Deprecated
-  public ItemType getType() {
-		return getItemType();
-	}
+   */
+  public ItemType getItemType() {
+    return type;
+  }
 
-	/**
-	 * This method is a shortcut for calling this.getType().getName()
-	 *
-	 */
-	public String getName() {
-		return type.getName();
-	}
-  
+  /**
+   * Returns the type of this item.
+   * 
+   * @deprecated Use getItemType() instead
+   */
+  @Deprecated
+  public ItemType getType() {
+    return getItemType();
+  }
+
+  /**
+   * This method is a shortcut for calling this.getType().getName()
+   */
+  public String getName() {
+    return type.getName();
+  }
+
   /**
    * Returns the name, quoted if required.
    */

@@ -109,7 +109,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     dispatcher.addSelectionListener(this);
 
     init();
-    setRegions((newRegions == null) ? Collections.<Region>emptySet() : newRegions);
+    setRegions((newRegions == null) ? Collections.<Region> emptySet() : newRegions);
   }
 
   @Override
@@ -181,7 +181,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     c.weightx = 1.0;
 
     luxuries = new JComboBox();
-    this.buildLuxuryTranslations();
+    buildLuxuryTranslations();
     luxuries.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         setSellTableRegions();
@@ -288,9 +288,9 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   public void gameDataChanged(GameDataEvent ge) {
     super.gameDataChanged(ge);
 
-    this.buildLuxuryTranslations();
+    buildLuxuryTranslations();
 
-    setRegions(Collections.<Region>emptySet());
+    setRegions(Collections.<Region> emptySet());
 
     updateFactions();
   }
@@ -335,17 +335,15 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   private void setBuyTableRegions() {
     String curLux = (String) luxuries.getSelectedItem();
 
-    if (curLux == null) {
+    if (curLux == null)
       return;
-    }
 
     curLux = getOriginalLuxuryTranslation(curLux);
 
     LinkedList<Region> newRegions = new LinkedList<Region>();
     int total = 0;
 
-    for (Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
-      Region region = iter.next();
+    for (Region region : regions) {
       LuxuryPrice price = region.getPrices().get(StringID.create(curLux));
 
       if (price != null && price.getPrice() < 0) {
@@ -367,18 +365,16 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   private void setSellTableRegions() {
     String curLux = (String) luxuries.getSelectedItem();
 
-    if (curLux == null) {
+    if (curLux == null)
       return;
-    }
 
-    curLux = this.getOriginalLuxuryTranslation(curLux);
+    curLux = getOriginalLuxuryTranslation(curLux);
 
     LinkedList<Region> newRegions = new LinkedList<Region>();
     int total = 0;
     int totalPrice = 0;
 
-    for (Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
-      Region region = iter.next();
+    for (Region region : regions) {
       LuxuryPrice price = region.getPrices().get(StringID.create(curLux));
 
       if (price != null && checkPrice(price)) {
@@ -410,9 +406,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
       Item luxuryPrice = price.getItemType().getResource(EresseaConstants.I_USILVER);
 
       if ((luxuryPrice != null) && (luxuryPrice.getAmount() > 0)) {
-        if ((price.getPrice() / luxuryPrice.getAmount()) < minSellMultiplier) {
+        if ((price.getPrice() / luxuryPrice.getAmount()) < minSellMultiplier)
           return false;
-        }
       }
 
       return true;
@@ -450,9 +445,9 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     public SortableRegionTable(final SortableRegionTableModel sortableModel) {
       super(sortableModel);
 
-      this.getTableHeader().setReorderingAllowed(false);
-      this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      this.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      getTableHeader().setReorderingAllowed(false);
+      setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      getSelectionModel().addListSelectionListener(new ListSelectionListener() {
         public void valueChanged(ListSelectionEvent e) {
           int i = getSelectedRow();
           if (i >= 0) {
@@ -466,7 +461,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
       });
 
       // sorting
-      this.getTableHeader().addMouseListener(new MouseAdapter() {
+      getTableHeader().addMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
           int i = getTableHeader().getColumnModel().getColumnIndexAtX(e.getPoint().x);
@@ -661,11 +656,10 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
         LuxuryPrice price = region.getPrices().get(StringID.create(o));
 
-        if (price == null) {
+        if (price == null)
           return "-?-";
-        } else {
+        else
           return price.getPrice();
-        }
       }
 
       case 2:
@@ -868,9 +862,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
         Region r = regionIter.next();
         int amount = 0;
 
-        for (Iterator<Unit> unitIter = r.units().iterator(); unitIter.hasNext();) {
-          Unit u = unitIter.next();
-
+        for (Unit u : r.units()) {
           if ((u.getFaction() != null) && tableFactions.contains(u.getFaction())) {
             Item item = u.getItem(luxury);
 
@@ -920,11 +912,10 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
       Integer i1 = stocks.get(r1);
       Integer i2 = stocks.get(r2);
 
-      if ((i1 == null) || (i2 == null)) {
+      if ((i1 == null) || (i2 == null))
         return 0;
-      } else {
+      else
         return i2.intValue() - i1.intValue();
-      }
     }
   }
 
@@ -945,11 +936,10 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
           r2.getPrices().get(
               StringID.create(getOriginalLuxuryTranslation((String) luxuries.getSelectedItem())));
 
-      if ((p1 == null) || (p2 == null)) {
+      if ((p1 == null) || (p2 == null))
         return 0;
-      } else {
+      else
         return p2.getPrice() - p1.getPrice();
-      }
     }
   }
 
@@ -969,27 +959,28 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
   private void buildLuxuryTranslations() {
 
-    if (this.luxuryTranslations == null) {
-      this.luxuryTranslations = new OrderedHashtable<String, String>();
+    if (luxuryTranslations == null) {
+      luxuryTranslations = new OrderedHashtable<String, String>();
     } else {
-      this.luxuryTranslations.clear();
+      luxuryTranslations.clear();
     }
 
     if ((data != null) && (data.rules != null)) {
       for (ItemType currentType : data.rules.getItemTypes()) {
         if (currentType.getCategory() != null
             && currentType.getCategory().equals(data.rules.getItemCategory("luxuries"))) {
-          this.luxuryTranslations.put(data.getTranslation(currentType), currentType.getID()
-              .toString());
+          luxuryTranslations.put(data.getTranslation(currentType), currentType.getID().toString());
         }
       }
     }
 
     luxuries.removeAllItems();
-    for (String name : getLuxuryListTranslated())
+    for (String name : getLuxuryListTranslated()) {
       luxuries.addItem(name);
-    if (luxuries.getItemCount() <= 0)
+    }
+    if (luxuries.getItemCount() <= 0) {
       luxuries.addItem("-?-");
+    }
 
   }
 

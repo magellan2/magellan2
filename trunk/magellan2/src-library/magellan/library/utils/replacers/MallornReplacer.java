@@ -19,40 +19,31 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Fiete
  * @version 1.0
  */
 public class MallornReplacer extends AbstractRegionReplacer {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public Object getRegionReplacement(Region region) {
-		if (!region.isMallorn()){
-			return new Integer(0);
-		}
-		ItemType mallornType = region.getData().rules.getItemType(EresseaConstants.I_RMALLORN);
-		if (mallornType==null){
-			return new Integer(0);
-		}
-		RegionResource mallornResource = region.getResource(mallornType);
-		if (mallornResource==null){
-			return new Integer(0);
-		}
-		return new Integer(mallornResource.getAmount());
-	}
-  
+    if (!region.isMallorn())
+      return new Integer(0);
+    ItemType mallornType = region.getData().rules.getItemType(EresseaConstants.I_RMALLORN);
+    if (mallornType == null)
+      return new Integer(0);
+    RegionResource mallornResource = region.getResource(mallornType);
+    if (mallornResource == null)
+      return new Integer(0);
+    return new Integer(mallornResource.getAmount());
+  }
 
   public String getDescription() {
     return Resources.get("util.replacers.mallornreplacer.description");
-  }  
+  }
 
 }

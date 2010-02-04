@@ -36,41 +36,42 @@ import magellan.library.utils.Score;
 
 public class RegionIDMapping implements DataMapping {
   private static RegionIDMapping singleton = new RegionIDMapping();
+
   public static RegionIDMapping getSingleton() {
     return RegionIDMapping.singleton;
   }
-  
+
   @Override
   public String toString() {
     return "RegionID";
   }
-  
+
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
-    Map<CoordinateID, Score<CoordinateID>> translationMap = new Hashtable<CoordinateID, Score<CoordinateID>>();
-    
+    Map<CoordinateID, Score<CoordinateID>> translationMap =
+        new Hashtable<CoordinateID, Score<CoordinateID>>();
+
     // Create HashMap of regions in toData
     Map<LongID, Region> regionMap = new HashMap<LongID, Region>();
     for (Region region : toData.regions().values()) {
-      if ((region.getCoordinate().z == level) && 
-          (region.getUID() != 0)) {
+      if ((region.getCoordinate().z == level) && (region.getUID() != 0)) {
         LongID rid = LongID.create(region.getUID());
         regionMap.put(rid, region);
       }
     }
-    
+
     // loop regions in fromData
     for (Region region : fromData.regions().values()) {
       CoordinateID coord = region.getCoordinate();
-  
-      if ((coord.z == level) && 
-          (region.getUID() != 0)) {
+
+      if ((coord.z == level) && (region.getUID() != 0)) {
 
         LongID rid = LongID.create(region.getUID());
         Region foundRegion = regionMap.get(rid);
         if (foundRegion != null) {
           CoordinateID foundCoord = foundRegion.getCoordinate();
-          CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, level);
-          
+          CoordinateID translation =
+              new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, level);
+
           Score<CoordinateID> score = translationMap.get(translation);
           if (score == null) {
             score = new Score<CoordinateID>(translation);
@@ -81,10 +82,9 @@ public class RegionIDMapping implements DataMapping {
       }
     }
 
-    if (translationMap.size() > 0) {
+    if (translationMap.size() > 0)
       return Collections.max(translationMap.values()).getKey();
-    } else {
+    else
       return null;
-    }
   }
 }

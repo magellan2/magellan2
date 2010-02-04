@@ -55,22 +55,23 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * This component serves the Look'n Feel Preferences
- *
+ * 
  * @author ...
  * @version 1.0, 15.02.2008
  */
-public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter, ActionListener {
+public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter implements
+    PreferencesAdapter, ActionListener {
   private final Logger log = Logger.getInstance(ClientLookAndFeelPreferences.class);
-  
+
   protected JTextField editFontSize;
   protected JList jComboBoxLaF;
 
   /** if selected, region overview's and faction stat's top nodes will have handles */
   public JCheckBox chkRootHandles = null;
 
-//  /** if selected, messages are linewrapped */
-//  protected JCheckBox lineWrap;
-//
+  // /** if selected, messages are linewrapped */
+  // protected JCheckBox lineWrap;
+  //
   protected Client source;
   protected Properties settings;
 
@@ -78,7 +79,7 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
    * Creates a new LAndF object.
    */
   public ClientLookAndFeelPreferences(Client client, Properties settings) {
-    source= client;
+    source = client;
     this.settings = settings;
     initGUI();
   }
@@ -92,23 +93,21 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
   protected Container createFontPanel(JPanel panel) {
     panel.setLayout(new GridBagLayout());
 
-    GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0,
-                            GridBagConstraints.WEST,
-                            GridBagConstraints.HORIZONTAL,
-                            new Insets(3, 3, 3, 3), 0, 0);
+    GridBagConstraints con =
+        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, new Insets(3, 3, 3, 3), 0, 0);
 
-    panel.add(new JLabel( Resources.get("clientpreferences.lbl.relativefontsize.caption")), con);
+    panel.add(new JLabel(Resources.get("clientpreferences.lbl.relativefontsize.caption")), con);
 
     editFontSize = new JTextField(5);
     editFontSize.setPreferredSize(new java.awt.Dimension(50, 20));
     editFontSize.setText("100");
 
     try {
-      float fScale = Float.valueOf(settings.getProperty("Client.FontScale", "1.0"))
-                .floatValue();
+      float fScale = Float.valueOf(settings.getProperty("Client.FontScale", "1.0")).floatValue();
       fScale *= 100.0f;
       editFontSize.setText(Float.toString(fScale));
-    } catch(Exception exc) {
+    } catch (Exception exc) {
     }
 
     editFontSize.setMinimumSize(new java.awt.Dimension(50, 20));
@@ -121,7 +120,8 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     JLabel l = new JLabel("%");
     panel.add(l, con);
 
-    JTextArea help = new JTextArea( Resources.get("clientpreferences.txt.restartforfontsize.caption"));
+    JTextArea help =
+        new JTextArea(Resources.get("clientpreferences.txt.restartforfontsize.caption"));
     help.setEditable(false);
     help.setLineWrap(true);
     help.setWrapStyleWord(true);
@@ -129,8 +129,10 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     help.setSelectedTextColor(getForeground());
     help.setFont(l.getFont());
     help.setMinimumSize(new java.awt.Dimension(546, 20));
-    help.setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.background"));
-    help.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.foreground"));
+    help
+        .setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.background"));
+    help
+        .setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.foreground"));
 
     con.gridx = 0;
     con.gridy = 1;
@@ -144,22 +146,22 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
   protected Container createLAndFPanel(JPanel panel) {
     panel.setLayout(new GridBagLayout());
 
-    GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0,
-                            GridBagConstraints.FIRST_LINE_START,
-                            GridBagConstraints.NONE,
-                            new Insets(3, 3, 3, 3), 0, 0);
+    GridBagConstraints con =
+        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.FIRST_LINE_START,
+            GridBagConstraints.NONE, new Insets(3, 3, 3, 3), 0, 0);
 
-    panel.add(new JLabel( Resources.get("clientpreferences.lbl.lafrenderer.caption")), con);
+    panel.add(new JLabel(Resources.get("clientpreferences.lbl.lafrenderer.caption")), con);
 
     String renderer[] = source.getLookAndFeels();
     jComboBoxLaF = new JList(renderer);
     jComboBoxLaF.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    jComboBoxLaF.setSelectedValue(settings.getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, "Metal"), true);
+    jComboBoxLaF.setSelectedValue(settings.getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL,
+        "Metal"), true);
     con.gridx = 1;
     con.weightx = 1;
     panel.add(new JScrollPane(jComboBoxLaF), con);
 
-    JButton button = new JButton( Resources.get("clientpreferences.desktopcolor.button"));
+    JButton button = new JButton(Resources.get("clientpreferences.desktopcolor.button"));
     button.addActionListener(this);
     con.gridx = 1;
     con.gridy = 1;
@@ -172,25 +174,24 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
   protected Container createMiscPanel(JPanel panel) {
     panel.setLayout(new GridBagLayout());
 
-    GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 1, 0,
-                            GridBagConstraints.FIRST_LINE_START,
-                            GridBagConstraints.NONE,
-                            new Insets(3, 3, 3, 3), 0, 0);
+    GridBagConstraints con =
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.FIRST_LINE_START,
+            GridBagConstraints.NONE, new Insets(3, 3, 3, 3), 0, 0);
 
     chkRootHandles = new JCheckBox(Resources.get("clientpreferences.lbl.roothandles"));
-    chkRootHandles.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
+    chkRootHandles.setSelected(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.treeRootHandles", true));
     panel.add(chkRootHandles, con);
 
-//    lineWrap = new JCheckBox(Resources.get("messagepanel.prefs.linewrap"), source.getMessagePanel().isLineWrap());
-//    panel.add(lineWrap);
-    
+    // lineWrap = new JCheckBox(Resources.get("messagepanel.prefs.linewrap"),
+    // source.getMessagePanel().isLineWrap());
+    // panel.add(lineWrap);
+
     return panel;
   }
 
   /**
    * DOCUMENT-ME
-   *
-   * 
    */
   public Component getComponent() {
     return this;
@@ -198,23 +199,21 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
 
   /**
    * DOCUMENT-ME
-   *
-   * 
    */
   public String getTitle() {
-    return  Resources.get("clientpreferences.border.lookandfeel");
+    return Resources.get("clientpreferences.border.lookandfeel");
   }
 
-      /**
-       * TODO: implement it
-       * @deprecated not implemented!
-       * 
-       * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
-       */
-      @Deprecated
-      public void initPreferences() {
-          // TODO: implement it
-      }
+  /**
+   * TODO: implement it
+   * 
+   * @deprecated not implemented!
+   * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
+   */
+  @Deprecated
+  public void initPreferences() {
+    // TODO: implement it
+  }
 
   /**
    * DOCUMENT-ME
@@ -225,21 +224,21 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
       fScale /= 100.0f;
 
       settings.setProperty("Client.FontScale", Float.toString(fScale));
-    } catch(NumberFormatException ex) {
+    } catch (NumberFormatException ex) {
       log.error(ex);
-      javax.swing.JOptionPane.showMessageDialog(this,
-                             Resources.get("clientpreferences.msg.fontsizeerror.text") +
-                            ex.toString(),
-                             Resources.get("clientpreferences.msg.fontsizeerror.title"),
-                            javax.swing.JOptionPane.ERROR_MESSAGE);
+      javax.swing.JOptionPane.showMessageDialog(this, Resources
+          .get("clientpreferences.msg.fontsizeerror.text")
+          + ex.toString(), Resources.get("clientpreferences.msg.fontsizeerror.title"),
+          javax.swing.JOptionPane.ERROR_MESSAGE);
     }
 
-    //source.setLookAndFeel((String)jComboBoxLaF.getSelectedItem());
+    // source.setLookAndFeel((String)jComboBoxLaF.getSelectedItem());
     source.setLookAndFeel((String) jComboBoxLaF.getSelectedValue());
-    
-    settings.setProperty("EMapOverviewPanel.treeRootHandles", String.valueOf(chkRootHandles.isSelected()));
 
-//    source.getMessagePanel().setLineWrap(lineWrap.isSelected());
+    settings.setProperty("EMapOverviewPanel.treeRootHandles", String.valueOf(chkRootHandles
+        .isSelected()));
+
+    // source.getMessagePanel().setLineWrap(lineWrap.isSelected());
   }
 
   /**
@@ -252,11 +251,12 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
   protected void changeMetalBackground() {
     LookAndFeel laf = UIManager.getLookAndFeel();
 
-    if(laf instanceof javax.swing.plaf.metal.MetalLookAndFeel) {
-      Color col = JColorChooser.showDialog(source,  Resources.get("clientpreferences.desktopcolor.title"),
-                         MetalLookAndFeel.getWindowBackground());
+    if (laf instanceof javax.swing.plaf.metal.MetalLookAndFeel) {
+      Color col =
+          JColorChooser.showDialog(source, Resources.get("clientpreferences.desktopcolor.title"),
+              MetalLookAndFeel.getWindowBackground());
 
-      if(col != null) {
+      if (col != null) {
         MagellanLookAndFeel.setBackground(col, settings);
       }
     }

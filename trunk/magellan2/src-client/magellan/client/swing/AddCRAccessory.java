@@ -37,9 +37,6 @@ public class AddCRAccessory extends HistoryAccessory {
 
   /**
    * Creates a new OpenOrdersAccessory object.
-   *
-   * 
-   * 
    */
   public AddCRAccessory(Properties setting, JFileChooser fileChooser) {
     super(setting, fileChooser);
@@ -48,7 +45,6 @@ public class AddCRAccessory extends HistoryAccessory {
 
     chkSort = new JCheckBox(Resources.get("addcraccessory.chk.sort.caption"));
     chkSort.setToolTipText(Resources.get("addcraccessory.chk.sort.tooltip"));
-
 
     c.anchor = GridBagConstraints.NORTHWEST;
     c.gridx = 0;
@@ -62,7 +58,6 @@ public class AddCRAccessory extends HistoryAccessory {
 
     chkInteractive = new JCheckBox(Resources.get("addcraccessory.chk.interactive.caption"));
     chkInteractive.setToolTipText(Resources.get("addcraccessory.chk.interactive.tooltip"));
-
 
     c.anchor = GridBagConstraints.NORTHWEST;
     c.gridx = 0;
@@ -78,8 +73,6 @@ public class AddCRAccessory extends HistoryAccessory {
 
   /**
    * DOCUMENT-ME
-   *
-   * 
    */
   public boolean getSort() {
     return chkSort.isSelected();
@@ -87,8 +80,6 @@ public class AddCRAccessory extends HistoryAccessory {
 
   /**
    * DOCUMENT-ME
-   *
-   * 
    */
   public void setSort(boolean sort) {
     chkSort.setSelected(sort);
@@ -101,6 +92,5 @@ public class AddCRAccessory extends HistoryAccessory {
   public void setInteractive(boolean interactive) {
     chkInteractive.setSelected(interactive);
   }
-
 
 }

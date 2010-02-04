@@ -52,22 +52,21 @@ public class UnitContainerContextFactory implements ContextFactory {
    */
   public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
       SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
-    if (argument instanceof UnitContainer) {
+    if (argument instanceof UnitContainer)
       return new UnitContainerContextMenu((UnitContainer) argument, dispatcher, data, settings,
           selectedObjects.getSelectedObjects());
-    } else if (argument instanceof RegionNodeWrapper) {
+    else if (argument instanceof RegionNodeWrapper)
       return new UnitContainerContextMenu(((RegionNodeWrapper) argument).getRegion(), dispatcher,
           data, settings, selectedObjects.getSelectedObjects());
-    } else if (argument instanceof FactionNodeWrapper) {
+    else if (argument instanceof FactionNodeWrapper)
       return new UnitContainerContextMenu(((FactionNodeWrapper) argument).getFaction(), dispatcher,
           data, settings, selectedObjects.getSelectedObjects());
-    } else if (argument instanceof UnitContainerNodeWrapper) {
+    else if (argument instanceof UnitContainerNodeWrapper)
       return new UnitContainerContextMenu(((UnitContainerNodeWrapper) argument).getUnitContainer(),
           dispatcher, data, settings, selectedObjects.getSelectedObjects());
-    } else if (argument instanceof IslandNodeWrapper) {
+    else if (argument instanceof IslandNodeWrapper)
       return new IslandContextMenu(((IslandNodeWrapper) argument).getIsland(), dispatcher, data,
           settings, selectedObjects.getSelectedObjects());
-    }
 
     return null;
   }

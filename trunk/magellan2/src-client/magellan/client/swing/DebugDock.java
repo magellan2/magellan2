@@ -38,53 +38,52 @@ import magellan.library.utils.logging.LogListener;
 import magellan.library.utils.logging.Logger;
 
 /**
- * This is a small listener dock that prints all log events
- * to a textarea.
- *
+ * This is a small listener dock that prints all log events to a textarea.
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 14.07.2008
  */
 public class DebugDock extends JPanel implements LogListener {
   private static final Logger log = Logger.getInstance(DebugDock.class);
-  
+
   public static String IDENTIFIER = "DEBUG";
-  
+
   private static DebugDock INSTANCE = null;
-  private static final int BUFFER_LENGTH = 50*1024;
-  
+  private static final int BUFFER_LENGTH = 50 * 1024;
+
   protected JTextArea logArea = null;
   protected Calendar calendar = Calendar.getInstance();
-  
+
   protected DebugDock() {
     Logger.addLogListener(this);
     Logger.activateDefaultLogListener(true);
     init();
   }
-  
+
   public static DebugDock getInstance() {
     if (DebugDock.INSTANCE == null) {
       DebugDock.INSTANCE = new DebugDock();
     }
     return DebugDock.INSTANCE;
   }
-  
+
   /**
    * Initializes the GUI
    */
   protected void init() {
     setLayout(new BorderLayout());
-    
+
     logArea = new JTextArea();
     logArea.setEditable(false);
-    
+
     JScrollPane scrollPane = new JScrollPane(logArea);
     scrollPane.setViewportBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     scrollPane.setBackground(logArea.getBackground());
     scrollPane.setWheelScrollingEnabled(true);
     scrollPane.setPreferredSize(new Dimension(1, 220));
     scrollPane.setMinimumSize(new Dimension(1, 220));
-    
-    add(scrollPane,BorderLayout.CENTER);
+
+    add(scrollPane, BorderLayout.CENTER);
   }
 
   /**
@@ -114,7 +113,7 @@ public class DebugDock extends JPanel implements LogListener {
   public void error(String str) {
     DebugDock.log.error(str);
   }
-  
+
   /**
    * 
    */
@@ -128,118 +127,115 @@ public class DebugDock extends JPanel implements LogListener {
   public void log(int level, Object obj, Throwable throwable) {
     String str = "";
 
-    switch(level) {
-      case Logger.FATAL:
-        str = "FATAL";
-        break;
-  
-      case Logger.ERROR:
-        str = "ERROR";
-        break;
-  
-      case Logger.WARN:
-        str = "WARN ";
-        break;
-  
-      case Logger.INFO:
-        str = "INFO ";
-        break;
-  
-      case Logger.DEBUG:
-        str = "DEBUG";
-        break;
-  
-      default:
-        str = "ALL  ";
-        break;
+    switch (level) {
+    case Logger.FATAL:
+      str = "FATAL";
+      break;
+
+    case Logger.ERROR:
+      str = "ERROR";
+      break;
+
+    case Logger.WARN:
+      str = "WARN ";
+      break;
+
+    case Logger.INFO:
+      str = "INFO ";
+      break;
+
+    case Logger.DEBUG:
+      str = "DEBUG";
+      break;
+
+    default:
+      str = "ALL  ";
+      break;
     }
     str += ": ";
     if (obj != null) {
       str += obj.toString();
-    } 
+    }
     setStatus(str, throwable);
   }
-  
+
   /**
    * 
    */
   protected void setStatus(String message, Throwable throwable) {
     calendar.setTimeInMillis(System.currentTimeMillis());
-    String time = DebugDock.toDay(calendar)+" "+toTime(calendar)+": ";
-    
+    String time = DebugDock.toDay(calendar) + " " + toTime(calendar) + ": ";
+
     if (logArea != null) {
       StringBuffer buffer = new StringBuffer(logArea.getText().trim());
       String newtext = "";
-      newtext += "\r\n"+time+message.trim();
+      newtext += "\r\n" + time + message.trim();
       if (throwable != null) {
-        newtext+="\r\n"+DebugDock.toString(throwable);
+        newtext += "\r\n" + DebugDock.toString(throwable);
       }
-      
+
       buffer.append(newtext);
       // Text-Area eingrenzen
-      if (buffer.length()>DebugDock.BUFFER_LENGTH) {
-        buffer.delete(0, buffer.length()-DebugDock.BUFFER_LENGTH);
+      if (buffer.length() > DebugDock.BUFFER_LENGTH) {
+        buffer.delete(0, buffer.length() - DebugDock.BUFFER_LENGTH);
       }
-      
+
       logArea.setText(buffer.toString());
-      logArea.setCaretPosition(buffer.length()-newtext.length()+2);
+      logArea.setCaretPosition(buffer.length() - newtext.length() + 2);
     }
   }
-  
+
   /**
    * Returns the string representation of a time
    */
   protected String toTime(Calendar calendar) {
-    if (calendar == null) {
+    if (calendar == null)
       return "";
-    }
     int hour = calendar.get(Calendar.HOUR_OF_DAY);
     int min = calendar.get(Calendar.MINUTE);
     int sec = calendar.get(Calendar.SECOND);
     String r = "";
-    if (hour<10) {
-      r+="0";
+    if (hour < 10) {
+      r += "0";
     }
-    r+=hour+":";
-    if (min<10) {
-      r+="0";
+    r += hour + ":";
+    if (min < 10) {
+      r += "0";
     }
-    r+=min+":";
-    if (sec<10) {
-      r+="0";
+    r += min + ":";
+    if (sec < 10) {
+      r += "0";
     }
-    r+=sec;
+    r += sec;
     return r;
   }
-  
 
   /**
    * Returns the string representation of a day
    */
   protected static String toDay(Calendar calendar) {
-    if (calendar == null) {
+    if (calendar == null)
       return "";
-    }
     String d = "";
-    if (calendar.get(Calendar.DAY_OF_MONTH)<10) {
-      d+="0";
+    if (calendar.get(Calendar.DAY_OF_MONTH) < 10) {
+      d += "0";
     }
-    d+=calendar.get(Calendar.DAY_OF_MONTH);
-    d+=".";
-    int month = calendar.get(Calendar.MONTH)+1;
-    if (month<10) {
-      d+="0";
+    d += calendar.get(Calendar.DAY_OF_MONTH);
+    d += ".";
+    int month = calendar.get(Calendar.MONTH) + 1;
+    if (month < 10) {
+      d += "0";
     }
-    d+=month;
-    d+=".";
+    d += month;
+    d += ".";
     int year = calendar.get(Calendar.YEAR);
-    if (year<10) {
-      d+="0";
+    if (year < 10) {
+      d += "0";
     }
-    d+=year;
+    d += year;
     return d;
   }
-  
+
   /**
    * Returns the stack trace of a throwable
    */

@@ -29,17 +29,17 @@ import java.util.List;
 
 /**
  * A default implementation of {@link SupportsEmphasizing}.
- *
+ * 
  * @author stm
  */
-public class EmphasizingImpl implements SupportsEmphasizing{
+public class EmphasizingImpl implements SupportsEmphasizing {
   private List<SupportsEmphasizing> subordinatedElements;
 
   /**
    * @see magellan.client.swing.tree.SupportsEmphasizing#getSubordinatedElements()
    */
   public List<SupportsEmphasizing> getSubordinatedElements() {
-    if (subordinatedElements!=null)
+    if (subordinatedElements != null)
       return subordinatedElements;
     else
       return Collections.emptyList();
@@ -48,9 +48,10 @@ public class EmphasizingImpl implements SupportsEmphasizing{
   /**
    * @see magellan.client.swing.tree.SupportsEmphasizing#addSubordinatedElement(magellan.client.swing.tree.SupportsEmphasizing)
    */
-  public void addSubordinatedElement(SupportsEmphasizing newObject){
-    if (subordinatedElements==null)
-      subordinatedElements=new ArrayList<SupportsEmphasizing>(1);
+  public void addSubordinatedElement(SupportsEmphasizing newObject) {
+    if (subordinatedElements == null) {
+      subordinatedElements = new ArrayList<SupportsEmphasizing>(1);
+    }
     subordinatedElements.add(newObject);
   }
 
@@ -58,17 +59,15 @@ public class EmphasizingImpl implements SupportsEmphasizing{
    * @see magellan.client.swing.tree.SupportsEmphasizing#emphasized()
    */
   public boolean emphasized() {
-    if (subordinatedElements==null)
+    if (subordinatedElements == null)
       return false;
-    
-    for(SupportsEmphasizing se : subordinatedElements) {
-      if(se.emphasized()) {
+
+    for (SupportsEmphasizing se : subordinatedElements) {
+      if (se.emphasized())
         return true;
-      }
     }
 
     return false;
   }
-
 
 }

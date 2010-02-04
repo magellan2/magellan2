@@ -21,82 +21,80 @@ import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 
-
 /**
  * A dialog that is a GameDataListener.
- *
  */
-public abstract class InternationalizedDataDialog extends InternationalizedDialog
-	implements GameDataListener
-{
-	protected GameData data = null;
-	protected Properties settings = null;
-	protected EventDispatcher dispatcher = null;
-
-	/**
-	 * Creates a new InternationalizedDataDialog object. Adds this object as gameDataListener to the dispatcher.
-	 *
-	 * @param owner the <code>Frame</code> from which the dialog is displayed
-	 * @param modal <code>true</code> for a modal dialog, false for one that allows others windows to be 
-	 * active at the same time
-	 * @param ed The event dispatcher that this dialog should use
-	 * @param initData The corresponding GameData
-	 * @param p The corresponding properties
-	 */
-	public InternationalizedDataDialog(Frame owner, boolean modal, EventDispatcher ed,
-									   GameData initData, Properties p) {
-		super(owner, modal);
-		this.dispatcher = ed;
-
-		if(this.dispatcher != null) {
-			this.dispatcher.addGameDataListener(this);
-		}
-
-		this.data = initData;
-		this.settings = p;
-	}
-
-	/**
-	 * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
-	 */
-	public void gameDataChanged(GameDataEvent e) {
-		this.data = e.getGameData();
-	}
+public abstract class InternationalizedDataDialog extends InternationalizedDialog implements
+    GameDataListener {
+  protected GameData data = null;
+  protected Properties settings = null;
+  protected EventDispatcher dispatcher = null;
 
   /**
-   * Removes this instance as listener from the dispatcher. 
+   * Creates a new InternationalizedDataDialog object. Adds this object as gameDataListener to the
+   * dispatcher.
+   * 
+   * @param owner the <code>Frame</code> from which the dialog is displayed
+   * @param modal <code>true</code> for a modal dialog, false for one that allows others windows to
+   *          be active at the same time
+   * @param ed The event dispatcher that this dialog should use
+   * @param initData The corresponding GameData
+   * @param p The corresponding properties
+   */
+  public InternationalizedDataDialog(Frame owner, boolean modal, EventDispatcher ed,
+      GameData initData, Properties p) {
+    super(owner, modal);
+    dispatcher = ed;
+
+    if (dispatcher != null) {
+      dispatcher.addGameDataListener(this);
+    }
+
+    data = initData;
+    settings = p;
+  }
+
+  /**
+   * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
+   */
+  public void gameDataChanged(GameDataEvent e) {
+    data = e.getGameData();
+  }
+
+  /**
+   * Removes this instance as listener from the dispatcher.
    * 
    * @see java.awt.Window#dispose()
    */
   @Override
   public void dispose() {
-    if(dispatcher != null) {
+    if (dispatcher != null) {
       // remove stale listeners
       dispatcher.removeAllListeners(this);
     }
     super.dispose();
   }
-	
-	/**
-	 * Returns the current GameData this dialog works with.
-	 * 
-	 * @return the data
-	 */
-	protected GameData getData() {
-		return data;
-	}
 
-	/**
-	 * Returns the dispatcher
-	 */
-	protected EventDispatcher getDispatcher() {
-		return dispatcher;
-	}
+  /**
+   * Returns the current GameData this dialog works with.
+   * 
+   * @return the data
+   */
+  protected GameData getData() {
+    return data;
+  }
 
-	/**
-	 * Returns the settings.
-	 */
-	protected Properties getSettings() {
-		return settings;
-	}
+  /**
+   * Returns the dispatcher
+   */
+  protected EventDispatcher getDispatcher() {
+    return dispatcher;
+  }
+
+  /**
+   * Returns the settings.
+   */
+  protected Properties getSettings() {
+    return settings;
+  }
 }

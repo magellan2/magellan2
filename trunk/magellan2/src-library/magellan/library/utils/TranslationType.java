@@ -24,10 +24,8 @@
 package magellan.library.utils;
 
 /**
+ * Stores information of an translated string used in Translation Map
  * 
- * Stores information of an translated string
- * used in Translation Map
- *
  * @author Fiete
  * @version 1.0, 20.11.2007
  */
@@ -36,17 +34,17 @@ public class TranslationType {
   // source of this translation type is unknown
   // should not stay after init
   public static final int sourceUnknown = 0;
-  
+
   // source of this translation type is the CR
   public static final int sourceCR = 1;
-  
+
   // source of this translation type are the default Translations
   // of Magellan
   public static final int sourceMagellan = 2;
-  
+
   // The translated string
   private String translation = null;
-  
+
   // the source of this translation
   private int source = TranslationType.sourceUnknown;
 
@@ -70,17 +68,18 @@ public class TranslationType {
 
   /**
    * Constructs new Translation Type
+   * 
    * @param text the Translation
    * @param _source the Source
    */
-  public TranslationType(String text, int _source){
-    this.translation = text;
-    this.source = _source;
+  public TranslationType(String text, int _source) {
+    translation = text;
+    source = _source;
   }
 
   /**
    * Sets the value of translation.
-   *
+   * 
    * @param translation The value for translation.
    */
   public void setTranslation(String translation) {
@@ -89,7 +88,7 @@ public class TranslationType {
 
   /**
    * Sets the value of source.
-   *
+   * 
    * @param source The value for source.
    */
   public void setSource(int source) {

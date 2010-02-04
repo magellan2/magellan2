@@ -30,13 +30,9 @@ import java.util.TreeSet;
 import magellan.library.Rules;
 
 /**
+ * class contains and handels translations from the CR or default Magellan translations Is part of
+ * GameData thinking about to make it "Localized"
  * 
- * class contains and handels translations from the CR or 
- * default Magellan translations
- * Is part of GameData
- * 
- * thinking about to make it "Localized" 
- *
  * @author ...
  * @version 1.0, 20.11.2007
  */
@@ -44,186 +40,167 @@ import magellan.library.Rules;
 public class Translations {
 
   // central structure to hold the translations
-  private HashMap<String,TranslationType> translationMap = null;
-  
+  private HashMap<String, TranslationType> translationMap = null;
+
   /**
-   * Adds a new Translation 
+   * Adds a new Translation
+   * 
    * @param original
    * @param translated
    * @param source
    */
-   
 
-  public void addTranslation(String original, String translated, int source){
+  public void addTranslation(String original, String translated, int source) {
     // do we have to check if source is well defined?
-    if (original==null){
+    if (original == null)
       return;
-    }
-    
+
     // check if we have already a Translation to that string
-    if (this.translationMap!=null){
-      TranslationType translationType = this.translationMap.get(original);
-      if (translationType!=null){
+    if (translationMap != null) {
+      TranslationType translationType = translationMap.get(original);
+      if (translationType != null) {
         // yes, we have already an Translation..setting new values
         translationType.setSource(source);
         translationType.setTranslation(translated);
         return;
-      } 
+      }
     } else {
       // translationMap create
-      this.translationMap = new HashMap<String, TranslationType>();
+      translationMap = new HashMap<String, TranslationType>();
     }
     // adding
-    this.translationMap.put(original, new TranslationType(translated,source));
+    translationMap.put(original, new TranslationType(translated, source));
   }
-  
-  
+
   /**
-   * returns the translated string
-   * source is not importand
+   * returns the translated string source is not importand
    * 
    * @param original
    */
-  public String getTranslation(String original){
-    return getTranslation(original,TranslationType.sourceUnknown);
+  public String getTranslation(String original) {
+    return getTranslation(original, TranslationType.sourceUnknown);
   }
-  
-  
+
   /**
-   * returns the translated string, if it is from the specified
-   * source. No filtering is done, when sourceUnknown is choosen
+   * returns the translated string, if it is from the specified source. No filtering is done, when
+   * sourceUnknown is choosen
    * 
    * @param original
    * @param source
    */
-  public String getTranslation(String original, int source){
-    if (original==null){
+  public String getTranslation(String original, int source) {
+    if (original == null)
       return null;
-    }
-    if (this.translationMap==null || this.translationMap.size()==0){
-      return original; 
-    }
-    
-    TranslationType translationType = this.translationMap.get(original);
-    if (translationType!=null && translationType.getTranslation()!=null){
-      if (source==TranslationType.sourceUnknown || source==translationType.getSource()){
+    if (translationMap == null || translationMap.size() == 0)
+      return original;
+
+    TranslationType translationType = translationMap.get(original);
+    if (translationType != null && translationType.getTranslation() != null) {
+      if (source == TranslationType.sourceUnknown || source == translationType.getSource())
         return translationType.getTranslation();
-      } 
     }
-    if (source==TranslationType.sourceUnknown){
+    if (source == TranslationType.sourceUnknown)
       // if we don´t searched for a specific source, we return original
       return original;
-    } else {
+    else
       // we searched for an specific source and found nothing..returning null
       return null;
-    }
   }
-  
+
   /**
    * returns the translated string
    * 
    * @param original
    */
-  public TranslationType getTranslationType(String original){
-    if (original==null){
+  public TranslationType getTranslationType(String original) {
+    if (original == null)
       return null;
-    }
-    if (this.translationMap==null || this.translationMap.size()==0){
-      return null; 
-    }
-    
-    return this.translationMap.get(original);
-    
+    if (translationMap == null || translationMap.size() == 0)
+      return null;
+
+    return translationMap.get(original);
+
   }
-  
-  
+
   /**
    * clear complete contents of the Translations
    */
-  public void clear(){
-    if (this.translationMap!=null){
-      this.translationMap.clear();
+  public void clear() {
+    if (translationMap != null) {
+      translationMap.clear();
     }
   }
-  
+
   /**
-   * adds the complete translations to this translations
-   * the actual contents is not cleared!
+   * adds the complete translations to this translations the actual contents is not cleared!
    * 
    * @param translations
    */
-  public void addAll(Translations translations, Rules rules){
-    if (translations!=null && translations.iteratorKeys()!=null){
-      if (this.translationMap==null){
-        this.translationMap = new HashMap<String, TranslationType>();
+  public void addAll(Translations translations, Rules rules) {
+    if (translations != null && translations.iteratorKeys() != null) {
+      if (translationMap == null) {
+        translationMap = new HashMap<String, TranslationType>();
       }
-      for (Iterator<String> iter = translations.iteratorKeys();iter.hasNext();){
+      for (Iterator<String> iter = translations.iteratorKeys(); iter.hasNext();) {
         String original = iter.next();
         TranslationType translationType = translations.getTranslationType(original);
-        if (translationType!=null){
-          this.translationMap.put(original, translationType);
+        if (translationType != null) {
+          translationMap.put(original, translationType);
           rules.changeName(original, translationType.getTranslation());
         }
       }
     }
   }
-  
+
   /**
    * provides an Iterator over the keys = original strings
    */
-  public Iterator<String> iteratorKeys(){
-    if (this.translationMap==null){
+  public Iterator<String> iteratorKeys() {
+    if (translationMap == null)
       return null;
-    }
-    return this.translationMap.keySet().iterator();
+    return translationMap.keySet().iterator();
   }
-  
+
   /**
    * returns the size of the translations object (number of translations)
    */
-  public int size(){
-    if (this.translationMap==null){
+  public int size() {
+    if (translationMap == null)
       return 0;
-    }
-    
-    return this.translationMap.size();
+
+    return translationMap.size();
   }
-  
-  
-   /**
-    * provides a sorted set of the keys
-    */
-   public TreeSet<String> getKeyTreeSet(){
-     if (this.translationMap==null){
-       return null;
-     }
-     return new TreeSet<String>(this.translationMap.keySet());
-   }
-   
-   /**
-    * removes an Translation
-    * 
-    * @param o
-    */
-   public void remove(String o){
-     if (this.translationMap==null || this.translationMap.size()==0){
-       return;
-     }
-     // we do nothing return...
-     this.translationMap.remove(o);
-   }
-   
-   /**
-    * returns true, if given String is already in this translations
-    * 
-    * @param s
-    */
-   public boolean contains(String s){
-     if (this.translationMap==null){
-       return false;
-     }
-     return this.translationMap.containsKey(s);
-   }
-   
-   
+
+  /**
+   * provides a sorted set of the keys
+   */
+  public TreeSet<String> getKeyTreeSet() {
+    if (translationMap == null)
+      return null;
+    return new TreeSet<String>(translationMap.keySet());
+  }
+
+  /**
+   * removes an Translation
+   * 
+   * @param o
+   */
+  public void remove(String o) {
+    if (translationMap == null || translationMap.size() == 0)
+      return;
+    // we do nothing return...
+    translationMap.remove(o);
+  }
+
+  /**
+   * returns true, if given String is already in this translations
+   * 
+   * @param s
+   */
+  public boolean contains(String s) {
+    if (translationMap == null)
+      return false;
+    return translationMap.containsKey(s);
+  }
+
 }

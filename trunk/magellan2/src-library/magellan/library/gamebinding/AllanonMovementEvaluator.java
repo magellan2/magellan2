@@ -26,8 +26,6 @@ package magellan.library.gamebinding;
 import magellan.library.Rules;
 
 /**
- * 
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
@@ -38,6 +36,5 @@ public class AllanonMovementEvaluator extends EresseaMovementEvaluator {
   protected AllanonMovementEvaluator(Rules rules) {
     super(rules);
   }
-
 
 }

@@ -22,7 +22,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class ShipType extends ConstructibleType {
   Logger log = Logger.getInstance(ShipType.class);
-  
+
   private int range = -1;
   private int capacity = -1;
   private int captainLevel = -1;
@@ -36,7 +36,6 @@ public class ShipType extends ConstructibleType {
   public ShipType(StringID id) {
     super(id);
   }
-
 
   public void init(ItemType wood) {
     this.wood = wood;
@@ -79,10 +78,9 @@ public class ShipType extends ConstructibleType {
 
   /**
    * Returns the number of persons that fit on the ship.
-   * 
    */
   public int getMaxPersons() {
-    return persons ;
+    return persons;
   }
 
   /**
@@ -135,9 +133,8 @@ public class ShipType extends ConstructibleType {
         return new Item(new ItemType(id), 1);
       else
         return null;
-    } else {
+    } else
       return super.getRawMaterial(id);
-    }
   }
 
   /**
@@ -146,7 +143,7 @@ public class ShipType extends ConstructibleType {
   @Override
   public Collection<Item> getRawMaterials() {
     if (fallBackMaterial)
-      if (wood == null){
+      if (wood == null) {
         log.warn("Hmm..., don't know what wood is...");
         return super.getRawMaterials();
       } else

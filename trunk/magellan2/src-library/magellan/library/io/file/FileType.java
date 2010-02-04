@@ -62,9 +62,8 @@ public class FileType {
    * @throws IOException If aFile is <code>null</code>
    */
   FileType(File aFile, boolean readonly) throws IOException {
-    if (aFile == null) {
+    if (aFile == null)
       throw new IOException();
-    }
 
     filename = aFile;
 
@@ -96,17 +95,16 @@ public class FileType {
    */
   public FileType checkConnection() throws IOException {
     try {
-// if(readonly) {
+      // if(readonly) {
       createInputStream().close();
-// } else {
-// createOutputStream().close();
-// }
+      // } else {
+      // createOutputStream().close();
+      // }
     } catch (FileNotFoundException e) {
       // if file is readonly, this will be a problem
       // if not, it may be ok that the file does not exist
-      if (readonly) {
+      if (readonly)
         throw e;
-      }
     }
 
     return this;
@@ -147,11 +145,10 @@ public class FileType {
    */
   @Override
   public String toString() {
-    if (getInnerName() == null) {
+    if (getInnerName() == null)
       return getName();
-    } else {
+    else
       return getName() + " (" + getInnerName() + ")";
-    }
   }
 
   /**
@@ -189,18 +186,16 @@ public class FileType {
    * @throws IOException If the file cannot be created
    */
   public Writer createWriter(String encoding, int numberOfBackups) throws IOException {
-    if (readonly) {
+    if (readonly)
       throw new ReadOnlyException();
-    }
 
     if (createBackup && filename.exists() && filename.canWrite()) {
       File backup = FileBackup.create(filename, numberOfBackups);
       FileType.log.info("Created backupfile " + backup + " (FileType.java)");
     }
 
-    if (filename.exists() && !filename.canWrite()) {
+    if (filename.exists() && !filename.canWrite())
       throw new IOException("cannot write " + filename);
-    }
 
     return new BufferedWriter(FileType.createEncodingWriter(createOutputStream(), encoding));
   }
@@ -316,9 +311,8 @@ public class FileType {
    * This method tries to find the encoding tag in the CR file.
    */
   public String getEncoding() {
-    if (reader != null) {
+    if (reader != null)
       return reader.getEncoding();
-    }
     try {
 
       // use UnicodeReader to determine encoding
@@ -381,10 +375,9 @@ public class FileType {
     String encoding = FileType.DEFAULT_ENCODING.toString();
     int counter = 0;
     while ((line = reader.readLine()) != null) {
-      if (line.lastIndexOf(";charset") > 0) {
+      if (line.lastIndexOf(";charset") > 0)
         // found line with charset. Format is "<encoding>";charset
         return encoding = line.substring(1, line.indexOf(";charset") - 1);
-      }
       counter++;
       if (counter >= 5) {
         break;

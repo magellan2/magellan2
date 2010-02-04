@@ -18,18 +18,15 @@ import java.io.IOException;
 import magellan.library.Rules;
 import magellan.library.io.file.FileType;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public interface RulesIO {
-	/**
-	 * Reads the rules from a FileType.
-	 *
-	 * 
-	 */
-	public Rules readRules(FileType filetype) throws IOException;
+  /**
+   * Reads the rules from a FileType.
+   */
+  public Rules readRules(FileType filetype) throws IOException;
 }

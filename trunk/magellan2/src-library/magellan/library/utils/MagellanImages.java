@@ -32,68 +32,69 @@ import javax.swing.ImageIcon;
 
 public class MagellanImages {
   public static ImageIcon GUI_TOTD = null;
-  public static  ImageIcon GUI_CREATETEMPUNIT = null;
-  public static  ImageIcon GUI_DELETETEMPUNIT = null;
-  
-  public static  ImageIcon ABOUNT_APPLICATION_ICON = null;
-  public static  ImageIcon ABOUT_MAGELLAN = null;
-  public static  ImageIcon BULLETS_LEAF = null;
-  public static  ImageIcon BULLETS_OPEN = null;
-  public static  ImageIcon BULLETS_CLOSED = null;
-   
+  public static ImageIcon GUI_CREATETEMPUNIT = null;
+  public static ImageIcon GUI_DELETETEMPUNIT = null;
+
+  public static ImageIcon ABOUNT_APPLICATION_ICON = null;
+  public static ImageIcon ABOUT_MAGELLAN = null;
+  public static ImageIcon BULLETS_LEAF = null;
+  public static ImageIcon BULLETS_OPEN = null;
+  public static ImageIcon BULLETS_CLOSED = null;
+
   private static File magellanDirectory = null;
-  
-  public static  Color foreground = new Color(79, 63, 48);
-  public static  Color background = new Color(213, 169, 131);
+
+  public static Color foreground = new Color(79, 63, 48);
+  public static Color background = new Color(213, 169, 131);
 
   public static URL getResource(String path) {
     try {
       File resFile = new File(path);
-      if (!resFile.exists()){
+      if (!resFile.exists()) {
         // try to use MagDir
-        resFile = new File(MagellanImages.magellanDirectory,path);
-        if (!resFile.exists()){
+        resFile = new File(MagellanImages.magellanDirectory, path);
+        if (!resFile.exists())
           // OK give up here
           return null;
-        }
       }
       return resFile.toURI().toURL();
     } catch (MalformedURLException exception) {
       return null;
     }
   }
-  
+
   public static ImageIcon getImageIcon(String path) {
     // log.info("getImageIcon: " + path);
     File file = new File(path);
-    if (!file.exists()){
-      file = new File(MagellanImages.magellanDirectory,path);
+    if (!file.exists()) {
+      file = new File(MagellanImages.magellanDirectory, path);
       // log.info("trying also: " + file.toString());
     }
-    if (!file.exists()) {
+    if (!file.exists())
       return null;
-    }
-    
+
     ImageIcon res = new ImageIcon(file.toString());
     return res;
   }
 
   /**
    * Sets the value of magellanDirectory.
-   *
+   * 
    * @param magellanDirectory The value for magellanDirectory.
    */
   public static void setMagellanDirectory(File magellanDirectory) {
     MagellanImages.magellanDirectory = magellanDirectory;
     MagellanImages.GUI_TOTD = MagellanImages.getImageIcon("etc/images/gui/totd.gif");
-    MagellanImages.GUI_CREATETEMPUNIT = MagellanImages.getImageIcon("etc/images/gui/createtempunit.gif");
-    MagellanImages.GUI_DELETETEMPUNIT = MagellanImages.getImageIcon("etc/images/gui/deletetempunit.gif");
-    
-    MagellanImages.ABOUNT_APPLICATION_ICON = MagellanImages.getImageIcon("etc/images/about/appicon.gif");
+    MagellanImages.GUI_CREATETEMPUNIT =
+        MagellanImages.getImageIcon("etc/images/gui/createtempunit.gif");
+    MagellanImages.GUI_DELETETEMPUNIT =
+        MagellanImages.getImageIcon("etc/images/gui/deletetempunit.gif");
+
+    MagellanImages.ABOUNT_APPLICATION_ICON =
+        MagellanImages.getImageIcon("etc/images/about/appicon.gif");
     MagellanImages.ABOUT_MAGELLAN = MagellanImages.getImageIcon("etc/images/about/magellan.jpg");
     MagellanImages.BULLETS_LEAF = MagellanImages.getImageIcon("etc/images/bullets/leaf.gif");
     MagellanImages.BULLETS_OPEN = MagellanImages.getImageIcon("etc/images/bullets/open.gif");
-    MagellanImages.BULLETS_CLOSED = MagellanImages.getImageIcon("etc/images/bullets/closed.gif");    
-    
+    MagellanImages.BULLETS_CLOSED = MagellanImages.getImageIcon("etc/images/bullets/closed.gif");
+
   }
 }

@@ -18,15 +18,12 @@ import java.util.Comparator;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 
-
 /**
  * A comparator imposing an ordering on Unit and TempUnit objects by sorting all temp units behind
  * normal units.
- * 
  * <p>
  * Note: this comparator imposes orderings that are inconsistent with equals.
  * </p>
- * 
  * <p>
  * In order to overcome the inconsistency with equals this comparator allows the introduction of a
  * sub-comparator which is applied in cases of equality. I.e. if the two compared units are either
@@ -35,42 +32,37 @@ import magellan.library.Unit;
  * </p>
  */
 public class LinearUnitTempUnitComparator implements Comparator<Unit> {
-	protected Comparator<? super Unit> subCmp = null;
+  protected Comparator<? super Unit> subCmp = null;
 
-	/**
-	 * Creates a new LinearUnitTempUnitComparator object.
-	 *
-	 * @param unitSubComparator if two units are of the same type (standard or temp unit), this
-	 * 		  sub-comparator is applied if it is not <tt>null</tt>.
-	 */
-	public LinearUnitTempUnitComparator(Comparator<? super Unit> unitSubComparator) {
-		this.subCmp = unitSubComparator;
-	}
+  /**
+   * Creates a new LinearUnitTempUnitComparator object.
+   * 
+   * @param unitSubComparator if two units are of the same type (standard or temp unit), this
+   *          sub-comparator is applied if it is not <tt>null</tt>.
+   */
+  public LinearUnitTempUnitComparator(Comparator<? super Unit> unitSubComparator) {
+    subCmp = unitSubComparator;
+  }
 
-	/**
-	 * Compares its two arguments for order according to their types.
-	 *
-	 * 
-	 * 
-	 *
-	 * @return a value less than zero if o1 is.an instance of class <tt>Unit</tt> and o2 an
-	 * 		   instance of class <tt>TempUnit</tt>. Conversely, if o1 is an instance of class
-	 * 		   <tt>TempUnit</tt> and o2 an instance of class <tt>Unit</tt>, a value greater than
-	 * 		   zero is returned. If o1 and o2 are instances of the same class, the comparison
-	 * 		   either returns zero or, when unitSubComparator is not null, that comparator's
-	 * 		   result.
-	 */
-	public int compare(Unit u1, Unit u2) {
-		if(u1 instanceof TempUnit && u2 instanceof TempUnit) {
-			return (this.subCmp != null) ? this.subCmp.compare(u1, u2) : 0;
-		} else {
-			if(u1 instanceof TempUnit) {
-				return 1;
-			} else if(u2 instanceof TempUnit) {
-				return -1;
-			} else {
-				return (this.subCmp != null) ? this.subCmp.compare(u1, u2) : 0;
-			}
-		}
-	}
+  /**
+   * Compares its two arguments for order according to their types.
+   * 
+   * @return a value less than zero if o1 is.an instance of class <tt>Unit</tt> and o2 an instance
+   *         of class <tt>TempUnit</tt>. Conversely, if o1 is an instance of class <tt>TempUnit</tt>
+   *         and o2 an instance of class <tt>Unit</tt>, a value greater than zero is returned. If o1
+   *         and o2 are instances of the same class, the comparison either returns zero or, when
+   *         unitSubComparator is not null, that comparator's result.
+   */
+  public int compare(Unit u1, Unit u2) {
+    if (u1 instanceof TempUnit && u2 instanceof TempUnit)
+      return (subCmp != null) ? subCmp.compare(u1, u2) : 0;
+    else {
+      if (u1 instanceof TempUnit)
+        return 1;
+      else if (u2 instanceof TempUnit)
+        return -1;
+      else
+        return (subCmp != null) ? subCmp.compare(u1, u2) : 0;
+    }
+  }
 }

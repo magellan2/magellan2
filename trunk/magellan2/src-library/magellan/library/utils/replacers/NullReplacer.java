@@ -22,34 +22,33 @@ import magellan.library.utils.Resources;
 
 /**
  * Returns true iff the argument is null.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class NullReplacer extends AbstractParameterReplacer {
 
   /**
-	 * Creates new NotReplacer
-	 */
-	public NullReplacer() {
-		super(1);
-	}
+   * Creates new NotReplacer
+   */
+  public NullReplacer() {
+    super(1);
+  }
 
-	/**
-	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
-	 */
-	public Object getReplacement(Object o) {
-		Object obj = getParameter(0, o);
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
+   */
+  public Object getReplacement(Object o) {
+    Object obj = getParameter(0, o);
 
-		if(obj == null) {
-			return NullReplacer.TRUE;
-		}
+    if (obj == null)
+      return Replacer.TRUE;
 
-		return NullReplacer.FALSE;
-	}
+    return Replacer.FALSE;
+  }
 
   @Override
   public String getDescription() {
-    return Resources.get("util.replacers.null.description")+"\n\n"+super.getDescription();
+    return Resources.get("util.replacers.null.description") + "\n\n" + super.getDescription();
   }
 }

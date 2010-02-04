@@ -85,14 +85,14 @@ public class EresseaDate extends Date {
    * Returns the epoch ("Zeitalter").
    */
   public int getEpoch() {
-    return this.epoch;
+    return epoch;
   }
 
   /**
    * Sets the epoch ("Zeitalter").
    */
   public void setEpoch(int newEpoch) {
-    this.epoch = newEpoch;
+    epoch = newEpoch;
 
     /*
      * not such a bad idea, actually, but removed for vinyambar int round = getDate(); if (newEpoch
@@ -139,15 +139,14 @@ public class EresseaDate extends Date {
       // second age
       int iDate2 = iDate;
 
-      if (getEpoch()==2){
+      if (getEpoch() == 2) {
         if (iDate2 >= 184) {
           iDate2 -= 184;
         }
-      } else if (getEpoch()==3){
-        iDate2 -=1;
+      } else if (getEpoch() == 3) {
+        iDate2 -= 1;
       }
 
-      
       switch (iDateType) {
       default:
       case Date.TYPE_SHORT: {
@@ -301,7 +300,7 @@ public class EresseaDate extends Date {
    * Creates a clone.
    */
   public magellan.library.ID copy() {
-    return new EresseaDate(this.iDate);
+    return new EresseaDate(iDate);
   }
 
   /**
@@ -309,18 +308,17 @@ public class EresseaDate extends Date {
    */
   @Override
   public int getSeason() {
-    if (getEpoch() < 2) {
+    if (getEpoch() < 2)
       return Date.UNKNOWN;
-    }
 
     int time = iDate;
 
-    if (getEpoch()==2){
+    if (getEpoch() == 2) {
       if (time >= 184) {
         time -= 184;
       }
-    }else if (getEpoch()==3) {
-      time -=1;
+    } else if (getEpoch() == 3) {
+      time -= 1;
     }
 
     switch ((time / 3) % 9) {

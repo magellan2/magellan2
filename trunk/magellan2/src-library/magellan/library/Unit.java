@@ -32,8 +32,8 @@ import magellan.library.utils.Taggable;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 
 /**
- * This is a Unit. A unit is an object that contains one or more persons.
- * All persons in this unit have the same level of skills.
+ * This is a Unit. A unit is an object that contains one or more persons. All persons in this unit
+ * have the same level of skills.
  * 
  * @author $Author: $
  * @version $Revision: 389 $
@@ -45,7 +45,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /** The unit is not sufficiently skilled in horse riding */
   public static final int CAP_UNSKILLED = MovementEvaluator.CAP_UNSKILLED;
 
-  /** hmmm.... */  // Do not know either (Fiete)
+  /** hmmm.... */
+  // Do not know either (Fiete)
   // OK, mail from enno: different bit coded guard effects
   public static final int GUARDFLAG_TAX = 1;
   public static final int GUARDFLAG_MINING = 1 << 1;
@@ -55,27 +56,17 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public static final int GUARDFLAG_CREWS = 1 << 5;
   public static final int GUARDFLAG_RECRUIT = 1 << 6;
   public static final int GUARDFLAG_PRODUCE = 1 << 7;
-  /**
-  Original Mail:
-    Das ist was anderes: Je nach Rasse kann Bewachung einen untershciedlichen Effekt haben. Bergwaechter zum Beispiel bewachen den Abbau von Eisen/Steinen, so dass niemand etwas abbauen kann solange sie das tun, Elfen haben das fuer Holz, usw. Das sieht man allerdings nicht im CR.
 
-    Folgende defines hat der Server dafuer:
-    #define GUARD_TAX 1
-      /* Verhindert Steuereintreiben *
-    #define GUARD_MINING 2
-      /* Verhindert Bergbau *
-    #define GUARD_TREES 4
-      /* Verhindert Waldarbeiten *
-    #define GUARD_TRAVELTHRU 8
-      /* Blockiert Durchreisende *
-    #define GUARD_LANDING 16
-      /* Verhindert Ausstieg + Weiterreise *
-   *#define GUARD_CREWS 32
-      /* Verhindert Unterhaltung auf Schiffen
-   * * #define GUARD_RECRUIT 64
-       /* Verhindert Rekrutieren *
-    #define GUARD_PRODUCE 128
-      /* Verhindert Abbau von Resourcen mit RTF_LIMITED *
+  /**
+   * Original Mail: Das ist was anderes: Je nach Rasse kann Bewachung einen untershciedlichen Effekt
+   * haben. Bergwaechter zum Beispiel bewachen den Abbau von Eisen/Steinen, so dass niemand etwas
+   * abbauen kann solange sie das tun, Elfen haben das fuer Holz, usw. Das sieht man allerdings
+   * nicht im CR. Folgende defines hat der Server dafuer: #define GUARD_TAX 1 /* Verhindert
+   * Steuereintreiben * #define GUARD_MINING 2 /* Verhindert Bergbau * #define GUARD_TREES 4 /*
+   * Verhindert Waldarbeiten * #define GUARD_TRAVELTHRU 8 /* Blockiert Durchreisende * #define
+   * GUARD_LANDING 16 /* Verhindert Ausstieg + Weiterreise * #define GUARD_CREWS 32 /* Verhindert
+   * Unterhaltung auf Schiffen * #define GUARD_RECRUIT 64 /* Verhindert Rekrutieren * #define
+   * GUARD_PRODUCE 128 /* Verhindert Abbau von Resourcen mit RTF_LIMITED *
    */
 
   /**
@@ -101,8 +92,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /**
    * Clears the orders and possibly refreshes the relations
    * 
-   * @param refreshRelations
-   *          if true also refresh the relations of the unit.
+   * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void clearOrders(boolean refreshRelations);
 
@@ -112,11 +102,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void removeOrderAt(int i);
 
   /**
-   * Removes the order at position <tt>i</tt> and possibly refreshes the
-   * relations
+   * Removes the order at position <tt>i</tt> and possibly refreshes the relations
    * 
-   * @param refreshRelations
-   *          if true also refresh the relations of the unit.
+   * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void removeOrderAt(int i, boolean refreshRelations);
 
@@ -125,9 +113,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @param order pattern to remove
    * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
-   *      specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should
-   *      be replaced but not all "BENENNE" orders.
-   *
+   *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
+   *          replaced but not all "BENENNE" orders.
    * @return <tt>true</tt> if at least one order was removed
    */
   public boolean removeOrder(String order, int length);
@@ -135,21 +122,17 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /**
    * Adds the order at position <tt>i</tt> and refreshes the relations
    * 
-   * @param i
-   *          An index between 0 and getOrders().getSize() (inclusively)
+   * @param i An index between 0 and getOrders().getSize() (inclusively)
    * @param newOrders
    */
   public void addOrderAt(int i, String newOrders);
 
   /**
-   * Adds the order at position <tt>i</tt> and possibly refreshes the
-   * relations
+   * Adds the order at position <tt>i</tt> and possibly refreshes the relations
    * 
-   * @param i
-   *          An index between 0 and getOrders().getSize() (inclusively)
+   * @param i An index between 0 and getOrders().getSize() (inclusively)
    * @param newOrders
-   * @param refreshRelations
-   *          if true also refresh the relations of the unit.
+   * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void addOrderAt(int i, String newOrders, boolean refreshRelations);
 
@@ -164,8 +147,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Adds the order and possibly refreshes the relations
    * 
    * @param newOrders
-   * @param refreshRelations
-   *          if true also refresh the relations of the unit.
+   * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void addOrders(String newOrders, boolean refreshRelations);
 
@@ -180,8 +162,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Adds the orders and possibly refreshes the relations
    * 
    * @param newOrders
-   * @param refreshRelations
-   *          If true also refresh the relations of the unit
+   * @param refreshRelations If true also refresh the relations of the unit
    */
   public void addOrders(Collection<String> newOrders, boolean refreshRelations);
 
@@ -196,8 +177,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Sets the orders and possibly refreshes the relations
    * 
    * @param newOrders
-   * @param refreshRelations
-   *          if true also refresh the relations of the unit.
+   * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void setOrders(Collection<String> newOrders, boolean refreshRelations);
 
@@ -209,8 +189,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /**
    * Sets the group this unit belongs to.
    * 
-   * @param g
-   *          the group of the unit
+   * @param g the group of the unit
    */
   public void setGroup(Group g);
 
@@ -224,14 +203,13 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /**
    * Sets an alias id for this unit.
    * 
-   * @param id
-   *          the alias id for this unit
+   * @param id the alias id for this unit
    */
   public void setAlias(UnitID id);
 
   /**
-   * Returns the alias, i.e. the id of this unit it had in the last turn (e.g.
-   * after a NUMMER order).
+   * Returns the alias, i.e. the id of this unit it had in the last turn (e.g. after a NUMMER
+   * order).
    * 
    * @return the alias or null, if the id did not change.
    */
@@ -256,22 +234,21 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public boolean isSpy();
 
   /**
-   * Sets the faction this unit pretends to belong to. A unit cannot disguise
-   * itself as a different faction and at the same time be a spy of another
-   * faction, therefore, setting a value other than null results in having the
-   * spy attribute set to false.
+   * Sets the faction this unit pretends to belong to. A unit cannot disguise itself as a different
+   * faction and at the same time be a spy of another faction, therefore, setting a value other than
+   * null results in having the spy attribute set to false.
    */
   public void setGuiseFaction(Faction f);
 
   /**
-   * Returns the faction this unit pretends to belong to. If the unit is not
-   * disguised null is returned.
+   * Returns the faction this unit pretends to belong to. If the unit is not disguised null is
+   * returned.
    */
   public Faction getGuiseFaction();
 
   /**
-   * Adds an item to the unit. If the unit already has an item of the same type,
-   * the item is overwritten with the specified item object.
+   * Adds an item to the unit. If the unit already has an item of the same type, the item is
+   * overwritten with the specified item object.
    * 
    * @return the specified item i.
    */
@@ -283,17 +260,16 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void setTempID(UnitID id);
 
   /**
-   * Returns the id the unit had when it was still a temp unit. This id is only
-   * set in the turn after the unit turned from a temp unit into to a real unit.
+   * Returns the id the unit had when it was still a temp unit. This id is only set in the turn
+   * after the unit turned from a temp unit into to a real unit.
    * 
-   * @return the temp id or null, if this unit was no temp unit in the previous
-   *         turn.
+   * @return the temp id or null, if this unit was no temp unit in the previous turn.
    */
   public UnitID getTempID();
 
   /**
-   * Sets the region this unit is in. If this unit already has a different
-   * region set it removes itself from the collection of units in that region.
+   * Sets the region this unit is in. If this unit already has a different region set it removes
+   * itself from the collection of units in that region.
    */
   public void setRegion(Region r);
 
@@ -303,8 +279,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public Region getRegion();
 
   /**
-   * Sets the faction for this unit. If this unit already has a different
-   * faction set it removes itself from the collection of units in that faction.
+   * Sets the faction for this unit. If this unit already has a different faction set it removes
+   * itself from the collection of units in that faction.
    */
   public void setFaction(Faction faction);
 
@@ -314,9 +290,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public Faction getFaction();
 
   /**
-   * Sets the building this unit is staying in. If the unit already is in
-   * another building this method removes it from the unit collection of that
-   * building.
+   * Sets the building this unit is staying in. If the unit already is in another building this
+   * method removes it from the unit collection of that building.
    */
   public void setBuilding(Building building);
 
@@ -326,8 +301,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public Building getBuilding();
 
   /**
-   * Sets the ship this unit is on. If the unit already is on another ship this
-   * method removes it from the unit collection of that ship.
+   * Sets the ship this unit is on. If the unit already is on another ship this method removes it
+   * from the unit collection of that ship.
    */
   public void setShip(Ship ship);
 
@@ -342,8 +317,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void setSortIndex(int index);
 
   /**
-   * Returns an index indicating how instances of class are sorted in the
-   * report.
+   * Returns an index indicating how instances of class are sorted in the report.
    */
   public int getSortIndex();
 
@@ -358,24 +332,23 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public String getRaceNamePrefix();
 
   /**
-   * Returns the name of this unit's race including the prefixes of itself, its
-   * faction and group if it has such and those prefixes are set.
+   * Returns the name of this unit's race including the prefixes of itself, its faction and group if
+   * it has such and those prefixes are set.
    * 
-   * @param data
-   *          The GameData
+   * @param data The GameData
    * @return the name or null if this unit's race or its name is not set.
    */
   public String getRaceName(GameData data);
 
   /**
-   * @return The String of the RealRace. If no RealRace is known( = null) the
-   *         normal raceName is returned.
+   * @return The String of the RealRace. If no RealRace is known( = null) the normal raceName is
+   *         returned.
    */
   public String getSimpleRealRaceName();
 
   /**
-   * Delivers the info "typ" from CR without any prefixes and translations used
-   * for displaying the according race icon
+   * Delivers the info "typ" from CR without any prefixes and translations used for displaying the
+   * according race icon
    * 
    * @return Name of the race
    */
@@ -392,14 +365,14 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public Unit getTempUnit(ID key);
 
   /**
-   * Clears the list of temp units created by this unit. Clears only the caching
-   * collection, does not perform clean-up like deleteTemp() does.
+   * Clears the list of temp units created by this unit. Clears only the caching collection, does
+   * not perform clean-up like deleteTemp() does.
    */
   public void clearTemps();
 
   /**
-   * Returns alle orders including the orders necessary to issue the creation of
-   * all the child temp units of this unit.
+   * Returns alle orders including the orders necessary to issue the creation of all the child temp
+   * units of this unit.
    */
   public List<String> getCompleteOrders();
 
@@ -411,19 +384,17 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public List<String> getCompleteOrders(boolean writeUnitTagsAsVorlageComment);
 
   /**
-   * Creates a new temp unit with this unit as the parent. The temp unit is
-   * fully initialised, i.e. it is added to the region units collection in the
-   * specified game data,it inherits the faction, building or ship, region,
-   * faction stealth status, group, race and combat status settings and adds
-   * itself to the corresponding unit collections.
+   * Creates a new temp unit with this unit as the parent. The temp unit is fully initialised, i.e.
+   * it is added to the region units collection in the specified game data,it inherits the faction,
+   * building or ship, region, faction stealth status, group, race and combat status settings and
+   * adds itself to the corresponding unit collections.
    * 
    * @throws IllegalArgumentException
    */
   public TempUnit createTemp(UnitID key);
 
   /**
-   * Removes a temp unit with this unit as the parent completely from the game
-   * data.
+   * Removes a temp unit with this unit as the parent completely from the game data.
    */
   public void deleteTemp(ID key, GameData data);
 
@@ -448,20 +419,18 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void getRelatedUnits(Collection<Unit> units);
 
   /**
-   * Recursively retrieves all units that are related to this unit via one of
-   * the specified relations.
+   * Recursively retrieves all units that are related to this unit via one of the specified
+   * relations.
    * 
-   * @param units
-   *          all units gathered so far to prevent loops.
-   * @param relations
-   *          a set of classes naming the types of relations that are eligible
-   *          for regarding a unit as related to some other unit.
+   * @param units all units gathered so far to prevent loops.
+   * @param relations a set of classes naming the types of relations that are eligible for regarding
+   *          a unit as related to some other unit.
    */
   public void getRelatedUnits(Set<Unit> units, Set<UnitRelation.ID> relations);
 
   /**
-   * Returns a List of the reached coordinates of the units movement starting
-   * with the current region or an empty list if unit is not moving.
+   * Returns a List of the reached coordinates of the units movement starting with the current
+   * region or an empty list if unit is not moving.
    * 
    * @return A list of coordinates, empty list means no movement
    */
@@ -483,8 +452,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public Skill getModifiedSkill(SkillType type);
 
   /**
-   * Returns the skills of this unit as they would appear after the orders for
-   * person transfers are processed.
+   * Returns the skills of this unit as they would appear after the orders for person transfers are
+   * processed.
    */
   public Collection<Skill> getModifiedSkills();
 
@@ -494,34 +463,28 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public UnitContainer getUnitContainer();
 
   /**
-   * Returns the modified unit container this unit belongs to. (ship, building
-   * or null)
+   * Returns the modified unit container this unit belongs to. (ship, building or null)
    */
   public UnitContainer getModifiedUnitContainer();
 
   /**
-   * Returns the skill of the specified type if the unit has such a skill, else
-   * null is returned.
+   * Returns the skill of the specified type if the unit has such a skill, else null is returned.
    */
   public Skill getSkill(SkillType type);
 
   /**
-   * @return
-   * 
-   * FIXME explain
+   * @return FIXME explain
    */
   public boolean isSkillsCopied();
 
   /**
-   * @param skillsCopied
-   * 
-   * FIXME explain
+   * @param skillsCopied FIXME explain
    */
   public void setSkillsCopied(boolean skillsCopied);
 
   /**
-   * Adds a skill to unit's collection of skills. If the unit already has a
-   * skill of the same type it is overwritten with the the new skill object.
+   * Adds a skill to unit's collection of skills. If the unit already has a skill of the same type
+   * it is overwritten with the the new skill object.
    * 
    * @return the specified skill s.
    */
@@ -533,7 +496,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return a collection of Skill objects.
    */
   public Collection<Skill> getSkills();
-  public Map<StringID,Skill> getSkillMap();
+
+  public Map<StringID, Skill> getSkillMap();
 
   /**
    * Removes all skills from this unit.
@@ -546,8 +510,10 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return a collection of Item objects.
    */
   public Collection<Item> getItems();
-  public void setItems(Map<StringID,Item> items);
-  public Map<StringID,Item> getItemMap();
+
+  public void setItems(Map<StringID, Item> items);
+
+  public Map<StringID, Item> getItemMap();
 
   /**
    * Removes all items from this unit.
@@ -555,10 +521,10 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void clearItems();
 
   /**
-   * Returns the item of the specified type as it would appear after the orders
-   * of this unit have been processed, i.e. the amount of the item might be
-   * modified by transfer orders. If the unit does not have an item of the
-   * specified type nor is given one by some other unit, null is returned.
+   * Returns the item of the specified type as it would appear after the orders of this unit have
+   * been processed, i.e. the amount of the item might be modified by transfer orders. If the unit
+   * does not have an item of the specified type nor is given one by some other unit, null is
+   * returned.
    */
   public Item getModifiedItem(ItemType type);
 
@@ -585,8 +551,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public List<PersonTransferRelation> getPersonTransferRelations();
 
   /**
-   * Returns the items of this unit as they would appear after the orders of
-   * this unit have been processed.
+   * Returns the items of this unit as they would appear after the orders of this unit have been
+   * processed.
    * 
    * @return a collection of Item objects.
    */
@@ -598,28 +564,26 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public int getPersons();
 
   /**
-   * Returns the number of persons in this unit as it would be after the orders
-   * of this and other units have been processed since it may be modified by
-   * transfer orders.
+   * Returns the number of persons in this unit as it would be after the orders of this and other
+   * units have been processed since it may be modified by transfer orders.
    */
   public int getModifiedPersons();
 
   /**
-   * Returns the new combat status of this unit as it would be after the orders
-   * of this unit have been processed.
+   * Returns the new combat status of this unit as it would be after the orders of this unit have
+   * been processed.
    */
   public int getModifiedCombatStatus();
 
   /**
-   * Returns the new (expected) guard value of this unit as it would be after the orders of this unit
-   * (and the unit is still allive next turn)
-   * (@TODO: do we need a region.getModifiedGuards - List? guess and hope not)
+   * Returns the new (expected) guard value of this unit as it would be after the orders of this
+   * unit (and the unit is still allive next turn) (@TODO: do we need a region.getModifiedGuards -
+   * List? guess and hope not)
    */
   public int getModifiedGuard();
 
   /**
    * Returns the new Unaided status of this unit as it would be after the orders of this unit
-   * 
    */
   public boolean getModifiedUnaided();
 
@@ -636,45 +600,41 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   @Deprecated
   public int getWeight();
 
-
   /**
-   * Returns the overall weight of this unit (persons and items) in silver if it is known, otherwise -1.
+   * Returns the overall weight of this unit (persons and items) in silver if it is known, otherwise
+   * -1.
    */
   public int getSimpleWeight();
 
   /**
-   * Returns the maximum payload in silver of this unit when it travels by
-   * horse. Horses, carts and persons are taken into account for this
-   * calculation. If the unit has a sufficient skill in horse riding but there
-   * are too many carts for the horses, the weight of the additional carts are
-   * also already considered.
+   * Returns the maximum payload in silver of this unit when it travels by horse. Horses, carts and
+   * persons are taken into account for this calculation. If the unit has a sufficient skill in
+   * horse riding but there are too many carts for the horses, the weight of the additional carts
+   * are also already considered.
    * 
-   * @return the payload in silver, CAP_NO_HORSES if the unit does not possess
-   *         horses or CAP_UNSKILLED if the unit is not sufficiently skilled in
-   *         horse riding to travel on horseback.
+   * @return the payload in silver, CAP_NO_HORSES if the unit does not possess horses or
+   *         CAP_UNSKILLED if the unit is not sufficiently skilled in horse riding to travel on
+   *         horseback.
    * @deprecated use {@link MovementEvaluator#getPayloadOnHorse(Unit)}
    */
   @Deprecated
   public int getPayloadOnHorse();
 
   /**
-   * Returns the maximum payload in silver of this unit when it travels on foot.
-   * Horses, carts and persons are taken into account for this calculation. If
-   * the unit has a sufficient skill in horse riding but there are too many
-   * carts for the horses, the weight of the additional carts are also already
-   * considered. The calculation also takes into account that trolls can tow
-   * carts.
+   * Returns the maximum payload in silver of this unit when it travels on foot. Horses, carts and
+   * persons are taken into account for this calculation. If the unit has a sufficient skill in
+   * horse riding but there are too many carts for the horses, the weight of the additional carts
+   * are also already considered. The calculation also takes into account that trolls can tow carts.
    * 
-   * @return the payload in silver, CAP_UNSKILLED if the unit is not
-   *         sufficiently skilled in horse riding to travel on horseback.
+   * @return the payload in silver, CAP_UNSKILLED if the unit is not sufficiently skilled in horse
+   *         riding to travel on horseback.
    * @deprecated use {@link MovementEvaluator#getPayloadOnFoot(Unit)}
    */
   @Deprecated
   public int getPayloadOnFoot();
 
   /**
-   * Returns the weight of all items of this unit that are not horses or carts
-   * in silver.
+   * Returns the weight of all items of this unit that are not horses or carts in silver.
    * 
    * @deprecated use {@link MovementEvaluator#getLoad(Unit)}
    */
@@ -682,8 +642,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public int getLoad();
 
   /**
-   * Returns the weight of all items of this unit that are not horses or carts
-   * in silver based on the modified items.
+   * Returns the weight of all items of this unit that are not horses or carts in silver based on
+   * the modified items.
    * 
    * @deprecated use {@link MovementEvaluator#getModifiedLoad(Unit)}
    */
@@ -691,8 +651,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public int getModifiedLoad();
 
   /**
-   * Returns the number of regions this unit is able to travel within one turn
-   * based on the riding skill, horses, carts and load of this unit.
+   * Returns the number of regions this unit is able to travel within one turn based on the riding
+   * skill, horses, carts and load of this unit.
    * 
    * @deprecated use {@link MovementEvaluator#getRadius(Unit)}
    */
@@ -700,8 +660,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public int getRadius();
 
   /**
-   * Returns the overall weight (persons, items) of this unit in silver based on
-   * the modified items and persons.
+   * Returns the overall weight (persons, items) of this unit in silver based on the modified items
+   * and persons.
    * 
    * @deprecated use {@link MovementEvaluator#getModifiedWeight(Unit)}
    */
@@ -716,9 +676,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public Collection<Unit> getPassengers();
 
   /**
-   * Returns all units indicating by their orders that they would transport this
-   * unit as a passenger (if there is more than one such unit, that is a
-   * semantical error of course).
+   * Returns all units indicating by their orders that they would transport this unit as a passenger
+   * (if there is more than one such unit, that is a semantical error of course).
    * 
    * @return A Collection of <code>Unit</code>s carrying this one
    */
@@ -742,36 +701,32 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Returns a list of attacked victims.
    */
   public Collection<Unit> getAttackVictims();
+
   /**
    * Returns a list of attackers.
    */
   public Collection<Unit> getAttackAggressors();
 
   /**
-   * Parses the orders of this unit and detects relations between units
-   * established by those orders. When does this method have to be called? No
-   * relation of a unit can affect an object outside the region that unit is in.
-   * So when all relations regarding a certain unit as target or source need to
-   * be determined, this method has to be called for each unit in the same
-   * region. Since relations are defined by unit orders, modified orders may
-   * lead to different relations. Therefore refreshRelations() has to be invoked
-   * on a unit after its orders were modified.
+   * Parses the orders of this unit and detects relations between units established by those orders.
+   * When does this method have to be called? No relation of a unit can affect an object outside the
+   * region that unit is in. So when all relations regarding a certain unit as target or source need
+   * to be determined, this method has to be called for each unit in the same region. Since
+   * relations are defined by unit orders, modified orders may lead to different relations.
+   * Therefore refreshRelations() has to be invoked on a unit after its orders were modified.
    */
   public void refreshRelations();
 
   /**
-   * Parses the orders of this unit <i>beginning at the <code>from</code>th
-   * order</i> and detects relations between units established by those orders.
-   * When does this method have to be called? No relation of a unit can affect
-   * an object outside the region that unit is in. So when all relations
-   * regarding a certain unit as target or source need to be determined, this
-   * method has to be called for each unit in the same region. Since relations
-   * are defined by unit orders, modified orders may lead to different
-   * relations. Therefore refreshRelations() has to be invoked on a unit after
-   * its orders were modified.
+   * Parses the orders of this unit <i>beginning at the <code>from</code>th order</i> and detects
+   * relations between units established by those orders. When does this method have to be called?
+   * No relation of a unit can affect an object outside the region that unit is in. So when all
+   * relations regarding a certain unit as target or source need to be determined, this method has
+   * to be called for each unit in the same region. Since relations are defined by unit orders,
+   * modified orders may lead to different relations. Therefore refreshRelations() has to be invoked
+   * on a unit after its orders were modified.
    * 
-   * @param from
-   *          Start from this line
+   * @param from Start from this line
    */
   public void refreshRelations(int from);
 
@@ -785,59 +740,49 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public String toString(boolean withName);
 
-
   /**
-   * Add a order to the unit's orders. This function ensures that TEMP units are
-   * not affected by the operation.
+   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
+   * operation.
    * 
-   * @param order
-   *          the order to add.
+   * @param order the order to add.
    */
   public boolean addOrder(String order);
 
   /**
-   * Add a order to the unit's orders. This function ensures that TEMP units are
-   * not affected by the operation.
+   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
+   * operation.
    * 
-   * @param order
-   *          the order to add.
-   * @param replace
-   *          if <tt>true</tt>, the order replaces any other of the unit's
-   *          orders of the same type. If <tt>false</tt> the order is simply
-   *          added.
-   * @param length
-   *          denotes the number of tokens that need to be equal for a
-   *          replacement. E.g. specify 2 if order is "BENENNE EINHEIT abc" and
-   *          all "BENENNE EINHEIT" orders should be replaced but not all
-   *          "BENENNE" orders.
+   * @param order the order to add.
+   * @param replace if <tt>true</tt>, the order replaces any other of the unit's orders of the same
+   *          type. If <tt>false</tt> the order is simply added.
+   * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
+   *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
+   *          replaced but not all "BENENNE" orders.
    * @return <tt>true</tt> if the order was successfully added.
    */
   public boolean addOrder(String order, boolean replace, int length);
 
   /**
-   * Scans this unit's orders for temp units to create. It constructs them as
-   * TempUnit objects and removes the corresponding orders from this unit. Uses
-   * the default order locale to parse the orders.
+   * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
+   * removes the corresponding orders from this unit. Uses the default order locale to parse the
+   * orders.
    * 
-   * @param tempSortIndex
-   *          an index for sorting units (required to reconstruct the original
-   *          order in the report) which is incremented with each new temp unit.
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the
-   *         number of temp units read from this unit's orders.
+   * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
+   *          the report) which is incremented with each new temp unit.
+   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   *         from this unit's orders.
    */
   public int extractTempUnits(int tempSortIndex);
 
   /**
-   * Scans this unit's orders for temp units to create. It constructs them as
-   * TempUnit objects and removes the corresponding orders from this unit.
+   * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
+   * removes the corresponding orders from this unit.
    * 
-   * @param tempSortIndex
-   *          an index for sorting units (required to reconstruct the original
-   *          order in the report) which is incremented with each new temp unit.
-   * @param locale
-   *          the locale to parse the orders with.
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the
-   *         number of temp units read from this unit's orders.
+   * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
+   *          the report) which is incremented with each new temp unit.
+   * @param locale the locale to parse the orders with.
+   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   *         from this unit's orders.
    */
   public int extractTempUnits(int tempSortIndex, Locale locale);
 
@@ -850,7 +795,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of aura.
-   *
+   * 
    * @param aura The value for aura.
    */
   public void setAura(int aura);
@@ -864,7 +809,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of auraMax.
-   *
+   * 
    * @param auraMax The value for auraMax.
    */
   public void setAuraMax(int auraMax);
@@ -878,7 +823,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of combatSpells.
-   *
+   * 
    * @param combatSpells The value for combatSpells.
    */
   public void setCombatSpells(Map<ID, CombatSpell> combatSpells);
@@ -892,7 +837,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of combatStatus.
-   *
+   * 
    * @param combatStatus The value for combatStatus.
    */
   public void setCombatStatus(int combatStatus);
@@ -906,7 +851,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of comments.
-   *
+   * 
    * @param comments The value for comments.
    */
   public void setComments(List<String> comments);
@@ -920,7 +865,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of effects.
-   *
+   * 
    * @param effects The value for effects.
    */
   public void setEffects(List<String> effects);
@@ -934,7 +879,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of familiarmageID.
-   *
+   * 
    * @param familiarmageID The value for familiarmageID.
    */
   public void setFamiliarmageID(ID familiarmageID);
@@ -948,7 +893,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of follows.
-   *
+   * 
    * @param follows The value for follows.
    */
   public void setFollows(Unit follows);
@@ -962,7 +907,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of guard.
-   *
+   * 
    * @param guard The value for guard.
    */
   public void setGuard(int guard);
@@ -976,7 +921,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of health.
-   *
+   * 
    * @param health The value for health.
    */
   public void setHealth(String health);
@@ -990,7 +935,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of hideFaction.
-   *
+   * 
    * @param hideFaction The value for hideFaction.
    */
   public void setHideFaction(boolean hideFaction);
@@ -1004,7 +949,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of isHero.
-   *
+   * 
    * @param isHero The value for isHero.
    */
   public void setHero(boolean isHero);
@@ -1018,7 +963,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of isStarving.
-   *
+   * 
    * @param isStarving The value for isStarving.
    */
   public void setStarving(boolean isStarving);
@@ -1032,10 +977,11 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of ordersConfirmed.
-   *
+   * 
    * @param ordersConfirmed The value for ordersConfirmed.
    */
   public void setOrdersConfirmed(boolean ordersConfirmed);
+
   /**
    * Returns the value of privDesc.
    * 
@@ -1045,7 +991,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of privDesc.
-   *
+   * 
    * @param privDesc The value for privDesc.
    */
   public void setPrivDesc(String privDesc);
@@ -1060,7 +1006,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of race.
-   *
+   * 
    * @param race The value for race.
    */
   public void setRace(Race race);
@@ -1074,7 +1020,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of realRace.
-   *
+   * 
    * @param realRace The value for realRace.
    */
   public void setRealRace(Race realRace);
@@ -1088,7 +1034,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of siege.
-   *
+   * 
    * @param siege The value for siege.
    */
   public void setSiege(Building siege);
@@ -1102,7 +1048,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of spells.
-   *
+   * 
    * @param spells The value for spells.
    */
   public void setSpells(Map<ID, Spell> spells);
@@ -1116,7 +1062,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of stealth.
-   *
+   * 
    * @param stealth The value for stealth.
    */
   public void setStealth(int stealth);
@@ -1130,7 +1076,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of unaided.
-   *
+   * 
    * @param unaided The value for unaided.
    */
   public void setUnaided(boolean unaided);
@@ -1144,28 +1090,28 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Sets the value of unitMessages.
-   *
+   * 
    * @param unitMessages The value for unitMessages.
    */
   public void setUnitMessages(List<Message> unitMessages);
 
   /**
    * Sets the value of persons.
-   *
+   * 
    * @param persons The value for persons.
    */
   public void setPersons(int persons);
 
   /**
    * Sets the value of skills.
-   *
+   * 
    * @param skills The value for skills.
    */
   public void setSkills(Map<StringID, Skill> skills);
 
   /**
    * Sets the value of weight.
-   *
+   * 
    * @param weight The value for weight.
    */
   public void setWeight(int weight);
@@ -1189,7 +1135,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return
    */
   public boolean isPastMovementPassive();
-
 
   /**
    * Returns the id uniquely identifying this object.

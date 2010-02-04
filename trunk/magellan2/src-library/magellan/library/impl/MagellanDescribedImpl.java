@@ -21,44 +21,36 @@ import magellan.library.rules.ObjectType;
  * A class representing a uniquely identifiable object with a modifiable name and description.
  */
 public abstract class MagellanDescribedImpl extends ObjectType implements Described {
-	protected String description = null;
+  protected String description = null;
 
-	/**
-	 * Constructs a new described object that is uniquely identifiable by the specified id.
-	 *
-	 * 
-	 */
-	public MagellanDescribedImpl(ID id) {
-		super(id);
-	}
+  /**
+   * Constructs a new described object that is uniquely identifiable by the specified id.
+   */
+  public MagellanDescribedImpl(ID id) {
+    super(id);
+  }
 
-	/**
-	 * Sets the description of this object.
-	 *
-	 * 
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  /**
+   * Sets the description of this object.
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	/**
-	 * Returns the description of this object.
-	 *
-	 * 
-	 */
-	public String getDescription() {
-		return this.description;
-	}
+  /**
+   * Returns the description of this object.
+   */
+  public String getDescription() {
+    return description;
+  }
 
-	/**
-	 * Returns a copy of this described object.
-	 *
-	 * 
-	 *
-	 * @throws CloneNotSupportedException DOCUMENT-ME
-	 */
-	@Override
+  /**
+   * Returns a copy of this described object.
+   * 
+   * @throws CloneNotSupportedException DOCUMENT-ME
+   */
+  @Override
   public Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+    return super.clone();
+  }
 }

@@ -17,60 +17,57 @@ import java.util.Comparator;
 
 import magellan.library.rules.SkillType;
 
-
 /**
  * A comparator imposing an ordering on SkillTypes.
- * 
  * <p>
  * Note: this comparator can impose orderings that are inconsistent with equals.
  * </p>
- * 
  * <p>
  * In order to overcome the inconsistency with equals this comparator allows the introduction of a
  * sub-comparator which is applied in cases of equality. I.e. if the two compared objects have the
- * same type and they would be regarded as equal by this comparator, instead of 0 the result of
- * the sub-comparator's comparison is returned.
+ * same type and they would be regarded as equal by this comparator, instead of 0 the result of the
+ * sub-comparator's comparison is returned.
  * </p>
- *
+ * 
  * @author Ulrich Küster
  * @deprecated completely pointless
  */
 @Deprecated
 public class SkillTypeComparator implements Comparator<SkillType> {
-	private final Comparator<? super SkillType> typeCmp;
-	private final Comparator<? super SkillType> subCmp;
+  private final Comparator<? super SkillType> typeCmp;
+  private final Comparator<? super SkillType> subCmp;
 
-	/**
-	 * Creates a new SkillTypeComparator object.
-	 *
-	 * @param typeComparator used to compare the types of skills.
-	 * @param subComparator if the typeComparator's comparison of the skill types yields 0, this
-	 * 		  sub-comparator is applied to the skill objects if it is not <tt>null</tt>.
-	 */
-	public SkillTypeComparator(Comparator<? super SkillType> typeComparator, Comparator<? super SkillType> subComparator) {
-		this.typeCmp = typeComparator;
-		this.subCmp = subComparator;
-	}
+  /**
+   * Creates a new SkillTypeComparator object.
+   * 
+   * @param typeComparator used to compare the types of skills.
+   * @param subComparator if the typeComparator's comparison of the skill types yields 0, this
+   *          sub-comparator is applied to the skill objects if it is not <tt>null</tt>.
+   */
+  public SkillTypeComparator(Comparator<? super SkillType> typeComparator,
+      Comparator<? super SkillType> subComparator) {
+    typeCmp = typeComparator;
+    subCmp = subComparator;
+  }
 
-	/**
-	 * Compares its two arguments for order according to their types.
-	 *
-	 * @param o1 an instance of class Skill.
-	 * @param o2 an instance of class Skill.
-	 *
-	 * @return the result of the type comparator's comparison of the skill object types. If this
-	 * 		   result is 0 and a subcomparator is specified that subcomparator is applied on the
-	 * 		   skill objects.
-	 */
-	public int compare(SkillType s1, SkillType s2) {
-		int retVal = 0;
+  /**
+   * Compares its two arguments for order according to their types.
+   * 
+   * @param o1 an instance of class Skill.
+   * @param o2 an instance of class Skill.
+   * @return the result of the type comparator's comparison of the skill object types. If this
+   *         result is 0 and a subcomparator is specified that subcomparator is applied on the skill
+   *         objects.
+   */
+  public int compare(SkillType s1, SkillType s2) {
+    int retVal = 0;
 
-		retVal = typeCmp.compare(s1, s2);
+    retVal = typeCmp.compare(s1, s2);
 
-		if((retVal == 0) && (subCmp != null)) {
-			retVal = subCmp.compare(s1, s2);
-		}
+    if ((retVal == 0) && (subCmp != null)) {
+      retVal = subCmp.compare(s1, s2);
+    }
 
-		return retVal;
-	}
+    return retVal;
+  }
 }

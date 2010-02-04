@@ -19,31 +19,31 @@ import javax.swing.KeyStroke;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface ShortcutListener {
-	/**
-	 * Should return all short cuts this class want to be informed. The elements have to be of type
-	 * javax.swing.KeyStroke
-	 *
-	 * @return Iterator over all short
-	 */
-	public Iterator<KeyStroke> getShortCuts();
+  /**
+   * Should return all short cuts this class want to be informed. The elements have to be of type
+   * javax.swing.KeyStroke
+   * 
+   * @return Iterator over all short
+   */
+  public Iterator<KeyStroke> getShortCuts();
 
-	/**
-	 * This method is called when a shortcut from getShortCuts() is recognized.
-	 */
-	public void shortCut(KeyStroke shortcut);
+  /**
+   * This method is called when a shortcut from getShortCuts() is recognized.
+   */
+  public void shortCut(KeyStroke shortcut);
 
-	/**
-	 * Returns a (localized) description (or name) for this listener. 
-	 */
-	public String getListenerDescription();
+  /**
+   * Returns a (localized) description (or name) for this listener.
+   */
+  public String getListenerDescription();
 
-	/**
-	 * Returns a short description for the specified thing... 
-	 */
-	public String getShortcutDescription(KeyStroke stroke);
+  /**
+   * Returns a short description for the specified thing...
+   */
+  public String getShortcutDescription(KeyStroke stroke);
 }

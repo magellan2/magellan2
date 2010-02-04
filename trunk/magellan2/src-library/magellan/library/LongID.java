@@ -21,172 +21,138 @@ import java.util.Map;
  * representation of integers to be decimal in all cases.
  */
 public class LongID implements ID {
-	/** The Long object this id is based on. */
+  /** The Long object this id is based on. */
 
-	// pavkovic 2003.09.18: changed to primitive type to avoid memory overhead
-	protected final long id;
+  // pavkovic 2003.09.18: changed to primitive type to avoid memory overhead
+  protected final long id;
 
-	/**
-	 * Constructs a new LongID object from the specified integer.
-	 *
-	 * 
-	 */
-	protected LongID(Long l) {
-		this(l.longValue());
-	}
+  /**
+   * Constructs a new LongID object from the specified integer.
+   */
+  protected LongID(Long l) {
+    this(l.longValue());
+  }
 
-	/**
-	 * Constructs a new LongID object based on an Long object created from the specified long.
-	 *
-	 * 
-	 */
-	protected LongID(long l) {
-		this.id = l;
-	}
+  /**
+   * Constructs a new LongID object based on an Long object created from the specified long.
+   */
+  protected LongID(long l) {
+    id = l;
+  }
 
-	/**
-	 * Creates a new LongID object by parsing the specified string for a decimal integer.
-	 *
-	 * 
-	 */
-	protected LongID(String s) {
-		this(Long.valueOf(s));
-	}
+  /**
+   * Creates a new LongID object by parsing the specified string for a decimal integer.
+   */
+  protected LongID(String s) {
+    this(Long.valueOf(s));
+  }
 
-	/** a static cache to use this class as flyweight factory */
-	private static Map<Long,LongID> idMap = new HashMap<Long, LongID>();
+  /** a static cache to use this class as flyweight factory */
+  private static Map<Long, LongID> idMap = new HashMap<Long, LongID>();
 
-	/**
-	 * Returns a (possibly) new StringID object.
-	 *
-	 * 
-	 *
-	 * 
-	 *
-	 * @throws NullPointerException DOCUMENT-ME
-	 */
-	public static LongID create(Long o) {
-		if(o == null) {
-			throw new NullPointerException();
-		}
+  /**
+   * Returns a (possibly) new StringID object.
+   * 
+   * @throws NullPointerException DOCUMENT-ME
+   */
+  public static LongID create(Long o) {
+    if (o == null)
+      throw new NullPointerException();
 
-		LongID id = LongID.idMap.get(o);
+    LongID id = LongID.idMap.get(o);
 
-		if(id == null) {
-			id = new LongID(o);
-			LongID.idMap.put(o, id);
-		}
+    if (id == null) {
+      id = new LongID(o);
+      LongID.idMap.put(o, id);
+    }
 
-		return id;
-	}
+    return id;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public static LongID create(String s) {
-		return LongID.create(Long.valueOf(s));
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public static LongID create(String s) {
+    return LongID.create(Long.valueOf(s));
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public static LongID create(int i) {
-		return LongID.create(new Long(i));
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public static LongID create(int i) {
+    return LongID.create(new Long(i));
+  }
 
   public static LongID create(long l) {
     return LongID.create(new Long(l));
   }
 
-	/**
-	 * Returns a string representation of the underlying integer.
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Returns a string representation of the underlying integer.
+   */
+  @Override
   public String toString() {
-		return Long.toString(id);
-	}
+    return Long.toString(id);
+  }
 
-	/**
-	 * Returns a string representation of the underlying integer.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public String toString(String delim) {
-		return toString();
-	}
+  /**
+   * Returns a string representation of the underlying integer.
+   */
+  public String toString(String delim) {
+    return toString();
+  }
 
-	/**
-	 * Returns the value of this LongID as an int.
-	 *
-	 * 
-	 */
-	public long longValue() {
-		return id;
-	}
+  /**
+   * Returns the value of this LongID as an int.
+   */
+  public long longValue() {
+    return id;
+  }
 
-	/**
-	 * Indicates whether this LongID object is equal to some other object.
-	 *
-	 * 
-	 *
-	 * @return true, if o is an instance of class LongID and the numerical values of this and the
-	 * 		   specified object are equal.
-	 */
-	@Override
+  /**
+   * Indicates whether this LongID object is equal to some other object.
+   * 
+   * @return true, if o is an instance of class LongID and the numerical values of this and the
+   *         specified object are equal.
+   */
+  @Override
   public boolean equals(Object o) {
-		try {
-			return (this == o) || (id == ((LongID) o).id);
-		} catch(ClassCastException e) {
-			return false;
-		}
-	}
+    try {
+      return (this == o) || (id == ((LongID) o).id);
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
 
-	/**
-	 * Imposes a natural ordering on LongID objects which is based on the natural ordering of the
-	 * underlying integers.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public int compareTo(Object o) {
-		long anotherId = ((LongID) o).id;
+  /**
+   * Imposes a natural ordering on LongID objects which is based on the natural ordering of the
+   * underlying integers.
+   */
+  public int compareTo(Object o) {
+    long anotherId = ((LongID) o).id;
 
-		return (id < anotherId) ? (-1) : ((id == anotherId) ? 0 : 1);
-	}
+    return (id < anotherId) ? (-1) : ((id == anotherId) ? 0 : 1);
+  }
 
-	/**
-	 * Returns a hash code for this object.
-	 *
-	 * @return a hash code value based on the hash code returned by the underlying Long object.
-	 */
-	@Override
+  /**
+   * Returns a hash code for this object.
+   * 
+   * @return a hash code value based on the hash code returned by the underlying Long object.
+   */
+  @Override
   public int hashCode() {
-		return (int) (id ^ (id >>> 32));
-	}
+    return (int) (id ^ (id >>> 32));
+  }
 
-	/**
-	 * Returns a copy of this LongID object.
-	 *
-	 * 
-	 *
-	 * @throws CloneNotSupportedException DOCUMENT-ME
-	 */
-	@Override
+  /**
+   * Returns a copy of this LongID object.
+   * 
+   * @throws CloneNotSupportedException DOCUMENT-ME
+   */
+  @Override
   public Object clone() throws CloneNotSupportedException {
-		// pavkovic 2003.07.08: we dont really clone this object as LongID is unchangeable after creation
-		return this;
-	}
+    // pavkovic 2003.07.08: we dont really clone this object as LongID is unchangeable after
+    // creation
+    return this;
+  }
 }

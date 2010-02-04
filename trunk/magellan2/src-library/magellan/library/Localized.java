@@ -24,28 +24,26 @@
 package magellan.library;
 
 import java.util.Locale;
-  
-  /**
-   * This interface should guarantee that the object can be localized. 
-   * Furthermore it should make sure that relocalized objects invalidate locale dependent
-   * information.
-   *
-   * @author ...
-   * @version 1.0, 20.11.2007
-   */
+
+/**
+ * This interface should guarantee that the object can be localized. Furthermore it should make sure
+ * that relocalized objects invalidate locale dependent information.
+ * 
+ * @author ...
+ * @version 1.0, 20.11.2007
+ */
 public interface Localized {
 
   /**
-   * Sets the current locale of the object and should
-   * invalidate/reset all locale dependent content of the
-   * object if the locale changes. 
+   * Sets the current locale of the object and should invalidate/reset all locale dependent content
+   * of the object if the locale changes.
    * 
    * @param locale
    */
   public void setLocale(Locale locale);
 
   /**
-   * Return the current locale i.e. for comparisions 
+   * Return the current locale i.e. for comparisions
    * 
    * @return locale
    */

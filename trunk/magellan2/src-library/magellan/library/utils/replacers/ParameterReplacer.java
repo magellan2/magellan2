@@ -20,18 +20,18 @@ package magellan.library.utils.replacers;
 
 /**
  * A replacer that accepts parameters
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface ParameterReplacer extends Replacer {
-	/**
-	 * Returns the number of parameters.
-	 */
-	public int getParameterCount();
+  /**
+   * Returns the number of parameters.
+   */
+  public int getParameterCount();
 
-	/**
-	 * Sets the <code>index</code>-th parameter  to obj 
-	 */
-	public void setParameter(int index, Object obj);
+  /**
+   * Sets the <code>index</code>-th parameter to obj
+   */
+  public void setParameter(int index, Object obj);
 }

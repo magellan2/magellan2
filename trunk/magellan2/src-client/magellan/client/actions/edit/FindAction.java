@@ -27,66 +27,67 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class FindAction extends MenuAction implements SelectionListener, GameDataListener {
-	private Collection<Region> selectedRegions = new LinkedList<Region>();
+  private Collection<Region> selectedRegions = new LinkedList<Region>();
 
-	/**
-	 * Creates a new FindAction object.
-	 *
-	 * @param client
-	 */
-	public FindAction(Client client) {
+  /**
+   * Creates a new FindAction object.
+   * 
+   * @param client
+   */
+  public FindAction(Client client) {
     super(client);
     client.getDispatcher().addGameDataListener(this);
-		client.getDispatcher().addSelectionListener(this);
-	}
+    client.getDispatcher().addSelectionListener(this);
+  }
 
-	/**
+  /**
 	 * 
 	 */
-	@Override
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		FindDialog f = new FindDialog(client, false, client.getDispatcher(), client.getData(), client.getProperties(), selectedRegions);
-		f.setVisible(true);
-	}
+    FindDialog f =
+        new FindDialog(client, false, client.getDispatcher(), client.getData(), client
+            .getProperties(), selectedRegions);
+    f.setVisible(true);
+  }
 
-	/**
+  /**
 	 * 
 	 */
-	public void selectionChanged(SelectionEvent s) {
-		if(s.getSelectionType() == SelectionEvent.ST_REGIONS) {
-			selectedRegions.clear();
+  public void selectionChanged(SelectionEvent s) {
+    if (s.getSelectionType() == SelectionEvent.ST_REGIONS) {
+      selectedRegions.clear();
 
-			if(s.getSelectedObjects() != null) {
-		    for (Object o : s.getSelectedObjects()){
-		      if (o instanceof Region){
-		        selectedRegions.add((Region) o);
-		      }
-		    }
-			}
-		}
-	}
+      if (s.getSelectedObjects() != null) {
+        for (Object o : s.getSelectedObjects()) {
+          if (o instanceof Region) {
+            selectedRegions.add((Region) o);
+          }
+        }
+      }
+    }
+  }
 
-	/**
+  /**
 	 * 
 	 */
-	public void gameDataChanged(GameDataEvent e) {
-		selectedRegions.clear();
-	}
+  public void gameDataChanged(GameDataEvent e) {
+    selectedRegions.clear();
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.findaction.accelerator",false);
+    return Resources.get("actions.findaction.accelerator", false);
   }
 
   /**
@@ -94,7 +95,7 @@ public class FindAction extends MenuAction implements SelectionListener, GameDat
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.findaction.mnemonic",false);
+    return Resources.get("actions.findaction.mnemonic", false);
   }
 
   /**
@@ -107,7 +108,7 @@ public class FindAction extends MenuAction implements SelectionListener, GameDat
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.findaction.tooltip",false);
+    return Resources.get("actions.findaction.tooltip", false);
   }
 
 }

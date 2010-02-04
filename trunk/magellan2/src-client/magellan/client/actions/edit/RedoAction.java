@@ -24,80 +24,70 @@ import magellan.client.MagellanUndoManager;
 import magellan.client.actions.MenuAction;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class RedoAction extends MenuAction implements PropertyChangeListener {
-	private MagellanUndoManager undo;
-	private String name = null;
+  private MagellanUndoManager undo;
+  private String name = null;
 
-	/**
-	 * Creates a new RedoAction object.
-	 *
-	 * 
-	 */
-	public RedoAction(Client client, MagellanUndoManager m) {
-        super(client);
-		name = this.getName();
-		undo = m;
-		setEnabled(undo.canUndo());
+  /**
+   * Creates a new RedoAction object.
+   */
+  public RedoAction(Client client, MagellanUndoManager m) {
+    super(client);
+    name = getName();
+    undo = m;
+    setEnabled(undo.canUndo());
 
-		if(isEnabled()) {
-			putValue(Action.NAME, name + ": " + undo.getUndoPresentationName());
-		}
+    if (isEnabled()) {
+      putValue(Action.NAME, name + ": " + undo.getUndoPresentationName());
+    }
 
-		undo.addPropertyChangeListener(MagellanUndoManager.REDO, this);
-	}
+    undo.addPropertyChangeListener(MagellanUndoManager.REDO, this);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String getIconName() {
-		return "redo_edit";
-	}
+    return "redo_edit";
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		if (undo.canRedo()) {
+    if (undo.canRedo()) {
       undo.redo();
     }
-	}
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void propertyChange(PropertyChangeEvent p1) {
-		boolean enabled = ((Boolean) p1.getNewValue()).booleanValue();
+  /**
+   * DOCUMENT-ME
+   */
+  public void propertyChange(PropertyChangeEvent p1) {
+    boolean enabled = ((Boolean) p1.getNewValue()).booleanValue();
 
-		if(enabled) {
-			putValue(Action.NAME, name + ": " + undo.getRedoPresentationName());
-		} else {
-			putValue(Action.NAME, name);
-		}
-		setEnabled(enabled);
-	}
-  
+    if (enabled) {
+      putValue(Action.NAME, name + ": " + undo.getRedoPresentationName());
+    } else {
+      putValue(Action.NAME, name);
+    }
+    setEnabled(enabled);
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.redoaction.accelerator",false);
+    return Resources.get("actions.redoaction.accelerator", false);
   }
 
   /**
@@ -105,7 +95,7 @@ public class RedoAction extends MenuAction implements PropertyChangeListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.redoaction.mnemonic",false);
+    return Resources.get("actions.redoaction.mnemonic", false);
   }
 
   /**
@@ -118,7 +108,7 @@ public class RedoAction extends MenuAction implements PropertyChangeListener {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.redoaction.tooltip",false);
+    return Resources.get("actions.redoaction.tooltip", false);
   }
 
 }

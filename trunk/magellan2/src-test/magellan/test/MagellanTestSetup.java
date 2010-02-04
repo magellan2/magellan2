@@ -8,28 +8,28 @@ import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
 
 public class MagellanTestSetup extends TestSetup {
-  
-  public MagellanTestSetup(){
+
+  public MagellanTestSetup() {
     super(new TestSuite());
   }
-  
-	public MagellanTestSetup(TestSuite test) {
-		super(test);
-	}
 
-	@Override
+  public MagellanTestSetup(TestSuite test) {
+    super(test);
+  }
+
+  @Override
   protected void setUp() {
-		MagellanContext context = new MagellanContext(null);
-		context.setProperties(new Properties());
+    MagellanContext context = new MagellanContext(null);
+    context.setProperties(new Properties());
     context.setEventDispatcher(new EventDispatcher());
-		context.init();
-	}
+    context.init();
+  }
 
-	@Override
+  @Override
   protected void tearDown() {
-	}
-	
-	public void testNothing(){
-	  
-	}
+  }
+
+  public void testNothing() {
+
+  }
 }

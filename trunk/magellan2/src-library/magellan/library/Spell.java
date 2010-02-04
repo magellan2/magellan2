@@ -20,21 +20,23 @@ import magellan.library.rules.ItemType;
 import magellan.library.utils.SpellSyntax;
 
 /**
- * Container class for a spell based on its representation in a cr version >=
- * 42.
+ * Container class for a spell based on its representation in a cr version >= 42.
  */
 public interface Spell extends Described, Localized {
 
   public interface Component {
-    public static final String AURA = "Aura"; 
+    public static final String AURA = "Aura";
     public static final String PERMANENT_AURA = "permanente Aura";
 
     public String getName();
+
     public ItemType getItem();
+
     public int getAmount();
+
     public boolean isLevelDependent();
   }
-  
+
   /**
    * Returns the integer serving as the block id in the cr.
    */
@@ -46,14 +48,14 @@ public interface Spell extends Described, Localized {
   public void setBlockID(int id);
 
   /**
-   * Returns the level of this spell which indicates the lowest skill level a
-   * mage must have to be able to cast this spell.
+   * Returns the level of this spell which indicates the lowest skill level a mage must have to be
+   * able to cast this spell.
    */
   public int getLevel();
 
   /**
-   * Sets the level of this spell which indicates the lowest skill level a mage
-   * must have to be able to cast this spell.
+   * Sets the level of this spell which indicates the lowest skill level a mage must have to be able
+   * to cast this spell.
    */
   public void setLevel(int level);
 
@@ -88,7 +90,7 @@ public interface Spell extends Described, Localized {
   public void setOnOcean(boolean onOcean);
 
   /**
-   * Returns <code>true</code> if this spell can be cast on leaving ships. 
+   * Returns <code>true</code> if this spell can be cast on leaving ships.
    */
   public boolean getOnShip();
 
@@ -118,10 +120,10 @@ public interface Spell extends Described, Localized {
   public void setIsFar(boolean isFar);
 
   /**
-   * Returns the components of this spell as a map of "type" Strings as keys and "amount"
-   * Strings as values.
+   * Returns the components of this spell as a map of "type" Strings as keys and "amount" Strings as
+   * values.
    */
-  public Map<String,String> getComponents();
+  public Map<String, String> getComponents();
 
   /**
    * Returns a list of the spells components in a more convenient form.
@@ -150,29 +152,27 @@ public interface Spell extends Described, Localized {
 
   /**
    * Enno in e-client about the syntax:
-   * <ul> 
-   * <li>'c' = Zeichenkette</li> 
-   * <li>'k' = REGION|EINHEIT|STUFE|SCHIFF|GEBAEUDE </li>
-   * <li>'i' = Zahl </li>
-   * <li>'s' = Schiffsnummer </li>
-   * <li>'b' = Gebaeudenummer </li>
-   * <li>'r' = Regionskoordinaten (x, y) </li>
-   * <li>'u' = Einheit </li>
-   * <li>'+' = Wiederholung des vorangehenden Parameters </li>
+   * <ul>
+   * <li>'c' = Zeichenkette</li>
+   * <li>'k' = REGION|EINHEIT|STUFE|SCHIFF|GEBAEUDE</li>
+   * <li>'i' = Zahl</li>
+   * <li>'s' = Schiffsnummer</li>
+   * <li>'b' = Gebaeudenummer</li>
+   * <li>'r' = Regionskoordinaten (x, y)</li>
+   * <li>'u' = Einheit</li>
+   * <li>'+' = Wiederholung des vorangehenden Parameters</li>
    * <li>'?' = vorangegangener Parameter</li>
    * </ul>
-   * ist nicht zwingend Syntaxcheks, die der Server auf dieser Basis macht, sind
-   * nicht perfekt; es ist notwendig, aber nicht hinreichend, dass die Syntax
-   * erfuellt wird. Aber in den vielen Faellen kann man damit schonmal sagen,
-   * was denn falsch war.
+   * ist nicht zwingend Syntaxcheks, die der Server auf dieser Basis macht, sind nicht perfekt; es
+   * ist notwendig, aber nicht hinreichend, dass die Syntax erfuellt wird. Aber in den vielen
+   * Faellen kann man damit schonmal sagen, was denn falsch war.
    * 
    * @return the syntax or <code>null</code>
    */
   public String getSyntax();
 
   /**
-   * @param syntax
-   *          the syntax to set
+   * @param syntax the syntax to set
    */
   public void setSyntax(String syntax);
 

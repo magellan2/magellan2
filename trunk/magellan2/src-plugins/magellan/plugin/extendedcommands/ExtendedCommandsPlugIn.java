@@ -86,11 +86,11 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     ExtendedCommandsPlugIn.log = Logger.getInstance(ExtendedCommandsPlugIn.class);
     Resources.getInstance().initialize(Client.getSettingsDirectory(), "extendedcommands_");
     this.client = client;
-    this.commands = new ExtendedCommands(client);
+    commands = new ExtendedCommands(client);
     initCommands();
-    this.dock = new ExtendedCommandsDock(commands);
+    dock = new ExtendedCommandsDock(commands);
     client.getDispatcher().addSelectionListener(dock);
-    this.help = new HelpDock();
+    help = new HelpDock();
     ExtendedCommandsPlugIn.log.debug(getName() + " initialized...(Client)");
 
     // initialize shortcuts
@@ -341,9 +341,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     }
 
     // open a dialog for the commands...
-// ExtendedCommandsDialog dialog = new
+    // ExtendedCommandsDialog dialog = new
     // ExtendedCommandsDialog(client,data,commands,container,script);
-// dialog.setVisible(true);
+    // dialog.setVisible(true);
     dock.setScript(null, container, script);
 
   }
@@ -361,8 +361,8 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     }
 
     // open a dialog for the commands...
-// ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,unit,script);
-// dialog.setVisible(true);
+    // ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,unit,script);
+    // dialog.setVisible(true);
     dock.setScript(unit, null, script);
   }
 
@@ -379,16 +379,15 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     }
 
     // open a dialog for the commands...
-// ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,script);
-// dialog.setVisible(true);
+    // ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,script);
+    // dialog.setVisible(true);
     dock.setScript(null, null, script);
   }
 
   protected void clearCommands() {
     if (JOptionPane.showConfirmDialog(client, Resources.get("extended_commands.cleanup.question"),
-        Resources.get("extended_commands.cleanup.title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+        Resources.get("extended_commands.cleanup.title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
       return;
-    }
     int units = commands.clearUnusedUnits();
     int containers = commands.clearUnusedContainers();
 
@@ -432,9 +431,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     }
 
     // client notification is done from commands.execute
-// client.getDispatcher().fire(new GameDataEvent(this, data));
-// client.getDispatcher().fire(new UnitOrdersEvent(this, unit));
-// container.getCache().orderEditor.reloadOrders();
+    // client.getDispatcher().fire(new GameDataEvent(this, data));
+    // client.getDispatcher().fire(new UnitOrdersEvent(this, unit));
+    // container.getCache().orderEditor.reloadOrders();
 
   }
 

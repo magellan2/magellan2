@@ -78,12 +78,12 @@ public class SelectionEvent extends EventObject {
    * an active object.
    */
   public Object getActiveObject() {
-    if (getSelectionType()==ST_REGIONS)
+    if (getSelectionType() == SelectionEvent.ST_REGIONS)
       return null;
     if (selectedObjects.isEmpty())
       return null;
-      
-    return  selectedObjects.iterator().next();
+
+    return selectedObjects.iterator().next();
   }
 
   /**
@@ -99,8 +99,8 @@ public class SelectionEvent extends EventObject {
     StringBuffer buffer = new StringBuffer();
     buffer.append("SelectionEvent{\n");
     buffer.append("selectedObjects:").append(selectedObjects).append("\n");
-// buffer.append("activeObject:").append(activeObject).append("\n");
-// buffer.append("path:").append(path).append("\n");
+    // buffer.append("activeObject:").append(activeObject).append("\n");
+    // buffer.append("path:").append(path).append("\n");
     buffer.append("selectionType:").append(selectionType).append("\n");
     buffer.append("}\n");
     return buffer.toString();
@@ -120,15 +120,15 @@ public class SelectionEvent extends EventObject {
 
     this.contexts = contexts; // maybe null?
 
-    if (contexts == null)
-      this.selectedObjects = Collections.emptyList();
-    else {
-      this.selectedObjects = new ArrayList<Object>(contexts.size());
+    if (contexts == null) {
+      selectedObjects = Collections.emptyList();
+    } else {
+      selectedObjects = new ArrayList<Object>(contexts.size());
       for (List<Object> context : contexts) {
         Object obj = context.get(context.size() - 1);
-        if (obj==null)
+        if (obj == null)
           throw new NullPointerException();
-        this.selectedObjects.add(obj);
+        selectedObjects.add(obj);
       }
     }
   }
@@ -167,12 +167,12 @@ public class SelectionEvent extends EventObject {
    * @return
    */
   public static SelectionEvent create(Object source, HasRegion hasRegion) {
-    if (hasRegion==null)
+    if (hasRegion == null)
       throw new NullPointerException();
     List<Object> context = new ArrayList<Object>(2);
     context.add(hasRegion.getRegion());
     context.add(hasRegion);
-    return new SelectionEvent(source, Collections.singletonList(context), ST_DEFAULT);
+    return new SelectionEvent(source, Collections.singletonList(context), SelectionEvent.ST_DEFAULT);
   }
 
   /**
@@ -183,10 +183,10 @@ public class SelectionEvent extends EventObject {
    * @return
    */
   public static SelectionEvent create(Object source, Region region) {
-    if (region==null)
-      return create(source);
+    if (region == null)
+      return SelectionEvent.create(source);
     else
-      return create(source, region, Collections.singletonList(region));
+      return SelectionEvent.create(source, region, Collections.singletonList(region));
   }
 
   /**
@@ -204,7 +204,7 @@ public class SelectionEvent extends EventObject {
       contexts.add(copy);
     }
 
-    return new SelectionEvent(source, contexts, ST_DEFAULT);
+    return new SelectionEvent(source, contexts, SelectionEvent.ST_DEFAULT);
   }
 
   /**
@@ -225,7 +225,7 @@ public class SelectionEvent extends EventObject {
       contexts.add(copy);
     }
 
-    return new SelectionEvent(source, contexts, ST_DEFAULT);
+    return new SelectionEvent(source, contexts, SelectionEvent.ST_DEFAULT);
   }
 
   /**
@@ -242,7 +242,7 @@ public class SelectionEvent extends EventObject {
       contexts.add(copy);
     }
 
-    return new SelectionEvent(source, contexts, ST_REGIONS);
+    return new SelectionEvent(source, contexts, SelectionEvent.ST_REGIONS);
   }
 
   /**
@@ -255,7 +255,7 @@ public class SelectionEvent extends EventObject {
    * @return
    */
   public static SelectionEvent create(Object source, List<? extends List<?>> contexts) {
-    return new SelectionEvent(source, copy2(contexts), ST_DEFAULT);
+    return new SelectionEvent(source, SelectionEvent.copy2(contexts), SelectionEvent.ST_DEFAULT);
   }
 
   /**
@@ -267,7 +267,7 @@ public class SelectionEvent extends EventObject {
    * @return
    */
   public static SelectionEvent create(Object source, Object selection, int mode) {
-    if (selection==null)
+    if (selection == null)
       throw new NullPointerException();
     else
       return new SelectionEvent(source, Collections.singletonList(Collections
@@ -279,7 +279,7 @@ public class SelectionEvent extends EventObject {
    * {@link #ST_REGIONS} selection.
    */
   public boolean isSingleSelection() {
-    return selectionType != ST_REGIONS && getSelectedObjects().size() == 1;
+    return selectionType != SelectionEvent.ST_REGIONS && getSelectedObjects().size() == 1;
   }
 
   /**
@@ -289,7 +289,7 @@ public class SelectionEvent extends EventObject {
    * @return A new event.
    */
   public static SelectionEvent create(Object source) {
-    return new SelectionEvent(source, null, ST_DEFAULT);
+    return new SelectionEvent(source, null, SelectionEvent.ST_DEFAULT);
   }
 
   /**
@@ -332,16 +332,18 @@ public class SelectionEvent extends EventObject {
     }
     return false;
   }
-  
+
   @Override
   public int hashCode() {
     int result = 42;
     result = result * 31 + selectionType;
-    for (List<?> l : contexts)
+    for (List<?> l : contexts) {
       result = result * 31 + l.size();
-    for (Object o : selectedObjects)
+    }
+    for (Object o : selectedObjects) {
       result = result * 31 + o.hashCode();
-    
+    }
+
     return result;
   }
 }

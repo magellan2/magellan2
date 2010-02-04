@@ -36,55 +36,59 @@ import magellan.library.rules.RegionType;
 import magellan.library.utils.Score;
 
 /**
- * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
  */
 
 public class AstralMappingEvaluator extends MappingEvaluator {
   private static AstralMappingEvaluator singleton = new AstralMappingEvaluator();
+
   public static AstralMappingEvaluator getSingleton() {
     return AstralMappingEvaluator.singleton;
   }
 
   public static final int SCORE_TERRAIN = 1;
   public static final int SCORE_SCHEME = 1;
-  
+
   @Override
-  protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData, CoordinateID mapping) {
+  protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData,
+      CoordinateID mapping) {
 
     RegionType dustTerrain = fromData.rules.getRegionType(EresseaConstants.RT_FOG);
 
     int score = 0;
-  
+
     // for each translation we have to compare the regions' terrains
     for (Region region : fromData.regions().values()) {
       if (region.getType() == null || region.getType().equals(RegionType.unknown)) {
         continue;
       }
-      
+
       CoordinateID c = region.getCoordinate();
-  
+
       // do the translation and find the corresponding region in the report
       // data
       if (c.z == mapping.z) {
         CoordinateID translatedCoord = new CoordinateID(c.x, c.y, 0);
         translatedCoord.translate(mapping);
         Region sameRegion = toData.regions().get(translatedCoord);
-  
+
         // the hit count for the current translation must only be modified, if
         // there actually are regions to be compared and their terrains are
         // valid
 
-        if ((sameRegion != null) && (sameRegion.getType() != null) && !(sameRegion.getType().equals(RegionType.unknown))) {
+        if ((sameRegion != null) && (sameRegion.getType() != null)
+            && !(sameRegion.getType().equals(RegionType.unknown))) {
           if (region.getType().equals(sameRegion.getType())) {
             score += AstralMappingEvaluator.SCORE_TERRAIN;
-            if ((region.getType().equals(dustTerrain)) && (region.schemes() != null) && (region.schemes().size() > 0) && (sameRegion.schemes() != null) && (sameRegion.schemes().size()>0)) {
+            if ((region.getType().equals(dustTerrain)) && (region.schemes() != null)
+                && (region.schemes().size() > 0) && (sameRegion.schemes() != null)
+                && (sameRegion.schemes().size() > 0)) {
               // both regions have schemes - lets compare them
               if (equalSchemes(region.schemes(), sameRegion.schemes())) {
-                score += AstralMappingEvaluator.SCORE_SCHEME*region.schemes().size();
+                score += AstralMappingEvaluator.SCORE_SCHEME * region.schemes().size();
               } else {
-                score -= AstralMappingEvaluator.SCORE_SCHEME*region.schemes().size();
+                score -= AstralMappingEvaluator.SCORE_SCHEME * region.schemes().size();
               }
             }
           } else {
@@ -100,16 +104,14 @@ public class AstralMappingEvaluator extends MappingEvaluator {
 
   private boolean equalSchemes(Collection<Scheme> schemes1, Collection<Scheme> schemes2) {
     if (schemes1 == null) {
-      if (schemes2 == null) {
+      if (schemes2 == null)
         return true;
-      } else {
+      else
         return false;
-      }
     }
 
-    if (schemes1.size() != schemes2.size()) {
+    if (schemes1.size() != schemes2.size())
       return false;
-    }
 
     Set<String> schemeNames1 = new HashSet<String>();
     Set<String> schemeNames2 = new HashSet<String>();
@@ -124,5 +126,5 @@ public class AstralMappingEvaluator extends MappingEvaluator {
 
     return schemeNames1.containsAll(schemeNames2);
   }
-  
+
 }

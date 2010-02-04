@@ -24,21 +24,19 @@
 package magellan.library.gamebinding;
 
 /**
- * 
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
 public class AllanonOrderWriter extends EresseaOrderWriter {
   private static final AllanonOrderWriter instance = new AllanonOrderWriter();
-  
+
   /**
    * 
    */
   protected AllanonOrderWriter() {
     super();
   }
-  
+
   /**
    * Returns the instance of this class.
    */
@@ -53,7 +51,7 @@ public class AllanonOrderWriter extends EresseaOrderWriter {
   public String getCheckerName() {
     return "ACheck";
   }
-  
+
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerDefaultParameter()
    */

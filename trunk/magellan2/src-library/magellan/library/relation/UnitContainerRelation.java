@@ -21,26 +21,27 @@ import magellan.library.UnitContainer;
  * container.
  */
 public class UnitContainerRelation extends UnitRelation {
-	/** DOCUMENT-ME */
-	public final UnitContainer target;
+  /** DOCUMENT-ME */
+  public final UnitContainer target;
 
-	/**
-	 * Creates a new UnitContainerRelation object.
-	 *
-	 * @param s The source unit
-	 * @param t The target unit
-	 * @param line The line in the source's orders
-	 */
-	public UnitContainerRelation(Unit s, UnitContainer t, int line) {
-		super(s, line);
-		this.target = t;
-	}
+  /**
+   * Creates a new UnitContainerRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target unit
+   * @param line The line in the source's orders
+   */
+  public UnitContainerRelation(Unit s, UnitContainer t, int line) {
+    super(s, line);
+    target = t;
+  }
 
-	/* (non-Javadoc)
-	 * @see com.eressea.relation.UnitRelation#toString()
-	 */
-	@Override
+  /*
+   * (non-Javadoc)
+   * @see com.eressea.relation.UnitRelation#toString()
+   */
+  @Override
   public String toString() {
-		return super.toString() + "@TARGET=" + target;
-	}
+    return super.toString() + "@TARGET=" + target;
+  }
 }

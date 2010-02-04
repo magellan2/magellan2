@@ -25,8 +25,8 @@ import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.logging.Logger;
 
 /**
- * A common super class for all menu actions. It offers all necessary
- * information to build a menu with it.
+ * A common super class for all menu actions. It offers all necessary information to build a menu
+ * with it.
  */
 public abstract class MenuAction extends AbstractAction {
   private static final Logger log = Logger.getInstance(MenuAction.class);
@@ -34,54 +34,52 @@ public abstract class MenuAction extends AbstractAction {
   protected Client client;
 
   /**
-   * Creates a new MenuAction object reading its name, mnemonic and accelerator
-   * from the dictionary.
+   * Creates a new MenuAction object reading its name, mnemonic and accelerator from the dictionary.
    * 
    * @param client The client for this MenuAction object.
    */
   public MenuAction(Client client) {
     this.client = client;
-    this.setName(getNameTranslated());
+    setName(getNameTranslated());
 
-    this.setIcon(getIconName());
+    setIcon(getIconName());
 
     if (getMnemonicTranslated() != null && !getMnemonicTranslated().trim().equals("")) {
-      this.putValue("mnemonic", new Character(getMnemonicTranslated().charAt(0)));
+      putValue("mnemonic", new Character(getMnemonicTranslated().charAt(0)));
     }
 
     if (getAcceleratorTranslated() != null && !getAcceleratorTranslated().trim().equals("")) {
-      this.putValue("accelerator", KeyStroke.getKeyStroke(getAcceleratorTranslated()));
+      putValue("accelerator", KeyStroke.getKeyStroke(getAcceleratorTranslated()));
     }
 
     if (getTooltipTranslated() != null && !getTooltipTranslated().trim().equals("")) {
-      this.putValue("tooltip", getTooltipTranslated());
+      putValue("tooltip", getTooltipTranslated());
     }
   }
 
   /**
-   * Returns an name which should depend on the current GUI locale for a menu action.
-   * May return <code>null</code>! 
+   * Returns an name which should depend on the current GUI locale for a menu action. May return
+   * <code>null</code>!
    */
   protected abstract String getNameTranslated();
 
   protected abstract String getMnemonicTranslated();
 
   /**
-   * Returns an accelerator key combination which should depend on the current GUI locale for a 
-   * menu action. 
-   * May return <code>null</code>! 
-   *
+   * Returns an accelerator key combination which should depend on the current GUI locale for a menu
+   * action. May return <code>null</code>!
+   * 
    * @return A KeyStroke description
    * @see KeyStroke#getKeyStroke(String)
    */
   protected abstract String getAcceleratorTranslated();
 
   /**
-   * Returns a tool tip text which should depend on the current GUI locale for a menu action. 
-   * May return <code>null</code>! 
+   * Returns a tool tip text which should depend on the current GUI locale for a menu action. May
+   * return <code>null</code>!
    */
   protected abstract String getTooltipTranslated();
-  
+
   /**
    * This method is called whenever this action is invoked.
    */
@@ -89,8 +87,8 @@ public abstract class MenuAction extends AbstractAction {
     try {
       menuActionPerformed(e);
     } catch (Throwable t) {
-      MenuAction.log.error(t.getMessage(),t);
-      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);
+      MenuAction.log.error(t.getMessage(), t);
+      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t.getMessage(), "", t);
       errorWindow.setVisible(true);
     }
   }
@@ -104,14 +102,14 @@ public abstract class MenuAction extends AbstractAction {
    * Sets the name of this menu action.
    */
   protected void setName(String name) {
-    this.putValue(Action.NAME, name);
+    putValue(Action.NAME, name);
   }
 
   /**
    * Returns the name of this menu action.
    */
   protected String getName() {
-    return (String) this.getValue(Action.NAME);
+    return (String) getValue(Action.NAME);
   }
 
   /**
@@ -125,11 +123,11 @@ public abstract class MenuAction extends AbstractAction {
     if (aName != null) {
       String name = "etc/images/gui/actions/" + aName;
       icon = client.getMagellanContext().getImageFactory().loadImage(name);
-      
+
       // log.info("Image for "+aName+" ("+name+") is "+icon);
     }
 
-    this.putValue(Action.SMALL_ICON, icon);
+    putValue(Action.SMALL_ICON, icon);
   }
 
   /**
@@ -140,19 +138,18 @@ public abstract class MenuAction extends AbstractAction {
   }
 
   /**
-   * Returns the mnemonic of the menu this menu action is to be associated with. The return value
-   * is a key code which should be one of the values specified in {@link java.awt.event.KeyEvent}.
+   * Returns the mnemonic of the menu this menu action is to be associated with. The return value is
+   * a key code which should be one of the values specified in {@link java.awt.event.KeyEvent}.
    * 
    * @return the mnemonic, a value of 0 means that no mnemonic is set.
    */
   public char getMnemonic() {
-    Character c = (Character) this.getValue("mnemonic");
+    Character c = (Character) getValue("mnemonic");
 
-    if (c != null) {
+    if (c != null)
       return c.charValue();
-    } else {
+    else
       return 0;
-    }
   }
 
   /**
@@ -161,7 +158,7 @@ public abstract class MenuAction extends AbstractAction {
    * @return the accelerator or null, if the menu has no accelerator.
    */
   public KeyStroke getAccelerator() {
-    return (KeyStroke) this.getValue("accelerator");
+    return (KeyStroke) getValue("accelerator");
   }
 
   /**
@@ -170,7 +167,7 @@ public abstract class MenuAction extends AbstractAction {
    * @return the tool tip String or null, if no tool tip is set.
    */
   public String getToolTip() {
-    return (String) this.getValue("tooltip");
+    return (String) getValue("tooltip");
   }
 
   /**
@@ -178,6 +175,6 @@ public abstract class MenuAction extends AbstractAction {
    */
   @Override
   public String toString() {
-    return this.getName();
+    return getName();
   }
 }

@@ -15,63 +15,55 @@ package magellan.library.utils.replacers;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class ReplacerSystem {
-	protected ReplacerEnvironment environment;
-	protected Replacer base;
+  protected ReplacerEnvironment environment;
+  protected Replacer base;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public ReplacerEnvironment getEnvironment() {
-		if(environment == null) {
-			environment = new ReplacerEnvironment();
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public ReplacerEnvironment getEnvironment() {
+    if (environment == null) {
+      environment = new ReplacerEnvironment();
+    }
 
-		return environment;
-	}
+    return environment;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Replacer getBase() {
-		return base;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public Replacer getBase() {
+    return base;
+  }
 
-	protected void setBase(Replacer replacer) {
-		base = replacer;
-	}
+  protected void setBase(Replacer replacer) {
+    base = replacer;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public synchronized Object getReplacement(Object obj) {
-		if(environment != null) {
-			environment.reset();
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public synchronized Object getReplacement(Object obj) {
+    if (environment != null) {
+      environment.reset();
+    }
 
-		Object ret = null;
+    Object ret = null;
 
-		try {
-			ret = base.getReplacement(obj);
-		} catch(Exception exc) {
-		}
+    try {
+      ret = base.getReplacement(obj);
+    } catch (Exception exc) {
+    }
 
-		if(environment != null) {
-			environment.reset();
-		}
+    if (environment != null) {
+      environment.reset();
+    }
 
-		return ret;
-	}
+    return ret;
+  }
 }

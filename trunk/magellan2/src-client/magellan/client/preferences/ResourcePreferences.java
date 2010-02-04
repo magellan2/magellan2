@@ -23,7 +23,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -48,10 +47,9 @@ import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
-
 /**
  * Settings for all concerning resource paths
- *
+ * 
  * @author $Author: $
  * @version $Revision: 269 $
  */
@@ -105,13 +103,17 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
    * Miscellaneous external modules settings
    */
   protected Component getExternalPanel() {
-    JPanel extPanel = addPanel(Resources.get("resource.externalmodulesettings.border.externalmodules"), new GridBagLayout());
+    JPanel extPanel =
+        addPanel(Resources.get("resource.externalmodulesettings.border.externalmodules"),
+            new GridBagLayout());
 
     GridBagConstraints c = new GridBagConstraints();
 
-    chkSearchResources = new JCheckBox(Resources.get("resource.externalmodulesettings.chk.searchResources"),
-        Boolean.valueOf(settings.getProperty("ExternalModuleLoader.searchResourcePathClassLoader",
-        "true")).booleanValue());
+    chkSearchResources =
+        new JCheckBox(Resources.get("resource.externalmodulesettings.chk.searchResources"), Boolean
+            .valueOf(
+                settings.getProperty("ExternalModuleLoader.searchResourcePathClassLoader", "true"))
+            .booleanValue());
 
     c.gridx = 0;
     c.gridy = 0;
@@ -121,9 +123,10 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
     c.weighty = 1.0;
     extPanel.add(chkSearchResources, c);
 
-    chkSearchClassPath = new JCheckBox(Resources.get("resource.externalmodulesettings.chk.searchClassPath"),
-        Boolean.valueOf(settings.getProperty("ExternalModuleLoader.searchClassPath",
-        "true")).booleanValue());
+    chkSearchClassPath =
+        new JCheckBox(Resources.get("resource.externalmodulesettings.chk.searchClassPath"), Boolean
+            .valueOf(settings.getProperty("ExternalModuleLoader.searchClassPath", "true"))
+            .booleanValue());
 
     c.gridx = 0;
     c.gridy = 1;
@@ -131,7 +134,6 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
 
     return extPanel;
   }
-
 
   private List<JTextField> textFields;
   private List<String> keys;
@@ -144,7 +146,8 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
    * ECheck and Vorlage paths (and the like...)
    */
   protected Component getSpecialPathsPanel() {
-    spPanel = addPanel(Resources.get("resource.resourcesettings.special.title"), new GridBagLayout());
+    spPanel =
+        addPanel(Resources.get("resource.resourcesettings.special.title"), new GridBagLayout());
 
     GridBagConstraints con = new GridBagConstraints();
     con.anchor = GridBagConstraints.CENTER;
@@ -152,9 +155,8 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
     con.weighty = 0;
     con.gridy = 0;
 
-
     con.gridy++;
-    con.gridwidth=1;
+    con.gridwidth = 1;
 
     // list
     textFields = new LinkedList<JTextField>();
@@ -166,14 +168,14 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
     try {
       file = new File(".");
 
-      if(!file.isDirectory()) {
+      if (!file.isDirectory()) {
         file = file.getParentFile();
       }
 
-      if(file == null) {
+      if (file == null) {
         file = new File(".");
       }
-    } catch(Exception exc) {
+    } catch (Exception exc) {
     }
 
     addPath(con, "ECheck:", "JECheckPanel.echeckEXE");
@@ -181,7 +183,6 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
 
     return spPanel;
   }
-
 
   protected void addPath(GridBagConstraints con, String label, String key) {
     con.gridx = 0;
@@ -210,10 +211,14 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
   /**
    * All other resource paths...
    */
-  protected Component getResourcePathsPanel(){
-    JPanel rpPanel = addPanel(Resources.get("resource.resourcesettings.resourcepaths.title"), new java.awt.GridBagLayout());
+  protected Component getResourcePathsPanel() {
+    JPanel rpPanel =
+        addPanel(Resources.get("resource.resourcesettings.resourcepaths.title"),
+            new java.awt.GridBagLayout());
 
-    lstPaths = new JList(getWrappedURLs(Resources.getStaticPaths())); // later we need to assume that this list's model is a DefaultListModel!
+    lstPaths = new JList(getWrappedURLs(Resources.getStaticPaths())); // later we need to assume
+                                                                      // that this list's model is a
+                                                                      // DefaultListModel!
 
     lstPaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -273,8 +278,8 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
   private DefaultListModel getWrappedURLs(Collection<URL> urls) {
     DefaultListModel wrappers = new DefaultListModel();
 
-    for(Iterator<URL> iter = urls.iterator(); iter.hasNext();) {
-      wrappers.add(wrappers.getSize(), new URLWrapper(iter.next()));
+    for (URL url : urls) {
+      wrappers.add(wrappers.getSize(), new URLWrapper(url));
     }
 
     return wrappers;
@@ -284,48 +289,49 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
    * Action for editing a resource path
    */
   private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {
-    if(lstPaths.getSelectedValue() == null) {
+    if (lstPaths.getSelectedValue() == null)
       return;
-    }
 
-    Component parent = this.getTopLevelAncestor();
+    Component parent = getTopLevelAncestor();
     URLWrapper w = (URLWrapper) lstPaths.getSelectedValue();
 
-    if((w != null) && (w.getUrl() != null)) {
+    if ((w != null) && (w.getUrl() != null)) {
       Object selectionValues[] = { w.toString() };
-      String input = (String) JOptionPane.showInputDialog(parent, Resources.get("resource.resourcesettings.msg.edit.text"),
-          Resources.get("resource.resourcesettings.msg.edit.title"),
-          JOptionPane.PLAIN_MESSAGE, null,
-          null, selectionValues[0]);
+      String input =
+          (String) JOptionPane.showInputDialog(parent, Resources
+              .get("resource.resourcesettings.msg.edit.text"), Resources
+              .get("resource.resourcesettings.msg.edit.title"), JOptionPane.PLAIN_MESSAGE, null,
+              null, selectionValues[0]);
 
-      if(input != null) {
-        if(input.startsWith("http")) {
+      if (input != null) {
+        if (input.startsWith("http")) {
           try {
             w.setUrl(new URL(input));
-          } catch(MalformedURLException mue) {
-            JOptionPane.showMessageDialog(parent, Resources.get("resource.resourcesettings.msg.invalidformat.text"));
+          } catch (MalformedURLException mue) {
+            JOptionPane.showMessageDialog(parent, Resources
+                .get("resource.resourcesettings.msg.invalidformat.text"));
           }
         } else {
           File f = new File(input);
 
-          if(!f.exists()) {
-            if(JOptionPane.showConfirmDialog(parent,
-                Resources.get("resource.resourcesettings.msg.usenonexisting.text"),
-                Resources.get("resource.resourcesettings.msg.usenonexisting.title"),
+          if (!f.exists()) {
+            if (JOptionPane.showConfirmDialog(parent, Resources
+                .get("resource.resourcesettings.msg.usenonexisting.text"), Resources
+                .get("resource.resourcesettings.msg.usenonexisting.title"),
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
               try {
                 w.setUrl(new URL(input));
-              } catch(MalformedURLException mue) {
-                JOptionPane.showMessageDialog(parent,
-                    Resources.get("resource.resourcesettings.msg.invalidformat.text"));
+              } catch (MalformedURLException mue) {
+                JOptionPane.showMessageDialog(parent, Resources
+                    .get("resource.resourcesettings.msg.invalidformat.text"));
               }
             }
           } else {
             try {
               w.setUrl(f.toURI().toURL());
-            } catch(MalformedURLException mue) {
-              JOptionPane.showMessageDialog(parent,
-                  Resources.get("resource.resourcesettings.msg.invalidformat.text"));
+            } catch (MalformedURLException mue) {
+              JOptionPane.showMessageDialog(parent, Resources
+                  .get("resource.resourcesettings.msg.invalidformat.text"));
             }
           }
         }
@@ -334,8 +340,8 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
   }
 
   private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {
-    if(this.lstPaths.getSelectedValue() != null) {
-      ((DefaultListModel) this.lstPaths.getModel()).removeElementAt(this.lstPaths.getSelectedIndex());
+    if (lstPaths.getSelectedValue() != null) {
+      ((DefaultListModel) lstPaths.getModel()).removeElementAt(lstPaths.getSelectedIndex());
     }
   }
 
@@ -346,17 +352,17 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
    */
   private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {
     URLWrapper urlWrapper = null;
-    Component parent = this.getTopLevelAncestor();
+    Component parent = getTopLevelAncestor();
 
     javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
     fc.setFileSelectionMode(javax.swing.JFileChooser.FILES_AND_DIRECTORIES);
 
-    if(fc.showOpenDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
+    if (fc.showOpenDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
       java.io.File file = fc.getSelectedFile();
 
       try {
-        if(file.exists()) {
-          if(file.isDirectory()) {
+        if (file.exists()) {
+          if (file.isDirectory()) {
             urlWrapper = new URLWrapper(file.toURI().toURL());
           } else {
             urlWrapper = new URLWrapper(Resources.file2URL(file));
@@ -365,35 +371,35 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
           String name = file.getName();
           String parentName = "";
 
-          if(file.getParentFile() != null) {
+          if (file.getParentFile() != null) {
             parentName = file.getParentFile().getName();
           }
 
-          if(!name.equals("") && name.equals(parentName)) {
+          if (!name.equals("") && name.equals(parentName)) {
             // in this case the user double clicked a directory instead of just selecting it
             urlWrapper = new URLWrapper(file.getParentFile().toURI().toURL());
           } else {
-            JOptionPane.showMessageDialog(parent, Resources.get("resource.resourcesettings.msg.nonexistingfile.text"));
+            JOptionPane.showMessageDialog(parent, Resources
+                .get("resource.resourcesettings.msg.nonexistingfile.text"));
           }
         }
-      } catch(MalformedURLException ex) {
-        JOptionPane.showMessageDialog(parent,
-            Resources.get("resource.resourcesettings.msg.urlexception.text") + " " +
-            ex.toString());
+      } catch (MalformedURLException ex) {
+        JOptionPane.showMessageDialog(parent, Resources
+            .get("resource.resourcesettings.msg.urlexception.text")
+            + " " + ex.toString());
       }
     }
 
-    ((DefaultListModel) this.lstPaths.getModel()).insertElementAt(urlWrapper, 0);
+    ((DefaultListModel) lstPaths.getModel()).insertElementAt(urlWrapper, 0);
   }
 
   public void initPreferences() {
-    if(textFields.size() > 0) {
-      for(int i = 0, max = textFields.size(); i < max; i++) {
+    if (textFields.size() > 0) {
+      for (int i = 0, max = textFields.size(); i < max; i++) {
         (textFields.get(i)).setText(settings.getProperty(keys.get(i)));
       }
     }
   }
-
 
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
@@ -401,33 +407,31 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
   public void applyPreferences() {
     // resource paths
     Collection<URL> resourcePaths = new LinkedList<URL>();
-    ListModel listModel = this.lstPaths.getModel();
+    ListModel listModel = lstPaths.getModel();
 
-    for(int j = 0; j < listModel.getSize(); j++) {
+    for (int j = 0; j < listModel.getSize(); j++) {
       URLWrapper wrapper = (URLWrapper) listModel.getElementAt(j);
 
-      if((wrapper != null) && (wrapper.getUrl() != null)) {
+      if ((wrapper != null) && (wrapper.getUrl() != null)) {
         resourcePaths.add(wrapper.getUrl());
       }
     }
 
     Resources.setStaticPaths(resourcePaths);
-    Resources.storePaths(resourcePaths, this.settings);
-
+    Resources.storePaths(resourcePaths, settings);
 
     // special paths
-    if(textFields.size() > 0) {
-      for(int i = 0; i < textFields.size(); i++) {
-        settings.setProperty(keys.get(i),
-            (textFields.get(i)).getText());
+    if (textFields.size() > 0) {
+      for (int i = 0; i < textFields.size(); i++) {
+        settings.setProperty(keys.get(i), (textFields.get(i)).getText());
       }
     }
-    
+
     // external modules
-    settings.setProperty("ExternalModuleLoader.searchResourcePathClassLoader",
-        String.valueOf(chkSearchResources.isSelected()));
-    settings.setProperty("ExternalModuleLoader.searchClassPath",
-        String.valueOf(chkSearchClassPath.isSelected()));
+    settings.setProperty("ExternalModuleLoader.searchResourcePathClassLoader", String
+        .valueOf(chkSearchResources.isSelected()));
+    settings.setProperty("ExternalModuleLoader.searchClassPath", String.valueOf(chkSearchClassPath
+        .isSelected()));
 
   }
 
@@ -459,17 +463,15 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
 
     /**
      * DOCUMENT-ME
-     *
-     * 
      */
     public void actionPerformed(ActionEvent e) {
       try {
         fchooser.setSelectedFile(new File(text.getText()));
-      } catch(Exception exc) {
+      } catch (Exception exc) {
         fchooser.setCurrentDirectory(file);
       }
 
-      if(fchooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+      if (fchooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
         text.setText(fchooser.getSelectedFile().toString());
       }
     }
@@ -481,8 +483,6 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
 
     /**
      * Creates a new URLWrapper object.
-     *
-     * 
      */
     public URLWrapper(URL url) {
       this.url = url;
@@ -498,22 +498,18 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
 
     /**
      * DOCUMENT-ME
-     *
-     * 
      */
     @Override
     public String toString() {
-      if(getUrl().getProtocol().equals("file")) {
+      if (getUrl().getProtocol().equals("file")) {
         File f = new File(getUrl().getPath());
 
-        if(f.exists()) {
+        if (f.exists())
           return f.toString();
-        } else {
+        else
           return getUrl().toString();
-        }
-      } else {
+      } else
         return getUrl().toString();
-      }
     }
   }
 }

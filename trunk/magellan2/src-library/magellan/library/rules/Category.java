@@ -21,321 +21,267 @@ import magellan.library.ID;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 203 $
  */
 public abstract class Category extends ObjectType {
-	private int sortIndex = 0;
-	private Category parent = null;
-	private Collection<Category> children = null;
-	private Collection<Object> data = null;
+  private int sortIndex = 0;
+  private Category parent = null;
+  private Collection<Category> children = null;
+  private Collection<Object> data = null;
 
-	/**
-	 * Creates a new Category object.
-	 *
-	 * 
-	 */
-	public Category(ID id) {
-		this(id, null);
-	}
+  /**
+   * Creates a new Category object.
+   */
+  public Category(ID id) {
+    this(id, null);
+  }
 
-	/**
-	 * Creates a new Category object.
-	 *
-	 * 
-	 * 
-	 */
-	public Category(ID id, Category parent) {
-		super(id);
-		setParent(parent);
-	}
+  /**
+   * Creates a new Category object.
+   */
+  public Category(ID id, Category parent) {
+    super(id);
+    setParent(parent);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Category getParent() {
-		return parent;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public Category getParent() {
+    return parent;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setParent(Category p) {
-		if(parent != p) {
-			if (parent != null) {
-				parent.removeChild(this);
-			}
-			
-			parent = p;
-			
-			if(p != null) {
-				parent.addChild(this);
-			}
-		}
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setParent(Category p) {
+    if (parent != p) {
+      if (parent != null) {
+        parent.removeChild(this);
+      }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean hasChildren() {
-		return (children != null) && (children.size() > 0);
-	}
+      parent = p;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Collection<Category> getChildren() {
-		if(children == null) {
-			children = new HashSet<Category>();
-		}
+      if (p != null) {
+        parent.addChild(this);
+      }
+    }
+  }
 
-		return children;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean hasChildren() {
+    return (children != null) && (children.size() > 0);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void addChild(Category ic) {
-		getChildren().add(ic);
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public Collection<Category> getChildren() {
+    if (children == null) {
+      children = new HashSet<Category>();
+    }
 
-	protected void removeChild(Category ic) {
-		if(hasChildren()) {
-			getChildren().remove(ic);
-		}
-	}
+    return children;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean hasInstances() {
-		return (data != null) && (data.size() > 0);
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void addChild(Category ic) {
+    getChildren().add(ic);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Collection<Object> getInstances() {
-		if(data == null) {
-			data = new HashSet<Object>();
-		}
+  protected void removeChild(Category ic) {
+    if (hasChildren()) {
+      getChildren().remove(ic);
+    }
+  }
 
-		return data;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean hasInstances() {
+    return (data != null) && (data.size() > 0);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public abstract boolean isInstance(Object o);
+  /**
+   * DOCUMENT-ME
+   */
+  public Collection<Object> getInstances() {
+    if (data == null) {
+      data = new HashSet<Object>();
+    }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public boolean addInstance(Object o) {
-		if(!isInstance(o)) {
-			return false;
-		}
+    return data;
+  }
 
-		getInstances().add(o);
+  /**
+   * DOCUMENT-ME
+   */
+  public abstract boolean isInstance(Object o);
 
-		if(parent != null) {
-			parent.addInstance(o);
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean addInstance(Object o) {
+    if (!isInstance(o))
+      return false;
 
-		return true;
-	}
+    getInstances().add(o);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void removeInstance(Object o) {
-		if(!isInstance(o)) {
-			return;
-		}
+    if (parent != null) {
+      parent.addInstance(o);
+    }
 
-		if(hasInstances()) {
-			getInstances().remove(o);
-		}
+    return true;
+  }
 
-		if(hasChildren()) {
-			Iterator<Category> it = getChildren().iterator();
+  /**
+   * DOCUMENT-ME
+   */
+  public void removeInstance(Object o) {
+    if (!isInstance(o))
+      return;
 
-			while(it.hasNext()) {
-				(it.next()).removeInstance(o);
-			}
-		}
-	}
+    if (hasInstances()) {
+      getInstances().remove(o);
+    }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public static Category getTopLevelAncestor(Category i) {
-		while(i.getParent() != null) {
-			i = i.getParent();
-		}
+    if (hasChildren()) {
+      Iterator<Category> it = getChildren().iterator();
 
-		return i;
-	}
+      while (it.hasNext()) {
+        (it.next()).removeInstance(o);
+      }
+    }
+  }
 
-	/**
-	 * Returns a path of category from the top level ancestor to <code>ic</code>. 
-	 */
-	public static Category[] getPath(Category ic) {
-		int i = 1;
-		Category j = ic;
+  /**
+   * DOCUMENT-ME
+   */
+  public static Category getTopLevelAncestor(Category i) {
+    while (i.getParent() != null) {
+      i = i.getParent();
+    }
 
-		while(j.getParent() != null) {
-			j = j.getParent();
-			i++;
-		}
+    return i;
+  }
 
-		Category path[] = new Category[i];
+  /**
+   * Returns a path of category from the top level ancestor to <code>ic</code>.
+   */
+  public static Category[] getPath(Category ic) {
+    int i = 1;
+    Category j = ic;
 
-		for(int k = 0; k < i; k++) {
-			path[i - k - 1] = ic;
-			ic = ic.getParent();
-		}
+    while (j.getParent() != null) {
+      j = j.getParent();
+      i++;
+    }
 
-		return path;
-	}
+    Category path[] = new Category[i];
 
-	/**
-	 * Returns true if p is an ancestor of this category. 
-	 */
-	public boolean isDescendant(Category p) {
-		Category path[] = Category.getPath(this);
+    for (int k = 0; k < i; k++) {
+      path[i - k - 1] = ic;
+      ic = ic.getParent();
+    }
 
-		for(int i = 0; i < path.length; i++) {
-			if(path[i].equals(p)) {
-				return true;
-			}
-		}
+    return path;
+  }
 
-		return false;
-	}
+  /**
+   * Returns true if p is an ancestor of this category.
+   */
+  public boolean isDescendant(Category p) {
+    Category path[] = Category.getPath(this);
 
-	/**
-	 * helper method for xml reader
-	 *
-	 * 
-	 */
-	public void setNaturalorder(String i) {
-		setSortIndex(Integer.parseInt(i));
-	}
+    for (Category element : path) {
+      if (element.equals(p))
+        return true;
+    }
 
-	/**
-	 * Sets the sort index of this item category indicating its natural ordering compared to other
-	 * ItemCategory objects.
-	 *
-	 * 
-	 */
-	public void setSortIndex(int sortIndex) {
-		this.sortIndex = sortIndex;
-	}
+    return false;
+  }
 
-	/**
-	 * Returns the sort index of this item category indicating its natural ordering compared to
-	 * other ItemCategory objects.
-	 *
-	 * 
-	 */
-	public int getSortIndex() {
-		return sortIndex;
-	}
+  /**
+   * helper method for xml reader
+   */
+  public void setNaturalorder(String i) {
+    setSortIndex(Integer.parseInt(i));
+  }
 
-	/**
-	 * Imposes a natural ordering on ItemCategory objects. Since we may have more structured item
-	 * types, begin with the top-level ancestors and work down.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Sets the sort index of this item category indicating its natural ordering compared to other
+   * ItemCategory objects.
+   */
+  public void setSortIndex(int sortIndex) {
+    this.sortIndex = sortIndex;
+  }
+
+  /**
+   * Returns the sort index of this item category indicating its natural ordering compared to other
+   * ItemCategory objects.
+   */
+  public int getSortIndex() {
+    return sortIndex;
+  }
+
+  /**
+   * Imposes a natural ordering on ItemCategory objects. Since we may have more structured item
+   * types, begin with the top-level ancestors and work down.
+   */
+  @Override
   public int compareTo(Object o) {
-		Category path1[] = Category.getPath(this);
-		Category path2[] = Category.getPath((Category) o);
-		int j = path1.length;
+    Category path1[] = Category.getPath(this);
+    Category path2[] = Category.getPath((Category) o);
+    int j = path1.length;
 
-		if(path2.length < j) {
-			j = path2.length;
-		}
+    if (path2.length < j) {
+      j = path2.length;
+    }
 
-		for(int i = 0; i < j; i++) {
-			int k = Category.compareImpl(path1[i], path2[i]);
+    for (int i = 0; i < j; i++) {
+      int k = Category.compareImpl(path1[i], path2[i]);
 
-			if(k != 0) {
-				return k;
-			}
-		}
+      if (k != 0)
+        return k;
+    }
 
-		if(path1.length > path2.length) {
-			return 1;
-		} else if(path2.length > path1.length) {
-			return -1;
-		}
+    if (path1.length > path2.length)
+      return 1;
+    else if (path2.length > path1.length)
+      return -1;
 
-		return 0;
-	}
+    return 0;
+  }
 
-	protected static int compareImpl(Category i1, Category i2) {
-		if(i1.getSortIndex() != i2.getSortIndex()) {
-			return i1.getSortIndex() - i2.getSortIndex();
-		} else {
-			return i1.getID().compareTo(i2.getID());
-		}
-	}
+  protected static int compareImpl(Category i1, Category i2) {
+    if (i1.getSortIndex() != i2.getSortIndex())
+      return i1.getSortIndex() - i2.getSortIndex();
+    else
+      return i1.getID().compareTo(i2.getID());
+  }
 
-	private String iconName = null;
+  private String iconName = null;
 
-	/**
-	 * Returns the file name of the icon to use for this item.
-	 *
-	 * 
-	 */
-	public String getIconName() {
-		if((iconName == null) && (parent != null)) {
-			return parent.getIconName();
-		}
-    
-		return iconName;
-	}
+  /**
+   * Returns the file name of the icon to use for this item.
+   */
+  public String getIconName() {
+    if ((iconName == null) && (parent != null))
+      return parent.getIconName();
 
-	/**
-	 * Sets the file name of the icon to use for this item.
-	 *
-	 * 
-	 */
-	public void setIconName(String iName) {
-		iconName = iName;
-	}
+    return iconName;
+  }
+
+  /**
+   * Sets the file name of the icon to use for this item.
+   */
+  public void setIconName(String iName) {
+    iconName = iName;
+  }
 }

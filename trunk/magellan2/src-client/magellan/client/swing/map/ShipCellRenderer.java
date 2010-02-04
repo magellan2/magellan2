@@ -29,43 +29,41 @@ import magellan.library.Ship;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
 
-
 /**
  * A renderer for displaying ships on the map
- *
  */
 public class ShipCellRenderer extends ImageCellRenderer {
-	/**
-	 * Creates a new ShipCellRenderer object.
-	 * 
+  /**
+   * Creates a new ShipCellRenderer object.
+   * 
    * @param geo The geometry object to use for rendering.
    * @param context Context to get settings from.
-	 */
-	public ShipCellRenderer(CellGeometry geo, MagellanContext context) {
-		super(geo, context);
-	}
+   */
+  public ShipCellRenderer(CellGeometry geo, MagellanContext context) {
+    super(geo, context);
+  }
 
-	/**
+  /**
    * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
    */
-	@Override
+  @Override
   public void render(Object obj, boolean active, boolean selected) {
-		if(obj instanceof Region) {
-			Region r = (Region) obj;
+    if (obj instanceof Region) {
+      Region r = (Region) obj;
 
-			Iterator<Ship> iter = r.ships().iterator();
+      Iterator<Ship> iter = r.ships().iterator();
 
-			if(iter.hasNext()) {
-				CoordinateID c = r.getCoordinate();
-				Point pos = new Point(cellGeo.getImagePosition(c.x, c.y));
-				pos.translate(-offset.x, -offset.y);
+      if (iter.hasNext()) {
+        CoordinateID c = r.getCoordinate();
+        Point pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+        pos.translate(-offset.x, -offset.y);
 
-				Dimension size = cellGeo.getImageSize();
+        Dimension size = cellGeo.getImageSize();
 
-				// grep ships in region
-				// The ship with the maximum capacity will be drawn only
-				// Directions 0-6
-				ShipInformation shipInformations[] = new ShipInformation[7];
+        // grep ships in region
+        // The ship with the maximum capacity will be drawn only
+        // Directions 0-6
+        ShipInformation shipInformations[] = new ShipInformation[7];
         boolean multipleTypes[] = new boolean[7];
 
         // find ships with max capacity
@@ -80,7 +78,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
           ShipInformation actShip = shipInformations[s.getShoreId() + 1];
 
           if (actShip.capacity != s.getShipType().getCapacity()) {
-            multipleTypes[s.getShoreId()+1] = true;
+            multipleTypes[s.getShoreId() + 1] = true;
             if (actShip.capacity < s.getShipType().getCapacity()) {
               actShip.capacity = s.getDeprecatedCapacity();
               actShip.typeName = s.getType().getName();
@@ -88,123 +86,121 @@ public class ShipCellRenderer extends ImageCellRenderer {
           }
         }
 
-				// 2. draw ships in region
-				for(int shore = 0; shore < shipInformations.length; shore++) {
-					ShipInformation actShip = shipInformations[shore];
+        // 2. draw ships in region
+        for (int shore = 0; shore < shipInformations.length; shore++) {
+          ShipInformation actShip = shipInformations[shore];
 
-					if(actShip == null) {
-						continue;
-					}
+          if (actShip == null) {
+            continue;
+          }
 
-					Image img = getImage(actShip.typeName + shore);
+          Image img = getImage(actShip.typeName + shore);
 
-					if(img == null) {
-						// special image not found, use generic image
-						img = getImage("Schiff" + shore);
-					}
+          if (img == null) {
+            // special image not found, use generic image
+            img = getImage("Schiff" + shore);
+          }
 
-					if(img != null) {
-						graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
-					}
-	        if (multipleTypes[shore])
-	          renderMultiple(r, shore);
-				}
-			}
-			renderTravelThrough(r);
-		}
-	}
-
-	private void renderMultiple(Region region, int shore) {
-	  Image img = getImage("viele_schiffe"+shore);
-	  if(img != null) {
-	    CoordinateID c = region.getCoordinate();
-	    Rectangle rect = cellGeo.getImageRect(c.x, c.y);    
-	    rect.translate(-offset.x, -offset.y);
-	    graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
-	  }
-	}
-
-	/** 
-	 * renders shipthrou informations here. May be smarter elsewhere.
-	 */
-	private void renderTravelThrough(Region region) {
-		if(!region.getRegionType().isOcean()) {
-			return;
-		}
-		boolean foundEnemy=false;
-		boolean foundAllied=false;
-		if(region.getTravelThruShips() != null) {
-			for(Iterator<Message> iter = region.getTravelThruShips().iterator(); iter.hasNext(); ) {
-				// Messages like "Wogenspalter (64ch)"
-				String msg = iter.next().toString();
-				int from = msg.lastIndexOf("(");
-				int to   = msg.indexOf(")",from);
-				if(from>-1 && to <msg.toString().length()) {
-					ID sid = EntityID.createEntityID(msg.substring(from+1,to),region.getData().base);
-					Ship ship = region.getData().getShip(sid);
-			    // use old owner unit (message is about last round)
-					if(ship != null && ship.getOwnerUnit() != null &&
-							ship.getOwnerUnit().getFaction() != null && 
-							ship.getOwnerUnit().getFaction().getTrustLevel() >=FactionTrustComparator.ALLIED) {
-						foundAllied=true;
-					} else {
-						foundEnemy=true;
-					}
-				}
-			}
-		}
-
-		for (Ship ship : region.ships()) {
-      if(ship != null && ship.getOwnerUnit() != null &&
-          ship.getOwnerUnit().getFaction() != null && 
-          ship.getOwnerUnit().getFaction().getTrustLevel() >=FactionTrustComparator.ALLIED) {
-        
-      } else {
-        foundEnemy=true;
+          if (img != null) {
+            graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
+          }
+          if (multipleTypes[shore]) {
+            renderMultiple(r, shore);
+          }
+        }
       }
-		}
-		
-		if(foundAllied) {
-			Image img = getImage("durchschiffung_alliiert");
-			if(img != null) {
-				CoordinateID c = region.getCoordinate();
-				Rectangle rect = cellGeo.getImageRect(c.x, c.y);		
-				rect.translate(-offset.x, -offset.y);
-				graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
-			}
-		}		
-		if(foundEnemy) {
-			Image img = getImage("durchschiffung_feindlich");
-			if(img != null) {
-				CoordinateID c = region.getCoordinate();
-				Rectangle rect = cellGeo.getImageRect(c.x, c.y);		
-				rect.translate(-offset.x, -offset.y);
-				graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
-			}
-		}		
-	}
-	
-	private static class ShipInformation {
-		public int capacity = -1;
+      renderTravelThrough(r);
+    }
+  }
 
-		public String typeName = null;
+  private void renderMultiple(Region region, int shore) {
+    Image img = getImage("viele_schiffe" + shore);
+    if (img != null) {
+      CoordinateID c = region.getCoordinate();
+      Rectangle rect = cellGeo.getImageRect(c.x, c.y);
+      rect.translate(-offset.x, -offset.y);
+      graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
+    }
+  }
 
-		ShipInformation(int aCap, String aName) {
-			capacity = aCap;
-			typeName = aName;
-		}
-	}
+  /**
+   * renders shipthrou informations here. May be smarter elsewhere.
+   */
+  private void renderTravelThrough(Region region) {
+    if (!region.getRegionType().isOcean())
+      return;
+    boolean foundEnemy = false;
+    boolean foundAllied = false;
+    if (region.getTravelThruShips() != null) {
+      for (Message message : region.getTravelThruShips()) {
+        // Messages like "Wogenspalter (64ch)"
+        String msg = message.toString();
+        int from = msg.lastIndexOf("(");
+        int to = msg.indexOf(")", from);
+        if (from > -1 && to < msg.toString().length()) {
+          ID sid = EntityID.createEntityID(msg.substring(from + 1, to), region.getData().base);
+          Ship ship = region.getData().getShip(sid);
+          // use old owner unit (message is about last round)
+          if (ship != null && ship.getOwnerUnit() != null
+              && ship.getOwnerUnit().getFaction() != null
+              && ship.getOwnerUnit().getFaction().getTrustLevel() >= FactionTrustComparator.ALLIED) {
+            foundAllied = true;
+          } else {
+            foundEnemy = true;
+          }
+        }
+      }
+    }
 
-	/**
-	 * Returns {@link Mapper#PLANE_SHIP}.
-	 * 
-	 * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
-	 */
-	@Override
+    for (Ship ship : region.ships()) {
+      if (ship != null && ship.getOwnerUnit() != null && ship.getOwnerUnit().getFaction() != null
+          && ship.getOwnerUnit().getFaction().getTrustLevel() >= FactionTrustComparator.ALLIED) {
+
+      } else {
+        foundEnemy = true;
+      }
+    }
+
+    if (foundAllied) {
+      Image img = getImage("durchschiffung_alliiert");
+      if (img != null) {
+        CoordinateID c = region.getCoordinate();
+        Rectangle rect = cellGeo.getImageRect(c.x, c.y);
+        rect.translate(-offset.x, -offset.y);
+        graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
+      }
+    }
+    if (foundEnemy) {
+      Image img = getImage("durchschiffung_feindlich");
+      if (img != null) {
+        CoordinateID c = region.getCoordinate();
+        Rectangle rect = cellGeo.getImageRect(c.x, c.y);
+        rect.translate(-offset.x, -offset.y);
+        graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
+      }
+    }
+  }
+
+  private static class ShipInformation {
+    public int capacity = -1;
+
+    public String typeName = null;
+
+    ShipInformation(int aCap, String aName) {
+      capacity = aCap;
+      typeName = aName;
+    }
+  }
+
+  /**
+   * Returns {@link Mapper#PLANE_SHIP}.
+   * 
+   * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
+   */
+  @Override
   public int getPlaneIndex() {
-		return Mapper.PLANE_SHIP;
-	}
-
+    return Mapper.PLANE_SHIP;
+  }
 
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getName()

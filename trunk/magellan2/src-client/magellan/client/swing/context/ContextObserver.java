@@ -20,13 +20,13 @@ package magellan.client.swing.context;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface ContextObserver {
-	/**
-	 * DOCUMENT-ME
-	 */
-	public void contextDataChanged();
+  /**
+   * DOCUMENT-ME
+   */
+  public void contextDataChanged();
 }

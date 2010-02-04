@@ -47,15 +47,15 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
   /**
    * Creates a new InfoDlg object.
    * 
-   * @param parent
-   *          modally stucked frame.
+   * @param parent modally stucked frame.
    */
   public InfoDialog(JFrame parent) {
     super(parent, true);
     initComponents();
 
     // center
-    this.setLocation((getToolkit().getScreenSize().width - this.getWidth()) / 2, (getToolkit().getScreenSize().height - this.getHeight()) / 2);
+    this.setLocation((getToolkit().getScreenSize().width - getWidth()) / 2, (getToolkit()
+        .getScreenSize().height - getHeight()) / 2);
 
   }
 
@@ -72,23 +72,23 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     magellanImage.setText("");
     magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
     jPanel.add(magellanImage);
-    String text = Resources.get("infodlg.infotext",getVersionString());
+    String text = Resources.get("infodlg.infotext", getVersionString());
 
     jTextArea1 = new JEditorPane();
     jTextArea1.setContentType("text/html");
     jTextArea1.setEditable(false);
-//    jTextArea1 = new JTextArea();
-//    jTextArea1.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
-//    jTextArea1.setWrapStyleWord(true);
-//    jTextArea1.setLineWrap(true);
-//    jTextArea1.setEditable(false);
+    // jTextArea1 = new JTextArea();
+    // jTextArea1.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
+    // jTextArea1.setWrapStyleWord(true);
+    // jTextArea1.setLineWrap(true);
+    // jTextArea1.setEditable(false);
     jTextArea1.setText(text);
     jTextArea1.setCaretPosition(0);
     jTextArea1.setPreferredSize(new Dimension(400, 400));
     jTextArea1.addHyperlinkListener(this);
     JScrollPane scrollPane = new JScrollPane(jTextArea1);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-//    scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+    // scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
     scrollPane.setPreferredSize(new Dimension(400, 400));
     jPanel.add(scrollPane);
 
@@ -121,7 +121,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
       try {
         // Loads the new page represented by link clicked
         URI uri = e.getURL().toURI();
-        
+
         // only in Java6 available, so we try to load it.
         // otherwise, we do nothing...
         Class<?> c = Class.forName("java.awt.Desktop");
@@ -129,12 +129,11 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
           Object desktop = c.getMethod("getDesktop").invoke(null);
           c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
         }
-      }
-      catch (Exception exc) {
+      } catch (Exception exc) {
         // we do nothing here...
       }
     }
-    
+
   }
 
 }

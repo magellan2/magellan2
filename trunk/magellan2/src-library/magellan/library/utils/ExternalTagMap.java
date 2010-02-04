@@ -20,166 +20,128 @@ import java.util.Map;
 import magellan.library.ID;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
- * 
  * @deprecated (stm) Nobody seems to really need this class. A simple Map<String, String> would do.
  */
 @Deprecated
-public class ExternalTagMap extends HashMap<ID,TagMap> {
-	private static final Logger log = Logger.getInstance(ExternalTagMap.class);
-	private static final String METHOD_NAME = "getID";
-	
-	protected ID getID(Object o) {
-		if(o instanceof ID) {
-			return (ID) o;
-		}
+public class ExternalTagMap extends HashMap<ID, TagMap> {
+  private static final Logger log = Logger.getInstance(ExternalTagMap.class);
+  private static final String METHOD_NAME = "getID";
 
-		Class<? extends Object> c = o.getClass();
+  protected ID getID(Object o) {
+    if (o instanceof ID)
+      return (ID) o;
 
-		try {
-			Method m = c.getMethod(ExternalTagMap.METHOD_NAME, (Class<?>)null);
+    Class<? extends Object> c = o.getClass();
 
-			if(m != null) {
-				try {
-					Object o2 = m.invoke(o, (Object[])null);
+    try {
+      Method m = c.getMethod(ExternalTagMap.METHOD_NAME, (Class<?>) null);
 
-					if(o2 instanceof ID) {
-						return (ID) o2;
-					}
-				} catch(Exception inner) {
-				}
-			}
-		} catch(NoSuchMethodException nsme) {
-			ExternalTagMap.log.error("Error trying to get ID: " + o);
-		}
+      if (m != null) {
+        try {
+          Object o2 = m.invoke(o, (Object[]) null);
 
-		return null;
-	}
+          if (o2 instanceof ID)
+            return (ID) o2;
+        } catch (Exception inner) {
+        }
+      }
+    } catch (NoSuchMethodException nsme) {
+      ExternalTagMap.log.error("Error trying to get ID: " + o);
+    }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public String putTag(Object o, String tag, String value) {
-		ID id = getID(o);
+    return null;
+  }
 
-		if(id == null) {
-			return null;
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public String putTag(Object o, String tag, String value) {
+    ID id = getID(o);
 
-		if(!containsKey(id)) {
-			put(id, new TagMap());
-		}
+    if (id == null)
+      return null;
 
-		TagMap m = get(id);
+    if (!containsKey(id)) {
+      put(id, new TagMap());
+    }
 
-		return m.put(tag, value);
-	}
+    TagMap m = get(id);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public String getTag(Object o, String tag) {
-		ID id = getID(o);
+    return m.put(tag, value);
+  }
 
-		if(id == null) {
-			return null;
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public String getTag(Object o, String tag) {
+    ID id = getID(o);
 
-		TagMap m = get(id);
+    if (id == null)
+      return null;
 
-		if(m == null) {
-			return null;
-		}
+    TagMap m = get(id);
 
-		return m.get(tag);
-	}
+    if (m == null)
+      return null;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public boolean containsTag(Object o, String tag) {
-		ID id = getID(o);
+    return m.get(tag);
+  }
 
-		if(id == null) {
-			return false;
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean containsTag(Object o, String tag) {
+    ID id = getID(o);
 
-		TagMap m = get(id);
+    if (id == null)
+      return false;
 
-		if(m == null) {
-			return false;
-		}
+    TagMap m = get(id);
 
-		return m.containsKey(tag);
-	}
+    if (m == null)
+      return false;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public String removeTag(Object o, String tag) {
-		ID id = getID(o);
+    return m.containsKey(tag);
+  }
 
-		if(id == null) {
-			return null;
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public String removeTag(Object o, String tag) {
+    ID id = getID(o);
 
-		TagMap m = get(id);
+    if (id == null)
+      return null;
 
-		if(m == null) {
-			return null;
-		}
+    TagMap m = get(id);
 
-		return m.remove(tag);
-	}
+    if (m == null)
+      return null;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public Map<String,String> getTagMap(Object o, boolean create) {
-		ID id = getID(o);
+    return m.remove(tag);
+  }
 
-		if(id == null) {
-			return null;
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public Map<String, String> getTagMap(Object o, boolean create) {
+    ID id = getID(o);
 
-		TagMap m = get(id);
+    if (id == null)
+      return null;
 
-		if((m == null) && create) {
-			m = new TagMap();
-			put(id, m);
-		}
+    TagMap m = get(id);
 
-		return m;
-	}
+    if ((m == null) && create) {
+      m = new TagMap();
+      put(id, m);
+    }
+
+    return m;
+  }
 }

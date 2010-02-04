@@ -29,20 +29,19 @@ import java.awt.FocusTraversalPolicy;
 import java.util.Vector;
 
 /**
- * This is a small utility for a focus traversal policy based on
- * a list of components. The next focus element is based on the
- * current index of the corresponding element in the list.
- *
+ * This is a small utility for a focus traversal policy based on a list of components. The next
+ * focus element is based on the current index of the corresponding element in the list.
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 11.08.2007
  */
 public class MagellanFocusTraversalPolicy extends FocusTraversalPolicy {
   private Vector<Component> order;
-  
+
   public MagellanFocusTraversalPolicy(Vector<Component> components) {
-    this.order = components;
+    order = components;
   }
-  
+
   /**
    * @see java.awt.FocusTraversalPolicy#getComponentAfter(java.awt.Container, java.awt.Component)
    */
@@ -59,7 +58,7 @@ public class MagellanFocusTraversalPolicy extends FocusTraversalPolicy {
   public Component getComponentBefore(Container container, Component aComponent) {
     int idx = order.indexOf(aComponent) - 1;
     if (idx < 0) {
-        idx = order.size() - 1;
+      idx = order.size() - 1;
     }
     return order.get(idx);
   }
@@ -87,5 +86,5 @@ public class MagellanFocusTraversalPolicy extends FocusTraversalPolicy {
   public Component getLastComponent(Container container) {
     return order.lastElement();
   }
-  
+
 }

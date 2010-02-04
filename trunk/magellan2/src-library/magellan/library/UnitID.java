@@ -49,8 +49,9 @@ public class UnitID extends EntityID {
     UnitID id = UnitID.idMap.get(o);
 
     if (id == null || id.radix != radix) {
-      if (id != null)
-        log.warn("changing radix of id " + id);
+      if (id != null) {
+        UnitID.log.warn("changing radix of id " + id);
+      }
       id = new UnitID(o, radix);
       UnitID.idMap.put(o, id);
     }
@@ -63,7 +64,7 @@ public class UnitID extends EntityID {
    * createUnitID(s, radix, radix).
    */
   public static UnitID createUnitID(String s, int radix) {
-    return createUnitID(s, radix, radix);
+    return UnitID.createUnitID(s, radix, radix);
   }
 
   /**
@@ -209,7 +210,7 @@ public class UnitID extends EntityID {
    */
   @Override
   public String toString() {
-    return IDBaseConverter.toString(Math.abs(this.intValue()), radix);
+    return IDBaseConverter.toString(Math.abs(intValue()), radix);
   }
 
   /**
@@ -237,7 +238,7 @@ public class UnitID extends EntityID {
    */
   @Override
   public int compareTo(Object o) {
-    return Math.abs(this.intValue()) - Math.abs(((EntityID) o).intValue());
+    return Math.abs(intValue()) - Math.abs(((EntityID) o).intValue());
   }
 
   /**
@@ -255,19 +256,18 @@ public class UnitID extends EntityID {
 
     int blankPos = s.indexOf(" ");
 
-    if (blankPos == -1) {
+    if (blankPos == -1)
       return Integer.valueOf(s, radix);
-    } else {
+    else {
       String part1 = s.substring(0, blankPos);
 
-      if (part1.equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+      if (part1.equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)))
         return new Integer(-1 * Integer.parseInt(s.substring(blankPos).trim(), radix));
-      } else {
+      else
         throw new NumberFormatException("UnitID: unable to parse id " + s);
-      }
     }
   }
-  
+
   /**
    * @see magellan.library.EntityID#clone()
    */

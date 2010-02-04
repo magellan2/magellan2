@@ -18,33 +18,32 @@ import magellan.client.swing.context.ContextFactory;
 /**
  * An interface signaling a context manager that this element can be edited. At this time only
  * context menus are supported.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface Changeable {
-	/** DOCUMENT-ME */
-	public static final int CONTEXT_MENU = 1;
+  /** DOCUMENT-ME */
+  public static final int CONTEXT_MENU = 1;
 
-	/** DOCUMENT-ME */
-	public static final int CELL_EDITOR = 2;
+  /** DOCUMENT-ME */
+  public static final int CELL_EDITOR = 2;
 
   /**
-   * Return the change mode. At this time this can be either
-   * {@link #CONTEXT_MENU} or {@link #CELL_EDITOR}
+   * Return the change mode. At this time this can be either {@link #CONTEXT_MENU} or
+   * {@link #CELL_EDITOR}
    */
-	public int getChangeModes();
+  public int getChangeModes();
 
-	/**
-	 * Returns a factory for creating the appropriate context menu.
-	 * 
-	 */
-	public ContextFactory getContextFactory();
+  /**
+   * Returns a factory for creating the appropriate context menu.
+   */
+  public ContextFactory getContextFactory();
 
-	/**
-	 * The game object for which this Changeable is responsible.
-	 * 
-	 * @return
-	 */
-	public Object getArgument();
+  /**
+   * The game object for which this Changeable is responsible.
+   * 
+   * @return
+   */
+  public Object getArgument();
 }

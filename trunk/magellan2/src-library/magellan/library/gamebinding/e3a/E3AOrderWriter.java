@@ -27,21 +27,19 @@ import magellan.library.gamebinding.EresseaOrderWriter;
 import magellan.library.gamebinding.GameSpecificOrderWriter;
 
 /**
- * 
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
 public class E3AOrderWriter extends EresseaOrderWriter {
   private static final E3AOrderWriter instance = new E3AOrderWriter();
-  
+
   /**
    * 
    */
   protected E3AOrderWriter() {
     // do nothing...
   }
-  
+
   /**
    * Returns the instance of this class.
    */
@@ -70,7 +68,7 @@ public class E3AOrderWriter extends EresseaOrderWriter {
    */
   @Override
   public String getCheckerDefaultParameter() {
-    return " -s -l -w4 -v" + E3AOrderWriter.ECHECKVERSION;
+    return " -s -l -w4 -v" + EresseaOrderWriter.ECHECKVERSION;
   }
 
 }

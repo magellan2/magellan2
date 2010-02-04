@@ -64,16 +64,17 @@ import net.infonode.docking.properties.RootWindowProperties;
 import net.infonode.tabbedpanel.TabAreaVisiblePolicy;
 
 /**
- * This class represents the Magellan Desktop. It contains all visible
- * components. We use this class to load, set and save their positions.
- *
- * @author Roger Butenuth 
+ * This class represents the Magellan Desktop. It contains all visible components. We use this class
+ * to load, set and save their positions.
+ * 
+ * @author Roger Butenuth
  * @author Andreas Gampe
  * @author Thoralf Rickert
  */
-public class MagellanDesktop extends JPanel implements WindowListener, ActionListener, PreferencesFactory, DockingWindowListener {
+public class MagellanDesktop extends JPanel implements WindowListener, ActionListener,
+    PreferencesFactory, DockingWindowListener {
   private static final Logger log = Logger.getInstance(MagellanDesktop.class);
-  
+
   private static MagellanDesktop _instance = null;
 
   /** the workSpace associated with this MagellanDesktop */
@@ -86,11 +87,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * Holds all the components. The key is the global id like NAME or OVERVIEW, the value is the
    * component.
    */
-  private Map<String,Component> components;
+  private Map<String, Component> components;
 
   /** Some shortcut things */
-  private Map<KeyStroke,Object> shortCutListeners = new HashMap<KeyStroke, Object>();
-  private Map<KeyStroke,KeyStroke> shortCutTranslations = new HashMap<KeyStroke, KeyStroke>();
+  private Map<KeyStroke, Object> shortCutListeners = new HashMap<KeyStroke, Object>();
+  private Map<KeyStroke, KeyStroke> shortCutTranslations = new HashMap<KeyStroke, KeyStroke>();
   private KeyHandler keyHandler;
 
   /** Decides if all frames should be (de)iconified if the client frame is (de)iconified. */
@@ -112,8 +113,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   private Rectangle splitRect;
 
   /**
-   * Just a variable to suppress double activation events. If anyone can do it better, please DO
-   * IT.
+   * Just a variable to suppress double activation events. If anyone can do it better, please DO IT.
    */
   private boolean inFront = false;
   private Timer timer;
@@ -129,32 +129,32 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   private Image bgImage = null;
   private Color bgColor = Color.red;
 
-    
   /** the current context */
   MagellanContext context;
-  
+
   /**
    * Creates new MagellanDesktop
    */
   private MagellanDesktop() {
     // do nothing
   }
-  
+
   public static MagellanDesktop getInstance() {
     if (MagellanDesktop._instance == null) {
       MagellanDesktop._instance = new MagellanDesktop();
     }
     return MagellanDesktop._instance;
   }
-    
+
   /**
    * Creates new MagellanDesktop
    */
-  public void init(Client client, MagellanContext context, Properties settings, Map<String,Component> components, File dir) {
+  public void init(Client client, MagellanContext context, Properties settings,
+      Map<String, Component> components, File dir) {
     this.client = client;
     this.context = context;
     this.settings = settings;
-    
+
     DockingFrameworkBuilder.getInstance().setProperties(settings);
 
     magellanDir = dir;
@@ -172,14 +172,14 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
     // init the desktop
     initSplitSet();
-    
+
     validateDesktopMenu();
 
     loadTranslations();
 
     // register keystrokes
     registerKeyStrokes();
-    
+
     DesktopEnvironment.init(this);
   }
 
@@ -187,16 +187,18 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    *
    */
   private void initWorkSpace() {
-    if(workSpace == null) {
+    if (workSpace == null) {
       workSpace = new WorkSpace();
-      
-      this.setLayout(new BorderLayout());
-      this.removeAll();
+
+      setLayout(new BorderLayout());
+      removeAll();
       this.add(workSpace, BorderLayout.CENTER);
     }
-    workSpace.setEnabledChooser(settings.getProperty(PropertiesHelper.DESKTOP_ENABLE_WORKSPACE_CHOOSER,Boolean.TRUE.toString()).equals(Boolean.TRUE.toString()));
+    workSpace.setEnabledChooser(settings.getProperty(
+        PropertiesHelper.DESKTOP_ENABLE_WORKSPACE_CHOOSER, Boolean.TRUE.toString()).equals(
+        Boolean.TRUE.toString()));
   }
-  
+
   /**
    * Returns the workspace of Magellan.
    */
@@ -208,15 +210,16 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * 
    */
   public void setWorkSpaceChooser(boolean enabled) {
-    settings.setProperty(PropertiesHelper.DESKTOP_ENABLE_WORKSPACE_CHOOSER, String.valueOf(enabled));
+    settings
+        .setProperty(PropertiesHelper.DESKTOP_ENABLE_WORKSPACE_CHOOSER, String.valueOf(enabled));
     initWorkSpace();
   }
-  
-  public Map<KeyStroke,Object> getShortCutListeners() {
+
+  public Map<KeyStroke, Object> getShortCutListeners() {
     return shortCutListeners;
   }
-  
-  public Map<KeyStroke,KeyStroke> getShortCutTranslations() {
+
+  public Map<KeyStroke, KeyStroke> getShortCutTranslations() {
     return shortCutTranslations;
   }
 
@@ -228,13 +231,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   /*
-   ########################
-   # Property access code #
-   ########################
+   * ######################## # Property access code # ########################
    */
   /**
    * Returns the current desktop menu.
-   *
+   * 
    * @return The current desktop menu.
    */
   public JMenu getDesktopMenu() {
@@ -252,7 +253,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * Sets the components available for this desktop. This is only useful if called before a
    * mode-change.
    */
-  public void setManagedComponents(Map<String,Component> components) {
+  public void setManagedComponents(Map<String, Component> components) {
     this.components = components;
   }
 
@@ -265,8 +266,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   /**
-   * Sets the iconification mode. TRUE means, that all windows are (de)iconified if the main
-   * window is (de)iconified.
+   * Sets the iconification mode. TRUE means, that all windows are (de)iconified if the main window
+   * is (de)iconified.
    */
   public void setIconify(boolean iconify) {
     this.iconify = iconify;
@@ -277,29 +278,28 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * sub-menu for all available split sets and at last a sub-menu with all layouts.
    */
   protected void initDesktopMenu() {
-    desktopMenu = DockingFrameworkBuilder.getInstance().createDesktopMenu(components,settings,this);
+    desktopMenu =
+        DockingFrameworkBuilder.getInstance().createDesktopMenu(components, settings, this);
   }
 
   /*
-   ########################
-   # Desktop init methods #
-   ########################
+   * ######################## # Desktop init methods # ########################
    */
 
   /**
    * Sets the Magellan window bounds according to current mode.
    */
   protected void setClientBounds() {
-    if(splitRect == null) { // not initialized before, load it
+    if (splitRect == null) { // not initialized before, load it
       splitRect = PropertiesHelper.loadRect(settings, splitRect, "Client");
     }
 
-    if(splitRect == null) { // still null - use full screen
+    if (splitRect == null) { // still null - use full screen
 
       Dimension d = getToolkit().getScreenSize();
       splitRect = new Rectangle(0, 0, d.width, d.height);
     }
-    MagellanDesktop.log.debug("ClientBounds: "+splitRect);
+    MagellanDesktop.log.debug("ClientBounds: " + splitRect);
     client.setBounds(splitRect);
   }
 
@@ -308,10 +308,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    */
   protected void validateDesktopMenu() {
     if (splitRoot != null) {
-      for (int i=0; i<desktopMenu.getItemCount(); i++) {
+      for (int i = 0; i < desktopMenu.getItemCount(); i++) {
         JMenuItem menuItem = desktopMenu.getItem(i);
         if (menuItem instanceof JCheckBoxMenuItem) {
-          JCheckBoxMenuItem item = (JCheckBoxMenuItem)menuItem;
+          JCheckBoxMenuItem item = (JCheckBoxMenuItem) menuItem;
           String name = item.getActionCommand().substring(5);
           DockingWindow window = findDockingWindow(splitRoot, name);
           if (window != null) {
@@ -319,7 +319,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
           }
         }
       }
-      
+
       DockingFrameworkBuilder.getInstance().updateLayoutMenu();
     }
   }
@@ -330,58 +330,55 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   protected boolean initSplitSet() {
     setClientBounds();
 
-    //get out area, (approximatly)
+    // get out area, (approximatly)
     Rectangle r = client.getBounds();
     r.x += 3;
     r.y += 20;
     r.width -= 6;
     r.height -= 23;
 
-    if(dockingFrameworkBuilder == null) {
+    if (dockingFrameworkBuilder == null) {
       dockingFrameworkBuilder = DockingFrameworkBuilder.getInstance();
     }
 
     try {
-      splitRoot = dockingFrameworkBuilder.buildDesktop(components, new File(magellanDir,MagellanDesktop.DOCKING_LAYOUT_FILE));
+      splitRoot =
+          dockingFrameworkBuilder.buildDesktop(components, new File(magellanDir,
+              MagellanDesktop.DOCKING_LAYOUT_FILE));
       if (splitRoot != null) {
         splitRoot.addListener(this);
       }
-    } catch(Exception exc) {
+    } catch (Exception exc) {
       MagellanDesktop.log.error(exc);
       return false;
     }
 
-    if(splitRoot == null) {
+    if (splitRoot == null)
       return false;
-    }
 
     workSpace.setContent(splitRoot);
     buildShortCutTable(dockingFrameworkBuilder.getComponentsUsed());
-    
+
     return true;
   }
 
   /*
-   ######################
-   # Shortcut - Methods #
-   ######################
+   * ###################### # Shortcut - Methods # ######################
    */
 
   /**
-   * Based on the components used by the desktop this method builds the KeyStroke-HashMap. The
-   * key is the KeyStroke-Object returned by ShortcutListener.getShortCuts(), the value is the
-   * listener object.
-   *
-   * 
+   * Based on the components used by the desktop this method builds the KeyStroke-HashMap. The key
+   * is the KeyStroke-Object returned by ShortcutListener.getShortCuts(), the value is the listener
+   * object.
    */
   protected void buildShortCutTable(Collection<Component> scomps) {
-    for (Component o : scomps){
+    for (Component o : scomps) {
 
-      if(o instanceof ShortcutListener) {
+      if (o instanceof ShortcutListener) {
         ShortcutListener sl = (ShortcutListener) o;
         Iterator<KeyStroke> it2 = sl.getShortCuts();
 
-        while(it2.hasNext()) {
+        while (it2.hasNext()) {
           KeyStroke stroke = it2.next();
           shortCutListeners.put(stroke, sl);
         }
@@ -415,28 +412,30 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   protected void loadTranslations() {
     String s = settings.getProperty("Desktop.KeyTranslations");
 
-    if(s != null) {
+    if (s != null) {
       StringTokenizer st = new StringTokenizer(s, ",");
 
-      while(st.hasMoreTokens()) {
+      while (st.hasMoreTokens()) {
         try {
-          KeyStroke newStroke = KeyStroke.getKeyStroke(Integer.parseInt(st.nextToken()),
-                                 Integer.parseInt(st.nextToken()));
-          KeyStroke oldStroke = KeyStroke.getKeyStroke(Integer.parseInt(st.nextToken()),
-                                 Integer.parseInt(st.nextToken()));
+          KeyStroke newStroke =
+              KeyStroke.getKeyStroke(Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                  .nextToken()));
+          KeyStroke oldStroke =
+              KeyStroke.getKeyStroke(Integer.parseInt(st.nextToken()), Integer.parseInt(st
+                  .nextToken()));
           registerTranslation(newStroke, oldStroke);
-        } catch(RuntimeException exc) {
+        } catch (RuntimeException exc) {
         }
       }
     }
   }
 
   protected void saveTranslations() {
-    if(shortCutTranslations.size() > 0) {
+    if (shortCutTranslations.size() > 0) {
       StringBuffer buf = new StringBuffer();
       Iterator<Map.Entry<KeyStroke, KeyStroke>> it = shortCutTranslations.entrySet().iterator();
 
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         Map.Entry<KeyStroke, KeyStroke> e = it.next();
         KeyStroke stroke = e.getKey();
         buf.append(stroke.getKeyCode());
@@ -448,7 +447,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
         buf.append(',');
         buf.append(stroke.getModifiers());
 
-        if(it.hasNext()) {
+        if (it.hasNext()) {
           buf.append(',');
         }
       }
@@ -463,12 +462,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * Registers a shortcut translation.
    */
   public void registerTranslation(KeyStroke newStroke, KeyStroke oldStroke) {
-    if(newStroke.equals(oldStroke)) { // senseless
-
+    if (newStroke.equals(oldStroke))
       return;
-    }
 
-    if(!shortCutTranslations.containsKey(oldStroke)) {
+    if (!shortCutTranslations.containsKey(oldStroke)) {
       keyHandler.removeStroke(oldStroke);
     }
 
@@ -480,7 +477,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * 
    */
   public void removeTranslation(KeyStroke stroke) {
-    if(shortCutTranslations.containsKey(stroke)) {
+    if (shortCutTranslations.containsKey(stroke)) {
       KeyStroke old = shortCutTranslations.get(stroke);
       keyHandler.removeStroke(stroke);
       keyHandler.install(old);
@@ -501,12 +498,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   public KeyStroke findTranslation(KeyStroke oldStroke) {
     Iterator<KeyStroke> it = shortCutTranslations.keySet().iterator();
 
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       Object obj = it.next();
 
-      if(shortCutTranslations.get(obj).equals(oldStroke)) {
+      if (shortCutTranslations.get(obj).equals(oldStroke))
         return (KeyStroke) obj;
-      }
     }
 
     return null;
@@ -535,10 +531,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   /*
-   ################################
-   # Frame management methods     #
-   # ONLY USED WHEN IN FRAME MODE #
-   ################################
+   * ################################ # Frame management methods # # ONLY USED WHEN IN FRAME MODE #
+   * ################################
    */
 
   /**
@@ -556,8 +550,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   /**
-   * Check if this event comes from the client window and if all windows should be deiconified -
-   * if so, deiconify all and put them to front.
+   * Check if this event comes from the client window and if all windows should be deiconified - if
+   * so, deiconify all and put them to front.
    */
   public void windowDeiconified(java.awt.event.WindowEvent p1) {
     // clear "input buffer"
@@ -573,8 +567,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   /**
-   * Check if this  event comes from the client window and if all windows should be iconified -
-   * if so, iconify them.
+   * Check if this event comes from the client window and if all windows should be iconified - if
+   * so, iconify them.
    */
   public void windowIconified(java.awt.event.WindowEvent p1) {
     // clear "input buffer"
@@ -591,18 +585,17 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
   /**
    * Check the activation modus:
-   * 
    * <ul>
-   *   <li>DO NOTHING ON ACTIVATION</li>
-   *   <li>ACTIVATE ALL WHEN CLIENT IS ACTIVATED</li>
-   *   <li>ACTIVATE ALL IF ANY WINDOW IS ACTIVATED</li>
+   * <li>DO NOTHING ON ACTIVATION</li>
+   * <li>ACTIVATE ALL WHEN CLIENT IS ACTIVATED</li>
+   * <li>ACTIVATE ALL IF ANY WINDOW IS ACTIVATED</li>
    * </ul>
    */
   public void windowActivated(java.awt.event.WindowEvent p1) {
     // clear "input buffer"
     keyHandler.resetExtendedShortcutListener();
 
-    if(inFront) {
+    if (inFront) {
       timer.restart();
 
       return;
@@ -617,10 +610,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   /*
-   #########################
-   # Cross-Mode Management #
-   # Focus and Repaint     #
-   #########################
+   * ######################### # Cross-Mode Management # # Focus and Repaint #
+   * #########################
    */
 
   /**
@@ -628,16 +619,15 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * will be activated.
    */
   public void componentRequestFocus(String id) {
-    if(!components.containsKey(id)) {
+    if (!components.containsKey(id))
       return;
-    }
 
     if (splitRoot != null) {
       restoreView(id);
     }
 
     // search in component table to activate directly
-    if (components.get(id)!=null) {
+    if (components.get(id) != null) {
       components.get(id).requestFocus();
     }
   }
@@ -646,23 +636,21 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * Repaints the component with ID id.
    */
   public void repaint(String id) {
-    if(!components.containsKey(id)) {
+    if (!components.containsKey(id))
       return;
-    }
     // FIXME (stm) this only works the first time; try this:
     // install to ATR modes
     // select the first (via Ctrl+Alt+T, 1) --> repaint ok
     // select the second (Ctrl+Alt+T, 2) --> no repaint, only after moving map
-    //    components.get(id).validate();
+    // components.get(id).validate();
     // solution: call Mapper.setRenderContextChanged(true) before...;
     components.get(id).repaint();
-    
-    
+
   }
-  
+
   public void repaintAllComponents() {
-    log.debug("repaint all");
-    for (Component c : components.values()){
+    MagellanDesktop.log.debug("repaint all");
+    for (Component c : components.values()) {
       c.repaint();
     }
   }
@@ -674,24 +662,21 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     SwingUtilities.updateComponentTreeUI(client);
 
     // to avoid start bug
-    if(desktopMenu != null) {
+    if (desktopMenu != null) {
       SwingUtilities.updateComponentTreeUI(desktopMenu);
     }
   }
-  
-  private DockingWindow findDockingWindow(DockingWindow root, String name) {
-    if (root == null) {
-      return null;
-    }
-    if (root.getName() != null && root.getName().equals(name)) {
-      return root;
-    }
 
-    for (int index=0; index<root.getChildWindowCount(); index++) {
-      DockingWindow window = findDockingWindow(root.getChildWindow(index),name);
-      if (window != null) {
+  private DockingWindow findDockingWindow(DockingWindow root, String name) {
+    if (root == null)
+      return null;
+    if (root.getName() != null && root.getName().equals(name))
+      return root;
+
+    for (int index = 0; index < root.getChildWindowCount(); index++) {
+      DockingWindow window = findDockingWindow(root.getChildWindow(index), name);
+      if (window != null)
         return window;
-      }
     }
     return null;
   }
@@ -700,11 +685,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * 
    */
   public void actionPerformed(ActionEvent p1) {
-    if(p1.getSource() == timer) {
+    if (p1.getSource() == timer) {
       inFront = false;
       timer.stop();
-    } else if(p1.getSource() instanceof JCheckBoxMenuItem) {
-      JCheckBoxMenuItem menu = (JCheckBoxMenuItem)p1.getSource();
+    } else if (p1.getSource() instanceof JCheckBoxMenuItem) {
+      JCheckBoxMenuItem menu = (JCheckBoxMenuItem) p1.getSource();
       String action = p1.getActionCommand();
       if (action != null && action.startsWith("menu.")) {
         String name = action.substring(5);
@@ -720,33 +705,36 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
             } else {
               menu.setSelected(false);
             }
-            
+
           }
-          
+
         }
-        
+
       } else if (action != null && action.equals("hideTabs")) {
         setTabVisibility(!menu.isSelected());
       }
     }
   }
-  
+
   /**
    * Enables or disables all docking tabs.
    */
   public synchronized void setTabVisibility(boolean showTabs) {
-    Client.INSTANCE.getProperties().setProperty(PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, Boolean.toString(!showTabs));
-    
+    Client.INSTANCE.getProperties().setProperty(PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS,
+        Boolean.toString(!showTabs));
+
     RootWindow root = splitRoot;
     RootWindowProperties prop = root.getRootWindowProperties();
-    if (!showTabs){
-      prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(TabAreaVisiblePolicy.MORE_THAN_ONE_TAB);
+    if (!showTabs) {
+      prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties()
+          .setTabAreaVisiblePolicy(TabAreaVisiblePolicy.MORE_THAN_ONE_TAB);
     } else {
-      prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(TabAreaVisiblePolicy.ALWAYS);
+      prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties()
+          .setTabAreaVisiblePolicy(TabAreaVisiblePolicy.ALWAYS);
     }
   }
 
-   /** 
+  /**
    * Makes a view visible.
    * 
    * @param name
@@ -759,11 +747,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     }
   }
 
-  ///////////////////////////////////////
-  //                                   //
-  //  S H O R T C U T - H A N D L E R  //
-  //                                   //
-  ///////////////////////////////////////
+  // /////////////////////////////////////
+  // //
+  // S H O R T C U T - H A N D L E R //
+  // //
+  // /////////////////////////////////////
 
   /**
    * A handler class for key events. It checks if the given combination is stored and calls the
@@ -801,7 +789,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      * 
      */
     public void connect(Collection<Component> deskElements) {
-      if(lastComponents.size() > 0) {
+      if (lastComponents.size() > 0) {
         disconnect();
       }
 
@@ -811,7 +799,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
       Set<KeyStroke> set2 = new HashSet<KeyStroke>(shortCutListeners.keySet());
       Iterator<KeyStroke> it = set.iterator();
 
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         set2.remove(shortCutTranslations.get(it.next()));
       }
 
@@ -819,7 +807,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
       it = set.iterator();
 
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         KeyStroke stroke = it.next();
         install(stroke);
       }
@@ -832,24 +820,24 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      * 
      */
     public void disconnect() {
-      if(lastComponents.size() > 0) {
+      if (lastComponents.size() > 0) {
         Iterator<KeyStroke> it = shortCutListeners.keySet().iterator();
 
-        while(it.hasNext()) {
+        while (it.hasNext()) {
           KeyStroke str = it.next();
           remove(str);
         }
 
         it = extendedListeners.iterator();
 
-        while(it.hasNext()) {
+        while (it.hasNext()) {
           KeyStroke str = it.next();
           remove(str);
         }
 
         it = shortCutTranslations.keySet().iterator();
 
-        while(it.hasNext()) {
+        while (it.hasNext()) {
           KeyStroke str = it.next();
           remove(str);
         }
@@ -885,18 +873,20 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      * 
      */
     public void addStroke(KeyStroke str, Object dest, boolean actionAware) {
-      if((findTranslation(str) == null) && !shortCutListeners.containsKey(str)) {
+      if ((findTranslation(str) == null) && !shortCutListeners.containsKey(str)) {
         install(str);
-      } else if(actionAware) {
+      } else if (actionAware) {
         KeyStroke newStroke = findTranslation(str);
 
-        if((newStroke != null) && (dest instanceof Action)) {
+        if ((newStroke != null) && (dest instanceof Action)) {
           ((Action) dest).putValue("accelerator", newStroke);
         }
       }
 
-      if (shortCutListeners.containsKey(str) && dest!=shortCutListeners.get(str))
-        log.warn("multiply used shortcut + "+str+"\n     old: "+shortCutListeners.get(str)+",\n     new: "+dest);
+      if (shortCutListeners.containsKey(str) && dest != shortCutListeners.get(str)) {
+        MagellanDesktop.log.warn("multiply used shortcut + " + str + "\n     old: "
+            + shortCutListeners.get(str) + ",\n     new: " + dest);
+      }
       shortCutListeners.put(str, dest);
     }
 
@@ -906,7 +896,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     public void addListener(ShortcutListener sl) {
       Iterator<KeyStroke> it = sl.getShortCuts();
 
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         addStroke(it.next(), sl, false);
       }
     }
@@ -916,15 +906,15 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      */
     public void keyPressed(KeyStroke e, Object src) {
       // "translate" the key
-      if(shortCutTranslations.containsKey(e)) {
+      if (shortCutTranslations.containsKey(e)) {
         e = shortCutTranslations.get(e);
       }
 
       // redirect only for sub-listener
-      if(lastListener != null) {
+      if (lastListener != null) {
         remove(extendedListeners, false);
 
-        if(extendedListeners.contains(e)) {
+        if (extendedListeners.contains(e)) {
           reactOnStroke(e, lastListener);
 
           return;
@@ -933,15 +923,16 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
         lastListener = null;
       }
 
-      if(shortCutListeners.containsKey(e)) {
+      if (shortCutListeners.containsKey(e)) {
         Object o = shortCutListeners.get(e);
 
-        if(o instanceof ShortcutListener) {
+        if (o instanceof ShortcutListener) {
           reactOnStroke(e, (ShortcutListener) o);
-        } else if(o instanceof ActionListener) {
-          /*if (src instanceof JComponent)
-              if (((JComponent)src).getTopLevelAncestor()==client)
-                  return;*/
+        } else if (o instanceof ActionListener) {
+          /*
+           * if (src instanceof JComponent) if (((JComponent)src).getTopLevelAncestor()==client)
+           * return;
+           */
           ((ActionListener) o).actionPerformed(null);
         }
 
@@ -954,14 +945,14 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     protected void install(ShortcutListener sl, boolean flag) {
       Iterator<KeyStroke> it = sl.getShortCuts();
 
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         KeyStroke stroke = it.next();
 
-        if(flag) {
+        if (flag) {
           extendedListeners.add(stroke);
         }
 
-        if(!shortCutListeners.containsKey(stroke)) {
+        if (!shortCutListeners.containsKey(stroke)) {
           install(stroke);
         }
       }
@@ -972,12 +963,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
       KeyboardActionListener kal = new KeyboardActionListener();
       kal.stroke = stroke;
 
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         Component c = it.next();
 
-        if(c instanceof JComponent) {
-          ((JComponent) c).registerKeyboardAction(kal, stroke,
-                              JComponent.WHEN_IN_FOCUSED_WINDOW);
+        if (c instanceof JComponent) {
+          ((JComponent) c).registerKeyboardAction(kal, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
         } else {
           addToContainer(c, stroke, kal);
         }
@@ -988,22 +978,21 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      * Removes the given key stroke from the container searching an instance of JComponent.
      */
     protected boolean addToContainer(Component c, KeyStroke s, ActionListener al) {
-      if(c instanceof JComponent) {
+      if (c instanceof JComponent) {
         ((JComponent) c).registerKeyboardAction(al, s, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
         return true;
       }
 
-      if(c instanceof Container) {
+      if (c instanceof Container) {
         Container con = (Container) c;
 
-        if(con.getComponentCount() > 0) {
+        if (con.getComponentCount() > 0) {
           Component comp[] = con.getComponents();
 
-          for(int i = 0; i < comp.length; i++) {
-            if(addToContainer(comp[i], s, al)) {
+          for (Component element : comp) {
+            if (addToContainer(element, s, al))
               return true;
-            }
           }
         }
       }
@@ -1012,19 +1001,17 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     }
 
     /**
-     * Removes the KeyStrokes in the collection from all desktop components. If the given flag
-     * is true, all key-strokes in the collection are removed, else only non-base-level
-     * key-strokes.
+     * Removes the KeyStrokes in the collection from all desktop components. If the given flag is
+     * true, all key-strokes in the collection are removed, else only non-base-level key-strokes.
      */
     protected void remove(Collection<KeyStroke> col, boolean flag) {
       Iterator<KeyStroke> it = col.iterator();
 
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         KeyStroke stroke = it.next();
 
-        if(flag ||
-             (!shortCutTranslations.containsKey(stroke) &&
-             !shortCutListeners.containsKey(stroke))) {
+        if (flag
+            || (!shortCutTranslations.containsKey(stroke) && !shortCutListeners.containsKey(stroke))) {
           remove(stroke);
         }
       }
@@ -1033,10 +1020,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     protected void remove(KeyStroke stroke) {
       Iterator<Component> it2 = lastComponents.iterator();
 
-      while(it2.hasNext()) {
+      while (it2.hasNext()) {
         Component c = it2.next();
 
-        if(c instanceof JComponent) {
+        if (c instanceof JComponent) {
           ((JComponent) c).unregisterKeyboardAction(stroke);
         } else {
           removeFromContainer(c, stroke);
@@ -1048,22 +1035,21 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      * Removes the given key stroke from the container searching an instance of JComponent.
      */
     protected boolean removeFromContainer(Component c, KeyStroke s) {
-      if(c instanceof JComponent) {
+      if (c instanceof JComponent) {
         ((JComponent) c).unregisterKeyboardAction(s);
 
         return true;
       }
 
-      if(c instanceof Container) {
+      if (c instanceof Container) {
         Container con = (Container) c;
 
-        if(con.getComponentCount() > 0) {
+        if (con.getComponentCount() > 0) {
           Component comp[] = con.getComponents();
 
-          for(int i = 0; i < comp.length; i++) {
-            if(removeFromContainer(comp[i], s)) {
+          for (Component element : comp) {
+            if (removeFromContainer(element, s))
               return true;
-            }
           }
         }
       }
@@ -1083,10 +1069,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      * Performs the action for the given shortcut listener.
      */
     protected void reactOnStroke(KeyStroke stroke, ShortcutListener sl) {
-      if(sl instanceof ExtendedShortcutListener) {
+      if (sl instanceof ExtendedShortcutListener) {
         ExtendedShortcutListener esl = (ExtendedShortcutListener) sl;
 
-        if(esl.isExtendedShortcut(stroke)) {
+        if (esl.isExtendedShortcut(stroke)) {
           lastListener = esl.getExtendedShortcutListener(stroke);
           install(lastListener, true);
 
@@ -1102,8 +1088,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      * The sub-shortcutlistener must be cleared when any game event appears
      */
     protected class GameEventListener implements magellan.library.event.GameDataListener,
-                           magellan.client.event.SelectionListener
-    {
+        magellan.client.event.SelectionListener {
       KeyHandler parent;
 
       /**
@@ -1133,9 +1118,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     }
   }
 
-  ///////////////////////////////////
+  // /////////////////////////////////
   // CONFIGURATION CODE - EXTERNAL //
-  ///////////////////////////////////
+  // /////////////////////////////////
 
   /**
    * Writes the configuration of this desktop.
@@ -1143,52 +1128,51 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   public void save() {
 
     saveTranslations();
-    
+
     try {
-      dockingFrameworkBuilder.write(new File(magellanDir,MagellanDesktop.DOCKING_LAYOUT_FILE));
+      dockingFrameworkBuilder.write(new File(magellanDir, MagellanDesktop.DOCKING_LAYOUT_FILE));
     } catch (Throwable t) {
-      MagellanDesktop.log.fatal(t.getMessage(),t);
-      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);
+      MagellanDesktop.log.fatal(t.getMessage(), t);
+      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t.getMessage(), "", t);
       errorWindow.setVisible(true);
     }
   }
 
-  ///////////////////////
+  // /////////////////////
   // WINDOW ACTIVATION //
-  ///////////////////////
+  // /////////////////////
 
   /**
    * Runnable used to activate all displayed windows. This will move them to the front of the
    * desktop.
    */
-//  private class WindowActivator implements Runnable {
-//    protected Window source;
-//
-//    /**
-//     * Creates a new WindowActivator object.
-//     */
-//    public WindowActivator(Window s) {
-//      source = s;
-//    }
-//
-//    /**
-//     * 
-//     */
-//    public void run() {
-//        return;
-//    }
-//  }
+  // private class WindowActivator implements Runnable {
+  // protected Window source;
+  //
+  // /**
+  // * Creates a new WindowActivator object.
+  // */
+  // public WindowActivator(Window s) {
+  // source = s;
+  // }
+  //
+  // /**
+  // *
+  // */
+  // public void run() {
+  // return;
+  // }
+  // }
 
-  /////////////////////////
+  // ///////////////////////
   // PREFERENCES ADAPTER //
-  /////////////////////////
+  // ///////////////////////
   /**
    * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
     return new DesktopPreferences(this, client, settings);
   }
-
 
   protected class BackgroundPanel extends JPanel {
     /**
@@ -1211,39 +1195,39 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      */
     @Override
     public void paintComponent(Graphics g) {
-      if(bgMode == -1) {
+      if (bgMode == -1) {
         super.paintComponent(g);
 
         return;
       }
 
-      if(bgMode == 0) {
-        if(bgColor != null) {
+      if (bgMode == 0) {
+        if (bgColor != null) {
           g.setColor(bgColor);
-          g.fillRect(0, 0, this.getWidth(), this.getHeight());
+          g.fillRect(0, 0, getWidth(), getHeight());
         }
       } else {
-        if(bgImage != null) {
-          if(bgMode == 1) { // resize
-            g.drawImage(bgImage, 0, 0, this.getWidth(), this.getHeight(), this);
+        if (bgImage != null) {
+          if (bgMode == 1) { // resize
+            g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
           } else { // repeat
 
             int w = bgImage.getWidth(this);
             int h = bgImage.getHeight(this);
-            int wi = this.getWidth() / w;
+            int wi = getWidth() / w;
 
-            if((this.getWidth() % w) != 0) {
+            if ((getWidth() % w) != 0) {
               wi++;
             }
 
-            int hi = this.getHeight() / h;
+            int hi = getHeight() / h;
 
-            if((this.getHeight() % h) != 0) {
+            if ((getHeight() % h) != 0) {
               hi++;
             }
 
-            for(int i = 0; i < hi; i++) {
-              for(int j = 0; j < wi; j++) {
+            for (int i = 0; i < hi; i++) {
+              for (int j = 0; j < wi; j++) {
                 g.drawImage(bgImage, j * w, i * h, this);
               }
             }
@@ -1273,20 +1257,19 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   protected void clearOpaque(Component c) {
-    if(bgMode == -1) {
+    if (bgMode == -1)
       return;
-    }
 
-    if(c instanceof JComponent) {
+    if (c instanceof JComponent) {
       ((JComponent) c).setOpaque(false);
     }
 
-    if(c instanceof Container) {
+    if (c instanceof Container) {
       Component children[] = ((Container) c).getComponents();
 
-      if((children != null) && (children.length > 0)) {
-        for(int i = 0; i < children.length; i++) {
-          clearOpaque(children[i]);
+      if ((children != null) && (children.length > 0)) {
+        for (Component element : children) {
+          clearOpaque(element);
         }
       }
     }
@@ -1297,39 +1280,39 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    */
   @Override
   public void paintComponent(Graphics g) {
-    if(bgMode == -1) {
+    if (bgMode == -1) {
       super.paintComponent(g);
 
       return;
     }
 
-    if(bgMode == 0) {
-      if(bgColor != null) {
+    if (bgMode == 0) {
+      if (bgColor != null) {
         g.setColor(bgColor);
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g.fillRect(0, 0, getWidth(), getHeight());
       }
     } else {
-      if(bgImage != null) {
-        if(bgMode == 1) { // resize
-          g.drawImage(bgImage, 0, 0, this.getWidth(), this.getHeight(), this);
+      if (bgImage != null) {
+        if (bgMode == 1) { // resize
+          g.drawImage(bgImage, 0, 0, getWidth(), getHeight(), this);
         } else { // repeat
 
           int w = bgImage.getWidth(this);
           int h = bgImage.getHeight(this);
-          int wi = this.getWidth() / w;
+          int wi = getWidth() / w;
 
-          if((this.getWidth() % w) != 0) {
+          if ((getWidth() % w) != 0) {
             wi++;
           }
 
-          int hi = this.getHeight() / h;
+          int hi = getHeight() / h;
 
-          if((this.getHeight() % h) != 0) {
+          if ((getHeight() % h) != 0) {
             hi++;
           }
 
-          for(int i = 0; i < hi; i++) {
-            for(int j = 0; j < wi; j++) {
+          for (int i = 0; i < hi; i++) {
+            for (int j = 0; j < wi; j++) {
               g.drawImage(bgImage, j * w, i * h, this);
             }
           }
@@ -1344,7 +1327,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   public void setVisible(String viewName, boolean setVisible) {
     if (splitRoot != null) {
       dockingFrameworkBuilder.setVisible(splitRoot, viewName, setVisible);
-      
+
       if (desktopMenu != null) {
         if (setVisible) {
           setActive(viewName);
@@ -1355,41 +1338,41 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     }
   }
 
-
   /**
-   * @see net.infonode.docking.DockingWindowListener#viewFocusChanged(net.infonode.docking.View, net.infonode.docking.View)
+   * @see net.infonode.docking.DockingWindowListener#viewFocusChanged(net.infonode.docking.View,
+   *      net.infonode.docking.View)
    */
   public void viewFocusChanged(View previouslyFocusedView, View focusedView) {
     // do nothing
   }
-  
+
   /**
    * Enabled a desktop menu entry for the given View
    */
   public void setActive(String viewName) {
     // inform desktopmenu
     if (viewName != null) {
-      for (int index=0; index<desktopMenu.getItemCount(); index++) {
+      for (int index = 0; index < desktopMenu.getItemCount(); index++) {
         if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
-          JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
-          if (menu.getActionCommand().equals("menu."+viewName)) {
+          JCheckBoxMenuItem menu = (JCheckBoxMenuItem) desktopMenu.getItem(index);
+          if (menu.getActionCommand().equals("menu." + viewName)) {
             menu.setSelected(true);
           }
         }
       }
     }
   }
-  
+
   /**
    * Disables a desktop menu entry for the given View
    */
   public void setInActive(String viewName) {
     // inform desktopmenu
     if (viewName != null) {
-      for (int index=0; index<desktopMenu.getItemCount(); index++) {
+      for (int index = 0; index < desktopMenu.getItemCount(); index++) {
         if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
-          JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
-          if (menu.getActionCommand().equals("menu."+viewName)) {
+          JCheckBoxMenuItem menu = (JCheckBoxMenuItem) desktopMenu.getItem(index);
+          if (menu.getActionCommand().equals("menu." + viewName)) {
             menu.setSelected(false);
           }
         }
@@ -1398,7 +1381,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   /**
-   * @see net.infonode.docking.DockingWindowListener#windowAdded(net.infonode.docking.DockingWindow, net.infonode.docking.DockingWindow)
+   * @see net.infonode.docking.DockingWindowListener#windowAdded(net.infonode.docking.DockingWindow,
+   *      net.infonode.docking.DockingWindow)
    */
   public void windowAdded(DockingWindow addedToWindow, DockingWindow addedWindow) {
     // inform desktopmenu
@@ -1474,7 +1458,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   /**
-   * @see net.infonode.docking.DockingWindowListener#windowRemoved(net.infonode.docking.DockingWindow, net.infonode.docking.DockingWindow)
+   * @see net.infonode.docking.DockingWindowListener#windowRemoved(net.infonode.docking.DockingWindow,
+   *      net.infonode.docking.DockingWindow)
    */
   public void windowRemoved(DockingWindow removedFromWindow, DockingWindow removedWindow) {
     // inform desktopmenu
@@ -1517,17 +1502,18 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   public void windowUndocking(DockingWindow window) throws OperationAbortedException {
     // do nothing
   }
-  
+
   /**
    * adds the listener to the DockingFrameWork
+   * 
    * @param listener
    */
-  public void addDockingWindowListener(DockingWindowListener listener){
-     if (splitRoot!=null){
-       splitRoot.addListener(listener);
-     } else {
-       MagellanDesktop.log.error("unable to add DockingWindowListener! (no RootWindow)");
-     }
+  public void addDockingWindowListener(DockingWindowListener listener) {
+    if (splitRoot != null) {
+      splitRoot.addListener(listener);
+    } else {
+      MagellanDesktop.log.error("unable to add DockingWindowListener! (no RootWindow)");
+    }
   }
-  
+
 }

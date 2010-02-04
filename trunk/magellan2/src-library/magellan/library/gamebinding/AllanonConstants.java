@@ -28,7 +28,7 @@ import magellan.library.StringID;
 
 /**
  * This class contains some Allanon specific constants.
- *
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 26.02.2009
  */
@@ -38,7 +38,6 @@ public class AllanonConstants extends EresseaConstants {
   public static final String O_KARAWANE = "KARAWANE";
   public static final String O_MEUCHELN = "MEUCHELN";
 
-  
   public static final ID S_ALCHIMIE = StringID.create("ALCHIMIE");
   public static final ID S_ANWERBEN = StringID.create("ANWERBEN");
   public static final ID S_BEANSPRUCHE = StringID.create("BEANSPRUCHE");

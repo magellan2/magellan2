@@ -24,80 +24,71 @@ import magellan.client.MagellanUndoManager;
 import magellan.client.actions.MenuAction;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class UndoAction extends MenuAction implements PropertyChangeListener {
-	private MagellanUndoManager undoManager;
-	private String name = null;
+  private MagellanUndoManager undoManager;
+  private String name = null;
 
-	/**
-	 * Creates a new UndoAction object.
-	 *
-	 * 
-	 */
-	public UndoAction(Client client, MagellanUndoManager m) {
-        super(client);
-		this.name = getName();
-		undoManager = m;
-		setEnabled(undoManager.canUndo());
+  /**
+   * Creates a new UndoAction object.
+   */
+  public UndoAction(Client client, MagellanUndoManager m) {
+    super(client);
+    name = getName();
+    undoManager = m;
+    setEnabled(undoManager.canUndo());
 
-		if(isEnabled()) {
-			putValue(Action.NAME, name + ": " + undoManager.getUndoPresentationName());
-		}
+    if (isEnabled()) {
+      putValue(Action.NAME, name + ": " + undoManager.getUndoPresentationName());
+    }
 
-		undoManager.addPropertyChangeListener(MagellanUndoManager.UNDO, this);
-	}
+    undoManager.addPropertyChangeListener(MagellanUndoManager.UNDO, this);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String getIconName() {
-		return "undo_edit";
-	}
+    return "undo_edit";
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		if (undoManager.canUndo()) {
+    if (undoManager.canUndo()) {
       undoManager.undo();
     }
-	}
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void propertyChange(PropertyChangeEvent p1) {
-		boolean enabled = (Boolean) p1.getNewValue();
+  /**
+   * DOCUMENT-ME
+   */
+  public void propertyChange(PropertyChangeEvent p1) {
+    boolean enabled = (Boolean) p1.getNewValue();
 
-		if(enabled) {
-			putValue(Action.NAME, name + ": " + undoManager.getUndoPresentationName());
-		} else {
-			putValue(Action.NAME, name);
-		}
-		setEnabled(enabled);
+    if (enabled) {
+      putValue(Action.NAME, name + ": " + undoManager.getUndoPresentationName());
+    } else {
+      putValue(Action.NAME, name);
+    }
+    setEnabled(enabled);
 
-	}
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.undoaction.accelerator",false);
+    return Resources.get("actions.undoaction.accelerator", false);
   }
 
   /**
@@ -105,7 +96,7 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.undoaction.mnemonic",false);
+    return Resources.get("actions.undoaction.mnemonic", false);
   }
 
   /**
@@ -118,6 +109,6 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.undoaction.tooltip",false);
+    return Resources.get("actions.undoaction.tooltip", false);
   }
 }

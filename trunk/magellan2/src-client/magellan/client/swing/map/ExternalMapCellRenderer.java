@@ -18,15 +18,13 @@ import java.util.ResourceBundle;
 /**
  * An interface for plug-in renderers. It allows to connect a properties object directly (not
  * through normal getString()).
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface ExternalMapCellRenderer extends MapCellRenderer {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setResourceBundle(ResourceBundle rb);
+  /**
+   * DOCUMENT-ME
+   */
+  public void setResourceBundle(ResourceBundle rb);
 }

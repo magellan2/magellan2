@@ -98,9 +98,10 @@ public class RegionTypeSwitch extends AbstractRegionSwitch {
   public String getDescription() {
     Object arg[] = new Object[1];
     if (type != null) {
-      arg[0]=type.getName();
-    } else
-      arg[0]=id.toString();
+      arg[0] = type.getName();
+    } else {
+      arg[0] = id.toString();
+    }
 
     return Resources.get("util.replacers.regiontypereplacer.description", arg);
   }

@@ -24,71 +24,77 @@ import magellan.library.rules.GenericRules;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public class RulesReader {
-	private static final Logger log = Logger.getInstance(RulesReader.class);
+  private static final Logger log = Logger.getInstance(RulesReader.class);
 
-	/**
-	 * Creates a new RulesReader object.
-	 */
-	public RulesReader() {
-	}
+  /**
+   * Creates a new RulesReader object.
+   */
+  public RulesReader() {
+  }
 
-	/**
-	 * Reads the rules of the given gamedata. Right now it first tries to read it from an xml. If
-	 * this fails it  possibly reads the cr
-	 * 
+  /**
+   * Reads the rules of the given gamedata. Right now it first tries to read it from an xml. If this
+   * fails it possibly reads the cr
+   * 
    * @throws IOException If an I/O error occurs
-	 */
-	public Rules readRules(String name) throws IOException {
-		try {
-			return loadRules(name);
-		} catch(IOException e) {
-			/* The desired rule file doesn't exist. Fallback to default, if
-			   we haven't tried that yet. */
-			if(name.equalsIgnoreCase("eressea")) {
-				/* This is bad. We don't even have the default rules. */
-				RulesReader.log.warn("The default ruleset couldn't be found! Operating with an empty ruleset.",e);
+   */
+  public Rules readRules(String name) throws IOException {
+    try {
+      return loadRules(name);
+    } catch (IOException e) {
+      /*
+       * The desired rule file doesn't exist. Fallback to default, if we haven't tried that yet.
+       */
+      if (name.equalsIgnoreCase("eressea")) {
+        /* This is bad. We don't even have the default rules. */
+        RulesReader.log.warn(
+            "The default ruleset couldn't be found! Operating with an empty ruleset.", e);
 
-				return new GenericRules();
-			} else {
-				return readRules("eressea");
-			}
-		}
-	}
+        return new GenericRules();
+      } else
+        return readRules("eressea");
+    }
+  }
 
-	/**
-	 * Looks for the ruleset in etc/rules and reads it.
-	 *
+  /**
+   * Looks for the ruleset in etc/rules and reads it.
+   * 
    * @throws IOException If an I/O error occurs
-	 */
-	private Rules loadRules(String name) throws IOException {
-		String ending = new File("XML").exists() ? ".xml" : ".cr";
-		
-    if (name != null) name = name.toLowerCase();
-    if (ending != null) ending = ending.toLowerCase();
-		
+   */
+  private Rules loadRules(String name) throws IOException {
+    String ending = new File("XML").exists() ? ".xml" : ".cr";
+
+    if (name != null) {
+      name = name.toLowerCase();
+    }
+    if (ending != null) {
+      ending = ending.toLowerCase();
+    }
+
     RulesReader.log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
-    
-    File rules = new File(PropertiesHelper.getSettingsDirectory(),"etc/rules/" + name + ending);
+
+    File rules = new File(PropertiesHelper.getSettingsDirectory(), "etc/rules/" + name + ending);
     // workaround for working with eclipse...
     if (!rules.exists()) {
-      log.error("Rule file '"+rules.getAbsolutePath()+"' could not be found. Switching to local.");
+      RulesReader.log.error("Rule file '" + rules.getAbsolutePath()
+          + "' could not be found. Switching to local.");
       rules = new File("etc/rules/" + name + ending);
-      
+
       if (!rules.exists()) {
-        log.error("Cannot find rule files in '"+rules.getAbsolutePath()+"'...that might be a problem...");
+        RulesReader.log.error("Cannot find rule files in '" + rules.getAbsolutePath()
+            + "'...that might be a problem...");
       }
     }
 
-		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(rules);
+    FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(rules);
 
-		return new CRParser(null).readRules(filetype);
-	}
+    return new CRParser(null).readRules(filetype);
+  }
 }

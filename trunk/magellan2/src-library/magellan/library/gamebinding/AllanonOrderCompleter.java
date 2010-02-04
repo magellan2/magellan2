@@ -40,7 +40,6 @@ import magellan.library.rules.SkillType;
 import magellan.library.utils.Resources;
 
 /**
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
@@ -48,69 +47,68 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
   /**
    * Creates a new <tt>AllanonOrderCompleter</tt> taking context information from the specified
    * <tt>GameData</tt> object.
-   *
+   * 
    * @param gd The <tt>GameData</tt> this completer uses as context.
    */
   public AllanonOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
-    super(gd,ac);
+    super(gd, ac);
   }
-
 
   /**
    * Returns the learn cost for a specific skill.
-   *
+   * 
    * @param skillType the skill to be learned
    * @param unit the Unit
-   *
-   * @return the cost to learn a skill for the given unit. If the unit has no persons the cost
-   *       for one person is returned.
+   * @return the cost to learn a skill for the given unit. If the unit has no persons the cost for
+   *         one person is returned.
    */
   @Override
   public int getSkillCost(SkillType skillType, Unit unit) {
     int cost = 0;
 
-    if(skillType.getID().equals(AllanonConstants.S_TAKTIK) ||
-         skillType.getID().equals(AllanonConstants.S_KRAEUTERKUNDE) ||
-         skillType.getID().equals(AllanonConstants.S_ALCHIMIE) ||
-         skillType.getID().equals(AllanonConstants.S_MEUCHELN) ||
-         skillType.getID().equals(AllanonConstants.S_MECHANIK)) {
+    if (skillType.getID().equals(EresseaConstants.S_TAKTIK)
+        || skillType.getID().equals(EresseaConstants.S_KRAEUTERKUNDE)
+        || skillType.getID().equals(AllanonConstants.S_ALCHIMIE)
+        || skillType.getID().equals(AllanonConstants.S_MEUCHELN)
+        || skillType.getID().equals(AllanonConstants.S_MECHANIK)) {
       int level = 0;
       Skill skill = (unit != null) ? unit.getSkill(skillType) : null;
 
-      if(skill != null && unit!=null) {
-        if(skill.noSkillPoints()) {
+      if (skill != null && unit != null) {
+        if (skill.noSkillPoints()) {
           level = skill.getLevel() - skill.getModifier(unit);
         } else {
           int days = unit.getSkill(skillType).getPointsPerPerson();
           level = (int) Math.floor(Math.sqrt((days / 15.0) + 0.25) - 0.5);
         }
       }
-      
+
       int nextLevel = level + 1;
-      cost = nextLevel*50;
-      
-    } else if(skillType.getID().equals(AllanonConstants.S_MAGIE)) {
+      cost = nextLevel * 50;
+
+    } else if (skillType.getID().equals(EresseaConstants.S_MAGIE)) {
       // get magic level without modifier
       int level = 0;
       Skill skill = (unit != null) ? unit.getSkill(skillType) : null;
 
-      if(skill != null) {
-        if(skill.noSkillPoints()) {
+      if (skill != null) {
+        if (skill.noSkillPoints()) {
           level = skill.getLevel() - skill.getModifier(unit);
         } else {
           int days = unit.getSkill(skillType).getPointsPerPerson();
           level = (int) Math.floor(Math.sqrt((days / 15.0) + 0.25) - 0.5);
         }
       }
-      
+
       int nextLevel = level + 1;
-      cost = (nextLevel*nextLevel) *50;
+      cost = (nextLevel * nextLevel) * 50;
     }
 
-    if(unit != null) {
-      if((unit.getModifiedBuilding() != null) &&
-         unit.getModifiedBuilding().getType().equals(getData().rules.getBuildingType(EresseaConstants.B_ACADEMY))) {
-        if(cost == 0) {
+    if (unit != null) {
+      if ((unit.getModifiedBuilding() != null)
+          && unit.getModifiedBuilding().getType().equals(
+              getData().rules.getBuildingType(EresseaConstants.B_ACADEMY))) {
+        if (cost == 0) {
           cost = 100;
         } else {
           cost *= 2;
@@ -124,18 +122,19 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
   }
 
   /**
-   * 
    * @see magellan.library.gamebinding.EresseaOrderCompleter#cmplt()
    */
   @Override
   protected void cmplt() {
     super.cmplt();
-    getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_ANWERBEN)));
-    getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_BEANSPRUCHE)," "));
-    getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_MEUCHELN)," "));
+    getCompletions()
+        .add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_ANWERBEN)));
+    getCompletions().add(
+        new Completion(Resources.getOrderTranslation(AllanonConstants.O_BEANSPRUCHE), " "));
+    getCompletions().add(
+        new Completion(Resources.getOrderTranslation(AllanonConstants.O_MEUCHELN), " "));
   }
-  
-  
+
   /**
    * @see magellan.library.gamebinding.EresseaOrderCompleter#cmpltBetrete()
    */
@@ -143,20 +142,28 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
   public void cmpltBetrete() {
     Iterator<Building> iter1 = getRegion().buildings().iterator();
 
-    if(iter1.hasNext()) {
-      getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_CASTLE)," ", 7));
+    if (iter1.hasNext()) {
+      getCompletions().add(
+          new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " ", 7));
     }
 
-    for(; iter1.hasNext();) {
+    for (; iter1.hasNext();) {
       UnitContainer uc = iter1.next();
 
-      if(!uc.equals(getUnit().getBuilding())) {
-        getCompletions().add(new Completion(uc.getName() + " (" + uc.getID() + ")", Resources.getOrderTranslation(AllanonConstants.O_CASTLE) + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY-1));
-        getCompletions().add(new Completion(uc.getID() + " (" + uc.getName() + ")", Resources.getOrderTranslation(AllanonConstants.O_CASTLE) + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
+      if (!uc.equals(getUnit().getBuilding())) {
+        getCompletions().add(
+            new Completion(uc.getName() + " (" + uc.getID() + ")", Resources
+                .getOrderTranslation(EresseaConstants.O_CASTLE)
+                + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
+        getCompletions().add(
+            new Completion(uc.getID() + " (" + uc.getName() + ")", Resources
+                .getOrderTranslation(EresseaConstants.O_CASTLE)
+                + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
       }
     }
-    
-    // Allanon is a little bit problematic with "Karawane" because it is marked as SHIP but of type "Karawane",
+
+    // Allanon is a little bit problematic with "Karawane" because it is marked as SHIP but of type
+    // "Karawane",
     // so we have to take care about the ship type
 
     Collection<Ship> iter2 = getRegion().ships();
@@ -169,31 +176,44 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
         ships.add(ship);
       }
     }
-    
-    if (caravans.size() > 0) {
-      getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE), " ", 7));
 
-      for(UnitContainer uc : caravans) {
-        if(!uc.equals(getUnit().getShip())) {
-          getCompletions().add(new Completion(uc.getName() + " (" + uc.getID() + ")", Resources.getOrderTranslation(AllanonConstants.O_KARAWANE) + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY-1));
-          getCompletions().add(new Completion(uc.getID() + " (" + uc.getName() + ")", Resources.getOrderTranslation(AllanonConstants.O_KARAWANE) + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
+    if (caravans.size() > 0) {
+      getCompletions().add(
+          new Completion(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE), " ", 7));
+
+      for (UnitContainer uc : caravans) {
+        if (!uc.equals(getUnit().getShip())) {
+          getCompletions().add(
+              new Completion(uc.getName() + " (" + uc.getID() + ")", Resources
+                  .getOrderTranslation(AllanonConstants.O_KARAWANE)
+                  + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
+          getCompletions().add(
+              new Completion(uc.getID() + " (" + uc.getName() + ")", Resources
+                  .getOrderTranslation(AllanonConstants.O_KARAWANE)
+                  + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
         }
       }
     }
-    
-    
-    if (ships.size() > 0) {
-      getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_SHIP), " ", 7));
 
-      for(UnitContainer uc : ships) {
-        if(!uc.equals(getUnit().getShip())) {
-          getCompletions().add(new Completion(uc.getName() + " (" + uc.getID() + ")", Resources.getOrderTranslation(AllanonConstants.O_SHIP) + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY-1));
-          getCompletions().add(new Completion(uc.getID() + " (" + uc.getName() + ")", Resources.getOrderTranslation(AllanonConstants.O_SHIP) + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
+    if (ships.size() > 0) {
+      getCompletions().add(
+          new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " ", 7));
+
+      for (UnitContainer uc : ships) {
+        if (!uc.equals(getUnit().getShip())) {
+          getCompletions().add(
+              new Completion(uc.getName() + " (" + uc.getID() + ")", Resources
+                  .getOrderTranslation(EresseaConstants.O_SHIP)
+                  + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
+          getCompletions().add(
+              new Completion(uc.getID() + " (" + uc.getName() + ")", Resources
+                  .getOrderTranslation(EresseaConstants.O_SHIP)
+                  + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
         }
       }
     }
   }
-  
+
   /**
    * @see magellan.library.gamebinding.EresseaOrderCompleter#cmpltBenenne()
    */
@@ -201,19 +221,28 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
   public void cmpltBenenne() {
     super.cmpltBenenne();
     // use old owner unit (BENENNE before GIB)
-    if((getUnit().getShip() != null) && (getUnit().getShip().getType().getID().equals(AllanonConstants.ST_KARAWANE)) && (getUnit().getShip().getOwnerUnit() != null) && getUnit().getShip().getOwnerUnit().equals(getUnit())) {
-      getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE),Resources.getOrderTranslation(AllanonConstants.O_KARAWANE)," \"\"", Completion.DEFAULT_PRIORITY, 1));
+    if ((getUnit().getShip() != null)
+        && (getUnit().getShip().getType().getID().equals(AllanonConstants.ST_KARAWANE))
+        && (getUnit().getShip().getOwnerUnit() != null)
+        && getUnit().getShip().getOwnerUnit().equals(getUnit())) {
+      getCompletions().add(
+          new Completion(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE), Resources
+              .getOrderTranslation(AllanonConstants.O_KARAWANE), " \"\"",
+              Completion.DEFAULT_PRIORITY, 1));
     }
   }
-  
+
   /**
    * @see magellan.library.gamebinding.EresseaOrderCompleter#cmpltBeanspruche()
    */
   @Override
-  public void cmpltBeanspruche(){
-    getCompletions().add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
-    getCompletions().add(new Completion(getData().rules.getItemType(EresseaConstants.I_USILVER).getOrderName()));
+  public void cmpltBeanspruche() {
+    getCompletions()
+        .add(
+            new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1",
+                " "));
+    getCompletions().add(
+        new Completion(getData().rules.getItemType(EresseaConstants.I_USILVER).getOrderName()));
   }
-
 
 }

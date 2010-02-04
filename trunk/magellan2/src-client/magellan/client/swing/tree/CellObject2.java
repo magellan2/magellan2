@@ -17,16 +17,16 @@ import java.util.List;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public interface CellObject2 extends CellObject {
 
   /**
-	 * @return
-	 */
-	List<GraphicsElement> getGraphicsElements();
+   * @return
+   */
+  List<GraphicsElement> getGraphicsElements();
 
-	boolean reverseOrder();
+  boolean reverseOrder();
 }

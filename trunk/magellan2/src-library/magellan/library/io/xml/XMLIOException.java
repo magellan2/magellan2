@@ -21,67 +21,59 @@ import java.io.PrintWriter;
  * This class encapsulates some occuring exceptions as IOException.
  */
 public class XMLIOException extends IOException {
-	private Exception exception;
-	private static final String EXCEPTION_SEPARATOR = "______________ORIGINAL EXCEPTION____________";
+  private Exception exception;
+  private static final String EXCEPTION_SEPARATOR = "______________ORIGINAL EXCEPTION____________";
 
-	/**
-	 * Creates a new XMLIOException object.
-	 *
-	 * 
-	 */
-	public XMLIOException(String aMessage) {
-		super(aMessage);
-	}
+  /**
+   * Creates a new XMLIOException object.
+   */
+  public XMLIOException(String aMessage) {
+    super(aMessage);
+  }
 
-	/**
-	 * Creates a new XMLIOException object.
-	 *
-	 * 
-	 */
-	public XMLIOException(Exception exception) {
-		super(exception.getMessage());
-		this.exception = exception;
-	}
+  /**
+   * Creates a new XMLIOException object.
+   */
+  public XMLIOException(Exception exception) {
+    super(exception.getMessage());
+    this.exception = exception;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void printStackTrace() {
-		printStackTrace(System.err);
-	}
+    printStackTrace(System.err);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void printStackTrace(PrintStream aTarget) {
-		synchronized(aTarget) {
-			super.printStackTrace(aTarget);
+    synchronized (aTarget) {
+      super.printStackTrace(aTarget);
 
-			if(exception != null) {
-				aTarget.println(XMLIOException.EXCEPTION_SEPARATOR);
-				exception.printStackTrace(aTarget);
-			}
-		}
-	}
+      if (exception != null) {
+        aTarget.println(XMLIOException.EXCEPTION_SEPARATOR);
+        exception.printStackTrace(aTarget);
+      }
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void printStackTrace(PrintWriter aTarget) {
-		synchronized(aTarget) {
-			super.printStackTrace(aTarget);
+    synchronized (aTarget) {
+      super.printStackTrace(aTarget);
 
-			if(exception != null) {
-				aTarget.println(XMLIOException.EXCEPTION_SEPARATOR);
-				exception.printStackTrace(aTarget);
-			}
-		}
-	}
+      if (exception != null) {
+        aTarget.println(XMLIOException.EXCEPTION_SEPARATOR);
+        exception.printStackTrace(aTarget);
+      }
+    }
+  }
 }

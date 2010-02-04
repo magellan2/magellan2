@@ -22,121 +22,110 @@ import magellan.library.utils.Resources;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
- * @version 1.0rn */
+ * @version 1.0rn
+ */
 public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
-	protected Object criterion;
-	protected Object branches[] = new Object[2];
+  protected Object criterion;
+  protected Object branches[] = new Object[2];
 
-	/**
-	 * Returns "else" for the first branch, "end" for the next branch.
-	 * 
-	 * @see magellan.library.utils.replacers.BranchReplacer#getBranchSign(int)
-	 */
-	public String getBranchSign(int index) {
-		if(index == 1) {
-			return Replacer.NEXT_BRANCH;
-		}
+  /**
+   * Returns "else" for the first branch, "end" for the next branch.
+   * 
+   * @see magellan.library.utils.replacers.BranchReplacer#getBranchSign(int)
+   */
+  public String getBranchSign(int index) {
+    if (index == 1)
+      return Replacer.NEXT_BRANCH;
 
-		return Replacer.END;
-	}
+    return Replacer.END;
+  }
 
-	/**
-	 * @see magellan.library.utils.replacers.BranchReplacer#setBranch(int, java.lang.Object)
-	 */
-	public void setBranch(int index, Object obj) {
-		branches[index] = obj;
-	}
+  /**
+   * @see magellan.library.utils.replacers.BranchReplacer#setBranch(int, java.lang.Object)
+   */
+  public void setBranch(int index, Object obj) {
+    branches[index] = obj;
+  }
 
-	/**
-	 * Returns 2.
-	 * 
-	 * @see magellan.library.utils.replacers.BranchReplacer#getBranchCount()
-	 */
-	public int getBranchCount() {
-		return 2;
-	}
+  /**
+   * Returns 2.
+   * 
+   * @see magellan.library.utils.replacers.BranchReplacer#getBranchCount()
+   */
+  public int getBranchCount() {
+    return 2;
+  }
 
-	/**
-	 * Replaces by the first branch if the predicate is true, else by the second branch.
-	 * 
-	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
-	 */
-	public Object getReplacement(Object o) {
-		if(criterion != null) {
-			String ret = null;
+  /**
+   * Replaces by the first branch if the predicate is true, else by the second branch.
+   * 
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
+   */
+  public Object getReplacement(Object o) {
+    if (criterion != null) {
+      String ret = null;
 
-			if(criterion instanceof Replacer) {
-				try {
-					ret = ((Replacer) criterion).getReplacement(o).toString();
-				} catch(Exception exc) {
-					return null;
-				}
-			} else {
-				ret = criterion.toString();
-			}
+      if (criterion instanceof Replacer) {
+        try {
+          ret = ((Replacer) criterion).getReplacement(o).toString();
+        } catch (Exception exc) {
+          return null;
+        }
+      } else {
+        ret = criterion.toString();
+      }
 
-			int index = 1;
+      int index = 1;
 
-			if(ret.equals(Replacer.TRUE)) {
-				index = 0;
-			}
+      if (ret.equals(Replacer.TRUE)) {
+        index = 0;
+      }
 
-			if(branches[index] == null) {
-				return Replacer.EMPTY;
-			}
+      if (branches[index] == null)
+        return Replacer.EMPTY;
 
-			if(branches[index] instanceof Replacer) {
-				return ((Replacer) branches[index]).getReplacement(o);
-			}
+      if (branches[index] instanceof Replacer)
+        return ((Replacer) branches[index]).getReplacement(o);
 
-			return branches[index];
-		}
+      return branches[index];
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getDescription() {
+  /**
+   * DOCUMENT-ME
+   */
+  public String getDescription() {
     return Resources.get("util.replacers.ifbranch.description");
-	}
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getParameterCount() {
-		return 1;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int getParameterCount() {
+    return 1;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 */
-	public void setParameter(int index, Object obj) {
-		criterion = obj;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setParameter(int index, Object obj) {
+    criterion = obj;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String toString() {
-		try {
-			return "if " + criterion + " then " + branches[0] + " else " + branches[1];
-		} catch(Exception exc) {
-		}
+    try {
+      return "if " + criterion + " then " + branches[0] + " else " + branches[1];
+    } catch (Exception exc) {
+    }
 
-		return "IfReplacer";
-	}
+    return "IfReplacer";
+  }
 }

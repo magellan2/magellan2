@@ -15,10 +15,8 @@ package magellan.library;
 
 import java.util.Collection;
 
-
 /**
- * Container class for a potion based on its representation in a cr version >=
- * 42.
+ * Container class for a potion based on its representation in a cr version >= 42.
  */
 public interface Potion extends Described {
   /**
@@ -32,8 +30,7 @@ public interface Potion extends Described {
   public int getLevel();
 
   /**
-   * Returns the ingredients required for this potion. The elements are
-   * instances of class Item.
+   * Returns the ingredients required for this potion. The elements are instances of class Item.
    */
   public Collection<Item> ingredients();
 
@@ -45,16 +42,14 @@ public interface Potion extends Described {
   public Item getIngredient(ID key);
 
   /**
-   * Puts a new element into the list of ingredients required to brew this
-   * potion.
+   * Puts a new element into the list of ingredients required to brew this potion.
    */
   public Item addIngredient(Item i);
 
   /**
    * Removes an item from the list of ingredients required to brew this potion.
    * 
-   * @param key
-   *          the id of the item's item type to be removed.
+   * @param key the id of the item's item type to be removed.
    */
   public Item removeIngredient(ID key);
 

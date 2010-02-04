@@ -18,42 +18,37 @@ import magellan.client.actions.MenuAction;
 import magellan.client.swing.MapperPanel;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class TileSetAction extends MenuAction {
-	private MapperPanel map;
+  private MapperPanel map;
 
-	/**
-	 * Creates a new TileSetAction object.
-	 *
-	 * 
-	 */
-	public TileSetAction(Client client, MapperPanel m) {
-        super(client);
-		map = m;
-	}
+  /**
+   * Creates a new TileSetAction object.
+   */
+  public TileSetAction(Client client, MapperPanel m) {
+    super(client);
+    map = m;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(java.awt.event.ActionEvent e) {
-		map.reloadGraphicSet();
-	}
+    map.reloadGraphicSet();
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.tilesetaction.accelerator",false);
+    return Resources.get("actions.tilesetaction.accelerator", false);
   }
 
   /**
@@ -61,7 +56,7 @@ public class TileSetAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.tilesetaction.mnemonic",false);
+    return Resources.get("actions.tilesetaction.mnemonic", false);
   }
 
   /**
@@ -72,9 +67,8 @@ public class TileSetAction extends MenuAction {
     return Resources.get("actions.tilesetaction.name");
   }
 
-
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.tilesetaction.tooltip",false);
+    return Resources.get("actions.tilesetaction.tooltip", false);
   }
 }

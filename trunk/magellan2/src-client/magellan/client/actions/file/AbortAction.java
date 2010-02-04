@@ -17,40 +17,37 @@ import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public class AbortAction extends MenuAction {
 
-	/**
-	 * Creates a new AbortAction object.
-	 *
-	 * @param client 
-	 */
-	public AbortAction(Client client) {
-        super(client);
-	}
+  /**
+   * Creates a new AbortAction object.
+   * 
+   * @param client
+   */
+  public AbortAction(Client client) {
+    super(client);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(java.awt.event.ActionEvent e) {
-		client.quit(false);
-	}
+    client.quit(false);
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.abortaction.accelerator",false);
+    return Resources.get("actions.abortaction.accelerator", false);
   }
 
   /**
@@ -58,7 +55,7 @@ public class AbortAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.abortaction.mnemonic",false);
+    return Resources.get("actions.abortaction.mnemonic", false);
   }
 
   /**
@@ -71,7 +68,7 @@ public class AbortAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.abortaction.tooltip",false);
+    return Resources.get("actions.abortaction.tooltip", false);
   }
 
 }

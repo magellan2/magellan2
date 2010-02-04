@@ -17,19 +17,17 @@ import magellan.library.StringID;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 203 $
  */
 public abstract class UnitContainerType extends ObjectType {
-	/**
-	 * Creates a new UnitContainerType object.
-	 *
-	 * 
-	 */
-	public UnitContainerType(StringID id) {
-		super(id);
-	}
+  /**
+   * Creates a new UnitContainerType object.
+   */
+  public UnitContainerType(StringID id) {
+    super(id);
+  }
 
   /**
    * Returns the id uniquely identifying this object.

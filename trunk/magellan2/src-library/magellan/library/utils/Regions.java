@@ -60,12 +60,11 @@ public class Regions {
   @Deprecated
   public static Map<CoordinateID, Region> getAllNeighbours(Map<CoordinateID, Region> regions,
       ID center, int radius, Map<ID, RegionType> excludedRegionTypes) {
-    if (center instanceof CoordinateID) {
+    if (center instanceof CoordinateID)
       return Regions.getAllNeighbours(regions, (CoordinateID) center, radius, excludedRegionTypes);
-    } else {
+    else
       throw new IllegalArgumentException(
           "center is not an eressea coordinate. Support for e2 incomplete!");
-    }
   }
 
   /**
@@ -122,7 +121,9 @@ public class Regions {
    * Find a way from one region to another region and get the directions in which to move to follow
    * a sequence of regions. This is virtually the same as
    * 
-   * <pre>getDirections(getPath(regions, start, dest, excludedRegionTypes, radius));</pre>
+   * <pre>
+   * getDirections(getPath(regions, start, dest, excludedRegionTypes, radius));
+   * </pre>
    * 
    * @return a String telling the direction statements necessary to follow the sequence of regions
    *         contained in regions.
@@ -141,15 +142,13 @@ public class Regions {
    *         contained in regions.
    */
   public static String getDirections(Collection<Region> regions) {
-    if (regions == null) {
+    if (regions == null)
       return null;
-    }
 
     List<Direction> directions = Regions.getDirectionObjectsOfRegions(regions);
 
-    if (directions == null) {
+    if (directions == null)
       return null;
-    }
 
     StringBuffer dir = new StringBuffer();
 
@@ -168,9 +167,8 @@ public class Regions {
    * DOCUMENT-ME
    */
   public static List<Direction> getDirectionObjectsOfRegions(Collection<Region> regions) {
-    if (regions == null) {
+    if (regions == null)
       return null;
-    }
 
     List<CoordinateID> coordinates = new ArrayList<CoordinateID>(regions.size());
 
@@ -186,9 +184,8 @@ public class Regions {
    */
   public static List<Direction> getDirectionObjectsOfCoordinates(
       Collection<CoordinateID> coordinates) {
-    if (coordinates == null) {
+    if (coordinates == null)
       return null;
-    }
 
     List<Direction> directions = new ArrayList<Direction>(coordinates.size());
 
@@ -330,9 +327,8 @@ public class Regions {
    */
   public static void getDistances(Map<CoordinateID, Region> regions, CoordinateID start,
       CoordinateID dest, int maxDist, Metric metric) {
-    if (!regions.containsKey(start) || (dest != null && !regions.containsKey(dest))) {
+    if (!regions.containsKey(start) || (dest != null && !regions.containsKey(dest)))
       throw new IllegalArgumentException();
-    }
 
     // this method applies Dijkstra's algorithm
 
@@ -386,9 +382,8 @@ public class Regions {
     while (currentID != null && !currentID.equals(start)) {
       path.addFirst(regions.get(currentID));
       currentID = records.get(currentID).getPredecessor();
-      if (currentID == null) {
+      if (currentID == null)
         return null;
-      }
     }
     path.addFirst(regions.get(currentID));
 
@@ -411,16 +406,15 @@ public class Regions {
     CoordinateID currentID = outerMetric.get(dest).getID();
     while (currentID != start && currentID != null) {
       CoordinateID currentStart = outerMetric.get(currentID).getPredecessor();
-      if (currentStart == null) {
+      if (currentStart == null)
         return null;
-      }
 
       RoadMetric innerMetric;
-      getDistances(regions, currentStart, currentID, Integer.MAX_VALUE, innerMetric =
+      Regions.getDistances(regions, currentStart, currentID, Integer.MAX_VALUE, innerMetric =
           new RoadMetric(regions, excludedRegionTypes, currentStart, currentID, radius,
               streetRadius));
       List<Region> interPath =
-          getPath(regions, currentStart, currentID, innerMetric.getDistances());
+          Regions.getPath(regions, currentStart, currentID, innerMetric.getDistances());
       interPath.remove(0);
 
       path.addAll(0, interPath);
@@ -446,9 +440,9 @@ public class Regions {
     protected int pot;
 
     public MultidimensionalDistance(int d, int p, int r, int pot) {
-      this.dist = d;
-      this.plus = p;
-      this.realDist = r;
+      dist = d;
+      plus = p;
+      realDist = r;
       this.pot = pot;
     }
 
@@ -465,18 +459,14 @@ public class Regions {
      * second, and the real distance third.
      */
     public int compareTo(int newdist, int newplus, int newrealDist, int newpot) {
-      if (dist + pot > newdist + newpot) {
+      if (dist + pot > newdist + newpot)
         return 1;
-      }
-      if (dist + pot < newdist + newpot) {
+      if (dist + pot < newdist + newpot)
         return -1;
-      }
-      if (realDist - plus > newrealDist - newplus) {
+      if (realDist - plus > newrealDist - newplus)
         return 1;
-      }
-      if (realDist - plus < newrealDist - newplus) {
+      if (realDist - plus < newrealDist - newplus)
         return -1;
-      }
       return realDist - newrealDist;
     }
 
@@ -513,10 +503,10 @@ public class Regions {
      * Sets this distance to zero
      */
     public void setZero() {
-      this.dist = 0;
-      this.plus = 0;
-      this.realDist = 0;
-      this.pot = 0;
+      dist = 0;
+      plus = 0;
+      realDist = 0;
+      pot = 0;
     }
 
     void set(int dist2, int plus2, int realDist2, int pot2) {
@@ -561,9 +551,9 @@ public class Regions {
     }
 
     protected MultiDimensionalInfo(Region region, int d, int p, int r, int pot) {
-      this.dist = new MultidimensionalDistance(d, p, r, pot);
+      dist = new MultidimensionalDistance(d, p, r, pot);
       this.region = region;
-      instanceCount++;
+      MultiDimensionalInfo.instanceCount++;
     }
 
     protected MultiDimensionalInfo(Region region) {
@@ -621,7 +611,7 @@ public class Regions {
      * @see magellan.library.utils.Regions.RegionInfo#setInfinity()
      */
     public void setInfinity() {
-      this.dist.setInfinity();
+      dist.setInfinity();
     }
 
     /**
@@ -663,7 +653,7 @@ public class Regions {
      * @see magellan.library.utils.Regions.RegionInfo#setPredecessor(magellan.library.CoordinateID)
      */
     public void setPredecessor(CoordinateID pred) {
-      this.pre = pred;
+      pre = pred;
     }
 
     /**
@@ -713,9 +703,9 @@ public class Regions {
       final int speed) {
 
     Metric metric;
-    getDistances(regions, start, dest, Integer.MAX_VALUE, metric =
+    Regions.getDistances(regions, start, dest, Integer.MAX_VALUE, metric =
         new ShipMetric(regions, start, dest, excludedRegionTypes, harbourTypes, speed));
-    return getPath(regions, start, dest, metric.getDistances());
+    return Regions.getPath(regions, start, dest, metric.getDistances());
   }
 
   /**
@@ -791,17 +781,16 @@ public class Regions {
      */
     public boolean checkDistArguments(Region r1, Region r2, RegionInfo<?> d1, RegionInfo<?> d2) {
       if (r1 == null || r2 == null) {
-        log.error("found invalid region");
+        Regions.log.error("found invalid region");
         return true;
       }
-      if (d1.isInfinity()) {
+      if (d1.isInfinity())
         return true;
-      }
       if (excludedRegionTypes.containsKey(r1.getType().getID())
-          || excludedRegionTypes.containsKey(r2.getType().getID())) {
+          || excludedRegionTypes.containsKey(r2.getType().getID()))
         return true;
-      } else if (r1 == r2) {
-        log.warn("invalid path");
+      else if (r1 == r2) {
+        Regions.log.warn("invalid path");
         return true;
       }
 
@@ -820,9 +809,8 @@ public class Regions {
     public boolean relax(RegionInfo<?> current, RegionInfo<?> next) {
       Region r1 = current.getRegion();
       Region r2 = next.getRegion();
-      if (checkDistArguments(r1, r2, current, next)) {
+      if (checkDistArguments(r1, r2, current, next))
         return false;
-      }
 
       MultiDimensionalInfo current2 = (MultiDimensionalInfo) current;
       MultiDimensionalInfo next2 = (MultiDimensionalInfo) next;
@@ -831,9 +819,8 @@ public class Regions {
 
       newValues[3] = getPotential(r1, r2);
 
-      if (!getNewValue(r1, r2, current2, next2, newValues)) {
+      if (!getNewValue(r1, r2, current2, next2, newValues))
         return false;
-      }
 
       // if d(next)=\infty OR d(current)+d(current,next) < d(next)
       // decrease key
@@ -851,9 +838,8 @@ public class Regions {
      * speed-up search.
      */
     protected int getPotential(Region r1, Region r2) {
-      if (dest == null) {
+      if (dest == null)
         return 0;
-      }
       // add potential for goal-directed search:
       int xdiff1 = Math.abs(r1.getID().x - dest.x);
       int ydiff1 = Math.abs(r1.getID().y - dest.y);
@@ -884,7 +870,7 @@ public class Regions {
     public ShipMetric(Map<CoordinateID, Region> regions, CoordinateID start, CoordinateID dest,
         Map<ID, RegionType> excludedRegionTypes, Set<BuildingType> harbourTypes, int speed) {
       super(regions, excludedRegionTypes, start, dest);
-      this.harbourType = harbourTypes;
+      harbourType = harbourTypes;
       this.speed = speed;
     }
 
@@ -912,19 +898,18 @@ public class Regions {
             newRealDist = 1;
           }
         } else {
-          if (containsHarbour(r2, harbourType) || r2.getID().equals(dest)) {
+          if (Regions.containsHarbour(r2, harbourType) || r2.getID().equals(dest)) {
             // movement ends in land regions, so round up to next multiple of speed
             newDist = speed - current.dist.dist % speed;
             newPlus = 1;
             newRealDist = 1;
-          } else {
+          } else
             return false;
-          }
         }
       } else {
         if (!r2.getRegionType().isOcean()) {
           // this should not happen
-          log.warn("ship route to neighboring land region");
+          Regions.log.warn("ship route to neighboring land region");
           return false;
         }
         newDist = 1;
@@ -979,9 +964,10 @@ public class Regions {
       final int streetRadius) {
 
     Metric metric;
-    getDistances(data.regions(), start, dest, Integer.MAX_VALUE, metric =
+    Regions.getDistances(data.regions(), start, dest, Integer.MAX_VALUE, metric =
         new LandMetric(data.regions(), excludedRegionTypes, start, dest, radius, streetRadius));
-    return getPath2(data.regions(), start, dest, excludedRegionTypes, metric, radius, streetRadius);
+    return Regions.getPath2(data.regions(), start, dest, excludedRegionTypes, metric, radius,
+        streetRadius);
   }
 
   /**
@@ -1337,9 +1323,8 @@ public class Regions {
 
   public static boolean containsHarbour(Region r, Collection<BuildingType> harbours) {
     for (BuildingType harbourType : harbours) {
-      if (containsBuilding(r, harbourType)) {
+      if (Regions.containsBuilding(r, harbourType))
         return true;
-      }
     }
     return false;
   }
@@ -1364,8 +1349,8 @@ public class Regions {
   }
 
   public static List<Region> planShipRoute(Ship ship, GameData data, CoordinateID destination) {
-    return planShipRoute(data, ship.getRegion().getCoordinate(), ship.getShoreId(), destination,
-        data.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship));
+    return Regions.planShipRoute(data, ship.getRegion().getCoordinate(), ship.getShoreId(),
+        destination, data.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship));
   }
 
   /**
@@ -1381,10 +1366,9 @@ public class Regions {
     BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
 
     if (destination == null || data.regions().get(destination) == null || start == null
-        || data.regions().get(start) == null) {
+        || data.regions().get(start) == null)
       // no path
       return null;
-    }
     Region destRegion = data.regions().get(destination);
     Region startRegion = data.regions().get(start);
 
@@ -1448,9 +1432,8 @@ public class Regions {
    */
   private static double getDistance(Region r1, Region r2, boolean useExtendedVersion) {
     double erg = 1;
-    if (!useExtendedVersion) {
+    if (!useExtendedVersion)
       return Regions.getDistance(r1, r2);
-    }
     // Fiete 20061123
     // for Ships...prefer Regions near coasts
     // for land units...prfer Regions with roads
@@ -1459,21 +1442,19 @@ public class Regions {
 
     // if we have 2 Ozean regions...
     if (r1.getRegionType().isOcean() && r2.getRegionType().isOcean()) {
-      if (r2.getOceanWithCoast() == 1) {
+      if (r2.getOceanWithCoast() == 1)
         return suitErg;
-      } else {
+      else
         return erg;
-      }
     }
 
     // if we have 2 non ozean regions....
     if (!r1.getRegionType().isOcean() && !r2.getRegionType().isOcean()) {
-      if (Regions.isCompleteRoadConnection(r1, r2)) {
+      if (Regions.isCompleteRoadConnection(r1, r2))
         // return 2;
         return (1 + suitErg);
-      } else {
+      else
         return 3;
-      }
     }
 
     return erg;
@@ -1522,23 +1503,20 @@ public class Regions {
       }
 
       if (Regions.messagesContainsString(r.getTravelThru(), id)
-          || Regions.messagesContainsString(r.getTravelThruShips(), id)) {
+          || Regions.messagesContainsString(r.getTravelThruShips(), id))
         return neighbour;
-      }
     }
 
     return null;
   }
 
   private static boolean messagesContainsString(List<Message> messages, String ID) {
-    if (messages == null) {
+    if (messages == null)
       return false;
-    }
 
     for (Message m : messages) {
-      if (m.getText().equals(ID)) {
+      if (m.getText().equals(ID))
         return true;
-      }
     }
 
     return false;
@@ -1619,9 +1597,8 @@ public class Regions {
       }
     }
 
-    if (!border1OK) {
+    if (!border1OK)
       return false;
-    }
 
     // r2->r1
     regions.clear();
@@ -1638,9 +1615,8 @@ public class Regions {
         break;
       }
     }
-    if (border1OK && border2OK) {
+    if (border1OK && border2OK)
       return true;
-    }
 
     return erg;
   }
@@ -1661,13 +1637,12 @@ public class Regions {
     /*
      * dy ist jetzt >=0, fuer dx sind 3 Faelle zu untescheiden
      */
-    if (dx >= 0) {
+    if (dx >= 0)
       return dx + dy;
-    } else if (-dx >= dy) {
+    else if (-dx >= dy)
       return -dx;
-    } else {
+    else
       return dy;
-    }
   }
 
   /**
@@ -1686,9 +1661,8 @@ public class Regions {
       int i = 1;
       while (!IDisFree) {
         IntegerID newID = IntegerID.create(i);
-        if (r.getBorder(newID) == null) {
+        if (r.getBorder(newID) == null)
           return newID;
-        }
         i++;
       }
     }

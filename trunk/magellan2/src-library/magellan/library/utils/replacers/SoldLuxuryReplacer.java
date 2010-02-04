@@ -26,69 +26,60 @@ import magellan.library.Region;
 import magellan.library.StringID;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class SoldLuxuryReplacer extends AbstractRegionReplacer {
-	protected int mode;
+  protected int mode;
 
-	/**
-	 * Creates new SoldLuxuryReplacer
-	 *
-	 * 
-	 */
-	public SoldLuxuryReplacer(int mode) {
-		this.mode = mode;
-	}
+  /**
+   * Creates new SoldLuxuryReplacer
+   */
+  public SoldLuxuryReplacer(int mode) {
+    this.mode = mode;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public Object getRegionReplacement(Region r) {
-		if(r.getPrices() != null) {
-			Iterator<StringID> it = r.getPrices().keySet().iterator();
+    if (r.getPrices() != null) {
+      Iterator<StringID> it = r.getPrices().keySet().iterator();
 
-			while(it.hasNext()) {
-				ID id = it.next();
-				LuxuryPrice lp = r.getPrices().get(id);
+      while (it.hasNext()) {
+        ID id = it.next();
+        LuxuryPrice lp = r.getPrices().get(id);
 
-				if(lp.getPrice() < 0) {
-					switch(mode) {
-					case 0:
-						return id.toString();
+        if (lp.getPrice() < 0) {
+          switch (mode) {
+          case 0:
+            return id.toString();
 
-					case 1:
-						return new String(lp.getItemType().getName().toCharArray(), 0, 1);
+          case 1:
+            return new String(lp.getItemType().getName().toCharArray(), 0, 1);
 
-					case 2:
-						return new String(lp.getItemType().getName().toCharArray(), 0, 2);
+          case 2:
+            return new String(lp.getItemType().getName().toCharArray(), 0, 2);
 
-					case 3:
-						return new Integer(-lp.getPrice());
-					}
-				}
-			}
-		}
+          case 3:
+            return new Integer(-lp.getPrice());
+          }
+        }
+      }
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getDescription() {
-		return Resources.get("util.replacers.soldluxuryreplacer.description." + mode);
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public String getDescription() {
+    return Resources.get("util.replacers.soldluxuryreplacer.description." + mode);
+  }
 
 }

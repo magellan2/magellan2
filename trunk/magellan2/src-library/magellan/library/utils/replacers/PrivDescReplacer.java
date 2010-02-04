@@ -18,26 +18,25 @@ import magellan.library.utils.Resources;
 
 /**
  * Returns the private description of a unit
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class PrivDescReplacer extends AbstractUnitReplacer {
 
   /**
-	 * @see magellan.library.utils.replacers.AbstractUnitReplacer#getUnitReplacement(magellan.library.Unit)
-	 */
-	@Override
+   * @see magellan.library.utils.replacers.AbstractUnitReplacer#getUnitReplacement(magellan.library.Unit)
+   */
+  @Override
   public Object getUnitReplacement(Unit r) {
-		return r.getPrivDesc();
-	}
-  
+    return r.getPrivDesc();
+  }
 
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   public String getDescription() {
     return Resources.get("util.replacers.privdescreplacer.description");
-  }  
+  }
 
 }

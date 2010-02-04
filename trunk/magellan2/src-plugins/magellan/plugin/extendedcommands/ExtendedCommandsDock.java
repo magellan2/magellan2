@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import magellan.client.Client;
 import magellan.client.desktop.MagellanDesktop;
@@ -123,8 +124,8 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
         new JButton(Resources.get("extended_commands.button.save.caption"), MagellanImages
             .getImageIcon("etc/images/gui/actions/save_edit.gif"));
     saveButton.setRequestFocusEnabled(false);
-    saveButton.setVerticalTextPosition(JButton.CENTER);
-    saveButton.setHorizontalTextPosition(JButton.LEADING);
+    saveButton.setVerticalTextPosition(SwingConstants.CENTER);
+    saveButton.setHorizontalTextPosition(SwingConstants.LEADING);
     saveButton.setActionCommand("button.save");
     saveButton.addActionListener(this);
     saveButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -134,8 +135,8 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
         new JButton(Resources.get("extended_commands.button.saveall.caption"), MagellanImages
             .getImageIcon("etc/images/gui/actions/saveas_edit.gif"));
     saveAllButton.setRequestFocusEnabled(false);
-    saveAllButton.setVerticalTextPosition(JButton.CENTER);
-    saveAllButton.setHorizontalTextPosition(JButton.LEADING);
+    saveAllButton.setVerticalTextPosition(SwingConstants.CENTER);
+    saveAllButton.setHorizontalTextPosition(SwingConstants.LEADING);
     saveAllButton.setActionCommand("button.saveall");
     saveAllButton.addActionListener(this);
     saveAllButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -150,7 +151,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
-    log.debug("Action '" + e.getActionCommand() + "' called");
+    ExtendedCommandsDock.log.debug("Action '" + e.getActionCommand() + "' called");
     if (e.getActionCommand().equalsIgnoreCase("button.load")) {
       openCurrent();
     }
@@ -161,7 +162,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
         return; // we don't execute everything here....
       ExtendedCommandsDocument doc = (ExtendedCommandsDocument) tab.getContentComponent();
 
-      log.debug("Execute button selected on tab " + tab.getText());
+      ExtendedCommandsDock.log.debug("Execute button selected on tab " + tab.getText());
       doc.actionPerformed(e);
     } else if (e.getActionCommand().equalsIgnoreCase("button.save")) {
 
@@ -192,9 +193,8 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     if (selection.getSelectedObjects().size() > 5) {
       if (JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.loadmany.question",
           selection.getSelectedObjects().size()),
-          Resources.get("extended_commands.loadmany.title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+          Resources.get("extended_commands.loadmany.title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
         return;
-      }
     }
 
     for (Object sel : selection.getSelectedObjects()) {
@@ -242,7 +242,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     if (tab == null)
       return;
     ExtendedCommandsDocument doc = (ExtendedCommandsDocument) tab.getContentComponent();
-    log.debug("Save tab '" + tab.getText() + "' contents");
+    ExtendedCommandsDock.log.debug("Save tab '" + tab.getText() + "' contents");
 
     Script newScript = (Script) doc.getScript().clone();
     newScript.setScript(doc.getScriptingArea().getText());
@@ -284,10 +284,10 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     }
     try {
       ((ExtendedCommandsDocument) tabMap.get(key).getContentComponent()).getScriptingArea()
-      .requestFocus();
+          .requestFocus();
       ((ExtendedCommandsDocument) tabMap.get(key).getContentComponent()).getScriptingArea()
-      .requestFocusInWindow();
-    } catch (ClassCastException e){
+          .requestFocusInWindow();
+    } catch (ClassCastException e) {
     }
   }
 
@@ -301,7 +301,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     // Visibility
     if (!visible) {
       MagellanDesktop.getInstance().setVisible(ExtendedCommandsDock.IDENTIFIER, true);
-      
+
     }
   }
 
@@ -316,15 +316,17 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
   protected String createTitle(Unit unit, UnitContainer container) {
     if (unit != null) {
       String unitName = unit.getName();
-      if (unitName == null)
+      if (unitName == null) {
         unitName = "";
+      }
       return Resources.get("extended_commands.element.unit", unitName, unit.getID());
     }
     if (container != null) {
       String containerName = container.getName();
       if (containerName == null) {
-        if (container instanceof Region)
+        if (container instanceof Region) {
           containerName = ((Region) container).getRegionType().getName();
+        }
       }
       return Resources.get("extended_commands.element.container", containerName, container.getID());
     }
@@ -409,7 +411,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    * @see net.infonode.docking.DockingWindowListener#windowHidden(net.infonode.docking.DockingWindow)
    */
   public void windowHidden(DockingWindow window) {
-    this.visible = false;
+    visible = false;
   }
 
   /**
@@ -459,7 +461,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    * @see net.infonode.docking.DockingWindowListener#windowShown(net.infonode.docking.DockingWindow)
    */
   public void windowShown(DockingWindow window) {
-    this.visible = true;
+    visible = true;
   }
 
   /**
@@ -504,7 +506,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     // Closing the tab by removing it from the tabbed panel it is a member of
     Tab t1 = tabMap.remove(key);
     if (t1 != null && !tab.equals(tab)) {
-      log.error("Whoops - here is something wrong");
+      ExtendedCommandsDock.log.error("Whoops - here is something wrong");
     }
     docMap.remove(key);
 
@@ -512,6 +514,6 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
   }
 
   public void selectionChanged(SelectionEvent e) {
-    this.selection = e;
+    selection = e;
   }
 }

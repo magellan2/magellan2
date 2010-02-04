@@ -108,21 +108,21 @@ public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
    */
   @Override
   public boolean canLandInRegion(Ship ship, Region region) {
-    if (region.getType().getID().equals(AllanonConstants.RT_FIREWALL))
+    if (region.getType().getID().equals(EresseaConstants.RT_FIREWALL))
       return false;
 
-    if (ship.getType().getID().equals(AllanonConstants.ST_BOAT))
+    if (ship.getType().getID().equals(EresseaConstants.ST_BOAT))
       return true; // can land everywhere
-    if (ship.getType().getID().equals(AllanonConstants.ST_LONGBOAT))
+    if (ship.getType().getID().equals(EresseaConstants.ST_LONGBOAT))
       return true; // can land everywhere
 
-    if (region.getType().getID().equals(AllanonConstants.RT_HIGHLAND))
+    if (region.getType().getID().equals(EresseaConstants.RT_HIGHLAND))
       return false;
-    if (region.getType().getID().equals(AllanonConstants.RT_GLACIER))
+    if (region.getType().getID().equals(EresseaConstants.RT_GLACIER))
       return false;
-    if (region.getType().getID().equals(AllanonConstants.RT_MOUNTAIN))
+    if (region.getType().getID().equals(EresseaConstants.RT_MOUNTAIN))
       return false;
-    if (region.getType().getID().equals(AllanonConstants.RT_VOLCANO))
+    if (region.getType().getID().equals(EresseaConstants.RT_VOLCANO))
       return false;
 
     return true;
@@ -134,7 +134,7 @@ public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
   @Override
   public int getWage(Region region, Race race) {
     int wage = region.getWage();
-    if (race.getName().equalsIgnoreCase(getRules().getRace(AllanonConstants.R_ORKS).getName())) {
+    if (race.getName().equalsIgnoreCase(getRules().getRace(EresseaConstants.R_ORKS).getName())) {
       switch (wage) {
       case 12:
         wage = 11;

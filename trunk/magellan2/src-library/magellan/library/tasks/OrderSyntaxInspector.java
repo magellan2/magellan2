@@ -46,7 +46,7 @@ import magellan.library.utils.Utils;
 public class OrderSyntaxInspector extends AbstractInspector {
 
   /** The singleton instance of the OrderSyntaxInspector */
-//  public static final OrderSyntaxInspector INSPECTOR = new OrderSyntaxInspector();
+  // public static final OrderSyntaxInspector INSPECTOR = new OrderSyntaxInspector();
 
   enum OrderSyntaxProblemTypes {
     NO_ORDERS, PARSE_ERROR, PARSE_WARNING;
@@ -54,14 +54,15 @@ public class OrderSyntaxInspector extends AbstractInspector {
     private ProblemType type;
 
     OrderSyntaxProblemTypes() {
-      String name = this.name().toLowerCase();
+      String name = name().toLowerCase();
       String message = Resources.get("tasks.ordersyntaxinspector." + name + ".message");
       String typeName = Resources.get("tasks.ordersyntaxinspector." + name + ".name", false);
-      if (typeName == null)
+      if (typeName == null) {
         typeName = message;
+      }
       String description =
           Resources.get("tasks.ordersyntaxinspector." + name + ".description", false);
-      String group = Resources.get("tasks.ordersyntaxinspector."+name+".group", false); 
+      String group = Resources.get("tasks.ordersyntaxinspector." + name + ".group", false);
       type = new ProblemType(typeName, group, description, message);
     }
 
@@ -96,12 +97,12 @@ public class OrderSyntaxInspector extends AbstractInspector {
 
     if ((Utils.isEmpty(orders) || orders.size() == 0) && severity == Severity.ERROR) {
       // no orders...that could be a problem.
-      if (!magellan.library.utils.Units.isPrivilegedAndNoSpy(unit)) {
+      if (!magellan.library.utils.Units.isPrivilegedAndNoSpy(unit))
         // okay, that isn't our unit... forget it
         return Collections.emptyList();
-      } else {
-        errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS.getType(),
-            unit, this));
+      else {
+        errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS
+            .getType(), unit, this));
       }
 
     }
@@ -119,8 +120,9 @@ public class OrderSyntaxInspector extends AbstractInspector {
         StringReader reader = new StringReader(order);
         boolean ok = parser.read(reader);
         if (!ok) {
-          errors.add(ProblemFactory.createProblem(Severity.WARNING, OrderSyntaxProblemTypes.PARSE_WARNING
-              .getType(), unit, this, getWarningMessage(order, line), line));
+          errors.add(ProblemFactory.createProblem(Severity.WARNING,
+              OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, getWarningMessage(order,
+                  line), line));
         }
       }
     }

@@ -35,7 +35,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -73,8 +72,6 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
 /**
- * 
- *
  * @author ...
  * @version 1.0, 15.02.2008
  */
@@ -96,36 +93,49 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
    */
   public DetailsViewAutoCompletionPreferences(AutoCompletion s) {
     source = s;
-    this.setLayout(new BorderLayout());
+    setLayout(new BorderLayout());
     JPanel panel = new JPanel(new GridBagLayout());
 
-    GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 0.1, 1.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 2, 1, 0.1, 1.0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
 
     panel.add(new JPanel(), c);
 
     c.gridwidth = 1;
     c.weighty = 0;
     c.gridy++;
-    cEnable = new JCheckBox(Resources.get("completion.autocompletion.prefs.autocompletion"), source.isEnableAutoCompletion());
+    cEnable =
+        new JCheckBox(Resources.get("completion.autocompletion.prefs.autocompletion"), source
+            .isEnableAutoCompletion());
     panel.add(cEnable, c);
 
     c.gridy++;
-    cLimitMakeCompletion = new JCheckBox(Resources.get("completion.autocompletion.prefs.limitmakecompletion"), source.getLimitMakeCompletion());
-    cLimitMakeCompletion.setToolTipText(Resources.get("completion.autocompletion.prefs.limitmakecompletion.tooltip"));
+    cLimitMakeCompletion =
+        new JCheckBox(Resources.get("completion.autocompletion.prefs.limitmakecompletion"), source
+            .getLimitMakeCompletion());
+    cLimitMakeCompletion.setToolTipText(Resources
+        .get("completion.autocompletion.prefs.limitmakecompletion.tooltip"));
     panel.add(cLimitMakeCompletion, c);
 
-    cPopup = new JCheckBox(Resources.get("completion.autocompletion.prefs.stubmode"), source.getEmptyStubMode());
+    cPopup =
+        new JCheckBox(Resources.get("completion.autocompletion.prefs.stubmode"), source
+            .getEmptyStubMode());
     c.gridy++;
     panel.add(cPopup, c);
 
-    cHotKey = new JCheckBox(Resources.get("completion.autocompletion.prefs.hotkeymode"), source.getHotKeyMode());
+    cHotKey =
+        new JCheckBox(Resources.get("completion.autocompletion.prefs.hotkeymode"), source
+            .getHotKeyMode());
     c.gridy++;
     panel.add(cHotKey, c);
 
     c.gridy++;
 
     JPanel inner = new JPanel(new GridBagLayout());
-    GridBagConstraints con2 = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
+    GridBagConstraints con2 =
+        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
 
     inner.add(new JLabel(Resources.get("completion.autocompletion.prefs.time")), con2);
     con2.gridy++;
@@ -162,7 +172,8 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
 
     // make a copy of the self defined completions that will be
     // written back in applyPreferences()
-    this.selfDefinedCompletions = new OrderedHashtable<String, String>(source.getSelfDefinedCompletionsMap());
+    selfDefinedCompletions =
+        new OrderedHashtable<String, String>(source.getSelfDefinedCompletionsMap());
 
     c.gridx = 0;
     c.gridy = 6;
@@ -182,8 +193,8 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     c.weighty = 1;
     c.gridy++;
     panel.add(new JPanel(), c);
-    
-    add(panel,BorderLayout.NORTH);
+
+    add(panel, BorderLayout.NORTH);
   }
 
   private JPanel getSelfDefinedCompletionPanel() {
@@ -191,24 +202,31 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     sDCPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
     sDCPanel.setLayout(new GridBagLayout());
 
-    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0.5, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(2, 2, 2, 2), 0, 0);
-    sDCPanel.add(new JLabel(Resources.get("completion.autocompletion.prefs.SelfDefinedCompletions.title") + ":"), c);
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 0.5, 0, GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH, new Insets(2, 2, 2, 2), 0, 0);
+    sDCPanel.add(new JLabel(Resources
+        .get("completion.autocompletion.prefs.SelfDefinedCompletions.title")
+        + ":"), c);
 
     final JLabel completionValue = new JLabel();
     JScrollPane temp = new JScrollPane(completionValue);
-    temp.setBorder(new CompoundBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("completion.autocompletion.prefs.SelfDefinedCompletions.completionValue.title")), new EmptyBorder(5, 5, 5, 5)));
+    temp.setBorder(new CompoundBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
+        Resources
+            .get("completion.autocompletion.prefs.SelfDefinedCompletions.completionValue.title")),
+        new EmptyBorder(5, 5, 5, 5)));
     c.gridx = 1;
     c.gridy = 1;
     c.weighty = 0.5;
     sDCPanel.add(temp, c);
 
-    List<String> l = new LinkedList<String>(this.selfDefinedCompletions.keySet());
+    List<String> l = new LinkedList<String>(selfDefinedCompletions.keySet());
     Collections.sort(l);
 
     DefaultListModel listModel = new DefaultListModel();
 
-    for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-      listModel.addElement(iter.next());
+    for (String string : l) {
+      listModel.addElement(string);
     }
 
     final JList completionNames = new JList(listModel);
@@ -244,13 +262,17 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     }
 
     temp = new JScrollPane(completionNames);
-    temp.setBorder(new TitledBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED), Resources.get("completion.autocompletion.prefs.SelfDefinedCompletions.completionNames.title")));
+    temp.setBorder(new TitledBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED), Resources
+        .get("completion.autocompletion.prefs.SelfDefinedCompletions.completionNames.title")));
     c.gridx = 0;
     c.gridheight = 3;
     sDCPanel.add(temp, c);
 
-    final JButton delete = new JButton(Resources.get("completion.autocompletion.prefs.SelfDefinedCompletions.deleteButton.caption"));
-    delete.setMnemonic(Resources.get("completion.autocompletion.prefs.SelfDefinedCompletions.deleteButton.mnemonic").charAt(0));
+    final JButton delete =
+        new JButton(Resources
+            .get("completion.autocompletion.prefs.SelfDefinedCompletions.deleteButton.caption"));
+    delete.setMnemonic(Resources.get(
+        "completion.autocompletion.prefs.SelfDefinedCompletions.deleteButton.mnemonic").charAt(0));
 
     if (completionNames.getModel().getSize() == 0) {
       delete.setEnabled(false);
@@ -276,11 +298,18 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
       }
     });
 
-    final JButton newCompletion = new JButton(Resources.get("completion.autocompletion.prefs.SelfDefinedCompletions.newCompletionButton.caption"));
-    newCompletion.setMnemonic(Resources.get("completion.autocompletion.prefs.SelfDefinedCompletions.newCompletionButton.mnemonic").charAt(0));
+    final JButton newCompletion =
+        new JButton(
+            Resources
+                .get("completion.autocompletion.prefs.SelfDefinedCompletions.newCompletionButton.caption"));
+    newCompletion.setMnemonic(Resources.get(
+        "completion.autocompletion.prefs.SelfDefinedCompletions.newCompletionButton.mnemonic")
+        .charAt(0));
     newCompletion.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        String nameAndValue[] = (new DefineCompletionDialog(JOptionPane.getFrameForComponent(newCompletion))).getNewCompletionNameAndValue();
+        String nameAndValue[] =
+            (new DefineCompletionDialog(JOptionPane.getFrameForComponent(newCompletion)))
+                .getNewCompletionNameAndValue();
         String name = nameAndValue[0];
         String value = nameAndValue[1];
 
@@ -316,11 +345,14 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
 
   protected Component createKeyComponents(AutoCompletion s) {
     JPanel p = new JPanel(new java.awt.GridBagLayout());
-    java.awt.GridBagConstraints c = new java.awt.GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
+    java.awt.GridBagConstraints c =
+        new java.awt.GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
 
     for (int i = 0; i < AutoCompletion.numKeys; i++) {
       c.gridy = i;
-      p.add(new JLabel(Resources.get("completion.autocompletion.prefs.keys." + String.valueOf(i))), c);
+      p.add(new JLabel(Resources.get("completion.autocompletion.prefs.keys." + String.valueOf(i))),
+          c);
     }
 
     c.gridx = 1;
@@ -341,20 +373,18 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
   /**
    * DOCUMENT-ME
    * 
-   * @param cGUI
-   *          DOCUMENT-ME
+   * @param cGUI DOCUMENT-ME
    */
   public void addCompletionGUI(CompletionGUI cGUI) {
     cForGUIs.addItem(cGUI);
-    this.revalidate();
-    this.doLayout();
+    revalidate();
+    doLayout();
   }
 
   /**
    * DOCUMENT-ME
    * 
-   * @param cGUI
-   *          DOCUMENT-ME
+   * @param cGUI DOCUMENT-ME
    */
   public void setCurrentGUI(CompletionGUI cGUI) {
     cForGUIs.setSelectedItem(cGUI);
@@ -362,8 +392,6 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
 
   /**
    * DOCUMENT-ME
-   * 
-   * 
    */
   public Component getComponent() {
     return this;
@@ -371,8 +399,6 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
 
   /**
    * DOCUMENT-ME
-   * 
-   * 
    */
   public String getTitle() {
     return Resources.get("completion.autocompletion.prefs.title");
@@ -420,7 +446,9 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     /** Apply preferences for self defined completions */
 
     // delete old entries out of settings file
-    String s = (String) source.getSettings().get(PropertiesHelper.AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT);
+    String s =
+        (String) source.getSettings().get(
+            PropertiesHelper.AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT);
     int completionCount = 0;
 
     if (s != null) {
@@ -435,15 +463,18 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     // insert new values
     completionCount = 0;
 
-    for (Iterator<String> iter = selfDefinedCompletions.keySet().iterator(); iter.hasNext();) {
-      String name = iter.next();
+    for (String name : selfDefinedCompletions.keySet()) {
       String value = selfDefinedCompletions.get(name);
-      source.getSettings().setProperty("AutoCompletion.SelfDefinedCompletions.name" + completionCount, name);
-      source.getSettings().setProperty("AutoCompletion.SelfDefinedCompletions.value" + completionCount, value);
+      source.getSettings().setProperty(
+          "AutoCompletion.SelfDefinedCompletions.name" + completionCount, name);
+      source.getSettings().setProperty(
+          "AutoCompletion.SelfDefinedCompletions.value" + completionCount, value);
       completionCount++;
     }
 
-    source.getSettings().setProperty(PropertiesHelper.AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT, String.valueOf(completionCount));
+    source.getSettings().setProperty(
+        PropertiesHelper.AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT,
+        String.valueOf(completionCount));
 
     // update selfDefinedCompletion table of AutoCompletion
     source.getSelfDefinedCompletionsMap().clear();
@@ -459,16 +490,14 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
      */
     public KeyTextField() {
       super(20);
-      this.addKeyListener(this);
+      addKeyListener(this);
     }
 
     /**
      * DOCUMENT-ME
      * 
-     * @param modifiers
-     *          DOCUMENT-ME
-     * @param key
-     *          DOCUMENT-ME
+     * @param modifiers DOCUMENT-ME
+     * @param key DOCUMENT-ME
      */
     public void init(int modifiers, int key) {
       this.key = key;
@@ -488,8 +517,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     /**
      * DOCUMENT-ME
      * 
-     * @param p1
-     *          DOCUMENT-ME
+     * @param p1 DOCUMENT-ME
      */
     public void keyReleased(java.awt.event.KeyEvent p1) {
       // maybe should delete any input if there's no "stable"(non-modifying)
@@ -499,15 +527,15 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     /**
      * DOCUMENT-ME
      * 
-     * @param p1
-     *          DOCUMENT-ME
+     * @param p1 DOCUMENT-ME
      */
     public void keyPressed(java.awt.event.KeyEvent p1) {
       modifiers = p1.getModifiers();
       key = p1.getKeyCode();
 
       // avoid double string
-      if ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT) || (key == KeyEvent.VK_ALT_GRAPH)) {
+      if ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT)
+          || (key == KeyEvent.VK_ALT_GRAPH)) {
         int xored = 0;
 
         switch (key) {
@@ -550,8 +578,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     /**
      * DOCUMENT-ME
      * 
-     * @param p1
-     *          DOCUMENT-ME
+     * @param p1 DOCUMENT-ME
      */
     public void keyTyped(java.awt.event.KeyEvent p1) {
     }
@@ -568,8 +595,6 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
 
     /**
      * DOCUMENT-ME
-     * 
-     * 
      */
     public int getKeyCode() {
       return key;
@@ -577,8 +602,6 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
 
     /**
      * DOCUMENT-ME
-     * 
-     * 
      */
     public int getModifiers() {
       return modifiers;
@@ -590,36 +613,43 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     private JTextArea value;
     private JButton ok;
     private JButton cancel;
-       
 
     private DefineCompletionDialog(Frame frame) {
       super(frame, true);
-      this.setTitle(Resources.get("completion.autocompletion.DefineCompletionDialog.title"));
+      setTitle(Resources.get("completion.autocompletion.DefineCompletionDialog.title"));
       this.setSize(500, 200);
 
       JPanel cp = new JPanel();
-      this.getContentPane().add(cp);
-      cp.setBorder(new CompoundBorder(BorderFactory.createEtchedBorder(), new EmptyBorder(5, 5, 5, 5)));
+      getContentPane().add(cp);
+      cp.setBorder(new CompoundBorder(BorderFactory.createEtchedBorder(), new EmptyBorder(5, 5, 5,
+          5)));
       cp.setLayout(new GridBagLayout());
 
-      GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
+      GridBagConstraints c =
+          new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER,
+              GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
 
       name = new JTextField();
-      name.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("completion.autocompletion.DefineCompletionDialog.nameField.title")));
+      name.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+          .get("completion.autocompletion.DefineCompletionDialog.nameField.title")));
       cp.add(name, c);
 
       value = new JTextArea();
       value.setMargin(new Insets(4, 4, 4, 4));
 
       JScrollPane temp = new JScrollPane(value);
-      temp.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("completion.autocompletion.DefineCompletionDialog.valueField.title")));
+      temp.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+          .get("completion.autocompletion.DefineCompletionDialog.valueField.title")));
       c.gridy = 1;
       c.fill = GridBagConstraints.BOTH;
       c.weighty = 1.0;
       cp.add(temp, c);
 
-      ok = new JButton(Resources.get("completion.autocompletion.DefineCompletionDialog.okButton.caption"));
-      ok.setMnemonic(Resources.get("completion.autocompletion.DefineCompletionDialog.okButton.mnemonic").charAt(0));
+      ok =
+          new JButton(Resources
+              .get("completion.autocompletion.DefineCompletionDialog.okButton.caption"));
+      ok.setMnemonic(Resources.get(
+          "completion.autocompletion.DefineCompletionDialog.okButton.mnemonic").charAt(0));
       c.gridy = 0;
       c.gridx = 1;
       c.weighty = 0.0;
@@ -627,8 +657,11 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
       c.fill = GridBagConstraints.HORIZONTAL;
       cp.add(ok, c);
 
-      cancel = new JButton(Resources.get("completion.autocompletion.DefineCompletionDialog.cancelButton.caption"));
-      cancel.setMnemonic(Resources.get("completion.autocompletion.DefineCompletionDialog.cancelButton.mnemonic").charAt(0));
+      cancel =
+          new JButton(Resources
+              .get("completion.autocompletion.DefineCompletionDialog.cancelButton.caption"));
+      cancel.setMnemonic(Resources.get(
+          "completion.autocompletion.DefineCompletionDialog.cancelButton.mnemonic").charAt(0));
       cancel.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           DefineCompletionDialog.this.quit();
@@ -637,19 +670,19 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
       c.gridy = 1;
       c.anchor = GridBagConstraints.NORTH;
       cp.add(cancel, c);
-      
+
       Vector<Component> components = new Vector<Component>();
       components.add(name);
       components.add(value);
       components.add(ok);
       components.add(cancel);
-      
+
       setFocusTraversalPolicy(new MagellanFocusTraversalPolicy(components));
-//
-//      name.setNextFocusableComponent(value);
-//      value.setNextFocusableComponent(ok);
-//      ok.setNextFocusableComponent(cancel);
-//      cancel.setNextFocusableComponent(name);
+      //
+      // name.setNextFocusableComponent(value);
+      // value.setNextFocusableComponent(ok);
+      // ok.setNextFocusableComponent(cancel);
+      // cancel.setNextFocusableComponent(name);
     }
 
     private String[] getNewCompletionNameAndValue() {
@@ -661,8 +694,8 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
           quit();
         }
       });
-      this.setLocationRelativeTo(getOwner());
-      this.setVisible(true);
+      setLocationRelativeTo(getOwner());
+      setVisible(true);
 
       return retVal;
     }

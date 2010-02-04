@@ -41,9 +41,8 @@ public class ShipRoutePlanner extends RoutePlanner {
    * faction.
    */
   public static boolean canPlan(Ship ship) {
-    if (ship.getSize() < ship.getShipType().getMaxSize()) {
+    if (ship.getSize() < ship.getShipType().getMaxSize())
       return false;
-    }
 
     return (ship.getModifiedOwnerUnit() != null)
         && ship.getModifiedOwnerUnit().getFaction().isPrivileged();
@@ -124,9 +123,9 @@ public class ShipRoutePlanner extends RoutePlanner {
       List<String> orders =
           getOrders(ship, data, ship.getRegion().getID(), v.getDestination(), ui, v.makeSingle(), v
               .useRange(), v.makeRoute(), v.useVorlage());
-      if (orders.size()==0)
+      if (orders.size() == 0)
         return null;
-      
+
       // add orders to captain
       if (v.replaceOrders()) {
         shipOwner.setOrders(orders);
@@ -152,8 +151,10 @@ public class ShipRoutePlanner extends RoutePlanner {
    * @param destination The target region
    * @param ui The parent component for message panes
    * @param makeSingle If this is <code>false</code>, a return trip is constructed
-   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so that the ship's range is not exceeded.
-   * @param makeRoute If this is <code>true</code>, ROUTE commands are produced, as opposed to NACH commands.
+   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so
+   *          that the ship's range is not exceeded.
+   * @param makeRoute If this is <code>true</code>, ROUTE commands are produced, as opposed to NACH
+   *          commands.
    * @param useVorlage If this is <code>true</code>, Vorlage meta commands are produced.
    * @return The list of new orders.
    */
@@ -195,18 +196,18 @@ public class ShipRoutePlanner extends RoutePlanner {
 
     // adjust cost function
     if (!useRange) {
-      shipCosts = ZERO_COSTS;
+      shipCosts = RoutePlanner.ZERO_COSTS;
     } else if (speed <= 0) {
       // couldn't determine ship range
       JOptionPane.showMessageDialog(ui, Resources
           .get("util.shiprouteplanner.msg.shiprangeiszero.text"), Resources
           .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
-      shipCosts = ZERO_COSTS;
+      shipCosts = RoutePlanner.ZERO_COSTS;
     }
 
     // compute new orders
     List<String> orders = new LinkedList<String>();
-    addOrders(orders, path, makeRoute, useVorlage, shipCosts);
+    RoutePlanner.addOrders(orders, path, makeRoute, useVorlage, shipCosts);
     return orders;
   }
 
@@ -231,8 +232,9 @@ public class ShipRoutePlanner extends RoutePlanner {
     public void increase(Region region, Region region2) {
       if (region2.getRegionType().isOcean() || Regions.containsBuilding(region2, harbour)) {
         costs += 1;
-      } else
+      } else {
         costs = speed;
+      }
     }
 
     public void reset() {

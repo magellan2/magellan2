@@ -47,8 +47,10 @@ public class ProblemFactory {
    * @param u
    * @param line
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u, Inspector inspector, int line) {
-    return new SimpleProblem(severity, type, u.getRegion(), u, u.getFaction(), u, inspector, type.getMessage(), line);
+  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u,
+      Inspector inspector, int line) {
+    return new SimpleProblem(severity, type, u.getRegion(), u, u.getFaction(), u, inspector, type
+        .getMessage(), line);
   }
 
   /**
@@ -59,8 +61,10 @@ public class ProblemFactory {
    * @param type
    * @param u
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u, Inspector inspector) {
-    return new SimpleProblem(severity, type, u.getRegion(), u, u.getFaction(), u, inspector, type.getMessage(), -1);
+  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u,
+      Inspector inspector) {
+    return new SimpleProblem(severity, type, u.getRegion(), u, u.getFaction(), u, inspector, type
+        .getMessage(), -1);
   }
 
   /**
@@ -72,8 +76,8 @@ public class ProblemFactory {
    * @param c
    * @param line
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c, Inspector inspector,
-      int line) {
+  public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c,
+      Inspector inspector, int line) {
     return new SimpleProblem(severity, type,
         c.getOwner() == null ? null : c.getOwner().getRegion(), c.getOwner(), c.getOwner() == null
             ? null : c.getOwner().getFaction(), c, inspector, type.getMessage(), line);
@@ -87,7 +91,8 @@ public class ProblemFactory {
    * @param type
    * @param c
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c, Inspector inspector) {
+  public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c,
+      Inspector inspector) {
     Region r = null;
     if (c instanceof HasRegion) {
       r = ((HasRegion) c).getRegion();
@@ -110,9 +115,10 @@ public class ProblemFactory {
    * @param message
    * @param line
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u, Inspector inspector,
-      String message, int line) {
-    return new SimpleProblem(severity, type, u.getRegion(), u, u.getFaction(), u, inspector, message, line);
+  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u,
+      Inspector inspector, String message, int line) {
+    return new SimpleProblem(severity, type, u.getRegion(), u, u.getFaction(), u, inspector,
+        message, line);
   }
 
 }

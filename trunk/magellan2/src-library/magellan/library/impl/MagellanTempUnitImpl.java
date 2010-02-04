@@ -49,12 +49,11 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
    * Assigns this temp unit a parent unit.
    */
   public void setParent(Unit u) {
-    this.parent = u;
+    parent = u;
   }
 
   /**
-   * Returns the parent of this temp unit. If this is not a temp unit, null is
-   * returned.
+   * Returns the parent of this temp unit. If this is not a temp unit, null is returned.
    */
   public Unit getParent() {
     return parent;
@@ -66,18 +65,18 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
 
   @Override
   public String toString(boolean withName) {
-    if (withName) {
+    if (withName)
       return super.toString(withName);
-    } else {
+    else {
       String temp = Resources.getOrderTranslation(EresseaConstants.O_TEMP);
       return temp + " " + id.toString();
     }
   }
-  
-  public void setTempRace(Race r){
-    this.tempRace = r;
+
+  public void setTempRace(Race r) {
+    tempRace = r;
   }
-  
+
   @Override
   public Race getRace() {
     if (tempRace == null)
@@ -85,12 +84,12 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
     else
       return tempRace;
   }
-  
+
   /**
    * Returns the id uniquely identifying this object.
    */
   @Override
-  public UnitID getID(){
+  public UnitID getID() {
     return super.getID();
   }
 

@@ -16,29 +16,23 @@ package magellan.library.utils.replacers;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author unknown
  * @version 1.0
  */
 public class HerbReplacer extends AbstractRegionReplacer {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public Object getRegionReplacement(Region r) {
-		if(r.getHerb() != null) {
-			return r.getHerb().getName();
-		}
+    if (r.getHerb() != null)
+      return r.getHerb().getName();
 
-		return null;
-	}
+    return null;
+  }
 
   public String getDescription() {
     return Resources.get("util.replacers.herbreplacer.description");

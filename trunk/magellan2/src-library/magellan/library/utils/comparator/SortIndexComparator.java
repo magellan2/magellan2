@@ -17,15 +17,12 @@ import java.util.Comparator;
 
 import magellan.library.utils.Sorted;
 
-
 /**
- * A comparator imposing an ordering on objects implementing the Sorted interface by comparing
- * their sorting indices.
- * 
+ * A comparator imposing an ordering on objects implementing the Sorted interface by comparing their
+ * sorting indices.
  * <p>
  * Note: this comparator can impose orderings that are inconsistent with equals.
  * </p>
- * 
  * <p>
  * In order to overcome the inconsistency with equals this comparator allows the introduction of a
  * sub-comparator which is applied in cases of equality. I.e. if the two compared objects have the
@@ -34,34 +31,33 @@ import magellan.library.utils.Sorted;
  * </p>
  */
 public class SortIndexComparator<T extends Sorted> implements Comparator<T> {
-	protected Comparator<? super T> sameIndexSubCmp = null;
+  protected Comparator<? super T> sameIndexSubCmp = null;
 
-	/**
-	 * Creates a new SortIndexComparator object.
-	 *
-	 * @param sameIndexSubComparator if two objects with the same sort index are compared, the
-	 * 		  given sub-comparator is applied (if not <tt>null</tt>).
-	 */
-	public SortIndexComparator(Comparator<? super T> sameIndexSubComparator) {
-		sameIndexSubCmp = sameIndexSubComparator;
-	}
+  /**
+   * Creates a new SortIndexComparator object.
+   * 
+   * @param sameIndexSubComparator if two objects with the same sort index are compared, the given
+   *          sub-comparator is applied (if not <tt>null</tt>).
+   */
+  public SortIndexComparator(Comparator<? super T> sameIndexSubComparator) {
+    sameIndexSubCmp = sameIndexSubComparator;
+  }
 
-	/**
-	 * Compares its two arguments for order according to their sort indices.
-	 *
-	 * @return the numerical difference of <tt>o1</tt>'s and <tt>o2</tt>'s sort indices. If the
-	 * 		   sort indices are equal and a sub-comparator was specified, the result of that
-	 * 		   sub-comparator's comparison is returned.
-	 */
-	public int compare(T o1, T o2) {
-		int s1 = o1.getSortIndex();
-		int s2 = o2.getSortIndex();
+  /**
+   * Compares its two arguments for order according to their sort indices.
+   * 
+   * @return the numerical difference of <tt>o1</tt>'s and <tt>o2</tt>'s sort indices. If the sort
+   *         indices are equal and a sub-comparator was specified, the result of that
+   *         sub-comparator's comparison is returned.
+   */
+  public int compare(T o1, T o2) {
+    int s1 = o1.getSortIndex();
+    int s2 = o2.getSortIndex();
 
-		if((s1 == s2) && (sameIndexSubCmp != null)) {
-			return sameIndexSubCmp.compare(o1, o2);
-		} else {
-			return s1 < s2 ? -1 : 1;
-		}
-	}
+    if ((s1 == s2) && (sameIndexSubCmp != null))
+      return sameIndexSubCmp.compare(o1, o2);
+    else
+      return s1 < s2 ? -1 : 1;
+  }
 
 }

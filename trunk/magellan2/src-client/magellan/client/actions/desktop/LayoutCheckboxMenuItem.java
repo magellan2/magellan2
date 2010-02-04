@@ -32,9 +32,9 @@ import magellan.client.desktop.DockingFrameworkBuilder;
 import magellan.client.desktop.DockingLayout;
 
 /**
- * This class represents a menu item for one Docking layout.
- * By selecting this item, all other items are disabled.
- *
+ * This class represents a menu item for one Docking layout. By selecting this item, all other items
+ * are disabled.
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 18.11.2007
  */
@@ -42,9 +42,9 @@ public class LayoutCheckboxMenuItem extends JCheckBoxMenuItem implements ActionL
   private DockingLayout layout = null;
 
   public LayoutCheckboxMenuItem(DockingLayout layout) {
-    super(layout.getName(),layout.isActive());
+    super(layout.getName(), layout.isActive());
     this.layout = layout;
-    
+
     addActionListener(this);
   }
 
@@ -52,13 +52,11 @@ public class LayoutCheckboxMenuItem extends JCheckBoxMenuItem implements ActionL
    * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
    */
   public void actionPerformed(ActionEvent evt) {
-    LayoutCheckboxMenuItem source = (LayoutCheckboxMenuItem)evt.getSource();
-    if (source == null) {
+    LayoutCheckboxMenuItem source = (LayoutCheckboxMenuItem) evt.getSource();
+    if (source == null)
       return;
-    }
-    if (layout.isActive()) {
+    if (layout.isActive())
       return;
-    }
     if (isSelected()) {
       DockingFrameworkBuilder.getInstance().setActiveLayout(layout);
     }

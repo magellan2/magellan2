@@ -24,8 +24,6 @@
 package magellan.library.gamebinding;
 
 /**
- * 
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
@@ -33,14 +31,14 @@ public class EresseaOrderWriter implements GameSpecificOrderWriter {
   private static final EresseaOrderWriter instance = new EresseaOrderWriter();
   /** Current ECheck version */
   public static final String ECHECKVERSION = "4.3.2";
-  
+
   /**
    * 
    */
   protected EresseaOrderWriter() {
     // do nothing...
   }
-  
+
   /**
    * Returns the instance of this class.
    */

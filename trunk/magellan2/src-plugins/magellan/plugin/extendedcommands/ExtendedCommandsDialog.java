@@ -60,12 +60,10 @@ import magellan.library.UnitContainer;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
-
 /**
- * This is a dialog to edit the script/commands for a given unit.
+ * This is a dialog to edit the script/commands for a given unit. TODO Save dialog positions (size,
+ * location, slider position)
  * 
- * TODO Save dialog positions (size, location, slider position)
- *
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
@@ -86,39 +84,42 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
   private Script script = null;
   private List<URL> history = new ArrayList<URL>();
   private int pos = 0;
-  
-  public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, Script script) {
-    super(client,true);
-    
+
+  public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands,
+      Script script) {
+    super(client, true);
+
     this.client = client;
-    this.world = data;
+    world = data;
     this.commands = commands;
-    
+
     init(script);
   }
-  
-  public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, Unit unit, Script script) {
-    super(client,true);
-    
+
+  public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, Unit unit,
+      Script script) {
+    super(client, true);
+
     this.client = client;
-    this.world = data;
+    world = data;
     this.commands = commands;
     this.unit = unit;
-    
+
     init(script);
   }
-  
-  public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, UnitContainer container, Script script) {
-    super(client,true);
-    
+
+  public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands,
+      UnitContainer container, Script script) {
+    super(client, true);
+
     this.client = client;
-    this.world = data;
+    world = data;
     this.commands = commands;
     this.container = container;
-    
+
     init(script);
   }
-  
+
   protected void init(Script script) {
     this.script = script;
     setLayout(new BorderLayout());
@@ -130,15 +131,15 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         updateWindowSettings();
       }
     });
-    
+
     JPanel editor = new JPanel(new BorderLayout());
     editor.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-    
+
     scriptingArea = new BeanShellEditor();
     scriptingArea.setText(script.getScript());
     scriptingArea.setCaretPosition(script.getCursor());
-    editor.add(new JScrollPane(scriptingArea),BorderLayout.CENTER);
-    
+    editor.add(new JScrollPane(scriptingArea), BorderLayout.CENTER);
+
     JPanel helpPanel = new JPanel(new BorderLayout());
     help = new JEditorPane();
     help.setContentType("text/html");
@@ -148,9 +149,9 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     help.setCaretPosition(0);
     JScrollPane scrollPane = new JScrollPane(help);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-    
-    helpPanel.add(scrollPane,BorderLayout.CENTER);
-    
+
+    helpPanel.add(scrollPane, BorderLayout.CENTER);
+
     JPanel helpButtonPanel = new JPanel(new FlowLayout());
     homeButton = new JButton("Home");
     homeButton.setEnabled(false);
@@ -174,37 +175,38 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       browserButton.addActionListener(this);
       helpButtonPanel.add(browserButton);
     }
-    helpPanel.add(helpButtonPanel,BorderLayout.NORTH);
-    
+    helpPanel.add(helpButtonPanel, BorderLayout.NORTH);
+
     splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, editor, helpPanel);
     splitPane.setOneTouchExpandable(true);
-    splitPane.setDividerLocation(PropertiesHelper.getInteger(client.getProperties(), "ExtendedCommandsDialog.slider", 480));
-    
-    add(splitPane,BorderLayout.CENTER);
-    
+    splitPane.setDividerLocation(PropertiesHelper.getInteger(client.getProperties(),
+        "ExtendedCommandsDialog.slider", 480));
+
+    add(splitPane, BorderLayout.CENTER);
+
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
     buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     buttonPanel.add(Box.createHorizontalGlue());
-    
+
     JLabel label = new JLabel(Resources.get("extended_commands.priority.caption"));
     buttonPanel.add(label);
-    
+
     priorityBox = new JComboBox(Priority.values());
     priorityBox.setSelectedItem(script.getPriority());
     buttonPanel.add(priorityBox);
-    
+
     buttonPanel.add(Box.createRigidArea(new Dimension(30, 0)));
-    
+
     JButton cancelButton = new JButton(Resources.get("button.cancel"));
     cancelButton.setRequestFocusEnabled(false);
     cancelButton.setActionCommand("button.cancel");
     cancelButton.addActionListener(this);
     cancelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
     buttonPanel.add(cancelButton);
-    
+
     buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-    
+
     JButton executeButton = new JButton(Resources.get("button.execute"));
     executeButton.setRequestFocusEnabled(false);
     executeButton.setActionCommand("button.execute");
@@ -213,7 +215,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     buttonPanel.add(executeButton);
 
     buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-    
+
     JButton saveButton = new JButton(Resources.get("button.save"));
     saveButton.setRequestFocusEnabled(false);
     saveButton.setActionCommand("button.save");
@@ -222,7 +224,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     buttonPanel.add(saveButton);
 
     buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-    
+
     JButton okButton = new JButton(Resources.get("button.ok"));
     okButton.setRequestFocusEnabled(false);
     okButton.setActionCommand("button.ok");
@@ -231,8 +233,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     buttonPanel.add(okButton);
 
     buttonPanel.add(Box.createHorizontalGlue());
-    
-    add(buttonPanel,BorderLayout.SOUTH);
+
+    add(buttonPanel, BorderLayout.SOUTH);
   }
 
   /**
@@ -246,19 +248,19 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       updateWindowSettings();
       setVisible(false);
       String scripttext = scriptingArea.getText();
-      Priority prio = (Priority)priorityBox.getSelectedItem();
+      Priority prio = (Priority) priorityBox.getSelectedItem();
       int cursor = scriptingArea.getCaretPosition();
-      
+
       if (unit != null) {
         script.setScript(scripttext);
         script.setPriority(prio);
         script.setCursor(cursor);
-        commands.setCommands(unit,script);
+        commands.setCommands(unit, script);
       } else if (container != null) {
         script.setScript(scripttext);
         script.setPriority(prio);
         script.setCursor(cursor);
-        commands.setCommands(container,script);
+        commands.setCommands(container, script);
       } else {
         script.setScript(scripttext);
         script.setCursor(cursor);
@@ -267,15 +269,15 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     } else if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
       // execute the command, this means, to temporary store the script
       // and execute it. After that, restore the old script.
-      Script newScript = (Script)script.clone();
+      Script newScript = (Script) script.clone();
       newScript.setScript(scriptingArea.getText());
 
       if (unit != null) {
-        commands.setCommands(unit,newScript);
+        commands.setCommands(unit, newScript);
         commands.execute(world, unit);
         commands.setCommands(unit, script); // reset to old script
       } else if (container != null) {
-        commands.setCommands(container,newScript);
+        commands.setCommands(container, newScript);
         commands.execute(world, container);
         commands.setCommands(container, script); // reset to old script
       } else {
@@ -283,21 +285,21 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         commands.execute(world);
         commands.setLibrary(script); // reset to old script
       }
-      
+
     } else if (e.getActionCommand().equalsIgnoreCase("button.save")) {
-      Script newScript = (Script)script.clone();
+      Script newScript = (Script) script.clone();
       newScript.setScript(scriptingArea.getText());
 
       if (unit != null) {
-        commands.setCommands(unit,newScript);
+        commands.setCommands(unit, newScript);
       } else if (container != null) {
-        commands.setCommands(container,newScript);
+        commands.setCommands(container, newScript);
       } else {
         commands.setLibrary(newScript);
       }
-      
+
       commands.save();
-      
+
     } else if (e.getActionCommand().equalsIgnoreCase("button.cancel")) {
       // just do nothing
       updateWindowSettings();
@@ -313,7 +315,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         pos--;
         try {
           help.setPage(history.get(pos));
-        } catch (Exception exception) {}
+        } catch (Exception exception) {
+        }
         forwardButton.setEnabled(true);
         if (pos == 0) {
           backwardButton.setEnabled(false);
@@ -328,9 +331,10 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         pos++;
         try {
           help.setPage(history.get(pos));
-        } catch (Exception exception) {}
+        } catch (Exception exception) {
+        }
         backwardButton.setEnabled(true);
-        if (pos == history.size()-1) {
+        if (pos == history.size() - 1) {
           forwardButton.setEnabled(false);
         }
       }
@@ -338,7 +342,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       try {
         // Loads the new page represented by link clicked
         URI uri = help.getPage().toURI();
-        
+
         // only in Java6 available, so we try to load it.
         // otherwise, we do nothing...
         Class<?> c = Class.forName("java.awt.Desktop");
@@ -346,26 +350,30 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
           Object desktop = c.getMethod("getDesktop").invoke(null);
           c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
         }
-      }
-      catch (Exception exc) {
+      } catch (Exception exc) {
         // we do nothing here...
       }
     }
   }
 
   /**
-   * This method sets the window dimension and positions the window to the
-   * center of the screen.
+   * This method sets the window dimension and positions the window to the center of the screen.
    */
   public void setWindowSize(int xSize, int ySize) {
     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x = PropertiesHelper.getInteger(client.getProperties(),"ExtendedCommandsDialog.x",(screen.width - getWidth()) / 2);
-    int y = PropertiesHelper.getInteger(client.getProperties(),"ExtendedCommandsDialog.y",(screen.height - getHeight()) / 2);
+    int x =
+        PropertiesHelper.getInteger(client.getProperties(), "ExtendedCommandsDialog.x",
+            (screen.width - getWidth()) / 2);
+    int y =
+        PropertiesHelper.getInteger(client.getProperties(), "ExtendedCommandsDialog.y",
+            (screen.height - getHeight()) / 2);
     setLocation(x, y);
-    
-    int width = PropertiesHelper.getInteger(client.getProperties(),"ExtendedCommandsDialog.width",xSize);
-    int height = PropertiesHelper.getInteger(client.getProperties(),"ExtendedCommandsDialog.height",ySize);
-    
+
+    int width =
+        PropertiesHelper.getInteger(client.getProperties(), "ExtendedCommandsDialog.width", xSize);
+    int height =
+        PropertiesHelper.getInteger(client.getProperties(), "ExtendedCommandsDialog.height", ySize);
+
     if (width <= 0) {
       width = xSize;
     }
@@ -374,16 +382,17 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     }
     setSize(width, height);
   }
-  
+
   /**
    * Sets the window positions in the configuration.
    */
   public void updateWindowSettings() {
-    client.getProperties().setProperty("ExtendedCommandsDialog.x",""+getLocation().x);
-    client.getProperties().setProperty("ExtendedCommandsDialog.y",""+getLocation().y);
-    client.getProperties().setProperty("ExtendedCommandsDialog.width",""+getSize().width);
-    client.getProperties().setProperty("ExtendedCommandsDialog.height",""+getSize().height);
-    client.getProperties().setProperty("ExtendedCommandsDialog.slider", ""+splitPane.getDividerLocation());
+    client.getProperties().setProperty("ExtendedCommandsDialog.x", "" + getLocation().x);
+    client.getProperties().setProperty("ExtendedCommandsDialog.y", "" + getLocation().y);
+    client.getProperties().setProperty("ExtendedCommandsDialog.width", "" + getSize().width);
+    client.getProperties().setProperty("ExtendedCommandsDialog.height", "" + getSize().height);
+    client.getProperties().setProperty("ExtendedCommandsDialog.slider",
+        "" + splitPane.getDividerLocation());
   }
 
   /**
@@ -393,20 +402,19 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
       try {
         // Loads the new page represented by link clicked
-        URL url = e.getURL() ;
-        help.setPage(url) ;
+        URL url = e.getURL();
+        help.setPage(url);
         pos++;
-        history.add(pos,url);
+        history.add(pos, url);
         backwardButton.setEnabled(true);
         if (!homeButton.isEnabled()) {
           homeButton.setEnabled(true);
         }
-      }
-      catch (Exception exc) {
+      } catch (Exception exc) {
       }
     }
   }
-  
+
   public boolean isBrowserAvailable() {
     try {
       // only in Java6 available, so we try to load it.
@@ -420,7 +428,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       return false;
     }
   }
-  
+
   /**
    * Sets the homepage.
    */
@@ -428,7 +436,9 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     File path = null;
     if (unit != null) {
       // show help for unit commands
-      path = new File(Client.getSettingsDirectory(),Resources.get("extended_commands.help.dialog.unit"));
+      path =
+          new File(Client.getSettingsDirectory(), Resources
+              .get("extended_commands.help.dialog.unit"));
       if (!path.exists()) {
         path = new File(Resources.get("extended_commands.help.dialog.unit"));
       }
@@ -464,7 +474,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         help.setText("Unable to locate help files...");
       }
     } catch (Exception e) {
-      help.setText("Unable to locate help files...\n"+e.getMessage());
+      help.setText("Unable to locate help files...\n" + e.getMessage());
     }
   }
 }

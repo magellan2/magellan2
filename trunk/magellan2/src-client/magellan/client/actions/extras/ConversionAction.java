@@ -100,8 +100,9 @@ public class ConversionAction extends MenuAction {
           new ConversionDialog(client, client.getDispatcher(), client.getData(), client
               .getProperties());
       f.setVisible(true);
-    } else
+    } else {
       f.requestFocus();
+    }
   }
 
   /**
@@ -165,7 +166,7 @@ public class ConversionAction extends MenuAction {
         }
 
       });
-      
+
       id10.addKeyListener(new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent e) {
@@ -197,19 +198,17 @@ public class ConversionAction extends MenuAction {
       panel.add(label10);
       panel.add(id10);
       panel.add(cancelButton);
-      
-      
+
       getContentPane().add(panel);
 
       SpringUtilities.makeCompactGrid(panel, 3, 2, 7, 7, 7, 7);
     }
 
-    
-    
     @Override
     public void setVisible(boolean b) {
-      if (!b)
+      if (!b) {
         f = null;
+      }
       super.setVisible(b);
     }
 

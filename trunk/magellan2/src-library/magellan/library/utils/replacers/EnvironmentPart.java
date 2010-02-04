@@ -15,13 +15,13 @@ package magellan.library.utils.replacers;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public abstract class EnvironmentPart {
-	/**
-	 * DOCUMENT-ME
-	 */
-	public abstract void reset();
+  /**
+   * DOCUMENT-ME
+   */
+  public abstract void reset();
 }

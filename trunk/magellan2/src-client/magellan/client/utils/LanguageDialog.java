@@ -53,13 +53,11 @@ public class LanguageDialog {
 
   private String title = Resources.get("util.languagedialog.title");
 
-  
   /**
    * Creates new LanguageDialog
    * 
    * @param parent The parent component
    * @param settings The settings needed for the resource loader
-   * 
    */
   public LanguageDialog(Component parent, Properties settings) {
     this.settings = settings;
@@ -67,7 +65,7 @@ public class LanguageDialog {
     Resources.getInstance();
 
     findLanguages();
-    
+
     initDialog(parent);
   }
 
@@ -94,53 +92,57 @@ public class LanguageDialog {
   }
 
   private void initDialog(Component parent) {
-    if (languagesFound()){
-      pane = new JOptionPane(message, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, null, null);
+    if (languagesFound()) {
+      pane =
+          new JOptionPane(message, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION,
+              null, null, null);
 
       pane.setWantsInput(true);
       pane.setSelectionValues(languageList.toArray());
       pane.setInitialSelectionValue(sysDefault);
-      pane.setComponentOrientation(((parent == null) ?
-          JOptionPane.getRootFrame() : parent).getComponentOrientation());
+      pane.setComponentOrientation(((parent == null) ? JOptionPane.getRootFrame() : parent)
+          .getComponentOrientation());
 
       dialog = pane.createDialog(parent, title);
-    } else { 
-      pane = new JOptionPane("No languages found!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, null, null);
+    } else {
+      pane =
+          new JOptionPane("No languages found!", JOptionPane.WARNING_MESSAGE,
+              JOptionPane.OK_CANCEL_OPTION, null, null, null);
       dialog = pane.createDialog(parent, title);
     }
-      
+
   }
 
   /**
-     * Moves this component to a new location. The top-left corner of
-     * the new location is specified by the <code>x</code> and <code>y</code>
-     * parameters in the coordinate space of this component's parent.
-     * @param x the <i>x</i>-coordinate of the new location's 
-     *          top-left corner in the parent's coordinate space
-     * @param y the <i>y</i>-coordinate of the new location's 
-     *          top-left corner in the parent's coordinate space
+   * Moves this component to a new location. The top-left corner of the new location is specified by
+   * the <code>x</code> and <code>y</code> parameters in the coordinate space of this component's
+   * parent.
+   * 
+   * @param x the <i>x</i>-coordinate of the new location's top-left corner in the parent's
+   *          coordinate space
+   * @param y the <i>y</i>-coordinate of the new location's top-left corner in the parent's
+   *          coordinate space
    */
-  public void setLocation(int x, int y){
+  public void setLocation(int x, int y) {
     dialog.setLocation(x, y);
   }
-  
+
   /**
    * @return Width of the dialog
    */
-  public int getWidth(){
+  public int getWidth() {
     return dialog.getWidth();
   }
-  
+
   /**
-   * @return Height of the dialog 
+   * @return Height of the dialog
    */
-  public int getHeight(){
+  public int getHeight() {
     return dialog.getHeight();
   }
-  
+
   /**
    * Display the dialog and return user's choice.
-   * 
    */
   public Locale show() {
     if (languagesFound()) {
@@ -149,13 +151,12 @@ public class LanguageDialog {
       dialog.setAlwaysOnTop(true);
       dialog.setVisible(true);
       dialog.dispose();
-      
+
       Object value = pane.getInputValue();
-      if (value == JOptionPane.UNINITIALIZED_VALUE) {
+      if (value == JOptionPane.UNINITIALIZED_VALUE)
         return null;
-        }
-        return ((Lang)value).locale;
-    }else{
+      return ((Lang) value).locale;
+    } else {
       dialog.setVisible(true);
       dialog.dispose();
       return null;
@@ -163,7 +164,6 @@ public class LanguageDialog {
   }
 
   /**
-   * 
    * @return <code>true</code> iff at least one language has been found
    */
   public boolean languagesFound() {
@@ -175,8 +175,6 @@ public class LanguageDialog {
 
     /**
      * Creates a new Lang object.
-     * 
-     * 
      */
     public Lang(String lang) {
       locale = new Locale(lang, "");
@@ -184,8 +182,6 @@ public class LanguageDialog {
 
     /**
      * Creates a new Lang object.
-     * 
-     * 
      */
     public Lang(Locale l) {
       locale = l;
@@ -193,8 +189,6 @@ public class LanguageDialog {
 
     /**
      * DOCUMENT-ME
-     * 
-     * 
      */
     @Override
     public String toString() {
@@ -213,7 +207,7 @@ public class LanguageDialog {
       }
       return false;
     }
-    
+
     @Override
     public int hashCode() {
       return toString().hashCode();

@@ -39,29 +39,29 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
   public SaveOrdersAction(Client client, Mode mode) {
     super(client);
     this.mode = mode;
-    
+
     // don't need this, MenuAction takes care of shortcuts
-//    shortCuts = new ArrayList<KeyStroke>(1);
-//    switch (mode) {
-//    case DIALOG:
-//      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK
-//          | InputEvent.SHIFT_MASK));
-//      break;
-//    case FILE:
-//      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK
-//          | InputEvent.SHIFT_MASK));
-//      break;
-//    case CLIPBOARD:
-//      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK
-//          | InputEvent.SHIFT_MASK));
-//      break;
-//    case MAIL:
-//      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK
-//          | InputEvent.SHIFT_MASK));
-//
-//      break;
-//    }
-//    DesktopEnvironment.registerShortcutListener(this);
+    // shortCuts = new ArrayList<KeyStroke>(1);
+    // switch (mode) {
+    // case DIALOG:
+    // shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK
+    // | InputEvent.SHIFT_MASK));
+    // break;
+    // case FILE:
+    // shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK
+    // | InputEvent.SHIFT_MASK));
+    // break;
+    // case CLIPBOARD:
+    // shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK
+    // | InputEvent.SHIFT_MASK));
+    // break;
+    // case MAIL:
+    // shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK
+    // | InputEvent.SHIFT_MASK));
+    //
+    // break;
+    // }
+    // DesktopEnvironment.registerShortcutListener(this);
 
     init();
     setEnabled(false);
@@ -72,20 +72,20 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
    * Simulates {@link MenuAction#MenuAction(Client)}.
    */
   private void init() {
-    this.setName(getNameTranslated());
+    setName(getNameTranslated());
 
-    this.setIcon(getIconName());
+    setIcon(getIconName());
 
     if (getMnemonicTranslated() != null && !getMnemonicTranslated().trim().equals("")) {
-      this.putValue("mnemonic", new Character(getMnemonicTranslated().charAt(0)));
+      putValue("mnemonic", new Character(getMnemonicTranslated().charAt(0)));
     }
 
     if (getAcceleratorTranslated() != null && !getAcceleratorTranslated().trim().equals("")) {
-      this.putValue("accelerator", KeyStroke.getKeyStroke(getAcceleratorTranslated()));
+      putValue("accelerator", KeyStroke.getKeyStroke(getAcceleratorTranslated()));
     }
 
     if (getTooltipTranslated() != null && !getTooltipTranslated().trim().equals("")) {
-      this.putValue("tooltip", getTooltipTranslated());
+      putValue("tooltip", getTooltipTranslated());
     }
   }
 
@@ -119,76 +119,79 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
 
   private void execMail() {
     if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
-        .getSelectedRegions().values()).runMail())
+        .getSelectedRegions().values()).runMail()) {
       JOptionPane.showMessageDialog(client, Resources
           .get("actions.saveordersaction.action.error.message"), Resources
           .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
+    }
   }
 
   private void execSave() {
     if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
-        .getSelectedRegions().values()).runSave())
+        .getSelectedRegions().values()).runSave()) {
       JOptionPane.showMessageDialog(client, Resources
           .get("actions.saveordersaction.action.error.message"), Resources
           .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
+    }
   }
 
   private void execClipboard() {
     if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
-        .getSelectedRegions().values()).runClipboard())
+        .getSelectedRegions().values()).runClipboard()) {
       JOptionPane.showMessageDialog(client, Resources
           .get("actions.saveordersaction.action.error.message"), Resources
           .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
+    }
   }
 
-//  /**
-//   * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
-//   */
-//  public void shortCut(KeyStroke shortcut) {
-//    if (shortCuts.indexOf(shortcut) < 0)
-//      return;
-//
-//    switch (mode) {
-//    case DIALOG:
-//      showDialog();
-//      break;
-//    case FILE:
-//      execSave();
-//      break;
-//    case CLIPBOARD:
-//      execClipboard();
-//      break;
-//    case MAIL:
-//      execMail();
-//      break;
-//    }
-//  }
-//
-//  /**
-//   * Should return all short cuts this class want to be informed. The elements should be of type
-//   * javax.swing.KeyStroke
-//   *
-//   * @see magellan.client.desktop.ShortcutListener#getShortCuts()
-//   */
-//  public Iterator<KeyStroke> getShortCuts() {
-//    return shortCuts.iterator();
-//  }
-//
-//  /**
-//   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
-//   */
-//  public String getShortcutDescription(KeyStroke obj) {
-//    if (mode==null) return "default"; // not yet initialized
-//    return Resources.get("actions.saveordersaction.shortcuts.description." + String.valueOf(mode));
-//  }
-//
-//  /**
-//   * 
-//   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
-//   */
-//  public java.lang.String getListenerDescription() {
-//    return Resources.get("actions.saveordersaction.shortcuts.title." + String.valueOf(mode));
-//  }
+  // /**
+  // * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
+  // */
+  // public void shortCut(KeyStroke shortcut) {
+  // if (shortCuts.indexOf(shortcut) < 0)
+  // return;
+  //
+  // switch (mode) {
+  // case DIALOG:
+  // showDialog();
+  // break;
+  // case FILE:
+  // execSave();
+  // break;
+  // case CLIPBOARD:
+  // execClipboard();
+  // break;
+  // case MAIL:
+  // execMail();
+  // break;
+  // }
+  // }
+  //
+  // /**
+  // * Should return all short cuts this class want to be informed. The elements should be of type
+  // * javax.swing.KeyStroke
+  // *
+  // * @see magellan.client.desktop.ShortcutListener#getShortCuts()
+  // */
+  // public Iterator<KeyStroke> getShortCuts() {
+  // return shortCuts.iterator();
+  // }
+  //
+  // /**
+  // * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+  // */
+  // public String getShortcutDescription(KeyStroke obj) {
+  // if (mode==null) return "default"; // not yet initialized
+  // return Resources.get("actions.saveordersaction.shortcuts.description." + String.valueOf(mode));
+  // }
+  //
+  // /**
+  // *
+  // * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
+  // */
+  // public java.lang.String getListenerDescription() {
+  // return Resources.get("actions.saveordersaction.shortcuts.title." + String.valueOf(mode));
+  // }
 
   /**
    * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
@@ -207,7 +210,8 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    if (mode==null) return "default"; // not yet initialized
+    if (mode == null)
+      return "default"; // not yet initialized
     return Resources.get("actions.saveordersaction.accelerator." + String.valueOf(mode), false);
   }
 
@@ -216,7 +220,8 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    if (mode==null) return "default"; // not yet initialized
+    if (mode == null)
+      return "default"; // not yet initialized
     return Resources.get("actions.saveordersaction.mnemonic." + String.valueOf(mode), false);
   }
 
@@ -225,7 +230,8 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getNameTranslated() {
-    if (mode==null) return "default"; // not yet initialized
+    if (mode == null)
+      return "default"; // not yet initialized
     return Resources.get("actions.saveordersaction.name." + String.valueOf(mode));
   }
 
@@ -234,7 +240,8 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getTooltipTranslated() {
-    if (mode==null) return "default"; // not yet initialized
+    if (mode == null)
+      return "default"; // not yet initialized
     return Resources.get("actions.saveordersaction.tooltip." + String.valueOf(mode), false);
   }
 }

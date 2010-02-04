@@ -26,292 +26,254 @@ import magellan.client.completion.AutoCompletion;
 import magellan.library.completion.Completion;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements KeyListener {
-	protected boolean addLinebreak = false;
-	protected Completion lastCompletion = null;
-	protected JTextComponent lastEditor = null;
-	protected boolean markedText = false;
-	protected boolean caretUpdate = false;
-	protected int selectedArea[];
-	protected AutoCompletion ac;
+  protected boolean addLinebreak = false;
+  protected Completion lastCompletion = null;
+  protected JTextComponent lastEditor = null;
+  protected boolean markedText = false;
+  protected boolean caretUpdate = false;
+  protected int selectedArea[];
+  protected AutoCompletion ac;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void keyReleased(java.awt.event.KeyEvent p1) {
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void keyReleased(java.awt.event.KeyEvent p1) {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void keyPressed(java.awt.event.KeyEvent e) {
-		if(lastEditor == null) { // forget to remove listener?
+  /**
+   * DOCUMENT-ME
+   */
+  public void keyPressed(java.awt.event.KeyEvent e) {
+    if (lastEditor == null) { // forget to remove listener?
 
-			if(e.getSource() instanceof Component) {
-				((Component) e.getSource()).removeKeyListener(this);
-			}
+      if (e.getSource() instanceof Component) {
+        ((Component) e.getSource()).removeKeyListener(this);
+      }
 
-			return;
-		}
+      return;
+    }
 
-		if(!markedText) { // this selection was not marked by us
+    if (!markedText)
+      return;
 
-			return;
-		}
+    int code = e.getKeyCode();
+    int modifiers = e.getModifiers();
 
-		int code = e.getKeyCode();
-		int modifiers = e.getModifiers();
+    // no "real" key
+    if ((code == KeyEvent.VK_CONTROL) || (code == KeyEvent.VK_SHIFT) || (code == KeyEvent.VK_ALT)
+        || (code == KeyEvent.VK_TAB))
+      return;
 
-		// no "real" key
-		if((code == KeyEvent.VK_CONTROL) || (code == KeyEvent.VK_SHIFT) ||
-			   (code == KeyEvent.VK_ALT) || (code == KeyEvent.VK_TAB)) {
-			return;
-		}
+    int sp[][] = ac.getCompleterKeys();
 
-		int sp[][] = ac.getCompleterKeys();
+    for (int i = 0; i < 4; i++) {
+      if ((modifiers == sp[i][0]) && (code == sp[i][1]))
+        return;
+    }
 
-		for(int i = 0; i < 4; i++) {
-			if((modifiers == sp[i][0]) && (code == sp[i][1])) {
-				return;
-			}
-		}
+    // delete our selection
+    markedText = false;
+  }
 
-		// delete our selection
-		markedText = false;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void keyTyped(java.awt.event.KeyEvent p1) {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void keyTyped(java.awt.event.KeyEvent p1) {
-	}
+  /**
+   * Initialize this GUI for use with the given AutoCompletion. This method is called by
+   * AutoCompletion when the GUI is added to it.
+   */
+  public void init(AutoCompletion ac) {
+    this.ac = ac;
+    selectedArea = new int[2];
+    selectedArea[0] = -1;
+  }
 
-	/**
-	 * Initialize this GUI for use with the given AutoCompletion. This method is called by
-	 * AutoCompletion when the GUI is added to it.
-	 *
-	 * 
-	 */
-	public void init(AutoCompletion ac) {
-		this.ac = ac;
-		selectedArea = new int[2];
-		selectedArea[0] = -1;
-	}
+  /**
+   * Should return true if this GUI is currently offering a completion to the user.
+   */
+  public boolean isOfferingCompletion() {
+    return markedText;
+  }
 
-	/**
-	 * Should return true if this GUI is currently offering a completion to the user.
-	 *
-	 * 
-	 */
-	public boolean isOfferingCompletion() {
-		return markedText;
-	}
+  /**
+   * Called the advice this GUI to offer the given completions in the given Editor to the user.
+   * 
+   * @see magellan.client.swing.completion.CompletionGUI#offerCompletion(javax.swing.text.JTextComponent,
+   *      java.util.Collection, java.lang.String)
+   */
+  public void offerCompletion(JTextComponent editor, Collection<Completion> completions, String stub) {
+    lastEditor = editor;
+    markedText = false;
+    editor.addKeyListener(this);
 
-	/**
-	 * Called the advice this GUI to offer the given completions in the given Editor to the user.
-	 *
-	 * 
-	 * @see magellan.client.swing.completion.CompletionGUI#offerCompletion(javax.swing.text.JTextComponent, java.util.Collection, java.lang.String)
-	 */
-	public void offerCompletion(JTextComponent editor, Collection<Completion> completions, String stub) {
-		lastEditor = editor;
-		markedText = false;
-		editor.addKeyListener(this);
+    Completion cmp = completions.iterator().next();
 
-		Completion cmp = completions.iterator().next();
+    String cpltStr = null;
 
-		String cpltStr = null;
+    if (startsWith(cmp.getValue(), stub)) {
+      cpltStr = cmp.getValue() + cmp.getPostfix();
+    } else if (startsWith(cmp.getName(), stub)) {
+      cpltStr = cmp.getName() + cmp.getPostfix();
+    } else {
+      cpltStr = cmp.getValue() + cmp.getPostfix();
+    }
 
-		if(startsWith(cmp.getValue(), stub)) {
-			cpltStr = cmp.getValue() + cmp.getPostfix();
-		} else if(startsWith(cmp.getName(), stub)) {
-			cpltStr = cmp.getName() + cmp.getPostfix();
-		} else {
-			cpltStr = cmp.getValue() + cmp.getPostfix();
-		}
+    // check for line break and cut it
+    if (cpltStr.indexOf('\n') > -1) {
+      cpltStr = cpltStr.substring(0, cpltStr.length() - 1);
+    }
 
-		//check for line break and cut it
-		if(cpltStr.indexOf('\n') > -1) {
-			cpltStr = cpltStr.substring(0, cpltStr.length() - 1);
-		}
+    if (stub.length() < cpltStr.length()) {
+      try {
+        int offset = editor.getCaretPosition();
+        selectedArea[0] = offset;
+        cpltStr = cpltStr.substring(stub.length(), cpltStr.length());
+        markedText = true;
+        caretUpdate = true;
+        editor.getDocument().insertString(offset, cpltStr, new SimpleAttributeSet());
+        caretUpdate = true;
+        editor.select(offset, offset + cpltStr.length());
+        selectedArea[1] = editor.getSelectionEnd();
+        lastCompletion = cmp;
+      } catch (Exception exc) {
+      }
+    }
+  }
 
-		if(stub.length() < cpltStr.length()) {
-			try {
-				int offset = editor.getCaretPosition();
-				selectedArea[0] = offset;
-				cpltStr = cpltStr.substring(stub.length(), cpltStr.length());
-				markedText = true;
-				caretUpdate = true;
-				editor.getDocument().insertString(offset, cpltStr, new SimpleAttributeSet());
-				caretUpdate = true;
-				editor.select(offset, offset + cpltStr.length());
-				selectedArea[1] = editor.getSelectionEnd();
-				lastCompletion = cmp;
-			} catch(Exception exc) {
-			}
-		}
-	}
+  /**
+   * Checks if s1 is starting with s2, case-insensitive
+   */
+  protected boolean startsWith(String s1, String s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
 
-	/**
-	 * Checks if s1 is starting with s2, case-insensitive
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	protected boolean startsWith(String s1, String s2) {
-		s1 = s1.toLowerCase();
-		s2 = s2.toLowerCase();
+    return s1.startsWith(s2);
+  }
 
-		return s1.startsWith(s2);
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void cycleCompletion(JTextComponent editor, Collection<Completion> completions,
+      String stub, int index) {
+    if (!markedText || (editor.getSelectionStart() < 0))
+      return;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-	public void cycleCompletion(JTextComponent editor, Collection<Completion> completions, String stub,
-								int index) {
-		if(!markedText || (editor.getSelectionStart() < 0)) { // offerCompletion broken
+    Iterator<Completion> it = completions.iterator();
+    Completion cmp = it.next();
 
-			return;
-		}
+    for (int i = 1; i <= index; i++) {
+      if (!it.hasNext()) {
+        it = completions.iterator();
+      }
 
-		Iterator<Completion> it = completions.iterator();
-		Completion cmp = it.next();
+      cmp = it.next();
+    }
 
-		for(int i = 1; i <= index; i++) {
-			if(!it.hasNext()) {
-				it = completions.iterator();
-			}
+    String cpltStr = null;
 
-			cmp = it.next();
-		}
+    if (cmp.getValue().startsWith(stub)) {
+      cpltStr = cmp.getValue() + cmp.getPostfix();
+    } else if (cmp.getName().startsWith(stub)) {
+      cpltStr = cmp.getName() + cmp.getPostfix();
+    } else {
+      cpltStr = cmp.getValue() + cmp.getPostfix();
+    }
 
-		String cpltStr = null;
+    // check for line break and cut it
+    if (cpltStr.indexOf('\n') > -1) {
+      cpltStr = cpltStr.substring(0, cpltStr.length() - 1);
+    }
 
-		if(cmp.getValue().startsWith(stub)) {
-			cpltStr = cmp.getValue() + cmp.getPostfix();
-		} else if(cmp.getName().startsWith(stub)) {
-			cpltStr = cmp.getName() + cmp.getPostfix();
-		} else {
-			cpltStr = cmp.getValue() + cmp.getPostfix();
-		}
+    if (stub.length() < cpltStr.length()) {
+      cpltStr = cpltStr.substring(stub.length(), cpltStr.length());
 
-		//check for line break and cut it
-		if(cpltStr.indexOf('\n') > -1) {
-			cpltStr = cpltStr.substring(0, cpltStr.length() - 1);
-		}
+      int pos = editor.getSelectionStart();
+      markedText = true;
+      caretUpdate = true;
+      selectedArea[0] = editor.getSelectionStart();
+      lastEditor.replaceSelection(cpltStr);
+      caretUpdate = true;
+      editor.select(pos, pos + cpltStr.length());
+      selectedArea[1] = editor.getSelectionEnd();
+      lastCompletion = cmp;
+      lastEditor = editor; // shouldn't be necessary
+    }
+  }
 
-		if(stub.length() < cpltStr.length()) {
-			cpltStr = cpltStr.substring(stub.length(), cpltStr.length());
+  /**
+   * Called when this GUI should stop offering completions.
+   */
+  public void stopOffer() {
+    if (lastEditor != null) {
+      lastEditor.removeKeyListener(this);
+      checkMarkedText();
 
-			int pos = editor.getSelectionStart();
-			markedText = true;
-			caretUpdate = true;
-			selectedArea[0] = editor.getSelectionStart();
-			lastEditor.replaceSelection(cpltStr);
-			caretUpdate = true;
-			editor.select(pos, pos + cpltStr.length());
-			selectedArea[1] = editor.getSelectionEnd();
-			lastCompletion = cmp;
-			lastEditor = editor; // shouldn't be necessary
-		}
-	}
+      if (markedText) {
+        lastEditor.replaceSelection(null);
+      }
+    }
 
-	/**
-	 * Called when this GUI should stop offering completions.
-	 */
-	public void stopOffer() {
-		if(lastEditor != null) {
-			lastEditor.removeKeyListener(this);
-			checkMarkedText();
+    markedText = false;
+  }
 
-			if(markedText) {
-				lastEditor.replaceSelection(null);
-			}
-		}
+  /*
+   * checks if the selected text is still ours(same as in selectedArea). May clear markedText flag.
+   */
+  protected void checkMarkedText() {
+  }
 
-		markedText = false;
-	}
+  /**
+   * If this GUI needs some special keys the Key-Codes con be obtained by this method.
+   */
+  public int[] getSpecialKeys() {
+    return null;
+  }
 
-	/* checks if the selected text is still ours(same as in selectedArea).
-	 * May clear markedText flag.
-	 */
-	protected void checkMarkedText() {
-	}
+  /**
+   * When AutoCompletion recognizes a special key of getSpecialKeys(), this method is called with
+   * the key found.
+   */
+  public void specialKeyPressed(int key) {
+  }
 
-	/**
-	 * If this GUI needs some special keys the Key-Codes con be obtained by this method.
-	 *
-	 * 
-	 */
-	public int[] getSpecialKeys() {
-		return null;
-	}
+  /**
+   * If the editor my lose the focus because of a GUI action(usually after specialKeyPressed()),
+   * this method should return true to avoid AutoCompletion calling stopOffer().
+   */
+  public boolean editorMayLoseFocus() {
+    return false;
+  }
 
-	/**
-	 * When AutoCompletion recognizes a special key of getSpecialKeys(), this method is called with
-	 * the key found.
-	 *
-	 * 
-	 */
-	public void specialKeyPressed(int key) {
-	}
+  /**
+   * If the editor my update the caret because of a GUI action(usually after specialKeyPressed()),
+   * this method should return true to avoid AutoCompletion calling stopOffer().
+   */
+  public boolean editorMayUpdateCaret() {
+    if (caretUpdate) {
+      caretUpdate = false;
 
-	/**
-	 * If the editor my lose the focus because of a GUI action(usually after specialKeyPressed()),
-	 * this method should return true to avoid AutoCompletion calling stopOffer().
-	 *
-	 * 
-	 */
-	public boolean editorMayLoseFocus() {
-		return false;
-	}
+      return true;
+    }
 
-	/**
-	 * If the editor my update the caret because of a GUI action(usually after
-	 * specialKeyPressed()), this method should return true to avoid AutoCompletion calling
-	 * stopOffer().
-	 *
-	 * 
-	 */
-	public boolean editorMayUpdateCaret() {
-		if(caretUpdate) {
-			caretUpdate = false;
+    return markedText;
+  }
 
-			return true;
-		}
-
-		return markedText;
-	}
-
-	/**
-	 * Returns the currently selected Completion object.
-	 *
-	 * 
-	 */
-	public Completion getSelectedCompletion() {
-		return lastCompletion;
-	}
+  /**
+   * Returns the currently selected Completion object.
+   */
+  public Completion getSelectedCompletion() {
+    return lastCompletion;
+  }
 
   /**
    */

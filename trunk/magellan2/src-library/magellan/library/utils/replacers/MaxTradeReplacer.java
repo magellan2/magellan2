@@ -16,38 +16,32 @@ package magellan.library.utils.replacers;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author unknown
  * @version 1.0
  */
 public class MaxTradeReplacer extends AbstractRegionReplacer {
-	protected static final Integer ZERO = new Integer(0);
+  protected static final Integer ZERO = new Integer(0);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public Object getRegionReplacement(Region r) {
-		if(r.maxLuxuries() >= 0) {
-			if(r.maxLuxuries() == 0) {
-				return MaxTradeReplacer.ZERO;
-			}
+    if (r.maxLuxuries() >= 0) {
+      if (r.maxLuxuries() == 0)
+        return MaxTradeReplacer.ZERO;
 
-			return new Integer(r.maxLuxuries());
-		}
+      return new Integer(r.maxLuxuries());
+    }
 
-		return null;
-	}
+    return null;
+  }
 
   public String getDescription() {
     return Resources.get("util.replacers.maxtradereplacer.description");
-  }  
+  }
 
 }

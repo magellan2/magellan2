@@ -30,6 +30,7 @@ import magellan.library.Ship;
 
 public class ShipIDMapping implements DataMapping {
   private static ShipIDMapping singleton = new ShipIDMapping();
+
   public static ShipIDMapping getSingleton() {
     return ShipIDMapping.singleton;
   }
@@ -41,23 +42,23 @@ public class ShipIDMapping implements DataMapping {
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
     // create possible translations by same unit in both reports from same turn!
-    if (fromData.getDate()==null || toData.getDate()==null || !fromData.getDate().equals(toData.getDate())) {
+    if (fromData.getDate() == null || toData.getDate() == null
+        || !fromData.getDate().equals(toData.getDate()))
       return null;
-    }
-    
+
     for (Region region : fromData.regions().values()) {
       if (region.getCoordinate().z == level) {
         for (Ship ship : region.ships()) {
           Ship sameShip = toData.getShip(ship.getID());
-          
+
           if (sameShip != null) {
             // match found
             Region sameRegion = sameShip.getRegion();
             if (sameRegion != null) {
               CoordinateID sameCoord = sameRegion.getCoordinate();
-              if (sameCoord.z == level) {
-                return new CoordinateID(sameCoord.x - region.getCoordinate().x , sameCoord.y - region.getCoordinate().y, level);
-              }
+              if (sameCoord.z == level)
+                return new CoordinateID(sameCoord.x - region.getCoordinate().x, sameCoord.y
+                    - region.getCoordinate().y, level);
             }
           }
         }

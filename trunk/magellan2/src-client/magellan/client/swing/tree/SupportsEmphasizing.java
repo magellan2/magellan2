@@ -21,29 +21,25 @@ import java.util.List;
  * getSubordinatedElements is supposed to contain those wrappers that are directly under the node
  * that contains this wrapper. This List should be used to determine the return value of
  * emphasized().
- *
+ * 
  * @author Ulrich Küster
  */
 public interface SupportsEmphasizing {
-	/**
-	 * Retrieve the subordinate elements of this wrapper. They are supposed to implement
-	 * SupportsEmphasizing too. This way we can ask them and check whether all subordinated
-	 * elements are not emphasized.
-	 */
-	public List<SupportsEmphasizing> getSubordinatedElements();
+  /**
+   * Retrieve the subordinate elements of this wrapper. They are supposed to implement
+   * SupportsEmphasizing too. This way we can ask them and check whether all subordinated elements
+   * are not emphasized.
+   */
+  public List<SupportsEmphasizing> getSubordinatedElements();
 
-	
   /**
    * Adds an item to the list of subordinate elements.
    */
   public void addSubordinatedElement(SupportsEmphasizing nodeWrapper);
 
-	/**
-	 * Tells whether this element is emphasized or not.
-	 *
-	 * 
-	 */
-	public boolean emphasized();
-
+  /**
+   * Tells whether this element is emphasized or not.
+   */
+  public boolean emphasized();
 
 }

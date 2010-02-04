@@ -15,26 +15,22 @@ package magellan.client.swing.completion;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public abstract class AbstractCompletionGUI implements CompletionGUI {
-	/**
-	 * Returns the title of this GUI.
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Returns the title of this GUI.
+   */
+  @Override
   public String toString() {
-		return getTitle();
-	}
+    return getTitle();
+  }
 
-	/**
-	 * Returns the name of this CompletionGUI. This implementation returns the content of
-	 * "gui.title" key in the current Resource Bundle.
-	 *
-	 * ... gui.title
-	 */
-	public abstract String getTitle();
+  /**
+   * Returns the name of this CompletionGUI. This implementation returns the content of "gui.title"
+   * key in the current Resource Bundle. ... gui.title
+   */
+  public abstract String getTitle();
 }

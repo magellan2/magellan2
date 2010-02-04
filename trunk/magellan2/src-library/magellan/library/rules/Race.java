@@ -51,7 +51,7 @@ public class Race extends UnitContainerType {
    * Sets the string needed for recruiting orders.
    */
   public void setRecruitmentName(String name) {
-    this.recruitName = name;
+    recruitName = name;
   }
 
   /**

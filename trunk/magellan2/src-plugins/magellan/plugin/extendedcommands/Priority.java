@@ -27,33 +27,27 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 
 public enum Priority {
-  HIGHEST,
-  HIGHER,
-  NORMAL,
-  LOWER,
-  LOWEST;
+  HIGHEST, HIGHER, NORMAL, LOWER, LOWEST;
 
   /**
    * Returns the wanted priority.
    */
   public static Priority getPriority(String name) {
-    if (Utils.isEmpty(name)) {
+    if (Utils.isEmpty(name))
       return NORMAL;
-    }
     for (Priority priority : Priority.values()) {
-      if (priority.toString().equalsIgnoreCase(name)) {
+      if (priority.toString().equalsIgnoreCase(name))
         return priority;
-      }
     }
     return NORMAL;
   }
-  
+
   /**
    * @see java.lang.Enum#toString()
    */
   @Override
   public String toString() {
-    return Resources.get("extended_commands.priority."+name().toLowerCase());
+    return Resources.get("extended_commands.priority." + name().toLowerCase());
   }
-  
+
 }

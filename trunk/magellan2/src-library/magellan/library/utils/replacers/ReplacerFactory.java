@@ -22,33 +22,23 @@ import java.util.Set;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface ReplacerFactory {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Set<String> getReplacers();
+  /**
+   * DOCUMENT-ME
+   */
+  public Set<String> getReplacers();
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public boolean isReplacer(String name);
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean isReplacer(String name);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Replacer createReplacer(String name);
+  /**
+   * DOCUMENT-ME
+   */
+  public Replacer createReplacer(String name);
 }

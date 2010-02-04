@@ -16,158 +16,145 @@ package magellan.client.swing.tree;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import magellan.library.rules.ItemCategory;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Ulrich Küster
  */
-public class ItemCategoryNodeWrapper implements CellObject{
-	private int amount = -1;
-	private int unmodifiedAmount = -1;
-	private ItemCategory cat = null;
-	private String setCatName = null;
-	protected List<String> icons;
-	protected List<String> returnIcons;
-	
-	protected DetailsNodeWrapperDrawPolicy adapter;
-	
-	/**
-	 * Creates a new ItemCategoryNodeWrapper object.
-	 *
-	 * 
-	 * 
-	 */
-	public ItemCategoryNodeWrapper(ItemCategory category, int amount) {
-		this.amount = amount;
-		this.cat = category;
-	}
-	public ItemCategoryNodeWrapper(ItemCategory category, int amount, String _catName) {
-		this.amount = amount;
-		this.cat = category;
-		this.setCatName = _catName;
-	}
-	
+public class ItemCategoryNodeWrapper implements CellObject {
+  private int amount = -1;
+  private int unmodifiedAmount = -1;
+  private ItemCategory cat = null;
+  private String setCatName = null;
+  protected List<String> icons;
+  protected List<String> returnIcons;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setAmount(int i) {
-		amount = i;
-	}
+  protected DetailsNodeWrapperDrawPolicy adapter;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public ItemCategory getItemCategory() {
-		return cat;
-	}
+  /**
+   * Creates a new ItemCategoryNodeWrapper object.
+   */
+  public ItemCategoryNodeWrapper(ItemCategory category, int amount) {
+    this.amount = amount;
+    cat = category;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  public ItemCategoryNodeWrapper(ItemCategory category, int amount, String _catName) {
+    this.amount = amount;
+    cat = category;
+    setCatName = _catName;
+  }
+
+  /**
+   * DOCUMENT-ME
+   */
+  public void setAmount(int i) {
+    amount = i;
+  }
+
+  /**
+   * DOCUMENT-ME
+   */
+  public ItemCategory getItemCategory() {
+    return cat;
+  }
+
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String toString() {
-		if(amount == -1) {
-			if (this.setCatName==null) {
-				return cat.toString();
-			} else {
-				return this.setCatName;
-			}
-		} else {
-		  String amountInfo = "";
-		  if (unmodifiedAmount==-1 || unmodifiedAmount==amount){
-		    amountInfo = ": " +  amount;
-		  } else {
-		    amountInfo = ": " +  unmodifiedAmount + " (" + amount + ")";
-		  }
-			if (this.setCatName==null) {
-				return cat.toString() + amountInfo;
-			} else {
-				return this.setCatName + amountInfo;
-			}
-		}
-	}
-	public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
-		return init(settings, "SimpleNodeWrapper", adapter);
-	}
+    if (amount == -1) {
+      if (setCatName == null)
+        return cat.toString();
+      else
+        return setCatName;
+    } else {
+      String amountInfo = "";
+      if (unmodifiedAmount == -1 || unmodifiedAmount == amount) {
+        amountInfo = ": " + amount;
+      } else {
+        amountInfo = ": " + unmodifiedAmount + " (" + amount + ")";
+      }
+      if (setCatName == null)
+        return cat.toString() + amountInfo;
+      else
+        return setCatName + amountInfo;
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public NodeWrapperDrawPolicy init(Properties settings, String prefix,
-									  NodeWrapperDrawPolicy adapter) {
-		if(adapter == null) {
-			adapter = createSimpleDrawPolicy(settings, prefix);
-		}
+  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
+    return init(settings, "SimpleNodeWrapper", adapter);
+  }
 
-		adapter.addCellObject(this);
-		this.adapter = (DetailsNodeWrapperDrawPolicy) adapter;
+  /**
+   * DOCUMENT-ME
+   */
+  public NodeWrapperDrawPolicy init(Properties settings, String prefix,
+      NodeWrapperDrawPolicy adapter) {
+    if (adapter == null) {
+      adapter = createSimpleDrawPolicy(settings, prefix);
+    }
 
-		return adapter;
-	}
-	protected NodeWrapperDrawPolicy createSimpleDrawPolicy(Properties settings, String prefix) {
-		return new DetailsNodeWrapperDrawPolicy(1, null, settings, prefix, new String[][] {
-													{ "simple.showIcon", "true" }}, new String[] { "icons.text" }, 0, "tree.itemcategorynodewrapper.");
-	}
-	
-	public void setIcons(Collection<String> icons) {
+    adapter.addCellObject(this);
+    this.adapter = (DetailsNodeWrapperDrawPolicy) adapter;
+
+    return adapter;
+  }
+
+  protected NodeWrapperDrawPolicy createSimpleDrawPolicy(Properties settings, String prefix) {
+    return new DetailsNodeWrapperDrawPolicy(1, null, settings, prefix, new String[][] { {
+        "simple.showIcon", "true" } }, new String[] { "icons.text" }, 0,
+        "tree.itemcategorynodewrapper.");
+  }
+
+  public void setIcons(Collection<String> icons) {
     this.icons = null;
-    if(icons != null) {
+    if (icons != null) {
       this.icons = new ArrayList<String>(icons);
     }
-	}
-	
-	public void setIcons(Map<?, ?> icons) {
+  }
+
+  public void setIcons(Map<?, ?> icons) {
     this.icons = null;
-    if(icons != null) {
+    if (icons != null) {
       this.icons = new ArrayList<String>(icons.size());
-  
-      for(Iterator<?> iter = icons.values().iterator(); iter.hasNext();) {
-        this.icons.add(iter.next().toString());
+
+      for (Object name : icons.values()) {
+        this.icons.add(name.toString());
       }
     }
-	}
-	
-	public void setIcons(Object icons) {
+  }
+
+  public void setIcons(Object icons) {
     this.icons = null;
     this.icons = Collections.singletonList(icons.toString());
-	}
-	
-	public boolean emphasized() {
-		return false;
-	}
-	public void propertiesChanged() {
-		returnIcons = null;
-	}
-	public List<String> getIconNames() {
-		if(returnIcons == null) {
-			
-				returnIcons = icons;
-			
-		}
+  }
 
-		return returnIcons;
-	}
+  public boolean emphasized() {
+    return false;
+  }
+
+  public void propertiesChanged() {
+    returnIcons = null;
+  }
+
+  public List<String> getIconNames() {
+    if (returnIcons == null) {
+
+      returnIcons = icons;
+
+    }
+
+    return returnIcons;
+  }
+
   /**
    * Returns the value of unmodifiedAmount.
    * 
@@ -176,13 +163,14 @@ public class ItemCategoryNodeWrapper implements CellObject{
   public int getUnmodifiedAmount() {
     return unmodifiedAmount;
   }
+
   /**
    * Sets the value of unmodifiedAmount.
-   *
+   * 
    * @param unmodifiedAmount The value for unmodifiedAmount.
    */
   public void setUnmodifiedAmount(int unmodifiedAmount) {
     this.unmodifiedAmount = unmodifiedAmount;
   }
-	
+
 }

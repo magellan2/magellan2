@@ -85,7 +85,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     data = d;
     settings = p;
     this.dispatcher = dispatcher;
-    this.faction = f;
+    faction = f;
 
     setTitle(Resources.getFormatted("factionpropertiesdialog.window.title", f));
     setContentPane(getMainPane());
@@ -103,7 +103,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
-    this.data = e.getGameData();
+    data = e.getGameData();
   }
 
   private JPanel getMainPane() {
@@ -177,9 +177,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     addButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         CoordinateID translation = getTranslation();
-        if (translation == null) {
+        if (translation == null)
           return;
-        }
         DefaultListModel model = (DefaultListModel) translationList.getModel();
         int pos = -1;
         for (int i = 0; i < model.size(); ++i) {
@@ -207,8 +206,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     DefaultListModel model = new DefaultListModel();
 
     if (getData().getCoordinateTranslationMap(faction.getID()) != null) {
-      for (CoordinateID translation : getData().getCoordinateTranslationMap(
-          faction.getID()).values()) {
+      for (CoordinateID translation : getData().getCoordinateTranslationMap(faction.getID())
+          .values()) {
         model.addElement(translation);
       }
     }
@@ -253,9 +252,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     removeButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int pos = translationList.getSelectedIndex();
-        if (pos == -1) {
+        if (pos == -1)
           return;
-        }
         DefaultListModel model = getModel();
         model.remove(pos);
       }
@@ -335,11 +333,10 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
   }
 
   public String getPassword() {
-    if (approved) {
+    if (approved)
       return txtPassword.getText();
-    } else {
+    else
       return null;
-    }
   }
 
   public Collection<CoordinateID> getTranslations() {

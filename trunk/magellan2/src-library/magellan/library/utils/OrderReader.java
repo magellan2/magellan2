@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -35,53 +34,47 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.GenericRules;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * A class for reading a orders file for unit orders.
  */
 public class OrderReader {
-	private static final Logger log = Logger.getInstance(OrderReader.class);
-	private GameData data = null;
-	private LineNumberReader stream = null;
-	private boolean autoConfirm = false;
-	private boolean ignoreSemicolonComments = false;
-	private Status status = null;
+  private static final Logger log = Logger.getInstance(OrderReader.class);
+  private GameData data = null;
+  private LineNumberReader stream = null;
+  private boolean autoConfirm = false;
+  private boolean ignoreSemicolonComments = false;
+  private Status status = null;
   private boolean refreshUnitRelations = true;
   private boolean doNotOverwriteConfirmedOrders = false;
 
-	/**
-	 * Creates a new OrderReader object adding the read orders to the units it can find in the
-	 * specified game data object. This function clears the caches of all units.
-	 *
-	 * 
-	 */
-	public OrderReader(GameData g) {
-		data = g;
+  /**
+   * Creates a new OrderReader object adding the read orders to the units it can find in the
+   * specified game data object. This function clears the caches of all units.
+   */
+  public OrderReader(GameData g) {
+    data = g;
 
-		if(data == null) {
-			OrderReader.log.info("OrderReader.OrderReader(): game data is null! Creating empty game data to proceed.");
-			data = new CompleteData(new GenericRules());
-		}
+    if (data == null) {
+      OrderReader.log
+          .info("OrderReader.OrderReader(): game data is null! Creating empty game data to proceed.");
+      data = new CompleteData(new GenericRules());
+    }
 
-		// clear the caches in game data
-		if(data.units() != null) {
-			for(Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
-				Unit u = iter.next();
+    // clear the caches in game data
+    if (data.units() != null) {
+      for (Unit u : data.units().values()) {
+        u.clearCache();
+      }
+    }
 
-				u.clearCache();
-			}
-		}
-
-		if(data.regions() != null) {
-			for(Iterator<Region> iter = data.regions().values().iterator(); iter.hasNext();) {
-        Region uc = iter.next();
-
+    if (data.regions() != null) {
+      for (Region uc : data.regions().values()) {
         uc.clearCache();
-			}
-		}
-	}
+      }
+    }
+  }
 
-	/**
+  /**
    * Reads the orders from the specified Reader. Orders for multiple factions can be read. Region
    * lines are ignored. Unit are not created. If there are orders for a unit that cannot be found in
    * the game data these orders are ignored. Lines containing ECHECK comments are always ignored.
@@ -127,218 +120,216 @@ public class OrderReader {
     }
   }
 
-	private void readFaction(EntityID id) throws IOException {
-		Faction faction = data.getFaction(id);
+  private void readFaction(EntityID id) throws IOException {
+    Faction faction = data.getFaction(id);
 
-		if(faction == null) {
-			data.addFaction(MagellanFactory.createFaction(id, data));
-		}
+    if (faction == null) {
+      data.addFaction(MagellanFactory.createFaction(id, data));
+    }
 
-		String line = null; // the line read from the file
-		Unit currentUnit = null; // keeps track of the unit which is currently processed
-		Locale currentLocale = Locales.getOrderLocale(); // start out with the currently set default order locale
+    String line = null; // the line read from the file
+    Unit currentUnit = null; // keeps track of the unit which is currently processed
+    Locale currentLocale = Locales.getOrderLocale(); // start out with the currently set default
+    // order locale
 
-		/* normalized orders that have to be checked often in the loop
-		these have to be updated whenever the locale changes */
-		String naechsterOrder = Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_NEXT,
-																				  currentLocale));
-		String localeOrder = Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_LOCALE,
-																			   currentLocale));
+    /*
+     * normalized orders that have to be checked often in the loop these have to be updated whenever
+     * the locale changes
+     */
+    String naechsterOrder =
+        Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_NEXT, currentLocale));
+    String localeOrder =
+        Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_LOCALE, currentLocale));
 
-		if(status == null) {
-			status = new Status();
-		}
+    if (status == null) {
+      status = new Status();
+    }
 
-		status.factions++;
+    status.factions++;
 
-		while((line = stream.readLine()) != null) {
-			StringTokenizer tokenizer = new StringTokenizer(line, " ;");
+    while ((line = stream.readLine()) != null) {
+      StringTokenizer tokenizer = new StringTokenizer(line, " ;");
 
-			/*
-			There was a problem using this StringTokenizer:
-			If a unit had an order like " ; Einheit hat Kommando" the tokenizer
-			skipped the leading semicolon and tried to parse a new order instead
-			of parsing this line as a comment.
-			So treat lines, that start with a semicolon special!
-			*/
-			if(line.trim().startsWith(";")) {
-				if(currentUnit != null) {
-					// mark orders as confirmed on a ";bestaetigt" comment
-					String rest = Umlaut.normalize(line.substring(line.indexOf(';') + 1).trim());
+      /*
+       * There was a problem using this StringTokenizer: If a unit had an order like
+       * " ; Einheit hat Kommando" the tokenizer skipped the leading semicolon and tried to parse a
+       * new order instead of parsing this line as a comment. So treat lines, that start with a
+       * semicolon special!
+       */
+      if (line.trim().startsWith(";")) {
+        if (currentUnit != null) {
+          // mark orders as confirmed on a ";bestaetigt" comment
+          String rest = Umlaut.normalize(line.substring(line.indexOf(';') + 1).trim());
 
-					if(rest.equalsIgnoreCase(OrderWriter.CONFIRMED)) {
-						currentUnit.setOrdersConfirmed(true);
-					} else if((ignoreSemicolonComments == false) &&
-								  (rest.startsWith("ECHECK") == false)) {
-						// add all other comments except "; ECHECK ..." to the orders
-						currentUnit.addOrders(line,refreshUnitRelations);
-					}
-				}
+          if (rest.equalsIgnoreCase(OrderWriter.CONFIRMED)) {
+            currentUnit.setOrdersConfirmed(true);
+          } else if ((ignoreSemicolonComments == false) && (rest.startsWith("ECHECK") == false)) {
+            // add all other comments except "; ECHECK ..." to the orders
+            currentUnit.addOrders(line, refreshUnitRelations);
+          }
+        }
 
-				continue;
-			}
+        continue;
+      }
 
-			if(!tokenizer.hasMoreTokens() || line.trim().equals("")) {
-				// empty line
-				if(currentUnit != null) {
-					currentUnit.addOrders(line,refreshUnitRelations);
-				}
+      if (!tokenizer.hasMoreTokens() || line.trim().equals("")) {
+        // empty line
+        if (currentUnit != null) {
+          currentUnit.addOrders(line, refreshUnitRelations);
+        }
 
-				continue;
-			}
+        continue;
+      }
 
-			String token = Umlaut.normalize(tokenizer.nextToken().trim());
+      String token = Umlaut.normalize(tokenizer.nextToken().trim());
 
-			if(naechsterOrder.startsWith(token)) {
-				/* turn orders into 'real' temp units */
-				if(currentUnit != null) {
-					currentUnit.extractTempUnits(0, currentLocale);
-				}
+      if (naechsterOrder.startsWith(token)) {
+        /* turn orders into 'real' temp units */
+        if (currentUnit != null) {
+          currentUnit.extractTempUnits(0, currentLocale);
+        }
 
-				break;
-			} else if(localeOrder.startsWith(token)) {
-				if(tokenizer.hasMoreTokens()) {
-					token = tokenizer.nextToken().replace('"', ' ').trim();
-					currentLocale = new Locale(token, "");
+        break;
+      } else if (localeOrder.startsWith(token)) {
+        if (tokenizer.hasMoreTokens()) {
+          token = tokenizer.nextToken().replace('"', ' ').trim();
+          currentLocale = new Locale(token, "");
 
-					/* update the locale dependent cached orders */
-					naechsterOrder = Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_NEXT,currentLocale));
-					localeOrder = Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_LOCALE,currentLocale));
-				}
-			} else if(Resources.getOrderTranslation(EresseaConstants.O_REGION, currentLocale).startsWith(token)) {
-				//ignore
-				currentUnit = null;
-			} else if(Resources.getOrderTranslation(EresseaConstants.O_UNIT, currentLocale).startsWith(token)) {
-				token = tokenizer.nextToken();
+          /* update the locale dependent cached orders */
+          naechsterOrder =
+              Umlaut.normalize(Resources
+                  .getOrderTranslation(EresseaConstants.O_NEXT, currentLocale));
+          localeOrder =
+              Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_LOCALE,
+                  currentLocale));
+        }
+      } else if (Resources.getOrderTranslation(EresseaConstants.O_REGION, currentLocale)
+          .startsWith(token)) {
+        // ignore
+        currentUnit = null;
+      } else if (Resources.getOrderTranslation(EresseaConstants.O_UNIT, currentLocale).startsWith(
+          token)) {
+        token = tokenizer.nextToken();
 
-				UnitID unitID = null;
+        UnitID unitID = null;
 
-				try {
-					unitID = UnitID.createUnitID(token, data.base);
-				} catch(NumberFormatException e) {
-					OrderReader.log.error("OrderReader.readFaction(): " + e.toString() + " at line " +
-							  stream.getLineNumber(), e);
-				}
+        try {
+          unitID = UnitID.createUnitID(token, data.base);
+        } catch (NumberFormatException e) {
+          OrderReader.log.error("OrderReader.readFaction(): " + e.toString() + " at line "
+              + stream.getLineNumber(), e);
+        }
 
-				if(unitID != null) {
-					status.units++;
+        if (unitID != null) {
+          status.units++;
 
-					/* turn orders into 'real' temp units */
-					if(currentUnit != null) {
-						currentUnit.extractTempUnits(0, currentLocale);
-					}
+          /* turn orders into 'real' temp units */
+          if (currentUnit != null) {
+            currentUnit.extractTempUnits(0, currentLocale);
+          }
 
-					currentUnit = data.getUnit(unitID);
+          currentUnit = data.getUnit(unitID);
 
-					if(currentUnit == null) {
-						currentUnit = MagellanFactory.createUnit(unitID);
-						currentUnit.setFaction(faction);
+          if (currentUnit == null) {
+            currentUnit = MagellanFactory.createUnit(unitID);
+            currentUnit.setFaction(faction);
 
-						data.addUnit(currentUnit);
-					} else {
-					  if (currentUnit.isOrdersConfirmed() && this.doNotOverwriteConfirmedOrders){
-					    // we have a unit with confirmed orders and no OK for 
-					    // changing anything
-					    // feature request #296, Fiete
-					    currentUnit=null;
-					    status.confirmedUnitsNotOverwritten++;
-					  } else {
-  						/* the unit already exists so delete all its
-  						   temp units */
-  						Collection<ID> victimIDs = new LinkedList<ID>();
-  
-  						for(Iterator<TempUnit> tempIter = currentUnit.tempUnits().iterator();
-  								tempIter.hasNext();) {
-  							victimIDs.add((tempIter.next()).getID());
-  						}
-  
-  						for(Iterator<ID> idIter = victimIDs.iterator(); idIter.hasNext();) {
-  							currentUnit.deleteTemp(idIter.next(), data);
-  						}
-					  }
-					}
-					if (currentUnit!=null){
-  					currentUnit.clearOrders();
-  					currentUnit.setOrdersConfirmed(autoConfirm);
-					}
-				} else {
-					currentUnit = null;
-				}
-			} else if(currentUnit != null) {
-				currentUnit.addOrders(line,refreshUnitRelations);
-			}
-		}
-	}
+            data.addUnit(currentUnit);
+          } else {
+            if (currentUnit.isOrdersConfirmed() && doNotOverwriteConfirmedOrders) {
+              // we have a unit with confirmed orders and no OK for
+              // changing anything
+              // feature request #296, Fiete
+              currentUnit = null;
+              status.confirmedUnitsNotOverwritten++;
+            } else {
+              /*
+               * the unit already exists so delete all its temp units
+               */
+              Collection<ID> victimIDs = new LinkedList<ID>();
 
-	/**
-	 * Returns whether all read orders get automatically confirmed.
-	 *
-	 * 
-	 */
-	public boolean getAutoConfirm() {
-		return this.autoConfirm;
-	}
+              for (TempUnit tempUnit : currentUnit.tempUnits()) {
+                victimIDs.add((tempUnit).getID());
+              }
 
-	/**
-	 * Sets whether all read orders get automatically confirmed.
-	 *
-	 * 
-	 */
-	public void setAutoConfirm(boolean autoConfirm) {
-		this.autoConfirm = autoConfirm;
-	}
+              for (ID id2 : victimIDs) {
+                currentUnit.deleteTemp(id2, data);
+              }
+            }
+          }
+          if (currentUnit != null) {
+            currentUnit.clearOrders();
+            currentUnit.setOrdersConfirmed(autoConfirm);
+          }
+        } else {
+          currentUnit = null;
+        }
+      } else if (currentUnit != null) {
+        currentUnit.addOrders(line, refreshUnitRelations);
+      }
+    }
+  }
 
-	/**
-	 * Returns whether all comments in the orders starting with a semicolon (except confirmation
-	 * comments) are ignored.
-	 *
-	 * 
-	 */
-	public boolean isIgnoringSemicolonComments() {
-		return ignoreSemicolonComments;
-	}
+  /**
+   * Returns whether all read orders get automatically confirmed.
+   */
+  public boolean getAutoConfirm() {
+    return autoConfirm;
+  }
 
-	/**
-	 * Sets whether all comments in the orders starting with a semicolon (except confirmation
-	 * comments) are ignored.
-	 *
-	 * 
-	 */
-	public void ignoreSemicolonComments(boolean ignoreSemicolonComments) {
-		this.ignoreSemicolonComments = ignoreSemicolonComments;
-	}
+  /**
+   * Sets whether all read orders get automatically confirmed.
+   */
+  public void setAutoConfirm(boolean autoConfirm) {
+    this.autoConfirm = autoConfirm;
+  }
 
-	/**
-	 * Returns the number of factions and units that were read. This method should only be called
-	 * after reading the orders has finished.
-	 *
-	 * 
-	 */
-	public Status getStatus() {
-	  if (status==null)
-	    status=new Status();
-		return status;
-	}
+  /**
+   * Returns whether all comments in the orders starting with a semicolon (except confirmation
+   * comments) are ignored.
+   */
+  public boolean isIgnoringSemicolonComments() {
+    return ignoreSemicolonComments;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * @author $Author: $
-	 * @version $Revision: 242 $
-	 */
-	public class Status {
-		/** DOCUMENT-ME */
-		public int units = 0;
+  /**
+   * Sets whether all comments in the orders starting with a semicolon (except confirmation
+   * comments) are ignored.
+   */
+  public void ignoreSemicolonComments(boolean ignoreSemicolonComments) {
+    this.ignoreSemicolonComments = ignoreSemicolonComments;
+  }
 
-		/** DOCUMENT-ME */
-		public int factions = 0;
-		
-		/** 
-		 * if doNotOverwriteConfirmedorders=true then this is a counter
-		 * of the units which were protected by this setting and left unchanged
-		 */
-		public int confirmedUnitsNotOverwritten = 0;
-	}
+  /**
+   * Returns the number of factions and units that were read. This method should only be called
+   * after reading the orders has finished.
+   */
+  public Status getStatus() {
+    if (status == null) {
+      status = new Status();
+    }
+    return status;
+  }
+
+  /**
+   * DOCUMENT-ME
+   * 
+   * @author $Author: $
+   * @version $Revision: 242 $
+   */
+  public class Status {
+    /** DOCUMENT-ME */
+    public int units = 0;
+
+    /** DOCUMENT-ME */
+    public int factions = 0;
+
+    /**
+     * if doNotOverwriteConfirmedorders=true then this is a counter of the units which were
+     * protected by this setting and left unchanged
+     */
+    public int confirmedUnitsNotOverwritten = 0;
+  }
 
   public boolean isRefreshUnitRelations() {
     return refreshUnitRelations;
@@ -359,7 +350,7 @@ public class OrderReader {
 
   /**
    * Sets the value of doNotOverwriteConfirmedOrders.
-   *
+   * 
    * @param doNotOverwriteConfirmedOrders The value for doNotOverwriteConfirmedOrders.
    */
   public void setDoNotOverwriteConfirmedOrders(boolean doNotOverwriteConfirmedOrders) {

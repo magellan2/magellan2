@@ -21,48 +21,45 @@ import magellan.library.io.GameNameIO;
 import magellan.library.io.file.FileType;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * The purpose of this class is to try to read the game name from a cr report file.
- *
+ * 
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public class CRGameNameIO implements GameNameIO {
-	private static final Logger log = Logger.getInstance(CRGameNameIO.class);
+  private static final Logger log = Logger.getInstance(CRGameNameIO.class);
 
-	private static final String nameUndef = "undef";
+  private static final String nameUndef = "undef";
 
-	/**
-	 * Tries to determine the game name from a report.
-	 * 
-	 * It tries to get it from the "Spiel" tag and returns "Eressea" if no such tag is found.
-	 *
-	 * @param filetype 
-	 *
-	 * @return A String representing the name of the game.
-	 *
+  /**
+   * Tries to determine the game name from a report. It tries to get it from the "Spiel" tag and
+   * returns "Eressea" if no such tag is found.
+   * 
+   * @param filetype
+   * @return A String representing the name of the game.
    * @throws IOException If an I/O error occurs
-	 */
-	public String getGameName(FileType filetype) throws IOException {
-		Reader report = filetype.createReader();
+   */
+  public String getGameName(FileType filetype) throws IOException {
+    Reader report = filetype.createReader();
 
-		try {
-			Map<String, Object> headerMap = (new CRParser(null)).readHeader(report);
+    try {
+      Map<String, Object> headerMap = (new CRParser(null)).readHeader(report);
 
-			if(headerMap.containsKey("Spiel")) {
-				return (String) headerMap.get("Spiel");
-			}
-		} catch(IOException e) {
-			CRGameNameIO.log.error("Loader.getGameName(): unable to determine game's name of report " + report, e);
-		} finally {
-			report.close();
-		}
+      if (headerMap.containsKey("Spiel"))
+        return (String) headerMap.get("Spiel");
+    } catch (IOException e) {
+      CRGameNameIO.log.error("Loader.getGameName(): unable to determine game's name of report "
+          + report, e);
+    } finally {
+      report.close();
+    }
 
-		CRGameNameIO.log.warn("Loader.getGameName(): report header does not contain 'Spiel' tag!");
-		// oopsa! Fiete 20090105
-		// this means if we load bullshit eressea is returned. checkgametype is going to missfunction this way!
-		// return "Eressea";
-		return nameUndef;
-	}
+    CRGameNameIO.log.warn("Loader.getGameName(): report header does not contain 'Spiel' tag!");
+    // oopsa! Fiete 20090105
+    // this means if we load bullshit eressea is returned. checkgametype is going to missfunction
+    // this way!
+    // return "Eressea";
+    return CRGameNameIO.nameUndef;
+  }
 }

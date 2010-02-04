@@ -16,7 +16,7 @@ package magellan.library.utils.replacers;
 /**
  * This is an interface simply for the purpose of marking switches that do internal changes but no
  * "real" output.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */

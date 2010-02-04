@@ -8,7 +8,6 @@
 package magellan.client.actions.map;
 
 import java.awt.event.ActionEvent;
-import java.util.Iterator;
 
 import magellan.client.Client;
 import magellan.library.CoordinateID;
@@ -34,9 +33,7 @@ public class SelectAllAction extends AbstractSelectionAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    for (Iterator<CoordinateID> iter = client.getData().regions().keySet().iterator(); iter.hasNext();) {
-      CoordinateID c = iter.next();
-
+    for (CoordinateID c : client.getData().regions().keySet()) {
       if (c.z == client.getLevel()) {
         getSelectedRegions().put(c, client.getData().regions().get(c));
       }

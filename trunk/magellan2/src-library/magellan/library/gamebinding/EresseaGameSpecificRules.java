@@ -93,9 +93,8 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
    * silver.
    */
   private int maxEntertain(int silver) {
-    if (silver >= 0) {
+    if (silver >= 0)
       return silver / 20;
-    }
     return -1;
   }
 
@@ -133,8 +132,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
    */
   public int getWage(Region region, Race race) {
     int wage = region.getWage();
-    if (race.getName().equalsIgnoreCase(
-        getRules().getRace(AllanonConstants.R_ORKS).getName())) {
+    if (race.getName().equalsIgnoreCase(getRules().getRace(EresseaConstants.R_ORKS).getName())) {
       switch (wage) {
       case 12:
         wage = 11;
@@ -162,22 +160,22 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   }
 
   public int getShipRange(Ship s) {
-    if (s.getSpeed() != -1 && s.getModifiedOwnerUnit() == s.getOwnerUnit()) {
+    if (s.getSpeed() != -1 && s.getModifiedOwnerUnit() == s.getOwnerUnit())
       return s.getSpeed();
-    }
-    
+
     // Reichweite (bei Schaden aufrunden)
     int rad = s.getShipType().getRange();
 
-    if((s.getModifiedOwnerUnit() != null) && (s.getModifiedOwnerUnit().getRace() != null) &&
-           s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus()!=0) {
-        rad+=s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus();
-      }
+    if ((s.getModifiedOwnerUnit() != null) && (s.getModifiedOwnerUnit().getRace() != null)
+        && s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
+      rad += s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus();
+    }
 
     // rad = rad*(100.0-damageRatio)/100.0
-    rad = new BigDecimal(rad).multiply(new BigDecimal(100 - s.getDamageRatio()))
-                 .divide(new BigDecimal(100), BigDecimal.ROUND_UP).intValue();
-    
+    rad =
+        new BigDecimal(rad).multiply(new BigDecimal(100 - s.getDamageRatio())).divide(
+            new BigDecimal(100), BigDecimal.ROUND_UP).intValue();
+
     return rad;
   }
 
@@ -201,9 +199,10 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
 
   /**
    * Returns true if the type is a castle (Befestigung, Turm, ...)
+   * 
    * @see magellan.library.gamebinding.GameSpecificRules#isCastle(magellan.library.rules.UnitContainerType)
    */
-  public boolean isCastle(UnitContainerType type){
+  public boolean isCastle(UnitContainerType type) {
     return type instanceof CastleType;
   }
 

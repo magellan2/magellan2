@@ -43,21 +43,20 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import net.infonode.tabbedpanel.titledtab.TitledTab;
-
-
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.utils.Resources;
+import net.infonode.tabbedpanel.titledtab.TitledTab;
 
 /**
  * This is a single panel representing ONE script.
- *
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 28.07.2008
  */
-public class ExtendedCommandsDocument extends JPanel implements ActionListener, CaretListener, DocumentListener {
+public class ExtendedCommandsDocument extends JPanel implements ActionListener, CaretListener,
+    DocumentListener {
   private BeanShellEditor scriptingArea = null;
   private JComboBox priorityBox = null;
   private GameData world = null;
@@ -69,17 +68,16 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
   private ExtendedCommands commands = null;
   private JLabel positionBox = null;
   private TitledTab tab = null;
-  
+
   /**
-   * This constructor creates a single empty document.
-   * If you want to load some settings into the document,
-   * you have to call setScript(). 
+   * This constructor creates a single empty document. If you want to load some settings into the
+   * document, you have to call setScript().
    */
   public ExtendedCommandsDocument() {
     super();
     initGUI();
   }
-  
+
   /**
    * Initializes the GUI elements (textare, statusbar, etc.)
    */
@@ -88,38 +86,38 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
     JPanel editor = new JPanel(new BorderLayout());
     editor.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-    
+
     scriptingArea = new BeanShellEditor();
     scriptingArea.getDocument().addDocumentListener(this);
     scriptingArea.addCaretListener(this);
-    
-    editor.add(new JScrollPane(scriptingArea),BorderLayout.CENTER);
-    
-    add(editor,BorderLayout.CENTER);
+
+    editor.add(new JScrollPane(scriptingArea), BorderLayout.CENTER);
+
+    add(editor, BorderLayout.CENTER);
 
     JPanel south = new JPanel(new BorderLayout());
-    
+
     // on the left, we present the username:
     JPanel left = new JPanel();
     left.setLayout(new BoxLayout(left, BoxLayout.X_AXIS));
     left.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
     left.add(Box.createRigidArea(new Dimension(10, 0)));
-    
+
     JLabel label = new JLabel(Resources.get("extended_commands.priority.caption"));
     left.add(label);
-    
+
     priorityBox = new JComboBox(Priority.values());
     left.add(priorityBox);
     left.add(Box.createRigidArea(new Dimension(10, 0)));
-    
+
     JPanel center = new JPanel();
     center.setLayout(new BoxLayout(center, BoxLayout.X_AXIS));
     center.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
     center.add(Box.createRigidArea(new Dimension(10, 0)));
-    
+
     label = new JLabel(Resources.get("extended_commands.element.caption"));
     center.add(label);
-    
+
     center.add(Box.createRigidArea(new Dimension(5, 0)));
     elementBox = new JLabel();
     elementBox.setFont(elementBox.getFont().deriveFont(Font.BOLD));
@@ -130,24 +128,23 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
     JPanel right = new JPanel();
     right.setLayout(new BoxLayout(right, BoxLayout.X_AXIS));
     right.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-    
+
     right.add(Box.createRigidArea(new Dimension(10, 0)));
     label = new JLabel(Resources.get("extended_commands.position.caption"));
     right.add(label);
     right.add(Box.createRigidArea(new Dimension(5, 0)));
-    
+
     positionBox = new JLabel("0,0");
     right.add(positionBox);
     right.add(Box.createRigidArea(new Dimension(10, 0)));
-    
-    south.add(left,BorderLayout.WEST);
-    south.add(center,BorderLayout.CENTER);
-    south.add(right,BorderLayout.EAST);
-   
-    add(south,BorderLayout.SOUTH);
+
+    south.add(left, BorderLayout.WEST);
+    south.add(center, BorderLayout.CENTER);
+    south.add(right, BorderLayout.EAST);
+
+    add(south, BorderLayout.SOUTH);
   }
-  
-  
+
   /**
    * This method is called, if one of the buttons is clicked.
    * 
@@ -158,15 +155,15 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
     if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
       // execute the command, this means, to temporary store the script
       // and execute it. After that, restore the old script.
-      Script newScript = (Script)script.clone();
+      Script newScript = (Script) script.clone();
       newScript.setScript(scriptingArea.getText());
-      
+
       if (unit != null) {
-        commands.setCommands(unit,newScript);
+        commands.setCommands(unit, newScript);
         commands.execute(world, unit);
         commands.setCommands(unit, script); // reset to old script
       } else if (container != null) {
-        commands.setCommands(container,newScript);
+        commands.setCommands(container, newScript);
         commands.execute(world, container);
         commands.setCommands(container, script); // reset to old script
       } else {
@@ -176,8 +173,6 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
       }
     }
   }
-  
-  
 
   /**
    * Returns the value of world.
@@ -190,7 +185,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of world.
-   *
+   * 
    * @param world The value for world.
    */
   public void setWorld(GameData world) {
@@ -208,7 +203,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of unit.
-   *
+   * 
    * @param unit The value for unit.
    */
   public void setUnit(Unit unit) {
@@ -226,7 +221,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of container.
-   *
+   * 
    * @param container The value for container.
    */
   public void setContainer(UnitContainer container) {
@@ -244,14 +239,18 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of script.
-   *
+   * 
    * @param script The value for script.
    */
   public void setScript(Script script) {
     if (isModified) {
       // ask if it is okay to load the new file
-      int result = JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.questions.not_saved"),Resources.get("extended_commands.questions.not_saved_title"),JOptionPane.OK_CANCEL_OPTION);
-      if (result != JOptionPane.OK_OPTION) return;
+      int result =
+          JOptionPane.showConfirmDialog(this, Resources
+              .get("extended_commands.questions.not_saved"), Resources
+              .get("extended_commands.questions.not_saved_title"), JOptionPane.OK_CANCEL_OPTION);
+      if (result != JOptionPane.OK_OPTION)
+        return;
     }
     this.script = script;
     if (script != null) {
@@ -263,7 +262,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
       scriptingArea.setCaretPosition(0);
       priorityBox.setSelectedItem(Priority.NORMAL);
     }
-    
+
     setModified(false);
   }
 
@@ -276,8 +275,8 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
       String text = scriptingArea.getText();
       int row = 1;
       int col = 1;
-      for (int i=0; i<text.length(); i++) {
-        if (i==pos) {
+      for (int i = 0; i < text.length(); i++) {
+        if (i == pos) {
           break;
         }
         char c = text.charAt(i);
@@ -288,8 +287,8 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
           col++;
         }
       }
-      
-      positionBox.setText(row+","+col);
+
+      positionBox.setText(row + "," + col);
     }
   }
 
@@ -313,34 +312,41 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
   public void removeUpdate(DocumentEvent e) {
     setModified(true);
   }
-    
+
   public BeanShellEditor getScriptingArea() {
     return scriptingArea;
   }
-  
+
   public void setModified(boolean modified) {
-    this.isModified = modified;
-    
+    isModified = modified;
+
     String changed = "";
-    
+
     if (modified) {
       changed = " (*)";
     }
-    
+
     String title = "";
-    
+
     if (unit != null) {
-      title = Resources.get("extended_commands.element.unit",unit.getName(),unit.getID())+changed;
+      title =
+          Resources.get("extended_commands.element.unit", unit.getName(), unit.getID()) + changed;
     } else if (container != null) {
-      title = Resources.get("extended_commands.element.container",container.getName(),container.getID())+changed;
+      title =
+          Resources.get("extended_commands.element.container", container.getName(), container
+              .getID())
+              + changed;
     } else {
-      title = Resources.get("extended_commands.element.library")+changed;
+      title = Resources.get("extended_commands.element.library") + changed;
     }
-    
+
     elementBox.setText(title);
-    if (tab != null) tab.setText(title);
-    
+    if (tab != null) {
+      tab.setText(title);
+    }
+
   }
+
   public boolean isModified() {
     return isModified;
   }
@@ -356,7 +362,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of commands.
-   *
+   * 
    * @param commands The value for commands.
    */
   public void setCommands(ExtendedCommands commands) {
@@ -374,13 +380,11 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of tab.
-   *
+   * 
    * @param tab The value for tab.
    */
   public void setTab(TitledTab tab) {
     this.tab = tab;
   }
-  
-  
-  
+
 }

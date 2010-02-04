@@ -20,11 +20,10 @@ import java.util.List;
 /**
  * This comparator glues two comparators together.
  * <p>
- * In order to overcome the inconsistency with equals this comparator allows the
- * introduction of a sub-comparator which is applied in cases of equality. I.e.
- * if the two compared units belong to the same faction and they would be
- * regarded as equal by this comparator, instead of 0 the result of the
- * sub-comparator's comparison is returned.
+ * In order to overcome the inconsistency with equals this comparator allows the introduction of a
+ * sub-comparator which is applied in cases of equality. I.e. if the two compared units belong to
+ * the same faction and they would be regarded as equal by this comparator, instead of 0 the result
+ * of the sub-comparator's comparison is returned.
  * </p>
  */
 public class GroupingComparator<T> implements Comparator<T> {
@@ -35,27 +34,26 @@ public class GroupingComparator<T> implements Comparator<T> {
   /**
    * Creates a new <tt>GroupingComparator</tt> object.
    * 
-   * @param mainComparator
-   *          the comparator used to compare the given objects
-   * @param subComparator
-   *          the comparator used to compare the given objects if mainComparator
+   * @param mainComparator the comparator used to compare the given objects
+   * @param subComparator the comparator used to compare the given objects if mainComparator
    *          delivers 0.
    */
-  public GroupingComparator(Comparator<? super T> mainComparator, GroupingComparator<? super T> subComparator) {
-    if (mainComparator == null) {
+  public GroupingComparator(Comparator<? super T> mainComparator,
+      GroupingComparator<? super T> subComparator) {
+    if (mainComparator == null)
       throw new NullPointerException();
-    }
     main = mainComparator;
     sub = subComparator;
   }
 
-  public GroupingComparator(Comparator<? super T>  mainComparator, Comparator<? super T>  subComparator) {
+  public GroupingComparator(Comparator<? super T> mainComparator,
+      Comparator<? super T> subComparator) {
     this(mainComparator, new GroupingComparator<T>(subComparator, null));
   }
 
   /**
-   * Compares its two arguments. Also it returns powers of 2 to return the depth
-   * of the underlying comparators
+   * Compares its two arguments. Also it returns powers of 2 to return the depth of the underlying
+   * comparators
    */
   public int compare(T o1, T o2) {
     int ret = main.compare(o1, o2);
@@ -63,15 +61,15 @@ public class GroupingComparator<T> implements Comparator<T> {
 
   }
 
-  public static<S> GroupingComparator<S> buildFromList(Comparator<S>[] comparators) {
+  public static <S> GroupingComparator<S> buildFromList(Comparator<S>[] comparators) {
     return GroupingComparator.buildFromList(Arrays.asList(comparators));
   }
 
-  private static<S> GroupingComparator<S> buildFromList(List<Comparator<S> > comparators) {
-    if (comparators == null || comparators.isEmpty()) {
+  private static <S> GroupingComparator<S> buildFromList(List<Comparator<S>> comparators) {
+    if (comparators == null || comparators.isEmpty())
       return null;
-    }
 
-    return new GroupingComparator<S>(comparators.remove(0), GroupingComparator.buildFromList(comparators));
+    return new GroupingComparator<S>(comparators.remove(0), GroupingComparator
+        .buildFromList(comparators));
   }
 }

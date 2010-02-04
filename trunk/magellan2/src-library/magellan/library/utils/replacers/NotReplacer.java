@@ -22,39 +22,37 @@ import magellan.library.utils.Resources;
 
 /**
  * Negates the argument if it is TRUE or FALSE. Otherwise, the argument is not changed.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class NotReplacer extends AbstractParameterReplacer {
-	/**
-	 * Creates new NotReplacer
-	 */
-	public NotReplacer() {
-		super(1);
-	}
+  /**
+   * Creates new NotReplacer
+   */
+  public NotReplacer() {
+    super(1);
+  }
 
-	/**
-	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
-	 */
-	public Object getReplacement(Object o) {
-		Object obj = getParameter(0, o);
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
+   */
+  public Object getReplacement(Object o) {
+    Object obj = getParameter(0, o);
 
-		if(obj != null) {
-			if(Replacer.TRUE.equals(obj.toString())) {
-				return Replacer.FALSE;
-			}
+    if (obj != null) {
+      if (Replacer.TRUE.equals(obj.toString()))
+        return Replacer.FALSE;
 
-			if(Replacer.FALSE.equals(obj.toString())) {
-				return Replacer.TRUE;
-			}
-		}
+      if (Replacer.FALSE.equals(obj.toString()))
+        return Replacer.TRUE;
+    }
 
-		return null;
-	}
+    return null;
+  }
 
   @Override
   public String getDescription() {
-    return Resources.get("util.replacers.not.description")+"\n\n"+super.getDescription();
+    return Resources.get("util.replacers.not.description") + "\n\n" + super.getDescription();
   }
 }

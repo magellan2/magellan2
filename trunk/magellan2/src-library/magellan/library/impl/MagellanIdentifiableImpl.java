@@ -20,146 +20,132 @@ import magellan.library.Unique;
 /**
  * A template class for objects to be uniquely identifiable by other objects.
  */
-public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, Comparable<Object>, Cloneable {
+public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, Comparable<Object>,
+    Cloneable {
 
-  /** The object imposing the unique identifiability.  This is immutable. */
+  /** The object imposing the unique identifiability. This is immutable. */
   protected final ID id;
-  
+
   // only for memory profiling
-//  public class Counter {
-//
-//    public Counter(String name) {
-//      this.name = name;
-//      created = 0;
-//      deleted = 0;
-//    }
-//    protected String name;
-//    protected long created;
-//    protected long deleted;
-//
-//  }
+  // public class Counter {
+  //
+  // public Counter(String name) {
+  // this.name = name;
+  // created = 0;
+  // deleted = 0;
+  // }
+  // protected String name;
+  // protected long created;
+  // protected long deleted;
+  //
+  // }
 
-//	protected static Map<String, Counter> counters; 
-//  private static Timer timer;
+  // protected static Map<String, Counter> counters;
+  // private static Timer timer;
 
-//  static {
-//    counters =  new HashMap<String, Counter>();
-//    timer = new Timer("memory tracker");
-//    TimerTask task = new TimerTask() {
-//    
-//      @Override
-//      public void run() {
-//        for (Counter counter : counters.values()){
-//          System.err.println(counter.name+": "+counter.created+" - "+counter.deleted);
-//        }
-//        System.err.println("--------------------------------------------------------");
-//      }
-//    };
-//    timer.scheduleAtFixedRate(task , 10, 10000);
-//  }
-  
-	/**
-	 * Creates a new identifiable object with the specified id.
-	 *
-	 * @param id ID of the Identifiable
-	 *
-	 * @throws NullPointerException if <tt>ID</tt> is <code>null</code>
-	 */
-	public MagellanIdentifiableImpl(ID id) {
-		if(id == null) {
-			throw new NullPointerException();
-		}
+  // static {
+  // counters = new HashMap<String, Counter>();
+  // timer = new Timer("memory tracker");
+  // TimerTask task = new TimerTask() {
+  //    
+  // @Override
+  // public void run() {
+  // for (Counter counter : counters.values()){
+  // System.err.println(counter.name+": "+counter.created+" - "+counter.deleted);
+  // }
+  // System.err.println("--------------------------------------------------------");
+  // }
+  // };
+  // timer.scheduleAtFixedRate(task , 10, 10000);
+  // }
 
-		this.id = id;
-//    Counter counter = counters.get(this.getClass().getName());
-//		if (counter==null){
-//		  counter = new Counter(this.getClass().getName());
-//		  counters.put(this.getClass().getName(), counter);
-//		}
-//		counter.created++;
-	}
-	
-//	@Override
-//	protected void finalize() throws Throwable {
-//    Counter counter = counters.get(this.getClass().getName());
-//    if (counter==null){
-//      System.err.println("class "+this.getClass().getName()+" should have counter.");
-//      counter = new Counter(this.getClass().getName());
-//    }
-//    counter.deleted++;
-//	  super.finalize();
-//	}
+  /**
+   * Creates a new identifiable object with the specified id.
+   * 
+   * @param id ID of the Identifiable
+   * @throws NullPointerException if <tt>ID</tt> is <code>null</code>
+   */
+  public MagellanIdentifiableImpl(ID id) {
+    if (id == null)
+      throw new NullPointerException();
 
-	/**
-	 * Returns the id uniquely identifying this object.
-	 *
-	 * 
-	 */
-	public ID getID() {
-		return id;
-	}
+    this.id = id;
+    // Counter counter = counters.get(this.getClass().getName());
+    // if (counter==null){
+    // counter = new Counter(this.getClass().getName());
+    // counters.put(this.getClass().getName(), counter);
+    // }
+    // counter.created++;
+  }
 
-	/**
-	 * Returns a copy of this object identified by a copy of the orignial's id. I.e., the following
-	 * statement holds true: this.getID() != this.clone().getID()
-	 *
-	 * 
-	 *
-	 * @throws CloneNotSupportedException DOCUMENT-ME
-	 */
-	@Override
+  // @Override
+  // protected void finalize() throws Throwable {
+  // Counter counter = counters.get(this.getClass().getName());
+  // if (counter==null){
+  // System.err.println("class "+this.getClass().getName()+" should have counter.");
+  // counter = new Counter(this.getClass().getName());
+  // }
+  // counter.deleted++;
+  // super.finalize();
+  // }
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public ID getID() {
+    return id;
+  }
+
+  /**
+   * Returns a copy of this object identified by a copy of the orignial's id. I.e., the following
+   * statement holds true: this.getID() != this.clone().getID()
+   * 
+   * @throws CloneNotSupportedException DOCUMENT-ME
+   */
+  @Override
   public Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+    return super.clone();
+  }
 
-	/**
-	 * Indicates that this object is to be regarded as equal to some other object. Especially with
-	 * implementing sub classes of Identifiable, equality will often be established through the
-	 * equality of ids.
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Indicates that this object is to be regarded as equal to some other object. Especially with
+   * implementing sub classes of Identifiable, equality will often be established through the
+   * equality of ids.
+   */
+  @Override
   public boolean equals(Object o) {
-		try {
-			return this == o || 
-				(o != null && 
-				 getID().equals(((MagellanIdentifiableImpl) o).getID()) && 
-				 getClass().isInstance(o));
-		} catch(ClassCastException e) {
-			return false;
-		}
-	}
+    try {
+      return this == o
+          || (o != null && getID().equals(((MagellanIdentifiableImpl) o).getID()) && getClass()
+              .isInstance(o));
+    } catch (ClassCastException e) {
+      return false;
+    }
+  }
 
-	/**
-	 * As we want to use the hashCode/equals contract we need to force the implementation of 
-	 * hashCode.
-	 *
-	 * @return the hashCode of the current object
-	 */
-	@Override
+  /**
+   * As we want to use the hashCode/equals contract we need to force the implementation of hashCode.
+   * 
+   * @return the hashCode of the current object
+   */
+  @Override
   public int hashCode() {
-		return getID() == null ? super.hashCode() : getID().hashCode();
-	}
+    return getID() == null ? super.hashCode() : getID().hashCode();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 * 
-	 * 
-	 */
-	public int superHashCode() {
-		return super.hashCode();
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int superHashCode() {
+    return super.hashCode();
+  }
 
-	/**
-	 * Imposes a natural ordering on Identifiable objects. Especially with implementing sub classes
-	 * of Identifiable, such orderings will often be established by the natural order of ids.
-	 *
-	 * 
-	 */
-	public int compareTo(Object o) {
-		return getID().compareTo(((MagellanIdentifiableImpl) o).getID());
-	}
-	
-	
+  /**
+   * Imposes a natural ordering on Identifiable objects. Especially with implementing sub classes of
+   * Identifiable, such orderings will often be established by the natural order of ids.
+   */
+  public int compareTo(Object o) {
+    return getID().compareTo(((MagellanIdentifiableImpl) o).getID());
+  }
+
 }

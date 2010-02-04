@@ -29,73 +29,77 @@ import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
 
-
 /**
  * A context menu for Islands.
- *
+ * 
  * @author stm
  */
 public class IslandContextMenu extends JPopupMenu {
 
   private EventDispatcher dispatcher;
-	private GameData data;
-//	private Properties settings;
-	private Collection<?> selectedObjects;
+  private GameData data;
+  // private Properties settings;
+  private Collection<?> selectedObjects;
 
   private Island island;
 
-	/**
-	 * Creates a new UnitContainerContextMenu object.
-	 */
-	public IslandContextMenu(Island island, EventDispatcher dispatcher, GameData data,
-									Properties settings,Collection<?> selectedObjects) {
-		super(island.toString());
-		this.island = island;
-		this.dispatcher = dispatcher;
-		this.data = data;
-//		this.settings = settings;
-		this.selectedObjects = selectedObjects;
+  /**
+   * Creates a new UnitContainerContextMenu object.
+   */
+  public IslandContextMenu(Island island, EventDispatcher dispatcher, GameData data,
+      Properties settings, Collection<?> selectedObjects) {
+    super(island.toString());
+    this.island = island;
+    this.dispatcher = dispatcher;
+    this.data = data;
+    // this.settings = settings;
+    this.selectedObjects = selectedObjects;
 
-		initMenu();
-	}
+    initMenu();
+  }
 
-	private void initMenu() {
-		JMenuItem name = new JMenuItem(getCaption());
-		name.setEnabled(false);
-		add(name);
+  private void initMenu() {
+    JMenuItem name = new JMenuItem(getCaption());
+    name.setEnabled(false);
+    add(name);
 
-		JMenuItem removeIsland = new JMenuItem(Resources.get("context.islandcontextmenu.menu.removeIsland.caption"));
-		removeIsland.addActionListener(new ActionListener() {
-		  public void actionPerformed(ActionEvent e) {
-		    removeIsland();
-		  }
-		});
-		add(removeIsland);
+    JMenuItem removeIsland =
+        new JMenuItem(Resources.get("context.islandcontextmenu.menu.removeIsland.caption"));
+    removeIsland.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        removeIsland();
+      }
+    });
+    add(removeIsland);
 
-	}
-  
+  }
+
   protected void removeIsland() {
-    int result = JOptionPane.showConfirmDialog(this, Resources.get("context.islandcontextmenu.confirmation.message"), Resources.get("context.islandcontextmenu.confirmation.title"), JOptionPane.YES_NO_OPTION);
-    if (result!=0)
+    int result =
+        JOptionPane.showConfirmDialog(this, Resources
+            .get("context.islandcontextmenu.confirmation.message"), Resources
+            .get("context.islandcontextmenu.confirmation.title"), JOptionPane.YES_NO_OPTION);
+    if (result != 0)
       return;
     boolean changed = false;
-    for (Object o : selectedObjects){
-      if (o instanceof Island){
+    for (Object o : selectedObjects) {
+      if (o instanceof Island) {
         changed = true;
         Island island = (Island) o;
-        for (Region r : island.regions()){
+        for (Region r : island.regions()) {
           r.setIsland(null);
         }
         data.islands().remove(island);
-        
+
       }
     }
-    if (changed)
-      dispatcher.fire(new GameDataEvent(this,data));
+    if (changed) {
+      dispatcher.fire(new GameDataEvent(this, data));
+    }
   }
 
   private String getCaption() {
     return island.toString();
   }
-	
+
 }

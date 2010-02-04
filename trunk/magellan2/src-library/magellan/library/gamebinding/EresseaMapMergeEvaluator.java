@@ -39,16 +39,16 @@ import magellan.library.utils.mapping.UnitIDMapping;
 
 /**
  * TODO This class must be commented
- *
  * 
  * @author Ralf Duckstein
  * @version 1.1, 21.05.2008
  */
 
 public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
-  protected EresseaMapMergeEvaluator(Rules rules) { }
-  
-  protected static final Integer REAL_LAYER = Integer.valueOf(0); 
+  protected EresseaMapMergeEvaluator(Rules rules) {
+  }
+
+  protected static final Integer REAL_LAYER = Integer.valueOf(0);
   protected static final Integer ASTRAL_LAYER = Integer.valueOf(1);
 
   @Override
@@ -58,30 +58,29 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
       variants.add(RegionIDMapping.getSingleton());
       variants.add(SchemeNameMapping.getSingleton());
       variants.add(UnitIDMapping.getSingleton());
-      return variants;     
-    } 
+      return variants;
+    }
     return super.getDataMappingVariants(level);
   }
-  
+
   @Override
   public Collection<LevelMapping> getLevelMappingVariants(int fromLevel, int toLevel) {
-    if ((fromLevel == EresseaMapMergeEvaluator.ASTRAL_LAYER) && (toLevel == EresseaMapMergeEvaluator.REAL_LAYER)) {
+    if ((fromLevel == EresseaMapMergeEvaluator.ASTRAL_LAYER)
+        && (toLevel == EresseaMapMergeEvaluator.REAL_LAYER)) {
       Collection<LevelMapping> variants = new ArrayList<LevelMapping>(2);
       variants.add(SchemeOverlapMapping.getSingleton());
       variants.add(SchemeExtendMapping.getSingleton());
       return variants;
-    } else {
+    } else
       return null;
-    }
   }
 
   @Override
   public MappingEvaluator getMappingEvaluator(int level) {
-    if (level == EresseaMapMergeEvaluator.ASTRAL_LAYER) {
+    if (level == EresseaMapMergeEvaluator.ASTRAL_LAYER)
       return AstralMappingEvaluator.getSingleton();
-    } else {
+    else
       return super.getMappingEvaluator(level);
-    }
   }
-   
+
 }

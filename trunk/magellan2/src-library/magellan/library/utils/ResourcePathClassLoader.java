@@ -41,7 +41,6 @@ import java.util.Properties;
 
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * Loads classes and resources from a configurable set of places. Well-known local directories
  * and/or contents of the executed jar file are used as fall-back resourcePaths.
@@ -49,12 +48,12 @@ import magellan.library.utils.logging.Logger;
 public class ResourcePathClassLoader extends ClassLoader {
   private static final Logger log = Logger.getInstance(ResourcePathClassLoader.class);
   private List<URL> resourcePaths = new ArrayList<URL>();
-  
+
   /**
    * Creates a new class loader initializing itself with the specified settings.
    */
   public ResourcePathClassLoader(Properties settings) {
-    this.resourcePaths = ResourcePathClassLoader.loadResourcePaths(settings);
+    resourcePaths = ResourcePathClassLoader.loadResourcePaths(settings);
   }
 
   /**
@@ -63,26 +62,27 @@ public class ResourcePathClassLoader extends ClassLoader {
   private static List<URL> loadResourcePaths(Properties settings) {
     List<URL> resourcePaths = new ArrayList<URL>();
 
-    for(String location : PropertiesHelper.getList(settings, "Resources.preferredPathList")){
+    for (String location : PropertiesHelper.getList(settings, "Resources.preferredPathList")) {
 
       try {
         resourcePaths.add(new URL(location));
-        if (!location.endsWith(File.separator))
-          resourcePaths.add(new URL(location+File.separator));
-      } catch(MalformedURLException e) {
+        if (!location.endsWith(File.separator)) {
+          resourcePaths.add(new URL(location + File.separator));
+        }
+      } catch (MalformedURLException e) {
         ResourcePathClassLoader.log.error(e);
-      } 
+      }
     }
-    
+
     /**
      * just add found jars from pluginDir to RessourcePaths
      */
     resourcePaths.addAll(ResourcePathClassLoader.getPathsFromPlugInDir(settings));
-    
+
     return resourcePaths;
   }
 
-  private static List<URL> getPathsFromPlugInDir(Properties settings){
+  private static List<URL> getPathsFromPlugInDir(Properties settings) {
     List<URL> paths = new ArrayList<URL>();
     String magellanDirString = settings.getProperty("plugin.helper.magellandir");
     File magPluginDir = new File(magellanDirString + File.separator + "plugins");
@@ -91,7 +91,7 @@ public class ResourcePathClassLoader extends ClassLoader {
     }
     return paths;
   }
-  
+
   private static void getPathsFromPlugInDir(List<URL> paths, File directory) {
     if (directory.exists() && directory.isDirectory()) {
       File[] files = directory.listFiles();
@@ -106,88 +106,87 @@ public class ResourcePathClassLoader extends ClassLoader {
               try {
                 // log.info("PluginDir - found:" + entry);
                 paths.add(Resources.file2URL(file));
-              } catch(MalformedURLException e) {
+              } catch (MalformedURLException e) {
                 ResourcePathClassLoader.log.error(e);
-              } 
+              }
             }
           }
         }
       }
     }
   }
-  
+
   /**
    * Returns the resource paths this loader operates on.
    */
   public Collection<URL> getPaths() {
-    return Collections.unmodifiableCollection(this.resourcePaths);
+    return Collections.unmodifiableCollection(resourcePaths);
   }
 
   /**
    * Finds the resource with the given name.
-   *
+   * 
    * @param name the resource name
-   *
-   * @return a URL for reading the resource, or <code>null</code> if the resource could not be
-   *       found
+   * @return a URL for reading the resource, or <code>null</code> if the resource could not be found
    * @see ClassLoader#findResource(String)
    */
   @Override
   protected URL findResource(String name) {
-    return ResourcePathClassLoader.getResource(name, this.resourcePaths);
+    return ResourcePathClassLoader.getResource(name, resourcePaths);
   }
-  
 
   /**
    * Finds the resource with the given name in the given resource paths.
-   *
+   * 
    * @param aName The resource name, a relative path!
    * @param resourcePaths Additional resource paths to find the resource in
-   * 
-   * @return A URL for reading the resource, or <code>null</code> if the resource could not be
-   *       found
+   * @return A URL for reading the resource, or <code>null</code> if the resource could not be found
    */
   protected static URL getResource(String aName, Collection<URL> resourcePaths) {
     URL url = null;
-    ResourcePathClassLoader.log.debug("trying to find \""+aName+"\"");
+    ResourcePathClassLoader.log.debug("trying to find \"" + aName + "\"");
 
-    //String name = Umlaut.replace(aName," ","\\ ");
-    String name=aName;
-    
+    // String name = Umlaut.replace(aName," ","\\ ");
+    String name = aName;
+
     url = ResourcePathClassLoader.getResourceFromPaths(name, resourcePaths);
 
-    if(url == null) {
+    if (url == null) {
       url = ResourcePathClassLoader.getResourceFromCurrentDir(name);
     }
 
     // try to get the resource from the class path
-    if(url == null) {
+    if (url == null) {
       url = ClassLoader.getSystemClassLoader().getResource(name);
     }
 
     // try to get the resource from the jar
-    if(url == null) {
+    if (url == null) {
       // FFTest...do not use \ but / (Fiete)
       String myName = name.replace("\\".charAt(0), "/".charAt(0));
       url = ClassLoader.getSystemClassLoader().getResource(myName);
     }
 
-    if(url != null) {
+    if (url != null) {
       // do some ugly tests here because of jvm specification bugs with spaces
       // in filenames inside OR outside a jar file
-      if(ResourcePathClassLoader.canOpenURLResource(url) == null) {
+      if (ResourcePathClassLoader.canOpenURLResource(url) == null) {
         try {
-          URL decoded = ResourcePathClassLoader.canOpenURLResource(URLDecoder.decode(url.toString(),"UTF-8"));
-          if(decoded != null) {
+          URL decoded =
+              ResourcePathClassLoader
+                  .canOpenURLResource(URLDecoder.decode(url.toString(), "UTF-8"));
+          if (decoded != null) {
             url = decoded;
           } else {
-            URL encoded = ResourcePathClassLoader.canOpenURLResource(URLEncoder.encode(url.toString(),"UTF-8"));
-            if(encoded != null) {
+            URL encoded =
+                ResourcePathClassLoader.canOpenURLResource(URLEncoder.encode(url.toString(),
+                    "UTF-8"));
+            if (encoded != null) {
               url = encoded;
             }
           }
         } catch (UnsupportedEncodingException usee) {
-          
+
         }
       }
     }
@@ -197,27 +196,24 @@ public class ResourcePathClassLoader extends ClassLoader {
   /**
    * Searches the available resource paths for a resource with the specified name and returns the
    * first match.
-   *
+   * 
    * @param name The resource name, a relative path!
    * @param resourcePaths The collection of resource paths.
-   *
-   * @return a URL for reading the resource, or <code>null</code> if the resource could not be
-   *       found
+   * @return a URL for reading the resource, or <code>null</code> if the resource could not be found
    */
   private static URL getResourceFromPaths(String name, Collection<URL> resourcePaths) {
     URL url = null;
 
-    for(Iterator<URL> iter = resourcePaths.iterator(); iter.hasNext() && (url == null);) {
+    for (Iterator<URL> iter = resourcePaths.iterator(); iter.hasNext() && (url == null);) {
       url = ResourcePathClassLoader.verifyResource(iter.next(), name);
     }
 
     return url;
   }
 
-
   /**
-   * Checks if the object specified by the base location and the name exists.
-   * If it does, a valid URL pointing to is returned else null.
+   * Checks if the object specified by the base location and the name exists. If it does, a valid
+   * URL pointing to is returned else null.
    */
   private static URL verifyResource(URL location, String name) {
     URL url = null;
@@ -226,21 +222,18 @@ public class ResourcePathClassLoader extends ClassLoader {
       url = new URL(location, name);
       InputStream istream = url.openStream();
       istream.close();
-    } catch(Exception ex) {
+    } catch (Exception ex) {
       url = null;
     }
 
     return url;
   }
 
-
   /**
    * Searches the current directory for a resource with the specified name.
-   *
+   * 
    * @param name The resource name, a relative path!
-   *
-   * @return a URL for reading the resource, or <code>null</code> if 
-   *         the resource could not be found
+   * @return a URL for reading the resource, or <code>null</code> if the resource could not be found
    */
   private static URL getResourceFromCurrentDir(String name) {
     URL url = null;
@@ -249,7 +242,7 @@ public class ResourcePathClassLoader extends ClassLoader {
       File currentDirectory = new File(".");
       URL baseLocation = currentDirectory.toURI().toURL();
       url = ResourcePathClassLoader.verifyResource(baseLocation, name);
-    } catch(Exception e) {
+    } catch (Exception e) {
       ResourcePathClassLoader.log.error(e);
     }
 
@@ -262,7 +255,7 @@ public class ResourcePathClassLoader extends ClassLoader {
   private static URL canOpenURLResource(String aUrl) {
     try {
       return ResourcePathClassLoader.canOpenURLResource(new URL(aUrl));
-    }  catch (MalformedURLException e) {
+    } catch (MalformedURLException e) {
       return null;
     }
   }
@@ -271,15 +264,14 @@ public class ResourcePathClassLoader extends ClassLoader {
    * 
    */
   private static URL canOpenURLResource(URL url) {
-    if(url == null) {
+    if (url == null)
       return null;
-    }
     try {
       url.openStream().close();
       return url;
     } catch (IOException e) {
       return null;
-    } 
+    }
   }
 
   /**
@@ -288,29 +280,28 @@ public class ResourcePathClassLoader extends ClassLoader {
   @Override
   protected Class<?> findClass(String name) throws ClassNotFoundException {
     String fileName = name.replace('.', '/').concat(".class");
-    
+
     URL url = ResourcePathClassLoader.getResourceFromPaths(fileName, resourcePaths);
     if (url == null) {
       url = ResourcePathClassLoader.getResourceFromCurrentDir(fileName);
     }
-    if (url == null) {
+    if (url == null)
       return findSystemClass(name);
-    }
-    
+
     try {
       InputStream stream = url.openStream();
       List<Byte> buffer = new LinkedList<Byte>();
       int read;
-      
+
       while ((read = stream.read()) != -1) {
         buffer.add(new Byte((byte) read));
       }
-      
+
       stream.close();
 
       byte buf[] = new byte[buffer.size()];
 
-      for(int i = 0; i < buffer.size(); i++) {
+      for (int i = 0; i < buffer.size(); i++) {
         buf[i] = buffer.get(i).byteValue();
       }
       return defineClass(name, buf, 0, buf.length);
@@ -318,6 +309,5 @@ public class ResourcePathClassLoader extends ClassLoader {
       throw new ClassNotFoundException(exception.getMessage());
     }
   }
-  
-  
+
 }

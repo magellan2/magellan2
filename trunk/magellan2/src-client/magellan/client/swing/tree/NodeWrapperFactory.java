@@ -88,7 +88,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   public static final int SIMPLE = 10;
 
   private static final int NUM_ADAPTERS = 11;
-  
+
   protected Properties settings;
   protected boolean initialized[];
   protected NodeWrapperDrawPolicy adapters[];
@@ -119,10 +119,10 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
     this.title = title;
     this.settings = settings;
-    initialized = new boolean[NUM_ADAPTERS];
-    adapters = new NodeWrapperDrawPolicy[NUM_ADAPTERS];
+    initialized = new boolean[NodeWrapperFactory.NUM_ADAPTERS];
+    adapters = new NodeWrapperDrawPolicy[NodeWrapperFactory.NUM_ADAPTERS];
 
-    for (int i = 0; i < NUM_ADAPTERS; i++) {
+    for (int i = 0; i < NodeWrapperFactory.NUM_ADAPTERS; i++) {
       initialized[i] = false;
       adapters[i] = null;
     }
@@ -149,15 +149,15 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   protected void updateContextMenu() {
     contextMenu.removeAll();
 
-    for (int i = 0; i < adapters.length; i++) {
-      if ((adapters[i] != null) && (adapters[i] instanceof ContextChangeable)) {
-        ContextChangeable cc = (ContextChangeable) adapters[i];
+    for (NodeWrapperDrawPolicy adapter : adapters) {
+      if ((adapter != null) && (adapter instanceof ContextChangeable)) {
+        ContextChangeable cc = (ContextChangeable) adapter;
         JMenuItem item = cc.getContextAdapter();
 
         if (item instanceof JMenu) {
           contextMenu.add(item);
         } else {
-          JMenu help = new JMenu(adapters[i].getTitle());
+          JMenu help = new JMenu(adapter.getTitle());
           help.add(item);
           contextMenu.add(help);
         }
@@ -252,7 +252,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    */
   public UnitRelationNodeWrapper createRelationNodeWrapper(UnitRelation rel, CellObject2 innerNode) {
     UnitRelationNodeWrapper rnw = new UnitRelationNodeWrapper2(rel, innerNode);
-    // FIXME which  policy?
+    // FIXME which policy?
     init(rnw, NodeWrapperFactory.SIMPLE);
     return rnw;
   }
@@ -262,7 +262,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    */
   public UnitRelationNodeWrapper createRelationNodeWrapper(UnitRelation rel, CellObject innerNode) {
     UnitRelationNodeWrapper rnw = new UnitRelationNodeWrapper(rel, innerNode);
-    // FIXME which  policy?
+    // FIXME which policy?
     init(rnw, NodeWrapperFactory.SIMPLE);
     return rnw;
   }
@@ -281,10 +281,8 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * Creates a wrapper node for a unit container with extended options.
    * 
    * @param uc
-   * @param showFreeLoad
-   *          Specifies if the free load should be displayed
-   * @param hasCommand
-   *          If <code>true</code>, it is indicated the the unit has the command
+   * @param showFreeLoad Specifies if the free load should be displayed
+   * @param hasCommand If <code>true</code>, it is indicated the the unit has the command
    * @return The NodeWrapper
    */
   public UnitContainerNodeWrapper createUnitContainerNodeWrapper(UnitContainer uc,
@@ -296,11 +294,9 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * Creates a wrapper node for a unit. The text will consist only of the unit's
-   * name and id
+   * Creates a wrapper node for a unit. The text will consist only of the unit's name and id
    * 
-   * @param unit
-   *          The unit
+   * @param unit The unit
    * @return The created node wrapper.
    */
   public UnitNodeWrapper createUnitNodeWrapper(Unit unit) {
@@ -308,13 +304,11 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * Creates a wrapper node for a unit. The text is generated from the unit's
-   * name and ID, and num without mod or prefix.
+   * Creates a wrapper node for a unit. The text is generated from the unit's name and ID, and num
+   * without mod or prefix.
    * 
-   * @param unit
-   *          The unit
-   * @param num
-   *          The number of persons
+   * @param unit The unit
+   * @param num The number of persons
    * @return The created node wrapper.
    */
   public UnitNodeWrapper createUnitNodeWrapper(Unit unit, int num) {
@@ -322,15 +316,12 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * Creates a wrapper node for a unit. The text is generated from the unit's
-   * name and ID, and num and mod without prefix.
+   * Creates a wrapper node for a unit. The text is generated from the unit's name and ID, and num
+   * and mod without prefix.
    * 
-   * @param unit
-   *          The unit
-   * @param num
-   *          The number of persons
-   * @param mod
-   *          The modified number of persons.
+   * @param unit The unit
+   * @param num The number of persons
+   * @param mod The modified number of persons.
    * @return The created node wrapper.
    */
   public UnitNodeWrapper createUnitNodeWrapper(Unit unit, int num, int mod) {
@@ -338,17 +329,13 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * Creates a wrapper node for a unit. The text is generated from the prefix,
-   * the unit's name and ID, and num and mod.
+   * Creates a wrapper node for a unit. The text is generated from the prefix, the unit's name and
+   * ID, and num and mod.
    * 
-   * @param unit
-   *          The unit
-   * @param prfx
-   *          A prefix which is displayed in front of the unit's name.
-   * @param num
-   *          The number of persons
-   * @param mod
-   *          The modified number of persons.
+   * @param unit The unit
+   * @param prfx A prefix which is displayed in front of the unit's name.
+   * @param num The number of persons
+   * @param mod The modified number of persons.
    * @return The created node wrapper.
    */
   public UnitNodeWrapper createUnitNodeWrapper(Unit unit, String prfx, int num, int mod) {
@@ -359,13 +346,10 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * Creates a wrapper node for a unit. The text will not be generated but taken
-   * from the argument.
+   * Creates a wrapper node for a unit. The text will not be generated but taken from the argument.
    * 
-   * @param unit
-   *          The unit
-   * @param text
-   *          The node will use this text.
+   * @param unit The unit
+   * @param text The node will use this text.
    * @return The created node wrapper.
    */
   public UnitNodeWrapper createUnitNodeWrapper(Unit unit, String text) {
@@ -471,7 +455,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
     return snw;
   }
-  
+
   /**
    * Creates new SimpleNodeWrapper with one icon and generated text.
    * 
@@ -500,14 +484,14 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
     return snw;
   }
 
-//  /**
-//   * Creates new SimpleNodeWrapper
-//   */
-//  public SimpleNodeWrapper createSimpleNodeWrapper(Object text, String icons, String clipValue) {
-//    SimpleNodeWrapper snw = new SimpleNodeWrapper(text, icons, clipValue);
-//    init(snw, NodeWrapperFactory.SIMPLE);
-//    return snw;
-//  }
+  // /**
+  // * Creates new SimpleNodeWrapper
+  // */
+  // public SimpleNodeWrapper createSimpleNodeWrapper(Object text, String icons, String clipValue) {
+  // SimpleNodeWrapper snw = new SimpleNodeWrapper(text, icons, clipValue);
+  // init(snw, NodeWrapperFactory.SIMPLE);
+  // return snw;
+  // }
 
   /**
    * DOCUMENT-ME
@@ -535,9 +519,9 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
     protected NodeWrapperFactoryPreferences(NodeWrapperDrawPolicy adapters[]) {
       myAdapters = new LinkedList<PreferencesAdapter>();
 
-      for (int i = 0; i < adapters.length; i++) {
-        if (adapters[i] != null) {
-          PreferencesAdapter pref = adapters[i].createPreferencesAdapter();
+      for (NodeWrapperDrawPolicy adapter : adapters) {
+        if (adapter != null) {
+          PreferencesAdapter pref = adapter.createPreferencesAdapter();
 
           if (pref != null) {
             addTab(pref.getTitle(), pref.getComponent());
@@ -551,7 +535,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
       java.awt.Dimension dim = getPreferredSize();
       int tabHeight = getTabCount() * 30; // just approximate since there are no
-                                          // public functions :-(
+      // public functions :-(
 
       if (dim.height < tabHeight) {
         dim.height = tabHeight;

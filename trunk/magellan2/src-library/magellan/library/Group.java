@@ -33,12 +33,12 @@ public interface Group extends Named, Taggable, Addeable {
   public Faction getFaction();
 
   /**
-   * The alliances specific to this group. The map returned by this function
-   * contains <tt>ID</tt> objects as keys with the id of the faction that
-   * alliance references. The values are instances of class <tt>Alliance</tt>.
-   * The return value is never null.
+   * The alliances specific to this group. The map returned by this function contains <tt>ID</tt>
+   * objects as keys with the id of the faction that alliance references. The values are instances
+   * of class <tt>Alliance</tt>. The return value is never null.
    */
   public Map<EntityID, Alliance> allies();
+
   public void setAllies(Map<EntityID, Alliance> alliances);
 
   /**
@@ -57,8 +57,7 @@ public interface Group extends Named, Taggable, Addeable {
   public void setSortIndex(int index);
 
   /**
-   * Returns an index indicating how instances of class are sorted in the
-   * report.
+   * Returns an index indicating how instances of class are sorted in the report.
    */
   public int getSortIndex();
 
@@ -73,14 +72,13 @@ public interface Group extends Named, Taggable, Addeable {
   public Unit getUnit(ID key);
 
   /**
-   * Adds a unit to this container. This method should only be invoked by
-   * Unit.setXXX() methods.
+   * Adds a unit to this container. This method should only be invoked by Unit.setXXX() methods.
    */
   public void addUnit(Unit u);
 
   /**
-   * Removes a unit from this container. This method should only be invoked by
-   * Unit.setXXX() methods.
+   * Removes a unit from this container. This method should only be invoked by Unit.setXXX()
+   * methods.
    */
   public Unit removeUnit(ID key);
 
@@ -88,7 +86,6 @@ public interface Group extends Named, Taggable, Addeable {
    * Returns a String representation of this group object.
    */
   public String toString();
-
 
   /**
    * @see magellan.library.Identifiable#getID()

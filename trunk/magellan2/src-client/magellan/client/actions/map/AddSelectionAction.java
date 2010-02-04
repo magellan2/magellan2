@@ -15,39 +15,37 @@ package magellan.client.actions.map;
 
 import magellan.client.Client;
 
-
 /**
  * Adds a previously saved selection file to the current selection.
- *
+ * 
  * @author Ilja Pavkovic
  */
 public class AddSelectionAction extends OpenSelectionAction {
 
   /**
-	 * Creates a new AddSelectionAction object.
-	 * 
-	 */
-	public AddSelectionAction(Client client) {
-		super(client);
-	}
+   * Creates a new AddSelectionAction object.
+   */
+  public AddSelectionAction(Client client) {
+    super(client);
+  }
 
-	/**
-	 * Does nothing.
-	 * 
-	 * @see magellan.client.actions.map.OpenSelectionAction#preSetCleanSelection()
-	 */
-	@Override
+  /**
+   * Does nothing.
+   * 
+   * @see magellan.client.actions.map.OpenSelectionAction#preSetCleanSelection()
+   */
+  @Override
   protected void preSetCleanSelection() {
-		// adding does not clean selectedRegion
-		// System.out.println("do not clean selection");
-	}
+    // adding does not clean selectedRegion
+    // System.out.println("do not clean selection");
+  }
 
-	/**
-	 * @see magellan.client.actions.map.OpenSelectionAction#getPropertyName()
-	 */
-	@Override
+  /**
+   * @see magellan.client.actions.map.OpenSelectionAction#getPropertyName()
+   */
+  @Override
   protected String getPropertyName() {
-		return "Client.lastSELAdded";
-	}
+    return "Client.lastSELAdded";
+  }
 
 }

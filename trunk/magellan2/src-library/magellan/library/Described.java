@@ -17,15 +17,13 @@ package magellan.library;
  * An interface granting access to the description of an object.
  */
 public interface Described extends Named {
-	/**
-	 * Sets the description of this object.
-	 */
-	public void setDescription(String description);
+  /**
+   * Sets the description of this object.
+   */
+  public void setDescription(String description);
 
-	/**
-	 * Returns the description of this object.
-	 *
-	 * 
-	 */
-	public String getDescription();
+  /**
+   * Returns the description of this object.
+   */
+  public String getDescription();
 }

@@ -52,7 +52,8 @@ import magellan.client.swing.completion.OrderEditor;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
-public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
+public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapter implements
+    PreferencesAdapter {
   private MultiEditorOrderEditorList source = null;
   private JPanel pnlStandardColor = null;
   private JPanel pnlStandardColorConfirmed = null;
@@ -70,8 +71,6 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
 
   /**
    * Creates a new OrderEditorListPreferences object.
-   *
-   * 
    */
   public DetailsViewOrderEditorPreferences(MultiEditorOrderEditorList source) {
     this.source = source;
@@ -83,110 +82,131 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     getHighlightPanel();
 
     getListModePanel();
-    
+
   }
 
   protected Container getLayoutPanel() {
-    JPanel content = addPanel(Resources.get("completion.multieditorordereditorlist.prefs.layout"), new FlowLayout(FlowLayout.LEADING, 3, 0));
+    JPanel content =
+        addPanel(Resources.get("completion.multieditorordereditorlist.prefs.layout"),
+            new FlowLayout(FlowLayout.LEADING, 3, 0));
 
-    chkMultiEditorLayout = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.multieditorlayout"),
-                       source.isMultiEditorLayout());
+    chkMultiEditorLayout =
+        new JCheckBox(Resources
+            .get("completion.multieditorordereditorlist.prefs.multieditorlayout"), source
+            .isMultiEditorLayout());
     content.add(chkMultiEditorLayout);
 
-    chkHideButtons = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.hidebuttons"), source.isHideButtons());
+    chkHideButtons =
+        new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.hidebuttons"),
+            source.isHideButtons());
     content.add(chkHideButtons);
-    
-    chkEditAllFactions = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.editallfactions"), source.isEditAllFactions());
+
+    chkEditAllFactions =
+        new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.editallfactions"),
+            source.isEditAllFactions());
     content.add(chkEditAllFactions);
 
     return content;
   }
 
   protected Container getColorPanel() {
-    JPanel content = addPanel(Resources.get("completion.multieditorordereditorlist.prefs.colors"), new GridBagLayout());
+    JPanel content =
+        addPanel(Resources.get("completion.multieditorordereditorlist.prefs.colors"),
+            new GridBagLayout());
 
-    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
-                            GridBagConstraints.WEST,
-                            GridBagConstraints.NONE,
-                            new Insets(0, 2, 1, 1), 0, 0);
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+            new Insets(0, 2, 1, 1), 0, 0);
 
-    JLabel lblStandardColor = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.inactivebackground") + ": ");
+    JLabel lblStandardColor =
+        new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.inactivebackground")
+            + ": ");
 
     pnlStandardColor = new JPanel();
     pnlStandardColor.setBorder(new LineBorder(Color.black));
     pnlStandardColor.setPreferredSize(prefDim);
     pnlStandardColor.setBackground(source.getStandardBackgroundColor());
     pnlStandardColor.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent e) {
-          Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-                                Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
-                                ((Component) e.getSource()).getBackground());
+      @Override
+      public void mousePressed(MouseEvent e) {
+        Color newColor =
+            JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(), Resources
+                .get("completion.multieditorordereditorlist.prefs.backgroundcolor"), ((Component) e
+                .getSource()).getBackground());
 
-          if(newColor != null) {
-            ((Component) e.getSource()).setBackground(newColor);
-          }
+        if (newColor != null) {
+          ((Component) e.getSource()).setBackground(newColor);
         }
-      });
+      }
+    });
 
-    JLabel lblStandardColorConfirmed = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.inactivebackground.confirmed") +
-                            ": ");
+    JLabel lblStandardColorConfirmed =
+        new JLabel(Resources
+            .get("completion.multieditorordereditorlist.prefs.inactivebackground.confirmed")
+            + ": ");
 
     pnlStandardColorConfirmed = new JPanel();
     pnlStandardColorConfirmed.setBorder(new LineBorder(Color.black));
     pnlStandardColorConfirmed.setPreferredSize(prefDim);
     pnlStandardColorConfirmed.setBackground(source.getStandardBackgroundColorConfirmed());
     pnlStandardColorConfirmed.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent e) {
-          Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-                                Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
-                                ((Component) e.getSource()).getBackground());
+      @Override
+      public void mousePressed(MouseEvent e) {
+        Color newColor =
+            JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(), Resources
+                .get("completion.multieditorordereditorlist.prefs.backgroundcolor"), ((Component) e
+                .getSource()).getBackground());
 
-          if(newColor != null) {
-            ((Component) e.getSource()).setBackground(newColor);
-          }
+        if (newColor != null) {
+          ((Component) e.getSource()).setBackground(newColor);
         }
-      });
+      }
+    });
 
-    JLabel lblActiveColor = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.activebackground") + ": ");
+    JLabel lblActiveColor =
+        new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.activebackground")
+            + ": ");
 
     pnlActiveColor = new JPanel();
     pnlActiveColor.setBorder(new LineBorder(Color.black));
     pnlActiveColor.setPreferredSize(prefDim);
     pnlActiveColor.setBackground(source.getActiveBackgroundColor());
     pnlActiveColor.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent e) {
-          Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-                                Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
-                                ((Component) e.getSource()).getBackground());
+      @Override
+      public void mousePressed(MouseEvent e) {
+        Color newColor =
+            JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(), Resources
+                .get("completion.multieditorordereditorlist.prefs.backgroundcolor"), ((Component) e
+                .getSource()).getBackground());
 
-          if(newColor != null) {
-            ((Component) e.getSource()).setBackground(newColor);
-          }
+        if (newColor != null) {
+          ((Component) e.getSource()).setBackground(newColor);
         }
-      });
+      }
+    });
 
-    JLabel lblActiveColorConfirmed = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.activebackground.confirmed") +
-                          ": ");
+    JLabel lblActiveColorConfirmed =
+        new JLabel(Resources
+            .get("completion.multieditorordereditorlist.prefs.activebackground.confirmed")
+            + ": ");
 
     pnlActiveColorConfirmed = new JPanel();
     pnlActiveColorConfirmed.setBorder(new LineBorder(Color.black));
     pnlActiveColorConfirmed.setPreferredSize(prefDim);
     pnlActiveColorConfirmed.setBackground(source.getActiveBackgroundColorConfirmed());
     pnlActiveColorConfirmed.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent e) {
-          Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-                                Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
-                                ((Component) e.getSource()).getBackground());
+      @Override
+      public void mousePressed(MouseEvent e) {
+        Color newColor =
+            JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(), Resources
+                .get("completion.multieditorordereditorlist.prefs.backgroundcolor"), ((Component) e
+                .getSource()).getBackground());
 
-          if(newColor != null) {
-            ((Component) e.getSource()).setBackground(newColor);
-          }
+        if (newColor != null) {
+          ((Component) e.getSource()).setBackground(newColor);
         }
-      });
+      }
+    });
 
     content.add(lblActiveColor, c);
     c.gridx++;
@@ -217,15 +237,18 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
   }
 
   protected Container getHighlightPanel() {
-    JPanel content = addPanel(Resources.get("completion.multieditorordereditorlist.prefs.syntaxhighlighting"), new GridBagLayout());
+    JPanel content =
+        addPanel(Resources.get("completion.multieditorordereditorlist.prefs.syntaxhighlighting"),
+            new GridBagLayout());
 
-    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
-                            GridBagConstraints.WEST,
-                            GridBagConstraints.NONE,
-                            new Insets(0, 2, 1, 1), 0, 0);
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+            new Insets(0, 2, 1, 1), 0, 0);
 
-    chkSyntaxHighlighting = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.syntaxhighlighting.caption"),
-                        source.getUseSyntaxHighlighting());
+    chkSyntaxHighlighting =
+        new JCheckBox(Resources
+            .get("completion.multieditorordereditorlist.prefs.syntaxhighlighting.caption"), source
+            .getUseSyntaxHighlighting());
     content.add(chkSyntaxHighlighting, c);
 
     c.gridy++;
@@ -237,11 +260,14 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
   }
 
   protected Container getListModePanel() {
-    JPanel content = addPanel(Resources.get("completion.multieditorordereditorlist.prefs.listMode"), new BorderLayout(2, 2));
-    
+    JPanel content =
+        addPanel(Resources.get("completion.multieditorordereditorlist.prefs.listMode"),
+            new BorderLayout(2, 2));
+
     JLabel dummy = new JLabel();
 
-    JTextArea text = new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode.text"));
+    JTextArea text =
+        new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode.text"));
     text.setEditable(false);
     text.setLineWrap(true);
     text.setWrapStyleWord(true);
@@ -255,14 +281,14 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     content.add(text, BorderLayout.NORTH);
 
     JPanel help = new JPanel(new GridBagLayout());
-    GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0.5, 0,
-                            GridBagConstraints.WEST,
-                            GridBagConstraints.NONE,
-                            new Insets(1, 1, 1, 1), 0, 0);
+    GridBagConstraints con =
+        new GridBagConstraints(0, 0, 1, 1, 0.5, 0, GridBagConstraints.WEST,
+            GridBagConstraints.NONE, new Insets(1, 1, 1, 1), 0, 0);
     listModes = new JCheckBox[3];
 
-    for(int i = 0; i < 3; i++) {
-      listModes[i] = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i));
+    for (int i = 0; i < 3; i++) {
+      listModes[i] =
+          new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i));
       listModes[i].setSelected(((source.getListMode() >> (3 - i)) & 1) != 0);
       help.add(listModes[i], con);
       con.gridy++;
@@ -272,8 +298,10 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     con.gridx = 1;
     con.fill = GridBagConstraints.HORIZONTAL;
 
-    for(int i = 0; i < 3; i++) {
-      text = new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i + ".text"));
+    for (int i = 0; i < 3; i++) {
+      text =
+          new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i
+              + ".text"));
       text.setEditable(false);
       text.setLineWrap(true);
       text.setWrapStyleWord(true);
@@ -300,53 +328,56 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
 
   protected Container createStylesContainer() {
     JPanel content = new JPanel(new GridBagLayout());
-    
+
     comboSHColors = new JComboBox(getStyles());
     comboSHColors.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent ae) {
-          StyleContainer c = (StyleContainer) comboSHColors.getSelectedItem();
-          pnlStylesColor.setBackground(c.color);
-        }
-      });
+      public void actionPerformed(ActionEvent ae) {
+        StyleContainer c = (StyleContainer) comboSHColors.getSelectedItem();
+        pnlStylesColor.setBackground(c.color);
+      }
+    });
 
     pnlStylesColor = new JPanel();
     pnlStylesColor.setBorder(new LineBorder(Color.black));
     pnlStylesColor.setPreferredSize(prefDim);
     pnlStylesColor.setBackground(((StyleContainer) comboSHColors.getItemAt(0)).color);
     pnlStylesColor.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent me) {
-          StyleContainer sc = (StyleContainer) comboSHColors.getSelectedItem();
-          Color newColor = JColorChooser.showDialog(((JComponent) me.getSource()).getTopLevelAncestor(),
-                                sc.description + " Farbe",
-                                sc.color);
+      @Override
+      public void mousePressed(MouseEvent me) {
+        StyleContainer sc = (StyleContainer) comboSHColors.getSelectedItem();
+        Color newColor =
+            JColorChooser.showDialog(((JComponent) me.getSource()).getTopLevelAncestor(),
+                sc.description + " Farbe", sc.color);
 
-          if(newColor != null) {
-            sc.color = newColor;
-            pnlStylesColor.setBackground(newColor);
-          }
+        if (newColor != null) {
+          sc.color = newColor;
+          pnlStylesColor.setBackground(newColor);
         }
-      });
+      }
+    });
 
     pnlBackgroundColor = new JPanel();
     pnlBackgroundColor.setBorder(new LineBorder(Color.black));
     pnlBackgroundColor.setPreferredSize(prefDim);
     pnlBackgroundColor.setBackground(source.getErrorBackground());
     pnlBackgroundColor.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mousePressed(MouseEvent me) {
-          Color newColor = JColorChooser.showDialog(((JComponent) me.getSource()).getTopLevelAncestor(),
-              Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolorchooser.title"),
-                                source.getErrorBackground());
+      @Override
+      public void mousePressed(MouseEvent me) {
+        Color newColor =
+            JColorChooser.showDialog(((JComponent) me.getSource()).getTopLevelAncestor(), Resources
+                .get("completion.multieditorordereditorlist.prefs.backgroundcolorchooser.title"),
+                source.getErrorBackground());
 
-          if(newColor != null) {
-            source.setErrorBackground(newColor);
-            pnlBackgroundColor.setBackground(newColor);
-          }
+        if (newColor != null) {
+          source.setErrorBackground(newColor);
+          pnlBackgroundColor.setBackground(newColor);
         }
-      });
+      }
+    });
 
-    GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0);
+    GridBagConstraints gbc =
+        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+            new Insets(0, 0, 0, 0), 0, 0);
     content.add(comboSHColors, gbc);
 
     gbc.gridx++;
@@ -357,10 +388,11 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
 
     gbc.gridx++;
     content.add(Box.createRigidArea(new Dimension(10, 5)));
-    
+
     gbc.gridx++;
-    content.add(new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolorchooser.label")));
-    
+    content.add(new JLabel(Resources
+        .get("completion.multieditorordereditorlist.prefs.backgroundcolorchooser.label")));
+
     gbc.gridx++;
     content.add(Box.createRigidArea(new Dimension(5, 5)));
 
@@ -373,21 +405,29 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
   private Object[] getStyles() {
     Object styles[] = new Object[6];
 
-    styles[0] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.standard"),
-                     OrderEditor.S_REGULAR,
-                     source.getTokenColor(OrderEditor.S_REGULAR));
-    styles[1] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.keywords"),
-                     OrderEditor.S_KEYWORD,
-                     source.getTokenColor(OrderEditor.S_KEYWORD));
-    styles[2] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.strings"), OrderEditor.S_STRING,
-                     source.getTokenColor(OrderEditor.S_STRING));
-    styles[3] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.numbers"), OrderEditor.S_NUMBER,
-                     source.getTokenColor(OrderEditor.S_NUMBER));
-    styles[4] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.ids"), OrderEditor.S_ID,
-                     source.getTokenColor(OrderEditor.S_ID));
-    styles[5] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.comments"),
-                     OrderEditor.S_COMMENT,
-                     source.getTokenColor(OrderEditor.S_COMMENT));
+    styles[0] =
+        new StyleContainer(Resources
+            .get("completion.multieditorordereditorlist.prefs.colors.standard"),
+            OrderEditor.S_REGULAR, source.getTokenColor(OrderEditor.S_REGULAR));
+    styles[1] =
+        new StyleContainer(Resources
+            .get("completion.multieditorordereditorlist.prefs.colors.keywords"),
+            OrderEditor.S_KEYWORD, source.getTokenColor(OrderEditor.S_KEYWORD));
+    styles[2] =
+        new StyleContainer(Resources
+            .get("completion.multieditorordereditorlist.prefs.colors.strings"),
+            OrderEditor.S_STRING, source.getTokenColor(OrderEditor.S_STRING));
+    styles[3] =
+        new StyleContainer(Resources
+            .get("completion.multieditorordereditorlist.prefs.colors.numbers"),
+            OrderEditor.S_NUMBER, source.getTokenColor(OrderEditor.S_NUMBER));
+    styles[4] =
+        new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.ids"),
+            OrderEditor.S_ID, source.getTokenColor(OrderEditor.S_ID));
+    styles[5] =
+        new StyleContainer(Resources
+            .get("completion.multieditorordereditorlist.prefs.colors.comments"),
+            OrderEditor.S_COMMENT, source.getTokenColor(OrderEditor.S_COMMENT));
 
     return styles;
   }
@@ -408,23 +448,23 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     source.setHideButtons(chkHideButtons.isSelected());
     source.setEditAllFactions(chkEditAllFactions.isSelected());
     source.setUseSyntaxHighlighting(chkSyntaxHighlighting.isSelected());
-    
+
     source.setErrorBackground(pnlBackgroundColor.getBackground());
 
-    for(int i = 0; i < comboSHColors.getItemCount(); i++) {
+    for (int i = 0; i < comboSHColors.getItemCount(); i++) {
       StyleContainer sc = (StyleContainer) comboSHColors.getItemAt(i);
       source.setTokenColor(sc.name, sc.color);
     }
 
     source.setListMode(0);
 
-    for(int i = 0; i < 3; i++) {
-      if(listModes[i].isSelected()) {
+    for (int i = 0; i < 3; i++) {
+      if (listModes[i].isSelected()) {
         source.setListMode(source.getListMode() | (1 << (3 - i)));
       }
     }
 
-    if(source.getListMode() == 0) {
+    if (source.getListMode() == 0) {
       source.setListMode(1 << MultiEditorOrderEditorList.LIST_REGION);
     }
 
@@ -433,8 +473,6 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
 
   /**
    * DOCUMENT-ME
-   *
-   * 
    */
   public Component getComponent() {
     return this;
@@ -442,8 +480,6 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
 
   /**
    * DOCUMENT-ME
-   *
-   * 
    */
   public String getTitle() {
     return Resources.get("completion.multieditorordereditorlist.prefs.title");
@@ -461,10 +497,6 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
 
     /**
      * Creates a new StyleContainer object.
-     *
-     * 
-     * 
-     * 
      */
     public StyleContainer(String description, String name, Color color) {
       this.description = description;
@@ -474,8 +506,6 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
 
     /**
      * DOCUMENT-ME
-     *
-     * 
      */
     @Override
     public String toString() {
@@ -483,4 +513,3 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     }
   }
 }
-

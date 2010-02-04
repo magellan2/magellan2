@@ -30,7 +30,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * This is the loader for all Magellan PlugIns.
- *
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 28.05.2007
  */
@@ -45,11 +45,13 @@ public class MagellanPlugInLoader extends AbstractPlugInLoader<MagellanPlugIn> {
     MagellanPlugInLoader.log.info("Searching for magellan plugins...");
 
     long start = System.currentTimeMillis();
-    
-    Collection<Class<MagellanPlugIn>> classes = getExternalModuleClasses(settings, MagellanPlugIn.class);
+
+    Collection<Class<MagellanPlugIn>> classes =
+        getExternalModuleClasses(settings, MagellanPlugIn.class);
 
     long end = System.currentTimeMillis();
-    MagellanPlugInLoader.log.info("Searching for magellan plugins done. Found " + classes.size() + " instances in " + String.valueOf((end - start)) + " msecs");
+    MagellanPlugInLoader.log.info("Searching for magellan plugins done. Found " + classes.size()
+        + " instances in " + String.valueOf((end - start)) + " msecs");
 
     return classes;
   }

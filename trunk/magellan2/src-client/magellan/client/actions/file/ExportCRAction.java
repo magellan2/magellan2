@@ -22,52 +22,51 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
-public class ExportCRAction extends MenuAction implements GameDataListener{
+public class ExportCRAction extends MenuAction implements GameDataListener {
 
-	/**
-	 * Creates a new ExportCRAction object.
-	 *
-	 * @param client
-	 */
-	public ExportCRAction(Client client) {
-        super(client);
-        setEnabled(false);
-        client.getDispatcher().addGameDataListener(this);
-	}
+  /**
+   * Creates a new ExportCRAction object.
+   * 
+   * @param client
+   */
+  public ExportCRAction(Client client) {
+    super(client);
+    setEnabled(false);
+    client.getDispatcher().addGameDataListener(this);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		CRWriterDialog d = new CRWriterDialog(client, true, client.getData(), client.getProperties(), client.getSelectedRegions().values());
-		d.setVisible(true);
-	}
+    CRWriterDialog d =
+        new CRWriterDialog(client, true, client.getData(), client.getProperties(), client
+            .getSelectedRegions().values());
+    d.setVisible(true);
+  }
 
-	public void gameDataChanged(GameDataEvent e) {
-		int i = e.getGameData().regions().size();
-		if (i>0) {
-			setEnabled(true);
-		} else {
-			setEnabled(false);
-		}
-	}
-	
+  public void gameDataChanged(GameDataEvent e) {
+    int i = e.getGameData().regions().size();
+    if (i > 0) {
+      setEnabled(true);
+    } else {
+      setEnabled(false);
+    }
+  }
+
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.exportcraction.accelerator",false);
+    return Resources.get("actions.exportcraction.accelerator", false);
   }
 
   /**
@@ -75,7 +74,7 @@ public class ExportCRAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.exportcraction.mnemonic",false);
+    return Resources.get("actions.exportcraction.mnemonic", false);
   }
 
   /**
@@ -88,6 +87,6 @@ public class ExportCRAction extends MenuAction implements GameDataListener{
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.exportcraction.tooltip",false);
+    return Resources.get("actions.exportcraction.tooltip", false);
   }
 }

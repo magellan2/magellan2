@@ -36,20 +36,20 @@ import magellan.client.utils.XMLFileFilter;
 import magellan.library.utils.Resources;
 
 public class LayoutExportAction extends MenuAction {
-  
+
   /**
    * 
    */
   public LayoutExportAction() {
     super(Client.INSTANCE);
   }
-  
+
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.accelerator",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.accelerator", false);
   }
 
   /**
@@ -57,7 +57,7 @@ public class LayoutExportAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.mnemonic",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.mnemonic", false);
   }
 
   /**
@@ -87,10 +87,12 @@ public class LayoutExportAction extends MenuAction {
     fileChooser.setFileFilter(new XMLFileFilter());
     if (fileChooser.showSaveDialog(Client.INSTANCE) == JFileChooser.APPROVE_OPTION) {
       if (fileChooser.getSelectedFile().exists()) {
-        int result = JOptionPane.showConfirmDialog(Client.INSTANCE, Resources.get("desktop.magellandesktop.msg.layout.export.caption"), Resources.get("desktop.magellandesktop.msg.layout.export.title"), JOptionPane.YES_NO_OPTION);
-        if (result != JOptionPane.YES_OPTION) {
+        int result =
+            JOptionPane.showConfirmDialog(Client.INSTANCE, Resources
+                .get("desktop.magellandesktop.msg.layout.export.caption"), Resources
+                .get("desktop.magellandesktop.msg.layout.export.title"), JOptionPane.YES_NO_OPTION);
+        if (result != JOptionPane.YES_OPTION)
           return;
-        }
       }
       try {
         DockingFrameworkBuilder.getInstance().write(fileChooser.getSelectedFile());

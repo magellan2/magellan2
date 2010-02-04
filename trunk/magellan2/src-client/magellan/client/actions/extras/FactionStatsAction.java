@@ -42,7 +42,9 @@ public class FactionStatsAction extends MenuAction implements GameDataListener {
    */
   @Override
   public void menuActionPerformed(java.awt.event.ActionEvent e) {
-    FactionStatsDialog d = new FactionStatsDialog(client, false, client.getDispatcher(), client.getData(), client.getProperties());
+    FactionStatsDialog d =
+        new FactionStatsDialog(client, false, client.getDispatcher(), client.getData(), client
+            .getProperties());
     d.setVisible(true);
   }
 

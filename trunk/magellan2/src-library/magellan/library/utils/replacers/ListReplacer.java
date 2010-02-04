@@ -24,132 +24,120 @@ import java.util.List;
 
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class ListReplacer implements Replacer {
-	protected StringBuffer buffer;
-	protected List<?> list;
-	protected String unknown;
-	protected String evolved = null;
-	protected static NumberFormat numberFormat;
+  protected StringBuffer buffer;
+  protected List<?> list;
+  protected String unknown;
+  protected String evolved = null;
+  protected static NumberFormat numberFormat;
 
-	/**
-	 * Creates new ListReplacer
-	 *
-	 * 
-	 * 
-	 */
-	public ListReplacer(List<?> list, String unknown) {
-		buffer = new StringBuffer();
-		this.list = list;
-		this.unknown = unknown;
+  /**
+   * Creates new ListReplacer
+   */
+  public ListReplacer(List<?> list, String unknown) {
+    buffer = new StringBuffer();
+    this.list = list;
+    this.unknown = unknown;
 
-		if(ListReplacer.numberFormat == null) {
-			try {
-				ListReplacer.numberFormat = NumberFormat.getInstance(magellan.library.utils.Locales.getGUILocale());
-			} catch(IllegalStateException ise) {
-				ListReplacer.numberFormat = NumberFormat.getInstance();
-			}
+    if (ListReplacer.numberFormat == null) {
+      try {
+        ListReplacer.numberFormat =
+            NumberFormat.getInstance(magellan.library.utils.Locales.getGUILocale());
+      } catch (IllegalStateException ise) {
+        ListReplacer.numberFormat = NumberFormat.getInstance();
+      }
 
-			ListReplacer.numberFormat.setMaximumFractionDigits(2);
-			ListReplacer.numberFormat.setMinimumFractionDigits(0);
-		}
+      ListReplacer.numberFormat.setMaximumFractionDigits(2);
+      ListReplacer.numberFormat.setMinimumFractionDigits(0);
+    }
 
-		if(list == null) {
-			evolved = "";
-		} else {
-			Iterator<?> it = list.iterator();
-			boolean canEvolve = true;
+    if (list == null) {
+      evolved = "";
+    } else {
+      Iterator<?> it = list.iterator();
+      boolean canEvolve = true;
 
-			while(canEvolve && it.hasNext()) {
-				canEvolve = !(it.next() instanceof Replacer);
-			}
+      while (canEvolve && it.hasNext()) {
+        canEvolve = !(it.next() instanceof Replacer);
+      }
 
-			if(canEvolve) {
-				evolved = (String) getReplacement(null);
-			}
-		}
-	}
+      if (canEvolve) {
+        evolved = (String) getReplacement(null);
+      }
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getDescription() {
-		return "list replacer";
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public String getDescription() {
+    return "list replacer";
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Object getReplacement(Object o) {
-		if(evolved != null) {
-			return evolved;
-		}
+  /**
+   * DOCUMENT-ME
+   */
+  public Object getReplacement(Object o) {
+    if (evolved != null)
+      return evolved;
 
-		//try{
-		if(list == null) {
-			return null;
-		}
+    // try{
+    if (list == null)
+      return null;
 
-		buffer.setLength(0);
+    buffer.setLength(0);
 
-		Iterator<?> it = list.iterator();
+    Iterator<?> it = list.iterator();
 
-		while(it.hasNext()) {
-			Object obj = it.next();
+    while (it.hasNext()) {
+      Object obj = it.next();
 
-			if(obj instanceof Replacer) {
-				obj = ((Replacer) obj).getReplacement(o);
-			}
+      if (obj instanceof Replacer) {
+        obj = ((Replacer) obj).getReplacement(o);
+      }
 
-			if(obj == null) {
-				buffer.append(unknown);
-			} else {
-				if(obj instanceof Number) {
-					buffer.append(ListReplacer.numberFormat.format(obj));
-				} else {
-					buffer.append(obj.toString());
-				}
-			}
-		}
+      if (obj == null) {
+        buffer.append(unknown);
+      } else {
+        if (obj instanceof Number) {
+          buffer.append(ListReplacer.numberFormat.format(obj));
+        } else {
+          buffer.append(obj.toString());
+        }
+      }
+    }
 
-		String str = buffer.toString();
-		buffer.setLength(0);
+    String str = buffer.toString();
+    buffer.setLength(0);
 
-		return str;
+    return str;
 
-		//}catch(Exception exc) {}
-		//return null;
-	}
+    // }catch(Exception exc) {}
+    // return null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String toString() {
-		StringBuffer buf = new StringBuffer();
-		Iterator<?> it = list.iterator();
+    StringBuffer buf = new StringBuffer();
+    Iterator<?> it = list.iterator();
 
-		while(it.hasNext()) {
-			buf.append(it.next());
-		}
+    while (it.hasNext()) {
+      buf.append(it.next());
+    }
 
-		if(evolved != null) {
-			buf.append("(Evolved to: ");
-			buf.append(evolved);
-			buf.append(")");
-		}
+    if (evolved != null) {
+      buf.append("(Evolved to: ");
+      buf.append(evolved);
+      buf.append(")");
+    }
 
-		return buf.toString();
-	}
+    return buf.toString();
+  }
 }

@@ -20,26 +20,26 @@ import magellan.library.Unit;
  */
 public class AttackRelation extends InterUnitRelation {
 
-	/**
-	 * Creates a new AttackRelation object.
-	 *
-	 * @param s The source unit
-	 * @param t The target unit
-	 * @param line The line in the source's orders
-	 */
-	public AttackRelation(Unit s, Unit t, int line) {
-		super(s, t, line);
-	}
+  /**
+   * Creates a new AttackRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target unit
+   * @param line The line in the source's orders
+   */
+  public AttackRelation(Unit s, Unit t, int line) {
+    super(s, t, line);
+  }
 
-	/**
-	 * Creates a new AttackRelation object.
-	 *
-	 * @param s The source unit
-	 * @param t The target unit
-	 * @param line The line in the source's orders
-	 * @param w <code>true</code> iff this relation causes a warning
-	 */
-	public AttackRelation(Unit s, Unit t, int line, boolean w) {
-		super(s, t, line, w);
-	}
+  /**
+   * Creates a new AttackRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target unit
+   * @param line The line in the source's orders
+   * @param w <code>true</code> iff this relation causes a warning
+   */
+  public AttackRelation(Unit s, Unit t, int line, boolean w) {
+    super(s, t, line, w);
+  }
 }

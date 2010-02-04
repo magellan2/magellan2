@@ -40,46 +40,57 @@ public class AllianceStateRenderer extends JLabel implements ListCellRenderer, T
   public AllianceStateRenderer() {
     setOpaque(true);
   }
-  
+
   /**
-   * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+   * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList,
+   *      java.lang.Object, int, boolean, boolean)
    */
-  public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-    return getRendererComponent(list, list.getSelectionBackground(), list.getSelectionForeground(), value, isSelected, cellHasFocus);
+  public Component getListCellRendererComponent(JList list, Object value, int index,
+      boolean isSelected, boolean cellHasFocus) {
+    return getRendererComponent(list, list.getSelectionBackground(), list.getSelectionForeground(),
+        value, isSelected, cellHasFocus);
   }
 
   /**
-   * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+   * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable,
+   *      java.lang.Object, boolean, boolean, int, int)
    */
-  public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-    return getRendererComponent(table, table.getSelectionBackground(), table.getSelectionForeground(), value, isSelected, hasFocus);
+  public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+      boolean hasFocus, int row, int column) {
+    return getRendererComponent(table, table.getSelectionBackground(), table
+        .getSelectionForeground(), value, isSelected, hasFocus);
   }
-  
-  protected Component getRendererComponent(JComponent component, Color sBackground, Color sForeground, Object value, boolean isSelected, boolean hasFocus) {
+
+  protected Component getRendererComponent(JComponent component, Color sBackground,
+      Color sForeground, Object value, boolean isSelected, boolean hasFocus) {
     int bitmask = 0;
     String text = "";
-    AllianceState state = (AllianceState)value;
-    if (state != null) bitmask = state.getBitMask();
-    if (state != null) text = state.toString();
-    
+    AllianceState state = (AllianceState) value;
+    if (state != null) {
+      bitmask = state.getBitMask();
+    }
+    if (state != null) {
+      text = state.toString();
+    }
 
     if (isSelected) {
-        setBackground(sBackground);
-        setForeground(sForeground);
+      setBackground(sBackground);
+      setForeground(sForeground);
     } else {
-        setBackground(component.getBackground());
-        setForeground(component.getForeground());
+      setBackground(component.getBackground());
+      setForeground(component.getForeground());
     }
-    
-    setToolTipText(state==null?"state":state.toString());
 
-    //Set the icon and text.  If icon was null, say so.
-    ImageIcon icon = MagellanImages.getImageIcon("etc/images/icons/alliancestate_"+bitmask+".gif");
+    setToolTipText(state == null ? "state" : state.toString());
+
+    // Set the icon and text. If icon was null, say so.
+    ImageIcon icon =
+        MagellanImages.getImageIcon("etc/images/icons/alliancestate_" + bitmask + ".gif");
     setIcon(icon);
     setText(text);
     setFont(component.getFont());
 
     return this;
   }
-  
+
 }

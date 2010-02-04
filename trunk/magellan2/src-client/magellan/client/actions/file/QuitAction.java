@@ -19,41 +19,38 @@ import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class QuitAction extends MenuAction {
 
-	/**
-	 * Creates new OpenCRAction
-	 *
-	 * @param client
-	 */
-	public QuitAction(Client client) {
-        super(client);
-	}
+  /**
+   * Creates new OpenCRAction
+   * 
+   * @param client
+   */
+  public QuitAction(Client client) {
+    super(client);
+  }
 
-	/**
-	 * Called when the file->open menu is selected in order to open a certain cr file. Displays a
-	 * file chooser and loads the selected cr file.
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Called when the file->open menu is selected in order to open a certain cr file. Displays a file
+   * chooser and loads the selected cr file.
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		client.quit(true);
-	}
+    client.quit(true);
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.quitaction.accelerator",false);
+    return Resources.get("actions.quitaction.accelerator", false);
   }
 
   /**
@@ -61,7 +58,7 @@ public class QuitAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.quitaction.mnemonic",false);
+    return Resources.get("actions.quitaction.mnemonic", false);
   }
 
   /**
@@ -74,7 +71,7 @@ public class QuitAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.quitaction.tooltip",false);
+    return Resources.get("actions.quitaction.tooltip", false);
   }
 
 }

@@ -53,9 +53,8 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
   /**
    * Creates new UnitSkillCountReplacer
    * 
-   * @param mode
-   *          one if {@link #MODE_SKILL_MIN}, {@link #MODE_SKILL_MIN},
-   *          {@link #MODE_SKILL_SUM}, {@link #MODE_SKILL_SUM_MIN}
+   * @param mode one if {@link #MODE_SKILL_MIN}, {@link #MODE_SKILL_MIN}, {@link #MODE_SKILL_SUM},
+   *          {@link #MODE_SKILL_SUM_MIN}
    */
   public UnitSkillCountReplacer(int mode) {
     super(UnitSkillCountReplacer.MODE_LENGTHS[mode]);
@@ -63,24 +62,20 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
   }
 
   /**
-   * Counts all persons in the region. Can be restricted by unit filters. Can be
-   * restricted by unit filters. The first parameter specifies the skill. If
-   * <code>mode=={@link #MODE_SKILL_MIN}</code> or
-   * <code>mode=={@link #MODE_SKILL_SUM_MIN}</code>, only persons with a certain skill level are counted.
+   * Counts all persons in the region. Can be restricted by unit filters. Can be restricted by unit
+   * filters. The first parameter specifies the skill. If <code>mode=={@link #MODE_SKILL_MIN}</code> or <code>mode=={@link #MODE_SKILL_SUM_MIN}</code>, only persons with a certain skill level are
+   * counted.
    * 
-   * @param politicsMode
-   *          {@link #MODE_SKILL} : counts all persons with the skill<br />
-   *          {@link #MODE_SKILL_MIN} : count all persons with at least a
-   *          certain skill level<br /> {@link #MODE_SKILL_SUM}: count the skill
-   *          points of units with the given skill.<br />
-   *          {@link #MODE_SKILL_SUM_MIN}: count all skill points of units with
-   *          at least a certain skill level.
+   * @param politicsMode {@link #MODE_SKILL} : counts all persons with the skill<br />
+   *          {@link #MODE_SKILL_MIN} : count all persons with at least a certain skill level<br />
+   *          {@link #MODE_SKILL_SUM}: count the skill points of units with the given skill.<br />
+   *          {@link #MODE_SKILL_SUM_MIN}: count all skill points of units with at least a certain
+   *          skill level.
    * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
    */
   public Object getReplacement(Object region) {
-    if (!(region instanceof Region)) {
+    if (!(region instanceof Region))
       return null;
-    }
 
     boolean minMode =
         ((mode == UnitSkillCountReplacer.MODE_SKILL_MIN) || (mode == UnitSkillCountReplacer.MODE_SKILL_SUM_MIN));
@@ -106,9 +101,8 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
         ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART))
             .getUnits((Region) region);
 
-    if ((units == null) || (units.size() == 0)) {
+    if ((units == null) || (units.size() == 0))
       return new Integer(0);
-    }
 
     int count = 0;
     Iterator<Unit> it = units.iterator();
@@ -150,7 +144,8 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
    */
   @Override
   public String getDescription() {
-    return Resources.get("util.replacers.unitskillcountreplacer.description." + mode)+"\n\n"+super.getDescription();
+    return Resources.get("util.replacers.unitskillcountreplacer.description." + mode) + "\n\n"
+        + super.getDescription();
   }
 
 }

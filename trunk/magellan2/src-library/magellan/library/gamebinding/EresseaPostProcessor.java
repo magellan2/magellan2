@@ -47,31 +47,28 @@ import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 345 $
  */
 public class EresseaPostProcessor {
   private static final Logger log = Logger.getInstance(EresseaPostProcessor.class);
-  
+
   protected EresseaPostProcessor() {
-	}
-  
-	private static final EresseaPostProcessor singleton = new EresseaPostProcessor();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static EresseaPostProcessor getSingleton() {
-		return EresseaPostProcessor.singleton;
-	}
+  private static final EresseaPostProcessor singleton = new EresseaPostProcessor();
 
-	/**
+  /**
+   * DOCUMENT-ME
+   */
+  public static EresseaPostProcessor getSingleton() {
+    return EresseaPostProcessor.singleton;
+  }
+
+  /**
    * This method tries to fix some issues that arise right after reading a report file. It scans
    * messages for herbs, removes dummy units, creates temp units and tries to detect if resources
    * should be set to zero because they are not in the report.
@@ -141,14 +138,17 @@ public class EresseaPostProcessor {
                   if (targetId != null) {
                     target = data.getUnit(UnitID.createUnitID(targetId, 10, data.base));
                     if (spy == null || target == null || spy.getFaction() == null) {
-                      log.warn("spy message without spy or target: " + message);
+                      EresseaPostProcessor.log
+                          .warn("spy message without spy or target: " + message);
                     } else {
                       for (Message msg2 : spy.getFaction().getMessages()) {
                         if (targetId.equals(msg2.getAttributes().get("target"))) {
                           if (msg2.getAttributes().get("spy") != null) {
-                            if (!spyId.equals(msg2.getAttributes().get("spy")))
-                              log.warn("message " + message.getID() + " seems to belong to "
-                                  + msg2.getAttributes().get("spy") + " and " + spyId);
+                            if (!spyId.equals(msg2.getAttributes().get("spy"))) {
+                              EresseaPostProcessor.log.warn("message " + message.getID()
+                                  + " seems to belong to " + msg2.getAttributes().get("spy")
+                                  + " and " + spyId);
+                            }
                           } else {
                             switch (((msg2.getMessageType().getID()).intValue())) {
                             case 387085007: // Y gehört der Partei F an
@@ -172,259 +172,219 @@ public class EresseaPostProcessor {
       }
     }
 
-		// there can be dummy units (UnitContainer owners and such), find and remove these
-		if(data.units() != null) {
-			Collection<ID> dummyUnitIDs = new LinkedList<ID>();
+    // there can be dummy units (UnitContainer owners and such), find and remove these
+    if (data.units() != null) {
+      Collection<ID> dummyUnitIDs = new LinkedList<ID>();
 
-			for(Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
-				Unit unit = iter.next();
+      for (Unit unit : data.units().values()) {
+        if (unit.getName() == null) {
+          dummyUnitIDs.add(unit.getID());
+        }
+      }
 
-				if(unit.getName() == null) {
-					dummyUnitIDs.add(unit.getID());
-				}
-			}
+      for (ID id : dummyUnitIDs) {
+        data.units().remove(id);
+      }
+    }
 
-			for(Iterator<ID> iter = dummyUnitIDs.iterator(); iter.hasNext();) {
-				data.units().remove(iter.next());
-			}
-		}
+    /*
+     * retrieve the temp units mentioned in the orders and create them as TempUnit objects
+     */
+    int sortIndex = 0;
+    List<Unit> sortedUnits = new LinkedList<Unit>(data.units().values());
+    Collections.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
 
-		/* retrieve the temp units mentioned in the orders and
-		 create them as TempUnit objects */
-		int sortIndex = 0;
-		List<Unit> sortedUnits = new LinkedList<Unit>(data.units().values());
-		Collections.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
+    for (Unit unit : sortedUnits) {
+      unit.setSortIndex(sortIndex++);
+      sortIndex = unit.extractTempUnits(sortIndex);
+    }
 
-		for(Iterator<Unit> unitIter = sortedUnits.iterator(); unitIter.hasNext();) {
-			Unit unit = unitIter.next();
-			unit.setSortIndex(sortIndex++);
-			sortIndex = unit.extractTempUnits(sortIndex);
-		}
+    /*
+     * 'known' information does not necessarily show up in the report. e.g. depleted region
+     * resources are not mentioned although we actually know that the resource is available with an
+     * amount of 0. Resolve this ambiguity here:
+     */
+    if ((data != null) && (data.regions() != null)) {
+      /* ItemType sproutResourceID = */data.rules.getItemType("Schößlinge", true);
+      /* ItemType treeResourceID = */data.rules.getItemType("Bäume", true);
+      /* ItemType mallornSproutResourceID = */data.rules.getItemType("Mallornschößlinge", true);
+      /* ItemType mallornTreeResourceID = */data.rules.getItemType("Mallorn", true);
 
-		/* 'known' information does not necessarily show up in the
-		report. e.g. depleted region resources are not mentioned
-		although we actually know that the resource is available with
-		an amount of 0. Resolve this ambiguity here: */
-		if((data != null) && (data.regions() != null)) {
-			/*ItemType sproutResourceID = */data.rules.getItemType("Schößlinge",true);
-			/*ItemType treeResourceID = */data.rules.getItemType("Bäume",true);
-			/*ItemType mallornSproutResourceID = */data.rules.getItemType("Mallornschößlinge",true);
-			/*ItemType mallornTreeResourceID = */data.rules.getItemType("Mallorn",true);
+      for (Region region : data.regions().values()) {
+        /*
+         * first determine whether we know everything about this region
+         */
+        if (region.getVisibility() == Visibility.UNIT) {
+          /*
+           * now patch as much missing information as possible
+           */
+          // FIXME (stm) 2006-10-28: this has bitten us already
+          // check what is visible in what visibility
+          // (lighthouse, neigbbour, travel)
 
-			for(Iterator<Region> regionIter = data.regions().values().iterator(); regionIter.hasNext();) {
-				Region region = regionIter.next();
-
-        // ------------------------------------------------------------------
-        // the following tags seem to be visible for "lighthouse";visibility:
-        // DURCHSCHIFFUNG
-        // SCHIFF: Name, Beschr, Typ, Groesse, Kapitaen, Partei, (Kueste)
-        // EINHEIT: Name, Beschr, Partei, Anderepartei, typprefix, Typ, Anzahl, Schiff, (Burg)
-        // GEGENSTÄNDE
-        // ------------------------------------------------------------------
-        // the following tags seem to be visible for "travel";visibility:
-        // Baeume, Schoesslinge, Bauern, Pferde, Effects 
-        // DURCHSCHIFFUNG
-        // DURCHREISE
-        // BURG: Typ, Name, Beschr, Groesse, Besitzer, Partei
-        // SCHIFF: Name, Beschr, Typ, Groesse, Kapitaen, Partei, Kueste
-        // EINHEIT: Name, Beschr, Partei, Anderepartei, typprefix, Typ, Anzahl, Burg, Schiff
-        // ------------------------------------------------------------------
-        // the following tags seem to be visible even for "neighbour";visibilty:
-        // Name, Terrain, Beschr 
-        // GRENZE -- in the direction of the region with own unit.
-
-        /* first determine whether we know everything about
-				this region */
-				if(region.getVisibility()==Visibility.UNIT) {
-					/* now patch as much missing information as
-					possible */
-					// FIXME (stm) 2006-10-28: this has bitten us already
-					// check what is visible in what visibility 
-					// (lighthouse, neigbbour, travel)   
-					
-					// the following tags seem to be present under undefined visibility
+          // the following tags seem to be present under undefined visibility
           // even if they are zero (but only if region is not an ocean):
           // Bauern, Silber, Unterh, Rekruten, Pferde, (Lohn)
-					{
-						if(region.getPeasants() < 0) {
-							region.setPeasants(0);
-						}
+          {
+            if (region.getPeasants() < 0) {
+              region.setPeasants(0);
+            }
 
-						if(region.getSilver() < 0) {
-							region.setSilver(0);
-						}
+            if (region.getSilver() < 0) {
+              region.setSilver(0);
+            }
 
-						if(region.getWage() < 0) {
-							// TODO: should we set this to 10 instead?
-							region.setWage(0);
-						}
+            if (region.getWage() < 0) {
+              // TODO: should we set this to 10 instead?
+              region.setWage(0);
+            }
 
-						if(region.getHorses() < 0) {
-							region.setHorses(0);
-						}
-					}
-					
-					if(region.getSprouts() < 0) {
-						region.setSprouts(0);
-					}
-					if(region.getTrees() < 0) {
-						region.setTrees(0);
-					}
-				}
-			}
-		}
-	}
+            if (region.getHorses() < 0) {
+              region.setHorses(0);
+            }
+          }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void postProcessAfterTrustlevelChange(GameData data) {
-		// initialize fog-of-war cache (FIXME(pavkovic): Do it always?)
-		// clear all fog-of-war caches
-		if(data.regions() != null) {
-			for(Iterator<Region> iter = data.regions().values().iterator(); iter.hasNext();) {
-				Region r = iter.next();
-				r.setFogOfWar(-1);
-			}
-		}
+          if (region.getSprouts() < 0) {
+            region.setSprouts(0);
+          }
+          if (region.getTrees() < 0) {
+            region.setTrees(0);
+          }
+        }
+      }
+    }
+  }
 
-		// intialize the fog-of-war cache for all regions that are covered by lighthouses
-		if(data.buildings() != null) {
-			BuildingType type = data.rules.getBuildingType(EresseaConstants.B_LIGHTHOUSE);
-			RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
-			Comparator<Unit> sortIndexComparator = new SortIndexComparator<Unit>(IDComparator.DEFAULT);
-
-			// FIXME(stm) broken, if a unit's faction's report was not added but the skill is still known...
-			if(type != null) {
-				for(Iterator<Building> iter = data.buildings().values().iterator(); iter.hasNext();) {
-					Building b = iter.next();
-
-					if(type.equals(b.getType()) && (b.getSize() >= 10)) {
-						int personCounter = 0;
-						int perceptionSkillLevel = 0;
-						List<Unit> sortedInmates = new LinkedList<Unit>(b.units());
-						Collections.sort(sortedInmates, sortIndexComparator);
-
-						for(Iterator<Unit> inmates = sortedInmates.iterator(); inmates.hasNext() && (personCounter < 4); personCounter++) {
-							Unit inmate = inmates.next();
-							Skill perceptionSkill = inmate.getSkill(data.rules.getSkillType(EresseaConstants.S_WAHRNEHMUNG,
-																							true));
-
-							if(perceptionSkill != null) {
-								perceptionSkillLevel = Math.max(perceptionSkill.getLevel(),
-																perceptionSkillLevel);
-							}
-						}
-
-						int maxRadius = (int) Math.min(Math.log10(b.getSize()) + 1,
-													   perceptionSkillLevel / 3);
-
-						if(maxRadius > 0) {
-							Map<CoordinateID, Region> regions = Regions.getAllNeighbours(data.regions(),
-																   b.getRegion().getCoordinate(),
-																   maxRadius, null);
-
-							for(Iterator<Region> regionIter = regions.values().iterator();
-									regionIter.hasNext();) {
-								Region r = regionIter.next();
-
-								if((oceanType == null) || oceanType.equals(r.getType())) {
-									r.setFogOfWar(0);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// intialize the fog-of-war cache for all regions where units or ships traveled through
-		for(Iterator<Region> iterator = data.regions().values().iterator(); iterator.hasNext();) {
-			Region r = iterator.next();
-
-			if(r.getTravelThru() != null) {
-				initTravelThru(data, r, r.getTravelThru());
-			}
-
-			if(r.getTravelThruShips() != null) {
-				initTravelThru(data, r, r.getTravelThruShips());
-			}
-		}
-	}
-
-	private void initTravelThru(GameData data, Region region, Collection<Message> travelThru) {
-		for(Iterator<Message> iter = travelThru.iterator(); iter.hasNext();) {
-			Message mes = iter.next();
-
-			// fetch ID of Unit or Ship from Message of type "<name> (<id>)"
-			String s = mes.getText();
-			int startpos = s.lastIndexOf("(") + 1;
-			int endpos = s.length() - 1;
-
-			if((startpos > -1) && (endpos > startpos)) {
-				try {
-				  // message text always use the report base
-					ID id = EntityID.createEntityID(s.substring(startpos, endpos),data.base);
-
-					if((data.getUnit(id) != null) &&
-						   (data.getUnit(id).getFaction().isPrivileged())) {
-						// fast return
-						region.setFogOfWar(0);
-
-						return;
-					} else {
-						Ship ship = data.getShip(id);
-
-						if(ship != null) {
-							for(Iterator<Unit> i = ship.units().iterator(); i.hasNext();) {
-								if((i.next()).getFaction().isPrivileged()) {
-									// fast return
-									region.setFogOfWar(0);
-
-									return;
-								}
-							}
-						}
-					}
-				} catch(NumberFormatException e) {
-				}
-			}
-		}
-	}
-  
   /**
-   * Deletes the schemes of astral regions in the case one of the following
-   * inconsistencies is detected
+   * DOCUMENT-ME
+   */
+  public void postProcessAfterTrustlevelChange(GameData data) {
+    // initialize fog-of-war cache (FIXME(pavkovic): Do it always?)
+    // clear all fog-of-war caches
+    if (data.regions() != null) {
+      for (Region r : data.regions().values()) {
+        r.setFogOfWar(-1);
+      }
+    }
+
+    // intialize the fog-of-war cache for all regions that are covered by lighthouses
+    if (data.buildings() != null) {
+      BuildingType type = data.rules.getBuildingType(EresseaConstants.B_LIGHTHOUSE);
+      RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
+      Comparator<Unit> sortIndexComparator = new SortIndexComparator<Unit>(IDComparator.DEFAULT);
+
+      // FIXME(stm) broken, if a unit's faction's report was not added but the skill is still
+      // known...
+      if (type != null) {
+        for (Building b : data.buildings().values()) {
+          if (type.equals(b.getType()) && (b.getSize() >= 10)) {
+            int personCounter = 0;
+            int perceptionSkillLevel = 0;
+            List<Unit> sortedInmates = new LinkedList<Unit>(b.units());
+            Collections.sort(sortedInmates, sortIndexComparator);
+
+            for (Iterator<Unit> inmates = sortedInmates.iterator(); inmates.hasNext()
+                && (personCounter < 4); personCounter++) {
+              Unit inmate = inmates.next();
+              Skill perceptionSkill =
+                  inmate.getSkill(data.rules.getSkillType(EresseaConstants.S_WAHRNEHMUNG, true));
+
+              if (perceptionSkill != null) {
+                perceptionSkillLevel = Math.max(perceptionSkill.getLevel(), perceptionSkillLevel);
+              }
+            }
+
+            int maxRadius = (int) Math.min(Math.log10(b.getSize()) + 1, perceptionSkillLevel / 3);
+
+            if (maxRadius > 0) {
+              Map<CoordinateID, Region> regions =
+                  Regions.getAllNeighbours(data.regions(), b.getRegion().getCoordinate(),
+                      maxRadius, null);
+
+              for (Region r : regions.values()) {
+                if ((oceanType == null) || oceanType.equals(r.getType())) {
+                  r.setFogOfWar(0);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // intialize the fog-of-war cache for all regions where units or ships traveled through
+    for (Region r : data.regions().values()) {
+      if (r.getTravelThru() != null) {
+        initTravelThru(data, r, r.getTravelThru());
+      }
+
+      if (r.getTravelThruShips() != null) {
+        initTravelThru(data, r, r.getTravelThruShips());
+      }
+    }
+  }
+
+  private void initTravelThru(GameData data, Region region, Collection<Message> travelThru) {
+    for (Message mes : travelThru) {
+      // fetch ID of Unit or Ship from Message of type "<name> (<id>)"
+      String s = mes.getText();
+      int startpos = s.lastIndexOf("(") + 1;
+      int endpos = s.length() - 1;
+
+      if ((startpos > -1) && (endpos > startpos)) {
+        try {
+          // message text always use the report base
+          ID id = EntityID.createEntityID(s.substring(startpos, endpos), data.base);
+
+          if ((data.getUnit(id) != null) && (data.getUnit(id).getFaction().isPrivileged())) {
+            // fast return
+            region.setFogOfWar(0);
+
+            return;
+          } else {
+            Ship ship = data.getShip(id);
+
+            if (ship != null) {
+              for (Unit unit : ship.units()) {
+                if ((unit).getFaction().isPrivileged()) {
+                  // fast return
+                  region.setFogOfWar(0);
+
+                  return;
+                }
+              }
+            }
+          }
+        } catch (NumberFormatException e) {
+        }
+      }
+    }
+  }
+
+  /**
+   * Deletes the schemes of astral regions in the case one of the following inconsistencies is
+   * detected 1. more than 19 schemes per astral region 2. the region with the scheme coordinates
+   * has terrain ocean or firewall 3. layout, i.e. two scheme of the same astral region with a
+   * distance of >4 4. a scheme is seen from more than 2 astral regions Only the scheme of the
+   * affected astral regions are deleted the others will remain to allow a mapping of astral to real
+   * space. Not implemented: 5. global layout (similar alorithm as layout but normalizing all
+   * schemes into the area of one astral region before) -> nearly impossible to determine the wrong
+   * schemes 6. diferent scheme/region name of same coordinate -> may not be an wrong scheme, only
+   * outdated name.
    * 
-   * 1. more than 19 schemes per astral region
-   * 2. the region with the scheme coordinates has terrain ocean or 
-   *    firewall
-   * 3. layout, i.e. two scheme of the same astral region with a distance of >4
-   * 4. a scheme is seen from more than 2 astral regions
-   * 
-   * Only the scheme of the affected astral regions are deleted the others 
-   * will remain to allow a mapping of astral to real space.
-   * 
-   * Not implemented:
-   * 
-   * 5. global layout (similar alorithm as layout but normalizing all schemes
-   *    into the area of one astral region before) 
-   *    -> nearly impossible to determine the wrong schemes
-   * 6. diferent scheme/region name of same coordinate
-   *    -> may not be an wrong scheme, only outdated name.
    * @param gd
    */
   private void cleanAstralSchemes(GameData gd) {
-    RegionType firewall = gd.rules.getRegionType(EresseaConstants.RT_FIREWALL);
-    Map<CoordinateID, Collection<Region>> schemeMap = new HashMap<CoordinateID, Collection<Region>>();
+    gd.rules.getRegionType(EresseaConstants.RT_FIREWALL);
+    Map<CoordinateID, Collection<Region>> schemeMap =
+        new HashMap<CoordinateID, Collection<Region>>();
     for (Region region : gd.regions().values()) {
-      if ((region.getCoordinate().z == 1)&&(region.schemes().size()>0)) {
+      if ((region.getCoordinate().z == 1) && (region.schemes().size() > 0)) {
         // Check 1. (number)
-        if (region.schemes().size()>19) {
+        if (region.schemes().size() > 19) {
           // Inconsistency of type 1. found
-          EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: too many schemes");
+          EresseaPostProcessor.log
+              .warn("EresseaPostProcessor: Astral schemes inconsistency type: too many schemes");
           EresseaPostProcessor.log.warn(region);
           region.clearSchemes();
           continue;
@@ -433,7 +393,7 @@ public class EresseaPostProcessor {
         boolean inconsistent = false;
         CoordinateID min = null;
         CoordinateID max = null;
-        
+
         for (Scheme scheme : region.schemes()) {
           CoordinateID schemeID = scheme.getCoordinate();
           Region schemeRegion = gd.getRegion(schemeID);
@@ -461,35 +421,34 @@ public class EresseaPostProcessor {
         }
         if (inconsistent) {
           // Inconsistency of type 2. found
-          EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: terrain");
+          EresseaPostProcessor.log
+              .warn("EresseaPostProcessor: Astral schemes inconsistency type: terrain");
           EresseaPostProcessor.log.warn(region);
           region.clearSchemes();
-          continue;          
+          continue;
         }
         boolean centerFound = false;
-        for (int x = max.x-2; (x <= min.x+2) && !centerFound; x++) {
-          for (int y = max.y-2; (y <= min.y+2) && !centerFound; y++) {
-            if ((max.z-2 <= x+y ) && (x+y <= min.z+2)) {
+        for (int x = max.x - 2; (x <= min.x + 2) && !centerFound; x++) {
+          for (int y = max.y - 2; (y <= min.y + 2) && !centerFound; y++) {
+            if ((max.z - 2 <= x + y) && (x + y <= min.z + 2)) {
               centerFound = true;
             }
           }
         }
         if (!centerFound) {
           // Inconsistency of type 3. found
-          EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: layout");
+          EresseaPostProcessor.log
+              .warn("EresseaPostProcessor: Astral schemes inconsistency type: layout");
           EresseaPostProcessor.log.warn(region);
           region.clearSchemes();
-          continue;                   
+          continue;
         }
         /*
-         * none of the other inconsistency checks fail. 
-         * therefore we can check for type 4 now.
-         * (this check eleminates the schemes from all astral
-         * regions having the scheme. Therefore eleminating other
-         * inconsistencies first allow to probably save some
-         * right schemes from beeing deleted)
-         * We only prepare the a map here that maps schemeIDs to regions
-         */  
+         * none of the other inconsistency checks fail. therefore we can check for type 4 now. (this
+         * check eleminates the schemes from all astral regions having the scheme. Therefore
+         * eleminating other inconsistencies first allow to probably save some right schemes from
+         * beeing deleted) We only prepare the a map here that maps schemeIDs to regions
+         */
         for (Scheme scheme : region.schemes()) {
           Collection<Region> regionCol = schemeMap.get(scheme.getCoordinate());
           if (regionCol == null) {
@@ -503,7 +462,8 @@ public class EresseaPostProcessor {
     for (Collection<Region> regionCol : schemeMap.values()) {
       if (regionCol.size() > 2) {
         // Inconsistency of type 4. found
-        EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: scheme too often");        
+        EresseaPostProcessor.log
+            .warn("EresseaPostProcessor: Astral schemes inconsistency type: scheme too often");
         for (Region region : regionCol) {
           EresseaPostProcessor.log.warn(region);
           region.clearSchemes();
@@ -511,10 +471,10 @@ public class EresseaPostProcessor {
       }
     }
   }
-//  private void postProcessMessages(GameData data) {
-    // herb information from FIND HERBS/FORSCHE KRÄUTER or MAKE HERBS/MACHE KRÄUTER
-    // item information from SHOW/ZEIGE
-    // race information from SHOW/ZEIGE
-    // unit information from SPY/SPIONIERE
-//  }
+  // private void postProcessMessages(GameData data) {
+  // herb information from FIND HERBS/FORSCHE KRÄUTER or MAKE HERBS/MACHE KRÄUTER
+  // item information from SHOW/ZEIGE
+  // race information from SHOW/ZEIGE
+  // unit information from SPY/SPIONIERE
+  // }
 }

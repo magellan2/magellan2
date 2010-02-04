@@ -28,9 +28,8 @@ import javax.swing.JDialog;
 import magellan.library.utils.logging.Logger;
 
 /**
- * This class implements a UserInterface that shows no
- * output.
- *
+ * This class implements a UserInterface that shows no output.
+ * 
  * @author ...
  * @version 1.0, 07.11.2007
  */
@@ -39,67 +38,70 @@ public class NullUserInterface implements UserInterface {
   private int max = 100;
 
   private static NullUserInterface singleton = new NullUserInterface();
-  
+
   public static UserInterface getInstance() {
-    return singleton;
+    return NullUserInterface.singleton;
   }
 
   /**
    * @see magellan.library.utils.UserInterface#ready()
    */
-  public void ready() {}
-  
+  public void ready() {
+  }
+
   /**
    * @see magellan.library.utils.UserInterface#show()
    */
-  public void show() {}
-  
+  public void show() {
+  }
+
   /**
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
   public void setProgress(String strMessage, int iProgress) {
-    NullUserInterface.log.debug("Progress: "+strMessage+" ("+getPercent(iProgress)+"%)");
+    NullUserInterface.log.debug("Progress: " + strMessage + " (" + getPercent(iProgress) + "%)");
   }
-  
+
   protected int getPercent(int progress) {
-    if (max==0) {
+    if (max == 0)
       return 0;
-    }
-    return progress*100/max;
+    return progress * 100 / max;
   }
-  
+
   /**
    * @see magellan.library.utils.UserInterface#confirm(java.lang.String, java.lang.String)
    */
   public boolean confirm(String strMessage, String strTitle) {
     return true;
   }
-  
+
   /**
-   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String, java.lang.Object[], java.lang.Object)
+   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String,
+   *      java.lang.Object[], java.lang.Object)
    */
-  public Object input(String strMessage, String strTitle, Object [] values, Object initialSelection) {
+  public Object input(String strMessage, String strTitle, Object[] values, Object initialSelection) {
     return null;
   }
-  
+
   /**
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
   public void setMaximum(int maxProgress) {
-    this.max = maxProgress;
+    max = maxProgress;
   }
 
   /**
    * @see magellan.library.utils.UserInterface#setTitle(java.lang.String)
    */
-  public void setTitle(String title) {}
+  public void setTitle(String title) {
+  }
 
   public void showException(String message, String description, Exception exception) {
     throw new RuntimeException(exception);
   }
-  
-  public void showMessageDialog(String message){
-    NullUserInterface.log.debug("Error: "+message+")");
+
+  public void showMessageDialog(String message) {
+    NullUserInterface.log.debug("Error: " + message + ")");
   }
 
   public void showDialog(JDialog optionPane) {

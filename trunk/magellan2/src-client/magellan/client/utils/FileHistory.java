@@ -66,8 +66,8 @@ public class FileHistory {
     List<String> files = new ArrayList<String>((history == null) ? 0 : history.size());
 
     if (history != null) {
-      for (Iterator<FileHistoryAction> iter = history.iterator(); iter.hasNext();) {
-        files.add(iter.next().getFile().getAbsolutePath());
+      for (FileHistoryAction fileHistoryAction : history) {
+        files.add(fileHistoryAction.getFile().getAbsolutePath());
       }
 
       Collections.reverse(files);
@@ -84,9 +84,7 @@ public class FileHistory {
       history = new Bucket<FileHistoryAction>(getMaxFileHistorySize());
     }
 
-    for (Iterator<String> iter =
-        PropertiesHelper.getList(settings, "Client.fileHistory").iterator(); iter.hasNext();) {
-      String file = iter.next();
+    for (String file : PropertiesHelper.getList(settings, "Client.fileHistory")) {
       File f = new File(file);
 
       if (f.exists()) {
@@ -99,14 +97,12 @@ public class FileHistory {
    * Returns the last file loaded into Magellan.
    */
   public File getLastExistingReport() {
-    if (history == null || history.size() == 0) {
+    if (history == null || history.size() == 0)
       return null;
-    }
     for (FileHistoryAction action : history) {
       File last = action.getFile();
-      if (last != null && last.exists()) {
+      if (last != null && last.exists())
         return last;
-      }
     }
     return null;
   }
@@ -117,8 +113,7 @@ public class FileHistory {
    */
   public void clearFileHistoryMenu() {
     if (history != null) {
-      for (Iterator<FileHistoryAction> iter = history.iterator(); iter.hasNext();) {
-        iter.next();
+      for (FileHistoryAction fileHistoryAction : history) {
         historyMenu.remove(insertionIndex);
       }
     }
@@ -165,9 +160,8 @@ public class FileHistory {
    */
   public void loadFile(File file) {
     int response = client.askToSave();
-    if (response == JOptionPane.CANCEL_OPTION) {
+    if (response == JOptionPane.CANCEL_OPTION)
       return;
-    }
 
     settings.setProperty("Client.lastCROpened", file.getAbsolutePath());
     addFileToHistory(file);

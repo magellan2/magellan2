@@ -47,10 +47,12 @@ public class E3APostProcessor extends EresseaPostProcessor {
 
     int fightState = 2;
     try {
-      fightState = data.rules.getAllianceCategory(Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT)).getBitMask();
+      fightState =
+          data.rules.getAllianceCategory(
+              Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT)).getBitMask();
     } catch (NullPointerException e) {
       // TODO (stm) I think I found the bug that caused this, but leave it here for now...
-      log.error("postProcess " + e);
+      E3APostProcessor.log.error("postProcess " + e);
       e.printStackTrace();
       fightState = 2;
     }
@@ -63,7 +65,7 @@ public class E3APostProcessor extends EresseaPostProcessor {
           Faction faction2 = data.getFaction(id2);
           if (faction1 != faction2) {
             boolean found = false;
-            if (faction1.getAllies()!=null){
+            if (faction1.getAllies() != null) {
               for (Alliance alliance : faction1.getAllies().values()) {
                 if (alliance.getFaction().equals(faction2)) {
                   alliance.addState(fightState);
@@ -72,8 +74,9 @@ public class E3APostProcessor extends EresseaPostProcessor {
               }
             }
             if (!found) {
-              if (faction1.getAllies()==null)
+              if (faction1.getAllies() == null) {
                 faction1.setAllies(new OrderedHashtable<EntityID, Alliance>());
+              }
               faction1.getAllies().put(faction2.getID(), new Alliance(faction2, fightState));
             }
           }

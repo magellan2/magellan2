@@ -20,44 +20,41 @@ import magellan.client.actions.MenuAction;
 import magellan.client.swing.TipOfTheDay;
 import magellan.library.utils.Resources;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class TipOfTheDayAction extends MenuAction {
 
-	/**
-	 * Creates a new TipOfTheDayAction object.
-	 *
-	 * @param client
-	 */
-	public TipOfTheDayAction(Client client) {
-        super(client);
-	}
+  /**
+   * Creates a new TipOfTheDayAction object.
+   * 
+   * @param client
+   */
+  public TipOfTheDayAction(Client client) {
+    super(client);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		if(!TipOfTheDay.active) {
-			TipOfTheDay totd = new TipOfTheDay(client, client.getProperties());
-			totd.showTipDialog();
-			totd.showNextTip();
-		}
-	}
+    if (!TipOfTheDay.active) {
+      TipOfTheDay totd = new TipOfTheDay(client, client.getProperties());
+      totd.showTipDialog();
+      totd.showNextTip();
+    }
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.tipofthedayaction.accelerator",false);
+    return Resources.get("actions.tipofthedayaction.accelerator", false);
   }
 
   /**
@@ -65,7 +62,7 @@ public class TipOfTheDayAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.tipofthedayaction.mnemonic",false);
+    return Resources.get("actions.tipofthedayaction.mnemonic", false);
   }
 
   /**
@@ -78,6 +75,6 @@ public class TipOfTheDayAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.tipofthedayaction.tooltip",false);
+    return Resources.get("actions.tipofthedayaction.tooltip", false);
   }
 }

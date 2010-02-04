@@ -24,7 +24,6 @@
 package magellan.client.actions.map;
 
 import java.awt.event.ActionEvent;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -72,20 +71,17 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
   }
 
   /**
-   * Updates the currentselection. 
+   * Updates the currentselection.
    */
   public void selectionChanged(SelectionEvent e) {
-    if(e.getSource() == this) {
+    if (e.getSource() == this)
       return;
-    }
 
     if (e.getSelectionType() == SelectionEvent.ST_REGIONS && e.getSelectedObjects() != null) {
       selectedRegions.clear();
 
-      for (Iterator<Object> iter = e.getSelectedObjects().iterator(); iter.hasNext();) {
-        Object o = iter.next();
-
-        if(o instanceof Region) {
+      for (Object o : e.getSelectedObjects()) {
+        if (o instanceof Region) {
           Region r = (Region) o;
           selectedRegions.put(r.getID(), r);
         }
@@ -110,13 +106,12 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
   @Override
   public abstract void menuActionPerformed(ActionEvent e);
 
-  
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get(getResourcePrefix()+".accelerator",false);
+    return Resources.get(getResourcePrefix() + ".accelerator", false);
   }
 
   /**
@@ -124,7 +119,7 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get(getResourcePrefix()+".mnemonic",false);
+    return Resources.get(getResourcePrefix() + ".mnemonic", false);
   }
 
   /**
@@ -132,7 +127,7 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get(getResourcePrefix()+".name");
+    return Resources.get(getResourcePrefix() + ".name");
   }
 
   /**
@@ -150,7 +145,7 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
    * Returns a prefix used for the resource keys of the class.
    */
   protected String getResourcePrefix() {
-    return "actions."+this.getClass().getSimpleName().toLowerCase();
+    return "actions." + this.getClass().getSimpleName().toLowerCase();
   }
 
   /**
@@ -159,7 +154,7 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
   protected void updateClientSelection() {
     client.getData().setSelectedRegionCoordinates(getSelectedRegions());
     client.getDispatcher().fire(SelectionEvent.create(this, getSelectedRegions().values()));
-//        new SelectionEvent(this, getSelectedRegions().values(), null, SelectionEvent.ST_REGIONS));
+    // new SelectionEvent(this, getSelectedRegions().values(), null, SelectionEvent.ST_REGIONS));
   }
 
 }

@@ -28,13 +28,13 @@ import magellan.library.GameData;
 import magellan.library.utils.Score;
 
 /**
- * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
  */
 
 public abstract class MappingEvaluator {
-  public final Score<CoordinateID> getRatedMapping(GameData fromData, GameData toData, CoordinateID mapping, String type) {
+  public final Score<CoordinateID> getRatedMapping(GameData fromData, GameData toData,
+      CoordinateID mapping, String type) {
     Score<CoordinateID> score = evaluateMapping(fromData, toData, mapping);
     if (score != null) {
       score.setType(type);
@@ -42,13 +42,15 @@ public abstract class MappingEvaluator {
     return score;
   }
 
-  public final void adjustRatedMapping(GameData fromData, GameData toData, Score<CoordinateID> ratedMapping) {
+  public final void adjustRatedMapping(GameData fromData, GameData toData,
+      Score<CoordinateID> ratedMapping) {
     Score<CoordinateID> score = evaluateMapping(fromData, toData, ratedMapping.getKey());
     if (score != null) {
       ratedMapping.addScore(score.getScore());
     }
   }
 
-  protected abstract Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData, CoordinateID mapping);
- 
+  protected abstract Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData,
+      CoordinateID mapping);
+
 }

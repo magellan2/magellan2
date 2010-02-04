@@ -19,21 +19,19 @@ package magellan.library;
 public interface Named extends Identifiable {
   /**
    * Returns the name of this object.
-   *
-   * 
    */
   public String getName();
-  
+
   /**
    * Sets the name of this object.
    */
   public void setName(String name);
 
-	/**
-	 * TODO DOCUMENT ME!
-	 * 
-	 * @return TODO DOCUMENT ME!
-	 */
-	public String getModifiedName();
+  /**
+   * TODO DOCUMENT ME!
+   * 
+   * @return TODO DOCUMENT ME!
+   */
+  public String getModifiedName();
 
 }

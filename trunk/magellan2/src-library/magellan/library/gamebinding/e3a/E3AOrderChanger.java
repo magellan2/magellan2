@@ -109,31 +109,31 @@ public class E3AOrderChanger extends EresseaOrderChanger {
    */
   @Override
   protected ArrayList<String> getLongOrderTokens() {
-    if (this.longOrderTokens == null) {
-      this.longOrderTokens = new ArrayList<String>();
-      this.longOrderTokens.add(EresseaConstants.O_WORK);
-      this.longOrderTokens.add(EresseaConstants.O_ATTACK);
-      this.longOrderTokens.add(EresseaConstants.O_STEAL);
-      this.longOrderTokens.add(EresseaConstants.O_SIEGE);
-      this.longOrderTokens.add(EresseaConstants.O_RIDE);
-      this.longOrderTokens.add(EresseaConstants.O_FOLLOW);
-      this.longOrderTokens.add(EresseaConstants.O_RESEARCH);
-      this.longOrderTokens.add(EresseaConstants.O_BUY);
-      this.longOrderTokens.add(EresseaConstants.O_TEACH);
-      this.longOrderTokens.add(EresseaConstants.O_LEARN);
-      this.longOrderTokens.add(EresseaConstants.O_MAKE);
-      this.longOrderTokens.add(EresseaConstants.O_MOVE);
-      this.longOrderTokens.add(EresseaConstants.O_PLANT);
-      this.longOrderTokens.add(EresseaConstants.O_ROUTE);
-      this.longOrderTokens.add(EresseaConstants.O_SABOTAGE);
-      this.longOrderTokens.add(EresseaConstants.O_SPY);
-      this.longOrderTokens.add(EresseaConstants.O_TAX);
-      this.longOrderTokens.add(EresseaConstants.O_ENTERTAIN);
-      this.longOrderTokens.add(EresseaConstants.O_SELL);
-      this.longOrderTokens.add(EresseaConstants.O_CAST);
-      this.longOrderTokens.add(EresseaConstants.O_GROW);
+    if (longOrderTokens == null) {
+      longOrderTokens = new ArrayList<String>();
+      longOrderTokens.add(EresseaConstants.O_WORK);
+      longOrderTokens.add(EresseaConstants.O_ATTACK);
+      longOrderTokens.add(EresseaConstants.O_STEAL);
+      longOrderTokens.add(EresseaConstants.O_SIEGE);
+      longOrderTokens.add(EresseaConstants.O_RIDE);
+      longOrderTokens.add(EresseaConstants.O_FOLLOW);
+      longOrderTokens.add(EresseaConstants.O_RESEARCH);
+      longOrderTokens.add(EresseaConstants.O_BUY);
+      longOrderTokens.add(EresseaConstants.O_TEACH);
+      longOrderTokens.add(EresseaConstants.O_LEARN);
+      longOrderTokens.add(EresseaConstants.O_MAKE);
+      longOrderTokens.add(EresseaConstants.O_MOVE);
+      longOrderTokens.add(EresseaConstants.O_PLANT);
+      longOrderTokens.add(EresseaConstants.O_ROUTE);
+      longOrderTokens.add(EresseaConstants.O_SABOTAGE);
+      longOrderTokens.add(EresseaConstants.O_SPY);
+      longOrderTokens.add(EresseaConstants.O_TAX);
+      longOrderTokens.add(EresseaConstants.O_ENTERTAIN);
+      longOrderTokens.add(EresseaConstants.O_SELL);
+      longOrderTokens.add(EresseaConstants.O_CAST);
+      longOrderTokens.add(EresseaConstants.O_GROW);
     }
-    return this.longOrderTokens;
+    return longOrderTokens;
   }
 
   private ArrayList<String> longButShortOrderTokens = null;
@@ -143,11 +143,11 @@ public class E3AOrderChanger extends EresseaOrderChanger {
    */
   @Override
   protected ArrayList<String> getLongButShortOrderTokens() {
-    if (this.longButShortOrderTokens == null) {
-      this.longButShortOrderTokens = new ArrayList<String>();
-      this.longButShortOrderTokens.add(EresseaConstants.O_MAKE + " " + EresseaConstants.O_TEMP);
+    if (longButShortOrderTokens == null) {
+      longButShortOrderTokens = new ArrayList<String>();
+      longButShortOrderTokens.add(EresseaConstants.O_MAKE + " " + EresseaConstants.O_TEMP);
     }
-    return this.longButShortOrderTokens;
+    return longButShortOrderTokens;
   }
 
 }

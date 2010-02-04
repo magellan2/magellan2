@@ -23,47 +23,36 @@ import java.util.Properties;
 import magellan.library.ID;
 import magellan.library.Skill;
 
-
 /**
- * A comparator imposing an ordering on collections of Skill objects by comparing the highest
- * ranked skill available in each set with a SkillComparator. In case of equality the second
- * highest ranked skills are compared and so on and so on. In case of total equality (e.g. if
- * there is only one skill oject in both maps and the skilltype and value is the same) the
- * sub-comparator is used for comparison. Note: Skilltype rankings can be defined in the
- * preferences and are available through SkillTypeRankComparator.
- * 
+ * A comparator imposing an ordering on collections of Skill objects by comparing the highest ranked
+ * skill available in each set with a SkillComparator. In case of equality the second highest ranked
+ * skills are compared and so on and so on. In case of total equality (e.g. if there is only one
+ * skill oject in both maps and the skilltype and value is the same) the sub-comparator is used for
+ * comparison. Note: Skilltype rankings can be defined in the preferences and are available through
+ * SkillTypeRankComparator.
  * <p>
  * Note: this comparator imposes orderings that are inconsistent with equals.
  * </p>
- * 
  * <p>
  * In order to overcome the inconsistency with equals this comparator allows the introduction of a
  * sub-comparator which is applied in cases of equality.
  * </p>
  */
-public class TopmostRankedSkillComparator implements Comparator<Map<? extends ID, Skill> > {
+public class TopmostRankedSkillComparator implements Comparator<Map<? extends ID, Skill>> {
   private final Comparator<Skill> rankCmp;
   private final Comparator<? super Map<? extends ID, Skill>> subCmp;
 
   /**
    * Creates a new TopmostRankedSkillComparator object.
-   *
-   * 
-   * 
    */
   public TopmostRankedSkillComparator(Comparator<? super Map<? extends ID, Skill>> subComparator,
       Properties settings) {
     rankCmp = new SkillRankComparator(null, settings);
-    this.subCmp = subComparator;
+    subCmp = subComparator;
   }
 
   /**
    * Compares its two arguments for order according to their skills.
-   *
-   * 
-   * 
-   *
-   * 
    */
   public int compare(Map<? extends ID, Skill> o1, Map<? extends ID, Skill> o2) {
     int retVal = 0;
@@ -77,54 +66,50 @@ public class TopmostRankedSkillComparator implements Comparator<Map<? extends ID
     Collections.sort(list1, rankCmp);
     Collections.sort(list2, rankCmp);
 
-    while(true) {
+    while (true) {
       Skill s1 = null;
 
-      if(list1.size() > rank) {
+      if (list1.size() > rank) {
         s1 = list1.get(rank);
       }
 
       Skill s2 = null;
 
-      if(list2.size() > rank) {
+      if (list2.size() > rank) {
         s2 = list2.get(rank);
       }
 
-      if((s1 == null) && (s2 != null)) {
+      if ((s1 == null) && (s2 != null))
         return Integer.MAX_VALUE;
-      }
 
-      if((s1 != null) && (s2 == null)) {
+      if ((s1 != null) && (s2 == null))
         return Integer.MIN_VALUE;
-      }
 
-      if((s1 == null) && (s2 == null)) {
-        if(subCmp != null) {
+      if ((s1 == null) && (s2 == null)) {
+        if (subCmp != null)
           return subCmp.compare(o1, o2);
-        } else {
+        else
           return 0;
-        }
       }
 
       retVal = rankCmp.compare(s1, s2);
 
-      if(retVal != 0) {
+      if (retVal != 0)
         return retVal;
-      } else {
+      else {
         retVal = SkillComparator.skillCmp.compare(s1, s2);
 
-        if(retVal != 0) {
+        if (retVal != 0)
           return retVal;
-        } else {
+        else {
           // test if there are more skills available in both sets
-          if((map1.size() > (rank + 1)) || (map2.size() > (rank + 1))) {
+          if ((map1.size() > (rank + 1)) || (map2.size() > (rank + 1))) {
             rank++;
           } else {
-            if(subCmp != null) {
+            if (subCmp != null)
               return subCmp.compare(o1, o2);
-            } else {
+            else
               return 0;
-            }
           }
         }
       }

@@ -21,61 +21,56 @@ package magellan.library.utils.replacers;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Taggable;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class TagReplacer extends AbstractParameterReplacer {
-	protected boolean mode;
+  protected boolean mode;
 
-	/**
-	 * Creates new TagReplacer
-	 *
-	 * 
-	 * @param mode
-	 */
-	public TagReplacer(boolean mode) {
-		super(1);
-		this.mode = mode;
-	}
+  /**
+   * Creates new TagReplacer
+   * 
+   * @param mode
+   */
+  public TagReplacer(boolean mode) {
+    super(1);
+    this.mode = mode;
+  }
 
-	/**
-	 * Returns the value of the tag given as parameter from the unit given as argument. If mode==true,
-	 * an empty string is returned instead of null.
-	 * 
-	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
-	 */
-	public Object getReplacement(Object unit) {
-		if(unit instanceof Taggable) {
-			Object obj = getParameter(0, unit);
+  /**
+   * Returns the value of the tag given as parameter from the unit given as argument. If mode==true,
+   * an empty string is returned instead of null.
+   * 
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
+   */
+  public Object getReplacement(Object unit) {
+    if (unit instanceof Taggable) {
+      Object obj = getParameter(0, unit);
 
-			if(obj != null) {
-				Taggable t = (Taggable) unit;
-				String s = obj.toString();
+      if (obj != null) {
+        Taggable t = (Taggable) unit;
+        String s = obj.toString();
 
-				if(t.containsTag(s)) {
-					return t.getTag(s);
-				}
+        if (t.containsTag(s))
+          return t.getTag(s);
 
-				if(mode) {
-					return Replacer.EMPTY;
-				}
-			}
-		}
+        if (mode)
+          return Replacer.EMPTY;
+      }
+    }
 
-		return null; // no parameter or not an object with tags is always error
-	}
+    return null; // no parameter or not an object with tags is always error
+  }
 
-	/**
-	 *
-	 * 
+  /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   @Override
   public String getDescription() {
-		return Resources.get("util.replacers.tagreplacer.description." + mode)+"\n\n"+super.getDescription();
-	}
+    return Resources.get("util.replacers.tagreplacer.description." + mode) + "\n\n"
+        + super.getDescription();
+  }
 }

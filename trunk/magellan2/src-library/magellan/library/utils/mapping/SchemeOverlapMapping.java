@@ -35,40 +35,45 @@ import magellan.library.Region;
 import magellan.library.Scheme;
 
 /**
- *  Astral to real mapping from two neighbour astral spaces with schemes
- *  (there can be seen exactly one same scheme from both astral regions)
+ * Astral to real mapping from two neighbour astral spaces with schemes (there can be seen exactly
+ * one same scheme from both astral regions)
  **/
 public class SchemeOverlapMapping implements LevelMapping {
   private static SchemeOverlapMapping singleton = new SchemeOverlapMapping();
+
   public static SchemeOverlapMapping getSingleton() {
     return SchemeOverlapMapping.singleton;
   }
 
   public LevelRelation getMapping(GameData data, int fromLevel, int toLevel) {
-    Map<CoordinateID, Collection<Region>> astralRegions = getAstralRegionsBySchemeName(data, fromLevel, toLevel);
+    Map<CoordinateID, Collection<Region>> astralRegions =
+        getAstralRegionsBySchemeName(data, fromLevel, toLevel);
 
-    for(CoordinateID schemeCoord : astralRegions.keySet()) {
+    for (CoordinateID schemeCoord : astralRegions.keySet()) {
       Collection<Region> regions = astralRegions.get(schemeCoord);
-      if (regions.size()>1) {
+      if (regions.size() > 1) {
         if (regions.size() > 2) {
-//              log.error("Report corrupted: scheme visible from more than two regions: " + scheme);
+          // log.error("Report corrupted: scheme visible from more than two regions: " + scheme);
           break;
         }
         /**
-         * He we have two astral regions showing the same scheme. From
-         * this we can calculate an astral to real mapping for the data.
+         * He we have two astral regions showing the same scheme. From this we can calculate an
+         * astral to real mapping for the data.
          */
         Iterator<Region> it = regions.iterator();
         CoordinateID firstCoord = it.next().getCoordinate();
         CoordinateID secondCoord = it.next().getCoordinate();
-        return new LevelRelation(schemeCoord.x - 2 * (firstCoord.x + secondCoord.x), schemeCoord.y - 2 * (firstCoord.y + secondCoord.y), toLevel, 4, 4, fromLevel);
+        return new LevelRelation(schemeCoord.x - 2 * (firstCoord.x + secondCoord.x), schemeCoord.y
+            - 2 * (firstCoord.y + secondCoord.y), toLevel, 4, 4, fromLevel);
       }
     }
     return null;
   }
 
-  private Map<CoordinateID, Collection<Region>> getAstralRegionsBySchemeName(GameData data, int astralLevel, int realLevel) {
-    Map<CoordinateID, Collection<Region>> astralRegions = new HashMap<CoordinateID, Collection<Region>>(0);
+  private Map<CoordinateID, Collection<Region>> getAstralRegionsBySchemeName(GameData data,
+      int astralLevel, int realLevel) {
+    Map<CoordinateID, Collection<Region>> astralRegions =
+        new HashMap<CoordinateID, Collection<Region>>(0);
     if (data != null) {
       for (Region region : data.regions().values()) {
         if (region.getCoordinate().z == astralLevel) {

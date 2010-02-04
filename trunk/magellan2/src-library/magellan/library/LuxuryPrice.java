@@ -19,43 +19,36 @@ import magellan.library.rules.ItemType;
  * A class representing the price of a luxury good as they are offered in any region.
  */
 public class LuxuryPrice {
-	private final int price;
-	private ItemType itemType;
+  private final int price;
+  private ItemType itemType;
 
-	/**
-	 * Creates a new LuxuryPrice object with the specified luxury good and price.
-	 *
-	 * 
-	 * 
-	 */
-	public LuxuryPrice(ItemType itemType, int price) {
-		this.price = price;
-		this.itemType = itemType;
-	}
+  /**
+   * Creates a new LuxuryPrice object with the specified luxury good and price.
+   */
+  public LuxuryPrice(ItemType itemType, int price) {
+    this.price = price;
+    this.itemType = itemType;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getPrice() {
-		return price;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int getPrice() {
+    return price;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public ItemType getItemType() {
-		return itemType;
-	}
-	
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-	  return itemType.toString()+":"+price;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public ItemType getItemType() {
+    return itemType;
+  }
+
+  /**
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return itemType.toString() + ":" + price;
+  }
 }

@@ -3,7 +3,6 @@ package magellan.library.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,42 +12,38 @@ import magellan.library.Related;
 import magellan.library.relation.RenameNamedRelation;
 import magellan.library.relation.UnitRelation;
 
-
-/** 
+/**
  * A RelatedObject knows concepts of relations
  */
 public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implements Related {
 
   /** Contains all attributes */
-  private Map<String,String> attributes = new HashMap<String,String>();
+  private Map<String, String> attributes = new HashMap<String, String>();
 
   /**
    * Constructs a new described object that is uniquely identifiable by the specified id.
-   *
-   * 
    */
   public MagellanRelatedImpl(ID id) {
-      super(id);
+    super(id);
   }
 
   /**
    * @see magellan.library.Related#addRelation(magellan.library.relation.UnitRelation)
    */
   public void addRelation(UnitRelation rel) {
-      getRelations().add(rel);
+    getRelations().add(rel);
   }
 
   /**
    * @see magellan.library.Related#removeRelation(magellan.library.relation.UnitRelation)
    */
   public UnitRelation removeRelation(UnitRelation rel) {
-      if(getRelations().remove(rel)) {
-          return rel;
-      } else {
-          return null;
-      }
+    if (getRelations().remove(rel))
+      return rel;
+    else
+      return null;
   }
-  
+
   protected abstract Collection<UnitRelation> getRelations();
 
   /**
@@ -59,36 +54,31 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
    * @see magellan.library.Related#getRelations(java.lang.Class)
    */
   public <T extends UnitRelation> List<T> getRelations(Class<T> relationClass) {
-  	List<T> ret = new LinkedList<T>();
-  
-  	for(Iterator<UnitRelation> iter = getRelations().iterator(); iter.hasNext();) {
-      UnitRelation relation = iter.next();
-  
-  		if(relationClass.isInstance(relation)) {
-  		  @SuppressWarnings("unchecked")
-  		  T toAdd = (T) relation;
-  			ret.add(toAdd);
-  		}
-  	}
-  
-  	return ret;
+    List<T> ret = new LinkedList<T>();
+
+    for (UnitRelation relation : getRelations()) {
+      if (relationClass.isInstance(relation)) {
+        @SuppressWarnings("unchecked")
+        T toAdd = (T) relation;
+        ret.add(toAdd);
+      }
+    }
+
+    return ret;
   }
 
-  
   /**
    * @see magellan.library.Named#getModifiedName()
    */
   @Override
   public String getModifiedName() {
     List<?> renameRelations = getRelations(RenameNamedRelation.class);
-    if(renameRelations.isEmpty()) {
-        return null;
-    } else {
-        // return first rename relation
-        return ((RenameNamedRelation) renameRelations.get(0)).name;
-    }
+    if (renameRelations.isEmpty())
+      return null;
+    else
+      // return first rename relation
+      return ((RenameNamedRelation) renameRelations.get(0)).name;
   }
-
 
   /**
    * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)

@@ -75,10 +75,10 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
   public class TypeTree extends JTree {
 
     DefaultMutableTreeNode root;
-    DefaultTreeModel model; 
+    DefaultTreeModel model;
     Map<String, DefaultMutableTreeNode> catNodes;
     Set<ProblemType> problems;
-    
+
     public TypeTree(boolean fill) {
       root = new DefaultMutableTreeNode();
       model = new DefaultTreeModel(root);
@@ -86,14 +86,16 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
       setRootVisible(false);
       catNodes = new HashMap<String, DefaultMutableTreeNode>();
       problems = new HashSet<ProblemType>();
-      if (fill)
+      if (fill) {
         fill();
+      }
     }
 
     protected void fill() {
       // TODO clear model
-      for (ProblemType p : taskPanel.getAllProblemTypes())
+      for (ProblemType p : taskPanel.getAllProblemTypes()) {
         addProblem(p);
+      }
     }
 
     public Collection<ProblemType> getProblems() {
@@ -103,17 +105,17 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     public Collection<ProblemType> getSelectedProblems() {
       List<ProblemType> result = new LinkedList<ProblemType>();
       TreePath selection[] = getSelectionPaths();
-      if (selection==null)
+      if (selection == null)
         return Collections.emptySet();
 
-      for (int i = 0; i < selection.length; i++) {
-        DefaultMutableTreeNode node =
-            (DefaultMutableTreeNode) selection[i].getLastPathComponent();
+      for (TreePath element : selection) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) element.getLastPathComponent();
         if (node.getUserObject() instanceof ProblemType) {
           result.add((ProblemType) node.getUserObject());
-        } else{
+        } else {
           for (Enumeration<?> children = node.children(); children.hasMoreElements();) {
-            result.add((ProblemType) ((DefaultMutableTreeNode) children.nextElement()).getUserObject());
+            result.add((ProblemType) ((DefaultMutableTreeNode) children.nextElement())
+                .getUserObject());
           }
         }
       }
@@ -124,10 +126,10 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
       if (problems.contains(p))
         return;
       String cat = p.getGroup();
-      if (cat == null){
+      if (cat == null) {
         root.add(new DefaultMutableTreeNode(p));
         problems.add(p);
-      }else {
+      } else {
         if (!catNodes.containsKey(cat)) {
           DefaultMutableTreeNode catNode = new DefaultMutableTreeNode(cat);
           root.add(catNode);
@@ -138,19 +140,19 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
       }
       model.nodeStructureChanged(root);
     }
-    
-    public void removeProblem(ProblemType p){
+
+    public void removeProblem(ProblemType p) {
       if (!problems.contains(p))
         return;
       String cat = p.getGroup();
-      if (cat == null){
+      if (cat == null) {
         remove(root, p);
         problems.remove(p);
       } else {
         DefaultMutableTreeNode parent = catNodes.get(cat);
         remove(parent, p);
         problems.remove(p);
-        if (parent.getChildCount()==0){
+        if (parent.getChildCount() == 0) {
           catNodes.remove(cat);
           root.remove(parent);
         }
@@ -159,9 +161,10 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     }
 
     private void remove(DefaultMutableTreeNode parent, ProblemType p) {
-      for (int i = 0; i<parent.getChildCount(); ++i){
-        if (((DefaultMutableTreeNode) parent.getChildAt(i)).getUserObject().equals(p))
+      for (int i = 0; i < parent.getChildCount(); ++i) {
+        if (((DefaultMutableTreeNode) parent.getChildAt(i)).getUserObject().equals(p)) {
           parent.remove(i);
+        }
       }
     }
   }
@@ -192,7 +195,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     this.settings = settings;
     taskPanel = parent;
 
-    this.setLayout(new BorderLayout());
+    setLayout(new BorderLayout());
 
     restrictPanel = new JPanel();
     restrictPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
@@ -287,7 +290,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     right.addActionListener(new ActionListener() {
       /** add all selected nodes on the left to the useList */
       public void actionPerformed(ActionEvent e) {
-        for (ProblemType p : inspectorsList.getSelectedProblems()){
+        for (ProblemType p : inspectorsList.getSelectedProblems()) {
           useList.addProblem(p);
         }
       }
@@ -296,7 +299,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     JButton left = new JButton("  <--  ");
     left.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        for (ProblemType p : useList.getSelectedProblems()){
+        for (ProblemType p : useList.getSelectedProblems()) {
           useList.removeProblem(p);
         }
       }
@@ -377,21 +380,23 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     if (criteria == null) {
       StringBuffer sb = new StringBuffer();
       for (ProblemType p : taskPanel.getAllProblemTypes()) {
-        if (sb.length() > 0)
+        if (sb.length() > 0) {
           sb.append(";");
+        }
         sb.append(p);
       }
       criteria = sb.toString();
     }
 
     Map<String, ProblemType> pMap = new HashMap<String, ProblemType>();
-    for (ProblemType p : taskPanel.getAllProblemTypes()){
+    for (ProblemType p : taskPanel.getAllProblemTypes()) {
       pMap.put(p.getName(), p);
     }
     for (StringTokenizer tokenizer = new StringTokenizer(criteria, ";"); tokenizer.hasMoreTokens();) {
       String s = tokenizer.nextToken();
-      if (pMap.containsKey(s))
+      if (pMap.containsKey(s)) {
         useList.addProblem(pMap.get(s));
+      }
     }
   }
 
@@ -404,8 +409,9 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     Set<ProblemType> result = new HashSet<ProblemType>();
     for (ProblemType p : useList.getProblems()) {
       result.add(p);
-      if (definition.length() > 0)
+      if (definition.length() > 0) {
         definition.append(";");
+      }
       definition.append(p.getName());
     }
     taskPanel.setActiveProblems(result);

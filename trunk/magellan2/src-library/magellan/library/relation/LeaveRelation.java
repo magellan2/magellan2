@@ -20,14 +20,14 @@ import magellan.library.UnitContainer;
  * A relation indicating that a unit leaves a unit container.
  */
 public class LeaveRelation extends UnitContainerRelation {
-	/**
-	 * Creates a new LeaveRelation object.
-	 *
-	 * @param s The source unit
-	 * @param t The target container
-	 * @param line The line in the source's orders
-	 */
-	public LeaveRelation(Unit s, UnitContainer t, int line) {
-		super(s, t, line);
-	}
+  /**
+   * Creates a new LeaveRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target container
+   * @param line The line in the source's orders
+   */
+  public LeaveRelation(Unit s, UnitContainer t, int line) {
+    super(s, t, line);
+  }
 }

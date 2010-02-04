@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -116,13 +115,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   private int oldStones = -1;
 
   /**
-   * The wage persons can earn by working in this region. Unfortunately this is
-   * not the wage peasants earn but the wage a player's persons earn and to make
-   * it worse, the eressea server puts different values into CRs depending of
-   * the race of the 'owner' faction of the report. I.e. an orc faction gets a
-   * different value than factions of other races. Therefore there is a
-   * getPeasantWage() method returning how much a peasant earns in this region
-   * depending on the biggest castle.
+   * The wage persons can earn by working in this region. Unfortunately this is not the wage
+   * peasants earn but the wage a player's persons earn and to make it worse, the eressea server
+   * puts different values into CRs depending of the race of the 'owner' faction of the report. I.e.
+   * an orc faction gets a different value than factions of other races. Therefore there is a
+   * getPeasantWage() method returning how much a peasant earns in this region depending on the
+   * biggest castle.
    */
   public int wage = -1;
 
@@ -151,10 +149,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   private List<Sign> signs = null;
 
   /**
-   * a flag which indicates if this region is ocean with a neighboring not-ocean
-   * region used for better pathfindung for ships 
-   * -1 -> not computed yet 
-   * 0 -> either no ozean or no neighboring land 
+   * a flag which indicates if this region is ocean with a neighboring not-ocean region used for
+   * better pathfindung for ships -1 -> not computed yet 0 -> either no ozean or no neighboring land
    * 1 -> ozean and neighboring land
    */
   private int ozeanWithCoast = -1;
@@ -163,15 +159,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   private String visibility = null;
 
   /**
-   * The Integer is an BitMap representing the info, if neighboriing regions are
-   * ozean or not BitMask 1: dir = 0 BitMask 2: dir = 1 BitMask 4: dir = 2 ....
-   * Bit = 1 -> there is land! Bit = 0 -> there is ozean!
+   * The Integer is an BitMap representing the info, if neighboriing regions are ozean or not
+   * BitMask 1: dir = 0 BitMask 2: dir = 1 BitMask 4: dir = 2 .... Bit = 1 -> there is land! Bit = 0
+   * -> there is ozean!
    */
   private Integer coastBitMask = null;
 
   /**
-   * the unique regionID generated and sent by the eressea server starting with
-   * turn 570
+   * the unique regionID generated and sent by the eressea server starting with turn 570
    */
   private long UID = 0;
 
@@ -194,8 +189,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (fogOfWar == -1) {
       fogOfWar = 1;
 
-      for (Iterator<Unit> iter = units().iterator(); iter.hasNext();) {
-        Faction f = iter.next().getFaction();
+      for (Unit unit : units()) {
+        Faction f = unit.getFaction();
 
         if (f.isPrivileged()) {
           fogOfWar = 0;
@@ -228,9 +223,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       // region is less interesting (there will be NO Relation nor
       // massive interactive view of this region.
       // So we create the ZeroUnit on the fly.
-      if (units().isEmpty()) {
+      if (units().isEmpty())
         return MagellanFactory.createZeroUnit(this);
-      }
 
       cachedZeroUnit = MagellanFactory.createZeroUnit(this);
     }
@@ -248,8 +242,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
     // peasants == peasants - (maxRecruit() - recruited peasants ) +
     // givenPersons
-    return (this.peasants == -1) ? (-1) : (this.peasants - zu.getPersons()
-        + zu.getModifiedPersons() + zu.getGivenPersons());
+    return (peasants == -1) ? (-1) : (peasants - zu.getPersons() + zu.getModifiedPersons() + zu
+        .getGivenPersons());
   }
 
   /**
@@ -269,14 +263,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Sets the island this region belongs to.
    */
   public void setIsland(Island i) {
-    if (this.island != null) {
-      this.island.invalidateRegions();
+    if (island != null) {
+      island.invalidateRegions();
     }
 
-    this.island = i;
+    island = i;
 
-    if (this.island != null) {
-      this.island.invalidateRegions();
+    if (island != null) {
+      island.invalidateRegions();
     }
   }
 
@@ -284,7 +278,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns the island this region belongs to.
    */
   public Island getIsland() {
-    return this.island;
+    return island;
   }
 
   /**
@@ -293,22 +287,21 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return the string object or null, if the visibility is unspecified.
    */
   public String getVisibilityString() {
-    return this.visibility;
+    return visibility;
   }
 
   /**
-   * Represents the quality of the visibility as an int value 0..very poor - no
-   * info (->visibility=null) 1..neighbour 2..lighthouse 3..travel 4..qualified
-   * unit in region (->visibility=null)
+   * Represents the quality of the visibility as an int value 0..very poor - no info
+   * (->visibility=null) 1..neighbour 2..lighthouse 3..travel 4..qualified unit in region
+   * (->visibility=null)
    */
   public Visibility getVisibility() {
-    if (this.visibility == null) {
+    if (visibility == null) {
       // we have 0 or 4
       // check for qualified units
       boolean qualifiedUnitInCurRegion = false;
-      if (this.units() != null && this.units().size() > 0) {
-        for (Iterator<Unit> iter = this.units().iterator(); iter.hasNext();) {
-          Unit actUnit = iter.next();
+      if (units() != null && units().size() > 0) {
+        for (Unit actUnit : units()) {
           if (actUnit.getCombatStatus() != -1) {
             // -1 is default for this int and stays, if no info is available
             qualifiedUnitInCurRegion = true;
@@ -316,22 +309,18 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
           }
         }
       }
-      if (qualifiedUnitInCurRegion) {
+      if (qualifiedUnitInCurRegion)
         return Visibility.UNIT;
-      } else {
+      else
         return Visibility.NULL;
-      }
     } else {
       // we have a visibility ... choose right int
-      if (this.visibility.equalsIgnoreCase("neighbour")) {
+      if (visibility.equalsIgnoreCase("neighbour"))
         return Visibility.NEIGHBOR;
-      }
-      if (this.visibility.equalsIgnoreCase("lighthouse")) {
+      if (visibility.equalsIgnoreCase("lighthouse"))
         return Visibility.LIGHTHOUSE;
-      }
-      if (this.visibility.equalsIgnoreCase("travel")) {
+      if (visibility.equalsIgnoreCase("travel"))
         return Visibility.TRAVEL;
-      }
     }
     return Visibility.NULL;
   }
@@ -339,17 +328,15 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets a string constant indicating why this region is visible.
    * 
-   * @param vis
-   *          a String object or null to indicate that the visibility cannot be
-   *          determined.
+   * @param vis a String object or null to indicate that the visibility cannot be determined.
    */
   public void setVisibilityString(String vis) {
-    this.visibility = vis;
+    visibility = vis;
   }
 
   /**
-   * 0..very poor - no info (->visibility=null)<br /> 
-   * 1..neighbour<br /> 
+   * 0..very poor - no info (->visibility=null)<br />
+   * 1..neighbour<br />
    * 2..lighthouse<br />
    * 3..travel<br />
    * 4..qualified unit in region (->visibility=null)
@@ -360,24 +347,24 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     switch (vis) {
     case NULL:
     case UNIT:
-      this.visibility = null;
+      visibility = null;
       break;
     case NEIGHBOR:
-      this.visibility = "neighbour";
+      visibility = "neighbour";
       break;
     case LIGHTHOUSE:
-      this.visibility = "lighthouse";
+      visibility = "lighthouse";
       break;
     case TRAVEL:
-      this.visibility = "travel";
+      visibility = "travel";
       break;
     }
   }
 
   /**
-   * The prices for luxury goods in this region. The map contains the name of
-   * the luxury good as instance of class <tt>StringID</tt> as key and instances
-   * of class <tt>LuxuryPrice</tt> as values.
+   * The prices for luxury goods in this region. The map contains the name of the luxury good as
+   * instance of class <tt>StringID</tt> as key and instances of class <tt>LuxuryPrice</tt> as
+   * values.
    */
   public Map<StringID, LuxuryPrice> prices = null;
 
@@ -385,45 +372,44 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   public Map<StringID, LuxuryPrice> oldPrices = null;
 
   /**
-   * The messages for this region. The list consists of objects of class
-   * <tt>Message</tt>.
+   * The messages for this region. The list consists of objects of class <tt>Message</tt>.
    */
   public List<Message> messages = null;
 
   /**
-   * Special messages related to this region. The list contains instances of
-   * class <tt>Message</tt> with type -1 and only the text set.
+   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * with type -1 and only the text set.
    */
   public List<Message> events = null;
 
   /**
-   * Special messages related to this region. The list contains instances of
-   * class <tt>Message</tt> with type -1 and only the text set.
+   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * with type -1 and only the text set.
    */
   public List<Message> playerMessages = null;
 
   /**
-   * Special messages related to this region. The list contains instances of
-   * class <tt>Message</tt> with type -1 and only the text set.
+   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * with type -1 and only the text set.
    */
   public List<Message> surroundings = null;
 
   /**
-   * Special messages related to this region. The list contains instances of
-   * class <tt>Message</tt> with type -1 and only the text set.
+   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * with type -1 and only the text set.
    */
   public List<Message> travelThru = null;
 
   /**
-   * Special messages related to this region. The list contains instances of
-   * class <tt>Message</tt> with type -1 and only the text set.
+   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * with type -1 and only the text set.
    */
   public List<Message> travelThruShips = null;
 
   /**
-   * RegionResources in this region. The keys in this map are instances of class
-   * <tt>ID</tt> identifying the item type of the resource, the values are
-   * instances of class <tt>RegionResource</tt>.
+   * RegionResources in this region. The keys in this map are instances of class <tt>ID</tt>
+   * identifying the item type of the resource, the values are instances of class
+   * <tt>RegionResource</tt>.
    */
   private Map<Identifiable, RegionResource> resources = null;
 
@@ -434,25 +420,23 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns all resources of this region.
    */
   public Collection<RegionResource> resources() {
-    if (this.resourceCollection == null) {
+    if (resourceCollection == null) {
       /*
-       * since resources appear twice in the map, once with the numerical ID and
-       * once with the item type ID, we have to make sure that this collection
-       * lists only one of them. Since the hashValue() Method of a
-       * RegionResource relates to its numerical ID a HashSet can do the job
+       * since resources appear twice in the map, once with the numerical ID and once with the item
+       * type ID, we have to make sure that this collection lists only one of them. Since the
+       * hashValue() Method of a RegionResource relates to its numerical ID a HashSet can do the job
        */
 
       // 2002.02.18 ip: this.resources can be null
-      if (this.resources == null) {
-        this.resourceCollection = Collections.emptySet();
+      if (resources == null) {
+        resourceCollection = Collections.emptySet();
       } else {
-        this.resourceCollection =
-            Collections
-                .unmodifiableCollection(new HashSet<RegionResource>(this.resources.values()));
+        resourceCollection =
+            Collections.unmodifiableCollection(new HashSet<RegionResource>(resources.values()));
       }
     }
 
-    return this.resourceCollection;
+    return resourceCollection;
   }
 
   /**
@@ -461,21 +445,20 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @throws NullPointerException
    */
   public RegionResource addResource(RegionResource resource) {
-    if (resource == null) {
+    if (resource == null)
       throw new NullPointerException();
-    }
 
-    if (this.resources == null) {
-      this.resources = new OrderedHashtable<Identifiable, RegionResource>();
+    if (resources == null) {
+      resources = new OrderedHashtable<Identifiable, RegionResource>();
 
     }
 
     // enforce the creation of a new collection view
-    this.resourceCollection = null;
+    resourceCollection = null;
 
     // pavkovic 2002.05.21: If some resources have an amount zero, we ignore it
     if (resource.getAmount() != 0) {
-      this.resources.put(resource.getType(), resource);
+      resources.put(resource.getType(), resource);
       // if (this.resourceCollection != null)
       // this.resourceCollection.add(resource);
     }
@@ -490,11 +473,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Removes the resource with the specified numerical id or the id of its item
-   * type from this region.
+   * Removes the resource with the specified numerical id or the id of its item type from this
+   * region.
    * 
-   * @return the removed resource or null if no resource with the specified id
-   *         exists in this region.
+   * @return the removed resource or null if no resource with the specified id exists in this
+   *         region.
    */
   public RegionResource removeResource(RegionResource r) {
     return this.removeResource(r.getType());
@@ -504,17 +487,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @see magellan.library.Region#removeResource(magellan.library.rules.ItemType)
    */
   public RegionResource removeResource(ItemType type) {
-    if (this.resources == null) {
+    if (resources == null)
       return null;
+
+    RegionResource ret = resources.remove(type);
+
+    if (resources.isEmpty()) {
+      resources = null;
     }
 
-    RegionResource ret = this.resources.remove(type);
-
-    if (this.resources.isEmpty()) {
-      this.resources = null;
-    }
-
-    this.resourceCollection = null;
+    resourceCollection = null;
     // if(log.isDebugEnabled()) {
     // log.debug("Region.removeResource:" + this);
     // log.debug("Region.removeResource:" + ret);
@@ -531,27 +513,25 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Removes all resources from this region.
    */
   public void clearRegionResources() {
-    if (this.resources != null) {
-      this.resources.clear();
-      this.resources = null;
-      this.resourceCollection = null;
+    if (resources != null) {
+      resources.clear();
+      resources = null;
+      resourceCollection = null;
     }
   }
 
   /**
    * Returns the resource with the ID of its item type.
    * 
-   * @return the resource object or null if no resource with the specified ID
-   *         exists in this region.
+   * @return the resource object or null if no resource with the specified ID exists in this region.
    */
   public RegionResource getResource(ItemType type) {
-    return (this.resources != null) ? (RegionResource) this.resources.get(type) : null;
+    return (resources != null) ? (RegionResource) resources.get(type) : null;
   }
 
   /**
-   * Schemes in this region. The keys in this map are instances of class
-   * <tt>Coordinate</tt> identifying the location of the scheme, the values are
-   * instances of class <tt>Scheme</tt>.
+   * Schemes in this region. The keys in this map are instances of class <tt>Coordinate</tt>
+   * identifying the location of the scheme, the values are instances of class <tt>Scheme</tt>.
    */
   private Map<ID, Scheme> schemes = null;
 
@@ -562,9 +542,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns all schemes of this region.
    */
   public Collection<Scheme> schemes() {
-    if (schemes == null) {
+    if (schemes == null)
       return Collections.emptyList();
-    }
 
     if (schemeCollection == null) {
       if (schemes != null && schemes.values() != null) {
@@ -583,19 +562,18 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @throws NullPointerException
    */
   public Scheme addScheme(Scheme scheme) {
-    if (scheme == null) {
+    if (scheme == null)
       throw new NullPointerException();
-    }
 
-    if (this.schemes == null) {
-      this.schemes = new OrderedHashtable<ID, Scheme>();
+    if (schemes == null) {
+      schemes = new OrderedHashtable<ID, Scheme>();
 
       // enforce the creation of a new collection view
       // AG: Since we just create if the scheme map is non-null not necessary
       // this.schemeCollection = null;
     }
 
-    this.schemes.put(scheme.getID(), scheme);
+    schemes.put(scheme.getID(), scheme);
 
     return scheme;
   }
@@ -604,26 +582,24 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Removes all schemes from this region.
    */
   public void clearSchemes() {
-    if (this.schemes != null) {
-      this.schemes.clear();
-      this.schemes = null;
-      this.schemeCollection = null;
+    if (schemes != null) {
+      schemes.clear();
+      schemes = null;
+      schemeCollection = null;
     }
   }
 
   /**
    * Returns the scheme with the specified corodinate.
    * 
-   * @return the scheme object or null if no scheme with the specified ID exists
-   *         in this region.
+   * @return the scheme object or null if no scheme with the specified ID exists in this region.
    */
   public Scheme getScheme(ID id) {
-    return (this.schemes != null) ? (Scheme) this.schemes.get(id) : null;
+    return (schemes != null) ? (Scheme) schemes.get(id) : null;
   }
 
   /**
-   * Border elements of this region. The list contains instances of class
-   * <tt>Border</tt>.
+   * Border elements of this region. The list contains instances of class <tt>Border</tt>.
    */
   private Map<ID, Border> borders = null;
 
@@ -634,9 +610,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns all borders of this region.
    */
   public Collection<Border> borders() {
-    if (borders == null) {
+    if (borders == null)
       return Collections.emptyList();
-    }
 
     if (borderCollection == null) {
       if (borders != null && borders.values() != null) {
@@ -652,23 +627,21 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Adds a border to this region.
    * 
-   * @throws NullPointerException
-   *           if border is <code>null</code>
+   * @throws NullPointerException if border is <code>null</code>
    */
   public Border addBorder(Border border) {
-    if (border == null) {
+    if (border == null)
       throw new NullPointerException();
-    }
 
-    if (this.borders == null) {
-      this.borders = new OrderedHashtable<ID, Border>();
+    if (borders == null) {
+      borders = new OrderedHashtable<ID, Border>();
 
       // enforce the creation of a new collection view
       // AG: Since we just create if the scheme map is non-null not necessary
       // this.borderCollection = null;
     }
 
-    this.borders.put(border.getID(), border);
+    borders.put(border.getID(), border);
 
     return border;
   }
@@ -687,8 +660,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Returns the border with the specified id.
    * 
-   * @return the border object or null if no border with the specified id exists
-   *         in this region.
+   * @return the border object or null if no border with the specified id exists in this region.
    */
   public Border getBorder(ID key) {
     return (borders != null) ? (Border) borders.get(key) : null;
@@ -704,9 +676,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns an unmodifiable collection of all the ships in this container.
    */
   public Collection<Ship> ships() {
-    if (ships == null) {
+    if (ships == null)
       return Collections.emptyList();
-    }
 
     if (shipCollection == null) {
       if (ships != null && ships.values() != null) {
@@ -727,8 +698,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Adds a ship to this container. This method should only be invoked by
-   * Ship.setXXX() methods.
+   * Adds a ship to this container. This method should only be invoked by Ship.setXXX() methods.
    */
   public void addShip(Ship s) {
     if (ships == null) {
@@ -743,13 +713,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Removes a ship from this container. This method should only be invoked by
-   * Ship.setXXX() methods.
+   * Removes a ship from this container. This method should only be invoked by Ship.setXXX()
+   * methods.
    */
   public Ship removeShip(Ship s) {
-    if (ships == null) {
+    if (ships == null)
       return null;
-    }
 
     Ship ret = ships.remove(s.getID());
 
@@ -771,16 +740,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns an unmodifiable collection of all the buildings in this container.
    */
   public Collection<Building> buildings() {
-    if (buildings == null) {
+    if (buildings == null)
       return Collections.emptyList();
-    }
 
     if (buildingCollection == null) {
-      if (buildings != null && buildings.values() != null) {
+      if (buildings != null && buildings.values() != null)
         return Collections.unmodifiableCollection(buildings.values());
-      } else {
+      else
         return Collections.emptyList();
-      }
     }
 
     return buildingCollection;
@@ -794,8 +761,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Adds a building to this container. This method should only be invoked by
-   * Building.setXXX() methods.
+   * Adds a building to this container. This method should only be invoked by Building.setXXX()
+   * methods.
    */
   public void addBuilding(Building u) {
     if (buildings == null) {
@@ -810,15 +777,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Removes a building from this container. This method should only be invoked
-   * by Building.setXXX() methods.
+   * Removes a building from this container. This method should only be invoked by Building.setXXX()
+   * methods.
    */
   public Building removeBuilding(Building b) {
-    if (buildings == null) {
+    if (buildings == null)
       return null;
-    }
 
-    Building ret = this.buildings.remove(b.getID());
+    Building ret = buildings.remove(b.getID());
 
     if (buildings.isEmpty()) {
       buildings = null;
@@ -834,7 +800,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Fiete 20061224: ...and the factions with "GIVE" alliances too. <br>
    * The amount of the items of a particular item type are added up, so two units with 5 pieces of
    * silver yield one silver item of amount 10 here.
-   *
+   * 
    * @deprecated Use {@link Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)}
    *             instead.
    */
@@ -844,18 +810,17 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       refreshItems();
     }
 
-    if (getCache().regionItems != null && getCache().regionItems.values() != null) {
+    if (getCache().regionItems != null && getCache().regionItems.values() != null)
       return Collections.unmodifiableCollection(getCache().regionItems.values());
-    } else {
+    else
       return Collections.emptyList();
-    }
   }
 
   /**
-   * Returns the items of all units that are stationed in this region The amount
-   * of the items of a particular item type are added up, so two units with 5
-   * pieces of silver yield one silver item of amount 10 here.
-   *
+   * Returns the items of all units that are stationed in this region The amount of the items of a
+   * particular item type are added up, so two units with 5 pieces of silver yield one silver item
+   * of amount 10 here.
+   * 
    * @see magellan.library.Region#allItems()
    * @deprecated Use {@link Units#getContainerAllUnitItems(magellan.library.UnitContainer)} instead.
    */
@@ -865,11 +830,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       refreshAllItems();
     }
 
-    if (getCache().allRegionItems != null && getCache().allRegionItems.values() != null) {
+    if (getCache().allRegionItems != null && getCache().allRegionItems.values() != null)
       return Collections.unmodifiableCollection(getCache().allRegionItems.values());
-    } else {
+    else
       return Collections.emptyList();
-    }
   }
 
   /**
@@ -891,8 +855,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Updates the cache of items owned by privileged factions in this region.
-   * Fiete 20061224: ...and the factions with "GIVE" alliances too.
+   * Updates the cache of items owned by privileged factions in this region. Fiete 20061224: ...and
+   * the factions with "GIVE" alliances too.
    * 
    * @deprecated
    */
@@ -904,13 +868,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       getCache().regionItems = new Hashtable<ID, Item>();
     }
 
-    for (Iterator<Unit> iter = units().iterator(); iter.hasNext();) {
-      Unit u = iter.next();
-
+    for (Unit u : units()) {
       // if(u.getFaction().isPrivileged()) {
       if (u.getFaction().hasGiveAlliance() || u.getFaction().isPrivileged()) {
-        for (Iterator<Item> unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
-          Item item = unitItemIterator.next();
+        for (Item item : u.getItems()) {
           Item i = getCache().regionItems.get(item.getItemType().getID());
 
           if (i == null) {
@@ -938,11 +899,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       getCache().allRegionItems = new Hashtable<ID, Item>();
     }
 
-    for (Iterator<Unit> iter = units().iterator(); iter.hasNext();) {
-      Unit u = iter.next();
-
-      for (Iterator<Item> unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
-        Item item = unitItemIterator.next();
+    for (Unit u : units()) {
+      for (Item item : u.getItems()) {
         Item i = getCache().allRegionItems.get(item.getItemType().getID());
 
         if (i == null) {
@@ -975,20 +933,19 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Returns the maximum number of persons available for recruitment in a region
-   * with the specified number of peasants.
+   * Returns the maximum number of persons available for recruitment in a region with the specified
+   * number of peasants.
    */
   private static int maxRecruit(int peasants) {
-    if (peasants >= 0) {
+    if (peasants >= 0)
       return peasants / 40; // 2.5 %
-    }
 
     return -1;
   }
 
   /**
    * Returns the silver that can be earned through entertainment in this region.
-   *
+   * 
    * @see magellan.library.Region#maxEntertain()
    */
   public int maxEntertain() {
@@ -996,33 +953,31 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Returns the silver that could be earned through entertainment in this
-   * region in the last week.
+   * Returns the silver that could be earned through entertainment in this region in the last week.
    */
   public int maxOldEntertain() {
     return getData().getGameSpecificStuff().getGameSpecificRules().getMaxOldEntertain(this);
   }
 
-
   /**
-   * Returns the maximum number of luxury items that can be bought in this
-   * region without a price penalty.
+   * Returns the maximum number of luxury items that can be bought in this region without a price
+   * penalty.
    */
   public int maxLuxuries() {
     return MagellanRegionImpl.maxLuxuries(peasants);
   }
 
   /**
-   * Returns the maximum number of luxury items that could be bought in this
-   * region without a price penalty.
+   * Returns the maximum number of luxury items that could be bought in this region without a price
+   * penalty.
    */
   public int maxOldLuxuries() {
     return MagellanRegionImpl.maxLuxuries(oldPeasants);
   }
 
   /**
-   * Return the maximum number of luxury items that can be bought without a
-   * price increase in a region with the specified number of peasants.
+   * Return the maximum number of luxury items that can be bought without a price increase in a
+   * region with the specified number of peasants.
    */
   private static int maxLuxuries(int peasants) {
     return (peasants >= 0) ? (peasants / 100) : (-1);
@@ -1030,25 +985,24 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   @Override
   public RegionType getType() {
-    if (super.getType()==null || super.getType() instanceof RegionType)
+    if (super.getType() == null || super.getType() instanceof RegionType)
       return (RegionType) super.getType();
     throw new RuntimeException("invalid region type");
   }
-  
+
   @Override
-  public void setType(UnitContainerType type){
-    if (type instanceof RegionType)
+  public void setType(UnitContainerType type) {
+    if (type instanceof RegionType) {
       super.setType(type);
-    else
+    } else
       throw new IllegalArgumentException("invalid region type");
   }
-  
+
   /**
-   * Calculates the wage a peasant earns according to the biggest castle in this
-   * region. While the value of the wage field is directly taken from the report
-   * and may be biased by the race of the owner faction of that report, this
-   * function tries to determine the real wage a peasant can earn in this
-   * region. Wage for player persons can be derived from that value
+   * Calculates the wage a peasant earns according to the biggest castle in this region. While the
+   * value of the wage field is directly taken from the report and may be biased by the race of the
+   * owner faction of that report, this function tries to determine the real wage a peasant can earn
+   * in this region. Wage for player persons can be derived from that value
    */
   public int getPeasantWage() {
     int realWage = getType().getPeasantWage();
@@ -1064,8 +1018,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Returns a String representation of this Region object. If region has no
-   * name the string representation of the region type is used.
+   * Returns a String representation of this Region object. If region has no name the string
+   * representation of the region type is used.
    */
   @Override
   public String toString() {
@@ -1079,14 +1033,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       sb.append(getName());
     }
 
-    sb.append(" (").append(this.getID().toString()).append(")");
+    sb.append(" (").append(getID().toString()).append(")");
 
     return sb.toString();
   }
 
   /**
-   * Returns the coordinate of this region. This method is only a type-safe
-   * short cut for retrieving and converting the ID object of this region.
+   * Returns the coordinate of this region. This method is only a type-safe short cut for retrieving
+   * and converting the ID object of this region.
    */
   public CoordinateID getCoordinate() {
     return (CoordinateID) super.getID();
@@ -1101,29 +1055,28 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   public CoordinateID getID() {
     return (CoordinateID) super.getID();
   }
-  
+
   /**
-   * Returns the RegionType of this region. This method is only a type-safe
-   * short cut for retrieving and converting the RegionType of this region.
+   * Returns the RegionType of this region. This method is only a type-safe short cut for retrieving
+   * and converting the RegionType of this region.
    */
   public RegionType getRegionType() {
-    return this.getType();
+    return getType();
   }
 
   /**
-   * Refreshes all the relations of all units in this region. It is preferrable
-   * to call this method instead of refreshing the unit relations 'manually'.
+   * Refreshes all the relations of all units in this region. It is preferrable to call this method
+   * instead of refreshing the unit relations 'manually'.
    */
   public void refreshUnitRelations() {
     refreshUnitRelations(false);
   }
 
   /**
-   * Refreshes all the relations of all units in this region. It is preferrable
-   * to call this method instead of refreshing the unit relations 'manually'.
+   * Refreshes all the relations of all units in this region. It is preferrable to call this method
+   * instead of refreshing the unit relations 'manually'.
    * 
-   * @param forceRefresh
-   *          to enforce refreshment, false for one refreshment only
+   * @param forceRefresh to enforce refreshment, false for one refreshment only
    */
 
   public synchronized void refreshUnitRelations(boolean forceRefresh) {
@@ -1131,8 +1084,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (unitRelationsRefreshed == false || forceRefresh) {
       unitRelationsRefreshed = true;
 
-      for (Iterator<Unit> iter = this.units().iterator(); iter.hasNext();) {
-        Unit u = iter.next();
+      for (Unit u : units()) {
         u.refreshRelations();
       }
 
@@ -1142,8 +1094,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Guarding units of this region. The list contains instances of class
-   * <tt>Unit</tt>.
+   * Guarding units of this region. The list contains instances of class <tt>Unit</tt>.
    */
   private List<Unit> guards;
 
@@ -1172,11 +1123,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   @Override
   public Unit getUnit(ID key) {
-    if (UnitID.createUnitID(0, getData().base).equals(key)) {
+    if (UnitID.createUnitID(0, getData().base).equals(key))
       return getZeroUnit();
-    } else {
+    else
       return super.getUnit(key);
-    }
   }
 
   private Collection<CoordinateID> neighbours;
@@ -1188,17 +1138,17 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   private int mourning = -1;
 
   /**
-   * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If
-   * <tt>neighbours</tt> is null they will be evaluated.
+   * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If <tt>neighbours</tt>
+   * is null they will be evaluated.
    */
   public void setNeighbours(Collection<CoordinateID> neighbours) {
     this.neighbours = neighbours;
   }
 
   /**
-   * returns a collection of ids for reachable neighbours. This may be set by
-   * setNeighbours() if neighbours is null it will be calculated from the game
-   * data). This function may be necessary for new xml reports.
+   * returns a collection of ids for reachable neighbours. This may be set by setNeighbours() if
+   * neighbours is null it will be calculated from the game data). This function may be necessary
+   * for new xml reports.
    */
   public Collection<CoordinateID> getNeighbours() {
     if (neighbours == null) {
@@ -1209,9 +1159,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   private Collection<CoordinateID> evaluateNeighbours() {
-    if ((getData() == null) || (getData().regions() == null)) {
+    if ((getData() == null) || (getData().regions() == null))
       return null;
-    }
 
     Collection<CoordinateID> c =
         Regions.getAllNeighbours(getData().regions(), getID(), 1, null).keySet();
@@ -1221,14 +1170,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * returns 1 if coast is nearby
-   * returns 0 if there es no coast
+   * returns 1 if coast is nearby returns 0 if there es no coast
+   * 
    * @return the ozeanWithCoast
    */
   public int getOceanWithCoast() {
-    if (this.ozeanWithCoast == -1) {
+    if (ozeanWithCoast == -1) {
       // value was not set until now
-      this.ozeanWithCoast = this.calcOceanWithCoast();
+      ozeanWithCoast = calcOceanWithCoast();
     }
     return ozeanWithCoast;
   }
@@ -1240,15 +1189,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   private int calcOceanWithCoast() {
     // start only if we are a ozean region
-    if (!this.getRegionType().isOcean()) {
+    if (!getRegionType().isOcean())
       return 0;
-    }
     // run through the neighbors
-    for (Iterator<CoordinateID> iter = this.getNeighbours().iterator(); iter.hasNext();) {
-      CoordinateID checkRegionID = iter.next();
-      if (getData().getRegion(checkRegionID).getRegionType().isLand()) {
+    for (CoordinateID checkRegionID : getNeighbours()) {
+      if (getData().getRegion(checkRegionID).getRegionType().isLand())
         return 1;
-      }
     }
     return 0;
   }
@@ -1257,7 +1203,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Used for replacers..showing coordinates of region
    */
   public int getCoordX() {
-    CoordinateID myCID = this.getCoordinate();
+    CoordinateID myCID = getCoordinate();
     return myCID.x;
   }
 
@@ -1265,7 +1211,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Used for replacers..showing coordinates of region
    */
   public int getCoordY() {
-    CoordinateID myCID = this.getCoordinate();
+    CoordinateID myCID = getCoordinate();
     return myCID.y;
   }
 
@@ -1277,30 +1223,31 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * @param signLines
-   *          the signLines to set
+   * @see magellan.library.Region#addSign(magellan.library.Sign)
    */
-  public void setSigns(List<Sign> signLines) {
-    this.signs = signLines;
-  }
-
   public void addSign(Sign s) {
-    if (this.signs == null) {
-      this.signs = new ArrayList<Sign>(1);
+    if (signs == null) {
+      signs = new ArrayList<Sign>(1);
     }
-    this.signs.add(s);
+    signs.add(s);
   }
 
+  /**
+   * @see magellan.library.Region#addSigns(java.util.Collection)
+   */
   public void addSigns(Collection<Sign> c) {
-    if (this.signs == null) {
-      this.signs = new ArrayList<Sign>(1);
+    if (signs == null) {
+      signs = new ArrayList<Sign>(1);
     }
-    this.signs.addAll(c);
+    signs.addAll(c);
   }
 
+  /**
+   * @see magellan.library.Region#clearSigns()
+   */
   public void clearSigns() {
-    if (this.signs != null) {
-      this.signs.clear();
+    if (signs != null) {
+      signs.clear();
     }
   }
 
@@ -1316,8 +1263,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of events.
    * 
-   * @param events
-   *          The value for events.
+   * @param events The value for events.
    */
   public void setEvents(List<Message> events) {
     this.events = events;
@@ -1335,8 +1281,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of herb.
    * 
-   * @param herb
-   *          The value for herb.
+   * @param herb The value for herb.
    */
   public void setHerb(ItemType herb) {
     this.herb = herb;
@@ -1354,8 +1299,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of herbAmount.
    * 
-   * @param herbAmount
-   *          The value for herbAmount.
+   * @param herbAmount The value for herbAmount.
    */
   public void setHerbAmount(String herbAmount) {
     this.herbAmount = herbAmount;
@@ -1368,18 +1312,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public int getHorses() {
     ItemType horsesIT = data.rules.getItemType(EresseaConstants.I_RHORSES);
-    RegionResource horseRR = this.getResource(horsesIT);
-    if (horseRR != null) {
+    RegionResource horseRR = getResource(horsesIT);
+    if (horseRR != null)
       return horseRR.getAmount();
-    }
     return horses;
   }
 
   /**
    * Sets the value of horses.
    * 
-   * @param horses
-   *          The value for horses.
+   * @param horses The value for horses.
    */
   public void setHorses(int horses) {
     this.horses = horses;
@@ -1392,18 +1334,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public int getIron() {
     ItemType ironIT = data.rules.getItemType(EresseaConstants.I_RIRON);
-    RegionResource ironRR = this.getResource(ironIT);
-    if (ironRR != null) {
+    RegionResource ironRR = getResource(ironIT);
+    if (ironRR != null)
       return ironRR.getAmount();
-    }
     return iron;
   }
 
   /**
    * Sets the value of iron.
    * 
-   * @param iron
-   *          The value for iron.
+   * @param iron The value for iron.
    */
   public void setIron(int iron) {
     this.iron = iron;
@@ -1416,18 +1356,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public int getLaen() {
     ItemType laenIT = data.rules.getItemType(EresseaConstants.I_RLAEN);
-    RegionResource laenRR = this.getResource(laenIT);
-    if (laenRR != null) {
+    RegionResource laenRR = getResource(laenIT);
+    if (laenRR != null)
       return laenRR.getAmount();
-    }
     return laen;
   }
 
   /**
    * Sets the value of laen.
    * 
-   * @param laen
-   *          The value for laen.
+   * @param laen The value for laen.
    */
   public void setLaen(int laen) {
     this.laen = laen;
@@ -1445,8 +1383,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of mallorn.
    * 
-   * @param mallorn
-   *          The value for mallorn.
+   * @param mallorn The value for mallorn.
    */
   public void setMallorn(boolean mallorn) {
     this.mallorn = mallorn;
@@ -1464,8 +1401,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of messages.
    * 
-   * @param messages
-   *          The value for messages.
+   * @param messages The value for messages.
    */
   public void setMessages(List<Message> messages) {
     this.messages = messages;
@@ -1483,8 +1419,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldHorses.
    * 
-   * @param oldHorses
-   *          The value for oldHorses.
+   * @param oldHorses The value for oldHorses.
    */
   public void setOldHorses(int oldHorses) {
     this.oldHorses = oldHorses;
@@ -1502,8 +1437,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldIron.
    * 
-   * @param oldIron
-   *          The value for oldIron.
+   * @param oldIron The value for oldIron.
    */
   public void setOldIron(int oldIron) {
     this.oldIron = oldIron;
@@ -1521,8 +1455,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldLaen.
    * 
-   * @param oldLaen
-   *          The value for oldLaen.
+   * @param oldLaen The value for oldLaen.
    */
   public void setOldLaen(int oldLaen) {
     this.oldLaen = oldLaen;
@@ -1540,8 +1473,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldPeasants.
    * 
-   * @param oldPeasants
-   *          The value for oldPeasants.
+   * @param oldPeasants The value for oldPeasants.
    */
   public void setOldPeasants(int oldPeasants) {
     this.oldPeasants = oldPeasants;
@@ -1559,8 +1491,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldPrices.
    * 
-   * @param oldPrices
-   *          The value for oldPrices.
+   * @param oldPrices The value for oldPrices.
    */
   public void setOldPrices(Map<StringID, LuxuryPrice> oldPrices) {
     this.oldPrices = oldPrices;
@@ -1578,8 +1509,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldRecruits.
    * 
-   * @param oldRecruits
-   *          The value for oldRecruits.
+   * @param oldRecruits The value for oldRecruits.
    */
   public void setOldRecruits(int oldRecruits) {
     this.oldRecruits = oldRecruits;
@@ -1597,8 +1527,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldSilver.
    * 
-   * @param oldSilver
-   *          The value for oldSilver.
+   * @param oldSilver The value for oldSilver.
    */
   public void setOldSilver(int oldSilver) {
     this.oldSilver = oldSilver;
@@ -1616,8 +1545,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldSprouts.
    * 
-   * @param oldSprouts
-   *          The value for oldSprouts.
+   * @param oldSprouts The value for oldSprouts.
    */
   public void setOldSprouts(int oldSprouts) {
     this.oldSprouts = oldSprouts;
@@ -1635,8 +1563,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldStones.
    * 
-   * @param oldStones
-   *          The value for oldStones.
+   * @param oldStones The value for oldStones.
    */
   public void setOldStones(int oldStones) {
     this.oldStones = oldStones;
@@ -1654,8 +1581,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldTrees.
    * 
-   * @param oldTrees
-   *          The value for oldTrees.
+   * @param oldTrees The value for oldTrees.
    */
   public void setOldTrees(int oldTrees) {
     this.oldTrees = oldTrees;
@@ -1673,8 +1599,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of oldWage.
    * 
-   * @param oldWage
-   *          The value for oldWage.
+   * @param oldWage The value for oldWage.
    */
   public void setOldWage(int oldWage) {
     this.oldWage = oldWage;
@@ -1692,8 +1617,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of orcInfested.
    * 
-   * @param orcInfested
-   *          The value for orcInfested.
+   * @param orcInfested The value for orcInfested.
    */
   public void setOrcInfested(boolean orcInfested) {
     this.orcInfested = orcInfested;
@@ -1706,18 +1630,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public int getPeasants() {
     ItemType peasonsIT = data.rules.getItemType(EresseaConstants.I_PEASANTS, true);
-    RegionResource peasonsRR = this.getResource(peasonsIT);
-    if (peasonsRR != null) {
+    RegionResource peasonsRR = getResource(peasonsIT);
+    if (peasonsRR != null)
       return peasonsRR.getAmount();
-    }
     return peasants;
   }
 
   /**
    * Sets the value of peasants.
    * 
-   * @param peasants
-   *          The value for peasants.
+   * @param peasants The value for peasants.
    */
   public void setPeasants(int peasants) {
     this.peasants = peasants;
@@ -1735,8 +1657,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of playerMessages.
    * 
-   * @param playerMessages
-   *          The value for playerMessages.
+   * @param playerMessages The value for playerMessages.
    */
   public void setPlayerMessages(List<Message> playerMessages) {
     this.playerMessages = playerMessages;
@@ -1754,8 +1675,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of prices.
    * 
-   * @param prices
-   *          The value for prices.
+   * @param prices The value for prices.
    */
   public void setPrices(Map<StringID, LuxuryPrice> prices) {
     this.prices = prices;
@@ -1773,8 +1693,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of recruits.
    * 
-   * @param recruits
-   *          The value for recruits.
+   * @param recruits The value for recruits.
    */
   public void setRecruits(int recruits) {
     this.recruits = recruits;
@@ -1786,18 +1705,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns silver.
    */
   public int getSilver() {
-    RegionResource silverRR = this.getResource(data.rules.getItemType(EresseaConstants.I_RSILVER));
-    if (silverRR != null) {
+    RegionResource silverRR = getResource(data.rules.getItemType(EresseaConstants.I_RSILVER));
+    if (silverRR != null)
       return silverRR.getAmount();
-    }
     return silver;
   }
 
   /**
    * Sets the value of silver.
    * 
-   * @param silver
-   *          The value for silver.
+   * @param silver The value for silver.
    */
   public void setSilver(int silver) {
     this.silver = silver;
@@ -1810,18 +1727,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public int getSprouts() {
     ItemType sproutsIT = data.rules.getItemType(EresseaConstants.I_SPROUTS);
-    RegionResource sproutsRR = this.getResource(sproutsIT);
-    if (sproutsRR != null) {
+    RegionResource sproutsRR = getResource(sproutsIT);
+    if (sproutsRR != null)
       return sproutsRR.getAmount();
-    }
     return sprouts;
   }
 
   /**
    * Sets the value of sprouts.
    * 
-   * @param sprouts
-   *          The value for sprouts.
+   * @param sprouts The value for sprouts.
    */
   public void setSprouts(int sprouts) {
     this.sprouts = sprouts;
@@ -1834,18 +1749,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public int getStones() {
     ItemType stonesIT = data.rules.getItemType(EresseaConstants.I_RSTONES);
-    RegionResource stonesRR = this.getResource(stonesIT);
-    if (stonesRR != null) {
+    RegionResource stonesRR = getResource(stonesIT);
+    if (stonesRR != null)
       return stonesRR.getAmount();
-    }
     return stones;
   }
 
   /**
    * Sets the value of stones.
    * 
-   * @param stones
-   *          The value for stones.
+   * @param stones The value for stones.
    */
   public void setStones(int stones) {
     this.stones = stones;
@@ -1863,8 +1776,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of surroundings.
    * 
-   * @param surroundings
-   *          The value for surroundings.
+   * @param surroundings The value for surroundings.
    */
   public void setSurroundings(List<Message> surroundings) {
     this.surroundings = surroundings;
@@ -1882,8 +1794,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of travelThru.
    * 
-   * @param travelThru
-   *          The value for travelThru.
+   * @param travelThru The value for travelThru.
    */
   public void setTravelThru(List<Message> travelThru) {
     this.travelThru = travelThru;
@@ -1895,14 +1806,13 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return returns list of DURCHSCHIFFUNG messages or <code>null</code>
    */
   public List<Message> getTravelThruShips() {
-      return travelThruShips;
+    return travelThruShips;
   }
 
   /**
    * Sets the value of travelThruShips.
    * 
-   * @param travelThruShips
-   *          The value for travelThruShips.
+   * @param travelThruShips The value for travelThruShips.
    */
   public void setTravelThruShips(List<Message> travelThruShips) {
     this.travelThruShips = travelThruShips;
@@ -1915,18 +1825,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public int getTrees() {
     ItemType treesIT = data.rules.getItemType(EresseaConstants.I_TREES);
-    RegionResource treesRR = this.getResource(treesIT);
-    if (treesRR != null) {
+    RegionResource treesRR = getResource(treesIT);
+    if (treesRR != null)
       return treesRR.getAmount();
-    }
     return trees;
   }
 
   /**
    * Sets the value of trees.
    * 
-   * @param trees
-   *          The value for trees.
+   * @param trees The value for trees.
    */
   public void setTrees(int trees) {
     this.trees = trees;
@@ -1944,8 +1852,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of wage.
    * 
-   * @param wage
-   *          The value for wage.
+   * @param wage The value for wage.
    */
   public void setWage(int wage) {
     this.wage = wage;
@@ -1975,19 +1882,19 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @see magellan.library.Region#getCoastBitMap()
    */
   public Integer getCoastBitMap() {
-    return this.coastBitMask;
+    return coastBitMask;
   }
 
   /**
    * @see magellan.library.Region#setCoastBitMap(java.lang.Integer)
    */
   public void setCoastBitMap(Integer bitMap) {
-    this.coastBitMask = bitMap;
+    coastBitMask = bitMap;
   }
 
   /**
-   * Returns the value of uID, the unique regionID generated and sent by the
-   * eressea server (starting in turn 570)
+   * Returns the value of uID, the unique regionID generated and sent by the eressea server
+   * (starting in turn 570)
    * 
    * @return Returns uID.
    */
@@ -1996,11 +1903,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Sets the value of uID, the unique regionID generated and sent by the
-   * eressea server (starting in turn 570)
+   * Sets the value of uID, the unique regionID generated and sent by the eressea server (starting
+   * in turn 570)
    * 
-   * @param uid
-   *          The value for uID.
+   * @param uid The value for uID.
    */
   public void setUID(long uid) {
     UID = uid;
@@ -2017,7 +1923,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @see magellan.library.Region#setOwnerFaction(magellan.library.Faction)
    */
   public void setOwnerFaction(Faction f) {
-    this.ownerFaction = f;
+    ownerFaction = f;
   }
 
   /**
@@ -2031,7 +1937,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @see magellan.library.Region#setMorale(int)
    */
   public void setMorale(int morale) {
-    this.morale  = morale;
+    this.morale = morale;
   }
 
   /**
@@ -2045,7 +1951,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @see magellan.library.Region#setMourning(int)
    */
   public void setMourning(int newMourning) {
-    mourning  = newMourning;
+    mourning = newMourning;
   }
 
 }

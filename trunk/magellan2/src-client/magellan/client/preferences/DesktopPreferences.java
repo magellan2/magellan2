@@ -48,9 +48,10 @@ import magellan.library.utils.Resources;
 /**
  * Encapsulates the preferences tab for the desktop.
  */
-public class DesktopPreferences extends AbstractPreferencesAdapter implements ActionListener, ExtendedPreferencesAdapter {
+public class DesktopPreferences extends AbstractPreferencesAdapter implements ActionListener,
+    ExtendedPreferencesAdapter {
   private MagellanDesktop desktop;
-  
+
   private JPanel center;
   private List<PreferencesAdapter> scList;
   private JCheckBox enableWorkSpaceChooser;
@@ -61,21 +62,24 @@ public class DesktopPreferences extends AbstractPreferencesAdapter implements Ac
    */
   public DesktopPreferences(MagellanDesktop desktop, Client client, Properties settings) {
     this.desktop = desktop;
-    this.setLayout(new BorderLayout());
+    setLayout(new BorderLayout());
 
-    center = addPanel(Resources.get("desktop.magellandesktop.prefs.border.options"), new BorderLayout());
-    
+    center =
+        addPanel(Resources.get("desktop.magellandesktop.prefs.border.options"), new BorderLayout());
+
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
     c.insets = new Insets(2, 2, 2, 2);
-    
+
     c.gridx = 0;
     c.gridy = 0;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    enableWorkSpaceChooser = new JCheckBox(Resources.get("desktop.magellandesktop.prefs.displaychooser"), desktop.getWorkSpace().isEnabledChooser());
-    panel.add(enableWorkSpaceChooser,c);
+    enableWorkSpaceChooser =
+        new JCheckBox(Resources.get("desktop.magellandesktop.prefs.displaychooser"), desktop
+            .getWorkSpace().isEnabledChooser());
+    panel.add(enableWorkSpaceChooser, c);
     c.gridx = 1;
     c.gridy = 0;
     c.fill = GridBagConstraints.NONE;
@@ -89,9 +93,12 @@ public class DesktopPreferences extends AbstractPreferencesAdapter implements Ac
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    dontShowTabs = new JCheckBox( Resources.get("desktop.magellandesktop.prefs.dontShowTabs"), PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(), PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
+    dontShowTabs =
+        new JCheckBox(Resources.get("desktop.magellandesktop.prefs.dontShowTabs"), PropertiesHelper
+            .getBoolean(Client.INSTANCE.getProperties(),
+                PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
     dontShowTabs.setHorizontalAlignment(SwingConstants.LEFT);
-    panel.add(dontShowTabs,c);
+    panel.add(dontShowTabs, c);
     c.gridx = 1;
     c.gridy = 1;
     c.fill = GridBagConstraints.NONE;
@@ -99,11 +106,10 @@ public class DesktopPreferences extends AbstractPreferencesAdapter implements Ac
     c.weightx = 0.1;
     panel.add(new JLabel(""), c);
 
-    
-    center.add(panel,BorderLayout.NORTH);
+    center.add(panel, BorderLayout.NORTH);
 
     scList = new ArrayList<PreferencesAdapter>(1);
-    scList.add(new DesktopShortCutPreferences(desktop,client));
+    scList.add(new DesktopShortCutPreferences(desktop, client));
   }
 
   /**
@@ -131,10 +137,11 @@ public class DesktopPreferences extends AbstractPreferencesAdapter implements Ac
    */
   public void initPreferences() {
     if (dontShowTabs != null) {
-      dontShowTabs.setSelected(PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(), PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
+      dontShowTabs.setSelected(PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(),
+          PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
     }
   }
-      
+
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */

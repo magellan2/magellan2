@@ -21,41 +21,39 @@ import magellan.client.swing.MapSaverUI;
 import magellan.client.swing.MapperPanel;
 import magellan.library.utils.Resources;
 
-
 /**
  * Saves the map as image.
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class MapSaveAction extends MenuAction {
-	private MapperPanel map;
+  private MapperPanel map;
 
-	/**
-	 * Creates a new MapSaveAction object.
-	 *
-	 * @param client
-	 * 
-	 */
-	public MapSaveAction(Client client, MapperPanel m) {
+  /**
+   * Creates a new MapSaveAction object.
+   * 
+   * @param client
+   */
+  public MapSaveAction(Client client, MapperPanel m) {
     super(client);
-		map = m;
-	}
+    map = m;
+  }
 
-	/**
-	 * Shows the UI to save the map.
-	 */
-	@Override
+  /**
+   * Shows the UI to save the map.
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		new MapSaverUI(client, true, map.getView()).setVisible(true);
-	}
+    new MapSaverUI(client, true, map.getView()).setVisible(true);
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.mapsaveaction.accelerator",false);
+    return Resources.get("actions.mapsaveaction.accelerator", false);
   }
 
   /**
@@ -63,7 +61,7 @@ public class MapSaveAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.mapsaveaction.mnemonic",false);
+    return Resources.get("actions.mapsaveaction.mnemonic", false);
   }
 
   /**
@@ -76,6 +74,6 @@ public class MapSaveAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.mapsaveaction.tooltip",false);
+    return Resources.get("actions.mapsaveaction.tooltip", false);
   }
 }

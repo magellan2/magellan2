@@ -28,18 +28,16 @@ public interface TempUnit extends Unit {
   public void setParent(Unit u);
 
   /**
-   * Returns the parent of this temp unit. If this is not a temp unit, null is
-   * returned.
+   * Returns the parent of this temp unit. If this is not a temp unit, null is returned.
    */
   public Unit getParent();
-  
+
   /**
    * Returns a string representation of this temporary unit.
    */
 
   public String toString(boolean withName);
 
-  
   /**
    * If the temp unit has a different race than the parent unit, set it here.
    */

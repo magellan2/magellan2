@@ -18,37 +18,32 @@ import java.util.Comparator;
 import magellan.library.Alliance;
 import magellan.library.Faction;
 
-
 /**
  * A comparator imposing an ordering on <tt>Alliance</tt> objects by comparing the factions they
  * contain.
  */
 public class AllianceFactionComparator implements Comparator<Alliance> {
-	protected Comparator<? super Faction> factionSubCmp = null;
+  protected Comparator<? super Faction> factionSubCmp = null;
 
-	/**
-	 * Creates a new <tt>AllianceFactionComparator</tt> object.
-	 *
-	 * @param factionSubComparator is used to compare the factions of two alliance objects.
-	 */
-	public AllianceFactionComparator(Comparator<? super Faction> factionSubComparator) {
-		factionSubCmp = factionSubComparator;
-	}
+  /**
+   * Creates a new <tt>AllianceFactionComparator</tt> object.
+   * 
+   * @param factionSubComparator is used to compare the factions of two alliance objects.
+   */
+  public AllianceFactionComparator(Comparator<? super Faction> factionSubComparator) {
+    factionSubCmp = factionSubComparator;
+  }
 
-	/**
-	 * Compares its two arguments for order with regard to their trust levels.
-	 *
-	 * 
-	 * 
-	 *
-	 * @return the result of the faction comparator applied to the factions of the alliances o1 and
-	 * 		   o2.
-	 */
-	public int compare(Alliance a1, Alliance a2) {
-		if(a1 == null) {
-			return (a2 == null) ? 0 : 1;
-		} else {
-			return (a2 == null) ? (-1) : factionSubCmp.compare(a1.getFaction(), a2.getFaction());
-		}
-	}
+  /**
+   * Compares its two arguments for order with regard to their trust levels.
+   * 
+   * @return the result of the faction comparator applied to the factions of the alliances o1 and
+   *         o2.
+   */
+  public int compare(Alliance a1, Alliance a2) {
+    if (a1 == null)
+      return (a2 == null) ? 0 : 1;
+    else
+      return (a2 == null) ? (-1) : factionSubCmp.compare(a1.getFaction(), a2.getFaction());
+  }
 }

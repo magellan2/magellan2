@@ -37,9 +37,9 @@ import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
- * This class is a help tool from outside Magellan. It will be started via
- * a shortcut in the windows start menu, that was created by the installer.
- *
+ * This class is a help tool from outside Magellan. It will be started via a shortcut in the windows
+ * start menu, that was created by the installer.
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 15.11.2007
  */
@@ -47,19 +47,21 @@ public class Help {
   private static final Logger log = Logger.getInstance(Help.class);
 
   public static void open(String[] args) {
-    
+
     try {
       Properties settings = Client.loadSettings(new File("."), "magellan.ini");
-      if (settings==null) settings=new SelfCleaningProperties();
+      if (settings == null) {
+        settings = new SelfCleaningProperties();
+      }
       ClassLoader loader = new ResourcePathClassLoader(settings);
       String language = settings.getProperty("locales.gui", "");
       if (!Utils.isEmpty(language)) {
-        language = "_"+language;
+        language = "_" + language;
       }
-      
-      URL hsURL = loader.getResource("help/magellan"+language+".hs");
+
+      URL hsURL = loader.getResource("help/magellan" + language + ".hs");
       if (hsURL == null) {
-        hsURL = loader.getResource("magellan"+language+".hs");
+        hsURL = loader.getResource("magellan" + language + ".hs");
       }
       if (hsURL == null) {
         hsURL = loader.getResource("help/magellan.hs");
@@ -71,44 +73,50 @@ public class Help {
         JOptionPane.showMessageDialog(null, "Could not find the magellan-help.jar");
         return;
       }
-            
+
       Class<?> helpSetClass = null;
       Class<?> helpBrokerClass = null;
-      
+
       try {
-        helpSetClass = Class.forName("javax.help.HelpSet", true, ClassLoader.getSystemClassLoader());
-        Class.forName("javax.help.CSH$DisplayHelpFromSource", true, ClassLoader.getSystemClassLoader());
-        helpBrokerClass = Class.forName("javax.help.HelpBroker", true, ClassLoader.getSystemClassLoader());
+        helpSetClass =
+            Class.forName("javax.help.HelpSet", true, ClassLoader.getSystemClassLoader());
+        Class.forName("javax.help.CSH$DisplayHelpFromSource", true, ClassLoader
+            .getSystemClassLoader());
+        helpBrokerClass =
+            Class.forName("javax.help.HelpBroker", true, ClassLoader.getSystemClassLoader());
       } catch (ClassNotFoundException ex) {
-        log.warn(ex);
+        Help.log.warn(ex);
         JOptionPane.showMessageDialog(null, "Could not find the Java Help environment.");
         return;
       }
-      
-      Class<?> helpSetConstructorSignature[] = { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
+
+      Class<?> helpSetConstructorSignature[] =
+          { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
       Constructor<?> helpSetConstructor = helpSetClass.getConstructor(helpSetConstructorSignature);
       Object helpSetConstructorArgs[] = { loader, hsURL };
-  
+
       // this calls new javax.help.Helpset(ClassLoader, URL)
       Object helpSet = helpSetConstructor.newInstance(helpSetConstructorArgs);
-  
-      Method helpSetCreateHelpBrokerMethod = helpSetClass.getMethod("createHelpBroker", (Class[])null);
-  
+
+      Method helpSetCreateHelpBrokerMethod =
+          helpSetClass.getMethod("createHelpBroker", (Class[]) null);
+
       // this calls new javax.help.Helpset.createHelpBroker()
-      Object helpBroker = helpSetCreateHelpBrokerMethod.invoke(helpSet, (Object[])null);
-  
-      Method initPresentationMethod = helpBrokerClass.getMethod("initPresentation", (Class[])null);
+      Object helpBroker = helpSetCreateHelpBrokerMethod.invoke(helpSet, (Object[]) null);
+
+      Method initPresentationMethod = helpBrokerClass.getMethod("initPresentation", (Class[]) null);
       // this calls new javax.help.HelpBroker.initPresentation()
-      initPresentationMethod.invoke(helpBroker, (Object[])null);
-  
+      initPresentationMethod.invoke(helpBroker, (Object[]) null);
+
       Class<?> setDisplayedMethodSignature[] = { boolean.class };
-      Method setDisplayedMethod = helpBroker.getClass().getMethod("setDisplayed", setDisplayedMethodSignature);
+      Method setDisplayedMethod =
+          helpBroker.getClass().getMethod("setDisplayed", setDisplayedMethodSignature);
       Object setDisplayedMethodArgs[] = { Boolean.TRUE };
-  
+
       // this calls new javax.help.HelpBroker.setDisplayed(true)
       setDisplayedMethod.invoke(helpBroker, setDisplayedMethodArgs);
     } catch (Exception e) {
-      log.warn(e);
+      Help.log.warn(e);
       JOptionPane.showMessageDialog(null, "Could not initialize the Java Help environment.");
     }
   }

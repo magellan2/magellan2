@@ -30,5 +30,6 @@ import magellan.library.Region;
 
 public interface RoutingDialogDataPicker {
   public RoutingDialogData showRoutingDialog();
+
   public void initialize(GameData data, Collection<Region> coast, boolean excludeUnnamed);
 }

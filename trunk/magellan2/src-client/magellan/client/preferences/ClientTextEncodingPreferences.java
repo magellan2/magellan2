@@ -29,87 +29,110 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
-
 /**
- * This preferences dialog configures the textfile encoding properties
- * of Magellan.
- *
+ * This preferences dialog configures the textfile encoding properties of Magellan.
+ * 
  * @author Fiete
  * @version 1.0
  */
-public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
+public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter implements
+    PreferencesAdapter {
 
-	static Properties settings;
-	protected JCheckBox saveISOOrders;
-	protected JCheckBox openISOOrders;
-	protected JCheckBox runISOEcheck;
-	protected JCheckBox runJVorlage;
+  static Properties settings;
+  protected JCheckBox saveISOOrders;
+  protected JCheckBox openISOOrders;
+  protected JCheckBox runISOEcheck;
+  protected JCheckBox runJVorlage;
   protected JCheckBox saveUTFOrders;
   protected JCheckBox runUTFEcheck;
 
-	public ClientTextEncodingPreferences(Properties _settings){
-		ClientTextEncodingPreferences.settings = _settings;
-		this.initGUI();
-	}
-	
-	
-	/**
-	 * @see PreferencesAdapter#initPreferences()
-	 */
-	public void initPreferences() {
-		// nothing to do...
-		
-	}
-	
-	private void initGUI() {
-	  getTextEncodingPrefrencesPanel(addPanel(Resources.get("util.textencodingpreferences.prefs.title")));
-	}
+  public ClientTextEncodingPreferences(Properties _settings) {
+    ClientTextEncodingPreferences.settings = _settings;
+    initGUI();
+  }
+
+  /**
+   * @see PreferencesAdapter#initPreferences()
+   */
+  public void initPreferences() {
+    // nothing to do...
+
+  }
+
+  private void initGUI() {
+    getTextEncodingPrefrencesPanel(addPanel(Resources
+        .get("util.textencodingpreferences.prefs.title")));
+  }
 
   /**
    * 
    */
-	private Component getTextEncodingPrefrencesPanel(JPanel textEncodingPrefrencesPanel) {
-		textEncodingPrefrencesPanel.setLayout(new GridBagLayout());
+  private Component getTextEncodingPrefrencesPanel(JPanel textEncodingPrefrencesPanel) {
+    textEncodingPrefrencesPanel.setLayout(new GridBagLayout());
 
-		GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1, 0,
-													  GridBagConstraints.WEST,
-													  GridBagConstraints.HORIZONTAL,
-													  new Insets(2, 10, 1, 10), 0, 0);
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, new Insets(2, 10, 1, 10), 0, 0);
 
-		JLabel textEncodingInfoLabel = new JLabel(Resources.get("util.textencodingpreferences.prefs.info1"));
-		textEncodingPrefrencesPanel.add(textEncodingInfoLabel,c);
-		
-		c.gridy++;
-		textEncodingInfoLabel = new JLabel(Resources.get("util.textencodingpreferences.prefs.info2"));
-		textEncodingPrefrencesPanel.add(textEncodingInfoLabel,c);
-		
+    JLabel textEncodingInfoLabel =
+        new JLabel(Resources.get("util.textencodingpreferences.prefs.info1"));
+    textEncodingPrefrencesPanel.add(textEncodingInfoLabel, c);
+
     c.gridy++;
-    openISOOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOopenOrders.label"),PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings, "TextEncoding.ISOopenOrders", false));
+    textEncodingInfoLabel = new JLabel(Resources.get("util.textencodingpreferences.prefs.info2"));
+    textEncodingPrefrencesPanel.add(textEncodingInfoLabel, c);
+
+    c.gridy++;
+    openISOOrders =
+        new JCheckBox(Resources
+            .get("util.textencodingpreferences.checkbox.textEncodingISOopenOrders.label"),
+            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
+                "TextEncoding.ISOopenOrders", false));
     textEncodingPrefrencesPanel.add(openISOOrders, c);
-    
-		c.gridy++;
-		saveISOOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOsaveOrders.label"),PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings, "TextEncoding.ISOsaveOrders", false));
-		textEncodingPrefrencesPanel.add(saveISOOrders, c);
-    
-		c.gridy++;
-		runISOEcheck = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOECheck.label"),PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings, "TextEncoding.ISOrunEcheck", false));
-		textEncodingPrefrencesPanel.add(runISOEcheck, c);
-		
+
     c.gridy++;
-    runJVorlage = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOJVorlage.label"),PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings, "TextEncoding.ISOrunJVorlage", false));
+    saveISOOrders =
+        new JCheckBox(Resources
+            .get("util.textencodingpreferences.checkbox.textEncodingISOsaveOrders.label"),
+            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
+                "TextEncoding.ISOsaveOrders", false));
+    textEncodingPrefrencesPanel.add(saveISOOrders, c);
+
+    c.gridy++;
+    runISOEcheck =
+        new JCheckBox(Resources
+            .get("util.textencodingpreferences.checkbox.textEncodingISOECheck.label"),
+            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
+                "TextEncoding.ISOrunEcheck", false));
+    textEncodingPrefrencesPanel.add(runISOEcheck, c);
+
+    c.gridy++;
+    runJVorlage =
+        new JCheckBox(Resources
+            .get("util.textencodingpreferences.checkbox.textEncodingISOJVorlage.label"),
+            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
+                "TextEncoding.ISOrunJVorlage", false));
     runJVorlage.setEnabled(false);
     textEncodingPrefrencesPanel.add(runJVorlage, c);
 
     // TextEncoding.UTF8saveOrders
     c.gridy++;
-    saveUTFOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingUTFsaveOrders.label"),PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings, "TextEncoding.UTF8saveOrders", false));
+    saveUTFOrders =
+        new JCheckBox(Resources
+            .get("util.textencodingpreferences.checkbox.textEncodingUTFsaveOrders.label"),
+            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
+                "TextEncoding.UTF8saveOrders", false));
     textEncodingPrefrencesPanel.add(saveUTFOrders, c);
 
     // TextEncoding.UTF8runEcheck
     c.gridy++;
-    runUTFEcheck = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingUTFECheck.label"),PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings, "TextEncoding.UTF8runEcheck", false));
+    runUTFEcheck =
+        new JCheckBox(Resources
+            .get("util.textencodingpreferences.checkbox.textEncodingUTFECheck.label"),
+            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
+                "TextEncoding.UTF8runEcheck", false));
     textEncodingPrefrencesPanel.add(runUTFEcheck, c);
-    
+
     if (saveISOOrders.isSelected()) {
       saveUTFOrders.setEnabled(false);
       saveUTFOrders.setSelected(false);
@@ -117,7 +140,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
       saveISOOrders.setEnabled(false);
       saveISOOrders.setSelected(false);
     }
-    
+
     if (runISOEcheck.isSelected()) {
       runUTFEcheck.setEnabled(false);
       runUTFEcheck.setSelected(false);
@@ -125,7 +148,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
       runISOEcheck.setEnabled(false);
       runISOEcheck.setSelected(false);
     }
-    
+
     saveISOOrders.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent e) {
         if (saveISOOrders.isSelected()) {
@@ -136,7 +159,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
         }
       }
     });
-    
+
     saveUTFOrders.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent e) {
         if (saveUTFOrders.isSelected()) {
@@ -147,7 +170,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
         }
       }
     });
-    
+
     runISOEcheck.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent e) {
         if (runISOEcheck.isSelected()) {
@@ -158,7 +181,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
         }
       }
     });
-    
+
     runUTFEcheck.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent e) {
         if (runUTFEcheck.isSelected()) {
@@ -169,39 +192,42 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
         }
       }
     });
-    
-		return textEncodingPrefrencesPanel;
-	}
 
-   	/**
-	 * save settings 
-	 * 
-	 */
-	public void applyPreferences() {
-		ClientTextEncodingPreferences.settings.setProperty("TextEncoding.ISOsaveOrders", (saveISOOrders.isSelected() ? "true" : "false"));
-		ClientTextEncodingPreferences.settings.setProperty("TextEncoding.ISOopenOrders", (openISOOrders.isSelected() ? "true" : "false"));
-		ClientTextEncodingPreferences.settings.setProperty("TextEncoding.ISOrunEcheck", (runISOEcheck.isSelected() ? "true" : "false"));
-    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.ISOrunJVorlage", (runJVorlage.isSelected() ? "true" : "false"));
-    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.UTF8saveOrders", (saveUTFOrders.isSelected() ? "true" : "false"));
-    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.UTF8runEcheck", (runUTFEcheck.isSelected() ? "true" : "false"));
-	}
+    return textEncodingPrefrencesPanel;
+  }
 
-	/**
-	 * Returns the component for showing in preferences dialog
-	 *
-	 * @return The Component
-	 */
-	public Component getComponent() {
-		return this;
-	}
+  /**
+   * save settings
+   */
+  public void applyPreferences() {
+    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.ISOsaveOrders", (saveISOOrders
+        .isSelected() ? "true" : "false"));
+    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.ISOopenOrders", (openISOOrders
+        .isSelected() ? "true" : "false"));
+    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.ISOrunEcheck", (runISOEcheck
+        .isSelected() ? "true" : "false"));
+    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.ISOrunJVorlage", (runJVorlage
+        .isSelected() ? "true" : "false"));
+    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.UTF8saveOrders",
+        (saveUTFOrders.isSelected() ? "true" : "false"));
+    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.UTF8runEcheck", (runUTFEcheck
+        .isSelected() ? "true" : "false"));
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getTitle() {
-		return Resources.get("util.textencodingpreferences.prefs.title");
-	}
+  /**
+   * Returns the component for showing in preferences dialog
+   * 
+   * @return The Component
+   */
+  public Component getComponent() {
+    return this;
+  }
+
+  /**
+   * DOCUMENT-ME
+   */
+  public String getTitle() {
+    return Resources.get("util.textencodingpreferences.prefs.title");
+  }
 
 }

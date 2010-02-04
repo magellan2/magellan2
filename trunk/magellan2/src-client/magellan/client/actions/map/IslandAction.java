@@ -24,49 +24,48 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Islands;
 import magellan.library.utils.Resources;
 
-
 /**
- * This action will check the whole map and tries to find
- * islands.
- *
+ * This action will check the whole map and tries to find islands.
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class IslandAction extends MenuAction {
 
-	/**
-	 * Creates a new IslandAction object.
-	 *
-	 * @param client
-	 */
-	public IslandAction(Client client) {
+  /**
+   * Creates a new IslandAction object.
+   * 
+   * @param client
+   */
+  public IslandAction(Client client) {
     super(client);
-	}
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#menuActionPerformed(java.awt.event.ActionEvent)
    */
-	@Override
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-    
+
     new Thread(new Runnable() {
       public void run() {
         GameData data = client.getData();
-    		client.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-    		data.islands().putAll(Islands.getIslands(new ProgressBarUI(client), data.rules, data.regions(), data.islands(), data));
-    		client.getDispatcher().fire(new GameDataEvent(this, data));
-    		client.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        client.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+        data.islands().putAll(
+            Islands.getIslands(new ProgressBarUI(client), data.rules, data.regions(), data
+                .islands(), data));
+        client.getDispatcher().fire(new GameDataEvent(this, data));
+        client.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
       }
     }).start();
-	}
-
+  }
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.islandaction.accelerator",false);
+    return Resources.get("actions.islandaction.accelerator", false);
   }
 
   /**
@@ -74,7 +73,7 @@ public class IslandAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.islandaction.mnemonic",false);
+    return Resources.get("actions.islandaction.mnemonic", false);
   }
 
   /**
@@ -87,7 +86,7 @@ public class IslandAction extends MenuAction {
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.islandaction.tooltip",false);
+    return Resources.get("actions.islandaction.tooltip", false);
   }
 
 }

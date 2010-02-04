@@ -32,50 +32,39 @@ import magellan.library.utils.Utils;
 
 /**
  * An enum for all container types in this plugin.
- *
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
 public enum ContainerType {
-  REGIONTYPE,
-  RACE,
-  BUILDINGTYPE,
-  SHIPTYPE,
-  UNKNOWN;
-  
+  REGIONTYPE, RACE, BUILDINGTYPE, SHIPTYPE, UNKNOWN;
+
   @Override
   public String toString() {
     return name().toLowerCase();
   }
-  
+
   public static ContainerType getType(String name) {
-    if (Utils.isEmpty(name)) {
+    if (Utils.isEmpty(name))
       return UNKNOWN;
-    }
     for (ContainerType type : ContainerType.values()) {
-      if (type.toString().equalsIgnoreCase(name)) {
+      if (type.toString().equalsIgnoreCase(name))
         return type;
-      }
     }
     return UNKNOWN;
   }
-  
+
   public static ContainerType getType(UnitContainerType uctype) {
-    if (Utils.isEmpty(uctype)) {
+    if (Utils.isEmpty(uctype))
       return UNKNOWN;
-    }
-    if (uctype instanceof RegionType) {
+    if (uctype instanceof RegionType)
       return REGIONTYPE;
-    }
-    if (uctype instanceof Race) {
+    if (uctype instanceof Race)
       return RACE;
-    }
-    if (uctype instanceof BuildingType) {
+    if (uctype instanceof BuildingType)
       return BUILDINGTYPE;
-    }
-    if (uctype instanceof ShipType) {
+    if (uctype instanceof ShipType)
       return SHIPTYPE;
-    }
     return UNKNOWN;
   }
 

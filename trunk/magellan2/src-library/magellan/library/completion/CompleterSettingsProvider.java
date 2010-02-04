@@ -17,22 +17,18 @@ import java.util.List;
 
 /**
  * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public interface CompleterSettingsProvider {
-	/**
-	 * Delivers a list of completions for self defined completions.
-	 *
-	 * 
-	 */
-	public List<Completion> getSelfDefinedCompletions();
+  /**
+   * Delivers a list of completions for self defined completions.
+   */
+  public List<Completion> getSelfDefinedCompletions();
 
-	/**
-	 * Returns true iff LimitMakeCompletion is turned on
-	 *
-	 * 
-	 */
-	public boolean getLimitMakeCompletion();
+  /**
+   * Returns true iff LimitMakeCompletion is turned on
+   */
+  public boolean getLimitMakeCompletion();
 }

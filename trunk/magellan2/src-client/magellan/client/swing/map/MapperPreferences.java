@@ -59,6 +59,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
@@ -67,556 +68,542 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * The preferences panel providing a GUI to configure a Mapper object.
  */
 public class MapperPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter,
-																		 ActionListener
-{
-	// The source component to configure
-	private Mapper source = null;
-	
+    ActionListener {
+  // The source component to configure
+  private Mapper source = null;
 
-	
-	// GUI elements
-	private JCheckBox chkDeferPainting = null;
-	private JCheckBox showTooltips;
+  // GUI elements
+  private JCheckBox chkDeferPainting = null;
+  private JCheckBox showTooltips;
 
-	private JTabbedPane planes;
+  private JTabbedPane planes;
 
-	// the map holding the associations between planes and renderers
-	// maps RenderingPlane to MapCellRenderer
-	private Map<RenderingPlane,MapCellRenderer> planeMap = new HashMap<RenderingPlane, MapCellRenderer>();
-	private Collection<PreferencesAdapter> rendererAdapters = new LinkedList<PreferencesAdapter>();
+  // the map holding the associations between planes and renderers
+  // maps RenderingPlane to MapCellRenderer
+  private Map<RenderingPlane, MapCellRenderer> planeMap =
+      new HashMap<RenderingPlane, MapCellRenderer>();
+  private Collection<PreferencesAdapter> rendererAdapters = new LinkedList<PreferencesAdapter>();
 
-	// for changing tooltips
-	private ToolTipSwitcherDialog ttsDialog;
-	private boolean dialogShown = false;
+  // for changing tooltips
+  private ToolTipSwitcherDialog ttsDialog;
+  private boolean dialogShown = false;
 
-	/**
-	 * Creates a new MapperPreferences object.
-	 *
-	 * 
-	 */
-	public MapperPreferences(Mapper m) {
-		this.source = m;
-		init();
-	}
+  /**
+   * Creates a new MapperPreferences object.
+   */
+  public MapperPreferences(Mapper m) {
+    source = m;
+    init();
+  }
 
-	private void init() {
-		chkDeferPainting = new JCheckBox(Resources.get("map.mapperpreferences.chk.deferpainting.caption"),
-										 source.isDeferringPainting());
-		showTooltips = new JCheckBox(Resources.get("map.mapperpreferences.showtooltips.caption"), source.isShowingTooltip());
+  private void init() {
+    chkDeferPainting =
+        new JCheckBox(Resources.get("map.mapperpreferences.chk.deferpainting.caption"), source
+            .isDeferringPainting());
+    showTooltips =
+        new JCheckBox(Resources.get("map.mapperpreferences.showtooltips.caption"), source
+            .isShowingTooltip());
 
-		JButton configureTooltips = new JButton(Resources.get("map.mapperpreferences.showtooltips.configure.caption"));
-		configureTooltips.addActionListener(this);
+    JButton configureTooltips =
+        new JButton(Resources.get("map.mapperpreferences.showtooltips.configure.caption"));
+    configureTooltips.addActionListener(this);
 
-		JPanel helpPanel = addPanel(null, new GridBagLayout());
+    JPanel helpPanel = addPanel(null, new GridBagLayout());
 
-		GridBagConstraints gbc = new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST,
-														GridBagConstraints.HORIZONTAL,
-														new Insets(3, 3, 3, 3), 0, 0);
-		helpPanel.add(chkDeferPainting, gbc);
-		gbc.gridy++;
-		gbc.gridwidth = 1;
-		gbc.weightx = 0;
-		helpPanel.add(showTooltips, gbc);
-		gbc.gridx++;
-		gbc.fill = GridBagConstraints.NONE;
-		helpPanel.add(configureTooltips, gbc);
+    GridBagConstraints gbc =
+        new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST,
+            GridBagConstraints.HORIZONTAL, new Insets(3, 3, 3, 3), 0, 0);
+    helpPanel.add(chkDeferPainting, gbc);
+    gbc.gridy++;
+    gbc.gridwidth = 1;
+    gbc.weightx = 0;
+    helpPanel.add(showTooltips, gbc);
+    gbc.gridx++;
+    gbc.fill = GridBagConstraints.NONE;
+    helpPanel.add(configureTooltips, gbc);
 
-		JPanel rendererPanel = addPanel(Resources.get("map.mapperpreferences.border.rendereroptions"), new BorderLayout());
+    JPanel rendererPanel =
+        addPanel(Resources.get("map.mapperpreferences.border.rendereroptions"), new BorderLayout());
 
-		planes = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
-		rendererPanel.add(planes, BorderLayout.CENTER);
+    planes = new JTabbedPane(SwingConstants.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+    rendererPanel.add(planes, BorderLayout.CENTER);
 
-		for(RenderingPlane plane : source.getPlanes()) {
+    for (RenderingPlane plane : source.getPlanes()) {
       if (plane == null) {
         continue;
       }
-			JPanel aRendererPanel = new JPanel(new GridBagLayout());
-			gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER,
-										 GridBagConstraints.BOTH, new Insets(3, 3, 3, 3), 0, 0);
+      JPanel aRendererPanel = new JPanel(new GridBagLayout());
+      gbc =
+          new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER,
+              GridBagConstraints.BOTH, new Insets(3, 3, 3, 3), 0, 0);
 
-			JComboBox availableRenderers = new JComboBox();
-			availableRenderers.setEditable(false);
-			availableRenderers.addItem(Resources.get("map.mapperpreferences.cmb.renderers.disabled"));
+      JComboBox availableRenderers = new JComboBox();
+      availableRenderers.setEditable(false);
+      availableRenderers.addItem(Resources.get("map.mapperpreferences.cmb.renderers.disabled"));
 
-			final CardLayout cards = new CardLayout();
-			final JPanel temp = new JPanel(cards);
-			temp.add(new JPanel(), "NONE");
+      final CardLayout cards = new CardLayout();
+      final JPanel temp = new JPanel(cards);
+      temp.add(new JPanel(), "NONE");
 
-			for(MapCellRenderer r : source.getRenderers(plane.getIndex())) {
-				availableRenderers.addItem(r);
+      for (MapCellRenderer r : source.getRenderers(plane.getIndex())) {
+        availableRenderers.addItem(r);
 
-				PreferencesAdapter adap = r.getPreferencesAdapter();
+        PreferencesAdapter adap = r.getPreferencesAdapter();
         Component adapterComponent = adap.getComponent();
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(adapterComponent,BorderLayout.NORTH);
+        panel.add(adapterComponent, BorderLayout.NORTH);
         temp.add(panel, r.getName());
         rendererAdapters.add(adap);
-			}
-			
-			availableRenderers.addItemListener(new ItemListener() {
-					public void itemStateChanged(ItemEvent e) {
-						if(e.getStateChange() == ItemEvent.SELECTED) {
-							if(e.getItem() instanceof MapCellRenderer) {
-								MapCellRenderer r = (MapCellRenderer) e.getItem();
-								cards.show(temp, r.getName());
+      }
 
-								// store that a renderer has been set for the selected plane
-                RenderingPlane o = source.getPlanes().get(r.getPlaneIndex());
-								planeMap.put(o, r);
-							} else {
-								// a mapper was deactivated
-								int selectedIndex = planes.getSelectedIndex();
+      availableRenderers.addItemListener(new ItemListener() {
+        public void itemStateChanged(ItemEvent e) {
+          if (e.getStateChange() == ItemEvent.SELECTED) {
+            if (e.getItem() instanceof MapCellRenderer) {
+              MapCellRenderer r = (MapCellRenderer) e.getItem();
+              cards.show(temp, r.getName());
 
-								if(selectedIndex > -1) {
-									// store that a renderer has been set for the selected plane
-                  RenderingPlane o = source.getPlanes().get(selectedIndex);
-									planeMap.put(o, null);
-								}
+              // store that a renderer has been set for the selected plane
+              RenderingPlane o = source.getPlanes().get(r.getPlaneIndex());
+              planeMap.put(o, r);
+            } else {
+              // a mapper was deactivated
+              int selectedIndex = planes.getSelectedIndex();
 
-								cards.first(temp);
-							}
+              if (selectedIndex > -1) {
+                // store that a renderer has been set for the selected plane
+                RenderingPlane o = source.getPlanes().get(selectedIndex);
+                planeMap.put(o, null);
+              }
 
-							temp.revalidate();
-							temp.repaint();
-						}
-					}
-				});
+              cards.first(temp);
+            }
 
-			JLabel lblRenderers = new JLabel(Resources.get("map.mapperpreferences.lbl.renderer.caption"));
-			aRendererPanel.add(lblRenderers, gbc);
-			gbc.gridx++;
-			gbc.weightx = 1;
-			aRendererPanel.add(availableRenderers, gbc);
-			gbc.gridy++;
-			gbc.gridx = 0;
-			gbc.gridwidth = 2;
-			gbc.weighty = 1;
-			aRendererPanel.add(temp, gbc);
+            temp.revalidate();
+            temp.repaint();
+          }
+        }
+      });
 
-			MapCellRenderer r = null;
-			r = plane.getRenderer();
+      JLabel lblRenderers = new JLabel(Resources.get("map.mapperpreferences.lbl.renderer.caption"));
+      aRendererPanel.add(lblRenderers, gbc);
+      gbc.gridx++;
+      gbc.weightx = 1;
+      aRendererPanel.add(availableRenderers, gbc);
+      gbc.gridy++;
+      gbc.gridx = 0;
+      gbc.gridwidth = 2;
+      gbc.weighty = 1;
+      aRendererPanel.add(temp, gbc);
 
-			if(r != null) {
-				availableRenderers.setSelectedItem(r);
-			} else {
-				availableRenderers.setSelectedIndex(0);
-			}
+      MapCellRenderer r = null;
+      r = plane.getRenderer();
 
-			planes.addTab(plane.toString(), aRendererPanel);
-		}
+      if (r != null) {
+        availableRenderers.setSelectedItem(r);
+      } else {
+        availableRenderers.setSelectedIndex(0);
+      }
 
-	}
+      planes.addTab(plane.toString(), aRendererPanel);
+    }
 
-	/**
-	 * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
-	 */
-	public void initPreferences() {
-	  for(Iterator<PreferencesAdapter> iter = rendererAdapters.iterator(); iter.hasNext();) {
-	    PreferencesAdapter adap = iter.next();
-	    adap.initPreferences();
-	  }
-	}
+  }
 
-	/**
-	 * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
-	 */
-	public void applyPreferences() {
-		source.deferPainting(chkDeferPainting.isSelected());
-		source.setShowTooltip(showTooltips.isSelected());
-		
-		if(dialogShown) {
-			String tDefinition = ttsDialog.getSelectedToolTip();
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
+   */
+  public void initPreferences() {
+    for (PreferencesAdapter adap : rendererAdapters) {
+      adap.initPreferences();
+    }
+  }
 
-			if(tDefinition != null) {
-				source.setTooltipDefinition(tDefinition);
-			}
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
+   */
+  public void applyPreferences() {
+    source.deferPainting(chkDeferPainting.isSelected());
+    source.setShowTooltip(showTooltips.isSelected());
 
-			dialogShown = false;
-		}
+    if (dialogShown) {
+      String tDefinition = ttsDialog.getSelectedToolTip();
 
-		// set renderer for plane, taking those from the map is enough since only they can be changed
-		for(Iterator<RenderingPlane> iter = planeMap.keySet().iterator(); iter.hasNext();) {
-			RenderingPlane p = iter.next();
-			source.setRenderer(planeMap.get(p), p.getIndex());
-		}
+      if (tDefinition != null) {
+        source.setTooltipDefinition(tDefinition);
+      }
 
-		// apply changes on the renderers
-		for(Iterator<PreferencesAdapter> iter = rendererAdapters.iterator(); iter.hasNext();) {
-			PreferencesAdapter adap = iter.next();
-			adap.applyPreferences();
-		}
+      dialogShown = false;
+    }
 
-		Mapper.setRenderContextChanged(true);
-	}
+    // set renderer for plane, taking those from the map is enough since only they can be changed
+    for (RenderingPlane p : planeMap.keySet()) {
+      source.setRenderer(planeMap.get(p), p.getIndex());
+    }
 
-	/**
-	 * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
-	 */
-	public Component getComponent() {
-		return this;
-	}
+    // apply changes on the renderers
+    for (PreferencesAdapter adap : rendererAdapters) {
+      adap.applyPreferences();
+    }
 
-	/**
-	 * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
-	 */
-	public String getTitle() {
-		return Resources.get("map.mapperpreferences.title");
-	}
+    Mapper.setRenderContextChanged(true);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void actionPerformed(java.awt.event.ActionEvent p1) {
-		if(ttsDialog == null) {
-			Component parent = getTopLevelAncestor();
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
+   */
+  public Component getComponent() {
+    return this;
+  }
 
-			if(parent instanceof Frame) {
-				ttsDialog = new ToolTipSwitcherDialog((Frame) parent,
-													  Resources.get("map.mapperpreferences.tooltipdialog.title"));
-			} else {
-				ttsDialog = new ToolTipSwitcherDialog((Dialog) parent,
-													  Resources.get("map.mapperpreferences.tooltipdialog.title"));
-			}
-		}
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
+   */
+  public String getTitle() {
+    return Resources.get("map.mapperpreferences.title");
+  }
 
-		ttsDialog.setVisible(true);
-		dialogShown = true;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void actionPerformed(java.awt.event.ActionEvent p1) {
+    if (ttsDialog == null) {
+      Component parent = getTopLevelAncestor();
 
-	protected class ToolTipSwitcherDialog extends JDialog implements ActionListener,
-																	 javax.swing.event.ListSelectionListener
-	{
-		/**
-		 * Imports/exports tooltips from/to text files. The text files are interpreted
-		 * two-line-wise. The first line acts as the name and the second one as the definition.
-		 */
-		protected class ImExportDialog extends JDialog implements ActionListener {
+      if (parent instanceof Frame) {
+        ttsDialog =
+            new ToolTipSwitcherDialog((Frame) parent, Resources
+                .get("map.mapperpreferences.tooltipdialog.title"));
+      } else {
+        ttsDialog =
+            new ToolTipSwitcherDialog((Dialog) parent, Resources
+                .get("map.mapperpreferences.tooltipdialog.title"));
+      }
+    }
+
+    ttsDialog.setVisible(true);
+    dialogShown = true;
+  }
+
+  protected class ToolTipSwitcherDialog extends JDialog implements ActionListener,
+      javax.swing.event.ListSelectionListener {
+    /**
+     * Imports/exports tooltips from/to text files. The text files are interpreted two-line-wise.
+     * The first line acts as the name and the second one as the definition.
+     */
+    protected class ImExportDialog extends JDialog implements ActionListener {
       private final Logger log = Logger.getInstance(ImExportDialog.class);
-			protected JFileChooser fileChooser;
-			protected Dialog parent;
-			protected JList list;
-			protected java.util.List<String> data;
-			protected JButton ok;
-			protected boolean approved = false;
+      protected JFileChooser fileChooser;
+      protected Dialog parent;
+      protected JList list;
+      protected java.util.List<String> data;
+      protected JButton ok;
+      protected boolean approved = false;
 
-			/**
-			 * Creates a new ImExportDialog object.
-			 *
-			 * 
-			 * 
-			 */
-			public ImExportDialog(Dialog parent, String title) {
-				super(parent, title, true);
+      /**
+       * Creates a new ImExportDialog object.
+       */
+      public ImExportDialog(Dialog parent, String title) {
+        super(parent, title, true);
 
-				this.parent = parent;
+        this.parent = parent;
 
-				list = new JList();
-				list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        list = new JList();
+        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-				JScrollPane sp = new JScrollPane(list);
-				sp.setPreferredSize(new Dimension(100, 200));
+        JScrollPane sp = new JScrollPane(list);
+        sp.setPreferredSize(new Dimension(100, 200));
 
-				this.getContentPane().add(sp, BorderLayout.CENTER);
+        getContentPane().add(sp, BorderLayout.CENTER);
 
-				JPanel p = new JPanel(new FlowLayout());
-				((FlowLayout) p.getLayout()).setAlignment(FlowLayout.CENTER);
+        JPanel p = new JPanel(new FlowLayout());
+        ((FlowLayout) p.getLayout()).setAlignment(FlowLayout.CENTER);
 
-				JButton b = new JButton(Resources.get("map.mapperpreferences.imexportdialog.OK"));
-				ok = b;
-				b.addActionListener(this);
-				p.add(b);
-				b = new JButton(Resources.get("map.mapperpreferences.imexportdialog.Cancel"));
-				b.addActionListener(this);
-				p.add(b);
+        JButton b = new JButton(Resources.get("map.mapperpreferences.imexportdialog.OK"));
+        ok = b;
+        b.addActionListener(this);
+        p.add(b);
+        b = new JButton(Resources.get("map.mapperpreferences.imexportdialog.Cancel"));
+        b.addActionListener(this);
+        p.add(b);
 
-				this.getContentPane().add(p, BorderLayout.SOUTH);
-			}
+        getContentPane().add(p, BorderLayout.SOUTH);
+      }
 
-			/**
-			 * DOCUMENT-ME
-			 *
-			 * 
-			 */
-			public void showDialog(boolean doImport) {
-				File file = null;
-				JFileChooser jfc = new JFileChooser(magellan.client.Client.getMagellanDirectory());
-				int ret = 0;
+      /**
+       * DOCUMENT-ME
+       */
+      public void showDialog(boolean doImport) {
+        File file = null;
+        JFileChooser jfc = new JFileChooser(magellan.client.Client.getMagellanDirectory());
+        int ret = 0;
 
-				if(doImport) {
-					ret = jfc.showOpenDialog(this);
-				} else {
-					ret = jfc.showSaveDialog(this);
-				}
+        if (doImport) {
+          ret = jfc.showOpenDialog(this);
+        } else {
+          ret = jfc.showSaveDialog(this);
+        }
 
-				if(ret == JFileChooser.APPROVE_OPTION) {
-					try {
-						file = jfc.getSelectedFile();
-						data = new LinkedList<String>();
+        if (ret == JFileChooser.APPROVE_OPTION) {
+          try {
+            file = jfc.getSelectedFile();
+            data = new LinkedList<String>();
 
-						if(doImport) {
-							if(file.exists()) {
-								BufferedReader br = new BufferedReader(new FileReader(file));
-								String s1 = null;
-								String s2 = null;
+            if (doImport) {
+              if (file.exists()) {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String s1 = null;
+                String s2 = null;
 
-								try {
-									do {
-										s1 = br.readLine();
-										s2 = br.readLine();
+                try {
+                  do {
+                    s1 = br.readLine();
+                    s2 = br.readLine();
 
-										if((s1 != null) && !s1.equals("") && (s2 != null) &&
-											   !s2.equals("")) {
-											data.add(s1);
-											data.add(s2);
-										}
-									} while(s2 != null);
-								} catch(Exception inner) {
-								}
+                    if ((s1 != null) && !s1.equals("") && (s2 != null) && !s2.equals("")) {
+                      data.add(s1);
+                      data.add(s2);
+                    }
+                  } while (s2 != null);
+                } catch (Exception inner) {
+                }
 
-								if(data.size() > 0) {
-									Object a[] = new Object[data.size() / 2];
+                if (data.size() > 0) {
+                  Object a[] = new Object[data.size() / 2];
 
-									for(int i = 0; i < a.length; i++) {
-										a[i] = data.get(i * 2);
-									}
+                  for (int i = 0; i < a.length; i++) {
+                    a[i] = data.get(i * 2);
+                  }
 
-									list.setListData(a);
-									this.pack();
-									this.setLocationRelativeTo(parent);
-									approved = false;
-									this.setVisible(true);
+                  list.setListData(a);
+                  pack();
+                  setLocationRelativeTo(parent);
+                  approved = false;
+                  setVisible(true);
 
-									if(approved) {
-										int indices[] = list.getSelectedIndices();
+                  if (approved) {
+                    int indices[] = list.getSelectedIndices();
 
-										if((indices != null) && (indices.length > 0)) {
-											for(int i = 0; i < indices.length; i++) {
-												source.addTooltipDefinition(data.get(indices[i] * 2),
-																			data.get((indices[i] * 2) +
-																							  1));
-											}
-										}
-									}
-								} else { // no def found, show error
-									JOptionPane.showMessageDialog(this,
-																  Resources.get("map.mapperpreferences.imexportdialog.nodeffound"));
-								}
-							} else { // file not found, show error
-								JOptionPane.showMessageDialog(this, Resources.get("map.mapperpreferences.imexportdialog.fnf"));
-							}
-						} else {
-							data = source.getAllTooltipDefinitions();
+                    if ((indices != null) && (indices.length > 0)) {
+                      for (int indice : indices) {
+                        source.addTooltipDefinition(data.get(indice * 2), data
+                            .get((indice * 2) + 1));
+                      }
+                    }
+                  }
+                } else { // no def found, show error
+                  JOptionPane.showMessageDialog(this, Resources
+                      .get("map.mapperpreferences.imexportdialog.nodeffound"));
+                }
+              } else { // file not found, show error
+                JOptionPane.showMessageDialog(this, Resources
+                    .get("map.mapperpreferences.imexportdialog.fnf"));
+              }
+            } else {
+              data = source.getAllTooltipDefinitions();
 
-							Object a[] = new Object[data.size() / 2];
+              Object a[] = new Object[data.size() / 2];
 
-							for(int i = 0; i < a.length; i++) {
-								a[i] = data.get(i * 2);
-							}
+              for (int i = 0; i < a.length; i++) {
+                a[i] = data.get(i * 2);
+              }
 
-							list.setListData(a);
-							this.pack();
-							this.setLocationRelativeTo(parent);
-							approved = false;
-							this.setVisible(true);
+              list.setListData(a);
+              pack();
+              setLocationRelativeTo(parent);
+              approved = false;
+              setVisible(true);
 
-							if(approved) {
-								int indices[] = list.getSelectedIndices();
+              if (approved) {
+                int indices[] = list.getSelectedIndices();
 
-								if((indices != null) && (indices.length > 0)) {
-									PrintWriter bw = new PrintWriter(new FileWriter(file));
-									ListModel model = list.getModel();
+                if ((indices != null) && (indices.length > 0)) {
+                  PrintWriter bw = new PrintWriter(new FileWriter(file));
+                  ListModel model = list.getModel();
 
-									for(int i = 0; i < indices.length; i++) {
-										bw.println(model.getElementAt(indices[i]));
-										bw.println(data.get((indices[i] * 2) + 1));
-									}
+                  for (int indice : indices) {
+                    bw.println(model.getElementAt(indice));
+                    bw.println(data.get((indice * 2) + 1));
+                  }
 
-									bw.close();
-								}
-							}
-						}
-					} catch(Exception exc) { // some I/O Error, show it
-						JOptionPane.showMessageDialog(this,
-													  Resources.get("map.mapperpreferences.imexportdialog.ioerror") +
-													  exc.toString());
-						log.error(exc);
-					}
-				}
-			}
+                  bw.close();
+                }
+              }
+            }
+          } catch (Exception exc) { // some I/O Error, show it
+            JOptionPane.showMessageDialog(this, Resources
+                .get("map.mapperpreferences.imexportdialog.ioerror")
+                + exc.toString());
+            log.error(exc);
+          }
+        }
+      }
 
-			/**
-			 * Reacts to clicks on Ok (approved=true) or Cancel (approved = false) and hides dialog.
-			 * 
-			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-			 */
-			public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-				if(actionEvent.getSource() == ok) {
-					approved = true;
-				}
+      /**
+       * Reacts to clicks on Ok (approved=true) or Cancel (approved = false) and hides dialog.
+       * 
+       * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+       */
+      public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
+        if (actionEvent.getSource() == ok) {
+          approved = true;
+        }
 
-				this.setVisible(false);
-			}
-		}
+        setVisible(false);
+      }
+    }
 
-		/**
-		 * A dialog for adding/editing tooltips. After successful editing(name and definition !=
-		 * ""), all line breaks are terminated from the value since they cause errors in the
-		 * replacer engine(keywords can't be recognized if divided by a line break character).
-		 */
-		protected class AddTooltipDialog extends JDialog implements ActionListener {
-			protected JButton cancel;
-			protected JTextField name;
-			protected JTextArea value;
-			protected boolean existed = false;
-			protected String origName = null;
-			protected int origIndex = -1;
+    /**
+     * A dialog for adding/editing tooltips. After successful editing(name and definition != ""),
+     * all line breaks are terminated from the value since they cause errors in the replacer
+     * engine(keywords can't be recognized if divided by a line break character).
+     */
+    protected class AddTooltipDialog extends JDialog implements ActionListener {
+      protected JButton cancel;
+      protected JTextField name;
+      protected JTextArea value;
+      protected boolean existed = false;
+      protected String origName = null;
+      protected int origIndex = -1;
 
-			/**
-			 * Creates a new AddTooltipDialog object.
-			 *
-			 * 
-			 */
-			public AddTooltipDialog(Dialog parent, String title, String name, String def, int index) {
-				super(parent, title, true);
+      /**
+       * Creates a new AddTooltipDialog object.
+       */
+      public AddTooltipDialog(Dialog parent, String title, String name, String def, int index) {
+        super(parent, title, true);
 
-				if((name != null) && (def != null)) {
-					existed = true;
-					origName = name;
-					origIndex = index;
-				}
+        if ((name != null) && (def != null)) {
+          existed = true;
+          origName = name;
+          origIndex = index;
+        }
 
-				JPanel center = new JPanel(new GridBagLayout());
-				GridBagConstraints gbc = new GridBagConstraints();
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				gbc.gridx = 0;
-				gbc.gridy = 0;
-				gbc.gridwidth = 1;
-				gbc.gridheight = 1;
-				gbc.weightx = 0;
-				gbc.anchor = GridBagConstraints.WEST;
+        JPanel center = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 0;
+        gbc.anchor = GridBagConstraints.WEST;
 
-				center.add(new JLabel(Resources.get("map.mapperpreferences.addtooltipdialog.name")), gbc);
-				gbc.gridy++;
-				center.add(new JLabel(Resources.get("map.mapperpreferences.addtooltipdialog.value")), gbc);
+        center.add(new JLabel(Resources.get("map.mapperpreferences.addtooltipdialog.name")), gbc);
+        gbc.gridy++;
+        center.add(new JLabel(Resources.get("map.mapperpreferences.addtooltipdialog.value")), gbc);
 
-				gbc.gridx = 1;
-				gbc.gridy = 0;
-				gbc.weightx = 1;
-				center.add(this.name = new JTextField(name, 20), gbc);
-				gbc.gridy++;
-				gbc.weighty = 1;
-				gbc.fill = GridBagConstraints.BOTH;
-				center.add(new JScrollPane(value = new JTextArea(def, 5, 20)), gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        center.add(this.name = new JTextField(name, 20), gbc);
+        gbc.gridy++;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        center.add(new JScrollPane(value = new JTextArea(def, 5, 20)), gbc);
 
-				value.setLineWrap(true);
+        value.setLineWrap(true);
 
-				this.getContentPane().add(center, BorderLayout.CENTER);
+        getContentPane().add(center, BorderLayout.CENTER);
 
-				JPanel s = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel s = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-				JButton b = new JButton(Resources.get("map.mapperpreferences.addtooltipdialog.OK"));
-				b.addActionListener(this);
-				s.add(b);
+        JButton b = new JButton(Resources.get("map.mapperpreferences.addtooltipdialog.OK"));
+        b.addActionListener(this);
+        s.add(b);
 
-				b = new JButton(Resources.get("map.mapperpreferences.addtooltipdialog.Cancel"));
-				b.addActionListener(this);
-				cancel = b;
-				s.add(b);
+        b = new JButton(Resources.get("map.mapperpreferences.addtooltipdialog.Cancel"));
+        b.addActionListener(this);
+        cancel = b;
+        s.add(b);
 
-				this.getContentPane().add(s, BorderLayout.SOUTH);
+        getContentPane().add(s, BorderLayout.SOUTH);
 
-				this.pack();
+        pack();
 
-				// getMinimumSize doesn't seem to work properly, so a little bit more
-				if(this.getWidth() < 300) {
-					this.setSize(300, this.getHeight());
-				}
+        // getMinimumSize doesn't seem to work properly, so a little bit more
+        if (getWidth() < 300) {
+          this.setSize(300, getHeight());
+        }
 
-				if(this.getHeight() < 100) {
-					this.setSize(this.getWidth(), 100);
-				}
+        if (getHeight() < 100) {
+          this.setSize(getWidth(), 100);
+        }
 
-				this.setLocationRelativeTo(parent);
-			}
+        setLocationRelativeTo(parent);
+      }
 
-			/**
-			 * @see java.awt.Container#getMinimumSize()
-			 */
-			@Override
+      /**
+       * @see java.awt.Container#getMinimumSize()
+       */
+      @Override
       public Dimension getMinimumSize() {
-				return new Dimension(300, 100);
-			}
+        return new Dimension(300, 100);
+      }
 
-			/**
-			 * Reacts to click on Ok (by creating and adding the new tooltip) or Cancel (by adding nothing)
-			 * and hiding the dialog.
-			 * 
-			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-			 */
-			public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-				if(actionEvent.getSource() != cancel) {
-					if((name.getText() != null) && !name.getText().equals("") &&
-						   (value.getText() != null) && !value.getText().equals("")) {
-						StringBuffer buf = new StringBuffer(value.getText());
+      /**
+       * Reacts to click on Ok (by creating and adding the new tooltip) or Cancel (by adding
+       * nothing) and hiding the dialog.
+       * 
+       * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+       */
+      public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
+        if (actionEvent.getSource() != cancel) {
+          if ((name.getText() != null) && !name.getText().equals("") && (value.getText() != null)
+              && !value.getText().equals("")) {
+            StringBuffer buf = new StringBuffer(value.getText());
 
-						//remove all '\n'
-						int i = 0;
+            // remove all '\n'
+            int i = 0;
 
-						while(i < buf.length()) {
-							if(buf.charAt(i) == '\n') {
-								buf.deleteCharAt(i);
-								i = 0; // start again
-							} else {
-								i++;
-							}
-						}
+            while (i < buf.length()) {
+              if (buf.charAt(i) == '\n') {
+                buf.deleteCharAt(i);
+                i = 0; // start again
+              } else {
+                i++;
+              }
+            }
 
-						if(existed && origName.equals(name.getText())) { // need to overwrite
+            if (existed && origName.equals(name.getText())) { // need to overwrite
 
-							java.util.List<String> l = source.getAllTooltipDefinitions();
-							l.set(origIndex + 1, buf.toString());
-							source.setAllTooltipDefinitions(l);
-						} else {
-							source.addTooltipDefinition(name.getText(), buf.toString());
-						}
-					}
-				}
+              java.util.List<String> l = source.getAllTooltipDefinitions();
+              l.set(origIndex + 1, buf.toString());
+              source.setAllTooltipDefinitions(l);
+            } else {
+              source.addTooltipDefinition(name.getText(), buf.toString());
+            }
+          }
+        }
 
-				this.setVisible(false);
-			}
-		}
+        setVisible(false);
+      }
+    }
 
-		protected class AddByMaskDialog extends JDialog implements ActionListener {
-			protected JButton ok;
-			protected JButton cancel;
-			protected JTextField title;
+    protected class AddByMaskDialog extends JDialog implements ActionListener {
+      protected JButton ok;
+      protected JButton cancel;
+      protected JTextField title;
       protected JTextField padding;
-			protected JTextField table[][];
-			protected JCheckBox excludeOceans;
-			protected String name;
-			protected String leftPart = null;
-			protected String midPart = null;
-			protected String rightPart = null;
-			protected String tableAttribs = null;
-			protected int origIndex = -1;
-			protected GridBagConstraints gbc = null;
+      protected JTextField table[][];
+      protected JCheckBox excludeOceans;
+      protected String name;
+      protected String leftPart = null;
+      protected String midPart = null;
+      protected String rightPart = null;
+      protected String tableAttribs = null;
+      protected int origIndex = -1;
+      protected GridBagConstraints gbc = null;
 
-			/**
-			 * Creates a new AddByMaskDialog object.
-			 *
-			 * 
-			 * 
-			 */
-			public AddByMaskDialog(Dialog parent, String title) {
-				super(parent, title, true);
-			}
+      /**
+       * Creates a new AddByMaskDialog object.
+       */
+      public AddByMaskDialog(Dialog parent, String title) {
+        super(parent, title, true);
+      }
 
       /**
        * Creates a dialog for adding a tooltip in table form. Asks for tooltip name, rows and cols.
@@ -624,74 +611,76 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
        * @return <code>false</code> if input was aborted.
        */
       public boolean init() {
-				// clear parts to flag that this is a new mask
-				leftPart = null;
-				midPart = null;
-				rightPart = null;
+        // clear parts to flag that this is a new mask
+        leftPart = null;
+        midPart = null;
+        rightPart = null;
 
-				// get name and size
-				name = JOptionPane.showInputDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addbymask.name"));
+        // get name and size
+        name =
+            JOptionPane.showInputDialog(this, Resources
+                .get("map.mapperpreferences.tooltipdialog.addbymask.name"));
 
-				if((name == null) || (name.length() < 1)) {
-					return false;
-				}
-
-				String s = JOptionPane.showInputDialog(this,
-													   Resources.get("map.mapperpreferences.tooltipdialog.addbymask.rows"));
-				int rows = 0;
-
-				try {
-					rows = Integer.parseInt(s);
-				} catch(Exception exc) {
+        if ((name == null) || (name.length() < 1))
           return false;
-				}
 
-				if(rows <= 0) {
+        String s =
+            JOptionPane.showInputDialog(this, Resources
+                .get("map.mapperpreferences.tooltipdialog.addbymask.rows"));
+        int rows = 0;
+
+        try {
+          rows = Integer.parseInt(s);
+        } catch (Exception exc) {
           return false;
-				}
+        }
 
-				s = JOptionPane.showInputDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addbymask.columns"));
-
-				int columns = 0;
-
-				try {
-					columns = Integer.parseInt(s);
-				} catch(Exception exc) {
+        if (rows <= 0)
           return false;
-				}
 
-				if(columns <= 0) {
+        s =
+            JOptionPane.showInputDialog(this, Resources
+                .get("map.mapperpreferences.tooltipdialog.addbymask.columns"));
+
+        int columns = 0;
+
+        try {
+          columns = Integer.parseInt(s);
+        } catch (Exception exc) {
           return false;
-				}
+        }
 
-				Container content = this.getContentPane();
-				content.setLayout(new GridBagLayout());
-				content.removeAll();
+        if (columns <= 0)
+          return false;
 
-				initComponents(content);
+        Container content = getContentPane();
+        content.setLayout(new GridBagLayout());
+        content.removeAll();
 
-				initUI(content, rows, columns, null, "0", null, true); // emtpy table
+        initComponents(content);
 
-				this.pack();
-				this.setLocationRelativeTo(this.getParent());
-				return true;
-			}
+        initUI(content, rows, columns, null, "0", null, true); // emtpy table
 
-			protected String removePSigns(String s) {
-				while(s.startsWith("§")) {
-					s = s.substring(1);
-				}
+        pack();
+        setLocationRelativeTo(getParent());
+        return true;
+      }
 
-				while(s.endsWith("§")) {
-					try {
-						s = s.substring(0, s.length() - 1);
-					} catch(Exception exc) {
-						break;
-					}
-				}
+      protected String removePSigns(String s) {
+        while (s.startsWith("§")) {
+          s = s.substring(1);
+        }
 
-				return s;
-			}
+        while (s.endsWith("§")) {
+          try {
+            s = s.substring(0, s.length() - 1);
+          } catch (Exception exc) {
+            break;
+          }
+        }
+
+        return s;
+      }
 
       /**
        * Creates a dialog for editing a tooltip in table form. Asks for tooltip name, rows and cols.
@@ -699,732 +688,717 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
        * @return <code>false</code> if input was aborted or old definition could not be parsed.
        */
       public boolean init(String tipName, String tipDef, int index) {
-				/* try to find the parts of the mask
-				 *
-				 * Assume: Start ... "<b><center>"title"</center></b>"..."<table"table data"</table>"...End
-				*/
-				name = tipName;
-				origIndex = index;
+        /*
+         * try to find the parts of the mask Assume: Start ...
+         * "<b><center>"title"</center></b>"..."<table"table data"</table>"...End
+         */
+        name = tipName;
+        origIndex = index;
 
-				int i = tipDef.indexOf("<b><center>");
+        int i = tipDef.indexOf("<b><center>");
 
-				if(i == -1) { // not correct
-					i = tipDef.indexOf("<center><b>");
+        if (i == -1) { // not correct
+          i = tipDef.indexOf("<center><b>");
 
-					if(i == -1) {
-						return false;
-					}
-				}
-
-				leftPart = tipDef.substring(0, i);
-
-				String rest = tipDef.substring(i + 11);
-
-				i = rest.indexOf("</center></b>");
-
-				if(i == -1) {
-					i = tipDef.indexOf("</b></center>");
-
-					if(i == -1) {
+          if (i == -1)
             return false;
-					}
-				}
+        }
 
-				String titleS = removePSigns(rest.substring(0, i));
+        leftPart = tipDef.substring(0, i);
 
-				rest = rest.substring(i + 13);
+        String rest = tipDef.substring(i + 11);
 
-				i = rest.indexOf("<table");
-				
-				int tagEnd = rest.indexOf("\">");
-				String paddingS = rest.substring(i+20, tagEnd);
+        i = rest.indexOf("</center></b>");
 
-				int j = rest.indexOf("</table>");
+        if (i == -1) {
+          i = tipDef.indexOf("</b></center>");
 
-				if((i == -1) || (j == -1)) {
+          if (i == -1)
+            return false;
+        }
+
+        String titleS = removePSigns(rest.substring(0, i));
+
+        rest = rest.substring(i + 13);
+
+        i = rest.indexOf("<table");
+
+        int tagEnd = rest.indexOf("\">");
+        String paddingS = rest.substring(i + 20, tagEnd);
+
+        int j = rest.indexOf("</table>");
+
+        if ((i == -1) || (j == -1))
           return false;
-				}
 
-				String tData = rest.substring(i, j);
+        String tData = rest.substring(i, j);
 
-				rest = rest.substring(j + 8);
+        rest = rest.substring(j + 8);
 
-				rightPart = rest;
+        rightPart = rest;
 
-				// now that we have the parts try to parse the table data
-				int rows = 0;
+        // now that we have the parts try to parse the table data
+        int rows = 0;
 
-				// now that we have the parts try to parse the table data
-				int columns = 0;
-				rest = tData;
+        // now that we have the parts try to parse the table data
+        int columns = 0;
+        rest = tData;
 
-				// first get possible table attribs
-				tableAttribs = rest.substring(6, rest.indexOf('>'));
+        // first get possible table attribs
+        tableAttribs = rest.substring(6, rest.indexOf('>'));
 
-				// now compute table size
-				rest = rest.substring(rest.indexOf('>') + 1);
+        // now compute table size
+        rest = rest.substring(rest.indexOf('>') + 1);
 
-				int ccolumns = 0;
+        int ccolumns = 0;
 
-				while(rest.length() > 0) {
-					if(rest.indexOf('<') >= 0) {
-						rest = rest.substring(rest.indexOf('<') + 1);
+        while (rest.length() > 0) {
+          if (rest.indexOf('<') >= 0) {
+            rest = rest.substring(rest.indexOf('<') + 1);
 
-						if(rest.startsWith("tr")) { // new row
-							ccolumns = 0;
-							rows++;
-						} else if(rest.startsWith("td")) { // new element
-							ccolumns++;
+            if (rest.startsWith("tr")) { // new row
+              ccolumns = 0;
+              rows++;
+            } else if (rest.startsWith("td")) { // new element
+              ccolumns++;
 
-							if(ccolumns > columns) {
-								columns = ccolumns;
-							}
-						}
-					} else {
-						rest = "";
-					}
-				}
+              if (ccolumns > columns) {
+                columns = ccolumns;
+              }
+            }
+          } else {
+            rest = "";
+          }
+        }
 
-				if((rows == 0) || (columns == 0)) {
+        if ((rows == 0) || (columns == 0))
           return false;
-				}
 
-				// now get the table elements
-				String values[][] = new String[rows][columns];
-				rest = tData.substring(tData.indexOf('>') + 1);
-				i = -1;
-				j = 0;
+        // now get the table elements
+        String values[][] = new String[rows][columns];
+        rest = tData.substring(tData.indexOf('>') + 1);
+        i = -1;
+        j = 0;
 
-				while(rest.length() > 0) {
-					if(rest.indexOf('<') >= 0) {
-						rest = rest.substring(rest.indexOf('<') + 1);
+        while (rest.length() > 0) {
+          if (rest.indexOf('<') >= 0) {
+            rest = rest.substring(rest.indexOf('<') + 1);
 
-						if(rest.startsWith("tr")) { // new row
-							j = -1;
-							i++;
-						} else if(rest.startsWith("td")) { // new element
-							j++;
+            if (rest.startsWith("tr")) { // new row
+              j = -1;
+              i++;
+            } else if (rest.startsWith("td")) { // new element
+              j++;
 
-							// extract data
-							int k = rest.indexOf("</td>");
+              // extract data
+              int k = rest.indexOf("</td>");
 
-							if(k == -1) {
-								k = Integer.MAX_VALUE;
-							}
+              if (k == -1) {
+                k = Integer.MAX_VALUE;
+              }
 
-							int l = rest.indexOf("<td>");
+              int l = rest.indexOf("<td>");
 
-							if(l == -1) {
-								l = Integer.MAX_VALUE;
-							}
+              if (l == -1) {
+                l = Integer.MAX_VALUE;
+              }
 
-							int m = rest.indexOf("</tr>");
+              int m = rest.indexOf("</tr>");
 
-							if(m == -1) {
-								m = Integer.MAX_VALUE;
-							}
+              if (m == -1) {
+                m = Integer.MAX_VALUE;
+              }
 
-							int n = rest.indexOf("<tr>");
+              int n = rest.indexOf("<tr>");
 
-							if(n == -1) {
-								n = Integer.MAX_VALUE;
-							}
+              if (n == -1) {
+                n = Integer.MAX_VALUE;
+              }
 
-							int o = rest.indexOf("</table>");
+              int o = rest.indexOf("</table>");
 
-							if(o == -1) {
-								o = Integer.MAX_VALUE;
-							}
+              if (o == -1) {
+                o = Integer.MAX_VALUE;
+              }
 
-							int p = Math.min(k, l);
-							int q = Math.min(m, n);
-							p = Math.min(p, o);
-							p = Math.min(p, q);
+              int p = Math.min(k, l);
+              int q = Math.min(m, n);
+              p = Math.min(p, o);
+              p = Math.min(p, q);
 
-							if(p < 3) {
-								values[i][j] = removePSigns(rest.substring(3));
-							} else {
-								values[i][j] = removePSigns(rest.substring(3, p));
-							}
+              if (p < 3) {
+                values[i][j] = removePSigns(rest.substring(3));
+              } else {
+                values[i][j] = removePSigns(rest.substring(3, p));
+              }
 
-							rest = rest.substring(3 +
-												  ((values[i][j] == null) ? 0 : values[i][j].length()));
-						}
-					} else {
-						rest = "";
-					}
-				}
+              rest = rest.substring(3 + ((values[i][j] == null) ? 0 : values[i][j].length()));
+            }
+          } else {
+            rest = "";
+          }
+        }
 
-				Container content = this.getContentPane();
-				content.removeAll();
+        Container content = getContentPane();
+        content.removeAll();
 
-				initComponents(content);
+        initComponents(content);
 
-				initUI(content, rows, columns, titleS, paddingS, values, false);
+        initUI(content, rows, columns, titleS, paddingS, values, false);
 
-				this.pack();
-				this.setLocationRelativeTo(this.getParent());
+        pack();
+        setLocationRelativeTo(getParent());
         return true;
-			}
+      }
 
-			protected void initComponents(Container content) {
-				if(gbc == null) {
-					content.setLayout(new GridBagLayout());
-					gbc = new GridBagConstraints();
-					gbc.fill = GridBagConstraints.HORIZONTAL;
-					gbc.anchor = GridBagConstraints.CENTER;
-					gbc.weightx = 1;
-					gbc.insets = new Insets(2, 2, 2, 2);
-				}
+      protected void initComponents(Container content) {
+        if (gbc == null) {
+          content.setLayout(new GridBagLayout());
+          gbc = new GridBagConstraints();
+          gbc.fill = GridBagConstraints.HORIZONTAL;
+          gbc.anchor = GridBagConstraints.CENTER;
+          gbc.weightx = 1;
+          gbc.insets = new Insets(2, 2, 2, 2);
+        }
 
-				if(title == null) {
-					title = new JTextField(20);
-				} else {
-					title.setText(null);
-				}
+        if (title == null) {
+          title = new JTextField(20);
+        } else {
+          title.setText(null);
+        }
 
-        if(padding == null) {
+        if (padding == null) {
           padding = new JTextField("0", 3);
         }
 
-				if(ok == null) {
-					ok = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask.ok"));
-					ok.addActionListener(this);
-				}
+        if (ok == null) {
+          ok = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask.ok"));
+          ok.addActionListener(this);
+        }
 
-				if(cancel == null) {
-					cancel = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask.cancel"));
-					cancel.addActionListener(this);
-				}
+        if (cancel == null) {
+          cancel =
+              new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask.cancel"));
+          cancel.addActionListener(this);
+        }
 
-				if(excludeOceans == null) {
-					excludeOceans = new JCheckBox(Resources.get("map.mapperpreferences.tooltipdialog.addbymask.excludeocean"),
-												  true);
-				}
-			}
+        if (excludeOceans == null) {
+          excludeOceans =
+              new JCheckBox(Resources
+                  .get("map.mapperpreferences.tooltipdialog.addbymask.excludeocean"), true);
+        }
+      }
 
-			protected void initUI(Container content, int rows, int cols, String titleS, String paddingS,
-								  String values[][], boolean showExclude) {
-				// title
-        if(title == null) {
+      protected void initUI(Container content, int rows, int cols, String titleS, String paddingS,
+          String values[][], boolean showExclude) {
+        // title
+        if (title == null) {
           title = new JTextField(20);
-        }				
+        }
         title.setText(titleS);
-				gbc.gridx = 0;
-				gbc.gridy = 0;
-				gbc.gridwidth = 2;
-				gbc.gridheight = 1;
-				content.add(title, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 1;
+        content.add(title, gbc);
 
-				JLabel label = new JLabel("cellpadding");
-				if(padding == null) {
-				  padding = new JTextField("0", 3);
-				}
-				padding.setText(paddingS);
+        JLabel label = new JLabel("cellpadding");
+        if (padding == null) {
+          padding = new JTextField("0", 3);
+        }
+        padding.setText(paddingS);
 
-				gbc.gridwidth=1;
-				gbc.gridx=2;
-				content.add(label);
-				gbc.gridx++;
-				content.add(padding, gbc);
+        gbc.gridwidth = 1;
+        gbc.gridx = 2;
+        content.add(label);
+        gbc.gridx++;
+        content.add(padding, gbc);
 
-        gbc.gridy=1;
-				gbc.gridwidth = 1;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
 
-				// table
-				table = new JTextField[rows][cols];
+        // table
+        table = new JTextField[rows][cols];
 
-				for(int i = 0; i < rows; i++) {
-					gbc.gridy++;
+        for (int i = 0; i < rows; i++) {
+          gbc.gridy++;
 
-					for(int j = 0; j < cols; j++) {
-						table[i][j] = new JTextField(20);
-						gbc.gridx = j;
+          for (int j = 0; j < cols; j++) {
+            table[i][j] = new JTextField(20);
+            gbc.gridx = j;
 
-						if(values != null) {
-							table[i][j].setText(values[i][j]);
-						}
+            if (values != null) {
+              table[i][j].setText(values[i][j]);
+            }
 
-						content.add(table[i][j], gbc);
-					}
-				}
+            content.add(table[i][j], gbc);
+          }
+        }
 
-				// buttons
-				JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 2));
+        // buttons
+        JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 2));
 
-				if(showExclude) {
-					south.add(excludeOceans);
-				}
+        if (showExclude) {
+          south.add(excludeOceans);
+        }
 
-				south.add(ok);
-				south.add(cancel);
-				gbc.gridy++;
-				gbc.gridx = 0;
-				gbc.gridwidth = 2;
-				content.add(south, gbc);
-			}
+        south.add(ok);
+        south.add(cancel);
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        content.add(south, gbc);
+      }
 
-			/**
-			 * DOCUMENT-ME
-			 *
-			 * 
-			 */
-			@Override
+      /**
+       * DOCUMENT-ME
+       */
+      @Override
       public Dimension getMinimumSize() {
-				return new Dimension(300, 100);
-			}
-
-			/**
-			 * DOCUMENT-ME
-			 *
-			 * 
-			 */
-			public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-				if(actionEvent.getSource() != cancel) {
-					createTable();
-				}
-
-				this.setVisible(false);
-			}
-
-			/**
-			 * Creates the table out of the GUI mask. All text elements from the fields are packed
-			 * inside paragraph signs. Uses some default things like bold title.
-			 */
-			protected void createTable() {
-				if(leftPart == null) {
-					createNewTable();
-				} else {
-					createEditedTable();
-				}
-			}
-
-			protected void createEditedTable() {
-				String rowStart = "<tr>";
-				String columnStart = "<td>§";
-				String columnEnd = "§</td>";
-				String rowEnd = "</tr>";
-
-				StringBuffer buf = new StringBuffer();
-
-				if(leftPart != null) {
-					buf.append(leftPart);
-				}
-
-				buf.append("<b><center>§");
-				buf.append(title.getText());
-				buf.append("§</center></b>");
-
-				if(midPart != null) {
-					buf.append(midPart);
-				}
-
-				buf.append("<table");
-
-				if(tableAttribs != null) {
-				  Pattern p = Pattern.compile("cellpadding=\"[^\"]*\"");
-				  Matcher m = p.matcher(tableAttribs);
-				  while (m.find()) {
-				    m.appendReplacement(buf, "cellpadding=\""+padding.getText()+"\"");
-				  }
-				  m.appendTail(buf);
-				}				
-				buf.append(">");
-
-				//table
-				for(int i = 0; i < table.length; i++) {
-					buf.append(rowStart);
-
-					for(int j = 0; j < table[i].length; j++) {
-						buf.append(columnStart);
-
-						if(table[i][j].getText() != null) {
-							buf.append(removePSigns(table[i][j].getText()));
-						}
-
-						buf.append(columnEnd);
-					}
-
-					buf.append(rowEnd);
-				}
-
-				buf.append("</table>");
-
-				if(rightPart != null) {
-					buf.append(rightPart);
-				}
-
-				java.util.List<String> l = source.getAllTooltipDefinitions();
-				l.set(origIndex + 1, buf.toString());
-				source.setAllTooltipDefinitions(l);
-			}
-
-			protected void createNewTable() {
-				String rowStart = "<tr>";
-				String columnStart = "<td>§";
-				String columnEnd = "§</td>";
-				String rowEnd = "</tr>";
-
-				StringBuffer buf = new StringBuffer("<html>");
-
-				// exclude oceans if selected
-				if(excludeOceans.isSelected()) {
-					buf.append("§if§isOzean§Ozean§else§");
-				}
-
-				buf.append("<b><center>§");
-
-				// title
-				if(title.getText() != null) {
-					buf.append(title.getText());
-				}
-
-				buf.append("§</center></b><table cellpadding=\""+padding.getText()+"\">");
-
-				//table
-				for(int i = 0; i < table.length; i++) {
-					buf.append(rowStart);
-
-					for(int j = 0; j < table[i].length; j++) {
-						buf.append(columnStart);
-
-						if(table[i][j].getText() != null) {
-							buf.append(removePSigns(table[i][j].getText()));
-						}
-
-						buf.append(columnEnd);
-					}
-
-					buf.append(rowEnd);
-				}
-
-				buf.append("</table>");
-
-				if(excludeOceans.isSelected()) {
-					buf.append("§end§");
-				}
-
-				buf.append("</html>");
-
-				source.addTooltipDefinition(name, buf.toString());
-			}
-		}
-
-		protected JList tooltipList;
-		protected List<String> tooltips;
-		protected JButton add;
-		protected JButton edit;
-		protected JButton info;
-		protected JButton importT;
-		protected JButton exportT;
-		protected JButton delete;
-		protected JButton mask;
-		protected JButton editmask;
-		protected JTextField text;
-		protected Component listComp = null;
-		protected Container listCont;
-		protected ToolTipReplacersInfo infoDialog = null;
-		protected AddByMaskDialog maskDialog = null;
-
-		/**
-		 * Creates a new ToolTipSwitcherDialog object.
-		 *
-		 * 
-		 * 
-		 */
-		public ToolTipSwitcherDialog(Frame parent, String title) {
-			super(parent, title, true);
-			initDialog();
-		}
-
-		/**
-		 * Creates a new ToolTipSwitcherDialog object.
-		 *
-		 * 
-		 * 
-		 */
-		public ToolTipSwitcherDialog(Dialog parent, String title) {
-			super(parent, title, true);
-			initDialog();
-		}
-
-		private void initDialog() {
-			Container content = getContentPane();
-			content.setLayout(new BorderLayout());
-
-			JButton b;
-
-			JPanel main = new JPanel(new BorderLayout());
-			javax.swing.border.Border border = new CompoundBorder(BorderFactory.createEtchedBorder(),
-																  new EmptyBorder(3, 3, 3, 3));
-
-			main.setBorder(border);
-
-			text = new JTextField(30);
-			text.setEditable(false);
-			main.add(text, BorderLayout.NORTH);
-
-			JPanel mInner = new JPanel(new BorderLayout());
-
-			Container iButtons = new JPanel(new GridBagLayout());
-
-			GridBagConstraints gbc = new GridBagConstraints();
-			gbc.gridwidth = 1;
-			gbc.gridheight = 2;
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.weightx = 0.5;
-			gbc.insets = new Insets(0, 1, 10, 1);
-
-			JPanel normal = new JPanel(new GridLayout(0, 1, 2, 3));
-			normal.setBorder(border);
-
-			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.add"));
-			b.addActionListener(this);
-			add = b;
-			normal.add(b);
-			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.edit"));
-			b.addActionListener(this);
-			edit = b;
-			edit.setEnabled(false);
-			normal.add(b);
-
-			iButtons.add(normal, gbc);
-
-			gbc.gridy = 2;
-
-			normal = new JPanel(new GridLayout(0, 1, 2, 3));
-			normal.setBorder(border);
-
-			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask"));
-			b.addActionListener(this);
-			mask = b;
-			normal.add(b);
-
-			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.editbymask"));
-			b.addActionListener(this);
-			editmask = b;
-			editmask.setEnabled(false);
-			normal.add(b);
-
-			iButtons.add(normal, gbc);
-
-			gbc.gridheight = 1;
-			gbc.gridy = 4;
-			gbc.insets.left += 5;
-			gbc.insets.right += 5;
-			gbc.insets.bottom = 0;
-
-			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.delete"));
-			b.addActionListener(this);
-			delete = b;
-			delete.setEnabled(false);
-			iButtons.add(b, gbc);
-
-			JPanel iDummy = new JPanel();
-			iDummy.add(iButtons);
-
-			mInner.add(iDummy, BorderLayout.EAST);
-
-			listCont = mInner;
-			recreate();
-
-			main.add(mInner, BorderLayout.CENTER);
-
-			Container east = new JPanel(new GridLayout(0, 1, 2, 3));
-
-			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.ok"));
-			b.addActionListener(this);
-			east.add(b);
-
-			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.info"));
-			info = b;
-			b.addActionListener(this);
-			east.add(b);
-
-			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.import"));
-			b.addActionListener(this);
-			importT = b;
-			east.add(b);
-
-			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.export"));
-			b.addActionListener(this);
-			exportT = b;
-			east.add(b);
-
-			JPanel dummy = new JPanel();
-			dummy.add(east);
-			content.add(dummy, BorderLayout.EAST);
-			content.add(main, BorderLayout.CENTER);
-
-			pack();
-			setLocationRelativeTo(this.getParent());
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		@Override
+        return new Dimension(300, 100);
+      }
+
+      /**
+       * DOCUMENT-ME
+       */
+      public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
+        if (actionEvent.getSource() != cancel) {
+          createTable();
+        }
+
+        setVisible(false);
+      }
+
+      /**
+       * Creates the table out of the GUI mask. All text elements from the fields are packed inside
+       * paragraph signs. Uses some default things like bold title.
+       */
+      protected void createTable() {
+        if (leftPart == null) {
+          createNewTable();
+        } else {
+          createEditedTable();
+        }
+      }
+
+      protected void createEditedTable() {
+        String rowStart = "<tr>";
+        String columnStart = "<td>§";
+        String columnEnd = "§</td>";
+        String rowEnd = "</tr>";
+
+        StringBuffer buf = new StringBuffer();
+
+        if (leftPart != null) {
+          buf.append(leftPart);
+        }
+
+        buf.append("<b><center>§");
+        buf.append(title.getText());
+        buf.append("§</center></b>");
+
+        if (midPart != null) {
+          buf.append(midPart);
+        }
+
+        buf.append("<table");
+
+        if (tableAttribs != null) {
+          Pattern p = Pattern.compile("cellpadding=\"[^\"]*\"");
+          Matcher m = p.matcher(tableAttribs);
+          while (m.find()) {
+            m.appendReplacement(buf, "cellpadding=\"" + padding.getText() + "\"");
+          }
+          m.appendTail(buf);
+        }
+        buf.append(">");
+
+        // table
+        for (JTextField[] element : table) {
+          buf.append(rowStart);
+
+          for (int j = 0; j < element.length; j++) {
+            buf.append(columnStart);
+
+            if (element[j].getText() != null) {
+              buf.append(removePSigns(element[j].getText()));
+            }
+
+            buf.append(columnEnd);
+          }
+
+          buf.append(rowEnd);
+        }
+
+        buf.append("</table>");
+
+        if (rightPart != null) {
+          buf.append(rightPart);
+        }
+
+        java.util.List<String> l = source.getAllTooltipDefinitions();
+        l.set(origIndex + 1, buf.toString());
+        source.setAllTooltipDefinitions(l);
+      }
+
+      protected void createNewTable() {
+        String rowStart = "<tr>";
+        String columnStart = "<td>§";
+        String columnEnd = "§</td>";
+        String rowEnd = "</tr>";
+
+        StringBuffer buf = new StringBuffer("<html>");
+
+        // exclude oceans if selected
+        if (excludeOceans.isSelected()) {
+          buf.append("§if§isOzean§Ozean§else§");
+        }
+
+        buf.append("<b><center>§");
+
+        // title
+        if (title.getText() != null) {
+          buf.append(title.getText());
+        }
+
+        buf.append("§</center></b><table cellpadding=\"" + padding.getText() + "\">");
+
+        // table
+        for (JTextField[] element : table) {
+          buf.append(rowStart);
+
+          for (int j = 0; j < element.length; j++) {
+            buf.append(columnStart);
+
+            if (element[j].getText() != null) {
+              buf.append(removePSigns(element[j].getText()));
+            }
+
+            buf.append(columnEnd);
+          }
+
+          buf.append(rowEnd);
+        }
+
+        buf.append("</table>");
+
+        if (excludeOceans.isSelected()) {
+          buf.append("§end§");
+        }
+
+        buf.append("</html>");
+
+        source.addTooltipDefinition(name, buf.toString());
+      }
+    }
+
+    protected JList tooltipList;
+    protected List<String> tooltips;
+    protected JButton add;
+    protected JButton edit;
+    protected JButton info;
+    protected JButton importT;
+    protected JButton exportT;
+    protected JButton delete;
+    protected JButton mask;
+    protected JButton editmask;
+    protected JTextField text;
+    protected Component listComp = null;
+    protected Container listCont;
+    protected ToolTipReplacersInfo infoDialog = null;
+    protected AddByMaskDialog maskDialog = null;
+
+    /**
+     * Creates a new ToolTipSwitcherDialog object.
+     */
+    public ToolTipSwitcherDialog(Frame parent, String title) {
+      super(parent, title, true);
+      initDialog();
+    }
+
+    /**
+     * Creates a new ToolTipSwitcherDialog object.
+     */
+    public ToolTipSwitcherDialog(Dialog parent, String title) {
+      super(parent, title, true);
+      initDialog();
+    }
+
+    private void initDialog() {
+      Container content = getContentPane();
+      content.setLayout(new BorderLayout());
+
+      JButton b;
+
+      JPanel main = new JPanel(new BorderLayout());
+      javax.swing.border.Border border =
+          new CompoundBorder(BorderFactory.createEtchedBorder(), new EmptyBorder(3, 3, 3, 3));
+
+      main.setBorder(border);
+
+      text = new JTextField(30);
+      text.setEditable(false);
+      main.add(text, BorderLayout.NORTH);
+
+      JPanel mInner = new JPanel(new BorderLayout());
+
+      Container iButtons = new JPanel(new GridBagLayout());
+
+      GridBagConstraints gbc = new GridBagConstraints();
+      gbc.gridwidth = 1;
+      gbc.gridheight = 2;
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.weightx = 0.5;
+      gbc.insets = new Insets(0, 1, 10, 1);
+
+      JPanel normal = new JPanel(new GridLayout(0, 1, 2, 3));
+      normal.setBorder(border);
+
+      b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.add"));
+      b.addActionListener(this);
+      add = b;
+      normal.add(b);
+      b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.edit"));
+      b.addActionListener(this);
+      edit = b;
+      edit.setEnabled(false);
+      normal.add(b);
+
+      iButtons.add(normal, gbc);
+
+      gbc.gridy = 2;
+
+      normal = new JPanel(new GridLayout(0, 1, 2, 3));
+      normal.setBorder(border);
+
+      b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask"));
+      b.addActionListener(this);
+      mask = b;
+      normal.add(b);
+
+      b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.editbymask"));
+      b.addActionListener(this);
+      editmask = b;
+      editmask.setEnabled(false);
+      normal.add(b);
+
+      iButtons.add(normal, gbc);
+
+      gbc.gridheight = 1;
+      gbc.gridy = 4;
+      gbc.insets.left += 5;
+      gbc.insets.right += 5;
+      gbc.insets.bottom = 0;
+
+      b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.delete"));
+      b.addActionListener(this);
+      delete = b;
+      delete.setEnabled(false);
+      iButtons.add(b, gbc);
+
+      JPanel iDummy = new JPanel();
+      iDummy.add(iButtons);
+
+      mInner.add(iDummy, BorderLayout.EAST);
+
+      listCont = mInner;
+      recreate();
+
+      main.add(mInner, BorderLayout.CENTER);
+
+      Container east = new JPanel(new GridLayout(0, 1, 2, 3));
+
+      b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.ok"));
+      b.addActionListener(this);
+      east.add(b);
+
+      b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.info"));
+      info = b;
+      b.addActionListener(this);
+      east.add(b);
+
+      b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.import"));
+      b.addActionListener(this);
+      importT = b;
+      east.add(b);
+
+      b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.export"));
+      b.addActionListener(this);
+      exportT = b;
+      east.add(b);
+
+      JPanel dummy = new JPanel();
+      dummy.add(east);
+      content.add(dummy, BorderLayout.EAST);
+      content.add(main, BorderLayout.CENTER);
+
+      pack();
+      setLocationRelativeTo(getParent());
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
     public Dimension getMinimumSize() {
-			return new Dimension(100, 100);
-		}
+      return new Dimension(100, 100);
+    }
 
-		protected void recreate() {
-			if(listCont == null) {
-				return;
-			}
+    protected void recreate() {
+      if (listCont == null)
+        return;
 
-			java.util.List<String> list = source.getAllTooltipDefinitions();
-			List<String> v = new LinkedList<String>();
-			tooltips = new LinkedList<String>();
+      java.util.List<String> list = source.getAllTooltipDefinitions();
+      List<String> v = new LinkedList<String>();
+      tooltips = new LinkedList<String>();
 
-			Iterator<String> it = list.iterator();
+      Iterator<String> it = list.iterator();
 
-			while(it.hasNext()) {
-				String name = it.next();
-				String def = it.next();
-				v.add(name);
-				tooltips.add(def);
-			}
+      while (it.hasNext()) {
+        String name = it.next();
+        String def = it.next();
+        v.add(name);
+        tooltips.add(def);
+      }
 
-			if(tooltipList == null) {
-				tooltipList = new JList(v.toArray());
-				tooltipList.setBorder(BorderFactory.createEtchedBorder());
-				tooltipList.addListSelectionListener(this);
-				tooltipList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      if (tooltipList == null) {
+        tooltipList = new JList(v.toArray());
+        tooltipList.setBorder(BorderFactory.createEtchedBorder());
+        tooltipList.addListSelectionListener(this);
+        tooltipList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-				JScrollPane jsp = new JScrollPane(tooltipList);
-				listComp = jsp;
-				listCont.add(jsp, BorderLayout.CENTER);
-			} else {
-				int oldIndex = tooltipList.getSelectedIndex();
-				tooltipList.setListData(v.toArray());
+        JScrollPane jsp = new JScrollPane(tooltipList);
+        listComp = jsp;
+        listCont.add(jsp, BorderLayout.CENTER);
+      } else {
+        int oldIndex = tooltipList.getSelectedIndex();
+        tooltipList.setListData(v.toArray());
 
-				if(oldIndex >= v.size()) {
-					oldIndex = -1;
-				}
+        if (oldIndex >= v.size()) {
+          oldIndex = -1;
+        }
 
-				tooltipList.setSelectedIndex(oldIndex);
+        tooltipList.setSelectedIndex(oldIndex);
 
-				if(oldIndex != -1) {
-					text.setText(tooltips.get(oldIndex));
-				}
-			}
+        if (oldIndex != -1) {
+          text.setText(tooltips.get(oldIndex));
+        }
+      }
 
-			pack();
-			setLocationRelativeTo(this.getParent());
-			getContentPane().repaint();
-			this.repaint();
-		}
+      pack();
+      setLocationRelativeTo(getParent());
+      getContentPane().repaint();
+      this.repaint();
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void actionPerformed(ActionEvent e) {
-			if(e.getSource() == importT) {
-				new ImExportDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.importdialog.title")).showDialog(true);
-				recreate();
-			} else if(e.getSource() == exportT) {
-				new ImExportDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.exportdialog.title")).showDialog(false);
-			} else if(e.getSource() == add) {
-				new AddTooltipDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title"), null,
-									 null, -1).setVisible(true);
-				recreate();
-			} else if(e.getSource() == mask) {
-				if(maskDialog == null) {
-					maskDialog = new AddByMaskDialog(this,
-													 Resources.get("map.mapperpreferences.tooltipdialog.addbymask.title"));
-				}
-				if (maskDialog.init()){
-				  maskDialog.setVisible(true);
-				  recreate();
-				}
-			} else if(e.getSource() == editmask) {
-				if((tooltipList != null) && (tooltipList.getSelectedIndex() > -1)) {
-					int index = tooltipList.getSelectedIndex();
+    /**
+     * DOCUMENT-ME
+     */
+    public void actionPerformed(ActionEvent e) {
+      if (e.getSource() == importT) {
+        new ImExportDialog(this, Resources
+            .get("map.mapperpreferences.tooltipdialog.importdialog.title")).showDialog(true);
+        recreate();
+      } else if (e.getSource() == exportT) {
+        new ImExportDialog(this, Resources
+            .get("map.mapperpreferences.tooltipdialog.exportdialog.title")).showDialog(false);
+      } else if (e.getSource() == add) {
+        new AddTooltipDialog(this, Resources
+            .get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title"), null, null, -1)
+            .setVisible(true);
+        recreate();
+      } else if (e.getSource() == mask) {
+        if (maskDialog == null) {
+          maskDialog =
+              new AddByMaskDialog(this, Resources
+                  .get("map.mapperpreferences.tooltipdialog.addbymask.title"));
+        }
+        if (maskDialog.init()) {
+          maskDialog.setVisible(true);
+          recreate();
+        }
+      } else if (e.getSource() == editmask) {
+        if ((tooltipList != null) && (tooltipList.getSelectedIndex() > -1)) {
+          int index = tooltipList.getSelectedIndex();
 
-					if(maskDialog == null) {
-						maskDialog = new AddByMaskDialog(this,
-														 Resources.get("map.mapperpreferences.tooltipdialog.addbymask.title"));
-					}
+          if (maskDialog == null) {
+            maskDialog =
+                new AddByMaskDialog(this, Resources
+                    .get("map.mapperpreferences.tooltipdialog.addbymask.title"));
+          }
 
-					if (maskDialog.init(tooltipList.getSelectedValue().toString(),
-									tooltips.get(index), index * 2)){
-					  maskDialog.setVisible(true);
-					  recreate();
-					}
-				}
-			} else if(e.getSource() == edit) {
-				if((tooltipList != null) && (tooltipList.getSelectedIndex() > -1)) {
-					int index = tooltipList.getSelectedIndex();
-          AddTooltipDialog dialog = new AddTooltipDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title2"),
-										 tooltipList.getSelectedValue().toString(),
-										 tooltips.get(index), index * 2);
+          if (maskDialog.init(tooltipList.getSelectedValue().toString(), tooltips.get(index),
+              index * 2)) {
+            maskDialog.setVisible(true);
+            recreate();
+          }
+        }
+      } else if (e.getSource() == edit) {
+        if ((tooltipList != null) && (tooltipList.getSelectedIndex() > -1)) {
+          int index = tooltipList.getSelectedIndex();
+          AddTooltipDialog dialog =
+              new AddTooltipDialog(this, Resources
+                  .get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title2"), tooltipList
+                  .getSelectedValue().toString(), tooltips.get(index), index * 2);
           dialog.setVisible(true);
-					recreate();
-				}
-			} else if(e.getSource() == delete) {
-				try {
-					java.util.List<String> src = source.getAllTooltipDefinitions();
-					src.remove(tooltipList.getSelectedIndex() * 2);
-					src.remove(tooltipList.getSelectedIndex() * 2);
-					source.setAllTooltipDefinitions(src);
-					recreate();
-				} catch(Exception exc) {
-				}
-			} else if(e.getSource() == info) {
-				if(infoDialog == null) {
-					infoDialog = new ToolTipReplacersInfo(this,
-														  Resources.get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
-				}
+          recreate();
+        }
+      } else if (e.getSource() == delete) {
+        try {
+          java.util.List<String> src = source.getAllTooltipDefinitions();
+          src.remove(tooltipList.getSelectedIndex() * 2);
+          src.remove(tooltipList.getSelectedIndex() * 2);
+          source.setAllTooltipDefinitions(src);
+          recreate();
+        } catch (Exception exc) {
+        }
+      } else if (e.getSource() == info) {
+        if (infoDialog == null) {
+          infoDialog =
+              new ToolTipReplacersInfo(this, Resources
+                  .get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
+        }
 
-				if(!infoDialog.isVisible()) {
-					infoDialog.showDialog();
-				}
-			} else {
-				this.setVisible(false);
+        if (!infoDialog.isVisible()) {
+          infoDialog.showDialog();
+        }
+      } else {
+        setVisible(false);
 
-				if(infoDialog != null) {
-					infoDialog.setVisible(false);
-				}
-			}
-		}
+        if (infoDialog != null) {
+          infoDialog.setVisible(false);
+        }
+      }
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void valueChanged(javax.swing.event.ListSelectionEvent e) {
-			if(tooltipList.getSelectedIndex() >= 0) {
-				text.setText(tooltips.get(tooltipList.getSelectedIndex()));
-				edit.setEnabled(true);
-				editmask.setEnabled(true);
-				delete.setEnabled(true);
-			} else {
-				edit.setEnabled(false);
-				editmask.setEnabled(false);
-				delete.setEnabled(false);
-			}
-		}
+    /**
+     * DOCUMENT-ME
+     */
+    public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+      if (tooltipList.getSelectedIndex() >= 0) {
+        text.setText(tooltips.get(tooltipList.getSelectedIndex()));
+        edit.setEnabled(true);
+        editmask.setEnabled(true);
+        delete.setEnabled(true);
+      } else {
+        edit.setEnabled(false);
+        editmask.setEnabled(false);
+        delete.setEnabled(false);
+      }
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public String getSelectedToolTip() {
-			if(tooltipList != null) {
-				int i = tooltipList.getSelectedIndex();
-				i = Math.max(i, 0);
+    /**
+     * DOCUMENT-ME
+     */
+    public String getSelectedToolTip() {
+      if (tooltipList != null) {
+        int i = tooltipList.getSelectedIndex();
+        i = Math.max(i, 0);
 
-				return tooltips.get(i);
-			}
+        return tooltips.get(i);
+      }
 
-			return null;
-		}
-	}
+      return null;
+    }
+  }
 }

@@ -46,15 +46,14 @@ import magellan.library.utils.Resources;
 
 /**
  * Preference adapter for plug ins
- *
+ * 
  * @author ...
  * @version 1.0, Feb 19, 2008
  */
 public class PluginPreferences implements ExtendedPreferencesAdapter {
 
   private Collection<MagellanPlugIn> plugins;
-  
-  
+
   public PluginPreferences(Collection<MagellanPlugIn> plugins, Properties settings) {
     this.plugins = plugins;
   }
@@ -68,7 +67,8 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
    * @see magellan.client.swing.preferences.ExtendedPreferencesAdapter#getChildren()
    */
   public Collection<PreferencesAdapter> getChildren() {
-    Collection<PreferencesAdapter> preferencesAdapterList = new ArrayList<PreferencesAdapter>(plugins.size());
+    Collection<PreferencesAdapter> preferencesAdapterList =
+        new ArrayList<PreferencesAdapter>(plugins.size());
     for (MagellanPlugIn plugIn : plugins) {
       PreferencesFactory plugInPreferenceFactory = plugIn.getPreferencesProvider();
       if (plugInPreferenceFactory != null) {
@@ -86,22 +86,22 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
    */
   public Component getComponent() {
     JPanel pnl = new JPanel(new GridBagLayout());
-    pnl.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-        Resources.get("plugins.pluginsettings.modulelist.title")));
+    pnl.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("plugins.pluginsettings.modulelist.title")));
 
     GridBagConstraints c = new GridBagConstraints();
 
     DefaultListModel model = new DefaultListModel();
     JList pluginList = new JList(model);
-    
-    for (MagellanPlugIn plugin : plugins){
+
+    for (MagellanPlugIn plugin : plugins) {
       model.addElement(plugin.getName());
     }
-    
-    c = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0);
 
-    
+    c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
+            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0);
+
     JTextArea comment = new JTextArea(Resources.get("plugins.pluginsettings.comment"));
     comment.setEditable(false);
     comment.setWrapStyleWord(true);
@@ -115,7 +115,7 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
     comment.setFont(new JLabel().getFont());
 
     pnl.add(comment, c);
-    
+
     c.gridy = 2;
     pnl.add(new JPanel());
 

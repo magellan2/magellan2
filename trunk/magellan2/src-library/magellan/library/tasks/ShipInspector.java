@@ -37,7 +37,7 @@ import magellan.library.utils.Units;
 public class ShipInspector extends AbstractInspector {
 
   /** The singleton instance of the ShipInspector */
-// public static final ShipInspector INSPECTOR = new ShipInspector();
+  // public static final ShipInspector INSPECTOR = new ShipInspector();
 
   enum ShipProblemTypes {
     EMPTY, NOCREW, NONEXTREGION, NOOCEAN, WRONGSHORE, WRONGSHOREHARBOUR, SHIPWRECK, OVERLOADED;
@@ -45,11 +45,12 @@ public class ShipInspector extends AbstractInspector {
     private ProblemType type;
 
     ShipProblemTypes() {
-      String name = this.name().toLowerCase();
+      String name = name().toLowerCase();
       String message = Resources.get("tasks.shipinspector." + name + ".message");
       String typeName = Resources.get("tasks.shipinspector." + name + ".name", false);
-      if (typeName == null)
+      if (typeName == null) {
         typeName = message;
+      }
       String description = Resources.get("tasks.shipinspector." + name + ".description", false);
       String group = Resources.get("tasks.shipinspector." + name + ".group", false);
       type = new ProblemType(typeName, group, description, message);
@@ -83,34 +84,29 @@ public class ShipInspector extends AbstractInspector {
   @Override
   public List<Problem> reviewRegion(Region r, Severity severity) {
     // we notify errors only
-    if (severity != Severity.ERROR) {
+    if (severity != Severity.ERROR)
       return Collections.emptyList();
-    }
 
     // fail fast if prerequisites are not fulfilled
-    if ((r == null) || (r.units() == null) || r.units().isEmpty()) {
+    if ((r == null) || (r.units() == null) || r.units().isEmpty())
       return Collections.emptyList();
-    }
 
     // this inspector is only interested in ships
-    if ((r.ships() == null) || r.ships().isEmpty()) {
+    if ((r.ships() == null) || r.ships().isEmpty())
       return Collections.emptyList();
-    }
 
     List<Problem> problems = reviewShips(r);
 
-    if (problems.isEmpty()) {
+    if (problems.isEmpty())
       return Collections.emptyList();
-    } else {
+    else
       return problems;
-    }
   }
 
   private List<Problem> reviewShips(Region r) {
     List<Problem> problems = new ArrayList<Problem>(2);
 
-    for (Iterator<Ship> iter = r.ships().iterator(); iter.hasNext();) {
-      Ship s = iter.next();
+    for (Ship s : r.ships()) {
       problems.addAll(reviewShip(s));
     }
 
@@ -133,10 +129,9 @@ public class ShipInspector extends AbstractInspector {
           s, this));
     }
 
-    if (s.getSize() != nominalShipSize) {
+    if (s.getSize() != nominalShipSize)
       // ship will be built, so we don´t go through the other checks
       return problems;
-    }
 
     Unit owner = s.getOwnerUnit();
     // the problem also belongs to the faction of the new owner...
@@ -145,8 +140,9 @@ public class ShipInspector extends AbstractInspector {
       for (UnitRelation u : owner.getRelations(ControlRelation.class)) {
         if (u instanceof ControlRelation) {
           ControlRelation ctr = (ControlRelation) u;
-          if (u.source == owner)
+          if (u.source == owner) {
             newOwner = ctr.target;
+          }
         }
       }
     }
@@ -169,15 +165,13 @@ public class ShipInspector extends AbstractInspector {
       return Collections.emptyList();
 
     List<Problem> problems = new ArrayList<Problem>();
-    if (ship.getModifiedOwnerUnit() == null) {
+    if (ship.getModifiedOwnerUnit() == null)
       return problems;
-    }
 
     List<CoordinateID> modifiedMovement = ship.getModifiedOwnerUnit().getModifiedMovement();
 
-    if (modifiedMovement.isEmpty()) {
+    if (modifiedMovement.isEmpty())
       return problems;
-    }
 
     Iterator<CoordinateID> movementIterator = modifiedMovement.iterator();
     // skip origin
@@ -215,7 +209,7 @@ public class ShipInspector extends AbstractInspector {
       Direction d = Regions.getDirectionObjectsOfCoordinates(modifiedMovement).get(0);
       if (Math.abs(ship.getShoreId() - d.getDir()) > 1
           && Math.abs(ship.getShoreId() - d.getDir()) < 5) {
-        if (!this.hasHarbourInRegion(ship.getRegion())) {
+        if (!hasHarbourInRegion(ship.getRegion())) {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.WRONGSHORE
               .getType(), ship, this));
         } else {
@@ -244,7 +238,7 @@ public class ShipInspector extends AbstractInspector {
       if (isShip
           && (nextRegion == null || !(getGameSpecificStuff().getGameSpecificRules()
               .canLandInRegion(ship, nextRegion)))) {
-        if (nextRegion == null || !this.hasHarbourInRegion(nextRegion)) {
+        if (nextRegion == null || !hasHarbourInRegion(nextRegion)) {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.SHIPWRECK
               .getType(), ship, this));
           return problems;
@@ -277,14 +271,12 @@ public class ShipInspector extends AbstractInspector {
       // check all buildings
       // i have no reference to the rules, do I?
       // so we have to check for Harbour by BuildingTypeName
-      for (Iterator<Building> iter = nextRegion.buildings().iterator(); iter.hasNext();) {
-        Building b = iter.next();
+      for (Building b : nextRegion.buildings()) {
         if (b.getBuildingType().getName().equalsIgnoreCase("Hafen")) {
           // lets check size
-          if (b.getSize() >= b.getBuildingType().getMaxSize()) {
+          if (b.getSize() >= b.getBuildingType().getMaxSize())
             // ok...there is an harbour
             return true;
-          }
         }
       }
     }
@@ -299,20 +291,16 @@ public class ShipInspector extends AbstractInspector {
   @Override
   public List<Problem> reviewUnit(Unit u, Severity severity) {
     // we notify errors only
-    if (severity != Severity.ERROR) {
+    if (severity != Severity.ERROR)
       return Collections.emptyList();
-    }
     // we check for captns of ships
     UnitContainer uc = u.getModifiedUnitContainer();
-    if (uc == null) {
+    if (uc == null)
       return Collections.emptyList();
-    }
-    if (!(uc instanceof Ship)) {
+    if (!(uc instanceof Ship))
       return Collections.emptyList();
-    }
-    if (uc.getModifiedOwnerUnit() == null || !uc.getModifiedOwnerUnit().equals(u)) {
+    if (uc.getModifiedOwnerUnit() == null || !uc.getModifiedOwnerUnit().equals(u))
       return Collections.emptyList();
-    }
 
     return reviewMovingShip((Ship) uc);
   }

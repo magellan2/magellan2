@@ -30,124 +30,117 @@ import javax.swing.JOptionPane;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class NameGenerator {
-	boolean available = false;
-	List<String> names;
-	static Properties settings;
-	static NameGenerator gen;
+  boolean available = false;
+  List<String> names;
+  static Properties settings;
+  static NameGenerator gen;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static void init(Properties set) {
-		NameGenerator.settings = set;
-		new NameGenerator(NameGenerator.settings);
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public static void init(Properties set) {
+    NameGenerator.settings = set;
+    new NameGenerator(NameGenerator.settings);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	public static void quit() {
-		if(NameGenerator.gen != null) {
-			NameGenerator.gen.close();
-		}
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public static void quit() {
+    if (NameGenerator.gen != null) {
+      NameGenerator.gen.close();
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static NameGenerator getInstance() {
-		if(NameGenerator.gen == null) {
-			new NameGenerator(NameGenerator.settings);
-		}
-
-		return NameGenerator.gen;
-	}
-
-	private NameGenerator(Properties settings) {
-		load(settings.getProperty("NameGenerator.Source"));
-		available = settings.getProperty("NameGenerator.active", "false").equals("true");
-
-		NameGenerator.gen = this;
-	}
-
-	public void load(String fileName) {
-		if(names == null) {
-			names = new LinkedList<String>();
-		} else {
-			names.clear();
-		}
-    
-    if (!Utils.isEmpty(fileName)) {
-      File file = new File(fileName);
-  
-      // we read the file only if it exists.
-  		if(file.exists() && file.canRead()) {
-  			try {
-  				BufferedReader in = new BufferedReader(new FileReader(file));
-  				String s = null;
-  
-  				while((s = in.readLine()) != null) {
-  					names.add(s.trim());
-  				}
-  
-  				in.close();
-  			} catch(IOException ioe) {
-  				System.out.println(ioe);
-  			}
-  		}
+  /**
+   * DOCUMENT-ME
+   */
+  public static NameGenerator getInstance() {
+    if (NameGenerator.gen == null) {
+      new NameGenerator(NameGenerator.settings);
     }
 
-		if(names.size() == 0) {
-			names = null;
-		}
-	}
+    return NameGenerator.gen;
+  }
 
-	protected void close() {
-		String file = NameGenerator.settings.getProperty("NameGenerator.Source");
+  private NameGenerator(Properties settings) {
+    load(settings.getProperty("NameGenerator.Source"));
+    available = settings.getProperty("NameGenerator.active", "false").equals("true");
 
-		if (!Utils.isEmpty(file)) {
-			try {
-				File f = new File(file);
+    NameGenerator.gen = this;
+  }
 
-				if(f.exists()) {
-					f.delete();
-				}
+  public void load(String fileName) {
+    if (names == null) {
+      names = new LinkedList<String>();
+    } else {
+      names.clear();
+    }
 
-				if(names != null) {
-					PrintWriter out = new PrintWriter(new FileWriter(file));
-					Iterator<String> it = names.iterator();
+    if (!Utils.isEmpty(fileName)) {
+      File file = new File(fileName);
 
-					while(it.hasNext()) {
-						out.println(it.next());
-					}
+      // we read the file only if it exists.
+      if (file.exists() && file.canRead()) {
+        try {
+          BufferedReader in = new BufferedReader(new FileReader(file));
+          String s = null;
 
-					out.close();
-				}
-			} catch(IOException exc) {
-			}
-		}
-	}
+          while ((s = in.readLine()) != null) {
+            names.add(s.trim());
+          }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean isActive() {
-		return available;
-	}
+          in.close();
+        } catch (IOException ioe) {
+          System.out.println(ioe);
+        }
+      }
+    }
+
+    if (names.size() == 0) {
+      names = null;
+    }
+  }
+
+  protected void close() {
+    String file = NameGenerator.settings.getProperty("NameGenerator.Source");
+
+    if (!Utils.isEmpty(file)) {
+      try {
+        File f = new File(file);
+
+        if (f.exists()) {
+          f.delete();
+        }
+
+        if (names != null) {
+          PrintWriter out = new PrintWriter(new FileWriter(file));
+          Iterator<String> it = names.iterator();
+
+          while (it.hasNext()) {
+            out.println(it.next());
+          }
+
+          out.close();
+        }
+      } catch (IOException exc) {
+      }
+    }
+  }
+
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean isActive() {
+    return available;
+  }
 
   /**
    * Returns true, if there is a name generator configured and names are available.
@@ -163,27 +156,25 @@ public class NameGenerator {
     this.available = available;
   }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getName() {
-		if(names != null) {
-			String name = names.remove(0);
+  /**
+   * DOCUMENT-ME
+   */
+  public String getName() {
+    if (names != null) {
+      String name = names.remove(0);
 
-			if(names.size() == 0) {
-				names = null;
-				showMessage();
-			}
+      if (names.size() == 0) {
+        names = null;
+        showMessage();
+      }
 
-			return name;
-		}
+      return name;
+    }
 
-		return null;
-	}
+    return null;
+  }
 
-	protected void showMessage() {
-		JOptionPane.showMessageDialog(new JFrame(), Resources.get("util.namegenerator.nomorenames"));
-	}
+  protected void showMessage() {
+    JOptionPane.showMessageDialog(new JFrame(), Resources.get("util.namegenerator.nomorenames"));
+  }
 }

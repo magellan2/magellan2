@@ -17,67 +17,66 @@ import magellan.library.utils.Resources;
 
 /**
  * A Switch that compares the following to elements by their String replacement. Possible replacers
- * are evaluated by forwarding the Switch object and iterator. If these two are not
- * evaluable (list too short) or only one of them is <i>null</i> the Switch stays active. <i>Note
- * that if both are null the switch is inactive!</i>
- *
+ * are evaluated by forwarding the Switch object and iterator. If these two are not evaluable (list
+ * too short) or only one of them is <i>null</i> the Switch stays active. <i>Note that if both are
+ * null the switch is inactive!</i>
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class LessReplacer extends AbstractParameterSwitch {
-	/**
-	 * Creates a new LessReplacer object.
-	 */
-	public LessReplacer() {
-		super(2);
-	}
+  /**
+   * Creates a new LessReplacer object.
+   */
+  public LessReplacer() {
+    super(2);
+  }
 
-	/**
-	 * Checks the following two elements and evaluates their replacements. They are treated as
-	 * Strings through <i>toString()</i> and compared for equality.
-	 * 
-	 *
-	 * @throws IllegalArgumentException DOCUMENT-ME
-	 */
-	@Override
+  /**
+   * Checks the following two elements and evaluates their replacements. They are treated as Strings
+   * through <i>toString()</i> and compared for equality.
+   * 
+   * @throws IllegalArgumentException DOCUMENT-ME
+   */
+  @Override
   public boolean isSwitchingObject(Object o) {
-		Object o1 = getParameter(0, o);
-		Object o2 = getParameter(1, o);
+    Object o1 = getParameter(0, o);
+    Object o2 = getParameter(1, o);
 
-		if((o1 != null) && (o2 != null)) {
-			// first check on numbers
-			try {
-				float f1 = 0;
-				float f2 = 0;
+    if ((o1 != null) && (o2 != null)) {
+      // first check on numbers
+      try {
+        float f1 = 0;
+        float f2 = 0;
 
-				if(o1 instanceof Number) {
-					f1 = ((Number) o1).floatValue();
-				} else {
-					f1 = Float.parseFloat(o1.toString());
-				}
+        if (o1 instanceof Number) {
+          f1 = ((Number) o1).floatValue();
+        } else {
+          f1 = Float.parseFloat(o1.toString());
+        }
 
-				if(o2 instanceof Number) {
-					f2 = ((Number) o2).floatValue();
-				} else {
-					f2 = Float.parseFloat(o2.toString());
-				}
+        if (o2 instanceof Number) {
+          f2 = ((Number) o2).floatValue();
+        } else {
+          f2 = Float.parseFloat(o2.toString());
+        }
 
-				return f1 < f2;
-			} catch(NumberFormatException nfe) {
-			}
+        return f1 < f2;
+      } catch (NumberFormatException nfe) {
+      }
 
-			return o1.toString().compareTo(o2.toString()) < 0;
-		}
+      return o1.toString().compareTo(o2.toString()) < 0;
+    }
 
-		throw new IllegalArgumentException("Not enough arguments.");
-	}
-
+    throw new IllegalArgumentException("Not enough arguments.");
+  }
 
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   @Override
   public String getDescription() {
-    return Resources.get("util.replacers.lessreplacer.description")+"\n\n"+super.getDescription();
-  }  
+    return Resources.get("util.replacers.lessreplacer.description") + "\n\n"
+        + super.getDescription();
+  }
 }

@@ -30,86 +30,86 @@ import magellan.library.io.file.FileBackup;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * Lets the user save a selection as file.
- *
+ * 
  * @author Ilja Pavkovic
  */
 public class SaveSelectionAction extends AbstractSelectionAction {
-	private static final Logger log = Logger.getInstance(SaveSelectionAction.class);
+  private static final Logger log = Logger.getInstance(SaveSelectionAction.class);
 
-	/** The file extension for selecion files. */
-	public static final String EXTENSION = "sel";
+  /** The file extension for selecion files. */
+  public static final String EXTENSION = "sel";
 
-	/** delimiter used for coordinates */
-	public static final String DELIMITER = " ";
+  /** delimiter used for coordinates */
+  public static final String DELIMITER = " ";
 
-	/** comment character */
-	public static final char COMMENT = ';';
+  /** comment character */
+  public static final char COMMENT = ';';
 
-	/**
-	 * Creates a new SaveSelectionAction object.
-	 */
-	public SaveSelectionAction(Client client) {
-	  super(client);
-	}
+  /**
+   * Creates a new SaveSelectionAction object.
+   */
+  public SaveSelectionAction(Client client) {
+    super(client);
+  }
 
+  protected String getPropertyName() {
+    return "Client.lastSELSaved";
+  }
 
-	protected String getPropertyName() {
-		return "Client.lastSELSaved";
-	}
-
-	/**
-	 * Opens a file dialog and saves current selection.
-	 * 
-	 * @see magellan.client.actions.MenuAction#menuActionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
+  /**
+   * Opens a file dialog and saves current selection.
+   * 
+   * @see magellan.client.actions.MenuAction#menuActionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		JFileChooser fc = new JFileChooser();
+    JFileChooser fc = new JFileChooser();
     fc.addChoosableFileFilter(new EresseaFileFilter(SaveSelectionAction.EXTENSION, Resources
         .get("actions.saveselectionaction.selectionfilter.name")));
     fc.setSelectedFile(new File(client.getProperties().getProperty(getPropertyName(), "")));
     fc.setDialogTitle(Resources.get("actions.saveselectionaction.title"));
 
-		if(fc.showSaveDialog(client) == JFileChooser.APPROVE_OPTION) {
-			PrintWriter pw = null;
-			try {
-				client.getProperties().setProperty(getPropertyName(),
-												 fc.getSelectedFile().getAbsolutePath());
+    if (fc.showSaveDialog(client) == JFileChooser.APPROVE_OPTION) {
+      PrintWriter pw = null;
+      try {
+        client.getProperties().setProperty(getPropertyName(),
+            fc.getSelectedFile().getAbsolutePath());
 
-				if(fc.getSelectedFile().exists() && fc.getSelectedFile().canWrite()) {
-					// create backup file
-					try {
-						File backup = FileBackup.create(fc.getSelectedFile());
-						SaveSelectionAction.log.info("Created backupfile " + backup);
-					} catch(IOException ie) {
-						SaveSelectionAction.log.warn("Could not create backupfile for file " + fc.getSelectedFile());
-					}
-				} 
-        if (fc.getSelectedFile().exists() && !fc.getSelectedFile().canWrite()){
-          throw new IOException("cannot write "+fc.getSelectedFile());
-        }else{
+        if (fc.getSelectedFile().exists() && fc.getSelectedFile().canWrite()) {
+          // create backup file
+          try {
+            File backup = FileBackup.create(fc.getSelectedFile());
+            SaveSelectionAction.log.info("Created backupfile " + backup);
+          } catch (IOException ie) {
+            SaveSelectionAction.log.warn("Could not create backupfile for file "
+                + fc.getSelectedFile());
+          }
+        }
+        if (fc.getSelectedFile().exists() && !fc.getSelectedFile().canWrite())
+          throw new IOException("cannot write " + fc.getSelectedFile());
+        else {
           pw = new PrintWriter(new BufferedWriter(new FileWriter(fc.getSelectedFile())));
 
-          for(CoordinateID c : getSelectedRegions().keySet()) {
+          for (CoordinateID c : getSelectedRegions().keySet()) {
             pw.println((c).toString(SaveSelectionAction.DELIMITER));
           }
 
           pw.close();
         }
-			} catch(IOException exc) {
-				SaveSelectionAction.log.error(exc);
-				JOptionPane.showMessageDialog(client, exc.toString(),
-											  Resources.get("actions.saveselectionaction.msg.filesave.error.title"),
-											  JOptionPane.ERROR_MESSAGE);
-			} finally {
-				if(pw != null) {
-					pw.close();
-				}
-			}
-		}
-	}
+      } catch (IOException exc) {
+        SaveSelectionAction.log.error(exc);
+        JOptionPane
+            .showMessageDialog(client, exc.toString(), Resources
+                .get("actions.saveselectionaction.msg.filesave.error.title"),
+                JOptionPane.ERROR_MESSAGE);
+      } finally {
+        if (pw != null) {
+          pw.close();
+        }
+      }
+    }
+  }
 
 }

@@ -19,39 +19,40 @@ import magellan.library.Unit;
  * A (possibly abstract) relation indicating between a source and a target unit.
  */
 public class InterUnitRelation extends UnitRelation {
-	/** The unit that is the target of the relation */
-	public Unit target;
+  /** The unit that is the target of the relation */
+  public Unit target;
 
-	/**
-	 * Creates a new InterUnitRelation object.
-	 *
-	 * @param s The source unit
-	 * @param t The target unit
-	 * @param line The line in the source's orders
-	 */
-	public InterUnitRelation(Unit s, Unit t, int line) {
-		super(s, line);
-		this.target = t;
-	}
+  /**
+   * Creates a new InterUnitRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target unit
+   * @param line The line in the source's orders
+   */
+  public InterUnitRelation(Unit s, Unit t, int line) {
+    super(s, line);
+    target = t;
+  }
 
-	/**
-	 * Creates a new InterUnitRelation object.
-	 *
-	 * @param s The source unit
-	 * @param t The target unit
-	 * @param line The line in the source's orders
-	 * @param w <code>true</code> iff this relation causes a warning
-	 */
-	public InterUnitRelation(Unit s, Unit t, int line, boolean w) {
-		super(s, line, w);
-		this.target = t;
-	}
+  /**
+   * Creates a new InterUnitRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target unit
+   * @param line The line in the source's orders
+   * @param w <code>true</code> iff this relation causes a warning
+   */
+  public InterUnitRelation(Unit s, Unit t, int line, boolean w) {
+    super(s, line, w);
+    target = t;
+  }
 
-	/* (non-Javadoc)
-	 * @see com.eressea.relation.UnitRelation#toString()
-	 */
-	@Override
+  /*
+   * (non-Javadoc)
+   * @see com.eressea.relation.UnitRelation#toString()
+   */
+  @Override
   public String toString() {
-		return super.toString() + "@TARGET=" + target;
-	}
+    return super.toString() + "@TARGET=" + target;
+  }
 }

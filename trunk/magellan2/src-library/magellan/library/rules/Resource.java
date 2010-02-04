@@ -14,71 +14,59 @@
 package magellan.library.rules;
 
 /**
- * A Resource reflects a needed resource for  e.g. building roads (stones, building) e.g. a
- * building (stones, wood, iron, silver e.g. recruiting (silver, potion?)
+ * A Resource reflects a needed resource for e.g. building roads (stones, building) e.g. a building
+ * (stones, wood, iron, silver e.g. recruiting (silver, potion?)
  */
 public class Resource {
-	private int amount = 1;
-	private ObjectType type = null;
+  private int amount = 1;
+  private ObjectType type = null;
 
-	/**
-	 * Creates a new Resource object.
-	 */
-	public Resource() {
-	}
+  /**
+   * Creates a new Resource object.
+   */
+  public Resource() {
+  }
 
-	/**
-	 * Creates a new Resource object.
-	 *
-	 * 
-	 */
-	public Resource(int amount) {
-		this.amount = amount;
-	}
+  /**
+   * Creates a new Resource object.
+   */
+  public Resource(int amount) {
+    this.amount = amount;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public int getAmount() {
-		return amount;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public int getAmount() {
+    return amount;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setAmount(int amount) {
-		this.amount = amount;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setAmount(int amount) {
+    this.amount = amount;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public ObjectType getObjectType() {
-		return type;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public ObjectType getObjectType() {
+    return type;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setObjectType(ObjectType type) {
-		this.type = type;
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void setObjectType(ObjectType type) {
+    this.type = type;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public String toString() {
-		return "Resource: " + amount + " " + type;
-	}
+    return "Resource: " + amount + " " + type;
+  }
 }

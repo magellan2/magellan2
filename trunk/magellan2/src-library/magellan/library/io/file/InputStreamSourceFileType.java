@@ -21,47 +21,43 @@ import java.net.URL;
 
 import magellan.library.utils.MagellanImages;
 
-
 /**
  * This FileType represent a "File" via an input stream URL. This is a convenient object for
  * encapsulating ClassLoader stuff.
  */
 public class InputStreamSourceFileType extends FileType {
-	InputStreamSourceFileType(File url) throws IOException {
-		super(url, true);
-	}
+  InputStreamSourceFileType(File url) throws IOException {
+    super(url, true);
+  }
 
-	@Override
+  @Override
   protected InputStream createInputStream() throws IOException {
-		URL url = MagellanImages.getResource(filename.getPath().toLowerCase());
+    URL url = MagellanImages.getResource(filename.getPath().toLowerCase());
 
-		if(url == null) {
-		  
-		  url = MagellanImages.getResource(filename.getPath());
-		  
-		  if (url == null) {
-  			throw new IOException("URL '" + filename.getPath().toLowerCase() + "' not readable.");
-		  }
-		}
+    if (url == null) {
 
-		return url.openStream();
-	}
+      url = MagellanImages.getResource(filename.getPath());
 
-	@Override
+      if (url == null)
+        throw new IOException("URL '" + filename.getPath().toLowerCase() + "' not readable.");
+    }
+
+    return url.openStream();
+  }
+
+  @Override
   protected OutputStream createOutputStream() throws IOException {
-		throw new IOException("InputStreamSourceFileType does not support writing to a resource.");
-	}
+    throw new IOException("InputStreamSourceFileType does not support writing to a resource.");
+  }
 
-	/**
-	 * Returns the underlying file.
-	 *
-	 * @return a File object
-	 *
-	 * @throws IOException if file cannot be determined, e.g. for  an url pointing to an
-	 * 		   InputStream.
-	 */
-	@Override
+  /**
+   * Returns the underlying file.
+   * 
+   * @return a File object
+   * @throws IOException if file cannot be determined, e.g. for an url pointing to an InputStream.
+   */
+  @Override
   public File getFile() throws IOException {
-		throw new IOException("Unable to determine File for InputStream URL '" + toString() + "'.");
-	}
+    throw new IOException("Unable to determine File for InputStream URL '" + toString() + "'.");
+  }
 }

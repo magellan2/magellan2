@@ -33,6 +33,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -156,7 +157,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
     // register for events
     // unnecessary
- // dispatcher.addGameDataListener(this);
+    // dispatcher.addGameDataListener(this);
     dispatcher.addSelectionListener(this);
 
     init();
@@ -187,16 +188,16 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     mainPanel.add(new JScrollPane(planner), con);
 
     this.add(mainPanel);
-    this.setPreferredSize(new Dimension(800, 500));
+    setPreferredSize(new Dimension(800, 500));
 
-    this.pack();
+    pack();
   }
 
   private JMenuBar createMenuBar() {
     JMenuBar menuBar = new JMenuBar();
 
     // FIXME (stm) this depends on the font!
-// menuBar.setMinimumSize(new Dimension(10, 20));
+    // menuBar.setMinimumSize(new Dimension(10, 20));
 
     JMenu menu;
     menuBar.add(menu = new JMenu(Resources.get("alchemydialog.menu.file.title")));
@@ -220,7 +221,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     };
     JMenuItem quitItem;
     menu.add(quitItem = new JMenuItem(quitAction));
-    quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_MASK));
+    quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
 
     menuBar.add(menu = new JMenu(Resources.get("alchemydialog.menu.update.title")));
 
@@ -343,7 +344,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     sorter.setColumnComparator(String.class, getComp2(true));
     sorter.setColumnComparator(StockValue.class, getComp1(true));
     sorter.setColumnComparator(RestValue.class, getComp1(true));
-    
+
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -369,48 +370,47 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
   /**
    * Returns a comparator for sorting the first column
+   * 
    * @param nullUp if <code>true</code>, <code>null</code> values will be sorted to the top.
    */
   private Comparator<Object> getComp2(final boolean nullUp) {
     return new Comparator<Object>() {
       /**
-       * String (max possible)  | null       | null      | MaxValue             | ...
-       * String (remaining)     | null       | null      | CurrentMaxValue      | ...
-       * String (planned)       | null       | null      | ProductionValue      | ...
-       * HerbInfo (Herb1)       | StockValue | RestValue | IngredientValue/null | ...
-       * HerbInfo (Herb2)       | StockValue | RestValue | IngredientValue/null | ... 
-       * ...
+       * String (max possible) | null | null | MaxValue | ... String (remaining) | null | null |
+       * CurrentMaxValue | ... String (planned) | null | null | ProductionValue | ... HerbInfo
+       * (Herb1) | StockValue | RestValue | IngredientValue/null | ... HerbInfo (Herb2) | StockValue
+       * | RestValue | IngredientValue/null | ... ...
        */
-       public int compare(Object o1, Object o2) {
-         if (o1 instanceof String)
-           if (o2 instanceof String)
-             return ((String)o1).compareTo((String)o2);
-           else
-             return -1;
-         
-         if (o2 instanceof String)
-           return 1;
-         
-         ItemType val1 = null;
-         if (o1 instanceof ItemType) {
-           val1 = (ItemType) o1;
-         }
-         ItemType val2 = null;
-         if (o2 instanceof ItemType) {
-           val2 = (ItemType) o2;
-         
-         } 
-         if (val1 == null || val2 == null){
-           if (val2!=null)
-             return nullUp?-1:1;
-           else if (val1!=null)
-             return nullUp?1:-1;
-           return 0;
-         } 
+      public int compare(Object o1, Object o2) {
+        if (o1 instanceof String)
+          if (o2 instanceof String)
+            return ((String) o1).compareTo((String) o2);
+          else
+            return -1;
 
-         return val1.getName().compareTo(val2.getName());
-       }
-     };
+        if (o2 instanceof String)
+          return 1;
+
+        ItemType val1 = null;
+        if (o1 instanceof ItemType) {
+          val1 = (ItemType) o1;
+        }
+        ItemType val2 = null;
+        if (o2 instanceof ItemType) {
+          val2 = (ItemType) o2;
+
+        }
+        if (val1 == null || val2 == null) {
+          if (val2 != null)
+            return nullUp ? -1 : 1;
+          else if (val1 != null)
+            return nullUp ? 1 : -1;
+          return 0;
+        }
+
+        return val1.getName().compareTo(val2.getName());
+      }
+    };
   }
 
   /**
@@ -419,57 +419,54 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    * @param nullUp if <code>true</code>, <code>null</code> values will be sorted to the top.
    */
   private Comparator<Object> getComp1(final boolean nullUp) {
-    
+
     return new Comparator<Object>() {
       /**
-       * String (max possible)  | null       | null      | MaxValue             | ...
-       * String (remaining)     | null       | null      | CurrentMaxValue      | ...
-       * String (planned)       | null       | null      | ProductionValue      | ...
-       * HerbInfo (Herb1)       | StockValue | RestValue | IngredientValue/null | ...
-       * HerbInfo (Herb2)       | StockValue | RestValue | IngredientValue/null | ... 
-       * ...
+       * String (max possible) | null | null | MaxValue | ... String (remaining) | null | null |
+       * CurrentMaxValue | ... String (planned) | null | null | ProductionValue | ... HerbInfo
+       * (Herb1) | StockValue | RestValue | IngredientValue/null | ... HerbInfo (Herb2) | StockValue
+       * | RestValue | IngredientValue/null | ... ...
        */
-       public int compare(Object o1, Object o2) {
-         ValueMarker val1 = null;
-         if (o1 instanceof ValueMarker) {
-           val1 = (ValueMarker) o1;
-         }
-         ValueMarker val2 = null;
-         if (o2 instanceof ValueMarker) {
-           val2 = (ValueMarker) o2;
-         
-         } 
-         if (val1 == null || val2 == null){
-           if (val2!=null)
-             return nullUp?-1:1;
-           else if (val1!=null)
-             return nullUp?1:-1;
-           return 0;
-         } 
+      public int compare(Object o1, Object o2) {
+        ValueMarker val1 = null;
+        if (o1 instanceof ValueMarker) {
+          val1 = (ValueMarker) o1;
+        }
+        ValueMarker val2 = null;
+        if (o2 instanceof ValueMarker) {
+          val2 = (ValueMarker) o2;
 
-         if (val1 instanceof MaxValue)
-           if (!(val2 instanceof MaxValue))
-             return -1;
-         if (val2 instanceof MaxValue)
-           return 1;
+        }
+        if (val1 == null || val2 == null) {
+          if (val2 != null)
+            return nullUp ? -1 : 1;
+          else if (val1 != null)
+            return nullUp ? 1 : -1;
+          return 0;
+        }
 
-         if (val1 instanceof CurrentMaxValue)
-           if (!(val2 instanceof CurrentMaxValue))
-             return -1;
-         if (val2 instanceof CurrentMaxValue)
-           return 1;
+        if (val1 instanceof MaxValue)
+          if (!(val2 instanceof MaxValue))
+            return -1;
+        if (val2 instanceof MaxValue)
+          return 1;
 
-         if (val1 instanceof ProductionValue)
-           if (!(val2 instanceof ProductionValue))
-             return -1;
-         if (val2 instanceof ProductionValue)
-           return 1;
-         
-         return val2.value - val1.value;
-       }
+        if (val1 instanceof CurrentMaxValue)
+          if (!(val2 instanceof CurrentMaxValue))
+            return -1;
+        if (val2 instanceof CurrentMaxValue)
+          return 1;
 
+        if (val1 instanceof ProductionValue)
+          if (!(val2 instanceof ProductionValue))
+            return -1;
+        if (val2 instanceof ProductionValue)
+          return 1;
 
-     };
+        return val2.value - val1.value;
+      }
+
+    };
   }
 
   /**
@@ -488,8 +485,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
         if (value instanceof StockValue) {
           // stock cells (editable) -- with border
-          if (c instanceof JComponent)
+          if (c instanceof JComponent) {
             ((JComponent) c).setBorder(BorderFactory.createLoweredBevelBorder());
+          }
 
           c.setBackground(Color.WHITE);
           c.setForeground(Color.BLACK);
@@ -507,8 +505,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           c.setFocusable(false);
         } else if (value instanceof ProductionValue) {
           // production cells (editable) -- with border
-          if (c instanceof JComponent)
+          if (c instanceof JComponent) {
             ((JComponent) c).setBorder(BorderFactory.createLoweredBevelBorder());
+          }
 
           c.setBackground(Color.WHITE);
           c.setForeground(Color.BLACK);
@@ -600,8 +599,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
   @Override
   public void gameDataChanged(GameDataEvent e) {
     super.gameDataChanged(e);
-    if (model != null)
+    if (model != null) {
       model.setData(data);
+    }
     setRegions(Collections.<Region> emptyList());
   }
 
@@ -631,14 +631,16 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    */
   protected void loadTable() {
     JFileChooser fc = new JFileChooser();
-    fc.addChoosableFileFilter(new EresseaFileFilter(FILE_EXTENSION, FILE_EXTENSION_DECRIPTION));
-    fc.setSelectedFile(new File(settings.getProperty(PROPERTYNAME_LAST_SAVED, "")));
+    fc.addChoosableFileFilter(new EresseaFileFilter(AlchemyDialog.FILE_EXTENSION,
+        AlchemyDialog.FILE_EXTENSION_DECRIPTION));
+    fc.setSelectedFile(new File(settings.getProperty(AlchemyDialog.PROPERTYNAME_LAST_SAVED, "")));
     fc.setDialogTitle(Resources.get("alchemydialog.loaddialog.title"));
 
     boolean error = false;
     if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
       try {
-        settings.setProperty(PROPERTYNAME_LAST_SAVED, fc.getSelectedFile().getAbsolutePath());
+        settings.setProperty(AlchemyDialog.PROPERTYNAME_LAST_SAVED, fc.getSelectedFile()
+            .getAbsolutePath());
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser parser;
@@ -665,8 +667,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    */
   protected void saveTable() {
     JFileChooser fc = new JFileChooser();
-    fc.addChoosableFileFilter(new EresseaFileFilter(FILE_EXTENSION, FILE_EXTENSION_DECRIPTION));
-    fc.setSelectedFile(new File(settings.getProperty(PROPERTYNAME_LAST_SAVED, "")));
+    fc.addChoosableFileFilter(new EresseaFileFilter(AlchemyDialog.FILE_EXTENSION,
+        AlchemyDialog.FILE_EXTENSION_DECRIPTION));
+    fc.setSelectedFile(new File(settings.getProperty(AlchemyDialog.PROPERTYNAME_LAST_SAVED, "")));
     fc.setDialogTitle(Resources.get("alchemydialog.savedialog.title"));
 
     if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -674,21 +677,22 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       FileOutputStream os = null;
       String error = null;
       try {
-        settings.setProperty(PROPERTYNAME_LAST_SAVED, fc.getSelectedFile().getAbsolutePath());
+        settings.setProperty(AlchemyDialog.PROPERTYNAME_LAST_SAVED, fc.getSelectedFile()
+            .getAbsolutePath());
         File name = null;
         name = fc.getSelectedFile();
         if (!fc.getFileFilter().equals(fc.getAcceptAllFileFilter())
-            && !name.getName().endsWith("." + FILE_EXTENSION)) {
-          name = new File(name.getPath() + "." + FILE_EXTENSION);
+            && !name.getName().endsWith("." + AlchemyDialog.FILE_EXTENSION)) {
+          name = new File(name.getPath() + "." + AlchemyDialog.FILE_EXTENSION);
         }
 
         if (name.exists()) {
           // create backup file
           try {
             File backup = FileBackup.create(name);
-            log.info("Created backupfile " + backup);
+            AlchemyDialog.log.info("Created backupfile " + backup);
           } catch (IOException ie) {
-            log.warn("Could not create backupfile for file " + name);
+            AlchemyDialog.log.warn("Could not create backupfile for file " + name);
           }
         }
 
@@ -701,7 +705,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           writer.writeStartElement("alchemydialog");
           writer.writeAttribute("version", "0.1");
           writer.writeCharacters("\n");
-// writer.writeNamespace("date", "");
+          // writer.writeNamespace("date", "");
           for (Faction f : getFactions()) {
             writer.writeCharacters("\n");
             writer.writeEmptyElement("faction");
@@ -715,7 +719,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           for (HerbInfo info : model.herbs) {
             writer.writeCharacters("\n");
             writer.writeEmptyElement("herb");
-// writer.writeAttribute("id", info.item.getID().toString());
+            // writer.writeAttribute("id", info.item.getID().toString());
             writer.writeAttribute("name", info.item.getName());
             writer.writeAttribute("amount", String.valueOf(info.number));
           }
@@ -723,13 +727,13 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
             PotionInfo info = model.getPotions().get(pot);
             writer.writeCharacters("\n");
             writer.writeStartElement("potion");
-// writer.writeAttribute("id", info.getID().toString());
+            // writer.writeAttribute("id", info.getID().toString());
             writer.writeAttribute("name", info.getName());
             writer.writeAttribute("planned", String.valueOf(info.production));
             for (ItemType ingredient : info.ingredients.keySet()) {
               writer.writeCharacters("\n");
               writer.writeEmptyElement("ingredient");
-// writer.writeAttribute("id", ingredient.getID().toString());
+              // writer.writeAttribute("id", ingredient.getID().toString());
               writer.writeAttribute("name", ingredient.getName());
               writer.writeAttribute("amount", info.ingredients.get(ingredient).toString());
             }
@@ -749,10 +753,12 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         error = e.getLocalizedMessage();
       } finally {
         try {
-          if (os != null)
+          if (os != null) {
             os.close();
-          if (writer != null)
+          }
+          if (writer != null) {
             writer.close();
+          }
         } catch (XMLStreamException e) {
           e.printStackTrace();
           error = e.getLocalizedMessage();
@@ -761,7 +767,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           error = e.getLocalizedMessage();
         }
         if (error != null) {
-          JOptionPane.showMessageDialog(this, Resources.get("alchemydialog.savingerror.message", error));
+          JOptionPane.showMessageDialog(this, Resources.get("alchemydialog.savingerror.message",
+              error));
         }
       }
     }
@@ -839,8 +846,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
        * @param herb The ingredient. Usually, but not necessarily an ItemType from data.rules.
        */
       public HerbInfo(ItemType herb) {
-        this.item = herb;
-        this.number = 0;
+        item = herb;
+        number = 0;
       }
 
       ItemType item;
@@ -860,30 +867,31 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
        * @param potion The potion. Usually, but not necessarily a potion from data.
        */
       public PotionInfo(Potion potion) {
-        this._potion = potion;
-        this.ingredients = new HashMap<ItemType, Integer>();
-        this.production = 0;
+        _potion = potion;
+        ingredients = new HashMap<ItemType, Integer>();
+        production = 0;
 
         for (Item ingredient : potion.ingredients()) {
-          this.ingredients.put(ingredient.getItemType(), ingredient.getAmount());
+          ingredients.put(ingredient.getItemType(), ingredient.getAmount());
         }
       }
 
       public PotionInfo(Spell spell) {
-        this._spell = spell;
-        this.ingredients = new HashMap<ItemType, Integer>();
-        this.production = 0;
+        _spell = spell;
+        ingredients = new HashMap<ItemType, Integer>();
+        production = 0;
 
         for (Spell.Component ingredient : spell.getParsedComponents()) {
-          if (ingredient.getItem() != null)
-            this.ingredients.put(ingredient.getItem(), ingredient.getAmount());
+          if (ingredient.getItem() != null) {
+            ingredients.put(ingredient.getItem(), ingredient.getAmount());
+          }
         }
       }
 
       public PotionInfo(String answer) {
         _name = answer;
-        this.ingredients = new HashMap<ItemType, Integer>();
-        this.production = 0;
+        ingredients = new HashMap<ItemType, Integer>();
+        production = 0;
       }
 
       @Override
@@ -1006,8 +1014,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       }
 
       for (Region r : data.regions().values()) {
-        if (r.getHerb() != null)
+        if (r.getHerb() != null) {
           addHerb(r.getHerb());
+        }
 
         if (r.getPrices() != null) {
           for (LuxuryPrice price : r.getPrices().values()) {
@@ -1135,8 +1144,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     public void setHerbs(List<HerbInfo> newHerbs) {
       herbs = new ArrayList<HerbInfo>(newHerbs);
       herbMap = new HashMap<ItemType, HerbInfo>();
-      for (HerbInfo info : newHerbs)
+      for (HerbInfo info : newHerbs) {
         herbMap.put(info.item, info);
+      }
       fireTableStructureChanged();
     }
 
@@ -1158,8 +1168,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * Set production to 0.
      */
     public void resetProduction() {
-      for (int i = 0; i < potions.size(); ++i)
+      for (int i = 0; i < potions.size(); ++i) {
         potions.get(i).production = 0;
+      }
     }
 
     /**
@@ -1169,14 +1180,16 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * @param regions Only units from these regions will be considered.
      */
     public void updateFromFactions(List<Faction> factions, List<Region> regions) {
-      for (HerbInfo herb : herbs)
+      for (HerbInfo herb : herbs) {
         herb.number = 0;
+      }
       for (Region region : regions) {
         for (Unit u : region.units()) {
           if (factions.contains(u.getFaction())) {
             for (Item item : u.getItems()) {
-              if (herbMap.containsKey(item.getItemType()))
+              if (herbMap.containsKey(item.getItemType())) {
                 herbMap.get(item.getItemType()).number += item.getAmount();
+              }
             }
           }
         }
@@ -1188,19 +1201,22 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * Update stocks with region herbs in selected regions.
      */
     public void updateFromRegions(List<Region> regions) {
-      for (HerbInfo herb : herbs)
+      for (HerbInfo herb : herbs) {
         herb.number = 0;
+      }
 
       for (Region region : regions) {
         HerbInfo info = getInfo(region.getHerb());
-        if (info != null)
+        if (info != null) {
           info.number += 10;
+        }
 
         if (region.getPrices() != null) {
           for (LuxuryPrice price : region.getPrices().values()) {
             info = getInfo(price.getItemType());
-            if (info != null)
+            if (info != null) {
               info.number += 10;
+            }
           }
         }
       }
@@ -1218,14 +1234,14 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * @see javax.swing.table.TableModel#getColumnCount()
      */
     public int getColumnCount() {
-      return potions.size() + fixedCols;
+      return potions.size() + PlannerModel.fixedCols;
     }
 
     /**
      * @see javax.swing.table.TableModel#getRowCount()
      */
     public int getRowCount() {
-      return herbs.size() + fixedRows;
+      return herbs.size() + PlannerModel.fixedRows;
     }
 
     /**
@@ -1242,7 +1258,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         return Resources.get("alchemydialog.colname.rest.title");
 
       default:
-        return potions.get(column - fixedCols).getName();
+        return potions.get(column - PlannerModel.fixedCols).getName();
       }
     }
 
@@ -1275,22 +1291,20 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     private int getType(int columnIndex) {
       switch (columnIndex) {
       case nameCol:
-        return nameType;
+        return PlannerModel.nameType;
       case restCol:
-        return restType;
+        return PlannerModel.restType;
       case stockCol:
-        return stockType;
+        return PlannerModel.stockType;
       default:
-        return ingredientType;
+        return PlannerModel.ingredientType;
       }
     }
 
     /**
      * Returns the cell type. One of {@link #nameType}, {@link #noType}, {@link #restType},
      * {@link #noType}, {@link #stockType}, {@link #maxType}, {@link #currentMaxType},
-     * {@link #productionType}, {@link #ingredientType}.
-     * 
-     * <code>
+     * {@link #productionType}, {@link #ingredientType}. <code>
      * nameType (max possible)  | noType     | noType   | maxType        | ...
      * nameType (remaining)     | noType     | noType   | currentMaxType | ...
      * nameType (planned)       | noType     | noType   | productionType | ...
@@ -1302,27 +1316,27 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     private int getType(int rowIndex, int columnIndex) {
       switch (columnIndex) {
       case nameCol:
-        return nameType;
+        return PlannerModel.nameType;
       case restCol:
-        if (rowIndex < fixedRows)
-          return noType;
+        if (rowIndex < PlannerModel.fixedRows)
+          return PlannerModel.noType;
         else
-          return restType;
+          return PlannerModel.restType;
       case stockCol:
-        if (rowIndex < fixedRows)
-          return noType;
+        if (rowIndex < PlannerModel.fixedRows)
+          return PlannerModel.noType;
         else
-          return stockType;
+          return PlannerModel.stockType;
       default:
         switch (rowIndex) {
         case maxRow:
-          return maxType;
+          return PlannerModel.maxType;
         case currentMaxRow:
-          return currentMaxType;
+          return PlannerModel.currentMaxType;
         case productionRow:
-          return productionType;
+          return PlannerModel.productionType;
         default:
-          return ingredientType;
+          return PlannerModel.ingredientType;
         }
       }
     }
@@ -1426,8 +1440,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     }
 
     /**
-     * Returns the value at the specified cell this is either a String or a subclass of {@link ValueMarker}. The table looks as follows:
-     * <code>
+     * Returns the value at the specified cell this is either a String or a subclass of
+     * {@link ValueMarker}. The table looks as follows: <code>
      * String (max possible)  | null       | null      | MaxValue             | ...
      * String (remaining)     | null       | null      | CurrentMaxValue      | ...
      * String (planned)       | null       | null      | ProductionValue      | ...
@@ -1475,9 +1489,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * row.
      */
     private HerbInfo getHerb(int rowIndex) {
-      if (rowIndex < fixedRows)
+      if (rowIndex < PlannerModel.fixedRows)
         return null;
-      return herbs.get(rowIndex - fixedRows);
+      return herbs.get(rowIndex - PlannerModel.fixedRows);
     }
 
     /**
@@ -1485,9 +1499,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * invalid column.
      */
     private PotionInfo getPotion(int columnIndex) {
-      if (columnIndex < fixedRows)
+      if (columnIndex < PlannerModel.fixedRows)
         return null;
-      return potions.get(columnIndex - fixedCols);
+      return potions.get(columnIndex - PlannerModel.fixedCols);
     }
 
     /**
@@ -1585,11 +1599,11 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       }
 
       for (int pot = 0; pot < potions.size(); ++pot) {
-        fireTableCellUpdated(maxRow, pot + fixedCols);
-        fireTableCellUpdated(currentMaxRow, pot + fixedCols);
+        fireTableCellUpdated(PlannerModel.maxRow, pot + PlannerModel.fixedCols);
+        fireTableCellUpdated(PlannerModel.currentMaxRow, pot + PlannerModel.fixedCols);
       }
       for (int herb = 0; herb < herbs.size(); ++herb) {
-        fireTableCellUpdated(herb + fixedRows, restCol);
+        fireTableCellUpdated(herb + PlannerModel.fixedRows, PlannerModel.restCol);
       }
     }
 
@@ -1604,7 +1618,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     private ArrayList<HerbInfo> newHerbs;
     private ArrayList<PotionInfo> newPotions;
     private PotionInfo currentPotion;
-// private Map<ID, ItemType> addedTypes;
+    // private Map<ID, ItemType> addedTypes;
     private ArrayList<Faction> newFactions;
 
     @Override
@@ -1613,7 +1627,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       newHerbs = new ArrayList<HerbInfo>();
       newPotions = new ArrayList<PotionInfo>();
       newFactions = new ArrayList<Faction>();
-// addedTypes = new HashMap<ID, ItemType>();
+      // addedTypes = new HashMap<ID, ItemType>();
     }
 
     /**
@@ -1635,17 +1649,20 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       if (qName.equals("faction")) {
         Faction faction = getData().getFaction(getEntityID(attributes));
         if (faction == null) {
-          log.warn("unknown faction in alchemy file: " + getEntityID(attributes).toString());
+          AlchemyDialog.log.warn("unknown faction in alchemy file: "
+              + getEntityID(attributes).toString());
         } else {
           newFactions.add(faction);
         }
       } else if (qName.equals("region")) {
         Region region =
             getData().getRegion(CoordinateID.parse(attributes.getValue("coordinate"), ","));
-        if (region == null)
-          log.warn("unknown region in alchemy file: " + attributes.getValue("coordinate"));
-        else
+        if (region == null) {
+          AlchemyDialog.log.warn("unknown region in alchemy file: "
+              + attributes.getValue("coordinate"));
+        } else {
           newRegions.add(region);
+        }
       } else if (qName.equals("herb")) {
         ItemType herb = getHerb(attributes);
         HerbInfo info;
@@ -1670,7 +1687,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       }
       ItemType herb = new ItemType(StringID.create("-1"));
       herb.setName(attributes.getValue("name"));
-// addedTypes.put(getStringID(attributes), herb);
+      // addedTypes.put(getStringID(attributes), herb);
       return herb;
     }
 
@@ -1681,28 +1698,28 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       }
       Potion potion = new MagellanPotionImpl(IntegerID.create(-1));
       potion.setName(attributes.getValue("name"));
-// addedPotion.put()
+      // addedPotion.put()
       return potion;
     }
 
-// private StringID getStringID(Attributes attributes) {
-// return StringID.create(attributes.getValue("id"));
-// }
-//
+    // private StringID getStringID(Attributes attributes) {
+    // return StringID.create(attributes.getValue("id"));
+    // }
+    //
     private EntityID getEntityID(Attributes attributes) {
       return EntityID.createEntityID(attributes.getValue("id"), 10, getData().base);
     }
 
-// private ItemType getType(StringID id) {
-// ItemType type = getData().rules.getItemType(id);
-// if (type == null)
-// type = addedTypes.get(id);
-//
-// if (type == null)
-// throw new RuntimeException("unknown ingredient");
-//
-// return type;
-// }
+    // private ItemType getType(StringID id) {
+    // ItemType type = getData().rules.getItemType(id);
+    // if (type == null)
+    // type = addedTypes.get(id);
+    //
+    // if (type == null)
+    // throw new RuntimeException("unknown ingredient");
+    //
+    // return type;
+    // }
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
@@ -1735,8 +1752,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       factionList.clearSelection();
       List<Faction> factions = getFactions();
       for (int row = 0; row < model.size(); ++row) {
-        if (factions.contains(model.get(row)))
+        if (factions.contains(model.get(row))) {
           factionList.addSelectionInterval(row, row);
+        }
       }
       factionList.setVisibleRowCount(10);
       mainPanel.add(new JScrollPane(factionList));
@@ -1757,7 +1775,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       SpringUtilities.makeCompactGrid(mainPanel, 2, 1, 2, 2, 2, 2);
 
       this.add(mainPanel);
-      this.pack();
+      pack();
     }
   }
 

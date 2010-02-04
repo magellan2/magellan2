@@ -44,8 +44,7 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-public class ClientFilePreferences extends AbstractPreferencesAdapter implements
-    PreferencesAdapter {
+public class ClientFilePreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
   private final Logger log = Logger.getInstance(ClientFilePreferences.class);
   protected JSpinner txtFileHistorySize;
   protected JSpinner txtCRBackupsCount;
@@ -74,8 +73,7 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
     help.add(l, con);
     con.gridx = 1;
     con.gridwidth = 2;
-    txtFileHistorySize =
-        new JSpinner(new SpinnerNumberModel(5, 0, 99, 1));
+    txtFileHistorySize = new JSpinner(new SpinnerNumberModel(5, 0, 99, 1));
 
     help.add(txtFileHistorySize, con);
 
@@ -110,8 +108,7 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
 
     jpanel_CRBackups.add(l2, c_CR);
 
-    txtCRBackupsCount =
-        new JSpinner(new SpinnerNumberModel(3, 0, 100, 1));
+    txtCRBackupsCount = new JSpinner(new SpinnerNumberModel(3, 0, 100, 1));
 
     c_CR.gridx++;
     jpanel_CRBackups.add(txtCRBackupsCount, c_CR);
@@ -137,8 +134,8 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
     c_CR.fill = GridBagConstraints.HORIZONTAL;
     jpanel_CRBackups.add(txtDescription2, c_CR);
 
-    
-    JPanel fileNameGeneratorPanel = addPanel(Resources.get("util.filenamegenerator.prefs.title"), new GridBagLayout());
+    JPanel fileNameGeneratorPanel =
+        addPanel(Resources.get("util.filenamegenerator.prefs.title"), new GridBagLayout());
 
     con =
         new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST,

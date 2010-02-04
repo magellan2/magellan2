@@ -25,27 +25,15 @@ package magellan.library.gamebinding.e3a;
 
 import magellan.library.GameData;
 import magellan.library.gamebinding.EresseaMessageRenderer;
+
 /**
- * A Renderer for Eressea Messages
- * 
- * Messages in Eressea look like this:
- * MESSAGE 350568592
- * 5281483;type
- * "Whio (whio) übergibt 10 Silber an Darin Jerekop (djer).";rendered
- * 1515696;unit
- * 10;amount
- * "Silber";resource
- * 631683;target
- * 
- * The rendered tag can be rendered by this Renderer using the Message, 
- * the Messagetype and Translations
- * 
- * Messagetypes look like this:
- * 
- * MESSAGETYPE 5281483
+ * A Renderer for Eressea Messages Messages in Eressea look like this: MESSAGE 350568592
+ * 5281483;type "Whio (whio) übergibt 10 Silber an Darin Jerekop (djer).";rendered 1515696;unit
+ * 10;amount "Silber";resource 631683;target The rendered tag can be rendered by this Renderer using
+ * the Message, the Messagetype and Translations Messagetypes look like this: MESSAGETYPE 5281483
  * "\"$unit($unit) übergibt $int($amount) $resource($resource,$amount) an $unit($target).\"";text
  * "economy";section
- *
+ * 
  * @author ...
  * @version 1.0, 28.11.2007
  */

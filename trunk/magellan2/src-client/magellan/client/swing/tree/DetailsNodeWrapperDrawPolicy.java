@@ -49,16 +49,17 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
    * @param count Number of options (top level check boxes)
    * @param subcount Number of sub-options (check boxes in details entry)
    * @param p Properties to store options
-   * @param prefix Prefix for properties keys 
+   * @param prefix Prefix for properties keys
    * @param sK suffixes of properties keys
    * @param lK suffixes of resource keys
    * @param rows number of rows of boxes
    * @param resourcePrefix Prefix for resource keys
    */
-  public DetailsNodeWrapperDrawPolicy(int count, int subcount[], Properties p, String prefix, String sK[][], String lK[], int rows, String resourcePrefix) {
+  public DetailsNodeWrapperDrawPolicy(int count, int subcount[], Properties p, String prefix,
+      String sK[][], String lK[], int rows, String resourcePrefix) {
     this.count = count;
     this.subcount = subcount;
-    this.settings = p;
+    settings = p;
     this.prefix = prefix;
     this.sK = sK;
     this.lK = lK;
@@ -107,7 +108,7 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
    * DOCUMENT-ME
    */
   public String getString(String key) {
-    return Resources.get(resourcePrefix+key);
+    return Resources.get(resourcePrefix + key);
   }
 
   protected JPanel getExternalDetailContainer(int index) {
@@ -123,7 +124,7 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
      * @param count Number of options (top level check boxes)
      * @param subcount Number of sub-options (check boxes in details entry)
      * @param p Properties to store options
-     * @param prefix Prefix for properties keys 
+     * @param prefix Prefix for properties keys
      * @param sK suffixes of properties keys
      * @param lK suffixes of resource keys
      * @param rows number of rows of boxes

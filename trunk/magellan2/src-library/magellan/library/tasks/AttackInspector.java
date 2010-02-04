@@ -49,13 +49,14 @@ public class AttackInspector extends AbstractInspector {
     private ProblemType type;
 
     AttackProblemTypes() {
-      String name = this.name().toLowerCase();
+      String name = name().toLowerCase();
       String message = Resources.get("tasks.attackinspector." + name + ".message");
       String typeName = Resources.get("tasks.attackinspector." + name + ".name", false);
-      if (typeName == null)
+      if (typeName == null) {
         typeName = message;
+      }
       String description = Resources.get("tasks.attackinspector." + name + ".description", false);
-      String group = Resources.get("tasks.attackinspector."+name+".group", false); 
+      String group = Resources.get("tasks.attackinspector." + name + ".group", false);
       type = new ProblemType(typeName, group, description, message);
     }
 
@@ -84,13 +85,11 @@ public class AttackInspector extends AbstractInspector {
    */
   @Override
   public List<Problem> reviewUnit(Unit u, Severity severity) {
-    if ((u == null) || u.ordersAreNull()) {
+    if ((u == null) || u.ordersAreNull())
       return Collections.emptyList();
-    }
 
-    if (severity == Severity.INFORMATION) {
+    if (severity == Severity.INFORMATION)
       return Collections.emptyList();
-    }
 
     List<Problem> problems = new ArrayList<Problem>(2);
 
@@ -108,8 +107,8 @@ public class AttackInspector extends AbstractInspector {
           if (relation.source.getFaction().getAllies() != null
               && relation.source.getFaction().getAllies().containsKey(
                   relation.target.getFaction().getID())) {
-            problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.FRIENDLYFIRE.getType(),
-                u, this, relation.line));
+            problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.FRIENDLYFIRE
+                .getType(), u, this, relation.line));
           }
         }
         // TODO define as constants
@@ -136,22 +135,21 @@ public class AttackInspector extends AbstractInspector {
     }
     if (severity == Severity.ERROR) {
       if (wrongStatus != Integer.MAX_VALUE) {
-        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING.getType(), u, this,
-            wrongStatus));
+        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING
+            .getType(), u, this, wrongStatus));
       }
 
       // guard and not fighting (fleeing)?
       if (u.getModifiedGuard() != 0 && u.getModifiedCombatStatus() == 5) {
-        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING4GUARD.getType(),
-            u, this));
+        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING4GUARD
+            .getType(), u, this));
       }
 
     }
-    if (problems.isEmpty()) {
+    if (problems.isEmpty())
       return Collections.emptyList();
-    } else {
+    else
       return problems;
-    }
   }
 
   public Collection<ProblemType> getTypes() {

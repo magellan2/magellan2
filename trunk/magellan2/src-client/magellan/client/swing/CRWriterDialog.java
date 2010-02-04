@@ -82,9 +82,8 @@ import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
 /**
- * A GUI for writing a CR to a file or copy it to the clipboard. This class can
- * be used as a stand-alone application or can be integrated as dialog into a
- * different application.
+ * A GUI for writing a CR to a file or copy it to the clipboard. This class can be used as a
+ * stand-alone application or can be integrated as dialog into a different application.
  */
 public class CRWriterDialog extends InternationalizedDataDialog {
   private static final Logger log = Logger.getInstance(CRWriterDialog.class);
@@ -134,19 +133,19 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    */
   public CRWriterDialog(Frame owner, boolean modal, GameData initData, Properties p) {
     super(owner, modal, null, initData, p);
-    this.data = initData;
+    data = initData;
     init();
   }
 
   /**
-   * Create a new CRWriterDialog object as a dialog with a parent window and a
-   * set of selected regions.
+   * Create a new CRWriterDialog object as a dialog with a parent window and a set of selected
+   * regions.
    */
   public CRWriterDialog(Frame owner, boolean modal, GameData initData, Properties p,
       Collection<Region> selectedRegions) {
     super(owner, modal, null, initData, p);
-    this.regions = selectedRegions;
-    this.data = initData;
+    regions = selectedRegions;
+    data = initData;
     init();
   }
 
@@ -178,7 +177,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     c.fill = GridBagConstraints.HORIZONTAL;
     c.weightx = 0.1;
     c.weighty = 0.0;
-    Container fp = getFilePanel(); 
+    Container fp = getFilePanel();
     mainPanel.add(fp, c);
 
     c.anchor = GridBagConstraints.NORTH;
@@ -189,7 +188,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     c.fill = GridBagConstraints.HORIZONTAL;
     c.weightx = 0.1;
     c.weighty = 0.0;
-    Container op = getOptionPanel(); 
+    Container op = getOptionPanel();
     mainPanel.add(op, c);
 
     c.anchor = GridBagConstraints.NORTH;
@@ -203,7 +202,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     Container bp = getButtonPanel();
     mainPanel.add(bp, c);
     // don't let dialog size be dominated by file panel size
-    fp.setPreferredSize(new Dimension(op.getPreferredSize().width+bp.getPreferredSize().width, fp.getPreferredSize().height));
+    fp.setPreferredSize(new Dimension(op.getPreferredSize().width + bp.getPreferredSize().width, fp
+        .getPreferredSize().height));
 
     return mainPanel;
   }
@@ -228,7 +228,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       }
     });
     saveButton.setToolTipText(Resources.get("crwriterdialog.btn.save.tooltip", false));
-    
+
     JButton clipboardButton = new JButton(Resources.get("crwriterdialog.btn.clipboard.caption"));
     clipboardButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -691,18 +691,19 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    * @see magellan.client.swing.InternationalizedDataDialog#quit()
    */
   @Override
-  protected void quit(){
+  protected void quit() {
     quit(false);
   }
-  
+
   /**
    * If <code>save==true</code>, save settings. Then quit.
    * 
    * @param save
    */
   protected void quit(boolean save) {
-    if (save)
+    if (save) {
       storeSettings();
+    }
 
     if (standAlone == true) {
       System.exit(0);
@@ -712,7 +713,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   }
 
   private String getFileName(String filename) {
-    File defaultFile = filename==null?null:new File(filename);
+    File defaultFile = filename == null ? null : new File(filename);
     String retVal = null;
 
     JFileChooser fc = new JFileChooser();
@@ -751,18 +752,19 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     final UserInterface ui = new ProgressBarUI(this);
     ui.show();
     new Thread(new Runnable() {
-    
+
       public void run() {
         doWrite(ui, out);
       }
     }).start();
     setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
   }
-   
-  
-  private void doWrite(UserInterface ui, Writer out){
+
+  private void doWrite(UserInterface ui, Writer out) {
     try {
-      int maxProgress = 2+2*(chkSelRegionsOnly.isEnabled()&&chkSelRegionsOnly.isSelected()?regions.size():data.regions().size());
+      int maxProgress =
+          2 + 2 * (chkSelRegionsOnly.isEnabled() && chkSelRegionsOnly.isSelected() ? regions.size()
+              : data.regions().size());
       ui.setMaximum(maxProgress);
       ui.setTitle(Resources.get("crwriterdialog.progress.title"));
       ui.setProgress(Resources.get("crwriterdialog.progress.start"), 2);
@@ -770,15 +772,15 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       GameData newData = data;
 
       // if delemptyfactions is selected we need to have the newData cloned too
-      ui.setProgress(Resources.get("crwriterdialog.progress.cloning"), Math.max(2, maxProgress/20));
+      ui.setProgress(Resources.get("crwriterdialog.progress.cloning"), Math
+          .max(2, maxProgress / 20));
       if (chkDelEmptyFactions.isSelected() || chkDelStats.isSelected()
           || chkSelRegionsOnly.isSelected()) {
         // make the clone here already.
         try {
           newData = (GameData) data.clone();
-          if (newData==null){
+          if (newData == null)
             throw new NullPointerException();
-          }
           if (newData.outOfMemory) {
             JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"),
                 Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
@@ -795,7 +797,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         }
       }
 
-      ui.setProgress(Resources.get("crwriterdialog.progress.cleanfactions"), maxProgress/2/5*1);
+      ui.setProgress(Resources.get("crwriterdialog.progress.cleanfactions"),
+          maxProgress / 2 / 5 * 1);
       if (chkDelStats.isSelected()) {
         // delete points, person counts, spell school, alliances, messages
         // of privileged factions
@@ -838,11 +841,10 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
             if (found && f.isPrivileged()) {
               /**
-               * Fiete: removed here and called for every faction
-               * f.setAverageScore(-1); f.setScore(-1); f.setPersons(-1);
-               * f.setMigrants(-1); f.setMaxMigrants(-1);
-               * f.setSpellSchool(null); f.setAllies(null); // FIXED: heroes?
-               * (Fiete) f.setHeroes(-1); f.setMaxHeroes(-1);
+               * Fiete: removed here and called for every faction f.setAverageScore(-1);
+               * f.setScore(-1); f.setPersons(-1); f.setMigrants(-1); f.setMaxMigrants(-1);
+               * f.setSpellSchool(null); f.setAllies(null); // FIXED: heroes? (Fiete)
+               * f.setHeroes(-1); f.setMaxHeroes(-1);
                **/
               if (excludeBRegions && (f.getMessages() != null)) {
                 Iterator<Message> it2 = f.getMessages().iterator();
@@ -883,8 +885,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
                 // check if some messages should be removed
                 if (messageRemoveList != null && messageRemoveList.size() > 0) {
-                  for (Iterator<Message> iter = messageRemoveList.iterator(); iter.hasNext();) {
-                    Message removeM = iter.next();
+                  for (Message removeM : messageRemoveList) {
                     f.getMessages().remove(removeM);
                   }
                 }
@@ -894,8 +895,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         }
       }
 
-      
-      ui.setProgress(Resources.get("crwriterdialog.progress.cleantranslations"), maxProgress/2/5*2);
+      ui.setProgress(Resources.get("crwriterdialog.progress.cleantranslations"),
+          maxProgress / 2 / 5 * 2);
       if (chkDelTrans.isSelected()) {
         // clean translation table
         List<String> trans = new LinkedList<String>(newData.translations().getKeyTreeSet());
@@ -927,10 +928,10 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         Iterator<String> stringIterator = null;
         boolean checkShips = chkShips.isSelected();
         boolean checkUnits = chkUnits.isSelected();
-//        boolean checkUnitDetails = chkUnitDetails.isSelected();
-//        boolean checkSkills = chkSkills.isSelected();
-//        boolean checkOrders = chkOrders.isSelected();
-//        boolean checkItems = chkItems.isSelected();
+        // boolean checkUnitDetails = chkUnitDetails.isSelected();
+        // boolean checkSkills = chkSkills.isSelected();
+        // boolean checkOrders = chkOrders.isSelected();
+        // boolean checkItems = chkItems.isSelected();
         boolean checkBuildings = chkBuildings.isSelected();
         boolean checkSpells = chkSpellsAndPotions.isSelected();
         boolean checkRegDetails = chkRegionDetails.isSelected();
@@ -1040,9 +1041,10 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         }
       }
 
-      ui.setProgress(Resources.get("crwriterdialog.progress.cleanemptyfactions"), maxProgress/2/5*3);
+      ui.setProgress(Resources.get("crwriterdialog.progress.cleanemptyfactions"),
+          maxProgress / 2 / 5 * 3);
       // Deleting empty Factions
-      if (this.chkDelEmptyFactions.isSelected()) {
+      if (chkDelEmptyFactions.isSelected()) {
         Collection<Region> lookup = data.regions().values();
         if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
           lookup = regions;
@@ -1051,10 +1053,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         ArrayList<Faction> factionRemoveList = null;
         // Looping through the factions
         if (newData.factions() != null) {
-          for (Iterator<Faction> it1 = newData.factions().values().iterator(); it1.hasNext();) {
-            Faction actF = it1.next();
+          for (Faction actF : newData.factions().values()) {
             boolean found = false;
-            // Looping through exported regions or all regions to see if the faction has a unit 
+            // Looping through exported regions or all regions to see if the faction has a unit
             // lookup is set already
             if (lookup != null && lookup.size() > 0) {
               Iterator<Region> it2 = lookup.iterator();
@@ -1089,17 +1090,17 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         // remove code
         // check if factions should be removed
         if (factionRemoveList != null && factionRemoveList.size() > 0) {
-          for (Iterator<Faction> iter = factionRemoveList.iterator(); iter.hasNext();) {
-            Faction removeF = iter.next();
+          for (Faction removeF : factionRemoveList) {
             // Removing the faction from newData
             newData.factions().remove(removeF.getID());
             // alliances...if one of the partners is our delete Faction->delete
-            this.cleanAllianzes(newData, removeF);
+            cleanAllianzes(newData, removeF);
           }
         }
       }
 
-      ui.setProgress(Resources.get("crwriterdialog.progress.cleanmessages"), maxProgress/2/5*4);
+      ui.setProgress(Resources.get("crwriterdialog.progress.cleanmessages"),
+          maxProgress / 2 / 5 * 4);
       // Messages: remove all messages concerning regions not in selection
       if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
         this.cleanMessages(newData, regions);
@@ -1126,7 +1127,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         crw.setRegions(regions);
       }
 
-      ui.setProgress(Resources.get("crwriterdialog.progress.writing"), maxProgress/2);
+      ui.setProgress(Resources.get("crwriterdialog.progress.writing"), maxProgress / 2);
       crw.writeSynchronously();
       crw.close();
     } catch (Exception exc) {
@@ -1148,13 +1149,13 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     while (i1.hasNext()) {
       Faction actF = i1.next();
       if (!actF.equals(factionToDel)) {
-        this.cleanAllies(actF.getAllies(), factionToDel);
+        cleanAllies(actF.getAllies(), factionToDel);
         // groups too
         if (actF.getGroups() != null) {
           Iterator<Group> i2 = actF.getGroups().values().iterator();
           while (i2.hasNext()) {
             Group actG = i2.next();
-            this.cleanAllies(actG.allies(), factionToDel);
+            cleanAllies(actG.allies(), factionToDel);
           }
         }
       }
@@ -1164,8 +1165,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   /**
    * Removes alliances to specific factions
    * 
-   * @param allies
-   *          may be <code>null</code>
+   * @param allies may be <code>null</code>
    * @param factionToDel
    */
   private void cleanAllies(Map<EntityID, Alliance> allies, Faction factionToDel) {
@@ -1223,9 +1223,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    * @param regionList
    */
   private void cleanMessages(GameData data, Faction f, Collection<Region> regionList) {
-    if (f == null || f.getMessages() == null || f.getMessages().size() == 0) {
+    if (f == null || f.getMessages() == null || f.getMessages().size() == 0)
       return;
-    }
     this.cleanMessages(data, f.getMessages(), regionList);
   }
 
@@ -1236,23 +1235,21 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    * @param regionList
    */
   private void cleanMessages(GameData data, Region r, Collection<Region> regionList) {
-    if (r == null || r.getMessages() == null || r.getMessages().size() == 0) {
+    if (r == null || r.getMessages() == null || r.getMessages().size() == 0)
       return;
-    }
     this.cleanMessages(data, r.getMessages(), regionList);
   }
 
   /**
-   * Removes all Messages of the faction linking to regions not in regionList
-   * checkimg msg-tags: region, target, unit, student, teacher
+   * Removes all Messages of the faction linking to regions not in regionList checkimg msg-tags:
+   * region, target, unit, student, teacher
    * 
    * @param data
    * @param regionList
    */
   private void cleanMessages(GameData data, List<Message> msgList, Collection<Region> regionList) {
-    if (msgList == null || msgList.size() == 0 || regionList == null || regionList.size() == 0) {
+    if (msgList == null || msgList.size() == 0 || regionList == null || regionList.size() == 0)
       return;
-    }
 
     ArrayList<Message> keepList = null;
     Iterator<Message> i1 = msgList.iterator();
@@ -1261,16 +1258,16 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       if (msg.getAttributes() != null) {
         // check whether the message belongs to one of the selected regions
         // region related messages:
-        if (this.msgRegionAttributeNotInRegionList(data, msg, "region", regionList)
-            || this.msgRegionAttributeNotInRegionList(data, msg, "from", regionList)
-            || this.msgRegionAttributeNotInRegionList(data, msg, "to", regionList)) {
+        if (msgRegionAttributeNotInRegionList(data, msg, "region", regionList)
+            || msgRegionAttributeNotInRegionList(data, msg, "from", regionList)
+            || msgRegionAttributeNotInRegionList(data, msg, "to", regionList)) {
           continue;
         }
         // unit related messages
-        if (this.msgUnitAttributeNotInRegionList(data, msg, "unit", regionList)
-            || this.msgUnitAttributeNotInRegionList(data, msg, "teacher", regionList)
-            || this.msgUnitAttributeNotInRegionList(data, msg, "student", regionList)
-            || this.msgUnitAttributeNotInRegionList(data, msg, "target", regionList)) {
+        if (msgUnitAttributeNotInRegionList(data, msg, "unit", regionList)
+            || msgUnitAttributeNotInRegionList(data, msg, "teacher", regionList)
+            || msgUnitAttributeNotInRegionList(data, msg, "student", regionList)
+            || msgUnitAttributeNotInRegionList(data, msg, "target", regionList)) {
           continue;
         }
       }
@@ -1289,8 +1286,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   }
 
   /**
-   * true, if the Attribute tagName of the Message msg links not to a region in
-   * regionLists
+   * true, if the Attribute tagName of the Message msg links not to a region in regionLists
    * 
    * @param data
    * @param tagName
@@ -1309,9 +1305,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       if (unit != null) {
         Region r = unit.getRegion();
         if (r != null) {
-          if (regionList.contains(r)) {
+          if (regionList.contains(r))
             return false;
-          }
         }
       }
     }
@@ -1319,8 +1314,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   }
 
   /**
-   * true, if the Attribute tagName of the Message msg links not to a region in
-   * regionLists
+   * true, if the Attribute tagName of the Message msg links not to a region in regionLists
    * 
    * @param data
    * @param tagName
@@ -1341,9 +1335,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       if (coordinate != null) {
         Region mR = data.getRegion(coordinate);
         if (mR != null) {
-          if (regionList.contains(mR)) {
+          if (regionList.contains(mR))
             return false;
-          }
         }
       }
     }
@@ -1370,17 +1363,15 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   }
 
   /**
-   * removes all battles from the faction which took place outside the regions
-   * in regionList
+   * removes all battles from the faction which took place outside the regions in regionList
    * 
    * @param data
    * @param f
    * @param regionList
    */
   private void cleanBattles(GameData data, Faction f, Collection<Region> regionList) {
-    if (f.getBattles() == null || f.getBattles().size() == 0) {
+    if (f.getBattles() == null || f.getBattles().size() == 0)
       return;
-    }
     ArrayList<Battle> battleRemoveList = null;
     Iterator<Battle> it1 = f.getBattles().iterator();
     while (it1.hasNext()) {

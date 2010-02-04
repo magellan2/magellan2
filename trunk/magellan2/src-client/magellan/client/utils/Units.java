@@ -511,6 +511,15 @@ public class Units {
   }
 
   private void initItemCategories() {
+    if (rules.getItemCategories().size() == 0) {
+      ItemCategory cat = new ItemCategory(StringID.create("misc"));
+      cat.setName("misc");
+      StatItemContainer sic = new StatItemContainer(cat);
+      itemCategoriesMap.put(cat, sic);
+      catLessContainer = sic;
+      return;
+    }
+
     for (final Iterator<ItemCategory> iter = rules.getItemCategoryIterator(); iter.hasNext();) {
       final ItemCategory cat = iter.next();
       final StatItemContainer sic = new StatItemContainer(cat);

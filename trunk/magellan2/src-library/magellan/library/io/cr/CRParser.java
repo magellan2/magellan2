@@ -1631,8 +1631,8 @@ public class CRParser implements RulesIO, GameDataIO {
     }
 
     /*
-     * The desired header has been parsed. Continue parsing the sequent rule blocks until the file
-     * ends.
+     * The desired header has been parsed. Continue parsing the subsequent rule blocks until the
+     * file ends.
      */
     parseRules(rules);
 

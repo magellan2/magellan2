@@ -37,30 +37,29 @@ public class RulesReader {
    * Creates a new RulesReader object.
    */
   public RulesReader() {
+    //
   }
 
   /**
    * Reads the rules of the given gamedata. Right now it first tries to read it from an xml. If this
-   * fails it possibly reads the cr
+   * fails it possibly reads the cr.
    * 
-   * @throws IOException If an I/O error occurs
+   * @return The rules for the given name. If all else fails, an empty rules object is returned.
    */
-  public Rules readRules(String name) throws IOException {
+  public Rules readRules(String name) {
     try {
       return loadRules(name);
     } catch (IOException e) {
-      /*
-       * The desired rule file doesn't exist. Fallback to default, if we haven't tried that yet.
-       */
-      if (name.equalsIgnoreCase("eressea")) {
+      RulesReader.log.warn("The ruleset " + name + " could not be found, falling back to Eressea.");
+      try {
+        return loadRules("eressea");
+      } catch (IOException e2) {
         /* This is bad. We don't even have the default rules. */
-        RulesReader.log.warn(
-            "The default ruleset couldn't be found! Operating with an empty ruleset.", e);
-
-        return new GenericRules();
-      } else
-        return readRules("eressea");
+        RulesReader.log.error(
+            "The default ruleset couldn't be found! Operating with an empty ruleset.", e2);
+      }
     }
+    return new GenericRules();
   }
 
   /**
@@ -74,9 +73,7 @@ public class RulesReader {
     if (name != null) {
       name = name.toLowerCase();
     }
-    if (ending != null) {
-      ending = ending.toLowerCase();
-    }
+    ending = ending.toLowerCase();
 
     RulesReader.log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
 

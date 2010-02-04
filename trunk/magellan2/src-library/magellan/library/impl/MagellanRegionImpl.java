@@ -1311,10 +1311,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns horses.
    */
   public int getHorses() {
-    ItemType horsesIT = data.rules.getItemType(EresseaConstants.I_RHORSES);
-    RegionResource horseRR = getResource(horsesIT);
-    if (horseRR != null)
-      return horseRR.getAmount();
+    ItemType horsesIT = data.rules.getItemType(EresseaConstants.I_RHORSES, true);
+    if (horsesIT != null) {
+      RegionResource horseRR = getResource(horsesIT);
+      if (horseRR != null)
+        return horseRR.getAmount();
+    }
     return horses;
   }
 

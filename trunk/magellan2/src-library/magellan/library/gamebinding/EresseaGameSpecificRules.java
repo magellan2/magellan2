@@ -132,7 +132,8 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
    */
   public int getWage(Region region, Race race) {
     int wage = region.getWage();
-    if (race.getName().equalsIgnoreCase(getRules().getRace(EresseaConstants.R_ORKS).getName())) {
+    if (getRules().getRace(EresseaConstants.R_ORKS) == null
+        || race.getName().equalsIgnoreCase(getRules().getRace(EresseaConstants.R_ORKS).getName())) {
       switch (wage) {
       case 12:
         wage = 11;

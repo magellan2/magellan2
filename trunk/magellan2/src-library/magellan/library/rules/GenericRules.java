@@ -810,8 +810,6 @@ public class GenericRules implements Rules {
    */
   public void setGameSpecificStuffClassName(String className) throws IOException {
     gameSpecificStuffClassName = className;
-    gameSpecificStuff =
-        new GameSpecificStuffProvider().getGameSpecificStuff(gameSpecificStuffClassName);
   }
 
   /**
@@ -820,6 +818,14 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getGameSpecificStuff()
    */
   public GameSpecificStuff getGameSpecificStuff() {
+    if (gameSpecificStuff == null) {
+      if (gameSpecificStuffClassName == null) {
+        gameSpecificStuff = new GameSpecificStuffProvider().getGameSpecificStuff();
+      } else {
+        gameSpecificStuff =
+            new GameSpecificStuffProvider().getGameSpecificStuff(gameSpecificStuffClassName);
+      }
+    }
     return gameSpecificStuff;
   }
 

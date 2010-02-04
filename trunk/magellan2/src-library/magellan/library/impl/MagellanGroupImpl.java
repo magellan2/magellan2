@@ -30,7 +30,6 @@ import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Unit;
 import magellan.library.utils.OrderedHashtable;
-import magellan.library.utils.TagMap;
 
 /**
  * A class representing a group of units within a faction.
@@ -228,7 +227,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
    */
   public String putTag(String tag, String value) {
     if (MagellanGroupImpl.tagMap == null) {
-      MagellanGroupImpl.tagMap = new HashMap<String, String>();
+      MagellanGroupImpl.tagMap = new HashMap<String, String>(1);
     }
 
     return MagellanGroupImpl.tagMap.put(tag, value);
@@ -269,7 +268,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
    */
   public Map<String, String> getTagMap() {
     if (MagellanGroupImpl.tagMap == null) {
-      MagellanGroupImpl.tagMap = new TagMap();
+      MagellanGroupImpl.tagMap = new HashMap<String, String>(1);
     }
 
     return Collections.unmodifiableMap(MagellanGroupImpl.tagMap);

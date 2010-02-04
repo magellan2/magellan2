@@ -21,16 +21,20 @@ import magellan.library.ID;
 import magellan.library.utils.logging.Logger;
 
 /**
- * DOCUMENT-ME
+ * This seems to be a meta-map to hold tags for all objects with IDs.
  * 
  * @author $Author: $
  * @version $Revision: 171 $
- * @deprecated (stm) Nobody seems to really need this class. A simple Map<String, String> would do.
+ * @deprecated (stm) Nobody seems to really need this class. It seems over-complicated.
  */
 @Deprecated
 public class ExternalTagMap extends HashMap<ID, TagMap> {
   private static final Logger log = Logger.getInstance(ExternalTagMap.class);
   private static final String METHOD_NAME = "getID";
+
+  public ExternalTagMap() {
+    Logger.getInstance(TagMap.class).warn("using deprecated ExternalTagMap");
+  }
 
   protected ID getID(Object o) {
     if (o instanceof ID)

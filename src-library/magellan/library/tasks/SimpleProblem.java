@@ -32,7 +32,8 @@ public class SimpleProblem implements Problem {
   /**
    * Creates a new AbstractProblem object.
    * 
-   * @param type One of {@link Problem#INFORMATION}, {@link Problem#WARNING}, {@link Problem#ERROR}
+   * @param type One of {@link Problem.Severity#INFORMATION}, {@link Problem.Severity#WARNING},
+   *          {@link Problem.Severity#ERROR}
    * @param region A region where the problem occurs
    * @param owner The unit responsible for this problem or <code>null</code>. If
    *          <code>line >= 0 </code>, it refers to an order of this unit.

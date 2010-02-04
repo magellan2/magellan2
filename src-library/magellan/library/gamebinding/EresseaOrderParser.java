@@ -3432,7 +3432,7 @@ public class EresseaOrderParser implements OrderParser {
      * garnished with quotes as specified by the do... methods.
      * 
      * @return {@link #checkInner()} && {@link #checkNext()}
-     * @see {@link EresseaOrderParser#getString(OrderToken)}
+     * @see EresseaOrderParser#getString(OrderToken)
      */
     public boolean read(OrderToken token) {
       if (!isString(token))
@@ -3766,7 +3766,7 @@ public class EresseaOrderParser implements OrderParser {
   /**
    * Tests if <code>txt</code> is surrounded by double quotes.
    * 
-   * @deprecated use {@link #isNewString(OrderToken, true)}
+   * @deprecated nobody needs us
    */
   @Deprecated
   protected boolean isQuoted(String txt) {
@@ -3776,7 +3776,7 @@ public class EresseaOrderParser implements OrderParser {
   /**
    * Tests if <code>txt</code> is surrounded by single quotes.
    * 
-   * @deprecated use {@link #isNewString(OrderToken, true)}
+   * @deprecated nobody needs us
    */
   @Deprecated
   protected boolean isSingleQuoted(String txt) {
@@ -3831,7 +3831,7 @@ public class EresseaOrderParser implements OrderParser {
   }
 
   /**
-   * Same as {@link #isString(OrderToken, false)}
+   * Same as {@link #isString(OrderToken, boolean) isString(OrderToken, false)}
    */
   protected boolean isString(OrderToken token) {
     return isString(token, false);

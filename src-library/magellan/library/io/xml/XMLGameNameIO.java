@@ -26,6 +26,7 @@ import magellan.library.io.file.FileType;
  */
 public class XMLGameNameIO implements GameNameIO {
   public XMLGameNameIO() {
+    // TODO IMPLEMENT-ME
   }
 
   /**

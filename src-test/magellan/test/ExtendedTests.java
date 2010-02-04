@@ -272,13 +272,13 @@ public class ExtendedTests {
    * shield if available. Confirms unit if there's no problem.
    * 
    * @param u The unit in question
-   * @param weaponSkill The desired skill. If <code>null</code>, the unit's best weapon skill is
+   * @param sWeaponSkill The desired skill. If <code>null</code>, the unit's best weapon skill is
    *          used. If the unit knows no weapon skill, a warning is issued.
-   * @param weapon The desired weapon that is reserved. If this is <code>null</code>, a weapon that
+   * @param sWeapon The desired weapon that is reserved. If this is <code>null</code>, a weapon that
    *          matches the weaponSkill is reserved.
-   * @param armor The desired armor. If <code>null</code>, a suitable armor is reserved. If the unit
-   *          has no armor at all, <em>no</em> warning is issued.
-   * @param shield The desired shield. If <code>null</code>, a suitable shield is reserved. If the
+   * @param sArmor The desired armor. If <code>null</code>, a suitable armor is reserved. If the
+   *          unit has no armor at all, <em>no</em> warning is issued.
+   * @param sShield The desired shield. If <code>null</code>, a suitable shield is reserved. If the
    *          unit has no shield at all, <em>no</em> warning is issued.
    * @param warnEquipment Warnings for missing equipment are only issued if this is
    *          <code>true</code>.

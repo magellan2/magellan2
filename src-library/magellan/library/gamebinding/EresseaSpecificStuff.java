@@ -52,12 +52,15 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
     return rules;
   }
 
-  public EresseaSpecificStuff() {
+  /**
+   * @throws IOException If the rules are not readable
+   */
+  public EresseaSpecificStuff() throws IOException {
     try {
       rules = new RulesReader().readRules(getName());
     } catch (IOException e) {
       rules = null;
-      throw new RuntimeException(getName() + " rules not readable", e);
+      throw new IOException(getName() + " rules not readable", e);
     }
   }
 

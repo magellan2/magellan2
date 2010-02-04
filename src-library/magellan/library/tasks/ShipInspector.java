@@ -79,7 +79,7 @@ public class ShipInspector extends AbstractInspector {
   /**
    * Reviews the region for ships with problems.
    * 
-   * @see magellan.library.tasks.AbstractInspector#reviewRegion(magellan.library.Region, int)
+   * @see magellan.library.tasks.AbstractInspector#reviewRegion(magellan.library.Region, Severity)
    */
   @Override
   public List<Problem> reviewRegion(Region r, Severity severity) {
@@ -286,7 +286,7 @@ public class ShipInspector extends AbstractInspector {
   /**
    * Reviews the region for ships with problems.
    * 
-   * @see magellan.library.tasks.AbstractInspector#reviewRegion(magellan.library.Region, int)
+   * @see magellan.library.tasks.AbstractInspector#reviewRegion(magellan.library.Region, Severity)
    */
   @Override
   public List<Problem> reviewUnit(Unit u, Severity severity) {

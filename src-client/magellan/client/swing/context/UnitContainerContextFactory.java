@@ -46,9 +46,8 @@ public class UnitContainerContextFactory implements ContextFactory {
   /**
    * Creates a context menu based on the type of argument.
    * 
-   * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
-   *      magellan.library.GameData, java.lang.Object, java.util.Collection,
-   *      javax.swing.tree.DefaultMutableTreeNode)
+   * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher, GameData,
+   *      Object, SelectionEvent, DefaultMutableTreeNode)
    */
   public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
       SelectionEvent selectedObjects, DefaultMutableTreeNode node) {

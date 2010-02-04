@@ -13,6 +13,8 @@
 
 package magellan.library.gamebinding;
 
+import java.io.IOException;
+
 import magellan.library.GameData;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
@@ -33,7 +35,10 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
 
   private OrderChanger orderChanger;
 
-  public AllanonSpecificStuff() {
+  /**
+   * @throws IOException If rules are not readable
+   */
+  public AllanonSpecificStuff() throws IOException {
     super();
   }
 

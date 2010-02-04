@@ -70,7 +70,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
   /**
    * Sets the value of faction.
    * 
-   * @param faction The value for faction.
+   * @param owner The value for faction.
    */
   public void setOwner(Faction owner) {
     this.owner = owner;

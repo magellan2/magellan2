@@ -33,7 +33,7 @@ public class GameSpecificStuffProvider {
    * @return a GameSpecificStuff object based on the given game name
    * @throws IOException if we must fall back to Eressea and no rules file can be read.
    */
-  public GameSpecificStuff getGameSpecificStuff(String className) {
+  public GameSpecificStuff getGameSpecificStuff(String className) throws IOException {
     GameSpecificStuff gameSpecificStuff = loadGameSpecificStuff(className);
 
     if ((className == null) || (gameSpecificStuff == null)) {

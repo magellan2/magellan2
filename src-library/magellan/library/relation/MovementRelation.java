@@ -28,7 +28,7 @@ public class MovementRelation extends UnitRelation implements LongOrderRelation 
   /**
    * Creates a new MovementRelation object.
    * 
-   * @param s The source unit
+   * @param u The source unit
    * @param m The list of region coordinates
    * @param line The line in the source's orders
    */

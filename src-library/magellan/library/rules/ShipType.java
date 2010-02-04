@@ -123,7 +123,7 @@ public class ShipType extends ConstructibleType {
   }
 
   /**
-   * @see magellan.library.rules.ConstructibleType#getRawMaterial(magellan.library.ID)
+   * @see magellan.library.rules.ConstructibleType#getRawMaterial(StringID)
    */
   @Override
   public Item getRawMaterial(StringID id) {
@@ -142,13 +142,13 @@ public class ShipType extends ConstructibleType {
    */
   @Override
   public Collection<Item> getRawMaterials() {
-    if (fallBackMaterial)
+    if (fallBackMaterial) {
       if (wood == null) {
         log.warn("Hmm..., don't know what wood is...");
         return super.getRawMaterials();
       } else
         return Collections.singletonList(new Item(wood, 1));
-    else
+    } else
       return super.getRawMaterials();
   }
 

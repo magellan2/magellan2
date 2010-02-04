@@ -253,7 +253,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Testmethod for {@link magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader}.
+   * Testmethod for ARBEITE
    */
   @Test
   public void testArbeiteReader() {
@@ -520,7 +520,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.EndeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.EndeReader}.
    */
   @Test
   public void testEndeReader() {

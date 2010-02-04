@@ -61,15 +61,25 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
+   * DOCUMENT-ME
+   * 
    * @param text
    * @param clipboardValue
    * @param units
-   * @param icons
+   * @param icon
    */
   public UnitListNodeWrapper(String text, String clipboardValue, Collection<Unit> units, String icon) {
     this(text, clipboardValue, units, icon == null ? null : Collections.singleton(icon));
   }
 
+  /**
+   * DOCUMENT-ME
+   * 
+   * @param text
+   * @param clipboardValue
+   * @param units
+   * @param icons
+   */
   public UnitListNodeWrapper(String text, String clipboardValue, Collection<Unit> units,
       Collection<String> icons) {
     this(text, clipboardValue, units);

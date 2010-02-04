@@ -1392,7 +1392,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       if (ucr instanceof EnterRelation)
         // fast return: first EnterRelation wins
         return ucr.target;
-      // } else if(ucr instanceof LeaveRelation && ucr.target.equals(getShip())) {
       else if (ucr instanceof LeaveRelation && ucr.target.equals(getUnitContainer()))
         // fast return: first LeaveRelation wins
         // we only left our container
@@ -2544,7 +2543,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
      * Removes the order at the specified position. Shifts any subsequent elements to the left
      * (subtracts one from their indices).
      * 
-     * @param index the index of the element to removed. The first order is 0!
+     * @param i the index of the element to removed. The first order is 0!
      * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt;=
      *           getSize()).
      */

@@ -66,15 +66,10 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   public Map<String, String> attributes = null;
 
   /**
-   * this is a helper static variable so we only have one reference (tricky, eh?)
-   */
-  private static final IntegerID ambiguousID = IntegerID.create(-1);
-
-  /**
    * Creates a new Message object.
    */
   public MagellanMessageImpl(String text) {
-    this(MagellanMessageImpl.ambiguousID, text, null, null);
+    this(Message.ambiguousID, text, null, null);
   }
 
   /**
@@ -314,8 +309,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   public boolean equals(Object o) {
     try {
       boolean ret =
-          getID().equals(MagellanMessageImpl.ambiguousID)
-              ? isPrimitiveEquals((MagellanMessageImpl) o)
+          getID().equals(Message.ambiguousID) ? isPrimitiveEquals((MagellanMessageImpl) o)
               : isComplexEquals((MagellanMessageImpl) o);
 
       /*
@@ -353,7 +347,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
      * (this.getID().equals(o.getID()) || (equalObjects(this.getText(), o.getText()) &&
      * equalObjects(this.getMessageType(), o.getMessageType())));
      */
-    return (!getID().equals(MagellanMessageImpl.ambiguousID) && getID().equals(o.getID()) && MagellanMessageImpl
+    return (!getID().equals(Message.ambiguousID) && getID().equals(o.getID()) && MagellanMessageImpl
         .equalObjects(getMessageType(), o.getMessageType()));
   }
 

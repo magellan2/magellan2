@@ -59,7 +59,7 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
   /**
    * @param obj
    * @param text
-   * @param icons may be <code>null</code>
+   * @param icon may be <code>null</code>
    */
   public SimpleNodeWrapper(Object obj, String text, String icon) {
     this(obj, text, icon, null);

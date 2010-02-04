@@ -1017,11 +1017,11 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
         for (JTextField[] element : table) {
           buf.append(rowStart);
 
-          for (int j = 0; j < element.length; j++) {
+          for (JTextField element2 : element) {
             buf.append(columnStart);
 
-            if (element[j].getText() != null) {
-              buf.append(removePSigns(element[j].getText()));
+            if (element2.getText() != null) {
+              buf.append(removePSigns(element2.getText()));
             }
 
             buf.append(columnEnd);
@@ -1067,11 +1067,11 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
         for (JTextField[] element : table) {
           buf.append(rowStart);
 
-          for (int j = 0; j < element.length; j++) {
+          for (JTextField element2 : element) {
             buf.append(columnStart);
 
-            if (element[j].getText() != null) {
-              buf.append(removePSigns(element[j].getText()));
+            if (element2.getText() != null) {
+              buf.append(removePSigns(element2.getText()));
             }
 
             buf.append(columnEnd);

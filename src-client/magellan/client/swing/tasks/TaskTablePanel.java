@@ -251,9 +251,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     private void maybeSelect(MouseEvent e) {
-      if (updateDispatcher.isBusy()) {
+      if (updateDispatcher.isBusy())
         return;
-      }
       if (e.getSource() == table) {
         if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
           JTable target = (JTable) e.getSource();
@@ -417,9 +416,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   protected void acknowledge(int row) {
-    if (row < 0 || row >= sorter.getRowCount()) {
+    if (row < 0 || row >= sorter.getRowCount())
       throw new IndexOutOfBoundsException();
-    }
     Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
     selectObjectOnRow(row);
 
@@ -435,9 +433,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @param row
    */
   protected void selectObjectOnRow(int row) {
-    if (row < 0 || row >= sorter.getRowCount()) {
+    if (row < 0 || row >= sorter.getRowCount())
       throw new IndexOutOfBoundsException();
-    }
     Object obj = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
     dispatcher.fire(SelectionEvent.create(this, obj, SelectionEvent.ST_DEFAULT));
   }
@@ -544,12 +541,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * @return Return the object.
      */
     public Object getObject() {
-      if (region != null) {
+      if (region != null)
         return region;
-      }
-      if (unit != null) {
+      if (unit != null)
         return unit;
-      }
       return CLEAR;
     }
 
@@ -795,9 +790,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * @param r
      */
     public void removeRegion(Region r) {
-      if (!isShown()) {
+      if (!isShown())
         return;
-      }
       queue.push(new UpdateEvent(r, false));
     }
 
@@ -818,9 +812,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * @param region
      */
     public void addRegion(Region region) {
-      if (!isShown()) {
+      if (!isShown())
         return;
-      }
       queue.push(new UpdateEvent(region, true));
     }
 
@@ -837,9 +830,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * @param u
      */
     public void addUnit(Unit u) {
-      if (!isShown()) {
+      if (!isShown())
         return;
-      }
       queue.push(new UpdateEvent(u, true));
     }
 
@@ -856,9 +848,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * @param u
      */
     public void removeUnit(Unit u) {
-      if (!isShown()) {
+      if (!isShown())
         return;
-      }
       queue.push(new UpdateEvent(u, false));
     }
 
@@ -907,8 +898,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   /**
    * Returns a list of all registered inspectors.
-   * 
-   * @return
    */
   public List<Inspector> getInspectors() {
     return Collections.unmodifiableList(inspectors);
@@ -916,8 +905,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   /**
    * Returns a list of all ProblemTypes of all registered inspectors.
-   * 
-   * @return
    */
   public List<ProblemType> getAllProblemTypes() {
     List<ProblemType> types = null;
@@ -929,11 +916,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         types.add(p);
       }
     }
-    if (types == null) {
+    if (types == null)
       return Collections.emptyList();
-    } else {
+    else
       return Collections.unmodifiableList(types);
-    }
   }
 
   /**
@@ -976,9 +962,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     super.gameDataChanged(e);
     initInspectors(e.getGameData());
     // do nothing if Panel is hidden
-    if (!isShown()) {
+    if (!isShown())
       return;
-    }
     // rebuild warning list
     refreshProblems();
   }
@@ -987,14 +972,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent e) {
-    if ((e.getSource() == this)) {
+    if ((e.getSource() == this))
       return;
-    }
 
     // do nothing if Panel is hidden
-    if (!isShown()) {
+    if (!isShown())
       return;
-    }
 
     synchronized (lastSelection) {
       // if selection has changed, refresh delta
@@ -1093,9 +1076,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * Reviews a region with all units within.
    */
   private void reviewRegionAndUnits(Region r) {
-    if (r == null) {
+    if (r == null)
       return;
-    }
 
     if (TaskTablePanel.log.isDebugEnabled()) {
       TaskTablePanel.log.debug("TaskTablePanel.reviewRegionAndUnits(" + r + ") called");
@@ -1103,9 +1085,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     reviewRegion(r);
 
-    if (r.units() == null) {
+    if (r.units() == null)
       return;
-    }
 
     for (Unit u : r.units()) {
       reviewUnit(u);
@@ -1117,9 +1098,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * Reviews a region with all units within.
    */
   private void unReviewRegionAndUnits(Region r) {
-    if (r == null) {
+    if (r == null)
       return;
-    }
 
     if (TaskTablePanel.log.isDebugEnabled()) {
       TaskTablePanel.log.debug("TaskTablePanel.reviewRegionAndUnits(" + r + ") called");
@@ -1127,9 +1107,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     removeRegion(r);
 
-    if (r.units() == null) {
+    if (r.units() == null)
       return;
-    }
 
     for (Unit u : r.units()) {
       unReviewUnit(u);
@@ -1192,9 +1171,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * Reviews a the specified region and the specified unit.
    */
   private void reviewUnit(Unit u) {
-    if (!isValidUnitByFaction(u)) {
+    if (!isValidUnitByFaction(u))
       return;
-    }
     for (Inspector c : getInspectors()) {
       if (u != null) {
         final List<Problem> problems = c.reviewUnit(u);
@@ -1223,14 +1201,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     if (restrictToOwner()
         && !restrictToPassword()
         && (data.getOwnerFaction() == null || u.getFaction() == null || !data.getOwnerFaction()
-            .equals(u.getFaction().getID()))) {
+            .equals(u.getFaction().getID())))
       return false;
-    }
     if (restrictToPassword()
         && (u.getFaction() == null || u.getFaction().getPassword() == null || u.getFaction()
-            .getPassword().length() == 0)) {
+            .getPassword().length() == 0))
       return false;
-    }
 
     return true;
   }
@@ -1249,39 +1225,63 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     return activeProblems == null || activeProblems.contains(p.getType());
   }
 
+  /**
+   * Returns <code>true</code> if problems will be restricted to the owner faction.
+   */
   public boolean restrictToOwner() {
     return PropertiesHelper
         .getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, true);
   }
 
+  /**
+   * Returns <code>true</code> if problems will be restricted to factions with known password.
+   */
   public boolean restrictToPassword() {
     return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_PASSWORD,
         true);
   }
 
+  /**
+   * Sets whether problems will be restricted to the owner faction.
+   */
   public void setRestrictToOwner(boolean value) {
     settings.put(PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, String.valueOf(value));
   }
 
+  /**
+   * Sets whether problems will be restricted to factions with known password.
+   */
   public void setRestrictToPassword(boolean value) {
     settings.put(PropertiesHelper.TASKTABLE_RESTRICT_TO_PASSWORD, String.valueOf(value));
   }
 
+  /**
+   * Returns <code>true</code> if problems will be restricted to current region selection.
+   */
   public boolean restrictToSelection() {
     return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_SELECTION,
         false);
   }
 
+  /**
+   * Returns <code>true</code> if problems will be restricted to current region.
+   */
   public boolean restrictToActiveRegion() {
     return PropertiesHelper.getBoolean(settings,
         PropertiesHelper.TASKTABLE_RESTRICT_TO_ACTIVEREGION, false);
   }
 
+  /**
+   * Sets whether problems will be restricted to current selection.
+   */
   public void setRestrictToSelection(boolean value) {
     settings.put(PropertiesHelper.TASKTABLE_RESTRICT_TO_SELECTION, String.valueOf(value));
     selectionLabel.setEnabled(value);
   }
 
+  /**
+   * Sets whether problems will be restricted to current region.
+   */
   public void setRestrictToActiveRegion(boolean value) {
     settings.put(PropertiesHelper.TASKTABLE_RESTRICT_TO_ACTIVEREGION, String.valueOf(value));
     activeRegionLabel.setEnabled(value);
@@ -1310,10 +1310,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      */
     public TaskTableModel(Vector<?> header) {
       super(header, 0);
-      init();
-    }
-
-    private void init() {
     }
 
     /**
@@ -1332,8 +1328,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     /**
      * Adds a list of problems one by one. Should be called in the AWT event dispatch thread!
-     * 
-     * @param p
      */
     public void addProblems(List<Problem> problems) {
       for (Problem p : problems) {
@@ -1431,7 +1425,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     /**
-     * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+     * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(KeyStroke)
      */
     public String getShortcutDescription(KeyStroke stroke) {
       int index = shortcuts.indexOf(stroke);

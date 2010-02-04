@@ -42,7 +42,6 @@ public class ProblemType {
    * @param group The (localized) group this problem belongs to or <code>null</code>
    * @param description The localized description of the problem or <code>null</code>
    * @param message The message to display or <code>null</code>
-   * @param inspector The inspector that causes this ProblemType. Never <code>null</code>
    * @throws NullPointerException if <code>name == null</code>
    * @throws IllegalArgumentException if name contains illegal characters or does not start with a
    *           letter
@@ -84,8 +83,6 @@ public class ProblemType {
   /**
    * Returns the message for this type or <code>null</code> (if the message depends on more than
    * just the type.
-   * 
-   * @return
    */
   public String getMessage() {
     return message;
@@ -93,8 +90,6 @@ public class ProblemType {
 
   /**
    * An inspector creating this ProblemType.
-   * 
-   * @return
    */
   // public Inspector getInspector() {
   // return inspector;

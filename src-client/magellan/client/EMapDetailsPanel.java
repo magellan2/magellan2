@@ -4876,7 +4876,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(KeyStroke)
    */
   public String getShortcutDescription(KeyStroke stroke) {
     int index = shortCuts.indexOf(stroke);
@@ -5053,9 +5053,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   private class StealthContextFactory implements ContextFactory {
     /**
-     * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
-     *      magellan.library.GameData, java.lang.Object, java.util.Collection,
-     *      javax.swing.tree.DefaultMutableTreeNode)
+     * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
+     *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
     public javax.swing.JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data,
         Object argument, SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
@@ -5160,9 +5159,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
-     *      magellan.library.GameData, java.lang.Object, java.util.Collection,
-     *      javax.swing.tree.DefaultMutableTreeNode)
+     * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
+     *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
     public javax.swing.JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data,
         Object argument, SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
@@ -5178,9 +5176,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private class RelationContextFactory implements ContextFactory {
     /**
-     * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
-     *      magellan.library.GameData, java.lang.Object, java.util.Collection,
-     *      javax.swing.tree.DefaultMutableTreeNode)
+     * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
+     *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
     public javax.swing.JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data,
         Object argument, SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
@@ -5620,9 +5617,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   private class UnitCommentContextFactory implements ContextFactory {
     /**
-     * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
-     *      magellan.library.GameData, java.lang.Object, java.util.Collection,
-     *      javax.swing.tree.DefaultMutableTreeNode)
+     * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
+     *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
     public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
         SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
@@ -5788,9 +5784,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private class DetailsUnitContextFactory implements ContextFactory {
 
     /**
-     * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
-     *      magellan.library.GameData, java.lang.Object, java.util.Collection,
-     *      javax.swing.tree.DefaultMutableTreeNode)
+     * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
+     *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
     public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
         SelectionEvent selectedObjects, DefaultMutableTreeNode node) {

@@ -125,7 +125,7 @@ public class CastleType extends BuildingType {
    * If no raw materials have been added we fall back to old behavior: 1 stone per size point.
    * 
    * @param id The id of an {@link ItemType}.
-   * @see magellan.library.rules.ConstructibleType#getRawMaterial(magellan.library.ID)
+   * @see magellan.library.rules.ConstructibleType#getRawMaterial(StringID)
    */
   @Override
   public Item getRawMaterial(StringID id) {

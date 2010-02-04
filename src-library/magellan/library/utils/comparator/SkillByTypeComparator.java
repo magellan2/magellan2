@@ -52,8 +52,8 @@ public class SkillByTypeComparator implements Comparator<Skill> {
   /**
    * Compares its two arguments for order according to their types.
    * 
-   * @param o1 an instance of class Skill.
-   * @param o2 an instance of class Skill.
+   * @param s1 an instance of class Skill.
+   * @param s2 an instance of class Skill.
    * @return the result of the type comparator's comparison of the skill object types. If this
    *         result is 0 and a subcomparator is specified that subcomparator is applied on the skill
    *         objects.

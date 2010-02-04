@@ -13,7 +13,6 @@
 
 package magellan.client.event;
 
-
 /**
  * The listener interface for receiving temp unit events. A class interested in temp unit events
  * implements this interface and registers with an instance of the EventDispatcher class to receive

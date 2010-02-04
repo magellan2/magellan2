@@ -130,8 +130,15 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
   private static final magellan.library.utils.logging.Logger log =
       magellan.library.utils.logging.Logger.getInstance(AlchemyDialog.class);
 
+  /**
+   * The file extension used for writing files
+   */
   public static final String FILE_EXTENSION = "axml";
+  /**
+   * the last saved property
+   */
   public static String PROPERTYNAME_LAST_SAVED = "alchemydialog.lastSaved";
+
   private static String FILE_EXTENSION_DECRIPTION = "XML";
 
   private List<Region> regions;
@@ -145,11 +152,13 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
   /**
    * Creates the dialog and makes it visible.
    * 
-   * @param client
+   * @param owner
    * @param dispatcher
    * @param data
-   * @param properties
-   * @param values
+   * @param settings
+   * @param newRegions
+   * @see InternationalizedDataDialog#InternationalizedDataDialog(Frame, boolean, EventDispatcher,
+   *      GameData, Properties)
    */
   public AlchemyDialog(Frame owner, EventDispatcher dispatcher, GameData data, Properties settings,
       Collection<Region> newRegions) {
@@ -195,9 +204,6 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
   private JMenuBar createMenuBar() {
     JMenuBar menuBar = new JMenuBar();
-
-    // FIXME (stm) this depends on the font!
-    // menuBar.setMinimumSize(new Dimension(10, 20));
 
     JMenu menu;
     menuBar.add(menu = new JMenu(Resources.get("alchemydialog.menu.file.title")));
@@ -382,11 +388,12 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
        * | RestValue | IngredientValue/null | ... ...
        */
       public int compare(Object o1, Object o2) {
-        if (o1 instanceof String)
+        if (o1 instanceof String) {
           if (o2 instanceof String)
             return ((String) o1).compareTo((String) o2);
           else
             return -1;
+        }
 
         if (o2 instanceof String)
           return 1;
@@ -445,21 +452,24 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           return 0;
         }
 
-        if (val1 instanceof MaxValue)
+        if (val1 instanceof MaxValue) {
           if (!(val2 instanceof MaxValue))
             return -1;
+        }
         if (val2 instanceof MaxValue)
           return 1;
 
-        if (val1 instanceof CurrentMaxValue)
+        if (val1 instanceof CurrentMaxValue) {
           if (!(val2 instanceof CurrentMaxValue))
             return -1;
+        }
         if (val2 instanceof CurrentMaxValue)
           return 1;
 
-        if (val1 instanceof ProductionValue)
+        if (val1 instanceof ProductionValue) {
           if (!(val2 instanceof ProductionValue))
             return -1;
+        }
         if (val2 instanceof ProductionValue)
           return 1;
 
@@ -838,6 +848,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    */
   public static class PlannerModel extends AbstractTableModel {
 
+    /**
+     * 
+     */
     public static class HerbInfo {
 
       /**
@@ -854,11 +867,15 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       int number;
     }
 
+    /**
+     */
     public static class PotionInfo {
+      /** */
       public HashMap<ItemType, Integer> ingredients;
       private Potion _potion;
       private Spell _spell;
       private String _name;
+      /** */
       public int production;
 
       /**
@@ -876,6 +893,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         }
       }
 
+      /** */
       public PotionInfo(Spell spell) {
         _spell = spell;
         ingredients = new HashMap<ItemType, Integer>();
@@ -888,6 +906,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         }
       }
 
+      /** */
       public PotionInfo(String answer) {
         _name = answer;
         ingredients = new HashMap<ItemType, Integer>();
@@ -904,6 +923,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           return _name;
       }
 
+      /** */
       public String getName() {
         return toString();
       }
@@ -970,7 +990,6 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
     /**
      * @param data
-     * @param regions
      */
     public PlannerModel(GameData data) {
       this.data = data;
@@ -991,8 +1010,6 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
     /**
      * Return the list of known potions;
-     * 
-     * @return
      */
     public List<PotionInfo> getPotions() {
       if (potions != null)
@@ -1101,6 +1118,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       return true;
     }
 
+    /**
+     * Removes the herb of the specified row from the model.
+     */
     public boolean removeHerb(int row) {
       HerbInfo herbInfo = getHerb(row);
       if (herbInfo == null)
@@ -1115,6 +1135,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       return false;
     }
 
+    /**
+     * Removes the potion of the specified column from the model.
+     */
     public boolean removePotion(int col) {
       PotionInfo potionInfo = getPotion(col);
       if (potionInfo == null)
@@ -1348,10 +1371,12 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     public static class ValueMarker {
       private Integer value;
 
+      /**       */
       public ValueMarker(Integer value) {
         this.value = value;
       }
 
+      /**       */
       public ValueMarker(String value) {
         try {
           this.value = Integer.parseInt(value);
@@ -1369,71 +1394,92 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       }
     }
 
+    /** Value for current stock */
     public static class StockValue extends ValueMarker {
+      /**       */
       public StockValue(Integer value) {
         super(value);
       }
 
+      /**       */
       public StockValue(String value) {
         super(value);
       }
     }
 
+    /** Value for remaining herb */
     public static class RestValue extends ValueMarker {
+      /**       */
       public RestValue(Integer value) {
         super(value);
       }
 
+      /**       */
       public RestValue(String value) {
         super(value);
       }
     }
 
+    /** Value for potion name */
     public static class PotionValue extends ValueMarker {
+      /**       */
       public PotionValue(Integer value) {
         super(value);
       }
 
+      /**       */
       public PotionValue(String value) {
         super(value);
       }
     }
 
+    /** Value for maximum potion value */
     public static class MaxValue extends PotionValue {
+      /**       */
       public MaxValue(Integer value) {
         super(value);
       }
 
+      /**       */
       public MaxValue(String value) {
         super(value);
       }
     }
 
+    /** Value for remaining max potion value */
     public static class CurrentMaxValue extends PotionValue {
+      /**       */
       public CurrentMaxValue(Integer value) {
         super(value);
       }
 
+      /**       */
       public CurrentMaxValue(String value) {
         super(value);
       }
     }
 
+    /** Value for current production */
     public static class ProductionValue extends PotionValue {
+      /**       */
       public ProductionValue(Integer value) {
         super(value);
       }
 
+      /**       */
       public ProductionValue(String value) {
         super(value);
       }
     }
 
+    /** Value for ingredient */
     public static class IngredientValue extends PotionValue {
+      /**       */
       public IngredientValue(Integer value) {
         super(value);
       }
 
+      /**       */
       public IngredientValue(String value) {
         super(value);
       }
@@ -1578,6 +1624,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         try {
           iValue = Integer.parseInt((String) aValue);
         } catch (NumberFormatException e) {
+          // ignore invalid value
         }
       } else if (aValue instanceof Integer) {
         iValue = (Integer) aValue;
@@ -1741,6 +1788,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    * Dialog for selecting a faction from all factions in the report.
    */
   public class FactionDialog extends JDialog {
+    /**
+     * 
+     */
     public FactionDialog() {
       JPanel mainPanel = new JPanel(new SpringLayout());
       DefaultListModel model = new DefaultListModel();

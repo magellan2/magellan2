@@ -206,9 +206,6 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   }
 
   /**
-   * @param u
-   * @param onRoad
-   * @return
    * @deprecated Use {@link #getModifiedRadius(Unit)}
    */
   @Deprecated

@@ -83,7 +83,7 @@ public class Units {
   /**
    * Returns <code>true</code> iff f is a privileged faction.
    * 
-   * @see {@link Faction#isPrivileged()}
+   * @see Faction#isPrivileged()
    */
   public static boolean isPrivileged(Faction f) {
     return (f != null) && (f.isPrivileged());
@@ -96,6 +96,9 @@ public class Units {
     return (u != null) && Units.isPrivileged(u.getFaction()) && !u.isSpy();
   }
 
+  /**
+   * Returns the sailing skill value of the ship's owner
+   */
   public static int getCaptainSkillAmount(Ship s) {
     // FIXME shouldn't access getData() from here, maybe move to GameSpecific
     SkillType sailingSkillType = s.getData().rules.getSkillType(EresseaConstants.S_SEGELN, true);
@@ -108,6 +111,9 @@ public class Units {
     return captainSkillAmount;
   }
 
+  /**
+   * Returns the sailing skill sum of the ship's crew.
+   */
   public static int getSailingSkillAmount(Ship s) {
     SkillType sailingSkillType = s.getData().rules.getSkillType(EresseaConstants.S_SEGELN, true);
     int sailingSkillAmount = 0;

@@ -85,8 +85,12 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
     return cache.modifiedPersons;
   }
 
+  /**
+   * Delivers the number of persons given to region via command "GIVE 0 x PERSONS".
+   * 
+   * @see magellan.library.ZeroUnit#getGivenPersons()
+   */
   public int getGivenPersons() {
-    // delivers the number of persons given to region via command "GIVE 0 x PERSONS"
     int result = 0;
 
     for (PersonTransferRelation ptr : getPersonTransferRelations()) {

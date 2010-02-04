@@ -151,7 +151,7 @@ public class JComboBoxCompletion extends PlainDocument {
       } else {
         // User hit backspace with the cursor positioned on the start => beep
         comboBox.getToolkit().beep(); // when available use:
-                                      // UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+        // UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
       }
       highlightCompletedText(offs);
     } else {
@@ -183,7 +183,7 @@ public class JComboBoxCompletion extends PlainDocument {
         offs = offs - str.length();
         // provide feedback to the user that his input has been received but can not be accepted
         comboBox.getToolkit().beep(); // when available use:
-                                      // UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+        // UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
       }
     }
     setSelectedItem(item);

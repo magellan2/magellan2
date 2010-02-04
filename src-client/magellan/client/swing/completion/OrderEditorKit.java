@@ -40,7 +40,7 @@ public class OrderEditorKit extends StyledEditorKit {
       { new CopyLineAction(), new PreviousWordAction(DefaultEditorKit.previousWordAction, false), // CTRL-Left
           new NextWordAction(DefaultEditorKit.nextWordAction, false), // CTRL-Right
           new PreviousWordAction(DefaultEditorKit.selectionPreviousWordAction, true), // CTRL-Left
-                                                                                      // selected
+          // selected
           new NextWordAction(DefaultEditorKit.selectionNextWordAction, true) // CTRL-Right selected
       };
 

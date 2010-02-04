@@ -341,7 +341,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * 3..travel<br />
    * 4..qualified unit in region (->visibility=null)
    * 
-   * @param i
+   * @param vis
    */
   public void setVisibility(Visibility vis) {
     switch (vis) {

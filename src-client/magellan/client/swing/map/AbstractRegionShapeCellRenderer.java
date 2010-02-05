@@ -44,7 +44,7 @@ public abstract class AbstractRegionShapeCellRenderer extends HexCellRenderer {
       Region r = (Region) obj;
       CoordinateID c = r.getCoordinate();
 
-      Point pos = cellGeo.getCellPosition(c.x, c.y);
+      Point pos = cellGeo.getCellPosition(c.getX(), c.getY());
       pos.translate(-offset.x, -offset.y);
 
       Polygon p = cellGeo.getScaledPolygon();

@@ -49,7 +49,7 @@ public class SchemeCellRenderer extends ImageCellRenderer {
       Image schemeImage = getImage("schemen");
 
       CoordinateID c = r.getCoordinate();
-      Point pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+      Point pos = new Point(cellGeo.getImagePosition(c.getX(), c.getY()));
       pos.translate(-offset.x, -offset.y);
 
       Dimension size = cellGeo.getImageSize();

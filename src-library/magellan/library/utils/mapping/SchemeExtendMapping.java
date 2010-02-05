@@ -47,23 +47,23 @@ public class SchemeExtendMapping implements LevelMapping {
 
   public LevelRelation getMapping(GameData data, int fromLevel, int toLevel) {
     CoordinateID astralToReal = null;
-    CoordinateID minExtend = null;
-    CoordinateID maxExtend = null;
+    CoordinateID.Triplet minExtend = null;
+    CoordinateID.Triplet maxExtend = null;
     for (Region region : data.regions().values()) {
-      if ((region.getCoordinate().z == fromLevel) && (region.schemes().size() > 0)) {
+      if ((region.getCoordinate().getZ() == fromLevel) && (region.schemes().size() > 0)) {
         for (Scheme scheme : region.schemes()) {
           /**
            * we may not find any astral to real mapping by variant 1 above therefore also do
            * calculations for variant 2 here we "normalize" all schemes to be in the area
            */
-          int nx = scheme.getCoordinate().x - 4 * region.getCoordinate().x;
-          int ny = scheme.getCoordinate().y - 4 * region.getCoordinate().y;
+          int nx = scheme.getCoordinate().getX() - 4 * region.getCoordinate().getX();
+          int ny = scheme.getCoordinate().getY() - 4 * region.getCoordinate().getY();
           // this is a virtual third axis diagonal to x and y in the same level, but we store it in
           // the z coordinate
           int nd = nx + ny;
           if (minExtend == null || maxExtend == null) {
-            minExtend = new CoordinateID(nx, ny, nd);
-            maxExtend = new CoordinateID(nx, ny, nd);
+            minExtend = new CoordinateID.Triplet(nx, ny, nd);
+            maxExtend = new CoordinateID.Triplet(nx, ny, nd);
           } else {
             minExtend.x = Math.min(minExtend.x, nx);
             minExtend.y = Math.min(minExtend.y, ny);
@@ -83,7 +83,7 @@ public class SchemeExtendMapping implements LevelMapping {
           for (int x = maxExtend.x - 2; (x <= minExtend.x + 2) && (cntr < 2); x++) {
             for (int y = maxExtend.y - 2; (y <= minExtend.y + 2) && (cntr < 2); y++) {
               if ((maxExtend.z - 2 <= x + y) && (x + y <= minExtend.z + 2)) {
-                astralToReal = new CoordinateID(x, y, toLevel);
+                astralToReal = CoordinateID.create(x, y, toLevel);
                 cntr++;
               }
             }
@@ -105,7 +105,7 @@ public class SchemeExtendMapping implements LevelMapping {
       for (int x = maxExtend.x - 2; (x <= minExtend.x + 2); x++) {
         for (int y = maxExtend.y - 2; (y <= minExtend.y + 2); y++) {
           if ((maxExtend.z - 2 <= x + y) && (x + y <= minExtend.z + 2)) {
-            relations.add(new CoordinateID(x, y, toLevel));
+            relations.add(CoordinateID.create(x, y, toLevel));
           }
         }
       }
@@ -123,7 +123,7 @@ public class SchemeExtendMapping implements LevelMapping {
 
       // now loop over all surounding regions for all astral regions
       for (Region region : data.regions().values()) {
-        if ((region.getCoordinate().z == fromLevel) && (region.schemes().size() > 0)) {
+        if ((region.getCoordinate().getZ() == fromLevel) && (region.schemes().size() > 0)) {
           // surounding regions
           for (int x = maxExtend.x - 4; (x <= minExtend.x + 4); x++) {
             for (int y = maxExtend.y - 4; (y <= minExtend.y + 4); y++) {
@@ -133,16 +133,16 @@ public class SchemeExtendMapping implements LevelMapping {
                     || d < minExtend.z || d > maxExtend.z) {
                   // check terrain
                   Region realRegion =
-                      data.getRegion(new CoordinateID(x + 4 * region.getCoordinate().x, y + 4
-                          * region.getCoordinate().y, toLevel));
+                      data.getRegion(CoordinateID.create(x + 4 * region.getCoordinate().getX(), y + 4
+                          * region.getCoordinate().getY(), toLevel));
                   if (realRegion != null) {
                     if (scheme_rt.contains(realRegion.getRegionType())) {
                       // distance check
                       Iterator<CoordinateID> it = relations.iterator();
                       while (it.hasNext()) {
                         CoordinateID realCoord = it.next();
-                        if (Math.abs(realCoord.x - x) <= 2 && Math.abs(realCoord.y - y) <= 2
-                            && Math.abs(realCoord.x + realCoord.y - d) <= 2) {
+                        if (Math.abs(realCoord.getX() - x) <= 2 && Math.abs(realCoord.getY() - y) <= 2
+                            && Math.abs(realCoord.getX() + realCoord.getY() - d) <= 2) {
                           it.remove();
                         }
                       }

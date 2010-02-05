@@ -683,11 +683,7 @@ public abstract class MagellanFactory {
     }
 
     if (curHS.getCenter() != null) {
-      try {
-        newHS.setCenter(curHS.getCenter().clone());
-      } catch (final CloneNotSupportedException e) {
-        // impossible position, should throw a runtime exception here
-      }
+      newHS.setCenter(curHS.getCenter());
     }
   }
 
@@ -1184,16 +1180,12 @@ public abstract class MagellanFactory {
       for (Scheme curScheme : curRegion.schemes()) {
         Scheme newScheme = resultRegion.getScheme(curScheme.getID());
 
-        try {
-          if (newScheme == null) {
-            newScheme = MagellanFactory.createScheme(curScheme.getID().clone());
-            resultRegion.addScheme(newScheme);
-          }
-
-          MagellanFactory.mergeScheme(curGD, curScheme, resultGD, newScheme);
-        } catch (final CloneNotSupportedException e) {
-          MagellanFactory.log.error(e);
+        if (newScheme == null) {
+          newScheme = MagellanFactory.createScheme(curScheme.getID());
+          resultRegion.addScheme(newScheme);
         }
+
+        MagellanFactory.mergeScheme(curGD, curScheme, resultGD, newScheme);
       }
     }
 

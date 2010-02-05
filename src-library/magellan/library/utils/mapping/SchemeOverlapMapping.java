@@ -63,8 +63,8 @@ public class SchemeOverlapMapping implements LevelMapping {
         Iterator<Region> it = regions.iterator();
         CoordinateID firstCoord = it.next().getCoordinate();
         CoordinateID secondCoord = it.next().getCoordinate();
-        return new LevelRelation(schemeCoord.x - 2 * (firstCoord.x + secondCoord.x), schemeCoord.y
-            - 2 * (firstCoord.y + secondCoord.y), toLevel, 4, 4, fromLevel);
+        return new LevelRelation(schemeCoord.getX() - 2 * (firstCoord.getX() + secondCoord.getX()), schemeCoord.getY()
+            - 2 * (firstCoord.getY() + secondCoord.getY()), toLevel, 4, 4, fromLevel);
       }
     }
     return null;
@@ -76,10 +76,10 @@ public class SchemeOverlapMapping implements LevelMapping {
         new HashMap<CoordinateID, Collection<Region>>(0);
     if (data != null) {
       for (Region region : data.regions().values()) {
-        if (region.getCoordinate().z == astralLevel) {
+        if (region.getCoordinate().getZ() == astralLevel) {
           for (Scheme scheme : region.schemes()) {
             CoordinateID coord = scheme.getCoordinate();
-            if (coord.z == realLevel) {
+            if (coord.getZ() == realLevel) {
               Collection<Region> col = astralRegions.get(coord);
               if (col == null) {
                 astralRegions.put(coord, col = new HashSet<Region>());

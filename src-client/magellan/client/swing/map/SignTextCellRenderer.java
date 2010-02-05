@@ -208,7 +208,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
     if (obj instanceof Region) {
       Region r = (Region) obj;
       CoordinateID c = r.getCoordinate();
-      Rectangle rect = cellGeo.getCellRect(c.x, c.y);
+      Rectangle rect = cellGeo.getCellRect(c.getX(), c.getY());
 
       Collection<Sign> signs = getText(r, rect);
       if (signs == null)

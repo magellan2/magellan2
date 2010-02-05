@@ -337,45 +337,45 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         switch (e.getKeyCode()) {
         case KeyEvent.VK_UP:
         case KeyEvent.VK_NUMPAD9:
-          translationCoord = new CoordinateID(0, 1);
+          translationCoord = CoordinateID.create(0, 1);
 
           break;
 
         case KeyEvent.VK_RIGHT:
         case KeyEvent.VK_NUMPAD6:
-          translationCoord = new CoordinateID(1, 0);
+          translationCoord = CoordinateID.create(1, 0);
 
           break;
 
         case KeyEvent.VK_DOWN:
         case KeyEvent.VK_NUMPAD1:
-          translationCoord = new CoordinateID(0, -1);
+          translationCoord = CoordinateID.create(0, -1);
 
           break;
 
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_NUMPAD4:
-          translationCoord = new CoordinateID(-1, 0);
+          translationCoord = CoordinateID.create(-1, 0);
 
           break;
 
         case KeyEvent.VK_NUMPAD3:
-          translationCoord = new CoordinateID(1, -1);
+          translationCoord = CoordinateID.create(1, -1);
 
           break;
 
         case KeyEvent.VK_NUMPAD7:
-          translationCoord = new CoordinateID(-1, 1);
+          translationCoord = CoordinateID.create(-1, 1);
 
           break;
 
         case KeyEvent.VK_NUMPAD2:
-          translationCoord = new CoordinateID(1, -2);
+          translationCoord = CoordinateID.create(1, -2);
 
           break;
 
         case KeyEvent.VK_NUMPAD8:
-          translationCoord = new CoordinateID(-1, 2);
+          translationCoord = CoordinateID.create(-1, 2);
 
           break;
 
@@ -384,7 +384,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         }
 
         if (translationCoord != null) {
-          CoordinateID c = new CoordinateID(activeRegion.getCoordinate());
+          CoordinateID c = CoordinateID.create(activeRegion.getCoordinate());
           activeRegion = data.getRegion(c.translate(translationCoord));
           data.setSelectedRegionCoordinates(null);
           dispatcher.fire(SelectionEvent.create(mapper, activeRegion));
@@ -595,8 +595,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
         CoordinateID c = activeRegion.getCoordinate();
 
-        if (c.z != showLevel) {
-          setLevel(c.z);
+        if (c.getZ() != showLevel) {
+          setLevel(c.getZ());
         }
       }
     }
@@ -717,20 +717,17 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     // just use visible regions as base
     if ((condition & RenderingPlane.VISIBLE_REGIONS) != 0) {
-      int xstart = upperLeft.x - 2;
-      int xend = lowerRight.x + 1;
+      int xstart = upperLeft.getX() - 2;
+      int xend = lowerRight.getX() + 1;
       int yCounter = 0;
-      CoordinateID c = new CoordinateID(0, 0, upperLeft.z);
 
-      for (int y = upperLeft.y + 1; y >= (lowerRight.y - 1); y--) {
+      for (int y = upperLeft.getY() + 1; y >= (lowerRight.getY() - 1); y--) {
         if ((++yCounter % 2) == 0) {
           xstart += 1;
         }
 
         for (int x = xstart; x < xend; x++) {
-          c.x = x;
-          c.y = y;
-
+          CoordinateID c = CoordinateID.create(x, y, upperLeft.getZ());
           Region r = data.getRegion(c);
 
           if (r != null) {
@@ -750,7 +747,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       while (it.hasNext()) {
         Region r = it.next();
 
-        if (r.getCoordinate().z == upperLeft.z) {
+        if (r.getCoordinate().getZ() == upperLeft.getZ()) {
           main.add(r);
         }
       }
@@ -978,7 +975,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
       // Is there any need to mark schemes?
       if ((activeRegion != null) && (getLevel() == 0)) {
-        if (activeRegion.getCoordinate().z == 1) {
+        if (activeRegion.getCoordinate().getZ() == 1) {
           // "Astralraum"-region is active
           // contains all schemes of the active region
           Collection<Region> regionSchemeList = new LinkedList<Region>();
@@ -1139,7 +1136,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
       while (iter.hasNext()) {
         CoordinateID c = iter.next().getCoordinate();
-        Integer i = new Integer(c.z);
+        Integer i = new Integer(c.getZ());
 
         if (levels.contains(i) == false) {
           levels.add(i);
@@ -1201,7 +1198,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     Rectangle bounds = null;
 
     if (cellGeometry != null) {
-      bounds = cellGeometry.getCellRect(cell.x, cell.y);
+      bounds = cellGeometry.getCellRect(cell.getX(), cell.getY());
       bounds.translate(-mapToScreenBounds.x, -mapToScreenBounds.y);
     } else {
       Mapper.log.warn("Mapper.getCellRect(): Unable to determine cell bounds!");
@@ -1249,7 +1246,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     if ((cellGeometry != null) && (viewSize != null) && (center != null)) {
       // get the cell position as relative screen coordinates
-      Rectangle cellPos = cellGeometry.getCellRect(center.x, center.y);
+      Rectangle cellPos = cellGeometry.getCellRect(center.getX(), center.getY());
 
       // transform cell position into absolute screen coordinates on this
       // component
@@ -1339,9 +1336,9 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     while (iter.hasNext()) {
       CoordinateID c = (iter.next()).getCoordinate();
 
-      if (c.z == showLevel) {
-        int x = cellGeometry.getCellPositionX(c.x, c.y);
-        int y = cellGeometry.getCellPositionY(c.x, c.y);
+      if (c.getZ() == showLevel) {
+        int x = cellGeometry.getCellPositionX(c.getX(), c.getY());
+        int y = cellGeometry.getCellPositionY(c.getX(), c.getY());
         upperLeft.x = Math.min(x, upperLeft.x);
         upperLeft.y = Math.min(y, upperLeft.y);
         lowerRight.x = Math.max(x, lowerRight.x);

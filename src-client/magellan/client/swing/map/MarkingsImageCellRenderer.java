@@ -57,7 +57,7 @@ public class MarkingsImageCellRenderer extends ImageCellRenderer {
       Region r = (Region) obj;
       CoordinateID c = r.getCoordinate();
 
-      Rectangle rect = cellGeo.getImageRect(c.x, c.y);
+      Rectangle rect = cellGeo.getImageRect(c.getX(), c.getY());
       rect.translate(-offset.x, -offset.y);
 
       int i = 1;

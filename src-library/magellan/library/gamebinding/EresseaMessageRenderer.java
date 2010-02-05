@@ -279,9 +279,9 @@ public class EresseaMessageRenderer implements MessageRenderer {
       if ((i_ar != null) && (i_ar.length >= 2)) {
         CoordinateID rid;
         if (i_ar.length == 2) {
-          rid = new CoordinateID(i_ar[0], i_ar[1]);
+          rid = CoordinateID.create(i_ar[0], i_ar[1]);
         } else {
-          rid = new CoordinateID(i_ar[0], i_ar[1], i_ar[2]);
+          rid = CoordinateID.create(i_ar[0], i_ar[1], i_ar[2]);
         }
         Region r = gd.getRegion(rid);
         if (r != null) {
@@ -307,11 +307,10 @@ public class EresseaMessageRenderer implements MessageRenderer {
           if ((coords != null) && (coords.length >= 2)) {
             CoordinateID rid;
             if (coords.length == 2) {
-              rid = new CoordinateID(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
+              rid = CoordinateID.create(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
             } else {
               rid =
-                  new CoordinateID(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]),
-                      Integer.parseInt(coords[2]));
+                  CoordinateID.create(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2]));
             }
             Region r = gd.getRegion(rid);
             if (r != null) {

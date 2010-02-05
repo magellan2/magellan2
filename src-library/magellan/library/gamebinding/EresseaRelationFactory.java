@@ -209,9 +209,9 @@ public class EresseaRelationFactory implements RelationFactory {
           OrderToken token = iter2.next();
           Direction movement = Direction.toDirection(token.getText());
 
-          c = new CoordinateID(c); // make c a new copy
+          c = CoordinateID.create(c); // make c a new copy
           if (movement != Direction.INVALID) {
-            c.translate(movement.toCoordinate());
+            c = c.translate(movement.toCoordinate());
           }
           modifiedMovement.add(c);
         }

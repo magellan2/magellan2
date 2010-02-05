@@ -55,7 +55,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
 
       if (iter.hasNext()) {
         CoordinateID c = r.getCoordinate();
-        Point pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+        Point pos = new Point(cellGeo.getImagePosition(c.getX(), c.getY()));
         pos.translate(-offset.x, -offset.y);
 
         Dimension size = cellGeo.getImageSize();
@@ -117,7 +117,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
     Image img = getImage("viele_schiffe" + shore);
     if (img != null) {
       CoordinateID c = region.getCoordinate();
-      Rectangle rect = cellGeo.getImageRect(c.x, c.y);
+      Rectangle rect = cellGeo.getImageRect(c.getX(), c.getY());
       rect.translate(-offset.x, -offset.y);
       graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
     }
@@ -165,7 +165,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
       Image img = getImage("durchschiffung_alliiert");
       if (img != null) {
         CoordinateID c = region.getCoordinate();
-        Rectangle rect = cellGeo.getImageRect(c.x, c.y);
+        Rectangle rect = cellGeo.getImageRect(c.getX(), c.getY());
         rect.translate(-offset.x, -offset.y);
         graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
       }
@@ -174,7 +174,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
       Image img = getImage("durchschiffung_feindlich");
       if (img != null) {
         CoordinateID c = region.getCoordinate();
-        Rectangle rect = cellGeo.getImageRect(c.x, c.y);
+        Rectangle rect = cellGeo.getImageRect(c.getX(), c.getY());
         rect.translate(-offset.x, -offset.y);
         graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
       }

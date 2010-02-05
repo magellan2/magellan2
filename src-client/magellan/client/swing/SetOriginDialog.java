@@ -34,7 +34,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
   /**
    * new Origin, entered eventually by the user
    */
-  private CoordinateID newOrigin = new CoordinateID(0, 0, 0);
+  private CoordinateID newOrigin = CoordinateID.create(0, 0, 0);
 
   /**
    * Creates new form SetOriginDialog
@@ -207,7 +207,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     // setOrigin only, if new Origin is wanted...
     if (iX != 0 || iY != 0) {
       approved = true;
-      newOrigin = new CoordinateID(iX, iY, iLevel);
+      newOrigin = CoordinateID.create(iX, iY, iLevel);
     }
 
     setVisible(false);

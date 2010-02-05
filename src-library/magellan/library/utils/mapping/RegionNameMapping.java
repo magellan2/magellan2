@@ -54,7 +54,7 @@ public class RegionNameMapping implements DataMapping {
     // Create HashMap of regions in toData
     Map<String, Collection<Region>> regionMap = new HashMap<String, Collection<Region>>();
     for (Region region : toData.regions().values()) {
-      if ((region.getCoordinate().z == level) && (region.getName() != null)
+      if ((region.getCoordinate().getZ() == level) && (region.getName() != null)
           && (region.getName().length() > 0)) {
         Collection<Region> regions = regionMap.get(region.getName());
         if (regions == null) {
@@ -69,7 +69,7 @@ public class RegionNameMapping implements DataMapping {
     for (Region region : fromData.regions().values()) {
       CoordinateID coord = region.getCoordinate();
 
-      if ((coord.z == level) && (region.getName() != null) && (region.getName().length() > 0)) {
+      if ((coord.getZ() == level) && (region.getName() != null) && (region.getName().length() > 0)) {
 
         Collection<Region> result = regionMap.get(region.getName());
         if (result != null) {
@@ -77,7 +77,7 @@ public class RegionNameMapping implements DataMapping {
             if (foundRegion != null) {
               CoordinateID foundCoord = foundRegion.getCoordinate();
               CoordinateID translation =
-                  new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, level);
+                  CoordinateID.create(foundCoord.getX() - coord.getX(), foundCoord.getY() - coord.getY(), level);
 
               Score<CoordinateID> score = translationMap.get(translation);
               if (score == null) {

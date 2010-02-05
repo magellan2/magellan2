@@ -141,7 +141,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
         // client.getData()));
         // force a complete new init of the game data, using data.clone
         // using for that client.setOrigin...(Fiete)
-        client.setOrigin(new CoordinateID(0, 0));
+        client.setOrigin(CoordinateID.create(0, 0));
         ui.ready();
       }
     }).start();

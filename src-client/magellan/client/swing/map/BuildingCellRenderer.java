@@ -66,7 +66,7 @@ public class BuildingCellRenderer extends ImageCellRenderer {
 
       if (iter.hasNext()) {
         CoordinateID coordinate = region.getCoordinate();
-        Point pos = new Point(cellGeo.getImagePosition(coordinate.x, coordinate.y));
+        Point pos = new Point(cellGeo.getImagePosition(coordinate.getX(), coordinate.getY()));
         pos.translate(-offset.x, -offset.y);
 
         Dimension size = cellGeo.getImageSize();

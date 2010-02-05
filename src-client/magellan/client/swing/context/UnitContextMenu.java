@@ -512,6 +512,7 @@ public class UnitContextMenu extends JPopupMenu {
     Collection<Unit> keyUnits = new HashSet<Unit>();
 
     {
+      // collect all tag keys for all units in region
       Collection<Region> regions = new HashSet<Region>();
       for (Unit unit : selectedUnits) {
         regions.add(unit.getRegion());
@@ -524,6 +525,7 @@ public class UnitContextMenu extends JPopupMenu {
       }
     }
 
+    // present key selection
     List<String> sortedKeys = new ArrayList<String>(keys);
     Collections.sort(sortedKeys);
     key =

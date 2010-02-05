@@ -101,7 +101,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
     if (obj instanceof Region) {
       Region ar = (Region) obj;
       CoordinateID c = ar.getCoordinate();
-      if (c.z == 1) {
+      if (c.getZ() == 1) {
         for (Scheme s : ar.schemes()) {
           CoordinateID cr = s.getCoordinate();
           Region r = data.getRegion(cr);
@@ -110,7 +110,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
             if (type != null) {
               String imageName = type.getID().toString();
 
-              Rectangle rect = cellGeo.getImageRect(cr.x - relation.x, cr.y - relation.y);
+              Rectangle rect = cellGeo.getImageRect(cr.getX() - relation.getX(), cr.getY() - relation.getY());
               rect.translate(-offset.x, -offset.y);
               graphics
                   .drawImage(getImage(imageName), rect.x, rect.y, rect.width, rect.height, null);

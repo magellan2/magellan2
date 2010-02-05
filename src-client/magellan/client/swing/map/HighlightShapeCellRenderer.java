@@ -95,7 +95,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
   private void drawAndPossiblyFillPolygon(Region r, Color col) {
     CoordinateID c = r.getCoordinate();
 
-    Rectangle rect = cellGeo.getCellRect(c.x, c.y);
+    Rectangle rect = cellGeo.getCellRect(c.getX(), c.getY());
     rect.translate(-offset.x, -offset.y);
 
     Polygon p = cellGeo.getScaledPolygon();

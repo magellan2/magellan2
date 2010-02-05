@@ -58,7 +58,7 @@ public class BuildingIDMapping implements DataMapping {
     for (Region region : fromData.regions().values()) {
       CoordinateID coord = region.getCoordinate();
 
-      if (coord.z == level) {
+      if (coord.getZ() == level) {
         for (Building building : region.buildings()) {
           Building sameBuilding = toData.getBuilding(building.getID());
           if (sameBuilding != null) {
@@ -66,7 +66,7 @@ public class BuildingIDMapping implements DataMapping {
             if (sameRegion != null) {
               CoordinateID foundCoord = sameRegion.getCoordinate();
               CoordinateID translation =
-                  new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y);
+                  CoordinateID.create(foundCoord.getX() - coord.getX(), foundCoord.getY() - coord.getY());
 
               Score<CoordinateID> score = translationMap.get(translation);
               if (score == null) {

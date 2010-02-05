@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import magellan.library.CoordinateID;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.logging.Logger;
 
@@ -334,7 +335,7 @@ public class CellGeometry {
       }
     }
 
-    return new magellan.library.CoordinateID(mx, my, z);
+    return CoordinateID.create(mx, my, z);
   }
 
   /**

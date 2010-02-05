@@ -58,7 +58,7 @@ public class SavedTranslationsMapping implements DataMapping {
       CoordinateID fromTrans = fromData.getCoordinateTranslation(fid, level);
       CoordinateID toTrans = toData.getCoordinateTranslation(fid, level);
       if ((fromTrans != null) && (toTrans != null)) {
-        toTrans.z = 0;
+        toTrans = CoordinateID.create(toTrans.getX(), toTrans.getY(), 0);
         CoordinateID translation = toTrans.createDistanceCoordinate(fromTrans);
 
         Score<CoordinateID> score = translationMap.get(translation);

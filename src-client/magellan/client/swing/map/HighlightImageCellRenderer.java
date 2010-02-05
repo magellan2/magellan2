@@ -59,7 +59,7 @@ public class HighlightImageCellRenderer extends ImageCellRenderer {
   private void renderIt(Region r, String imgName) {
     CoordinateID c = r.getCoordinate();
 
-    Rectangle rect = cellGeo.getImageRect(c.x, c.y);
+    Rectangle rect = cellGeo.getImageRect(c.getX(), c.getY());
     rect.translate(-offset.x, -offset.y);
 
     Image img = getImage(imgName);

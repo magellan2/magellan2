@@ -1204,7 +1204,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public int getCoordX() {
     CoordinateID myCID = getCoordinate();
-    return myCID.x;
+    return myCID.getX();
   }
 
   /**
@@ -1212,7 +1212,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public int getCoordY() {
     CoordinateID myCID = getCoordinate();
-    return myCID.y;
+    return myCID.getY();
   }
 
   /**

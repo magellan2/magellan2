@@ -153,14 +153,14 @@ public enum Direction {
    * Returns a direction as distance from from to to.
    */
   public static Direction toDirection(CoordinateID from, CoordinateID to) {
-    return toDirection(to.x - from.x, to.y - from.y);
+    return toDirection(to.getX() - from.getX(), to.getY() - from.getY());
   }
 
   /**
    * Converts a relative coordinate to a direction.
    */
   public static Direction toDirection(CoordinateID c) {
-    return toDirection(c.x, c.y);
+    return toDirection(c.getX(), c.getY());
   }
 
   /**
@@ -245,7 +245,7 @@ public enum Direction {
       break;
     }
 
-    return new CoordinateID(x, y);
+    return CoordinateID.create(x, y);
   }
 
   /**
@@ -369,7 +369,7 @@ public enum Direction {
    */
   @Deprecated
   public static int toInt(CoordinateID c) {
-    return toDirection(c.x, c.y).getDir();
+    return toDirection(c.getX(), c.getY()).getDir();
   }
 
   /**

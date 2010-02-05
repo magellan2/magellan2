@@ -1818,9 +1818,9 @@ public class EresseaOrderCompleter implements Completer {
         Regions.getAllNeighbours(data.regions(), region.getID(), 2, null);
 
     CoordinateID trans =
-        data.getCoordinateTranslation(unit.getFaction().getID(), region.getCoordinate().z);
+        data.getCoordinateTranslation(unit.getFaction().getID(), region.getCoordinate().getZ());
     if (trans != null) {
-      trans = (new CoordinateID(0, 0, trans.z)).subtract(trans);
+      trans = CoordinateID.create(0 - trans.getX(), 0 - trans.getY(), trans.getZ() - trans.getZ());
     }
 
     // first add all regions within a radius of 1 and remove them from Map regions2

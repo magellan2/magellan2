@@ -150,7 +150,7 @@ public class CoordinateID implements ID {
   }
 
   /**
-   * Returns a String representation of this corrdinate. The x, y and z components are seperated by
+   * Returns a String representation of this coordinate. The x, y and z components are seperated by
    * semicolon with a blank and the z component is ommitted if it equals 0.
    */
   @Override

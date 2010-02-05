@@ -136,7 +136,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
       public void actionPerformed(ActionEvent e) {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-        CoordinateID c = new CoordinateID(region.getCoordinate());
+        CoordinateID c = CoordinateID.create(region.getCoordinate());
         client.setOrigin(c);
         // client.setOrigin fires already the event..
         // dispatcher.fire(new GameDataEvent(this, data));

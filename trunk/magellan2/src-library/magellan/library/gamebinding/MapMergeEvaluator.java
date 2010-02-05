@@ -125,11 +125,11 @@ public class MapMergeEvaluator {
           if (!mappings.containsKey(mapping)) {
             score =
                 getMappingEvaluator(level).getRatedMapping(fromData, toData, mapping,
-                    "Transitive(" + otherMapping.z + ")");
+                    "Transitive(" + otherMapping.getZ() + ")");
             mappings.put(mapping, score);
           } else {
             score = mappings.get(mapping);
-            score.setType(score.getType() + ", Transitive(" + otherMapping.z + ")");
+            score.setType(score.getType() + ", Transitive(" + otherMapping.getZ() + ")");
           }
         }
       }
@@ -162,7 +162,7 @@ public class MapMergeEvaluator {
   public static Set<Integer> getLayers(GameData data) {
     Set<Integer> layers = new HashSet<Integer>(2);
     for (Region region : data.regions().values()) {
-      layers.add(Integer.valueOf(region.getCoordinate().z));
+      layers.add(Integer.valueOf(region.getCoordinate().getZ()));
     }
     return layers;
   }
@@ -170,25 +170,22 @@ public class MapMergeEvaluator {
   public final CoordinateID getTransitivMapping(GameData fromData, GameData toData, int layer,
       CoordinateID mapping) {
     // first chance
-    LevelRelation fromLR = fromData.getLevelRelation(layer, mapping.z);
-    LevelRelation toLR = toData.getLevelRelation(layer, mapping.z);
+    LevelRelation fromLR = fromData.getLevelRelation(layer, mapping.getZ());
+    LevelRelation toLR = toData.getLevelRelation(layer, mapping.getZ());
     if ((fromLR != null) && (toLR != null)) {
-      CoordinateID c = new CoordinateID(mapping.x + fromLR.x, mapping.y + fromLR.y, mapping.z);
+      CoordinateID c = CoordinateID.create(mapping.getX() + fromLR.getX(), mapping.getY() + fromLR.getY(), mapping.getZ());
       CoordinateID cNew = toLR.getInverseRelatedCoordinate(c);
       if (cNew != null)
         return cNew;
     }
     // second chance - maybe we have a relation in the other direction
 
-    fromLR = fromData.getLevelRelation(mapping.z, layer);
-    toLR = toData.getLevelRelation(mapping.z, layer);
+    fromLR = fromData.getLevelRelation(mapping.getZ(), layer);
+    toLR = toData.getLevelRelation(mapping.getZ(), layer);
     if ((fromLR != null) && (toLR != null)) {
       CoordinateID cNew = fromLR.getRelatedCoordinate(mapping);
-      if (cNew != null) {
-        cNew.x -= toLR.x;
-        cNew.y -= toLR.y;
-        return cNew;
-      }
+      if (cNew != null)
+        return CoordinateID.create(cNew.getX() - toLR.getX(), cNew.getY() - toLR.getY(), cNew.getZ());
     }
 
     return null;

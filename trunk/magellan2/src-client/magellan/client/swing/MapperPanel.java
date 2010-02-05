@@ -214,7 +214,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     if (newCenter != null) {
       if (cmbLevel.isVisible()) {
-        Integer level = new Integer(newCenter.z);
+        Integer level = new Integer(newCenter.getZ());
 
         if (level.intValue() != mapper.getLevel()) {
           cmbLevel.setSelectedItem(level);
@@ -272,7 +272,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
         CoordinateID coord = r.getCoordinate();
 
         if (cmbLevel.isVisible()) {
-          Integer level = new Integer(coord.z);
+          Integer level = new Integer(coord.getZ());
 
           if (level.intValue() != mapper.getLevel()) {
             cmbLevel.setSelectedItem(level);
@@ -681,7 +681,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       CoordinateID c = mapper.getActiveRegion().getCoordinate();
       CoordinateID cNew = context.getGameData().getRelatedCoordinateUI(c, level);
       if (cNew == null) {
-        cNew = new CoordinateID(0, 0, level);
+        cNew = CoordinateID.create(0, 0, level);
       }
       setCenter(cNew);
     }
@@ -783,9 +783,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   public void showHotSpot(HotSpot h) {
     // switch planes
     if ((mapper.getActiveRegion() == null)
-        || (mapper.getActiveRegion().getCoordinate().z != ((h.getCenter()).z))) {
+        || (mapper.getActiveRegion().getCoordinate().getZ() != ((h.getCenter()).getZ()))) {
       if (cmbLevel.isVisible()) {
-        cmbLevel.setSelectedItem(new Integer((h.getCenter()).z));
+        cmbLevel.setSelectedItem(new Integer((h.getCenter()).getZ()));
       }
     }
 

@@ -34,7 +34,7 @@ public class SelectAllAction extends AbstractSelectionAction {
   @Override
   public void menuActionPerformed(ActionEvent e) {
     for (CoordinateID c : client.getData().regions().keySet()) {
-      if (c.z == client.getLevel()) {
+      if (c.getZ() == client.getLevel()) {
         getSelectedRegions().put(c, client.getData().regions().get(c));
       }
     }

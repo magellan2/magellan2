@@ -42,7 +42,7 @@ public class Loader {
    * @throws CloneNotSupportedException if cloning failed
    */
   public GameData cloneGameData(GameData data) throws CloneNotSupportedException {
-    return cloneGameData(data, new CoordinateID(0, 0));
+    return cloneGameData(data, CoordinateID.create(0, 0));
   }
 
   synchronized public GameData cloneGameDataInMemory(final GameData data,

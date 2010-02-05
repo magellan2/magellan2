@@ -39,28 +39,28 @@ public class FillSelectionAction extends AbstractSelectionAction {
     int maxY = Integer.MIN_VALUE;
 
     for (CoordinateID c : getSelectedRegions().keySet()) {
-      if (c.z == client.getLevel()) {
-        if (c.x > maxX) {
-          maxX = c.x;
+      if (c.getZ() == client.getLevel()) {
+        if (c.getX() > maxX) {
+          maxX = c.getX();
         }
 
-        if (c.y > maxY) {
-          maxY = c.y;
+        if (c.getY() > maxY) {
+          maxY = c.getY();
         }
 
-        if (c.x < minX) {
-          minX = c.x;
+        if (c.getX() < minX) {
+          minX = c.getX();
         }
 
-        if (c.y < minY) {
-          minY = c.y;
+        if (c.getY() < minY) {
+          minY = c.getY();
         }
       }
     }
 
     for (CoordinateID c : client.getData().regions().keySet()) {
-      if ((c.z == client.getLevel()) && (c.x <= maxX) && (c.x >= minX) && (c.y <= maxY)
-          && (c.y >= minY)) {
+      if ((c.getZ() == client.getLevel()) && (c.getX() <= maxX) && (c.getX() >= minX) && (c.getY() <= maxY)
+          && (c.getY() >= minY)) {
         getSelectedRegions().put(c, client.getData().regions().get(c));
       }
     }

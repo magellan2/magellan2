@@ -1097,22 +1097,14 @@ public abstract class GameData implements Cloneable, Addeable {
     // this just adds all the regions to newGD. No content yet.
     if (olderGD.regions() != null) {
       for (Region r : olderGD.regions().values()) {
-        try {
-          resultGD.addRegion(MagellanFactory.createRegion(r.getID().clone(), resultGD));
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
+        resultGD.addRegion(MagellanFactory.createRegion(r.getID(), resultGD));
       }
     }
 
     if (newerGD.regions() != null) {
       for (Region r : newerGD.regions().values()) {
         if (resultGD.getRegion(r.getID()) == null) {
-          try {
-            resultGD.addRegion(MagellanFactory.createRegion(r.getID().clone(), resultGD));
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
+          resultGD.addRegion(MagellanFactory.createRegion(r.getID(), resultGD));
         }
       }
     }
@@ -1565,7 +1557,7 @@ public abstract class GameData implements Cloneable, Addeable {
   @Override
   public Object clone() throws CloneNotSupportedException {
     // return new Loader().cloneGameData(this);
-    return clone(new CoordinateID(0, 0));
+    return clone(CoordinateID.create(0, 0));
   }
 
   /**
@@ -1681,9 +1673,8 @@ public abstract class GameData implements Cloneable, Addeable {
         for (int dx = -radius; dx <= radius; dx++) {
           for (int dy = (-radius + Math.abs(dx)) - ((dx > 0) ? dx : 0); dy <= ((radius - Math
               .abs(dx)) - ((dx < 0) ? dx : 0)); dy++) {
-            CoordinateID c = new CoordinateID(0, 0, center.z);
-            c.x = center.x + dx;
-            c.y = center.y + dy;
+            CoordinateID c =
+                CoordinateID.create(center.getX() + dx, center.getY() + dy, center.getZ());
 
             Region neighbour = regions().get(c);
 
@@ -1902,7 +1893,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * @return Mapped Coordinate
    */
   public CoordinateID getRelatedCoordinate(CoordinateID c, int level) {
-    LevelRelation lr = getLevelRelation(c.z, level);
+    LevelRelation lr = getLevelRelation(c.getZ(), level);
     if (lr == null)
       return null;
     return lr.getRelatedCoordinate(c);
@@ -1911,7 +1902,7 @@ public abstract class GameData implements Cloneable, Addeable {
   public CoordinateID getRelatedCoordinateUI(CoordinateID c, int level) {
     CoordinateID result = getRelatedCoordinate(c, level);
     if (result == null) {
-      LevelRelation lr = getLevelRelation(level, c.z);
+      LevelRelation lr = getLevelRelation(level, c.getZ());
       if (lr == null)
         return null;
       return lr.getInverseRelatedCoordinate(c);
@@ -1984,7 +1975,7 @@ public abstract class GameData implements Cloneable, Addeable {
       layerMap = new HashMap<Integer, CoordinateID>();
       coordinateTranslations.put(otherFaction, layerMap);
     }
-    layerMap.put(usedTranslation.z, usedTranslation);
+    layerMap.put(usedTranslation.getZ(), usedTranslation);
   }
 
   /**

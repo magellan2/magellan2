@@ -81,13 +81,11 @@ public class Regions {
   public static Map<CoordinateID, Region> getAllNeighbours(Map<CoordinateID, Region> regions,
       CoordinateID center, int radius, Map<ID, RegionType> excludedRegionTypes) {
     Map<CoordinateID, Region> neighbours = new Hashtable<CoordinateID, Region>();
-    CoordinateID c = new CoordinateID(0, 0, center.z);
 
     for (int dx = -radius; dx <= radius; dx++) {
       for (int dy = (-radius + Math.abs(dx)) - ((dx > 0) ? dx : 0); dy <= ((radius - Math.abs(dx)) - ((dx < 0)
           ? dx : 0)); dy++) {
-        c.x = center.x + dx;
-        c.y = center.y + dy;
+        CoordinateID c = CoordinateID.create(center.getX() + dx, center.getY() + dy, center.getZ());
 
         Region neighbour = regions.get(c);
 
@@ -839,10 +837,10 @@ public class Regions {
       if (dest == null)
         return 0;
       // add potential for goal-directed search:
-      int xdiff1 = Math.abs(r1.getID().x - dest.x);
-      int ydiff1 = Math.abs(r1.getID().y - dest.y);
-      int xdiff2 = Math.abs(r2.getID().x - dest.x);
-      int ydiff2 = Math.abs(r2.getID().y - dest.y);
+      int xdiff1 = Math.abs(r1.getID().getX() - dest.getX());
+      int ydiff1 = Math.abs(r1.getID().getY() - dest.getY());
+      int xdiff2 = Math.abs(r2.getID().getX() - dest.getX());
+      int ydiff2 = Math.abs(r2.getID().getY() - dest.getY());
       return Math.max(xdiff2, ydiff2) - Math.max(xdiff1, ydiff1);
     }
 
@@ -1396,7 +1394,7 @@ public class Regions {
         if (Math.abs(tryShore.getDifference(returnDirection)) > 1) {
           continue;
         }
-        CoordinateID newStart = new CoordinateID(start).translate(tryShore.toCoordinate());
+        CoordinateID newStart = start.translate(tryShore.toCoordinate());
         if (!harbourRegions.containsKey(newStart)
             || !harbourRegions.get(newStart).getRegionType().isOcean()) {
           continue;
@@ -1628,8 +1626,8 @@ public class Regions {
    * Contributed by Hubert Mackenberg. Thanks. x und y Abstand zwischen x1 und x2 berechnen
    **/
   public static int getRegionDist(CoordinateID r1, CoordinateID r2) {
-    int dx = r1.x - r2.x;
-    int dy = r1.y - r2.y;
+    int dx = r1.getX() - r2.getX();
+    int dy = r1.getY() - r2.getY();
     /*
      * Bei negativem dy am Ursprung spiegeln, das veraendert den Abstand nicht
      */
@@ -1703,7 +1701,7 @@ public class Regions {
           if (checkR.getRegionType().isLand()) {
             // not ocean! we should set an 1
             // what is relative coordinate ?
-            CoordinateID diffCoord = new CoordinateID(checkID.x - cID.x, checkID.y - cID.y, 0);
+            CoordinateID diffCoord = CoordinateID.create(checkID.getX() - cID.getX(), checkID.getY() - cID.getY(), 0);
             int intDir = Direction.toInt(diffCoord);
             int bitMask = bitMaskArray[intDir];
             coastBitmap = coastBitmap | bitMask;

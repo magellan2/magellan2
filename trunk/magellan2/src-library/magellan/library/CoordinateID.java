@@ -17,31 +17,65 @@ import java.util.StringTokenizer;
 
 /**
  * A CoordinateID uniquely identifies a location in a three dimensional space by x-, y- and z-axis
- * components.
+ * components. This is an immutable object.
  */
 public class CoordinateID implements ID {
+  /**
+   * Convenience implementation of a mutable coordinate triplet.
+   */
+  public static class Triplet {
+    /**
+     * x-coordinate
+     */
+    public int x;
+    /**
+     * y-coordinate
+     */
+    public int y;
+    /**
+     * z-coordinate
+     */
+    public int z;
+
+    /**
+     * Creates a new triplet.
+     */
+    public Triplet(int x, int y, int z) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+    }
+
+    /**
+     * Returns a CoordinateID with identical coordinates.
+     */
+    public CoordinateID toCoordinate() {
+      return create(x, y, z);
+    }
+  }
+
   /**
    * The x-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
    * this CoordinateID!
    */
-  public int x;
+  private int x;
 
   /**
    * The y-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
    * this CoordinateID!
    */
-  public int y;
+  private int y;
 
   /**
    * The z-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
    * this CoordinateID!
    */
-  public int z;
+  private int z;
 
   /**
    * Create a new CoordinateID with a z-value of 0.
    */
-  public CoordinateID(int x, int y) {
+  private CoordinateID(int x, int y) {
     this.x = x;
     this.y = y;
     z = 0;
@@ -50,7 +84,7 @@ public class CoordinateID implements ID {
   /**
    * Creates a new CoordinateID object.
    */
-  public CoordinateID(int x, int y, int z) {
+  private CoordinateID(int x, int y, int z) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -59,10 +93,44 @@ public class CoordinateID implements ID {
   /**
    * Creates a new CoordinateID object.
    */
-  public CoordinateID(CoordinateID c) {
-    x = c.x;
-    y = c.y;
-    z = c.z;
+  private CoordinateID(CoordinateID c) {
+    this.x = c.x;
+    this.y = c.y;
+    this.z = c.z;
+  }
+
+  /**
+   * Returns the value of x.
+   * 
+   * @return Returns x.
+   */
+  public int getX() {
+    return x;
+  }
+
+  /**
+   * Returns the value of y.
+   * 
+   * @return Returns y.
+   */
+  public int getY() {
+    return y;
+  }
+
+  /**
+   * Returns the value of z.
+   * 
+   * @return Returns z.
+   */
+  public int getZ() {
+    return z;
+  }
+
+  /**
+   * Returns a new Triplet with identical coordinates.
+   */
+  public Triplet toTriplet() {
+    return new Triplet(x, y, z);
   }
 
   /**
@@ -70,6 +138,7 @@ public class CoordinateID implements ID {
    */
   @Override
   public boolean equals(Object o) {
+    // return this == o;
     if (o == this)
       return true;
     if (o instanceof CoordinateID) {
@@ -78,7 +147,6 @@ public class CoordinateID implements ID {
       return (x == c.x) && (y == c.y) && (z == c.z);
     }
     return false;
-
   }
 
   /**
@@ -143,16 +211,16 @@ public class CoordinateID implements ID {
       if (st.countTokens() == 2) {
         try {
           c =
-              new CoordinateID(Integer.parseInt(st.nextToken().trim()), Integer.parseInt(st
-                  .nextToken().trim()));
+              create(Integer.parseInt(st.nextToken().trim()), Integer.parseInt(st.nextToken()
+                  .trim()));
         } catch (NumberFormatException e) {
           c = null;
         }
       } else if (st.countTokens() == 3) {
         try {
           c =
-              new CoordinateID(Integer.parseInt(st.nextToken().trim()), Integer.parseInt(st
-                  .nextToken().trim()), Integer.parseInt(st.nextToken().trim()));
+              create(Integer.parseInt(st.nextToken().trim()), Integer.parseInt(st.nextToken()
+                  .trim()), Integer.parseInt(st.nextToken().trim()));
         } catch (NumberFormatException e) {
           c = null;
         }
@@ -163,51 +231,64 @@ public class CoordinateID implements ID {
   }
 
   /**
-   * Translates this CoordinateID by c.x on the x-axis and c.y on the y-axis and c.z on the z-axis.
-   * Be careful when using this method on a coordinate used as a key in a hash map: modifying the x,
-   * y and z values changes the hash value.
-   * 
-   * @param c the relative CoordinateID to translate the current one by.
-   * @return this.
+   * Create a CoordinateID with a z-value of 0.
    */
-  public CoordinateID translate(CoordinateID c) {
-    x += c.x;
-    y += c.y;
-    z += c.z;
-
-    return this;
+  public static CoordinateID create(int x, int y) {
+    return createCoordinate(x, y, 0);
   }
 
   /**
-   * Translates this CoordinateID by -c.x on the x-axis and -c.y on the y-axis and -c.z on the
-   * z-axis. Be careful when using this method on a coordinate used as a key in a hash map:
-   * modifying the x, y and z values changes the hash value.
+   * Creates a new CoordinateID object.
+   */
+  public static CoordinateID create(int x, int y, int z) {
+    return createCoordinate(x, y, z);
+  }
+
+  /**
+   * Creates a CoordinateID identical to c.
+   */
+  public static CoordinateID create(CoordinateID c) {
+    return c;
+  }
+
+  /**
+   * Return a new CoordinateID that is this one modified by c.x on the x-axis and c.y on the y-axis
+   * and c.z on the z-axis.
    * 
    * @param c the relative CoordinateID to translate the current one by.
-   * @return this.
+   * @return A new CoordinateID
+   */
+  public CoordinateID translate(CoordinateID c) {
+    return create(x + c.x, y + c.y, z + c.z);
+  }
+
+  /**
+   * Returns a new CoordinateID that is this one modified by -c.x, -c.y, -c.z.
+   * 
+   * @param c the relative CoordinateID to subtract from this coordinate.
+   * @return A new CoordinateID
    */
   public CoordinateID subtract(CoordinateID c) {
-    x -= c.x;
-    y -= c.y;
-    z -= c.z;
-    return this;
+    return create(x - c.x, y - c.y, z - c.z);
   }
 
   /**
    * Creates the distance coordinate from this coordinate to the given coordinate
    */
   public CoordinateID createDistanceCoordinate(CoordinateID to) {
-    return new CoordinateID(to.x - x, to.y - y, to.z - z);
+    return create(to.x - x, to.y - y, to.z - z);
   }
 
   /**
    * Defines the natural ordering of coordinates which is: Iff the z coordinates differ their
-   * difference is returend. Iff the y coordinates differ their difference is returend. Else the
+   * difference is returned. Iff the y coordinates differ their difference is returend. Else the
    * difference of the x coordinates is returned.
    */
   public int compareTo(Object o) {
-    CoordinateID c = (CoordinateID) o;
+    if (this == o)
+      return 0;
 
+    CoordinateID c = (CoordinateID) o;
     if (!equals(c)) {
       if (z != c.z)
         return z - c.z;
@@ -221,12 +302,41 @@ public class CoordinateID implements ID {
 
   /**
    * Returns a copy of this CoordinateID object.
-   * 
-   * @throws CloneNotSupportedException DOCUMENT-ME
    */
   @Override
-  public CoordinateID clone() throws CloneNotSupportedException {
-    // FIXME (stm): return this?
-    return (CoordinateID) super.clone();
+  public CoordinateID clone() {
+    return this;
+  }
+
+  // private static Map<Integer, Map<Integer, Map<Integer, CoordinateID>>> lookup =
+  // new HashMap<Integer, Map<Integer, Map<Integer, CoordinateID>>>();
+
+  /**
+   * @param x
+   * @param y
+   * @param z
+   */
+  private static CoordinateID createCoordinate(int x, int y, int z) {
+    return new CoordinateID(x, y, z);
+
+    // trying to improve performance -- did not work
+    // Map<Integer, Map<Integer, CoordinateID>> mx = lookup.get(x);
+    // if (mx == null) {
+    // mx = new HashMap<Integer, Map<Integer, CoordinateID>>();
+    // lookup.put(x, mx);
+    // }
+    // Map<Integer, CoordinateID> my = mx.get(y);
+    // CoordinateID mz;
+    // if (my == null) {
+    // my = new HashMap<Integer, CoordinateID>();
+    // mx.put(y, my);
+    // }
+    // mz = my.get(z);
+    // if (mz == null) {
+    // mz = new CoordinateID(x, y, z);
+    // my.put(z, mz);
+    // }
+    //
+    // return mz;
   }
 }

@@ -57,7 +57,7 @@ public class GameDataReader {
    * @throws IOException iff something went wrong while reading the file.
    */
   public GameData readGameData(FileType aFileType) throws IOException {
-    return readGameData(aFileType, new CoordinateID(0, 0));
+    return readGameData(aFileType, CoordinateID.create(0, 0));
   }
 
   /**
@@ -140,7 +140,7 @@ public class GameDataReader {
    * Reads the game data from a CR file
    */
   protected GameData readGameDataCR(FileType aFileType, String aGameName) throws IOException {
-    return readGameDataCR(aFileType, aGameName, new CoordinateID(0, 0));
+    return readGameDataCR(aFileType, aGameName, CoordinateID.create(0, 0));
   }
 
   /**

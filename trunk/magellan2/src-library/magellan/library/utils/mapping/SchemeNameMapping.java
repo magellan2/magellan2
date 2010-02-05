@@ -55,7 +55,7 @@ public class SchemeNameMapping implements DataMapping {
     // Create HashMap of regions in toData
     Map<String, Collection<Region>> regionMap = new HashMap<String, Collection<Region>>();
     for (Region region : toData.regions().values()) {
-      if ((region.getCoordinate().z == level) && (region.schemes() != null)
+      if ((region.getCoordinate().getZ() == level) && (region.schemes() != null)
           && (region.schemes().size() > 0)) {
         for (Scheme scheme : region.schemes()) {
           if ((scheme.getName() != null) && (scheme.getName().length() > 0)) {
@@ -74,7 +74,7 @@ public class SchemeNameMapping implements DataMapping {
     for (Region region : fromData.regions().values()) {
       CoordinateID coord = region.getCoordinate();
 
-      if ((coord.z == level) && (region.schemes() != null) && (region.schemes().size() > 0)) {
+      if ((coord.getZ() == level) && (region.schemes() != null) && (region.schemes().size() > 0)) {
 
         for (Scheme scheme : region.schemes()) {
           if ((scheme.getName() != null) && (scheme.getName().length() > 0)) {
@@ -85,7 +85,7 @@ public class SchemeNameMapping implements DataMapping {
                 if (foundRegion != null) {
                   CoordinateID foundCoord = foundRegion.getCoordinate();
                   CoordinateID translation =
-                      new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, level);
+                      CoordinateID.create(foundCoord.getX() - coord.getX(), foundCoord.getY() - coord.getY(), level);
 
                   Score<CoordinateID> score = translationMap.get(translation);
                   if (score == null) {

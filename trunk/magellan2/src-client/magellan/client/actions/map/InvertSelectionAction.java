@@ -39,7 +39,7 @@ public class InvertSelectionAction extends AbstractSelectionAction {
 
     // add all regions that belong to the active level XOR were selected befor
     for (CoordinateID c : client.getData().regions().keySet()) {
-      if ((c.z == client.getLevel()) ^ client.getSelectedRegions().containsKey(c)) {
+      if ((c.getZ() == client.getLevel()) ^ client.getSelectedRegions().containsKey(c)) {
         getSelectedRegions().put(c, client.getData().regions().get(c));
       }
     }

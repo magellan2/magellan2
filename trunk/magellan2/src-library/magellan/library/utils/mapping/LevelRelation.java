@@ -33,50 +33,56 @@ import magellan.library.CoordinateID;
  * @version 1.0, 21.05.2008
  */
 
-public class LevelRelation extends CoordinateID {
+public class LevelRelation {
+  private CoordinateID coord;
+
   public int scaleX = 1;
   public int scaleY = 1;
   public int fromLevel = 1;
 
   public LevelRelation(CoordinateID c) {
-    super(c);
-    fromLevel = c.z;
+    coord = CoordinateID.create(c);
+    fromLevel = c.getZ();
   }
 
   public LevelRelation(CoordinateID c, int scaleX, int scaleY, int fromLevel) {
-    super(c);
+    coord = CoordinateID.create(c);
     this.scaleX = scaleX;
     this.scaleY = scaleY;
     this.fromLevel = fromLevel;
   }
 
   public LevelRelation(int translateX, int translateY, int toLevel) {
-    super(translateX, translateY, toLevel);
+    coord = CoordinateID.create(translateX, translateY, toLevel);
     fromLevel = toLevel;
   }
 
   public LevelRelation(int translateX, int translateY, int toLevel, int scaleX, int scaleY,
       int fromLevel) {
-    super(translateX, translateY, toLevel);
+    coord = CoordinateID.create(translateX, translateY, toLevel);
     this.scaleX = scaleX;
     this.scaleY = scaleY;
     this.fromLevel = fromLevel;
   }
 
+  /**
+   * Returns a new coordinate, scaled or null if c==null or c is in the wrong level. TODO
+   * DOCUMENT-ME
+   */
   public CoordinateID getRelatedCoordinate(CoordinateID c) {
     if (c == null)
       return null;
-    if (c.z != fromLevel)
+    if (c.getZ() != fromLevel)
       return null;
-    return new CoordinateID(c.x * scaleX + x, c.y * scaleY + y, z);
+    return CoordinateID.create(c.getX() * scaleX + getX(), c.getY() * scaleY + getY(), getZ());
   }
 
   public CoordinateID getInverseRelatedCoordinate(CoordinateID c) {
     if (c == null)
       return null;
-    if (c.z != z)
+    if (c.getZ() != getZ())
       return null;
-    return new CoordinateID((c.x - x) / scaleX, (c.y - y) / scaleY, fromLevel);
+    return CoordinateID.create((c.getX() - getX()) / scaleX, (c.getY() - getY()) / scaleY, fromLevel);
   }
 
   // FIXME overriding equals violates the contract of equals (symmetry)!
@@ -89,7 +95,7 @@ public class LevelRelation extends CoordinateID {
           return (scaleX == l.scaleX) && (scaleX == l.scaleY) && (fromLevel == l.fromLevel);
         } else {
           CoordinateID c = (CoordinateID) o;
-          return (scaleX == 1) && (scaleX == 1) && (fromLevel == c.z);
+          return (scaleX == 1) && (scaleX == 1) && (fromLevel == c.getZ());
         }
       } else
         return false;
@@ -104,7 +110,19 @@ public class LevelRelation extends CoordinateID {
 
   @Override
   public String toString() {
-    return "trans([0, 0, " + fromLevel + "] -> [" + x + ", " + y + ", " + z + "]) scale(" + scaleX
-        + ", " + scaleY + ")";
+    return "trans([0, 0, " + fromLevel + "] -> [" + getX() + ", " + getY() + ", " + getZ()
+        + "]) scale(" + scaleX + ", " + scaleY + ")";
+  }
+
+  public int getX() {
+    return coord.getX();
+  }
+
+  public int getY() {
+    return coord.getY();
+  }
+
+  public int getZ() {
+    return coord.getZ();
   }
 }

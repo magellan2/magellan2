@@ -178,7 +178,7 @@ public class ReportMerger extends Object {
          * HashSet<Region>(); regionMap.put(region.getName(), regions); } regions.add(region); } if
          * (region.getUID()!=0){ regionUIDMap.put(region.getUID(), region); }
          */
-        if (region.getCoordinate().z == 1) {
+        if (region.getCoordinate().getZ() == 1) {
           hasAstralRegions = true;
           /*
            * for (Scheme scheme : region.schemes()) { Collection<Region> astralRegions =
@@ -540,7 +540,7 @@ public class ReportMerger extends Object {
        */
       Score<CoordinateID> bestAstralTranslation = null;
       if (!newReport.hasAstralRegions()) {
-        bestAstralTranslation = new Score<CoordinateID>(new CoordinateID(0, 0, 1), -1);
+        bestAstralTranslation = new Score<CoordinateID>(CoordinateID.create(0, 0, 1), -1);
       } else if (!dataReport.hasAstralRegions()) {
         Collection<Score<CoordinateID>> empty = Collections.emptyList();
         if (interactive) {
@@ -590,8 +590,7 @@ public class ReportMerger extends Object {
             CoordinateID correct = newReport.getData().getCoordinateTranslation(newReportOwner, 0);
             if (correct != null) {
               correct =
-                  new CoordinateID(bestTranslation.getKey().x + correct.x,
-                      bestTranslation.getKey().y + correct.y, 0);
+                  CoordinateID.create(bestTranslation.getKey().getX() + correct.getX(), bestTranslation.getKey().getY() + correct.getY(), 0);
               globalData.setCoordinateTranslation(newReportOwner, correct);
             }
           }
@@ -613,8 +612,7 @@ public class ReportMerger extends Object {
                   newReport.getData().getCoordinateTranslation(newReportOwner, 1);
               if (correct != null) {
                 correct =
-                    new CoordinateID(bestAstralTranslation.getKey().x + correct.x,
-                        bestAstralTranslation.getKey().y + correct.y, 1);
+                    CoordinateID.create(bestAstralTranslation.getKey().getX() + correct.getX(), bestAstralTranslation.getKey().getY() + correct.getY(), 1);
                 globalData.setCoordinateTranslation(newReportOwner, correct);
               }
             }
@@ -625,7 +623,7 @@ public class ReportMerger extends Object {
          * translate new report
          */
         GameData clonedData = newReport.getData();
-        if (bestTranslation.getKey().x != 0 || bestTranslation.getKey().y != 0) {
+        if (bestTranslation.getKey().getX() != 0 || bestTranslation.getKey().getY() != 0) {
           try {
             clonedData = (GameData) clonedData.clone(bestTranslation.getKey());
             if (clonedData == null)
@@ -646,7 +644,7 @@ public class ReportMerger extends Object {
         } else {
           ReportMerger.log.info("Level 0 : using untranslated new report - same origin");
         }
-        if (bestAstralTranslation.getKey().x != 0 || bestAstralTranslation.getKey().y != 0) {
+        if (bestAstralTranslation.getKey().getX() != 0 || bestAstralTranslation.getKey().getY() != 0) {
           try {
             clonedData = (GameData) clonedData.clone(bestAstralTranslation.getKey());
             if (clonedData == null)
@@ -737,7 +735,7 @@ public class ReportMerger extends Object {
       Collection<Score<CoordinateID>> translationList, Score<CoordinateID> savedTranslation,
       int layer) {
     Score<CoordinateID> bestTranslation =
-        new Score<CoordinateID>(new CoordinateID(0, 0, layer), -1);
+        new Score<CoordinateID>(CoordinateID.create(0, 0, layer), -1);
 
     if (translationList != null && translationList.size() > 0) {
       bestTranslation = Collections.max(translationList);
@@ -856,7 +854,7 @@ public class ReportMerger extends Object {
         if (savedTranslation != null) {
           tChoices.add(savedTranslation);
         }
-        tChoices.add(new Score<CoordinateID>(new CoordinateID(0, 0, layer), -1));
+        tChoices.add(new Score<CoordinateID>(CoordinateID.create(0, 0, layer), -1));
 
         Score<?> help =
             (Score<?>) ui.input(Resources.getFormatted(
@@ -921,8 +919,7 @@ public class ReportMerger extends Object {
           cancelled = false;
           try {
             CoordinateID trans =
-                new CoordinateID(Integer.parseInt((String) xS), Integer.parseInt((String) yS),
-                    layer);
+                CoordinateID.create(Integer.parseInt((String) xS), Integer.parseInt((String) yS), layer);
             resultTranslation = new Score<CoordinateID>(trans, 1, "user");
             ReportMerger.log.debug("using user translation: " + resultTranslation.getKey()
                 + " in layer " + layer);

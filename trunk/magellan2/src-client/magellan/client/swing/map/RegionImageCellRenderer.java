@@ -89,7 +89,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
       Region r = (Region) obj;
       CoordinateID c = r.getCoordinate();
 
-      Rectangle rect = cellGeo.getImageRect(c.x, c.y);
+      Rectangle rect = cellGeo.getImageRect(c.getX(), c.getY());
       rect.translate(-offset.x, -offset.y);
 
       if (r.containsTag(RegionImageCellRenderer.MAP_TAG)) {

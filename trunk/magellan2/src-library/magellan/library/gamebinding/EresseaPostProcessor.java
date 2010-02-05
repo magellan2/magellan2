@@ -379,7 +379,7 @@ public class EresseaPostProcessor {
     Map<CoordinateID, Collection<Region>> schemeMap =
         new HashMap<CoordinateID, Collection<Region>>();
     for (Region region : gd.regions().values()) {
-      if ((region.getCoordinate().z == 1) && (region.schemes().size() > 0)) {
+      if ((region.getCoordinate().getZ() == 1) && (region.schemes().size() > 0)) {
         // Check 1. (number)
         if (region.schemes().size() > 19) {
           // Inconsistency of type 1. found
@@ -391,8 +391,8 @@ public class EresseaPostProcessor {
         }
         // Check 2. (terrain) and 3. (extension)
         boolean inconsistent = false;
-        CoordinateID min = null;
-        CoordinateID max = null;
+        CoordinateID.Triplet min = null;
+        CoordinateID.Triplet max = null;
 
         for (Scheme scheme : region.schemes()) {
           CoordinateID schemeID = scheme.getCoordinate();
@@ -407,16 +407,16 @@ public class EresseaPostProcessor {
           }
           // Check 3. (extension)
           if (min == null || max == null) {
-            min = new CoordinateID(schemeID);
-            max = new CoordinateID(schemeID);
-            min.z = max.z = schemeID.x + schemeID.y;
+            min = schemeID.toTriplet();
+            max = schemeID.toTriplet();
+            min.z = max.z = schemeID.getX() + schemeID.getY();
           } else {
-            min.x = Math.min(min.x, schemeID.x);
-            min.y = Math.min(min.y, schemeID.y);
-            min.z = Math.min(min.z, schemeID.x + schemeID.y);
-            max.x = Math.max(max.x, schemeID.x);
-            max.y = Math.max(max.y, schemeID.y);
-            max.z = Math.max(max.z, schemeID.x + schemeID.y);
+            min.x = Math.min(min.x, schemeID.getX());
+            min.y = Math.min(min.y, schemeID.getY());
+            min.z = Math.min(min.z, schemeID.getX() + schemeID.getY());
+            max.x = Math.max(max.x, schemeID.getX());
+            max.y = Math.max(max.y, schemeID.getY());
+            max.z = Math.max(max.z, schemeID.getX() + schemeID.getY());
           }
         }
         if (inconsistent) {

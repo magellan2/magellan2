@@ -110,7 +110,7 @@ public class CRParser implements RulesIO, GameDataIO {
   boolean umlauts;
   int version = 0; // the version of the report
 
-  CoordinateID newOrigin = new CoordinateID(0, 0, 0);
+  CoordinateID newOrigin = CoordinateID.create(0, 0, 0);
 
   private final Collection<String> warnedLines = new HashSet<String>();
 
@@ -145,24 +145,20 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   /**
-   * 
+   * Translates c by newOrigin if it's in the same z-level and returns it.
    */
   CoordinateID originTranslate(CoordinateID c) {
-    if (c.z == newOrigin.z) {
-      c.x -= newOrigin.x;
-      c.y -= newOrigin.y;
-    }
+    if (c.getZ() == newOrigin.getZ())
+      return CoordinateID.create(c.getX() - newOrigin.getX(), c.getY() - newOrigin.getY(), c.getZ());
     return c;
   }
 
   /**
-   * 
+   * Translates c by -newOrigin if it's in the same z-level and returns it.
    */
   CoordinateID inverseOriginTranslate(CoordinateID c) {
-    if (c.z == newOrigin.z) {
-      c.x += newOrigin.x;
-      c.y += newOrigin.y;
-    }
+    if (c.getZ() == newOrigin.getZ())
+      return CoordinateID.create(c.getX() + newOrigin.getX(), c.getY() + newOrigin.getY(), c.getZ());
     return c;
   }
 
@@ -187,9 +183,9 @@ public class CRParser implements RulesIO, GameDataIO {
       final String candi = matcher.group();
       // candi=candi.replaceAll(astral,
       // world.getGameSpecificStuff().getGameSpecificRules().getAstralSpacePlane());
-      final CoordinateID coord = CoordinateID.parse(candi.substring(1, candi.length() - 1), ",");
+      CoordinateID coord = CoordinateID.parse(candi.substring(1, candi.length() - 1), ",");
       if (coord != null) {
-        originTranslate(coord);
+        coord = originTranslate(coord);
         matcher.appendReplacement(result, "(" + coord.toString() + ")");
       } else {
         matcher.appendReplacement(result, matcher.group());
@@ -640,13 +636,12 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   private List<Battle> parseBattles(List<Battle> list) throws IOException {
     while (!sc.eof && sc.argv[0].startsWith("BATTLE ")) {
-      final CoordinateID c =
-          CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
+      CoordinateID c = CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
       if (c == null) {
         unknown("BATTLE", true);
         break;
       }
-      originTranslate(c);
+      c = originTranslate(c);
 
       final Battle battle = MagellanFactory.createBattle(c);
 
@@ -670,13 +665,12 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   private List<Battle> parseBattleSpecs(List<Battle> list) throws IOException {
     while (!sc.eof && sc.argv[0].startsWith("BATTLESPEC ")) {
-      final CoordinateID c =
-          CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
+      CoordinateID c = CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
       if (c == null) {
         unknown("BATTLESPEC", true);
         continue;
       }
-      originTranslate(c);
+      c = originTranslate(c);
       final Battle battle = MagellanFactory.createBattle(c, true);
 
       if (list == null) {
@@ -1688,7 +1682,7 @@ public class CRParser implements RulesIO, GameDataIO {
     while (!sc.eof) {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("translation")) {
         translation = CoordinateID.parse(sc.argv[0], " ");
-        inverseOriginTranslate(translation);
+        translation = inverseOriginTranslate(translation);
         world.setCoordinateTranslation(id, translation);
         sc.getNextToken();
       } else if (!sc.isBlock) {
@@ -2783,8 +2777,7 @@ public class CRParser implements RulesIO, GameDataIO {
     int unitSortIndex = 0;
     int shipSortIndex = 0;
     int buildingSortIndex = 0;
-    final CoordinateID c =
-        CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
+    CoordinateID c = CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
 
     if (c == null) {
       unknown("REGION", true);
@@ -2793,7 +2786,7 @@ public class CRParser implements RulesIO, GameDataIO {
     }
 
     // this we should make after checking c!=null
-    originTranslate(c);
+    c = originTranslate(c);
 
     sc.getNextToken(); // skip "REGION x y"
 
@@ -3061,12 +3054,13 @@ public class CRParser implements RulesIO, GameDataIO {
     sc.getNextToken(); // skip "SPEZIALREGION x y"
 
     if (specialRegion == null) {
-      CoordinateID c = new CoordinateID(0, 0, 1);
-      originTranslate(c);
+      CoordinateID c = CoordinateID.create(0, 0, 1);
+      c = originTranslate(c);
 
       while (world.getRegion(c) != null) {
-        c = new CoordinateID(0, 0, (int) (Math.random() * (Integer.MAX_VALUE - 1)) + 1);
-        originTranslate(c);
+        // FIXME whats's this??
+        c = CoordinateID.create(0, 0, (int) (Math.random() * (Integer.MAX_VALUE - 1)) + 1);
+        c = originTranslate(c);
       }
 
       specialRegion = MagellanFactory.createRegion(c, world);
@@ -3161,13 +3155,12 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   private void parseScheme(Region region) throws IOException {
-    final CoordinateID c =
-        CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
+    CoordinateID c = CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
     if (c == null) {
       unknown("SCHEMEN", true);
       return;
     }
-    originTranslate(c);
+    c = originTranslate(c);
 
     sc.getNextToken(); // skip "SCHEMEN x y"
 
@@ -3283,10 +3276,10 @@ public class CRParser implements RulesIO, GameDataIO {
         // set translation to (0,0,...) in all existing layers
         final Set<Integer> layers = new HashSet<Integer>();
         for (final CoordinateID coord : newData.regions().keySet()) {
-          if (!layers.contains(coord.z)) {
+          if (!layers.contains(coord.getZ())) {
             newData
-                .setCoordinateTranslation(firstFaction2.getID(), new CoordinateID(0, 0, coord.z));
-            layers.add(coord.z);
+                .setCoordinateTranslation(firstFaction2.getID(), CoordinateID.create(0, 0, coord.getZ()));
+            layers.add(coord.getZ());
           }
         }
         CRParser.log.info("Layers updated with translation 0,0 for " + firstFaction2.toString());

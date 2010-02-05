@@ -183,7 +183,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
         int pos = -1;
         for (int i = 0; i < model.size(); ++i) {
           CoordinateID oldTranslation = (CoordinateID) model.get(i);
-          if (oldTranslation.z == translation.z) {
+          if (oldTranslation.getZ() == translation.getZ()) {
             pos = i;
             break;
           }
@@ -308,7 +308,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     CoordinateID result = null;
     try {
       result =
-          new CoordinateID(Integer.parseInt(tx.getText()), Integer.parseInt(ty.getText()), Integer
+          CoordinateID.create(Integer.parseInt(tx.getText()), Integer.parseInt(ty.getText()), Integer
               .parseInt(tz.getText()));
     } catch (NumberFormatException e) {
       return null;

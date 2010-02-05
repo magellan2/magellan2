@@ -209,8 +209,8 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
         public void actionPerformed(ActionEvent e) {
           Region r = (Region) regions.getSelectedItem();
           CoordinateID co = r.getCoordinate();
-          xCor.setText(co.x + "");
-          yCor.setText(co.y + "");
+          xCor.setText(co.getX() + "");
+          yCor.setText(co.getY() + "");
         }
       });
       destSelect.add(regions, c);
@@ -297,7 +297,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
         try {
           x = Integer.parseInt(xCor.getText());
           y = Integer.parseInt(yCor.getText());
-          retVal.dest = new CoordinateID(x, y);
+          retVal.dest = CoordinateID.create(x, y);
           retVal.makeRoute = createRoute.isSelected();
           retVal.useRange = considerShipRange.isSelected();
           retVal.useVorlage = createVorlageOrders.isSelected();

@@ -131,11 +131,11 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
   public String[] getText(Region r, Rectangle rect) {
     CoordinateID c = r.getCoordinate();
 
-    if ((r.getName() == null) || ((c.x % 2) != 0) || ((c.y % 2) != 0))
+    if ((r.getName() == null) || ((c.getX() % 2) != 0) || ((c.getY() % 2) != 0))
       return null;
 
     regNameAndCoord[0] = r.getName();
-    regNameAndCoord[1] = "[" + c.x + "," + c.y + "]";
+    regNameAndCoord[1] = "[" + c.getX() + "," + c.getY() + "]";
 
     return regNameAndCoord;
   }

@@ -67,7 +67,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
         Dimension size = null;
         {
           CoordinateID c = r.getCoordinate();
-          pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+          pos = new Point(cellGeo.getImagePosition(c.getX(), c.getY()));
           pos.translate(-offset.x, -offset.y);
           size = cellGeo.getImageSize();
         }
@@ -107,7 +107,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
     Dimension size = null;
     {
       CoordinateID c = r.getCoordinate();
-      pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+      pos = new Point(cellGeo.getImagePosition(c.getX(), c.getY()));
       pos.translate(-offset.x, -offset.y);
       size = cellGeo.getImageSize();
     }
@@ -218,7 +218,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
     }
     if (img != null) {
       c = r.getCoordinate();
-      pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+      pos = new Point(cellGeo.getImagePosition(c.getX(), c.getY()));
       pos.translate(-offset.x, -offset.y);
       size = cellGeo.getImageSize();
       graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);

@@ -68,9 +68,9 @@ public class AstralMappingEvaluator extends MappingEvaluator {
 
       // do the translation and find the corresponding region in the report
       // data
-      if (c.z == mapping.z) {
-        CoordinateID translatedCoord = new CoordinateID(c.x, c.y, 0);
-        translatedCoord.translate(mapping);
+      if (c.getZ() == mapping.getZ()) {
+        CoordinateID translatedCoord = CoordinateID.create(c.getX(), c.getY(), 0);
+        translatedCoord = translatedCoord.translate(mapping);
         Region sameRegion = toData.regions().get(translatedCoord);
 
         // the hit count for the current translation must only be modified, if

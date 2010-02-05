@@ -223,11 +223,11 @@ public class PathCellRenderer extends ImageCellRenderer {
           + directions + ", imageType " + imageType);
     }
 
-    CoordinateID actCoord = new CoordinateID(start); // make Coordinate a copy
+    CoordinateID actCoord = CoordinateID.create(start); // make Coordinate a copy
 
     for (Direction dirObj : directions) {
       if (dirObj != Direction.INVALID) {
-        Rectangle rect = cellGeo.getImageRect(actCoord.x, actCoord.y);
+        Rectangle rect = cellGeo.getImageRect(actCoord.getX(), actCoord.getY());
         rect.translate(-offset.x, -offset.y);
 
         Image img = getImage("Pfeil" + dirObj.getDir(), imageType);
@@ -236,7 +236,7 @@ public class PathCellRenderer extends ImageCellRenderer {
           graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
         }
 
-        actCoord.translate(dirObj.toCoordinate());
+        actCoord = actCoord.translate(dirObj.toCoordinate());
       } else {
         break;
       }

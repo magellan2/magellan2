@@ -38,7 +38,7 @@ public class SelectNothingAction extends AbstractSelectionAction {
     for (Iterator<CoordinateID> iter = getSelectedRegions().keySet().iterator(); iter.hasNext();) {
       CoordinateID c = iter.next();
 
-      if (c.z == client.getLevel()) {
+      if (c.getZ() == client.getLevel()) {
         iter.remove();
       }
     }

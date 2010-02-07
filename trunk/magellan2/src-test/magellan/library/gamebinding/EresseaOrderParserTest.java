@@ -585,7 +585,7 @@ public class EresseaOrderParserTest {
     checkOrder("GIB KOMMANDO", false);
     checkOrder("GIB abc \"KOMMANDO\"", false);
     checkOrder("GIB 123 KOMMANDO 123", false);
-    checkOrder("GIB 123 123 KOMMANDO", true); // FIXME should it be false?
+    checkOrder("GIB 123 123 KOMMANDO", false);
 
     checkOrder("GIB 123 2 Silber");
     checkOrder("GIB 0 2 Silber");
@@ -745,6 +745,7 @@ public class EresseaOrderParserTest {
     checkOrder("LERNE foo", false);
     checkOrder("LERNE Waffenloser Kampf", false);
     checkOrder("LERNE 123 456", false);
+    checkOrder("LERNE Magie 1234#", false);
   }
 
   /**
@@ -881,8 +882,8 @@ public class EresseaOrderParserTest {
   @Test
   public void testOptionReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_OPTION) + " AUSWERTUNG");
-    checkOrder("AUSWERTUNG PUNKTE NICHT");
-    checkOrder("AUSWERTUNG PUNKTE NICHT MEHR", false);
+    checkOrder("OPTION PUNKTE NICHT");
+    checkOrder("OPTION PUNKTE NICHT MEHR", false);
   }
 
   /**
@@ -890,7 +891,7 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testParteiReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FACTION));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FACTION), false); // TODO???
   }
 
   /**
@@ -899,8 +900,8 @@ public class EresseaOrderParserTest {
   @Test
   public void testPasswortReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD) + " \"squiggy\"");
+    checkOrder("PASSWORT", true);
     checkOrder("PASSWORT 123", false);
-    checkOrder("PASSWORT", false);
   }
 
   /**
@@ -1084,7 +1085,6 @@ public class EresseaOrderParserTest {
     checkOrder("ZAUBERE Magisches Geschoﬂ", false);
     checkOrder("ZAUBERE \"Groﬂes Fest\" 123", false);
     checkOrder("ZAUBERE STUFE x Schild 123", false);
-
   }
 
   /**
@@ -1290,6 +1290,14 @@ public class EresseaOrderParserTest {
     parser.read(new StringReader(""));
     token = parser.getLastToken();
     Assert.assertFalse(parser.readFinalString(token));
+    parser.read(new StringReader("1234#"));
+    token = parser.getLastToken();
+    try {
+      parser.readFinalString(token);
+      Assert.assertFalse(true);
+    } catch (IllegalArgumentException e) {
+      // should throw exception!
+    }
   }
 
   /**
@@ -1307,7 +1315,7 @@ public class EresseaOrderParserTest {
     token = parser.getLastToken();
     Assert.assertFalse(parser.readFinalID(token));
     Assert.assertTrue(token.ttype == OrderToken.TT_ID);
-    parser.read(new StringReader(""));
+    parser.read(new StringReader("")); // TODO what should happen here?
     token = parser.getLastToken();
     Assert.assertFalse(parser.readFinalID(token));
     Assert.assertTrue(token.ttype == OrderToken.TT_ID);

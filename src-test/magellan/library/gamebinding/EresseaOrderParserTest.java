@@ -617,7 +617,7 @@ public class EresseaOrderParserTest {
 
     checkOrder("GIB 123 2 Würziger~Wagemut");
 
-    checkOrder("GIB 123 2 EINHEIT", false); // FIXME should it be false?
+    checkOrder("GIB 123 2 EINHEIT", false);
   }
 
   /**
@@ -909,7 +909,20 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testPflanzeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PLANT));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PLANT) + " "
+        + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder("PFLANZE BÄUME");
+    checkOrder("PFLANZE MALLOrnSamen");
+    checkOrder("PFLANZE SAMEN");
+    checkOrder("PFLANZE 4 BÄUME");
+    checkOrder("PFLANZE 5 MALLOrnSamen");
+    checkOrder("PFLANZE 2 SAMEN");
+    checkOrder("PFLANZE", false);
+    checkOrder("PFLANZE 2", false);
+    checkOrder("PFLANZE ", false);
+    checkOrder("PFLANZE Silber", false);
+    checkOrder("PFLANZE 3 SAMEN NICHT", false);
+    checkOrder("PFLANZE 123 123 SAMEN", false);
   }
 
   /**
@@ -926,6 +939,10 @@ public class EresseaOrderParserTest {
   @Test
   public void testPraefixReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PREFIX));
+    checkOrder("PRÄFIX Nebel");
+    checkOrder("PRÄFIX Blubb"); // do not currently test for allowed prefixes
+    checkOrder("PRÄFIX Bla blubb", false);
+    checkOrder("PRÄFIX 2", false);
   }
 
   /**
@@ -933,7 +950,12 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testRegionReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_REGION));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_REGION) + " 1,1"); // FIXME read
+    // comma'd
+    // coordinate
+    checkOrder("REGION", false);
+    checkOrder("REGION 123", false);
+    checkOrder("REGION abc,def", false);
   }
 
   /**
@@ -941,7 +963,12 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testRekrutiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RECRUIT));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RECRUIT) + " 1");
+    checkOrder("REKRUTIERE 5");
+    checkOrder("REKRUTIERE 0", true); // TODO should we return false here?
+    checkOrder("REKRUTIERE", false);
+    checkOrder("REKRUTIERE 1 2", false);
+    checkOrder("REKRUTIERE 1 Zwerg", false); // for E2, this is an error
   }
 
   /**
@@ -958,14 +985,6 @@ public class EresseaOrderParserTest {
   @Test
   public void testRouteReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ROUTE));
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.SortiereReader}.
-   */
-  @Test
-  public void testSortiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SORT) + " westen");
     checkOrder("ROUTE o");
     checkOrder("ROUTE so");
     checkOrder("ROUTE sw");
@@ -985,6 +1004,14 @@ public class EresseaOrderParserTest {
     checkOrder("ROUTE 1 o", false);
     checkOrder("ROUTE", false);
     checkOrder("ROUTE 1", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.SortiereReader}.
+   */
+  @Test
+  public void testSortiereReader() {
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SORT) + " westen");
   }
 
   /**

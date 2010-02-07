@@ -299,7 +299,7 @@ public class EresseaConstants {
   /** DOCUMENT-ME */
   public static final String O_MALLORNSEED = "MALLORNSEED";
 
-  /** DOCUMENT-ME */
+  /** As in GIB 123 2 PERSONEN */
   public static final String O_MEN = "MEN";
 
   /** DOCUMENT-ME */

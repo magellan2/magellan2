@@ -37,6 +37,7 @@ import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.OrderTokenizer;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Umlaut;
 import magellan.library.utils.logging.Logger;
 import ds.tree.RadixTree;
 import ds.tree.RadixTreeImpl;
@@ -1424,8 +1425,9 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        retVal = checkItem(t);
-        retVal = retVal && checkNextFinal();
+        retVal =
+            checkItem(t) || t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MEN));
+        retVal = retVal && checkFinal(getLastToken());
 
       } else {
         unexpected(t);
@@ -2059,7 +2061,11 @@ public class EresseaOrderParser implements OrderParser {
     return new StringChecker(false, false, true, false) {
       @Override
       protected boolean checkInner() {
-        return data.rules.getItemType(content) != null;
+        for (ItemType type : data.rules.getItemTypes()) {
+          if (normalizeName(type.getName()).equals(normalizeName(content)))
+            return true;
+        }
+        return false;
       }
     }.read(token);
   }
@@ -2364,6 +2370,12 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isNumeric(t.getText()) == true) {
         retVal = readPflanzeAmount(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HERBS))
+          || t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SEED))
+          || t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MALLORNSEED))
+          || t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TREES))) {
+        t.ttype = OrderToken.TT_KEYWORD;
+        retVal = checkNextFinal();
       } else {
         unexpected(t);
       }
@@ -2455,8 +2467,8 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t)) {
-        retVal = readDescription(t);
+      if (t.ttype != OrderToken.TT_EOC && isString(t)) {
+        retVal = new StringChecker(false, false, false, false).read(t);
       } else {
         retVal = checkFinal(t);
         if (shallComplete(token, t)) {
@@ -3926,8 +3938,23 @@ public class EresseaOrderParser implements OrderParser {
     // return Pattern.matches("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}", txt);
   }
 
+  /**
+   * Return true if a completions should be added to the completer for the current token. The
+   * standard version returns true if there is a OrderCompleter and <code>token</code> is followed
+   * by a space and <code>t</code> is not.
+   * 
+   * @param token The last token read
+   * @param t The current token.
+   */
   public boolean shallComplete(OrderToken token, OrderToken t) {
     return (getCompleter() != null && token.followedBySpace() && !t.followedBySpace());
+  }
+
+  /**
+   * Returns name with '~' replaced by spaces and Umlauts replaced, too.
+   */
+  public static String normalizeName(String name) {
+    return Umlaut.convertUmlauts(name.replace('~', ' '));
   }
 
 }

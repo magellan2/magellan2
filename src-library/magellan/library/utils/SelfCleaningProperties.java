@@ -89,25 +89,12 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
     if (doRemoveProperties(name))
       return;
 
-    if (1 == 2) {
-      if (doRemoveProperty(name, "EMapOverviewPanel.displayIslands"))
-        // after a property has been removed, we dont need more checks
-        return;
-    }
-
     name = doCleanCompareValue(name);
     name = doExpandValue(name, PropertiesHelper.ORDERWRITER_OUTPUT_FILE, "|");
     name = doExpandValue(name, "CRWriterDialog.outputFile", "|");
     name = doExpandValue(name, "Client.fileHistory", "|");
     name = renameProperty(name, "DirectoryHistory", "HistoryAccessory.directoryHistory");
     name = doExpandValue(name, "HistoryAccessory.directoryHistory", "|");
-
-    if (1 == 2) {
-      // TODO!!
-      name = doExpandFactionColors(name, "GeomRenderer.FactionColors");
-      name = doExpandFactionColors(name, "Minimap.FactionColors");
-      name = doExpandFactionColors(name, "Minimap.RegionColors");
-    }
   }
 
   /**

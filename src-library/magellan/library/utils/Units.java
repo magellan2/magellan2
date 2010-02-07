@@ -182,7 +182,6 @@ public class Units {
       result = map.get(container).get();
       if (result == null) {
         // debugging
-        result = null;
         Units.recount++;
       }
     }

@@ -567,45 +567,43 @@ public class UnitContextMenu extends JPopupMenu {
     selectedUnits.clear();
   }
 
+  /**
+   * Lets user select one of the given values or enter a new one.
+   */
   private String showInputDialog(String message, List<String> values) {
-    if (1 == 2)
-      return JOptionPane.showInputDialog(message);
-    else {
+    // the combo box (add/modify items if you like to)
+    JComboBox comboBox = new JComboBox(values.toArray());
+    // has to be editable
+    comboBox.setEditable(true);
+    comboBox.getEditor().selectAll();
+    // change the editor's document
+    // new JComboBoxCompletion(comboBox,true);
 
-      // the combo box (add/modify items if you like to)
-      JComboBox comboBox = new JComboBox(values.toArray());
-      // has to be editable
-      comboBox.setEditable(true);
-      comboBox.getEditor().selectAll();
-      // change the editor's document
-      // new JComboBoxCompletion(comboBox,true);
+    // create and show a window containing the combo box
+    Frame parent = dispatcher.getMagellanContext().getClient();
+    JDialog frame = new JDialog(parent, message, true);
+    frame.setLocationRelativeTo(parent);
+    frame.getContentPane().setLayout(new BorderLayout());
+    frame.setResizable(false);
+    frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-      // create and show a window containing the combo box
-      Frame parent = dispatcher.getMagellanContext().getClient();
-      JDialog frame = new JDialog(parent, message, true);
-      frame.setLocationRelativeTo(parent);
-      frame.getContentPane().setLayout(new BorderLayout());
-      frame.setResizable(false);
-      frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    JPanel pane = new JPanel(new BorderLayout());
+    pane.add(new JLabel(message), BorderLayout.NORTH);
+    pane.add(comboBox, BorderLayout.CENTER);
 
-      JPanel pane = new JPanel(new BorderLayout());
-      pane.add(new JLabel(message), BorderLayout.NORTH);
-      pane.add(comboBox, BorderLayout.CENTER);
+    frame.getContentPane().add(new JLabel("  "), BorderLayout.NORTH);
+    frame.getContentPane().add(new JLabel("  "), BorderLayout.SOUTH);
+    frame.getContentPane().add(pane, BorderLayout.CENTER);
+    frame.getContentPane().add(new JLabel("  "), BorderLayout.WEST);
+    frame.getContentPane().add(new JLabel("  "), BorderLayout.EAST);
+    frame.pack();
 
-      frame.getContentPane().add(new JLabel("  "), BorderLayout.NORTH);
-      frame.getContentPane().add(new JLabel("  "), BorderLayout.SOUTH);
-      frame.getContentPane().add(pane, BorderLayout.CENTER);
-      frame.getContentPane().add(new JLabel("  "), BorderLayout.WEST);
-      frame.getContentPane().add(new JLabel("  "), BorderLayout.EAST);
-      frame.pack();
+    comboBox.getEditor().getEditorComponent().addKeyListener(new MyKeyAdapter(frame, comboBox));
 
-      comboBox.getEditor().getEditorComponent().addKeyListener(new MyKeyAdapter(frame, comboBox));
+    frame.setVisible(true);
+    frame.dispose();
 
-      frame.setVisible(true);
-      frame.dispose();
-
-      return (String) comboBox.getSelectedItem();
-    }
+    return (String) comboBox.getSelectedItem();
   }
 
   private static class MyOkAction extends AbstractAction {

@@ -1424,7 +1424,9 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        retVal = readFinalString(t);
+        retVal = checkItem(t);
+        retVal = retVal && checkNextFinal();
+
       } else {
         unexpected(t);
       }
@@ -1689,7 +1691,8 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       // 
-      if ((getData().rules != null) && ((type = getData().rules.getItemType(t.getText())) != null)
+      if (isString(t) && (getData().rules != null)
+          && ((type = getData().rules.getItemType(t.getText())) != null)
           && (luxuryCategory != null) && luxuryCategory.equals(type.getCategory())) {
         retVal = readFinalString(t);
       } else {
@@ -1782,7 +1785,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (token.followedBySpace() && isString(t)) {
+      if (isString(t) && token.followedBySpace()) {
         retVal = new StringChecker(false, false, true, false) {
           SkillType skill = null;
 
@@ -1821,7 +1824,7 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isNumeric(t.getText()) == true) {
         retVal = readFinalNumber(t);
-      } else if (t.ttype != OrderToken.TT_EOC
+      } else if (isString(t) && t.ttype != OrderToken.TT_EOC
           && skill.equals(getData().rules.getSkillType(EresseaConstants.S_MAGIE))) {
         retVal = readFinalString(t);
       } else {
@@ -2025,7 +2028,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (Direction.toDirection(t.getText()) != Direction.INVALID) {
+      if (isString(t) && Direction.toDirection(t.getText()) != Direction.INVALID) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -2041,16 +2044,24 @@ public class EresseaOrderParser implements OrderParser {
       boolean retVal = false;
 
       if (isString(token)) {
-        retVal = new StringChecker(false, false, true, false) {
-          @Override
-          protected boolean checkInner() {
-            return data.rules.getItemType(content) != null;
-          }
-        }.read(token);
+        retVal = checkItem(token);
       }
 
       return retVal;
     }
+
+  }
+
+  /**
+   * Returns <code>true</code> if token represents an item.
+   */
+  protected boolean checkItem(OrderToken token) {
+    return new StringChecker(false, false, true, false) {
+      @Override
+      protected boolean checkInner() {
+        return data.rules.getItemType(content) != null;
+      }
+    }.read(token);
   }
 
   // ************* NACH
@@ -2914,7 +2925,8 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if ((getData().rules != null) && (getData().rules.getSkillType(t.getText()) != null)) {
+      if (isString(t) && (getData().rules != null)
+          && (getData().rules.getSkillType(t.getText()) != null)) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -2960,7 +2972,8 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if ((getData().rules != null) && ((type = getData().rules.getItemType(t.getText())) != null)
+      if (isString(t) && (getData().rules != null)
+          && ((type = getData().rules.getItemType(t.getText())) != null)
           && (luxuryCategory != null) && type.getCategory().equals(luxuryCategory)) {
         retVal = readFinalString(t);
       } else {
@@ -2983,9 +2996,9 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if ((getData().rules != null) && ((type = getData().rules.getItemType(t.getText())) != null)
-          && (type != null) && (luxuryCategory != null)
-          && luxuryCategory.equals(type.getCategory())) {
+      if (isString(t) && (getData().rules != null)
+          && ((type = getData().rules.getItemType(t.getText())) != null)
+          && (luxuryCategory != null) && luxuryCategory.equals(type.getCategory())) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -3340,7 +3353,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (Direction.toDirection(t.getText()) != Direction.INVALID) {
+      if (isString(t) && Direction.toDirection(t.getText()) != Direction.INVALID) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -3433,6 +3446,7 @@ public class EresseaOrderParser implements OrderParser {
      * 
      * @return {@link #checkInner()} && {@link #checkNext()}
      * @see EresseaOrderParser#getString(OrderToken)
+     * @throws IllegalArgumentException If <code>!isString(token)</code>
      */
     public boolean read(OrderToken token) {
       if (!isString(token))

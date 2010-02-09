@@ -420,10 +420,10 @@ public class Regions {
 
   /**
    * A distance value that uses a tuple of distance components. <code>dist</code> is the primary
-   * distance value. <code>plus</code> is a bonus value for regions with the same distance but some
-   * additional bonus. <code>realDist</code> is a tertiary value, usually the number of regions on
-   * the shortest path. <code>pot</code> is an additional potential that can be used to speed up the
-   * search ("goal-directed search").
+   * distance value. <code>plus</code> is a bonus value for regions with the same distance but
+   * some additional bonus. <code>realDist</code> is a tertiary value, usually the number of
+   * regions on the shortest path. <code>pot</code> is an additional potential that can be used to
+   * speed up the search ("goal-directed search").
    * 
    * @author stm
    */
@@ -520,8 +520,8 @@ public class Regions {
   }
 
   /**
-   * A distance implementation that uses {@link MultidimensionalDistance}. <code>dist</code> is the
-   * distance in regions, that has been modified if harbours have been encountered on the path.
+   * A distance implementation that uses {@link MultidimensionalDistance}. <code>dist</code> is
+   * the distance in regions, that has been modified if harbours have been encountered on the path.
    * <code>plus</code> is the number of oceans near the coast or land regions on the path.
    * <code>realDist</code> is the actual length of the path.
    * 
@@ -1409,7 +1409,12 @@ public class Regions {
       }
       LinkedList<Region> result = new LinkedList<Region>();
       result.add(startRegion);
-      result.addAll(bestPath);
+      if (bestPath == null) {
+        log.warn("planShipRoute without best path from " + start.toString() + " to "
+            + destination.toString());
+      } else {
+        result.addAll(bestPath);
+      }
       return result;
     }
 
@@ -1587,6 +1592,14 @@ public class Regions {
     regions.add(r2);
     // generate List of directions
     List<Direction> directions = Regions.getDirectionObjectsOfRegions(regions);
+
+    // safety check to avoid IndexOutOfBoundsException
+    if (directions.size() == 0) {
+      log.error("isCompleteRoadCon - size=0 Error: from " + r1.getCoordinate().toString() + " to "
+          + r2.getCoordinate().toString());
+      return false;
+    }
+
     Direction dir1 = directions.get(0);
     // border of r1 ->
     boolean border1OK = false;
@@ -1606,6 +1619,12 @@ public class Regions {
     regions.add(r2);
     regions.add(r1);
     directions = Regions.getDirectionObjectsOfRegions(regions);
+    // safety check to avoid IndexOutOfBoundsException
+    if (directions.size() == 0) {
+      log.error("isCompleteRoadCon - size=0 Error: from " + r2.getCoordinate().toString() + " to "
+          + r1.getCoordinate().toString());
+      return false;
+    }
     dir1 = directions.get(0);
     // border of r1 ->
     boolean border2OK = false;
@@ -1624,7 +1643,7 @@ public class Regions {
 
   /**
    * Contributed by Hubert Mackenberg. Thanks. x und y Abstand zwischen x1 und x2 berechnen
-   **/
+   */
   public static int getRegionDist(CoordinateID r1, CoordinateID r2) {
     int dx = r1.getX() - r2.getX();
     int dy = r1.getY() - r2.getY();
@@ -1701,7 +1720,8 @@ public class Regions {
           if (checkR.getRegionType().isLand()) {
             // not ocean! we should set an 1
             // what is relative coordinate ?
-            CoordinateID diffCoord = CoordinateID.create(checkID.getX() - cID.getX(), checkID.getY() - cID.getY(), 0);
+            CoordinateID diffCoord =
+                CoordinateID.create(checkID.getX() - cID.getX(), checkID.getY() - cID.getY(), 0);
             int intDir = Direction.toInt(diffCoord);
             int bitMask = bitMaskArray[intDir];
             coastBitmap = coastBitmap | bitMask;

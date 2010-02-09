@@ -34,23 +34,23 @@ public enum Direction {
    * north-west direction
    */
   NW(0), /**
-   * north-east direction
-   */
+           * north-east direction
+           */
   NE(1), /**
-   * east direction
-   */
+           * east direction
+           */
   E(2), /**
-   * south-east direction
-   */
+         * south-east direction
+         */
   SE(3), /**
-   * south-west direction
-   */
+           * south-west direction
+           */
   SW(4), /**
-   * west direction
-   */
+           * west direction
+           */
   W(5), /**
-   * Invalid/unknown direction
-   */
+         * Invalid/unknown direction
+         */
   INVALID(-1);
 
   /** Invalid/unknown direction */
@@ -143,7 +143,8 @@ public enum Direction {
 
   /**
    * Returns the actual direction of this object. Please prefer using the singletons
-   * {@link #INVALID}, {@link #NE}, {@link #E}, {@link #SE}, {@link #SW}, {@link #W}, {@link #NW}.
+   * {@link #INVALID}, {@link #NE}, {@link #E}, {@link #SE}, {@link #SW}, {@link #W},
+   * {@link #NW}.
    */
   public int getDir() {
     return dir;
@@ -484,10 +485,56 @@ public enum Direction {
    * <code>N.getDifference(SE) == -2</code>. Differences to {@link #INVALID} are always
    * {@link Integer#MAX_VALUE}.
    */
-  public int getDifference(int dir) {
+  public int getDifference_old(int dir) {
     if (toDirection(dir) == INVALID)
       return Integer.MAX_VALUE;
     return (6 + this.dir - dir) % 6 - 6;
+  }
+
+  /**
+   * Returns the difference to the specified dir constant. E.g.,
+   * <code>N.getDifference(SE) == -2</code>. Differences to {@link #INVALID} are always
+   * {@link Integer#MAX_VALUE}.
+   */
+  public int getDifference(int dir) {
+    if (toDirection(dir) == INVALID)
+      return Integer.MAX_VALUE;
+    if (dir == this.dir)
+      return 0;
+    int erg = Integer.MAX_VALUE;
+    int erg_counterClockWise = 0;
+    int erg_clockWise = 0;
+
+    // im Uhrzeigersinn
+    int actDir = dir;
+    boolean reached = false;
+    while (!reached) {
+      actDir++;
+      erg_clockWise++;
+      if (actDir == 6) {
+        actDir = 0;
+      }
+      if (actDir == this.dir) {
+        reached = true;
+      }
+    }
+
+    // entgegen dem Uhrzeigersinn
+    actDir = dir;
+    reached = false;
+    while (!reached) {
+      actDir--;
+      erg_counterClockWise++;
+      if (actDir == -1) {
+        actDir = 5;
+      }
+      if (actDir == this.dir) {
+        reached = true;
+      }
+    }
+
+    return Math.min(erg_counterClockWise, erg_clockWise);
+
   }
 
   /**

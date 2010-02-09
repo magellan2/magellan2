@@ -78,7 +78,7 @@ public class CoordinateID implements ID {
   private CoordinateID(int x, int y) {
     this.x = x;
     this.y = y;
-    z = 0;
+    this.z = 0;
   }
 
   /**

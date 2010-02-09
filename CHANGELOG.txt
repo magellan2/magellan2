@@ -1,3 +1,7 @@
+2009-02-09 / Build 404 - Fiete <sf@fietefietz.de>
+	* fixed Direction.getDifference(int)
+	* added 2 Warnings for IndexOutOfBoundsExceptions to Regions.java
+
 2009-02-03 / Build 403 - stm (stm_@users.sourceforge.net)
     * fixed equals methods
     * converted Direction to Enum

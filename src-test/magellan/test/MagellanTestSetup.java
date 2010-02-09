@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
 
-public class MagellanTestSetup extends TestSetup {
+public abstract class MagellanTestSetup extends TestSetup {
 
   public MagellanTestSetup() {
     super(new TestSuite());

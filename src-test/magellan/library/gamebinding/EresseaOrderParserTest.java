@@ -779,27 +779,11 @@ public class EresseaOrderParserTest {
     checkOrder("MACHE KRÄUTER");
     checkOrder("MACHE 2 KRÄUTER");
     checkOrder("MACHE Pferd");
+    checkOrder("MACHE Pferd Pferd", false);
     checkOrder("MACHE 2 Schwert");
     checkOrder("MACHE 1 Pferd");
     checkOrder("MACHE", false); // actually, this is correct, but dangerous
-    checkOrder("MACHE BURG");
-    checkOrder("MACHE 2 BURG");
-    checkOrder("MACHE BURG 123");
-    checkOrder("MACHE 3 BURG abc");
-    checkOrder("MACHE Sägewerk");
-    checkOrder("MACHE 2 Sägewerk");
     checkOrder("MACHE \"Sägewerk\"", false); // well...
-    checkOrder("MACHE Boot");
-    checkOrder("MACHE Trireme");
-    checkOrder("MACHE SCHIFF");
-    checkOrder("MACHE SCHIFF 123");
-    checkOrder("MACHE 2 SCHIFF 123");
-    checkOrder("MACHE STRASSE no");
-    checkOrder("MACHE 2 STRASSE no");
-    checkOrder("MACHE STRASSE nordwesten");
-    checkOrder("MACHE KRÄUTER");
-    checkOrder("MACHE 2 KRÄUTER");
-    checkOrder("MACHE Pferd");
     checkOrder("MACHE \"Pferd\"");
     checkOrder("MACHE 2 Schwert");
     checkOrder("MACHE 2 \"Rostiger Zweihänder\"");
@@ -976,7 +960,15 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testReserviereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESERVE));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESERVE) + " 1 "
+        + data.rules.getItemType("Silber").getName());
+    checkOrder("RESERVIEREN ALLES Holz");
+    checkOrder("RESERVIERE JE 1 Holz");
+    checkOrder("RESERVIERE JE Holz", false);
+    checkOrder("RESERVIERE 2 1 Holz", false);
+    checkOrder("RESERVIERE 1 1", false);
+    checkOrder("RESERVIERE", false);
+    checkOrder("RESERVIERE 1 Flabberghast", false);
   }
 
   /**
@@ -984,7 +976,8 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testRouteReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ROUTE));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ROUTE) + " "
+        + Resources.getOrderTranslation(EresseaConstants.O_NE));
     checkOrder("ROUTE o");
     checkOrder("ROUTE so");
     checkOrder("ROUTE sw");
@@ -1011,7 +1004,16 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testSortiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SORT) + " westen");
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SORT) + " "
+        + Resources.getOrderTranslation(EresseaConstants.O_BEFORE) + " " + "123");
+    checkOrder("SORTIERE VOR abc");
+    checkOrder("SORTIERE HINTER abc");
+    checkOrder("SORTIERE VOR ", false);
+    checkOrder("SORTIERE", false);
+    checkOrder("SORTIERE abc abc", false);
+    checkOrder("SORTIERE 1 abc", false);
+    checkOrder("SORTIERE VOR abcdefg", false);
+    checkOrder("SORTIERE VOR abc 123", false);
   }
 
   /**
@@ -1019,7 +1021,11 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testSpioniereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SPY));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SPY) + " abc");
+    checkOrder("SPIONIERE 123");
+    checkOrder("SPIONIERE 123 123", false);
+    checkOrder("SPIONIERE", false);
+    checkOrder("SPIONIERE ALLES", false);
   }
 
   /**
@@ -1027,7 +1033,9 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testStirbReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_QUIT));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_QUIT) + " \"abc\"");
+    checkOrder("STIRB", false);
+    checkOrder("STIRB 123", false);
   }
 
   /**

@@ -2530,7 +2530,8 @@ public class EresseaOrderParser implements OrderParser {
       token.ttype = OrderToken.TT_KEYWORD;
 
       OrderToken t = getNextToken();
-      if (isNumeric(t.getText()) == true) {
+      if (isNumeric(t.getText()) == true
+          || t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ALL))) {
         retVal = readReserviereAmount(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_EACH))) {
         retVal = readReserviereJe(t);
@@ -2565,12 +2566,16 @@ public class EresseaOrderParser implements OrderParser {
 
     protected boolean readReserviereAmount(OrderToken token) {
       boolean retVal = false;
-      token.ttype = OrderToken.TT_NUMBER;
+      if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ALL))) {
+        token.ttype = OrderToken.TT_KEYWORD;
+      } else {
+        token.ttype = OrderToken.TT_NUMBER;
+      }
 
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        retVal = readFinalString(t);
+        retVal = checkItem(t) && checkFinal(getLastToken());
       } else {
         unexpected(t);
       }

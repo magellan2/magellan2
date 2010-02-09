@@ -420,10 +420,10 @@ public class Regions {
 
   /**
    * A distance value that uses a tuple of distance components. <code>dist</code> is the primary
-   * distance value. <code>plus</code> is a bonus value for regions with the same distance but
-   * some additional bonus. <code>realDist</code> is a tertiary value, usually the number of
-   * regions on the shortest path. <code>pot</code> is an additional potential that can be used to
-   * speed up the search ("goal-directed search").
+   * distance value. <code>plus</code> is a bonus value for regions with the same distance but some
+   * additional bonus. <code>realDist</code> is a tertiary value, usually the number of regions on
+   * the shortest path. <code>pot</code> is an additional potential that can be used to speed up the
+   * search ("goal-directed search").
    * 
    * @author stm
    */
@@ -520,8 +520,8 @@ public class Regions {
   }
 
   /**
-   * A distance implementation that uses {@link MultidimensionalDistance}. <code>dist</code> is
-   * the distance in regions, that has been modified if harbours have been encountered on the path.
+   * A distance implementation that uses {@link MultidimensionalDistance}. <code>dist</code> is the
+   * distance in regions, that has been modified if harbours have been encountered on the path.
    * <code>plus</code> is the number of oceans near the coast or land regions on the path.
    * <code>realDist</code> is the actual length of the path.
    * 
@@ -1410,7 +1410,7 @@ public class Regions {
       LinkedList<Region> result = new LinkedList<Region>();
       result.add(startRegion);
       if (bestPath == null) {
-        log.warn("planShipRoute without best path from " + start.toString() + " to "
+        log.info("planShipRoute without best path from " + start.toString() + " to "
             + destination.toString());
       } else {
         result.addAll(bestPath);

@@ -119,16 +119,22 @@ public class Islands {
    * 
    * @param regions all regions that could possibly belong to the island.
    * @param r a region forming an island with its neighbouring regions.
+   * @param _excludedRegionTypes additional regiontypes which should not be included (e.g.
+   *          Feuerwand)
    * @return a map containing all regions that can be reached from region r via any number of
    *         regions that are not of type ocean.
    */
   public static Map<CoordinateID, Region> getIsland(Rules rules, Map<CoordinateID, Region> regions,
-      Region r) {
+      Region r, Map<ID, RegionType> _excludedRegionTypes) {
     Map<CoordinateID, Region> checked = new Hashtable<CoordinateID, Region>();
 
     Map<ID, RegionType> excludedRegionTypes = Regions.getOceanRegionTypes(rules);
 
-    if (excludedRegionTypes.isEmpty()) {
+    if (_excludedRegionTypes != null && excludedRegionTypes != null) {
+      excludedRegionTypes.putAll(_excludedRegionTypes);
+    }
+
+    if (excludedRegionTypes == null || excludedRegionTypes.isEmpty()) {
       Islands.log.warn("Islands.getIsland(): unable to determine ocean region types!");
 
       return null;
@@ -155,5 +161,19 @@ public class Islands {
     }
 
     return checked;
+  }
+
+  /**
+   * Get all regions belonging the same island as the region r.
+   * 
+   * @param regions all regions that could possibly belong to the island.
+   * @param r a region forming an island with its neighbouring regions.
+   * @return a map containing all regions that can be reached from region r via any number of
+   *         regions that are not of type ocean.
+   */
+  public static Map<CoordinateID, Region> getIsland(Rules rules, Map<CoordinateID, Region> regions,
+      Region r) {
+
+    return getIsland(rules, regions, r, null);
   }
 }

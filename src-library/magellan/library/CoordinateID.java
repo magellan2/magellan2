@@ -339,4 +339,25 @@ public class CoordinateID implements ID {
     //
     // return mz;
   }
+
+  /**
+   * @param _x new value of x
+   * @param _y new value of y
+   * @param _z new value of z
+   */
+  public void setCoordinates(int _x, int _y, int _z) {
+    this.x = _x;
+    this.y = _y;
+    this.z = _z;
+  }
+
+  /**
+   * @param _c CoordinateID from which new values are taken
+   */
+  public void setCoordinates(CoordinateID _c) {
+    this.x = _c.getX();
+    this.y = _c.getY();
+    this.z = _c.getZ();
+  }
+
 }

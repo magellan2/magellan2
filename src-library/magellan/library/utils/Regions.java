@@ -420,10 +420,10 @@ public class Regions {
 
   /**
    * A distance value that uses a tuple of distance components. <code>dist</code> is the primary
-   * distance value. <code>plus</code> is a bonus value for regions with the same distance but some
-   * additional bonus. <code>realDist</code> is a tertiary value, usually the number of regions on
-   * the shortest path. <code>pot</code> is an additional potential that can be used to speed up the
-   * search ("goal-directed search").
+   * distance value. <code>plus</code> is a bonus value for regions with the same distance but
+   * some additional bonus. <code>realDist</code> is a tertiary value, usually the number of
+   * regions on the shortest path. <code>pot</code> is an additional potential that can be used to
+   * speed up the search ("goal-directed search").
    * 
    * @author stm
    */
@@ -520,8 +520,8 @@ public class Regions {
   }
 
   /**
-   * A distance implementation that uses {@link MultidimensionalDistance}. <code>dist</code> is the
-   * distance in regions, that has been modified if harbours have been encountered on the path.
+   * A distance implementation that uses {@link MultidimensionalDistance}. <code>dist</code> is
+   * the distance in regions, that has been modified if harbours have been encountered on the path.
    * <code>plus</code> is the number of oceans near the coast or land regions on the path.
    * <code>realDist</code> is the actual length of the path.
    * 
@@ -1563,17 +1563,16 @@ public class Regions {
   /**
    * Returns the RegionType that is named as <tt>Feuerwand</tt>.
    * 
-   * @param rules Rules of the game
    * @param data GameDate - needed to find Translation
    * @return RegionType Feuerwand
    */
-  public static RegionType getFeuerwandRegionType(Rules rules, GameData data) {
+  public static RegionType getFeuerwandRegionType(GameData data) {
+    if (data == null)
+      return null;
     String actFeuerwandName = "Feuerwand";
     // TODO:we do not need a translation here (FF)!
-    if (data != null) {
-      actFeuerwandName = data.getTranslation("Feuerwand");
-    }
-    return rules.getRegionType(StringID.create(actFeuerwandName));
+    actFeuerwandName = data.getTranslation("Feuerwand");
+    return data.rules.getRegionType(StringID.create(actFeuerwandName));
   }
 
   /**

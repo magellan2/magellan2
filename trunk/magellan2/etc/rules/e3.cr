@@ -1011,7 +1011,7 @@ ITEM "Repetierarmbrust"
 1;weight
 "Waffenbau";makeskill
 "Armbrustschießen";useskill
-6;makeskilllevel
+5;makeskilllevel
 "distance weapons";category
 1;storeinbonw
 RESOURCES
@@ -1092,7 +1092,7 @@ ITEM "Kettenhemd"
 "armour";category
 1;storeinbonw
 RESOURCES
-3;Eisen
+2;Eisen
 
 ITEM "Rostiges Kettenhemd"
 "Rostiges Kettenhemd";name
@@ -1108,7 +1108,7 @@ ITEM "Laenkettenhemd"
 "armour";category
 1;storeinbonw
 RESOURCES
-3;Laen
+2;Laen
 
 ITEM "Plattenpanzer"
 "Plattenpanzer";name
@@ -1118,7 +1118,17 @@ ITEM "Plattenpanzer"
 "armour";category
 1;storeinbonw
 RESOURCES
-5;Eisen
+4;Eisen
+
+ITEM "Schuppenpanzer"
+"Schuppenpanzer";name
+3;weight
+"Rüstungsbau";makeskill
+5;makeskilllevel
+"armour";category
+1;storeinbonw
+RESOURCES
+2;Eisen
 
 ITEM "Adamantiumrüstung"
 "Adamantiumrüstung";name
@@ -1145,19 +1155,13 @@ ITEM "Turmschild"
 "Turmschild";name
 2;weight
 "Rüstungsbau";makeskill
-6;makeskilllevel
+4;makeskilllevel
 "shield";category
 1;storeinbonw
 RESOURCES
-2;Eisen
+1;Eisen
 
 ITEM "Rostiger Schild"
-"Rostiger Schild";name
-"shield";category
-1;weight
-1;storeinbonw
-
-ITEM "Rostiges Schild"
 "Rostiger Schild";name
 "shield";category
 1;weight
@@ -1168,6 +1172,7 @@ ITEM "Laenschild"
 "Rüstungsbau";makeskill
 7;makeskilllevel
 "shield";category
+0;weight
 1;storeinbonw
 RESOURCES
 1;Laen

@@ -156,15 +156,17 @@ public class GameDataBuilder {
     return island;
   }
 
-  public Region addRegion(GameData data, String number, String name, String type, int sortIndex) {
-    final CoordinateID c = CoordinateID.parse(number, " ");
+  public Region addRegion(GameData data, String coordinate, String name, String type, int sortIndex) {
+    final CoordinateID c = CoordinateID.parse(coordinate, " ");
 
     final Region region = MagellanFactory.createRegion(c, data);
     data.addRegion(region);
 
     region.setName(name);
 
-    region.setType(data.rules.getRegionType(StringID.create(type), true));
+    if (type != null) {
+      region.setType(data.rules.getRegionType(StringID.create(type), true));
+    }
 
     region.setSortIndex(sortIndex);
     return region;

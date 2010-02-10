@@ -57,6 +57,11 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
     setCellGeometry(geo);
   }
 
+  /**
+   * Scale the geometry by 1/4.
+   * 
+   * @see magellan.client.swing.map.ImageCellRenderer#setCellGeometry(magellan.client.swing.map.CellGeometry)
+   */
   @Override
   public void setCellGeometry(CellGeometry geo) {
     CellGeometry newGeo = new CellGeometry();
@@ -99,18 +104,20 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
     if (relation == null)
       return;
     if (obj instanceof Region) {
-      Region ar = (Region) obj;
-      CoordinateID c = ar.getCoordinate();
+      Region astralRegion = (Region) obj;
+      CoordinateID c = astralRegion.getCoordinate();
       if (c.getZ() == 1) {
-        for (Scheme s : ar.schemes()) {
-          CoordinateID cr = s.getCoordinate();
-          Region r = data.getRegion(cr);
-          if (r != null) {
-            UnitContainerType type = r.getType();
+        for (Scheme scheme : astralRegion.schemes()) {
+          CoordinateID schemeCoord = scheme.getCoordinate();
+          Region schemeRegion = data.getRegion(schemeCoord);
+          if (schemeRegion != null) {
+            UnitContainerType type = schemeRegion.getType();
             if (type != null) {
               String imageName = type.getID().toString();
 
-              Rectangle rect = cellGeo.getImageRect(cr.getX() - relation.getX(), cr.getY() - relation.getY());
+              Rectangle rect =
+                  cellGeo.getImageRect(schemeCoord.getX() - relation.getX(), schemeCoord.getY()
+                      - relation.getY());
               rect.translate(-offset.x, -offset.y);
               graphics
                   .drawImage(getImage(imageName), rect.x, rect.y, rect.width, rect.height, null);

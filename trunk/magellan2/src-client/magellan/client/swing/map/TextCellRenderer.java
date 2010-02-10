@@ -125,7 +125,8 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns a pair of (Name, [Coordinate]) if the coordinate's of r are both divisible by 2,
+   * <code>null</code> otherwise.
    */
   @Override
   public String[] getText(Region r, Rectangle rect) {

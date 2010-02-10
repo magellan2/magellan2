@@ -112,6 +112,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     exampleScript += "// int getHorses(Region region) {\n";
     exampleScript += "// return region.getHorses();\n";
     exampleScript += "// }\n";
+    exampleScript += "// check the Magellan web pages for more examples...";
     exampleScript += "//\n";
     commands.setDefaultLibrary(exampleScript);
 
@@ -120,11 +121,17 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     exampleScript += "//if (!unit.isOrdersConfirmed()) {\n";
     exampleScript += "//  unit.setOrdersConfirmed(true);\n";
     exampleScript += "//}\n";
+    exampleScript += "// check the Magellan web pages for more examples...";
     commands.setDefaultUnitScript(exampleScript);
 
     exampleScript = "// example for beginners...\n";
     exampleScript += "//\n";
-    exampleScript += "//...";
+    exampleScript += "// for (Unit u : container.units()) {\n";
+    exampleScript += "//   helper.addOrder(u, \"; gotcha\");\n";
+    exampleScript += "//   helper.updateUnit(u);\n";
+    exampleScript += "// }\n";
+    exampleScript += "//\n";
+    exampleScript += "// check the Magellan web pages for more examples...";
     commands.setDefaultContainerScript(exampleScript);
   }
 

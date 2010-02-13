@@ -54,6 +54,7 @@ import magellan.library.rules.MessageType;
 import magellan.library.rules.OptionCategory;
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
+import magellan.library.rules.RegionType;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.Resources;
@@ -289,8 +290,8 @@ public class CRWriter extends BufferedWriter {
   }
 
   private void writeCoordinateTranslations(GameData data) throws IOException {
-    for (ID f : data.factions().keySet()) {
-      EntityID fID = (EntityID) f;
+    for (Faction f : data.getFactions()) {
+      EntityID fID = f.getID();
       Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap(fID);
       if (map != null && !map.isEmpty()) {
         write("COORDTRANS " + (fID).intValue());
@@ -823,24 +824,22 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of faction (PARTEI) blocks to the underlying stream.
    * 
-   * @param map a map containing the factions to write. The keys are expected to be <tt>Integer</tt>
-   *          objects containing the ids of the factions. The values are expected to be instances of
-   *          class <tt>Faction</tt>.
+   * @param factions The Collection of factions to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeFactions(Map<EntityID, Faction> map) throws IOException {
-    if (map == null)
+  public void writeFactions(Collection<Faction> factions) throws IOException {
+    if (factions == null)
       return;
 
     // write owner first
     Faction ownerFaction = null;
-    if (map.values().size() > 0) {
-      ownerFaction = map.values().iterator().next();
+    if (factions.size() > 0) {
+      ownerFaction = factions.iterator().next();
     }
     if (ownerFaction != null) {
       writeFaction(ownerFaction);
     }
-    List<Faction> sorted = new ArrayList<Faction>(map.values());
+    List<Faction> sorted = new ArrayList<Faction>(factions);
     Comparator<Faction> sortIndexComparator =
         new SortIndexComparator<Faction>(IDComparator.DEFAULT);
     Collections.sort(sorted, sortIndexComparator);
@@ -1710,7 +1709,7 @@ public class CRWriter extends BufferedWriter {
     // Fiete 20070117
     // Exception: Magellan-added Regions to show TheVoid
     // these regions should not be written
-    if (region.getRegionType().equals(world.rules.getRegionType("Leere")))
+    if (region.getRegionType().equals(RegionType.unknown))
       return;
 
     write("REGION " + region.getID().toString(" "));
@@ -2254,7 +2253,7 @@ public class CRWriter extends BufferedWriter {
       }
 
       writeAlliances(world.getAllianceGroups());
-      writeFactions(world.factions());
+      writeFactions(world.getFactions());
     }
 
     if (includeSpellsAndPotions) {
@@ -2285,6 +2284,7 @@ public class CRWriter extends BufferedWriter {
       } else {
         writeRegions(world.regions());
       }
+      writeRegions(world.wrappers());
     }
 
     if (includeMessages) {
@@ -2303,19 +2303,19 @@ public class CRWriter extends BufferedWriter {
       if (ui != null) {
         ui.setProgress(Resources.get("crwriterdialog.progress.10"), 10);
       }
-      if (world.units() != null) {
-        if (world.units().size() != unitsWritten) {
+      if (world.getUnits() != null) {
+        if (world.getUnits().size() != unitsWritten) {
           int homelessUnitsCounter = 0;
 
-          for (Unit u : world.units().values()) {
-            if (u.getRegion() == null) {
+          for (Unit u : world.getUnits()) {
+            if (u.getRegion() == null || u.getRegion() == world.getNullRegion()) {
               homelessUnitsCounter++;
             }
           }
 
-          if ((world.units().size() - homelessUnitsCounter) != unitsWritten)
+          if ((world.getUnits().size() - homelessUnitsCounter) != unitsWritten)
             throw new IOException("Although there are "
-                + (world.units().size() - homelessUnitsCounter) + " units, only " + unitsWritten
+                + (world.getUnits().size() - homelessUnitsCounter) + " units, only " + unitsWritten
                 + " were written!");
         }
       }

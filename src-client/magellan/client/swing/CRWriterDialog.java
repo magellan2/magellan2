@@ -33,7 +33,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -60,12 +59,12 @@ import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.GameDataMerger;
 import magellan.library.Group;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Potion;
 import magellan.library.Region;
-import magellan.library.RegionResource;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Spell;
@@ -446,7 +445,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
         } else {
           chkIslands.setEnabled(true);
-          if (data != null && data.hotSpots() != null && data.hotSpots().size() > 0) {
+          if (data != null && data.getHotSpots() != null && data.getHotSpots().size() > 0) {
             chkExportHotspots.setEnabled(true);
           } else {
             chkExportHotspots.setEnabled(false);
@@ -764,7 +763,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     try {
       int maxProgress =
           2 + 2 * (chkSelRegionsOnly.isEnabled() && chkSelRegionsOnly.isSelected() ? regions.size()
-              : data.regions().size());
+              : data.getRegions().size());
       ui.setMaximum(maxProgress);
       ui.setTitle(Resources.get("crwriterdialog.progress.title"));
       ui.setProgress(Resources.get("crwriterdialog.progress.start"), 2);
@@ -789,7 +788,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         } catch (CloneNotSupportedException e) {
           CRWriterDialog.log.error(
               "CRWriterDialog: trying to clone gamedata failed, fallback to merge method.", e);
-          newData = GameData.merge(data, data);
+          newData = GameDataMerger.merge(data, data);
         }
         if (!MemoryManagment.isFreeMemory(newData.estimateSize())) {
           JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources
@@ -803,26 +802,24 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         // delete points, person counts, spell school, alliances, messages
         // of privileged factions
         // Fiete: why only from privileged factions?
-        if (newData.factions() != null) {
-          Iterator<Faction> it1 = newData.factions().values().iterator();
+        if (newData.getFactions() != null) {
           boolean excludeBRegions =
               (chkMessages.isSelected() && chkSelRegionsOnly.isSelected() && (regions != null) && (regions
                   .size() > 0));
 
-          while (it1.hasNext()) {
-            Faction f = it1.next();
+          for (Faction f : newData.getFactions()) {
             boolean found = true;
 
             if (excludeBRegions) {
-              Iterator<Region> it2 = regions.iterator();
               found = false;
-
-              while (!found && it2.hasNext()) {
-                Region reg = it2.next();
-                Iterator<Unit> it3 = reg.units().iterator();
-
-                while (!found && it3.hasNext()) {
-                  Unit unit = it3.next();
+              for (Region reg : regions) {
+                if (found) {
+                  break;
+                }
+                for (Unit unit : reg.units()) {
+                  if (found) {
+                    break;
+                  }
                   found = f.equals(unit.getFaction());
                 }
               }
@@ -847,25 +844,24 @@ public class CRWriterDialog extends InternationalizedDataDialog {
                * f.setHeroes(-1); f.setMaxHeroes(-1);
                **/
               if (excludeBRegions && (f.getMessages() != null)) {
-                Iterator<Message> it2 = f.getMessages().iterator();
 
                 // ArrayList of Messages to be removed
                 ArrayList<Message> messageRemoveList = null;
 
-                while (it2.hasNext()) {
-                  Message mes = it2.next();
+                for (Message mes : f.getMessages()) {
                   found = false;
 
-                  Iterator<Region> it3 = regions.iterator();
-
-                  while (it3.hasNext() && !found) {
-                    Region reg = it3.next();
+                  for (Region reg : regions) {
+                    if (found) {
+                      break;
+                    }
 
                     if (reg.getMessages() != null) {
-                      Iterator<Message> it4 = reg.getMessages().iterator();
-
-                      while (!found && it4.hasNext()) {
-                        found = mes.equals(it4.next());
+                      for (Message message : reg.getMessages()) {
+                        if (found) {
+                          break;
+                        }
+                        found = mes.equals(message);
                       }
                     }
                   }
@@ -910,22 +906,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         trans.remove("schwer verwundet");
         trans.remove("erschöpft");
 
-        Collection<Region> lookup = data.regions().values();
+        Collection<? extends Region> lookup = data.getRegions();
 
         if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
           lookup = regions;
         }
 
-        Iterator<Region> regionIterator = lookup.iterator();
-        Iterator<RegionResource> resourceIterator = null;
-        Iterator<Ship> shipIterator = null;
-        Iterator<Building> buildingIterator = null;
-        Iterator<Unit> unitIterator = null;
-        Iterator<Item> itemIterator = null;
-        Iterator<Potion> potionIterator = null;
-        Iterator<Spell> spellIterator = null;
-        Iterator<Skill> skillIterator = null;
-        Iterator<String> stringIterator = null;
         boolean checkShips = chkShips.isSelected();
         boolean checkUnits = chkUnits.isSelected();
         // boolean checkUnitDetails = chkUnitDetails.isSelected();
@@ -936,41 +922,30 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         boolean checkSpells = chkSpellsAndPotions.isSelected();
         boolean checkRegDetails = chkRegionDetails.isSelected();
 
-        while (regionIterator.hasNext()) {
-          Region r = regionIterator.next();
+        for (Region r : lookup) {
           trans.remove(r.getType().getID().toString());
 
           if (checkRegDetails) {
-            resourceIterator = r.resources().iterator();
-
-            while (resourceIterator.hasNext()) {
-              magellan.library.RegionResource res = resourceIterator.next();
+            for (magellan.library.RegionResource res : r.resources()) {
               trans.remove(res.getID().toString());
               trans.remove(res.getType().getID().toString());
             }
           }
 
           if (checkShips) {
-            shipIterator = r.ships().iterator();
-
-            while (shipIterator.hasNext()) {
-              trans.remove((shipIterator.next()).getType().getID().toString());
+            for (Ship ship : r.ships()) {
+              trans.remove(ship.getType().getID().toString());
             }
           }
 
           if (checkBuildings) {
-            buildingIterator = r.buildings().iterator();
-
-            while (buildingIterator.hasNext()) {
-              trans.remove((buildingIterator.next()).getType().getID().toString());
+            for (Building b : r.buildings()) {
+              trans.remove(b.getType().getID().toString());
             }
           }
 
           if (checkUnits) {
-            unitIterator = r.units().iterator();
-
-            while (unitIterator.hasNext()) {
-              Unit u = unitIterator.next();
+            for (Unit u : r.units()) {
               trans.remove(u.getRace().getID().toString());
 
               if (u.getRaceNamePrefix() != null) {
@@ -981,61 +956,46 @@ public class CRWriterDialog extends InternationalizedDataDialog {
                 }
               }
 
-              itemIterator = u.getItems().iterator();
-
-              while (itemIterator.hasNext()) {
-                trans.remove((itemIterator.next()).getItemType().getID().toString());
+              for (Item item : u.getItems()) {
+                trans.remove(item.getItemType().getID().toString());
               }
 
-              skillIterator = u.getSkills().iterator();
-
-              while (skillIterator.hasNext()) {
-                trans.remove((skillIterator.next()).getSkillType().getID().toString());
+              for (Skill skill : u.getSkills()) {
+                trans.remove(skill.getSkillType().getID().toString());
               }
             }
           }
         }
 
         if (checkSpells) {
-          spellIterator = data.spells().values().iterator();
-
-          while (spellIterator.hasNext()) {
-            Spell sp = spellIterator.next();
+          for (Spell sp : data.spells().values()) {
             trans.remove(sp.getID().toString());
             trans.remove(sp.getName());
 
-            stringIterator = sp.getComponents().keySet().iterator();
-            while (stringIterator.hasNext()) {
-              trans.remove(stringIterator.next());
+            for (String comp : sp.getComponents().keySet()) {
+              trans.remove(comp);
             }
           }
 
-          potionIterator = data.potions().values().iterator();
-
-          while (potionIterator.hasNext()) {
-            Potion sp = potionIterator.next();
-            trans.remove(sp.getID().toString());
-            itemIterator = sp.ingredients().iterator();
-
-            while (itemIterator.hasNext()) {
-              trans.remove(itemIterator.next().getItemType().getID().toString());
+          for (Potion potion : data.getPotions()) {
+            trans.remove(potion.getID().toString());
+            for (Item item : potion.ingredients()) {
+              trans.remove(item.getItemType().getID().toString());
             }
           }
         }
 
         if (trans.size() > 0) {
           CRWriterDialog.log.debug("Following translations will be removed:");
-          stringIterator = trans.iterator();
 
           // java.util.Map<String,String> newTrans = newData.translations();
           Translations newTrans = newData.translations();
 
-          while (stringIterator.hasNext()) {
-            Object o = stringIterator.next();
-            newTrans.remove((String) o);
+          for (String translation : trans) {
+            newTrans.remove(translation);
 
             if (CRWriterDialog.log.isDebugEnabled()) {
-              CRWriterDialog.log.debug("Removing: " + o);
+              CRWriterDialog.log.debug("Removing: " + translation);
             }
           }
         }
@@ -1045,40 +1005,32 @@ public class CRWriterDialog extends InternationalizedDataDialog {
           maxProgress / 2 / 5 * 3);
       // Deleting empty Factions
       if (chkDelEmptyFactions.isSelected()) {
-        Collection<Region> lookup = data.regions().values();
+        Collection<? extends Region> lookup = data.getRegions();
         if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
           lookup = regions;
         }
         // ArrayList of Factions to be removed
-        ArrayList<Faction> factionRemoveList = null;
+        ArrayList<Faction> factionRemoveList = new ArrayList<Faction>();
         // Looping through the factions
-        if (newData.factions() != null) {
-          for (Faction actF : newData.factions().values()) {
+        if (newData.getFactions() != null) {
+          for (Faction actF : newData.getFactions()) {
             boolean found = false;
             // Looping through exported regions or all regions to see if the faction has a unit
             // lookup is set already
             if (lookup != null && lookup.size() > 0) {
-              Iterator<Region> it2 = lookup.iterator();
-              it2.hasNext();
-              while (!found && it2.hasNext()) {
-                Region reg = it2.next();
-                Iterator<Unit> it3 = reg.units().iterator();
-                while (!found && it3.hasNext()) {
-                  Unit unit = it3.next();
-                  if (actF.equals(unit.getFaction())) {
-                    // int i22=0;
+              for (Region reg : lookup) {
+                if (found) {
+                  break;
+                }
+                for (Unit unit : reg.units()) {
+                  if (found) {
+                    break;
                   }
                   found = actF.equals(unit.getFaction());
                 }
               }
 
               if (!found) {
-                // "remove" removed
-                // it1.remove(); // ???? TR: why removing it from the
-                // iterator...
-                if (factionRemoveList == null) {
-                  factionRemoveList = new ArrayList<Faction>();
-                }
                 if (!factionRemoveList.contains(actF)) {
                   factionRemoveList.add(actF);
                 }
@@ -1089,10 +1041,11 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
         // remove code
         // check if factions should be removed
-        if (factionRemoveList != null && factionRemoveList.size() > 0) {
+        if (factionRemoveList.size() > 0) {
           for (Faction removeF : factionRemoveList) {
             // Removing the faction from newData
-            newData.factions().remove(removeF.getID());
+            newData.removeFaction(removeF.getID());
+
             // alliances...if one of the partners is our delete Faction->delete
             cleanAllianzes(newData, removeF);
           }
@@ -1145,16 +1098,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    * @param factionToDel
    */
   private void cleanAllianzes(GameData data, Faction factionToDel) {
-    Iterator<Faction> i1 = data.factions().values().iterator();
-    while (i1.hasNext()) {
-      Faction actF = i1.next();
+    for (Faction actF : data.getFactions()) {
       if (!actF.equals(factionToDel)) {
         cleanAllies(actF.getAllies(), factionToDel);
         // groups too
         if (actF.getGroups() != null) {
-          Iterator<Group> i2 = actF.getGroups().values().iterator();
-          while (i2.hasNext()) {
-            Group actG = i2.next();
+          for (Group actG : actF.getGroups().values()) {
             cleanAllies(actG.allies(), factionToDel);
           }
         }
@@ -1171,9 +1120,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   private void cleanAllies(Map<EntityID, Alliance> allies, Faction factionToDel) {
     ArrayList<EntityID> allianceRemoveList = null;
     if (allies != null && allies.keySet() != null) {
-      Iterator<EntityID> i2 = allies.keySet().iterator();
-      while (i2.hasNext()) {
-        EntityID allianceID = i2.next();
+      for (EntityID allianceID : allies.keySet()) {
         Alliance actAlliance = allies.get(allianceID);
         if (actAlliance.getFaction().equals(factionToDel)) {
           // jip! delete it!
@@ -1185,9 +1132,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       }
       // something to delete?
       if (allianceRemoveList != null && allianceRemoveList.size() > 0) {
-        Iterator<EntityID> i3 = allianceRemoveList.iterator();
-        while (i3.hasNext()) {
-          allies.remove(i3.next());
+        for (EntityID id : allianceRemoveList) {
+          allies.remove(id);
         }
       }
     }
@@ -1201,17 +1147,15 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    */
   private void cleanMessages(GameData data, Collection<Region> regionList) {
     // Messages of factions
-    if (data.factions() != null) {
-      Iterator<Faction> i1 = data.factions().values().iterator();
-      while (i1.hasNext()) {
-        this.cleanMessages(data, i1.next(), regionList);
+    if (data.getFactions() != null) {
+      for (Faction f : data.getFactions()) {
+        this.cleanMessages(data, f, regionList);
       }
     }
     // Messages of regions
-    if (data.regions() != null) {
-      Iterator<Region> i1 = data.regions().values().iterator();
-      while (i1.hasNext()) {
-        this.cleanMessages(data, i1.next(), regionList);
+    if (data.getRegions() != null) {
+      for (Region r : data.getRegions()) {
+        this.cleanMessages(data, r, regionList);
       }
     }
   }
@@ -1252,9 +1196,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       return;
 
     ArrayList<Message> keepList = null;
-    Iterator<Message> i1 = msgList.iterator();
-    while (i1.hasNext()) {
-      Message msg = i1.next();
+    for (Message msg : msgList) {
       if (msg.getAttributes() != null) {
         // check whether the message belongs to one of the selected regions
         // region related messages:
@@ -1301,7 +1243,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       erg = true;
       String number = value;
       UnitID id = UnitID.createUnitID(number, 10, data.base);
-      Unit unit = data.units().get(id);
+      Unit unit = data.getUnit(id);
       if (unit != null) {
         Region r = unit.getRegion();
         if (r != null) {
@@ -1350,10 +1292,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    * @param regionList
    */
   private void cleanBattles(GameData data, Collection<Region> regionList) {
-    if (data.factions() != null) {
-      Iterator<Faction> i1 = data.factions().values().iterator();
-      while (i1.hasNext()) {
-        Faction actF = i1.next();
+    if (data.getFactions() != null) {
+      for (Faction actF : data.getFactions()) {
         if (actF.getBattles() != null && actF.getBattles().size() > 0) {
           this.cleanBattles(data, actF, regionList);
         }
@@ -1373,9 +1313,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     if (f.getBattles() == null || f.getBattles().size() == 0)
       return;
     ArrayList<Battle> battleRemoveList = null;
-    Iterator<Battle> it1 = f.getBattles().iterator();
-    while (it1.hasNext()) {
-      Battle actBattle = it1.next();
+    for (Battle actBattle : f.getBattles()) {
       Region actR = data.getRegion(actBattle.getID());
       if (actR == null || !regionList.contains(actR)) {
         // we have to remove the battle

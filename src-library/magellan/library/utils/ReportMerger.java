@@ -28,6 +28,7 @@ import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.GameDataMerger;
 import magellan.library.Region;
 import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.rules.Date;
@@ -171,7 +172,7 @@ public class ReportMerger extends Object {
        * regionUIDMap = new HashMap<Long, Region>();
        */
 
-      for (Region region : data.regions().values()) {
+      for (Region region : data.getRegions()) {
         /*
          * if ((region.getName() != null) && (region.getName().length() > 0)) { Collection<Region>
          * regions = regionMap.get(region.getName()); if (regions == null) { regions = new
@@ -435,7 +436,7 @@ public class ReportMerger extends Object {
                   + Resources.get("util.reportmerger.status.merging"), iProgress);
 
               // data.mergeWith( reports[i].getData() );
-              globalData = GameData.merge(globalData, reports[i].getData());
+              globalData = GameDataMerger.merge(globalData, reports[i].getData());
 
               reports[i].setMerged(true);
 
@@ -590,7 +591,8 @@ public class ReportMerger extends Object {
             CoordinateID correct = newReport.getData().getCoordinateTranslation(newReportOwner, 0);
             if (correct != null) {
               correct =
-                  CoordinateID.create(bestTranslation.getKey().getX() + correct.getX(), bestTranslation.getKey().getY() + correct.getY(), 0);
+                  CoordinateID.create(bestTranslation.getKey().getX() + correct.getX(),
+                      bestTranslation.getKey().getY() + correct.getY(), 0);
               globalData.setCoordinateTranslation(newReportOwner, correct);
             }
           }
@@ -612,7 +614,8 @@ public class ReportMerger extends Object {
                   newReport.getData().getCoordinateTranslation(newReportOwner, 1);
               if (correct != null) {
                 correct =
-                    CoordinateID.create(bestAstralTranslation.getKey().getX() + correct.getX(), bestAstralTranslation.getKey().getY() + correct.getY(), 1);
+                    CoordinateID.create(bestAstralTranslation.getKey().getX() + correct.getX(),
+                        bestAstralTranslation.getKey().getY() + correct.getY(), 1);
                 globalData.setCoordinateTranslation(newReportOwner, correct);
               }
             }
@@ -644,7 +647,8 @@ public class ReportMerger extends Object {
         } else {
           ReportMerger.log.info("Level 0 : using untranslated new report - same origin");
         }
-        if (bestAstralTranslation.getKey().getX() != 0 || bestAstralTranslation.getKey().getY() != 0) {
+        if (bestAstralTranslation.getKey().getX() != 0
+            || bestAstralTranslation.getKey().getY() != 0) {
           try {
             clonedData = (GameData) clonedData.clone(bestAstralTranslation.getKey());
             if (clonedData == null)
@@ -675,7 +679,7 @@ public class ReportMerger extends Object {
           ui.setProgress(newReport.getFile().getName() + " - "
               + Resources.get("util.reportmerger.status.merging"), iProgress);
         }
-        globalData = GameData.merge(globalData, clonedData);
+        globalData = GameDataMerger.merge(globalData, clonedData);
         newReport.setMerged(true);
       } else {
         ReportMerger.log.info("aborting...");
@@ -701,12 +705,12 @@ public class ReportMerger extends Object {
     EntityID newReportOwner = newReport.getData().getOwnerFaction();
     // ask user if necessary
     if (newReportOwner == null && interactive) {
-      if (!newReport.getData().factions().isEmpty()) {
-        Faction firstFaction = newReport.getData().factions().values().iterator().next();
+      if (!newReport.getData().getFactions().isEmpty()) {
+        Faction firstFaction = newReport.getData().getFactions().iterator().next();
         Object result =
             ui.input(Resources.getFormatted("util.reportmerger.msg.inputowner.msg", newReport
                 .getFile().getName()), Resources.get("util.reportmerger.msg.inputowner.title"),
-                newReport.getData().factions().values().toArray(), firstFaction);
+                newReport.getData().getFactions().toArray(), firstFaction);
         if (result != null && result instanceof Faction) {
           newReport.getData().setOwnerFaction(((Faction) result).getID());
         }
@@ -919,7 +923,8 @@ public class ReportMerger extends Object {
           cancelled = false;
           try {
             CoordinateID trans =
-                CoordinateID.create(Integer.parseInt((String) xS), Integer.parseInt((String) yS), layer);
+                CoordinateID.create(Integer.parseInt((String) xS), Integer.parseInt((String) yS),
+                    layer);
             resultTranslation = new Score<CoordinateID>(trans, 1, "user");
             ReportMerger.log.debug("using user translation: " + resultTranslation.getKey()
                 + " in layer " + layer);
@@ -962,14 +967,14 @@ public class ReportMerger extends Object {
         && TrustLevels.containsTrustLevelsSetByUser(newReport.getData())) {
       // take the trust levels out of the to be added data
       // set those in the existing data to default-values
-      for (Faction f : globalData.factions().values()) {
+      for (Faction f : globalData.getFactions()) {
         f.setTrustLevel(Faction.TL_DEFAULT);
         f.setTrustLevelSetByUser(false);
       }
     } else {
       // take the trust levels out of the existing data
       // set those in the to be added data to default-values
-      for (Faction f : newReport.getData().factions().values()) {
+      for (Faction f : newReport.getData().getFactions()) {
         f.setTrustLevel(Faction.TL_DEFAULT);
         f.setTrustLevelSetByUser(false);
       }

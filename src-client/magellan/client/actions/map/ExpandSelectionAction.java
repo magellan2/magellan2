@@ -8,7 +8,6 @@
 package magellan.client.actions.map;
 
 import java.awt.event.ActionEvent;
-import java.util.Collection;
 
 import magellan.client.Client;
 import magellan.library.CoordinateID;
@@ -41,13 +40,10 @@ public class ExpandSelectionAction extends AbstractSelectionAction {
       return;
     // add all the current selected region in one move
     for (CoordinateID c : client.getData().getSelectedRegionCoordinates().keySet()) {
-      Region region = client.getData().regions().get(c);
+      Region region = client.getData().getRegion(c);
       // get neighbors
-      Collection<CoordinateID> neighbours = region.getNeighbours();
-      if (neighbours != null) {
-        for (CoordinateID checkRegionID : neighbours) {
-          getSelectedRegions().put(checkRegionID, client.getData().regions().get(checkRegionID));
-        }
+      for (Region n : region.getNeighbors().values()) {
+        getSelectedRegions().put(n.getID(), n);
       }
     }
 

@@ -13,6 +13,7 @@
 
 package magellan.library;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
@@ -29,6 +30,7 @@ import magellan.library.utils.Translations;
  * @see magellan.library.GameData
  */
 public class CompleteData extends GameData {
+
   protected Map<CoordinateID, Region> regions = new OrderedHashtable<CoordinateID, Region>();
   protected Map<UnitID, Unit> units = new Hashtable<UnitID, Unit>();
   protected Map<UnitID, TempUnit> tempUnits = new Hashtable<UnitID, TempUnit>();
@@ -44,95 +46,42 @@ public class CompleteData extends GameData {
   protected Locale locale = null;
   protected Map<CoordinateID, Region> selectedRegions = new TreeMap<CoordinateID, Region>();
 
-  /*
-   * protected CoordinateID astralMapping = null; private boolean astralMappingImpossible = false;
-   */
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.GameData#setIslands(java.util.Map)
    */
   @Override
-  public Map<IntegerID, Island> islands() {
-    return islands;
+  public void setIslands(Map<IntegerID, Island> islands) {
+    if (islands == null) {
+      this.islands = new OrderedHashtable<IntegerID, Island>();
+    } else {
+      this.islands = new OrderedHashtable<IntegerID, Island>(islands);
+    }
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.GameData#addTempUnit(magellan.library.TempUnit)
    */
   @Override
-  public Map<CoordinateID, Region> regions() {
-    return regions;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  @Override
-  public Map<UnitID, Unit> units() {
-    return units;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  @Override
-  public Map<UnitID, TempUnit> tempUnits() {
-    return tempUnits;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  @Override
-  public Map<EntityID, Faction> factions() {
-    return factions;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  @Override
-  public Map<EntityID, Ship> ships() {
-    return ships;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  @Override
-  public Map<EntityID, Building> buildings() {
-    return buildings;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  @Override
-  public Map<IntegerID, MessageType> msgTypes() {
-    return msgTypes;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  @Override
-  public Map<StringID, Spell> spells() {
-    return spells;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  @Override
-  public Map<IntegerID, Potion> potions() {
-    return potions;
+  public void addTempUnit(TempUnit t) {
+    tempUnits.put(t.getID(), t);
   }
 
   /**
    * Returns a collection of the coordinates of selected regions.
+   * 
+   * @see magellan.library.GameData#getSelectedRegionCoordinates()
    */
   @Override
   public Map<CoordinateID, Region> getSelectedRegionCoordinates() {
-    return selectedRegions;
+    return Collections.unmodifiableMap(selectedRegions);
+  }
+
+  /**
+   * @see magellan.library.GameData#addSelectedRegionCoordinate(magellan.library.Region)
+   */
+  @Override
+  public void addSelectedRegionCoordinate(Region region) {
+    selectedRegions.put(region.getCoordinate(), region);
   }
 
   /**
@@ -148,12 +97,9 @@ public class CompleteData extends GameData {
     }
   }
 
-  /**
-   * DOCUMENT-ME
-   */
   @Override
-  public Map<IntegerID, HotSpot> hotSpots() {
-    return hotSpots;
+  public void addHotSpot(HotSpot h) {
+    hotSpots.put(h.getID(), h);
   }
 
   /**
@@ -200,36 +146,99 @@ public class CompleteData extends GameData {
   }
 
   /**
-   * Sets the mapping for astral to real space.
-   * 
-   * @param c the real space <code>CoordianteID</code> <x,y,0> which is the center of the astral
-   *          space region with CoordinateID <0,0,1>.
-   */
-  /*
-   * public void setAstralMapping(CoordinateID c) { this.astralMapping = c; }
-   */
-  /**
-   * Returns the mapping for astral to real space.
-   * 
-   * @return the <code>CoordinateID</code> of the real space region which is the center of the
-   *         astral space region with CoordinateID <0,0,1>.
-   */
-  /*
-   * public CoordinateID getAstralMapping() { if (this.getGameSpecificStuff() instanceof
-   * AllanonSpecificStuff) { // Allanon doesn't provide an astral space return null; } if
-   * (!(this.getGameSpecificStuff() instanceof EresseaSpecificStuff)) { return null; } if
-   * (this.astralMappingImpossible) { return null; } if (this.astralMapping == null) {
-   * EresseaMapMergeEvaluator mme = (EresseaMapMergeEvaluator)
-   * this.getGameSpecificStuff().getMapMergeEvaluator(); this.astralMapping =
-   * mme.getAstral2RealMapping(this); this.astralMappingImpossible = this.astralMapping == null; }
-   * return this.astralMapping; }
-   */
-  /**
    * @see magellan.library.GameData#estimateSize()
    */
   @Override
   public long estimateSize() {
-    return regions().size() * 1000 + units.size() * 1000;
+    return regionView().size() * 1000 + units.size() * 1000;
+  }
+
+  /**
+   * @see magellan.library.GameData#buildingView()
+   */
+  @Override
+  protected Map<EntityID, Building> buildingView() {
+    return buildings;
+  }
+
+  /**
+   * @see magellan.library.GameData#factionView()
+   */
+  @Override
+  protected Map<EntityID, Faction> factionView() {
+    return factions;
+  }
+
+  /**
+   * @see magellan.library.GameData#hotSpotView()
+   */
+  @Override
+  protected Map<IntegerID, HotSpot> hotSpotView() {
+    return hotSpots;
+  }
+
+  /**
+   * @see magellan.library.GameData#islandView()
+   */
+  @Override
+  protected Map<IntegerID, Island> islandView() {
+    return islands;
+  }
+
+  /**
+   * @see magellan.library.GameData#msgTypeView()
+   */
+  @Override
+  protected Map<IntegerID, MessageType> msgTypeView() {
+    return msgTypes;
+  }
+
+  /**
+   * @see magellan.library.GameData#potionView()
+   */
+  @Override
+  protected Map<IntegerID, Potion> potionView() {
+    return potions;
+  }
+
+  /**
+   * @see magellan.library.GameData#regionView()
+   */
+  @Override
+  protected Map<CoordinateID, Region> regionView() {
+    return regions;
+  }
+
+  /**
+   * @see magellan.library.GameData#shipView()
+   */
+  @Override
+  protected Map<EntityID, Ship> shipView() {
+    return ships;
+  }
+
+  /**
+   * @see magellan.library.GameData#spellView()
+   */
+  @Override
+  protected Map<StringID, Spell> spellView() {
+    return spells;
+  }
+
+  /**
+   * @see magellan.library.GameData#tempUnitView()
+   */
+  @Override
+  protected Map<UnitID, TempUnit> tempUnitView() {
+    return tempUnits;
+  }
+
+  /**
+   * @see magellan.library.GameData#unitView()
+   */
+  @Override
+  protected Map<UnitID, Unit> unitView() {
+    return units;
   }
 
 }

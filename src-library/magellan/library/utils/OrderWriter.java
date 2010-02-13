@@ -180,7 +180,8 @@ public class OrderWriter {
     writeln(stream, "LOCALE " + Locales.getOrderLocale().getLanguage());
   }
 
-  private int writeRegions(Collection<Region> regions, BufferedWriter stream) throws IOException {
+  private int writeRegions(Collection<? extends Region> regions, BufferedWriter stream)
+      throws IOException {
     int writtenUnits = 0;
 
     for (Region r : regions) {

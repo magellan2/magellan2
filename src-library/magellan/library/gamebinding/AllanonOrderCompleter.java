@@ -25,10 +25,8 @@ package magellan.library.gamebinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
-import magellan.library.Building;
 import magellan.library.GameData;
 import magellan.library.Ship;
 import magellan.library.Skill;
@@ -140,15 +138,12 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
    */
   @Override
   public void cmpltBetrete() {
-    Iterator<Building> iter1 = getRegion().buildings().iterator();
-
-    if (iter1.hasNext()) {
+    if (!getRegion().buildings().isEmpty()) {
       getCompletions().add(
           new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " ", 7));
     }
 
-    for (; iter1.hasNext();) {
-      UnitContainer uc = iter1.next();
+    for (UnitContainer uc : getRegion().buildings()) {
 
       if (!uc.equals(getUnit().getBuilding())) {
         getCompletions().add(

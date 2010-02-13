@@ -38,8 +38,9 @@ public class StringID implements ID {
    * Creates a new StringID object. See the class description on how the specified string is used to
    * establish the uniqueness of this id.
    * 
-   * @throws IllegalArgumentException DOCUMENT-ME
+   * @throws IllegalArgumentException If i is null or empty
    */
+  // FIXME(stm) create doesn't throw exception on i==""
   protected StringID(String i) {
     if ((i == null) || i.equals(""))
       throw new IllegalArgumentException("StringID: empty String specified as an ID");
@@ -54,7 +55,7 @@ public class StringID implements ID {
   /**
    * Returns a (possibly) new StringID object.
    * 
-   * @throws NullPointerException DOCUMENT-ME
+   * @throws NullPointerException If <code>o==null</code>
    */
   public static StringID create(String o) {
     if (o == null)
@@ -79,7 +80,7 @@ public class StringID implements ID {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.ID#toString(java.lang.String)
    */
   public String toString(String delim) {
     return toString();

@@ -163,7 +163,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
     Region actRegion = null;
     String path = "";
     List<Region> regionList = null;
-    Map<ID, RegionType> excludeMap = Regions.getOceanRegionTypes(data.rules);
+    Map<ID, RegionType> excludeMap = Regions.getNonLandRegionTypes(data.rules);
     for (Unit u : getSelectedUnits()) {
       if (onSameIsland(u.getRegion(), destRegion)) {
         if (actRegion == null || !u.getRegion().equals(actRegion)) {
@@ -426,7 +426,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   private boolean onSameIsland(Region r1, Region r2) {
     Collection<Region> island = new LinkedList<Region>();
-    Map<CoordinateID, Region> m = Islands.getIsland(data.rules, data.regions(), r1);
+    Map<CoordinateID, ? extends Region> m = Islands.getIsland(data.rules, data.regions(), r1);
     if (m != null) {
       island.addAll(m.values());
       island.remove(r1);
@@ -513,8 +513,8 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
         isShipableRegion = true;
       } else {
         // run through the neighbors
-        for (CoordinateID checkRegionID : destRegion.getNeighbours()) {
-          if (data.getRegion(checkRegionID).getRegionType().isOcean()) {
+        for (Region n : destRegion.getNeighbors().values()) {
+          if (n.getRegionType().isOcean()) {
             isShipableRegion = true;
             break;
           }

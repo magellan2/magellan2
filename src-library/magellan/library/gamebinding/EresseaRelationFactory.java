@@ -202,18 +202,33 @@ public class EresseaRelationFactory implements RelationFactory {
 
         // dissect the order into pieces to detect which way the unit
         // is taking
-        CoordinateID c = u.getRegion().getCoordinate();
-        modifiedMovement.add(c);
+        Region currentRegion = u.getRegion();
+        CoordinateID currentCoord = u.getRegion().getCoordinate();
+
+        modifiedMovement.add(currentCoord);
 
         for (Iterator<OrderToken> iter2 = tokens.listIterator(1); iter2.hasNext();) {
           OrderToken token = iter2.next();
           Direction movement = Direction.toDirection(token.getText());
 
-          c = CoordinateID.create(c); // make c a new copy
+          // try to get the next region; take "wrap around" regions into account
+          CoordinateID nextCoord = currentCoord;
+          Region nextRegion = currentRegion;
           if (movement != Direction.INVALID) {
-            c = c.translate(movement.toCoordinate());
+            nextCoord = currentCoord.translate(movement.toCoordinate());
+            if (currentRegion != null) {
+              nextRegion = currentRegion.getNeighbors().get(movement);
+            }
+            if (nextRegion == null) {
+              nextRegion = data.getRegion(nextCoord);
+            } else {
+              nextCoord = nextRegion.getCoordinate();
+            }
           }
-          modifiedMovement.add(c);
+
+          modifiedMovement.add(nextCoord);
+          currentCoord = nextCoord;
+          currentRegion = nextRegion;
         }
 
         relations.add(new MovementRelation(u, modifiedMovement, line));

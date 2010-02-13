@@ -142,7 +142,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // factions.clear();
     if (data != null) {
       unitsTools.setRules(data.rules);
-      setRegions(data.regions().values());
+      setRegions(data.getRegions());
     }
   }
 
@@ -737,7 +737,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           if (value != null) {
             String number = value;
             UnitID id = UnitID.createUnitID(number, 10, data.base);
-            Unit unit = data.units().get(id);
+            Unit unit = data.getUnit(id);
 
             if (unit != null) {
               Region r = unit.getRegion();
@@ -855,13 +855,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               int menge = Integer.parseInt(value2);
               value = msg.getAttributes().get("unit");
               UnitID id = UnitID.createUnitID(value, 10, data.base);
-              Unit giver = data.units().get(id);
+              Unit giver = data.getUnit(id);
               ID giverID =
                   (giver == null || giver.getFaction() == null) ? EntityID.createEntityID(-1,
                       data.base) : giver.getFaction().getID();
               value = msg.getAttributes().get("target");
               id = UnitID.createUnitID(value, 10, data.base);
-              Unit target = data.units().get(id);
+              Unit target = data.getUnit(id);
               ID targetID =
                   (target == null || target.getFaction() == null) ? EntityID.createEntityID(-1,
                       data.base) : target.getFaction().getID();

@@ -18,13 +18,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 import magellan.library.StringID;
+import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.utils.Resources;
 
 /**
  * Stores rule relevant information about a region type.
  */
 public class RegionType extends UnitContainerType {
   /** A static instance of the unknown region type */
-  public static RegionType unknown = new RegionType(StringID.create("unbekannt"));
+  public static RegionType unknown = new RegionType(EresseaConstants.RT_VOID);
+  /** A static instance of the wrapping region type */
+  public static RegionType wrap = new RegionType(EresseaConstants.RT_WRAP);
+  static {
+    unknown.setName(Resources.get("completedata.region.thevoid.name"));
+    wrap.setName(Resources.get("completedata.region.wrap.name"));
+  }
   private int inhabitants = -1;
 
   private boolean isOcean = false;

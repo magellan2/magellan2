@@ -44,7 +44,7 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
       CoordinateID mapping) {
 
     int maxTerrainMismatches =
-        (int) (Math.max(fromData.regions().size(), toData.regions().size()) * TerrainMappingEvaluator.PERCENT_MISMATCHES);
+        (int) (Math.max(fromData.getRegions().size(), toData.getRegions().size()) * TerrainMappingEvaluator.PERCENT_MISMATCHES);
 
     RegionType forestTerrain = fromData.rules.getRegionType(StringID.create("Wald"));
     RegionType plainTerrain = fromData.rules.getRegionType(StringID.create("Ebene"));
@@ -58,7 +58,7 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
     int score = 0;
 
     /* for each translation we have to compare the regions' terrains */
-    for (Region region : fromData.regions().values()) {
+    for (Region region : fromData.getRegions()) {
       if ((region.getType() == null) || region.getType().equals(RegionType.unknown)) {
         continue;
       }
@@ -71,7 +71,7 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
       if (c.getZ() == mapping.getZ()) {
         CoordinateID translatedCoord = CoordinateID.create(c.getX(), c.getY(), 0);
         translatedCoord = translatedCoord.translate(mapping);
-        Region sameRegion = toData.regions().get(translatedCoord);
+        Region sameRegion = toData.getRegion(translatedCoord);
 
         /*
          * the hit count for the current translation must only be modified, if there actually are

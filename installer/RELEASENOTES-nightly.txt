@@ -1,6 +1,3 @@
-!!! Vorsicht, dies ist eine besonders instabile Version. Vielleicht warten Sie lieber auf die 
-nächste stabile Version !!!
-
 Neueste Meldungen
 
 Dies ist eine experimentelle Magellanversion, ein sogenannter "nightly build". Hier probieren
@@ -11,6 +8,7 @@ und auf die neuesten Funktionen verzichten können, benutzen Sie lieber eine stab
 
 Diese Version funktioniert mit E3!
 
+
 Release Notes
 
 This is an experimental version of Magellan, a so called nightly build. Here we try out new 
@@ -20,12 +18,3 @@ tested by as many people as a stable version. In the worst case, you could lose 
 you may prefer to download a stable version.
 
 This version supports E3!
-
-Hints for programmers
-- CoordinateID has changed its interface! It is now immutable and translate(..) and subtract(...)
-  no longer change their subject, but return a new, modified object.
-- You should not construct your own region neighborhoods based on CoordinateIDs, but instead use
-  Region.getNeighbours() or Regions.getAllNeighbors() from now on!
-- GameData.units(), regions() etc. no return unmodifiable collections, but you weren't changing 
-  them anyway, were you?
-- Regions.getPath,getNeighbors etc. may have changed slightly

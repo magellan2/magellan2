@@ -386,7 +386,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     final ProgressBarUI progressUI = new ProgressBarUI((JFrame) (w instanceof JFrame ? w : null));
     progressUI.setTitle(Resources.get("tasks.progressbar.unack.title"));
 
-    progressUI.setMaximum(data.regions().size());
+    progressUI.setMaximum(data.getRegions().size());
 
     progressUI.show();
     new Thread(new Runnable() {
@@ -394,7 +394,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         try {
           int iProgress = 0;
           for (Inspector i : getInspectors()) {
-            for (Region r : data.regions().values()) {
+            for (Region r : data.getRegions()) {
               progressUI.setProgress(r.getName(), ++iProgress);
               for (Unit u : r.units()) {
                 i.unSuppress(u);
@@ -462,7 +462,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     } else if (restrictToSelection() && lastSelection != null && !lastSelection.isEmpty()) {
       updateDispatcher.addRegions(lastSelection);
     } else {
-      updateDispatcher.addRegions(data.regions().values());
+      updateDispatcher.addRegions(data.getRegions());
     }
   }
 
@@ -800,7 +800,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * 
      * @param regions
      */
-    public void addRegions(Collection<Region> regions) {
+    public void addRegions(Collection<? extends Region> regions) {
       for (Region region : regions) {
         addRegion(region);
       }
@@ -985,7 +985,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         // no selection: refresh all
         if (e.getSelectedObjects().isEmpty()) {
           // copy to Hashset to improve performance!
-          lastSelection = new HashSet<Region>(data.regions().values());
+          lastSelection = new HashSet<Region>(data.getRegions());
           refreshProblems();
         } else {
           // copy to Hashset to improve performance!

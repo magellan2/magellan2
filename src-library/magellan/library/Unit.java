@@ -371,7 +371,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void clearTemps();
 
   /**
-   * Returns alle orders including the orders necessary to issue the creation of all the child temp
+   * Returns all orders including the orders necessary to issue the creation of all the child temp
    * units of this unit.
    */
   public List<String> getCompleteOrders();
@@ -391,12 +391,12 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @throws IllegalArgumentException
    */
-  public TempUnit createTemp(UnitID key);
+  public TempUnit createTemp(GameData data, UnitID key);
 
   /**
    * Removes a temp unit with this unit as the parent completely from the game data.
    */
-  public void deleteTemp(ID key, GameData data);
+  public void deleteTemp(UnitID key, GameData data);
 
   /**
    * @see magellan.library.Named#getModifiedName()
@@ -772,7 +772,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
-  public int extractTempUnits(int tempSortIndex);
+  public int extractTempUnits(GameData data, int tempSortIndex);
 
   /**
    * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
@@ -784,7 +784,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
-  public int extractTempUnits(int tempSortIndex, Locale locale);
+  public int extractTempUnits(GameData data, int tempSortIndex, Locale locale);
 
   /**
    * Returns the value of aura.

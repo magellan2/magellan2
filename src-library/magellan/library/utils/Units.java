@@ -64,7 +64,7 @@ public class Units {
           .info("Units cache recalculated "
               + Units.recount
               + " times for "
-              + (Units.data != null && Units.data.regions() != null ? Units.data.regions().size()
+              + (Units.data != null && Units.data.getRegions() != null ? Units.data.getRegions().size()
                   : "?") + " regions.");
       Units.recount = 0;
       Units.data = e.getGameData();

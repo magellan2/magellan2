@@ -74,7 +74,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
    * Creates a new RoutingDialog object.
    */
   public RoutingDialog(Frame owner, GameData data, boolean initializeRegions) {
-    this(owner, data, data.regions().values(), true, initializeRegions);
+    this(owner, data, data.getRegions(), true, initializeRegions);
   }
 
   /**

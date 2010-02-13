@@ -765,6 +765,9 @@ public class EresseaConstants {
   /** The RegoinType "the void" */
   public static final StringID RT_VOID = StringID.create("Leere");
 
+  /** "wrap around" regions */
+  public static final StringID RT_WRAP = StringID.create("Übergang");
+
   /** The RegionType active volcano */
   public static final StringID RT_ACTIVE_VOLCANO = StringID.create("Aktiver Vulkan");
 

@@ -319,7 +319,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     c.gridwidth = 3;
     pnlAttributeCheckBoxes.add(radioPanel, c);
 
-    List<Faction> factions = new LinkedList<Faction>(data.factions().values());
+    List<Faction> factions = new LinkedList<Faction>(data.getFactions());
     Collections.sort(factions, new NameComparator(IDComparator.DEFAULT));
     factionCombo = new JComboBox(factions.toArray());
     factionCombo.addItem("");
@@ -583,8 +583,8 @@ public class FindDialog extends InternationalizedDataDialog implements
     }
     // determine the items to search
     if (addUnits.isSelected() == true) {
-      // items.addAll(data.units().values()); TempUnits were forgotten...
-      for (Unit u : data.units().values()) {
+      // items.addAll(data.getRegions()); TempUnits were forgotten...
+      for (Unit u : data.getUnits()) {
         if ((selectedRegions == null) || selectedRegions.isEmpty()
             || selectedRegions.contains(u.getRegion())) {
           if (addOnlyUnconfirmedUnits.isSelected()) {
@@ -609,7 +609,7 @@ public class FindDialog extends InternationalizedDataDialog implements
 
     if (addRegions.isSelected() == true) {
       if ((selectedRegions == null) || selectedRegions.isEmpty()) {
-        items.addAll(data.regions().values());
+        items.addAll(data.getRegions());
       } else {
         items.addAll(selectedRegions);
       }
@@ -617,9 +617,9 @@ public class FindDialog extends InternationalizedDataDialog implements
 
     if (addBuildings.isSelected() == true) {
       if ((selectedRegions == null) || selectedRegions.isEmpty()) {
-        items.addAll(data.buildings().values());
+        items.addAll(data.getBuildings());
       } else {
-        for (Building b : data.buildings().values()) {
+        for (Building b : data.getBuildings()) {
           if (selectedRegions.contains(b.getRegion())) {
             items.add(b);
           }
@@ -656,7 +656,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     }
 
     if (addFactions.isSelected()) {
-      items.addAll(data.factions().values());
+      items.addAll(data.getFactions());
     }
 
     // determine the faction to limit the search to
@@ -865,7 +865,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   private Collection<Unit> getAllTraitors() {
     Collection<Unit> retVal = new LinkedList<Unit>();
 
-    for (Unit unit : data.units().values()) {
+    for (Unit unit : data.getUnits()) {
       if (unit.isSpy()) {
         retVal.add(unit);
       }

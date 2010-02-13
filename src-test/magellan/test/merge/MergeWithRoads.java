@@ -3,6 +3,7 @@ package magellan.test.merge;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import magellan.library.GameData;
+import magellan.library.GameDataMerger;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.test.GameDataBuilder;
@@ -27,7 +28,7 @@ public class MergeWithRoads extends TestCase {
     builder.addUnit(gd2, "Unit_2", region_1_0_gd2);
     builder.addRoad(region_1_0_gd2, 1, 1, 100);
 
-    GameData gd4 = GameData.merge(gd1, gd2);
+    GameData gd4 = GameDataMerger.merge(gd1, gd2);
     // WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
 
     Region region_1_1_gd4 = gd4.getRegion(region_1_1_gd1.getID());
@@ -46,7 +47,7 @@ public class MergeWithRoads extends TestCase {
     Region r2 = gd2.regions().values().iterator().next();
     builder.addRoad(r2, 1, 1, 100);
 
-    GameData gd4 = GameData.merge(gd1, gd2);
+    GameData gd4 = GameDataMerger.merge(gd1, gd2);
     // WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
 
     Region r4 = gd4.getRegion(r2.getID());
@@ -65,7 +66,7 @@ public class MergeWithRoads extends TestCase {
     Region r1 = gd1.regions().values().iterator().next();
     builder.addRoad(r1, 1, 1, 100);
 
-    GameData gd4 = GameData.merge(gd1, gd2);
+    GameData gd4 = GameDataMerger.merge(gd1, gd2);
     // WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
 
     Region r4 = gd4.getRegion(r1.getID());
@@ -87,7 +88,7 @@ public class MergeWithRoads extends TestCase {
     builder.addUnit(gd2, "Unit_2", region_1_0_gd2);
     builder.addRoad(region_1_0_gd2, 1, 1, 100);
 
-    GameData gd4 = GameData.merge(gd1, gd2);
+    GameData gd4 = GameDataMerger.merge(gd1, gd2);
 
     Region region_1_0_gd4 = gd4.getRegion(region_1_0_gd1.getID());
     Assert.assertEquals(1, region_1_0_gd4.borders().size());
@@ -106,7 +107,7 @@ public class MergeWithRoads extends TestCase {
     Region region_1_1_gd2 = builder.addRegion(gd2, "1 1", "Region_1_1", "Ebene", 3);
     builder.addRoad(region_1_1_gd2, 1, 1, 100);
 
-    GameData gd4 = GameData.merge(gd1, gd2);
+    GameData gd4 = GameDataMerger.merge(gd1, gd2);
 
     Region region_1_1_gd4 = gd4.getRegion(region_1_1_gd1.getID());
     Assert.assertEquals(1, region_1_1_gd4.units().size());
@@ -129,7 +130,7 @@ public class MergeWithRoads extends TestCase {
 
     System.out.println(u2.getFaction().isPrivileged());
 
-    GameData gd4 = GameData.merge(gd1, gd2);
+    GameData gd4 = GameDataMerger.merge(gd1, gd2);
 
     Region region_1_1_gd4 = gd4.getRegion(region_1_1_gd1.getID());
     Assert.assertEquals(1, region_1_1_gd4.units().size());

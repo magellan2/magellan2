@@ -53,7 +53,7 @@ public class ExportCRAction extends MenuAction implements GameDataListener {
   }
 
   public void gameDataChanged(GameDataEvent e) {
-    int i = e.getGameData().regions().size();
+    int i = e.getGameData().getRegions().size();
     if (i > 0) {
       setEnabled(true);
     } else {

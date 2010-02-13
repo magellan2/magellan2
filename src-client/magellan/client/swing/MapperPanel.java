@@ -167,8 +167,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // fill hot spot combo
     cmbHotSpots.removeAllItems();
 
-    if ((data != null) && (data.hotSpots() != null)) {
-      List<HotSpot> hotSpots = new LinkedList<HotSpot>(data.hotSpots().values());
+    if ((data != null) && (data.getHotSpots() != null)) {
+      List<HotSpot> hotSpots = new LinkedList<HotSpot>(data.getHotSpots());
       Collections.sort(hotSpots, new Comparator<HotSpot>() {
         public int compare(HotSpot o1, HotSpot o2) {
           return o1.getName().compareTo(o2.getName());
@@ -755,7 +755,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       h.setCenter(center);
       data.setHotSpot(h);
 
-      List<HotSpot> hotSpots = new LinkedList<HotSpot>(data.hotSpots().values());
+      List<HotSpot> hotSpots = new LinkedList<HotSpot>(data.getHotSpots());
       Collections.sort(hotSpots, new Comparator<HotSpot>() {
         public int compare(HotSpot o1, HotSpot o2) {
           return o1.getName().compareTo(o2.getName());
@@ -932,8 +932,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     cmbHotSpots = new JComboBox();
 
-    if ((data != null) && (data.hotSpots() != null)) {
-      for (HotSpot h : data.hotSpots().values()) {
+    if ((data != null) && (data.getHotSpots() != null)) {
+      for (HotSpot h : data.getHotSpots()) {
         cmbHotSpots.addItem(h);
       }
     }

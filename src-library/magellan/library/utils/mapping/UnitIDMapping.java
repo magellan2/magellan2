@@ -45,7 +45,7 @@ public class UnitIDMapping implements DataMapping {
     if ((fromData.getDate() == null) || (!fromData.getDate().equals(toData.getDate())))
       return null;
 
-    for (Region region : fromData.regions().values()) {
+    for (Region region : fromData.getRegions()) {
       if (region.getCoordinate().getZ() == level) {
         for (Unit unit : region.units()) {
           Unit sameUnit = toData.getUnit(unit.getID());
@@ -56,8 +56,8 @@ public class UnitIDMapping implements DataMapping {
             if (sameRegion != null) {
               CoordinateID sameCoord = sameRegion.getCoordinate();
               if (sameCoord.getZ() == level)
-                return CoordinateID.create(sameCoord.getX() - region.getCoordinate().getX(), sameCoord.getY()
-                    - region.getCoordinate().getY(), level);
+                return CoordinateID.create(sameCoord.getX() - region.getCoordinate().getX(),
+                    sameCoord.getY() - region.getCoordinate().getY(), level);
             }
           }
         }

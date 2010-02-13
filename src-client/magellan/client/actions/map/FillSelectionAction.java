@@ -61,7 +61,7 @@ public class FillSelectionAction extends AbstractSelectionAction {
     for (CoordinateID c : client.getData().regions().keySet()) {
       if ((c.getZ() == client.getLevel()) && (c.getX() <= maxX) && (c.getX() >= minX) && (c.getY() <= maxY)
           && (c.getY() >= minY)) {
-        getSelectedRegions().put(c, client.getData().regions().get(c));
+        getSelectedRegions().put(c, client.getData().getRegion(c));
       }
     }
 

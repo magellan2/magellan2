@@ -18,8 +18,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import magellan.library.CoordinateID;
+import magellan.library.Region;
 import magellan.library.gamebinding.EresseaConstants;
 
 /**
@@ -157,6 +159,19 @@ public enum Direction {
     if (to.getZ() != from.getZ())
       return Direction.INVALID;
     return toDirection(to.getX() - from.getX(), to.getY() - from.getY());
+  }
+
+  /**
+   * Returns a direction as distance from from to to regarding wraparound effects. If they are not
+   * in the same z-layer, {@link #INVALID} is returned.
+   */
+  public static Direction toDirection(Region from, Region to) {
+    Map<Direction, Region> neighbors = from.getNeighbors();
+    for (Direction d : neighbors.keySet()) {
+      if (neighbors.get(d) == to)
+        return d;
+    }
+    return Direction.INVALID;
   }
 
   /**
@@ -500,6 +515,16 @@ public enum Direction {
    */
   public static List<Direction> getDirections() {
     return directions;
+  }
+
+  /**
+   * Returns a direction that is delta steps further (clockwise). E.g., <code>W.add(1)==NW</code>,
+   * <code>W.add(-2)==SE</code>, <code>W.add(6)==W</code>.
+   */
+  public Direction add(int delta) {
+    if (this == INVALID)
+      return INVALID;
+    return Direction.toDirection(((getDir() + delta) % 6 + 12) % 6);
   }
 
 }

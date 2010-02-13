@@ -326,9 +326,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
    */
   private void updateJumpToHotSpot() {
     jumpToHotSpot.removeAll();
-    if (data != null && data.hotSpots() != null && data.hotSpots().size() > 0) {
+    if (data != null && data.getHotSpots() != null && data.getHotSpots().size() > 0) {
       jumpToHotSpot.setEnabled(true);
-      for (HotSpot h : data.hotSpots().values()) {
+      for (HotSpot h : data.getHotSpots()) {
         JMenuItem levelSign = new JMenuItem(h.getName());
         levelSign.setActionCommand(h.getID().toString());
         levelSign.addActionListener(new ActionListener() {
@@ -399,7 +399,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
    * deletes all signs of the actual gamedata (CR)
    */
   private void delAllSigns() {
-    for (Region region2 : data.regions().values()) {
+    for (Region region2 : data.getRegions()) {
       (region2).clearSigns();
     }
     updateMap();
@@ -560,11 +560,12 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
   private void changeHotSpot() {
     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-    Map<IntegerID, HotSpot> hotspots = data.hotSpots();
     boolean found = false;
 
-    for (Iterator<HotSpot> iter = hotspots.values().iterator(); iter.hasNext() && !found;) {
-      HotSpot h = iter.next();
+    for (HotSpot h : data.getHotSpots()) {
+      if (found) {
+        break;
+      }
 
       if (h.getCenter().equals(region.getCoordinate())) {
         found = true;
@@ -586,7 +587,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
       HotSpot h = MagellanFactory.createHotSpot(id);
       h.setCenter(region.getID());
       h.setName(region.toString());
-      data.hotSpots().put(id, h);
+      data.addHotSpot(h);
     }
 
     dispatcher.fire(new GameDataEvent(this, data));

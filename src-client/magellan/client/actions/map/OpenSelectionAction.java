@@ -102,8 +102,8 @@ public class OpenSelectionAction extends AbstractSelectionAction {
       preSetCleanSelection();
 
       for (CoordinateID c : coordinates) {
-        if (client.getData().regions().get(c) != null) {
-          getSelectedRegions().put(c, client.getData().regions().get(c));
+        if (client.getData().getRegion(c) != null) {
+          getSelectedRegions().put(c, client.getData().getRegion(c));
         }
       }
 

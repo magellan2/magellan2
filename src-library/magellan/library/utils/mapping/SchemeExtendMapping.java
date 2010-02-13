@@ -49,7 +49,7 @@ public class SchemeExtendMapping implements LevelMapping {
     CoordinateID astralToReal = null;
     CoordinateID.Triplet minExtend = null;
     CoordinateID.Triplet maxExtend = null;
-    for (Region region : data.regions().values()) {
+    for (Region region : data.getRegions()) {
       if ((region.getCoordinate().getZ() == fromLevel) && (region.schemes().size() > 0)) {
         for (Scheme scheme : region.schemes()) {
           /**
@@ -122,7 +122,7 @@ public class SchemeExtendMapping implements LevelMapping {
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_ACTIVE_VOLCANO));
 
       // now loop over all surounding regions for all astral regions
-      for (Region region : data.regions().values()) {
+      for (Region region : data.getRegions()) {
         if ((region.getCoordinate().getZ() == fromLevel) && (region.schemes().size() > 0)) {
           // surounding regions
           for (int x = maxExtend.x - 4; (x <= minExtend.x + 4); x++) {

@@ -98,7 +98,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
     }
 
     rows.clear();
-    List<Faction> factions = new ArrayList<Faction>(owner.getData().factions().values());
+    List<Faction> factions = new ArrayList<Faction>(owner.getData().getFactions());
     Collections.sort(factions, FactionTrustComparator.DEFAULT_COMPARATOR);
 
     for (Faction faction : factions) {

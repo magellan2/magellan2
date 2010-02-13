@@ -250,7 +250,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
    * @return
    */
   private boolean isProbablyPriviligedFaction(Faction f, GameData data) {
-    for (Unit u : data.units().values()) {
+    for (Unit u : data.getUnits()) {
       if (u.getFaction().equals(f) && u.getCombatStatus() != -1)
         return true;
     }
@@ -265,7 +265,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
    */
   private Vector<FactionItem> getProbablyPriviligedFactionItems(GameData data) {
     Vector<FactionItem> erg = null;
-    for (Faction f : data.factions().values()) {
+    for (Faction f : data.getFactions()) {
       if (isProbablyPriviligedFaction(f, data)) {
         if (erg == null) {
           erg = new Vector<FactionItem>();
@@ -284,7 +284,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
    */
   private Vector<FactionItem> getAllFactionItems(GameData data) {
     Vector<FactionItem> erg = null;
-    for (Faction f : data.factions().values()) {
+    for (Faction f : data.getFactions()) {
       if (erg == null) {
         erg = new Vector<FactionItem>();
       }

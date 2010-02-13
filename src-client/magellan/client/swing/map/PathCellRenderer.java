@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.CoordinateID;
+import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.utils.Direction;
@@ -93,9 +94,13 @@ public class PathCellRenderer extends ImageCellRenderer {
   public void render(Object obj, boolean active, boolean selected) {
     try {
       if (obj instanceof Unit) {
+        if (((Unit) obj).getRegion() == null)
+          return;
         renderPast((Unit) obj);
         renderFuture((Unit) obj);
       } else if (obj instanceof Ship) {
+        if (((Ship) obj).getRegion() == null)
+          return;
         if (((Ship) obj).getOwnerUnit() != null) {
           renderPast(((Ship) obj).getOwnerUnit());
         }
@@ -212,8 +217,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 
   private void renderPath(Unit u, List<CoordinateID> coordinates, int imageType) {
     if ((coordinates != null) && (coordinates.size() > 0)) {
-      renderPath(u, coordinates.get(0), Regions.getDirectionObjectsOfCoordinates(coordinates),
-          imageType);
+      renderPath(u, coordinates.get(0),
+          Regions.getDirectionObjectsOfCoordinates(data, coordinates), imageType);
     }
   }
 
@@ -223,23 +228,42 @@ public class PathCellRenderer extends ImageCellRenderer {
           + directions + ", imageType " + imageType);
     }
 
-    CoordinateID actCoord = CoordinateID.create(start); // make Coordinate a copy
+    CoordinateID currentCoord = CoordinateID.create(start); // make Coordinate a copy
+    Region currentRegion = data.getRegion(currentCoord);
 
     for (Direction dirObj : directions) {
       if (dirObj != Direction.INVALID) {
-        Rectangle rect = cellGeo.getImageRect(actCoord.getX(), actCoord.getY());
-        rect.translate(-offset.x, -offset.y);
+        draw(currentCoord, dirObj, imageType);
 
-        Image img = getImage("Pfeil" + dirObj.getDir(), imageType);
-
-        if (img != null) {
-          graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
+        CoordinateID newCoord = currentCoord.translate(dirObj.toCoordinate());
+        Region newRegion = currentRegion != null ? currentRegion.getNeighbors().get(dirObj) : null;
+        if (newRegion == null) {
+          newRegion = data.getRegion(newCoord);
         }
 
-        actCoord = actCoord.translate(dirObj.toCoordinate());
+        if (newRegion != null && !newCoord.equals(newRegion.getCoordinate())) {
+          // if newRegion is a wraparound region, draw an additional arrow...
+          draw(newRegion.getCoordinate().translate(dirObj.add(3).toCoordinate()), dirObj, imageType);
+          // ...and continue at the wrapped region
+          currentCoord = newRegion.getCoordinate();
+        } else {
+          currentCoord = newCoord;
+        }
+        currentRegion = newRegion;
       } else {
         break;
       }
+    }
+  }
+
+  private void draw(CoordinateID actCoord, Direction dirObj, int imageType) {
+    Rectangle rect = cellGeo.getImageRect(actCoord.getX(), actCoord.getY());
+    rect.translate(-offset.x, -offset.y);
+
+    Image img = getImage("Pfeil" + dirObj.getDir(), imageType);
+
+    if (img != null) {
+      graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
     }
   }
 

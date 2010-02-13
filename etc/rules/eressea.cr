@@ -281,19 +281,19 @@ HERB "Alraune"
 
 HERB "Steinbeißer"
 "Steinbeißer";name
-"Gebirge";region
+"Berge";region
 "herbs";category
 "rockweed";iconname
 
 HERB "Spaltwachs"
 "Spaltwachs";name
-"Gebirge";region
+"Berge";region
 "herbs";category
 "gapgrowth";iconname
 
 HERB "Höhlenglimm"
 "Höhlenglimm";name
-"Gebirge";region
+"Berge";region
 "herbs";category
 "cavelichen";iconname
 

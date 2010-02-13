@@ -77,7 +77,7 @@ public class UnitRoutePlanner {
       island.addAll(start.getIsland().regions());
       island.remove(start);
     } else {
-      Map<CoordinateID, Region> m = Islands.getIsland(data.rules, data.regions(), start);
+      Map<CoordinateID, ? extends Region> m = Islands.getIsland(data.rules, data.regions(), start);
 
       if (m != null) {
         island.addAll(m.values());
@@ -150,7 +150,7 @@ public class UnitRoutePlanner {
       CoordinateID destination, Component ui, boolean makeSingle, boolean useRange,
       boolean makeRoute, boolean useVorlage) {
     // find a path
-    Map<ID, RegionType> excludeMap = Regions.getOceanRegionTypes(data.rules);
+    Map<ID, RegionType> excludeMap = Regions.getNonLandRegionTypes(data.rules);
 
     int speed = UnitRoutePlanner.getModifiedRadius(unit, true);
     List<Region> path = Regions.getLandPath(data, start, destination, excludeMap, speed, speed);

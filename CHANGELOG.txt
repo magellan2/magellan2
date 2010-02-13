@@ -1,3 +1,9 @@
+2009-02-13 / Build 405 - Fiete <sf@fietefietz.de>
+    * encapsulated functions of GameData. units(), factions() etc. now return unmodifiable collections
+    * added to GameData interface
+    * added support for toroidal worlds, therefor:
+    * extended neighborhood functionality. Method of choice is now Region.getNeighbors()
+
 2009-02-09 / Build 404 - Fiete <sf@fietefietz.de>
 	* fixed Direction.getDifference(int)
 	* added 2 Warnings for IndexOutOfBoundsExceptions to Regions.java

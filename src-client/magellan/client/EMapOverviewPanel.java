@@ -383,10 +383,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     activeObject = null;
     lastExpanded.clear();
 
-    // if((data != null) && (data.regions() != null)) {
+    // if((data != null) && (data.getRegions() != null)) {
     // preprocess regions to have relations
     // pavkovic 2003.12.21: moved to RegionNodeWrapper, perhaps this helps
-    // for(Iterator iter = data.regions().values().iterator();
+    // for(Iterator iter = data.getRegions().iterator();
     // iter.hasNext();) {
     // ((Region) iter.next()).refreshUnitRelations();
     // }
@@ -1770,7 +1770,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     boolean privilegedWithoutAllies = false;
 
-    for (Faction f : data.factions().values()) {
+    for (Faction f : data.getFactions()) {
       if (f.isPrivileged()) {
         privilegedFactions.add(f);
 

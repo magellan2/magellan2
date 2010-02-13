@@ -54,6 +54,9 @@ public class CoordinateID implements ID {
     }
   }
 
+  private static final CoordinateID INVALID =
+      new CoordinateID(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
+
   /**
    * The x-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
    * this CoordinateID!
@@ -141,6 +144,8 @@ public class CoordinateID implements ID {
     // return this == o;
     if (o == this)
       return true;
+    if (this == INVALID || o == INVALID)
+      return false;
     if (o instanceof CoordinateID) {
       CoordinateID c = (CoordinateID) o;
 
@@ -175,6 +180,8 @@ public class CoordinateID implements ID {
    *          always included.
    */
   public String toString(String delim, boolean forceZ) {
+    if (this == INVALID)
+      return "---";
     if (!forceZ && (z == 0))
       return x + delim + y;
     else
@@ -259,6 +266,8 @@ public class CoordinateID implements ID {
    * @return A new CoordinateID
    */
   public CoordinateID translate(CoordinateID c) {
+    if (this == INVALID || c == INVALID)
+      return INVALID;
     return create(x + c.x, y + c.y, z + c.z);
   }
 
@@ -269,6 +278,8 @@ public class CoordinateID implements ID {
    * @return A new CoordinateID
    */
   public CoordinateID subtract(CoordinateID c) {
+    if (this == INVALID || c == INVALID)
+      return INVALID;
     return create(x - c.x, y - c.y, z - c.z);
   }
 
@@ -276,12 +287,14 @@ public class CoordinateID implements ID {
    * Creates the distance coordinate from this coordinate to the given coordinate
    */
   public CoordinateID createDistanceCoordinate(CoordinateID to) {
+    if (this == INVALID || to == INVALID)
+      return INVALID;
     return create(to.x - x, to.y - y, to.z - z);
   }
 
   /**
    * Defines the natural ordering of coordinates which is: Iff the z coordinates differ their
-   * difference is returned. Iff the y coordinates differ their difference is returend. Else the
+   * difference is returned. Iff the y coordinates differ their difference is returned. Else the
    * difference of the x coordinates is returned.
    */
   public int compareTo(Object o) {
@@ -341,23 +354,9 @@ public class CoordinateID implements ID {
   }
 
   /**
-   * @param _x new value of x
-   * @param _y new value of y
-   * @param _z new value of z
+   * Returns a dummy coordinate that is not equal to any other CoordinateID.
    */
-  public void setCoordinates(int _x, int _y, int _z) {
-    this.x = _x;
-    this.y = _y;
-    this.z = _z;
+  public static CoordinateID getInvalid() {
+    return INVALID;
   }
-
-  /**
-   * @param _c CoordinateID from which new values are taken
-   */
-  public void setCoordinates(CoordinateID _c) {
-    this.x = _c.getX();
-    this.y = _c.getY();
-    this.z = _c.getZ();
-  }
-
 }

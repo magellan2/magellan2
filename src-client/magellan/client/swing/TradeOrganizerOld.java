@@ -275,7 +275,7 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
    * Called to update the faction list in the stocks panel
    */
   private void updateFactions() {
-    Vector<Faction> factionVector = new Vector<Faction>(data.factions().values());
+    Vector<Faction> factionVector = new Vector<Faction>(data.getFactions());
     Collections.sort(factionVector, FactionTrustComparator.DEFAULT_COMPARATOR);
 
     DefaultListModel model = new DefaultListModel();
@@ -313,9 +313,9 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
   /**
    * Sets this classes region list. Filters out all regions, which trade information is unknown.
    */
-  private void setRegions(Collection<Region> newRegions) {
-    if (newRegions.isEmpty() && (data.regions() != null)) {
-      newRegions = data.regions().values();
+  private void setRegions(Collection<? extends Region> newRegions) {
+    if (newRegions.isEmpty() && (data.getRegions() != null)) {
+      newRegions = data.getRegions();
     }
 
     regions = new LinkedList<Region>();

@@ -148,8 +148,10 @@ public class CRParser implements RulesIO, GameDataIO {
    * Translates c by newOrigin if it's in the same z-level and returns it.
    */
   CoordinateID originTranslate(CoordinateID c) {
+    // FIXME(stm) make wrapping-proof
     if (c.getZ() == newOrigin.getZ())
-      return CoordinateID.create(c.getX() - newOrigin.getX(), c.getY() - newOrigin.getY(), c.getZ());
+      return CoordinateID
+          .create(c.getX() - newOrigin.getX(), c.getY() - newOrigin.getY(), c.getZ());
     return c;
   }
 
@@ -157,8 +159,10 @@ public class CRParser implements RulesIO, GameDataIO {
    * Translates c by -newOrigin if it's in the same z-level and returns it.
    */
   CoordinateID inverseOriginTranslate(CoordinateID c) {
+    // FIXME(stm) make wrapping-proof
     if (c.getZ() == newOrigin.getZ())
-      return CoordinateID.create(c.getX() + newOrigin.getX(), c.getY() + newOrigin.getY(), c.getZ());
+      return CoordinateID
+          .create(c.getX() + newOrigin.getX(), c.getY() + newOrigin.getY(), c.getZ());
     return c;
   }
 
@@ -2815,7 +2819,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Strasse")) {
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("ejcIsSelected")) {
-        world.getSelectedRegionCoordinates().put(c, region);
+        world.addSelectedRegionCoordinate(region);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Insel")) {
         try {
@@ -3040,9 +3044,13 @@ public class CRParser implements RulesIO, GameDataIO {
 
     // validate region before add to world data
     if ((iValidateFlags & 1) == 0) {
-      CRParser.log.warn("Warning: No region type is given for region '" + region.toString()
-          + "' - it is ignored.");
-      region.setType(world.rules.getRegionType(EresseaConstants.RT_VOID, true));
+      if (Region.VIS_STR_WRAP.equals(region.getVisibilityString())) {
+        region.setType(RegionType.wrap);
+      } else {
+        CRParser.log.warn("Warning: No region type is given for region '" + region.toString()
+            + "' - it is ignored.");
+        region.setType(RegionType.unknown);
+      }
       world.addRegion(region);
     } else {
       world.addRegion(region);
@@ -3262,6 +3270,7 @@ public class CRParser implements RulesIO, GameDataIO {
     ui.ready();
 
     CRParser.log.info("Done reading.");
+
     return world;
   }
 
@@ -3277,8 +3286,8 @@ public class CRParser implements RulesIO, GameDataIO {
         final Set<Integer> layers = new HashSet<Integer>();
         for (final CoordinateID coord : newData.regions().keySet()) {
           if (!layers.contains(coord.getZ())) {
-            newData
-                .setCoordinateTranslation(firstFaction2.getID(), CoordinateID.create(0, 0, coord.getZ()));
+            newData.setCoordinateTranslation(firstFaction2.getID(), CoordinateID.create(0, 0, coord
+                .getZ()));
             layers.add(coord.getZ());
           }
         }

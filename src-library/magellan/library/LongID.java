@@ -53,7 +53,7 @@ public class LongID implements ID {
   /**
    * Returns a (possibly) new StringID object.
    * 
-   * @throws NullPointerException DOCUMENT-ME
+   * @throws NullPointerException If <code>o==null</code>
    */
   public static LongID create(Long o) {
     if (o == null)
@@ -70,19 +70,22 @@ public class LongID implements ID {
   }
 
   /**
-   * DOCUMENT-ME
+   * Creates an id with the integer represented by s.
    */
   public static LongID create(String s) {
     return LongID.create(Long.valueOf(s));
   }
 
   /**
-   * DOCUMENT-ME
+   * Creates an ID with the specified value.
    */
   public static LongID create(int i) {
     return LongID.create(new Long(i));
   }
 
+  /**
+   * Creates an ID with the specified value.
+   */
   public static LongID create(long l) {
     return LongID.create(new Long(l));
   }

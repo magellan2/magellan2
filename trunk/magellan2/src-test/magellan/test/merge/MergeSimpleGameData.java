@@ -3,6 +3,7 @@ package magellan.test.merge;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import magellan.library.GameData;
+import magellan.library.GameDataMerger;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.test.GameDataBuilder;
@@ -30,14 +31,14 @@ public class MergeSimpleGameData extends TestCase {
 
     String ausdauer = "Ausdauer";
 
-    Unit unit1 = gd1.units().values().iterator().next();
+    Unit unit1 = gd1.getUnits().iterator().next();
     builder.addSkill(unit1, ausdauer, 3);
     // System.out.println("Skill1 :"+skill1+" "+skill1.getChangeLevel());
 
-    GameData gd4 = GameData.merge(gd1, gd2);
+    GameData gd4 = GameDataMerger.merge(gd1, gd2);
     // WriteGameData.writeCR(gd4, gd4.getDate().getDate()+"_MergeSimpleGameData.cr");
 
-    GameData gd5 = GameData.merge(gd3, gd4);
+    GameData gd5 = GameDataMerger.merge(gd3, gd4);
     // WriteGameData.writeCR(gd5, gd5.getDate().getDate()+"_MergeSimpleGameData.cr");
 
     Unit unit4 = gd4.getUnit(unit1.getID());

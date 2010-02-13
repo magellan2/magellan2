@@ -869,7 +869,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     if (getData() != null) {
       // add all privileged factions
-      for (Faction f : getData().factions().values()) {
+      for (Faction f : getData().getFactions()) {
         if ((f.isPrivileged()) && !f.units().isEmpty()) {
           aMenu.add(new ChangeFactionConfirmationAction(this, f, aConfirmationType, false, false));
           aMenu.add(new ChangeFactionConfirmationAction(this, f, aConfirmationType, true, false));
@@ -1699,13 +1699,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     boolean factionsWithoutPassword = true;
 
     if (aData != null) {
-      if (aData.factions() == null || aData.factions().values().size() == 0) {
+      if (aData.getFactions() == null || aData.getFactions().size() == 0) {
         factionsWithoutPassword = false;
       }
     }
 
-    if ((aData != null) && (aData.factions() != null)) {
-      for (Faction f : aData.factions().values()) {
+    if ((aData != null) && (aData.getFactions() != null)) {
+      for (Faction f : aData.getFactions()) {
 
         if (f.getPassword() == null) {
           // take password from settings but only if it is not an
@@ -1854,7 +1854,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       int units = 0;
       int done = 0;
 
-      for (Unit u : data.units().values()) {
+      for (Unit u : data.getUnits()) {
         if (u.getFaction().isPrivileged()) {
           units++;
 

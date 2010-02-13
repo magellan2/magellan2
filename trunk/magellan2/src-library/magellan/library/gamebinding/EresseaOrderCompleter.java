@@ -291,8 +291,8 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MOVE), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NUMBER), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_OPTION), " "));
-    completions
-        .add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD), " "));
+    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD),
+        " \"\"", Completion.DEFAULT_PRIORITY, 1));
 
     if (hasSkill(unit, EresseaConstants.S_KRAEUTERKUNDE, 6)) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PLANT), " "));
@@ -561,12 +561,10 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltBenenneFremdePartei() {
-    if ((data != null) && (data.factions() != null) && (unit != null)) {
+    if ((data != null) && (data.getFactions() != null) && (unit != null)) {
       final Faction ownerFaction = unit.getFaction();
-      final Iterator<Faction> factions = data.factions().values().iterator();
 
-      while (factions.hasNext()) {
-        final Faction f = factions.next();
+      for (Faction f : data.getFactions()) {
 
         if (f.equals(ownerFaction) == false) {
           addNamed(f, " \"\"", 1, false);
@@ -1456,6 +1454,10 @@ public class EresseaOrderCompleter implements Completer {
         true), " ");
   }
 
+  public void cmpltNachDirection() {
+    addDirections(" ");
+  }
+
   public void cmpltNeustart() {
     completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.race"),
         "", ""));
@@ -1630,6 +1632,13 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltRoute() {
+    addDirections(" ");
+    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PAUSE), " "));
+    addSurroundingRegions(getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(unit,
+        true), " ");
+  }
+
+  public void cmpltRouteDirection() {
     addDirections(" ");
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PAUSE), " "));
   }
@@ -1933,8 +1942,8 @@ public class EresseaOrderCompleter implements Completer {
 
     Skill magic = mage.getSkill(data.rules.getSkillType(EresseaConstants.S_MAGIE));
     if ((magic != null)
-        && (Regions.getRegionDist(mage.getRegion().getCoordinate(), familar.getRegion()
-            .getCoordinate()) <= magic.getLevel())) {
+        && (Regions.getDist(mage.getRegion().getCoordinate(), familar.getRegion().getCoordinate()) <= magic
+            .getLevel())) {
       // familar is in range
       int maxlevel = magic.getLevel() / 2;
       magic = familar.getSkill(data.rules.getSkillType(EresseaConstants.S_MAGIE));
@@ -2222,7 +2231,7 @@ public class EresseaOrderCompleter implements Completer {
    */
   protected void addFactions(String postfix) {
     if (data != null) {
-      for (Faction f : data.factions().values()) {
+      for (Faction f : data.getFactions()) {
         addNamed(f, postfix, 0, true);
       }
     }
@@ -2238,10 +2247,7 @@ public class EresseaOrderCompleter implements Completer {
    */
   protected void addOtherFactions(String postfix, int cursorOffset, boolean addComment) {
     final Faction ownerFaction = unit.getFaction();
-    final Iterator<Faction> factions = data.factions().values().iterator();
-
-    while ((factions != null) && factions.hasNext()) {
-      final Faction f = factions.next();
+    for (Faction f : data.getFactions()) {
 
       if ((ownerFaction == null) || (f.equals(ownerFaction) == false)) {
         addNamed(f, postfix, cursorOffset, addComment);
@@ -2254,7 +2260,7 @@ public class EresseaOrderCompleter implements Completer {
       radius = 1;
     }
 
-    final Map<ID, RegionType> excludedRegionTypes = Regions.getOceanRegionTypes(getData().rules);
+    final Map<ID, RegionType> excludedRegionTypes = Regions.getNonLandRegionTypes(getData().rules);
     // no need to exclude oceans, oceans have no name anyway and it'll break getPath(...)
 
     final Map<CoordinateID, Region> neighbours =

@@ -45,57 +45,63 @@ public class Loader {
     return cloneGameData(data, CoordinateID.create(0, 0));
   }
 
+  /**
+   * @param data
+   * @param newOrigin
+   * @return
+   * @throws IOException If an I/O error occurs
+   */
   synchronized public GameData cloneGameDataInMemory(final GameData data,
       final CoordinateID newOrigin) throws CloneNotSupportedException {
     try {
-      final PipeFileType filetype = new PipeFileType();
-      filetype.setEncoding(data.getEncoding());
-      final CRWriter crw = new CRWriter(data, null, filetype, data.getEncoding());
-      GameDataReader crReader = new GameDataReader(null);
+    final PipeFileType filetype = new PipeFileType();
+    filetype.setEncoding(data.getEncoding());
+    final CRWriter crw = new CRWriter(data, null, filetype, data.getEncoding());
+    GameDataReader crReader = new GameDataReader(null);
 
-      class ReadRunner implements Runnable {
-        boolean done = false;
-        GameDataReader r;
-        GameData d[];
+    class ReadRunner implements Runnable {
+      boolean done = false;
+      GameDataReader r;
+      GameData d[];
 
-        ReadRunner(GameDataReader r, GameData d[]) {
-          this.r = r;
-          this.d = d;
-        }
-
-        public boolean finished() {
-          return done;
-        }
-
-        public void run() {
-          try {
-            d[0] = r.readGameData(filetype, newOrigin, data.getGameName());
-            done = true;
-          } catch (IOException e1) {
-            e1.printStackTrace();
-          }
-        }
+      ReadRunner(GameDataReader r, GameData d[]) {
+        this.r = r;
+        this.d = d;
       }
 
-      GameData newData[] = new GameData[1];
-      ReadRunner runner = new ReadRunner(crReader, newData);
-      new Thread(runner).start();
+      public boolean finished() {
+        return done;
+      }
 
-      crw.writeSynchronously();
-      crw.close();
-
-      while (!runner.finished()) {
-        notifyAll();
+      public void run() {
         try {
-          wait(500);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
+          d[0] = r.readGameData(filetype, newOrigin, data.getGameName());
+          done = true;
+        } catch (IOException e1) {
+          e1.printStackTrace();
         }
       }
+    }
 
-      newData[0].setFileType(data.getFileType());
+    GameData newData[] = new GameData[1];
+    ReadRunner runner = new ReadRunner(crReader, newData);
+    new Thread(runner).start();
 
-      return newData[0];
+    crw.writeSynchronously();
+    crw.close();
+
+    while (!runner.finished()) {
+      notifyAll();
+      try {
+        wait(500);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    newData[0].setFileType(data.getFileType());
+
+    return newData[0];
     } catch (IOException ioe) {
       Loader.log.error("Loader.cloneGameData failed!", ioe);
       throw new CloneNotSupportedException(ioe.toString());

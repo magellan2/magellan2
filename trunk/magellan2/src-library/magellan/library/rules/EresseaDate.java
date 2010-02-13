@@ -8,6 +8,7 @@
 package magellan.library.rules;
 
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This class represents an Eressea Date.
@@ -15,6 +16,7 @@ import magellan.library.utils.Resources;
  * @author Sebastian
  */
 public class EresseaDate extends Date {
+  private static final Logger log = Logger.getInstance(EresseaDate.class);
   private static final String months_old[] =
       { "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September",
           "Oktober", "November", "Dezember" };
@@ -145,6 +147,11 @@ public class EresseaDate extends Date {
         }
       } else if (getEpoch() == 3) {
         iDate2 -= 1;
+      }
+
+      if (iDate2 < 0) {
+        log.error("invalid date " + iDate);
+        iDate2 = Math.max(0, iDate2);
       }
 
       switch (iDateType) {

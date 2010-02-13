@@ -19,22 +19,22 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import magellan.library.Region.Visibility;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.io.cr.Loader;
 import magellan.library.io.file.FileType;
 import magellan.library.rules.Date;
-import magellan.library.rules.EresseaDate;
 import magellan.library.rules.MessageType;
+import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
-import magellan.library.utils.Encoding;
+import magellan.library.utils.Direction;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
@@ -81,6 +81,8 @@ public abstract class GameData implements Cloneable, Addeable {
 
   private Map<ID, AllianceGroup> alliancegroups;
 
+  protected Map<CoordinateID, Region> wrappers = new LinkedHashMap<CoordinateID, Region>();
+
   /**
    * The current TempUnit-ID. This means, if a new TempUnit is created, it's suggested ID is usually
    * curTempID and if this suggestion is accepted by the user (which means, that a TempUnit with
@@ -92,65 +94,6 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /** Contains all attributes */
   private Map<String, String> attributes = new HashMap<String, String>();
-
-  /**
-   * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
-   */
-  public void addAttribute(String key, String value) {
-    attributes.put(key, value);
-  }
-
-  /**
-   * @see magellan.library.Addeable#containsAttribute(java.lang.String)
-   */
-  public boolean containsAttribute(String key) {
-    return attributes.containsKey(key);
-  }
-
-  /**
-   * @see magellan.library.Addeable#getAttribute(java.lang.String)
-   */
-  public String getAttribute(String key) {
-    return attributes.get(key);
-  }
-
-  /**
-   * @see magellan.library.Addeable#getAttributeKeys()
-   */
-  public List<String> getAttributeKeys() {
-    return new ArrayList<String>(attributes.keySet());
-  }
-
-  /**
-   * @see magellan.library.Addeable#getAttributeSize()
-   */
-  public int getAttributeSize() {
-    return attributes.size();
-  }
-
-  /**
-   * This method sets the current temp id with respect to the possible max value of the current
-   * base. The value also has to be >= -1
-   * 
-   * @param newTempID temp id
-   */
-  public void setCurTempID(int newTempID) {
-    curTempID = Math.max(-1, Math.min(newTempID, IDBaseConverter.getMaxId(base)));
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  public void setCurTempID(String s) {
-    setCurTempID("".equals(s) ? 0 : IDBaseConverter.parse(s, base));
-  }
-
-  /**
-   * This method sets the current temp id.
-   */
-  public int getCurTempID() {
-    return curTempID;
-  }
 
   /**
    * The current file attached to the game data. If it is null, the save as dialog shall be opened.
@@ -176,29 +119,68 @@ public abstract class GameData implements Cloneable, Addeable {
   public String mailSubject = null;
 
   /**
-   * A collection of all units. The keys are <tt>Integer</tt> objects containg the unit's ids. The
+   * A collection of all units. The keys are <tt>Integer</tt> objects containing the unit's ids. The
    * values consist of objects of class <tt>Unit</tt>. TEMP units are not included, they are only
    * stored in the unit collection of their parents and their regions and in the tempUnits map.
    * 
    * @return returns the units map
+   * @deprecated Try using {@link #getUnits()}
    */
-  public abstract Map<UnitID, Unit> units();
+  @Deprecated
+  public Map<UnitID, Unit> units() {
+    return Collections.unmodifiableMap(unitView());
+  }
 
   /**
-   * A collection of tempUnits. The keys are <tt>Integer</tt> objects containg the unit's ids. The
-   * values consist of objects of class <tt>TempUnit</tt>.
+   * Returns a collection of all units in the data.
+   */
+  public Collection<Unit> getUnits() {
+    return Collections.unmodifiableCollection(unitView().values());
+  }
+
+  /** Returns a modifiable view of the units. */
+  protected abstract Map<UnitID, Unit> unitView();
+
+  /**
+   * A collection of tempUnits. The keys are <tt>Integer</tt> objects containinng the unit's ids.
+   * The values consist of objects of class <tt>TempUnit</tt>.
    * 
    * @return returns the tempunits map
+   * @deprecated
    */
-  public abstract Map<UnitID, TempUnit> tempUnits();
+  @Deprecated
+  public Map<UnitID, TempUnit> tempUnits() {
+    return Collections.unmodifiableMap(tempUnitView());
+  }
+
+  /** Returns a modifiable of the temp units. */
+  protected abstract Map<UnitID, TempUnit> tempUnitView();
 
   /**
-   * All regions in this game data. The keys are <tt>Coordinate</tt> objects containg the id of each
-   * region. The values consist of objects of class <tt>Region</tt>.
+   * All regions in this game data. The keys are <tt>Coordinate</tt> objects containing the id of
+   * each region. The values consist of objects of class <tt>Region</tt>.<br />
+   * <b>Attention</b>: You might not always get what you expect if work based on coordinates in a
+   * cylinder- or torus-shaped world! <a>
    * 
+   * @see Region#getNeighbours()
    * @return returns the regions map
+   * @see #getRegion(CoordinateID)
+   * @deprecated Try using {@link #getRegions()}
    */
-  public abstract Map<CoordinateID, Region> regions();
+  @Deprecated
+  public Map<CoordinateID, Region> regions() {
+    return Collections.unmodifiableMap(regionView());
+  }
+
+  /**
+   * Returns a collection of all regions of the report.
+   */
+  public Collection<Region> getRegions() {
+    return Collections.unmodifiableCollection(regionView().values());
+  }
+
+  /** Returns a modifiable view of the regions. */
+  protected abstract Map<CoordinateID, Region> regionView();
 
   /**
    * All factions in this game data. The keys are <tt>Integer</tt> objects containg the id of each
@@ -206,24 +188,66 @@ public abstract class GameData implements Cloneable, Addeable {
    * referenced by the ownerFaction attribute.
    * 
    * @return returns the factions map
+   * @deprecated Try using {@link #getFactions()}
    */
-  public abstract Map<EntityID, Faction> factions();
+  @Deprecated
+  public Map<EntityID, Faction> factions() {
+    return Collections.unmodifiableMap(factionView());
+  }
+
+  /**
+   * Returns a collection of all the report's factions.
+   */
+  public Collection<Faction> getFactions() {
+    return Collections.unmodifiableCollection(factionView().values());
+  }
+
+  /** Returns a modifiable view of the factions. */
+  protected abstract Map<EntityID, Faction> factionView();
 
   /**
    * All buildings in this game data. The keys are <tt>Integer</tt> objects containg the id of each
    * building. The values consist of objects of class <tt>Building</tt>.
    * 
    * @return returns the buildings map
+   * @deprecated Try using {@link #getBuildings()}
    */
-  public abstract Map<EntityID, Building> buildings();
+  @Deprecated
+  public Map<EntityID, Building> buildings() {
+    return Collections.unmodifiableMap(buildingView());
+  }
+
+  /**
+   * Returns an unmodifiable view of all buildings in the data.
+   */
+  public Collection<Building> getBuildings() {
+    return Collections.unmodifiableCollection(buildingView().values());
+  }
+
+  /** Returns a modifiable view of the buildings. */
+  protected abstract Map<EntityID, Building> buildingView();
 
   /**
    * All ships in this game data. The keys are <tt>Integer</tt> objects containing the id of each
    * ship. The values consist of objects of class <tt>Ship</tt>.
    * 
    * @return returns the ships map
+   * @deprecated Try using {@link #getShips()}
    */
-  public abstract Map<EntityID, Ship> ships();
+  @Deprecated
+  public Map<EntityID, Ship> ships() {
+    return Collections.unmodifiableMap(shipView());
+  }
+
+  /**
+   * Returns an unmodifiable view of all ships in the data.
+   */
+  public Collection<Ship> getShips() {
+    return Collections.unmodifiableCollection(shipView().values());
+  }
+
+  /** Returns a modifiable view of the ships. */
+  protected abstract Map<EntityID, Ship> shipView();
 
   /**
    * All message types in this game data. The keys are <tt>Integer</tt> objects containg the id of
@@ -231,43 +255,115 @@ public abstract class GameData implements Cloneable, Addeable {
    * 
    * @return returns the messageType map
    */
-  public abstract Map<IntegerID, MessageType> msgTypes();
+  public Map<IntegerID, MessageType> msgTypes() {
+    return Collections.unmodifiableMap(msgTypeView());
+  }
+
+  /** Returns a modifiable view of the message types. */
+  protected abstract Map<IntegerID, MessageType> msgTypeView();
 
   /**
    * All magic spells in this game data. The keys are <tt>Integer</tt> objects containg the id of
    * each spell. The values consist of objects of class <tt>Spell</tt>.
    * 
    * @return returns the spells map
+   * @deprecated Try using {@link #getSpells()}
    */
-  public abstract Map<StringID, Spell> spells();
+  @Deprecated
+  public Map<StringID, Spell> spells() {
+    return Collections.unmodifiableMap(spellView());
+  }
+
+  /**
+   * Returns an unmodifiable view of all spells in the data.
+   */
+  public Collection<Spell> getSpells() {
+    return Collections.unmodifiableCollection(spellView().values());
+  }
+
+  /** Returns a modifiable view of the spells. */
+  protected abstract Map<StringID, Spell> spellView();
 
   /**
    * All potions in this game data. The keys are <tt>Integer</tt> objects containg the id of each
    * potion. The values consist of objects of class <tt>Potion</tt>.
    * 
    * @return returns the potions map
+   * @deprecated
    */
-  public abstract Map<IntegerID, Potion> potions();
+  @Deprecated
+  public Map<IntegerID, Potion> potions() {
+    return Collections.unmodifiableMap(potionView());
+  }
+
+  /**
+   * Returns an unmodifiable view of all potions in the data.
+   */
+  public Collection<Potion> getPotions() {
+    return Collections.unmodifiableCollection(potionView().values());
+  }
+
+  /** Returns a modifiable view of the potions. */
+  protected abstract Map<IntegerID, Potion> potionView();
 
   /**
    * All islands in this game data. The keys are <tt>Integer</tt> objects containing the id of each
    * island. The values consist of objects of class <tt>Island</tt>.
    * 
    * @return returns the islands map
+   * @deprecated
    */
-  public abstract Map<IntegerID, Island> islands();
+  @Deprecated
+  public Map<IntegerID, Island> islands() {
+    return Collections.unmodifiableMap(islandView());
+  }
+
+  /**
+   * Returns an unmodifiable collection of all islands in the data.
+   */
+  public Collection<Island> getIslands() {
+    return Collections.unmodifiableCollection(islandView().values());
+  }
+
+  /** Returns a modifiable view of the islands. */
+  protected abstract Map<IntegerID, Island> islandView();
 
   /**
    * All HotSpots existing for this game data. Hot spots are used to quickly access regions of
    * interest on the map. The keys are Integer representations of the hot spot id, the values are
    * Coordinate objects.
+   * 
+   * @deprecated Try using {@link #getHotSpots()}
    */
-  public abstract Map<IntegerID, HotSpot> hotSpots();
+  @Deprecated
+  public Map<IntegerID, HotSpot> hotSpots() {
+    return Collections.unmodifiableMap(hotSpotView());
+  }
+
+  /**
+   * Returns a unmodifiable view of all HotSpots of the data.
+   */
+  public Collection<HotSpot> getHotSpots() {
+    return Collections.unmodifiableCollection(hotSpotView().values());
+  }
+
+  /** Returns a modifiable view of the hot spots. */
+  protected abstract Map<IntegerID, HotSpot> hotSpotView();
 
   /**
    * Represents the table of translations from the report.
    */
   public abstract Translations translations();
+
+  /**
+   * Returns a collection of all known AllianceGroups.
+   */
+  public Collection<AllianceGroup> getAllianceGroups() {
+    if (alliancegroups == null)
+      return Collections.emptyList();
+    else
+      return Collections.unmodifiableCollection(alliancegroups.values());
+  }
 
   /**
    * is set to true, if while proceeding some functions (e.g. CRParse) and we are running out of
@@ -320,24 +416,127 @@ public abstract class GameData implements Cloneable, Addeable {
   // }
 
   /**
-   * Returns the AllianceGroup with the specified ID if it exists, otherwise <code>null</code>.
+   * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
    */
-  public AllianceGroup getAllianceGroup(ID allianceID) {
-    if (alliancegroups == null)
-      return null;
-    return alliancegroups.get(allianceID);
+  public void addAttribute(String key, String value) {
+    attributes.put(key, value);
   }
 
   /**
-   * Returns a collection of all known AllianceGroups.
+   * Add a unit to the specified game data. If units() is <tt>null</tt>, this method has no effect.
+   * 
+   * @param u the unit to be added.
    */
-  public Collection<AllianceGroup> getAllianceGroups() {
-    if (alliancegroups == null)
-      return Collections.emptyList();
-    else
-      return alliancegroups.values();
+
+  public void addUnit(Unit u) {
+    unitView().put(u.getID(), u);
   }
 
+  /**
+   * Add a temp unit.
+   */
+  public abstract void addTempUnit(TempUnit t);
+
+  /**
+   * Add a region to the specified game data. If regions() is <tt>null</tt>, this method has no
+   * effect.
+   * 
+   * @param r the region to be added.
+   */
+
+  public void addRegion(Region r) {
+    regionView().put(r.getID(), r);
+
+    Map<Direction, Region> neighbors =
+        Regions.getCoordinateNeighbours(regions(), r.getCoordinate());
+    for (Direction d : neighbors.keySet()) {
+      Region n = neighbors.get(d);
+      n.addNeighbor(d.add(3), r);
+      r.addNeighbor(d, n);
+    }
+  }
+
+  /**
+   * Add a faction to the specified game data. If factions() is <tt>null</tt>, this method has no
+   * effect.
+   * 
+   * @param f the faction to be added.
+   */
+
+  public void addFaction(Faction f) {
+    factionView().put(f.getID(), f);
+  }
+
+  /**
+   * Add a building to the specified game data. If buildings() is <tt>null</tt>, this method has no
+   * effect.
+   * 
+   * @param b the building to be added.
+   */
+
+  public void addBuilding(Building b) {
+    buildingView().put(b.getID(), b);
+  }
+
+  /**
+   * Add a ship to the specified game data. If ships() is <tt>null</tt>, this method has no effect.
+   * 
+   * @param s the ship to be added.
+   */
+
+  public void addShip(Ship s) {
+    shipView().put(s.getID(), s);
+  }
+
+  /**
+   * Add a message type to the specified game data. If msgTypes() is <tt>null</tt>, this method has
+   * no effect.
+   * 
+   * @param type the message type to be added.
+   */
+
+  public void addMsgType(MessageType type) {
+    msgTypeView().put(type.getID(), type);
+  }
+
+  /**
+   * Add a spell to the specified game data. If spells() is <tt>null</tt>, this method has no
+   * effect.
+   * 
+   * @param s the spells to be added.
+   */
+
+  public void addSpell(Spell s) {
+    spellView().put(s.getID(), s);
+  }
+
+  /**
+   * Add a potion to the specified game data. If potions() is <tt>null</tt>, this method has no
+   * effect.
+   * 
+   * @param p the potion to be added.
+   */
+
+  public void addPotion(Potion p) {
+    potionView().put(p.getID(), p);
+  }
+
+  /**
+   * Add an island to the specified game data. If islands() is <tt>null</tt>, this method has no
+   * effect.
+   * 
+   * @param i the island to be added.
+   */
+
+  public void addIsland(Island i) {
+    islandView().put(i.getID(), i);
+  }
+
+  public abstract void addHotSpot(HotSpot h);
+
+  /**
+   * Add an AllianceGroup.
+   */
   public void addAllianceGroup(AllianceGroup alliance) {
     if (alliancegroups == null) {
       alliancegroups = new OrderedHashtable<ID, AllianceGroup>(1);
@@ -346,36 +545,31 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Retrieve a building from buildings() by id.
-   * 
-   * @param id the id of the building to be retrieved.
-   * @return an instance of class <tt>Building</tt> or <tt>null</tt> if there is no building with
-   *         the specified id or if buildings() is <tt>null</tt>.
+   * @see magellan.library.Addeable#containsAttribute(java.lang.String)
    */
-  public Building getBuilding(ID id) {
-    return (buildings() == null) ? null : (Building) buildings().get(id);
+  public boolean containsAttribute(String key) {
+    return attributes.containsKey(key);
   }
 
   /**
-   * Retrieve a ship from ships() by id.
-   * 
-   * @param id the id of the ship to be retrieved.
-   * @return an instance of class <tt>Ship</tt> or <tt>null</tt> if there is no ship with the
-   *         specified id or if ships() is <tt>null</tt>.
+   * @see magellan.library.Addeable#getAttribute(java.lang.String)
    */
-  public Ship getShip(ID id) {
-    return (ships() == null) ? null : (Ship) ships().get(id);
+  public String getAttribute(String key) {
+    return attributes.get(key);
   }
 
   /**
-   * Retrieve a faction from factions() by id.
-   * 
-   * @param id the id of the faction to be retrieved.
-   * @return an instance of class <tt>Faction</tt> or <tt>null</tt> if there is no faction with the
-   *         specified id or if factions() is <tt>null</tt>.
+   * @see magellan.library.Addeable#getAttributeKeys()
    */
-  public Faction getFaction(ID id) {
-    return (factions() == null) ? null : factions().get(id);
+  public List<String> getAttributeKeys() {
+    return new ArrayList<String>(attributes.keySet());
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeSize()
+   */
+  public int getAttributeSize() {
+    return attributes.size();
   }
 
   /**
@@ -386,21 +580,62 @@ public abstract class GameData implements Cloneable, Addeable {
    *         specified id or if units() is <tt>null</tt>.
    */
   public Unit getUnit(ID id) {
-    return (units() == null) ? null : (Unit) units().get(id);
+    return (unitView() == null) ? null : unitView().get(id);
   }
 
   /**
-   * Retrieve a region from regions() by id.
+   * Returns the temp unit with the specified ID, <code>null</code> if it doesn not exist.
+   */
+  public Object getTempUnit(UnitID id) {
+    return tempUnitView().get(id);
+  }
+
+  /**
+   * Retrieve a region from regions() by id.<br />
+   * <b>Attention</b>: You might not always get what you expect if work based on coordinates in a
+   * cylinder- or torus-shaped world! <a>
    * 
+   * @see Region#getNeighbours()
    * @param c region coordinate
    * @return an instance of class <tt>Region</tt> or <tt>null</tt> if there is no region with the
    *         specified coordinates or if regions() is <tt>null</tt>.
    */
   public Region getRegion(CoordinateID c) {
-    // TODO (stm) why was this here??
-    // CoordinateID id = new CoordinateID(c);
-    // return (regions() == null) ? null : (Region) regions().get(id);
-    return (regions() == null) ? null : regions().get(c);
+    return (regionView() == null) ? null : regionView().get(c);
+  }
+
+  /**
+   * Retrieve a faction from factions() by id.
+   * 
+   * @param id the id of the faction to be retrieved.
+   * @return an instance of class <tt>Faction</tt> or <tt>null</tt> if there is no faction with the
+   *         specified id or if factions() is <tt>null</tt>.
+   */
+  public Faction getFaction(ID id) {
+    return (factionView() == null) ? null : (factionView().get(id) != null ? factionView().get(id)
+        : (id.equals(getNullFaction().getID()) ? getNullFaction() : null));
+  }
+
+  /**
+   * Retrieve a building from buildings() by id.
+   * 
+   * @param id the id of the building to be retrieved.
+   * @return an instance of class <tt>Building</tt> or <tt>null</tt> if there is no building with
+   *         the specified id or if buildings() is <tt>null</tt>.
+   */
+  public Building getBuilding(ID id) {
+    return (buildingView() == null) ? null : (Building) buildingView().get(id);
+  }
+
+  /**
+   * Retrieve a ship from ships() by id.
+   * 
+   * @param id the id of the ship to be retrieved.
+   * @return an instance of class <tt>Ship</tt> or <tt>null</tt> if there is no ship with the
+   *         specified id or if ships() is <tt>null</tt>.
+   */
+  public Ship getShip(ID id) {
+    return (shipView() == null) ? null : (Ship) shipView().get(id);
   }
 
   /**
@@ -411,7 +646,7 @@ public abstract class GameData implements Cloneable, Addeable {
    *         with the specified id or if msgTypes() is <tt>null</tt>.
    */
   public MessageType getMsgType(ID id) {
-    return (msgTypes() == null) ? null : (MessageType) msgTypes().get(id);
+    return (msgTypeView() == null) ? null : (MessageType) msgTypeView().get(id);
   }
 
   /**
@@ -422,7 +657,7 @@ public abstract class GameData implements Cloneable, Addeable {
    *         specified id or if spells() is <tt>null</tt>.
    */
   public Spell getSpell(ID id) {
-    return (spells() == null) ? null : (Spell) spells().get(id);
+    return (spellView() == null) ? null : (Spell) spellView().get(id);
   }
 
   /**
@@ -433,9 +668,9 @@ public abstract class GameData implements Cloneable, Addeable {
    *         specified id or if spells() is <tt>null</tt>.
    */
   public Spell getSpell(String spellName) {
-    if (spells() == null || spells().size() == 0)
+    if (spellView() == null || spellView().size() == 0)
       return null;
-    for (Spell spell : spells().values()) {
+    for (Spell spell : spellView().values()) {
       if (spell.getName().equalsIgnoreCase(spellName))
         return spell;
     }
@@ -450,7 +685,7 @@ public abstract class GameData implements Cloneable, Addeable {
    *         specified id or if potions() is <tt>null</tt>.
    */
   public Potion getPotion(ID id) {
-    return (potions() == null) ? null : (Potion) potions().get(id);
+    return (potionView() == null) ? null : (Potion) potionView().get(id);
   }
 
   /**
@@ -461,114 +696,107 @@ public abstract class GameData implements Cloneable, Addeable {
    *         specified id or if islands() is <tt>null</tt>.
    */
   public Island getIsland(ID id) {
-    return (islands() == null) ? null : (Island) islands().get(id);
+    return (islandView() == null) ? null : (Island) islandView().get(id);
   }
 
   /**
-   * Add a faction to the specified game data. If factions() is <tt>null</tt>, this method has no
-   * effect.
-   * 
-   * @param f the faction to be added.
+   * Returns the AllianceGroup with the specified ID if it exists, otherwise <code>null</code>.
    */
-  public void addFaction(Faction f) {
-    if (factions() != null) {
-      factions().put(f.getID(), f);
+  public AllianceGroup getAllianceGroup(ID allianceID) {
+    if (alliancegroups == null)
+      return null;
+    return alliancegroups.get(allianceID);
+  }
+
+  /**
+   * Retrieve a hot spot from hotSpots() by its id.
+   * 
+   * @param id the id of the hot spot to be retrieved.
+   * @return an instance of class <tt>HotSpot</tt> or <tt>null</tt> if there is no hot spot with the
+   *         specified id or if hotSpots() is <tt>null</tt> .
+   */
+  public HotSpot getHotSpot(IntegerID id) {
+    return (hotSpotView() == null) ? null : (HotSpot) hotSpotView().get(id);
+  }
+
+  /**
+   * Removes unit from the report.
+   */
+  public void removeUnit(UnitID id) {
+    unitView().remove(id);
+  }
+
+  /**
+   * Removes a temp unit from the collection of temp units.
+   */
+  public void removeTemp(UnitID key) {
+    tempUnitView().remove(key);
+  }
+
+  /**
+   * Removes a faction from the report.
+   */
+  public void removeFaction(EntityID id) {
+    // TODO (stm) remove units??
+    factionView().remove(id);
+  }
+
+  /**
+   * Removes a region from the data. Also removes units, buildings, ships, and hot spots.
+   */
+  public Region removeRegion(Region r) {
+    Region removed = regionView().remove(r.getID());
+    if (removed != null) {
+      for (Unit u : removed.units()) {
+        if (unitView().remove(u.getID()) == null) {
+          log.warn("could not remove unit " + u);
+        }
+        for (TempUnit t : u.tempUnits()) {
+          if (tempUnitView().remove(t) == null) {
+            log.warn("could not remove TEMP unit " + t);
+          }
+        }
+      }
+      for (Ship s : removed.ships())
+        if (shipView().remove(s) == null) {
+          log.warn("could not remove ship " + s);
+        }
+      for (Building b : removed.buildings())
+        if (buildingView().remove(b) == null) {
+          log.warn("could not remove TEMP unit " + b);
+        }
+      for (HotSpot h : hotSpotView().values()) {
+        if (h.getCenter().equals(removed.getID())) {
+          removeHotSpot(h.getID());
+        }
+      }
+    }
+    // TODO remove neighbors!
+    return removed;
+  }
+
+  /**
+   * Removes the island from the report.
+   */
+  public void removeIsland(IntegerID islandID) {
+    islandView().remove(islandID);
+  }
+
+  /**
+   * Remove a hot spot from hotSpots() by its id.
+   * 
+   * @param id the id of the hot spot to be removed.
+   */
+  public void removeHotSpot(IntegerID id) {
+    if (hotSpotView() != null) {
+      hotSpotView().remove(id);
     }
   }
 
   /**
-   * Add a unit to the specified game data. If units() is <tt>null</tt>, this method has no effect.
-   * 
-   * @param u the unit to be added.
+   * Sets the new set of islands.
    */
-  public void addUnit(Unit u) {
-    if (units() != null) {
-      units().put(u.getID(), u);
-    }
-  }
-
-  /**
-   * Add a region to the specified game data. If regions() is <tt>null</tt>, this method has no
-   * effect.
-   * 
-   * @param r the region to be added.
-   */
-  public void addRegion(Region r) {
-    if (regions() != null) {
-      regions().put(r.getID(), r);
-    }
-  }
-
-  /**
-   * Add a ship to the specified game data. If ships() is <tt>null</tt>, this method has no effect.
-   * 
-   * @param s the ship to be added.
-   */
-  public void addShip(Ship s) {
-    if (ships() != null) {
-      ships().put(s.getID(), s);
-    }
-  }
-
-  /**
-   * Add a building to the specified game data. If buildings() is <tt>null</tt>, this method has no
-   * effect.
-   * 
-   * @param b the building to be added.
-   */
-  public void addBuilding(Building b) {
-    if (buildings() != null) {
-      buildings().put(b.getID(), b);
-    }
-  }
-
-  /**
-   * Add a message type to the specified game data. If msgTypes() is <tt>null</tt>, this method has
-   * no effect.
-   * 
-   * @param type the message type to be added.
-   */
-  public void addMsgType(MessageType type) {
-    if (msgTypes() != null) {
-      msgTypes().put(type.getID(), type);
-    }
-  }
-
-  /**
-   * Add a spell to the specified game data. If spells() is <tt>null</tt>, this method has no
-   * effect.
-   * 
-   * @param s the spells to be added.
-   */
-  public void addSpell(Spell s) {
-    if (spells() != null) {
-      spells().put(s.getID(), s);
-    }
-  }
-
-  /**
-   * Add a potion to the specified game data. If potions() is <tt>null</tt>, this method has no
-   * effect.
-   * 
-   * @param p the potion to be added.
-   */
-  public void addPotion(Potion p) {
-    if (potions() != null) {
-      potions().put(p.getID(), p);
-    }
-  }
-
-  /**
-   * Add an island to the specified game data. If islands() is <tt>null</tt>, this method has no
-   * effect.
-   * 
-   * @param i the island to be added.
-   */
-  public void addIsland(Island i) {
-    if (islands() != null) {
-      islands().put(i.getID(), i);
-    }
-  }
+  public abstract void setIslands(Map<IntegerID, Island> islands);
 
   /**
    * Returns a map selected regions.
@@ -576,7 +804,12 @@ public abstract class GameData implements Cloneable, Addeable {
   public abstract Map<CoordinateID, Region> getSelectedRegionCoordinates();
 
   /**
-   * set a collection of selected regions.
+   * Adds a region to the selection
+   */
+  public abstract void addSelectedRegionCoordinate(Region region);
+
+  /**
+   * Set a collection of selected regions.
    * 
    * @param regions the Map of coordinates of selected regions
    */
@@ -589,52 +822,36 @@ public abstract class GameData implements Cloneable, Addeable {
    * @param h the hot spot to be added.
    */
   public void setHotSpot(HotSpot h) {
-    if (hotSpots() != null) {
-      hotSpots().put(h.getID(), h);
+    if (hotSpotView() != null) {
+      hotSpotView().put(h.getID(), h);
     }
   }
 
   /**
-   * Retrieve a hot spot from hotSpots() by its id.
-   * 
-   * @param id the id of the hot spot to be retrieved.
-   * @return an instance of class <tt>HotSpot</tt> or <tt>null</tt> if there is no hot spot with the
-   *         specified id or if hotSpots() is <tt>null</tt> .
+   * This method sets the current temp id.
    */
-  public HotSpot getHotSpot(IntegerID id) {
-    return (hotSpots() == null) ? null : (HotSpot) hotSpots().get(id);
+  public int getCurTempID() {
+    return curTempID;
   }
 
   /**
-   * Remove a hot spot from hotSpots() by its id.
+   * This method sets the current Temp ID with respect to the possible max value of the current
+   * base. The value also has to be >= -1
    * 
-   * @param id the id of the hot spot to be removed.
+   * @param newTempID Temp ID
    */
-  public void removeHotSpot(IntegerID id) {
-    if (hotSpots() != null) {
-      hotSpots().remove(id);
-    }
+  public void setCurTempID(int newTempID) {
+    curTempID = Math.max(-1, Math.min(newTempID, IDBaseConverter.getMaxId(base)));
   }
 
   /**
-   * Puts a translation into the translation table.
+   * This method interprets the string as a number in the {@link #base} and sets the current Temp ID
+   * with respect to the possible max value of the current base. The value also has to be >= -1
    * 
-   * @param from a language independent key.
-   * @param to the language dependent translation of key.
+   * @param s Temp ID
    */
-  public void addTranslation(String from, String to, int source) {
-
-    translations().addTranslation(from, to, source);
-    if (rules != null) {
-      // dynamically add translation key to rules to access object by name
-      rules.changeName(from, to);
-    }
-
-    /*
-     * if (translations() != null) { translations().put(from, to); if (rules != null) { //
-     * dynamically add translation key to rules to access object by name rules.changeName(from, to);
-     * } }
-     */
+  public void setCurTempID(String s) {
+    setCurTempID("".equals(s) ? 0 : IDBaseConverter.parse(s, base));
   }
 
   /**
@@ -661,6 +878,27 @@ public abstract class GameData implements Cloneable, Addeable {
     /*
      * String retVal = (key == null || translations() == null) ? null : (String)
      * translations().get(key); return retVal != null ? retVal : key;
+     */
+  }
+
+  /**
+   * Puts a translation into the translation table.
+   * 
+   * @param from a language independent key.
+   * @param to the language dependent translation of key.
+   */
+  public void addTranslation(String from, String to, int source) {
+
+    translations().addTranslation(from, to, source);
+    if (rules != null) {
+      // dynamically add translation key to rules to access object by name
+      rules.changeName(from, to);
+    }
+
+    /*
+     * if (translations() != null) { translations().put(from, to); if (rules != null) { //
+     * dynamically add translation key to rules to access object by name rules.changeName(from, to);
+     * } }
      */
   }
 
@@ -712,819 +950,6 @@ public abstract class GameData implements Cloneable, Addeable {
   public abstract Locale getLocale();
 
   /**
-   * Merges the specified dataset with this dataset.
-   * 
-   * @param gd1 the first game data object for merging
-   * @param gd2 the second game data object for merging
-   * @return the new merged game data object
-   * @throws IllegalArgumentException if first and second game data object are from different game
-   *           types.
-   */
-  public static GameData merge(GameData gd1, GameData gd2) {
-    // make sure, the game types are the same.
-    if (!gd1.getGameName().equalsIgnoreCase(gd2.getGameName()))
-      throw new IllegalArgumentException("GameData.merge(): Can't merge different game types. ("
-          + gd1.getGameName() + " via " + gd2.getGameName() + ")");
-
-    // make sure that a date object is available
-    if (gd1.getDate() == null) {
-      gd1.setDate(new EresseaDate(0));
-    }
-
-    if (gd2.getDate() == null) {
-      gd2.setDate(new EresseaDate(0));
-    }
-
-    // setting FileType to gd1
-    if (gd1.filetype != null) {
-      gd2.setFileType(gd1.getFileType());
-    }
-
-    if (gd1.getDate().compareTo(gd2.getDate()) > 0)
-      return GameData.mergeIt(gd2, gd1);
-    else
-      return GameData.mergeIt(gd1, gd2);
-  }
-
-  /**
-   * Merges the two game data containers yielding a third one. By convention, olderGD must not be
-   * newer than newerGD. The resulting game data container inherits the rules and name from
-   * <b>newerGD</b>.
-   * 
-   * @param olderGD A GameData object, must be the older one of the two
-   * @param newerGD The newer GameData object.
-   * @return the merged GameData
-   */
-  private static GameData mergeIt(GameData olderGD, GameData newerGD) {
-    // 2002.02.20 pavkovic: the newer rules are in GameData gd2. So we take
-    // them for the new GameData
-    // FIXME(pavkovic) rules should be loaded instead of just used in this
-    // situation
-    GameData resultGD = new CompleteData(newerGD.rules, newerGD.getGameName());
-    if (olderGD.getFileType() != null) {
-      resultGD.setFileType(olderGD.getFileType());
-    }
-
-    /***********************************************************************/
-    /**************************** ADDING PHASE *****************************/
-    /***********************************************************************/
-
-    /**************************** DATE ***************************/
-    EresseaDate date = new EresseaDate(newerGD.getDate().getDate());
-    date.setEpoch(((EresseaDate) newerGD.getDate()).getEpoch());
-    resultGD.setDate(date);
-
-    // new report - new timestamp
-    resultGD.setTimestamp(System.currentTimeMillis() / 1000);
-
-    // verify the encodings of the two reports
-    String oldEncoding = olderGD.getEncoding();
-    String newEncoding = newerGD.getEncoding();
-
-    // GameData.log.info("Old Encoding: "+oldEncoding);
-    // GameData.log.info("New Encoding: "+newEncoding);
-
-    if (oldEncoding != null && newEncoding != null) {
-      if (oldEncoding.equalsIgnoreCase(newEncoding)) {
-        // do nothing
-        GameData.log.debug("Do nothing");
-        resultGD.setEncoding(oldEncoding);
-      } else if (oldEncoding.equalsIgnoreCase(Encoding.UTF8.toString())
-          || newEncoding.equalsIgnoreCase(Encoding.UTF8.toString())) {
-        // if one of the reports has UTF-8 Encoding, we use it always.
-        GameData.log.info("Set UTF-8 because one report match");
-        resultGD.setEncoding(Encoding.UTF8.toString());
-      } else {
-        // okay, we have differnt encodings, but none of them is UTF-8 - what
-        // now?
-        GameData.log.info("Encoding does not match (" + oldEncoding + " vs. " + newEncoding
-            + "), using new encoding");
-        resultGD.setEncoding(newEncoding);
-      }
-    } else {
-      // okay, this should never happen (no encoding in the reports)
-      // so, we set the default encoding
-      GameData.log.info("Set UTF-8 as default");
-      resultGD.setEncoding(Encoding.UTF8.toString());
-    }
-
-    GameData.log.info("Old Encoding: " + oldEncoding + ",New Encoding: " + newEncoding
-        + ",Result-Encoding: " + resultGD.getEncoding());
-
-    boolean sameRound = olderGD.getDate().equals(newerGD.getDate());
-
-    /**************************** MAIL TO, MAIL SUBJECT ***************************/
-    if (newerGD.mailTo != null) {
-      resultGD.mailTo = newerGD.mailTo;
-    } else {
-      resultGD.mailTo = olderGD.mailTo;
-    }
-
-    if (newerGD.mailSubject != null) {
-      resultGD.mailSubject = newerGD.mailSubject;
-    } else {
-      resultGD.mailSubject = olderGD.mailSubject;
-    }
-
-    /**************************** BASE ***************************/
-    if (newerGD.base != 0) {
-      resultGD.base = newerGD.base;
-    } else {
-      resultGD.base = olderGD.base;
-    }
-
-    /**
-     * Tracking an Bug warn, if we do not have 36 with eressea or vinyambar and set it to 36
-     */
-    String actGameName = newerGD.getGameName().toLowerCase();
-    if ((actGameName.indexOf("eressea") > -1 || actGameName.indexOf("vinyambar") > -1)
-        && (newerGD.base != 36)) {
-      // this should not happen
-      GameData.log.warn("BASE ERROR !! merged report could have not base36 !! Changed to base36.");
-      newerGD.base = 36;
-    }
-
-    // NOSKILLPOINTS: the newer report determines the skill point handling
-    resultGD.noSkillPoints = newerGD.noSkillPoints;
-
-    // curTempID
-    // (it is assured, that at least on of the GameData-objects
-    // contains a default value for curTempID)
-    if (newerGD.curTempID != -1) {
-      resultGD.curTempID = newerGD.curTempID;
-    } else {
-      resultGD.curTempID = olderGD.curTempID;
-    }
-
-    if (olderGD.getAttributeSize() > 0) {
-      for (String key : olderGD.getAttributeKeys()) {
-        if (!newerGD.containsAttribute(key)) {
-          newerGD.addAttribute(key, olderGD.getAttribute(key));
-        }
-      }
-    }
-
-    // version - we take the CR version from the newer report
-    resultGD.version = newerGD.version;
-
-    /**************************** LOCALE ***************************/
-    if (sameRound) {
-      // if the added report is from the same round it is the newer
-      // one, but we would stay then with the current locale
-      if (olderGD.getLocale() != null) {
-        resultGD.setLocale(olderGD.getLocale());
-      } else {
-        resultGD.setLocale(newerGD.getLocale());
-      }
-    } else {
-      // if we do not have the same round then we use the newer locale
-      // as we must have a chance to change the locale by adding a report
-      // but we don't want that if we add an older report.
-      if (newerGD.getLocale() != null) {
-        resultGD.setLocale(newerGD.getLocale());
-      } else {
-        resultGD.setLocale(olderGD.getLocale());
-      }
-    }
-
-    /**************************** TRANSLATIONS ***************************/
-    // simple objects, created and merged in one step
-    // for safety we should merge the translation directly
-    // after setting the local of the result report
-    if (resultGD.translations() != null) {
-      if (olderGD.getLocale().equals(resultGD.getLocale())) {
-        resultGD.translations().addAll(olderGD.translations(), resultGD.rules);
-      } else {
-        resultGD.translations().clear();
-      }
-      if (newerGD.getLocale().equals(resultGD.getLocale())) {
-        resultGD.translations().addAll(newerGD.translations(), resultGD.rules);
-      }
-    }
-
-    /**************************** MESSAGETYPES ***************************/
-    // simple objects, created and merged in one step
-    // locale has to be considered.
-    if (olderGD.msgTypes() != null) {
-      for (MessageType mt : olderGD.msgTypes().values()) {
-        MessageType newMT = null;
-
-        try {
-          newMT = new MessageType(mt.getID().clone());
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-
-        MessageType.merge(olderGD, mt, resultGD, newMT);
-        resultGD.addMsgType(newMT);
-      }
-    }
-
-    if (newerGD.msgTypes() != null) {
-      for (MessageType mt : newerGD.msgTypes().values()) {
-        MessageType newMT = resultGD.getMsgType(mt.getID());
-
-        if (newMT == null) {
-          try {
-            newMT = new MessageType(mt.getID().clone());
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
-        }
-
-        MessageType.merge(newerGD, mt, resultGD, newMT);
-        resultGD.addMsgType(newMT);
-      }
-    }
-
-    /**************************** SPELLS ***************************/
-    // simple objects, created and merged in one step
-    if (olderGD.spells() != null) {
-      for (Spell spell : olderGD.spells().values()) {
-        Spell newSpell = null;
-
-        try {
-          newSpell = MagellanFactory.createSpell(spell.getID().clone(), resultGD);
-
-          MagellanFactory.mergeSpell(olderGD, spell, resultGD, newSpell);
-          resultGD.addSpell(newSpell);
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-      }
-    }
-
-    if (newerGD.spells() != null) {
-      for (Spell spell : newerGD.spells().values()) {
-        Spell newSpell = resultGD.getSpell(spell.getID());
-
-        try {
-          if (newSpell == null) {
-            newSpell = MagellanFactory.createSpell(spell.getID().clone(), resultGD);
-          }
-
-          MagellanFactory.mergeSpell(newerGD, spell, resultGD, newSpell);
-          resultGD.addSpell(newSpell);
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-      }
-    }
-
-    /**************************** POTIONS ***************************/
-    // simple objects, created and merged in one step
-    if (olderGD.potions() != null) {
-      for (Potion potion : olderGD.potions().values()) {
-        Potion newPotion = null;
-
-        try {
-          newPotion = MagellanFactory.createPotion(potion.getID().clone());
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-
-        MagellanFactory.mergePotion(olderGD, potion, resultGD, newPotion);
-        resultGD.addPotion(newPotion);
-      }
-    }
-
-    if (newerGD.potions() != null) {
-      for (Potion potion : newerGD.potions().values()) {
-        Potion newPotion = resultGD.getPotion(potion.getID());
-
-        if (newPotion == null) {
-          try {
-            newPotion = MagellanFactory.createPotion(potion.getID().clone());
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
-        }
-
-        MagellanFactory.mergePotion(newerGD, potion, resultGD, newPotion);
-        resultGD.addPotion(newPotion);
-      }
-    }
-
-    /**************************** OWNER FACTION ***************************/
-    if (olderGD.getOwnerFaction() != null) {
-      resultGD.setOwnerFaction(olderGD.getOwnerFaction());
-    }
-    // never change owner faction
-    // else
-    // resultGD.setOwnerFaction(newerGD.getOwnerFaction());
-
-    /**************************** COORDINATE TRANSLATIONS ***************************/
-    for (EntityID factionID : olderGD.coordinateTranslations.keySet()) {
-      for (Integer layer : olderGD.coordinateTranslations.get(factionID).keySet()) {
-        CoordinateID oldTranslation = olderGD.getCoordinateTranslation(factionID, layer);
-        if (oldTranslation != null) {
-          resultGD.setCoordinateTranslation(factionID, oldTranslation);
-        }
-      }
-    }
-    for (EntityID factionID : newerGD.coordinateTranslations.keySet()) {
-      for (Integer layer : newerGD.coordinateTranslations.get(factionID).keySet()) {
-        CoordinateID oldTranslation = olderGD.getCoordinateTranslation(factionID, layer);
-        CoordinateID newTranslation = newerGD.getCoordinateTranslation(factionID, layer);
-        if (oldTranslation != null && newTranslation != null
-            && !oldTranslation.equals(newTranslation)) {
-          GameData.log.warn("coordinate translations do not match " + factionID + "," + layer + ":"
-              + oldTranslation + "!=" + newTranslation);
-          resultGD.setCoordinateTranslation(factionID, oldTranslation);
-        } else {
-          if (oldTranslation != null) {
-            resultGD.setCoordinateTranslation(factionID, oldTranslation);
-          } else if (newTranslation != null) {
-            resultGD.setCoordinateTranslation(factionID, newTranslation);
-          } else {
-            GameData.log.warn("unexpected case");
-          }
-        }
-      }
-    }
-
-    /**************************** ALLIANCES ***************************/
-    if (olderGD.alliancegroups != null && sameRound) {
-      for (AllianceGroup alliance : olderGD.alliancegroups.values()) {
-        try {
-          resultGD.addAllianceGroup(MagellanFactory.createAlliance(alliance.getID().clone(),
-              resultGD));
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-      }
-    }
-
-    if (newerGD.alliancegroups != null) {
-      for (AllianceGroup alliance : newerGD.alliancegroups.values()) {
-        if (resultGD.getAllianceGroup(alliance.getID()) == null) {
-          try {
-            resultGD.addAllianceGroup(MagellanFactory.createAlliance(alliance.getID().clone(),
-                resultGD));
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
-        }
-      }
-    }
-
-    /**************************** FACTIONS ***************************/
-    // complex object, just add faction without merging here
-    if (olderGD.factions() != null) {
-      for (Faction f : olderGD.factions().values()) {
-        try {
-          resultGD.addFaction(MagellanFactory.createFaction(f.getID().clone(), resultGD));
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-      }
-    }
-
-    if (newerGD.factions() != null) {
-      for (Faction f : newerGD.factions().values()) {
-        if (resultGD.getFaction(f.getID()) == null) {
-          try {
-            resultGD.addFaction(MagellanFactory.createFaction(f.getID().clone(), resultGD));
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
-        }
-      }
-    }
-
-    /**************************** REGIONS ***************************/
-    // complex object, just add faction without merging here
-    // this just adds all the regions to newGD. No content yet.
-    if (olderGD.regions() != null) {
-      for (Region r : olderGD.regions().values()) {
-        resultGD.addRegion(MagellanFactory.createRegion(r.getID(), resultGD));
-      }
-    }
-
-    if (newerGD.regions() != null) {
-      for (Region r : newerGD.regions().values()) {
-        if (resultGD.getRegion(r.getID()) == null) {
-          resultGD.addRegion(MagellanFactory.createRegion(r.getID(), resultGD));
-        }
-      }
-    }
-
-    /**************************** ISLANDS ***************************/
-    // complex object, just add without merging here
-    if (olderGD.islands() != null) {
-      for (Island i : olderGD.islands().values()) {
-        try {
-          resultGD.addIsland(MagellanFactory.createIsland(i.getID().clone(), resultGD));
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-      }
-    }
-
-    if (newerGD.islands() != null) {
-      for (Island i : newerGD.islands().values()) {
-        if (olderGD.getIsland(i.getID()) == null) {
-          try {
-            resultGD.addIsland(MagellanFactory.createIsland(i.getID().clone(), resultGD));
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
-        }
-      }
-    }
-
-    /**************************** HOTSPOTS ***************************/
-    // complex object, just add without merging here
-    if (olderGD.hotSpots() != null) {
-      for (HotSpot h : olderGD.hotSpots().values()) {
-        try {
-          resultGD.setHotSpot(MagellanFactory.createHotSpot(h.getID().clone()));
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-      }
-    }
-
-    if (newerGD.hotSpots() != null) {
-      for (HotSpot h : newerGD.hotSpots().values()) {
-        if (resultGD.getHotSpot(h.getID()) == null) {
-          try {
-            resultGD.setHotSpot(MagellanFactory.createHotSpot(h.getID().clone()));
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
-        }
-      }
-    }
-
-    /**************************** BUILDINGS ***************************/
-    // complex object, just add without merging here
-    if (newerGD.buildings() != null) {
-      for (Building b : newerGD.buildings().values()) {
-        try {
-          resultGD.addBuilding(MagellanFactory.createBuilding(b.getID().clone(), resultGD));
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-      }
-    }
-
-    if (olderGD.buildings() != null) {
-      // buildings are persistent.
-      // Accept old buildings not occurring in the new report
-      // only if there are no units in that region
-      for (Building oldBuilding : olderGD.buildings().values()) {
-        Building curBuilding = newerGD.getBuilding(oldBuilding.getID());
-
-        if (curBuilding == null) {
-          // check if the building disappeared because we do
-          // not know the region anymore or if it was
-          // destroyed
-          Region curRegion = null;
-          if (oldBuilding.getRegion() == null) {
-            GameData.log.errorOnce("Building without Region!" + oldBuilding.toString());
-          } else {
-            if (oldBuilding.getRegion().getID() == null) {
-              GameData.log.errorOnce("Region without ID!");
-            } else {
-              curRegion = newerGD.getRegion(oldBuilding.getRegion().getID());
-
-              if ((curRegion == null) || curRegion.getVisibility().compareTo(Visibility.TRAVEL) < 0) {
-                try {
-                  resultGD.addBuilding(MagellanFactory.createBuilding(oldBuilding.getID().clone(),
-                      resultGD));
-                } catch (CloneNotSupportedException e) {
-                  GameData.log.error(e);
-                }
-              } else {
-                // skip this building
-              }
-            }
-          }
-        } else {
-          // the building occurs in gd2 so we already
-          // included its current version in newGD
-        }
-      }
-    }
-
-    /**************************** SHIPS ***************************/
-    // complex object, just add without merging here
-    if (sameRound && (olderGD.ships() != null)) {
-      for (Ship s : olderGD.ships().values()) {
-        try {
-          resultGD.addShip(MagellanFactory.createShip(s.getID().clone(), resultGD));
-        } catch (CloneNotSupportedException e) {
-          GameData.log.error(e);
-        }
-      }
-    }
-
-    if (newerGD.ships() != null) {
-      for (Ship s : newerGD.ships().values()) {
-        if (resultGD.getShip(s.getID()) == null) {
-          try {
-            resultGD.addShip(MagellanFactory.createShip(s.getID().clone(), resultGD));
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
-        }
-      }
-    }
-
-    /**************************** UNITS ***************************/
-    // complex object, just add without merging here
-
-    /*
-     * Note: To gather the information needed for level changes, report one is always treated. But
-     * in the case of unequal dates only units that are also in the second report are added to the
-     * new one and temp units are ignored. IDs are used for comparison.
-     */
-    if (olderGD.units() != null) {
-      for (Unit u : olderGD.units().values()) {
-        if (sameRound || (newerGD.getUnit(u.getID()) != null)) {
-          // TODO (stm): Isn't that nonsense? Doesn't it suffice to add the
-          // units of the new report
-          // if they are not from the same round?
-          try {
-            resultGD.addUnit(MagellanFactory.createUnit(u.getID().clone()));
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
-        }
-      }
-    }
-
-    if (newerGD.units() != null) {
-      for (Unit u : newerGD.units().values()) {
-        if (resultGD.getUnit(u.getID()) == null) {
-          try {
-            resultGD.addUnit(MagellanFactory.createUnit(u.getID().clone()));
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
-        }
-      }
-    }
-
-    /***********************************************************************/
-    /********************** MERGING PHASE -- FIRST PASS ********************/
-    /***********************************************************************/
-
-    /**************************** ALLIANCES ***************************/
-    if (olderGD.alliancegroups != null && sameRound) {
-      for (AllianceGroup curAlliance : olderGD.alliancegroups.values()) {
-        AllianceGroup newAlliance = resultGD.getAllianceGroup(curAlliance.getID());
-
-        MagellanFactory.mergeAlliance(olderGD, curAlliance, resultGD, newAlliance);
-      }
-    }
-
-    /**************************** MERGE FACTIONS ***************************/
-    // complex object FIRST PASS
-    if (olderGD.factions() != null) {
-      for (Faction curFaction : olderGD.factions().values()) {
-        Faction newFaction = resultGD.getFaction(curFaction.getID());
-
-        // first pass
-        MagellanFactory.mergeFaction(olderGD, curFaction, resultGD, newFaction);
-      }
-    }
-
-    /**************************** MERGE REGIONS ***************************/
-    // complex object FIRST PASS
-    if (olderGD.regions() != null) {
-      for (Region oldRegion : olderGD.regions().values()) {
-        Region resultRegion = resultGD.getRegion(oldRegion.getID());
-
-        // first pass
-        MagellanFactory.mergeRegion(olderGD, oldRegion, resultGD, resultRegion, !sameRound, true);
-      }
-    }
-
-    /**************************** MERGE ISLANDS ***************************/
-    // complex object FIRST PASS
-    if (olderGD.islands() != null) {
-      for (Island curIsland : olderGD.islands().values()) {
-        Island newIsland = resultGD.getIsland(curIsland.getID());
-
-        // first pass
-        MagellanFactory.mergeIsland(olderGD, curIsland, resultGD, newIsland);
-      }
-    }
-
-    /**************************** MERGE HOTSPOTS ***************************/
-    // complex object FIRST PASS
-    if (olderGD.hotSpots() != null) {
-      for (HotSpot curHotSpot : olderGD.hotSpots().values()) {
-        HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
-        // first pass
-        MagellanFactory.mergeHotSpot(olderGD, curHotSpot, resultGD, newHotSpot);
-      }
-    }
-
-    /**************************** MERGE BUILDINGS ***************************/
-    // complex object FIRST PASS
-    if (olderGD.buildings() != null) {
-      for (Building curBuilding : olderGD.buildings().values()) {
-        Building newBuilding = resultGD.getBuilding(curBuilding.getID());
-
-        if (newBuilding != null) {
-          // first pass
-          MagellanFactory.mergeBuilding(olderGD, curBuilding, resultGD, newBuilding);
-        }
-      }
-    }
-
-    /**************************** MERGE SHIPS ***************************/
-    // complex object FIRST PASS
-    if ((olderGD.ships() != null)) {
-      for (Ship curShip : olderGD.ships().values()) {
-        Ship newShip = resultGD.getShip(curShip.getID());
-
-        // only merge ships from the "older" game data if they are from the same
-        // round
-        if (sameRound) {
-          // first pass
-          MagellanFactory.mergeShip(olderGD, curShip, resultGD, newShip);
-        } else {
-          // TODO (stm 2007-02-19) this is a workaround, we need a nicer
-          // solution
-          MagellanFactory.mergeComments(curShip, newShip);
-        }
-      }
-    }
-
-    /***********************************************************************/
-    /********************** MERGING PHASE -- SECOND PASS *******************/
-    /***********************************************************************/
-
-    /**************************** ALLIANCES ***************************/
-    if (newerGD.alliancegroups != null) {
-      for (AllianceGroup curAlliance : newerGD.alliancegroups.values()) {
-        AllianceGroup newAlliance = resultGD.getAllianceGroup(curAlliance.getID());
-
-        MagellanFactory.mergeAlliance(olderGD, curAlliance, resultGD, newAlliance);
-      }
-    }
-
-    /**************************** MERGE FACTIONS, SECOND PASS ***************************/
-    // must be done before merging units to keep group information
-    if (newerGD.factions() != null) {
-      for (Faction curFaction : newerGD.factions().values()) {
-        Faction newFaction = resultGD.getFaction(curFaction.getID());
-
-        // second pass
-        MagellanFactory.mergeFaction(newerGD, curFaction, resultGD, newFaction);
-      }
-    }
-
-    /**************************** MERGE UNITS ***************************/
-
-    /*
-     * Note: To gather level change informations all units are used. If the dates are equal, a fully
-     * merge is done, if not, only the skills are retrieved.
-     */
-    for (Unit resultUnit : resultGD.units().values()) {
-      // find the second first since we may need the temp id
-      Unit newerUnit = newerGD.findUnit(resultUnit.getID(), null, null);
-
-      // find a temp ID to gather information out of the temp unit
-      ID tempID = null;
-      Region newRegion = null;
-
-      if ((newerUnit != null) && !sameRound) {
-        // only use temp ID if reports have different date
-        tempID = newerUnit.getTempID();
-
-        if (tempID != null) {
-          tempID = UnitID.createUnitID(-((UnitID) tempID).intValue(), newerGD.base);
-        }
-
-        newRegion = newerUnit.getRegion();
-      }
-
-      // now get the unit of the first report
-      Unit olderUnit = olderGD.findUnit(resultUnit.getID(), tempID, newRegion);
-      // first merge step
-      if (olderUnit != null) {
-        if (sameRound) { // full merge
-          MagellanFactory.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound, true);
-        } else { // only copy the skills to get change-level base
-          if ((newerUnit != null)
-              && ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged()))) {
-            MagellanFactory.copySkills(olderUnit, resultUnit);
-          }
-        }
-      }
-
-      // second merge step
-      if (newerUnit != null) {
-        MagellanFactory.mergeUnit(newerGD, newerUnit, resultGD, resultUnit, sameRound, false);
-      }
-    }
-
-    /**************************** MERGE REGIONS, SECOND PASS ***************************/
-    if (resultGD.regions() != null) {
-      for (Region resultRegion : resultGD.regions().values()) {
-        Region newerRegion = newerGD.getRegion(resultRegion.getID());
-        if (newerRegion != null) {
-          // second pass
-          MagellanFactory.mergeRegion(newerGD, newerRegion, resultGD, resultRegion, !sameRound,
-              false);
-        } else {
-          // region not present in new report
-          if (!sameRound && resultRegion.getVisibility() != Visibility.NULL) {
-            GameData.log.warn("region should not be visible: " + resultRegion.getName());
-            resultRegion.setVisibility(Visibility.NULL);
-          }
-        }
-      }
-    }
-
-    /**************************** MERGE ISLANDS, SECOND PASS ***************************/
-    if (newerGD.islands() != null) {
-      for (Island curIsland : newerGD.islands().values()) {
-        Island newIsland = resultGD.getIsland(curIsland.getID());
-
-        // second pass
-        MagellanFactory.mergeIsland(newerGD, curIsland, resultGD, newIsland);
-      }
-    }
-
-    /**************************** MERGE HOTSPOTS, SECOND PASS ***************************/
-    if (newerGD.hotSpots() != null) {
-      for (HotSpot curHotSpot : newerGD.hotSpots().values()) {
-        HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
-        // second pass
-        MagellanFactory.mergeHotSpot(newerGD, curHotSpot, resultGD, newHotSpot);
-      }
-    }
-
-    /**************************** MERGE BUILDINGS, SECOND PASS ***************************/
-    if (newerGD.buildings() != null) {
-      for (Building curBuilding : newerGD.buildings().values()) {
-        Building newBuilding = resultGD.getBuilding(curBuilding.getID());
-
-        if (newBuilding != null) {
-          // second pass
-          MagellanFactory.mergeBuilding(newerGD, curBuilding, resultGD, newBuilding);
-        }
-      }
-    }
-
-    /**************************** MERGE SHIPS, SECOND PASS ***************************/
-    if (newerGD.ships() != null) {
-      for (Ship curShip : newerGD.ships().values()) {
-        Ship newShip = resultGD.getShip(curShip.getID());
-
-        // second pass
-        MagellanFactory.mergeShip(newerGD, curShip, resultGD, newShip);
-      }
-    }
-
-    resultGD.postProcess();
-    resultGD.resetToUnchanged();
-
-    return resultGD;
-  }
-
-  protected Unit findUnit(ID id, ID tempID, Region newRegion) {
-    // search for a temp unit
-    if (tempID != null) {
-      if (newRegion == null) {
-        Iterator<Unit> it = units().values().iterator();
-
-        while (it.hasNext()) {
-          Unit u = it.next();
-          Unit u2 = u.getTempUnit(tempID);
-
-          if (u2 != null)
-            return u2;
-        }
-      } else {
-        Map<CoordinateID, Region> m =
-            Regions.getAllNeighbours(regions(), newRegion.getID(), 3, null);
-
-        if (m != null) {
-          Iterator<Region> it = m.values().iterator();
-
-          while (it.hasNext()) {
-            Region r = it.next();
-            Unit u2 = r.getUnit(tempID);
-
-            if (u2 != null)
-              return u2;
-          }
-        }
-      }
-    }
-
-    // standard search
-    return getUnit(id);
-  }
-
-  /**
    * This function checks if the game data have been manipulated somehow (merge will lead to a
    * filetype null). TODO (stm) nobody uses this
    */
@@ -1532,7 +957,7 @@ public abstract class GameData implements Cloneable, Addeable {
     if (g.getFileType() == null)
       return true;
 
-    for (Unit u : g.units().values()) {
+    for (Unit u : g.unitView().values()) {
       if (u.ordersHaveChanged())
         return true;
     }
@@ -1544,7 +969,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * reset change state of all units to false
    */
   public void resetToUnchanged() {
-    for (Unit u : units().values()) {
+    for (Unit u : unitView().values()) {
       u.setOrdersChanged(false);
     }
   }
@@ -1552,8 +977,9 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader)
    * 
-   * @throws CloneNotSupportedException DOCUMENT-ME
+   * @throws CloneNotSupportedException If cloning doesn't succeed
    */
+
   @Override
   public Object clone() throws CloneNotSupportedException {
     // return new Loader().cloneGameData(this);
@@ -1564,7 +990,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader) and at
    * the same time translates the origin two <code>newOrigin</code>
    * 
-   * @throws CloneNotSupportedException DOCUMENT-ME
+   * @throws CloneNotSupportedException If cloning doesn't succeed
    */
   public Object clone(CoordinateID newOrigin) throws CloneNotSupportedException {
     // if (newOrigin.x == 0 && newOrigin.y == 0) {
@@ -1605,13 +1031,20 @@ public abstract class GameData implements Cloneable, Addeable {
 
   private Region activeRegion;
 
+  private Faction nullFaction;
+
+  private Region nullRegion;
+
+  private Race nullRace;
+
   /**
    * This method can be called after loading or merging a report to avoid double messages and to set
    * some game specific stuff.
    */
   public void postProcess() {
-    if (postProcessed)
-      return;
+    // FIXME(stm) does it harm to call this more than once???
+    // if (postProcessed)
+    // return;
     GameData.log.info("start GameData postProcess");
 
     // enforce locale to be non-null
@@ -1660,42 +1093,34 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   public void postProcessTheVoid() {
     List<Region> newRegions = new ArrayList<Region>();
-    for (CoordinateID actRegionID : regions().keySet()) {
-      Region actRegion = regions().get(actRegionID);
+    for (Region actRegion : regionView().values()) {
       boolean shouldHaveAllNeighbours = false;
-      if (actRegion.getVisibility().compareTo(Region.Visibility.TRAVEL) >= 0) {
+      if (actRegion.getVisibility().greaterEqual(Region.Visibility.TRAVEL)) {
         shouldHaveAllNeighbours = true;
       }
       if (shouldHaveAllNeighbours) {
         CoordinateID center = actRegion.getCoordinate();
 
-        int radius = 1;
-        for (int dx = -radius; dx <= radius; dx++) {
-          for (int dy = (-radius + Math.abs(dx)) - ((dx > 0) ? dx : 0); dy <= ((radius - Math
-              .abs(dx)) - ((dx < 0) ? dx : 0)); dy++) {
-            CoordinateID c =
-                CoordinateID.create(center.getX() + dx, center.getY() + dy, center.getZ());
+        for (CoordinateID c : Regions.getAllNeighbours(center, 1)) {
+          Region neighbour = getRegion(c);
 
-            Region neighbour = regions().get(c);
-
-            if (neighbour == null) {
-              // Missing Neighbor
-              Region r = MagellanFactory.createRegion(c, this);
-              RegionType type = RegionType.unknown;
-              r.setType(type);
-              r.setName(Resources.get("completedata.region.thevoid.name"));
-              r.setDescription(Resources.get("completedata.region.thevoid.beschr"));
-              newRegions.add(r);
-              addTranslation("Leere", Resources.get("completedata.region.thevoid.name"),
-                  TranslationType.sourceMagellan);
-            }
+          if (neighbour == null) {
+            // Missing Neighbor
+            Region r = MagellanFactory.createRegion(c, this);
+            RegionType type = RegionType.unknown;
+            r.setType(type);
+            r.setName(Resources.get("completedata.region.thevoid.name"));
+            r.setDescription(Resources.get("completedata.region.thevoid.beschr"));
+            newRegions.add(r);
+            addTranslation(EresseaConstants.RT_VOID.toString(), Resources
+                .get("completedata.region.thevoid.name"), TranslationType.sourceMagellan);
           }
         }
       }
     }
     if (newRegions.size() > 0) {
       for (Region actRegion : newRegions) {
-        if (!regions().containsKey(actRegion.getID())) {
+        if (!regionView().containsKey(actRegion.getID())) {
           addRegion(actRegion);
         }
       }
@@ -1719,12 +1144,12 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   private void postProcessMessages() {
     // faction.messages
-    for (Faction o : factions().values()) {
+    for (Faction o : factionView().values()) {
       postProcessMessages(o.getMessages());
     }
 
     // region.messages
-    for (Region o : regions().values()) {
+    for (Region o : regionView().values()) {
       postProcessMessages(o.getMessages());
     }
   }
@@ -1737,16 +1162,16 @@ public abstract class GameData implements Cloneable, Addeable {
    * - asuming that this was the last potion-definition reveived from the server
    */
   private void postProcessPotions() {
-    if (potions() == null || potions().size() == 0)
+    if (potionView() == null || potionView().size() == 0)
       // nothing to do
       return;
     // just for info:
-    int count_before = potions().size();
+    int count_before = potionView().size();
     // The final Map of the potions
-    HashMap<String, Potion> potions = new HashMap<String, Potion>();
+    HashMap<String, Potion> newPotions = new HashMap<String, Potion>();
     // To sort the Potions after ID we use a simple List
     // and fill it with our Potions
-    List<Potion> sortedPotions = new LinkedList<Potion>(potions().values());
+    List<Potion> sortedPotions = new ArrayList<Potion>(potionView().values());
     // use normal name and ID comparator
     Comparator<Unique> idCmp = IDComparator.DEFAULT;
     Collections.sort(sortedPotions, new NameComparator(idCmp));
@@ -1754,23 +1179,23 @@ public abstract class GameData implements Cloneable, Addeable {
     // fill our new PotionMap with the PotionNames as Keys
     for (Potion p : sortedPotions) {
       // some info, if replacing
-      if (potions.containsKey(p.getName().toLowerCase())) {
-        Potion oldPotion = potions.get(p.getName().toLowerCase());
+      if (newPotions.containsKey(p.getName().toLowerCase())) {
+        Potion oldPotion = newPotions.get(p.getName().toLowerCase());
         GameData.log.info("removing Potion " + oldPotion.getName() + "(ID: "
             + oldPotion.getID().toString() + ")");
       }
-      potions.put(p.getName().toLowerCase(), p);
+      newPotions.put(p.getName().toLowerCase(), p);
     }
     // we have a clean PotionMap now -> set the real Potion Map
     // erease all potions
-    potions().clear();
+    potionView().clear();
     // fill again from our PotionMap
-    for (Potion p : potions.values()) {
-      potions().put(p.getID(), p);
+    for (Potion p : newPotions.values()) {
+      addPotion(p);
     }
     // ready
     // some info?
-    int count_after = potions().size();
+    int count_after = potionView().size();
     if (count_before != count_after) {
       GameData.log.info("postProcessPotions: changing number of potions from " + count_before
           + " to " + count_after);
@@ -1812,15 +1237,15 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   public void removeTheVoid() {
     List<CoordinateID> delRegionID = new ArrayList<CoordinateID>();
-    for (CoordinateID actRegionID : regions().keySet()) {
-      Region actRegion = regions().get(actRegionID);
-      if (actRegion.getRegionType().equals(rules.getRegionType("Leere"))) {
+    for (CoordinateID actRegionID : regionView().keySet()) {
+      Region actRegion = getRegion(actRegionID);
+      if (actRegion.getRegionType().equals(rules.getRegionType(EresseaConstants.RT_VOID))) {
         delRegionID.add(actRegionID);
       }
     }
     if (delRegionID.size() > 0) {
       for (CoordinateID actID : delRegionID) {
-        regions().remove(actID);
+        regionView().remove(actID);
       }
     }
   }
@@ -1857,13 +1282,6 @@ public abstract class GameData implements Cloneable, Addeable {
     activeRegion = region;
   }
 
-  /**
-   * Sets the mapping for astral to real space.
-   * 
-   * @param c the real space <code>CoordianteID</code> <x,y,0> which is the center of the astral
-   *          space region with CoordinateID <0,0,1>.
-   */
-  // public abstract void setAstralMapping(CoordinateID c);
   /**
    * Returns the relation of two map layers.
    * 
@@ -1940,6 +1358,10 @@ public abstract class GameData implements Cloneable, Addeable {
       return layerMap.get(layer);
   }
 
+  protected Map<EntityID, Map<Integer, CoordinateID>> getCoordinateTranslations() {
+    return coordinateTranslations;
+  }
+
   /**
    * Returns the immutable map of all known coordinate translations of <code>otherFaction</code>.
    * This is a mapping of layers to coordinateIDs. This is the coordinate vector that has to be
@@ -2003,18 +1425,30 @@ public abstract class GameData implements Cloneable, Addeable {
     this.ownerFaction = ownerFaction;
   }
 
+  /**
+   * Returns the name of the game (e.g. "eresea").
+   */
   public String getGameName() {
     return gameName;
   }
 
+  /**
+   * Sets the name of the game (e.g. "eresea").
+   */
   public void setGameName(String newName) {
     gameName = newName;
   }
 
+  /**
+   * Sets the FileType (basically the file name this report was read from).
+   */
   public void setFileType(FileType filetype) {
     this.filetype = filetype;
   }
 
+  /**
+   * Returns the FileType (basically the file name this report was read from).
+   */
   public FileType getFileType() {
     return filetype;
   }
@@ -2031,6 +1465,56 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   public long getTimestamp() {
     return timestamp;
+  }
+
+  /**
+   * Makes r a "wraparound" region, removing it as a normal region.
+   */
+  public void makeWrapper(Region r) {
+    removeRegion(r);
+    wrappers.put(r.getID(), r);
+  }
+
+  /**
+   * Returns a view of al "wraparound" regions.
+   */
+  public Map<CoordinateID, Region> wrappers() {
+    return Collections.unmodifiableMap(wrappers);
+  }
+
+  /**
+   * Returns a dummy region which may be used for units without region. This region should not be
+   * contained in {@link #regions()}.
+   */
+  public Region getNullRegion() {
+    if (nullRegion == null) {
+      nullRegion = MagellanFactory.createRegion(CoordinateID.getInvalid(), this);
+      nullRegion.setType(RegionType.unknown);
+    }
+    return nullRegion;
+  }
+
+  /**
+   * Returns a dummy faction which may be used for units without faction. This faction should not be
+   * contained in {@link #factions()}.
+   */
+  public Faction getNullFaction() {
+    if (nullFaction == null) {
+      nullFaction =
+          MagellanFactory.createFaction(EntityID.createEntityID(Integer.MIN_VALUE, base), this);
+    }
+    return nullFaction;
+  }
+
+  /**
+   * Returns a dummy region which may be used for units without region. This faction should not be
+   * contained in rules.{@link Rules#getRaces()}.
+   */
+  public Race getNullRace() {
+    if (nullRace == null) {
+      nullRace = new Race(StringID.create(Resources.get("unit.race.personen.name")));
+    }
+    return nullRace;
   }
 
 }

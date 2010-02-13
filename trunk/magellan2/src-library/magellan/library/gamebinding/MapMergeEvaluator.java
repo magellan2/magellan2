@@ -161,7 +161,7 @@ public class MapMergeEvaluator {
 
   public static Set<Integer> getLayers(GameData data) {
     Set<Integer> layers = new HashSet<Integer>(2);
-    for (Region region : data.regions().values()) {
+    for (Region region : data.getRegions()) {
       layers.add(Integer.valueOf(region.getCoordinate().getZ()));
     }
     return layers;

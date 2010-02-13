@@ -401,7 +401,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private Container getFactionPanel() {
     cmbFaction = new JComboBox();
 
-    for (Faction f : data.factions().values()) {
+    for (Faction f : data.getFactions()) {
       if (f.isPrivileged()) {
         cmbFaction.addItem(f);
       }
@@ -1265,7 +1265,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
       int allUnits = 0;
 
-      for (Unit u : data.units().values()) {
+      for (Unit u : data.getUnits()) {
         if (!(u instanceof TempUnit) && u.getFaction().equals(faction)) {
           allUnits++;
         }

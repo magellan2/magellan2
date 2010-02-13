@@ -724,6 +724,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @return Name of the race
    */
   public String getSimpleRaceName() {
+    if (race == null)
+      return Resources.get("unit.race.personen.name");
     return race.getName();
   }
 
@@ -872,7 +874,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * 
    * @throws IllegalArgumentException If <code>key</code> is negative
    */
-  public TempUnit createTemp(UnitID key) {
+  public TempUnit createTemp(GameData data, UnitID key) {
     if ((key).intValue() >= 0)
       throw new IllegalArgumentException(
           "Unit.createTemp(): cannot create temp unit with non-negative ID.");
@@ -912,8 +914,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
     // add to tempunits in gamedata
     if ((getRegion() != null) && (getRegion().getData() != null)) {
-      // FIXME unit shouldn't access getData()
-      getRegion().getData().tempUnits().put(t.getID(), t);
+      data.addTempUnit(t);
     } else {
       MagellanUnitImpl.log
           .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
@@ -925,7 +926,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Removes a temp unit with this unit as the parent completely from the game data.
    */
-  public void deleteTemp(ID key, GameData data) {
+  public void deleteTemp(UnitID key, GameData data) {
     final TempUnit t = (TempUnit) removeTemp(key);
 
     if (t != null) {
@@ -944,7 +945,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       t.clearCache();
 
       t.setParent(null);
-      data.tempUnits().remove(key);
+      data.removeTemp(key);
+      // data.tempUnits().remove(key);
 
       // enforce refreshing of unit relations in the whole region
       if (getRegion() != null) {
@@ -1975,12 +1977,17 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     for (UnitRelation r : getRelations()) {
       if (equals(r.origin) && (r.line >= from)) {
         if (r instanceof InterUnitRelation) {
-          if (((InterUnitRelation) r).target != null) {
+          InterUnitRelation ir = (InterUnitRelation) r;
+          if (ir.target != null) {
             // remove relations in target units
-            if (((InterUnitRelation) r).target.equals(this)) {
-              ((InterUnitRelation) r).source.removeRelation(r);
+            if (ir.target.equals(this)) {
+              if (ir.source != this) {
+                ir.source.removeRelation(r);
+              }
             } else {
-              ((InterUnitRelation) r).target.removeRelation(r);
+              if (ir.target != this) {
+                ir.target.removeRelation(r);
+              }
             }
           }
         } else {
@@ -2033,7 +2040,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
     invalidateCache();
     removeRelationsOriginatingFromUs(from);
-    // FIXME shouldn't access GameSpecificlike this
+    // FIXME shouldn't access GameSpecific like this
     addAndSpreadRelations(getRegion().getData().getGameSpecificStuff().getRelationFactory()
         .createRelations(this, from));
   }
@@ -2245,8 +2252,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
-  public int extractTempUnits(int tempSortIndex) {
-    return extractTempUnits(tempSortIndex, Locales.getOrderLocale());
+  public int extractTempUnits(GameData data, int tempSortIndex) {
+    return extractTempUnits(data, tempSortIndex, Locales.getOrderLocale());
   }
 
   /**
@@ -2259,7 +2266,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
-  public int extractTempUnits(int tempSortIndex, Locale locale) {
+  public int extractTempUnits(GameData data, int tempSortIndex, Locale locale) {
     if (!ordersAreNull()) {
       TempUnit tempUnit = null;
 
@@ -2282,7 +2289,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
                 final UnitID orderTempID = UnitID.createUnitID(idInt * -1, base);
 
                 if (getRegion() == null || getRegion().getUnit(orderTempID) == null) {
-                  tempUnit = createTemp(orderTempID);
+                  tempUnit = createTemp(data, orderTempID);
                   tempUnit.setSortIndex(++tempSortIndex);
                   cmdIterator.remove();
                   token = ct.getNextToken();

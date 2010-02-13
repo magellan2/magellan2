@@ -197,7 +197,7 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
    * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {
-    int i = e.getGameData().regions().size();
+    int i = e.getGameData().getRegions().size();
     if (i > 0) {
       setEnabled(true);
     } else {

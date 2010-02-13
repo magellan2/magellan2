@@ -89,8 +89,7 @@ public class IslandContextMenu extends JPopupMenu {
         for (Region r : island.regions()) {
           r.setIsland(null);
         }
-        data.islands().remove(island);
-
+        data.removeIsland(island.getID());
       }
     }
     if (changed) {

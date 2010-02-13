@@ -136,7 +136,8 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MOVE), " "));
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NUMBER), " "));
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_OPTION), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD), " "));
+    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD),
+        " \"\"", Completion.DEFAULT_PRIORITY, 1));
 
     if (hasSkill(getUnit(), EresseaConstants.S_KRAEUTERKUNDE, 6)) {
       addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PLANT), " "));

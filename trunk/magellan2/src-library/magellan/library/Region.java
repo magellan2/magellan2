@@ -13,11 +13,18 @@ import java.util.Map;
 
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
+import magellan.library.utils.Direction;
 
 /**
  * Represents a region of a report.
  */
 public interface Region extends UnitContainer {
+
+  static final String VIS_STR_NEIGHBOUR = "neighbour";
+  static final String VIS_STR_LIGHTHOUSE = "lighthouse";
+  static final String VIS_STR_TRAVEL = "travel";
+
+  static final String VIS_STR_WRAP = "wrap";
 
   /**
    * 0..very poor - no info (->visibility=null)<br />
@@ -26,36 +33,119 @@ public interface Region extends UnitContainer {
    * 3..travel<br />
    * 4..qualified unit in region (->visibility=null)
    */
-  public enum Visibility {
+  public static class Visibility {
+
+    // as enum:
+    // /**
+    // * ..very poor - no info (->visibility=null)<br />
+    // */
+    // NULL,
+    // // /**
+    // // * ..for toroidal worlds
+    // // */
+    // // WRAP,
+    // /**
+    // * ..neighbour
+    // */
+    // NEIGHBOR,
+    // /**
+    // * ..lighthouse
+    // */
+    // LIGHTHOUSE,
+    // /**
+    // * ..travel
+    // */
+    // TRAVEL,
+    // /**
+    // * ..qualified unit in region (->visibility=null)
+    // */
+    // UNIT;
+
+    // as class:
+    private int vis;
+    private String name;
+
+    protected Visibility(int vis, String name) {
+      this.vis = vis;
+      this.name = name;
+    }
+
     /**
      * 0..very poor - no info (->visibility=null)<br />
      */
-    NULL,
+    public static final Visibility NULL = new Visibility(0, "NULL");
     /**
      * 1..neighbour
      */
-    NEIGHBOR,
+    public static final Visibility NEIGHBOR = new Visibility(1, "NEIGHBOR");
     /**
      * 2..lighthouse
      */
-    LIGHTHOUSE,
+    public static final Visibility LIGHTHOUSE = new Visibility(2, "LIGHTHOUSE");
     /**
      * 3..travel
      */
-    TRAVEL,
+    public static final Visibility TRAVEL = new Visibility(3, "TRAVEL");
     /**
      * 4..qualified unit in region (->visibility=null)
      */
-    UNIT;
+    public static final Visibility UNIT = new Visibility(4, "UNIT");
+    /**
+     * 5..for toroidal worlds
+     */
+    public static final Visibility WRAP = new Visibility(5, "WRAP");
+
+    protected int ordinal() {
+      return vis;
+    }
 
     /**
      * Returns the greater of the two visibilities. The order of visibilities is
-     * <code>UNIT > TRAVEL > LIGHTHOUSE > NEIGHBOR > NULL </code>.
+     * <code>UNIT > TRAVEL > LIGHTHOUSE > NEIGHBOR > WRAP > NULL </code>.
      */
     public static Visibility getMax(Visibility vis1, Visibility vis2) {
       return vis1.ordinal() >= vis2.ordinal() ? vis1 : vis2;
     }
 
+    /**
+     * Returns <code>true</code> if <code>this</code> is at least <code>other</code>.
+     */
+    public boolean greaterEqual(Visibility other) {
+      return getMax(this, other) == this;
+    }
+
+    /**
+     * Returns <code>true</code> if <code>other</code> is at least <code>this</code>.
+     */
+    public boolean lessEqual(Visibility other) {
+      return getMax(this, other) == other;
+    }
+
+    /**
+     * Returns <code>true</code> if <code>other</code> is more than <code>this</code>.
+     */
+    public boolean lessThan(Visibility other) {
+      return getMax(this, other) != this;
+    }
+
+    /**
+     * Returns <code>true</code> if <code>this</code> is at least <code>other</code>.
+     */
+    public boolean greaterThan(Visibility other) {
+      return getMax(this, other) != other;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+      return name;
+    }
+    // @Override
+    // public int compareTo(Visibility other) {
+    //
+    // }
   }
 
   /**
@@ -356,7 +446,9 @@ public interface Region extends UnitContainer {
   public CoordinateID getCoordinate();
 
   /**
-   * A synonym of {@link #getCoordinate()}.
+   * A synonym of {@link #getCoordinate()}. Regions are identified by their Coordinate, not by their
+   * region ID. This has historic reasons, but there could now also be multiple regions with the
+   * same region id.
    * 
    * @see magellan.library.Identifiable#getID()
    */
@@ -401,15 +493,41 @@ public interface Region extends UnitContainer {
   /**
    * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If <tt>neighbours</tt>
    * is null they will be evaluated.
+   * 
+   * @throws IllegalArgumentException if one of the neighbours doesn't exist in the data.
+   * @deprecated Use {@link #setNeighbors(Map)}
    */
+  @Deprecated
   public void setNeighbours(Collection<CoordinateID> neighbours);
 
   /**
-   * returns a collection of ids for reachable neighbours. This may be set by setNeighbours() if
+   * Sets the collection of ids for reachable regions to <tt>neighbors</tt>. If <tt>neighbors</tt>
+   * is null they will be evaluated from Coordinate neighbors.
+   */
+  public void setNeighbors(Map<Direction, Region> neighbors);
+
+  /**
+   * Adds a neighbor in the specified direction.
+   * 
+   * @return The old neighbor in this direction, if there was one, otherwise <code>null</code>.
+   */
+  public Region addNeighbor(Direction dir, Region newNeighbor);
+
+  /**
+   * Returns a collection of ids for reachable neighbours. This may be set by setNeighbours() if
    * neighbours is null it will be calculated from the game data). This function may be necessary
    * for new xml reports.
+   * 
+   * @deprecated Use {@link #getNeighbors()}.
    */
+  @Deprecated
   public Collection<CoordinateID> getNeighbours();
+
+  /**
+   * Returns a map for reachable neighbors. If the neighbors have not been set by setNeighbors(), it
+   * will be calculated from the game data).
+   */
+  public Map<Direction, Region> getNeighbors();
 
   /**
    * @return the ozeanWithCoast
@@ -940,12 +1058,14 @@ public interface Region extends UnitContainer {
   public void setCoastBitMap(Integer bitMap);
 
   /**
-   * Returns the unique regionID generated by the eressea-server used at first for merging
+   * Returns the unique regionID generated by the eressea-server. Note that this is no longer
+   * necessarily unique, due to wrap around effects!
    */
   public long getUID();
 
   /**
-   * sets the given long value as the unique regionID
+   * Sets the given long value as the unique regionID. Note that this is no longer necessarily
+   * unique, due to wrap around effects!
    */
   public void setUID(long uID);
 

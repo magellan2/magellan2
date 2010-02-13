@@ -24,9 +24,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Properties;
 
 import javax.swing.JButton;
@@ -176,7 +176,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
    * 
    */
   private Container getFactionPanel() {
-    factions = new LinkedList<Faction>(data.factions().values());
+    factions = new LinkedList<Faction>(data.getFactions());
 
     String sortByTrustLevel = settings.getProperty("FactionStatsDialog.SortByTrustLevel", "true");
 
@@ -278,8 +278,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
           victims.add((Faction) value);
         }
 
-        for (ListIterator<Faction> iter = (ListIterator<Faction>) victims.iterator(); iter
-            .hasNext();) {
+        for (Iterator<Faction> iter = victims.iterator(); iter.hasNext();) {
           Faction f = iter.next();
           boolean veto = false;
 
@@ -293,7 +292,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
           }
 
           if (!veto) {
-            for (Faction dummy : data.factions().values()) {
+            for (Faction dummy : data.getFactions()) {
               // let's check, if one faction outside the selection has an alliance with this
               // faction. If so, we should NOT delete the faction.
               if ((dummy.units().size() > 0) && !victims.contains(dummy)
@@ -326,7 +325,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
         if (victims.size() > 0) {
           for (Faction f : victims) {
-            data.factions().remove(f.getID());
+            data.removeFaction(f.getID());
           }
 
           // should notify game data listeners here
@@ -559,7 +558,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
   public void gameDataChanged(GameDataEvent e) {
     Object oldSelection = lstFaction.getSelectedValue();
     data = e.getGameData();
-    factions = new LinkedList<Faction>(data.factions().values());
+    factions = new LinkedList<Faction>(data.getFactions());
 
     // sort factions
     Collections.sort(factions, FactionStatsDialog.factionTrustComparator);

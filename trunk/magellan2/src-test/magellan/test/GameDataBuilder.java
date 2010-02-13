@@ -115,8 +115,8 @@ public class GameDataBuilder {
   public GameData createSimpleGameData(int round, boolean addUnit) throws Exception {
     final GameData data = createSimplestGameData(round, addUnit, false);
 
-    if (data.units().size() > 0) {
-      final Unit unit = data.units().values().iterator().next();
+    if (data.getUnits().size() > 0) {
+      final Unit unit = data.getUnits().iterator().next();
 
       addSkill(unit, "Hiebwaffen", 4, 3, true); // Hiebwaffen 4 (+3)
       addSkill(unit, "Segeln", -1, -3, false); // Segeln - (-3)
@@ -173,8 +173,8 @@ public class GameDataBuilder {
   }
 
   public Unit addUnit(GameData data, String name, Region region) {
-    final String number = "g" + (data.units().size() + 1);
-    final Faction faction = data.factions().values().iterator().next();
+    final String number = "g" + (data.getUnits().size() + 1);
+    final Faction faction = data.getFactions().iterator().next();
     return addUnit(data, number, name, faction, region);
   }
 
@@ -252,7 +252,7 @@ public class GameDataBuilder {
   }
 
   public static void addSpells(GameData data) {
-    Unit mage = data.units().values().iterator().next();
+    Unit mage = data.getUnits().iterator().next();
     Map<ID, Spell> spellMap = new HashMap<ID, Spell>();
     IntegerID id = IntegerID.create(999);
     SpellBuilder spell = new SpellBuilder(id, data);

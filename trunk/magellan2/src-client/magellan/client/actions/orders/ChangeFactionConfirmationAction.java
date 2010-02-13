@@ -87,11 +87,11 @@ public class ChangeFactionConfirmationAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(java.awt.event.ActionEvent e) {
-    Collection<Unit> units = null;
+    Collection<? extends Unit> units = null;
 
     if (faction == null) {
-      if ((client.getData() != null) && (client.getData().units() != null)) {
-        units = client.getData().units().values();
+      if ((client.getData() != null) && (client.getData().getUnits() != null)) {
+        units = client.getData().getUnits();
       }
     } else {
       units = faction.units();
@@ -119,7 +119,7 @@ public class ChangeFactionConfirmationAction extends MenuAction {
       }
 
       client.getDispatcher().fire(
-          new OrderConfirmEvent(this, (faction == null) ? client.getData().units().values()
+          new OrderConfirmEvent(this, (faction == null) ? client.getData().getUnits()
               : faction.units()));
     }
   }

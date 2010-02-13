@@ -26,6 +26,7 @@ package magellan.library.utils;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.Properties;
@@ -33,7 +34,10 @@ import java.util.Properties;
 import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
 import magellan.library.CoordinateID;
+import magellan.library.GameData;
+import magellan.library.Region;
 import magellan.library.utils.logging.Logger;
+import magellan.test.GameDataBuilder;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -111,6 +115,45 @@ public class DirectionTest {
         .create(1, 1)));
     assertSame(Direction.INVALID, Direction.toDirection(CoordinateID.create(0, 0), CoordinateID
         .create(1, 0, 1)));
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.library.utils.Direction#toDirection(magellan.library.Region, magellan.library.Region)}
+   * .
+   */
+  @Test
+  public void testToDirectionRegionRegion() {
+    GameDataBuilder builder = (new GameDataBuilder());
+    GameData data = null;
+    try {
+      data = builder.createSimplestGameData();
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail();
+    }
+    if (data == null) {
+      fail();
+      return;
+    }
+    Region r0 = data.getRegions().iterator().next();
+    Region r1 = builder.addRegion(data, "1 0", "Ebene", "Ebene", 2);
+    r1.setUID(1234);
+    data.addRegion(r1);
+    Region r2 = builder.addRegion(data, "5 0", "Wrapper", "Ebene", 3);
+    r2.setUID(12345);
+    data.addRegion(r2);
+
+    r0.addNeighbor(Direction.W, r2);
+    r2.addNeighbor(Direction.E, r0);
+
+    data.rules.getGameSpecificStuff().postProcess(data);
+
+    assertSame(Direction.E, Direction.toDirection(r0, r1));
+    assertSame(Direction.W, Direction.toDirection(r1, r0));
+    assertSame(Direction.E, Direction.toDirection(r2, r0));
+    assertSame(Direction.W, Direction.toDirection(r0, r2));
+    assertSame(Direction.INVALID, Direction.toDirection(r1, r2));
   }
 
   /**
@@ -337,4 +380,34 @@ public class DirectionTest {
         Direction.SW, Direction.W }, Direction.getDirections().toArray());
   }
 
+  /**
+   * Test method for {@link Direction#add(int)}.
+   */
+  @Test
+  public void testAdd() throws Exception {
+    assertSame(Direction.E, Direction.E.add(0));
+    assertSame(Direction.SE, Direction.E.add(1));
+    assertSame(Direction.SW, Direction.E.add(2));
+    assertSame(Direction.W, Direction.E.add(3));
+    assertSame(Direction.NW, Direction.E.add(4));
+    assertSame(Direction.NE, Direction.E.add(5));
+    assertSame(Direction.E, Direction.E.add(6));
+    assertSame(Direction.SE, Direction.E.add(7));
+    assertSame(Direction.NE, Direction.E.add(-1));
+    assertSame(Direction.W, Direction.E.add(-9));
+    assertSame(Direction.W, Direction.SE.add(2));
+    assertSame(Direction.NW, Direction.SW.add(2));
+    assertSame(Direction.NE, Direction.W.add(2));
+    assertSame(Direction.E, Direction.NW.add(2));
+    assertSame(Direction.SE, Direction.NE.add(2));
+    assertSame(Direction.SW, Direction.E.add(2));
+    assertSame(Direction.INVALID, Direction.INVALID.add(0));
+    assertSame(Direction.INVALID, Direction.INVALID.add(1));
+    assertSame(Direction.INVALID, Direction.INVALID.add(2));
+    assertSame(Direction.INVALID, Direction.INVALID.add(3));
+    assertSame(Direction.INVALID, Direction.INVALID.add(4));
+    assertSame(Direction.INVALID, Direction.INVALID.add(5));
+    assertSame(Direction.INVALID, Direction.INVALID.add(6));
+    assertSame(Direction.INVALID, Direction.INVALID.add(-2));
+  }
 }

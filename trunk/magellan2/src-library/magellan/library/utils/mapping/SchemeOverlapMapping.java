@@ -75,7 +75,7 @@ public class SchemeOverlapMapping implements LevelMapping {
     Map<CoordinateID, Collection<Region>> astralRegions =
         new HashMap<CoordinateID, Collection<Region>>(0);
     if (data != null) {
-      for (Region region : data.regions().values()) {
+      for (Region region : data.getRegions()) {
         if (region.getCoordinate().getZ() == astralLevel) {
           for (Scheme scheme : region.schemes()) {
             CoordinateID coord = scheme.getCoordinate();

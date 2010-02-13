@@ -273,7 +273,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
     if (cmbFactions != null) {
       cmbFactions.removeAllItems();
-      for (Faction f : data.factions().values()) {
+      for (Faction f : data.getFactions()) {
         if (f.isPrivileged()) {
           cmbFactions.addItem(f);
         }
@@ -520,7 +520,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     cmbFactions = new JComboBox();
     lblFactions.setLabelFor(cmbFactions);
 
-    for (Faction f : data.factions().values()) {
+    for (Faction f : data.getFactions()) {
       if (f.isPrivileged()) {
         cmbFactions.addItem(f);
       }

@@ -2104,7 +2104,7 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       if (shallComplete(token, t)) {
-        getCompleter().cmpltNach();
+        getCompleter().cmpltNachDirection();
       }
       return retVal;
     }
@@ -2625,7 +2625,7 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       if (shallComplete(token, t)) {
-        getCompleter().cmpltRoute();
+        getCompleter().cmpltRouteDirection();
       }
       return retVal;
     }

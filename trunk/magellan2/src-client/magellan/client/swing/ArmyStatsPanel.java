@@ -336,7 +336,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
     } else if (data != null) {
       int minTrust = 255;
 
-      for (Faction f : data.factions().values()) {
+      for (Faction f : data.getFactions()) {
         if (f.isPrivileged()) {
           if ((f.getAllies() != null) && f.getAllies().containsKey(fac.getID())) {
             Alliance a = f.getAllies().get(fac.getID());
@@ -513,10 +513,10 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
     if ((regions != null) && (regions.size() > 0)) {
       allRegions = new ArrayList<Region>(regions);
     } else {
-      allRegions = new ArrayList<Region>(data.regions().values());
+      allRegions = new ArrayList<Region>(data.getRegions());
     }
 
-    List<Island> islList = new ArrayList<Island>(data.islands().values());
+    List<Island> islList = new ArrayList<Island>(data.getIslands());
     Collections.sort(islList, nameComp);
 
     Iterator<Island> islIt = islList.iterator();

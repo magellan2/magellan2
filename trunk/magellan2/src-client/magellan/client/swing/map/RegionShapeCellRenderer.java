@@ -1033,10 +1033,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     GameData data = e.getGameData();
 
     // check for new factions
-    Iterator<Faction> fIt = data.factions().values().iterator();
-
-    while (fIt.hasNext()) {
-      Faction f = fIt.next();
+    for (Faction f : data.getFactions()) {
 
       // generates a new one if not present
       if (f.getTrustLevel() <= Faction.TL_DEFAULT) {
@@ -1046,10 +1043,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       }
     }
 
-    Iterator<Region> rIt = data.regions().values().iterator();
-
-    while (rIt.hasNext()) {
-      Region r = rIt.next();
+    for (Region r : data.getRegions()) {
       getRegionTypeColor(r.getRegionType());
     }
 
@@ -1129,7 +1123,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
           if (data != null) {
             Faction f1 = null;
             Faction f2 = null;
-            Iterator<Faction> it = data.factions().values().iterator();
+            Iterator<? extends Faction> it = data.getFactions().iterator();
 
             while (it.hasNext() && ((f1 == null) || (f2 == null))) {
               Faction f = it.next();

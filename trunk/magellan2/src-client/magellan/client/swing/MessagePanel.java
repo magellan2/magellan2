@@ -156,13 +156,13 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
    * Shows the messages for the specified island.
    */
   public void show(Island i, DefaultMutableTreeNode parent) {
-    if (data.factions() == null)
+    if (data.getFactions() == null)
       return;
 
     // collect messages
     List<Message> sortedMessages = new LinkedList<Message>();
 
-    for (Faction f : data.factions().values()) {
+    for (Faction f : data.getFactions()) {
       if (f.getMessages() != null) {
         Iterator<Message> msgs = f.getMessages().iterator();
 
@@ -286,10 +286,10 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       }
     }
 
-    if (data.factions() != null) {
+    if (data.getFactions() != null) {
       List<Message> sortedMessages = new LinkedList<Message>();
 
-      for (Faction f : data.factions().values()) {
+      for (Faction f : data.getFactions()) {
         if (f.getMessages() != null) {
           Iterator<Message> msgs = f.getMessages().iterator();
 
@@ -476,8 +476,8 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       }
     }
 
-    if (data.factions() != null) {
-      for (Faction f : data.factions().values()) {
+    if (data.getFactions() != null) {
+      for (Faction f : data.getFactions()) {
         if (f.getMessages() != null) {
           Iterator<Message> msgs = f.getMessages().iterator();
 

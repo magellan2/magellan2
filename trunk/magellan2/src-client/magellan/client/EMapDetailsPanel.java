@@ -3142,7 +3142,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       DefaultMutableTreeNode potionsNode =
           createSimpleNode(Resources.get("emapdetailspanel.node.potions"), "Alchemie");
       Skill alchSkill = u.getSkillMap().get(EresseaConstants.S_ALCHEMIE);
-      List<Potion> potions = new LinkedList<Potion>(data.potions().values());
+      List<Potion> potions = new LinkedList<Potion>(data.getPotions());
       Collections.sort(potions, new PotionLevelComparator(new NameComparator(null)));
 
       // we have after merging multiple potion-definitions within the CR
@@ -3188,7 +3188,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendUnitRegionResource(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     DefaultMutableTreeNode resourceNode = null;
-    if (!u.getRegion().resources().isEmpty()) {
+    if (u.getRegion() != null && !u.getRegion().resources().isEmpty()) {
       for (RegionResource res : u.getRegion().resources()) {
         ItemType resItemType = res.getType();
         if (resItemType != null && resItemType.getMakeSkill() != null) {
@@ -3287,7 +3287,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
     ItemType silver = data.rules.getItemType(EresseaConstants.I_USILVER);
     // Fiete: feature request...showing not only capacity for "good" items in region...
-    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", true)) {
+    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", true)
+        && u.getRegion() != null) {
       for (Item item : magellan.library.utils.Units.getContainerPrivilegedUnitItems(u.getRegion())) {
         ItemType type = item.getItemType();
 
@@ -3300,7 +3301,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
     }
 
-    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowSome", false)) {
+    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowSome", false)
+        && u.getRegion() != null) {
       for (Item item : magellan.library.utils.Units.getContainerAllUnitItems(u.getRegion())) {
         ItemType type = item.getItemType();
 
@@ -3319,7 +3321,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       TreeSet<ItemType> l = new TreeSet<ItemType>();
       // only use the items found in gamedata
       // without fancy merging, for all items should pe Translation present
-      for (Region r : getGameData().regions().values()) {
+      for (Region r : getGameData().getRegions()) {
         for (Item item : magellan.library.utils.Units.getContainerAllUnitItems(r)) {
           ItemType type = item.getItemType();
           l.add(type);
@@ -4629,6 +4631,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       fireObj = o;
     } else if (o instanceof PotionNodeWrapper) {
       fireObj = ((PotionNodeWrapper) o).getPotion();
+    } else if (o instanceof Scheme) {
+      fireObj = data.getRegion(((Scheme) o).getID());
     } else if (o instanceof String) {
       String s = (String) o;
 

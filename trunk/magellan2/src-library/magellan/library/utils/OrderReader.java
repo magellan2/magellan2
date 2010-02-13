@@ -25,7 +25,6 @@ import magellan.library.CompleteData;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
-import magellan.library.ID;
 import magellan.library.Region;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
@@ -61,14 +60,14 @@ public class OrderReader {
     }
 
     // clear the caches in game data
-    if (data.units() != null) {
-      for (Unit u : data.units().values()) {
+    if (data.getUnits() != null) {
+      for (Unit u : data.getUnits()) {
         u.clearCache();
       }
     }
 
-    if (data.regions() != null) {
-      for (Region uc : data.regions().values()) {
+    if (data.getRegions() != null) {
+      for (Region uc : data.getRegions()) {
         uc.clearCache();
       }
     }
@@ -118,6 +117,8 @@ public class OrderReader {
 
       line = stream.readLine();
     }
+
+    data.postProcess();
   }
 
   private void readFaction(EntityID id) throws IOException {
@@ -186,7 +187,7 @@ public class OrderReader {
       if (naechsterOrder.startsWith(token)) {
         /* turn orders into 'real' temp units */
         if (currentUnit != null) {
-          currentUnit.extractTempUnits(0, currentLocale);
+          currentUnit.extractTempUnits(data, 0, currentLocale);
         }
 
         break;
@@ -225,16 +226,17 @@ public class OrderReader {
 
           /* turn orders into 'real' temp units */
           if (currentUnit != null) {
-            currentUnit.extractTempUnits(0, currentLocale);
+            currentUnit.extractTempUnits(data, 0, currentLocale);
           }
 
           currentUnit = data.getUnit(unitID);
 
           if (currentUnit == null) {
-            currentUnit = MagellanFactory.createUnit(unitID);
-            currentUnit.setFaction(faction);
-
-            data.addUnit(currentUnit);
+            // do not add unknown units
+            // currentUnit = MagellanFactory.createUnit(unitID);
+            // currentUnit.setFaction(faction);
+            //
+            // data.addUnit(currentUnit);
           } else {
             if (currentUnit.isOrdersConfirmed() && doNotOverwriteConfirmedOrders) {
               // we have a unit with confirmed orders and no OK for
@@ -246,13 +248,13 @@ public class OrderReader {
               /*
                * the unit already exists so delete all its temp units
                */
-              Collection<ID> victimIDs = new LinkedList<ID>();
+              Collection<UnitID> victimIDs = new LinkedList<UnitID>();
 
               for (TempUnit tempUnit : currentUnit.tempUnits()) {
                 victimIDs.add((tempUnit).getID());
               }
 
-              for (ID id2 : victimIDs) {
+              for (UnitID id2 : victimIDs) {
                 currentUnit.deleteTemp(id2, data);
               }
             }

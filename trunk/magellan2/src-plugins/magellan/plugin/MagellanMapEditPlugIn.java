@@ -388,7 +388,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
       MagellanMapEditPlugIn.log.error("MapEdit runDelRegion with no region");
       return;
     }
-    Region rGone = data.regions().remove(r.getID());
+    Region rGone = data.removeRegion(r);
     if (rGone != null) {
       // ok..ist wech
       r = null;
@@ -446,7 +446,8 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
           workingRegion.setSortIndex(data.getMaxSortIndex());
           // name setzen ?
           // hinzu!
-          data.regions().put(workingRegion.getCoordinate(), workingRegion);
+          data.addRegion(workingRegion);
+          // data.regions().put(workingRegion.getCoordinate(), workingRegion);
         }
       }
     }

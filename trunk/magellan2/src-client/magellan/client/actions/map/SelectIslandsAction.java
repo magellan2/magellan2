@@ -43,7 +43,7 @@ public class SelectIslandsAction extends AbstractSelectionAction {
       if (c.getZ() == client.getLevel()) {
         getSelectedRegions().putAll(
             Islands.getIsland(client.getData().rules, client.getData().regions(), client.getData()
-                .regions().get(c)));
+                .getRegion(c)));
       }
     }
 

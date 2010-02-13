@@ -30,7 +30,6 @@ import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.OpenOrdersAccessory;
 import magellan.client.swing.ProgressBarUI;
-import magellan.library.CoordinateID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.io.file.FileType;
@@ -141,7 +140,10 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
         // client.getData()));
         // force a complete new init of the game data, using data.clone
         // using for that client.setOrigin...(Fiete)
-        client.setOrigin(CoordinateID.create(0, 0));
+        // client.setOrigin(CoordinateID.create(0, 0));
+
+        // TODO(stm) is this enough?
+        client.getDispatcher().fire(new GameDataEvent(this, client.getData()));
         ui.ready();
       }
     }).start();
@@ -152,7 +154,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
    * @see com.eressea.event.GameDataListener#gameDataChanged(com.eressea.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {
-    int i = e.getGameData().regions().size();
+    int i = e.getGameData().getRegions().size();
     if (i > 0) {
       setEnabled(true);
     } else {

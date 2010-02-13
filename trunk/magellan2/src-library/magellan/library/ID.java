@@ -14,11 +14,12 @@
 package magellan.library;
 
 /**
- * A general interface to ID objects conveying "uniqueness".
+ * A general interface to ID objects conveying "uniqueness". IDs should be (but are not required to
+ * be) immutable after construction.
  */
 public interface ID extends Comparable<Object>, Cloneable {
   /**
-   * DOCUMENT ME!
+   * Returns a String representation of the ID formatted in a user friendly manner.
    * 
    * @return a String representation of the ID formatted in a user friendly manner.
    */
@@ -26,7 +27,7 @@ public interface ID extends Comparable<Object>, Cloneable {
 
   /**
    * Returns a String representation of the ID formatted in a user friendly manner with a given
-   * seperator. Right now only Coordinate should implement this, all others should invoke
+   * separator. Right now only Coordinate should implement this, all others should invoke
    * toString()!
    * 
    * @return a String representation of the ID formatted in a user friendly manner.

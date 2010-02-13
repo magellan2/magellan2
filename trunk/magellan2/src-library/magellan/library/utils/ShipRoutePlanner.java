@@ -10,11 +10,9 @@ package magellan.library.utils;
 import java.awt.Component;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 
 import javax.swing.JOptionPane;
 
@@ -83,18 +81,9 @@ public class ShipRoutePlanner extends RoutePlanner {
     Collection<Region> coast = new LinkedList<Region>();
 
     try {
-      Map<CoordinateID, Region> regionMap = data.regions();
-      Iterator<Region> cIt = regionMap.values().iterator();
-
-      while (cIt.hasNext()) {
+      for (Region region : data.getRegions()) {
         try {
-          Region region = cIt.next();
-          Map<CoordinateID, Region> m =
-              Regions.getAllNeighbours(regionMap, region.getCoordinate(), 1, null);
-          Iterator<Region> cIt2 = m.values().iterator();
-
-          while (cIt2.hasNext()) {
-            Region r2 = cIt2.next();
+          for (Region r2 : region.getNeighbors().values()) {
 
             // if(oceans.values().contains(r2.getRegionType())) {
             if (r2.getRegionType().isOcean()) {
@@ -183,7 +172,7 @@ public class ShipRoutePlanner extends RoutePlanner {
       Direction returnDirection = Direction.INVALID;
       if (!lastRegion.getRegionType().isOcean() || !Regions.containsBuilding(lastRegion, harbour)) {
         Region preLastRegion = path.get(path.size() - 2);
-        returnDirection = Direction.toDirection(lastRegion.getID(), preLastRegion.getID());
+        returnDirection = Direction.toDirection(lastRegion, preLastRegion);
       }
       returnPath =
           Regions.planShipRoute(data, destination, returnDirection.getDir(), ship.getRegion()

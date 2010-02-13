@@ -102,7 +102,7 @@ public class UnitID extends EntityID {
 
       int i = (parentUnit.getID()).intValue();
 
-      while (data.tempUnits().get(UnitID.createUnitID(-i, data.base)) != null) {
+      while (data.getTempUnit(UnitID.createUnitID(-i, data.base)) != null) {
         i = UnitID.getNextDecimalID(i, data.base, true);
       }
 
@@ -111,7 +111,7 @@ public class UnitID extends EntityID {
       int i = data.getCurTempID();
       UnitID checkID = UnitID.createUnitID(-i, data.base);
 
-      while (data.tempUnits().get(checkID) != null) {
+      while (data.getTempUnit(checkID) != null) {
         boolean ascending =
             settings.getProperty("ClientPreferences.ascendingOrder", "true").equalsIgnoreCase(
                 "true");

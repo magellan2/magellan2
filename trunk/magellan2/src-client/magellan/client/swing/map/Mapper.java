@@ -146,6 +146,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   private boolean doDraggingSelect = false;
   private Object activeObject = null;
   private Region activeRegion = null;
+  private CoordinateID activeCoordinate = null;
   private Map<CoordinateID, Region> selectedRegions = new Hashtable<CoordinateID, Region>();
   private List<CoordinateID> pathRegions = new LinkedList<CoordinateID>();
   private boolean pathPersistence = false;
@@ -258,6 +259,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
               prevDragRegion = r;
             } else {
               activeRegion = r;
+              activeCoordinate = c;
               activeObject = r;
               dispatcher.fire(SelectionEvent.create(mapper, activeRegion));
               repaint();
@@ -329,7 +331,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        if (activeRegion == null)
+        if (activeCoordinate == null)
           return;
 
         CoordinateID translationCoord = null;
@@ -384,8 +386,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         }
 
         if (translationCoord != null) {
-          CoordinateID c = CoordinateID.create(activeRegion.getCoordinate());
-          activeRegion = data.getRegion(c.translate(translationCoord));
+          activeCoordinate = activeCoordinate.translate(translationCoord);
+          activeRegion = data.getRegion(activeCoordinate);
           data.setSelectedRegionCoordinates(null);
           dispatcher.fire(SelectionEvent.create(mapper, activeRegion));
           repaint();
@@ -561,6 +563,9 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     setPreferredSize(getSize());
     activeRegion = data.getActiveRegion();
+    if (activeRegion != null) {
+      activeCoordinate = activeRegion.getCoordinate();
+    }
     selectedRegions.clear();
 
     pathRegions.clear();
@@ -592,11 +597,10 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
       if (newRegion != null) {
         activeRegion = newRegion;
+        activeCoordinate = activeRegion.getCoordinate();
 
-        CoordinateID c = activeRegion.getCoordinate();
-
-        if (c.getZ() != showLevel) {
-          setLevel(c.getZ());
+        if (activeCoordinate.getZ() != showLevel) {
+          setLevel(activeCoordinate.getZ());
         }
       }
     }
@@ -729,6 +733,9 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         for (int x = xstart; x < xend; x++) {
           CoordinateID c = CoordinateID.create(x, y, upperLeft.getZ());
           Region r = data.getRegion(c);
+          if (r == null) {
+            r = data.wrappers().get(c);
+          }
 
           if (r != null) {
             main.add(r);
@@ -742,11 +749,12 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
      * FIX: Have to look at the level...
      */
     else {
-      Iterator<Region> it = data.regions().values().iterator();
-
-      while (it.hasNext()) {
-        Region r = it.next();
-
+      for (Region r : data.getRegions()) {
+        if (r.getCoordinate().getZ() == upperLeft.getZ()) {
+          main.add(r);
+        }
+      }
+      for (Region r : data.wrappers().values()) {
         if (r.getCoordinate().getZ() == upperLeft.getZ()) {
           main.add(r);
         }
@@ -1132,10 +1140,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     List<Integer> levels = new LinkedList<Integer>();
 
     if (data != null) {
-      Iterator<Region> iter = data.regions().values().iterator();
-
-      while (iter.hasNext()) {
-        CoordinateID c = iter.next().getCoordinate();
+      for (CoordinateID c : data.regions().keySet()) {
         Integer i = new Integer(c.getZ());
 
         if (levels.contains(i) == false) {
@@ -1331,10 +1336,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     Point upperLeft = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
     Point lowerRight = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
 
-    Iterator<Region> iter = data.regions().values().iterator();
-
-    while (iter.hasNext()) {
-      CoordinateID c = (iter.next()).getCoordinate();
+    for (CoordinateID c : data.regions().keySet()) {
 
       if (c.getZ() == showLevel) {
         int x = cellGeometry.getCellPositionX(c.getX(), c.getY());

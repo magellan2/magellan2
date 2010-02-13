@@ -46,7 +46,7 @@ public class ShipIDMapping implements DataMapping {
         || !fromData.getDate().equals(toData.getDate()))
       return null;
 
-    for (Region region : fromData.regions().values()) {
+    for (Region region : fromData.getRegions()) {
       if (region.getCoordinate().getZ() == level) {
         for (Ship ship : region.ships()) {
           Ship sameShip = toData.getShip(ship.getID());
@@ -57,8 +57,8 @@ public class ShipIDMapping implements DataMapping {
             if (sameRegion != null) {
               CoordinateID sameCoord = sameRegion.getCoordinate();
               if (sameCoord.getZ() == level)
-                return CoordinateID.create(sameCoord.getX() - region.getCoordinate().getX(), sameCoord.getY()
-                    - region.getCoordinate().getY(), level);
+                return CoordinateID.create(sameCoord.getX() - region.getCoordinate().getX(),
+                    sameCoord.getY() - region.getCoordinate().getY(), level);
             }
           }
         }

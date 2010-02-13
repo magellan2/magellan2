@@ -42,6 +42,7 @@ import magellan.library.Region.Visibility;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
+import magellan.library.utils.Direction;
 import magellan.library.utils.Regions;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
@@ -78,10 +79,13 @@ public class EresseaPostProcessor {
   public void postProcess(GameData data) {
     if (data == null)
       throw new NullPointerException();
+
+    resolveWraparound(data);
+
     cleanAstralSchemes(data);
     /* scan the messages for additional information */
-    if (data.factions() != null) {
-      for (Faction faction : data.factions().values()) {
+    if (data.getFactions() != null) {
+      for (Faction faction : data.getFactions()) {
 
         if (faction.getMessages() != null) {
           for (Message message : faction.getMessages()) {
@@ -173,30 +177,40 @@ public class EresseaPostProcessor {
     }
 
     // there can be dummy units (UnitContainer owners and such), find and remove these
-    if (data.units() != null) {
-      Collection<ID> dummyUnitIDs = new LinkedList<ID>();
+    if (data.getUnits() != null) {
+      Collection<UnitID> dummyUnitIDs = new LinkedList<UnitID>();
 
-      for (Unit unit : data.units().values()) {
+      for (Unit unit : data.getUnits()) {
         if (unit.getName() == null) {
           dummyUnitIDs.add(unit.getID());
+          unit.setName("???");
+        }
+        if (unit.getRegion() == null) {
+          unit.setRegion(data.getNullRegion());
+        }
+        if (unit.getFaction() == null) {
+          unit.setFaction(data.getNullFaction());
+        }
+        if (unit.getRace() == null) {
+          unit.setRace(data.getNullRace());
         }
       }
 
-      for (ID id : dummyUnitIDs) {
-        data.units().remove(id);
-      }
+      // for (UnitID id : dummyUnitIDs) {
+      // data.removeUnit(id);
+      // }
     }
 
     /*
      * retrieve the temp units mentioned in the orders and create them as TempUnit objects
      */
     int sortIndex = 0;
-    List<Unit> sortedUnits = new LinkedList<Unit>(data.units().values());
+    List<Unit> sortedUnits = new LinkedList<Unit>(data.getUnits());
     Collections.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
 
     for (Unit unit : sortedUnits) {
       unit.setSortIndex(sortIndex++);
-      sortIndex = unit.extractTempUnits(sortIndex);
+      sortIndex = unit.extractTempUnits(data, sortIndex);
     }
 
     /*
@@ -204,13 +218,13 @@ public class EresseaPostProcessor {
      * resources are not mentioned although we actually know that the resource is available with an
      * amount of 0. Resolve this ambiguity here:
      */
-    if ((data != null) && (data.regions() != null)) {
+    if ((data != null) && (data.getRegions() != null)) {
       /* ItemType sproutResourceID = */data.rules.getItemType("Schößlinge", true);
       /* ItemType treeResourceID = */data.rules.getItemType("Bäume", true);
       /* ItemType mallornSproutResourceID = */data.rules.getItemType("Mallornschößlinge", true);
       /* ItemType mallornTreeResourceID = */data.rules.getItemType("Mallorn", true);
 
-      for (Region region : data.regions().values()) {
+      for (Region region : data.getRegions()) {
         /*
          * first determine whether we know everything about this region
          */
@@ -255,28 +269,70 @@ public class EresseaPostProcessor {
     }
   }
 
+  private void resolveWraparound(GameData data) {
+    if (data.getRegions().size() == 0)
+      return;
+
+    Map<Long, Region> idMap = null;
+    idMap = setUpIDMap(data);
+    if (idMap == null)
+      return;
+
+    // find all regions with "wrap" as visibility string, update their neighbors and make themselves
+    // wrapping regions
+    Collection<Region> toDelete = new LinkedList<Region>();
+    for (Region wrappingRegion : data.getRegions()) {
+      if (Region.VIS_STR_WRAP.equals(wrappingRegion.getVisibilityString())) {
+        toDelete.add(wrappingRegion);
+        if (idMap.get(wrappingRegion.getUID()) == null) {
+          log.warn("wrapping region without actual region");
+          continue;
+        }
+        Map<Direction, Region> neighbors =
+            Regions.getCoordinateNeighbours(data.regions(), wrappingRegion.getCoordinate());
+        for (Direction d : neighbors.keySet()) {
+          neighbors.get(d).addNeighbor(d.add(3), idMap.get(wrappingRegion.getUID()));
+        }
+      }
+      wrappingRegion.getNeighbors();
+    }
+    for (Region r : toDelete) {
+      data.makeWrapper(r);
+    }
+  }
+
+  private Map<Long, Region> setUpIDMap(GameData data) {
+    Map<Long, Region> result = new HashMap<Long, Region>(data.getRegions().size() * 5 / 4 + 5, .8f);
+    // for each ID in the report, put at least one into the map. Prefer the one with lowest distance
+    for (Region r : data.getRegions()) {
+      Region old = result.get(r.getUID());
+      if (old == null || !Region.VIS_STR_WRAP.equals(r.getVisibilityString())) {
+        result.put(r.getUID(), r);
+      }
+    }
+    return result;
+  }
+
   /**
    * DOCUMENT-ME
    */
   public void postProcessAfterTrustlevelChange(GameData data) {
     // initialize fog-of-war cache (FIXME(pavkovic): Do it always?)
     // clear all fog-of-war caches
-    if (data.regions() != null) {
-      for (Region r : data.regions().values()) {
+    if (data.getRegions() != null) {
+      for (Region r : data.getRegions()) {
         r.setFogOfWar(-1);
       }
     }
 
     // intialize the fog-of-war cache for all regions that are covered by lighthouses
-    if (data.buildings() != null) {
+    if (data.getBuildings() != null) {
       BuildingType type = data.rules.getBuildingType(EresseaConstants.B_LIGHTHOUSE);
       RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
       Comparator<Unit> sortIndexComparator = new SortIndexComparator<Unit>(IDComparator.DEFAULT);
 
-      // FIXME(stm) broken, if a unit's faction's report was not added but the skill is still
-      // known...
       if (type != null) {
-        for (Building b : data.buildings().values()) {
+        for (Building b : data.getBuildings()) {
           if (type.equals(b.getType()) && (b.getSize() >= 10)) {
             int personCounter = 0;
             int perceptionSkillLevel = 0;
@@ -303,7 +359,9 @@ public class EresseaPostProcessor {
 
               for (Region r : regions.values()) {
                 if ((oceanType == null) || oceanType.equals(r.getType())) {
-                  r.setFogOfWar(0);
+                  if (r.getVisibility().greaterEqual(Visibility.LIGHTHOUSE)) {
+                    r.setFogOfWar(0);
+                  }
                 }
               }
             }
@@ -313,7 +371,7 @@ public class EresseaPostProcessor {
     }
 
     // intialize the fog-of-war cache for all regions where units or ships traveled through
-    for (Region r : data.regions().values()) {
+    for (Region r : data.getRegions()) {
       if (r.getTravelThru() != null) {
         initTravelThru(data, r, r.getTravelThru());
       }
@@ -363,14 +421,17 @@ public class EresseaPostProcessor {
 
   /**
    * Deletes the schemes of astral regions in the case one of the following inconsistencies is
-   * detected 1. more than 19 schemes per astral region 2. the region with the scheme coordinates
-   * has terrain ocean or firewall 3. layout, i.e. two scheme of the same astral region with a
-   * distance of >4 4. a scheme is seen from more than 2 astral regions Only the scheme of the
-   * affected astral regions are deleted the others will remain to allow a mapping of astral to real
-   * space. Not implemented: 5. global layout (similar alorithm as layout but normalizing all
-   * schemes into the area of one astral region before) -> nearly impossible to determine the wrong
-   * schemes 6. diferent scheme/region name of same coordinate -> may not be an wrong scheme, only
-   * outdated name.
+   * detected.<br />
+   * 1. more than 19 schemes per astral region<br />
+   * 2. the region with the scheme coordinates has terrain ocean or firewall<br />
+   * 3. layout, i.e. two scheme of the same astral region with a distance of >4<br />
+   * 4. a scheme is seen from more than 2 astral regions. Only the scheme of the affected astral
+   * regions are deleted the others will remain to allow a mapping of astral to real space.<br />
+   * Not implemented:<br />
+   * 5. global layout (similar algorithm as layout but normalizing all schemes into the area of one
+   * astral region before) -> nearly impossible to determine the wrong schemes<br />
+   * 6. different scheme/region name of same coordinate -> may not be an wrong scheme, only outdated
+   * name.
    * 
    * @param gd
    */

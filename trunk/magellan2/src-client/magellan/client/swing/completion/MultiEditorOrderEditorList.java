@@ -758,8 +758,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     settings.setProperty("OrderEditor.highlightSyntax", String.valueOf(bool));
 
     if (multiEditorLayout) {
-      if (data.units() != null) {
-        for (Unit u : data.units().values()) {
+      if (data.getUnits() != null) {
+        for (Unit u : data.getUnits()) {
           if (getEditor(u) != null) {
             getEditor(u).setUseSyntaxHighlighting(bool);
           }
@@ -786,8 +786,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
 
-      if (data.units() != null) {
-        for (Unit u : data.units().values()) {
+      if (data.getUnits() != null) {
+        for (Unit u : data.getUnits()) {
           if (getEditor(u) != null) {
             getEditor(u).setTokenColor(styleName, color);
           }
@@ -810,8 +810,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     if (multiEditorLayout) {
-      if (data.units() != null) {
-        for (Unit u : data.units().values()) {
+      if (data.getUnits() != null) {
+        for (Unit u : data.getUnits()) {
           if (getEditor(u) != null) {
             getEditor(u).setErrorBackround(c);
           }
@@ -840,8 +840,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     if (multiEditorLayout) {
-      if (data.units() != null) {
-        for (Unit u : data.units().values()) {
+      if (data.getUnits() != null) {
+        for (Unit u : data.getUnits()) {
           if (getEditor(u) != null) {
             if (!u.isOrdersConfirmed() && u != currentUnit) {
               getEditor(u).setBackground(c);
@@ -869,8 +869,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     if (multiEditorLayout) {
-      if (data.units() != null) {
-        for (Unit u : data.units().values()) {
+      if (data.getUnits() != null) {
+        for (Unit u : data.getUnits()) {
           if (getEditor(u) != null) {
             if (u.isOrdersConfirmed() && u != currentUnit) {
               getEditor(u).setBackground(c);
@@ -1922,7 +1922,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           .getProperty("MultiEditorOrderEditorList.ButtonPanel.ShowTempUnitDialog", "true")
           .equalsIgnoreCase("true")) {
         // don't show any dialogs, simply create the tempunit and finish.
-        TempUnit tempUnit = parentUnit.createTemp(id);
+        TempUnit tempUnit = parentUnit.createTemp(data, id);
         dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.CREATED));
         dispatcher.fire(SelectionEvent.create(this, tempUnit));
       } else {
@@ -1961,7 +1961,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
               UnitID checkID = UnitID.createUnitID(-realNewIDInt, data.base);
 
               if (data.tempUnits().get(checkID) == null) {
-                TempUnit tempUnit = parentUnit.createTemp(checkID);
+                TempUnit tempUnit = parentUnit.createTemp(data, checkID);
 
                 // Name
                 String name = dialog.getName();

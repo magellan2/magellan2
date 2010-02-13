@@ -199,8 +199,8 @@ public class TreeBuilder {
     if (data == null)
       return;
 
-    buildTree(rootNode, sortRegions(data.regions().values()), data.units().values(), regionNodes,
-        unitNodes, buildingNodes, shipNodes, unitComparator, activeAlliances, treeStructure, data);
+    buildTree(rootNode, sortRegions(data.getRegions()), data.getUnits(), regionNodes, unitNodes,
+        buildingNodes, shipNodes, unitComparator, activeAlliances, treeStructure, data);
   }
 
   /**
@@ -266,10 +266,11 @@ public class TreeBuilder {
 
     // add the homeless
     DefaultMutableTreeNode n =
-        new DefaultMutableTreeNode(Resources.get("emapoverviewpanel.node.regionlessunits"));
+        new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+            .get("emapoverviewpanel.node.regionlessunits"), "homeless"));
 
     for (Unit un : units) {
-      if (un.getRegion() == null) {
+      if (un.getRegion() == null || un.getRegion() == data.getNullRegion()) {
         n.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(un)));
       }
     }

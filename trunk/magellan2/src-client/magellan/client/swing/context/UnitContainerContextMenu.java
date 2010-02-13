@@ -291,11 +291,11 @@ public class UnitContainerContextMenu extends JPopupMenu {
 
       cp.add(new JLabel(Resources.get("addtoislanddialog.window.message")), c);
 
-      List<Island> islandList = new ArrayList<Island>(data.islands().size() + 2);
+      List<Island> islandList = new ArrayList<Island>(data.getIslands().size() + 2);
       newIsland.setName(Resources.get("addtoislanddialog.newisland.caption"));
 
       islandList.add(newIsland);
-      islandList.addAll(data.islands().values());
+      islandList.addAll(data.getIslands());
       islandBox = new JComboBox(islandList.toArray());
 
       c.gridx = 1;
@@ -345,6 +345,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
   }
 
   protected void addToIsland() {
+    // search free ID
     for (int i = 1; newIsland == null; ++i) {
       if (data.getIsland(IntegerID.create(i)) == null) {
         newIsland = MagellanFactory.createIsland(IntegerID.create(i), data);

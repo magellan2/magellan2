@@ -53,7 +53,7 @@ public class SavedTranslationsMapping implements DataMapping {
     // special handling for owner faction may be required
     // if not saved -> owner faction has 0,0 in this level
 
-    for (Faction faction : fromData.factions().values()) {
+    for (Faction faction : fromData.getFactions()) {
       EntityID fid = faction.getID();
       CoordinateID fromTrans = fromData.getCoordinateTranslation(fid, level);
       CoordinateID toTrans = toData.getCoordinateTranslation(fid, level);

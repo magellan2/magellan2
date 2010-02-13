@@ -125,8 +125,8 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
       regions.clear();
     }
 
-    if (data.regions() != null) {
-      for (Region r : data.regions().values()) {
+    if (data.getRegions() != null) {
+      for (Region r : data.getRegions()) {
         if (equals(r.getIsland())) {
           regions.put(r.getID(), r);
         }

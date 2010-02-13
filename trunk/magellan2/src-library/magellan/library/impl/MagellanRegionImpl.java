@@ -16,6 +16,7 @@ package magellan.library.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -46,6 +47,7 @@ import magellan.library.rules.CastleType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.UnitContainerType;
+import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
@@ -315,12 +317,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
         return Visibility.NULL;
     } else {
       // we have a visibility ... choose right int
-      if (visibility.equalsIgnoreCase("neighbour"))
+      if (visibility.equalsIgnoreCase(MagellanRegionImpl.VIS_STR_NEIGHBOUR))
         return Visibility.NEIGHBOR;
-      if (visibility.equalsIgnoreCase("lighthouse"))
+      if (visibility.equalsIgnoreCase(MagellanRegionImpl.VIS_STR_LIGHTHOUSE))
         return Visibility.LIGHTHOUSE;
-      if (visibility.equalsIgnoreCase("travel"))
+      if (visibility.equalsIgnoreCase(MagellanRegionImpl.VIS_STR_TRAVEL))
         return Visibility.TRAVEL;
+      if (visibility.equalsIgnoreCase(MagellanRegionImpl.VIS_STR_WRAP))
+        return Visibility.NULL;
     }
     return Visibility.NULL;
   }
@@ -344,20 +348,16 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @param vis
    */
   public void setVisibility(Visibility vis) {
-    switch (vis) {
-    case NULL:
-    case UNIT:
+    if (vis == Visibility.NULL || vis == Visibility.UNIT) {
       visibility = null;
-      break;
-    case NEIGHBOR:
-      visibility = "neighbour";
-      break;
-    case LIGHTHOUSE:
-      visibility = "lighthouse";
-      break;
-    case TRAVEL:
-      visibility = "travel";
-      break;
+    } else if (vis == Visibility.NEIGHBOR) {
+      visibility = MagellanRegionImpl.VIS_STR_NEIGHBOUR;
+    } else if (vis == Visibility.LIGHTHOUSE) {
+      visibility = MagellanRegionImpl.VIS_STR_LIGHTHOUSE;
+    } else if (vis == Visibility.TRAVEL) {
+      visibility = MagellanRegionImpl.VIS_STR_TRAVEL;
+    } else {
+      visibility = null;
     }
   }
 
@@ -1129,7 +1129,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       return super.getUnit(key);
   }
 
-  private Collection<CoordinateID> neighbours;
+  private Map<Direction, Region> neighbors;
 
   private Faction ownerFaction;
 
@@ -1138,35 +1138,83 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   private int mourning = -1;
 
   /**
-   * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If <tt>neighbours</tt>
-   * is null they will be evaluated.
+   * @see magellan.library.Region#setNeighbours(java.util.Collection)
+   * @throws IllegalArgumentException if one of the neighbours doesn't exist in the data.
+   * @deprecated Use {@link #setNeighbors(Map)}
    */
+  @Deprecated
   public void setNeighbours(Collection<CoordinateID> neighbours) {
-    this.neighbours = neighbours;
+    if (neighbors == null) {
+      this.neighbors = null;
+    } else {
+      HashMap<Direction, Region> newNeighbors = new HashMap<Direction, Region>();
+      for (CoordinateID id : neighbours) {
+        Direction dir = Direction.toDirection(this.getCoordinate(), id);
+        Region r = data.getRegion(id);
+        if (r == null)
+          throw new IllegalArgumentException("neighbor region doesn't exist");
+        newNeighbors.put(dir, r);
+      }
+      this.neighbors = newNeighbors;
+    }
   }
 
   /**
-   * returns a collection of ids for reachable neighbours. This may be set by setNeighbours() if
-   * neighbours is null it will be calculated from the game data). This function may be necessary
-   * for new xml reports.
+   * @see magellan.library.Region#setNeighbors(java.util.Map)
    */
-  public Collection<CoordinateID> getNeighbours() {
-    if (neighbours == null) {
-      neighbours = evaluateNeighbours();
+  public void setNeighbors(Map<Direction, Region> neighbors) {
+    if (neighbors == null) {
+      this.neighbors = null;
+    } else {
+      this.neighbors = new HashMap<Direction, Region>(neighbors);
     }
-
-    return neighbours;
   }
 
-  private Collection<CoordinateID> evaluateNeighbours() {
-    if ((getData() == null) || (getData().regions() == null))
+  /**
+   * Adds a neighbor in the specified direction.
+   */
+  public Region addNeighbor(Direction dir, Region newNeighbor) {
+    if (neighbors == null) {
+      neighbors = evaluateNeighbours();
+    }
+    return this.neighbors.put(dir, newNeighbor);
+  }
+
+  /**
+   * Returns a collection of ids for reachable neighbours. This may be set by setNeighbours() if
+   * neighbours is null it will be calculated from the game data). This function may be necessary
+   * for new xml reports.
+   * 
+   * @deprecated better use {@link #getNeighbors()}.
+   */
+  @Deprecated
+  public Collection<CoordinateID> getNeighbours() {
+    Collection<CoordinateID> result = new ArrayList<CoordinateID>();
+    for (Region r : getNeighbors().values()) {
+      result.add(r.getID());
+    }
+    return result;
+  }
+
+  /**
+   * @see magellan.library.Region#getNeighbors()
+   */
+  public Map<Direction, Region> getNeighbors() {
+    if (neighbors == null)
+      return evaluateNeighbours();
+
+    return Collections.unmodifiableMap(neighbors);
+  }
+
+  private Map<Direction, Region> evaluateNeighbours() {
+    if ((getData() == null) || (getData().getRegions() == null))
       return null;
 
-    Collection<CoordinateID> c =
-        Regions.getAllNeighbours(getData().regions(), getID(), 1, null).keySet();
-    c.remove(getID());
+    Map<Direction, Region> newNeighbors =
+        Regions.getCoordinateNeighbours(data.regions(), this.getID());
+    newNeighbors.remove(getID());
 
-    return c;
+    return newNeighbors;
   }
 
   /**
@@ -1185,15 +1233,15 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * calculates the OzeanWithCoast-value
    * 
-   * @return 1 if this region is ozean and has neighboring non-ozean regions
+   * @return 1 if this region is ocean and has neighboring non-ocean regions
    */
   private int calcOceanWithCoast() {
     // start only if we are a ozean region
     if (!getRegionType().isOcean())
       return 0;
     // run through the neighbors
-    for (CoordinateID checkRegionID : getNeighbours()) {
-      if (getData().getRegion(checkRegionID).getRegionType().isLand())
+    for (Region n : getNeighbors().values()) {
+      if (n.getRegionType().isLand())
         return 1;
     }
     return 0;

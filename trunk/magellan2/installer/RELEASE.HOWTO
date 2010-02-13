@@ -1,0 +1,8 @@
+Notwendige Schritte für ein Release (Stand Februar 2010)
+
+- Branch/Tag anlegen in svn-repository/tags/release/magellan2/vx.y.z
+- build.xml anpassen: neue Versionsnummer (VERSION.major, minor, sub)
+- installer/izpack-install.xml anpassen
+- RELASENOTES.txt anpassen
+- build.xml, target "distribute" ausführen
+- Version bei Sourceforge hochladen bzw. Automagie auf Thoralfs Server anpassen

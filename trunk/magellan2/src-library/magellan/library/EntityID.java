@@ -20,7 +20,7 @@ import magellan.library.utils.logging.Logger;
 public class EntityID extends IntegerID {
   private static final Logger log = Logger.getInstance(EntityID.class);
 
-  protected int radix = 10;
+  protected final int radix;
 
   /** a static cache to use this class as flyweight factory */
   private static Map<Integer, EntityID> idMap = new HashMap<Integer, EntityID>();

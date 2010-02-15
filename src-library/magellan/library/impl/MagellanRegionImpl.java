@@ -317,13 +317,13 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
         return Visibility.NULL;
     } else {
       // we have a visibility ... choose right int
-      if (visibility.equalsIgnoreCase(MagellanRegionImpl.VIS_STR_NEIGHBOUR))
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_NEIGHBOUR))
         return Visibility.NEIGHBOR;
-      if (visibility.equalsIgnoreCase(MagellanRegionImpl.VIS_STR_LIGHTHOUSE))
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_LIGHTHOUSE))
         return Visibility.LIGHTHOUSE;
-      if (visibility.equalsIgnoreCase(MagellanRegionImpl.VIS_STR_TRAVEL))
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_TRAVEL))
         return Visibility.TRAVEL;
-      if (visibility.equalsIgnoreCase(MagellanRegionImpl.VIS_STR_WRAP))
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_WRAP))
         return Visibility.NULL;
     }
     return Visibility.NULL;
@@ -351,11 +351,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (vis == Visibility.NULL || vis == Visibility.UNIT) {
       visibility = null;
     } else if (vis == Visibility.NEIGHBOR) {
-      visibility = MagellanRegionImpl.VIS_STR_NEIGHBOUR;
+      visibility = Region.VIS_STR_NEIGHBOUR;
     } else if (vis == Visibility.LIGHTHOUSE) {
-      visibility = MagellanRegionImpl.VIS_STR_LIGHTHOUSE;
+      visibility = Region.VIS_STR_LIGHTHOUSE;
     } else if (vis == Visibility.TRAVEL) {
-      visibility = MagellanRegionImpl.VIS_STR_TRAVEL;
+      visibility = Region.VIS_STR_TRAVEL;
     } else {
       visibility = null;
     }
@@ -1145,17 +1145,17 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   @Deprecated
   public void setNeighbours(Collection<CoordinateID> neighbours) {
     if (neighbors == null) {
-      this.neighbors = null;
+      neighbors = null;
     } else {
       HashMap<Direction, Region> newNeighbors = new HashMap<Direction, Region>();
       for (CoordinateID id : neighbours) {
-        Direction dir = Direction.toDirection(this.getCoordinate(), id);
+        Direction dir = Direction.toDirection(getCoordinate(), id);
         Region r = data.getRegion(id);
         if (r == null)
           throw new IllegalArgumentException("neighbor region doesn't exist");
         newNeighbors.put(dir, r);
       }
-      this.neighbors = newNeighbors;
+      neighbors = newNeighbors;
     }
   }
 
@@ -1177,7 +1177,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (neighbors == null) {
       neighbors = evaluateNeighbours();
     }
-    return this.neighbors.put(dir, newNeighbor);
+    return neighbors.put(dir, newNeighbor);
   }
 
   /**
@@ -1210,8 +1210,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if ((getData() == null) || (getData().getRegions() == null))
       return null;
 
-    Map<Direction, Region> newNeighbors =
-        Regions.getCoordinateNeighbours(data.regions(), this.getID());
+    Map<Direction, Region> newNeighbors = Regions.getCoordinateNeighbours(data.regions(), getID());
     newNeighbors.remove(getID());
 
     return newNeighbors;

@@ -60,12 +60,11 @@ public class Units {
      * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
      */
     public void gameDataChanged(GameDataEvent e) {
-      Units.log
-          .info("Units cache recalculated "
-              + Units.recount
-              + " times for "
-              + (Units.data != null && Units.data.getRegions() != null ? Units.data.getRegions().size()
-                  : "?") + " regions.");
+      Units.log.info("Units cache recalculated "
+          + Units.recount
+          + " times for "
+          + (Units.data != null && Units.data.getRegions() != null ? Units.data.getRegions().size()
+              : "?") + " regions.");
       Units.recount = 0;
       Units.data = e.getGameData();
       Units.containerPrivItems.clear();

@@ -86,7 +86,7 @@ public class CoordinateID implements ID {
   private CoordinateID(int x, int y) {
     this.x = x;
     this.y = y;
-    this.z = 0;
+    z = 0;
   }
 
   /**
@@ -102,9 +102,9 @@ public class CoordinateID implements ID {
    * Creates a new CoordinateID object.
    */
   private CoordinateID(CoordinateID c) {
-    this.x = c.x;
-    this.y = c.y;
-    this.z = c.z;
+    x = c.x;
+    y = c.y;
+    z = c.z;
   }
 
   /**

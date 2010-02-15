@@ -166,7 +166,8 @@ public class MapMergeEvaluator {
   }
 
   /**
-   * Calculates a mapping by comparing the {@link GameData#getLevelRelation(int, int)} from the two given reports.
+   * Calculates a mapping by comparing the {@link GameData#getLevelRelation(int, int)} from the two
+   * given reports.
    * 
    * @param fromData the first report
    * @param toData the second report

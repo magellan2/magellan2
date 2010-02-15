@@ -42,6 +42,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -413,8 +414,8 @@ public class FindDialog extends InternationalizedDataDialog implements
 
     // resultList.setCellRenderer(new IconListCellRenderer());
     JScrollPane scroller =
-        new JScrollPane(resultList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        new JScrollPane(resultList, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scroller.setBorder(new LineBorder(Color.black));
 
     JButton bookmarkResults = new JButton(Resources.get("finddialog.btn.bookmark"));

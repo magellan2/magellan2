@@ -58,6 +58,11 @@ public class CoordinateID implements ID {
       new CoordinateID(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
 
   /**
+   * The coordinate (0,0,0).
+   */
+  public static final CoordinateID ZERO = CoordinateID.create(0, 0);
+
+  /**
    * The x-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
    * this CoordinateID!
    */

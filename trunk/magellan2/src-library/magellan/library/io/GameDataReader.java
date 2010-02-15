@@ -22,7 +22,9 @@ import magellan.library.Rules;
 import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
 import magellan.library.utils.NullUserInterface;
+import magellan.library.utils.ReportMerger;
 import magellan.library.utils.UserInterface;
+import magellan.library.utils.ReportMerger.ReportTranslator;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -57,7 +59,14 @@ public class GameDataReader {
    * @throws IOException iff something went wrong while reading the file.
    */
   public GameData readGameData(FileType aFileType) throws IOException {
-    return readGameData(aFileType, CoordinateID.create(0, 0));
+    return readGameData(aFileType, CoordinateID.ZERO);
+  }
+
+  /** @deprecated Use {@link #readGameData(FileType, ReportTranslator)} */
+  @Deprecated
+  public GameData readGameData(FileType aFileType, CoordinateID newOrigin) throws IOException {
+    return readGameData(aFileType, new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID
+        .create(0, 0)));
   }
 
   /**
@@ -69,29 +78,40 @@ public class GameDataReader {
    * @return a GameData object read from the cr or xml file.
    * @throws IOException If an I/O error occurs
    */
-  public GameData readGameData(FileType aFileType, CoordinateID newOrigin) throws IOException {
+  public GameData readGameData(FileType aFileType, ReportMerger.ReportTranslator translator)
+      throws IOException {
     // a) read game name
     String gameName = GameNameReader.getGameName(aFileType);
 
     if (gameName == null)
       throw new IOException("Unable to determine game name of file " + aFileType);
 
-    return readGameData(aFileType, newOrigin, gameName);
+    return readGameData(aFileType, translator, gameName);
+  }
+
+  /**
+   * @deprecated
+   */
+  @Deprecated
+  public GameData readGameData(FileType aFileType, CoordinateID newOrigin, String gameName)
+      throws IOException {
+    return readGameData(aFileType, new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID
+        .create(0, 0)), gameName);
   }
 
   /**
    * Read a gamedata from a given File.
    * 
    * @param aFileType the filetype representing a cr or xml file.
-   * @param newOrigin the loaded report is translated by this coordinates.
+   * @param coordinateTranslator the loaded report is translated by this coordinates.
    * @param gameName
    * @return a GameData object read from the cr or xml file.
    * @throws IOException If an I/O error occurs
    */
-  public GameData readGameData(FileType aFileType, CoordinateID newOrigin, String gameName)
-      throws IOException {
+  public GameData readGameData(FileType aFileType,
+      ReportMerger.ReportTranslator coordinateTranslator, String gameName) throws IOException {
     if (aFileType.isXMLFile()) {
-      GameData data = readGameDataXML(aFileType, gameName, newOrigin);
+      GameData data = readGameDataXML(aFileType, gameName, coordinateTranslator);
 
       if (data != null) {
         data.postProcess();
@@ -109,7 +129,7 @@ public class GameDataReader {
        * treatment of different filetypes, hence we can simply say here
        * "all known cr types are treated the same" 20060917: Jonathan (Fiete)
        */
-      GameData data = readGameDataCR(aFileType, gameName, newOrigin);
+      GameData data = readGameDataCR(aFileType, gameName, coordinateTranslator);
 
       if (data != null) {
         data.postProcess();
@@ -131,8 +151,8 @@ public class GameDataReader {
   /**
    * Reads game data from a XML file
    */
-  protected GameData readGameDataXML(FileType aFileType, String aGameName, CoordinateID newOrigin)
-      throws IOException {
+  protected GameData readGameDataXML(FileType aFileType, String aGameName,
+      ReportTranslator coordinateTranslator) throws IOException {
     throw new IOException("Reading of xml files unfinished");
   }
 
@@ -140,7 +160,7 @@ public class GameDataReader {
    * Reads the game data from a CR file
    */
   protected GameData readGameDataCR(FileType aFileType, String aGameName) throws IOException {
-    return readGameDataCR(aFileType, aGameName, CoordinateID.create(0, 0));
+    return readGameDataCR(aFileType, aGameName, new ReportMerger.IdentityTranslator());
   }
 
   /**
@@ -148,12 +168,12 @@ public class GameDataReader {
    * 
    * @param aFileType The CR file
    * @param aGameName
-   * @param newOrigin the loaded report is translated by this coordinates.
+   * @param coordinateTranslator the loaded report is translated by this coordinates.
    * @return A new GameData object filled in with the information from the file.
    * @throws IOException If an I/O error occurs
    */
-  protected GameData readGameDataCR(FileType aFileType, String aGameName, CoordinateID newOrigin)
-      throws IOException {
+  protected GameData readGameDataCR(FileType aFileType, String aGameName,
+      ReportTranslator coordinateTranslator) throws IOException {
     GameData newData = createGameData(aGameName);
     newData.setFileType(aFileType);
 
@@ -161,7 +181,7 @@ public class GameDataReader {
 
     try {
       GameDataReader.log.info("Loading report " + aFileType.getName());
-      CRParser parser = new CRParser(ui, newOrigin);
+      CRParser parser = new CRParser(ui, coordinateTranslator);
       parser.read(reader, newData);
     } finally {
       try {

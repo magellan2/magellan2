@@ -48,8 +48,6 @@ import magellan.library.utils.mapping.TerrainMappingEvaluator;
 import magellan.library.utils.mapping.UnitIDMapping;
 
 /**
- * TODO This class must be commented
- * 
  * @author Ralf Duckstein
  * @version 1.1, 21.05.2008
  */
@@ -116,7 +114,7 @@ public class MapMergeEvaluator {
         }
       }
     }
-    // now add transitiv mappings
+    // now add transitive mappings
     if (otherLevels != null) {
       for (CoordinateID otherMapping : otherLevels) {
         CoordinateID mapping = getTransitivMapping(fromData, toData, level, otherMapping);
@@ -167,13 +165,24 @@ public class MapMergeEvaluator {
     return layers;
   }
 
+  /**
+   * Calculates a mapping by comparing the {@link GameData#getLevelRelation(int, int)} from the two given reports.
+   * 
+   * @param fromData the first report
+   * @param toData the second report
+   * @param layer the layer for which a translation is requested
+   * @param mapping a mapping of another layer of the two reports.
+   * @return A mapping of layer or <code>null</code> if none can be found.
+   */
   public final CoordinateID getTransitivMapping(GameData fromData, GameData toData, int layer,
       CoordinateID mapping) {
     // first chance
     LevelRelation fromLR = fromData.getLevelRelation(layer, mapping.getZ());
     LevelRelation toLR = toData.getLevelRelation(layer, mapping.getZ());
     if ((fromLR != null) && (toLR != null)) {
-      CoordinateID c = CoordinateID.create(mapping.getX() + fromLR.getX(), mapping.getY() + fromLR.getY(), mapping.getZ());
+      CoordinateID c =
+          CoordinateID.create(mapping.getX() + fromLR.getX(), mapping.getY() + fromLR.getY(),
+              mapping.getZ());
       CoordinateID cNew = toLR.getInverseRelatedCoordinate(c);
       if (cNew != null)
         return cNew;
@@ -185,7 +194,8 @@ public class MapMergeEvaluator {
     if ((fromLR != null) && (toLR != null)) {
       CoordinateID cNew = fromLR.getRelatedCoordinate(mapping);
       if (cNew != null)
-        return CoordinateID.create(cNew.getX() - toLR.getX(), cNew.getY() - toLR.getY(), cNew.getZ());
+        return CoordinateID.create(cNew.getX() - toLR.getX(), cNew.getY() - toLR.getY(), cNew
+            .getZ());
     }
 
     return null;

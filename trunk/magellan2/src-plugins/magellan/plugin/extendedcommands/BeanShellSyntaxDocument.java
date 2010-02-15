@@ -338,7 +338,7 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     }
   }
 
-  /*   * Does this line contain the end delimiter */
+  /*      * Does this line contain the end delimiter */
   private boolean endingMultiLineComment(String content, int startOffset, int endOffset)
       throws BadLocationException {
     int index = indexOf(content, getEndDelimiter(), startOffset);

@@ -31,6 +31,7 @@ import java.util.TreeSet;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -1630,8 +1631,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     tree.setCellRenderer(tr);
 
     JScrollPane treeScrollPane =
-        new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     treeScrollPane.setMinimumSize(new Dimension(100, 50));
 
     JPanel stats = new JPanel(new GridLayout(1, 1));

@@ -19,6 +19,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -58,6 +59,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
@@ -431,8 +433,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     });
 
     JScrollPane descScrollPane =
-        new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        new JScrollPane(description, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
     // ClearLook suggests to remove border
     descScrollPane.setBorder(null);
@@ -620,11 +622,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     orders.attachEditorManager(editor);
     editor.setCompleter(orders);
     shortCuts = new ArrayList<KeyStroke>(3);
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.CTRL_MASK));
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.ALT_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.CTRL_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.ALT_MASK));
 
     // toggle "limit make completion"
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
 
     // split pane combining top split pane and orders
 

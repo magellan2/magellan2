@@ -119,8 +119,8 @@ public class ChangeFactionConfirmationAction extends MenuAction {
       }
 
       client.getDispatcher().fire(
-          new OrderConfirmEvent(this, (faction == null) ? client.getData().getUnits()
-              : faction.units()));
+          new OrderConfirmEvent(this, (faction == null) ? client.getData().getUnits() : faction
+              .units()));
     }
   }
 

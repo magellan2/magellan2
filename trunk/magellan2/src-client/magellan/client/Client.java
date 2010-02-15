@@ -18,6 +18,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -164,7 +165,7 @@ import magellan.library.io.file.FileBackup;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.io.file.FileType.ReadOnlyException;
-import magellan.library.rules.EresseaDate;
+import magellan.library.rules.Date;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Locales;
 import magellan.library.utils.Log;
@@ -904,7 +905,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     bookmarks.setMnemonic(Resources.get("client.menu.bookmarks.mnemonic").charAt(0));
 
     JMenuItem toggle = new JMenuItem(Resources.get("client.menu.bookmarks.toggle.caption"));
-    toggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.CTRL_MASK));
+    toggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_MASK));
     toggle.addActionListener(new ToggleBookmarkAction());
     bookmarks.add(toggle);
 
@@ -918,7 +919,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     bookmarks.add(forward);
 
     JMenuItem backward = new JMenuItem(Resources.get("client.menu.bookmarks.backward.caption"));
-    backward.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.SHIFT_MASK));
+    backward.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_MASK));
     backward.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         bookmarkManager.jumpBackward();
@@ -1843,8 +1844,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (data.getDate() != null) {
       title.append(" - ").append(
           data.getDate().toString(
-              showStatusOverride ? EresseaDate.TYPE_SHORT : EresseaDate.TYPE_PHRASE_AND_SEASON))
-          .append(" (").append(data.getDate().getDate()).append(")");
+              showStatusOverride ? Date.TYPE_SHORT : Date.TYPE_PHRASE_AND_SEASON)).append(" (")
+          .append(data.getDate().getDate()).append(")");
     }
 
     if (!longTitle)

@@ -310,7 +310,8 @@ public class EresseaMessageRenderer implements MessageRenderer {
               rid = CoordinateID.create(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
             } else {
               rid =
-                  CoordinateID.create(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2]));
+                  CoordinateID.create(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]),
+                      Integer.parseInt(coords[2]));
             }
             Region r = gd.getRegion(rid);
             if (r != null) {

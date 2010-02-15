@@ -97,24 +97,18 @@ public class DirectionTest {
    */
   @Test
   public void testToDirectionCoordinateIDCoordinateID() {
-    assertSame(Direction.NW, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(
-        -1, 1)));
+    assertSame(Direction.NW, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(-1, 1)));
     assertSame(Direction.NW, Direction.toDirection(CoordinateID.create(0, 0, 1), CoordinateID
         .create(-1, 1, 1)));
-    assertSame(Direction.NE, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(
-        0, 1)));
-    assertSame(Direction.E, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(1,
-        0)));
-    assertSame(Direction.SE, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(
-        1, -1)));
-    assertSame(Direction.SW, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(
-        0, -1)));
-    assertSame(Direction.W, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(
-        -1, 0)));
+    assertSame(Direction.NE, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(0, 1)));
+    assertSame(Direction.E, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(1, 0)));
+    assertSame(Direction.SE, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(1, -1)));
+    assertSame(Direction.SW, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(0, -1)));
+    assertSame(Direction.W, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(-1, 0)));
     assertSame(Direction.INVALID, Direction.toDirection(CoordinateID.ZERO, CoordinateID
         .create(1, 1)));
-    assertSame(Direction.INVALID, Direction.toDirection(CoordinateID.ZERO, CoordinateID
-        .create(1, 0, 1)));
+    assertSame(Direction.INVALID, Direction.toDirection(CoordinateID.ZERO, CoordinateID.create(1,
+        0, 1)));
   }
 
   /**

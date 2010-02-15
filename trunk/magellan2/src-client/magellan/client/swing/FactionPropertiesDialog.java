@@ -308,8 +308,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     CoordinateID result = null;
     try {
       result =
-          CoordinateID.create(Integer.parseInt(tx.getText()), Integer.parseInt(ty.getText()), Integer
-              .parseInt(tz.getText()));
+          CoordinateID.create(Integer.parseInt(tx.getText()), Integer.parseInt(ty.getText()),
+              Integer.parseInt(tz.getText()));
     } catch (NumberFormatException e) {
       return null;
     }

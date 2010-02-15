@@ -240,7 +240,7 @@ public enum Direction {
     int x = 0;
     int y = 0;
 
-    switch (this.getDir()) {
+    switch (getDir()) {
     case DIR_NW:
       x = -1;
       y = 1;

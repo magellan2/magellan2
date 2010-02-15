@@ -111,28 +111,28 @@ public interface Region extends UnitContainer {
      * Returns <code>true</code> if <code>this</code> is at least <code>other</code>.
      */
     public boolean greaterEqual(Visibility other) {
-      return getMax(this, other) == this;
+      return Visibility.getMax(this, other) == this;
     }
 
     /**
      * Returns <code>true</code> if <code>other</code> is at least <code>this</code>.
      */
     public boolean lessEqual(Visibility other) {
-      return getMax(this, other) == other;
+      return Visibility.getMax(this, other) == other;
     }
 
     /**
      * Returns <code>true</code> if <code>other</code> is more than <code>this</code>.
      */
     public boolean lessThan(Visibility other) {
-      return getMax(this, other) != this;
+      return Visibility.getMax(this, other) != this;
     }
 
     /**
      * Returns <code>true</code> if <code>this</code> is at least <code>other</code>.
      */
     public boolean greaterThan(Visibility other) {
-      return getMax(this, other) != other;
+      return Visibility.getMax(this, other) != other;
     }
 
     /**

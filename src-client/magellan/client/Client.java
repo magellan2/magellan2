@@ -1598,7 +1598,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             client.getDispatcher().fire(SelectionEvent.create(client, activeRegion));
           } else {
             // suggestion by enno...if we have no active region but we have 0,0..center on 0,0
-            CoordinateID cID = CoordinateID.create(0, 0);
+            CoordinateID cID = CoordinateID.ZERO;
             activeRegion = data.getRegion(cID);
             if (activeRegion != null) {
               client.getDispatcher().fire(SelectionEvent.create(client, activeRegion));

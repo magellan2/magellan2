@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -42,23 +44,99 @@ public class ReportMerger extends Object {
   private static final Logger log = Logger.getInstance(ReportMerger.class);
 
   /**
-   * 
+   * An interface representing classes that read a report from a file.
    */
   public interface Loader {
     /**
-     * 
+     * Read a report from file.
      */
     public GameData load(File file);
   }
 
   /**
-   * 
+   * An interface representing classes that receive a GameData object (possibly assigning it to the
+   * Client).
    */
   public interface AssignData {
     /**
-     * 
+     * Do something with the given report
      */
-    public void assign(GameData _data);
+    public void assign(GameData data);
+  }
+
+  /**
+   * An interface for classes that transform coordinates. Possibly used by a report parser to
+   * translate a report.
+   */
+  public static interface ReportTranslator {
+    /**
+     * Return a coordinate related to c. Should be the inverse of
+     * {@link #inverseTransform(CoordinateID)}.
+     */
+    public CoordinateID transform(CoordinateID c);
+
+    /**
+     * Return a coordinate related to c. Should be the inverse of {@link #transform(CoordinateID)}.
+     */
+    public CoordinateID inverseTransform(CoordinateID c);
+  }
+
+  /**
+   * Returns the coordinates unchanged.
+   */
+  public static class IdentityTranslator implements ReportTranslator {
+
+    public CoordinateID inverseTransform(CoordinateID c) {
+      return c;
+    }
+
+    public CoordinateID transform(CoordinateID c) {
+      return c;
+    }
+
+  }
+
+  /**
+   * Translates coordinates in two levels by a given translation.
+   */
+  public static class TwoLevelTranslator implements ReportTranslator {
+
+    private CoordinateID bestTranslation;
+    private CoordinateID bestAstralTranslation;
+
+    /**
+     * @param bestTranslation
+     * @param bestAstralTranslation
+     */
+    public TwoLevelTranslator(CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
+      this.bestTranslation = bestTranslation;
+      this.bestAstralTranslation = bestAstralTranslation;
+    }
+
+    /**
+     * If c is in the layer of bestAstralTranslation, transform it by this value, if it's in
+     * bestTranslation's level, transform it by this one.
+     */
+    public CoordinateID transform(CoordinateID c) {
+      if (c.getZ() == bestTranslation.getZ())
+        return c.subtract(bestTranslation);
+      if (c.getZ() == bestAstralTranslation.getZ())
+        return c.subtract(bestTranslation);
+      return c;
+    }
+
+    /**
+     * If c is in the layer of bestAstralTranslation, transform it by this value, if it's in
+     * bestTranslation's level, transform it by this one.
+     */
+    public CoordinateID inverseTransform(CoordinateID c) {
+      if (c.getZ() == bestTranslation.getZ())
+        return c.translate(bestTranslation);
+      if (c.getZ() == bestAstralTranslation.getZ())
+        return c.translate(bestTranslation);
+      return c;
+    }
+
   }
 
   /**
@@ -374,72 +452,20 @@ public class ReportMerger extends Object {
      * We only break, if all reports, subsequently, have failed to merge.
      */
     try {
-      int currentReport = 0;
-      int iFailedConnectivity = 0;
-      int iMerged = 0;
-
-      while (true) {
-        if (!reports[currentReport].isMerged()) {
-          if (!mergeReport(reports[currentReport])) {
-            iFailedConnectivity++;
-          } else {
-            // a report has been successfully merged
-            // previously failed reports could now have a connection
-            iFailedConnectivity = 0;
-            iMerged++;
-          }
-        }
-
-        if ((iMerged + iFailedConnectivity) == reports.length) {
-          // all reports have either been merged or subsequently tried to be merged without success
-          break;
-        }
-
-        currentReport++;
-
-        // cycle through reports
-        if (currentReport >= reports.length) {
-          currentReport = 0;
-          iFailedConnectivity = 0;
-          iMerged = 0;
-          for (ReportCache r : reports) {
-            if (r.isMerged()) {
-              iMerged++;
-            }
-          }
-        }
-      }
+      int iFailedConnectivity = tryAllReports();
 
       // prepare failure message
       if (iFailedConnectivity > 0) {
-        String strMessage = Resources.get("util.reportmerger.msg.noconnection.text.1");
-
-        for (int i = 0; i < reports.length; i++) {
-          if (!reports[i].isMerged()) {
-            strMessage += reports[i].getFile().getName();
-
-            if ((i + 1) < reports.length) {
-              strMessage += ", ";
-            }
-          }
-        }
-
-        strMessage += Resources.get("util.reportmerger.msg.noconnection.text.2");
-
-        // ask to merge anyway
-        if (ui != null
-            && ui.confirm(strMessage, Resources.get("util.reportmerger.msg.confirmmerge.title"))) {
+        if (askToMergeAnyway()) {
           for (int i = 0; i < reports.length; i++) {
             if (!reports[i].isMerged()) {
               iProgress += 2;
               ui.setProgress(reports[i].getFile().getName() + " - "
                   + Resources.get("util.reportmerger.status.merging"), iProgress);
 
-              // data.mergeWith( reports[i].getData() );
               globalData = GameDataMerger.merge(globalData, reports[i].getData());
 
               reports[i].setMerged(true);
-
               reports[i].release();
             }
           }
@@ -450,13 +476,18 @@ public class ReportMerger extends Object {
       ui.showException("Exception while merging report", null, e);
     }
 
+    // inform user about memory problems
     if (globalData.outOfMemory) {
-      ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources
-          .get("client.msg.outofmemory.title"));
+      ui.showDialog((new JOptionPane(Resources.get("client.msg.outofmemory.text"),
+          JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
+          .get("client.msg.outofmemory.title")));
       ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
     }
     if (!MemoryManagment.isFreeMemory(globalData.estimateSize())) {
-      ui.confirm(Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"));
+      ui.showDialog((new JOptionPane(Resources.get("client.msg.lowmem.text"),
+          JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
+          .get("client.msg.lowmem.title")));
+      log.warn(Resources.get("client.msg.lowmem.text"));
     }
 
     if (ui != null) {
@@ -468,6 +499,69 @@ public class ReportMerger extends Object {
     }
 
     return globalData;
+  }
+
+  private boolean askToMergeAnyway() {
+    StringBuilder strMessage =
+        new StringBuilder(Resources.get("util.reportmerger.msg.noconnection.text.1"));
+
+    for (int i = 0; i < reports.length; i++) {
+      if (!reports[i].isMerged()) {
+        strMessage.append(reports[i].getFile().getName());
+
+        if (i < reports.length - 1) {
+          strMessage.append(", ");
+        }
+      }
+    }
+    strMessage.append(Resources.get("util.reportmerger.msg.noconnection.text.2"));
+
+    // ask to merge anyway
+    return ui != null
+        && ui.confirm(strMessage.toString(), Resources
+            .get("util.reportmerger.msg.confirmmerge.title"));
+  }
+
+  /**
+   * Try to merge the reports one by one and return number of failed reports.
+   */
+  private int tryAllReports() {
+    int iFailedConnectivity = 0;
+    int currentReport = 0;
+    int iMerged = 0;
+
+    while (true) {
+      if (!reports[currentReport].isMerged()) {
+        if (!mergeReport(reports[currentReport])) {
+          iFailedConnectivity++;
+        } else {
+          // a report has been successfully merged
+          // previously failed reports could now have a connection
+          iFailedConnectivity = 0;
+          iMerged++;
+        }
+      }
+
+      if ((iMerged + iFailedConnectivity) == reports.length) {
+        // all reports have either been merged or subsequently tried to be merged without success
+        break;
+      }
+
+      currentReport++;
+
+      // cycle through reports
+      if (currentReport >= reports.length) {
+        currentReport = 0;
+        iFailedConnectivity = 0;
+        iMerged = 0;
+        for (ReportCache r : reports) {
+          if (r.isMerged()) {
+            iMerged++;
+          }
+        }
+      }
+    }
+    return iFailedConnectivity;
   }
 
   /**
@@ -514,61 +608,13 @@ public class ReportMerger extends Object {
           + Resources.get("util.reportmerger.status.connecting"), iProgress);
     }
 
-    /***************************************************************************
-     * find best translation
-     */
-
-    MapMergeEvaluator mhelp = dataReport.getData().getGameSpecificStuff().getMapMergeEvaluator();
-    Collection<Score<CoordinateID>> translationList =
-        mhelp.getDataMappings(dataReport.getData(), newReport.getData(), 0);
-
-    // try to find a translation for the new report's owner faction in the
-    // global data's owner faction
-    Score<CoordinateID> savedTranslation = findSavedMapping(dataReport, newReport, 0);
-
     // decide, which translation to choose
-    Score<CoordinateID> bestTranslation = null;
-
-    if (interactive) {
-      bestTranslation = askTranslation(newReport, translationList, savedTranslation, 0);
-    } else {
-      bestTranslation = decideTranslation(newReport, translationList, savedTranslation, 0);
-    }
+    Score<CoordinateID> bestTranslation = findRealSpaceTranslation(newReport);
 
     if (bestTranslation != null) {
-      /*************************************************************************
-       * find best astral translation
-       */
-      Score<CoordinateID> bestAstralTranslation = null;
-      if (!newReport.hasAstralRegions()) {
-        bestAstralTranslation = new Score<CoordinateID>(CoordinateID.create(0, 0, 1), -1);
-      } else if (!dataReport.hasAstralRegions()) {
-        Collection<Score<CoordinateID>> empty = Collections.emptyList();
-        if (interactive) {
-          bestAstralTranslation = askTranslation(newReport, empty, null, 1);
-        } else {
-          bestAstralTranslation = decideTranslation(newReport, empty, null, 1);
-        }
-      } else {
+      Score<CoordinateID> bestAstralTranslation =
+          findAstralRSpaceTranslation(newReport, bestTranslation);
 
-        Collection<CoordinateID> otherLevels = new ArrayList<CoordinateID>(1);
-        otherLevels.add(bestTranslation.getKey());
-        Collection<Score<CoordinateID>> astralTranslationList =
-            mhelp.getDataMappings(dataReport.getData(), newReport.getData(), 1, otherLevels);
-
-        Score<CoordinateID> savedAstralTranslation = findSavedMapping(dataReport, newReport, 1);
-
-        if (interactive) {
-          bestAstralTranslation =
-              askTranslation(newReport, astralTranslationList, savedAstralTranslation, 1);
-        } else {
-          bestAstralTranslation =
-              decideTranslation(newReport, astralTranslationList, savedAstralTranslation, 1);
-        }
-      }
-      /***************************************************************************
-       * store translations
-       */
       if (bestAstralTranslation != null) {
         iProgress += 1;
         if (ui != null) {
@@ -576,100 +622,9 @@ public class ReportMerger extends Object {
               + Resources.get("util.reportmerger.status.translating"), iProgress);
         }
 
-        ReportMerger.log.info("Using this (real) translation: " + bestTranslation.getKey());
-        // store found translations
-        EntityID newReportOwner = newReport.getData().getOwnerFaction();
-        if (newReportOwner != null) {
-          if (globalData.getCoordinateTranslation(newReportOwner, 0) != null
-              && !globalData.getCoordinateTranslation(newReportOwner, 0).equals(
-                  bestTranslation.getKey())) {
-            ReportMerger.log.warn("old translation "
-                + globalData.getCoordinateTranslation(newReportOwner, 0)
-                + " inconsistent with new translation " + bestTranslation.getKey());
-          }
-          if (bestTranslation.getScore() >= 0) {
-            CoordinateID correct = newReport.getData().getCoordinateTranslation(newReportOwner, 0);
-            if (correct != null) {
-              correct =
-                  CoordinateID.create(bestTranslation.getKey().getX() + correct.getX(),
-                      bestTranslation.getKey().getY() + correct.getY(), 0);
-              globalData.setCoordinateTranslation(newReportOwner, correct);
-            }
-          }
-        }
+        storeTranslations(newReport, bestTranslation, bestAstralTranslation);
 
-        if (newReport.hasAstralRegions() && dataReport.hasAstralRegions()) {
-          ReportMerger.log.info("Using this astral translation: " + bestAstralTranslation.getKey());
-
-          if (newReportOwner != null) {
-            if (globalData.getCoordinateTranslation(newReportOwner, 1) != null
-                && !globalData.getCoordinateTranslation(newReportOwner, 1).equals(
-                    bestAstralTranslation.getKey())) {
-              ReportMerger.log.warn("old astral translation "
-                  + globalData.getCoordinateTranslation(newReportOwner, 1)
-                  + " inconsistent with new translation " + bestAstralTranslation.getKey());
-            }
-            if (bestAstralTranslation.getScore() >= 0) {
-              CoordinateID correct =
-                  newReport.getData().getCoordinateTranslation(newReportOwner, 1);
-              if (correct != null) {
-                correct =
-                    CoordinateID.create(bestAstralTranslation.getKey().getX() + correct.getX(),
-                        bestAstralTranslation.getKey().getY() + correct.getY(), 1);
-                globalData.setCoordinateTranslation(newReportOwner, correct);
-              }
-            }
-          }
-        }
-
-        /***************************************************************************
-         * translate new report
-         */
-        GameData clonedData = newReport.getData();
-        if (bestTranslation.getKey().getX() != 0 || bestTranslation.getKey().getY() != 0) {
-          try {
-            clonedData = (GameData) clonedData.clone(bestTranslation.getKey());
-            if (clonedData == null)
-              throw new NullPointerException();
-            if (clonedData.outOfMemory) {
-              ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources
-                  .get("client.msg.outofmemory.title"));
-              ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
-            }
-          } catch (CloneNotSupportedException e) {
-            ReportMerger.log.error(e);
-            throw new RuntimeException("problems while cloning", e);
-          }
-          if (!MemoryManagment.isFreeMemory(clonedData.estimateSize())) {
-            ui.confirm(Resources.get("client.msg.lowmem.text"), Resources
-                .get("client.msg.lowmem.title"));
-          }
-        } else {
-          ReportMerger.log.info("Level 0 : using untranslated new report - same origin");
-        }
-        if (bestAstralTranslation.getKey().getX() != 0
-            || bestAstralTranslation.getKey().getY() != 0) {
-          try {
-            clonedData = (GameData) clonedData.clone(bestAstralTranslation.getKey());
-            if (clonedData == null)
-              throw new RuntimeException("problems during cloning");
-            if (clonedData.outOfMemory) {
-              ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources
-                  .get("client.msg.outofmemory.title"));
-              ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
-            }
-            if (!MemoryManagment.isFreeMemory(clonedData.estimateSize())) {
-              ui.confirm(Resources.get("client.msg.lowmem.text"), Resources
-                  .get("client.msg.lowmem.title"));
-            }
-          } catch (CloneNotSupportedException e) {
-            ReportMerger.log.error(e);
-            throw new RuntimeException("problems while cloning", e);
-          }
-        } else {
-          ReportMerger.log
-              .info("Astral level : using untranslated new report - same origin or no Astral Regions");
-        }
+        GameData clonedData = translateReport(newReport, bestTranslation, bestAstralTranslation);
 
         /***************************************************************************
          * Merge the reports, finally!
@@ -698,6 +653,157 @@ public class ReportMerger extends Object {
 
     newReport.release();
     return newReport.isMerged();
+  }
+
+  /***************************************************************************
+   * translate new report
+   */
+  private GameData translateReport(ReportCache newReport, Score<CoordinateID> bestTranslation,
+      Score<CoordinateID> bestAstralTranslation) {
+    GameData clonedData = newReport.getData();
+    if (bestTranslation.getKey().getX() != 0 || bestTranslation.getKey().getY() != 0
+        || bestAstralTranslation.getKey().getX() != 0 || bestAstralTranslation.getKey().getY() != 0) {
+      try {
+        clonedData =
+            (GameData) clonedData.clone(new TwoLevelTranslator(bestTranslation.getKey(),
+                bestAstralTranslation.getKey()));
+        if (clonedData == null)
+          throw new RuntimeException("problems during cloning");
+        if (clonedData.outOfMemory) {
+          ui.showDialog((new JOptionPane(Resources.get("client.msg.outofmemory.text"),
+              JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
+              .get("client.msg.outofmemory.title")));
+          // ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources
+          // .get("client.msg.outofmemory.title"));
+          ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
+        }
+      } catch (CloneNotSupportedException e) {
+        ReportMerger.log.error(e);
+        throw new RuntimeException("problems while cloning", e);
+      }
+      if (!MemoryManagment.isFreeMemory(clonedData.estimateSize())) {
+        ui.showDialog((new JOptionPane(Resources.get("client.msg.lowmem.text"),
+            JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
+            .get("client.msg.lowmem.title")));
+        log.warn(Resources.get("client.msg.lowmem.text"));
+        // ui.confirm(Resources.get("client.msg.lowmem.text"), Resources
+        // .get("client.msg.lowmem.title"));
+      }
+    } else {
+      ReportMerger.log.info("Using untranslated new report - same origin");
+    }
+    return clonedData;
+  }
+
+  /**
+   * Find best translation in real space
+   */
+  private Score<CoordinateID> findRealSpaceTranslation(ReportCache newReport) {
+    MapMergeEvaluator mhelp = dataReport.getData().getGameSpecificStuff().getMapMergeEvaluator();
+    Collection<Score<CoordinateID>> translationList =
+        mhelp.getDataMappings(dataReport.getData(), newReport.getData(), 0);
+
+    // try to find a translation for the new report's owner faction in the
+    // global data's owner faction
+    Score<CoordinateID> savedTranslation = findSavedMapping(dataReport, newReport, 0);
+
+    // decide, which translation to choose
+    Score<CoordinateID> bestTranslation = null;
+
+    if (interactive) {
+      bestTranslation = askTranslation(newReport, translationList, savedTranslation, 0);
+    } else {
+      bestTranslation = decideTranslation(newReport, translationList, savedTranslation, 0);
+    }
+    return bestTranslation;
+  }
+
+  /**
+   * find best astral translation
+   */
+  private Score<CoordinateID> findAstralRSpaceTranslation(ReportCache newReport,
+      Score<CoordinateID> bestTranslation) {
+    MapMergeEvaluator mhelp = dataReport.getData().getGameSpecificStuff().getMapMergeEvaluator();
+    Score<CoordinateID> bestAstralTranslation = null;
+    if (!newReport.hasAstralRegions()) {
+      bestAstralTranslation = new Score<CoordinateID>(CoordinateID.create(0, 0, 1), -1);
+    } else if (!dataReport.hasAstralRegions()) {
+      Collection<Score<CoordinateID>> empty = Collections.emptyList();
+      if (interactive) {
+        bestAstralTranslation = askTranslation(newReport, empty, null, 1);
+      } else {
+        bestAstralTranslation = decideTranslation(newReport, empty, null, 1);
+      }
+    } else {
+
+      Collection<CoordinateID> otherLevels = new ArrayList<CoordinateID>(1);
+      otherLevels.add(bestTranslation.getKey());
+      Collection<Score<CoordinateID>> astralTranslationList =
+          mhelp.getDataMappings(dataReport.getData(), newReport.getData(), 1, otherLevels);
+
+      Score<CoordinateID> savedAstralTranslation = findSavedMapping(dataReport, newReport, 1);
+
+      if (interactive) {
+        bestAstralTranslation =
+            askTranslation(newReport, astralTranslationList, savedAstralTranslation, 1);
+      } else {
+        bestAstralTranslation =
+            decideTranslation(newReport, astralTranslationList, savedAstralTranslation, 1);
+      }
+    }
+    return bestAstralTranslation;
+  }
+
+  /***************************************************************************
+   * store translations
+   */
+  private void storeTranslations(ReportCache newReport, Score<CoordinateID> bestTranslation,
+      Score<CoordinateID> bestAstralTranslation) {
+    ReportMerger.log.info("Using this (real) translation: " + bestTranslation.getKey());
+    // store found translations
+    EntityID newReportOwner = newReport.getData().getOwnerFaction();
+    if (newReportOwner != null) {
+      if (globalData.getCoordinateTranslation(newReportOwner, 0) != null
+          && !globalData.getCoordinateTranslation(newReportOwner, 0).equals(
+              bestTranslation.getKey())) {
+        ReportMerger.log.warn("old translation "
+            + globalData.getCoordinateTranslation(newReportOwner, 0)
+            + " inconsistent with new translation " + bestTranslation.getKey());
+      }
+      if (bestTranslation.getScore() >= 0) {
+        CoordinateID correct = newReport.getData().getCoordinateTranslation(newReportOwner, 0);
+        if (correct != null) {
+          correct =
+              CoordinateID.create(bestTranslation.getKey().getX() + correct.getX(), bestTranslation
+                  .getKey().getY()
+                  + correct.getY(), 0);
+          globalData.setCoordinateTranslation(newReportOwner, correct);
+        }
+      }
+    }
+
+    if (newReport.hasAstralRegions() && dataReport.hasAstralRegions()) {
+      ReportMerger.log.info("Using this astral translation: " + bestAstralTranslation.getKey());
+
+      if (newReportOwner != null) {
+        if (globalData.getCoordinateTranslation(newReportOwner, 1) != null
+            && !globalData.getCoordinateTranslation(newReportOwner, 1).equals(
+                bestAstralTranslation.getKey())) {
+          ReportMerger.log.warn("old astral translation "
+              + globalData.getCoordinateTranslation(newReportOwner, 1)
+              + " inconsistent with new translation " + bestAstralTranslation.getKey());
+        }
+        if (bestAstralTranslation.getScore() >= 0) {
+          CoordinateID correct = newReport.getData().getCoordinateTranslation(newReportOwner, 1);
+          if (correct != null) {
+            correct =
+                CoordinateID.create(bestAstralTranslation.getKey().getX() + correct.getX(),
+                    bestAstralTranslation.getKey().getY() + correct.getY(), 1);
+            globalData.setCoordinateTranslation(newReportOwner, correct);
+          }
+        }
+      }
+    }
   }
 
   private Score<CoordinateID> findSavedMapping(ReportCache dataReport2, ReportCache newReport,

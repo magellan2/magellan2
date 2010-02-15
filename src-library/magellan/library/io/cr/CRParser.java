@@ -84,9 +84,11 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.ReportMerger;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.UserInterface;
+import magellan.library.utils.ReportMerger.ReportTranslator;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -97,9 +99,13 @@ public class CRParser implements RulesIO, GameDataIO {
 
   /** These special tags are used by TreeHelper and are therefore reserved. */
   public static final String TAGGABLE_STRING = "ejcTaggableComparator";
+  /** These special tags are used by TreeHelper and are therefore reserved. */
   public static final String TAGGABLE_STRING2 = "ejcTaggableComparator2";
+  /** These special tags are used by TreeHelper and are therefore reserved. */
   public static final String TAGGABLE_STRING3 = "ejcTaggableComparator3";
+  /** These special tags are used by TreeHelper and are therefore reserved. */
   public static final String TAGGABLE_STRING4 = "ejcTaggableComparator4";
+  /** These special tags are used by TreeHelper and are therefore reserved. */
   public static final String TAGGABLE_STRING5 = "ejcTaggableComparator5";
 
   Scanner sc;
@@ -110,12 +116,12 @@ public class CRParser implements RulesIO, GameDataIO {
   boolean umlauts;
   int version = 0; // the version of the report
 
-  CoordinateID newOrigin = CoordinateID.create(0, 0, 0);
-
   private final Collection<String> warnedLines = new HashSet<String>();
 
   private UserInterface ui = null;
   private Faction firstFaction;
+
+  protected ReportTranslator translator;
 
   /**
    * Creates a new parser.
@@ -123,10 +129,15 @@ public class CRParser implements RulesIO, GameDataIO {
    * @param ui The UserInterface for the progress. Can be NULL. Then no operation is displayed.
    */
   public CRParser(UserInterface ui) {
-    if (ui == null) {
-      ui = new NullUserInterface();
-    }
-    this.ui = ui;
+    this(ui, new ReportMerger.IdentityTranslator());
+  }
+
+  /**
+   * @deprecated Use {@link #CRParser(UserInterface, ReportTranslator)}
+   */
+  @Deprecated
+  public CRParser(UserInterface ui, CoordinateID newOrigin) {
+    this(ui, new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
   }
 
   /**
@@ -136,12 +147,15 @@ public class CRParser implements RulesIO, GameDataIO {
    * coordinates are decreased by origin.x and origin.y, respectively. That means, that the reports
    * origin is transferred to newOrigin.
    * 
-   * @param newOrigin The coordinates (relative to the origin of the report) of the new origin.
+   * @param translator The coordinates (relative to the origin of the report) of the new origin.
    */
-  // FIXME Other games might want to change coordinate systems on all levels at once!
-  public CRParser(UserInterface ui, CoordinateID newOrigin) {
-    this.ui = ui;
-    this.newOrigin = newOrigin;
+  public CRParser(UserInterface ui, ReportTranslator translator) {
+    if (ui == null) {
+      this.ui = new NullUserInterface();
+    } else {
+      this.ui = ui;
+    }
+    this.translator = translator;
   }
 
   /**
@@ -149,10 +163,7 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   CoordinateID originTranslate(CoordinateID c) {
     // FIXME(stm) make wrapping-proof
-    if (c.getZ() == newOrigin.getZ())
-      return CoordinateID
-          .create(c.getX() - newOrigin.getX(), c.getY() - newOrigin.getY(), c.getZ());
-    return c;
+    return translator.transform(c);
   }
 
   /**
@@ -160,10 +171,7 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   CoordinateID inverseOriginTranslate(CoordinateID c) {
     // FIXME(stm) make wrapping-proof
-    if (c.getZ() == newOrigin.getZ())
-      return CoordinateID
-          .create(c.getX() + newOrigin.getX(), c.getY() + newOrigin.getY(), c.getZ());
-    return c;
+    return translator.inverseTransform(c);
   }
 
   /**

@@ -23,6 +23,8 @@ import magellan.library.io.file.CopyFile;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.io.file.PipeFileType;
+import magellan.library.utils.ReportMerger;
+import magellan.library.utils.ReportMerger.ReportTranslator;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -42,66 +44,78 @@ public class Loader {
    * @throws CloneNotSupportedException if cloning failed
    */
   public GameData cloneGameData(GameData data) throws CloneNotSupportedException {
-    return cloneGameData(data, CoordinateID.create(0, 0));
+    return cloneGameData(data, new ReportMerger.IdentityTranslator());
   }
 
   /**
-   * @param data
-   * @param newOrigin
-   * @return
-   * @throws IOException If an I/O error occurs
+   * @deprecated Use {@link #cloneGameData(GameData, ReportTranslator)}
    */
+  @Deprecated
   synchronized public GameData cloneGameDataInMemory(final GameData data,
       final CoordinateID newOrigin) throws CloneNotSupportedException {
+    return cloneGameDataInMemory(data, new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID
+        .create(0, 0)));
+  }
+
+  /**
+   * Clones the data and translates coordinates.
+   * 
+   * @param data
+   * @param coordinateTranslator
+   * @return A copy of data, translated by the translator.
+   * @throws CloneNotSupportedException if cloning failed
+   */
+  synchronized public GameData cloneGameDataInMemory(final GameData data,
+      final ReportTranslator coordinateTranslator) throws CloneNotSupportedException {
     try {
-    final PipeFileType filetype = new PipeFileType();
-    filetype.setEncoding(data.getEncoding());
-    final CRWriter crw = new CRWriter(data, null, filetype, data.getEncoding());
-    GameDataReader crReader = new GameDataReader(null);
+      final PipeFileType filetype = new PipeFileType();
+      filetype.setEncoding(data.getEncoding());
+      final CRWriter crw = new CRWriter(data, null, filetype, data.getEncoding());
+      GameDataReader crReader = new GameDataReader(null);
 
-    class ReadRunner implements Runnable {
-      boolean done = false;
-      GameDataReader r;
-      GameData d[];
+      class ReadRunner implements Runnable {
+        boolean done = false;
+        GameDataReader r;
+        GameData d[];
 
-      ReadRunner(GameDataReader r, GameData d[]) {
-        this.r = r;
-        this.d = d;
-      }
+        ReadRunner(GameDataReader r, GameData d[]) {
+          this.r = r;
+          this.d = d;
+        }
 
-      public boolean finished() {
-        return done;
-      }
+        public boolean finished() {
+          return done;
+        }
 
-      public void run() {
-        try {
-          d[0] = r.readGameData(filetype, newOrigin, data.getGameName());
-          done = true;
-        } catch (IOException e1) {
-          e1.printStackTrace();
+        public void run() {
+          try {
+            d[0] = r.readGameData(filetype, coordinateTranslator, data.getGameName());
+            done = true;
+          } catch (IOException e1) {
+            e1.printStackTrace();
+          }
         }
       }
-    }
 
-    GameData newData[] = new GameData[1];
-    ReadRunner runner = new ReadRunner(crReader, newData);
-    new Thread(runner).start();
+      GameData newData[] = new GameData[1];
+      ReadRunner runner = new ReadRunner(crReader, newData);
+      new Thread(runner).start();
 
-    crw.writeSynchronously();
-    crw.close();
+      crw.writeSynchronously();
+      crw.close();
 
-    while (!runner.finished()) {
-      notifyAll();
-      try {
-        wait(500);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+      while (!runner.finished()) {
+        notifyAll();
+        try {
+          wait(500);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
       }
-    }
 
-    newData[0].setFileType(data.getFileType());
+      newData[0].setFileType(data.getFileType());
 
-    return newData[0];
+      return newData[0];
     } catch (IOException ioe) {
       Loader.log.error("Loader.cloneGameData failed!", ioe);
       throw new CloneNotSupportedException(ioe.toString());
@@ -116,7 +130,7 @@ public class Loader {
    * @return a clone of the given GameData
    * @throws CloneNotSupportedException if cloning failed
    */
-  public GameData cloneGameData(GameData data, CoordinateID newOrigin)
+  public GameData cloneGameData(GameData data, ReportTranslator coordinateTranslator)
       throws CloneNotSupportedException {
     try {
       File tempFile = CopyFile.createCrTempFile();
@@ -134,7 +148,7 @@ public class Loader {
         crw.close();
       }
 
-      GameData newData = new GameDataReader(null).readGameData(filetype, newOrigin);
+      GameData newData = new GameDataReader(null).readGameData(filetype, coordinateTranslator);
       newData.setFileType(data.getFileType());
       tempFile.delete();
 

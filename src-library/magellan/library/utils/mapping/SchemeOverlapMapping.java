@@ -35,16 +35,45 @@ import magellan.library.Region;
 import magellan.library.Scheme;
 
 /**
- * Astral to real mapping from two neighbour astral spaces with schemes (there can be seen exactly
- * one same scheme from both astral regions)
- **/
+ * Astral to real mapping from two neighbor astral spaces with schemes (there can be seen exactly
+ * one same scheme from both astral regions).
+ * 
+ * <pre>
+ *                   / \ 
+ *                 S| s |S 
+ *             / \ / \ / \ / \    
+ *            | s | s | s | s |
+ *   /1\ / \ /|\ / \ /2\ / \ /| 
+ *  | A |   |S|S| s | A | s |S|S
+ *   \1/ \ / \|/ \ / \2/ \ / \|
+ *            | s | s | s | s |
+ *             \ / \ / \ / \ /
+ *                S | s | S
+ *                   \ /
+ * 
+ * </pre>
+ * 
+ * Now <code>scheme</code> is one of the four S regions, firstCoord and second coord are A1 and A2.
+ * Then, the real space region <code>(S.x-2*(A1.x + A2.x), 4*S.y-2*(A1.y + A2.y), 0)</code> is
+ * centered below <code>(0,0,1)</code>.
+ */
+
 public class SchemeOverlapMapping implements LevelMapping {
   private static SchemeOverlapMapping singleton = new SchemeOverlapMapping();
 
+  /**
+   * Returns an instance of this class.
+   */
   public static SchemeOverlapMapping getSingleton() {
     return SchemeOverlapMapping.singleton;
   }
 
+  /**
+   * Returns a mapping from "real space" to "astral space".
+   * 
+   * @see magellan.library.utils.mapping.LevelMapping#getMapping(magellan.library.GameData, int,
+   *      int)
+   */
   public LevelRelation getMapping(GameData data, int fromLevel, int toLevel) {
     Map<CoordinateID, Collection<Region>> astralRegions =
         getAstralRegionsBySchemeName(data, fromLevel, toLevel);
@@ -56,15 +85,13 @@ public class SchemeOverlapMapping implements LevelMapping {
           // log.error("Report corrupted: scheme visible from more than two regions: " + scheme);
           break;
         }
-        /**
-         * He we have two astral regions showing the same scheme. From this we can calculate an
-         * astral to real mapping for the data.
-         */
+
         Iterator<Region> it = regions.iterator();
         CoordinateID firstCoord = it.next().getCoordinate();
         CoordinateID secondCoord = it.next().getCoordinate();
-        return new LevelRelation(schemeCoord.getX() - 2 * (firstCoord.getX() + secondCoord.getX()), schemeCoord.getY()
-            - 2 * (firstCoord.getY() + secondCoord.getY()), toLevel, 4, 4, fromLevel);
+        return new LevelRelation(schemeCoord.getX() - 2 * (firstCoord.getX() + secondCoord.getX()),
+            schemeCoord.getY() - 2 * (firstCoord.getY() + secondCoord.getY()), toLevel, 4, 4,
+            fromLevel);
       }
     }
     return null;

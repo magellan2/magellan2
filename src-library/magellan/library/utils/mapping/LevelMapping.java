@@ -26,10 +26,16 @@ package magellan.library.utils.mapping;
 import magellan.library.GameData;
 
 /**
+ * An interface calculating a mapping between two map levels (or layers).
+ * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
  */
 
 public interface LevelMapping {
+  /**
+   * Returns a mapping that maps coordinates of fromLevel to coordinates of toLevel or
+   * <code>null</code> if no such mapping can be found.
+   */
   public LevelRelation getMapping(GameData data, int fromLevel, int toLevel);
 }

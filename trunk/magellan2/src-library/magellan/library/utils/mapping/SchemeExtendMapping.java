@@ -34,17 +34,44 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.RegionType;
 
 /**
- * Astral to real mapping from several astral regions with schemes, calculating the "extend" of the
- * schemes Proposed by Fiete: taking into account land regions in the neighbourhood that would
- * appear as schems, but don' do. So they further decrease the number of posibilities
+ * Astral to real mapping from several astral regions with schemes, calculating the "extent" of the
+ * schemes Proposed by Fiete: taking into account land regions in the neighborhood that would appear
+ * as schemes, but don't do. So they further decrease the number of possibilities. Calculates a
+ * mapping from the extend of the schemes seen from one astral region.
+ * 
+ * <pre>
+ *           / \ 
+ *          | s |  
+ *     / \s/ \ / \s/ \    
+ *    | s | s | s | X |
+ *   /|\ / \ / \ / \ /| 
+ *  | | | s | C | s | |
+ *   \|/ \ / \ / \ / \|
+ *    | Y | s | s | s |
+ *     \ /s\ / \ /s\ /
+ *          | s |
+ *           \ /
+ * 
+ * </pre>
+ * 
+ * If, for instance, we can see X and Y from an astral region, we can reconstruct the center C.
  **/
 public class SchemeExtendMapping implements LevelMapping {
   private static SchemeExtendMapping singleton = new SchemeExtendMapping();
 
+  /**
+   * Returns an instance of this class.
+   */
   public static SchemeExtendMapping getSingleton() {
     return SchemeExtendMapping.singleton;
   }
 
+  /**
+   * Returns a mapping from "real space" to "astral space".
+   * 
+   * @see magellan.library.utils.mapping.LevelMapping#getMapping(magellan.library.GameData, int,
+   *      int)
+   */
   public LevelRelation getMapping(GameData data, int fromLevel, int toLevel) {
     CoordinateID astralToReal = null;
     CoordinateID.Triplet minExtend = null;
@@ -133,15 +160,16 @@ public class SchemeExtendMapping implements LevelMapping {
                     || d < minExtend.z || d > maxExtend.z) {
                   // check terrain
                   Region realRegion =
-                      data.getRegion(CoordinateID.create(x + 4 * region.getCoordinate().getX(), y + 4
-                          * region.getCoordinate().getY(), toLevel));
+                      data.getRegion(CoordinateID.create(x + 4 * region.getCoordinate().getX(), y
+                          + 4 * region.getCoordinate().getY(), toLevel));
                   if (realRegion != null) {
                     if (scheme_rt.contains(realRegion.getRegionType())) {
                       // distance check
                       Iterator<CoordinateID> it = relations.iterator();
                       while (it.hasNext()) {
                         CoordinateID realCoord = it.next();
-                        if (Math.abs(realCoord.getX() - x) <= 2 && Math.abs(realCoord.getY() - y) <= 2
+                        if (Math.abs(realCoord.getX() - x) <= 2
+                            && Math.abs(realCoord.getY() - y) <= 2
                             && Math.abs(realCoord.getX() + realCoord.getY() - d) <= 2) {
                           it.remove();
                         }

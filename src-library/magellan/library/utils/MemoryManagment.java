@@ -25,23 +25,19 @@ public class MemoryManagment {
   public static Logger log = Logger.getInstance(MemoryManagment.class);
 
   /**
-   * minimal amount of free memory after calling gc and sleeping for 3 seconds
+   * minimal amount of free memory after calling gc and sleeping for {@link #waitingMillis}.
    */
-  static long minMemory = 20000;
+  public static final long minMemory = 20000;
 
   /**
    * after calling gc in case of low memory we wait this amount of millisecs
    */
-  static long waitingMillis = 2000;
+  public static final long waitingMillis = 2000;
 
-  private static Runtime r = java.lang.Runtime.getRuntime();
+  private static Runtime runtime = java.lang.Runtime.getRuntime();
 
-  public MemoryManagment() {
-
-  }
-
-  public static Runtime getRuntime() {
-    return MemoryManagment.r;
+  protected static Runtime getRuntime() {
+    return MemoryManagment.runtime;
   }
 
   /**
@@ -72,6 +68,9 @@ public class MemoryManagment {
     }
   }
 
+  /**
+   * Check for {@link MemoryManagment#minMemory} memory.
+   */
   public static boolean isFreeMemory() {
     return MemoryManagment.isFreeMemory(MemoryManagment.minMemory);
   }
@@ -80,14 +79,15 @@ public class MemoryManagment {
    * checks, if there is enough free memory for the JVM if not, invokes the garbage collector if not
    * successful returns false, otherwise true
    * 
+   * @param The requested amount of memory.
    * @return true, if enough memory available
    */
   public static boolean isFreeMemory(long min) {
     // Runtime r = java.lang.Runtime.getRuntime();
     if (MemoryManagment.checkFreeMemory(min))
       return true;
-    MemoryManagment.r.runFinalization();
-    MemoryManagment.r.gc();
+    MemoryManagment.runtime.runFinalization();
+    MemoryManagment.runtime.gc();
     try {
       MemoryManagment.log.warn("waiting for garbage collection");
       Thread.sleep(MemoryManagment.waitingMillis);
@@ -100,9 +100,9 @@ public class MemoryManagment {
   }
 
   private static boolean checkFreeMemory(long min) {
-    long free = MemoryManagment.r.freeMemory();
-    long tot = MemoryManagment.r.totalMemory();
-    long max = MemoryManagment.r.maxMemory();
+    long free = MemoryManagment.runtime.freeMemory();
+    long tot = MemoryManagment.runtime.totalMemory();
+    long max = MemoryManagment.runtime.maxMemory();
     if (free > min)
       return true;
 
@@ -111,7 +111,7 @@ public class MemoryManagment {
   }
 
   public static Runtime getR() {
-    return MemoryManagment.r;
+    return MemoryManagment.runtime;
   }
 
 }

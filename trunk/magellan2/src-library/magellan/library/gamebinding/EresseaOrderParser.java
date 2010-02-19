@@ -2054,22 +2054,6 @@ public class EresseaOrderParser implements OrderParser {
 
   }
 
-  /**
-   * Returns <code>true</code> if token represents an item.
-   */
-  protected boolean checkItem(OrderToken token) {
-    return new StringChecker(false, false, true, false) {
-      @Override
-      protected boolean checkInner() {
-        for (ItemType type : data.rules.getItemTypes()) {
-          if (normalizeName(type.getName()).equals(normalizeName(content)))
-            return true;
-        }
-        return false;
-      }
-    }.read(token);
-  }
-
   // ************* NACH
   protected class NachReader extends OrderHandler {
     @Override
@@ -3682,6 +3666,22 @@ public class EresseaOrderParser implements OrderParser {
     }
 
     return retVal;
+  }
+
+  /**
+   * Returns <code>true</code> if token represents an item.
+   */
+  protected boolean checkItem(OrderToken token) {
+    return new StringChecker(false, false, true, false) {
+      @Override
+      protected boolean checkInner() {
+        for (ItemType type : data.rules.getItemTypes()) {
+          if (normalizeName(type.getName()).equalsIgnoreCase(normalizeName(content)))
+            return true;
+        }
+        return false;
+      }
+    }.read(token);
   }
 
   protected void unexpected(OrderToken t) {

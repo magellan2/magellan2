@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import magellan.library.utils.logging.AbstractLogListener;
 import magellan.library.utils.logging.LogListener;
 import magellan.library.utils.logging.Logger;
 
@@ -46,6 +47,9 @@ import magellan.library.utils.logging.Logger;
 public class DebugDock extends JPanel implements LogListener {
   private static final Logger log = Logger.getInstance(DebugDock.class);
 
+  /**
+   * Identifier (for Client)
+   */
   public static String IDENTIFIER = "DEBUG";
 
   private static DebugDock INSTANCE = null;
@@ -53,10 +57,18 @@ public class DebugDock extends JPanel implements LogListener {
 
   protected JTextArea logArea = null;
   protected Calendar calendar = Calendar.getInstance();
+  protected AbstractLogListener defaultListener = new AbstractLogListener() {
+    @Override
+    public String getDate() {
+      calendar.setTimeInMillis(System.currentTimeMillis());
+      return super.getDate();
+      // return DebugDock.toDay(calendar) + " " + toTime(calendar);
+    }
+  };
 
   protected DebugDock() {
     Logger.addLogListener(this);
-    Logger.activateDefaultLogListener(true);
+    // Logger.activateDefaultLogListener(true);
     init();
   }
 
@@ -125,37 +137,7 @@ public class DebugDock extends JPanel implements LogListener {
    * @see magellan.library.utils.logging.LogListener#log(int, java.lang.Object, java.lang.Throwable)
    */
   public void log(int level, Object obj, Throwable throwable) {
-    String str = "";
-
-    switch (level) {
-    case Logger.FATAL:
-      str = "FATAL";
-      break;
-
-    case Logger.ERROR:
-      str = "ERROR";
-      break;
-
-    case Logger.WARN:
-      str = "WARN ";
-      break;
-
-    case Logger.INFO:
-      str = "INFO ";
-      break;
-
-    case Logger.DEBUG:
-      str = "DEBUG";
-      break;
-
-    default:
-      str = "ALL  ";
-      break;
-    }
-    str += ": ";
-    if (obj != null) {
-      str += obj.toString();
-    }
+    String str = defaultListener.getMessage(level, obj, null);
     setStatus(str, throwable);
   }
 
@@ -163,25 +145,18 @@ public class DebugDock extends JPanel implements LogListener {
    * 
    */
   protected void setStatus(String message, Throwable throwable) {
-    calendar.setTimeInMillis(System.currentTimeMillis());
-    String time = DebugDock.toDay(calendar) + " " + toTime(calendar) + ": ";
-
     if (logArea != null) {
       StringBuffer buffer = new StringBuffer(logArea.getText().trim());
-      String newtext = "";
-      newtext += "\r\n" + time + message.trim();
-      if (throwable != null) {
-        newtext += "\r\n" + DebugDock.toString(throwable);
-      }
 
-      buffer.append(newtext);
+      buffer.append("\n").append(message);
+
       // Text-Area eingrenzen
       if (buffer.length() > DebugDock.BUFFER_LENGTH) {
         buffer.delete(0, buffer.length() - DebugDock.BUFFER_LENGTH);
       }
 
       logArea.setText(buffer.toString());
-      logArea.setCaretPosition(buffer.length() - newtext.length() + 2);
+      logArea.setCaretPosition(buffer.length() - message.length() + 2);
     }
   }
 

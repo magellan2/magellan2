@@ -296,7 +296,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
     // init the plugin
     MagellanMapEditPlugIn.log = Logger.getInstance(MagellanMapEditPlugIn.class);
     Resources.getInstance().initialize(Client.getSettingsDirectory(), "mapedit_");
-    MagellanMapEditPlugIn.log.info("MapEdit initialized...(client)");
+    MagellanMapEditPlugIn.log.fine("MapEdit initialized...(client)");
     this.client = client;
     // System.err.println(Resources.get("mapedit.menu.setterrain"));
   }
@@ -307,7 +307,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.library.GameData)
    */
   public void init(GameData data) {
-    MagellanMapEditPlugIn.log.info("MapEdit initialized...(GameData)");
+    MagellanMapEditPlugIn.log.fine("MapEdit initialized...(GameData)");
     this.data = data;
     addTerrains(setTerrain);
     addHerbs(setHerbs);

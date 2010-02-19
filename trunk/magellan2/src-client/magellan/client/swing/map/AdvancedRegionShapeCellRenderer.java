@@ -430,11 +430,11 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       if (curList != null) {
         try {
           curF = parseFloat(curList.getReplacement(r));
-          if (Logger.getLevel() >= Logger.DEBUG) {
+          if (log.isDebugEnabled()) {
             AdvancedRegionShapeCellRenderer.log.debug("cur " + r.getName() + " " + curF);
           }
         } catch (Exception e) {
-          if (Logger.getLevel() >= Logger.DEBUG) {
+          if (log.isDebugEnabled()) {
             AdvancedRegionShapeCellRenderer.log.debug("cur " + r.getName() + " --- ");
           }
           nonFound = true;

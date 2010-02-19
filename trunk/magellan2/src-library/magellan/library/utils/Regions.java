@@ -1003,7 +1003,7 @@ public class Regions {
     }
 
     /**
-     * Returns the direct neighbors of id.
+     * Returns the direct neighbors of a coordinate.
      * 
      * @see magellan.library.utils.Regions.Metric#getNeighbours(magellan.library.CoordinateID)
      */
@@ -1913,7 +1913,7 @@ public class Regions {
     Random r = new Random(System.currentTimeMillis());
 
     long cnt = 0;
-    Regions.log.info("starting calculation of coasts");
+    Regions.log.finer("starting calculation of coasts");
     for (Region currentRegion : data.getRegions()) {
       int coastBitmap = 0;
       if (currentRegion.getRegionType().isOcean()) {
@@ -1953,7 +1953,7 @@ public class Regions {
       }
       currentRegion.setCoastBitMap(coastBitmap);
     }
-    Regions.log.info("finished calculation of coasts, found " + cnt + " coasts.");
+    Regions.log.finer("finished calculation of coasts, found " + cnt + " coasts.");
   }
 
 }

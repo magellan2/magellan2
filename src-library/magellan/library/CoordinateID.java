@@ -52,6 +52,11 @@ public class CoordinateID implements ID {
     public CoordinateID toCoordinate() {
       return create(x, y, z);
     }
+
+    @Override
+    public String toString() {
+      return "(" + x + "," + y + "," + z + ")";
+    }
   }
 
   private static final CoordinateID INVALID =

@@ -13,21 +13,19 @@
 
 package magellan.library.utils.logging;
 
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import magellan.library.utils.Utils;
-
 //import org.apache.log4j.*;
 
-/*
+/**
+ * Logs events in different levels.
+ * 
  * @author Ilja Pavkovic
  */
 public class Logger {
@@ -48,11 +46,20 @@ public class Logger {
   /** Info messages are printed for informational purposes */
   public static final int INFO = 4;
 
+  /** Fine messages are more fine grained than INFO messages, but not yet DEBUG */
+  public static final int FINE = 5;
+
+  /** Fine messages are more fine grained than INFO messages, but not yet DEBUG */
+  public static final int FINER = 6;
+
+  /** Fine messages are more fine grained than INFO messages, but not yet DEBUG */
+  public static final int FINEST = 7;
+
   /** Debug messages are printed for debugging purposes */
-  public static final int DEBUG = 5;
+  public static final int DEBUG = 8;
 
   /** AWT messages are printed for debugging awt purposes */
-  public static final int AWT = 6;
+  public static final int AWT = 9;
 
   private static Logger DEFAULT = new Logger("");
   private static int verboseLevel = Logger.INFO;
@@ -72,8 +79,8 @@ public class Logger {
   }
 
   /**
-	 * 
-	 */
+   * Returns a logger "personalized" for some class.
+   */
   public static Logger getInstance(Class<?> aClass) {
     // be fail-fast
     if (aClass == null)
@@ -83,8 +90,8 @@ public class Logger {
   }
 
   /**
-	 * 
-	 */
+   * Returns a logger with a specified name.
+   */
   public static Logger getInstance(String aBase) {
     // be fail-fast
     if (aBase == null)
@@ -99,8 +106,8 @@ public class Logger {
 
   /**
    * Set the logging level. Currently supported levels are {@link Logger#FATAL},
-   * {@link Logger#ERROR}, {@link Logger#WARN}, {@link Logger#INFO}, {@link Logger#DEBUG},
-   * {@link Logger#AWT}.
+   * {@link Logger#ERROR}, {@link Logger#WARN}, {@link Logger#INFO}, {@link Logger#FINE},
+   * {@link Logger#DEBUG}, {@link Logger#AWT}.
    * 
    * @param level The new log level.
    */
@@ -132,6 +139,18 @@ public class Logger {
 
     if (level.startsWith("I")) {
       Logger.setLevel(Logger.INFO);
+    }
+
+    if (level.startsWith("N")) {
+      Logger.setLevel(Logger.FINE);
+    }
+
+    if (level.startsWith("R")) {
+      Logger.setLevel(Logger.FINER);
+    }
+
+    if (level.startsWith("S")) {
+      Logger.setLevel(Logger.FINEST);
     }
 
     if (level.startsWith("D")) {
@@ -170,6 +189,15 @@ public class Logger {
     case INFO:
       return "INFO";
 
+    case FINE:
+      return "FINE";
+
+    case FINER:
+      return "FINER";
+
+    case FINEST:
+      return "FINEST";
+
     case DEBUG:
       return "DEBUG";
 
@@ -196,40 +224,44 @@ public class Logger {
     }
   }
 
+  /**
+   * Activates or de-activates the default listener, which logs to {@link System#err}.
+   */
   public static void activateDefaultLogListener(boolean activate) {
     Logger.activateDefaultLogListener = activate;
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #FATAL} level.
+   */
   public void fatal(Object aObj) {
     fatal(aObj, null);
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #FATAL} level.
+   */
   public void fatal(Object aObj, Throwable aThrowable) {
     log(Logger.FATAL, aObj, aThrowable);
   }
 
   /**
-	 * 
-	 */
+   * Returns true if the log level is at least {@link #FATAL}.
+   */
   public boolean isFatalEnabled() {
     return Logger.verboseLevel >= Logger.FATAL;
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #ERROR} level.
+   */
   public void error(Object aObj) {
     error(aObj, null);
   }
 
   /**
-   * 
+   * Logs a message at the {@link #ERROR} level, but only if no equal message has been logged
+   * before.
    */
   public void errorOnce(Object aObj) {
     if (Logger.onceErrors == null) {
@@ -246,28 +278,28 @@ public class Logger {
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #ERROR} level.
+   */
   public void error(Object aObj, Throwable aThrowable) {
     log(Logger.ERROR, aObj, aThrowable);
   }
 
   /**
-	 * 
-	 */
+   * Returns true if log level is at least {@link #ERROR}.
+   */
   public boolean isErrorEnabled() {
     return Logger.verboseLevel >= Logger.ERROR;
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #WARN} level.
+   */
   public void warn(Object aObj) {
     warn(aObj, null);
   }
 
   /**
-   * processed all warnings only once
+   * Logs a message at the {@link #WARN} level, but only if no equals event has been logged before.
    */
   public void warnOnce(Object aObj) {
     if (Logger.onceWarnings == null) {
@@ -284,71 +316,113 @@ public class Logger {
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #WARN} level.
+   */
   public void warn(Object aObj, Throwable aThrowable) {
     log(Logger.WARN, aObj, aThrowable);
   }
 
   /**
-	 * 
-	 */
+   * Returns true if log level is at least {@link #WARN}.
+   */
   public boolean isWarnEnabled() {
     return Logger.verboseLevel >= Logger.WARN;
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #INFO} level.
+   */
   public void info(Object aObj) {
     info(aObj, null);
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #INFO} level.
+   */
   public void info(Object aObj, Throwable aThrowable) {
     log(Logger.INFO, aObj, aThrowable);
   }
 
   /**
-	 * 
-	 */
+   * Returns true if level is at least {@link #INFO}.
+   */
   public boolean isInfoEnabled() {
     return Logger.verboseLevel >= Logger.INFO;
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #FINE} level.
+   */
+  public void fine(Object aObj) {
+    fine(aObj, null);
+  }
+
+  /**
+   * Logs a message at the {@link #FINE} level.
+   */
+  public void fine(Object aObj, Throwable aThrowable) {
+    log(Logger.FINE, aObj, aThrowable);
+  }
+
+  /**
+   * Logs a message at the {@link #FINER} level.
+   */
+  public void finer(Object aObj) {
+    finer(aObj, null);
+  }
+
+  /**
+   * Logs a message at the {@link #FINER} level.
+   */
+  public void finer(Object aObj, Throwable aThrowable) {
+    log(Logger.FINER, aObj, aThrowable);
+  }
+
+  /**
+   * Logs a message at the {@link #FINEST} level.
+   */
+  public void finest(Object aObj) {
+    finest(aObj, null);
+  }
+
+  /**
+   * Logs a message at the {@link #FINEST} level.
+   */
+  public void finest(Object aObj, Throwable aThrowable) {
+    log(Logger.FINEST, aObj, aThrowable);
+  }
+
+  /**
+   * Logs a message at the {@link #DEBUG} level.
+   */
   public void debug(Object aObj) {
     debug(aObj, null);
   }
 
   /**
-	 * 
-	 */
+   * Logs a message at the {@link #DEBUG} level.
+   */
   public void debug(Object aObj, Throwable aThrowable) {
     log(Logger.DEBUG, aObj, aThrowable);
   }
 
   /**
-	 * 
-	 */
+   * Returns true if the level is at least {@link #DEBUG}.
+   */
   public boolean isDebugEnabled() {
     return Logger.verboseLevel >= Logger.DEBUG;
   }
 
   /**
-	 * 
-	 */
+   * Logs an {@link #AWT} level message.
+   */
   public void awt(Object aObj) {
     awt(aObj, null);
   }
 
   /**
-	 * 
-	 */
+   * Logs an {@link #AWT} level message.
+   */
   public void awt(Object aObj, Throwable aThrowable) {
     log(Logger.AWT, aObj, aThrowable);
 
@@ -394,75 +468,34 @@ public class Logger {
 
   private static Collection<LogListener> logListeners = new ArrayList<LogListener>();
 
+  /**
+   * Adds a listener to the list of notified listeners.
+   */
   public static void addLogListener(LogListener l) {
     Logger.logListeners.add(l);
   }
 
+  /**
+   * Removes l from the list of notified listeners.
+   */
   public static void removeLogListener(LogListener l) {
     Logger.logListeners.remove(l);
   }
 
-  private static class DefaultLogListener implements LogListener {
-    private Calendar calendar = Calendar.getInstance();
+  private static class DefaultLogListener extends AbstractLogListener implements LogListener {
 
-    public void log(int aLevel, Object aObj, Throwable aThrowable) {
-      log(System.err, aLevel, aObj, aThrowable);
+    /**
+     * Logs to {@link System#err}.
+     * 
+     * @see magellan.library.utils.logging.LogListener#log(int, java.lang.Object,
+     *      java.lang.Throwable)
+     */
+    public void log(int level, Object aObj, Throwable aThrowable) {
+      log(System.err, getMessage(level, aObj, aThrowable));
     }
 
-    private void log(PrintStream aOut, int aLevel, Object aObj, Throwable aThrowable) {
-
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      PrintStream ps = new PrintStream(baos);
-
-      calendar.setTimeInMillis(System.currentTimeMillis());
-
-      String prefix = "(--)";
-      switch (aLevel) {
-      case FATAL:
-        prefix = "(FF)";
-        break;
-      case ERROR:
-        prefix = "(EE)";
-        break;
-      case WARN:
-        prefix = "(WW)";
-        break;
-      case INFO:
-        prefix = "(II)";
-        break;
-      case DEBUG:
-        prefix = "(DD)";
-        break;
-      case AWT:
-        prefix = "(AA)";
-        break;
-      default:
-        prefix = "(--)";
-        break;
-      }
-      ps.print(prefix + " ");
-      ps.print(Utils.toDayAndTime(calendar.getTime()));
-      ps.print(": ");
-
-      if (aObj != null) {
-        if (aObj instanceof Throwable) {
-          ((Throwable) aObj).printStackTrace(ps);
-        } else {
-          ps.println(aObj);
-        }
-      }
-
-      if (aThrowable != null) {
-        aThrowable.printStackTrace(ps);
-      } else {
-        if ((aObj != null) && !(aObj instanceof Throwable) && aObj.toString().endsWith("Error")) {
-          new Exception("SELF GENERATED STACK TRACE").printStackTrace(ps);
-        }
-      }
-
-      ps.close();
-
-      aOut.print(baos.toString());
+    private void log(PrintStream aOut, String message) {
+      aOut.print(message);
     }
   }
 }

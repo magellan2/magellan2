@@ -1,4 +1,7 @@
-2009-02-13 / Build 405 - Fiete <sf@fietefietz.de>
+2009-02-19 / Build 406 - stm (stm_@users.sourceforge.net)
+    * added more log levels to Logger
+
+2009-02-13 / Build 405 - stm (stm_@users.sourceforge.net)
     * encapsulated functions of GameData. units(), factions() etc. now return unmodifiable collections
     * added to GameData interface
     * added support for toroidal worlds, therefor:

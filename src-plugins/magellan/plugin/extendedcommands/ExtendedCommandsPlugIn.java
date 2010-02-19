@@ -91,7 +91,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     dock = new ExtendedCommandsDock(commands);
     client.getDispatcher().addSelectionListener(dock);
     help = new HelpDock();
-    ExtendedCommandsPlugIn.log.debug(getName() + " initialized...(Client)");
+    ExtendedCommandsPlugIn.log.fine(getName() + " initialized...(Client)");
 
     // initialize shortcuts
     shortcuts = new ArrayList<KeyStroke>(2);
@@ -140,7 +140,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    */
   public void init(GameData data) {
     // init the report
-    ExtendedCommandsPlugIn.log.debug(getName() + " initialized...(GameData)");
+    ExtendedCommandsPlugIn.log.fine(getName() + " initialized...(GameData)");
     dock.setWorld(data);
   }
 
@@ -294,37 +294,37 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     ExtendedCommandsPlugIn.log.debug(e.getActionCommand());
     switch (PlugInAction.getAction(e)) {
     case EXECUTE_ALL: {
-      ExtendedCommandsPlugIn.log.info("Execute all...");
+      ExtendedCommandsPlugIn.log.fine("Execute all...");
       ProgressBarUI progress = new ProgressBarUI(Client.INSTANCE);
       ExecutionThread thread = new ExecutionThread(client, progress, commands);
       thread.start();
       break;
     }
     case LIBRARY_EDIT: {
-      ExtendedCommandsPlugIn.log.debug("Edit library...");
+      ExtendedCommandsPlugIn.log.finer("Edit library...");
       editLibrary(client.getData());
       break;
     }
     case CLEAR: {
-      ExtendedCommandsPlugIn.log.info("Clear unused scripts...");
+      ExtendedCommandsPlugIn.log.fine("Clear unused scripts...");
       clearCommands();
       break;
     }
     case SAVE_ALL: {
-      ExtendedCommandsPlugIn.log.debug("Saving...");
+      ExtendedCommandsPlugIn.log.finer("Saving...");
       commands.save();
       break;
     }
     case EXPORT: {
-      ExtendedCommandsPlugIn.log.debug("Exporting commands...");
+      ExtendedCommandsPlugIn.log.finer("Exporting commands...");
       break;
     }
     case IMPORT: {
-      ExtendedCommandsPlugIn.log.debug("import commands...");
+      ExtendedCommandsPlugIn.log.finer("import commands...");
       break;
     }
     case UNKNOWN:
-      ExtendedCommandsPlugIn.log.debug("unknown command...");
+      ExtendedCommandsPlugIn.log.warn("unknown command...");
     }
   }
 
@@ -339,7 +339,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Opens a Dialog for editing the commands for the given Unitcontainer.
    */
   protected void editCommands(GameData data, UnitContainer container) {
-    ExtendedCommandsPlugIn.log.debug("Edit Command for UnitContainer " + container);
+    ExtendedCommandsPlugIn.log.finest("Edit Command for UnitContainer " + container);
 
     // find the commands for this container or set them to "".
     Script script = commands.getCommands(container);
@@ -359,7 +359,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Opens a Dialog for editing the commands for the given Unit.
    */
   protected void editCommands(GameData data, Unit unit) {
-    ExtendedCommandsPlugIn.log.debug("Edit Command for Unit " + unit);
+    ExtendedCommandsPlugIn.log.finest("Edit Command for Unit " + unit);
 
     // find the commands for this unit or set them to "".
     Script script = commands.getCommands(unit);
@@ -377,7 +377,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Opens a Dialog for editing the library.
    */
   protected void editLibrary(GameData data) {
-    ExtendedCommandsPlugIn.log.debug("Edit library for all units and containers...");
+    ExtendedCommandsPlugIn.log.finest("Edit library for all units and containers...");
 
     // find the commands for this unit or set them to "".
     Script script = commands.getLibrary();
@@ -407,7 +407,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Executes the commands for a given unitcontainer.
    */
   protected void executeCommands(GameData data, UnitContainer container) {
-    ExtendedCommandsPlugIn.log.info("Execute Command for UnitContainer " + container);
+    ExtendedCommandsPlugIn.log.fine("Execute Command for UnitContainer " + container);
 
     // execute the commands for this container.
     commands.execute(data, container);
@@ -419,7 +419,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Executes the commands for a given unitcontainer.
    */
   protected void executeAllCommands(GameData data, UnitContainer container) {
-    ExtendedCommandsPlugIn.log.info("Execute Command for UnitContainer " + container);
+    ExtendedCommandsPlugIn.log.fine("Execute Command for UnitContainer " + container);
 
     // execute the commands for this unit.
     if (commands.hasCommands(container)) {
@@ -431,7 +431,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
       for (Unit unit : units) {
         if (commands.hasCommands(unit)) {
           // execute the commands for this unit.
-          ExtendedCommandsPlugIn.log.info("Execute Command for Unit " + unit);
+          ExtendedCommandsPlugIn.log.finer("Execute Command for Unit " + unit);
           commands.execute(data, unit);
         }
       }
@@ -448,7 +448,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Executes the commands for a given unit.
    */
   protected void executeCommands(GameData data, Unit unit) {
-    ExtendedCommandsPlugIn.log.info("Execute Command for Unit " + unit);
+    ExtendedCommandsPlugIn.log.fine("Execute Command for Unit " + unit);
 
     // execute the commands for this unit.
     commands.execute(data, unit);

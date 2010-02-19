@@ -69,8 +69,8 @@ public class CollectionFilters {
   }
 
   /**
-   * Creates a new list, adds to it all elements of oldCollection which are of the specified type,
-   * and returns this list.
+   * Creates a new set, adds to it all elements of oldCollection which are of the specified type,
+   * and returns this set.
    * 
    * @param <T>
    * @param oldCollection
@@ -88,8 +88,8 @@ public class CollectionFilters {
   }
 
   /**
-   * Creates a new list, adds to it all elements of oldCollection which are of the specified type,
-   * and returns this list.
+   * Creates a new set, adds to it all elements of oldCollection which are of the specified type,
+   * and returns this set.
    * 
    * @param <T>
    * @param oldCollection
@@ -107,7 +107,7 @@ public class CollectionFilters {
   }
 
   /**
-   * Adds to newList all elements of oldCollection which are of the specified type.
+   * Adds to newCollection all elements of oldCollection which are of the specified type.
    * 
    * @param <T>
    * @param oldCollection

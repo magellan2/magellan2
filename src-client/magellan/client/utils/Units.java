@@ -622,7 +622,7 @@ public class Units {
    * @param s A string array with the following values: <br/>
    *          [0] : The order fragment that was given <br/>
    *          [1] : One of {@link RemoveOrderDialog#BEGIN_ACTION},
-   *          {@link RemoveOrderDialog#CONTAINS_ACTION} <br/>
+   *          {@link RemoveOrderDialog#CONTAINS_ACTION, {@link RemoveOrderDialog#REGEX_ACTION} <br/>
    *          [2] : "true" if case should not be ignored
    */
   public static void removeOrders(Unit u, String[] s) {
@@ -644,10 +644,22 @@ public class Units {
         } else {
           casedOrder = order;
         }
-        if (!((mode.equals(RemoveOrderDialog.BEGIN_ACTION) && casedOrder.startsWith(pattern)) || (mode
-            .equals(RemoveOrderDialog.CONTAINS_ACTION) && casedOrder.contains(pattern)))) {
-          newOrders.add(order);
+        if (mode.equals(RemoveOrderDialog.BEGIN_ACTION))
+          if (casedOrder.startsWith(pattern)) {
+            continue;
+          }
+
+        if (mode.equals(RemoveOrderDialog.CONTAINS_ACTION))
+          if (casedOrder.contains(pattern)) {
+            continue;
+          }
+        if (mode.equals(RemoveOrderDialog.REGEX_ACTION)) {
+          if (order.matches(pattern)) {
+            continue;
+          }
         }
+        newOrders.add(order);
+
       }
       u.setOrders(newOrders);
     }

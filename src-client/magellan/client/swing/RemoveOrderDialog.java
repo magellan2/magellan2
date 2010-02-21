@@ -26,10 +26,12 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.JTextComponent;
 
 import magellan.library.utils.Resources;
 
@@ -43,9 +45,10 @@ public class RemoveOrderDialog extends InternationalizedDialog {
 
   public static final String BEGIN_ACTION = "begins";
   public static final String CONTAINS_ACTION = "contains";
+  public static final String REGEX_ACTION = "regex";
 
   private ButtonGroup position;
-  private JTextArea order;
+  private JTextComponent order;
   private JButton ok;
   private JButton cancel;
 
@@ -65,7 +68,7 @@ public class RemoveOrderDialog extends InternationalizedDialog {
         new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
             new Insets(3, 3, 3, 3), 0, 0);
 
-    c.gridwidth = 2;
+    c.gridwidth = GridBagConstraints.REMAINDER;
     JLabel captionLabel = new JLabel(caption);
     captionLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
     captionLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -76,13 +79,23 @@ public class RemoveOrderDialog extends InternationalizedDialog {
 
     JRadioButton beginButton =
         new JRadioButton(Resources.get("removeorderdialog.radio.begins.title"));
-    beginButton.setActionCommand(RemoveOrderDialog.BEGIN_ACTION);
     JRadioButton containsButton =
         new JRadioButton(Resources.get("removeorderdialog.radio.contains.title"));
+    final JRadioButton regexButton =
+        new JRadioButton(Resources.get("removeorderdialog.radio.regex.title"));
+    regexButton.addChangeListener(new ChangeListener() {
+
+      public void stateChanged(ChangeEvent e) {
+        caseBox.setEnabled(!regexButton.isSelected());
+      }
+    });
+    beginButton.setActionCommand(RemoveOrderDialog.BEGIN_ACTION);
     containsButton.setActionCommand(RemoveOrderDialog.CONTAINS_ACTION);
+    regexButton.setActionCommand(RemoveOrderDialog.REGEX_ACTION);
     position = new ButtonGroup();
     position.add(beginButton);
     position.add(containsButton);
+    position.add(regexButton);
     position.setSelected(beginButton.getModel(), true);
     c.gridx = 0;
     c.gridy++;
@@ -93,25 +106,32 @@ public class RemoveOrderDialog extends InternationalizedDialog {
     c.weightx = 0;
     c.anchor = GridBagConstraints.EAST;
     cp.add(containsButton, c);
+    c.gridx = 2;
+    c.weightx = 0;
+    c.anchor = GridBagConstraints.EAST;
+    cp.add(regexButton, c);
 
     c.gridx = 0;
     c.gridy++;
 
     cp.add(new JLabel(Resources.get("removeorderdialog.window.message")), c);
 
-    order = new JTextArea(1, 25);
+    order = new JTextField(25);
 
-    JScrollPane helperPane = new JScrollPane(order);
+    // JScrollPane helperPane = new JScrollPane(order);
 
     c.gridx = 1;
     c.weightx = 0.5;
-    cp.add(helperPane, c);
+    c.gridwidth = GridBagConstraints.REMAINDER;
+    cp.add(order, c);
+    // cp.add(helperPane, c);
 
     caseBox = new JCheckBox(Resources.get("removeorderdialog.chkbox.matchcase.title"));
     caseBox.setSelected(true);
     c.gridx = 0;
     c.gridy++;
     c.weightx = 0;
+    c.gridwidth = 1;
     cp.add(caseBox, c);
 
     ok = new JButton(Resources.get("removeorderdialog.btn.ok.caption"));
@@ -140,7 +160,7 @@ public class RemoveOrderDialog extends InternationalizedDialog {
    * @return A string array with the following values: <br/>
    *         [0] : The order fragment that was given <br/>
    *         [1] : One of {@link RemoveOrderDialog#BEGIN_ACTION},
-   *         {@link RemoveOrderDialog#CONTAINS_ACTION} <br/>
+   *         {@link RemoveOrderDialog#CONTAINS_ACTION}, {@link RemoveOrderDialog#REGEX_ACTION} <br/>
    *         [2] : "true" if case should not be ignored
    */
   public String[] showDialog() {

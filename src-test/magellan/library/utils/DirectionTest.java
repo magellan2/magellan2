@@ -43,9 +43,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * DOCUMENT-ME
+ * Tests for the direction class
  * 
- * @author ...
+ * @author stm
  * @version 1.0, Feb 9, 2010
  */
 public class DirectionTest {

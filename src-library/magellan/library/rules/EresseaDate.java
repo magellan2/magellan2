@@ -24,63 +24,33 @@ public class EresseaDate extends Date {
       { "Feldsegen", "Nebeltage", "Sturmmond", "Herdfeuer", "Eiswind", "Schneebann", "Blütenregen",
           "Mond_der_milden_Winde", "Sonnenfeuer" };
 
-  // long
-  private static final String week_long[] =
-      { "Erste_Woche_des_Monats_", "Zweite_Woche_des_Monats_", "Dritte_Woche_des_Monats_" };
-  private static final String year_long = "_im_Jahre_";
-  private static final String age_long = "_des_zweiten_Zeitalters.";
-
-  // long alt
-  private static final String week_long_alt[] =
-      { "Anfang_des_Monats_", "Mitte_des_Monats_", "Ende_des_Monats_" };
-  private static final String year_long_alt = "_im_Jahre_";
-  private static final String age_long_alt = "_des_zweiten_Zeitalters.";
-
-  // long alt2
-  private static final String week_long_alt2[] =
-      { "Erste_Woche_des_Monats_", "Zweite_Woche_des_Monats_", "Letzte_Woche_des_Monats_" };
-  private static final String year_long_alt2 = "_im_Jahre_";
-  private static final String age_long_alt2 = "_des_zweiten_Zeitalters.";
-
-  // short internationalized
-  private static final String week_short[] = { "1.", "2.", "3." };
-
-  // phrase
-  private static final String begin_phrase = "Wir_schreiben_";
-  private static final String week_phrase[] =
-      { "die_erste_Woche_des_Monats_", "die_zweite_Woche_des_Monats_",
-          "die_dritte_Woche_des_Monats_" };
-  private static final String year_phrase = "_im_Jahre_";
-  private static final String age_phrase = "_des_zweiten_Zeitalters.";
-
-  // alternative phrase
-  private static final String begin_phrase_alt = "Wir_haben_";
-  private static final String week_phrase_alt[] =
-      { "den_Anfang_des_Monats_", "die_Mitte_des_Monats_", "das_Ende_des_Monats_" };
-  private static final String year_phrase_alt = "_im_Jahre_";
-  private static final String age_phrase_alt = "_des_zweiten_Zeitalters.";
-
-  // alternative phrase 2
-  private static final String begin_phrase_alt2 = "Wir_schreiben_";
-  private static final String week_phrase_alt2[] =
-      { "die_erste_Woche_des_Monats_", "die_zweite_Woche_des_Monats_",
-          "die_letzte_Woche_des_Monats_" };
-  private static final String year_phrase_alt2 = "_im_Jahre_";
-  private static final String age_phrase_alt2 = "_des_zweiten_Zeitalters.";
-
-  // seasons
-  private static final String seasonPhrases[] =
-      { "Es_ist_Sommer", "Es_ist_Herbst", "Es_ist_Herbst", "Es_ist_Winter", "Es_ist_Winter",
-          "Es_ist_Winter", "Es_ist_Frühling", "Es_ist_Frühling", "Es_ist_Sommer" };
-
-  // private static int epochsBeginAt[] = {0, 1, 184};
   private int epoch = 1;
+  private int yearOffset = -1;
+  private int monthOffset = -1;
+  private int weekOffset = -1;
 
   /**
-   * Creates new EresseaDate
+   * Creates new EresseaDate.
    */
   public EresseaDate(int iInitDate) {
     super(iInitDate);
+  }
+
+  /**
+   * Creates new EresseaDate with adjustment. For example, the second age of Eressea started after
+   * the first week of the seventh month of the year 6, so it could be created with
+   * <code>EresseaDate(185, 6, 7, 1)</code> (but also with <code>EresseaDate(185)</code>, epoch 2.
+   * 
+   * @param iInitDate The date (as read from the report).
+   * @param yearOffset The year of week 1.
+   * @param monthOffset The month of week 1.
+   * @param weekOffset The week of week 1.
+   */
+  public EresseaDate(int iInitDate, int yearOffset, int monthOffset, int weekOffset) {
+    super(iInitDate);
+    this.yearOffset = yearOffset;
+    this.monthOffset = monthOffset;
+    this.weekOffset = weekOffset;
   }
 
   /**
@@ -95,13 +65,6 @@ public class EresseaDate extends Date {
    */
   public void setEpoch(int newEpoch) {
     epoch = newEpoch;
-
-    /*
-     * not such a bad idea, actually, but removed for vinyambar int round = getDate(); if (newEpoch
-     * > 0 && newEpoch < epochsBeginAt.length) { if (round < epochsBeginAt[newEpoch]) {
-     * setDate(epochsBeginAt[newEpoch]); } else if (newEpoch < epochsBeginAt.length - 1 && round >
-     * epochsBeginAt[newEpoch + 1]) { setDate(epochsBeginAt[newEpoch + 1]); } }
-     */
   }
 
   /**
@@ -138,8 +101,75 @@ public class EresseaDate extends Date {
         break;
       }
     } else if (getEpoch() >= 2) {
-      // second age
-      int iDate2 = iDate;
+      // second and third age
+      int iDate2 = getWeekFromStart();
+
+      int iWeek = iDate2 % 3;
+      String strWeek = Resources.get("rules.eresseadate.week_short." + (iWeek + 1));
+      String strMonth =
+          Resources.get("rules.eresseadate." + EresseaDate.months_new[(iDate2 / 3) % 9]);
+      int iYear = (iDate2 / 27) + 1;
+
+      switch (iDateType) {
+      default:
+      case Date.TYPE_SHORT: {
+        strDate = Resources.get("rules.eresseadate.type_short", strWeek, strMonth, iYear);
+      }
+        break;
+
+      case Date.TYPE_LONG: {
+        // select one of three phrases at random
+        int random = ((int) (java.lang.Math.random() * 3)) % 3;
+        String strWeekLong =
+            Resources.get("rules.eresseadate.week_long." + (iWeek + 1) + "." + random);
+        String strAge = Resources.get("rules.eresseadate.age_long." + getEpoch());
+        strDate =
+            Resources.get("rules.eresseadate.type_long." + random, strWeekLong, strMonth, iYear,
+                strAge);
+      }
+        break;
+
+      case TYPE_PHRASE: {
+        int random = ((int) (java.lang.Math.random() * 3)) % 3;
+        String strWeekLong =
+            Resources.get("rules.eresseadate.week_phrase." + (iWeek + 1) + "." + random);
+        String strAge = Resources.get("rules.eresseadate.age_phrase." + getEpoch());
+        strDate =
+            Resources.get("rules.eresseadate.type_phrase." + random, strWeekLong, strMonth, iYear,
+                strAge);
+      }
+        break;
+
+      case TYPE_PHRASE_AND_SEASON: {
+        int random = ((int) (java.lang.Math.random() * 3)) % 3;
+        String strWeekLong =
+            Resources.get("rules.eresseadate.week_phrase." + (iWeek + 1) + "." + random);
+        String strAge = Resources.get("rules.eresseadate.age_phrase." + getEpoch());
+        String strSeason = " " + Resources.get("rules.eresseadate.season_phrase." + getSeason());
+        strDate =
+            Resources.get("rules.eresseadate.type_phrase_season." + random, strWeekLong, strMonth,
+                iYear, strAge, strSeason);
+      }
+        break;
+      }
+    }
+    strDate = strDate.replaceAll("  ", " ");
+    return strDate;
+  }
+
+  /**
+   * Returns the difference to (year 0, week 27).
+   */
+  public int getWeekFromStart() {
+
+    int iDate2 = iDate;
+    if (yearOffset != -1) {
+      iDate2 -= 27 * (yearOffset);
+      iDate2 -= (monthOffset) * 3;
+      iDate2 -= weekOffset + 1;
+    } else {
+      if (getEpoch() == 1)
+        return iDate;
 
       if (getEpoch() == 2) {
         if (iDate2 >= 184) {
@@ -149,165 +179,26 @@ public class EresseaDate extends Date {
         iDate2 -= 1;
       }
 
-      if (iDate2 < 0) {
-        log.error("invalid date " + iDate);
-        iDate2 = Math.max(0, iDate2);
-      }
-
-      switch (iDateType) {
-      default:
-      case Date.TYPE_SHORT: {
-        int iWeek = (iDate2 % 3) + 1;
-        String strWeek = Resources.get("rules.eresseadate." + EresseaDate.week_short[iWeek - 1]);
-        String strMonth =
-            Resources.get("rules.eresseadate." + EresseaDate.months_new[(iDate2 / 3) % 9]);
-        int iYear = (iDate2 / 27) + 1;
-
-        // strDate = iWeek + " " + getString("._Woche_") +" " + strMonth +
-        // iYear;
-        strDate =
-            strWeek + " " + Resources.get("rules.eresseadate.Woche") + " " + strMonth + " "
-                + Resources.get("rules.eresseadate.Jahr") + " " + iYear;
-      }
-
-        break;
-
-      case Date.TYPE_LONG: {
-        int iWeek = iDate2 % 3;
-        String strMonth =
-            Resources.get("rules.eresseadate." + EresseaDate.months_new[(iDate2 / 3) % 9]);
-        int iYear = (iDate2 / 27) + 1;
-
-        switch (((int) (java.lang.Math.random() * 3)) % 3) {
-        default:
-        case 0:
-          strDate =
-              Resources.get("rules.eresseadate." + EresseaDate.week_long[iWeek]) + " " + strMonth
-                  + " " + Resources.get("rules.eresseadate." + EresseaDate.year_long) + " " + iYear
-                  + " " + Resources.get("rules.eresseadate." + EresseaDate.age_long);
-
-          break;
-
-        case 1:
-          strDate =
-              Resources.get("rules.eresseadate." + EresseaDate.week_long_alt[iWeek]) + " "
-                  + strMonth + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.year_long_alt) + " " + iYear
-                  + " " + Resources.get("rules.eresseadate." + EresseaDate.age_long_alt);
-
-          break;
-
-        case 2:
-          strDate =
-              Resources.get("rules.eresseadate." + EresseaDate.week_long_alt2[iWeek]) + " "
-                  + strMonth + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.year_long_alt2) + " " + iYear
-                  + " " + Resources.get("rules.eresseadate." + EresseaDate.age_long_alt2);
-
-          break;
-        }
-      }
-
-        break;
-
-      case TYPE_PHRASE: {
-        int iWeek = iDate2 % 3;
-        String strMonth =
-            Resources.get("rules.eresseadate." + EresseaDate.months_new[(iDate2 / 3) % 9]);
-        int iYear = (iDate2 / 27) + 1;
-
-        switch (((int) (java.lang.Math.random() * 3)) % 3) {
-        default:
-        case 0:
-          strDate =
-              Resources.get("rules.eresseadate." + EresseaDate.begin_phrase) + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.week_phrase[iWeek]) + " "
-                  + strMonth + " " + Resources.get("rules.eresseadate." + EresseaDate.year_phrase)
-                  + " " + iYear + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.age_phrase);
-
-          break;
-
-        case 1:
-          strDate =
-              Resources.get("rules.eresseadate." + EresseaDate.begin_phrase_alt) + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.week_phrase_alt[iWeek]) + " "
-                  + strMonth + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.year_phrase_alt) + " " + iYear
-                  + " " + Resources.get("rules.eresseadate." + EresseaDate.age_phrase_alt);
-
-          break;
-
-        case 2:
-          strDate =
-              Resources.get("rules.eresseadate." + EresseaDate.begin_phrase_alt2) + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.week_phrase_alt2[iWeek]) + " "
-                  + strMonth + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.year_phrase_alt2) + " "
-                  + iYear + " " + Resources.get("rules.eresseadate." + EresseaDate.age_phrase_alt2);
-
-          break;
-        }
-      }
-
-        break;
-
-      case TYPE_PHRASE_AND_SEASON: {
-        int iWeek = iDate2 % 3;
-        String strMonth =
-            Resources.get("rules.eresseadate." + EresseaDate.months_new[(iDate2 / 3) % 9]);
-        String season =
-            " " + Resources.get("rules.eresseadate." + EresseaDate.seasonPhrases[(iDate2 / 3) % 9]);
-        int iYear = (iDate2 / 27) + 1;
-
-        switch (((int) (java.lang.Math.random() * 3)) % 3) {
-        default:
-        case 0:
-          strDate =
-              Resources.get("rules.eresseadate." + EresseaDate.begin_phrase) + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.week_phrase[iWeek]) + " "
-                  + strMonth + " " + Resources.get("rules.eresseadate." + EresseaDate.year_phrase)
-                  + " " + iYear + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.age_phrase) + season;
-
-          break;
-
-        case 1:
-          strDate =
-              Resources.get("rules.eresseadate." + EresseaDate.begin_phrase_alt) + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.week_phrase_alt[iWeek]) + " "
-                  + strMonth + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.year_phrase_alt) + " " + iYear
-                  + " " + Resources.get("rules.eresseadate." + EresseaDate.age_phrase_alt) + " "
-                  + season;
-
-          break;
-
-        case 2:
-          strDate =
-              Resources.get("rules.eresseadate." + EresseaDate.begin_phrase_alt2) + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.week_phrase_alt2[iWeek]) + " "
-                  + strMonth + " "
-                  + Resources.get("rules.eresseadate." + EresseaDate.year_phrase_alt2) + " "
-                  + iYear + " " + Resources.get("rules.eresseadate." + EresseaDate.age_phrase_alt2)
-                  + season;
-
-          break;
-        }
-      }
-
-        break;
+      if (getEpoch() > 3) {
+        log.error("unknown epoch, we'll try our best...");
       }
     }
-    strDate = strDate.replaceAll("  ", " ");
-    return strDate;
+
+    if (iDate2 < 0) {
+      log.error("invalid date " + iDate);
+      iDate2 = Math.max(0, iDate2);
+    }
+
+    return iDate2;
   }
 
   /**
    * Creates a clone.
    */
-  public magellan.library.ID copy() {
-    return new EresseaDate(iDate);
+  public EresseaDate copy() {
+    EresseaDate date = new EresseaDate(iDate, yearOffset, monthOffset, weekOffset);
+    date.setEpoch(getEpoch());
+    return date;
   }
 
   /**
@@ -318,15 +209,7 @@ public class EresseaDate extends Date {
     if (getEpoch() < 2)
       return Date.UNKNOWN;
 
-    int time = iDate;
-
-    if (getEpoch() == 2) {
-      if (time >= 184) {
-        time -= 184;
-      }
-    } else if (getEpoch() == 3) {
-      time -= 1;
-    }
+    int time = getWeekFromStart();
 
     switch ((time / 3) % 9) {
     case 0:

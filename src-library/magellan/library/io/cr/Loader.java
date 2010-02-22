@@ -23,8 +23,6 @@ import magellan.library.io.file.CopyFile;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.io.file.PipeFileType;
-import magellan.library.utils.ReportMerger;
-import magellan.library.utils.ReportMerger.ReportTranslator;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -44,17 +42,7 @@ public class Loader {
    * @throws CloneNotSupportedException if cloning failed
    */
   public GameData cloneGameData(GameData data) throws CloneNotSupportedException {
-    return cloneGameData(data, new ReportMerger.IdentityTranslator());
-  }
-
-  /**
-   * @deprecated Use {@link #cloneGameData(GameData, ReportTranslator)}
-   */
-  @Deprecated
-  synchronized public GameData cloneGameDataInMemory(final GameData data,
-      final CoordinateID newOrigin) throws CloneNotSupportedException {
-    return cloneGameDataInMemory(data, new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID
-        .create(0, 0)));
+    return cloneGameData(data, CoordinateID.ZERO);
   }
 
   /**
@@ -66,7 +54,7 @@ public class Loader {
    * @throws CloneNotSupportedException if cloning failed
    */
   synchronized public GameData cloneGameDataInMemory(final GameData data,
-      final ReportTranslator coordinateTranslator) throws CloneNotSupportedException {
+      final CoordinateID newOrigin) throws CloneNotSupportedException {
     try {
       final PipeFileType filetype = new PipeFileType();
       filetype.setEncoding(data.getEncoding());
@@ -89,7 +77,7 @@ public class Loader {
 
         public void run() {
           try {
-            d[0] = r.readGameData(filetype, coordinateTranslator, data.getGameName());
+            d[0] = r.readGameData(filetype, newOrigin, data.getGameName());
             done = true;
           } catch (IOException e1) {
             e1.printStackTrace();
@@ -130,7 +118,7 @@ public class Loader {
    * @return a clone of the given GameData
    * @throws CloneNotSupportedException if cloning failed
    */
-  public GameData cloneGameData(GameData data, ReportTranslator coordinateTranslator)
+  public GameData cloneGameData(GameData data, CoordinateID newOrigin)
       throws CloneNotSupportedException {
     try {
       File tempFile = CopyFile.createCrTempFile();
@@ -148,7 +136,7 @@ public class Loader {
         crw.close();
       }
 
-      GameData newData = new GameDataReader(null).readGameData(filetype, coordinateTranslator);
+      GameData newData = new GameDataReader(null).readGameData(filetype, newOrigin);
       newData.setFileType(data.getFileType());
       tempFile.delete();
 

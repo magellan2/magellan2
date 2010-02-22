@@ -65,8 +65,8 @@ public class GameDataReader {
   /** @deprecated Use {@link #readGameData(FileType, ReportTranslator)} */
   @Deprecated
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin) throws IOException {
-    return readGameData(aFileType, new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID
-        .create(0, 0)));
+    return readGameData(aFileType,
+        new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
   }
 
   /**
@@ -95,8 +95,8 @@ public class GameDataReader {
   @Deprecated
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin, String gameName)
       throws IOException {
-    return readGameData(aFileType, new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID
-        .create(0, 0)), gameName);
+    return readGameData(aFileType,
+        new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID.ZERO), gameName);
   }
 
   /**

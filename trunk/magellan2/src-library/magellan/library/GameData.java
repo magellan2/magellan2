@@ -41,11 +41,9 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
-import magellan.library.utils.ReportMerger;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.Translations;
-import magellan.library.utils.ReportMerger.ReportTranslator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.logging.Logger;
@@ -985,38 +983,23 @@ public abstract class GameData implements Cloneable, Addeable {
   @Override
   public Object clone() throws CloneNotSupportedException {
     // return new Loader().cloneGameData(this);
-    return clone(new ReportMerger.IdentityTranslator());
+    return clone(CoordinateID.ZERO);
   }
 
   /** @deprecated Use {@link #clone(ReportTranslator)}. */
   @Deprecated
   public Object clone(CoordinateID newOrigin) throws CloneNotSupportedException {
-    return clone(new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
-  }
-
-  /**
-   * returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader) and at
-   * the same time translates the origin two <code>newOrigin</code>
-   * 
-   * @throws CloneNotSupportedException If cloning doesn't succeed
-   */
-  public Object clone(ReportMerger.ReportTranslator coordinateTranslator)
-      throws CloneNotSupportedException {
-    // if (newOrigin.x == 0 && newOrigin.y == 0) {
-    // GameData.log.info("no need to clone - same origin");
-    // return this.clone();
-    // }
     if (MemoryManagment.isFreeMemory(estimateSize() * 3)) {
       GameData.log.info("cloning in memory");
-      GameData clonedData = new Loader().cloneGameDataInMemory(this, coordinateTranslator);
+      GameData clonedData = new Loader().cloneGameDataInMemory(this, newOrigin);
       if (clonedData == null || clonedData.outOfMemory) {
         GameData.log.info("cloning externally after failed memory-clone-attempt");
-        clonedData = new Loader().cloneGameData(this, coordinateTranslator);
+        clonedData = new Loader().cloneGameData(this, newOrigin);
       }
       return clonedData;
     }
     GameData.log.info("cloning externally");
-    return new Loader().cloneGameData(this, coordinateTranslator);
+    return new Loader().cloneGameData(this, newOrigin);
 
   }
 

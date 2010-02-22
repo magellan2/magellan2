@@ -103,6 +103,8 @@ public class ReportMerger extends Object {
 
     private CoordinateID bestTranslation;
     private CoordinateID bestAstralTranslation;
+    private CoordinateID translate2;
+    private CoordinateID translate1;
 
     /**
      * @param bestTranslation
@@ -111,6 +113,8 @@ public class ReportMerger extends Object {
     public TwoLevelTranslator(CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
       this.bestTranslation = bestTranslation;
       this.bestAstralTranslation = bestAstralTranslation;
+      translate1 = CoordinateID.create(bestTranslation.getX(), bestTranslation.getY());
+      translate2 = CoordinateID.create(bestAstralTranslation.getX(), bestAstralTranslation.getY());
     }
 
     /**
@@ -119,9 +123,9 @@ public class ReportMerger extends Object {
      */
     public CoordinateID transform(CoordinateID c) {
       if (c.getZ() == bestTranslation.getZ())
-        return c.subtract(bestTranslation);
+        return c.subtract(translate1);
       if (c.getZ() == bestAstralTranslation.getZ())
-        return c.subtract(bestTranslation);
+        return c.subtract(translate2);
       return c;
     }
 
@@ -131,9 +135,9 @@ public class ReportMerger extends Object {
      */
     public CoordinateID inverseTransform(CoordinateID c) {
       if (c.getZ() == bestTranslation.getZ())
-        return c.translate(bestTranslation);
+        return c.translate(translate1);
       if (c.getZ() == bestAstralTranslation.getZ())
-        return c.translate(bestTranslation);
+        return c.translate(translate2);
       return c;
     }
 

@@ -2,7 +2,7 @@ package magellan.library.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,7 @@ import magellan.library.relation.UnitRelation;
 public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implements Related {
 
   /** Contains all attributes */
-  private Map<String, String> attributes = new HashMap<String, String>();
+  private Map<String, String> attributes = new LinkedHashMap<String, String>();
 
   /**
    * Constructs a new described object that is uniquely identifiable by the specified id.

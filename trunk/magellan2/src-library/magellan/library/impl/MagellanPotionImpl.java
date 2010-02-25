@@ -81,7 +81,7 @@ public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion 
    */
   public Item addIngredient(Item i) {
     if (ingredients == null) {
-      ingredients = new OrderedHashtable<ID, Item>();
+      ingredients = new OrderedHashtable<ID, Item>(4);
     }
 
     ingredients.put(i.getItemType().getID(), i);

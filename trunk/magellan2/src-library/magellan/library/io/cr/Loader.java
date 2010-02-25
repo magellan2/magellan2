@@ -23,9 +23,10 @@ import magellan.library.io.file.CopyFile;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.io.file.PipeFileType;
-import magellan.library.utils.ReportMerger;
-import magellan.library.utils.ReportMerger.ReportTranslator;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.transformation.IdentityTranslator;
+import magellan.library.utils.transformation.ReportTranslator;
+import magellan.library.utils.transformation.TwoLevelTranslator;
 
 /**
  * This used to be the Loader class. Now it only supports cloning via cr writing/reading
@@ -44,7 +45,7 @@ public class Loader {
    * @throws CloneNotSupportedException if cloning failed
    */
   public GameData cloneGameData(GameData data) throws CloneNotSupportedException {
-    return cloneGameData(data, new ReportMerger.IdentityTranslator());
+    return cloneGameData(data, new IdentityTranslator());
   }
 
   /**
@@ -53,8 +54,8 @@ public class Loader {
   @Deprecated
   synchronized public GameData cloneGameDataInMemory(final GameData data,
       final CoordinateID newOrigin) throws CloneNotSupportedException {
-    return cloneGameDataInMemory(data, new ReportMerger.TwoLevelTranslator(newOrigin,
-        CoordinateID.ZERO));
+    return cloneGameDataInMemory(data, new TwoLevelTranslator(newOrigin, CoordinateID
+        .ZERO));
   }
 
   /**
@@ -65,7 +66,7 @@ public class Loader {
    * @return A copy of data, translated by the translator.
    * @throws CloneNotSupportedException if cloning failed
    */
-  synchronized public GameData cloneGameDataInMemory(final GameData data,
+  public synchronized GameData cloneGameDataInMemory(final GameData data,
       final ReportTranslator coordinateTranslator) throws CloneNotSupportedException {
     try {
       final PipeFileType filetype = new PipeFileType();
@@ -101,8 +102,11 @@ public class Loader {
       ReadRunner runner = new ReadRunner(crReader, newData);
       new Thread(runner).start();
 
-      crw.writeSynchronously();
-      crw.close();
+      try {
+        crw.writeSynchronously();
+      } finally {
+        crw.close();
+      }
 
       while (!runner.finished()) {
         notifyAll();

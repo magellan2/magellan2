@@ -16,8 +16,7 @@ package magellan.library.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +39,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 
   private static Map<String, String> tagMap = null; // Map for external tags
   /** Contains all attributes */
-  private Map<String, String> attributes = new HashMap<String, String>();
+  private Map<String, String> attributes = new LinkedHashMap<String, String>();
 
   /**
    * Create a new <tt>Group</tt> object.
@@ -172,7 +171,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
    */
   public void addUnit(Unit u) {
     if (units == null) {
-      units = new Hashtable<ID, Unit>();
+      units = new LinkedHashMap<ID, Unit>();
 
       /* enforce the creation of a new collection view */
       unitCollection = null;
@@ -227,7 +226,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
    */
   public String putTag(String tag, String value) {
     if (MagellanGroupImpl.tagMap == null) {
-      MagellanGroupImpl.tagMap = new HashMap<String, String>(1);
+      MagellanGroupImpl.tagMap = new LinkedHashMap<String, String>(1);
     }
 
     return MagellanGroupImpl.tagMap.put(tag, value);
@@ -268,7 +267,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
    */
   public Map<String, String> getTagMap() {
     if (MagellanGroupImpl.tagMap == null) {
-      MagellanGroupImpl.tagMap = new HashMap<String, String>(1);
+      MagellanGroupImpl.tagMap = new LinkedHashMap<String, String>(1);
     }
 
     return Collections.unmodifiableMap(MagellanGroupImpl.tagMap);

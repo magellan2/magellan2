@@ -13,8 +13,8 @@
 
 package magellan.library.rules;
 
-import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import magellan.library.Item;
@@ -106,7 +106,7 @@ public class ItemType extends ObjectType {
    */
   public void addResource(Item i) {
     if (resources == null) {
-      resources = new Hashtable<StringID, Item>();
+      resources = new LinkedHashMap<StringID, Item>();
     }
 
     resources.put(i.getItemType().getID(), i);

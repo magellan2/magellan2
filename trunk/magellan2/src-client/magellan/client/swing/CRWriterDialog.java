@@ -1081,8 +1081,11 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       }
 
       ui.setProgress(Resources.get("crwriterdialog.progress.writing"), maxProgress / 2);
-      crw.writeSynchronously();
-      crw.close();
+      try {
+        crw.writeSynchronously();
+      } finally {
+        crw.close();
+      }
     } catch (Exception exc) {
       CRWriterDialog.log.error(exc);
       JOptionPane.showMessageDialog(this, Resources.get("crwriterdialog.msg.exporterror.text")

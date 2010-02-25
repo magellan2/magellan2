@@ -1147,6 +1147,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       System.setErr(LOG.getPrintStream());
 
       // logging with level warning to get this information even if user selected low debug level...
+      Logger.activateDefaultLogListener(true);
       Client.log.warn("Start writing error file with encoding " + LOG.encoding + ", log level "
           + Logger.getLevel(Logger.getLevel()));
 
@@ -1622,7 +1623,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public void setOrigin(CoordinateID newOrigin) {
     GameData newData = null;
     try {
-      newData = (GameData) getData().clone(newOrigin);
+      newData = getData().clone(newOrigin);
       if (newData == null)
         throw new NullPointerException();
       if (newData.outOfMemory) {
@@ -1837,8 +1838,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       title.append(" [").append(file).append("]");
     }
 
-    if (data.getOwnerFaction() != null && data.getFaction(data.getOwnerFaction()) != null) {
-      title.append("-").append(data.getFaction(data.getOwnerFaction()).toString());
+    if (data.getOwnerFaction() != null) {
+      title.append(" - ").append(data.getOwnerFaction().toString());
     }
 
     if (data.getDate() != null) {
@@ -2102,8 +2103,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     context.setGameData(newData);
     postProcessLoadedCR(newData);
 
-    if (newData != null && PropertiesHelper.getBoolean(getProperties(), "map.creating.void", false)) {
-      newData.postProcessTheVoid();
+    // postProceddTheVoid moved to GameData.postProcess:
+    if (newData != null
+        && !PropertiesHelper.getBoolean(getProperties(), "map.creating.void", false)) {
+      newData.removeTheVoid();
     }
 
     getDispatcher().fire(new GameDataEvent(this, newData));

@@ -22,10 +22,11 @@ import magellan.library.Rules;
 import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
 import magellan.library.utils.NullUserInterface;
-import magellan.library.utils.ReportMerger;
 import magellan.library.utils.UserInterface;
-import magellan.library.utils.ReportMerger.ReportTranslator;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.transformation.IdentityTranslator;
+import magellan.library.utils.transformation.ReportTranslator;
+import magellan.library.utils.transformation.TwoLevelTranslator;
 
 /**
  * The <code>GameDataReader</code> reads a <code>GameData</code> from a given <code>FileType</code>
@@ -59,14 +60,14 @@ public class GameDataReader {
    * @throws IOException iff something went wrong while reading the file.
    */
   public GameData readGameData(FileType aFileType) throws IOException {
-    return readGameData(aFileType, CoordinateID.ZERO);
+    return readGameData(aFileType, new IdentityTranslator());
   }
 
   /** @deprecated Use {@link #readGameData(FileType, ReportTranslator)} */
   @Deprecated
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin) throws IOException {
     return readGameData(aFileType,
-        new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
+        new TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
   }
 
   /**
@@ -78,7 +79,7 @@ public class GameDataReader {
    * @return a GameData object read from the cr or xml file.
    * @throws IOException If an I/O error occurs
    */
-  public GameData readGameData(FileType aFileType, ReportMerger.ReportTranslator translator)
+  public GameData readGameData(FileType aFileType, ReportTranslator translator)
       throws IOException {
     // a) read game name
     String gameName = GameNameReader.getGameName(aFileType);
@@ -96,7 +97,7 @@ public class GameDataReader {
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin, String gameName)
       throws IOException {
     return readGameData(aFileType,
-        new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID.ZERO), gameName);
+        new TwoLevelTranslator(newOrigin, CoordinateID.ZERO), gameName);
   }
 
   /**
@@ -109,7 +110,7 @@ public class GameDataReader {
    * @throws IOException If an I/O error occurs
    */
   public GameData readGameData(FileType aFileType,
-      ReportMerger.ReportTranslator coordinateTranslator, String gameName) throws IOException {
+      ReportTranslator coordinateTranslator, String gameName) throws IOException {
     if (aFileType.isXMLFile()) {
       GameData data = readGameDataXML(aFileType, gameName, coordinateTranslator);
 
@@ -160,7 +161,7 @@ public class GameDataReader {
    * Reads the game data from a CR file
    */
   protected GameData readGameDataCR(FileType aFileType, String aGameName) throws IOException {
-    return readGameDataCR(aFileType, aGameName, new ReportMerger.IdentityTranslator());
+    return readGameDataCR(aFileType, aGameName, new IdentityTranslator());
   }
 
   /**

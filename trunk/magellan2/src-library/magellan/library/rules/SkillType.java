@@ -13,7 +13,7 @@
 
 package magellan.library.rules;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import magellan.library.StringID;
@@ -21,7 +21,7 @@ import magellan.library.StringID;
 public class SkillType extends ObjectType {
   protected SkillCategory category;
   private int cost = 0;
-  Map<Integer, Integer> costMap = new HashMap<Integer, Integer>(0);
+  Map<Integer, Integer> costMap = new LinkedHashMap<Integer, Integer>(0);
 
   /**
    * Creates a new SkillType object.

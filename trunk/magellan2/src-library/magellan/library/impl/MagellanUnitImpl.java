@@ -17,10 +17,10 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -504,7 +504,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public Item addItem(Item i) {
     if (items == null) {
-      items = new OrderedHashtable<StringID, Item>();
+      items = new OrderedHashtable<StringID, Item>(4);
     }
 
     items.put(i.getItemType().getID(), i);
@@ -765,7 +765,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   private TempUnit addTemp(TempUnit u) {
     if (tempUnits == null) {
-      tempUnits = new Hashtable<ID, TempUnit>();
+      tempUnits = new LinkedHashMap<ID, TempUnit>();
 
       // enforce the creation of a new collection view
       tempUnitCollection = null;
@@ -2376,7 +2376,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     }
 
     if (tagMap == null) {
-      tagMap = new HashMap<String, String>(1);
+      tagMap = new LinkedHashMap<String, String>(1);
     }
 
     return tagMap.put(tag, value);
@@ -2417,7 +2417,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public Map<String, String> getTagMap() {
     if (tagMap == null) {
-      tagMap = new HashMap<String, String>(1);
+      tagMap = new LinkedHashMap<String, String>(1);
     }
 
     return Collections.unmodifiableMap(tagMap);

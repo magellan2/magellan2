@@ -11,9 +11,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -84,12 +83,13 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.OrderedHashtable;
-import magellan.library.utils.ReportMerger;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.UserInterface;
-import magellan.library.utils.ReportMerger.ReportTranslator;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.transformation.IdentityTranslator;
+import magellan.library.utils.transformation.ReportTranslator;
+import magellan.library.utils.transformation.TwoLevelTranslator;
 
 /**
  * Parser for cr-files.
@@ -129,7 +129,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * @param ui The UserInterface for the progress. Can be NULL. Then no operation is displayed.
    */
   public CRParser(UserInterface ui) {
-    this(ui, new ReportMerger.IdentityTranslator());
+    this(ui, new IdentityTranslator());
   }
 
   /**
@@ -137,7 +137,7 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   @Deprecated
   public CRParser(UserInterface ui, CoordinateID newOrigin) {
-    this(ui, new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
+    this(ui, new TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
   }
 
   /**
@@ -162,16 +162,67 @@ public class CRParser implements RulesIO, GameDataIO {
    * Translates c by newOrigin if it's in the same z-level and returns it.
    */
   CoordinateID originTranslate(CoordinateID c) {
-    // FIXME(stm) make wrapping-proof
     return translator.transform(c);
   }
 
+  protected static final String number = "[\\+\\-]?\\d+";
+  protected static String astral = Resources.get("rules.astralspacecoordinate");
+  protected static String pattern;
+  protected static String regionsPattern1;
+  protected static String regionsPattern2;
+  static {
+    buildPattern();
+  }
+
+  protected static void buildPattern() {
+    // check if locale has changed
+    if (pattern == null || !astral.equals(Resources.get("rules.astralspacecoordinate"))) {
+      astral = Resources.get("rules.astralspacecoordinate");
+      // \((number)\,\ ?(number)(\,\ ?((number)|Astralraum))?\)
+      // \(([\+\-]?\d+)\,\ ?([\+\-]?\d+)(\,\ ?(([\+\-]?\d+)|Astralraum))?\)
+      pattern =
+          "\\((" + number + ")\\,\\ ?(" + number + ")(\\,\\ ?((" + number + ")|" + astral
+              + "))?\\)";
+      // \(([\+\-]?\d+) ([\+\-]?\d+)( (([\+\-]?\d+)|Astralraum))?\)
+      regionsPattern1 =
+          "\\((" + number + ") (" + number + ")( ((" + number + ")|" + astral + "))?\\)";
+      // \(([\+\-]?\d+) ([\+\-]?\d+)( (([\+\-]?\d+)|Astralraum))?\)*
+      regionsPattern2 =
+          "\\((" + number + ") (" + number + ")( ((" + number + ")|" + astral + "))?\\)*";
+    }
+  }
+
   /**
-   * Translates c by -newOrigin if it's in the same z-level and returns it.
+   * special sub to translate coords in ";regions" tags of messages expecting this form
+   * <code>"x1 y1 z1, x2 y2 z2";regions</code>.<br />
+   * There is also an older variant: <code>"der Sumpf von Rudros (-7,23)";regions</code>
+   * 
+   * @param value
+   * @return
    */
-  CoordinateID inverseOriginTranslate(CoordinateID c) {
-    // FIXME(stm) make wrapping-proof
-    return translator.inverseTransform(c);
+  private String originTranslateRegions(String value) {
+    final StringBuffer result = new StringBuffer();
+    buildPattern();
+    String content = value.replace("\"", "");
+
+    if (content.matches(regionsPattern2)) {
+      final Matcher matcher = Pattern.compile(regionsPattern1).matcher(content);
+      while (matcher.find()) {
+        final String candi = matcher.group();
+        // candi=candi.replaceAll(astral,
+        // world.getGameSpecificStuff().getGameSpecificRules().getAstralSpacePlane());
+        CoordinateID coord = CoordinateID.parse(candi, " ");
+        if (coord != null) {
+          coord = originTranslate(coord);
+          matcher.appendReplacement(result, "(" + coord.toString(" ") + ")");
+        } else {
+          matcher.appendReplacement(result, matcher.group());
+        }
+      }
+      matcher.appendTail(result);
+      return result.toString();
+    } else
+      return originTranslate(content);
   }
 
   /**
@@ -179,25 +230,20 @@ public class CRParser implements RulesIO, GameDataIO {
    * occurrences of the form "(123,123)" or "(123,123,123)" or "(123,123,Astralraum)", transforms
    * them and replaces them. This is not completely fool-proof!
    * 
-   * @param string Usually a message text which might contain coordinates
-   * @deprecated We should rather use Message.render() for this purpose
+   * @param value Usually a message text which might contain coordinates
+   * @see magellan.library.utils.transformation.ReportTranslator#transform(java.lang.String)
    */
-  @Deprecated
-  private String originTranslate(String string) {
+  private String originTranslate(String value) {
     final StringBuffer result = new StringBuffer();
-    final String number = "[\\+\\-]?\\d+";
-    final String astral = Resources.get("rules.astralspacecoordinate");
-    final Matcher matcher =
-        Pattern.compile(
-            "\\((" + number + ")\\,\\ ?(" + number + ")(\\,\\ ?((" + number + ")|" + astral
-                + "))?\\)").matcher(string);
+    buildPattern();
+    final Matcher matcher = Pattern.compile(pattern).matcher(value);
     while (matcher.find()) {
       final String candi = matcher.group();
       // candi=candi.replaceAll(astral,
       // world.getGameSpecificStuff().getGameSpecificRules().getAstralSpacePlane());
       CoordinateID coord = CoordinateID.parse(candi.substring(1, candi.length() - 1), ",");
       if (coord != null) {
-        coord = originTranslate(coord);
+        coord = translator.transform(coord);
         matcher.appendReplacement(result, "(" + coord.toString() + ")");
       } else {
         matcher.appendReplacement(result, matcher.group());
@@ -205,53 +251,6 @@ public class CRParser implements RulesIO, GameDataIO {
     }
     matcher.appendTail(result);
     return result.toString();
-  }
-
-  /**
-   * special sub to translate coords in ";regions" tags of messages expecting this form
-   * "x1 y1 z1, x2 y2 z2";regions
-   * 
-   * @param string
-   * @return
-   */
-  private String originTranslateRegions(String string) {
-    String result = string;
-    String helper = "";
-    boolean didSomething = false;
-    result = result.replace("\"", "");
-    if (result.length() < 3)
-      return string;
-    if (result.indexOf(",") > 0) {
-      // Split it
-      final String[] s = result.split(",");
-      for (String element : s) {
-        String sC = element;
-        CoordinateID c = CoordinateID.parse(sC, " ");
-        if (c != null) {
-          // we got valid coordinates - translate it
-          c = originTranslate(c);
-          didSomething = true;
-          sC = c.toString(" ", true);
-        }
-        // , between coords
-        if (helper.length() > 0) {
-          helper = helper.concat(", ");
-        }
-        helper = helper.concat(sC);
-      }
-    } else {
-      CoordinateID c = CoordinateID.parse(result, " ");
-      if (c != null) {
-        c = originTranslate(c);
-        didSomething = true;
-        helper = c.toString(" ", true);
-      }
-    }
-
-    if (!didSomething)
-      return string;
-
-    return helper;
   }
 
   /**
@@ -537,7 +536,7 @@ public class CRParser implements RulesIO, GameDataIO {
     s.setUnit(unit);
 
     if (unit.getCombatSpells() == null) {
-      unit.setCombatSpells(new Hashtable<ID, CombatSpell>());
+      unit.setCombatSpells(new LinkedHashMap<ID, CombatSpell>());
     }
 
     unit.getCombatSpells().put(s.getID(), s);
@@ -746,7 +745,7 @@ public class CRParser implements RulesIO, GameDataIO {
           spell.setIsFar(Integer.parseInt(sc.argv[0]) != 0);
           sc.getNextToken();
         } else if (sc.isBlock && sc.argv[0].equals("KOMPONENTEN")) {
-          final Map<String, String> map = new Hashtable<String, String>();
+          final Map<String, String> map = new LinkedHashMap<String, String>();
           sc.getNextToken(); // skip KOMPONENTEN
 
           while (!sc.eof && !sc.isBlock && (sc.argc == 2)) {
@@ -859,7 +858,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * @throws IOException If an I/O error occurs
    */
   public synchronized Map<String, Object> readHeader(Reader in) throws java.io.IOException {
-    final Map<String, Object> map = new HashMap<String, Object>();
+    final Map<String, Object> map = new LinkedHashMap<String, Object>();
     sc = new Scanner(in);
     sc.getNextToken();
 
@@ -1689,12 +1688,13 @@ public class CRParser implements RulesIO, GameDataIO {
             world.base);
     sc.getNextToken();
 
-    CoordinateID translation = null;
-
     while (!sc.eof) {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("translation")) {
-        translation = CoordinateID.parse(sc.argv[0], " ");
-        translation = inverseOriginTranslate(translation);
+        CoordinateID translation = CoordinateID.parse(sc.argv[0], " ");
+        // first mirror the translation at the origin (of the correct layer!), then translate, then
+        // mirror again:
+        CoordinateID zero = CoordinateID.create(0, 0, translation.getZ() * 2);
+        translation = zero.subtract(originTranslate(zero.subtract(translation)));
         world.setCoordinateTranslation(id, translation);
         sc.getNextToken();
       } else if (!sc.isBlock) {
@@ -1837,7 +1837,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * block.
    */
   private Map<EntityID, Alliance> parseAlliierte() throws IOException {
-    final Map<EntityID, Alliance> allies = new Hashtable<EntityID, Alliance>();
+    final Map<EntityID, Alliance> allies = new LinkedHashMap<EntityID, Alliance>();
     sc.getNextToken(); // skip "ALLIERTE" tag
 
     while (!sc.eof && !sc.isBlock) {
@@ -3065,6 +3065,9 @@ public class CRParser implements RulesIO, GameDataIO {
     }
   }
 
+  /**
+   * DOCUMENT-ME What is a "SPEZIALREGION"?
+   */
   private Region parseSpecialRegion(Region specialRegion) throws IOException {
     int unitSortIndex = 0;
     sc.getNextToken(); // skip "SPEZIALREGION x y"
@@ -3197,7 +3200,6 @@ public class CRParser implements RulesIO, GameDataIO {
     // add scheme region as a normal region with unknown region type
     if (world.getRegion(c) == null) {
       final Region newRegion = MagellanFactory.createRegion(c, world);
-      newRegion.setType(RegionType.unknown);
       newRegion.setName(scheme.getName());
       world.addRegion(newRegion);
     }
@@ -3277,7 +3279,7 @@ public class CRParser implements RulesIO, GameDataIO {
     // FIXME(stm) this could be too soon if called via the load menu!
     ui.ready();
 
-    CRParser.log.info("Done reading.");
+    CRParser.log.fine("Done reading.");
 
     return world;
   }

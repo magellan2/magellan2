@@ -16,8 +16,7 @@ package magellan.library.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +37,7 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
   /** The game data required to construct the collection of regions belonging to this island. */
   private GameData data = null;
   /** Contains all attributes */
-  private Map<String, String> attributes = new HashMap<String, String>();
+  private Map<String, String> attributes = new LinkedHashMap<String, String>();
 
   /**
    * Constructs a new Island object uniquely identifiable by the specified id.
@@ -120,7 +119,7 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
    */
   private void refreshRegions() {
     if (regions == null) {
-      regions = new Hashtable<CoordinateID, Region>();
+      regions = new LinkedHashMap<CoordinateID, Region>();
     } else {
       regions.clear();
     }

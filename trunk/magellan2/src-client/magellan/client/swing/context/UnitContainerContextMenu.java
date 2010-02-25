@@ -136,7 +136,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
     // context.unitcontainercontextmenu.menu.copyidandnameanduid.caption
     if (uc instanceof Region) {
       Region r = (Region) uc;
-      if (r.getUID() > 0) {
+      if (r.hasUID()) {
         JMenuItem copyNameRegionID =
             new JMenuItem(Resources
                 .get("context.unitcontainercontextmenu.menu.copynameanduid.caption"));

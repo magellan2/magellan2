@@ -1,3 +1,11 @@
+2009-02-25 / Build 408 - stm (stm_@users.sourceforge.net)
+    * added RegionType.unknown and RegionType.thevoid
+    * changed some HashMaps to the order-preserving LinkedHashMap
+    * added Region.hasUID()
+    * expanded GameDataMerger to support translations of both reports in order to...
+    * ...enable merging of torus-worlds
+    * fixed ObiWan bug in JECheck
+
 2009-02-19 / Build 406 - stm (stm_@users.sourceforge.net)
     * added more log levels to Logger
 

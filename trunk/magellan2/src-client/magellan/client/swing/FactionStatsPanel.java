@@ -137,12 +137,15 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     /**
      * Don't clear factions as the SelectionEvent of the updated List in FactionStatsDialog might be
-     * processed befor the GameDataEvent
+     * processed before the GameDataEvent
      */
 
     // factions.clear();
     if (data != null) {
       unitsTools.setRules(data.rules);
+    // FIXME need to clear, or updateTree may be called on invalid faction list...
+//      factions.clear();
+//      regions.clear();
       setRegions(data.getRegions());
     }
   }
@@ -166,7 +169,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
 
       /**
-       * Ulrich Küster: (!) Special care has to be taken. Generelly it can not be differed, if
+       * Ulrich Küster: (!) Special care has to be taken. Generally it can not be differed, if
        * SelectionEvents come from the faction list in FactionStatsDialog or from other components
        * of Magellan (except if a special SelectionType has been defined in SelectionEvent and is
        * used). To keep the faction list in FactionStatsDialog consistent to the displayed data in
@@ -178,7 +181,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   }
 
   /**
-   * Sets the set of factions to display to fs and updates the panel contents.
+   * Sets the set of factions to display and updates the panel contents.
    */
   public void setFactions(Collection<Faction> fs) {
     factions.clear();

@@ -109,4 +109,9 @@ public interface GameSpecificRules {
    */
   public int getMaxHorsesRiding(Unit u);
 
+  // /**
+  // * Returns true, if the world wraps around at x- or y-coordinates.
+  // */
+  // public boolean isToroidal();
+
 }

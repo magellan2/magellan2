@@ -14,8 +14,8 @@
 package magellan.library.rules;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 import magellan.library.ID;
 
@@ -82,7 +82,7 @@ public abstract class Category extends ObjectType {
    */
   public Collection<Category> getChildren() {
     if (children == null) {
-      children = new HashSet<Category>();
+      children = new LinkedHashSet<Category>();
     }
 
     return children;
@@ -113,7 +113,7 @@ public abstract class Category extends ObjectType {
    */
   public Collection<Object> getInstances() {
     if (data == null) {
-      data = new HashSet<Object>();
+      data = new LinkedHashSet<Object>();
     }
 
     return data;

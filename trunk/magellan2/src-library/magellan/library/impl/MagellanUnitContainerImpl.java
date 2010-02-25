@@ -16,8 +16,8 @@ package magellan.library.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -152,7 +152,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public Item addItem(Item i) {
     if (items == null) {
-      items = new OrderedHashtable<ID, Item>();
+      items = new OrderedHashtable<ID, Item>(3);
     }
 
     items.put(i.getItemType().getID(), i);
@@ -482,7 +482,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public String putTag(String tag, String value) {
     if (tagMap == null) {
-      tagMap = new HashMap<String, String>(1);
+      tagMap = new LinkedHashMap<String, String>(1);
     }
 
     return tagMap.put(tag, value);
@@ -523,7 +523,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public Map<String, String> getTagMap() {
     if (tagMap == null) {
-      tagMap = new HashMap<String, String>(1);
+      tagMap = new LinkedHashMap<String, String>(1);
     }
 
     return Collections.unmodifiableMap(tagMap);

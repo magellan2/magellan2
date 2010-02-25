@@ -52,7 +52,8 @@ public class TopmostRankedSkillComparator implements Comparator<Map<? extends ID
   }
 
   /**
-   * Compares its two arguments for order according to their skills.
+   * Compares its two arguments for order according to their skills. Undefined values are evaluated
+   * as <code>&gt; 0</code>.
    */
   public int compare(Map<? extends ID, Skill> o1, Map<? extends ID, Skill> o2) {
     int retVal = 0;

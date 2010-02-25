@@ -38,7 +38,7 @@ public class AllianceFactionComparator implements Comparator<Alliance> {
    * Compares its two arguments for order with regard to their trust levels.
    * 
    * @return the result of the faction comparator applied to the factions of the alliances o1 and
-   *         o2.
+   *         o2. Undefined values are evaluated as <code>&gt; 0</code>.
    */
   public int compare(Alliance a1, Alliance a2) {
     if (a1 == null)

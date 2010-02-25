@@ -50,7 +50,8 @@ public class ToStringComparator<T extends Object> implements Comparator<T> {
    * @param o2 an instance of interface Named.
    * @return the lexical difference of <tt>o1</tt>'s and <tt>o2</tt>'s names as returned by
    *         String.compareTo(). If the names are equal and a sub-comparator was specified, the
-   *         result of that sub-comparator's comparison is returned.
+   *         result of that sub-comparator's comparison is returned. Undefined values are evaluated
+   *         as <code>&gt; 0</code>.
    */
   public int compare(T o1, T o2) {
     String n1 = o1.toString();

@@ -49,7 +49,8 @@ public class ShipFactionComparator implements Comparator<Ship> {
    * 
    * @return the natural ordering of <tt>o1</tt>'s and <tt>o2</tt>'s types as returned by
    *         BuildingType.compareTo(). If the types are equal and a sub-comparator was specified,
-   *         the result of that sub-comparator's comparison is returned.
+   *         the result of that sub-comparator's comparison is returned. Unlike other comparators in
+   *         this package, undefined values (i.e., owners) are evaluated as <code>&lt; 0</code>.
    */
   public int compare(Ship o1, Ship o2) {
     Unit u1 = o1.getOwner();

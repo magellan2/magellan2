@@ -25,6 +25,7 @@ public class IDComparator implements Comparator<Unique> {
    * Creates a new IDComparator object.
    */
   private IDComparator() {
+    // private -- singleton
   }
 
   /** The default IDComparator. We only has extrinsic state so we can use singleton here. */

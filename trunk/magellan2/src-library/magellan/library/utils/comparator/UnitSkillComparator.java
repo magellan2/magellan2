@@ -54,6 +54,7 @@ public class UnitSkillComparator implements Comparator<Unit> {
    * @return a number &lt; 0 if o1's best skill is alphabetically less than o2's best skill. If both
    *         units have the same best skill these are compared using the standard skill comparator.
    *         If these two values are the same, the subcomparator is used to compare the two units.
+   *         Unknown values are evaluated as <code>&gt; 0</code>.
    */
   public int compare(Unit o1, Unit o2) {
     int retVal = 0;

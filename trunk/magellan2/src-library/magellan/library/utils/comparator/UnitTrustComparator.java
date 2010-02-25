@@ -42,11 +42,11 @@ public class UnitTrustComparator implements Comparator<Unit> {
     subCmp = subComparator;
   }
 
-  /** DOCUMENT-ME */
+  /** The comparator without subComparator, used as fall back. */
   public static final UnitTrustComparator DEFAULT_COMPARATOR = new UnitTrustComparator(null);
 
   /**
-   * Compares its two arguments for order according to the health-status
+   * Compares its two arguments for order according to their factions' trust levels.
    */
   public int compare(Unit o1, Unit o2) {
     int ret = FactionTrustComparator.DEFAULT_COMPARATOR.compare(o1.getFaction(), o2.getFaction());

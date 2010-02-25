@@ -70,13 +70,14 @@ public class FactionTrustComparator implements Comparator<Faction> {
   public static final int ENEMY = Faction.TL_DEFAULT - 1;
 
   /**
-   * Compares its two arguments for order with regard to their trust levels.
+   * Compares its two arguments for order with regard to their trust levels (one of
+   * {@link #PRIVILEGED}, {@link #ALLIED}, {@link #DEFAULT}, or {@link #ENEMY}.
    * 
    * @param o1
    * @param o2
    * @return the difference of <tt>o2</tt>'s and <tt>o1</tt>'s trust level values. If this is 0 and
    *         a sub-comparator is specified, the result of that sub-comparator's comparison is
-   *         returned.
+   *         returned. Unknown values are evaluated as > 0.
    */
   public int compare(Faction o1, Faction o2) {
     // owner faction should always be first

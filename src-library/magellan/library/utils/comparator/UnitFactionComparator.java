@@ -52,7 +52,8 @@ public class UnitFactionComparator implements Comparator<Unit> {
    * 
    * @return the result of the faction comparator's comparison of <tt>o1</tt>'s and <tt>o2</tt>. If
    *         both belong to the same faction and a sub-comparator was specified, the result that
-   *         sub-comparator's comparison is returned.
+   *         sub-comparator's comparison is returned. Undefined values are evaluated as
+   *         <code>&gt; 0</code>.
    */
   public int compare(Unit o1, Unit o2) {
     int retVal = 0;

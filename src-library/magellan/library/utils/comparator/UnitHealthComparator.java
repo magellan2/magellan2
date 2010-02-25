@@ -43,7 +43,8 @@ public class UnitHealthComparator implements Comparator<Unit> {
   }
 
   /**
-   * Compares its two arguments for order according to the health-status
+   * Compares its two arguments for order according to the health-status. Unlike other comparators
+   * in this package, unknown values are evaluated as <code>&lt; 0</code>.
    */
   public int compare(Unit u1, Unit u2) {
     int retVal = 0;
@@ -52,6 +53,8 @@ public class UnitHealthComparator implements Comparator<Unit> {
 
     if (health1 == null) {
       if (health2 != null) {
+        // we deviate from the common pattern of returning >0 for null values, because units with
+        // full health have a null value, too.
         retVal = Integer.MIN_VALUE;
       } else
         return 0;

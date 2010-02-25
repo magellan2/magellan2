@@ -44,7 +44,8 @@ public class MessageTypeComparator implements Comparator<Message> {
   /**
    * Compares its two arguments for order according to their types
    * 
-   * @return the result specified message type comparator.
+   * @return the result of the specified message type comparator. Undefined values are evaluated as
+   *         <code>&gt; 0</code>.
    */
   public int compare(Message o1, Message o2) {
     MessageType t1 = o1.getMessageType();

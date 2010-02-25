@@ -66,7 +66,7 @@ public class SkillRankComparator implements Comparator<Skill> {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
    */
   public int compare(Skill o1, Skill o2) {
     s1 = o1.getSkillType();

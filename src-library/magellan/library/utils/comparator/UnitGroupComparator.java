@@ -59,7 +59,8 @@ public class UnitGroupComparator implements Comparator<Unit> {
    * @return the difference of <tt>o1</tt>'s and <tt>o2</tt>'s group ids. If both belong to the same
    *         group and a sub-comparator was specified, the result that sub-comparator's comparison
    *         is returned. If both units do not belong to any group and a no-group sub-comparator was
-   *         specified, the result of that sub-comparator's comparison is returned.
+   *         specified, the result of that sub-comparator's comparison is returned. Undefined values
+   *         are evaluated as <code>&gt; 0</code>.
    */
   public int compare(Unit o1, Unit o2) {
     Group g1 = o1.getGroup();

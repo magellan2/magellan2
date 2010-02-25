@@ -48,7 +48,8 @@ public class MessageTypeSectionComparator implements Comparator<MessageType> {
    * 
    * @return the result of the String.compareTo() method applied to <tt>o1</tt>'s and <tt>o2</tt>.
    *         If both belong to the same section and a sub-comparator was specified, the result that
-   *         sub-comparator's comparison is returned.
+   *         sub-comparator's comparison is returned. Undefined values are evaluated as
+   *         <code>&gt; 0</code>.
    */
   public int compare(MessageType o1, MessageType o2) {
     String s1 = o1.getSection();

@@ -55,20 +55,17 @@ public class BestSkillComparator implements Comparator<Map<? extends ID, Skill>>
    * Compares its two arguments for order according to their skills.
    * 
    * @return the result of the skill comparator applied to the - according to the best comparator -
-   *         smallest skills in o1 and o2.
+   *         smallest skills in o1 and o2. Undefined values are evaluated as <code>&gt; 0</code>.
    */
   public int compare(Map<? extends ID, Skill> o1, Map<? extends ID, Skill> o2) {
     int retVal = 0;
     Skill s1 = getBestSkill(o1);
     Skill s2 = getBestSkill(o2);
 
-    // E e1 = (E)o1;
-    // E e2 = (E)o2;
-
     if ((s1 == null) && (s2 != null)) {
-      retVal = Integer.MIN_VALUE;
-    } else if ((s1 != null) && (s2 == null)) {
       retVal = Integer.MAX_VALUE;
+    } else if ((s1 != null) && (s2 == null)) {
+      retVal = Integer.MIN_VALUE;
     } else if ((s1 == null) && (s2 == null)) {
       if (subCmp != null) {
         retVal = subCmp.compare(s1, s2);

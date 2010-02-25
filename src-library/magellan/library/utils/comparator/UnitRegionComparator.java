@@ -48,7 +48,8 @@ public class UnitRegionComparator implements Comparator<Unit> {
    * 
    * @return the result of the region sub-comparator applied to the regions of the the two units o1
    *         and o2 or the result of the sameRegion sub-comparator if the afore-said comparator
-   *         regards the units' regions as equal.
+   *         regards the units' regions as equal. Unknown values are evaluated as
+   *         <code>&gt; 0</code>.
    */
   public int compare(Unit o1, Unit o2) {
     int retVal = 0;

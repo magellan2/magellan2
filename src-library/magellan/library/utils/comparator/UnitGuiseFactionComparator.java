@@ -53,20 +53,14 @@ public class UnitGuiseFactionComparator implements Comparator<Unit> {
    * 
    * @return the result of the faction comparator's comparison of <tt>o1</tt>'s and <tt>o2</tt>. If
    *         are disguised as the same faction and a sub-comparator was specified, the result that
-   *         sub-comparator's comparison is returned.
+   *         sub-comparator's comparison is returned. Unknown values are evaluated as
+   *         <code>&gt; 0</code>.
    */
   public int compare(Unit o1, Unit o2) {
     int retVal = 0;
 
     Faction f1 = o1.getGuiseFaction();
     Faction f2 = o2.getGuiseFaction();
-
-    // if (f1==null){
-    // f1 = o1.getFaction();
-    // }
-    // if (f2==null){
-    // f2 = o2.getFaction();
-    // }
 
     if (f1 == null) {
       if (f2 == null) {

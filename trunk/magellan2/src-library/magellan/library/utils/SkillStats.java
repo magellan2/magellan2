@@ -26,11 +26,11 @@ import magellan.library.rules.SkillType;
 import magellan.library.utils.comparator.SkillComparator;
 
 /**
- * DOCUMENT ME!
+ * A class for holding statistic information about units and their skills like number of persons
+ * with a specified skill or total skillpoints or things like that. Units can be added by a call to
+ * the addUnit-Method but not removed.
  * 
- * @author Ulrich Küster a class for holding statistic information about units and their skills like
- *         number of persons with a specified skill or total skillpoints or things like that. Units
- *         can be added by a call to the addUnit-Method but not removed.
+ * @author Ulrich Küster
  */
 public class SkillStats {
   /**

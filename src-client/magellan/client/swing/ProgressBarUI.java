@@ -352,6 +352,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
       }
 
       initComponents();
+      super.setFocusableWindowState(false);
       setLocationRelativeTo(getParent());
       pack();
     }

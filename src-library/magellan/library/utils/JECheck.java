@@ -498,7 +498,7 @@ public class JECheck extends Reader {
      */
     lnr = new LineNumberReader(new FileReader(orderFile));
 
-    for (line = lnr.readLine(); (line != null) && lnr.ready(); line = lnr.readLine()) {
+    for (line = lnr.readLine(); (line != null); line = lnr.readLine()) {
       orders.add(line);
     }
 
@@ -711,7 +711,7 @@ public class JECheck extends Reader {
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns the line where the error was. Line numbers start with 1!
      */
     public int getLineNr() {
       return lineNr;

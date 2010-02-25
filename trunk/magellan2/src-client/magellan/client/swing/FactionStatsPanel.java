@@ -1339,6 +1339,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
           // now sort the units and add them as nodes...
           Comparator<Unique> idCmp = IDComparator.DEFAULT;
+          // TODO(stm) using SpecifiedSkillTypeSkillComp here seems pretty pointless, as all units
+          // have the same value in the specified skill
           Comparator<Unit> unitCmp =
               new UnitSkillComparator(new SpecifiedSkillTypeSkillComparator(type,
                   new SkillComparator(), null), idCmp);

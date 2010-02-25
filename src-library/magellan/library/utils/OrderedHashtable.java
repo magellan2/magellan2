@@ -31,7 +31,7 @@ import java.util.Set;
  * A Hashtable implementation maintaining the values in the order they were inserted. Note that the
  * order is only maintained on the put() and get() functions and the ordered values can only be
  * accessed through the values() function. All other methods that operate on other Maps or on keys
- * do not provide any garuantee for the ordering of the values if not otherwise mentioned. Further
+ * do not provide any guarantee for the ordering of the values if not otherwise mentioned. Further
  * note that in order to maintain the order of the values additional space and time overhead is
  * introduced to the standard Hashtable implementation. This object should be threadsafe, every
  * value changing method is synchronized.

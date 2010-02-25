@@ -25,7 +25,7 @@ package magellan.library.rules;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import magellan.library.ID;
@@ -53,7 +53,7 @@ public abstract class ConstructibleType extends UnitContainerType {
    */
   public void addRawMaterial(Item i) {
     if (rawMaterials == null) {
-      rawMaterials = new Hashtable<StringID, Item>();
+      rawMaterials = new LinkedHashMap<StringID, Item>();
     }
 
     rawMaterials.put(i.getItemType().getID(), i);
@@ -86,7 +86,7 @@ public abstract class ConstructibleType extends UnitContainerType {
    */
   public void addMaintenance(Item i) {
     if (maintenance == null) {
-      maintenance = new Hashtable<StringID, Item>();
+      maintenance = new LinkedHashMap<StringID, Item>();
     }
 
     maintenance.put(i.getItemType().getID(), i);

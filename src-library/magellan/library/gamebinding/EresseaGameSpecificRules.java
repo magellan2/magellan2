@@ -226,4 +226,11 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     }
     return (skillLevel * u.getModifiedPersons() * 2);
   }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#isToroidal()
+   */
+  public boolean isToroidal() {
+    return false;
+  }
 }

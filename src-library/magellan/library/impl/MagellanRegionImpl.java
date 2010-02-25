@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +52,7 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Units;
+import magellan.library.utils.logging.Logger;
 
 // Fiete 20080806: prepare for loosing special info in CR
 // pre eressearound 570+(?) we have ;silber as region tag
@@ -65,6 +66,8 @@ import magellan.library.utils.Units;
  * @version $Revision: 356 $
  */
 public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Region {
+  private static final Logger log = Logger.getInstance(MagellanUnitContainerImpl.class);
+
   /** DOCUMENT-ME */
   private int trees = -1;
 
@@ -170,7 +173,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * the unique regionID generated and sent by the eressea server starting with turn 570
    */
-  private long UID = 0;
+  private long UID = Integer.MIN_VALUE;
 
   /**
    * Constructs a new Region object uniquely identifiable by the specified id.
@@ -432,7 +435,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
         resourceCollection = Collections.emptySet();
       } else {
         resourceCollection =
-            Collections.unmodifiableCollection(new HashSet<RegionResource>(resources.values()));
+            Collections
+                .unmodifiableCollection(new LinkedHashSet<RegionResource>(resources.values()));
       }
     }
 
@@ -634,7 +638,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       throw new NullPointerException();
 
     if (borders == null) {
-      borders = new OrderedHashtable<ID, Border>();
+      borders = new OrderedHashtable<ID, Border>(2);
 
       // enforce the creation of a new collection view
       // AG: Since we just create if the scheme map is non-null not necessary
@@ -702,7 +706,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public void addShip(Ship s) {
     if (ships == null) {
-      ships = new Hashtable<ID, Ship>();
+      ships = new LinkedHashMap<ID, Ship>();
 
       // enforce the creation of a new collection view
       // AG: Since we just create if the ship map is non-null not necessary
@@ -766,7 +770,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public void addBuilding(Building u) {
     if (buildings == null) {
-      buildings = new Hashtable<ID, Building>();
+      buildings = new LinkedHashMap<ID, Building>();
 
       // enforce the creation of a new collection view
       // AG: Since we just create if the builing map is non-null not necessary
@@ -865,7 +869,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (getCache().regionItems != null) {
       getCache().regionItems.clear();
     } else {
-      getCache().regionItems = new Hashtable<ID, Item>();
+      getCache().regionItems = new LinkedHashMap<ID, Item>();
     }
 
     for (Unit u : units()) {
@@ -896,7 +900,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (getCache().allRegionItems != null) {
       getCache().allRegionItems.clear();
     } else {
-      getCache().allRegionItems = new Hashtable<ID, Item>();
+      getCache().allRegionItems = new LinkedHashMap<ID, Item>();
     }
 
     for (Unit u : units()) {
@@ -1147,7 +1151,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (neighbors == null) {
       neighbors = null;
     } else {
-      HashMap<Direction, Region> newNeighbors = new HashMap<Direction, Region>();
+      HashMap<Direction, Region> newNeighbors = new LinkedHashMap<Direction, Region>();
       for (CoordinateID id : neighbours) {
         Direction dir = Direction.toDirection(getCoordinate(), id);
         Region r = data.getRegion(id);
@@ -1166,7 +1170,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (neighbors == null) {
       this.neighbors = null;
     } else {
-      this.neighbors = new HashMap<Direction, Region>(neighbors);
+      this.neighbors = new LinkedHashMap<Direction, Region>(neighbors);
     }
   }
 
@@ -1177,7 +1181,21 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (neighbors == null) {
       neighbors = evaluateNeighbours();
     }
+    if (getData() != newNeighbor.getData()) {
+      log.warn("neighbor not in same data!");
+    }
     return neighbors.put(dir, newNeighbor);
+  }
+
+  /**
+   * @see magellan.library.Region#addNeighbor(magellan.library.utils.Direction,
+   *      magellan.library.Region)
+   */
+  public Region removeNeighbor(Direction dir) {
+    if (neighbors == null) {
+      neighbors = evaluateNeighbours();
+    }
+    return neighbors.remove(dir);
   }
 
   /**
@@ -1939,6 +1957,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public void setCoastBitMap(Integer bitMap) {
     coastBitMask = bitMap;
+  }
+
+  public boolean hasUID() {
+    return UID != Integer.MIN_VALUE;
   }
 
   /**

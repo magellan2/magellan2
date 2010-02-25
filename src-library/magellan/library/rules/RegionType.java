@@ -26,12 +26,15 @@ import magellan.library.utils.Resources;
  */
 public class RegionType extends UnitContainerType {
   /** A static instance of the unknown region type */
-  public static RegionType unknown = new RegionType(EresseaConstants.RT_VOID);
+  public static RegionType unknown = new RegionType(EresseaConstants.RT_UNKNOWN);
+  /** A static instance of the unknown region type */
+  public static RegionType theVoid = new RegionType(EresseaConstants.RT_VOID);
   /** A static instance of the wrapping region type */
   public static RegionType wrap = new RegionType(EresseaConstants.RT_WRAP);
   static {
-    unknown.setName(Resources.get("completedata.region.thevoid.name"));
-    wrap.setName(Resources.get("completedata.region.wrap.name"));
+    unknown.setName(Resources.get("gamedata.region.unknown.name"));
+    theVoid.setName(Resources.get("gamedata.region.thevoid.name"));
+    wrap.setName(Resources.get("gamedata.region.wrap.name"));
   }
   private int inhabitants = -1;
 

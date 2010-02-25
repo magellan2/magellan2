@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,78 @@ public class EresseaPostProcessor {
     resolveWraparound(data);
 
     cleanAstralSchemes(data);
+
+    postProcessMessages(data);
+
+    /*
+     * retrieve the temp units mentioned in the orders and create them as TempUnit objects
+     */
+    int sortIndex = 0;
+    List<Unit> sortedUnits = new LinkedList<Unit>(data.getUnits());
+    Collections.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
+
+    for (Unit unit : sortedUnits) {
+      unit.setSortIndex(sortIndex++);
+      sortIndex = unit.extractTempUnits(data, sortIndex);
+    }
+
+    /*
+     * 'known' information does not necessarily show up in the report. e.g. depleted region
+     * resources are not mentioned although we actually know that the resource is available with an
+     * amount of 0. Resolve this ambiguity here:
+     */
+    if ((data != null) && (data.getRegions() != null)) {
+      /* ItemType sproutResourceID = */data.rules.getItemType("Schößlinge", true);
+      /* ItemType treeResourceID = */data.rules.getItemType("Bäume", true);
+      /* ItemType mallornSproutResourceID = */data.rules.getItemType("Mallornschößlinge", true);
+      /* ItemType mallornTreeResourceID = */data.rules.getItemType("Mallorn", true);
+
+      for (Region region : data.getRegions()) {
+        /*
+         * first determine whether we know everything about this region
+         */
+        if (region.getVisibility() == Visibility.UNIT) {
+          /*
+           * now patch as much missing information as possible
+           */
+          // FIXME (stm) 2006-10-28: this has bitten us already
+          // check what is visible in what visibility
+          // (lighthouse, neigbbour, travel)
+
+          // the following tags seem to be present under undefined visibility
+          // even if they are zero (but only if region is not an ocean):
+          // Bauern, Silber, Unterh, Rekruten, Pferde, (Lohn)
+          {
+            if (region.getPeasants() < 0) {
+              region.setPeasants(0);
+            }
+
+            if (region.getSilver() < 0) {
+              region.setSilver(0);
+            }
+
+            if (region.getWage() < 0) {
+              // TODO: should we set this to 10 instead?
+              region.setWage(0);
+            }
+
+            if (region.getHorses() < 0) {
+              region.setHorses(0);
+            }
+          }
+
+          if (region.getSprouts() < 0) {
+            region.setSprouts(0);
+          }
+          if (region.getTrees() < 0) {
+            region.setTrees(0);
+          }
+        }
+      }
+    }
+  }
+
+  private void postProcessMessages(GameData data) {
     /* scan the messages for additional information */
     if (data.getFactions() != null) {
       for (Faction faction : data.getFactions()) {
@@ -175,98 +248,6 @@ public class EresseaPostProcessor {
         }
       }
     }
-
-    // there can be dummy units (UnitContainer owners and such), find and remove these
-    if (data.getUnits() != null) {
-      Collection<UnitID> dummyUnitIDs = new LinkedList<UnitID>();
-
-      for (Unit unit : data.getUnits()) {
-        if (unit.getName() == null) {
-          dummyUnitIDs.add(unit.getID());
-          unit.setName("???");
-        }
-        if (unit.getRegion() == null) {
-          unit.setRegion(data.getNullRegion());
-        }
-        if (unit.getFaction() == null) {
-          unit.setFaction(data.getNullFaction());
-        }
-        if (unit.getRace() == null) {
-          unit.setRace(data.getNullRace());
-        }
-      }
-
-      // for (UnitID id : dummyUnitIDs) {
-      // data.removeUnit(id);
-      // }
-    }
-
-    /*
-     * retrieve the temp units mentioned in the orders and create them as TempUnit objects
-     */
-    int sortIndex = 0;
-    List<Unit> sortedUnits = new LinkedList<Unit>(data.getUnits());
-    Collections.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
-
-    for (Unit unit : sortedUnits) {
-      unit.setSortIndex(sortIndex++);
-      sortIndex = unit.extractTempUnits(data, sortIndex);
-    }
-
-    /*
-     * 'known' information does not necessarily show up in the report. e.g. depleted region
-     * resources are not mentioned although we actually know that the resource is available with an
-     * amount of 0. Resolve this ambiguity here:
-     */
-    if ((data != null) && (data.getRegions() != null)) {
-      /* ItemType sproutResourceID = */data.rules.getItemType("Schößlinge", true);
-      /* ItemType treeResourceID = */data.rules.getItemType("Bäume", true);
-      /* ItemType mallornSproutResourceID = */data.rules.getItemType("Mallornschößlinge", true);
-      /* ItemType mallornTreeResourceID = */data.rules.getItemType("Mallorn", true);
-
-      for (Region region : data.getRegions()) {
-        /*
-         * first determine whether we know everything about this region
-         */
-        if (region.getVisibility() == Visibility.UNIT) {
-          /*
-           * now patch as much missing information as possible
-           */
-          // FIXME (stm) 2006-10-28: this has bitten us already
-          // check what is visible in what visibility
-          // (lighthouse, neigbbour, travel)
-
-          // the following tags seem to be present under undefined visibility
-          // even if they are zero (but only if region is not an ocean):
-          // Bauern, Silber, Unterh, Rekruten, Pferde, (Lohn)
-          {
-            if (region.getPeasants() < 0) {
-              region.setPeasants(0);
-            }
-
-            if (region.getSilver() < 0) {
-              region.setSilver(0);
-            }
-
-            if (region.getWage() < 0) {
-              // TODO: should we set this to 10 instead?
-              region.setWage(0);
-            }
-
-            if (region.getHorses() < 0) {
-              region.setHorses(0);
-            }
-          }
-
-          if (region.getSprouts() < 0) {
-            region.setSprouts(0);
-          }
-          if (region.getTrees() < 0) {
-            region.setTrees(0);
-          }
-        }
-      }
-    }
   }
 
   private void resolveWraparound(GameData data) {
@@ -275,29 +256,31 @@ public class EresseaPostProcessor {
 
     Map<Long, Region> idMap = null;
     idMap = setUpIDMap(data);
-    if (idMap == null)
-      return;
 
     // find all regions with "wrap" as visibility string, update their neighbors and make themselves
     // wrapping regions
-    Collection<Region> toDelete = new LinkedList<Region>();
+    Map<Region, Region> toDelete = new LinkedHashMap<Region, Region>();
     for (Region wrappingRegion : data.getRegions()) {
       if (Region.VIS_STR_WRAP.equals(wrappingRegion.getVisibilityString())) {
-        toDelete.add(wrappingRegion);
+        if (idMap == null || idMap.isEmpty()) {
+          log.error("wrapping region found, but no region IDs");
+          return;
+        }
+        Region original = idMap.get(wrappingRegion.getUID());
         if (idMap.get(wrappingRegion.getUID()) == null) {
           log.warn("wrapping region without actual region");
           continue;
         }
+        toDelete.put(wrappingRegion, original);
         Map<Direction, Region> neighbors =
             Regions.getCoordinateNeighbours(data.regions(), wrappingRegion.getCoordinate());
         for (Direction d : neighbors.keySet()) {
           neighbors.get(d).addNeighbor(d.add(3), idMap.get(wrappingRegion.getUID()));
         }
       }
-      wrappingRegion.getNeighbors();
     }
-    for (Region r : toDelete) {
-      data.makeWrapper(r);
+    for (Region r : toDelete.keySet()) {
+      data.makeWrapper(r, toDelete.get(r));
     }
   }
 
@@ -305,9 +288,11 @@ public class EresseaPostProcessor {
     Map<Long, Region> result = new HashMap<Long, Region>(data.getRegions().size() * 5 / 4 + 5, .8f);
     // for each ID in the report, put at least one into the map. Prefer the one with lowest distance
     for (Region r : data.getRegions()) {
-      Region old = result.get(r.getUID());
-      if (old == null || !Region.VIS_STR_WRAP.equals(r.getVisibilityString())) {
-        result.put(r.getUID(), r);
+      if (r.hasUID()) {
+        Region old = result.get(r.getUID());
+        if (old == null || !Region.VIS_STR_WRAP.equals(r.getVisibilityString())) {
+          result.put(r.getUID(), r);
+        }
       }
     }
     return result;
@@ -353,6 +338,8 @@ public class EresseaPostProcessor {
             int maxRadius = (int) Math.min(Math.log10(b.getSize()) + 1, perceptionSkillLevel / 3);
 
             if (maxRadius > 0) {
+              // FIXME(stm) getAllNeighbours misst die Pfadlänge, wir brauchen aber alle Regionen
+              // mit dem richtigen Abstand der Koordinaten.
               Map<CoordinateID, Region> regions =
                   Regions.getAllNeighbours(data.regions(), b.getRegion().getCoordinate(),
                       maxRadius, null);
@@ -439,7 +426,7 @@ public class EresseaPostProcessor {
     gd.rules.getRegionType(EresseaConstants.RT_FIREWALL);
     Map<CoordinateID, Collection<Region>> schemeMap =
         new HashMap<CoordinateID, Collection<Region>>();
-    for (Region region : gd.regions().values()) {
+    for (Region region : gd.getRegions()) {
       if ((region.getCoordinate().getZ() == 1) && (region.schemes().size() > 0)) {
         // Check 1. (number)
         if (region.schemes().size() > 19) {

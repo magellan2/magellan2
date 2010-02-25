@@ -15,7 +15,7 @@ package magellan.library.rules;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import magellan.library.StringID;
@@ -59,7 +59,7 @@ public class BuildingType extends ConstructibleType {
    */
   public void setSkillBonus(SkillType skillType, int bonus) {
     if (skillBonuses == null) {
-      skillBonuses = new Hashtable<StringID, Integer>();
+      skillBonuses = new LinkedHashMap<StringID, Integer>();
     }
 
     skillBonuses.put(skillType.getID(), new Integer(bonus));
@@ -72,7 +72,7 @@ public class BuildingType extends ConstructibleType {
    */
   public void addRegionType(RegionType type) {
     if (regionTypes == null) {
-      regionTypes = new Hashtable<StringID, RegionType>();
+      regionTypes = new LinkedHashMap<StringID, RegionType>();
     }
 
     regionTypes.put(type.getID(), type);

@@ -23,9 +23,6 @@
 //
 package magellan.library.utils;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -74,7 +71,7 @@ import magellan.library.impl.MagellanTempUnitImpl;
 import magellan.library.impl.MagellanUnitImpl;
 import magellan.library.impl.MagellanZeroUnitImpl;
 import magellan.library.rules.MessageType;
-import magellan.library.rules.Race;
+import magellan.library.rules.RegionType;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -124,6 +121,14 @@ public abstract class MagellanFactory {
 
   public static Region createRegion(CoordinateID id, GameData data) {
     return new MagellanRegionImpl(id, data);
+  }
+
+  public static Region createWrapper(CoordinateID wrapperID, long regionID, GameData resultGD) {
+    Region resultRegion = MagellanFactory.createRegion(wrapperID, resultGD);
+    resultRegion.setUID(regionID);
+    resultRegion.setVisibilityString(Region.VIS_STR_WRAP);
+    resultRegion.setType(RegionType.wrap);
+    return resultRegion;
   }
 
   public static Ship createShip(EntityID id, GameData data) {
@@ -212,8 +217,8 @@ public abstract class MagellanFactory {
    */
   @Deprecated
   public static void mergeFaction(GameData curGD, Faction curFaction, GameData newGD,
-      Faction newFaction) {
-    GameDataMerger.mergeFaction(curGD, curFaction, newGD, newFaction);
+      Faction newFaction, boolean adjustTrustLevels) {
+    GameDataMerger.mergeFaction(curGD, curFaction, newGD, newFaction, adjustTrustLevels, null);
   }
 
   /**
@@ -245,7 +250,7 @@ public abstract class MagellanFactory {
    */
   @Deprecated
   public static void mergeMessage(GameData curGD, Message curMsg, GameData newGD, Message newMsg) {
-    GameDataMerger.mergeMessage(curGD, curMsg, newGD, newMsg);
+    GameDataMerger.mergeMessage(curGD, curMsg, newGD, newMsg, null);
   }
 
   /**
@@ -272,7 +277,7 @@ public abstract class MagellanFactory {
   @Deprecated
   public static void mergeBuilding(GameData curGD, Building curBuilding, GameData newGD,
       Building newBuilding) {
-    GameDataMerger.mergeBuilding(curGD, curBuilding, newGD, newBuilding);
+    GameDataMerger.mergeBuilding(curGD, curBuilding, newGD, newBuilding, null);
   }
 
   /**
@@ -299,7 +304,7 @@ public abstract class MagellanFactory {
    */
   @Deprecated
   public static void mergeHotSpot(GameData curGD, HotSpot curHS, GameData newGD, HotSpot newHS) {
-    GameDataMerger.mergeHotSpot(curGD, curHS, newGD, newHS);
+    GameDataMerger.mergeHotSpot(curGD, curHS, newGD, newHS, null);
   }
 
   /**
@@ -332,7 +337,7 @@ public abstract class MagellanFactory {
   @Deprecated
   public static void mergeRegion(GameData curGD, Region curRegion, GameData resultGD,
       Region resultRegion, boolean newTurn, boolean firstPass) {
-    GameDataMerger.mergeRegion(curGD, curRegion, resultGD, resultRegion, newTurn, firstPass);
+    GameDataMerger.mergeRegion(curGD, curRegion, resultGD, resultRegion, newTurn, firstPass, null);
   }
 
   /**
@@ -352,7 +357,7 @@ public abstract class MagellanFactory {
    */
   @Deprecated
   public static void mergeShip(GameData curGD, Ship curShip, GameData newGD, Ship newShip) {
-    GameDataMerger.mergeShip(curGD, curShip, newGD, newShip);
+    GameDataMerger.mergeShip(curGD, curShip, newGD, newShip, null);
   }
 
   /**
@@ -376,7 +381,7 @@ public abstract class MagellanFactory {
   @Deprecated
   public static void merge(GameData curGD, TempUnit curTemp, GameData newGD, TempUnit newTemp,
       boolean sameRound, boolean firstPass) {
-    GameDataMerger.merge(curGD, curTemp, newGD, newTemp, sameRound, firstPass);
+    GameDataMerger.merge(curGD, curTemp, newGD, newTemp, sameRound, firstPass, null);
   }
 
   /**
@@ -411,7 +416,7 @@ public abstract class MagellanFactory {
   @Deprecated
   public static void mergeUnit(GameData curGD, Unit curUnit, GameData resultGD, Unit resultUnit,
       boolean sameRound, boolean firstPass) {
-    GameDataMerger.mergeUnit(curGD, curUnit, resultGD, resultUnit, sameRound, firstPass);
+    GameDataMerger.mergeUnit(curGD, curUnit, resultGD, resultUnit, sameRound, firstPass, null);
   }
 
   /**
@@ -557,80 +562,6 @@ public abstract class MagellanFactory {
     return strFlags;
   }
 
-  /**
-   * Postprocess of Island objects. The Regions of the GameData are attached to their Island. The
-   * Factions got their Race settings.
-   */
-  public static void postProcess(GameData data) {
-    // create a map of region maps for every Island
-    final Map<Island, Map<CoordinateID, Region>> islandMap =
-        new Hashtable<Island, Map<CoordinateID, Region>>();
-
-    for (final Region r : data.getRegions()) {
-      if (r.getIsland() != null) {
-        Map<CoordinateID, Region> actRegionMap = islandMap.get(r.getIsland());
-
-        if (actRegionMap == null) {
-          actRegionMap = new Hashtable<CoordinateID, Region>();
-          islandMap.put(r.getIsland(), actRegionMap);
-        }
-
-        actRegionMap.put(r.getID(), r);
-      }
-    }
-
-    // setRegions for every Island in the map of region maps.
-    for (final Island island : islandMap.keySet()) {
-      final Map<CoordinateID, Region> actRegionMap = islandMap.get(island);
-      island.setRegions(actRegionMap);
-    }
-
-    // search for the races of the factions in the report.
-    final Map<EntityID, ? extends Faction> factions = data.factions();
-
-    for (final EntityID id : factions.keySet()) {
-      final Faction faction = factions.get(id);
-
-      // if the race is already set in the report ignore this algorithm
-      if (faction.getType() != null) {
-        continue;
-      }
-
-      final Map<Race, Integer> personsPerRace = new HashMap<Race, Integer>();
-
-      // iterate thru all units and count the races of them
-      final Collection<Unit> units = faction.units();
-      for (final Unit unit : units) {
-        final Race race = unit.getRace();
-        if (race == null) {
-          continue;
-        }
-        if (personsPerRace.containsKey(race)) {
-          final int amount = personsPerRace.get(race) + unit.getPersons();
-          personsPerRace.put(race, amount);
-        } else {
-          personsPerRace.put(race, unit.getPersons());
-        }
-      }
-
-      // find the race with the most persons in it - this is the race of the
-      // faction.
-      int maxPersons = 0;
-      Race race = null;
-      for (final Race aRace : personsPerRace.keySet()) {
-        final int amount = personsPerRace.get(aRace);
-        if (amount > maxPersons) {
-          maxPersons = amount;
-          race = aRace;
-        }
-      }
-
-      if (race != null) {
-        faction.setType(race);
-      }
-    }
-  }
-
   public static AllianceGroup createAlliance(EntityID id, GameData resultGD) {
     return new AllianceGroup(id);
   }
@@ -645,4 +576,5 @@ public abstract class MagellanFactory {
       AllianceGroup newAlliance) {
     GameDataMerger.mergeAlliance(curGD, curAlliance, newGD, newAlliance);
   }
+
 }

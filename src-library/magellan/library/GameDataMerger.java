@@ -25,12 +25,14 @@ package magellan.library;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import magellan.library.Region.Visibility;
 import magellan.library.gamebinding.EresseaConstants;
@@ -45,7 +47,11 @@ import magellan.library.utils.Encoding;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
+import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.transformation.IdentityTranslator;
+import magellan.library.utils.transformation.ReportTranslator;
 
 /**
  * Utility class to merge two reports.
@@ -65,6 +71,12 @@ public class GameDataMerger {
    *           types.
    */
   public static GameData merge(GameData gd1, GameData gd2) {
+    return merge(gd1, gd2, new IdentityTranslator(),
+        new IdentityTranslator());
+  }
+
+  public static GameData merge(GameData gd1, GameData gd2,
+      ReportTranslator translator1, ReportTranslator translator2) {
     // make sure, the game types are the same.
     if (!gd1.getGameName().equalsIgnoreCase(gd2.getGameName()))
       throw new IllegalArgumentException("GameData.merge(): Can't merge different game types. ("
@@ -79,15 +91,19 @@ public class GameDataMerger {
       gd2.setDate(new EresseaDate(0));
     }
 
-    // setting FileType to gd1
-    if (gd1.getFileType() != null) {
-      gd2.setFileType(gd1.getFileType());
+    GameData resultGD;
+    if (gd1.getDate().compareTo(gd2.getDate()) > 0) {
+      resultGD = mergeIt(gd2, gd1, translator2, translator1);
+    } else {
+      resultGD = mergeIt(gd1, gd2, translator1, translator2);
     }
 
-    if (gd1.getDate().compareTo(gd2.getDate()) > 0)
-      return mergeIt(gd2, gd1);
-    else
-      return mergeIt(gd1, gd2);
+    // setting FileType to gd1
+    if (gd1.getFileType() != null) {
+      resultGD.setFileType(gd1.getFileType());
+    }
+
+    return resultGD;
   }
 
   /**
@@ -99,15 +115,22 @@ public class GameDataMerger {
    * @param newerGD The newer GameData object.
    * @return the merged GameData
    */
-  private static GameData mergeIt(GameData olderGD, GameData newerGD) {
+  private static GameData mergeIt(GameData olderGD, GameData newerGD,
+      ReportTranslator translator1, ReportTranslator translator2) {
     // 2002.02.20 pavkovic: the newer rules are in GameData gd2. So we take
     // them for the new GameData
     // FIXME(pavkovic) rules should be loaded instead of just used in this
     // situation
     GameData resultGD = new CompleteData(newerGD.rules, newerGD.getGameName());
-    if (olderGD.getFileType() != null) {
-      resultGD.setFileType(olderGD.getFileType());
-    }
+
+    boolean sameRound = olderGD.getDate().equals(newerGD.getDate());
+    /**
+     * - to be added CR is newer and contains trust level that were set by the user explicitly (or
+     * read from CR what means the same) -> take the trust levels out of the new CR<br />
+     * - to be added CR is older or of same age -> keep existing trust levels<br />
+     * otherwise -> keep existing trust levels<br />
+     */
+    boolean takeTrustFromNew = !sameRound && TrustLevels.containsTrustLevelsSetByUser(newerGD);
 
     /***********************************************************************/
     /**************************** ADDING PHASE *****************************/
@@ -121,12 +144,10 @@ public class GameDataMerger {
     // new report - new timestamp
     resultGD.setTimestamp(System.currentTimeMillis() / 1000);
 
+    /**************************** ENCODING ***************************/
     // verify the encodings of the two reports
     String oldEncoding = olderGD.getEncoding();
     String newEncoding = newerGD.getEncoding();
-
-    // log.info("Old Encoding: "+oldEncoding);
-    // log.info("New Encoding: "+newEncoding);
 
     if (oldEncoding != null && newEncoding != null) {
       if (oldEncoding.equalsIgnoreCase(newEncoding)) {
@@ -155,8 +176,6 @@ public class GameDataMerger {
     log.info("Old Encoding: " + oldEncoding + ",New Encoding: " + newEncoding
         + ",Result-Encoding: " + resultGD.getEncoding());
 
-    boolean sameRound = olderGD.getDate().equals(newerGD.getDate());
-
     /**************************** MAIL TO, MAIL SUBJECT ***************************/
     if (newerGD.mailTo != null) {
       resultGD.mailTo = newerGD.mailTo;
@@ -178,7 +197,7 @@ public class GameDataMerger {
     }
 
     /**
-     * Tracking an Bug warn, if we do not have 36 with eressea or vinyambar and set it to 36
+     * Tracking an Bug: warn if we do not have 36 with eressea or vinyambar and set it to 36
      */
     String actGameName = newerGD.getGameName().toLowerCase();
     if ((actGameName.indexOf("eressea") > -1 || actGameName.indexOf("vinyambar") > -1)
@@ -191,19 +210,27 @@ public class GameDataMerger {
     // NOSKILLPOINTS: the newer report determines the skill point handling
     resultGD.noSkillPoints = newerGD.noSkillPoints;
 
-    // curTempID
-    // (it is assured, that at least on of the GameData-objects
-    // contains a default value for curTempID)
-    if (newerGD.curTempID != -1) {
-      resultGD.curTempID = newerGD.curTempID;
+    // overwrite TempID only if newerGD is newer and has a tempID defined
+    if (!sameRound && newerGD.getCurTempID() != -1) {
+      resultGD.setCurTempID(newerGD.getCurTempID());
     } else {
-      resultGD.curTempID = olderGD.curTempID;
+      resultGD.setCurTempID(olderGD.getCurTempID());
     }
 
+    /**************************** Attributes ***************************/
+    // add both old and new attributes here
     if (olderGD.getAttributeSize() > 0) {
       for (String key : olderGD.getAttributeKeys()) {
-        if (!newerGD.containsAttribute(key)) {
-          newerGD.addAttribute(key, olderGD.getAttribute(key));
+        if (!resultGD.containsAttribute(key)) {
+          resultGD.addAttribute(key, olderGD.getAttribute(key));
+        }
+      }
+    }
+
+    if (newerGD.getAttributeSize() > 0) {
+      for (String key : newerGD.getAttributeKeys()) {
+        if (!resultGD.containsAttribute(key)) {
+          resultGD.addAttribute(key, newerGD.getAttribute(key));
         }
       }
     }
@@ -333,35 +360,78 @@ public class GameDataMerger {
     // else
     // resultGD.setOwnerFaction(newerGD.getOwnerFaction());
 
+    // FIXME(stm) test
     /**************************** COORDINATE TRANSLATIONS ***************************/
     for (EntityID factionID : olderGD.getCoordinateTranslations().keySet()) {
       for (Integer layer : olderGD.getCoordinateTranslations().get(factionID).keySet()) {
+        CoordinateID zero = CoordinateID.create(0, 0, layer * 2);
         CoordinateID oldTranslation = olderGD.getCoordinateTranslation(factionID, layer);
-        if (oldTranslation != null) {
-          resultGD.setCoordinateTranslation(factionID, oldTranslation);
-        }
+        resultGD.setCoordinateTranslation(factionID, zero.subtract(transform(translator1, zero
+            .subtract(oldTranslation))));
       }
     }
     for (EntityID factionID : newerGD.getCoordinateTranslations().keySet()) {
       for (Integer layer : newerGD.getCoordinateTranslations().get(factionID).keySet()) {
-        CoordinateID oldTranslation = olderGD.getCoordinateTranslation(factionID, layer);
-        CoordinateID newTranslation = newerGD.getCoordinateTranslation(factionID, layer);
-        if (oldTranslation != null && newTranslation != null
-            && !oldTranslation.equals(newTranslation)) {
-          log.warn("coordinate translations do not match " + factionID + "," + layer + ":"
-              + oldTranslation + "!=" + newTranslation);
-          resultGD.setCoordinateTranslation(factionID, oldTranslation);
-        } else {
-          if (oldTranslation != null) {
-            resultGD.setCoordinateTranslation(factionID, oldTranslation);
-          } else if (newTranslation != null) {
-            resultGD.setCoordinateTranslation(factionID, newTranslation);
-          } else {
-            log.warn("unexpected case");
+        CoordinateID zero = CoordinateID.create(0, 0, 2 * layer);
+        CoordinateID newerTranslation = newerGD.getCoordinateTranslation(factionID, layer);
+        CoordinateID resultTranslation =
+            zero.subtract(transform(translator2, zero.subtract(newerTranslation)));
+        if (olderGD.getCoordinateTranslation(factionID, layer) != null) {
+          CoordinateID oldTranslation =
+              zero.subtract(transform(translator1, zero.subtract(olderGD.getCoordinateTranslation(
+                  factionID, layer))));
+          if (!oldTranslation.equals(resultTranslation)) {
+            log.warn("coordinate translations do not match " + factionID + "," + layer + ":"
+                + oldTranslation + "!=" + resultTranslation);
+            // resultGD.setCoordinateTranslation(factionID, oldTranslation);
           }
+        } else {
+          resultGD.setCoordinateTranslation(factionID, resultTranslation);
         }
       }
     }
+
+    // /**************************** COORDINATE TRANSLATIONS ***************************/
+    // Map<IntegerID, MessageType> olderTranslations;
+    // for (EntityID factionID : olderGD.getCoordinateTranslations().keySet()) {
+    // for (Integer layer : olderGD.getCoordinateTranslations().get(factionID).keySet()) {
+    // CoordinateID oldTranslation = olderGD.getCoordinateTranslation(factionID, layer);
+    // if (oldTranslation != null) {
+    // CoordinateID newOldTranslation = transformTranslation(olderGD, translator1, oldTranslation);
+    // if (newOldTranslation == null) {
+    // log.warn("losing translation for faction " + factionID + " in layer " + layer);
+    // } else {
+    // olderTranslations.put(factionID, newOldTranslation);
+    // }
+    // }
+    // }
+    // }
+    // for (EntityID factionID : newerGD.getCoordinateTranslations().keySet()) {
+    // for (Integer layer : newerGD.getCoordinateTranslations().get(factionID).keySet()) {
+    // CoordinateID newTranslation = transformTranslation(olderGD, translator2,
+    // newerGD.getCoordinateTranslation(factionID, layer));
+    // CoordinateID oldTranslation = transformTranslation(olderGD, translator1,
+    // olderGD.getCoordinateTranslation(factionID, layer));
+    // if (newTranslation == null && newerGD.getCoordinateTranslation(factionID, layer) != null) {
+    // log.warn("losing translation for faction " + factionID + " in layer " + layer);
+    // resultGD.setCoordinateTranslation(factionID, newOldTranslation);
+    // }
+    // if (oldTranslation != null && newTranslation != null
+    // && !oldTranslation.equals(newTranslation)) {
+    // log.warn("coordinate translations do not match " + factionID + "," + layer + ":"
+    // + oldTranslation + "!=" + newTranslation);
+    // resultGD.setCoordinateTranslation(factionID, oldTranslation);
+    // } else {
+    // if (oldTranslation != null) {
+    // resultGD.setCoordinateTranslation(factionID, oldTranslation);
+    // } else if (newTranslation != null) {
+    // resultGD.setCoordinateTranslation(factionID, newTranslation);
+    // } else {
+    // log.warn("unexpected case");
+    // }
+    // }
+    // }
+    // }
 
     /**************************** ALLIANCES ***************************/
     if (olderGD.getAllianceGroups() != null && sameRound) {
@@ -399,15 +469,21 @@ public class GameDataMerger {
     // this just adds all the regions to newGD. No content yet.
     if (olderGD.regionView() != null) {
       for (Region r : olderGD.regionView().values()) {
-        resultGD.addRegion(MagellanFactory.createRegion(r.getID(), resultGD));
+        // if (!r.getRegionType().equals(RegionType.theVoid)) {
+        CoordinateID newID = transform(translator1, r.getID());
+        resultGD.addRegion(MagellanFactory.createRegion(newID, resultGD));
+        // }
       }
     }
 
     if (newerGD.regionView() != null) {
       for (Region r : newerGD.regionView().values()) {
-        if (resultGD.getRegion(r.getID()) == null) {
-          resultGD.addRegion(MagellanFactory.createRegion(r.getID(), resultGD));
+        // if (!r.getRegionType().equals(RegionType.theVoid)) {
+        CoordinateID resultID = transform(translator2, r.getID());
+        if (resultGD.getRegion(resultID) == null) {
+          resultGD.addRegion(MagellanFactory.createRegion(resultID, resultGD));
         }
+        // }
       }
     }
 
@@ -469,7 +545,8 @@ public class GameDataMerger {
             if (oldBuilding.getRegion().getID() == null) {
               log.errorOnce("Region without ID!");
             } else {
-              curRegion = newerGD.getRegion(oldBuilding.getRegion().getID());
+              curRegion =
+                  resultGD.getRegion(transform(translator1, oldBuilding.getRegion().getID()));
 
               if ((curRegion == null) || !curRegion.getVisibility().greaterEqual(Visibility.TRAVEL)) {
                 resultGD.addBuilding(MagellanFactory.createBuilding(oldBuilding.getID(), resultGD));
@@ -516,7 +593,7 @@ public class GameDataMerger {
       for (Unit u : olderGD.unitView().values()) {
         if (sameRound || (newerGD.getUnit(u.getID()) != null)) {
           resultGD.addUnit(MagellanFactory.createUnit(u.getID()));
-        } else if (experimental) {
+        } else if (experimental) { // FIXME changes unit order
           resultGD.addUnit(MagellanFactory.createUnit(u.getID()));
           resultGD.getUnit(u.getID()).putTag("old", "was present in last report");
           // resultGD.getUnit(u.getID()).setRegion(u.getRegion());
@@ -548,11 +625,12 @@ public class GameDataMerger {
     /**************************** MERGE FACTIONS ***************************/
     // complex object FIRST PASS
     if (olderGD.factionView() != null) {
-      for (Faction curFaction : olderGD.factionView().values()) {
-        Faction newFaction = resultGD.getFaction(curFaction.getID());
+      for (Faction oldFaction : olderGD.factionView().values()) {
+        Faction newFaction = resultGD.getFaction(oldFaction.getID());
 
         // first pass
-        GameDataMerger.mergeFaction(olderGD, curFaction, resultGD, newFaction);
+        GameDataMerger.mergeFaction(olderGD, oldFaction, resultGD, newFaction, !takeTrustFromNew,
+            translator1);
       }
     }
 
@@ -560,18 +638,11 @@ public class GameDataMerger {
     // complex object FIRST PASS
     if (olderGD.regionView() != null) {
       for (Region oldRegion : olderGD.regionView().values()) {
-        Region resultRegion = resultGD.getRegion(oldRegion.getID());
+        Region resultRegion = resultGD.getRegion(transform(translator1, oldRegion.getID()));
 
         // first pass
-        GameDataMerger.mergeRegion(olderGD, oldRegion, resultGD, resultRegion, !sameRound, true);
-      }
-    }
-
-    for (Region r : olderGD.wrappers().values()) {
-      Region resultRegion = resultGD.getRegion(r.getCoordinate());
-      // TODO think about this condition
-      if (resultRegion == null || Region.VIS_STR_WRAP.equals(resultRegion.getVisibilityString())) {
-        resultGD.makeWrapper(r);
+        GameDataMerger.mergeRegion(olderGD, oldRegion, resultGD, resultRegion, !sameRound, true,
+            translator1);
       }
     }
 
@@ -592,7 +663,7 @@ public class GameDataMerger {
       for (HotSpot curHotSpot : olderGD.hotSpotView().values()) {
         HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
         // first pass
-        GameDataMerger.mergeHotSpot(olderGD, curHotSpot, resultGD, newHotSpot);
+        GameDataMerger.mergeHotSpot(olderGD, curHotSpot, resultGD, newHotSpot, translator1);
       }
     }
 
@@ -604,7 +675,7 @@ public class GameDataMerger {
 
         if (newBuilding != null) {
           // first pass
-          GameDataMerger.mergeBuilding(olderGD, curBuilding, resultGD, newBuilding);
+          GameDataMerger.mergeBuilding(olderGD, curBuilding, resultGD, newBuilding, translator1);
         }
       }
     }
@@ -612,18 +683,20 @@ public class GameDataMerger {
     /**************************** MERGE SHIPS ***************************/
     // complex object FIRST PASS
     if ((olderGD.shipView() != null)) {
-      for (Ship curShip : olderGD.shipView().values()) {
-        Ship newShip = resultGD.getShip(curShip.getID());
+      for (Ship oldShip : olderGD.shipView().values()) {
+        Ship resultShip = resultGD.getShip(oldShip.getID());
 
         // only merge ships from the "older" game data if they are from the same
         // round
         if (sameRound) {
           // first pass
-          GameDataMerger.mergeShip(olderGD, curShip, resultGD, newShip);
+          GameDataMerger.mergeShip(olderGD, oldShip, resultGD, resultShip, translator1);
         } else {
           // TODO (stm 2007-02-19) this is a workaround, we need a nicer
-          // solution
-          GameDataMerger.mergeComments(curShip, newShip);
+          // solution.
+          // Unlike other unit containers, ships are deleted if they are not
+          // seen any more in a new round. But we want to keep their comments anyway.
+          GameDataMerger.mergeComments(oldShip, resultShip);
         }
       }
     }
@@ -648,44 +721,47 @@ public class GameDataMerger {
         Faction newFaction = resultGD.getFaction(curFaction.getID());
 
         // second pass
-        GameDataMerger.mergeFaction(newerGD, curFaction, resultGD, newFaction);
+        GameDataMerger.mergeFaction(newerGD, curFaction, resultGD, newFaction, takeTrustFromNew,
+            translator2);
       }
     }
 
     /**************************** MERGE UNITS ***************************/
-
     /*
      * Note: To gather level change informations all units are used. If the dates are equal, a fully
      * merge is done, if not, only the skills are retrieved.
      */
     for (Unit resultUnit : resultGD.unitView().values()) {
       // find the second first since we may need the temp id
-      Unit newerUnit = findUnit(newerGD, resultUnit.getID(), null, null);
+      Unit newerUnit = newerGD.getUnit(resultUnit.getID());
 
       // find a temp ID to gather information out of the temp unit
-      ID tempID = null;
-      Region newRegion = null;
+      UnitID tempID = null;
 
       if ((newerUnit != null) && !sameRound) {
         // only use temp ID if reports have different date
         tempID = newerUnit.getTempID();
 
         if (tempID != null) {
-          tempID = UnitID.createUnitID(-((UnitID) tempID).intValue(), newerGD.base);
+          tempID = UnitID.createUnitID(-tempID.intValue(), newerGD.base);
         }
-
-        newRegion = newerUnit.getRegion();
       }
 
       // now get the unit of the first report
-      Unit olderUnit = findUnit(olderGD, resultUnit.getID(), tempID, newRegion);
+      Unit olderUnit;
+      if (tempID != null) {
+        olderUnit = olderGD.getTempUnit(tempID);
+      } else {
+        olderUnit = olderGD.getUnit(resultUnit.getID());
+      }
       // first merge step
       if (olderUnit != null) {
         if (experimental || sameRound) { // full merge
+          GameDataMerger.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound, true,
+              translator1);
           if (!sameRound && experimental && newerUnit == null) {
-            olderUnit.setRegion(null);
+            resultUnit.setRegion(null);
           }
-          GameDataMerger.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound, true);
         } else { // only copy the skills to get change-level base
           if ((newerUnit != null)
               && ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged()))) {
@@ -696,31 +772,47 @@ public class GameDataMerger {
 
       // second merge step
       if (newerUnit != null) {
-        GameDataMerger.mergeUnit(newerGD, newerUnit, resultGD, resultUnit, sameRound, false);
+        GameDataMerger.mergeUnit(newerGD, newerUnit, resultGD, resultUnit, sameRound, false,
+            translator2);
       }
     }
 
     /**************************** MERGE REGIONS, SECOND PASS ***************************/
     if (resultGD.regionView() != null) {
-      for (Region resultRegion : resultGD.regionView().values()) {
-        Region newerRegion = newerGD.getRegion(resultRegion.getID());
-        if (newerRegion != null) {
-          // second pass
-          GameDataMerger.mergeRegion(newerGD, newerRegion, resultGD, resultRegion, !sameRound,
-              false);
-        } else {
-          // region not present in new report
-          if (!sameRound && resultRegion.getVisibility() != Visibility.NULL) {
-            log.warn("region should not be visible: " + resultRegion.getName());
-            resultRegion.setVisibility(Visibility.NULL);
-          }
-        }
+      for (Region newerRegion : newerGD.regionView().values()) {
+        Region resultRegion = resultGD.getRegion(transform(translator2, newerRegion.getID()));
+        GameDataMerger.mergeRegion(newerGD, newerRegion, resultGD, resultRegion, !sameRound, false,
+            translator2);
+        // // if region in resultGD, but not in newerGD
+        // {
+        // // region not present in new report
+        // if (!sameRound && resultRegion.getVisibility() != Visibility.NULL) {
+        // log.warn("region should not be visible: " + resultRegion.getName());
+        // resultRegion.setVisibility(Visibility.NULL);
+        // }
+        // }
       }
     }
-    for (Region r : newerGD.wrappers().values()) {
-      Region resultRegion = resultGD.getRegion(r.getCoordinate());
-      if (resultRegion == null || Region.VIS_STR_WRAP.equals(resultRegion.getVisibilityString())) {
-        resultGD.makeWrapper(r);
+
+    for (Region wrapper : newerGD.wrappers().values()) {
+      CoordinateID newID = transform(translator2, wrapper.getCoordinate());
+      Region resultRegion = resultGD.getRegion(newID);
+      if (resultRegion == null) {
+        resultRegion = MagellanFactory.createRegion(newID, resultGD);
+        resultRegion.setUID(wrapper.getUID());
+        resultRegion.setVisibilityString(Region.VIS_STR_WRAP);
+        resultRegion.setType(RegionType.wrap);
+      }
+      if (Region.VIS_STR_WRAP.equals(resultRegion.getVisibilityString())) {
+        Region original = newerGD.getOriginal(wrapper);
+        Region newOriginal = resultGD.getRegion(original.getID());
+        if (newOriginal == null) {
+          log
+              .error("did not find corresponding region for original " + original + " of "
+                  + wrapper);
+        } else {
+          resultGD.makeWrapper(resultRegion, newOriginal);
+        }
       }
     }
 
@@ -739,7 +831,7 @@ public class GameDataMerger {
       for (HotSpot curHotSpot : newerGD.hotSpotView().values()) {
         HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
         // second pass
-        GameDataMerger.mergeHotSpot(newerGD, curHotSpot, resultGD, newHotSpot);
+        GameDataMerger.mergeHotSpot(newerGD, curHotSpot, resultGD, newHotSpot, translator2);
       }
     }
 
@@ -750,7 +842,7 @@ public class GameDataMerger {
 
         if (newBuilding != null) {
           // second pass
-          GameDataMerger.mergeBuilding(newerGD, curBuilding, resultGD, newBuilding);
+          GameDataMerger.mergeBuilding(newerGD, curBuilding, resultGD, newBuilding, translator2);
         }
       }
     }
@@ -761,7 +853,7 @@ public class GameDataMerger {
         Ship newShip = resultGD.getShip(curShip.getID());
 
         // second pass
-        GameDataMerger.mergeShip(newerGD, curShip, resultGD, newShip);
+        GameDataMerger.mergeShip(newerGD, curShip, resultGD, newShip, translator2);
       }
     }
 
@@ -771,46 +863,11 @@ public class GameDataMerger {
     return resultGD;
   }
 
-  protected static Unit findUnit(GameData data, ID id, ID tempID, Region newRegion) {
-    // search for a temp unit
-    if (tempID != null) {
-      if (newRegion == null) {
-        for (Unit u : data.unitView().values()) {
-          Unit u2 = u.getTempUnit(tempID);
-
-          if (u2 != null)
-            return u2;
-        }
-      } else {
-
-        Map<CoordinateID, Region> myRegions;
-        if (!data.regionView().containsKey(newRegion.getID())) {
-          Map<CoordinateID, Region> tempRegions =
-              new HashMap<CoordinateID, Region>(data.regionView());
-          tempRegions.put(newRegion.getID(), newRegion);
-          myRegions = tempRegions;
-        } else {
-          myRegions = data.regionView();
-        }
-        Map<CoordinateID, Region> m =
-            Regions.getAllNeighbours(myRegions, newRegion.getID(), 3, null);
-
-        if (m != null) {
-          Iterator<Region> it = m.values().iterator();
-
-          while (it.hasNext()) {
-            Region r = it.next();
-            Unit u2 = r.getUnit(tempID);
-
-            if (u2 != null)
-              return u2;
-          }
-        }
-      }
-    }
-
-    // standard search
-    return data.getUnit(id);
+  private static CoordinateID transform(ReportTranslator translator, CoordinateID id) {
+    if (translator == null)
+      return id;
+    else
+      return translator.transform(id);
   }
 
   /**
@@ -828,7 +885,7 @@ public class GameDataMerger {
 
     if ((curGroup.allies() != null) && (curGroup.allies().size() > 0)) {
       if (newGroup.allies() == null) {
-        newGroup.setAllies(new Hashtable<EntityID, Alliance>());
+        newGroup.setAllies(new LinkedHashMap<EntityID, Alliance>());
       } else {
         newGroup.allies().clear();
       }
@@ -860,10 +917,14 @@ public class GameDataMerger {
   }
 
   /**
-   * DOCUMENT-ME
+   * Copies the values of curFaction to newFaction.
+   * 
+   * @param adjustTrustLevels Only if this is <code>true</code> will the trust levels of newFaction
+   *          be copied.
+   * @param translator
    */
   public static void mergeFaction(GameData curGD, Faction curFaction, GameData newGD,
-      Faction newFaction) {
+      Faction newFaction, boolean adjustTrustLevels, ReportTranslator translator) {
     GameDataMerger.mergeUnitContainer(curGD, curFaction, newGD, newFaction);
 
     // tricky: keep alliance only if from the same round and either curFaction is owner faction or
@@ -896,7 +957,7 @@ public class GameDataMerger {
 
     if ((curFaction.getGroups() != null) && (curFaction.getGroups().size() > 0)) {
       if (newFaction.getGroups() == null) {
-        newFaction.setGroups(new Hashtable<IntegerID, Group>());
+        newFaction.setGroups(new LinkedHashMap<IntegerID, Group>());
       } else {
         newFaction.getGroups().clear();
       }
@@ -935,17 +996,9 @@ public class GameDataMerger {
       newFaction.setSpellSchool(curFaction.getSpellSchool());
     }
 
-    // one trustLevel is guaranteed to be TL_DEFAULT
-    // ReportMerger.mergeReport() :
-
-    /**
-     * prepare faction trustlevel for merging: - to be added CR is older or of same age -> hold
-     * existing trust levels - to be added CR is newer and contains trust level that were set by the
-     * user explicitly (or read from CR what means the same) -> take the trust levels out of the new
-     * CR otherwise -> hold existing trust levels This means: set those trust levels, that will not
-     * be retained to default values
-     */
-    if ((curFaction.getTrustLevel() != Faction.TL_DEFAULT) || curFaction.isTrustLevelSetByUser()) {
+    if (adjustTrustLevels
+        && ((curFaction.getTrustLevel() != Faction.TL_DEFAULT) || curFaction
+            .isTrustLevelSetByUser())) {
       newFaction.setTrustLevel(curFaction.getTrustLevel());
       newFaction.setTrustLevelSetByUser(curFaction.isTrustLevelSetByUser());
     }
@@ -960,16 +1013,16 @@ public class GameDataMerger {
         newFaction.setBattles(new LinkedList<Battle>());
 
         for (Battle curBattle : curFaction.getBattles()) {
-          final Battle newBattle =
-              MagellanFactory.createBattle(curBattle.getID(), curBattle.isBattleSpec());
+          CoordinateID newID = transform(translator, curBattle.getID());
+          final Battle newBattle = MagellanFactory.createBattle(newID, curBattle.isBattleSpec());
 
           for (Message curMsg : curBattle.messages()) {
             final Message newMsg = MagellanFactory.createMessage(curMsg.getID());
-            GameDataMerger.mergeMessage(curGD, curMsg, newGD, newMsg);
+            GameDataMerger.mergeMessage(curGD, curMsg, newGD, newMsg, translator);
             newBattle.messages().add(newMsg);
           }
 
-          newFaction.getBattles().add(curBattle);
+          newFaction.getBattles().add(newBattle);
         }
       }
 
@@ -989,7 +1042,7 @@ public class GameDataMerger {
 
           newMsg = MagellanFactory.createMessage(curMsg.getID());
 
-          GameDataMerger.mergeMessage(curGD, curMsg, newGD, newMsg);
+          GameDataMerger.mergeMessage(curGD, curMsg, newGD, newMsg, translator);
           newFaction.getMessages().add(newMsg);
         }
       }
@@ -1096,6 +1149,7 @@ public class GameDataMerger {
         // Ulrich has more experiences with "Astralraum" :-))
         // if (newUC.getType() == null ||
         // newUC.getType().equals(RegionType.unknown)) {
+        // TODO(stm) also test "theVoid"?
         if ((curUC.getType() != null && !curUC.getType().equals(RegionType.unknown))
             || newUC.getType() == null || newUC.getType().equals(RegionType.unknown)) {
           newUC.setType(newGD.rules.getRegionType(curUC.getType().getID(), true));
@@ -1109,13 +1163,9 @@ public class GameDataMerger {
 
     // copy tags
     if (curGD.getDate().equals(newGD.getDate()) && curUC.hasTags()) {
-      final Iterator<String> it = curUC.getTagMap().keySet().iterator();
-
-      while (it.hasNext()) {
-        final String str = it.next();
-
-        if (!newUC.containsTag(str)) {
-          newUC.putTag(str, curUC.getTag(str));
+      for (String key : curUC.getTagMap().keySet()) {
+        if (!newUC.containsTag(key)) {
+          newUC.putTag(key, curUC.getTag(key));
         }
       }
     }
@@ -1146,8 +1196,10 @@ public class GameDataMerger {
    * @param curMsg a fully initialized and valid message
    * @param newGD the game data to be updated
    * @param newMsg a message to be updated with the data from curMsg
+   * @param translator
    */
-  public static void mergeMessage(GameData curGD, Message curMsg, GameData newGD, Message newMsg) {
+  public static void mergeMessage(GameData curGD, Message curMsg, GameData newGD, Message newMsg,
+      ReportTranslator translator) {
     if ((curMsg.getAttributes() != null) && (curMsg.getAttributes().size() > 0)) {
       if (newMsg.getAttributes() == null) {
         newMsg.setAttributes(new OrderedHashtable<String, String>());
@@ -1155,7 +1207,38 @@ public class GameDataMerger {
         newMsg.getAttributes().clear();
       }
 
-      newMsg.getAttributes().putAll(curMsg.getAttributes());
+      if (curMsg.getAttributes() != null) {
+        for (Entry<String, String> entry : curMsg.getAttributes().entrySet()) {
+          if (entry.getKey().equalsIgnoreCase("type")) {
+            newMsg.getAttributes().put(entry.getKey(), entry.getValue());
+          } else if (entry.getKey().equalsIgnoreCase("rendered")) {
+            newMsg.getAttributes().put(entry.getKey(),
+                originTranslate(translator, entry.getValue()));
+          } else {
+            CoordinateID coord = CoordinateID.parse(entry.getValue(), ",");
+
+            if (coord != null) {
+              final CoordinateID newCoord = translator.transform(coord);
+              newMsg.getAttributes().put(entry.getKey(), newCoord.toString(","));
+            } else {
+              coord = CoordinateID.parse(entry.getValue(), " ");
+              if (coord != null) {
+                final CoordinateID newCoord = translator.transform(coord);
+                newMsg.getAttributes().put(entry.getKey(), newCoord.toString(" ", true));
+              } else {
+                // check for ;regions
+                if (entry.getKey().equalsIgnoreCase("regions")) {
+                  // special dealing
+                  newMsg.getAttributes().put(entry.getKey(),
+                      originTranslateRegions(translator, entry.getValue()));
+                } else {
+                  newMsg.getAttributes().put(entry.getKey(), entry.getValue());
+                }
+              }
+            }
+          }
+        }
+      }
     }
 
     // first update the message type - this was already localized
@@ -1169,12 +1252,12 @@ public class GameDataMerger {
       // currently we check the GameData as the msg locale is not implemented.
       if (curGD.getLocale().equals(newGD.getLocale())) {
         // we can only copy the text if it matches the locale
-        newMsg.setText(curMsg.getText());
+        newMsg.setText(originTranslate(translator, curMsg.getText()));
       } else {
         if (curMsg.getMessageType() == null) {
           // if the message has no message type (e.g. DURCHSCHIFFUNG,
           // DURCHREISE), the best thing we can do is to copy the text anyway...
-          newMsg.setText(curMsg.getText());
+          newMsg.setText(originTranslate(translator, curMsg.getText()));
         }
         // otherwise we can render the text from the probably localized
         // messagetype
@@ -1184,6 +1267,92 @@ public class GameDataMerger {
          */
       }
     }
+  }
+
+  protected static final String number = "[\\+\\-]?\\d+";
+  protected static String astral = Resources.get("rules.astralspacecoordinate");
+  protected static String pattern;
+  protected static String regionsPattern1;
+  protected static String regionsPattern2;
+  static {
+    buildPattern();
+  }
+
+  protected static void buildPattern() {
+    // check if locale has changed
+    if (pattern == null || !astral.equals(Resources.get("rules.astralspacecoordinate"))) {
+      astral = Resources.get("rules.astralspacecoordinate");
+      // \((number)\,\ ?(number)(\,\ ?((number)|Astralraum))?\)
+      // \(([\+\-]?\d+)\,\ ?([\+\-]?\d+)(\,\ ?(([\+\-]?\d+)|Astralraum))?\)
+      pattern =
+          "\\((" + number + ")\\,\\ ?(" + number + ")(\\,\\ ?((" + number + ")|" + astral
+              + "))?\\)";
+      // \(([\+\-]?\d+) ([\+\-]?\d+)( (([\+\-]?\d+)|Astralraum))?\)
+      regionsPattern1 =
+          "\\((" + number + ") (" + number + ")( ((" + number + ")|" + astral + "))?\\)";
+      // \(([\+\-]?\d+) ([\+\-]?\d+)( (([\+\-]?\d+)|Astralraum))?\)*
+      regionsPattern2 =
+          "\\((" + number + ") (" + number + ")( ((" + number + ")|" + astral + "))?\\)*";
+    }
+  }
+
+  /**
+   * special sub to translate coords in ";regions" tags of messages expecting this form
+   * <code>"x1 y1 z1, x2 y2 z2";regions</code>.<br />
+   * There is also an older variant: <code>"der Sumpf von Rudros (-7,23)";regions</code>
+   * 
+   * @param value
+   * @return
+   */
+  private static String originTranslateRegions(ReportTranslator translator, String value) {
+    final StringBuffer result = new StringBuffer();
+    buildPattern();
+    if (value.matches(regionsPattern2)) {
+      final Matcher matcher = Pattern.compile(regionsPattern1).matcher(value);
+      while (matcher.find()) {
+        final String candi = matcher.group();
+        // candi=candi.replaceAll(astral,
+        // world.getGameSpecificStuff().getGameSpecificRules().getAstralSpacePlane());
+        CoordinateID coord = CoordinateID.parse(candi, " ");
+        if (coord != null) {
+          coord = translator.transform(coord);
+          matcher.appendReplacement(result, "(" + coord.toString(" ") + ")");
+        } else {
+          matcher.appendReplacement(result, matcher.group());
+        }
+      }
+      matcher.appendTail(result);
+      return result.toString();
+    } else
+      return originTranslate(translator, value);
+  }
+
+  /**
+   * Tries to replace coordinates in string by the translated version. The string is searched for
+   * occurrences of the form "(123,123)" or "(123,123,123)" or "(123,123,Astralraum)", transforms
+   * them and replaces them. This is not completely fool-proof!
+   * 
+   * @param value Usually a message text which might contain coordinates
+   * @see magellan.library.utils.transformation.ReportTranslator#transform(java.lang.String)
+   */
+  private static String originTranslate(ReportTranslator translator, String value) {
+    final StringBuffer result = new StringBuffer();
+    buildPattern();
+    final Matcher matcher = Pattern.compile(pattern).matcher(value);
+    while (matcher.find()) {
+      final String candi = matcher.group();
+      // candi=candi.replaceAll(astral,
+      // world.getGameSpecificStuff().getGameSpecificRules().getAstralSpacePlane());
+      CoordinateID coord = CoordinateID.parse(candi.substring(1, candi.length() - 1), ",");
+      if (coord != null) {
+        coord = translator.transform(coord);
+        matcher.appendReplacement(result, "(" + coord.toString() + ")");
+      } else {
+        matcher.appendReplacement(result, matcher.group());
+      }
+    }
+    matcher.appendTail(result);
+    return result.toString();
   }
 
   /**
@@ -1221,9 +1390,10 @@ public class GameDataMerger {
    * @param curBuilding the current Building
    * @param newGD new GameData
    * @param newBuilding the new Building
+   * @param translator
    */
   public static void mergeBuilding(GameData curGD, Building curBuilding, GameData newGD,
-      Building newBuilding) {
+      Building newBuilding, ReportTranslator translator) {
     GameDataMerger.mergeUnitContainer(curGD, curBuilding, newGD, newBuilding);
 
     if (curBuilding.getCost() != -1) {
@@ -1231,7 +1401,8 @@ public class GameDataMerger {
     }
 
     if (curBuilding.getRegion() != null) {
-      newBuilding.setRegion(newGD.getRegion(curBuilding.getRegion().getID()));
+      newBuilding
+          .setRegion(newGD.getRegion(transform(translator, curBuilding.getRegion().getID())));
     }
 
     if (curBuilding.getSize() != -1) {
@@ -1274,14 +1445,17 @@ public class GameDataMerger {
 
   /**
    * Merges two HotSpot objects.
+   * 
+   * @param translator
    */
-  public static void mergeHotSpot(GameData curGD, HotSpot curHS, GameData newGD, HotSpot newHS) {
+  public static void mergeHotSpot(GameData curGD, HotSpot curHS, GameData newGD, HotSpot newHS,
+      ReportTranslator translator) {
     if (curHS.getName() != null) {
       newHS.setName(curHS.getName());
     }
 
     if (curHS.getCenter() != null) {
-      newHS.setCenter(curHS.getCenter());
+      newHS.setCenter(transform(translator, curHS.getCenter()));
     }
   }
 
@@ -1321,9 +1495,10 @@ public class GameDataMerger {
    * @param resultRegion The info is merged into this region
    * @param newTurn notifies if both game data objects have been from the same round
    * @param firstPass notifies if this is the first of two passes
+   * @param translator
    */
   public static void mergeRegion(GameData curGD, Region curRegion, GameData resultGD,
-      Region resultRegion, boolean newTurn, boolean firstPass) {
+      Region resultRegion, boolean newTurn, boolean firstPass, ReportTranslator translator) {
     GameDataMerger.mergeUnitContainer(curGD, curRegion, resultGD, resultRegion);
 
     final boolean sameTurn = !newTurn || !firstPass;
@@ -1332,7 +1507,20 @@ public class GameDataMerger {
     {
       Map<Direction, Region> neighbors = curRegion.getNeighbors();
       for (Direction d : neighbors.keySet()) {
-        resultRegion.addNeighbor(d, resultGD.getRegion(neighbors.get(d).getID()));
+        Region neighbor = resultGD.getRegion(transform(translator, neighbors.get(d).getID()));
+        if (neighbor == null)
+          throw new RuntimeException("neighbor not found " + curRegion);
+        else {
+          resultRegion.addNeighbor(d, neighbor);
+          if (Regions.getDist(neighbor.getCoordinate(), resultRegion.getCoordinate()) > 1) {
+            CoordinateID wrapperID = resultRegion.getCoordinate().translate(d.toCoordinate());
+            if (resultGD.wrappers().get(wrapperID) == null) {
+              Region wrapper =
+                  MagellanFactory.createWrapper(wrapperID, neighbor.getUID(), resultGD);
+              resultGD.makeWrapper(wrapper, neighbor);
+            }
+          }
+        }
       }
     }
 
@@ -1441,7 +1629,7 @@ public class GameDataMerger {
     /******************* PRICES ******************************/
     if ((resultRegion.getPrices() != null) && (curRegion.getPrices() != null)
         && !curRegion.getPrices().equals(resultRegion.getPrices())) {
-      resultRegion.setOldPrices(new Hashtable<StringID, LuxuryPrice>());
+      resultRegion.setOldPrices(new LinkedHashMap<StringID, LuxuryPrice>());
 
       for (LuxuryPrice curPrice : resultRegion.getPrices().values()) {
         final LuxuryPrice newPrice =
@@ -1450,7 +1638,7 @@ public class GameDataMerger {
         resultRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
       }
     } else if (curRegion.getOldPrices() != null) {
-      resultRegion.setOldPrices(new Hashtable<StringID, LuxuryPrice>());
+      resultRegion.setOldPrices(new LinkedHashMap<StringID, LuxuryPrice>());
 
       for (LuxuryPrice curPrice : curRegion.getOldPrices().values()) {
         final LuxuryPrice newPrice =
@@ -1546,7 +1734,7 @@ public class GameDataMerger {
     }
 
     /******************** REGION IDs *************************************/
-    if (curRegion.getUID() != 0) {
+    if (curRegion.hasUID()) {
       resultRegion.setUID(curRegion.getUID());
     }
 
@@ -1776,10 +1964,11 @@ public class GameDataMerger {
     /******************** SCHEMES *************************************/
     if (!curRegion.schemes().isEmpty()) {
       for (Scheme curScheme : curRegion.schemes()) {
-        Scheme newScheme = resultRegion.getScheme(curScheme.getID());
+        CoordinateID newID = transform(translator, curScheme.getID());
+        Scheme newScheme = resultRegion.getScheme(newID);
 
         if (newScheme == null) {
-          newScheme = MagellanFactory.createScheme(curScheme.getID());
+          newScheme = MagellanFactory.createScheme(newID);
           resultRegion.addScheme(newScheme);
         }
 
@@ -1813,7 +2002,7 @@ public class GameDataMerger {
 
           newMsg = MagellanFactory.createMessage(curMsg.getID());
 
-          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg, translator);
           resultRegion.getEvents().add(newMsg);
         }
       }
@@ -1828,7 +2017,7 @@ public class GameDataMerger {
 
           newMsg = MagellanFactory.createMessage(curMsg.getID());
 
-          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg, translator);
           resultRegion.getMessages().add(newMsg);
         }
       }
@@ -1843,7 +2032,7 @@ public class GameDataMerger {
 
           newMsg = MagellanFactory.createMessage(curMsg.getID());
 
-          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg, translator);
           resultRegion.getPlayerMessages().add(newMsg);
         }
       }
@@ -1858,7 +2047,7 @@ public class GameDataMerger {
 
           newMsg = MagellanFactory.createMessage(curMsg.getID());
 
-          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg, translator);
           resultRegion.getSurroundings().add(newMsg);
         }
       }
@@ -1873,7 +2062,7 @@ public class GameDataMerger {
 
           newMsg = MagellanFactory.createMessage(curMsg.getID());
 
-          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg, translator);
 
           // 2002.02.21 pavkovic: prevent double entries
           if (!resultRegion.getTravelThru().contains(newMsg)) {
@@ -1892,7 +2081,7 @@ public class GameDataMerger {
 
           newMsg = MagellanFactory.createMessage(curMsg.getID());
 
-          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg, translator);
 
           // 2002.02.21 pavkovic: prevent duplicate entries
           if (!resultRegion.getTravelThruShips().contains(newMsg)) {
@@ -1914,8 +2103,11 @@ public class GameDataMerger {
 
   /**
    * Merges ships.
+   * 
+   * @param translator
    */
-  public static void mergeShip(GameData curGD, Ship curShip, GameData newGD, Ship newShip) {
+  public static void mergeShip(GameData curGD, Ship curShip, GameData newGD, Ship newShip,
+      ReportTranslator translator) {
     GameDataMerger.mergeUnitContainer(curGD, curShip, newGD, newShip);
 
     if (curShip.getCargo() != -1) {
@@ -1939,7 +2131,7 @@ public class GameDataMerger {
     }
 
     if (curShip.getRegion() != null) {
-      newShip.setRegion(newGD.getRegion(curShip.getRegion().getID()));
+      newShip.setRegion(newGD.getRegion(transform(translator, curShip.getRegion().getID())));
     }
 
     newShip.setShoreId(curShip.getShoreId());
@@ -2012,10 +2204,11 @@ public class GameDataMerger {
    * Merges two temp units.
    * 
    * @param sameRound notifies if both game data objects have been from the same round
+   * @param translator
    */
   public static void merge(GameData curGD, TempUnit curTemp, GameData newGD, TempUnit newTemp,
-      boolean sameRound, boolean firstPass) {
-    GameDataMerger.mergeUnit(curGD, curTemp, newGD, newTemp, sameRound, firstPass);
+      boolean sameRound, boolean firstPass, ReportTranslator translator) {
+    GameDataMerger.mergeUnit(curGD, curTemp, newGD, newTemp, sameRound, firstPass, translator);
 
     if (curTemp.getParent() != null) {
       newTemp.setParent(newGD.getUnit(curTemp.getParent().getID()));
@@ -2053,9 +2246,10 @@ public class GameDataMerger {
    * @param resultUnit The info is merged into this unit
    * @param sameRound notifies if both game data objects have been from the same round
    * @param firstPass notifies if this is the first of two passes
+   * @param translator
    */
   public static void mergeUnit(GameData curGD, Unit curUnit, GameData resultGD, Unit resultUnit,
-      boolean sameRound, boolean firstPass) {
+      boolean sameRound, boolean firstPass, ReportTranslator translator) {
     /*
      * True, when curUnit is seen by the faction it belongs to and is therefore fully specified.
      */
@@ -2104,7 +2298,7 @@ public class GameDataMerger {
 
     if ((curUnit.getCombatSpells() != null) && (curUnit.getCombatSpells().size() > 0)) {
       if (resultUnit.getCombatSpells() == null) {
-        resultUnit.setCombatSpells(new Hashtable<ID, CombatSpell>());
+        resultUnit.setCombatSpells(new LinkedHashMap<ID, CombatSpell>());
       } else {
         resultUnit.getCombatSpells().clear();
       }
@@ -2180,7 +2374,7 @@ public class GameDataMerger {
     if (firstPass || !newWellKnown || curWellKnown) {
       if ((curUnit.getItems() != null) && (curUnit.getItems().size() > 0)) {
         if (resultUnit.getItemMap() == null) {
-          resultUnit.setItems(new Hashtable<StringID, Item>());
+          resultUnit.setItems(new LinkedHashMap<StringID, Item>());
         } else {
           resultUnit.getItemMap().clear();
         }
@@ -2214,7 +2408,7 @@ public class GameDataMerger {
     }
 
     if (curUnit.getRegion() != null) {
-      resultUnit.setRegion(resultGD.getRegion(curUnit.getRegion().getID()));
+      resultUnit.setRegion(resultGD.getRegion(transform(translator, curUnit.getRegion().getID())));
     }
 
     if (curUnit.getCombatStatus() != -1) {
@@ -2233,7 +2427,7 @@ public class GameDataMerger {
     final Collection<Skill> oldSkills = new LinkedList<Skill>();
 
     if (resultUnit.getSkillMap() == null) {
-      resultUnit.setSkills(new OrderedHashtable<StringID, Skill>());
+      resultUnit.setSkills(new OrderedHashtable<StringID, Skill>(4));
     } else {
       oldSkills.addAll(resultUnit.getSkills());
     }
@@ -2327,7 +2521,7 @@ public class GameDataMerger {
 
     if ((curUnit.getSpells() != null) && (curUnit.getSpells().size() > 0)) {
       if (resultUnit.getSpells() == null) {
-        resultUnit.setSpells(new Hashtable<ID, Spell>());
+        resultUnit.setSpells(new LinkedHashMap<ID, Spell>());
       } else {
         resultUnit.getSpells().clear();
       }
@@ -2378,7 +2572,7 @@ public class GameDataMerger {
 
         newMsg = MagellanFactory.createMessage(curMsg.getID());
 
-        GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg);
+        GameDataMerger.mergeMessage(curGD, curMsg, resultGD, newMsg, translator);
         resultUnit.getUnitMessages().add(newMsg);
       }
     }

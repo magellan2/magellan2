@@ -171,4 +171,11 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
     return rad;
   }
 
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#isToroidal()
+   */
+  @Override
+  public boolean isToroidal() {
+    return true;
+  }
 }

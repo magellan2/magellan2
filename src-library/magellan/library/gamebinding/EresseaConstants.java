@@ -763,7 +763,10 @@ public class EresseaConstants {
   public static final StringID RT_FOG = StringID.create("Nebel");
 
   /** The RegoinType "the void" */
-  public static final StringID RT_VOID = StringID.create("Leere");
+  public static final StringID RT_VOID = StringID.create("Magellan_Leere");
+
+  /** The RegoinType "the void" */
+  public static final StringID RT_UNKNOWN = StringID.create("unbekannt");
 
   /** "wrap around" regions */
   public static final StringID RT_WRAP = StringID.create("Übergang");

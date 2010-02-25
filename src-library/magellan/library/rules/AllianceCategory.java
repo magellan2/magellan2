@@ -14,7 +14,7 @@
 package magellan.library.rules;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import magellan.library.StringID;
 
@@ -55,7 +55,7 @@ public class AllianceCategory extends ObjectType {
 
   public Collection<AllianceCategory> getChildren() {
     if (children == null) {
-      children = new HashSet<AllianceCategory>();
+      children = new LinkedHashSet<AllianceCategory>();
     }
 
     return children;

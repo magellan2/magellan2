@@ -545,7 +545,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
    */
   private void copyNameID() {
     String toCopy = region.toString();
-    if (region.getUID() > 0) {
+    if (region.hasUID()) {
       toCopy += " (" + Integer.toString((int) region.getUID(), data.base).replace("l", "L") + ")";
     }
     StringSelection strSel = new StringSelection(toCopy);

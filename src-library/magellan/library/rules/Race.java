@@ -7,7 +7,7 @@
 
 package magellan.library.rules;
 
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import magellan.library.ID;
@@ -129,7 +129,7 @@ public class Race extends UnitContainerType {
    */
   public void setSkillBonus(SkillType skillType, int bonus) {
     if (skillBonuses == null) {
-      skillBonuses = new Hashtable<ID, Integer>();
+      skillBonuses = new LinkedHashMap<ID, Integer>();
     }
 
     skillBonuses.put(skillType.getID(), new Integer(bonus));
@@ -161,13 +161,13 @@ public class Race extends UnitContainerType {
    */
   public void setSkillBonus(SkillType skillType, RegionType regionType, int bonus) {
     if (skillRegionBonuses == null) {
-      skillRegionBonuses = new Hashtable<ID, Map<ID, Integer>>();
+      skillRegionBonuses = new LinkedHashMap<ID, Map<ID, Integer>>();
     }
 
     Map<ID, Integer> m = skillRegionBonuses.get(regionType.getID());
 
     if (m == null) {
-      m = new Hashtable<ID, Integer>();
+      m = new LinkedHashMap<ID, Integer>();
       skillRegionBonuses.put(regionType.getID(), m);
     }
 

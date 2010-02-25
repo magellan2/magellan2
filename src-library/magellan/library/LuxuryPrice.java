@@ -31,17 +31,37 @@ public class LuxuryPrice {
   }
 
   /**
-   * DOCUMENT-ME
+   * The price of the item type.
    */
   public int getPrice() {
     return price;
   }
 
   /**
-   * DOCUMENT-ME
+   * The item type the price is for.
    */
   public ItemType getItemType() {
     return itemType;
+  }
+
+  /**
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj instanceof LuxuryPrice)
+      return price == ((LuxuryPrice) obj).price && itemType == ((LuxuryPrice) obj).itemType;
+    return false;
+  }
+
+  /**
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    return (17 + price << 5) << 5 + itemType.hashCode();
   }
 
   /**

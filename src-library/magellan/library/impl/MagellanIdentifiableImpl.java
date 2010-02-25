@@ -134,7 +134,7 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
    */
   @Override
   public int hashCode() {
-    return getID() == null ? super.hashCode() : getID().hashCode();
+    return getID().hashCode();
   }
 
   /**

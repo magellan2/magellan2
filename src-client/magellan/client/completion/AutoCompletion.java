@@ -13,8 +13,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.StringReader;
-import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -88,8 +88,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   // self defined completion objects (mapping a name (String) to a value
   // (String))
-  private Map<String, String> selfDefinedCompletions = new Hashtable<String, String>();
-  private Map<String, String> selfDefinedCompletions2 = new Hashtable<String, String>();
+  private Map<String, String> selfDefinedCompletions = new LinkedHashMap<String, String>();
+  private Map<String, String> selfDefinedCompletions2 = new LinkedHashMap<String, String>();
 
   protected Properties settings;
   private Properties completionSettings;

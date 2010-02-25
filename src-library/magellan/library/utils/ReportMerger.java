@@ -36,12 +36,18 @@ import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.rules.Date;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.SavedTranslationsMapping;
+import magellan.library.utils.transformation.BoxTranslator;
+import magellan.library.utils.transformation.MapTranslator;
+import magellan.library.utils.transformation.ReportTranslator;
+import magellan.library.utils.transformation.TwoLevelTranslator;
+import magellan.library.utils.transformation.MapTranslator.BBox;
+import magellan.library.utils.transformation.MapTranslator.BBoxes;
 
 /**
  * Helper class.
  */
 public class ReportMerger extends Object {
-  private static final Logger log = Logger.getInstance(ReportMerger.class);
+  static final Logger log = Logger.getInstance(ReportMerger.class);
 
   /**
    * An interface representing classes that read a report from a file.
@@ -65,85 +71,6 @@ public class ReportMerger extends Object {
   }
 
   /**
-   * An interface for classes that transform coordinates. Possibly used by a report parser to
-   * translate a report.
-   */
-  public static interface ReportTranslator {
-    /**
-     * Return a coordinate related to c. Should be the inverse of
-     * {@link #inverseTransform(CoordinateID)}.
-     */
-    public CoordinateID transform(CoordinateID c);
-
-    /**
-     * Return a coordinate related to c. Should be the inverse of {@link #transform(CoordinateID)}.
-     */
-    public CoordinateID inverseTransform(CoordinateID c);
-  }
-
-  /**
-   * Returns the coordinates unchanged.
-   */
-  public static class IdentityTranslator implements ReportTranslator {
-
-    public CoordinateID inverseTransform(CoordinateID c) {
-      return c;
-    }
-
-    public CoordinateID transform(CoordinateID c) {
-      return c;
-    }
-
-  }
-
-  /**
-   * Translates coordinates in two levels by a given translation.
-   */
-  public static class TwoLevelTranslator implements ReportTranslator {
-
-    private CoordinateID bestTranslation;
-    private CoordinateID bestAstralTranslation;
-    private CoordinateID translate2;
-    private CoordinateID translate1;
-
-    /**
-     * @param bestTranslation
-     * @param bestAstralTranslation
-     */
-    public TwoLevelTranslator(CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
-      this.bestTranslation = bestTranslation;
-      this.bestAstralTranslation = bestAstralTranslation;
-      translate1 = CoordinateID.create(bestTranslation.getX(), bestTranslation.getY());
-      translate2 = CoordinateID.create(bestAstralTranslation.getX(), bestAstralTranslation.getY());
-    }
-
-    /**
-     * If c is in the layer of bestAstralTranslation, transform it by this value, if it's in
-     * bestTranslation's level, transform it by this one.
-     */
-    public CoordinateID transform(CoordinateID c) {
-      if (c.getZ() == bestTranslation.getZ())
-        return c.subtract(translate1);
-      if (c.getZ() == bestAstralTranslation.getZ())
-        return c.subtract(translate2);
-      return c;
-    }
-
-    /**
-     * If c is in the layer of bestAstralTranslation, transform it by this value, if it's in
-     * bestTranslation's level, transform it by this one.
-     */
-    public CoordinateID inverseTransform(CoordinateID c) {
-      if (c.getZ() == bestTranslation.getZ())
-        return c.translate(translate1);
-      if (c.getZ() == bestAstralTranslation.getZ())
-        return c.translate(translate2);
-      return c;
-    }
-
-  }
-
-  /**
    * Manages a report and provides information relevant to ReportMerger.
    * 
    * @author stm
@@ -151,33 +78,22 @@ public class ReportMerger extends Object {
    */
   private class ReportCache implements Comparable<ReportCache> {
     // data set
-    SoftReference<GameData> dataReference = null;
+    private SoftReference<GameData> dataReference = null;
 
     // you can either set game data statically...
-    GameData staticData = null;
+    private GameData staticData = null;
 
     // ...or load data from a file
-    File file = null;
+    private File file = null;
 
-    // maps region names to a set of region coordinates (of regions with that
-    // name)
-    Map<String, Collection<Region>> regionMap = null;
-
-    // maps schemes (region names) to a Collection of astral regions
-    // containing that scheme
-    Map<String, Collection<Region>> schemeMap = null;
-
-    // maps regionUIDs to the Region
-    // Map<Long, Region> regionUIDMap = null;
-
-    boolean hasAstralRegions = false;
+    private boolean hasAstralRegions = false;
 
     // already merged with another report
-    boolean merged = false;
+    private boolean merged = false;
 
     private Date date = null;
 
-    private boolean mergeError = false;
+    private boolean initialized = false;
 
     /**
      * Creates a new ReportCache which will read the report from <code>file</code> as needed using
@@ -225,9 +141,6 @@ public class ReportMerger extends Object {
      * @return The report
      */
     private GameData loadData() {
-      // ui.setProgress(file.getName() + " - " + Resources.get("util.reportmerger.status.loading"),
-      // iProgress);
-
       GameData data = loader.load(file);
       dataReference = new SoftReference<GameData>(data);
       return data;
@@ -237,7 +150,7 @@ public class ReportMerger extends Object {
      * Perform initializations if not already done.
      */
     private void init() {
-      if (schemeMap == null || regionMap == null) {
+      if (!initialized) {
         initRegionMaps();
       }
     }
@@ -248,38 +161,23 @@ public class ReportMerger extends Object {
     private void initRegionMaps() {
       GameData data = getData();
 
-      regionMap = new HashMap<String, Collection<Region>>();
-      schemeMap = new HashMap<String, Collection<Region>>();
-      /*
-       * regionUIDMap = new HashMap<Long, Region>();
-       */
-
       for (Region region : data.getRegions()) {
-        /*
-         * if ((region.getName() != null) && (region.getName().length() > 0)) { Collection<Region>
-         * regions = regionMap.get(region.getName()); if (regions == null) { regions = new
-         * HashSet<Region>(); regionMap.put(region.getName(), regions); } regions.add(region); } if
-         * (region.getUID()!=0){ regionUIDMap.put(region.getUID(), region); }
-         */
         if (region.getCoordinate().getZ() == 1) {
           hasAstralRegions = true;
-          /*
-           * for (Scheme scheme : region.schemes()) { Collection<Region> astralRegions =
-           * schemeMap.get(scheme.getName()); if (astralRegions == null) { astralRegions = new
-           * HashSet<Region>(); schemeMap.put(scheme.getName(), astralRegions); }
-           * astralRegions.add(region); }
-           */
         }
       }
     }
 
+    /**
+     * Returns <code>true</code> if the report has at least one astral region.
+     */
     public boolean hasAstralRegions() {
       init();
       return hasAstralRegions;
     }
 
     /**
-     * Ensures order by increasing date.
+     * Ensures partial order by increasing date.
      * 
      * @return <code>1</code> iff this report's round is greater than <code>otherReport</code>'s
      *         round.
@@ -293,6 +191,9 @@ public class ReportMerger extends Object {
             : 0);
     }
 
+    /**
+     * Returns the data's round (== date).
+     */
     private int getRound() {
       if (date == null) {
         date = getData().getDate();
@@ -311,23 +212,8 @@ public class ReportMerger extends Object {
       if (dataReference != null) {
         dataReference.clear();
       }
-      if (regionMap != null) {
-        regionMap.clear();
-      }
-      if (schemeMap != null) {
-        schemeMap.clear();
-      }
-      regionMap = null;
-      schemeMap = null;
+      initialized = false;
       date = null;
-    }
-
-    public boolean isMergeError() {
-      return mergeError;
-    }
-
-    public void setMergeError(boolean mergeError) {
-      this.mergeError = mergeError;
     }
 
     public boolean isMerged() {
@@ -341,40 +227,24 @@ public class ReportMerger extends Object {
     public File getFile() {
       return file;
     }
-
-    /*
-     * @param name
-     * @return The regions with the specified name public Collection<Region> getRegionsByName(String
-     * name) { init(); Collection<Region> result = regionMap.get(name); if (result == null) return
-     * Collections.emptySet(); else return result; } public Region getRegionByUID(long regionUID){
-     * init(); return regionUIDMap.get(regionUID); }
-     */
-
-    /*
-     * @param name
-     * @return The set of astral regions having a scheme named <code>name</code> public
-     * Collection<Region> getAstralRegionBySchemeName(String name) { init(); Collection<Region>
-     * result = schemeMap.get(name); if (result == null) return Collections.emptySet(); else return
-     * result; }
-     */
   }
 
   // merged data set
-  GameData globalData = null;
+  protected GameData globalData = null;
 
-  ReportCache dataReport = null;
+  protected ReportCache dataReport = null;
 
   // reports to merge
-  ReportCache reports[] = null;
+  protected ReportCache reports[] = null;
 
   // loader interface
-  Loader loader = null;
+  protected Loader loader = null;
 
   // data assign interface
-  AssignData assignData = null;
+  protected AssignData assignData = null;
 
-  UserInterface ui;
-  int iProgress;
+  protected UserInterface ui;
+  protected int iProgress;
 
   private boolean sort = false;
 
@@ -385,7 +255,8 @@ public class ReportMerger extends Object {
    */
   public ReportMerger(GameData _data, File files[], Loader _loader, AssignData _assignData) {
     globalData = _data;
-    globalData.removeTheVoid(); // removes void regions
+    // globalData.removeTheVoid(); // removes void regions; STM: bad idea to change the report
+    // here...
     reports = new ReportCache[files.length];
 
     for (int i = 0; i < files.length; i++) {
@@ -507,7 +378,7 @@ public class ReportMerger extends Object {
 
   private boolean askToMergeAnyway() {
     StringBuilder strMessage =
-        new StringBuilder(Resources.get("util.reportmerger.msg.noconnection.text.1"));
+        new StringBuilder(Resources.get("util.reportmerger.msg.noconnection.text.1")).append(" ");
 
     for (int i = 0; i < reports.length; i++) {
       if (!reports[i].isMerged()) {
@@ -595,16 +466,21 @@ public class ReportMerger extends Object {
     if (!checkGameType(newReport))
       return true;
 
-    adjustTrustlevels(newReport);
+    // fixed (stm) moved to GameDataMerger
+    // adjustTrustlevels(newReport);
 
-    setTempID(newReport);
+    // fixed (stm) moved to GameDataMerger
+    // setTempID(newReport);
 
     /***************************************************************************
-     * Look for coordinate translation Important: A faction's coordinate system for astral space is
-     * independent of it's coordinate system for normal space. It depends (as far as I know) on the
-     * astral space region where the faction first enters the astral space (this region will have
-     * the coordinate (0,0,1). Thus a special translation for the astral space (beside that one for
-     * normal space) has to be found.
+     * Look for coordinate translation.
+     * <p>
+     * Important: A faction's coordinate system for astral space is independent of it's coordinate
+     * system for normal space (in Eressea). It depends (as far as I know) on the astral space
+     * region where the faction first enters the astral space (this region will have the coordinate
+     * (0,0,1). Thus a special translation for the astral space (beside that one for normal space)
+     * has to be found.
+     * </p>
      */
     iProgress += 1;
     if (ui != null) {
@@ -626,9 +502,17 @@ public class ReportMerger extends Object {
               + Resources.get("util.reportmerger.status.translating"), iProgress);
         }
 
+        // TODO (stm) do this /after/ merging?
         storeTranslations(newReport, bestTranslation, bestAstralTranslation);
 
-        GameData clonedData = translateReport(newReport, bestTranslation, bestAstralTranslation);
+        BBoxes boxes = getBoundingBox(globalData, newReport.getData());
+
+        ReportTranslator translator1 = getTranslator(globalData, boxes);
+        ReportTranslator translator2 =
+            getTranslator(dataReport.getData(), newReport.getData(), boxes, bestTranslation
+                .getKey(), bestAstralTranslation.getKey());
+
+        // GameData clonedData = translateReport(newReport, bestTranslation, bestAstralTranslation);
 
         /***************************************************************************
          * Merge the reports, finally!
@@ -638,7 +522,19 @@ public class ReportMerger extends Object {
           ui.setProgress(newReport.getFile().getName() + " - "
               + Resources.get("util.reportmerger.status.merging"), iProgress);
         }
-        globalData = GameDataMerger.merge(globalData, clonedData);
+        // old: globalData = GameDataMerger.merge(globalData, clonedData);
+        globalData =
+            GameDataMerger.merge(globalData, newReport.getData(), translator1, translator2);
+
+        // try {
+        // (new CRWriter(globalData, null, FileTypeFactory.singleton().createFileType(
+        // new File("dummydummy1.cr"), false), globalData.getEncoding())).writeSynchronously();
+        // (new CRWriter(newData, null, FileTypeFactory.singleton().createFileType(
+        // new File("dummydummy2.cr"), false), newData.getEncoding())).writeSynchronously();
+        // } catch (IOException e) {
+        // e.printStackTrace();
+        // }
+
         newReport.setMerged(true);
       } else {
         ReportMerger.log.info("aborting...");
@@ -659,18 +555,129 @@ public class ReportMerger extends Object {
     return newReport.isMerged();
   }
 
-  /***************************************************************************
-   * translate new report
+  private BBoxes getBoundingBox(GameData oldData, GameData newData) {
+    BBoxes outBoxes = getBoundingBox(oldData);
+    BBoxes inBoxes = getBoundingBox(newData);
+
+    BBoxes resultBoxes = new BBoxes();
+    for (int layer : outBoxes.getLayers()) {
+      BBox outBox = outBoxes.getBox(layer);
+      BBox inBox = inBoxes.getBox(layer);
+      if (inBox != null
+          && (inBox.maxx - inBox.minx != outBox.maxx - outBox.minx || inBox.maxy - inBox.miny != outBox.maxy
+              - outBox.miny)) {
+        log.warn("bounding box changed from " + outBox + " to " + inBox);
+        resultBoxes.setBox(layer, inBox);
+      } else {
+        resultBoxes.setBox(layer, outBox);
+      }
+    }
+    for (int layer : inBoxes.getLayers()) {
+      BBox outBox = outBoxes.getBox(layer);
+      if (outBox == null) {
+        resultBoxes.setBox(layer, inBoxes.getBox(layer));
+      }
+    }
+    return resultBoxes;
+  }
+
+  /**
+   * Try to find a translation based on region ids.
    */
-  private GameData translateReport(ReportCache newReport, Score<CoordinateID> bestTranslation,
+  protected static MapTranslator.BBoxes getBoundingBox(GameData data) {
+
+    BBoxes boxes = new BBoxes();
+    for (Region w : data.wrappers().values()) {
+      Region original = data.getOriginal(w);
+      if (original != null) {
+        if (w.getCoordinate().getZ() != original.getCoordinate().getZ())
+          throw new IllegalArgumentException("Report wraps between different layers not supported.");
+
+        if (original.getCoordX() - w.getCoordX() > 0) {
+          changeBoxX(boxes, w.getCoordinate().getZ(), w.getCoordX() + 1, original.getCoordX());
+        }
+        if (original.getCoordX() - w.getCoordX() < 0) {
+          changeBoxX(boxes, w.getCoordinate().getZ(), original.getCoordX(), w.getCoordX() - 1);
+        }
+        if (original.getCoordY() - w.getCoordY() > 0) {
+          changeBoxY(boxes, w.getCoordinate().getZ(), w.getCoordY() + 1, original.getCoordY());
+        }
+        if (original.getCoordY() - w.getCoordY() < 0) {
+          changeBoxY(boxes, w.getCoordinate().getZ(), original.getCoordY(), w.getCoordY() - 1);
+        }
+      }
+    }
+    return boxes;
+  }
+
+  private static void changeBoxX(BBoxes boxes, int layer, int newmin, int newmax) {
+    BBox oldBox = boxes.getBox(layer);
+    if (oldBox != null
+        && ((oldBox.minx != Integer.MAX_VALUE && oldBox.minx != newmin) || (oldBox.maxx != Integer.MAX_VALUE && oldBox.maxx != newmax))) {
+      ReportMerger.log.warn("box changed");
+    }
+    boxes.setBoxX(layer, newmin, newmax);
+  }
+
+  private static void changeBoxY(BBoxes boxes, int layer, int newmin, int newmax) {
+    BBox oldBox = boxes.getBox(layer);
+    if (oldBox != null
+        && ((oldBox.miny != Integer.MAX_VALUE && oldBox.miny != newmin) || (oldBox.maxy != Integer.MAX_VALUE && oldBox.maxy != newmax))) {
+      ReportMerger.log.warn("box changed");
+    }
+    boxes.setBoxY(layer, newmin, newmax);
+  }
+
+  protected ReportTranslator getTranslator(GameData data, BBoxes boxes) {
+    BoxTranslator translator = new BoxTranslator(boxes);
+    return translator;
+  }
+
+  protected ReportTranslator getTranslator(GameData oldData, GameData newData, BBoxes outBoxes,
+      CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
+    Map<Long, Region> idMap = new HashMap<Long, Region>(newData.getRegions().size() * 9 / 6);
+    for (Region r : oldData.getRegions()) {
+      if (r.hasUID()) {
+        idMap.put(r.getUID(), r);
+      }
+    }
+
+    TwoLevelTranslator translator2L =
+        new TwoLevelTranslator(bestTranslation, bestAstralTranslation);
+
+    try {
+      MapTranslator translatorUID = new MapTranslator(translator2L);
+      translatorUID.setBoxes(outBoxes);
+
+      if (idMap.size() > 0) {
+        for (Region rNew : newData.getRegions()) {
+          if (rNew.hasUID()) {
+            Region rOld = idMap.get(rNew.getUID());
+            if (rOld != null) {
+              translatorUID.addMapping(rNew.getID(), outBoxes.putInBox(rOld.getCoordinate()));
+            }
+          }
+        }
+      }
+      return translatorUID;
+    } catch (Exception e) {
+      log.error("could not compute translation", e);
+      return translator2L;
+    }
+  }
+
+  /***************************************************************************
+   * Translate the report in two layers.
+   */
+  protected GameData translateReport(ReportCache newReport, Score<CoordinateID> bestTranslation,
       Score<CoordinateID> bestAstralTranslation) {
     GameData clonedData = newReport.getData();
     if (bestTranslation.getKey().getX() != 0 || bestTranslation.getKey().getY() != 0
         || bestAstralTranslation.getKey().getX() != 0 || bestAstralTranslation.getKey().getY() != 0) {
       try {
         clonedData =
-            (GameData) clonedData.clone(new TwoLevelTranslator(bestTranslation.getKey(),
-                bestAstralTranslation.getKey()));
+            clonedData.clone(new TwoLevelTranslator(bestTranslation.getKey(), bestAstralTranslation
+                .getKey()));
         if (clonedData == null)
           throw new RuntimeException("problems during cloning");
         if (clonedData.outOfMemory) {
@@ -928,8 +935,7 @@ public class ReportMerger extends Object {
       distinct.add(savedTranslation.getKey());
     }
 
-    if (!newReport.isMergeError() && !dataReport.isMergeError() && bestTranslation.getScore() >= 0
-        && !changed && distinct.size() == 1)
+    if (bestTranslation.getScore() >= 0 && !changed && distinct.size() == 1)
       // all seems well, return
       return bestTranslation;
     else {
@@ -1049,47 +1055,6 @@ public class ReportMerger extends Object {
       return null;
     }
     return resultTranslation;
-  }
-
-  /**
-   * Prepare curTempID-Value for merging. If reports are of the same age, keep existing by setting
-   * the new one to default value. Otherwise set the existing to default value.
-   */
-  private void setTempID(ReportCache newReport) {
-    if ((globalData.getDate() != null) && (newReport.getData().getDate() != null)
-        && (globalData.getDate().getDate() < newReport.getData().getDate().getDate())) {
-      globalData.setCurTempID(-1);
-    } else {
-      newReport.getData().setCurTempID(-1);
-    }
-  }
-
-  /**
-   * prepare faction trustlevel for merging: - to be added CR is older or of same age -> hold
-   * existing trust levels - to be added CR is newer and contains trust level that were set by the
-   * user explicitly (or read from CR what means the same) -> take the trust levels out of the new
-   * CR otherwise -> hold existing trust levels This means: set those trust levels, that will not be
-   * retained to default values
-   */
-  private void adjustTrustlevels(ReportCache newReport) {
-    if ((globalData.getDate() != null) && (newReport.getData().getDate() != null)
-        && (globalData.getDate().getDate() < newReport.getData().getDate().getDate())
-        && TrustLevels.containsTrustLevelsSetByUser(newReport.getData())) {
-      // take the trust levels out of the to be added data
-      // set those in the existing data to default-values
-      for (Faction f : globalData.getFactions()) {
-        f.setTrustLevel(Faction.TL_DEFAULT);
-        f.setTrustLevelSetByUser(false);
-      }
-    } else {
-      // take the trust levels out of the existing data
-      // set those in the to be added data to default-values
-      for (Faction f : newReport.getData().getFactions()) {
-        f.setTrustLevel(Faction.TL_DEFAULT);
-        f.setTrustLevelSetByUser(false);
-      }
-    }
-
   }
 
   /**

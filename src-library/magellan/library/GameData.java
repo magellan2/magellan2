@@ -18,8 +18,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -41,15 +43,16 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
-import magellan.library.utils.ReportMerger;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.Translations;
-import magellan.library.utils.ReportMerger.ReportTranslator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.LevelRelation;
+import magellan.library.utils.transformation.IdentityTranslator;
+import magellan.library.utils.transformation.ReportTranslator;
+import magellan.library.utils.transformation.TwoLevelTranslator;
 
 /**
  * This is the central class for collecting all the data representing one computer report.
@@ -76,14 +79,15 @@ public abstract class GameData implements Cloneable, Addeable {
   private EntityID ownerFaction;
 
   private Map<EntityID, Map<Integer, CoordinateID>> coordinateTranslations =
-      new HashMap<EntityID, Map<Integer, CoordinateID>>();
+      new LinkedHashMap<EntityID, Map<Integer, CoordinateID>>();
 
   private Map<Integer, Map<Integer, LevelRelation>> levelRelations =
-      new HashMap<Integer, Map<Integer, LevelRelation>>();
+      new LinkedHashMap<Integer, Map<Integer, LevelRelation>>();
 
   private Map<ID, AllianceGroup> alliancegroups;
 
   protected Map<CoordinateID, Region> wrappers = new LinkedHashMap<CoordinateID, Region>();
+  protected Map<Region, Region> originals = new LinkedHashMap<Region, Region>();
 
   /**
    * The current TempUnit-ID. This means, if a new TempUnit is created, it's suggested ID is usually
@@ -95,7 +99,7 @@ public abstract class GameData implements Cloneable, Addeable {
   protected int curTempID = -1;
 
   /** Contains all attributes */
-  private Map<String, String> attributes = new HashMap<String, String>();
+  private Map<String, String> attributes = new LinkedHashMap<String, String>();
 
   /**
    * The current file attached to the game data. If it is null, the save as dialog shall be opened.
@@ -588,7 +592,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Returns the temp unit with the specified ID, <code>null</code> if it doesn not exist.
    */
-  public Object getTempUnit(UnitID id) {
+  public TempUnit getTempUnit(UnitID id) {
     return tempUnitView().get(id);
   }
 
@@ -749,6 +753,12 @@ public abstract class GameData implements Cloneable, Addeable {
   public Region removeRegion(Region r) {
     Region removed = regionView().remove(r.getID());
     if (removed != null) {
+      for (Direction d : removed.getNeighbors().keySet()) {
+        removed.getNeighbors().get(d).removeNeighbor(d.add(3));
+      }
+      for (Direction d : Direction.getDirections()) {
+        removed.removeNeighbor(d);
+      }
       for (Unit u : removed.units()) {
         if (unitView().remove(u.getID()) == null) {
           log.warn("could not remove unit " + u);
@@ -773,7 +783,6 @@ public abstract class GameData implements Cloneable, Addeable {
         }
       }
     }
-    // TODO remove neighbors!
     return removed;
   }
 
@@ -980,32 +989,32 @@ public abstract class GameData implements Cloneable, Addeable {
    * returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader)
    * 
    * @throws CloneNotSupportedException If cloning doesn't succeed
+   * @see java.lang.Object#clone()
    */
-
   @Override
-  public Object clone() throws CloneNotSupportedException {
+  public GameData clone() throws CloneNotSupportedException {
     // return new Loader().cloneGameData(this);
-    return clone(new ReportMerger.IdentityTranslator());
-  }
-
-  /** @deprecated Use {@link #clone(ReportTranslator)}. */
-  @Deprecated
-  public Object clone(CoordinateID newOrigin) throws CloneNotSupportedException {
-    return clone(new ReportMerger.TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
+    return clone(new IdentityTranslator());
   }
 
   /**
-   * returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader) and at
-   * the same time translates the origin two <code>newOrigin</code>
+   * Returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader) and at
+   * the same time translates the origin to <code>newOrigin</code>.
    * 
    * @throws CloneNotSupportedException If cloning doesn't succeed
    */
-  public Object clone(ReportMerger.ReportTranslator coordinateTranslator)
+  public GameData clone(CoordinateID newOrigin) throws CloneNotSupportedException {
+    return clone(new TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
+  }
+
+  /**
+   * Returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader) and at
+   * the same time translates the new report.
+   * 
+   * @throws CloneNotSupportedException If cloning doesn't succeed
+   */
+  public GameData clone(ReportTranslator coordinateTranslator)
       throws CloneNotSupportedException {
-    // if (newOrigin.x == 0 && newOrigin.y == 0) {
-    // GameData.log.info("no need to clone - same origin");
-    // return this.clone();
-    // }
     if (MemoryManagment.isFreeMemory(estimateSize() * 3)) {
       GameData.log.info("cloning in memory");
       GameData clonedData = new Loader().cloneGameDataInMemory(this, coordinateTranslator);
@@ -1054,13 +1063,16 @@ public abstract class GameData implements Cloneable, Addeable {
     // FIXME(stm) does it harm to call this more than once???
     // if (postProcessed)
     // return;
-    GameData.log.info("start GameData postProcess");
+    GameData.log.fine("start GameData postProcess");
 
     // enforce locale to be non-null
     postProcessLocale();
 
-    // attach Regions to Islands
-    MagellanFactory.postProcess(this);
+    postProcessUnknown();
+
+    postProcessTheVoid();
+
+    postProcessIslands();
 
     // remove double messages
     postProcessMessages();
@@ -1076,7 +1088,120 @@ public abstract class GameData implements Cloneable, Addeable {
 
     postProcessed = true;
 
-    GameData.log.info("finished GameData postProcess");
+    GameData.log.fine("finished GameData postProcess");
+  }
+
+  /**
+   * Post process of Island objects. The Regions of the GameData are attached to their Island.
+   */
+  public void postProcessIslands() {
+    GameData data = this;
+
+    // create a map of region maps for every Island
+    final Map<Island, Map<CoordinateID, Region>> islandMap =
+        new Hashtable<Island, Map<CoordinateID, Region>>();
+
+    for (final Region r : data.getRegions()) {
+      if (r.getIsland() != null) {
+        Map<CoordinateID, Region> actRegionMap = islandMap.get(r.getIsland());
+
+        if (actRegionMap == null) {
+          actRegionMap = new Hashtable<CoordinateID, Region>();
+          islandMap.put(r.getIsland(), actRegionMap);
+        }
+
+        actRegionMap.put(r.getID(), r);
+      }
+    }
+
+    // setRegions for every Island in the map of region maps.
+    for (final Island island : islandMap.keySet()) {
+      final Map<CoordinateID, Region> actRegionMap = islandMap.get(island);
+      island.setRegions(actRegionMap);
+    }
+
+  }
+
+  /**
+   * Set data to default values: RegionTypes, faction races, unit name/race/faction
+   */
+  private void postProcessUnknown() {
+
+    GameData data = this;
+
+    // fix unknown stuff
+    for (Region r : data.getRegions()) {
+      if (r.getRegionType() == null) {
+        r.setType(RegionType.unknown);
+      }
+    }
+
+    // search for the races of the factions in the report.
+    for (Faction faction : data.getFactions()) {
+      // if the race is already set in the report ignore this algorithm
+      if (faction.getType() != null) {
+        continue;
+      }
+
+      final Map<Race, Integer> personsPerRace = new HashMap<Race, Integer>();
+
+      // iterate thru all units and count the races of them
+      final Collection<Unit> units = faction.units();
+      for (final Unit unit : units) {
+        final Race race = unit.getRace();
+        if (race == null) {
+          continue;
+        }
+        if (personsPerRace.containsKey(race)) {
+          final int amount = personsPerRace.get(race) + unit.getPersons();
+          personsPerRace.put(race, amount);
+        } else {
+          personsPerRace.put(race, unit.getPersons());
+        }
+      }
+
+      // find the race with the most persons in it - this is the race of the
+      // faction.
+      int maxPersons = 0;
+      Race race = null;
+      for (final Race aRace : personsPerRace.keySet()) {
+        final int amount = personsPerRace.get(aRace);
+        if (amount > maxPersons) {
+          maxPersons = amount;
+          race = aRace;
+        }
+      }
+
+      if (race != null) {
+        faction.setType(race);
+      }
+    }
+
+    // there can be dummy units (UnitContainer owners and such), find and remove these
+    if (data.getUnits() != null) {
+      Collection<UnitID> dummyUnitIDs = new LinkedList<UnitID>();
+
+      for (Unit unit : data.getUnits()) {
+        if (unit.getName() == null) {
+          dummyUnitIDs.add(unit.getID());
+          unit.setName("???");
+        }
+        if (unit.getRegion() == null) {
+          unit.setRegion(data.getNullRegion());
+        }
+        if (unit.getFaction() == null) {
+          unit.setFaction(data.getNullFaction());
+        }
+        if (unit.getRace() == null) {
+          unit.setRace(data.getNullRace());
+        }
+      }
+
+      // for (UnitID id : dummyUnitIDs) {
+      // data.removeUnit(id);
+      // }
+    }
+
   }
 
   /**
@@ -1116,13 +1241,13 @@ public abstract class GameData implements Cloneable, Addeable {
           if (neighbour == null) {
             // Missing Neighbor
             Region r = MagellanFactory.createRegion(c, this);
-            RegionType type = RegionType.unknown;
+            RegionType type = RegionType.theVoid;
             r.setType(type);
-            r.setName(Resources.get("completedata.region.thevoid.name"));
-            r.setDescription(Resources.get("completedata.region.thevoid.beschr"));
+            r.setName(Resources.get("gamedata.region.thevoid.name"));
+            r.setDescription(Resources.get("gamedata.region.thevoid.beschr"));
             newRegions.add(r);
             addTranslation(EresseaConstants.RT_VOID.toString(), Resources
-                .get("completedata.region.thevoid.name"), TranslationType.sourceMagellan);
+                .get("gamedata.region.thevoid.name"), TranslationType.sourceMagellan);
           }
         }
       }
@@ -1177,7 +1302,7 @@ public abstract class GameData implements Cloneable, Addeable {
     // just for info:
     int count_before = potionView().size();
     // The final Map of the potions
-    HashMap<String, Potion> newPotions = new HashMap<String, Potion>();
+    HashMap<String, Potion> newPotions = new LinkedHashMap<String, Potion>();
     // To sort the Potions after ID we use a simple List
     // and fill it with our Potions
     List<Potion> sortedPotions = new ArrayList<Potion>(potionView().values());
@@ -1213,8 +1338,8 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Postprocess a given list of messages. To remove duplicate messages we put all messages in an
-   * ordered hashtable and put them back into the messages collection.
+   * Post process a given list of messages. To remove duplicate messages we put all messages in an
+   * ordered hash table and put them back into the messages collection.
    */
   private void postProcessMessages(Collection<Message> messages) {
     if (messages == null)
@@ -1245,17 +1370,15 @@ public abstract class GameData implements Cloneable, Addeable {
    * removes all "Leere" Regions needed for merging
    */
   public void removeTheVoid() {
-    List<CoordinateID> delRegionID = new ArrayList<CoordinateID>();
+    List<Region> todelete = new ArrayList<Region>();
     for (CoordinateID actRegionID : regionView().keySet()) {
       Region actRegion = getRegion(actRegionID);
-      if (actRegion.getRegionType().equals(rules.getRegionType(EresseaConstants.RT_VOID))) {
-        delRegionID.add(actRegionID);
+      if (actRegion.getRegionType().equals(RegionType.theVoid)) {
+        todelete.add(actRegion);
       }
     }
-    if (delRegionID.size() > 0) {
-      for (CoordinateID actID : delRegionID) {
-        regionView().remove(actID);
-      }
+    for (Region r : todelete) {
+      removeRegion(r);
     }
   }
 
@@ -1294,13 +1417,13 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Returns the relation of two map layers.
    * 
-   * @return the <code>CoordinateID</code> of the toLevel region which is accessable by the
+   * @return the <code>CoordinateID</code> of the toLevel region which is accessible by the
    *         fromLevel region with CoordinateID <0, 0, fromLevel>.
    */
   public LevelRelation getLevelRelation(int fromLevel, int toLevel) {
     Map<Integer, LevelRelation> relations = levelRelations.get(toLevel);
     if (relations == null) {
-      relations = new HashMap<Integer, LevelRelation>();
+      relations = new LinkedHashMap<Integer, LevelRelation>();
       levelRelations.put(toLevel, relations);
     }
     LevelRelation lr = relations.get(fromLevel);
@@ -1403,7 +1526,7 @@ public abstract class GameData implements Cloneable, Addeable {
   public void setCoordinateTranslation(EntityID otherFaction, CoordinateID usedTranslation) {
     Map<Integer, CoordinateID> layerMap = coordinateTranslations.get(otherFaction);
     if (layerMap == null) {
-      layerMap = new HashMap<Integer, CoordinateID>();
+      layerMap = new LinkedHashMap<Integer, CoordinateID>();
       coordinateTranslations.put(otherFaction, layerMap);
     }
     layerMap.put(usedTranslation.getZ(), usedTranslation);
@@ -1477,18 +1600,38 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Makes r a "wraparound" region, removing it as a normal region.
+   * Makes r a "wraparound" region, removing it as a normal region. A wrapper is a region which is
+   * not a real region, but is only a placeholder for a another region (most probably to represent a
+   * cylinder- or torus-shaped world.
+   * 
+   * @param wrapper The placeholder region
+   * @param original The original region, represented by the wrapper.
    */
-  public void makeWrapper(Region r) {
-    removeRegion(r);
-    wrappers.put(r.getID(), r);
+  public void makeWrapper(Region wrapper, Region original) {
+    if (wrapper == null || original == null)
+      throw new NullPointerException();
+    removeRegion(wrapper);
+    wrappers.put(wrapper.getID(), wrapper);
+    originals.put(wrapper, original);
   }
 
   /**
    * Returns a view of al "wraparound" regions.
+   * 
+   * @see #makeWrapper(Region, Region)
    */
   public Map<CoordinateID, Region> wrappers() {
     return Collections.unmodifiableMap(wrappers);
+  }
+
+  /**
+   * Gets the real region for a wrapper region.
+   * 
+   * @return The region corresponding to this wrapper, or <code>null</code> if none is known.
+   * @see #makeWrapper(Region, Region)
+   */
+  public Region getOriginal(Region wrapper) {
+    return originals.get(wrapper);
   }
 
   /**

@@ -850,7 +850,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // terrain coordinates
     String regionKoordinateInfo =
         Resources.get("emapdetailspanel.node.coordinates") + ": " + r.getID();
-    if (r.getUID() > 0) {
+    if (r.hasUID()) {
       regionKoordinateInfo +=
           " (ID:" + Integer.toString((int) r.getUID(), getGameData().base).replace("l", "L") + ")";
     }

@@ -56,7 +56,7 @@ public class SpecifiedSkillTypeSkillComparator implements Comparator<Map<? exten
    * Compares its two arguments for order according to their skills.
    * 
    * @return the result of the skill comparator applied to the - according to the given skilltype -
-   *         smallest skills in o1 and o2.
+   *         smallest skills in o1 and o2. Undefined values are evaluated as <code>&gt; 0</code>.
    */
   public int compare(Map<? extends ID, Skill> o1, Map<? extends ID, Skill> o2) {
     int retVal = 0;
@@ -64,15 +64,15 @@ public class SpecifiedSkillTypeSkillComparator implements Comparator<Map<? exten
     Skill s2 = o2.get(skillTypeID);
 
     if ((s1 == null) && (s2 != null)) {
-      retVal = Integer.MIN_VALUE;
-    } else if ((s1 != null) && (s2 == null)) {
       retVal = Integer.MAX_VALUE;
+    } else if ((s1 != null) && (s2 == null)) {
+      retVal = Integer.MIN_VALUE;
     } else if ((s1 == null) && (s2 == null)) {
       if (subCmp != null) {
         retVal = subCmp.compare(o1, o2);
       }
     } else {
-      retVal = skillCmp.compare(s1, s2);
+      retVal = -skillCmp.compare(s1, s2);
 
       if ((retVal == 0) && (subCmp != null)) {
         retVal = subCmp.compare(o1, o2);

@@ -754,7 +754,9 @@ public abstract class GameData implements Cloneable, Addeable {
     Region removed = regionView().remove(r.getID());
     if (removed != null) {
       for (Direction d : removed.getNeighbors().keySet()) {
-        removed.getNeighbors().get(d).removeNeighbor(d.add(3));
+        if (removed.getNeighbors().get(d).getNeighbors().get(d.add(3)) == removed) {
+          removed.getNeighbors().get(d).removeNeighbor(d.add(3));
+        }
       }
       for (Direction d : Direction.getDirections()) {
         removed.removeNeighbor(d);
@@ -1013,8 +1015,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * 
    * @throws CloneNotSupportedException If cloning doesn't succeed
    */
-  public GameData clone(ReportTranslator coordinateTranslator)
-      throws CloneNotSupportedException {
+  public GameData clone(ReportTranslator coordinateTranslator) throws CloneNotSupportedException {
     if (MemoryManagment.isFreeMemory(estimateSize() * 3)) {
       GameData.log.info("cloning in memory");
       GameData clonedData = new Loader().cloneGameDataInMemory(this, coordinateTranslator);
@@ -1228,11 +1229,9 @@ public abstract class GameData implements Cloneable, Addeable {
   public void postProcessTheVoid() {
     List<Region> newRegions = new ArrayList<Region>();
     for (Region actRegion : regionView().values()) {
-      boolean shouldHaveAllNeighbours = false;
+
       if (actRegion.getVisibility().greaterEqual(Region.Visibility.TRAVEL)) {
-        shouldHaveAllNeighbours = true;
-      }
-      if (shouldHaveAllNeighbours) {
+        // should have all neighbors
         CoordinateID center = actRegion.getCoordinate();
 
         for (CoordinateID c : Regions.getAllNeighbours(center, 1)) {

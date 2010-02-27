@@ -5,11 +5,11 @@ import magellan.library.CoordinateID;
 /**
  * This Translator puts all coordinates into a box.
  */
-public class BoxTranslator implements ReportTranslator {
+public class BoxTransformer implements ReportTransformer {
 
-  private MapTranslator.BBoxes boxes;
+  private MapTransformer.BBoxes boxes;
 
-  public BoxTranslator(MapTranslator.BBoxes boxes) {
+  public BoxTransformer(MapTransformer.BBoxes boxes) {
     this.boxes = boxes;
   }
 

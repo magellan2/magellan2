@@ -24,9 +24,9 @@ import magellan.library.io.file.FileType;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
-import magellan.library.utils.transformation.IdentityTranslator;
-import magellan.library.utils.transformation.ReportTranslator;
-import magellan.library.utils.transformation.TwoLevelTranslator;
+import magellan.library.utils.transformation.IdentityTransformer;
+import magellan.library.utils.transformation.ReportTransformer;
+import magellan.library.utils.transformation.TwoLevelTransformer;
 
 /**
  * The <code>GameDataReader</code> reads a <code>GameData</code> from a given <code>FileType</code>
@@ -60,14 +60,14 @@ public class GameDataReader {
    * @throws IOException iff something went wrong while reading the file.
    */
   public GameData readGameData(FileType aFileType) throws IOException {
-    return readGameData(aFileType, new IdentityTranslator());
+    return readGameData(aFileType, new IdentityTransformer());
   }
 
-  /** @deprecated Use {@link #readGameData(FileType, ReportTranslator)} */
+  /** @deprecated Use {@link #readGameData(FileType, ReportTransformer)} */
   @Deprecated
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin) throws IOException {
     return readGameData(aFileType,
-        new TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
+        new TwoLevelTransformer(newOrigin, CoordinateID.ZERO));
   }
 
   /**
@@ -79,7 +79,7 @@ public class GameDataReader {
    * @return a GameData object read from the cr or xml file.
    * @throws IOException If an I/O error occurs
    */
-  public GameData readGameData(FileType aFileType, ReportTranslator translator)
+  public GameData readGameData(FileType aFileType, ReportTransformer translator)
       throws IOException {
     // a) read game name
     String gameName = GameNameReader.getGameName(aFileType);
@@ -97,7 +97,7 @@ public class GameDataReader {
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin, String gameName)
       throws IOException {
     return readGameData(aFileType,
-        new TwoLevelTranslator(newOrigin, CoordinateID.ZERO), gameName);
+        new TwoLevelTransformer(newOrigin, CoordinateID.ZERO), gameName);
   }
 
   /**
@@ -110,7 +110,7 @@ public class GameDataReader {
    * @throws IOException If an I/O error occurs
    */
   public GameData readGameData(FileType aFileType,
-      ReportTranslator coordinateTranslator, String gameName) throws IOException {
+      ReportTransformer coordinateTranslator, String gameName) throws IOException {
     if (aFileType.isXMLFile()) {
       GameData data = readGameDataXML(aFileType, gameName, coordinateTranslator);
 
@@ -153,7 +153,7 @@ public class GameDataReader {
    * Reads game data from a XML file
    */
   protected GameData readGameDataXML(FileType aFileType, String aGameName,
-      ReportTranslator coordinateTranslator) throws IOException {
+      ReportTransformer coordinateTranslator) throws IOException {
     throw new IOException("Reading of xml files unfinished");
   }
 
@@ -161,7 +161,7 @@ public class GameDataReader {
    * Reads the game data from a CR file
    */
   protected GameData readGameDataCR(FileType aFileType, String aGameName) throws IOException {
-    return readGameDataCR(aFileType, aGameName, new IdentityTranslator());
+    return readGameDataCR(aFileType, aGameName, new IdentityTransformer());
   }
 
   /**
@@ -174,7 +174,7 @@ public class GameDataReader {
    * @throws IOException If an I/O error occurs
    */
   protected GameData readGameDataCR(FileType aFileType, String aGameName,
-      ReportTranslator coordinateTranslator) throws IOException {
+      ReportTransformer coordinateTranslator) throws IOException {
     GameData newData = createGameData(aGameName);
     newData.setFileType(aFileType);
 

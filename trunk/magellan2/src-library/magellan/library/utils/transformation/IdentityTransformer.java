@@ -5,7 +5,7 @@ import magellan.library.CoordinateID;
 /**
  * Returns the coordinates unchanged.
  */
-public class IdentityTranslator implements ReportTranslator {
+public class IdentityTransformer implements ReportTransformer {
 
   public CoordinateID transform(CoordinateID c) {
     return c;

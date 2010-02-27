@@ -36,12 +36,12 @@ import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.rules.Date;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.SavedTranslationsMapping;
-import magellan.library.utils.transformation.BoxTranslator;
-import magellan.library.utils.transformation.MapTranslator;
-import magellan.library.utils.transformation.ReportTranslator;
-import magellan.library.utils.transformation.TwoLevelTranslator;
-import magellan.library.utils.transformation.MapTranslator.BBox;
-import magellan.library.utils.transformation.MapTranslator.BBoxes;
+import magellan.library.utils.transformation.BoxTransformer;
+import magellan.library.utils.transformation.MapTransformer;
+import magellan.library.utils.transformation.ReportTransformer;
+import magellan.library.utils.transformation.TwoLevelTransformer;
+import magellan.library.utils.transformation.MapTransformer.BBox;
+import magellan.library.utils.transformation.MapTransformer.BBoxes;
 
 /**
  * Helper class.
@@ -505,11 +505,13 @@ public class ReportMerger extends Object {
         // TODO (stm) do this /after/ merging?
         storeTranslations(newReport, bestTranslation, bestAstralTranslation);
 
-        BBoxes boxes = getBoundingBox(globalData, newReport.getData());
+        BBoxes boxes =
+            getBoundingBox(globalData, newReport.getData(), bestTranslation.getKey(),
+                bestAstralTranslation.getKey());
 
-        ReportTranslator translator1 = getTranslator(globalData, boxes);
-        ReportTranslator translator2 =
-            getTranslator(dataReport.getData(), newReport.getData(), boxes, bestTranslation
+        ReportTransformer transformer1 = getTransformer(globalData, boxes);
+        ReportTransformer transformer2 =
+            getTransformer(dataReport.getData(), newReport.getData(), boxes, bestTranslation
                 .getKey(), bestAstralTranslation.getKey());
 
         // GameData clonedData = translateReport(newReport, bestTranslation, bestAstralTranslation);
@@ -524,7 +526,7 @@ public class ReportMerger extends Object {
         }
         // old: globalData = GameDataMerger.merge(globalData, clonedData);
         globalData =
-            GameDataMerger.merge(globalData, newReport.getData(), translator1, translator2);
+            GameDataMerger.merge(globalData, newReport.getData(), transformer1, transformer2);
 
         // try {
         // (new CRWriter(globalData, null, FileTypeFactory.singleton().createFileType(
@@ -555,9 +557,11 @@ public class ReportMerger extends Object {
     return newReport.isMerged();
   }
 
-  private BBoxes getBoundingBox(GameData oldData, GameData newData) {
+  private BBoxes getBoundingBox(GameData oldData, GameData newData, CoordinateID bestTranslation,
+      CoordinateID bestAstralTranslation) {
     BBoxes outBoxes = getBoundingBox(oldData);
     BBoxes inBoxes = getBoundingBox(newData);
+    BBoxes idBoxes = getTransformBox(oldData, newData, bestTranslation, bestAstralTranslation);
 
     BBoxes resultBoxes = new BBoxes();
     for (int layer : outBoxes.getLayers()) {
@@ -578,13 +582,103 @@ public class ReportMerger extends Object {
         resultBoxes.setBox(layer, inBoxes.getBox(layer));
       }
     }
+    for (int layer : idBoxes.getLayers()) {
+      BBox idBox = idBoxes.getBox(layer);
+      BBox rBox = resultBoxes.getBox(layer);
+      if (idBox.maxx != Integer.MIN_VALUE) {
+        if (rBox != null && rBox.maxx - rBox.minx != idBox.maxx) {
+          log.warn("new xbox: " + rBox + " -> " + idBox);
+          if (rBox.maxx != Integer.MIN_VALUE && idBox.maxx % (rBox.maxx - rBox.minx) != 0) {
+            log.warn("cannot continue");
+            return null;
+          }
+        }
+        log.info("gone round the world (westward) the world's new girth is " + idBox.maxx);
+        resultBoxes.setBoxX(layer, 1 - idBox.maxx + idBox.maxx / 2, idBox.maxx / 2);
+      }
+      if (idBox.maxy != Integer.MIN_VALUE) {
+        if (rBox != null && rBox.maxy - rBox.miny != idBox.maxy) {
+          log.warn("new ybox: " + rBox + " -> " + idBox);
+          if (rBox.maxy != Integer.MIN_VALUE && idBox.maxy % (rBox.maxy - rBox.miny) != 0) {
+            log.warn("cannot continue");
+            return null;
+          }
+        }
+        log.info("gone round the world (northward) the world's new girth is " + idBox.maxy);
+        resultBoxes.setBoxY(layer, 1 - idBox.maxy + idBox.maxy / 2, idBox.maxy / 2);
+      }
+    }
     return resultBoxes;
+  }
+
+  private BBoxes getTransformBox(GameData oldData, GameData newData, CoordinateID bestTranslation,
+      CoordinateID bestAstralTranslation) {
+
+    BBoxes boxes = new BBoxes();
+
+    Map<Long, Region> idMap = new HashMap<Long, Region>(newData.getRegions().size() * 9 / 6);
+    for (Region r : oldData.getRegions()) {
+      if (r.hasUID()) {
+        idMap.put(r.getUID(), r);
+      }
+    }
+
+    if (idMap.size() > 0) {
+      for (Region rNew : newData.getRegions()) {
+        if (rNew.hasUID()) {
+          Region rOld = idMap.get(rNew.getUID());
+          if (rOld != null) {
+            int layer = rNew.getCoordinate().getZ();
+            CoordinateID translation = rNew.getCoordinate();
+            if (layer == bestTranslation.getZ()) {
+              translation = translation.subtract(bestTranslation);
+            } else if (layer == bestTranslation.getZ()) {
+              translation = translation.subtract(bestTranslation);
+            }
+            translation = translation.subtract(rOld.getCoordinate());
+            translation =
+                CoordinateID.create(Math.abs(translation.getX()), Math.abs(translation.getY()),
+                    layer);
+            log.finest("translation: " + translation);
+            if (translation.getX() != 0) {
+              if (Math.abs(translation.getX()) <= 2) {
+                log.warn("unclear translation: " + rNew + " --> " + rOld);
+              } else {
+                if (boxes.getBox(layer) != null) {
+                  if (boxes.getBox(layer).maxx != Integer.MAX_VALUE
+                      && boxes.getBox(layer).maxx != translation.getX()) {
+                    log.warn("box mismatch: " + translation.getX() + " vs. "
+                        + boxes.getBox(layer).maxx);
+                  }
+                }
+                boxes.setBoxX(layer, 0, translation.getX());
+              }
+            }
+            if (translation.getY() != 0) {
+              if (Math.abs(translation.getY()) <= 2) {
+                log.warn("unclear translation: " + rNew + " --> " + rOld);
+              } else {
+                if (boxes.getBox(layer) != null) {
+                  if (boxes.getBox(layer).maxy != Integer.MAX_VALUE
+                      && boxes.getBox(layer).maxy != translation.getY()) {
+                    log.warn("box mismatch: " + translation.getY() + " vs. "
+                        + boxes.getBox(layer).maxy);
+                  }
+                }
+                boxes.setBoxY(layer, 0, translation.getY());
+              }
+            }
+          }
+        }
+      }
+    }
+    return boxes;
   }
 
   /**
    * Try to find a translation based on region ids.
    */
-  protected static MapTranslator.BBoxes getBoundingBox(GameData data) {
+  protected static MapTransformer.BBoxes getBoundingBox(GameData data) {
 
     BBoxes boxes = new BBoxes();
     for (Region w : data.wrappers().values()) {
@@ -628,12 +722,12 @@ public class ReportMerger extends Object {
     boxes.setBoxY(layer, newmin, newmax);
   }
 
-  protected ReportTranslator getTranslator(GameData data, BBoxes boxes) {
-    BoxTranslator translator = new BoxTranslator(boxes);
-    return translator;
+  protected ReportTransformer getTransformer(GameData data, BBoxes boxes) {
+    BoxTransformer transformer = new BoxTransformer(boxes);
+    return transformer;
   }
 
-  protected ReportTranslator getTranslator(GameData oldData, GameData newData, BBoxes outBoxes,
+  protected ReportTransformer getTransformer(GameData oldData, GameData newData, BBoxes outBoxes,
       CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
     Map<Long, Region> idMap = new HashMap<Long, Region>(newData.getRegions().size() * 9 / 6);
     for (Region r : oldData.getRegions()) {
@@ -642,27 +736,37 @@ public class ReportMerger extends Object {
       }
     }
 
-    TwoLevelTranslator translator2L =
-        new TwoLevelTranslator(bestTranslation, bestAstralTranslation);
+    TwoLevelTransformer transformer2L =
+        new TwoLevelTransformer(bestTranslation, bestAstralTranslation);
 
     try {
-      MapTranslator translatorUID = new MapTranslator(translator2L);
-      translatorUID.setBoxes(outBoxes);
+      MapTransformer transformerUID = new MapTransformer(transformer2L);
+      transformerUID.setBoxes(outBoxes);
 
       if (idMap.size() > 0) {
         for (Region rNew : newData.getRegions()) {
           if (rNew.hasUID()) {
             Region rOld = idMap.get(rNew.getUID());
             if (rOld != null) {
-              translatorUID.addMapping(rNew.getID(), outBoxes.putInBox(rOld.getCoordinate()));
+              CoordinateID translation = rNew.getCoordinate();
+              if (rNew.getCoordinate().getZ() == bestTranslation.getZ()) {
+                translation = translation.subtract(bestTranslation);
+              } else if (rNew.getCoordinate().getZ() == bestTranslation.getZ()) {
+                translation = translation.subtract(bestTranslation);
+              }
+              translation = translation.subtract(rOld.getCoordinate());
+              translation =
+                  CoordinateID.create(translation.getX(), translation.getY(), rNew.getCoordinate()
+                      .getZ());
+              transformerUID.addMapping(rNew.getID(), outBoxes.putInBox(rOld.getCoordinate()));
             }
           }
         }
       }
-      return translatorUID;
+      return transformerUID;
     } catch (Exception e) {
       log.error("could not compute translation", e);
-      return translator2L;
+      return transformer2L;
     }
   }
 
@@ -676,8 +780,8 @@ public class ReportMerger extends Object {
         || bestAstralTranslation.getKey().getX() != 0 || bestAstralTranslation.getKey().getY() != 0) {
       try {
         clonedData =
-            clonedData.clone(new TwoLevelTranslator(bestTranslation.getKey(), bestAstralTranslation
-                .getKey()));
+            clonedData.clone(new TwoLevelTransformer(bestTranslation.getKey(),
+                bestAstralTranslation.getKey()));
         if (clonedData == null)
           throw new RuntimeException("problems during cloning");
         if (clonedData.outOfMemory) {

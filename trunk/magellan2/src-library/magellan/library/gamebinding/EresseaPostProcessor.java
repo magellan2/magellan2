@@ -165,12 +165,11 @@ public class EresseaPostProcessor {
 
             if (message.getMessageType() != null) {
               switch (((message.getMessageType().getID()).intValue())) {
-              case 1511758069:
+              case 1511758069: // xyz "findet 5 Schneekristalle"
               case 18362:
-
+              case 861989530: // xyz kann keine Kräuter finden
                 // a herb was found in a region
-              case 1349776898:
-
+              case 1349776898: // xyz stellt fest, dass es hier viele Schneekristalle gibt
                 // a certain amount of herbs has been detected in a region
                 if ((message.getAttributes() != null)
                     && message.getAttributes().containsKey("region")) {
@@ -198,6 +197,9 @@ public class EresseaPostProcessor {
                       if (amount != null) {
                         r.setHerbAmount(amount);
                       }
+                    } else if (((message.getMessageType().getID()).intValue()) == 861989530) {
+                      // no herbs at all
+                      r.setHerbAmount("keine");
                     }
                   }
                 }

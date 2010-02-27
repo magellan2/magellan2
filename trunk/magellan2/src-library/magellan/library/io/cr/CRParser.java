@@ -87,9 +87,9 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
-import magellan.library.utils.transformation.IdentityTranslator;
-import magellan.library.utils.transformation.ReportTranslator;
-import magellan.library.utils.transformation.TwoLevelTranslator;
+import magellan.library.utils.transformation.IdentityTransformer;
+import magellan.library.utils.transformation.ReportTransformer;
+import magellan.library.utils.transformation.TwoLevelTransformer;
 
 /**
  * Parser for cr-files.
@@ -121,7 +121,7 @@ public class CRParser implements RulesIO, GameDataIO {
   private UserInterface ui = null;
   private Faction firstFaction;
 
-  protected ReportTranslator translator;
+  protected ReportTransformer translator;
 
   /**
    * Creates a new parser.
@@ -129,15 +129,15 @@ public class CRParser implements RulesIO, GameDataIO {
    * @param ui The UserInterface for the progress. Can be NULL. Then no operation is displayed.
    */
   public CRParser(UserInterface ui) {
-    this(ui, new IdentityTranslator());
+    this(ui, new IdentityTransformer());
   }
 
   /**
-   * @deprecated Use {@link #CRParser(UserInterface, ReportTranslator)}
+   * @deprecated Use {@link #CRParser(UserInterface, ReportTransformer)}
    */
   @Deprecated
   public CRParser(UserInterface ui, CoordinateID newOrigin) {
-    this(ui, new TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
+    this(ui, new TwoLevelTransformer(newOrigin, CoordinateID.ZERO));
   }
 
   /**
@@ -149,7 +149,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * 
    * @param translator The coordinates (relative to the origin of the report) of the new origin.
    */
-  public CRParser(UserInterface ui, ReportTranslator translator) {
+  public CRParser(UserInterface ui, ReportTransformer translator) {
     if (ui == null) {
       this.ui = new NullUserInterface();
     } else {
@@ -231,7 +231,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * them and replaces them. This is not completely fool-proof!
    * 
    * @param value Usually a message text which might contain coordinates
-   * @see magellan.library.utils.transformation.ReportTranslator#transform(java.lang.String)
+   * @see magellan.library.utils.transformation.ReportTransformer#transform(java.lang.String)
    */
   private String originTranslate(String value) {
     final StringBuffer result = new StringBuffer();

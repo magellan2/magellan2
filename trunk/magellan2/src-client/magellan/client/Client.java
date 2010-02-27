@@ -100,6 +100,7 @@ import magellan.client.actions.map.SaveSelectionAction;
 import magellan.client.actions.map.SelectAllAction;
 import magellan.client.actions.map.SelectIslandsAction;
 import magellan.client.actions.map.SelectNothingAction;
+import magellan.client.actions.map.SetGirthAction;
 import magellan.client.actions.map.SetOriginAction;
 import magellan.client.actions.orders.ChangeFactionConfirmationAction;
 import magellan.client.actions.orders.ConfirmAction;
@@ -152,6 +153,7 @@ import magellan.client.utils.SelectionHistory;
 import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.GameDataMerger;
 import magellan.library.Message;
 import magellan.library.MissingData;
 import magellan.library.Region;
@@ -181,6 +183,9 @@ import magellan.library.utils.UserInterface;
 import magellan.library.utils.Utils;
 import magellan.library.utils.VersionInfo;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.transformation.BoxTransformer;
+import magellan.library.utils.transformation.MapTransformer.BBox;
+import magellan.library.utils.transformation.MapTransformer.BBoxes;
 
 /**
  * This class is the root of all evil. It represents also the main entry point into the application
@@ -883,6 +888,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     JMenu map = new JMenu(Resources.get("client.menu.map.caption"));
     map.setMnemonic(Resources.get("client.menu.map.mnemonic").charAt(0));
     addMenuItem(map, new SetOriginAction(this));
+    addMenuItem(map, new SetGirthAction(this));
     addMenuItem(map, new IslandAction(this));
     addMenuItem(map, new MapSaveAction(this, mapPanel));
     map.addSeparator();
@@ -1639,6 +1645,34 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           .get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
     }
 
+    // FIXME(stm) do not change on out of memory!?
+    setData(newData);
+    setReportChanged(false);
+  }
+
+  public void setGirth(BBoxes newBorders) {
+    // TODO compare with known borders
+    for (Integer layer : newBorders.getLayers()) {
+      BBox box = newBorders.getBox(layer);
+      if (box.minx == box.maxx) {
+        box.minx = Integer.MAX_VALUE;
+        box.maxx = Integer.MIN_VALUE;
+      }
+      if (box.miny == box.maxy) {
+        box.miny = Integer.MAX_VALUE;
+        box.maxy = Integer.MIN_VALUE;
+      }
+    }
+
+    GameData newData = GameDataMerger.merge(getData(), new BoxTransformer(newBorders));
+    if (newData == null)
+      throw new NullPointerException();
+    if (newData.outOfMemory) {
+      JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources
+          .get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
+      Client.log.error(Resources.get("client.msg.outofmemory.text"));
+    }
+    // FIXME(stm) do not change on out of memory!?
     setData(newData);
     setReportChanged(false);
   }

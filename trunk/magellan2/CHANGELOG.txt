@@ -1,3 +1,9 @@
+2009-02-26 / Build 410 - stm (stm_@users.sourceforge.net)
+ * added SetGirthDialog
+ * renamed ReportTranslator to Transformer and moved to own package
+ * enabled correct region selection on click on wrapper in map
+ * enabled auto-girth-detection in merger
+
 2009-02-25 / Build 409 - stm (stm_@users.sourceforge.net)
     * added RegionType.unknown and RegionType.thevoid
     * changed some HashMaps to the order-preserving LinkedHashMap

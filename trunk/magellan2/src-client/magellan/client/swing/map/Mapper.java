@@ -242,6 +242,14 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
                 + mapToScreenBounds.y, showLevel);
         Region r = data.getRegion(c);
 
+        // might be a wrapping region: find original
+        if (r == null) {
+          Region w = data.wrappers().get(c);
+          if (w != null) {
+            r = data.getOriginal(w);
+          }
+        }
+
         if (r != null) {
           if ((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
             if ((me.getModifiers() & InputEvent.CTRL_MASK) != 0) {

@@ -5,7 +5,7 @@ import magellan.library.CoordinateID;
 /**
  * Translates coordinates in two levels by a given translation.
  */
-public class TwoLevelTranslator implements ReportTranslator {
+public class TwoLevelTransformer implements ReportTransformer {
 
   private CoordinateID bestTranslation;
   private CoordinateID bestAstralTranslation;
@@ -16,7 +16,7 @@ public class TwoLevelTranslator implements ReportTranslator {
    * @param bestTranslation
    * @param bestAstralTranslation
    */
-  public TwoLevelTranslator(CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
+  public TwoLevelTransformer(CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
     this.bestTranslation = bestTranslation;
     this.bestAstralTranslation = bestAstralTranslation;
     translate1 = CoordinateID.create(bestTranslation.getX(), bestTranslation.getY());

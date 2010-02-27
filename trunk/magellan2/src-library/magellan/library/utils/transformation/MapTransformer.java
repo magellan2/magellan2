@@ -9,13 +9,13 @@ import magellan.library.CoordinateID;
 /**
  * Stores arbitrary mappings. Uses another translator as fallback.
  */
-public class MapTranslator implements ReportTranslator {
+public class MapTransformer implements ReportTransformer {
 
   /**
    * A set of boxes for several layers.
    */
   public static class BBoxes {
-    private Map<Integer, MapTranslator.BBox> boxes = new HashMap<Integer, MapTranslator.BBox>();
+    private Map<Integer, MapTransformer.BBox> boxes = new HashMap<Integer, MapTransformer.BBox>();
 
     /**
      * Adjusts the x-dimensions of a box.
@@ -44,7 +44,7 @@ public class MapTranslator implements ReportTranslator {
     /**
      * Sets a box for a layer.
      */
-    public void setBox(int layer, MapTranslator.BBox box) {
+    public void setBox(int layer, MapTransformer.BBox box) {
       boxes.put(layer, box);
     }
 
@@ -62,8 +62,8 @@ public class MapTranslator implements ReportTranslator {
     /**
      * Returns the box for the specified layer or <code>null</code> if it has not been set.
      */
-    public MapTranslator.BBox getBox(int layer) {
-      MapTranslator.BBox result = boxes.get(layer);
+    public MapTransformer.BBox getBox(int layer) {
+      MapTransformer.BBox result = boxes.get(layer);
       return result;
     }
 
@@ -129,9 +129,9 @@ public class MapTranslator implements ReportTranslator {
     public boolean equals(Object obj) {
       if (obj == this)
         return true;
-      if (obj instanceof MapTranslator.BBox)
-        return minx == ((MapTranslator.BBox) obj).minx && maxx == ((MapTranslator.BBox) obj).maxx
-            && miny == ((MapTranslator.BBox) obj).miny && maxy == ((MapTranslator.BBox) obj).maxy;
+      if (obj instanceof MapTransformer.BBox)
+        return minx == ((MapTransformer.BBox) obj).minx && maxx == ((MapTransformer.BBox) obj).maxx
+            && miny == ((MapTransformer.BBox) obj).miny && maxy == ((MapTransformer.BBox) obj).maxy;
       return false;
     }
 
@@ -147,27 +147,27 @@ public class MapTranslator implements ReportTranslator {
   }
 
   Map<CoordinateID, CoordinateID> translationMap = new HashMap<CoordinateID, CoordinateID>();
-  private ReportTranslator fallBack;
-  private MapTranslator.BBoxes boxes = new BBoxes();
+  private ReportTransformer fallBack;
+  private MapTransformer.BBoxes boxes = new BBoxes();
 
   /**
    * Creates a translator without fallback.
    */
-  public MapTranslator() {
+  public MapTransformer() {
     this(null);
   }
 
   /**
    * Uses the specified translator when no mapping is stored.
    */
-  public MapTranslator(ReportTranslator fallBack) {
+  public MapTransformer(ReportTransformer fallBack) {
     this.fallBack = fallBack;
   }
 
   /**
    * @see #transform(CoordinateID)
    */
-  public void setBoxes(MapTranslator.BBoxes boxes) {
+  public void setBoxes(MapTransformer.BBoxes boxes) {
     this.boxes = boxes;
   }
 
@@ -177,7 +177,7 @@ public class MapTranslator implements ReportTranslator {
    * 
    * @return the transformed coordinate or <code>null</code> if no mapping and no fallback is
    *         defined.
-   * @see magellan.library.utils.transformation.ReportTranslator#transform(magellan.library.CoordinateID)
+   * @see magellan.library.utils.transformation.ReportTransformer#transform(magellan.library.CoordinateID)
    */
   public CoordinateID transform(CoordinateID c) {
     CoordinateID newC = translationMap.get(c);

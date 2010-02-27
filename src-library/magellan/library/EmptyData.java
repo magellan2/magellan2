@@ -33,7 +33,7 @@ import javax.help.UnsupportedOperationException;
 
 import magellan.library.rules.MessageType;
 import magellan.library.utils.Translations;
-import magellan.library.utils.transformation.ReportTranslator;
+import magellan.library.utils.transformation.ReportTransformer;
 
 /**
  * A GameData that contains nothing. Nothing can be added to this data.
@@ -295,10 +295,10 @@ public class EmptyData extends GameData {
   }
 
   /**
-   * @see magellan.library.GameData#clone(magellan.library.utils.ReportMerger.ReportTranslator)
+   * @see magellan.library.GameData#clone(magellan.library.utils.ReportMerger.ReportTransformer)
    */
   @Override
-  public GameData clone(ReportTranslator coordinateTranslator) throws CloneNotSupportedException {
+  public GameData clone(ReportTransformer coordinateTranslator) throws CloneNotSupportedException {
     return new EmptyData(rules, getGameName());
   }
 

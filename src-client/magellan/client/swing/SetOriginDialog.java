@@ -13,7 +13,10 @@
 
 package magellan.client.swing;
 
+import java.awt.Color;
 import java.awt.Point;
+
+import javax.swing.JTextField;
 
 import magellan.client.event.EventDispatcher;
 import magellan.library.CoordinateID;
@@ -21,10 +24,7 @@ import magellan.library.GameData;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 312 $
+ * A dialog for acquiring a new origin coordinate.
  */
 public class SetOriginDialog extends magellan.client.swing.InternationalizedDataDialog {
   /**
@@ -35,6 +35,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
    * new Origin, entered eventually by the user
    */
   private CoordinateID newOrigin = CoordinateID.create(0, 0, 0);
+  private Color defaultColor;
 
   /**
    * Creates new form SetOriginDialog
@@ -62,6 +63,8 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     editX = new javax.swing.JTextField();
     editY = new javax.swing.JTextField();
     editLevel = new javax.swing.JTextField();
+    defaultColor = editX.getBackground();
+
     getContentPane().setLayout(new java.awt.GridBagLayout());
     setTitle(Resources.get("setorigindialog.window.title"));
 
@@ -200,10 +203,21 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     int iY;
     int iLevel;
 
-    iX = Integer.parseInt(editX.getText());
-    iY = Integer.parseInt(editY.getText());
-    iLevel = Integer.parseInt(editLevel.getText());
-
+    try {
+      iX = parse(editX);
+    } catch (NumberFormatException e) {
+      return;
+    }
+    try {
+      iY = parse(editY);
+    } catch (NumberFormatException e) {
+      return;
+    }
+    try {
+      iLevel = parse(editLevel);
+    } catch (NumberFormatException e) {
+      return;
+    }
     // setOrigin only, if new Origin is wanted...
     if (iX != 0 || iY != 0) {
       approved = true;
@@ -212,6 +226,19 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 
     setVisible(false);
     dispose();
+  }
+
+  private int parse(JTextField edit) throws NumberFormatException {
+    int result;
+    try {
+      result = Integer.parseInt(edit.getText());
+      edit.setBackground(defaultColor);
+    } catch (NumberFormatException e) {
+      edit.requestFocus();
+      edit.setBackground(Color.RED);
+      throw e;
+    }
+    return result;
   }
 
   private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {

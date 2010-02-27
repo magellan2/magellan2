@@ -24,9 +24,9 @@ import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.io.file.PipeFileType;
 import magellan.library.utils.logging.Logger;
-import magellan.library.utils.transformation.IdentityTranslator;
-import magellan.library.utils.transformation.ReportTranslator;
-import magellan.library.utils.transformation.TwoLevelTranslator;
+import magellan.library.utils.transformation.IdentityTransformer;
+import magellan.library.utils.transformation.ReportTransformer;
+import magellan.library.utils.transformation.TwoLevelTransformer;
 
 /**
  * This used to be the Loader class. Now it only supports cloning via cr writing/reading
@@ -45,16 +45,16 @@ public class Loader {
    * @throws CloneNotSupportedException if cloning failed
    */
   public GameData cloneGameData(GameData data) throws CloneNotSupportedException {
-    return cloneGameData(data, new IdentityTranslator());
+    return cloneGameData(data, new IdentityTransformer());
   }
 
   /**
-   * @deprecated Use {@link #cloneGameData(GameData, ReportTranslator)}
+   * @deprecated Use {@link #cloneGameData(GameData, ReportTransformer)}
    */
   @Deprecated
   synchronized public GameData cloneGameDataInMemory(final GameData data,
       final CoordinateID newOrigin) throws CloneNotSupportedException {
-    return cloneGameDataInMemory(data, new TwoLevelTranslator(newOrigin, CoordinateID
+    return cloneGameDataInMemory(data, new TwoLevelTransformer(newOrigin, CoordinateID
         .ZERO));
   }
 
@@ -67,7 +67,7 @@ public class Loader {
    * @throws CloneNotSupportedException if cloning failed
    */
   public synchronized GameData cloneGameDataInMemory(final GameData data,
-      final ReportTranslator coordinateTranslator) throws CloneNotSupportedException {
+      final ReportTransformer coordinateTranslator) throws CloneNotSupportedException {
     try {
       final PipeFileType filetype = new PipeFileType();
       filetype.setEncoding(data.getEncoding());
@@ -134,7 +134,7 @@ public class Loader {
    * @return a clone of the given GameData
    * @throws CloneNotSupportedException if cloning failed
    */
-  public GameData cloneGameData(GameData data, ReportTranslator coordinateTranslator)
+  public GameData cloneGameData(GameData data, ReportTransformer coordinateTranslator)
       throws CloneNotSupportedException {
     try {
       File tempFile = CopyFile.createCrTempFile();

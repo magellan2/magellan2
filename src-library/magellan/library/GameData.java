@@ -50,9 +50,9 @@ import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.LevelRelation;
-import magellan.library.utils.transformation.IdentityTranslator;
-import magellan.library.utils.transformation.ReportTranslator;
-import magellan.library.utils.transformation.TwoLevelTranslator;
+import magellan.library.utils.transformation.IdentityTransformer;
+import magellan.library.utils.transformation.ReportTransformer;
+import magellan.library.utils.transformation.TwoLevelTransformer;
 
 /**
  * This is the central class for collecting all the data representing one computer report.
@@ -996,7 +996,7 @@ public abstract class GameData implements Cloneable, Addeable {
   @Override
   public GameData clone() throws CloneNotSupportedException {
     // return new Loader().cloneGameData(this);
-    return clone(new IdentityTranslator());
+    return clone(new IdentityTransformer());
   }
 
   /**
@@ -1006,7 +1006,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * @throws CloneNotSupportedException If cloning doesn't succeed
    */
   public GameData clone(CoordinateID newOrigin) throws CloneNotSupportedException {
-    return clone(new TwoLevelTranslator(newOrigin, CoordinateID.ZERO));
+    return clone(new TwoLevelTransformer(newOrigin, CoordinateID.ZERO));
   }
 
   /**
@@ -1015,7 +1015,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * 
    * @throws CloneNotSupportedException If cloning doesn't succeed
    */
-  public GameData clone(ReportTranslator coordinateTranslator) throws CloneNotSupportedException {
+  public GameData clone(ReportTransformer coordinateTranslator) throws CloneNotSupportedException {
     if (MemoryManagment.isFreeMemory(estimateSize() * 3)) {
       GameData.log.info("cloning in memory");
       GameData clonedData = new Loader().cloneGameDataInMemory(this, coordinateTranslator);
@@ -1232,13 +1232,11 @@ public abstract class GameData implements Cloneable, Addeable {
 
       if (actRegion.getVisibility().greaterEqual(Region.Visibility.TRAVEL)) {
         // should have all neighbors
-        CoordinateID center = actRegion.getCoordinate();
-
-        for (CoordinateID c : Regions.getAllNeighbours(center, 1)) {
-          Region neighbour = getRegion(c);
-
-          if (neighbour == null) {
+        for (Direction d : Direction.getDirections()) {
+          if (actRegion.getNeighbors().get(d) == null) {
             // Missing Neighbor
+            // FIXME(stm) this is not valid for worlds with boundaries
+            CoordinateID c = actRegion.getCoordinate().translate(Direction.toCoordinate(d));
             Region r = MagellanFactory.createRegion(c, this);
             RegionType type = RegionType.theVoid;
             r.setType(type);

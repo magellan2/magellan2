@@ -1501,7 +1501,7 @@ public class Regions {
       LinkedList<Region> result = new LinkedList<Region>();
       result.add(startRegion);
       if (bestPath == null) {
-        log.info("planShipRoute without best path from " + start.toString() + " to "
+        log.fine("planShipRoute without best path from " + start.toString() + " to "
             + destination.toString());
       } else {
         result.addAll(bestPath);
@@ -1624,7 +1624,7 @@ public class Regions {
     for (Region r : end.getNeighbors().values()) {
       CoordinateID neighbour = r.getCoordinate();
 
-      if (r != end || travelledRegions.contains(neighbour)) {
+      if (r == end || travelledRegions.contains(neighbour)) {
         // dont add our own or an already visited coordinate
         continue;
       }

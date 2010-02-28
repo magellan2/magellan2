@@ -372,22 +372,18 @@ public class GameDataMerger {
     /**************************** COORDINATE TRANSLATIONS ***************************/
     for (EntityID factionID : olderGD.getCoordinateTranslations().keySet()) {
       for (Integer layer : olderGD.getCoordinateTranslations().get(factionID).keySet()) {
-        CoordinateID zero = CoordinateID.create(0, 0, layer * 2);
         CoordinateID oldTranslation = olderGD.getCoordinateTranslation(factionID, layer);
-        resultGD.setCoordinateTranslation(factionID, zero.subtract(transform(transformer1, zero
-            .subtract(oldTranslation))));
+        resultGD.setCoordinateTranslation(factionID, transformTranslation(transformer1,
+            oldTranslation));
       }
     }
     for (EntityID factionID : newerGD.getCoordinateTranslations().keySet()) {
       for (Integer layer : newerGD.getCoordinateTranslations().get(factionID).keySet()) {
-        CoordinateID zero = CoordinateID.create(0, 0, 2 * layer);
         CoordinateID newerTranslation = newerGD.getCoordinateTranslation(factionID, layer);
-        CoordinateID resultTranslation =
-            zero.subtract(transform(transformer2, zero.subtract(newerTranslation)));
+        CoordinateID resultTranslation = transformTranslation(transformer2, newerTranslation);
         if (olderGD.getCoordinateTranslation(factionID, layer) != null) {
           CoordinateID oldTranslation =
-              zero.subtract(transform(transformer1, zero.subtract(olderGD.getCoordinateTranslation(
-                  factionID, layer))));
+              transformTranslation(transformer1, olderGD.getCoordinateTranslation(factionID, layer));
           if (!oldTranslation.equals(resultTranslation)) {
             log.warn("coordinate translations do not match " + factionID + "," + layer + ":"
                 + oldTranslation + "!=" + resultTranslation);
@@ -786,7 +782,7 @@ public class GameDataMerger {
     }
 
     /**************************** MERGE REGIONS, SECOND PASS ***************************/
-    if (resultGD.regionView() != null) {
+    if (newerGD.regionView() != null) {
       for (Region newerRegion : newerGD.regionView().values()) {
         Region resultRegion = resultGD.getRegion(transform(transformer2, newerRegion.getID()));
         GameDataMerger.mergeRegion(newerGD, newerRegion, resultGD, resultRegion, !sameRound, false,
@@ -869,6 +865,16 @@ public class GameDataMerger {
     resultGD.resetToUnchanged();
 
     return resultGD;
+  }
+
+  /**
+   * Transform a coordinate translation: mirror at origin, translate, mirror again.
+   */
+  private static CoordinateID transformTranslation(ReportTransformer transformer,
+      CoordinateID oldTranslation) {
+    CoordinateID zero = CoordinateID.create(0, 0, oldTranslation.getZ());
+    return zero.inverseTranslateInLayer(transform(transformer, zero
+        .inverseTranslateInLayer(oldTranslation)));
   }
 
   private static CoordinateID transform(ReportTransformer transformer, CoordinateID id) {
@@ -1516,18 +1522,11 @@ public class GameDataMerger {
       Map<Direction, Region> neighbors = curRegion.getNeighbors();
       for (Direction d : neighbors.keySet()) {
         Region neighbor = resultGD.getRegion(transform(transformer, neighbors.get(d).getID()));
-        if (neighbor == null)
-          throw new RuntimeException("neighbor not found " + curRegion);
-        else {
+        if (neighbor == null) {
+          log.error("neighbor not found " + neighbors.get(d) + " of " + curRegion);
+        } else {
           resultRegion.addNeighbor(d, neighbor);
-          if (Regions.getDist(neighbor.getCoordinate(), resultRegion.getCoordinate()) > 1) {
-            CoordinateID wrapperID = resultRegion.getCoordinate().translate(d.toCoordinate());
-            if (resultGD.wrappers().get(wrapperID) == null) {
-              Region wrapper =
-                  MagellanFactory.createWrapper(wrapperID, neighbor.getUID(), resultGD);
-              resultGD.makeWrapper(wrapper, neighbor);
-            }
-          }
+          // TODO (stm) add missing wrappers here??
         }
       }
     }

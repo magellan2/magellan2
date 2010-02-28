@@ -44,6 +44,7 @@ import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Direction;
+import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Regions;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
@@ -281,6 +282,29 @@ public class EresseaPostProcessor {
         }
       }
     }
+    for (Region r : toDelete.keySet()) {
+      data.makeWrapper(r, toDelete.get(r));
+    }
+    toDelete.clear();
+    for (Region curRegion : data.getRegions()) {
+      for (Direction d : curRegion.getNeighbors().keySet()) {
+        Region neighbor = curRegion.getNeighbors().get(d);
+        if (Regions.getDist(neighbor.getCoordinate(), curRegion.getCoordinate()) > 1) {
+          CoordinateID wrapperID = curRegion.getID().translateInLayer(d.toCoordinate());
+          if (!data.wrappers().containsKey(wrapperID)) {
+            if (data.getRegion(wrapperID) != null) {
+              log.warn(neighbor + " should be connected by a wrapper to " + curRegion
+                  + " but there is already a region at " + wrapperID);
+            } else {
+              Region wrapper = MagellanFactory.createWrapper(wrapperID, neighbor.getUID(), data);
+              log.finest(neighbor + " should be connected by a wrapper to " + curRegion);
+              toDelete.put(wrapper, neighbor);
+            }
+          }
+        }
+      }
+    }
+
     for (Region r : toDelete.keySet()) {
       data.makeWrapper(r, toDelete.get(r));
     }

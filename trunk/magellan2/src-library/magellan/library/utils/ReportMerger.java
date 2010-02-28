@@ -322,6 +322,7 @@ public class ReportMerger extends Object {
       sortReports();
     }
 
+    boolean error = false;
     /**
      * We merge reports one by one. If merging of a report fails, we try to merge all other reports.
      * We only break, if all reports, subsequently, have failed to merge.
@@ -349,6 +350,7 @@ public class ReportMerger extends Object {
     } catch (Exception e) {
       ReportMerger.log.error(e);
       ui.showException("Exception while merging report", null, e);
+      error = true;
     }
 
     // inform user about memory problems
@@ -357,6 +359,7 @@ public class ReportMerger extends Object {
           JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
           .get("client.msg.outofmemory.title")));
       ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
+      error = true;
     }
     if (!MemoryManagment.isFreeMemory(globalData.estimateSize())) {
       ui.showDialog((new JOptionPane(Resources.get("client.msg.lowmem.text"),
@@ -369,7 +372,7 @@ public class ReportMerger extends Object {
       ui.ready();
     }
 
-    if (assignData != null) {
+    if (!error && assignData != null) {
       assignData.assign(globalData);
     }
 
@@ -559,8 +562,11 @@ public class ReportMerger extends Object {
 
   private BBoxes getBoundingBox(GameData oldData, GameData newData, CoordinateID bestTranslation,
       CoordinateID bestAstralTranslation) {
+    // get existing box of old data
     BBoxes outBoxes = getBoundingBox(oldData);
+    // get existing box of new data
     BBoxes inBoxes = getBoundingBox(newData);
+    // get new box of combination of both
     BBoxes idBoxes = getTransformBox(oldData, newData, bestTranslation, bestAstralTranslation);
 
     BBoxes resultBoxes = new BBoxes();
@@ -582,30 +588,45 @@ public class ReportMerger extends Object {
         resultBoxes.setBox(layer, inBoxes.getBox(layer));
       }
     }
+
+    // check if a new box has been found
     for (int layer : idBoxes.getLayers()) {
       BBox idBox = idBoxes.getBox(layer);
       BBox rBox = resultBoxes.getBox(layer);
       if (idBox.maxx != Integer.MIN_VALUE) {
-        if (rBox != null && rBox.maxx - rBox.minx != idBox.maxx) {
+        if (rBox == null) {
+          log.info("gone round the world (westward); the world's new girth is " + (idBox.maxx + 1));
+          resultBoxes.setBoxX(layer, (idBox.maxx + 1) / 2 - (idBox.maxx), (idBox.maxx + 1) / 2);
+        } else if (rBox.maxx - rBox.minx != idBox.maxx) {
           log.warn("new xbox: " + rBox + " -> " + idBox);
-          if (rBox.maxx != Integer.MIN_VALUE && idBox.maxx % (rBox.maxx - rBox.minx) != 0) {
+          // old box might be a multiple of new box...
+          if (rBox.maxx != Integer.MIN_VALUE && idBox.maxx + 1 % rBox.maxx - rBox.minx != 0) {
             log.warn("cannot continue");
             return null;
+          } else {
+            log.info("the world has shrunken (westward); the world's new girth is "
+                + (idBox.maxx + 1));
+            resultBoxes.setBoxX(layer, (idBox.maxx + 1) / 2 - (idBox.maxx), (idBox.maxx + 1) / 2);
           }
         }
-        log.info("gone round the world (westward) the world's new girth is " + idBox.maxx);
-        resultBoxes.setBoxX(layer, 1 - idBox.maxx + idBox.maxx / 2, idBox.maxx / 2);
       }
       if (idBox.maxy != Integer.MIN_VALUE) {
-        if (rBox != null && rBox.maxy - rBox.miny != idBox.maxy) {
+        if (rBox == null) {
+          log
+              .info("gone round the world (southward); the world's new girth is "
+                  + (idBox.maxy + 1));
+          resultBoxes.setBoxY(layer, (idBox.maxy + 1) / 2 - (idBox.maxy), (idBox.maxy + 1) / 2);
+        } else if (rBox.maxy - rBox.miny != idBox.maxy) {
           log.warn("new ybox: " + rBox + " -> " + idBox);
           if (rBox.maxy != Integer.MIN_VALUE && idBox.maxy % (rBox.maxy - rBox.miny) != 0) {
             log.warn("cannot continue");
             return null;
+          } else {
+            log.info("the world has shrunken (southward); the world's new girth is "
+                + (idBox.maxy + 1));
+            resultBoxes.setBoxY(layer, (idBox.maxy + 1) / 2 - (idBox.maxy), (idBox.maxy + 1) / 2);
           }
         }
-        log.info("gone round the world (northward) the world's new girth is " + idBox.maxy);
-        resultBoxes.setBoxY(layer, 1 - idBox.maxy + idBox.maxy / 2, idBox.maxy / 2);
       }
     }
     return resultBoxes;
@@ -629,43 +650,42 @@ public class ReportMerger extends Object {
           Region rOld = idMap.get(rNew.getUID());
           if (rOld != null) {
             int layer = rNew.getCoordinate().getZ();
-            CoordinateID translation = rNew.getCoordinate();
+            CoordinateID translation =
+                rNew.getCoordinate().inverseTranslateInLayer(rOld.getCoordinate());
             if (layer == bestTranslation.getZ()) {
-              translation = translation.subtract(bestTranslation);
-            } else if (layer == bestTranslation.getZ()) {
-              translation = translation.subtract(bestTranslation);
+              translation = translation.inverseTranslateInLayer(bestTranslation);
+            } else if (layer == bestAstralTranslation.getZ()) {
+              translation = translation.inverseTranslateInLayer(bestAstralTranslation);
             }
-            translation = translation.subtract(rOld.getCoordinate());
             translation =
                 CoordinateID.create(Math.abs(translation.getX()), Math.abs(translation.getY()),
                     layer);
-            log.finest("translation: " + translation);
-            if (translation.getX() != 0) {
-              if (Math.abs(translation.getX()) <= 2) {
-                log.warn("unclear translation: " + rNew + " --> " + rOld);
-              } else {
+            if (translation.getX() != 0 || translation.getY() != 0) {
+              log.finest("translation: " + translation);
+            }
+            if ((translation.getX() != 0 && translation.getX() <= 2)
+                || (translation.getY() != 0 && translation.getY() <= 2)) {
+              log.warn("unclear translation: " + rNew + " --> " + rOld);
+            } else {
+              if (translation.getX() != 0) {
                 if (boxes.getBox(layer) != null) {
                   if (boxes.getBox(layer).maxx != Integer.MAX_VALUE
-                      && boxes.getBox(layer).maxx != translation.getX()) {
-                    log.warn("box mismatch: " + translation.getX() + " vs. "
+                      && boxes.getBox(layer).maxx != translation.getX() - 1) {
+                    log.warn("box mismatch: " + (translation.getX() - 1) + " vs. "
                         + boxes.getBox(layer).maxx);
                   }
                 }
-                boxes.setBoxX(layer, 0, translation.getX());
+                boxes.setBoxX(layer, 0, translation.getX() - 1);
               }
-            }
-            if (translation.getY() != 0) {
-              if (Math.abs(translation.getY()) <= 2) {
-                log.warn("unclear translation: " + rNew + " --> " + rOld);
-              } else {
+              if (translation.getY() != 0) {
                 if (boxes.getBox(layer) != null) {
                   if (boxes.getBox(layer).maxy != Integer.MAX_VALUE
-                      && boxes.getBox(layer).maxy != translation.getY()) {
-                    log.warn("box mismatch: " + translation.getY() + " vs. "
+                      && boxes.getBox(layer).maxy != translation.getY() - 1) {
+                    log.warn("box mismatch: " + (translation.getY() - 1) + " vs. "
                         + boxes.getBox(layer).maxy);
                   }
                 }
-                boxes.setBoxY(layer, 0, translation.getY());
+                boxes.setBoxY(layer, 0, translation.getY() - 1);
               }
             }
           }
@@ -748,16 +768,6 @@ public class ReportMerger extends Object {
           if (rNew.hasUID()) {
             Region rOld = idMap.get(rNew.getUID());
             if (rOld != null) {
-              CoordinateID translation = rNew.getCoordinate();
-              if (rNew.getCoordinate().getZ() == bestTranslation.getZ()) {
-                translation = translation.subtract(bestTranslation);
-              } else if (rNew.getCoordinate().getZ() == bestTranslation.getZ()) {
-                translation = translation.subtract(bestTranslation);
-              }
-              translation = translation.subtract(rOld.getCoordinate());
-              translation =
-                  CoordinateID.create(translation.getX(), translation.getY(), rNew.getCoordinate()
-                      .getZ());
               transformerUID.addMapping(rNew.getID(), outBoxes.putInBox(rOld.getCoordinate()));
             }
           }

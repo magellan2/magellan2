@@ -23,13 +23,15 @@
 // 
 package magellan.client.utils;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,6 +48,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.JTextComponent;
 
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -72,7 +75,7 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
 
   protected JTextArea errorMessage = null;
 
-  protected JEditorPane errorDescription = null;
+  protected JTextComponent errorDescription = null;
 
   protected JScrollPane scrollPane = null;
 
@@ -162,10 +165,8 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
 
   public ErrorWindow(Frame owner, String message, String description, Throwable throwable) {
     super(owner, true);
-    setWindowSize(400, 180);
     setup();
     pack();
-    setResizable(false);
     setErrorMessage(message, description, throwable);
   }
 
@@ -180,9 +181,8 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
 
   public ErrorWindow(Dialog owner, String message, String description, Throwable throwable) {
     super(owner, true);
-    setWindowSize(400, 180);
-    setResizable(false);
     setup();
+    pack();
     setErrorMessage(message, description, throwable);
   }
 
@@ -282,8 +282,6 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
 
     addWindowListener(new WindowClosingDispatcher(this));
 
-    getContentPane().setLayout(new BorderLayout());
-
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new GridLayout(0, 1, 5, 5));
     buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -320,24 +318,45 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     errorMessage.setFont(okButton.getFont());
     errorMessage.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-    errorDescription = new EditorPane();
-    errorDescription.setContentType("text/plain");
-    errorDescription.setText("");
+    JTextArea errorDescription = new JTextArea();
+    // errorDescription.setContentType("text/plain");
+    errorDescription.setText("If you can see this, something went wrong.");
     errorDescription.setBackground(getContentPane().getBackground());
     errorDescription.setFont(new Font("Courier New", Font.PLAIN, 12));
     errorDescription.setEditable(false);
-    errorDescription.setBounds(0, 0, 1000, 200);
+    errorDescription.setMinimumSize(new Dimension(500, 1));
+    errorDescription.setLineWrap(false);
+    this.errorDescription = errorDescription;
 
     scrollPane = new JScrollPane(errorDescription);
     scrollPane.setViewportBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
     scrollPane.setWheelScrollingEnabled(true);
     scrollPane.setPreferredSize(new Dimension(1, 220));
-    scrollPane.setMinimumSize(new Dimension(1, 220));
+    scrollPane.setMinimumSize(new Dimension(1, 50));
     scrollPane.setVisible(false);
 
-    getContentPane().add(buttonPanel, BorderLayout.EAST);
-    getContentPane().add(errorMessage, BorderLayout.CENTER);
-    getContentPane().add(scrollPane, BorderLayout.SOUTH);
+    getContentPane().setLayout(new GridBagLayout());
+    GridBagConstraints gc =
+        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.FIRST_LINE_START,
+            GridBagConstraints.NONE, new Insets(1, 1, 1, 1), 2, 2);
+    gc.fill = GridBagConstraints.HORIZONTAL;
+    gc.weightx = 1;
+    gc.weighty = 0.1;
+    getContentPane().add(errorMessage, gc);
+
+    errorMessage.setPreferredSize(new Dimension(350, 100));
+
+    gc.gridx++;
+    gc.fill = GridBagConstraints.NONE;
+    gc.weightx = 0;
+    getContentPane().add(buttonPanel, gc);
+    gc.gridx = 0;
+    gc.gridy++;
+    gc.gridwidth = 2;
+    gc.fill = GridBagConstraints.BOTH;
+    gc.weighty = 1;
+    gc.weightx = 1;
+    getContentPane().add(scrollPane, gc);
 
     setTitle("Fehler");
   }

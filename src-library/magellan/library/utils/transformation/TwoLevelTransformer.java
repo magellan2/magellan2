@@ -9,8 +9,6 @@ public class TwoLevelTransformer implements ReportTransformer {
 
   private CoordinateID bestTranslation;
   private CoordinateID bestAstralTranslation;
-  private CoordinateID translate2;
-  private CoordinateID translate1;
 
   /**
    * @param bestTranslation
@@ -19,8 +17,6 @@ public class TwoLevelTransformer implements ReportTransformer {
   public TwoLevelTransformer(CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
     this.bestTranslation = bestTranslation;
     this.bestAstralTranslation = bestAstralTranslation;
-    translate1 = CoordinateID.create(bestTranslation.getX(), bestTranslation.getY());
-    translate2 = CoordinateID.create(bestAstralTranslation.getX(), bestAstralTranslation.getY());
   }
 
   /**
@@ -29,9 +25,9 @@ public class TwoLevelTransformer implements ReportTransformer {
    */
   public CoordinateID transform(CoordinateID c) {
     if (c.getZ() == bestTranslation.getZ())
-      return c.subtract(translate1);
+      return c.inverseTranslateInLayer(bestTranslation);
     if (c.getZ() == bestAstralTranslation.getZ())
-      return c.subtract(translate2);
+      return c.inverseTranslateInLayer(bestAstralTranslation);
     return c;
   }
 

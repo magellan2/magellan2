@@ -269,6 +269,15 @@ public class CoordinateID implements ID {
   }
 
   /**
+   * A synonym for {@link #translate(CoordinateID)}.
+   */
+  public CoordinateID add(CoordinateID c) {
+    if (this == INVALID || c == INVALID)
+      return INVALID;
+    return create(x + c.x, y + c.y, z + c.z);
+  }
+
+  /**
    * Return a new CoordinateID that is this one modified by c.x on the x-axis and c.y on the y-axis
    * and c.z on the z-axis.
    * 
@@ -282,6 +291,19 @@ public class CoordinateID implements ID {
   }
 
   /**
+   * Return a new CoordinateID that is this one modified by c.x on the x-axis and c.y on the y-axis
+   * <em>but has the same z-coordinate</em>.
+   * 
+   * @param c the relative CoordinateID to translate the current one by.
+   * @return A new CoordinateID
+   */
+  public CoordinateID translateInLayer(CoordinateID c) {
+    if (this == INVALID || c == INVALID)
+      return INVALID;
+    return create(x + c.x, y + c.y, z);
+  }
+
+  /**
    * Returns a new CoordinateID that is this one modified by -c.x, -c.y, -c.z.
    * 
    * @param c the relative CoordinateID to subtract from this coordinate.
@@ -291,6 +313,17 @@ public class CoordinateID implements ID {
     if (this == INVALID || c == INVALID)
       return INVALID;
     return create(x - c.x, y - c.y, z - c.z);
+  }
+
+  /**
+   * Subtract c from this coordinate, but only the x and y coordinates.
+   * 
+   * @return The result as a new CoordinateID
+   */
+  public CoordinateID inverseTranslateInLayer(CoordinateID c) {
+    if (this == INVALID || c == INVALID)
+      return INVALID;
+    return create(x - c.x, y - c.y, z);
   }
 
   /**
@@ -369,4 +402,5 @@ public class CoordinateID implements ID {
   public static CoordinateID getInvalid() {
     return INVALID;
   }
+
 }

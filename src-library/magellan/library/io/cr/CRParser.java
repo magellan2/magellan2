@@ -121,7 +121,7 @@ public class CRParser implements RulesIO, GameDataIO {
   private UserInterface ui = null;
   private Faction firstFaction;
 
-  protected ReportTransformer translator;
+  protected ReportTransformer transformer;
 
   /**
    * Creates a new parser.
@@ -155,14 +155,23 @@ public class CRParser implements RulesIO, GameDataIO {
     } else {
       this.ui = ui;
     }
-    this.translator = translator;
+    this.transformer = translator;
   }
 
   /**
    * Translates c by newOrigin if it's in the same z-level and returns it.
    */
   CoordinateID originTranslate(CoordinateID c) {
-    return translator.transform(c);
+    return transformer.transform(c);
+  }
+
+  /**
+   * Transform a coordinate translation: mirror at origin, translate, mirror again.
+   */
+  private CoordinateID transformTranslation(CoordinateID oldTranslation) {
+    CoordinateID zero = CoordinateID.create(0, 0, oldTranslation.getZ());
+    return zero.inverseTranslateInLayer(transformer.transform(zero
+        .inverseTranslateInLayer(oldTranslation)));
   }
 
   protected static final String number = "[\\+\\-]?\\d+";
@@ -243,7 +252,7 @@ public class CRParser implements RulesIO, GameDataIO {
       // world.getGameSpecificStuff().getGameSpecificRules().getAstralSpacePlane());
       CoordinateID coord = CoordinateID.parse(candi.substring(1, candi.length() - 1), ",");
       if (coord != null) {
-        coord = translator.transform(coord);
+        coord = transformer.transform(coord);
         matcher.appendReplacement(result, "(" + coord.toString() + ")");
       } else {
         matcher.appendReplacement(result, matcher.group());
@@ -1693,8 +1702,7 @@ public class CRParser implements RulesIO, GameDataIO {
         CoordinateID translation = CoordinateID.parse(sc.argv[0], " ");
         // first mirror the translation at the origin (of the correct layer!), then translate, then
         // mirror again:
-        CoordinateID zero = CoordinateID.create(0, 0, translation.getZ() * 2);
-        translation = zero.subtract(originTranslate(zero.subtract(translation)));
+        translation = transformTranslation(translation);
         world.setCoordinateTranslation(id, translation);
         sc.getNextToken();
       } else if (!sc.isBlock) {

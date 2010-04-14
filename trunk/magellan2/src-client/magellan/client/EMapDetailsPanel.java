@@ -181,6 +181,7 @@ import magellan.library.utils.comparator.SpellLevelComparator;
 import magellan.library.utils.comparator.ToStringComparator;
 import magellan.library.utils.comparator.UnitSkillComparator;
 import magellan.library.utils.filters.CollectionFilters;
+import magellan.library.utils.filters.UnitFilter;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -1685,7 +1686,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     Iterator<Faction> fIt = factions.iterator();
     Iterator<? extends List<?>> cIt = contexts.iterator();
     for (; fIt.hasNext();) {
-      addFiltered(units, fIt.next().units(), cIt.next());
+      addFiltered(units, fIt.next().units(), new ContextUnitFilter(cIt.next()));
     }
 
     appendUnitsInfo(units, parent, expandableNodes);
@@ -1703,15 +1704,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * @param input
    * @param context
    */
-  protected void addFiltered(Collection<Unit> result, Collection<Unit> input, List<?> context) {
+  protected void addFiltered(Collection<Unit> result, Collection<Unit> input, UnitFilter filter) {
     for (Unit u : input) {
-      boolean include = true;
-      for (Object o : context) {
-        if (o instanceof Region) {
-          include &= u.getRegion().equals(o);
-        }
-      }
-      if (include) {
+      if (filter.acceptUnit(u)) {
         result.add(u);
       }
     }
@@ -1921,11 +1916,20 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * @param parent
    * @param expandableNodes
    */
-  private void appendGroupInfo(Group g, List<?> context, DefaultMutableTreeNode parent,
+  private void appendGroupInfo(final Group g, final List<?> context, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     Map<String, SkillStatItem> skills = new Hashtable<String, SkillStatItem>();
     Collection<Unit> groupUnits = new LinkedList<Unit>();
-    addFiltered(groupUnits, g.getFaction().units(), context);
+
+    addFiltered(groupUnits, g.getFaction().units(), new UnitFilter() {
+      UnitFilter contextFilter = new ContextUnitFilter(context);
+
+      @Override
+      public boolean acceptUnit(Unit u) {
+        return contextFilter.acceptUnit(u) && u.getGroup() != null && u.getGroup().equals(g);
+      }
+    });
+
     int personCount = gatherGroupInfo(g, groupUnits, skills);
     appendGroupPersons(g, personCount, parent, expandableNodes);
     appendGroupAlliances(g, parent, expandableNodes);
@@ -1938,24 +1942,22 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     int personCount = 0;
 
     for (Unit u : groupUnits) {
+      personCount += u.getPersons();
+      // groupUnits.add(u);
 
-      if ((u.getGroup() != null) && u.getGroup().equals(g)) {
-        personCount += u.getPersons();
-        groupUnits.add(u);
+      for (Skill skill : u.getSkills()) {
+        SkillStatItem stored = skills.get(skill.getName() + skill.getLevel());
 
-        for (Skill skill : u.getSkills()) {
-          SkillStatItem stored = skills.get(skill.getName() + skill.getLevel());
-
-          if (stored != null) {
-            stored.unitCounter += u.getPersons();
-            stored.units.add(u);
-          } else {
-            stored = new SkillStatItem(skill, u.getPersons());
-            stored.units.add(u);
-            skills.put(skill.getName() + skill.getLevel(), stored);
-          }
+        if (stored != null) {
+          stored.unitCounter += u.getPersons();
+          stored.units.add(u);
+        } else {
+          stored = new SkillStatItem(skill, u.getPersons());
+          stored.units.add(u);
+          skills.put(skill.getName() + skill.getLevel(), stored);
         }
       }
+
     }
     return personCount;
   }
@@ -5936,4 +5938,32 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   // return activeRegion;
   // }
 
+  /**
+   * A unit filter that accepts units that are in all regions occuring in a given Selection context.
+   */
+  public class ContextUnitFilter extends UnitFilter {
+
+    private List<?> context;
+
+    /**
+     * Creates a filter that accepts units that are in all regions occuring in context.
+     * 
+     * @param context
+     */
+    public ContextUnitFilter(List<?> context) {
+      this.context = context;
+    }
+
+    @Override
+    public boolean acceptUnit(Unit u) {
+      for (Object o : context) {
+        if (o instanceof Region) {
+          if (!o.equals(u.getRegion()))
+            return false;
+        }
+      }
+      return true;
+    }
+
+  }
 }

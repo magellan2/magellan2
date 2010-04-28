@@ -2014,8 +2014,8 @@ REGIONTYPES
 "Vulkan"
 "Aktiver Vulkan"
 
-BUILDINGTYPE "Markt"
-"Markt";name
+BUILDINGTYPE "Marktplatz"
+"Marktplatz";name
 1;level
 10;maxsize
 MAINTENANCE

@@ -29,19 +29,21 @@ import magellan.library.utils.Resources;
  */
 public abstract class UnitFilter {
   /**
-   * DOCUMENT-ME
+   * Returns <code>true</code> fall accepted units.
    */
   public abstract boolean acceptUnit(Unit u);
 
   /**
-   * DOCUMENT-ME
+   * Returns a collection of accepted units in <code>col</code>. The original list is not modified.
    */
   public Collection<Unit> acceptUnits(Collection<Unit> col) {
     return acceptUnits(col, false);
   }
 
   /**
-   * DOCUMENT-ME
+   * Filters the given collection. The result is a collection of all accepted units in
+   * <code>col</code>. If <code>useThis</code> is <code>true</code>, the collection itself is
+   * returnd (and modified). Otherwise, a new list is returned.
    */
   public Collection<Unit> acceptUnits(Collection<Unit> col, boolean useThis) {
     Collection<Unit> col2 = null;
@@ -64,7 +66,7 @@ public abstract class UnitFilter {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns a name for the filter.
    */
   public String getName() {
     String ret = Resources.get("unitfilter." + getClass().getName());

@@ -34,6 +34,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -57,6 +59,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   protected boolean ready = false;
   private javax.swing.Timer timer;
   private int delay;
+  private Progress progress;
 
   /**
    * Creates a modal progressbar with standard closing listener.
@@ -113,6 +116,10 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     init();
   }
 
+  public void addClosingListener(ClosingListener listener) {
+    dlg.addClosingListener(listener);
+  }
+
   /**
    * Initialize the user interface.
    */
@@ -147,10 +154,14 @@ public class ProgressBarUI implements UserInterface, ActionListener {
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
   public void setProgress(String strMessage, int iProgress) {
-    Progress progress = new Progress();
+    progress = new Progress();
     progress.strMessage = strMessage;
     progress.iProgress = iProgress;
     SwingUtilities.invokeLater(progress);
+  }
+
+  public int getProgress() {
+    return progress == null ? -1 : progress.iProgress;
   }
 
   /**
@@ -275,7 +286,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   public static ClosingListener getDefaultClosingListener(final Component parent) {
     return new ClosingListener() {
 
-      public boolean proceed(WindowEvent e) {
+      public boolean close(WindowEvent e) {
         return (JOptionPane.showConfirmDialog(parent, Resources.get("progressbarui.abort.message"),
             Resources.get("progressbarui.abort.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION);
       }
@@ -283,24 +294,12 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     };
   }
 
-  public interface ClosingListener {
-
-    /**
-     * Returns <code>true</code> if the dialog should be closed after receiving an event
-     * <code>e</code> of type {@link WindowEvent#WINDOW_CLOSING}.
-     * 
-     * @param e
-     * @return
-     */
-    public boolean proceed(WindowEvent e);
-  }
-
   /**
    *
    */
   private class ProgressDlg extends JDialog {
 
-    private ClosingListener closingListener;
+    private List<ClosingListener> closingListeners;
 
     /**
      * @see java.awt.Window#processEvent(java.awt.AWTEvent)
@@ -311,11 +310,15 @@ public class ProgressBarUI implements UserInterface, ActionListener {
         WindowEvent we = (WindowEvent) e;
         if (we.getID() != WindowEvent.WINDOW_CLOSING) {
           super.processEvent(e);
-        } else if (closingListener.proceed(we)) {
+        } else {
+          for (ClosingListener l : closingListeners) {
+            if (!l.close(we)) {
+              ProgressBarUI.log.info("abort aborted");
+              return;
+            }
+          }
           ProgressBarUI.log.info("aborted");
           super.processEvent(e);
-        } else {
-          ProgressBarUI.log.info("abort aborted");
         }
       } else {
         super.processEvent(e);
@@ -345,16 +348,21 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     }
 
     protected void init(ClosingListener listener) {
+      closingListeners = new LinkedList<ClosingListener>();
       if (listener == null) {
-        closingListener = ProgressBarUI.getDefaultClosingListener(ProgressDlg.this);
+        closingListeners.add(ProgressBarUI.getDefaultClosingListener(ProgressDlg.this));
       } else {
-        closingListener = listener;
+        closingListeners.add(listener);
       }
 
       initComponents();
       super.setFocusableWindowState(false);
       setLocationRelativeTo(getParent());
       pack();
+    }
+
+    public void addClosingListener(ClosingListener listener) {
+      closingListeners.add(listener);
     }
 
     /**

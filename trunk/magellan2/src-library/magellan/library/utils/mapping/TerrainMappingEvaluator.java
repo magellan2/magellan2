@@ -56,6 +56,7 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
 
     int mismatches = 0;
     int score = 0;
+    int oceanMatches = 0;
 
     /* for each translation we have to compare the regions' terrains */
     for (Region region : fromData.getRegions()) {
@@ -81,6 +82,9 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
             && !(sameRegion.getType().equals(RegionType.unknown))) {
           if (region.getType().equals(sameRegion.getType())) {
             score++;
+            if (region.getType().equals(oceanTerrain)) {
+              oceanMatches++;
+            }
           } else {
             /*
              * now we have a mismatch. If the reports are from the same turn, terrains may not
@@ -105,14 +109,15 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
               }
             }
 
-            if (mismatches > maxTerrainMismatches) {
+            if (mismatches > maxTerrainMismatches && score <= 0) {
               break;
             }
           }
         }
       }
     }
-    return new Score<CoordinateID>(mapping, score);
+    return new Score<CoordinateID>(mapping, mismatches > maxTerrainMismatches ? Math.min(-1, score)
+        : score);
   }
 
 }

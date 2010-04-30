@@ -1,10 +1,20 @@
-2009-02-26 / Build 410 - stm (stm_@users.sourceforge.net)
- * added SetGirthDialog
- * renamed ReportTranslator to Transformer and moved to own package
- * enabled correct region selection on click on wrapper in map
- * enabled auto-girth-detection in merger
+2010-04-30 / Build 415 - stm (stm_@users.sourceforge.net)
+    * improved auto-girth-detection to no longer insert wrap regions when region coordinates have changed slightly
+    * slightly changed user interaction of ReportMerger
+    * moved transformation finding code to own class TransformationFinder
+    * introduced random region ids for wrapping regions if they have no region id
+    * improved ProgressBar user interaction
+    * renamed E3 Markt to Marktplatz
+    * changed logic of regexp finding
+    * happy new year!
 
-2009-02-25 / Build 409 - stm (stm_@users.sourceforge.net)
+2010-02-26 / Build 410 - stm (stm_@users.sourceforge.net)
+    * added SetGirthDialog
+    * renamed ReportTranslator to Transformer and moved to own package
+    * enabled correct region selection on click on wrapper in map
+    * enabled auto-girth-detection in merger
+
+2010-02-25 / Build 409 - stm (stm_@users.sourceforge.net)
     * added RegionType.unknown and RegionType.thevoid
     * changed some HashMaps to the order-preserving LinkedHashMap
     * added Region.hasUID()
@@ -12,38 +22,38 @@
     * ...enable merging of torus-worlds
     * fixed ObiWan bug in JECheck
 
-2009-02-19 / Build 406 - stm (stm_@users.sourceforge.net)
+2010-02-19 / Build 406 - stm (stm_@users.sourceforge.net)
     * added more log levels to Logger
 
-2009-02-13 / Build 405 - stm (stm_@users.sourceforge.net)
+2010-02-13 / Build 405 - stm (stm_@users.sourceforge.net)
     * encapsulated functions of GameData. units(), factions() etc. now return unmodifiable collections
     * added to GameData interface
     * added support for toroidal worlds, therefor:
     * extended neighborhood functionality. Method of choice is now Region.getNeighbors()
 
-2009-02-09 / Build 404 - Fiete <sf@fietefietz.de>
+2010-02-09 / Build 404 - Fiete <sf@fietefietz.de>
 	* fixed Direction.getDifference(int)
 	* added 2 Warnings for IndexOutOfBoundsExceptions to Regions.java
 
-2009-02-03 / Build 403 - stm (stm_@users.sourceforge.net)
+2010-02-03 / Build 403 - stm (stm_@users.sourceforge.net)
     * fixed equals methods
     * converted Direction to Enum
     * made CoordinateID immutable
 
-2009-02-03 / Build 402 - stm (stm_@users.sourceforge.net)
+2010-02-03 / Build 402 - stm (stm_@users.sourceforge.net)
     * Changes SelectionEvent interface and fixed selection history
     * removed many compiler warnings, especially legacy collection code
     * did complete code cleanup (format code, convert loops, etc.)
     * ...I hope that not too many things are broken...
 
-2009-02-02 / Build 401 - stm (stm_@users.sourceforge.net)
+2010-02-02 / Build 401 - stm (stm_@users.sourceforge.net)
     * activated Streitross>=Pferd in movement related code and move it to MovementEvaluator
     * tried to reduce misuse of region.getData()
     * optimized route planners (better routes and more consistent interface) 
     * removed some unnecessary GameDataListeners
     * added isLand to RegionType and changed coast recognition
 
-2009-02-01 / Build 383 - stm (stm_@users.sourceforge.net)
+2010-02-01 / Build 383 - stm (stm_@users.sourceforge.net)
     * activated Streitross>=Pferd in movement related code and move it to MovementEvaluator
 
 2009-12-27 / Build 382 - stm (stm_@users.sourceforge.net)

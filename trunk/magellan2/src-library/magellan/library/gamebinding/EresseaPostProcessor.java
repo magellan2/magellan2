@@ -264,7 +264,7 @@ public class EresseaPostProcessor {
     // wrapping regions
     Map<Region, Region> toDelete = new LinkedHashMap<Region, Region>();
     for (Region wrappingRegion : data.getRegions()) {
-      if (Region.VIS_STR_WRAP.equals(wrappingRegion.getVisibilityString())) {
+      if (wrappingRegion.getVisibility().equals(Visibility.WRAP)) {
         if (idMap == null || idMap.isEmpty()) {
           log.error("wrapping region found, but no region IDs");
           return;
@@ -316,7 +316,7 @@ public class EresseaPostProcessor {
     for (Region r : data.getRegions()) {
       if (r.hasUID()) {
         Region old = result.get(r.getUID());
-        if (old == null || !Region.VIS_STR_WRAP.equals(r.getVisibilityString())) {
+        if (old == null || !r.getVisibility().equals(Visibility.WRAP)) {
           result.put(r.getUID(), r);
         }
       }

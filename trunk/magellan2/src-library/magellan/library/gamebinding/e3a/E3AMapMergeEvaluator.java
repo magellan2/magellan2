@@ -33,6 +33,7 @@ import magellan.library.utils.mapping.DataMapping;
 import magellan.library.utils.mapping.LevelMapping;
 import magellan.library.utils.mapping.MappingEvaluator;
 import magellan.library.utils.mapping.RegionIDMapping;
+import magellan.library.utils.mapping.SavedTranslationsMapping;
 import magellan.library.utils.mapping.SchemeExtendMapping;
 import magellan.library.utils.mapping.SchemeNameMapping;
 import magellan.library.utils.mapping.SchemeOverlapMapping;
@@ -55,6 +56,8 @@ public class E3AMapMergeEvaluator extends EresseaMapMergeEvaluator {
       variants.add(RegionIDMapping.getSingleton());
       variants.add(SchemeNameMapping.getSingleton());
       variants.add(UnitIDMapping.getSingleton());
+      // saved mappings
+      variants.add(SavedTranslationsMapping.getSingleton());
       return variants;
     }
     return super.getDataMappingVariants(level);

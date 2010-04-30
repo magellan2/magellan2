@@ -36,6 +36,7 @@ import magellan.library.utils.logging.Logger;
 public class NullUserInterface implements UserInterface {
   private static final Logger log = Logger.getInstance(NullUserInterface.class);
   private int max = 100;
+  private int progress;
 
   private static NullUserInterface singleton = new NullUserInterface();
 
@@ -60,6 +61,11 @@ public class NullUserInterface implements UserInterface {
    */
   public void setProgress(String strMessage, int iProgress) {
     NullUserInterface.log.debug("Progress: " + strMessage + " (" + getPercent(iProgress) + "%)");
+    progress = iProgress;
+  }
+
+  public int getProgress() {
+    return progress;
   }
 
   protected int getPercent(int progress) {
@@ -106,6 +112,10 @@ public class NullUserInterface implements UserInterface {
 
   public void showDialog(JDialog optionPane) {
     NullUserInterface.log.debug("dialog suppressed");
+  }
+
+  public void addClosingListener(ClosingListener listener) {
+
   }
 
 }

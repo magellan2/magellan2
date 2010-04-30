@@ -23,10 +23,15 @@
 // 
 package magellan.library.utils.mapping;
 
+import java.util.Collection;
+
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
+import magellan.library.utils.Score;
 
 /**
+ * A class that produces mappings from one game data into another.
+ * 
  * @author Ralf Duckstein
  * @version 1.0, 21.05.2008
  */
@@ -34,4 +39,6 @@ import magellan.library.GameData;
 public interface DataMapping {
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level);
+
+  public Collection<Score<CoordinateID>> getMappings(GameData fromData, GameData toData, int level);
 }

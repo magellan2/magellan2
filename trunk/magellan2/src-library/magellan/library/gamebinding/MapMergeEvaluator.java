@@ -34,6 +34,7 @@ import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.utils.Score;
+import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.BuildingIDMapping;
 import magellan.library.utils.mapping.DataMapping;
 import magellan.library.utils.mapping.EasyLevelMapping;
@@ -101,8 +102,8 @@ public class MapMergeEvaluator {
     Map<CoordinateID, Score<CoordinateID>> mappings =
         new HashMap<CoordinateID, Score<CoordinateID>>(1);
     for (DataMapping dm : mappingVariants) {
-      CoordinateID mapping = dm.getMapping(fromData, toData, level);
-      if (mapping != null) {
+      for (Score<CoordinateID> candidateScore : dm.getMappings(fromData, toData, level)) {
+        CoordinateID mapping = candidateScore.getKey();
         Score<CoordinateID> score;
         if (!mappings.containsKey(mapping)) {
           score =
@@ -110,13 +111,14 @@ public class MapMergeEvaluator {
           mappings.put(mapping, score);
         } else {
           score = mappings.get(mapping);
-          score.setType(score.getType() + ", " + dm.toString());
+          score.addType(dm.toString());
         }
       }
     }
     // now add transitive mappings
     if (otherLevels != null) {
       for (CoordinateID otherMapping : otherLevels) {
+        // TODO
         CoordinateID mapping = getTransitivMapping(fromData, toData, level, otherMapping);
         if (mapping != null) {
           Score<CoordinateID> score;
@@ -127,7 +129,7 @@ public class MapMergeEvaluator {
             mappings.put(mapping, score);
           } else {
             score = mappings.get(mapping);
-            score.setType(score.getType() + ", Transitive(" + otherMapping.getZ() + ")");
+            score.addType("Transitive(" + otherMapping.getZ() + ")");
           }
         }
       }
@@ -180,26 +182,35 @@ public class MapMergeEvaluator {
     // first chance
     LevelRelation fromLR = fromData.getLevelRelation(layer, mapping.getZ());
     LevelRelation toLR = toData.getLevelRelation(layer, mapping.getZ());
+    CoordinateID cOne = null;
     if ((fromLR != null) && (toLR != null)) {
       CoordinateID c =
           CoordinateID.create(mapping.getX() + fromLR.getX(), mapping.getY() + fromLR.getY(),
               mapping.getZ());
-      CoordinateID cNew = toLR.getInverseRelatedCoordinate(c);
-      if (cNew != null)
-        return cNew;
+      cOne = toLR.getInverseRelatedCoordinate(c);
     }
-    // second chance - maybe we have a relation in the other direction
 
+    // second chance - maybe we have a relation in the other direction
     fromLR = fromData.getLevelRelation(mapping.getZ(), layer);
     toLR = toData.getLevelRelation(mapping.getZ(), layer);
+    CoordinateID cTwo = null;
     if ((fromLR != null) && (toLR != null)) {
-      CoordinateID cNew = fromLR.getRelatedCoordinate(mapping);
-      if (cNew != null)
-        return CoordinateID.create(cNew.getX() - toLR.getX(), cNew.getY() - toLR.getY(), cNew
-            .getZ());
+      cTwo = fromLR.getRelatedCoordinate(mapping);
+      if (cTwo != null) {
+        cTwo =
+            CoordinateID.create(cTwo.getX() - toLR.getX(), cTwo.getY() - toLR.getY(), cTwo.getZ());
+      }
     }
 
-    return null;
+    if (cOne != null) {
+      if (cTwo != null && !cOne.equals(cTwo)) {
+        Logger.getInstance(this.getClass()).error(
+            "transitive mappings do not match: " + cOne + " vs. " + cTwo);
+      }
+      return cOne;
+    }
+
+    return cTwo;
   }
 
 }

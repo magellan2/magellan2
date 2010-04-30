@@ -264,6 +264,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /** The island this region belongs to. */
   private Island island = null;
 
+  private Visibility visibilityConstant;
+
   /**
    * Sets the island this region belongs to.
    */
@@ -296,11 +298,13 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Represents the quality of the visibility as an int value 0..very poor - no info
-   * (->visibility=null) 1..neighbour 2..lighthouse 3..travel 4..qualified unit in region
-   * (->visibility=null)
+   * @see magellan.library.Region#getVisibility()
    */
   public Visibility getVisibility() {
+    if (visibilityConstant != null)
+      return visibilityConstant;
+
+    Visibility result = Visibility.NULL;
     if (visibility == null) {
       // we have 0 or 4
       // check for qualified units
@@ -314,31 +318,38 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
           }
         }
       }
-      if (qualifiedUnitInCurRegion)
-        return Visibility.UNIT;
-      else
-        return Visibility.NULL;
+      if (qualifiedUnitInCurRegion) {
+        result = Visibility.UNIT;
+      } else {
+        result = Visibility.NULL;
+      }
     } else {
       // we have a visibility ... choose right int
-      if (visibility.equalsIgnoreCase(Region.VIS_STR_NEIGHBOUR))
-        return Visibility.NEIGHBOR;
-      if (visibility.equalsIgnoreCase(Region.VIS_STR_LIGHTHOUSE))
-        return Visibility.LIGHTHOUSE;
-      if (visibility.equalsIgnoreCase(Region.VIS_STR_TRAVEL))
-        return Visibility.TRAVEL;
-      if (visibility.equalsIgnoreCase(Region.VIS_STR_WRAP))
-        return Visibility.NULL;
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_NEIGHBOUR)) {
+        result = Visibility.NEIGHBOR;
+      }
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_LIGHTHOUSE)) {
+        result = Visibility.LIGHTHOUSE;
+      }
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_TRAVEL)) {
+        result = Visibility.TRAVEL;
+      }
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_WRAP)) {
+        result = Visibility.NULL;
+      }
     }
-    return Visibility.NULL;
+    return result;
   }
 
   /**
    * Sets a string constant indicating why this region is visible.
    * 
    * @param vis a String object or null to indicate that the visibility cannot be determined.
+   * @see magellan.library.Region#setVisibilityString(java.lang.String)
    */
   public void setVisibilityString(String vis) {
     visibility = vis;
+    visibilityConstant = null;
   }
 
   /**
@@ -359,9 +370,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       visibility = Region.VIS_STR_LIGHTHOUSE;
     } else if (vis == Visibility.TRAVEL) {
       visibility = Region.VIS_STR_TRAVEL;
-    } else {
-      visibility = null;
+    } else if (vis == Visibility.WRAP) {
+      visibility = Region.VIS_STR_WRAP;
     }
+    visibilityConstant = vis;
   }
 
   /**

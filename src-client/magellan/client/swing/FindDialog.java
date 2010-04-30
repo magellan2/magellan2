@@ -532,8 +532,8 @@ public class FindDialog extends InternationalizedDataDialog implements
     if (rbtRegexp.isSelected()) {
       // just take the pattern
       try {
-        patterns.add(Pattern.compile(chkCase.isSelected() ? pattern : pattern.toLowerCase(data
-            .getLocale())));
+        patterns.add(Pattern.compile(chkCase.isSelected() ? ".*" + pattern + ".*" : ".*"
+            + pattern.toLowerCase(data.getLocale()) + ".*"));
       } catch (PatternSyntaxException e) {
         hits.add(e.getLocalizedMessage());
         return wrap(hits);

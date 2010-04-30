@@ -1080,8 +1080,6 @@ public abstract class GameData implements Cloneable, Addeable {
 
     postProcessUnknown();
 
-    postProcessTheVoid();
-
     postProcessIslands();
 
     // remove double messages
@@ -1089,6 +1087,8 @@ public abstract class GameData implements Cloneable, Addeable {
 
     // do game specific post processing
     getGameSpecificStuff().postProcess(this);
+
+    postProcessTheVoid();
 
     // adding Default Translations to the translations
     postProcessDefaultTranslations();

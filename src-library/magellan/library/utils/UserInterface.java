@@ -23,6 +23,8 @@
 // 
 package magellan.library.utils;
 
+import java.awt.event.WindowEvent;
+
 import javax.swing.JDialog;
 
 /**
@@ -33,6 +35,18 @@ import javax.swing.JDialog;
  * @version 1.0, 07.11.2007
  */
 public interface UserInterface {
+
+  public interface ClosingListener {
+
+    /**
+     * Returns <code>true</code> if the dialog should be closed after receiving an event
+     * <code>e</code> of type {@link WindowEvent#WINDOW_CLOSING}.
+     * 
+     * @param e
+     * @return <code>true</code> if the dialog should be closed.
+     */
+    public boolean close(WindowEvent e);
+  }
 
   /**
    * Shows the dialog. If the action is done in a different thread, this method should be called in
@@ -46,10 +60,14 @@ public interface UserInterface {
    */
   public void ready();
 
+  public void addClosingListener(ClosingListener listener);
+
   /**
    * Sets the progress of the action.
    */
   public void setProgress(String strMessage, int iProgress);
+
+  public int getProgress();
 
   /**
    * Sets the maximum number of steps. A value of 0 or less means, that the maximum is

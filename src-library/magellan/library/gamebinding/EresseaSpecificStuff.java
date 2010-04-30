@@ -21,6 +21,10 @@ import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesReader;
+import magellan.library.utils.UserInterface;
+import magellan.library.utils.logging.Logger;
+import magellan.library.utils.transformation.ReportTransformer;
+import magellan.library.utils.transformation.TransformerFinder;
 
 /**
  * All the stuff needed for Eressea.
@@ -29,8 +33,11 @@ import magellan.library.io.RulesReader;
  * @version $Revision: 242 $
  */
 public class EresseaSpecificStuff implements GameSpecificStuff {
+  static final Logger log = Logger.getInstance(EresseaSpecificStuff.class);
 
   private static final String name = "Eressea";
+
+  public static final int ASTRAL_LAYER = 1;
 
   private Rules rules;
   private GameSpecificRules gamespecificRules;
@@ -172,4 +179,11 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   public String getName() {
     return EresseaSpecificStuff.name;
   }
+
+  public ReportTransformer[] getTransformers(GameData globalData, GameData addedData,
+      UserInterface ui, boolean interactive) {
+
+    return (new TransformerFinder(globalData, addedData, ui, interactive, false)).getTransformers();
+  }
+
 }

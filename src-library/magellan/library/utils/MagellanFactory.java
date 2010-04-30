@@ -53,6 +53,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
+import magellan.library.Region.Visibility;
 import magellan.library.impl.MagellanBattleImpl;
 import magellan.library.impl.MagellanBorderImpl;
 import magellan.library.impl.MagellanBuildingImpl;
@@ -126,7 +127,7 @@ public abstract class MagellanFactory {
   public static Region createWrapper(CoordinateID wrapperID, long regionID, GameData resultGD) {
     Region resultRegion = MagellanFactory.createRegion(wrapperID, resultGD);
     resultRegion.setUID(regionID);
-    resultRegion.setVisibilityString(Region.VIS_STR_WRAP);
+    resultRegion.setVisibility(Visibility.WRAP);
     resultRegion.setType(RegionType.wrap);
     return resultRegion;
   }

@@ -23,6 +23,7 @@
 // 
 package magellan.library.utils.mapping;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
@@ -32,6 +33,7 @@ import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.utils.Score;
+import magellan.library.utils.logging.Logger;
 
 /**
  * @author Ralf Duckstein
@@ -51,6 +53,13 @@ public class BuildingIDMapping implements DataMapping {
   }
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
+    Collection<Score<CoordinateID>> list = getMappings(fromData, toData, level);
+    if (list.isEmpty())
+      return null;
+    return Collections.max(list).getKey();
+  }
+
+  public Collection<Score<CoordinateID>> getMappings(GameData fromData, GameData toData, int level) {
     Map<CoordinateID, Score<CoordinateID>> translationMap =
         new Hashtable<CoordinateID, Score<CoordinateID>>();
 
@@ -81,9 +90,10 @@ public class BuildingIDMapping implements DataMapping {
       }
     }
 
-    if (translationMap.size() > 0)
-      return Collections.max(translationMap.values()).getKey();
-    else
-      return null;
+    for (Score<CoordinateID> val : translationMap.values()) {
+      Logger.getInstance(this.getClass()).finest("translation (" + toString() + "): " + val);
+    }
+
+    return translationMap.values();
   }
 }

@@ -48,7 +48,7 @@ public class AstralMappingEvaluator extends MappingEvaluator {
   }
 
   public static final int SCORE_TERRAIN = 1;
-  public static final int SCORE_SCHEME = 1;
+  public static final int SCORE_SCHEME = 2;
 
   @Override
   protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData,
@@ -85,9 +85,11 @@ public class AstralMappingEvaluator extends MappingEvaluator {
                 && (sameRegion.schemes().size() > 0)) {
               // both regions have schemes - lets compare them
               if (equalSchemes(region.schemes(), sameRegion.schemes())) {
-                score += AstralMappingEvaluator.SCORE_SCHEME * region.schemes().size();
+                score += AstralMappingEvaluator.SCORE_SCHEME;
+                // do not multiply * region.schemes().size()
               } else {
-                score -= AstralMappingEvaluator.SCORE_SCHEME * region.schemes().size();
+                score -= AstralMappingEvaluator.SCORE_SCHEME;
+                // do not multiply * region.schemes().size()
               }
             }
           } else {

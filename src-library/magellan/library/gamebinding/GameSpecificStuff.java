@@ -18,6 +18,8 @@ import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
 import magellan.library.io.GameDataIO;
+import magellan.library.utils.UserInterface;
+import magellan.library.utils.transformation.ReportTransformer;
 
 /**
  * This utility class provides game specific methods for certain properties of the game.
@@ -113,4 +115,7 @@ public interface GameSpecificStuff {
    * Returns the name of the game this stuff belongs to.
    */
   public String getName();
+
+  public ReportTransformer[] getTransformers(GameData globalData, GameData addedData,
+      UserInterface ui, boolean interactive);
 }

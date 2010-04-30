@@ -29,6 +29,9 @@ import magellan.library.gamebinding.OrderChanger;
 import magellan.library.gamebinding.RelationFactory;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesReader;
+import magellan.library.utils.UserInterface;
+import magellan.library.utils.transformation.ReportTransformer;
+import magellan.library.utils.transformation.TransformerFinder;
 
 /**
  * All the stuff needed for E2K9.
@@ -179,4 +182,11 @@ public class E3ASpecificStuff implements GameSpecificStuff {
   public String getName() {
     return E3ASpecificStuff.name;
   }
+
+  public ReportTransformer[] getTransformers(GameData globalData, GameData addedData,
+      UserInterface ui, boolean interactive) {
+
+    return (new TransformerFinder(globalData, addedData, ui, interactive, true)).getTransformers();
+  }
+
 }

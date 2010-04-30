@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -25,6 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificStuff;
@@ -383,6 +386,10 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   private int maxSortIndex = 0;
 
+  private Random random;
+
+  private Set<Long> inventedUIDs = new HashSet<Long>();
+
   /**
    * Creates a new GameData object with the name of "default".
    * 
@@ -407,6 +414,8 @@ public abstract class GameData implements Cloneable, Addeable {
       throw new NullPointerException();
     this.rules = rules;
     gameName = name;
+
+    random = new Random();
     // // for profiling purposes
     // created++;
     // System.err.println("============== data: "+created+" - "+deleted);
@@ -1607,6 +1616,33 @@ public abstract class GameData implements Cloneable, Addeable {
   public void makeWrapper(Region wrapper, Region original) {
     if (wrapper == null || original == null)
       throw new NullPointerException();
+
+    // wrappers without region ID are dangerous
+    // if this happens, we invent an ID for them
+    // this is a hack, but what else can we do if the id is missing?
+    if (!wrapper.hasUID()) {
+      log.warn("wrapper without region ID: " + wrapper);
+      if (original.hasUID()) {
+        wrapper.setUID(original.getUID());
+      } else {
+        log.warn("inventing region ID for " + original);
+
+        long newUID = random.nextLong();
+        long min = ((long) Integer.MAX_VALUE) * 4096;
+        // ensure that the invented ID doesn't occur in a server report
+        // assumes that server IDs are 32bit
+        while (inventedUIDs.contains(newUID) || newUID <= min) {
+          newUID = random.nextLong();
+        }
+        inventedUIDs.add(newUID);
+        original.setUID(newUID);
+        wrapper.setUID(newUID);
+      }
+    } else {
+      if (!original.hasUID() || wrapper.getUID() != original.getUID()) {
+        log.error("wrapper and original region ID do not match: " + wrapper + " " + original);
+      }
+    }
     removeRegion(wrapper);
     wrappers.put(wrapper.getID(), wrapper);
     originals.put(wrapper, original);

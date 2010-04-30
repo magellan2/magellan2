@@ -23,10 +23,16 @@
 // 
 package magellan.library.utils.mapping;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Map;
+
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Ship;
+import magellan.library.utils.Score;
 
 public class ShipIDMapping implements DataMapping {
   private static ShipIDMapping singleton = new ShipIDMapping();
@@ -41,10 +47,25 @@ public class ShipIDMapping implements DataMapping {
   }
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
-    // create possible translations by same unit in both reports from same turn!
+    Collection<Score<CoordinateID>> list = getMappings(fromData, toData, level);
+    if (list.isEmpty())
+      return null;
+    return Collections.max(list).getKey();
+  }
+
+  /**
+   * Create possible translations by same unit in both reports from same turn.
+   * 
+   * @see magellan.library.utils.mapping.DataMapping#getMappings(magellan.library.GameData,
+   *      magellan.library.GameData, int)
+   */
+  public Collection<Score<CoordinateID>> getMappings(GameData fromData, GameData toData, int level) {
+    Map<CoordinateID, Score<CoordinateID>> translationMap =
+        new Hashtable<CoordinateID, Score<CoordinateID>>();
+
     if (fromData.getDate() == null || toData.getDate() == null
         || !fromData.getDate().equals(toData.getDate()))
-      return null;
+      return Collections.emptyList();
 
     for (Region region : fromData.getRegions()) {
       if (region.getCoordinate().getZ() == level) {
@@ -56,14 +77,24 @@ public class ShipIDMapping implements DataMapping {
             Region sameRegion = sameShip.getRegion();
             if (sameRegion != null) {
               CoordinateID sameCoord = sameRegion.getCoordinate();
-              if (sameCoord.getZ() == level)
-                return CoordinateID.create(sameCoord.getX() - region.getCoordinate().getX(),
-                    sameCoord.getY() - region.getCoordinate().getY(), level);
+              CoordinateID translation;
+              if (sameCoord.getZ() == level) {
+                translation =
+                    CoordinateID.create(sameCoord.getX() - region.getCoordinate().getX(), sameCoord
+                        .getY()
+                        - region.getCoordinate().getY(), level);
+                Score<CoordinateID> score = translationMap.get(translation);
+                if (score == null) {
+                  score = new Score<CoordinateID>(translation);
+                  translationMap.put(translation, score);
+                }
+                score.addScore(1);
+              }
             }
           }
         }
       }
     }
-    return null;
+    return translationMap.values();
   }
 }

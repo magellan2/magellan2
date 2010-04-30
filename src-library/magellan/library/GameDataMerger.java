@@ -531,6 +531,13 @@ public class GameDataMerger {
       }
     }
 
+    for (Region newRegion : newerGD.regionView().values()) {
+      if (newRegion.getVisibility().equals(Visibility.UNIT)) {
+        CoordinateID resultRegion = transform(transformer2, newRegion.getID());
+        resultGD.getRegion(resultRegion).setVisibility(Visibility.UNIT);
+      }
+    }
+
     if (olderGD.buildingView() != null) {
       // buildings are persistent.
       // Accept old buildings not occurring in the new report
@@ -804,10 +811,10 @@ public class GameDataMerger {
       if (resultRegion == null) {
         resultRegion = MagellanFactory.createRegion(newID, resultGD);
         resultRegion.setUID(wrapper.getUID());
-        resultRegion.setVisibilityString(Region.VIS_STR_WRAP);
+        resultRegion.setVisibility(Visibility.WRAP);
         resultRegion.setType(RegionType.wrap);
       }
-      if (Region.VIS_STR_WRAP.equals(resultRegion.getVisibilityString())) {
+      if (resultRegion.getVisibility().equals(Visibility.WRAP)) {
         Region original = newerGD.getOriginal(wrapper);
         Region newOriginal = resultGD.getRegion(original.getID());
         if (newOriginal == null) {

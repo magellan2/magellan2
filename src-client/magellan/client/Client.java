@@ -174,6 +174,7 @@ import magellan.library.utils.Log;
 import magellan.library.utils.MagellanFinder;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.MemoryManagment;
+import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
@@ -1507,11 +1508,19 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // //////////////////
   // GAME DATA Code //
   // //////////////////
+  /**
+   * Loads game data from a file and returns it.
+   * 
+   * @param ui
+   * @param fileName
+   * @return the game data read or <code>null</code> if something went wrong
+   */
   public GameData loadCR(UserInterface ui, File fileName) {
     GameData data = null;
     Client client = this;
     if (ui == null) {
-      ui = new ProgressBarUI(client);
+      ui = new NullUserInterface();
+      // ProgressBarUI(client);
     }
 
     try {
@@ -1616,6 +1625,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }, "loadCRThread").start();
 
+    /* this is here just for debugging reasons */
     if (false) {
       saveSynchronously();
     }

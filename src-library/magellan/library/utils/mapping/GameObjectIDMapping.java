@@ -23,8 +23,11 @@
 // 
 package magellan.library.utils.mapping;
 
+import java.util.Collection;
+
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
+import magellan.library.utils.Score;
 
 /**
  * @author Ralf Duckstein
@@ -61,6 +64,17 @@ public class GameObjectIDMapping implements DataMapping {
       return translation;
 
     return null;
+  }
+
+  public Collection<Score<CoordinateID>> getMappings(GameData fromData, GameData toData, int level) {
+    Collection<Score<CoordinateID>> translations =
+        RegionIDMapping.getSingleton().getMappings(fromData, toData, level);
+
+    translations.addAll(BuildingIDMapping.getSingleton().getMappings(fromData, toData, level));
+    translations.addAll(ShipIDMapping.getSingleton().getMappings(fromData, toData, level));
+    translations.addAll(UnitIDMapping.getSingleton().getMappings(fromData, toData, level));
+
+    return translations;
   }
 
 }

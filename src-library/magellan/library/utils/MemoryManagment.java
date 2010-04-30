@@ -36,7 +36,7 @@ public class MemoryManagment {
 
   private static Runtime runtime = java.lang.Runtime.getRuntime();
 
-  protected static Runtime getRuntime() {
+  public static Runtime getRuntime() {
     return MemoryManagment.runtime;
   }
 
@@ -110,6 +110,10 @@ public class MemoryManagment {
     return false;
   }
 
+  /**
+   * @deprecated use {@link #getRuntime()}.
+   */
+  @Deprecated
   public static Runtime getR() {
     return MemoryManagment.runtime;
   }

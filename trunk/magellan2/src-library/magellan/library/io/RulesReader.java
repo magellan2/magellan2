@@ -75,7 +75,7 @@ public class RulesReader {
     }
     ending = ending.toLowerCase();
 
-    RulesReader.log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
+    RulesReader.log.fine("loading rules for \"" + name + "\" (ending: " + ending + ")");
 
     File rules = new File(PropertiesHelper.getSettingsDirectory(), "etc/rules/" + name + ending);
     // workaround for working with eclipse...

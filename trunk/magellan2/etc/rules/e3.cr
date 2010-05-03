@@ -1,5 +1,5 @@
-VERSION 65
-RULES "$Id: e2k9.cr 001 2009-06-07 stm $"
+VERSION 66
+RULES "$Id: e3.cr 1720"
 
 MAGELLAN
 "magellan.library.gamebinding.e3a.E3ASpecificStuff";class

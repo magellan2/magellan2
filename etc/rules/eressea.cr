@@ -1,5 +1,5 @@
 VERSION 42
-RULES "$Id: eressea.cr 395 2007-04-18 23:29:32Z Fiete $"
+RULES "$Id: eressea.cr 1392"
 
 MAGELLAN
 "magellan.library.gamebinding.EresseaSpecificStuff";class

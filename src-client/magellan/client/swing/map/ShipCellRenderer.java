@@ -94,15 +94,44 @@ public class ShipCellRenderer extends ImageCellRenderer {
             continue;
           }
 
+          int xOff = 0, yOff = 0;
           Image img = getImage(actShip.typeName + shore);
 
           if (img == null) {
-            // special image not found, use generic image
-            img = getImage("Schiff" + shore);
+            img = getImage(actShip.typeName + "0");
+            if (img == null) {
+              // special image not found, use generic image
+              img = getImage("Schiff" + "0");
+            }
+
+            switch (shore) {
+            case 1:
+              xOff = -size.width / 7;
+              yOff = -size.width * 2 / 5;
+              break;
+            case 2:
+              xOff = size.width * 2 / 7;
+              yOff = -size.width * 2 / 5;
+              break;
+            case 3:
+              xOff = size.width * 3 / 7;
+              break;
+            case 4:
+              xOff = size.width * 2 / 7;
+              yOff = size.width / 5;
+              break;
+            case 5:
+              xOff = -size.width / 7;
+              yOff = size.width / 5;
+              break;
+            case 6:
+              xOff = -size.width / 3;
+              break;
+            }
           }
 
           if (img != null) {
-            graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
+            graphics.drawImage(img, pos.x + xOff, pos.y + yOff, size.width, size.height, null);
           }
           if (multipleTypes[shore]) {
             renderMultiple(r, shore);

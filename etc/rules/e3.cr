@@ -2016,7 +2016,7 @@ REGIONTYPES
 
 BUILDINGTYPE "Marktplatz"
 "Marktplatz";name
-1;level
+3;level
 10;maxsize
 MAINTENANCE
 200;Silber

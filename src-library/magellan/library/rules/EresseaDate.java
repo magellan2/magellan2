@@ -24,16 +24,19 @@ public class EresseaDate extends Date {
       { "Feldsegen", "Nebeltage", "Sturmmond", "Herdfeuer", "Eiswind", "Schneebann", "Blütenregen",
           "Mond_der_milden_Winde", "Sonnenfeuer" };
 
+  private static final int EPOCH1_START = 0;
+  private static final int EPOCH2_START = 184;
+  private static final int EPOCH3_START = 1;
+
   private int epoch = 1;
-  private int yearOffset = -1;
-  private int monthOffset = -1;
-  private int weekOffset = -1;
+  private int startRound = 1;
 
   /**
    * Creates new EresseaDate.
    */
   public EresseaDate(int iInitDate) {
-    super(iInitDate);
+    this(iInitDate, 0);
+
   }
 
   /**
@@ -42,15 +45,25 @@ public class EresseaDate extends Date {
    * <code>EresseaDate(185, 6, 7, 1)</code> (but also with <code>EresseaDate(185)</code>, epoch 2.
    * 
    * @param iInitDate The date (as read from the report).
-   * @param yearOffset The year of week 1.
-   * @param monthOffset The month of week 1.
-   * @param weekOffset The week of week 1.
+   * @param yearOffset The year of round 1.
+   * @param monthOffset The month of round 1.
+   * @param weekOffset The week of round 1.
    */
   public EresseaDate(int iInitDate, int yearOffset, int monthOffset, int weekOffset) {
     super(iInitDate);
-    this.yearOffset = yearOffset;
-    this.monthOffset = monthOffset;
-    this.weekOffset = weekOffset;
+
+    startRound = -27 * (yearOffset - 1) - 3 * (monthOffset - 1) + (weekOffset);
+  }
+
+  /**
+   * Creates new EresseaDate with adjustment.
+   * 
+   * @param iInitDate The date (or round, as read from the report)
+   * @param startRound The round corresponding to year 1, month 1, week 1
+   */
+  public EresseaDate(int iInitDate, int startRound) {
+    super(iInitDate);
+    this.startRound = startRound;
   }
 
   /**
@@ -65,6 +78,21 @@ public class EresseaDate extends Date {
    */
   public void setEpoch(int newEpoch) {
     epoch = newEpoch;
+    switch (epoch) {
+    case 1:
+      startRound = EPOCH1_START;
+      break;
+    case 2:
+      startRound = EPOCH2_START;
+      break;
+    case 3:
+      startRound = EPOCH3_START;
+      break;
+
+    default:
+      startRound = 1;
+      break;
+    }
   }
 
   /**
@@ -160,45 +188,35 @@ public class EresseaDate extends Date {
   /**
    * Returns the difference to (year 0, week 27).
    */
-  public int getWeekFromStart() {
-
-    int iDate2 = iDate;
-    if (yearOffset != -1) {
-      iDate2 -= 27 * (yearOffset);
-      iDate2 -= (monthOffset) * 3;
-      iDate2 -= weekOffset + 1;
-    } else {
-      if (getEpoch() == 1)
-        return iDate;
-
-      if (getEpoch() == 2) {
-        if (iDate2 >= 184) {
-          iDate2 -= 184;
-        }
-      } else if (getEpoch() == 3) {
-        iDate2 -= 1;
-      }
-
-      if (getEpoch() > 3) {
-        log.error("unknown epoch, we'll try our best...");
-      }
-    }
+  protected int getWeekFromStart() {
+    int iDate2 = iDate - startRound;
 
     if (iDate2 < 0) {
-      log.error("invalid date " + iDate);
-      iDate2 = Math.max(0, iDate2);
+      log.errorOnce("invalid date " + iDate);
+      // iDate2 = Math.max(0, iDate2);
     }
 
     return iDate2;
   }
 
   /**
+   * Creates a copy of this Date object.
+   */
+  @Override
+  public EresseaDate clone() {
+    EresseaDate date = (EresseaDate) super.clone();
+
+    date.epoch = epoch;
+    date.startRound = startRound;
+
+    return date;
+  }
+
+  /**
    * Creates a clone.
    */
   public EresseaDate copy() {
-    EresseaDate date = new EresseaDate(iDate, yearOffset, monthOffset, weekOffset);
-    date.setEpoch(getEpoch());
-    return date;
+    return clone();
   }
 
   /**
@@ -210,26 +228,24 @@ public class EresseaDate extends Date {
       return Date.UNKNOWN;
 
     int time = getWeekFromStart();
+    while (time < 0) {
+      time += 27;
+    }
 
     switch ((time / 3) % 9) {
+    case 8:
     case 0:
       return Date.SUMMER;
     case 1:
-      return Date.AUTUMN;
     case 2:
       return Date.AUTUMN;
     case 3:
-      return Date.WINTER;
     case 4:
-      return Date.WINTER;
     case 5:
       return Date.WINTER;
     case 6:
-      return Date.SPRING;
     case 7:
       return Date.SPRING;
-    case 8:
-      return Date.SUMMER;
     default:
       return Date.UNKNOWN;
     }

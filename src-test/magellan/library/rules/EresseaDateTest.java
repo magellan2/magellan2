@@ -72,35 +72,34 @@ public class EresseaDateTest {
   @Test
   public void testGet() {
     EresseaDate date = new EresseaDate(1);
+    Assert.assertEquals(1, date.getWeekFromStart());
+    date = new EresseaDate(1);
     date.setEpoch(1);
     Assert.assertEquals(1, date.getWeekFromStart());
-    date = new EresseaDate(185);
+    date = new EresseaDate(184);
     date.setEpoch(2);
-    Assert.assertEquals(1, date.getWeekFromStart());
+    Assert.assertEquals(0, date.getWeekFromStart());
     date = new EresseaDate(1);
     date.setEpoch(3);
     Assert.assertEquals(0, date.getWeekFromStart());
 
-    // second age
-    date = new EresseaDate(185, 6, 7, 0);
-    Assert.assertEquals(1, date.getWeekFromStart());
-    date = new EresseaDate(185, 6, 7, 0);
+    date = new EresseaDate(1, 1, 1, 1);
+    Assert.assertEquals(0, date.getWeekFromStart());
     date.setEpoch(2);
-    Assert.assertEquals(1, date.getWeekFromStart());
-    date = new EresseaDate(185, 6, 7, 0);
+    Assert.assertEquals(-183, date.getWeekFromStart());
     date.setEpoch(3);
-    Assert.assertEquals(1, date.getWeekFromStart());
-
-    // third age
-    date = new EresseaDate(1, 0, 0, 0);
     Assert.assertEquals(0, date.getWeekFromStart());
 
-    date = new EresseaDate(616, 6, 7, 0);
+    date = new EresseaDate(184, -6, 3, 1);
+    Assert.assertEquals(0, date.getWeekFromStart());
     date.setEpoch(2);
-    Assert.assertEquals(Date.SUMMER, date.getSeason());
-    date = new EresseaDate(619, 6, 7, 0);
-    date.setEpoch(2);
-    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    Assert.assertEquals(0, date.getWeekFromStart());
+    date.setEpoch(3);
+    Assert.assertEquals(183, date.getWeekFromStart());
+
+    date = new EresseaDate(1, 0, 0, 0);
+    Assert.assertEquals(-29, date.getWeekFromStart());
+
   }
 
   /**
@@ -157,6 +156,77 @@ public class EresseaDateTest {
       date.setDate(d);
       Assert.assertEquals("Date " + d + " epoch " + 3, Date.SUMMER, date.getSeason());
     }
+
+    // second age -6, 2, 3);
+    date = new EresseaDate(616, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    date = new EresseaDate(618, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    date = new EresseaDate(619, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    date = new EresseaDate(624, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    date = new EresseaDate(625, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.WINTER, date.getSeason());
+    date = new EresseaDate(633, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.WINTER, date.getSeason());
+    date = new EresseaDate(634, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.SPRING, date.getSeason());
+    date = new EresseaDate(639, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.SPRING, date.getSeason());
+    date = new EresseaDate(640, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    date = new EresseaDate(645, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    date = new EresseaDate(646, -6, 2, 3);
+    date.setEpoch(2);
+    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+
+    // third age
+    date = new EresseaDate(1, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    date = new EresseaDate(3, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    date = new EresseaDate(4, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    date = new EresseaDate(9, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    date = new EresseaDate(10, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.WINTER, date.getSeason());
+    date = new EresseaDate(18, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.WINTER, date.getSeason());
+    date = new EresseaDate(19, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.SPRING, date.getSeason());
+    date = new EresseaDate(24, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.SPRING, date.getSeason());
+    date = new EresseaDate(25, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    date = new EresseaDate(30, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    date = new EresseaDate(31, 1, 1, 1);
+    date.setEpoch(3);
+    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+
   }
 
   /**

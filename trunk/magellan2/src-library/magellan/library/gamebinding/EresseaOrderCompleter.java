@@ -1720,7 +1720,9 @@ public class EresseaOrderCompleter implements Completer {
     if (!quoted) {
       if (unit.isHideFaction()) {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION)
-            + " " + Resources.getOrderTranslation(EresseaConstants.O_NOT)));
+            + " " + Resources.getOrderTranslation(EresseaConstants.O_NOT), Resources
+            .getOrderTranslation(EresseaConstants.O_FACTION), " "
+            + Resources.getOrderTranslation(EresseaConstants.O_NOT)));
       } else {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION),
             " "));

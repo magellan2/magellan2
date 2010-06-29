@@ -1,3 +1,7 @@
+2010-04-30 / Build 417 - stm (stm_@users.sourceforge.net)
+    * fixed small date issues
+    * experimental: display of "hidden" ship cargo
+
 2010-04-30 / Build 415 - stm (stm_@users.sourceforge.net)
     * improved auto-girth-detection to no longer insert wrap regions when region coordinates have changed slightly
     * slightly changed user interaction of ReportMerger

@@ -174,9 +174,28 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   }
 
   /**
-   * Returns the weight of all units of this ship. The method does some delta calculation to be more
-   * precise. The initial load is subtracted by the initial weight of the initial units and added by
-   * the modified weight of the modified units.
+   * Calculates the weight of all units of this ship. This is usually less precise than
+   * {@link #getCargo()}.
+   * 
+   * @return The load of the ship
+   */
+  public int getLoad() {
+    int modLoad = 0;
+    // subtract all units initially on the ship with their initial weight
+    for (final Unit u : units()) {
+      modLoad += getGameSpecificStuff().getMovementEvaluator().getWeight(u);
+      // if persons and cargo are counted separately (E3), remove persons' weight here
+      if (getShipType().getMaxPersons() > 0) {
+        modLoad -= u.getPersons() * u.getRace().getWeight() * 100;
+      }
+    }
+    return modLoad;
+  }
+
+  /**
+   * Returns the (modified) weight of all (modified) units of this ship . The method does some delta
+   * calculation to be more precise. The initial load is subtracted by the initial weight of the
+   * initial units and added by the modified weight of the modified units.
    * 
    * @return The modified load of the ship TODO: move to {@link MovementEvaluator}
    */
@@ -188,14 +207,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     if (modLoad < 0) {
       modLoad = 0;
     } else {
-      // subtract all units initially on the ship with their initial weight
-      for (final Unit u : units()) {
-        modLoad -= getGameSpecificStuff().getMovementEvaluator().getWeight(u);
-        // if persons and cargo are counted separately (E3), remove persons' weight here
-        if (getShipType().getMaxPersons() > 0) {
-          modLoad += u.getPersons() * u.getRace().getWeight() * 100;
-        }
-      }
+      modLoad -= getLoad();
     }
 
     // now we generally should have modLoad zero or near zero.

@@ -3954,7 +3954,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendShipLoadInfo(Ship s, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    String strLoad = EMapDetailsPanel.weightNumberFormat.format(new Float(s.getCargo() / 100.0F));
+    String strCargo = EMapDetailsPanel.weightNumberFormat.format(new Float(s.getCargo() / 100.0F));
+    String strLoad = EMapDetailsPanel.weightNumberFormat.format(new Float(s.getLoad() / 100.0F));
+    String strUnknownLoad =
+        EMapDetailsPanel.weightNumberFormat
+            .format(new Float((s.getCargo() - s.getLoad()) / 100.0F));
 
     String strModLoad =
         EMapDetailsPanel.weightNumberFormat.format(new Float(s.getModifiedLoad() / 100.0F));
@@ -3964,12 +3968,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     StringBuffer loadText = new StringBuffer();
     loadText.append(Resources.get("emapdetailspanel.node.load")).append(": ");
-    loadText.append(strLoad);
-    if (s.getModifiedLoad() != s.getCargo()) {
-      loadText.append(" (").append(strModLoad).append(") / ");
-    } else {
-      loadText.append(" / ");
+    if (s.getCargo() != s.getLoad() && s.getCargo() != -1) {
+      loadText.append(strLoad).append(" + ").append(strUnknownLoad).append(" = ");
     }
+    loadText.append(strCargo);
+    if (s.getModifiedLoad() != s.getCargo()) {
+      loadText.append(" (").append(strModLoad).append(")");
+    }
+
+    loadText.append(" / ");
+
     loadText.append(strCap).append(" ");
     loadText.append(Resources.get("emapdetailspanel.node.weightunits"));
 

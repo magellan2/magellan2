@@ -59,18 +59,19 @@ public interface Ship extends UnitContainer, HasRegion {
   public int getCargo();
 
   /**
+   * Returns the weight of all units of this ship in silver. This is usually less precise than
+   * {@link #getCargo()}.
+   * 
+   * @return The weight of the units on the ship
+   */
+  public int getLoad();
+
+  /**
    * Returns the weight of all units of this ship in silver based on the modified units.
    * 
    * @return The modified weight of the modified units on the ship
    */
   public int getModifiedLoad();
-
-  /**
-   * This is a helper function for showing inner object state.
-   * 
-   * @return A debug message
-   */
-  public String toDebugString();
 
   /**
    * A string representation of this ship.

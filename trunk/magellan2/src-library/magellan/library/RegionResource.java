@@ -92,6 +92,7 @@ public class RegionResource implements Unique {
    */
   public void setDate(int Round) {
     if (date == null) {
+      // FIXME this date has no epoch
       date = new EresseaDate(Round);
     } else {
       date.setDate(Round);
@@ -99,7 +100,7 @@ public class RegionResource implements Unique {
   }
 
   /**
-   * Returns the Date, the ressource info was last updated
+   * Returns the Date, the ressource info was last updated.
    */
   public Date getDate() {
     return date;

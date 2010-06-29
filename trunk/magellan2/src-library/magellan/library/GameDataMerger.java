@@ -145,9 +145,7 @@ public class GameDataMerger {
     /***********************************************************************/
 
     /**************************** DATE ***************************/
-    EresseaDate date = new EresseaDate(newerGD.getDate().getDate());
-    date.setEpoch(((EresseaDate) newerGD.getDate()).getEpoch());
-    resultGD.setDate(date);
+    resultGD.setDate(newerGD.getDate().clone());
 
     // new report - new timestamp
     resultGD.setTimestamp(System.currentTimeMillis() / 1000);

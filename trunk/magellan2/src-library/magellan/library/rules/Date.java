@@ -20,7 +20,7 @@ import magellan.library.ID;
  * 
  * @author Sebastian
  */
-public abstract class Date extends Object implements ID {
+public abstract class Date extends Object implements ID, Cloneable {
   protected int iDate = 0;
 
   /** Short format */
@@ -117,12 +117,16 @@ public abstract class Date extends Object implements ID {
 
   /**
    * Creates a copy of this Date object.
-   * 
-   * @throws CloneNotSupportedException
    */
   @Override
-  public Object clone() throws CloneNotSupportedException {
-    return super.clone();
+  public Date clone() {
+    try {
+      return (Date) super.clone();
+    } catch (CloneNotSupportedException e) {
+      // won't happen
+      e.printStackTrace();
+      throw new AssertionError();
+    }
   }
 
   /**

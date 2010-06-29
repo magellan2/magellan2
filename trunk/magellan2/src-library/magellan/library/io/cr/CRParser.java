@@ -155,7 +155,7 @@ public class CRParser implements RulesIO, GameDataIO {
     } else {
       this.ui = ui;
     }
-    this.transformer = translator;
+    transformer = translator;
   }
 
   /**
@@ -1870,9 +1870,10 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   /**
-   * Parse the FACTION block with all its subblocks. Heuristic for block termination: - Terminate on
-   * another PARTEI block (without warning) - Terminate on another id block (without warning) -
-   * Terminate on any other unknown block (with warning)
+   * Parse the FACTION block with all its subblocks. Heuristic for block termination:<br />
+   * - Terminate on another PARTEI block (without warning)<br />
+   * - Terminate on another id block (without warning)<br />
+   * - Terminate on any other unknown block (with warning)
    * 
    * @param sortIndex
    * @return The resulting faction

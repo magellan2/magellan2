@@ -2761,7 +2761,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readFinalNumber(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
         retVal = readTarnePartei(t);
-      } else if (isString(t)) {
+      } else if (isString(t) && !checkFinal(t)) {
         retVal = new StringChecker(false, false, true, false) {
           @Override
           protected boolean checkInner() {
@@ -3415,6 +3415,7 @@ public class EresseaOrderParser implements OrderParser {
      * 
      * @param forceQuotes if this is <code>true</code>, the string must be enclosed in (single or
      *          double) quotes.
+     * @param preferQuotes if this is <code>true</code>, quotes are inserted by order completers.
      * @param allowQuotes if this is <code>true</code>, the string may be enclosed in (single or
      *          double) quotes.
      * @param allowEmpty if this is <code>true</code>, the content may be empty.

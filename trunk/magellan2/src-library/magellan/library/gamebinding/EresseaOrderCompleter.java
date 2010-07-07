@@ -1727,7 +1727,7 @@ public class EresseaOrderCompleter implements Completer {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION),
             " "));
       }
-      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
+      // completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
       completions.add(new Completion("0"));
     }
 

@@ -1019,7 +1019,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       } else {
         activeObject = null;
       }
-
+      if (se.getActiveObject() instanceof Region) {
+        getData().setActiveRegion((Region) se.getActiveObject());
+      }
     }
 
     /**

@@ -1044,6 +1044,11 @@ public class EresseaOrderParserTest {
   @Test
   public void testTarneReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_HIDE));
+    checkOrder("TARNE 0");
+    checkOrder("TARNE 1");
+    checkOrder("TARNE NICHT", false);
+    checkOrder("TARNE xyz", false);
+    checkOrder("TARNE 0 1", false);
   }
 
   /**

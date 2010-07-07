@@ -48,7 +48,7 @@ public class AddSignDialog extends InternationalizedDialog {
   private Region region = null;
 
   /**
-   * Create a new JVorlage object as a dialog with a parent window.
+   * Create a new dialog.
    */
   public AddSignDialog(Frame owner, boolean modal, Properties p, EventDispatcher dispatcher,
       Region r) {
@@ -137,7 +137,7 @@ public class AddSignDialog extends InternationalizedDialog {
     if (s2 != null && s2.length() > 0) {
       region.addSign(new Sign(s2));
     }
-    // TODO this should be a smaller scale event... Only the map sould be interested...
+    // TODO this should be a smaller scale event... Only the map should be interested...
     dispatcher.fire(new GameDataEvent(this, region.getData()));
     quit();
   }

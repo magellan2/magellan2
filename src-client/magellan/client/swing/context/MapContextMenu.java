@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import magellan.client.Client;
@@ -367,13 +368,13 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
       });
       signs.add(delSign);
     } else {
-      JMenuItem delSign = new JMenuItem(Resources.get("context.mapcontextmenu.menu.signs.addsign"));
-      delSign.addActionListener(new ActionListener() {
+      JMenuItem addSign = new JMenuItem(Resources.get("context.mapcontextmenu.menu.signs.addsign"));
+      addSign.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           addSign();
         }
       });
-      signs.add(delSign);
+      signs.add(addSign);
     }
 
     // remove all
@@ -396,11 +397,15 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
   }
 
   /**
-   * deletes all signs of the actual gamedata (CR)
+   * deletes all signs of the current gamedata (CR)
    */
   private void delAllSigns() {
-    for (Region region2 : data.getRegions()) {
-      (region2).clearSigns();
+    if (JOptionPane.showConfirmDialog(this, Resources
+        .get("context.mapcontextmenu.delsigns.confirm.message"), Resources
+        .get("context.mapcontextmenu.delsigns.confirm.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+      for (Region region2 : data.getRegions()) {
+        (region2).clearSigns();
+      }
     }
     updateMap();
   }

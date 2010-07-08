@@ -5810,8 +5810,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         return new UnitContextMenu((Unit) argument, selectedObjects.getSelectedObjects(),
             dispatcher, data);
       else if (argument instanceof UnitNodeWrapper)
-        return new UnitContextMenu(((UnitNodeWrapper) argument).getUnit(), selectedObjects
-            .getSelectedObjects(), dispatcher, data);
+        return new UnitContextMenu(((UnitNodeWrapper) argument).getUnit(), selectedObjects == null
+            ? null : selectedObjects.getSelectedObjects(), dispatcher, data);
       else if (argument instanceof UnitListNodeWrapper) {
         Collection<Unit> col = ((UnitListNodeWrapper) argument).getUnits();
 
@@ -5829,7 +5829,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             return new UnitCapacityContextMenu(dispatcher, data, settings);
         }
       } else {
-
+        log.finest("unknown argument");
       }
 
       return null;

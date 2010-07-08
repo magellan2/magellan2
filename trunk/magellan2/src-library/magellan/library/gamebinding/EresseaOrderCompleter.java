@@ -497,7 +497,7 @@ public class EresseaOrderCompleter implements Completer {
         " \"\"", Completion.DEFAULT_PRIORITY, 1));
 
     // use old owner unit (BENENNE before GIB)
-    if ((unit.getBuilding() != null) && unit.getBuilding().getOwnerUnit().equals(unit)) {
+    if ((unit.getBuilding() != null) && unit.equals(unit.getBuilding().getOwnerUnit())) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
           " \"\"", Completion.DEFAULT_PRIORITY, 1));
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REGION),

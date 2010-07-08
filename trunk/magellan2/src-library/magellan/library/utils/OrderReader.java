@@ -59,19 +59,19 @@ public class OrderReader {
       data = new CompleteData(new GenericRules());
     }
 
-    // clear the caches in game data
-    if (data.getUnits() != null) {
-      for (Unit u : data.getUnits()) {
-        u.clearCache();
+      // clear the caches in game data
+      if (data.getUnits() != null) {
+        for (Unit u : data.getUnits()) {
+          u.clearCache();
+        }
       }
-    }
 
-    if (data.getRegions() != null) {
-      for (Region uc : data.getRegions()) {
-        uc.clearCache();
+      if (data.getRegions() != null) {
+        for (Region uc : data.getRegions()) {
+          uc.clearCache();
+        }
       }
     }
-  }
 
   /**
    * Reads the orders from the specified Reader. Orders for multiple factions can be read. Region
@@ -118,6 +118,7 @@ public class OrderReader {
       line = stream.readLine();
     }
 
+    // FIXME (stm 07/2010) why this??
     data.postProcess();
   }
 
@@ -166,7 +167,7 @@ public class OrderReader {
             currentUnit.setOrdersConfirmed(true);
           } else if ((ignoreSemicolonComments == false) && (rest.startsWith("ECHECK") == false)) {
             // add all other comments except "; ECHECK ..." to the orders
-            currentUnit.addOrders(line, refreshUnitRelations);
+            currentUnit.addOrders(line, isRefreshUnitRelations());
           }
         }
 
@@ -176,7 +177,7 @@ public class OrderReader {
       if (!tokenizer.hasMoreTokens() || line.trim().equals("")) {
         // empty line
         if (currentUnit != null) {
-          currentUnit.addOrders(line, refreshUnitRelations);
+          currentUnit.addOrders(line, isRefreshUnitRelations());
         }
 
         continue;
@@ -267,7 +268,7 @@ public class OrderReader {
           currentUnit = null;
         }
       } else if (currentUnit != null) {
-        currentUnit.addOrders(line, refreshUnitRelations);
+        currentUnit.addOrders(line, isRefreshUnitRelations());
       }
     }
   }
@@ -314,16 +315,13 @@ public class OrderReader {
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @author $Author: $
-   * @version $Revision: 242 $
+   * Describes a few aspects of the orders read.
    */
   public class Status {
-    /** DOCUMENT-ME */
+    /** Counts the number of units for which orders where read. */
     public int units = 0;
 
-    /** DOCUMENT-ME */
+    /** Counts the number of factions for which orders where read. */
     public int factions = 0;
 
     /**
@@ -333,25 +331,38 @@ public class OrderReader {
     public int confirmedUnitsNotOverwritten = 0;
   }
 
+  /**
+   * Returns whether unit relations should be refreshed while reading the orders.
+   * 
+   * @return Returns doNotOverwriteConfirmedOrders.
+   * @see OrderReader#setRefreshUnitRelations(boolean)
+   */
   public boolean isRefreshUnitRelations() {
     return refreshUnitRelations;
   }
 
+  /**
+   * Sets whether unit relations should be refreshed while reading the orders. If this is set to
+   * <code>false</code>, the relations will not be updated.
+   * 
+   * @param refreshUnitRelations
+   */
   public void setRefreshUnitRelations(boolean refreshUnitRelations) {
     this.refreshUnitRelations = refreshUnitRelations;
   }
 
   /**
-   * Returns the value of doNotOverwriteConfirmedOrders.
+   * Returns whether orders of confirmed units should be overwritten.
    * 
    * @return Returns doNotOverwriteConfirmedOrders.
    */
-  public boolean DoNotOverwriteConfirmedOrders() {
+  public boolean isDoNotOverwriteConfirmedOrders() {
     return doNotOverwriteConfirmedOrders;
   }
 
   /**
-   * Sets the value of doNotOverwriteConfirmedOrders.
+   * Sets whether orders of confirmed units should be overwritten. If set to <code>true</code>,
+   * orders of confirmed units will not be changed.
    * 
    * @param doNotOverwriteConfirmedOrders The value for doNotOverwriteConfirmedOrders.
    */

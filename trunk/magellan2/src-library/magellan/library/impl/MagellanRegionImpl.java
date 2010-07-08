@@ -1082,9 +1082,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Refreshes all the relations of all units in this region. It is preferrable to call this method
+   * Refreshes all the relations of all units in this region. It is preferable to call this method
    * instead of refreshing the unit relations 'manually'.
    */
+  // FIXME should be called once after region creation, then never again
   public void refreshUnitRelations() {
     refreshUnitRelations(false);
   }

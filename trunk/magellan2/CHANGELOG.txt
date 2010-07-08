@@ -1,4 +1,10 @@
-2010-04-30 / Build 417 - stm (stm_@users.sourceforge.net)
+2010-07-08 / Build 418 - stm (stm_@users.sourceforge.net)
+    * restored calculation of relations after adding orders (Track ticket #14)
+    * restored saving of active region
+    * added confirmation dialog for "delete all signs" action
+    * tweaked TARNE completion
+
+2010-06-30 / Build 417 - stm (stm_@users.sourceforge.net)
     * fixed small date issues
     * experimental: display of "hidden" ship cargo
 

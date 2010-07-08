@@ -1970,6 +1970,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           unitRelations.put(u.getID(), new LinkedList<UnitRelation>());
         }
 
+        // FIXME explain this code!
         List<UnitRelation> oldRelations = unitRelations.get(u.getID());
         Collection<UnitRelation> buffer = updateRelationPartners ? buff1 : buff2;
 

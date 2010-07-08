@@ -102,9 +102,10 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
+
   }
 
   /**
@@ -112,9 +113,9 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
    */
   public List<GraphicsElement> getGraphicsElements() {
     if (GEs == null) {
-      // TODO do this in background thread!
+      // FIXME (stm) do this in background thread!
       // in this situation init the region
-      region.refreshUnitRelations();
+      region.refreshUnitRelations(); // true
 
       GraphicsElement ge =
           new RegionGraphicsElement(toString(), null, null, region.getType().getID().toString());

@@ -213,7 +213,7 @@ public class TreeHelper {
     Unit curUnit = null;
     Unit prevUnit = null;
     List<Unit> helpList = new ArrayList<Unit>();
-
+    // FIXME (stm) this recursive implementation seems very inefficient
     for (Unit unit : units) {
       // ignore temp units
       // they are added under their mother unit

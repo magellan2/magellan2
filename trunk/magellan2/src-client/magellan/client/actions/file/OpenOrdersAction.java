@@ -30,6 +30,7 @@ import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.OpenOrdersAccessory;
 import magellan.client.swing.ProgressBarUI;
+import magellan.library.CoordinateID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.io.file.FileType;
@@ -138,12 +139,11 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 
         // client.getDispatcher().fire(new GameDataEvent(client,
         // client.getData()));
-        // force a complete new init of the game data, using data.clone
-        // using for that client.setOrigin...(Fiete)
-        // client.setOrigin(CoordinateID.ZERO);
-
-        // TODO(stm) is this enough?
-        client.getDispatcher().fire(new GameDataEvent(this, client.getData()));
+        // in order to refresh relations, force a complete new init of the game data, using
+        // data.clone, using for that client.setOrigin...(Fiete)
+        client.setOrigin(CoordinateID.ZERO);
+        // setOrigin already fires a GameDataEvent
+        // client.getDispatcher().fire(new GameDataEvent(this, client.getData()));
         ui.ready();
       }
     }).start();

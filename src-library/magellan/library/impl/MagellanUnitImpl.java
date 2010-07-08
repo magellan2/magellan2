@@ -329,12 +329,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   // (stm 09-06-08) had to get rid of the soft reference again as it leads to problems with
   // updates of unit relations.
-  // /**
-  // * The cache object containing cached information that may be not related enough to be
-  // * encapsulated as a function and is time consuming to gather.
-  // */
   // protected SoftReference<Cache> cacheReference = null;
 
+  /**
+   * The cache object containing cached information that may be not related enough to be
+   * encapsulated as a function and is time consuming to gather.
+   */
   private Cache cache;
 
   /**

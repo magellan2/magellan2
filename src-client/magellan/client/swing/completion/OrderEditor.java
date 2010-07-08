@@ -385,7 +385,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
    * order.
    */
   public List<String> getOrders() {
-    if (modified == false)
+    if (!isModified())
       return orders;
 
     orders = new LinkedList<String>();

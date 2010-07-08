@@ -156,10 +156,13 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
         rad += s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus();
       }
 
+      // add +1 to speed for every six levels over half (rounded up!) minimum captain speed
       Skill sailing =
           s.getModifiedOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
       if (sailing != null) {
-        rad += sailing.getLevel() / 7;
+        rad +=
+            Math
+                .max(0, (sailing.getLevel() - (1 + s.getShipType().getCaptainSkillLevel()) / 2) / 6);
       }
     }
 

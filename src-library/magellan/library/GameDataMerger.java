@@ -2155,6 +2155,10 @@ public class GameDataMerger {
     if (curShip.getMaxPersons() != -1) {
       newShip.setMaxPersons(curShip.getMaxPersons());
     }
+
+    if (curShip.getSpeed() != -1) {
+      newShip.setSpeed(curShip.getSpeed());
+    }
   }
 
   /**

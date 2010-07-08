@@ -3,6 +3,7 @@
     * restored saving of active region
     * added confirmation dialog for "delete all signs" action
     * tweaked TARNE completion
+    * fix to E3 ship speed calculation/merging
 
 2010-06-30 / Build 417 - stm (stm_@users.sourceforge.net)
     * fixed small date issues

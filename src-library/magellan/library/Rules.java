@@ -236,11 +236,19 @@ public interface Rules {
 
   /**
    * get ItemType by (possibly localized) name
+   * 
+   * @param id An id, like "Silber".
+   * @param add If this is <code>true</code>, a type will be added if it does not exist, yet.
+   * @return The item type corresponding to the id or <code>null</code> if the type is unknown or
+   *         <code>id</code> is <code>null</code> or empty.
    */
   public ItemType getItemType(String id, boolean add);
 
   /**
    * Shorthand for getItemType(id, false).
+   * 
+   * @param id An id, like "Silber".
+   * @return The item type corresponding to the id or <code>null</code> if the type is unknown.
    */
   public ItemType getItemType(String id);
 

@@ -65,18 +65,16 @@ public class EresseaOrderParserTest {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    EresseaOrderParserTest.settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
+    settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
     // PARSER_SETTINGS_FILE);
     Resources.getInstance().initialize(new File("."), "");
     System.out.println(new File(".").getAbsolutePath());
-    EresseaOrderParserTest.context = new MagellanContext(null);
-    EresseaOrderParserTest.context.setProperties(EresseaOrderParserTest.settings);
-    EresseaOrderParserTest.context.setEventDispatcher(new EventDispatcher());
-    EresseaOrderParserTest.context
-        .setCompletionProperties(EresseaOrderParserTest.completionSettings =
-            new SelfCleaningProperties());
+    context = new MagellanContext(null);
+    context.setProperties(settings);
+    context.setEventDispatcher(new EventDispatcher());
+    context.setCompletionProperties(completionSettings = new SelfCleaningProperties());
     Logger.setLevel(Logger.ERROR);
-    EresseaOrderParserTest.context.init();
+    context.init();
   }
 
   /**
@@ -100,7 +98,7 @@ public class EresseaOrderParserTest {
     data = new GameDataBuilder().createSimpleGameData();
 
     parser = new EresseaOrderParser(data);
-    completion = new AutoCompletion(EresseaOrderParserTest.context);
+    completion = new AutoCompletion(context);
     completer = new EresseaOrderCompleter(data, completion);
     parserCompleter = new EresseaOrderParser(data, completer);
   }

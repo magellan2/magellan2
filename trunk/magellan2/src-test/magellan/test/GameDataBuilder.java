@@ -13,6 +13,7 @@ import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Island;
+import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Skill;
@@ -284,6 +285,13 @@ public class GameDataBuilder {
     spellMap.put(id, shield);
 
     mage.setSpells(spellMap);
+  }
+
+  /**
+   * Adds the specified item to the unit.
+   */
+  public void addItem(GameData data, Unit unit, String item, int amount) {
+    unit.addItem(new Item(data.rules.getItemType(item), amount));
   }
 
 }

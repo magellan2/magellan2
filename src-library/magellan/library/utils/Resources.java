@@ -98,8 +98,8 @@ public class Resources {
     if (prefix == null) {
       prefix = "";
     }
-    Resources.log.info("Initializing resources for prefix...'" + prefix + "' in "
-        + magellanDirectory);
+    Resources.log
+        .info("Initializing resources for prefix '" + prefix + "' in " + magellanDirectory);
 
     File resourceDirectory = new File(magellanDirectory, "etc");
 

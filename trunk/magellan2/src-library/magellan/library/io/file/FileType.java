@@ -7,7 +7,8 @@
 
 package magellan.library.io.file;
 
-import java.io.BufferedWriter;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -197,7 +198,7 @@ public class FileType {
     if (filename.exists() && !filename.canWrite())
       throw new IOException("cannot write " + filename);
 
-    return new BufferedWriter(FileType.createEncodingWriter(createOutputStream(), encoding));
+    return FileType.createEncodingWriter(createOutputStream(), encoding);
   }
 
   /**
@@ -207,7 +208,7 @@ public class FileType {
    * @throws IOException If the file cannot be opened for reading
    */
   protected InputStream createInputStream() throws IOException {
-    return new FileInputStream(filename);
+    return new BufferedInputStream(new FileInputStream(filename));
   }
 
   /**
@@ -217,7 +218,7 @@ public class FileType {
    * @throws IOException If the file cannot be opened for writing
    */
   protected OutputStream createOutputStream() throws IOException {
-    return new FileOutputStream(filename);
+    return new BufferedOutputStream(new FileOutputStream(filename));
   }
 
   /**
@@ -305,6 +306,10 @@ public class FileType {
    * Signals that the file cannot be written to.
    */
   public static class ReadOnlyException extends IOException {
+
+    ReadOnlyException() {
+      super("FileType is read only");
+    }
   }
 
   /**

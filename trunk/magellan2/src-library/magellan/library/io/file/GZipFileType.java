@@ -35,11 +35,13 @@ public class GZipFileType extends FileType {
 
   @Override
   protected InputStream createInputStream() throws IOException {
+    // TODO GZIPInputStream is already buffered (?)
     return new GZIPInputStream(new FileInputStream(filename));
   }
 
   @Override
   protected OutputStream createOutputStream() throws IOException {
+    // TODO GZIPInputStream is already buffered (?)
     return new GZIPOutputStream(new FileOutputStream(filename));
   }
 

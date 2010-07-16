@@ -13,6 +13,8 @@
 
 package magellan.library.io.file;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -107,7 +109,7 @@ public class ZipFileType extends FileType {
     if (is == null)
       throw new IOException("Cannot read zip entry '" + zipentry + "' in file '" + filename + "',");
 
-    return is;
+    return new BufferedInputStream(is);
   }
 
   @Override
@@ -117,7 +119,8 @@ public class ZipFileType extends FileType {
       ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(filename));
       zos.putNextEntry(new ZipEntry(entryName));
 
-      return zos;
+      // TODO is ZipOutputStream already buffered?
+      return new BufferedOutputStream(zos);
     }
 
     // here we need to do something special: all entries are copied expect the named zipentry, which
@@ -125,6 +128,7 @@ public class ZipFileType extends FileType {
     File tmpfile = CopyFile.copy(filename);
     try {
       ZipFile zfile = new ZipFile(tmpfile);
+      // ZipOutputStream is already buffered (?)
       ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(filename));
 
       for (Enumeration<?> e = zfile.entries(); e.hasMoreElements();) {
@@ -143,7 +147,7 @@ public class ZipFileType extends FileType {
       // do not reuse oldEntry but create a new ZipEntry
       zos.putNextEntry(new ZipEntry(zipentry.getName()));
 
-      return zos;
+      return new BufferedOutputStream(zos);
     } catch (IOException exc) {
       CopyFile.copy(tmpfile, filename);
       throw exc;

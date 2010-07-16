@@ -61,10 +61,10 @@ public class BZip2FileType extends FileType {
         throw new IOException("File " + filename + " is missing bzip2 header BZ.");
 
       CopyFile.copyStreams(new CBZip2InputStream(new BufferedInputStream(fis)),
-          new FileOutputStream(tmpfile));
+          new BufferedOutputStream(new FileOutputStream(tmpfile)));
     }
 
-    return new FileInputStream(tmpfile);
+    return new BufferedInputStream(new FileInputStream(tmpfile));
   }
 
   @Override

@@ -13,6 +13,7 @@
 
 package magellan.library.io.file;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +43,7 @@ public class InputStreamSourceFileType extends FileType {
         throw new IOException("URL '" + filename.getPath().toLowerCase() + "' not readable.");
     }
 
-    return url.openStream();
+    return new BufferedInputStream(url.openStream());
   }
 
   @Override

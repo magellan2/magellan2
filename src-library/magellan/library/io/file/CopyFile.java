@@ -30,13 +30,15 @@ public class CopyFile {
    * Disable instantiation of class
    */
   private CopyFile() {
+    throw new IllegalStateException("should never be called");
   }
 
   /**
    * Copies the given source file to a temporary file.
    * 
    * @param source source file.
-   * @throws IOException if an I/O error occured.
+   * @return The temporary file.
+   * @throws IOException if an I/O error occurs
    */
   public static synchronized File copy(File source) throws IOException {
     return CopyFile.copy(source, CopyFile.createTempFile());
@@ -47,7 +49,8 @@ public class CopyFile {
    * 
    * @param source source file.
    * @param target destination target file.
-   * @throws IOException if an I/O error occured.
+   * @return target
+   * @throws IOException if an I/O error occurs
    */
   public static synchronized File copy(File source, File target) throws IOException {
     CopyFile.copyStreams(new FileInputStream(source), new FileOutputStream(target));
@@ -57,32 +60,42 @@ public class CopyFile {
   }
 
   /**
-   * DOCUMENT-ME
+   * Identical to <code>CopyFile.createTempFile("magellan", ".tmp.cr")</code>.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @return The temp file
+   * @throws IOException if an I/O error occurs
    */
   public static synchronized File createCrTempFile() throws IOException {
     return CopyFile.createTempFile("magellan", ".tmp.cr");
   }
 
   /**
-   * DOCUMENT-ME
+   * Identical to <code>createTempFile("magellan", null)</code>.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @return The temp file
+   * @throws IOException if an I/O error occurs
    */
   public static synchronized File createTempFile() throws IOException {
-    return CopyFile.createTempFile("magellan");
+    return CopyFile.createTempFile("magellan", null);
   }
 
   /**
-   * DOCUMENT-ME
+   * Identical to <code>createTempFile(prefix, null)</code>.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @return The temp file
+   * @throws IOException if an I/O error occurs
    */
   public static synchronized File createTempFile(String prefix) throws IOException {
     return CopyFile.createTempFile(prefix, null);
   }
 
+  /**
+   * Identical to {@link File#createTempFile(String, String)}, but additionally sets
+   * {@link File#deleteOnExit()}.
+   * 
+   * @return The temp file
+   * @throws IOException if an I/O error occurs
+   */
   private static File createTempFile(String prefix, String suffix) throws IOException {
     File tempfile = File.createTempFile(prefix, suffix);
     tempfile.deleteOnExit();
@@ -90,18 +103,27 @@ public class CopyFile {
     return tempfile;
   }
 
-  /** Copies the given source inputstream to the given destination outputstream. */
   private static final int BUFF_SIZE = 100000;
 
+  /**
+   * Reads everything from source and writes it to target and attempts to close them after reading.
+   * 
+   * @param source
+   * @param target
+   * @throws IOException if an I/O error occurs
+   */
   public static synchronized void copyStreams(InputStream source, OutputStream target)
       throws IOException {
     CopyFile.copyStreams(source, target, true);
   }
 
   /**
-   * DOCUMENT-ME
+   * Reads everything from source and writes it to target.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @param source
+   * @param target
+   * @param closeStreams if <code>true</code>, will attempt to close the streams after reading
+   * @throws IOException if an I/O error occurs
    */
   public static synchronized void copyStreams(InputStream source, OutputStream target,
       boolean closeStreams) throws IOException {
@@ -111,16 +133,16 @@ public class CopyFile {
 
     try {
       // encapsulate into BufferedInputStream if necessary
-      try {
+      if (source instanceof BufferedInputStream) {
         in = source;
-      } catch (ClassCastException e) {
+      } else {
         in = new BufferedInputStream(source);
       }
 
       // encapsulate into BufferedInputStream if necessary
-      try {
+      if (target instanceof BufferedOutputStream) {
         out = target;
-      } catch (ClassCastException e) {
+      } else {
         out = new BufferedOutputStream(target);
       }
 
@@ -137,6 +159,7 @@ public class CopyFile {
           try {
             in.close();
           } catch (IOException e) {
+            // can't do much about it
           }
         }
 
@@ -144,6 +167,7 @@ public class CopyFile {
           try {
             out.close();
           } catch (IOException e) {
+            // can't do much about it
           }
         }
       } else {

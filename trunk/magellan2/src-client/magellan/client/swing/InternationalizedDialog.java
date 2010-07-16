@@ -26,7 +26,7 @@ import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.logging.Logger;
 
 /**
- * A JDialog which should be used as base clase for all Magellan dialogs. The "Internationalized" in
+ * A JDialog which should be used as base class for all Magellan dialogs. The "Internationalized" in
  * the name is somewhat obsolete since the localization method was changed.
  */
 public abstract class InternationalizedDialog extends JDialog {

@@ -38,6 +38,12 @@ import java.io.Writer;
 
 import magellan.library.utils.Encoding;
 
+/**
+ * A FileType that directly pipes its input (from {@link #createReader()}) to an outputstream (
+ * {@link #createOutputStream()}).
+ * 
+ * @author stm
+ */
 public class PipeFileType extends FileType {
 
   private static int SERIAL = 0;
@@ -49,6 +55,13 @@ public class PipeFileType extends FileType {
 
   private final int serial = PipeFileType.SERIAL++;
 
+  /**
+   * Creates a pipe file. Everything written to the reader given by {@link #createReader()} will be
+   * directly written to the writer given by {@link #createWriter(String)}. There is no actual file
+   * involved.
+   * 
+   * @throws IOException if an I/O error occurs.
+   */
   public PipeFileType() throws IOException {
     super(new File(""), false);
     outputStream = new PipedOutputStream();
@@ -76,8 +89,23 @@ public class PipeFileType extends FileType {
     return this;
   }
 
+  /**
+   * A PipeFileType does not create backups.
+   * 
+   * @see magellan.library.io.file.FileType#createWriter(java.lang.String)
+   */
   @Override
   public Writer createWriter(String encoding) throws IOException {
+    return new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
+  }
+
+  /**
+   * A PipeFileType does not create backups.
+   * 
+   * @see magellan.library.io.file.FileType#createWriter(java.lang.String, int)
+   */
+  @Override
+  public Writer createWriter(String encoding, int numberOfBackups) throws IOException {
     return new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
   }
 
@@ -91,23 +119,43 @@ public class PipeFileType extends FileType {
     return encoding;
   }
 
+  /**
+   * Changes the encoding.
+   * 
+   * @param _encoding
+   */
   public void setEncoding(String _encoding) {
     encoding = _encoding;
   }
 
+  /**
+   * Returns <code>null</code>.
+   * 
+   * @see magellan.library.io.file.FileType#getFile()
+   */
   @Override
   public File getFile() throws IOException {
     return null;
   }
 
+  /**
+   * Returns an empty string.
+   * 
+   * @see magellan.library.io.file.FileType#getInnerName()
+   */
   @Override
   public String getInnerName() {
-    return null;
+    return "";
   }
 
+  /**
+   * Returns an empty string.
+   * 
+   * @see magellan.library.io.file.FileType#getName()
+   */
   @Override
   public String getName() {
-    return null;
+    return "";
   }
 
   @Override
@@ -137,12 +185,13 @@ public class PipeFileType extends FileType {
 
   @Override
   public void setCreateBackup(boolean createBackup) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("not available for PipeFileType");
   }
 
   @Override
   public void setReadonly(boolean readonly) {
-
+    if (readonly)
+      throw new UnsupportedOperationException("not available for PipeFileType");
   }
 
   @Override

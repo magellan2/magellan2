@@ -66,8 +66,7 @@ public class GameDataReader {
   /** @deprecated Use {@link #readGameData(FileType, ReportTransformer)} */
   @Deprecated
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin) throws IOException {
-    return readGameData(aFileType,
-        new TwoLevelTransformer(newOrigin, CoordinateID.ZERO));
+    return readGameData(aFileType, new TwoLevelTransformer(newOrigin, CoordinateID.ZERO));
   }
 
   /**
@@ -96,8 +95,7 @@ public class GameDataReader {
   @Deprecated
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin, String gameName)
       throws IOException {
-    return readGameData(aFileType,
-        new TwoLevelTransformer(newOrigin, CoordinateID.ZERO), gameName);
+    return readGameData(aFileType, new TwoLevelTransformer(newOrigin, CoordinateID.ZERO), gameName);
   }
 
   /**
@@ -109,8 +107,8 @@ public class GameDataReader {
    * @return a GameData object read from the cr or xml file.
    * @throws IOException If an I/O error occurs
    */
-  public GameData readGameData(FileType aFileType,
-      ReportTransformer coordinateTransformer, String gameName) throws IOException {
+  public GameData readGameData(FileType aFileType, ReportTransformer coordinateTransformer,
+      String gameName) throws IOException {
     if (aFileType.isXMLFile()) {
       GameData data = readGameDataXML(aFileType, gameName, coordinateTransformer);
 
@@ -188,6 +186,7 @@ public class GameDataReader {
       try {
         reader.close();
       } catch (IOException e) {
+        // can't do much
       }
     }
 

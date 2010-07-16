@@ -79,7 +79,7 @@ public class GameDataReader {
    * @return a GameData object read from the cr or xml file.
    * @throws IOException If an I/O error occurs
    */
-  public GameData readGameData(FileType aFileType, ReportTransformer translator)
+  public GameData readGameData(FileType aFileType, ReportTransformer transformer)
       throws IOException {
     // a) read game name
     String gameName = GameNameReader.getGameName(aFileType);
@@ -87,7 +87,7 @@ public class GameDataReader {
     if (gameName == null)
       throw new IOException("Unable to determine game name of file " + aFileType);
 
-    return readGameData(aFileType, translator, gameName);
+    return readGameData(aFileType, transformer, gameName);
   }
 
   /**
@@ -104,15 +104,15 @@ public class GameDataReader {
    * Read a gamedata from a given File.
    * 
    * @param aFileType the filetype representing a cr or xml file.
-   * @param coordinateTranslator the loaded report is translated by this coordinates.
+   * @param coordinateTransformer the loaded report is translated by this coordinates.
    * @param gameName
    * @return a GameData object read from the cr or xml file.
    * @throws IOException If an I/O error occurs
    */
   public GameData readGameData(FileType aFileType,
-      ReportTransformer coordinateTranslator, String gameName) throws IOException {
+      ReportTransformer coordinateTransformer, String gameName) throws IOException {
     if (aFileType.isXMLFile()) {
-      GameData data = readGameDataXML(aFileType, gameName, coordinateTranslator);
+      GameData data = readGameDataXML(aFileType, gameName, coordinateTransformer);
 
       if (data != null) {
         data.postProcess();
@@ -130,7 +130,7 @@ public class GameDataReader {
        * treatment of different filetypes, hence we can simply say here
        * "all known cr types are treated the same" 20060917: Jonathan (Fiete)
        */
-      GameData data = readGameDataCR(aFileType, gameName, coordinateTranslator);
+      GameData data = readGameDataCR(aFileType, gameName, coordinateTransformer);
 
       if (data != null) {
         data.postProcess();

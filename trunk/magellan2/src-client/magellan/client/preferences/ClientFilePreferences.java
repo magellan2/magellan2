@@ -67,8 +67,8 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
         addPanel(Resources.get("clientpreferences.border.filehistory"), new GridBagLayout());
 
     GridBagConstraints con =
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
-            GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 5, 1);
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
+            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 1);
     JLabel l = new JLabel(Resources.get("clientpreferences.lbl.filehistoryentries.caption"));
     help.add(l, con);
     con.gridx = 1;
@@ -79,6 +79,7 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
 
     JTextArea txtDescription =
         new JTextArea(Resources.get("clientpreferences.txt.filehistorydescription.text"));
+    txtDescription.setRequestFocusEnabled(false);
     txtDescription.setLineWrap(true);
     txtDescription.setWrapStyleWord(true);
     txtDescription.setEditable(false);
@@ -88,12 +89,10 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
     txtDescription.setFont(l.getFont());
     txtDescription.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get(
         "Label.foreground"));
-    // need this to limit size of panel
-    txtDescription.setPreferredSize(new java.awt.Dimension(50, 20));
 
     con.gridx = 0;
     con.gridy = 1;
-    con.gridwidth = 2;
+    con.gridwidth = 1;
     con.weightx = 1;
     con.fill = GridBagConstraints.HORIZONTAL;
     help.add(txtDescription, con);
@@ -101,20 +100,22 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
     JPanel jpanel_CRBackups =
         addPanel(Resources.get("clientpreferences.border.crbackups"), new GridBagLayout());
 
-    GridBagConstraints c_CR =
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
-            GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 5, 0);
+    con =
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
+            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 1);
     JLabel l2 = new JLabel(Resources.get("clientpreferences.lbl.numberofbackups.caption"));
 
-    jpanel_CRBackups.add(l2, c_CR);
+    jpanel_CRBackups.add(l2, con);
 
     txtCRBackupsCount = new JSpinner(new SpinnerNumberModel(3, 0, 100, 1));
 
-    c_CR.gridx++;
-    jpanel_CRBackups.add(txtCRBackupsCount, c_CR);
+    con.gridx++;
+    con.gridwidth = 2;
+    jpanel_CRBackups.add(txtCRBackupsCount, con);
 
     JTextArea txtDescription2 =
         new JTextArea(Resources.get("clientpreferences.txt.crbackupsdescription.text"));
+    txtDescription2.setRequestFocusEnabled(false);
     txtDescription2.setLineWrap(true);
     txtDescription2.setWrapStyleWord(true);
     txtDescription2.setEditable(false);
@@ -124,22 +125,20 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
     txtDescription2.setFont(l.getFont());
     txtDescription2.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get(
         "Label.foreground"));
-    // need this to limit size of panel
-    txtDescription2.setPreferredSize(new java.awt.Dimension(50, 20));
 
-    c_CR.gridx = 0;
-    c_CR.gridy = 1;
-    c_CR.weightx = 1.0;
-    c_CR.gridwidth = 2;
-    c_CR.fill = GridBagConstraints.HORIZONTAL;
-    jpanel_CRBackups.add(txtDescription2, c_CR);
+    con.gridx = 0;
+    con.gridy = 1;
+    con.weightx = 1.0;
+    con.gridwidth = 1;
+    con.fill = GridBagConstraints.HORIZONTAL;
+    jpanel_CRBackups.add(txtDescription2, con);
 
     JPanel fileNameGeneratorPanel =
         addPanel(Resources.get("util.filenamegenerator.prefs.title"), new GridBagLayout());
 
     con =
-        new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST,
-            GridBagConstraints.HORIZONTAL, new Insets(2, 10, 1, 10), 0, 0);
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
+            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 1);
 
     JLabel ordersSaveFileNamePatternLabel =
         new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNamePattern.label"));

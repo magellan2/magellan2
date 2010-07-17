@@ -75,6 +75,7 @@ import magellan.client.actions.extras.FactionStatsAction;
 import magellan.client.actions.extras.HelpAction;
 import magellan.client.actions.extras.InfoAction;
 import magellan.client.actions.extras.OptionAction;
+import magellan.client.actions.extras.ProfileAction;
 import magellan.client.actions.extras.RepaintAction;
 import magellan.client.actions.extras.TileSetAction;
 import magellan.client.actions.extras.TipOfTheDayAction;
@@ -147,6 +148,7 @@ import magellan.client.utils.IconAdapterFactory;
 import magellan.client.utils.LanguageDialog;
 import magellan.client.utils.NameGenerator;
 import magellan.client.utils.PluginSettingsFactory;
+import magellan.client.utils.ProfileManager;
 import magellan.client.utils.RendererLoader;
 import magellan.client.utils.ResourceSettingsFactory;
 import magellan.client.utils.SelectionHistory;
@@ -198,6 +200,8 @@ import magellan.library.utils.transformation.MapTransformer.BBoxes;
  */
 public class Client extends JFrame implements ShortcutListener, PreferencesFactory {
   private static final Logger log = Logger.getInstance(Client.class);
+
+  public static final String SETTINGS_FILENAME = "magellan.ini";
 
   /** This is the instance of this class */
   public static Client INSTANCE = null;
@@ -289,7 +293,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     EventDispatcher dispatcher = new EventDispatcher();
 
     Client.startWindow.progress(1, Resources.get("clientstart.1"));
-    Properties settings = Client.loadSettings(Client.settingsDirectory, "magellan.ini");
+    Properties settings = Client.loadSettings(Client.settingsDirectory, Client.SETTINGS_FILENAME);
     String lastSavedVersion = null;
     if (settings == null) {
       Client.log.info("Client.loadSettings: settings file " + "magellan.ini"
@@ -976,6 +980,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     optionAction = new OptionAction(this, preferencesAdapterList);
     addMenuItem(extras, optionAction);
+    addMenuItem(extras, new ProfileAction(this));
 
     // TODO(pavkovic): currently EresseaOptionPanel is broken, I deactivated
     // it.
@@ -1056,20 +1061,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     return item;
   }
 
-  // ////////////////////
-  // START & END Code //
-  // ////////////////////
   /**
    * START & END Code
    */
   public static void main(String args[]) {
     try {
-      String report = null; // the report to be loaded on startup
-      File binDir = null; // the program directory
-      File fileDir = null; // the directory to store ini files and
-      File settFileDir = null;
-      // stuff in
-
       /* set the stderr to stdout while there is no log attached */
       System.setErr(System.out);
 
@@ -1077,118 +1073,49 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // set finalizer prio to max
       magellan.library.utils.MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
 
+      Parameters parameters = parseCommandLine(args);
+      if (parameters == null)
+        return;
+
       /* determine default value for files directory */
-      binDir = MagellanFinder.findMagellanDirectory();
+      parameters.binDir = MagellanFinder.findMagellanDirectory();
 
-      /* process command line parameters */
-      int i = 0;
-
-      while (i < args.length) {
-        if (args[i].toLowerCase().startsWith("-log")) {
-          String level = null;
-
-          if (args[i].toLowerCase().startsWith("-log=") && (args[i].length() > 5)) {
-            level = args[i].charAt(5) + "";
-          } else if (args[i].equals("-log") && (args.length > (i + 1))) {
-            i++;
-            level = args[i];
-          }
-
-          if (level != null) {
-            level = level.toUpperCase();
-            Logger.setLevel(level);
-            Client.log.info("Client.main: Set logging to " + level);
-
-            if ("A".equals(level)) {
-              Client.log.awt("Start logging of awt events to awtdebug.txt.");
-            }
-          }
-        } else if (args[i].equals("--help")) {
-          Help.open(args);
-          return;
-        } else if (args[i].equals("-d") && (args.length > (i + 1))) {
-          i++;
-
-          try {
-            File tmpFile = new File(args[i]).getCanonicalFile();
-
-            if (tmpFile.exists() && tmpFile.isDirectory() && tmpFile.canWrite()) {
-              fileDir = tmpFile;
-            } else {
-              Client.log.info("Client.main(): the specified files directory does not "
-                  + "exist, is not a directory or is not writeable.");
-            }
-          } catch (Exception e) {
-            Client.log.error("Client.main(): the specified files directory is invalid.", e);
-          }
-        } else {
-          if (args[i].toLowerCase().endsWith(".cr") || args[i].toLowerCase().endsWith(".bz2")
-              || args[i].toLowerCase().endsWith(".zip")) {
-            report = args[i];
-          }
-        }
-
-        i++;
+      if (parameters.resourceDir == null) {
+        parameters.resourceDir = parameters.binDir;
       }
-
-      if (fileDir == null) {
-        fileDir = binDir;
-      }
-      settFileDir = MagellanFinder.findSettingsDirectory(fileDir, settFileDir);
-      Resources.getInstance().initialize(fileDir, "");
-      MagellanLookAndFeel.setMagellanDirectory(fileDir);
-      MagellanImages.setMagellanDirectory(fileDir);
+      parameters.settingsDir =
+          MagellanFinder.findSettingsDirectory(parameters.resourceDir, parameters.settingsDir);
+      Resources.getInstance().initialize(parameters.resourceDir, "");
+      MagellanLookAndFeel.setMagellanDirectory(parameters.resourceDir);
+      MagellanImages.setMagellanDirectory(parameters.resourceDir);
 
       // initialize start window
       Icon startIcon = MagellanImages.ABOUT_MAGELLAN;
 
-      Client.startWindow = new StartWindow(startIcon, 5, fileDir);
-
+      Client.startWindow = new StartWindow(startIcon, 5, parameters.resourceDir);
       Client.startWindow.setVisible(true);
-
       Client.startWindow.progress(0, Resources.get("clientstart.0"));
 
+      ProfileManager.init(parameters);
+      if (ProfileManager.getProfileDirectory() == null || ProfileManager.isAlwaysAsk()) {
+        if (!ProfileManager.showProfileChooser(Client.startWindow)) {
+          log.info("Abort requested by ProfileChooser");
+          System.exit(0);
+        } else {
+          ProfileManager.saveSettings();
+        }
+      }
+      parameters.settingsDir = ProfileManager.getProfileDirectory();
+
       // tell the user where we expect ini files and errors.txt
-      PropertiesHelper.setSettingsDirectory(settFileDir);
+      PropertiesHelper.setSettingsDirectory(parameters.settingsDir);
 
-      // now redirect stderr through our log
-      Log LOG = new Log(fileDir);
-      System.setErr(LOG.getPrintStream());
+      startLog(parameters);
 
-      // logging with level warning to get this information even if user selected low debug level...
-      Logger.activateDefaultLogListener(true);
-      Client.log.warn("Start writing error file with encoding " + LOG.encoding + ", log level "
-          + Logger.getLevel(Logger.getLevel()));
-
-      String version = VersionInfo.getVersion(fileDir);
-      if (version == null) {
-        Client.log.warn("no magellan version available");
-      } else {
-        Client.log.warn("This is Magellan Version " + version);
-      }
-
-      try {
-        Client.log.warn("OS: " + System.getProperty("os.name") + " "
-            + System.getProperty("os.arch") + " " + System.getProperty("os.version"));
-        Client.log.warn("Java Version: " + System.getProperty("java.version") + " "
-            + System.getProperty("java.vendor"));
-        Client.log.warn("Java Spec: " + System.getProperty("java.specification.version") + " "
-            + System.getProperty("java.specification.vendor") + " "
-            + System.getProperty("java.specification.name"));
-        Client.log.warn("VM Version: " + System.getProperty("java.vm.version") + " "
-            + System.getProperty("java.vm.vendor") + " " + System.getProperty("java.vm.name"));
-        Client.log.warn("VM Specification: " + System.getProperty("java.vm.specification.version")
-            + " " + System.getProperty("java.vm.specification.vendor") + " "
-            + System.getProperty("java.vm.specification.name"));
-        Client.log.warn("Java Class Version: " + System.getProperty("java.class.version"));
-      } catch (SecurityException e) {
-        Client.log.warn("Unable to retrieve system properties: " + e);
-      }
-
-      final File tBinDir = binDir;
-      final File tFileDir = fileDir;
-      final File tsettFileDir = settFileDir;
-      final String tReport = report;
+      final File tBinDir = parameters.binDir;
+      final File tFileDir = parameters.resourceDir;
+      final File tsettFileDir = ProfileManager.getProfileDirectory();
+      final String tReport = parameters.report;
 
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
@@ -1279,6 +1206,142 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       JOptionPane.showMessageDialog(new JFrame(), out);
       System.exit(1);
     }
+  }
+
+  /**
+   * Open the log file and log basic information to it.
+   * 
+   * @param parameters
+   * @throws IOException if an I/O error occurs
+   */
+  protected static void startLog(Parameters parameters) throws IOException {
+    // now redirect stderr through our log
+    Log LOG = new Log(parameters.settingsDir);
+    System.setErr(LOG.getPrintStream());
+
+    // logging with level warning to get this information even if user selected low debug level...
+    Logger.activateDefaultLogListener(true);
+    Client.log.warn("Start writing error file with encoding " + LOG.encoding + ", log level "
+        + Logger.getLevel(Logger.getLevel()));
+
+    Client.log.info("resource directory: " + parameters.resourceDir);
+    Client.log.info("settings directory: " + parameters.settingsDir);
+
+    String version = VersionInfo.getVersion(parameters.binDir);
+    if (version == null) {
+      version = VersionInfo.getVersion(parameters.resourceDir);
+    }
+    if (version == null) {
+      Client.log.warn("no magellan version available");
+    } else {
+      Client.log.warn("This is Magellan Version " + version);
+    }
+
+    try {
+      Client.log.warn("OS: " + System.getProperty("os.name") + " " + System.getProperty("os.arch")
+          + " " + System.getProperty("os.version"));
+      Client.log.warn("Java Version: " + System.getProperty("java.version") + " "
+          + System.getProperty("java.vendor"));
+      Client.log.warn("Java Spec: " + System.getProperty("java.specification.version") + " "
+          + System.getProperty("java.specification.vendor") + " "
+          + System.getProperty("java.specification.name"));
+      Client.log.warn("VM Version: " + System.getProperty("java.vm.version") + " "
+          + System.getProperty("java.vm.vendor") + " " + System.getProperty("java.vm.name"));
+      Client.log.warn("VM Specification: " + System.getProperty("java.vm.specification.version")
+          + " " + System.getProperty("java.vm.specification.vendor") + " "
+          + System.getProperty("java.vm.specification.name"));
+      Client.log.warn("Java Class Version: " + System.getProperty("java.class.version"));
+    } catch (SecurityException e) {
+      Client.log.warn("Unable to retrieve system properties: " + e);
+    }
+  }
+
+  /**
+   * Stores command line parameters
+   */
+  public static class Parameters {
+    /** the program directory */
+    public File binDir;
+    /** the directory for resources (images, languages etc.) */
+    public File resourceDir;
+    /** the directory to store ini files and stuff in */
+    public File settingsDir;
+    /** the name of the profile */
+    public String profile;
+    /** the report to be loaded on startup */
+    public String report;
+  }
+
+  protected static Parameters parseCommandLine(String[] args) {
+    Parameters result = new Parameters();
+
+    /* process command line parameters */
+    for (int i = 0; i < args.length; ++i) {
+      if (args[i].toLowerCase().startsWith("-log")) {
+        String level = null;
+
+        if (args[i].toLowerCase().startsWith("-log=") && (args[i].length() > 5)) {
+          level = args[i].charAt(5) + "";
+        } else if (args[i].equals("-log") && (args.length > (i + 1))) {
+          i++;
+          level = args[i];
+        }
+
+        if (level != null) {
+          level = level.toUpperCase();
+          Logger.setLevel(level);
+          Client.log.info("Client.main: Set logging to " + level);
+
+          if ("A".equals(level)) {
+            Client.log.awt("Start logging of awt events to awtdebug.txt.");
+          }
+        }
+      } else if (args[i].equals("--help")) {
+        Help.open(args);
+        return null;
+      } else if (args[i].equals("-d") && (args.length > (i + 1))) {
+        i++;
+
+        try {
+          File tmpFile = new File(args[i]).getCanonicalFile();
+
+          if (tmpFile.exists() && tmpFile.isDirectory() && tmpFile.canWrite()) {
+            result.resourceDir = tmpFile;
+          } else {
+            Client.log.info("Client.main(): the specified files directory does not "
+                + "exist, is not a directory or is not writeable.");
+          }
+        } catch (Exception e) {
+          Client.log.error("Client.main(): the specified files directory is invalid.", e);
+        }
+      } else if (args[i].equals("-s") && (args.length > (i + 1))) {
+        i++;
+
+        try {
+          File tmpFile = new File(args[i]).getCanonicalFile();
+
+          if (tmpFile.exists() && tmpFile.isDirectory() && tmpFile.canWrite()) {
+            result.settingsDir = tmpFile;
+          } else {
+            Client.log.info("Client.main(): the specified files directory does not "
+                + "exist, is not a directory or is not writeable.");
+          }
+        } catch (Exception e) {
+          Client.log.error("Client.main(): the specified files directory is invalid.", e);
+        }
+      } else if (args[i].equals("-p") && (args.length > (i + 1))) {
+        i++;
+
+        result.profile = args[i];
+      } else {
+        if (args[i].toLowerCase().endsWith(".cr") || args[i].toLowerCase().endsWith(".bz2")
+            || args[i].toLowerCase().endsWith(".zip")) {
+          result.report = args[i];
+        }
+      }
+
+    }
+    return result;
   }
 
   /**

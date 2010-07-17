@@ -278,6 +278,15 @@ public class Logger {
   }
 
   /**
+   * Stops remembering an object for {@link #errorOnce(Object)}.
+   */
+  public void clearError(Object aObj) {
+    if (Logger.onceErrors != null) {
+      Logger.onceErrors.remove(aObj);
+    }
+  }
+
+  /**
    * Logs a message at the {@link #ERROR} level.
    */
   public void error(Object aObj, Throwable aThrowable) {

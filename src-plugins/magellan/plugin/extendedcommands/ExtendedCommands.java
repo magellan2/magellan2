@@ -66,6 +66,7 @@ import bsh.Interpreter;
 public class ExtendedCommands {
 
   private static final Logger log = Logger.getInstance(ExtendedCommands.class);
+  public static final String COMANDFILENAME = "extendedcommands.xml";
   private File unitCommandsFile;
   private Client client;
   private Hashtable<String, Script> unitCommands = new Hashtable<String, Script>();
@@ -82,10 +83,10 @@ public class ExtendedCommands {
     Properties properties = client.getProperties();
     String commandsFilename = properties.getProperty("extendedcommands.unitCommands");
     if (Utils.isEmpty(commandsFilename)) {
-      commandsFilename = Client.getSettingsDirectory() + "/extendedcommands.xml";
+      unitCommandsFile = new File(Client.getSettingsDirectory(), COMANDFILENAME);
+    } else {
+      unitCommandsFile = new File(commandsFilename);
     }
-
-    unitCommandsFile = new File(commandsFilename);
     if (!unitCommandsFile.exists()) {
       // file doesn't exist. create it with an empty set.
       write(unitCommandsFile);

@@ -317,6 +317,7 @@ public class PropertiesHelper {
       try {
         return Float.valueOf(val).floatValue();
       } catch (NumberFormatException nfe) {
+        return def;
       }
     }
 
@@ -335,6 +336,7 @@ public class PropertiesHelper {
       try {
         return Integer.valueOf(val).intValue();
       } catch (NumberFormatException nfe) {
+        return def;
       }
     }
 
@@ -481,12 +483,22 @@ public class PropertiesHelper {
 
   private static File settingsDir = null;
 
+  /**
+   * Sets the directory for configuration configuration is stored.
+   * 
+   * @param newSettingsDir
+   */
   public static void setSettingsDirectory(File newSettingsDir) {
-    PropertiesHelper.log.info("PropertiesHelper: directory used for ini files: "
+    PropertiesHelper.log.info("PropertiesHelper: directory used for rule files: "
         + newSettingsDir.toString());
     PropertiesHelper.settingsDir = newSettingsDir;
   }
 
+  /**
+   * Returns the directory where configuration is stored.
+   * 
+   * @return The directory where configuration is stored
+   */
   public static File getSettingsDirectory() {
     return PropertiesHelper.settingsDir;
   }

@@ -21,7 +21,7 @@ import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.rules.GenericRules;
-import magellan.library.utils.PropertiesHelper;
+import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -37,7 +37,7 @@ public class RulesReader {
    * Creates a new RulesReader object.
    */
   public RulesReader() {
-    //
+    // TODO if this class has no state, why isn't it static or singleton?
   }
 
   /**
@@ -77,7 +77,7 @@ public class RulesReader {
 
     RulesReader.log.fine("loading rules for \"" + name + "\" (ending: " + ending + ")");
 
-    File rules = new File(PropertiesHelper.getSettingsDirectory(), "etc/rules/" + name + ending);
+    File rules = new File(Resources.getResourceDirectory(), "etc/rules/" + name + ending);
     // workaround for working with eclipse...
     if (!rules.exists()) {
       RulesReader.log.error("Rule file '" + rules.getAbsolutePath()

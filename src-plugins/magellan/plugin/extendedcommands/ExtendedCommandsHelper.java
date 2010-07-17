@@ -31,6 +31,7 @@ import java.util.Map;
 
 import magellan.client.Client;
 import magellan.client.event.UnitOrdersEvent;
+import magellan.client.extern.MagellanPlugIn;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
@@ -39,6 +40,7 @@ import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.rules.ItemCategory;
@@ -122,6 +124,22 @@ public class ExtendedCommandsHelper {
    */
   public int getItemCount(Unit unit, String itemTypeName) {
     Collection<Item> items = unit.getItems();
+    if (items != null) {
+      for (Item item : items) {
+        if (item.getItemType().getName().equalsIgnoreCase(itemTypeName))
+          return item.getAmount();
+      }
+    }
+    return 0;
+  }
+
+  /**
+   * Returns the number of items of a unit with the given item name after execution of orders. For
+   * example: int horses = getModifiedItemCount(unit,"Pferd") returns the number of horses of the
+   * given unit.
+   */
+  public int getModifiedItemCount(Unit unit, String itemTypeName) {
+    Collection<Item> items = unit.getModifiedItems();
     if (items != null) {
       for (Item item : items) {
         if (item.getItemType().getName().equalsIgnoreCase(itemTypeName))
@@ -403,5 +421,31 @@ public class ExtendedCommandsHelper {
   public void updateUnit(Unit u) {
     u.setOrdersChanged(true);
     client.getDispatcher().fire(new UnitOrdersEvent(this, u));
+  }
+
+  /**
+   * Returns <code>true</code> if the container c has an ExtendedCommands script.
+   */
+  public boolean hasScript(UnitContainer c) {
+    for (MagellanPlugIn plugin : client.getPlugIns()) {
+      if (plugin instanceof ExtendedCommands) {
+        ExtendedCommandsPlugIn exPlugin = (ExtendedCommandsPlugIn) plugin;
+        return exPlugin.getExtendedCommands().getCommands(c) != null;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Returns <code>true</code> if the unit u has an ExtendedCommands script.
+   */
+  public boolean hasScript(Unit u) {
+    for (MagellanPlugIn plugin : client.getPlugIns()) {
+      if (plugin instanceof ExtendedCommands) {
+        ExtendedCommandsPlugIn exPlugin = (ExtendedCommandsPlugIn) plugin;
+        return exPlugin.getExtendedCommands().getCommands(u) != null;
+      }
+    }
+    return false;
   }
 }

@@ -516,4 +516,11 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     return Resources.get("extended_commands.shortcut.description." + String.valueOf(index));
   }
 
+  /**
+   * Returns the current ExtendedCommands instance.
+   */
+  public ExtendedCommands getExtendedCommands() {
+    return commands;
+  }
+
 }

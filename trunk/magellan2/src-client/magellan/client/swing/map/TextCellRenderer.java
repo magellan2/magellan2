@@ -254,7 +254,8 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
       c.gridwidth = 2;
       c.fill = GridBagConstraints.BOTH;
       this.add(new JScrollPane(HexCellRenderer.createDescriptionPanel(Resources
-          .get("map.textcellrenderer.description." + source.getName()), this)), c);
+          .get("map.textcellrenderer.description." + source.getName().trim().replace(" ", "")),
+          this)), c);
 
       c.gridwidth = 1;
       c.gridy++;

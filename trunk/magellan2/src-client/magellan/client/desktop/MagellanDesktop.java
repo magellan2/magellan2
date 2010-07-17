@@ -124,7 +124,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   // Desktop menu
   private JMenu desktopMenu;
 
-  private File magellanDir = null;
+  private File settingsDir = null;
   private int bgMode = -1;
   private Image bgImage = null;
   private Color bgColor = Color.red;
@@ -150,14 +150,14 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * Creates new MagellanDesktop
    */
   public void init(Client client, MagellanContext context, Properties settings,
-      Map<String, Component> components, File dir) {
+      Map<String, Component> components, File settingsDir) {
     this.client = client;
     this.context = context;
     this.settings = settings;
 
     DockingFrameworkBuilder.getInstance().setProperties(settings);
 
-    magellanDir = dir;
+    this.settingsDir = settingsDir;
     timer = new Timer(1000, this);
     timer.start();
     timer.stop();
@@ -227,7 +227,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * Returns the home directory of Magellan.
    */
   public File getMagellanSettingsDir() {
-    return magellanDir;
+    return settingsDir;
   }
 
   /*
@@ -343,7 +343,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
     try {
       splitRoot =
-          dockingFrameworkBuilder.buildDesktop(components, new File(magellanDir,
+          dockingFrameworkBuilder.buildDesktop(components, new File(settingsDir,
               MagellanDesktop.DOCKING_LAYOUT_FILE));
       if (splitRoot != null) {
         splitRoot.addListener(this);
@@ -1130,7 +1130,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     saveTranslations();
 
     try {
-      dockingFrameworkBuilder.write(new File(magellanDir, MagellanDesktop.DOCKING_LAYOUT_FILE));
+      dockingFrameworkBuilder.write(new File(settingsDir, MagellanDesktop.DOCKING_LAYOUT_FILE));
     } catch (Throwable t) {
       MagellanDesktop.log.fatal(t.getMessage(), t);
       ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t.getMessage(), "", t);

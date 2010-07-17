@@ -34,6 +34,10 @@ public class MagellanFinder {
    * Tries to create/read the settings file in <code>settDir</code> (first), the user's home
    * directory (second), <code>magDirectory</code> (third) or the current directory (last). The
    * first valid location is returned.
+   * 
+   * @param magDirectory The magellan resource directory
+   * @param settDir <code>null</code> or the magellan settings directory
+   * @return The directory where the configuration files reside.
    */
   public static File findSettingsDirectory(File magDirectory, File settDir) {
     MagellanFinder.log.info("Searching for Magellan configuration:");

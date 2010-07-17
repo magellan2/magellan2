@@ -63,6 +63,8 @@ public class Resources {
   private static Resources _instance = null;
 
   private Hashtable<String, MyResourceBundle> bundles = new Hashtable<String, MyResourceBundle>();
+  private File resourceDirectory;
+  // private static int callCount = 0;
 
   /**
    * Returns the translated string for the specified class and string using the order locale. The
@@ -90,32 +92,54 @@ public class Resources {
   }
 
   /**
+   * Changes the resource directory.
+   * 
+   * @param resourceDirectory
+   */
+  public void setResourceDirectory(File resourceDirectory) {
+    resourceDirectory = resourceDirectory;
+  }
+
+  /**
+   * Returns the current resource directory.
+   * 
+   * @return the current resource directory
+   */
+  public static File getResourceDirectory() {
+    return getInstance().resourceDirectory;
+  }
+
+  /**
    * This method makes it possible to add specific resource files to this Resources map. F.e. call
    * initialize("mapedit_") to search and load resource files from files called
    * "mapedit_resources.properties".
    */
-  public void initialize(File magellanDirectory, String prefix) {
+  public void initialize(File resourceDirectory, String prefix) {
     if (prefix == null) {
       prefix = "";
     }
+    if (resourceDirectory == null) {
+      this.resourceDirectory = resourceDirectory;
+    }
+
     Resources.log
-        .info("Initializing resources for prefix '" + prefix + "' in " + magellanDirectory);
+        .info("Initializing resources for prefix '" + prefix + "' in " + resourceDirectory);
 
-    File resourceDirectory = new File(magellanDirectory, "etc");
+    File etcDirectory = new File(resourceDirectory, "etc");
 
-    if (!resourceDirectory.exists()) {
-      Resources.log.info("Could not find resources in directory " + resourceDirectory);
+    if (!etcDirectory.exists()) {
+      Resources.log.info("Could not find resources in directory " + etcDirectory);
       // hmmm, maybe one directory level up (special Eclipse problem with bin directory)
-      resourceDirectory = new File(magellanDirectory.getParentFile(), "etc");
-      if (!resourceDirectory.exists()) {
-        Resources.log.info("Could not find resources in directory " + resourceDirectory);
+      etcDirectory = new File(resourceDirectory.getParentFile(), "etc");
+      if (!etcDirectory.exists()) {
+        Resources.log.info("Could not find resources in directory " + etcDirectory);
         // okay, I'll give up...
         throw new RuntimeException("Could NOT find location Magellan");
       }
     }
 
-    Resources.log.info("Searching resources in " + resourceDirectory);
-    File[] files = resourceDirectory.listFiles(new ResourceFilenameFilter(prefix));
+    Resources.log.info("Searching resources in " + etcDirectory);
+    File[] files = etcDirectory.listFiles(new ResourceFilenameFilter(prefix));
 
     for (File file : files) {
       String resourceName = file.getName();
@@ -243,6 +267,10 @@ public class Resources {
    * Returns the resource for the resource key in the default locale of the running machine. If the
    * resource is not available in this locale, this method tries to find the resource in the default
    * resources.
+   * 
+   * @param key should not contain spaces
+   * @return the value for the key. If the key could not be found in any resource, the key is
+   *         returned.
    */
   public static String get(String key) {
     return Resources.get(key, true);
@@ -252,6 +280,12 @@ public class Resources {
    * Returns the resource for the resource key in the default locale of the running machine. If the
    * resource is not available in this locale, this method tries to find the resource in the default
    * resources.
+   * 
+   * @param key should not contain spaces
+   * @param args These arguments are applied to the resource. See
+   *          {@link MessageFormat#format(Object)}.
+   * @return the value for the key. If the key could not be found in any resource, the key is
+   *         returned.
    */
   public static String get(String key, Object... args) {
     String value = Resources.get(key);
@@ -264,8 +298,12 @@ public class Resources {
   /**
    * Returns the resource for the resource key in the default locale of the running machine. If the
    * resource is not available in this locale, this method tries to find the resource in the default
-   * resources. If returnKey is false and the resourceKey could not be found the method returns null
-   * otherwise it returns a String
+   * resources.
+   * 
+   * @param key should not contain spaces
+   * @param returnKey
+   * @return the value for the key. If the key could not be found in any resource, the key is
+   *         returned if <code>returnKey==true</code>, otherwise <code>null</code> is returned.
    */
   public static String get(String key, boolean returnKey) {
     return Resources.get(key, Locale.getDefault(), returnKey);
@@ -295,14 +333,18 @@ public class Resources {
   /**
    * Returns the resource for the resource key in the given locale. If the resource is not available
    * in this locale the method tries to find the resource in the default locale of this machine and
-   * if it is not available in this locale too then it tries the default resource. If the key could
-   * not be found in any resource, the key is returned.
+   * if it is not available in this locale too then it tries the default resource.
+   * 
+   * @param key should not contain spaces
+   * @param locale This locale is used before default locales
+   * @param returnKey
+   * @return the value for the key. If the key could not be found in any resource, the key is
+   *         returned if <code>returnKey==true</code>, otherwise <code>null</code> is returned.
    */
   public static String get(String key, Locale locale, boolean returnKey) {
     if (locale == null) {
       locale = Locale.getDefault();
     }
-    key = key.trim().replaceAll(" ", "");
     if (key.startsWith("magellan.")) {
       Resources.log.warn("Using deprecated resource key with prefix 'magellan.'. The key '" + key
           + "' will be truncated.");
@@ -312,7 +354,9 @@ public class Resources {
     String result = resources.getResource(key, locale);
 
     if (result == null) {
-      result = resources.getResource(key, Locale.getDefault());
+      if (locale != Locale.getDefault()) {
+        result = resources.getResource(key, Locale.getDefault());
+      }
       if (result == null) {
         result = resources.getResource(key, null);
       }
@@ -415,39 +459,41 @@ public class Resources {
    * Attempts to get the translation of the given order key in the given locale. If no translation
    * is found, the key is returned.
    * 
-   * @param key An order key
+   * @param key An rule item key. May contain spaces, but they will be removed before lookup.
    * @param locale
    * @return The translation as found in the Resources or the key if no translation is found
    */
   public static String getRuleItemTranslation(String key, Locale locale) {
     Resources resources = Resources.getInstance();
-    key = "rules." + key.trim().replaceAll(" ", "");
-    String translation = resources.getResource(key, locale);
+    String trimKey = key.trim().replaceAll(" ", "");
+
+    trimKey = "rules." + trimKey;
+    String translation = resources.getResource(trimKey, locale);
 
     if (translation != null) {
-      if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(key)) {
-        Resources.log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \""
+      if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(trimKey)) {
+        Resources.log.debug("Resources.getOrderTranslation(" + trimKey + "," + locale + "): \""
             + translation + "\"");
-        Resources.loggedOrderTranslations.add(key);
+        Resources.loggedOrderTranslations.add(trimKey);
       }
 
       return translation;
     }
 
     // no translation found, give back key
-    if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(key)) {
-      Resources.log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + key
-          + "\"");
-      Resources.loggedOrderTranslations.add(key);
+    if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(trimKey)) {
+      Resources.log.debug("Resources.getOrderTranslation(" + trimKey + "," + locale + "): \""
+          + trimKey + "\"");
+      Resources.loggedOrderTranslations.add(trimKey);
     }
 
     // no translation found, give back key
     if (!Locale.GERMAN.equals(locale)) {
-      Resources.log.warn("Resources.getOrderTranslation(" + key + "," + locale
+      Resources.log.warn("Resources.getOrderTranslation(" + trimKey + "," + locale
           + "): no valid translation found, returning key");
     }
 
-    return key;
+    return trimKey;
 
   }
 
@@ -455,40 +501,44 @@ public class Resources {
    * Attempts to get the translation of the given order key in the given locale. If no translation
    * is found, the key is returned.
    * 
-   * @param key An order key
+   * @param key An order key. May contain spaces, but they will be removed before lookup.
    * @param locale If this is <code>null</code>, the {@link #DEFAULT} locale is used.
    * @return The translation as found in the Resources or the key if no translation is found
    */
   public static String getOrderTranslation(String key, Locale locale) {
     Resources resources = Resources.getInstance();
-    key = "orders." + key.trim().replaceAll(" ", "");
-    String translation = resources.getResource(key, locale);
+    String trimkey = key.trim().replaceAll(" ", "");
+    if (trimkey != key) {
+      log.warn("key was invalid: " + key);
+    }
+    trimkey = "orders." + trimkey;
+    String translation = resources.getResource(trimkey, locale);
 
     if (translation != null) {
-      if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(key)) {
-        Resources.log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \""
+      if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(trimkey)) {
+        Resources.log.debug("Resources.getOrderTranslation(" + trimkey + "," + locale + "): \""
             + translation + "\"");
-        Resources.loggedOrderTranslations.add(key);
+        Resources.loggedOrderTranslations.add(trimkey);
       }
 
       return translation;
     }
 
     // no translation found, give back key
-    if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(key)) {
-      Resources.log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + key
-          + "\"");
-      Resources.loggedOrderTranslations.add(key);
+    if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(trimkey)) {
+      Resources.log.debug("Resources.getOrderTranslation(" + trimkey + "," + locale + "): \""
+          + trimkey + "\"");
+      Resources.loggedOrderTranslations.add(trimkey);
     }
 
     // no translation found, give back key
     if (!Locale.ENGLISH.equals(locale)) {
-      Resources.log.warn("Resources.getOrderTranslation(" + key + "," + locale
+      Resources.log.warn("Resources.getOrderTranslation(" + trimkey + "," + locale
           + "): no valid translation found, returning key");
       // (new RuntimeException()).printStackTrace();
     }
 
-    return key;
+    return trimkey;
 
   }
 
@@ -545,26 +595,39 @@ public class Resources {
   /**
    * This method tries to find a resource in the set of bundles.
    * 
+   * @param key should not contain spaces
    * @param locale If this is <code>null</code>, the {@link #DEFAULT} locale is used.
+   * @return The value for this key in the resources or <code>null</code> if the key couldn't be
+   *         found in any of the registered bundles
    */
   private String getResource(String key, Locale locale) {
-    key = key.trim().replaceAll(" ", "");
+    // removed for performance reasons; callers must ensure proper keys
+    String trimKey = key;
+    if (key.contains(" ")) {
+      log.warn("invalid resource key " + key);
+      trimKey = key.trim().replace(" ", "");
+    }
+
+    // if (++callCount % 100000 == 1) {
+    // log.fine("getResource call #" + callCount);
+    // }
     if (locale == null) {
-      if (bundles.containsKey(Resources.DEFAULT) && bundles.get(Resources.DEFAULT).containsKey(key))
-        return bundles.get(Resources.DEFAULT).getResource(key);
+      if (bundles.containsKey(Resources.DEFAULT)
+          && bundles.get(Resources.DEFAULT).containsKey(trimKey))
+        return bundles.get(Resources.DEFAULT).getResource(trimKey);
     } else {
       String localeName = locale.toString();
       if (Locale.ENGLISH.equals(locale)) {
         localeName = Resources.DEFAULT;
       }
-      if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(key))
-        return bundles.get(localeName).getResource(key);
+      if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(trimKey))
+        return bundles.get(localeName).getResource(trimKey);
       localeName = locale.getCountry();
-      if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(key))
-        return bundles.get(localeName).getResource(key);
+      if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(trimKey))
+        return bundles.get(localeName).getResource(trimKey);
       localeName = locale.getLanguage();
-      if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(key))
-        return bundles.get(localeName).getResource(key);
+      if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(trimKey))
+        return bundles.get(localeName).getResource(trimKey);
     }
     return null;
   }

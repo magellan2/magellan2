@@ -64,13 +64,22 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   private Completer completer;
   private int lastCaretPosition = 0;
 
-  /**
-   * Keys for cycling, completing and breaking. completerKeys[] completerKeys[][0] completerKeys[1]
-   * cycle forward modifier key cycle backward modifier key complete modifier key break modifier key
-   */
-  public static final int numKeys = 5;
   private static final AttributeSet SIMPLEATTRIBUTESET = new SimpleAttributeSet();
+  /**
+   * Keys for cycling, completing and breaking.
+   * 
+   * <pre>
+   * completerKeys[]   completerKeys[][0]  completerKeys[1]
+   * cycle forward     modifier            key
+   * cycle backward    modifier            key
+   * complete          modifier            key
+   * break             modifier            key
+   * start             modifier            key
+   * </pre>
+   */
   private int completerKeys[][];
+  /** number of completer keys (cycle forward, cycle backward, complete, cancel, start */
+  public static final int numKeys = 5;
   private Timer timer;
   private List<Completion> completions = null;
   private int completionIndex = 0;
@@ -158,7 +167,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     completerKeys = new int[AutoCompletion.numKeys][2]; // cycle forward, cycle backward, complete,
-    // break
+    // break, start
 
     String cycleForward = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD);
 
@@ -680,6 +689,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
    */
   public void keyReleased(java.awt.event.KeyEvent p1) {
+    // dummy implementation
   }
 
   /**
@@ -750,6 +760,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
    */
   public void keyTyped(java.awt.event.KeyEvent p1) {
+    // dummy implementation
   }
 
   /**
@@ -878,7 +889,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Controls if completion should start on an empty word or requires at least one letter.
    */
   public void setEmptyStubMode(boolean b) {
     emptyStubMode = b;
@@ -887,7 +898,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns if completion should start on an empty word or requires at least one letter.
    */
   public boolean getEmptyStubMode() {
     return emptyStubMode;
@@ -912,7 +923,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the time (in ms) after a key stroke until activating the GUI.
    */
   public int getActivationTime() {
     return time;
@@ -934,16 +945,32 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns keys for cycling, completing and breaking.
+   * 
+   * <pre>
+   * completerKeys[]   completerKeys[][0]  completerKeys[1]
+   * cycle forward     modifier            key
+   * cycle backward    modifier            key
+   * complete          modifier            key
+   * break             modifier            key
+   * start             modifier            key
+   * </pre>
    */
   public int[][] getCompleterKeys() {
     return completerKeys;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets keys for cycling, completing and breaking.
    * 
-   * @param ck DOCUMENT-ME
+   * <pre>
+   * completerKeys[]   completerKeys[][0]  completerKeys[1]
+   * cycle forward     modifier            key
+   * cycle backward    modifier            key
+   * complete          modifier            key
+   * break             modifier            key
+   * start             modifier            key
+   * </pre>
    */
   public void setCompleterKeys(int ck[][]) {
     completerKeys = ck;

@@ -148,6 +148,7 @@ public class ProfileManager {
   private static void copyLegacy() {
     try {
       mvFile(Client.SETTINGS_FILENAME);
+      mvFile(Client.COMPLETIONSETTINGS_FILENAME);
       mvFile(MagellanDesktop.DOCKING_LAYOUT_FILE);
       mvFile(XCMD_FILENAME); // ExtendedCommands.COMANDFILENAME
     } catch (Exception e) {

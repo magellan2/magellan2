@@ -23,7 +23,6 @@
 // 
 package magellan.client;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -32,7 +31,6 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import magellan.library.utils.ResourcePathClassLoader;
-import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
@@ -46,13 +44,14 @@ import magellan.library.utils.logging.Logger;
 public class Help {
   private static final Logger log = Logger.getInstance(Help.class);
 
-  public static void open(String[] args) {
+  /**
+   * Opens the help dialog.
+   * 
+   * @param settings
+   */
+  public static void open(Properties settings) {
 
     try {
-      Properties settings = Client.loadSettings(new File("."), "magellan.ini");
-      if (settings == null) {
-        settings = new SelfCleaningProperties();
-      }
       ClassLoader loader = new ResourcePathClassLoader(settings);
       String language = settings.getProperty("locales.gui", "");
       if (!Utils.isEmpty(language)) {

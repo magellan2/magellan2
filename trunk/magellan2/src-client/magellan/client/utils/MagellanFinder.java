@@ -11,12 +11,13 @@
  *
  */
 
-package magellan.library.utils;
+package magellan.client.utils;
 
 import java.io.File;
 import java.util.StringTokenizer;
 import java.util.zip.ZipFile;
 
+import magellan.client.Client;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -25,9 +26,7 @@ import magellan.library.utils.logging.Logger;
  * 
  * @author Andreas
  * @version 1.0
- * @deprecated moved to package magellan.client.utils
  */
-@Deprecated
 public class MagellanFinder {
   private static final Logger log = Logger.getInstance(MagellanFinder.class);
 
@@ -54,8 +53,8 @@ public class MagellanFinder {
         }
       }
     }
-    File sFile = new File(settFileDir, "magellan.ini");
-    File oFile = new File(settFileDir, "profiles.init");
+    File sFile = new File(settFileDir, Client.SETTINGS_FILENAME);
+    File oFile = new File(settFileDir, ProfileManager.INIFILE);
 
     if (!sFile.exists() && !oFile.exists()) {
       StringBuilder msg =
@@ -76,12 +75,12 @@ public class MagellanFinder {
    * @return <code>true</code> if one of the ini files was found
    */
   private static boolean testFile(File settFileDir) {
-    File magFile = new File(settFileDir, "magellan.ini");
+    File magFile = new File(settFileDir, Client.SETTINGS_FILENAME);
 
     StringBuffer msg = new StringBuffer();
 
     if (!settFileDir.exists() || !settFileDir.canWrite() || !magFile.exists()) {
-      magFile = new File(settFileDir, "profiles.ini");
+      magFile = new File(settFileDir, ProfileManager.INIFILE);
       if (!settFileDir.exists() || !settFileDir.canWrite() || !magFile.exists()) {
         msg.append(magFile).append("... not found.");
         MagellanFinder.log.info(msg);

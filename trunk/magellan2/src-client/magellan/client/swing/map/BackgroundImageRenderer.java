@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
+import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
@@ -205,7 +206,7 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
         folder = (new File(filename)).getParentFile();
       }
       if (folder == null || !folder.exists()) {
-        folder = magellan.client.Client.getMagellanDirectory();
+        folder = Client.getResourceDirectory();
       }
       JFileChooser jfc = new JFileChooser(folder);
       int ret = jfc.showOpenDialog(null);

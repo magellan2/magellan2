@@ -437,7 +437,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     if (unit != null) {
       // show help for unit commands
       path =
-          new File(Client.getSettingsDirectory(), Resources
+          new File(Client.getResourceDirectory(), Resources
               .get("extended_commands.help.dialog.unit"));
       if (!path.exists()) {
         path = new File(Resources.get("extended_commands.help.dialog.unit"));
@@ -447,7 +447,9 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       }
     } else if (container != null) {
       // show help for container commands
-      path = new File(Resources.get("extended_commands.help.dialog.container"));
+      path =
+          new File(Client.getResourceDirectory(), Resources
+              .get("extended_commands.help.dialog.container"));
       if (!path.exists()) {
         path = new File(Resources.get("extended_commands.help.dialog.container"));
       }
@@ -456,7 +458,9 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       }
     } else {
       // show help for library
-      path = new File(Resources.get("extended_commands.help.dialog.library"));
+      path =
+          new File(Client.getResourceDirectory(), Resources
+              .get("extended_commands.help.dialog.library"));
       if (!path.exists()) {
         path = new File(Resources.get("extended_commands.help.dialog.library"));
       }

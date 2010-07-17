@@ -371,9 +371,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param cGUI DOCUMENT-ME
+   * Adds a GUI mode
    */
   public void addCompletionGUI(CompletionGUI cGUI) {
     cForGUIs.addItem(cGUI);
@@ -382,31 +380,29 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param cGUI DOCUMENT-ME
+   * Selects a GUI mode.
    */
   public void setCurrentGUI(CompletionGUI cGUI) {
     cForGUIs.setSelectedItem(cGUI);
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns this.
+   * 
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
   public Component getComponent() {
     return this;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
     return Resources.get("completion.autocompletion.prefs.title");
   }
 
   /**
-   * DOCUMENT-ME
-   * 
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
@@ -414,7 +410,9 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
   }
 
   /**
-   * DOCUMENT-ME
+   * Apply settings to AutoCompletion
+   * 
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
     source.setEnableAutoCompletion(cEnable.isSelected());
@@ -481,6 +479,9 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     source.getSelfDefinedCompletionsMap().putAll(selfDefinedCompletions);
   }
 
+  /**
+   * An input field that registers modifiers and keys.
+   */
   private class KeyTextField extends JTextField implements KeyListener {
     protected int modifiers = 0;
     protected int key = 0;
@@ -494,10 +495,10 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     }
 
     /**
-     * DOCUMENT-ME
+     * Changes the value of the field.
      * 
-     * @param modifiers DOCUMENT-ME
-     * @param key DOCUMENT-ME
+     * @param modifiers
+     * @param key
      */
     public void init(int modifiers, int key) {
       this.key = key;
@@ -515,9 +516,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @param p1 DOCUMENT-ME
+     * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
      */
     public void keyReleased(java.awt.event.KeyEvent p1) {
       // maybe should delete any input if there's no "stable"(non-modifying)
@@ -525,9 +524,9 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     }
 
     /**
-     * DOCUMENT-ME
+     * Changes the value.
      * 
-     * @param p1 DOCUMENT-ME
+     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
      */
     public void keyPressed(java.awt.event.KeyEvent p1) {
       modifiers = p1.getModifiers();
@@ -576,11 +575,10 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @param p1 DOCUMENT-ME
+     * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
      */
     public void keyTyped(java.awt.event.KeyEvent p1) {
+      // dummy implementation
     }
 
     /**
@@ -594,14 +592,18 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns the current key code.
+     * 
+     * @see KeyEvent#getKeyCode()
      */
     public int getKeyCode() {
       return key;
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns the current modifiers.
+     * 
+     * @see KeyEvent#getModifiers()
      */
     public int getModifiers() {
       return modifiers;

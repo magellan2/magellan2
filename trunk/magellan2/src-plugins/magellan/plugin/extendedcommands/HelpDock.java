@@ -45,8 +45,7 @@ import magellan.client.Client;
 import magellan.library.utils.Resources;
 
 /**
- * This is a dialog to edit the script/commands for a given unit. TODO Save dialog positions (size,
- * location, slider position)
+ * This is a dialog to display ExtendedCommands help
  * 
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007

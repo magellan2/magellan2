@@ -145,6 +145,7 @@ public class ProfileManager {
   /**
    * Moves settings files from {@link #settingsDir} to the profile dir.
    */
+  @SuppressWarnings("deprecation")
   private static void copyLegacy() {
     try {
       mvFile(Client.SETTINGS_FILENAME);

@@ -60,7 +60,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
   private final String lastVersion;
   private final String currentVersion;
-  private boolean abort = false;
+  private boolean abort = true;
   @SuppressWarnings("unused")
   private final Client client;
 
@@ -163,7 +163,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     final JButton btn_OK = new JButton(Resources.get("updatedialog.btn.ok.caption"));
     btn_OK.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-        abort = true;
+        abort = false;
         quit();
       }
     });
@@ -172,7 +172,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     final JButton btn_Quit = new JButton(Resources.get("updatedialog.btn.quit.caption"));
     btn_Quit.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-        abort = false;
+        abort = true;
         quit();
       }
     });
@@ -268,8 +268,13 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     }
   }
 
+  /**
+   * Return <code>true</code> if the OK button was pressed.
+   * 
+   * @return <code>true</code> if the OK button was pressed
+   */
   public boolean getResult() {
-    return abort;
+    return !abort;
   }
 
   public void hyperlinkUpdate(HyperlinkEvent e) {

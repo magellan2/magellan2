@@ -51,6 +51,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
+import magellan.client.Client;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -789,7 +790,7 @@ public class JVorlage extends InternationalizedDialog {
    */
   public static void main(String args[]) throws IOException {
     Properties settings = new Properties();
-    settings.load(new FileInputStream("magellan.ini"));
+    settings.load(new FileInputStream(Client.SETTINGS_FILENAME));
     Resources.getInstance();
 
     JVorlage v = new JVorlage();

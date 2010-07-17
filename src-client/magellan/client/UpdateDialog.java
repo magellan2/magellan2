@@ -245,9 +245,9 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     if (!file.exists()) {
       file = new File(Client.getBinaryDirectory().getParent(), name);
       if (!file.exists()) {
-        file = new File(Client.getMagellanDirectory(), name);
+        file = new File(Client.getResourceDirectory(), name);
         if (!file.exists()) {
-          file = new File(Client.getMagellanDirectory() + File.separator + "etc", name);
+          file = new File(new File(Client.getResourceDirectory(), "etc"), name);
         }
       }
     }

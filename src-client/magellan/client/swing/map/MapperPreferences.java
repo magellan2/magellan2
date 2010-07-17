@@ -63,6 +63,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
+import magellan.client.Client;
 import magellan.client.preferences.AbstractPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
@@ -339,7 +340,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
        */
       public void showDialog(boolean doImport) {
         File file = null;
-        JFileChooser jfc = new JFileChooser(magellan.client.Client.getMagellanDirectory());
+        JFileChooser jfc = new JFileChooser(Client.getResourceDirectory());
         int ret = 0;
 
         if (doImport) {

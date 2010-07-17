@@ -55,7 +55,7 @@ public class GroupEditorPlugIn implements MagellanPlugIn {
    */
   public void init(Client client, Properties properties) {
     GroupEditorPlugIn.log = Logger.getInstance(GroupEditorPlugIn.class);
-    Resources.getInstance().initialize(Client.getSettingsDirectory(), "groupeditor_");
+    Resources.getInstance().initialize(Client.getResourceDirectory(), "groupeditor_");
     dock = new GroupEditorDock(client);
     GroupEditorPlugIn.log.info(getName() + " initialized...(Client)");
   }

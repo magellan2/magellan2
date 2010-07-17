@@ -84,10 +84,17 @@ public class ResourcePathClassLoader extends ClassLoader {
 
   private static List<URL> getPathsFromPlugInDir(Properties settings) {
     List<URL> paths = new ArrayList<URL>();
-    String magellanDirString = settings.getProperty("plugin.helper.magellandir");
-    File magPluginDir = new File(magellanDirString + File.separator + "plugins");
+    String magellanDirString = settings.getProperty("plugin.helper.resourcedir");
+    File magPluginDir = new File(magellanDirString, "plugins");
     if (magPluginDir.exists() && magPluginDir.isDirectory()) {
       ResourcePathClassLoader.getPathsFromPlugInDir(paths, magPluginDir);
+    } else {
+      magellanDirString = settings.getProperty("plugin.helper.bindir");
+      magPluginDir = new File(magellanDirString, "plugins");
+      if (magPluginDir.exists() && magPluginDir.isDirectory()) {
+        ResourcePathClassLoader.getPathsFromPlugInDir(paths, magPluginDir);
+      }
+
     }
     return paths;
   }

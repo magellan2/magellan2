@@ -146,6 +146,7 @@ import magellan.client.utils.ErrorWindow;
 import magellan.client.utils.FileHistory;
 import magellan.client.utils.IconAdapterFactory;
 import magellan.client.utils.LanguageDialog;
+import magellan.client.utils.MagellanFinder;
 import magellan.client.utils.NameGenerator;
 import magellan.client.utils.PluginSettingsFactory;
 import magellan.client.utils.ProfileManager;
@@ -173,7 +174,6 @@ import magellan.library.rules.Date;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Locales;
 import magellan.library.utils.Log;
-import magellan.library.utils.MagellanFinder;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
@@ -201,7 +201,16 @@ import magellan.library.utils.transformation.MapTransformer.BBoxes;
 public class Client extends JFrame implements ShortcutListener, PreferencesFactory {
   private static final Logger log = Logger.getInstance(Client.class);
 
+  /** The name of the magellan settings file. */
   public static final String SETTINGS_FILENAME = "magellan.ini";
+
+  /**
+   * The name of the ini file for order completions.
+   * 
+   * @deprecated A seperate completion file is no longer actively supported
+   */
+  @Deprecated
+  public static final String COMPLETIONSETTINGS_FILENAME = "magellan_completions.ini";
 
   /** This is the instance of this class */
   public static Client INSTANCE = null;
@@ -254,8 +263,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /** Directory for binaries */
   private static File binDirectory;
 
-  /** Magellan Directories */
-  private static File filesDirectory = null;
+  /**
+   * Directory for resources. Usually identical to binDirectory, but can be used to load texts,
+   * images and the like from elsewhere
+   */
+  private static File resourceDirectory = null;
 
   /** Directory of "magellan.ini" etc. */
   private static File settingsDirectory = null;
@@ -280,13 +292,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * 
    * @param gd
    * @param binDir The directory where magellan files are situated
-   * @param fileDir The directory where magellan configuration files are situated
+   * @param resourceDir The directory where magellan configuration files are situated
    * @param settingsDir The directory where the settings are situated
    */
-  protected Client(GameData gd, File binDir, File fileDir, File settingsDir) {
+  protected Client(GameData gd, File binDir, File resourceDir, File settingsDir) {
     Client.INSTANCE = this;
     Client.binDirectory = binDir;
-    Client.filesDirectory = fileDir;
+    Client.resourceDirectory = resourceDir;
     Client.settingsDirectory = settingsDir;
 
     // get new dispatcher
@@ -296,7 +308,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     Properties settings = Client.loadSettings(Client.settingsDirectory, Client.SETTINGS_FILENAME);
     String lastSavedVersion = null;
     if (settings == null) {
-      Client.log.info("Client.loadSettings: settings file " + "magellan.ini"
+      Client.log.info("Client.loadSettings: settings file " + Client.SETTINGS_FILENAME
           + " does not exist, using default values.");
       settings = new SelfCleaningProperties();
       settings.setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, "Windows");
@@ -390,8 +402,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         lastSavedVersion = "null";
       }
     }
-    if (VersionInfo.getVersion(fileDir) != null) {
-      settings.setProperty("Client.Version", VersionInfo.getVersion(fileDir));
+    if (VersionInfo.getVersion(resourceDir) != null) {
+      settings.setProperty("Client.Version", VersionInfo.getVersion(resourceDir));
     }
     if (lastSavedVersion != null) {
       settings.setProperty("Client.LastVersion", lastSavedVersion);
@@ -400,7 +412,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     showStatus = PropertiesHelper.getBoolean(settings, "Client.ShowOrderStatus", false);
 
     Properties completionSettings =
-        Client.loadSettings(Client.settingsDirectory, "magellan_completions.ini");
+        Client.loadSettings(Client.settingsDirectory, COMPLETIONSETTINGS_FILENAME);
     if (completionSettings == null) {
       completionSettings = new SelfCleaningProperties();
     }
@@ -444,7 +456,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     desktop = MagellanDesktop.getInstance();
-    desktop.init(this, context, settings, components, Client.settingsDirectory);
+    desktop.init(this, context, settings, components, Client.getSettingsDirectory());
 
     setContentPane(desktop);
 
@@ -625,7 +637,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     // load custom renderers
     // ForcedFileClassLoader.directory = filesDirectory;
-    RendererLoader rl = new RendererLoader(Client.filesDirectory, ".", geo, getProperties());
+    RendererLoader rl =
+        new RendererLoader(Client.getResourceDirectory(), ".", geo, getProperties());
     Collection<MapCellRenderer> cR = rl.loadRenderers();
 
     // init mapper
@@ -1074,8 +1087,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       magellan.library.utils.MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
 
       Parameters parameters = parseCommandLine(args);
-      if (parameters == null)
-        return;
 
       /* determine default value for files directory */
       parameters.binDir = MagellanFinder.findMagellanDirectory();
@@ -1106,6 +1117,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         }
       }
       parameters.settingsDir = ProfileManager.getProfileDirectory();
+      if (parameters.help) {
+        Help.open(Client.loadSettings(parameters.settingsDir, SETTINGS_FILENAME));
+        System.exit(0);
+      }
 
       // tell the user where we expect ini files and errors.txt
       PropertiesHelper.setSettingsDirectory(parameters.settingsDir);
@@ -1113,7 +1128,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       startLog(parameters);
 
       final File tBinDir = parameters.binDir;
-      final File tFileDir = parameters.resourceDir;
+      final File tResourceDir = parameters.resourceDir;
       final File tsettFileDir = ProfileManager.getProfileDirectory();
       final String tReport = parameters.report;
 
@@ -1125,13 +1140,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           GameData data = new MissingData();
 
           // new CompleteData(new com.eressea.rules.Eressea(), "void");
-          Client c = new Client(data, tBinDir, tFileDir, tsettFileDir);
+          Client c = new Client(data, tBinDir, tResourceDir, tsettFileDir);
           // setup a singleton instance of this client
           Client.INSTANCE = c;
 
           String newestVersion =
               VersionInfo.getNewestVersion(c.getProperties(), Client.startWindow);
-          String currentVersion = VersionInfo.getVersion(tFileDir);
+          String currentVersion = VersionInfo.getVersion(tResourceDir);
           if (!Utils.isEmpty(newestVersion)) {
             Client.log.info("Newest Version on server: " + newestVersion);
             Client.log.info("Current Version: " + currentVersion);
@@ -1270,6 +1285,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     public String profile;
     /** the report to be loaded on startup */
     public String report;
+    /** Indicates that the help option was given */
+    public boolean help = false;
   }
 
   protected static Parameters parseCommandLine(String[] args) {
@@ -1297,8 +1314,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           }
         }
       } else if (args[i].equals("--help")) {
-        Help.open(args);
-        return null;
+        result.help = true;
       } else if (args[i].equals("-d") && (args.length > (i + 1))) {
         i++;
 
@@ -1530,7 +1546,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
           try {
             // if necessary, use settings file in local directory
-            File settingsFile = new File(Client.settingsDirectory, "magellan.ini");
+            File settingsFile = new File(Client.getSettingsDirectory(), Client.SETTINGS_FILENAME);
 
             if (settingsFile.exists() && settingsFile.canWrite()) {
               try {
@@ -1924,7 +1940,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // set frame title (date)
     StringBuilder title = new StringBuilder("Magellan");
 
-    String version = VersionInfo.getVersion(Client.filesDirectory);
+    String version = VersionInfo.getVersion(Client.getBinaryDirectory());
+    if (version == null) {
+      version = VersionInfo.getVersion(Client.getResourceDirectory());
+    }
 
     if (version != null) {
       title.append(" ").append(version);
@@ -2256,10 +2275,22 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Returns the directory the local copy of Magellan is inside.
+   * Returns the directory the local copy of Magellan is inside. Usually identical to binDirectory,
+   * but can be used to load texts, images and the like from elsewhere.
+   * 
+   * @deprecated Use {@link #getResourceDirectory()}
    */
+  @Deprecated
   public static File getMagellanDirectory() {
-    return Client.filesDirectory;
+    return Client.resourceDirectory;
+  }
+
+  /**
+   * Returns the directory for the Magellan resources. Usually identical to binDirectory, but can be
+   * used to load texts, images and the like from elsewhere.
+   */
+  public static File getResourceDirectory() {
+    return Client.resourceDirectory;
   }
 
   /**
@@ -2545,7 +2576,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     MagellanPlugInLoader loader = new MagellanPlugInLoader();
     Properties properties = getProperties();
     // helper: store Magellan-Dir in properties toBe changed
-    properties.setProperty("plugin.helper.magellandir", Client.filesDirectory.toString());
+    properties.setProperty("plugin.helper.bindir", Client.getBinaryDirectory().toString());
+    properties.setProperty("plugin.helper.resourcedir", Client.getResourceDirectory().toString());
     List<Class<MagellanPlugIn>> plugInClasses =
         new ArrayList<Class<MagellanPlugIn>>(loader.getExternalModuleClasses(properties));
     Collections.sort(plugInClasses, new Comparator<Class<MagellanPlugIn>>() {
@@ -2599,10 +2631,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Client.log.info("new ini. windows OS detected. (" + osName + ")");
       // we have a windows OS
       // lets assume the location
-      String actPath =
-          Client.settingsDirectory + File.separator + "echeck" + File.separator + "ECheck.exe";
-      Client.log.info("checking for ECheck: " + actPath);
-      File echeckFile = new File(actPath);
+      File echeckFile = new File(new File(Client.getResourceDirectory(), "echeck"), "ECheck.exe");
+      Client.log.info("checking for ECheck: " + echeckFile);
       if (echeckFile.exists()) {
         // yep, we have an ECheck.exe here
         // lets add to the properties

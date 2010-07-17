@@ -65,6 +65,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.ShortcutListener;
@@ -77,6 +78,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 import magellan.library.utils.replacers.ReplacerHelp;
 import magellan.library.utils.replacers.ReplacerSystem;
 
@@ -903,7 +905,9 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     }
 
     /**
-     * DOCUMENT-ME
+     * Changes the active set.
+     * 
+     * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
      */
     public void valueChanged(ListSelectionEvent e) {
       if (list.getSelectedValue() != null) {
@@ -923,12 +927,15 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       def.setText(set.getDef());
     }
 
+    /**
+     * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
+     */
     public void initPreferences() {
       // TODO: implement it
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
      */
     public void applyPreferences() {
       saveSettings();
@@ -944,21 +951,23 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns <code>this</code>.
+     * 
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
      */
     public Component getComponent() {
       return this;
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
      */
     public String getTitle() {
       return s.getName();
     }
 
     /**
-     * DOCUMENT-ME
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
       if (e.getSource() == add) {
@@ -1032,7 +1041,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     }
 
     protected void importSet() {
-      JFileChooser jfc = new JFileChooser(magellan.client.Client.getMagellanDirectory());
+      JFileChooser jfc = new JFileChooser(Client.getResourceDirectory());
       int ret = jfc.showOpenDialog(this);
 
       if (ret == JFileChooser.APPROVE_OPTION) {
@@ -1054,6 +1063,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
             }
           }
         } catch (Exception exc) {
+          Logger.getInstance(this.getClass()).warn(
+              "could not read file " + f + ", " + exc.getLocalizedMessage());
         }
 
         fillList(lastName);
@@ -1082,7 +1093,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     }
 
     protected void exportSet() {
-      JFileChooser jfc = new JFileChooser(magellan.client.Client.getMagellanDirectory());
+      JFileChooser jfc = new JFileChooser(Client.getResourceDirectory());
       int ret = jfc.showSaveDialog(this);
 
       if (ret == JFileChooser.APPROVE_OPTION) {
@@ -1094,6 +1105,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
           prop.store(out, "ATR exported settings");
           out.close();
         } catch (IOException exc) {
+          Logger.getInstance(this.getClass()).warn(
+              "could not write file " + jfc.getSelectedFile() + ", " + exc.getLocalizedMessage());
         }
       }
     }

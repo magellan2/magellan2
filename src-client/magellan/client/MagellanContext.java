@@ -114,10 +114,24 @@ public class MagellanContext implements MagellanEnvironment {
     replacerHelp = new ReplacerHelp(getEventDispatcher(), getGameData());
   }
 
+  /**
+   * Returns the completion settings (from magellan.ini)
+   * 
+   * @return the completion settings (from magellan.ini)
+   * @deprecated extra completion settings are no longer supported
+   */
+  @Deprecated
   public Properties getCompletionProperties() {
     return completionSettings;
   }
 
+  /**
+   * Sets additional completion settings (e.g. from magellan_completions.ini)
+   * 
+   * @param completionSettings2
+   * @deprecated extra completion settings are no longer supported
+   */
+  @Deprecated
   public void setCompletionProperties(Properties completionSettings2) {
     completionSettings = completionSettings2;
   }

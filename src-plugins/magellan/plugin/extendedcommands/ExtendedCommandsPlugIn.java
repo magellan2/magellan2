@@ -84,7 +84,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   public void init(Client client, Properties properties) {
     // init the plugin
     ExtendedCommandsPlugIn.log = Logger.getInstance(ExtendedCommandsPlugIn.class);
-    Resources.getInstance().initialize(Client.getSettingsDirectory(), "extendedcommands_");
+    Resources.getInstance().initialize(Client.getResourceDirectory(), "extendedcommands_");
     this.client = client;
     commands = new ExtendedCommands(client);
     initCommands();

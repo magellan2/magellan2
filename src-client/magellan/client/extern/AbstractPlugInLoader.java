@@ -234,7 +234,9 @@ public abstract class AbstractPlugInLoader<T> {
     }
 
     // search explicit the magellan dir for the magellan-plugins.jar
-    paths.add(settings.getProperty("plugin.helper.magellandir") + File.separator
+    paths.add(settings.getProperty("plugin.helper.resourcedir") + File.separator
+        + "magellan-plugins.jar");
+    paths.add(settings.getProperty("plugin.helper.bindir") + File.separator
         + "magellan-plugins.jar");
 
     for (String path : paths) {

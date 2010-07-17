@@ -207,7 +207,7 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
   protected void goHome() {
     File path = null;
     path =
-        new File(Client.getSettingsDirectory(), Resources
+        new File(Client.getResourceDirectory(), Resources
             .get("extended_commands.help.dialog.overview"));
     if (!path.exists()) {
       path = new File(Resources.get("extended_commands.help.dialog.overview"));

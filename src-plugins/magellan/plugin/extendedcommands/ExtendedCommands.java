@@ -431,7 +431,7 @@ public class ExtendedCommands {
       Interpreter interpreter = new Interpreter();
       interpreter.set("world", world);
       interpreter.set("container", container);
-      interpreter.set("helper", new ExtendedCommandsHelper(client, world));
+      interpreter.set("helper", new ExtendedCommandsHelper(client, world, container));
       interpreter.set("log", DebugDock.getInstance());
 
       String script = "";

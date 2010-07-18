@@ -139,7 +139,10 @@ public class ProfileManager {
       getProfileDirectory().mkdir();
       copyLegacy();
     }
-    return settings.getProperty(CURRENT_PROFILE);
+    if (parameters.profile != null) {
+      setProfile(parameters.profile);
+    }
+    return getCurrentProfile();
   }
 
   /**

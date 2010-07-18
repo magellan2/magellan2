@@ -3339,12 +3339,12 @@ public class CRParser implements RulesIO, GameDataIO {
   /**
    * This method reads all attributes from a CR "value":key
    */
-  private void parseAttributes(Addeable data) throws IOException {
+  private void parseAttributes(Addeable addeable) throws IOException {
     sc.getNextToken();
 
     while (!sc.eof) {
       if (sc.argc == 2) {
-        data.addAttribute(sc.argv[1], sc.argv[0]);
+        addeable.addAttribute(sc.argv[1], sc.argv[0]);
         sc.getNextToken();
       } else if (sc.isBlock) {
         break;

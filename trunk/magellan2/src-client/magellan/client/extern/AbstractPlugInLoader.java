@@ -200,11 +200,11 @@ public abstract class AbstractPlugInLoader<T> {
         AbstractPlugInLoader.log.info("File not found: " + file);
       }
     } catch (IOException ioe) {
-      AbstractPlugInLoader.log.error(ioe);
+      AbstractPlugInLoader.log.info(ioe);
     } catch (NoClassDefFoundError ncdfe) {
-      AbstractPlugInLoader.log.error(ncdfe);
+      AbstractPlugInLoader.log.info(ncdfe);
     } catch (ClassNotFoundException cnfe) {
-      AbstractPlugInLoader.log.error(cnfe);
+      AbstractPlugInLoader.log.info(cnfe);
     }
 
     return classes;

@@ -25,8 +25,8 @@ import magellan.library.utils.logging.Logger;
 public class Locales {
   private final static Logger log = Logger.getInstance(Locales.class);
 
-  private static Locale guiLocale = null;
-  private static Locale orderLocale = null;
+  private static Locale guiLocale;
+  private static Locale orderLocale;
 
   /**
    * Sets the locale for the user interface. If Locales was initialized with a Properties object

@@ -253,7 +253,9 @@ public interface Rules {
   public ItemType getItemType(String id);
 
   /**
-   * Shorthand for <code>getSkillType(id, false)</code>.
+   * Returns the skill type with the given id.
+   * 
+   * @return the skill type with the given id or <code>null</code> if there is no such skill type.
    */
   public SkillType getSkillType(StringID id);
 

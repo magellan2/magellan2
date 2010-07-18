@@ -263,27 +263,27 @@ public class CRWriter extends BufferedWriter {
    * a part of <tt>str</tt> is quoted, its quotes are escaped according to the current quote escape
    * setting. writeQuotedTag("a b", "tag") results in writing "\"a b\";tag\n" to the
    * 
-   * @param str the string that is to be put in quotes and written to the
-   * @param tag the tag to be written to the stream, separated from <tt>str</tt> by a semicolon.
+   * @param value the string that is to be put in quotes and written to the
+   * @param key the tag to be written to the stream, separated from <tt>str</tt> by a semicolon.
    * @throws IOException If an I/O error occurs.
    */
-  private void writeQuotedTag(String str, String tag) throws IOException {
-    if (str == null) {
+  private void writeQuotedTag(String value, String key) throws IOException {
+    if (value == null) {
       CRWriter.log.warn("CRWriter.writeQuotedTag(): argument str is null");
 
       return;
     }
 
-    if (tag == null) {
+    if (key == null) {
       CRWriter.log.warn("CRWriter.writeQuotedTag(): argument tag is null");
 
       return;
     }
 
     if (useTildesForQuotes) {
-      write("\"" + tildeQuotes(str) + "\";" + tag);
+      write("\"" + tildeQuotes(value) + "\";" + key);
     } else {
-      write("\"" + escapeQuotes(str) + "\";" + tag);
+      write("\"" + escapeQuotes(value) + "\";" + key);
     }
 
     newLine();

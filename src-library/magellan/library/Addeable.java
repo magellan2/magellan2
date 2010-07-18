@@ -26,19 +26,42 @@ package magellan.library;
 import java.util.List;
 
 /**
- * This interface marks an object as addeable. It can be used to add an attribute
+ * This interface marks an object as addeable. Addeable objects have "attributes", i.e. Name/Value
+ * pairs.
  * 
  * @author Thoralf Rickert
  * @version 1.0, 12.04.2009
  */
 public interface Addeable {
+  /**
+   * Tags this object with the given key/value pair.
+   */
   public void addAttribute(String key, String value);
 
+  /**
+   * Returns all keys that have been added to this object.
+   * 
+   * @return a list of keys that have been added to this object.
+   */
   public List<String> getAttributeKeys();
 
+  /**
+   * Returns the value for the given key.
+   * 
+   * @return the value for the given key or <code>null</code> if no value has been added for the
+   *         key.
+   */
   public String getAttribute(String key);
 
+  /**
+   * Returns <code>true</code> if a value has been added for the given key.
+   * 
+   * @return <code>true</code> if a value has been added for the given key.
+   */
   public boolean containsAttribute(String key);
 
+  /**
+   * Returns the number of keys that have been added.
+   */
   public int getAttributeSize();
 }

@@ -213,26 +213,26 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public static final String COMPLETIONSETTINGS_FILENAME = "magellan_completions.ini";
 
   /** This is the instance of this class */
-  public static Client INSTANCE = null;
+  public static Client INSTANCE;
 
-  private List<JPanel> panels = null;
+  private List<JPanel> panels;
 
-  private MapperPanel mapPanel = null;
+  private MapperPanel mapPanel;
 
   /** The overview panel */
-  private EMapOverviewPanel overviewPanel = null;
+  private EMapOverviewPanel overviewPanel;
 
   /** The details panel */
-  private EMapDetailsPanel detailsPanel = null;
+  private EMapDetailsPanel detailsPanel;
 
   /** The message panel */
-  private MessagePanel messagePanel = null;
+  private MessagePanel messagePanel;
 
   /** The ECheck panel */
-  private ECheckPanel echeckPanel = null;
+  private ECheckPanel echeckPanel;
 
   /** The open tasks panel */
-  private TaskTablePanel taskPanel = null;
+  private TaskTablePanel taskPanel;
 
   private FileHistory fileHistory;
 
@@ -258,7 +258,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private BookmarkManager bookmarkManager;
 
   /** Central undo manager - specialized to deliver change events */
-  private MagellanUndoManager undoMgr = null;
+  private MagellanUndoManager undoMgr;
 
   /** Directory for binaries */
   private static File binDirectory;
@@ -267,10 +267,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Directory for resources. Usually identical to binDirectory, but can be used to load texts,
    * images and the like from elsewhere
    */
-  private static File resourceDirectory = null;
+  private static File resourceDirectory;
 
   /** Directory of "magellan.ini" etc. */
-  private static File settingsDirectory = null;
+  private static File settingsDirectory;
 
   /** show order status in title */
   protected boolean showStatus = false;

@@ -1,3 +1,6 @@
+2010-07-18 / Build 423 - stm (stm_@users.sourceforge.net)
+    * more methods for ExtendedCommandsHelper
+    
 2010-07-17 / Build 421 - stm (stm_@users.sourceforge.net)
     * added profile chooser
     * added getModifiedItemCount and hasScript to ExtendedCommandsHelper
@@ -67,6 +70,9 @@
     * optimized route planners (better routes and more consistent interface) 
     * removed some unnecessary GameDataListeners
     * added isLand to RegionType and changed coast recognition
+
+2010-??-?? / Build 390
+    * RELEASE 2.0.5 
 
 2010-02-01 / Build 383 - stm (stm_@users.sourceforge.net)
     * activated Streitross>=Pferd in movement related code and move it to MovementEvaluator

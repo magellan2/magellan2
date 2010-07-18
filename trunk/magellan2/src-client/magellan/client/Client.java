@@ -1108,7 +1108,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Client.startWindow.progress(0, Resources.get("clientstart.0"));
 
       ProfileManager.init(parameters);
-      if (ProfileManager.getProfileDirectory() == null || ProfileManager.isAlwaysAsk()) {
+      if (ProfileManager.getProfileDirectory() == null || ProfileManager.isAlwaysAsk()
+          || parameters.startPM) {
         if (!ProfileManager.showProfileChooser(Client.startWindow)) {
           log.info("Abort requested by ProfileChooser");
           System.exit(0);
@@ -1287,8 +1288,24 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     public String report;
     /** Indicates that the help option was given */
     public boolean help = false;
+    /** Whether to show the profile manager dialog */
+    public boolean startPM = false;
   }
 
+  /**
+   * Recognizes the following parameters:<br />
+   * <tt>-log X</tt> -- set log level X<br />
+   * <tt>--help</tt> -- start only help dialog<br />
+   * <tt>-d dir</tt> -- set resource directory<br />
+   * <tt>-s dir</tt> -- set settings (aka profiles) directory<br />
+   * <tt>-p profile</tt> -- set profile<br />
+   * <tt>-pm</tt> -- show profile manager<br />
+   * <tt>-s dir</tt> -- set settings (aka profiles) directory<br />
+   * <tt>file.[cr|bz2|zip]</tt> -- set report<br />
+   * 
+   * @param args
+   * @return
+   */
   protected static Parameters parseCommandLine(String[] args) {
     Parameters result = new Parameters();
 
@@ -1349,6 +1366,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         i++;
 
         result.profile = args[i];
+      } else if (args[i].equals("-pm")) {
+        result.startPM = true;
       } else {
         if (args[i].toLowerCase().endsWith(".cr") || args[i].toLowerCase().endsWith(".bz2")
             || args[i].toLowerCase().endsWith(".zip")) {

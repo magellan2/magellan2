@@ -274,6 +274,15 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
         y = Integer.parseInt(st.nextToken());
         w = Integer.parseInt(st.nextToken());
         h = Integer.parseInt(st.nextToken());
+        // make sure dialog is inside screen
+        w = Math.max(w, 50);
+        h = Math.max(h, 50);
+        w = Math.min(w, getToolkit().getScreenSize().width);
+        h = Math.min(h, getToolkit().getScreenSize().height);
+        x = Math.min(x, getToolkit().getScreenSize().width - 50);
+        y = Math.min(y, getToolkit().getScreenSize().height - 50);
+        x = Math.max(x, 50 - w);
+        y = Math.min(y, 50 - h);
         setBounds(x, y, w, h);
       } catch (Exception e) {
         pack();

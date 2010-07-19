@@ -14,6 +14,7 @@
 package magellan.library.gamebinding;
 
 import java.io.StringReader;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -104,6 +105,28 @@ public class EresseaRelationFactory implements RelationFactory {
     return createRelations(u, orders, 0);
   }
 
+  class GDEntry {
+
+    public GameData data;
+    public OrderParser parser;
+  }
+
+  WeakReference<GDEntry> lastData = new WeakReference<GDEntry>(null);
+
+  private OrderParser getParser(GameData data) {
+    // we try to reduce the number of instances by caching the last one
+    // if the last one was created for the same data, we return that one
+    GDEntry last = lastData.get();
+    if (last != null && last.data == data)
+      return last.parser;
+
+    last = new GDEntry();
+    last.data = data;
+    last.parser = data.getGameSpecificStuff().getOrderParser(data);
+    lastData = new WeakReference<GDEntry>(last);
+    return last.parser;
+  }
+
   /**
    * Creates a list of com.eressea.util.Relation objects for a unit using <code>orders</code>.
    * starting at order position <tt>from</tt>. Note: The parameter <code>from</code> is ignored by
@@ -131,7 +154,7 @@ public class EresseaRelationFactory implements RelationFactory {
     }
 
     // 4. parse the orders and create new relations
-    OrderParser parser = data.getGameSpecificStuff().getOrderParser(data);
+    OrderParser parser = getParser(data);
 
     // TODO (stm): sort order according to execution order and process them in
     // that order.

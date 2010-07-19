@@ -43,6 +43,7 @@ public abstract class AbstractInspector implements Inspector {
 
   protected AbstractInspector(GameData data) {
     this.data = data;
+    gameSpecStuff = data.getGameSpecificStuff();
   }
 
   /**

@@ -72,9 +72,17 @@ public class OrderSyntaxInspector extends AbstractInspector {
   }
 
   private Collection<ProblemType> types;
+  private OrderParser parser;
 
   protected OrderSyntaxInspector(GameData data) {
     super(data);
+    parser = getGameSpecificStuff().getOrderParser(getData());
+  }
+
+  @Override
+  public void setGameData(GameData gameData) {
+    super.setGameData(gameData);
+    parser = getGameSpecificStuff().getOrderParser(getData());
   }
 
   /**
@@ -112,7 +120,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
     // so I change that from error to warning
 
     if (severity == Severity.WARNING) {
-      OrderParser parser = getGameSpecificStuff().getOrderParser(getData());
+      OrderParser parser = getParser();
 
       Integer line = 0;
       for (String order : orders) {
@@ -127,6 +135,10 @@ public class OrderSyntaxInspector extends AbstractInspector {
       }
     }
     return errors;
+  }
+
+  private synchronized OrderParser getParser() {
+    return parser;
   }
 
   private String getWarningMessage(String order, Integer line) {

@@ -344,7 +344,7 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     gc.weighty = 0.1;
     getContentPane().add(errorMessage, gc);
 
-    errorMessage.setPreferredSize(new Dimension(350, 100));
+    errorMessage.setPreferredSize(new Dimension(550, 100));
 
     gc.gridx++;
     gc.fill = GridBagConstraints.NONE;

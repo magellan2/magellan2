@@ -179,6 +179,7 @@ public class Regions {
    * getDirections(getPath(regions, start, dest, excludedRegionTypes, radius));
    * </pre>
    * 
+   * @see #getPath(Map, CoordinateID, CoordinateID, Map)
    * @return a String telling the direction statements necessary to follow the sequence of regions
    *         contained in regions.
    */
@@ -320,6 +321,7 @@ public class Regions {
    * @author stm
    */
   public interface RegionInfo {
+
     /**
      * Returns a distance value that is used to limit the search horizon.
      */
@@ -466,7 +468,7 @@ public class Regions {
   }
 
   /**
-   * Returns a path from start to dest based on the predecessor information in records.
+   * Returns a path from start to dest based on the predecessor information in the map.
    */
   public static List<Region> getPath(Map<CoordinateID, Region> regions, CoordinateID start,
       CoordinateID dest, Map<CoordinateID, ? extends RegionInfo> map) {
@@ -582,7 +584,8 @@ public class Regions {
      */
     @Override
     public String toString() {
-      return String.valueOf(dist) + "," + String.valueOf(plus) + "," + String.valueOf(realDist);
+      return String.valueOf(dist) + "," + String.valueOf(pot) + "," + String.valueOf(plus) + ","
+          + String.valueOf(realDist);
     }
 
     /**
@@ -899,7 +902,12 @@ public class Regions {
       // decrease key
       if (next2.dist.compareTo(newValues[0], newValues[1], newValues[2], newValues[3]) > 0) {
         next2.dist.set(newValues[0], newValues[1], newValues[2], newValues[3]);
-        next2.pre = current.getID();
+        // FIXME this if was necessary, but I'm not sure if that is due to a broken metric
+        if (records.get(next2.pre) == null
+            || records.get(next2.pre).dist.compareTo(current2.dist) > 0) {
+          next2.pre = current.getID();
+        }
+
         return true;
       }
       return false;
@@ -935,17 +943,31 @@ public class Regions {
   }
 
   /**
-   * A metric for ship paths
+   * A metric for ship paths. Distances are path lengths, but a path that ends in a land region is
+   * rounded up to the next multiple of speed.
    */
   public static class ShipMetric extends MultidimensionalMetric {
     private Set<BuildingType> harbourType;
     private int speed;
+    private int returnDirection;
 
+    /**
+     * @param regions
+     * @param start
+     * @param dest
+     * @param excludedRegionTypes
+     * @param harbourTypes
+     * @param speed
+     * @param returnDirection Ship may only leave the start region in this direction or the two
+     *          neighboring direction
+     */
     public ShipMetric(Map<CoordinateID, Region> regions, CoordinateID start, CoordinateID dest,
-        Map<ID, RegionType> excludedRegionTypes, Set<BuildingType> harbourTypes, int speed) {
+        Map<ID, RegionType> excludedRegionTypes, Set<BuildingType> harbourTypes, int speed,
+        int returnDirection) {
       super(regions, excludedRegionTypes, start, dest);
       harbourType = harbourTypes;
       this.speed = speed;
+      this.returnDirection = returnDirection;
     }
 
     /**
@@ -986,11 +1008,16 @@ public class Regions {
           Regions.log.warn("ship route to neighboring land region");
           return false;
         }
-        newDist = 1;
-        newPlus = 1;
-        newRealDist = 1;
+        if (!Regions.containsHarbour(r1, harbourType) && r1.getCoordinate() == start
+            && returnDirection != Direction.DIR_INVALID
+            && Math.abs(Direction.toDirection(r1, r2).getDifference(returnDirection)) > 1)
+          return false;
+        else {
+          newDist = 1;
+          newPlus = 1;
+          newRealDist = 1;
+        }
       }
-
       newDist += current.dist.dist;
       newPlus += current.dist.plus;
       newRealDist += current.dist.realDist;
@@ -1021,15 +1048,38 @@ public class Regions {
   }
 
   /**
+   * Returns the distance on a shortest path over land from start to dest, excluding certain region
+   * types and considering streets.
+   * 
+   * @param data
+   * @param start
+   * @param dest
+   * @param excludedRegionTypes regions with these types will be ignored (not entered) in the
+   *          search.
+   * @param radius The number of regions that can be travelled per turn without streets
+   * @param streetRadius The number of regions that can be travelled per turn on streets
+   * @return The distance in turns from start to dest. Integer.MAX_VALUE if there is no connection
+   */
+  public static int getLandDistance(GameData data, final CoordinateID start,
+      final CoordinateID dest, final Map<ID, RegionType> excludedRegionTypes, final int radius,
+      final int streetRadius) {
+    Metric metric;
+    Regions.getDistances(data.regions(), start, dest, Integer.MAX_VALUE, metric =
+        new LandMetric(data.regions(), excludedRegionTypes, start, dest, radius, streetRadius));
+    return metric.get(dest).getDistance() / streetRadius / radius;
+  }
+
+  /**
    * Returns a shortest path over land from start to dest, excluding certain region types and
    * considering streets.
    * 
    * @param data
    * @param start
    * @param dest
-   * @param excludedRegionTypes
-   * @param radius
-   * @param streetRadius
+   * @param excludedRegionTypes regions with these types will be ignored (not entered) in the
+   *          search.
+   * @param radius The number of regions that can be travelled per turn without streets
+   * @param streetRadius The number of regions that can be travelled per turn on streets
    */
   public static List<Region> getLandPath(GameData data, final CoordinateID start,
       final CoordinateID dest, final Map<ID, RegionType> excludedRegionTypes, final int radius,
@@ -1050,6 +1100,14 @@ public class Regions {
     private int radius;
     private int streetRadius;
 
+    /**
+     * @param regions
+     * @param excludedRegionTypes
+     * @param start
+     * @dest may be <code>null</code>
+     * @param radius
+     * @param streetRadius
+     */
     public LandMetric(Map<CoordinateID, Region> regions, Map<ID, RegionType> excludedRegionTypes,
         CoordinateID start, CoordinateID dest, int radius, int streetRadius) {
       super(regions, excludedRegionTypes, start, dest);
@@ -1103,7 +1161,8 @@ public class Regions {
   }
 
   /**
-   * A metric that accounts for movement cost using roads.
+   * A metric that accounts for movement cost using roads. Distances are in weeks, but multiplied by
+   * (streetradius*radius) in order to work with ints, not floats.
    */
   public static class RoadMetric extends MultidimensionalMetric {
 
@@ -1124,7 +1183,7 @@ public class Regions {
       int newRealDist;
 
       if (Regions.isCompleteRoadConnection(r1, r2)) {
-        // in order to use ints, not floats, we do not use 1/radius, but
+        // in order to use ints, not floats, we do not use 1/streetradius, but
         // streetradius*radius/streetradius
         newDist = radius;
       } else {
@@ -1147,6 +1206,9 @@ public class Regions {
     }
   }
 
+  /**
+   * A natural metric where neighboring regions have distance 1.
+   */
   public static class UnitMetric extends MultidimensionalMetric {
 
     public UnitMetric(Map<CoordinateID, Region> regions, Map<ID, RegionType> excludedRegionTypes,
@@ -1423,11 +1485,38 @@ public class Regions {
   }
 
   /**
+   * Returns the distance on a shortest path over land from start to dest, excluding certain region
+   * types and considering streets.
+   * 
+   * @param data
+   * @param start
+   * @param returnDirection The ship's shore or {@link Direction#INVALID}
+   * @param destination
+   * @return The distance in turns from start to dest. Integer.MAX_VALUE if there is no connection.
+   */
+  public static int getShipDistance(GameData data, CoordinateID start, int returnDirection,
+      CoordinateID destination, int speed) {
+    PathWithLength result =
+        planShipRouteWithLength(data, start, returnDirection, destination, speed);
+    return result.length;
+  }
+
+  /**
    * Returns a route for the ship from its current region to its destination.
    */
   public static List<Region> planShipRoute(Ship ship, GameData data, CoordinateID destination) {
     return Regions.planShipRoute(data, ship.getRegion().getCoordinate(), ship.getShoreId(),
         destination, data.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship));
+  }
+
+  static class PathWithLength {
+    public PathWithLength(List<Region> p, int l) {
+      path = p;
+      length = l;
+    }
+
+    List<Region> path;
+    int length;
   }
 
   /**
@@ -1442,6 +1531,24 @@ public class Regions {
    */
   public static List<Region> planShipRoute(GameData data, CoordinateID start, int returnDirection,
       CoordinateID destination, int speed) {
+    PathWithLength result =
+        planShipRouteWithLength(data, start, returnDirection, destination, speed);
+    return result.path;
+  }
+
+  /**
+   * Finds a shortest path for a ship from start to destination.
+   * 
+   * @param data
+   * @param start
+   * @param returnDirection The ship's shore or {@link Direction#INVALID}
+   * @param destination
+   * @param speed The number of regions per week
+   * @return A list of region from start to destination, or <code>null</code> if no path exists and
+   *         the length (in turns) of this path.
+   */
+  protected static PathWithLength planShipRouteWithLength(GameData data, CoordinateID start,
+      int returnDirection, CoordinateID destination, int speed) {
     BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
 
     if (destination == null || data.getRegion(destination) == null || start == null
@@ -1465,55 +1572,66 @@ public class Regions {
       }
     }
 
-    if (returnDirection != Direction.DIR_INVALID && !Regions.containsBuilding(startRegion, harbour)) {
-      // Ship cannot leave in all directions
-      // try to find a path from every allowed shore-off region to the destination
-      List<Region> bestPath = null;
-      MultiDimensionalInfo bestValue = null;
-      for (Direction tryShore : startRegion.getNeighbors().keySet()) {
-        if (Math.abs(tryShore.getDifference(returnDirection)) > 1) {
-          continue;
-        }
-        Region newStart = startRegion.getNeighbors().get(tryShore);
-        if (newStart == null) {
-          continue;
-        }
-
-        if (!harbourRegions.containsKey(newStart.getID())
-            || !harbourRegions.get(newStart.getID()).getRegionType().isOcean()) {
-          continue;
-        }
-
-        ShipMetric metric =
-            new ShipMetric(harbourRegions, newStart.getID(), destination, Collections
-                .<ID, RegionType> emptyMap(), Collections.singleton(harbour), speed);
-        Regions.getDistances(harbourRegions, newStart.getID(), destination, Integer.MAX_VALUE,
-            metric);
-        List<Region> newPath =
-            Regions.getPath(harbourRegions, newStart.getID(), destination, metric.getDistances());
-
-        MultiDimensionalInfo value = metric.get(destination);
-        if (bestValue == null || value.compareTo(bestValue) < 0) {
-          bestPath = newPath;
-          bestValue = value;
-        }
-      }
-      LinkedList<Region> result = new LinkedList<Region>();
-      result.add(startRegion);
-      if (bestPath == null) {
-        log.fine("planShipRoute without best path from " + start.toString() + " to "
-            + destination.toString());
-      } else {
-        result.addAll(bestPath);
-      }
-      return result;
-    }
+    // if (returnDirection != Direction.DIR_INVALID && !Regions.containsBuilding(startRegion,
+    // harbour)) {
+    // // Ship cannot leave in all directions
+    // // try to find a path from every allowed shore-off region to the destination
+    //
+    // List<Region> bestPath = null;
+    // MultiDimensionalInfo bestValue = null;
+    // for (Direction tryShore : startRegion.getNeighbors().keySet()) {
+    // if (Math.abs(tryShore.getDifference(returnDirection)) > 1) {
+    // continue;
+    // }
+    // Region newStart = startRegion.getNeighbors().get(tryShore);
+    // if (newStart == null) {
+    // continue;
+    // }
+    //
+    // if (!harbourRegions.containsKey(newStart.getID())
+    // || !harbourRegions.get(newStart.getID()).getRegionType().isOcean()) {
+    // continue;
+    // }
+    //
+    // ShipMetric metric =
+    // new ShipMetric(harbourRegions, newStart.getID(), destination, Collections
+    // .<ID, RegionType> emptyMap(), Collections.singleton(harbour), speed, 0);
+    // Regions.getDistances(harbourRegions, newStart.getID(), destination, Integer.MAX_VALUE,
+    // metric);
+    // List<Region> newPath =
+    // Regions.getPath(harbourRegions, newStart.getID(), destination, metric.getDistances());
+    //
+    // MultiDimensionalInfo value = metric.get(destination);
+    // if (bestValue == null || value.compareTo(bestValue) < 0) {
+    // bestPath = newPath;
+    // bestValue = value;
+    // }
+    // }
+    // LinkedList<Region> result = new LinkedList<Region>();
+    // result.add(startRegion);
+    // if (bestPath == null) {
+    // log.fine("planShipRoute without best path from " + start.toString() + " to "
+    // + destination.toString());
+    // } else {
+    // result.addAll(bestPath);
+    // }
+    // return result;
+    // }
+    //
+    // ShipMetric metric =
+    // new ShipMetric(harbourRegions, start, destination, Collections.<ID, RegionType> emptyMap(),
+    // Collections.singleton(harbour), speed);
+    // Regions.getDistances(harbourRegions, start, destination, Integer.MAX_VALUE, metric);
+    // return getPath(harbourRegions, start, destination, metric.getDistances());
 
     ShipMetric metric =
         new ShipMetric(harbourRegions, start, destination, Collections.<ID, RegionType> emptyMap(),
-            Collections.singleton(harbour), speed);
+            Collections.singleton(harbour), speed, returnDirection);
     Regions.getDistances(harbourRegions, start, destination, Integer.MAX_VALUE, metric);
-    return Regions.getPath(harbourRegions, start, destination, metric.getDistances());
+    return new PathWithLength(getPath(harbourRegions, start, destination, metric.getDistances()),
+        metric.get(destination).getDistance() / speed
+            + (metric.get(destination).getDistance() % speed != 0 ? 1 : 0));
+
   }
 
   // /**

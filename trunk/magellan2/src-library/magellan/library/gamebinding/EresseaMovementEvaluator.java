@@ -15,13 +15,16 @@ package magellan.library.gamebinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import magellan.library.Item;
+import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
+import magellan.library.utils.Regions;
 
 /**
  * @author $Author: $
@@ -411,7 +414,100 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     return 0;
   }
 
-  public Rules getRules() {
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getModifiedRadius(magellan.library.Unit,
+   *      java.util.List)
+   */
+  public int getModifiedRadius(Unit unit, List<Region> path) {
+    if (path.size() == 0)
+      return 0;
+    Region start = path.iterator().next();
+    if (start != unit.getRegion())
+      throw new IllegalArgumentException("unit not in first path region");
+
+    int radius = getModifiedRadius(unit, false), streetRadius = getModifiedRadius(unit, true);
+    int etappe = 0;
+    Region lastRegion = null;
+    boolean road = true;
+    int length = 0;
+    for (Region r : path) {
+      if (lastRegion != null) {
+        if (lastRegion == r)
+          return length;
+        else {
+          etappe++;
+          if (!Regions.isCompleteRoadConnection(lastRegion, r)) {
+            road = false;
+          }
+          if (road) {
+            if (etappe >= streetRadius)
+              return length;
+          } else {
+            if (etappe >= radius)
+              return length;
+          }
+        }
+      }
+      lastRegion = r;
+      length++;
+    }
+    return length;
+  }
+
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getDistance(magellan.library.Unit,
+   *      java.util.List)
+   */
+  public int getDistance(Unit unit, List<Region> path) {
+    if (path.size() == 0)
+      return 0;
+    Region start = path.iterator().next();
+    if (start != unit.getRegion())
+      throw new IllegalArgumentException("unit not in first path region");
+
+    int radius = getModifiedRadius(unit, false), streetRadius = getModifiedRadius(unit, true);
+    int weeks = 0, etappe = 0;
+    Region lastRegion = null;
+    boolean road = true;
+    for (Region r : path) {
+      if (lastRegion != null) {
+        if (lastRegion == r) {
+          if (etappe > 0) {
+            weeks++;
+            etappe = 0;
+            road = true;
+          }
+        } else {
+          etappe++;
+          if (!Regions.isCompleteRoadConnection(lastRegion, r)) {
+            road = false;
+          }
+          if (road) {
+            if (etappe >= streetRadius) {
+              weeks++;
+              etappe = 0;
+            }
+          } else {
+            if (etappe == radius) {
+              weeks++;
+              etappe = 0;
+              road = true;
+            } else if (etappe >= streetRadius) {
+              weeks++;
+              etappe = 1;
+            }
+          }
+        }
+      }
+      lastRegion = r;
+    }
+    if (etappe > 0) {
+      ++weeks;
+    }
+    return weeks;
+  }
+
+  protected Rules getRules() {
     return rules;
   }
 }

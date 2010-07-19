@@ -1,5 +1,6 @@
-2010-07-18 / Build 423 - stm (stm_@users.sourceforge.net)
+2010-07-19 / Build 424 - stm (stm_@users.sourceforge.net)
     * more methods for ExtendedCommandsHelper
+    * fixed Track ticket #14 (unit relation update after report load)
     
 2010-07-17 / Build 421 - stm (stm_@users.sourceforge.net)
     * added profile chooser

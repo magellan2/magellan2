@@ -1085,9 +1085,6 @@ public abstract class GameData implements Cloneable, Addeable {
     // remove double messages
     postProcessMessages();
 
-    // do game specific post processing
-    getGameSpecificStuff().postProcess(this);
-
     postProcessTheVoid();
 
     // adding Default Translations to the translations
@@ -1095,6 +1092,13 @@ public abstract class GameData implements Cloneable, Addeable {
 
     // remove double potions
     postProcessPotions();
+
+    for (Region r : getRegions()) {
+      r.refreshUnitRelations();
+    }
+
+    // do game specific post processing
+    getGameSpecificStuff().postProcess(this);
 
     postProcessed = true;
 

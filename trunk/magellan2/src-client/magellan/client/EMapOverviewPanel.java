@@ -112,7 +112,6 @@ import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.relation.TransferRelation;
-import magellan.library.relation.UnitRelation;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -138,12 +137,12 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private static final Logger log = Logger.getInstance(EMapOverviewPanel.class);
 
   // GUI elements
-  private JSplitPane sppTreeHistory = null;
-  private CopyTree tree = null;
-  private DefaultTreeModel treeModel = null;
-  private DefaultMutableTreeNode rootNode = null;
-  private JScrollPane scpTree = null;
-  private JList lstHistory = null;
+  private JSplitPane sppTreeHistory;
+  private CopyTree tree;
+  private DefaultTreeModel treeModel;
+  private DefaultMutableTreeNode rootNode;
+  private JScrollPane scpTree;
+  private JList lstHistory;
   private JScrollPane scpHistory;
 
   // node maps, mapping the object ids to their tree nodes
@@ -152,12 +151,16 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private Map<ID, TreeNode> buildingNodes = new Hashtable<ID, TreeNode>();
   private Map<ID, TreeNode> shipNodes = new Hashtable<ID, TreeNode>();
 
-  // relation map, mapping unit's id to its relations
-  private Map<ID, List<UnitRelation>> unitRelations = new HashMap<ID, List<UnitRelation>>();
+  /**
+   * relation map, mapping unit's id to its relations; used to store the last known relations and
+   * update related units when relations change
+   */
+  private Map<ID, Set<TransferRelation>> lastUnitRelations =
+      new HashMap<ID, Set<TransferRelation>>();
   private boolean ignoreTreeSelections = false;
 
   // region with previously selected item
-  private Unique activeObject = null;
+  private Unique activeObject;
   private List<Object> selectedObjects = new ArrayList<Object>();
   private List<List<Object>> contexts = new ArrayList<List<Object>>();
 
@@ -375,7 +378,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     rootNode.removeAllChildren();
 
     // clear relation map
-    unitRelations.clear();
+    lastUnitRelations.clear();
 
     // clear other buffers
     selectedObjects.clear();
@@ -424,6 +427,13 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     treeBuilder.setTreeStructure(EMapOverviewPanel.getTreeStructure(settings));
 
     treeBuilder.buildTree(rootNode, data);
+
+    for (Unit u : data.getUnits()) {
+      List<TransferRelation> relations = u.getRelations(TransferRelation.class);
+      if (relations != null && !relations.isEmpty()) {
+        lastUnitRelations.put(u.getID(), new HashSet<TransferRelation>(relations));
+      }
+    }
 
     tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings,
         "EMapOverviewPanel.treeRootHandles", true));
@@ -1922,8 +1932,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * Updates UnitNodeWrappers on changes of orders
    */
   private class UnitWrapperUpdater implements UnitOrdersListener {
-    Collection<UnitRelation> buff1 = new LinkedList<UnitRelation>();
-    Collection<UnitRelation> buff2 = new LinkedList<UnitRelation>();
 
     /**
      * Invoked when the orders of a unit are modified.
@@ -1941,7 +1949,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         unw.clearBuffer();
         treeModel.nodeChanged(node);
 
-        // building or ship nodes may have been modified, too
+        // update building or ship nodes, which may have been modified, too
         Ship ship = u.getShip();
         if (ship != null && shipNodes.containsKey(ship.getID())) {
           treeModel.nodeChanged(shipNodes.get(ship.getID()));
@@ -1960,44 +1968,43 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           treeModel.nodeChanged(buildingNodes.get(container.getID()));
         }
 
-        List<TransferRelation> relations = u.getRelations(TransferRelation.class);
+        // update related units
+        List<TransferRelation> newRelations = u.getRelations(TransferRelation.class);
 
         // ensure that unitRelations has an entry for u
-        if (!unitRelations.containsKey(u.getID())) {
-          if (relations.size() == 0)
+        if (!lastUnitRelations.containsKey(u.getID())) {
+          if (newRelations.size() == 0)
             return;
-
-          unitRelations.put(u.getID(), new LinkedList<UnitRelation>());
+          lastUnitRelations.put(u.getID(), new HashSet<TransferRelation>(4));
         }
 
-        // FIXME explain this code!
-        List<UnitRelation> oldRelations = unitRelations.get(u.getID());
-        Collection<UnitRelation> buffer = updateRelationPartners ? buff1 : buff2;
+        Collection<TransferRelation> lastRelations = lastUnitRelations.get(u.getID());
+        Set<TransferRelation> intersection =
+            new HashSet<TransferRelation>(Math.min(lastRelations.size(), newRelations.size()) * 2);
 
-        if (!relations.equals(oldRelations)) {
-          buffer.clear();
-          buffer.addAll(oldRelations);
-
-          for (UnitRelation o : relations) {
-            if (oldRelations.contains(o)) {
-              buffer.remove(o);
-            } else {
-              oldRelations.add(o);
-
-              if (updateRelationPartners) {
-                update(((TransferRelation) o).target, false);
+        if (!newRelations.equals(lastRelations)) {
+          if (updateRelationPartners) {
+            // update related units from added relations
+            for (TransferRelation r : newRelations) {
+              if (lastRelations.contains(r)) {
+                intersection.add(r);
+              } else if (r.target != u) {
+                update((r).target, false);
               }
             }
-          }
-
-          for (Object o : buffer) {
-            oldRelations.remove(o);
-
-            if (updateRelationPartners) {
-              update(((TransferRelation) o).target, false);
+            // update related units from remove relations
+            for (TransferRelation r : lastRelations) {
+              if (!intersection.contains(r))
+                if (r.target != u) {
+                  update((r).target, false);
+                }
             }
           }
+          // update map entry
+          lastRelations.clear();
+          lastRelations.addAll(newRelations);
         }
+
       }
       // tree.validate();
       // tree.repaint();

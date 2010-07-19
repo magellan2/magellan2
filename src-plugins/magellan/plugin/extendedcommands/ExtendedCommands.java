@@ -48,6 +48,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.utils.Encoding;
+import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
@@ -56,6 +57,8 @@ import org.w3c.dom.Element;
 
 import bsh.EvalError;
 import bsh.Interpreter;
+import bsh.ParseException;
+import bsh.TargetError;
 
 /**
  * This class holds the commands for all units.
@@ -383,41 +386,18 @@ public class ExtendedCommands {
     if (!hasCommands(unit))
       return;
 
-    try {
-      Interpreter interpreter = new Interpreter();
-      interpreter.set("world", world);
-      interpreter.set("unit", unit);
-      interpreter.set("helper", new ExtendedCommandsHelper(client, world, unit));
-      interpreter.set("log", DebugDock.getInstance());
-
-      String script = "";
-      if (getLibrary() != null) {
-        script += getLibrary().getScript();
-      }
-      script += "\n";
-      script += getCommands(unit).getScript();
-
-      interpreter.eval(script);
-      unit.setOrdersChanged(true);
-      client.getDispatcher().fire(new UnitOrdersEvent(unit, unit));
-    } catch (EvalError error) {
-      String message = error.getMessage();
-      if (message == null || message.length() == 0) {
-        message = error.getCause().getClass().getName();
-      }
-      try {
-        message += "\r\n" + error.getErrorText();
-      } catch (NullPointerException npe) {
-      }
-      ErrorWindow errorWindow = new ErrorWindow(client, message, "", error);
-      errorWindow.setShutdownOnCancel(false);
-      errorWindow.setVisible(true);
-    } catch (Throwable throwable) {
-      ExtendedCommands.log.info("", throwable);
-      ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
-      errorWindow.setShutdownOnCancel(false);
-      errorWindow.setVisible(true);
+    StringBuilder script = new StringBuilder();
+    if (getLibrary() != null) {
+      script.append(getLibrary().getScript());
     }
+    if (script.charAt(script.length() - 1) != '\n') {
+      script.append("\n");
+    }
+    script.append(getCommands(unit).getScript());
+
+    execute(script.toString(), world, unit, null);
+    unit.setOrdersChanged(true);
+    client.getDispatcher().fire(new UnitOrdersEvent(unit, unit));
   }
 
   /**
@@ -427,61 +407,107 @@ public class ExtendedCommands {
     if (!hasCommands(container))
       return;
 
-    try {
-      Interpreter interpreter = new Interpreter();
-      interpreter.set("world", world);
-      interpreter.set("container", container);
-      interpreter.set("helper", new ExtendedCommandsHelper(client, world, container));
-      interpreter.set("log", DebugDock.getInstance());
-
-      String script = "";
-      if (getLibrary() != null) {
-        script += getLibrary().getScript();
-      }
-      script += "\n";
-      script += getCommands(container).getScript();
-
-      interpreter.eval(script);
-    } catch (EvalError error) {
-      String message = error.getMessage();
-      if (message == null || message.length() == 0) {
-        message = error.getCause().getClass().getName();
-      }
-      try {
-        message += "\r\n" + error.getErrorText();
-      } catch (NullPointerException npe) {
-      }
-      ErrorWindow errorWindow = new ErrorWindow(client, message, "", error);
-      errorWindow.setShutdownOnCancel(false);
-      errorWindow.setVisible(true);
-    } catch (Throwable throwable) {
-      ExtendedCommands.log.info("", throwable);
-      ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
-      errorWindow.setShutdownOnCancel(false);
-      errorWindow.setVisible(true);
+    StringBuilder script = new StringBuilder();
+    if (getLibrary() != null) {
+      script.append(getLibrary().getScript());
     }
+    if (script.charAt(script.length() - 1) != '\n') {
+      script.append("\n");
+    }
+    script.append(getCommands(container).getScript());
+
+    execute(script.toString(), world, null, container);
   }
 
   /**
    * Executes the library commands/script.
    */
   public void execute(GameData world) {
+    execute(getLibrary().getScript(), world, null, null);
+  }
+
+  protected void execute(String script, GameData world, Unit unit, UnitContainer container) {
     try {
       Interpreter interpreter = new Interpreter();
       interpreter.set("world", world);
-      interpreter.set("helper", new ExtendedCommandsHelper(client, world));
+      if (unit != null) {
+        interpreter.set("unit", unit);
+      }
+      if (container != null) {
+        interpreter.set("container", container);
+      }
+      interpreter.set("helper", new ExtendedCommandsHelper(client, world, unit, container));
       interpreter.set("log", DebugDock.getInstance());
-      interpreter.eval(getLibrary().getScript());
+
+      interpreter.eval(script);
     } catch (EvalError error) {
-      String message = error.getMessage();
-      if (message == null || message.length() == 0) {
-        message = error.getCause().getClass().getName();
+      StringBuilder message = new StringBuilder();
+      StringBuilder description = new StringBuilder();
+      if (error instanceof TargetError) {
+        TargetError tError = (TargetError) error;
+        message.append(Resources.get("extended_commands.ex.targeterror.message"));
+        if (tError.getTarget() != null) {
+          message.append("\n\n").append(tError.getTarget());
+        }
+        if (tError.getLocalizedMessage() != null) {
+          description.append("\n\n").append(tError.getLocalizedMessage());
+        }
+
+        int lines = 0;
+        String lib = getLibrary().getScript();
+        for (int i = 0; i < lib.length(); ++i)
+          if (lib.charAt(i) == '\n') {
+            lines++;
+          }
+        if (lib.charAt(lib.length() - 1) != '\n') {
+          lines++;
+        }
+
+        description.append("\n\n");
+        if (tError.getErrorLineNumber() > lines) {
+          description.append(Resources.get("extended_commands.ex.scriptline.message", tError
+              .getErrorLineNumber()
+              - lines));
+        } else {
+          description.append(Resources.get("extended_commands.ex.libline.message", tError
+              .getErrorLineNumber()));
+          // message.append("\n\n").append(tError.getErrorSourceFile());
+          // message.append("\n\n").append(tError.getErrorText());
+          // message.append("\n\n").append(tError.getScriptStackTrace());
+        }
+      } else if (error instanceof ParseException) {
+        ParseException pError = (ParseException) error;
+        message.append(Resources.get("extended_commands.ex.parseerror.message"));
+        message.append("\n\n").append(pError.getLocalizedMessage());
+
+        if (pError.getErrorSourceFile() != null) {
+          description.append("\n\n").append(pError.getErrorSourceFile());
+        }
+        if (pError.getScriptStackTrace() != null) {
+          description.append("\n\n").append(pError.getScriptStackTrace());
+        }
+        try {
+          if (pError.getErrorText() != null) {
+            description.append("\n\n").append(pError.getErrorText());
+          }
+        } catch (NullPointerException e) {
+          // unknown BeanShell bug, ignore
+        }
+        try {
+          pError.getErrorLineNumber();
+          description.append("\n\n").append(pError.getErrorLineNumber());
+        } catch (NullPointerException e) {
+          // unknown BeanShell bug, ignore
+        }
+        // message.append("\n\n").append(pError.currentToken);
+      } else {
+        message.append(Resources.get("extended_commands.ex.evalerror.message"));
+        message.append("\n\n").append((error).getLocalizedMessage());
+        // description.append("\n\n").append((error).getErrorSourceFile());
       }
-      try {
-        message += "\r\n" + error.getErrorText();
-      } catch (NullPointerException npe) {
-      }
-      ErrorWindow errorWindow = new ErrorWindow(client, message, "", error);
+
+      ErrorWindow errorWindow =
+          new ErrorWindow(client, message.toString(), description.toString(), error);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
     } catch (Throwable throwable) {

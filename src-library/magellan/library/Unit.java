@@ -432,7 +432,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Returns a List of the reached coordinates of the units movement starting with the current
    * region or an empty list if unit is not moving.
    * 
-   * @return A list of coordinates, empty list means no movement
+   * @return A list of coordinates, empty list means no movement. A PAUSE causes two successive
+   *         occurances of the last region.
    */
   public List<CoordinateID> getModifiedMovement();
 
@@ -1132,7 +1133,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /**
    * Checks if the unit's movement was passive (transported or shipped).
    * 
-   * @return
+   * @return <code>true</code> if the unit's movement was passive (transported or shipped).
    */
   public boolean isPastMovementPassive();
 

@@ -7,6 +7,9 @@
 
 package magellan.library.gamebinding;
 
+import java.util.List;
+
+import magellan.library.Region;
 import magellan.library.Unit;
 
 /**
@@ -88,6 +91,31 @@ public interface MovementEvaluator {
    * this unit.
    */
   public int getModifiedRadius(Unit unit, boolean onRoad);
+
+  /**
+   * Returns the number of regions this unit is able to travel within one turn based on modified
+   * riding skill, horses, carts, load of this unit and roads <i>on the given path</i>.
+   * 
+   * @param unit
+   * @param path A sequence of regions. The first region must be the current region of the unit. If
+   *          two successive elements of the path are the same region, this is interpreted as a
+   *          PAUSE, which always ends a turn. See {@link Unit#getModifiedMovement()}.
+   * @return The number of regions, the unit may move on this path. The result is always
+   *         <code><= path.size()-1</code>.
+   * @throws IllegalArgumentException if the unit is not in the first path region or the path is not
+   *           continuous
+   */
+  public int getModifiedRadius(Unit unit, List<Region> path);
+
+  /**
+   * Returns the number of turns that the unit needs to travel on the specified path based on
+   * modified riding skill, horses, carts, load of this unit and roads <i>on the given path</i>.
+   * 
+   * @param unit
+   * @param path A sequence of regions. The first region must be the current region of the unit.
+   * @return
+   */
+  public int getDistance(Unit unit, List<Region> path);
 
   /**
    * Returns the number of regions this unit is able to travel within one turn based on the riding

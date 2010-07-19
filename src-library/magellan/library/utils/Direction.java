@@ -501,8 +501,8 @@ public enum Direction {
 
   /**
    * Returns the difference to the specified direction. E.g., <code>NE.getDifference(W) == -2</code>
-   * , <code>NE.getDifference(SE) == 2</code>, <code>NE.getDifference(SW) == 3</code> Differences to
-   * {@link #INVALID} are always {@link Integer#MAX_VALUE}.
+   * , <code>NE.getDifference(SE) == 2</code>, <code>NE.getDifference(SW) == 3</code>. Differences
+   * to {@link #INVALID} are always {@link Integer#MAX_VALUE}.
    */
   public int getDifference(int dir) {
     if (toDirection(dir) == INVALID || this == INVALID)

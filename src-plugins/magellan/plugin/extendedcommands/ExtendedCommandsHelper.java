@@ -48,7 +48,9 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
+import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
@@ -719,4 +721,22 @@ public class ExtendedCommandsHelper {
     return false;
   }
 
+  /**
+   * Returns a game specific rule manager that provides a few utility methods that differ from game
+   * to game.
+   * 
+   * @return
+   */
+  public GameSpecificRules getGameSpecificRules() {
+    return world.getGameSpecificStuff().getGameSpecificRules();
+  }
+
+  /**
+   * Returns a MovementEvaluator that provides utility methods concerning the movement of units.
+   * 
+   * @return
+   */
+  public MovementEvaluator getMovementEvaluator() {
+    return world.getGameSpecificStuff().getMovementEvaluator();
+  }
 }

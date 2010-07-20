@@ -1359,9 +1359,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
     for (Message msg : messages) {
       if (ht.put(msg, msg) != null) {
-        if (1 == 2) {
-          GameData.log.warn("Duplicate message \"" + msg.getText() + "\" found, removing it.");
-        }
+        GameData.log.debug("Duplicate message \"" + msg.getText() + "\" found, removing it.");
       }
     }
 

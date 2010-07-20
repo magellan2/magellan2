@@ -32,13 +32,13 @@ import magellan.library.utils.logging.Logger;
 public class MagellanUndoManager extends UndoManager {
   private static final Logger log = Logger.getInstance(MagellanUndoManager.class);
 
-  /** DOCUMENT-ME */
+  /** UNDO Property name */
   public static final String UNDO = "Undo_Changed";
 
-  /** DOCUMENT-ME */
+  /** REDO property name */
   public static final String REDO = "Redo_Changed";
 
-  // this is basicall needed to attach RedoAction and UndoAction to this UndoManager
+  // this is basically needed to attach RedoAction and UndoAction to this UndoManager
   private PropertyChangeSupport list;
 
   private ArrayList<UndoableEdit> eventList = new ArrayList<UndoableEdit>();
@@ -53,46 +53,51 @@ public class MagellanUndoManager extends UndoManager {
   }
 
   /**
-   * DOCUMENT-ME
+   * Adds a listener.
    */
   public void addPropertyChangeListener(PropertyChangeListener l) {
     list.addPropertyChangeListener(l);
   }
 
   /**
-   * DOCUMENT-ME
+   * Adds a listener.
    */
   public void addPropertyChangeListener(String property, PropertyChangeListener l) {
     list.addPropertyChangeListener(property, l);
   }
 
   /**
-   * DOCUMENT-ME
+   * Removes a listener.
    */
   public void removePropertyChangeListener(PropertyChangeListener l) {
     list.removePropertyChangeListener(l);
   }
 
   /**
-   * DOCUMENT-ME
+   * Removes a listener.
    */
   public void removePropertyChangeListener(String property, PropertyChangeListener l) {
     list.removePropertyChangeListener(property, l);
   }
 
-  /*
-   * This methods must be changed to throw the events.
+  /**
+   * Calls super.undo() and fires property change for menu actions.
+   * 
+   * @see javax.swing.undo.UndoManager#undo()
    */
   @Override
   public synchronized void undo() {
-    // TODO: implement undo history?
+    // boolean oldUndo = eventList.size() > 0;
+    // boolean oldRedo = undoneList.size() > 0;
+    boolean oldUndo = canUndo();
+    boolean oldRedo = canRedo();
     undoneList.add(eventList.remove(eventList.size() - 1));
 
     // String oldUndo=getUndoPresentationName(),oldRedo=getRedoPresentationName();
     try {
       super.undo();
-      list.firePropertyChange(MagellanUndoManager.REDO, false, canRedo());
-      list.firePropertyChange(MagellanUndoManager.UNDO, false, canUndo());
+      list.firePropertyChange(MagellanUndoManager.REDO, oldRedo, canRedo());
+      list.firePropertyChange(MagellanUndoManager.UNDO, oldUndo, canUndo());
     } catch (CannotUndoException e) {
       MagellanUndoManager.log.info("MagellanUndoManager.undo: cannot undo");
       MagellanUndoManager.log.debug("", e);
@@ -100,17 +105,21 @@ public class MagellanUndoManager extends UndoManager {
   }
 
   /**
-   * DOCUMENT-ME
+   * Calls super.redo() and fires property change for menu actions.
    */
   @Override
   public synchronized void redo() {
-    eventList.add(undoneList.remove(eventList.size() - 1));
+    // boolean oldUndo = eventList.size() > 0;
+    // boolean oldRedo = undoneList.size() > 0;
+    boolean oldUndo = canUndo();
+    boolean oldRedo = canRedo();
+    eventList.add(undoneList.remove(undoneList.size() - 1));
     try {
       // TODO: implement redo history?
       // String oldUndo=getUndoPresentationName(),oldRedo=getRedoPresentationName();
       super.redo();
-      list.firePropertyChange(MagellanUndoManager.REDO, false, canRedo());
-      list.firePropertyChange(MagellanUndoManager.UNDO, false, canUndo());
+      list.firePropertyChange(MagellanUndoManager.REDO, oldRedo, canRedo());
+      list.firePropertyChange(MagellanUndoManager.UNDO, oldUndo, canUndo());
     } catch (CannotRedoException e) {
       MagellanUndoManager.log.info("MagellanUndoManager.redo: cannot redo");
       MagellanUndoManager.log.debug("", e);
@@ -118,14 +127,14 @@ public class MagellanUndoManager extends UndoManager {
   }
 
   /**
-   * DOCUMENT-ME
+   * Calls super.addEdit() and fires property change for menu actions.
    * 
    * @see javax.swing.undo.UndoManager#addEdit(javax.swing.undo.UndoableEdit)
    */
   @Override
   public synchronized boolean addEdit(UndoableEdit e) {
     // FIXME stm 10.08.07 This class is broken, so we deactivate it for the time being
-    if (true)
+    if (e == null | e != null)
       return false;
     // TODO: implement undo/redo history?
     eventList.add(e);
@@ -144,6 +153,8 @@ public class MagellanUndoManager extends UndoManager {
   }
 
   /**
+   * Calls super.discardAllEdits() and fires property change for menu actions.
+   * 
    * @see javax.swing.undo.UndoManager#discardAllEdits()
    */
   @Override

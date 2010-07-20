@@ -51,7 +51,7 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.actions.MenuAction#getIconName()
    */
   @Override
   public String getIconName() {
@@ -59,7 +59,7 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.actions.MenuAction#menuActionPerformed(java.awt.event.ActionEvent)
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
@@ -69,7 +69,9 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
   }
 
   /**
-   * DOCUMENT-ME
+   * Updates the menu item.
+   * 
+   * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
    */
   public void propertyChange(PropertyChangeEvent p1) {
     boolean enabled = (Boolean) p1.getNewValue();
@@ -107,6 +109,9 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
     return Resources.get("actions.undoaction.name");
   }
 
+  /**
+   * @see magellan.client.actions.MenuAction#getTooltipTranslated()
+   */
   @Override
   protected String getTooltipTranslated() {
     return Resources.get("actions.undoaction.tooltip", false);

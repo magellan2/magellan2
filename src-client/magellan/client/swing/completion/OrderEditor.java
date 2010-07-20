@@ -68,32 +68,39 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   // Style name constants
 
-  /** DOCUMENT-ME */
+  /** Text style REGULAR */
   public static final String S_REGULAR = "regular";
+  /** Text style REGULAR inverted */
   public static final String S_REGULAR_INV = "regular_inv";
 
-  /** DOCUMENT-ME */
+  /** Text style KEYWORD */
   public static final String S_KEYWORD = "keyword";
+  /** Text style KEYWORD inverted */
   public static final String S_KEYWORD_INV = "keyword_inv";
 
-  /** DOCUMENT-ME */
+  /** Text style STRING */
   public static final String S_STRING = "string";
+  /** Text style STRING inverted */
   public static final String S_STRING_INV = "string_inv";
 
-  /** DOCUMENT-ME */
+  /** Text style NUMBER */
   public static final String S_NUMBER = "number";
+  /** Text style NUMBER inverted */
   public static final String S_NUMBER_INV = "number_inv";
 
-  /** DOCUMENT-ME */
+  /** Text style ID */
   public static final String S_ID = "id";
+  /** Text style ID inverted */
   public static final String S_ID_INV = "id_inv";
 
-  /** DOCUMENT-ME */
+  /** Text style COMMENT */
   public static final String S_COMMENT = "comment";
+  /** Text style COMMENT inverted */
   public static final String S_COMMENT_INV = "comment_inv";
 
-  /** DOCUMENT-ME */
+  /** Text style LONGORDER */
   public static final String S_LONGORDER = "longorder";
+  /** Text style LONGORDER inverted */
   public static final String S_LONGORDER_INV = "longorder_inv";
 
   private Color errorColor;
@@ -108,14 +115,11 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   private EventDispatcher dispatcher = null;
 
   // private GameData data = null;
-  private UndoManager undoMgr = null;
-  private DocumentUpdateRunnable docUpdateThread = new DocumentUpdateRunnable(null); // keep this
-  // udpate
-  // runnable
-  // instead of
-  // re-creating
-  // it over and
-  // over again
+  // TODO undoing disabled
+  // private UndoManager undoMgr = null;
+
+  // keep this udpate runnable instead of re-creating it over and over again
+  private DocumentUpdateRunnable docUpdateThread = new DocumentUpdateRunnable(null);
   private OrderEditorCaret myCaret = null;
 
   private UnitOrdersListener orderListener;
@@ -138,8 +142,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     this.parser = parser; // (data != null) ? data.getGameSpecificStuff().getOrderParser(data) :
     // null;
 
-    undoMgr = _undoMgr;
-
     dispatcher = d;
 
     // this.dispatcher.addGameDataListener(this);
@@ -150,6 +152,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     getDocument().addDocumentListener(this);
 
     // TODO stm undo is deactivated
+    // undoMgr = _undoMgr;
     // SignificantUndos sigUndos = new SignificantUndos();
     // getDocument().addUndoableEditListener(sigUndos);
     // getDocument().addDocumentListener(sigUndos);
@@ -286,7 +289,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
    */
   public void keyPressed(KeyEvent e) {
     if ((unit != null)
@@ -303,25 +306,30 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
    */
   public void keyReleased(KeyEvent e) {
+    // ignored
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
    */
   public void keyTyped(KeyEvent e) {
+    // ignored
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
    */
   public void focusGained(FocusEvent e) {
+    // ignored
   }
 
   /**
-   * DOCUMENT-ME
+   * Update orders.
+   * 
+   * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
    */
   public void focusLost(FocusEvent e) {
     setOrdersAndFireEvent();
@@ -374,6 +382,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
       setOrders(unit.getOrders());
     } else {
       setText("");
+      // undoMgr.discardAllEdits();
     }
 
     ignoreModifications = false;
@@ -413,12 +422,13 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   }
 
   /**
-   * Puts the list elements in <tt>c</tt> into this text pane, one at a line.
+   * Puts the list elements in <tt>c</tt> into this text pane, one at a time.
    */
   public void setOrders(Collection<String> c) {
     orders = new LinkedList<String>();
     orders.addAll(c);
 
+    boolean oldMod = ignoreModifications;
     ignoreModifications = true;
     setText("");
 
@@ -428,14 +438,15 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
     setCaretPosition(0);
     setModified(false);
-    ignoreModifications = false;
-    undoMgr.discardAllEdits();
+    ignoreModifications = oldMod;
+    // undoMgr.discardAllEdits();
   }
 
   /**
    * Adds a order to this text pane.
    */
   public void addOrder(String cmd) {
+    boolean oldMod = ignoreModifications;
     ignoreModifications = true;
 
     Document doc = getDocument();
@@ -456,7 +467,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
       OrderEditor.log.warn("OrderEditor.addOrder(): " + e.toString());
     }
 
-    ignoreModifications = false;
+    ignoreModifications = oldMod;
   }
 
   /**
@@ -510,6 +521,11 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     }
   }
 
+  /**
+   * Sets the background color for orders with errors.
+   * 
+   * @param c
+   */
   public void setErrorBackround(Color c) {
     errorColor = c;
     initStyles();
@@ -910,7 +926,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     }
 
     /**
-     * DOCUMENT-ME
+     * Formats changed tokens.
      */
     public void run() {
       int offset = e.getOffset();
@@ -957,43 +973,46 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     javax.swing.undo.CompoundEdit compoundEdit = new javax.swing.undo.CompoundEdit();
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
      */
     public void changedUpdate(DocumentEvent e) {
       documentEvent(e);
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
      */
     public void insertUpdate(DocumentEvent e) {
       documentEvent(e);
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
      */
     public void removeUpdate(DocumentEvent e) {
       documentEvent(e);
     }
 
+    /**
+     * All events except change events are significant.
+     */
     private void documentEvent(DocumentEvent e) {
       bSignificant = (!DocumentEvent.EventType.CHANGE.equals(e.getType()));
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.event.UndoableEditListener#undoableEditHappened(javax.swing.event.UndoableEditEvent)
      */
     public void undoableEditHappened(UndoableEditEvent e) {
       if (bSignificant) {
         if (bMoreThanOne) {
           compoundEdit.addEdit(e.getEdit());
           compoundEdit.end();
-          undoMgr.undoableEditHappened(new UndoableEditEvent(e.getSource(), compoundEdit));
+          // undoMgr.undoableEditHappened(new UndoableEditEvent(e.getSource(), compoundEdit));
           compoundEdit = new javax.swing.undo.CompoundEdit();
           bMoreThanOne = false;
         } else {
-          undoMgr.undoableEditHappened(e);
+          // undoMgr.undoableEditHappened(e);
         }
       } else {
         compoundEdit.addEdit(e.getEdit());
@@ -1020,6 +1039,9 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     return Changeable.CONTEXT_MENU;
   }
 
+  /**
+   * @see magellan.client.swing.tree.Changeable#getContextFactory()
+   */
   public ContextFactory getContextFactory() {
     return new UnitContextFactory();
   }

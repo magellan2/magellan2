@@ -2181,7 +2181,7 @@ public class CRWriter extends BufferedWriter {
     });
     t.start();
 
-    if (false) {
+    if (world == null) {
       // for debugging
       doWrite();
     }

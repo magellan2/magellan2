@@ -528,6 +528,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         treeStructure[i] = Integer.parseInt(s);
         i++;
       } catch (NumberFormatException e) {
+        throw new IllegalStateException("properties corrupt", e);
       }
     }
 
@@ -578,7 +579,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
        */
     } else if (!selectionTransfer.isEmpty()) {
       // debug
-      removed = removed;
+      removed = !(!removed);
     }
 
     /**

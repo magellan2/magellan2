@@ -22,7 +22,7 @@
 // 
 package magellan.client.utils;
 
-import java.awt.Window;
+import java.awt.Frame;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 import magellan.client.Client;
 import magellan.client.desktop.MagellanDesktop;
@@ -132,12 +133,23 @@ public class ProfileManager {
     }
 
     if (getCurrentProfile() == null) {
-      settings.setProperty(CURRENT_PROFILE, DEFAULT);
-      settings.setProperty(ASK_ALWAYS, "1");
-      settings.setProperty(PROFILE_PREFIX + DEFAULT + NAME, DEFAULT);
-      settings.setProperty(PROFILE_PREFIX + DEFAULT + DIRECTORY, DEFAULT);
-      getProfileDirectory().mkdir();
-      copyLegacy();
+      // try to create a default directory 20 times
+      Random r = new Random();
+      String nr = "";
+      for (int i = 0; i < 20 && !getProfileDirectory(DEFAULT + nr).mkdir();) {
+        nr = "" + r.nextInt();
+      }
+      if (getProfileDirectory(DEFAULT + nr).isDirectory()
+          && getProfileDirectory(DEFAULT + nr).canWrite()) {
+        settings.setProperty(CURRENT_PROFILE, DEFAULT + nr);
+        settings.setProperty(ASK_ALWAYS, "1");
+        settings.setProperty(PROFILE_PREFIX + DEFAULT + nr + NAME, DEFAULT);
+        settings.setProperty(PROFILE_PREFIX + DEFAULT + nr + DIRECTORY, DEFAULT);
+        copyLegacy();
+      } else {
+        log.warn("could not create profile directory" + getProfileDirectory(DEFAULT));
+        return null;
+      }
     }
     if (parameters.profile != null) {
       setProfile(parameters.profile);
@@ -224,10 +236,10 @@ public class ProfileManager {
   /**
    * Shows a dialog to manage profiles.
    * 
-   * @param parent The parent window for the JDialog.
+   * @param parent The parent frame for the JDialog.
    * @return <code>true</code> if the dialog was confirmed
    */
-  public static boolean showProfileChooser(Window parent) {
+  public static boolean showProfileChooser(Frame parent) {
     ProfileDialog dlg = new ProfileDialog(parent);
     dlg.setVisible(true);
     return dlg.getResult();
@@ -314,8 +326,8 @@ public class ProfileManager {
                   "profilemanager.exc.couldnotcreatedirectory", outDir.toString()));
             File outFile = new File(outDir, f.getName());
             if (outFile.exists())
-              throw new ProfileException(Resources.get("profilemanager.exc.fileexists", outFile
-                  .toString()));
+              throw new ProfileException(Resources.get("profilemanager.exc.fileexists",
+                  outFile.toString()));
 
             try {
               if (outFile.createNewFile()) {
@@ -326,23 +338,24 @@ public class ProfileManager {
                   os.write(b);
                 }
                 os.close();
+                is.close();
               } else {
                 log.warn("could not copy " + outFile);
               }
             } catch (FileNotFoundException e) {
-              throw new ProfileException(Resources.get("profilemanager.exc.filenotfound", f
-                  .toString()));
+              throw new ProfileException(Resources.get("profilemanager.exc.filenotfound",
+                  f.toString()));
             } catch (IOException e) {
-              throw new ProfileException(Resources
-                  .get("profilemanager.exc.ioerror", e.getMessage()));
+              throw new ProfileException(
+                  Resources.get("profilemanager.exc.ioerror", e.getMessage()));
             }
           }
         }
       }
     }
     if (!outDir.mkdir() && !outDir.isDirectory())
-      throw new ProfileException(Resources
-          .get("profilemanager.exc.couldnotcreatedirectory", outDir));
+      throw new ProfileException(
+          Resources.get("profilemanager.exc.couldnotcreatedirectory", outDir));
     settings.setProperty(PROFILE_PREFIX + name + NAME, name);
     settings.setProperty(PROFILE_PREFIX + name + DIRECTORY, name);
   }

@@ -22,10 +22,10 @@
 //
 package magellan.client.utils;
 
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -63,11 +63,11 @@ public class ProfileDialog extends JDialog {
   /**
    * Creates a new modal dialog.
    * 
-   * @see JDialog#JDialog(Window, String, ModalityType)
+   * @see JDialog#JDialog(Frame, String, boolean)
    * @param parent
    */
-  public ProfileDialog(Window parent) {
-    super(parent, Resources.get("profiledialog.window.caption"), ModalityType.APPLICATION_MODAL);
+  public ProfileDialog(Frame parent) {
+    super(parent, Resources.get("profiledialog.window.caption"), true);
 
     initGUI();
 
@@ -223,8 +223,9 @@ public class ProfileDialog extends JDialog {
     if (profiles.size() > 1) {
       String name = (String) profileList.getSelectedValue();
       int remove =
-          JOptionPane
-              .showConfirmDialog(this, Resources.get("profiledialog.inputdialog.remove.message",
+          JOptionPane.showConfirmDialog(
+              this,
+              Resources.get("profiledialog.inputdialog.remove.message",
                   ProfileManager.getProfileDirectory(name)));
       if (remove != JOptionPane.CANCEL_OPTION)
         if (ProfileManager.remove(name, remove == JOptionPane.YES_OPTION)) {

@@ -209,7 +209,7 @@ public class EresseaOrderParser implements OrderParser {
     addCommand(Resources.getOrderTranslation(EresseaConstants.O_PIRACY), new PiraterieReader());
     addCommand(Resources.getOrderTranslation(EresseaConstants.O_PREFIX), new PraefixReader());
     // normalerweise nicht erlaubt...
-    // 
+    //
     // addCommand(Resources.getOrderTranslation(EresseaConstants.O_REGION), new RegionReader());
     addCommand(Resources.getOrderTranslation(EresseaConstants.O_RECRUIT), new RekrutiereReader());
     addCommand(Resources.getOrderTranslation(EresseaConstants.O_RESERVE), new ReserviereReader());
@@ -1692,7 +1692,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      // 
+      //
       if (isString(t) && (getData().rules != null)
           && ((type = getData().rules.getItemType(t.getText())) != null)
           && (luxuryCategory != null) && luxuryCategory.equals(type.getCategory())) {
@@ -3225,11 +3225,11 @@ public class EresseaOrderParser implements OrderParser {
     // token.ttype = OrderToken.TT_STRING;
     //
     // OrderToken t = tokens.next();
-    //    
+    //
     // SpellSyntax ss = s.getSpellSyntax();
     // ss.reset();
     // SpellSyntaxToken sst = ss.getNextToken();
-    //   
+    //
     // retVal = readZaubereSyntax(t, sst);
     //
     // return retVal;
@@ -3242,15 +3242,15 @@ public class EresseaOrderParser implements OrderParser {
     // token.ttype = OrderToken.TT_KEYWORD;
     // token = tokens.next();
     // token.ttype = OrderToken.TT_ID;
-    //          
+    //
     // } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))) {
-    //          
+    //
     // } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
-    //          
+    //
     // } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_REGION))) {
-    //          
+    //
     // } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
-    //          
+    //
     // }
     // }
     // }
@@ -3934,7 +3934,8 @@ public class EresseaOrderParser implements OrderParser {
    */
   protected boolean isEmailAddress(String txt) {
     try {
-      new InternetAddress(txt, true);
+      @SuppressWarnings("unused")
+      InternetAddress foo = new InternetAddress(txt, true);
     } catch (AddressException e) {
       return false;
     }

@@ -116,8 +116,8 @@ public class JVMUtilities {
   public static final int MAXIMIZED_VERT = 4;
 
   /** DOCUMENT-ME */
-  public static final int MAXIMIZED_BOTH =
-      JVMUtilities.MAXIMIZED_VERT | JVMUtilities.MAXIMIZED_HORIZ;
+  public static final int MAXIMIZED_BOTH = JVMUtilities.MAXIMIZED_VERT
+      | JVMUtilities.MAXIMIZED_HORIZ;
 
   /**
    * This function calls Frame.getExtendedState (in java >= 1.4) to keep GUI consistent with java
@@ -156,8 +156,8 @@ public class JVMUtilities {
       return false;
 
     try {
-      aObj.getClass().getMethod("setExtendedState", new Class[] { Integer.TYPE })
-          .invoke(aObj, new Object[] { Integer.valueOf(state) });
+      aObj.getClass().getMethod("setExtendedState", new Class[] { Integer.TYPE }).invoke(aObj,
+          new Object[] { Integer.valueOf(state) });
 
       if (JVMUtilities.log.isDebugEnabled()) {
         JVMUtilities.log.debug("JVMUtitities : successfully called Window.setExtendedState("

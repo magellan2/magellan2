@@ -19,12 +19,10 @@ import magellan.library.utils.logging.Logger;
  */
 public class EresseaDate extends Date {
   private static final Logger log = Logger.getInstance(EresseaDate.class);
-  private static final String months_old[] =
-      { "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September",
-          "Oktober", "November", "Dezember" };
-  private static final String months_new[] =
-      { "Feldsegen", "Nebeltage", "Sturmmond", "Herdfeuer", "Eiswind", "Schneebann", "Blütenregen",
-          "Mond_der_milden_Winde", "Sonnenfeuer" };
+  private static final String months_old[] = { "Januar", "Februar", "März", "April", "Mai", "Juni",
+      "Juli", "August", "September", "Oktober", "November", "Dezember" };
+  private static final String months_new[] = { "Feldsegen", "Nebeltage", "Sturmmond", "Herdfeuer",
+      "Eiswind", "Schneebann", "Blütenregen", "Mond_der_milden_Winde", "Sonnenfeuer" };
 
   private static final int EPOCH1_START = 0;
   private static final int EPOCH2_START = 184;
@@ -32,7 +30,7 @@ public class EresseaDate extends Date {
 
   private int epoch = 1;
   private int startRound = 1;
-  private Random r=new Random();
+  private Random r = new Random();
 
   /**
    * Creates new EresseaDate.
@@ -172,8 +170,8 @@ public class EresseaDate extends Date {
         break;
 
       case TYPE_PHRASE_AND_SEASON: {
-        int random = r.nextInt(3); 
-          
+        int random = r.nextInt(3);
+
         String strWeekLong =
             Resources.get("rules.eresseadate.week_phrase." + (iWeek + 1) + "." + random);
         String strAge = Resources.get("rules.eresseadate.age_phrase." + getEpoch());

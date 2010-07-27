@@ -69,8 +69,8 @@ public class TreeBuilder {
   public static final int CREATE_ISLANDS = 16384;
 
   /** the mode controls which elements are displayed */
-  private int displayMode =
-      TreeBuilder.UNITS | TreeBuilder.BUILDINGS | TreeBuilder.SHIPS | TreeBuilder.COMMENTS;
+  private int displayMode = TreeBuilder.UNITS | TreeBuilder.BUILDINGS | TreeBuilder.SHIPS
+      | TreeBuilder.COMMENTS;
 
   // TODO hides fields form EmapOverviewPanel! */
   private Map<ID, TreeNode> regionNodes;

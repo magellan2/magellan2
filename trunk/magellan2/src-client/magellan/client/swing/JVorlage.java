@@ -610,10 +610,9 @@ public class JVorlage extends InternationalizedDialog {
           try {
             if (p.exitValue() != 0) {
               Object msgArgs[] = { Integer.valueOf(p.exitValue()) };
-              JOptionPane.showMessageDialog(this,
-                  (new java.text.MessageFormat(Resources.get("jvorlage.msg.execerror.text")))
-                      .format(msgArgs), Resources.get("jvorlage.msg.execerror.title"),
-                  JOptionPane.WARNING_MESSAGE);
+              JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
+                  .get("jvorlage.msg.execerror.text"))).format(msgArgs), Resources
+                  .get("jvorlage.msg.execerror.title"), JOptionPane.WARNING_MESSAGE);
             }
 
             break;

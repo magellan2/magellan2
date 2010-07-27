@@ -27,6 +27,10 @@ import javax.swing.text.PlainDocument;
  * To view a copy of the public domain dedication, visit
  * http://creativecommons.org/licenses/publicdomain/
  */
+/**
+ * @deprecated Unused
+ */
+@Deprecated
 public class JComboBoxCompletion extends PlainDocument {
   JComboBox comboBox;
   ComboBoxModel model;
@@ -43,6 +47,11 @@ public class JComboBoxCompletion extends PlainDocument {
 
   private boolean mayEditUnknownItems = false;
 
+  /**
+   * Creates a completion and adds it as listener to the combobox
+   * 
+   * @param comboBox
+   */
   public JComboBoxCompletion(final JComboBox comboBox) {
     this(comboBox, false);
   }
@@ -115,11 +124,19 @@ public class JComboBoxCompletion extends PlainDocument {
     highlightCompletedText(0);
   }
 
+  /**
+   * Registers a new Completion with the comboBox as listener. Which is not very nice, because it is
+   * never removed again...
+   * 
+   * @param comboBox
+   */
   public static void enable(JComboBox comboBox) {
     // has to be editable
     comboBox.setEditable(true);
+    // FIXME the listener is never removed from comboBox
     // change the editor's document
-    new JComboBoxCompletion(comboBox);
+    @SuppressWarnings("unused")
+    JComboBoxCompletion foo = new JComboBoxCompletion(comboBox);
   }
 
   void configureEditor(ComboBoxEditor newEditor) {

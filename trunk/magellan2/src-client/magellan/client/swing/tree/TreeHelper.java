@@ -90,40 +90,39 @@ public class TreeHelper {
   public static final int TAGGABLE4 = 10;
   public static final int TAGGABLE5 = 11;
 
-  private static final Comparator<Building> buildingCmp =
-      new BuildingTypeComparator(new NameComparator(IDComparator.DEFAULT));
-  private static final Comparator<Ship> shipComparator =
-      new ShipFactionComparator(new ShipTypeComparator(new NameComparator(IDComparator.DEFAULT)));
+  private static final Comparator<Building> buildingCmp = new BuildingTypeComparator(
+      new NameComparator(IDComparator.DEFAULT));
+  private static final Comparator<Ship> shipComparator = new ShipFactionComparator(
+      new ShipTypeComparator(new NameComparator(IDComparator.DEFAULT)));
   private static final Comparator<Unit> healthCmp = new UnitHealthComparator(null);
 
   // pavkovic 2004.01.04: we dont want to sort groups by group id but name;
   // if they are sorted by id this would make tree hierarchy
   // (trustlevel, group) somehow uninteresting
   // Side effect: Groups are sorted by name
-  private static final Comparator<Unit> groupCmp =
-      new UnitGroupComparator(new NameComparator(null), null, null);
+  private static final Comparator<Unit> groupCmp = new UnitGroupComparator(
+      new NameComparator(null), null, null);
 
-  private static final Comparator<Unit> factionDisguisedCmp =
-      new UnitFactionDisguisedComparator(null);
+  private static final Comparator<Unit> factionDisguisedCmp = new UnitFactionDisguisedComparator(
+      null);
 
   private static final Comparator<Unit> combatCmp = new UnitCombatStatusComparator(null);
-  private static final Comparator<Unit> factionCmp =
-      new UnitFactionComparator(new FactionTrustComparator(NameComparator.DEFAULT), null);
-  private static final Comparator<Unit> guiseFactionCmp =
-      new UnitFactionDisguisedComparator(new UnitGuiseFactionComparator(new FactionTrustComparator(
-          NameComparator.DEFAULT), null));
+  private static final Comparator<Unit> factionCmp = new UnitFactionComparator(
+      new FactionTrustComparator(NameComparator.DEFAULT), null);
+  private static final Comparator<Unit> guiseFactionCmp = new UnitFactionDisguisedComparator(
+      new UnitGuiseFactionComparator(new FactionTrustComparator(NameComparator.DEFAULT), null));
 
   private static final Comparator<Unit> trustlevelCmp = UnitTrustComparator.DEFAULT_COMPARATOR;
-  private static final Comparator<Taggable> taggableCmp =
-      new TaggableComparator(CRParser.TAGGABLE_STRING, null);
-  private static final Comparator<Taggable> taggableCmp2 =
-      new TaggableComparator(CRParser.TAGGABLE_STRING2, null);
-  private static final Comparator<Taggable> taggableCmp3 =
-      new TaggableComparator(CRParser.TAGGABLE_STRING3, null);
-  private static final Comparator<Taggable> taggableCmp4 =
-      new TaggableComparator(CRParser.TAGGABLE_STRING4, null);
-  private static final Comparator<Taggable> taggableCmp5 =
-      new TaggableComparator(CRParser.TAGGABLE_STRING5, null);
+  private static final Comparator<Taggable> taggableCmp = new TaggableComparator(
+      CRParser.TAGGABLE_STRING, null);
+  private static final Comparator<Taggable> taggableCmp2 = new TaggableComparator(
+      CRParser.TAGGABLE_STRING2, null);
+  private static final Comparator<Taggable> taggableCmp3 = new TaggableComparator(
+      CRParser.TAGGABLE_STRING3, null);
+  private static final Comparator<Taggable> taggableCmp4 = new TaggableComparator(
+      CRParser.TAGGABLE_STRING4, null);
+  private static final Comparator<Taggable> taggableCmp5 = new TaggableComparator(
+      CRParser.TAGGABLE_STRING5, null);
 
   /**
    * Creates the subtree for one region with units (sorted by faction or other criteria), ships,

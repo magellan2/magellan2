@@ -50,8 +50,8 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
   // protected ItemNodeWrapperPreferencesAdapter adapter=null;
   protected boolean showRegionItemAmount = false;
   protected DetailsNodeWrapperDrawPolicy adapter;
-  protected static final java.text.NumberFormat weightNumberFormat =
-      java.text.NumberFormat.getNumberInstance();
+  protected static final java.text.NumberFormat weightNumberFormat = java.text.NumberFormat
+      .getNumberInstance();
 
   /**
    * Creates new ItemNodeWrapper

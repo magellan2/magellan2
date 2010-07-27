@@ -402,8 +402,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
         fontNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
       } catch (NullPointerException e) {
         // FIXME(pavkovic) 2003.03.17: This is bad!
-        log
-            .error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
+        log.error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
         fontNames = new String[0];
       }
 

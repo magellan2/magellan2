@@ -196,8 +196,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /** DOCUMENT-ME */
   public static final int COLLAPSE_ONLY_EXPANDED = 2;
-  private int collapseMode =
-      EMapOverviewPanel.COLLAPSE_FLAG | EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED | (3 << 2);
+  private int collapseMode = EMapOverviewPanel.COLLAPSE_FLAG
+      | EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED | (3 << 2);
   private List<TreeNode> lastExpanded = new LinkedList<TreeNode>();
   private Set<TreeNode> collapsedNodes = new HashSet<TreeNode>();
   private Set<TreeNode> collapseInfo = new HashSet<TreeNode>();
@@ -452,7 +452,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     // for (SelectionEntry se : SelectionHistory.getHistory()){
     // historyItems[i++]=se.getActiveObject();
     // }
-    //    
+    //
     // lstHistory.setListData(historyItems);
     lstHistory.setListData(SelectionHistory.getHistory().toArray());
     // if (lstHistory.getModel().getSize()>0)
@@ -2022,8 +2022,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     /**
      * Fiete Default fuer den Modus auf UNITS | SHIPS | BUILDINGS |COMMENTS setzen nach Vorgabe stm
      */
-    treeBuilder.setDisplayMode(Integer.parseInt(settings.getProperty(
-        "EMapOverviewPanel.filters",
+    treeBuilder.setDisplayMode(Integer.parseInt(settings.getProperty("EMapOverviewPanel.filters",
         Integer.valueOf(
             TreeBuilder.UNITS | TreeBuilder.BUILDINGS | TreeBuilder.SHIPS | TreeBuilder.COMMENTS)
             .toString())));

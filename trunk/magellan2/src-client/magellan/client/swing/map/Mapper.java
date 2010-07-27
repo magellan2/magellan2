@@ -86,9 +86,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * a mapping for int positions of planes to logical names. Will be used for magellan_desktop.ini
    */
-  public static final String PLANE_STRINGS[] =
-      { "BACKGROUND", "BEHIND", "REGION", "BORDER", "BUILDING", "SHIP", "TEXT", "PATH",
-          "HIGHLIGHT", "MARKINGS", "SCHEMES", "SIGNS" };
+  public static final String PLANE_STRINGS[] = { "BACKGROUND", "BEHIND", "REGION", "BORDER",
+      "BUILDING", "SHIP", "TEXT", "PATH", "HIGHLIGHT", "MARKINGS", "SCHEMES", "SIGNS" };
 
   /** Plane for general background renderer, like background image renderer */
   public static final int PLANE_BACKGROUND = 0;

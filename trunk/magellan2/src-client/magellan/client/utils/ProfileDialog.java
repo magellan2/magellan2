@@ -223,9 +223,8 @@ public class ProfileDialog extends JDialog {
     if (profiles.size() > 1) {
       String name = (String) profileList.getSelectedValue();
       int remove =
-          JOptionPane.showConfirmDialog(
-              this,
-              Resources.get("profiledialog.inputdialog.remove.message",
+          JOptionPane
+              .showConfirmDialog(this, Resources.get("profiledialog.inputdialog.remove.message",
                   ProfileManager.getProfileDirectory(name)));
       if (remove != JOptionPane.CANCEL_OPTION)
         if (ProfileManager.remove(name, remove == JOptionPane.YES_OPTION)) {

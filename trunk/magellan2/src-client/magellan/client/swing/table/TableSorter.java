@@ -347,7 +347,7 @@ public class TableSorter extends AbstractTableModel {
         return compareTo(obj) == 0;
       else
         return false;
-  }
+    }
 
     @Override
     public int hashCode() {
@@ -385,14 +385,14 @@ public class TableSorter extends AbstractTableModel {
 
       // We can map a cell event through to the view without widening
       // when the following conditions apply:
-      // 
+      //
       // a) all the changes are on one row (e.getFirstRow() == e.getLastRow()) and,
       // b) all the changes are in one column (column != TableModelEvent.ALL_COLUMNS) and,
       // c) we are not sorting on that column (getSortingStatus(column) == NOT_SORTED) and,
       // d) a reverse lookup will not trigger a sort (modelToView != null)
       //
       // Note: INSERT and DELETE events fail this test as they have column == ALL_COLUMNS.
-      // 
+      //
       // The last check, for (modelToView != null) is to see if modelToView
       // is already allocated. If we don't do this check; sorting can become
       // a performance bottleneck for applications where cells

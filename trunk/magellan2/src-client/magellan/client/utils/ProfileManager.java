@@ -135,16 +135,15 @@ public class ProfileManager {
     if (getCurrentProfile() == null) {
       // try to create a default directory 20 times
       Random r = new Random();
-      String nr = "";
-      for (int i = 0; i < 20 && !getProfileDirectory(DEFAULT + nr).mkdir();) {
-        nr = "" + r.nextInt();
+      File dir = new File(getSettingsDirectory(), DEFAULT);
+      for (int i = 0; i < 20 && !dir.mkdir();) {
+        dir = new File(getSettingsDirectory(), DEFAULT + r.nextInt());
       }
-      if (getProfileDirectory(DEFAULT + nr).isDirectory()
-          && getProfileDirectory(DEFAULT + nr).canWrite()) {
-        settings.setProperty(CURRENT_PROFILE, DEFAULT + nr);
+      if (dir.isDirectory() && dir.canWrite()) {
+        settings.setProperty(CURRENT_PROFILE, dir.getName());
         settings.setProperty(ASK_ALWAYS, "1");
-        settings.setProperty(PROFILE_PREFIX + DEFAULT + nr + NAME, DEFAULT);
-        settings.setProperty(PROFILE_PREFIX + DEFAULT + nr + DIRECTORY, DEFAULT);
+        settings.setProperty(PROFILE_PREFIX + dir.getName() + NAME, dir.getName());
+        settings.setProperty(PROFILE_PREFIX + dir.getName() + DIRECTORY, dir.getName());
         copyLegacy();
       } else {
         log.warn("could not create profile directory" + getProfileDirectory(DEFAULT));
@@ -326,8 +325,8 @@ public class ProfileManager {
                   "profilemanager.exc.couldnotcreatedirectory", outDir.toString()));
             File outFile = new File(outDir, f.getName());
             if (outFile.exists())
-              throw new ProfileException(Resources.get("profilemanager.exc.fileexists",
-                  outFile.toString()));
+              throw new ProfileException(Resources.get("profilemanager.exc.fileexists", outFile
+                  .toString()));
 
             try {
               if (outFile.createNewFile()) {
@@ -343,19 +342,19 @@ public class ProfileManager {
                 log.warn("could not copy " + outFile);
               }
             } catch (FileNotFoundException e) {
-              throw new ProfileException(Resources.get("profilemanager.exc.filenotfound",
-                  f.toString()));
+              throw new ProfileException(Resources.get("profilemanager.exc.filenotfound", f
+                  .toString()));
             } catch (IOException e) {
-              throw new ProfileException(
-                  Resources.get("profilemanager.exc.ioerror", e.getMessage()));
+              throw new ProfileException(Resources
+                  .get("profilemanager.exc.ioerror", e.getMessage()));
             }
           }
         }
       }
     }
     if (!outDir.mkdir() && !outDir.isDirectory())
-      throw new ProfileException(
-          Resources.get("profilemanager.exc.couldnotcreatedirectory", outDir));
+      throw new ProfileException(Resources
+          .get("profilemanager.exc.couldnotcreatedirectory", outDir));
     settings.setProperty(PROFILE_PREFIX + name + NAME, name);
     settings.setProperty(PROFILE_PREFIX + name + DIRECTORY, name);
   }

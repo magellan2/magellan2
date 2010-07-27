@@ -737,9 +737,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
         for (int i = 0; i < 4; i++) {
           con.gridx = 0;
           con.gridy = i;
-          this.add(
-              boxes[i] =
-                  new JCheckBox(Resources.get("tree.iconadapter.styles.color." + String.valueOf(i))),
+          this.add(boxes[i] =
+              new JCheckBox(Resources.get("tree.iconadapter.styles.color." + String.valueOf(i))),
               con);
           con.gridx = 1;
           this.add(buttons[i] = new JButton(" "), con);

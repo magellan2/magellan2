@@ -161,8 +161,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
           s.getModifiedOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
       if (sailing != null) {
         rad +=
-            Math
-                .max(0, (sailing.getLevel() - (1 + s.getShipType().getCaptainSkillLevel()) / 2) / 6);
+            Math.max(0, (sailing.getLevel() - (1 + s.getShipType().getCaptainSkillLevel()) / 2) / 6);
       }
     }
 

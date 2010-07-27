@@ -518,8 +518,8 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       StringBuffer buf = new StringBuffer();
 
       Object args[] = { Integer.valueOf(otherShortcuts.size()) };
-      buf.append(MessageFormat.format(
-          Resources.get("desktop.magellandesktop.prefs.shortcuts.others"), args));
+      buf.append(MessageFormat.format(Resources
+          .get("desktop.magellandesktop.prefs.shortcuts.others"), args));
       buf.append('\n');
       buf.append('\n');
 

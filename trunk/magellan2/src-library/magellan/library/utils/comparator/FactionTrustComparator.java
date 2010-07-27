@@ -49,13 +49,12 @@ public class FactionTrustComparator implements Comparator<Faction> {
    */
   // public static final FactionTrustComparator DEFAULT_COMPARATOR = new
   // FactionTrustComparator(null);
-  public final static FactionTrustComparator DEFAULT_COMPARATOR =
-      new FactionTrustComparator(new NameComparator(IDComparator.DEFAULT));
+  public final static FactionTrustComparator DEFAULT_COMPARATOR = new FactionTrustComparator(
+      new NameComparator(IDComparator.DEFAULT));
 
   /** A convenient constant providing a comparator that just compares the exact trust value */
-  public static final FactionTrustComparator DETAILED_COMPARATOR =
-      new FactionTrustComparator(new FactionDetailComparator(new NameComparator(
-          IDComparator.DEFAULT)));
+  public static final FactionTrustComparator DETAILED_COMPARATOR = new FactionTrustComparator(
+      new FactionDetailComparator(new NameComparator(IDComparator.DEFAULT)));
 
   /** The "privileged" trust level */
   public static final int PRIVILEGED = Faction.TL_PRIVILEGED;

@@ -3122,8 +3122,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     return cache1.movementPathIsPassive.booleanValue();
   }
 
-  private static final MessageType transportMessageType =
-      new MessageType(IntegerID.create(891175669));
+  private static final MessageType transportMessageType = new MessageType(IntegerID
+      .create(891175669));
 
   private boolean evaluatePastMovementPassive() {
     final Unit u = this;

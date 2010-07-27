@@ -38,8 +38,8 @@ public class CenterLayout implements LayoutManager {
   public static final CenterLayout SPAN_Y_LAYOUT = new CenterLayout(CenterLayout.SPAN_Y);
 
   /** A layout that spans the x and y axis. */
-  public static final CenterLayout SPAN_BOTH_LAYOUT =
-      new CenterLayout(CenterLayout.SPAN_X | CenterLayout.SPAN_Y);
+  public static final CenterLayout SPAN_BOTH_LAYOUT = new CenterLayout(CenterLayout.SPAN_X
+      | CenterLayout.SPAN_Y);
 
   private CenterLayout(int mode) {
     this.mode = mode;

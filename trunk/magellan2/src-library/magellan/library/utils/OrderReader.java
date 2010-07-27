@@ -59,19 +59,19 @@ public class OrderReader {
       data = new CompleteData(new GenericRules());
     }
 
-      // clear the caches in game data
-      if (data.getUnits() != null) {
-        for (Unit u : data.getUnits()) {
-          u.clearCache();
-        }
-      }
-
-      if (data.getRegions() != null) {
-        for (Region uc : data.getRegions()) {
-          uc.clearCache();
-        }
+    // clear the caches in game data
+    if (data.getUnits() != null) {
+      for (Unit u : data.getUnits()) {
+        u.clearCache();
       }
     }
+
+    if (data.getRegions() != null) {
+      for (Region uc : data.getRegions()) {
+        uc.clearCache();
+      }
+    }
+  }
 
   /**
    * Reads the orders from the specified Reader. Orders for multiple factions can be read. Region

@@ -11,7 +11,7 @@ public class BoxTransformer implements ReportTransformer {
 
   /**
    * Creates a new Transformer the puts all coordinates into the boxes.
-   *
+   * 
    * @throws NullPointerException if boxes is <code>null</code>
    */
   public BoxTransformer(MapTransformer.BBoxes boxes) {

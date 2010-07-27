@@ -66,9 +66,9 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
     }
   }
 
-  private static final String propertiesToRemove[] =
-      { "AgingProperties.numberofsessions", "AgingProperties.sessionsofkeys",
-          "Client.checkVersionOnStartup", "EMapDetailsPanel.units.showDetailedSkills" };
+  private static final String propertiesToRemove[] = { "AgingProperties.numberofsessions",
+      "AgingProperties.sessionsofkeys", "Client.checkVersionOnStartup",
+      "EMapDetailsPanel.units.showDetailedSkills" };
 
   private boolean doRemoveProperties(String name) {
     for (String property : SelfCleaningProperties.propertiesToRemove) {

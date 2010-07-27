@@ -1238,8 +1238,8 @@ public class EresseaOrderCompleter implements Completer {
     // }
 
     if ((someUnit.getModifiedBuilding() != null)
-        && someUnit.getModifiedBuilding().getType()
-            .equals(data.rules.getBuildingType(EresseaConstants.B_ACADEMY))) {
+        && someUnit.getModifiedBuilding().getType().equals(
+            data.rules.getBuildingType(EresseaConstants.B_ACADEMY))) {
       if (c2 == 0) {
         // cost = 50;
         c2 = 50;
@@ -1293,8 +1293,8 @@ public class EresseaOrderCompleter implements Completer {
       }
 
       if (!completerSettingsProvider.getLimitMakeCompletion()
-          || (Units.getContainerPrivilegedUnitItem(region,
-              data.rules.getItemType(EresseaConstants.I_USTONE)) != null)) {
+          || (Units.getContainerPrivilegedUnitItem(region, data.rules
+              .getItemType(EresseaConstants.I_USTONE)) != null)) {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
             " "));
       }
@@ -1335,8 +1335,8 @@ public class EresseaOrderCompleter implements Completer {
 
     if (hasSkill(unit, EresseaConstants.S_STRASSENBAU)
         && (!completerSettingsProvider.getLimitMakeCompletion() || (Units
-            .getContainerPrivilegedUnitItem(region,
-                data.rules.getItemType(EresseaConstants.I_USTONE)) != null)) && canMake) {
+            .getContainerPrivilegedUnitItem(region, data.rules
+                .getItemType(EresseaConstants.I_USTONE)) != null)) && canMake) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ROAD), " "));
     }
 
@@ -1445,8 +1445,8 @@ public class EresseaOrderCompleter implements Completer {
 
   public void cmpltNach() {
     addDirections(" ");
-    addSurroundingRegions(
-        getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(unit, true), " ");
+    addSurroundingRegions(getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(unit,
+        true), " ");
   }
 
   public void cmpltNachDirection() {
@@ -1587,8 +1587,8 @@ public class EresseaOrderCompleter implements Completer {
 
       // if unit doesn't have silver, but poolsilver is available
       if ((unit.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) == null)
-          && (Units.getContainerPrivilegedUnitItem(region,
-              data.rules.getItemType(EresseaConstants.I_USILVER)) != null)) {
+          && (Units.getContainerPrivilegedUnitItem(region, data.rules
+              .getItemType(EresseaConstants.I_USILVER)) != null)) {
         completions.add(new Completion(data.rules.getItemType(EresseaConstants.I_USILVER)
             .getOrderName()));
       }
@@ -1629,8 +1629,8 @@ public class EresseaOrderCompleter implements Completer {
   public void cmpltRoute() {
     addDirections(" ");
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PAUSE), " "));
-    addSurroundingRegions(
-        getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(unit, true), " ");
+    addSurroundingRegions(getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(unit,
+        true), " ");
   }
 
   public void cmpltRouteDirection() {
@@ -1785,9 +1785,8 @@ public class EresseaOrderCompleter implements Completer {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
             " ", Completion.DEFAULT_PRIORITY - 1));
       }
-      addFilteredSpells(unit, far,
-          region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)), combat,
-          opening, closing);
+      addFilteredSpells(unit, far, region.getType().equals(
+          data.rules.getRegionType(EresseaConstants.RT_OCEAN)), combat, opening, closing);
     }
 
     // here we go for spells spoken through the familar
@@ -2124,8 +2123,8 @@ public class EresseaOrderCompleter implements Completer {
             final ItemType actItemType = actUnitItem.getItemType();
             if (items.containsKey(actItemType)) {
               // our List contains the ItemType already
-              items.put(actItemType,
-                  Integer.valueOf((items.get(actItemType)).intValue() + actUnitItem.getAmount()));
+              items.put(actItemType, Integer.valueOf((items.get(actItemType)).intValue()
+                  + actUnitItem.getAmount()));
             } else {
               // new ItemType on our List
               items.put(actItemType, Integer.valueOf(actUnitItem.getAmount()));

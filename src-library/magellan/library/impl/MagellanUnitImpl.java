@@ -37,7 +37,6 @@ import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.HasRegion;
 import magellan.library.ID;
-import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Region;
@@ -50,6 +49,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.AttackRelation;
 import magellan.library.relation.CombatStatusRelation;
@@ -67,7 +67,6 @@ import magellan.library.relation.TransportRelation;
 import magellan.library.relation.UnitContainerRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemType;
-import magellan.library.rules.MessageType;
 import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Cache;
@@ -122,6 +121,108 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /** Comments modifiable by the user. The comments are represented as String objects. */
   /** analog to comments in unitcontainer **/
   private List<String> comments = null;
+
+  /** The number of persons of the unit */
+  private int persons = 1;
+  /** guard flag (only one flag left in modern Eressea) */
+  private int guard = 0;
+  /** The building that is besieged by this unit */
+  private Building siege = null; // belagert
+  /** stealth level */
+  private int stealth = -1; // getarnt
+  /** the current amount of aura */
+  private int aura = -1;
+  /** the maximum amount of aura */
+  private int auraMax = -1;
+  /** combat status code */
+  private int combatStatus = -1; // Kampfstatus
+  /** HELFE KÄMPFE NICHT status */
+  private boolean unaided = false; // if attacked, this unit will not be helped by allied units
+  /** faction hidden (PARTEITARNUNG) */
+  private boolean hideFaction = false; // Parteitarnung
+  /** follows tag */
+  private Unit follows = null; // folgt-Tag
+  /** hero tag */
+  private boolean isHero = false; // hero-tag
+  /** health tag */
+  private String health = null;
+  /** hunger tag */
+  private boolean isStarving = false; // hunger-Tag
+
+  // (stm 09-06-08) had to get rid of the soft reference again as it leads to problems with
+  // updates of unit relations.
+  // protected SoftReference<Cache> cacheReference = null;
+  /**
+   * The cache object containing cached information that may be not related enough to be
+   * encapsulated as a function and is time consuming to gather.
+   */
+  private Cache cache;
+  /**
+   * Messages directly sent to this unit. The list contains instances of class <tt>Message</tt> with
+   * type -1 and only the text set.
+   */
+  private List<Message> unitMessages = null;
+  /** A map for unknown tags */
+  private Map<String, String> tagMap = null;
+  /**
+   * A list containing <tt>String</tt> objects, specifying effects on this <tt>Unit</tt> object.
+   */
+  private List<String> effects = null;
+  /** true indicates that the unit has orders confirmed by an user. */
+  private boolean ordersConfirmed = false;
+  /** all the unit's skills */
+  private Map<StringID, Skill> skills = null; // maps SkillType.getID() objects to Skill objects
+  private boolean skillsCopied = false;
+  /**
+   * The items carried by this unit. The keys are the IDs of the item's type, the values are the
+   * Item objects themselves.
+   */
+  private Map<StringID, Item> items = null;
+  /**
+   * The spells known to this unit. The keys are the IDs of the spells, the values are the Spell
+   * objects themselves.
+   */
+  private Map<ID, Spell> spells = null;
+  /**
+   * Contains the spells this unit has set for use in a combat. This map contains data if a unit has
+   * a magic skill and has actively set combat spells. The values in this map are objects of type
+   * CombatSpell, the keys are their ids.
+   */
+  private Map<ID, CombatSpell> combatSpells = null;
+  /** The group this unit belongs to. */
+  private Group group = null;
+  /** The previous id of this unit. */
+  private UnitID alias = null;
+  /**
+   * Indicates that this unit belongs to a different faction than it pretends to. A unit cannot
+   * disguise itself as a different faction and at the same time be a spy of another faction,
+   * therefore, setting this attribute to true results in having the guiseFaction attribute set to
+   * null.
+   */
+  private boolean isSpy = false;
+  /**
+   * If this unit is disguised and pretends to belong to a different faction this field holds that
+   * faction, else it is null.
+   */
+  private Faction guiseFaction = null;
+  /** The temp id this unit had before becoming a real unit. */
+  private UnitID tempID = null;
+  /** The region this unit is currently in. */
+  protected Region region = null;
+  /** The faction this unit belongs to. */
+  private Faction faction = null;
+  /** The building this unit stays in. */
+  private Building building = null;
+  /** The ship this unit is on. */
+  private Ship ship = null;
+  // units are sorted in unit containers with this index
+  private int sortIndex = -1;
+  /** A unit dependent prefix to be prepended to this faction's race name. */
+  private String raceNamePrefix = null;
+  /** A map containing all temp units created by this unit. */
+  private Map<ID, TempUnit> tempUnits = null;
+  /** A collection view of the temp units. */
+  private Collection<TempUnit> tempUnitCollection = null;
 
   /**
    * @see magellan.library.Unit#ordersAreNull()
@@ -288,98 +389,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     return Collections.emptyList();
   }
 
-  /** The number of persons of the unit */
-  private int persons = 1;
-
-  /** DOCUMENT-ME */
-  private int guard = 0;
-
-  /** DOCUMENT-ME */
-  private Building siege = null; // belagert
-
-  /** DOCUMENT-ME */
-  private int stealth = -1; // getarnt
-
-  /** the current amount of aura */
-  private int aura = -1;
-
-  /** the maximum amount of aura */
-  private int auraMax = -1;
-
-  /** DOCUMENT-ME */
-  private int combatStatus = -1; // Kampfstatus
-
-  /** DOCUMENT-ME */
-  private boolean unaided = false; // if attacked, this unit will not be helped by allied units
-
-  /** DOCUMENT-ME */
-  private boolean hideFaction = false; // Parteitarnung
-
-  /** DOCUMENT-ME */
-  private Unit follows = null; // folgt-Tag
-
-  /** DOCUMENT-ME */
-  private boolean isHero = false; // hero-tag
-
-  /** DOCUMENT-ME */
-  private String health = null;
-
-  /** DOCUMENT-ME */
-  private boolean isStarving = false; // hunger-Tag
-
-  // (stm 09-06-08) had to get rid of the soft reference again as it leads to problems with
-  // updates of unit relations.
-  // protected SoftReference<Cache> cacheReference = null;
-
-  /**
-   * The cache object containing cached information that may be not related enough to be
-   * encapsulated as a function and is time consuming to gather.
-   */
-  private Cache cache;
-
-  /**
-   * Messages directly sent to this unit. The list contains instances of class <tt>Message</tt> with
-   * type -1 and only the text set.
-   */
-  private List<Message> unitMessages = null;
-
-  /** A map for unknown tags */
-  private Map<String, String> tagMap = null;
-
-  /**
-   * A list containing <tt>String</tt> objects, specifying effects on this <tt>Unit</tt> object.
-   */
-  private List<String> effects = null;
-
-  /** true indicates that the unit has orders confirmed by an user. */
-  private boolean ordersConfirmed = false;
-
-  /** DOCUMENT-ME */
-  private Map<StringID, Skill> skills = null; // maps SkillType.getID() objects to Skill objects
-  private boolean skillsCopied = false;
-
-  /**
-   * The items carried by this unit. The keys are the IDs of the item's type, the values are the
-   * Item objects themselves.
-   */
-  private Map<StringID, Item> items = null;
-
-  /**
-   * The spells known to this unit. The keys are the IDs of the spells, the values are the Spell
-   * objects themselves.
-   */
-  private Map<ID, Spell> spells = null;
-
-  /**
-   * Contains the spells this unit has set for use in a combat. This map contains data if a unit has
-   * a magic skill and has actively set combat spells. The values in this map are objects of type
-   * CombatSpell, the keys are their ids.
-   */
-  private Map<ID, CombatSpell> combatSpells = null;
-
-  /** The group this unit belongs to. */
-  private Group group = null;
-
   /**
    * Sets the group this unit belongs to.
    * 
@@ -405,9 +414,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public Group getGroup() {
     return group;
   }
-
-  /** The previous id of this unit. */
-  private UnitID alias = null;
 
   /**
    * Sets an alias id for this unit.
@@ -437,14 +443,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Indicates that this unit belongs to a different faction than it pretends to. A unit cannot
-   * disguise itself as a different faction and at the same time be a spy of another faction,
-   * therefore, setting this attribute to true results in having the guiseFaction attribute set to
-   * null.
-   */
-  private boolean isSpy = false;
-
-  /**
    * Sets whether is unit really belongs to its unit or only pretends to do so. A unit cannot
    * disguise itself as a different faction and at the same time be a spy of another faction,
    * therefore, setting this attribute to true results in having the guiseFaction attribute set to
@@ -467,12 +465,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public boolean isSpy() {
     return isSpy;
   }
-
-  /**
-   * If this unit is disguised and pretends to belong to a different faction this field holds that
-   * faction, else it is null.
-   */
-  private Faction guiseFaction = null;
 
   /**
    * Sets the faction this unit pretends to belong to. A unit cannot disguise itself as a different
@@ -513,9 +505,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     return i;
   }
 
-  /** The temp id this unit had before becoming a real unit. */
-  private UnitID tempID = null;
-
   /**
    * Sets the temp id this unit had before becoming a real unit.
    */
@@ -532,9 +521,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public UnitID getTempID() {
     return tempID;
   }
-
-  /** The region this unit is currently in. */
-  protected Region region = null;
 
   /**
    * Sets the region this unit is in. If this unit already has a different region set it removes
@@ -561,9 +547,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     return region;
   }
 
-  /** The faction this unit belongs to. */
-  private Faction faction = null;
-
   /**
    * Sets the faction for this unit. If this unit already has a different faction set it removes
    * itself from the collection of units in that faction.
@@ -589,9 +572,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     return faction;
   }
 
-  /** The building this unit stays in. */
-  private Building building = null;
-
   /**
    * Sets the building this unit is staying in. If the unit already is in another building this
    * method removes it from the unit collection of that building.
@@ -614,9 +594,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public Building getBuilding() {
     return building;
   }
-
-  /** The ship this unit is on. */
-  private Ship ship = null;
 
   /**
    * Sets the ship this unit is on. If the unit already is on another ship this method removes it
@@ -641,9 +618,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     return ship;
   }
 
-  // units are sorted in unit containers with this index
-  private int sortIndex = -1;
-
   /**
    * Sets an index indicating how instances of class are sorted in the report.
    */
@@ -657,9 +631,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public int getSortIndex() {
     return sortIndex;
   }
-
-  /** A unit dependent prefix to be prepended to this faction's race name. */
-  private String raceNamePrefix = null;
 
   /**
    * Sets the unit dependent prefix for the race name.
@@ -728,12 +699,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       return Resources.get("unit.race.personen.name");
     return race.getName();
   }
-
-  /** A map containing all temp units created by this unit. */
-  private Map<ID, TempUnit> tempUnits = null;
-
-  /** A collection view of the temp units. */
-  private Collection<TempUnit> tempUnitCollection = null;
 
   /**
    * Returns the child temp units created by this unit's orders.
@@ -2452,7 +2417,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     /**
      * Returns the number of orders (lines).
      * 
-     * @return
+     * @return The number of orders
      */
     public int getSize() {
       return (orders == null) ? 0 : orders.size();
@@ -3111,97 +3076,22 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Checks if the unit's movement was passive (transported or shipped).
    * 
-   * @return
+   * @return <code>true</code> if the unit's past movement was passive
+   * @deprecated Use {@link #isPastMovementPassive(GameSpecificStuff)}
    */
+  @Deprecated
   public boolean isPastMovementPassive() {
+    return isPastMovementPassive(getRegion().getData().getGameSpecificStuff());
+  }
+
+  public boolean isPastMovementPassive(GameSpecificStuff gameSpecificStuff) {
     final Cache cache1 = getCache();
     if (cache1.movementPathIsPassive == null) {
-      cache1.movementPathIsPassive = evaluatePastMovementPassive() ? Boolean.TRUE : Boolean.FALSE;
+      cache1.movementPathIsPassive =
+          Boolean.valueOf(gameSpecificStuff.getMovementEvaluator().isPastMovementPassive(this));
     }
 
     return cache1.movementPathIsPassive.booleanValue();
-  }
-
-  private static final MessageType transportMessageType = new MessageType(IntegerID
-      .create(891175669));
-
-  private boolean evaluatePastMovementPassive() {
-    final Unit u = this;
-    if (u.getShip() != null) {
-      if (u.equals(u.getShip().getOwnerUnit())) {
-        // unit is on ship and the owner
-        if (MagellanUnitImpl.log.isDebugEnabled()) {
-          MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):false on ship");
-        }
-
-        return false;
-      }
-
-      // unit is on a ship and not the owner
-      if (MagellanUnitImpl.log.isDebugEnabled()) {
-        MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):true on ship");
-      }
-
-      return true;
-    }
-
-    // we assume a transportation to be passive, if
-    // there is no message of type 891175669
-    if (u.getFaction() == null) {
-      if (MagellanUnitImpl.log.isDebugEnabled()) {
-        MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):false no faction");
-      }
-
-      return false;
-    }
-
-    if (u.getFaction().getMessages() == null) {
-      // faction has no message at all
-      if (MagellanUnitImpl.log.isDebugEnabled()) {
-        MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):false no faction");
-      }
-
-      return true;
-    }
-
-    for (Message m : u.getFaction().getMessages()) {
-      if (false) {
-        if (MagellanUnitImpl.log.isDebugEnabled()) {
-          if (MagellanUnitImpl.transportMessageType.equals(m.getMessageType())) {
-            MagellanUnitImpl.log.debug("PathCellRenderer(" + u + ") Message " + m);
-
-            if ((m.getAttributes() != null) && (m.getAttributes().get("unit") != null)) {
-              MagellanUnitImpl.log.debug("PathCellRenderer(" + u + ") Unit   "
-                  + m.getAttributes().get("unit"));
-              // FIXME actually it should be creatUnitID(*, 10, data.base), but it doesn't matter
-              // here
-              MagellanUnitImpl.log.debug("PathCellRenderer(" + u + ") UnitID "
-                  + UnitID.createUnitID(m.getAttributes().get("unit"), 10));
-            }
-          }
-        }
-      }
-
-      if (MagellanUnitImpl.transportMessageType.equals(m.getMessageType())
-          && (m.getAttributes() != null) && (m.getAttributes().get("unit") != null)
-          && u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) { // FIXME
-        // 10,
-        // data.base
-        // found a transport message; this is only valid in
-        // units with active movement
-        if (MagellanUnitImpl.log.isDebugEnabled()) {
-          MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):false with message " + m);
-        }
-
-        return false;
-      }
-    }
-
-    if (MagellanUnitImpl.log.isDebugEnabled()) {
-      MagellanUnitImpl.log.debug("PathCellRenderer(" + u + "):true with messages");
-    }
-
-    return true;
   }
 
   /**

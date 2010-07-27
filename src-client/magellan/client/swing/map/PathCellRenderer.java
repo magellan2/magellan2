@@ -130,8 +130,8 @@ public class PathCellRenderer extends ImageCellRenderer {
             + pastMovement);
       }
 
-      renderPath(unit, pastMovement, unit.isPastMovementPassive() ? PathCellRenderer.PASSIVEPAST
-          : PathCellRenderer.ACTIVEPAST);
+      renderPath(unit, pastMovement, unit.isPastMovementPassive(data.getGameSpecificStuff())
+          ? PathCellRenderer.PASSIVEPAST : PathCellRenderer.ACTIVEPAST);
     }
   }
 

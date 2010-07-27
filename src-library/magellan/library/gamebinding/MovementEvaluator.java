@@ -11,6 +11,7 @@ import java.util.List;
 
 import magellan.library.Region;
 import magellan.library.Unit;
+import magellan.library.rules.MessageType;
 
 /**
  * DOCUMENT-ME
@@ -107,6 +108,8 @@ public interface MovementEvaluator {
    */
   public int getModifiedRadius(Unit unit, List<Region> path);
 
+  public MessageType getTransportMessageType();
+
   /**
    * Returns the number of turns that the unit needs to travel on the specified path based on
    * modified riding skill, horses, carts, load of this unit and roads <i>on the given path</i>.
@@ -135,4 +138,12 @@ public interface MovementEvaluator {
    */
   @Deprecated
   public int getRadius(Unit u, boolean onRoad);
+
+  /**
+   * Checks if the unit's movement was passive (transported or shipped).
+   * 
+   * @param unit
+   * @return <code>true</code> if the unit's past movement was passive
+   */
+  public boolean isPastMovementPassive(Unit unit);
 }

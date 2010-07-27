@@ -512,14 +512,14 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
   }
 
   // inner class //
-  private class RegionTypeComparator implements Comparator<RegionType> {
+  private static class RegionTypeComparator implements Comparator<RegionType> {
     public int compare(RegionType arg0, RegionType arg1) {
       return arg0.getName().compareToIgnoreCase(arg1.getName());
     }
   }
 
   // inner class //
-  private class HerbTypeComparator implements Comparator<ItemType> {
+  private static class HerbTypeComparator implements Comparator<ItemType> {
     public int compare(ItemType arg0, ItemType arg1) {
       return arg0.getName().compareToIgnoreCase(arg1.getName());
     }

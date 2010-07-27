@@ -128,7 +128,8 @@ public class BuildingCellRenderer extends ImageCellRenderer {
    * @version 1.0, 28.02.2008
    */
 
-  protected class BuildingCellRendererPreferences extends JPanel implements PreferencesAdapter {
+  protected static class BuildingCellRendererPreferences extends JPanel implements
+      PreferencesAdapter {
     protected BuildingCellRenderer source = null;
     protected GameData data = null;
     protected List<JCheckBox> buildings;

@@ -97,7 +97,7 @@ public class Resources {
    * @param resourceDirectory
    */
   public void setResourceDirectory(File resourceDirectory) {
-    resourceDirectory = resourceDirectory;
+    this.resourceDirectory = resourceDirectory;
   }
 
   /**
@@ -118,6 +118,7 @@ public class Resources {
     if (prefix == null) {
       prefix = "";
     }
+    // FIXME null assignment
     if (resourceDirectory == null) {
       this.resourceDirectory = resourceDirectory;
     }

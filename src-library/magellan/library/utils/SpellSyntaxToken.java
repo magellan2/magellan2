@@ -54,7 +54,7 @@ public class SpellSyntaxToken {
    * constructor
    */
   public SpellSyntaxToken(char c) {
-    tokenChar = new Character(c);
+    tokenChar = c;
   }
 
   /**
@@ -116,6 +116,7 @@ public class SpellSyntaxToken {
   public String toString() {
     String retVal = getTokenString();
     if (retVal == null)
+      // FIXME returning null is a bad idea
       return retVal;
     String tokenString =
         "<" + Resources.get("util.spellsyntaxtoken.SpellSyntaxToken." + retVal) + ">";

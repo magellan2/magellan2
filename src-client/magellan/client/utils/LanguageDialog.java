@@ -170,7 +170,7 @@ public class LanguageDialog {
     return languageList.size() > 0;
   }
 
-  protected class Lang implements Comparable<Lang> {
+  protected static class Lang implements Comparable<Lang> {
     protected Locale locale;
 
     /**

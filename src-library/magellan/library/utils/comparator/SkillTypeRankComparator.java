@@ -77,7 +77,7 @@ public class SkillTypeRankComparator implements Comparator<SkillType> {
 
     if (retVal == null) {
       String prop = settings.getProperty("ClientPreferences.compareValue." + s.getID(), "-1");
-      retVal = new Integer(Integer.parseInt(prop));
+      retVal = Integer.parseInt(prop);
       skillRanks.put(s.getID(), retVal);
     }
 

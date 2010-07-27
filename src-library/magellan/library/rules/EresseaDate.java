@@ -7,6 +7,8 @@
 
 package magellan.library.rules;
 
+import java.util.Random;
+
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -30,6 +32,7 @@ public class EresseaDate extends Date {
 
   private int epoch = 1;
   private int startRound = 1;
+  private Random r=new Random();
 
   /**
    * Creates new EresseaDate.
@@ -147,7 +150,7 @@ public class EresseaDate extends Date {
 
       case Date.TYPE_LONG: {
         // select one of three phrases at random
-        int random = ((int) (java.lang.Math.random() * 3)) % 3;
+        int random = r.nextInt(3);
         String strWeekLong =
             Resources.get("rules.eresseadate.week_long." + (iWeek + 1) + "." + random);
         String strAge = Resources.get("rules.eresseadate.age_long." + getEpoch());
@@ -158,7 +161,7 @@ public class EresseaDate extends Date {
         break;
 
       case TYPE_PHRASE: {
-        int random = ((int) (java.lang.Math.random() * 3)) % 3;
+        int random = r.nextInt(3);
         String strWeekLong =
             Resources.get("rules.eresseadate.week_phrase." + (iWeek + 1) + "." + random);
         String strAge = Resources.get("rules.eresseadate.age_phrase." + getEpoch());
@@ -169,7 +172,8 @@ public class EresseaDate extends Date {
         break;
 
       case TYPE_PHRASE_AND_SEASON: {
-        int random = ((int) (java.lang.Math.random() * 3)) % 3;
+        int random = r.nextInt(3); 
+          
         String strWeekLong =
             Resources.get("rules.eresseadate.week_phrase." + (iWeek + 1) + "." + random);
         String strAge = Resources.get("rules.eresseadate.age_phrase." + getEpoch());

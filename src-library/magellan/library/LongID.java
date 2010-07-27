@@ -80,14 +80,14 @@ public class LongID implements ID {
    * Creates an ID with the specified value.
    */
   public static LongID create(int i) {
-    return LongID.create(new Long(i));
+    return LongID.create(Long.valueOf(i));
   }
 
   /**
    * Creates an ID with the specified value.
    */
   public static LongID create(long l) {
-    return LongID.create(new Long(l));
+    return LongID.create(Long.valueOf(l));
   }
 
   /**

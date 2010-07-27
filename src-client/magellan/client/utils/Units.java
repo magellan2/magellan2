@@ -363,6 +363,19 @@ public class Units {
       return getItemType().getName().compareTo((o).getItemType().getName());
     }
 
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof StatItem)
+        return compareTo((StatItem) obj) != 0;
+      else
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return getItemType().getName().hashCode();
+    }
+
     /**
      * Returns the value of unmodifiedAmount.
      * 

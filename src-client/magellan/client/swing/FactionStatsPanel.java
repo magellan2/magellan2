@@ -143,9 +143,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // factions.clear();
     if (data != null) {
       unitsTools.setRules(data.rules);
-    // FIXME need to clear, or updateTree may be called on invalid faction list...
-//      factions.clear();
-//      regions.clear();
+      // FIXME need to clear, or updateTree may be called on invalid faction list...
+      // factions.clear();
+      // regions.clear();
       setRegions(data.getRegions());
     }
   }
@@ -1055,7 +1055,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     for (int i = 0; i < extraEarned.length; i++) {
       // income by alms, transfers
       if (extraEarned[i] != 0) {
-        Object msgArgs[] = { new Integer(extraEarned[i]) };
+        Object msgArgs[] = { Integer.valueOf(extraEarned[i]) };
         StringBuffer sb = new StringBuffer();
         sb.append(new java.text.MessageFormat(Resources.get("factionstatspanel.node.income"
             + (earned.length + i))).format(msgArgs));
@@ -1471,7 +1471,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                       Unit u = data.getUnit(id);
 
                       if (u != null) {
-                        p.units.put(u, new Integer(amount));
+                        p.units.put(u, amount);
                       }
                     }
                   }
@@ -1656,7 +1656,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   /**
    * A little class used to store information about production statistics for a certain resource
    */
-  private class ProductionStats {
+  private static class ProductionStats {
     // mapping units who produced the special resource (Unit) to the according
     // amounts (Integer)
     private Map<Unit, Integer> units = new Hashtable<Unit, Integer>();

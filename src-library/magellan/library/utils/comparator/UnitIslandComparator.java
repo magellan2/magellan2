@@ -16,7 +16,6 @@ package magellan.library.utils.comparator;
 import java.util.Comparator;
 
 import magellan.library.Island;
-import magellan.library.Unit;
 
 /**
  * A comparator imposing an ordering on Island objects
@@ -35,14 +34,16 @@ public class UnitIslandComparator implements Comparator<Island> {
   }
 
   /**
-   * Compares its two arguments for order according to the factions they belong to.
+   * Compares two islands
    * 
-   * @return the result of the faction comparator's comparison of <tt>o1</tt>'s and <tt>o2</tt>. If
-   *         both belong to the same faction and a sub-comparator was specified, the result that
-   *         sub-comparator's comparison is returned.
+   * @return The comparison result of the names or IDs. If both are the same and a sub-comparator
+   *         was specified, the result that sub-comparator's comparison is returned.
    */
   public int compare(Island o1, Island o2) {
-    int ret = ((Unit) o1).compareTo(o2);
+    int ret = o1.getName().compareTo(o2.getName());
+    if (ret == 0) {
+      ret = o1.getID().compareTo(o2.getID());
+    }
 
     // if equality found, ask sub comparator
     return ((ret == 0) && (subCmp != null)) ? subCmp.compare(o1, o2) : ret;

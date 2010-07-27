@@ -1276,7 +1276,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             i += amount.intValue();
           }
 
-          resources.put(res.getType(), new Integer(i));
+          resources.put(res.getType(), i);
         }
       }
 
@@ -1289,7 +1289,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           i += amount.intValue();
         }
 
-        resources.put(iType, new Integer(i));
+        resources.put(iType, i);
       }
     }
 
@@ -2375,6 +2375,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
               .get("emapdetailspanel.node.faction")
               + ": " + Resources.get("emapdetailspanel.node.unknownfaction"), "faction"));
+      parent.add(fNode);
     } else {
       // custom faction icon ?
       String customFactionIconFileName = "custom/factions/" + f.getID();
@@ -2908,11 +2909,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendUnitTeachInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     // teacher pupil relations
-    Collection<Unit> pupils = new LinkedList<Unit>();
-    Collection<Unit> teachers = new LinkedList<Unit>();
+    Collection<Unit> pupils = u.getPupils();
+    Collection<Unit> teachers = u.getTeachers();
 
-    pupils = u.getPupils();
-    teachers = u.getTeachers();
     // for(Iterator iter = u.getRelations(TeachRelation.class).iterator(); iter.hasNext();) {
     // TeachRelation tr = (TeachRelation) iter.next();
     //
@@ -3139,13 +3138,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendUnitPotionInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    if ((data.potions() != null) && (u.getSkillMap() != null)
-        && u.getSkillMap().containsKey(EresseaConstants.S_ALCHEMIE)) {
-      // DefaultMutableTreeNode potionsNode = new
-      // DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.potions"));
+    if (u.getSkill(EresseaConstants.S_ALCHEMIE) != null) {
       DefaultMutableTreeNode potionsNode =
           createSimpleNode(Resources.get("emapdetailspanel.node.potions"), "Alchemie");
-      Skill alchSkill = u.getSkillMap().get(EresseaConstants.S_ALCHEMIE);
+      Skill alchSkill = u.getSkill(EresseaConstants.S_ALCHEMIE);
       List<Potion> potions = new LinkedList<Potion>(data.getPotions());
       Collections.sort(potions, new PotionLevelComparator(new NameComparator(null)));
 
@@ -4910,7 +4906,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * A NodeWrapper for category nodes with a description, used for storing expansion states
    */
-  private class NodeWrapper {
+  private static class NodeWrapper {
     private DefaultMutableTreeNode node = null;
     private String desc = "";
 
@@ -4931,7 +4927,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
   }
 
-  private class SkillStatItem {
+  private static class SkillStatItem {
     public Skill skill = null;
 
     public int unitCounter = 0;
@@ -4947,7 +4943,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
   }
 
-  private class SkillStatItemComparator implements Comparator<SkillStatItem> {
+  private static class SkillStatItemComparator implements Comparator<SkillStatItem> {
     /**
      * Compare by skill level.
      */
@@ -5839,7 +5835,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * 
    */
-  private class RaceInfo {
+  private static class RaceInfo {
     int amount = 0;
     int amount_modified = 0;
     String raceNoPrefix = null;
@@ -5949,7 +5945,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * A unit filter that accepts units that are in all regions occuring in a given Selection context.
    */
-  public class ContextUnitFilter extends UnitFilter {
+  public static class ContextUnitFilter extends UnitFilter {
 
     private List<?> context;
 

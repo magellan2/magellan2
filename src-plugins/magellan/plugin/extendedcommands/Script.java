@@ -280,7 +280,16 @@ public class Script implements Cloneable {
    */
   @Override
   public Object clone() {
-    Script script = new Script(containerId, scripttype, type, this.script);
+    Script script;
+    try {
+      script = (Script) super.clone();
+    } catch (CloneNotSupportedException e) {
+      throw new IllegalStateException("should never happen, we are Cloneable!");
+    }
+    script.containerId = containerId;
+    script.scripttype = scripttype;
+    script.type = type;
+    script.script = this.script;
     script.setCursor(cursor);
     script.setPriority(priority);
     return script;

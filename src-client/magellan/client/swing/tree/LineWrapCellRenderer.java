@@ -559,7 +559,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
    * @author ...
    * @version 1.0, 15.11.2007
    */
-  protected class SimpleLayout implements LayoutManager {
+  protected static class SimpleLayout implements LayoutManager {
     protected Dimension inDim = new Dimension(0, 0);
     protected boolean inCompute = false;
 

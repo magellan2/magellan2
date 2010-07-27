@@ -498,7 +498,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     setLocationRelativeTo(posC);
   }
 
-  protected class TablessTextArea extends JTextArea {
+  protected static class TablessTextArea extends JTextArea {
     /**
      * Creates a new TablessTextArea object.
      */

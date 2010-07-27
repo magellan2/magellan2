@@ -154,7 +154,12 @@ public class OrderedHashtable<K, V> extends Hashtable<K, V> {
    */
   @Override
   public synchronized Object clone() {
-    return new OrderedHashtable<K, V>(this);
+    @SuppressWarnings("unchecked")
+    OrderedHashtable<K, V> clone = (OrderedHashtable<K, V>) super.clone();
+    clone.clear();
+    clone.putAll(this);
+
+    return clone;
   }
 
   /**
@@ -187,7 +192,7 @@ public class OrderedHashtable<K, V> extends Hashtable<K, V> {
     // To circumvent this problem we build an array by using the
     // hashtable entries and find the position of its key in the keylist.
     // As I said before, this is a very expensive operation.
-    // 
+    //
     // unchecked cast is safe, because we insert only entries of entryList, which is bounded
     // correctly!
     @SuppressWarnings("unchecked")

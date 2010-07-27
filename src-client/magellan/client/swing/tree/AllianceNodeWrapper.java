@@ -49,7 +49,7 @@ public class AllianceNodeWrapper extends FactionNodeWrapper {
   public String toString() {
     Alliance a = getAlliance(getFaction().getID());
     if (a == null)
-      return null;
+      return "-";
     else
       return a.toString();
   }

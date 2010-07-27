@@ -9,8 +9,8 @@ import java.util.LinkedList;
  */
 public class SpellSyntax {
 
-  private final Character syntax_add = new Character("+".charAt(0));
-  private final Character syntax_notNeeded = new Character("?".charAt(0));
+  private final char syntax_add = '+'; // new Character("+".charAt(0));
+  private final char syntax_notNeeded = '?'; // new Character("?".charAt(0));
 
   /**
    * List of our Tokens
@@ -38,13 +38,12 @@ public class SpellSyntax {
     char[] chars = text.toCharArray();
 
     for (char d : chars) {
-      Character c = new Character(d);
-      if (t != null && c.equals(syntax_add)) {
+      if (t != null && d == syntax_add) {
         t.setMultiple(true);
-      } else if (t != null && c.equals(syntax_notNeeded)) {
+      } else if (t != null && d == syntax_notNeeded) {
         t.setNeeded(false);
       } else {
-        t = new SpellSyntaxToken(c);
+        t = new SpellSyntaxToken(d);
         addToken(t);
       }
     }
@@ -102,6 +101,7 @@ public class SpellSyntax {
   public String toString() {
     String retVal = null;
     if (tokens == null || tokens.size() == 0)
+      // FIXME returning null is a bad idea
       return retVal;
     for (SpellSyntaxToken token : tokens) {
       String tokenString = token.toString();

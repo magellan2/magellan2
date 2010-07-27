@@ -297,7 +297,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   /**
    *
    */
-  private class ProgressDlg extends JDialog {
+  private static class ProgressDlg extends JDialog {
 
     private List<ClosingListener> closingListeners;
 

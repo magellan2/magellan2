@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
@@ -214,7 +215,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     if (newCenter != null) {
       if (cmbLevel.isVisible()) {
-        Integer level = new Integer(newCenter.getZ());
+        Integer level = Integer.valueOf(newCenter.getZ());
 
         if (level.intValue() != mapper.getLevel()) {
           cmbLevel.setSelectedItem(level);
@@ -272,7 +273,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
         CoordinateID coord = r.getCoordinate();
 
         if (cmbLevel.isVisible()) {
-          Integer level = new Integer(coord.getZ());
+          Integer level = Integer.valueOf(coord.getZ());
 
           if (level.intValue() != mapper.getLevel()) {
             cmbLevel.setSelectedItem(level);
@@ -329,6 +330,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
   Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+
+  private Random r = new Random();
 
   /**
    * Action event handler for timer events related to the scaling slider.
@@ -689,7 +692,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // check, if we have a difference between Level just set and displayed Level in navi
     Integer displayedLevel = (Integer) cmbLevel.getSelectedItem();
     if (level != displayedLevel.intValue()) {
-      cmbLevel.setSelectedItem(new Integer(level));
+      cmbLevel.setSelectedItem(Integer.valueOf(level));
     }
   }
 
@@ -785,7 +788,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     if ((mapper.getActiveRegion() == null)
         || (mapper.getActiveRegion().getCoordinate().getZ() != ((h.getCenter()).getZ()))) {
       if (cmbLevel.isVisible()) {
-        cmbLevel.setSelectedItem(new Integer((h.getCenter()).getZ()));
+        cmbLevel.setSelectedItem(Integer.valueOf((h.getCenter()).getZ()));
       }
     }
 
@@ -854,7 +857,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     IntegerID i = null;
 
     do {
-      i = IntegerID.create((int) (Math.random() * Integer.MAX_VALUE));
+      i = IntegerID.create(r.nextInt());
     } while (data.getHotSpot(i) != null);
 
     return i;

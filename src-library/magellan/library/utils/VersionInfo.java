@@ -89,16 +89,16 @@ public class VersionInfo {
     if (properties == null)
       return null;
     boolean check =
-        new Boolean(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, String
-            .valueOf(true)));
+        Boolean.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK,
+            String.valueOf(true)));
     boolean checkNightly =
-        new Boolean(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK,
+        Boolean.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK,
             String.valueOf(false)));
 
     String urlstring = VersionInfo.DEFAULT_CHECK_URL;
     long failedTimestamp =
-        new Long(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, String
-            .valueOf(0)));
+        Long.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED,
+            String.valueOf(0)));
 
     boolean doCheck = check;
 

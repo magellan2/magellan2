@@ -207,7 +207,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
   /**
    * Is a container for a faction for the combobox.
    */
-  class FactionItem {
+  static class FactionItem {
     Faction faction = null;
 
     public FactionItem(Faction f) {
@@ -229,7 +229,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
   /**
    * Used to sort the FactionsItems
    */
-  class FactionItemComparator implements Comparator<FactionItem> {
+  static class FactionItemComparator implements Comparator<FactionItem> {
 
     public int compare(FactionItem o1, FactionItem o2) {
       if (o1.getFaction() == null)

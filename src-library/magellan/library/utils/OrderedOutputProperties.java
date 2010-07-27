@@ -59,7 +59,7 @@ public class OrderedOutputProperties extends Properties {
     return new IteratorEnumeration(l.iterator());
   }
 
-  private class IteratorEnumeration implements Enumeration<Object> {
+  private static class IteratorEnumeration implements Enumeration<Object> {
     protected Iterator<?> iterator;
 
     /**
@@ -84,7 +84,7 @@ public class OrderedOutputProperties extends Properties {
     }
   }
 
-  private class ObjectComparator<T extends Object> implements Comparator<T> {
+  private static class ObjectComparator<T extends Object> implements Comparator<T> {
 
     ObjectComparator() {
 

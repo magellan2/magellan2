@@ -36,7 +36,7 @@ import magellan.library.utils.logging.Logger;
  */
 @Deprecated
 public class TagMap implements Map<String, String> {
-  protected class Tag {
+  protected static class Tag {
     /** DOCUMENT-ME */
     public String key;
 
@@ -121,6 +121,7 @@ public class TagMap implements Map<String, String> {
    */
   @Override
   public boolean equals(Object obj) {
+    // FIXME
     return false;
   }
 

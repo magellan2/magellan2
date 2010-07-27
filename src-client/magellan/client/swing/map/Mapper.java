@@ -1149,7 +1149,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     if (data != null) {
       for (CoordinateID c : data.regions().keySet()) {
-        Integer i = new Integer(c.getZ());
+        Integer i = Integer.valueOf(c.getZ());
 
         if (levels.contains(i) == false) {
           levels.add(i);
@@ -1577,7 +1577,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     StringTokenizer st = new StringTokenizer(s, "~");
     int j = st.countTokens();
 
-    if ((j % 2) == 1) {
+    if ((j % 2) != 0) {
       j--;
     }
 

@@ -61,7 +61,7 @@ public class SkillStats {
       return Collections.emptyList();
     else {
       Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
-      UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
+      UnitVector uv = levelTable.get(Integer.valueOf(skill.getLevel()));
 
       if (uv == null)
         return Collections.emptyList();
@@ -82,7 +82,7 @@ public class SkillStats {
       return 0;
     else {
       Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
-      UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
+      UnitVector uv = levelTable.get(Integer.valueOf(skill.getLevel()));
 
       if (uv == null)
         return 0;
@@ -275,11 +275,11 @@ public class SkillStats {
       }
 
       Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
-      UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
+      UnitVector uv = levelTable.get(Integer.valueOf(skill.getLevel()));
 
       if (uv == null) {
         uv = new UnitVector();
-        levelTable.put(new Integer(skill.getLevel()), uv);
+        levelTable.put(Integer.valueOf(skill.getLevel()), uv);
       }
 
       uv.units.add(u);
@@ -292,12 +292,12 @@ public class SkillStats {
   }
 
   // inner helper classes
-  private class UnitVector {
+  private static class UnitVector {
     int personCounter = 0;
     List<Unit> units = new LinkedList<Unit>();
   }
 
-  private class SkillStorage {
+  private static class SkillStorage {
     // maps level (Integerobjects) to UnitVector-Objects
     Map<Integer, UnitVector> levelTable = new Hashtable<Integer, UnitVector>();
     int skillPointCounter = 0;

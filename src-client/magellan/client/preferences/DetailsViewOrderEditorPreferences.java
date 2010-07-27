@@ -485,7 +485,7 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     return Resources.get("completion.multieditorordereditorlist.prefs.title");
   }
 
-  private class StyleContainer {
+  private static class StyleContainer {
     /** DOCUMENT-ME */
     public String description;
 

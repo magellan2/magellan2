@@ -130,7 +130,8 @@ public class Score<K> implements Comparable<Score<K>> {
   }
 
   /**
-   * Compares the score to another score.
+   * Compares the score to another score. Partial order, so it violates contracts of compareTo(),
+   * equals() and hashCode()!
    * 
    * @return 1 if this score is greater than <code>s</code>
    * @see java.lang.Comparable#compareTo(java.lang.Object)

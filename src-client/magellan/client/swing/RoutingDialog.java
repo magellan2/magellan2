@@ -324,7 +324,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
   /**
    * Just to order regions by their names.
    */
-  private class RegionNameComparator implements Comparator<Object> {
+  private static class RegionNameComparator implements Comparator<Object> {
     /**
      * Compares two regions by name.
      */
@@ -369,7 +369,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
    * @author $Author: $
    * @version $Revision: 389 $
    */
-  public class RetValue implements RoutingDialogData {
+  public static class RetValue implements RoutingDialogData {
     /** The coordinates of the destination */
     public CoordinateID dest;
 

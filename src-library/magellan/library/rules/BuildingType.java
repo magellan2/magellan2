@@ -62,7 +62,7 @@ public class BuildingType extends ConstructibleType {
       skillBonuses = new LinkedHashMap<StringID, Integer>();
     }
 
-    skillBonuses.put(skillType.getID(), new Integer(bonus));
+    skillBonuses.put(skillType.getID(), Integer.valueOf(bonus));
   }
 
   /**

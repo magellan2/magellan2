@@ -744,13 +744,13 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   private void event_copyMultipleNameID(ActionEvent e) {
-    String s = "";
+    StringBuilder s = new StringBuilder();
 
     for (Unit u : selectedUnits) {
-      s += (u.toString() + "\n");
+      s.append(u.toString()).append("\n");
     }
 
-    StringSelection strSel = new StringSelection(s);
+    StringSelection strSel = new StringSelection(s.toString());
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
 
@@ -759,27 +759,28 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   private void event_copyMultipleNameIDPersonCount(ActionEvent e) {
-    String s = "";
+    StringBuilder s = new StringBuilder();
     int cntUnits = 0;
     int cntPersons = 0;
     int cntModifiedPersons = 0;
     for (Unit u : selectedUnits) {
-      s += (u.toString() + ":" + u.getPersons());
+      s.append(u.toString()).append(":").append(u.getPersons());
       if (u.getModifiedPersons() != u.getPersons()) {
-        s += "(" + u.getModifiedPersons() + ")";
+        s.append("(").append(u.getModifiedPersons()).append(")");
       }
-      s += "\n";
+      s.append("\n");
       cntUnits++;
       cntPersons += u.getPersons();
       cntModifiedPersons += u.getModifiedPersons();
     }
     if (cntUnits > 0) {
-      s += cntUnits + " units with " + cntPersons + "(" + cntModifiedPersons + ") individuals.";
+      s.append(cntUnits).append(" units with ").append(cntPersons).append("(")
+          .append(cntModifiedPersons).append(") individuals.");
     } else {
-      s = "no units";
+      s = new StringBuilder("no units");
     }
 
-    StringSelection strSel = new StringSelection(s);
+    StringSelection strSel = new StringSelection(s.toString());
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
 

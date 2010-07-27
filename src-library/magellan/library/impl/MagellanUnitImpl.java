@@ -827,8 +827,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
     if (writeUnitTagsAsVorlageComment && hasTags()) {
       for (String tag : getTagMap().keySet()) {
-        cmds
-            .add("// #after 1 { #tag EINHEIT " + tag.replace(' ', '~') + " '" + getTag(tag) + "' }");
+        cmds.add("// #after 1 { #tag EINHEIT " + tag.replace(' ', '~') + " '" + getTag(tag) + "' }");
       }
     }
 
@@ -1408,6 +1407,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public Skill getSkill(SkillType type) {
     return (skills != null) ? (Skill) skills.get(type.getID()) : null;
+  }
+
+  /**
+   * Returns the skill of the specified type if the unit has such a skill, else null is returned.
+   */
+  public Skill getSkill(StringID type) {
+    return (skills != null) ? (Skill) skills.get(type) : null;
   }
 
   /**

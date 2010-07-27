@@ -485,27 +485,27 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
   private JButton createCloseTabButton(final String key, final TitledTab tab) {
     return ButtonFactory.createFlatHighlightButton(new CloseIcon(), Resources
         .get("extended_commands.button.close.tooltip"), 0, new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ExtendedCommandsDocument doc = (ExtendedCommandsDocument) tab.getContentComponent();
-        if (doc.isModified()) {
-          int answer =
+          public void actionPerformed(ActionEvent e) {
+            ExtendedCommandsDocument doc = (ExtendedCommandsDocument) tab.getContentComponent();
+            if (doc.isModified()) {
+              int answer =
               JOptionPane.showConfirmDialog(Client.INSTANCE, Resources
                   .get("extended_commands.questions.not_saved"), Resources
                   .get("extended_commands.questions.not_saved_title"), JOptionPane.YES_NO_OPTION);
-          if (answer == JOptionPane.YES_OPTION) {
-            closeTab(key, tab);
+              if (answer == JOptionPane.YES_OPTION) {
+                closeTab(key, tab);
+              }
+            } else {
+              closeTab(key, tab);
+            }
           }
-        } else {
-          closeTab(key, tab);
-        }
-      }
-    });
+        });
   }
 
   public void closeTab(String key, Tab tab) {
     // Closing the tab by removing it from the tabbed panel it is a member of
     Tab t1 = tabMap.remove(key);
-    if (t1 != null && !tab.equals(tab)) {
+    if (t1 != null && !t1.equals(tab)) {
       ExtendedCommandsDock.log.error("Whoops - here is something wrong");
     }
     docMap.remove(key);

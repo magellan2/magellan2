@@ -665,12 +665,12 @@ public class JECheck extends Reader {
     /** Some other message */
     public static final int MESSAGE = -1;
 
-    private String fileName = null;
+    private String fileName;
     private int lineNr = 0;
     private int type = 0;
     private int warnLevel = 0;
-    private String msg = null;
-    private Object affectedObject = null; // the object affected by this message
+    private String msg;
+    private Object affectedObject; // the object affected by this message
 
     /**
      * Creates a new ECheckMessage object by parsing the specified String.
@@ -678,6 +678,11 @@ public class JECheck extends Reader {
      * @throws java.text.ParseException if the rawMessage String cannot be parsed.
      */
     public ECheckMessage(String rawMessage) throws java.text.ParseException {
+      this(rawMessage, null);
+    }
+
+    public ECheckMessage(String rawMessage, String fileName) throws java.text.ParseException {
+      this.fileName = fileName;
       String delim = JECheck.FIELD_SEP;
       StringTokenizer tokenizer = new StringTokenizer(rawMessage, delim);
 

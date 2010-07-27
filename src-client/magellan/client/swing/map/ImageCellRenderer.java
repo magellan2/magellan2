@@ -18,6 +18,7 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import magellan.client.MagellanContext;
 import magellan.library.utils.Umlaut;
@@ -29,6 +30,7 @@ import magellan.library.utils.Umlaut;
  */
 public abstract class ImageCellRenderer extends HexCellRenderer {
   private Map<String, ImageContainer> images = new HashMap<String, ImageContainer>();
+  private Random r;
   private static MediaTracker tracker = null;
 
   /**
@@ -39,6 +41,7 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
    */
   public ImageCellRenderer(CellGeometry geo, MagellanContext context) {
     super(geo, context);
+    r = new Random();
   }
 
   /**
@@ -76,7 +79,8 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
       Image scaled = img.getScaledInstance(size.width, size.height, Image.SCALE_SMOOTH);
 
       if (ImageCellRenderer.tracker != null) {
-        ImageCellRenderer.tracker.addImage(scaled, (int) (Math.random() * Integer.MAX_VALUE));
+        // TODO random ID??
+        ImageCellRenderer.tracker.addImage(scaled, r.nextInt());
       } else {
         context.getImageFactory().waitForImage(img);
       }
@@ -172,7 +176,7 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
     return img;
   }
 
-  protected class ImageContainer {
+  protected static class ImageContainer {
     /** DOCUMENT-ME */
     public Image unscaled = null;
 

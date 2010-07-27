@@ -472,7 +472,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @author stm
    * @version 1.0, Aug 23, 2008
    */
-  protected class UpdateEvent {
+  protected static class UpdateEvent {
 
     private final Object CLEAR = "EMPTY";
     private Region region;
@@ -556,7 +556,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @author stm
    * @version 1.0, Aug 23, 2008
    */
-  private class EQueue {
+  private static class EQueue {
     private List<UpdateEvent> events = new LinkedList<UpdateEvent>();
     /** Takes track of number of insertions of objects to add. */
     private Map<Object, Integer> addObjects = new HashMap<Object, Integer>();
@@ -611,7 +611,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * @throws InterruptedException
      */
     public synchronized UpdateEvent waitFor() throws InterruptedException {
-      if (events.size() == 0) {
+      while (events.size() == 0) {
         this.wait();
       }
 
@@ -696,6 +696,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     public UpdateEventDispatcher() {
       queue = new EQueue();
       refreshThread = new Thread(new Runner(), "TaskTableRefresher");
+      // FIXME The constructor starts a thread. This is likely to be wrong if the class is ever
+      // extended/subclassed, since the thread will be started before the subclass constructor is
+      // started.
       refreshThread.start();
     }
 

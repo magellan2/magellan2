@@ -967,7 +967,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     }
   }
 
-  private class SignificantUndos implements UndoableEditListener, DocumentListener {
+  private static class SignificantUndos implements UndoableEditListener, DocumentListener {
     boolean bSignificant = true;
     boolean bMoreThanOne = false;
     javax.swing.undo.CompoundEdit compoundEdit = new javax.swing.undo.CompoundEdit();

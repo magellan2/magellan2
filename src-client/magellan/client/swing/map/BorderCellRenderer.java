@@ -248,7 +248,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
   /**
    * This Preferences dialog does nothing...
    */
-  protected class Preferences extends JPanel implements PreferencesAdapter {
+  protected static class Preferences extends JPanel implements PreferencesAdapter {
     // The source component to configure
     protected BorderCellRenderer source = null;
 

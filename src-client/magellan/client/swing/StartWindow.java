@@ -267,7 +267,7 @@ public class StartWindow extends JFrame {
     }
   }
 
-  protected class SimpleLayout implements LayoutManager {
+  protected static class SimpleLayout implements LayoutManager {
     /**
      * DOCUMENT-ME
      */

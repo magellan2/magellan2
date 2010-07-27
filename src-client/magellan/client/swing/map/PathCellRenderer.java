@@ -331,7 +331,7 @@ public class PathCellRenderer extends ImageCellRenderer {
     return Toolkit.getDefaultToolkit().createImage(prod);
   }
 
-  private class ChannelFilter extends RGBImageFilter {
+  private static class ChannelFilter extends RGBImageFilter {
     public static final int RED = 0x00FF0000;
     public static final int GREEN = 0x0000FF00;
     public static final int BLUE = 0x000000FF;
@@ -473,7 +473,7 @@ public class PathCellRenderer extends ImageCellRenderer {
     return new Preferences(this);
   }
 
-  protected class Preferences extends JPanel implements PreferencesAdapter {
+  protected static class Preferences extends JPanel implements PreferencesAdapter {
     // The source component to configure
     protected PathCellRenderer source = null;
 

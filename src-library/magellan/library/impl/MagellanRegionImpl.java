@@ -238,7 +238,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * DOCUMENT ME!
+   * Returns the number of modified persons after "give 0", recruit.
    * 
    * @return the number of modified persons after "give 0", recruit
    */
@@ -1243,7 +1243,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       return null;
 
     Map<Direction, Region> newNeighbors = Regions.getCoordinateNeighbours(data.regions(), getID());
-    newNeighbors.remove(getID());
 
     return newNeighbors;
   }

@@ -474,6 +474,11 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public Skill getSkill(SkillType type);
 
   /**
+   * Returns the skill of the specified type if the unit has such a skill, else null is returned.
+   */
+  public Skill getSkill(StringID type);
+
+  /**
    * @return FIXME explain
    */
   public boolean isSkillsCopied();

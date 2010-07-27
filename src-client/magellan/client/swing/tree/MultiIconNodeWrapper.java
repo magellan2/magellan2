@@ -223,7 +223,7 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
     return iconNames;
   }
 
-  private class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements
+  private static class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements
       ContextChangeable, ActionListener {
     /** DOCUMENT-ME */
     public final int SHOW_ADDITIONAL = 0;

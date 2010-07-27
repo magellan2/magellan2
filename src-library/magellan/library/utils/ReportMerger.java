@@ -165,7 +165,8 @@ public class ReportMerger extends Object {
     }
 
     /**
-     * Ensures partial order by increasing date.
+     * Ensures partial order by increasing date. This violates the general contract of equals() and
+     * hashCode()!
      * 
      * @return <code>1</code> iff this report's round is greater than <code>otherReport</code>'s
      *         round.

@@ -477,7 +477,7 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
     }
   }
 
-  private class URLWrapper {
+  private static class URLWrapper {
     /** DOCUMENT-ME */
     private URL url;
 

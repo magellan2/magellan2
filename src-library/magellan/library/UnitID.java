@@ -268,7 +268,7 @@ public class UnitID extends EntityID {
       String part1 = s.substring(0, blankPos);
 
       if (part1.equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)))
-        return new Integer(-1 * Integer.parseInt(s.substring(blankPos).trim(), radix));
+        return Integer.valueOf(-1 * Integer.parseInt(s.substring(blankPos).trim(), radix));
       else
         throw new NumberFormatException("UnitID: unable to parse id " + s);
     }

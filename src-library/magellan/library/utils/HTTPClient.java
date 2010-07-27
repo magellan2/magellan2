@@ -71,7 +71,7 @@ public class HTTPClient {
     setTimeOut(5);
 
     boolean proxyEnabled =
-        new Boolean(properties.getProperty("http.proxy.enabled", String.valueOf(false)));
+        Boolean.valueOf(properties.getProperty("http.proxy.enabled", String.valueOf(false)));
     String host = properties.getProperty("http.proxy.host");
     int port = new Integer(properties.getProperty("http.proxy.port", String.valueOf(0)));
     if (proxyEnabled && host != null && host.length() != 0) {

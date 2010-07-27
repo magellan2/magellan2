@@ -97,7 +97,6 @@ public class MagellanFinder {
     } else {
       msg.append(magFile).append("... found.");
       MagellanFinder.log.info(msg);
-      msg = new StringBuffer();
       return true;
     }
 

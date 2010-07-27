@@ -77,7 +77,7 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
     setIcon(getIconName());
 
     if (getMnemonicTranslated() != null && !getMnemonicTranslated().trim().equals("")) {
-      putValue("mnemonic", new Character(getMnemonicTranslated().charAt(0)));
+      putValue("mnemonic", Character.valueOf(getMnemonicTranslated().charAt(0)));
     }
 
     if (getAcceleratorTranslated() != null && !getAcceleratorTranslated().trim().equals("")) {

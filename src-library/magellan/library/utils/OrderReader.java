@@ -317,7 +317,7 @@ public class OrderReader {
   /**
    * Describes a few aspects of the orders read.
    */
-  public class Status {
+  public static class Status {
     /** Counts the number of units for which orders where read. */
     public int units = 0;
 

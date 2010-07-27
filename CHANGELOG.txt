@@ -1,3 +1,6 @@
+2010-07-27 / Build 427 - stm (stm_@users.sourceforge.net)
+    * fixed various bugs and quirks found by FindBugs plugin, mainly unnecessary object creation, unclosed readers, static inner classes and StringBuilders
+
 2010-07-20 / Build 425 - stm (stm_@users.sourceforge.net)
     * added convenience methods for movement and fixed a bug in planShipRoute on the way 
     

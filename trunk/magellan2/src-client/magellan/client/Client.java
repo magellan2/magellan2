@@ -207,7 +207,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * The name of the ini file for order completions.
    * 
-   * @deprecated A seperate completion file is no longer actively supported
+   * @deprecated A separate completion file is no longer actively supported
    */
   @Deprecated
   public static final String COMPLETIONSETTINGS_FILENAME = "magellan_completions.ini";
@@ -334,6 +334,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     Properties completionSettings =
         Client.loadSettings(Client.settingsDirectory, COMPLETIONSETTINGS_FILENAME);
     if (completionSettings == null) {
+      log.warn(COMPLETIONSETTINGS_FILENAME + " is no longer supported.");
       completionSettings = new SelfCleaningProperties();
     }
 
@@ -501,8 +502,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // load settings from file
     if (settingsFile.exists()) {
       try {
-        settings.load(new BufferedInputStream(new FileInputStream(settingsFile)));
+        BufferedInputStream stream = null;
+        try {
+          settings.load(stream = new BufferedInputStream(new FileInputStream(settingsFile)));
         Client.log.info("Client.loadSettings: successfully loaded " + settingsFile);
+        } finally {
+          if (stream != null) {
+            stream.close();
+          }
+        }
       } catch (IOException e) {
         Client.log.error("Client.loadSettings: Error while loading " + settingsFile, e);
         return null;
@@ -2456,7 +2464,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // /////////////////
   // INNER Classes //
   // /////////////////
-  private class MenuActionObserver implements PropertyChangeListener {
+  private static class MenuActionObserver implements PropertyChangeListener {
     protected JMenuItem item;
 
     /**
@@ -2631,20 +2639,20 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Returns a String representing all parts of the component for debugging.
    */
   public static String debug(Component comp) {
-    String result = "";
+    StringBuilder result = new StringBuilder();
     if (comp instanceof Container) {
       Container container = (Container) comp;
-      result = "Container: " + container + "\n";
-      result += "{";
+      result.append("Container: ").append(container).append("\n");
+      result.append("{");
       Component[] comps = container.getComponents();
       for (Component acomp : comps) {
-        result += " " + Client.debug(acomp) + "\n";
+        result.append(" ").append(Client.debug(acomp)).append("\n");
       }
-      result += ")";
+      result.append(")");
     } else {
-      result = "Component: " + comp + "\n";
+      result.append("Component: ").append(comp).append("\n");
     }
-    return result;
+    return result.toString();
   }
 
   /**

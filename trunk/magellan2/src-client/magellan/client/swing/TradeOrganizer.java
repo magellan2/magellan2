@@ -873,7 +873,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
         }
 
         if (amount > 0) {
-          stocks.put(r, new Integer(amount));
+          stocks.put(r, Integer.valueOf(amount));
         } else {
           regionIter.remove();
         }

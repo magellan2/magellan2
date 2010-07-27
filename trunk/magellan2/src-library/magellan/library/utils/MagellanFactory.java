@@ -515,7 +515,7 @@ public abstract class MagellanFactory {
 
     default:
 
-      final Object msgArgs[] = { new Integer(combatStatus) };
+      final Object msgArgs[] = { Integer.valueOf(combatStatus) };
       retVal =
           (new java.text.MessageFormat(Resources.get("unit.combatstatus.unknown"))).format(msgArgs);
     }

@@ -49,8 +49,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
@@ -329,7 +329,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     }
   }
 
-  protected class KeyStrokeComparator implements Comparator<KeyStroke> {
+  protected static class KeyStrokeComparator implements Comparator<KeyStroke> {
     /**
      * 
      */
@@ -344,7 +344,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
         int j2 = 0;
 
         while (i1 != 0) {
-          if ((i1 % 2) == 1) {
+          if ((i1 % 2) != 0) {
             i2++;
           }
 
@@ -352,7 +352,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
         }
 
         while (j1 != 0) {
-          if ((j1 % 2) == 1) {
+          if ((j1 % 2) != 0) {
             j2++;
           }
 
@@ -369,7 +369,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     }
   }
 
-  protected class ListTableModel extends DefaultTableModel {
+  protected static class ListTableModel extends DefaultTableModel {
     /**
      * Creates a new ListTableModel object.
      */
@@ -517,9 +517,9 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
       StringBuffer buf = new StringBuffer();
 
-      Object args[] = { new Integer(otherShortcuts.size()) };
-      buf.append(MessageFormat.format(Resources
-          .get("desktop.magellandesktop.prefs.shortcuts.others"), args));
+      Object args[] = { Integer.valueOf(otherShortcuts.size()) };
+      buf.append(MessageFormat.format(
+          Resources.get("desktop.magellandesktop.prefs.shortcuts.others"), args));
       buf.append('\n');
       buf.append('\n');
 
@@ -558,7 +558,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     }
   }
 
-  protected class TranslateStroke extends JDialog implements ActionListener {
+  protected static class TranslateStroke extends JDialog implements ActionListener {
     protected KeyTextField text;
     protected JButton cancel;
     protected KeyStroke stroke = null;
@@ -624,7 +624,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
   }
 
-  private class KeyTextField extends JTextField implements KeyListener {
+  private static class KeyTextField extends JTextField implements KeyListener {
     protected int modifiers = 0;
     protected int key = 0;
 

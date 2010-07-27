@@ -188,7 +188,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
     return new Preferences(this);
   }
 
-  protected class Preferences extends JPanel implements PreferencesAdapter {
+  protected static class Preferences extends JPanel implements PreferencesAdapter {
     // The source component to configure
     protected HighlightShapeCellRenderer source = null;
 

@@ -77,7 +77,7 @@ public class BOMReader extends Reader {
   public Boolean hasBOM() {
     if (internalIn2 == null)
       return null;
-    return new Boolean(hasBOM);
+    return hasBOM;
   }
 
   /**

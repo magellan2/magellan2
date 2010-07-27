@@ -190,7 +190,7 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
    * @author ...
    * @version 1.0, 16.02.2008
    */
-  protected class EmphasizeStyle extends JPanel implements ActionListener {
+  protected static class EmphasizeStyle extends JPanel implements ActionListener {
     protected JCheckBox bold;
     protected JCheckBox italic;
     protected JCheckBox actColor;

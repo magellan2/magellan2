@@ -156,8 +156,8 @@ public class JVMUtilities {
       return false;
 
     try {
-      aObj.getClass().getMethod("setExtendedState", new Class[] { Integer.TYPE }).invoke(aObj,
-          new Object[] { new Integer(state) });
+      aObj.getClass().getMethod("setExtendedState", new Class[] { Integer.TYPE })
+          .invoke(aObj, new Object[] { Integer.valueOf(state) });
 
       if (JVMUtilities.log.isDebugEnabled()) {
         JVMUtilities.log.debug("JVMUtitities : successfully called Window.setExtendedState("

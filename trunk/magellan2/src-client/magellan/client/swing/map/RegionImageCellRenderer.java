@@ -235,7 +235,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
    * @author ...
    * @version 1.0, 11.11.2007
    */
-  private class Preferences extends JPanel implements PreferencesAdapter {
+  private static class Preferences extends JPanel implements PreferencesAdapter {
     // The source component to configure
     private RegionImageCellRenderer source = null;
 

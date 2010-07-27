@@ -132,7 +132,7 @@ public class Race extends UnitContainerType {
       skillBonuses = new LinkedHashMap<ID, Integer>();
     }
 
-    skillBonuses.put(skillType.getID(), new Integer(bonus));
+    skillBonuses.put(skillType.getID(), Integer.valueOf(bonus));
   }
 
   /**

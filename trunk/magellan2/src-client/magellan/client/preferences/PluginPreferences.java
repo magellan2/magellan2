@@ -89,8 +89,6 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
     pnl.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("plugins.pluginsettings.modulelist.title")));
 
-    GridBagConstraints c = new GridBagConstraints();
-
     DefaultListModel model = new DefaultListModel();
     JList pluginList = new JList(model);
 
@@ -98,7 +96,7 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
       model.addElement(plugin.getName());
     }
 
-    c =
+    GridBagConstraints c =
         new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
             GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0);
 

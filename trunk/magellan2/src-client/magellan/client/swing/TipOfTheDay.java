@@ -429,7 +429,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
   /**
    * Simple pair of number and html text.
    */
-  protected class Tip {
+  protected static class Tip {
     protected int number;
     protected String text;
   }

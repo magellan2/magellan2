@@ -120,7 +120,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
     return replacers.keySet();
   }
 
-  protected class ReplacerInfo {
+  protected static class ReplacerInfo {
     Class<?> replacerClass;
     Object args[] = null;
     Class<?> argClasses[] = null;

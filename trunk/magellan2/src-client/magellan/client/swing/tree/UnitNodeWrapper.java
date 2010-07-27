@@ -488,7 +488,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
                  * GraphicsElement(null, null, "items/" + item.getItemType().getIconName()); }
                  */
                 if (isShowingIconText()) {
-                  ge = new GraphicsElement(new Integer(count), null, null, iconName);
+                  ge = new GraphicsElement(Integer.valueOf(count), null, null, iconName);
                 } else {
                   ge = new GraphicsElement(null, null, iconName);
                 }
@@ -540,7 +540,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
               continue;
             }
 
-            ge.setObject(new Integer(oldAmount));
+            ge.setObject(Integer.valueOf(oldAmount));
           }
         } else {
           ge = new GraphicsElement(null, null, "items/" + s.getItemType().getIconName());
@@ -654,7 +654,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
     return iconNames;
   }
 
-  private class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements
+  private static class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements
       ContextChangeable, ActionListener {
     /** DOCUMENT-ME */
     public final int SHOW_ADDITIONAL = 0;

@@ -260,7 +260,7 @@ public class ClientMessagePreferences extends AbstractPreferencesAdapter impleme
     return Resources.get("messagepanel.prefs.title");
   }
 
-  class ColorPanelMouseAdapter extends MouseAdapter {
+  static class ColorPanelMouseAdapter extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
       Color newColor =

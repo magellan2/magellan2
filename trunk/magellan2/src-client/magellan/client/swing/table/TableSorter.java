@@ -314,6 +314,8 @@ public class TableSorter extends AbstractTableModel {
     }
 
     public int compareTo(Object o) {
+      if (!(o instanceof Row))
+        return 1;
       int row1 = modelIndex;
       int row2 = ((Row) o).modelIndex;
 
@@ -338,6 +340,29 @@ public class TableSorter extends AbstractTableModel {
       }
       return 0;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof Row)
+        return compareTo(obj) == 0;
+      else
+        return false;
+  }
+
+    @Override
+    public int hashCode() {
+      int row1 = modelIndex;
+      int result = 17 + modelIndex;
+      for (Directive directive : sortingColumns) {
+        int column = directive.column;
+        Object o1 = tableModel.getValueAt(row1, column);
+        // TODO this is not good, but probably correct
+        int comparison = getComparator(column).compare(o1, "");
+        result = result * 31 + comparison;
+      }
+      return result;
+    }
+
   }
 
   private class TableModelHandler implements TableModelListener {

@@ -232,7 +232,7 @@ public class RendererLoader extends Object {
     return (parent == null) ? false : isRenderer(parent);
   }
 
-  protected class ZipClassLoader extends ClassLoader {
+  protected static class ZipClassLoader extends ClassLoader {
     protected ZipFile jar = null;
 
     /**

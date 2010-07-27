@@ -126,7 +126,7 @@ public class LevelRelation {
    * .
    */
   public boolean equals(CoordinateID c) {
-    return c.equals(coord) && (scaleX == 1) && (scaleX == 1) && (fromLevel == c.getZ());
+    return c.equals(coord) && (scaleX == 1) && (scaleY == 1) && (fromLevel == c.getZ());
   }
 
   /**

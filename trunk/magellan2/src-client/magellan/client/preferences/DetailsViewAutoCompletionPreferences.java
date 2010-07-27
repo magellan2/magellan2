@@ -235,24 +235,24 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
       public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
           String str = (String) completionNames.getSelectedValue();
-          String display = "";
+          StringBuilder display = new StringBuilder();
 
           if (str != null) {
             str = selfDefinedCompletions.get(str);
-            display = "<html><b><p>";
+            display.append("<html><b><p>");
 
             for (int i = 0; i < str.length(); i++) {
               if (str.charAt(i) == '\n') {
-                display += "</p><p>";
+                display.append("</p><p>");
               } else {
-                display += str.charAt(i);
+                display.append(str.charAt(i));
               }
             }
 
-            display += "</p></b></html>";
+            display.append("</p></b></html>");
           }
 
-          completionValue.setText(display);
+          completionValue.setText(display.toString());
         }
       }
     });
@@ -482,7 +482,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
   /**
    * An input field that registers modifiers and keys.
    */
-  private class KeyTextField extends JTextField implements KeyListener {
+  private static class KeyTextField extends JTextField implements KeyListener {
     protected int modifiers = 0;
     protected int key = 0;
 
@@ -610,7 +610,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     }
   }
 
-  private class DefineCompletionDialog extends InternationalizedDialog {
+  private static class DefineCompletionDialog extends InternationalizedDialog {
     private JTextField name;
     private JTextArea value;
     private JButton ok;

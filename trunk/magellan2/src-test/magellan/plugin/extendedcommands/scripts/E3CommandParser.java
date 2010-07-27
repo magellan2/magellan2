@@ -801,7 +801,7 @@ public class E3CommandParser {
     ItemType armor = sArmor == null ? null : rules.getItemType(StringID.create(sArmor));
     ItemType shield = sShield == null ? null : rules.getItemType(StringID.create(sShield));
 
-    if (weaponSkill == null || NULL.equals(weaponSkill)) {
+    if (weaponSkill == null || BEST.equals(sWeaponSkill)) {
 
       int max = 0;
       for (Skill skill : u.getSkills()) {

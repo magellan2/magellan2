@@ -251,7 +251,7 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 
     for (int i = 0; i < boxes.length; i++) {
       if (checkBox(i, settKeys[i][0], settKeys[i][1])) {
-        l.add(new Integer(i));
+        l.add(Integer.valueOf(i));
       }
     }
 
@@ -325,7 +325,7 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
     }
   }
 
-  protected class DetailsDialog extends JDialog implements ActionListener {
+  protected static class DetailsDialog extends JDialog implements ActionListener {
     /**
      * Creates new DetailsDialog
      */

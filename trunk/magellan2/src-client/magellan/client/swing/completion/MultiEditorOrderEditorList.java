@@ -1537,7 +1537,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     focusListeners.remove(k);
   }
 
-  private class MEKeyAdapter extends KeyAdapter {
+  private static class MEKeyAdapter extends KeyAdapter {
     protected MultiEditorOrderEditorList source;
 
     /**
@@ -1599,7 +1599,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
   }
 
-  private class MEFocusAdapter extends FocusAdapter {
+  private static class MEFocusAdapter extends FocusAdapter {
     protected MultiEditorOrderEditorList source;
 
     /**
@@ -1638,7 +1638,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
   }
 
-  private class MECaretAdapter implements CaretListener {
+  private static class MECaretAdapter implements CaretListener {
     protected MultiEditorOrderEditorList source;
 
     /**
@@ -1742,7 +1742,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * Does the syntax highlighting for an editor.
    */
-  private class UpdateThread implements Runnable {
+  private static class UpdateThread implements Runnable {
     public CacheableOrderEditor e = null;
 
     /**
@@ -1960,7 +1960,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
               int realNewIDInt = IDBaseConverter.parse(tempID, data.base);
               UnitID checkID = UnitID.createUnitID(-realNewIDInt, data.base);
 
-              if (data.tempUnits().get(checkID) == null) {
+              if (data.getTempUnit(checkID) == null) {
                 TempUnit tempUnit = parentUnit.createTemp(data, checkID);
 
                 // Name

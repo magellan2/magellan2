@@ -427,7 +427,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
 
   /**
    */
-  protected class MapElement {
+  protected static class MapElement {
     protected String value;
     protected Color color;
   }
@@ -435,8 +435,8 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
   /**
    *
    */
-  protected class ColorMappingListCellRenderer extends JLabel implements ListCellRenderer {
-    protected class RoundRectIcon implements Icon {
+  protected static class ColorMappingListCellRenderer extends JLabel implements ListCellRenderer {
+    protected static class RoundRectIcon implements Icon {
       protected Color color;
       protected boolean selected;
       protected int width;
@@ -552,7 +552,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
    * @author ...
    * @version 1.0, 16.02.2008
    */
-  protected class HelpDialog extends JDialog implements ActionListener {
+  protected static class HelpDialog extends JDialog implements ActionListener {
     /**
      * Creates a new HelpDialog object.
      */

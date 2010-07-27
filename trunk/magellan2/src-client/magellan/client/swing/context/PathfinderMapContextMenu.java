@@ -53,9 +53,9 @@ import magellan.library.utils.Resources;
 public class PathfinderMapContextMenu extends JMenu implements SelectionListener, GameDataListener {
   // private static final NumberFormat weightNumberFormat = NumberFormat.getNumberInstance();
 
-  private final int MOVE_NACH = 1;
-  private final int MOVE_ROUTE = 2;
-  private final int MOVE_ROUTEBACK = 3;
+  private static final int MOVE_NACH = 1;
+  private static final int MOVE_ROUTE = 2;
+  private static final int MOVE_ROUTEBACK = 3;
 
   private EventDispatcher dispatcher = null;
 

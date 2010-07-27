@@ -29,7 +29,7 @@ import magellan.library.utils.MagellanFactory;
 
 public class GameDataBuilder {
 
-  private final int BASE_ROUND = 360;
+  private static final int BASE_ROUND = 360;
 
   public GameData createSimplestGameData() throws Exception {
     return createSimplestGameData(BASE_ROUND);

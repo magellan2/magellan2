@@ -1059,7 +1059,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   /**
    * A class wrapping a Region object, customizing the toString() needs for the tree.
    */
-  private class RegionWrapper {
+  private static class RegionWrapper {
     private Region region = null;
 
     /**
@@ -1088,7 +1088,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   /**
    * A class wrapping a Unit object, customizing the toString() needs for the tree.
    */
-  private class UnitWrapper {
+  private static class UnitWrapper {
     private Unit unit = null;
 
     /**

@@ -700,7 +700,7 @@ public class ExtendedCommandsHelper {
    */
   public boolean hasScript(Unit u) {
     for (MagellanPlugIn plugin : client.getPlugIns()) {
-      if (plugin instanceof ExtendedCommands) {
+      if (plugin instanceof ExtendedCommandsPlugIn) {
         ExtendedCommandsPlugIn exPlugin = (ExtendedCommandsPlugIn) plugin;
         return exPlugin.getExtendedCommands().getCommands(u) != null;
       }
@@ -713,7 +713,7 @@ public class ExtendedCommandsHelper {
    */
   public boolean hasScript(UnitContainer c) {
     for (MagellanPlugIn plugin : client.getPlugIns()) {
-      if (plugin instanceof ExtendedCommands) {
+      if (plugin instanceof ExtendedCommandsPlugIn) {
         ExtendedCommandsPlugIn exPlugin = (ExtendedCommandsPlugIn) plugin;
         return exPlugin.getExtendedCommands().getCommands(c) != null;
       }

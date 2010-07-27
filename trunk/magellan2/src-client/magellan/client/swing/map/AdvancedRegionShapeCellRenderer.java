@@ -786,7 +786,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           (int) (((leftColor.getGreen()) * (1 - percent)) + ((rightColor.getGreen()) * (percent)));
       int blue =
           (int) (((leftColor.getBlue()) * (1 - percent)) + ((rightColor.getBlue()) * (percent)));
-      Integer integer = new Integer(((red & 255) << 16) | ((green & 255) << 8) | (blue & 255));
+      Integer integer = Integer.valueOf(((red & 255) << 16) | ((green & 255) << 8) | (blue & 255));
 
       if (interpolBuf.containsKey(integer)) {
         interpolLookup.remove(integer);

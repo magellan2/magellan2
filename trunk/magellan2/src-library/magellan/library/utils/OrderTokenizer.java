@@ -183,7 +183,7 @@ public class OrderTokenizer {
    */
   private OrderToken readSSComment() throws IOException {
     StringBuffer sb = new StringBuffer("/");
-    OrderToken retVal = new OrderToken(OrderToken.TT_EOC);
+    OrderToken retVal; // = new OrderToken(OrderToken.TT_EOC);
     int start = in.getPos() - 1;
     int c = in.read();
 

@@ -548,7 +548,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
    * Copies Info about selected ships to the clipboard
    */
   private void event_shipList() {
-    String s = "";
+    StringBuilder s = new StringBuilder();
     int cntShips = 0;
     int cntActModifiedLoad = 0;
     int cntMaxLoad = 0;
@@ -558,25 +558,25 @@ public class UnitContainerContextMenu extends JPopupMenu {
         cntShips++;
         cntActModifiedLoad += ship.getModifiedLoad();
         cntMaxLoad += ship.getMaxCapacity();
-        s += ship.toString(true);
-        s += ":";
-        s +=
+        s.append(ship.toString(true));
+        s.append(":");
+        s .append(
             UnitContainerContextMenu.weightNumberFormat.format(new Float(
-                (ship.getMaxCapacity() - ship.getModifiedLoad()) / 100.0F));
-        s += "\n";
+                (ship.getMaxCapacity() - ship.getModifiedLoad()) / 100.0F)));
+        s.append( "\n");
       }
     }
     if (cntShips > 0) {
-      s +=
-          cntShips
-              + " ships with "
-              + UnitContainerContextMenu.weightNumberFormat.format(new Float(
-                  (cntMaxLoad - cntActModifiedLoad) / 100.0F)) + " free space.";
-      s += "\n";
+      s .append(
+          cntShips)
+          .append( " ships with ").append(
+              UnitContainerContextMenu.weightNumberFormat.format(new Float(
+                  (cntMaxLoad - cntActModifiedLoad) / 100.0F))).append(" free space.");
+      s.append("\n");
     } else {
-      s = "no ships.";
+      s = new StringBuilder( "no ships.");
     }
-    StringSelection strSel = new StringSelection(s);
+    StringSelection strSel = new StringSelection(s.toString());
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
   }

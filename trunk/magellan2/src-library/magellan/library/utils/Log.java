@@ -70,7 +70,7 @@ public class Log {
   /**
    * Wrapper for the logging stream for adding timestamp and linebreaks to output.
    */
-  private class StreamWrapper extends OutputStream {
+  private static class StreamWrapper extends OutputStream {
     BufferedWriter out = null;
 
     /**

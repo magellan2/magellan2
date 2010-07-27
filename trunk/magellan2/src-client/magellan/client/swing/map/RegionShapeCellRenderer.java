@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 import javax.swing.AbstractListModel;
@@ -143,6 +144,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
   protected ContextObserver obs;
   protected Color singleColorArray[] = new Color[1];
 
+  private Random r;
+
   /**
    * Constructs a new RegionShapeCellRenderer object using the given geometry and settings. The
    * default settings-operations keys are initialized to:
@@ -200,6 +203,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     initContextMenu();
 
     context.getEventDispatcher().addGameDataListener(this);
+    r = new Random();
   }
 
   /**
@@ -872,9 +876,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     }
 
     if (!factionColors.containsKey(f)) {
-      Color c =
-          new Color((int) (Math.random() * 128) + 128, (int) (Math.random() * 128) + 128,
-              (int) (Math.random() * 128) + 128);
+      Color c = new Color(r.nextInt(128) + 128, r.nextInt(128) + 128, r.nextInt(128) + 128);
       setFactionColor(f, c);
 
       // adapter.addColor(1,f,c);

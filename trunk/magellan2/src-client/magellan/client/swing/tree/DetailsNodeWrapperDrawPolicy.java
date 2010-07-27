@@ -114,7 +114,7 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
     return null;
   }
 
-  class DetailPolicyPreferencesAdapter extends DetailedPreferencesAdapter {
+  static class DetailPolicyPreferencesAdapter extends DetailedPreferencesAdapter {
     DetailsNodeWrapperDrawPolicy parent;
 
     /**

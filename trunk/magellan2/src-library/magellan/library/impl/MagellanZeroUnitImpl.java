@@ -29,7 +29,7 @@ import magellan.library.utils.Cache;
 public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
 
   /**
-   * Creates a new ZeroUnit object.
+   * Creates a new ZeroUnit object, i.e. a unit that represent the peasants of a region.
    * 
    * @param r the region this ZeroUnit belongs to.
    */

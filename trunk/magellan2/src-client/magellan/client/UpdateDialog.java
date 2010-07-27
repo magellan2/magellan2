@@ -258,6 +258,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       while ((line = reader.readLine()) != null) {
         result.append(line).append("\n");
       }
+      reader.close();
       return result.toString();
     } catch (final FileNotFoundException e) {
       UpdateDialog.log.error(e);

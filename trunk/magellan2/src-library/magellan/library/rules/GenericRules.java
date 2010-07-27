@@ -846,7 +846,7 @@ public class GenericRules implements Rules {
   /**
    * An iterator that iterates over the union of two collections. Unmodifiable.
    */
-  public class CompoundIterator<T> implements Iterator<T> {
+  public static class CompoundIterator<T> implements Iterator<T> {
 
     private Iterator<? extends T> iterator1;
     private Iterator<? extends T> iterator2;
@@ -875,7 +875,7 @@ public class GenericRules implements Rules {
   /**
    * A collection which acts as the union of two collections. Unmodifiable.
    */
-  public class CompoundCollection<T> extends AbstractCollection<T> {
+  public static class CompoundCollection<T> extends AbstractCollection<T> {
 
     private Collection<? extends T> collection1;
     private Collection<? extends T> collection2;

@@ -121,7 +121,7 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
     myFilter = new MyFilterClass(predicate);
   }
 
-  protected class MyFilterClass extends UnitFilter {
+  protected static class MyFilterClass extends UnitFilter {
     int always = 0;
     protected Replacer rep = null;
 

@@ -37,7 +37,7 @@ public class MagellanFinder {
    * first valid location is returned.
    */
   public static File findSettingsDirectory(File magDirectory, File settDir) {
-    MagellanFinder.log.info("Searching for Magellan configuration:");
+    log.info("Searching for Magellan configuration:");
     File settFileDir = settDir;
     if (settDir == null || !testFile(settFileDir)) {
       settFileDir = new File(System.getProperty("user.home"), ".magellan2");
@@ -60,10 +60,10 @@ public class MagellanFinder {
     if (!sFile.exists() && !oFile.exists()) {
       StringBuilder msg =
           new StringBuilder("Using default directory ").append(settFileDir).append(".");
-      MagellanFinder.log.info(msg);
+      log.info(msg);
       settFileDir = magDirectory;
     } else {
-      MagellanFinder.log.info("Using directory '" + settFileDir.getAbsolutePath() + "'.");
+      log.info("Using directory '" + settFileDir.getAbsolutePath() + "'.");
     }
 
     return settFileDir;
@@ -84,17 +84,16 @@ public class MagellanFinder {
       magFile = new File(settFileDir, "profiles.ini");
       if (!settFileDir.exists() || !settFileDir.canWrite() || !magFile.exists()) {
         msg.append(magFile).append("... not found.");
-        MagellanFinder.log.info(msg);
+        log.info(msg);
         return false;
       } else {
         msg.append(magFile).append("... found.");
-        MagellanFinder.log.info(msg);
+        log.info(msg);
         return true;
       }
     } else {
       msg.append(magFile).append("... found.");
-      MagellanFinder.log.info(msg);
-      msg = new StringBuffer();
+      log.info(msg);
       return true;
     }
 
@@ -113,9 +112,9 @@ public class MagellanFinder {
 
       // search for a jar
       try {
-        if (path.endsWith(".jar") && MagellanFinder.checkJar(path)) {
-          File file = new File(MagellanFinder.extractDir(path));
-          MagellanFinder.log.info("Magellan directory: " + file + "(found JAR)");
+        if (path.endsWith(".jar") && checkJar(path)) {
+          File file = new File(extractDir(path));
+          log.info("Magellan directory: " + file + "(found JAR)");
 
           return file;
         } else {
@@ -130,8 +129,8 @@ public class MagellanFinder {
 
             if (list.length > 0) {
               for (File element : list) {
-                if (MagellanFinder.checkJar(element)) {
-                  MagellanFinder.log.info("Magellan directory: " + file + "(found JAR)");
+                if (checkJar(element)) {
+                  log.info("Magellan directory: " + file + "(found JAR)");
 
                   return file;
                 }
@@ -162,8 +161,7 @@ public class MagellanFinder {
             if (list.length > 0) {
               for (String element : list) {
                 if (element.equals("Client.class")) {
-                  MagellanFinder.log.info("Magellan directory: " + file
-                      + "(found magellan.client.Client class)");
+                  log.info("Magellan directory: " + file + "(found magellan.client.Client class)");
 
                   return file;
                 }
@@ -210,7 +208,7 @@ public class MagellanFinder {
    * conditions for the file to be a valid magellan Java Archive (JAR).
    */
   protected static boolean checkJar(String file) {
-    return MagellanFinder.checkJar(new File(file));
+    return checkJar(new File(file));
   }
 
   /**

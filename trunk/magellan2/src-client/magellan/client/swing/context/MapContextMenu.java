@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -501,7 +502,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 
         JMenuItem item = new JMenuItem(Resources.get("context.mapcontextmenu.menu.renderer.none"));
         item.setEnabled(rp.getRenderer() != null);
-        item.putClientProperty(MapContextMenu.RKEY, new Integer(rp.getIndex()));
+        item.putClientProperty(MapContextMenu.RKEY, Integer.valueOf(rp.getIndex()));
         item.addActionListener(rListener);
         help.add(item);
 
@@ -580,9 +581,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 
     if (!found) {
       IntegerID id;
-
+      Random r = new Random();
       while (true) {
-        id = IntegerID.create((int) (Math.random() * Integer.MAX_VALUE));
+        id = IntegerID.create(r.nextInt());
 
         if (data.getHotSpot(id) == null) {
           break;

@@ -105,7 +105,7 @@ public class EresseaRelationFactory implements RelationFactory {
     return createRelations(u, orders, 0);
   }
 
-  class GDEntry {
+  static class GDEntry {
 
     public GameData data;
     public OrderParser parser;
@@ -739,7 +739,7 @@ public class EresseaRelationFactory implements RelationFactory {
   /**
    * Ensures that {@link ReserveRelation}s are sorted before all other relations.
    */
-  public class OrderPreferenceComparator implements Comparator<UnitRelation> {
+  public static class OrderPreferenceComparator implements Comparator<UnitRelation> {
 
     public int compare(UnitRelation o1, UnitRelation o2) {
       if (o1 instanceof ReserveRelation && !(o2 instanceof ReserveRelation))
@@ -760,7 +760,7 @@ public class EresseaRelationFactory implements RelationFactory {
    * @param modItems The Map of the unit's modified items
    * @param rels The newly created {@link ReserveRelation}s are inserted into this list
    */
-  private static void createReserveRelations(Unit u, List<String> ordersCopy, int from,
+  private static void createReserveRelations(Unit u, List<String> ordersCopy,  int from,
       OrderParser parser, Map<ID, Item> modItems, List<UnitRelation> rels) {
     from = 0;
     // parameter from is ignored because it violates execution order
@@ -830,7 +830,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
                 if (iType != null) {
                   // get the item from the list of modified items
-                  Item i = modItems.get(iType.getID());
+                  Item i = modItems.get(iType);
 
                   if (i == null) {
                     // item unknown

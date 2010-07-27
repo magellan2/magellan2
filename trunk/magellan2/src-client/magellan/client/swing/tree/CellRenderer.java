@@ -1177,7 +1177,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
   /**
    * A box layout assuring that all components have the same height.
    */
-  protected class SameHeightBoxLayout implements LayoutManager {
+  protected static class SameHeightBoxLayout implements LayoutManager {
     /**
      * DOCUMENT-ME
      */

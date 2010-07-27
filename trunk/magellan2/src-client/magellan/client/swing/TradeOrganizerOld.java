@@ -547,11 +547,11 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
         if (price == null)
           return "-?-";
         else
-          return new Integer(price.getPrice());
+          return Integer.valueOf(price.getPrice());
       }
 
       case 2:
-        return new Integer(region.getPeasants() / 100);
+        return Integer.valueOf(region.getPeasants() / 100);
       }
 
       return null;
@@ -722,7 +722,7 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
         return region.toString();
 
       case 1:
-        return new Integer(region.getPeasants() / 100);
+        return Integer.valueOf(region.getPeasants() / 100);
       }
 
       return null;
@@ -965,7 +965,7 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
         }
 
         if (amount > 0) {
-          stocks.put(r, new Integer(amount));
+          stocks.put(r, Integer.valueOf(amount));
         } else {
           regionIter.remove();
         }

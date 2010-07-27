@@ -137,7 +137,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
     return errors;
   }
 
-  private synchronized OrderParser getParser() {
+  private OrderParser getParser() {
     return parser;
   }
 

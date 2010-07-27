@@ -122,14 +122,14 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
           if (skillList.isSelectedIndex(i)) {
             int newPos;
 
-            if ((i > 0) && !newSelectedIndices.contains(new Integer(i - 1))) {
+            if ((i > 0) && !newSelectedIndices.contains(i - 1)) {
               newPos = i - 1;
             } else {
               newPos = i;
             }
 
             newData.add(newPos, o);
-            newSelectedIndices.add(new Integer(newPos));
+            newSelectedIndices.add(newPos);
           } else {
             newData.add(o);
           }
@@ -174,7 +174,8 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
           if (skillList.isSelectedIndex(i)) {
             int newPos;
 
-            if ((i < (oldData.getSize() - 1)) && !newSelectedIndices.contains(new Integer(i + 1))) {
+            if ((i < (oldData.getSize() - 1))
+                && !newSelectedIndices.contains(Integer.valueOf(i + 1))) {
               newPos = i + 1;
               newData.add(1, o);
             } else {
@@ -182,7 +183,7 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
               newData.add(0, o);
             }
 
-            newSelectedIndices.add(new Integer(newPos));
+            newSelectedIndices.add(newPos);
           } else {
             newData.add(0, o);
           }
@@ -322,7 +323,7 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
    * @author ...
    * @version 1.0, 20.11.2007
    */
-  private class MyCellRenderer extends JLabel implements ListCellRenderer {
+  private static class MyCellRenderer extends JLabel implements ListCellRenderer {
     // we need a reference to the translations
     private GameData data = null;
     // we need a reference to the ImageFactory
@@ -376,7 +377,7 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
    * @author ...
    * @version 1.0, 20.11.2007
    */
-  private class SkillTypeComparator implements Comparator<SkillType> {
+  private static class SkillTypeComparator implements Comparator<SkillType> {
 
     // Reference to Translations
     private GameData data = null;

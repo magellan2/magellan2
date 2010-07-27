@@ -84,7 +84,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
             .get("skillchart.skillchartpanel.labeltext.horizontalaxis"));
     VerticalNumberAxis yAxis =
         new VerticalNumberAxis(Resources.get("skillchart.skillchartpanel.labeltext.verticalaxis"));
-    yAxis.setTickValue(new Integer(1));
+    yAxis.setTickValue(1);
     yAxis.setAutoRangeIncludesZero(true);
 
     try {
@@ -230,8 +230,8 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 
       for (int level = lowLevel; level <= highLevel; loopCounter++, level++) {
         Skill skill = new Skill(skillType, 1, level, 1, false);
-        dataArray[0][loopCounter] = new Integer(skillStats.getPersonNumber(skill));
-        names.add(new Integer(level));
+        dataArray[0][loopCounter] = Integer.valueOf(skillStats.getPersonNumber(skill));
+        names.add(Integer.valueOf(level));
       }
     }
 

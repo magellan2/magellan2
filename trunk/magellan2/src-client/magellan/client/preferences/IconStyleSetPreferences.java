@@ -460,14 +460,14 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
    * @author ...
    * @version 1.0, 16.02.2008
    */
-  protected class StylesetPanel extends JPanel {
+  protected static class StylesetPanel extends JPanel {
     protected GraphicsStyleset set;
     protected DirectionPanel direction;
     protected FontPanel font;
     protected ColorPanel colors;
     protected JCheckBox fontEnabled;
 
-    class DirectionPanel extends JPanel implements ActionListener {
+    static class DirectionPanel extends JPanel implements ActionListener {
       protected AbstractButton buttons[];
       protected AbstractButton last;
       protected int horiz;
@@ -641,8 +641,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
           fontNa = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         } catch (NullPointerException e) {
           // FIXME(pavkovic) 2003.03.17: This is bad!
-          log
-              .error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
+          log.error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
           fontNa = new String[0];
         }
 
@@ -716,7 +715,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
      * @author ...
      * @version 1.0, 16.02.2008
      */
-    protected class ColorPanel extends JPanel implements ActionListener {
+    protected static class ColorPanel extends JPanel implements ActionListener {
       protected JCheckBox boxes[];
       protected JButton buttons[];
       private Color neutralColor;
@@ -738,8 +737,9 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
         for (int i = 0; i < 4; i++) {
           con.gridx = 0;
           con.gridy = i;
-          this.add(boxes[i] =
-              new JCheckBox(Resources.get("tree.iconadapter.styles.color." + String.valueOf(i))),
+          this.add(
+              boxes[i] =
+                  new JCheckBox(Resources.get("tree.iconadapter.styles.color." + String.valueOf(i))),
               con);
           con.gridx = 1;
           this.add(buttons[i] = new JButton(" "), con);
@@ -938,7 +938,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
    * @author ...
    * @version 1.0, 16.02.2008
    */
-  protected class TreeObject {
+  protected static class TreeObject {
     protected String name;
     protected String sName;
 

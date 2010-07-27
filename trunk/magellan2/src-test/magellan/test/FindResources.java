@@ -128,6 +128,7 @@ public class FindResources {
         FindResources.extractResourceKey(line);
       }
     }
+    reader.close();
   }
 
   public static String extractResourceKey(String line) {

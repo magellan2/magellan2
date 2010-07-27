@@ -21,6 +21,7 @@ import magellan.client.utils.NameGenerator;
 import magellan.library.GameData;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Units;
 import magellan.library.utils.replacers.ReplacerHelp;
 
 /**
@@ -65,6 +66,8 @@ public class MagellanContext implements MagellanEnvironment {
   public void setEventDispatcher(EventDispatcher d) {
     dispatcher = d;
     dispatcher.setMagellanContext(this);
+    // FIXME should this be here?
+    // dispatcher.addGameDataListener(Units.getGameDataListener());
   }
 
   /**

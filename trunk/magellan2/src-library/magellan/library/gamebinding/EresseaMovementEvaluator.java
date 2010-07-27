@@ -17,22 +17,31 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import magellan.library.IntegerID;
 import magellan.library.Item;
+import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Skill;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.MessageType;
 import magellan.library.rules.Race;
 import magellan.library.utils.Regions;
+import magellan.library.utils.logging.Logger;
 
 /**
  * @author $Author: $
  * @version $Revision: 396 $
  */
 public class EresseaMovementEvaluator implements MovementEvaluator {
+  private static Logger log = Logger.getInstance(EresseaMovementEvaluator.class);
+
   private Rules rules;
   private Collection<ItemType> horseTypes;
+
+  private MessageType transportMessageType = new MessageType(IntegerID.create(891175669));
 
   protected EresseaMovementEvaluator(Rules rules) {
     this.rules = rules;
@@ -505,6 +514,91 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       ++weeks;
     }
     return weeks;
+  }
+
+  public MessageType getTransportMessageType() {
+    return transportMessageType;
+  }
+
+  /**
+   * Returns <code>true</code> if the unit's past movement was passive (transported, shipped...)
+   * 
+   * @param u
+   * @return <code>true</code> if there is evidence that the unit's past movement was passive
+   *         (transported, shipped...)
+   */
+  public boolean isPastMovementPassive(Unit u) {
+    if (u.getShip() != null) {
+      if (u.equals(u.getShip().getOwnerUnit())) {
+        // unit is on ship and the owner
+        if (log.isDebugEnabled()) {
+          log.debug("PathCellRenderer(" + u + "):false on ship");
+        }
+
+        return false;
+      }
+
+      // unit is on a ship and not the owner
+      if (log.isDebugEnabled()) {
+        log.debug("PathCellRenderer(" + u + "):true on ship");
+      }
+
+      return true;
+    }
+
+    // we assume a transportation to be passive, if
+    // there is no message of type 891175669
+    if (u.getFaction() == null) {
+      if (log.isDebugEnabled()) {
+        log.debug("PathCellRenderer(" + u + "):false no faction");
+      }
+
+      return false;
+    }
+
+    if (u.getFaction().getMessages() == null) {
+      // faction has no message at all
+      if (log.isDebugEnabled()) {
+        log.debug("PathCellRenderer(" + u + "):false no faction");
+      }
+
+      return true;
+    }
+
+    for (Message m : u.getFaction().getMessages()) {
+      if (log.isDebugEnabled()) {
+        if (getTransportMessageType().equals(m.getMessageType())) {
+          log.debug("PathCellRenderer(" + u + ") Message " + m);
+
+          if ((m.getAttributes() != null) && (m.getAttributes().get("unit") != null)) {
+            log.debug("PathCellRenderer(" + u + ") Unit   " + m.getAttributes().get("unit"));
+            // FIXME actually it should be creatUnitID(*, 10, data.base), but it doesn't matter
+            // here
+            log.debug("PathCellRenderer(" + u + ") UnitID "
+                + UnitID.createUnitID(m.getAttributes().get("unit"), 10));
+          }
+        }
+      }
+
+      if (getTransportMessageType().equals(m.getMessageType()) && (m.getAttributes() != null)
+          && (m.getAttributes().get("unit") != null)
+          && u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) { // FIXME
+                                                                                         // 10,data.base
+        // found a transport message; this is only valid in
+        // units with active movement
+        if (log.isDebugEnabled()) {
+          log.debug("PathCellRenderer(" + u + "):false with message " + m);
+        }
+
+        return false;
+      }
+    }
+
+    if (log.isDebugEnabled()) {
+      log.debug("PathCellRenderer(" + u + "):true with messages");
+    }
+
+    return true;
   }
 
   protected Rules getRules() {

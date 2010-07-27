@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.PersonTransferRelation;
@@ -1139,8 +1140,18 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Checks if the unit's movement was passive (transported or shipped).
    * 
    * @return <code>true</code> if the unit's movement was passive (transported or shipped).
+   * @deprecated Use {@link #isPastMovementPassive(GameSpecificStuff)}
    */
+  @Deprecated
   public boolean isPastMovementPassive();
+
+  /**
+   * Checks if the unit's movement was passive (transported or shipped).
+   * 
+   * @param gameSpecificStuff
+   * @return <code>true</code> if the unit's movement was passive (transported or shipped).
+   */
+  public boolean isPastMovementPassive(GameSpecificStuff gameSpecificStuff);
 
   /**
    * Returns the id uniquely identifying this object.

@@ -66,7 +66,7 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
    */
   @Override
   public int getPersons() {
-    // 
+    //
     return getRegion().maxRecruit();
   }
 

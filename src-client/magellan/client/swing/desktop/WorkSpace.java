@@ -123,7 +123,7 @@ public class WorkSpace extends JPanel {
   // chooserBar.addSeparator();
   // }
   // lastAction =action;
-  //			
+  //
   // chooserBar.add(button);
   // }
   //

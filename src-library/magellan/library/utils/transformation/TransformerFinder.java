@@ -441,9 +441,7 @@ public class TransformerFinder {
       String message =
           Resources.getFormatted("util.reportmerger.msg.usertranslation.x", filename, layer);
       Object xS =
-          ui
-              .input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null,
-                  "0");
+          ui.input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null, "0");
       if (xS != null) {
         message =
             Resources.getFormatted("util.reportmerger.msg.usertranslation.y", filename, layer);
@@ -523,9 +521,7 @@ public class TransformerFinder {
       }
       if (idBox.maxy != Integer.MIN_VALUE) {
         if (rBox == null) {
-          log
-              .info("gone round the world (southward); the world's new girth is "
-                  + (idBox.maxy + 1));
+          log.info("gone round the world (southward); the world's new girth is " + (idBox.maxy + 1));
           resultBoxes.setBoxY(layer, (idBox.maxy + 1) / 2 - (idBox.maxy), (idBox.maxy + 1) / 2);
         } else if (rBox.maxy - rBox.miny != idBox.maxy) {
           log.warn("new ybox: " + rBox + " -> " + idBox);

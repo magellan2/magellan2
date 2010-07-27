@@ -36,7 +36,7 @@ public class XMLGameDataIO implements GameDataIO {
 
     // c) use corresponding gamebinding object (or eressea gamebinding object if
     // no special implementation found) to read the cr/xml
-    // 
+    //
     // return new XMLGameDataReader(file).readGameData();
   }
 }

@@ -65,7 +65,8 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
 
   /**
    * Counts all persons in the region. Can be restricted by unit filters. Can be restricted by unit
-   * filters. The first parameter specifies the skill. If <code>mode=={@link #MODE_SKILL_MIN}</code> or <code>mode=={@link #MODE_SKILL_SUM_MIN}</code>, only persons with a certain skill level are
+   * filters. The first parameter specifies the skill. If <code>mode=={@link #MODE_SKILL_MIN}</code>
+   * or <code>mode=={@link #MODE_SKILL_SUM_MIN}</code>, only persons with a certain skill level are
    * counted.
    * 
    * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)

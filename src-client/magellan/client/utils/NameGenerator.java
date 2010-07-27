@@ -39,19 +39,20 @@ import magellan.library.utils.Utils;
 public class NameGenerator {
   boolean available = false;
   List<String> names;
-  static Properties settings;
+  Properties settings;
   static NameGenerator gen;
 
   /**
-   * DOCUMENT-ME
+   * Initializes the generator from settings
+   * 
+   * @throws NullPointerException if <code>settings==null</code>
    */
-  public static void init(Properties set) {
-    NameGenerator.settings = set;
-    new NameGenerator(NameGenerator.settings);
+  public static void init(Properties settings) {
+    gen = new NameGenerator(settings);
   }
 
   /**
-   * DOCUMENT-ME
+   * Closes the generator.
    */
   public static void quit() {
     if (NameGenerator.gen != null) {
@@ -60,12 +61,13 @@ public class NameGenerator {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the generator
+   * 
+   * @throws IllegalStateException if instance hasn't been called before.
    */
   public static NameGenerator getInstance() {
-    if (NameGenerator.gen == null) {
-      new NameGenerator(NameGenerator.settings);
-    }
+    if (NameGenerator.gen == null)
+      throw new IllegalStateException("not initialized");
 
     return NameGenerator.gen;
   }
@@ -74,7 +76,7 @@ public class NameGenerator {
     load(settings.getProperty("NameGenerator.Source"));
     available = settings.getProperty("NameGenerator.active", "false").equals("true");
 
-    NameGenerator.gen = this;
+    this.settings = settings;
   }
 
   public void load(String fileName) {
@@ -110,7 +112,7 @@ public class NameGenerator {
   }
 
   protected void close() {
-    String file = NameGenerator.settings.getProperty("NameGenerator.Source");
+    String file = settings.getProperty("NameGenerator.Source");
 
     if (!Utils.isEmpty(file)) {
       try {

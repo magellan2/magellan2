@@ -168,8 +168,8 @@ import magellan.library.io.GameDataReader;
 import magellan.library.io.cr.CRWriter;
 import magellan.library.io.file.FileBackup;
 import magellan.library.io.file.FileType;
-import magellan.library.io.file.FileTypeFactory;
 import magellan.library.io.file.FileType.ReadOnlyException;
+import magellan.library.io.file.FileTypeFactory;
 import magellan.library.rules.Date;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Locales;
@@ -505,7 +505,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         BufferedInputStream stream = null;
         try {
           settings.load(stream = new BufferedInputStream(new FileInputStream(settingsFile)));
-        Client.log.info("Client.loadSettings: successfully loaded " + settingsFile);
+          Client.log.info("Client.loadSettings: successfully loaded " + settingsFile);
         } finally {
           if (stream != null) {
             stream.close();
@@ -1072,7 +1072,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Adds a new menu item to the specifie menu associating it with the specified action, setting its
+   * Adds a new menu item to the specify menu associating it with the specified action, setting its
    * mnemonic and registers its accelerator if it has one.
    * 
    * @return the menu item created.
@@ -1086,7 +1086,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       item.setAccelerator(action.getAccelerator());
     }
 
-    new MenuActionObserver(item, action);
+    @SuppressWarnings("unused")
+    MenuActionObserver foo = new MenuActionObserver(item, action);
 
     return item;
   }

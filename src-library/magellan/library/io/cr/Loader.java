@@ -54,8 +54,7 @@ public class Loader {
   @Deprecated
   synchronized public GameData cloneGameDataInMemory(final GameData data,
       final CoordinateID newOrigin) throws CloneNotSupportedException {
-    return cloneGameDataInMemory(data, new TwoLevelTransformer(newOrigin, CoordinateID
-        .ZERO));
+    return cloneGameDataInMemory(data, new TwoLevelTransformer(newOrigin, CoordinateID.ZERO));
   }
 
   /**

@@ -816,9 +816,7 @@ public class GameDataMerger {
         Region original = newerGD.getOriginal(wrapper);
         Region newOriginal = resultGD.getRegion(original.getID());
         if (newOriginal == null) {
-          log
-              .error("did not find corresponding region for original " + original + " of "
-                  + wrapper);
+          log.error("did not find corresponding region for original " + original + " of " + wrapper);
         } else {
           resultGD.makeWrapper(resultRegion, newOriginal);
         }

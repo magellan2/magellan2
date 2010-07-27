@@ -181,7 +181,7 @@ public class EresseaRelationFactory implements RelationFactory {
       // }
 
       // UnitRelation relation = parser.read(new StringReader(order));
-      //      
+      //
       // relations.add(relation);
 
       if (!parser.read(new StringReader(order))) {
@@ -760,7 +760,7 @@ public class EresseaRelationFactory implements RelationFactory {
    * @param modItems The Map of the unit's modified items
    * @param rels The newly created {@link ReserveRelation}s are inserted into this list
    */
-  private static void createReserveRelations(Unit u, List<String> ordersCopy,  int from,
+  private static void createReserveRelations(Unit u, List<String> ordersCopy, int from,
       OrderParser parser, Map<ID, Item> modItems, List<UnitRelation> rels) {
     from = 0;
     // parameter from is ignored because it violates execution order

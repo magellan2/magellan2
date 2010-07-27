@@ -707,8 +707,8 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 
     public final int NUMBER_OF_CATEGORIES = 7;
 
-    protected String categories[] =
-        { "weapons", "armour", "resources", "luxuries", "herbs", "potions", "misc" };
+    protected String categories[] = { "weapons", "armour", "resources", "luxuries", "herbs",
+        "potions", "misc" };
 
     // for menu use
     protected ContextObserver obs;

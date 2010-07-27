@@ -82,7 +82,11 @@ public class LanguageDialog {
     }
 
     if (sysDefault == null) {
-      new Lang(Locale.ENGLISH);
+      if (defaultLocale != null) {
+        sysDefault = new Lang(defaultLocale);
+      } else {
+        sysDefault = new Lang(Locale.ENGLISH);
+      }
     }
 
     languageList = new LinkedList<Lang>();

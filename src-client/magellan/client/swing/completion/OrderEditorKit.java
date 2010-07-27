@@ -36,12 +36,12 @@ public class OrderEditorKit extends StyledEditorKit {
 
   /** DOCUMENT-ME */
   public static final String copyLineAction = "copy-line-to-clipboard";
-  private static final Action defaultActions[] =
-      { new CopyLineAction(), new PreviousWordAction(DefaultEditorKit.previousWordAction, false), // CTRL-Left
-          new NextWordAction(DefaultEditorKit.nextWordAction, false), // CTRL-Right
-          new PreviousWordAction(DefaultEditorKit.selectionPreviousWordAction, true), // CTRL-Left
-          // selected
-          new NextWordAction(DefaultEditorKit.selectionNextWordAction, true) // CTRL-Right selected
+  private static final Action defaultActions[] = { new CopyLineAction(),
+      new PreviousWordAction(DefaultEditorKit.previousWordAction, false), // CTRL-Left
+      new NextWordAction(DefaultEditorKit.nextWordAction, false), // CTRL-Right
+      new PreviousWordAction(DefaultEditorKit.selectionPreviousWordAction, true), // CTRL-Left
+      // selected
+      new NextWordAction(DefaultEditorKit.selectionNextWordAction, true) // CTRL-Right selected
       };
 
   /**

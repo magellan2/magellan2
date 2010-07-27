@@ -27,43 +27,38 @@ public class FileNameGenerator {
 
   String ordersSaveFileNamePattern = null;
 
-  static Properties settings;
+  Properties settings;
   static FileNameGenerator gen;
 
   /**
-   * DOCUMENT-ME
+   * Initializes the generator from settings
+   * 
+   * @throws NullPointerException if <code>settings==null</code>
    */
-  public static void init(Properties set) {
-    FileNameGenerator.settings = set;
-    new FileNameGenerator(FileNameGenerator.settings);
+  public static void init(Properties settings) {
+    gen = new FileNameGenerator(settings);
   }
 
   /**
-   * DOCUMENT-ME
+   * Closes the generator.
    */
   public static void quit() {
-    if (FileNameGenerator.gen != null) {
-      FileNameGenerator.gen.close();
-    }
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the generator
+   * 
+   * @throws IllegalStateException if instance hasn't been called before.
    */
   public static FileNameGenerator getInstance() {
-    if (FileNameGenerator.gen == null) {
-      new FileNameGenerator(FileNameGenerator.settings);
-    }
+    if (FileNameGenerator.gen == null)
+      throw new IllegalStateException("not initialized");
     return FileNameGenerator.gen;
   }
 
   private FileNameGenerator(Properties settings) {
     ordersSaveFileNamePattern = settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern");
-    FileNameGenerator.gen = this;
-  }
-
-  protected void close() {
-
+    this.settings = settings;
   }
 
   /**
@@ -94,15 +89,15 @@ public class FileNameGenerator {
     // Lets work in extra String
     String res = pattern.toString();
 
-    res = FileNameGenerator.replaceAll(res, "{faction}", feed.getFaction());
-    res = FileNameGenerator.replaceAll(res, "{factionnr}", feed.getFactionnr());
+    res = res.replaceAll("{faction}", feed.getFaction());
+    res = res.replaceAll("{factionnr}", feed.getFactionnr());
     int i = feed.getRound();
     if (i > -1) {
-      res = FileNameGenerator.replaceAll(res, "{round}", Integer.toString(i));
+      res = res.replaceAll("{round}", Integer.toString(i));
     } else {
-      res = FileNameGenerator.replaceAll(res, "{round}", null);
+      res = res.replaceAll("{round}", null);
     }
-    res = FileNameGenerator.replaceAll(res, "{group}", feed.getGroup());
+    res = res.replaceAll("{group}", feed.getGroup());
 
     return res;
   }
@@ -114,7 +109,9 @@ public class FileNameGenerator {
    * @return originalString with searchString replaced by replaceString we could use
    *         String.replaceAll for that...but, it's built in java 1.4 and just now we are compatible
    *         with 1.3. ... (Fiete 20061108)
+   * @deprecated We use Java 1.5 now
    */
+  @Deprecated
   public static String replaceAll(String originalString, String searchString, String replaceString) {
     if (originalString == null)
       return null;

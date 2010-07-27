@@ -774,8 +774,8 @@ public class UnitContextMenu extends JPopupMenu {
       cntModifiedPersons += u.getModifiedPersons();
     }
     if (cntUnits > 0) {
-      s.append(cntUnits).append(" units with ").append(cntPersons).append("(")
-          .append(cntModifiedPersons).append(") individuals.");
+      s.append(cntUnits).append(" units with ").append(cntPersons).append("(").append(
+          cntModifiedPersons).append(") individuals.");
     } else {
       s = new StringBuilder("no units");
     }

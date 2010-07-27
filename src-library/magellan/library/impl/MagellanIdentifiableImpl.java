@@ -47,7 +47,7 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
   // counters = new HashMap<String, Counter>();
   // timer = new Timer("memory tracker");
   // TimerTask task = new TimerTask() {
-  //    
+  //
   // @Override
   // public void run() {
   // for (Counter counter : counters.values()){

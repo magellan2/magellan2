@@ -572,7 +572,8 @@ public class EventDispatcher implements EventDispatcherInterface {
         notifierIsAliveOnList[EventDispatcher.SELECTION] = true;
 
         for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.SELECTION).iterator(); iter
-            .hasNext() && !stopNotification;) {
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -603,7 +604,8 @@ public class EventDispatcher implements EventDispatcherInterface {
         notifierIsAliveOnList[EventDispatcher.ORDERCONFIRM] = true;
 
         for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.ORDERCONFIRM).iterator(); iter
-            .hasNext() && !stopNotification;) {
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -628,7 +630,8 @@ public class EventDispatcher implements EventDispatcherInterface {
         notifierIsAliveOnList[EventDispatcher.UNITORDERS] = true;
 
         for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.UNITORDERS).iterator(); iter
-            .hasNext() && !stopNotification;) {
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -654,7 +657,8 @@ public class EventDispatcher implements EventDispatcherInterface {
         notifierIsAliveOnList[EventDispatcher.TEMPUNIT] = true;
 
         for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.TEMPUNIT).iterator(); iter
-            .hasNext() && !stopNotification;) {
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -687,7 +691,8 @@ public class EventDispatcher implements EventDispatcherInterface {
         notifierIsAliveOnList[EventDispatcher.GAMEDATA] = true;
 
         for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.GAMEDATA).iterator(); iter
-            .hasNext() && !stopNotification;) {
+            .hasNext()
+            && !stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 

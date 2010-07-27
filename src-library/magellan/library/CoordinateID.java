@@ -59,8 +59,8 @@ public class CoordinateID implements ID {
     }
   }
 
-  private static final CoordinateID INVALID =
-      new CoordinateID(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
+  private static final CoordinateID INVALID = new CoordinateID(Integer.MIN_VALUE,
+      Integer.MIN_VALUE, Integer.MIN_VALUE);
 
   /**
    * The coordinate (0,0,0).

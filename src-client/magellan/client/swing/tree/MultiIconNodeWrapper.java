@@ -270,8 +270,8 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
     /** DOCUMENT-ME */
     public final int SHOW_WARNINGS = 20;
 
-    protected String categories[] =
-        { "weapons", "armour", "resources", "luxuries", "herbs", "potions", "misc" };
+    protected String categories[] = { "weapons", "armour", "resources", "luxuries", "herbs",
+        "potions", "misc" };
 
     // for menu use
     protected ContextObserver obs;

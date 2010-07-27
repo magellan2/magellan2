@@ -47,7 +47,8 @@ public class MemoryManagment {
    *          (Fiete)
    */
   public static final void setFinalizerPriority(int newPriority) {
-    new FinalizerChanger(newPriority);
+    @SuppressWarnings("unused")
+    FinalizerChanger foo = new FinalizerChanger(newPriority);
     java.lang.System.gc();
     java.lang.System.runFinalization();
   }

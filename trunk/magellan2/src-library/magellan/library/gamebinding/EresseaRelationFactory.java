@@ -765,6 +765,7 @@ public class EresseaRelationFactory implements RelationFactory {
     from = 0;
     // parameter from is ignored because it violates execution order
 
+    // TODO this map is not really used
     Map<ItemType, Item> reservedItems = new HashMap<ItemType, Item>();
     GameData data = u.getRegion().getData();
     int line = 0;

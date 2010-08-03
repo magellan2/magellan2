@@ -1927,11 +1927,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         dispatcher.fire(SelectionEvent.create(this, tempUnit));
       } else {
         // do all the tempunit-dialog-stuff
-        UnitID newID = UnitID.createUnitID(-id.intValue(), data.base); // unit
-        // id is
-        // non-negative
-        // on
-        // views
+        // unit id is non-negative on views
+        UnitID newID = UnitID.createUnitID(-id.intValue(), data.base);
 
         if (dialog == null) {
           dialog = new TempUnitDialog((Frame) getTopLevelAncestor(), this, settings);

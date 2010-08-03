@@ -4,7 +4,8 @@ import java.io.File;
 
 import magellan.client.Client.Parameters;
 import magellan.client.swing.StartWindow;
-import magellan.client.utils.*;
+import magellan.client.utils.MagellanFinder;
+import magellan.client.utils.ProfileManager;
 import magellan.library.GameData;
 import magellan.library.utils.MagellanImages;
 

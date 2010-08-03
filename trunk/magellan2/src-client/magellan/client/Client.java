@@ -774,7 +774,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     // currently not used (stm)
-    // for (JMenu menu:topLevel.values()){
+    // for (JMenu menu : topLevel.values()) {
     // menuBar.add(menu);
     // }
 

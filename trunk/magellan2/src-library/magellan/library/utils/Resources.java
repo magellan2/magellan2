@@ -79,6 +79,7 @@ public class Resources {
    * This constructor loads all available resources into a hashtable.
    */
   private Resources() {
+    //
   }
 
   /**

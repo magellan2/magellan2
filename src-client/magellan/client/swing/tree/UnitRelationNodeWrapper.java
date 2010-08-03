@@ -29,12 +29,23 @@ import java.util.Properties;
 import magellan.client.swing.context.ContextFactory;
 import magellan.library.relation.UnitRelation;
 
+/**
+ * A node that represents a unit relation and is wrapped around another node.
+ * 
+ * @author stm
+ */
 public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, Changeable {
 
   private UnitRelation relation;
   private CellObject innerNode;
   private ContextFactory contextFactory;
 
+  /**
+   * Creates a node representing a relation to another unit.
+   * 
+   * @param rel
+   * @param innerNode Another node that this node wraps around
+   */
   public UnitRelationNodeWrapper(UnitRelation rel, CellObject innerNode) {
     relation = rel;
     this.innerNode = innerNode;
@@ -111,15 +122,16 @@ public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, C
   }
 
   /**
-   * Returns the text.
-   * 
-   * @see java.lang.Object#toString()
+   * Returns the inner nodes text.
    */
   @Override
   public String toString() {
     return innerNode.toString();
   }
 
+  /**
+   * @return the inner node
+   */
   public CellObject getInnerNode() {
     return innerNode;
   }

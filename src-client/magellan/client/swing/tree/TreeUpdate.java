@@ -14,14 +14,16 @@
 package magellan.client.swing.tree;
 
 /**
- * DOCUMENT ME!
+ * An interface for notifiying a GUI element that it should update its tree.
  * 
  * @author Andreas
  * @version 1.0
  */
 public interface TreeUpdate {
   /**
-   * DOCUMENT-ME
+   * Called when the tree should be updated.
+   * 
+   * @param src The object that was responsible for this event.
    */
   public void updateTree(Object src);
 }

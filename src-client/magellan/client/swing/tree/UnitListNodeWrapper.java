@@ -32,8 +32,9 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
 
   protected static final List<String> defaultIcon = Collections.singletonList("simpledefault");
 
-  /** DOCUMENT-ME */
+  /** The student list type */
   public static final int STUDENT_LIST = 1;
+
   private int type = 0;
   protected Collection<Unit> units = null;
   protected String text = null;
@@ -45,6 +46,12 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
 
   /**
    * Creates new UnitListNodeWrapper
+   * 
+   * @param text
+   * @param clipboardValue
+   * @param units
+   * @param type
+   * @param typed nodes seem to have fallen out of use...
    */
   public UnitListNodeWrapper(String text, String clipboardValue, Collection<Unit> units, int type) {
     this(text, clipboardValue, units);
@@ -61,7 +68,7 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * Creates a new UnitListNodeWrapper object.
    * 
    * @param text
    * @param clipboardValue
@@ -73,7 +80,7 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * Creates a new UnitListNodeWrapper object.
    * 
    * @param text
    * @param clipboardValue
@@ -88,21 +95,23 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the list type
+   * @deprecated This seems to have fallen out of use.
    */
+  @Deprecated
   public int getType() {
     return type;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the unit list
    */
   public Collection<Unit> getUnits() {
     return units;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The (explicitly set) text.
    */
   @Override
   public String toString() {
@@ -110,7 +119,7 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     if (clipboardValue == null)
@@ -119,6 +128,9 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
       return clipboardValue;
   }
 
+  /**
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
+   */
   public Collection<String> getIconNames() {
     if (returnIcons == null) {
       if ((icons == null)) {
@@ -132,22 +144,23 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * Controls whether the tree cell renderer should display this item more noticeably than other
-   * nodes.
+   * @see magellan.client.swing.tree.CellObject#emphasized()
    */
   public boolean emphasized() {
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return init(settings, "UnitListNodeWrapper", adapter);
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {
@@ -162,7 +175,9 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @param settings
+   * @param prefix
+   * @return
    */
   protected NodeWrapperDrawPolicy createSimpleDrawPolicy(Properties settings, String prefix) {
     return new DetailsNodeWrapperDrawPolicy(1, null, settings, prefix, new String[][] { {
@@ -170,7 +185,7 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
     returnIcons = null;

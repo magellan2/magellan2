@@ -30,6 +30,8 @@ import java.util.Properties;
 import magellan.client.swing.context.ContextFactory;
 import magellan.library.relation.UnitRelation;
 
+// FIXME doesn't work well
+// FIXME explain CellObject2
 public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements CellObject2 {
 
   private UnitRelation relation;

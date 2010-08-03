@@ -22,7 +22,7 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * A factory for preferences of CellObjects with various subcategories.
  * 
  * @author Andreas
  * @version 1.0
@@ -44,7 +44,7 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
   boolean properties[];
 
   /**
-   * Creates new NodeWrapperPreferencesDialog with subcategories
+   * Creates new NodeWrapperPreferencesDialog with subcategories.
    * 
    * @param count Number of options (top level check boxes)
    * @param subcount Number of sub-options (check boxes in details entry)

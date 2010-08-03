@@ -152,6 +152,7 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
    * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
+    // no changeable properties
   }
 
   /**

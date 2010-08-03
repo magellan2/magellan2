@@ -37,14 +37,14 @@ public class BorderNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The border represented by this node
    */
   public Border getBorder() {
     return border;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the border name
    */
   @Override
   public String toString() {
@@ -52,7 +52,7 @@ public class BorderNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
     if (iconNames == null) {
@@ -63,27 +63,30 @@ public class BorderNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#emphasized()
    */
   public boolean emphasized() {
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
+    // no changeable properties
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {
@@ -91,7 +94,7 @@ public class BorderNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     if (border != null)

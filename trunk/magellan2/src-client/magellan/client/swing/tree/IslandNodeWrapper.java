@@ -42,14 +42,14 @@ public class IslandNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The corresponding island
    */
   public Island getIsland() {
     return island;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the island's name
    */
   @Override
   public String toString() {
@@ -57,14 +57,14 @@ public class IslandNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
     return IslandNodeWrapper.iconNames;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#emphasized()
    */
   public boolean emphasized() {
     for (Region region : island.regions()) {
@@ -86,27 +86,30 @@ public class IslandNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
+    // no changeable properties
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     return (island != null) ? island.getName() : toString();
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {

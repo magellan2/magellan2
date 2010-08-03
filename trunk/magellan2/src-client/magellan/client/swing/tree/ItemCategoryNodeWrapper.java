@@ -38,13 +38,16 @@ public class ItemCategoryNodeWrapper implements CellObject {
   protected DetailsNodeWrapperDrawPolicy adapter;
 
   /**
-   * Creates a new ItemCategoryNodeWrapper object.
+   * Creates a new ItemCategoryNodeWrapper object (with number of items).
    */
   public ItemCategoryNodeWrapper(ItemCategory category, int amount) {
     this.amount = amount;
     cat = category;
   }
 
+  /**
+   * Creates a new ItemCategoryNodeWrapper object with explicit name.
+   */
   public ItemCategoryNodeWrapper(ItemCategory category, int amount, String _catName) {
     this.amount = amount;
     cat = category;
@@ -52,21 +55,21 @@ public class ItemCategoryNodeWrapper implements CellObject {
   }
 
   /**
-   * DOCUMENT-ME
+   * @param i
    */
   public void setAmount(int i) {
     amount = i;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The corresponding category.
    */
   public ItemCategory getItemCategory() {
     return cat;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the category name and amount (and unmodified amount)
    */
   @Override
   public String toString() {
@@ -89,12 +92,17 @@ public class ItemCategoryNodeWrapper implements CellObject {
     }
   }
 
+  /**
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
+   */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return init(settings, "SimpleNodeWrapper", adapter);
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {
@@ -108,12 +116,18 @@ public class ItemCategoryNodeWrapper implements CellObject {
     return adapter;
   }
 
+  /**
+   * DOCUMENT-ME
+   */
   protected NodeWrapperDrawPolicy createSimpleDrawPolicy(Properties settings, String prefix) {
     return new DetailsNodeWrapperDrawPolicy(1, null, settings, prefix, new String[][] { {
         "simple.showIcon", "true" } }, new String[] { "icons.text" }, 0,
         "tree.itemcategorynodewrapper.");
   }
 
+  /**
+   * @param icons
+   */
   public void setIcons(Collection<String> icons) {
     this.icons = null;
     if (icons != null) {
@@ -121,6 +135,9 @@ public class ItemCategoryNodeWrapper implements CellObject {
     }
   }
 
+  /**
+   * @param icons
+   */
   public void setIcons(Map<?, ?> icons) {
     this.icons = null;
     if (icons != null) {
@@ -132,19 +149,31 @@ public class ItemCategoryNodeWrapper implements CellObject {
     }
   }
 
+  /**
+   * @param icons
+   */
   public void setIcons(Object icons) {
     this.icons = null;
     this.icons = Collections.singletonList(icons.toString());
   }
 
+  /**
+   * @see magellan.client.swing.tree.CellObject#emphasized()
+   */
   public boolean emphasized() {
     return false;
   }
 
+  /**
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
+   */
   public void propertiesChanged() {
     returnIcons = null;
   }
 
+  /**
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
+   */
   public List<String> getIconNames() {
     if (returnIcons == null) {
 

@@ -43,15 +43,13 @@ import javax.swing.SwingUtilities;
 import magellan.client.swing.InternationalizedDialog;
 import magellan.client.swing.MagellanFocusTraversalPolicy;
 import magellan.client.utils.NameGenerator;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 171 $
+ * A dialog for creating a Temp Unit
  */
 public class TempUnitDialog extends InternationalizedDialog implements ActionListener {
   private static final Logger log = Logger.getInstance(TempUnitDialog.class);
@@ -60,7 +58,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   protected JButton more;
   protected JButton ok;
   protected JButton cancel;
-  protected JPanel bPanel;
+  protected JPanel moreButtonPanel;
   protected JPanel morePanel;
   protected JTextField recruit;
   protected JTextArea descript;
@@ -75,7 +73,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   protected JButton nameGen;
   protected Container nameCon;
 
-  /** DOCUMENT-ME */
+  /** settings key for detailed dialog property */
   public static final String SETTINGS_KEY = "TempUnitDialog.ExtendedDialog";
 
   /**
@@ -87,38 +85,32 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 
     posC = parent;
 
-    Container c = getContentPane();
+    Container main = getContentPane();
 
-    c.setLayout(layout = new GridBagLayout());
+    main.setLayout(layout = new GridBagLayout());
 
-    con = new GridBagConstraints();
-    con.gridwidth = 1;
-    con.gridheight = 1;
+    getBasicConstraints();
+
+    // //// text boxes with labels
     con.weightx = 0;
-    con.anchor = GridBagConstraints.WEST;
-    con.fill = GridBagConstraints.NONE;
-
-    Insets i = new Insets(1, 2, 1, 2);
-
-    con.insets = i;
-
-    c.add(new JLabel(Resources.get("completion.tempunitdialog.id.label")), con);
+    main.add(new JLabel(Resources.get("completion.tempunitdialog.id.label")), con);
     con.gridy = 1;
-    c.add(new JLabel(Resources.get("completion.tempunitdialog.name.label")), con);
+    main.add(new JLabel(Resources.get("completion.tempunitdialog.name.label")), con);
 
     con.gridy = 0;
     con.gridx = 1;
     con.weightx = 1;
     con.fill = GridBagConstraints.HORIZONTAL;
-    c.add(id = new JTextField(5), con);
+    main.add(id = new JTextField(5), con);
     id.addActionListener(this);
     con.gridy = 1;
     nameCon = new JPanel(new BorderLayout());
     ((JPanel) nameCon).setPreferredSize(id.getPreferredSize());
     nameCon.add(name = new JTextField(20), BorderLayout.CENTER);
-    c.add(nameCon, con);
+    main.add(nameCon, con);
     name.addActionListener(this);
 
+    // ///////// name generator button (unused)
     nameGen = new JButton("...");
     nameGen.addActionListener(this);
     nameGen.setEnabled(false);
@@ -129,18 +121,16 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     nameGen.setMargin(insets);
     nameGen.setFocusPainted(false);
 
-    con.gridx = 0;
-    con.gridy = 2;
-    con.gridwidth = 3;
-
+    // ///////// more/less button
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
     panel.add(more = new JButton(Resources.get("completion.tempunitdialog.more.more")));
     panel.setOpaque(false);
     more.addActionListener(this);
-    bPanel = panel;
-    c.add(panel, con);
+    moreButtonPanel = panel;
+    main.add(moreButtonPanel, con = getMoreLessConstraints(false));
 
+    // ///////// ok/cancel buttons
     con.gridx = 2;
     con.gridy = 0;
     con.gridwidth = 1;
@@ -154,8 +144,12 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     cancel.addActionListener(this);
     cancel.setMnemonic(Resources.get("completion.tempunitdialog.cancel.mnemonic").charAt(0));
     con.fill = GridBagConstraints.NONE;
-    c.add(panel, con);
+    con.weightx = 0;
+    main.add(panel, con);
+    con.weightx = 1;
+    con.fill = GridBagConstraints.HORIZONTAL;
 
+    // /////////// details panel
     morePanel = new JPanel(new GridBagLayout());
     morePanel.setOpaque(false);
     con.gridx = 0;
@@ -193,6 +187,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     morePanel.add(new JScrollPane(descript = new TablessTextArea(3, 10)), con);
     descript.setLineWrap(true);
     descript.setWrapStyleWord(true);
+
+    // morePanel isn't added here
 
     // Focus management/Default opening state
     boolean open = false;
@@ -238,6 +234,23 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     });
   }
 
+  private GridBagConstraints getBasicConstraints() {
+    if (con == null) {
+      con = new GridBagConstraints();
+    }
+
+    con.gridwidth = 1;
+    con.gridheight = 1;
+    con.weightx = 1;
+    con.anchor = GridBagConstraints.WEST;
+    con.fill = GridBagConstraints.NONE;
+
+    Insets i = new Insets(1, 2, 1, 2);
+
+    con.insets = i;
+    return con;
+  }
+
   // overrides InternationalizedDialog.quit()
   // do not dispose
   @Override
@@ -250,7 +263,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.Dialog#setVisible(boolean)
    */
   @Override
   public void setVisible(boolean b) {
@@ -275,14 +288,14 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
         w = Integer.parseInt(st.nextToken());
         h = Integer.parseInt(st.nextToken());
         // make sure dialog is inside screen
-        w = Math.max(w, 50);
-        h = Math.max(h, 50);
+        w = Math.max(w, getToolkit().getScreenSize().width / 10 + 1);
+        h = Math.max(h, getToolkit().getScreenSize().height / 10 + 1);
         w = Math.min(w, getToolkit().getScreenSize().width);
         h = Math.min(h, getToolkit().getScreenSize().height);
         x = Math.min(x, getToolkit().getScreenSize().width - 50);
         y = Math.min(y, getToolkit().getScreenSize().height - 50);
-        x = Math.max(x, 50 - w);
-        y = Math.min(y, 50 - h);
+        x = Math.max(x, getToolkit().getScreenSize().width / 10 + 1 - w);
+        y = Math.max(y, getToolkit().getScreenSize().height / 10 + 1 - h);
         setBounds(x, y, w, h);
       } catch (Exception e) {
         pack();
@@ -317,7 +330,9 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Reacts on buttons.
+   * 
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(java.awt.event.ActionEvent p1) {
     if (p1.getSource() == more) {
@@ -338,7 +353,10 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Displays the dialog.
+   * 
+   * @param newID preset for id text box
+   * @param newName preset for name box
    */
   public void show(String newID, String newName) {
     id.setText(newID);
@@ -347,9 +365,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     if (settings.getProperty("TempUnitDialog.LastOrderEmpty", "false").equals("true")) {
       order.setText(null);
     } else {
-      // FIXME (stm) for some reason Resources.getOrderTranslation(EresseaConstants.O_LEARN + " ")
-      // does not work
-      order.setText(Resources.get("completion.tempunitdialog.order.default") + " ");
+      order.setText(Resources.getOrderTranslation(EresseaConstants.O_LEARN));
+      // order.setText(Resources.get("completion.tempunitdialog.order.default") + " ");
     }
 
     descript.setText(null);
@@ -357,7 +374,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Shows the dialog without resetting text boxes except name.
    */
   public void show(String newName) {
     approved = false;
@@ -399,28 +416,28 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns <code>true</code> if ok button was pressed.
    */
   public boolean isApproved() {
     return approved;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return true if the "more" (detailed) view was active.
    */
   public boolean wasExtendedDialog() {
-    return getContentPane().getComponentCount() == 7;
+    return !more.getText().equals(Resources.get("completion.tempunitdialog.more.less"));
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The value of the id input box
    */
   public String getID() {
     return id.getText();
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The value of the name input box
    */
   @Override
   public String getName() {
@@ -428,35 +445,35 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The value of the recruit input box
    */
   public String getRecruit() {
     return recruit.getText();
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The value of the order input box
    */
   public String getOrder() {
     return order.getText();
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The value of the description input box
    */
   public String getDescript() {
     return descript.getText();
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The value of the give recruit silver checkbox
    */
   public boolean isGiveRecruitCost() {
     return giveRecruitCost.isSelected();
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The value of the give maintenance silver checkbox
    */
   public boolean isGiveMaintainCost() {
     return giveMaintainCost.isSelected();
@@ -464,15 +481,10 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 
   protected void changeDialog() {
     Container c = getContentPane();
-    int count = c.getComponentCount();
 
-    if (count == 6) { // add
+    if (!more.getText().equals(Resources.get("completion.tempunitdialog.more.less"))) { // add
+      layout.setConstraints(moreButtonPanel, getMoreLessConstraints(true));
       con.gridx = 0;
-      con.gridy = 4;
-      con.gridwidth = 3;
-      con.gridheight = 1;
-      con.fill = GridBagConstraints.HORIZONTAL;
-      layout.setConstraints(bPanel, con);
       con.gridy = 2;
       con.gridheight = 2;
       con.gridwidth = 2;
@@ -483,21 +495,37 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
       settings.setProperty(TempUnitDialog.SETTINGS_KEY, "true");
     } else { // remove
       c.remove(morePanel);
-      con.gridx = 0;
-      con.gridy = 2;
-      con.gridwidth = 3;
-      con.gridheight = 1;
-      con.fill = GridBagConstraints.HORIZONTAL;
-      layout.setConstraints(bPanel, con);
+      layout.setConstraints(moreButtonPanel, getMoreLessConstraints(false));
       more.setText(Resources.get("completion.tempunitdialog.more.more"));
       setFocusList(false);
       settings.setProperty(TempUnitDialog.SETTINGS_KEY, "false");
     }
 
     pack();
-    setLocationRelativeTo(posC);
+    // setLocationRelativeTo(posC);
   }
 
+  private GridBagConstraints getMoreLessConstraints(boolean showMore) {
+    if (showMore) {
+      con.gridx = 0;
+      con.gridy = 4;
+      con.gridwidth = 3;
+      con.gridheight = 1;
+      con.fill = GridBagConstraints.HORIZONTAL;
+
+    } else {
+      con.gridx = 0;
+      con.gridy = 2;
+      con.gridwidth = 3;
+      con.gridheight = 1;
+      con.fill = GridBagConstraints.HORIZONTAL;
+    }
+    return con;
+  }
+
+  /**
+   * A text area that doesn't lose focus by tab.
+   */
   protected static class TablessTextArea extends JTextArea {
     /**
      * Creates a new TablessTextArea object.
@@ -507,7 +535,9 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     }
 
     /**
-     * DOCUMENT-ME
+     * Always returns false.
+     * 
+     * @see javax.swing.JComponent#isManagingFocus()
      */
     @Override
     public boolean isManagingFocus() {

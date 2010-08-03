@@ -23,14 +23,12 @@
 // 
 package magellan.client.swing;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -56,6 +54,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -66,13 +65,17 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpringLayout;
+import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -177,27 +180,15 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    * Create and initialize GUI.
    */
   private void init() {
-    JPanel mainPanel = new JPanel(new GridBagLayout());
-    GridBagConstraints con =
-        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.FIRST_LINE_START,
-            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
+    JPanel mainPanel = new JPanel(new BorderLayout());
 
     planner = createTable();
-    // planner.setPreferredSize(new Dimension(400, 300));
 
-    con.gridwidth = 1;
-
-    mainPanel.add(createMenuBar(), con);
-
-    con.weighty = 1;
-    con.fill = GridBagConstraints.BOTH;
-    con.gridy++;
-
-    mainPanel.add(new JScrollPane(planner), con);
-
+    mainPanel.add(createMenuBar(), BorderLayout.NORTH);
+    mainPanel.add(new JScrollPane(planner), BorderLayout.CENTER);
     this.add(mainPanel);
-    setPreferredSize(new Dimension(800, 500));
 
+    setPreferredSize(new Dimension(800, 500));
     pack();
   }
 
@@ -336,7 +327,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    * Creates the main content of the dialog, the production table.
    */
   private JTable createTable() {
-    final JTable table = new JTable(sorter = new TableSorter(model = new PlannerModel(getData())));
+    final JTable table =
+        new AlchemyTable(sorter = new TableSorter(model = new PlannerModel(getData())));
     table.getModel().addTableModelListener(new TableModelListener() {
 
       public void tableChanged(TableModelEvent e) {
@@ -354,11 +346,11 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-    for (int i = 0; i < table.getColumnCount(); ++i) {
+    table.getColumnModel().getColumn(0).setPreferredWidth(150);
+    for (int i = 1; i < table.getColumnCount(); ++i) {
       table.getColumnModel().getColumn(i).setPreferredWidth(30);
     }
 
-    table.getColumnModel().getColumn(0).setPreferredWidth(150);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     // table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -557,8 +549,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           final int row = view2modelRow(planner.rowAtPoint(e.getPoint()));
           Object val = model.getValueAt(row, col);
           StringBuilder text = new StringBuilder();
-          text.append(model.getColumnName(col)).append("\n").append(model.getValueAt(row, 0))
-              .append("\n").append(val);
+          text.append(model.getColumnName(col)).append("/").append(model.getValueAt(row, 0))
+              .append(": ").append(val == null ? 0 : val);
           JMenuItem item = new JMenuItem(text.toString());
           item.setEnabled(false);
           menu.add(item);
@@ -1041,7 +1033,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         }
       }
 
-      for (Spell spell : data.spells().values()) {
+      for (Spell spell : data.getSpells()) {
         PotionInfo info = new PotionInfo(spell);
         if (info.ingredients.size() > 0) {
           potions.add(info);
@@ -1826,6 +1818,108 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       this.add(mainPanel);
       pack();
     }
+  }
+
+  /**
+   * Renders cells with linewrap.
+   */
+  public class TextAreaRenderer extends JTextArea implements TableCellRenderer {
+
+    /**
+     * Creates a new renderer
+     * 
+     * @param table
+     */
+    public TextAreaRenderer(JTable table, int rows) {
+      setLineWrap(true);
+      setEditable(false);
+      setWrapStyleWord(false);
+      setOpaque(false);
+      setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+      setRows(rows);
+      // JTableHeader header = table.getTableHeader();
+      // setForeground(header.getForeground());
+      // setBackground(table.getTableHeader().getBackground());
+      // setFont(header.getFont());
+      // setPreferredSize(new Dimension(100, 40));
+    }
+
+    /**
+     * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable,
+     *      java.lang.Object, boolean, boolean, int, int)
+     */
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+        boolean hasFocus, int row, int column) {
+
+      setText((value == null) ? "" : value.toString());
+      return this;
+    }
+
+  }
+
+  /**
+   * Rendering table cells with JLabels (does not work well).
+   */
+  public class JLabelRenderer extends JLabel implements TableCellRenderer {
+
+    /**
+     */
+    public JLabelRenderer(JTable table) {
+      // setPreferredSize(new Dimension(50, 50));
+    }
+
+    /**
+     * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable,
+     *      java.lang.Object, boolean, boolean, int, int)
+     */
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+        boolean hasFocus, int row, int column) {
+
+      setText((value == null) ? "" : "<html>" + value.toString().replaceAll(" ", "<br>")
+          + "</html>");
+
+      return this;
+    }
+
+  }
+
+  /**
+   * A table with custom header.
+   */
+  public class AlchemyTable extends JTable {
+    /**
+     * @param model
+     */
+    public AlchemyTable(TableModel model) {
+      super(model);
+    }
+
+    /**
+     * Creates multiline headers with tooltips.
+     * 
+     * @see javax.swing.JTable#createDefaultTableHeader()
+     */
+    @Override
+    protected JTableHeader createDefaultTableHeader() {
+      return new JTableHeader(columnModel) {
+        @Override
+        public String getToolTipText(MouseEvent e) {
+          java.awt.Point p = e.getPoint();
+          int index = columnModel.getColumnIndexAtX(p.x);
+          int realIndex = columnModel.getColumn(index).getModelIndex();
+
+          return getModel().getColumnName(realIndex);
+        }
+
+        @Override
+        public TableCellRenderer getDefaultRenderer() {
+          TextAreaRenderer ta = new TextAreaRenderer(AlchemyTable.this, 3);
+          return ta;
+          // return new JLabelRenderer(null);
+        }
+      };
+    }
+
   }
 
 }

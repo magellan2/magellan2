@@ -25,8 +25,26 @@ import java.util.Properties;
  * @version 1.0
  */
 public interface CellObject {
+  /**
+   * Creates a preferences adapter factory.
+   * 
+   * @param settings
+   * @param adapter
+   * @return A preferences adapter factory. If <code>adapter!=null</code> it should be returned. If
+   *         this object has no changeable preferences, <code>null</code> should be returned.
+   */
   NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter);
 
+  /**
+   * Creates a preferences adapter factory.
+   * 
+   * @param settings
+   * @param prefix Prefix for properties keys
+   * @param adapter The cell object should be appended to this adapter. If this is <code>null</code>
+   *          a new adapter should be returned.
+   * @return A preferences adapter factory. If <code>adapter!=null</code> it should be returned. If
+   *         this object has no changeable preferences, <code>null</code> should be returned.
+   */
   NodeWrapperDrawPolicy init(Properties settings, String prefix, NodeWrapperDrawPolicy adapter);
 
   /**
@@ -40,7 +58,7 @@ public interface CellObject {
    * to be displayed by the tree cell renderer. A return value of <code>null</code> is valid to
    * indicate that no icons shall be displayed.
    * 
-   * @return list of iconnames or null if no icons shall be displayed.
+   * @return list of icon names or null if no icons shall be displayed.
    */
   Collection<String> getIconNames();
 

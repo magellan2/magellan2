@@ -24,7 +24,7 @@ import javax.swing.UIManager;
 import magellan.library.Group;
 
 /**
- * DOCUMENT ME!
+ * A node that represents a Group.
  * 
  * @author Andreas, Ulrich Küster
  */
@@ -50,14 +50,14 @@ public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, Su
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the corresponding group
    */
   public Group getGroup() {
     return group;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject2#getGraphicsElements()
    */
   public List<GraphicsElement> getGraphicsElements() {
     if (GE == null) {
@@ -81,7 +81,7 @@ public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, Su
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.tree.GraphicsElement#isEmphasized()
      */
     @Override
     public boolean isEmphasized() {
@@ -90,28 +90,32 @@ public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, Su
   }
 
   /**
-   * DOCUMENT-ME
+   * Never reversed
+   * 
+   * @see magellan.client.swing.tree.CellObject2#reverseOrder()
    */
   public boolean reverseOrder() {
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * Changes the amount (of persons)
+   * 
+   * @param i
    */
   public void setAmount(int i) {
     amount = i;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the amount (of persons)
    */
   public int getAmount() {
     return amount;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return "Group name: amount"
    */
   @Override
   public String toString() {
@@ -122,20 +126,21 @@ public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, Su
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
+    // no changeable properties
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     if (group != null)
@@ -145,14 +150,16 @@ public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, Su
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {

@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import magellan.library.utils.logging.Logger;
+
 /**
  * This class maintains a collection of WeakReferences to CellObjects. If necessary, their
  * properties can be updated.
@@ -40,7 +42,7 @@ public abstract class AbstractNodeWrapperDrawPolicy implements NodeWrapperDrawPo
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.NodeWrapperDrawPolicy#addCellObject(magellan.client.swing.tree.CellObject)
    */
   public void addCellObject(CellObject co) {
     clearNodes();
@@ -63,7 +65,7 @@ public abstract class AbstractNodeWrapperDrawPolicy implements NodeWrapperDrawPo
   }
 
   /**
-   * DOCUMENT-ME
+   * Notifies the registered CellObjects that their preferences have changed.
    */
   public void applyPreferences() {
     clearNodes();
@@ -71,22 +73,14 @@ public abstract class AbstractNodeWrapperDrawPolicy implements NodeWrapperDrawPo
 
     Iterator<WeakReference<CellObject>> it = nodes.iterator();
 
-    try { // because of deletion of weak ref
-
-      while (it.hasNext()) {
-        try { // - || -
-
-          CellObject co = (it.next()).get();
-          co.propertiesChanged();
-        } catch (Exception inner) {
-          try {
-            it.remove();
-          } // remove the broken weak reference
-          catch (Exception exc2) {
-          }
-        }
+    while (it.hasNext()) {
+      CellObject co = (it.next()).get();
+      if (co != null) {
+        co.propertiesChanged();
+      } else {
+        Logger.getInstance(this.getClass()).fine("registered CellObject has disappeared...");
+        it.remove();
       }
-    } catch (Exception outer) {
     }
 
     inUpdate = false;

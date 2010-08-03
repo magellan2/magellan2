@@ -13,16 +13,18 @@
 
 package magellan.client.swing.tree;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import magellan.library.Skill;
 import magellan.library.Unit;
+import magellan.library.rules.SkillType;
 
 /**
- * DOCUMENT-ME
+ * A node that wraps a skill
  * 
  * @author $Author: $
  * @version $Revision: 171 $
@@ -38,30 +40,31 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
   protected List<String> icon;
   protected List<GraphicsElement> elements;
 
-  /** DOCUMENT-ME */
+  /** The index of the show next level property */
   public static final int SHOW_NEXTLEVEL = 0;
 
-  /** DOCUMENT-ME */
+  /** The index of the show points to next level property */
   public static final int SHOW_NEXTLEVELPOINTS = 1;
 
-  /** DOCUMENT-ME */
+  /** The index of the show change turns until next level property */
   public static final int SHOW_NEXTLEVELTURNS = 2;
 
-  /** DOCUMENT-ME */
+  /** The index of the show change property */
   public static final int SHOW_CHANGES = 3;
 
-  /** DOCUMENT-ME */
+  /** The index of the show change style property */
   public static final int SHOW_CHANGE_STYLED = 4;
 
-  /** DOCUMENT-ME */
+  /** The index of the show change text property */
   public static final int SHOW_CHANGE_TEXT = 5;
+
   private static final String SKILL_CHANGE_STYLE_PREFIX = "Talent";
 
   /**
    * Creates a new SkillNodeWrapper object.
    * 
    * @param u the unit with the specified skills.
-   * @param s the base skill. If s is null, it is assumed that the unit aquires that skill only
+   * @param s the base skill. If s is null, it is assumed that the unit acquires that skill only
    *          through a person transfer. s and ms may not both be null.
    * @param ms the modified skill. If ms is null, it is assumed that the modification of the skill
    *          cannot be determined. s and ms may not both be null.
@@ -83,6 +86,8 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 
   /**
    * DOCUMENT-ME
+   * 
+   * @return "Skillname Level|- (+|-change) [points -> nextlevelpoints  {turns to learn }] ..."
    */
   @Override
   public String toString() {
@@ -200,7 +205,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @return if this wrapper shows the next level
    */
   public boolean isShowingNextLevel() {
     if (adapter != null)
@@ -210,7 +215,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @return if thsi wrapper shows skill level changes
    */
   public boolean isShowingChanges() {
     if (adapter != null)
@@ -221,6 +226,8 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 
   /**
    * DOCUMENT-ME
+   * 
+   * @return
    */
   public boolean isShowingChangesStyled() {
     if (adapter != null)
@@ -231,6 +238,8 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 
   /**
    * DOCUMENT-ME
+   * 
+   * @return
    */
   public boolean isShowingChangesText() {
     if (adapter != null)
@@ -240,31 +249,60 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#emphasized()
    */
   public boolean emphasized() {
     return false;
   }
 
-  // TODO: possibly make static
-  public List<String> getIconNames() {
-    if (icon == null) {
-      icon = new ArrayList<String>(1);
-
-      if (skill != null) {
-        icon.add(skill.getSkillType().getID().toString());
-      } else if (modSkill != null) {
-        icon.add(modSkill.getSkillType().getID().toString());
-      } else {
-        icon = null;
-      }
-    }
-
-    return icon;
-  }
+  // stm 2010: prevent multiple Lists to be generated for nearly static code
+  private static Map<Object, List<String>> iconNamesLists = new Hashtable<Object, List<String>>();
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
+   */
+  public List<String> getIconNames() {
+    SkillType key = null;
+    if (skill != null) {
+      key = skill.getSkillType();
+    } else if (modSkill != null) {
+      key = modSkill.getSkillType();
+    }
+
+    if (key == null)
+      return null;
+
+    List<String> iconNames = iconNamesLists.get(key);
+
+    if (iconNames == null) {
+      iconNames = Collections.singletonList(key.getID().toString());
+      iconNamesLists.put(key, iconNames);
+    }
+
+    return iconNames;
+  }
+
+  // /**
+  // * @see magellan.client.swing.tree.CellObject#getIconNames()
+  // */
+  // public List<String> getIconNames() {
+  // if (icon == null) {
+  // icon = new ArrayList<String>(1);
+  //
+  // if (skill != null) {
+  // icon.add(skill.getSkillType().getID().toString());
+  // } else if (modSkill != null) {
+  // icon.add(modSkill.getSkillType().getID().toString());
+  // } else {
+  // icon = null;
+  // }
+  // }
+  //
+  // return icon;
+  // }
+
+  /**
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
     text = null;
@@ -272,7 +310,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     if (skill != null)
@@ -282,7 +320,9 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the skill image (possibly styled).
+   * 
+   * @see magellan.client.swing.tree.CellObject2#getGraphicsElements()
    */
   public List<GraphicsElement> getGraphicsElements() {
     if (elements == null) {
@@ -314,21 +354,25 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * Never reversed.
+   * 
+   * @see magellan.client.swing.tree.CellObject2#reverseOrder()
    */
   public boolean reverseOrder() {
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return init(settings, "SkillNodeWrapper", adapter);
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties p1, String p2, NodeWrapperDrawPolicy p3) {
     if (p3 == null) {

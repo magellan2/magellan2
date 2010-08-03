@@ -583,7 +583,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       throw new NullPointerException();
 
     if (schemes == null) {
-      schemes = new OrderedHashtable<ID, Scheme>();
+      schemes = new OrderedHashtable<ID, Scheme>(4);
 
       // enforce the creation of a new collection view
       // AG: Since we just create if the scheme map is non-null not necessary
@@ -651,7 +651,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       throw new NullPointerException();
 
     if (borders == null) {
-      borders = new OrderedHashtable<ID, Border>(2);
+      borders = new OrderedHashtable<ID, Border>(3);
 
       // enforce the creation of a new collection view
       // AG: Since we just create if the scheme map is non-null not necessary

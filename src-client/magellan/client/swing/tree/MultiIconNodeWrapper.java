@@ -35,7 +35,9 @@ import magellan.library.utils.Resources;
  * 
  * @author $Author: $
  * @version $Revision: 288 $
+ * @deprecated actually never finished
  */
+@Deprecated
 public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
 
   // private int modified = -1;
@@ -55,6 +57,12 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
   //
   // private String clipboardValue;
 
+  /**
+   * @param obj
+   * @param texts
+   * @param icons
+   * @param clipboardValue
+   */
   public MultiIconNodeWrapper(Object obj, String[] texts, Object[] icons, String clipboardValue) {
     // this.object = obj;
     this.texts = texts;
@@ -62,6 +70,9 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
     // this.clipboardValue = clipboardValue;
   }
 
+  /**
+   * @return The texts, separated by spaces
+   */
   @Override
   public String toString() {
     boolean first = true;
@@ -82,10 +93,18 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
   // }
 
   // we just don't support old style
+  /**
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
+   */
   public List<String> getIconNames() {
     return null;
   }
 
+  /**
+   * DOCUMENT-ME
+   * 
+   * @return
+   */
   public boolean isShowingAdditional() {
     return adapter.properties[adapter.SHOW_ADDITIONAL];
   }
@@ -153,7 +172,7 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject2#reverseOrder()
    */
   public boolean reverseOrder() {
     // if(reverse != null) {
@@ -177,7 +196,7 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
     if (iconNames != null) {
@@ -189,14 +208,16 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return init(settings, "UnitNodeWrapper", adapter);
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {
@@ -212,7 +233,7 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject2#getGraphicsElements()
    */
   public List<GraphicsElement> getGraphicsElements() {
     if (!iconNamesCreated) {
@@ -223,6 +244,7 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
     return iconNames;
   }
 
+  // FIXME adapt
   private static class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements
       ContextChangeable, ActionListener {
     /** DOCUMENT-ME */
@@ -327,7 +349,7 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.tree.AbstractNodeWrapperDrawPolicy#applyPreferences()
      */
     @Override
     public void applyPreferences() {
@@ -341,21 +363,22 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.context.ContextChangeable#getContextAdapter()
      */
     public JMenuItem getContextAdapter() {
       return contextMenu;
     }
 
     /**
-     * DOCUMENT-ME
+     * Sets the context observer that should be notified on changes via the context menu.
      */
     public void setContextObserver(ContextObserver co) {
       obs = co;
     }
 
     /**
-     * DOCUMENT-ME
+     * Reacts on context menu changes by updating the preferences and notifying the context
+     * observer.
      */
     public void actionPerformed(ActionEvent e) {
       boolean changed = false;
@@ -400,6 +423,8 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
 
     /**
      * DOCUMENT-ME
+     * 
+     * @return
      */
     public Properties getSettings() {
       return settings;
@@ -431,6 +456,9 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
     /**
 		 * 
 		 */
+    /**
+     * @see magellan.client.swing.tree.GraphicsElement#isEmphasized()
+     */
     @Override
     public boolean isEmphasized() {
       return emphasized();
@@ -438,7 +466,7 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     return toString();

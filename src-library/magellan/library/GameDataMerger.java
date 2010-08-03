@@ -1219,7 +1219,7 @@ public class GameDataMerger {
       ReportTransformer transformer) {
     if ((curMsg.getAttributes() != null) && (curMsg.getAttributes().size() > 0)) {
       if (newMsg.getAttributes() == null) {
-        newMsg.setAttributes(new OrderedHashtable<String, String>());
+        newMsg.setAttributes(new OrderedHashtable<String, String>(4));
       } else {
         newMsg.getAttributes().clear();
       }
@@ -1816,7 +1816,7 @@ public class GameDataMerger {
     /******************** PRICES *************************************/
     if ((curRegion.getPrices() != null) && (curRegion.getPrices().size() > 0)) {
       if (resultRegion.getPrices() == null) {
-        resultRegion.setPrices(new OrderedHashtable<StringID, LuxuryPrice>());
+        resultRegion.setPrices(new OrderedHashtable<StringID, LuxuryPrice>(3));
       } else {
         resultRegion.getPrices().clear();
       }
@@ -2441,7 +2441,8 @@ public class GameDataMerger {
     final Collection<Skill> oldSkills = new LinkedList<Skill>();
 
     if (resultUnit.getSkillMap() == null) {
-      resultUnit.setSkills(new OrderedHashtable<StringID, Skill>(4));
+      // TODO is this necessary?
+      resultUnit.setSkills(new OrderedHashtable<StringID, Skill>(2));
     } else {
       oldSkills.addAll(resultUnit.getSkills());
     }

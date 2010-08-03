@@ -108,11 +108,9 @@ import magellan.library.TempUnit;
 import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
-import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.relation.TransferRelation;
-import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.BestSkillComparator;
@@ -225,8 +223,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     nodeWrapperFactory.setSource(this);
 
     // to get the pref-adapter
-    nodeWrapperFactory
-        .createUnitNodeWrapper(MagellanFactory.createUnit(UnitID.createUnitID(0, 10)));
+//    nodeWrapperFactory
+//        .createUnitNodeWrapper(MagellanFactory.createUnit(UnitID.createUnitID(0, 10)));
 
     SelectionHistory.addListener(this);
     d.addSelectionListener(this);

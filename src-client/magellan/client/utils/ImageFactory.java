@@ -195,6 +195,7 @@ public class ImageFactory implements GameDataListener {
     int w = rgb.getWidth(null);
     int h = rgb.getHeight(null);
 
+    // FIXME(stm) This needs very much memory (temporarily) if it's called too often and not re-used -- find out why
     int pixelsRGB[] = new int[w * h];
     int pixelsAlpha[] = new int[pixelsRGB.length];
     PixelGrabber pgRGB = new PixelGrabber(rgb, 0, 0, w, h, pixelsRGB, 0, w);

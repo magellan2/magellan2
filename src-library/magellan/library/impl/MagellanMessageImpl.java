@@ -121,7 +121,8 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
     this.type = type;
 
     if (attributes != null) {
-      this.attributes = new OrderedHashtable<String, String>(attributes);
+      this.attributes = new OrderedHashtable<String, String>((int) (attributes.size() / .7));
+      this.attributes.putAll(attributes);
     }
   }
 

@@ -39,11 +39,11 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -283,12 +283,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     nodeWrapperFactory.setSource(this);
 
     // to get the pref-adapter
-    Unit temp = MagellanFactory.createUnit(UnitID.createUnitID(0, 10));
-    nodeWrapperFactory.createUnitNodeWrapper(temp);
-    nodeWrapperFactory.createSkillNodeWrapper(temp, new Skill(
-        new SkillType(StringID.create("Test")), 0, 0, 0, false), null);
-    nodeWrapperFactory.createItemNodeWrapper(new Item(new ItemType(StringID.create("Test")), 0));
-    nodeWrapperFactory.createSimpleNodeWrapper(null, (Collection<String>) null);
+//    Unit temp = MagellanFactory.createUnit(UnitID.createUnitID(0, 10));
+//    nodeWrapperFactory.createUnitNodeWrapper(temp);
+//    nodeWrapperFactory.createSkillNodeWrapper(temp, new Skill(
+//        new SkillType(StringID.create("Test")), 0, 0, 0, false), null);
+//    nodeWrapperFactory.createItemNodeWrapper(new Item(new ItemType(StringID.create("Test")), 0));
+//    nodeWrapperFactory.createSimpleNodeWrapper(null, (Collection<String>) null);
 
     EMapDetailsPanel.weightNumberFormat.setMaximumFractionDigits(2);
     EMapDetailsPanel.weightNumberFormat.setMinimumFractionDigits(0);
@@ -1871,34 +1871,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 item.skill.getSkillType(), new SkillComparator(), null), idCmp);
         Collections.sort(item.units, unitCmp);
 
-        StringBuilder sb = new StringBuilder();
         for (Unit u : item.units) {
-          sb.delete(0, sb.length());
-          sb.append(u.toString());
 
           Skill skill = u.getSkill(item.skill.getSkillType());
+          Skill modSkill = u.getModifiedSkill(item.skill.getSkillType());
 
-          if (skill != null) {
-            int bonus = 0;
-            if (u.getRace() != null && u.getRegion() != null) {
-              bonus = u.getRace().getSkillBonus(skill.getSkillType());
-              bonus +=
-                  u.getRace().getSkillBonus(item.skill.getSkillType(),
-                      u.getRegion().getRegionType());
-            }
-
-            sb.append(": [").append(skill.getPointsPerPerson()).append(" -> ").append(
-                Skill.getPointsAtLevel((item.skill.getLevel() - bonus) + 1)).append("]");
-          }
-
-          sb.append(", " + u.getPersons());
-
-          if (u.getPersons() != u.getModifiedPersons()) {
-            sb.append(" (").append(u.getModifiedPersons()).append(")");
-          }
-
-          skillNode.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, sb
-              .toString())));
+          text = nodeWrapperFactory.createSkillNodeWrapper(u, skill, modSkill).toString();
+          skillNode.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, u
+              .getPersons())));
         }
       }
     }
@@ -2870,17 +2850,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       parent.add(skillsNode);
       expandableNodes.add(new NodeWrapper(skillsNode, "EMapDetailsPanel.UnitSkillsExpanded"));
 
-      for (Iterator<Skill> iter = sortedSkills.iterator(); iter.hasNext();) {
+      for (Skill currentSkill : sortedSkills) {
         Skill os = null;
         Skill ms = null;
 
         if (modSkills != null) {
           // assume that we are iterating over the mod skills
-          ms = iter.next();
+          ms = currentSkill;
           os = u.getSkill(ms.getSkillType());
         } else {
           // assume that we are iterating over the original skills
-          os = iter.next();
+          os = currentSkill;
         }
 
         if (!isTrader && (os != null)) { // check for trader
@@ -2943,7 +2923,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
 
       int teachFactor = data.getGameSpecificStuff().getGameSpecificRules().getTeachFactor();
-      teachersNode.setUserObject(new UnitListNodeWrapper(Resources
+      teachersNode.setUserObject(nodeWrapperFactory.createUnitListNodeWrapper(Resources
           .get("emapdetailspanel.node.teacher")
           + ": "
           + teacherCounter
@@ -3002,7 +2982,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     if (carriers.size() > 0) {
       DefaultMutableTreeNode carriersNode =
-          new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources
+          new DefaultMutableTreeNode(nodeWrapperFactory.createUnitListNodeWrapper(Resources
               .get("emapdetailspanel.node.carriers"), null, carriers, "carriers"));
       parent.add(carriersNode);
       expandableNodes.add(new NodeWrapper(carriersNode, "EMapDetailsPanel.UnitCarriersExpanded"));
@@ -3018,7 +2998,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     if (passengers.size() > 0) {
       DefaultMutableTreeNode passengersNode =
-          new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources
+          new DefaultMutableTreeNode(nodeWrapperFactory.createUnitListNodeWrapper(Resources
               .get("emapdetailspanel.node.passengers"), null, passengers, "passengers"));
       parent.add(passengersNode);
       expandableNodes
@@ -3052,7 +3032,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     if (attacks.size() > 0) {
       DefaultMutableTreeNode attacksNode =
-          new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources
+          new DefaultMutableTreeNode(nodeWrapperFactory.createUnitListNodeWrapper(Resources
               .get("emapdetailspanel.node.attacks"), null, attacks, "victim"));
       parent.add(attacksNode);
       expandableNodes.add(new NodeWrapper(attacksNode, "EMapDetailsPanel.UnitAttacksExpanded"));
@@ -3069,7 +3049,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     if (attackedBy.size() > 0) {
       DefaultMutableTreeNode attackedByNode =
-          new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources
+          new DefaultMutableTreeNode(nodeWrapperFactory.createUnitListNodeWrapper(Resources
               .get("emapdetailspanel.node.attackedBy"), null, attackedBy, "attacker"));
       parent.add(attackedByNode);
       expandableNodes
@@ -3602,10 +3582,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
 
       if (inmates == modInmates) {
-        n.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.inmates")
+        n.setUserObject(nodeWrapperFactory.createUnitListNodeWrapper(Resources
+            .get("emapdetailspanel.node.inmates")
             + ": " + inmates, null, allInmates, "occupants"));
       } else {
-        n.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.inmates")
+        n.setUserObject(nodeWrapperFactory.createUnitListNodeWrapper(Resources
+            .get("emapdetailspanel.node.inmates")
             + ": " + inmates + " (" + modInmates + ")", null, allInmates, "occupants"));
       }
     }
@@ -3860,10 +3842,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
 
       if (inmates == modInmates) {
-        n.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.inmates")
+        n.setUserObject(nodeWrapperFactory.createUnitListNodeWrapper(Resources
+            .get("emapdetailspanel.node.inmates")
             + ": " + inmates, null, allInmates, "occupants"));
       } else {
-        n.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.inmates")
+        n.setUserObject(nodeWrapperFactory.createUnitListNodeWrapper(Resources
+            .get("emapdetailspanel.node.inmates")
             + ": " + inmates + " (" + modInmates + ")", null, allInmates, "occupants"));
       }
 
@@ -4970,39 +4954,27 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       this.key = key;
     }
 
-    /**
-		 */
     @Override
     public String toString() {
       return Resources.get("emapdetailspanel." + key);
     }
 
-    /**
-		 */
     public boolean emphasized() {
       return false;
     }
 
-    /**
-		 */
     public List<String> getIconNames() {
       return icons;
     }
 
-    /**
-		 */
     public void propertiesChanged() {
     }
 
-    /**
-		 */
     public NodeWrapperDrawPolicy init(Properties settings, String prefix,
         NodeWrapperDrawPolicy adapter) {
       return null;
     }
 
-    /**
-		 */
     public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
       return null;
     }
@@ -5021,15 +4993,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       target = t;
     }
 
-    /**
-		 */
     @SuppressWarnings("unused")
     public Object getTarget() {
       return target;
     }
 
-    /**
-		 */
     public void actionPerformed(ActionEvent e) {
       dispatcher.fire(SelectionEvent.create(EMapDetailsPanel.this, target,
           SelectionEvent.ST_DEFAULT));
@@ -5049,8 +5017,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       icons.add("koordinaten");
     }
 
-    /**
-		 */
     public void actionPerformed(ActionEvent e) {
       Unit unit =
           (new ShipRoutePlanner()).planShipRoute(target, data, EMapDetailsPanel.this,
@@ -5215,11 +5181,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       public abstract class SetAction extends AbstractAction {
         protected UnitRelation relation;
 
+        /**
+         * Creates the action
+         */
         public SetAction(UnitRelation r, String title) {
           super(title);
           relation = r;
         }
 
+        /**
+         * Replaces the relation order with a new order.
+         */
         public void replace(String newOrder) {
           relation.origin.removeOrderAt(relation.line - 1, false);
           if (newOrder != null) {
@@ -5236,11 +5208,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       public abstract class SetReserveAction extends SetAction {
         protected ReserveRelation reserveRelation;
 
+        /**
+         * Creates the action.
+         */
         public SetReserveAction(ReserveRelation r, String title) {
           super(r, title);
           reserveRelation = r;
         }
 
+        /**
+         * Creates a RESERVIERE order.
+         */
         public String getOrder(String amount, boolean each) {
           Locale locale = Locales.getOrderLocale();
           // relation.origin.getFaction() != null ? relation.origin.getFaction().getLocale() :
@@ -5263,10 +5241,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
        * Action for setting reserve order to 0.
        */
       public class Reserve0Action extends SetReserveAction {
+        /**
+         * Creates the action.
+         */
         public Reserve0Action(ReserveRelation r) {
           super(r, Resources.get("emapdetailspanel.contextmenu.reserve.set0.title"));
         }
 
+        /**
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
         public void actionPerformed(ActionEvent e) {
           replace(null);
         }
@@ -5278,11 +5262,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       public class ReserveNumberAction extends SetReserveAction {
         private boolean each;
 
+        /**
+         * Creates the action
+         */
         public ReserveNumberAction(ReserveRelation r, boolean each) {
           super(r, Resources.get("emapdetailspanel.contextmenu.reserve.set." + each + ".title"));
           this.each = each;
         }
 
+        /**
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
         public void actionPerformed(ActionEvent e) {
           String result =
               JOptionPane.showInputDialog(RelationContextMenu.this, getOrder("...", each),
@@ -5294,7 +5284,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               Integer.parseInt(result);
               replace(getOrder(result, each));
             } catch (NumberFormatException exc) {
-
+              // abort
             }
           }
         }
@@ -5306,12 +5296,19 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       public abstract class SetGiveAction extends SetAction {
         private ItemTransferRelation transferRelation;
 
+        /**
+         * Creates the action
+         */
         public SetGiveAction(ItemTransferRelation r, String title) {
           super(r, title);
           transferRelation = r;
         }
 
+        /**
+         * Creates the give order
+         */
         public String getOrder(String amount, boolean each) {
+
           Locale locale = Locales.getOrderLocale();
           // relation.origin.getFaction() != null ? relation.origin.getFaction().getLocale() :
 
@@ -5335,10 +5332,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
        * Action for setting a give order to 0.
        */
       public class Give0Action extends SetGiveAction {
+        /**
+         * Create the action.
+         */
         public Give0Action(ItemTransferRelation r) {
           super(r, Resources.get("emapdetailspanel.contextmenu.give.set0.title"));
         }
 
+        /**
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
         public void actionPerformed(ActionEvent e) {
           replace(null);
         }
@@ -5350,11 +5353,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       public class GiveNumberAction extends SetGiveAction {
         private boolean each;
 
+        /**
+         * Create the action.
+         */
         public GiveNumberAction(ItemTransferRelation r, boolean each) {
           super(r, Resources.get("emapdetailspanel.contextmenu.give.set." + each + ".title"));
           this.each = each;
         }
 
+        /**
+         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+         */
         public void actionPerformed(ActionEvent e) {
           String result =
               JOptionPane.showInputDialog(RelationContextMenu.this, getOrder("...", each),
@@ -5365,7 +5374,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               Integer.parseInt(result);
               replace(getOrder(result, each));
             } catch (NumberFormatException exc) {
-
+              // abort
             }
           }
         }
@@ -5400,7 +5409,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
       }
 
+      /**
+       * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+       */
       public void actionPerformed(ActionEvent e) {
+        // FIXME why blank
       }
 
     }
@@ -5419,7 +5432,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-		 */
+     * @return the unit container
+     */
     public UnitContainer getUnitContainer() {
       return uc;
     }
@@ -5434,12 +5448,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
   }
 
-  // make unit comment nodes recognizable through this class
+  /**
+   * Marker class for unit comment nodes
+   */
   private class UnitCommentNode extends DefaultMutableTreeNode {
     private Unit u = null;
 
     /**
-     * Creates a new CommentNode object.
+     * Creates a new CommentNode object for a unit.
      */
     public UnitCommentNode(Unit u, String comment) {
       super(comment);
@@ -5447,7 +5463,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-		 */
+     * @return the unit
+     */
     public Unit getUnit() {
       return u;
     }
@@ -5463,8 +5480,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   private class CommentContextFactory implements ContextFactory {
+
     /**
-		 */
+     * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
+     *      magellan.library.GameData, java.lang.Object, magellan.client.event.SelectionEvent,
+     *      javax.swing.tree.DefaultMutableTreeNode)
+     */
     public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
         SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
       if (argument instanceof UnitContainer)

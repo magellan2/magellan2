@@ -39,7 +39,7 @@ public class UnitContainerCommentNodeWrapper implements CellObject, SupportsClip
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the comment.
    */
   @Override
   public String toString() {
@@ -47,7 +47,7 @@ public class UnitContainerCommentNodeWrapper implements CellObject, SupportsClip
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
     if (iconNames == null) {
@@ -58,27 +58,30 @@ public class UnitContainerCommentNodeWrapper implements CellObject, SupportsClip
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#emphasized()
    */
   public boolean emphasized() {
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
+    // no changeable properties
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {
@@ -86,7 +89,7 @@ public class UnitContainerCommentNodeWrapper implements CellObject, SupportsClip
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     if (comment != null)

@@ -48,6 +48,13 @@ public class PotionNodeWrapper implements CellObject, SupportsClipboard {
     this(p, p.getName(), postfix);
   }
 
+  /**
+   * Creates a new PotionNodeWrapper object.
+   * 
+   * @param p
+   * @param name
+   * @param postfix
+   */
   public PotionNodeWrapper(Potion p, String name, String postfix) {
     potion = p;
     this.name = name;
@@ -55,14 +62,14 @@ public class PotionNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @return The corresponding potion
    */
   public Potion getPotion() {
     return potion;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return potion name + postfix
    */
   @Override
   public String toString() {
@@ -70,7 +77,7 @@ public class PotionNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
     if (icon == null) {
@@ -85,20 +92,21 @@ public class PotionNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#emphasized()
    */
   public boolean emphasized() {
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
+    // no changeable properties
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     if (potion != null)
@@ -108,14 +116,16 @@ public class PotionNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {

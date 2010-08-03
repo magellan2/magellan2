@@ -37,6 +37,9 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
   private boolean showFreeLoad = false;
   private boolean hasOwner = false;
 
+  /**
+   * Creates a new container node wrapper.
+   */
   public UnitContainerNodeWrapper(UnitContainer uc) {
     // this(uc, false);
     this(uc, true, false);
@@ -44,11 +47,22 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
 
   /**
    * Creates a new UnitContainerNodeWrapper object.
+   * 
+   * @param uc
+   * @param showFreeLoad If this is true, the free space is returned in the text
    */
   public UnitContainerNodeWrapper(UnitContainer uc, boolean showFreeLoad) {
     this(uc, showFreeLoad, false);
   }
 
+  /**
+   * Creates a new UnitContainerNodeWrapper object.
+   * 
+   * @param uc
+   * @param showFreeLoad If this is true, the free space is returned in the text
+   * @param hasOwner if <code>true</code>, the text indicates that the node is displayed for the
+   *          owner
+   */
   public UnitContainerNodeWrapper(UnitContainer uc, boolean showFreeLoad, boolean hasOwner) {
     this.uc = uc;
     this.showFreeLoad = showFreeLoad;
@@ -56,14 +70,14 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the corresponding unit container
    */
   public UnitContainer getUnitContainer() {
     return uc;
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns a text like "Name: free capacity; free person capacity (!!!) (Besitzer)"
    */
   @Override
   public String toString() {
@@ -100,10 +114,11 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
     return text.toString();
   }
 
+  /** A cache for the quasi-static icon names */
   private static Map<ID, List<String>> iconNamesLists = new Hashtable<ID, List<String>>();
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
     ID key = uc.getType().getID();
@@ -118,20 +133,21 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#emphasized()
    */
   public boolean emphasized() {
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
+    // no changeable properties
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     // Fiete: I prefer to have just the same in the clipboard like in
@@ -146,14 +162,16 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {

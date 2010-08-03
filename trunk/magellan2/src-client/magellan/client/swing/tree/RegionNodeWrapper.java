@@ -26,14 +26,14 @@ import magellan.library.Region;
 import magellan.library.utils.StringFactory;
 
 /**
- * DOCUMENT-ME
+ * A wrapper for regions.
  * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
   private Region region = null;
-  private List<GraphicsElement> GEs = null;
+  private List<GraphicsElement> graphicElements = null;
   private int amount = Integer.MIN_VALUE;
 
   /**
@@ -44,7 +44,8 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
   }
 
   /**
-   * Creates a new RegionNodeWrapper object.
+   * Creates a new RegionNodeWrapper object with amount (of persons). {@link Integer#MIN_VALUE}
+   * disables amount display
    */
   public RegionNodeWrapper(Region r, int amount) {
     region = r;
@@ -52,28 +53,30 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the corresponding region
    */
   public Region getRegion() {
     return region;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets the amount (of persons)
+   * 
+   * @param amount {@link Integer#MIN_VALUE} disables amount display
    */
   public void setAmount(int amount) {
     this.amount = amount;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return the amount (of persons)
    */
   public int getAmount() {
     return amount;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return "region name: amount"
    */
   @Override
   public String toString() {
@@ -84,7 +87,7 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
   private static Map<Object, List<String>> iconNamesLists = new Hashtable<Object, List<String>>();
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
     Object key = region.getType().getID();
@@ -105,14 +108,14 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
    * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
-
+    // no changeable properties
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject2#getGraphicsElements()
    */
   public List<GraphicsElement> getGraphicsElements() {
-    if (GEs == null) {
+    if (graphicElements == null) {
       // FIXME (stm) do this in background thread!
       // in this situation init the region
       region.refreshUnitRelations(); // true
@@ -122,14 +125,16 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
       ge.setTooltip(region.getType().getName());
       ge.setType(GraphicsElement.MAIN);
 
-      GEs = Collections.singletonList(ge);
+      graphicElements = Collections.singletonList(ge);
     }
 
-    return GEs;
+    return graphicElements;
   }
 
   /**
-   * DOCUMENT-ME
+   * Never reversed
+   * 
+   * @see magellan.client.swing.tree.CellObject2#reverseOrder()
    */
   public boolean reverseOrder() {
     return false;
@@ -145,7 +150,7 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.tree.GraphicsElement#isEmphasized()
      */
     @Override
     public boolean isEmphasized() {
@@ -154,7 +159,7 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     if (region != null)
@@ -164,14 +169,16 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {

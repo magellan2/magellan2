@@ -479,15 +479,16 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public Skill getSkill(StringID type);
 
-  /**
-   * @return FIXME explain
-   */
-  public boolean isSkillsCopied();
+  // deprecated?
+  // /**
+  // * @return FIXME explain
+  // */
+  // public boolean isSkillsCopied();
 
-  /**
-   * @param skillsCopied FIXME explain
-   */
-  public void setSkillsCopied(boolean skillsCopied);
+  // /**
+  // * @param skillsCopied FIXME explain
+  // */
+  // public void setSkillsCopied(boolean skillsCopied);
 
   /**
    * Adds a skill to unit's collection of skills. If the unit already has a skill of the same type

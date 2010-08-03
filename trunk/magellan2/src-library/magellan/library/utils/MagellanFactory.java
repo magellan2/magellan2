@@ -43,6 +43,7 @@ import magellan.library.Island;
 import magellan.library.Message;
 import magellan.library.Potion;
 import magellan.library.Region;
+import magellan.library.Region.Visibility;
 import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Skill;
@@ -53,7 +54,6 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
-import magellan.library.Region.Visibility;
 import magellan.library.impl.MagellanBattleImpl;
 import magellan.library.impl.MagellanBorderImpl;
 import magellan.library.impl.MagellanBuildingImpl;
@@ -431,7 +431,8 @@ public abstract class MagellanFactory {
    * Copies the skills of the given unit. Does not empty this unit's skills.
    */
   public static void copySkills(Unit u, Unit v, boolean sortOut) {
-    v.setSkillsCopied(true);
+    // deprecated?
+    // v.setSkillsCopied(true);
 
     if (u.getSkills() != null) {
       final Iterator<Skill> it = u.getSkills().iterator();

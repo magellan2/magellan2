@@ -97,7 +97,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   private static final String CONFIRMEDTEMPCOMMENT = ";" + OrderWriter.CONFIRMEDTEMP;
   private static final String TAG_PREFIX_TEMP = ";" + "ejcTagTemp "; // grammar for ejcTag:
   // ";ejcTempTag tag numbervalue|'stringvalue'"
-
   /** The private description of the unit. */
   private String privDesc = null; // private description
 
@@ -496,7 +495,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public Item addItem(Item i) {
     if (items == null) {
-      items = new OrderedHashtable<StringID, Item>(4);
+      items = new OrderedHashtable<StringID, Item>(3, .8f);
     }
 
     items.put(i.getItemType().getID(), i);
@@ -883,6 +882,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       MagellanUnitImpl.log
           .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
     }
+
+    // FIXME(stm) fire unitorderschanged?)
 
     return t;
   }
@@ -1389,7 +1390,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public Skill addSkill(Skill s) {
     if (skills == null) {
-      skills = new OrderedHashtable<StringID, Skill>(11);
+      skills = new OrderedHashtable<StringID, Skill>(3, .8f);
     }
 
     skills.put(s.getSkillType().getID(), s);
@@ -1409,6 +1410,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       return Collections.emptyList();
   }
 
+  // FIXME deprecate?
   public boolean isSkillsCopied() {
     return skillsCopied;
   }
@@ -2343,7 +2345,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public String putTag(String tag, String value) {
     if (tag.equals("$tm_trigger")) {
-      // (new ExtendedTests()).test(this);
+
     }
 
     if (tagMap == null) {
@@ -3051,6 +3053,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     this.weight = weight;
   }
 
+  /**
+   * @see magellan.library.Unit#getSkillMap()
+   */
   public Map<StringID, Skill> getSkillMap() {
     return skills;
   }
@@ -3087,8 +3092,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   public boolean isPastMovementPassive(GameSpecificStuff gameSpecificStuff) {
     final Cache cache1 = getCache();
     if (cache1.movementPathIsPassive == null) {
-      cache1.movementPathIsPassive =
-          Boolean.valueOf(gameSpecificStuff.getMovementEvaluator().isPastMovementPassive(this));
+      cache1.movementPathIsPassive = false;
+      // Boolean.valueOf(gameSpecificStuff.getMovementEvaluator().isPastMovementPassive(this));
     }
 
     return cache1.movementPathIsPassive.booleanValue();

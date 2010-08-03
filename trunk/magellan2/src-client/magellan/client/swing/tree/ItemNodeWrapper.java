@@ -56,28 +56,28 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
   /**
    * Creates new ItemNodeWrapper
    */
-  public ItemNodeWrapper(Unit unit, Item item) {
-    this(unit, item, -1);
+  public ItemNodeWrapper(Item item) {
+    this(null, item, -1);
   }
 
   /**
    * Creates new ItemNodeWrapper
    */
-  public ItemNodeWrapper(Unit unit, Item item, int unmodfiedAmount) {
+  public ItemNodeWrapper(Unit unit, Item modItem, int unmodfiedAmount) {
     this.unit = unit;
-    modItem = item;
-    unmodifiedAmount = unmodfiedAmount;
+    this.modItem = modItem;
+    unmodifiedAmount = unmodifiedAmount;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#emphasized()
    */
   public boolean emphasized() {
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return true if the item amount of all units in the region should be displayed.
    */
   public boolean isShowingRegionItemAmount() {
     if (adapter != null)
@@ -87,7 +87,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * Determines if the item amount of all units in the region should be displayed.
    */
   public void setShowRegionItemAmount(boolean b) {
     adapter = null;
@@ -119,7 +119,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
     String key = modItem.getItemType().getIconName();
@@ -134,7 +134,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
     text = null;
@@ -153,7 +153,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
     if (text == null) {
       boolean showRegion = isShowingRegionItemAmount();
 
-      // do not show region amounts if faction is not priviliged
+      // do not show region amounts if faction is not privileged
       // TODO: make this configurable
       if ((unit == null) || (unit.getFaction().getTrustLevel() < Faction.TL_PRIVILEGED)) {
         showRegion = false;
@@ -270,7 +270,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
     if (modItem != null)
@@ -280,14 +280,16 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return init(settings, "ItemNodeWrapper", adapter);
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+   *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {

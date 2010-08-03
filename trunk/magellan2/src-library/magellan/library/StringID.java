@@ -34,6 +34,8 @@ public class StringID implements ID {
   /** The string specified at construction time of this object. */
   protected final String originalString;
 
+  private final int hash;
+
   /**
    * Creates a new StringID object. See the class description on how the specified string is used to
    * establish the uniqueness of this id.
@@ -47,6 +49,7 @@ public class StringID implements ID {
 
     originalString = StringFactory.getFactory().intern(i);
     id = StringFactory.getFactory().intern(Umlaut.normalize(i));
+    hash = id.hashCode();
   }
 
   /** a static cache to use this class as flyweight factory */
@@ -106,7 +109,7 @@ public class StringID implements ID {
    */
   @Override
   public int hashCode() {
-    return id.hashCode();
+    return hash;
   }
 
   /**

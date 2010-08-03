@@ -256,7 +256,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public void addUnit(Unit u) {
     if (units == null) {
-      units = new OrderedHashtable<ID, Unit>();
+      units = new OrderedHashtable<ID, Unit>(3, .6f);
 
       // enforce the creation of a new collection view:
       unitCollection = null;

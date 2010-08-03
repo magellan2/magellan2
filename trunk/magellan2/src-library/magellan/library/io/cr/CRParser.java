@@ -611,7 +611,7 @@ public class CRParser implements RulesIO, GameDataIO {
           msg.setText(originTranslate(sc.argv[0]));
         } else if (sc.argc == 2) {
           if (msg.getAttributes() == null) {
-            msg.setAttributes(new OrderedHashtable<String, String>());
+            msg.setAttributes(new OrderedHashtable<String, String>(4));
           }
 
           CoordinateID coord = CoordinateID.parse(sc.argv[0], ",");
@@ -2515,7 +2515,7 @@ public class CRParser implements RulesIO, GameDataIO {
       final LuxuryPrice pr = new LuxuryPrice(itemType, Integer.parseInt(sc.argv[0]));
 
       if (prices == null) {
-        prices = new OrderedHashtable<StringID, LuxuryPrice>();
+        prices = new OrderedHashtable<StringID, LuxuryPrice>(8, .9f);
       }
 
       prices.put(itemType.getID(), pr);

@@ -14,7 +14,6 @@
 package magellan.client.swing.tree;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +40,7 @@ import magellan.library.Region;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.impl.MagellanFactionImpl;
 import magellan.library.relation.UnitRelation;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -54,44 +54,45 @@ import magellan.library.utils.logging.Logger;
 public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactory, ContextObserver {
   private static final Logger log = Logger.getInstance(NodeWrapperFactory.class);
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for border nodes */
   public static final int BORDER = 0;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for faction nodes */
   public static final int FACTION = 1;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for island nodes */
   public static final int ISLAND = 2;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for region nodes */
   public static final int REGION = 3;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for unit container nodes */
   public static final int UNITCONTAINER = 4;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for unit nodes */
   public static final int UNIT = 5;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for potion nodes */
   public static final int POTION = 6;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for item nodes */
   public static final int ITEM = 7;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for skill nodes */
   public static final int SKILL = 8;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for group nodes */
   public static final int GROUP = 9;
 
-  /** DOCUMENT-ME */
+  /** The index of the policy adapter for simple nodes */
   public static final int SIMPLE = 10;
 
   private static final int NUM_ADAPTERS = 11;
 
+  protected NodeWrapperDrawPolicy adapters[];
+
   protected Properties settings;
   protected boolean initialized[];
-  protected NodeWrapperDrawPolicy adapters[];
   protected JTabbedPane tabs;
   protected String initString = null;
   protected String title = null;
@@ -132,7 +133,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Set the object that should be notified on context changes.
    */
   public void setSource(TreeUpdate s) {
     source = s;
@@ -143,9 +144,24 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
     // (context) menu
     contextMenu = new JMenu(title);
     contextMenu.setEnabled(false);
+    init(new BorderNodeWrapper(null), NodeWrapperFactory.BORDER);
+    init(new FactionNodeWrapper(new MagellanFactionImpl(EntityID.createEntityID(0, 36), null),
+        null, null), NodeWrapperFactory.FACTION);
+    init(new GroupNodeWrapper(null), NodeWrapperFactory.GROUP);
+    init(new IslandNodeWrapper(null), NodeWrapperFactory.ISLAND);
+    init(new PotionNodeWrapper(null, "", ""), NodeWrapperFactory.POTION);
+    init(new UnitContainerNodeWrapper(null), NodeWrapperFactory.UNITCONTAINER);
+    init(new RegionNodeWrapper(null), NodeWrapperFactory.REGION);
+    init(new ItemNodeWrapper(null), NodeWrapperFactory.ITEM);
+    init(new UnitNodeWrapper(null, ""), NodeWrapperFactory.UNIT);
+    init(new SkillNodeWrapper(null, new Skill(null, 0, 0, 0, true), null), NodeWrapperFactory.SKILL);
+    init(new SimpleNodeWrapper(null, "null"), NodeWrapperFactory.SIMPLE);
+
   }
 
-  // update the context menu
+  /**
+   * Update the context menu, which governs certain display properties.
+   */
   protected void updateContextMenu() {
     contextMenu.removeAll();
 
@@ -170,13 +186,55 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the menu that can change display properties of the nodes created by this factory.
    */
   public JMenu getContextMenu() {
     return contextMenu;
   }
 
-  // initialize a CellObject by category index
+  /**
+   * Initializes preference adapter for region nodes
+   */
+  public void initRegionNodeWrappers() {
+    // init(new RegionNodeWrapper(null), NodeWrapperFactory.REGION);
+  }
+
+  /**
+   * Initializes preference adapter for item nodes
+   */
+  public void initItemNodeWrappers() {
+    // init(new ItemNodeWrapper(null), NodeWrapperFactory.ITEM);
+  }
+
+  /**
+   * Initializes preference adapter for unit nodes
+   */
+  public void initUnitNodeWrappers() {
+    // init(new UnitNodeWrapper(null, ""), NodeWrapperFactory.UNIT);
+  }
+
+  /**
+   * Initializes preference adapter for skill nodes
+   */
+  public void initSkillNodeWrappers() {
+    // init(new SkillNodeWrapper(null, new Skill(null, 0, 0, 0, true), null),
+    // NodeWrapperFactory.UNIT);
+  }
+
+  /**
+   * Initializes preference adapter for simple nodes
+   */
+  public void initSimpleNodeWrappers() {
+    // init(new SimpleNodeWrapper(null, "null"), NodeWrapperFactory.SIMPLE);
+  }
+
+  /**
+   * Initialize a CellObject by category index. This makes sure that the CellObject type is
+   * registered with the preferences adapter and initializes the context menu.
+   * 
+   * @param co
+   * @param policy
+   */
   protected void init(CellObject co, int policy) {
     NodeWrapperDrawPolicy o = null;
 
@@ -197,7 +255,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for a border (street, wall, etc.)
    */
   public BorderNodeWrapper createBorderNodeWrapper(Border b) {
     BorderNodeWrapper bnw = new BorderNodeWrapper(b);
@@ -207,7 +265,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for a faction.
    */
   public FactionNodeWrapper createFactionNodeWrapper(Faction f, Region r,
       Map<EntityID, Alliance> alliances) {
@@ -218,7 +276,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for an island.
    */
   public IslandNodeWrapper createIslandNodeWrapper(Island i) {
     IslandNodeWrapper inw = new IslandNodeWrapper(i);
@@ -228,7 +286,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for a region.
    */
   public RegionNodeWrapper createRegionNodeWrapper(Region r) {
     RegionNodeWrapper rnw = new RegionNodeWrapper(r);
@@ -238,7 +296,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for a region including a number (of persons).
    */
   public RegionNodeWrapper createRegionNodeWrapper(Region r, int amount) {
     RegionNodeWrapper rnw = new RegionNodeWrapper(r, amount);
@@ -359,8 +417,16 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
     return unw;
   }
 
+  public UnitListNodeWrapper createUnitListNodeWrapper(String text, String clipBoardValue,
+      Collection<Unit> units, String icon) {
+    UnitListNodeWrapper wrapper = new UnitListNodeWrapper(text, clipBoardValue, units, icon);
+    init(wrapper, NodeWrapperFactory.SIMPLE);
+
+    return wrapper;
+  }
+
   /**
-   * DOCUMENT-ME
+   * Create a node for a potion.
    */
   public PotionNodeWrapper createPotionNodeWrapper(Potion potion) {
     PotionNodeWrapper pnw = new PotionNodeWrapper(potion);
@@ -370,7 +436,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for a potion with the given name and appendix to the name.
    */
   public PotionNodeWrapper createPotionNodeWrapper(Potion potion, String name, String postfix) {
     PotionNodeWrapper pnw = new PotionNodeWrapper(potion, name, postfix);
@@ -380,24 +446,25 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for an item without unit.
    */
   public ItemNodeWrapper createItemNodeWrapper(Item item) {
     return createItemNodeWrapper(null, item);
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for an item. Unmodified amount is taken from a unit
    */
-  public ItemNodeWrapper createItemNodeWrapper(Unit unit, Item item) {
-    ItemNodeWrapper inw = new ItemNodeWrapper(unit, item);
+  public ItemNodeWrapper createItemNodeWrapper(Unit unit, Item modItem) {
+    ItemNodeWrapper inw = new ItemNodeWrapper(unit, modItem, -1);
     init(inw, NodeWrapperFactory.ITEM);
 
     return inw;
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for an item. The unmodified amount is not taken from the unit but is given
+   * explicitly.
    */
   public ItemNodeWrapper createItemNodeWrapper(Unit unit, Item item, int unmodifiedAmount) {
     ItemNodeWrapper inw = new ItemNodeWrapper(unit, item, unmodifiedAmount);
@@ -407,7 +474,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for a skill.
    */
   public SkillNodeWrapper createSkillNodeWrapper(Unit unit, Skill skill, Skill modSkill) {
     SkillNodeWrapper snw = new SkillNodeWrapper(unit, skill, modSkill);
@@ -417,7 +484,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
-   * DOCUMENT-ME
+   * Create a node for a group.
    */
   public GroupNodeWrapper createGroupNodeWrapper(Group group) {
     GroupNodeWrapper gnw = new GroupNodeWrapper(group);
@@ -431,11 +498,10 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * 
    * @param obj
    * @param text
-   * @param icons may be <code>null</code>
-   * @return
+   * @param icon may be <code>null</code>
    */
-  public SimpleNodeWrapper createSimpleNodeWrapper(Object obj, String text, String icons) {
-    SimpleNodeWrapper snw = new SimpleNodeWrapper(obj, text, icons);
+  public SimpleNodeWrapper createSimpleNodeWrapper(Object obj, String text, String icon) {
+    SimpleNodeWrapper snw = new SimpleNodeWrapper(obj, text, icon);
     init(snw, NodeWrapperFactory.SIMPLE);
 
     return snw;
@@ -447,7 +513,6 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * @param obj
    * @param text
    * @param icons may be <code>null</code>
-   * @return
    */
   public SimpleNodeWrapper createSimpleNodeWrapper(Object obj, String text, Collection<String> icons) {
     SimpleNodeWrapper snw = new SimpleNodeWrapper(obj, text, icons);
@@ -461,7 +526,6 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * 
    * @param obj
    * @param icons may be <code>null</code>
-   * @return
    */
   public SimpleNodeWrapper createSimpleNodeWrapper(Object obj, String icons) {
     SimpleNodeWrapper snw = new SimpleNodeWrapper(obj, icons);
@@ -475,7 +539,6 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * 
    * @param obj
    * @param icons may be <code>null</code>
-   * @return
    */
   public SimpleNodeWrapper createSimpleNodeWrapper(Object obj, Collection<String> icons) {
     SimpleNodeWrapper snw = new SimpleNodeWrapper(obj, icons);
@@ -531,16 +594,16 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
       }
 
       // try to enforce only one column
-      setPreferredSize(null);
-
-      java.awt.Dimension dim = getPreferredSize();
-      int tabHeight = getTabCount() * 30; // just approximate since there are no
-      // public functions :-(
-
-      if (dim.height < tabHeight) {
-        dim.height = tabHeight;
-        setPreferredSize(dim);
-      }
+//      setPreferredSize(null);
+//
+//      java.awt.Dimension dim = getPreferredSize();
+//      int tabHeight = getTabCount() * 30; // just approximate since there are no
+//      // public functions :-(
+//
+//      if (dim.height < tabHeight) {
+//        dim.height = tabHeight;
+//        setPreferredSize(dim);
+//      }
     }
 
     public void initPreferences() {
@@ -548,26 +611,23 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
      */
     public void applyPreferences() {
-      Iterator<PreferencesAdapter> it = myAdapters.iterator();
-
-      while (it.hasNext()) {
-        PreferencesAdapter pref = it.next();
+      for (PreferencesAdapter pref : myAdapters) {
         pref.applyPreferences();
       }
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
      */
     public java.awt.Component getComponent() {
       return this;
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
      */
     public String getTitle() {
       return title;

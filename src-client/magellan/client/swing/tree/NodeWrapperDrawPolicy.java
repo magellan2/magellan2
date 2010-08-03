@@ -16,18 +16,19 @@ package magellan.client.swing.tree;
 import magellan.client.swing.preferences.PreferencesFactory;
 
 /**
- * DOCUMENT ME!
+ * A PreferencesFactory for node wrappers.
  * 
  * @author SirBacon
  */
 public interface NodeWrapperDrawPolicy extends PreferencesFactory {
   /**
-   * DOCUMENT-ME
+   * Adds a cell object to the preferences factory in order to display options for it in the
+   * preferences dialog.
    */
   public void addCellObject(CellObject co);
 
   /**
-   * DOCUMENT-ME
+   * Returns a title for this factory.
    */
   public String getTitle();
 }

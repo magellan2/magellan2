@@ -797,6 +797,7 @@ public class GenericRules implements Rules {
 
     // pavkovic 2004.03.08: for now also return object with id
     // return null;
+    // FIXME (stm) only objects.get(normName) makes sense
     return objects.get(StringID.create(normName));
   }
 

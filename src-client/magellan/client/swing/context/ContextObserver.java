@@ -19,14 +19,14 @@
 package magellan.client.swing.context;
 
 /**
- * DOCUMENT ME!
+ * Marks a class that should be notified of change by a context menu
  * 
  * @author Andreas
  * @version 1.0
  */
 public interface ContextObserver {
   /**
-   * DOCUMENT-ME
+   * Called if the state has changed to notify the observer that it should be updated.
    */
   public void contextDataChanged();
 }

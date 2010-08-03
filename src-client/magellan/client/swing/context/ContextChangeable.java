@@ -21,19 +21,19 @@ package magellan.client.swing.context;
 import javax.swing.JMenuItem;
 
 /**
- * DOCUMENT ME!
+ * Marks renderers that should be included in a context menu.
  * 
  * @author Andreas
  * @version 1.0
  */
 public interface ContextChangeable {
   /**
-   * DOCUMENT-ME
+   * Returns an item for this renderer.
    */
   public JMenuItem getContextAdapter();
 
   /**
-   * DOCUMENT-ME
+   * Sets an observer that should be notified if the state of this renderer changes.
    */
   public void setContextObserver(ContextObserver co);
 }

@@ -4003,6 +4003,7 @@ class TokenBucket extends Vector<OrderToken> {
    * @return
    */
   public int read(Reader in) {
+    // TODO reduce object creation
     OrderTokenizer tokenizer = new OrderTokenizer(in);
     OrderToken token = null;
     clear();

@@ -56,7 +56,8 @@ public class Skill {
    * @param points
    * @param level
    * @param persons
-   * @param noSkillPoints
+   * @param noSkillPoints Indicated whether the skill points value of this Skill object has
+   *          relevance
    */
   public Skill(SkillType type, int points, int level, int persons, boolean noSkillPoints) {
     this.type = type;

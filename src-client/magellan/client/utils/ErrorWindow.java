@@ -416,7 +416,6 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
   // **********************************************************************
   /**
    */
-
   public void open() {
     ErrorWindow.log.debug("Open Window");
     setVisible(true);
@@ -436,6 +435,18 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
   public void close() {
     ErrorWindow.log.debug("Close Window");
     setVisible(false);
+  }
+
+  /**
+   * @see java.awt.Dialog#setVisible(boolean)
+   */
+  @Override
+  public void setVisible(boolean b) {
+    if (b) {
+      log.error("Error window: " + (errorMessage != null ? errorMessage.getText() : "") + " : "
+          + (errorDescription != null ? errorDescription.getText() : ""));
+    }
+    super.setVisible(b);
   }
 
   // **********************************************************************

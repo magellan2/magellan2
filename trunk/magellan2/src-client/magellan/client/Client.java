@@ -333,8 +333,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     Properties completionSettings =
         Client.loadSettings(Client.settingsDirectory, COMPLETIONSETTINGS_FILENAME);
-    if (completionSettings == null) {
+    if (completionSettings != null) {
       log.warn(COMPLETIONSETTINGS_FILENAME + " is no longer supported.");
+    } else {
       completionSettings = new SelfCleaningProperties();
     }
 
@@ -395,6 +396,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // ////////////////////////
   // BASIC initialization //
   // ////////////////////////
+
+  /**
+   * @see java.awt.Window#setBounds(int, int, int, int)
+   */
+  @Override
+  public void setBounds(int x, int y, int width, int height) {
+    Rectangle r = Utils.adjustToScreen(x, y, width, height, this);
+    super.setBounds(r.x, r.y, r.width, r.height);
+  }
 
   private void fixSettings(Properties settings) {
     // backward compatibility for white message tags (it's now the text color)
@@ -1560,6 +1570,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           plugIn.quit(storeSettings);
         }
 
+        PropertiesHelper.saveRectangle(getProperties(), Client.this.getBounds(), "Client");
         saveExtendedState();
         setVisible(false);
 
@@ -1766,7 +1777,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         Client.log.error(Resources.get("client.msg.outofmemory.text"));
       }
     } catch (final CloneNotSupportedException e) {
-      throw new RuntimeException("cannot happen");
+      throw new IllegalStateException("cannot happen");
     }
     if (!MemoryManagment.isFreeMemory(newData.estimateSize())) {
       JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources
@@ -2386,11 +2397,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   private void resetExtendedState() {
-    int state = new Integer(getProperties().getProperty("Client.extendedState", "-1")).intValue();
+    int state = PropertiesHelper.getInteger(getProperties(), "Client.extendedState", -1);
 
     if (state != -1) {
       JVMUtilities.setExtendedState(this, state);
     }
+
   }
 
   // The repaint functions are overwritten to repaint the whole Magellan

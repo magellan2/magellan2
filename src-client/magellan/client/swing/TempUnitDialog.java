@@ -11,7 +11,7 @@
  *
  */
 
-package magellan.client.swing.completion;
+package magellan.client.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -46,6 +46,7 @@ import magellan.client.utils.NameGenerator;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -287,16 +288,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
         y = Integer.parseInt(st.nextToken());
         w = Integer.parseInt(st.nextToken());
         h = Integer.parseInt(st.nextToken());
-        // make sure dialog is inside screen
-        w = Math.max(w, getToolkit().getScreenSize().width / 10 + 1);
-        h = Math.max(h, getToolkit().getScreenSize().height / 10 + 1);
-        w = Math.min(w, getToolkit().getScreenSize().width);
-        h = Math.min(h, getToolkit().getScreenSize().height);
-        x = Math.min(x, getToolkit().getScreenSize().width - 50);
-        y = Math.min(y, getToolkit().getScreenSize().height - 50);
-        x = Math.max(x, getToolkit().getScreenSize().width / 10 + 1 - w);
-        y = Math.max(y, getToolkit().getScreenSize().height / 10 + 1 - h);
-        setBounds(x, y, w, h);
+        Rectangle r = Utils.adjustToScreen(x, y, w, h, this);
+        setBounds(r);
       } catch (Exception e) {
         pack();
         setLocationRelativeTo(posC);

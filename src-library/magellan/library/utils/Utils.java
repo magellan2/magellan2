@@ -24,6 +24,9 @@
 package magellan.library.utils;
 
 import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -458,5 +461,31 @@ public class Utils {
       }
     }
     return null;
+  }
+
+  /**
+   * Adjust the given rectangle so that it fits the screen size of window.
+   * 
+   * @param x of old rectangle
+   * @param y of old rectangle
+   * @param width of old rectangle
+   * @param height of old rectangle
+   * @param window
+   * @return A rectangle that overlaps {@link Window#getToolkit()}.getScreenSize() by at least a few
+   *         pixels
+   * @see Toolkit#getScreenSize()
+   */
+  public static Rectangle adjustToScreen(int x, int y, int width, int height, Window window) {
+    // make sure dialog is inside screen
+    Rectangle r = new Rectangle(x, y, width, height);
+    r.width = Math.max(r.width, window.getToolkit().getScreenSize().width / 10 + 1);
+    r.height = Math.max(r.height, window.getToolkit().getScreenSize().height / 10 + 1);
+    r.width = Math.min(r.width, window.getToolkit().getScreenSize().width);
+    r.height = Math.min(r.height, window.getToolkit().getScreenSize().height);
+    r.x = Math.min(r.x, window.getToolkit().getScreenSize().width - 50);
+    r.y = Math.min(r.y, window.getToolkit().getScreenSize().height - 50);
+    r.x = Math.max(r.x, window.getToolkit().getScreenSize().width / 10 + 1 - r.width);
+    r.y = Math.max(r.y, window.getToolkit().getScreenSize().height / 10 + 1 - r.height);
+    return r;
   }
 }

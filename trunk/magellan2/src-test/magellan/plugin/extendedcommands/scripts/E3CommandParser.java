@@ -78,6 +78,10 @@ public class E3CommandParser {
   public static String EACHOrder = "JE";
   /** The ALL order parameter */
   public static String ALLOrder = "ALLES";
+  /** The KRÄUTER order parameter */
+  public static String KRAUTOrder = "KRAUT";
+  /** The LUXUS order parameter */
+  public static String LUXUSOrder = "LUXUS";
   /** The persistent comment order */
   public static String PCOMMENTOrder = "//";
   /** The persistent comment order */
@@ -102,14 +106,19 @@ public class E3CommandParser {
   public static final String W_UNIT = "Einheit";
   /** The AMOUNT warning type token */
   public static final String W_AMOUNT = "Menge";
+  /** The HIDDEN warning type token */
+  public static String W_HIDDEN = "versteckt";
   /** The ALWAYS warning type token */
-  public static final Object W_ALWAYS = "immer";
+  public static final String W_ALWAYS = "immer";
   /** The BEST token (for soldier) */
   public static String BEST = "best";
   /** The NULL token (for soldier) */
   public static String NULL = "null";
   /** The NOT token (for auto and others) */
   public static String NOT = "nicht";
+
+  /** warning constants */
+  protected static final int C_ALWAYS = 0, C_AMOUNT = 1, C_UNIT = 2, C_HIDDEN = 3, C_NEVER = 4;
 
   private Unit someUnit;
 
@@ -298,6 +307,7 @@ public class E3CommandParser {
       } else if (command.equals("GibWenn")) {
         commandGibWenn(tokens);
       } else if (command.equals("Benoetige")) {
+        addNewOrder(currentOrder, false);
         commandBenoetige(tokens);
         // } else if (command.equals("Versorge")) {
         // commandVersorge(tokens);
@@ -344,94 +354,166 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript GibWenn receiver [[JE] amount|ALLES] item [warning]</code><br />
-   * Adds a GIB order to the unit. Warning may be one of "immer", "Menge", "Einheit", "nie".
+   * <code>// $cript GibWenn receiver [[JE] amount|ALLES|KRAUT|LUXUS] [item] [warning]</code><br />
+   * Adds a GIB order to the unit. Warning may be one of "immer", "Menge", "Einheit", "versteckt"
+   * "nie". "versteckt" informiert nur, wenn die Einheit nicht da ist, übergibt aber trotzdem.
    */
   protected void commandGibWenn(String[] tokens) {
-    final int IMMER = 0, MENGE = 1, EINHEIT = 2, NIE = 3;
 
     addNewOrder(currentOrder, false);
-    if (tokens.length >= 4 && tokens.length <= 6) {
-      Unit other = helper.getUnit(tokens[1]);
-      int je = 0;
-      if (EACHOrder.equals(tokens[2])) {
-        je = 1;
-      }
-      int warning = IMMER;
-      if (tokens.length == 5 + je) {
-        if (W_ALWAYS.equals(tokens[4 + je])) {
-          warning = IMMER;
-        } else if (W_AMOUNT.equals(tokens[4 + je])) {
-          warning = MENGE;
-        } else if (W_UNIT.equals(tokens[4 + je])) {
-          warning = EINHEIT;
-        } else if (W_NEVER.equals(tokens[4 + je])) {
-          warning = NIE;
-        } else {
-          addError("unbekannter Warnungstyp " + tokens[4 + je]
-              + "; \"immer\", \"Menge\", \"Einheit\" oder \"nie\" erlaubt.");
-        }
-      }
-      String item = tokens[3 + je];
-      int amount = 0;
-      if (ALLOrder.equalsIgnoreCase(tokens[2 + je])) {
-        if (je > 0) {
-          addError("JE ALLES geht nicht");
-          return;
-        }
-        amount = getItemCount(currentUnit, item);
-      } else {
-        try {
-          amount = Integer.parseInt(tokens[2 + je]);
-        } catch (NumberFormatException e) {
-          amount = 0;
-          addError("Zahl oder ALLES erwartet");
-        }
-      }
-      int fullAmount = amount;
-      if (je == 1) {
-        if (other == null) {
-          addNewOrder("; Einheit nicht gefunden; kann Menge nicht überprüfen", true);
-        } else {
-          fullAmount = other.getModifiedPersons() * amount;
-        }
-      }
-      if (getItemCount(currentUnit, item) < fullAmount) {
-        if (warning == IMMER || warning == MENGE) {
-          addError("zu wenig " + item);
-        } else {
-          addNewOrder("; zu wenig " + item, true);
-        }
-        amount = getItemCount(currentUnit, item);
-        je = 0;
-      }
 
-      if (other == null || other.getRegion() != currentUnit.getRegion()) {
-        if (warning == IMMER || warning == EINHEIT) {
-          addError(tokens[1] + " nicht da.");
-        } else {
-          addNewOrder("; " + tokens[1] + " nicht da.", true);
-        }
-      }
-
-      if (amount > 0) {
-        if (amount == getItemCount(currentUnit, item) && je != 1) {
-          addNewOrder(getGiveOrder(currentUnit, tokens[1], item, Integer.MAX_VALUE, je == 1), true);
-        } else {
-          addNewOrder(getGiveOrder(currentUnit, tokens[1], item, amount, je == 1), true);
-        }
-        Supply supply = getSupply(item, currentUnit);
-        if (supply == null) {
-          addError("Fehler im script: supply 0");
-        }
-        supply.reduceAmount(fullAmount);
-        if (other != null) {
-          addNeed(item, other, -amount, -amount);
-        }
-      }
-    } else {
+    if (tokens.length < 3 && tokens.length > 6) {
       addError("Fehler in GibWenn");
+      return;
     }
+
+    Unit target = helper.getUnit(tokens[1]);
+
+    // test if EACH is present
+    int je = 0;
+    if (EACHOrder.equals(tokens[2])) {
+      je = 1;
+      if (ALLOrder.equals(tokens[3]) || KRAUTOrder.equals(tokens[3])
+          || LUXUSOrder.equals(tokens[3])) {
+        addError("JE ALLES geht nicht");
+        return;
+      }
+    }
+
+    // get warning type
+    int warning = -1;
+    if (W_ALWAYS.equals(tokens[tokens.length - 1])) {
+      warning = C_ALWAYS;
+    } else if (W_AMOUNT.equals(tokens[tokens.length - 1])) {
+      warning = C_AMOUNT;
+    } else if (W_UNIT.equals(tokens[tokens.length - 1])) {
+      warning = C_UNIT;
+    } else if (W_NEVER.equals(tokens[tokens.length - 1])) {
+      warning = C_NEVER;
+    } else if (W_HIDDEN.equals(tokens[tokens.length - 1])) {
+      warning = C_HIDDEN;
+    }
+
+    // handle GIB xyz ALLES
+    if (ALLOrder.equalsIgnoreCase(tokens[2])) {
+      if (!testUnit(tokens[1], target, warning))
+        return;
+      if (tokens.length == (warning == -1 ? 3 : 4)) {
+        for (Item item : currentUnit.getItems()) {
+          addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(), Integer.MAX_VALUE,
+              false), true);
+        }
+        return;
+      }
+    }
+
+    // handle GIB xyz KRAUT
+    if (KRAUTOrder.equalsIgnoreCase(tokens[2])) {
+      if (testUnit(tokens[1], target, warning)) {
+        if (tokens.length > (warning == -1 ? 3 : 4)) {
+          addError("zu viele Parameter");
+        }
+        for (Item item : currentUnit.getItems())
+          if (item.getItemType().getCategory().equals(world.rules.getItemCategory("herbs"))) {
+            addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
+                Integer.MAX_VALUE, false), true);
+          }
+      }
+      return;
+    }
+
+    // handle GIB xyz LUXUS
+    if (LUXUSOrder.equalsIgnoreCase(tokens[2])) {
+      if (testUnit(tokens[1], target, warning)) {
+        if (tokens.length > (warning == -1 ? 3 : 4)) {
+          addError("zu viele Parameter");
+        }
+        for (Item item : currentUnit.getItems())
+          if (item.getItemType().getCategory().equals(world.rules.getItemCategory("luxuries"))) {
+            addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
+                Integer.MAX_VALUE, false), true);
+          }
+      }
+      return;
+    }
+
+    if (tokens.length != 4 + je + (warning == -1 ? 0 : 1)) {
+      addError("zu viele Parameter");
+    }
+
+    if (warning == -1) {
+      warning = C_ALWAYS;
+    }
+
+    // get amount
+    String item = tokens[3 + je];
+    int amount = 0;
+    if (ALLOrder.equalsIgnoreCase(tokens[2 + je])) {
+      amount = getItemCount(currentUnit, item);
+    } else {
+      try {
+        amount = Integer.parseInt(tokens[2 + je]);
+      } catch (NumberFormatException e) {
+        amount = 0;
+        addError("Zahl oder ALLES erwartet");
+        return;
+      }
+    }
+
+    // get full amount (=amount * persons)
+    int fullAmount = amount;
+    if (je == 1) {
+      if (target == null) {
+        addNewOrder("; Einheit nicht gefunden; kann Menge nicht überprüfen", true);
+      } else {
+        fullAmount = target.getModifiedPersons() * amount;
+      }
+    }
+
+    // check availibility
+    if (getItemCount(currentUnit, item) < fullAmount) {
+      if (warning == C_ALWAYS || warning == C_AMOUNT || warning == C_HIDDEN) {
+        addError("zu wenig " + item);
+      } else {
+        addNewOrder("; zu wenig " + item, true);
+      }
+      amount = getItemCount(currentUnit, item);
+      je = 0;
+    }
+
+    if (!testUnit(tokens[1], target, warning))
+      return;
+
+    // make GIVE order
+    if (amount > 0) {
+      if (amount == getItemCount(currentUnit, item) && je != 1) {
+        addNewOrder(getGiveOrder(currentUnit, tokens[1], item, Integer.MAX_VALUE, je == 1), true);
+      } else {
+        addNewOrder(getGiveOrder(currentUnit, tokens[1], item, amount, je == 1), true);
+      }
+      Supply supply = getSupply(item, currentUnit);
+      if (supply == null) {
+        addError("Fehler im script: supply 0");
+        return;
+      }
+      supply.reduceAmount(fullAmount);
+      if (target != null) {
+        addNeed(item, target, -amount, -amount);
+      }
+    }
+
+  }
+
+  private boolean testUnit(String sOther, Unit other, int warning) {
+    if (other == null || other.getRegion() != currentUnit.getRegion()) {
+      if (warning == C_AMOUNT || warning == C_HIDDEN || warning == C_NEVER) {
+        addNewOrder("; " + sOther + " nicht da", true);
+      } else {
+        addError(sOther + " nicht da");
+      }
+      return warning == C_HIDDEN;
+    }
+    return true;
   }
 
   /**
@@ -846,6 +928,7 @@ public class E3CommandParser {
     }
 
     ArrayList<Item> armors = findItems(armor, u, "armour");
+    // FIXME: shield is subcategory of armour!
     if (armors.isEmpty()) {
       addError("no known armour types");
     }
@@ -879,7 +962,7 @@ public class E3CommandParser {
     ItemCategory itemCategory = world.rules.getItemCategory(StringID.create(category), false);
     if (itemType == null) {
       for (Item item : u.getItems()) {
-        if (item.getItemType().getCategory().isDescendant(itemCategory)) {
+        if (item.getItemType().getCategory().equals(itemCategory)) {
           items.add(item);
         }
       }
@@ -890,7 +973,7 @@ public class E3CommandParser {
     }
     if (items.isEmpty()) {
       for (ItemType type : world.rules.getItemTypes()) {
-        if (type.getCategory().isDescendant(itemCategory)) {
+        if (type.getCategory().equals(itemCategory)) {
           items.add(new Item(type, 0));
           break;
         }
@@ -942,13 +1025,15 @@ public class E3CommandParser {
 
     if (currentFaction.getLocale().getLanguage() != "de") {
       // warning constants
-      W_NEVER = "NEVER";
-      W_SKILL = "SKILL";
-      W_WEAPON = "WEAPON";
-      W_SHIELD = "SHIELD";
-      W_ARMOR = "ARMOR";
-      BEST = "BEST";
-      NULL = "NULL";
+      W_NEVER = "never";
+      W_SKILL = "skill";
+      W_WEAPON = "weapon";
+      W_SHIELD = "shield";
+      W_ARMOR = "armor";
+      BEST = "best";
+      NULL = "null";
+      LUXUSOrder = "LUXURY";
+      KRAUTOrder = "HERBS";
     }
   }
 
@@ -1279,7 +1364,8 @@ public class E3CommandParser {
    * @param args this is ignored
    */
   public static void main(String[] args) {
-    File file = new File("./src/magellan/plugin/extendedcommands/stm/E3CommandParser.java");
+    File file =
+        new File("./src-test/magellan/plugin/extendedcommands/scripts/E3CommandParser.java");
     try {
       LineNumberReader reader = new LineNumberReader(new FileReader(file));
 

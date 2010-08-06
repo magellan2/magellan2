@@ -3,20 +3,37 @@
  */
 package magellan.plugin.extendedcommands.scripts;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Properties;
 
-import magellan.client.*;
+import magellan.client.Client;
+import magellan.client.ClientProvider;
+import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
-import magellan.library.*;
+import magellan.library.GameData;
+import magellan.library.Item;
+import magellan.library.MissingData;
+import magellan.library.Skill;
+import magellan.library.Unit;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
-import magellan.plugin.extendedcommands.*;
+import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
+import magellan.plugin.extendedcommands.ExtendedCommandsProvider;
 import magellan.test.GameDataBuilder;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * @author steffen
@@ -249,17 +266,23 @@ public class E3CommandParserTest {
     builder.addItem(data, unit2, "Silber", 5);
 
     // test one Benoetige order
+    unit.clearOrders();
     unit.addOrder("// $cript Benoetige 4 Silber");
     parser.execute(unit.getFaction());
 
+    assertEquals(2, unit.getOrders().size());
     assertEquals("GIB 1 4 Silber", unit2.getOrders().get(1));
 
     // test one Benoetige order with JE
+    unit.clearOrders();
+    unit2.clearOrders();
     unit.setPersons(2);
     unit.addOrder("// $cript Benoetige JE 2 Silber");
     parser.execute(unit.getFaction());
 
-    assertEquals("GIB 1 4 Silber", unit2.getOrders().get(1));
+    assertEquals(2, unit.getOrders().size());
+    assertEquals(1, unit2.getOrders().size());
+    assertEquals("GIB 1 4 Silber", unit2.getOrders().get(0));
 
     // test if unit's own items are RESERVED first
     unit.clearOrders();
@@ -269,6 +292,8 @@ public class E3CommandParserTest {
     unit.addOrder("// $cript Benoetige 4 Silber");
 
     parser.execute(unit.getFaction());
+    assertEquals(3, unit.getOrders().size());
+    assertEquals(1, unit2.getOrders().size());
     assertEquals("RESERVIEREN 2 Silber", unit.getOrders().get(2));
     assertEquals("GIB 1 2 Silber", unit2.getOrders().get(0));
 
@@ -283,6 +308,7 @@ public class E3CommandParserTest {
     parser.execute(unit.getFaction());
     assertEquals("RESERVIEREN 2 Silber", unit.getOrders().get(2));
     assertFalse(unit.getOrders().contains("; TODO: needs 1 more Silber"));
+    assertEquals("RESERVIEREN 4 Silber", unit2.getOrders().get(0));
     assertEquals("GIB 1 2 Silber", unit2.getOrders().get(1));
 
     // test what happens if Benoetige unit already has a RESERVE order (nothing should change)
@@ -340,7 +366,34 @@ public class E3CommandParserTest {
     unit2.addOrder("// $cript GibWenn qwra 120 Silber Menge");
     parser.execute(unit.getFaction());
 
-    assertEquals(4, unit2.getOrders().size());
+    assertEquals(3, unit2.getOrders().size());
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.plugin.extendedcommands.stm.E3CommandParser#commandGibWenn(String[])}.
+   */
+  @Test
+  public final void testCommandGibWenn3() {
+    // add other unit with Kraut
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Würziger Wagemut", 5);
+    builder.addItem(data, unit2, "Flachwurz", 5);
+    builder.addItem(data, unit2, "Myrrhe", 5);
+    builder.addItem(data, unit2, "Seide", 5);
+
+    // test one GibWenn order
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit2.addOrder("// $cript GibWenn 1 KRAUT");
+    unit2.addOrder("// $cript GibWenn 1 LUXUS");
+
+    parser.execute(unit.getFaction());
+    assertEquals(6, unit2.getOrders().size());
+    assertEquals("GIB 1 ALLES Würziger~Wagemut", unit2.getOrders().get(1));
+    assertEquals("GIB 1 ALLES Flachwurz", unit2.getOrders().get(2));
+    assertEquals("GIB 1 ALLES Myrrhe", unit2.getOrders().get(4));
+    assertEquals("GIB 1 ALLES Seide", unit2.getOrders().get(5));
   }
 
   /**
@@ -370,10 +423,10 @@ public class E3CommandParserTest {
     unit2.addOrder("// $cript GibWenn 2 3 Silber");
     parser.execute(unit.getFaction());
 
-    assertEquals(3, unit2.getOrders().size());
+    assertEquals(2, unit2.getOrders().size());
     assertEquals("// $cript GibWenn 2 3 Silber", unit2.getOrders().get(0));
-    assertEquals("; TODO: Fehler im Skript in Zeile 1: 2 nicht da.", unit2.getOrders().get(1));//
-    assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
+    assertEquals("; TODO: Fehler im Skript in Zeile 1: 2 nicht da", unit2.getOrders().get(1));//
+    // assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
 
     // test receiver unit not there (with warning)
     unit.clearOrders();
@@ -382,20 +435,20 @@ public class E3CommandParserTest {
     unit2.addOrder("// $cript GibWenn 2 3 Silber immer");
     parser.execute(unit.getFaction());
 
-    assertEquals(3, unit2.getOrders().size());
-    assertEquals("; TODO: Fehler im Skript in Zeile 1: 2 nicht da.", unit2.getOrders().get(1));
-    assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
+    assertEquals(2, unit2.getOrders().size());
+    assertEquals("; TODO: Fehler im Skript in Zeile 1: 2 nicht da", unit2.getOrders().get(1));
+    // assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
 
-    // test receiver unit not there (with warning)
+    // test receiver unit not there (without warning)
     unit.clearOrders();
     unit2.clearOrders();
 
     unit2.addOrder("// $cript GibWenn 2 3 Silber Menge");
     parser.execute(unit.getFaction());
 
-    assertEquals(3, unit2.getOrders().size());
-    assertEquals("; 2 nicht da.", unit2.getOrders().get(1));
-    assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
+    assertEquals(2, unit2.getOrders().size());
+    assertEquals("; 2 nicht da", unit2.getOrders().get(1));
+    // assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
 
     // test receiver unit not there (with warning)
     unit.clearOrders();
@@ -404,20 +457,31 @@ public class E3CommandParserTest {
     unit2.addOrder("// $cript GibWenn 2 3 Silber Einheit");
     parser.execute(unit.getFaction());
 
+    assertEquals(2, unit2.getOrders().size());
+    assertEquals("; TODO: Fehler im Skript in Zeile 1: 2 nicht da", unit2.getOrders().get(1));
+    // assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
+
+    // test receiver unit not there (with hidden unit warning)
+    unit.clearOrders();
+    unit2.clearOrders();
+
+    unit2.addOrder("// $cript GibWenn 2 3 Silber versteckt");
+    parser.execute(unit.getFaction());
+
     assertEquals(3, unit2.getOrders().size());
-    assertEquals("; TODO: Fehler im Skript in Zeile 1: 2 nicht da.", unit2.getOrders().get(1));
+    assertEquals("; 2 nicht da", unit2.getOrders().get(1));
     assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
 
-    // test receiver unit not there (with warning)
+    // test receiver unit not there (without warning)
     unit.clearOrders();
     unit2.clearOrders();
 
     unit2.addOrder("// $cript GibWenn 2 3 Silber nie");
     parser.execute(unit.getFaction());
 
-    assertEquals(3, unit2.getOrders().size());
-    assertEquals("; 2 nicht da.", unit2.getOrders().get(1));
-    assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
+    assertEquals(2, unit2.getOrders().size());
+    assertEquals("; 2 nicht da", unit2.getOrders().get(1));
+    // assertEquals("GIB 2 3 Silber", unit2.getOrders().get(2));
 
     // test receiver unit not there (with nonsense warning)
     unit.clearOrders();
@@ -426,13 +490,12 @@ public class E3CommandParserTest {
     unit2.addOrder("// $cript GibWenn 2 3 Silber bla");
     parser.execute(unit.getFaction());
 
-    assertEquals(4, unit2.getOrders().size());
-    assertEquals(
-        "; TODO: Fehler im Skript in Zeile 1: unbekannter Warnungstyp bla; \"immer\", \"Menge\", \"Einheit\" oder \"nie\" erlaubt.",
-        unit2.getOrders().get(1));
+    assertEquals(3, unit2.getOrders().size());
+    assertEquals("; TODO: Fehler im Skript in Zeile 1: zu viele Parameter", unit2.getOrders()
+        .get(1));
 
-    assertEquals("; TODO: Fehler im Skript in Zeile 1: 2 nicht da.", unit2.getOrders().get(2));
-    assertEquals("GIB 2 3 Silber", unit2.getOrders().get(3));
+    assertEquals("; TODO: Fehler im Skript in Zeile 1: 2 nicht da", unit2.getOrders().get(2));
+    // assertEquals("GIB 2 3 Silber", unit2.getOrders().get(3));
 
     // test receiver unit not there (with nonsense warning)
     unit.clearOrders();
@@ -442,9 +505,8 @@ public class E3CommandParserTest {
     parser.execute(unit.getFaction());
 
     assertEquals(3, unit2.getOrders().size());
-    assertEquals(
-        "; TODO: Fehler im Skript in Zeile 1: unbekannter Warnungstyp bla; \"immer\", \"Menge\", \"Einheit\" oder \"nie\" erlaubt.",
-        unit2.getOrders().get(1));
+    assertEquals("; TODO: Fehler im Skript in Zeile 1: zu viele Parameter", unit2.getOrders()
+        .get(1));
     assertEquals("GIB 1 3 Silber", unit2.getOrders().get(2));
 
     // test supplyer does not have item
@@ -521,6 +583,7 @@ public class E3CommandParserTest {
     unit.addOrder("// $cript Benoetige 4 Silber");
     parser.execute(unit.getFaction());
 
+    assertEquals(2, unit.getOrders().size());
     assertEquals(3, unit2.getOrders().size());
     assertEquals("GIB 1 3 Silber", unit2.getOrders().get(1));
     assertEquals("GIB 1 1 Silber", unit2.getOrders().get(2));
@@ -529,7 +592,7 @@ public class E3CommandParserTest {
     unit.clearOrders();
     unit2.clearOrders();
 
-    unit2.addOrder("// $cript GibWenn 2 3 Silber nie");
+    unit2.addOrder("// $cript GibWenn 2 3 Silber versteckt");
     unit.addOrder("// $cript Benoetige 4 Silber");
     parser.execute(unit.getFaction());
 
@@ -568,6 +631,10 @@ public class E3CommandParserTest {
     parser.execute(unit.getFaction());
     assertFalse(unit.getOrders().contains("; TODO: foo"));
     assertEquals("// $cript +1 foo", unit.getOrders().get(1));
+    unit.clearOrders();
+    unit.addOrder("// $cript +1 ; TODO bug armbrustagabe?");
+    parser.execute(unit.getFaction());
+    assertEquals("; TODO: ; TODO bug armbrustagabe?", unit.getOrders().get(1));
   }
 
   /**
@@ -673,6 +740,38 @@ public class E3CommandParserTest {
     assertEquals("RESERVIEREN 5 Schwert", unit2.getOrders().get(2));
     assertEquals("RESERVIEREN 2 Plattenpanzer", unit2.getOrders().get(3));
     assertEquals("; TODO: needs 8 more Plattenpanzer", unit2.getOrders().get(5));
+
+    // ensure that shields are not armour!
+    unit.clearOrders();
+    unit2.clearOrders();
+
+    unit2.getItem(data.rules.getItemType("Schwert")).setAmount(0);
+    unit2.getItem(data.rules.getItemType("Plattenpanzer")).setAmount(0);
+    builder.addItem(data, unit2, "Schild", 10);
+    builder.addItem(data, unit, "Schild", 5);
+
+    Unit unit3 = builder.addUnit(data, "s2", "Soldat 2", unit.getFaction(), unit.getRegion());
+    unit3.setPersons(10);
+    builder.addSkill(unit3, "Hiebwaffen", 2);
+    builder.addItem(data, unit3, "Schild", 10);
+
+    unit2.addOrder("// $cript Soldat Talent");
+    unit3.clearOrders();
+    unit3.addOrder("// $cript Soldat Talent");
+
+    parser.execute(unit.getFaction());
+
+    assertEquals(2, unit.getOrders().size());
+    assertEquals("GIB s 10 Schwert", unit.getOrders().get(1));
+    assertEquals(4, unit2.getOrders().size());
+    assertEquals("LERNEN Hiebwaffen", unit2.getOrders().get(1));
+    assertEquals("RESERVIEREN 10 Schild", unit2.getOrders().get(2));
+    assertEquals("; needs 10 more Plattenpanzer", unit2.getOrders().get(3));
+    assertEquals(5, unit3.getOrders().size());
+    assertEquals("LERNEN Hiebwaffen", unit3.getOrders().get(1));
+    assertEquals("; needs 10 more Schwert", unit3.getOrders().get(2));
+    assertEquals("RESERVIEREN 10 Schild", unit3.getOrders().get(3));
+    assertEquals("; needs 10 more Kettenhemd", unit3.getOrders().get(4));
 
   }
 

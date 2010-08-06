@@ -48,7 +48,6 @@ import javax.swing.Timer;
 import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
-import magellan.client.preferences.DesktopPreferences;
 import magellan.client.swing.desktop.WorkSpace;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
@@ -182,7 +181,8 @@ public class JDMagellanDesktop extends JPanel implements WindowListener, ActionL
     // register keystrokes
     registerKeyStrokes();
 
-    DesktopEnvironment.init(this);
+    // FIXME!!!!
+    // DesktopEnvironment.init(this);
   }
 
   /**
@@ -1176,7 +1176,9 @@ public class JDMagellanDesktop extends JPanel implements WindowListener, ActionL
    * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
-    return new DesktopPreferences(this, client, settings);
+    // FIXME !!!!!!
+    throw new IllegalStateException("FIXME");
+    // return new DesktopPreferences(this, client, settings);
   }
 
   protected class BackgroundPanel extends JPanel {

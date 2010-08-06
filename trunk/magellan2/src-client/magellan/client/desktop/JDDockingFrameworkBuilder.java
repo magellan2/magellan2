@@ -71,6 +71,7 @@ import com.javadocking.visualizer.SingleMaximizer;
  * @version 1.0
  * @deprecated unfinished
  */
+@Deprecated
 public class JDDockingFrameworkBuilder {
   private static final Logger log = Logger.getInstance(JDDockingFrameworkBuilder.class);
   private static JDDockingFrameworkBuilder _instance = null;
@@ -412,7 +413,9 @@ public class JDDockingFrameworkBuilder {
 
     ButtonGroup group = new ButtonGroup();
     for (JDDockingLayout layout : JDDockingFrameworkBuilder.layouts) {
-      LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
+      // FIXME !!!!!
+      // LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
+      LayoutCheckboxMenuItem item = null;
       group.add(item);
       JDDockingFrameworkBuilder.layoutMenu.add(item);
     }
@@ -492,7 +495,9 @@ public class JDDockingFrameworkBuilder {
     int i = 0;
     ButtonGroup group = new ButtonGroup();
     for (JDDockingLayout layout : JDDockingFrameworkBuilder.layouts) {
-      LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
+      // FIXME !!!!
+      // LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
+      LayoutCheckboxMenuItem item = null;
       group.add(item);
       JDDockingFrameworkBuilder.log.debug("Add Layout Menu Entry (" + i + "): " + layout.getName());
       JDDockingFrameworkBuilder.layoutMenu.insert(item, i++);
@@ -545,7 +550,8 @@ public class JDDockingFrameworkBuilder {
       return; // ham we nich.
 
     JDDockingLayout deletableLayout = JDDockingFrameworkBuilder.activeLayout;
-    JDDockingFrameworkBuilder.log.debug("Remove docking layout '" + deletableLayout.getName() + "'");
+    JDDockingFrameworkBuilder.log
+        .debug("Remove docking layout '" + deletableLayout.getName() + "'");
     int index = JDDockingFrameworkBuilder.layouts.indexOf(JDDockingFrameworkBuilder.activeLayout);
     if (index == 0) {
       index = 1;

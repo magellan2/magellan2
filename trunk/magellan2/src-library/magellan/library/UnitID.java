@@ -110,7 +110,9 @@ public class UnitID extends EntityID {
       int i = (parentUnit.getID()).intValue();
 
       while (data.getTempUnit(UnitID.createUnitID(-i, data.base)) != null) {
-        i = UnitID.getNextDecimalID(i, data.base, true);
+        // does not make much sense, does it?
+        // i = UnitID.getNextDecimalID(i, data.base, true);
+        i++;
       }
 
       return UnitID.createUnitID(-i, data.base);
@@ -204,7 +206,7 @@ public class UnitID extends EntityID {
         while (j < result) {
           j = j * base + 9;
         }
-        result = (j - 9) / base + 0;
+        result = (j - 9) / base;
       }
 
     }

@@ -113,7 +113,7 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
    * implementing sub classes of Identifiable, equality will often be established through the
    * equality of IDs.
    * <p>
-   * <b>Attention</b>: Overriding this method will most likely break the general contract of equals!
+   * <b>Attention</b>: Overriding this method could break the general contract of equals!
    * </p>
    * 
    * @see java.lang.Object#equals(java.lang.Object)
@@ -123,7 +123,8 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
     if (this == o)
       return true;
     if (o instanceof MagellanIdentifiableImpl)
-      return getID().equals(((MagellanIdentifiableImpl) o).getID());
+      return getID().equals(((MagellanIdentifiableImpl) o).getID())
+          && (o.getClass().isInstance(this) || getClass().isInstance(o));
     return false;
   }
 
@@ -147,11 +148,22 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
   /**
    * Imposes a natural ordering on Identifiable objects. Especially with implementing sub classes of
    * Identifiable, such orderings will often be established by the natural order of ids.
+   * <p>
+   * <b>Attention</b>: Overriding this method could break the general contract of equals!
+   * </p>
    * 
    * @see magellan.library.Identifiable#compareTo(java.lang.Object)
    */
   public int compareTo(Object o) {
-    return getID().compareTo(((MagellanIdentifiableImpl) o).getID());
+    if (!(getClass().isInstance(o) || o.getClass().isInstance(this)))
+      throw new ClassCastException("invariant types");
+
+    int result;
+    return result = getID().compareTo(((MagellanIdentifiableImpl) o).getID());
+    // if (result == 0 && getClass() != o.getClass())
+    // return getClass().toString().compareTo(o.getClass().toString());
+    //
+    // return result;
   }
 
 }

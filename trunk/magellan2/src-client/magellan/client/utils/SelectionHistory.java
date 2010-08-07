@@ -112,9 +112,9 @@ public class SelectionHistory {
           // insert new entry
           SelectionHistory.history.add(newEntry);
           SelectionHistory.informListeners();
+          SelectionHistory.lastEvent = e;
         }
       }
-      SelectionHistory.lastEvent = e;
     }
   }
 

@@ -1150,23 +1150,23 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       final MagellanUnitImpl u = (MagellanUnitImpl) unit;
       MagellanUnitImpl clone = null;
 
-      try {
-        clone = new MagellanUnitImpl(u.getID().clone());
-        clone.persons = u.getPersons();
-        clone.race = u.race;
-        clone.realRace = u.realRace;
-        clone.region = u.region;
-        clone.isStarving = u.isStarving;
-        clone.isHero = u.isHero;
+      // try {
+      clone = new MagellanUnitImpl(u.getID().clone());
+      clone.persons = u.getPersons();
+      clone.race = u.race;
+      clone.realRace = u.realRace;
+      clone.region = u.region;
+      clone.isStarving = u.isStarving;
+      clone.isHero = u.isHero;
 
-        for (Skill s : u.getSkills()) {
-          clone.addSkill(new Skill(s.getSkillType(), s.getPoints(), s.getLevel(), clone.persons, s
-              .noSkillPoints()));
-        }
-        clones.put(clone.getID(), clone);
-      } catch (final CloneNotSupportedException e) {
-        // won't fail
+      for (Skill s : u.getSkills()) {
+        clone.addSkill(new Skill(s.getSkillType(), s.getPoints(), s.getLevel(), clone.persons, s
+            .noSkillPoints()));
       }
+      clones.put(clone.getID(), clone);
+      // } catch (final CloneNotSupportedException e) {
+      // // won't fail
+      // }
 
     }
 

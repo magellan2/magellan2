@@ -21,15 +21,21 @@ import magellan.library.Unique;
  * A comparator imposing a total ordering on identifiable objects by comparing their ids.
  */
 public class IDComparator implements Comparator<Unique> {
+  private boolean inverse;
+
   /**
    * Creates a new IDComparator object.
    */
-  private IDComparator() {
+  private IDComparator(boolean inverted) {
     // private -- singleton
+    inverse = inverted;
   }
 
   /** The default IDComparator. We only has extrinsic state so we can use singleton here. */
-  public static final Comparator<Unique> DEFAULT = new IDComparator();
+  public static final Comparator<Unique> DEFAULT = new IDComparator(false);
+
+  /** The default IDComparator, but with inverted order. */
+  public static final Comparator<Unique> INVERSE = new IDComparator(true);
 
   /**
    * Compares its two arguments for order according to their ids.
@@ -37,7 +43,13 @@ public class IDComparator implements Comparator<Unique> {
    * @return the natural ordering of <tt>o1</tt>'s id and <tt>o2</tt>'s id.
    */
   public int compare(Unique o1, Unique o2) {
-    return o1.getID().compareTo(o2.getID());
+    if (o1.getID().getClass() != o2.getID().getClass())
+      throw new AssertionError("comparing different ID types");
+    int result = o1.getID().compareTo(o2.getID());
+    if (inverse)
+      return -result;
+    else
+      return result;
   }
 
 }

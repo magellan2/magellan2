@@ -402,6 +402,13 @@ public class Logger {
   }
 
   /**
+   * Returns true if the level is at least {@link #FINE}.
+   */
+  public boolean isFineEnabled() {
+    return Logger.verboseLevel >= Logger.FINE;
+  }
+
+  /**
    * Logs a message at the {@link #DEBUG} level.
    */
   public void debug(Object aObj) {
@@ -507,4 +514,5 @@ public class Logger {
       aOut.print(message);
     }
   }
+
 }

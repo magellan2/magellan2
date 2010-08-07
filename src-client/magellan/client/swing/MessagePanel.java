@@ -95,8 +95,8 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
             .get("messagepanel.nodeFactory.title"));
 
     // create dummies to have a valid pref adapter
-//    nodeFactory.createUnitNodeWrapper(null, null);
-//    nodeFactory.createRegionNodeWrapper(null);
+    // nodeFactory.createUnitNodeWrapper(null, null);
+    // nodeFactory.createRegionNodeWrapper(null);
 
     d.addSelectionListener(this);
 
@@ -476,6 +476,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       }
     }
 
+    // TODO do something more efficient than searching all faction messages here!?
     if (data.getFactions() != null) {
       for (Faction f : data.getFactions()) {
         if (f.getMessages() != null) {

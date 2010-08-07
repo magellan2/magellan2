@@ -81,6 +81,7 @@ import magellan.client.event.TempUnitListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.preferences.DetailsViewOrderEditorPreferences;
 import magellan.client.swing.InternationalizedDataPanel;
+import magellan.client.swing.TempUnitDialog;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.Faction;
 import magellan.library.GameData;

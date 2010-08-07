@@ -92,9 +92,18 @@ public class IntegerID implements ID {
   public boolean equals(Object o) {
     if (o == this)
       return true;
-    if (o instanceof IntegerID)
-      return id == ((IntegerID) o).id;
-    return false;
+    boolean result;
+    if (o instanceof IntegerID) {
+      result = id == ((IntegerID) o).id;
+    } else
+      return false;
+    if (result && getClass() != o.getClass())
+      // make sure that the classes are at least covariant; requiring o.getClass() == getClass()
+      // would break Liskov's substitution principle for subclasses of IntegerID, which is generally
+      // a bad idea...
+      return getClass().isInstance(o) || o.getClass().isInstance(this);
+
+    return result;
   }
 
   /**
@@ -106,7 +115,17 @@ public class IntegerID implements ID {
   public int compareTo(Object o) {
     int anotherId = ((IntegerID) o).id;
 
-    return (id < anotherId) ? (-1) : ((id == anotherId) ? 0 : 1);
+    if (!(getClass().isInstance(o) || o.getClass().isInstance(this)))
+      throw new ClassCastException("invariant types");
+
+    int result;
+    if (anotherId < 0 && id < 0) {
+      // sort negative IDs (TEMP IDs!) inversely
+      result = (id > anotherId) ? (-1) : ((id == anotherId) ? 0 : 1);
+    } else {
+      result = (id < anotherId) ? (-1) : ((id == anotherId) ? 0 : 1);
+    }
+    return result;
   }
 
   /**
@@ -125,7 +144,7 @@ public class IntegerID implements ID {
    * @throws CloneNotSupportedException Never
    */
   @Override
-  public IntegerID clone() throws CloneNotSupportedException {
+  public IntegerID clone() {
     // pavkovic 2003.07.08: we dont really clone this object as IntegerID is unchangeable after
     // creation
     return this;

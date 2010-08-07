@@ -133,7 +133,7 @@ public class EntityID extends IntegerID {
    * @throws CloneNotSupportedException Never
    */
   @Override
-  public EntityID clone() throws CloneNotSupportedException {
+  public EntityID clone() {
     // pavkovic 2003.07.08: we dont really clone this object as IntegerID is unchangeable after
     // creation
     return this;

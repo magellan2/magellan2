@@ -28,6 +28,7 @@ import magellan.library.UnitID;
 import magellan.library.gamebinding.MessageRenderer;
 import magellan.library.rules.MessageType;
 import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A class for representing a message.
@@ -55,6 +56,8 @@ import magellan.library.utils.OrderedHashtable;
  * </p>
  */
 public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Message {
+  private static final Logger log = Logger.getInstance(MagellanMessageImpl.class);
+
   private String text = null;
   private MessageType type = null;
   private boolean isRendered = false;
@@ -219,7 +222,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   }
 
   /**
-   * Renderes a message text from the given <code>pattern</code> and <code>attributes</code>.
+   * Renders a message text from the given <code>pattern</code> and <code>attributes</code>.
    * <p>
    * Expects the tokens of the form {name1 name2} and replaces them by the attribute values for
    * name1, name2 etc. If these values are unit names or region coordinates, their names are taken
@@ -304,15 +307,16 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    * Indicates whether this Message object is equal to another object. Returns true only if o is not
    * null and an instance of class Message and o's id is equal to the id of this Message object.
    * 2002.02.21 pavkovic: Also the message text has to be the same for Messages with ambiguous
-   * IntegerID(-1)
+   * IntegerID(-1).
    */
   @Override
   public boolean equals(Object o) {
     if (o == null)
       return false;
     try {
-      return getID().equals(Message.ambiguousID) ? isPrimitiveEquals((MagellanMessageImpl) o)
-          : isComplexEquals((MagellanMessageImpl) o);
+      boolean result =
+          getID().equals(Message.ambiguousID) ? isPrimitiveEquals((MagellanMessageImpl) o)
+              : isComplexEquals((MagellanMessageImpl) o);
 
       /*
        * if(ret && log.isDebugEnabled()) { log.debug("Messages: "+this+", "+o);
@@ -320,14 +324,42 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
        * log.debug("isPrimitiveEquals:"+isPrimitiveEquals((Message) o));
        * log.debug("isComplexEquals:"+isComplexEquals((Message) o)); }
        */
+
+      if (log.isFineEnabled())
+        if (result != (compareTo(o) == 0)) {
+          log.warn("equals!=result");
+        }
+      return result;
+
     } catch (ClassCastException e) {
+      Logger.getInstance(this.getClass()).fine("comparing message to something else");
       return false;
     }
   }
 
   /**
+   * @see magellan.library.impl.MagellanIdentifiableImpl#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(Object o) {
+    int result;
+    if (getID().equals(Message.ambiguousID)) {
+      result = getID().compareTo(((MagellanMessageImpl) o).getID());
+      if (result != 0)
+        return result;
+      return getText().compareTo(((MagellanMessageImpl) o).getText());
+    } else {
+      result = getID().compareTo(((MagellanMessageImpl) o).getID());
+      if (result != 0)
+        return result;
+      return getMessageType() == null ? ((MagellanMessageImpl) o).getMessageType() == null ? 0 : -1
+          : getMessageType().compareTo(((MagellanMessageImpl) o).getMessageType());
+    }
+  }
+
+  /**
    * This checks if Messages are of old style without id. In such a situation we have to compare the
-   * text
+   * text.
    */
   private boolean isPrimitiveEquals(MagellanMessageImpl o) {
     // we use == for ambiguousID as it is singleton
@@ -340,14 +372,14 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    * identifying characteristica.
    */
   private boolean isComplexEquals(MagellanMessageImpl o) {
-    // this means: this.ID == o.ID ( != ambiguousID ) || (<IDs are not equal> this.text == o.text &&
-    // this.messageType == o.messageType)
-    /*
-     * this returns equal for same text but different ID. This will eleminate messages from one
-     * report as duplicates! return !this.getID().equals(ambiguousID) &&
-     * (this.getID().equals(o.getID()) || (equalObjects(this.getText(), o.getText()) &&
-     * equalObjects(this.getMessageType(), o.getMessageType())));
-     */
+    // this returns equal for same text but different ID. This will eliminate messages from one
+    // report as duplicates!
+    // // this means: this.ID == o.ID ( != ambiguousID ) || (<IDs are not equal> this.text == o.text
+    // // && this.messageType == o.messageType)
+    // return !getID().equals(ambiguousID)
+    // && (getID().equals(o.getID()) || (equalObjects(getText(), o.getText()) && equalObjects(
+    // getMessageType(), o.getMessageType())));
+
     return (!getID().equals(Message.ambiguousID) && getID().equals(o.getID()) && MagellanMessageImpl
         .equalObjects(getMessageType(), o.getMessageType()));
   }
@@ -357,8 +389,8 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   }
 
   /**
-   * DOCUMENT-ME Fiete 20080121 toString is also copied to clipboard when using ctrl+c changing this
-   * now the the text value
+   * Fiete 20080121 toString is also copied to clipboard when using ctrl+c changing this now to the
+   * text value.
    */
   @Override
   public String toString() {

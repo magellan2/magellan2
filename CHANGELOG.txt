@@ -1,3 +1,6 @@
+2010-08-07 / Build 429 - stm (stm_@users.sourceforge.net)
+    * fixed Trac bug #16 (temp unit sorting) and a few issues around id comparison on the way
+
 2010-07-27 / Build 428 - stm (stm_@users.sourceforge.net)
     * tweaked a few nodewrappers and unnecessary object allocation issues
 

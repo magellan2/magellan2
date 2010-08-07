@@ -21,6 +21,10 @@ import magellan.library.utils.logging.Logger;
  * about the representation of the integer as the EntityID class. It also provides additional
  * convenience methods and knowledge about TEMP unit ids (which are represented as negative
  * integers).
+ * <p>
+ * FIXME (stm-2010) It would be better if UnitID wasn't a sub-type of EntityID. This can result in
+ * unit IDs being compared to building IDs and found equal...
+ * </p>
  */
 public class UnitID extends EntityID {
   private static final Logger log = Logger.getInstance(UnitID.class);
@@ -111,6 +115,7 @@ public class UnitID extends EntityID {
 
       return UnitID.createUnitID(-i, data.base);
     } else {
+      // find next free ID based off getCurTempID()
       int i = data.getCurTempID();
       UnitID checkID = UnitID.createUnitID(-i, data.base);
 
@@ -149,59 +154,62 @@ public class UnitID extends EntityID {
 
   /**
    * Returns the next int, that is bigger than the given one but consists only out of decimal digits
-   * (interpreted in the current base) if the given int did so also.
+   * (interpreted in the current base).
    * 
-   * @param i
-   * @param ascending
-   * @return the next int, that is bigger than the given one but consists only out of decimal digits
-   *         (interpreted in the current base) if the given int did so also
+   * @param current the last ID, that is to be increased (or decreased)
+   * @param base the base where the digits come from
+   * @param ascending if <code>true</code>, the current id is increased, otherwise decreased
+   * @return the next int, that is bigger than the given one (or smaller if ascending==false) but
+   *         consists only of decimal digits (interpreted in the given base). The result is also
+   *         &gt; 0 and &lt;= {@link IDBaseConverter#getMaxId(int)}
    */
-  private static int getNextDecimalID(int i, int radix, boolean ascending) {
-    int base = radix;
+  protected static int getNextDecimalID(int current, int base, boolean ascending) {
+    int result = current;
 
     if (ascending) {
-      i++;
-
-      if ((i % base) == 10) {
-        i += (base - 10);
+      result++;
+      if (result <= 0) {
+        result = 1;
       }
+      for (int nextDigit = 1; nextDigit <= IDBaseConverter.getMaxId(base); nextDigit *= base)
+        if ((result % (nextDigit * base)) >= 10 * nextDigit) {
+          result += nextDigit * base - result % (nextDigit * base);
+        }
 
-      if ((i % (base * base)) == (base * 10)) {
-        i += ((base - 10) * base * base);
-      }
-
-      if ((i % (base * base * base)) == (base * base * 10)) {
-        i += ((base - 10) * base * base * base);
-      }
-
-      if (i > IDBaseConverter.getMaxId(base)) {
-        i = 1;
+      if (result > IDBaseConverter.getMaxId(base)) {
+        result = 1;
       }
     } else {
-      if (i == 0) {
-        i = (base * base * base * 10) + 10;
+      result--;
+
+      if (result <= 0 || result > IDBaseConverter.getMaxId(base)) {
+        result = IDBaseConverter.getMaxId(base);
       }
 
-      if ((i % (base * base * base)) == 0) {
-        i = i - (base * base * base) + (base * base * 10);
+      int nextDigit = 1;
+      while (nextDigit < IDBaseConverter.getMaxId(base)) {
+        nextDigit *= base;
+      }
+      for (; nextDigit >= 1; nextDigit /= base)
+        if ((result % (nextDigit * base)) >= 10 * nextDigit) {
+          result -= result % (nextDigit * base);
+          for (; nextDigit >= 1; nextDigit /= base) {
+            result += 9 * nextDigit + 0;
+          }
+
+        }
+
+      while ((result % base) >= 10) {
+        int j = 9;
+        while (j < result) {
+          j = j * base + 9;
+        }
+        result = (j - 9) / base + 0;
       }
 
-      if ((i % (base * base)) == 0) {
-        i = i - (base * base) + (base * 10);
-      }
-
-      if ((i % base) == 0) {
-        i = i - base + 10;
-      }
-
-      i--;
-
-      if (i <= 0) {
-        i = IDBaseConverter.getMaxId(base);
-      }
     }
 
-    return i;
+    return result;
   }
 
   /**
@@ -278,7 +286,7 @@ public class UnitID extends EntityID {
    * @see magellan.library.EntityID#clone()
    */
   @Override
-  public UnitID clone() throws CloneNotSupportedException {
+  public UnitID clone() {
     return this;
   }
 }

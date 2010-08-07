@@ -118,6 +118,12 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
           Object msgArgs[] = { Integer.valueOf(status.factions), Integer.valueOf(status.units) };
           String messageS =
               Resources.get("actions.openordersaction.msg.fileordersopen.status.text");
+          if (status.unknownUnits > 0) {
+            messageS +=
+                "\n"
+                    + Resources.get("actions.openordersaction.msg.fileordersopen.status.text3",
+                        Integer.valueOf(status.unknownUnits));
+          }
           if (status.confirmedUnitsNotOverwritten > 0) {
             messageS +=
                 "\n" + status.confirmedUnitsNotOverwritten + " "

@@ -238,6 +238,7 @@ public class OrderReader {
             // currentUnit.setFaction(faction);
             //
             // data.addUnit(currentUnit);
+            status.unknownUnits++;
           } else {
             if (currentUnit.isOrdersConfirmed() && doNotOverwriteConfirmedOrders) {
               // we have a unit with confirmed orders and no OK for
@@ -323,6 +324,9 @@ public class OrderReader {
 
     /** Counts the number of factions for which orders where read. */
     public int factions = 0;
+
+    /** counts units in orders that were not present in the report */
+    public int unknownUnits = 0;
 
     /**
      * if doNotOverwriteConfirmedorders=true then this is a counter of the units which were

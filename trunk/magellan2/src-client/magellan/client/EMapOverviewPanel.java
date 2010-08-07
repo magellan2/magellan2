@@ -223,8 +223,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     nodeWrapperFactory.setSource(this);
 
     // to get the pref-adapter
-//    nodeWrapperFactory
-//        .createUnitNodeWrapper(MagellanFactory.createUnit(UnitID.createUnitID(0, 10)));
+    // nodeWrapperFactory
+    // .createUnitNodeWrapper(MagellanFactory.createUnit(UnitID.createUnitID(0, 10)));
 
     SelectionHistory.addListener(this);
     d.addSelectionListener(this);

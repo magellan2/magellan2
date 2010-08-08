@@ -106,10 +106,7 @@ import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 import magellan.library.utils.logging.Logger;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 269 $
+ * A panel holding one or more {@link OrderEditor}s.
  */
 public class MultiEditorOrderEditorList extends InternationalizedDataPanel implements
     OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
@@ -123,11 +120,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   // currently selected entities
   private Unit currentUnit = null;
-
-  // for remembering transitional selections
-  private Region transitionalRegionss = null;
-  private Island transitionalIslandss = null;
-  private Faction transitionalFactionss = null;
 
   private Color errorBgColor = null;
 
@@ -162,9 +154,13 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   // editor list generation mode
   protected int listMode = 1 << MultiEditorOrderEditorList.LIST_REGION;
+  /** List only editor for current unit */
   public static final int LIST_UNIT = 0;
+  /** List editors for currently selected element's faction (if applicable) */
   public static final int LIST_FACTION = 1;
+  /** List editors for currently selected element's region (if applicable) */
   public static final int LIST_REGION = 2;
+  /** List editors for currently selected element's island (if applicable) */
   public static final int LIST_ISLAND = 3;
 
   private AutoCompletion completion;
@@ -640,15 +636,17 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * 
+   * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
    */
   public void keyReleased(KeyEvent e) {
+    // do not react
   }
 
   /**
-   * 
+   * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
    */
   public void keyTyped(KeyEvent e) {
+    // do not react
   }
 
   /**
@@ -703,12 +701,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
    */
   public void mouseEntered(MouseEvent e) {
+    // do not react
   }
 
   /**
    * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
    */
   public void mouseExited(MouseEvent e) {
+    // do not react
   }
 
   /**
@@ -728,6 +728,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
    */
   public void mouseReleased(MouseEvent e) {
+    // do not react
   }
 
   /**
@@ -800,10 +801,18 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
   }
 
+  /**
+   * @return Background color of orders with errors
+   */
   public Color getErrorBackground() {
     return errorBgColor;
   }
 
+  /**
+   * Set Background color of orders with errors.
+   * 
+   * @param c
+   */
   public void setErrorBackground(Color c) {
     if ((errorBgColor != c) && (c != null)) {
       errorBgColor = c;
@@ -1397,7 +1406,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         }
       }
 
-      if (editorSingelton != null && editorSingelton.getUnit() != null) {
+      if (editorSingelton.getUnit() != null) {
         editorSingelton.getUnit().setOrderEditor(null);
       }
       editorSingelton.setUnit(null);
@@ -1664,8 +1673,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   // scrollpane
   // In very ugly situations it is called twice, but that does not really hurt
   private class SwingGlitchThread implements Runnable {
-    SwingGlitchThread() {
-    }
 
     private int loopCounter = 0;
 
@@ -1928,8 +1935,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         dispatcher.fire(SelectionEvent.create(this, tempUnit));
       } else {
         // do all the tempunit-dialog-stuff
-        // unit id is non-negative on views
-        UnitID newID = UnitID.createUnitID(-id.intValue(), data.base);
 
         if (dialog == null) {
           dialog = new TempUnitDialog((Frame) getTopLevelAncestor(), this, settings);
@@ -1940,6 +1945,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
         while (true) {
           if (first) { // reset if it's the first dialog for this temp unit
+            // unit id is non-negative on views
+            UnitID newID = UnitID.createUnitID(-id.intValue(), data.base);
             dialog.show(newID.toString(), parentUnit.getName());
           } else { // do not reset if we had formerly wrong data
             dialog.show(parentUnit.getName());

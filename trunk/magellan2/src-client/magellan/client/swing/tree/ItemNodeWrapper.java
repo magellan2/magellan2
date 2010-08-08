@@ -63,10 +63,10 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
   /**
    * Creates new ItemNodeWrapper
    */
-  public ItemNodeWrapper(Unit unit, Item modItem, int unmodfiedAmount) {
+  public ItemNodeWrapper(Unit unit, Item modItem, int unmodifiedAmount) {
     this.unit = unit;
     this.modItem = modItem;
-    unmodifiedAmount = unmodifiedAmount;
+    this.unmodifiedAmount = unmodifiedAmount;
   }
 
   /**

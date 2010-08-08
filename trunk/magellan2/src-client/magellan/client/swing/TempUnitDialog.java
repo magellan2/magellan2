@@ -40,8 +40,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import magellan.client.swing.InternationalizedDialog;
-import magellan.client.swing.MagellanFocusTraversalPolicy;
 import magellan.client.utils.NameGenerator;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.JVMUtilities;
@@ -419,7 +417,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
    * @return true if the "more" (detailed) view was active.
    */
   public boolean wasExtendedDialog() {
-    return !more.getText().equals(Resources.get("completion.tempunitdialog.more.less"));
+    return more.getText().equals(Resources.get("completion.tempunitdialog.more.less"));
   }
 
   /**

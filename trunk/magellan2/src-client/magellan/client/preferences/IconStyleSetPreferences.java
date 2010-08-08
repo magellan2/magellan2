@@ -561,7 +561,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
           i = 2;
         }
 
-        buttons[(j * 3) + i].doClick();
+        buttons[(j * 3) + i].doClick(1);
         horiz = set.getHorizontalPos();
         vertic = set.getVerticalPos();
       }

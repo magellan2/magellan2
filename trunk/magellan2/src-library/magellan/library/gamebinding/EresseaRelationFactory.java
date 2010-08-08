@@ -18,7 +18,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -162,7 +161,8 @@ public class EresseaRelationFactory implements RelationFactory {
 
     // process RESERVE orders first
     // Collections.sort(ordersCopy, new EresseaOrderComparator(null));
-    EresseaRelationFactory.createReserveRelations(u, orders, from, parser, modItems, relations);
+    EresseaRelationFactory.createReserveRelations(u, orders, rules, from, parser, modItems,
+        relations);
 
     // process all other orders
     int line = 0;
@@ -755,19 +755,17 @@ public class EresseaRelationFactory implements RelationFactory {
    * 
    * @param u The unit
    * @param ordersCopy A copy of the unit's orders. TODO: remove this parameter
+   * @param rules
    * @param from Ignored!
    * @param parser An order parser which has been initialized with the game data
    * @param modItems The Map of the unit's modified items
    * @param rels The newly created {@link ReserveRelation}s are inserted into this list
    */
-  private static void createReserveRelations(Unit u, List<String> ordersCopy, int from,
-      OrderParser parser, Map<ID, Item> modItems, List<UnitRelation> rels) {
+  private static void createReserveRelations(Unit u, List<String> ordersCopy, Rules rules,
+      int from, OrderParser parser, Map<ID, Item> modItems, List<UnitRelation> rels) {
     from = 0;
     // parameter from is ignored because it violates execution order
 
-    // TODO this map is not really used
-    Map<ItemType, Item> reservedItems = new HashMap<ItemType, Item>();
-    GameData data = u.getRegion().getData();
     int line = 0;
 
     for (String order : ordersCopy) {
@@ -825,13 +823,12 @@ public class EresseaRelationFactory implements RelationFactory {
 
               if (itemName.length() > 0) {
                 // TODO(pavkovic): korrigieren!!! Hier soll eigentlich das Item
-                // über den
-                // übersetzten Namen gefunden werden!!!
-                ItemType iType = data.rules.getItemType(itemName);
+                // über den übersetzten Namen gefunden werden!!!
+                ItemType iType = rules.getItemType(itemName);
 
                 if (iType != null) {
                   // get the item from the list of modified items
-                  Item i = modItems.get(iType);
+                  Item i = modItems.get(iType.getID());
 
                   if (i == null) {
                     // item unknown
@@ -852,22 +849,11 @@ public class EresseaRelationFactory implements RelationFactory {
                     amount *= hasEach ? u.getModifiedPersons() : 1;
                     // }
                     amount = Math.min(i.getAmount(), amount);
+                    i.setAmount(Math.max(0, i.getAmount() - amount));
                   }
 
                   // create the new reserve relation
                   rel = new ReserveRelation(u, amount, iType, line, warning);
-
-                  // update the modified item amount and record reserved amount
-                  if (i != null) {
-                    i.setAmount(Math.max(0, i.getAmount() - rel.amount));
-                    Item rItem = reservedItems.get(iType.getID());
-                    if (rItem == null) {
-                      rItem = new Item(i.getItemType(), rel.amount);
-                      reservedItems.put(i.getItemType(), rItem);
-                    } else {
-                      rItem.setAmount(rItem.getAmount() + rel.amount);
-                    }
-                  }
                 }
               }
             }

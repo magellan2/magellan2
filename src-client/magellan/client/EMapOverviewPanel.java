@@ -62,6 +62,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.Initializable;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.OrderConfirmEvent;
@@ -204,7 +205,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private static final Comparator<Unique> idCmp = IDComparator.DEFAULT;
   private static final Comparator<Named> nameCmp = new NameComparator(EMapOverviewPanel.idCmp);
 
-  public static final String IDENTIFIER = "OVERVIEW";
+  /** @deprecated Use {@link MagellanDesktop#OVERVIEW_IDENTIFIER} instead */
+  public static final String IDENTIFIER = MagellanDesktop.OVERVIEW_IDENTIFIER;
 
   /**
    * Creates a new EMapOverviewPanel object.
@@ -1528,7 +1530,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     case 0:
     case 1:
-      DesktopEnvironment.requestFocus(EMapOverviewPanel.IDENTIFIER);
+      DesktopEnvironment.requestFocus(MagellanDesktop.OVERVIEW_IDENTIFIER);
       tree.requestFocus(); // activate the tree, not the scrollpane
 
       break;

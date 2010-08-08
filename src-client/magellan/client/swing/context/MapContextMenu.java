@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import magellan.client.Client;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.extern.MagellanPlugIn;
@@ -309,7 +310,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
         if (actLevel.intValue() != source.getLevel()) {
           levelSign.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              MapperPanel mp = (MapperPanel) client.getDesktop().getManagedComponents().get("MAP");
+              MapperPanel mp =
+                  (MapperPanel) client.getDesktop().getManagedComponents().get(
+                      MagellanDesktop.MAP_IDENTIFIER);
               mp.setLevel(Integer.parseInt(e.getActionCommand()));
             }
           });
@@ -335,7 +338,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
         levelSign.setActionCommand(h.getID().toString());
         levelSign.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            MapperPanel mp = (MapperPanel) client.getDesktop().getManagedComponents().get("MAP");
+            MapperPanel mp =
+                (MapperPanel) client.getDesktop().getManagedComponents().get(
+                    MagellanDesktop.MAP_IDENTIFIER);
             IntegerID id = IntegerID.create(e.getActionCommand());
             HotSpot h = data.getHotSpot(id);
             if (h != null) {

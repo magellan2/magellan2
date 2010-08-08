@@ -25,8 +25,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import magellan.client.Client;
-import magellan.client.EMapOverviewPanel;
 import magellan.client.actions.MenuAction;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.OpenOrdersAccessory;
 import magellan.client.swing.ProgressBarUI;
@@ -77,7 +77,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
     }
 
     // repaint since command confirmation status may have changed
-    client.getDesktop().repaint(EMapOverviewPanel.IDENTIFIER);
+    client.getDesktop().repaint(MagellanDesktop.OVERVIEW_IDENTIFIER);
   }
 
   protected void loadAsynchronously(final OpenOrdersAccessory acc, final JFileChooser fc) {

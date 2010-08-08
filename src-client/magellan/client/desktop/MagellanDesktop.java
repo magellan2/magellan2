@@ -53,6 +53,7 @@ import magellan.client.swing.desktop.WorkSpace;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.utils.ErrorWindow;
+import magellan.library.event.GameDataEvent;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.logging.Logger;
 import net.infonode.docking.DockingWindow;
@@ -82,6 +83,39 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
   /** The name of the docking layout file */
   public static final String DOCKING_LAYOUT_FILE = "dock-default.xml";
+
+  /** Name of MAP component */
+  public static final String MAP_IDENTIFIER = "MAP";
+  /** Name of MINIMAP component */
+  public static final String MINIMAP_IDENTIFIER = "MINIMAP";
+  /** Name of ECheck component */
+  public static final String ECHECK_IDENTIFIER = "ECHECK";
+  /** Name of the MESSAGES component */
+  public static final String MESSAGES_IDENTIFIER = "MESSAGES";
+  /** Name of the NAME&DESCRIPTION component */
+  public static final String NAMEDESCRIPTION_IDENTIFIER = "NAME&DESCRIPTION";
+  /** Name of the NAME component */
+  public static final String NAME_IDENTIFIER = "NAME";
+  /** Name of the DESCRIPTION component */
+  public static final String DESCRIPTION_IDENTIFIER = "DESCRIPTION";
+  /** Name of the DETAILS component */
+  public static final String DETAILS_IDENTIFIER = "DETAILS";
+  /** Name of the ORDERS component */
+  public static final String ORDERS_IDENTIFIER = "ORDERS";
+  /** Name of the COMMANDS component */
+  public static final String COMMANDS_IDENTIFIER = "COMMANDS";
+  /** Name of the OVERVIEW component */
+  public static final String OVERVIEW_IDENTIFIER = "OVERVIEW";
+  /** Name of the HISTORY component */
+  public static final String HISTORY_IDENTIFIER = "HISTORY";
+  /** Name of the OVERVIEW&HISTORY component */
+  public static final String OVERVIEWHISTORY_IDENTIFIER = "OVERVIEW&HISTORY";
+  /** Name of the TASKS component */
+  public static final String TASKS_IDENTIFIER = "TASKS";
+  /** Name of the BOOKMARKS component */
+  public static final String BOOKMARKS_IDENTIFIER = "BOOKMARKS";
+  /** Name of the DEBUG component */
+  public static final String DEBUG_IDENTIFIER = "DEBUG";
 
   /**
    * Holds all the components. The key is the global id like NAME or OVERVIEW, the value is the
@@ -648,7 +682,27 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
   }
 
+  /**
+   * Refreshes region tree and paints all desktop components.
+   */
   public void repaintAllComponents() {
+    try {
+    	// hmm.... what's the best way to do this?
+      context.getEventDispatcher().fire(new GameDataEvent(this, context.getGameData()), true);
+      // EMapDetailsPanel details = (EMapDetailsPanel) components.get(DETAILS_IDENTIFIER);
+      // if (details != null) {
+      // details.setGameData(client.getData());
+      // }
+      // client.setData(client.getData());
+      // EMapOverviewPanel overview = (EMapOverviewPanel)
+      // components.get(OVERVIEWHISTORY_IDENTIFIER);
+      // if (overview != null) {
+      // overview.rebuildTree();
+      // }
+
+    } catch (ClassCastException e) {
+      log.error("internal error: component not found", e);
+    }
     MagellanDesktop.log.debug("repaint all");
     for (Component c : components.values()) {
       c.repaint();

@@ -66,6 +66,7 @@ import magellan.client.MagellanContext;
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.ExtendedShortcutListener;
 import magellan.client.desktop.Initializable;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
@@ -1076,7 +1077,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     case 0:
     case 1:
       // request FOcus CTRL + 2 or ALT + 2
-      magellan.client.desktop.DesktopEnvironment.requestFocus("MAP");
+      magellan.client.desktop.DesktopEnvironment.requestFocus(MagellanDesktop.MAP_IDENTIFIER);
       mapper.requestFocus(); // activate the mapper, not the scrollpane
 
       break;
@@ -1230,7 +1231,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
             mapper.setRenderer(mapper.getATR());
             mapper.getATR().loadSet(sets.get(number));
             Mapper.setRenderContextChanged(true);
-            DesktopEnvironment.repaintComponent("MAP");
+            DesktopEnvironment.repaintComponent(MagellanDesktop.MAP_IDENTIFIER);
           }
         }
       });

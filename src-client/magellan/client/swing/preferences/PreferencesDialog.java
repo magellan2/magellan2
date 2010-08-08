@@ -42,6 +42,7 @@ import javax.swing.tree.TreeSelectionModel;
 import magellan.client.swing.CenterLayout;
 import magellan.client.swing.InternationalizedDialog;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A dialog allowing the user to set preferences or similar data.

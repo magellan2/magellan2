@@ -26,6 +26,7 @@ package magellan.client.desktop;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -58,6 +60,7 @@ import net.infonode.util.Direction;
 import org.apache.tools.ant.filters.StringInputStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * This class holds alle informations about a Docking Layout.
@@ -544,100 +547,121 @@ public class DockingLayout {
 
   /**
    * Creates the default layout.
+   * 
+   * @throws LayoutException on internal error
    */
-  public static Element createDefaultLayout(String name, boolean isActive) {
-    try {
-      StringBuffer buffer = new StringBuffer();
-      buffer.append("<rootwindow name='" + name + "' isActive='" + isActive + "'>\r\n");
-      buffer.append(" <splitwindow divider='0.3' horizontal='true'>\r\n");
-      buffer.append("  <split>\r\n");
-      buffer.append("   <splitwindow divider='0.6' horizontal='false'>\r\n");
-      buffer.append("    <split>\r\n");
-      buffer.append("     <tabwindow>\r\n");
-      buffer.append("      <tab isActive='true'>\r\n");
-      buffer.append("       <view title='OVERVIEW'/>\r\n");
-      buffer.append("      </tab>\r\n");
-      buffer.append("     </tabwindow>\r\n");
-      buffer.append("    </split>\r\n");
-      buffer.append("    <split>\r\n");
-      buffer.append("     <tabwindow>\r\n");
-      buffer.append("      <tab isActive='true'>\r\n");
-      buffer.append("       <view title='MINIMAP'/>\r\n");
-      buffer.append("      </tab>\r\n");
-      buffer.append("      <tab isActive='false'>\r\n");
-      buffer.append("       <view title='HISTORY'/>\r\n");
-      buffer.append("      </tab>\r\n");
-      buffer.append("     </tabwindow>\r\n");
-      buffer.append("    </split>\r\n");
-      buffer.append("   </splitwindow>\r\n");
-      buffer.append("  </split>\r\n");
-      buffer.append("  <split>\r\n");
-      buffer.append("   <splitwindow divider='0.5' horizontal='true'>\r\n");
-      buffer.append("    <split>\r\n");
-      buffer.append("     <splitwindow divider='0.6' horizontal='false'>\r\n");
-      buffer.append("      <split>\r\n");
-      buffer.append("       <tabwindow>\r\n");
-      buffer.append("        <tab isActive='true'>\r\n");
-      buffer.append("         <view title='MAP'/>\r\n");
-      buffer.append("        </tab>\r\n");
-      buffer.append("       </tabwindow>\r\n");
-      buffer.append("      </split>\r\n");
-      buffer.append("      <split>\r\n");
-      buffer.append("       <tabwindow>\r\n");
-      buffer.append("        <tab isActive='true'>\r\n");
-      buffer.append("         <view title='MESSAGES'/>\r\n");
-      buffer.append("        </tab>\r\n");
-      buffer.append("        <tab isActive='false'>\r\n");
-      buffer.append("         <view title='ECHECK'/>\r\n");
-      buffer.append("        </tab>\r\n");
-      buffer.append("        <tab isActive='false'>\r\n");
-      buffer.append("         <view title='TASKS'/>\r\n");
-      buffer.append("        </tab>\r\n");
-      buffer.append("       </tabwindow>\r\n");
-      buffer.append("      </split>\r\n");
-      buffer.append("     </splitwindow>\r\n");
-      buffer.append("    </split>\r\n");
-      buffer.append("    <split>\r\n");
-      buffer.append("     <splitwindow divider='0.5' horizontal='false'>\r\n");
-      buffer.append("      <split>\r\n");
-      buffer.append("       <splitwindow divider='0.5' horizontal='false'>\r\n");
-      buffer.append("        <split>\r\n");
-      buffer.append("         <tabwindow>\r\n");
-      buffer.append("          <tab isActive='true'>\r\n");
-      buffer.append("           <view title='NAME&amp;DESCRIPTION'/>\r\n");
-      buffer.append("          </tab>\r\n");
-      buffer.append("         </tabwindow>\r\n");
-      buffer.append("        </split>\r\n");
-      buffer.append("        <split>\r\n");
-      buffer.append("         <tabwindow>\r\n");
-      buffer.append("          <tab isActive='true'>\r\n");
-      buffer.append("           <view title='DETAILS'/>\r\n");
-      buffer.append("          </tab>\r\n");
-      buffer.append("         </tabwindow>\r\n");
-      buffer.append("        </split>\r\n");
-      buffer.append("       </splitwindow>\r\n");
-      buffer.append("      </split>\r\n");
-      buffer.append("      <split>\r\n");
-      buffer.append("       <tabwindow>\r\n");
-      buffer.append("        <tab isActive='true'>\r\n");
-      buffer.append("         <view title='ORDERS'/>\r\n");
-      buffer.append("        </tab>\r\n");
-      buffer.append("       </tabwindow>\r\n");
-      buffer.append("      </split>\r\n");
-      buffer.append("     </splitwindow>\r\n");
-      buffer.append("    </split>\r\n");
-      buffer.append("   </splitwindow>\r\n");
-      buffer.append("  </split>\r\n");
-      buffer.append(" </splitwindow>\r\n");
-      buffer.append("</rootwindow>\r\n");
+  public static Element createDefaultLayout(String name, boolean isActive) throws LayoutException {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("<rootwindow name='" + name + "' isActive='" + isActive + "'>\r\n");
+    buffer.append(" <splitwindow divider='0.3' horizontal='true'>\r\n");
+    buffer.append("  <split>\r\n");
+    buffer.append("   <splitwindow divider='0.6' horizontal='false'>\r\n");
+    buffer.append("    <split>\r\n");
+    buffer.append("     <tabwindow>\r\n");
+    buffer.append("      <tab isActive='true'>\r\n");
+    buffer.append("       ").append("<view title='").append(
+        toHTML(MagellanDesktop.OVERVIEW_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("      </tab>\r\n");
+    buffer.append("     </tabwindow>\r\n");
+    buffer.append("    </split>\r\n");
+    buffer.append("    <split>\r\n");
+    buffer.append("     <tabwindow>\r\n");
+    buffer.append("      <tab isActive='true'>\r\n");
+    buffer.append("       ").append("<view title='").append(
+        toHTML(MagellanDesktop.MINIMAP_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("      </tab>\r\n");
+    buffer.append("      <tab isActive='false'>\r\n");
+    buffer.append("       ").append("<view title='").append(
+        toHTML(MagellanDesktop.HISTORY_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("      </tab>\r\n");
+    buffer.append("     </tabwindow>\r\n");
+    buffer.append("    </split>\r\n");
+    buffer.append("   </splitwindow>\r\n");
+    buffer.append("  </split>\r\n");
+    buffer.append("  <split>\r\n");
+    buffer.append("   <splitwindow divider='0.5' horizontal='true'>\r\n");
+    buffer.append("    <split>\r\n");
+    buffer.append("     <splitwindow divider='0.6' horizontal='false'>\r\n");
+    buffer.append("      <split>\r\n");
+    buffer.append("       <tabwindow>\r\n");
+    buffer.append("        <tab isActive='true'>\r\n");
+    buffer.append("         ").append("<view title='").append(
+        toHTML(MagellanDesktop.MAP_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("        </tab>\r\n");
+    buffer.append("       </tabwindow>\r\n");
+    buffer.append("      </split>\r\n");
+    buffer.append("      <split>\r\n");
+    buffer.append("       <tabwindow>\r\n");
+    buffer.append("        <tab isActive='true'>\r\n");
+    buffer.append("         ").append("<view title='").append(
+        toHTML(MagellanDesktop.MESSAGES_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("        </tab>\r\n");
+    buffer.append("        <tab isActive='false'>\r\n");
+    buffer.append("         ").append("<view title='").append(
+        toHTML(MagellanDesktop.ECHECK_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("        </tab>\r\n");
+    buffer.append("        <tab isActive='false'>\r\n");
+    buffer.append("         ").append("<view title='").append(
+        toHTML(MagellanDesktop.TASKS_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("        </tab>\r\n");
+    buffer.append("       </tabwindow>\r\n");
+    buffer.append("      </split>\r\n");
+    buffer.append("     </splitwindow>\r\n");
+    buffer.append("    </split>\r\n");
+    buffer.append("    <split>\r\n");
+    buffer.append("     <splitwindow divider='0.5' horizontal='false'>\r\n");
+    buffer.append("      <split>\r\n");
+    buffer.append("       <splitwindow divider='0.5' horizontal='false'>\r\n");
+    buffer.append("        <split>\r\n");
+    buffer.append("         <tabwindow>\r\n");
+    buffer.append("          <tab isActive='true'>\r\n");
+    buffer.append("           ").append("<view title='").append(
+        toHTML(MagellanDesktop.NAMEDESCRIPTION_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("          </tab>\r\n");
+    buffer.append("         </tabwindow>\r\n");
+    buffer.append("        </split>\r\n");
+    buffer.append("        <split>\r\n");
+    buffer.append("         <tabwindow>\r\n");
+    buffer.append("          <tab isActive='true'>\r\n");
+    buffer.append("           ").append("<view title='").append(
+        toHTML(MagellanDesktop.DETAILS_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("          </tab>\r\n");
+    buffer.append("         </tabwindow>\r\n");
+    buffer.append("        </split>\r\n");
+    buffer.append("       </splitwindow>\r\n");
+    buffer.append("      </split>\r\n");
+    buffer.append("      <split>\r\n");
+    buffer.append("       <tabwindow>\r\n");
+    buffer.append("        <tab isActive='true'>\r\n");
+    buffer.append("         ").append("<view title='").append(
+        toHTML(MagellanDesktop.ORDERS_IDENTIFIER)).append("'/>\r\n");
+    buffer.append("        </tab>\r\n");
+    buffer.append("       </tabwindow>\r\n");
+    buffer.append("      </split>\r\n");
+    buffer.append("     </splitwindow>\r\n");
+    buffer.append("    </split>\r\n");
+    buffer.append("   </splitwindow>\r\n");
+    buffer.append("  </split>\r\n");
+    buffer.append(" </splitwindow>\r\n");
+    buffer.append("</rootwindow>\r\n");
 
-      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    DocumentBuilder builder;
+    try {
+      builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       Document document = builder.parse(new StringInputStream(buffer.toString()));
       return document.getDocumentElement();
-    } catch (Exception exception) {
-      DockingLayout.log.error("Error during default layout creating", exception);
-      return null;
+    } catch (ParserConfigurationException e) {
+      throw new LayoutException("could not create default layout", e);
+    } catch (SAXException e) {
+      throw new LayoutException("could not create default layout", e);
+    } catch (IOException e) {
+      throw new LayoutException("could not create default layout", e);
     }
+  }
+
+  private static String toHTML(String str) {
+    return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll(
+        "\"", "&quot;").replaceAll("'", "&apos;");
   }
 
   /**
@@ -746,6 +770,41 @@ public class DockingLayout {
    */
   public void setRootWindow(RootWindow window) {
     this.window = window;
+  }
+
+  /**
+   * An exception during docking layout handling.
+   */
+  public static class LayoutException extends Exception {
+
+    /**
+     * @see Exception#Exception()
+     */
+    public LayoutException() {
+      super();
+    }
+
+    /**
+     * @see Exception#Exception(String)
+     */
+    public LayoutException(String message) {
+      super(message);
+    }
+
+    /**
+     * @see Exception#Exception(Throwable)
+     */
+    public LayoutException(Throwable cause) {
+      super(cause);
+    }
+
+    /**
+     * @see Exception#Exception(String, Throwable)
+     */
+    public LayoutException(String message, Throwable cause) {
+      super(message, cause);
+    }
+
   }
 
 }

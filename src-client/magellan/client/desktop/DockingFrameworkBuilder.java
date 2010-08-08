@@ -37,6 +37,7 @@ import magellan.client.actions.desktop.LayoutExportAction;
 import magellan.client.actions.desktop.LayoutImportAction;
 import magellan.client.actions.desktop.LayoutNewAction;
 import magellan.client.actions.desktop.LayoutSaveAction;
+import magellan.client.desktop.DockingLayout.LayoutException;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.PropertiesHelper;
@@ -112,16 +113,16 @@ public class DockingFrameworkBuilder {
     viewMap = new StringViewMap();
 
     for (String key : components.keySet()) {
-      if (key.equals("COMMANDS")) {
+      if (key.equals(MagellanDesktop.COMMANDS_IDENTIFIER)) {
         continue; // deprecated
       }
-      if (key.equals("NAME")) {
+      if (key.equals(MagellanDesktop.NAME_IDENTIFIER)) {
         continue; // deprecated
       }
-      if (key.equals("DESCRIPTION")) {
+      if (key.equals(MagellanDesktop.DESCRIPTION_IDENTIFIER)) {
         continue; // deprecated
       }
-      if (key.equals("OVERVIEW&HISTORY")) {
+      if (key.equals(MagellanDesktop.OVERVIEWHISTORY_IDENTIFIER)) {
         continue; // deprecated
       }
 
@@ -280,10 +281,13 @@ public class DockingFrameworkBuilder {
    */
   protected synchronized RootWindow createDefault(StringViewMap viewMap, Map<String, View> views) {
     RootWindow window = DockingUtil.createRootWindow(viewMap, true);
-    Element root = DockingLayout.createDefaultLayout("Standard", true);
-    if (root == null) {
-      ErrorWindow errorWindow = new ErrorWindow("Could not create default docking layout.");
+    Element root;
+    try {
+      root = DockingLayout.createDefaultLayout("Standard", true);
+    } catch (LayoutException e) {
+      ErrorWindow errorWindow = new ErrorWindow("Could not create default docking layout.", e);
       errorWindow.open();
+      throw new RuntimeException(e);
     }
     DockingLayout defaultLayout = new DockingLayout("Standard", root, viewMap, views);
     defaultLayout.setActive(true);
@@ -339,16 +343,16 @@ public class DockingFrameworkBuilder {
 
     if (components.size() > 0) {
       for (String key : components.keySet()) {
-        if (key.equals("COMMANDS")) {
+        if (key.equals(MagellanDesktop.COMMANDS_IDENTIFIER)) {
           continue; // deprecated
         }
-        if (key.equals("NAME")) {
+        if (key.equals(MagellanDesktop.NAME_IDENTIFIER)) {
           continue; // deprecated
         }
-        if (key.equals("DESCRIPTION")) {
+        if (key.equals(MagellanDesktop.DESCRIPTION_IDENTIFIER)) {
           continue; // deprecated
         }
-        if (key.equals("OVERVIEW&HISTORY")) {
+        if (key.equals(MagellanDesktop.OVERVIEWHISTORY_IDENTIFIER)) {
           continue; // deprecated
         }
 
@@ -422,7 +426,14 @@ public class DockingFrameworkBuilder {
    * This method creates a new layout with the given name and the default settings.
    */
   public void createNewLayout(String name) {
-    Element root = DockingLayout.createDefaultLayout(name, false);
+    Element root;
+    try {
+      root = DockingLayout.createDefaultLayout(name, false);
+    } catch (LayoutException e) {
+      ErrorWindow errorWindow = new ErrorWindow("Could not create default docking layout.", e);
+      errorWindow.open();
+      throw new RuntimeException(e);
+    }
 
     DockingLayout layout = new DockingLayout(name, root, viewMap, views);
     DockingFrameworkBuilder.layouts.add(layout);

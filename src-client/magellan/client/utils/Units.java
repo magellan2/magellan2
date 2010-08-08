@@ -186,7 +186,7 @@ public class Units {
             magellan.library.utils.Umlaut
                 .convertUmlauts(currentCategoryMap.getCategory().getName());
         final String nodeName = Resources.get("util.units." + catIconName);
-        final ItemCategoryNodeWrapper wrapper =
+        final ItemCategoryNodeWrapper wrapper = // TODO use factory
             new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
         wrapper.setIcons(catIconName);
         categoryNode = new DefaultMutableTreeNode(wrapper);

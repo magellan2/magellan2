@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import magellan.client.desktop.MagellanDesktop;
 import magellan.library.utils.logging.AbstractLogListener;
 import magellan.library.utils.logging.LogListener;
 import magellan.library.utils.logging.Logger;
@@ -47,10 +48,9 @@ import magellan.library.utils.logging.Logger;
 public class DebugDock extends JPanel implements LogListener {
   private static final Logger log = Logger.getInstance(DebugDock.class);
 
-  /**
-   * Identifier (for Client)
-   */
-  public static String IDENTIFIER = "DEBUG";
+  /** @deprecated use {@link MagellanDesktop#DEBUG_IDENTIFIER} instead. */
+  @Deprecated
+  public static String IDENTIFIER = MagellanDesktop.DEBUG_IDENTIFIER;
 
   private static DebugDock INSTANCE = null;
   private static final int BUFFER_LENGTH = 50 * 1024;

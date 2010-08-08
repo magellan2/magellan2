@@ -74,6 +74,7 @@ import javax.swing.undo.UndoManager;
 
 import magellan.client.completion.AutoCompletion;
 import magellan.client.desktop.DesktopEnvironment;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
@@ -283,12 +284,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     nodeWrapperFactory.setSource(this);
 
     // to get the pref-adapter
-//    Unit temp = MagellanFactory.createUnit(UnitID.createUnitID(0, 10));
-//    nodeWrapperFactory.createUnitNodeWrapper(temp);
-//    nodeWrapperFactory.createSkillNodeWrapper(temp, new Skill(
-//        new SkillType(StringID.create("Test")), 0, 0, 0, false), null);
-//    nodeWrapperFactory.createItemNodeWrapper(new Item(new ItemType(StringID.create("Test")), 0));
-//    nodeWrapperFactory.createSimpleNodeWrapper(null, (Collection<String>) null);
+    // Unit temp = MagellanFactory.createUnit(UnitID.createUnitID(0, 10));
+    // nodeWrapperFactory.createUnitNodeWrapper(temp);
+    // nodeWrapperFactory.createSkillNodeWrapper(temp, new Skill(
+    // new SkillType(StringID.create("Test")), 0, 0, 0, false), null);
+    // nodeWrapperFactory.createItemNodeWrapper(new Item(new ItemType(StringID.create("Test")), 0));
+    // nodeWrapperFactory.createSimpleNodeWrapper(null, (Collection<String>) null);
 
     EMapDetailsPanel.weightNumberFormat.setMaximumFractionDigits(2);
     EMapDetailsPanel.weightNumberFormat.setMinimumFractionDigits(0);
@@ -4716,8 +4717,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     case 0:
     case 1:
-      DesktopEnvironment.requestFocus("COMMANDS");
-      DesktopEnvironment.requestFocus("ORDERS");
+      DesktopEnvironment.requestFocus(MagellanDesktop.COMMANDS_IDENTIFIER);
+      DesktopEnvironment.requestFocus(MagellanDesktop.ORDERS_IDENTIFIER);
 
       break;
 

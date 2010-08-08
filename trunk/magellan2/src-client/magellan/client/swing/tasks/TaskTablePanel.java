@@ -87,7 +87,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     SelectionListener, PreferencesFactory {
   private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
-  public static final String IDENTIFIER = "TASKS";
+  /** @deprecated Use {@link MagellanDesktop#TASKS_IDENTIFIER} instead */
+  public static final String IDENTIFIER = MagellanDesktop.TASKS_IDENTIFIER;
 
   private JTable table;
   private TableSorter sorter;
@@ -1422,7 +1423,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         break; // unknown shortcut
 
       case 0:
-        DesktopEnvironment.requestFocus(TaskTablePanel.IDENTIFIER);
+        DesktopEnvironment.requestFocus(MagellanDesktop.TASKS_IDENTIFIER);
         break;
       }
     }
@@ -1483,7 +1484,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       for (int index = 0; index < desktopMenu.getItemCount(); index++) {
         if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
           JCheckBoxMenuItem menu = (JCheckBoxMenuItem) desktopMenu.getItem(index);
-          if (menu.getActionCommand().equals("menu." + TaskTablePanel.IDENTIFIER)) {
+          if (menu.getActionCommand().equals("menu." + MagellanDesktop.TASKS_IDENTIFIER)) {
             menuSelected = menu.isSelected();
           }
         }

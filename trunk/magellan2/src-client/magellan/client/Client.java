@@ -672,8 +672,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     mapPanel = new MapperPanel(getMagellanContext(), cR, geo);
     mapPanel.setMinimumSize(new Dimension(100, 10));
     panels.add(mapPanel);
-    components.put("MAP", mapPanel);
-    components.put("MINIMAP", mapPanel.getMinimapComponent());
+    components.put(MagellanDesktop.MAP_IDENTIFIER, mapPanel);
+    components.put(MagellanDesktop.MINIMAP_IDENTIFIER, mapPanel.getMinimapComponent());
     topLevel.add(mapPanel);
 
     // configure and add message panel
@@ -681,7 +681,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     messagePanel.setMinimumSize(new Dimension(100, 10));
     panels.add(messagePanel);
     nodeWrapperFactories.add(messagePanel.getNodeWrapperFactory());
-    components.put("MESSAGES", messagePanel);
+    components.put(MagellanDesktop.MESSAGES_IDENTIFIER, messagePanel);
     topLevel.add(messagePanel);
 
     // configure and add details panel
@@ -691,35 +691,35 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     nodeWrapperFactories.add(detailsPanel.getNodeWrapperFactory());
 
     Container c = detailsPanel.getNameAndDescriptionPanel();
-    components.put("NAME&DESCRIPTION", c);
-    components.put("NAME", c.getComponent(0));
-    components.put("DESCRIPTION", c.getComponent(1));
-    components.put("DETAILS", detailsPanel.getDetailsPanel());
-    components.put("ORDERS", detailsPanel.getOrderEditor());
+    components.put(MagellanDesktop.NAMEDESCRIPTION_IDENTIFIER, c);
+    components.put(MagellanDesktop.NAME_IDENTIFIER, c.getComponent(0));
+    components.put(MagellanDesktop.DESCRIPTION_IDENTIFIER, c.getComponent(1));
+    components.put(MagellanDesktop.DETAILS_IDENTIFIER, detailsPanel.getDetailsPanel());
+    components.put(MagellanDesktop.ORDERS_IDENTIFIER, detailsPanel.getOrderEditor());
 
     // this keyword is deprecated
-    components.put("COMMANDS", detailsPanel.getOrderEditor());
+    components.put(MagellanDesktop.COMMANDS_IDENTIFIER, detailsPanel.getOrderEditor());
     topLevel.add(detailsPanel);
 
     // configure and add overview panel
     overviewPanel = new EMapOverviewPanel(getDispatcher(), getProperties());
     overviewPanel.setMinimumSize(new Dimension(100, 10));
     panels.add(overviewPanel);
-    components.put(EMapOverviewPanel.IDENTIFIER, overviewPanel.getOverviewComponent());
-    components.put("HISTORY", overviewPanel.getHistoryComponent());
-    components.put("OVERVIEW&HISTORY", overviewPanel);
+    components.put(MagellanDesktop.OVERVIEW_IDENTIFIER, overviewPanel.getOverviewComponent());
+    components.put(MagellanDesktop.HISTORY_IDENTIFIER, overviewPanel.getHistoryComponent());
+    components.put(MagellanDesktop.OVERVIEWHISTORY_IDENTIFIER, overviewPanel);
     nodeWrapperFactories.add(overviewPanel.getNodeWrapperFactory());
     topLevel.add(overviewPanel);
 
     echeckPanel =
         new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions().values());
-    components.put(ECheckPanel.IDENTIFIER, echeckPanel);
+    components.put(MagellanDesktop.ECHECK_IDENTIFIER, echeckPanel);
 
     taskPanel = new TaskTablePanel(getDispatcher(), getData(), getProperties());
-    components.put(TaskTablePanel.IDENTIFIER, taskPanel);
+    components.put(MagellanDesktop.TASKS_IDENTIFIER, taskPanel);
 
-    components.put(DebugDock.IDENTIFIER, DebugDock.getInstance());
-    components.put(BookmarkDock.IDENTIFIER, BookmarkDock.getInstance());
+    components.put(MagellanDesktop.DEBUG_IDENTIFIER, DebugDock.getInstance());
+    components.put(MagellanDesktop.BOOKMARKS_IDENTIFIER, BookmarkDock.getInstance());
 
     // armyStatsPanel = new ArmyStatsPanel(getDispatcher(), getData(), getProperties(), true);
     // components.put(ArmyStatsPanel.IDENTIFIER, armyStatsPanel);

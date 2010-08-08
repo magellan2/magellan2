@@ -62,6 +62,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import magellan.client.desktop.DesktopEnvironment;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
@@ -88,7 +89,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     ShortcutListener {
   private static final Logger log = Logger.getInstance(ECheckPanel.class);
 
-  public static final String IDENTIFIER = "ECHECK";
+  /** @deprecated Use {@link MagellanDesktop#ECHECK_IDENTIFIER} instead */
+  public static final String IDENTIFIER = MagellanDesktop.ECHECK_IDENTIFIER;
 
   // private JTextField txtECheckEXE = null;
   private JList lstMessages = null;
@@ -936,7 +938,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       break; // unknown shortcut
 
     case 0:
-      DesktopEnvironment.requestFocus(ECheckPanel.IDENTIFIER);
+      DesktopEnvironment.requestFocus(MagellanDesktop.ECHECK_IDENTIFIER);
       break;
     }
   }

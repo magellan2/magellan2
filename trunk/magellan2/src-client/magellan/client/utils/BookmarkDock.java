@@ -37,6 +37,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import magellan.client.desktop.MagellanDesktop;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
@@ -49,7 +50,8 @@ import magellan.client.event.SelectionListener;
  * @version 1.0, 19.07.2008
  */
 public class BookmarkDock extends JPanel implements SelectionListener {
-  public static final String IDENTIFIER = "BOOKMARKS";
+  /** @deprecated Use {@link MagellanDesktop#BOOKMARKS_IDENTIFIER} instead */
+  public static final String IDENTIFIER = MagellanDesktop.BOOKMARKS_IDENTIFIER;
   private static BookmarkDock _INSTANCE = null;
   private JList list;
   private BookmarkManager manager = null;

@@ -130,16 +130,16 @@ public class JDDockingFrameworkBuilder {
     viewMap = new HashMap<String, Dockable>();
 
     for (String key : components.keySet()) {
-      if (key.equals("COMMANDS")) {
+      if (key.equals(MagellanDesktop.COMMANDS_IDENTIFIER)) {
         continue; // deprecated
       }
-      if (key.equals("NAME")) {
+      if (key.equals(MagellanDesktop.NAME_IDENTIFIER)) {
         continue; // deprecated
       }
-      if (key.equals("DESCRIPTION")) {
+      if (key.equals(MagellanDesktop.DESCRIPTION_IDENTIFIER)) {
         continue; // deprecated
       }
-      if (key.equals("OVERVIEW&HISTORY")) {
+      if (key.equals(MagellanDesktop.OVERVIEWHISTORY_IDENTIFIER)) {
         continue; // deprecated
       }
 
@@ -445,16 +445,16 @@ public class JDDockingFrameworkBuilder {
 
     if (components.size() > 0) {
       for (String key : components.keySet()) {
-        if (key.equals("COMMANDS")) {
+        if (key.equals(MagellanDesktop.COMMANDS_IDENTIFIER)) {
           continue; // deprecated
         }
-        if (key.equals("NAME")) {
+        if (key.equals(MagellanDesktop.NAME_IDENTIFIER)) {
           continue; // deprecated
         }
-        if (key.equals("DESCRIPTION")) {
+        if (key.equals(MagellanDesktop.DESCRIPTION_IDENTIFIER)) {
           continue; // deprecated
         }
-        if (key.equals("OVERVIEW&HISTORY")) {
+        if (key.equals(MagellanDesktop.OVERVIEWHISTORY_IDENTIFIER)) {
           continue; // deprecated
         }
 

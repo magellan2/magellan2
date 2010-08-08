@@ -68,6 +68,7 @@ import javax.swing.event.ListSelectionListener;
 import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.client.desktop.DesktopEnvironment;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
@@ -334,7 +335,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       breakLines = b;
       settings.setProperty("ATR.breakLines", b ? "true" : "false");
       Mapper.setRenderContextChanged(true);
-      DesktopEnvironment.repaintComponent("MAP");
+      DesktopEnvironment.repaintComponent(MagellanDesktop.MAP_IDENTIFIER);
     }
   }
 
@@ -697,7 +698,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 
             if (i == j) {
               loadSet(s);
-              DesktopEnvironment.repaintComponent("MAP");
+              DesktopEnvironment.repaintComponent(MagellanDesktop.MAP_IDENTIFIER);
 
               break;
             }

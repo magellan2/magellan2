@@ -25,6 +25,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Properties;
@@ -50,7 +53,7 @@ import magellan.library.utils.logging.Logger;
 /**
  * A dialog for creating a Temp Unit
  */
-public class TempUnitDialog extends InternationalizedDialog implements ActionListener {
+public class TempUnitDialog extends InternationalizedDialog {
   private static final Logger log = Logger.getInstance(TempUnitDialog.class);
   protected JTextField id;
   protected JTextField name;
@@ -71,6 +74,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   protected Properties settings;
   protected JButton nameGen;
   protected Container nameCon;
+  private TempUnitDialogListener listener;
 
   /** settings key for detailed dialog property */
   public static final String SETTINGS_KEY = "TempUnitDialog.ExtendedDialog";
@@ -84,6 +88,69 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 
     posC = parent;
 
+    initGUI();
+
+    listener = new TempUnitDialogListener();
+
+    id.addActionListener(listener);
+    name.addActionListener(listener);
+    nameGen.addActionListener(listener);
+    more.addActionListener(listener);
+    ok.addActionListener(listener);
+    cancel.addActionListener(listener);
+
+    id.addKeyListener(listener);
+    name.addKeyListener(listener);
+    nameGen.addKeyListener(listener);
+    more.addKeyListener(listener);
+    ok.addKeyListener(listener);
+    cancel.addKeyListener(listener);
+
+    // Focus management/Default opening state
+    boolean open = false;
+
+    if (settings.containsKey(TempUnitDialog.SETTINGS_KEY)) {
+      String s = settings.getProperty(TempUnitDialog.SETTINGS_KEY);
+
+      if (s.equalsIgnoreCase("true")) {
+        open = true;
+      }
+    } else {
+      open = true;
+    }
+
+    if (open) {
+      changeDialog();
+    } else {
+      setFocusList(open);
+    }
+
+    loadBounds();
+
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowActivated(WindowEvent e) {
+        // dont look too close on this method. It recalls itself until this.name is
+        // showing on screen and then it calls requestFocusInWindow on it (via
+        // reflection api to stay compatible with jdk < 1.4
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            if (TempUnitDialog.log.isDebugEnabled()) {
+              TempUnitDialog.log.debug("TempUnitDialog.requestFocusInWindows: " + name.isShowing());
+            }
+
+            if (name.isShowing()) {
+              JVMUtilities.requestFocusInWindow(name);
+            } else {
+              SwingUtilities.invokeLater(this);
+            }
+          }
+        });
+      }
+    });
+  }
+
+  private void initGUI() {
     Container main = getContentPane();
 
     main.setLayout(layout = new GridBagLayout());
@@ -101,17 +168,14 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     con.weightx = 1;
     con.fill = GridBagConstraints.HORIZONTAL;
     main.add(id = new JTextField(5), con);
-    id.addActionListener(this);
     con.gridy = 1;
     nameCon = new JPanel(new BorderLayout());
     ((JPanel) nameCon).setPreferredSize(id.getPreferredSize());
     nameCon.add(name = new JTextField(20), BorderLayout.CENTER);
     main.add(nameCon, con);
-    name.addActionListener(this);
 
     // ///////// name generator button (unused)
     nameGen = new JButton("...");
-    nameGen.addActionListener(this);
     nameGen.setEnabled(false);
 
     Insets insets = nameGen.getMargin();
@@ -125,7 +189,6 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 
     panel.add(more = new JButton(Resources.get("completion.tempunitdialog.more.more")));
     panel.setOpaque(false);
-    more.addActionListener(this);
     moreButtonPanel = panel;
     main.add(moreButtonPanel, con = getMoreLessConstraints(false));
 
@@ -137,11 +200,10 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     panel = new JPanel(new GridLayout(2, 1));
     panel.setOpaque(false);
     panel.add(ok = new JButton(Resources.get("completion.tempunitdialog.ok")));
-    ok.addActionListener(this);
     ok.setMnemonic(Resources.get("completion.tempunitdialog.ok.mnemonic").charAt(0));
     panel.add(cancel = new JButton(Resources.get("completion.tempunitdialog.cancel")));
-    cancel.addActionListener(this);
     cancel.setMnemonic(Resources.get("completion.tempunitdialog.cancel.mnemonic").charAt(0));
+
     con.fill = GridBagConstraints.NONE;
     con.weightx = 0;
     main.add(panel, con);
@@ -188,49 +250,6 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     descript.setWrapStyleWord(true);
 
     // morePanel isn't added here
-
-    // Focus management/Default opening state
-    boolean open = false;
-
-    if (settings.containsKey(TempUnitDialog.SETTINGS_KEY)) {
-      String s = settings.getProperty(TempUnitDialog.SETTINGS_KEY);
-
-      if (s.equalsIgnoreCase("true")) {
-        open = true;
-      }
-    } else {
-      open = true;
-    }
-
-    if (open) {
-      changeDialog();
-    } else {
-      setFocusList(open);
-    }
-
-    loadBounds();
-
-    addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowActivated(WindowEvent e) {
-        // dont look too close on this method. It recalls itself until this.name is
-        // showing on screen and then it calls requestFocusInWindow on it (via
-        // reflection api to stay compatible with jdk < 1.4
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            if (TempUnitDialog.log.isDebugEnabled()) {
-              TempUnitDialog.log.debug("TempUnitDialog.requestFocusInWindows: " + name.isShowing());
-            }
-
-            if (name.isShowing()) {
-              JVMUtilities.requestFocusInWindow(name);
-            } else {
-              SwingUtilities.invokeLater(this);
-            }
-          }
-        });
-      }
-    });
   }
 
   private GridBagConstraints getBasicConstraints() {
@@ -309,6 +328,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     components.add(name);
     if (extended) {
       components.add(recruit);
+      components.add(giveRecruitCost);
+      components.add(giveMaintainCost);
       components.add(order);
       components.add(descript);
     }
@@ -321,35 +342,13 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
   }
 
   /**
-   * Reacts on buttons.
-   * 
-   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-   */
-  public void actionPerformed(java.awt.event.ActionEvent p1) {
-    if (p1.getSource() == more) {
-      changeDialog();
-
-      return;
-    } else if (p1.getSource() == nameGen) {
-      NameGenerator gen = NameGenerator.getInstance();
-      name.setText(gen.getName());
-      nameGen.setEnabled(gen.isAvailable());
-
-      return;
-    }
-
-    approved = (p1.getSource() instanceof JTextField) || (p1.getSource() == ok);
-    saveBounds();
-    setVisible(false);
-  }
-
-  /**
    * Displays the dialog.
    * 
    * @param newID preset for id text box
    * @param newName preset for name box
    */
   public void show(String newID, String newName) {
+
     id.setText(newID);
     recruit.setText(null);
 
@@ -534,6 +533,52 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
     public boolean isManagingFocus() {
       return false;
     }
+  }
+
+  /**
+   * Reacts to events.
+   * 
+   * @author stm
+   */
+  public class TempUnitDialogListener extends KeyAdapter implements ActionListener, KeyListener {
+
+    /**
+     * Reacts on buttons and ENTER in text fields.
+     * 
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
+    public void actionPerformed(java.awt.event.ActionEvent p1) {
+      if (p1.getSource() == more) {
+        changeDialog();
+
+        return;
+      } else if (p1.getSource() == nameGen) {
+        NameGenerator gen = NameGenerator.getInstance();
+        name.setText(gen.getName());
+        nameGen.setEnabled(gen.isAvailable());
+
+        return;
+      }
+
+      approved = (p1.getSource() instanceof JTextField) || (p1.getSource() == ok);
+      saveBounds();
+      setVisible(false);
+    }
+
+    /**
+     * Quits dialog when user pressed ESC.
+     * 
+     * @see java.awt.event.KeyAdapter#keyReleased(java.awt.event.KeyEvent)
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+      if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        approved = false;
+        saveBounds();
+        setVisible(false);
+      }
+    }
+
   }
 
 }

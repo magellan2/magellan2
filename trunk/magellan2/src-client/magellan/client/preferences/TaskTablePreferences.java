@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -184,7 +183,8 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
   private JCheckBox chkRestrictToActiveRegion;
 
   private TypeTree inspectorsList;
-  private TypeTree useList;
+  private TypeTree ignoreList;
+  // private TypeTree useList;
 
   /**
    * @param parent
@@ -279,19 +279,19 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
 
     });
 
-    JPanel usePanel = new JPanel();
-    usePanel.setLayout(new GridBagLayout());
-    usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
-        .get("tasks.prefs.inspectors.use")));
+    JPanel ignorePanel = new JPanel();
+    ignorePanel.setLayout(new GridBagLayout());
+    ignorePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("tasks.prefs.inspectors.ignore")));
 
-    useList = new TypeTree(false);
+    ignoreList = new TypeTree(false);
 
     JButton right = new JButton("  -->  ");
     right.addActionListener(new ActionListener() {
       /** add all selected nodes on the left to the useList */
       public void actionPerformed(ActionEvent e) {
         for (ProblemType p : inspectorsList.getSelectedProblems()) {
-          useList.addProblem(p);
+          ignoreList.addProblem(p);
         }
       }
     });
@@ -299,14 +299,14 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     JButton left = new JButton("  <--  ");
     left.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        for (ProblemType p : useList.getSelectedProblems()) {
-          useList.removeProblem(p);
+        for (ProblemType p : ignoreList.getSelectedProblems()) {
+          ignoreList.removeProblem(p);
         }
       }
     });
 
-    useList.setVisibleRowCount(10);
-    pane = new JScrollPane(useList);
+    ignoreList.setVisibleRowCount(10);
+    pane = new JScrollPane(ignoreList);
 
     pnlSelection.setLayout(new GridBagLayout());
 
@@ -315,12 +315,12 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
             GridBagConstraints.BOTH, new Insets(2, 2, 2, 2), 0, 0);
 
     c.gridheight = 4;
-    usePanel.add(pane, c);
+    ignorePanel.add(pane, c);
 
     c.gridheight = 1;
     c.gridx = 1;
     c.weightx = 0;
-    usePanel.add(new JPanel(), c);
+    ignorePanel.add(new JPanel(), c);
 
     c.gridx = 0;
     c.gridy = 0;
@@ -330,7 +330,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     pnlSelection.add(inspectorsPanel, c);
 
     c.gridx = 2;
-    pnlSelection.add(usePanel, c);
+    pnlSelection.add(ignorePanel, c);
 
     c.gridx = 1;
     c.gridheight = 1;
@@ -376,27 +376,8 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
 
     chkRestrictToSelection.setSelected(taskPanel.restrictToSelection());
 
-    String criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
-    if (criteria == null) {
-      StringBuffer sb = new StringBuffer();
-      for (ProblemType p : taskPanel.getAllProblemTypes()) {
-        if (sb.length() > 0) {
-          sb.append(";");
-        }
-        sb.append(p);
-      }
-      criteria = sb.toString();
-    }
-
-    Map<String, ProblemType> pMap = new HashMap<String, ProblemType>();
-    for (ProblemType p : taskPanel.getAllProblemTypes()) {
-      pMap.put(p.getName(), p);
-    }
-    for (StringTokenizer tokenizer = new StringTokenizer(criteria, ";"); tokenizer.hasMoreTokens();) {
-      String s = tokenizer.nextToken();
-      if (pMap.containsKey(s)) {
-        useList.addProblem(pMap.get(s));
-      }
+    for (ProblemType t : taskPanel.getIgnoredProblems()) {
+      ignoreList.addProblem(t);
     }
   }
 
@@ -407,16 +388,17 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     StringBuffer definition = new StringBuffer("");
 
     Set<ProblemType> result = new HashSet<ProblemType>();
-    for (ProblemType p : useList.getProblems()) {
+    for (ProblemType p : ignoreList.getProblems()) {
       result.add(p);
       if (definition.length() > 0) {
         definition.append(";");
       }
       definition.append(p.getName());
     }
-    taskPanel.setActiveProblems(result);
+    // taskPanel.setActiveProblems(result);
+    taskPanel.setIgnoredProblems(result);
 
-    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST, definition.toString());
+    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_IGNORE_LIST, definition.toString());
 
     taskPanel.setRestrictToOwner(chkOwnerParty.isSelected());
     taskPanel.setRestrictToPassword(chkPasswordParties.isSelected());

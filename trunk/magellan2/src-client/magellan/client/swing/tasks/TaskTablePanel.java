@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -88,6 +89,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
   /** @deprecated Use {@link MagellanDesktop#TASKS_IDENTIFIER} instead */
+  @Deprecated
   public static final String IDENTIFIER = MagellanDesktop.TASKS_IDENTIFIER;
 
   private JTable table;
@@ -126,7 +128,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   private magellan.client.swing.tasks.TaskTablePanel.UpdateEventDispatcher updateDispatcher;
 
-  private Set<ProblemType> activeProblems;
+  // private Set<ProblemType> activeProblems;
+  private Set<ProblemType> ignoredProblems;
 
   /**
    * Creates a new TaskTablePanel object.
@@ -898,6 +901,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     for (Inspector i : inspectors) {
       i.setGameData(gameData);
     }
+
+    getIgnoredProblems();
   }
 
   /**
@@ -1220,13 +1225,63 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * one in result will be displayed.
    * 
    * @param result A list of name. If <code>null</code>, all problems will be displayed.
+   * @deprecated We use a negative list now
+   * @see #setIgnoredProblems(Set)
    */
+  @Deprecated
   public void setActiveProblems(Set<ProblemType> result) {
-    activeProblems = result;
+    // activeProblems = result;
+  }
+
+  /**
+   * Specifies which problems to ignore. Only problems whose <code>ProblemType.getName()</code> does
+   * not match one in this set will be displayed.
+   * 
+   * @param set A list of names. If <code>null</code>, all problems will be displayed.
+   */
+  public void setIgnoredProblems(Set<ProblemType> set) {
+    ignoredProblems = new HashSet<ProblemType>();
+    if (set != null) {
+      ignoredProblems.addAll(set);
+    }
+  }
+
+  /**
+   * Returns a list of all ignored problem types (read from the settings if necessary).
+   */
+  @SuppressWarnings("deprecation")
+  public Set<ProblemType> getIgnoredProblems() {
+    if (ignoredProblems == null) {
+      ignoredProblems = new HashSet<ProblemType>();
+
+      String criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
+      if (criteria == null) {
+        Logger.getInstance(this.getClass()).warn(
+            "deprecated property " + PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
+        settings.remove(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
+      }
+
+      criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_IGNORE_LIST);
+
+      if (criteria != null) {
+        Map<String, ProblemType> pMap = new HashMap<String, ProblemType>();
+        for (ProblemType p : getAllProblemTypes()) {
+          pMap.put(p.getName(), p);
+        }
+        for (StringTokenizer tokenizer = new StringTokenizer(criteria, ";"); tokenizer
+            .hasMoreTokens();) {
+          String s = tokenizer.nextToken();
+          if (pMap.containsKey(s)) {
+            ignoredProblems.add(pMap.get(s));
+          }
+        }
+      }
+    }
+    return Collections.unmodifiableSet(ignoredProblems);
   }
 
   private boolean checkActive(Problem p) {
-    return activeProblems == null || activeProblems.contains(p.getType());
+    return ignoredProblems == null || !ignoredProblems.contains(p.getType());
   }
 
   /**

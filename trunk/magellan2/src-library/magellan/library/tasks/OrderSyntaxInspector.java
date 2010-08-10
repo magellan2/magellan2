@@ -49,7 +49,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
   // public static final OrderSyntaxInspector INSPECTOR = new OrderSyntaxInspector();
 
   enum OrderSyntaxProblemTypes {
-    NO_ORDERS, PARSE_ERROR, PARSE_WARNING;
+    NO_ORDERS, PARSE_ERROR, PARSE_WARNING, LONGORDERS, NO_LONG_ORDER;
 
     private ProblemType type;
 
@@ -100,7 +100,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
   @Override
   public List<Problem> reviewUnit(Unit unit, Severity severity) {
 
-    Collection<String> orders = unit.getOrders();
+    List<String> orders = unit.getOrders();
     List<Problem> errors = new ArrayList<Problem>();
 
     if ((Utils.isEmpty(orders) || orders.size() == 0) && severity == Severity.ERROR) {
@@ -123,6 +123,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
       OrderParser parser = getParser();
 
       Integer line = 0;
+      boolean longOrder = false;
       for (String order : orders) {
         line++;
         StringReader reader = new StringReader(order);
@@ -132,6 +133,18 @@ public class OrderSyntaxInspector extends AbstractInspector {
               OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, getWarningMessage(order,
                   line), line));
         }
+        longOrder |= getData().getGameSpecificStuff().getOrderChanger().isLongOrder(order);
+      }
+
+      if (!longOrder) {
+        errors.add(ProblemFactory.createProblem(Severity.WARNING,
+            OrderSyntaxProblemTypes.NO_LONG_ORDER.getType(), unit, this));
+      }
+
+      line = getData().getGameSpecificStuff().getOrderChanger().areCompatibleLongOrders(orders);
+      if (0 <= line) {
+        errors.add(ProblemFactory.createProblem(Severity.WARNING,
+            OrderSyntaxProblemTypes.LONGORDERS.getType(), unit, this));
       }
     }
     return errors;

@@ -1,3 +1,7 @@
+2010-08-10 / Build 431 - stm (stm_@users.sourceforge.net)
+    * changed used problem list for OpenTasks from positive to negative list
+    * added inspectors for long orders
+
 2010-08-07 / Build 429 - stm (stm_@users.sourceforge.net)
     * fixed Trac bug #16 (temp unit sorting) and a few issues around id comparison on the way
 

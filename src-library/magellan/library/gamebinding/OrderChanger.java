@@ -13,6 +13,8 @@
 
 package magellan.library.gamebinding;
 
+import java.util.Collection;
+
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 
@@ -96,5 +98,13 @@ public interface OrderChanger {
    * @return
    */
   public boolean isLongOrder(String order);
+
+  /**
+   * Returns true if the orders in the collection are legal to have at the same time for one unit.
+   * 
+   * @param orders
+   * @return The first offending order
+   */
+  public int areCompatibleLongOrders(Collection<String> orders);
 
 }

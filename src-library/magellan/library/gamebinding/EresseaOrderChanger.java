@@ -25,6 +25,7 @@ import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.rules.Race;
+import magellan.library.utils.Locales;
 import magellan.library.utils.Resources;
 
 /**
@@ -398,9 +399,12 @@ public class EresseaOrderChanger implements OrderChanger {
   private Map<Locale, ArrayList<String>> longOrders = new HashMap<Locale, ArrayList<String>>();
 
   /**
-   * List of long orders in the selectede locale.
+   * List of long orders in the selected locale.
    */
   protected ArrayList<String> getLongOrders(Locale locale) {
+    if (locale == null) {
+      locale = Locales.getOrderLocale();
+    }
     ArrayList<String> orders = longOrders.get(locale);
     if (orders == null) {
       orders = translateOrders(getLongOrderTokens(), locale);
@@ -425,6 +429,9 @@ public class EresseaOrderChanger implements OrderChanger {
    * form are short orders.. make temp = short (in this list) make sword = long (not in this list)
    */
   protected ArrayList<String> getLongButShortOrders(Locale locale) {
+    if (locale == null) {
+      locale = Locales.getOrderLocale();
+    }
     ArrayList<String> orders = longButShortOrders.get(locale);
     if (orders == null) {
       orders = translateOrders(getLongButShortOrderTokens(), locale);
@@ -488,7 +495,7 @@ public class EresseaOrderChanger implements OrderChanger {
 
   private ArrayList<String> translateOrders(ArrayList<String> orders, Locale locale) {
     ArrayList<String> result = new ArrayList<String>();
-    for (String order : getLongOrderTokens()) {
+    for (String order : orders) {
       StringBuilder translation = new StringBuilder();
       for (StringTokenizer tokenizer = new StringTokenizer(order); tokenizer.hasMoreTokens();) {
         if (translation.length() != 0) {
@@ -499,6 +506,119 @@ public class EresseaOrderChanger implements OrderChanger {
       result.add(translation.toString());
     }
     return result;
+  }
+
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#areCompatibleLongOrders(java.util.Collection)
+   */
+  public int areCompatibleLongOrders(Collection<String> orders) {
+    if (orders.size() <= 1)
+      return -1;
+
+    Locale locale = Locales.getOrderLocale();
+
+    CountMap<String> map = new CountMap<String>();
+
+    // count frequency of orders
+    Collection<String> longOrders = toLowerCase(getLongOrdersTranslated(), locale);
+    for (String order : orders) {
+      if (isLongOrder(order)) {
+        for (String longOrder : longOrders) {
+          if (order.toLowerCase().startsWith(longOrder)) {
+            map.increase(longOrder);
+            break;
+          }
+        }
+      }
+    }
+
+    if (map.containsKey(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW, locale))) {
+      map.remove(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW, locale));
+    }
+
+    String buy;
+    String sell;
+    if (map.containsKey(buy = Resources.getOrderTranslation(EresseaConstants.O_BUY, locale))
+        | map.containsKey(sell = Resources.getOrderTranslation(EresseaConstants.O_SELL, locale))) {
+      // only KAUFE and VERKAUFE and only one KAUFE are allowed
+      if (map.size() > 2 || !(map.containsKey(buy) && map.containsKey(sell)))
+        return findFirst(orders, buy, sell);
+      else { // size <= 2 and map does contain only buy and sell
+        if (map.get(buy) > 1)
+          return findFirst(orders, buy);
+        return -1;
+      }
+    }
+
+    String zaubere;
+    if (map.containsKey(zaubere = Resources.getOrderTranslation(EresseaConstants.O_CAST, locale))) {
+      // ZAUBERE is compatible with itself only
+      for (String candidate : map.keySet())
+        if (!candidate.equalsIgnoreCase(zaubere))
+          return findFirst(orders, candidate);
+      return -1;
+    }
+
+    if (map.size() == 0)
+      return -1;
+    else if (map.size() == 1)
+      if (map.values().iterator().next() == 1)
+        return -1;
+      else
+        return findNth(orders, 2, map.keySet().iterator().next());
+    else { // map size > 1
+      int n = 0, line = 0;
+      for (String order : orders) {
+        if (isLongOrder(order)) {
+          n++;
+        }
+        if (n >= 2)
+          return line;
+        line++;
+      }
+      return 0; // should never happen
+    }
+
+  }
+
+  private int findFirst(Collection<String> orders, String... orderTranslation) {
+    return findNth(orders, 1, orderTranslation);
+  }
+
+  private int findNth(Collection<String> orders, int n, String... orderTranslation) {
+    int line = 0;
+    int found = 0;
+    for (String order : orders) {
+      for (String candidate : orderTranslation)
+        if (order.toLowerCase().startsWith(candidate)) {
+          found++;
+          if (found == n)
+            return line;
+        }
+      line++;
+    }
+    return -1;
+  }
+
+  public class CountMap<T> extends HashMap<T, Integer> {
+    public int increase(T key, int delta) {
+      Integer value = get(key);
+      if (value == null) {
+        put(key, delta);
+        return 1;
+      } else {
+        put(key, value + delta);
+        return value + delta;
+      }
+    }
+
+    public int increase(T key) {
+      return increase(key, 1);
+    }
+
+    public int decrease(T key) {
+      return increase(key, -1);
+    }
   }
 
 }

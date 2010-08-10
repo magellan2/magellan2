@@ -1083,6 +1083,8 @@ ITEM "Pferd"
 50;weight
 "resources";category
 "Pferdedressur";makeskill
+1;makeskilllevel
+1;ishorse
 
 ITEM "Wagen"
 "Wagen";name

@@ -262,8 +262,16 @@ public class PropertiesHelper {
   /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_TODO = "TaskTable.inspectors.todo";
 
-  /** Property type list of names */
+  /**
+   * Property type list of names
+   * 
+   * @deprecated we use an ignore list now
+   */
+  @Deprecated
   public static final String TASKTABLE_INSPECTORS_LIST = "TaskTable.inspectors.list";
+
+  /** Property type list (of ignored problem types) */
+  public static final String TASKTABLE_INSPECTORS_IGNORE_LIST = "TaskTable.inspectors.ignored";
 
   /** Property type boolean: edit orders for all factions */
   public static final String ORDEREDITOR_EDITALLFACTIONS = "OrderEditor.editAllFactions";

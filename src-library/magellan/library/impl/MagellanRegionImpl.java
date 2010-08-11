@@ -1103,7 +1103,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       unitRelationsRefreshed = true;
 
       for (Unit u : units()) {
+        u.clearCache();
+      }
+
+      for (Unit u : units()) {
         u.refreshRelations();
+        // TODO fire UnitOrdersEvent here to update views??
       }
 
       getZeroUnit().refreshRelations();

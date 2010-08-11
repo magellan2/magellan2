@@ -2016,6 +2016,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     // FIXME shouldn't access GameSpecific like this
     addAndSpreadRelations(getRegion().getData().getGameSpecificStuff().getRelationFactory()
         .createRelations(this, from));
+    // TODO invalidateCache();
   }
 
   private void addAndSpreadRelations(Collection<UnitRelation> newRelations) {

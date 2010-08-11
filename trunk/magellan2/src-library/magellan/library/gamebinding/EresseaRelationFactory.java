@@ -456,16 +456,24 @@ public class EresseaRelationFactory implements RelationFactory {
                           // to a decent number
                           if (rel.amount == EresseaRelationFactory.REFRESHRELATIONS_ALL) {
                             rel.amount = i.getAmount();
+                            // GIVE ... EACH ALL is invalid
+                            if (hasEach)
+                              throw new AssertionError("GIB ... JE ALLES");
                           } else {
                             // if not, only transfer the minimum amount
                             // the unit has
                             if (i.getAmount() < rel.amount) {
                               rel.warning = true;
                             }
-                            // GIVE ... EACH ALL does not make sense
+                            // FIXME getPersons() or getModifiedPersons()? this is only correct if
+                            // units are parsed in order; also, REKRUTIERE is after GIBs
                             rel.amount =
                                 Math.min(i.getAmount(), rel.amount
                                     * (hasEach ? target.getModifiedPersons() : 1));
+                            if (target.getPersonTransferRelations().size() != 0) {
+                              // so we add a warning here, to indicate that we're not sure
+                              rel.warning = true;
+                            }
                           }
                         }
 
@@ -845,8 +853,12 @@ public class EresseaRelationFactory implements RelationFactory {
                     if (i.getAmount() < amount) {
                       warning = true;
                     }
-                    // TODO (stm) should this be persons or modified persons?
-                    amount *= hasEach ? u.getModifiedPersons() : 1;
+                    // should this be persons or modified persons?
+                    // Eressea server multiplies amount with u->number (pool.c) when RESERVE is
+                    // executed; as RESERVE is before GIVE (PERSONEN), we should take the unmodified
+                    // amount here; but we have cleared the relations at this point, so modified is
+                    // in fact in undefined state, probably == getPersons()
+                    amount *= hasEach ? u.getPersons() : 1;
                     // }
                     amount = Math.min(i.getAmount(), amount);
                     i.setAmount(Math.max(0, i.getAmount() - amount));

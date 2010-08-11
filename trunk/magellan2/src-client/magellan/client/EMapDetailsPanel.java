@@ -5174,7 +5174,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     /**
      * Context menu for unit relation nodes.
      */
-    private class RelationContextMenu extends UnitContextMenu implements ActionListener {
+    private class RelationContextMenu extends UnitContextMenu {
 
       /**
        * Action for changing an order
@@ -5389,33 +5389,33 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         this.add(new JSeparator());
         if (r instanceof ReserveRelation) {
           JMenuItem item = new JMenuItem(new Reserve0Action((ReserveRelation) r));
-          item.addActionListener(this);
+          // item.addActionListener(this);
           this.add(item);
           item = new JMenuItem(new ReserveNumberAction((ReserveRelation) r, false));
-          item.addActionListener(this);
+          // item.addActionListener(this);
           this.add(item);
           item = new JMenuItem(new ReserveNumberAction((ReserveRelation) r, true));
-          item.addActionListener(this);
+          // item.addActionListener(this);
           this.add(item);
         } else if (r instanceof ItemTransferRelation) {
           JMenuItem item = new JMenuItem(new Give0Action((ItemTransferRelation) r));
-          item.addActionListener(this);
+          // item.addActionListener(this);
           this.add(item);
           item = new JMenuItem(new GiveNumberAction((ItemTransferRelation) r, false));
-          item.addActionListener(this);
+          // item.addActionListener(this);
           this.add(item);
           item = new JMenuItem(new GiveNumberAction((ItemTransferRelation) r, true));
-          item.addActionListener(this);
+          // item.addActionListener(this);
           this.add(item);
         }
       }
 
-      /**
-       * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-       */
-      public void actionPerformed(ActionEvent e) {
-        // FIXME why blank
-      }
+      // events are already handled by the actions.
+      // /**
+      // * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+      // */
+      // public void actionPerformed(ActionEvent e) {
+      // }
 
     }
   }

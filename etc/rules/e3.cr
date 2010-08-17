@@ -2036,7 +2036,7 @@ REGIONTYPES
 
 REGIONTYPE "Berge"
 "Berge";name
-1000;maxworkers
+600;maxworkers
 250;roadstones
 "true";isAstralVisible
 "true";isLand

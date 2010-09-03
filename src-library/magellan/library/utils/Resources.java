@@ -119,20 +119,17 @@ public class Resources {
     if (prefix == null) {
       prefix = "";
     }
-    // FIXME null assignment
-    if (resourceDirectory == null) {
-      this.resourceDirectory = resourceDirectory;
-    }
+    this.resourceDirectory = resourceDirectory;
 
-    Resources.log
-        .info("Initializing resources for prefix '" + prefix + "' in " + resourceDirectory);
+    Resources.log.info("Initializing resources for prefix '" + prefix + "' in "
+        + this.resourceDirectory);
 
-    File etcDirectory = new File(resourceDirectory, "etc");
+    File etcDirectory = new File(this.resourceDirectory, "etc");
 
     if (!etcDirectory.exists()) {
       Resources.log.info("Could not find resources in directory " + etcDirectory);
       // hmmm, maybe one directory level up (special Eclipse problem with bin directory)
-      etcDirectory = new File(resourceDirectory.getParentFile(), "etc");
+      etcDirectory = new File(this.resourceDirectory.getParentFile(), "etc");
       if (!etcDirectory.exists()) {
         Resources.log.info("Could not find resources in directory " + etcDirectory);
         // okay, I'll give up...

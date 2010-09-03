@@ -48,6 +48,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.utils.Encoding;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
@@ -81,12 +82,36 @@ public class ExtendedCommands {
   private String defaultUnitScript = "";
   private String defaultContainerScript = "";
 
+  /**
+   * Constructor for the extended commands container object
+   * 
+   * @param client The GUI client that holds the configuration etc.
+   */
   public ExtendedCommands(Client client) {
     this.client = client;
     Properties properties = client.getProperties();
     String commandsFilename = properties.getProperty("extendedcommands.unitCommands");
     if (Utils.isEmpty(commandsFilename)) {
       unitCommandsFile = new File(Client.getSettingsDirectory(), COMANDFILENAME);
+    } else {
+      unitCommandsFile = new File(commandsFilename);
+    }
+    if (!unitCommandsFile.exists()) {
+      // file doesn't exist. create it with an empty set.
+      write(unitCommandsFile);
+    }
+
+    read(unitCommandsFile);
+  }
+
+  /**
+   * Constructor for the extended commands container object. This method is for GUI-less usage only!
+   * 
+   * @param commandsFilename
+   */
+  public ExtendedCommands(String commandsFilename) {
+    if (Utils.isEmpty(commandsFilename)) {
+      unitCommandsFile = new File(PropertiesHelper.getSettingsDirectory(), COMANDFILENAME);
     } else {
       unitCommandsFile = new File(commandsFilename);
     }
@@ -239,9 +264,8 @@ public class ExtendedCommands {
   /**
    * Returns a list of all units with commands.
    */
-  public List<Unit> getUnitsWithCommands() {
+  public List<Unit> getUnitsWithCommands(GameData world) {
     List<Unit> units = new ArrayList<Unit>();
-    GameData world = client.getData();
 
     for (String unitId : unitCommands.keySet()) {
       Unit unit = world.getUnit(UnitID.createUnitID(unitId, world.base));
@@ -256,9 +280,8 @@ public class ExtendedCommands {
   /**
    * Returns a list of all unitcontainerss with commands.
    */
-  public List<UnitContainer> getUnitContainersWithCommands() {
+  public List<UnitContainer> getUnitContainersWithCommands(GameData world) {
     List<UnitContainer> containers = new ArrayList<UnitContainer>();
-    GameData world = client.getData();
 
     for (String unitContainerId : unitContainerCommands.keySet()) {
       switch (unitContainerCommands.get(unitContainerId).getType()) {
@@ -303,8 +326,7 @@ public class ExtendedCommands {
   /**
    * Clears the commands if there are now units associated with this script
    */
-  public int clearUnusedUnits() {
-    GameData world = client.getData();
+  public int clearUnusedUnits(GameData world) {
     List<String> keys = new ArrayList<String>();
     int counter = 0;
 
@@ -326,8 +348,7 @@ public class ExtendedCommands {
   /**
    * Clears the commands if there are now unitcontainers associated with this script
    */
-  public int clearUnusedContainers() {
-    GameData world = client.getData();
+  public int clearUnusedContainers(GameData world) {
     List<String> keys = new ArrayList<String>();
     int counter = 0;
 
@@ -397,7 +418,8 @@ public class ExtendedCommands {
 
     execute(script.toString(), world, unit, null);
     unit.setOrdersChanged(true);
-    client.getDispatcher().fire(new UnitOrdersEvent(unit, unit));
+    if (client != null)
+      client.getDispatcher().fire(new UnitOrdersEvent(unit, unit));
   }
 
   /**
@@ -506,15 +528,20 @@ public class ExtendedCommands {
         // description.append("\n\n").append((error).getErrorSourceFile());
       }
 
-      ErrorWindow errorWindow =
-          new ErrorWindow(client, message.toString(), description.toString(), error);
-      errorWindow.setShutdownOnCancel(false);
-      errorWindow.setVisible(true);
+      if (client != null) {
+        ErrorWindow errorWindow =
+            new ErrorWindow(client, message.toString(), description.toString(), error);
+        errorWindow.setShutdownOnCancel(false);
+        errorWindow.setVisible(true);
+      }
     } catch (Throwable throwable) {
       ExtendedCommands.log.info("", throwable);
-      ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
-      errorWindow.setShutdownOnCancel(false);
-      errorWindow.setVisible(true);
+
+      if (client != null) {
+        ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
+        errorWindow.setShutdownOnCancel(false);
+        errorWindow.setVisible(true);
+      }
     }
   }
 
@@ -556,9 +583,11 @@ public class ExtendedCommands {
 
     } catch (Throwable throwable) {
       ExtendedCommands.log.error("", throwable);
-      ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
-      errorWindow.setShutdownOnCancel(false);
-      errorWindow.setVisible(true);
+      if (client != null) {
+        ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
+        errorWindow.setShutdownOnCancel(false);
+        errorWindow.setVisible(true);
+      }
     }
   }
 
@@ -596,9 +625,11 @@ public class ExtendedCommands {
       fos.close();
     } catch (Throwable throwable) {
       ExtendedCommands.log.error("", throwable);
-      ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
-      errorWindow.setShutdownOnCancel(false);
-      errorWindow.setVisible(true);
+      if (client != null) {
+        ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
+        errorWindow.setShutdownOnCancel(false);
+        errorWindow.setVisible(true);
+      }
     }
   }
 

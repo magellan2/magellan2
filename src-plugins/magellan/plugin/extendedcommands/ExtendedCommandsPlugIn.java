@@ -395,8 +395,8 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     if (JOptionPane.showConfirmDialog(client, Resources.get("extended_commands.cleanup.question"),
         Resources.get("extended_commands.cleanup.title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
       return;
-    int units = commands.clearUnusedUnits();
-    int containers = commands.clearUnusedContainers();
+    int units = commands.clearUnusedUnits(client.getData());
+    int containers = commands.clearUnusedContainers(client.getData());
 
     JOptionPane.showMessageDialog(client, Resources.get("extended_commands.cleanup.result", units,
         containers), Resources.get("extended_commands.cleanup.title"),

@@ -272,8 +272,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Returns <code>true</code>, if the unit with unitId is in the same region as the active unit and
-   * perception skill of the current unit' faction is greater than the other unit.
+   * Returns <code>true</code>, if the unit with unitId is in the same region as the active unit
+   * and perception skill of the current unit' faction is greater than the other unit.
    * 
    * @return {@link NullPointerException} if there is no active unit.
    */
@@ -559,8 +559,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Searches the best path from the current position of an unit to the given region. <br/>
-   * This method is only useful for persons on land!
+   * Searches the best path from the current position of an unit to the given region. <br/> This
+   * method is only useful for persons on land!
    * 
    * @param unit The unit that should go to another region
    * @param destination The destination region which should be reached
@@ -574,8 +574,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Searches the best path from the current position of an unit to the given region. <br/>
-   * This method is only useful for persons on land!
+   * Searches the best path from the current position of an unit to the given region. <br/> This
+   * method is only useful for persons on land!
    * 
    * @param unit The unit that should go to another region
    * @param destination The destination region which should be reached
@@ -598,8 +598,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Searches the best path from the current position of a ship to the given region. <br/>
-   * This method is only useful for ships!
+   * Searches the best path from the current position of a ship to the given region. <br/> This
+   * method is only useful for ships!
    * 
    * @param ship The ship that should go to another region
    * @param destination The destination region which should be reached
@@ -613,8 +613,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Searches the best path from the current position of a ship to the given region. <br/>
-   * This method is only useful for ships!
+   * Searches the best path from the current position of a ship to the given region. <br/> This
+   * method is only useful for ships!
    * 
    * @param ship The ship that should go to another region
    * @param destination The destination region which should be reached
@@ -637,8 +637,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * This method reads the orders of a unit and extracts all lines with the syntax '//
-   * extcmds:"<key>":value'. This method returns always a map and never null.
+   * This method reads the orders of a unit and extracts all lines with the syntax '// extcmds:"<key>":value'.
+   * This method returns always a map and never null.
    */
   public Map<String, String> getConfiguration(Unit unit) {
     Map<String, String> configuration = new HashMap<String, String>();
@@ -692,13 +692,16 @@ public class ExtendedCommandsHelper {
    */
   public void updateUnit(Unit u) {
     u.setOrdersChanged(true);
-    client.getDispatcher().fire(new UnitOrdersEvent(this, u));
+    if (client != null)
+      client.getDispatcher().fire(new UnitOrdersEvent(this, u));
   }
 
   /**
    * Returns <code>true</code> if the unit u has an ExtendedCommands script.
    */
   public boolean hasScript(Unit u) {
+    if (client == null)
+      return false;
     for (MagellanPlugIn plugin : client.getPlugIns()) {
       if (plugin instanceof ExtendedCommandsPlugIn) {
         ExtendedCommandsPlugIn exPlugin = (ExtendedCommandsPlugIn) plugin;
@@ -712,6 +715,8 @@ public class ExtendedCommandsHelper {
    * Returns <code>true</code> if the container c has an ExtendedCommands script.
    */
   public boolean hasScript(UnitContainer c) {
+    if (client == null)
+      return false;
     for (MagellanPlugIn plugin : client.getPlugIns()) {
       if (plugin instanceof ExtendedCommandsPlugIn) {
         ExtendedCommandsPlugIn exPlugin = (ExtendedCommandsPlugIn) plugin;
@@ -724,8 +729,6 @@ public class ExtendedCommandsHelper {
   /**
    * Returns a game specific rule manager that provides a few utility methods that differ from game
    * to game.
-   * 
-   * @return
    */
   public GameSpecificRules getGameSpecificRules() {
     return world.getGameSpecificStuff().getGameSpecificRules();
@@ -733,8 +736,6 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns a MovementEvaluator that provides utility methods concerning the movement of units.
-   * 
-   * @return
    */
   public MovementEvaluator getMovementEvaluator() {
     return world.getGameSpecificStuff().getMovementEvaluator();

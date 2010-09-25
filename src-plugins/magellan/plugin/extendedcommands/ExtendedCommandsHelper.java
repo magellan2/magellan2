@@ -272,8 +272,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Returns <code>true</code>, if the unit with unitId is in the same region as the active unit
-   * and perception skill of the current unit' faction is greater than the other unit.
+   * Returns <code>true</code>, if the unit with unitId is in the same region as the active unit and
+   * perception skill of the current unit' faction is greater than the other unit.
    * 
    * @return {@link NullPointerException} if there is no active unit.
    */
@@ -283,9 +283,22 @@ public class ExtendedCommandsHelper {
     Unit otherunit = getUnitInRegion(unitId);
     if (otherunit == null)
       return false;
-    return getRegionSkillLevel(unit.getRegion(), unit.getFaction(), world.rules
-        .getSkillType(EresseaConstants.S_WAHRNEHMUNG)) >= otherunit.getSkill(
+    if (otherunit.getFaction().equals(unit.getFaction()))
+      return true;
+    return getRegionSkillLevel(unit.getRegion(), unit.getFaction(),
+        world.rules.getSkillType(EresseaConstants.S_WAHRNEHMUNG)) >= otherunit.getSkill(
         world.rules.getSkillType(EresseaConstants.S_TARNUNG)).getLevel();
+  }
+
+  /**
+   * Returns <code>true</code>, if the current unit sees another unit with the given unit id. This
+   * method does not compare the the perception skill level. It uses the default tree information
+   * inside a region (so if you just want to know if the unit can give something to another unit,
+   * this is the right method).
+   */
+  public boolean unitSeesOtherUnit(String unitId) {
+    Unit otherunit = getUnitInRegion(unitId);
+    return otherunit != null;
   }
 
   /**
@@ -559,8 +572,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Searches the best path from the current position of an unit to the given region. <br/> This
-   * method is only useful for persons on land!
+   * Searches the best path from the current position of an unit to the given region. <br/>
+   * This method is only useful for persons on land!
    * 
    * @param unit The unit that should go to another region
    * @param destination The destination region which should be reached
@@ -574,8 +587,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Searches the best path from the current position of an unit to the given region. <br/> This
-   * method is only useful for persons on land!
+   * Searches the best path from the current position of an unit to the given region. <br/>
+   * This method is only useful for persons on land!
    * 
    * @param unit The unit that should go to another region
    * @param destination The destination region which should be reached
@@ -585,8 +598,8 @@ public class ExtendedCommandsHelper {
    */
   public String getPathToRegion(Unit unit, Region destination, boolean useSpeed, boolean makeRoute) {
     List<String> orders =
-        (new UnitRoutePlanner()).getOrders(unit, world, unit.getRegion().getID(), destination
-            .getCoordinate(), null, true, true, makeRoute, false);
+        (new UnitRoutePlanner()).getOrders(unit, world, unit.getRegion().getID(),
+            destination.getCoordinate(), null, true, true, makeRoute, false);
     if (orders.size() == 1)
       return orders.get(0);
 
@@ -598,8 +611,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Searches the best path from the current position of a ship to the given region. <br/> This
-   * method is only useful for ships!
+   * Searches the best path from the current position of a ship to the given region. <br/>
+   * This method is only useful for ships!
    * 
    * @param ship The ship that should go to another region
    * @param destination The destination region which should be reached
@@ -613,8 +626,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Searches the best path from the current position of a ship to the given region. <br/> This
-   * method is only useful for ships!
+   * Searches the best path from the current position of a ship to the given region. <br/>
+   * This method is only useful for ships!
    * 
    * @param ship The ship that should go to another region
    * @param destination The destination region which should be reached
@@ -637,8 +650,8 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * This method reads the orders of a unit and extracts all lines with the syntax '// extcmds:"<key>":value'.
-   * This method returns always a map and never null.
+   * This method reads the orders of a unit and extracts all lines with the syntax '//
+   * extcmds:"<key>":value'. This method returns always a map and never null.
    */
   public Map<String, String> getConfiguration(Unit unit) {
     Map<String, String> configuration = new HashMap<String, String>();
@@ -692,8 +705,9 @@ public class ExtendedCommandsHelper {
    */
   public void updateUnit(Unit u) {
     u.setOrdersChanged(true);
-    if (client != null)
+    if (client != null) {
       client.getDispatcher().fire(new UnitOrdersEvent(this, u));
+    }
   }
 
   /**

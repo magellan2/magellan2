@@ -16,15 +16,12 @@ package magellan.library.gamebinding;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -35,12 +32,10 @@ import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Scheme;
 import magellan.library.Ship;
-import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.Region.Visibility;
-import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Direction;
@@ -122,7 +117,6 @@ public class EresseaPostProcessor {
           // FIXME (stm) 2006-10-28: this has bitten us already
           // check what is visible in what visibility
           // (lighthouse, neigbbour, travel)
-
           // the following tags seem to be present under undefined visibility
           // even if they are zero (but only if region is not an ocean):
           // Bauern, Silber, Unterh, Rekruten, Pferde, (Lohn)
@@ -330,58 +324,20 @@ public class EresseaPostProcessor {
   public void postProcessAfterTrustlevelChange(GameData data) {
     // initialize fog-of-war cache (FIXME(pavkovic): Do it always?)
     // clear all fog-of-war caches
+    RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
     if (data.getRegions() != null) {
       for (Region r : data.getRegions()) {
         r.setFogOfWar(-1);
-      }
-    }
-
-    // intialize the fog-of-war cache for all regions that are covered by lighthouses
-    if (data.getBuildings() != null) {
-      BuildingType type = data.rules.getBuildingType(EresseaConstants.B_LIGHTHOUSE);
-      RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
-      Comparator<Unit> sortIndexComparator = new SortIndexComparator<Unit>(IDComparator.DEFAULT);
-
-      if (type != null) {
-        for (Building b : data.getBuildings()) {
-          if (type.equals(b.getType()) && (b.getSize() >= 10)) {
-            int personCounter = 0;
-            int perceptionSkillLevel = 0;
-            List<Unit> sortedInmates = new LinkedList<Unit>(b.units());
-            Collections.sort(sortedInmates, sortIndexComparator);
-
-            for (Iterator<Unit> inmates = sortedInmates.iterator(); inmates.hasNext()
-                && (personCounter < 4); personCounter++) {
-              Unit inmate = inmates.next();
-              Skill perceptionSkill =
-                  inmate.getSkill(data.rules.getSkillType(EresseaConstants.S_WAHRNEHMUNG, true));
-
-              if (perceptionSkill != null) {
-                perceptionSkillLevel = Math.max(perceptionSkill.getLevel(), perceptionSkillLevel);
-              }
-            }
-
-            int maxRadius = (int) Math.min(Math.log10(b.getSize()) + 1, perceptionSkillLevel / 3);
-
-            if (maxRadius > 0) {
-              // FIXME(stm) getAllNeighbours misst die Pfadlänge, wir brauchen aber alle Regionen
-              // mit dem richtigen Abstand der Koordinaten.
-              Map<CoordinateID, Region> regions =
-                  Regions.getAllNeighbours(data.regions(), b.getRegion().getCoordinate(),
-                      maxRadius, null);
-
-              for (Region r : regions.values()) {
-                if ((oceanType == null) || oceanType.equals(r.getType())) {
-                  if (r.getVisibility().greaterEqual(Visibility.LIGHTHOUSE)) {
-                    r.setFogOfWar(0);
-                  }
-                }
-              }
-            }
+        if ((oceanType == null) || oceanType.equals(r.getType())) {
+          if (r.getVisibility().greaterEqual(Visibility.LIGHTHOUSE)) {
+            r.setFogOfWar(0);
           }
         }
       }
     }
+
+    // intialize the fog-of-war cache for all regions that are covered by lighthouses
+    // removed...
 
     // intialize the fog-of-war cache for all regions where units or ships traveled through
     for (Region r : data.getRegions()) {

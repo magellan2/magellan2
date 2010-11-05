@@ -1658,6 +1658,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     private PotionInfo currentPotion;
     // private Map<ID, ItemType> addedTypes;
     private ArrayList<Faction> newFactions;
+    private int unknownFactions;
+    private int unknownRegions;
 
     @Override
     public void startDocument() throws SAXException {
@@ -1666,6 +1668,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       newPotions = new ArrayList<PotionInfo>();
       newFactions = new ArrayList<Faction>();
       // addedTypes = new HashMap<ID, ItemType>();
+      unknownFactions = 0;
+      unknownRegions = 0;
     }
 
     /**
@@ -1687,8 +1691,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       if (qName.equals("faction")) {
         Faction faction = getData().getFaction(getEntityID(attributes));
         if (faction == null) {
-          AlchemyDialog.log.warn("unknown faction in alchemy file: "
-              + getEntityID(attributes).toString());
+          unknownFactions++;
+          // AlchemyDialog.log.warn("unknown faction in alchemy file: "
+          // + getEntityID(attributes).toString());
         } else {
           newFactions.add(faction);
         }
@@ -1696,8 +1701,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         Region region =
             getData().getRegion(CoordinateID.parse(attributes.getValue("coordinate"), ","));
         if (region == null) {
-          AlchemyDialog.log.warn("unknown region in alchemy file: "
-              + attributes.getValue("coordinate"));
+          unknownRegions++;
+          // AlchemyDialog.log.warn("unknown region in alchemy file: "
+          // + attributes.getValue("coordinate"));
         } else {
           newRegions.add(region);
         }
@@ -1768,7 +1774,10 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
     @Override
     public void endDocument() throws SAXException {
+      log.info("alchemy file read with " + newRegions.size() + " regions and " + unknownFactions
+          + " unknown factions and " + unknownRegions + " unknown regions.");
       setRegions(newRegions);
+      dispatcher.fire(SelectionEvent.create(AlchemyDialog.this, newRegions));
       setFactions(newFactions);
       model.setHerbs(newHerbs);
       model.setPotions(newPotions);

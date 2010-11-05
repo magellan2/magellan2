@@ -1265,8 +1265,8 @@ public abstract class GameData implements Cloneable, Addeable {
             r.setName(Resources.get("gamedata.region.thevoid.name"));
             r.setDescription(Resources.get("gamedata.region.thevoid.beschr"));
             newRegions.add(r);
-            addTranslation(EresseaConstants.RT_VOID.toString(),
-                Resources.get("gamedata.region.thevoid.name"), TranslationType.sourceMagellan);
+            addTranslation(EresseaConstants.RT_VOID.toString(), Resources
+                .get("gamedata.region.thevoid.name"), TranslationType.sourceMagellan);
           }
         }
       }

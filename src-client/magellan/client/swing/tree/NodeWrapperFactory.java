@@ -594,16 +594,16 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
       }
 
       // try to enforce only one column
-//      setPreferredSize(null);
-//
-//      java.awt.Dimension dim = getPreferredSize();
-//      int tabHeight = getTabCount() * 30; // just approximate since there are no
-//      // public functions :-(
-//
-//      if (dim.height < tabHeight) {
-//        dim.height = tabHeight;
-//        setPreferredSize(dim);
-//      }
+      // setPreferredSize(null);
+      //
+      // java.awt.Dimension dim = getPreferredSize();
+      // int tabHeight = getTabCount() * 30; // just approximate since there are no
+      // // public functions :-(
+      //
+      // if (dim.height < tabHeight) {
+      // dim.height = tabHeight;
+      // setPreferredSize(dim);
+      // }
     }
 
     public void initPreferences() {

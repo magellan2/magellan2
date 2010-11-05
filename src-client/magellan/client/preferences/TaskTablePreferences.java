@@ -184,6 +184,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
 
   private TypeTree inspectorsList;
   private TypeTree ignoreList;
+
   // private TypeTree useList;
 
   /**

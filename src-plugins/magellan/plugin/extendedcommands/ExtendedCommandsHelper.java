@@ -285,8 +285,8 @@ public class ExtendedCommandsHelper {
       return false;
     if (otherunit.getFaction().equals(unit.getFaction()))
       return true;
-    return getRegionSkillLevel(unit.getRegion(), unit.getFaction(),
-        world.rules.getSkillType(EresseaConstants.S_WAHRNEHMUNG)) >= otherunit.getSkill(
+    return getRegionSkillLevel(unit.getRegion(), unit.getFaction(), world.rules
+        .getSkillType(EresseaConstants.S_WAHRNEHMUNG)) >= otherunit.getSkill(
         world.rules.getSkillType(EresseaConstants.S_TARNUNG)).getLevel();
   }
 
@@ -598,8 +598,8 @@ public class ExtendedCommandsHelper {
    */
   public String getPathToRegion(Unit unit, Region destination, boolean useSpeed, boolean makeRoute) {
     List<String> orders =
-        (new UnitRoutePlanner()).getOrders(unit, world, unit.getRegion().getID(),
-            destination.getCoordinate(), null, true, true, makeRoute, false);
+        (new UnitRoutePlanner()).getOrders(unit, world, unit.getRegion().getID(), destination
+            .getCoordinate(), null, true, true, makeRoute, false);
     if (orders.size() == 1)
       return orders.get(0);
 

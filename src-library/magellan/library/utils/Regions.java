@@ -1506,7 +1506,7 @@ public class Regions {
    */
   public static List<Region> planShipRoute(Ship ship, GameData data, CoordinateID destination) {
     return Regions.planShipRoute(data, ship.getRegion().getCoordinate(), ship.getShoreId(),
-        destination, data.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship));
+        destination, data.getGameSpecificRules().getShipRange(ship));
   }
 
   static class PathWithLength {

@@ -151,7 +151,7 @@ public class ShipRoutePlanner extends RoutePlanner {
       CoordinateID destination, Component ui, boolean makeSingle, boolean useRange,
       boolean makeRoute, boolean useVorlage) {
     BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
-    int speed = data.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship);
+    int speed = data.getGameSpecificRules().getShipRange(ship);
     List<Region> path =
         Regions
             .planShipRoute(data, ship.getRegion().getID(), ship.getShoreId(), destination, speed);

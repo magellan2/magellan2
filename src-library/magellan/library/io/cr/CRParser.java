@@ -219,7 +219,7 @@ public class CRParser implements RulesIO, GameDataIO {
       while (matcher.find()) {
         final String candi = matcher.group();
         // candi=candi.replaceAll(astral,
-        // world.getGameSpecificStuff().getGameSpecificRules().getAstralSpacePlane());
+        // world.getGameSpecificRules().getAstralSpacePlane());
         CoordinateID coord = CoordinateID.parse(candi, " ");
         if (coord != null) {
           coord = originTranslate(coord);
@@ -249,7 +249,7 @@ public class CRParser implements RulesIO, GameDataIO {
     while (matcher.find()) {
       final String candi = matcher.group();
       // candi=candi.replaceAll(astral,
-      // world.getGameSpecificStuff().getGameSpecificRules().getAstralSpacePlane());
+      // world.getGameSpecificRules().getAstralSpacePlane());
       CoordinateID coord = CoordinateID.parse(candi.substring(1, candi.length() - 1), ",");
       if (coord != null) {
         coord = transformer.transform(coord);

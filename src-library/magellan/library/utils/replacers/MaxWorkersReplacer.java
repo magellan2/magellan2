@@ -30,7 +30,7 @@ public class MaxWorkersReplacer extends AbstractRegionReplacer {
    */
   @Override
   public Object getRegionReplacement(Region region) {
-    return region.getData().getGameSpecificStuff().getGameSpecificRules().getMaxWorkers(region);
+    return region.getData().getGameSpecificRules().getMaxWorkers(region);
   }
 
   public String getDescription() {

@@ -1,8 +1,8 @@
+2010-11-05 / Build 433 - Fiete (sf@fietefietz.de)
+	* changed FogOfWar to CR-visibility information.
 
 2010-11-04 / Build 432 - Fiete (sf@fietefietz.de)
-	* fixed FogOfWar throug Lighthouses https://sourceforge.net/apps/trac/magellan-client/ticket/1
-	
-	
+	* fixed FogOfWar through Lighthouses https://sourceforge.net/apps/trac/magellan-client/ticket/1
 
 2010-08-10 / Build 431 - thoralf (thoralf@m84.de)
     * some small bugfixes in Resources for a better settingsDir variable checking (NPE)

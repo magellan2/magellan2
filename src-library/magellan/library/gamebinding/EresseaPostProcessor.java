@@ -23,15 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 import magellan.library.CoordinateID;
-import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
-import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Scheme;
-import magellan.library.Ship;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
@@ -82,6 +79,8 @@ public class EresseaPostProcessor {
     cleanAstralSchemes(data);
 
     postProcessMessages(data);
+
+    adjustFogOfWar2Visibility(data);
 
     /*
      * retrieve the temp units mentioned in the orders and create them as TempUnit objects
@@ -319,70 +318,32 @@ public class EresseaPostProcessor {
   }
 
   /**
-   * DOCUMENT-ME
+   * making changes to the data after changing trustlevels
    */
   public void postProcessAfterTrustlevelChange(GameData data) {
-    // initialize fog-of-war cache (FIXME(pavkovic): Do it always?)
-    // clear all fog-of-war caches
-    RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
+    // initialize fog-of-war cache ((pavkovic): Do it always?)
+    // (Fiete): no dependencies to TrustLevels anymore...moved to postProcess
+
+    // intialize the fog-of-war cache for all regions that are covered by lighthouses
+    // removed...Fiete
+
+    // intialize the fog-of-war cache for all regions where units or ships traveled through
+    // removed...Fiete
+
+  }
+
+  /**
+   * Removes the FoW for regions with visibility greaterthan lighthouse
+   * 
+   * @param data World
+   */
+  private void adjustFogOfWar2Visibility(GameData data) {
     if (data.getRegions() != null) {
       for (Region r : data.getRegions()) {
         r.setFogOfWar(-1);
-        if ((oceanType == null) || oceanType.equals(r.getType())) {
-          if (r.getVisibility().greaterEqual(Visibility.LIGHTHOUSE)) {
-            r.setFogOfWar(0);
-          }
-        }
-      }
-    }
-
-    // intialize the fog-of-war cache for all regions that are covered by lighthouses
-    // removed...
-
-    // intialize the fog-of-war cache for all regions where units or ships traveled through
-    for (Region r : data.getRegions()) {
-      if (r.getTravelThru() != null) {
-        initTravelThru(data, r, r.getTravelThru());
-      }
-
-      if (r.getTravelThruShips() != null) {
-        initTravelThru(data, r, r.getTravelThruShips());
-      }
-    }
-  }
-
-  private void initTravelThru(GameData data, Region region, Collection<Message> travelThru) {
-    for (Message mes : travelThru) {
-      // fetch ID of Unit or Ship from Message of type "<name> (<id>)"
-      String s = mes.getText();
-      int startpos = s.lastIndexOf("(") + 1;
-      int endpos = s.length() - 1;
-
-      if ((startpos > -1) && (endpos > startpos)) {
-        try {
-          // message text always use the report base
-          ID id = EntityID.createEntityID(s.substring(startpos, endpos), data.base);
-
-          if ((data.getUnit(id) != null) && (data.getUnit(id).getFaction().isPrivileged())) {
-            // fast return
-            region.setFogOfWar(0);
-
-            return;
-          } else {
-            Ship ship = data.getShip(id);
-
-            if (ship != null) {
-              for (Unit unit : ship.units()) {
-                if ((unit).getFaction().isPrivileged()) {
-                  // fast return
-                  region.setFogOfWar(0);
-
-                  return;
-                }
-              }
-            }
-          }
-        } catch (NumberFormatException e) {
+        // removed: Beschränkung auf Ozeanregionen (Fiete)
+        if (r.getVisibility().greaterEqual(Visibility.LIGHTHOUSE)) {
+          r.setFogOfWar(0);
         }
       }
     }
@@ -501,10 +462,5 @@ public class EresseaPostProcessor {
       }
     }
   }
-  // private void postProcessMessages(GameData data) {
-  // herb information from FIND HERBS/FORSCHE KRÄUTER or MAKE HERBS/MACHE KRÄUTER
-  // item information from SHOW/ZEIGE
-  // race information from SHOW/ZEIGE
-  // unit information from SPY/SPIONIERE
-  // }
+
 }

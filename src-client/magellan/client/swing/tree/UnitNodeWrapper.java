@@ -152,35 +152,35 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingAdditional() {
-    return adapter.properties[adapter.SHOW_ADDITIONAL];
+    return adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_ADDITIONAL];
   }
 
   /**
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingContainerIcons() {
-    return isShowingAdditional() && adapter.properties[adapter.SHOW_CONTAINER];
+    return isShowingAdditional() && adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_CONTAINER];
   }
 
   /**
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingSkillIcons() {
-    return isShowingAdditional() && adapter.properties[adapter.SHOW_SKILL];
+    return isShowingAdditional() && adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_SKILL];
   }
 
   /**
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingOtherIcons() {
-    return isShowingAdditional() && adapter.properties[adapter.SHOW_OTHER];
+    return isShowingAdditional() && adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_OTHER];
   }
 
   /**
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingIconText() {
-    return isShowingAdditional() && adapter.properties[adapter.SHOW_TEXT];
+    return isShowingAdditional() && adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_TEXT];
   }
 
   /**
@@ -189,7 +189,8 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
    * @return <code>true</code> iff skills with level less than one should be shown
    */
   public boolean isShowingSkillsLessThanOne() {
-    return isShowingAdditional() && adapter.properties[adapter.SHOW_SKILL_LESS_ONE];
+    return isShowingAdditional()
+        && adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_SKILL_LESS_ONE];
   }
 
   /**
@@ -198,7 +199,8 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
    * @return <code>true</code> iff skills with level less than two should be shown
    */
   public boolean isShowingSkillsLessThanTwo() {
-    return isShowingAdditional() && adapter.properties[adapter.SHOW_SKILL_LESS_TWO];
+    return isShowingAdditional()
+        && adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_SKILL_LESS_TWO];
   }
 
   /**
@@ -207,11 +209,11 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
    * @return The maximum number of skill icons that should be shown.
    */
   public int numberOfShownSkills() {
-    if (!adapter.properties[adapter.NUMBER_OF_SHOWN_SKILLS])
+    if (!adapter.properties[UnitNodeWrapperDrawPolicy.NUMBER_OF_SHOWN_SKILLS])
       return Integer.MAX_VALUE;
 
     for (int i = 1; i <= 5; ++i) {
-      if (!adapter.properties[adapter.NUMBER_OF_SHOWN_SKILLS + i])
+      if (!adapter.properties[UnitNodeWrapperDrawPolicy.NUMBER_OF_SHOWN_SKILLS + i])
         return i - 1;
     }
     return 5;
@@ -221,42 +223,43 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingExpectedOnly() {
-    return isShowingAdditional() && adapter.properties[adapter.SHOW_EXPECTED_ONLY];
+    return isShowingAdditional()
+        && adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_EXPECTED_ONLY];
   }
 
   /**
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingChanges() {
-    return adapter.properties[adapter.SHOW_CHANGES];
+    return adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_CHANGES];
   }
 
   /**
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingChangesStyled() {
-    return isShowingChanges() && adapter.properties[adapter.SHOW_CHANGE_STYLED];
+    return isShowingChanges() && adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_CHANGE_STYLED];
   }
 
   /**
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingChangesText() {
-    return isShowingChanges() && adapter.properties[adapter.SHOW_CHANGE_TEXT];
+    return isShowingChanges() && adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_CHANGE_TEXT];
   }
 
   /**
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingCategorized() {
-    return adapter.properties[adapter.SHOW_CATEGORIZED];
+    return adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_CATEGORIZED];
   }
 
   /**
    * Returns the accordant option of the draw policy.
    */
   public boolean isShowingCatagorized(int type) {
-    return adapter.properties[adapter.CATEGORIZE_START + type];
+    return adapter.properties[UnitNodeWrapperDrawPolicy.CATEGORIZE_START + type];
   }
 
   /**
@@ -415,10 +418,11 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
     // items
     if (others != null) {
       if (isShowingCategorized()) {
-        ArrayList<List<Item>> categories = new ArrayList<List<Item>>(adapter.NUMBER_OF_CATEGORIES);
+        ArrayList<List<Item>> categories =
+            new ArrayList<List<Item>>(UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES);
         boolean anything = false;
 
-        for (int i = 0; i < adapter.NUMBER_OF_CATEGORIES; i++) {
+        for (int i = 0; i < UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES; i++) {
           if (isShowingCatagorized(i)) {
             categories.add(new LinkedList<Item>());
             anything = true;
@@ -436,7 +440,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 
               int j = -1;
 
-              for (int i = 0; i < adapter.NUMBER_OF_CATEGORIES; i++) {
+              for (int i = 0; i < UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES; i++) {
                 if (adapter.categories[i].equals(cat) && isShowingCatagorized(i)) {
                   j = i;
                 }
@@ -452,7 +456,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 
           StringBuffer buffer = new StringBuffer();
 
-          for (int i = 0; i < adapter.NUMBER_OF_CATEGORIES; i++) {
+          for (int i = 0; i < UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES; i++) {
             if (categories.get(i) != null) {
 
               int count = 0;
@@ -583,7 +587,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
     if (reverse != null)
       return reverse.booleanValue();
 
-    return adapter.properties[adapter.SHOW_NAMEFIRST];
+    return adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_NAMEFIRST];
   }
 
   /**
@@ -657,55 +661,55 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
   private static class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements
       ContextChangeable, ActionListener {
     /** DOCUMENT-ME */
-    public final int SHOW_ADDITIONAL = 0;
+    public static final int SHOW_ADDITIONAL = 0;
 
     /** DOCUMENT-ME */
-    public final int SHOW_CONTAINER = 1;
+    public static final int SHOW_CONTAINER = 1;
 
     /** DOCUMENT-ME */
-    public final int SHOW_SKILL = 2;
+    public static final int SHOW_SKILL = 2;
 
     /** DOCUMENT-ME */
-    public final int SHOW_SKILL_LESS_ONE = 3;
+    public static final int SHOW_SKILL_LESS_ONE = 3;
 
     /** DOCUMENT-ME */
-    public final int SHOW_SKILL_LESS_TWO = 4;
+    public static final int SHOW_SKILL_LESS_TWO = 4;
 
     /** DOCUMENT-ME */
-    public final int SHOW_OTHER = 5;
+    public static final int SHOW_OTHER = 5;
 
     /** DOCUMENT-ME */
-    public final int SHOW_TEXT = 6;
+    public static final int SHOW_TEXT = 6;
 
     /** DOCUMENT-ME */
-    public final int SHOW_NAMEFIRST = 7;
+    public static final int SHOW_NAMEFIRST = 7;
 
     /** DOCUMENT-ME */
-    public final int SHOW_EXPECTED_ONLY = 8;
+    public static final int SHOW_EXPECTED_ONLY = 8;
 
     /** option for showing only first x skills */
-    public final int NUMBER_OF_SHOWN_SKILLS = 9;
+    public static final int NUMBER_OF_SHOWN_SKILLS = 9;
 
-    public final int NUMBER_OF_SHOWN_SKILLS_START = 10;
+    public static final int NUMBER_OF_SHOWN_SKILLS_START = 10;
 
-    public final int NUMBER_OF_SHOWN_SKILLS_END = 14;
-
-    /** DOCUMENT-ME */
-    public final int SHOW_CHANGES = 15;
+    public static final int NUMBER_OF_SHOWN_SKILLS_END = 14;
 
     /** DOCUMENT-ME */
-    public final int SHOW_CHANGE_STYLED = 16;
+    public static final int SHOW_CHANGES = 15;
 
     /** DOCUMENT-ME */
-    public final int SHOW_CHANGE_TEXT = 17;
+    public static final int SHOW_CHANGE_STYLED = 16;
 
     /** DOCUMENT-ME */
-    public final int SHOW_CATEGORIZED = 18;
+    public static final int SHOW_CHANGE_TEXT = 17;
 
     /** DOCUMENT-ME */
-    public final int CATEGORIZE_START = 19;
+    public static final int SHOW_CATEGORIZED = 18;
 
-    public final int NUMBER_OF_CATEGORIES = 7;
+    /** DOCUMENT-ME */
+    public static final int CATEGORIZE_START = 19;
+
+    public static final int NUMBER_OF_CATEGORIES = 7;
 
     protected String categories[] = { "weapons", "armour", "resources", "luxuries", "herbs",
         "potions", "misc" };

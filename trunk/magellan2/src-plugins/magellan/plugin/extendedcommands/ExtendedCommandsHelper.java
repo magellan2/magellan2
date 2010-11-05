@@ -745,7 +745,7 @@ public class ExtendedCommandsHelper {
    * to game.
    */
   public GameSpecificRules getGameSpecificRules() {
-    return world.getGameSpecificStuff().getGameSpecificRules();
+    return world.getGameSpecificRules();
   }
 
   /**

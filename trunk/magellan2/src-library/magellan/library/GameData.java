@@ -30,6 +30,7 @@ import java.util.Random;
 import java.util.Set;
 
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.io.cr.Loader;
@@ -1047,11 +1048,19 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   public abstract long estimateSize();
 
+  public Rules getRules() {
+    return rules;
+  }
+
   /**
    * Provides the encapsulating of game specific stuff
    */
   public GameSpecificStuff getGameSpecificStuff() {
     return rules.getGameSpecificStuff();
+  }
+
+  public GameSpecificRules getGameSpecificRules() {
+    return rules.getGameSpecificStuff().getGameSpecificRules();
   }
 
   /** Post processes the game data (if necessary) once */
@@ -1256,8 +1265,8 @@ public abstract class GameData implements Cloneable, Addeable {
             r.setName(Resources.get("gamedata.region.thevoid.name"));
             r.setDescription(Resources.get("gamedata.region.thevoid.beschr"));
             newRegions.add(r);
-            addTranslation(EresseaConstants.RT_VOID.toString(), Resources
-                .get("gamedata.region.thevoid.name"), TranslationType.sourceMagellan);
+            addTranslation(EresseaConstants.RT_VOID.toString(),
+                Resources.get("gamedata.region.thevoid.name"), TranslationType.sourceMagellan);
           }
         }
       }

@@ -966,14 +966,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @see magellan.library.Region#maxEntertain()
    */
   public int maxEntertain() {
-    return getData().getGameSpecificStuff().getGameSpecificRules().getMaxEntertain(this);
+    return getData().getGameSpecificRules().getMaxEntertain(this);
   }
 
   /**
    * Returns the silver that could be earned through entertainment in this region in the last week.
    */
   public int maxOldEntertain() {
-    return getData().getGameSpecificStuff().getGameSpecificRules().getMaxOldEntertain(this);
+    return getData().getGameSpecificRules().getMaxOldEntertain(this);
   }
 
   /**

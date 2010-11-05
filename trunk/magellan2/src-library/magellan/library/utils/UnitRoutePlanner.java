@@ -35,7 +35,7 @@ import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
 public class UnitRoutePlanner {
 
   private static int getModifiedRadius(Unit unit, boolean onRoad) {
-    return unit.getRegion().getData().rules.getGameSpecificStuff().getMovementEvaluator()
+    return unit.getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
         .getModifiedRadius(unit, onRoad);
   }
 

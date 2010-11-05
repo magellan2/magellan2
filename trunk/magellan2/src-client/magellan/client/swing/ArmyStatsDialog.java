@@ -165,7 +165,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 
       while (st.hasMoreTokens()) {
         String skillName = st.nextToken();
-        SkillType skill = data.rules.getSkillType(StringID.create(skillName), false);
+        SkillType skill = data.rules.getSkillType(StringID.create(skillName));
 
         if (skill != null) {
           excludeSkills.add(skill);

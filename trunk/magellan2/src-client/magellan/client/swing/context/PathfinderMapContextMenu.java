@@ -171,12 +171,12 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
           // dest, excludeMap);
           actRegion = u.getRegion();
           int streetRadius =
-              data.rules.getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(u, true);
+              data.getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(u, true);
           if (streetRadius == 0) {
             streetRadius = 2;
           }
           int radius =
-              data.rules.getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(u, false);
+              data.getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(u, false);
           if (radius == 0) {
             radius = 1;
           }

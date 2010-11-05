@@ -727,7 +727,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   protected GameSpecificStuff getGameSpecificStuff() {
     if (gameSpecStuff == null) {
-      gameSpecStuff = data.rules.getGameSpecificStuff();
+      gameSpecStuff = data.getGameSpecificStuff();
     }
     return gameSpecStuff;
   }
@@ -3965,7 +3965,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     boolean warning = false;
     if (s.getShipType().getMaxPersons() > 0) {
       int silverWeight =
-          data.rules.getGameSpecificStuff().getGameSpecificRules().getSilverPerWeightUnit();
+          data.getGameSpecificStuff().getGameSpecificRules().getSilverPerWeightUnit();
       int personWeight = 10;
       int maxInmates = s.getMaxPersons() * silverWeight * personWeight; // 10 GE
       loadText.append(" -- ");
@@ -4252,7 +4252,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             // Lets see, if we have an herb here
             // or another ItemType...just in case
             String keyIcon = key;
-            ItemType someItemType = data.rules.getItemType(key, false);
+            ItemType someItemType = data.rules.getItemType(key);
             if (someItemType != null && someItemType.getIconName() != null
                 && someItemType.getIconName().length() > 0) {
               keyIcon = someItemType.getIconName();

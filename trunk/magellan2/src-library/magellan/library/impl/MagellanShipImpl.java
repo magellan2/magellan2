@@ -227,7 +227,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   }
 
   private GameSpecificStuff getGameSpecificStuff() {
-    return data.rules.getGameSpecificStuff();
+    return data.getGameSpecificStuff();
   }
 
   /**

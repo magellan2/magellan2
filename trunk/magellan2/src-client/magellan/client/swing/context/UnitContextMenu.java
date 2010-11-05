@@ -99,7 +99,7 @@ public class UnitContextMenu extends JPopupMenu {
     super(unit.toString());
     this.unit = unit;
     this.data = data;
-    gameSpecStuff = data.rules.getGameSpecificStuff();
+    gameSpecStuff = data.getGameSpecificStuff();
     this.dispatcher = dispatcher;
     settings = dispatcher.getMagellanContext().getProperties();
 

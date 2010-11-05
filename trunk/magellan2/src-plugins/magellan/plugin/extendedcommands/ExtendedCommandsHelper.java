@@ -101,7 +101,7 @@ public class ExtendedCommandsHelper {
   }
 
   protected GameSpecificStuff getGamesSpecificStuff() {
-    return world.rules.getGameSpecificStuff();
+    return world.getGameSpecificStuff();
   }
 
   /**

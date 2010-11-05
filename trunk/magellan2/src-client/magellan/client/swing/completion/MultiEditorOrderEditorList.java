@@ -1990,7 +1990,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
                         if (dialog.isGiveMaintainCost() || dialog.isGiveRecruitCost()) {
                           ItemType silverType =
-                              data.rules.getItemType(EresseaConstants.I_USILVER, false);
+                              data.rules.getItemType(EresseaConstants.I_USILVER);
                           String silver = null;
 
                           if (silverType != null) {

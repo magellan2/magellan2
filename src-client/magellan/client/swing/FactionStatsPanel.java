@@ -802,7 +802,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 ConstructibleType bT = b.getBuildingType();
                 if (bT != null) {
                   // get Maintenance cost Silver
-                  ItemType silverType = data.rules.getItemType(EresseaConstants.I_USILVER, false);
+                  ItemType silverType = data.rules.getItemType(EresseaConstants.I_USILVER);
                   if (silverType != null) {
                     Item silverItem = bT.getMaintenance(silverType.getID());
                     if (silverItem != null) {

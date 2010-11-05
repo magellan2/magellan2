@@ -58,7 +58,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
           || name.equalsIgnoreCase(magellan.library.Spell.Component.PERMANENT_AURA))
         return null;
       else
-        return data.rules.getItemType(name, false);
+        return data.rules.getItemType(name);
     }
 
     public String getName() {

@@ -470,7 +470,7 @@ public class EresseaOrderCompleter implements Completer {
       while (buildings.hasNext()) {
         final Building b = buildings.next();
 
-        if (data.rules.getGameSpecificStuff().getGameSpecificRules().isCastle(b.getType())
+        if (data.getGameSpecificStuff().getGameSpecificRules().isCastle(b.getType())
             && (b.getModifiedOwnerUnit() == null || b.getModifiedOwnerUnit().getFaction().equals(
                 ownerFaction) == false)) {
           addNamed(b, "", 0, true);
@@ -2602,7 +2602,7 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   protected GameSpecificStuff getGameSpecificStuff() {
-    return data.rules.getGameSpecificStuff();
+    return data.getGameSpecificStuff();
   }
 
   /**

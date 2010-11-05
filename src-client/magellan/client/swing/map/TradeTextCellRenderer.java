@@ -82,7 +82,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
         LuxuryPrice lp = r.getPrices().get(id);
 
         if (lp.getPrice() < 0) {
-          ItemType type = data.rules.getItemType(id, false);
+          ItemType type = data.rules.getItemType(id);
 
           if (type != null)
             return type.getName().substring(0, 1) + r.maxLuxuries();

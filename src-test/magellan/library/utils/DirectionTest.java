@@ -141,7 +141,7 @@ public class DirectionTest {
     r0.addNeighbor(Direction.W, r2);
     r2.addNeighbor(Direction.E, r0);
 
-    data.rules.getGameSpecificStuff().postProcess(data);
+    data.getGameSpecificStuff().postProcess(data);
 
     assertSame(Direction.E, Direction.toDirection(r0, r1));
     assertSame(Direction.W, Direction.toDirection(r1, r0));

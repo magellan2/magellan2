@@ -67,8 +67,13 @@ public class SelectionHistory {
     }
   }
 
+  /**
+   * Number of entries in the history list.
+   */
+  public static final int HISTORY_SIZE = 20;
+
   private static EventHook eventHook = new EventHook();
-  private static Bucket<SelectionEntry> history = new Bucket<SelectionEntry>(10);
+  private static Bucket<SelectionEntry> history = new Bucket<SelectionEntry>(HISTORY_SIZE);
   private static Collection<Object> ignoredSources = new HashSet<Object>();
   private static List<ChangeListener> listeners = new ArrayList<ChangeListener>();
   private static SelectionEvent lastEvent;

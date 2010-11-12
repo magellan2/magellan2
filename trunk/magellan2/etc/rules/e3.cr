@@ -538,6 +538,7 @@ RACE "Goblins"
 "Goblins";name
 60;recruitmentcosts
 "Goblin";recruitmentname
+2;recruitmentfactor
 6;maintenance
 6;weight
 4.4;capacity

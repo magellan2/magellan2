@@ -37,13 +37,11 @@ import magellan.library.utils.Units;
  * @author Andreas
  * @version 1.0
  */
-public class ItemNodeWrapper implements CellObject, SupportsClipboard {
+public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard {
   // Achtung: Das modifizierte Item!
   protected Item modItem;
   protected Unit unit;
   protected String text;
-
-  protected boolean warning = false;
 
   protected int unmodifiedAmount;
 
@@ -93,19 +91,6 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
     adapter = null;
     showRegionItemAmount = b;
     propertiesChanged();
-  }
-
-  /**
-   * sets the warning flag for this node
-   * 
-   * @param b the new value of the warning flag
-   * @return the old value of the warning flag
-   */
-  public boolean setWarningFlag(boolean b) {
-    boolean res = warning;
-    warning = b;
-    text = null;
-    return res;
   }
 
   // pavkovic 2003.10.01: prevent multiple Lists to be generated for nearly static code
@@ -181,7 +166,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
           nodeText.append(modItem.getAmount()).append(' ');
         }
 
-        if (warning) {
+        if (getWarningLevel() >= CellObject.L_WARNING) {
           nodeText.append(" (!!!) ");
         }
 
@@ -216,14 +201,14 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 
         if (modItem.getAmount() != item.getAmount()) {
           nodeText.append("(").append(modItem.getAmount());
-          if (warning) {
+          if (getWarningLevel() >= CellObject.L_WARNING) {
             nodeText.append("!!!) ");
           } else {
             nodeText.append(") ");
           }
 
         } else {
-          if (warning) {
+          if (getWarningLevel() >= CellObject.L_WARNING) {
             nodeText.append("(!!!) ");
           }
         }
@@ -302,4 +287,5 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 
     return adapter;
   }
+
 }

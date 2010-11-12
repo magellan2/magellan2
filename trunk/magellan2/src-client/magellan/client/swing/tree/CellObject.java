@@ -25,6 +25,13 @@ import java.util.Properties;
  * @version 1.0
  */
 public interface CellObject {
+  /** Message level. */
+  public static final int L_MESSAGE = 1;
+  /** Warning level. */
+  public static final int L_WARNING = 2;
+  /** Error level. */
+  public static final int L_ERROR = 3;
+
   /**
    * Creates a preferences adapter factory.
    * 
@@ -69,6 +76,21 @@ public interface CellObject {
    * @return true if this item shall be displayed emphasized, false otherwise
    */
   boolean emphasized();
+
+  /**
+   * Sets the warning level for this node
+   * 
+   * @param level the new warning level
+   * @return the old warning level
+   */
+  public int setWarningLevel(int level);
+
+  /**
+   * Returns the warning level for this node.
+   * 
+   * @return the warning level for this node
+   */
+  public int getWarningLevel();
 
   /**
    * This enforces the toString method

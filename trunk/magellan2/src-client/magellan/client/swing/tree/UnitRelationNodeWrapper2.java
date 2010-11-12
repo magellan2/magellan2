@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Properties;
 
 import magellan.client.swing.context.ContextFactory;
+import magellan.library.Unit;
 import magellan.library.relation.UnitRelation;
 
 // FIXME doesn't work well
@@ -38,8 +39,8 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   private CellObject2 innerNode;
   private ContextFactory contextFactory;
 
-  public UnitRelationNodeWrapper2(UnitRelation rel, CellObject2 innerNode) {
-    super(rel, null);
+  public UnitRelationNodeWrapper2(Unit owner, UnitRelation rel, CellObject2 innerNode) {
+    super(owner, rel, null);
     this.innerNode = innerNode;
     relation = rel;
   }
@@ -57,7 +58,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
    */
   @Override
   public Collection<String> getIconNames() {
-    return innerNode.getIconNames();
+    return super.getIconNames();
   }
 
   /**
@@ -138,6 +139,13 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
     return innerNode.getGraphicsElements();
   }
 
+  /**
+   * @see magellan.client.swing.tree.CellObject2#getLabelPosition()
+   */
+  public int getLabelPosition() {
+    return innerNode.getLabelPosition();
+  }
+
   public boolean reverseOrder() {
     return innerNode.reverseOrder();
   }
@@ -146,4 +154,5 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   public CellObject getInnerNode() {
     return innerNode;
   }
+
 }

@@ -26,7 +26,7 @@ import magellan.library.Unit;
  * @author Ulrich Küster A simple nodewrapper wrapping a list of units allowing acces to them via
  *         getUnits().
  */
-public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
+public class UnitListNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard {
   // identifies that this UnitListNodeWrapper contains a list of units that are
   // some other unit's students
 

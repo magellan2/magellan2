@@ -28,6 +28,7 @@ import javax.swing.tree.TreeNode;
 import magellan.client.swing.GiveOrderDialog;
 import magellan.client.swing.RemoveOrderDialog;
 import magellan.client.swing.context.ContextFactory;
+import magellan.client.swing.tree.CellObject;
 import magellan.client.swing.tree.ItemCategoryNodeWrapper;
 import magellan.client.swing.tree.ItemNodeWrapper;
 import magellan.client.swing.tree.NodeWrapperFactory;
@@ -72,7 +73,7 @@ public class Units {
   }
 
   /**
-   * DOCUMENT-ME
+   * Changes the game rules.
    */
   public void setRules(Rules rules) {
     this.rules = rules;
@@ -267,19 +268,21 @@ public class Units {
       boolean addItemNode = false;
 
       for (final ReserveRelation rrel : u.getItemReserveRelations(currentItem.getItemType())) {
-        final StringBuffer text = new StringBuffer(rrel.amount).append(" ");
+        final StringBuilder text = new StringBuilder().append(rrel.amount).append(" ");
         final List<String> icons = new LinkedList<String>();
-        if (rrel.warning) {
-          itemNodeWrapper.setWarningFlag(true);
-          text.append("(!!!) ");
-          icons.add("warnung");
-        }
         text.append(Resources.get("util.units.node.reserved"));
+        if (rrel.warning) {
+          itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
+          // text.append("(!!!) ");
+          icons.add("warnung");
+          // reserveNodeWrapper.setAdditionalIcon("warnung");
+        }
         icons.add("reserve");
 
-        final UnitRelationNodeWrapper reserveNodeWrapper =
-            factory.createRelationNodeWrapper(rrel, factory.createSimpleNodeWrapper(
-                text.toString(), icons));
+        UnitRelationNodeWrapper reserveNodeWrapper = // factory.createSimpleNodeWrapper(rrel,
+                                                     // text.toString(), icons);
+            factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
+                .toString(), icons));
         itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
 
         addItemNode = true;
@@ -287,22 +290,26 @@ public class Units {
 
       for (final ItemTransferRelation currentRelation : u.getItemTransferRelations(currentItem
           .getItemType())) {
-        final StringBuffer prefix = new StringBuffer(currentRelation.amount).append(" ");
-        if (currentRelation.warning) {
-          itemNodeWrapper.setWarningFlag(true);
-          // TODO: use append
-          prefix.append("(!!!) ");
-
-        }
+        final StringBuilder prefix = new StringBuilder().append(currentRelation.amount).append(" ");
 
         String addIcon = null;
         Unit u2 = null;
 
         if (currentRelation.source == u) {
-          addIcon = "get";
+          if (currentRelation.target == u) {
+            addIcon = "getgive";
+          } else if (currentRelation.origin == currentRelation.source) {
+            addIcon = "give";
+          } else {
+            addIcon = "givetrans";
+          }
           u2 = currentRelation.target;
         } else if (currentRelation.target == u) {
-          addIcon = "give";
+          if (currentRelation.origin == currentRelation.source) {
+            addIcon = "get";
+          } else {
+            addIcon = "gettrans";
+          }
           u2 = currentRelation.source;
         }
 
@@ -311,19 +318,24 @@ public class Units {
               factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2
                   .getModifiedPersons());
           giveNodeWrapper.setReverseOrder(true);
-          giveNodeWrapper.setAdditionalIcon(addIcon);
+
+          if (currentRelation.warning) {
+            itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
+            // prefix.append("(!!!) ");
+            giveNodeWrapper.addAdditionalIcon("warnung");
+            // relationWrapper.setAdditionalIcon("warnung");
+          }
+          giveNodeWrapper.addAdditionalIcon(addIcon);
 
           final UnitRelationNodeWrapper relationWrapper =
-              factory.createRelationNodeWrapper(currentRelation, giveNodeWrapper);
+              factory.createRelationNodeWrapper(u2, currentRelation, giveNodeWrapper);
 
-          // if (currentRelation.warning) {
-          // giveNodeWrapper.setAdditionalIcon("warnung");
-          // }
           itemNode.add(new DefaultMutableTreeNode(relationWrapper));
 
           addItemNode = true;
         }
       }
+
       if (addItemNode) {
         // FIXME: we return different objects here!!
         categoryNode.add(itemNode);
@@ -635,7 +647,7 @@ public class Units {
    * @param s A string array with the following values: <br/>
    *          [0] : The order fragment that was given <br/>
    *          [1] : One of {@link RemoveOrderDialog#BEGIN_ACTION},
-   *          {@link RemoveOrderDialog#CONTAINS_ACTION, {@link RemoveOrderDialog#REGEX_ACTION} <br/>
+   *          {@link RemoveOrderDialog#CONTAINS_ACTION}, {@link RemoveOrderDialog#REGEX_ACTION} <br/>
    *          [2] : "true" if case should not be ignored
    */
   public static void removeOrders(Unit u, String[] s) {

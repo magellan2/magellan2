@@ -28,7 +28,7 @@ import magellan.library.Unit;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class IslandNodeWrapper implements CellObject, SupportsClipboard {
+public class IslandNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard {
   private Island island = null;
 
   // a static list (will never change) its value over all instances of IslandNodeWrapper

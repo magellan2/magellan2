@@ -29,7 +29,7 @@ import magellan.library.rules.SkillType;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
+public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2, SupportsClipboard {
   private Unit unit;
   private Skill skill;
   private Skill modSkill;
@@ -251,6 +251,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
   /**
    * @see magellan.client.swing.tree.CellObject#emphasized()
    */
+  @Override
   public boolean emphasized() {
     return false;
   }
@@ -354,6 +355,13 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
   }
 
   /**
+   * @see magellan.client.swing.tree.CellObject2#getLabelPosition()
+   */
+  public int getLabelPosition() {
+    return elements.size() - 1;
+  }
+
+  /**
    * Never reversed.
    * 
    * @see magellan.client.swing.tree.CellObject2#reverseOrder()
@@ -395,4 +403,5 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
             "prefs.changes.text", "prefs.changes.mode0.text", "prefs.changes.mode1.text", }, 0,
         "tree.skillnodewrapper.");
   }
+
 }

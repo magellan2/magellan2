@@ -25,7 +25,7 @@ import magellan.library.Unit;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class UnitCommentNodeWrapper implements CellObject, SupportsClipboard {
+public class UnitCommentNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard {
   private String comment = null;
   private Unit u = null;
   private List<String> iconNames = null;

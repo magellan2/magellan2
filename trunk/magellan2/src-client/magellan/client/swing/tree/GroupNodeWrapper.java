@@ -28,7 +28,7 @@ import magellan.library.Group;
  * 
  * @author Andreas, Ulrich Küster
  */
-public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
+public class GroupNodeWrapper extends DefaultNodeWrapper implements CellObject2, SupportsClipboard {
   protected Group group;
   protected List<GraphicsElement> GE;
   protected static Icon icon;
@@ -70,6 +70,13 @@ public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, Su
     }
 
     return GE;
+  }
+
+  /**
+   * @see magellan.client.swing.tree.CellObject2#getLabelPosition()
+   */
+  public int getLabelPosition() {
+    return GE.size() - 1;
   }
 
   private class GroupGraphicsElement extends GraphicsElement {
@@ -165,4 +172,5 @@ public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, Su
       NodeWrapperDrawPolicy adapter) {
     return null;
   }
+
 }

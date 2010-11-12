@@ -157,7 +157,7 @@ public class OrderReader {
        * new order instead of parsing this line as a comment. So treat lines, that start with a
        * semicolon special!
        */
-      if (line.trim().startsWith(";")) {
+      if (line.trim().startsWith(EresseaConstants.O_COMMENT)) {
         if (currentUnit != null) {
           // mark orders as confirmed on a ";bestaetigt" comment
           String rest = Umlaut.normalize(line.substring(line.indexOf(';') + 1).trim());

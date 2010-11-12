@@ -538,11 +538,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Returns the resource with the ID of its item type.
-   * 
-   * @return the resource object or null if no resource with the specified ID exists in this region.
+   * @see magellan.library.Region#getResource(magellan.library.rules.ItemType)
    */
   public RegionResource getResource(ItemType type) {
+    if (type == null)
+      return null;
     return (resources != null) ? (RegionResource) resources.get(type) : null;
   }
 
@@ -1394,7 +1394,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns horses.
    */
   public int getHorses() {
-    ItemType horsesIT = data.rules.getItemType(EresseaConstants.I_RHORSES, true);
+    ItemType horsesIT = data.rules.getItemType(EresseaConstants.I_RHORSES);
     if (horsesIT != null) {
       RegionResource horseRR = getResource(horsesIT);
       if (horseRR != null)
@@ -1714,10 +1714,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns peasants.
    */
   public int getPeasants() {
-    ItemType peasonsIT = data.rules.getItemType(EresseaConstants.I_PEASANTS, true);
-    RegionResource peasonsRR = getResource(peasonsIT);
-    if (peasonsRR != null)
-      return peasonsRR.getAmount();
+    ItemType peasantType = data.rules.getItemType(EresseaConstants.I_PEASANTS);
+    RegionResource peasantResource = getResource(peasantType);
+    if (peasantResource != null)
+      return peasantResource.getAmount();
     return peasants;
   }
 

@@ -46,16 +46,24 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /** The unit is not sufficiently skilled in horse riding */
   public static final int CAP_UNSKILLED = MovementEvaluator.CAP_UNSKILLED;
 
-  /** hmmm.... */
+  // hmmm....
   // Do not know either (Fiete)
   // OK, mail from enno: different bit coded guard effects
+  /** "GUARD TAX" flag (not used any more in modern eressea) */
   public static final int GUARDFLAG_TAX = 1;
+  /** "GUARD MINING" flag (not used any more in modern eressea) */
   public static final int GUARDFLAG_MINING = 1 << 1;
+  /** "GUARD WOOD" flag (not used any more in modern eressea) */
   public static final int GUARDFLAG_WOOD = 1 << 2;
+  /** "GUARD TRAVEL" flag (not used any more in modern eressea) */
   public static final int GUARDFLAG_TRAVELTHRU = 1 << 3;
+  /** "GUARD LANDING" flag (not used any more in modern eressea) */
   public static final int GUARDFLAG_LANDING = 1 << 4;
+  /** "GUARD CREWS" flag (not used any more in modern eressea) */
   public static final int GUARDFLAG_CREWS = 1 << 5;
+  /** "GUARD RECRUIT" flag (not used any more in modern eressea) */
   public static final int GUARDFLAG_RECRUIT = 1 << 6;
+  /** "GUARD PRODUCE" flag (not used any more in modern eressea) */
   public static final int GUARDFLAG_PRODUCE = 1 << 7;
 
   /**

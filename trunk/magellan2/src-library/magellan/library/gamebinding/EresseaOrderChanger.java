@@ -35,8 +35,9 @@ import magellan.library.utils.Resources;
  * @version $Revision: 305 $
  */
 public class EresseaOrderChanger implements OrderChanger {
-
   public static final String eresseaOrderChangedMarker = ";changed by Magellan";
+
+  protected static final String PCOMMENTSTART = EresseaConstants.O_PCOMMENT + " ";
 
   private Rules rules;
 
@@ -206,7 +207,8 @@ public class EresseaOrderChanger implements OrderChanger {
       break;
 
     case 1:
-      str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FRONT);
+      // KÄMPFE VORNE is deprecated
+      str += PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FRONT);
 
       break;
 
@@ -272,33 +274,33 @@ public class EresseaOrderChanger implements OrderChanger {
           + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \"\"");
     }
 
-    orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
+    orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
         + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " " + unit.getID());
-    orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
+    orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
         + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + unit.getName() + "\"");
 
     if (unit.getDescription() != null) {
-      orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
+      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + unit.getDescription()
           + "\"");
     }
 
     if (!unit.isHideFaction()) {
-      orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_HIDE) + " "
+      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_HIDE) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_FACTION) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_NOT));
     }
 
     if (unit.getShip() != null) {
-      orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
+      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " "
           + unit.getShip().getID().toString());
-      orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
+      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \""
           + unit.getShip().getName() + "\"");
 
       if (unit.getShip().getDescription() != null) {
-        orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
+        orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
             + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \""
             + unit.getShip().getDescription() + "\"");
       }
@@ -348,16 +350,16 @@ public class EresseaOrderChanger implements OrderChanger {
      * LongButShort, genau dann ist es eine long Order
      */
     String rOrder = order;
-    if (rOrder.startsWith("@")) {
+    if (rOrder.startsWith(EresseaConstants.O_PERSISTENT)) {
       rOrder = rOrder.substring(1);
     }
-    if (rOrder.startsWith(";"))
+    if (rOrder.startsWith(EresseaConstants.O_COMMENT))
       return false;
-    if (rOrder.startsWith("//"))
+    if (rOrder.startsWith(EresseaConstants.O_PCOMMENT))
       return false;
     boolean isInLongorder = false;
     for (String s : getLongOrdersTranslated()) {
-      if (order.toLowerCase().startsWith(s.toLowerCase())) {
+      if (rOrder.toLowerCase().startsWith(s.toLowerCase())) {
         isInLongorder = true;
         break;
       }
@@ -368,7 +370,7 @@ public class EresseaOrderChanger implements OrderChanger {
     // Abgleich mit "NegativListe"
     boolean isInLongButShortOrders = false;
     for (String s : getLongButShortOrdersTranslated()) {
-      if (order.toLowerCase().startsWith(s.toLowerCase())) {
+      if (rOrder.toLowerCase().startsWith(s.toLowerCase())) {
         isInLongButShortOrders = true;
         break;
       }

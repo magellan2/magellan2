@@ -82,8 +82,8 @@ public class RoutePlanner {
               order.append(temp);
               orders.add(order.toString());
               order =
-                  new StringBuilder("// #after ").append(orders.size() - size).append(" { ")
-                      .append(localCommand).append(" ");
+                  new StringBuilder(EresseaConstants.O_PCOMMENT).append(" #after ").append(
+                      orders.size() - size).append(" { ").append(localCommand).append(" ");
               temp = "}";
             } else {
               if (makeRoute) {
@@ -92,7 +92,9 @@ public class RoutePlanner {
               } else {
                 // add new NACH order as comment
                 orders.add(order.toString());
-                order = new StringBuilder("// ").append(localCommand).append(" ");
+                order =
+                    new StringBuilder(EresseaConstants.O_PCOMMENT).append(" ").append(localCommand)
+                        .append(" ");
               }
             }
           } else {

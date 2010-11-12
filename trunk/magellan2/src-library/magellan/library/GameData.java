@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
@@ -956,9 +957,11 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Indicates whether in this report skill points are to be expected or whether they are
-   * meaningful, respecitively.
+   * meaningful, respectively.
    */
   public boolean noSkillPoints = false;
+
+  private OrderParser parser;
 
   /**
    * Sets the valid locale for this report. Currently, this is only used to remember this setting
@@ -974,8 +977,11 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * This function checks if the game data have been manipulated somehow (merge will lead to a
-   * filetype null). TODO (stm) nobody uses this
+   * filetype null).
+   * 
+   * @deprecated nobody uses this, @see Client#ReportObserver
    */
+  @Deprecated
   public boolean gameDataChanged(GameData g) {
     if (g.getFileType() == null)
       return true;
@@ -1061,6 +1067,13 @@ public abstract class GameData implements Cloneable, Addeable {
 
   public GameSpecificRules getGameSpecificRules() {
     return rules.getGameSpecificStuff().getGameSpecificRules();
+  }
+
+  public OrderParser getOrderParser() {
+    if (parser == null) {
+      parser = getGameSpecificStuff().getOrderParser(this);
+    }
+    return parser;
   }
 
   /** Post processes the game data (if necessary) once */

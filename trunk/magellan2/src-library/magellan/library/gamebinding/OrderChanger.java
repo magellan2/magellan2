@@ -95,7 +95,7 @@ public interface OrderChanger {
    * checks, if the given order is a long order
    * 
    * @param order
-   * @return
+   * @return true if the given order is a long order
    */
   public boolean isLongOrder(String order);
 

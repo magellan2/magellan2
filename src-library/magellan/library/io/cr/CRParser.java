@@ -323,7 +323,7 @@ public class CRParser implements RulesIO, GameDataIO {
     Unit unit = world.getUnit(id);
 
     if (unit == null) {
-      unit = MagellanFactory.createUnit(id);
+      unit = MagellanFactory.createUnit(id, world);
       world.addUnit(unit);
     }
 

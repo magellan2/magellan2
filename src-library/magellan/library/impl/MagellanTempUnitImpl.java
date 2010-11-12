@@ -36,8 +36,8 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
   /**
    * Creates a new TempUnit object.
    */
-  public MagellanTempUnitImpl(UnitID id, Unit parent) {
-    super(id);
+  public MagellanTempUnitImpl(UnitID id, MagellanUnitImpl parent) {
+    super(id, parent.getData());
     this.parent = parent;
 
     // pavkovic 2003.12.04: TempUnits have empty orders by default

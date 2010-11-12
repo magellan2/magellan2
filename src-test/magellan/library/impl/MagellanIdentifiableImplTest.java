@@ -25,8 +25,10 @@ package magellan.library.impl;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import magellan.library.GameData;
 import magellan.library.IntegerID;
 import magellan.library.UnitID;
+import magellan.test.GameDataBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,17 +51,19 @@ public class MagellanIdentifiableImplTest {
   private MagellanUnitImpl unit5;
   private MagellanMessageImpl message3;
   private MagellanMessageImpl message4;
+  private GameData data;
 
   /**
    * @throws java.lang.Exception
    */
   @Before
   public void setUp() throws Exception {
-    unit1 = new MagellanUnitImpl(UnitID.createUnitID(42, 36));
-    unit2 = new MagellanUnitImpl(UnitID.createUnitID(42, 36));
-    unit3 = new MagellanUnitImpl(UnitID.createUnitID(42, 10));
-    unit4 = new MagellanUnitImpl(UnitID.createUnitID(4242, 36));
-    unit5 = new MagellanUnitImpl(UnitID.createUnitID(-42, 36));
+    data = new GameDataBuilder().createSimplestGameData();
+    unit1 = new MagellanUnitImpl(UnitID.createUnitID(42, 36), data);
+    unit2 = new MagellanUnitImpl(UnitID.createUnitID(42, 36), data);
+    unit3 = new MagellanUnitImpl(UnitID.createUnitID(42, 10), data);
+    unit4 = new MagellanUnitImpl(UnitID.createUnitID(4242, 36), data);
+    unit5 = new MagellanUnitImpl(UnitID.createUnitID(-42, 36), data);
     tempUnit1 = new MagellanTempUnitImpl(UnitID.createUnitID(-42, 36), unit1);
     tempUnit2 = new MagellanTempUnitImpl(UnitID.createUnitID(-43, 36), unit1);
     message1 = new MagellanMessageImpl(IntegerID.create(42));

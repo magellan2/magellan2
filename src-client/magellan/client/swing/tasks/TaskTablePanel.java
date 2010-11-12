@@ -668,11 +668,13 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       return addObjects.size() + delObjects.size();
     }
 
-    // public synchronized void clear() {
-    // events.clear();
-    // addObjects.clear();
-    // delObjects.clear();
-    // }
+    public synchronized void clear() {
+      clear = true;
+      events.clear();
+      addObjects.clear();
+      delObjects.clear();
+      clear = false;
+    }
   }
 
   /**
@@ -864,6 +866,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       queue.push(new UpdateEvent(false));
     }
 
+    private void reset() {
+      queue.clear();
+    }
+
     public void quit() {
       stop = true;
     }
@@ -969,7 +975,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   @Override
   public void gameDataChanged(GameDataEvent e) {
     super.gameDataChanged(e);
+    updateDispatcher.reset();
     initInspectors(e.getGameData());
+    lastActiveRegion = null;
+    lastSelection = new HashSet<Region>();
     // do nothing if Panel is hidden
     if (!isShown())
       return;
@@ -1053,7 +1062,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     synchronized (this) {
-      if (restrictToActiveRegion() && r != null && r != lastActiveRegion) {
+      if (restrictToActiveRegion() && r != null && r.getData() == data && r != lastActiveRegion) {
         lastActiveRegion = r;
         refreshProblems();
       }

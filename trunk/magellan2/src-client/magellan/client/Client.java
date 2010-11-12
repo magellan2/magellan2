@@ -497,6 +497,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   private MagellanContext context;
 
+  private TitleLine title;
+
   /**
    * Load the file fileName in the given directory into the settings object.
    */
@@ -1733,23 +1735,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
         if (data != null) {
           client.setData(data);
-          client.setReportChanged(false);
-
-          if (client.getSelectedObjects() != null) {
-            client.getDispatcher().fire(client.getSelectedObjects());
-          }
-          // if we have active Region, center on it
-          Region activeRegion = data.getActiveRegion();
-          if (activeRegion != null) {
-            client.getDispatcher().fire(SelectionEvent.create(client, activeRegion));
-          } else {
-            // suggestion by enno...if we have no active region but we have 0,0..center on 0,0
-            CoordinateID cID = CoordinateID.ZERO;
-            activeRegion = data.getRegion(cID);
-            if (activeRegion != null) {
-              client.getDispatcher().fire(SelectionEvent.create(client, activeRegion));
-            }
-          }
         }
       }
     }, "loadCRThread").start();
@@ -1966,6 +1951,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       // recalculate the status of regions - coastal or not?
       Regions.calculateCoastBorders(aData);
+
+      // postProceddTheVoid moved to GameData.postProcess:
+    }
+
+    if (aData != null && !PropertiesHelper.getBoolean(getProperties(), "map.creating.void", false)) {
+      aData.removeTheVoid();
     }
   }
 
@@ -1973,20 +1964,33 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // UPDATE Code //
   // ///////////////
   private void updateTitleCaption() {
-    String title = createTitle(getData(), showStatus, false);
+    String titleline;
+    if (title == null) {
+      title = new TitleLine();
+    }
 
     try {
-      title = createTitle(getData(), showStatus, true);
+      titleline = title.createTitle(getData(), showStatus, true);
     } catch (Exception e) {
+      titleline = title.createTitle(getData(), showStatus, false);
       Client.log.error("createTitle failed!", e);
     }
 
-    setTitle(title);
+    setTitle(titleline);
   }
 
-  private String createTitle(GameData data, boolean showStatusOverride, boolean longTitle) {
+  private class TitleLine {
+    private String oldTitle1;
+    private String oldTitle3;
+    private Date date;
+    private String oldTitle;
+
+    public String createTitle(GameData data, boolean showStatusOverride, boolean longTitle) {
     // set frame title (date)
-    StringBuilder title = new StringBuilder("Magellan");
+      StringBuilder title1 =
+          new StringBuilder(reportState.isStateChanged() ? "*" : "").append("Magellan");
+      StringBuilder title2 = new StringBuilder();
+      StringBuilder title3 = new StringBuilder();
 
     String version = VersionInfo.getVersion(Client.getBinaryDirectory());
     if (version == null) {
@@ -1994,13 +1998,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     if (version != null) {
-      title.append(" ").append(version);
+        title1.append(" ").append(version);
     }
 
     // pavkovic 2002.05.7: data may be null in this situation
-    if (data == null)
-      return title.toString();
-
+      if (data != null) {
     if (data.getFileType() != null) {
       String file;
 
@@ -2011,23 +2013,21 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
 
       file = file.substring(file.lastIndexOf(File.separator) + 1);
-      title.append(" [").append(file).append("]");
+          title1.append(" [").append(file).append("]");
     }
 
     if (data.getOwnerFaction() != null) {
-      title.append(" - ").append(data.getOwnerFaction().toString());
+          title1.append(" - ").append(data.getOwnerFaction().toString());
     }
 
     if (data.getDate() != null) {
-      title.append(" - ").append(
+          title2.append(" - ").append(
           data.getDate().toString(
               showStatusOverride ? Date.TYPE_SHORT : Date.TYPE_PHRASE_AND_SEASON)).append(" (")
           .append(data.getDate().getDate()).append(")");
     }
 
-    if (!longTitle)
-      return title.toString();
-
+        if (longTitle) {
     if (showStatusOverride) {
       int units = 0;
       int done = 0;
@@ -2057,15 +2057,31 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       if (units > 0) {
         BigDecimal percent =
-            (new BigDecimal((done * 100) / ((float) units))).setScale(2, BigDecimal.ROUND_DOWN);
-        title.append(" (").append(units).append(" ").append(Resources.get("client.title.unit"))
-            .append(", ").append(done).append(" ").append(Resources.get("client.title.done"))
-            .append(", ").append(Resources.get("client.title.thatare")).append(" ").append(percent)
-            .append(" ").append(Resources.get("client.title.percent")).append(")");
+                  (new BigDecimal((done * 100) / ((float) units))).setScale(2,
+                      BigDecimal.ROUND_DOWN);
+              title3.append(" (").append(units).append(" ").append(
+                  Resources.get("client.title.unit")).append(", ").append(done).append(" ").append(
+                  Resources.get("client.title.done")).append(", ").append(
+                  Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
+                  .append(Resources.get("client.title.percent")).append(")");
+            }
+          }
+
+        }
       }
+
+      // this prevents that the title "flickers" when it changes too often
+      if (!title1.toString().equals(oldTitle1)
+          || ((data == null || data.getDate() == null) ? date != null : !data.getDate()
+              .equals(date)) || !title3.toString().equals(oldTitle3)) {
+        date = data != null ? data.getDate() : null;
+        oldTitle1 = title1.toString();
+        oldTitle3 = title3.toString();
+        oldTitle = title1.append(title2).append(title3).toString();
     }
 
-    return title.toString();
+      return oldTitle;
+    }
   }
 
   /**
@@ -2101,6 +2117,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * changes do occur.
    */
   private void updatedGameData() {
+    setReportChanged(false);
+
     updateTitleCaption();
     updateConfirmMenu();
     updatePlugIns();
@@ -2114,17 +2132,36 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
 
-    // pavkovic 2004.01.04:
-    // this method behaves at if the gamedata has been loaded by this
-    // method.
-    // this is not true at all but true enough for our needs.
-    // dispatcher.fire(new GameDataEvent(this, data));
-    getDispatcher().fire(new GameDataEvent(this, getData(), true));
+    // getDispatcher().fire(new GameDataEvent(this, getData(), true));
+
+    if (getSelectedObjects() != null) {
+      getDispatcher().fire(getSelectedObjects());
+    }
+    // if we have active Region, center on it
+    Region activeRegion = getData().getActiveRegion();
+    if (activeRegion != null) {
+      getDispatcher().fire(SelectionEvent.create(this, activeRegion));
+    } else {
+      // suggestion by enno...if we have no active region but we have 0,0..center on 0,0
+      CoordinateID cID = CoordinateID.ZERO;
+      activeRegion = getData().getRegion(cID);
+      if (activeRegion != null) {
+        getDispatcher().fire(SelectionEvent.create(this, activeRegion));
+      }
+    }
+
+    // // pavkovic 2004.01.04:
+    // // this method behaves at if the gamedata has been loaded by this
+    // // method.
+    // // this is not true at all but true enough for our needs.
+    // // dispatcher.fire(new GameDataEvent(this, data));
+    // // FIXME(stm) duplicate GameDataEvent??
+    // getDispatcher().fire(new GameDataEvent(this, getData(), true));
     // also inform system about the new selection found in the GameData
     // object
     getDispatcher().fire(
         SelectionEvent.create(this, getData().getSelectedRegionCoordinates().values()));
-    getDispatcher().fire(SelectionEvent.create(this, getData().getActiveRegion()));
+    // getDispatcher().fire(SelectionEvent.create(this, getData().getActiveRegion()));
 
   }
 
@@ -2278,21 +2315,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public void setData(GameData newData) {
     context.setGameData(newData);
     postProcessLoadedCR(newData);
-
-    // postProceddTheVoid moved to GameData.postProcess:
-    if (newData != null
-        && !PropertiesHelper.getBoolean(getProperties(), "map.creating.void", false)) {
-      newData.removeTheVoid();
+    getDispatcher().fire(new GameDataEvent(this, getData(), true));
     }
-
-    getDispatcher().fire(new GameDataEvent(this, newData));
-
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        Client.this.updatedGameData();
-      }
-    });
-  }
 
   /**
    * Returns the current GameData.
@@ -2541,6 +2565,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (!newState) {
         lastClear = System.currentTimeMillis();
       }
+      updateTitleCaption();
     }
 
     /**
@@ -2555,6 +2580,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
+        updateTitleCaption();
       }
     }
 
@@ -2566,6 +2592,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     public void tempUnitCreated(TempUnitEvent e) {
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
+        updateTitleCaption();
       }
     }
 
@@ -2577,6 +2604,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     public void tempUnitDeleting(TempUnitEvent e) {
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
+        updateTitleCaption();
       }
     }
 
@@ -2592,7 +2620,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       } else {
         stateChanged = false;
       }
-      updateTitleCaption();
+      updatedGameData();
     }
 
     /**
@@ -2602,6 +2630,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
      */
     public void unitOrdersChanged(UnitOrdersEvent e) {
       if (lastClear < e.getTimestamp()) {
+        if (!stateChanged) {
+          updateTitleCaption();
+        }
         stateChanged = true;
       }
     }

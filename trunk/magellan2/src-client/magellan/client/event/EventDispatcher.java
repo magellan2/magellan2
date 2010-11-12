@@ -49,7 +49,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   private static final int PRIORITIES[] = { 0, 4, 1, 1, 1 };
   private EQueue queue;
 
-  private static final int infoMilliSeks = 5000;
+  private static final int infoMilliSeks = 1000;
 
   /**
    * Creates a new dispatcher

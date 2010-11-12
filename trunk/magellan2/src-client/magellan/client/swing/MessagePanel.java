@@ -661,7 +661,6 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
    */
   private void addCategorizedMessages(Collection<Message> messages, DefaultMutableTreeNode parent) {
     Map<String, List<Message>> categories = new Hashtable<String, List<Message>>();
-
     // categorize messages
     for (Message message : messages) {
       String section = null;

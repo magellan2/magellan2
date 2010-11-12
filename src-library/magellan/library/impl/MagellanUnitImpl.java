@@ -39,7 +39,9 @@ import magellan.library.HasRegion;
 import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Message;
+import magellan.library.Named;
 import magellan.library.Region;
+import magellan.library.Related;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Spell;
@@ -61,6 +63,7 @@ import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.MovementRelation;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.RecruitmentRelation;
+import magellan.library.relation.RenameNamedRelation;
 import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.TeachRelation;
 import magellan.library.relation.TransportRelation;
@@ -2049,6 +2052,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
         if (ucr.target != null) {
           ucr.target.addRelation(r);
+        }
+
+        continue;
+      }
+      if (r instanceof RenameNamedRelation) {
+        Named named = ((RenameNamedRelation) r).named;
+        if (named != null && named instanceof Related) {
+          ((Related) named).addRelation(r);
         }
 
         continue;

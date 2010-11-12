@@ -5,6 +5,7 @@
     * added TeachInspector, improved AttackInspector
     * improved handling of E3 ship and wage rules
     * introduced recruiting costs and support for material pool
+    * show changed names not only for units
 
 2010-11-05 / Build 433 - Fiete (sf@fietefietz.de)
 	* changed FogOfWar to CR-visibility information.

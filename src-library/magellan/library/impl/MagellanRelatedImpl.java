@@ -72,12 +72,11 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
    */
   @Override
   public String getModifiedName() {
-    List<?> renameRelations = getRelations(RenameNamedRelation.class);
-    if (renameRelations.isEmpty())
-      return null;
-    else
-      // return first rename relation
-      return ((RenameNamedRelation) renameRelations.get(0)).name;
+    List<RenameNamedRelation> renameRelations = getRelations(RenameNamedRelation.class);
+    for (RenameNamedRelation rel : renameRelations)
+      if (rel.named == this)
+        return rel.name;
+    return null;
   }
 
   /**

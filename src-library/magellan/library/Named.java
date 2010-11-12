@@ -28,9 +28,9 @@ public interface Named extends Identifiable {
   public void setName(String name);
 
   /**
-   * TODO DOCUMENT ME!
+   * Returns the name after orders.
    * 
-   * @return TODO DOCUMENT ME!
+   * @return The new name
    */
   public String getModifiedName();
 

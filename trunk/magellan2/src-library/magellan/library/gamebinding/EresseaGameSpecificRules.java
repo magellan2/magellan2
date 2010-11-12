@@ -29,8 +29,11 @@ import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.Skill;
+import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.relation.RecruitmentRelation;
 import magellan.library.rules.CastleType;
+import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.UnitContainerType;
@@ -131,7 +134,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
    * Calculates the wage for the units of a certain faction in the specified region.
    */
   public int getWage(Region region, Race race) {
-    int wage = region.getWage();
+    int wage = region.getWage() - 1;
     if (getRules().getRace(EresseaConstants.R_ORKS) == null
         || race.getName().equalsIgnoreCase(getRules().getRace(EresseaConstants.R_ORKS).getName())) {
       switch (wage) {
@@ -228,9 +231,40 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   }
 
   /**
+   * FIXME (stm) implement or not?
+   * 
    * @see magellan.library.gamebinding.GameSpecificRules#isToroidal()
    */
   public boolean isToroidal() {
     return false;
+  }
+
+  public boolean isPooled(Unit unit, ItemType type) {
+    if (unit.getRegion().getData().getDate().getDate() > 558
+        && getRules().getGameSpecificStuff().getName().equalsIgnoreCase("eressea"))
+      // the pools were activated in Eressea starting from report no. 559
+      return true;
+    if (type.getID().equals(EresseaConstants.I_USILVER))
+      return unit.getFaction().getOptions()
+          .isActive(StringID.create(EresseaConstants.O_SILVERPOOL));
+    else
+      return unit.getFaction().getOptions().isActive(StringID.create(EresseaConstants.O_ITEMPOOL));
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#getRecruitmentLimit(magellan.library.Unit,
+   *      magellan.library.rules.Race)
+   */
+  public int getRecruitmentLimit(Unit u, Race race) {
+    if (u.getRegion() == null)
+      return 0;
+    int recruited = 0;
+    for (RecruitmentRelation rrel : u.getRegion().getZeroUnit().getRelations(
+        RecruitmentRelation.class)) {
+      recruited +=
+          rrel.amount / rrel.race.getRecruitmentFactor()
+              + (rrel.amount % rrel.race.getRecruitmentFactor() > 0 ? 1 : 0);
+    }
+    return (u.getRegion().getRecruits() - recruited) * race.getRecruitmentFactor();
   }
 }

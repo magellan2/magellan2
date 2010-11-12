@@ -133,6 +133,7 @@ public class Umlaut {
     if (str == null)
       return null;
 
-    return StringFactory.getFactory().intern(Umlaut.convertUmlauts(str).toUpperCase());
+    return StringFactory.getFactory().intern(
+        Umlaut.convertUmlauts(str).toUpperCase().replaceAll("~", " "));
   }
 }

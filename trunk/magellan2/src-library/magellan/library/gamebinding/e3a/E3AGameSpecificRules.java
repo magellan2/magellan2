@@ -30,9 +30,11 @@ import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.Skill;
+import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaGameSpecificRules;
 import magellan.library.rules.CastleType;
+import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.utils.logging.Logger;
 
@@ -202,6 +204,17 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
    */
   @Override
   public boolean isToroidal() {
+    return true;
+  }
+
+  /**
+   * Returns true. Material and silver pools are always active in E3.
+   * 
+   * @see magellan.library.gamebinding.EresseaGameSpecificRules#isPooled(magellan.library.Unit,
+   *      magellan.library.rules.ItemType)
+   */
+  @Override
+  public boolean isPooled(Unit unit, ItemType type) {
     return true;
   }
 }

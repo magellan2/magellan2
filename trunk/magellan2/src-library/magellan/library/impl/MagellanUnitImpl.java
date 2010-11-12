@@ -221,7 +221,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /** A map containing all temp units created by this unit. */
   private Map<ID, TempUnit> tempUnits = null;
   /** A collection view of the temp units. */
-  private Collection<TempUnit> tempUnitCollection = null;
+  private Collection<TempUnit> tempUnitCollection;
+  private GameData data;
 
   /**
    * @see magellan.library.Unit#ordersAreNull()
@@ -1150,8 +1151,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       final MagellanUnitImpl u = (MagellanUnitImpl) unit;
       MagellanUnitImpl clone = null;
 
-      // try {
-      clone = new MagellanUnitImpl(u.getID().clone());
+      clone = new MagellanUnitImpl(u.getID().clone(), getData());
       clone.persons = u.getPersons();
       clone.race = u.race;
       clone.realRace = u.realRace;
@@ -2084,8 +2084,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Kinda obvious, right?
    */
-  public MagellanUnitImpl(UnitID id) {
+  public MagellanUnitImpl(UnitID id, GameData data) {
     super(id);
+    this.data = data;
   }
 
   /**
@@ -3106,6 +3107,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   @Override
   public UnitID getID() {
     return (UnitID) super.getID();
+  }
+
+  /**
+   * @see magellan.library.Unit#getData()
+   */
+  public GameData getData() {
+    return data;
   }
 
 }

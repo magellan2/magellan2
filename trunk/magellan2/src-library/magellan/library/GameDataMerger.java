@@ -596,14 +596,15 @@ public class GameDataMerger {
      * new one and temp units are ignored. IDs are used for comparison.
      */
     // FIXME(stm) !!!! turn experimental off!!!
-    boolean experimental = false; // experimental: add regionless units from last round which are
-    // not visible any more
+    // experimental: add regionless units from last round which are not visible any more
+    boolean experimental = false;
+
     if (olderGD.unitView() != null) {
       for (Unit u : olderGD.unitView().values()) {
         if (sameRound || (newerGD.getUnit(u.getID()) != null)) {
-          resultGD.addUnit(MagellanFactory.createUnit(u.getID()));
+          resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
         } else if (experimental) { // FIXME changes unit order
-          resultGD.addUnit(MagellanFactory.createUnit(u.getID()));
+          resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
           resultGD.getUnit(u.getID()).putTag("old", "was present in last report");
           // resultGD.getUnit(u.getID()).setRegion(u.getRegion());
         }
@@ -613,7 +614,7 @@ public class GameDataMerger {
     if (newerGD.unitView() != null) {
       for (Unit u : newerGD.unitView().values()) {
         if (resultGD.getUnit(u.getID()) == null) {
-          resultGD.addUnit(MagellanFactory.createUnit(u.getID()));
+          resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
         }
       }
     }

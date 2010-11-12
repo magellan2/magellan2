@@ -54,6 +54,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.impl.MagellanBattleImpl;
 import magellan.library.impl.MagellanBorderImpl;
 import magellan.library.impl.MagellanBuildingImpl;
@@ -73,7 +74,6 @@ import magellan.library.impl.MagellanUnitImpl;
 import magellan.library.impl.MagellanZeroUnitImpl;
 import magellan.library.rules.MessageType;
 import magellan.library.rules.RegionType;
-import magellan.library.utils.logging.Logger;
 
 /**
  * This factory returns all kind of Magellan objects. ....
@@ -82,48 +82,59 @@ import magellan.library.utils.logging.Logger;
  * @version 1.0, 01.05.2007
  */
 public abstract class MagellanFactory {
-  private static final Logger log = Logger.getInstance(MagellanFactory.class);
+  // private static final Logger log = Logger.getInstance(MagellanFactory.class);
 
+  /** Creates a new Faction */
   public static Faction createFaction(EntityID id, GameData data) {
     return new MagellanFactionImpl(id, data);
   }
 
+  /** Creates a new Group */
   public static Group createGroup(IntegerID id, GameData data) {
     return new MagellanGroupImpl(id, data);
   }
 
+  /** Creates a new Group */
   public static Group createGroup(IntegerID id, GameData data, String name) {
     return new MagellanGroupImpl(id, data, name);
   }
 
+  /** Creates a new Group */
   public static Group createGroup(IntegerID id, GameData data, String name, Faction faction) {
     return new MagellanGroupImpl(id, data, name, faction);
   }
 
+  /** Creates a new Message */
   public static Message createMessage(String text) {
     return new MagellanMessageImpl(text);
   }
 
+  /** Creates a new Message */
   public static Message createMessage(IntegerID id) {
     return new MagellanMessageImpl(id);
   }
 
+  /** Creates a new Message */
   public static Message createMessage(IntegerID id, String text) {
     return new MagellanMessageImpl(id, text);
   }
 
+  /** Creates a new Message */
   public static Message createMessage(IntegerID id, MessageType type, Map<String, String> attributes) {
     return new MagellanMessageImpl(id, type, attributes);
   }
 
+  /** Creates a new Message */
   public static Message createMessage(Message message) {
     return new MagellanMessageImpl(message);
   }
 
+  /** Creates a new Region */
   public static Region createRegion(CoordinateID id, GameData data) {
     return new MagellanRegionImpl(id, data);
   }
 
+  /** Creates a new Region */
   public static Region createWrapper(CoordinateID wrapperID, long regionID, GameData resultGD) {
     Region resultRegion = MagellanFactory.createRegion(wrapperID, resultGD);
     resultRegion.setUID(regionID);
@@ -132,67 +143,82 @@ public abstract class MagellanFactory {
     return resultRegion;
   }
 
+  /** Creates a new Ship */
   public static Ship createShip(EntityID id, GameData data) {
     return new MagellanShipImpl(id, data);
   }
 
-  public static Unit createUnit(UnitID id) {
-    return new MagellanUnitImpl(id);
+  /** Creates a new Unit */
+  public static Unit createUnit(UnitID id, GameData data) {
+    return new MagellanUnitImpl(id, data);
   }
 
   /**
+   * Creates a new spell.
+   * 
    * @param id This should currently be a {@link StringID}
    * @param data
-   * @return
    */
   public static Spell createSpell(StringID id, GameData data) {
     return new MagellanSpellImpl(id, data);
   }
 
+  /** Creates a new Battle */
   public static Battle createBattle(CoordinateID id) {
     return new MagellanBattleImpl(id);
   }
 
+  /** Creates a new Battle */
   public static Battle createBattle(CoordinateID id, boolean spec) {
     return new MagellanBattleImpl(id, spec);
   }
 
+  /** Creates a new Border */
   public static Border createBorder(IntegerID id) {
     return new MagellanBorderImpl(id);
   }
 
+  /** Creates a new Border */
   public static Border createBorder(IntegerID id, int direction, String type, int buildratio) {
     return new MagellanBorderImpl(id, direction, type, buildratio);
   }
 
+  /** Creates a new Building */
   public static Building createBuilding(EntityID id, GameData data) {
     return new MagellanBuildingImpl(id, data);
   }
 
+  /** Creates a new CombatSpell */
   public static CombatSpell createCombatSpell(IntegerID id) {
     return new MagellanCombatSpellImpl(id);
   }
 
+  /** Creates a new HotSpot */
   public static HotSpot createHotSpot(IntegerID id) {
     return new MagellanHotSpotImpl(id);
   }
 
+  /** Creates a new Island */
   public static Island createIsland(IntegerID id, GameData data) {
     return new MagellanIslandImpl(id, data);
   }
 
+  /** Creates a new Potion */
   public static Potion createPotion(IntegerID id) {
     return new MagellanPotionImpl(id);
   }
 
+  /** Creates a new Scheme */
   public static Scheme createScheme(CoordinateID id) {
     return new MagellanSchemeImpl(id);
   }
 
-  public static TempUnit createTempUnit(UnitID id, Unit parent) {
+  /** Creates a new TempUnit */
+  public static TempUnit createTempUnit(UnitID id, MagellanUnitImpl parent) {
     return new MagellanTempUnitImpl(id, parent);
   }
 
+  /** Creates a new ZeroUnit */
   public static ZeroUnit createZeroUnit(Region region) {
     return new MagellanZeroUnitImpl(region);
   }
@@ -214,7 +240,9 @@ public abstract class MagellanFactory {
   /**
    * Merges factions.
    * 
-   * @deprecated Use {@link GameDataMerger#mergeFaction(GameData,Faction,GameData,Faction)} instead
+   * @deprecated Use
+   *             {@link GameDataMerger#mergeFaction(GameData, Faction, GameData, Faction, boolean, magellan.library.utils.transformation.ReportTransformer)}
+   *             instead
    */
   @Deprecated
   public static void mergeFaction(GameData curGD, Faction curFaction, GameData newGD,
@@ -247,7 +275,9 @@ public abstract class MagellanFactory {
    * @param curMsg a fully initialized and valid message
    * @param newGD the game data to be updated
    * @param newMsg a message to be updated with the data from curMsg
-   * @deprecated Use {@link GameDataMerger#mergeMessage(GameData,Message,GameData,Message)} instead
+   * @deprecated Use
+   *             {@link GameDataMerger#mergeMessage(GameData, Message, GameData, Message, magellan.library.utils.transformation.ReportTransformer)}
+   *             instead
    */
   @Deprecated
   public static void mergeMessage(GameData curGD, Message curMsg, GameData newGD, Message newMsg) {
@@ -272,7 +302,8 @@ public abstract class MagellanFactory {
    * @param curBuilding the current Building
    * @param newGD new GameData
    * @param newBuilding the new Building
-   * @deprecated Use {@link GameDataMerger#mergeBuilding(GameData,Building,GameData,Building)}
+   * @deprecated Use
+   *             {@link GameDataMerger#mergeBuilding(GameData, Building, GameData, Building, magellan.library.utils.transformation.ReportTransformer)}
    *             instead
    */
   @Deprecated
@@ -301,7 +332,9 @@ public abstract class MagellanFactory {
   /**
    * Merges two HotSpot objects.
    * 
-   * @deprecated Use {@link GameDataMerger#mergeHotSpot(GameData,HotSpot,GameData,HotSpot)} instead
+   * @deprecated Use
+   *             {@link GameDataMerger#mergeHotSpot(GameData, HotSpot, GameData, HotSpot, magellan.library.utils.transformation.ReportTransformer)}
+   *             instead
    */
   @Deprecated
   public static void mergeHotSpot(GameData curGD, HotSpot curHS, GameData newGD, HotSpot newHS) {
@@ -332,7 +365,7 @@ public abstract class MagellanFactory {
    * @param newTurn notifies if both game data objects have been from the same round
    * @param firstPass notifies if this is the first of two passes
    * @deprecated Use
-   *             {@link GameDataMerger#mergeRegion(GameData,Region,GameData,Region,boolean,boolean)}
+   *             {@link GameDataMerger#mergeRegion(GameData, Region, GameData, Region, boolean, boolean, magellan.library.utils.transformation.ReportTransformer)}
    *             instead
    */
   @Deprecated
@@ -354,7 +387,9 @@ public abstract class MagellanFactory {
   /**
    * Merges ships.
    * 
-   * @deprecated Use {@link GameDataMerger#mergeShip(GameData,Ship,GameData,Ship)} instead
+   * @deprecated Use
+   *             {@link GameDataMerger#mergeShip(GameData, Ship, GameData, Ship, magellan.library.utils.transformation.ReportTransformer)}
+   *             instead
    */
   @Deprecated
   public static void mergeShip(GameData curGD, Ship curShip, GameData newGD, Ship newShip) {
@@ -376,7 +411,7 @@ public abstract class MagellanFactory {
    * 
    * @param sameRound notifies if both game data objects have been from the same round
    * @deprecated Use
-   *             {@link GameDataMerger#merge(GameData,TempUnit,GameData,TempUnit,boolean,boolean)}
+   *             {@link GameDataMerger#merge(GameData, GameData, magellan.library.utils.transformation.ReportTransformer, magellan.library.utils.transformation.ReportTransformer)}
    *             instead
    */
   @Deprecated
@@ -411,7 +446,8 @@ public abstract class MagellanFactory {
    * @param resultUnit The info is merged into this unit
    * @param sameRound notifies if both game data objects have been from the same round
    * @param firstPass notifies if this is the first of two passes
-   * @deprecated Use {@link GameDataMerger#mergeUnit(GameData,Unit,GameData,Unit,boolean,boolean)}
+   * @deprecated Use
+   *             {@link GameDataMerger#mergeUnit(GameData, Unit, GameData, Unit, boolean, boolean, magellan.library.utils.transformation.ReportTransformer)}
    *             instead
    */
   @Deprecated
@@ -484,32 +520,32 @@ public abstract class MagellanFactory {
     String retVal = null;
 
     switch (combatStatus) {
-    case 0:
+    case EresseaConstants.CS_AGGRESSIVE:
       retVal = Resources.get("unit.combatstatus.aggressive");
 
       break;
 
-    case 1:
+    case EresseaConstants.CS_FRONT:
       retVal = Resources.get("unit.combatstatus.front");
 
       break;
 
-    case 2:
+    case EresseaConstants.CS_REAR:
       retVal = Resources.get("unit.combatstatus.back");
 
       break;
 
-    case 3:
+    case EresseaConstants.CS_DEFENSIVE:
       retVal = Resources.get("unit.combatstatus.defensive");
 
       break;
 
-    case 4:
+    case EresseaConstants.CS_NOT:
       retVal = Resources.get("unit.combatstatus.passive");
 
       break;
 
-    case 5:
+    case EresseaConstants.CS_FLEE:
       retVal = Resources.get("unit.combatstatus.escape");
 
       break;
@@ -564,6 +600,7 @@ public abstract class MagellanFactory {
     return strFlags;
   }
 
+  /** Creates a new AllianceGroup */
   public static AllianceGroup createAlliance(EntityID id, GameData resultGD) {
     return new AllianceGroup(id);
   }

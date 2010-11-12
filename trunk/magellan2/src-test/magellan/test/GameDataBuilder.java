@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.Border;
+import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -16,14 +17,19 @@ import magellan.library.Island;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Region;
+import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.impl.MagellanBuildingImpl;
+import magellan.library.impl.MagellanShipImpl;
 import magellan.library.impl.SpellBuilder;
 import magellan.library.io.GameDataReader;
+import magellan.library.rules.BuildingType;
 import magellan.library.rules.EresseaDate;
+import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.MagellanFactory;
 
@@ -48,16 +54,25 @@ public class GameDataBuilder {
    * region, and (if <code>addUnit</code>) one unit
    */
   public GameData createSimplestGameData(int round, boolean addUnit) throws Exception {
-    return createSimplestGameData(round, addUnit, true);
+    return createSimplestGameData("Eressea", round, addUnit, true);
+  }
+
+  /**
+   * Creates a GameData object that is always postProcessed with one faction, one island, one
+   * region, and (if <code>addUnit</code>) one unit
+   */
+  public GameData createSimplestGameData(String gameName, int round, boolean addUnit)
+      throws Exception {
+    return createSimplestGameData(gameName, round, addUnit, true);
   }
 
   /**
    * Creates a GameData object with one faction, one island, one region, and (if
    * <code>addUnit</code>) one unit.
    */
-  private GameData createSimplestGameData(int round, boolean addUnit, boolean postProcess)
-      throws Exception {
-    final GameData data = new GameDataReader(null).createGameData("Eressea");
+  private GameData createSimplestGameData(String gameName, int round, boolean addUnit,
+      boolean postProcess) throws Exception {
+    final GameData data = new GameDataReader(null).createGameData(gameName);
 
     data.base = 36;
     // this is sadly needed
@@ -114,7 +129,16 @@ public class GameDataBuilder {
    * Steinbau -. Add a unit if <code>addUnit</code>.
    */
   public GameData createSimpleGameData(int round, boolean addUnit) throws Exception {
-    final GameData data = createSimplestGameData(round, addUnit, false);
+    return createSimpleGameData("Eressea", round, addUnit);
+  }
+
+  /**
+   * Creates a GameData object of the specified type where all units have Hiebwaffen 4 (+3), Segeln
+   * - (-3), Magie 4, Steinbau -. Add a unit if <code>addUnit</code>.
+   */
+  public GameData createSimpleGameData(String gameName, int round, boolean addUnit)
+      throws Exception {
+    final GameData data = createSimplestGameData(gameName, round, addUnit, false);
 
     if (data.getUnits().size() > 0) {
       final Unit unit = data.getUnits().iterator().next();
@@ -180,9 +204,9 @@ public class GameDataBuilder {
   }
 
   public Unit addUnit(GameData data, String number, String name, Faction faction, Region region) {
-    final UnitID id = UnitID.createUnitID(number, data.base); // TODO base?
+    final UnitID id = UnitID.createUnitID(number, data.base);
 
-    final Unit unit = MagellanFactory.createUnit(id);
+    final Unit unit = MagellanFactory.createUnit(id, data);
     data.addUnit(unit);
 
     unit.setName(name);
@@ -292,6 +316,53 @@ public class GameDataBuilder {
    */
   public void addItem(GameData data, Unit unit, String item, int amount) {
     unit.addItem(new Item(data.rules.getItemType(item), amount));
+  }
+
+  /**
+   * Adds a building to the report.
+   * 
+   * @param data
+   * @param region
+   * @param id
+   * @param type {@link BuildingType}
+   * @param name
+   * @param size
+   */
+  public Building addBuilding(GameData data, Region region, String id, String type, String name,
+      int size) {
+    Building building = new MagellanBuildingImpl(EntityID.createEntityID(id, data.base), data);
+    building.setName(name);
+    building.setRegion(region);
+    building.setType(data.rules.getBuildingType(type));
+    building.setSize(size);
+
+    region.addBuilding(building);
+    data.addBuilding(building);
+
+    return building;
+  }
+
+  /**
+   * Adds a ship to the report.
+   * 
+   * @param data
+   * @param region
+   * @param id
+   * @param type {@link ShipType}
+   * @param name
+   * @param size
+   */
+  public Ship addShip(GameData data, Region region, String id, String type, String name, int size) {
+    Ship ship = new MagellanShipImpl(EntityID.createEntityID(id, data.base), data);
+    ship.setName(name);
+    ship.setRegion(region);
+    ship.setType(data.rules.getShipType(type));
+    ship.setSize(size);
+
+    region.addShip(ship);
+    data.addShip(ship);
+
+    return ship;
   }
 
 }

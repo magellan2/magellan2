@@ -35,7 +35,7 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
    */
   public MagellanZeroUnitImpl(Region r) {
     // pavkovic 2003.09.09: reduce amount of UnitID(0) from n regions to 1
-    super(UnitID.createUnitID(0, r.getData().base));
+    super(UnitID.createUnitID(0, r.getData().base), r.getData());
     setRegion(r);
   }
 

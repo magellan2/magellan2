@@ -694,15 +694,15 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
     }
 
     Rules r = data.rules;
-    weapon = r.getItemCategory(StringID.create("weapons"), false);
+    weapon = r.getItemCategory(StringID.create("weapons"));
 
     if (weapon == null)
       return;
 
-    front = r.getItemCategory(StringID.create("front weapons"), false);
-    back = r.getItemCategory(StringID.create("distance weapons"), false);
-    armourType = r.getItemCategory(StringID.create("armour"), false);
-    shieldType = r.getItemCategory(StringID.create("shield"), false);
+    front = r.getItemCategory(StringID.create("front weapons"));
+    back = r.getItemCategory(StringID.create("distance weapons"));
+    armourType = r.getItemCategory(StringID.create("armour"));
+    shieldType = r.getItemCategory(StringID.create("shield"));
 
     for (Iterator<ItemType> iter = r.getItemTypeIterator(); iter.hasNext();) {
       ItemType it = iter.next();

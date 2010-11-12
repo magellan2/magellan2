@@ -76,6 +76,15 @@ public class EresseaConstants {
   /** DOCUMENT-ME */
   public static final StringID C_MISC = StringID.create("MISC");
 
+  /** An end-of-line comment */
+  public static final String O_COMMENT = ";";
+
+  /** A persistent comment */
+  public static final String O_PCOMMENT = "//";
+
+  /** A persistent order marker */
+  public static final String O_PERSISTENT = "@";
+
   /** DOCUMENT-ME */
   public static final String O_ADDRESSES = "ADDRESSES";
 
@@ -136,7 +145,12 @@ public class EresseaConstants {
   /** argument of COMBAT order */
   public static final String O_COMBAT_FLEE = "COMBAT_FLEE";
 
-  /** argument of COMBAT order */
+  /**
+   * argument of COMBAT order
+   * 
+   * @deprecated "KÄMPFE" is now preferred to "KÄMPFE VORNE"
+   */
+  @Deprecated
   public static final String O_COMBAT_FRONT = "COMBAT_FRONT";
 
   /** argument of COMBAT order */
@@ -691,7 +705,7 @@ public class EresseaConstants {
 
   public static final StringID I_PEASANTS = StringID.create("Bauern");
 
-  /** The item silve */
+  /** The item silver */
   public static final StringID I_USILVER = StringID.create("Silber");
 
   /** The resource silver */
@@ -788,5 +802,36 @@ public class EresseaConstants {
 
   /** Shiptype longboat */
   public static final StringID ST_LONGBOAT = StringID.create("Langboot");
+
+  // pre 57:
+  // 0: VORNE
+  // 1: HINTEN
+  // 2: NICHT
+  // 3: FLIEHE
+  //
+  // 57 and later:
+  // 0 AGGRESSIV: 1. Reihe, flieht nie.
+  // 1 VORNE: 1. Reihe, kämpfen bis 20% HP
+  // 2 HINTEN: 2. Reihe, kämpfen bis 20% HP
+  // 3 DEFENSIV: 2. Reihe, kämpfen bis 90% HP
+  // 4 NICHT: 3. Reihe, kämpfen bis 90% HP
+  // 5 FLIEHE: 4. Reihe, flieht immer.
+
+  /** The {@link #O_COMBAT_AGGRESSIVE} combat status */
+  public static final int CS_AGGRESSIVE = 0;
+  /** The {@link #O_COMBAT_FRONT} combat status */
+  public static final int CS_FRONT = 1;
+  /** The {@link #O_COMBAT_REAR} combat status */
+  public static final int CS_REAR = 2;
+  /** The {@link #O_COMBAT_DEFENSIVE} combat status */
+  public static final int CS_DEFENSIVE = 3;
+  /** The {@link #O_COMBAT_NOT} combat status */
+  public static final int CS_NOT = 4;
+  /** The {@link #O_COMBAT_FLEE} combat status */
+  public static final int CS_FLEE = 5;
+  /** The {@link #O_COMBAT_HELP} NOT combat status */
+  public static final int CS_HELPNOT = -2;
+  /** The {@link #O_COMBAT_HELP} combat status */
+  public static final int CS_HELPYES = -1;
 
 }

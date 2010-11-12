@@ -14,8 +14,8 @@
 package magellan.library.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -76,6 +76,10 @@ public enum Direction {
   /** west direction */
   public static final int DIR_W = 5;
 
+  protected static final int SHORT = 0;
+  protected static final int LONG = 1;
+  protected static final int NORMLONG = 2;
+
   private static ArrayList<Direction> tempDirections = new ArrayList<Direction>(7);
   static {
     tempDirections.add(NW);
@@ -91,9 +95,9 @@ public enum Direction {
     tempDirections = null;
   }
 
-  private static List<String> shortNames = null;
-  private static List<String> longNames = null;
-  private static List<String> normalizedLongNames = null;
+  private static String[] shortNames = new String[6];
+  private static String[] longNames = new String[6];
+  private static String[] normalizedLongNames = new String[6];
 
   private static Locale usedLocale = null;
 
@@ -208,16 +212,24 @@ public enum Direction {
   }
 
   /**
-   * Converts a string to a direction.
+   * Converts a string (in the default order locale) to a direction.
    */
   public static Direction toDirection(String str) {
+    return toDirection(str, null);
+  }
+
+  /**
+   * Converts a string (in the specified locale) to a direction.
+   */
+  public static Direction toDirection(String str, Locale locale) {
     int dir = Direction.DIR_INVALID;
     String s = Umlaut.normalize(str).toLowerCase();
 
-    dir = Direction.find(s, Direction.getShortNames());
+    initNames(locale);
+    dir = Direction.find(s, SHORT);
 
     if (dir == Direction.DIR_INVALID) {
-      dir = Direction.find(s, Direction.getNormalizedLongNames());
+      dir = Direction.find(s, NORMLONG);
     }
 
     return toDirection(dir);
@@ -404,64 +416,67 @@ public enum Direction {
    * Returns the names of all valid directions in an all-lowercase short form.
    */
   public static List<String> getShortNames() {
-    if (!Locales.getOrderLocale().equals(Direction.usedLocale)) {
-      Direction.shortNames = null;
-      Direction.longNames = null;
-      Direction.normalizedLongNames = null;
-    }
+    return getShortNames(null);
+  }
 
-    if (Direction.shortNames == null) {
-      Direction.usedLocale = Locales.getOrderLocale();
-      Direction.shortNames = new ArrayList<String>(6);
+  /**
+   * Returns the names of all valid directions in an all-lowercase short form.
+   */
+  public static List<String> getShortNames(Locale locale) {
+    initNames(locale);
 
-      for (int i = 0; i < 6; i++) {
-        Direction.shortNames.add(Direction.getShortDirectionString(i).toLowerCase());
-      }
-    }
-
-    return Direction.shortNames;
+    return Arrays.asList(Direction.shortNames);
   }
 
   /**
    * Returns the names of all valid directions in an all-lowercase long form.
    */
   public static List<String> getLongNames() {
-    if (!Locales.getOrderLocale().equals(Direction.usedLocale)) {
-      Direction.shortNames = null;
-      Direction.longNames = null;
-      Direction.normalizedLongNames = null;
-    }
-
-    if (Direction.longNames == null) {
-      Direction.usedLocale = Locales.getOrderLocale();
-      Direction.longNames = new ArrayList<String>(6);
-
-      for (int i = 0; i < 6; i++) {
-        Direction.longNames.add(Direction.getLongDirectionString(i).toLowerCase());
-      }
-    }
-
-    return Direction.longNames;
+    return getLongNames(null);
   }
 
-  private static List<String> getNormalizedLongNames() {
-    if (!Locales.getOrderLocale().equals(Direction.usedLocale)) {
-      Direction.shortNames = null;
-      Direction.longNames = null;
-      Direction.normalizedLongNames = null;
+  /**
+   * Returns the names of all valid directions in an all-lowercase long form.
+   */
+  public static List<String> getLongNames(Locale locale) {
+    initNames(locale);
+
+    return Arrays.asList(Direction.longNames);
+  }
+
+  /**
+   * Returns the names of all valid directions in an all-lowercase long form. The names are also
+   * normalized (umlauts converted etc.)
+   */
+  public static List<String> getNormalizedLongNames() {
+    return getNormalizedLongNames(null);
+  }
+
+  /**
+   * Returns the names of all valid directions in an all-lowercase long form. The names are also
+   * normalized (umlauts converted etc.)
+   */
+  public static List<String> getNormalizedLongNames(Locale locale) {
+    initNames(locale);
+
+    return Arrays.asList(Direction.normalizedLongNames);
+  }
+
+  protected static void initNames(Locale locale) {
+    if (locale == null) {
+      locale = Locales.getOrderLocale();
+    }
+    if (locale.equals(Direction.usedLocale))
+      return;
+    Direction.usedLocale = locale;
+
+    for (int i = 0; i < 6; i++) {
+      Direction.shortNames[i] = Direction.getShortDirectionString(i).toLowerCase();
+      Direction.longNames[i] = Direction.getLongDirectionString(i).toLowerCase();
+      Direction.normalizedLongNames[i] =
+          Umlaut.convertUmlauts(Direction.getLongDirectionString(i)).toLowerCase();
     }
 
-    if (Direction.normalizedLongNames == null) {
-      Direction.usedLocale = Locales.getOrderLocale();
-      Direction.normalizedLongNames = new ArrayList<String>(6);
-
-      for (int i = 0; i < 6; i++) {
-        Direction.normalizedLongNames.add(Umlaut
-            .convertUmlauts(Direction.getLongDirectionString(i)).toLowerCase());
-      }
-    }
-
-    return Direction.normalizedLongNames;
   }
 
   /**
@@ -469,15 +484,50 @@ public enum Direction {
    * Pattern may be an abbreviation of any of the matches. If pattern is ambiguous or cannot be
    * found among the matches, -1 is returned
    */
-  private static int find(String pattern, List<String> matches) {
-    int i = 0;
-    int hitIndex = -1;
+  private static int find(String pattern, int mode) {
+
+    // Map<String, Integer> hits;
+    // switch (mode) {
+    // case SHORT:
+    // hits = shortNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
+    // if (hits.size() == 1)
+    // return hits.values().iterator().next();
+    // break;
+    //
+    // case LONG:
+    // hits = longNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
+    // if (hits.size() == 1)
+    // return hits.values().iterator().next();
+    // break;
+    // case NORMLONG:
+    // hits = normalizedLongNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
+    // if (hits.size() == 1)
+    // return hits.values().iterator().next();
+    // break;
+    // default:
+    // throw new IllegalStateException();
+    // }
+    // return -1;
+
     int hits = 0;
+    int hitIndex = -1;
+    String[] strings;
+    switch (mode) {
+    case SHORT:
+      strings = shortNames;
+      break;
+    case LONG:
+      strings = longNames;
+      break;
+    case NORMLONG:
+      strings = normalizedLongNames;
+      break;
+    default:
+      throw new IllegalStateException();
+    }
 
-    for (Iterator<String> iter = matches.iterator(); iter.hasNext(); i++) {
-      String match = iter.next();
-
-      if (match.startsWith(pattern)) {
+    for (int i = 0; i < strings.length; ++i) {
+      if (strings[i].startsWith(pattern)) {
         hits++;
         hitIndex = i;
       }

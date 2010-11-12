@@ -3,6 +3,7 @@
     * fixed duplicate counting of income in FactionStatsPanel
     * EMapDetailsPanel: improvements to region resource display and (transfer) relation display
     * added TeachInspector, improved AttackInspector
+    * improved handling of E3 ship and wage rules
 
 2010-11-05 / Build 433 - Fiete (sf@fietefietz.de)
 	* changed FogOfWar to CR-visibility information.

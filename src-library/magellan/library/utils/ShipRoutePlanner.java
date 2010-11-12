@@ -121,9 +121,10 @@ public class ShipRoutePlanner extends RoutePlanner {
       } else {
         data.getGameSpecificStuff().getOrderChanger().disableLongOrders(shipOwner);
         for (ListIterator<String> iter = orders.listIterator(); iter.hasNext();) {
-          shipOwner.addOrder(iter.next(), false, 0);
+          shipOwner.addOrder(iter.next());
         }
       }
+      // shipOwner.addOrder("; path is " + (regionList.size() - 1) + " regions long.", true, 1);
 
       return shipOwner;
     }

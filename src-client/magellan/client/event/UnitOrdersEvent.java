@@ -52,8 +52,11 @@ public class UnitOrdersEvent extends TimeStampedEvent {
   }
 
   /**
-   * Returns the relates units
+   * Returns the related units.
+   * 
+   * @deprecated FIXME(stm) I wouldn't trust this...
    */
+  @Deprecated
   public Collection<Unit> getRelatedUnits() {
     return relatedUnits;
   }

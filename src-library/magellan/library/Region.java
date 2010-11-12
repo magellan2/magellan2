@@ -260,6 +260,7 @@ public interface Region extends UnitContainer {
   /**
    * Returns the resource with the ID of its item type.
    * 
+   * @param type may be <code>null</code> in which case <code>null</code> will be returned
    * @return the resource object or null if no resource with the specified ID exists in this region.
    */
   public RegionResource getResource(ItemType type);

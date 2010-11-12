@@ -41,9 +41,7 @@ public class SelectIslandsAction extends AbstractSelectionAction {
     // that contained at least one selected region before
     for (CoordinateID c : client.getSelectedRegions().keySet()) {
       if (c.getZ() == client.getLevel()) {
-        getSelectedRegions().putAll(
-            Islands.getIsland(client.getData().rules, client.getData().regions(), client.getData()
-                .getRegion(c)));
+        getSelectedRegions().putAll(Islands.getIsland(client.getData().getRegion(c)));
       }
     }
 

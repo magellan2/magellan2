@@ -55,6 +55,7 @@ public class StringFactory {
    * DOCUMENT-ME
    */
   public String getOptimizedString(String s) {
+    // FIXME(stm) understand and assess this
     // copy all strings into new char and recreate string with it.
     // Prevent inefficient use of char[]
     char allchars[] = new char[s.length()];

@@ -118,7 +118,6 @@ public class OrderReader {
       line = stream.readLine();
     }
 
-    // FIXME (stm 07/2010) why this??
     data.postProcess();
   }
 

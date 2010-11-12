@@ -21,7 +21,7 @@ import magellan.library.Unit;
  * TAX, ENTERTAIN (SELL)
  */
 public class IncomeRelation extends UnitContainerRelation implements LongOrderRelation {
-  /** DOCUMENT-ME */
+  /** The money earned */
   public final int amount;
 
   /**

@@ -96,9 +96,11 @@ public class OrderToken {
    * @param start the start position of the token in the underlying stream.
    * @param end the end position of the token in the underlying stream.
    * @param ttype the type of the token, the value must equal one the TT_XXX constants.
-   * @param followedBySpace defines wether the token was followed by either '\r' '\n' '\t' or ' '
+   * @param followedBySpace defines whether the token was followed by either '\r' '\n' '\t' or ' '
    */
   public OrderToken(String text, int start, int end, int ttype, boolean followedBySpace) {
+    if (text.length() > 0 && Character.isSpace(text.charAt(0)) && ttype != TT_STRING)
+      throw new IllegalArgumentException("Order text starts with space");
     this.text = text;
     this.start = start;
     this.end = end;
@@ -127,6 +129,7 @@ public class OrderToken {
    * Returns the text.
    */
   public String getText() {
+    // FIXME test
     return text;
   }
 
@@ -136,6 +139,7 @@ public class OrderToken {
    * Same as getText() but removes enclosing quotes.
    */
   public String getStrippedText(char[] delimiters) {
+    // FIXME also remove line breaks and other stuff...
     if (ttype != OrderToken.TT_STRING)
       return getText();
 
@@ -158,6 +162,8 @@ public class OrderToken {
    */
   @Deprecated
   public void setText(String text) {
+    if (text.length() > 0 && Character.isSpace(text.charAt(0)))
+      throw new IllegalArgumentException("Order text starts with space");
     this.text = text;
   }
 

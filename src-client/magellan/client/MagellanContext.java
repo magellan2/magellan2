@@ -21,9 +21,9 @@ import magellan.client.utils.NameGenerator;
 import magellan.library.GameData;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Resources;
-import magellan.library.utils.Units;
 import magellan.library.utils.replacers.ReplacerHelp;
 
+// FIXME use this class more!?!
 /**
  * This class keeps all anchors to global resources e.g. EventDispatcher, Properties...<br>
  */

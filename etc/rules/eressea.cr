@@ -496,6 +496,7 @@ RACE "Orks"
 70;recruitmentcosts
 10;weight
 5.4;capacity
+2;recruitmentfactor
 TALENTBONI
 1;Alchemie
 1;Bergbau

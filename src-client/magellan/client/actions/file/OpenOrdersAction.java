@@ -150,6 +150,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
         client.setOrigin(CoordinateID.ZERO);
         // setOrigin already fires a GameDataEvent
         // client.getDispatcher().fire(new GameDataEvent(this, client.getData()));
+        client.setReportChanged(true);
         ui.ready();
       }
     }).start();

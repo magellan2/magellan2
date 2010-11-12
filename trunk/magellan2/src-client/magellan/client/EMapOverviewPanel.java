@@ -206,6 +206,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private static final Comparator<Named> nameCmp = new NameComparator(EMapOverviewPanel.idCmp);
 
   /** @deprecated Use {@link MagellanDesktop#OVERVIEW_IDENTIFIER} instead */
+  @Deprecated
   public static final String IDENTIFIER = MagellanDesktop.OVERVIEW_IDENTIFIER;
 
   /**
@@ -283,6 +284,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       }
     });
     SelectionHistory.ignoreSource(lstHistory);
+    SelectionHistory.setMaxSize(SelectionHistory.HISTORY_SIZE);
     scpHistory = new JScrollPane(lstHistory);
 
     // ClearLook suggests to remove border
@@ -355,6 +357,19 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   @Override
   public void gameDataChanged(GameDataEvent e) {
     data = e.getGameData();
+
+    // activeObject is from the old report. Convert it to the corresponding object in the new report
+    if (activeObject instanceof Unit) {
+      activeObject = data.getUnit(activeObject.getID());
+    } else if (activeObject instanceof Building) {
+      activeObject = data.getBuilding(activeObject.getID());
+    } else if (activeObject instanceof Ship) {
+      activeObject = data.getShip(activeObject.getID());
+    } else if (activeObject instanceof Region) {
+      activeObject = data.getRegion(((Region) activeObject).getCoordinate());
+    } else {
+      activeObject = null;
+    }
 
     rebuildTree();
 

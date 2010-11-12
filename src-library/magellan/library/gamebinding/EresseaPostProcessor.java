@@ -28,11 +28,11 @@ import magellan.library.GameData;
 import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.Region;
+import magellan.library.Region.Visibility;
 import magellan.library.Scheme;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
-import magellan.library.Region.Visibility;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Direction;
@@ -52,6 +52,7 @@ public class EresseaPostProcessor {
   private static final Logger log = Logger.getInstance(EresseaPostProcessor.class);
 
   protected EresseaPostProcessor() {
+    // nothing to do, no state
   }
 
   private static final EresseaPostProcessor singleton = new EresseaPostProcessor();
@@ -89,6 +90,7 @@ public class EresseaPostProcessor {
     List<Unit> sortedUnits = new LinkedList<Unit>(data.getUnits());
     Collections.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
 
+    // FIXME(stm) this effectively destroys report unit sorting!
     for (Unit unit : sortedUnits) {
       unit.setSortIndex(sortIndex++);
       sortIndex = unit.extractTempUnits(data, sortIndex);
@@ -116,6 +118,7 @@ public class EresseaPostProcessor {
           // FIXME (stm) 2006-10-28: this has bitten us already
           // check what is visible in what visibility
           // (lighthouse, neigbbour, travel)
+
           // the following tags seem to be present under undefined visibility
           // even if they are zero (but only if region is not an ocean):
           // Bauern, Silber, Unterh, Rekruten, Pferde, (Lohn)

@@ -37,11 +37,10 @@ public interface GameSpecificStuff {
    * DOCUMENT-ME Warning: Not implemented
    * 
    * @return A game data reader for this game
+   * @deprecated this somehow never got used (or implemented)
    */
-  // FIXME this somehow never got used (or implemented)
+  @Deprecated
   public GameDataIO getGameDataIO();
-
-  // for GameData
 
   /**
    * Processes a GameData object augmenting objects with additional information from messages,
@@ -116,6 +115,15 @@ public interface GameSpecificStuff {
    */
   public String getName();
 
+  /**
+   * DOCUMENT-ME
+   * 
+   * @param globalData
+   * @param addedData
+   * @param ui
+   * @param interactive
+   * @return
+   */
   public ReportTransformer[] getTransformers(GameData globalData, GameData addedData,
       UserInterface ui, boolean interactive);
 }

@@ -71,27 +71,27 @@ public class E3AOrderChanger extends EresseaOrderChanger {
           + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \"\"");
     }
 
-    orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
+    orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
         + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " " + unit.getID());
-    orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
+    orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
         + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + unit.getName() + "\"");
 
     if (unit.getDescription() != null) {
-      orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
+      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + unit.getDescription()
           + "\"");
     }
 
     if (unit.getShip() != null) {
-      orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
+      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " "
           + unit.getShip().getID().toString());
-      orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
+      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \""
           + unit.getShip().getName() + "\"");
 
       if (unit.getShip().getDescription() != null) {
-        orders.add("// " + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
+        orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
             + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \""
             + unit.getShip().getDescription() + "\"");
       }

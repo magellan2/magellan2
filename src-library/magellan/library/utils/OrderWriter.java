@@ -238,7 +238,7 @@ public class OrderWriter {
       // Item silver = unit.getModifiedItem(world.rules.getItemType(StringID.create("Silber"),
       // true));
       // pavkovic 2004.09.13: dont use modified items as it creates some bugs
-      Item silver = unit.getItem(world.rules.getItemType(EresseaConstants.I_USILVER, true));
+      Item silver = unit.getItem(world.rules.getItemType(EresseaConstants.I_USILVER));
 
       if (silver != null) {
         money = silver.getAmount();
@@ -277,7 +277,7 @@ public class OrderWriter {
 
     // confirmed?
     if (unit.isOrdersConfirmed() && !removeSCComments) {
-      writeln(stream, ";" + OrderWriter.CONFIRMED);
+      writeln(stream, EresseaConstants.O_COMMENT + OrderWriter.CONFIRMED);
     }
 
     writeOrders(unit.getCompleteOrders(writeUnitTagsAsVorlageComment), stream);
@@ -289,8 +289,8 @@ public class OrderWriter {
     for (String cmd : cmds) {
       String trimmedAndBurning = cmd.trim();
 
-      if ((removeSCComments && trimmedAndBurning.startsWith(";"))
-          || (removeSSComments && trimmedAndBurning.startsWith("//"))) {
+      if ((removeSCComments && trimmedAndBurning.startsWith(EresseaConstants.O_COMMENT))
+          || (removeSSComments && trimmedAndBurning.startsWith(EresseaConstants.O_PCOMMENT))) {
         // consume
       } else {
         writeln(stream, cmd);

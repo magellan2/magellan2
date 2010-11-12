@@ -102,7 +102,7 @@ public class UnitRoutePlanner {
         unit.setOrders(orders);
       } else {
         for (String string : orders) {
-          unit.addOrder(string, false, 0);
+          unit.addOrder(string);
         }
       }
 

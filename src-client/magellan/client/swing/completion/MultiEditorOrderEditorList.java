@@ -2017,7 +2017,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                                     + "; "
                                     + Resources
                                         .get("completion.multieditorordereditorlist.tempunit.recruitCost");
-                            parentUnit.addOrders(tmpOrders);
+                            parentUnit.addOrder(tmpOrders);
                           }
 
                           if (dialog.isGiveMaintainCost()) {
@@ -2032,7 +2032,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                                     + "; "
                                     + Resources
                                         .get("completion.multieditorordereditorlist.tempunit.maintainCost");
-                            parentUnit.addOrders(tmpOrders);
+                            parentUnit.addOrder(tmpOrders);
                           }
 
                           // TODO(pavkovic) extract to EresseaOrderChanger
@@ -2048,7 +2048,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                   String order = dialog.getOrder();
 
                   if ((order != null) && !order.trim().equals("")) {
-                    tempUnit.addOrders(order);
+                    tempUnit.addOrder(order);
                   }
 
                   // description

@@ -141,7 +141,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Adds the order and refreshes the relations
    * 
    * @param newOrders
+   * @deprecated Use {@link #addOrder(String)} or {@link #addOrders(Collection)}
    */
+  @Deprecated
   public void addOrders(String newOrders);
 
   /**

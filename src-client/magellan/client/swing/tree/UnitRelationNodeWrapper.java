@@ -23,10 +23,12 @@
 // 
 package magellan.client.swing.tree;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
 
 import magellan.client.swing.context.ContextFactory;
+import magellan.library.Unit;
 import magellan.library.relation.UnitRelation;
 
 /**
@@ -34,21 +36,25 @@ import magellan.library.relation.UnitRelation;
  * 
  * @author stm
  */
-public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, Changeable {
+public class UnitRelationNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard, Changeable {
 
   private UnitRelation relation;
   private CellObject innerNode;
   private ContextFactory contextFactory;
+  private Unit owner;
+  private String addIcon;
 
   /**
    * Creates a node representing a relation to another unit.
    * 
+   * @param owner
    * @param rel
    * @param innerNode Another node that this node wraps around
    */
-  public UnitRelationNodeWrapper(UnitRelation rel, CellObject innerNode) {
+  public UnitRelationNodeWrapper(Unit owner, UnitRelation rel, CellObject innerNode) {
     relation = rel;
     this.innerNode = innerNode;
+    this.owner = owner;
   }
 
   /**
@@ -62,7 +68,13 @@ public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, C
    * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public Collection<String> getIconNames() {
-    return innerNode.getIconNames();
+    if (addIcon != null) {
+      Collection<String> res = new ArrayList<String>(innerNode.getIconNames().size() + 1);
+      res = new ArrayList<String>(innerNode.getIconNames().size());
+      res.add(addIcon);
+      return res;
+    } else
+      return innerNode.getIconNames();
   }
 
   /**
@@ -135,4 +147,32 @@ public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, C
   public CellObject getInnerNode() {
     return innerNode;
   }
+
+  /**
+   * Returns the value of owner.
+   * 
+   * @return Returns owner.
+   */
+  public Unit getOwner() {
+    return owner;
+  }
+
+  /**
+   * Returns the value of addIcon.
+   * 
+   * @return Returns addIcon.
+   */
+  public String getAdditionalIcons() {
+    return addIcon;
+  }
+
+  /**
+   * Sets the value of addIcon.
+   * 
+   * @param addIcon The value for addIcon.
+   */
+  public void addAdditionalIcon(String addIcon) {
+    this.addIcon = addIcon;
+  }
+
 }

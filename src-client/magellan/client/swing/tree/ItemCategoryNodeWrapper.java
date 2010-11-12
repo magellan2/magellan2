@@ -27,7 +27,7 @@ import magellan.library.rules.ItemCategory;
  * 
  * @author Ulrich Küster
  */
-public class ItemCategoryNodeWrapper implements CellObject {
+public class ItemCategoryNodeWrapper extends DefaultNodeWrapper {
   private int amount = -1;
   private int unmodifiedAmount = -1;
   private ItemCategory cat = null;

@@ -25,7 +25,7 @@ import magellan.library.Potion;
  * @author $Author: $
  * @version $Revision: 259 $
  */
-public class PotionNodeWrapper implements CellObject, SupportsClipboard {
+public class PotionNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard {
   private Potion potion = null;
   private String name = null;
   private String postfix = null;

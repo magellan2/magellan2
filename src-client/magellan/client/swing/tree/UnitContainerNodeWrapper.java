@@ -32,7 +32,7 @@ import magellan.library.utils.StringFactory;
  * @author $Author: $
  * @version $Revision: 393 $
  */
-public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
+public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard {
   private UnitContainer uc = null;
   private boolean showFreeLoad = false;
   private boolean hasOwner = false;

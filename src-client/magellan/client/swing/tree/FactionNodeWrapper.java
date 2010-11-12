@@ -28,7 +28,8 @@ import magellan.library.utils.logging.Logger;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
+public class FactionNodeWrapper extends DefaultNodeWrapper implements CellObject2,
+    SupportsClipboard {
   private static final Logger log = Logger.getInstance(FactionNodeWrapper.class);
   private Faction faction = null;
   private Region region = null;
@@ -203,6 +204,13 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
   }
 
   /**
+   * @see magellan.client.swing.tree.CellObject2#getLabelPosition()
+   */
+  public int getLabelPosition() {
+    return GEs.size() - 1;
+  }
+
+  /**
    * Return <code>false</code>.
    * 
    * @see magellan.client.swing.tree.CellObject2#reverseOrder()
@@ -255,4 +263,5 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
       NodeWrapperDrawPolicy adapter) {
     return null;
   }
+
 }

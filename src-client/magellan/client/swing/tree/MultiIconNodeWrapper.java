@@ -38,7 +38,8 @@ import magellan.library.utils.Resources;
  * @deprecated actually never finished
  */
 @Deprecated
-public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
+public class MultiIconNodeWrapper extends DefaultNodeWrapper implements CellObject2,
+    SupportsClipboard {
 
   // private int modified = -1;
   // private String text = null;
@@ -242,6 +243,13 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
     }
 
     return iconNames;
+  }
+
+  /**
+   * @see magellan.client.swing.tree.CellObject2#getLabelPosition()
+   */
+  public int getLabelPosition() {
+    return 0;
   }
 
   // FIXME adapt

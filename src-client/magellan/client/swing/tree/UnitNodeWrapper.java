@@ -49,7 +49,7 @@ import magellan.library.utils.comparator.SkillRankComparator;
  * @author $Author: $
  * @version $Revision: 288 $
  */
-public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
+public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, SupportsClipboard {
   private static final Comparator<Skill> skillComparator = new SkillComparator();
   private static Comparator<Skill> rankComparator = null;
 
@@ -62,7 +62,8 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
   private boolean iconNamesCreated = false;
   private List<GraphicsElement> iconNames = null;
   private Boolean reverse;
-  private String additionalIcon = null;
+  // private String additionalIcon = null;
+  private List<String> additionalIcons;
   private UnitNodeWrapperDrawPolicy adapter;
 
   /**
@@ -112,8 +113,12 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
   /**
    * Specifies an additional icon that is displayed in front of the unit text.
    */
-  public void setAdditionalIcon(String icon) {
-    additionalIcon = icon;
+  public void addAdditionalIcon(String icon) {
+    if (additionalIcons == null) {
+      additionalIcons = new LinkedList<String>();
+    }
+    // added in reverse order, for more efficiency in getGraphicsElements()
+    additionalIcons.add(0, icon);
   }
 
   /**
@@ -293,7 +298,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
   }
 
   private List<GraphicsElement> createGraphicsElements(Unit u) {
-    List<GraphicsElement> names = new ArrayList<GraphicsElement>();
+    List<GraphicsElement> names = new LinkedList<GraphicsElement>();
     List<Skill> skills = new LinkedList<Skill>();
 
     if (isShowingSkillIcons() && (u.getSkills() != null)) {
@@ -333,10 +338,6 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 
     GraphicsElement start = new UnitGraphicsElement(toString());
     start.setType(GraphicsElement.MAIN);
-
-    if (additionalIcon != null) {
-      start.setImageName(additionalIcon);
-    }
 
     Tag2Element.apply(start);
 
@@ -558,10 +559,16 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
     }
 
     if (reverseOrder()) {
-      Collections.reverse(names);
+      names.add(0, start);
+    } else {
+      names.add(start);
     }
 
-    names.add(0, start);
+    if (additionalIcons != null) {
+      for (String addIcon : additionalIcons) {
+        names.add(0, new GraphicsElement(null, null, addIcon));
+      }
+    }
 
     // ease garbage collection
     skills.clear();
@@ -656,6 +663,14 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
     }
 
     return iconNames;
+  }
+
+  /**
+   * @see magellan.client.swing.tree.CellObject2#getLabelPosition()
+   */
+  public int getLabelPosition() {
+    return additionalIcons == null ? reverseOrder() ? 0 : (iconNames.size() - 1) : reverseOrder()
+        ? (additionalIcons.size()) : (iconNames.size() + additionalIcons.size() - 1);
   }
 
   private static class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements

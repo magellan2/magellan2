@@ -28,8 +28,7 @@ import magellan.client.swing.context.ContextFactory;
  * @author $Author: $
  * @version $Revision: 259 $
  */
-public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, SupportsClipboard,
-    Changeable {
+public class SimpleNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard, Changeable {
   protected static final List<String> defaultIcon = Collections.singletonList("simpledefault");
   protected List<String> icons;
   protected List<String> returnIcons;
@@ -268,4 +267,26 @@ public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, Su
 
     return adapter;
   }
+
+  private int warning = 0;
+
+  /**
+   * @see magellan.client.swing.tree.CellObject#setWarningLevel(int)
+   */
+  @Override
+  public int setWarningLevel(int level) {
+    propertiesChanged();
+    int res = warning;
+    warning = level;
+    return res;
+  }
+
+  /**
+   * @see magellan.client.swing.tree.CellObject#getWarningLevel()
+   */
+  @Override
+  public int getWarningLevel() {
+    return warning;
+  }
+
 }

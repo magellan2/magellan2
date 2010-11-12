@@ -25,7 +25,7 @@ import magellan.library.Border;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class BorderNodeWrapper implements CellObject, SupportsClipboard {
+public class BorderNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard {
   private Border border = null;
   private List<String> iconNames = null;
 

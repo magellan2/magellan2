@@ -31,7 +31,7 @@ import magellan.library.utils.StringFactory;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
+public class RegionNodeWrapper extends DefaultNodeWrapper implements CellObject2, SupportsClipboard {
   private Region region = null;
   private List<GraphicsElement> graphicElements = null;
   private int amount = Integer.MIN_VALUE;
@@ -132,6 +132,13 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
   }
 
   /**
+   * @see magellan.client.swing.tree.CellObject2#getLabelPosition()
+   */
+  public int getLabelPosition() {
+    return graphicElements.size() - 1;
+  }
+
+  /**
    * Never reversed
    * 
    * @see magellan.client.swing.tree.CellObject2#reverseOrder()
@@ -184,4 +191,5 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
       NodeWrapperDrawPolicy adapter) {
     return null;
   }
+
 }

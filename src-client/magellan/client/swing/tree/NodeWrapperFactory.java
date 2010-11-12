@@ -308,8 +308,9 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   /**
    * Creates a wrapper node for a unit relation.
    */
-  public UnitRelationNodeWrapper createRelationNodeWrapper(UnitRelation rel, CellObject2 innerNode) {
-    UnitRelationNodeWrapper rnw = new UnitRelationNodeWrapper2(rel, innerNode);
+  public UnitRelationNodeWrapper createRelationNodeWrapper(Unit owner, UnitRelation rel,
+      CellObject2 innerNode) {
+    UnitRelationNodeWrapper rnw = new UnitRelationNodeWrapper2(owner, rel, innerNode);
     // FIXME which policy?
     init(rnw, NodeWrapperFactory.SIMPLE);
     return rnw;
@@ -317,9 +318,12 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates a wrapper node for a unit relation.
+   * 
+   * @param owner
    */
-  public UnitRelationNodeWrapper createRelationNodeWrapper(UnitRelation rel, CellObject innerNode) {
-    UnitRelationNodeWrapper rnw = new UnitRelationNodeWrapper(rel, innerNode);
+  public UnitRelationNodeWrapper createRelationNodeWrapper(Unit owner, UnitRelation rel,
+      CellObject innerNode) {
+    UnitRelationNodeWrapper rnw = new UnitRelationNodeWrapper(owner, rel, innerNode);
     // FIXME which policy?
     init(rnw, NodeWrapperFactory.SIMPLE);
     return rnw;

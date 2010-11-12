@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -55,7 +56,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -93,10 +93,10 @@ import magellan.client.swing.context.UnitCapacityContextMenu;
 import magellan.client.swing.context.UnitContextMenu;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
-import magellan.client.swing.tree.CellObject;
 import magellan.client.swing.tree.CellRenderer;
 import magellan.client.swing.tree.ContextManager;
 import magellan.client.swing.tree.CopyTree;
+import magellan.client.swing.tree.DefaultNodeWrapper;
 import magellan.client.swing.tree.ItemCategoryNodeWrapper;
 import magellan.client.swing.tree.ItemNodeWrapper;
 import magellan.client.swing.tree.NodeWrapperDrawPolicy;
@@ -131,7 +131,6 @@ import magellan.library.Named;
 import magellan.library.Potion;
 import magellan.library.Region;
 import magellan.library.RegionResource;
-import magellan.library.Rules;
 import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Skill;
@@ -146,6 +145,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
+import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.PersonTransferRelation;
@@ -293,6 +293,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     EMapDetailsPanel.weightNumberFormat.setMaximumFractionDigits(2);
     EMapDetailsPanel.weightNumberFormat.setMinimumFractionDigits(0);
+    // FIXME can rules be null?
     unitsTools = (data != null) ? new Units(data.rules) : new Units(null);
     dispatcher.addSelectionListener(this);
 
@@ -664,9 +665,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // update this component if the orders of the currently displayed unit changed
     dispatcher.addUnitOrdersListener(new UnitOrdersListener() {
       public void unitOrdersChanged(UnitOrdersEvent e) {
-        if (e.getRelatedUnits().contains(EMapDetailsPanel.this.getDisplayedObject())) {
-          EMapDetailsPanel.this.refresh();
-        }
+        // if (e.getRelatedUnits().contains(EMapDetailsPanel.this.getDisplayedObject())) {
+        EMapDetailsPanel.this.refresh();
+        // }
       }
     });
 
@@ -734,9 +735,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   protected GameSpecificRules getRules() {
     if (gameRules == null) {
-      gameRules = getGameSpecificStuff().getGameSpecificRules();
+      gameRules = data.getGameSpecificRules();
     }
     return gameRules;
+  }
+
+  protected MovementEvaluator getMovementEvaluator() {
+    return getGameSpecificStuff().getMovementEvaluator();
   }
 
   /*
@@ -975,8 +980,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-   * This function adds a node with subnodes to given parent - Peasants: amount / max amount
-   * recruit: recruit amount of recruit amount silver: silver surplus: surplus wage: entertain:
+   * This function adds a node with subnodes to given parent<br />
+   * - Peasants: amount / max amount<br />
+   * recruit: recruit amount of recruit amount<br />
+   * silver: silver<br />
+   * surplus: surplus<br />
+   * wage: <br />
+   * entertain:
    * 
    * @param r
    * @param parent
@@ -1025,12 +1035,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         + getDiffString(r.maxRecruit(), r.maxRecruit(), r.modifiedRecruit()) + " "
         + Resources.get("emapdetailspanel.node.of") + " " + r.maxRecruit(), "rekruten"));
 
-    // silver
-    // Fiete 20080805: if we have silver in Resources, this would be redundant
-    if (!isResourceTypeIDInRegionResources(r, rsilverID)) {
-      peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": "
-          + getDiffString(r.getSilver(), r.getOldSilver()), "items/silber"));
-    }
     // surplus
     peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.surplus") + ": "
         + getDiffString(surplus, oldSurplus), "items/silber"));
@@ -1043,10 +1047,33 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           new StringBuffer(Resources.get("emapdetailspanel.node.wage")).append(": ").append(
               getDiffString(r.getWage(), r.getOldWage()));
 
+      // find wage most frequent wage value
+      Map<Integer, Integer> wages = new HashMap<Integer, Integer>();
+      int maxWageCount = 0, majorityWage = 0;
+      for (Race race : data.rules.getRaces()) {
+        wage = getRules().getWage(r, race);
+        if (wage <= 0) {
+          continue;
+        }
+        if (!wages.containsKey(wage)) {
+          wages.put(wage, 0);
+        }
+        int count = wages.get(wage);
+        if (maxWageCount < count + 1) {
+          maxWageCount = count + 1;
+          majorityWage = wage;
+        }
+        wages.put(wage, count + 1);
+      }
+      if (wages.get(majorityWage) != null && wages.get(majorityWage) > 2) {
+        nodeText.append(", ").append(Resources.get("emapdetailspanel.node.majoritywage")).append(
+            " ").append(majorityWage);
+      }
+
       for (Iterator<Race> it = data.rules.getRaceIterator(); it.hasNext();) {
         Race race = it.next();
-        int rWage = gameRules.getWage(r, race);
-        if (rWage > 0 && rWage != wage) {
+        int rWage = getRules().getWage(r, race);
+        if (rWage > 0 && rWage != majorityWage) {
           nodeText.append(", ").append(race.getName()).append(": ").append(rWage);
         }
       }
@@ -1061,7 +1088,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   private int getPeasantMaintenance(Region region) {
-    return gameRules.getPeasantMaintenance(region);
+    return getRules().getPeasantMaintenance(region);
   }
 
   /**
@@ -1127,6 +1154,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
         resourceNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.laen") + ": "
             + getDiffString(r.getLaen(), r.getOldLaen()), icon));
+      }
+    }
+
+    // silver
+    // Fiete 20080805: if we have silver in Resources, this would be redundant
+    if (!isResourceTypeIDInRegionResources(r, rsilverID)) {
+      if (r.getSilver() > 0 || r.getOldSilver() > 0) {
+        resourceNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": "
+            + getDiffString(r.getSilver(), r.getOldSilver()), "items/silber"));
       }
     }
 
@@ -1209,17 +1245,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       return false;
 
     for (RegionResource res : r.resources()) {
-      if (res.getType().getID().equals(resourceID)) {
-        if (r.getResource(data.rules.getItemType(resourceID)) == null) {
-          resourceID = null;
-        }
+      if (res.getType().getID().equals(resourceID))
+        // the following lines have no effect
+        // if (r.getResource(data.getRules().getItemType(resourceID)) == null) {
+        // resourceID = null;
+        // }
         return true;
-      }
     }
 
-    if (r.getResource(data.rules.getItemType(resourceID)) != null) {
-      resourceID = null;
-    }
+    // the following lines have no effect
+    // if (r.getResource(data.getRules().getItemType(resourceID)) != null) {
+    // resourceID = null;
+    // }
     return false;
   }
 
@@ -1235,19 +1272,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // Collect herbs: key: ItemType; value: LinkedList containing the region-objects
     Map<ItemType, List<Region>> herbs = new Hashtable<ItemType, List<Region>>();
 
-    // Count peasants, silver
     int peasants = 0;
     int silver = 0;
+    int horses = 0;
 
     for (Region region : r) {
-      if (region.getPeasants() != -1) {
-        peasants += region.getPeasants();
-      }
-
-      if (region.getSilver() != -1) {
-        silver += region.getSilver();
-      }
-
       if (region.getHerb() != null) {
         List<Region> regionList = herbs.get(region.getHerb());
 
@@ -1268,40 +1297,39 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       list.add(region);
 
+      boolean foundPeasants = false;
+      boolean foundSilver = false;
+      boolean foundHorses = false;
       if (!region.resources().isEmpty()) {
         for (RegionResource res : region.resources()) {
-          Integer amount = resources.get(res.getType());
-          int i = res.getAmount();
-
-          if (amount != null) {
-            i += amount.intValue();
+          if (res.getType().getID().equals(rpeasantsID)) {
+            foundPeasants = true;
+            peasants += res.getAmount();
+          } else if (res.getType().getID().equals(rsilverID)) {
+            foundSilver = true;
+            silver += res.getAmount();
+          } else if (res.getType().getID().equals(rhorsesID)) {
+            foundHorses = true;
+            horses += res.getAmount();
+          } else {
+            addResource(resources, res.getType(), res.getAmount());
           }
-
-          resources.put(res.getType(), i);
         }
       }
-
-      if (region.getHorses() > 0) {
-        ItemType iType = data.rules.getItemType(EresseaConstants.I_RHORSES);
-        Integer amount = resources.get(iType);
-        int i = region.getHorses();
-
-        if (amount != null) {
-          i += amount.intValue();
-        }
-
-        resources.put(iType, i);
+      // evaluate (deprecated) peasant info
+      if (!foundPeasants && region.getPeasants() != -1) {
+        peasants += region.getPeasants();
+      }
+      // evaluate (deprecated) silver info
+      if (!foundSilver && region.getSilver() != -1) {
+        silver += region.getSilver();
+      }
+      if (!foundHorses && region.getHorses() > 0) {
+        horses += region.getHorses();
       }
     }
 
     // Now the data is prepared. Build the tree:
-    // peasants
-    parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.peasants") + ": " + peasants,
-        "bauern"));
-
-    // silver
-    parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": " + silver,
-        "items/silber"));
 
     // terrains sorted by region type
     DefaultMutableTreeNode terrainsNode =
@@ -1339,8 +1367,21 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     List<ItemType> sortedList2 = new LinkedList<ItemType>(resources.keySet());
     Collections.sort(sortedList2, new NameComparator(IDComparator.DEFAULT));
 
-    for (ListIterator<ItemType> iter = sortedList2.listIterator(); iter.hasNext();) {
-      ItemType resType = iter.next();
+    if (peasants > 0) {
+      parent.add(createSimpleNode(
+          Resources.get("emapdetailspanel.node.peasants") + ": " + peasants, "bauern"));
+    }
+
+    if (silver > 0) {
+      parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": " + silver,
+          "items/silber"));
+    }
+    if (horses > 0) {
+      parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.horses") + ": " + horses,
+          "items/pferd"));
+    }
+
+    for (ItemType resType : sortedList2) {
       int amount = resources.get(resType);
 
       if (amount > 0) {
@@ -1385,6 +1426,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       parent.add(herbsNode);
       expandableNodes.add(new NodeWrapper(herbsNode, "EMapDetailsPanel.HerbStatisticExpanded"));
     }
+  }
+
+  private void addResource(Map<ItemType, Integer> resources, ItemType iType, int amount) {
+    Integer oldAmount = resources.get(iType);
+
+    if (oldAmount != null) {
+      amount += oldAmount.intValue();
+    }
+
+    resources.put(iType, amount);
   }
 
   /**
@@ -1741,11 +1792,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // count persons of different races, weight and modified weight and skills within this loop
     for (Unit u : units) {
       // weight (Fiete)
-      float actUWeight = getGameSpecificStuff().getMovementEvaluator().getWeight(u) / 100.0F;
+      float actUWeight = getMovementEvaluator().getWeight(u) / 100.0F;
       uWeight += actUWeight;
 
-      float actModUWeight =
-          getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u) / 100.0F;
+      float actModUWeight = getMovementEvaluator().getModifiedWeight(u) / 100.0F;
       modUWeight += actModUWeight;
 
       // persons
@@ -2290,10 +2340,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       Unit u2 = null;
 
       if (itr.source == u) {
-        addIcon = "get";
+        addIcon = "give";
         u2 = itr.target;
       } else if (itr.target == u) {
-        addIcon = "give";
+        addIcon = "get";
         u2 = itr.source;
       }
 
@@ -2301,7 +2351,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         UnitNodeWrapper unw =
             nodeWrapperFactory.createUnitNodeWrapper(u2, prefix, u2.getPersons(), u2
                 .getModifiedPersons());
-        unw.setAdditionalIcon(addIcon);
+        if (itr.warning) {
+          unw.addAdditionalIcon("warnung");
+        }
+        unw.addAdditionalIcon(addIcon);
         unw.setReverseOrder(true);
         personNode.add(new DefaultMutableTreeNode(unw));
       }
@@ -2312,15 +2365,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       Unit u2 = null;
 
       if (relation.source == u) {
-        addIcon = "get";
+        addIcon = "give";
         u2 = relation.target;
       } else if (relation.target == u) {
-        addIcon = "give";
+        addIcon = "get";
         u2 = relation.source;
       }
 
       UnitNodeWrapper unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
-      unw.setAdditionalIcon(addIcon);
+      if (relation.warning) {
+        unw.addAdditionalIcon("warnung");
+      }
+      unw.addAdditionalIcon(addIcon);
       unw.setReverseOrder(true);
       personNode.add(new DefaultMutableTreeNode(unw));
     }
@@ -2450,7 +2506,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendUnitStealthInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     // faction hidden, stealth level
-    Skill stealth = u.getSkill(data.rules.getSkillType(EresseaConstants.S_TARNUNG, true));
+    SkillType type = data.rules.getSkillType(EresseaConstants.S_TARNUNG);
+    Skill stealth = type != null ? u.getSkill(type) : null;
     int stealthLevel = 0;
 
     if (stealth != null) {
@@ -2574,8 +2631,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendUnitWeight(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    float uWeight = getGameSpecificStuff().getMovementEvaluator().getWeight(u) / 100.0F;
-    float modUWeight = getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u) / 100.0F;
+    float uWeight = getMovementEvaluator().getWeight(u) / 100.0F;
+    float modUWeight = getMovementEvaluator().getModifiedWeight(u) / 100.0F;
     String text =
         Resources.get("emapdetailspanel.node.totalweight") + ": "
             + EMapDetailsPanel.weightNumberFormat.format(uWeight);
@@ -2614,8 +2671,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendUnitLoadInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     // load
-    int load = getGameSpecificStuff().getMovementEvaluator().getLoad(u);
-    int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(u);
+    int load = getMovementEvaluator().getLoad(u);
+    int modLoad = getMovementEvaluator().getModifiedLoad(u);
 
     if ((load != 0) || (modLoad != 0)) {
       String text =
@@ -2632,7 +2689,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     // payload
-    int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(u);
+    int maxOnFoot = getMovementEvaluator().getPayloadOnFoot(u);
 
     if (maxOnFoot == Unit.CAP_UNSKILLED) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.capacityonfoot") + ": "
@@ -2673,7 +2730,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       parent.add(capacityNode);
     }
 
-    int maxOnHorse = getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(u);
+    int maxOnHorse = getMovementEvaluator().getPayloadOnHorse(u);
 
     if (maxOnHorse == Unit.CAP_UNSKILLED) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.capacityonhorse") + ": "
@@ -2923,7 +2980,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         teachersNode.add(teacherNode);
       }
 
-      int teachFactor = gameRules.getTeachFactor();
+      int teachFactor = getRules().getTeachFactor();
       teachersNode.setUserObject(nodeWrapperFactory.createUnitListNodeWrapper(Resources
           .get("emapdetailspanel.node.teacher")
           + ": "
@@ -2971,7 +3028,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           + ": "
           + pupilCounter
           + " / "
-          + (u.getModifiedPersons() * gameRules.getTeachFactor())
+          + (u.getModifiedPersons() * getRules().getTeachFactor())
           + duplicatePupilWarning, null, pupils, "pupils"));
     }
   }
@@ -3006,8 +3063,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           .add(new NodeWrapper(passengersNode, "EMapDetailsPanel.UnitPassengersExpanded"));
 
       for (Unit passenger : passengers) {
-        int pweight = getGameSpecificStuff().getMovementEvaluator().getWeight(passenger);
-        int pmodweight = getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(passenger);
+        int pweight = getMovementEvaluator().getWeight(passenger);
+        int pmodweight = getMovementEvaluator().getModifiedWeight(passenger);
         String str =
             passenger.toString() + ": "
                 + EMapDetailsPanel.weightNumberFormat.format(new Float(pweight / 100.0f)) + " "
@@ -3146,7 +3203,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       // lets see if we have potions to display
       if (potionList != null && potionList.size() > 0) {
         for (Potion p : potionList) {
-          int max = getBrewablePotions(data.rules, p, u.getRegion());
+          int max = getBrewablePotions(p, u.getRegion());
           potionsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory.createPotionNodeWrapper(p,
               data.getTranslation(p), ": " + max)));
         }
@@ -3236,27 +3293,26 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         commandNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.command"));
       }
       expandableNodes.add(new NodeWrapper(commandNode, "EMapDetailsPanel.PersonsExpanded"));
+      Unit u2 = null;
+      String addIcon = null;
       if (rel.target == u) {
-        Unit u2 = rel.source;
-        UnitNodeWrapper unw;
-        if (rel.warning) {
-          unw = nodeWrapperFactory.createUnitNodeWrapper(u2, "(!!!) " + u2);
-        } else {
-          unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
-        }
-        unw.setAdditionalIcon("give");
-        unw.setReverseOrder(true);
-        commandNode.add(new DefaultMutableTreeNode(unw));
+        addIcon = "get";
+        u2 = rel.source;
+      } else if (rel.source == u) {
+        addIcon = "give";
+        u2 = rel.target;
       }
-      if (rel.source == u) {
-        Unit u2 = rel.target;
+      if (u2 != null) {
         UnitNodeWrapper unw;
+        // if (rel.warning) {
+        // unw = nodeWrapperFactory.createUnitNodeWrapper(u2, "(!!!) " + u2);
+        // } else {
+        unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
+        // }
         if (rel.warning) {
-          unw = nodeWrapperFactory.createUnitNodeWrapper(u2, "(!!!) " + u2);
-        } else {
-          unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
+          unw.addAdditionalIcon("warnung");
         }
-        unw.setAdditionalIcon("get");
+        unw.addAdditionalIcon(addIcon);
         unw.setReverseOrder(true);
         commandNode.add(new DefaultMutableTreeNode(unw));
       }
@@ -3334,7 +3390,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * Determines how many potions potion can be brewed from the herbs owned by privileged factions in
    * the specified region.
    */
-  private int getBrewablePotions(Rules rules, Potion potion, Region region) {
+  private int getBrewablePotions(Potion potion, Region region) {
     int max = Integer.MAX_VALUE;
 
     for (Item ingredient : potion.ingredients()) {
@@ -3791,9 +3847,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           // modLoad += u.getModifiedWeight();
         }
 
-        float weight = getGameSpecificStuff().getMovementEvaluator().getWeight(u) / 100.0F;
-        float modWeight =
-            getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u) / 100.0f;
+        float weight = getMovementEvaluator().getWeight(u) / 100.0F;
+        float modWeight = getMovementEvaluator().getModifiedWeight(u) / 100.0f;
 
         // if (s.getShipType().getMaxPersons() > 0) {
         // weight -= u.getPersons()*u.getRace().getWeight();
@@ -3895,7 +3950,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               .get("emapdetailspanel.node.captain")
               + ": ", owner.getPersons(), owner.getModifiedPersons());
       w.setReverseOrder(true);
-      w.setAdditionalIcon("captain");
+      w.addAdditionalIcon("captain");
       DefaultMutableTreeNode ownerNode = new DefaultMutableTreeNode(w);
       parent.add(ownerNode);
       appendContainerCommandInfo(s, ownerNode, expandableNodes);
@@ -3964,7 +4019,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     boolean warning = false;
     if (s.getShipType().getMaxPersons() > 0) {
-      int silverWeight = gameRules.getSilverPerWeightUnit();
+      int silverWeight = getRules().getSilverPerWeightUnit();
       int personWeight = 10;
       int maxInmates = s.getMaxPersons() * silverWeight * personWeight; // 10 GE
       loadText.append(" -- ");
@@ -4023,7 +4078,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendShipRangeInfo(Ship s, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
 
-    int rad = gameRules.getShipRange(s);
+    int rad = getRules().getShipRange(s);
 
     String rangeString = Resources.get("emapdetailspanel.node.range") + ": " + rad;
     if ((s.getModifiedOwnerUnit() != null) && (s.getModifiedOwnerUnit().getRace() != null)
@@ -4083,18 +4138,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       DefaultMutableTreeNode commandNode =
           new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.command"));
       expandableNodes.add(new NodeWrapper(commandNode, "EMapDetailsPanel.PersonsExpanded"));
-      if (givers != null) {
-        for (Unit u2 : givers) {
+      if (getters != null) {
+        for (Unit u2 : getters) {
           UnitNodeWrapper unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
-          unw.setAdditionalIcon("give");
+          unw.addAdditionalIcon("get");
           unw.setReverseOrder(true);
           commandNode.add(new DefaultMutableTreeNode(unw));
         }
       }
-      if (getters != null) {
-        for (Unit u2 : getters) {
+      if (givers != null) {
+        for (Unit u2 : givers) {
           UnitNodeWrapper unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
-          unw.setAdditionalIcon("get");
+          unw.addAdditionalIcon("give");
           unw.setReverseOrder(true);
           commandNode.add(new DefaultMutableTreeNode(unw));
         }
@@ -4946,7 +5001,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * A class that can be used to interpret a tree entry as a button
    */
-  private abstract class SimpleActionObject implements CellObject, ActionListener {
+  private abstract class SimpleActionObject extends DefaultNodeWrapper implements ActionListener {
     protected List<String> icons;
     private final String key;
 
@@ -4959,6 +5014,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       return Resources.get("emapdetailspanel." + key);
     }
 
+    @Override
     public boolean emphasized() {
       return false;
     }
@@ -4968,6 +5024,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     public void propertiesChanged() {
+      // no change
     }
 
     public NodeWrapperDrawPolicy init(Properties settings, String prefix,
@@ -5057,9 +5114,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       public StealthContextMenu(Unit u) {
         unit = u;
 
-        Skill stealth = unit.getSkill(data.rules.getSkillType(EresseaConstants.S_TARNUNG, true));
+        SkillType type = data.rules.getSkillType(EresseaConstants.S_TARNUNG);
+        Skill stealth = type != null ? unit.getSkill(type) : null;
 
-        if (stealth.getLevel() > 0) {
+        if (stealth != null && stealth.getLevel() > 0) {
           for (int i = 0; i <= stealth.getLevel(); i++) {
             JMenuItem item = new JMenuItem(String.valueOf(i));
             item.addActionListener(this);
@@ -5161,7 +5219,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         Object argument, SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
       try {
         if (argument instanceof UnitRelationNodeWrapper)
-          return new RelationContextMenu(((UnitRelationNodeWrapper) argument).getArgument());
+          return new RelationContextMenu((UnitRelationNodeWrapper) argument);
         else
           return null;
       } catch (IllegalArgumentException exc) {
@@ -5308,7 +5366,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
          * Creates the give order
          */
         public String getOrder(String amount, boolean each) {
-
+          // FIXME data.getGameSpecificStuff().getOrderChanger().getGiveAction()
           Locale locale = Locales.getOrderLocale();
           // relation.origin.getFaction() != null ? relation.origin.getFaction().getLocale() :
 
@@ -5383,10 +5441,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       /**
        * Creates a new ReserveContextMenu object.
        */
-      public RelationContextMenu(Object r) {
-        super(((UnitRelation) r).origin, null, dispatcher, data);
-        this.add(new JSeparator());
+      public RelationContextMenu(UnitRelationNodeWrapper node) {
+        super(node.getOwner(), null, dispatcher, data);
+        Object r = node.getArgument();
         if (r instanceof ReserveRelation) {
+          // if (r.source == r.origin) {
           JMenuItem item = new JMenuItem(new Reserve0Action((ReserveRelation) r));
           // item.addActionListener(this);
           this.add(item);
@@ -5396,7 +5455,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           item = new JMenuItem(new ReserveNumberAction((ReserveRelation) r, true));
           // item.addActionListener(this);
           this.add(item);
+          // }
         } else if (r instanceof ItemTransferRelation) {
+          // if (r.source == r.origin) {
           JMenuItem item = new JMenuItem(new Give0Action((ItemTransferRelation) r));
           // item.addActionListener(this);
           this.add(item);
@@ -5406,9 +5467,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           item = new JMenuItem(new GiveNumberAction((ItemTransferRelation) r, true));
           // item.addActionListener(this);
           this.add(item);
+          // }
         }
       }
-
       // events are already handled by the actions.
       // /**
       // * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)

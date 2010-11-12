@@ -989,9 +989,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       totalIncome += earned[i];
       totalWanted += wanted[i];
     }
-    for (int i = 0; i < extraEarned.length; i++) {
-      totalIncome += extraEarned[i];
-      totalWanted += wanted[i];
+    for (int element : extraEarned) {
+      totalIncome += element;
+      totalWanted += element;
     }
 
     // iconnames for income groups

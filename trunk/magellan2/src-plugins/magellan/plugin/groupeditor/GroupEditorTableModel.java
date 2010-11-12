@@ -244,13 +244,13 @@ public class GroupEditorTableModel extends AbstractTableModel {
   protected void save(String helpcommand, Unit unit, Map<Faction, AllianceState> states) {
     for (Faction faction : states.keySet()) {
       AllianceState state = states.get(faction);
-      unit.addOrders("; ----------------------");
-      unit.addOrders("; reset " + faction);
-      unit.addOrders(helpcommand + " " + faction.getID() + " "
+      unit.addOrder("; ----------------------");
+      unit.addOrder("; reset " + faction);
+      unit.addOrder(helpcommand + " " + faction.getID() + " "
           + Resources.getOrderTranslation("ALL") + " " + Resources.getOrderTranslation("NOT"));
-      unit.addOrders("; new help states for " + faction);
+      unit.addOrder("; new help states for " + faction);
       for (AllianceCategory category : state.getCategories()) {
-        unit.addOrders(helpcommand + " " + faction.getID() + " "
+        unit.addOrder(helpcommand + " " + faction.getID() + " "
             + Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + category.getName()));
       }
     }

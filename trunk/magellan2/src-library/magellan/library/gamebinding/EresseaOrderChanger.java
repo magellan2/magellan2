@@ -243,7 +243,7 @@ public class EresseaOrderChanger implements OrderChanger {
   public void addRecruitOrder(Unit unit, int i) {
     String order =
         Resources.getOrderTranslation(EresseaConstants.O_RECRUIT) + " " + String.valueOf(i);
-    unit.addOrders(order);
+    unit.addOrder(order);
   }
 
   /**

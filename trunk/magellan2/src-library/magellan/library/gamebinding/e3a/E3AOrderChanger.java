@@ -42,7 +42,7 @@ public class E3AOrderChanger extends EresseaOrderChanger {
   public void addRecruitOrder(Unit unit, int i) {
     String order =
         Resources.getOrderTranslation(EresseaConstants.O_RECRUIT) + " " + String.valueOf(i);
-    unit.addOrders(order);
+    unit.addOrder(order);
   }
 
   /**

@@ -25,6 +25,7 @@ public class Race extends UnitContainerType {
   private int additiveShipBonus;
   private String recruitName;
   private int maintenance = 10;
+  private int recruitFactor = 1;
 
   /**
    * Creates a new Race object.
@@ -59,6 +60,20 @@ public class Race extends UnitContainerType {
    */
   public String getRecruitmentName() {
     return recruitName;
+  }
+
+  /**
+   * Sets the number of persons that can be recruited for one peasant.
+   */
+  public void setRecruitmentFactor(int factor) {
+    recruitFactor = factor;
+  }
+
+  /**
+   * Returns the number of persons that can be recruited for one peasant.
+   */
+  public int getRecruitmentFactor() {
+    return recruitFactor;
   }
 
   /**

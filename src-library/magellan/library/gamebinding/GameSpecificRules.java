@@ -26,6 +26,7 @@ package magellan.library.gamebinding;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
+import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.UnitContainerType;
 
@@ -108,6 +109,20 @@ public interface GameSpecificRules {
    * @param u
    */
   public int getMaxHorsesRiding(Unit u);
+
+  /**
+   * Returns true if the specified unit can access the pool for the specified item.
+   */
+  public boolean isPooled(Unit unit, ItemType type);
+
+  /**
+   * Returns the maximum possible number of recruits that the specified unit can recruit in the
+   * specified race.
+   * 
+   * @param u
+   * @param race
+   */
+  public int getRecruitmentLimit(Unit u, Race race);
 
   // /**
   // * Returns true, if the world wraps around at x- or y-coordinates.

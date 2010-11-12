@@ -1094,6 +1094,9 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("recruitmentname")) {
         race.setRecruitmentName(sc.argv[0]);
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("recruitmentfactor")) {
+        race.setRecruitmentFactor(Integer.parseInt(sc.argv[0]));
+        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("maintenance")) {
         race.setMaintenance(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();

@@ -240,7 +240,8 @@ public class EresseaOrderCompleter implements Completer {
       // special request for myself (Darcduck)
       // if an unit should guard the region it must have a combat state better than FLIEHE (5)
       // of a combat order (KÄMPFE) after all attack orders
-      if ((unit.getCombatStatus() > 4) && (unit.getModifiedCombatStatus() > 4)) {
+      if ((unit.getCombatStatus() > EresseaConstants.CS_NOT)
+          && (unit.getModifiedCombatStatus() > EresseaConstants.CS_NOT)) {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD)
             + "...", Resources.getOrderTranslation(EresseaConstants.O_GUARD) + "\n"
             + Resources.getOrderTranslation(EresseaConstants.O_COMBAT), " ", 5, 0));
@@ -393,7 +394,8 @@ public class EresseaOrderCompleter implements Completer {
     // if an attacking unit has the wrong combat state issue the start
     // of a combat order (KÄMPFE) after all attack orders
     String battleStateOrder = "";
-    if ((unit.getCombatStatus() > 3) && (unit.getModifiedCombatStatus() > 3)) {
+    if ((unit.getCombatStatus() > EresseaConstants.CS_DEFENSIVE)
+        && (unit.getModifiedCombatStatus() > EresseaConstants.CS_DEFENSIVE)) {
       battleStateOrder = "\n" + Resources.getOrderTranslation(EresseaConstants.O_COMBAT) + " ";
     }
 
@@ -761,7 +763,7 @@ public class EresseaOrderCompleter implements Completer {
     if (openingToken != null) {
       insertedQuote = openingToken.getText();
     } else {
-      insertedQuote = "" + preferredQuote;
+      insertedQuote = String.valueOf(preferredQuote);
     }
 
     // add rest of inner tokens
@@ -1049,6 +1051,7 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltKaempfe() {
+    // adjust order of completions by guard and attack status
     int guardMalus = 0;
     int attackMalus = 0;
     if (unit != null) {
@@ -1059,28 +1062,32 @@ public class EresseaOrderCompleter implements Completer {
         attackMalus = 20;
       }
     }
-    if ((unit == null) || ((unit.getCombatStatus() != 0) && (unit.getCombatStatus() != -1))) {
+
+    if ((unit == null)
+        || ((unit.getCombatStatus() != EresseaConstants.CS_AGGRESSIVE) && (unit.getCombatStatus() != -1))) {
       completions.add(new Completion(Resources
           .getOrderTranslation(EresseaConstants.O_COMBAT_AGGRESSIVE), "", unit.getCombatStatus()));
     }
 
-    if ((unit == null) || (unit.getCombatStatus() != 2)) {
-      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_REAR),
-          "", Math.abs(unit.getCombatStatus() - 2)));
-    }
+    // do not propose "VORNE"
+    // if ((unit == null) || (unit.getCombatStatus() != EresseaConstants.CS_FRONT)) {
+    // completions.add(new
+    // Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FRONT),
+    // "", Math.abs(unit.getCombatStatus() - 2)));
+    // }
 
-    if ((unit == null) || (unit.getCombatStatus() != 3)) {
+    if ((unit == null) || (unit.getCombatStatus() != EresseaConstants.CS_DEFENSIVE)) {
       completions.add(new Completion(Resources
           .getOrderTranslation(EresseaConstants.O_COMBAT_DEFENSIVE), "", Math.abs(unit
           .getCombatStatus() - 3)));
     }
 
-    if ((unit == null) || (unit.getCombatStatus() != 4)) {
+    if ((unit == null) || (unit.getCombatStatus() != EresseaConstants.CS_NOT)) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_NOT),
           "", Math.abs(unit.getCombatStatus() - 4) + attackMalus));
     }
 
-    if ((unit == null) || (unit.getCombatStatus() != 5)) {
+    if ((unit == null) || (unit.getCombatStatus() != EresseaConstants.CS_FLEE)) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FLEE),
           "", Math.abs(unit.getCombatStatus() - 5) + guardMalus + attackMalus));
     }
@@ -1119,7 +1126,7 @@ public class EresseaOrderCompleter implements Completer {
           for (final Iterator<ItemType> iter = data.rules.getItemTypeIterator(); iter.hasNext();) {
             final ItemType t = iter.next();
 
-            if (t.getCategory().equals(luxCat)) {
+            if (luxCat.equals(t.getCategory())) {
               completions.add(new Completion(t.getOrderName()));
             }
           }
@@ -1292,7 +1299,8 @@ public class EresseaOrderCompleter implements Completer {
         }
       }
 
-      if (!completerSettingsProvider.getLimitMakeCompletion()
+      if (hasSkill(unit, EresseaConstants.S_BURGENBAU)
+          && !completerSettingsProvider.getLimitMakeCompletion()
           || (Units.getContainerPrivilegedUnitItem(region, data.rules
               .getItemType(EresseaConstants.I_USTONE)) != null)) {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
@@ -1572,58 +1580,51 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltReserviereAmount() {
-    final Faction f = unit.getFaction();
-    boolean silverPool = false;
-    boolean materialPool = false;
-    if (f.getOptions() != null) {
-      silverPool = f.getOptions().isActive(StringID.create(EresseaConstants.O_SILVERPOOL));
-      materialPool = f.getOptions().isActive(StringID.create(EresseaConstants.O_ITEMPOOL));
+    addUnitItems("");
+    if (getSilverPool()) {
+      // if unit doesn't have silver, but silver pool is available
+      // if ((unit.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) == null)
+      // && (Units.getContainerPrivilegedUnitItem(region, data.rules
+      // .getItemType(EresseaConstants.I_USILVER)) != null)) {
+      completions.add(new Completion(data.rules.getItemType(EresseaConstants.I_USILVER)
+          .getOrderName(), Completion.DEFAULT_PRIORITY - 1));
+      // }
     }
-
-    if (!silverPool && !materialPool) {
-      addUnitItems("");
-    } else if (silverPool && !materialPool) {
-      addUnitItems("");
-
-      // if unit doesn't have silver, but poolsilver is available
-      if ((unit.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) == null)
-          && (Units.getContainerPrivilegedUnitItem(region, data.rules
-              .getItemType(EresseaConstants.I_USILVER)) != null)) {
-        completions.add(new Completion(data.rules.getItemType(EresseaConstants.I_USILVER)
-            .getOrderName()));
-      }
-    } else if (!silverPool && materialPool) {
+    if (getMaterialPool()) {
       for (Item item : Units.getContainerAllUnitItems(region)) {
-        if (silverPool
-            || (item.getItemType() != data.rules.getItemType(EresseaConstants.I_USILVER))
-            || (unit.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) != null)) {
-          final String name = item.getName();
-          String quotedName = name;
+        if (unit.getItem(item.getItemType()) == null) {
+          // silver only if silver pool activated or unit has silver
+          if ((item.getItemType() != data.rules.getItemType(EresseaConstants.I_USILVER))) {
+            final String name = item.getName();
+            String quotedName = name;
 
-          if ((name.indexOf(" ") > -1)) {
-            quotedName = "\"" + name + "\"";
+            if ((name.indexOf(" ") > -1)) {
+              quotedName = "\"" + name + "\"";
+            }
+
+            completions.add(new Completion(name, quotedName, "", Completion.DEFAULT_PRIORITY + 1));
           }
-
-          completions.add(new Completion(name, quotedName, ""));
-        }
-      }
-    } else {
-      for (Item item : Units.getContainerAllUnitItems(region)) {
-        // silver only if silverpool activated or unit has silver
-        if (silverPool
-            || (item.getItemType() != data.rules.getItemType(EresseaConstants.I_USILVER))
-            || (unit.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) != null)) {
-          final String name = item.getName();
-          String quotedName = name;
-
-          if ((name.indexOf(" ") > -1)) {
-            quotedName = "\"" + name + "\"";
-          }
-
-          completions.add(new Completion(name, quotedName, ""));
         }
       }
     }
+  }
+
+  private boolean getMaterialPool() {
+    boolean materialPool =
+        getGameSpecificStuff().getGameSpecificRules().isPooled(unit,
+            getData().getRules().getItemType(EresseaConstants.I_UHORSE));
+    // if (f.getOptions() != null) {
+    // silverPool = f.getOptions().isActive(StringID.create(EresseaConstants.O_SILVERPOOL));
+    // materialPool = f.getOptions().isActive(StringID.create(EresseaConstants.O_ITEMPOOL));
+    // }
+    return materialPool;
+  }
+
+  private boolean getSilverPool() {
+    boolean silverPool =
+        getGameSpecificStuff().getGameSpecificRules().isPooled(unit,
+            getData().getRules().getItemType(EresseaConstants.I_USILVER));
+    return silverPool;
   }
 
   public void cmpltRoute() {

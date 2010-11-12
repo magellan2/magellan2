@@ -85,7 +85,8 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       // special request for myself (Darcduck)
       // if an unit should guard the region it must have a combat state better than FLIEHE (5)
       // of a combat order (KÄMPFE) after all attack orders
-      if ((getUnit().getCombatStatus() > 4) && (getUnit().getModifiedCombatStatus() > 4)) {
+      if ((getUnit().getCombatStatus() > EresseaConstants.CS_NOT)
+          && (getUnit().getModifiedCombatStatus() > EresseaConstants.CS_NOT)) {
         addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD)
             + "...", Resources.getOrderTranslation(EresseaConstants.O_GUARD) + "\n"
             + Resources.getOrderTranslation(EresseaConstants.O_COMBAT), " ", 5, 0));
@@ -224,19 +225,15 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   @Override
   public void cmpltMache() {
     super.cmpltMache();
-    if (!getCompleterSettingsProvider().getLimitMakeCompletion()
-        || (Units.getContainerPrivilegedUnitItem(getRegion(), getData().rules
-            .getItemType(EresseaConstants.I_WOOD)) != null)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH), " "));
-    }
   }
 
   @Override
   public void cmpltMacheAmount() {
     super.cmpltMacheAmount();
-    if (!getCompleterSettingsProvider().getLimitMakeCompletion()
-        || (Units.getContainerPrivilegedUnitItem(getRegion(), getData().rules
-            .getItemType(EresseaConstants.I_WOOD)) != null)) {
+    if (hasSkill(getUnit(), EresseaConstants.S_BURGENBAU)
+        && (!getCompleterSettingsProvider().getLimitMakeCompletion() || (Units
+            .getContainerPrivilegedUnitItem(getRegion(), getData().rules
+                .getItemType(EresseaConstants.I_WOOD)) != null))) {
       addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH), " "));
     }
   }

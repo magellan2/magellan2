@@ -240,9 +240,9 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
       Collections.reverse(regionList);
     }
 
-    // ?? alle anderen langen Befehle löschen?
-    // ToDo
+    // TODO ?? alle anderen langen Befehle löschen?
     // Order setzen, anderes NACH ersetzen
+    data.getGameSpecificStuff().getOrderChanger().disableLongOrders(u);
     u.addOrder(order, true, 1);
     // Fiete: addOn : give as comment number of regions to travel
     u.addOrder("; path is " + (regionList.size() - 1) + " regions long.", true, 1);

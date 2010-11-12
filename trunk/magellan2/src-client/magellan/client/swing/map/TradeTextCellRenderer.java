@@ -140,7 +140,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
     if (data == null)
       return;
 
-    ItemCategory cat = data.rules.getItemCategory(StringID.create("luxuries"), false);
+    ItemCategory cat = data.rules.getItemCategory(StringID.create("luxuries"));
 
     if (cat == null)
       return;

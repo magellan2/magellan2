@@ -154,7 +154,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
         retVal[1] = String.valueOf(replaceOrders.isSelected());
         retVal[2] = String.valueOf(keepComments.isSelected());
         retVal[3] = String.valueOf(position.getSelection().getActionCommand());
-        GiveOrderDialog.log.info(position.getSelection() + " " + retVal[3]);
+        GiveOrderDialog.log.debug(position.getSelection() + " " + retVal[3]);
         quit();
       }
     };

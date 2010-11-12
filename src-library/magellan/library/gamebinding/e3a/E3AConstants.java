@@ -61,4 +61,15 @@ public class E3AConstants extends EresseaConstants {
 
   /** Streitross */
   public static final StringID I_STREITROSS = StringID.create("Streitross");
+
+  /** Schiffstyp */
+  public static final StringID ST_EINBAUM = StringID.create("Einbaum");
+  /** Schiffstyp */
+  public static final StringID ST_KUTTER = StringID.create("Kutter");
+  /** Schiffstyp */
+  public static final StringID ST_BARKE = StringID.create("Barke");
+  /** Schiffstyp */
+  public static final StringID ST_KOENIGSBARKE = StringID.create("Königsbarke");
+  /** Schiffstyp */
+  public static final StringID ST_FLOSS = StringID.create("Floß");
 }

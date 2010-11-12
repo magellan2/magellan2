@@ -34,6 +34,7 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaGameSpecificRules;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.Race;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This class implements all Eressea specific rule informations.
@@ -67,20 +68,27 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
     float rate = 0;
     if (maxCastle == null) {
       rate = 0;
-    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Wachstube"))) {
+    } else if (maxCastle.getBuildingType().equals(
+        getRules().getCastleType(E3AConstants.B_GUARDHOUSE))) {
       rate = .5f;
-    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Wachturm"))) {
+    } else if (maxCastle.getBuildingType().equals(
+        getRules().getCastleType(E3AConstants.B_GUARDTOWER))) {
       rate = 1;
-    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Befestigung"))) {
-      rate = 1;
-    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Turm"))) {
-      rate = 2;
-    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Burg"))) {
-      rate = 3;
-    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Festung"))) {
-      rate = 4;
-    } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Zitadelle"))) {
-      rate = 5;
+    } else {
+      if (maxCastle.getBuildingType().equals(getRules().getCastleType("Befestigung"))) {
+        rate = 1;
+      } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Turm"))) {
+        rate = 2;
+      } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Burg"))) {
+        rate = 3;
+      } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Festung"))) {
+        rate = 4;
+      } else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Zitadelle"))) {
+        rate = 5;
+      }
+      if (maxCastle.getBuildingType().getBuildSkillLevel() - 1 != rate) {
+        Logger.getInstance(this.getClass()).warn("peasant wage inconsistency with " + maxCastle);
+      }
     }
 
     rate = Math.min(rate, region.getMorale() / 2f);
@@ -116,8 +124,24 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
     if (region.getType().getID().equals(EresseaConstants.RT_FIREWALL))
       return false;
 
-    if (ship.getType().getID().equals(EresseaConstants.ST_BOAT))
+    if (ship.getType().getID().equals(E3AConstants.ST_EINBAUM)
+        || ship.getType().getID().equals(E3AConstants.ST_KUTTER)
+        || ship.getType().getID().equals(E3AConstants.ST_BARKE)
+        || ship.getType().getID().equals(E3AConstants.ST_KOENIGSBARKE))
       return true; // can land everywhere
+
+    if (ship.getType().getID().equals(E3AConstants.ST_FLOSS)) {
+      if (region.getType().getID().equals(EresseaConstants.RT_PLAIN))
+        return true;
+      if (region.getType().getID().equals(EresseaConstants.RT_FOREST))
+        return true;
+      if (region.getType().getID().equals(EresseaConstants.RT_OCEAN))
+        return true;
+      if (region.getType().getID().equals(EresseaConstants.RT_SWAMP))
+        return true;
+      if (region.getType().getID().equals(EresseaConstants.RT_DESSERT))
+        return true;
+    }
 
     if (region.getType().getID().equals(EresseaConstants.RT_PLAIN))
       return true;

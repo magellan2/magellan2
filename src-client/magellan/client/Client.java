@@ -1986,77 +1986,77 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     private String oldTitle;
 
     public String createTitle(GameData data, boolean showStatusOverride, boolean longTitle) {
-    // set frame title (date)
+      // set frame title (date)
       StringBuilder title1 =
           new StringBuilder(reportState.isStateChanged() ? "*" : "").append("Magellan");
       StringBuilder title2 = new StringBuilder();
       StringBuilder title3 = new StringBuilder();
 
-    String version = VersionInfo.getVersion(Client.getBinaryDirectory());
-    if (version == null) {
-      version = VersionInfo.getVersion(Client.getResourceDirectory());
-    }
-
-    if (version != null) {
-        title1.append(" ").append(version);
-    }
-
-    // pavkovic 2002.05.7: data may be null in this situation
-      if (data != null) {
-    if (data.getFileType() != null) {
-      String file;
-
-      try {
-        file = data.getFileType().getFile().toString();
-      } catch (IOException e) {
-        file = data.getFileType().toString();
+      String version = VersionInfo.getVersion(Client.getBinaryDirectory());
+      if (version == null) {
+        version = VersionInfo.getVersion(Client.getResourceDirectory());
       }
 
-      file = file.substring(file.lastIndexOf(File.separator) + 1);
+      if (version != null) {
+        title1.append(" ").append(version);
+      }
+
+      // pavkovic 2002.05.7: data may be null in this situation
+      if (data != null) {
+        if (data.getFileType() != null) {
+          String file;
+
+          try {
+            file = data.getFileType().getFile().toString();
+          } catch (IOException e) {
+            file = data.getFileType().toString();
+          }
+
+          file = file.substring(file.lastIndexOf(File.separator) + 1);
           title1.append(" [").append(file).append("]");
-    }
+        }
 
-    if (data.getOwnerFaction() != null) {
+        if (data.getOwnerFaction() != null) {
           title1.append(" - ").append(data.getOwnerFaction().toString());
-    }
+        }
 
-    if (data.getDate() != null) {
+        if (data.getDate() != null) {
           title2.append(" - ").append(
-          data.getDate().toString(
-              showStatusOverride ? Date.TYPE_SHORT : Date.TYPE_PHRASE_AND_SEASON)).append(" (")
-          .append(data.getDate().getDate()).append(")");
-    }
+              data.getDate().toString(
+                  showStatusOverride ? Date.TYPE_SHORT : Date.TYPE_PHRASE_AND_SEASON)).append(" (")
+              .append(data.getDate().getDate()).append(")");
+        }
 
         if (longTitle) {
-    if (showStatusOverride) {
-      int units = 0;
-      int done = 0;
+          if (showStatusOverride) {
+            int units = 0;
+            int done = 0;
 
-      for (Unit u : data.getUnits()) {
-        if (u.getFaction().isPrivileged()) {
-          units++;
+            for (Unit u : data.getUnits()) {
+              if (u.getFaction().isPrivileged()) {
+                units++;
 
-          if (u.isOrdersConfirmed()) {
-            done++;
-          }
-        }
+                if (u.isOrdersConfirmed()) {
+                  done++;
+                }
+              }
 
-        // also count temp units
-        for (Iterator<TempUnit> iter2 = u.tempUnits().iterator(); iter2.hasNext();) {
-          Unit u2 = iter2.next();
+              // also count temp units
+              for (Iterator<TempUnit> iter2 = u.tempUnits().iterator(); iter2.hasNext();) {
+                Unit u2 = iter2.next();
 
-          if (u2.getFaction().isPrivileged()) {
-            units++;
+                if (u2.getFaction().isPrivileged()) {
+                  units++;
 
-            if (u2.isOrdersConfirmed()) {
-              done++;
+                  if (u2.isOrdersConfirmed()) {
+                    done++;
+                  }
+                }
+              }
             }
-          }
-        }
-      }
 
-      if (units > 0) {
-        BigDecimal percent =
+            if (units > 0) {
+              BigDecimal percent =
                   (new BigDecimal((done * 100) / ((float) units))).setScale(2,
                       BigDecimal.ROUND_DOWN);
               title3.append(" (").append(units).append(" ").append(
@@ -2078,7 +2078,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         oldTitle1 = title1.toString();
         oldTitle3 = title3.toString();
         oldTitle = title1.append(title2).append(title3).toString();
-    }
+      }
 
       return oldTitle;
     }
@@ -2316,7 +2316,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     context.setGameData(newData);
     postProcessLoadedCR(newData);
     getDispatcher().fire(new GameDataEvent(this, getData(), true));
-    }
+  }
 
   /**
    * Returns the current GameData.

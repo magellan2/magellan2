@@ -150,10 +150,10 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
     // Fiete 20060910
     // added support for wahrer Typ
     if (trueBuildingType == null)
-      return getName() + " (" + id + "), " + getType() + " (" + getSize() + ")";
+      return getModifiedName() + " (" + id + "), " + getType() + " (" + getSize() + ")";
     else
-      return trueBuildingType + ": " + getName() + " (" + id + "), " + getType() + " (" + getSize()
-          + ")";
+      return trueBuildingType + ": " + getModifiedName() + " (" + id + "), " + getType() + " ("
+          + getSize() + ")";
   }
 
   /**

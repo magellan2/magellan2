@@ -299,6 +299,9 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       return Collections.emptyList();
   }
 
+  /**
+   * @see magellan.library.impl.MagellanRelatedImpl#getRelations()
+   */
   @Override
   protected Collection<UnitRelation> getRelations() {
     if (getCache().relations == null) {
@@ -383,7 +386,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   @Override
   public String toString() {
-    return getName() + " (" + id + "), " + type;
+    return getModifiedName() + " (" + id + "), " + type;
   }
 
   /**

@@ -692,20 +692,21 @@ public class EresseaRelationFactory implements RelationFactory {
           } else {
             if (tokens.size() > 4) {
               if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_CASTLE))) {
-                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), nameToken,
-                    line));
+                relations
+                    .add(new RenameNamedRelation(u, u.getBuilding(), nameToken.getText(), line));
               } else if (whatToken.equalsToken(EresseaRelationFactory
                   .getOrder(EresseaConstants.O_FACTION))) {
-                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), nameToken,
-                    line));
+                relations
+                    .add(new RenameNamedRelation(u, u.getFaction(), nameToken.getText(), line));
               } else if (whatToken.equalsToken(EresseaRelationFactory
                   .getOrder(EresseaConstants.O_REGION))) {
-                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), nameToken,
-                    line));
+                if (u.getRegion().getOwnerUnit() == u) {
+                  relations
+                      .add(new RenameNamedRelation(u, u.getRegion(), nameToken.getText(), line));
+                }
               } else if (whatToken.equalsToken(EresseaRelationFactory
                   .getOrder(EresseaConstants.O_SHIP))) {
-                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), nameToken,
-                    line));
+                relations.add(new RenameNamedRelation(u, u.getShip(), nameToken.getText(), line));
               }
             }
           }

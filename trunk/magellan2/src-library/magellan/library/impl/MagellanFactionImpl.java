@@ -192,7 +192,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    */
   @Override
   public String toString() {
-    return getName() + " (" + getID() + ")";
+    return getModifiedName() + " (" + getID() + ")";
   }
 
   /**

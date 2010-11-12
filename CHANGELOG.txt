@@ -1,5 +1,6 @@
 2010-11-12 / Build 435 - stm (stm_@users.sourceforge.net)
     * better update of title caption and report changed state
+    * fixed duplicate counting of income in FactionStatsPanel
 
 2010-11-05 / Build 433 - Fiete (sf@fietefietz.de)
 	* changed FogOfWar to CR-visibility information.

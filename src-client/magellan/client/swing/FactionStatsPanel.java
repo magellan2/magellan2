@@ -78,7 +78,6 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.rules.UnitContainerType;
-import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -120,10 +119,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     unitsTools = (data != null) ? new Units(data.rules) : new Units(null);
     nodeWrapperFactory = new NodeWrapperFactory(settings);
 
-    // to get the pref-adapter
-    Unit temp = MagellanFactory.createUnit(UnitID.createUnitID(0, data.base));
-    nodeWrapperFactory.createUnitNodeWrapper(temp);
-    nodeWrapperFactory.createSkillNodeWrapper(temp, new Skill(
+    // to get the pref-adapter FIXME remove
+    nodeWrapperFactory.createUnitNodeWrapper(null);
+    nodeWrapperFactory.createSkillNodeWrapper(null, new Skill(
         new SkillType(StringID.create("Test")), 0, 0, 0, false), null);
     nodeWrapperFactory.createItemNodeWrapper(new Item(new ItemType(StringID.create("Test")), 0));
   }
@@ -992,7 +990,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       totalWanted += wanted[i];
     }
     for (int i = 0; i < extraEarned.length; i++) {
-      totalIncome += earned[i];
+      totalIncome += extraEarned[i];
       totalWanted += wanted[i];
     }
 
@@ -1041,14 +1039,15 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         currentNode.add(subNode);
       }
       if (i == E_TRADETAX && spent[S_TRADE] != 0) {
-        // insert extra node for trade expenses
-        Object msgArgs[] = { new Integer(-spent[S_TRADE]) };
-        String s =
-            (new java.text.MessageFormat(Resources.get("factionstatspanel.node.spentfortrade"))
-                .format(msgArgs));
-        subNode =
-            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(s, "Handeln"));
-        currentNode.add(subNode);
+        // already included in "spent", below
+        // // insert extra node for trade expenses
+        // Object msgArgs[] = { new Integer(-spent[S_TRADE]) };
+        // String s =
+        // (new java.text.MessageFormat(Resources.get("factionstatspanel.node.spentfortrade"))
+        // .format(msgArgs));
+        // subNode =
+        // new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(s, "Handeln"));
+        // currentNode.add(subNode);
       }
 
     }

@@ -32,6 +32,19 @@ import magellan.library.tasks.Problem.Severity;
 
 public class ProblemFactory {
 
+  /**
+   * Creates a problem with all parameters given;
+   * 
+   * @param severity
+   * @param type
+   * @param region
+   * @param owner
+   * @param faction
+   * @param object
+   * @param inspector
+   * @param message
+   * @param line
+   */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, Region region,
       Unit owner, Faction faction, Object object, Inspector inspector, String message, int line) {
     return new SimpleProblem(severity, type, region, owner, faction, object, inspector, message,
@@ -39,12 +52,13 @@ public class ProblemFactory {
   }
 
   /**
-   * Creates a problem. Tries to deduce region and faction from the Unit, and inspector and message
-   * from the ProblemType.
+   * Creates a problem. Tries to deduce region and faction from the Unit, and the message from the
+   * ProblemType.
    * 
    * @param severity
    * @param type
    * @param u
+   * @param inspector
    * @param line
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u,
@@ -54,12 +68,13 @@ public class ProblemFactory {
   }
 
   /**
-   * Creates a problem without line. Tries to deduce region and faction from the Unit, and inspector
-   * and message from the ProblemType.
+   * Creates a problem without line. Tries to deduce region and faction from the Unit, and the
+   * message from the ProblemType.
    * 
    * @param severity
    * @param type
    * @param u
+   * @param inspector
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u,
       Inspector inspector) {
@@ -68,12 +83,13 @@ public class ProblemFactory {
   }
 
   /**
-   * Creates a problem. Tries to deduce unit, region and faction from the UnitContainer, and
-   * inspector and message from the ProblemType.
+   * Creates a problem. Tries to deduce unit, region and faction from the UnitContainer, and the
+   * message from the ProblemType.
    * 
    * @param severity
    * @param type
    * @param c
+   * @param inspector
    * @param line
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c,
@@ -85,11 +101,12 @@ public class ProblemFactory {
 
   /**
    * Creates a problem without line. Tries to deduce unit, region and faction from the
-   * UnitContainer, and inspector and message from the ProblemType.
+   * UnitContainer, and the message from the ProblemType.
    * 
    * @param severity
    * @param type
    * @param c
+   * @param inspector
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c,
       Inspector inspector) {
@@ -105,8 +122,8 @@ public class ProblemFactory {
   }
 
   /**
-   * Creates a problem. Tries to deduce region and faction from the Unit, and the inspector from the
-   * ProblemType but uses the given message.
+   * Creates a problem. Tries to deduce region and faction from the Unit, but uses the given
+   * message.
    * 
    * @param severity
    * @param type

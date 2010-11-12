@@ -31,6 +31,7 @@ import java.util.List;
 
 import magellan.library.GameData;
 import magellan.library.Unit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.AttackRelation;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Resources;
@@ -44,7 +45,7 @@ import magellan.library.utils.Resources;
 public class AttackInspector extends AbstractInspector {
 
   enum AttackProblemTypes {
-    FRIENDLYFIRE, NOTFIGHTING, NOTFIGHTING4GUARD;
+    ATTACKSELF, FRIENDLYFIRE, NOTFIGHTING, NOTFIGHTING4GUARD;
 
     private ProblemType type;
 
@@ -104,9 +105,12 @@ public class AttackInspector extends AbstractInspector {
           continue;
         }
         if (severity == Severity.WARNING) {
-          if (relation.source.getFaction().getAllies() != null
-              && relation.source.getFaction().getAllies().containsKey(
-                  relation.target.getFaction().getID())) {
+          if (relation.target == relation.source) {
+            problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.ATTACKSELF
+                .getType(), u, this, relation.line));
+          } else if (relation.source.getFaction() == relation.target.getFaction()
+              || (relation.source.getFaction().getAllies() != null && relation.source.getFaction()
+                  .getAllies().containsKey(relation.target.getFaction().getID()))) {
             problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.FRIENDLYFIRE
                 .getType(), u, this, relation.line));
           }
@@ -127,7 +131,7 @@ public class AttackInspector extends AbstractInspector {
         // 5 FLIEHE: 4. Reihe, flieht immer.
 
         // Fiete 20080521: changing here to modified Combat status
-        if (u.getModifiedCombatStatus() > 3) {
+        if (u.getModifiedCombatStatus() > EresseaConstants.CS_DEFENSIVE) {
           wrongStatus = Math.min(wrongStatus, relation.line);
         }
 
@@ -140,7 +144,7 @@ public class AttackInspector extends AbstractInspector {
       }
 
       // guard and not fighting (fleeing)?
-      if (u.getModifiedGuard() != 0 && u.getModifiedCombatStatus() == 5) {
+      if (u.getModifiedGuard() != 0 && u.getModifiedCombatStatus() == EresseaConstants.CS_FLEE) {
         problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING4GUARD
             .getType(), u, this));
       }

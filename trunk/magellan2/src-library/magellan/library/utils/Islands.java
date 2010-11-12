@@ -36,6 +36,17 @@ public class Islands {
   private static final Logger log = Logger.getInstance(Islands.class);
 
   /**
+   * Retrieve all islands formed by a collection of regions. This method will try to expand and
+   * merge islands already present in the data.
+   * 
+   * @param data the game data as required by the Island constructor.
+   */
+  @SuppressWarnings("deprecation")
+  public static Map<IntegerID, Island> getIslands(UserInterface ui, GameData data) {
+    return getIslands(ui, data.rules, data.regions(), data.islands(), data);
+  }
+
+  /**
    * Retrieve all islands formed by a collection of regions.
    * 
    * @param rules the rules to retrieve the ocean region type from.
@@ -44,7 +55,9 @@ public class Islands {
    *          expanded or merged, depending on the regions supplied. To indicate that no islands are
    *          known supply an empty map or null.
    * @param data the game data as required by the Island constructor.
+   * @deprecated You should prefer {@link #getIslands(UserInterface, GameData)}
    */
+  @Deprecated
   public static Map<IntegerID, Island> getIslands(UserInterface ui, Rules rules,
       Map<CoordinateID, Region> regions, Map<IntegerID, Island> oldIslands, GameData data) {
     if ((regions == null) || (regions.size() == 0))
@@ -118,6 +131,10 @@ public class Islands {
     ui.ready();
 
     return islands;
+  }
+
+  public static Map<CoordinateID, Region> getIsland(Region r) {
+    return getIsland(r.getData().rules, r.getData().regions(), r, null, true);
   }
 
   /**

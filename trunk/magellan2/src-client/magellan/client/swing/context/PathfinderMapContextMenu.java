@@ -426,7 +426,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   private boolean onSameIsland(Region r1, Region r2) {
     Collection<Region> island = new LinkedList<Region>();
-    Map<CoordinateID, ? extends Region> m = Islands.getIsland(data.rules, data.regions(), r1);
+    Map<CoordinateID, ? extends Region> m = Islands.getIsland(r1);
     if (m != null) {
       island.addAll(m.values());
       island.remove(r1);

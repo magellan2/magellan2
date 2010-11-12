@@ -254,7 +254,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
 
     JMenuItem editMenu =
         new JMenuItem(Resources.get("extended_commands.popupmenu.edit.title", new Object[] {
-            container.getName(), container.getID().toString() }));
+            container.getName(), container.getID().toString(),
+            KeyEvent.getKeyModifiersText(shortcuts.get(1).getModifiers()),
+            KeyEvent.getKeyText(shortcuts.get(1).getKeyCode()) }));
     editMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         editCommands(data, container);

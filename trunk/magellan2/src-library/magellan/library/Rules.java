@@ -434,14 +434,14 @@ public interface Rules {
   public GameSpecificStuff getGameSpecificStuff();
 
   /**
-   * Gets the gamespecific string with which order files should start
+   * Gets the game specific string with which order files should start.
    * 
-   * @return
+   * @return the game specific string with which order files should start
    */
   public String getOrderfileStartingString();
 
   /**
-   * sets the gamespecific string with which order files should start
+   * Sets the game specific string with which order files should start.
    * 
    * @param startingString
    */

@@ -119,7 +119,6 @@ public class GameDataReader {
       return data;
     }
 
-    // TODO (stm) why do we need this?
     if (aFileType.isZIPFile() || aFileType.isGZIPFile() || aFileType.isBZIP2File()
         || aFileType.isCRFile()) {
 
@@ -186,11 +185,12 @@ public class GameDataReader {
       try {
         reader.close();
       } catch (IOException e) {
+        log.error(e);
         // can't do much
       }
     }
 
-    // after reading the filetype may be written
+    // after reading, the filetype may be written
     aFileType.setReadonly(false);
 
     return newData;

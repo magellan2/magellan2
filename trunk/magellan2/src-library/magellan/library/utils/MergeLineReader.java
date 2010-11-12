@@ -133,9 +133,7 @@ public class MergeLineReader extends PushbackReader {
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @throws IOException DOCUMENT-ME
+   * @see java.io.PushbackReader#unread(int)
    */
   @Override
   public void unread(int c) throws IOException {

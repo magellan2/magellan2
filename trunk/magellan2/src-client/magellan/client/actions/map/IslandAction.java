@@ -52,8 +52,7 @@ public class IslandAction extends MenuAction {
         GameData data = client.getData();
         client.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-        data.setIslands(Islands.getIslands(new ProgressBarUI(client), data.rules, data.regions(),
-            data.islands(), data));
+        data.setIslands(Islands.getIslands(new ProgressBarUI(client), data));
         client.getDispatcher().fire(new GameDataEvent(this, data));
         client.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
       }

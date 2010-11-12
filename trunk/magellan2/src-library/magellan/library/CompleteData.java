@@ -14,7 +14,6 @@
 package magellan.library;
 
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -32,8 +31,8 @@ import magellan.library.utils.Translations;
 public class CompleteData extends GameData {
 
   protected Map<CoordinateID, Region> regions = new OrderedHashtable<CoordinateID, Region>();
-  protected Map<UnitID, Unit> units = new Hashtable<UnitID, Unit>();
-  protected Map<UnitID, TempUnit> tempUnits = new Hashtable<UnitID, TempUnit>();
+  protected Map<UnitID, Unit> units = new OrderedHashtable<UnitID, Unit>();
+  protected Map<UnitID, TempUnit> tempUnits = new OrderedHashtable<UnitID, TempUnit>();
   protected Map<EntityID, Faction> factions = new OrderedHashtable<EntityID, Faction>();
   protected Map<EntityID, Ship> ships = new OrderedHashtable<EntityID, Ship>();
   protected Map<EntityID, Building> buildings = new OrderedHashtable<EntityID, Building>();

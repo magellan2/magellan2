@@ -72,6 +72,8 @@ public class ExtendedCommandsHelper {
 
   private static final Logger log = Logger.getInstance(ExtendedCommandsHelper.class);
 
+  private static final String CONFIGURATION_MARKER = EresseaConstants.O_PCOMMENT + " extcmds:";
+
   private Client client;
   private GameData world;
   private Unit unit;
@@ -187,6 +189,8 @@ public class ExtendedCommandsHelper {
    * Returns the unit object of the given unit with the given id.
    * 
    * @return A unit with the given name or <code>null</code> if no such unit exists.
+   * @throws NumberFormatException if unit id is not parseable
+   * @throws NullPointerException if unit id is null
    */
   public Unit getUnit(String unitId) {
     return world.getUnit(UnitID.createUnitID(unitId, world.base));
@@ -450,7 +454,7 @@ public class ExtendedCommandsHelper {
   public void addOrder(Unit unit, String order) {
     if (unit == null)
       return;
-    unit.addOrder(order, false, 0);
+    unit.addOrder(order);
   }
 
   /**
@@ -526,7 +530,7 @@ public class ExtendedCommandsHelper {
    */
   public boolean isSoldier() {
     Collection<Item> items = unit.getItems();
-    ItemCategory weapons = world.rules.getItemCategory(StringID.create("weapons"), false);
+    ItemCategory weapons = world.rules.getItemCategory(StringID.create("weapons"));
     if (weapons == null) {
       // we don't know something about weapons.
       ExtendedCommandsHelper.log.info("World has no weapons rules");
@@ -665,9 +669,9 @@ public class ExtendedCommandsHelper {
       if (order == null) {
         continue;
       }
-      if (order.startsWith("// extcmds:")) {
+      if (order.startsWith(CONFIGURATION_MARKER)) {
         // okay, we found a line with the configuration
-        String line = order.substring("// extcmds:".length() + 1);
+        String line = order.substring(CONFIGURATION_MARKER.length() + 1);
         if (line.indexOf(":") > 0) {
           String key = line.substring(0, line.indexOf(":"));
           String value = line.substring(line.indexOf(":"));
@@ -692,7 +696,7 @@ public class ExtendedCommandsHelper {
       return;
     for (String key : configuration.keySet()) {
       String value = configuration.get(key);
-      addOrder("// extcmds:\"" + key + "\":" + value);
+      addOrder(CONFIGURATION_MARKER + "\"" + key + "\":" + value);
     }
   }
 

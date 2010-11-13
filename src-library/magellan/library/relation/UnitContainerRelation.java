@@ -21,7 +21,7 @@ import magellan.library.UnitContainer;
  * container.
  */
 public class UnitContainerRelation extends UnitRelation {
-  /** DOCUMENT-ME */
+  /** The container affected by this relation. */
   public final UnitContainer target;
 
   /**
@@ -32,7 +32,18 @@ public class UnitContainerRelation extends UnitRelation {
    * @param line The line in the source's orders
    */
   public UnitContainerRelation(Unit s, UnitContainer t, int line) {
-    super(s, line);
+    this(s, t, line, false);
+  }
+
+  /**
+   * Creates a new UnitContainerRelation object.
+   * 
+   * @param s The source unit
+   * @param t The target unit
+   * @param line The line in the source's orders
+   */
+  public UnitContainerRelation(Unit s, UnitContainer t, int line, boolean warning) {
+    super(s, line, warning);
     target = t;
   }
 
@@ -44,4 +55,16 @@ public class UnitContainerRelation extends UnitRelation {
   public String toString() {
     return super.toString() + "@TARGET=" + target;
   }
+
+  /**
+   * Attaches an order to all report objects it is relevant to.
+   */
+  @Override
+  public void add() {
+    super.add();
+    if (target != source && target != origin) {
+      target.addRelation(this);
+    }
+  }
+
 }

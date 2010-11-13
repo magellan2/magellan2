@@ -42,4 +42,5 @@ public class AttackRelation extends InterUnitRelation {
   public AttackRelation(Unit s, Unit t, int line, boolean w) {
     super(s, t, line, w);
   }
+
 }

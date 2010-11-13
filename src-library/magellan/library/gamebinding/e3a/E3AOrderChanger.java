@@ -18,8 +18,7 @@ import magellan.library.gamebinding.EresseaOrderChanger;
 import magellan.library.utils.Resources;
 
 /**
- * @author $Author: $
- * @version $Revision: 305 $
+ * OrderChanger class for the game Eressea -- The Third Age.
  */
 public class E3AOrderChanger extends EresseaOrderChanger {
 

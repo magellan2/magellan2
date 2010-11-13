@@ -455,8 +455,10 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // execute the commands for this unit.
     commands.execute(data, unit);
 
-    unit.getOrderEditor().reloadOrders();
-    unit.getOrderEditor().fireOrdersChangedEvent();
+    if (unit.getOrderEditor() != null) {
+      unit.getOrderEditor().reloadOrders();
+      unit.getOrderEditor().fireOrdersChangedEvent();
+    }
   }
 
   /**

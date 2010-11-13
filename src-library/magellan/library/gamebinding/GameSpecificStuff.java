@@ -95,7 +95,7 @@ public interface GameSpecificStuff {
   public MessageRenderer getMessageRenderer(GameData data);
 
   /**
-   * 
+   *
    */
   public MapMergeEvaluator getMapMergeEvaluator();
 
@@ -126,4 +126,5 @@ public interface GameSpecificStuff {
    */
   public ReportTransformer[] getTransformers(GameData globalData, GameData addedData,
       UserInterface ui, boolean interactive);
+
 }

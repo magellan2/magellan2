@@ -25,26 +25,38 @@ public class InterUnitRelation extends UnitRelation {
   /**
    * Creates a new InterUnitRelation object.
    * 
-   * @param s The source unit
-   * @param t The target unit
+   * @param source The source unit
+   * @param target The target unit
    * @param line The line in the source's orders
    */
-  public InterUnitRelation(Unit s, Unit t, int line) {
-    super(s, line);
-    target = t;
+  public InterUnitRelation(Unit source, Unit target, int line) {
+    this(source, source, target, line, false);
   }
 
   /**
    * Creates a new InterUnitRelation object.
    * 
-   * @param s The source unit
-   * @param t The target unit
+   * @param source The source unit
+   * @param target The target unit
    * @param line The line in the source's orders
-   * @param w <code>true</code> iff this relation causes a warning
+   * @param warning <code>true</code> iff this relation causes a warning
    */
-  public InterUnitRelation(Unit s, Unit t, int line, boolean w) {
-    super(s, line, w);
-    target = t;
+  public InterUnitRelation(Unit source, Unit target, int line, boolean warning) {
+    this(source, source, target, line, warning);
+  }
+
+  /**
+   * Creates a new InterUnitRelation object.
+   * 
+   * @param origin The origin unit
+   * @param source The source unit
+   * @param target The target unit
+   * @param line The line in the source's orders
+   * @param warning <code>true</code> iff this relation causes a warning
+   */
+  public InterUnitRelation(Unit origin, Unit source, Unit target, int line, boolean warning) {
+    super(origin, source, line, warning);
+    this.target = target;
   }
 
   /*
@@ -55,4 +67,18 @@ public class InterUnitRelation extends UnitRelation {
   public String toString() {
     return super.toString() + "@TARGET=" + target;
   }
+
+  /**
+   * Attaches an order to all report objects it is relevant to. source and target.
+   * 
+   * @see magellan.library.relation.UnitRelation#add()
+   */
+  @Override
+  public void add() {
+    super.add();
+    if (target != source && target != origin) {
+      target.addRelation(this);
+    }
+  }
+
 }

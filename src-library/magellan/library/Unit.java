@@ -67,28 +67,18 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public static final int GUARDFLAG_PRODUCE = 1 << 7;
 
   /**
-   * Original Mail: Das ist was anderes: Je nach Rasse kann Bewachung einen untershciedlichen Effekt
-   * haben. Bergwaechter zum Beispiel bewachen den Abbau von Eisen/Steinen, so dass niemand etwas
-   * abbauen kann solange sie das tun, Elfen haben das fuer Holz, usw. Das sieht man allerdings
-   * nicht im CR. Folgende defines hat der Server dafuer: #define GUARD_TAX 1 /* Verhindert
-   * Steuereintreiben * #define GUARD_MINING 2 /* Verhindert Bergbau * #define GUARD_TREES 4 /*
-   * Verhindert Waldarbeiten * #define GUARD_TRAVELTHRU 8 /* Blockiert Durchreisende * #define
-   * GUARD_LANDING 16 /* Verhindert Ausstieg + Weiterreise * #define GUARD_CREWS 32 /* Verhindert
-   * Unterhaltung auf Schiffen * #define GUARD_RECRUIT 64 /* Verhindert Rekrutieren * #define
-   * GUARD_PRODUCE 128 /* Verhindert Abbau von Resourcen mit RTF_LIMITED *
-   */
-
-  /**
-   * Returns true if no orders are set
+   * Returns true if no orders are set.
    */
   public boolean ordersAreNull();
 
   /**
-   * Returns true if the orders has changed
+   * Returns true if the orders have changed.
    */
   public boolean ordersHaveChanged();
 
   /**
+   * Manually change orders change status.
+   * 
    * @see #ordersHaveChanged()
    */
   public void setOrdersChanged(boolean changed);
@@ -129,38 +119,56 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public boolean removeOrder(String order, int length);
 
   /**
-   * Adds the order at position <tt>i</tt> and refreshes the relations
+   * Removes orders that match the given order up to a given length.
    * 
-   * @param i An index between 0 and getOrders().getSize() (inclusively)
-   * @param newOrders
+   * @param order pattern to remove
+   * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
+   *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
+   *          replaced but not all "BENENNE" orders.
+   * @param refreshRelations
+   * @return <tt>true</tt> if at least one order was removed
    */
-  public void addOrderAt(int i, String newOrders);
+  public boolean removeOrder(String order, int length, boolean refreshRelations);
+
+  /**
+   * Replaces the order at the position by the given new order.
+   * 
+   * @param pos An index between 0 and getOrders().getSize() (inclusively)
+   * @param newOrder
+   */
+  public void replaceOrder(int pos, Order newOrder, boolean refreshRelations);
+
+  // /**
+  // * Adds the order at position <tt>i</tt> and refreshes the relations
+  // *
+  // * @param i An index between 0 and getOrders().getSize() (inclusively)
+  // * @param newOrder
+  // */
+  // public void addOrderAt(int i, String newOrder);
 
   /**
    * Adds the order at position <tt>i</tt> and possibly refreshes the relations
    * 
-   * @param i An index between 0 and getOrders().getSize() (inclusively)
+   * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end
    * @param newOrders
    * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void addOrderAt(int i, String newOrders, boolean refreshRelations);
 
-  /**
-   * Adds the order and refreshes the relations
-   * 
-   * @param newOrders
-   * @deprecated Use {@link #addOrder(String)} or {@link #addOrders(Collection)}
-   */
-  @Deprecated
-  public void addOrders(String newOrders);
+  // /**
+  // * Adds the order and refreshes the relations
+  // *
+  // * @param newOrders
+  // */
+  // public void addOrders(String newOrders);
 
-  /**
-   * Adds the order and possibly refreshes the relations
-   * 
-   * @param newOrders
-   * @param refreshRelations if true also refresh the relations of the unit.
-   */
-  public void addOrders(String newOrders, boolean refreshRelations);
+  // /**
+  // * Adds the order and possibly refreshes the relations
+  // *
+  // * @param order the new order line
+  // * @param refreshRelations if true also refresh the relations of the unit.
+  // */
+  // public void addOrders(String order, boolean refreshRelations);
 
   /**
    * Adds the orders and refreshes the relations
@@ -178,24 +186,62 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void addOrders(Collection<String> newOrders, boolean refreshRelations);
 
   /**
-   * Sets the orders and refreshes the relations
+   * Adds the orders and refreshes the relations
    * 
    * @param newOrders
+   */
+  public void addOrders2(Collection<Order> newOrders);
+
+  /**
+   * Adds the orders and possibly refreshes the relations
+   * 
+   * @param newOrders
+   * @param refreshRelations If true also refresh the relations of the unit
+   */
+  public void addOrders2(Collection<Order> newOrders, boolean refreshRelations);
+
+  /**
+   * Sets the orders and refreshes the relations
+   * 
+   * @param newOrders my be <code>null</code>
    */
   public void setOrders(Collection<String> newOrders);
 
   /**
    * Sets the orders and possibly refreshes the relations
    * 
-   * @param newOrders
+   * @param newOrders may be <code>null</code>
    * @param refreshRelations if true also refresh the relations of the unit.
    */
   public void setOrders(Collection<String> newOrders, boolean refreshRelations);
 
   /**
+   * Sets the orders and refreshes the relations
+   * 
+   * @param newOrders my be <code>null</code>
+   */
+  public void setOrders2(Collection<Order> newOrders);
+
+  /**
+   * Sets the orders and possibly refreshes the relations
+   * 
+   * @param newOrders my be <code>null</code>
+   * @param refreshRelations if true also refresh the relations of the unit.
+   */
+  public void setOrders2(Collection<Order> newOrders, boolean refreshRelations);
+
+  /**
+   * Delivers a read-only collection of all orders of this unit.
+   * 
+   * @deprecated Use {@link #getOrders2()}
+   */
+  @Deprecated
+  public List<String> getOrders();
+
+  /**
    * Delivers a read-only collection of all orders of this unit.
    */
-  public List<String> getOrders();
+  public Orders getOrders2();
 
   /**
    * Sets the group this unit belongs to.
@@ -301,6 +347,11 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public Faction getFaction();
 
   /**
+   * A shortcut for {@link #getFaction()}.{@link Faction#getLocale() getLocale()}.
+   */
+  public Locale getLocale();
+
+  /**
    * Sets the building this unit is staying in. If the unit already is in another building this
    * method removes it from the unit collection of that building.
    */
@@ -385,14 +436,14 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Returns all orders including the orders necessary to issue the creation of all the child temp
    * units of this unit.
    */
-  public List<String> getCompleteOrders();
+  public Orders getCompleteOrders();
 
   /**
    * Returns a list of all orders.
    * 
    * @param writeUnitTagsAsVorlageComment
    */
-  public List<String> getCompleteOrders(boolean writeUnitTagsAsVorlageComment);
+  public Orders getCompleteOrders(boolean writeUnitTagsAsVorlageComment);
 
   /**
    * Creates a new temp unit with this unit as the parent. The temp unit is fully initialised, i.e.
@@ -460,6 +511,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Returns the modified skills if this will change.
+   * 
+   * @param type <code>null</code> is allowed and will yield <code>null</code> as result
    */
   public Skill getModifiedSkill(SkillType type);
 
@@ -481,6 +534,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Returns the skill of the specified type if the unit has such a skill, else null is returned.
+   * 
+   * @param type <code>null</code> is allowed and will yield <code>null</code> as result
    */
   public Skill getSkill(SkillType type);
 
@@ -489,14 +544,14 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public Skill getSkill(StringID type);
 
-  // deprecated?
+  // (stm) removed -- was never used for anything
   // /**
-  // * @return FIXME explain
+  // * @return
   // */
   // public boolean isSkillsCopied();
-
+  //
   // /**
-  // * @param skillsCopied FIXME explain
+  // * @param skillsCopied
   // */
   // public void setSkillsCopied(boolean skillsCopied);
 
@@ -515,6 +570,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public Collection<Skill> getSkills();
 
+  /**
+   * Returns the skills of the unit. Changes to the result are reflected in the unit's skills!
+   */
   public Map<StringID, Skill> getSkillMap();
 
   /**
@@ -529,8 +587,17 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public Collection<Item> getItems();
 
+  /**
+   * Changes the items.
+   * 
+   * @deprecated better use {@link #clearItems()}/{@link #addItem(Item)}
+   */
+  @Deprecated
   public void setItems(Map<StringID, Item> items);
 
+  /**
+   * Returns the collection of items. Changes to this map are reflected in the unit's items.
+   */
   public Map<StringID, Item> getItemMap();
 
   /**
@@ -767,6 +834,14 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public boolean addOrder(String order);
 
   /**
+   * Adds the order and possibly refreshes the relations
+   * 
+   * @param order the new order line
+   * @param refreshRelations if true also refresh the relations of the unit.
+   */
+  public boolean addOrder(String order, boolean refreshRelations);
+
+  /**
    * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
    * operation.
    * 
@@ -779,6 +854,23 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return <tt>true</tt> if the order was successfully added.
    */
   public boolean addOrder(String order, boolean replace, int length);
+
+  /**
+   * Adds the order and possibly refreshes the relations
+   * 
+   * @param newOrder
+   * @param refreshRelations if true also refresh the relations of the unit.
+   */
+  public void addOrder(Order newOrder, boolean refreshRelations);
+
+  /**
+   * Adds the order at position <tt>i</tt> and possibly refreshes the relations
+   * 
+   * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end
+   * @param newOrder
+   * @param refreshRelations if true also refresh the relations of the unit.
+   */
+  public void addOrderAt(int i, Order newOrder, boolean refreshRelations);
 
   /**
    * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
@@ -917,7 +1009,19 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void setFollows(Unit follows);
 
   /**
-   * Returns the value of guard.
+   * Returns the value of guard.<br />
+   * Original Mail: Das ist was anderes: Je nach Rasse kann Bewachung einen unterschiedlichen Effekt
+   * haben. Bergwaechter zum Beispiel bewachen den Abbau von Eisen/Steinen, so dass niemand etwas
+   * abbauen kann solange sie das tun, Elfen haben das fuer Holz, usw. Das sieht man allerdings
+   * nicht im CR. Folgende defines hat der Server dafuer:<br />
+   * #define GUARD_TAX 1 /* Verhindert Steuereintreiben *<br />
+   * #define GUARD_MINING 2 /* Verhindert Bergbau *<br />
+   * #define GUARD_TREES 4 /* Verhindert Waldarbeiten *<br />
+   * #define GUARD_TRAVELTHRU 8 /* Blockiert Durchreisende *<br />
+   * #define GUARD_LANDING 16 /* Verhindert Ausstieg + Weiterreise *<br />
+   * #define GUARD_CREWS 32 /* Verhindert Unterhaltung auf Schiffen *<br />
+   * #define GUARD_RECRUIT 64 /* Verhindert Rekrutieren *<br />
+   * #define GUARD_PRODUCE 128 /* Verhindert Abbau von Resourcen mit RTF_LIMITED *<br />
    * 
    * @return Returns guard.
    */
@@ -1032,7 +1136,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /**
    * Returns the disguised race or <code>null</code> if unit has no race disguise.
    * 
-   * @return
+   * @return the disguised race or <code>null</code> if unit has no race disguise.
    */
   public Race getDisguiseRace();
 
@@ -1134,8 +1238,17 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public void setWeight(int weight);
 
+  /**
+   * Returns the {@link CacheableOrderEditor} for this unit. May be <code>null</code> if no editor
+   * has been created, yet.
+   */
   public CacheableOrderEditor getOrderEditor();
 
+  /**
+   * Changes the editor for the unit orders.
+   * 
+   * @param editor
+   */
   public void setOrderEditor(CacheableOrderEditor editor);
 
   /**
@@ -1168,5 +1281,28 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Returns the id uniquely identifying this object.
    */
   public UnitID getID();
+
+  /**
+   * Parses the given order line and returns a corresponding order.
+   * 
+   * @param order
+   * @return A new order representing <code>order</code>
+   */
+  public Order createOrder(String order);
+
+  /**
+   * The game data this unit belongs to.
+   */
+  public GameData getData();
+
+  /**
+   * @see magellan.library.Related#clearRelations()
+   */
+  public void clearRelations();
+
+  /**
+   * Invoke the order parser again on all orders.
+   */
+  public void reparseOrders();
 
 }

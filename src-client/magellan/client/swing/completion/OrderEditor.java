@@ -49,6 +49,7 @@ import magellan.client.swing.context.ContextFactory;
 import magellan.client.swing.context.UnitContextFactory;
 import magellan.client.swing.tree.Changeable;
 import magellan.library.GameData;
+import magellan.library.Order;
 import magellan.library.Unit;
 import magellan.library.completion.OrderParser;
 import magellan.library.utils.Colors;
@@ -164,7 +165,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
       public void unitOrdersChanged(UnitOrdersEvent e) {
         // refresh local copy of orders in editor
         if ((e.getSource() != OrderEditor.this) && e.getUnit().equals(unit)) {
-          setOrders(unit.getOrders());
+          setOrders(unit.getOrders2());
         }
       }
     };
@@ -379,7 +380,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     unit = u;
 
     if (unit != null) {
-      setOrders(unit.getOrders());
+      setOrders(unit.getOrders2());
     } else {
       setText("");
       // undoMgr.discardAllEdits();
@@ -424,9 +425,11 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   /**
    * Puts the list elements in <tt>c</tt> into this text pane, one at a time.
    */
-  public void setOrders(Collection<String> c) {
+  public void setOrders(Collection<Order> c) {
     orders = new LinkedList<String>();
-    orders.addAll(c);
+    for (Order o : c) {
+      orders.add(o.toString());
+    }
 
     boolean oldMod = ignoreModifications;
     ignoreModifications = true;
@@ -517,7 +520,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
    */
   public void reloadOrders() {
     if (unit != null) {
-      setOrders(unit.getOrders());
+      setOrders(unit.getOrders2());
     }
   }
 
@@ -724,13 +727,15 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
       OrderEditor.log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + ")");
     }
 
-    boolean valid = parser.read(new StringReader(text));
+    Order order = parser.parse(text, getUnit().getLocale());
+    boolean valid = order.isValid(); // parser.read(new StringReader(text));
 
     // doc.setCharacterAttributes(pos[0]+(pos[1]-pos[0])/4, pos[1]-(pos[1]-pos[0])/4,
     // doc.getStyle(S_REGULAR), true);
 
     OrderToken prevToken = null;
-    for (OrderToken token : parser.getTokens()) {
+    // FIXME @-token is not styled any more as it doesn't occur in getTokens()
+    for (OrderToken token : order.getTokens()) {
       if (OrderEditor.log.isDebugEnabled()) {
         OrderEditor.log.debug("OrderEditor.formatTokens: token " + token);
       }

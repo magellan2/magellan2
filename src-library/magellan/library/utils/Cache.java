@@ -45,7 +45,7 @@ public class Cache {
   // public int fogOfWar = -1;
 
   /** used in Unit and UnitContainer for relations between or to units */
-  public Collection<UnitRelation> relations = null;
+  public List<UnitRelation> relations = null;
 
   /**
    * used in Unit for skills after person transfers and recruiting

@@ -35,6 +35,7 @@ import magellan.library.StringID;
 public class AllanonConstants extends EresseaConstants {
   public static final String O_ANWERBEN = "ANWERBEN";
   public static final String O_BEANSPRUCHE = "BEANSPRUCHE";
+  public static final String O_ERKUNDEN = "ERKUNDEN";
   public static final String O_KARAWANE = "KARAWANE";
   public static final String O_MEUCHELN = "MEUCHELN";
 

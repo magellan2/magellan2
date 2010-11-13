@@ -16,6 +16,9 @@ package magellan.library.utils;
 import java.io.IOException;
 import java.io.Reader;
 
+import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.utils.logging.Logger;
+
 /**
  * Splits a string into <tt>OrderToken</tt> objects. The tokenizer recognizes quoted strings and
  * comments and marks the generated tokens as such. Note that the tokenizer is not intended to
@@ -26,6 +29,8 @@ import java.io.Reader;
  * stream, including escape line breaks.
  */
 public class OrderTokenizer {
+  // private static final Logger log = Logger.getInstance(OrderTokenizer.class);
+
   private MergeLineReader in = null;
   private boolean isFirstToken = true;
   private OrderToken quotedString;
@@ -49,7 +54,7 @@ public class OrderTokenizer {
    * in a semantical context.
    */
   public OrderToken getNextToken() {
-    OrderToken retVal = new OrderToken(OrderToken.TT_EOC);
+    OrderToken retVal = null;
     if (quotedString != null) {
       retVal = quotedString;
       quotedString = null;
@@ -67,25 +72,32 @@ public class OrderTokenizer {
 
       if ((c = in.read()) != -1) {
         if (isFirstToken && (c == '@')) {
-          retVal = new OrderToken("@", in.getPos(), in.getPos() + 1, OrderToken.TT_PERSIST, false);
+          retVal = new OrderToken("@", in.getPos() - 1, in.getPos(), OrderToken.TT_PERSIST, false);
         } else if (c == '"' || c == '\'') {
           retVal = readQuote(c);
-        } else if (c == ';') {
+        } else if (c == ';') { // FIXME doesn't use EresseaConstants.O_COMMENT
           retVal = readSCComment();
-        } else if (c == '/') {
-          retVal = readSSComment();
         } else if ((c == '\r') || (c == '\n')) {
           retVal = new OrderToken(OrderToken.TT_EOC);
         } else {
-          in.unread(c);
-          retVal = readWord();
+          if (retVal == null) {
+            in.unread(c);
+            retVal = readWord();
+            if (retVal.getText().equals(EresseaConstants.O_PCOMMENT)) {
+              retVal = readSSComment();
+            }
+          }
         }
       }
     } catch (IOException e) {
+      // FIXME should throw this
+      Logger.getInstance(this.getClass()).error("Unknonw I/O error", e);
     }
 
     isFirstToken = false;
-
+    if (retVal == null) {
+      retVal = new OrderToken(OrderToken.TT_EOC);
+    }
     return retVal;
   }
 
@@ -160,7 +172,7 @@ public class OrderTokenizer {
    * @throws IOException DOCUMENT-ME
    */
   private OrderToken readSCComment() throws IOException {
-    StringBuffer sb = new StringBuffer(";");
+    StringBuffer sb = new StringBuffer(EresseaConstants.O_COMMENT);
     int c = 0;
     int start = in.getPos() - 1;
 
@@ -182,28 +194,19 @@ public class OrderTokenizer {
    * @throws IOException DOCUMENT-ME
    */
   private OrderToken readSSComment() throws IOException {
-    StringBuffer sb = new StringBuffer("/");
-    OrderToken retVal; // = new OrderToken(OrderToken.TT_EOC);
-    int start = in.getPos() - 1;
-    int c = in.read();
-
-    if (c == '/') {
-      sb.append((char) c);
-
-      while ((c = in.read()) != -1) {
-        if ((c == '\r') || (c == '\n')) {
-          break;
-        } else {
-          sb.append((char) c);
-        }
+    StringBuffer sb = new StringBuffer(EresseaConstants.O_PCOMMENT);
+    int start = in.getPos() - 2;
+    int c;
+    while ((c = in.read()) != -1) {
+      if ((c == '\r') || (c == '\n')) {
+        break;
+      } else {
+        sb.append((char) c);
       }
-
-      retVal = new OrderToken(sb.toString(), start, in.getPos(), OrderToken.TT_COMMENT, true);
-    } else {
-      in.unread(c);
-      in.unread('/');
-      retVal = readWord();
     }
+
+    OrderToken retVal =
+        new OrderToken(sb.toString(), start, in.getPos(), OrderToken.TT_COMMENT, true);
 
     return retVal;
   }
@@ -222,8 +225,7 @@ public class OrderTokenizer {
 
     while ((c = in.read()) != -1) {
       // TODO (stm) check for '\'' here, too?
-      if ((c == '\r') || (c == '\n') || (c == ' ') || (c == '\t') || (c == '"') || (c == ';')
-          || (c == '/')) {
+      if ((c == '\r') || (c == '\n') || (c == ' ') || (c == '\t') || (c == '"') || (c == ';')) {
         in.unread(c);
 
         break;

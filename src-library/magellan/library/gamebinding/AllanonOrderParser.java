@@ -25,7 +25,6 @@ package magellan.library.gamebinding;
 
 import magellan.library.GameData;
 import magellan.library.utils.OrderToken;
-import magellan.library.utils.Resources;
 
 /**
  * @author Thoralf Rickert
@@ -54,16 +53,29 @@ public class AllanonOrderParser extends EresseaOrderParser {
   @Override
   protected void initCommands() {
     super.initCommands();
-    addCommand(Resources.getOrderTranslation(AllanonConstants.O_ANWERBEN), new AnwerbenReader());
-    addCommand(Resources.getOrderTranslation(AllanonConstants.O_MEUCHELN), new MeuchelnReader());
+    addCommand(AllanonConstants.O_ANWERBEN, new AnwerbenReader());
+    addCommand(AllanonConstants.O_ERKUNDEN, new ErkundeReader());
+    addCommand(AllanonConstants.O_MEUCHELN, new MeuchelnReader());
   }
 
   // ************* ANWERBEN
   protected class AnwerbenReader extends OrderHandler {
     @Override
-    public boolean read(OrderToken token) {
+    protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
+      getOrder().setLong(true);
+      return checkNextFinal();
+    }
+  }
+
+  // ************* ERKUNDE
+  protected class ErkundeReader extends OrderHandler {
+    @Override
+    protected boolean readIt(OrderToken token) {
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      getOrder().setLong(true);
       return checkNextFinal();
     }
   }
@@ -71,10 +83,11 @@ public class AllanonOrderParser extends EresseaOrderParser {
   // ************* MEUCHELN
   protected class MeuchelnReader extends OrderHandler {
     @Override
-    public boolean read(OrderToken token) {
+    protected boolean readIt(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
+      getOrder().setLong(true);
       OrderToken t = getNextToken();
 
       if (isID(t.getText()) == true) {
@@ -103,17 +116,17 @@ public class AllanonOrderParser extends EresseaOrderParser {
   // ************* BETRETE
   protected class BetreteReader extends EresseaOrderParser.BetreteReader {
     @Override
-    public boolean read(OrderToken token) {
+    protected boolean readIt(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
         retVal = readBetreteBurg(t);
-      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE))) {
+      } else if (t.equalsToken(getOrderTranslation(AllanonConstants.O_KARAWANE))) {
         retVal = readBetreteKarawane(t);
-      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
         retVal = readBetreteSchiff(t);
       } else {
         unexpected(t);
@@ -153,26 +166,26 @@ public class AllanonOrderParser extends EresseaOrderParser {
   // ************* BENENNE
   protected class BenenneReader extends EresseaOrderParser.BenenneReader {
     @Override
-    public boolean read(OrderToken token) {
+    protected boolean readIt(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
       OrderToken t = getNextToken();
       t.ttype = OrderToken.TT_KEYWORD;
 
-      if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
-        retVal = readDescription(false);
-      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))) {
-        retVal = readDescription(false);
-      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
-        retVal = readDescription(false);
-      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_REGION))) {
-        retVal = readDescription(false);
-      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
-        retVal = readDescription(false);
-      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE))) {
-        retVal = readDescription(false);
-      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGN))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+        retVal = readDescription(false) != null;
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
+        retVal = readDescription(false) != null;
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+        retVal = readDescription(false) != null;
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_REGION))) {
+        retVal = readDescription(false) != null;
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+        retVal = readDescription(false) != null;
+      } else if (t.equalsToken(getOrderTranslation(AllanonConstants.O_KARAWANE))) {
+        retVal = readDescription(false) != null;
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGN))) {
         retVal = readBenenneFremdes(t);
       } else {
         t.ttype = OrderToken.TT_UNDEF;

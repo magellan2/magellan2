@@ -12,7 +12,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.StringReader;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -397,6 +396,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       return;
 
     // find the piece of text
+    // TODO join with previous line if this one ends with "\\"
     String line = AutoCompletion.getCurrentLine(j);
 
     if (line == null)
@@ -429,7 +429,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completions = completer.getCompletions(editors.getCurrentUnit(), line, completions);
       // try to get stub from last token
       if (completer.getParser() != null) {
-        List<OrderToken> tokens = completer.getParser().getTokens();
+        List<OrderToken> tokens = completer.getParser().getTokens(); // .parse(line,
+                                                                     // editors.getCurrentUnit().getLocale())
         stub = AutoCompletion.getStub(tokens);
       } else {
         stub = AutoCompletion.getStub(line);
@@ -592,8 +593,9 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     String line = AutoCompletion.getCurrentLine(j).substring(0, caretPos - lineBounds[0]);
     String stub;
     if (completer.getParser() != null) {
-      completer.getParser().read(new StringReader(line));
-      List<OrderToken> tokens = completer.getParser().getTokens();
+      // completer.getParser().read(new StringReader(line));
+      List<OrderToken> tokens =
+          completer.getParser().parse(line, editors.getCurrentUnit().getLocale()).getTokens();
       stub = AutoCompletion.getStub(tokens);
     } else {
       // try your best...

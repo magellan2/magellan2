@@ -27,30 +27,44 @@ public class TransferRelation extends InterUnitRelation {
   public int amount;
 
   /**
-   * Creates a new TransferRelation object.
+   * Creates a new TransferRelation object without warning.
    * 
-   * @param s The source unit
-   * @param t The target unit
-   * @param a The amount to transfer.
+   * @param source The source unit
+   * @param target The target unit
+   * @param amount The amount to transfer.
    * @param line The line in the source's orders
    */
-  public TransferRelation(Unit s, Unit t, int a, int line) {
-    super(s, t, line);
-    amount = a;
+  public TransferRelation(Unit source, Unit target, int amount, int line) {
+    this(source, source, target, amount, line, false);
   }
 
   /**
    * Creates a new TransferRelation object.
    * 
-   * @param s The source unit
-   * @param t The target unit
-   * @param a The amount to transfer.
+   * @param source The source unit
+   * @param target The target unit
+   * @param amount The amount to transfer.
    * @param line The line in the source's orders
-   * @param w <code>true</code> iff this relation causes a warning
+   * @param warning <code>true</code> iff this relation causes a warning
    */
-  public TransferRelation(Unit s, Unit t, int a, int line, boolean w) {
-    super(s, t, line, w);
-    amount = a;
+  public TransferRelation(Unit source, Unit target, int amount, int line, boolean warning) {
+    this(source, source, target, amount, line, warning);
+  }
+
+  /**
+   * Creates a new TransferRelation object.
+   * 
+   * @param origin The origin unit
+   * @param source The source unit
+   * @param target The target unit
+   * @param amount The amount to transfer.
+   * @param line The line in the source's orders
+   * @param warning <code>true</code> iff this relation causes a warning
+   */
+  public TransferRelation(Unit origin, Unit source, Unit target, int amount, int line,
+      boolean warning) {
+    super(origin, source, target, line, warning);
+    this.amount = amount;
   }
 
   /*

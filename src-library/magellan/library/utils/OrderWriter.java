@@ -23,6 +23,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.Item;
+import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
@@ -285,15 +286,14 @@ public class OrderWriter {
     return true;
   }
 
-  private void writeOrders(Collection<String> cmds, BufferedWriter stream) throws IOException {
-    for (String cmd : cmds) {
-      String trimmedAndBurning = cmd.trim();
-
-      if ((removeSCComments && trimmedAndBurning.startsWith(EresseaConstants.O_COMMENT))
-          || (removeSSComments && trimmedAndBurning.startsWith(EresseaConstants.O_PCOMMENT))) {
+  private void writeOrders(Collection<Order> cmds, BufferedWriter stream) throws IOException {
+    for (Order cmd : cmds) {
+      if (!cmd.isEmpty()
+          && ((removeSCComments && cmd.getToken(0).getText().startsWith(EresseaConstants.O_COMMENT)) || (removeSSComments && cmd
+              .getToken(0).getText().startsWith(EresseaConstants.O_PCOMMENT)))) {
         // consume
       } else {
-        writeln(stream, cmd);
+        writeln(stream, cmd.getText());
       }
     }
   }

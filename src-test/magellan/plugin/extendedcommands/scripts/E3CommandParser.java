@@ -28,11 +28,13 @@ import java.util.regex.Pattern;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
+import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
@@ -51,6 +53,8 @@ import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
  */
 public class E3CommandParser {
 
+  private OrderParser parser;
+
   /**
    * Creates and initializes the parser.
    * 
@@ -60,6 +64,11 @@ public class E3CommandParser {
   public E3CommandParser(GameData world, ExtendedCommandsHelper helper) {
     E3CommandParser.world = world;
     E3CommandParser.helper = helper;
+    parser = world.getGameSpecificStuff().getOrderParser(world);
+  }
+
+  protected OrderParser getParser() {
+    return parser;
   }
 
   static GameData world;
@@ -83,9 +92,9 @@ public class E3CommandParser {
   /** The LUXUS order parameter */
   public static String LUXUSOrder = "LUXUS";
   /** The persistent comment order */
-  public static String PCOMMENTOrder = "//";
+  public static String PCOMMENTOrder = EresseaConstants.O_PCOMMENT;
   /** The persistent comment order */
-  public static String COMMENTOrder = ";";
+  public static String COMMENTOrder = EresseaConstants.O_COMMENT;
   /** The LEARN order */
   public static String LEARNOrder = "LERNE";
   /** The TEACH order */
@@ -256,7 +265,7 @@ public class E3CommandParser {
     // ---stop uncomment for BeanShell
     someUnit.addOrderAt(0, "; " + unitScripts + " unit scripts, " + buildingScripts
         + " building scripts, " + shipScripts + " ship scripts, " + regionScripts
-        + " region scripts");
+        + " region scripts", true);
   }
 
   /**
@@ -314,7 +323,8 @@ public class E3CommandParser {
       } else if (command.equals("Soldat")) {
         commandSoldier(tokens);
       } else {
-        addError("unbekannter Befehl");
+        addNewOrder(currentOrder, false);
+        addError("unbekannter Befehl: " + command);
       }
       currentOrder = null;
     }
@@ -375,7 +385,7 @@ public class E3CommandParser {
       je = 1;
       if (ALLOrder.equals(tokens[3]) || KRAUTOrder.equals(tokens[3])
           || LUXUSOrder.equals(tokens[3])) {
-        addError("JE ALLES geht nicht");
+        addError("JE " + tokens[3] + " geht nicht");
         return;
       }
     }
@@ -449,6 +459,9 @@ public class E3CommandParser {
     String item = tokens[3 + je];
     int amount = 0;
     if (ALLOrder.equalsIgnoreCase(tokens[2 + je])) {
+      if (KRAUTOrder.equals(item) || LUXUSOrder.equals(item)) {
+        addError("GIB xyz ALLES " + item + " statt GIB xyz " + item);
+      }
       amount = getItemCount(currentUnit, item);
     } else {
       try {
@@ -790,15 +803,16 @@ public class E3CommandParser {
         return;
       for (Supply supply : supplyMap.get(need.getItem()).values()) {
         if (supply.getUnit() != need.getUnit()) {
-          amount = Math.min(amount, supply.getAmount());
-          if (amount > 0) {
-            addGiveOrder(supply.getUnit(), need.getUnit(), need.getItem(), amount, false);
-            need.reduceAmount(amount);
-            need.reduceMinAmount(amount);
-            supply.reduceAmount(amount);
+          int giveAmount = Math.min(amount, supply.getAmount());
+          if (giveAmount > 0) {
+            addGiveOrder(supply.getUnit(), need.getUnit(), need.getItem(), giveAmount, false);
+            need.reduceAmount(giveAmount);
+            need.reduceMinAmount(giveAmount);
+            supply.reduceAmount(giveAmount);
+            amount -= giveAmount;
           }
         }
-        if ((min ? need.getMinAmount() : need.getAmount()) <= 0) {
+        if (amount <= 0) {
           break;
         }
       }
@@ -906,7 +920,7 @@ public class E3CommandParser {
         }
       }
       if (weapons.isEmpty()) {
-        for (ItemType type : world.rules.getItemTypes()) {
+        for (ItemType type : rules.getItemTypes()) {
           if (isUsable(type, weaponSkill)) {
             weapons.add(new Item(type, 0));
             break;
@@ -959,7 +973,7 @@ public class E3CommandParser {
    */
   private ArrayList<Item> findItems(ItemType itemType, Unit u, String category) {
     ArrayList<Item> items = new ArrayList<Item>(1);
-    ItemCategory itemCategory = world.rules.getItemCategory(StringID.create(category), false);
+    ItemCategory itemCategory = world.rules.getItemCategory(StringID.create(category));
     if (itemType == null) {
       for (Item item : u.getItems()) {
         if (item.getItemType().getCategory().equals(itemCategory)) {
@@ -1058,7 +1072,8 @@ public class E3CommandParser {
         if (order.matches(pattern))
           return;
     }
-    newOrders.add(order);
+
+    newOrders.add(getParser().parse(order, currentUnit.getLocale()).getText());
   }
 
   /**
@@ -1315,9 +1330,9 @@ public class E3CommandParser {
   public static void parseShipLoaderTag2(magellan.library.Region r) {
     for (Unit u : r.units()) {
       String name = null;
-      for (String line : u.getOrders()) {
+      for (Order line : u.getOrders2()) {
         java.util.regex.Pattern p = Pattern.compile(".*[$]([^$]*)[$]verlassen.*");
-        java.util.regex.Matcher m = p.matcher(line);
+        java.util.regex.Matcher m = p.matcher(line.getText());
         if (m.matches()) {
           name = m.group(1);
         }

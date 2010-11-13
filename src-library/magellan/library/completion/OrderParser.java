@@ -15,14 +15,13 @@ package magellan.library.completion;
 
 import java.io.Reader;
 import java.util.List;
+import java.util.Locale;
 
+import magellan.library.Order;
 import magellan.library.utils.OrderToken;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 171 $
+ * A class that parses and validates orders.
  */
 public interface OrderParser {
   /**
@@ -30,7 +29,9 @@ public interface OrderParser {
    * 
    * @param in the stream to read the order from.
    * @return <tt>true</tt> if the syntax of the order read is valid, <tt>false</tt> else.
+   * @deprecated Should use {@link #parse(String, Locale)} instead
    */
+  @Deprecated
   public boolean read(Reader in);
 
   /**
@@ -38,6 +39,18 @@ public interface OrderParser {
    * 
    * @return all <tt>OrderToken</tt> object produced by the underlying <tt>OrderTokenizer</tt> by
    *         reading a order.
+   * @deprecated Should use {@link #parse(String, Locale)} instead
    */
+  @Deprecated
   public List<OrderToken> getTokens();
+
+  /**
+   * Parses an order line and converts it into an Order object.
+   * 
+   * @param text One line of text
+   * @param orderLocale The locale of the orders
+   * @return An order object with line as text and the parsed token.
+   */
+  public Order parse(String text, Locale orderLocale);
+
 }

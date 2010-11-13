@@ -15,17 +15,24 @@ package magellan.library.gamebinding;
 
 import java.util.List;
 
+import magellan.library.Orders;
 import magellan.library.Unit;
 import magellan.library.relation.UnitRelation;
 
 /**
- * A RelationFactory creates relatations of a unit to other game objects according to the unit's
+ * A RelationFactory creates relations of a unit to other game objects according to the unit's
  * orders. This interface is implemented by game specific classes.
  * 
  * @author $Author: $
  * @version $Revision: 389 $
  */
 public interface RelationFactory {
+  /** The highest order priority. */
+  public static final int P_FIRST = 0;
+
+  /** The lowest order priority. */
+  public static final int P_LAST = Integer.MAX_VALUE - 2;
+
   /**
    * Creates a list of com.eressea.util.Relation objects for a unit starting at order position
    * <tt>from</tt>.
@@ -43,5 +50,6 @@ public interface RelationFactory {
    * @param orders Use these orders instead of the unit's orders
    * @return A List of Relations for this unit
    */
-  public List<?> createRelations(Unit u, List<String> orders);
+  public List<?> createRelations(Unit u, Orders orders);
+
 }

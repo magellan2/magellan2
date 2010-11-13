@@ -26,6 +26,8 @@ package magellan.library.gamebinding;
 import magellan.library.Rules;
 
 /**
+ * OrderChanger class for the game Allanon.
+ * 
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */

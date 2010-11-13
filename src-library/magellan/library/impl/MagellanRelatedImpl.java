@@ -1,7 +1,6 @@
 package magellan.library.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +43,7 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
       return null;
   }
 
-  protected abstract Collection<UnitRelation> getRelations();
+  public abstract List<UnitRelation> getRelations();
 
   /**
    * Delivers all relations of the given class (and its subtypes!). Returns a Collection over the

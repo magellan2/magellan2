@@ -24,26 +24,42 @@ public class ItemTransferRelation extends TransferRelation {
   public ItemType itemType;
 
   /**
-   * Creates a new ItemTransferRelation object.
+   * Creates a new ItemTransferRelation object without warning.
    */
-  public ItemTransferRelation(Unit s, Unit t, int a, ItemType i, int line) {
-    super(s, t, a, line);
-    itemType = i;
+  public ItemTransferRelation(Unit source, Unit target, int amount, ItemType type, int line) {
+    this(source, source, target, amount, type, line, false);
   }
 
   /**
    * Creates a new ItemTransferRelation object.
    * 
-   * @param s The source unit
-   * @param t The target unit
-   * @param a The amount to transfer
-   * @param i The item to transfer
+   * @param source The source unit
+   * @param target The target unit
+   * @param amount The amount to transfer
+   * @param type The item to transfer
    * @param line The line in the source's orders
-   * @param w <code>true</code> iff this relation causes a warning
+   * @param warning <code>true</code> iff this relation causes a warning
    */
-  public ItemTransferRelation(Unit s, Unit t, int a, ItemType i, int line, boolean w) {
-    super(s, t, a, line, w);
-    itemType = i;
+  public ItemTransferRelation(Unit source, Unit target, int amount, ItemType type, int line,
+      boolean warning) {
+    this(source, source, target, amount, type, line, warning);
+  }
+
+  /**
+   * Creates a new ItemTransferRelation object.
+   * 
+   * @param origin The origin unit
+   * @param source The source unit
+   * @param target The target unit
+   * @param amount The amount to transfer
+   * @param type The item to transfer
+   * @param line The line in the source's orders
+   * @param warning <code>true</code> iff this relation causes a warning
+   */
+  public ItemTransferRelation(Unit origin, Unit source, Unit target, int amount, ItemType type,
+      int line, boolean warning) {
+    super(origin, source, target, amount, line, warning);
+    itemType = type;
   }
 
   /*

@@ -214,4 +214,5 @@ public class Race extends UnitContainerType {
   public StringID getID() {
     return (StringID) id;
   }
+
 }

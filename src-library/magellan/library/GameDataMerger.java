@@ -2329,7 +2329,7 @@ public class GameDataMerger {
     }
 
     if (!curUnit.ordersAreNull() && (curUnit.getCompleteOrders().size() > 0)) {
-      resultUnit.setOrders(curUnit.getCompleteOrders(), false);
+      resultUnit.setOrders2(curUnit.getCompleteOrders(), false);
     }
 
     resultUnit.setOrdersConfirmed(resultUnit.isOrdersConfirmed() || curUnit.isOrdersConfirmed());
@@ -2388,17 +2388,13 @@ public class GameDataMerger {
     // second pass
     if (firstPass || !newWellKnown || curWellKnown) {
       if ((curUnit.getItems() != null) && (curUnit.getItems().size() > 0)) {
-        if (resultUnit.getItemMap() == null) {
-          resultUnit.setItems(new LinkedHashMap<StringID, Item>());
-        } else {
-          resultUnit.getItemMap().clear();
-        }
+        resultUnit.clearItems();
 
         for (Item curItem : curUnit.getItems()) {
           final Item newItem =
               new Item(resultGD.rules.getItemType(curItem.getItemType().getID(), true), curItem
                   .getAmount());
-          resultUnit.getItemMap().put(newItem.getItemType().getID(), newItem);
+          resultUnit.addItem(newItem);
         }
       }
     }
@@ -2533,6 +2529,7 @@ public class GameDataMerger {
       }
     }
 
+    // FIXME(stm) this effectively destroys report unit sorting
     resultUnit.setSortIndex(Math.max(resultUnit.getSortIndex(), curUnit.getSortIndex()));
 
     if ((curUnit.getSpells() != null) && (curUnit.getSpells().size() > 0)) {

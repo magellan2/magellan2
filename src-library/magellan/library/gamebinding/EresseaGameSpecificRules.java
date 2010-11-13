@@ -239,16 +239,29 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     return false;
   }
 
-  public boolean isPooled(Unit unit, ItemType type) {
-    if (unit.getRegion().getData().getDate().getDate() > 558
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#isPooled(magellan.library.Unit,
+   *      magellan.library.StringID)
+   */
+  public boolean isPooled(Unit unit, StringID type) {
+    if (unit.getData().getDate().getDate() > 558
         && getRules().getGameSpecificStuff().getName().equalsIgnoreCase("eressea"))
       // the pools were activated in Eressea starting from report no. 559
       return true;
-    if (type.getID().equals(EresseaConstants.I_USILVER))
-      return unit.getFaction().getOptions()
-          .isActive(StringID.create(EresseaConstants.O_SILVERPOOL));
+    if (EresseaConstants.I_USILVER.equals(type))
+      return unit.getFaction().getOptions() != null
+          && unit.getFaction().getOptions()
+              .isActive(StringID.create(EresseaConstants.O_SILVERPOOL));
     else
       return unit.getFaction().getOptions().isActive(StringID.create(EresseaConstants.O_ITEMPOOL));
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#isPooled(magellan.library.Unit,
+   *      magellan.library.rules.ItemType)
+   */
+  public boolean isPooled(Unit unit, ItemType type) {
+    return isPooled(unit, type.getID());
   }
 
   /**

@@ -23,7 +23,6 @@
 // 
 package magellan.library.tasks;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,8 +30,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import magellan.library.GameData;
+import magellan.library.Order;
+import magellan.library.Orders;
 import magellan.library.Unit;
-import magellan.library.completion.OrderParser;
+import magellan.library.relation.UnitRelation;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
@@ -72,17 +73,16 @@ public class OrderSyntaxInspector extends AbstractInspector {
   }
 
   private Collection<ProblemType> types;
-  private OrderParser parser;
 
   protected OrderSyntaxInspector(GameData data) {
     super(data);
-    parser = getGameSpecificStuff().getOrderParser(getData());
+    // parser = getGameSpecificStuff().getOrderParser(getData());
   }
 
   @Override
   public void setGameData(GameData gameData) {
     super.setGameData(gameData);
-    parser = getGameSpecificStuff().getOrderParser(getData());
+    // parser = getGameSpecificStuff().getOrderParser(getData());
   }
 
   /**
@@ -100,68 +100,82 @@ public class OrderSyntaxInspector extends AbstractInspector {
   @Override
   public List<Problem> reviewUnit(Unit unit, Severity severity) {
 
-    List<String> orders = unit.getOrders();
+    Orders orders = unit.getOrders2();
     List<Problem> errors = new ArrayList<Problem>();
-
-    if ((Utils.isEmpty(orders) || orders.size() == 0) && severity == Severity.ERROR) {
-      // no orders...that could be a problem.
-      if (!magellan.library.utils.Units.isPrivilegedAndNoSpy(unit))
-        // okay, that isn't our unit... forget it
-        return Collections.emptyList();
-      else {
-        errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS
-            .getType(), unit, this));
-      }
-
-    }
 
     // be careful with the order parser. Some orders may be correct but will not get
     // an OK from the parser: ZAUBERE und Benutze Trank ...
     // so I change that from error to warning
 
-    if (severity == Severity.WARNING) {
-      OrderParser parser = getParser();
+    // OrderParser parser = getParser();
 
-      Integer line = 0;
-      boolean longOrder = false;
-      for (String order : orders) {
-        line++;
-        StringReader reader = new StringReader(order);
-        boolean ok = parser.read(reader);
-        if (!ok) {
+    int line = 0;
+    boolean longOrder = false;
+    for (Order order : orders) {
+      line++;
+
+      if (severity == Severity.WARNING)
+        if (order.getWarning() != null) {
           errors.add(ProblemFactory.createProblem(Severity.WARNING,
-              OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, getWarningMessage(order,
-                  line), line));
+              OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, order.getWarning()
+                  + ": " + order.toString(), line));
+        } else if (!order.isValid()) {
+          errors.add(ProblemFactory.createProblem(Severity.WARNING,
+              OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, getWarningMessage(
+                  OrderSyntaxProblemTypes.PARSE_WARNING, order), line));
         }
-        longOrder |= getData().getGameSpecificStuff().getOrderChanger().isLongOrder(order);
-      }
 
-      if (!longOrder) {
-        errors.add(ProblemFactory.createProblem(Severity.WARNING,
+      longOrder |= order.isLong();
+    }
+
+    if (severity == Severity.ERROR) {
+      if ((Utils.isEmpty(orders) || orders.size() == 0)) {
+        // no orders...that could be a problem.
+        if (!magellan.library.utils.Units.isPrivilegedAndNoSpy(unit))
+          // okay, that isn't our unit... forget it
+          return Collections.emptyList();
+        else {
+          errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS
+              .getType(), unit, this));
+          // }
+        }
+      } else if (!longOrder) {
+        errors.add(ProblemFactory.createProblem(Severity.ERROR,
             OrderSyntaxProblemTypes.NO_LONG_ORDER.getType(), unit, this));
-      }
-
-      line = getData().getGameSpecificStuff().getOrderChanger().areCompatibleLongOrders(orders);
-      if (0 <= line) {
-        errors.add(ProblemFactory.createProblem(Severity.WARNING,
-            OrderSyntaxProblemTypes.LONGORDERS.getType(), unit, this));
+      } else {
+        line = getData().getGameSpecificStuff().getOrderChanger().areCompatibleLongOrders(orders);
+        if (0 <= line) {
+          errors.add(ProblemFactory.createProblem(Severity.ERROR,
+              OrderSyntaxProblemTypes.LONGORDERS.getType(), unit, this, getWarningMessage(
+                  OrderSyntaxProblemTypes.LONGORDERS, orders.get(line)), line + 1));
+        }
       }
     }
+
+    if (severity == Severity.WARNING) {
+      for (UnitRelation rel : unit.getRelations(UnitRelation.class))
+        if (rel.warning) {
+          if (rel.line <= 0) {
+            Order order = rel.origin.getOrders2().get(rel.line - 1);
+            if (order == null || (order.getWarning() == null && order.isValid())) {
+              errors.add(ProblemFactory.createProblem(Severity.WARNING,
+                  OrderSyntaxProblemTypes.PARSE_WARNING.getType(), rel.origin, this, rel.getClass()
+                      .toString(), rel.line));
+            }
+          }
+        }
+    }
+
     return errors;
   }
 
-  private OrderParser getParser() {
-    return parser;
-  }
+  // private OrderParser getParser() {
+  // return parser;
+  // }
 
-  private String getWarningMessage(String order, Integer line) {
-    return Resources.get("tasks.ordersyntaxinspector.parse_warning.message", new Object[] { order,
-        line });
-  }
-
-  private String getErrorMessage(String order, Integer line) {
-    return Resources.get("tasks.ordersyntaxinspector.parse_error.message", new Object[] { order,
-        line });
+  private String getWarningMessage(OrderSyntaxProblemTypes parseWarning, Order order) {
+    return Resources.get("tasks.ordersyntaxinspector." + parseWarning.name().toLowerCase()
+        + ".message", new Object[] { order });
   }
 
   public Collection<ProblemType> getTypes() {

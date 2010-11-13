@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import magellan.library.GameData;
+import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
@@ -79,33 +80,35 @@ public abstract class AbstractInspector implements Inspector {
       Problem p = it.next();
       Unit unit = p.getOwner();
       if (unit != null) {
-        for (String line : unit.getOrders()) {
+        for (Order line : unit.getOrders2()) {
           if (isSuppressMarkerFor(line, p, false)) {
             it.remove();
             break;
           }
         }
-        for (int l = p.getLine() - 2; l >= 0; --l) {
-          if (l >= unit.getOrders().size()) {
-            AbstractInspector.log.error("error in wrong line: " + unit + " " + l);
-          }
-          String line = unit.getOrders().get(l);
-          if (!line.startsWith(Inspector.SUPPRESS_PREFIX)) {
-            break;
-          } else if (isSuppressMarkerFor(line, p, true)) {
-            it.remove();
-            break;
+        if (p.getLine() - 2 >= unit.getOrders2().size()) {
+          AbstractInspector.log.error("error in wrong line: " + unit + " " + p.getLine(),
+              new Exception());
+        } else {
+          for (int l = p.getLine() - 2; l >= 0; --l) {
+            Order line = unit.getOrders2().get(l);
+            if (!line.getText().startsWith(Inspector.SUPPRESS_PREFIX)) {
+              break;
+            } else if (isSuppressMarkerFor(line, p, true)) {
+              it.remove();
+              break;
+            }
           }
         }
       }
     }
   }
 
-  protected boolean isSuppressMarkerFor(String line, Problem p, boolean lineMode) {
+  protected boolean isSuppressMarkerFor(Order line, Problem p, boolean lineMode) {
     if (lineMode)
-      return line.equals(getSuppressLineComment(p.getType()));
+      return line.getText().equals(getSuppressLineComment(p.getType()));
     else
-      return line.equals(getSuppressUnitComment(p.getType()));
+      return line.getText().equals(getSuppressUnitComment(p.getType()));
   }
 
   /**
@@ -118,8 +121,8 @@ public abstract class AbstractInspector implements Inspector {
   protected boolean checkIgnoreUnit(Unit u) {
     for (ProblemType p : getTypes()) {
       boolean found = false;
-      for (String order : u.getOrders()) {
-        if (order.equals(getSuppressUnitComment(p))) {
+      for (Order order : u.getOrders2()) {
+        if (order.getText().equals(getSuppressUnitComment(p))) {
           found = true;
         }
       }
@@ -213,7 +216,7 @@ public abstract class AbstractInspector implements Inspector {
     if (p.getLine() >= 0) {
       p.getOwner().addOrderAt(p.getLine() - 1, getSuppressLineComment(p.getType()), true);
     } else {
-      p.getOwner().addOrderAt(0, getSuppressUnitComment(p.getType()));
+      p.getOwner().addOrderAt(0, getSuppressUnitComment(p.getType()), true);
     }
     return p.getOwner();
   }
@@ -233,12 +236,13 @@ public abstract class AbstractInspector implements Inspector {
   }
 
   public void unSuppress(Unit u) {
-    List<String> newOrders = new ArrayList<String>(u.getOrders().size());
+    List<Order> newOrders = new ArrayList<Order>(u.getOrders2().size());
     boolean changed = false;
-    for (String o : u.getOrders()) {
+    for (Order o : u.getOrders2()) {
       boolean match = false;
       for (ProblemType p : getTypes()) {
-        if (o.equals(getSuppressLineComment(p)) || o.equals(getSuppressUnitComment(p))) {
+        if (o.getText().equals(getSuppressLineComment(p))
+            || o.getText().equals(getSuppressUnitComment(p))) {
           match = true;
         }
       }
@@ -249,7 +253,7 @@ public abstract class AbstractInspector implements Inspector {
       }
     }
     if (changed) {
-      u.setOrders(newOrders);
+      u.setOrders2(newOrders);
     }
   }
 

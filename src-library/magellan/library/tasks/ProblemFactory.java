@@ -30,6 +30,9 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.tasks.Problem.Severity;
 
+/**
+ * Creates problems for the TaskTable.
+ */
 public class ProblemFactory {
 
   /**
@@ -88,15 +91,16 @@ public class ProblemFactory {
    * 
    * @param severity
    * @param type
-   * @param c
+   * @param container
+   * @param inspector
    * @param inspector
    * @param line
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c,
-      Inspector inspector, int line) {
-    return new SimpleProblem(severity, type,
-        c.getOwner() == null ? null : c.getOwner().getRegion(), c.getOwner(), c.getOwner() == null
-            ? null : c.getOwner().getFaction(), c, inspector, type.getMessage(), line);
+  public static SimpleProblem createProblem(Severity severity, ProblemType type,
+      UnitContainer container, Inspector inspector, int line) {
+    return new SimpleProblem(severity, type, container.getOwner() == null ? null : container
+        .getOwner().getRegion(), container.getOwner(), container.getOwner() == null ? null
+        : container.getOwner().getFaction(), container, inspector, type.getMessage(), line);
   }
 
   /**
@@ -105,20 +109,21 @@ public class ProblemFactory {
    * 
    * @param severity
    * @param type
-   * @param c
+   * @param container
+   * @param inspector
    * @param inspector
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c,
-      Inspector inspector) {
+  public static SimpleProblem createProblem(Severity severity, ProblemType type,
+      UnitContainer container, Inspector inspector) {
     Region r = null;
-    if (c instanceof HasRegion) {
-      r = ((HasRegion) c).getRegion();
+    if (container instanceof HasRegion) {
+      r = ((HasRegion) container).getRegion();
     } else {
-      r = c.getOwner() == null ? null : c.getOwner().getRegion();
+      r = container.getOwner() == null ? null : container.getOwner().getRegion();
     }
 
-    return new SimpleProblem(severity, type, r, c.getOwner(), c.getOwner() == null ? null : c
-        .getOwner().getFaction(), c, inspector, type.getMessage(), -1);
+    return new SimpleProblem(severity, type, r, container.getOwner(), container.getOwner() == null
+        ? null : container.getOwner().getFaction(), container, inspector, type.getMessage(), -1);
   }
 
   /**

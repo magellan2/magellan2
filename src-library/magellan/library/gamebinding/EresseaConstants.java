@@ -764,8 +764,12 @@ public class EresseaConstants {
   /** The RegionType highland */
   public static final StringID RT_HIGHLAND = StringID.create("Hochland");
 
-  /** The RegionType dessert */
+  /** @deprecated you can't eat terrain types! */
+  @Deprecated
   public static final StringID RT_DESSERT = StringID.create("Wüste");
+
+  /** The RegionType dessert */
+  public static final StringID RT_DESERT = StringID.create("Wüste");
 
   /** The RegionType mountain */
   public static final StringID RT_MOUNTAIN = StringID.create("Berge");

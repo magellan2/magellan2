@@ -121,6 +121,7 @@ public class AddCRAction extends MenuAction implements GameDataListener {
             }, new ReportMerger.AssignData() {
               public void assign(GameData _data) {
                 theclient.setData(_data);
+                theclient.setReportChanged(true);
               }
             });
         settings.setProperty(PropertiesHelper.CLIENT_LAST_CR_ADDED, fc.getSelectedFile()
@@ -134,6 +135,7 @@ public class AddCRAction extends MenuAction implements GameDataListener {
         }, new ReportMerger.AssignData() {
           public void assign(GameData _data) {
             theclient.setData(_data);
+            theclient.setReportChanged(true);
           }
         });
         settings.setProperty(PropertiesHelper.CLIENT_LAST_CR_ADDED, files[files.length - 1]

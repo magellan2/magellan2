@@ -1735,6 +1735,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
         if (data != null) {
           client.setData(data);
+          client.setReportChanged(false);
         }
       }
     }, "loadCRThread").start();
@@ -1771,7 +1772,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     // FIXME(stm) do not change on out of memory!?
     setData(newData);
-    setReportChanged(false);
+    setReportChanged(true);
   }
 
   public void setGirth(BBoxes newBorders) {
@@ -1798,7 +1799,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
     // FIXME(stm) do not change on out of memory!?
     setData(newData);
-    setReportChanged(false);
+    setReportChanged(true);
   }
 
   /**
@@ -2117,8 +2118,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * changes do occur.
    */
   private void updatedGameData() {
-    setReportChanged(false);
-
     updateTitleCaption();
     updateConfirmMenu();
     updatePlugIns();

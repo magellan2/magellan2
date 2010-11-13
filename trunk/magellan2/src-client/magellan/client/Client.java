@@ -2619,6 +2619,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       } else {
         stateChanged = false;
       }
+      updateTitleCaption();
       updatedGameData();
     }
 
@@ -2630,9 +2631,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     public void unitOrdersChanged(UnitOrdersEvent e) {
       if (lastClear < e.getTimestamp()) {
         if (!stateChanged) {
+          stateChanged = true;
           updateTitleCaption();
+        } else {
+          stateChanged = true;
         }
-        stateChanged = true;
       }
     }
   }

@@ -23,10 +23,10 @@ import magellan.client.swing.context.ContextFactory;
  * @version 1.0
  */
 public interface Changeable {
-  /** DOCUMENT-ME */
+  /** Flag to indicate that the element should be edited by a context menu. */
   public static final int CONTEXT_MENU = 1;
 
-  /** DOCUMENT-ME */
+  /** Flag to indicate that the element should be edited by a cell editor. */
   public static final int CELL_EDITOR = 2;
 
   /**
@@ -43,7 +43,7 @@ public interface Changeable {
   /**
    * The game object for which this Changeable is responsible.
    * 
-   * @return
+   * @return the game object for which this Changeable is responsible.
    */
   public Object getArgument();
 }

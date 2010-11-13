@@ -38,6 +38,7 @@ import magellan.library.Island;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
 import magellan.library.Message;
+import magellan.library.Order;
 import magellan.library.Potion;
 import magellan.library.Region;
 import magellan.library.RegionResource;
@@ -1211,15 +1212,15 @@ public class CRWriter extends BufferedWriter {
    * @param list a list with the <tt>String</tt> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeOrders(List<String> list) throws IOException {
+  public void writeOrders(List<Order> list) throws IOException {
     if ((list == null) || list.isEmpty())
       return;
 
     write("COMMANDS");
     newLine();
 
-    for (String line : list) {
-      writeQuotedString(line);
+    for (Order line : list) {
+      writeQuotedString(line.getText());
     }
   }
 
@@ -1914,7 +1915,7 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-      if (!serverConformance && region.getData().getActiveRegion() == region) {
+      if (!serverConformance && world.getActiveRegion() == region) {
         write("1;aktiveRegion");
         newLine();
       }

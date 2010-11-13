@@ -1,4 +1,11 @@
-2010-11-12 / Build 435 - stm (stm_@users.sourceforge.net)
+2010-11-13 / Build 436 - stm (stm_@users.sourceforge.net)
+    * deprecated data.rules and expanded GameSpecificRules to include Rules's non-modifying methods.
+    * general overhaul of order parsing/processing
+    * especially: REKRUTIERE, GIB/RESERVIERE (Materialpool!)
+    * added Allanon ERKUNDE order
+    * changes to relation/orders update behavior
+
+2010-11-12 / Build 434 - stm (stm_@users.sourceforge.net)
     * better update of title caption and report changed state
     * fixed duplicate counting of income in FactionStatsPanel
     * EMapDetailsPanel: improvements to region resource display and (transfer) relation display

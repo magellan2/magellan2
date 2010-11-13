@@ -19,6 +19,8 @@ import java.util.StringTokenizer;
 
 import magellan.library.Building;
 import magellan.library.Faction;
+import magellan.library.Order;
+import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
@@ -29,10 +31,7 @@ import magellan.library.utils.Locales;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 305 $
+ * OrderChanger class for the game Eressea.
  */
 public class EresseaOrderChanger implements OrderChanger {
   public static final String eresseaOrderChangedMarker = ";changed by Magellan";
@@ -154,39 +153,44 @@ public class EresseaOrderChanger implements OrderChanger {
    *      java.lang.String)
    */
   public void addHideOrder(Unit unit, String level) {
-    Collection<String> orders = new ArrayList<String>();
-    orders.addAll(unit.getOrders());
+    Orders orders = unit.getOrders2();
+    List<Order> ordersCopy = new ArrayList<Order>();
+    ordersCopy.addAll(orders);
 
-    // remove hide (but not hide faction) order
-    for (Iterator<String> iter = orders.iterator(); iter.hasNext();) {
-      String order = iter.next();
+    // remove hide (but not hide faction/race) order
+    for (Iterator<Order> iter = ordersCopy.iterator(); iter.hasNext();) {
+      Order order = iter.next();
 
-      if (order.startsWith(Resources.getOrderTranslation(EresseaConstants.O_HIDE))
-          && (order.indexOf(Resources.getOrderTranslation(EresseaConstants.O_FACTION)) == -1)) {
-        boolean raceFound = false;
+      if (orders.isToken(order, 0, EresseaConstants.O_HIDE))
+        if (orders.isToken(order, 1, EresseaConstants.O_FACTION)) {
+          continue;
+        } else {
+          boolean raceFound = false;
 
-        for (Iterator<Race> it2 = getRules().getRaceIterator(); it2.hasNext();) {
-          Race race = it2.next();
+          for (Iterator<Race> it2 = getRules().getRaceIterator(); it2.hasNext();) {
+            Race race = it2.next();
+            if (order.getToken(1).getText().equals(race.getName())) {
+              raceFound = true;
+              break;
+            }
+          }
 
-          if (order.indexOf(race.getName()) > 0) {
-            raceFound = true;
-
-            break;
+          if (!raceFound) {
+            iter.remove();
           }
         }
-
-        if (!raceFound) {
-          iter.remove();
-        }
-      }
     }
 
-    orders.add(createHideOrder(level));
-    unit.setOrders(orders);
+    ordersCopy.add(createHideOrder(unit, level));
+    unit.setOrders2(ordersCopy);
   }
 
-  protected String createHideOrder(String level) {
-    return Resources.getOrderTranslation(EresseaConstants.O_HIDE) + " " + level;
+  protected Order createHideOrder(Unit unit, String level) {
+    return createOrder(unit, Resources.getOrderTranslation(EresseaConstants.O_HIDE) + " " + level);
+  }
+
+  public Order createOrder(Unit unit, String string) {
+    return unit.createOrder(string);
   }
 
   /**
@@ -313,24 +317,16 @@ public class EresseaOrderChanger implements OrderChanger {
    * @see magellan.library.gamebinding.OrderChanger#disableLongOrders(magellan.library.Unit)
    */
   public void disableLongOrders(Unit u) {
-    Collection<String> longOrders =
-        toLowerCase(getLongOrders(u.getFaction().getLocale()), u.getFaction().getLocale());
-    LinkedList<String> newOrders = new LinkedList<String>();
-    for (String order : u.getOrders()) {
-      boolean add = true;
-      for (String longOrder : longOrders) {
-        if (order.toLowerCase(u.getFaction().getLocale()).startsWith(longOrder)) {
-          add = false;
-          break;
+    int i = 0;
+    for (Order order : u.getOrders2()) {
+      for (String longOrder : getLongOrderTokens()) {
+        if (u.getOrders2().isToken(order, 0, longOrder)) {
+          u.replaceOrder(i, createOrder(u, "; " + order.getText()), false);
         }
       }
-      if (add) {
-        newOrders.add(order);
-      } else {
-        newOrders.add("; " + order);
-      }
+      ++i;
     }
-    u.setOrders(newOrders, false);
+    u.refreshRelations();
   }
 
   private List<String> toLowerCase(List<String> orders, Locale locale) {
@@ -341,9 +337,15 @@ public class EresseaOrderChanger implements OrderChanger {
     return result;
   }
 
+  public boolean isLongOrder(Order order) {
+    return order.isLong();
+  }
+
   /**
    * @see magellan.library.gamebinding.OrderChanger#isLongOrder(java.lang.String)
+   * @deprecated The results of this method are not very accurate
    */
+  @Deprecated
   public boolean isLongOrder(String order) {
     /*
      * Wenn eine Order mit einem Eintrag aus LongOrdersTranslated beginnt, aber nicht mit einem aus
@@ -511,88 +513,111 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   /**
-   * @see magellan.library.gamebinding.OrderChanger#areCompatibleLongOrders(java.util.Collection)
+   * @see magellan.library.gamebinding.OrderChanger#areCompatibleLongOrders(Orders)
    */
-  public int areCompatibleLongOrders(Collection<String> orders) {
+  public int areCompatibleLongOrders(Orders orders) {
     if (orders.size() <= 1)
       return -1;
-
-    Locale locale = Locales.getOrderLocale();
 
     CountMap<String> map = new CountMap<String>();
 
     // count frequency of orders
-    Collection<String> longOrders = toLowerCase(getLongOrdersTranslated(), locale);
-    for (String order : orders) {
+    Collection<String> longOrders = getLongOrderTokens();
+    int line = 0;
+    for (Order order : orders) {
       if (isLongOrder(order)) {
         for (String longOrder : longOrders) {
-          if (order.toLowerCase().startsWith(longOrder)) {
-            map.increase(longOrder);
+          if (orders.isToken(order, 0, longOrder)
+              && !orders.isToken(order, 0, EresseaConstants.O_ATTACK)) {
+            map.increase(longOrder, line);
             break;
           }
         }
       }
+      line++;
     }
 
-    if (map.containsKey(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW, locale))) {
-      map.remove(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW, locale));
+    String follow;
+    if (map.containsKey(follow = EresseaConstants.O_FOLLOW)) {
+      // ignore FOLGE EINHEIT
+      for (Iterator<Integer> it = map.get(follow).iterator(); it.hasNext();) {
+        Integer occ = it.next();
+        if (orders.isToken(orders.get(occ.intValue()), 1, EresseaConstants.O_UNIT)) {
+          it.remove();
+          break;
+        }
+      }
+      if (map.get(follow).size() == 0) {
+        map.remove(follow);
+      }
     }
 
-    String buy;
     String sell;
-    if (map.containsKey(buy = Resources.getOrderTranslation(EresseaConstants.O_BUY, locale))
-        | map.containsKey(sell = Resources.getOrderTranslation(EresseaConstants.O_SELL, locale))) {
+    String buy;
+    if (map.containsKey(buy = EresseaConstants.O_BUY)
+        | map.containsKey(sell = EresseaConstants.O_SELL)) {
       // only KAUFE and VERKAUFE and only one KAUFE are allowed
-      if (map.size() > 2 || !(map.containsKey(buy) && map.containsKey(sell)))
-        return findFirst(orders, buy, sell);
-      else { // size <= 2 and map does contain only buy and sell
-        if (map.get(buy) > 1)
-          return findFirst(orders, buy);
+      if (map.size() > 2 || (map.size() == 2 && !(map.containsKey(buy) && map.containsKey(sell)))) {
+        // there is another order except buy and sell
+        int line2 = 0;
+        for (Order order : orders) {
+          if (isLongOrder(order) && !orders.isToken(order, 0, buy)
+              && !orders.isToken(order, 0, sell))
+            return line2;
+          line2++;
+        }
+        return 0; // should not occur
+      } else { // size <= 2 and map does contain only buy and sell
+        if (map.containsKey(buy) && map.get(buy).size() > 1)
+          return map.get(buy).get(1).intValue();
         return -1;
       }
     }
 
     String zaubere;
-    if (map.containsKey(zaubere = Resources.getOrderTranslation(EresseaConstants.O_CAST, locale))) {
-      // ZAUBERE is compatible with itself only
-      for (String candidate : map.keySet())
-        if (!candidate.equalsIgnoreCase(zaubere))
-          return findFirst(orders, candidate);
-      return -1;
+    if (map.containsKey(zaubere = EresseaConstants.O_CAST)) {
+      if (map.size() == 1)
+        return -1;
+      int line2 = 0;
+      for (Order order : orders) {
+        if (isLongOrder(order) && !orders.isToken(order, 0, zaubere))
+          return line2;
+        line2++;
+      }
     }
 
     if (map.size() == 0)
-      return -1;
+      return -1; // no long order
     else if (map.size() == 1)
-      if (map.values().iterator().next() == 1)
-        return -1;
+      if (map.values().iterator().next().size() == 1)
+        return -1; // exactly one long order
       else
-        return findNth(orders, 2, map.keySet().iterator().next());
-    else { // map size > 1
-      int n = 0, line = 0;
-      for (String order : orders) {
+        return map.values().iterator().next().get(1).intValue(); // multiple long orders of one type
+    else { // map size > 1, more than one lone order
+      int n = 0, line3 = 0;
+      for (Order order : orders) {
         if (isLongOrder(order)) {
           n++;
         }
         if (n >= 2)
-          return line;
-        line++;
+          return line3;
+        line3++;
       }
       return 0; // should never happen
     }
 
   }
 
-  private int findFirst(Collection<String> orders, String... orderTranslation) {
-    return findNth(orders, 1, orderTranslation);
+  private int findFirst(Orders orders, String... orderTypes) {
+    return findNth(orders, 1, orderTypes);
   }
 
-  private int findNth(Collection<String> orders, int n, String... orderTranslation) {
+  private int findNth(Orders orders, int n, String... orderTypes) {
     int line = 0;
     int found = 0;
-    for (String order : orders) {
-      for (String candidate : orderTranslation)
-        if (order.toLowerCase().startsWith(candidate)) {
+    for (Order order : orders) {
+      for (String candidate : orderTypes)
+        if (orders.isToken(order, 0, candidate)) {
           found++;
           if (found == n)
             return line;
@@ -602,25 +627,24 @@ public class EresseaOrderChanger implements OrderChanger {
     return -1;
   }
 
-  public class CountMap<T> extends HashMap<T, Integer> {
-    public int increase(T key, int delta) {
-      Integer value = get(key);
+  /**
+   * A map that counts occurrences of keys
+   */
+  public class CountMap<T> extends HashMap<T, List<Integer>> {
+    /**
+     * Increase the value of key by delta. The value is assumed 0 if it's not present in the map.
+     */
+    @SuppressWarnings("boxing")
+    public int increase(T key, int line) {
+      List<Integer> value = get(key);
       if (value == null) {
-        put(key, delta);
-        return 1;
-      } else {
-        put(key, value + delta);
-        return value + delta;
+        value = new ArrayList<Integer>(3);
       }
+      value.add(line);
+      put(key, value);
+      return value.size();
     }
 
-    public int increase(T key) {
-      return increase(key, 1);
-    }
-
-    public int decrease(T key) {
-      return increase(key, -1);
-    }
   }
 
 }

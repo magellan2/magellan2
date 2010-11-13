@@ -6,6 +6,14 @@ import magellan.library.Unit;
  * A relation indicating that the source unit changes its battle status
  */
 public class GuardRegionRelation extends UnitRelation {
+
+  /** Status for BEWACHE NICHT */
+  public static final int GUARD_NOT = 0;
+  /** Status for BEWACHE */
+  public static final int GUARD = 1;
+  /**
+   * The guard status.
+   */
   public int guard = 0;
 
   /**

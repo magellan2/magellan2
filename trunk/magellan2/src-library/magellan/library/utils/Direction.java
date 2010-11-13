@@ -16,6 +16,7 @@ package magellan.library.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -95,11 +96,9 @@ public enum Direction {
     tempDirections = null;
   }
 
-  private static String[] shortNames = new String[6];
-  private static String[] longNames = new String[6];
-  private static String[] normalizedLongNames = new String[6];
-
-  private static Locale usedLocale = null;
+  private static Map<Locale, String[]> shortNamess = new HashMap<Locale, String[]>();
+  private static Map<Locale, String[]> longNamess = new HashMap<Locale, String[]>();
+  private static Map<Locale, String[]> normalizedLongNamess = new HashMap<Locale, String[]>();
 
   private int dir;
 
@@ -226,10 +225,10 @@ public enum Direction {
     String s = Umlaut.normalize(str).toLowerCase();
 
     initNames(locale);
-    dir = Direction.find(s, SHORT);
+    dir = Direction.find(s, SHORT, locale);
 
     if (dir == Direction.DIR_INVALID) {
-      dir = Direction.find(s, NORMLONG);
+      dir = Direction.find(s, NORMLONG, locale);
     }
 
     return toDirection(dir);
@@ -311,9 +310,9 @@ public enum Direction {
    */
   public String toString(boolean shortForm) {
     if (shortForm)
-      return Direction.getShortDirectionString(dir);
+      return Direction.getShortDirectionString(dir, null);
     else
-      return Direction.getLongDirectionString(dir);
+      return Direction.getLongDirectionString(dir, null);
   }
 
   /**
@@ -332,9 +331,9 @@ public enum Direction {
    */
   public static String toString(int dir, boolean shortForm) {
     if (shortForm)
-      return Direction.getShortDirectionString(dir);
+      return Direction.getShortDirectionString(dir, null);
     else
-      return Direction.getLongDirectionString(dir);
+      return Direction.getLongDirectionString(dir, null);
   }
 
   /**
@@ -344,52 +343,58 @@ public enum Direction {
     return toDirection(c).toString();
   }
 
-  private static String getLongDirectionString(int key) {
+  private static String getLongDirectionString(int key, Locale locale) {
+    if (locale == null) {
+      locale = Locales.getOrderLocale();
+    }
     switch (key) {
     case DIR_NW:
-      return Resources.getOrderTranslation(EresseaConstants.O_NORTHWEST);
+      return Resources.getOrderTranslation(EresseaConstants.O_NORTHWEST, locale);
 
     case DIR_NE:
-      return Resources.getOrderTranslation(EresseaConstants.O_NORTHEAST);
+      return Resources.getOrderTranslation(EresseaConstants.O_NORTHEAST, locale);
 
     case DIR_E:
-      return Resources.getOrderTranslation(EresseaConstants.O_EAST);
+      return Resources.getOrderTranslation(EresseaConstants.O_EAST, locale);
 
     case DIR_SE:
-      return Resources.getOrderTranslation(EresseaConstants.O_SOUTHEAST);
+      return Resources.getOrderTranslation(EresseaConstants.O_SOUTHEAST, locale);
 
     case DIR_SW:
-      return Resources.getOrderTranslation(EresseaConstants.O_SOUTHWEST);
+      return Resources.getOrderTranslation(EresseaConstants.O_SOUTHWEST, locale);
 
     case DIR_W:
-      return Resources.getOrderTranslation(EresseaConstants.O_WEST);
+      return Resources.getOrderTranslation(EresseaConstants.O_WEST, locale);
     }
 
-    return Resources.get("util.direction.name.long.invalid");
+    return Resources.get("util.direction.name.long.invalid", locale);
   }
 
-  private static String getShortDirectionString(int key) {
+  private static String getShortDirectionString(int key, Locale locale) {
+    if (locale == null) {
+      locale = Locales.getOrderLocale();
+    }
     switch (key) {
     case DIR_NW:
-      return Resources.getOrderTranslation(EresseaConstants.O_NW);
+      return Resources.getOrderTranslation(EresseaConstants.O_NW, locale);
 
     case DIR_NE:
-      return Resources.getOrderTranslation(EresseaConstants.O_NE);
+      return Resources.getOrderTranslation(EresseaConstants.O_NE, locale);
 
     case DIR_E:
-      return Resources.getOrderTranslation(EresseaConstants.O_E);
+      return Resources.getOrderTranslation(EresseaConstants.O_E, locale);
 
     case DIR_SE:
-      return Resources.getOrderTranslation(EresseaConstants.O_SE);
+      return Resources.getOrderTranslation(EresseaConstants.O_SE, locale);
 
     case DIR_SW:
-      return Resources.getOrderTranslation(EresseaConstants.O_SW);
+      return Resources.getOrderTranslation(EresseaConstants.O_SW, locale);
 
     case DIR_W:
-      return Resources.getOrderTranslation(EresseaConstants.O_W);
+      return Resources.getOrderTranslation(EresseaConstants.O_W, locale);
     }
 
-    return Resources.get("util.direction.name.short.invalid");
+    return Resources.get("util.direction.name.short.invalid", locale);
   }
 
   /**
@@ -425,7 +430,8 @@ public enum Direction {
   public static List<String> getShortNames(Locale locale) {
     initNames(locale);
 
-    return Arrays.asList(Direction.shortNames);
+    return Arrays.asList(Direction.shortNamess.get(locale == null ? Locales.getOrderLocale()
+        : locale));
   }
 
   /**
@@ -441,7 +447,8 @@ public enum Direction {
   public static List<String> getLongNames(Locale locale) {
     initNames(locale);
 
-    return Arrays.asList(Direction.longNames);
+    return Arrays.asList(Direction.longNamess.get(locale == null ? Locales.getOrderLocale()
+        : locale));
   }
 
   /**
@@ -459,68 +466,77 @@ public enum Direction {
   public static List<String> getNormalizedLongNames(Locale locale) {
     initNames(locale);
 
-    return Arrays.asList(Direction.normalizedLongNames);
+    return Arrays.asList(Direction.normalizedLongNamess.get(locale == null ? Locales
+        .getOrderLocale() : locale));
   }
 
   protected static void initNames(Locale locale) {
     if (locale == null) {
       locale = Locales.getOrderLocale();
     }
-    if (locale.equals(Direction.usedLocale))
+    if (shortNamess.containsKey(locale))
       return;
-    Direction.usedLocale = locale;
+
+    String[] shorty = new String[6];
+    String[] longy = new String[6];
+    String[] nlongy = new String[6];
+    Direction.shortNamess.put(locale, shorty);
+    Direction.longNamess.put(locale, longy);
+    Direction.normalizedLongNamess.put(locale, nlongy);
 
     for (int i = 0; i < 6; i++) {
-      Direction.shortNames[i] = Direction.getShortDirectionString(i).toLowerCase();
-      Direction.longNames[i] = Direction.getLongDirectionString(i).toLowerCase();
-      Direction.normalizedLongNames[i] =
-          Umlaut.convertUmlauts(Direction.getLongDirectionString(i)).toLowerCase();
+      shorty[i] = Direction.getShortDirectionString(i, locale).toLowerCase();
+      longy[i] = Direction.getLongDirectionString(i, locale).toLowerCase();
+      nlongy[i] = Umlaut.convertUmlauts(Direction.getLongDirectionString(i, locale)).toLowerCase();
     }
-
   }
 
   /**
    * Finds pattern in the set of matches (case-sensitively) and returns the index of the hit.
    * Pattern may be an abbreviation of any of the matches. If pattern is ambiguous or cannot be
    * found among the matches, -1 is returned
+   * 
+   * @param locale
    */
-  private static int find(String pattern, int mode) {
-
-    // Map<String, Integer> hits;
-    // switch (mode) {
-    // case SHORT:
-    // hits = shortNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
-    // if (hits.size() == 1)
-    // return hits.values().iterator().next();
-    // break;
-    //
-    // case LONG:
-    // hits = longNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
-    // if (hits.size() == 1)
-    // return hits.values().iterator().next();
-    // break;
-    // case NORMLONG:
-    // hits = normalizedLongNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
-    // if (hits.size() == 1)
-    // return hits.values().iterator().next();
-    // break;
-    // default:
-    // throw new IllegalStateException();
-    // }
-    // return -1;
+  private static int find(String pattern, int mode, Locale locale) {
+    if (locale == null) {
+      locale = Locales.getOrderLocale();
+      // Map<String, Integer> hits;
+      // switch (mode) {
+      // case SHORT:
+      // hits = shortNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
+      // if (hits.size() == 1)
+      // return hits.values().iterator().next();
+      // break;
+      //
+      // case LONG:
+      // hits = longNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
+      // if (hits.size() == 1)
+      // return hits.values().iterator().next();
+      // break;
+      // case NORMLONG:
+      // hits = normalizedLongNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
+      // if (hits.size() == 1)
+      // return hits.values().iterator().next();
+      // break;
+      // default:
+      // throw new IllegalStateException();
+      // }
+      // return -1;
+    }
 
     int hits = 0;
     int hitIndex = -1;
     String[] strings;
     switch (mode) {
     case SHORT:
-      strings = shortNames;
+      strings = shortNamess.get(locale);
       break;
     case LONG:
-      strings = longNames;
+      strings = longNamess.get(locale);
       break;
     case NORMLONG:
-      strings = normalizedLongNames;
+      strings = normalizedLongNamess.get(locale);
       break;
     default:
       throw new IllegalStateException();
@@ -545,8 +561,8 @@ public enum Direction {
    * <code>NE.getDifference(DIR_SW) == 3</code> Differences to {@link #INVALID} are always
    * {@link Integer#MAX_VALUE}.
    */
-  public int getDifference(Direction dir) {
-    return getDifference(dir.dir);
+  public int getDifference(Direction toDir) {
+    return getDifference(toDir.dir);
   }
 
   /**
@@ -554,10 +570,10 @@ public enum Direction {
    * , <code>NE.getDifference(SE) == 2</code>, <code>NE.getDifference(SW) == 3</code>. Differences
    * to {@link #INVALID} are always {@link Integer#MAX_VALUE}.
    */
-  public int getDifference(int dir) {
-    if (toDirection(dir) == INVALID || this == INVALID)
+  public int getDifference(int toDir) {
+    if (toDirection(toDir) == INVALID || this == INVALID)
       return Integer.MAX_VALUE;
-    return (this.dir - dir + 3 >= 0 ? 3 - (this.dir - dir + 3) % 6 : (dir - this.dir + 3) % 6 - 3);
+    return (dir - toDir + 3 >= 0 ? 3 - (dir - toDir + 3) % 6 : (toDir - dir + 3) % 6 - 3);
   }
 
   /**

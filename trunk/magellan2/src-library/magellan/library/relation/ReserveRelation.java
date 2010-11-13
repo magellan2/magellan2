@@ -13,6 +13,7 @@
 package magellan.library.relation;
 
 import magellan.library.Unit;
+import magellan.library.gamebinding.ReserveOrder;
 import magellan.library.rules.ItemType;
 
 /**
@@ -27,23 +28,41 @@ public class ReserveRelation extends UnitRelation {
    */
   public ItemType itemType;
   /**
-   * The amount being reserved.
+   * The amount that is actually reserved. Usually min(item.amount, simpleAmount *
+   * (each?unit.getPersons():1))
    */
   public int amount;
 
   /**
    * Constructs a ReserveRelation (with warning parameter).
    * 
-   * @param s The reserving unit
-   * @param a The amount
-   * @param i The item (type)
+   * @param source The reserving unit
+   * @param amount The amount. {@link ReserveOrder#ALL} for "ALLES"
+   * @param itemType The item (type)
    * @param line The line number in the unit's orders
-   * @param w true iff a warning should be displayed
+   * @param warning true iff a warning should be displayed
    */
-  public ReserveRelation(Unit s, int a, ItemType i, int line, boolean w) {
-    super(s, line, w);
-    itemType = i;
-    amount = a;
+  public ReserveRelation(Unit source, int amount, ItemType itemType, int line, boolean warning) {
+    this(source, source, amount, itemType, line, warning);
+  }
+
+  /**
+   * Constructs a ReserveRelation (with warning parameter).
+   * 
+   * @param origin The reserving unit
+   * @param source The reserving unit
+   * @param amount The amount. {@link ReserveOrder#ALL} for "ALLES"
+   * @param itemID The item (type)
+   * @param line The line number in the unit's orders
+   * @param warning true iff a warning should be displayed
+   */
+  public ReserveRelation(Unit origin, Unit source, int amount, ItemType type, int line,
+      boolean warning) {
+    super(origin, source, line, warning);
+    if (type == null)
+      throw new NullPointerException();
+    this.amount = amount;
+    itemType = type;
   }
 
   /*

@@ -12,10 +12,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
+import magellan.library.Order;
+import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitID;
@@ -120,14 +121,13 @@ public class MovementInspector extends AbstractInspector {
     }
 
     int line = 0;
-    for (String order : u.getOrders()) {
+    Orders orders = u.getOrders2();
+    for (Order order : orders) {
       line++;
       try {
-        if (order.trim().startsWith(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW))) {
-          StringTokenizer st = new StringTokenizer(order.trim());
-          st.nextToken();
-          if (Resources.getOrderTranslation(EresseaConstants.O_UNIT).equals(st.nextToken())) {
-            if (UnitID.createUnitID(st.nextToken(), getData().base).equals(u.getID())) {
+        if (order.isValid() && orders.isToken(order, 0, EresseaConstants.O_FOLLOW)) {
+          if (orders.isToken(order, 1, EresseaConstants.O_UNIT)) {
+            if (UnitID.createUnitID(order.getToken(2).getText(), getData().base).equals(u.getID())) {
               problems.add(ProblemFactory.createProblem(Severity.ERROR,
                   MovementProblemTypes.UNITFOLLOWSSELF.getType(), u, this, line));
             }
@@ -153,15 +153,17 @@ public class MovementInspector extends AbstractInspector {
   }
 
   private boolean hasMovementOrder(Unit u) {
-    for (String order : u.getOrders()) {
-      if (order.trim().startsWith(Resources.getOrderTranslation(EresseaConstants.O_MOVE))
-          || order.trim().startsWith(Resources.getOrderTranslation(EresseaConstants.O_ROUTE)))
+    Orders orders = u.getOrders2();
+    for (Order order : orders) {
+      if (order.isEmpty() || !order.isValid()) {
+        continue;
+      }
+      if (orders.isToken(order, 0, EresseaConstants.O_MOVE)
+          || orders.isToken(order, 0, EresseaConstants.O_ROUTE))
         return true;
       try {
-        if (order.trim().startsWith(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW))) {
-          StringTokenizer st = new StringTokenizer(order.trim());
-          st.nextToken();
-          if (Resources.getOrderTranslation(EresseaConstants.O_UNIT).equals(st.nextToken()))
+        if (orders.isToken(order, 0, EresseaConstants.O_FOLLOW)) {
+          if (orders.isToken(order, 1, EresseaConstants.O_UNIT))
             return true;
         }
       } catch (Exception e) {

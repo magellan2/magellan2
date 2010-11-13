@@ -25,6 +25,19 @@ public interface Related extends Described, Addeable {
   public UnitRelation removeRelation(UnitRelation rel);
 
   /**
+   * Removes all relations.
+   */
+  public void clearRelations();
+
+  /**
+   * Delivers all relations.
+   * 
+   * @param relationClass Should be a subclass of {@link UnitRelation}
+   * @return list of relations that are instances of relationClass
+   */
+  public List<UnitRelation> getRelations();
+
+  /**
    * Delivers all relations of the given class (and its subtypes!).
    * 
    * @param relationClass Should be a subclass of {@link UnitRelation}

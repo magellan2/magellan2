@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,9 +51,10 @@ import magellan.client.swing.RemoveOrderDialog;
 import magellan.client.swing.RoutingDialog;
 import magellan.client.swing.context.actions.ContextAction;
 import magellan.library.GameData;
+import magellan.library.Order;
+import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Unit;
-import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.utils.OrderToken;
@@ -866,44 +866,44 @@ public class UnitContextMenu extends JPopupMenu {
      */
     public void actionPerformed(ActionEvent e) {
       String id = student.getID().toString();
-      Collection<String> orders = teacher.getOrders();
+      Orders orders = teacher.getOrders2();
       int i = 0;
-      String order = null;
 
       // look for teaching orders
-      for (Iterator<String> iter = orders.iterator(); iter.hasNext(); i++) {
-        order = iter.next();
-        OrderParser parser = gameData.getGameSpecificStuff().getOrderParser(gameData);
-        if (!parser.read(new StringReader(order))) {
+      for (Order order : orders) {
+        if (!order.isValid() || order.isEmpty()) {
           continue;
         }
 
-        List<?> tokens = parser.getTokens();
-        if (((OrderToken) tokens.get(0)).equalsToken(Resources
-            .getOrderTranslation(EresseaConstants.O_TEACH))) {
-          if (order.indexOf(id) > -1) {
-            teacher.removeOrderAt(i, false);
-            // FIXME The meaning of tokens.size() is undefined
-            if (tokens.size() > 3) { // teacher teaches more than one unit
-              // remove unit's ID from order
-              String newOrder =
-                  order.substring(0, order.indexOf(id))
-                      + order.substring(java.lang.Math.min(order.indexOf(id) + 1 + id.length(),
-                          order.length()), order.length());
-              teacher.addOrderAt(i, newOrder);
-            }
-            // we wouldn't need this, but we get a
-            // ConcurrentModificationException
-            // without it
-            break;
+        if (orders.isToken(order, 0, EresseaConstants.O_TEACH)) {
+          String newTeachOrder = pruneOrder(order, id);
+          teacher.removeOrderAt(i);
+          if (newTeachOrder != null) {
+            teacher.addOrderAt(i, newTeachOrder, true);
           }
+          // we wouldn't need this, but we get a
+          // ConcurrentModificationException
+          // without it
+          break;
         }
-
+        i++;
       }
       dispatcher.fire(new UnitOrdersEvent(this, teacher));
       dispatcher.fire(new UnitOrdersEvent(this, student));
       unit.getRegion().refreshUnitRelations(true);
       // dispatcher.fire(new GameDataEvent(this, gameData));
+    }
+
+    private String pruneOrder(Order order, String id) {
+      StringBuilder result = new StringBuilder();
+      for (OrderToken token : order.getTokens())
+        if (!token.getText().equals(id)) {
+          if (result.length() > 0) {
+            result.append(" ");
+          }
+          result.append(token.getText());
+        }
+      return result.toString();
     }
   }
 }

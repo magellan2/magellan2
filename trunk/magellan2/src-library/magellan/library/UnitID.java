@@ -67,6 +67,7 @@ public class UnitID extends EntityID {
    * Constructs a new UnitID object by parsing the specified string. Effectively the same as calling
    * createUnitID(s, radix, radix).
    * 
+   * @throws NumberFormatException if unit id is not parseable
    * @throws NullPointerException if unit id is null
    */
   public static UnitID createUnitID(String s, int radix) {
@@ -85,7 +86,7 @@ public class UnitID extends EntityID {
    */
 
   public static UnitID createUnitID(String s, int inputRadix, int outputRadix) {
-    return UnitID.createUnitID(UnitID.valueOf(s, inputRadix), outputRadix);
+    return UnitID.createUnitID(UnitID.valueOf(s, inputRadix).intValue(), outputRadix);
   }
 
   /**

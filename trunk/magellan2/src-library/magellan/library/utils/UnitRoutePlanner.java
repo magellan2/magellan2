@@ -35,8 +35,8 @@ import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
 public class UnitRoutePlanner {
 
   private static int getModifiedRadius(Unit unit, boolean onRoad) {
-    return unit.getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
-        .getModifiedRadius(unit, onRoad);
+    return unit.getData().getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(unit,
+        onRoad);
   }
 
   /**
@@ -77,7 +77,7 @@ public class UnitRoutePlanner {
       island.addAll(start.getIsland().regions());
       island.remove(start);
     } else {
-      Map<CoordinateID, ? extends Region> m = Islands.getIsland(data.rules, data.regions(), start);
+      Map<CoordinateID, ? extends Region> m = Islands.getIsland(start);
 
       if (m != null) {
         island.addAll(m.values());

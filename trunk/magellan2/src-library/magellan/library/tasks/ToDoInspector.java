@@ -19,8 +19,11 @@ import java.util.Collections;
 import java.util.List;
 
 import magellan.library.GameData;
+import magellan.library.Order;
 import magellan.library.Unit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.tasks.Problem.Severity;
+import magellan.library.utils.OrderToken;
 
 /**
  * This Inspector inspects a unit's orders and reports an item for every comment that starts with
@@ -60,18 +63,20 @@ public class ToDoInspector extends AbstractInspector {
 
     int line = 0;
 
-    for (String string : u.getOrders()) {
+    for (Order o : u.getOrders2()) {
       line++;
-      String order = (string).trim();
-
-      if (order.startsWith("//")) {
+      if (o.isEmpty() || o.getToken(0).ttype != OrderToken.TT_COMMENT) {
+        continue;
+      }
+      String order = o.getText();
+      if (order.startsWith(EresseaConstants.O_PCOMMENT)) {
         order = order.substring(2).trim();
 
         if (order.toLowerCase().startsWith("todo")) {
           problems.add(ProblemFactory.createProblem(Severity.INFORMATION, ToDoInspector.TODOTYPE,
               u, this, order, line));
         }
-      } else if (order.startsWith(";")) {
+      } else if (order.startsWith(EresseaConstants.O_COMMENT)) {
         order = order.substring(1).trim();
 
         if (order.toLowerCase().startsWith("todo")) {

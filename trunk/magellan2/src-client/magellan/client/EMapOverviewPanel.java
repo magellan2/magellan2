@@ -1955,11 +1955,25 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
      * @see magellan.client.event.UnitOrdersListener#unitOrdersChanged(magellan.client.event.UnitOrdersEvent)
      */
     public void unitOrdersChanged(UnitOrdersEvent e) {
-      update(e.getUnit(), true);
+      // a changed order can change the unit's own node, all nodes that are related to the unit, and
+      // also all units that are related by two degrees;
+      HashSet<Unit> visited = new HashSet<Unit>();
+      update(e.getUnit(), 2, visited);
+      visited.clear();
     }
 
-    protected synchronized void update(Unit u, boolean updateRelationPartners) {
+    /**
+     * Updates the nodes of this unit and all nodes that are related to this unit indirectly by no
+     * more than <code>updateRelationPartersDistance</code>.
+     * 
+     * @param u The updated unit
+     * @param updateRelationPartnersDistance maximum distance to this unit of units that should be
+     *          updated as well
+     */
+    protected synchronized void update(Unit u, int updateRelationPartnersDistance, Set<Unit> visited) {
       if (unitNodes.containsKey(u.getID())) {
+        visited.add(u);
+
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) unitNodes.get(u.getID());
         UnitNodeWrapper unw = (UnitNodeWrapper) node.getUserObject();
         unw.clearBuffer();
@@ -1995,31 +2009,47 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         }
 
         Collection<TransferRelation> lastRelations = lastUnitRelations.get(u.getID());
-        Set<TransferRelation> intersection =
-            new HashSet<TransferRelation>(Math.min(lastRelations.size(), newRelations.size()) * 2);
+        // Set<TransferRelation> intersection =
+        // new HashSet<TransferRelation>(Math.min(lastRelations.size(), newRelations.size()) * 2);
 
-        if (!newRelations.equals(lastRelations)) {
-          if (updateRelationPartners) {
-            // update related units from added relations
-            for (TransferRelation r : newRelations) {
-              if (lastRelations.contains(r)) {
-                intersection.add(r);
-              } else if (r.target != u) {
-                update((r).target, false);
+        // if (!newRelations.equals(lastRelations)) {
+        if (updateRelationPartnersDistance > 0) {
+          // update related units from added relations
+          for (TransferRelation r : newRelations) {
+            // if (lastRelations.contains(r)) {
+            // intersection.add(r);
+            // } else
+            if (r.target != u) {
+              if (!visited.contains(r.target)) {
+                update((r).target, updateRelationPartnersDistance - 1, visited);
+              }
+            } else if (r.source != u) {
+              if (!visited.contains(r.source)) {
+                update((r).source, updateRelationPartnersDistance - 1, visited);
               }
             }
-            // update related units from remove relations
-            for (TransferRelation r : lastRelations) {
-              if (!intersection.contains(r))
-                if (r.target != u) {
-                  update((r).target, false);
-                }
+          }
+          // update related units from removed relations
+          for (TransferRelation r : lastRelations) {
+            // if (!intersection.contains(r))
+            if (r.target != u) {
+              if (!visited.contains(r.target)) {
+                update((r).target, updateRelationPartnersDistance - 1, visited);
+              }
+            } else if (r.source != u) {
+              if (!visited.contains(r.source)) {
+                update((r).source, updateRelationPartnersDistance - 1, visited);
+              }
             }
           }
-          // update map entry
-          lastRelations.clear();
-          lastRelations.addAll(newRelations);
         }
+        // update map entry, but make sure that instances lower down in the recursion tree are not
+        // influenced!
+        // lastRelations.clear();
+        // lastRelations.addAll(newRelations);
+        lastUnitRelations.put(u.getID(), new HashSet<TransferRelation>(newRelations));
+
+        // }
 
       }
       // tree.validate();

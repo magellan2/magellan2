@@ -25,6 +25,7 @@ package magellan.library.gamebinding;
 
 import magellan.library.Region;
 import magellan.library.Ship;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
@@ -112,6 +113,21 @@ public interface GameSpecificRules {
 
   /**
    * Returns true if the specified unit can access the pool for the specified item.
+   * 
+   * @param unit
+   * @param typeID May be <code>null</code>. In that case, the status of the general material pool
+   *          is returned.
+   * @return <code>true</code> if the unit can access the pool for the type.
+   */
+  public boolean isPooled(Unit unit, StringID typeID);
+
+  /**
+   * Returns true if the specified unit can access the pool for the specified item.
+   * 
+   * @param unit
+   * @param type May be <code>null</code>. In that case, the status of the general material pool is
+   *          returned.
+   * @return <code>true</code> if the unit can access the pool for the type.
    */
   public boolean isPooled(Unit unit, ItemType type);
 

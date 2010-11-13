@@ -23,18 +23,30 @@
 // 
 package magellan.library.gamebinding;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Properties;
 
 import magellan.client.MagellanContext;
 import magellan.client.completion.AutoCompletion;
 import magellan.client.event.EventDispatcher;
+import magellan.library.Building;
+import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Region;
+import magellan.library.Ship;
+import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
 import magellan.library.gamebinding.EresseaOrderParser.OrderHandler;
-import magellan.library.gamebinding.EresseaOrderParser.WorkReader;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
@@ -43,7 +55,6 @@ import magellan.test.GameDataBuilder;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -89,13 +100,21 @@ public class EresseaOrderParserTest {
   private EresseaOrderParser parserCompleter;
   private AutoCompletion completion;
   private EresseaOrderCompleter completer;
+  private GameDataBuilder builder;
 
   /**
    * @throws java.lang.Exception
    */
   @Before
   public void setUp() throws Exception {
-    data = new GameDataBuilder().createSimpleGameData();
+    builder = new GameDataBuilder();
+    data = builder.createSimpleGameData();
+
+    Region region = data.getRegions().iterator().next();
+    Faction faction = data.getFactions().iterator().next();
+    Building castle = builder.addBuilding(data, region, "burg", "Burg", "groﬂe Burg", 200);
+    Ship ship = builder.addShip(data, region, "ship", "Langboot", "ein Langboot", 50);
+    builder.addUnit(data, "zwei", "Zweite", faction, region);
 
     parser = new EresseaOrderParser(data);
     completion = new AutoCompletion(context);
@@ -118,10 +137,10 @@ public class EresseaOrderParserTest {
   @Test
   public void testEresseaOrderParserGameDataEresseaOrderCompleter() {
     EresseaOrderParser localParser = new EresseaOrderParser(data, completer);
-    Assert.assertTrue(localParser.getData() == data);
-    Assert.assertTrue(localParser.getCompleter() == completer);
-    Assert.assertTrue(localParser.getCommands().size() == 60);
-    Assert.assertTrue(localParser.getHandlers().size() == 60);
+    assertTrue(localParser.getData() == data);
+    assertTrue(localParser.getCompleter() == completer);
+    assertSame(61, localParser.getCommands().size());
+    assertSame(61, localParser.getHandlers().size());
   }
 
   /**
@@ -129,11 +148,11 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testInitCommands() {
-    Assert.assertTrue(parser.getCommands().size() == 60);
-    Assert.assertTrue(parser.getHandlers().size() == 60);
-    Assert.assertTrue(parser.getCommands().contains("arbeiten"));
-    Assert.assertTrue(parser.getCommands().contains("zerstˆren"));
-    Assert.assertTrue(parser.getCommands().contains("sabotieren"));
+    assertSame(61, parser.getCommands().size());
+    assertSame(61, parser.getHandlers().size());
+    assertTrue(parser.getCommands().contains("WORK"));
+    assertTrue(parser.getCommands().contains("DESTROY"));
+    assertTrue(parser.getCommands().contains("SABOTAGE"));
   }
 
   /**
@@ -145,19 +164,19 @@ public class EresseaOrderParserTest {
   public void testAddCommand() {
     OrderHandler fooHandler = parser.new OrderHandler() {
       @Override
-      public boolean read(OrderToken token) {
+      protected boolean readIt(OrderToken token) {
         return false;
       }
     };
-    Assert.assertFalse(parser.getCommands().contains("foo"));
-    Assert.assertFalse(parser.getHandlers().contains(fooHandler));
-    Assert.assertTrue(parser.getHandlers(new OrderToken("foo")).size() == 0);
+    assertFalse(parser.getCommands().contains("foo"));
+    assertFalse(parser.getHandlers().contains(fooHandler));
+    assertTrue(parser.getHandlers(new OrderToken("foo")).size() == 0);
     parser.addCommand("foo", fooHandler);
-    Assert.assertTrue(parser.getCommands().contains("foo"));
-    Assert.assertTrue(parser.getHandlers().contains(fooHandler));
+    assertTrue(parser.getCommands().contains("foo"));
+    assertTrue(parser.getHandlers().contains(fooHandler));
 
-    Assert.assertTrue(parser.getHandlers(new OrderToken("foo")).contains(fooHandler));
-    Assert.assertTrue(parser.getHandlers(new OrderToken("foo")).size() == 1);
+    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).contains(fooHandler));
+    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).size() == 1);
   }
 
   /**
@@ -168,20 +187,20 @@ public class EresseaOrderParserTest {
   public void testRemoveCommand() {
     OrderHandler fooHandler = parser.new OrderHandler() {
       @Override
-      public boolean read(OrderToken token) {
+      protected boolean readIt(OrderToken token) {
         return false;
       }
     };
     parser.addCommand("foo", fooHandler);
-    Assert.assertTrue(parser.getCommands().contains("foo"));
-    Assert.assertTrue(parser.getHandlers().contains(fooHandler));
+    assertTrue(parser.getCommands().contains("foo"));
+    assertTrue(parser.getHandlers().contains(fooHandler));
 
-    Assert.assertTrue(parser.getHandlers(new OrderToken("foo")).contains(fooHandler));
-    Assert.assertTrue(parser.getHandlers(new OrderToken("foo")).size() == 1);
+    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).contains(fooHandler));
+    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).size() == 1);
     parser.removeCommand("foo");
-    Assert.assertFalse(parser.getCommands().contains("foo"));
-    Assert.assertFalse(parser.getHandlers().contains(fooHandler));
-    Assert.assertTrue(parser.getHandlers(new OrderToken("foo")).size() == 0);
+    assertFalse(parser.getCommands().contains("foo"));
+    assertFalse(parser.getHandlers().contains(fooHandler));
+    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).size() == 0);
   }
 
   /**
@@ -189,28 +208,27 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testGetNextToken() {
-    Assert.assertTrue(parser.getLastToken() == null);
-    Assert.assertFalse(parser.hasNextToken());
-    Assert.assertEquals(parser.getTokenIndex(), 0);
+    assertTrue(parser.getLastToken() == null);
+    assertFalse(parser.hasNextToken());
+    assertEquals(parser.getTokenIndex(), 0);
 
     parser.read(new StringReader("123 abc"));
 
-    Assert.assertTrue(parser.hasNextToken());
-    Assert.assertTrue(equals(parser.getLastToken(), new OrderToken("123", 0, 3,
-        OrderToken.TT_UNDEF, true)));
-    Assert.assertTrue(parser.hasNextToken());
-    Assert.assertEquals(parser.getTokenIndex(), 1);
+    assertTrue(parser.hasNextToken());
+    assertTrue(equals(parser.getLastToken(), new OrderToken("123", 0, 3, OrderToken.TT_UNDEF, true)));
+    assertTrue(parser.hasNextToken());
+    assertEquals(parser.getTokenIndex(), 1);
 
     OrderToken token = parser.getNextToken();
 
-    Assert.assertTrue(token.getText().equals("abc"));
-    Assert.assertTrue(parser.hasNextToken());
-    Assert.assertEquals(parser.getLastToken(), token);
-    Assert.assertEquals(parser.getTokenIndex(), 2);
+    assertTrue(token.getText().equals("abc"));
+    assertTrue(parser.hasNextToken());
+    assertEquals(parser.getLastToken(), token);
+    assertEquals(parser.getTokenIndex(), 2);
 
-    Assert.assertTrue(equals(parser.getNextToken(), new OrderToken(OrderToken.TT_EOC)));
-    Assert.assertFalse(parser.hasNextToken());
-    Assert.assertEquals(parser.getTokenIndex(), 3);
+    assertTrue(equals(parser.getNextToken(), new OrderToken(OrderToken.TT_EOC)));
+    assertFalse(parser.hasNextToken());
+    assertEquals(parser.getTokenIndex(), 3);
   }
 
   /**
@@ -218,7 +236,7 @@ public class EresseaOrderParserTest {
    */
   @Test(expected = NullPointerException.class)
   public void testGetNextTokenNull() {
-    Assert.assertTrue(parser.getNextToken() != null);
+    assertTrue(parser.getNextToken() != null);
   }
 
   /**
@@ -231,15 +249,16 @@ public class EresseaOrderParserTest {
     checkOrder("A", false);
   }
 
-  /**
-   * Test method for
-   * {@link magellan.library.gamebinding.EresseaOrderParser#readOrder(magellan.library.utils.OrderToken)}
-   * .
-   */
-  @Test
-  public void testReadOrder() {
-    Assert.fail("Not yet implemented");
-  }
+  // /**
+  // * Test method for
+  // * {@link
+  // magellan.library.gamebinding.EresseaOrderParser#readOrder(magellan.library.utils.OrderToken)}
+  // * .
+  // */
+  // @Test
+  // public void testReadOrder() {
+  // fail("Not yet implemented");
+  // }
 
   private void checkOrder(String string) {
     checkOrder(string, true);
@@ -247,7 +266,26 @@ public class EresseaOrderParserTest {
 
   private void checkOrder(String string, boolean result) {
     boolean retVal = parser.read(new StringReader(string));
-    Assert.assertEquals("checking " + string, result, retVal);
+    assertEquals("checking " + string, result, retVal);
+  }
+
+  @Test
+  public void testCommentReader() {
+    checkOrder(EresseaConstants.O_PCOMMENT);
+    checkOrder("//");
+    checkOrder("// ");
+    checkOrder("// HALLO");
+    checkOrder("//;");
+    checkOrder("//ARBEITE", false);
+    checkOrder("///", false);
+    checkOrder("////", false);
+
+    checkOrder("");
+    checkOrder(" ");
+    checkOrder(";");
+    checkOrder("; askj baskjdb");
+    checkOrder(";;;");
+    checkOrder(" ; abc");
   }
 
   /**
@@ -276,12 +314,13 @@ public class EresseaOrderParserTest {
     checkOrder("@ARBEITE");
     checkOrder(" @ARBEITE");
     checkOrder("@", false);
-    checkOrder("@@ARBEITE", false);
+    checkOrder("@@ARBEITE", false); // server actually accepts this and turn it into @AREITE...
     checkOrder("@@", false);
     checkOrder("@ARBEITE 1", false);
-    checkOrder("@// ", false); // dodgy...
-    checkOrder("@; ", false);
+    checkOrder("@// ", true); // dodgy...
     checkOrder(";@", true);
+    checkOrder("@; ", false);
+    checkOrder("@  ; ", false);
   }
 
   /**
@@ -292,7 +331,7 @@ public class EresseaOrderParserTest {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ATTACK) + " 123");
     checkOrder("ATTACKIERE 123");
     checkOrder("ATTACKIERE xyz");
-    checkOrder("ATTACKIERE TEMP xyz"); // TODO is this really legal?
+    checkOrder("ATTACKIERE TEMP xyz"); // this is actually legal
     checkOrder("ATTACKIERE xyz; abc");
     checkOrder("ATTACKIERE abcde", false);
     checkOrder("ATTACKIERE", false);
@@ -361,13 +400,14 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testBelagereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SIEGE) + " abc");
-    checkOrder("BELAGERE abc");
-    checkOrder("BELAGERUNG abc", false);
-    checkOrder("BELAGERE TEMP abc", false);
-    checkOrder("BELAGERE abc 123", false);
-    checkOrder("BELAGERE 2 abc", false);
-    checkOrder("BELAGERE \"abc\"", false);
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SIEGE) + " burg");
+    checkOrder("BELAGERE burg");
+    checkOrder("BELAGERE abc", false);
+    checkOrder("BELAGERUNG burg", false);
+    checkOrder("BELAGERE TEMP burg", false);
+    checkOrder("BELAGERE burg 123", false);
+    checkOrder("BELAGERE 2 burg", false);
+    checkOrder("BELAGERE \"burg\"", false);
   }
 
   /**
@@ -385,17 +425,32 @@ public class EresseaOrderParserTest {
       checkOrder("BENENNE " + thing + " 123 \"abc\"", false);
       checkOrder("BENENNE " + thing + " \"abc\" 123", false);
     }
-    for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Geb‰ude", "S‰gewerk", "SCHIFF" }) {
-      checkOrder("BENENNEN FREMDE " + thing + " 123 \"Foo\"");
-      checkOrder("BENENNE FREMDE " + thing + " abc \"Foo\"; comment");
-      checkOrder("BENENNE FREMDE " + thing + " TEMP xyz \"Foo\""); // TODO is this really allowed?
-      checkOrder("BENENNE FREMDE " + thing + " xyz \"\"", false);
-      checkOrder("BENENNE FREMDE " + thing + " abc abc", false);
-      checkOrder("BENENNE FREMDE " + thing + " 123 123 \"abc\"", false);
-      checkOrder("BENENNE FREMDE " + thing + " 123 \"abc\" 123", false);
-    }
+
+    checkOrder("BENENNE FREMDE EINHEIT zwei \"abc\"");
+    checkOrder("BENENNE FREMDE EINHEIT zwei \"\"", false);
+    checkOrder("BENENNE FREMDE PARTEI zwei \"abc\"", true); // no such faction
+    checkOrder("BENENNE FREMDE BURG burg \"abc\"");
+    checkOrder("BENENNE FREMDE SCHIFF ship \"abc\"");
+
+    // for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Geb‰ude", "S‰gewerk",
+    // "SCHIFF" }) {
+    // checkOrder("BENENNEN FREMDE " + thing + " 123 \"Foo\"");
+    // checkOrder("BENENNE FREMDE " + thing + " abc \"Foo\"; comment");
+    // checkOrder("BENENNE FREMDE " + thing + " TEMP xyz \"Foo\""); // this is really allowed (for
+    // // units)
+    // checkOrder("BENENNE FREMDE " + thing + " xyz \"\"", false);
+    // checkOrder("BENENNE FREMDE " + thing + " abc abc", false);
+    // checkOrder("BENENNE FREMDE " + thing + " 123 123 \"abc\"", false);
+    // checkOrder("BENENNE FREMDE " + thing + " 123 \"abc\" 123", false);
+    // }
 
     checkOrder("BENENNE abc \"abc\"", false);
+
+    // FIXME: these ambiguous commands shouldn't be accepted (maybe?)
+    for (String thing : new String[] { "E", "S" }) {
+      checkOrder("BENENNEN " + thing + " \"Foo\"", false);
+      checkOrder("BENENNE " + thing + " \"Foo\"; comment", false);
+    }
   }
 
   /**
@@ -437,12 +492,13 @@ public class EresseaOrderParserTest {
   @Test
   public void testBetreteReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ENTER) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " foo");
-    checkOrder("BetreteN BURG 1a2");
-    checkOrder("BetreteN BURG 1a2; ");
+        + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " ship");
+    checkOrder("BetreteN BURG burg");
+    checkOrder("BetreteN BURG burg; ");
+    checkOrder("BetreteN BURG abc", true); // no such building
     checkOrder("BetreteN BURG TEMP 123", false);
-    checkOrder("BetreteN BURG \"abc\"", false);
-    checkOrder("BetreteN 1 BURG abc", false);
+    checkOrder("BetreteN BURG \"burg\"", false);
+    checkOrder("BetreteN 1 BURG burg", false);
   }
 
   /**
@@ -532,11 +588,12 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testFahreReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RIDE) + " abc");
-    checkOrder("FAHREN 123");
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RIDE) + " zwei");
+    checkOrder("FAHREN zwei");
     checkOrder("FAHREN TEMP 456");
+    checkOrder("FAHREN abc"); // invisible unit allowed
     checkOrder("FAHREN abcde", false);
-    checkOrder("FAHREN 123 456", false);
+    checkOrder("FAHREN zwei zwei", false);
   }
 
   /**
@@ -545,8 +602,9 @@ public class EresseaOrderParserTest {
   @Test
   public void testFolgeReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " abc");
-    checkOrder("FOLGEN SCHIFF 123");
+        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " zwei");
+    checkOrder("FOLGEN SCHIFF ship");
+    checkOrder("FOLGEN SCHIFF 123", false);
     checkOrder("FOLGEN SCHIFF TEMP 123", false);
     checkOrder("FOLGEN EINHEIT 123 456", false);
     checkOrder("FOLGEN EINHEIT \"abc\"", false);
@@ -751,6 +809,7 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testLocaleReader() {
+    // this is a valid order, but not /inside/ a unit
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_LOCALE), false);
   }
 
@@ -932,10 +991,11 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testRegionReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_REGION) + " 1,1"); // FIXME read
-    // comma'd
-    // coordinate
+    // this is a valid order, but not /inside/ a unit
+    // FIXME read comma'd coordinate
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_REGION) + " 1,1");
     checkOrder("REGION", false);
+    checkOrder("REGION 1 3", false);
     checkOrder("REGION 123", false);
     checkOrder("REGION abc,def", false);
   }
@@ -959,14 +1019,20 @@ public class EresseaOrderParserTest {
   @Test
   public void testReserviereReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESERVE) + " 1 "
-        + data.rules.getItemType("Silber").getName());
+        + data.rules.getItemType(EresseaConstants.I_USILVER).getName());
     checkOrder("RESERVIEREN ALLES Holz");
+    checkOrder("RESERVIERE 2 Silber");
     checkOrder("RESERVIERE JE 1 Holz");
+    checkOrder("RESERVIERE 1 Flabberghast"); // item does not exist
+    checkOrder("RESERVIEREN ALLES", false);
+    checkOrder("RESERVIEREN JE", false);
+    checkOrder("RESERVIEREN JE 2", false);
+    checkOrder("RESERVIEREN JE 2 ALLES", false);
     checkOrder("RESERVIERE JE Holz", false);
+    checkOrder("RESERVIERE 1.5 Holz", false);
     checkOrder("RESERVIERE 2 1 Holz", false);
     checkOrder("RESERVIERE 1 1", false);
     checkOrder("RESERVIERE", false);
-    checkOrder("RESERVIERE 1 Flabberghast", false);
   }
 
   /**
@@ -1054,7 +1120,10 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testTransportiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CARRY));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CARRY) + " zwei");
+    checkOrder("TRANSPORTIERE zwei NICHT", false);
+    checkOrder("TRANSPORTIERE NICHT", false);
+    checkOrder("TRANSPORTIERE zwei zwei", false);
   }
 
   /**
@@ -1078,7 +1147,11 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testUrsprungReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ORIGIN));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ORIGIN) + " 1 1");
+    checkOrder("URSPRUNG 1", false);
+    checkOrder("URSPRUNG 1 2 3", false);
+    checkOrder("URSPRUNG 2,3", false);
+    checkOrder("URSPRUNG a b", false);
   }
 
   /**
@@ -1086,7 +1159,10 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testVergesseReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FORGET));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FORGET) + " Hiebwaffen");
+    checkOrder("VERGESSE", false);
+    checkOrder("VERGESSE Tuten", false);
+    checkOrder("VERGESSE Hiebwaffen Ausdauer", false);
   }
 
   /**
@@ -1094,7 +1170,12 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testVerkaufeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SELL));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SELL) + " 1 Balsam");
+    checkOrder("VERKAUFE ALLES Balsam");
+    checkOrder("VERKAUFE Balsam", false);
+    checkOrder("VERKAUFE 2 3 Balsam", false);
+    checkOrder("VERKAUFE Balsam Balsam", false);
+    checkOrder("VERKAUFE 2", false);
   }
 
   /**
@@ -1114,15 +1195,15 @@ public class EresseaOrderParserTest {
 
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CAST) + " \"Groﬂes Fest\"");
 
-    checkOrder("ZAUBERE STUFE 2 Schild abc");
+    checkOrder("ZAUBERE STUFE 2 Schild zwei");
     checkOrder("ZAUBERE STUFE 2 \"Groﬂes Fest\"");
     checkOrder("ZAUBERE Schild NICHT", true); // TODO cave: NICHT is read as spell parameter
     checkOrder("ZAUBERE \"Groﬂes Fest\" NICHT", false);
     checkOrder("ZAUBERE Hagel", false); // combat spell
-    checkOrder("ZAUBERE STUFE Schild abc", false);
+    checkOrder("ZAUBERE STUFE Schild zwei", false);
     checkOrder("ZAUBERE Magisches Geschoﬂ", false);
-    checkOrder("ZAUBERE \"Groﬂes Fest\" 123", false);
-    checkOrder("ZAUBERE STUFE x Schild 123", false);
+    checkOrder("ZAUBERE \"Groﬂes Fest\" zwei", false);
+    checkOrder("ZAUBERE STUFE x Schild zwei", false);
   }
 
   /**
@@ -1130,7 +1211,12 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testZeigeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SHOW));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SHOW) + " Schild");
+    checkOrder("ZEIGE ALLES ZAUBER");
+    checkOrder("ZEIGE ALLES Tr‰nke");
+    checkOrder("ZEIGE Zwerg");
+    checkOrder("ZEIGE Schild");
+    checkOrder("ZEIGE ALLES", false);
   }
 
   /**
@@ -1146,7 +1232,13 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testZuechteReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GROW));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GROW) + " PFERDE");
+    checkOrder("Z‹CHTE KRƒUTER");
+    checkOrder("Z‹CHTE 2 KRƒUTER");
+    checkOrder("Z‹CHTE 2", false);
+    checkOrder("Z‹CHTE 2 3", false);
+    checkOrder("Z‹CHTE Flachwurz 2", false);
+    checkOrder("Z‹CHTE Flachwurz", false);
   }
 
   /**
@@ -1154,7 +1246,9 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testSabotiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SABOTAGE));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SABOTAGE) + " SCHIFF");
+    checkOrder("SABOTIERE", false);
+    checkOrder("SABOTIERE SCHIFF ship", false);
   }
 
   /**
@@ -1165,22 +1259,22 @@ public class EresseaOrderParserTest {
   @Test
   public void testGetHandlers() {
     ArrayList<OrderHandler> list = parser.getHandlers(new OrderToken("a"));
-    Assert.assertTrue(list != null);
+    assertTrue(list != null);
     if (list == null)
       return;
-    Assert.assertTrue(list.size() == 2);
-    Assert.assertTrue(list.get(0).getClass().equals(WorkReader.class));
-    Assert.assertTrue(list.get(1).getClass().equals(AttackReader.class));
+    assertTrue(list.size() == 2);
+    assertTrue(list.get(0).getClass().equals(ArbeiteReader.class));
+    assertTrue(list.get(1).getClass().equals(AttackReader.class));
     list = parser.getHandlers(new OrderToken("arbei"));
-    Assert.assertTrue(list != null);
+    assertTrue(list != null);
     if (list == null)
       return;
-    Assert.assertTrue(list.size() == 1);
+    assertTrue(list.size() == 1);
     list = parser.getHandlers(new OrderToken("aga"));
-    Assert.assertTrue(list != null);
+    assertTrue(list != null);
     if (list == null)
       return;
-    Assert.assertTrue(list.size() == 0);
+    assertTrue(list.size() == 0);
   }
 
   @Test(expected = NullPointerException.class)
@@ -1194,13 +1288,13 @@ public class EresseaOrderParserTest {
   @Test
   public void testReadDescription() {
     parser.read(new StringReader("a \"abc\""));
-    Assert.assertTrue(parser.readDescription());
+    assertNotNull(parser.readDescription());
     parser.read(new StringReader("\"abc\""));
-    Assert.assertFalse(parser.readDescription());
+    assertEquals(null, parser.readDescription());
     parser.read(new StringReader("a \"\""));
-    Assert.assertTrue(parser.readDescription());
+    assertEquals("", parser.readDescription());
     parser.read(new StringReader("a \"\" a"));
-    Assert.assertFalse(parser.readDescription());
+    assertEquals(null, parser.readDescription());
   }
 
   /**
@@ -1210,15 +1304,15 @@ public class EresseaOrderParserTest {
   @Test
   public void testReadDescriptionBoolean() {
     parser.read(new StringReader("a \"abc\""));
-    Assert.assertTrue(parser.readDescription(true));
+    assertNotNull(parser.readDescription(true));
     parser.read(new StringReader("\"abc\""));
-    Assert.assertFalse(parser.readDescription(true));
+    assertEquals(null, parser.readDescription(true));
     parser.read(new StringReader("a \"\""));
-    Assert.assertTrue(parser.readDescription(true));
+    assertNotNull(parser.readDescription(true));
     parser.read(new StringReader("a \"\""));
-    Assert.assertFalse(parser.readDescription(false));
+    assertEquals(null, parser.readDescription(false));
     parser.read(new StringReader("a \"\" a"));
-    Assert.assertFalse(parser.readDescription(true));
+    assertEquals(null, parser.readDescription(true));
   }
 
   /**
@@ -1240,46 +1334,46 @@ public class EresseaOrderParserTest {
   public void testReadDescriptionOrderTokenBoolean() {
     parser.read(new StringReader("abc"));
     OrderToken token = parser.getLastToken();
-    Assert.assertFalse(parser.readDescription(token, true));
+    assertEquals(null, parser.readDescription(token, true));
     parser.read(new StringReader("abc"));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readDescription(token, false));
+    assertEquals(null, parser.readDescription(token, false));
     parser.read(new StringReader("\"abc\" \"abc\""));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readDescription(token, false));
+    assertEquals(null, parser.readDescription(token, false));
     parser.read(new StringReader(""));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readDescription(token, true));
+    assertEquals(null, parser.readDescription(token, true));
     parser.read(new StringReader("abc ; abc"));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readDescription(token, true));
+    assertEquals(null, parser.readDescription(token, true));
     parser.read(new StringReader("abc ; abc"));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readDescription(token, false));
+    assertEquals(null, parser.readDescription(token, false));
     parser.read(new StringReader("\"abc\""));
     token = parser.getLastToken();
-    Assert.assertTrue(parser.readDescription(token, true));
+    assertNotNull(parser.readDescription(token, true));
     parser.read(new StringReader("\"abc\""));
     token = parser.getLastToken();
-    Assert.assertTrue(parser.readDescription(token, false));
+    assertNotNull(parser.readDescription(token, false));
     parser.read(new StringReader("\"abc\"; 123"));
     token = parser.getLastToken();
-    Assert.assertTrue(parser.readDescription(token, true));
+    assertNotNull(parser.readDescription(token, true));
     parser.read(new StringReader("\"abc\"; 123"));
     token = parser.getLastToken();
-    Assert.assertTrue(parser.readDescription(token, false));
+    assertNotNull(parser.readDescription(token, false));
     parser.read(new StringReader("\"\""));
     token = parser.getLastToken();
-    Assert.assertTrue(parser.readDescription(token, true));
+    assertNotNull(parser.readDescription(token, true));
     parser.read(new StringReader("\"\""));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readDescription(token, false));
+    assertEquals(null, parser.readDescription(token, false));
     parser.read(new StringReader("\"\";abc"));
     token = parser.getLastToken();
-    Assert.assertTrue(parser.readDescription(token, true));
+    assertNotNull(parser.readDescription(token, true));
     parser.read(new StringReader("\"\";abc"));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readDescription(token, false));
+    assertEquals(null, parser.readDescription(token, false));
   }
 
   /**
@@ -1291,16 +1385,16 @@ public class EresseaOrderParserTest {
   public void testReadFinalKeyword() {
     parser.read(new StringReader("abc"));
     OrderToken token = parser.getLastToken();
-    Assert.assertTrue(parser.readFinalKeyword(token));
-    Assert.assertTrue(token.ttype == OrderToken.TT_KEYWORD);
+    assertTrue(parser.readFinalKeyword(token));
+    assertTrue(token.ttype == OrderToken.TT_KEYWORD);
     parser.read(new StringReader("abc abc"));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readFinalKeyword(token));
-    Assert.assertTrue(token.ttype == OrderToken.TT_KEYWORD);
+    assertFalse(parser.readFinalKeyword(token));
+    assertTrue(token.ttype == OrderToken.TT_KEYWORD);
     parser.read(new StringReader(""));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readFinalKeyword(token));
-    Assert.assertTrue(token.ttype == OrderToken.TT_KEYWORD);
+    assertFalse(parser.readFinalKeyword(token));
+    assertTrue(token.ttype == OrderToken.TT_KEYWORD);
   }
 
   /**
@@ -1312,27 +1406,27 @@ public class EresseaOrderParserTest {
   public void testReadFinalString() {
     parser.read(new StringReader("abc"));
     OrderToken token = parser.getLastToken();
-    Assert.assertTrue(parser.readFinalString(token));
+    assertTrue(parser.readFinalString(token));
     parser.read(new StringReader("abc ;123"));
     token = parser.getLastToken();
-    Assert.assertTrue(parser.readFinalString(token));
+    assertTrue(parser.readFinalString(token));
     parser.read(new StringReader("abc abc"));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readFinalString(token));
+    assertFalse(parser.readFinalString(token));
     parser.read(new StringReader("\"abc abc\""));
     token = parser.getLastToken();
-    Assert.assertTrue(parser.readFinalString(token));
+    assertTrue(parser.readFinalString(token));
     parser.read(new StringReader("\"abc abc"));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readFinalString(token));
+    assertFalse(parser.readFinalString(token));
     parser.read(new StringReader(""));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readFinalString(token));
+    assertFalse(parser.readFinalString(token));
     parser.read(new StringReader("1234#"));
     token = parser.getLastToken();
     try {
       parser.readFinalString(token);
-      Assert.assertFalse(true);
+      assertFalse(true);
     } catch (IllegalArgumentException e) {
       // should throw exception!
     }
@@ -1347,16 +1441,23 @@ public class EresseaOrderParserTest {
   public void testReadFinalID() {
     parser.read(new StringReader("abc"));
     OrderToken token = parser.getLastToken();
-    Assert.assertTrue(parser.readFinalID(token));
-    Assert.assertTrue(token.ttype == OrderToken.TT_ID);
+    assertTrue(parser.readFinalID(token));
+    assertTrue(token.ttype == OrderToken.TT_ID);
+
     parser.read(new StringReader("abc abc"));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readFinalID(token));
-    Assert.assertTrue(token.ttype == OrderToken.TT_ID);
+    assertFalse(parser.readFinalID(token));
+    assertTrue(token.ttype == OrderToken.TT_ID);
+
     parser.read(new StringReader("")); // TODO what should happen here?
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readFinalID(token));
-    Assert.assertTrue(token.ttype == OrderToken.TT_ID);
+    try {
+      parser.readFinalID(token);
+      fail("should throw exception");
+    } catch (NoSuchElementException e) {
+      // okay
+    }
+    assertTrue(token.ttype == OrderToken.TT_ID);
   }
 
   /**
@@ -1368,16 +1469,16 @@ public class EresseaOrderParserTest {
   public void testReadFinalNumber() {
     parser.read(new StringReader("abc"));
     OrderToken token = parser.getLastToken();
-    Assert.assertTrue(parser.readFinalNumber(token));
-    Assert.assertTrue(token.ttype == OrderToken.TT_NUMBER);
+    assertTrue(parser.readFinalNumber(token));
+    assertTrue(token.ttype == OrderToken.TT_NUMBER);
     parser.read(new StringReader("abc abc"));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readFinalNumber(token));
-    Assert.assertTrue(token.ttype == OrderToken.TT_NUMBER);
+    assertFalse(parser.readFinalNumber(token));
+    assertTrue(token.ttype == OrderToken.TT_NUMBER);
     parser.read(new StringReader(""));
     token = parser.getLastToken();
-    Assert.assertFalse(parser.readFinalNumber(token));
-    Assert.assertTrue(token.ttype == OrderToken.TT_NUMBER);
+    assertFalse(parser.readFinalNumber(token));
+    assertTrue(token.ttype == OrderToken.TT_NUMBER);
   }
 
   /**
@@ -1386,15 +1487,15 @@ public class EresseaOrderParserTest {
   @Test
   public void testCheckNextFinal() {
     parser.read(new StringReader("abc"));
-    Assert.assertTrue(parser.checkNextFinal());
+    assertTrue(parser.checkNextFinal());
     parser.read(new StringReader(""));
-    Assert.assertFalse(parser.checkNextFinal());
+    assertFalse(parser.checkNextFinal());
     parser.read(new StringReader("; abc"));
-    Assert.assertFalse(parser.checkNextFinal());
+    assertFalse(parser.checkNextFinal());
     parser.read(new StringReader("abc; abc"));
-    Assert.assertTrue(parser.checkNextFinal());
+    assertTrue(parser.checkNextFinal());
     parser.read(new StringReader("abc abc"));
-    Assert.assertFalse(parser.checkNextFinal());
+    assertFalse(parser.checkNextFinal());
   }
 
   /**
@@ -1404,19 +1505,19 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testCheckFinal() {
-    Assert.assertTrue(parser.checkFinal(new OrderToken(OrderToken.TT_EOC)));
-    Assert.assertTrue(parser.checkFinal(new OrderToken(OrderToken.TT_COMMENT)));
-    Assert.assertFalse(parser.checkFinal(new OrderToken(OrderToken.TT_STRING)));
+    assertTrue(parser.checkFinal(new OrderToken(OrderToken.TT_EOC)));
+    assertTrue(parser.checkFinal(new OrderToken(OrderToken.TT_COMMENT)));
+    assertFalse(parser.checkFinal(new OrderToken(OrderToken.TT_STRING)));
     parser.read(new StringReader(""));
-    Assert.assertTrue(parser.checkFinal(parser.getLastToken()));
+    assertTrue(parser.checkFinal(parser.getLastToken()));
     parser.read(new StringReader("; abc"));
-    Assert.assertTrue(parser.checkFinal(parser.getLastToken()));
+    assertTrue(parser.checkFinal(parser.getLastToken()));
     parser.read(new StringReader("abc; abc"));
-    Assert.assertFalse(parser.checkFinal(parser.getLastToken()));
-    Assert.assertTrue(parser.checkFinal(parser.getNextToken()));
+    assertFalse(parser.checkFinal(parser.getLastToken()));
+    assertTrue(parser.checkFinal(parser.getNextToken()));
     parser.read(new StringReader("abc"));
-    Assert.assertFalse(parser.checkFinal(parser.getLastToken()));
-    Assert.assertTrue(parser.checkFinal(parser.getNextToken()));
+    assertFalse(parser.checkFinal(parser.getLastToken()));
+    assertTrue(parser.checkFinal(parser.getNextToken()));
   }
 
   /**
@@ -1426,15 +1527,15 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testUnexpected() {
-    Assert.assertTrue(parser.getErrorMessage() == null);
+    assertTrue(parser.getErrorMessage() == null);
     parser.setErrMsg("error");
-    Assert.assertTrue(parser.getErrorMessage().equals("error"));
+    assertTrue(parser.getErrorMessage().equals("error"));
     parser.setErrMsg(null);
-    Assert.assertTrue(parser.getErrorMessage() == null);
+    assertTrue(parser.getErrorMessage() == null);
     parser.read(new StringReader("ARBEITEN"));
-    Assert.assertTrue(parser.getErrorMessage() == null);
+    assertTrue(parser.getErrorMessage() == null);
     parser.read(new StringReader("ARBEITEN 2"));
-    Assert.assertTrue(parser.getErrorMessage().equals(
+    assertTrue(parser.getErrorMessage().equals(
         "Unexpected token 2: Undefined(9, 10), not followed by Space"));
   }
 
@@ -1454,17 +1555,17 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testIsNumericString() {
-    Assert.assertTrue(parser.isNumeric("123456567"));
-    Assert.assertTrue(parser.isNumeric("-2", 10, -10, 0));
-    Assert.assertTrue(parser.isNumeric("abc", 36, 13368, 13368));
-    Assert.assertTrue(parser.isNumeric("ff", 16, 0, 256));
-    Assert.assertFalse(parser.isNumeric("ff", 16, 0, 100));
-    Assert.assertFalse(parser.isNumeric("-2"));
-    Assert.assertFalse(parser.isNumeric("1 2"));
-    Assert.assertFalse(parser.isNumeric("1,2"));
-    Assert.assertFalse(parser.isNumeric("1.2"));
-    Assert.assertFalse(parser.isNumeric("--"));
-    Assert.assertFalse(parser.isNumeric("a"));
+    assertTrue(parser.isNumeric("123456567"));
+    assertTrue(parser.isNumeric("-2", 10, -10, 0));
+    assertTrue(parser.isNumeric("abc", 36, 13368, 13368));
+    assertTrue(parser.isNumeric("ff", 16, 0, 256));
+    assertFalse(parser.isNumeric("ff", 16, 0, 100));
+    assertFalse(parser.isNumeric("-2"));
+    assertFalse(parser.isNumeric("1 2"));
+    assertFalse(parser.isNumeric("1,2"));
+    assertFalse(parser.isNumeric("1.2"));
+    assertFalse(parser.isNumeric("--"));
+    assertFalse(parser.isNumeric("a"));
   }
 
   /**
@@ -1472,13 +1573,13 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testIsID() {
-    Assert.assertTrue(parser.isID("TEMP abc"));
-    Assert.assertFalse(parser.isID("TEMP abc", false));
-    Assert.assertTrue(parser.isID("12"));
-    Assert.assertTrue(parser.isID("abc"));
-    Assert.assertTrue(parser.isID("2ac"));
-    Assert.assertFalse(parser.isID("12345"));
-    Assert.assertFalse(parser.isID("1,3"));
+    assertTrue(parser.isID("TEMP abc"));
+    assertFalse(parser.isID("TEMP abc", false));
+    assertTrue(parser.isID("12"));
+    assertTrue(parser.isID("abc"));
+    assertTrue(parser.isID("2ac"));
+    assertFalse(parser.isID("12345"));
+    assertFalse(parser.isID("1,3"));
   }
 
   /**
@@ -1487,12 +1588,12 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testIsTempID() {
-    Assert.assertTrue(parser.isTempID("TEMP abc"));
-    Assert.assertTrue(parser.isTempID("TEMP 1"));
-    Assert.assertFalse(parser.isTempID("1,3"));
-    Assert.assertFalse(parser.isTempID("abc"));
-    Assert.assertFalse(parser.isTempID(" TEMP abc "));
-    Assert.assertFalse(parser.isTempID(" TEMP TEMP temp"));
+    assertTrue(parser.isTempID("TEMP abc"));
+    assertTrue(parser.isTempID("TEMP 1"));
+    assertFalse(parser.isTempID("1,3"));
+    assertFalse(parser.isTempID("abc"));
+    assertFalse(parser.isTempID(" TEMP abc "));
+    assertFalse(parser.isTempID(" TEMP TEMP temp"));
   }
 
   /**
@@ -1501,19 +1602,19 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testIsRID() {
-    Assert.assertTrue(parser.isRID("1,3"));
-    Assert.assertTrue(parser.isRID("1,-3"));
-    Assert.assertTrue(parser.isRID("-1,-3323"));
-    Assert.assertTrue(parser.isRID("1,3,4"));
-    Assert.assertFalse(parser.isRID("1, 3"));
-    Assert.assertFalse(parser.isRID(" 1,3"));
-    Assert.assertFalse(parser.isRID("1,3 "));
-    Assert.assertFalse(parser.isRID("1,, 3"));
-    Assert.assertFalse(parser.isRID("1 3"));
-    Assert.assertFalse(parser.isRID("1 -3"));
-    Assert.assertFalse(parser.isRID("-a, 1"));
-    Assert.assertFalse(parser.isRID("123"));
-    Assert.assertFalse(parser.isRID("a, b"));
+    assertTrue(parser.isRID("1,3"));
+    assertTrue(parser.isRID("1,-3"));
+    assertTrue(parser.isRID("-1,-3323"));
+    assertTrue(parser.isRID("1,3,4"));
+    assertFalse(parser.isRID("1, 3"));
+    assertFalse(parser.isRID(" 1,3"));
+    assertFalse(parser.isRID("1,3 "));
+    assertFalse(parser.isRID("1,, 3"));
+    assertFalse(parser.isRID("1 3"));
+    assertFalse(parser.isRID("1 -3"));
+    assertFalse(parser.isRID("-a, 1"));
+    assertFalse(parser.isRID("123"));
+    assertFalse(parser.isRID("a, b"));
   }
 
   /**
@@ -1523,13 +1624,13 @@ public class EresseaOrderParserTest {
   @SuppressWarnings("deprecation")
   @Test
   public void testIsQuoted() {
-    Assert.assertFalse(parser.isQuoted("abc"));
-    Assert.assertTrue(parser.isQuoted("\"abc\""));
-    Assert.assertFalse(parser.isQuoted("'abc'"));
-    Assert.assertFalse(parser.isQuoted("abc5d"));
-    Assert.assertFalse(parser.isQuoted("567"));
-    Assert.assertFalse(parser.isQuoted("\"abc'"));
-    Assert.assertFalse(parser.isQuoted("'123"));
+    assertFalse(parser.isQuoted("abc"));
+    assertTrue(parser.isQuoted("\"abc\""));
+    assertFalse(parser.isQuoted("'abc'"));
+    assertFalse(parser.isQuoted("abc5d"));
+    assertFalse(parser.isQuoted("567"));
+    assertFalse(parser.isQuoted("\"abc'"));
+    assertFalse(parser.isQuoted("'123"));
   }
 
   /**
@@ -1539,13 +1640,13 @@ public class EresseaOrderParserTest {
   @SuppressWarnings("deprecation")
   @Test
   public void testIsSingleQuoted() {
-    Assert.assertFalse(parser.isSingleQuoted("abc"));
-    Assert.assertFalse(parser.isSingleQuoted("\"abc\""));
-    Assert.assertTrue(parser.isSingleQuoted("'abc'"));
-    Assert.assertFalse(parser.isSingleQuoted("abc5d"));
-    Assert.assertFalse(parser.isSingleQuoted("567"));
-    Assert.assertFalse(parser.isSingleQuoted("\"abc'"));
-    Assert.assertFalse(parser.isSingleQuoted("'123"));
+    assertFalse(parser.isSingleQuoted("abc"));
+    assertFalse(parser.isSingleQuoted("\"abc\""));
+    assertTrue(parser.isSingleQuoted("'abc'"));
+    assertFalse(parser.isSingleQuoted("abc5d"));
+    assertFalse(parser.isSingleQuoted("567"));
+    assertFalse(parser.isSingleQuoted("\"abc'"));
+    assertFalse(parser.isSingleQuoted("'123"));
   }
 
   /**
@@ -1554,13 +1655,13 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testIsSimpleString() {
-    Assert.assertTrue(parser.isSimpleString("abc"));
-    Assert.assertFalse(parser.isSimpleString("\"abc\""));
-    Assert.assertFalse(parser.isSimpleString("'abc'"));
-    Assert.assertTrue(parser.isSimpleString("abc5d"));
-    Assert.assertFalse(parser.isSimpleString("567"));
-    Assert.assertFalse(parser.isSimpleString("\"abc'"));
-    Assert.assertFalse(parser.isSimpleString("'123"));
+    assertTrue(parser.isSimpleString("abc"));
+    assertFalse(parser.isSimpleString("\"abc\""));
+    assertFalse(parser.isSimpleString("'abc'"));
+    assertTrue(parser.isSimpleString("abc5d"));
+    assertFalse(parser.isSimpleString("567"));
+    assertFalse(parser.isSimpleString("\"abc'"));
+    assertFalse(parser.isSimpleString("'123"));
   }
 
   /**
@@ -1570,13 +1671,13 @@ public class EresseaOrderParserTest {
   @SuppressWarnings("deprecation")
   @Test
   public void testIsStringString() {
-    Assert.assertTrue(parser.isString("abc"));
-    Assert.assertTrue(parser.isString("\"abc\""));
-    Assert.assertTrue(parser.isString("'abc'"));
-    Assert.assertTrue(parser.isString("abc5d"));
-    Assert.assertFalse(parser.isString("567"));
-    Assert.assertFalse(parser.isString("\"abc'"));
-    Assert.assertFalse(parser.isString("'123"));
+    assertTrue(parser.isString("abc"));
+    assertTrue(parser.isString("\"abc\""));
+    assertTrue(parser.isString("'abc'"));
+    assertTrue(parser.isString("abc5d"));
+    assertFalse(parser.isString("567"));
+    assertFalse(parser.isString("\"abc'"));
+    assertFalse(parser.isString("'123"));
   }
 
   /**
@@ -1587,9 +1688,9 @@ public class EresseaOrderParserTest {
   @Test
   public void testIsStringOrderToken() {
     OrderToken token = new OrderToken("");
-    Assert.assertTrue(parser.isString(token, false) == parser.isString(token));
+    assertTrue(parser.isString(token, false) == parser.isString(token));
     token = new OrderToken(OrderToken.TT_OPENING_QUOTE);
-    Assert.assertTrue(parser.isString(token, false) == parser.isString(token));
+    assertTrue(parser.isString(token, false) == parser.isString(token));
   }
 
   /**
@@ -1600,23 +1701,23 @@ public class EresseaOrderParserTest {
   @Test
   public void testIsStringOrderTokenBoolean() {
     OrderToken token = new OrderToken("");
-    Assert.assertFalse(parser.isString(token, true));
-    Assert.assertFalse(parser.isString(token, false));
+    assertFalse(parser.isString(token, true));
+    assertFalse(parser.isString(token, false));
     token = new OrderToken("a");
-    Assert.assertFalse(parser.isString(token, true));
-    Assert.assertTrue(parser.isString(token, false));
+    assertFalse(parser.isString(token, true));
+    assertTrue(parser.isString(token, false));
     token = new OrderToken(OrderToken.TT_OPENING_QUOTE);
-    Assert.assertTrue(parser.isString(token, true));
-    Assert.assertTrue(parser.isString(token, false));
+    assertTrue(parser.isString(token, true));
+    assertTrue(parser.isString(token, false));
     token = new OrderToken("'abc");
-    Assert.assertFalse(parser.isString(token, true));
-    Assert.assertFalse(parser.isString(token, false));
+    assertFalse(parser.isString(token, true));
+    assertFalse(parser.isString(token, false));
     token = new OrderToken("5");
-    Assert.assertFalse(parser.isString(token, true));
-    Assert.assertFalse(parser.isString(token, false));
+    assertFalse(parser.isString(token, true));
+    assertFalse(parser.isString(token, false));
     token = new OrderToken(OrderToken.TT_EOC);
-    Assert.assertTrue(parser.isString(token, true));
-    Assert.assertTrue(parser.isString(token, false));
+    assertTrue(parser.isString(token, true));
+    assertTrue(parser.isString(token, false));
   }
 
   /**
@@ -1628,63 +1729,63 @@ public class EresseaOrderParserTest {
   public void testGetString() {
     parser.read(new StringReader("abc"));
     OrderToken[] result = parser.getString(parser.getLastToken());
-    Assert.assertTrue(result[0] == null);
+    assertTrue(result[0] == null);
     OrderToken contentToken = new OrderToken("abc", 0, 3, OrderToken.TT_STRING, false);
-    Assert.assertTrue(result[1] != null && equals(result[1], contentToken));
-    Assert.assertTrue(result[2] == null);
+    assertTrue(result[1] != null && equals(result[1], contentToken));
+    assertTrue(result[2] == null);
     OrderToken nextToken = new OrderToken(OrderToken.TT_EOC);
-    Assert.assertTrue(equals(result[3], nextToken));
+    assertTrue(equals(result[3], nextToken));
 
     parser.read(new StringReader("@"));
     result = parser.getString(parser.getLastToken());
-    Assert.assertTrue(result[0] == null);
+    assertTrue(result[0] == null);
     contentToken = new OrderToken("@", 0, 1, OrderToken.TT_STRING, false);
-    Assert.assertTrue(result[1] == null);
-    Assert.assertTrue(result[2] == null);
+    assertTrue(result[1] == null);
+    assertTrue(result[2] == null);
 
     parser.read(new StringReader("\"abc\""));
     result = parser.getString(parser.getLastToken());
     OrderToken openingToken = new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
-    Assert.assertTrue(equals(result[0], openingToken));
+    assertTrue(equals(result[0], openingToken));
     contentToken = new OrderToken("abc", 1, 4, OrderToken.TT_STRING, false);
-    Assert.assertTrue(result[1] != null && equals(result[1], contentToken));
+    assertTrue(result[1] != null && equals(result[1], contentToken));
     OrderToken closingToken = new OrderToken("\"", 4, 5, OrderToken.TT_CLOSING_QUOTE, false);
-    Assert.assertTrue(equals(result[2], closingToken));
+    assertTrue(equals(result[2], closingToken));
     nextToken = new OrderToken(OrderToken.TT_EOC);
-    Assert.assertTrue(equals(result[3], nextToken));
+    assertTrue(equals(result[3], nextToken));
 
     parser.read(new StringReader("'abc'"));
     result = parser.getString(parser.getLastToken());
     openingToken = new OrderToken("'", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
-    Assert.assertTrue(equals(result[0], openingToken));
+    assertTrue(equals(result[0], openingToken));
     contentToken = new OrderToken("abc", 1, 4, OrderToken.TT_STRING, false);
-    Assert.assertTrue(result[1] != null && equals(result[1], contentToken));
+    assertTrue(result[1] != null && equals(result[1], contentToken));
     closingToken = new OrderToken("'", 4, 5, OrderToken.TT_CLOSING_QUOTE, false);
-    Assert.assertTrue(equals(result[2], closingToken));
+    assertTrue(equals(result[2], closingToken));
     nextToken = new OrderToken(OrderToken.TT_EOC);
-    Assert.assertTrue(equals(result[3], nextToken));
+    assertTrue(equals(result[3], nextToken));
 
     parser.read(new StringReader("\"a"));
     result = parser.getString(parser.getLastToken());
     openingToken = new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
-    Assert.assertTrue(equals(result[0], openingToken));
+    assertTrue(equals(result[0], openingToken));
     contentToken = new OrderToken("a", 1, 2, OrderToken.TT_STRING, false);
-    Assert.assertTrue(result[1] != null && equals(result[1], contentToken));
+    assertTrue(result[1] != null && equals(result[1], contentToken));
     closingToken = null;
-    Assert.assertTrue(equals(result[2], closingToken));
+    assertTrue(equals(result[2], closingToken));
     nextToken = new OrderToken(OrderToken.TT_EOC);
-    Assert.assertTrue(equals(result[3], nextToken));
+    assertTrue(equals(result[3], nextToken));
 
     parser.read(new StringReader("\"a'"));
     result = parser.getString(parser.getLastToken());
     openingToken = new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
-    Assert.assertTrue(equals(result[0], openingToken));
+    assertTrue(equals(result[0], openingToken));
     contentToken = new OrderToken("a'", 1, 3, OrderToken.TT_STRING, false);
-    Assert.assertTrue(result[1] != null && equals(result[1], contentToken));
+    assertTrue(result[1] != null && equals(result[1], contentToken));
     closingToken = null;
-    Assert.assertTrue(equals(result[2], closingToken));
+    assertTrue(equals(result[2], closingToken));
     nextToken = new OrderToken(OrderToken.TT_EOC);
-    Assert.assertTrue(equals(result[3], nextToken));
+    assertTrue(equals(result[3], nextToken));
 
   }
 
@@ -1703,19 +1804,23 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testIsEmailAddress() {
-    Assert.assertTrue(parser != null);
+    assertTrue(parser != null);
     if (parser != null) {
-      Assert.assertTrue(parser.isEmailAddress("a@b.com"));
-      Assert.assertTrue(parser.isEmailAddress("123@234.com"));
-      Assert.assertTrue(parser.isEmailAddress("a.b.c.defg.a@hallo.bla.bla.com"));
-      Assert.assertFalse(parser.isEmailAddress(""));
-      Assert.assertFalse(parser.isEmailAddress("a"));
-      Assert.assertFalse(parser.isEmailAddress("a.b"));
-      Assert.assertFalse(parser.isEmailAddress("a@b"));
-      Assert.assertFalse(parser.isEmailAddress("@b"));
-      Assert.assertFalse(parser.isEmailAddress("@b.com"));
-      Assert.assertFalse(parser.isEmailAddress(".@."));
+      assertTrue(parser.isEmailAddress("a@b.com"));
+      assertTrue(parser.isEmailAddress("123@234.com"));
+      assertTrue(parser.isEmailAddress("a.b.c.defg.a@hallo.bla.bla.com"));
+      assertFalse(parser.isEmailAddress(""));
+      assertFalse(parser.isEmailAddress("a"));
+      assertFalse(parser.isEmailAddress("a.b"));
+      assertFalse(parser.isEmailAddress("@b"));
+      assertFalse(parser.isEmailAddress("@b.com"));
+      assertTrue(parser.isEmailAddress("jsmith@[192.168.2.1]"));
+      assertFalse(parser.isEmailAddress(".@.")); // shouldn't be allowed, but is
+      assertFalse(parser.isEmailAddress("a@b")); // shouldn't be allowed, but is
+      assertFalse(parser.isEmailAddress("a.@b.com")); // shouldn't be allowed, but is
+      assertFalse(parser.isEmailAddress(".a@b.com")); // shouldn't be allowed, but is
+      assertTrue(parser.isEmailAddress("\"!#$%&'*+-/=?^_`{|}~\"@example.com")); // shouldn't be
+                                                                                // allowed, but is
     }
   }
-
 }

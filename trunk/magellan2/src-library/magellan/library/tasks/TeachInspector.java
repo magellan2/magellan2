@@ -29,9 +29,12 @@ import java.util.Collections;
 import java.util.List;
 
 import magellan.library.GameData;
+import magellan.library.Order;
+import magellan.library.Skill;
 import magellan.library.Unit;
-import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.LearnOrder;
 import magellan.library.relation.TeachRelation;
+import magellan.library.rules.SkillType;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Resources;
 
@@ -86,18 +89,21 @@ public class TeachInspector extends AbstractInspector {
         break;
       }
       boolean found = false;
-      int line = 0;
-      for (String string : u2.getOrders()) {
-        line++;
-        String order = (string).trim();
-        if (order.startsWith(Resources.getOrderTranslation(EresseaConstants.O_LEARN, u.getFaction()
-            .getLocale()))) {
+      for (Order o : u2.getOrders2())
+        if (o.isValid() && o instanceof LearnOrder) {
           found = true;
+          SkillType skillType = getData().getRules().getSkillType(((LearnOrder) o).skillName);
+          Skill ss = u2.getSkill(skillType);
+          Skill ts = u.getSkill(skillType);
+          if ((ss == null ? 0 : ss.getLevel()) + 2 > (ts == null ? 0 : ts.getLevel())) {
+            problems.add(ProblemFactory.createProblem(Severity.WARNING, NOTLEARNING, u, this,
+                Resources.get("tasks.teachinspector.notlearning.message2", u2, skillType),
+                relation.line));
+          }
         }
-      }
       if (!found) {
         problems.add(ProblemFactory.createProblem(Severity.WARNING, NOTLEARNING, u, this, Resources
-            .get("tasks.teachinspector.notlearning.message", u2), relation.line));
+            .get("tasks.teachinspector.notlearning.message1", u2), relation.line));
       }
     }
 

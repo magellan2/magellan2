@@ -32,6 +32,7 @@ import magellan.library.UnitContainer;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.EnterRelation;
 import magellan.library.relation.LeaveRelation;
+import magellan.library.relation.RenameNamedRelation;
 import magellan.library.relation.UnitContainerRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.CastleType;
@@ -303,11 +304,19 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * @see magellan.library.impl.MagellanRelatedImpl#getRelations()
    */
   @Override
-  protected Collection<UnitRelation> getRelations() {
+  public List<UnitRelation> getRelations() {
     if (getCache().relations == null) {
       getCache().relations = new ArrayList<UnitRelation>();
     }
     return getCache().relations;
+  }
+
+  /**
+   * @see magellan.library.Related#clearRelations()
+   */
+  public void clearRelations() {
+    getRelations().clear();
+    invalidateCache();
   }
 
   /**
@@ -325,56 +334,56 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   }
 
   private void refreshModifiedUnits() {
-    Cache cache = getCache();
+    Cache cache1 = getCache();
 
     // be careful when clearing modifiedContainerUnits, it could
     // be the normal units
-    if (cache.modifiedContainerUnits == units) {
-      cache.modifiedContainerUnits = null;
+    if (cache1.modifiedContainerUnits == units) {
+      cache1.modifiedContainerUnits = null;
     }
 
-    if (cache.modifiedContainerUnits != null) {
-      cache.modifiedContainerUnits.clear();
+    if (cache1.modifiedContainerUnits != null) {
+      cache1.modifiedContainerUnits.clear();
     }
 
     // if this unit container does not have relations the
     // modified units equal the normal units
-    if (cache.relations == null) {
-      if (cache.modifiedContainerUnits != units) {
-        if (cache.modifiedContainerUnits != null) {
-          cache.modifiedContainerUnits.clear();
+    if (cache1.relations == null) {
+      if (cache1.modifiedContainerUnits != units) {
+        if (cache1.modifiedContainerUnits != null) {
+          cache1.modifiedContainerUnits.clear();
         }
 
-        cache.modifiedContainerUnits = units;
+        cache1.modifiedContainerUnits = units;
       }
 
       return;
     }
 
-    if (cache.modifiedContainerUnits == null) {
-      cache.modifiedContainerUnits = new Hashtable<ID, Unit>();
+    if (cache1.modifiedContainerUnits == null) {
+      cache1.modifiedContainerUnits = new Hashtable<ID, Unit>();
     }
 
     if (units != null) {
-      cache.modifiedContainerUnits.putAll(units);
+      cache1.modifiedContainerUnits.putAll(units);
     }
 
-    for (UnitRelation rel : cache.relations) {
+    for (UnitRelation rel : cache1.relations) {
       if (rel instanceof UnitContainerRelation) {
         UnitContainerRelation ucr = (UnitContainerRelation) rel;
 
         if (equals(ucr.target)) {
           if (ucr instanceof EnterRelation) {
-            cache.modifiedContainerUnits.put(ucr.source.getID(), ucr.source);
+            cache1.modifiedContainerUnits.put(ucr.source.getID(), ucr.source);
           } else if (ucr instanceof LeaveRelation) {
-            cache.modifiedContainerUnits.remove(ucr.source.getID());
+            cache1.modifiedContainerUnits.remove(ucr.source.getID());
           }
         } else {
           MagellanUnitContainerImpl.log
               .info("UnitContainer.refreshModifiedUnits(): unit container " + this
                   + " has a relation associated that does not point to it!");
         }
-      } else {
+      } else if (!(rel instanceof RenameNamedRelation)) {
         MagellanUnitContainerImpl.log.info("UnitContainer.refreshModifiedUnits(): unit container "
             + this + " contains a relation that is not a UnitContainerRelation object!");
       }
@@ -426,13 +435,13 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   @Override
   public void addRelation(UnitRelation rel) {
-    Cache cache = getCache();
+    Cache cache1 = getCache();
 
-    if (cache.relations == null) {
-      cache.relations = new LinkedList<UnitRelation>();
+    if (cache1.relations == null) {
+      cache1.relations = new LinkedList<UnitRelation>();
     }
 
-    cache.relations.add(rel);
+    cache1.relations.add(rel);
 
     invalidateCache();
 

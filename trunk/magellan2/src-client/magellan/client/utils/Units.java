@@ -36,13 +36,17 @@ import magellan.client.swing.tree.UnitNodeWrapper;
 import magellan.client.swing.tree.UnitRelationNodeWrapper;
 import magellan.library.ID;
 import magellan.library.Item;
+import magellan.library.Order;
 import magellan.library.Rules;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.ItemTransferRelation;
+import magellan.library.relation.RecruitmentRelation;
 import magellan.library.relation.ReserveRelation;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
+import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -335,6 +339,29 @@ public class Units {
           addItemNode = true;
         }
       }
+      if (currentItem.getItemType().getID().equals(EresseaConstants.I_USILVER)) {
+        for (final RecruitmentRelation rrel : u.getRelations(RecruitmentRelation.class)) {
+          final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
+          final List<String> icons = new LinkedList<String>();
+          text.append(Resources.get("util.units.node.recruit")).append(" ").append(rrel.amount)
+              .append(" ").append(rrel.race);
+
+          icons.add("rekruten");
+          if (rrel.warning) {
+            itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
+            // text.append("(!!!) ");
+            icons.add("warnung");
+            // recruitNodeWrapper.setAdditionalIcon("warnung");
+          }
+
+          final UnitRelationNodeWrapper recruitNodeWrapper =
+              factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
+                  .toString(), icons));
+          itemNode.add(new DefaultMutableTreeNode(recruitNodeWrapper));
+
+          addItemNode = true;
+        }
+      }
 
       if (addItemNode) {
         // FIXME: we return different objects here!!
@@ -599,25 +626,25 @@ public class Units {
 
       if (replace) {
         if (keepComments) {
-          final Collection<String> oldOrders = u.getOrders();
-          final List<String> newOrders = new LinkedList<String>();
+          final Collection<Order> oldOrders = u.getOrders2();
+          final List<Order> newOrders = new LinkedList<Order>();
 
-          for (String order : oldOrders) {
-            if (order.trim().startsWith("//") || order.trim().startsWith(";")) {
+          for (Order order : oldOrders) {
+            if (!order.isEmpty() && order.getToken(0).ttype == OrderToken.TT_COMMENT) {
               newOrders.add(order);
             }
           }
 
           if (position.equals(GiveOrderDialog.FIRST_POS)) {
             for (int i = newOrderArray.length - 1; i >= 0; --i) {
-              newOrders.add(0, newOrderArray[i]);
+              newOrders.add(0, u.createOrder(newOrderArray[i]));
             }
           } else {
             for (final String sHelp : newOrderArray) {
-              newOrders.add(newOrders.size(), sHelp);
+              newOrders.add(newOrders.size(), u.createOrder(sHelp));
             }
           }
-          u.setOrders(newOrders);
+          u.setOrders2(newOrders);
         } else {
 
           final List<String> newOrders = new LinkedList<String>();
@@ -633,7 +660,7 @@ public class Units {
           }
         } else {
           for (final String sHelp : newOrderArray) {
-            u.addOrderAt(u.getOrders().size(), sHelp, true);
+            u.addOrderAt(u.getOrders2().size(), sHelp, true);
           }
         }
       }
@@ -659,34 +686,35 @@ public class Units {
       final String mode = s[1];
       final String matchCase = s[2];
 
-      final Collection<String> oldOrders = u.getOrders();
-      final List<String> newOrders = new LinkedList<String>();
+      final Collection<Order> oldOrders = u.getOrders2();
+      final List<Order> newOrders = new LinkedList<Order>();
 
-      for (String order : oldOrders) {
-        String casedOrder;
-        if (matchCase.equals("false")) {
-          casedOrder = order.toLowerCase();
-        } else {
-          casedOrder = order;
-        }
-        if (mode.equals(RemoveOrderDialog.BEGIN_ACTION))
-          if (casedOrder.startsWith(pattern)) {
-            continue;
-          }
-
-        if (mode.equals(RemoveOrderDialog.CONTAINS_ACTION))
-          if (casedOrder.contains(pattern)) {
-            continue;
-          }
+      for (Order order : oldOrders) {
         if (mode.equals(RemoveOrderDialog.REGEX_ACTION)) {
-          if (order.matches(pattern)) {
+          if (order.getText().matches(pattern)) {
             continue;
           }
+        } else {
+          String casedOrder;
+          if (matchCase.equals("false")) {
+            casedOrder = order.getText().toLowerCase();
+          } else {
+            casedOrder = order.getText();
+          }
+          if (mode.equals(RemoveOrderDialog.BEGIN_ACTION))
+            if (casedOrder.startsWith(pattern)) {
+              continue;
+            }
+
+          if (mode.equals(RemoveOrderDialog.CONTAINS_ACTION))
+            if (casedOrder.contains(pattern)) {
+              continue;
+            }
         }
         newOrders.add(order);
 
       }
-      u.setOrders(newOrders);
+      u.setOrders2(newOrders);
     }
   }
 }

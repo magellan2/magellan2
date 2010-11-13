@@ -13,7 +13,6 @@
 
 package magellan.library.impl;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +22,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -35,11 +33,12 @@ import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
-import magellan.library.HasRegion;
 import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Named;
+import magellan.library.Order;
+import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Related;
 import magellan.library.Ship;
@@ -74,17 +73,12 @@ import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Cache;
 import magellan.library.utils.CacheHandler;
-import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
-import magellan.library.utils.OrderToken;
-import magellan.library.utils.OrderTokenizer;
 import magellan.library.utils.OrderWriter;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
-import magellan.library.utils.Sorted;
-import magellan.library.utils.Taggable;
 import magellan.library.utils.comparator.LinearUnitTempUnitComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
@@ -94,42 +88,48 @@ import magellan.library.utils.logging.Logger;
  * @author $Author: $
  * @version $Revision: 389 $
  */
-public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRegion, Sorted,
-    Taggable {
+public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   private static final Logger log = Logger.getInstance(MagellanUnitImpl.class);
-  private static final String CONFIRMEDTEMPCOMMENT = ";" + OrderWriter.CONFIRMEDTEMP;
-  private static final String TAG_PREFIX_TEMP = ";" + "ejcTagTemp "; // grammar for ejcTag:
-  // ";ejcTempTag tag numbervalue|'stringvalue'"
+  private static final String CONFIRMEDTEMPCOMMENT = EresseaConstants.O_COMMENT
+      + OrderWriter.CONFIRMEDTEMP;
+
+  /**
+   * grammar for ejcTag: ";ejcTempTag tag numbervalue|'stringvalue'"
+   */
+  private static final String TAG_PREFIX_TEMP = EresseaConstants.O_COMMENT + "ejcTagTemp ";
+  /** "undefined" value for combat status */
+  private static final int CS_INIT = -13;
+
   /** The private description of the unit. */
-  private String privDesc = null; // private description
+  private String privDesc; // private description
 
   /** The displayed race of the unit. */
-  private Race race = null;
+  private Race race;
 
   /** The real race of the (daemon) unit */
-  private Race realRace = null;
+  private Race realRace;
 
   /**
    * unitID of the "father"-mage or mother.mage...
    */
-  private ID familiarmageID = null;
+  private ID familiarmageID;
 
   /** The weight in silver */
   private int weight = -1;
 
   /** an object encapsulation the orders of this unit as <tt>String</tt> objects */
-  private final Orders ordersObject = new Orders();
+  private MagellanOrdersImplementation ordersObject;
 
   /** Comments modifiable by the user. The comments are represented as String objects. */
   /** analog to comments in unitcontainer **/
-  private List<String> comments = null;
+  private List<String> comments;
 
   /** The number of persons of the unit */
   private int persons = 1;
   /** guard flag (only one flag left in modern Eressea) */
   private int guard = 0;
   /** The building that is besieged by this unit */
-  private Building siege = null; // belagert
+  private Building siege; // belagert
   /** stealth level */
   private int stealth = -1; // getarnt
   /** the current amount of aura */
@@ -139,21 +139,21 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /** combat status code */
   private int combatStatus = -1; // Kampfstatus
   /** HELFE KÄMPFE NICHT status */
-  private boolean unaided = false; // if attacked, this unit will not be helped by allied units
+  private boolean unaided; // if attacked, this unit will not be helped by allied units
   /** faction hidden (PARTEITARNUNG) */
-  private boolean hideFaction = false; // Parteitarnung
+  private boolean hideFaction; // Parteitarnung
   /** follows tag */
-  private Unit follows = null; // folgt-Tag
+  private Unit follows; // folgt-Tag
   /** hero tag */
-  private boolean isHero = false; // hero-tag
+  private boolean isHero; // hero-tag
   /** health tag */
-  private String health = null;
+  private String health;
   /** hunger tag */
-  private boolean isStarving = false; // hunger-Tag
+  private boolean isStarving; // hunger-Tag
 
   // (stm 09-06-08) had to get rid of the soft reference again as it leads to problems with
   // updates of unit relations.
-  // protected SoftReference<Cache> cacheReference = null;
+  // protected SoftReference<Cache> cacheReference;
   /**
    * The cache object containing cached information that may be not related enough to be
    * encapsulated as a function and is time consuming to gather.
@@ -163,66 +163,66 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Messages directly sent to this unit. The list contains instances of class <tt>Message</tt> with
    * type -1 and only the text set.
    */
-  private List<Message> unitMessages = null;
+  private List<Message> unitMessages;
   /** A map for unknown tags */
-  private Map<String, String> tagMap = null;
+  private Map<String, String> tagMap;
   /**
    * A list containing <tt>String</tt> objects, specifying effects on this <tt>Unit</tt> object.
    */
-  private List<String> effects = null;
+  private List<String> effects;
   /** true indicates that the unit has orders confirmed by an user. */
-  private boolean ordersConfirmed = false;
+  private boolean ordersConfirmed;
   /** all the unit's skills */
-  private Map<StringID, Skill> skills = null; // maps SkillType.getID() objects to Skill objects
-  private boolean skillsCopied = false;
+  private Map<StringID, Skill> skills; // maps SkillType.getID() objects to Skill objects
+  // private boolean skillsCopied;
   /**
    * The items carried by this unit. The keys are the IDs of the item's type, the values are the
    * Item objects themselves.
    */
-  private Map<StringID, Item> items = null;
+  private Map<StringID, Item> items;
   /**
    * The spells known to this unit. The keys are the IDs of the spells, the values are the Spell
    * objects themselves.
    */
-  private Map<ID, Spell> spells = null;
+  private Map<ID, Spell> spells;
   /**
    * Contains the spells this unit has set for use in a combat. This map contains data if a unit has
    * a magic skill and has actively set combat spells. The values in this map are objects of type
    * CombatSpell, the keys are their ids.
    */
-  private Map<ID, CombatSpell> combatSpells = null;
+  private Map<ID, CombatSpell> combatSpells;
   /** The group this unit belongs to. */
-  private Group group = null;
+  private Group group;
   /** The previous id of this unit. */
-  private UnitID alias = null;
+  private UnitID alias;
   /**
    * Indicates that this unit belongs to a different faction than it pretends to. A unit cannot
    * disguise itself as a different faction and at the same time be a spy of another faction,
    * therefore, setting this attribute to true results in having the guiseFaction attribute set to
    * null.
    */
-  private boolean isSpy = false;
+  private boolean isSpy;
   /**
    * If this unit is disguised and pretends to belong to a different faction this field holds that
    * faction, else it is null.
    */
-  private Faction guiseFaction = null;
+  private Faction guiseFaction;
   /** The temp id this unit had before becoming a real unit. */
-  private UnitID tempID = null;
+  private UnitID tempID;
   /** The region this unit is currently in. */
-  protected Region region = null;
+  protected Region region;
   /** The faction this unit belongs to. */
-  private Faction faction = null;
+  private Faction faction;
   /** The building this unit stays in. */
-  private Building building = null;
+  private Building building;
   /** The ship this unit is on. */
-  private Ship ship = null;
+  private Ship ship;
   // units are sorted in unit containers with this index
   private int sortIndex = -1;
   /** A unit dependent prefix to be prepended to this faction's race name. */
-  private String raceNamePrefix = null;
+  private String raceNamePrefix;
   /** A map containing all temp units created by this unit. */
-  private Map<ID, TempUnit> tempUnits = null;
+  private Map<ID, TempUnit> tempUnits;
   /** A collection view of the temp units. */
   private Collection<TempUnit> tempUnitCollection;
   private GameData data;
@@ -231,25 +231,37 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @see magellan.library.Unit#ordersAreNull()
    */
   public boolean ordersAreNull() {
-    return ordersObject.ordersAreNull();
+    return ordersObject == null;
   }
 
   /**
    * @see magellan.library.Unit#ordersHaveChanged()
    */
   public boolean ordersHaveChanged() {
-    return ordersObject.ordersHaveChanged();
+    return !ordersAreNull() && ordersObject.ordersHaveChanged();
   }
 
   /**
    * @see magellan.library.Unit#setOrdersChanged(boolean)
    */
   public void setOrdersChanged(boolean changed) {
-    ordersObject.setOrdersChanged(changed);
+    getOrdersObject().setOrdersChanged(changed);
+  }
+
+  /**
+   * Returns (or creates) the Orders object.
+   */
+  protected Orders getOrdersObject() {
+    if (ordersObject == null) {
+      ordersObject = new MagellanOrdersImplementation(this);
+    }
+    return ordersObject;
   }
 
   /**
    * Clears the orders and refreshes the relations
+   * 
+   * @see magellan.library.Unit#clearOrders()
    */
   public void clearOrders() {
     clearOrders(true);
@@ -259,9 +271,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Clears the orders and possibly refreshes the relations
    * 
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @see magellan.library.Unit#clearOrders(boolean)
    */
   public void clearOrders(boolean refreshRelations) {
-    ordersObject.clearOrders();
+    if (!ordersAreNull()) {
+      ordersObject.clear();
+    }
 
     if (refreshRelations) {
       refreshRelations();
@@ -270,6 +285,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Removes the order at position <tt>i</tt> and refreshes the relations
+   * 
+   * @see magellan.library.Unit#removeOrderAt(int)
    */
   public void removeOrderAt(int i) {
     removeOrderAt(i, true);
@@ -279,9 +296,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Removes the order at position <tt>i</tt> and possibly refreshes the relations
    * 
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @see magellan.library.Unit#removeOrderAt(int, boolean)
    */
   public void removeOrderAt(int i, boolean refreshRelations) {
-    ordersObject.removeOrderAt(i);
+    ordersObject.remove(i);
 
     if (refreshRelations) {
       refreshRelations(i);
@@ -289,57 +307,200 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Adds the order at position <tt>i</tt> and refreshes the relations
-   * 
-   * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
-   * @param newOrders
+   * @see magellan.library.Unit#removeOrder(java.lang.String, int)
    */
-  public void addOrderAt(int i, String newOrders) {
-    addOrderAt(i, newOrders, true);
+  public boolean removeOrder(String order, int length) {
+    return removeOrder(order, length, true);
   }
+
+  /**
+   * Removes orders that match the given order up to a given length.
+   * 
+   * @param order pattern to remove
+   * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
+   *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
+   *          replaced but not all "BENENNE" orders.
+   * @param refreshRelations
+   * @return <tt>true</tt> if at least one order was removed
+   * @see magellan.library.Unit#removeOrder(java.lang.String, int, boolean)
+   */
+  public boolean removeOrder(String order, int length, boolean refreshRelations) {
+    if (ordersAreNull())
+      return false;
+    boolean retVal = getOrdersObject().removeOrder(createOrder(order), length);
+
+    if (refreshRelations) {
+      refreshRelations();
+    }
+
+    return retVal;
+  }
+
+  /**
+   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
+   * operation.
+   * 
+   * @return <tt>true</tt> if the order was successfully added.
+   * @see magellan.library.Unit#addOrder(java.lang.String)
+   */
+  public boolean addOrder(String order) {
+    return addOrder(order, true);
+  }
+
+  /**
+   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
+   * operation.
+   * 
+   * @return <tt>true</tt> if the order was successfully added.
+   * @see magellan.library.Unit#addOrder(java.lang.String, boolean)
+   */
+  public boolean addOrder(String order, boolean refreshRelations) {
+    if ((order == null) || order.trim().equals(""))
+      return false;
+    addOrderAt(-1, createOrder(order), refreshRelations);
+
+    return true;
+  }
+
+  /**
+   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
+   * operation.
+   * 
+   * @param order the order to add.
+   * @param replace if <tt>true</tt>, the order replaces any other of the unit's orders of the same
+   *          type. If <tt>false</tt> the order is simply added.
+   * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
+   *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
+   *          replaced but not all "BENENNE" orders.
+   * @return <tt>true</tt> if the order was successfully added.
+   * @see magellan.library.Unit#addOrder(java.lang.String, boolean, int)
+   */
+  public boolean addOrder(String order, boolean replace, int length) {
+    if ((order == null) || order.trim().equals("") || (replace && (length < 1)))
+      return false;
+
+    if (replace) {
+      removeOrder(order, length, false);
+    }
+
+    addOrderAt(-1, order, true);
+
+    return true;
+  }
+
+  /**
+   * @see magellan.library.Unit#addOrder(magellan.library.Order, boolean)
+   */
+  public void addOrder(Order line, boolean refreshRelations) {
+    addOrders2(Collections.singletonList(line), refreshRelations);
+  }
+
+  // /**
+  // * Adds the order at position <tt>i</tt> and refreshes the relations
+  // *
+  // * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
+  // * @param newOrders
+  // * @see magellan.library.Unit#addOrderAt(int, java.lang.String)
+  // */
+  // public void addOrderAt(int i, String newOrders) {
+  // addOrderAt(i, newOrders, true);
+  // }
 
   /**
    * Adds the order at position <tt>i</tt> and possibly refreshes the relations
    * 
-   * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
-   * @param newOrders
+   * @param pos An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
+   * @param newOrder
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @see magellan.library.Unit#addOrderAt(int, java.lang.String, boolean)
    */
-  public void addOrderAt(int i, String newOrders, boolean refreshRelations) {
-    if (i < 0) {
-      ordersObject.addOrder(newOrders);
+  public void addOrderAt(int pos, String newOrder, boolean refreshRelations) {
+    addOrderAt(pos, createOrder(newOrder), refreshRelations);
+  }
+
+  // /**
+  // * @see magellan.library.Unit#addOrderAt(int, magellan.library.Order)
+  // */
+  // public void addOrderAt(int pos, Order newOrder) {
+  // addOrderAt(pos, newOrder, true);
+  // }
+
+  /**
+   * @see magellan.library.Unit#addOrderAt(int, magellan.library.Order, boolean)
+   */
+  public void addOrderAt(int pos, Order newOrder, boolean refreshRelations) {
+
+    if (pos < 0) {
+      getOrdersObject().add(newOrder);
     } else {
-      ordersObject.addOrderAt(i, newOrders);
+      getOrdersObject().add(pos, newOrder);
     }
 
     if (refreshRelations) {
-      refreshRelations(i);
+      refreshRelations(pos);
+    }
+
+  }
+
+  // /**
+  // * @see magellan.library.Unit#replaceOrder(int, java.lang.String)
+  // */
+  // public void replaceOrder(int pos, String newOrder) {
+  // replaceOrder(pos, createOrder(newOrder), true);
+  // }
+
+  /**
+   * @see magellan.library.Unit#replaceOrder(int, magellan.library.Order, boolean)
+   */
+  public void replaceOrder(int pos, Order newOrder, boolean refreshRelations) {
+    ordersObject.set(pos, newOrder);
+
+    if (refreshRelations) {
+      refreshRelations(pos);
     }
   }
 
   /**
-   * Adds the order and refreshes the relations
-   * 
-   * @param newOrders
+   * @see magellan.library.Unit#createOrder(java.lang.String)
    */
-  public void addOrders(String newOrders) {
-    addOrders(newOrders, true);
+  public Order createOrder(String newOrder) {
+    return getData().getOrderParser().parse(newOrder, getLocale());
   }
 
-  /**
-   * Adds the order and possibly refreshes the relations
-   * 
-   * @param newOrders
-   * @param refreshRelations if true also refresh the relations of the unit.
-   */
-  public void addOrders(String newOrders, boolean refreshRelations) {
-    addOrders(Collections.singleton(newOrders), refreshRelations);
-  }
+  // /**
+  // * Adds the order and refreshes the relations
+  // *
+  // * @param newOrders
+  // */
+  // public void addOrders(String newOrders) {
+  // addOrders(newOrders, true);
+  // }
+
+  // /**
+  // * Adds the order and possibly refreshes the relations
+  // *
+  // * @param newOrders
+  // * @param refreshRelations if true also refresh the relations of the unit.
+  // */
+  // public void addOrders(String newOrders, boolean refreshRelations) {
+  // try {
+  // LineNumberReader stream =
+  // new LineNumberReader(new MergeLineReader(new StringReader(newOrders)));
+  // String line;
+  // while ((line = stream.readLine()) != null) {
+  // addOrders(Collections.singleton(line), refreshRelations);
+  // }
+  // } catch (IOException e) {
+  // // StringReader should never throw an exception
+  // log.error("StringReaderException!", e);
+  // }
+  // }
 
   /**
    * Adds the orders and refreshes the relations
    * 
    * @param newOrders
+   * @see magellan.library.Unit#addOrders(java.util.Collection)
    */
   public void addOrders(Collection<String> newOrders) {
     addOrders(newOrders, true);
@@ -350,9 +511,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * 
    * @param newOrders
    * @param refreshRelations If true also refresh the relations of the unit
+   * @see magellan.library.Unit#addOrders(java.util.Collection, boolean)
    */
   public void addOrders(Collection<String> newOrders, boolean refreshRelations) {
-    final int newPos = ordersObject.addOrders(newOrders);
+    final int newPos = getOrdersObject().size();
+    for (String line : newOrders) {
+      getOrdersObject().add(createOrder(line));
+    }
 
     if (refreshRelations) {
       refreshRelations(newPos);
@@ -360,9 +525,28 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
+   * @see magellan.library.Unit#addOrders2(java.util.Collection, boolean)
+   */
+  public void addOrders2(Collection<Order> newOrders, boolean refreshRelations) {
+    final int newPos = getOrdersObject().size();
+    getOrdersObject().addAll(newOrders);
+    if (refreshRelations) {
+      refreshRelations(newPos);
+    }
+  }
+
+  /**
+   * @see magellan.library.Unit#addOrders2(java.util.Collection, boolean)
+   */
+  public void addOrders2(Collection<Order> newOrders) {
+    addOrders2(newOrders, true);
+  }
+
+  /**
    * Sets the orders and refreshes the relations
    * 
-   * @param newOrders
+   * @param newOrders my be <code>null</code>
+   * @see magellan.library.Unit#setOrders(java.util.Collection)
    */
   public void setOrders(Collection<String> newOrders) {
     setOrders(newOrders, true);
@@ -373,29 +557,72 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * 
    * @param newOrders
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @see magellan.library.Unit#setOrders(java.util.Collection, boolean)
    */
   public void setOrders(Collection<String> newOrders, boolean refreshRelations) {
-    ordersObject.setOrders(newOrders);
+    if (newOrders == null) {
+      ordersObject = null;
+      return;
+    }
+    if (!ordersAreNull()) {
+      ordersObject.clear();
+    }
+    addOrders(newOrders, refreshRelations);
+  }
 
-    if (refreshRelations) {
+  /**
+   * @see magellan.library.Unit#setOrders2(java.util.Collection)
+   */
+  public void setOrders2(Collection<Order> newOrders) {
+    setOrders2(newOrders, true);
+  }
+
+  /**
+   * @see magellan.library.Unit#setOrders2(java.util.Collection, boolean)
+   */
+  public void setOrders2(Collection<Order> newOrders, boolean refresh) {
+    if (newOrders == null) {
+      ordersObject = null;
+      return;
+    }
+
+    getOrdersObject().clear();
+    getOrdersObject().addAll(newOrders);
+
+    if (refresh) {
       refreshRelations();
     }
   }
 
   /**
-   * Delivers a readonly collection of alle orders of this unit.
+   * @see magellan.library.Unit#getOrders()
+   * @deprecated Use {@link #getOrders2()}
    */
+  @Deprecated
   public List<String> getOrders() {
-    final List<String> orders = ordersObject.getOrders();
-    if (orders != null)
-      return Collections.unmodifiableList(orders);
-    return Collections.emptyList();
+    if (ordersAreNull())
+      return Collections.emptyList();
+    List<String> list = new ArrayList<String>(getOrders2().size());
+    for (Order order : getOrders2()) {
+      list.add(order.toString());
+    }
+    return Collections.unmodifiableList(list);
+  }
+
+  /**
+   * @see magellan.library.Unit#getOrders2()
+   */
+  public Orders getOrders2() {
+    if (ordersAreNull())
+      return new MagellanOrdersImplementation(this);
+    return ordersObject.getView();
   }
 
   /**
    * Sets the group this unit belongs to.
    * 
    * @param g the group of the unit
+   * @see magellan.library.Unit#setGroup(magellan.library.Group)
    */
   public void setGroup(Group g) {
     if (group != null) {
@@ -413,6 +640,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Returns the group this unit belongs to.
    * 
    * @return the group this unit belongs to
+   * @see magellan.library.Unit#getGroup()
    */
   public Group getGroup() {
     return group;
@@ -575,6 +803,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     return faction;
   }
 
+  public Locale getLocale() {
+    if (getFaction() == null)
+      return Locales.getOrderLocale();
+    return getFaction().getLocale();
+  }
+
   /**
    * Sets the building this unit is staying in. If the unit already is in another building this
    * method removes it from the unit collection of that building.
@@ -653,23 +887,23 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Returns the name of this unit's race including the prefixes of itself, its faction and group if
    * it has such and those prefixes are set.
    * 
-   * @param data The GameData
+   * @param gdata The GameData
    * @return the name or null if this unit's race or its name is not set.
    */
-  public String getRaceName(GameData data) {
+  public String getRaceName(GameData gdata) {
     Race tempRace = getDisguiseRace();
     if (tempRace == null) {
       tempRace = getRace();
     }
     if (tempRace != null) {
       if (getRaceNamePrefix() != null)
-        return data.getTranslation(getRaceNamePrefix()) + tempRace.getName().toLowerCase();
+        return gdata.getTranslation(getRaceNamePrefix()) + tempRace.getName().toLowerCase();
       else {
         if ((group != null) && (group.getRaceNamePrefix() != null))
-          return data.getTranslation(group.getRaceNamePrefix()) + tempRace.getName().toLowerCase();
+          return gdata.getTranslation(group.getRaceNamePrefix()) + tempRace.getName().toLowerCase();
         else {
           if ((faction != null) && (faction.getRaceNamePrefix() != null))
-            return data.getTranslation(faction.getRaceNamePrefix())
+            return gdata.getTranslation(faction.getRaceNamePrefix())
                 + tempRace.getName().toLowerCase();
           else
             return tempRace.getName();
@@ -776,7 +1010,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Returns all orders including the orders necessary to issue the creation of all the child temp
    * units of this unit.
    */
-  public List<String> getCompleteOrders() {
+  public Orders getCompleteOrders() {
     return getCompleteOrders(false);
   }
 
@@ -787,47 +1021,50 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @param writeUnitTagsAsVorlageComment If this is <code>true</code>, unit tags are also added as
    *          Vorlage comments
    */
-  public List<String> getCompleteOrders(boolean writeUnitTagsAsVorlageComment) {
-    final List<String> cmds = new LinkedList<String>();
+  public Orders getCompleteOrders(boolean writeUnitTagsAsVorlageComment) {
+    final List<Order> cmds = new LinkedList<Order>();
     if (!ordersAreNull()) {
-      cmds.addAll(ordersObject.getOrders());
+      cmds.addAll(ordersObject);
     }
 
     if (writeUnitTagsAsVorlageComment && hasTags()) {
       for (String tag : getTagMap().keySet()) {
-        cmds.add("// #after 1 { #tag EINHEIT " + tag.replace(' ', '~') + " '" + getTag(tag) + "' }");
+        cmds.add(createOrder(EresseaConstants.O_PCOMMENT + " #after 1 { #tag EINHEIT "
+            + tag.replace(' ', '~') + " '" + getTag(tag) + "' }"));
       }
     }
 
     cmds.addAll(getTempOrders(writeUnitTagsAsVorlageComment));
 
-    return cmds;
+    return new MagellanOrdersImplementation(this, Collections.unmodifiableList(cmds));
   }
 
   /**
    * Returns the orders necessary to issue the creation of all the child temp units of this unit.
    */
-  protected List<String> getTempOrders(boolean writeUnitTagsAsVorlageComment) {
-    final List<String> cmds = new LinkedList<String>();
+  protected List<Order> getTempOrders(boolean writeUnitTagsAsVorlageComment) {
+    final List<Order> cmds = new LinkedList<Order>();
 
     for (TempUnit u : tempUnits()) {
-      cmds.add(Resources.getOrderTranslation(EresseaConstants.O_MAKE) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_TEMP) + " " + u.getID().toString());
+      // FIXME should use OrderFactory
+      cmds.add(createOrder(Resources.getOrderTranslation(EresseaConstants.O_MAKE) + " "
+          + Resources.getOrderTranslation(EresseaConstants.O_TEMP) + " " + u.getID().toString()));
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
       if (u.isOrdersConfirmed()) {
-        cmds.add(MagellanUnitImpl.CONFIRMEDTEMPCOMMENT);
+        cmds.add(createOrder(MagellanUnitImpl.CONFIRMEDTEMPCOMMENT));
       }
 
       if (u.hasTags()) {
         final Map<String, String> tempUnitTags = u.getTagMap();
         for (String tag : u.getTagMap().keySet()) {
           final String value = tempUnitTags.get(tag);
-          cmds.add(MagellanUnitImpl.TAG_PREFIX_TEMP + tag + " " + value.replace(' ', '~'));
+          cmds.add(createOrder(MagellanUnitImpl.TAG_PREFIX_TEMP + tag + " "
+              + value.replace(' ', '~')));
         }
       }
 
-      cmds.add(Resources.getOrderTranslation(EresseaConstants.O_END));
+      cmds.add(createOrder(Resources.getOrderTranslation(EresseaConstants.O_END)));
     }
 
     return cmds;
@@ -841,7 +1078,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * 
    * @throws IllegalArgumentException If <code>key</code> is negative
    */
-  public TempUnit createTemp(GameData data, UnitID key) {
+  public TempUnit createTemp(GameData gdata, UnitID key) {
     if ((key).intValue() >= 0)
       throw new IllegalArgumentException(
           "Unit.createTemp(): cannot create temp unit with non-negative ID.");
@@ -880,8 +1117,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     }
 
     // add to tempunits in gamedata
-    if ((getRegion() != null) && (getRegion().getData() != null)) {
-      data.addTempUnit(t);
+    if ((getRegion() != null) && (getData() != null)) {
+      gdata.addTempUnit(t);
     } else {
       MagellanUnitImpl.log
           .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
@@ -895,7 +1132,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Removes a temp unit with this unit as the parent completely from the game data.
    */
-  public void deleteTemp(UnitID key, GameData data) {
+  public void deleteTemp(UnitID key, GameData gdata) {
     final TempUnit t = (TempUnit) removeTemp(key);
 
     if (t != null) {
@@ -914,7 +1151,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       t.clearCache();
 
       t.setParent(null);
-      data.removeTemp(key);
+      gdata.removeTemp(key);
       // data.tempUnits().remove(key);
 
       // enforce refreshing of unit relations in the whole region
@@ -926,8 +1163,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Resets the cache of this unit to its uninitalized state.
+   * Resets the cache of this unit to its uninitialized state.
    */
+  @SuppressWarnings("deprecation")
   private void invalidateCache() {
     if (hasCache()) {
       final Cache cache1 = getCache();
@@ -937,7 +1175,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       cache1.unitWeight = -1;
       cache1.modifiedUnitWeight = -1;
       cache1.modifiedPersons = -1;
-      cache1.modifiedCombatStatus = -2;
+      cache1.modifiedCombatStatus = CS_INIT;
       cache1.modifiedUnaidedValidated = false;
       cache1.modifiedGuard = -1;
     }
@@ -962,7 +1200,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * the refreshRelations() method has to be invoked.
    */
   @Override
-  protected Collection<UnitRelation> getRelations() {
+  public List<UnitRelation> getRelations() {
     final Cache cache1 = getCache();
     if (cache1.relations == null) {
       cache1.relations = new ArrayList<UnitRelation>();
@@ -993,6 +1231,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * deliver all directly related units
+   * 
+   * @see magellan.library.Unit#getRelatedUnits(java.util.Collection)
    */
   public void getRelatedUnits(Collection<Unit> units) {
     units.add(this);
@@ -1008,11 +1248,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Recursively retrieves all units that are related to this unit via one of the specified
-   * relations (excatly, not as subclasses).
+   * relations (exactly, not as subclasses).
    * 
    * @param units all units gathered so far to prevent loops.
    * @param relations a set of classes naming the types of relations that are eligible for regarding
    *          a unit as related to some other unit.
+   * @see magellan.library.Unit#getRelatedUnits(java.util.Set, java.util.Set)
    */
   public void getRelatedUnits(Set<Unit> units, Set<UnitRelation.ID> relations) {
     units.add(this);
@@ -1075,6 +1316,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @see magellan.library.Unit#getModifiedSkill(magellan.library.rules.SkillType)
    */
   public Skill getModifiedSkill(SkillType type) {
+    if (type == null)
+      return null;
     Skill s = null;
 
     if (!hasCache() || (getCache().modifiedSkills == null)) {
@@ -1344,6 +1587,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns the unit container this belongs to. (ship, building or null)
+   * 
+   * @see magellan.library.Unit#getUnitContainer()
    */
   public UnitContainer getUnitContainer() {
     if (getShip() != null)
@@ -1375,7 +1620,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * Returns the skill of the specified type if the unit has such a skill, else null is returned.
    */
   public Skill getSkill(SkillType type) {
-    return (skills != null) ? (Skill) skills.get(type.getID()) : null;
+    return (type != null && skills != null) ? (Skill) skills.get(type.getID()) : null;
   }
 
   /**
@@ -1411,15 +1656,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       return Collections.unmodifiableCollection(skills.values());
     else
       return Collections.emptyList();
-  }
-
-  // FIXME deprecate?
-  public boolean isSkillsCopied() {
-    return skillsCopied;
-  }
-
-  public void setSkillsCopied(boolean skillsCopied) {
-    this.skillsCopied = skillsCopied;
   }
 
   /**
@@ -1509,7 +1745,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Returns a collection of the itemrelations concerning the given Item.
+   * Returns a collection of the item relations concerning the given Item.
    * 
    * @return a collection of ItemTransferRelation objects.
    */
@@ -1527,7 +1763,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Returns a collection of the personrelations associated with this unit
+   * Returns a collection of the person relations associated with this unit
    * 
    * @return a collection of PersonTransferRelation objects.
    */
@@ -1587,20 +1823,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     // 3a. now check relations for possible modifications; RESERVE orders first
     for (UnitRelation rel : getRelations()) {
       if (rel instanceof ReserveRelation) {
-        final ReserveRelation itr = (ReserveRelation) rel;
-        Item modifiedItem = cache1.modifiedItems.get(itr.itemType.getID());
+        final ReserveRelation resr = (ReserveRelation) rel;
+        Item modifiedItem = cache1.modifiedItems.get(resr.itemType.getID());
 
         if (modifiedItem != null) { // the transferred item can be found among this unit's items
           // nothing to do
         } else { // the transferred item is not among the items the unit already has
-
-          if (equals(itr.source)) {
-            modifiedItem = new Item(itr.itemType, -itr.amount);
-          } else {
-            modifiedItem = new Item(itr.itemType, itr.amount);
-          }
-
-          cache1.modifiedItems.put(itr.itemType.getID(), modifiedItem);
+          modifiedItem = new Item(resr.itemType, 0);
+          cache1.modifiedItems.put(resr.itemType.getID(), modifiedItem);
         }
       }
     }
@@ -1614,7 +1844,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
           if (equals(itr.source)) {
             modifiedItem.setAmount(modifiedItem.getAmount() - itr.amount);
-          } else {
+          }
+          if (equals(itr.target)) {
             modifiedItem.setAmount(modifiedItem.getAmount() + itr.amount);
           }
         } else { // the transferred item is not among the items the unit already has
@@ -1638,14 +1869,18 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       if (rel instanceof RecruitmentRelation) {
         final RecruitmentRelation rr = (RecruitmentRelation) rel;
 
-        final Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_USILVER);
+        Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_USILVER);
 
         if (modifiedItem != null) {
-          final Race recruitmentRace = rr.race;
-
-          if ((recruitmentRace != null) && (recruitmentRace.getRecruitmentCosts() > 0)) {
-            modifiedItem.setAmount(modifiedItem.getAmount()
-                - (rr.amount * recruitmentRace.getRecruitmentCosts()));
+          modifiedItem.setAmount(modifiedItem.getAmount() - rr.costs);
+        } else {
+          if (equals(rr.target)) {
+            modifiedItem =
+                new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER), -rr.costs);
+            // } else {
+            // modifiedItem = new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER),
+            // rr.costs);
+            cache1.modifiedItems.put(EresseaConstants.I_USILVER, modifiedItem);
           }
         }
       }
@@ -1685,10 +1920,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public int getModifiedCombatStatus() {
     final Cache cache1 = getCache();
-    if (cache1.modifiedCombatStatus == -2) {
+    if (cache1.modifiedCombatStatus == CS_INIT) {
       cache1.modifiedCombatStatus = getCombatStatus();
       // we only need to check relations for units, we know the
-      // tha actual combat status - do we?
+      // the actual combat status - do we?
       if (cache1.modifiedCombatStatus > -1) {
         for (CombatStatusRelation rel : getRelations(CombatStatusRelation.class)) {
           cache1.modifiedCombatStatus = rel.newCombatStatus;
@@ -1701,7 +1936,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
   /**
    * Returns the new (expected) guard value of this unit as it would be after the orders of this
-   * unit (and the unit is still allive next turn) (@TODO: do we need a region.getModifiedGuards -
+   * unit (and the unit is still alive next turn) (@TODO: do we need a region.getModifiedGuards -
    * List? guess and hope not)
    */
   public int getModifiedGuard() {
@@ -1725,7 +1960,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       cache1.modifiedUnaidedValidated = true;
       cache1.modifiedUnaided = isUnaided();
       // we only need to check relations for units, we know the
-      // tha actual combat status - do we?
+      // the actual combat status - do we?
       if (getCombatStatus() > -1) {
         for (CombatStatusRelation rel : getRelations(CombatStatusRelation.class)) {
           if (rel.newUnaidedSet) {
@@ -1755,7 +1990,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   @Deprecated
   public int getWeight() {
-    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getWeight(this);
+    return getData().getGameSpecificStuff().getMovementEvaluator().getWeight(this);
   }
 
   /**
@@ -1778,8 +2013,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   @Deprecated
   public int getPayloadOnHorse() {
-    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(
-        this);
+    return getData().getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(this);
   }
 
   /**
@@ -1794,8 +2028,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   @Deprecated
   public int getPayloadOnFoot() {
-    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(
-        this);
+    return getData().getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(this);
   }
 
   /**
@@ -1805,7 +2038,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   @Deprecated
   public int getLoad() {
-    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getLoad(this);
+    return getData().getGameSpecificStuff().getMovementEvaluator().getLoad(this);
   }
 
   /**
@@ -1816,8 +2049,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   @Deprecated
   public int getModifiedLoad() {
-    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
-        .getModifiedLoad(this);
+    return getData().getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(this);
   }
 
   /**
@@ -1828,7 +2060,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   @Deprecated
   public int getRadius() {
-    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getRadius(this);
+    return getData().getGameSpecificStuff().getMovementEvaluator().getRadius(this);
   }
 
   /**
@@ -1841,8 +2073,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   @Deprecated
   public int getModifiedWeight() {
-    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(
-        this);
+    return getData().getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(this);
   }
 
   /**
@@ -1947,6 +2178,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * remove relations that are originating from us with a line number &gt;= <tt>from</tt>
    */
+  @Deprecated
   private void removeRelationsOriginatingFromUs(int from) {
     final Collection<UnitRelation> deathRow = new LinkedList<UnitRelation>();
 
@@ -2011,14 +2243,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @param from Start from this line
    */
   public synchronized void refreshRelations(int from) {
-    if (ordersObject.ordersAreNull() || (getRegion() == null))
+    if (ordersAreNull() || (getRegion() == null))
       return;
 
-    invalidateCache();
-    removeRelationsOriginatingFromUs(from);
-    // FIXME shouldn't access GameSpecific like this
-    addAndSpreadRelations(getRegion().getData().getGameSpecificStuff().getRelationFactory()
-        .createRelations(this, from));
+    getData().getGameSpecificStuff().getRelationFactory().createRelations(this, from);
+    // invalidateCache();
+    // removeRelationsOriginatingFromUs(from);
+    // addAndSpreadRelations(getData().getGameSpecificStuff().getRelationFactory().createRelations(
+    // this, from));
     // TODO invalidateCache();
   }
 
@@ -2101,134 +2333,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   }
 
   /**
-   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
-   * operation.
-   * 
-   * @return <tt>true</tt> if the order was successfully added.
-   */
-  public boolean addOrder(String order) {
-    return addOrder(order, false, 0);
-  }
-
-  /**
-   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
-   * operation.
-   * 
-   * @param order the order to add.
-   * @param replace if <tt>true</tt>, the order replaces any other of the unit's orders of the same
-   *          type. If <tt>false</tt> the order is simply added.
-   * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
-   *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
-   *          replaced but not all "BENENNE" orders.
-   * @return <tt>true</tt> if the order was successfully added.
-   */
-  public boolean addOrder(String order, boolean replace, int length) {
-    if ((order == null) || order.trim().equals("") || (replace && (length < 1)))
-      return false;
-
-    if (replace) {
-      removeOrder(order, length);
-    }
-
-    addOrderAt(-1, order);
-
-    return true;
-  }
-
-  /**
-   * Removes orders that match the given order up to a given length.
-   * 
-   * @param order pattern to remove
-   * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
-   *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
-   *          replaced but not all "BENENNE" orders.
-   * @return <tt>true</tt> if at least one order was removed
-   */
-  public boolean removeOrder(String order, int length) {
-    if ((order == null) || order.trim().equals(""))
-      return false;
-
-    // parse order until there are enough match tokens
-    int tokenCounter = 0;
-    final Collection<OrderToken> matchTokens = new LinkedList<OrderToken>();
-    OrderTokenizer ct = new OrderTokenizer(new StringReader(order));
-    OrderToken t = ct.getNextToken();
-
-    while ((t.ttype != OrderToken.TT_EOC) && (tokenCounter++ < length)) {
-      matchTokens.add(t);
-      t = ct.getNextToken();
-    }
-
-    // order does not contain enough match tokens, abort
-    if (matchTokens.size() < length)
-      return false;
-
-    boolean result = false;
-
-    // if replace, delete matching orders first
-    if (!ordersAreNull()) {
-      boolean tempBlock = false;
-
-      // cycle through this unit's orders
-      for (final ListIterator<String> cmds = ordersObject.getOrders().listIterator(); cmds
-          .hasNext();) {
-        final String cmd = cmds.next();
-        ct = new OrderTokenizer(new StringReader(cmd));
-        t = ct.getNextToken();
-
-        // skip empty orders and comments
-        if ((OrderToken.TT_EOC == t.ttype) || (OrderToken.TT_COMMENT == t.ttype)) {
-          continue;
-        }
-
-        if (false == tempBlock) {
-          if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE))) {
-            t = ct.getNextToken();
-
-            if (OrderToken.TT_EOC == t.ttype) {
-              continue;
-            } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
-              tempBlock = true;
-
-              continue;
-            }
-          } else {
-            // compare the current unit order and tokens of the one to add
-            boolean removeOrder = true;
-
-            for (final Iterator<OrderToken> iter = matchTokens.iterator(); iter.hasNext()
-                && (t.ttype != OrderToken.TT_EOC);) {
-              final OrderToken matchToken = iter.next();
-
-              if (!(t.equalsToken(matchToken.getText()) || matchToken.equalsToken(t.getText()))) {
-                removeOrder = false;
-
-                break;
-              }
-
-              t = ct.getNextToken();
-            }
-
-            if (removeOrder) {
-              cmds.remove();
-              result = true;
-            }
-
-            continue;
-          }
-        } else {
-          if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END))) {
-            tempBlock = false;
-
-            continue;
-          }
-        }
-      }
-    }
-    return result;
-  }
-
-  /**
    * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
    * removes the corresponding orders from this unit. Uses the default order locale to parse the
    * orders.
@@ -2238,8 +2342,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
-  public int extractTempUnits(GameData data, int tempSortIndex) {
-    return extractTempUnits(data, tempSortIndex, Locales.getOrderLocale());
+  public int extractTempUnits(GameData gdata, int tempSortIndex) {
+    return extractTempUnits(gdata, tempSortIndex, Locales.getOrderLocale());
   }
 
   /**
@@ -2252,40 +2356,33 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
-  public int extractTempUnits(GameData data, int tempSortIndex, Locale locale) {
+  public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale) {
     if (!ordersAreNull()) {
       TempUnit tempUnit = null;
 
-      for (final Iterator<String> cmdIterator = ordersObject.getOrders().iterator(); cmdIterator
-          .hasNext();) {
-        final String line = cmdIterator.next();
-        final OrderTokenizer ct = new OrderTokenizer(new StringReader(line));
-        OrderToken token = ct.getNextToken();
+      for (final Iterator<Order> cmdIterator = ordersObject.iterator(); cmdIterator.hasNext();) {
+        final Order line = cmdIterator.next();
 
         if (tempUnit == null) {
-          if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE, locale))) {
-            token = ct.getNextToken();
-
-            if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP, locale))) {
-              token = ct.getNextToken();
-
+          if (line.isValid() && !line.isEmpty()
+              && ordersObject.isToken(line, 0, EresseaConstants.O_MAKE)) {
+            if (line.getToken(1).getText().toLowerCase().startsWith(
+                Resources.getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase())) {
+              // if (ordersObject.isToken(line, 1, EresseaConstants.O_TEMP)) {
               try {
                 final int base = (getID()).getRadix();
-                final int idInt = IDBaseConverter.parse(token.getText(), base);
-                final UnitID orderTempID = UnitID.createUnitID(idInt * -1, base);
+                final UnitID orderTempID = UnitID.createUnitID(line.getToken(1).getText(), base);
 
                 if (getRegion() == null || getRegion().getUnit(orderTempID) == null) {
-                  tempUnit = createTemp(data, orderTempID);
+                  tempUnit = createTemp(gdata, orderTempID);
                   tempUnit.setSortIndex(++tempSortIndex);
                   cmdIterator.remove();
-                  token = ct.getNextToken();
-
-                  if (token.ttype != OrderToken.TT_EOC) {
-                    tempUnit.addOrders(Resources.getOrderTranslation(EresseaConstants.O_NAME,
-                        locale)
+                  if (line.size() > 4) {
+                    tempUnit.addOrders(Collections.singleton(Resources.getOrderTranslation(
+                        EresseaConstants.O_NAME, locale)
                         + " "
                         + Resources.getOrderTranslation(EresseaConstants.O_UNIT, locale)
-                        + " " + token.getText(), false);
+                        + " " + line.getToken(3).getText()), false);
                   }
                 } else {
                   MagellanUnitImpl.log.warn("Unit.extractTempUnits(): region " + getRegion()
@@ -2294,13 +2391,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
                       + "unit instead of being created as a unit in its own right.");
                 }
               } catch (final NumberFormatException e) {
+                // temp unit invalid -- don't create it
               }
             }
           }
         } else {
           cmdIterator.remove();
 
-          if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END, locale))) {
+          if (ordersObject.isToken(line, 0, EresseaConstants.O_END)) {
             tempUnit = null;
           } else {
             scanTempOrder(tempUnit, line);
@@ -2312,16 +2410,16 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     return tempSortIndex;
   }
 
-  private void scanTempOrder(TempUnit tempUnit, String line) {
+  private void scanTempOrder(TempUnit tempUnit, Order line) {
     boolean scanned = false;
-    if (MagellanUnitImpl.CONFIRMEDTEMPCOMMENT.equals(line.trim())) {
+    if (MagellanUnitImpl.CONFIRMEDTEMPCOMMENT.equals(line.toString())) {
       tempUnit.setOrdersConfirmed(true);
       scanned = true;
     }
-    if (!scanned && line.trim().startsWith(MagellanUnitImpl.TAG_PREFIX_TEMP)) {
+    if (!scanned && !line.isEmpty() && line.getToken(0).equals(MagellanUnitImpl.TAG_PREFIX_TEMP)) {
       String tag = null;
       String value = null;
-      final StringTokenizer st = new StringTokenizer(line);
+      final StringTokenizer st = new StringTokenizer(line.getText());
       if (st.hasMoreTokens()) {
         // ignore TAG_PREFIX_TEMP
         st.nextToken();
@@ -2338,7 +2436,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
       }
     }
     if (!scanned) {
-      tempUnit.addOrders(line, false);
+      tempUnit.addOrder(line, false);
     }
   }
 
@@ -2358,7 +2456,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public String putTag(String tag, String value) {
     if (tag.equals("$tm_trigger")) {
-
+      // Faction f = (this).getFaction();
+      // (new E3CommandParser(data, ExtendedCommandsProvider.createHelper(null, data, null, f)))
+      // .execute(f);
     }
 
     if (tagMap == null) {
@@ -2414,154 +2514,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public boolean hasTags() {
     return (tagMap != null) && !tagMap.isEmpty();
-  }
-
-  /**
-   * a (hopefully) small class for handling orders in the Unit object
-   */
-  private static class Orders {
-    private List<String> orders = null;
-    private boolean changed = false;
-
-    /**
-     * Creates a new Orders object.
-     */
-    public Orders() {
-    }
-
-    /**
-     * Returns the number of orders (lines).
-     * 
-     * @return The number of orders
-     */
-    public int getSize() {
-      return (orders == null) ? 0 : orders.size();
-    }
-
-    /**
-     * Adds all Lines in <code>newOrders</code> to the orders
-     * 
-     * @param newOrders A collections of strings that are order lines.
-     * @return The number of orders <em>befor</em> addition
-     */
-    public int addOrders(Collection<String> newOrders) {
-      final int oldSize = getSize();
-
-      if (newOrders == null)
-        return oldSize;
-
-      if (orders == null) {
-        orders = new ArrayList<String>(newOrders.size());
-      }
-
-      orders.addAll(newOrders);
-      changed = true;
-
-      return oldSize;
-    }
-
-    /**
-     * Replaces the orders by <code>newOrders</code>.
-     * 
-     * @param newOrders A collections of strings that are order lines.
-     */
-    public void setOrders(Collection<String> newOrders) {
-      clearOrders();
-      addOrders(newOrders);
-    }
-
-    /**
-     * Returns the collection of orders which is backed by the orders and <i>not</i> immutable and
-     * may be <code>null</code>.
-     */
-    public List<String> getOrders() {
-      if (orders == null)
-        return null;
-      return orders;
-    }
-
-    /**
-     * Deletes all orders and internally sets them to <code>null</code>.
-     */
-    public void removeOrders() {
-      clearOrders();
-      orders = null;
-    }
-
-    /**
-     * Deletes all orders.
-     */
-    public void clearOrders() {
-      if (orders != null) {
-        orders.clear();
-      }
-    }
-
-    /**
-     * Returns <code>true</code> iff the orders are <code>null</code>.
-     */
-    public boolean ordersAreNull() {
-      return orders == null;
-    }
-
-    /**
-     * Inserts the specified order at the end.
-     * 
-     * @param newOrders
-     */
-    public void addOrder(String newOrders) {
-      if (orders == null) {
-        orders = new ArrayList<String>(1);
-      }
-
-      orders.add(newOrders);
-    }
-
-    /**
-     * Inserts the specified order at the specified position.
-     * 
-     * @param i An index between 0 and getOrders().getSize() (inclusively)
-     * @param newOrders
-     */
-    public void addOrderAt(int i, String newOrders) {
-      if (orders == null) {
-        orders = new ArrayList<String>(1);
-      }
-
-      orders.add(i, newOrders);
-    }
-
-    /**
-     * Removes the order at the specified position. Shifts any subsequent elements to the left
-     * (subtracts one from their indices).
-     * 
-     * @param i the index of the element to removed. The first order is 0!
-     * @throws IndexOutOfBoundsException if the index is out of range (index &lt; 0 || index &gt;=
-     *           getSize()).
-     */
-    public void removeOrderAt(int i) {
-      if (orders == null) {
-        orders = new ArrayList<String>(1);
-      }
-
-      orders.remove(i);
-    }
-
-    /**
-     * Returns <code>true</code> if orders have been added and
-     * <code>setOrdersChanged(<code>false</code>)</code> has not been called subsequently. Or if
-     * <code>setOrdersChanged(<code>true</code>)</code> has been called.
-     */
-    public boolean ordersHaveChanged() {
-      return changed;
-    }
-
-    /**
-     * Manual override of ordersHaveChanged status.
-     */
-    public void setOrdersChanged(boolean changed) {
-      this.changed = changed;
-    }
   }
 
   /**
@@ -3078,11 +3030,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * 
    * @return List of coordinates from start to end region.
    */
-  public List<CoordinateID> getPastMovement(GameData data) {
+  public List<CoordinateID> getPastMovement(GameData gdata) {
     final Cache cache1 = getCache();
     if (cache1.movementPath == null) {
       // the result may be null!
-      cache1.movementPath = Regions.getMovement(data, this);
+      cache1.movementPath = Regions.getMovement(gdata, this);
     }
 
     if (cache1.movementPath == null)
@@ -3099,7 +3051,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   @Deprecated
   public boolean isPastMovementPassive() {
-    return isPastMovementPassive(getRegion().getData().getGameSpecificStuff());
+    return isPastMovementPassive(getData().getGameSpecificStuff());
   }
 
   public boolean isPastMovementPassive(GameSpecificStuff gameSpecificStuff) {
@@ -3125,6 +3077,28 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public GameData getData() {
     return data;
+  }
+
+  /**
+   * @see magellan.library.impl.MagellanRelatedImpl#clearRelations()
+   */
+  public void clearRelations() {
+    if (getCache().relations != null) {
+      getCache().relations.clear();
+    }
+    invalidateCache();
+    // getCache().clear();
+  }
+
+  /**
+   * @see magellan.library.Unit#reparseOrders()
+   */
+  public void reparseOrders() {
+    if (!ordersAreNull()) {
+      for (int i = 0; i < getOrdersObject().size(); ++i) {
+        getOrdersObject().set(i, createOrder(ordersObject.get(i).getText()));
+      }
+    }
   }
 
 }

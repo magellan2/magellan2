@@ -1,6 +1,7 @@
 package magellan.library.relation;
 
 import magellan.library.Named;
+import magellan.library.Related;
 import magellan.library.Unit;
 
 /**
@@ -22,6 +23,17 @@ public class RenameNamedRelation extends UnitRelation {
     super(s, line);
     this.named = named;
     this.name = name;
+  }
+
+  /**
+   * Attaches an order to all report objects it is relevant to. source and named.
+   */
+  @Override
+  public void add() {
+    super.add();
+    if (named instanceof Related && named != source && named != origin) {
+      ((Related) named).addRelation(this);
+    }
   }
 
 }

@@ -237,13 +237,12 @@ public class GameDataBuilder {
 
   protected Skill addSkill(Unit unit, String name, int level, int change, boolean changed) {
 
-    final SkillType skt =
-        unit.getRegion().getData().rules.getSkillType(StringID.create(name), true);
+    final SkillType skt = unit.getData().rules.getSkillType(StringID.create(name), true);
     final int raceBonus = unit.getRace().getSkillBonus(skt);
     final int points = Skill.getPointsAtLevel(level - raceBonus);
 
     final Skill skill =
-        new Skill(skt, points, level, unit.getPersons(), unit.getRegion().getData().noSkillPoints);
+        new Skill(skt, points, level, unit.getPersons(), unit.getData().noSkillPoints);
 
     skill.setChangeLevel(change);
 

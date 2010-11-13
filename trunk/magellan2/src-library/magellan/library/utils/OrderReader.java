@@ -151,6 +151,7 @@ public class OrderReader {
     while ((line = stream.readLine()) != null) {
       StringTokenizer tokenizer = new StringTokenizer(line, " ;");
 
+      // FIXME adapt to new Order class
       /*
        * There was a problem using this StringTokenizer: If a unit had an order like
        * " ; Einheit hat Kommando" the tokenizer skipped the leading semicolon and tried to parse a
@@ -166,7 +167,7 @@ public class OrderReader {
             currentUnit.setOrdersConfirmed(true);
           } else if ((ignoreSemicolonComments == false) && (rest.startsWith("ECHECK") == false)) {
             // add all other comments except "; ECHECK ..." to the orders
-            currentUnit.addOrders(line, isRefreshUnitRelations());
+            currentUnit.addOrder(line, isRefreshUnitRelations());
           }
         }
 
@@ -176,7 +177,7 @@ public class OrderReader {
       if (!tokenizer.hasMoreTokens() || line.trim().equals("")) {
         // empty line
         if (currentUnit != null) {
-          currentUnit.addOrders(line, isRefreshUnitRelations());
+          currentUnit.addOrder(line, isRefreshUnitRelations());
         }
 
         continue;
@@ -187,6 +188,7 @@ public class OrderReader {
       if (naechsterOrder.startsWith(token)) {
         /* turn orders into 'real' temp units */
         if (currentUnit != null) {
+          // FIXME find correct sortIndex
           currentUnit.extractTempUnits(data, 0, currentLocale);
         }
 
@@ -268,7 +270,7 @@ public class OrderReader {
           currentUnit = null;
         }
       } else if (currentUnit != null) {
-        currentUnit.addOrders(line, isRefreshUnitRelations());
+        currentUnit.addOrder(line, isRefreshUnitRelations());
       }
     }
   }

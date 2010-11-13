@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import magellan.client.Client;
-import magellan.client.event.UnitOrdersEvent;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.library.Building;
 import magellan.library.Faction;
@@ -39,6 +38,7 @@ import magellan.library.HasRegion;
 import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
+import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.RegionResource;
 import magellan.library.Ship;
@@ -662,13 +662,11 @@ public class ExtendedCommandsHelper {
     if (unit == null)
       return configuration;
 
-    Collection<String> orders = unit.getOrders();
+    Collection<Order> orders = unit.getOrders2();
     if (orders == null)
       return configuration;
-    for (String order : orders) {
-      if (order == null) {
-        continue;
-      }
+    for (Order o : orders) {
+      String order = o.getText();
       if (order.startsWith(CONFIGURATION_MARKER)) {
         // okay, we found a line with the configuration
         String line = order.substring(CONFIGURATION_MARKER.length() + 1);
@@ -709,9 +707,10 @@ public class ExtendedCommandsHelper {
    */
   public void updateUnit(Unit u) {
     u.setOrdersChanged(true);
-    if (client != null) {
-      client.getDispatcher().fire(new UnitOrdersEvent(this, u));
-    }
+    // FIXME reactivate
+    // if (client != null) {
+    // client.getDispatcher().fire(new UnitOrdersEvent(this, u));
+    // }
   }
 
   /**

@@ -1115,12 +1115,20 @@ public abstract class GameData implements Cloneable, Addeable {
     // remove double potions
     postProcessPotions();
 
+    // do game specific post processing
+    getGameSpecificStuff().postProcess(this);
+
+    // unfortunately, this is necessary because there are parse errors when orders are added to
+    // units before the report has been completely read...
+    for (Unit u : getUnits()) {
+      u.reparseOrders();
+      if (!u.ordersAreNull()) {
+        // u.setOrders(u.getOrders(), false);
+      }
+    }
     for (Region r : getRegions()) {
       r.refreshUnitRelations();
     }
-
-    // do game specific post processing
-    getGameSpecificStuff().postProcess(this);
 
     postProcessed = true;
 

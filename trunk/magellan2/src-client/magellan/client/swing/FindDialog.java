@@ -59,6 +59,7 @@ import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Named;
+import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.TempUnit;
@@ -851,11 +852,11 @@ public class FindDialog extends InternationalizedDataDialog implements
    */
   private boolean filterCmd(Unique item, Collection<Pattern> patterns) {
     boolean retVal = false;
-    Collection<String> cmds = getCmds(item);
+    Collection<Order> cmds = getCmds(item);
 
     if (cmds != null) {
-      for (String cmd : cmds) {
-        if (match(cmd, patterns))
+      for (Order cmd : cmds) {
+        if (match(cmd.getText(), patterns))
           return true;
       }
     }
@@ -881,11 +882,11 @@ public class FindDialog extends InternationalizedDataDialog implements
    * @param item
    * @return
    */
-  private Collection<String> getCmds(Object item) {
-    Collection<String> retVal = null;
+  private Collection<Order> getCmds(Object item) {
+    Collection<Order> retVal = null;
 
     if (item instanceof Unit) {
-      retVal = ((Unit) item).getOrders();
+      retVal = ((Unit) item).getOrders2();
     }
 
     return retVal;

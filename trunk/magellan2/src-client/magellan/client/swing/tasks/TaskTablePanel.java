@@ -151,7 +151,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     initInspectors(getGameData());
     initUpdateThread();
     refreshProblems();
-
   }
 
   private void initGUI() {
@@ -162,8 +161,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     sorter.setTableHeader(table.getTableHeader()); // NEW
 
     // HACK: narrower columns for problem type and line numbers
-    table.getColumn(table.getColumnName(TaskTableModel.TYPE_POS)).setPreferredWidth(10);
-    table.getColumn(table.getColumnName(TaskTableModel.LINE_POS)).setPreferredWidth(10);
+    table.getColumn(table.getColumnName(TaskTableModel.PROBLEM_POS)).setPreferredWidth(200);
+    table.getColumn(table.getColumnName(TaskTableModel.OBJECT_POS)).setPreferredWidth(50);
+    table.getColumn(table.getColumnName(TaskTableModel.REGION_POS)).setPreferredWidth(50);
+    table.getColumn(table.getColumnName(TaskTableModel.FACTION_POS)).setPreferredWidth(50);
+    table.getColumn(table.getColumnName(TaskTableModel.LINE_POS)).setPreferredWidth(6);
+    table.getColumn(table.getColumnName(TaskTableModel.TYPE_POS)).setPreferredWidth(6);
 
     // allow reordering of headers
     table.getTableHeader().setReorderingAllowed(true);

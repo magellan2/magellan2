@@ -13,8 +13,8 @@
 
 package magellan.library.gamebinding;
 
-import java.util.Collection;
-
+import magellan.library.Order;
+import magellan.library.Orders;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 
@@ -26,6 +26,12 @@ import magellan.library.UnitContainer;
  * @version $Revision: 305 $
  */
 public interface OrderChanger {
+
+  /**
+   * Turns line of text into an Order object.
+   */
+  public Order createOrder(Unit unit, String string);
+
   /**
    * Adds a KÄMPFE order. TODO: state are defined... somewhere
    */
@@ -100,11 +106,19 @@ public interface OrderChanger {
   public boolean isLongOrder(String order);
 
   /**
+   * checks, if the given order is a long order
+   * 
+   * @param order
+   * @return true if the given order is a long order
+   */
+  public boolean isLongOrder(Order order);
+
+  /**
    * Returns true if the orders in the collection are legal to have at the same time for one unit.
    * 
    * @param orders
    * @return The first offending order
    */
-  public int areCompatibleLongOrders(Collection<String> orders);
+  public int areCompatibleLongOrders(Orders orders);
 
 }

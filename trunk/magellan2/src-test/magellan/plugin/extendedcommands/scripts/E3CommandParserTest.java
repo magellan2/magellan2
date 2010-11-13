@@ -292,6 +292,8 @@ public class E3CommandParserTest {
     unit.addOrder("// $cript Benoetige 4 Silber");
 
     parser.execute(unit.getFaction());
+    assertEquals("RESERVIEREN 2 Silber", unit.getOrders().get(2));
+    assertEquals("GIB 1 2 Silber", unit2.getOrders().get(0));
     assertEquals(3, unit.getOrders().size());
     assertEquals(1, unit2.getOrders().size());
     assertEquals("RESERVIEREN 2 Silber", unit.getOrders().get(2));
@@ -351,6 +353,52 @@ public class E3CommandParserTest {
 
   /**
    * Test method for
+   * {@link magellan.plugin.extendedcommands.stm.E3CommandParser#commandBenoetige(String...)}.
+   */
+  @Test
+  public final void testCommandBenoetige2() {
+    // test to ensure that a third unit doesn't change anything
+    // add other unit with Silber
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 5);
+    Unit unit3 = builder.addUnit(data, "st", "Störer", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit3, "Silber", 1);
+
+    // test one Benoetige order
+    unit.clearOrders();
+    unit.addOrder("// $cript Benoetige 4 Silber");
+    unit3.addOrder("// $cript Benoetige 1 Silber");
+    parser.execute(unit.getFaction());
+
+    assertEquals(2, unit.getOrders().size());
+    assertEquals("GIB 1 4 Silber", unit2.getOrders().get(1));
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.plugin.extendedcommands.stm.E3CommandParser#commandBenoetige(String...)}.
+   */
+  @Test
+  public final void testCommandBenoetige3() {
+    // test to ensure that a third unit doesn't change anything
+    Unit unit3 = builder.addUnit(data, "st", "Störer", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit3, "Silber", 1);
+    // add other unit with Silber
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 5);
+
+    // test one Benoetige order
+    unit.clearOrders();
+    unit.addOrder("// $cript Benoetige 4 Silber");
+    unit3.addOrder("// $cript Benoetige 1 Silber");
+    parser.execute(unit.getFaction());
+
+    assertEquals(2, unit.getOrders().size());
+    assertEquals("GIB 1 4 Silber", unit2.getOrders().get(1));
+  }
+
+  /**
+   * Test method for
    * {@link magellan.plugin.extendedcommands.stm.E3CommandParser#commandGibWenn(String[])}.
    */
   @Test
@@ -366,6 +414,7 @@ public class E3CommandParserTest {
     unit2.addOrder("// $cript GibWenn qwra 120 Silber Menge");
     parser.execute(unit.getFaction());
 
+    assertEquals(1, unit.getOrders().size());
     assertEquals(3, unit2.getOrders().size());
   }
 

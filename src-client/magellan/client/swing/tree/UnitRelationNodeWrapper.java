@@ -36,7 +36,8 @@ import magellan.library.relation.UnitRelation;
  * 
  * @author stm
  */
-public class UnitRelationNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard, Changeable {
+public class UnitRelationNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard,
+    Changeable {
 
   private UnitRelation relation;
   private CellObject innerNode;

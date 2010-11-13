@@ -31,6 +31,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+/**
+ * A tool box of methods to filter collections by class.
+ * 
+ * @author stm
+ */
 public class CollectionFilters {
 
   /**
@@ -39,12 +44,13 @@ public class CollectionFilters {
    * by oldCollection. This means that any changes to oldCollection affect the collection returned
    * and vice versa.
    * 
-   * @param <T>
+   * @param <T> The target collection's element type
    * @param oldCollection
    * @return Effectively returns oldCollection
    */
   @SuppressWarnings("unchecked")
-  public static <T> Collection<T> uncheckedCast(Collection oldCollection, Class<T> type) {
+  public static <T> Collection<T> uncheckedCast(
+      @SuppressWarnings("rawtypes") Collection oldCollection, Class<T> type) {
     return oldCollection;
   }
 
@@ -53,13 +59,15 @@ public class CollectionFilters {
    * to type, an Exception is thrown. The result is backed by oldCollection. This means that any
    * changes to oldCollection affect the collection returned and vice versa.
    * 
-   * @param <T>
+   * @param <T> The target collection's element type
    * @param oldCollection
+   * @param type The values are filtered by this type; effectively the same as T
    * @return Effectively returns oldCollection
-   * @throws ClassCastException
+   * @throws ClassCastException if any of the elements of oldCollection is not an instance of type
    */
   @SuppressWarnings("unchecked")
-  public static <T> Collection<T> checkedCast(Collection oldCollection, Class<T> type)
+  public static <T> Collection<T> checkedCast(
+      @SuppressWarnings("rawtypes") Collection oldCollection, Class<T> type)
       throws ClassCastException {
     for (Object o : oldCollection) {
       if (!type.isInstance(o))
@@ -72,9 +80,9 @@ public class CollectionFilters {
    * Creates a new set, adds to it all elements of oldCollection which are of the specified type,
    * and returns this set.
    * 
-   * @param <T>
+   * @param <T> The target collection's element type
    * @param oldCollection
-   * @param type
+   * @param type The values are filtered by this type; effectively the same as T
    * @return A collection with the objects of the desired type
    */
   public static <T> Collection<T> filter(Collection<?> oldCollection, Class<T> type) {
@@ -91,9 +99,9 @@ public class CollectionFilters {
    * Creates a new set, adds to it all elements of oldCollection which are of the specified type,
    * and returns this set.
    * 
-   * @param <T>
+   * @param <T> The target collection's element type
    * @param oldCollection
-   * @param type
+   * @param type The values are filtered by this type; effectively the same as T
    * @return A collection with the objects of the desired type
    */
   public static <T> Collection<T> filter(Object[] oldCollection, Class<T> type) {
@@ -109,10 +117,10 @@ public class CollectionFilters {
   /**
    * Adds to newCollection all elements of oldCollection which are of the specified type.
    * 
-   * @param <T>
+   * @param <T> The target collection's element type
    * @param oldCollection
    * @param newCollection
-   * @param type
+   * @param type The values are filtered by this type; effectively the same as T
    */
   public static <T> void filter(Collection<?> oldCollection, Collection<T> newCollection,
       Class<T> type) {
@@ -126,51 +134,54 @@ public class CollectionFilters {
   /**
    * Returns an iterator that iterates only over values of map of type class1.
    * 
-   * @param <T>
-   * @param class1
+   * @param <T> The target collection's element type
+   * @param type The values are filtered by this type; effectively the same as T
    * @param map
-   * @return
+   * @return an iterator that iterates only over values of map of type class1.
    */
-  public static <T> Iterator<T> getValueIterator(Class<T> class1, Map<?, ?> map) {
+  public static <T> Iterator<T> getValueIterator(Class<T> type, Map<?, ?> map) {
     if (map != null)
-      return CollectionFilters.getIterator(class1, map.values());
+      return CollectionFilters.getIterator(type, map.values());
     else
-      return new ClassIterator<T>(class1, Collections.emptyList().iterator());
+      return new ClassIterator<T>(type, Collections.emptyList().iterator());
   }
 
   /**
    * Returns an iterator that iterates only over keys of map of type class1.
    * 
-   * @param <T>
-   * @param class1
+   * @param <T> The target collection's element type
+   * @param type The values are filtered by this type; effectively the same as T
    * @param map
-   * @return
+   * @return an iterator that iterates only over keys of map of type class1.
    */
-  public static <T> Iterator<T> getKeyIterator(Class<T> class1, Map<?, ?> map) {
+  public static <T> Iterator<T> getKeyIterator(Class<T> type, Map<?, ?> map) {
     if (map != null)
-      return CollectionFilters.getIterator(class1, map.keySet());
+      return CollectionFilters.getIterator(type, map.keySet());
     else
-      return new ClassIterator<T>(class1, Collections.emptyList().iterator());
+      return new ClassIterator<T>(type, Collections.emptyList().iterator());
   }
 
   /**
    * Returns an iterator that iterates only over elements of coll of type class1.
    * 
-   * @param <T>
-   * @param class1
+   * @param <T> The target collection's element type
+   * @param type The values are filtered by this type; effectively the same as T
    * @param coll
-   * @return
+   * @return an iterator that iterates only over entries of the collection of type class1.
    */
-  public static <T> Iterator<T> getIterator(Class<T> class1, Collection<?> coll) {
+  public static <T> Iterator<T> getIterator(Class<T> type, Collection<?> coll) {
     if (coll != null)
-      return new ClassIterator<T>(class1, Collections.unmodifiableCollection(coll).iterator());
+      return new ClassIterator<T>(type, Collections.unmodifiableCollection(coll).iterator());
     else
-      return new ClassIterator<T>(class1, Collections.emptyList().iterator());
+      return new ClassIterator<T>(type, Collections.emptyList().iterator());
   }
 
   /**
    * An iterator implementation to iterate over Map of objects and return only object instances of
    * the given Class.
+   * 
+   * @param <T> The target collection's element type
+   * @author stm
    */
   private static class ClassIterator<T> implements Iterator<T> {
     private Class<T> givenClass;
@@ -180,7 +191,7 @@ public class CollectionFilters {
     /**
      * Creates a new ClassIterator object.
      * 
-     * @throws NullPointerException DOCUMENT-ME
+     * @throws NullPointerException if on of the arguments is <code>null</code>
      */
     public ClassIterator(Class<T> c, Iterator<?> i) {
       if (c == null)
@@ -194,7 +205,9 @@ public class CollectionFilters {
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns true if the collection contains more elements of the class
+     * 
+     * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
       possiblyMoveToNext();
@@ -203,9 +216,10 @@ public class CollectionFilters {
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns the next element of the class in the collection.
      * 
-     * @throws NoSuchElementException DOCUMENT-ME
+     * @see java.util.Iterator#next()
+     * @throws NoSuchElementException If there's no more such element
      */
     public T next() {
       possiblyMoveToNext();
@@ -238,11 +252,12 @@ public class CollectionFilters {
         }
 
       } catch (NoSuchElementException e) {
+        // currentObject = null;
       }
     }
 
     /**
-     * DOCUMENT-ME
+     * @see java.util.Iterator#remove()
      */
     public void remove() {
       givenIterator.remove();
@@ -252,20 +267,26 @@ public class CollectionFilters {
   /**
    * Returns an (unmodifiable) collection that contains all elements that are instances of
    * <code>class1</code> in <code>values</code>.
+   * 
+   * @param <T> The target collection's element type
+   * @param type The values are filtered by this type; effectively the same as T
+   * @param values
+   * @return A collection of type T elements
+   * @see Class#isInstance(Object)
    */
-  public static <T> Collection<T> getCollection(final Class<T> class1, final Collection<?> values) {
+  public static <T> Collection<T> getCollection(final Class<T> type, final Collection<?> values) {
     return new AbstractCollection<T>() {
 
       @Override
       public Iterator<T> iterator() {
-        return new ClassIterator<T>(class1, values.iterator());
+        return new ClassIterator<T>(type, values.iterator());
       }
 
       @Override
       public int size() {
         int size = 0;
         for (Object o : values) {
-          if (class1.isInstance(o)) {
+          if (type.isInstance(o)) {
             size++;
           }
         }

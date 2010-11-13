@@ -141,7 +141,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
         return true;
       if (region.getType().getID().equals(EresseaConstants.RT_SWAMP))
         return true;
-      if (region.getType().getID().equals(EresseaConstants.RT_DESSERT))
+      if (region.getType().getID().equals(EresseaConstants.RT_DESERT))
         return true;
     }
 

@@ -143,7 +143,7 @@ public class SchemeExtendMapping implements LevelMapping {
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_GLACIER));
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_SWAMP));
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_HIGHLAND));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_DESSERT));
+      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_DESERT));
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_MOUNTAIN));
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_VOLCANO));
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_ACTIVE_VOLCANO));

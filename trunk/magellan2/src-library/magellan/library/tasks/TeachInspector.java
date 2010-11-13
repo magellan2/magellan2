@@ -96,8 +96,8 @@ public class TeachInspector extends AbstractInspector {
         }
       }
       if (!found) {
-        problems.add(ProblemFactory.createProblem(Severity.WARNING, NOTLEARNING, u, this,
-            relation.line));
+        problems.add(ProblemFactory.createProblem(Severity.WARNING, NOTLEARNING, u, this, Resources
+            .get("tasks.teachinspector.notlearning.message", u2), relation.line));
       }
     }
 

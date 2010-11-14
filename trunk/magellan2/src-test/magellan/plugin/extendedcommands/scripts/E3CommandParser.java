@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -43,39 +45,27 @@ import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Resources;
 import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
 
+// ---start uncomment for BeanShell
+// import magellan.library.*;
+// import java.util.*;
+// ---stop uncomment for BeanShell
+
 /**
  * Call from the script of your faction with<br />
  * "(new E3CommandParser(world, helper)).execute(container);" or
- * "(new E3CommandParser(world, helper)).execute(helper.getUnit("
- * ekp6").getFaction(), (Region) container);".
+ * "(new E3CommandParser(world, helper)).execute(helper.getFaction("drac"), (Region) container);".
  * 
  * @author stm
  */
 public class E3CommandParser {
 
-  private OrderParser parser;
-
-  /**
-   * Creates and initializes the parser.
-   * 
-   * @param world
-   * @param helper
-   */
-  public E3CommandParser(GameData world, ExtendedCommandsHelper helper) {
-    E3CommandParser.world = world;
-    E3CommandParser.helper = helper;
-    parser = world.getGameSpecificStuff().getOrderParser(world);
-  }
-
-  protected OrderParser getParser() {
-    return parser;
-  }
-
-  static GameData world;
-  static ExtendedCommandsHelper helper;
+  /** A standard soldier's endurance skill should be this fraction of his (first row) weapon skill */
+  public static final float ENDURANCERATIO_FRONT = .6f;
+  /** A standard soldier's endurance skill should be this fraction of his (second row) weapon skill */
+  public static final float ENDURANCERATIO_BACK = .4f;
 
   /** Unit limit, used to warn if we get too many units. */
-  public static final int EINHEITENLIMIT = 200;
+  public static final int EINHEITENLIMIT = 250;
 
   /** All script commands begin with this text. */
   public static final String scriptMarker = "$cript";
@@ -129,6 +119,29 @@ public class E3CommandParser {
   /** warning constants */
   protected static final int C_ALWAYS = 0, C_AMOUNT = 1, C_UNIT = 2, C_HIDDEN = 3, C_NEVER = 4;
 
+  private static final String S_ENDURANCE = "Ausdauer";
+
+  private OrderParser parser;
+
+  /**
+   * Creates and initializes the parser.
+   * 
+   * @param world
+   * @param helper
+   */
+  public E3CommandParser(GameData world, ExtendedCommandsHelper helper) {
+    E3CommandParser.world = world;
+    E3CommandParser.helper = helper;
+    parser = world.getGameSpecificStuff().getOrderParser(world);
+  }
+
+  protected OrderParser getParser() {
+    return parser;
+  }
+
+  static GameData world;
+  static ExtendedCommandsHelper helper;
+
   private Unit someUnit;
 
   private Faction currentFaction;
@@ -139,7 +152,7 @@ public class E3CommandParser {
   private String currentOrder;
   private int line;
   private int error;
-  private String errMsg;
+  // private String errMsg;
   private boolean changedOrders;
 
   /**
@@ -189,8 +202,14 @@ public class E3CommandParser {
     if (someUnit == null)
       throw new RuntimeException("No units in report!");
 
-    if (faction.units().size() > EINHEITENLIMIT - 10) {
-      addWarning(someUnit, "Einheitenlimit fast erreicht!");
+    if (faction.units().size() >= EINHEITENLIMIT) {
+      addWarning(someUnit, "Einheitenlimit erreicht (" + faction.units().size() + "/"
+          + EINHEITENLIMIT + ")! ");
+    }
+
+    if (faction.units().size() * 1.1 > EINHEITENLIMIT) {
+      addWarning(someUnit, "Einheitenlimit fast erreicht (" + faction.units().size() + "/"
+          + EINHEITENLIMIT + ")! ");
     }
 
     collectStats();
@@ -240,7 +259,7 @@ public class E3CommandParser {
     int shipScripts = 0;
     int unitScripts = 0;
     int regionScripts = 0;
-    // FIXME uncomment this if you have the newest nighthly build of Magellan
+    // uncomment the following lines if you have the newest nighthly build of Magellan
     // ---start uncomment for BeanShell
     // for (Building b : world.getBuildings()) {
     // if (helper.hasScript(b)) {
@@ -283,6 +302,8 @@ public class E3CommandParser {
    * <code>// $cript Benoetige ALLES [item]</code> -- acquire things from other units<br />
    * <code>// $cript Soldat [Talent [Waffe [Schild [Rüstung]]]] [nie|Talent|Waffe|Schild|Rüstung]</code>
    * -- learn skill and reserve equipment<br />
+   * <code>// $cript Lerne Talent1 Stufe1 [[Talent2 Stufe2]...]</code> -- learn skills in given
+   * ratio <br />
    */
   protected void parseScripts() {
     oldOrders = new ArrayList<String>(currentUnit.getOrders());
@@ -290,7 +311,7 @@ public class E3CommandParser {
     removedOrderPatterns = new ArrayList<String>();
     changedOrders = false;
     error = -1;
-    errMsg = null;
+    // errMsg = null;
     line = 0;
     orderLoop: for (Object o : oldOrders) {
       ++line;
@@ -322,6 +343,8 @@ public class E3CommandParser {
         // commandVersorge(tokens);
       } else if (command.equals("Soldat")) {
         commandSoldier(tokens);
+      } else if (command.equals("Lerne")) {
+        commandLearn(tokens);
       } else {
         addNewOrder(currentOrder, false);
         addError("unbekannter Befehl: " + command);
@@ -603,6 +626,37 @@ public class E3CommandParser {
   }
 
   /**
+   * <code>// $cript Lerne Talent1 Stufe1 [[Talent2 Stufe2]...]</code><br />
+   * Tries to learn skills in given ratio. For example,
+   * <code>// $cript Lerne Hiebwaffen 10 Ausdauer 5</code> tries to learn to (Hiebwaffen 2, Ausdauer
+   * 1), (Hiebwaffen 4, Ausdauer 2), and so forth.
+   */
+  protected void commandLearn(String[] tokens) {
+    addNewOrder(currentOrder, false);
+
+    List<Skill> targetSkills = new LinkedList<Skill>();
+
+    for (int i = 1; i < tokens.length; i++) {
+      try {
+        if (i < tokens.length - 1) {
+          SkillType skill = world.rules.getSkillType(tokens[i++]);
+          int level = Integer.parseInt(tokens[i]);
+          if (skill == null) {
+            addError("invalid skill " + tokens[i - 1]);
+          }
+          targetSkills.add(new Skill(skill, 0, level, 1, true));
+        } else {
+          addError("stray token " + tokens[i]);
+        }
+      } catch (NumberFormatException e) {
+        addError("invalid skill level " + tokens[i]);
+      }
+    }
+
+    learn(currentUnit, targetSkills);
+  }
+
+  /**
    * <code>Soldat [Talent [Waffe [Schild [Rüstung]]]] [nie|Talent|Waffe|Schild|Rüstung]</code><br />
    * Tries to learn best skill and acquire equipment. If no skill is given, best weapon skill is
    * selected. If no weapon is given, best matching weapon is acquired and so on. Preference is
@@ -873,7 +927,7 @@ public class E3CommandParser {
 
   /**
    * Marks the unit as soldier. Learns its best weapon skill. Reserves suitable weapon, armor, and
-   * shield if available. Confirms unit if there's no problem. TODO update doc
+   * shield if available. Confirms unit if there's no problem.
    * 
    * @param u The unit in question
    * @param sWeaponSkill The desired skill. If <code>null</code>, the unit's best weapon skill is
@@ -947,9 +1001,19 @@ public class E3CommandParser {
       addError("no known armour types");
     }
 
-    removeOrdersLike(LEARNOrder + ".*", true);
-    removeOrdersLike(TEACHOrder + ".*", true);
-    addNewOrder(LEARNOrder + " " + weaponSkill.getName(), true);
+    if (weaponSkill != null) {
+      List<Skill> targetSkills = new LinkedList<Skill>();
+      targetSkills.add(u.getSkill(weaponSkill));
+      if (weaponSkill.getName().equals("Hiebwaffen")
+          || weaponSkill.getName().equals("Stangenwafen")) {
+        targetSkills.add(getSkill(S_ENDURANCE, Math.round(ENDURANCERATIO_FRONT
+            * getSkillLevel(u, weaponSkill))));
+      } else {
+        targetSkills.add(getSkill(S_ENDURANCE, Math.round(ENDURANCERATIO_BACK
+            * getSkillLevel(u, weaponSkill))));
+      }
+      learn(u, targetSkills);
+    }
 
     if (!NULL.equals(sWeapon)
         && !reserveEquipment(weapon, weapons, !W_NEVER.equals(warning) && !W_SKILL.equals(warning))) {
@@ -965,6 +1029,94 @@ public class E3CommandParser {
 
     setConfirm(u, true);
     notifyMagellan(u);
+  }
+
+  /**
+   * Tries to learn the skills at the ratio reflected in the skills argument.
+   * 
+   * @param u
+   * @param targetSkills
+   */
+  protected void learn(Unit u, Collection<Skill> targetSkills) {
+
+    // find skill with maximum priority
+    double maxWeight = 0;
+    Skill maxSkill = null;
+    StringBuilder comment = new StringBuilder(";");
+    for (Skill skill : targetSkills) {
+      double weight = calcWeight(u, skill, targetSkills);
+      comment.append(" ").append(skill.toString()).append(" ").append(weight);
+      if (weight > maxWeight) {
+        maxWeight = weight;
+        maxSkill = skill;
+      }
+    }
+
+    addNewOrder(comment.toString(), true);
+
+    if (maxSkill == null) {
+      addError("no weapon skill");
+    } else {
+      removeOrdersLike(LEARNOrder + ".*", true);
+      removeOrdersLike(TEACHOrder + ".*", true);
+      addNewOrder(LEARNOrder + " " + maxSkill.getName(), true);
+    }
+  }
+
+  private double calcWeight(Unit u, Skill learningSkill, Collection<Skill> targetSkills) {
+    if (learningSkill == null)
+      return 0;
+    double prio = 0.5;
+
+    // calc max mult
+    Skill learningTarget = null;
+    double maxMult = 0;
+
+    for (Skill skill2 : targetSkills) {
+      if (skill2.getSkillType().equals(learningSkill.getSkillType())) {
+        learningTarget = skill2;
+      }
+      int level = Math.max(1, getSkillLevel(u, skill2.getSkillType()));
+      // if (lev < getMax(skill2)) {
+      double mult = level / (double) skill2.getLevel();
+      if (maxMult < mult) {
+        maxMult = mult;
+      }
+      // }
+    }
+
+    if (learningTarget == null)
+      // learned skill is not in target skills
+      return 0.01 * learningSkill.getLevel();
+
+    if (maxMult > 0) {
+      // calc max normalized learning weeks
+      double maxWeeks = 0;
+      for (Skill skill2 : targetSkills) {
+        int currentLevel = Math.max(1, getSkillLevel(u, skill2.getSkillType()));
+        // if (lev < getMax(skill2)) {
+        double weeks = skill2.getLevel() - currentLevel / maxMult + 2;
+        if (maxWeeks < weeks) {
+          maxWeeks = weeks;
+        }
+        // }
+      }
+      int level = Math.max(1, getSkillLevel(u, learningSkill.getSkillType()));
+      // if (level >= getMax(skill))
+      // prio = 0d;
+      // else
+      // prio should be between .4 and 1
+      prio = .4 + .6 * (learningTarget.getLevel() - level / maxMult + 2) / maxWeeks;
+      if (prio < 0) {
+        prio = prio * 1.000001;
+      }
+    }
+    return prio;
+  }
+
+  private int getSkillLevel(Unit u, SkillType skill) {
+    Skill uskill = u.getSkill(skill);
+    return uskill == null ? 0 : uskill.getLevel();
   }
 
   /**
@@ -1084,7 +1236,7 @@ public class E3CommandParser {
    */
   protected void addError(String hint) {
     error = line;
-    errMsg = hint;
+    // errMsg = hint;
     addNewOrder(COMMENTOrder + " TODO: Fehler im Skript in Zeile " + error + ": " + hint, true);
   }
 
@@ -1097,8 +1249,8 @@ public class E3CommandParser {
   protected void removeOrdersLike(String pattern, boolean retroActively) {
     if (retroActively) {
       for (Iterator<String> it = newOrders.iterator(); it.hasNext();) {
-        String line = it.next();
-        if (line.matches(pattern)) {
+        String line2 = it.next();
+        if (line2.matches(pattern)) {
           it.remove();
         }
       }
@@ -1179,12 +1331,26 @@ public class E3CommandParser {
   /**
    * Returns the SkillType in the rules matching <code>name</code>.
    * 
-   * @param name A item type name, like "Hiebwaffen"
+   * @param name A skill name, like "Ausdauer"
    * @return The SkillType corresponding to name or <code>null</code> if this SkillType does not
    *         exist.
    */
   public static SkillType getSkillType(String name) {
     return world.rules.getSkillType(name);
+  }
+
+  /**
+   * Returns a skill with the given name and level.
+   * 
+   * @param name
+   * @param level
+   * @return A skill with the given level or <code>null</code> if this SkillType does not exist.
+   */
+  public static Skill getSkill(String name, int level) {
+    if (getSkillType(name) != null)
+      return new Skill(getSkillType(name), 0, level, 1, true);
+    else
+      return null;
   }
 
   /**
@@ -1386,6 +1552,7 @@ public class E3CommandParser {
 
       System.out.println("// created by E3CommandParser.main() at "
           + Calendar.getInstance().getTime());
+      System.out.println();
       boolean commentMode = false;
       boolean unCommentMode = false;
       for (String line = reader.readLine(); line != null; line = reader.readLine()) {
@@ -1553,5 +1720,17 @@ class Need extends Supply {
 }
 
 // ---start uncomment for BeanShell
-// void soldier(Unit unit) { E3CommandParser.soldier(unit); }
+// void soldier(Unit unit) {
+// E3CommandParser.soldier(unit);
+// }
+//
+// void cleanOcean() {
+// for (Region r : world.regions().values()) {
+// if (r.getName() != null && r.getType().toString().contains("Ozean")
+// && r.getName().contains("Leere")) {
+// r.setName(null);
+// r.setDescription(null);
+// }
+// }
+// }
 // ---stop uncomment for BeanShell

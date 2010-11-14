@@ -26,10 +26,8 @@ package magellan.library.utils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-import java.io.IOException;
 import java.io.StringReader;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -39,21 +37,47 @@ public class OrderTokenizerTest {
 
   private static final OrderToken EOC = new OrderToken("", -1, -1, OrderToken.TT_EOC, false);
 
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp() throws Exception {
+  protected void doTest(String string, OrderToken... orderToken) {
+    StringReader in = new StringReader(string);
+    OrderTokenizer tokenizer = new OrderTokenizer(in);
+    OrderToken token = null;
+    for (int i = 0; i < orderToken.length; ++i) {
+      token = tokenizer.getNextToken();
+      assertEqualToken(i, orderToken[i], token);
+    }
+    assertEqualToken(-1, EOC, token);
+  }
+
+  protected void assertEqualToken(int i, OrderToken expected, OrderToken actual) {
+    assertEquals("token " + i + " text", expected.getText(), actual.getText());
+    assertSame("token " + i + " start", expected.getStart(), actual.getStart());
+    assertSame("token " + i + " end", expected.getEnd(), actual.getEnd());
+    assertSame("token " + i + " type", expected.ttype, actual.ttype);
+    assertSame("token " + i + " followed", expected.followedBySpace(), actual.followedBySpace());
   }
 
   /**
-   * Test method for {@link magellan.library.utils.OrderTokenizer#OrderTokenizer(java.io.Reader)}.
+   * Fun with whitespace.
    */
   @Test
-  public final void testOrderTokenizer() {
-    // nothing to test
+  public final void testWhitespace() {
+    doTest(" ", EOC);
+
+    doTest(" ARBEITEN ", new OrderToken("ARBEITEN", 1, 9, OrderToken.TT_UNDEF, true), EOC);
+    doTest("@ARBEITEN ", new OrderToken("@", 0, 1, OrderToken.TT_PERSIST, false), new OrderToken(
+        "ARBEITEN", 1, 9, OrderToken.TT_UNDEF, true), EOC);
+    doTest("@ ARBEITEN ", new OrderToken("@", 0, 1, OrderToken.TT_PERSIST, false), new OrderToken(
+        "ARBEITEN", 2, 10, OrderToken.TT_UNDEF, true), EOC);
+    doTest(" @ARBEITEN ", new OrderToken("@", 1, 2, OrderToken.TT_PERSIST, false), new OrderToken(
+        "ARBEITEN", 2, 10, OrderToken.TT_UNDEF, true), EOC);
+    doTest(" @ ARBEITEN ", new OrderToken("@", 1, 2, OrderToken.TT_PERSIST, false), new OrderToken(
+        "ARBEITEN", 3, 11, OrderToken.TT_UNDEF, true), EOC);
+
   }
 
+  /**
+   * Fun with quotes.
+   */
   @Test
   public final void testString() {
     doTest("", EOC);
@@ -80,34 +104,9 @@ public class OrderTokenizerTest {
 
   }
 
-  protected void doTest(String string, OrderToken... orderToken) {
-    StringReader in = new StringReader(string);
-    OrderTokenizer tokenizer = new OrderTokenizer(in);
-    OrderToken token = null;
-    for (int i = 0; i < orderToken.length; ++i) {
-      token = tokenizer.getNextToken();
-      assertEqualToken(i, orderToken[i], token);
-    }
-    assertEqualToken(-1, EOC, token);
-  }
-
   /**
-   * Test method for {@link magellan.library.utils.OrderTokenizer#readQuote(int)}.
-   * 
-   * @throws IOException
+   * Test for ;-comments
    */
-  @Test
-  public final void testReadQuote() throws IOException {
-  }
-
-  protected void assertEqualToken(int i, OrderToken expected, OrderToken actual) {
-    assertEquals("token " + i + " text", expected.getText(), actual.getText());
-    assertSame("token " + i + " start", expected.getStart(), actual.getStart());
-    assertSame("token " + i + " end", expected.getEnd(), actual.getEnd());
-    assertSame("token " + i + " type", expected.ttype, actual.ttype);
-    assertSame("token " + i + " followed", expected.followedBySpace(), actual.followedBySpace());
-  }
-
   @Test
   public final void testComment() {
     doTest(";", new OrderToken(";", 0, 1, OrderToken.TT_COMMENT, true), EOC);
@@ -116,6 +115,9 @@ public class OrderTokenizerTest {
         EOC);
   }
 
+  /**
+   * Fun with //-comments.
+   */
   @Test
   public final void testOComment() {
     doTest("/", new OrderToken("/", 0, 1, OrderToken.TT_UNDEF, false), EOC);
@@ -127,7 +129,7 @@ public class OrderTokenizerTest {
     doTest("//\n", new OrderToken("//", 0, 3, OrderToken.TT_COMMENT, true), EOC);
     doTest("//\"", new OrderToken("//", 0, 2, OrderToken.TT_UNDEF, true), new OrderToken("\"", 2,
         3, OrderToken.TT_OPENING_QUOTE, false), EOC);
-    // FIXME the server interprets ;-comments also after //
+    // FIXME the server interprets ;-comments also after //. But I don't care at the moment
     doTest("//;", new OrderToken("//", 0, 2, OrderToken.TT_UNDEF, true), new OrderToken(";", 2, 3,
         OrderToken.TT_COMMENT, true), EOC);
     doTest("abc //", new OrderToken("abc", 0, 3, OrderToken.TT_UNDEF, true), new OrderToken("//",

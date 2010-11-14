@@ -36,6 +36,7 @@ public class OrderTokenizer {
   private OrderToken quotedString;
   private OrderToken closingQuote;
   private OrderToken openingQuote;
+  private boolean eos;
 
   /**
    * Creates a new <tt>OrderTokenizer</tt> object which will perform its read operations on the
@@ -80,14 +81,14 @@ public class OrderTokenizer {
         } else if ((c == '\r') || (c == '\n')) {
           retVal = new OrderToken(OrderToken.TT_EOC);
         } else {
-          if (retVal == null) {
-            in.unread(c);
-            retVal = readWord();
-            if (retVal.getText().equals(EresseaConstants.O_PCOMMENT)) {
-              retVal = readSSComment();
-            }
+          in.unread(c);
+          retVal = readWord();
+          if (isFirstToken && retVal.getText().equals(EresseaConstants.O_PCOMMENT)) {
+            retVal = readSSComment(retVal);
           }
         }
+      } else {
+        eos = true;
       }
     } catch (IOException e) {
       // FIXME should throw this
@@ -107,10 +108,9 @@ public class OrderTokenizer {
    * @return a <tt>OrderToken</tt> object of type TT_STRING containing the quoted string.
    * @throws IOException DOCUMENT-ME
    */
-  private OrderToken readQuote(int quote) throws IOException {
+  protected OrderToken readQuote(int quote) throws IOException {
     // setting followedBySpace to true here, is somewhat of a hack. It ensures that the
-    // OrderCompleter
-    // will not insert completions at this point.
+    // OrderCompleter will not insert completions at this point.
     openingQuote =
         new OrderToken("" + (char) quote, in.getPos() - 1, in.getPos(),
             OrderToken.TT_OPENING_QUOTE, false);
@@ -145,11 +145,15 @@ public class OrderTokenizer {
         }
       }
     } else {
+      if (c == -1) {
+        eos = true;
+      } else {
+        c = in.read();
+      }
       end--;
-      c = in.read();
       quotedString = new OrderToken(sb.toString(), start, end, OrderToken.TT_STRING, false);
 
-      if ((c == '\r') || (c == '\n') || (c == '\t') || (c == ' ')) {
+      if (isSpace(c)) {
         closingQuote =
             new OrderToken("" + (char) quote, end, end + 1, OrderToken.TT_CLOSING_QUOTE, true);
       } else {
@@ -171,7 +175,7 @@ public class OrderTokenizer {
    * @return a <tt>OrderToken</tt> object of type TT_COMMENT containing the comment.
    * @throws IOException DOCUMENT-ME
    */
-  private OrderToken readSCComment() throws IOException {
+  protected OrderToken readSCComment() throws IOException {
     StringBuffer sb = new StringBuffer(EresseaConstants.O_COMMENT);
     int c = 0;
     int start = in.getPos() - 1;
@@ -183,30 +187,53 @@ public class OrderTokenizer {
         sb.append((char) c);
       }
     }
+    eos = c == -1;
 
-    return new OrderToken(sb.toString(), start, in.getPos(), OrderToken.TT_COMMENT, true);
+    return new OrderToken(sb.toString(), start, in.getPos() - 1, OrderToken.TT_COMMENT, true);
   }
 
   /**
    * Reads a one line comment beginning with a double slash up to the next line break.
    * 
+   * @param retVal2
    * @return a <tt>OrderToken</tt> object of type TT_COMMENT containing the comment.
    * @throws IOException DOCUMENT-ME
    */
-  private OrderToken readSSComment() throws IOException {
+  protected OrderToken readSSComment(OrderToken retVal2) throws IOException {
     StringBuffer sb = new StringBuffer(EresseaConstants.O_PCOMMENT);
-    int start = in.getPos() - 2;
+    int start = in.getPos() - (retVal2.followedBySpace() ? 2 : 3);
     int c;
-    while ((c = in.read()) != -1) {
+
+    if (eos) {
+      c = -1;
+    } else {
+      c = in.read();
+      if (!eos && c != -1 && !isSpace(c)) {
+        if (!eos && c != -1) {
+          in.unread(c);
+        }
+        return retVal2;
+      }
+    }
+
+    while (c != -1) {
       if ((c == '\r') || (c == '\n')) {
         break;
       } else {
         sb.append((char) c);
       }
+      c = in.read();
     }
 
-    OrderToken retVal =
-        new OrderToken(sb.toString(), start, in.getPos(), OrderToken.TT_COMMENT, true);
+    int end = in.getPos();
+    if (c == -1) {
+      eos = true;
+      end--;
+    }
+    // if (!retVal2.followedBySpace()) {
+    // end--;
+    // }
+    OrderToken retVal = new OrderToken(sb.toString(), start, end, OrderToken.TT_COMMENT, true);
 
     return retVal;
   }
@@ -217,17 +244,16 @@ public class OrderTokenizer {
    * @return a <tt>OrderToken</tt> object of type TT_UNDEF containing the word.
    * @throws IOException DOCUMENT-ME
    */
-  private OrderToken readWord() throws IOException {
+  protected OrderToken readWord() throws IOException {
     StringBuffer sb = new StringBuffer();
-    OrderToken retVal = new OrderToken(OrderToken.TT_EOC);
+    OrderToken retVal = null;
     int c = 0;
     int start = in.getPos();
 
     while ((c = in.read()) != -1) {
       // TODO (stm) check for '\'' here, too?
-      if ((c == '\r') || (c == '\n') || (c == ' ') || (c == '\t') || (c == '"') || (c == ';')) {
+      if (isSpace(c) || isQuote(c) || (c == ';')) {
         in.unread(c);
-
         break;
       } else {
         sb.append((char) c);
@@ -237,14 +263,14 @@ public class OrderTokenizer {
     int end = in.getPos();
 
     if (c == -1) {
-      end--;
-      retVal = new OrderToken(sb.toString(), start, end, OrderToken.TT_UNDEF, false);
-    } else if ((c == '\r') || (c == '\n') || (c == '\t') || (c == ' ')) {
+      eos = true;
+      retVal = new OrderToken(sb.toString(), start, end - 1, OrderToken.TT_UNDEF, false);
+    } else if (isSpace(c)) {
       retVal = new OrderToken(sb.toString(), start, end, OrderToken.TT_UNDEF, true);
     } else {
       c = in.read();
 
-      if ((c == '\r') || (c == '\n') || (c == '\t') || (c == ' ')) {
+      if (isSpace(c) || isQuote(c) || (c == ';')) {
         retVal = new OrderToken(sb.toString(), start, end, OrderToken.TT_UNDEF, true);
       } else {
         retVal = new OrderToken(sb.toString(), start, end, OrderToken.TT_UNDEF, false);
@@ -252,7 +278,6 @@ public class OrderTokenizer {
 
       in.unread(c);
     }
-
     return retVal;
   }
 
@@ -261,7 +286,7 @@ public class OrderTokenizer {
    * 
    * @throws IOException DOCUMENT-ME
    */
-  private void eatWhiteSpace() throws IOException {
+  protected void eatWhiteSpace() throws IOException {
     int c = 0;
 
     while ((c = in.read()) != -1) {
@@ -270,5 +295,15 @@ public class OrderTokenizer {
         break;
       }
     }
+    eos = c == -1;
   }
+
+  private boolean isQuote(int c) {
+    return (c == '"') || (c == '\'');
+  }
+
+  private boolean isSpace(int c) {
+    return (c == '\r') || (c == '\n') || (c == '\t') || (c == ' ');
+  }
+
 }

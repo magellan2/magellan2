@@ -28,6 +28,7 @@ import magellan.library.utils.logging.Logger;
 public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   private static final Logger log = Logger.getInstance(MagellanSpellImpl.class);
 
+  /** Standard spell component implementation. */
   public class Component implements Spell.Component {
     private String name;
     private int amount;
@@ -431,7 +432,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
       return false;
     for (String key : components.keySet()) {
       String val = components.get(key);
-      if (key.equalsIgnoreCase("Aura")) {
+      if (key.equalsIgnoreCase(magellan.library.Spell.Component.AURA)) {
         int blankPos = val.indexOf(" ");
         if ((blankPos > 0) && (blankPos < val.length())) {
           String getLevelAtDays = val.substring(blankPos + 1, val.length());

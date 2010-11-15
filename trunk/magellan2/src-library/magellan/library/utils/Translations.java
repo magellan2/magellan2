@@ -30,10 +30,9 @@ import java.util.TreeSet;
 import magellan.library.Rules;
 
 /**
- * class contains and handels translations from the CR or default Magellan translations Is part of
+ * class contains and handles translations from the CR or default Magellan translations. Is part of
  * GameData thinking about to make it "Localized"
  * 
- * @author ...
  * @version 1.0, 20.11.2007
  */
 
@@ -47,7 +46,8 @@ public class Translations {
    * 
    * @param original
    * @param translated
-   * @param source
+   * @param source One of {@link TranslationType#sourceUnknown},{@link TranslationType#sourceCR}, or
+   *          {@link TranslationType#sourceMagellan}
    */
 
   public void addTranslation(String original, String translated, int source) {
@@ -73,9 +73,10 @@ public class Translations {
   }
 
   /**
-   * returns the translated string source is not importand
+   * returns the translated string source is not important
    * 
    * @param original
+   * @return the translated string; if the original was not found, the original is returned.
    */
   public String getTranslation(String original) {
     return getTranslation(original, TranslationType.sourceUnknown);
@@ -83,10 +84,13 @@ public class Translations {
 
   /**
    * returns the translated string, if it is from the specified source. No filtering is done, when
-   * sourceUnknown is choosen
+   * sourceUnknown is chosen
    * 
    * @param original
-   * @param source
+   * @param source One of {@link TranslationType#sourceUnknown},{@link TranslationType#sourceCR}, or
+   *          {@link TranslationType#sourceMagellan}
+   * @return the translated string; if the original was not found, the original is returned unless
+   *         <code>source!= {@link TranslationType#sourceUnknown}</code>.
    */
   public String getTranslation(String original, int source) {
     if (original == null)
@@ -193,7 +197,7 @@ public class Translations {
   }
 
   /**
-   * returns true, if given String is already in this translations
+   * Returns true if given String is already in this translations.
    * 
    * @param s
    */

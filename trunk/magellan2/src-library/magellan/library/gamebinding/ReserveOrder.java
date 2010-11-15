@@ -33,8 +33,12 @@ import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemType;
+import magellan.library.tasks.OrderSyntaxInspector;
+import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A RESERVIERE order.
@@ -50,10 +54,9 @@ public class ReserveOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
-  public ReserveOrder(List<OrderToken> tokens, String text, boolean valid) {
-    super(tokens, text, valid);
+  public ReserveOrder(List<OrderToken> tokens, String text) {
+    super(tokens, text);
   }
 
   /**
@@ -89,7 +92,7 @@ public class ReserveOrder extends SimpleOrder {
       return;
 
     if (unit instanceof TempUnit) {
-      setWarning(Resources.get("order.reserve.warning.temp"));
+      setWarning(unit, line, Resources.get("order.reserve.warning.temp"));
       return;
     }
 
@@ -101,7 +104,7 @@ public class ReserveOrder extends SimpleOrder {
     // RESERVIERE [JE] <amount> <object><EOC>
     // RESERVIERE ALLES <object><EOC>
     if (itemType != null) {
-      boolean warning = false;
+      String warning = null;
       int realAmount = amount;
       // get the item from the list of modified items
       if (amount == Order.ALL) {
@@ -110,8 +113,7 @@ public class ReserveOrder extends SimpleOrder {
         // realAmount =
         // unit.getModifiedItem(itemType) != null ? unit.getModifiedItem(itemType).getAmount() : 0;
         // FIXME warn as long as this feature is broken
-        warning = true;
-        setWarning(Resources.get("order.reserve.warning.all"));
+        warning = Resources.get("order.reserve.warning.all");
       } else {
         if (each) {
           // according to eressea source code it is modified persons (at this time, i.e. before
@@ -121,13 +123,40 @@ public class ReserveOrder extends SimpleOrder {
       }
       List<UnitRelation> relations =
           eState.reserveItem(itemType, amount == Order.ALL, realAmount, unit, line, this);
+      UnitRelation lastRelation = null;
       for (UnitRelation rel : relations) {
-        rel.warning |= warning;
+        lastRelation = rel;
         rel.add();
       }
+      if (lastRelation == null) {
+        Logger.getInstance(getClass()).error("ReserveOrder should always create a relation");
+      } else if (lastRelation.problem == null && warning != null) {
+        lastRelation.setWarning(warning,
+            OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
+      }
     } else {
-      setWarning(Resources.get("order.reserve.warning.unknownitem", itemID));
+      setWarning(unit, line, Resources.get("order.reserve.warning.unknownitem", itemID));
     }
+  }
+
+  /**
+   * @see magellan.library.gamebinding.SimpleOrder#setWarning(magellan.library.Unit, int,
+   *      java.lang.String)
+   */
+  @Override
+  protected void setWarning(Unit unit, int line, String string) {
+    setProblem(ProblemFactory.createProblem(Severity.WARNING,
+        OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type, unit, null, string, line));
+  }
+
+  /**
+   * @see magellan.library.gamebinding.SimpleOrder#setError(magellan.library.Unit, int,
+   *      java.lang.String)
+   */
+  @Override
+  protected void setError(Unit unit, int line, String string) {
+    setProblem(ProblemFactory.createProblem(Severity.ERROR,
+        OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_ERROR.type, unit, null, string, line));
   }
 
 }

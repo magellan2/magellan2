@@ -37,17 +37,16 @@ import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Resources;
 
 /**
- * An
+ * An inspector for problems with attacks
  * 
- * @author ...
- * @version 1.0, Jul 30, 2007
+ * @author stm
  */
 public class AttackInspector extends AbstractInspector {
 
-  enum AttackProblemTypes {
-    ATTACKSELF, FRIENDLYFIRE, NOTFIGHTING, NOTFIGHTING4GUARD;
+  public enum AttackProblemTypes {
+    ATTACKSELF, FRIENDLYFIRE, NOTFIGHTING, NOTFIGHTING4GUARD, UNKNOWNTARGET;
 
-    private ProblemType type;
+    public ProblemType type;
 
     AttackProblemTypes() {
       String name = name().toLowerCase();
@@ -66,7 +65,7 @@ public class AttackInspector extends AbstractInspector {
     }
   }
 
-  private Collection<ProblemType> types;
+  private static Collection<ProblemType> types;
 
   /**
    * Returns a (singleton) instance.

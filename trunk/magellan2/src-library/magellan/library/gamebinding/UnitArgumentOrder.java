@@ -29,6 +29,7 @@ import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.utils.OrderToken;
+import magellan.library.utils.Resources;
 
 /**
  * An order with one or more units as arguments.
@@ -42,24 +43,11 @@ public class UnitArgumentOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
-  public UnitArgumentOrder(List<OrderToken> tokens, String text, boolean valid, UnitID target) {
-    super(tokens, text, valid);
+  public UnitArgumentOrder(List<OrderToken> tokens, String text, UnitID target) {
+    super(tokens, text);
     this.target = target;
   }
-
-  // /**
-  // * @param subList
-  // * @param subList2
-  // * @param valid
-  // * @param persistent
-  // */
-  // public UnitArgumentOrder(List<OrderToken> subList, List<OrderToken> subList2, boolean valid,
-  // boolean persistent, Unit target) {
-  // super(subList, subList2, valid, persistent);
-  // this.target = target;
-  // }
 
   /**
    * Returns the value of unit.
@@ -78,7 +66,14 @@ public class UnitArgumentOrder extends SimpleOrder {
    * @param unit
    * @param sameRegionOnly
    */
-  protected Unit getTargetUnit(GameData data, Unit unit, boolean sameRegionOnly) {
+  protected Unit getTargetUnit(GameData data, Unit unit, int line, boolean sameRegionOnly,
+      boolean zeroAllowed) {
+    if (target == null)
+      return null;
+    if (!zeroAllowed && target.intValue() == 0) {
+      setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
+    }
+
     Unit tUnit = data.getUnit(target);
     if (tUnit == null) {
       tUnit = data.getTempUnit(target);

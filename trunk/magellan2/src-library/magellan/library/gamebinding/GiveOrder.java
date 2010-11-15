@@ -38,6 +38,9 @@ import magellan.library.relation.UnitRelation;
 import magellan.library.relation.UnitTransferRelation;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
+import magellan.library.tasks.OrderSyntaxInspector;
+import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -57,11 +60,10 @@ public class GiveOrder extends UnitArgumentOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    * @param type
    */
-  public GiveOrder(List<OrderToken> tokens, String text, boolean valid, UnitID target, String type) {
-    super(tokens, text, valid, target);
+  public GiveOrder(List<OrderToken> tokens, String text, UnitID target, String type) {
+    super(tokens, text, target);
     this.type = type;
   }
 
@@ -118,30 +120,38 @@ public class GiveOrder extends UnitArgumentOrder {
       return;
 
     if (unit instanceof TempUnit && type != EresseaConstants.O_CONTROL) {
-      setWarning(Resources.get("order.give.warning.temp"));
+      setWarning(unit, line, Resources.get("order.give.warning.temp"));
       return;
     }
 
-    Unit tUnit = getTargetUnit(data, unit, true);
+    Unit tUnit = getTargetUnit(data, unit, line, true, true);
 
     if (tUnit != null) {
       EresseaExecutionState eState = (EresseaExecutionState) state;
 
       if (!tUnit.equals(unit)) {
         if (type == EresseaConstants.O_CONTROL) {
-          UnitRelation rel = new ControlRelation(unit, tUnit, line);
-          if (unit.getUnitContainer() == null || unit.getUnitContainer().getOwnerUnit() != unit) {
-            // better warn too often than too rarely
-            rel.warning = true;
-            setWarning(Resources.get("order.give.warning.nocommand"));
+          if (target.intValue() == 0) {
+            setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
+          } else {
+            UnitRelation rel = new ControlRelation(unit, tUnit, line);
+            if (unit.getUnitContainer() == null || unit.getUnitContainer().getOwnerUnit() != unit) {
+              // better warn too often than too rarely
+              rel.setWarning(Resources.get("order.give.warning.nocommand"),
+                  OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
+            }
+            rel.add();
           }
-          rel.add();
         } else if (type == EresseaConstants.O_UNIT) {
-          UnitRelation rel = new UnitTransferRelation(unit, tUnit, unit.getRace(), line);
-          rel.add();
+          if (target.intValue() == 0) {
+            setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
+          } else {
+            UnitRelation rel = new UnitTransferRelation(unit, tUnit, unit.getRace(), line);
+            rel.add();
+          }
         } else if (type == EresseaConstants.O_MEN) {
           PersonTransferRelation rel =
-              new PersonTransferRelation(unit, tUnit, -1, unit.getRace(), line, false);
+              new PersonTransferRelation(unit, tUnit, -1, unit.getRace(), line);
           if (all) {
             rel.amount = unit.getModifiedPersons();
           } else {
@@ -186,17 +196,36 @@ public class GiveOrder extends UnitArgumentOrder {
             }
           }
         } else {
-          setWarning(Resources.get("order.give.warning.unknowntype"));
+          setWarning(unit, line, Resources.get("order.give.warning.unknowntype"));
         }
       } else {
         // relation to myself? you're sick
-        // setValid(false);
-        setWarning(Resources.get("order.give.warning.reflexive"));
+        setWarning(unit, line, Resources.get("order.give.warning.reflexive"));
       }
     } else {
-      setWarning(Resources.get("order.give.warning.unknowntarget", target));
+      setWarning(unit, line, Resources.get("order.give.warning.unknowntarget", target));
     }
 
+  }
+
+  /**
+   * @see magellan.library.gamebinding.SimpleOrder#setWarning(magellan.library.Unit, int,
+   *      java.lang.String)
+   */
+  @Override
+  protected void setWarning(Unit unit, int line, String string) {
+    setProblem(ProblemFactory.createProblem(Severity.WARNING,
+        OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type, unit, null, string, line));
+  }
+
+  /**
+   * @see magellan.library.gamebinding.SimpleOrder#setError(magellan.library.Unit, int,
+   *      java.lang.String)
+   */
+  @Override
+  protected void setError(Unit unit, int line, String string) {
+    setProblem(ProblemFactory.createProblem(Severity.ERROR,
+        OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_ERROR.type, unit, null, string, line));
   }
 
 }

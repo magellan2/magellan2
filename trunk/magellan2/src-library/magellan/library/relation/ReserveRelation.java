@@ -40,10 +40,9 @@ public class ReserveRelation extends UnitRelation {
    * @param amount The amount. {@link ReserveOrder#ALL} for "ALLES"
    * @param itemType The item (type)
    * @param line The line number in the unit's orders
-   * @param warning true iff a warning should be displayed
    */
-  public ReserveRelation(Unit source, int amount, ItemType itemType, int line, boolean warning) {
-    this(source, source, amount, itemType, line, warning);
+  public ReserveRelation(Unit source, int amount, ItemType itemType, int line) {
+    this(source, source, amount, itemType, line);
   }
 
   /**
@@ -54,11 +53,9 @@ public class ReserveRelation extends UnitRelation {
    * @param amount The amount. {@link ReserveOrder#ALL} for "ALLES"
    * @param itemID The item (type)
    * @param line The line number in the unit's orders
-   * @param warning true iff a warning should be displayed
    */
-  public ReserveRelation(Unit origin, Unit source, int amount, ItemType type, int line,
-      boolean warning) {
-    super(origin, source, line, warning);
+  public ReserveRelation(Unit origin, Unit source, int amount, ItemType type, int line) {
+    super(origin, source, line);
     if (type == null)
       throw new NullPointerException();
     this.amount = amount;

@@ -46,17 +46,14 @@ import magellan.library.utils.Utils;
  */
 public class OrderSyntaxInspector extends AbstractInspector {
 
-  /** The singleton instance of the OrderSyntaxInspector */
-  // public static final OrderSyntaxInspector INSPECTOR = new OrderSyntaxInspector();
-
-  enum OrderSyntaxProblemTypes {
+  public enum OrderSyntaxProblemTypes {
     NO_ORDERS, PARSE_ERROR, PARSE_WARNING, LONGORDERS, NO_LONG_ORDER;
 
-    private ProblemType type;
+    public ProblemType type;
 
     OrderSyntaxProblemTypes() {
       String name = name().toLowerCase();
-      String message = Resources.get("tasks.ordersyntaxinspector." + name + ".message");
+      String message = Resources.get("tasks.ordersyntaxinspector." + name + ".message", false);
       String typeName = Resources.get("tasks.ordersyntaxinspector." + name + ".name", false);
       if (typeName == null) {
         typeName = message;
@@ -64,6 +61,29 @@ public class OrderSyntaxInspector extends AbstractInspector {
       String description =
           Resources.get("tasks.ordersyntaxinspector." + name + ".description", false);
       String group = Resources.get("tasks.ordersyntaxinspector." + name + ".group", false);
+      type = new ProblemType(typeName, group, description, message);
+    }
+
+    ProblemType getType() {
+      return type;
+    }
+  }
+
+  public enum OrderSemanticsProblemTypes {
+    SEMANTIC_ERROR, GIVE_ERROR, GIVE_WARNING;
+
+    public ProblemType type;
+
+    OrderSemanticsProblemTypes() {
+      String name = name().toLowerCase();
+      String message = Resources.get("tasks.ordersemanticsinspector." + name + ".message", false);
+      String typeName = Resources.get("tasks.ordersemanticsinspector." + name + ".name", false);
+      if (typeName == null) {
+        typeName = message;
+      }
+      String description =
+          Resources.get("tasks.ordersemanticsinspector." + name + ".description", false);
+      String group = Resources.get("tasks.ordersemanticsinspector." + name + ".group", false);
       type = new ProblemType(typeName, group, description, message);
     }
 
@@ -114,16 +134,22 @@ public class OrderSyntaxInspector extends AbstractInspector {
     for (Order order : orders) {
       line++;
 
-      if (severity == Severity.WARNING)
-        if (order.getWarning() != null) {
-          errors.add(ProblemFactory.createProblem(Severity.WARNING,
-              OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, order.getWarning()
-                  + ": " + order.toString(), line));
-        } else if (!order.isValid()) {
-          errors.add(ProblemFactory.createProblem(Severity.WARNING,
-              OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, getWarningMessage(
-                  OrderSyntaxProblemTypes.PARSE_WARNING, order), line));
+      if (order.getProblem() != null) {
+        Problem problem = order.getProblem();
+        if (severity == problem.getSeverity()) {
+          String message = problem.getMessage();
+          if (message == null) {
+            message = getWarningMessage(OrderSyntaxProblemTypes.PARSE_WARNING, order);
+          }
+          errors.add(ProblemFactory.createProblem(problem.getSeverity(), problem.getType(), unit
+              .getRegion(), unit, unit.getFaction(), unit, this, message, line));
+          // order.getProblem());
         }
+      } else if (!order.isValid()) {
+        errors.add(ProblemFactory.createProblem(Severity.WARNING,
+            OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, getWarningMessage(
+                OrderSyntaxProblemTypes.PARSE_WARNING, order), line));
+      }
 
       longOrder |= order.isLong();
     }
@@ -137,7 +163,6 @@ public class OrderSyntaxInspector extends AbstractInspector {
         else {
           errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS
               .getType(), unit, this));
-          // }
         }
       } else if (!longOrder) {
         errors.add(ProblemFactory.createProblem(Severity.ERROR,
@@ -152,26 +177,20 @@ public class OrderSyntaxInspector extends AbstractInspector {
       }
     }
 
-    if (severity == Severity.WARNING) {
-      for (UnitRelation rel : unit.getRelations(UnitRelation.class))
-        if (rel.warning) {
-          if (rel.line <= 0) {
-            Order order = rel.origin.getOrders2().get(rel.line - 1);
-            if (order == null || (order.getWarning() == null && order.isValid())) {
-              errors.add(ProblemFactory.createProblem(Severity.WARNING,
-                  OrderSyntaxProblemTypes.PARSE_WARNING.getType(), rel.origin, this, rel.getClass()
-                      .toString(), rel.line));
-            }
+    for (UnitRelation rel : unit.getRelations(UnitRelation.class))
+      if (rel.problem != null && rel.origin == unit && rel.problem.getSeverity() == severity) {
+        if (rel.line > 0) {
+          Order order = rel.origin.getOrders2().get(rel.line - 1);
+          if (order == null || (order.getProblem() == null && order.isValid())) {
+            errors.add(ProblemFactory.createProblem(rel.problem.getSeverity(), rel.problem
+                .getType(), unit.getRegion(), unit, unit.getFaction(), unit, this, rel.problem
+                .getMessage(), line));
           }
         }
-    }
+      }
 
     return errors;
   }
-
-  // private OrderParser getParser() {
-  // return parser;
-  // }
 
   private String getWarningMessage(OrderSyntaxProblemTypes parseWarning, Order order) {
     return Resources.get("tasks.ordersyntaxinspector." + parseWarning.name().toLowerCase()
@@ -182,6 +201,9 @@ public class OrderSyntaxInspector extends AbstractInspector {
     if (types == null) {
       types = new LinkedList<ProblemType>();
       for (OrderSyntaxProblemTypes t : OrderSyntaxProblemTypes.values()) {
+        types.add(t.getType());
+      }
+      for (OrderSemanticsProblemTypes t : OrderSemanticsProblemTypes.values()) {
         types.add(t.getType());
       }
     }

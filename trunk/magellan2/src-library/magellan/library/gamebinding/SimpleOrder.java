@@ -30,6 +30,12 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Unit;
+import magellan.library.tasks.OrderSyntaxInspector;
+import magellan.library.tasks.Problem;
+import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory;
+import magellan.library.tasks.ProblemType;
+import magellan.library.tasks.SimpleProblem;
 import magellan.library.utils.OrderToken;
 
 /**
@@ -37,23 +43,31 @@ import magellan.library.utils.OrderToken;
  */
 public class SimpleOrder implements Order {
 
+  /**
+   * Marks a syntactic error.
+   */
+  public static final ProblemType SyntaxProblem =
+      OrderSyntaxInspector.OrderSyntaxProblemTypes.PARSE_WARNING.type;
+
+  /**
+   * Marks a semantic error.
+   */
+  public static final ProblemType OrderProblem =
+      OrderSyntaxInspector.OrderSemanticsProblemTypes.SEMANTIC_ERROR.type;
+
   private List<OrderToken> tokens;
   private String text;
-  private boolean valid;
   private boolean persistent;
-  private String warning;
   private boolean isLong;
-
-  // private UnitRelation relation;
+  private Problem problem;
 
   /**
    * Creates a new order from a list of tokens.
    * 
    * @param tokens
    * @param text
-   * @param valid
    */
-  public SimpleOrder(List<OrderToken> tokens, String text, boolean valid) {
+  public SimpleOrder(List<OrderToken> tokens, String text) {
     this.tokens = new ArrayList<OrderToken>(3);
     for (OrderToken t : tokens) {
       if (t.ttype == OrderToken.TT_PERSIST) {
@@ -65,7 +79,6 @@ public class SimpleOrder implements Order {
 
     this.tokens = Collections.unmodifiableList(this.tokens);
     this.text = text;
-    this.valid = valid;
   }
 
   /**
@@ -93,14 +106,20 @@ public class SimpleOrder implements Order {
    * @see magellan.library.Order#isValid()
    */
   public boolean isValid() {
-    return valid;
+    // FIXME setting a problem makes the order valid??
+    return problem == null;
+    // return problem == null || problem.getType() != SyntaxProblem;
   }
 
   /**
-   * @see magellan.library.Order#setValid(boolean)
+   * Marks the order as valid or unvalid.
    */
   public void setValid(boolean valid) {
-    this.valid = valid;
+    if (valid && !isValid()) {
+      problem = null;
+    } else if (!valid && isValid()) {
+      problem = ProblemFactory.createProblem(Severity.WARNING, SyntaxProblem);
+    }
   }
 
   /**
@@ -163,21 +182,35 @@ public class SimpleOrder implements Order {
   }
 
   /**
-   * Sets the value of warning.
-   * 
-   * @param warning The value for warning.
+   * @see magellan.library.Order#getProblem()
    */
-  public void setWarning(String warning) {
-    this.warning = warning;
+  public Problem getProblem() {
+    return problem;
   }
 
   /**
-   * Returns the value of warning.
-   * 
-   * @return Returns warning.
+   * @see magellan.library.Order#setProblem(magellan.library.tasks.Problem)
    */
-  public String getWarning() {
-    return warning;
+  public void setProblem(Problem problem) {
+    this.problem = problem;
   }
 
+  /**
+   * Registers a warning for a unit order.
+   * 
+   * @see SimpleProblem
+   */
+  protected void setWarning(Unit unit, int line, String string) {
+    setProblem(ProblemFactory.createProblem(Severity.WARNING, OrderProblem, unit, null, string,
+        line));
+  }
+
+  /**
+   * Registers a severe error for a unit order.
+   * 
+   * @see SimpleProblem
+   */
+  protected void setError(Unit unit, int line, String string) {
+    setProblem(ProblemFactory.createProblem(Severity.ERROR, OrderProblem, unit, null, string, line));
+  }
 }

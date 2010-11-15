@@ -58,8 +58,8 @@ public class MovementOrder extends SimpleOrder {
    * @param valid
    * @param permanent
    */
-  public MovementOrder(List<OrderToken> tokens, String text, boolean valid, boolean permanent) {
-    super(tokens, text, valid);
+  public MovementOrder(List<OrderToken> tokens, String text, boolean permanent) {
+    super(tokens, text);
     this.permanent = permanent;
   }
 
@@ -110,7 +110,8 @@ public class MovementOrder extends SimpleOrder {
       currentRegion = nextRegion;
     }
 
-    (new MovementRelation(unit, modifiedMovement, line)).add();
+    MovementRelation mRel = new MovementRelation(unit, modifiedMovement, line);
+    mRel.add();
 
     // check whether the unit leaves a container
     UnitContainer leftUC = unit.getBuilding();
@@ -121,19 +122,20 @@ public class MovementOrder extends SimpleOrder {
         if (leftUC.getModifiedOwnerUnit() == unit) {
           leftUC = null;
         } else if (leftUC.getModifiedUnit(unit.getID()) != null) {
-          setWarning(Resources.get("order.move.warning.leaveship"));
+          mRel.setWarning(Resources.get("order.move.warning.leaveship"), SimpleOrder.OrderProblem);
         }
     }
 
     if (leftUC != null) {
-      UnitRelation rel = new LeaveRelation(unit, leftUC, line, true, false);
+      UnitRelation rel = new LeaveRelation(unit, leftUC, line, true);
 
       if (leftUC.getModifiedOwnerUnit() == unit) {
         for (Unit otherUnit : leftUC.modifiedUnits()) {
           if (otherUnit != unit) {
-            ControlRelation crel = new ControlRelation(unit, otherUnit, line, true);
+            ControlRelation crel = new ControlRelation(unit, otherUnit, line);
+            crel.setWarning(Resources.get("order.move.warning.implicitcommand"),
+                SimpleOrder.OrderProblem);
             crel.add();
-            setWarning(Resources.get("order.move.warning.implicitcommand"));
             break;
           }
         }

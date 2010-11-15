@@ -1,5 +1,5 @@
-// class magellan.library.gamebinding.LearnOrder
-// created on Nov 13, 2010
+// class magellan.library.relation.FollowUnitRelation
+// created on Nov 15, 2010
 //
 // Copyright 2003-2010 by magellan project team
 //
@@ -21,28 +21,22 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.relation;
 
-import java.util.List;
-
-import magellan.library.utils.OrderToken;
+import magellan.library.Unit;
 
 /**
- * A LERNE order.
+ * A FOLLOW UNIT relation.
  */
-public class LearnOrder extends SimpleOrder {
+public class FollowUnitRelation extends InterUnitRelation {
 
   /**
-   * The name of the learned skill.
+   * @param source
+   * @param target
+   * @param line
    */
-  public String skillName;
-
-  /**
-   * @param tokens
-   * @param text
-   */
-  public LearnOrder(List<OrderToken> tokens, String text) {
-    super(tokens, text);
+  public FollowUnitRelation(Unit source, Unit target, int line) {
+    super(source, target, line);
   }
 
 }

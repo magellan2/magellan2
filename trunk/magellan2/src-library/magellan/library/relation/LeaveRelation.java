@@ -40,10 +40,9 @@ public class LeaveRelation extends UnitContainerRelation {
    * @param t The left container
    * @param line The order line that caused this
    * @param implicit indicates that another command (like ENTER or MOVE) caused this
-   * @param warning warning flag
    */
-  public LeaveRelation(Unit s, UnitContainer t, int line, boolean implicit, boolean warning) {
-    super(s, t, line, warning);
+  public LeaveRelation(Unit s, UnitContainer t, int line, boolean implicit) {
+    super(s, t, line);
     this.implicit = implicit;
   }
 

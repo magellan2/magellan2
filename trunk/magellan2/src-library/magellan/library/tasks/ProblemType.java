@@ -34,7 +34,7 @@ public class ProblemType {
 
   /**
    * name, group and description describe the problem and are used in preferences for selection.
-   * message is displayed in the user. If the message depends on the problem (not just on the type)
+   * message is displayed to the user. If the message depends on the problem (not just on the type)
    * it should be <code>null</code> here. A name must start with a letter and contain only letters,
    * numbers, '-', '_', and ' '.
    * 

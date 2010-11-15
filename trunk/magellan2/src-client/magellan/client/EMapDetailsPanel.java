@@ -150,6 +150,7 @@ import magellan.library.relation.ControlRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.ReserveRelation;
+import magellan.library.relation.TransportRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.relation.UnitTransferRelation;
 import magellan.library.rules.CastleType;
@@ -502,6 +503,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // handle editing of unit container comment edits
     tree.getCellEditor().addCellEditorListener(new CellEditorListener() {
       public void editingCanceled(ChangeEvent e) {
+        // nothing to do
       }
 
       /**
@@ -534,6 +536,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // handle editing of unit comment edits
     tree.getCellEditor().addCellEditorListener(new CellEditorListener() {
       public void editingCanceled(ChangeEvent e) {
+        // nothing to do
       }
 
       /**
@@ -2351,7 +2354,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         UnitNodeWrapper unw =
             nodeWrapperFactory.createUnitNodeWrapper(u2, prefix, u2.getPersons(), u2
                 .getModifiedPersons());
-        if (itr.warning) {
+        if (itr.problem != null) {
           unw.addAdditionalIcon("warnung");
         }
         unw.addAdditionalIcon(addIcon);
@@ -2373,7 +2376,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
 
       UnitNodeWrapper unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
-      if (relation.warning) {
+      if (relation.problem != null) {
         unw.addAdditionalIcon("warnung");
       }
       unw.addAdditionalIcon(addIcon);
@@ -2735,8 +2738,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     if (maxOnHorse == Unit.CAP_UNSKILLED) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.capacityonhorse") + ": "
           + Resources.get("emapdetailspanel.node.toomanyhorses"), "warnung"));
-    } else if (maxOnHorse == Unit.CAP_NO_HORSES) {
-    } else {
+    } else if (maxOnHorse != Unit.CAP_NO_HORSES) {
       float max = maxOnHorse / 100.0F;
       float free = Math.abs(maxOnHorse - modLoad) / 100.0F;
       DefaultMutableTreeNode capacityNode;
@@ -3036,33 +3038,39 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendUnitTransportationInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     // transportation relations
-    Collection<Unit> carriers = u.getCarriers();
-
-    if (carriers.size() > 0) {
-      DefaultMutableTreeNode carriersNode =
-          new DefaultMutableTreeNode(nodeWrapperFactory.createUnitListNodeWrapper(Resources
-              .get("emapdetailspanel.node.carriers"), null, carriers, "carriers"));
-      parent.add(carriersNode);
-      expandableNodes.add(new NodeWrapper(carriersNode, "EMapDetailsPanel.UnitCarriersExpanded"));
-
-      for (Unit carrier : carriers) {
-        UnitNodeWrapper w =
-            nodeWrapperFactory.createUnitNodeWrapper(carrier, carrier.getPersons(), carrier
-                .getModifiedPersons());
-        carriersNode.add(new DefaultMutableTreeNode(w));
+    Collection<Unit> carriers = new HashSet<Unit>();
+    Collection<Unit> passengers = new HashSet<Unit>();
+    for (TransportRelation rel : u.getRelations(TransportRelation.class)) {
+      if (rel.source == u) {
+        passengers.add(rel.target);
+      } else if (rel.target == u) {
+        carriers.add(rel.source);
       }
     }
-    Collection<Unit> passengers = u.getPassengers();
 
+    DefaultMutableTreeNode passengersNode = null;
     if (passengers.size() > 0) {
-      DefaultMutableTreeNode passengersNode =
+      passengersNode =
           new DefaultMutableTreeNode(nodeWrapperFactory.createUnitListNodeWrapper(Resources
               .get("emapdetailspanel.node.passengers"), null, passengers, "passengers"));
       parent.add(passengersNode);
       expandableNodes
           .add(new NodeWrapper(passengersNode, "EMapDetailsPanel.UnitPassengersExpanded"));
+    }
 
-      for (Unit passenger : passengers) {
+    DefaultMutableTreeNode carriersNode = null;
+    if (carriers.size() > 0) {
+      carriersNode =
+          new DefaultMutableTreeNode(nodeWrapperFactory.createUnitListNodeWrapper(Resources
+              .get("emapdetailspanel.node.carriers"), null, carriers, "carriers"));
+      parent.add(carriersNode);
+      expandableNodes.add(new NodeWrapper(carriersNode, "EMapDetailsPanel.UnitCarriersExpanded"));
+    }
+
+    for (TransportRelation rel : u.getRelations(TransportRelation.class)) {
+      if (rel.source == u) {
+        Unit passenger = rel.target;
+
         int pweight = getMovementEvaluator().getWeight(passenger);
         int pmodweight = getMovementEvaluator().getModifiedWeight(passenger);
         String str =
@@ -3077,7 +3085,27 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
 
         UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(passenger, str);
-        passengersNode.add(new DefaultMutableTreeNode(w));
+        w.setReverseOrder(true);
+        if (rel.problem != null) {
+          w.addAdditionalIcon("warnung");
+        }
+        w.addAdditionalIcon("get");
+        if (passengersNode != null) {
+          passengersNode.add(new DefaultMutableTreeNode(w));
+        }
+      } else {
+        Unit carrier = rel.source;
+        UnitNodeWrapper w =
+            nodeWrapperFactory.createUnitNodeWrapper(carrier, carrier.getPersons(), carrier
+                .getModifiedPersons());
+        w.setReverseOrder(true);
+        if (rel.problem != null) {
+          w.addAdditionalIcon("warnung");
+        }
+        w.addAdditionalIcon("get");
+        if (carriersNode != null) {
+          carriersNode.add(new DefaultMutableTreeNode(w));
+        }
       }
     }
   }
@@ -3309,7 +3337,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         // } else {
         unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
         // }
-        if (rel.warning) {
+        if (rel.problem != null) {
           unw.addAdditionalIcon("warnung");
         }
         unw.addAdditionalIcon(addIcon);
@@ -3799,9 +3827,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       return;
 
     int skillLevel = -1;
-    if (shipType != null) {
-      skillLevel = shipType.getBuildSkillLevel();
-    }
+    skillLevel = shipType.getBuildSkillLevel();
 
     int minSize = -1;
     int maxSize = shipType.getMaxSize();
@@ -4244,8 +4270,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           String val = s.getComponents().get(key);
           DefaultMutableTreeNode compNode;
 
-          // FIXME: localize?
-          if (key.equalsIgnoreCase("Aura")) {
+          if (key.equalsIgnoreCase(magellan.library.Spell.Component.AURA)) {
             int blankPos = val.indexOf(" ");
 
             if ((blankPos > 0) && (blankPos < val.length())) {
@@ -4270,7 +4295,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             } else {
               compNode = createSimpleNode(data.getTranslation(key) + ": " + val, "aura");
             }
-          } else if (key.equalsIgnoreCase("permanente Aura")) {
+          } else if (key.equalsIgnoreCase(magellan.library.Spell.Component.PERMANENT_AURA)) {
             int blankPos = val.indexOf(" ");
 
             if ((blankPos > 0) && (blankPos < val.length())) {
@@ -6005,24 +6030,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       contextManager.setSelection(null);
     }
   }
-
-  // /**
-  // * Sets the value of activeRegion.
-  // *
-  // * @param activeRegion The value for activeRegion.
-  // */
-  // protected void setActiveRegion(Region activeRegion) {
-  // this.activeRegion = activeRegion;
-  // }
-
-  // /**
-  // * Returns the value of activeRegion.
-  // *
-  // * @return Returns activeRegion.
-  // */
-  // protected Region getActiveRegion() {
-  // return activeRegion;
-  // }
 
   /**
    * A unit filter that accepts units that are in all regions occuring in a given Selection context.

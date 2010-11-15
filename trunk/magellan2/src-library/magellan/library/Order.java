@@ -26,6 +26,7 @@ package magellan.library;
 import java.util.List;
 
 import magellan.library.gamebinding.ExecutionState;
+import magellan.library.tasks.Problem;
 import magellan.library.utils.OrderToken;
 
 /**
@@ -108,16 +109,16 @@ public interface Order {
   public boolean isLong();
 
   /**
-   * Sets the value of warning.
+   * Sets a warning or error.
    * 
-   * @param warning The value for warning.
+   * @param problem The value for warning.
    */
-  public void setWarning(String warning);
+  public void setProblem(Problem problem);
 
   /**
-   * Returns the value of warning.
+   * Returns the problem.
    * 
    * @return Returns warning.
    */
-  public String getWarning();
+  public Problem getProblem();
 }

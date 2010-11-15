@@ -30,19 +30,7 @@ public class InterUnitRelation extends UnitRelation {
    * @param line The line in the source's orders
    */
   public InterUnitRelation(Unit source, Unit target, int line) {
-    this(source, source, target, line, false);
-  }
-
-  /**
-   * Creates a new InterUnitRelation object.
-   * 
-   * @param source The source unit
-   * @param target The target unit
-   * @param line The line in the source's orders
-   * @param warning <code>true</code> iff this relation causes a warning
-   */
-  public InterUnitRelation(Unit source, Unit target, int line, boolean warning) {
-    this(source, source, target, line, warning);
+    this(source, source, target, line);
   }
 
   /**
@@ -52,10 +40,9 @@ public class InterUnitRelation extends UnitRelation {
    * @param source The source unit
    * @param target The target unit
    * @param line The line in the source's orders
-   * @param warning <code>true</code> iff this relation causes a warning
    */
-  public InterUnitRelation(Unit origin, Unit source, Unit target, int line, boolean warning) {
-    super(origin, source, line, warning);
+  public InterUnitRelation(Unit origin, Unit source, Unit target, int line) {
+    super(origin, source, line);
     this.target = target;
   }
 
@@ -76,7 +63,7 @@ public class InterUnitRelation extends UnitRelation {
   @Override
   public void add() {
     super.add();
-    if (target != source && target != origin) {
+    if (target != source && target != origin && target != null) {
       target.addRelation(this);
     }
   }

@@ -42,10 +42,9 @@ public class LeaveOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
-  public LeaveOrder(List<OrderToken> tokens, String text, boolean valid) {
-    super(tokens, text, valid);
+  public LeaveOrder(List<OrderToken> tokens, String text) {
+    super(tokens, text);
   }
 
   @Override
@@ -57,7 +56,7 @@ public class LeaveOrder extends SimpleOrder {
         LeaveRelation rel = new LeaveRelation(unit, uc, line);
         rel.add();
       } else {
-        setWarning(Resources.get("order.leave.warning.nocontainer"));
+        setWarning(unit, line, Resources.get("order.leave.warning.nocontainer"));
       }
     }
   }

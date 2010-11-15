@@ -1,5 +1,5 @@
-// class magellan.library.gamebinding.ReserveOrder
-// created on Aug 12, 2010
+// class magellan.library.gamebinding.RideOrder
+// created on Nov 14, 2010
 //
 // Copyright 2003-2010 by magellan project team
 //
@@ -28,61 +28,22 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitID;
-import magellan.library.relation.AttackRelation;
-import magellan.library.rules.ItemType;
-import magellan.library.tasks.AttackInspector;
-import magellan.library.tasks.Problem.Severity;
-import magellan.library.tasks.ProblemFactory;
-import magellan.library.tasks.ProblemType;
+import magellan.library.relation.TransportRelation;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
 /**
- * An ATTACK order.
- * 
- * @author stm
+ * A RIDE order (FAHRE).
  */
-public class AttackOrder extends UnitArgumentOrder {
-
-  private static final ProblemType AttackProblem =
-      AttackInspector.AttackProblemTypes.UNKNOWNTARGET.type;
-  protected boolean each;
-  protected int amount;
-  protected ItemType itemType;
+public class RideOrder extends UnitArgumentOrder {
 
   /**
    * @param tokens
    * @param text
+   * @param target
    */
-  public AttackOrder(List<OrderToken> tokens, String text, UnitID target) {
+  public RideOrder(List<OrderToken> tokens, String text, UnitID target) {
     super(tokens, text, target);
-  }
-
-  /**
-   * Returns the value of each.
-   * 
-   * @return Returns each.
-   */
-  public boolean isEach() {
-    return each;
-  }
-
-  /**
-   * Returns the value of amount.
-   * 
-   * @return Returns amount.
-   */
-  public int getAmount() {
-    return amount;
-  }
-
-  /**
-   * Returns the value of itemType.
-   * 
-   * @return Returns itemType.
-   */
-  public ItemType getItemType() {
-    return itemType;
   }
 
   /**
@@ -91,17 +52,19 @@ public class AttackOrder extends UnitArgumentOrder {
    */
   @Override
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
-    if (!isValid())
-      return;
+    // if (!isValid())
+    // return;
 
     Unit tUnit = getTargetUnit(data, unit, line, true, false);
     if (tUnit != null) {
-      AttackRelation rel = new AttackRelation(unit, tUnit, line);
-      rel.add();
+      if (tUnit == unit) {
+        setWarning(unit, line, Resources.get("order.transport.warning.rreflexive"));
+      } else {
+        TransportRelation relation = new TransportRelation(unit, tUnit, null, line);
+        relation.add();
+      }
     } else {
-      setProblem(ProblemFactory.createProblem(Severity.ERROR, AttackProblem, unit, null, Resources
-          .get("order.attack.warning.unknowntarget", target), line));
-      // setWarning(unit,line,Resources.get("order.attack.warning.unknowntarget", target));
+      setWarning(unit, line, Resources.get("order.transport.warning.unknowntarget", target));
     }
 
   }

@@ -119,7 +119,7 @@ public class EresseaOrderParser implements OrderParser {
     }
 
     protected void init(@SuppressWarnings("unused") OrderToken token, String text) {
-      order = new SimpleOrder(getTokens(), text, false);
+      order = new SimpleOrder(getTokens(), text);
     }
 
     protected void postProcess() {
@@ -150,7 +150,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new UnitArgumentOrder(getTokens(), text, false, target);
+      order = new UnitArgumentOrder(getTokens(), text, target);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new UCArgumentOrder(getTokens(), text, false, target);
+      order = new UCArgumentOrder(getTokens(), text, target);
     }
 
     @Override
@@ -190,7 +190,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new UCArgumentOrder(getTokens(), text, false, target);
+      order = new UCArgumentOrder(getTokens(), text, target);
     }
 
     @Override
@@ -210,7 +210,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new UCArgumentOrder(getTokens(), text, false, target);
+      order = new UCArgumentOrder(getTokens(), text, target);
     }
 
     @Override
@@ -244,7 +244,7 @@ public class EresseaOrderParser implements OrderParser {
     emptyReader = new OrderHandler() {
       @Override
       protected void init(OrderToken token, String text) {
-        order = new SimpleOrder(getTokens(), text, false);
+        order = new SimpleOrder(getTokens(), text);
       }
 
       @Override
@@ -310,7 +310,7 @@ public class EresseaOrderParser implements OrderParser {
     this.completer = completer;
   }
 
-  protected Locale getLocale() {
+  public Locale getLocale() {
     return locale == null ? Locales.getOrderLocale() : locale;
   }
 
@@ -659,6 +659,7 @@ public class EresseaOrderParser implements OrderParser {
     OrderToken t = firstToken;
     if (t.ttype == OrderToken.TT_PERSIST) {
       t = getNextToken();
+      t.setStart(firstToken.getStart());
     }
 
     ArrayList<OrderHandler> readers = getHandlers(t);
@@ -712,7 +713,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new AttackOrder(getTokens(), text, false, target);
+      order = new AttackOrder(getTokens(), text, target);
     }
 
     @Override
@@ -839,7 +840,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new RenameOrder(getTokens(), text, false, RenameOrder.T_UNKNOWN, target, null);
+      order = new RenameOrder(getTokens(), text, RenameOrder.T_UNKNOWN, target, null);
     }
 
     @Override
@@ -927,12 +928,10 @@ public class EresseaOrderParser implements OrderParser {
       if (token.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNUNIT))
           && t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
         retVal = readBenenneFremdeEinheit(t);
-      } else if (token.equalsToken(Resources
-          .getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))
+      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))
           && t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
         retVal = readBenenneFremdesGebaeude(t);
-      } else if (token.equalsToken(Resources
-          .getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))
+      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))
           && t.equalsToken(getOrderTranslation(EresseaConstants.O_BUILDING))) {
         retVal = readBenenneFremdesGebaeude(t);
       } else if (token.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNFACTION))
@@ -1159,7 +1158,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new EnterOrder(getTokens(), text, valid, UCArgumentOrder.T_UNKNOWN);
+      order = new EnterOrder(getTokens(), text, UCArgumentOrder.T_UNKNOWN);
     }
 
     @Override
@@ -1252,7 +1251,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new GuardOrder(getTokens(), text, valid);
+      order = new GuardOrder(getTokens(), text);
     }
 
     @Override
@@ -1563,6 +1562,12 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* FAHRE
   protected class FahreReader extends UnitOrderHandler {
+
+    @Override
+    protected void init(OrderToken token, String text) {
+      order = new RideOrder(getTokens(), text, null);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -1587,7 +1592,6 @@ public class EresseaOrderParser implements OrderParser {
       token.ttype = OrderToken.TT_ID;
 
       OrderToken t = getNextToken();
-      // TODO check if unit exists
       target = UnitID.createUnitID(token.getText(), getData().base);
 
       if (shallComplete(token, t)
@@ -1595,7 +1599,6 @@ public class EresseaOrderParser implements OrderParser {
         getCompleter().cmpltFahre(true);
       }
 
-      // TODO test for target!=null? target could be invisible
       return checkFinal(t);
     }
   }
@@ -1607,7 +1610,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new SimpleOrder(getTokens(), text, false);
+      order = new SimpleOrder(getTokens(), text);
       this.text = text;
     }
 
@@ -1622,7 +1625,6 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readFolgeEinheit(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP)) == true) {
         retVal = readFolgeSchiff(t);
-        getOrder().setLong(true);
       } else {
         unexpected(t);
       }
@@ -1642,7 +1644,7 @@ public class EresseaOrderParser implements OrderParser {
       if (isID(t.getText()) == true) {
         UnitID target = UnitID.createUnitID(t.getText(), getData().base);
         Unit tUnit = getData().getUnit(target);
-        order = new UnitArgumentOrder(getTokens(), text, false, target);
+        order = new FollowUnitOrder(getTokens(), text, target);
         retVal = tUnit != null && readFinalID(t, true);
       } else {
         unexpected(t);
@@ -1658,12 +1660,14 @@ public class EresseaOrderParser implements OrderParser {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
+      getOrder().setLong(true);
       OrderToken t = getNextToken();
 
       if (isID(t.getText(), false) == true) {
         EntityID target = EntityID.createEntityID(t.getText(), getData().base);
         UnitContainer tContainer = getData().getShip(target);
-        order = new UCArgumentOrder(getTokens(), text, false, target);
+        order = new UCArgumentOrder(getTokens(), text, target);
+        getOrder().setLong(true);
         retVal = tContainer != null && readFinalID(t);
       } else {
         unexpected(t);
@@ -1752,7 +1756,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new GiveOrder(getTokens(), text, false, null, null);
+      order = new GiveOrder(getTokens(), text, null, null);
     }
 
     @Override
@@ -2032,7 +2036,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new CombatOrder(getTokens(), text, valid);
+      order = new CombatOrder(getTokens(), text);
     }
 
     @Override
@@ -2228,7 +2232,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new TeachOrder(getTokens(), text, valid);
+      order = new TeachOrder(getTokens(), text);
     }
 
     @Override
@@ -2284,7 +2288,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new LearnOrder(getTokens(), text, valid);
+      order = new LearnOrder(getTokens(), text);
     }
 
     @Override
@@ -2311,6 +2315,7 @@ public class EresseaOrderParser implements OrderParser {
               return false;
             if (getRules() == null)
               return openingToken.getText().length() > 0;
+            // TODO localize
             skill = getRules().getSkillType(content.replace('~', ' '));
             getOrder().skillName = content;
             return skill != null;
@@ -2575,7 +2580,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new MovementOrder(getTokens(), text, valid, false);
+      order = new MovementOrder(getTokens(), text, false);
     }
 
     @Override
@@ -3028,7 +3033,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new RecruitmentOrder(getTokens(), text, valid);
+      order = new RecruitmentOrder(getTokens(), text);
     }
 
     @Override
@@ -3066,7 +3071,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new ReserveOrder(getTokens(), text, valid);
+      order = new ReserveOrder(getTokens(), text);
     }
 
     @Override
@@ -3150,7 +3155,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new MovementOrder(getTokens(), text, valid, true);
+      order = new MovementOrder(getTokens(), text, true);
     }
 
     @Override
@@ -3417,7 +3422,7 @@ public class EresseaOrderParser implements OrderParser {
   protected class TransportiereReader extends OrderHandler {
     @Override
     protected void init(OrderToken token, String text) {
-      order = new TransportOrder(getTokens(), text, valid, null);
+      order = new TransportOrder(getTokens(), text, null);
     }
 
     @Override
@@ -3434,7 +3439,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isID(t.getText()) == true) {
-        Unit target = getUnit(t.getText());
+        // Unit target = getUnit(t.getText());
         getOrder().target = UnitID.createUnitID(t.getText(), data.base);
 
         retVal = readFinalID(t, true);
@@ -3621,7 +3626,7 @@ public class EresseaOrderParser implements OrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      order = new LeaveOrder(getTokens(), text, valid);
+      order = new LeaveOrder(getTokens(), text);
     }
 
     @Override

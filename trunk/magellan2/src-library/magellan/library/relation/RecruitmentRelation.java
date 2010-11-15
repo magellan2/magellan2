@@ -31,10 +31,9 @@ public class RecruitmentRelation extends PersonTransferRelation {
    * @param amount The amount to transfer
    * @param cost The costs in silver
    * @param line The line in the source's orders
-   * @param warning <code>true</code> iff this relation causes a warning
    */
-  public RecruitmentRelation(Unit unit, int amount, int cost, int line, boolean warning) {
-    this(unit, amount, cost, unit.getRace(), line, warning);
+  public RecruitmentRelation(Unit unit, int amount, int cost, int line) {
+    this(unit, amount, cost, unit.getRace(), line);
   }
 
   /**
@@ -45,10 +44,9 @@ public class RecruitmentRelation extends PersonTransferRelation {
    * @param cost The costs in silver
    * @param line The line in the source's orders
    * @param race The race that is recruited
-   * @param warning <code>true</code> iff this relation causes a warning
    */
-  public RecruitmentRelation(Unit unit, int amount, int cost, Race race, int line, boolean warning) {
-    super(unit.getRegion().getZeroUnit(), unit, amount, race, line, warning);
+  public RecruitmentRelation(Unit unit, int amount, int cost, Race race, int line) {
+    super(unit.getRegion().getZeroUnit(), unit, amount, race, line);
     costs = cost;
 
     // super(t, t.getRegion().getZeroUnit(), -amount, t.realRace != null ? t.realRace : t.race);

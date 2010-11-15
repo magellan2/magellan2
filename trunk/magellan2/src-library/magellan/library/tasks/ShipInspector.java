@@ -175,17 +175,7 @@ public class ShipInspector extends AbstractInspector {
 
     Iterator<CoordinateID> movementIterator = modifiedMovement.iterator();
     // skip origin
-    movementIterator.next();
-    if (!movementIterator.hasNext()) {
-      // this happens when we have some kind of movement and an startRegion
-      // but no next region
-      // example: ROUTE PAUSE NO
-
-      // FIXME That doesnt work anymore because iterator returns always next movement.
-      problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.NONEXTREGION
-          .getType(), ship, this));
-      return problems;
-    }
+    CoordinateID startRegion = movementIterator.next();
     CoordinateID nextRegionCoord = movementIterator.next();
     Region nextRegion = getData().getRegion(nextRegionCoord);
 
@@ -237,7 +227,8 @@ public class ShipInspector extends AbstractInspector {
       if (isShip
           && (nextRegion == null || !(getGameSpecificStuff().getGameSpecificRules()
               .canLandInRegion(ship, nextRegion)))) {
-        if (nextRegion == null || !hasHarbourInRegion(nextRegion)) {
+        if (nextRegion == null || !hasHarbourInRegion(nextRegion)
+            || nextRegion.getRegionType().equals(RegionType.theVoid)) {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.SHIPWRECK
               .getType(), ship, this));
           return problems;

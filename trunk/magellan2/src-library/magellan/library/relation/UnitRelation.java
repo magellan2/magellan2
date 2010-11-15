@@ -16,6 +16,9 @@ package magellan.library.relation;
 import java.util.HashMap;
 
 import magellan.library.Unit;
+import magellan.library.tasks.Problem;
+import magellan.library.tasks.ProblemFactory;
+import magellan.library.tasks.ProblemType;
 
 /**
  * A (possibly abstract) relation originating from a source unit.
@@ -35,8 +38,7 @@ public abstract class UnitRelation {
   /** The line in the source's orders that is the cause for this relation. The first line is 1. */
   public int line;
 
-  /** if something is amiss, this should be true */
-  public boolean warning;
+  public Problem problem;
 
   /**
    * Creates a new UnitRelation object.
@@ -44,24 +46,13 @@ public abstract class UnitRelation {
    * @param origin The origin unit
    * @param source The source unit
    * @param line The line in the source's orders. The first line is 1.
-   * @param warning <code>true</code> iff this relation causes a warning
    */
-  public UnitRelation(Unit origin, Unit source, int line, boolean warning) {
+  public UnitRelation(Unit origin, Unit source, int line) {
+    if (origin == null)
+      throw new NullPointerException("relation without origin");
     this.origin = origin;
     this.source = source;
     this.line = line;
-    this.warning = warning;
-  }
-
-  /**
-   * Creates a new UnitRelation object.
-   * 
-   * @param source The source unit
-   * @param line The line in the source's orders. The first line is 1.
-   * @param warning <code>true</code> iff this relation causes a warning
-   */
-  public UnitRelation(Unit source, int line, boolean warning) {
-    this(source, source, line, warning);
   }
 
   /**
@@ -71,7 +62,7 @@ public abstract class UnitRelation {
    * @param line The line in the source's orders
    */
   public UnitRelation(Unit source, int line) {
-    this(source, line, false);
+    this(source, source, line);
   }
 
   /*
@@ -81,16 +72,7 @@ public abstract class UnitRelation {
   @Override
   public String toString() {
     return this.getClass().getName() + "@ORIGIN=" + origin + "@SOURCE=" + source + "@line=" + line
-        + "@WARNING=" + warning;
-  }
-
-  /**
-   * Returns true iff this relation is caused by a long order
-   * 
-   * @return true iff this relation is caused by a long order
-   */
-  public boolean isLongOrder() {
-    return this instanceof LongOrderRelation;
+        + "@WARNING=" + problem;
   }
 
   /**
@@ -144,10 +126,22 @@ public abstract class UnitRelation {
    * Attaches an order to all report objects it is relevant to.
    */
   public void add() {
-    if (origin != source) {
+    if (origin != source && origin != null) {
       origin.addRelation(this);
     }
-    source.addRelation(this);
+    if (source != null) {
+      source.addRelation(this);
+    }
+  }
+
+  public void setWarning(String string, ProblemType type) {
+    problem =
+        ProblemFactory.createProblem(Problem.Severity.WARNING, type, origin, null, string, line);
+  }
+
+  public void setError(String string, ProblemType type) {
+    problem =
+        ProblemFactory.createProblem(Problem.Severity.ERROR, type, origin, null, string, line);
   }
 
 }

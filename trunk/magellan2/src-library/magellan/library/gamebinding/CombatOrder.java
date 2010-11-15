@@ -43,10 +43,9 @@ public class CombatOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
-  public CombatOrder(List<OrderToken> tokens, String text, boolean valid) {
-    super(tokens, text, valid);
+  public CombatOrder(List<OrderToken> tokens, String text) {
+    super(tokens, text);
   }
 
   /**

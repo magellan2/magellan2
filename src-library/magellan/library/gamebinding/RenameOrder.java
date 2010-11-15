@@ -73,12 +73,10 @@ public class RenameOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    * @param name
    */
-  public RenameOrder(List<OrderToken> tokens, String text, boolean valid, int type,
-      EntityID target, String name) {
-    super(tokens, text, valid);
+  public RenameOrder(List<OrderToken> tokens, String text, int type, EntityID target, String name) {
+    super(tokens, text);
     this.type = type;
     this.target = target;
     this.name = name;
@@ -127,7 +125,7 @@ public class RenameOrder extends SimpleOrder {
         }
       } else {
         if (unit.getBuilding() != null && unit.getBuilding().getOwnerUnit() != unit) {
-          setWarning(Resources.get("order.name.warning.owner"));
+          setWarning(unit, line, Resources.get("order.name.warning.owner"));
         } else {
           named = unit.getBuilding();
         }
@@ -142,7 +140,7 @@ public class RenameOrder extends SimpleOrder {
         }
       } else {
         if (unit.getShip() != null && unit.getShip().getOwnerUnit() != unit) {
-          setWarning(Resources.get("order.name.warning.owner"));
+          setWarning(unit, line, Resources.get("order.name.warning.owner"));
         } else {
           named = unit.getShip();
         }
@@ -161,7 +159,7 @@ public class RenameOrder extends SimpleOrder {
             "BENENNE FREMDE REGION geht nicht");
       } else {
         if (unit.getRegion().getOwnerUnit() != unit) {
-          setWarning(Resources.get("order.name.warning.owner"));
+          setWarning(unit, line, Resources.get("order.name.warning.owner"));
         } else {
           named = unit.getFaction();
         }
@@ -174,8 +172,8 @@ public class RenameOrder extends SimpleOrder {
     if (named != null) {
       UnitRelation rel = new RenameNamedRelation(unit, named, name, line);
       rel.add();
-    } else if (getWarning() == null) {
-      setWarning(Resources.get("order.name.warning.namewhat"));
+    } else if (getProblem() == null) {
+      setWarning(unit, line, Resources.get("order.name.warning.namewhat"));
     }
   }
 

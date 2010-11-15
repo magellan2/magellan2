@@ -20,14 +20,14 @@ import magellan.library.rules.ItemType;
  * A relation indicating that a unit transfers a certain amount of an item to another unit.
  */
 public class ItemTransferRelation extends TransferRelation {
-  /** DOCUMENT-ME */
+  /** The transferred item. */
   public ItemType itemType;
 
   /**
    * Creates a new ItemTransferRelation object without warning.
    */
   public ItemTransferRelation(Unit source, Unit target, int amount, ItemType type, int line) {
-    this(source, source, target, amount, type, line, false);
+    this(source, source, target, amount, type, line);
   }
 
   /**
@@ -38,11 +38,10 @@ public class ItemTransferRelation extends TransferRelation {
    * @param amount The amount to transfer
    * @param type The item to transfer
    * @param line The line in the source's orders
-   * @param warning <code>true</code> iff this relation causes a warning
    */
   public ItemTransferRelation(Unit source, Unit target, int amount, ItemType type, int line,
       boolean warning) {
-    this(source, source, target, amount, type, line, warning);
+    this(source, source, target, amount, type, line);
   }
 
   /**
@@ -54,17 +53,15 @@ public class ItemTransferRelation extends TransferRelation {
    * @param amount The amount to transfer
    * @param type The item to transfer
    * @param line The line in the source's orders
-   * @param warning <code>true</code> iff this relation causes a warning
    */
   public ItemTransferRelation(Unit origin, Unit source, Unit target, int amount, ItemType type,
-      int line, boolean warning) {
-    super(origin, source, target, amount, line, warning);
+      int line) {
+    super(origin, source, target, amount, line);
     itemType = type;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see com.eressea.relation.TransferRelation#toString()
+  /**
+   * @see magellan.library.relation.TransferRelation#toString()
    */
   @Override
   public String toString() {

@@ -26,6 +26,7 @@ package magellan.library.tasks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import magellan.library.GameData;
@@ -43,6 +44,30 @@ import magellan.library.utils.Resources;
  */
 public class TeachInspector extends AbstractInspector {
 
+  public enum TeachProblemTypes {
+    NOTLEARNING, REFLEXIVE, UNKNOWN_TARGET;
+
+    public ProblemType type;
+
+    TeachProblemTypes() {
+      String name = name().toLowerCase();
+      String message = Resources.get("tasks.teachinspector." + name + ".message", false);
+      String typeName = Resources.get("tasks.teachinspector." + name + ".name", false);
+      if (typeName == null) {
+        typeName = message;
+      }
+      String description = Resources.get("tasks.teachinspector." + name + ".description", false);
+      String group = Resources.get("tasks.teachinspector." + name + ".group", false);
+      type = new ProblemType(typeName, group, description, message);
+    }
+
+    ProblemType getType() {
+      return type;
+    }
+  }
+
+  private List<ProblemType> types;
+
   /**
    * @param data
    */
@@ -57,19 +82,6 @@ public class TeachInspector extends AbstractInspector {
    */
   public static TeachInspector getInstance(GameData data) {
     return new TeachInspector(data);
-  }
-
-  protected static final ProblemType NOTLEARNING;
-
-  static {
-    String message = Resources.get("tasks.teachinspector.notlearning.message");
-    String typeName = Resources.get("tasks.teachinspector.notlearning.name", false);
-    if (typeName == null) {
-      typeName = message;
-    }
-    String description = Resources.get("tasks.teachinspector.notlearning.description", false);
-    String group = Resources.get("tasks.teachinspector.notlearning.group", false);
-    NOTLEARNING = new ProblemType(typeName, group, description, message);
   }
 
   /**
@@ -96,14 +108,15 @@ public class TeachInspector extends AbstractInspector {
           Skill ss = u2.getSkill(skillType);
           Skill ts = u.getSkill(skillType);
           if ((ss == null ? 0 : ss.getLevel()) + 2 > (ts == null ? 0 : ts.getLevel())) {
-            problems.add(ProblemFactory.createProblem(Severity.WARNING, NOTLEARNING, u, this,
-                Resources.get("tasks.teachinspector.notlearning.message2", u2, skillType),
-                relation.line));
+            problems.add(ProblemFactory.createProblem(Severity.WARNING,
+                TeachProblemTypes.NOTLEARNING.type, u, this, Resources.get(
+                    "tasks.teachinspector.notlearning.message2", u2, skillType), relation.line));
           }
         }
       if (!found) {
-        problems.add(ProblemFactory.createProblem(Severity.WARNING, NOTLEARNING, u, this, Resources
-            .get("tasks.teachinspector.notlearning.message1", u2), relation.line));
+        problems.add(ProblemFactory.createProblem(Severity.WARNING,
+            TeachProblemTypes.NOTLEARNING.type, u, this, Resources.get(
+                "tasks.teachinspector.notlearning.message1", u2), relation.line));
       }
     }
 
@@ -114,7 +127,13 @@ public class TeachInspector extends AbstractInspector {
   }
 
   public Collection<ProblemType> getTypes() {
-    return Collections.singletonList(TeachInspector.NOTLEARNING);
+    if (types == null) {
+      types = new LinkedList<ProblemType>();
+      for (TeachProblemTypes t : TeachProblemTypes.values()) {
+        types.add(t.getType());
+      }
+    }
+    return types;
   }
 
 }

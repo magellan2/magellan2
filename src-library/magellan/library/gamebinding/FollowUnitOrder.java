@@ -1,5 +1,5 @@
-// class magellan.library.gamebinding.GuardOrder
-// created on Oct 12, 2010
+// class magellan.library.gamebinding.FollowOrder
+// created on Nov 15, 2010
 //
 // Copyright 2003-2010 by magellan project team
 //
@@ -27,52 +27,37 @@ import java.util.List;
 
 import magellan.library.GameData;
 import magellan.library.Unit;
-import magellan.library.relation.GuardRegionRelation;
+import magellan.library.UnitID;
+import magellan.library.relation.FollowUnitRelation;
 import magellan.library.utils.OrderToken;
+import magellan.library.utils.Resources;
 
 /**
- * A guard order (BEWACHE)
- * 
- * @author stm
+ * A FOLLOW order-
  */
-public class GuardOrder extends SimpleOrder {
-
-  private boolean not;
+public class FollowUnitOrder extends UnitArgumentOrder {
 
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
-  public GuardOrder(List<OrderToken> tokens, String text) {
-    super(tokens, text);
+  public FollowUnitOrder(List<OrderToken> tokens, String text, UnitID target) {
+    super(tokens, text, target);
   }
 
   @Override
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
-    if (!isValid())
-      return;
+    Unit tUnit = getTargetUnit(data, unit, line, true, false);
+    if (tUnit != null) {
 
-    new GuardRegionRelation(unit, not ? GuardRegionRelation.GUARD_NOT : GuardRegionRelation.GUARD,
-        line).add();
+      if (tUnit != unit) {
+        FollowUnitRelation rel = new FollowUnitRelation(unit, tUnit, line);
+        rel.add();
+      } else {
+        setWarning(unit, line, Resources.get("tasks.movementinspector.unitfollowsself.message"));
+      }
+    } else {
+      setWarning(unit, line, Resources.get("order.all.warning.unknowntarget", target));
+    }
   }
-
-  /**
-   * Sets the value of not.
-   * 
-   * @param not The value for not.
-   */
-  protected void setNot(boolean not) {
-    this.not = not;
-  }
-
-  /**
-   * Returns the value of not.
-   * 
-   * @return Returns not.
-   */
-  public boolean isNot() {
-    return not;
-  }
-
 }

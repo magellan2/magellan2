@@ -19,7 +19,7 @@ import magellan.library.Unit;
  */
 public interface Problem {
 
-  enum Severity {
+  public enum Severity {
     INFORMATION, WARNING, ERROR
   }
 

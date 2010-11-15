@@ -64,24 +64,11 @@ public class UCArgumentOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
-  public UCArgumentOrder(List<OrderToken> tokens, String text, boolean valid, EntityID target) {
-    super(tokens, text, valid);
+  public UCArgumentOrder(List<OrderToken> tokens, String text, EntityID target) {
+    super(tokens, text);
     container = target;
   }
-
-  // /**
-  // * @param subList
-  // * @param subList2
-  // * @param valid
-  // * @param persistent
-  // */
-  // public UCArgumentOrder(List<OrderToken> subList, List<OrderToken> subList2, boolean valid,
-  // boolean persistent, UnitContainer target) {
-  // super(subList, subList2, valid, persistent);
-  // container = target;
-  // }
 
   /**
    * Returns the value of container.

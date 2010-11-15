@@ -31,6 +31,9 @@ import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.relation.TeachRelation;
+import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory;
+import magellan.library.tasks.TeachInspector;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -46,10 +49,9 @@ public class TeachOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
-  public TeachOrder(List<OrderToken> tokens, String text, boolean valid) {
-    super(tokens, text, valid);
+  public TeachOrder(List<OrderToken> tokens, String text) {
+    super(tokens, text);
   }
 
   /**
@@ -58,7 +60,7 @@ public class TeachOrder extends SimpleOrder {
    */
   @Override
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
-    if (units == null || !isValid())
+    if (units == null)
       return;
 
     for (UnitID targetID : units) {
@@ -66,12 +68,14 @@ public class TeachOrder extends SimpleOrder {
       if (target != null) {
         TeachRelation rel = new TeachRelation(unit, target, line);
         if (unit.equals(target)) {
-          rel.warning = true;
-          setWarning(Resources.get("order.teach.warning.reflexive", targetID));
+          rel.setWarning(Resources.get("order.teach.warning.reflexive", targetID),
+              TeachInspector.TeachProblemTypes.REFLEXIVE.type);
         }
         rel.add();
       } else {
-        setWarning(Resources.get("order.teach.warning.unknowntarget", targetID));
+        setProblem(ProblemFactory.createProblem(Severity.WARNING,
+            TeachInspector.TeachProblemTypes.UNKNOWN_TARGET.type, unit, null, Resources.get(
+                "order.teach.warning.unknowntarget", targetID), line));
       }
     }
   }

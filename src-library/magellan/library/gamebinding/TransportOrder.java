@@ -42,25 +42,46 @@ public class TransportOrder extends UnitArgumentOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    * @param target
    */
-  public TransportOrder(List<OrderToken> tokens, String text, boolean valid, UnitID target) {
-    super(tokens, text, valid, target);
+  public TransportOrder(List<OrderToken> tokens, String text, UnitID target) {
+    super(tokens, text, target);
   }
 
+  /**
+   * @see magellan.library.gamebinding.SimpleOrder#execute(magellan.library.gamebinding.ExecutionState,
+   *      magellan.library.GameData, magellan.library.Unit, int)
+   */
   @Override
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
-    if (!isValid())
-      return;
+    // if (!isValid())
+    // return;
 
-    Unit tUnit = getTargetUnit(data, unit, true);
+    Unit tUnit = getTargetUnit(data, unit, line, true, false);
     if (tUnit != null) {
-      new TransportRelation(unit, tUnit, line).add();
+      if (tUnit == unit) {
+        setWarning(unit, line, Resources.get("order.transport.warning.treflexive"));
+      } else {
+        TransportRelation relation = null;
+        for (TransportRelation ride : unit.getRelations(TransportRelation.class)) {
+          if (ride.source == unit && ride.origin == tUnit) {
+            // ride relation
+            ride.target = ride.origin;
+            ride.origin = ride.source;
+            ride.line = line;
+            relation = ride;
+          }
+        }
+        if (relation == null) {
+          relation = new TransportRelation(unit, null, tUnit, line);
+          relation.add();
+          relation.setWarning(Resources.get("order.transport.warning.notriding", target),
+              SimpleOrder.OrderProblem);
+        }
+      }
     } else {
-      setWarning(Resources.get("order.transport.warning.unknowntarget", target));
+      setWarning(unit, line, Resources.get("order.transport.warning.unknowntarget", target));
     }
-
   }
 
 }

@@ -24,11 +24,12 @@ public class TransportRelation extends InterUnitRelation {
   /**
    * Creates a new relation indicating that unit s transports unit t
    * 
-   * @param s The source unit
-   * @param t The target unit
+   * @param source The source unit
+   * @param target The target unit
    * @param line The line in the source's orders
    */
-  public TransportRelation(Unit s, Unit t, int line) {
-    super(s, t, line);
+  public TransportRelation(Unit origin, Unit source, Unit target, int line) {
+    super(origin, source, target, line);
   }
+
 }

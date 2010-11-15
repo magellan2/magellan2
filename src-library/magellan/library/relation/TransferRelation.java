@@ -35,20 +35,7 @@ public class TransferRelation extends InterUnitRelation {
    * @param line The line in the source's orders
    */
   public TransferRelation(Unit source, Unit target, int amount, int line) {
-    this(source, source, target, amount, line, false);
-  }
-
-  /**
-   * Creates a new TransferRelation object.
-   * 
-   * @param source The source unit
-   * @param target The target unit
-   * @param amount The amount to transfer.
-   * @param line The line in the source's orders
-   * @param warning <code>true</code> iff this relation causes a warning
-   */
-  public TransferRelation(Unit source, Unit target, int amount, int line, boolean warning) {
-    this(source, source, target, amount, line, warning);
+    this(source, source, target, amount, line);
   }
 
   /**
@@ -59,11 +46,9 @@ public class TransferRelation extends InterUnitRelation {
    * @param target The target unit
    * @param amount The amount to transfer.
    * @param line The line in the source's orders
-   * @param warning <code>true</code> iff this relation causes a warning
    */
-  public TransferRelation(Unit origin, Unit source, Unit target, int amount, int line,
-      boolean warning) {
-    super(origin, source, target, line, warning);
+  public TransferRelation(Unit origin, Unit source, Unit target, int amount, int line) {
+    super(origin, source, target, line);
     this.amount = amount;
   }
 

@@ -275,7 +275,7 @@ public class Units {
         final StringBuilder text = new StringBuilder().append(rrel.amount).append(" ");
         final List<String> icons = new LinkedList<String>();
         text.append(Resources.get("util.units.node.reserved"));
-        if (rrel.warning) {
+        if (rrel.problem != null) {
           itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
           // text.append("(!!!) ");
           icons.add("warnung");
@@ -323,7 +323,7 @@ public class Units {
                   .getModifiedPersons());
           giveNodeWrapper.setReverseOrder(true);
 
-          if (currentRelation.warning) {
+          if (currentRelation.problem != null) {
             itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
             // prefix.append("(!!!) ");
             giveNodeWrapper.addAdditionalIcon("warnung");
@@ -347,7 +347,7 @@ public class Units {
               .append(" ").append(rrel.race);
 
           icons.add("rekruten");
-          if (rrel.warning) {
+          if (rrel.problem != null) {
             itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
             // text.append("(!!!) ");
             icons.add("warnung");

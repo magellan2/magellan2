@@ -1,3 +1,8 @@
+2010-11-15 / Build 437 - stm (stm_@users.sourceforge.net)
+    * additional layer of order warnings
+    * hiding of multiple problems at once in TaskTable
+    * better language support for orderparsing/completion
+
 2010-11-13 / Build 436 - stm (stm_@users.sourceforge.net)
     * deprecated data.rules and expanded GameSpecificRules to include Rules's non-modifying methods.
     * general overhaul of order parsing/processing

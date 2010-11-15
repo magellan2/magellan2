@@ -17,7 +17,6 @@ import magellan.library.completion.Completion;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderCompleter;
 import magellan.library.rules.Race;
-import magellan.library.utils.Resources;
 import magellan.library.utils.Units;
 
 /**
@@ -52,32 +51,32 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     for (Completion selfDef : getCompleterSettingsProvider().getSelfDefinedCompletions()) {
       addCompletion(selfDef);
     }
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_WORK)));
-    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ATTACK), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_BANNER), " \"\"",
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_WORK)));
+    addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_ATTACK), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_BANNER), " \"\"",
         Completion.DEFAULT_PRIORITY, 1));
     if (getUnit().getFaction().getItems().size() > 0) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CLAIM), " "));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_CLAIM), " "));
     }
     if (!getUnit().isHero()) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PROMOTION)));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_PROMOTION)));
     }
 
     if (!getRegion().buildings().isEmpty()) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SIEGE), " "));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_SIEGE), " "));
     }
 
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NAME), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_NAME), " "));
 
     if (getUnit().getItems().size() > 0) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_USE), " "));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_USE), " "));
     }
 
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_DESCRIBE), " "));
 
     if (!getRegion().buildings().isEmpty() || !getRegion().ships().isEmpty()) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ENTER), " "));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_ENTER), " "));
     }
 
     if (getUnit().getGuard() == 0) {
@@ -87,61 +86,59 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       // of a combat order (KÄMPFE) after all attack orders
       if ((getUnit().getCombatStatus() > EresseaConstants.CS_NOT)
           && (getUnit().getModifiedCombatStatus() > EresseaConstants.CS_NOT)) {
-        addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD)
-            + "...", Resources.getOrderTranslation(EresseaConstants.O_GUARD) + "\n"
-            + Resources.getOrderTranslation(EresseaConstants.O_COMBAT), " ", 5, 0));
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_GUARD) + "...",
+            getOrderTranslation(EresseaConstants.O_GUARD) + "\n"
+                + getOrderTranslation(EresseaConstants.O_COMBAT), " ", 5, 0));
       } else {
-        addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD)));
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_GUARD)));
       }
     } else {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_NOT)));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_GUARD) + " "
+          + getOrderTranslation(EresseaConstants.O_NOT)));
     }
 
     // the if clause is not always correct, but should usually be okay
     if (getUnit().getModifiedBuilding() != null
         || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
             getUnit()))) {
-      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_PAY) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_NOT)));
+      addCompletion(new Completion(getOrderTranslation(E3AConstants.O_PAY) + " "
+          + getOrderTranslation(EresseaConstants.O_NOT)));
     }
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MESSAGE), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DEFAULT),
-        Resources.getOrderTranslation(EresseaConstants.O_DEFAULT) + " '", "",
-        Completion.DEFAULT_PRIORITY, 0));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_EMAIL), Resources
-        .getOrderTranslation(EresseaConstants.O_EMAIL), " \"\"", Completion.DEFAULT_PRIORITY, 1));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_MESSAGE), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_DEFAULT),
+        getOrderTranslation(EresseaConstants.O_DEFAULT) + " '", "", Completion.DEFAULT_PRIORITY, 0));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_EMAIL),
+        getOrderTranslation(EresseaConstants.O_EMAIL), " \"\"", Completion.DEFAULT_PRIORITY, 1));
     // we focus auf our temp generation dialog FF
-    // addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_END)));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RIDE), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW), " "));
+    // addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_END)));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_RIDE), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_FOLLOW), " "));
 
     // if (hasSkill(getUnit(), EresseaConstants.S_KRAEUTERKUNDE, 7)) {
-    // addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
-    // + Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
+    // addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
+    // + getOrderTranslation(EresseaConstants.O_HERBS)));
     // }
 
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GIVE), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROUP), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HELP), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_GIVE), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_GROUP), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_HELP), " "));
 
     if (hasSkill(getUnit(), EresseaConstants.S_MAGIE)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL),
-          " "));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_COMBATSPELL), " "));
     }
 
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CONTACT), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEARN), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MAKE), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MOVE), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NUMBER), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_OPTION), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD),
-        " \"\"", Completion.DEFAULT_PRIORITY, 1));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_CONTACT), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_COMBAT), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_LEARN), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_MAKE), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_MOVE), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_NUMBER), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_OPTION), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_PASSWORD), " \"\"",
+        Completion.DEFAULT_PRIORITY, 1));
 
     if (hasSkill(getUnit(), EresseaConstants.S_KRAEUTERKUNDE, 6)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PLANT), " "));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_PLANT), " "));
     }
 
     if (getUnit().getShip() != null) {
@@ -149,44 +146,42 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
 
       if (owner != null) {
         if (owner.equals(getUnit())) {
-          addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PIRACY),
-              " "));
+          addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_PIRACY), " "));
         }
       }
     }
 
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PREFIX),
-        Resources.getOrderTranslation(EresseaConstants.O_PREFIX), " \"\"",
-        Completion.DEFAULT_PRIORITY, 1));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RECRUIT), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_PREFIX),
+        getOrderTranslation(EresseaConstants.O_PREFIX), " \"\"", Completion.DEFAULT_PRIORITY, 1));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_RECRUIT), " "));
 
     if (!(getUnit() instanceof TempUnit)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RESERVE), " "));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_RESERVE), " "));
     }
 
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ROUTE), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SORT), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_ROUTE), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_SORT), " "));
 
-    // addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_STIRB),
+    // addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_STIRB),
     // " ")); // don't blame me...
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CARRY), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_CARRY), " "));
 
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ORIGIN), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_ORIGIN), " "));
 
     if ((getUnit().getSkills() != null) && (getUnit().getSkills().size() > 0)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FORGET), " ",
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_FORGET), " ",
           Completion.DEFAULT_PRIORITY + 1));
     }
 
     if ((getUnit().getBuilding() != null) || (getUnit().getShip() != null)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEAVE)));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_LEAVE)));
     }
 
     if (hasSkill(getUnit(), EresseaConstants.S_MAGIE)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CAST), " "));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_CAST), " "));
     }
 
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHOW), " "));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_SHOW), " "));
 
     // TODO dontknow if we should use modified owner here (GIB and ZERSTÖRE have same priority!)
     // units destroying their own building or ship or...
@@ -201,25 +196,25 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
             .getModifiedBuilding().getOwnerUnit().getFaction())
         || (getUnit().getModifiedShip() != null && (getUnit().getModifiedShip().getOwnerUnit() == null || getUnit()
             .getFaction() != getUnit().getModifiedShip().getOwnerUnit().getFaction()))) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DESTROY)));
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_DESTROY)));
     } else {
       if (hasSkill(getUnit(), EresseaConstants.S_STRASSENBAU) && (getRegion() != null)
           && !getRegion().borders().isEmpty()) {
-        addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DESTROY), " "));
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_DESTROY), " "));
       }
     }
 
-    // addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROW), " "));
+    // addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_GROW), " "));
   }
 
   @Override
   public void cmpltBenenne() {
     super.cmpltBenenne();
-    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE), " "));
+    addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE), " "));
   }
 
   public void cmpltBezahle() {
-    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_NOT)));
   }
 
   @Override
@@ -234,7 +229,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
         && (!getCompleterSettingsProvider().getLimitMakeCompletion() || (Units
             .getContainerPrivilegedUnitItem(getRegion(), getData().rules
                 .getItemType(EresseaConstants.I_WOOD)) != null))) {
-      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH), " "));
+      addCompletion(new Completion(getOrderTranslation(E3AConstants.O_WATCH), " "));
     }
   }
 
@@ -249,18 +244,15 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
         addCompletion(new Completion(r.getRecruitmentName()));
       }
     }
-    // addCompletion(new Completion(Resources.get("gamebinding.e3a.e3aordercompleter.race"), "",
-    // ""));
   }
 
   public void cmpltAllianz() {
-    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_COMMAND),
-        " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_INVITE), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_JOIN), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_KICK), " "));
-    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_LEAVE), ""));
-    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_NEW), " "));
+    addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_COMMAND), " "));
+    addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_INVITE), " "));
+    addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_JOIN), " "));
+    addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_KICK), " "));
+    addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_LEAVE), ""));
+    addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_NEW), " "));
   }
 
 }

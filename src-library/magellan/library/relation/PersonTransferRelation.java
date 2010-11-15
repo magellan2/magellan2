@@ -31,11 +31,9 @@ public class PersonTransferRelation extends TransferRelation {
    * @param amount The amount to transfer
    * @param race The race of the source Unit
    * @param line The line in the source's orders
-   * @param warning <code>true</code> iff this relation causes a warning
    */
-  public PersonTransferRelation(Unit source, Unit target, int amount, Race race, int line,
-      boolean warning) {
-    super(source, target, amount, line, warning);
+  public PersonTransferRelation(Unit source, Unit target, int amount, Race race, int line) {
+    super(source, target, amount, line);
     this.race = race;
   }
 

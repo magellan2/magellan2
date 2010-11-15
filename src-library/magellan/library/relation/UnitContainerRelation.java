@@ -32,18 +32,7 @@ public class UnitContainerRelation extends UnitRelation {
    * @param line The line in the source's orders
    */
   public UnitContainerRelation(Unit s, UnitContainer t, int line) {
-    this(s, t, line, false);
-  }
-
-  /**
-   * Creates a new UnitContainerRelation object.
-   * 
-   * @param s The source unit
-   * @param t The target unit
-   * @param line The line in the source's orders
-   */
-  public UnitContainerRelation(Unit s, UnitContainer t, int line, boolean warning) {
-    super(s, line, warning);
+    super(s, line);
     target = t;
   }
 

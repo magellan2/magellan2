@@ -43,6 +43,7 @@ import magellan.library.relation.AttackRelation;
 import magellan.library.relation.CombatStatusRelation;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.EnterRelation;
+import magellan.library.relation.FollowUnitRelation;
 import magellan.library.relation.GuardRegionRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.LeaveRelation;
@@ -59,6 +60,8 @@ import magellan.library.relation.UnitTransferRelation;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
+import magellan.library.tasks.OrderSyntaxInspector;
+import magellan.library.tasks.Problem;
 import magellan.library.utils.Direction;
 import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
@@ -91,6 +94,8 @@ public class EresseaRelationFactory implements RelationFactory {
   public static final int P_REKRUTIERE = 1501;
   /** Order priority */
   public static final int P_LEHRE = 1801;
+  /** Order priority */
+  public static final int P_FAHRE = 2398;
   /** Order priority */
   public static final int P_TRANSPORTIERE = 2399;
   /** Order priority */
@@ -305,7 +310,9 @@ public class EresseaRelationFactory implements RelationFactory {
           if (leftUC.getModifiedOwnerUnit() == u) {
             for (Unit otherUnit : leftUC.modifiedUnits()) {
               if (otherUnit != u) {
-                relations.add(new ControlRelation(u, otherUnit, line, true));
+                ControlRelation cRel = new ControlRelation(u, otherUnit, line);
+                cRel.setWarning("???", SimpleOrder.OrderProblem);
+                relations.add(cRel);
                 break;
               }
             }
@@ -387,7 +394,7 @@ public class EresseaRelationFactory implements RelationFactory {
           continue;
         }
 
-        TransportRelation rel = new TransportRelation(u, target, line);
+        TransportRelation rel = new TransportRelation(u, u, target, line);
         relations.add(rel);
 
         continue;
@@ -483,9 +490,7 @@ public class EresseaRelationFactory implements RelationFactory {
                         rel.amount = Math.min(modPersons, rel.amount);
                       }
 
-                      rel =
-                          new PersonTransferRelation(u, target, rel.amount, u.getRace(), line,
-                              false);
+                      rel = new PersonTransferRelation(u, target, rel.amount, u.getRace(), line);
 
                       // update the modified person amount
                       modPersons = Math.max(0, modPersons - rel.amount);
@@ -516,7 +521,7 @@ public class EresseaRelationFactory implements RelationFactory {
                             // if not, only transfer the minimum amount
                             // the unit has
                             if (i.getAmount() < rel.amount) {
-                              rel.warning = true;
+                              rel.setWarning("???", SimpleOrder.OrderProblem);
                             }
                             // FIXME getPersons() or getModifiedPersons()? this is only correct if
                             // units are parsed in order; also, REKRUTIERE is after GIBs
@@ -525,15 +530,15 @@ public class EresseaRelationFactory implements RelationFactory {
                                     * (hasEach ? target.getModifiedPersons() : 1));
                             if (hasEach && target.getPersonTransferRelations().size() != 0) {
                               // so we add a warning here, to indicate that we're not sure
-                              rel.warning = true;
+                              rel.setWarning("???", SimpleOrder.OrderProblem);
                             }
                           }
                         }
 
                         // create the new transfer relation
-                        rel =
-                            new ItemTransferRelation(u, target, rel.amount, iType, line,
-                                rel.warning);
+                        Problem problem = rel.problem;
+                        rel = new ItemTransferRelation(u, target, rel.amount, iType, line);
+                        rel.problem = problem;
 
                         // update the modified item amount
                         if (i != null) {
@@ -589,9 +594,10 @@ public class EresseaRelationFactory implements RelationFactory {
               RecruitmentRelation rel;
               if ((race != null) && (race.getRecruitmentCosts() > 0)) {
                 int cost = amount * race.getRecruitmentCosts();
-                rel = new RecruitmentRelation(u, amount, cost, race, line, false);
+                rel = new RecruitmentRelation(u, amount, cost, race, line);
               } else {
-                rel = new RecruitmentRelation(u, amount, 0, race, line, true);
+                rel = new RecruitmentRelation(u, amount, 0, race, line);
+                rel.setWarning("???", SimpleOrder.OrderProblem);
               }
               relations.add(rel);
             } else {
@@ -603,9 +609,10 @@ public class EresseaRelationFactory implements RelationFactory {
             if (u.getRace() != null && u.getRace().getRecruitmentCosts() > 0) {
               rel =
                   new RecruitmentRelation(u, amount, amount * u.getRace().getRecruitmentCosts(),
-                      line, false);
+                      line);
             } else {
-              rel = new RecruitmentRelation(u, amount, 0, line, true);
+              rel = new RecruitmentRelation(u, amount, 0, line);
+              rel.setWarning("???", SimpleOrder.OrderProblem);
             }
             relations.add(rel);
           }
@@ -768,8 +775,7 @@ public class EresseaRelationFactory implements RelationFactory {
       for (int i = 0; i < relations.size(); ++i) {
         UnitRelation r = relations.get(i);
         if (r instanceof ControlRelation) {
-          relations.set(i, new ControlRelation(((ControlRelation) r).source,
-              ((ControlRelation) r).target, ((ControlRelation) r).line, true));
+          relations.get(i).setWarning("???", SimpleOrder.OrderProblem);
         }
       }
     }
@@ -854,13 +860,13 @@ public class EresseaRelationFactory implements RelationFactory {
           Item i = modItems.get(rel.itemType.getID());
           if (i != null) {
             if (i.getAmount() < rel.amount) {
-              rel.warning = true;
+              rel.setWarning("???", SimpleOrder.OrderProblem);
               rel.amount = i.getAmount();
             }
             i.setAmount(i.getAmount() - rel.amount);
           } else {
             rel.amount = 0;
-            rel.warning = true;
+            rel.setWarning("???", SimpleOrder.OrderProblem);
           }
           rels.add(rel);
         }
@@ -917,7 +923,7 @@ public class EresseaRelationFactory implements RelationFactory {
   protected ReserveRelation createReserveRelation(Unit source, int line, Order order) {
     ReserveOrder rOrder = (ReserveOrder) order;
     ItemType type = source.getData().getRules().getItemType(rOrder.itemID);
-    ReserveRelation rel = new ReserveRelation(source, 0, type, line, true);
+    ReserveRelation rel = new ReserveRelation(source, 0, type, line);
 
     if (rel.itemType != null) {
       // get the item from the list of modified items
@@ -926,19 +932,19 @@ public class EresseaRelationFactory implements RelationFactory {
       if (i == null) {
         // item unknown
         rel.amount = 0;
-        rel.warning = true;
+        rel.setWarning("???", SimpleOrder.OrderProblem);
       } else {
         if (rOrder.amount == Order.ALL) {
           // if the specified amount is 'all', convert u to a decent number
           // TODO how exactly does RESERVIERE ALLES <item> work??
           rel.amount = i.getAmount();
-          rel.warning = true;
+          rel.setWarning("???", SimpleOrder.OrderProblem);
         } else {
           // // if not, only transfer the minimum amount the unit has
           // TODO (stm) should this be persons or modified persons?
           rel.amount = rOrder.amount * (rOrder.each ? source.getModifiedPersons() : 1);
           if (i.getAmount() < rel.amount) {
-            rel.warning = true;
+            rel.setWarning("???", SimpleOrder.OrderProblem);
           }
           rel.amount = Math.min(i.getAmount(), rel.amount);
         }
@@ -1019,22 +1025,52 @@ public class EresseaRelationFactory implements RelationFactory {
 
   protected void postProcess(Region r) {
     for (Unit u : r.units()) {
-      // issue a warning if a unit that passes a command leaves the building
-      List<ControlRelation> controlRelations = u.getRelations(ControlRelation.class);
-      for (ControlRelation cRel : controlRelations) {
-        if (cRel.source == u) {
-          List<LeaveRelation> leaveRelations = u.getRelations(LeaveRelation.class);
-          if (!leaveRelations.isEmpty()) {
-            cRel.warning = true;
+      TransportRelation carrying = null, riding = null;
+      for (UnitRelation rel : u.getRelations()) {
+
+        // issue a warning if a unit that passes a command leaves the building
+        if (rel instanceof ControlRelation) {
+          ControlRelation cRel = (ControlRelation) rel;
+          if (cRel.source == u) {
+            List<LeaveRelation> leaveRelations = u.getRelations(LeaveRelation.class);
             for (LeaveRelation lrel : leaveRelations)
               if (lrel.origin == u && lrel.line > 0 && !lrel.isImplicit()) {
-                Order o = u.getOrders2().get(lrel.line - 1);
-                if (o.getWarning() == null) {
-                  o.setWarning(Resources.get("order.leave.warning.control"));
-                }
+                cRel.setWarning(Resources.get("order.leave.warning.control"),
+                    SimpleOrder.OrderProblem);
               }
           }
         }
+
+        if (rel instanceof TransportRelation) {
+          TransportRelation tRel = (TransportRelation) rel;
+          if (tRel.origin == u) {
+            if (tRel.target == null) {
+              riding = tRel;
+              tRel.target = tRel.origin;
+              if (tRel.problem == null) {
+                tRel.setWarning(Resources.get("order.transport.warning.notcarrying", tRel.source),
+                    SimpleOrder.OrderProblem);
+              }
+            } else {
+              carrying = tRel;
+              if (tRel.source == null) {
+                tRel.source = tRel.origin;
+              } else if (tRel.source.getRelations(MovementRelation.class).isEmpty()) {
+                if (tRel.source.getRelations(FollowUnitRelation.class).isEmpty()) {
+                  tRel.setWarning(Resources.get("order.transport.warning.notmoving"),
+                      SimpleOrder.OrderProblem);
+                }
+              }
+            }
+          } else if (tRel.target == u && tRel.source != null) {
+            riding = tRel;
+          }
+
+        }
+      }
+      if (riding != null && carrying != null) {
+        riding.setWarning(Resources.get("order.transport.warning.rideandcarry"),
+            SimpleOrder.OrderProblem);
       }
     }
   }
@@ -1072,6 +1108,8 @@ public class EresseaRelationFactory implements RelationFactory {
       return P_LEHRE;
     else if (order instanceof AttackOrder)
       return P_ATTACKIERE;
+    else if (order instanceof RideOrder)
+      return P_FAHRE;
     else if (order instanceof TransportOrder)
       return P_TRANSPORTIERE;
 
@@ -1088,6 +1126,9 @@ public class EresseaRelationFactory implements RelationFactory {
     private Collection<ItemType> herbTypes;
     private GameData data;
 
+    /**
+     * @param data
+     */
     public EresseaExecutionState(GameData data) {
       this.data = data;
     }
@@ -1100,7 +1141,8 @@ public class EresseaRelationFactory implements RelationFactory {
      * @param requiredAmount
      * @param unit
      * @param line
-     * @return The relations created for satisfying this event;
+     * @return The relations created for satisfying this event; The last relation is the main
+     *         relation.
      */
     public List<UnitRelation> reserveItem(ItemType type, boolean all, int requiredAmount,
         Unit unit, int line, Order order) {
@@ -1120,7 +1162,7 @@ public class EresseaRelationFactory implements RelationFactory {
                   Math.min(getFreeAmount(type, u, true), requiredAmount - reservedAmount);
               if (givenAmount > 0) {
                 UnitRelation giveRelation =
-                    new ItemTransferRelation(unit, u, unit, givenAmount, type, line, false);
+                    new ItemTransferRelation(unit, u, unit, givenAmount, type, line);
                 // new ReserveRelation(unit, u, givenAmount, type, -1, false);
                 result.add(giveRelation);
                 reservedAmount += givenAmount;
@@ -1132,10 +1174,11 @@ public class EresseaRelationFactory implements RelationFactory {
           }
         }
       }
-      ReserveRelation ownRelation = new ReserveRelation(unit, reservedAmount, type, line, false);
-      if (reservedAmount != requiredAmount) {
-        ownRelation.warning = true;
-        order.setWarning(Resources.get("order.reserve.warning.insufficient", type.toString()));
+      ReserveRelation ownRelation = new ReserveRelation(unit, reservedAmount, type, line);
+      if (reservedAmount != requiredAmount && !all) {
+        ownRelation.setWarning(
+            Resources.get("order.reserve.warning.insufficient", type.toString()),
+            OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
       }
       if (result != null) {
         result.add(ownRelation);
@@ -1148,12 +1191,14 @@ public class EresseaRelationFactory implements RelationFactory {
      * Tries to reserve a certain amount of an item. This method tries to get it from the material
      * pool if possible and may produce and register additional relations.
      * 
-     * @param type
+     * @param source
+     * @param target
+     * @param all
      * @param requiredAmount
+     * @param type
      * @param line
-     * @param unit
-     * @param line
-     * @return The relations created for satisfying this event;
+     * @param order
+     * @return
      */
     public List<UnitRelation> giveItem(Unit source, Unit target, boolean all, int requiredAmount,
         ItemType type, int line, Order order) {
@@ -1174,7 +1219,7 @@ public class EresseaRelationFactory implements RelationFactory {
                   Math.min(getFreeAmount(type, u, true), requiredAmount - reservedAmount);
               if (givenAmount > 0) {
                 UnitRelation giveRelation =
-                    new ItemTransferRelation(source, u, target, givenAmount, type, line, false);
+                    new ItemTransferRelation(source, u, target, givenAmount, type, line);
                 // new ReserveRelation(unit, u, givenAmount, type, -1, false);
                 result.add(giveRelation);
                 reservedAmount += givenAmount;
@@ -1189,8 +1234,8 @@ public class EresseaRelationFactory implements RelationFactory {
       UnitRelation ownRelation =
           new ItemTransferRelation(source, target, ownAmount, type, line, false);
       if (!all && reservedAmount != requiredAmount) {
-        ownRelation.warning = true;
-        order.setWarning(Resources.get("order.give.warning.insufficient", type.toString()));
+        ownRelation.setWarning(Resources.get("order.give.warning.insufficient", type.toString()),
+            OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
       }
       if (result != null) {
         result.add(ownRelation);

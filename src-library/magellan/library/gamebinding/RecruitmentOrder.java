@@ -48,10 +48,9 @@ public class RecruitmentOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
-  public RecruitmentOrder(List<OrderToken> tokens, String text, boolean valid) {
-    super(tokens, text, valid);
+  public RecruitmentOrder(List<OrderToken> tokens, String text) {
+    super(tokens, text);
   }
 
   /**
@@ -59,58 +58,61 @@ public class RecruitmentOrder extends SimpleOrder {
    *      magellan.library.GameData, magellan.library.Unit, int)
    */
   @Override
-  public void execute(ExecutionState state, GameData data, Unit u, int line) {
+  public void execute(ExecutionState state, GameData data, Unit unit, int line) {
     if (!isValid())
       return;
 
     RecruitmentRelation recRel;
     Race effRace = race;
+    String warning = null;
     if (race == null) {
-      effRace = u.getRace();
-      if (u.getRace() != null && u.getRace().getRecruitmentCosts() > 0) {
+      effRace = unit.getRace();
+      if (unit.getRace() != null && unit.getRace().getRecruitmentCosts() > 0) {
         recRel =
-            new RecruitmentRelation(u, amount, amount * u.getRace().getRecruitmentCosts(), line,
-                false);
+            new RecruitmentRelation(unit, amount, amount * unit.getRace().getRecruitmentCosts(),
+                line);
       } else {
-        recRel = new RecruitmentRelation(u, amount, 0, line, true);
-        setWarning(Resources.get("order.recruit.warning.unknowncost", u.getRace()));
+        recRel = new RecruitmentRelation(unit, amount, 0, line);
+        warning = Resources.get("order.recruit.warning.unknowncost", unit.getRace());
       }
     } else {
-      Race unitRace = (u instanceof TempUnit) ? ((TempUnit) u).getParent().getRace() : u.getRace();
+      Race unitRace =
+          (unit instanceof TempUnit) ? ((TempUnit) unit).getParent().getRace() : unit.getRace();
       if (race.getRecruitmentCosts() > 0) {
         int cost = amount * race.getRecruitmentCosts();
-        recRel = new RecruitmentRelation(u, getAmount(), cost, race, line, false);
+        recRel = new RecruitmentRelation(unit, getAmount(), cost, race, line);
       } else {
-        recRel = new RecruitmentRelation(u, getAmount(), 0, race, line, true);
-        setWarning(Resources.get("order.recruit.warning.unknowncost", race));
+        recRel = new RecruitmentRelation(unit, getAmount(), 0, race, line);
+        warning = Resources.get("order.recruit.warning.unknowncost", race);
       }
-      if (u.getPersons() != 0 && !unitRace.equals(race)) {
-        recRel.warning = true;
-        // setValid(false);
-        setWarning(Resources.get("order.recruit.warning.wrongrace"));
+      if (unit.getPersons() != 0 && !unitRace.equals(race)) {
+        warning = Resources.get("order.recruit.warning.wrongrace");
       }
     }
     if (effRace != null
-        && data.getGameSpecificRules().getRecruitmentLimit(u, effRace) < recRel.amount) {
-      if (getWarning() == null) {
-        setWarning(Resources.get("order.recruit.warning.recruitlimit"));
+        && data.getGameSpecificRules().getRecruitmentLimit(unit, effRace) < recRel.amount) {
+      if (getProblem() == null) {
+        warning = Resources.get("order.recruit.warning.recruitlimit");
       }
+    }
+    if (warning != null) {
+      recRel.setWarning(warning, SimpleOrder.OrderProblem);
     }
     recRel.add();
 
     EresseaExecutionState eState = (EresseaExecutionState) state;
     List<UnitRelation> relations =
         eState.reserveItem(data.getRules().getItemType(EresseaConstants.I_USILVER), false,
-            recRel.costs, u, line, this);
+            recRel.costs, unit, line, this);
     for (UnitRelation rel : relations) {
       rel.add();
-      if (rel.warning) {
-        setWarning(Resources.get("order.recruit.warning.silver"));
+      if (rel.problem != null) {
+        rel.setWarning(Resources.get("order.recruit.warning.silver"), SimpleOrder.OrderProblem);
       }
     }
 
-    if (u instanceof TempUnit) {
-      ((TempUnit) u).setTempRace(getRace());
+    if (unit instanceof TempUnit) {
+      ((TempUnit) unit).setTempRace(getRace());
     }
   }
 

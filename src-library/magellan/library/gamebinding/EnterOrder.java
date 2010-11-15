@@ -48,10 +48,9 @@ public class EnterOrder extends UCArgumentOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
-  public EnterOrder(List<OrderToken> tokens, String text, boolean valid, int type) {
-    super(tokens, text, valid, null);
+  public EnterOrder(List<OrderToken> tokens, String text, int type) {
+    super(tokens, text, null);
     this.type = type;
   }
 
@@ -70,7 +69,7 @@ public class EnterOrder extends UCArgumentOrder {
       EnterRelation rel = new EnterRelation(unit, target, line);
       rel.add();
     } else {
-      setWarning(Resources.get("order.enter.warning.unknowntarget", container));
+      setWarning(unit, line, Resources.get("order.enter.warning.unknowntarget", container));
     }
 
     // check whether the unit leaves a container
@@ -81,7 +80,7 @@ public class EnterOrder extends UCArgumentOrder {
     }
 
     if (leftUC != null) {
-      LeaveRelation rel = new LeaveRelation(unit, leftUC, line, true, false);
+      LeaveRelation rel = new LeaveRelation(unit, leftUC, line, true);
       rel.add();
     }
   }

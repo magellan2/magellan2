@@ -66,11 +66,14 @@ import magellan.library.utils.Resources;
 /**
  * Provides Panel (Extended Preferences Adapter) for Preferences
  * 
- * @author ...
+ * @author stm
  * @version 1.0, 20.11.2007
  */
 public class TaskTablePreferences extends JPanel implements ExtendedPreferencesAdapter {
 
+  /**
+   * A tree that displays problem types
+   */
   public class TypeTree extends JTree {
 
     DefaultMutableTreeNode root;

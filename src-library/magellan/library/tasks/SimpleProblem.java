@@ -47,8 +47,8 @@ public class SimpleProblem implements Problem {
    */
   public SimpleProblem(Severity severity, ProblemType type, Region region, Unit owner,
       Faction faction, Object object, Inspector inspector, String message, int line) {
-    if (object == null || inspector == null || message == null)
-      throw new NullPointerException();
+    // if (object == null || inspector == null || message == null)
+    // throw new NullPointerException();
     this.severity = severity;
     this.type = type;
     this.region = region;
@@ -148,7 +148,9 @@ public class SimpleProblem implements Problem {
    * @see magellan.library.tasks.Problem#addSuppressComment()
    */
   public Unit addSuppressComment() {
-    return getInspector().suppress(this);
+    if (getInspector() != null)
+      return getInspector().suppress(this);
+    return null;
   }
 
 }

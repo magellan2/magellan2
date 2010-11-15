@@ -39,14 +39,17 @@ public class ProblemFactory {
    * Creates a problem with all parameters given;
    * 
    * @param severity
-   * @param type
-   * @param region
-   * @param owner
-   * @param faction
-   * @param object
-   * @param inspector
-   * @param message
-   * @param line
+   * @param type One of {@link Problem.Severity#INFORMATION}, {@link Problem.Severity#WARNING},
+   *          {@link Problem.Severity#ERROR}
+   * @param region A region where the problem occurs
+   * @param owner The unit responsible for this problem or <code>null</code>. If
+   *          <code>line >= 0 </code>, it refers to an order of this unit.
+   * @param faction The faction this problem belongs to or <code>null</code>
+   * @param object The object that this problem criticizes
+   * @param inspector The Inspector that reported this problem
+   * @param message The message text of the problem
+   * @param line The line number in the orders of owner where the problem occured or -1 if no such
+   *          order can be identified. The first line is line 1!
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, Region region,
       Unit owner, Faction faction, Object object, Inspector inspector, String message, int line) {
@@ -60,14 +63,16 @@ public class ProblemFactory {
    * 
    * @param severity
    * @param type
-   * @param u
+   * @param unit The unit responsible for this problem or <code>null</code>. If
+   *          <code>line >= 0 </code>, it refers to an order of this unit.
    * @param inspector
-   * @param line
+   * @param line The line number in the orders of owner where the problem occurred or -1 if no such
+   *          order can be identified. The first line is line 1!
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u,
+  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit unit,
       Inspector inspector, int line) {
-    return new SimpleProblem(severity, type, u.getRegion(), u, u.getFaction(), u, inspector, type
-        .getMessage(), line);
+    return new SimpleProblem(severity, type, unit.getRegion(), unit, unit.getFaction(), unit,
+        inspector, type.getMessage(), line);
   }
 
   /**
@@ -76,13 +81,14 @@ public class ProblemFactory {
    * 
    * @param severity
    * @param type
-   * @param u
+   * @param unit The unit responsible for this problem or <code>null</code>. If
+   *          <code>line >= 0 </code>, it refers to an order of this unit.
    * @param inspector
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u,
+  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit unit,
       Inspector inspector) {
-    return new SimpleProblem(severity, type, u.getRegion(), u, u.getFaction(), u, inspector, type
-        .getMessage(), -1);
+    return new SimpleProblem(severity, type, unit.getRegion(), unit, unit.getFaction(), unit,
+        inspector, type.getMessage(), -1);
   }
 
   /**
@@ -93,8 +99,8 @@ public class ProblemFactory {
    * @param type
    * @param container
    * @param inspector
-   * @param inspector
-   * @param line
+   * @param line The line number in the orders of owner where the problem occured or -1 if no such
+   *          order can be identified. The first line is line 1!
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type,
       UnitContainer container, Inspector inspector, int line) {
@@ -110,7 +116,6 @@ public class ProblemFactory {
    * @param severity
    * @param type
    * @param container
-   * @param inspector
    * @param inspector
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type,
@@ -132,15 +137,26 @@ public class ProblemFactory {
    * 
    * @param severity
    * @param type
-   * @param u
+   * @param unit The unit responsible for this problem or <code>null</code>. If
+   *          <code>line >= 0 </code>, it refers to an order of this unit.
    * @param inspector
    * @param message
-   * @param line
+   * @param line The line number in the orders of owner where the problem occured or -1 if no such
+   *          order can be identified. The first line is line 1!
    */
-  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit u,
+  public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit unit,
       Inspector inspector, String message, int line) {
-    return new SimpleProblem(severity, type, u.getRegion(), u, u.getFaction(), u, inspector,
-        message, line);
+    return new SimpleProblem(severity, type, unit.getRegion(), unit, unit.getFaction(), unit,
+        inspector, message, line);
   }
 
+  /**
+   * Creates a dummy problem without object, inspector, or line.
+   * 
+   * @param severity
+   * @param type
+   */
+  public static Problem createProblem(Severity severity, ProblemType type) {
+    return new SimpleProblem(severity, type, null, null, null, null, null, null, -1);
+  }
 }

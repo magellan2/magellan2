@@ -22,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -342,10 +343,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
       acknowledgeMenu.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent menuEvent) {
-          int row = table.getSelectedRow();
-          if (row >= 0 && row < sorter.getRowCount()) {
-            acknowledge(row);
-          }
+          acknowledge(table.getSelectedRows());
         }
       });
 
@@ -423,15 +421,32 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   }
 
-  protected void acknowledge(int row) {
-    if (row < 0 || row >= sorter.getRowCount())
-      throw new IndexOutOfBoundsException();
-    Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
-    selectObjectOnRow(row);
+  protected void acknowledge(int rows[]) {
+    if (rows.length == 1) {
+      selectObjectOnRow(rows[0]);
+    }
 
-    Unit u = p.addSuppressComment();
-    if (u != null) {
-      dispatcher.fire(new UnitOrdersEvent(this, u));
+    // sort problems by line
+    List<Problem> problems = new ArrayList<Problem>();
+    for (int row : rows) {
+      if (row < 0 || row >= sorter.getRowCount())
+        throw new IndexOutOfBoundsException();
+      Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
+      problems.add(p);
+    }
+
+    Collections.sort(problems, new Comparator<Problem>() {
+
+      public int compare(Problem p1, Problem p2) {
+        return p2.getLine() - p1.getLine();
+      }
+    });
+
+    for (Problem p : problems) {
+      Unit u = p.addSuppressComment();
+      if (u != null) {
+        dispatcher.fire(new UnitOrdersEvent(this, u));
+      }
     }
   }
 
@@ -1433,7 +1448,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       newRow[i++] = p.getRegion();
       newRow[i++] = faction == null ? "" : faction;
       newRow[i++] = (p.getLine() < 1) ? "" : Integer.toString(p.getLine());
-      newRow[i++] = Resources.get("tasks.tasktablepanel.problemtype_" + p.getSeverity().toString());
+      newRow[i++] = p.getType().getName();// Resources.get("tasks.tasktablepanel.problemtype_" +
+                                          // p.getSeverity().toString());
       newRow[i++] = null;
       addRow(newRow);
     }
@@ -1459,11 +1475,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         // Inspector and region: only non unit objects will be removed
         // FIXME (stm)
         if (source instanceof Region && p.getRegion() != null) {
-          if (p.getInspector().equals(inspector) && p.getRegion().equals(source)) {
+          if (inspector.equals(p.getInspector()) && p.getRegion().equals(source)) {
             removeRow(i);
           }
         } else if (source instanceof Unit && p.getOwner() != null) {
-          if (p.getInspector().equals(inspector) && p.getOwner().equals(source)) {
+          if (inspector.equals(p.getInspector()) && p.getOwner().equals(source)) {
             removeRow(i);
           }
         }

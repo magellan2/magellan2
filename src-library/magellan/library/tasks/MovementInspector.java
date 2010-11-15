@@ -21,7 +21,10 @@ import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.FollowUnitOrder;
+import magellan.library.gamebinding.MovementOrder;
 import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ShipInspector.ShipProblemTypes;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 
@@ -85,10 +88,41 @@ public class MovementInspector extends AbstractInspector {
 
     List<Problem> problems = new ArrayList<Problem>();
 
-    if (!u.getModifiedMovement().isEmpty() || hasMovementOrder(u)) {
+    int movementOrderLine = -1;
+    int line = 0;
+    Orders orders = u.getOrders2();
+    for (Order order : orders) {
+      line++;
+      try {
+        if (order.isValid() && order instanceof FollowUnitOrder) {
+          movementOrderLine = line;
+          if (orders.isToken(order, 1, EresseaConstants.O_UNIT)) {
+            if (UnitID.createUnitID(order.getToken(2).getText(), getData().base).equals(u.getID())) {
+              problems.add(ProblemFactory.createProblem(Severity.ERROR,
+                  MovementProblemTypes.UNITFOLLOWSSELF.getType(), u, this, line));
+            }
+          }
+        } else if (order.isValid() && order instanceof MovementOrder) {
+          movementOrderLine = line;
+        }
+      } catch (Exception e) {
+      }
+    }
+
+    if (!u.getModifiedMovement().isEmpty() || movementOrderLine > 0) {
+
+      if (u.getModifiedMovement().size() > 1
+          && u.getModifiedMovement().get(0).equals(u.getModifiedMovement().get(1))) {
+        // this happens when we have some kind of movement and an startRegion
+        // but no next region
+        // example: ROUTE PAUSE NO
+        problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.NONEXTREGION
+            .getType(), u, this, movementOrderLine));
+      }
+
       // only test for foot/horse movement if unit is not owner of a modified ship
       if ((u.getModifiedShip() == null) || !u.equals(u.getModifiedShip().getModifiedOwnerUnit())) {
-        problems.addAll(reviewUnitOnFoot(u));
+        problems.addAll(reviewUnitOnFoot(u, movementOrderLine));
         if (u.getModifiedMovement().size() > 0) {
 
           int count = 0;
@@ -114,28 +148,12 @@ public class MovementInspector extends AbstractInspector {
             }
           }
           if ((count == 2 && !road) || count > 2) {
-            problems.addAll(reviewUnitOnHorse(u));
+            problems.addAll(reviewUnitOnHorse(u, movementOrderLine));
           }
         }
       }
     }
 
-    int line = 0;
-    Orders orders = u.getOrders2();
-    for (Order order : orders) {
-      line++;
-      try {
-        if (order.isValid() && orders.isToken(order, 0, EresseaConstants.O_FOLLOW)) {
-          if (orders.isToken(order, 1, EresseaConstants.O_UNIT)) {
-            if (UnitID.createUnitID(order.getToken(2).getText(), getData().base).equals(u.getID())) {
-              problems.add(ProblemFactory.createProblem(Severity.ERROR,
-                  MovementProblemTypes.UNITFOLLOWSSELF.getType(), u, this, line));
-            }
-          }
-        }
-      } catch (Exception e) {
-      }
-    }
     // TODO: check for movement length
     // TODO: check for roads
 
@@ -173,35 +191,35 @@ public class MovementInspector extends AbstractInspector {
     return false;
   }
 
-  private List<Problem> reviewUnitOnFoot(Unit u) {
+  private List<Problem> reviewUnitOnFoot(Unit u, int line) {
     int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(u);
 
     if (maxOnFoot == Unit.CAP_UNSKILLED)
       return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-          MovementProblemTypes.TOOMANYHORSESFOOT.getType(), u, this)));
+          MovementProblemTypes.TOOMANYHORSESFOOT.getType(), u, this, line)));
 
     int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(u);
 
     if ((maxOnFoot - modLoad) < 0)
       return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-          MovementProblemTypes.FOOTOVERLOADED.getType(), u, this)));
+          MovementProblemTypes.FOOTOVERLOADED.getType(), u, this, line)));
 
     return Collections.emptyList();
   }
 
-  private List<Problem> reviewUnitOnHorse(Unit u) {
+  private List<Problem> reviewUnitOnHorse(Unit u, int line) {
     int maxOnHorse = getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(u);
 
     if (maxOnHorse == Unit.CAP_UNSKILLED)
       return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-          MovementProblemTypes.TOOMANYHORSESRIDE.getType(), u, this)));
+          MovementProblemTypes.TOOMANYHORSESRIDE.getType(), u, this, line)));
 
     if (maxOnHorse != Unit.CAP_NO_HORSES) {
       int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(u);
 
       if ((maxOnHorse - modLoad) < 0)
         return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-            MovementProblemTypes.HORSEOVERLOADED.getType(), u, this)));
+            MovementProblemTypes.HORSEOVERLOADED.getType(), u, this, line)));
     }
     // FIXME if unit has no horses, we should report an error
 

@@ -72,7 +72,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
 
           if (shipInformations[s.getShoreId() + 1] == null) {
             shipInformations[s.getShoreId() + 1] =
-                new ShipInformation(s.getShipType().getCapacity(), s.getType().getName());
+                new ShipInformation(s.getShipType().getCapacity(), s.getType().getID().toString());
           }
 
           ShipInformation actShip = shipInformations[s.getShoreId() + 1];

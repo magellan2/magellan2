@@ -418,8 +418,9 @@ public class ExtendedCommands {
 
     execute(script.toString(), world, unit, null);
     unit.setOrdersChanged(true);
-    if (client != null)
+    if (client != null) {
       client.getDispatcher().fire(new UnitOrdersEvent(unit, unit));
+    }
   }
 
   /**

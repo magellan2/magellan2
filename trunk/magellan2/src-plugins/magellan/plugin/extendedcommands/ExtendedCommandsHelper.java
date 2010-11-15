@@ -30,12 +30,13 @@ import java.util.List;
 import java.util.Map;
 
 import magellan.client.Client;
+import magellan.client.event.UnitOrdersEvent;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.library.Building;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
-import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
 import magellan.library.Order;
@@ -202,7 +203,7 @@ public class ExtendedCommandsHelper {
    * @return A faction with the given name or <code>null</code> if no such faction exists.
    */
   public Faction getFaction(String factionID) {
-    return world.getFaction(IntegerID.create(factionID));
+    return world.getFaction(EntityID.createEntityID(factionID, world.base));
   }
 
   /**
@@ -211,7 +212,7 @@ public class ExtendedCommandsHelper {
    * @return A building with the given name or <code>null</code> if no such building exists.
    */
   public Building getBuilding(String buildingID) {
-    return world.getBuilding(IntegerID.create(buildingID));
+    return world.getBuilding(EntityID.createEntityID(buildingID, world.base));
   }
 
   /**
@@ -220,7 +221,7 @@ public class ExtendedCommandsHelper {
    * @return A ship with the given name or <code>null</code> if no such ship exists.
    */
   public Ship getShip(String shipID) {
-    return world.getShip(IntegerID.create(shipID));
+    return world.getShip(EntityID.createEntityID(shipID, world.base));
   }
 
   /**

@@ -31,21 +31,23 @@ package magellan.library.utils;
  */
 public class TranslationType {
 
-  // source of this translation type is unknown
-  // should not stay after init
+  /**
+   * Source of this translation type is unknown; should not stay after init.
+   */
   public static final int sourceUnknown = 0;
 
-  // source of this translation type is the CR
+  /** Source of this translation type is the CR */
   public static final int sourceCR = 1;
 
-  // source of this translation type are the default Translations
-  // of Magellan
+  /**
+   * Source of this translation type are the default Translations of Magellan.
+   */
   public static final int sourceMagellan = 2;
 
-  // The translated string
+  /** The translated string */
   private String translation = null;
 
-  // the source of this translation
+  /** the source of this translation */
   private int source = TranslationType.sourceUnknown;
 
   /**

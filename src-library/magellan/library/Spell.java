@@ -24,8 +24,13 @@ import magellan.library.utils.SpellSyntax;
  */
 public interface Spell extends Described, Localized {
 
+  /**
+   * A spell component.
+   */
   public interface Component {
+    /** Key for the Aura component */
     public static final String AURA = "Aura";
+    /** Key for the permanent Aura component */
     public static final String PERMANENT_AURA = "permanente Aura";
 
     public String getName();
@@ -100,12 +105,13 @@ public interface Spell extends Described, Localized {
   public void setOnShip(boolean onShip);
 
   /**
-   * DOCUMENT-ME
+   * Returns <code>true</code> if this is a spell can be cast by the mage's familiar.
    */
   public boolean getIsFamiliar();
 
   /**
-   * DOCUMENT-ME
+   * Sets the familiar property. <code>true</code> means that this is a spell can be cast by the
+   * mage's familiar.
    */
   public void setIsFamiliar(boolean isFamiliar);
 
@@ -121,7 +127,7 @@ public interface Spell extends Described, Localized {
 
   /**
    * Returns the components of this spell as a map of "type" Strings as keys and "amount" Strings as
-   * values.
+   * values. Types are not localized.
    */
   public Map<String, String> getComponents();
 
@@ -131,7 +137,7 @@ public interface Spell extends Described, Localized {
   public List<? extends Spell.Component> getParsedComponents();
 
   /**
-   * Sets the components of this spell as Strings.
+   * Sets the components of this spell as Strings. Types (the keys) are not localized.
    */
   public void setComponents(Map<String, String> components);
 

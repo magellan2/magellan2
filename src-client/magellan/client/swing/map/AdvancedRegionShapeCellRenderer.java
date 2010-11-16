@@ -53,11 +53,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -532,7 +532,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   /**
    * Implementation via SortedMap, maybe inefficient for small number of entries
    */
-  protected class ValueMapping {
+  protected static class ValueMapping {
     protected SortedMap<Float, Float> values;
 
     /**
@@ -655,7 +655,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   /**
    * Implementation via SortedMap, maybe inefficient for small number of entries
    */
-  protected class ColorTable {
+  protected static class ColorTable {
     protected SortedMap<Float, Color> colors;
     protected Map<Integer, Color> interpolBuf;
     protected List<Integer> interpolLookup;

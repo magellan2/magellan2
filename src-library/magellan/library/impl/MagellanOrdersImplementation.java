@@ -501,4 +501,8 @@ class MagellanOrdersImplementation implements Orders {
 
   }
 
+  @Override
+  public String toString() {
+    return "@Unit:" + unit + "@changed:" + changed + "," + orders.toString();
+  }
 }

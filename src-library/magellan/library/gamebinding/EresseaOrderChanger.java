@@ -630,7 +630,7 @@ public class EresseaOrderChanger implements OrderChanger {
   /**
    * A map that counts occurrences of keys
    */
-  public class CountMap<T> extends HashMap<T, List<Integer>> {
+  public static class CountMap<T> extends HashMap<T, List<Integer>> {
     /**
      * Increase the value of key by delta. The value is assumed 0 if it's not present in the map.
      */

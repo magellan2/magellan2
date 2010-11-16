@@ -2416,7 +2416,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       tempUnit.setOrdersConfirmed(true);
       scanned = true;
     }
-    if (!scanned && !line.isEmpty() && line.getToken(0).equals(MagellanUnitImpl.TAG_PREFIX_TEMP)) {
+    if (!scanned && !line.isEmpty() && line.getText().startsWith(MagellanUnitImpl.TAG_PREFIX_TEMP)) {
       String tag = null;
       String value = null;
       final StringTokenizer st = new StringTokenizer(line.getText());

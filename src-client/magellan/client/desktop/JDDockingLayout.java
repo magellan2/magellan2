@@ -69,6 +69,7 @@ import com.javadocking.dockable.Dockable;
  * @version 1.0, 17.11.2007
  * @deprecated unfinished
  */
+@Deprecated
 public class JDDockingLayout {
   private static final Logger log = Logger.getInstance(JDDockingLayout.class);
   private String name = null;
@@ -447,9 +448,9 @@ public class JDDockingLayout {
     if (window == null)
       return;
     if (window instanceof SplitDock) {
-      save(buffer, window, offset);
+      save(buffer, (SplitDock) window, offset);
     } else if (window instanceof CompositeTabDock) {
-      save(buffer, window, offset);
+      save(buffer, (CompositeTabDock) window, offset);
     } else if (window instanceof Dockable) {
       save(buffer, (Dockable) window, offset);
     } else if (window instanceof RootWindow) {

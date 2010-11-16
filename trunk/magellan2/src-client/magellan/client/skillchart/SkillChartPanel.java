@@ -21,9 +21,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
@@ -33,7 +35,6 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.swing.InternationalizedDataPanel;
-import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.ID;
@@ -66,7 +67,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
   private JComboBox totalSkillLevel;
   private JComboBox skills;
   private SkillStats skillStats = new SkillStats();
-  private Map<CoordinateID, Region> regions = new Hashtable<CoordinateID, Region>();
+  private Set<Region> regions;
   private Map<ID, Faction> factions = new Hashtable<ID, Faction>();
 
   /**
@@ -76,7 +77,9 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
    */
   public SkillChartPanel(EventDispatcher ed, GameData data, Properties settings) {
     super(ed, data, settings);
-    regions.putAll(data.regions());
+    regions = new HashSet<Region>(data.getRegions());
+
+    ed.addSelectionListener(this);
 
     // create axis, plot, chart
     HorizontalCategoryAxis xAxis =
@@ -208,7 +211,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
     Vector<Object> names;
 
     if (skillType == null) {
-      dataArray = new Number[][] { { new Integer(0) } };
+      dataArray = new Number[][] { { Integer.valueOf(0) } };
       names = new Vector<Object>();
       names.add("");
     } else {
@@ -239,7 +242,9 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
   }
 
   /**
-   * DOCUMENT-ME
+   * Displays skill information only for selected objects (Factions or Regions).
+   * 
+   * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent e) {
     // we are only interested in the selectedObjects, not in activeObject
@@ -252,7 +257,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
         regions.clear();
 
         if (data != null) {
-          regions.putAll(data.regions());
+          regions.addAll(data.getRegions());
         }
 
         modified = true;
@@ -268,7 +273,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
             }
             rModified = true;
 
-            regions.put(region.getCoordinate(), region);
+            regions.add(region);
           } else if (o instanceof Faction) {
             // a faction has been selected
             Faction faction = (Faction) o;
@@ -287,7 +292,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
         // update the skillStats-Object to the new data (new factions or new regions)
         skillStats = new SkillStats();
 
-        for (Region r : regions.values()) {
+        for (Region r : regions) {
           for (Unit u : r.units()) {
             if (factions.containsValue(u.getFaction())) {
               skillStats.addUnit(u);
@@ -311,7 +316,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   @Override
   public void gameDataChanged(magellan.library.event.GameDataEvent e) {

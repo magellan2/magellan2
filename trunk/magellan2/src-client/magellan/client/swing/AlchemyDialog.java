@@ -1832,7 +1832,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
   /**
    * Renders cells with linewrap.
    */
-  public class TextAreaRenderer extends JTextArea implements TableCellRenderer {
+  public static class TextAreaRenderer extends JTextArea implements TableCellRenderer {
 
     /**
      * Creates a new renderer
@@ -1869,7 +1869,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
   /**
    * Rendering table cells with JLabels (does not work well).
    */
-  public class JLabelRenderer extends JLabel implements TableCellRenderer {
+  public static class JLabelRenderer extends JLabel implements TableCellRenderer {
 
     /**
      */

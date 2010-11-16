@@ -9,8 +9,8 @@ import java.util.LinkedList;
  */
 public class SpellSyntax {
 
-  private final char syntax_add = '+'; // new Character("+".charAt(0));
-  private final char syntax_notNeeded = '?'; // new Character("?".charAt(0));
+  private static final char syntax_add = '+'; // new Character("+".charAt(0));
+  private static final char syntax_notNeeded = '?'; // new Character("?".charAt(0));
 
   /**
    * List of our Tokens

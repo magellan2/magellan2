@@ -954,7 +954,7 @@ public class EresseaRelationFactory implements RelationFactory {
     return rel;
   }
 
-  protected class OrderInfo {
+  protected static class OrderInfo {
     public Order order;
     public Unit unit;
     public int line;
@@ -1121,7 +1121,7 @@ public class EresseaRelationFactory implements RelationFactory {
    * 
    * @author stm
    */
-  public class EresseaExecutionState implements ExecutionState {
+  public static class EresseaExecutionState implements ExecutionState {
 
     private Collection<ItemType> herbTypes;
     private GameData data;

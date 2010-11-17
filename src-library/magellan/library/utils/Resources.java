@@ -168,14 +168,17 @@ public class Resources {
 
   /**
    * Checks if all resource bundle contain the same set of keys.
+   * 
+   * @return A list of all resources that are not identical
    */
-  public void check() {
+  public StringBuilder check() {
+    StringBuilder result = new StringBuilder();
     ResourceBundle defaultBundle = Resources.getResourceBundle(null);
     for (Locale l : Resources.getAvailableLocales()) {
       ResourceBundle firstBundle = Resources.getResourceBundle(l);
       if (firstBundle != null && defaultBundle != firstBundle) {
-        compareKeys(defaultBundle, firstBundle);
-        compareKeys(firstBundle, defaultBundle);
+        compareKeys(defaultBundle, firstBundle, result, l, null);
+        compareKeys(firstBundle, defaultBundle, result, null, l);
       }
       for (Locale l2 : Resources.getAvailableLocales()) {
         ResourceBundle currentBundle = Resources.getResourceBundle(l2);
@@ -183,12 +186,17 @@ public class Resources {
             || defaultBundle == firstBundle || firstBundle == currentBundle) {
           continue;
         }
-        compareKeys(firstBundle, currentBundle);
+        compareKeys(firstBundle, currentBundle, result, l, l2);
       }
     }
+    return result;
   }
 
-  private void compareKeys(ResourceBundle firstBundle, ResourceBundle otherBundle) {
+  private StringBuilder compareKeys(ResourceBundle firstBundle, ResourceBundle otherBundle,
+      StringBuilder result, Locale l, Locale l2) {
+    if (result == null) {
+      result = new StringBuilder();
+    }
     for (Enumeration<String> keys = firstBundle.getKeys(); keys.hasMoreElements();) {
       String key = keys.nextElement();
       boolean foundIt = false;
@@ -200,14 +208,15 @@ public class Resources {
         }
       }
       if (!foundIt) {
-        Resources.log.warn("key " + key + " in bundle " + firstBundle.getLocale()
-            + " not available in bundle " + otherBundle.getLocale());
+        result.append("key ").append(key).append(" in bundle ").append(l).append(
+            " not available in bundle ").append(l2).append("\n");
       }
       /*
        * if (!otherBundle.containsKey(key)) { log.warn("key " + key + " in bundle " +
        * firstBundle.getLocale() + " not available in bundle " + otherBundle.getLocale()); }
        */
     }
+    return result;
   }
 
   /**

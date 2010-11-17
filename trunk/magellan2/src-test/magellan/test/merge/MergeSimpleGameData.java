@@ -1,18 +1,20 @@
 package magellan.test.merge;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
-public class MergeSimpleGameData extends TestCase {
+import org.junit.Test;
 
-  public MergeSimpleGameData(String aName) {
-    super(aName);
-  }
+public class MergeSimpleGameData extends MagellanTestWithResources {
+
+  // public MergeSimpleGameData(String aName) {
+  // super(aName);
+  // }
 
   /*
    * public void testMergeSameRound() throws Exception { GameData gd1 = new
@@ -23,6 +25,7 @@ public class MergeSimpleGameData extends TestCase {
    * GameDataBuilder().createSimpleGameData(350); GameData gd3 = GameData.merge(gd1, gd2); }
    */
 
+  @Test
   public void testMergeDifferentRounds() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
     GameData gd1 = builder.createSimpleGameData(350);

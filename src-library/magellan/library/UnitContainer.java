@@ -9,6 +9,7 @@ package magellan.library;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.Sorted;
@@ -169,5 +170,7 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   public CacheableOrderEditor getOrderEditor();
 
   public void setOrderEditor(CacheableOrderEditor editor);
+
+  public Map<? extends ID, Unit> getUnits();
 
 }

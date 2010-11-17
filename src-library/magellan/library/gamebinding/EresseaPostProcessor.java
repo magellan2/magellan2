@@ -14,12 +14,10 @@
 package magellan.library.gamebinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import magellan.library.CoordinateID;
@@ -87,8 +85,9 @@ public class EresseaPostProcessor {
      * retrieve the temp units mentioned in the orders and create them as TempUnit objects
      */
     int sortIndex = 0;
-    List<Unit> sortedUnits = new LinkedList<Unit>(data.getUnits());
-    Collections.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
+
+    Unit[] sortedUnits = data.getUnits().toArray(new Unit[0]);
+    Arrays.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
 
     // FIXME(stm) this effectively destroys report unit sorting!
     for (Unit unit : sortedUnits) {

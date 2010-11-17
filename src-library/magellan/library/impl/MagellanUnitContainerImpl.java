@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import magellan.library.Building;
+import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Item;
@@ -215,7 +216,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   }
 
   /** All units that are in this container. */
-  private Map<ID, Unit> units = null;
+  private Map<EntityID, Unit> units = null;
 
   /** Provides a collection view of the unit map. */
   private Collection<Unit> unitCollection = null;
@@ -257,7 +258,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public void addUnit(Unit u) {
     if (units == null) {
-      units = new OrderedHashtable<ID, Unit>(3, .6f);
+      units = new OrderedHashtable<EntityID, Unit>(3, .6f);
 
       // enforce the creation of a new collection view:
       unitCollection = null;
@@ -361,7 +362,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     }
 
     if (cache1.modifiedContainerUnits == null) {
-      cache1.modifiedContainerUnits = new Hashtable<ID, Unit>();
+      cache1.modifiedContainerUnits = new Hashtable<EntityID, Unit>();
     }
 
     if (units != null) {
@@ -663,4 +664,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     getCache().orderEditor = editor;
   }
 
+  public Map<EntityID, Unit> getUnits() {
+    return units;
+  }
 }

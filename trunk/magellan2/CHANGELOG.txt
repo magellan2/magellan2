@@ -1,3 +1,6 @@
+2010-11-17 / Build 439 - stm (stm_@users.sourceforge.net)
+    * partial fix of unit sorting
+    
 2010-11-15 / Build 437 - stm (stm_@users.sourceforge.net)
     * additional layer of order warnings
     * hiding of multiple problems at once in TaskTable

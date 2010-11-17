@@ -59,6 +59,7 @@ import magellan.library.utils.transformation.ReportTransformer;
  * @author stm
  */
 public class GameDataMerger {
+
   private static final Logger log = Logger.getInstance(GameDataMerger.class);
 
   /**
@@ -595,23 +596,37 @@ public class GameDataMerger {
      * in the case of unequal dates only units that are also in the second report are added to the
      * new one and temp units are ignored. IDs are used for comparison.
      */
-    // FIXME(stm) !!!! turn experimental off!!!
-    // experimental: add regionless units from last round which are not visible any more
+
+    // // FIXME(stm) !!!! turn experimental off!!!
+    // // experimental: add regionless units from last round which are not visible any more
     boolean experimental = false;
 
-    if (olderGD.unitView() != null) {
-      for (Unit u : olderGD.unitView().values()) {
-        if (sameRound || (newerGD.getUnit(u.getID()) != null)) {
-          resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
-        } else if (experimental) { // FIXME changes unit order
-          resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
-          resultGD.getUnit(u.getID()).putTag("old", "was present in last report");
-          // resultGD.getUnit(u.getID()).setRegion(u.getRegion());
+    if (sameRound) {
+      // adding units faction by faction and for owner factions first (units from the owner faction
+      // should be ensured to have the correct order in the server report); this still doesn't
+      // enforce correct unit sorting, but it enforces it within factions, which is the most
+      // important for order evaluation...
+      int sortIndex = 0;
+      if (olderGD.getOwnerFaction() != null) {
+        sortIndex =
+            addUnits(olderGD.getFaction(olderGD.getOwnerFaction()).units(), resultGD, sortIndex);
+      }
+      if (newerGD.getOwnerFaction() != null
+          && !newerGD.getOwnerFaction().equals(olderGD.getOwnerFaction())) {
+        sortIndex =
+            addUnits(newerGD.getFaction(newerGD.getOwnerFaction()).units(), resultGD, sortIndex);
+      }
+      for (Faction f : olderGD.getFactions()) {
+        if (!f.getID().equals(olderGD.getOwnerFaction())) {
+          sortIndex = addUnits(f.units(), resultGD, sortIndex);
         }
       }
-    }
-
-    if (newerGD.unitView() != null) {
+      for (Faction f : newerGD.getFactions()) {
+        if (!f.getID().equals(newerGD.getOwnerFaction())) {
+          sortIndex = addUnits(f.units(), resultGD, sortIndex);
+        }
+      }
+    } else if (newerGD.unitView() != null) {
       for (Unit u : newerGD.unitView().values()) {
         if (resultGD.getUnit(u.getID()) == null) {
           resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
@@ -869,6 +884,109 @@ public class GameDataMerger {
     resultGD.resetToUnchanged();
 
     return resultGD;
+  }
+
+  private static int addUnits(Collection<Unit> units, GameData resultGD, int sortIndex) {
+    for (Unit u : units)
+      if (resultGD.getUnit(u.getID()) == null) {
+        Unit newUnit = MagellanFactory.createUnit(u.getID(), resultGD);
+        newUnit.setSortIndex(sortIndex++);
+        resultGD.addUnit(newUnit);
+      }
+    return sortIndex;
+  }
+
+  /**
+   * Add units from older and newer to resultGD; this doesn't preserve the correct unit order.
+   */
+  @SuppressWarnings("unused")
+  private void joinUnits0(GameData olderGD, GameData newerGD, final GameData resultGD,
+      boolean sameRound, boolean experimental) {
+    // try to merge units in the correct order; this doesn't work any more if we merge more
+    // than two reports.
+    // joinUnits(olderGD, newerGD, resultGD);
+
+    // but this doesn't work at all!
+    if (olderGD.unitView() != null) {
+      for (Unit u : olderGD.unitView().values()) {
+        if (sameRound || (newerGD.getUnit(u.getID()) != null)) {
+          resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
+        } else if (experimental) { // FIXME changes unit order
+          resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
+          resultGD.getUnit(u.getID()).putTag("old", "was present in last report");
+          // resultGD.getUnit(u.getID()).setRegion(u.getRegion());
+        }
+      }
+    }
+    for (Unit u : newerGD.unitView().values()) {
+      if (resultGD.getUnit(u.getID()) == null) {
+        resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
+      }
+    }
+
+  }
+
+  /**
+   * Add units from older and newer to resultGD, trying to maintain unit order. unfortunately, this
+   * also doesn't always preserve the correct unit order (especially, if more than two reports are
+   * added).
+   */
+  @SuppressWarnings("unused")
+  private static void joinUnits1(GameData olderGD, GameData newerGD, final GameData resultGD) {
+    for (Region r : resultGD.regionView().values()) {
+      GameDataMerger.joinSortedMaps(olderGD.getRegion(r.getCoordinate()).getUnits(), newerGD
+          .getRegion(r.getCoordinate()).getUnits(), new Assigner<Unit>() {
+
+        private int index = 0;
+
+        public void add(Unit element) {
+          Unit unit = MagellanFactory.createUnit(element.getID(), resultGD);
+          resultGD.addUnit(unit);
+          unit.setSortIndex(index++);
+        }
+      });
+    }
+  }
+
+  /**
+   * Little driver interface to make this applicable to more than just units, but also regions
+   * and... anything else.
+   */
+  public static interface Assigner<T extends Identifiable> {
+    /** Adds the argument to the result object. */
+    public void add(T element);
+  }
+
+  private static <T extends Identifiable> void joinSortedMaps(Map<? extends ID, T> map1,
+      Map<? extends ID, T> map2, Assigner<T> assigner) {
+
+    Iterator<T> iterator1 = map1.values().iterator();
+    Iterator<T> iterator2 = map2.values().iterator();
+    while (iterator1.hasNext() || iterator2.hasNext()) {
+      T element1 = null, element2 = null;
+      while (iterator1.hasNext()) {
+        element1 = iterator1.next();
+        if (!map2.containsKey(element1.getID())) {
+          assigner.add(element1);
+        } else {
+          break;
+        }
+      }
+      while (iterator2.hasNext()) {
+        element2 = iterator2.next();
+        if (!map1.containsKey(element2.getID())) {
+          assigner.add(element2);
+        } else {
+          break;
+        }
+      }
+      if (element1 != null) {
+        assigner.add(element1);
+      }
+      if (element2 != null && (element1 == null || !element2.getID().equals(element1.getID()))) {
+        assigner.add(element2);
+      }
+    }
   }
 
   /**
@@ -2530,7 +2648,7 @@ public class GameDataMerger {
     }
 
     // FIXME(stm) this effectively destroys report unit sorting
-    resultUnit.setSortIndex(Math.max(resultUnit.getSortIndex(), curUnit.getSortIndex()));
+    // resultUnit.setSortIndex(Math.max(resultUnit.getSortIndex(), curUnit.getSortIndex()));
 
     if ((curUnit.getSpells() != null) && (curUnit.getSpells().size() > 0)) {
       if (resultUnit.getSpells() == null) {

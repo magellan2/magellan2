@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Skill;
@@ -93,7 +94,7 @@ public class Cache {
    * do not modify this thing (except for assignments) since it may point to the UnitContainer.units
    * map!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    */
-  public Map<ID, Unit> modifiedContainerUnits = null;
+  public Map<EntityID, Unit> modifiedContainerUnits = null;
 
   /**
    * Used in Region for creating a list of Items of priviliged factions in the region

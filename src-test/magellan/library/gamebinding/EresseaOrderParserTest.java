@@ -52,24 +52,28 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * TODO This class must be commented
+ * Tests if valid orders are parsed correctly
  * 
- * @author ...
+ * @author stm
  * @version 1.0, Jun 20, 2009
  */
-public class EresseaOrderParserTest {
+public class EresseaOrderParserTest extends MagellanTestWithResources {
 
-  private static MagellanContext context;
-  private static Properties completionSettings;
-  private static Properties settings;
+  private static SelfCleaningProperties completionSettings;
+  private GameData data;
+  private EresseaOrderParser parser;
+  private EresseaOrderParser parserCompleter;
+  private AutoCompletion completion;
+  private EresseaOrderCompleter completer;
+  private GameDataBuilder builder;
 
   /**
    * @throws java.lang.Exception
@@ -87,20 +91,6 @@ public class EresseaOrderParserTest {
     Logger.setLevel(Logger.ERROR);
     context.init();
   }
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {
-  }
-
-  private GameData data;
-  private EresseaOrderParser parser;
-  private EresseaOrderParser parserCompleter;
-  private AutoCompletion completion;
-  private EresseaOrderCompleter completer;
-  private GameDataBuilder builder;
 
   /**
    * @throws java.lang.Exception
@@ -275,7 +265,7 @@ public class EresseaOrderParserTest {
     checkOrder("//");
     checkOrder("// ");
     checkOrder("// HALLO");
-    checkOrder("//;");
+    checkOrder("//;", false);
     checkOrder("//ARBEITE", false);
     checkOrder("///", false);
     checkOrder("////", false);
@@ -317,10 +307,10 @@ public class EresseaOrderParserTest {
     checkOrder("@@ARBEITE", false); // server actually accepts this and turn it into @AREITE...
     checkOrder("@@", false);
     checkOrder("@ARBEITE 1", false);
-    checkOrder("@// ", true); // dodgy...
     checkOrder(";@", true);
     checkOrder("@; ", false);
     checkOrder("@  ; ", false);
+    checkOrder("@// ", true); // dodgy...
   }
 
   /**

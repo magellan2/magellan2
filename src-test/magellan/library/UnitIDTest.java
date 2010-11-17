@@ -25,7 +25,6 @@ package magellan.library;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,14 +33,6 @@ import org.junit.Test;
  * @author stm
  */
 public class UnitIDTest {
-
-  /**
-   * Called before each test.
-   */
-  @Before
-  public void setUp() throws Exception {
-    // currently nothing
-  }
 
   /**
    * Test for {@link UnitID#getNextDecimalID(int, int, boolean)}.

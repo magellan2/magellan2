@@ -1,20 +1,23 @@
 package magellan.test.merge;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
-public class MergeWithRoads extends TestCase {
+import org.junit.Test;
 
-  public MergeWithRoads(String aName) {
-    super(aName);
-  }
+public class MergeWithRoads extends MagellanTestWithResources {
 
-  // bugzilla bug #819
+  // public MergeWithRoads(String aName) {
+  // super(aName);
+  // }
+
+  /** bugzilla bug #819 */
+  @Test
   public void testLooseOldRoadInformation() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
 
@@ -38,6 +41,7 @@ public class MergeWithRoads extends TestCase {
     Assert.assertEquals(1, region_1_0_gd4.borders().size());
   }
 
+  @Test
   public void testKeepNewRoadInformation() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
 
@@ -56,7 +60,8 @@ public class MergeWithRoads extends TestCase {
     Assert.assertEquals(1, r4.borders().size());
   }
 
-  // bugzilla bug #819
+  /** bugzilla bug #819 */
+  @Test
   public void testSameRound() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
 
@@ -74,7 +79,8 @@ public class MergeWithRoads extends TestCase {
     Assert.assertEquals(1, r4.borders().size());
   }
 
-  // bugzilla bug #819
+  /** bugzilla bug #819 */
+  @Test
   public void testSameRoundRoadInSecondCR() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
 
@@ -94,7 +100,8 @@ public class MergeWithRoads extends TestCase {
     Assert.assertEquals(1, region_1_0_gd4.borders().size());
   }
 
-  // bugzilla bug #819
+  /** bugzilla bug #819 */
+  @Test
   public void testSameRoundUnitInFirstCrAndRoadInSecondCR() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
 
@@ -114,7 +121,7 @@ public class MergeWithRoads extends TestCase {
     Assert.assertEquals(1, region_1_1_gd4.borders().size());
   }
 
-  // bugzilla bug #819
+  /** bugzilla bug #819 */
   public void testSameRoundUnitInSecondCrAndRoadInFirstCR() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
 

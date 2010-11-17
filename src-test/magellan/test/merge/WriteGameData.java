@@ -8,11 +8,12 @@ import magellan.library.io.cr.CRWriter;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class WriteGameData {
+public class WriteGameData extends MagellanTestWithResources {
 
   @Test
   public void testWriteCR() throws Exception {

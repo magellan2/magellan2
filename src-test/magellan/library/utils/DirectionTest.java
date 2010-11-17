@@ -27,19 +27,12 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.util.Properties;
-
-import magellan.client.MagellanContext;
-import magellan.client.event.EventDispatcher;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
-import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -48,26 +41,7 @@ import org.junit.Test;
  * @author stm
  * @version 1.0, Feb 9, 2010
  */
-public class DirectionTest {
-
-  private static MagellanContext context;
-  private static Properties settings;
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    DirectionTest.settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
-    // PARSER_SETTINGS_FILE);
-    Resources.getInstance().initialize(new File("."), "");
-    System.out.println(new File(".").getAbsolutePath());
-    DirectionTest.context = new MagellanContext(null);
-    DirectionTest.context.setProperties(DirectionTest.settings);
-    DirectionTest.context.setEventDispatcher(new EventDispatcher());
-    Logger.setLevel(Logger.ERROR);
-    DirectionTest.context.init();
-  }
+public class DirectionTest extends MagellanTestWithResources {
 
   /**
    * Test method for {@link magellan.library.utils.Direction#getDir()}.

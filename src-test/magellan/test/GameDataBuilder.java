@@ -91,9 +91,9 @@ public class GameDataBuilder {
     // data.mailSubject
 
     // data.addFaction
-    final Faction faction = addFaction(data, "867718", "Faction_867718", "Meermenschen", 1);
+    final Faction faction = addFaction(data, "iLja", "Faction_867718", "Meermenschen", 1);
 
-    final Island island = addIsland(data, "1", "Island_1");
+    final Island island = addIsland(data, 1, "Island_1");
 
     final Region region_0_0 = addRegion(data, "0 0", "Region_0_0", "Gletscher", 1);
     region_0_0.setIsland(island);
@@ -154,7 +154,7 @@ public class GameDataBuilder {
   }
 
   public Faction addFaction(GameData data, String number, String name, String race, int sortIndex) {
-    final EntityID id = EntityID.createEntityID(number, 10); // TODO base?
+    final EntityID id = EntityID.createEntityID(number, data.base);
 
     final Faction faction = MagellanFactory.createFaction(id, data);
     data.addFaction(faction);
@@ -170,7 +170,7 @@ public class GameDataBuilder {
     return faction;
   }
 
-  public Island addIsland(GameData data, String number, String name) {
+  public Island addIsland(GameData data, int number, String name) {
     final IntegerID id = IntegerID.create(number);
 
     final Island island = MagellanFactory.createIsland(id, data);

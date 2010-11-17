@@ -23,19 +23,12 @@
 // 
 package magellan.library.rules;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
 
 import junit.framework.Assert;
-import magellan.client.MagellanContext;
-import magellan.client.event.EventDispatcher;
-import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
+import magellan.test.MagellanTestWithResources;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -44,27 +37,7 @@ import org.junit.Test;
  * @author stm
  * @version 1.0, Feb 21, 2010
  */
-public class EresseaDateTest {
-
-  private static MagellanContext context;
-  private static Properties settings;
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
-    // PARSER_SETTINGS_FILE);
-    Resources.getInstance().initialize(new File("."), "");
-    Locale.setDefault(new Locale("de"));
-    System.out.println(new File(".").getAbsolutePath());
-    context = new MagellanContext(null);
-    context.setProperties(settings);
-    context.setEventDispatcher(new EventDispatcher());
-    Logger.setLevel(Logger.ERROR);
-    context.init();
-  }
+public class EresseaDateTest extends MagellanTestWithResources {
 
   /**
    * Test method for {@link EresseaDate#getWeekFromStart()}.

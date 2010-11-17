@@ -3,20 +3,23 @@ package magellan.test.merge;
 import java.util.LinkedList;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Message;
 import magellan.library.Unit;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
-public class MergeWithUnitMessages extends TestCase {
+import org.junit.Test;
 
-  public MergeWithUnitMessages(String aName) {
-    super(aName);
-  }
+public class MergeWithUnitMessages extends MagellanTestWithResources {
 
-  // bugzilla bug #8??
+  // public MergeWithUnitMessages(String aName) {
+  // super(aName);
+  // }
+
+  /** bugzilla bug #8?? */
+  @Test
   public void testMergeDifferentRound() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
 
@@ -41,6 +44,7 @@ public class MergeWithUnitMessages extends TestCase {
     Assert.assertEquals(1, u4.getUnitMessages().size());
   }
 
+  @Test
   public void testMergeSameRound() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
 

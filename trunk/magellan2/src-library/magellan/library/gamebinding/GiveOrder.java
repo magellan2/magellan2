@@ -214,8 +214,10 @@ public class GiveOrder extends UnitArgumentOrder {
    */
   @Override
   protected void setWarning(Unit unit, int line, String string) {
-    setProblem(ProblemFactory.createProblem(Severity.WARNING,
-        OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type, unit, null, string, line));
+    setProblem(ProblemFactory
+        .createProblem(Severity.WARNING,
+            OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type, unit, null, string,
+            line));
   }
 
   /**

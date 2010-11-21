@@ -31,9 +31,12 @@ import javax.swing.JFileChooser;
 
 import magellan.library.utils.Resources;
 
+/**
+ * Plugin for options for the add CR dialog
+ */
 public class AddCRAccessory extends HistoryAccessory {
-  private JCheckBox chkSort = null;
-  private JCheckBox chkInteractive = null;
+  private JCheckBox chkSort;
+  private JCheckBox chkInteractive;
 
   /**
    * Creates a new OpenOrdersAccessory object.
@@ -72,23 +75,29 @@ public class AddCRAccessory extends HistoryAccessory {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns <code>true</code> if the sort box is selected.
    */
   public boolean getSort() {
     return chkSort.isSelected();
   }
 
   /**
-   * DOCUMENT-ME
+   * Selects or un-selects the sort box.
    */
   public void setSort(boolean sort) {
     chkSort.setSelected(sort);
   }
 
+  /**
+   * Returns <code>true</code> if the interactive box is selected.
+   */
   public boolean getInteractive() {
     return chkInteractive.isSelected();
   }
 
+  /**
+   * Selects or un-selects the interactive box.
+   */
   public void setInteractive(boolean interactive) {
     chkInteractive.setSelected(interactive);
   }

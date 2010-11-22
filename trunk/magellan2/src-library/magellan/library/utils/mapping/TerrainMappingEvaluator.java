@@ -37,7 +37,7 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
     return TerrainMappingEvaluator.singleton;
   }
 
-  public static final double PERCENT_MISMATCHES = 0.02;
+  public static final double PERCENT_MISMATCHES = 0.03;
 
   @Override
   protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData,
@@ -57,6 +57,7 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
     int mismatches = 0;
     int score = 0;
     int oceanMatches = 0;
+    int uidMatches = 0;
 
     /* for each translation we have to compare the regions' terrains */
     for (Region region : fromData.getRegions()) {
@@ -78,46 +79,67 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
          * regions to be compared and their terrains are valid
          */
 
-        if ((sameRegion != null) && (sameRegion.getType() != null)
-            && !(sameRegion.getType().equals(RegionType.unknown))) {
-          if (region.getType().equals(sameRegion.getType())) {
-            score++;
-            if (region.getType().equals(oceanTerrain)) {
-              oceanMatches++;
-            }
-          } else {
-            /*
-             * now we have a mismatch. If the reports are from the same turn, terrains may not
-             * differ at all. If the reports are from different turns, some terrains can be
-             * transformed.
-             */
-            if ((fromData.getDate() != null) && fromData.getDate().equals(toData.getDate())) {
-              mismatches++;
-              score--;
-            } else {
-              if (!(((forestTerrain != null) && (plainTerrain != null) && ((forestTerrain
-                  .equals(region.getType()) && plainTerrain.equals(sameRegion.getType())) || (plainTerrain
-                  .equals(region.getType()) && forestTerrain.equals(sameRegion.getType()))))
-                  || ((oceanTerrain != null) && (glacierTerrain != null) && ((oceanTerrain
-                      .equals(region.getType()) && glacierTerrain.equals(sameRegion.getType())) || (glacierTerrain
-                      .equals(region.getType()) && oceanTerrain.equals(sameRegion.getType())))) || ((activeVolcanoTerrain != null)
-                  && (volcanoTerrain != null) && ((activeVolcanoTerrain.equals(region.getType()) && volcanoTerrain
-                  .equals(sameRegion.getType())) || (volcanoTerrain.equals(region.getType()) && activeVolcanoTerrain
-                  .equals(sameRegion.getType())))))) {
-                mismatches++;
-                score--;
+        if ((sameRegion != null)) {
+          // try to compare region ID
+          boolean idCheck = false;
+          if (sameRegion.hasUID() && region.hasUID()) {
+            if (sameRegion.getUID() > 0 && region.getUID() > 0) {
+              if (sameRegion.getUID() == region.getUID()) {
+                uidMatches += 2;
+              } else {
+                mismatches += 2;
               }
+              idCheck = true;
+            } else if (sameRegion.getUID() == region.getUID()) {
+              uidMatches += 1;
+              idCheck = true;
             }
+          }
+          if (!idCheck) {
+            // if there are no region IDs, compare terrain
+            if ((sameRegion.getType() != null)
+                && !(sameRegion.getType().equals(RegionType.unknown))) {
+              if (region.getType().equals(sameRegion.getType())) {
+                score++;
+                if (region.getType().equals(oceanTerrain)) {
+                  oceanMatches++;
+                }
+              } else {
+                /*
+                 * now we have a mismatch. If the reports are from the same turn, terrains may not
+                 * differ at all. If the reports are from different turns, some terrains can be
+                 * transformed.
+                 */
+                if ((fromData.getDate() != null) && fromData.getDate().equals(toData.getDate())) {
+                  mismatches++;
+                  score--;
+                } else {
+                  if (!(((forestTerrain != null) && (plainTerrain != null) && ((forestTerrain
+                      .equals(region.getType()) && plainTerrain.equals(sameRegion.getType())) || (plainTerrain
+                      .equals(region.getType()) && forestTerrain.equals(sameRegion.getType()))))
+                      || ((oceanTerrain != null) && (glacierTerrain != null) && ((oceanTerrain
+                          .equals(region.getType()) && glacierTerrain.equals(sameRegion.getType())) || (glacierTerrain
+                          .equals(region.getType()) && oceanTerrain.equals(sameRegion.getType())))) || ((activeVolcanoTerrain != null)
+                      && (volcanoTerrain != null) && ((activeVolcanoTerrain
+                      .equals(region.getType()) && volcanoTerrain.equals(sameRegion.getType())) || (volcanoTerrain
+                      .equals(region.getType()) && activeVolcanoTerrain
+                      .equals(sameRegion.getType())))))) {
+                    mismatches++;
+                    score--;
+                  }
+                }
 
-            if (mismatches > maxTerrainMismatches && score <= 0) {
-              break;
+                if (mismatches > maxTerrainMismatches && score <= 0) {
+                  break;
+                }
+              }
             }
           }
         }
       }
     }
+    score = (score * 4 - oceanMatches + uidMatches * 2) / 4;
     return new Score<CoordinateID>(mapping, mismatches > maxTerrainMismatches ? Math.min(-1, score)
         : score);
   }
-
 }

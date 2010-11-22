@@ -180,6 +180,10 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
     return EresseaSpecificStuff.name;
   }
 
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getTransformers(magellan.library.GameData,
+   *      magellan.library.GameData, magellan.library.utils.UserInterface, boolean)
+   */
   public ReportTransformer[] getTransformers(GameData globalData, GameData addedData,
       UserInterface ui, boolean interactive) {
 

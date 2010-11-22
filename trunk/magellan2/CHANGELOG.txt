@@ -1,3 +1,8 @@
+2010-11-22 / Build 442 - stm (stm_@users.sourceforge.net)
+    * fixed merging of wrapped reports; should now be able to merge most reports without creating 
+      crazy wrapping regions where they're not needed (see Track ticket #11)
+    * added GameDataInspector and related errors
+    
 2010-11-17 / Build 439 - stm (stm_@users.sourceforge.net)
     * partial fix of unit sorting
     

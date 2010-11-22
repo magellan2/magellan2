@@ -780,7 +780,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
           newData = (GameData) data.clone();
           if (newData == null)
             throw new NullPointerException();
-          if (newData.outOfMemory) {
+          if (newData.isOutOfMemory()) {
             JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"),
                 Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
             CRWriterDialog.log.error(Resources.get("client.msg.outofmemory.text"));

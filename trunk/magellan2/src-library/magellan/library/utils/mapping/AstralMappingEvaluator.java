@@ -54,9 +54,10 @@ public class AstralMappingEvaluator extends MappingEvaluator {
   protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData,
       CoordinateID mapping) {
 
-    RegionType dustTerrain = fromData.rules.getRegionType(EresseaConstants.RT_FOG);
+    RegionType fogTerrain = fromData.rules.getRegionType(EresseaConstants.RT_FOG);
 
     int score = 0;
+    int uidMatches = 0;
 
     // for each translation we have to compare the regions' terrains
     for (Region region : fromData.getRegions()) {
@@ -76,30 +77,48 @@ public class AstralMappingEvaluator extends MappingEvaluator {
         // there actually are regions to be compared and their terrains are
         // valid
 
-        if ((sameRegion != null) && (sameRegion.getType() != null)
-            && !(sameRegion.getType().equals(RegionType.unknown))) {
-          if (region.getType().equals(sameRegion.getType())) {
-            score += AstralMappingEvaluator.SCORE_TERRAIN;
-            if ((region.getType().equals(dustTerrain)) && (region.schemes() != null)
-                && (region.schemes().size() > 0) && (sameRegion.schemes() != null)
-                && (sameRegion.schemes().size() > 0)) {
-              // both regions have schemes - lets compare them
-              if (equalSchemes(region.schemes(), sameRegion.schemes())) {
-                score += AstralMappingEvaluator.SCORE_SCHEME;
-                // do not multiply * region.schemes().size()
-              } else {
-                score -= AstralMappingEvaluator.SCORE_SCHEME;
-                // do not multiply * region.schemes().size()
+        if ((sameRegion != null)) {
+          // try to compare region ID
+          boolean idCheck = false;
+          if (sameRegion.hasUID() && region.hasUID()) {
+            if (sameRegion.getUID() > 0 && region.getUID() > 0) {
+              if (sameRegion.getUID() == region.getUID()) {
+                uidMatches += 2;
               }
-            }
-          } else {
-            if ((fromData.getDate() != null) && fromData.getDate().equals(toData.getDate())) {
-              score -= AstralMappingEvaluator.SCORE_TERRAIN;
+              idCheck = true;
+            } else if (sameRegion.getUID() == region.getUID()) {
+              uidMatches += 1;
+              idCheck = true;
             }
           }
+          if (!idCheck)
+            if ((sameRegion.getType() != null)
+                && !(sameRegion.getType().equals(RegionType.unknown))) {
+              if (region.getType().equals(sameRegion.getType())) {
+                score += AstralMappingEvaluator.SCORE_TERRAIN;
+                if ((region.getType().equals(fogTerrain)) && (region.schemes() != null)
+                    && (region.schemes().size() > 0) && (sameRegion.schemes() != null)
+                    && (sameRegion.schemes().size() > 0)) {
+                  // both regions have schemes - lets compare them
+                  if (equalSchemes(region.schemes(), sameRegion.schemes())) {
+                    score += AstralMappingEvaluator.SCORE_SCHEME;
+                    // do not multiply * region.schemes().size()
+                  } else {
+                    score -= AstralMappingEvaluator.SCORE_SCHEME;
+                    // do not multiply * region.schemes().size()
+                  }
+                }
+              } else {
+                if ((fromData.getDate() != null) && fromData.getDate().equals(toData.getDate())) {
+                  score -= AstralMappingEvaluator.SCORE_TERRAIN;
+                }
+              }
+            }
         }
       }
     }
+
+    score = (score + uidMatches) / 2;
     return new Score<CoordinateID>(mapping, score);
   }
 

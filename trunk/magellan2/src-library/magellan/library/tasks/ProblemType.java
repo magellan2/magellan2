@@ -23,6 +23,8 @@
 // 
 package magellan.library.tasks;
 
+import magellan.library.utils.Resources;
+
 public class ProblemType {
 
   private String name;
@@ -98,5 +100,27 @@ public class ProblemType {
   @Override
   public String toString() {
     return getName();
+  }
+
+  /**
+   * Creates a new problem type. Loads message, name, description, and group from the Resources with
+   * the keys "prefix.name.xxxx". Example usage: ProblemType.create("component", "problemname").
+   * 
+   * @param prefix first part of the resource keys
+   * @param name second part of the resource keys
+   * @return A new problem type
+   * @throws IllegalArgumentException If the type name cannot be found in the Resources, or if it
+   *           contains illegal characters or does not start with a letter
+   * @see Resources#get(String)
+   */
+  public static ProblemType create(String prefix, String name) {
+    String message = Resources.get(prefix + "." + name + ".message", false);
+    String typeName = Resources.get(prefix + "." + name + ".name", false);
+    if (typeName == null) {
+      typeName = message;
+    }
+    String description = Resources.get(prefix + "." + name + ".description", false);
+    String group = Resources.get(prefix + "." + name + ".group", false);
+    return new ProblemType(typeName, group, description, message);
   }
 }

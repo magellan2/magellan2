@@ -118,6 +118,7 @@ public class OrderReader {
       line = stream.readLine();
     }
 
+    // TODO is this necessary?
     data.postProcess();
   }
 

@@ -135,6 +135,53 @@ public class Regions {
 
   /**
    * Calculates the neighbors of a region based on coordinates, i.e., it tests all neighboring
+   * coordinates and adds them if the region exists in the data. It follows wrappers if necessary.
+   * 
+   * @return A map with Direction/Region entries of existing neighbors. This map is created in this
+   *         method.
+   * @see Region#getNeighbors()
+   */
+  public static Map<Direction, Region> getCoordinateNeighbours(GameData data, CoordinateID center) {
+    int radius = 1;
+
+    Map<Direction, Region> neighbours = new HashMap<Direction, Region>(9, .9f);
+
+    for (int dx = -radius; dx <= radius; dx++) {
+      for (int dy = (-radius + Math.abs(dx)) - ((dx > 0) ? dx : 0); dy <= ((radius - Math.abs(dx)) - ((dx < 0)
+          ? dx : 0)); dy++) {
+        CoordinateID c = CoordinateID.create(center.getX() + dx, center.getY() + dy, center.getZ());
+
+        Region neighbour = data.getRegion(c);
+        if (neighbour == null) {
+          Region wrapper = data.wrappers().get(c);
+          if (wrapper != null) {
+            neighbour = data.getOriginal(wrapper);
+            if (neighbour.getCoordX() != wrapper.getCoordX()
+                && neighbour.getCoordY() != neighbour.getCoordY()) {
+              log.error("improbable wrapper " + wrapper + "->" + neighbour);
+            }
+          }
+        }
+
+        if (neighbour != null && !neighbour.getID().equals(center)) {
+          // if (neighbour.getVisibility().equals(Visibility.WRAP)) {
+          // // find real region
+          // for (Region r : regions.values()) {
+          // if (r.getUID() == neighbour.getUID() && r.getVisibility() != Visibility.WRAP) {
+          // neighbour = r;
+          // }
+          // }
+          // }
+          neighbours.put(Direction.toDirection(center, c), neighbour);
+        }
+      }
+    }
+
+    return neighbours;
+  }
+
+  /**
+   * Calculates the neighbors of a region based on coordinates, i.e., it tests all neighboring
    * coordinates and adds them if the region exists in the data.
    * 
    * @return A map with Direction/Region entries of existing neighbors. This map is created in this
@@ -1968,7 +2015,7 @@ public class Regions {
   }
 
   /**
-   * Contributed by Hubert Mackenberg. Thanks. x und y Abstand zwischen x1 und x2 berechnen
+   * Compute distance between two coordinates. Contributed by Hubert Mackenberg. Thanks.
    */
   public static int getDist(CoordinateID r1, CoordinateID r2) {
     int dx = r1.getX() - r2.getX();

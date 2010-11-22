@@ -26,7 +26,6 @@ import magellan.library.gamebinding.MovementOrder;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ShipInspector.ShipProblemTypes;
 import magellan.library.utils.Regions;
-import magellan.library.utils.Resources;
 
 /**
  * Checks land movement for overload or too many horses.
@@ -42,14 +41,7 @@ public class MovementInspector extends AbstractInspector {
 
     MovementProblemTypes() {
       String name = name().toLowerCase();
-      String message = Resources.get("tasks.movementinspector." + name + ".message");
-      String typeName = Resources.get("tasks.movementinspector." + name + ".name", false);
-      if (typeName == null) {
-        typeName = message;
-      }
-      String description = Resources.get("tasks.movementinspector." + name + ".description", false);
-      String group = Resources.get("tasks.movementinspector." + name + ".group", false);
-      type = new ProblemType(typeName, group, description, message);
+      type = ProblemType.create("tasks.movementinspector", name);
     }
 
     ProblemType getType() {

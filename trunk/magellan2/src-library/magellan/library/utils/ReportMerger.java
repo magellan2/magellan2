@@ -25,6 +25,8 @@ import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Region;
 import magellan.library.rules.Date;
+import magellan.library.tasks.GameDataInspector;
+import magellan.library.tasks.Problem;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.ReportTransformer;
 import magellan.library.utils.transformation.TwoLevelTransformer;
@@ -354,7 +356,7 @@ public class ReportMerger extends Object {
     }
 
     // inform user about memory problems
-    if (globalData.outOfMemory) {
+    if (globalData.isOutOfMemory()) {
       ui.showDialog((new JOptionPane(Resources.get("client.msg.outofmemory.text"),
           JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
           .get("client.msg.outofmemory.title")));
@@ -366,6 +368,33 @@ public class ReportMerger extends Object {
           JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
           .get("client.msg.lowmem.title")));
       log.warn(Resources.get("client.msg.lowmem.text"));
+    }
+    int bE = 0, rE = 0, ruE = 0, sE = 0, uE = 0, mE = 0;
+    for (Problem p : globalData.getErrors()) {
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEBUILDINGID.type) {
+        bE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONID.type) {
+        rE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONUID.type) {
+        ruE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATESHIPID.type) {
+        sE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEUNITID.type) {
+        uE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.OUTOFMEMORY.type) {
+        mE++;
+      }
+    }
+    if (bE > 0 || rE > 0 || ruE > 0 || sE > 0 || uE > 0) {
+      log.error("report with errors: " + (rE + ruE) + " " + uE + " " + bE + " " + sE);
+      ui.showDialog((new JOptionPane(Resources.get("client.msg.reporterrors.text", "", rE + ruE,
+          uE, bE, sE), JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)
+          .createDialog(Resources.get("client.msg.reporterrors.title"))));
     }
 
     if (ui != null) {
@@ -416,7 +445,7 @@ public class ReportMerger extends Object {
     strMessage.append(Resources.get("util.reportmerger.msg.noconnection.text.4"));
 
     // ask to merge anyway
-    return !(ui != null && ui.confirm(strMessage.toString(), Resources
+    return !(ui != null && !ui.confirm(strMessage.toString(), Resources
         .get("util.reportmerger.msg.confirmmerge.title")));
   }
 
@@ -484,6 +513,10 @@ public class ReportMerger extends Object {
       globalData =
           GameDataMerger.merge(globalData, newReport.getData(), transformers[0], transformers[1]);
 
+      for (ReportTransformer t : transformers) {
+        t.storeTranslations(globalData, newReport.getData());
+      }
+
       newReport.setMerged(true);
     } else {
       ReportMerger.log.info("aborting...");
@@ -516,7 +549,7 @@ public class ReportMerger extends Object {
                 bestAstralTranslation.getKey()));
         if (clonedData == null)
           throw new RuntimeException("problems during cloning");
-        if (clonedData.outOfMemory) {
+        if (clonedData.isOutOfMemory()) {
           ui.showDialog((new JOptionPane(Resources.get("client.msg.outofmemory.text"),
               JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
               .get("client.msg.outofmemory.title")));

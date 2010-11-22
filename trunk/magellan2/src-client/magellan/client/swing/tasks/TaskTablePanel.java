@@ -70,6 +70,7 @@ import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.tasks.AttackInspector;
+import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Inspector;
 import magellan.library.tasks.MovementInspector;
 import magellan.library.tasks.OrderSyntaxInspector;
@@ -924,6 +925,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TEACH, true)) {
       inspectors.add(TeachInspector.getInstance(gameData));
+    }
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_GAMEDATA, true)) {
+      inspectors.add(GameDataInspector.getInstance(gameData));
     }
 
     for (Inspector i : inspectors) {

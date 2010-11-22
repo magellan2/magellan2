@@ -112,37 +112,25 @@ public class AddCRAction extends MenuAction implements GameDataListener {
       File files[] = fc.getSelectedFiles();
 
       if (files.length == 0) {
-        merger =
-            new ReportMerger(client.getData(), fc.getSelectedFile(), new ReportMerger.Loader() {
-              // pavkovic 2002.11.05: prevent name clash with variable "file"
-              public GameData load(File aFile) {
-                return theclient.loadCR(null, aFile);
-              }
-            }, new ReportMerger.AssignData() {
-              public void assign(GameData _data) {
-                theclient.setData(_data);
-                theclient.setReportChanged(true);
-              }
-            });
-        settings.setProperty(PropertiesHelper.CLIENT_LAST_CR_ADDED, fc.getSelectedFile()
-            .getAbsolutePath());
-      } else {
-        merger = new ReportMerger(client.getData(), files, new ReportMerger.Loader() {
-          // pavkovic 2002.11.05: prevent name clash with variable "file"
-          public GameData load(File aFile) {
-            return theclient.loadCR(null, aFile);
-          }
-        }, new ReportMerger.AssignData() {
-          public void assign(GameData _data) {
-            theclient.setData(_data);
-            theclient.setReportChanged(true);
-          }
-        });
-        settings.setProperty(PropertiesHelper.CLIENT_LAST_CR_ADDED, files[files.length - 1]
-            .getAbsolutePath());
+        files = new File[] { fc.getSelectedFile() };
       }
+      merger = new ReportMerger(client.getData(), files, new ReportMerger.Loader() {
+        // pavkovic 2002.11.05: prevent name clash with variable "file"
+        public GameData load(File aFile) {
+          return theclient.loadCR(null, aFile);
+        }
+      }, new ReportMerger.AssignData() {
+        public void assign(GameData _data) {
+          theclient.setData(_data);
+          theclient.setReportChanged(true);
+        }
+      });
+      settings.setProperty(PropertiesHelper.CLIENT_LAST_CR_ADDED, files[files.length - 1]
+          .getAbsolutePath());
 
       merger.merge(new ProgressBarUI(client), acc.getSort(), acc.getInteractive(), true);
+      // FIXME this is probably pretty pointless at this time, because merging is done in a
+      // different thread...
       if (selectedObjects != null) {
         client.getDispatcher().fire(selectedObjects);
       }

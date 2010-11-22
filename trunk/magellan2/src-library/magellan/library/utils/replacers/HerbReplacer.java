@@ -30,6 +30,8 @@ public class HerbReplacer extends AbstractRegionReplacer {
   public Object getRegionReplacement(Region r) {
     if (r.getHerb() != null)
       return r.getHerb().getName();
+    else if ("keine".equals(r.getHerbAmount()))
+      return "---";
 
     return null;
   }

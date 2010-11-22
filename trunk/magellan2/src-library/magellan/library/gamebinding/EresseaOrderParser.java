@@ -170,7 +170,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new UCArgumentOrder(getTokens(), text, target);
+      order = new UCArgumentOrder(getTokens(), text, target, UCArgumentOrder.T_UNKNOWN);
     }
 
     @Override
@@ -190,7 +190,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new UCArgumentOrder(getTokens(), text, target);
+      order = new UCArgumentOrder(getTokens(), text, target, UCArgumentOrder.T_BUILDING);
     }
 
     @Override
@@ -210,7 +210,7 @@ public class EresseaOrderParser implements OrderParser {
     @Override
     protected void init(OrderToken token, String text) {
       target = null;
-      order = new UCArgumentOrder(getTokens(), text, target);
+      order = new UCArgumentOrder(getTokens(), text, target, UCArgumentOrder.T_SHIP);
     }
 
     @Override
@@ -1666,7 +1666,7 @@ public class EresseaOrderParser implements OrderParser {
       if (isID(t.getText(), false) == true) {
         EntityID target = EntityID.createEntityID(t.getText(), getData().base);
         UnitContainer tContainer = getData().getShip(target);
-        order = new UCArgumentOrder(getTokens(), text, target);
+        order = new UCArgumentOrder(getTokens(), text, target, UCArgumentOrder.T_SHIP);
         getOrder().setLong(true);
         retVal = tContainer != null && readFinalID(t);
       } else {
@@ -2200,7 +2200,7 @@ public class EresseaOrderParser implements OrderParser {
   }
 
   // ************* KONTAKTIERE
-  protected class KontaktiereReader extends OrderHandler {
+  protected class KontaktiereReader extends UnitOrderHandler {
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2222,6 +2222,7 @@ public class EresseaOrderParser implements OrderParser {
 
     protected boolean readKontaktiereUID(OrderToken token) {
       token.ttype = OrderToken.TT_ID;
+      target = UnitID.createUnitID(token.getText(), getData().base);
 
       return checkNextFinal();
     }
@@ -3232,7 +3233,7 @@ public class EresseaOrderParser implements OrderParser {
   }
 
   // ************* SORTIERE
-  protected class SortiereReader extends OrderHandler {
+  protected class SortiereReader extends UnitOrderHandler {
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3263,6 +3264,9 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isID(t.getText())) {
         retVal = readFinalID(t);
+        if (retVal) {
+          target = UnitID.createUnitID(t.getText(), getData().base);
+        }
       } else {
         unexpected(t);
       }
@@ -3281,6 +3285,9 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isID(t.getText())) {
         retVal = readFinalID(t);
+        if (retVal) {
+          target = UnitID.createUnitID(t.getText(), getData().base);
+        }
       } else {
         unexpected(t);
       }
@@ -3293,7 +3300,7 @@ public class EresseaOrderParser implements OrderParser {
   }
 
   // ************* SPIONIERE
-  protected class SpioniereReader extends OrderHandler {
+  protected class SpioniereReader extends UnitOrderHandler {
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3304,6 +3311,9 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isID(t.getText()) == true) {
         retVal = readFinalID(t, true);
+        if (retVal) {
+          target = UnitID.createUnitID(t.getText(), getData().base);
+        }
       } else {
         unexpected(t);
       }

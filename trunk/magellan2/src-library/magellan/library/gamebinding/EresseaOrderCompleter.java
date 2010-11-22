@@ -219,7 +219,7 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_ATTACK), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_BANNER), " \"\"",
         Completion.DEFAULT_PRIORITY, 1));
-    if (unit.getFaction().getItems().size() > 0) {
+    if (unit.getFaction() != null && unit.getFaction().getItems().size() > 0) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.O_CLAIM), " "));
     }
     if (!unit.isHero()) {
@@ -1009,33 +1009,19 @@ public class EresseaOrderCompleter implements Completer {
             // are known
             && checkForMaterials(iType.getResources(), i)) { // necessary resources are available
 
-          boolean suggest = true;
-          int loopCount = 0;
-          final StringBuffer order = new StringBuffer();
-
-          for (final Iterator<Item> iterator = iType.getResources(); iterator.hasNext() && suggest; loopCount++) {
-            final Item resource = iterator.next();
-
-            if ((loopCount == 0) && !iterator.hasNext()) {
-              // only one resource is necessary for this ItemType
-              // don't create a completion to give the resource for this ItemType
-              suggest = false;
-            } else {
-
-              if (order.length() == 0) {
-                order.append(resource.getOrderName());
-              } else {
-                order.append("\n").append(getOrderTranslation(EresseaConstants.O_GIVE)).append(" ")
-                    .append(uid.toString()).append(" ").append(i).append(" ").append(
-                        resource.getOrderName());
-              }
-            }
+          addMulti(uid, i, iType.getOrderName(), iType.getResources());
+        }
+      }
+      for (Spell spell : data.getSpells()) {
+        List<Item> comps = new LinkedList<Item>();
+        for (Spell.Component sComp : spell.getParsedComponents()) {
+          if (sComp.getItem() != null) {
+            comps.add(new Item(sComp.getItem(), sComp.getAmount()));
           }
+        }
 
-          if (suggest) {
-            completions.add(new Completion("R-" + iType.getOrderName(), order.toString(), "",
-                Completion.DEFAULT_PRIORITY + 1));
-          }
+        if (!comps.isEmpty()) {
+          addMulti(uid, i, spell.getName(), comps.iterator());
         }
       }
       /**
@@ -1074,6 +1060,37 @@ public class EresseaOrderCompleter implements Completer {
           .getPersons() >= i) ? 0 : Completion.DEFAULT_PRIORITY + 1));
     }
 
+  }
+
+  private void addMulti(UnitID uid, int i, String name, Iterator<Item> resources) {
+    boolean suggest = true;
+    int loopCount = 0;
+    final StringBuffer order = new StringBuffer();
+
+    for (final Iterator<Item> iterator = resources; iterator.hasNext() && suggest; loopCount++) {
+      final Item resource = iterator.next();
+
+      if ((loopCount == 0) && !iterator.hasNext()) {
+        // only one resource is necessary for this ItemType
+        // don't create a completion to give the resource for this ItemType
+        suggest = false;
+      } else {
+
+        if (order.length() == 0) {
+          order.append(resource.getOrderName());
+        } else {
+          order.append("\n").append(getOrderTranslation(EresseaConstants.O_GIVE)).append(" ")
+              .append(uid.toString()).append(" ").append(i).append(" ").append(
+                  resource.getOrderName());
+        }
+        order.append("; ").append(name);
+      }
+    }
+
+    if (suggest) {
+      completions.add(new Completion("R-" + name, order.toString(), "",
+          Completion.DEFAULT_PRIORITY + 1));
+    }
   }
 
   /** Add completions for command GibUIDAmount. */
@@ -2503,30 +2520,33 @@ public class EresseaOrderCompleter implements Completer {
 
     while (iter != null && iter.hasNext() && canMake) {
       final Item ingredient = iter.next();
-
-      // be careful, units cannot own peasants although one is required for the potion "Bauernblut"
-      if (ingredient.getItemType() != null) {
-        int availableAmount = 0;
-
-        if (ingredient.getItemType().equals(data.rules.getItemType(EresseaConstants.I_PEASANTS))) {
-          availableAmount = region.getPeasants();
-        } else {
-          final Item available =
-              Units.getContainerPrivilegedUnitItem(region, ingredient.getItemType());
-          // region.getItem(ingredient.getItemType());
-
-          if (available != null) {
-            availableAmount = available.getAmount();
-          }
-        }
-
-        if (availableAmount < (ingredient.getAmount() * amount)) {
-          canMake = false;
-        }
-      }
+      canMake &= checkForMaterial(ingredient, amount);
     }
 
     return canMake;
+  }
+
+  private boolean checkForMaterial(Item ingredient, int amount) {
+    // be careful, units cannot own peasants although one is required for the potion "Bauernblut"
+    if (ingredient.getItemType() != null) {
+      int availableAmount = 0;
+
+      if (ingredient.getItemType().equals(data.rules.getItemType(EresseaConstants.I_PEASANTS))) {
+        availableAmount = region.getPeasants();
+      } else {
+        final Item available =
+            Units.getContainerPrivilegedUnitItem(region, ingredient.getItemType());
+        // region.getItem(ingredient.getItemType());
+
+        if (available != null) {
+          availableAmount = available.getAmount();
+        }
+      }
+
+      if (availableAmount < (ingredient.getAmount() * amount))
+        return false;
+    }
+    return true;
   }
 
   /**

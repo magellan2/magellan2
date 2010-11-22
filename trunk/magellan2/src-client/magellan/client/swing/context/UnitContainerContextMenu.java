@@ -452,7 +452,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
       }
     }
 
-    StringSelection strSel = new StringSelection(uc.getName());
+    StringSelection strSel = new StringSelection(idString.toString());
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
   }

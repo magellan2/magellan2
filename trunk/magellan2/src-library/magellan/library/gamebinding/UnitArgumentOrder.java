@@ -28,6 +28,7 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.relation.InterUnitRelation;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -70,18 +71,37 @@ public class UnitArgumentOrder extends SimpleOrder {
       boolean zeroAllowed) {
     if (target == null)
       return null;
-    if (!zeroAllowed && target.intValue() == 0) {
-      setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
-    }
-
-    Unit tUnit = data.getUnit(target);
-    if (tUnit == null) {
-      tUnit = data.getTempUnit(target);
+    Unit tUnit = null;
+    if (target.intValue() == 0) {
+      if (zeroAllowed) {
+        tUnit = unit.getRegion().getZeroUnit();
+      } else {
+        setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
+      }
+    } else {
+      tUnit = data.getUnit(target);
+      if (tUnit == null) {
+        tUnit = data.getTempUnit(target);
+      }
     }
     if (tUnit != null && (!sameRegionOnly || tUnit.getRegion() == unit.getRegion()))
       return tUnit;
     else
       return null;
+  }
+
+  @Override
+  public void execute(ExecutionState state, GameData data, Unit unit, int line) {
+    if (!isValid())
+      return;
+
+    Unit tUnit = getTargetUnit(data, unit, line, true, true);
+
+    if (tUnit != null) {
+      new InterUnitRelation(unit, tUnit, line).add();
+    } else {
+      setWarning(unit, line, Resources.get("order.all.warning.unknowntarget", target));
+    }
   }
 
 }

@@ -109,6 +109,22 @@ public class OrderSyntaxInspector extends AbstractInspector {
         }
       }
     }
+
+    // Unit zero = r.getZeroUnit();
+    // if (zero != null) {
+    // for (UnitRelation rel : zero.getRelations(UnitRelation.class))
+    // if (rel.problem != null && rel.problem.getSeverity() == severity) {
+    // if (rel.line > 0) {
+    // Order order = rel.origin.getOrders2().get(rel.line - 1);
+    // if (order == null || (order.getProblem() == null && order.isValid())) {
+    // errors.add(ProblemFactory.createProblem(rel.problem.getSeverity(), rel.problem
+    // .getType(), zero.getRegion(), rel.origin, rel.origin.getFaction(), rel.origin,
+    // this, rel.problem.getMessage(), rel.line));
+    // }
+    // }
+    // }
+    // }
+
     return errors;
   }
 
@@ -182,7 +198,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
           if (order == null || (order.getProblem() == null && order.isValid())) {
             errors.add(ProblemFactory.createProblem(rel.problem.getSeverity(), rel.problem
                 .getType(), unit.getRegion(), unit, unit.getFaction(), unit, this, rel.problem
-                .getMessage(), line));
+                .getMessage(), rel.line));
           }
         }
       }

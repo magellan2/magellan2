@@ -28,7 +28,7 @@ public class UnitContainerRelation extends UnitRelation {
    * Creates a new UnitContainerRelation object.
    * 
    * @param s The source unit
-   * @param t The target unit
+   * @param t The target container
    * @param line The line in the source's orders
    */
   public UnitContainerRelation(Unit s, UnitContainer t, int line) {

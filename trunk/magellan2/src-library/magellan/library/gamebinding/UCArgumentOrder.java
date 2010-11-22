@@ -29,7 +29,9 @@ import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.relation.UnitContainerRelation;
 import magellan.library.utils.OrderToken;
+import magellan.library.utils.Resources;
 
 /**
  * An order with one or more units as arguments.
@@ -62,12 +64,20 @@ public class UCArgumentOrder extends SimpleOrder {
   protected EntityID container;
 
   /**
+   * The order type, one of {@link #T_BUILDING}, {@link #T_FACTION}, {@link #T_SHIP},
+   * {@link #T_REGION}, or {@link #T_UNKNOWN}.
+   */
+  public int type;
+
+  /**
    * @param tokens
    * @param text
+   * @param type
    */
-  public UCArgumentOrder(List<OrderToken> tokens, String text, EntityID target) {
+  public UCArgumentOrder(List<OrderToken> tokens, String text, EntityID target, int type) {
     super(tokens, text);
     container = target;
+    this.type = type;
   }
 
   /**
@@ -87,8 +97,24 @@ public class UCArgumentOrder extends SimpleOrder {
       return sameRegionOnly ? unit.getRegion().getShip(container) : data.getShip(container);
     case T_FACTION:
       return data.getFaction(container);
+    case T_REGION:
+      return unit.getRegion();
     }
     return null;
+  }
+
+  @Override
+  public void execute(ExecutionState state, GameData data, Unit unit, int line) {
+    if (!isValid())
+      return;
+
+    UnitContainer tContainer = getContainer(data, unit, type, true);
+
+    if (tContainer != null) {
+      new UnitContainerRelation(unit, tContainer, line).add();
+    } else {
+      setWarning(unit, line, Resources.get("order.all.warning.unknowntarget", container));
+    }
   }
 
 }

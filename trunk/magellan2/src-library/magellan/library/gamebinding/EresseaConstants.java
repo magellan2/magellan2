@@ -703,7 +703,11 @@ public class EresseaConstants {
   @Deprecated
   public static final StringID I_LAEN = StringID.create("Laen");
 
+  /** The resource peasants */
   public static final StringID I_PEASANTS = StringID.create("Bauern");
+
+  /** The item peasant */
+  public static final StringID I_UPEASANT = StringID.create("Bauer");
 
   /** The item silver */
   public static final StringID I_USILVER = StringID.create("Silber");

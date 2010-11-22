@@ -33,16 +33,17 @@ import magellan.library.utils.StringFactory;
  * @version $Revision: 393 $
  */
 public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard {
-  private UnitContainer uc = null;
-  private boolean showFreeLoad = false;
-  private boolean hasOwner = false;
+  private UnitContainer uc;
+  private boolean showFreeLoad;
+  private boolean hasOwner;
+  private String prefix;
 
   /**
    * Creates a new container node wrapper.
    */
   public UnitContainerNodeWrapper(UnitContainer uc) {
     // this(uc, false);
-    this(uc, true, false);
+    this(uc, true, false, null);
   }
 
   /**
@@ -52,7 +53,7 @@ public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements Supp
    * @param showFreeLoad If this is true, the free space is returned in the text
    */
   public UnitContainerNodeWrapper(UnitContainer uc, boolean showFreeLoad) {
-    this(uc, showFreeLoad, false);
+    this(uc, showFreeLoad, false, null);
   }
 
   /**
@@ -62,11 +63,14 @@ public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements Supp
    * @param showFreeLoad If this is true, the free space is returned in the text
    * @param hasOwner if <code>true</code>, the text indicates that the node is displayed for the
    *          owner
+   * @param prefix Text that is prepended the container name
    */
-  public UnitContainerNodeWrapper(UnitContainer uc, boolean showFreeLoad, boolean hasOwner) {
+  public UnitContainerNodeWrapper(UnitContainer uc, boolean showFreeLoad, boolean hasOwner,
+      String prefix) {
     this.uc = uc;
     this.showFreeLoad = showFreeLoad;
     this.hasOwner = hasOwner;
+    this.prefix = prefix;
   }
 
   /**
@@ -81,11 +85,15 @@ public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements Supp
    */
   @Override
   public String toString() {
-    // TODO (stm 2007-03-16) possible design problem here:
+    // NOTE:
     // in some NodeWrappers the string is set from outside (e.g. in EMapDetailsPanel)
     // sometimes it is built here
     final NumberFormat weightNumberFormat = NumberFormat.getNumberInstance();
-    StringBuffer text = new StringBuffer(uc.toString());
+    StringBuffer text = new StringBuffer();
+    if (prefix != null) {
+      text.append(prefix);
+    }
+    text.append(uc.toString());
     if (showFreeLoad && uc instanceof Ship) {
       text.append(": ");
 
@@ -135,6 +143,7 @@ public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements Supp
   /**
    * @see magellan.client.swing.tree.CellObject#emphasized()
    */
+  @Override
   public boolean emphasized() {
     return false;
   }

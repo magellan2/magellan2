@@ -106,6 +106,9 @@ public class CopyTree extends JTree implements KeyListener {
   public void keyPressed(KeyEvent e) {
     if ((e.getModifiers() == InputEvent.CTRL_MASK)
         && ((e.getKeyCode() == KeyEvent.VK_C) || (e.getKeyCode() == KeyEvent.VK_INSERT))) {
+      // FIXME on my system (Linux i386 2.6.32-25-generic, Java 1.6.0_20 Sun Microsystems Inc.) this
+      // call is shadowed by JComponent's (?) processKeyBinding mechanism which overwrites the
+      // clipboard value immediately.
       shortCut_Copy();
     }
   }

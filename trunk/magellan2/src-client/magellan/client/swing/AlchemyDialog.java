@@ -44,6 +44,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -116,6 +117,9 @@ import magellan.library.impl.MagellanPotionImpl;
 import magellan.library.io.file.FileBackup;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
+import magellan.library.utils.comparator.FactionTrustComparator;
+import magellan.library.utils.comparator.IDComparator;
+import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.filters.CollectionFilters;
 
 import org.xml.sax.Attributes;
@@ -144,10 +148,10 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
   private static String FILE_EXTENSION_DECRIPTION = "XML";
 
   private List<Region> regions;
-  private PlannerModel model;
+  private PlannerModel tableModel;
   private TableSorter sorter;
 
-  private List<Faction> factions;
+  private List<Faction> activeFactions;
 
   private JTable planner;
 
@@ -276,13 +280,13 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
   protected void removePotion() {
     if (planner.getSelectedColumn() > 0) {
-      model.removePotion(view2modelColumn((planner.getSelectedColumn())));
+      tableModel.removePotion(view2modelColumn((planner.getSelectedColumn())));
     }
   }
 
   protected void removeHerb() {
     if (planner.getSelectedRow() > 0) {
-      model.removeHerb(view2modelRow((planner.getSelectedRow())));
+      tableModel.removeHerb(view2modelRow((planner.getSelectedRow())));
     }
   }
 
@@ -294,18 +298,18 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
     for (Potion p : data.getPotions()) {
       if (p.getName().equals(answer)) {
-        model.addPotion(new PotionInfo(p));
+        tableModel.addPotion(new PotionInfo(p));
         return;
       }
     }
     for (Spell s : data.getSpells()) {
       if (s.getName().equals(answer)) {
-        model.addPotion(new PotionInfo(s));
+        tableModel.addPotion(new PotionInfo(s));
         break;
       }
     }
 
-    model.addPotion(new PotionInfo(answer));
+    tableModel.addPotion(new PotionInfo(answer));
   }
 
   protected void addHerb() {
@@ -320,7 +324,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       ingredient = new ItemType(StringID.create(answer));
       ingredient.setName(answer);
     }
-    model.addHerb(new HerbInfo(ingredient));
+    tableModel.addHerb(new HerbInfo(ingredient));
   }
 
   /**
@@ -328,7 +332,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    */
   private JTable createTable() {
     final JTable table =
-        new AlchemyTable(sorter = new TableSorter(model = new PlannerModel(getData())));
+        new AlchemyTable(sorter = new TableSorter(tableModel = new PlannerModel(getData())));
     table.getModel().addTableModelListener(new TableModelListener() {
 
       public void tableChanged(TableModelEvent e) {
@@ -547,9 +551,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           JPopupMenu menu = new JPopupMenu();
           final int col = view2modelColumn(planner.columnAtPoint(e.getPoint()));
           final int row = view2modelRow(planner.rowAtPoint(e.getPoint()));
-          Object val = model.getValueAt(row, col);
+          Object val = tableModel.getValueAt(row, col);
           StringBuilder text = new StringBuilder();
-          text.append(model.getColumnName(col)).append("/").append(model.getValueAt(row, 0))
+          text.append(tableModel.getColumnName(col)).append("/").append(tableModel.getValueAt(row, 0))
               .append(": ").append(val == null ? 0 : val);
           JMenuItem item = new JMenuItem(text.toString());
           item.setEnabled(false);
@@ -557,7 +561,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           item = new JMenuItem(Resources.get("alchemydialog.contextmenu.removerow.title"));
           item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              model.removeHerb(row);
+              tableModel.removeHerb(row);
             }
           });
           menu.add(item);
@@ -565,7 +569,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           item.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-              model.removePotion(col);
+              tableModel.removePotion(col);
             }
           });
           menu.add(item);
@@ -580,7 +584,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    * Set selected factions (used for stock updates).
    */
   public void setFactions(List<Faction> newFactions) {
-    factions = new ArrayList<Faction>(newFactions);
+    activeFactions = new ArrayList<Faction>(newFactions);
   }
 
   /**
@@ -600,8 +604,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
   @Override
   public void gameDataChanged(GameDataEvent e) {
     super.gameDataChanged(e);
-    if (model != null) {
-      model.setData(data);
+    if (tableModel != null) {
+      tableModel.setData(data);
     }
     setRegions(Collections.<Region> emptyList());
   }
@@ -610,21 +614,21 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    * Set production to 0.
    */
   protected void resetProduction() {
-    model.resetProduction();
+    tableModel.resetProduction();
   }
 
   /**
    * Updates stocks with herbs in selected regions.
    */
   protected void updateTableFromRegions() {
-    model.updateFromRegions(regions);
+    tableModel.updateFromRegions(regions);
   }
 
   /**
    * Update stocks with items of faction's units in selected regions.
    */
   protected void updateTableFromFaction() {
-    model.updateFromFactions(getFactions(), regions);
+    tableModel.updateFromFactions(getFactions(), regions);
   }
 
   /**
@@ -717,15 +721,15 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
             writer.writeEmptyElement("region");
             writer.writeAttribute("coordinate", region.getCoordinate().toString());
           }
-          for (HerbInfo info : model.herbs) {
+          for (HerbInfo info : tableModel.herbs) {
             writer.writeCharacters("\n");
             writer.writeEmptyElement("herb");
             // writer.writeAttribute("id", info.item.getID().toString());
             writer.writeAttribute("name", info.item.getName());
             writer.writeAttribute("amount", String.valueOf(info.number));
           }
-          for (int pot = 0; pot < model.getPotions().size(); ++pot) {
-            PotionInfo info = model.getPotions().get(pot);
+          for (int pot = 0; pot < tableModel.getPotions().size(); ++pot) {
+            PotionInfo info = tableModel.getPotions().get(pot);
             writer.writeCharacters("\n");
             writer.writeStartElement("potion");
             // writer.writeAttribute("id", info.getID().toString());
@@ -779,7 +783,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    * Returns the currently selected factions.
    */
   private List<Faction> getFactions() {
-    if (factions == null) {
+    if (activeFactions == null) {
       Faction f = null;
       if (data.getOwnerFaction() != null) {
         f = data.getFaction(data.getOwnerFaction());
@@ -791,7 +795,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       else
         return Collections.singletonList(f);
     } else
-      return factions;
+      return activeFactions;
   }
 
   /**
@@ -1779,10 +1783,15 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       setRegions(newRegions);
       dispatcher.fire(SelectionEvent.create(AlchemyDialog.this, newRegions));
       setFactions(newFactions);
-      model.setHerbs(newHerbs);
-      model.setPotions(newPotions);
+      tableModel.setHerbs(newHerbs);
+      tableModel.setPotions(newPotions);
     }
   }
+
+  private static FactionTrustComparator factionTrustComparator =
+      FactionTrustComparator.DEFAULT_COMPARATOR;
+
+  private static NameComparator nameComparator = new NameComparator(IDComparator.DEFAULT);
 
   /**
    * Dialog for selecting a faction from all factions in the report.
@@ -1793,16 +1802,28 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      */
     public FactionDialog() {
       JPanel mainPanel = new JPanel(new SpringLayout());
-      DefaultListModel model = new DefaultListModel();
-      for (Faction f : getData().getFactions()) {
-        model.addElement(f);
+      DefaultListModel factionListModel = new DefaultListModel();
+
+      LinkedList<Faction> sorted = new LinkedList<Faction>(getData().getFactions());
+      String sortByTrustLevel = settings.getProperty("FactionStatsDialog.SortByTrustLevel", "true");
+      // sort factions
+      if (sortByTrustLevel.equals("true")) {
+        Collections.sort(sorted, factionTrustComparator);
+      } else if (sortByTrustLevel.equals("detailed")) {
+        Collections.sort(sorted, FactionTrustComparator.DETAILED_COMPARATOR);
+      } else {
+        Collections.sort(sorted, nameComparator);
       }
-      final JList factionList = new JList(model);
+
+      for (Faction f : sorted) {
+        factionListModel.addElement(f);
+      }
+      final JList factionList = new JList(factionListModel);
       factionList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       factionList.clearSelection();
       List<Faction> factions = getFactions();
-      for (int row = 0; row < model.size(); ++row) {
-        if (factions.contains(model.get(row))) {
+      for (int row = 0; row < factionListModel.size(); ++row) {
+        if (factions.contains(factionListModel.get(row))) {
           factionList.addSelectionInterval(row, row);
         }
       }

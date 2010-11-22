@@ -41,17 +41,12 @@ import magellan.library.utils.Resources;
 public class EnterOrder extends UCArgumentOrder {
 
   /**
-   * The order type, either BUILDING or SHIP.
-   */
-  public int type;
-
-  /**
    * @param tokens
    * @param text
+   * @param type The order type, either BUILDING or SHIP.
    */
   public EnterOrder(List<OrderToken> tokens, String text, int type) {
-    super(tokens, text, null);
-    this.type = type;
+    super(tokens, text, null, type);
   }
 
   /**

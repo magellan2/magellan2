@@ -494,6 +494,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
 
     if (herbName.equals(unknownHerbType)) {
       workingRegion.setHerb(null);
+      workingRegion.setHerbAmount(null);
     }
     if (setherbType != null) {
       // set the new (or old) herb

@@ -42,7 +42,6 @@ import magellan.library.rules.MessageType;
 import magellan.library.rules.Options;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
-import magellan.library.utils.Direction;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
@@ -84,6 +83,10 @@ public class GameDataMerger {
     return merge(gd, empty, transformer, new IdentityTransformer());
   }
 
+  /**
+   * Returns a new report that is the given report translated by the given transformers. The first
+   * transformer is applied to gd1, the second one to gd2.
+   */
   public static GameData merge(GameData gd1, GameData gd2, ReportTransformer transformer1,
       ReportTransformer transformer2) {
     // make sure, the game types are the same.
@@ -128,8 +131,6 @@ public class GameDataMerger {
       ReportTransformer transformer1, ReportTransformer transformer2) {
     // 2002.02.20 pavkovic: the newer rules are in GameData gd2. So we take
     // them for the new GameData
-    // FIXME(pavkovic) rules should be loaded instead of just used in this
-    // situation
     GameData resultGD = new CompleteData(newerGD.rules, newerGD.getGameName());
 
     boolean sameRound = olderGD.getDate().equals(newerGD.getDate());
@@ -472,21 +473,44 @@ public class GameDataMerger {
     // this just adds all the regions to newGD. No content yet.
     if (olderGD.regionView() != null) {
       for (Region r : olderGD.regionView().values()) {
+        // void regions are not in regionView any more
         // if (!r.getRegionType().equals(RegionType.theVoid)) {
-        CoordinateID newID = transform(transformer1, r.getID());
-        resultGD.addRegion(MagellanFactory.createRegion(newID, resultGD));
-        // }
+        CoordinateID resultID = transform(transformer1, r.getID());
+        Region resultRegion = MagellanFactory.createRegion(resultID, resultGD);
+        resultGD.addRegion(resultRegion);
+        // set uid and name here, needed to create the wrapper region
+        if (r.hasUID() && r.getUID() >= 0) {
+          // uID exists and is not "invented" (see GameData.makeWrapper)
+          // TODO invent IDs if the region doesn't have one
+          resultRegion.setUID(r.getUID());
+        }
+        resultRegion.setName(r.getName());
+
+        // add wrappers for regions "on the edge"
+        for (Region wrapper : transformer1.getWrappers(resultRegion, resultGD)) {
+          resultGD.addRegion(wrapper);
+        }
       }
     }
 
     if (newerGD.regionView() != null) {
       for (Region r : newerGD.regionView().values()) {
-        // if (!r.getRegionType().equals(RegionType.theVoid)) {
         CoordinateID resultID = transform(transformer2, r.getID());
-        if (resultGD.getRegion(resultID) == null) {
-          resultGD.addRegion(MagellanFactory.createRegion(resultID, resultGD));
+        Region resultRegion = resultGD.getRegion(resultID);
+        if (resultRegion == null) {
+          resultRegion = MagellanFactory.createRegion(resultID, resultGD);
+          resultGD.addRegion(resultRegion);
         }
-        // }
+        if (r.hasUID() && r.getUID() >= 0) {
+          // TODO invent IDs if the region doesn't have one
+          resultRegion.setUID(r.getUID());
+        }
+        resultRegion.setName(r.getName());
+        for (Region wrapper : transformer2.getWrappers(resultRegion, resultGD)) {
+          if (resultGD.getRegion(wrapper.getCoordinate()) == null) {
+            resultGD.addRegion(wrapper);
+          }
+        }
       }
     }
 
@@ -819,25 +843,34 @@ public class GameDataMerger {
       }
     }
 
-    for (Region wrapper : newerGD.wrappers().values()) {
-      CoordinateID newID = transform(transformer2, wrapper.getCoordinate());
-      Region resultRegion = resultGD.getRegion(newID);
-      if (resultRegion == null) {
-        resultRegion = MagellanFactory.createRegion(newID, resultGD);
-        resultRegion.setUID(wrapper.getUID());
-        resultRegion.setVisibility(Visibility.WRAP);
-        resultRegion.setType(RegionType.wrap);
-      }
-      if (resultRegion.getVisibility().equals(Visibility.WRAP)) {
-        Region original = newerGD.getOriginal(wrapper);
-        Region newOriginal = resultGD.getRegion(original.getID());
-        if (newOriginal == null) {
-          log.error("did not find corresponding region for original " + original + " of " + wrapper);
-        } else {
-          resultGD.makeWrapper(resultRegion, newOriginal);
-        }
-      }
-    }
+    // for (Region wrapper : newerGD.wrappers().values()) {
+    // CoordinateID newID = transform(transformer2, wrapper.getCoordinate());
+    // Region resultRegion = resultGD.getRegion(newID);
+    // if (resultRegion == null) {
+    // resultRegion = MagellanFactory.createRegion(newID, resultGD);
+    // // Region newOrig = newerGD.getOriginal(wrapper);
+    // // Region resultOrig = resultGD.getRegion(transform(transformer2, newOrig.getCoordinate()));
+    // resultRegion.setUID(wrapper.getUID());
+    // resultRegion.setVisibility(Visibility.WRAP);
+    // resultRegion.setType(RegionType.wrap);
+    // resultGD.addRegion(resultRegion);
+    // }
+    // // this is now done in GameData.postProcess()
+    // // if (resultRegion.getVisibility().equals(Visibility.WRAP)) {
+    // // Region original = newerGD.getOriginal(wrapper);
+    // // Region newOriginal = resultGD.getRegion(original.getID());
+    // // if (newOriginal == null) {
+    // // log.error("did not find corresponding region for original " + original + " of " +
+    // wrapper);
+    // // } else if (Regions.getDist(resultRegion.getCoordinate(), newOriginal.getCoordinate()) < 2)
+    // // {
+    // // log.error("distance too small for wrapper: " + original + " --> " + wrapper + " = "
+    // // + Regions.getDist(resultRegion.getCoordinate(), newOriginal.getCoordinate()));
+    // // } else {
+    // // resultGD.makeWrapper(resultRegion, newOriginal);
+    // // }
+    // // }
+    // }
 
     /**************************** MERGE ISLANDS, SECOND PASS ***************************/
     if (newerGD.islandView() != null) {
@@ -887,12 +920,17 @@ public class GameDataMerger {
   }
 
   private static int addUnits(Collection<Unit> units, GameData resultGD, int sortIndex) {
-    for (Unit u : units)
+    for (Unit u : units) {
+      // Attention: UnitContainer.units() returns temp units (GameData.units() doesn't)
+      if (u instanceof TempUnit) {
+        continue;
+      }
       if (resultGD.getUnit(u.getID()) == null) {
         Unit newUnit = MagellanFactory.createUnit(u.getID(), resultGD);
         newUnit.setSortIndex(sortIndex++);
         resultGD.addUnit(newUnit);
       }
+    }
     return sortIndex;
   }
 
@@ -1640,18 +1678,17 @@ public class GameDataMerger {
     final boolean sameTurn = !newTurn || !firstPass;
 
     /******************** NEIGHBOURS *******************************************/
-    {
-      Map<Direction, Region> neighbors = curRegion.getNeighbors();
-      for (Direction d : neighbors.keySet()) {
-        Region neighbor = resultGD.getRegion(transform(transformer, neighbors.get(d).getID()));
-        if (neighbor == null) {
-          log.error("neighbor not found " + neighbors.get(d) + " of " + curRegion);
-        } else {
-          resultRegion.addNeighbor(d, neighbor);
-          // TODO (stm) add missing wrappers here??
-        }
-      }
-    }
+    // do not merge neighbors, add them automatically instead; if the report wraps, wrapper regions
+    // have been inserted before
+    // Map<Direction, Region> neighbors = curRegion.getNeighbors();
+    // for (Direction d : neighbors.keySet()) {
+    // Region neighbor = resultGD.getRegion(transform(transformer, neighbors.get(d).getID()));
+    // if (neighbor == null) {
+    // log.error("neighbor not found " + neighbors.get(d) + " of " + curRegion);
+    // } else {
+    // resultRegion.addNeighbor(d, neighbor);
+    // }
+    // }
 
     /******************** MORALE AND OWNER *************************************/
     if (curRegion.getMorale() >= 0
@@ -1864,7 +1901,9 @@ public class GameDataMerger {
 
     /******************** REGION IDs *************************************/
     if (curRegion.hasUID()) {
-      resultRegion.setUID(curRegion.getUID());
+      if (curRegion.getUID() >= 0 || resultRegion.getUID() < 0) {
+        resultRegion.setUID(curRegion.getUID());
+      }
     }
 
     /******************** HERBS *************************************/
@@ -2647,7 +2686,7 @@ public class GameDataMerger {
       }
     }
 
-    // FIXME(stm) this effectively destroys report unit sorting
+    // (stm) this had effectively destroyed report unit sorting
     // resultUnit.setSortIndex(Math.max(resultUnit.getSortIndex(), curUnit.getSortIndex()));
 
     if ((curUnit.getSpells() != null) && (curUnit.getSpells().size() > 0)) {

@@ -32,6 +32,7 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Orders;
+import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.relation.UnitRelation;
 import magellan.library.tasks.Problem.Severity;
@@ -53,15 +54,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
 
     OrderSyntaxProblemTypes() {
       String name = name().toLowerCase();
-      String message = Resources.get("tasks.ordersyntaxinspector." + name + ".message", false);
-      String typeName = Resources.get("tasks.ordersyntaxinspector." + name + ".name", false);
-      if (typeName == null) {
-        typeName = message;
-      }
-      String description =
-          Resources.get("tasks.ordersyntaxinspector." + name + ".description", false);
-      String group = Resources.get("tasks.ordersyntaxinspector." + name + ".group", false);
-      type = new ProblemType(typeName, group, description, message);
+      type = ProblemType.create("tasks.ordersyntaxinspector", name);
     }
 
     ProblemType getType() {
@@ -76,15 +69,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
 
     OrderSemanticsProblemTypes() {
       String name = name().toLowerCase();
-      String message = Resources.get("tasks.ordersemanticsinspector." + name + ".message", false);
-      String typeName = Resources.get("tasks.ordersemanticsinspector." + name + ".name", false);
-      if (typeName == null) {
-        typeName = message;
-      }
-      String description =
-          Resources.get("tasks.ordersemanticsinspector." + name + ".description", false);
-      String group = Resources.get("tasks.ordersemanticsinspector." + name + ".group", false);
-      type = new ProblemType(typeName, group, description, message);
+      type = ProblemType.create("tasks.ordersemanticsinspector", name);
     }
 
     ProblemType getType() {
@@ -112,6 +97,19 @@ public class OrderSyntaxInspector extends AbstractInspector {
    */
   public static OrderSyntaxInspector getInstance(GameData data) {
     return new OrderSyntaxInspector(data);
+  }
+
+  @Override
+  public List<Problem> reviewRegion(Region r, Severity severity) {
+    List<Problem> errors = new ArrayList<Problem>();
+    if (r == getData().getRegions().iterator().next()) {
+      for (Problem p : getData().getErrors()) {
+        if (p.getSeverity() == severity) {
+          errors.add(p);
+        }
+      }
+    }
+    return errors;
   }
 
   /**

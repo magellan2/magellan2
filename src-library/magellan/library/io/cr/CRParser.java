@@ -3275,7 +3275,7 @@ public class CRParser implements RulesIO, GameDataIO {
           // like in startup of client..we reset the data
           world = new MissingData();
           // marking the problem
-          world.outOfMemory = true;
+          world.setOutOfMemory(true);
 
           ui.ready();
           // end exit

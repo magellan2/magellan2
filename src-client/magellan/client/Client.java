@@ -171,6 +171,8 @@ import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileType.ReadOnlyException;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.rules.Date;
+import magellan.library.tasks.GameDataInspector;
+import magellan.library.tasks.Problem;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Locales;
 import magellan.library.utils.Log;
@@ -179,6 +181,8 @@ import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Regions;
+import magellan.library.utils.ReportMerger;
+import magellan.library.utils.ReportMerger.AssignData;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.TrustLevels;
@@ -187,8 +191,8 @@ import magellan.library.utils.Utils;
 import magellan.library.utils.VersionInfo;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.BoxTransformer;
-import magellan.library.utils.transformation.MapTransformer.BBox;
-import magellan.library.utils.transformation.MapTransformer.BBoxes;
+import magellan.library.utils.transformation.BoxTransformer.BBox;
+import magellan.library.utils.transformation.BoxTransformer.BBoxes;
 
 /**
  * This class is the root of all evil. It represents also the main entry point into the application
@@ -1685,7 +1689,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       return null;
     }
 
-    if (data.outOfMemory) {
+    if (data.isOutOfMemory()) {
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.outofmemory.text"), Resources
           .get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
       Client.log.error(Resources.get("client.msg.outofmemory.text"));
@@ -1694,8 +1698,60 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.lowmem.text"), Resources
           .get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
     }
+    int bE = 0, rE = 0, ruE = 0, sE = 0, uE = 0, mE = 0;
+    for (Problem p : data.getErrors()) {
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONID.type) {
+        rE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONUID.type) {
+        ruE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEBUILDINGID.type) {
+        bE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATESHIPID.type) {
+        sE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEUNITID.type) {
+        uE++;
+      }
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.OUTOFMEMORY.type) {
+        mE++;
+      }
+    }
+    if (ruE > 0) {
+      Client.log.error("report with errors: " + (rE + ruE) + " " + uE + " " + bE + " " + sE);
+      if (JOptionPane.showConfirmDialog(client, Resources.get(
+          "client.msg.reporterrors.text.question", fileName, rE + ruE, uE, bE, sE), Resources
+          .get("client.msg.reporterrors.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+
+        // merge report with itself to resolve wrapping
+        MyAssigner assigner = new MyAssigner();
+        final GameData data2 = data;
+        new ReportMerger(data, fileName, new ReportMerger.Loader() {
+          public GameData load(File aFile) {
+            return data2;
+          }
+        }, assigner).merge();
+        if (assigner.data2 != null)
+          return assigner.data2;
+      }
+    } else if (bE > 0 || rE > 0 || sE > 0 || uE > 0) {
+      Client.log.error("report with errors: " + rE + " " + uE + " " + bE + " " + sE);
+      JOptionPane.showMessageDialog(client, Resources.get("client.msg.reporterrors.text", fileName,
+          rE, uE, bE, sE), Resources.get("client.msg.reporterrors.title"),
+          JOptionPane.WARNING_MESSAGE);
+    }
 
     return data;
+  }
+
+  protected static class MyAssigner implements AssignData {
+    GameData data2 = null;
+
+    public void assign(GameData _data) {
+      data2 = _data;
+    }
   }
 
   /**
@@ -1757,7 +1813,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       newData = getData().clone(newOrigin);
       if (newData == null)
         throw new NullPointerException();
-      if (newData.outOfMemory) {
+      if (newData.isOutOfMemory()) {
         JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources
             .get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
         Client.log.error(Resources.get("client.msg.outofmemory.text"));
@@ -1775,24 +1831,27 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     setReportChanged(true);
   }
 
+  /**
+   * Sets the girth of the world in all layers.
+   * 
+   * @param newBorders
+   */
   public void setGirth(BBoxes newBorders) {
     // TODO compare with known borders
     for (Integer layer : newBorders.getLayers()) {
       BBox box = newBorders.getBox(layer);
-      if (box.minx == box.maxx) {
-        box.minx = Integer.MAX_VALUE;
-        box.maxx = Integer.MIN_VALUE;
+      if (box.minx >= box.maxx) {
+        box.setX(Integer.MAX_VALUE, Integer.MIN_VALUE);
       }
-      if (box.miny == box.maxy) {
-        box.miny = Integer.MAX_VALUE;
-        box.maxy = Integer.MIN_VALUE;
+      if (box.miny >= box.maxy) {
+        box.setY(Integer.MAX_VALUE, Integer.MIN_VALUE);
       }
     }
 
     GameData newData = GameDataMerger.merge(getData(), new BoxTransformer(newBorders));
     if (newData == null)
       throw new NullPointerException();
-    if (newData.outOfMemory) {
+    if (newData.isOutOfMemory()) {
       JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources
           .get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
       Client.log.error(Resources.get("client.msg.outofmemory.text"));

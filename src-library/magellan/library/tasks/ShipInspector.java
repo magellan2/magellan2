@@ -28,7 +28,6 @@ import magellan.library.rules.RegionType;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Direction;
 import magellan.library.utils.Regions;
-import magellan.library.utils.Resources;
 import magellan.library.utils.Units;
 
 /**
@@ -46,14 +45,7 @@ public class ShipInspector extends AbstractInspector {
 
     ShipProblemTypes() {
       String name = name().toLowerCase();
-      String message = Resources.get("tasks.shipinspector." + name + ".message");
-      String typeName = Resources.get("tasks.shipinspector." + name + ".name", false);
-      if (typeName == null) {
-        typeName = message;
-      }
-      String description = Resources.get("tasks.shipinspector." + name + ".description", false);
-      String group = Resources.get("tasks.shipinspector." + name + ".group", false);
-      type = new ProblemType(typeName, group, description, message);
+      type = ProblemType.create("tasks.shipinspector", name);
     }
 
     ProblemType getType() {

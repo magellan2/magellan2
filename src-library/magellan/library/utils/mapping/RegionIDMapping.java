@@ -87,12 +87,17 @@ public class RegionIDMapping implements DataMapping {
             score = new Score<CoordinateID>(translation);
             translationMap.put(translation, score);
           }
-          score.addScore(1);
+          if (rid.longValue() < 0) {
+            score.addScore(1);
+          } else {
+            score.addScore(2);
+          }
         }
       }
     }
 
     for (Score<CoordinateID> val : translationMap.values()) {
+      val.setScore(val.getScore() / 2);
       Logger.getInstance(this.getClass()).finest("translation (" + toString() + "): " + val);
     }
 

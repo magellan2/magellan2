@@ -173,7 +173,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * the unique regionID generated and sent by the eressea server starting with turn 570
    */
-  private long UID = Integer.MIN_VALUE;
+  private long uID = Integer.MIN_VALUE;
 
   /**
    * Constructs a new Region object uniquely identifiable by the specified id.
@@ -1247,7 +1247,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if ((getData() == null) || (getData().getRegions() == null))
       return null;
 
-    Map<Direction, Region> newNeighbors = Regions.getCoordinateNeighbours(data.regions(), getID());
+    Map<Direction, Region> newNeighbors = Regions.getCoordinateNeighbours(data, getID());
 
     return newNeighbors;
   }
@@ -1978,7 +1978,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   public boolean hasUID() {
-    return UID != Integer.MIN_VALUE;
+    return uID != Integer.MIN_VALUE;
   }
 
   /**
@@ -1988,7 +1988,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns uID.
    */
   public long getUID() {
-    return UID;
+    return uID;
   }
 
   /**
@@ -1998,7 +1998,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @param uid The value for uID.
    */
   public void setUID(long uid) {
-    UID = uid;
+    uID = uid;
   }
 
   /**

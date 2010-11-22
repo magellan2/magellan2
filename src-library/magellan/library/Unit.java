@@ -253,7 +253,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /**
    * Returns the group this unit belongs to.
    * 
-   * @return the group this unit belongs to
+   * @return the group this unit belongs to or <code>null</code>
    */
   public Group getGroup();
 
@@ -268,7 +268,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Returns the alias, i.e. the id of this unit it had in the last turn (e.g. after a NUMMER
    * order).
    * 
-   * @return the alias or null, if the id did not change.
+   * @return the alias or <code>null</code>, if the id did not change.
    */
   public UnitID getAlias();
 
@@ -331,7 +331,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void setRegion(Region r);
 
   /**
-   * Returns the region this unit is staying in.
+   * Returns the region this unit is staying in. Do not assume this to be <code>!=null</code>.
    */
   public Region getRegion();
 
@@ -342,12 +342,13 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void setFaction(Faction faction);
 
   /**
-   * Returns the faction this unit belongs to.
+   * Returns the faction this unit belongs to. Do not assume this to be <code>!=null</code>.
    */
   public Faction getFaction();
 
   /**
-   * A shortcut for {@link #getFaction()}.{@link Faction#getLocale() getLocale()}.
+   * A shortcut for {@link #getFaction()}.{@link Faction#getLocale() getLocale()}. May return
+   * <code>null</code>.
    */
   public Locale getLocale();
 
@@ -359,6 +360,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Returns the building this unit is staying in.
+   * 
+   * @return The building the unit is in, or <code>null</code>
    */
   public Building getBuilding();
 
@@ -370,6 +373,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   /**
    * Returns the ship this unit is on.
+   * 
+   * @return The ship the unit is in, or <code>null</code>
    */
   public Ship getShip();
 
@@ -389,7 +394,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void setRaceNamePrefix(String prefix);
 
   /**
-   * Returns the unit dependent prefix for the race name.
+   * Returns the unit dependent prefix for the race name or <code>null</code>
    */
   public String getRaceNamePrefix();
 

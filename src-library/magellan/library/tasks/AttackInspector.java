@@ -34,7 +34,6 @@ import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.AttackRelation;
 import magellan.library.tasks.Problem.Severity;
-import magellan.library.utils.Resources;
 
 /**
  * An inspector for problems with attacks
@@ -50,14 +49,7 @@ public class AttackInspector extends AbstractInspector {
 
     AttackProblemTypes() {
       String name = name().toLowerCase();
-      String message = Resources.get("tasks.attackinspector." + name + ".message");
-      String typeName = Resources.get("tasks.attackinspector." + name + ".name", false);
-      if (typeName == null) {
-        typeName = message;
-      }
-      String description = Resources.get("tasks.attackinspector." + name + ".description", false);
-      String group = Resources.get("tasks.attackinspector." + name + ".group", false);
-      type = new ProblemType(typeName, group, description, message);
+      type = ProblemType.create("tasks.attackinspector", name);
     }
 
     ProblemType getType() {

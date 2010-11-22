@@ -34,7 +34,6 @@ import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.tasks.Problem.Severity;
-import magellan.library.utils.Resources;
 
 public class SkillInspector extends AbstractInspector {
   /** The singleton instance. */
@@ -49,18 +48,8 @@ public class SkillInspector extends AbstractInspector {
     return new SkillInspector(data);
   }
 
-  protected static final ProblemType SKILLDECREASE;
-
-  static {
-    String message = Resources.get("tasks.skillinspector.skilldecrease.message");
-    String typeName = Resources.get("tasks.skillinspector.skilldecrease.name", false);
-    if (typeName == null) {
-      typeName = message;
-    }
-    String description = Resources.get("tasks.skillinspector.skilldecrease.description", false);
-    String group = Resources.get("tasks.skillinspector.skilldecrease.group", false);
-    SKILLDECREASE = new ProblemType(typeName, group, description, message);
-  }
+  protected static final ProblemType SKILLDECREASE = ProblemType.create("tasks.skillinspector",
+      "skilldecrease");
 
   protected SkillInspector(GameData data) {
     super(data);

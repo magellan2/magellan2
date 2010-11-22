@@ -116,13 +116,17 @@ public interface GameSpecificStuff {
   public String getName();
 
   /**
-   * DOCUMENT-ME
+   * Returns a pair of transformers that transform coordinates from the global data and the added
+   * data to coordinates in the merged report.
    * 
    * @param globalData
    * @param addedData
    * @param ui
-   * @param interactive
-   * @return
+   * @param interactive if <code>true</code>, the user may be asked question about the selection of
+   *          the correct transformer. Otherwise it is tried to determine the correct transformer
+   *          automatically.
+   * @return A pair of transformers, the first one for the original report, the second one for the
+   *         added report. Or <code>null</code> if no good transformer can be found.
    */
   public ReportTransformer[] getTransformers(GameData globalData, GameData addedData,
       UserInterface ui, boolean interactive);

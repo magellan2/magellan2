@@ -41,11 +41,12 @@ import magellan.library.gamebinding.EresseaSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Score;
+import magellan.library.utils.SetGirthDialog;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.SavedTranslationsMapping;
-import magellan.library.utils.transformation.MapTransformer.BBox;
-import magellan.library.utils.transformation.MapTransformer.BBoxes;
+import magellan.library.utils.transformation.BoxTransformer.BBox;
+import magellan.library.utils.transformation.BoxTransformer.BBoxes;
 
 public class TransformerFinder {
   static final Logger log = Logger.getInstance(TransformerFinder.class);
@@ -56,7 +57,7 @@ public class TransformerFinder {
   private boolean interactive;
   private String filename;
 
-  private HashMap<GameData, Boolean> astralInfo;
+  // private HashMap<GameData, Boolean> astralInfo;
 
   private boolean tryBoxes;
 
@@ -75,21 +76,28 @@ public class TransformerFinder {
     tryBoxes = tryFindingBoxes;
   }
 
+  /**
+   * @return A pair of transformers, the first one for the original report, the second one for the
+   *         added report. Or <code>null</code> if no good transformer can be found.
+   */
   public ReportTransformer[] getTransformers() {
     // decide, which translation to choose
     Score<CoordinateID> bestTranslation = findRealSpaceTranslation();
 
     if (bestTranslation != null) {
+      log.info("Using this (real) translation: " + bestTranslation.getKey());
       Score<CoordinateID> bestAstralTranslation = findAstralRSpaceTranslation(bestTranslation);
 
       if (bestAstralTranslation != null) {
-        // TODO (stm) do this /after/ merging?
-        storeTranslations(bestTranslation, bestAstralTranslation);
+        log.info("Using this astral translation: " + bestAstralTranslation.getKey());
 
+        // compute dimension (of the output report)
         BBoxes boxes = new BBoxes();
         if (tryBoxes) {
           boxes = getBoundingBox(bestTranslation.getKey(), bestAstralTranslation.getKey());
         }
+        if (boxes == null)
+          return null;
 
         ReportTransformer transformer1 = getTransformer(globalData, boxes);
         ReportTransformer transformer2 =
@@ -131,99 +139,82 @@ public class TransformerFinder {
   private Score<CoordinateID> findAstralRSpaceTranslation(Score<CoordinateID> bestTranslation) {
     MapMergeEvaluator mhelp = globalData.getGameSpecificStuff().getMapMergeEvaluator();
     Score<CoordinateID> bestAstralTranslation = null;
-    if (!hasAstralRegions(addedData)) {
-      bestAstralTranslation = new Score<CoordinateID>(CoordinateID.create(0, 0, 1), -1);
-    } else if (!hasAstralRegions(globalData)) {
+    if (!hasRegionsInLayer(EresseaSpecificStuff.ASTRAL_LAYER, addedData)) {
+      bestAstralTranslation =
+          new Score<CoordinateID>(CoordinateID.create(0, 0, EresseaSpecificStuff.ASTRAL_LAYER), -1);
+    } else if (!hasRegionsInLayer(EresseaSpecificStuff.ASTRAL_LAYER, globalData)) {
       Collection<Score<CoordinateID>> empty = Collections.emptyList();
       if (interactive) {
-        bestAstralTranslation = askTranslation(empty, null, 1);
+        bestAstralTranslation = askTranslation(empty, null, EresseaSpecificStuff.ASTRAL_LAYER);
       } else {
-        bestAstralTranslation = decideTranslation(empty, null, 1);
+        bestAstralTranslation = decideTranslation(empty, null, EresseaSpecificStuff.ASTRAL_LAYER);
       }
     } else {
 
       Collection<CoordinateID> otherLevels = new ArrayList<CoordinateID>(1);
       otherLevels.add(bestTranslation.getKey());
       Collection<Score<CoordinateID>> astralTranslationList =
-          mhelp.getDataMappings(globalData, addedData, 1, otherLevels);
+          mhelp.getDataMappings(globalData, addedData, EresseaSpecificStuff.ASTRAL_LAYER,
+              otherLevels);
 
-      Score<CoordinateID> savedAstralTranslation = findSavedMapping(1);
+      Score<CoordinateID> savedAstralTranslation =
+          findSavedMapping(EresseaSpecificStuff.ASTRAL_LAYER);
 
       if (interactive) {
-        bestAstralTranslation = askTranslation(astralTranslationList, savedAstralTranslation, 1);
+        bestAstralTranslation =
+            askTranslation(astralTranslationList, savedAstralTranslation,
+                EresseaSpecificStuff.ASTRAL_LAYER);
       } else {
-        bestAstralTranslation = decideTranslation(astralTranslationList, savedAstralTranslation, 1);
+        bestAstralTranslation =
+            decideTranslation(astralTranslationList, savedAstralTranslation,
+                EresseaSpecificStuff.ASTRAL_LAYER);
       }
     }
     return bestAstralTranslation;
   }
 
-  private boolean hasAstralRegions(GameData data) {
-    if (astralInfo == null) {
-      astralInfo = new HashMap<GameData, Boolean>();
-    }
-    if (astralInfo.get(data) == null) {
-      boolean found = false;
-      for (Region r : data.getRegions()) {
-        if (r.getCoordinate().getZ() == EresseaSpecificStuff.ASTRAL_LAYER) {
-          found = true;
-          break;
-        }
+  private static boolean hasRegionsInLayer(int layer, GameData data) {
+    // if (astralInfo == null) {
+    // astralInfo = new HashMap<GameData, Boolean>();
+    // }
+    // if (astralInfo.get(data) == null) {
+    boolean found = false;
+    for (Region r : data.getRegions()) {
+      if (r.getCoordinate().getZ() == layer) {
+        found = true;
+        break;
       }
-      astralInfo.put(data, found);
     }
-    return astralInfo.get(data);
+    // astralInfo.put(data, found);
+    // }
+    // return astralInfo.get(data);
+    return found;
   }
 
   /***************************************************************************
-   * store translations
+   * Stores the translation between the owner faction of global data and added data implied by the
+   * given translation.
    */
-  private void storeTranslations(Score<CoordinateID> bestTranslation,
-      Score<CoordinateID> bestAstralTranslation) {
-    log.info("Using this (real) translation: " + bestTranslation.getKey());
+  public static void storeTranslations(int layer, CoordinateID bestTranslation,
+      GameData globalData, GameData addedData) {
     // store found translations
     EntityID newReportOwner = addedData.getOwnerFaction();
-    if (newReportOwner != null) {
-      if (globalData.getCoordinateTranslation(newReportOwner, 0) != null
-          && !globalData.getCoordinateTranslation(newReportOwner, 0).equals(
-              bestTranslation.getKey())) {
-        log.warn("old translation " + globalData.getCoordinateTranslation(newReportOwner, 0)
-            + " inconsistent with new translation " + bestTranslation.getKey());
-      }
-      if (bestTranslation.getScore() >= 0) {
-        CoordinateID correct = addedData.getCoordinateTranslation(newReportOwner, 0);
-        if (correct != null) {
-          correct =
-              CoordinateID.create(bestTranslation.getKey().getX() + correct.getX(), bestTranslation
-                  .getKey().getY()
-                  + correct.getY(), 0);
-          globalData.setCoordinateTranslation(newReportOwner, correct);
-        }
-      }
+    if (newReportOwner == null)
+      return;
+
+    if (globalData.getCoordinateTranslation(newReportOwner, layer) != null
+        && !globalData.getCoordinateTranslation(newReportOwner, layer).equals(bestTranslation)) {
+      log.warn("old translation " + globalData.getCoordinateTranslation(newReportOwner, layer)
+          + " inconsistent with new translation " + bestTranslation);
+    }
+    CoordinateID correct = addedData.getCoordinateTranslation(newReportOwner, layer);
+    if (correct != null) {
+      correct =
+          CoordinateID.create(bestTranslation.getX() + correct.getX(), bestTranslation.getY()
+              + correct.getY(), layer);
+      globalData.setCoordinateTranslation(newReportOwner, correct);
     }
 
-    if (hasAstralRegions(addedData) && hasAstralRegions(globalData)) {
-      log.info("Using this astral translation: " + bestAstralTranslation.getKey());
-
-      if (newReportOwner != null) {
-        if (globalData.getCoordinateTranslation(newReportOwner, 1) != null
-            && !globalData.getCoordinateTranslation(newReportOwner, 1).equals(
-                bestAstralTranslation.getKey())) {
-          log.warn("old astral translation "
-              + globalData.getCoordinateTranslation(newReportOwner, 1)
-              + " inconsistent with new translation " + bestAstralTranslation.getKey());
-        }
-        if (bestAstralTranslation.getScore() >= 0) {
-          CoordinateID correct = addedData.getCoordinateTranslation(newReportOwner, 1);
-          if (correct != null) {
-            correct =
-                CoordinateID.create(bestAstralTranslation.getKey().getX() + correct.getX(),
-                    bestAstralTranslation.getKey().getY() + correct.getY(), 1);
-            globalData.setCoordinateTranslation(newReportOwner, correct);
-          }
-        }
-      }
-    }
   }
 
   private Score<CoordinateID> findSavedMapping(int layer) {
@@ -342,7 +333,7 @@ public class TransformerFinder {
       }
     }
     if (savedTranslation != null) {
-      // TODO this leads to a user interaction if saved translation != best found translation
+      // this leads to a user interaction if saved translation != best found translation
       distinct.add(savedTranslation.getKey());
     }
 
@@ -356,6 +347,8 @@ public class TransformerFinder {
       return bestTranslation;
     } else {
       // ask user what to do
+
+      // setup dialog
       String message =
           Resources.getFormatted("util.reportmerger.msg.method", filename, layer)
               + (isTranslationChanged ? Resources.get("util.reportmerger.msg.changed") : "");
@@ -375,12 +368,14 @@ public class TransformerFinder {
       Collections.sort(sorted, Collections.reverseOrder());
       choices.addAll(sorted);
 
+      // ask the question
       Object choice =
           ui.input(message, Resources.get("util.reportmerger.msg.method.title"), choices.toArray(),
               bestMethod);
       if (choice == null || choice.equals(skipMethod))
         return null;
 
+      // select translation the user wanted
       if (choice.equals(bestMethod))
         // try anyway
         return bestTranslation;
@@ -472,80 +467,176 @@ public class TransformerFinder {
 
   private BBoxes getBoundingBox(CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
     // get existing box of old data
-    BBoxes outBoxes = getBoundingBox(globalData);
+    BBoxes outBoxes = new BBoxes();
+    boolean problem = !getBoundingBox(globalData, outBoxes);
     // get existing box of new data
-    BBoxes inBoxes = getBoundingBox(addedData);
+    BBoxes inBoxes = new BBoxes();
+    problem |= !getBoundingBox(addedData, inBoxes);
     // get new box of combination of both
-    BBoxes idBoxes = getTransformBox(bestTranslation, bestAstralTranslation);
+    BBoxes idBoxes = new BBoxes();
+    problem |=
+        !getTransformBox(globalData, addedData, bestTranslation, bestAstralTranslation, idBoxes);
+
+    Set<Integer> layers = new HashSet<Integer>(outBoxes.getLayers());
+    layers.addAll(inBoxes.getLayers());
+    layers.addAll(idBoxes.getLayers());
 
     BBoxes resultBoxes = new BBoxes();
-    for (int layer : outBoxes.getLayers()) {
+    for (int layer : layers) {
+      Set<BBox> ask = new HashSet<BoxTransformer.BBox>();
+
       BBox outBox = outBoxes.getBox(layer);
       BBox inBox = inBoxes.getBox(layer);
-      if (inBox != null
-          && (inBox.maxx - inBox.minx != outBox.maxx - outBox.minx || inBox.maxy - inBox.miny != outBox.maxy
-              - outBox.miny)) {
-        log.warn("bounding box changed from " + outBox + " to " + inBox);
-        resultBoxes.setBox(layer, inBox);
-      } else {
+      BBox idBox = idBoxes.getBox(layer);
+
+      // set default: box that was already known
+      if (outBox != null) {
         resultBoxes.setBox(layer, outBox);
       }
-    }
-    for (int layer : inBoxes.getLayers()) {
-      BBox outBox = outBoxes.getBox(layer);
-      if (outBox == null) {
-        resultBoxes.setBox(layer, inBoxes.getBox(layer));
-      }
-    }
 
-    // check if a new box has been found
-    for (int layer : idBoxes.getLayers()) {
-      BBox idBox = idBoxes.getBox(layer);
+      // added report has its own box: choose if none was known before, ask if it changed
+      if (inBox != null) {
+        if (outBox != null
+            && (inBox.maxx - inBox.minx != outBox.maxx - outBox.minx || inBox.maxy - inBox.miny != outBox.maxy
+                - outBox.miny)) {
+          log.warn("bounding box changed from " + outBox + " to " + inBox);
+          ask.add(inBox);
+        }
+        resultBoxes.setBox(layer, inBox);
+      }
+
+      // boxes from combination
       BBox rBox = resultBoxes.getBox(layer);
-      if (idBox.maxx != Integer.MIN_VALUE) {
+
+      if (idBox != null && idBox.maxx != Integer.MIN_VALUE) {
         if (rBox == null) {
           log.info("gone round the world (westward); the world's new girth is " + (idBox.maxx + 1));
+          ask.add(idBox);
           resultBoxes.setBoxX(layer, (idBox.maxx + 1) / 2 - (idBox.maxx), (idBox.maxx + 1) / 2);
         } else if (rBox.maxx - rBox.minx != idBox.maxx) {
+          // boxes do not match
           log.warn("new xbox: " + rBox + " -> " + idBox);
           // old box might be a multiple of new box...
-          if (rBox.maxx != Integer.MIN_VALUE && idBox.maxx + 1 % rBox.maxx - rBox.minx != 0) {
+          if (rBox.maxx != Integer.MIN_VALUE && (idBox.maxx) % (rBox.maxx - rBox.minx) != 0) {
             log.warn("cannot continue");
-            return null;
+            ask.add(idBox);
+            if (!interactive)
+              return null;
           } else {
             log.info("the world has shrunken (westward); the world's new girth is "
                 + (idBox.maxx + 1));
+            ask.add(rBox);
             resultBoxes.setBoxX(layer, (idBox.maxx + 1) / 2 - (idBox.maxx), (idBox.maxx + 1) / 2);
           }
         }
       }
-      if (idBox.maxy != Integer.MIN_VALUE) {
+      // same thing for y-box
+      if (idBox != null && idBox.maxy != Integer.MIN_VALUE) {
         if (rBox == null) {
           log.info("gone round the world (southward); the world's new girth is " + (idBox.maxy + 1));
+          ask.add(idBox);
           resultBoxes.setBoxY(layer, (idBox.maxy + 1) / 2 - (idBox.maxy), (idBox.maxy + 1) / 2);
         } else if (rBox.maxy - rBox.miny != idBox.maxy) {
+          // boxes do not match
           log.warn("new ybox: " + rBox + " -> " + idBox);
-          if (rBox.maxy != Integer.MIN_VALUE && idBox.maxy % (rBox.maxy - rBox.miny) != 0) {
+          if (rBox.maxy != Integer.MIN_VALUE && (idBox.maxy) % (rBox.maxy - rBox.miny) != 0) {
             log.warn("cannot continue");
-            return null;
+            ask.add(idBox);
+            if (!interactive)
+              return null;
           } else {
             log.info("the world has shrunken (southward); the world's new girth is "
                 + (idBox.maxy + 1));
+            ask.add(rBox);
             resultBoxes.setBoxY(layer, (idBox.maxy + 1) / 2 - (idBox.maxy), (idBox.maxy + 1) / 2);
           }
         }
       }
+
+      // ask user and return result
+      if (interactive && (problem || !ask.isEmpty())) {
+        rBox = askBox(layer, ask, resultBoxes.getBox(layer));
+        if (rBox != null) {
+          resultBoxes.setBox(layer, rBox);
+        } else
+          return null;
+      }
+
     }
     return resultBoxes;
   }
 
-  private BBoxes getTransformBox(CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
+  /**
+   * Ask the user about boxes. Use the argument as proposal.
+   * 
+   * @param best
+   * @param ask
+   * @return user choice or <code>null</code> for no choice
+   */
+  private BBox askBox(int layer, Set<BBox> boxes, BBox best) {
+    String message = Resources.getFormatted("util.reportmerger.msg.box", filename, layer);
+    if (boxes.size() == 0) {
+      Resources.getFormatted("util.reportmerger.msg.box.null", filename, layer);
+    }
 
-    BBoxes boxes = new BBoxes();
+    String inputMethod = Resources.get("util.reportmerger.msg.box.input");
+    String skipMethod = Resources.get("util.reportmerger.msg.box.skip");
+    ArrayList<Object> choices = new ArrayList<Object>(3);
+    if (best != null) {
+      choices.add(Resources.getFormatted("util.reportmerger.msg.box.found", best));
+    }
+    for (BBox box : boxes) {
+      choices.add(Resources.getFormatted("util.reportmerger.msg.box.found", box));
+    }
+
+    choices.add(inputMethod);
+    choices.add(skipMethod);
+
+    Object choice =
+        ui.input(message, Resources.get("util.reportmerger.msg.box.title"), choices.toArray(),
+            choices.get(0));
+    if (choice == null || choice.equals(skipMethod))
+      return null;
+
+    if (choice.equals(inputMethod)) {
+      SetGirthDialog girthDialog;
+      ui.showDialog(girthDialog = new SetGirthDialog(null, best, layer));
+      if (girthDialog.approved())
+        return girthDialog.getNewBorders().getBox(layer);
+      else
+        return null;
+    } else if (choice.equals(skipMethod))
+      return null;
+    else {
+      for (int i = 0; i < choices.size(); i++)
+        if (choices.get(i).equals(choice)) {
+          if (i == 0 && best != null)
+            return best;
+          int j = best == null ? 0 : 1;
+          for (BBox box : boxes)
+            if (j++ == i)
+              return box;
+        }
+    }
+    log.error("Unexpected choice");
+    return null;
+  }
+
+  /**
+   * Compare coordinates of translated regions from new report to regions from global data and
+   * deduce boxes from the difference.
+   * 
+   * @param boxes The result boxes are stored in this parameter.
+   * @return <code>false</code> if ambiguous boxes where found
+   */
+  public static boolean getTransformBox(GameData globalData, GameData addedData,
+      CoordinateID bestTranslation, CoordinateID bestAstralTranslation, BBoxes boxes) {
+
+    boolean result = true;
 
     Map<Long, Region> idMap = new HashMap<Long, Region>(addedData.getRegions().size() * 9 / 6);
     for (Region r : globalData.getRegions()) {
-      if (r.hasUID()) {
+      if (r.hasUID() && r.getUID() >= 0) {
         idMap.put(r.getUID(), r);
       }
     }
@@ -567,85 +658,119 @@ public class TransformerFinder {
                 CoordinateID.create(Math.abs(translation.getX()), Math.abs(translation.getY()),
                     layer);
             if (translation.getX() != 0 || translation.getY() != 0) {
-              log.finest("translation: " + translation);
-            }
-            if ((translation.getX() != 0 && translation.getX() <= 2)
-                || (translation.getY() != 0 && translation.getY() <= 2)) {
-              log.warn("unclear translation: " + rNew + " --> " + rOld);
-            } else {
-              if (translation.getX() != 0) {
-                if (boxes.getBox(layer) != null) {
-                  if (boxes.getBox(layer).maxx != Integer.MAX_VALUE
-                      && boxes.getBox(layer).maxx != translation.getX() - 1) {
-                    log.warn("box mismatch: " + (translation.getX() - 1) + " vs. "
-                        + boxes.getBox(layer).maxx);
+              log.debug("translation: " + translation);
+
+              if ((translation.getX() != 0 && translation.getX() <= 2)
+                  || (translation.getY() != 0 && translation.getY() <= 2)) {
+                log.warn("dubious translation: " + rNew + " --> " + rOld);
+              } else {
+                if (translation.getX() != 0) {
+                  if (boxes.getBox(layer) != null) {
+                    if (boxes.getBox(layer).maxx != Integer.MAX_VALUE
+                        && boxes.getBox(layer).maxx != translation.getX() - 1) {
+                      log.warn("box mismatch: " + (translation.getX() - 1) + " vs. "
+                          + boxes.getBox(layer).maxx);
+                      result = false;
+                    }
+                  } else {
+                    log.finest("translation: " + translation);
                   }
+
+                  boxes.setBoxX(layer, 0, translation.getX() - 1);
                 }
-                boxes.setBoxX(layer, 0, translation.getX() - 1);
-              }
-              if (translation.getY() != 0) {
-                if (boxes.getBox(layer) != null) {
-                  if (boxes.getBox(layer).maxy != Integer.MAX_VALUE
-                      && boxes.getBox(layer).maxy != translation.getY() - 1) {
-                    log.warn("box mismatch: " + (translation.getY() - 1) + " vs. "
-                        + boxes.getBox(layer).maxy);
+                if (translation.getY() != 0) {
+                  if (boxes.getBox(layer) != null) {
+                    if (boxes.getBox(layer).maxy != Integer.MAX_VALUE
+                        && boxes.getBox(layer).maxy != translation.getY() - 1) {
+                      log.warn("box mismatch: " + (translation.getY() - 1) + " vs. "
+                          + boxes.getBox(layer).maxy);
+                      result = false;
+                    }
+                  } else {
+                    log.finest("translation: " + translation);
                   }
+                  boxes.setBoxY(layer, 0, translation.getY() - 1);
                 }
-                boxes.setBoxY(layer, 0, translation.getY() - 1);
               }
             }
           }
         }
       }
     }
-    return boxes;
+    return result;
   }
 
   /**
-   * Try to find a translation based on region ids.
+   * Try to find a translation based on region ids. Compares positions of wrappers in data with
+   * their original region and deduces box diameter from their difference.
+   * 
+   * @param boxes The result boxes are stored in this parameter.
+   * @return <code>false</code> if ambiguous boxes where found
    */
-  protected static MapTransformer.BBoxes getBoundingBox(GameData data) {
-
-    BBoxes boxes = new BBoxes();
+  public static boolean getBoundingBox(GameData data, BBoxes boxes) {
+    boolean result = true;
     for (Region w : data.wrappers().values()) {
       Region original = data.getOriginal(w);
       if (original != null) {
         if (w.getCoordinate().getZ() != original.getCoordinate().getZ())
           throw new IllegalArgumentException("Report wraps between different layers not supported.");
 
-        if (original.getCoordX() - w.getCoordX() > 0) {
-          changeBoxX(boxes, w.getCoordinate().getZ(), w.getCoordX() + 1, original.getCoordX());
-        }
-        if (original.getCoordX() - w.getCoordX() < 0) {
-          changeBoxX(boxes, w.getCoordinate().getZ(), original.getCoordX(), w.getCoordX() - 1);
-        }
-        if (original.getCoordY() - w.getCoordY() > 0) {
-          changeBoxY(boxes, w.getCoordinate().getZ(), w.getCoordY() + 1, original.getCoordY());
-        }
-        if (original.getCoordY() - w.getCoordY() < 0) {
-          changeBoxY(boxes, w.getCoordinate().getZ(), original.getCoordY(), w.getCoordY() - 1);
+        if (original.getCoordY() == w.getCoordY()) {
+          if (original.getCoordX() - w.getCoordX() > 0) {
+            result &=
+                changeBoxX(boxes, w.getCoordinate().getZ(), w.getCoordX() + 1, original.getCoordX());
+          }
+          if (original.getCoordX() - w.getCoordX() < 0) {
+            result &=
+                changeBoxX(boxes, w.getCoordinate().getZ(), original.getCoordX(), w.getCoordX() - 1);
+          }
+        } else {
+          if (original.getCoordY() - w.getCoordY() > 0) {
+            result &=
+                changeBoxY(boxes, w.getCoordinate().getZ(), w.getCoordY() + 1, original.getCoordY());
+          }
+          if (original.getCoordY() - w.getCoordY() < 0) {
+            result &=
+                changeBoxY(boxes, w.getCoordinate().getZ(), original.getCoordY(), w.getCoordY() - 1);
+          }
         }
       }
     }
-    return boxes;
+    return result;
   }
 
-  private static void changeBoxX(BBoxes boxes, int layer, int newmin, int newmax) {
+  /**
+   * @return <code>false</code> if the old box value was not infinite and did not match
+   */
+  private static boolean changeBoxX(BBoxes boxes, int layer, int newmin, int newmax) {
     BBox oldBox = boxes.getBox(layer);
+    boolean result = true;
     if (oldBox != null
         && ((oldBox.minx != Integer.MAX_VALUE && oldBox.minx != newmin) || (oldBox.maxx != Integer.MAX_VALUE && oldBox.maxx != newmax))) {
-      log.warn("box changed");
+      log.warn("box changed: " + oldBox + "->" + newmin + "/" + newmax);
+      if (oldBox.maxx - oldBox.minx != newmax - newmin) {
+        result = false;
+      }
     }
     boxes.setBoxX(layer, newmin, newmax);
+    return result;
   }
 
-  private static void changeBoxY(BBoxes boxes, int layer, int newmin, int newmax) {
+  /**
+   * @return <code>false</code> if the old box value was not infinite and did not match
+   */
+  private static boolean changeBoxY(BBoxes boxes, int layer, int newmin, int newmax) {
+    boolean result = true;
     BBox oldBox = boxes.getBox(layer);
     if (oldBox != null
         && ((oldBox.miny != Integer.MAX_VALUE && oldBox.miny != newmin) || (oldBox.maxy != Integer.MAX_VALUE && oldBox.maxy != newmax))) {
-      log.warn("box changed");
+      log.warn("box changed: " + oldBox + "->" + newmin + "/" + newmax);
+      if (oldBox.maxy - oldBox.miny != newmax - newmin) {
+        result = false;
+      }
     }
     boxes.setBoxY(layer, newmin, newmax);
+    return result;
   }
 
   protected ReportTransformer getTransformer(GameData data, BBoxes boxes) {
@@ -653,11 +778,11 @@ public class TransformerFinder {
     return transformer;
   }
 
-  protected ReportTransformer getTransformer(BBoxes outBoxes, CoordinateID bestTranslation,
+  protected ReportTransformer getTransformer(BBoxes resultBoxes, CoordinateID bestTranslation,
       CoordinateID bestAstralTranslation) {
     Map<Long, Region> idMap = new HashMap<Long, Region>(addedData.getRegions().size() * 9 / 6);
     for (Region r : globalData.getRegions()) {
-      if (r.hasUID()) {
+      if (r.hasUID() && r.getUID() >= 0) {
         idMap.put(r.getUID(), r);
       }
     }
@@ -667,14 +792,14 @@ public class TransformerFinder {
 
     try {
       MapTransformer transformerUID = new MapTransformer(transformer2L);
-      transformerUID.setBoxes(outBoxes);
+      transformerUID.setBoxes(resultBoxes);
 
       if (idMap.size() > 0) {
         for (Region rNew : addedData.getRegions()) {
           if (rNew.hasUID()) {
             Region rOld = idMap.get(rNew.getUID());
             if (rOld != null) {
-              transformerUID.addMapping(rNew.getID(), outBoxes.putInBox(rOld.getCoordinate()));
+              transformerUID.addMapping(rNew.getID(), resultBoxes.putInBox(rOld.getCoordinate()));
             }
           }
         }

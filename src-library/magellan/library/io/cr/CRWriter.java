@@ -14,9 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import magellan.library.Addeable;
@@ -2269,6 +2272,14 @@ public class CRWriter extends BufferedWriter {
         ui.setProgress(Resources.get("crwriterdialog.progress.07"), 7);
         if ((regions != null) && (regions.size() > 0)) {
           writeRegions(regions);
+          Set<Region> rs = new HashSet<Region>(regions);
+          Map<CoordinateID, Region> ws = new HashMap<CoordinateID, Region>();
+          for (Region w : world.wrappers().values()) {
+            if (rs.contains(world.getOriginal(w))) {
+              ws.put(w.getCoordinate(), w);
+            }
+          }
+          writeRegions(ws);
         } else {
           writeRegions(world.regions());
         }

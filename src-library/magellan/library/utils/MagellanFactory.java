@@ -135,12 +135,30 @@ public abstract class MagellanFactory {
   }
 
   /** Creates a new Region */
-  public static Region createWrapper(CoordinateID wrapperID, long regionID, GameData resultGD) {
-    Region resultRegion = MagellanFactory.createRegion(wrapperID, resultGD);
-    resultRegion.setUID(regionID);
+  public static Region createWrapper(CoordinateID wrapperID, Region original, GameData data) {
+    Region resultRegion = MagellanFactory.createRegion(wrapperID, data);
+    resultRegion.setUID(original.getUID());
+    resultRegion.setName("(" + original.getName() + ")");
     resultRegion.setVisibility(Visibility.WRAP);
     resultRegion.setType(RegionType.wrap);
     return resultRegion;
+  }
+
+  /**
+   * Creates a void Region
+   * 
+   * @see RegionType#theVoid
+   * @see GameData#postProcessTheVoid()
+   */
+  public static Region createVoid(CoordinateID c, GameData gameData) {
+    Region r = new MagellanRegionImpl(c, gameData);
+    RegionType type = RegionType.theVoid;
+    r.setType(type);
+    r.setName(Resources.get("gamedata.region.thevoid.name"));
+    r.setDescription(Resources.get("gamedata.region.thevoid.beschr"));
+    gameData.addTranslation(EresseaConstants.RT_VOID.toString(), Resources
+        .get("gamedata.region.thevoid.name"), TranslationType.sourceMagellan);
+    return r;
   }
 
   /** Creates a new Ship */

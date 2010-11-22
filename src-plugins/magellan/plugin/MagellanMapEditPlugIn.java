@@ -89,10 +89,10 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * Creates the Context-MenuItem (after Right-Click on Map)
    * 
    * @param dispatcher EventDispatcher
-   * @param data GameData
+   * @param data2 GameData
    * @return The JMenuItem to show in the MapContextMenu
    */
-  public JMenuItem createMapContextMenu(EventDispatcher dispatcher, GameData data) {
+  public JMenuItem createMapContextMenu(EventDispatcher dispatcher, GameData data2) {
     rootTitle = new JMenu(Resources.get("mapedit.menu.title"));
 
     setName = new JMenuItem(Resources.get("mapedit.menu.setname"));
@@ -199,10 +199,11 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.swing.context.MapContextMenuProvider#updateUnknownRegion(magellan.library.CoordinateID)
    */
-  public void updateUnknownRegion(CoordinateID c) {
-    if (c != null) {
-      this.c = c;
-      rootTitle.setText("MapEdit: NEW " + c.toString());
+  public void updateUnknownRegion(CoordinateID c2) {
+    if (c2 != null) {
+      c = c2;
+      r = null;
+      rootTitle.setText("MapEdit: NEW " + c2.toString());
       rootTitle.setEnabled(true);
       // Terrainänderung
       setTerrain.setText(Resources.get("mapedit.menu.addterrain"));
@@ -226,19 +227,19 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.swing.context.MapContextMenuProvider#update(magellan.library.Region)
    */
-  public void update(Region r) {
-    if (r != null) {
-      this.r = r;
-      rootTitle.setText("MapEdit: " + r.toString());
+  public void update(Region newRegion) {
+    if (newRegion != null) {
+      r = newRegion;
+      rootTitle.setText("MapEdit: " + newRegion.toString());
       rootTitle.setEnabled(true);
 
       // if (r.getRegionType().getID().toString().equalsIgnoreCase("Ozean")){
-      if (r.getRegionType().isOcean()) {
+      if (newRegion.getRegionType().isOcean()) {
         // keine benannten Ozeane
         setName.setEnabled(false);
         // zombies löschen können
         // wenn name gesetzt
-        if (r.getName() != null && r.getName().length() > 0) {
+        if (newRegion.getName() != null && newRegion.getName().length() > 0) {
           delName.setEnabled(true);
         } else {
           delName.setEnabled(false);
@@ -292,7 +293,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.client.Client, java.util.Properties)
    */
-  public void init(Client client, Properties properties) {
+  public void init(@SuppressWarnings("hiding") Client client, Properties properties) {
     // init the plugin
     MagellanMapEditPlugIn.log = Logger.getInstance(MagellanMapEditPlugIn.class);
     Resources.getInstance().initialize(Client.getResourceDirectory(), "mapedit_");
@@ -306,7 +307,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.library.GameData)
    */
-  public void init(GameData data) {
+  public void init(@SuppressWarnings("hiding") GameData data) {
     MagellanMapEditPlugIn.log.fine("MapEdit initialized...(GameData)");
     this.data = data;
     addTerrains(setTerrain);
@@ -526,7 +527,9 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
   }
 
   /**
+   * Returns <code>null</code>
    * 
+   * @see magellan.client.extern.MagellanPlugIn#getPreferencesProvider()
    */
   public PreferencesFactory getPreferencesProvider() {
     return null;

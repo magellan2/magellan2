@@ -17,8 +17,11 @@ import java.awt.event.ActionEvent;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
-import magellan.client.swing.SetGirthDialog;
+import magellan.library.GameData;
+import magellan.library.Region;
 import magellan.library.utils.Resources;
+import magellan.library.utils.SetGirthDialog;
+import magellan.library.utils.transformation.BoxTransformer.BBox;
 
 /**
  * Changes the maximum x- and y- dimensions of the map.
@@ -43,7 +46,34 @@ public class SetGirthAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    SetGirthDialog dialog = new SetGirthDialog(client, client.getDispatcher(), client.getData());
+    GameData data = client.getData();
+    int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, maxY =
+        Integer.MIN_VALUE;
+    for (Region wrapper : data.wrappers().values()) {
+      Region original = client.getData().getOriginal(wrapper);
+      if (original != null) {
+        if (original.getCoordY() == wrapper.getCoordY()) {
+          if (original.getCoordX() < minX) {
+            minX = original.getCoordX();
+          }
+          if (original.getCoordX() > maxX) {
+            maxX = original.getCoordX();
+          }
+        }
+        if (original.getCoordX() == wrapper.getCoordX()) {
+          if (original.getCoordY() < minY) {
+            minY = original.getCoordY();
+          }
+          if (original.getCoordY() > maxY) {
+            maxY = original.getCoordY();
+          }
+        }
+      }
+    }
+    BBox box = new BBox();
+    box.setX(minX, maxX);
+    box.setY(minY, maxY);
+    SetGirthDialog dialog = new SetGirthDialog(client, box, null);
     dialog.setVisible(true);
     if (dialog.approved()) {
       client.setGirth(dialog.getNewBorders());

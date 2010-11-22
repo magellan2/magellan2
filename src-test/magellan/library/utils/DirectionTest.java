@@ -115,7 +115,8 @@ public class DirectionTest extends MagellanTestWithResources {
     r0.addNeighbor(Direction.W, r2);
     r2.addNeighbor(Direction.E, r0);
 
-    data.getGameSpecificStuff().postProcess(data);
+    data.postProcess();
+    data.postProcessTheVoid();
 
     assertSame(Direction.E, Direction.toDirection(r0, r1));
     assertSame(Direction.W, Direction.toDirection(r1, r0));

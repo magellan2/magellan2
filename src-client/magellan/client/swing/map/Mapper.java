@@ -61,6 +61,7 @@ import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.rules.ItemType;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.logging.Logger;
@@ -239,45 +240,59 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         CoordinateID c =
             cellGeometry.getCoordinate(me.getPoint().x + mapToScreenBounds.x, me.getPoint().y
                 + mapToScreenBounds.y, showLevel);
-        Region r = data.getRegion(c);
+        Region region = data.getRegion(c);
+        Region voidRegion = data.voids().get(c);
+        Region wrapper = null;
 
         // might be a wrapping region: find original
-        if (r == null) {
-          Region w = data.wrappers().get(c);
-          if (w != null) {
-            r = data.getOriginal(w);
+        if (region == null) {
+          wrapper = data.wrappers().get(c);
+          if (wrapper != null) {
+            region = data.getOriginal(wrapper);
           }
         }
 
-        if (r != null) {
-          if ((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
-            if ((me.getModifiers() & InputEvent.CTRL_MASK) != 0) {
-              if (selectedRegions.containsKey(c) == false) {
+        if (region == null && PropertiesHelper.getBoolean(settings, "map.creating.void", false)) {
+          voidRegion = data.voids().get(c);
+        }
+
+        if ((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
+          if ((me.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+            if (region != null) {
+              // add region to selection -- do not add wrappers or voids
+              if (selectedRegions.containsKey(region.getID()) == false) {
                 doDraggingSelect = true;
-                selectedRegions.put(c, r);
+                selectedRegions.put(region.getID(), region);
               } else {
                 doDraggingSelect = false;
-                selectedRegions.remove(c);
+                selectedRegions.remove(region.getID());
               }
 
               data.setSelectedRegionCoordinates(selectedRegions);
               dispatcher.fire(SelectionEvent.create(mapper, selectedRegions.values()));
               repaint();
-              prevDragRegion = r;
-            } else {
-              activeRegion = r;
+              prevDragRegion = region;
+            }
+          } else {
+            // move cursor to region
+            if (region != null || voidRegion != null) {
+              activeRegion = region != null ? region : voidRegion;
               activeCoordinate = c;
-              activeObject = r;
+              activeObject = activeRegion;
               dispatcher.fire(SelectionEvent.create(mapper, activeRegion));
               repaint();
             }
-          } else if ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
-            conMenu.init(r, selectedRegions.values());
-            conMenu.show(Mapper.this, me.getX(), me.getY());
           }
         } else if ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
-          conMenu.clear(c);
-          conMenu.show(Mapper.this, me.getX(), me.getY());
+          if (region != null) {
+            // show context menu for real region
+            conMenu.init(region, selectedRegions.values());
+            conMenu.show(Mapper.this, me.getX(), me.getY());
+          } else {
+            // show context menu for no region
+            conMenu.clear(c);
+            conMenu.show(Mapper.this, me.getX(), me.getY());
+          }
         }
       }
 
@@ -428,6 +443,12 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
             cellGeometry.getCoordinate(e.getPoint().x + mapToScreenBounds.x, e.getPoint().y
                 + mapToScreenBounds.y, showLevel);
         Region r = data.getRegion(c);
+        if (r == null) {
+          r = data.wrappers().get(c);
+        }
+        if (r == null && PropertiesHelper.getBoolean(settings, "map.creating.void", false)) {
+          r = data.voids().get(c);
+        }
 
         if (r != null) {
           Object ret = tooltipDefinition.getReplacement(r);
@@ -743,6 +764,9 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           if (r == null) {
             r = data.wrappers().get(c);
           }
+          if (r == null && PropertiesHelper.getBoolean(settings, "map.creating.void", false)) {
+            r = data.voids().get(c);
+          }
 
           if (r != null) {
             main.add(r);
@@ -766,6 +790,12 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           main.add(r);
         }
       }
+      for (Region r : data.voids().values()) {
+        if (r.getCoordinate().getZ() == upperLeft.getZ()) {
+          main.add(r);
+        }
+      }
+
     }
 
     // sort out according to other states, use AND

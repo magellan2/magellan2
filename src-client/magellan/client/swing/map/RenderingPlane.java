@@ -125,17 +125,11 @@ public class RenderingPlane {
     regionTypes = r;
   }
 
-  /**
-   * DOCUMENT-ME
-   */
   @Override
   public String toString() {
     return getName();
   }
 
-  /**
-   * DOCUMENT-ME
-   */
   @Override
   public int hashCode() {
     return getIndex();

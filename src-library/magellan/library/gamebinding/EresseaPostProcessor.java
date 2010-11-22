@@ -33,6 +33,9 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
+import magellan.library.tasks.GameDataInspector;
+import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Regions;
@@ -50,13 +53,13 @@ public class EresseaPostProcessor {
   private static final Logger log = Logger.getInstance(EresseaPostProcessor.class);
 
   protected EresseaPostProcessor() {
-    // nothing to do, no state
+    // protected to enforce singleton property
   }
 
   private static final EresseaPostProcessor singleton = new EresseaPostProcessor();
 
   /**
-   * DOCUMENT-ME
+   * Returns an instance.
    */
   public static EresseaPostProcessor getSingleton() {
     return EresseaPostProcessor.singleton;
@@ -73,28 +76,45 @@ public class EresseaPostProcessor {
     if (data == null)
       throw new NullPointerException();
 
+    // enforce locale to be non-null
+    data.postProcessLocale();
+
+    // adding Default Translations to the translations
+    data.postProcessDefaultTranslations();
+
+    data.postProcessUnknown();
+
+    // remove double messages
+    data.postProcessMessages();
+
+    postProcessMessages(data);
+
+    // remove double potions
+    data.postProcessPotions();
+
     resolveWraparound(data);
 
     cleanAstralSchemes(data);
 
-    postProcessMessages(data);
+    data.postProcessIslands();
 
     adjustFogOfWar2Visibility(data);
 
-    /*
-     * retrieve the temp units mentioned in the orders and create them as TempUnit objects
-     */
     int sortIndex = 0;
 
     Unit[] sortedUnits = data.getUnits().toArray(new Unit[0]);
     Arrays.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
 
-    // FIXME(stm) this effectively destroys report unit sorting!
     for (Unit unit : sortedUnits) {
       unit.setSortIndex(sortIndex++);
       sortIndex = unit.extractTempUnits(data, sortIndex);
     }
 
+    postProcessNullInformation(data);
+
+  }
+
+  private void postProcessNullInformation(GameData data) {
     /*
      * 'known' information does not necessarily show up in the report. e.g. depleted region
      * resources are not mentioned although we actually know that the resource is available with an
@@ -265,13 +285,18 @@ public class EresseaPostProcessor {
           return;
         }
         Region original = idMap.get(wrappingRegion.getUID());
-        if (idMap.get(wrappingRegion.getUID()) == null) {
-          log.warn("wrapping region without actual region");
+        if (original == null) {
+          log.warn("wrapping region without actual region" + wrappingRegion);
           continue;
         }
-        toDelete.put(wrappingRegion, original);
+        if (Regions.getDist(wrappingRegion.getCoordinate(), original.getCoordinate()) < 2) {
+          log.error("distance too small for wrapper: " + wrappingRegion + " --> " + original
+              + " = " + Regions.getDist(wrappingRegion.getCoordinate(), original.getCoordinate()));
+        } else {
+          toDelete.put(wrappingRegion, original);
+        }
         Map<Direction, Region> neighbors =
-            Regions.getCoordinateNeighbours(data.regions(), wrappingRegion.getCoordinate());
+            Regions.getCoordinateNeighbours(data, wrappingRegion.getCoordinate());
         for (Direction d : neighbors.keySet()) {
           neighbors.get(d).addNeighbor(d.add(3), idMap.get(wrappingRegion.getUID()));
         }
@@ -280,25 +305,42 @@ public class EresseaPostProcessor {
     for (Region r : toDelete.keySet()) {
       data.makeWrapper(r, toDelete.get(r));
     }
+
     toDelete.clear();
+
+    // repair lost wrappers
+    for (Region wrappingRegion : data.getRegions()) {
+      if (wrappingRegion.getType().getID().equals(EresseaConstants.RT_WRAP)) {
+        toDelete.put(wrappingRegion, wrappingRegion);
+        log.warn("removed orphan wrapper " + wrappingRegion);
+      }
+    }
+    for (Region r : toDelete.keySet()) {
+      data.removeRegion(r);
+    }
+
+    toDelete.clear();
+
+    // if (data.isFixNeighborsWithWraparound()) {
     for (Region curRegion : data.getRegions()) {
       for (Direction d : curRegion.getNeighbors().keySet()) {
         Region neighbor = curRegion.getNeighbors().get(d);
-        if (Regions.getDist(neighbor.getCoordinate(), curRegion.getCoordinate()) > 1) {
+        if (Regions.getDist(neighbor.getCoordinate(), curRegion.getCoordinate()) > 2) {
           CoordinateID wrapperID = curRegion.getID().translateInLayer(d.toCoordinate());
           if (!data.wrappers().containsKey(wrapperID)) {
             if (data.getRegion(wrapperID) != null) {
               log.warn(neighbor + " should be connected by a wrapper to " + curRegion
                   + " but there is already a region at " + wrapperID);
             } else {
-              Region wrapper = MagellanFactory.createWrapper(wrapperID, neighbor.getUID(), data);
-              log.finest(neighbor + " should be connected by a wrapper to " + curRegion);
+              Region wrapper = MagellanFactory.createWrapper(wrapperID, neighbor, data);
+              log.finest(neighbor + " will be connected by a wrapper to " + curRegion);
               toDelete.put(wrapper, neighbor);
             }
           }
         }
       }
     }
+    // }
 
     for (Region r : toDelete.keySet()) {
       data.makeWrapper(r, toDelete.get(r));
@@ -309,10 +351,17 @@ public class EresseaPostProcessor {
     Map<Long, Region> result = new HashMap<Long, Region>(data.getRegions().size() * 5 / 4 + 5, .8f);
     // for each ID in the report, put at least one into the map. Prefer the one with lowest distance
     for (Region r : data.getRegions()) {
-      if (r.hasUID()) {
+      if (r.hasUID() && !r.getVisibility().equals(Visibility.WRAP)) {
         Region old = result.get(r.getUID());
-        if (old == null || !r.getVisibility().equals(Visibility.WRAP)) {
+        if (old == null) {
           result.put(r.getUID(), r);
+        } else {
+          StringBuilder message = new StringBuilder();
+          message.append("duplicate region ID ").append(r.getUID()).append(" in ").append(old)
+              .append(" and ").append(r);
+          data.addError(ProblemFactory.createProblem(Severity.ERROR,
+              GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONUID.type, r, null, null, old,
+              null, message.toString(), -1));
         }
       }
     }

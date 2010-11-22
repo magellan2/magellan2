@@ -51,14 +51,7 @@ public class TeachInspector extends AbstractInspector {
 
     TeachProblemTypes() {
       String name = name().toLowerCase();
-      String message = Resources.get("tasks.teachinspector." + name + ".message", false);
-      String typeName = Resources.get("tasks.teachinspector." + name + ".name", false);
-      if (typeName == null) {
-        typeName = message;
-      }
-      String description = Resources.get("tasks.teachinspector." + name + ".description", false);
-      String group = Resources.get("tasks.teachinspector." + name + ".group", false);
-      type = new ProblemType(typeName, group, description, message);
+      type = ProblemType.create("tasks.teachinspector", name);
     }
 
     ProblemType getType() {

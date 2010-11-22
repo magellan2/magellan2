@@ -19,7 +19,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import magellan.library.rules.MessageType;
+import magellan.library.tasks.GameDataInspector;
+import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory;
 import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.Resources;
 import magellan.library.utils.Translations;
 
 /**
@@ -62,7 +66,13 @@ public class CompleteData extends GameData {
    */
   @Override
   public void addTempUnit(TempUnit t) {
-    tempUnits.put(t.getID(), t);
+    TempUnit old = tempUnits.put(t.getID(), t);
+    if (old != null) {
+      addError(ProblemFactory.createProblem(Severity.ERROR,
+          GameDataInspector.GameDataProblemTypes.DUPLICATEUNITID.type, t.getRegion(), t, null, t,
+          null, Resources.get("gamedata.problem.duplicateunit.message", t, old), -1));
+    }
+
   }
 
   /**

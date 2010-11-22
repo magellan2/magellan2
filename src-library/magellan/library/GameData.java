@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import magellan.library.Region.Visibility;
 import magellan.library.completion.OrderParser;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
@@ -41,6 +41,10 @@ import magellan.library.rules.MessageType;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
+import magellan.library.tasks.GameDataInspector;
+import magellan.library.tasks.Problem;
+import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
@@ -70,6 +74,7 @@ import magellan.library.utils.transformation.TwoLevelTransformer;
  * </p>
  */
 public abstract class GameData implements Cloneable, Addeable {
+
   private static final Logger log = Logger.getInstance(GameData.class);
 
   /** Game specific and usually fixed data (like races etc.). */
@@ -77,6 +82,27 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /** The name of the game. */
   public String gameName;
+
+  /**
+   * The base (radix) in which ids are interpreted. The default value is 10. Note that all internal
+   * and cr representation is always decimal.
+   */
+  public int base = 10;
+
+  /**
+   * version number of computer report (CR)
+   */
+  public int version = 66;
+
+  /**
+   * Indicates whether in this report skill points are to be expected or whether they are
+   * meaningful, respectively.
+   */
+  public boolean noSkillPoints = false;
+
+  public List<Problem> errors;
+
+  private OrderParser parser;
 
   /** encoding */
   protected String encoding = FileType.DEFAULT_ENCODING.toString();
@@ -93,6 +119,8 @@ public abstract class GameData implements Cloneable, Addeable {
 
   protected Map<CoordinateID, Region> wrappers = new LinkedHashMap<CoordinateID, Region>();
   protected Map<Region, Region> originals = new LinkedHashMap<Region, Region>();
+
+  protected Map<CoordinateID, Region> voids = new LinkedHashMap<CoordinateID, Region>();
 
   /**
    * The current TempUnit-ID. This means, if a new TempUnit is created, it's suggested ID is usually
@@ -128,6 +156,19 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /** The 'mail' subject for this game data. This may be null */
   public String mailSubject = null;
+
+  /** Post processes the game data (if necessary) once */
+  private boolean postProcessed = false;
+
+  private boolean fixNeighborsWithWraparound;
+
+  private Region activeRegion;
+
+  private Faction nullFaction;
+
+  private Region nullRegion;
+
+  private Race nullRace;
 
   /**
    * A collection of all units. The keys are <tt>Integer</tt> objects containing the unit's ids. The
@@ -379,8 +420,11 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * is set to true, if while proceeding some functions (e.g. CRParse) and we are running out of
    * memory... data may be corrupted or empty then
+   * 
+   * @deprecated Use <code>getErros().contains({@link #OUT_OF_MEMORY})</code> instead
    */
-  public boolean outOfMemory = false;
+  @Deprecated
+  private boolean outOfMemory = false;
 
   /**
    * sortIndex is used to keep objects from CRParser to CRWriter in an order. maxSortIndex is set
@@ -446,7 +490,12 @@ public abstract class GameData implements Cloneable, Addeable {
    */
 
   public void addUnit(Unit u) {
-    unitView().put(u.getID(), u);
+    Unit old = unitView().put(u.getID(), u);
+    if (old != null) {
+      addError(ProblemFactory.createProblem(Severity.ERROR,
+          GameDataInspector.GameDataProblemTypes.DUPLICATEUNITID.type, u.getRegion(), u, null, u,
+          null, Resources.get("gamedata.problem.duplicateunit.message", u, old), -1));
+    }
   }
 
   /**
@@ -462,10 +511,20 @@ public abstract class GameData implements Cloneable, Addeable {
    */
 
   public void addRegion(Region r) {
-    regionView().put(r.getID(), r);
+    if (wrappers.containsKey(r.getID())) {
+      wrappers.remove(r.getID());
+    }
+    if (voids.containsKey(r.getID())) {
+      voids.remove(r.getID());
+    }
+    Region old = regionView().put(r.getID(), r);
+    if (old != null && old.getVisibility() != Visibility.WRAP) {
+      addError(ProblemFactory.createProblem(Severity.ERROR,
+          GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONID.type, r, null, null, r, null,
+          Resources.get("gamedata.problem.duplicateregionid.message", r, old), -1));
+    }
 
-    Map<Direction, Region> neighbors =
-        Regions.getCoordinateNeighbours(regions(), r.getCoordinate());
+    Map<Direction, Region> neighbors = Regions.getCoordinateNeighbours(this, r.getCoordinate());
     for (Direction d : neighbors.keySet()) {
       Region n = neighbors.get(d);
       n.addNeighbor(d.add(3), r);
@@ -492,7 +551,12 @@ public abstract class GameData implements Cloneable, Addeable {
    */
 
   public void addBuilding(Building b) {
-    buildingView().put(b.getID(), b);
+    Building old = buildingView().put(b.getID(), b);
+    if (old != null) {
+      addError(ProblemFactory.createProblem(Severity.ERROR,
+          GameDataInspector.GameDataProblemTypes.DUPLICATEBUILDINGID.type, b.getRegion(), null,
+          null, b, null, Resources.get("gamedata.problem.duplicatebuilding.message", b, old), -1));
+    }
   }
 
   /**
@@ -502,7 +566,12 @@ public abstract class GameData implements Cloneable, Addeable {
    */
 
   public void addShip(Ship s) {
-    shipView().put(s.getID(), s);
+    Ship old = shipView().put(s.getID(), s);
+    if (old != null) {
+      addError(ProblemFactory.createProblem(Severity.ERROR,
+          GameDataInspector.GameDataProblemTypes.DUPLICATESHIPID.type, s.getRegion(), null, null,
+          s, null, Resources.get("gamedata.problem.duplicateship.message", s, old), -1));
+    }
   }
 
   /**
@@ -945,25 +1014,6 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * The base (radix) in which ids are interpreted. The default value is 10. Note that all internal
-   * and cr representation is always decimal.
-   */
-  public int base = 10;
-
-  /**
-   * version number of computer report (CR)
-   */
-  public int version = 66;
-
-  /**
-   * Indicates whether in this report skill points are to be expected or whether they are
-   * meaningful, respectively.
-   */
-  public boolean noSkillPoints = false;
-
-  private OrderParser parser;
-
-  /**
    * Sets the valid locale for this report. Currently, this is only used to remember this setting
    * and write it back into the cr.
    */
@@ -1035,7 +1085,7 @@ public abstract class GameData implements Cloneable, Addeable {
     if (MemoryManagment.isFreeMemory(estimateSize() * 3)) {
       GameData.log.info("cloning in memory");
       GameData clonedData = new Loader().cloneGameDataInMemory(this, coordinateTranslator);
-      if (clonedData == null || clonedData.outOfMemory) {
+      if (clonedData == null || clonedData.isOutOfMemory()) {
         GameData.log.info("cloning externally after failed memory-clone-attempt");
         clonedData = new Loader().cloneGameData(this, coordinateTranslator);
       }
@@ -1076,47 +1126,26 @@ public abstract class GameData implements Cloneable, Addeable {
     return parser;
   }
 
-  /** Post processes the game data (if necessary) once */
-  private boolean postProcessed = false;
-
-  private Region activeRegion;
-
-  private Faction nullFaction;
-
-  private Region nullRegion;
-
-  private Race nullRace;
-
   /**
    * This method can be called after loading or merging a report to avoid double messages and to set
    * some game specific stuff.
+   * 
+   * @param addVoid
+   * @param addVoid
    */
   public void postProcess() {
     // FIXME(stm) does it harm to call this more than once???
     // if (postProcessed)
     // return;
-    GameData.log.fine("start GameData postProcess");
 
-    // enforce locale to be non-null
-    postProcessLocale();
-
-    postProcessUnknown();
-
-    postProcessIslands();
-
-    // remove double messages
-    postProcessMessages();
-
-    postProcessTheVoid();
-
-    // adding Default Translations to the translations
-    postProcessDefaultTranslations();
-
-    // remove double potions
-    postProcessPotions();
+    log.fine("start GameData postProcess");
 
     // do game specific post processing
     getGameSpecificStuff().postProcess(this);
+
+    postProcessTheVoid();
+
+    // postProcessErrors();
 
     // unfortunately, this is necessary because there are parse errors when orders are added to
     // units before the report has been completely read...
@@ -1132,7 +1161,37 @@ public abstract class GameData implements Cloneable, Addeable {
 
     postProcessed = true;
 
-    GameData.log.fine("finished GameData postProcess");
+    log.fine("finished GameData postProcess");
+  }
+
+  public void postProcessErrors() {
+    Map<Long, Region> regionMap = new HashMap<Long, Region>(getRegions().size() * 5 / 4 + 5, .8f);
+    int count = 0;
+    StringBuilder message = new StringBuilder();
+    Region original = null;
+    Region copy = null;
+    for (Region r : getRegions()) {
+      if (r.hasUID() && !r.getVisibility().equals(Visibility.WRAP)) {
+        Region old = regionMap.get(r.getUID());
+        if (old == null) {
+          regionMap.put(r.getUID(), r);
+        } else {
+          original = old;
+          copy = r;
+          addError(ProblemFactory.createProblem(Severity.ERROR,
+              GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONUID.type, original, null, null,
+              copy, null, Resources.get("gamedata.problem.duplicateregionuid", r, old), -1));
+        }
+      }
+    }
+
+    // if (count > 1) {
+    // message.append("...and " + (count - 1) + " more.");
+    // }
+    // if (count > 0) {
+    // }
+    regionMap.clear();
+
   }
 
   /**
@@ -1169,7 +1228,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Set data to default values: RegionTypes, faction races, unit name/race/faction
    */
-  private void postProcessUnknown() {
+  public void postProcessUnknown() {
 
     GameData data = this;
 
@@ -1251,7 +1310,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * adding Default Translations to the translations
    */
-  private void postProcessDefaultTranslations() {
+  public void postProcessDefaultTranslations() {
     // Skilltypes
     for (Iterator<SkillType> iter = rules.getSkillTypeIterator(); iter.hasNext();) {
       SkillType skillType = iter.next();
@@ -1270,32 +1329,15 @@ public abstract class GameData implements Cloneable, Addeable {
    * some information about it. So we add these Regions with the special RegionType "Leere"
    */
   public void postProcessTheVoid() {
-    List<Region> newRegions = new ArrayList<Region>();
     for (Region actRegion : regionView().values()) {
-
       if (actRegion.getVisibility().greaterEqual(Region.Visibility.TRAVEL)) {
         // should have all neighbors
         for (Direction d : Direction.getDirections()) {
           if (actRegion.getNeighbors().get(d) == null) {
             // Missing Neighbor
-            // FIXME(stm) this is not valid for worlds with boundaries
             CoordinateID c = actRegion.getCoordinate().translate(Direction.toCoordinate(d));
-            Region r = MagellanFactory.createRegion(c, this);
-            RegionType type = RegionType.theVoid;
-            r.setType(type);
-            r.setName(Resources.get("gamedata.region.thevoid.name"));
-            r.setDescription(Resources.get("gamedata.region.thevoid.beschr"));
-            newRegions.add(r);
-            addTranslation(EresseaConstants.RT_VOID.toString(), Resources
-                .get("gamedata.region.thevoid.name"), TranslationType.sourceMagellan);
+            addVoid(c);
           }
-        }
-      }
-    }
-    if (newRegions.size() > 0) {
-      for (Region actRegion : newRegions) {
-        if (!regionView().containsKey(actRegion.getID())) {
-          addRegion(actRegion);
         }
       }
     }
@@ -1305,7 +1347,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * Adds the order locale of Magellan if locale is null. This should prevent some NPE with the
    * sideeffect to store a locale in a locale-less game data object.
    */
-  private void postProcessLocale() {
+  public void postProcessLocale() {
     if (getLocale() == null) {
       setLocale(Locales.getOrderLocale());
     }
@@ -1316,7 +1358,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * this has been done while loading the game data but this had a negative time tradeoff (O(n^2)).
    * This functions needs about O(n log n).
    */
-  private void postProcessMessages() {
+  public void postProcessMessages() {
     // faction.messages
     for (Faction o : factionView().values()) {
       postProcessMessages(o.getMessages());
@@ -1335,7 +1377,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * chanegd over time - so it does not matter finally we could keep the potion with the highest ID
    * - asuming that this was the last potion-definition reveived from the server
    */
-  private void postProcessPotions() {
+  public void postProcessPotions() {
     if (potionView() == null || potionView().size() == 0)
       // nothing to do
       return;
@@ -1638,6 +1680,29 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
+   * Adds a "void" region at <code>c</code>.
+   * 
+   * @return the new void region
+   * @throws IllegalArgumentException if there was already a region at <code>c</code>.
+   */
+  public Region addVoid(CoordinateID c) {
+    if (regionView().containsKey(c) || wrappers().containsKey(c))
+      throw new IllegalArgumentException("there is a region at " + c);
+    Region aVoid = MagellanFactory.createVoid(c, this);
+    voids.put(c, aVoid);
+    return aVoid;
+  }
+
+  /**
+   * Returns all "void" regions, i.e., regions inserted only because we should have seen a region at
+   * this place, but there is none for some region. Most functions do not need to take these regions
+   * into account. The exception are displaying function, for example in the Mapper.
+   */
+  public Map<CoordinateID, Region> voids() {
+    return Collections.unmodifiableMap(voids);
+  }
+
+  /**
    * Makes r a "wraparound" region, removing it as a normal region. A wrapper is a region which is
    * not a real region, but is only a placeholder for a another region (most probably to represent a
    * cylinder- or torus-shaped world.
@@ -1660,10 +1725,10 @@ public abstract class GameData implements Cloneable, Addeable {
         log.warn("inventing region ID for " + original);
 
         long newUID = random.nextLong();
-        long min = ((long) Integer.MAX_VALUE) * 4096;
+        long min = ((long) Integer.MIN_VALUE) * 4096;
         // ensure that the invented ID doesn't occur in a server report
         // assumes that server IDs are 32bit
-        while (inventedUIDs.contains(newUID) || newUID <= min) {
+        while (inventedUIDs.contains(newUID) || newUID >= min) {
           newUID = random.nextLong();
         }
         inventedUIDs.add(newUID);
@@ -1724,7 +1789,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Returns a dummy region which may be used for units without region. This faction should not be
+   * Returns a dummy race which may be used for units without race. This race should not be
    * contained in rules.{@link Rules#getRaces()}.
    */
   public Race getNullRace() {
@@ -1732,6 +1797,43 @@ public abstract class GameData implements Cloneable, Addeable {
       nullRace = new Race(StringID.create(Resources.get("unit.race.personen.name")));
     }
     return nullRace;
+  }
+
+  public void addError(Problem err) {
+    if (errors == null) {
+      errors = new ArrayList<Problem>();
+    }
+    errors.add(err);
+  }
+
+  public List<Problem> getErrors() {
+    if (errors == null)
+      return Collections.emptyList();
+    else
+      return Collections.unmodifiableList(errors);
+  }
+
+  /**
+   * Sets the value of outOfMemory.
+   * 
+   * @param outOfMemory The value for outOfMemory.
+   */
+  public void setOutOfMemory(boolean outOfMemory) {
+    this.outOfMemory = outOfMemory;
+    if (isOutOfMemory() && !outOfMemory) {
+      addError(ProblemFactory.createProblem(Severity.WARNING,
+          GameDataInspector.GameDataProblemTypes.OUTOFMEMORY.type, null, null, null, null, null,
+          GameDataInspector.GameDataProblemTypes.OUTOFMEMORY.type.getMessage(), -1));
+    }
+  }
+
+  /**
+   * Returns the value of outOfMemory.
+   * 
+   * @return Returns outOfMemory.
+   */
+  public boolean isOutOfMemory() {
+    return outOfMemory;
   }
 
 }

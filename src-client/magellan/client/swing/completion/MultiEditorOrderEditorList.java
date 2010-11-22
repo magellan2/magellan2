@@ -2129,7 +2129,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
      * Updates the buttons according to the current unit.
      */
     public void currentUnitChanged() {
-      boolean enabled = (currentUnit != null) && currentUnit.getFaction().isPrivileged();
+      boolean enabled =
+          (currentUnit != null) && currentUnit.getFaction() != null
+              && currentUnit.getFaction().isPrivileged();
 
       setConfirmEnabled(enabled);
       setCreationEnabled(enabled);

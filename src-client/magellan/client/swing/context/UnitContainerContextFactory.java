@@ -13,6 +13,7 @@
 
 package magellan.client.swing.context;
 
+import java.util.Collections;
 import java.util.Properties;
 
 import javax.swing.JPopupMenu;
@@ -24,7 +25,10 @@ import magellan.client.swing.tree.FactionNodeWrapper;
 import magellan.client.swing.tree.IslandNodeWrapper;
 import magellan.client.swing.tree.RegionNodeWrapper;
 import magellan.client.swing.tree.UnitContainerNodeWrapper;
+import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Island;
+import magellan.library.Region;
 import magellan.library.UnitContainer;
 
 /**
@@ -53,20 +57,29 @@ public class UnitContainerContextFactory implements ContextFactory {
       SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
     if (argument instanceof UnitContainer)
       return new UnitContainerContextMenu((UnitContainer) argument, dispatcher, data, settings,
-          selectedObjects.getSelectedObjects());
-    else if (argument instanceof RegionNodeWrapper)
-      return new UnitContainerContextMenu(((RegionNodeWrapper) argument).getRegion(), dispatcher,
-          data, settings, selectedObjects.getSelectedObjects());
-    else if (argument instanceof FactionNodeWrapper)
-      return new UnitContainerContextMenu(((FactionNodeWrapper) argument).getFaction(), dispatcher,
-          data, settings, selectedObjects.getSelectedObjects());
-    else if (argument instanceof UnitContainerNodeWrapper)
-      return new UnitContainerContextMenu(((UnitContainerNodeWrapper) argument).getUnitContainer(),
-          dispatcher, data, settings, selectedObjects.getSelectedObjects());
-    else if (argument instanceof IslandNodeWrapper)
-      return new IslandContextMenu(((IslandNodeWrapper) argument).getIsland(), dispatcher, data,
-          settings, selectedObjects.getSelectedObjects());
-
+          selectedObjects == null ? Collections.singletonList(argument) : selectedObjects
+              .getSelectedObjects());
+    else if (argument instanceof RegionNodeWrapper) {
+      Region realArgument = ((RegionNodeWrapper) argument).getRegion();
+      return new UnitContainerContextMenu(realArgument, dispatcher, data, settings,
+          selectedObjects == null ? Collections.singletonList(realArgument) : selectedObjects
+              .getSelectedObjects());
+    } else if (argument instanceof FactionNodeWrapper) {
+      Faction realArgument = ((FactionNodeWrapper) argument).getFaction();
+      return new UnitContainerContextMenu(realArgument, dispatcher, data, settings,
+          selectedObjects == null ? Collections.singletonList(realArgument) : selectedObjects
+              .getSelectedObjects());
+    } else if (argument instanceof UnitContainerNodeWrapper) {
+      UnitContainer realArgument = ((UnitContainerNodeWrapper) argument).getUnitContainer();
+      return new UnitContainerContextMenu(realArgument, dispatcher, data, settings,
+          selectedObjects == null ? Collections.singletonList(realArgument) : selectedObjects
+              .getSelectedObjects());
+    } else if (argument instanceof IslandNodeWrapper) {
+      Island realArgument = ((IslandNodeWrapper) argument).getIsland();
+      return new IslandContextMenu(realArgument, dispatcher, data, settings,
+          selectedObjects == null ? Collections.singletonList(realArgument) : selectedObjects
+              .getSelectedObjects());
+    }
     return null;
   }
 }

@@ -336,7 +336,17 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * @return The NodeWrapper
    */
   public UnitContainerNodeWrapper createUnitContainerNodeWrapper(UnitContainer uc) {
-    return createUnitContainerNodeWrapper(uc, true, false);
+    return createUnitContainerNodeWrapper(uc, true, false, null);
+  }
+
+  /**
+   * Creates a wrapper node for a unit container.
+   * 
+   * @param uc
+   * @return The NodeWrapper
+   */
+  public UnitContainerNodeWrapper createUnitContainerNodeWrapper(UnitContainer uc, String prefix) {
+    return createUnitContainerNodeWrapper(uc, true, false, prefix);
   }
 
   /**
@@ -349,7 +359,21 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    */
   public UnitContainerNodeWrapper createUnitContainerNodeWrapper(UnitContainer uc,
       boolean showFreeLoad, boolean hasCommand) {
-    UnitContainerNodeWrapper ucnw = new UnitContainerNodeWrapper(uc, showFreeLoad, hasCommand);
+    return createUnitContainerNodeWrapper(uc, showFreeLoad, hasCommand, null);
+  }
+
+  /**
+   * Creates a wrapper node for a unit container with extended options.
+   * 
+   * @param uc
+   * @param showFreeLoad Specifies if the free load should be displayed
+   * @param hasCommand If <code>true</code>, it is indicated the the unit has the command
+   * @return The NodeWrapper
+   */
+  public UnitContainerNodeWrapper createUnitContainerNodeWrapper(UnitContainer uc,
+      boolean showFreeLoad, boolean hasCommand, String prefix) {
+    UnitContainerNodeWrapper ucnw =
+        new UnitContainerNodeWrapper(uc, showFreeLoad, hasCommand, prefix);
     init(ucnw, NodeWrapperFactory.UNITCONTAINER);
 
     return ucnw;

@@ -739,16 +739,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
     OrderToken prevToken = null;
     for (OrderToken token : order.getTokens()) {
-      if (prevToken == null) {
-        Style style = getTokenStyle(atToken, valid);
-        int startAt;
-        if (token.ttype != OrderToken.TT_EOC) {
-          startAt = pos[0] + token.getStart() - 1;
-        } else {
-          startAt = pos[0];
-        }
-        doc.setCharacterAttributes(startAt, startAt + 1, style, true);
-      }
       if (OrderEditor.log.isDebugEnabled()) {
         OrderEditor.log.debug("OrderEditor.formatTokens: token " + token);
       }
@@ -771,13 +761,13 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
         doc.setCharacterAttributes(pos[0] + start, token.getEnd() - start, style, true);
       }
       prevToken = token;
-
     }
+
     if (prevToken != null) {
       doc.setCharacterAttributes(pos[0] + prevToken.getEnd(), pos[1] - pos[0] - prevToken.getEnd(),
           doc.getStyle(OrderEditor.S_REGULAR), true);
     }
-    // @-token is not styled any more as it doesn't occur in getTokens()
+    // @-token is not explicitly styled any more as it doesn't occur in getTokens()
   }
 
   /**

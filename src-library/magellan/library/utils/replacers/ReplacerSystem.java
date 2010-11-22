@@ -13,6 +13,8 @@
 
 package magellan.library.utils.replacers;
 
+import magellan.library.utils.logging.Logger;
+
 /**
  * DOCUMENT ME!
  * 
@@ -58,6 +60,7 @@ public class ReplacerSystem {
     try {
       ret = base.getReplacement(obj);
     } catch (Exception exc) {
+      Logger.getInstance(this.getClass()).fine("", exc);
     }
 
     if (environment != null) {

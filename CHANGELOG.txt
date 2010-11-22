@@ -1,3 +1,11 @@
+2010-11-22 / Build 443 - stm (stm_@users.sourceforge.net)
+    * fixed herb display ("keine Kräuter")
+    * added misc relations node to EMapDetails (KONTAKTIERE, SPIONIERE etc.)
+    * added coast display to unit ship info
+    * faction sorting in AlchemyDialog
+    * fixed order formatting glitch
+    * added spell components to GIVE completion
+     
 2010-11-22 / Build 442 - stm (stm_@users.sourceforge.net)
     * fixed merging of wrapped reports; should now be able to merge most reports without creating 
       crazy wrapping regions where they're not needed (see Track ticket #11)

@@ -56,7 +56,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_ATTACK), " "));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_BANNER), " \"\"",
         Completion.DEFAULT_PRIORITY, 1));
-    if (getUnit().getFaction().getItems().size() > 0) {
+    if (getUnit().getFaction() != null && getUnit().getFaction().getItems().size() > 0) {
       addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_CLAIM), " "));
     }
     if (!getUnit().isHero()) {

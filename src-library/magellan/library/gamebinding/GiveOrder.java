@@ -166,15 +166,20 @@ public class GiveOrder extends UnitArgumentOrder {
 
           if ((herbCategory != null)) {
             for (ItemType i : eState.getHerbTypes()) {
-              List<UnitRelation> relations = eState.giveItem(unit, tUnit, true, 0, i, line, this);
-              for (UnitRelation rel : relations) {
-                rel.add();
+              if (unit.getItem(i) != null || unit.getModifiedItem(i) != null) {
+                List<UnitRelation> relations = eState.giveItem(unit, tUnit, true, 0, i, line, this);
+                for (UnitRelation rel : relations) {
+                  rel.add();
+                }
               }
             }
           }
 
         } else if (type == EresseaConstants.O_GIVE) {
           if (itemType != null) {
+            if (EresseaConstants.I_UPEASANT.equals(itemType.getID())) {
+              setWarning(unit, line, Resources.get("order.give.warning.invaliditem", itemType));
+            }
             List<UnitRelation> relations =
                 eState.giveItem(unit, tUnit, all, each ? tUnit.getModifiedPersons() * amount
                     : amount, itemType, line, this);

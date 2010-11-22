@@ -29,6 +29,7 @@ import magellan.client.swing.GiveOrderDialog;
 import magellan.client.swing.RemoveOrderDialog;
 import magellan.client.swing.context.ContextFactory;
 import magellan.client.swing.tree.CellObject;
+import magellan.client.swing.tree.DefaultNodeWrapper;
 import magellan.client.swing.tree.ItemCategoryNodeWrapper;
 import magellan.client.swing.tree.ItemNodeWrapper;
 import magellan.client.swing.tree.NodeWrapperFactory;
@@ -40,6 +41,7 @@ import magellan.library.Order;
 import magellan.library.Rules;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.ZeroUnit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.RecruitmentRelation;
@@ -318,21 +320,26 @@ public class Units {
         }
 
         if (u2 != null) {
-          final UnitNodeWrapper giveNodeWrapper =
-              factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2
-                  .getModifiedPersons());
-          giveNodeWrapper.setReverseOrder(true);
+          DefaultNodeWrapper relationWrapper;
+          if (u2 instanceof ZeroUnit) {
+            relationWrapper =
+                factory.createRegionNodeWrapper(u2.getRegion(), currentRelation.amount);
+          } else {
+            UnitNodeWrapper giveNodeWrapper =
+                factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2
+                    .getModifiedPersons());
+            giveNodeWrapper.setReverseOrder(true);
 
-          if (currentRelation.problem != null) {
-            itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
-            // prefix.append("(!!!) ");
-            giveNodeWrapper.addAdditionalIcon("warnung");
-            // relationWrapper.setAdditionalIcon("warnung");
+            if (currentRelation.problem != null) {
+              itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
+              // prefix.append("(!!!) ");
+              giveNodeWrapper.addAdditionalIcon("warnung");
+              // relationWrapper.setAdditionalIcon("warnung");
+            }
+            giveNodeWrapper.addAdditionalIcon(addIcon);
+            relationWrapper =
+                factory.createRelationNodeWrapper(u2, currentRelation, giveNodeWrapper);
           }
-          giveNodeWrapper.addAdditionalIcon(addIcon);
-
-          final UnitRelationNodeWrapper relationWrapper =
-              factory.createRelationNodeWrapper(u2, currentRelation, giveNodeWrapper);
 
           itemNode.add(new DefaultMutableTreeNode(relationWrapper));
 

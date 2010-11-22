@@ -90,6 +90,7 @@ import magellan.client.swing.RoutingDialog;
 import magellan.client.swing.completion.MultiEditorOrderEditorList;
 import magellan.client.swing.context.ContextFactory;
 import magellan.client.swing.context.UnitCapacityContextMenu;
+import magellan.client.swing.context.UnitContainerContextFactory;
 import magellan.client.swing.context.UnitContextMenu;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
@@ -147,10 +148,12 @@ import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.ControlRelation;
+import magellan.library.relation.InterUnitRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.TransportRelation;
+import magellan.library.relation.UnitContainerRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.relation.UnitTransferRelation;
 import magellan.library.rules.CastleType;
@@ -579,6 +582,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     contextManager.putSimpleObject(DefaultMutableTreeNode.class, unitContext);
     contextManager.putSimpleObject(UnitRelationNodeWrapper.class, relationContext);
     contextManager.putSimpleObject(UnitRelationNodeWrapper2.class, relationContext);
+
+    contextManager.putSimpleObject(UnitContainerNodeWrapper.class, new UnitContainerContextFactory(
+        settings));
 
     JScrollPane treeScrollPane = new JScrollPane(tree);
 
@@ -1183,10 +1189,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     // herb
-    if (r.getHerb() != null) {
+    if (r.getHerb() != null || r.getHerbAmount() != null) {
       StringBuffer sb =
           new StringBuffer(Resources.get("emapdetailspanel.node.herbs")).append(": ").append(
-              r.getHerb().getName());
+              r.getHerb() == null ? "???" : r.getHerb().getName());
 
       if (r.getHerbAmount() != null) {
         sb.append(" (").append(r.getHerbAmount()).append(")");
@@ -1194,11 +1200,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       icon = null;
 
-      try {
-        // bug 254..use the herb specified icon..at least try to find it
-        // icon = r.getHerb().getMakeSkill().getSkillType().getID().toString();
+      // bug 254..use the herb specified icon..at least try to find it
+      // icon = r.getHerb().getMakeSkill().getSkillType().getID().toString();
+      if (r.getHerb() != null) {
         icon = "items/" + r.getHerb().getIconName();
-      } catch (Exception exc) {
+      } else {
         icon = "kraeuterkunde";
       }
 
@@ -2270,6 +2276,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // attacking
     appendUnitAttackInfo(u, parent, expandableNodes);
 
+    // a catch-all for remaining inter-unit relations
+    appendMiscInfo(u, parent, expandableNodes);
+
     // magic spells
     appendUnitSpellsInfo(u, parent, expandableNodes);
 
@@ -2292,6 +2301,58 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     // tags
     appendTags(u, parent, expandableNodes);
+  }
+
+  /**
+   * Add a node for all relations that are not handled elsewhere.
+   */
+  private void appendMiscInfo(Unit u, DefaultMutableTreeNode parent,
+      Collection<NodeWrapper> expandableNodes) {
+    DefaultMutableTreeNode miscNode = null;
+    // add a node for each relation that is an InterUnitRelation (but not a subclass)
+    for (UnitRelation relation : u.getRelations()) {
+      if (relation.getClass().equals(InterUnitRelation.class)) {
+        InterUnitRelation irel = (InterUnitRelation) relation;
+        if (miscNode == null) {
+          miscNode =
+              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                  .get("emapdetailspanel.node.misc"), (String) null));
+          parent.add(miscNode);
+          expandableNodes.add(new NodeWrapper(miscNode, "EMapDetailsPanel.UnitMiscExpanded"));
+        }
+        String prefix;
+        try {
+          prefix = relation.origin.getOrders2().get(relation.line - 1).getToken(0).getText();
+        } catch (Exception e) {
+          prefix = "???";
+        }
+        UnitNodeWrapper w =
+            nodeWrapperFactory.createUnitNodeWrapper(irel.target, prefix + ": ", irel.target
+                .getPersons(), irel.target.getModifiedPersons());
+        w.setReverseOrder(true);
+        miscNode.add(new DefaultMutableTreeNode(w));
+      }
+      if (relation.getClass().equals(UnitContainerRelation.class)) {
+        UnitContainerRelation irel = (UnitContainerRelation) relation;
+        if (miscNode == null) {
+          miscNode =
+              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                  .get("emapdetailspanel.node.misc"), (String) null));
+          parent.add(miscNode);
+          expandableNodes.add(new NodeWrapper(miscNode, "EMapDetailsPanel.UnitMiscExpanded"));
+        }
+        String prefix;
+        try {
+          prefix = relation.origin.getOrders2().get(relation.line - 1).getToken(0).getText();
+        } catch (Exception e) {
+          prefix = "???";
+        }
+        UnitContainerNodeWrapper w =
+            nodeWrapperFactory.createUnitContainerNodeWrapper(irel.target, prefix + ": ");
+        miscNode.add(new DefaultMutableTreeNode(w));
+      }
+
+    }
   }
 
   /**
@@ -3302,6 +3363,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           nodeWrapperFactory.createUnitContainerNodeWrapper(u.getUnitContainer(), true, isOwner);
       containerNode = new DefaultMutableTreeNode(cnw);
       parent.add(containerNode);
+      if (u.getUnitContainer() instanceof Ship) {
+        Ship s = (Ship) u.getUnitContainer();
+        if (s.getShoreId() > -1) {
+          parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.shore") + ": "
+              + Direction.toString(s.getShoreId()), "shore_" + String.valueOf(s.getShoreId())));
+        }
+      }
     }
     if (u.getModifiedUnitContainer() != null
         && !u.getModifiedUnitContainer().equals(u.getUnitContainer())) {
@@ -5937,6 +6005,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       return null;
     }
+
   }
 
   /**

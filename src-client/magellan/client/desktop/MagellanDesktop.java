@@ -17,7 +17,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -53,6 +52,7 @@ import magellan.client.swing.desktop.WorkSpace;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.utils.ErrorWindow;
+import magellan.client.utils.SwingUtils;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.logging.Logger;
@@ -325,16 +325,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    */
   protected void setClientBounds() {
     if (splitRect == null) { // not initialized before, load it
-      splitRect = PropertiesHelper.loadRect(settings, splitRect, "Client");
+      SwingUtils.setBounds(client, settings, "Client", true);
+      splitRect = new Rectangle(client.getBounds());
     }
-
-    if (splitRect == null) { // still null - use full screen
-
-      Dimension d = getToolkit().getScreenSize();
-      splitRect = new Rectangle(0, 0, d.width, d.height);
-    }
-    MagellanDesktop.log.debug("ClientBounds: " + splitRect);
-    client.setBounds(splitRect);
   }
 
   /**

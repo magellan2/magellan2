@@ -128,28 +128,33 @@ public class SwingUtils {
   /**
    * Sets the component's bounds to the value read from settings by rectKey. The settings should
    * contain four keys (rectKey.x, rectKey.y, rectKey.width, rectKey.height) that evaluate to
-   * integer.Should the saved location bring the component outside the screen bounds, the position
+   * integer. Should the saved location bring the component outside the screen bounds, the position
    * is corrected to at least partly be visible on the screen. This is useful if Magellan is started
-   * on different screen resolutions.
+   * on different screen resolutions. If the location is not in the settings, the component is
+   * maximized on the current device dimensions if <code>maximize==true</code>, then centered.
    * 
    * @param component
    * @param settings
    * @param rectKey
-   * @param center
+   * @param maximize
    */
   public static void setBounds(Component component, Properties settings, String rectKey,
-      boolean center) {
+      boolean maximize) {
     Rectangle bounds = PropertiesHelper.loadRect(settings, null, "Client");
     if (bounds != null) {
-      // correct position to be included in the screen
       Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+      // correct position to be included in the screen
       bounds.x = Math.max(bounds.x, -bounds.width * 4 / 5 + 10);
       bounds.y = Math.max(bounds.y, -bounds.height * 4 / 5 + 10);
       bounds.x = Math.min(bounds.x, screen.width - bounds.width / 10 + 10);
       bounds.y = Math.min(bounds.y, screen.height - bounds.height / 5 + 10);
 
       component.setBounds(bounds);
-    } else if (center) {
+    } else {
+      if (maximize) {
+        Rectangle screen = component.getGraphicsConfiguration().getBounds();
+        component.setSize(screen.width, screen.height);
+      }
       center(component);
     }
   }

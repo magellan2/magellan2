@@ -376,7 +376,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     // init desktop
     Client.startWindow.progress(3, Resources.get("clientstart.3"));
-    SwingUtils.setBounds(this, settings, "Client", false);
+    SwingUtils.setBounds(this, settings, "Client", true);
 
     desktop = MagellanDesktop.getInstance();
     desktop.init(this, context, settings, components, Client.getSettingsDirectory());

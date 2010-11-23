@@ -8,6 +8,7 @@
 package magellan.client.swing.tasks;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,6 +21,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,10 +41,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
@@ -63,6 +67,7 @@ import magellan.client.swing.ProgressBarUI;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.table.TableSorter;
+import magellan.client.utils.TextAreaDialog;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
@@ -72,6 +77,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.tasks.AttackInspector;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Inspector;
+import magellan.library.tasks.MessageInspector;
 import magellan.library.tasks.MovementInspector;
 import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.Problem;
@@ -104,6 +110,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   private JLabel selectionLabel;
 
   private JLabel activeRegionLabel;
+
+  private JLabel globalLabel;
 
   private List<Inspector> inspectors;
 
@@ -179,6 +187,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     PopupListener popupListener = new PopupListener();
     // react on double clicks on a row
     table.addMouseListener(popupListener);
+    table.setToolTipText(Resources.get("tasks.tooltip", false));
 
     // layout component
     setLayout(new BorderLayout());
@@ -196,6 +205,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     activeRegionLabel.setToolTipText(Resources.get("tasks.activeregionlabel.tooltip"));
     activeRegionLabel.setEnabled(restrictToActiveRegion());
     activeRegionLabel.addMouseListener(popupListener);
+    globalLabel = new JLabel(Resources.get("tasks.globallabel.title"));
+    globalLabel.setToolTipText(Resources.get("tasks.globallabel.tooltip"));
+    globalLabel.setEnabled(showGlobal());
+    globalLabel.addMouseListener(popupListener);
 
     progressbar = new JProgressBar();
     GridBagConstraints c =
@@ -204,6 +217,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     statusBar.add(selectionLabel, c);
     c.gridx++;
     statusBar.add(activeRegionLabel, c);
+    c.gridx++;
+    statusBar.add(globalLabel, c);
     c.gridx++;
     c.weightx = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
@@ -228,12 +243,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     JPopupMenu tableMenu;
     JPopupMenu busyMenu;
     JPopupMenu activeRegionMenu;
+    JPopupMenu globalMenu;
     JPopupMenu selectionMenu;
 
     JMenuItem selectMenu;
     JMenuItem refreshMenu;
     JMenuItem acknowledgeMenu;
     JMenuItem unAcknowledgeMenu;
+    JMenuItem removeTypeMenu;
+    JMenuItem showMenu;
 
     PopupListener() {
       createPopupMenus();
@@ -286,6 +304,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         activeRegionMenu.show(e.getComponent(), e.getX(), e.getY());
       } else if (e.getSource() == selectionLabel) {
         selectionMenu.show(e.getComponent(), e.getX(), e.getY());
+      } else if (e.getSource() == globalLabel) {
+        globalMenu.show(e.getComponent(), e.getX(), e.getY());
       } else {
         // unselected rows if user clicks another row
         int rowClicked = table.rowAtPoint(e.getPoint());
@@ -305,9 +325,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         if (e.isPopupTrigger()) {
           if (rowClicked >= 0 && table.getSelectedRowCount() > 0) {
             acknowledgeMenu.setEnabled(true);
+            removeTypeMenu.setEnabled(true);
             selectMenu.setEnabled(true);
           } else {
             acknowledgeMenu.setEnabled(false);
+            removeTypeMenu.setEnabled(false);
             selectMenu.setEnabled(false);
           }
           tableMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -318,20 +340,35 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     private void createPopupMenus() {
       tableMenu = new JPopupMenu();
       selectMenu = new JMenuItem(Resources.get("tasks.contextmenu.select.title"));
+      showMenu = new JMenuItem(Resources.get("tasks.contextmenu.showfull.title"));
       refreshMenu = new JMenuItem(Resources.get("tasks.contextmenu.refresh.title"));
       acknowledgeMenu = new JMenuItem(Resources.get("tasks.contextmenu.acknowledge.title"));
+      removeTypeMenu = new JMenuItem(Resources.get("tasks.contextmenu.removetype.title"));
       unAcknowledgeMenu = new JMenuItem(Resources.get("tasks.contextmenu.unacknowledge.title"));
 
+      tableMenu.add(showMenu);
       tableMenu.add(selectMenu);
+      tableMenu.add(new JSeparator());
       tableMenu.add(refreshMenu);
       tableMenu.add(acknowledgeMenu);
       tableMenu.add(unAcknowledgeMenu);
+      tableMenu.add(new JSeparator());
+      tableMenu.add(removeTypeMenu);
 
       selectMenu.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent menuEvent) {
           int row = table.getSelectedRow();
           if (row >= 0 && row < sorter.getRowCount()) {
             selectObjectOnRow(row);
+          }
+        }
+      });
+
+      showMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent menuEvent) {
+          int row = table.getSelectedRow();
+          if (row >= 0 && row < sorter.getRowCount()) {
+            showObjectOnRow(row);
           }
         }
       });
@@ -354,6 +391,13 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         }
       });
 
+      removeTypeMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent menuEvent) {
+          removeType(table.getSelectedRows());
+        }
+
+      });
+
       busyMenu = new JPopupMenu();
       JMenuItem busyMenuItem = new JMenuItem(Resources.get("tasks.contextmenu.busy.title"));
       busyMenuItem.setEnabled(false);
@@ -365,9 +409,19 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       activeRegionMenu.add(arMenuItem);
 
       arMenuItem.addActionListener(new ActionListener() {
-
         public void actionPerformed(ActionEvent e) {
           setRestrictToActiveRegion(!restrictToActiveRegion());
+          refreshProblems();
+        }
+      });
+
+      globalMenu = new JPopupMenu();
+      JMenuItem glMenuItem = new JMenuItem(Resources.get("tasks.contextmenu.showglobal.title"));
+      globalMenu.add(glMenuItem);
+
+      glMenuItem.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          setShowGlobal(!showGlobal());
           refreshProblems();
         }
       });
@@ -423,9 +477,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   protected void acknowledge(int rows[]) {
-    if (rows.length == 1) {
-      selectObjectOnRow(rows[0]);
-    }
+    // selecting the acknowledge object seems weird
+    // if (rows.length == 1) {
+    // selectObjectOnRow(rows[0]);
+    // }
 
     // sort problems by line
     List<Problem> problems = new ArrayList<Problem>();
@@ -435,6 +490,17 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
       problems.add(p);
     }
+
+    int[] sortedRows = new int[rows.length];
+    int i = 0;
+    for (int row : rows) {
+      sortedRows[i++] = sorter.modelIndex(row);
+    }
+    Arrays.sort(sortedRows);
+    for (i = sortedRows.length - 1; i >= 0; --i) {
+      model.removeRow(sortedRows[i]);
+    }
+    model.fireTableRowsDeleted(sortedRows[0], sortedRows[sortedRows.length - 1]);
 
     Collections.sort(problems, new Comparator<Problem>() {
 
@@ -451,6 +517,33 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
   }
 
+  private void removeType(int[] rows) {
+    // sort problems by line
+    for (int row : rows) {
+      if (row < 0 || row >= sorter.getRowCount())
+        throw new IndexOutOfBoundsException();
+      Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
+      int option;
+      String desc = p.getType().getDescription();
+      if (desc == null) {
+        desc = p.getMessage();
+      }
+      if (desc != null && desc.length() > 120) {
+        desc =
+            desc.substring(0, 70) + " ... " + desc.substring(desc.length() - 40, desc.length() - 1);
+      }
+      if ((option =
+          JOptionPane.showConfirmDialog(this, Resources.get("tasks.confirmremovetype.message", p
+              .getType(), desc))) == JOptionPane.YES_OPTION) {
+        ignoredProblems.add(p.getType());
+      }
+      if (option == JOptionPane.CANCEL_OPTION) {
+        break;
+      }
+    }
+    refreshProblems();
+  }
+
   /**
    * Fire selection event for object associated with row
    * 
@@ -461,6 +554,22 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       throw new IndexOutOfBoundsException();
     Object obj = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
     dispatcher.fire(SelectionEvent.create(this, obj, SelectionEvent.ST_DEFAULT));
+  }
+
+  protected void showObjectOnRow(int row) {
+    if (row < 0 || row >= sorter.getRowCount())
+      throw new IndexOutOfBoundsException();
+    Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
+    StringBuilder text = new StringBuilder();
+    text.append(p.getMessage()).append("\n").append(p.getObject()).append("\n").append(
+        p.getRegion()).append("\n").append(p.getFaction()).append("\n").append(p.getLine()).append(
+        "\n").append(p.getType());
+    TextAreaDialog d =
+        (new TextAreaDialog((JFrame) null, Resources.get("tasks.showfull.dialog.title"), text
+            .toString()));
+    d.setPreferredSize(new Dimension(400, 200));
+    d.pack();
+    d.setVisible(true);
   }
 
   private void initUpdateThread() {
@@ -479,6 +588,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     updateDispatcher.clear();
+    if (showGlobal()) {
+      updateDispatcher.addGlobal();
+    }
     if (restrictToActiveRegion()) {
       if (lastActiveRegion != null) {
         updateDispatcher.addRegion(lastActiveRegion);
@@ -498,12 +610,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   protected static class UpdateEvent {
 
-    private final Object CLEAR = "EMPTY";
+    private static final Object CLEAR = "EMPTY";
+    private static final Object DATA = "DATA";
     private Region region;
     private Unit unit;
     private boolean add;
 
     /**
+     * Creates a region update event.
+     * 
      * @param r This update concerns a region
      * @param add <code>true</code> if this region is added to the watched set, <code>false</code>
      *          if the corresponding problems should be removed.
@@ -514,6 +629,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     /**
+     * Creates a unit update event.
+     * 
      * @param u This update concerns this unit
      * @param add <code>true</code> if this unit is added to the watched set.
      */
@@ -523,13 +640,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     /**
-     * If <code>false</code> , clear all problems.
+     * Creates a "clear" or "global" event.
      * 
-     * @param b
+     * @param b If <code>false</code> , clear all problems. If <code>true</code> update global
+     *          problems.
      */
     public UpdateEvent(boolean b) {
       region = null;
       unit = null;
+      add = b;
     }
 
     /**
@@ -569,7 +688,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         return region;
       if (unit != null)
         return unit;
-      return CLEAR;
+      if (add)
+        return DATA;
+      else
+        return CLEAR;
     }
 
   }
@@ -598,7 +720,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event.getObject());
       // remove obsolete events
       while (rank > 1 || clear) {
-        if (rank > 1 || (clear && event.getObject() != event.CLEAR)) {
+        if (rank > 1 || (clear && event.getObject() != UpdateEvent.CLEAR)) {
           // this is not the last event for the object or we are in clear mode
           // and this is not the last clear event
           if (TaskTablePanel.log.isDebugEnabled()) {
@@ -646,7 +768,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * Enqueue an event.
      */
     public synchronized void push(UpdateEvent e) {
-      if (e.getObject() == e.CLEAR) {
+      if (e.getObject() == UpdateEvent.CLEAR) {
         clear = true;
       }
       if (e.isAdd()) {
@@ -704,7 +826,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @author stm
    * @version 1.0, Aug 23, 2008
    */
-  protected class UpdateEventDispatcher {
+  protected final class UpdateEventDispatcher {
 
     /**
      * The Thread which handles update events.
@@ -765,8 +887,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
             // handle event
             Object object = event.getObject();
-            if (object.equals(event.CLEAR)) {
+            if (UpdateEvent.CLEAR.equals(object)) {
               clearProblems();
+            } else if (UpdateEvent.DATA.equals(object)) {
+              reviewGlobal();
             } else {
               Region region = null;
               if (object instanceof Region) {
@@ -882,6 +1006,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       queue.push(new UpdateEvent(u, false));
     }
 
+    public void addGlobal() {
+      queue.push(new UpdateEvent(true));
+    }
+
     public void clear() {
       queue.push(new UpdateEvent(false));
     }
@@ -928,6 +1056,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_GAMEDATA, true)) {
       inspectors.add(GameDataInspector.getInstance(gameData));
+    }
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MESSAGE, true)) {
+      inspectors.add(MessageInspector.getInstance(gameData));
     }
 
     for (Inspector i : inspectors) {
@@ -1116,6 +1247,39 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     updateDispatcher.addRegion(e.getUnit().getRegion());
   }
 
+  private void reviewGlobal() {
+    if (TaskTablePanel.log.isDebugEnabled()) {
+      TaskTablePanel.log.debug("TaskTablePanel.reviewGlobal() called");
+    }
+
+    for (Inspector c : getInspectors()) {
+      final List<Problem> gproblems = c.reviewGlobal();
+      // add problems in the AWT event dispatching thread to avoid
+      // synchronization issues!
+      if (!gproblems.isEmpty()) {
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            addProblems(gproblems);
+          }
+        });
+      }
+      for (Faction f : data.getFactions())
+        if (isValidFaction(f)) {
+          final List<Problem> fproblems = c.reviewFaction(f);
+          // add problems in the AWT event dispatching thread to avoid
+          // synchronization issues!
+          if (!fproblems.isEmpty()) {
+            SwingUtilities.invokeLater(new Runnable() {
+              public void run() {
+                addProblems(fproblems);
+              }
+            });
+          }
+        }
+    }
+
+  }
+
   /**
    * Reviews a region with all units within.
    */
@@ -1239,17 +1403,19 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @return
    */
   private boolean isValidUnitByFaction(Unit u) {
+    return isValidFaction(u.getFaction());
+  }
 
+  private boolean isValidFaction(Faction f) {
     // maybe it better to ignore the "restrictToOwner" setting, if there is no
     // faction owner.
     if (restrictToOwner()
         && !restrictToPassword()
-        && (data.getOwnerFaction() == null || u.getFaction() == null || !data.getOwnerFaction()
-            .equals(u.getFaction().getID())))
+        && (data.getOwnerFaction() == null || f == null || !data.getOwnerFaction()
+            .equals(f.getID())))
       return false;
     if (restrictToPassword()
-        && (u.getFaction() == null || u.getFaction().getPassword() == null || u.getFaction()
-            .getPassword().length() == 0))
+        && (f == null || f.getPassword() == null || f.getPassword().length() == 0))
       return false;
 
     return true;
@@ -1279,6 +1445,13 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     if (set != null) {
       ignoredProblems.addAll(set);
     }
+
+    for (Inspector i : getInspectors()) {
+      for (ProblemType type : i.getTypes()) {
+        i.setIgnore(type, ignoredProblems.contains(type));
+      }
+    }
+
   }
 
   /**
@@ -1312,6 +1485,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         }
       }
     }
+    for (Inspector i : getInspectors()) {
+      for (ProblemType type : i.getTypes()) {
+        i.setIgnore(type, ignoredProblems.contains(type));
+      }
+    }
+
     return Collections.unmodifiableSet(ignoredProblems);
   }
 
@@ -1379,6 +1558,21 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   public void setRestrictToActiveRegion(boolean value) {
     settings.put(PropertiesHelper.TASKTABLE_RESTRICT_TO_ACTIVEREGION, String.valueOf(value));
     activeRegionLabel.setEnabled(value);
+  }
+
+  /**
+   * Returns <code>true</code> if global problems will be shown.
+   */
+  public boolean showGlobal() {
+    return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_SHOW_GLOBAL, true);
+  }
+
+  /**
+   * Sets whether global problems will be shown.
+   */
+  public void setShowGlobal(boolean value) {
+    settings.put(PropertiesHelper.TASKTABLE_SHOW_GLOBAL, String.valueOf(value));
+    globalLabel.setEnabled(value);
   }
 
   private Vector<String> getHeaderTitles() {

@@ -23,11 +23,16 @@
 // 
 package magellan.library.tasks;
 
+import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.Faction;
+import magellan.library.GameData;
 import magellan.library.HasRegion;
+import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.UnitID;
 import magellan.library.tasks.Problem.Severity;
 
 /**
@@ -159,4 +164,174 @@ public class ProblemFactory {
   public static Problem createProblem(Severity severity, ProblemType type) {
     return new SimpleProblem(severity, type, null, null, null, null, null, null, -1);
   }
+
+  public static Problem createProblem(GameData data, Message m, Faction faction, Region region,
+      Unit owner, Object object, MessageInspector inspector) {
+
+    // try to guess missing arguments by evaluating attributes
+    if (m.getAttributes() != null) {
+      String attribute = m.getAttributes().get("unit");
+      if (owner == null && attribute != null) {
+        UnitID id = UnitID.createUnitID(attribute, 10, data.base);
+        if (id != null) {
+          owner = data.getUnit(id);
+        }
+      }
+      attribute = m.getAttributes().get("region");
+      if (region == null && attribute != null) {
+        CoordinateID coord = CoordinateID.parse(attribute, ",");
+        if (coord == null) {
+          coord = CoordinateID.parse(attribute, " ");
+        }
+        if (coord != null) {
+          region = data.getRegion(coord);
+        }
+      }
+      if (object == null) {
+        attribute = m.getAttributes().get("target");
+        if (attribute != null) {
+          UnitID id = UnitID.createUnitID(attribute, 10, data.base);
+          if (id != null) {
+            object = data.getUnit(id);
+          }
+        }
+      }
+      if (object == null) {
+        attribute = m.getAttributes().get("ship");
+        if (attribute != null) {
+          EntityID id = EntityID.createEntityID(attribute, 10, data.base);
+          if (id != null) {
+            object = data.getShip(id);
+          }
+        }
+      }
+      if (object == null) {
+        attribute = m.getAttributes().get("building");
+        if (attribute != null) {
+          EntityID id = EntityID.createEntityID(attribute, 10, data.base);
+          if (id != null) {
+            object = data.getBuilding(id);
+          }
+        }
+      }
+    }
+    if (object == null) {
+      object = owner != null ? owner : region != null ? region : faction != null ? faction : null;
+    }
+    return new MessageProblem(m, faction, region, owner, object, inspector);
+  }
+
+  /**
+   * Problem implementation taylored for {@link Message}s
+   * 
+   * @author stm
+   * @version 1.0, Nov 22, 2010
+   */
+  public static class MessageProblem implements Problem {
+
+    private Message message;
+    private Faction faction;
+    private Region region;
+    private Unit unit;
+    private MessageInspector inspector;
+    private Object object;
+
+    public MessageProblem(Message message, Faction faction, Region region, Unit unit,
+        Object object, MessageInspector inspector) {
+      super();
+      this.message = message;
+      this.faction = faction;
+      this.region = region;
+      this.unit = unit;
+      this.object = object;
+      this.inspector = inspector;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getSeverity()
+     */
+    public Severity getSeverity() {
+      return Severity.INFORMATION;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getType()
+     */
+    public ProblemType getType() {
+      ProblemType type = inspector.getProblemType(message);
+      if (type == null)
+        return MessageInspector.MESSAGE_PROBLEM;
+      else
+        return type;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getInspector()
+     */
+    public Inspector getInspector() {
+      return inspector;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getLine()
+     */
+    public int getLine() {
+      return -1;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getObject()
+     */
+    public Object getObject() {
+      return object;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getFaction()
+     */
+    public Faction getFaction() {
+      return faction;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getRegion()
+     */
+    public Region getRegion() {
+      return region;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getOwner()
+     */
+    public Unit getOwner() {
+      return unit;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getMessage()
+     */
+    public String getMessage() {
+      return message.getText();
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#addSuppressComment()
+     */
+    public Unit addSuppressComment() {
+      if (getInspector() != null)
+        return getInspector().suppress(this);
+      return null;
+    }
+
+    @Override
+    public String toString() {
+      return message.getText();
+    }
+
+    public Message getReportMessage() {
+      return message;
+    }
+
+  }
+
 }

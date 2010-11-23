@@ -245,7 +245,13 @@ public class PropertiesHelper {
       "TaskTable.restrictToAvtiveRegion";
 
   /** Property type boolean: */
+  public static final String TASKTABLE_SHOW_GLOBAL = "TaskTable.showGlobal";
+
+  /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_ATTACK = "TaskTable.inspectors.attack";
+
+  /** Property type boolean: */
+  public static final String TASKTABLE_INSPECTORS_MESSAGE = "TaskTable.inspectors.message";
 
   /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_MOVEMENT = "TaskTable.inspectors.movement";

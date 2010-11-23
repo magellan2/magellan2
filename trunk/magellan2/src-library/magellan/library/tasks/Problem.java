@@ -89,4 +89,10 @@ public interface Problem {
    */
   public Unit addSuppressComment();
 
+  /**
+   * Implementations should usually also overwrite this.
+   */
+  @Override
+  public String toString();
+
 }

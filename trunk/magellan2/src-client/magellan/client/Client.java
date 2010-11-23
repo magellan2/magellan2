@@ -1714,13 +1714,21 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           .get("client.msg.reporterrors.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 
         // merge report with itself to resolve wrapping
+
+        UserInterface ui2;
+        if (ui instanceof NullUserInterface) {
+          ui2 = new NullUserInterface();
+        } else {
+          ui2 = new ProgressBarUI(this);
+        }
+        ui2.show();
         MyAssigner assigner = new MyAssigner();
         final GameData data2 = data;
         new ReportMerger(data, fileName, new ReportMerger.Loader() {
           public GameData load(File aFile) {
             return data2;
           }
-        }, assigner).merge();
+        }, assigner).merge(ui2, true, false, false);
         if (assigner.data2 != null)
           return assigner.data2;
       }

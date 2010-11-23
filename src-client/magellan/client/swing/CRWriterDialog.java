@@ -20,7 +20,6 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -52,6 +51,7 @@ import javax.swing.border.TitledBorder;
 
 import magellan.client.swing.basics.SpringUtilities;
 import magellan.client.swing.layout.GridLayout2;
+import magellan.client.utils.SwingUtils;
 import magellan.library.Alliance;
 import magellan.library.Battle;
 import magellan.library.Building;
@@ -153,14 +153,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     setTitle(Resources.get("crwriterdialog.window.title"));
     pack();
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x =
-        Integer.parseInt(settings.getProperty("CRWriterDialog.x", ((screen.width - getWidth()) / 2)
-            + ""));
-    int y =
-        Integer.parseInt(settings.getProperty("CRWriterDialog.y",
-            ((screen.height - getHeight()) / 2) + ""));
-    setLocation(x, y);
+    SwingUtils.setLocation(this, settings, "CRWriterDialog.x", "CRWriterDialog.y");
   }
 
   private Container getMainPane() {
@@ -777,7 +770,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
           || chkSelRegionsOnly.isSelected()) {
         // make the clone here already.
         try {
-          newData = (GameData) data.clone();
+          newData = data.clone();
           if (newData == null)
             throw new NullPointerException();
           if (newData.isOutOfMemory()) {

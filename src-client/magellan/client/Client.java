@@ -14,7 +14,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -153,6 +152,7 @@ import magellan.client.utils.ProfileManager;
 import magellan.client.utils.RendererLoader;
 import magellan.client.utils.ResourceSettingsFactory;
 import magellan.client.utils.SelectionHistory;
+import magellan.client.utils.SwingUtils;
 import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -376,10 +376,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     // init desktop
     Client.startWindow.progress(3, Resources.get("clientstart.3"));
-    Rectangle bounds = PropertiesHelper.loadRect(settings, null, "Client");
-    if (bounds != null) {
-      setBounds(bounds);
-    }
+    SwingUtils.setBounds(this, settings, "Client", false);
 
     desktop = MagellanDesktop.getInstance();
     desktop.init(this, context, settings, components, Client.getSettingsDirectory());
@@ -400,15 +397,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // ////////////////////////
   // BASIC initialization //
   // ////////////////////////
-
-  /**
-   * @see java.awt.Window#setBounds(int, int, int, int)
-   */
-  @Override
-  public void setBounds(int x, int y, int width, int height) {
-    Rectangle r = Utils.adjustToScreen(x, y, width, height, this);
-    super.setBounds(r.x, r.y, r.width, r.height);
-  }
 
   private void fixSettings(Properties settings) {
     // backward compatibility for white message tags (it's now the text color)

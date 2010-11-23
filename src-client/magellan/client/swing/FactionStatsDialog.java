@@ -16,10 +16,8 @@ package magellan.client.swing;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -46,6 +44,7 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.skillchart.SkillChartPanel;
+import magellan.client.utils.SwingUtils;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -105,14 +104,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
     int height = Integer.parseInt(settings.getProperty("FactionStatsDialog.height", "540"));
     setSize(width, height);
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x =
-        Integer.parseInt(settings.getProperty("FactionStatsDialog.x",
-            ((screen.width - getWidth()) / 2) + ""));
-    int y =
-        Integer.parseInt(settings.getProperty("FactionStatsDialog.y",
-            ((screen.height - getHeight()) / 2) + ""));
-    setLocation(x, y);
+    SwingUtils.setLocation(this, settings, "FactionStatsDialog.x", "FactionStatsDialog.y");
+
     splFaction.setDividerLocation(Integer.parseInt(settings.getProperty("FactionStatsDialog.split",
         "340")));
 

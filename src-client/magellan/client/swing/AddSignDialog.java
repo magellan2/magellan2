@@ -14,9 +14,7 @@
 package magellan.client.swing;
 
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Properties;
@@ -30,6 +28,7 @@ import javax.swing.border.EmptyBorder;
 
 import magellan.client.event.EventDispatcher;
 import magellan.client.swing.basics.SpringUtilities;
+import magellan.client.utils.SwingUtils;
 import magellan.library.Region;
 import magellan.library.Sign;
 import magellan.library.event.GameDataEvent;
@@ -67,11 +66,7 @@ public class AddSignDialog extends InternationalizedDialog {
     int height = Math.max(Integer.parseInt(settings.getProperty("AddSign.height", "140")), 140);
     setSize(width, height);
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x = Integer.parseInt(settings.getProperty("AddSign.x", ((screen.width - width) / 2) + ""));
-    int y =
-        Integer.parseInt(settings.getProperty("AddSign.y", ((screen.height - height) / 2) + ""));
-    setLocation(x, y);
+    SwingUtils.setLocation(this, settings, "AddSign.x", "AddSign.y");
   }
 
   private Container getMainPane() {

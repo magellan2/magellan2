@@ -71,9 +71,7 @@ public class ProfileDialog extends JDialog {
 
     initGUI();
 
-    // center
-    this.setLocation((getToolkit().getScreenSize().width - getWidth()) / 2, (getToolkit()
-        .getScreenSize().height - getHeight()) / 2);
+    SwingUtils.center(this);
   }
 
   private void initGUI() {

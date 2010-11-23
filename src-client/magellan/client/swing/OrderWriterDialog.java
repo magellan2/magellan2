@@ -22,7 +22,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -63,6 +62,7 @@ import javax.swing.border.TitledBorder;
 
 import magellan.client.swing.layout.GridLayout2;
 import magellan.client.utils.FileNameGenerator;
+import magellan.client.utils.SwingUtils;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -187,14 +187,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     pack();
     // setSize(550, 580);
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x =
-        Integer.parseInt(settings.getProperty("OrderWriterDialog.x",
-            ((screen.width - getWidth()) / 2) + ""));
-    int y =
-        Integer.parseInt(settings.getProperty("OrderWriterDialog.y",
-            ((screen.height - getHeight()) / 2) + ""));
-    setLocation(x, y);
+    SwingUtils.setLocation(this, settings, "OrderWriterDialog.x", "OrderWriterDialog.y");
   }
 
   private Container getMainPane() {

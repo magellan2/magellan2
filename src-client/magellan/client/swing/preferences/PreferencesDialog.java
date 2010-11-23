@@ -20,7 +20,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
@@ -41,6 +40,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import magellan.client.swing.CenterLayout;
 import magellan.client.swing.InternationalizedDialog;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 
 /**
@@ -99,14 +99,7 @@ public class PreferencesDialog extends InternationalizedDialog {
     int height = Integer.parseInt(settings.getProperty("PreferencesDialog.height", "700"));
     setSize(width, height);
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x =
-        Integer.parseInt(settings.getProperty("PreferencesDialog.x", ((screen.width - width) / 2)
-            + ""));
-    int y =
-        Integer.parseInt(settings.getProperty("PreferencesDialog.y", ((screen.height - height) / 2)
-            + ""));
-    setLocation(x, y);
+    SwingUtils.setLocation(this, settings, "PreferencesDialog.x", "PreferencesDialog.y");
   }
 
   /**

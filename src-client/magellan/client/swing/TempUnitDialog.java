@@ -31,7 +31,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -44,10 +43,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import magellan.client.utils.NameGenerator;
+import magellan.client.utils.SwingUtils;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.JVMUtilities;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
-import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -78,6 +78,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   /** settings key for detailed dialog property */
   public static final String SETTINGS_KEY = "TempUnitDialog.ExtendedDialog";
+  private static final String BOUNDS_KEY = "TempUnitDialog.bounds";
 
   /**
    * Creates new TempUnitDialog
@@ -125,7 +126,9 @@ public class TempUnitDialog extends InternationalizedDialog {
       setFocusList(open);
     }
 
-    loadBounds();
+    pack();
+    SwingUtils.setBounds(this, settings, TempUnitDialog.BOUNDS_KEY, true);
+    // loadBounds();
 
     addWindowListener(new WindowAdapter() {
       @Override
@@ -293,33 +296,9 @@ public class TempUnitDialog extends InternationalizedDialog {
     }
   }
 
-  protected void loadBounds() {
-    if (settings.containsKey("TempUnitDialog.bounds")) {
-      int x = 0;
-      int y = 0;
-      int w = 0;
-      int h = 0;
-      StringTokenizer st = new StringTokenizer(settings.getProperty("TempUnitDialog.bounds"), ",");
-      try {
-        x = Integer.parseInt(st.nextToken());
-        y = Integer.parseInt(st.nextToken());
-        w = Integer.parseInt(st.nextToken());
-        h = Integer.parseInt(st.nextToken());
-        Rectangle r = Utils.adjustToScreen(x, y, w, h, this);
-        setBounds(r);
-      } catch (Exception e) {
-        pack();
-        setLocationRelativeTo(posC);
-      }
-    } else {
-      pack();
-      setLocationRelativeTo(posC);
-    }
-  }
-
   protected void saveBounds() {
     Rectangle r = getBounds();
-    settings.setProperty("TempUnitDialog.bounds", r.x + "," + r.y + "," + r.width + "," + r.height);
+    PropertiesHelper.saveRectangle(settings, r, BOUNDS_KEY);
   }
 
   protected void setFocusList(boolean extended) {

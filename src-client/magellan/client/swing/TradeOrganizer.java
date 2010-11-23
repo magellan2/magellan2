@@ -13,7 +13,6 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -51,6 +50,7 @@ import javax.swing.table.TableModel;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
+import magellan.client.utils.SwingUtils;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
@@ -125,23 +125,14 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   protected void init() {
     int width = Integer.parseInt(settings.getProperty("TradeOrganizer.width", "800"));
     int height = Integer.parseInt(settings.getProperty("TradeOrganizer.height", "600"));
-    int xPos = Integer.parseInt(settings.getProperty("TradeOrganizer.xPos", "-1"));
-    int yPos = Integer.parseInt(settings.getProperty("TradeOrganizer.yPos", "-1"));
+    setSize(width, height);
+
+    SwingUtils.setLocation(this, settings, "TradeOrganizer.xPos", "TradeOrganizer.yPos");
+
+    setTitle(Resources.get("tradeorganizer.title"));
 
     minSellMultiplier =
         Integer.parseInt(settings.getProperty("TradeOrganizer.minSellMultiplier", "1"));
-
-    if (xPos == -1) {
-      xPos = ((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() - width) / 2;
-    }
-
-    if (yPos == -1) {
-      yPos = ((int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() - height) / 2;
-    }
-
-    setSize(width, height);
-    setLocation(xPos, yPos);
-    setTitle(Resources.get("tradeorganizer.title"));
 
     // build GUI
     JTabbedPane tabPane = new JTabbedPane();

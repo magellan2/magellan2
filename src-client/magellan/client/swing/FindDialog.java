@@ -16,7 +16,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.StreamTokenizer;
@@ -51,6 +50,7 @@ import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
+import magellan.client.utils.SwingUtils;
 import magellan.library.Building;
 import magellan.library.Described;
 import magellan.library.Faction;
@@ -128,14 +128,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     setSize(420, 500);
     pack();
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x =
-        Integer.parseInt(settings.getProperty("FindDialog.x", ((screen.width - getWidth()) / 2)
-            + ""));
-    int y =
-        Integer.parseInt(settings.getProperty("FindDialog.y", ((screen.height - getHeight()) / 2)
-            + ""));
-    setLocation(x, y);
+    SwingUtils.setLocation(this, settings, "FindDialog.x", "FindDialog.y");
   }
 
   /**

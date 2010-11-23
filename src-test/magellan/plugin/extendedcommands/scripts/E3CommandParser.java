@@ -62,7 +62,7 @@ public class E3CommandParser {
   /** A standard soldier's endurance skill should be this fraction of his (first row) weapon skill */
   public static final float ENDURANCERATIO_FRONT = .6f;
   /** A standard soldier's endurance skill should be this fraction of his (second row) weapon skill */
-  public static final float ENDURANCERATIO_BACK = .4f;
+  public static final float ENDURANCERATIO_BACK = .35f;
 
   /** Unit limit, used to warn if we get too many units. */
   public static final int EINHEITENLIMIT = 250;
@@ -1148,7 +1148,7 @@ public class E3CommandParser {
     return items;
   }
 
-  private boolean reserveEquipment(ItemType preferred, List<Item> ownStuff, boolean warn) {
+  protected boolean reserveEquipment(ItemType preferred, List<Item> ownStuff, boolean warn) {
     if (preferred != null) {
       // reserve requested weapon
       commandBenoetige(new String[] { "SOLDIER", EACHOrder, "1", preferred.getOrderName() });

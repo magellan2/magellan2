@@ -264,13 +264,13 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     description.setText(Resources.get("tasks.prefs.inspectors.help"));
     description.setRows(3);
     description.setLineWrap(true);
+    description.setWrapStyleWord(true);
     JPanel descPanel = new JPanel(new BorderLayout());
     descPanel.add(new JScrollPane(description), BorderLayout.CENTER);
     descPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("tasks.prefs.inspectors.description")));
 
     inspectorsList.addTreeSelectionListener(new TreeSelectionListener() {
-
       public void valueChanged(TreeSelectionEvent e) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
         Object o = node.getUserObject();
@@ -280,7 +280,6 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
           description.setText(Resources.get("tasks.prefs.inspectors.help"));
         }
       }
-
     });
 
     JPanel ignorePanel = new JPanel();
@@ -289,6 +288,18 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
         .get("tasks.prefs.inspectors.ignore")));
 
     ignoreList = new TypeTree(false);
+
+    ignoreList.addTreeSelectionListener(new TreeSelectionListener() {
+      public void valueChanged(TreeSelectionEvent e) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
+        Object o = node.getUserObject();
+        if (o != null && o instanceof ProblemType) {
+          description.setText(((ProblemType) o).getDescription());
+        } else {
+          description.setText(Resources.get("tasks.prefs.inspectors.help"));
+        }
+      }
+    });
 
     JButton right = new JButton("  -->  ");
     right.addActionListener(new ActionListener() {
@@ -383,6 +394,8 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     for (ProblemType t : taskPanel.getIgnoredProblems()) {
       ignoreList.addProblem(t);
     }
+
+    inspectorsList.fill();
   }
 
   /**

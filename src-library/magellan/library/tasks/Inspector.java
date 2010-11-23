@@ -16,6 +16,7 @@ package magellan.library.tasks;
 import java.util.Collection;
 import java.util.List;
 
+import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
@@ -28,6 +29,16 @@ public interface Inspector {
 
   /** All lines suppressing problems must start with this prefix. */
   public static final String SUPPRESS_PREFIX = "; @suppressProblem";
+
+  /**
+   * Reviews global problems and returns a list of <tt>Problem</tt>s.
+   */
+  public List<Problem> reviewGlobal();
+
+  /**
+   * Reviews global problems and returns a list of <tt>Problem</tt>s.
+   */
+  public List<Problem> reviewFaction(Faction f);
 
   /**
    * Reviews a unit and returns a list of <tt>Problem</tt> objects associated with it.
@@ -78,5 +89,15 @@ public interface Inspector {
    * Changes the GameData this inspector works on from now on.
    */
   public void setGameData(GameData gameData);
+
+  /**
+   * Tells this inspector whether to ignore certain problems. The inspector may choose to still
+   * return problems of the given type even if <code>ignore==true</code>.
+   * 
+   * @param type
+   * @param ignore If <code>true</code>, the inspector may choose to not return problems of this
+   *          type.
+   */
+  public void setIgnore(ProblemType type, boolean ignore);
 
 }

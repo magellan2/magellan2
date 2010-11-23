@@ -30,10 +30,8 @@ import magellan.library.utils.OrderToken;
  * "TODO".
  */
 public class ToDoInspector extends AbstractInspector {
-  /** The singleton instance. */
-  // public static final ToDoInspector INSPECTOR = new ToDoInspector();
 
-  private static final ProblemType TODOTYPE = new ProblemType("TODO", null, null, null);
+  public static final ProblemType TODOTYPE = ProblemType.create("tasks.todoinspector", "todo");
 
   /**
    * Returns a (singleton) instance.

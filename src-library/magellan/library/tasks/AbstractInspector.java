@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Region;
@@ -45,6 +46,26 @@ public abstract class AbstractInspector implements Inspector {
   protected AbstractInspector(GameData data) {
     this.data = data;
     gameSpecStuff = data.getGameSpecificStuff();
+  }
+
+  /**
+   * Returns the empty list. Inspectors should overwrite this if they need to add problems that
+   * don't depend on a certain unit or region.
+   * 
+   * @see magellan.library.tasks.Inspector#reviewGlobal()
+   */
+  public List<Problem> reviewGlobal() {
+    return Collections.emptyList();
+  }
+
+  /**
+   * Returns the empty list. Inspectors should overwrite this if they need to add problems that only
+   * depend on a certain unit or region.
+   * 
+   * @see magellan.library.tasks.Inspector#reviewFaction(Faction)
+   */
+  public List<Problem> reviewFaction(Faction f) {
+    return Collections.emptyList();
   }
 
   /**
@@ -275,4 +296,15 @@ public abstract class AbstractInspector implements Inspector {
   public GameSpecificStuff getGameSpecificStuff() {
     return gameSpecStuff;
   }
+
+  /**
+   * Does not really ignore any problems. Subclasses may want to overwrite this to be more
+   * efficient.
+   * 
+   * @see magellan.library.tasks.Inspector#setIgnore(magellan.library.tasks.ProblemType, boolean)
+   */
+  public void setIgnore(ProblemType type, boolean ignore) {
+    // by default don't ignore any
+  }
+
 }

@@ -127,7 +127,7 @@ public class TempUnitDialog extends InternationalizedDialog {
     }
 
     pack();
-    SwingUtils.setBounds(this, settings, TempUnitDialog.BOUNDS_KEY, true);
+    SwingUtils.setBounds(this, settings, TempUnitDialog.BOUNDS_KEY, false);
     // loadBounds();
 
     addWindowListener(new WindowAdapter() {

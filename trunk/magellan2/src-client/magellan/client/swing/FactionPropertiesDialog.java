@@ -20,7 +20,6 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -42,6 +41,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import magellan.client.event.EventDispatcher;
+import magellan.client.utils.SwingUtils;
 import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -91,11 +91,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     setContentPane(getMainPane());
     setSize(420, 500);
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x = (screen.width - getWidth()) / 2;
-    int y = (screen.height - getHeight()) / 2;
-    setLocation(x, y);
     pack();
+    SwingUtils.center(this);
   }
 
   /**

@@ -45,6 +45,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import magellan.client.swing.InternationalizedDialog;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Resources;
 import magellan.library.utils.VersionInfo;
@@ -81,8 +82,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     setText();
 
     // center
-    this.setLocation((getToolkit().getScreenSize().width - getWidth()) / 2, (getToolkit()
-        .getScreenSize().height - getHeight()) / 2);
+    SwingUtils.center(this);
   }
 
   private void setText() {

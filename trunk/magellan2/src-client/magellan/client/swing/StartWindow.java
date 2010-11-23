@@ -22,7 +22,6 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +42,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import magellan.client.Client;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 import magellan.library.utils.VersionInfo;
 
@@ -240,10 +240,8 @@ public class StartWindow extends JFrame {
 
     pack();
 
-    Toolkit t = getToolkit();
-    Dimension screen = t.getScreenSize();
-    Dimension size = getSize();
-    setLocation((screen.width - size.width) / 2, (screen.height - size.height) / 3);
+    SwingUtils.center(this);
+
   }
 
   /**

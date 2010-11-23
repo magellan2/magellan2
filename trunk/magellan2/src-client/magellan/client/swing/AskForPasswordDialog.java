@@ -24,12 +24,10 @@
 package magellan.client.swing;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
@@ -47,6 +45,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import magellan.client.Client;
+import magellan.client.utils.SwingUtils;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Unit;
@@ -80,8 +79,8 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     setTitle(Resources.get("client.msg.askforpassword.title"));
     setSize(400, 260);
     setResizable(false);
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    setLocation(((screen.width - getWidth()) / 2), ((screen.height - getHeight()) / 2));
+
+    SwingUtils.center(this);
 
     JPanel panel = new JPanel(new BorderLayout());
     JPanel buttonPanel = new JPanel(new FlowLayout());

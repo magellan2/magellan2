@@ -15,13 +15,11 @@ package magellan.client.swing;
 
 import java.awt.Container;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -52,6 +50,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
 import magellan.client.Client;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -107,11 +106,7 @@ public class JVorlage extends InternationalizedDialog {
     int height = Math.max(Integer.parseInt(settings.getProperty("JVorlage.height", "310")), 310);
     setSize(width, height);
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x = Integer.parseInt(settings.getProperty("JVorlage.x", ((screen.width - width) / 2) + ""));
-    int y =
-        Integer.parseInt(settings.getProperty("JVorlage.y", ((screen.height - height) / 2) + ""));
-    setLocation(x, y);
+    SwingUtils.setLocation(this, settings, "JVorlage.x", "JVorlage.y");
   }
 
   private Container getMainPane() {

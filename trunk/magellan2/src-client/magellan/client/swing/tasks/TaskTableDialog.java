@@ -14,13 +14,12 @@
 package magellan.client.swing.tasks;
 
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Toolkit;
 import java.util.Properties;
 
 import magellan.client.event.EventDispatcher;
 import magellan.client.swing.InternationalizedDataDialog;
+import magellan.client.utils.SwingUtils;
 import magellan.library.GameData;
 import magellan.library.utils.Resources;
 
@@ -49,14 +48,7 @@ public class TaskTableDialog extends InternationalizedDataDialog {
     int height = Integer.parseInt(settings.getProperty("TaskTableDialog.height", "300"));
     this.setSize(width, height);
 
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x =
-        Integer.parseInt(settings.getProperty("TaskTableDialog.x",
-            ((screen.width - getWidth()) / 2) + ""));
-    int y =
-        Integer.parseInt(settings.getProperty("TaskTableDialog.y",
-            ((screen.height - getHeight()) / 2) + ""));
-    this.setLocation(x, y);
+    SwingUtils.setLocation(this, settings, "TaskTableDialog.x", "TaskTableDialog.y");
   }
 
   private Container getMainPane() {

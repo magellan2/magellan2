@@ -27,7 +27,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -54,6 +53,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import magellan.client.Client;
+import magellan.client.utils.SwingUtils;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
@@ -360,15 +360,6 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
    * This method sets the window dimension and positions the window to the center of the screen.
    */
   public void setWindowSize(int xSize, int ySize) {
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x =
-        PropertiesHelper.getInteger(client.getProperties(), "ExtendedCommandsDialog.x",
-            (screen.width - getWidth()) / 2);
-    int y =
-        PropertiesHelper.getInteger(client.getProperties(), "ExtendedCommandsDialog.y",
-            (screen.height - getHeight()) / 2);
-    setLocation(x, y);
-
     int width =
         PropertiesHelper.getInteger(client.getProperties(), "ExtendedCommandsDialog.width", xSize);
     int height =
@@ -381,6 +372,9 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       height = ySize;
     }
     setSize(width, height);
+
+    SwingUtils.setLocation(this, client.getProperties(), "ExtendedCommandsDialog.x",
+        "ExtendedCommandsDialog.y");
   }
 
   /**

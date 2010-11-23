@@ -31,6 +31,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Resources;
 import magellan.library.utils.VersionInfo;
@@ -53,10 +54,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     super(parent, true);
     initComponents();
 
-    // center
-    this.setLocation((getToolkit().getScreenSize().width - getWidth()) / 2, (getToolkit()
-        .getScreenSize().height - getHeight()) / 2);
-
+    SwingUtils.center(this);
   }
 
   private void initComponents() {

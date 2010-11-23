@@ -15,6 +15,8 @@ package magellan.library.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -57,7 +59,9 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
    * This operation iterates other a copy of all keys to check if they can be cleaned
    */
   private void doClean() {
-    for (Object name : keySet()) {
+    // copy keys to avoid ConcurrentModification
+    List<?> copy = new ArrayList<Object>(keySet());
+    for (Object name : copy) {
       if (name instanceof String) {
         doClean((String) name);
       } else {
@@ -95,6 +99,7 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
     name = doExpandValue(name, "Client.fileHistory", "|");
     name = renameProperty(name, "DirectoryHistory", "HistoryAccessory.directoryHistory");
     name = doExpandValue(name, "HistoryAccessory.directoryHistory", "|");
+    doExpandRectangle(name, "TempUnitDialog.bounds", ",");
   }
 
   /**
@@ -187,6 +192,45 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
         + " to " + newName);
 
     return newName;
+  }
+
+  /**
+   * Expands value in form x|y|width|height for property <tt>key</tt>
+   */
+  private String doExpandRectangle(String name, String key, String delim) {
+    if (name.equals(key))
+      return expandRectangle(name, delim);
+
+    return name;
+  }
+
+  /**
+   * generic function to expand a string into a list
+   */
+  private String expandRectangle(String oldName, String delim) {
+    StringTokenizer st = new StringTokenizer(getProperty(oldName), delim);
+    if (st.hasMoreTokens()) {
+      String x = st.nextToken();
+      if (st.hasMoreTokens()) {
+        String y = st.nextToken();
+        if (st.hasMoreTokens()) {
+          String width = st.nextToken();
+          if (st.hasMoreTokens()) {
+            String height = st.nextToken();
+            setProperty(oldName + ".x", x);
+            setProperty(oldName + ".y", y);
+            setProperty(oldName + ".width", width);
+            setProperty(oldName + ".height", height);
+            remove(oldName);
+          }
+        }
+      }
+    }
+
+    SelfCleaningProperties.log.error("SelfCleaningProperties.doClean: Expanded rectangle "
+        + oldName);
+
+    return oldName;
   }
 
   /**

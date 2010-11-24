@@ -1441,6 +1441,8 @@ public class GameDataMerger {
          */
       }
     }
+
+    newMsg.setAcknowledged(curMsg.isAcknowledged());
   }
 
   protected static final String number = "[\\+\\-]?\\d+";

@@ -142,6 +142,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   // private Set<ProblemType> activeProblems;
   private Set<ProblemType> ignoredProblems;
 
+  private Map<String, ProblemType> pMap;
+
   /**
    * Creates a new TaskTablePanel object.
    * 
@@ -1136,6 +1138,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     initInspectors(e.getGameData());
     lastActiveRegion = null;
     lastSelection = new HashSet<Region>();
+    // refresh to include unknown problems
+    setIgnoredProblems(ignoredProblems);
+
     // do nothing if Panel is hidden
     if (!isShown())
       return;
@@ -1441,9 +1446,17 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @param set A list of names. If <code>null</code>, all problems will be displayed.
    */
   public void setIgnoredProblems(Set<ProblemType> set) {
+    // refresh map to include unknown problems
+    getAllProblemTypes();
+
     ignoredProblems = new HashSet<ProblemType>();
     if (set != null) {
-      ignoredProblems.addAll(set);
+      for (ProblemType newP : set)
+        if (pMap.containsKey(newP.getName())) {
+          ignoredProblems.add(pMap.get(newP.getName()));
+        } else {
+          ignoredProblems.add(newP);
+        }
     }
 
     for (Inspector i : getInspectors()) {
@@ -1459,32 +1472,35 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   @SuppressWarnings("deprecation")
   public Set<ProblemType> getIgnoredProblems() {
-    if (ignoredProblems == null) {
-      ignoredProblems = new HashSet<ProblemType>();
+    ignoredProblems = new HashSet<ProblemType>();
 
-      String criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
-      if (criteria == null) {
-        Logger.getInstance(this.getClass()).warn(
-            "deprecated property " + PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
-        settings.remove(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
+    String criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
+    if (criteria == null) {
+      Logger.getInstance(this.getClass()).warn(
+          "deprecated property " + PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
+      settings.remove(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
+    }
+
+    criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_IGNORE_LIST);
+
+    if (criteria != null) {
+      pMap = new HashMap<String, ProblemType>();
+      for (ProblemType p : getAllProblemTypes()) {
+        pMap.put(p.getName(), p);
       }
-
-      criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_IGNORE_LIST);
-
-      if (criteria != null) {
-        Map<String, ProblemType> pMap = new HashMap<String, ProblemType>();
-        for (ProblemType p : getAllProblemTypes()) {
-          pMap.put(p.getName(), p);
+      for (StringTokenizer tokenizer = new StringTokenizer(criteria, ";"); tokenizer
+          .hasMoreTokens();) {
+        String s = tokenizer.nextToken();
+        ProblemType p;
+        if (!pMap.containsKey(s)) {
+          pMap.put(s, new ProblemType(s, Resources.get("tasks.unknowntype.group"), Resources
+              .get("tasks.unknowntype.description"), null));
         }
-        for (StringTokenizer tokenizer = new StringTokenizer(criteria, ";"); tokenizer
-            .hasMoreTokens();) {
-          String s = tokenizer.nextToken();
-          if (pMap.containsKey(s)) {
-            ignoredProblems.add(pMap.get(s));
-          }
-        }
+        p = pMap.get(s);
+        ignoredProblems.add(p);
       }
     }
+
     for (Inspector i : getInspectors()) {
       for (ProblemType type : i.getTypes()) {
         i.setIgnore(type, ignoredProblems.contains(type));

@@ -344,6 +344,10 @@ public class CRWriter extends BufferedWriter {
       writeQuotedTag(msg.getText(), "rendered");
     }
 
+    if (msg.isAcknowledged()) {
+      write("1;toolacknowledged");
+    }
+
     if (msg.getAttributes() != null) {
       for (String key : msg.getAttributes().keySet()) {
         String value = msg.getAttributes().get(key);

@@ -258,11 +258,7 @@ public class ProblemFactory {
      * @see magellan.library.tasks.Problem#getType()
      */
     public ProblemType getType() {
-      ProblemType type = inspector.getProblemType(message);
-      if (type == null)
-        return MessageInspector.MESSAGE_PROBLEM;
-      else
-        return type;
+      return inspector.getProblemType(message);
     }
 
     /**

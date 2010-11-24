@@ -149,4 +149,14 @@ public interface Message extends Identifiable {
    * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
    */
   public IntegerID getID();
+
+  /**
+   * @return <code>true</code> if the message has been acknowledged (by the user)
+   */
+  public boolean isAcknowledged();
+
+  /**
+   * Sets the new acknowledged status.
+   */
+  public void setAcknowledged(boolean ack);
 }

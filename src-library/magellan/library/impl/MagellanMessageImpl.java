@@ -68,6 +68,8 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    */
   public Map<String, String> attributes = null;
 
+  private boolean acknowledged;
+
   /**
    * Creates a new Message object.
    */
@@ -446,5 +448,19 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   @Override
   public IntegerID getID() {
     return (IntegerID) super.getID();
+  }
+
+  /**
+   * @see magellan.library.Message#isAcknowledged()
+   */
+  public boolean isAcknowledged() {
+    return acknowledged;
+  }
+
+  /**
+   * @see magellan.library.Message#setAcknowledged(boolean)
+   */
+  public void setAcknowledged(boolean ack) {
+    acknowledged = ack;
   }
 }

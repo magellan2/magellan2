@@ -94,10 +94,13 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     }
 
     protected void fill() {
-      // TODO clear model
+      root.removeAllChildren();
+      catNodes.clear();
+      problems.clear();
       for (ProblemType p : taskPanel.getAllProblemTypes()) {
         addProblem(p);
       }
+      model.nodeStructureChanged(root);
     }
 
     public Collection<ProblemType> getProblems() {

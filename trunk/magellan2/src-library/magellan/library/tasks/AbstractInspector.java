@@ -256,6 +256,9 @@ public abstract class AbstractInspector implements Inspector {
     return sb.toString();
   }
 
+  /**
+   * @see magellan.library.tasks.Inspector#unSuppress(magellan.library.Unit)
+   */
   public void unSuppress(Unit u) {
     List<Order> newOrders = new ArrayList<Order>(u.getOrders2().size());
     boolean changed = false;

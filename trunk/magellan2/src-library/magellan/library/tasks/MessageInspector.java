@@ -40,6 +40,7 @@ import magellan.library.GameData;
 import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.Region;
+import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.impl.MagellanMessageImpl;
 import magellan.library.rules.MessageType;
@@ -55,8 +56,8 @@ import magellan.library.utils.Resources;
  */
 public class MessageInspector extends AbstractInspector {
 
-  public static final ProblemType MESSAGE_PROBLEM = ProblemType.create("tasks.messageinspector",
-      "message");
+  // public static final ProblemType MESSAGE_PROBLEM = ProblemType.create("tasks.messageinspector",
+  // "message");
 
   private static final MessageType FACTIONEFFECT = new MessageType(IntegerID.create(-42),
       "FACTION--EFFECT");
@@ -66,6 +67,8 @@ public class MessageInspector extends AbstractInspector {
       "REGION--EFFECT");
   private static final MessageType BUILDINGEFFECT = new MessageType(IntegerID.create(-45),
       "BUILDING--EFFECT");
+  private static final MessageType SHIPEFFECT = new MessageType(IntegerID.create(-45),
+      "SHIP--EFFECT");
   private static final MessageType UNITEFFECT = new MessageType(IntegerID.create(-46),
       "UNIT--EFFECT");
   private static final MessageType BATTLE = new MessageType(IntegerID.create(-47), "BATTLE");
@@ -125,6 +128,14 @@ public class MessageInspector extends AbstractInspector {
           }
         }
       }
+
+      for (Ship s : r.ships()) {
+        if (s.getEffects() != null) {
+          for (String eff : s.getEffects()) {
+            effects.add(getPhrase(eff));
+          }
+        }
+      }
     }
     for (String effect : effects) {
       effectTypes.put(effect, createProblemType(effect, C_REGION));
@@ -147,6 +158,7 @@ public class MessageInspector extends AbstractInspector {
     // problemTypes.put(FACTIONERROR.getID(), createProblemType(FACTIONERROR));
     // problemTypes.put(REGIONEFFECT.getID(), createProblemType(REGIONEFFECT));
     // problemTypes.put(BUILDINGEFFECT.getID(), createProblemType(BUILDINGEFFECT));
+    // problemTypes.put(SHIPEFFECT.getID(), createProblemType(SHIPEFFECT));
     // problemTypes.put(UNITEFFECT.getID(), createProblemType(UNITEFFECT));
     problemTypes.put(BATTLE.getID(), ProblemType.create("tasks.messageinspector", "battle"));
   }
@@ -217,6 +229,7 @@ public class MessageInspector extends AbstractInspector {
   @Override
   public Unit suppress(Problem p) {
     if (p instanceof MessageProblem) {
+      ((MessageProblem) p).getReportMessage().setAcknowledged(true);
       suppressedProblems.add(((MessageProblem) p).getReportMessage());
     }
     return null;
@@ -224,6 +237,9 @@ public class MessageInspector extends AbstractInspector {
 
   @Override
   public void unSuppress(Unit u) {
+    for (Message m : suppressedProblems) {
+      m.setAcknowledged(false);
+    }
     suppressedProblems.clear();
   }
 
@@ -237,7 +253,7 @@ public class MessageInspector extends AbstractInspector {
     List<Problem> problems = new LinkedList<Problem>();
     if (f.getMessages() != null) {
       for (Message m : f.getMessages()) {
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, f, null, null, null, this));
           }
@@ -249,7 +265,7 @@ public class MessageInspector extends AbstractInspector {
         Message m =
             new MagellanMessageImpl(Message.ambiguousID, Resources.get(
                 "tasks.messageinspector.battle.message", region), BATTLE, null);
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, f, region, null, null, this));
           }
@@ -260,7 +276,7 @@ public class MessageInspector extends AbstractInspector {
       for (String s : f.getEffects()) {
         MagellanMessageImpl m =
             new MagellanMessageImpl(Message.ambiguousID, s, FACTIONEFFECT, null);
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, f, null, null, null, this));
           }
@@ -270,7 +286,7 @@ public class MessageInspector extends AbstractInspector {
     if (f.getErrors() != null) {
       for (String s : f.getErrors()) {
         MagellanMessageImpl m = new MagellanMessageImpl(Message.ambiguousID, s, FACTIONERROR, null);
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, f, null, null, null, this));
           }
@@ -290,7 +306,7 @@ public class MessageInspector extends AbstractInspector {
 
     if (r.getMessages() != null) {
       for (Message m : r.getMessages()) {
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, null, r, null, null, this));
           }
@@ -298,7 +314,7 @@ public class MessageInspector extends AbstractInspector {
     }
     if (r.getEvents() != null) {
       for (Message m : r.getEvents()) {
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, null, r, null, null, this));
           }
@@ -307,7 +323,7 @@ public class MessageInspector extends AbstractInspector {
 
     if (r.getPlayerMessages() != null) {
       for (Message m : r.getPlayerMessages()) {
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, null, r, null, null, this));
           }
@@ -317,7 +333,7 @@ public class MessageInspector extends AbstractInspector {
     if (r.getEffects() != null) {
       for (String s : r.getEffects()) {
         MagellanMessageImpl m = new MagellanMessageImpl(Message.ambiguousID, s, REGIONEFFECT, null);
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, null, r, null, null, this));
           }
@@ -326,12 +342,25 @@ public class MessageInspector extends AbstractInspector {
 
     for (Building b : r.buildings()) {
       if (b.getEffects() != null) {
-        for (String s : b.getEffects()) {
+        for (String eff : b.getEffects()) {
           MagellanMessageImpl m =
-              new MagellanMessageImpl(Message.ambiguousID, s, BUILDINGEFFECT, null);
-          if (!suppressedProblems.contains(m))
+              new MagellanMessageImpl(Message.ambiguousID, eff, BUILDINGEFFECT, null);
+          if (!m.isAcknowledged())
             if (!suppressedTypes.contains(getProblemType(m))) {
               problems.add(ProblemFactory.createProblem(getData(), m, null, r, null, b, this));
+            }
+        }
+      }
+    }
+
+    for (Ship s : r.ships()) {
+      if (s.getEffects() != null) {
+        for (String eff : s.getEffects()) {
+          MagellanMessageImpl m =
+              new MagellanMessageImpl(Message.ambiguousID, eff, SHIPEFFECT, null);
+          if (!m.isAcknowledged())
+            if (!suppressedTypes.contains(getProblemType(m))) {
+              problems.add(ProblemFactory.createProblem(getData(), m, null, r, null, s, this));
             }
         }
       }
@@ -349,7 +378,7 @@ public class MessageInspector extends AbstractInspector {
 
     if (u.getUnitMessages() != null) {
       for (Message m : u.getUnitMessages()) {
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, null, null, u, null, this));
           }
@@ -359,7 +388,7 @@ public class MessageInspector extends AbstractInspector {
     if (u.getEffects() != null) {
       for (String s : u.getEffects()) {
         MagellanMessageImpl m = new MagellanMessageImpl(Message.ambiguousID, s, UNITEFFECT, null);
-        if (!suppressedProblems.contains(m))
+        if (!m.isAcknowledged())
           if (!suppressedTypes.contains(getProblemType(m))) {
             problems.add(ProblemFactory.createProblem(getData(), m, null, null, u, null, this));
           }
@@ -369,6 +398,9 @@ public class MessageInspector extends AbstractInspector {
     return problems;
   }
 
+  /**
+   * Returns an instance for the data.
+   */
   public static Inspector getInstance(GameData gameData) {
     return new MessageInspector(gameData);
   }

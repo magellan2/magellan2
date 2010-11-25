@@ -326,10 +326,16 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         }
         if (e.isPopupTrigger()) {
           if (rowClicked >= 0 && table.getSelectedRowCount() > 0) {
+            if (table.getSelectedRowCount() > 1) {
+              acknowledgeMenu.setText(Resources.get("tasks.contextmenu.acknowledge.title"));
+            } else {
+              acknowledgeMenu.setText(Resources.get("tasks.contextmenu.acknowledge1.title"));
+            }
             acknowledgeMenu.setEnabled(true);
             removeTypeMenu.setEnabled(true);
             selectMenu.setEnabled(true);
           } else {
+            acknowledgeMenu.setText(Resources.get("tasks.contextmenu.acknowledge.title"));
             acknowledgeMenu.setEnabled(false);
             removeTypeMenu.setEnabled(false);
             selectMenu.setEnabled(false);
@@ -1511,7 +1517,16 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   private boolean checkActive(Problem p) {
-    return ignoredProblems == null || !ignoredProblems.contains(p.getType());
+    if (ignoredProblems == null && ignoredProblems.contains(p.getType()))
+      return false;
+    if (restrictToActiveRegion()) {
+      if (lastActiveRegion != null)
+        return p.getRegion() == null || p.getRegion() == lastActiveRegion;
+    } else if (restrictToSelection())
+      return p.getRegion() == null || lastSelection == null
+          || lastSelection.contains(p.getRegion());
+
+    return true;
   }
 
   /**

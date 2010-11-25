@@ -13,6 +13,8 @@
 
 package magellan.library;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,9 +54,12 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
+import magellan.library.utils.ReportMerger;
+import magellan.library.utils.ReportMerger.AssignData;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.Translations;
+import magellan.library.utils.UserInterface;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.logging.Logger;
@@ -1834,6 +1839,56 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   public boolean isOutOfMemory() {
     return outOfMemory;
+  }
+
+  /**
+   * Tries to repair errors in this data and returns the repaired data.
+   * 
+   * @param ui2
+   * @return The repaired data (may be <code>this</code>)
+   */
+  public GameData repair(UserInterface ui2) {
+    MyAssigner assigner = new MyAssigner();
+    final GameData data = this;
+    try {
+      new ReportMerger(this, data.filetype.getFile(), new ReportMerger.Loader() {
+        public GameData load(File aFile) {
+          return data;
+        }
+      }, assigner).merge(ui2, true, false, false);
+    } catch (IOException e) {
+      log.error("invalid filetype");
+      // this will probably not happen, since the Exception would have been thrown before. Anyway...
+      assigner.data2 = this;
+    }
+    if (assigner.data2 != null) {
+      assigner.data2 = this;
+    }
+
+    for (Problem p : data.getErrors()) {
+      if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONUID.type) {
+        Region original = p.getRegion();
+        if (p.getObject() instanceof Region) {
+          Region copy = (Region) p.getObject();
+          if (original.getData() == data) {
+            original.setUID(Region.INVALID_UID);
+          }
+          if (copy.getData() == data) {
+            copy.setUID(Region.INVALID_UID);
+          }
+        }
+      }
+    }
+
+    return assigner.data2;
+  }
+
+  protected static class MyAssigner implements AssignData {
+    GameData data2 = null;
+
+    public void assign(GameData _data) {
+      data2 = _data;
+    }
   }
 
 }

@@ -181,8 +181,6 @@ import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Regions;
-import magellan.library.utils.ReportMerger;
-import magellan.library.utils.ReportMerger.AssignData;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.TrustLevels;
@@ -1722,15 +1720,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           ui2 = new ProgressBarUI(this);
         }
         ui2.show();
-        MyAssigner assigner = new MyAssigner();
-        final GameData data2 = data;
-        new ReportMerger(data, fileName, new ReportMerger.Loader() {
-          public GameData load(File aFile) {
-            return data2;
-          }
-        }, assigner).merge(ui2, true, false, false);
-        if (assigner.data2 != null)
-          return assigner.data2;
+        return data.repair(ui2);
       }
     } else if (bE > 0 || rE > 0 || sE > 0 || uE > 0) {
       Client.log.error("report with errors: " + rE + " " + uE + " " + bE + " " + sE);
@@ -1740,14 +1730,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     return data;
-  }
-
-  protected static class MyAssigner implements AssignData {
-    GameData data2 = null;
-
-    public void assign(GameData _data) {
-      data2 = _data;
-    }
   }
 
   /**

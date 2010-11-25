@@ -173,7 +173,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * the unique regionID generated and sent by the eressea server starting with turn 570
    */
-  private long uID = Integer.MIN_VALUE;
+  private long uID = INVALID_UID;
 
   /**
    * Constructs a new Region object uniquely identifiable by the specified id.
@@ -1978,7 +1978,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   public boolean hasUID() {
-    return uID != Integer.MIN_VALUE;
+    return uID != INVALID_UID;
   }
 
   /**

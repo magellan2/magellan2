@@ -177,6 +177,16 @@ public class ProblemFactory {
           owner = data.getUnit(id);
         }
       }
+      if (object == null) {
+        attribute = m.getAttributes().get("target");
+        if (attribute != null) {
+          UnitID id = UnitID.createUnitID(attribute, 10, data.base);
+          if (id != null) {
+            object = data.getUnit(id);
+          }
+        }
+      }
+
       attribute = m.getAttributes().get("region");
       if (region == null && attribute != null) {
         CoordinateID coord = CoordinateID.parse(attribute, ",");
@@ -187,15 +197,17 @@ public class ProblemFactory {
           region = data.getRegion(coord);
         }
       }
-      if (object == null) {
-        attribute = m.getAttributes().get("target");
-        if (attribute != null) {
-          UnitID id = UnitID.createUnitID(attribute, 10, data.base);
-          if (id != null) {
-            object = data.getUnit(id);
-          }
+      attribute = m.getAttributes().get("end");
+      if (region == null && attribute != null && m.getAttributes().get("start") != null) {
+        CoordinateID coord = CoordinateID.parse(attribute, ",");
+        if (coord == null) {
+          coord = CoordinateID.parse(attribute, " ");
+        }
+        if (coord != null) {
+          region = data.getRegion(coord);
         }
       }
+
       if (object == null) {
         attribute = m.getAttributes().get("ship");
         if (attribute != null) {
@@ -213,6 +225,13 @@ public class ProblemFactory {
             object = data.getBuilding(id);
           }
         }
+      }
+
+      if (region == null && owner != null) {
+        region = owner.getRegion();
+      }
+      if (region == null && object instanceof HasRegion) {
+        region = ((HasRegion) object).getRegion();
       }
     }
     if (object == null) {

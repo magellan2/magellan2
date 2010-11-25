@@ -20,10 +20,17 @@ import magellan.library.utils.Direction;
  */
 public interface Region extends UnitContainer {
 
+  /** The invalid region ID */
+  static final long INVALID_UID = Integer.MIN_VALUE + 1;
+
+  /** A visibility string for {@link Visibility#NEIGHBOR} */
   static final String VIS_STR_NEIGHBOUR = "neighbour";
+  /** A visibility string for {@link Visibility#LIGHTHOUSE} */
   static final String VIS_STR_LIGHTHOUSE = "lighthouse";
+  /** A visibility string for {@link Visibility#TRAVEL} */
   static final String VIS_STR_TRAVEL = "travel";
 
+  /** A visibility string for {@link Visibility#WRAP} */
   static final String VIS_STR_WRAP = "wrap";
 
   /**

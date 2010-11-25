@@ -140,7 +140,7 @@ public class SwingUtils {
    */
   public static void setBounds(Component component, Properties settings, String rectKey,
       boolean maximize) {
-    Rectangle bounds = PropertiesHelper.loadRect(settings, null, "Client");
+    Rectangle bounds = PropertiesHelper.loadRect(settings, null, rectKey);
     if (bounds != null) {
       Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
       // correct position to be included in the screen

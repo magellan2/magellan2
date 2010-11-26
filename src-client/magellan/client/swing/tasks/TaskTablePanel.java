@@ -544,6 +544,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           JOptionPane.showConfirmDialog(this, Resources.get("tasks.confirmremovetype.message", p
               .getType(), desc))) == JOptionPane.YES_OPTION) {
         ignoredProblems.add(p.getType());
+        if (p.getInspector() != null) {
+          p.getInspector().setIgnore(p.getType(), true);
+        }
       }
       if (option == JOptionPane.CANCEL_OPTION) {
         break;
@@ -1517,7 +1520,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   private boolean checkActive(Problem p) {
-    if (ignoredProblems == null && ignoredProblems.contains(p.getType()))
+    if (ignoredProblems != null && ignoredProblems.contains(p.getType()))
       return false;
     if (restrictToActiveRegion()) {
       if (lastActiveRegion != null)

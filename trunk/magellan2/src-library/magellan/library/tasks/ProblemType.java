@@ -98,6 +98,18 @@ public class ProblemType {
   // }
 
   @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof ProblemType)
+      return name.equals(((ProblemType) obj).name);
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
+
+  @Override
   public String toString() {
     return getName();
   }

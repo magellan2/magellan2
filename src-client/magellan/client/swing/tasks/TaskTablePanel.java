@@ -543,10 +543,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       if ((option =
           JOptionPane.showConfirmDialog(this, Resources.get("tasks.confirmremovetype.message", p
               .getType(), desc))) == JOptionPane.YES_OPTION) {
-        ignoredProblems.add(p.getType());
-        if (p.getInspector() != null) {
-          p.getInspector().setIgnore(p.getType(), true);
-        }
+        addIgnoredProblem(p);
       }
       if (option == JOptionPane.CANCEL_OPTION) {
         break;
@@ -1148,7 +1145,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     lastActiveRegion = null;
     lastSelection = new HashSet<Region>();
     // refresh to include unknown problems
-    setIgnoredProblems(ignoredProblems);
+    getIgnoredProblems();
 
     // do nothing if Panel is hidden
     if (!isShown())
@@ -1458,6 +1455,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     // refresh map to include unknown problems
     getAllProblemTypes();
 
+    // make sure that unknown problems are replaced by their now existing problem (e.g. after game
+    // data change)
     ignoredProblems = new HashSet<ProblemType>();
     if (set != null) {
       for (ProblemType newP : set)
@@ -1474,6 +1473,28 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       }
     }
 
+    setIgnoredProperty();
+  }
+
+  private void setIgnoredProperty() {
+    StringBuffer definition = new StringBuffer("");
+
+    for (ProblemType p : ignoredProblems) {
+      if (definition.length() > 0) {
+        definition.append(";");
+      }
+      definition.append(p.getName());
+    }
+
+    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_IGNORE_LIST, definition.toString());
+  }
+
+  private void addIgnoredProblem(Problem p) {
+    ignoredProblems.add(p.getType());
+    if (p.getInspector() != null) {
+      p.getInspector().setIgnore(p.getType(), true);
+    }
+    setIgnoredProperty();
   }
 
   /**

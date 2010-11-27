@@ -346,6 +346,7 @@ public class CRWriter extends BufferedWriter {
 
     if (msg.isAcknowledged()) {
       write("1;toolacknowledged");
+      newLine();
     }
 
     if (msg.getAttributes() != null) {

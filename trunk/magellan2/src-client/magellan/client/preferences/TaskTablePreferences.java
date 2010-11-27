@@ -60,7 +60,6 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tasks.TaskTablePanel;
 import magellan.library.GameData;
 import magellan.library.tasks.ProblemType;
-import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
 /**
@@ -405,20 +404,13 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    StringBuffer definition = new StringBuffer("");
 
     Set<ProblemType> result = new HashSet<ProblemType>();
     for (ProblemType p : ignoreList.getProblems()) {
       result.add(p);
-      if (definition.length() > 0) {
-        definition.append(";");
-      }
-      definition.append(p.getName());
     }
     // taskPanel.setActiveProblems(result);
     taskPanel.setIgnoredProblems(result);
-
-    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_IGNORE_LIST, definition.toString());
 
     taskPanel.setRestrictToOwner(chkOwnerParty.isSelected());
     taskPanel.setRestrictToPassword(chkPasswordParties.isSelected());

@@ -13,17 +13,19 @@
 
 package magellan.library;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
  * A CoordinateID uniquely identifies a location in a three dimensional space by x-, y- and z-axis
  * components. This is an immutable object.
  */
-public class CoordinateID implements ID {
+public final class CoordinateID implements ID {
   /**
    * Convenience implementation of a mutable coordinate triplet.
    */
-  public static class Triplet {
+  public final static class Triplet {
     /**
      * x-coordinate
      */
@@ -62,6 +64,11 @@ public class CoordinateID implements ID {
   private static final CoordinateID INVALID = new CoordinateID(Integer.MIN_VALUE,
       Integer.MIN_VALUE, Integer.MIN_VALUE);
 
+  private static final Map<Integer, Map<Integer, CoordinateID>> lookup0 =
+      new LinkedHashMap<Integer, Map<Integer, CoordinateID>>();
+  private static final Map<Integer, Map<Integer, Map<Integer, CoordinateID>>> lookup =
+      new LinkedHashMap<Integer, Map<Integer, Map<Integer, CoordinateID>>>();
+
   /**
    * The coordinate (0,0,0).
    */
@@ -71,19 +78,19 @@ public class CoordinateID implements ID {
    * The x-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
    * this CoordinateID!
    */
-  private int x;
+  private final int x;
 
   /**
    * The y-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
    * this CoordinateID!
    */
-  private int y;
+  private final int y;
 
   /**
    * The z-axis part of this CoordinateID. Modifying the x, y and z values changes the hash value of
    * this CoordinateID!
    */
-  private int z;
+  private final int z;
 
   /**
    * Create a new CoordinateID with a z-value of 0.
@@ -204,7 +211,12 @@ public class CoordinateID implements ID {
    */
   @Override
   public int hashCode() {
-    return (x << 12) ^ (y << 6) ^ z;
+    // return (x << 12) ^ (y << 6) ^ z;
+    int hash = 42;
+    hash = hash * 31 + z;
+    hash = 31 * hash + y;
+    hash = 31 * hash + x;
+    return hash;
   }
 
   /**
@@ -345,15 +357,15 @@ public class CoordinateID implements ID {
       return 0;
 
     CoordinateID c = (CoordinateID) o;
-    if (!equals(c)) {
-      if (z != c.z)
-        return z - c.z;
-      else if (y != c.y)
-        return (c.y - y);
-      else
-        return (x - c.x);
-    } else
-      return 0;
+    // if (!equals(c)) {
+    if (z != c.z)
+      return z - c.z;
+    else if (y != c.y)
+      return (c.y - y);
+    else
+      return (x - c.x);
+    // } else
+    // return 0;
   }
 
   /**
@@ -364,36 +376,41 @@ public class CoordinateID implements ID {
     return this;
   }
 
-  // private static Map<Integer, Map<Integer, Map<Integer, CoordinateID>>> lookup =
-  // new HashMap<Integer, Map<Integer, Map<Integer, CoordinateID>>>();
-
   /**
    * @param x
    * @param y
    * @param z
    */
   private static CoordinateID createCoordinate(int x, int y, int z) {
-    return new CoordinateID(x, y, z);
+    if (x > 200 || y > 200 || x < -200 || y < -200)
+      return new CoordinateID(x, y, z);
 
-    // trying to improve performance -- did not work
-    // Map<Integer, Map<Integer, CoordinateID>> mx = lookup.get(x);
-    // if (mx == null) {
-    // mx = new HashMap<Integer, Map<Integer, CoordinateID>>();
-    // lookup.put(x, mx);
-    // }
-    // Map<Integer, CoordinateID> my = mx.get(y);
-    // CoordinateID mz;
-    // if (my == null) {
-    // my = new HashMap<Integer, CoordinateID>();
-    // mx.put(y, my);
-    // }
-    // mz = my.get(z);
-    // if (mz == null) {
-    // mz = new CoordinateID(x, y, z);
-    // my.put(z, mz);
-    // }
-    //
-    // return mz;
+    // trying to improve performance -- does it work?
+    // if Coordinate is not too big, take instance from cache
+    Map<Integer, Map<Integer, CoordinateID>> mz;
+    if (z == 0) {
+      mz = lookup0;
+    } else {
+      mz = lookup.get(z);
+      if (mz == null) {
+        mz = new LinkedHashMap<Integer, Map<Integer, CoordinateID>>();
+        lookup.put(z, mz);
+      }
+    }
+    Map<Integer, CoordinateID> my = mz.get(y);
+
+    if (my == null) {
+      my = new LinkedHashMap<Integer, CoordinateID>();
+      mz.put(y, my);
+    }
+    CoordinateID mx = my.get(x);
+    if (mx == null) {
+      mx = new CoordinateID(x, y, z);
+      my.put(x, mx);
+    }
+    if (x != mx.x || y != mx.y || z != mx.z)
+      throw new IllegalStateException();
+    return mx;
   }
 
   /**

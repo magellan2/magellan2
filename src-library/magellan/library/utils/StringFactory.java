@@ -16,13 +16,15 @@ package magellan.library.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import magellan.library.utils.logging.Logger;
+
 /**
  * DOCUMENT-ME
  * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class StringFactory {
+public final class StringFactory {
   private static final StringFactory sf = new StringFactory();
 
   private StringFactory() {
@@ -36,16 +38,22 @@ public class StringFactory {
   }
 
   private Map<String, String> strings = new HashMap<String, String>();
+  private int oldSize = 10;
 
   /**
    * DOCUMENT-ME
    */
   public String intern(String s) {
+    // FIXME map only for s.length()<100??
     String is = strings.get(s);
 
     if (is == null) {
       is = getOptimizedString(s);
       strings.put(is, is);
+      if (strings.size() > oldSize) {
+        oldSize *= 2;
+        Logger.getInstance(Umlaut.class).finest("strings " + strings.size());
+      }
     }
 
     return is;
@@ -55,7 +63,6 @@ public class StringFactory {
    * DOCUMENT-ME
    */
   public String getOptimizedString(String s) {
-    // FIXME(stm) understand and assess this
     // copy all strings into new char and recreate string with it.
     // Prevent inefficient use of char[]
     char allchars[] = new char[s.length()];

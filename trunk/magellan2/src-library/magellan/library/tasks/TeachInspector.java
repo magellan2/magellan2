@@ -98,8 +98,8 @@ public class TeachInspector extends AbstractInspector {
         if (o.isValid() && o instanceof LearnOrder) {
           found = true;
           SkillType skillType = getData().getRules().getSkillType(((LearnOrder) o).skillName);
-          Skill ss = u2.getSkill(skillType);
-          Skill ts = u.getSkill(skillType);
+          Skill ss = u2.getModifiedSkill(skillType);
+          Skill ts = u.getModifiedSkill(skillType);
           if ((ss == null ? 0 : ss.getLevel()) + 2 > (ts == null ? 0 : ts.getLevel())) {
             problems.add(ProblemFactory.createProblem(Severity.WARNING,
                 TeachProblemTypes.NOTLEARNING.type, u, this, Resources.get(

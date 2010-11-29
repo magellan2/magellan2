@@ -1724,9 +1724,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     } else if (bE > 0 || rE > 0 || sE > 0 || uE > 0) {
       Client.log.error("report with errors: " + rE + " " + uE + " " + bE + " " + sE);
-      JOptionPane.showMessageDialog(client, Resources.get("client.msg.reporterrors.text", fileName,
-          rE, uE, bE, sE), Resources.get("client.msg.reporterrors.title"),
-          JOptionPane.WARNING_MESSAGE);
+      // JOptionPane.showMessageDialog(client, Resources.get("client.msg.reporterrors.text",
+      // fileName,
+      // rE, uE, bE, sE), Resources.get("client.msg.reporterrors.title"),
+      // JOptionPane.WARNING_MESSAGE);
     }
 
     return data;
@@ -1765,7 +1766,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
         GameData data = null;
 
-        data = loadCR(ui, fileName);
+          data = loadCR(ui, fileName);
 
         if (data != null) {
           client.setData(data);
@@ -2349,8 +2350,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param newData
    */
   public void setData(GameData newData) {
+    log.fine("setData " + newData.getFileType().getName());
     context.setGameData(newData);
     postProcessLoadedCR(newData);
+    log.fine("fire(GameDataEvent)");
     getDispatcher().fire(new GameDataEvent(this, getData(), true));
   }
 

@@ -717,6 +717,7 @@ public class EventDispatcher implements EventDispatcherInterface {
           }
         }
         notifierIsAliveOnList[EventDispatcher.GAMEDATA] = false;
+        EventDispatcher.log.finest("EventDispatcher.Notifier.run(GameDataEvent) finished");
       }
 
       // 2002.03.04 pavkovic: get rid of evil Event, seems that Notifier will

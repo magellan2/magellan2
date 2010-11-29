@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import magellan.client.Client;
-import magellan.client.event.UnitOrdersEvent;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.library.Building;
 import magellan.library.EntityID;
@@ -61,6 +60,7 @@ import magellan.library.rules.SkillType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
 import magellan.library.utils.UnitRoutePlanner;
+import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -79,6 +79,8 @@ public class ExtendedCommandsHelper {
   private GameData world;
   private Unit unit;
   private UnitContainer container;
+
+  private UserInterface ui;
 
   protected ExtendedCommandsHelper(Client client, GameData world) {
     this(client, world, null, null);
@@ -758,4 +760,23 @@ public class ExtendedCommandsHelper {
   public MovementEvaluator getMovementEvaluator() {
     return world.getGameSpecificStuff().getMovementEvaluator();
   }
+
+  /**
+   * Sets the value of the current UserInterface ("progress bar"). This method is not for users.
+   * 
+   * @param ui The value for ui.
+   */
+  public void setUI(UserInterface ui) {
+    this.ui = ui;
+  }
+
+  /**
+   * Returns the current UserInterface ("progress bar").
+   * 
+   * @return the current UserInterface ("progress bar").
+   */
+  public UserInterface getUI() {
+    return ui;
+  }
+
 }

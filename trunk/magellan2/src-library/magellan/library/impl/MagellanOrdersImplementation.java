@@ -424,7 +424,7 @@ class MagellanOrdersImplementation implements Orders {
   /**
    * A ListIterator for Orders.
    */
-  public class OrdersIterator implements ListIterator<Order> {
+  public final class OrdersIterator implements ListIterator<Order> {
 
     private ListIterator<Order> delegate;
 

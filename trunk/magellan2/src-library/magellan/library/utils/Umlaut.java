@@ -13,8 +13,9 @@
 
 package magellan.library.utils;
 
-import java.util.Hashtable;
 import java.util.Map;
+
+import magellan.library.utils.logging.Logger;
 
 /**
  * DOCUMENT ME!
@@ -22,10 +23,11 @@ import java.util.Map;
  * @author Sebastian
  * @version 1.0
  */
-public class Umlaut {
+public final class Umlaut {
   private static final char UMLAUTS[] = { 'Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß' };
   private static final String EXPANSIONS[] = { "Ae", "Oe", "Ue", "ae", "oe", "ue", "ss" };
-  private static final Map<String, String> recodedStrings = new Hashtable<String, String>();
+  private static final Map<String, String> recodedStrings = CollectionFactory.createSyncMap();
+  private static final Map<String, String> normalizeds = CollectionFactory.createSyncMap();
 
   /**
    * Expand all umlauts in a string. Note that uppercase umlauts are converted to mixed case
@@ -123,6 +125,9 @@ public class Umlaut {
     return returnString.toString();
   }
 
+  // for debugging/profiling
+  private static int oldSize = 10;
+
   /**
    * Expand all umlauts in a string and convert it to uppercase.
    * 
@@ -133,7 +138,17 @@ public class Umlaut {
     if (str == null)
       return null;
 
-    return StringFactory.getFactory().intern(
-        Umlaut.convertUmlauts(str).toUpperCase().replaceAll("~", " "));
+    String normalized = normalizeds.get(str);
+    if (normalized == null) {
+      normalized =
+          StringFactory.getFactory().intern(
+              Umlaut.convertUmlauts(str).toUpperCase().replaceAll("~", " "));
+      normalizeds.put(str, normalized);
+      if (normalizeds.size() > oldSize) {
+        oldSize *= 2;
+        Logger.getInstance(Umlaut.class).finest("normalizeds " + normalizeds.size());
+      }
+    }
+    return normalized;
   }
 }

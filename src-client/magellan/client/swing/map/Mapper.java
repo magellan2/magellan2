@@ -720,7 +720,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   /**
    * Creates a sublist of regions to render according to the state of the given int. Values are
-   * interpreted as those of RenderingPlane.
+   * interpreted as those of {@link RenderingPlane}.
    */
   protected List<Sorted> createSubList(int condition, CoordinateID upperLeft,
       CoordinateID lowerRight, List<Sorted> regionList, int duration, int paintNumber) {
@@ -732,7 +732,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     }
 
     if (main == null) {
-      main = new LinkedList<Sorted>();
+    main = new LinkedList<Sorted>();
     } else {
       main.clear();
     }
@@ -926,6 +926,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
         // maybe another region set
         // FIXME (stm) background doesn't get rendered at startup
+        // FIXME2 (stm) this is a performance hole: too many lists copied unnecesarily
         if (planes[planeIndex].getRegionTypes() != getLastRegionRenderingType()) {
           setLastRegionRenderingType(planes[planeIndex].getRegionTypes());
           regList =
@@ -1074,8 +1075,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
         renderer.init(data, g, offset);
 
-        for (Iterator<Sorted> iter = regList.iterator(); iter.hasNext();) {
-          Object obj = iter.next();
+        for (Object obj : regList) {
           boolean selected = false;
           boolean active = false;
 

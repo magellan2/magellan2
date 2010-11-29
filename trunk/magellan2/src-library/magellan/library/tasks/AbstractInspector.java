@@ -197,8 +197,9 @@ public abstract class AbstractInspector implements Inspector {
     checkIgnore(lw);
     checkIgnore(le);
 
-    if (!li.isEmpty() || !lw.isEmpty() || !le.isEmpty()) {
-      List<Problem> problems = new ArrayList<Problem>(10);
+    int size = li.size() + lw.size() + le.size();
+    if (size > 0) {
+      List<Problem> problems = new ArrayList<Problem>(size);
       problems.addAll(li);
       problems.addAll(lw);
       problems.addAll(le);

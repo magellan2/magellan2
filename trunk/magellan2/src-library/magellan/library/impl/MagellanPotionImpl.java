@@ -23,7 +23,7 @@ import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.Potion;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 
 /**
  * Container class for a potion based on its representation in a cr version >= 42.
@@ -81,7 +81,7 @@ public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion 
    */
   public Item addIngredient(Item i) {
     if (ingredients == null) {
-      ingredients = new OrderedHashtable<ID, Item>(4);
+      ingredients = CollectionFactory.<ID, Item> createSyncOrderedMap(4);
     }
 
     ingredients.put(i.getItemType().getID(), i);

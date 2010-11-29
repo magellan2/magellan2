@@ -16,7 +16,6 @@ package magellan.library.gamebinding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -36,6 +35,7 @@ import magellan.library.rules.RegionType;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ProblemFactory;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Regions;
@@ -348,7 +348,8 @@ public class EresseaPostProcessor {
   }
 
   private Map<Long, Region> setUpIDMap(GameData data) {
-    Map<Long, Region> result = new HashMap<Long, Region>(data.getRegions().size() * 5 / 4 + 5, .8f);
+    Map<Long, Region> result =
+        CollectionFactory.<Long, Region> createMap(data.getRegions().size() * 5 / 4 + 5, .8f);
     // for each ID in the report, put at least one into the map. Prefer the one with lowest distance
     for (Region r : data.getRegions()) {
       if (r.hasUID() && !r.getVisibility().equals(Visibility.WRAP)) {
@@ -419,7 +420,7 @@ public class EresseaPostProcessor {
   private void cleanAstralSchemes(GameData gd) {
     gd.rules.getRegionType(EresseaConstants.RT_FIREWALL);
     Map<CoordinateID, Collection<Region>> schemeMap =
-        new HashMap<CoordinateID, Collection<Region>>();
+        CollectionFactory.<CoordinateID, Collection<Region>> createMap();
     for (Region region : gd.getRegions()) {
       if ((region.getCoordinate().getZ() == 1) && (region.schemes().size() > 0)) {
         // Check 1. (number)
@@ -506,10 +507,15 @@ public class EresseaPostProcessor {
         // Inconsistency of type 4. found
         EresseaPostProcessor.log
             .warn("EresseaPostProcessor: Astral schemes inconsistency type: scheme too often");
+        StringBuilder builder = new StringBuilder();
         for (Region region : regionCol) {
-          EresseaPostProcessor.log.warn(region);
+          if (builder.length() > 0) {
+            builder.append(",");
+          }
+          builder.append(region.toString());
           region.clearSchemes();
         }
+        EresseaPostProcessor.log.warn(builder.toString());
       }
     }
   }

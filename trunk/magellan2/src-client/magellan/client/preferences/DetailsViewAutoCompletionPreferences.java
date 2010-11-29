@@ -67,7 +67,7 @@ import magellan.client.swing.InternationalizedDialog;
 import magellan.client.swing.MagellanFocusTraversalPolicy;
 import magellan.client.swing.completion.CompletionGUI;
 import magellan.client.swing.preferences.PreferencesAdapter;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
@@ -173,7 +173,8 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     // make a copy of the self defined completions that will be
     // written back in applyPreferences()
     selfDefinedCompletions =
-        new OrderedHashtable<String, String>(source.getSelfDefinedCompletionsMap());
+        CollectionFactory.<String, String> createSyncOrderedMap(source
+            .getSelfDefinedCompletionsMap());
 
     c.gridx = 0;
     c.gridy = 6;

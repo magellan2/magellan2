@@ -27,7 +27,7 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.MessageRenderer;
 import magellan.library.rules.MessageType;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -126,7 +126,8 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
     this.type = type;
 
     if (attributes != null) {
-      this.attributes = new OrderedHashtable<String, String>((int) (attributes.size() / .7));
+      this.attributes =
+          CollectionFactory.<String, String> createSyncOrderedMap((int) (attributes.size() / .7));
       this.attributes.putAll(attributes);
     }
   }

@@ -26,7 +26,7 @@ import magellan.library.UnitID;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.GameSpecificStuffProvider;
 import magellan.library.impl.MagellanSpellImpl;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.filters.CollectionFilters;
 import magellan.library.utils.logging.Logger;
@@ -56,7 +56,7 @@ public class GenericRules implements Rules {
   protected <T extends ObjectType> Map<String, T> getMap(Class<T> class1) {
     Map<String, T> result = (Map<String, T>) metaMap.get(class1);
     if (result == null) {
-      result = new OrderedHashtable<String, T>();
+      result = CollectionFactory.<String, T> createSyncOrderedMap();
       metaMap.put(class1, result);
     }
     return result;
@@ -67,7 +67,7 @@ public class GenericRules implements Rules {
   protected <T extends ObjectType> Map<String, T> getNamesMap(Class<T> class1) {
     Map<String, T> result = (Map<String, T>) namesMetaMap.get(class1);
     if (result == null) {
-      result = new OrderedHashtable<String, T>();
+      result = CollectionFactory.<String, T> createSyncOrderedMap();
       namesMetaMap.put(class1, result);
     }
     return result;

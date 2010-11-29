@@ -28,14 +28,15 @@ import magellan.library.Group;
 import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Unit;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 
 /**
  * A class representing a group of units within a faction.
  */
 public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
   private Faction faction = null;
-  private Map<EntityID, Alliance> allies = new OrderedHashtable<EntityID, Alliance>();
+  private Map<EntityID, Alliance> allies = CollectionFactory
+      .<EntityID, Alliance> createSyncOrderedMap();
 
   private static Map<String, String> tagMap = null; // Map for external tags
   /** Contains all attributes */

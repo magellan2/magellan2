@@ -15,7 +15,7 @@ import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaPostProcessor;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -75,7 +75,7 @@ public class E3APostProcessor extends EresseaPostProcessor {
             }
             if (!found) {
               if (faction1.getAllies() == null) {
-                faction1.setAllies(new OrderedHashtable<EntityID, Alliance>());
+                faction1.setAllies(CollectionFactory.<EntityID, Alliance> createSyncOrderedMap());
               }
               faction1.getAllies().put(faction2.getID(), new Alliance(faction2, fightState));
             }

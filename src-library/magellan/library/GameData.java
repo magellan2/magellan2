@@ -47,12 +47,12 @@ import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Problem;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ProblemFactory;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
-import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 import magellan.library.utils.ReportMerger;
 import magellan.library.utils.ReportMerger.AssignData;
@@ -630,7 +630,7 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   public void addAllianceGroup(AllianceGroup alliance) {
     if (alliancegroups == null) {
-      alliancegroups = new OrderedHashtable<ID, AllianceGroup>(1);
+      alliancegroups = CollectionFactory.<ID, AllianceGroup> createSyncOrderedMap(1);
     }
     alliancegroups.put(alliance.getID(), alliance);
   }
@@ -1432,7 +1432,7 @@ public abstract class GameData implements Cloneable, Addeable {
     if (messages == null)
       return;
 
-    Map<Message, Message> ht = new OrderedHashtable<Message, Message>();
+    Map<Message, Message> ht = CollectionFactory.<Message, Message> createSyncOrderedMap();
 
     for (Message msg : messages) {
       if (ht.put(msg, msg) != null) {

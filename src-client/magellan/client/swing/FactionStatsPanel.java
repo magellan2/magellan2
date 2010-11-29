@@ -78,7 +78,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.rules.UnitContainerType;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SkillStats;
@@ -271,7 +271,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
      * Used to collect persons of different race than their faction. Key: String (racename), Value:
      * List containing the units
      */
-    Map<String, List<Unit>> specialPersons = new OrderedHashtable<String, List<Unit>>();
+    Map<String, List<Unit>> specialPersons =
+        CollectionFactory.<String, List<Unit>> createSyncOrderedMap();
     Collection<Unit> heroes = new LinkedList<Unit>();
     int heros_count = 0;
 

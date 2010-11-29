@@ -17,7 +17,7 @@ import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SpellSyntax;
 import magellan.library.utils.logging.Logger;
@@ -258,7 +258,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    */
   public Map<String, String> getComponents() {
     if (components == null) {
-      components = new OrderedHashtable<String, String>();
+      components = CollectionFactory.<String, String> createSyncOrderedMap();
     }
     return components;
   }

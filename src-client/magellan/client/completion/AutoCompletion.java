@@ -44,8 +44,8 @@ import magellan.library.completion.Completion;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.gamebinding.EresseaOrderCompleter;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.OrderToken;
-import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.logging.Logger;
 
@@ -235,7 +235,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * @return Map containing name to
    */
   private Map<String, String> getSelfDefinedCompletions(Properties aSettings) {
-    Map<String, String> result = new OrderedHashtable<String, String>();
+    Map<String, String> result = CollectionFactory.<String, String> createSyncOrderedMap();
 
     // load selfdefined completions
     List<String> completionNames =

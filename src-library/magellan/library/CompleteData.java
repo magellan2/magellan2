@@ -22,7 +22,7 @@ import magellan.library.rules.MessageType;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ProblemFactory;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Translations;
 
@@ -34,17 +34,26 @@ import magellan.library.utils.Translations;
  */
 public class CompleteData extends GameData {
 
-  protected Map<CoordinateID, Region> regions = new OrderedHashtable<CoordinateID, Region>();
-  protected Map<UnitID, Unit> units = new OrderedHashtable<UnitID, Unit>();
-  protected Map<UnitID, TempUnit> tempUnits = new OrderedHashtable<UnitID, TempUnit>();
-  protected Map<EntityID, Faction> factions = new OrderedHashtable<EntityID, Faction>();
-  protected Map<EntityID, Ship> ships = new OrderedHashtable<EntityID, Ship>();
-  protected Map<EntityID, Building> buildings = new OrderedHashtable<EntityID, Building>();
-  protected Map<IntegerID, Island> islands = new OrderedHashtable<IntegerID, Island>();
-  protected Map<IntegerID, MessageType> msgTypes = new OrderedHashtable<IntegerID, MessageType>();
-  protected Map<StringID, Spell> spells = new OrderedHashtable<StringID, Spell>();
-  protected Map<IntegerID, Potion> potions = new OrderedHashtable<IntegerID, Potion>();
-  protected Map<IntegerID, HotSpot> hotSpots = new OrderedHashtable<IntegerID, HotSpot>();
+  protected Map<CoordinateID, Region> regions = CollectionFactory
+      .<CoordinateID, Region> createSyncOrderedMap();
+  protected Map<UnitID, Unit> units = CollectionFactory.<UnitID, Unit> createSyncOrderedMap();
+  protected Map<UnitID, TempUnit> tempUnits = CollectionFactory
+      .<UnitID, TempUnit> createSyncOrderedMap();
+  protected Map<EntityID, Faction> factions = CollectionFactory
+      .<EntityID, Faction> createSyncOrderedMap();
+  protected Map<EntityID, Ship> ships = CollectionFactory.<EntityID, Ship> createSyncOrderedMap();
+  protected Map<EntityID, Building> buildings = CollectionFactory
+      .<EntityID, Building> createSyncOrderedMap();
+  protected Map<IntegerID, Island> islands = CollectionFactory
+      .<IntegerID, Island> createSyncOrderedMap();
+  protected Map<IntegerID, MessageType> msgTypes = CollectionFactory
+      .<IntegerID, MessageType> createSyncOrderedMap();
+  protected Map<StringID, Spell> spells = CollectionFactory
+      .<StringID, Spell> createSyncOrderedMap();
+  protected Map<IntegerID, Potion> potions = CollectionFactory
+      .<IntegerID, Potion> createSyncOrderedMap();
+  protected Map<IntegerID, HotSpot> hotSpots = CollectionFactory
+      .<IntegerID, HotSpot> createSyncOrderedMap();
   protected Translations translations = new Translations();
   protected Locale locale = null;
   protected Map<CoordinateID, Region> selectedRegions = new TreeMap<CoordinateID, Region>();
@@ -55,9 +64,9 @@ public class CompleteData extends GameData {
   @Override
   public void setIslands(Map<IntegerID, Island> islands) {
     if (islands == null) {
-      this.islands = new OrderedHashtable<IntegerID, Island>();
+      this.islands = CollectionFactory.<IntegerID, Island> createSyncOrderedMap();
     } else {
-      this.islands = new OrderedHashtable<IntegerID, Island>(islands);
+      this.islands = CollectionFactory.<IntegerID, Island> createSyncOrderedMap(islands);
     }
   }
 

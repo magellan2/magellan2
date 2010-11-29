@@ -26,6 +26,7 @@ package magellan.library.utils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A class that maintains and integer score and type for a key.
@@ -38,7 +39,7 @@ public class Score<K> implements Comparable<Score<K>> {
   private K key;
   private int score = 0;
   private String type;
-  private OrderedHashtable<String, String> types = new OrderedHashtable<String, String>(2);
+  private Map<String, String> types = CollectionFactory.<String, String> createSyncOrderedMap(2);
 
   /**
    * Creates a score without type and value 0.

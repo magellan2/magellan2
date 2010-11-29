@@ -20,7 +20,7 @@ import java.util.Map;
 
 import magellan.library.ID;
 import magellan.library.Rules;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -100,7 +100,7 @@ public class Options {
   }
 
   private void initOptions(Rules rules) {
-    options = new OrderedHashtable<ID, OptionCategory>();
+    options = CollectionFactory.<ID, OptionCategory> createSyncOrderedMap();
 
     for (Iterator<OptionCategory> iter = rules.getOptionCategoryIterator(); iter.hasNext();) {
       OptionCategory orig = iter.next();

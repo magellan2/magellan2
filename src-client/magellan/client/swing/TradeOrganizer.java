@@ -25,6 +25,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -61,7 +62,7 @@ import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.NameComparator;
@@ -87,7 +88,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   protected JList factionList;
 
   // Fiete: Keys: German Values:locale (en)
-  protected Hashtable<String, String> luxuryTranslations = null;
+  protected Map<String, String> luxuryTranslations = null;
 
   /**
    * Creates a new TradeOrganizer object.
@@ -951,7 +952,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   private void buildLuxuryTranslations() {
 
     if (luxuryTranslations == null) {
-      luxuryTranslations = new OrderedHashtable<String, String>();
+      luxuryTranslations = CollectionFactory.<String, String> createSyncOrderedMap();
     } else {
       luxuryTranslations.clear();
     }

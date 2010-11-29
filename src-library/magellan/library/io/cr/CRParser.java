@@ -79,10 +79,10 @@ import magellan.library.rules.Resource;
 import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillCategory;
 import magellan.library.rules.SkillType;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
-import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.UserInterface;
@@ -523,7 +523,7 @@ public class CRParser implements RulesIO, GameDataIO {
       }
 
       if (map == null) {
-        map = new OrderedHashtable<ID, Spell>();
+        map = CollectionFactory.<ID, Spell> createSyncOrderedMap();
       }
 
       map.put(s.getID(), s);
@@ -613,7 +613,7 @@ public class CRParser implements RulesIO, GameDataIO {
           msg.setAcknowledged(sc.argv[1].equals("1"));
         } else if (sc.argc == 2) {
           if (msg.getAttributes() == null) {
-            msg.setAttributes(new OrderedHashtable<String, String>(4));
+            msg.setAttributes(CollectionFactory.<String, String> createSyncOrderedMap(4));
           }
 
           CoordinateID coord = CoordinateID.parse(sc.argv[0], ",");
@@ -1784,7 +1784,7 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   private Map<EntityID, Alliance> parseAlliance(Map<EntityID, Alliance> allies) throws IOException {
     if (allies == null) {
-      allies = new OrderedHashtable<EntityID, Alliance>();
+      allies = CollectionFactory.<EntityID, Alliance> createSyncOrderedMap();
     }
 
     final EntityID id =
@@ -2077,7 +2077,7 @@ public class CRParser implements RulesIO, GameDataIO {
     Group group = null;
 
     if (groups == null) {
-      groups = new OrderedHashtable<IntegerID, Group>();
+      groups = CollectionFactory.<IntegerID, Group> createSyncOrderedMap();
     }
 
     group = groups.get(id);
@@ -2520,7 +2520,7 @@ public class CRParser implements RulesIO, GameDataIO {
       final LuxuryPrice pr = new LuxuryPrice(itemType, Integer.parseInt(sc.argv[0]));
 
       if (prices == null) {
-        prices = new OrderedHashtable<StringID, LuxuryPrice>(8, .9f);
+        prices = CollectionFactory.<StringID, LuxuryPrice> createSyncOrderedMap(8, .9f);
       }
 
       prices.put(itemType.getID(), pr);

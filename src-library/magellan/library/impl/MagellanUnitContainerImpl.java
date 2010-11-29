@@ -40,7 +40,7 @@ import magellan.library.rules.CastleType;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.Cache;
 import magellan.library.utils.CacheHandler;
-import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.Taggable;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
@@ -154,7 +154,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public Item addItem(Item i) {
     if (items == null) {
-      items = new OrderedHashtable<ID, Item>(3);
+      items = CollectionFactory.<ID, Item> createSyncOrderedMap(3);
     }
 
     items.put(i.getItemType().getID(), i);
@@ -258,7 +258,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public void addUnit(Unit u) {
     if (units == null) {
-      units = new OrderedHashtable<EntityID, Unit>(3, .6f);
+      units = CollectionFactory.<EntityID, Unit> createSyncOrderedMap(3, .6f);
 
       // enforce the creation of a new collection view:
       unitCollection = null;

@@ -42,9 +42,9 @@ import magellan.library.rules.MessageType;
 import magellan.library.rules.Options;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.MagellanFactory;
-import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TrustLevels;
@@ -1112,7 +1112,7 @@ public class GameDataMerger {
     if ((curFaction.getAllies() != null && curFaction.getAllies().size() > 0)
         || curFaction.getID().equals(curGD.getOwnerFaction())) {
       if (newFaction.getAllies() == null) {
-        newFaction.setAllies(new OrderedHashtable<EntityID, Alliance>());
+        newFaction.setAllies(CollectionFactory.<EntityID, Alliance> createSyncOrderedMap());
       } else {
         newFaction.getAllies().clear();
       }
@@ -1376,7 +1376,7 @@ public class GameDataMerger {
       ReportTransformer transformer) {
     if ((curMsg.getAttributes() != null) && (curMsg.getAttributes().size() > 0)) {
       if (newMsg.getAttributes() == null) {
-        newMsg.setAttributes(new OrderedHashtable<String, String>(4));
+        newMsg.setAttributes(CollectionFactory.<String, String> createSyncOrderedMap(4));
       } else {
         newMsg.getAttributes().clear();
       }
@@ -1976,7 +1976,7 @@ public class GameDataMerger {
     /******************** PRICES *************************************/
     if ((curRegion.getPrices() != null) && (curRegion.getPrices().size() > 0)) {
       if (resultRegion.getPrices() == null) {
-        resultRegion.setPrices(new OrderedHashtable<StringID, LuxuryPrice>(3));
+        resultRegion.setPrices(CollectionFactory.<StringID, LuxuryPrice> createSyncOrderedMap(3));
       } else {
         resultRegion.getPrices().clear();
       }
@@ -2369,7 +2369,7 @@ public class GameDataMerger {
     }
 
     if ((curSpell.getComponents() != null) && (curSpell.getComponents().size() > 0)) {
-      newSpell.setComponents(new OrderedHashtable<String, String>());
+      newSpell.setComponents(CollectionFactory.<String, String> createSyncOrderedMap());
       newSpell.getComponents().putAll(curSpell.getComponents());
     }
   }
@@ -2598,7 +2598,7 @@ public class GameDataMerger {
 
     if (resultUnit.getSkillMap() == null) {
       // TODO is this necessary?
-      resultUnit.setSkills(new OrderedHashtable<StringID, Skill>(2));
+      resultUnit.setSkills(CollectionFactory.<StringID, Skill> createSyncOrderedMap(2));
     } else {
       oldSkills.addAll(resultUnit.getSkills());
     }

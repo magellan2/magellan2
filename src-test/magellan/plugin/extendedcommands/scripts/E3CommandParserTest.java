@@ -17,6 +17,7 @@ import magellan.client.Client;
 import magellan.client.ClientProvider;
 import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
+import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.MissingData;
@@ -149,7 +150,7 @@ public class E3CommandParserTest {
   @Test
   public final void testExecute() {
     try {
-      parser.execute(null);
+      parser.execute((Faction) null);
       fail("argument null not allowed");
     } catch (NullPointerException e) {
       // okay

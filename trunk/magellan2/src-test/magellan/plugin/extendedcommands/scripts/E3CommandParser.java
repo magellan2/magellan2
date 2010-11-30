@@ -50,7 +50,6 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.SkillType;
-import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
@@ -613,11 +612,14 @@ public class E3CommandParser {
       }
     }
 
+    if (!testUnit(tokens[1], target, warning))
+      return;
+
     // get full amount (=amount * persons)
     int fullAmount = amount;
     if (je == 1) {
       if (target == null) {
-        addNewOrder("; Einheit nicht gefunden; kann Menge nicht überprüfen", true);
+        addNewMessage("Einheit nicht gefunden; kann Menge nicht überprüfen");
       } else {
         fullAmount = target.getModifiedPersons() * amount;
       }
@@ -633,9 +635,6 @@ public class E3CommandParser {
       amount = getItemCount(currentUnit, item);
       je = 0;
     }
-
-    if (!testUnit(tokens[1], target, warning))
-      return;
 
     // make GIVE order
     if (amount > 0) {
@@ -704,7 +703,7 @@ public class E3CommandParser {
         if (tokens.length > 2) {
           addNeed(tokens[2], unit, 0, Integer.MAX_VALUE);
         } else {
-          for (String item : needMap.keySet()) {
+          for (String item : supplyMap.keySet()) {
             addNeed(item, unit, 0, Integer.MAX_VALUE);
           }
         }
@@ -1242,7 +1241,11 @@ public class E3CommandParser {
       return;
     amount = Math.min(amount, supply.getAmount());
     if (amount > 0) {
-      addReserveOrder(need.getUnit(), need.getItem(), amount, false);
+      if (amount == need.getUnit().getPersons()) {
+        addReserveOrder(need.getUnit(), need.getItem(), 1, true);
+      } else {
+        addReserveOrder(need.getUnit(), need.getItem(), amount, false);
+      }
       need.reduceAmount(amount);
       need.reduceMinAmount(amount);
       supply.reduceAmount(amount);

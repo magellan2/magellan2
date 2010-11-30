@@ -1080,8 +1080,8 @@ public class EresseaOrderCompleter implements Completer {
           order.append(resource.getOrderName());
         } else {
           order.append("\n").append(getOrderTranslation(EresseaConstants.O_GIVE)).append(" ")
-              .append(uid.toString()).append(" ").append(i).append(" ").append(
-                  resource.getOrderName());
+              .append(uid.toString()).append(" ").append(i * resource.getAmount()).append(" ")
+              .append(resource.getOrderName());
         }
         order.append("; ").append(name);
       }

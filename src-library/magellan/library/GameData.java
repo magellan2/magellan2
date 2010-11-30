@@ -426,7 +426,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * is set to true, if while proceeding some functions (e.g. CRParse) and we are running out of
    * memory... data may be corrupted or empty then
    * 
-   * @deprecated Use <code>getErros().contains({@link #OUT_OF_MEMORY})</code> instead
+   * @deprecated Use {@link #isOutOfMemory()} instead
    */
   @Deprecated
   public boolean outOfMemory = false;

@@ -240,6 +240,7 @@ public abstract class AbstractPlugInLoader<T> {
         + "magellan-plugins.jar");
 
     for (String path : paths) {
+      log.fine("searching in " + path);
       classes.addAll(getClassesFromPath(resLoader, externalModuleClass, path));
     }
 

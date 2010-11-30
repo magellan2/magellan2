@@ -57,6 +57,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
+import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
 import magellan.library.utils.UnitRoutePlanner;
@@ -99,6 +100,7 @@ public class ExtendedCommandsHelper {
     this.world = world;
     this.unit = unit;
     this.container = container;
+    ui = new NullUserInterface();
   }
 
   protected GameData getData() {

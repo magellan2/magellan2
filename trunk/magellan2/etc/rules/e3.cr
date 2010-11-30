@@ -699,8 +699,6 @@ ITEM "Juwel"
 1;weight
 "luxuries";category
 1;storeinbonw
-RESOURCES
-7;Silber
 
 ITEM "Weihrauch"
 "Weihrauch";name
@@ -1189,18 +1187,12 @@ ITEM "Siebenmeilentee"
 "Alchemie";makeskill
 "potions";category
 2;makeskilllevel
-RESOURCES
-1;Blauer Baumringel
-1;Windbeutel
 
 ITEM "Goliathwasser"
 "Goliathwasser";name
 "Alchemie";makeskill
 "potions";category
 2;makeskilllevel
-RESOURCES
-1;Gurgelkraut
-1;Fjordwuchs
 
 
 ITEM "Wasser des Lebens"
@@ -1208,9 +1200,6 @@ ITEM "Wasser des Lebens"
 "Alchemie";makeskill
 "potions";category
 2;makeskilllevel
-RESOURCES
-1;Elfenlieb
-1;Knotiger Saugwurz
 
 
 ITEM "Trank der Wahrheit"
@@ -1218,9 +1207,6 @@ ITEM "Trank der Wahrheit"
 "Alchemie";makeskill
 "potions";category
 2;makeskilllevel
-RESOURCES
-1;Flachwurz
-1;Fjordwuchs
 
 
 ITEM "Schaffenstrunk"
@@ -1228,10 +1214,6 @@ ITEM "Schaffenstrunk"
 "Alchemie";makeskill
 4;makeskilllevel
 "potions";category
-RESOURCES
-1;Alraune
-1;Spaltwachs
-1;Würziger Wagemut
 
 
 ITEM "Wundsalbe"
@@ -1239,113 +1221,60 @@ ITEM "Wundsalbe"
 "Alchemie";makeskill
 4;makeskilllevel
 "potions";category
-RESOURCES
-1;Weißer Wüterich
-1;Blauer Baumringel
-1;Würziger Wagemut
 
 ITEM "Bauernblut"
 "Bauernblut";name
 "Alchemie";makeskill
 4;makeskilllevel
 "potions";category
-RESOURCES
-1;Höhlenglimm
-1;Fjordwuchs
-1;Blauer Baumringel
-1;Bauer
 
 ITEM "Gehirnschmalz"
 "Gehirnschmalz";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
-RESOURCES
-1;Wasserfinder
-1;Steinbeißer
-1;Windbeutel
-1;Gurgelkraut
 
 ITEM "Dumpfbackenbrot"
 "Dumpfbackenbrot";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
-RESOURCES
-1;Eulenauge
-1;Grüner Spinnerich
-1;Höhlenglimm
-1;Fjordwuchs
 
 ITEM "Nestwärme"
 "Nestwärme";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
-RESOURCES
-1;Eisblume;
-1;Grüner Spinnerich
-1;Spaltwachs
-1;Kakteenschwitz
 
 ITEM "Pferdeglück"
 "Pferdeglück";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
-RESOURCES
-1;Blauer Baumringel
-1;Sandfäule
-1;Kakteenschwitz
-1;Knotiger Saugwurz
 
 ITEM "Berserkerblut"
 "Berserkerblut";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
-RESOURCES
-1;Weißer Wüterich
-1;Alraune
-1;Flachwurz
-1;Sandfäule
 
 ITEM "Bauernlieb"
 "Bauernlieb";name
 "Alchemie";makeskill
 8;makeskilllevel
 "potions";category
-RESOURCES
-1;Alraune
-1;Schneekristall
-1;Steinbeißer
-1;Blasenmorchel
-1;Elfenlieb
 
 ITEM "Elixier der Macht"
 "Elixier der Macht";name
 "Alchemie";makeskill
 8;makeskilllevel
 "potions";category
-RESOURCES
-1;Elfenlieb
-1;Wasserfinder
-1;Windbeutel
-1;Grüner Spinnerich
-1;Blasenmorchel
-1;Drachenblut
 
 ITEM "Heiltrank"
 "Heiltrank";name
 "Alchemie";makeskill
 8;makeskilllevel
 "potions";category
-RESOURCES
-1;Gurgelkraut
-1;Windbeutel
-1;Eisblume
-1;Elfenlieb
-1;Spaltwachs
 
 ITEM "Phiole"
 "Phiole";name

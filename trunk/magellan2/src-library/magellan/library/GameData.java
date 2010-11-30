@@ -429,7 +429,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * @deprecated Use <code>getErros().contains({@link #OUT_OF_MEMORY})</code> instead
    */
   @Deprecated
-  private boolean outOfMemory = false;
+  public boolean outOfMemory = false;
 
   /**
    * sortIndex is used to keep objects from CRParser to CRWriter in an order. maxSortIndex is set

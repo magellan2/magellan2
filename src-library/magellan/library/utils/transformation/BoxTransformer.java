@@ -146,7 +146,7 @@ public class BoxTransformer implements ReportTransformer {
      * returns the result.
      */
     public CoordinateID putInBox(CoordinateID c) {
-      return putInBoxX(putInBoxY(c));
+      return putInBoxX(putInBoxY(putInBoxX(c)));
     }
 
     /**

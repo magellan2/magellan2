@@ -834,6 +834,8 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Removes a region from the data. Also removes units, buildings, ships, and hot spots.
+   * 
+   * @return The region that was removed, or <code>null</code> if the region wasn't found
    */
   public Region removeRegion(Region r) {
     Region removed = regionView().remove(r.getID());
@@ -1861,7 +1863,7 @@ public abstract class GameData implements Cloneable, Addeable {
       // this will probably not happen, since the Exception would have been thrown before. Anyway...
       assigner.data2 = this;
     }
-    if (assigner.data2 != null) {
+    if (assigner.data2 == null) {
       assigner.data2 = this;
     }
 

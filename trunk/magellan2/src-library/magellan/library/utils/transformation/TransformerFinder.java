@@ -718,11 +718,13 @@ public class TransformerFinder {
         if (original.getCoordY() == w.getCoordY()) {
           if (original.getCoordX() - w.getCoordX() > 0) {
             result &=
-                changeBoxX(boxes, w.getCoordinate().getZ(), w.getCoordX() + 1, original.getCoordX());
+                changeBoxX(boxes, w.getCoordinate().getZ(), w.getCoordX() + 1 + w.getCoordY() / 2,
+                    original.getCoordX() + w.getCoordY() / 2);
           }
           if (original.getCoordX() - w.getCoordX() < 0) {
             result &=
-                changeBoxX(boxes, w.getCoordinate().getZ(), original.getCoordX(), w.getCoordX() - 1);
+                changeBoxX(boxes, w.getCoordinate().getZ(), original.getCoordX() + w.getCoordY()
+                    / 2, w.getCoordX() - 1 + w.getCoordY() / 2);
           }
         } else {
           if (original.getCoordY() - w.getCoordY() > 0) {
@@ -745,14 +747,19 @@ public class TransformerFinder {
   private static boolean changeBoxX(BBoxes boxes, int layer, int newmin, int newmax) {
     BBox oldBox = boxes.getBox(layer);
     boolean result = true;
+    boolean keep = false;
     if (oldBox != null
         && ((oldBox.minx != Integer.MAX_VALUE && oldBox.minx != newmin) || (oldBox.maxx != Integer.MAX_VALUE && oldBox.maxx != newmax))) {
-      log.warn("box changed: " + oldBox + "->" + newmin + "/" + newmax);
+      log.warn("box changed: " + oldBox + "-> x: " + newmin + "/" + newmax);
       if (oldBox.maxx - oldBox.minx != newmax - newmin) {
         result = false;
+      } else {
+        keep = true;
       }
     }
-    boxes.setBoxX(layer, newmin, newmax);
+    if (!keep) {
+      boxes.setBoxX(layer, newmin, newmax);
+    }
     return result;
   }
 
@@ -764,7 +771,7 @@ public class TransformerFinder {
     BBox oldBox = boxes.getBox(layer);
     if (oldBox != null
         && ((oldBox.miny != Integer.MAX_VALUE && oldBox.miny != newmin) || (oldBox.maxy != Integer.MAX_VALUE && oldBox.maxy != newmax))) {
-      log.warn("box changed: " + oldBox + "->" + newmin + "/" + newmax);
+      log.warn("box changed: " + oldBox + "-> y: " + newmin + "/" + newmax);
       if (oldBox.maxy - oldBox.miny != newmax - newmin) {
         result = false;
       }

@@ -1581,7 +1581,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if (sc.isBlock) {
         break;
       } else {
-        unknown("ITEMCATEGORY", false);
+        unknown("ITEMCATEGORY", true);
       }
     }
   }
@@ -2739,7 +2739,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if (sc.isBlock) {
         break;
       } else {
-        unknown("GRENZE", false);
+        unknown("GRENZE", true);
       }
     }
 
@@ -2765,7 +2765,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if (sc.isBlock) {
         break;
       } else {
-        unknown("SIGN", false);
+        unknown("SIGN", true);
       }
     }
     return s;

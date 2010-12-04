@@ -1,3 +1,6 @@
+2010-11-23 / Build 454 - stm (stm_@users.sourceforge.net)
+    * fixed bug with unknown tags in CRParser
+    
 2010-11-23 / Build 446 - stm (stm_@users.sourceforge.net)
     * implemented experimental message inspector
     * tweaked positioning of the various dialogs

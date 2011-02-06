@@ -1151,6 +1151,11 @@ public class EresseaOrderCompleter implements Completer {
     // "", Math.abs(unit.getCombatStatus() - 2)));
     // }
 
+    if ((unit == null) || (unit.getCombatStatus() != EresseaConstants.CS_REAR)) {
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_COMBAT_REAR), "", Math
+          .abs(unit.getCombatStatus() - 3)));
+    }
+
     if ((unit == null) || (unit.getCombatStatus() != EresseaConstants.CS_DEFENSIVE)) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.O_COMBAT_DEFENSIVE), "",
           Math.abs(unit.getCombatStatus() - 3)));

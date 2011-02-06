@@ -48,6 +48,7 @@ import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
+import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
@@ -567,6 +568,7 @@ public class ExtendedCommands {
             errorWindow.setVisible(true);
           }
         } finally {
+          client.getDispatcher().fire(new GameDataEvent(this, world));
           ui.ready();
         }
       }

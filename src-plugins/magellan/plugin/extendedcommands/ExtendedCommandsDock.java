@@ -351,6 +351,27 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     this.world = world;
     if (tabs == null)
       return;
+    boolean modified = false;
+    for (ExtendedCommandsDocument doc : docMap.values()) {
+      if (doc.isModified()) {
+        modified = true;
+      }
+    }
+    if (modified) {
+      int answer =
+          JOptionPane.showConfirmDialog(Client.INSTANCE, Resources
+              .get("extended_commands.questions.gamedata_save"), Resources
+              .get("extended_commands.questions.gamedata_save_title"), JOptionPane.YES_NO_OPTION);
+      if (answer == JOptionPane.YES_OPTION) {
+        for (Tab tab : tabMap.values()) {
+          if (tab instanceof TitledTab) {
+            saveTab((TitledTab) tab);
+          } else {
+            log.error("TitledTab expected");
+          }
+        }
+      }
+    }
     // this means, we have to close all currently open tabs
     if (tabs.getTabCount() > 0) {
       tabMap.clear();

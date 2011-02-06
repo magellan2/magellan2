@@ -636,7 +636,8 @@ public class GameDataMerger {
             addUnits(olderGD.getFaction(olderGD.getOwnerFaction()).units(), resultGD, sortIndex);
       }
       if (newerGD.getOwnerFaction() != null
-          && !newerGD.getOwnerFaction().equals(olderGD.getOwnerFaction())) {
+          && !newerGD.getOwnerFaction().equals(olderGD.getOwnerFaction())
+          && newerGD.getFaction(newerGD.getOwnerFaction()) != null) {
         sortIndex =
             addUnits(newerGD.getFaction(newerGD.getOwnerFaction()).units(), resultGD, sortIndex);
       }

@@ -149,11 +149,17 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
   public String toString() {
     // Fiete 20060910
     // added support for wahrer Typ
+    // we could use getModifiedName here but it seems a bit obtrusive (and hard to handle tree
+    // updates)
+    String myName = getName();
+    if (myName == null) {
+      myName = getBuildingType().toString() + " " + getID();
+    }
     if (trueBuildingType == null)
-      return getModifiedName() + " (" + id + "), " + getType() + " (" + getSize() + ")";
+      return getName() + " (" + id + "), " + getType() + " (" + getSize() + ")";
     else
-      return trueBuildingType + ": " + getModifiedName() + " (" + id + "), " + getType() + " ("
-          + getSize() + ")";
+      return trueBuildingType + ": " + getName() + " (" + id + "), " + getType() + " (" + getSize()
+          + ")";
   }
 
   /**

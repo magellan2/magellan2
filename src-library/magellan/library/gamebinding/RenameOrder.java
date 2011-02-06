@@ -161,7 +161,7 @@ public class RenameOrder extends SimpleOrder {
         if (unit.getRegion().getOwnerUnit() != unit) {
           setWarning(unit, line, Resources.get("order.name.warning.owner"));
         } else {
-          named = unit.getFaction();
+          named = unit.getRegion();
         }
       }
       break;

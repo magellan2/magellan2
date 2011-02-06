@@ -28,6 +28,7 @@ import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
+import magellan.library.utils.Resources;
 
 /**
  * A class representing a faction in Eressea.
@@ -192,7 +193,13 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    */
   @Override
   public String toString() {
-    return getModifiedName() + " (" + getID() + ")";
+    // we could use getModifiedName here but it seems a bit obtrusive (and hard to handle tree
+    // updates)
+    String myName = getName();
+    if (myName == null) {
+      myName = Resources.get("crparser.unknownfaction", getID());
+    }
+    return myName + " (" + getID() + ")";
   }
 
   /**

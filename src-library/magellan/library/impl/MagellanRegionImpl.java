@@ -47,9 +47,9 @@ import magellan.library.rules.CastleType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.UnitContainerType;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
-import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Units;
 import magellan.library.utils.logging.Logger;
@@ -466,7 +466,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       throw new NullPointerException();
 
     if (resources == null) {
-      resources = new OrderedHashtable<Identifiable, RegionResource>();
+      resources = CollectionFactory.<Identifiable, RegionResource> createSyncOrderedMap();
 
     }
 
@@ -583,7 +583,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       throw new NullPointerException();
 
     if (schemes == null) {
-      schemes = new OrderedHashtable<ID, Scheme>(4);
+      schemes = CollectionFactory.<ID, Scheme> createSyncOrderedMap(4);
 
       // enforce the creation of a new collection view
       // AG: Since we just create if the scheme map is non-null not necessary
@@ -651,7 +651,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       throw new NullPointerException();
 
     if (borders == null) {
-      borders = new OrderedHashtable<ID, Border>(3);
+      borders = CollectionFactory.<ID, Border> createSyncOrderedMap(3);
 
       // enforce the creation of a new collection view
       // AG: Since we just create if the scheme map is non-null not necessary
@@ -1102,14 +1102,17 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (unitRelationsRefreshed == false || forceRefresh) {
       unitRelationsRefreshed = true;
 
-      for (Unit u : units()) {
-        u.clearCache();
-      }
+      getData().getGameSpecificStuff().getRelationFactory().createRelations(this);
 
-      for (Unit u : units()) {
-        u.refreshRelations();
-        // TODO fire UnitOrdersEvent here to update views??
-      }
+      // for (Unit u : units()) {
+      // u.clearCache();
+      // }
+      //
+      // for (Unit u : units()) {
+      // // FIXME (stm) too many calls!
+      // u.refreshRelations();
+      // // TODO fire UnitOrdersEvent here to update views??
+      // }
 
       getZeroUnit().refreshRelations();
 

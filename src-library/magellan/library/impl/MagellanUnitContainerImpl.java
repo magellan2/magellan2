@@ -396,7 +396,13 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   @Override
   public String toString() {
-    return getModifiedName() + " (" + id + "), " + type;
+    // we could use getModifiedName here but it seems a bit obtrusive (and hard to handle tree
+    // updates)
+    String myName = getName();
+    if (myName == null) {
+      myName = getType().toString();
+    }
+    return myName + " (" + id + "), " + type;
   }
 
   /**

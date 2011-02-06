@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import magellan.library.Alliance;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.ID;
@@ -93,6 +95,26 @@ public class Units {
    */
   public static boolean isPrivilegedAndNoSpy(Unit u) {
     return (u != null) && Units.isPrivileged(u.getFaction()) && !u.isSpy();
+  }
+
+  /**
+   * Returns true if the help status for aState of the faction includes ally.
+   * 
+   * @param faction The source faction
+   * @param ally The potential ally
+   * @param aState The help state, e.g. {@link EresseaConstants#A_GUARD}.
+   * @return true if the faction's alliance value for the ally includes the state.
+   */
+  public static boolean isAllied(Faction faction, Faction ally, int aState) {
+    if (faction == null || ally == null)
+      return false;
+    if (faction.equals(ally))
+      return true;
+    Map<EntityID, Alliance> allies = faction.getAllies();
+    if (allies == null)
+      return false;
+    Alliance alliance = allies.get(ally.getID());
+    return alliance != null && alliance.getState(aState);
   }
 
   /**

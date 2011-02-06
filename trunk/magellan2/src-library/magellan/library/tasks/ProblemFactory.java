@@ -186,6 +186,15 @@ public class ProblemFactory {
           }
         }
       }
+      if (object == null) {
+        attribute = m.getAttributes().get("mage");
+        if (attribute != null) {
+          UnitID id = UnitID.createUnitID(attribute, 10, data.base);
+          if (id != null) {
+            object = data.getUnit(id);
+          }
+        }
+      }
 
       attribute = m.getAttributes().get("region");
       if (region == null && attribute != null) {

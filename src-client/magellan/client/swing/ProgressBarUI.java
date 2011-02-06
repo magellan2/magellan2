@@ -143,9 +143,8 @@ public class ProgressBarUI implements UserInterface, ActionListener {
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
   public void setMaximum(int progressmaximum) {
-    if (progressmaximum <= 0) {
-      dlg.progressBar.setIndeterminate(true);
-    } else {
+    dlg.progressBar.setIndeterminate(progressmaximum <= 0);
+    if (progressmaximum > 0) {
       dlg.progressBar.setMaximum(progressmaximum);
     }
   }
@@ -187,15 +186,14 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   }
 
   protected synchronized void doShow() {
-    (new Thread(new Runnable() {
-
+    SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         if (!ready) {
           showing = true;
           dlg.setVisible(true);
         }
       }
-    })).start();
+    });
   }
 
   /**
@@ -208,6 +206,13 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     ready = true;
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
+        if (!showing) {
+          try {
+            Thread.sleep(1000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        }
         if (dlg.isVisible()) {
           dlg.setVisible(false);
         }

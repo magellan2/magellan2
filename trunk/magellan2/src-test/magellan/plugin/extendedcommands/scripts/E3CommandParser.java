@@ -33,7 +33,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
@@ -41,7 +40,6 @@ import magellan.library.LuxuryPrice;
 import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Rules;
-import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
@@ -62,20 +60,27 @@ import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
 
 /**
  * Call from the script of your faction with<br />
- * "(new E3CommandParser(world, helper)).execute(container);" or
- * "(new E3CommandParser(world, helper)).execute(helper.getFaction("drac"), (Region) container);".
+ * "(new E3CommandParser(world, helper)).execute(container);" or from the script of a region with
+ * "(new E3CommandParser(world, helper)).execute(helper.getFaction("drac"), (Region) container);"
+ * (for just this region).
  * 
  * @author stm
  */
 public class E3CommandParser {
 
   /** A standard soldier's endurance skill should be this fraction of his (first row) weapon skill */
-  public static final float ENDURANCERATIO_FRONT = .6f;
+  public static float ENDURANCERATIO_FRONT = .6f;
   /** A standard soldier's endurance skill should be this fraction of his (second row) weapon skill */
-  public static final float ENDURANCERATIO_BACK = .35f;
+  public static float ENDURANCERATIO_BACK = .35f;
 
   /** Unit limit, used to warn if we get too many units. */
-  public static final int EINHEITENLIMIT = 250;
+  public static int UNIT_LIMIT = 250;
+
+  /**
+   * If this is > 0, all units are suppliers, otherwise suppliers must be set with Versorge (the
+   * default)
+   */
+  public static int DEFAULT_SUPPLY_PRIORITY = 0;
 
   /** All script commands begin with this text. */
   public static final String scriptMarker = "$cript";
@@ -111,6 +116,12 @@ public class E3CommandParser {
   private static String SELLOrder = "VERKAUFE";
   /** The MAKE order */
   private static String MAKEOrder = "MACHE";
+  /** The NACH order */
+  private static String MOVEOrder = "NACH";
+  /** The ROUTE order */
+  private static String ROUTEOrder = "ROUTE";
+  /** The PAUSE order */
+  private static String PAUSEOrder = "PAUSE";
   /** The RESEARCH order */
   private static String RESEARCHOrder = "FORSCHE";
 
@@ -145,9 +156,10 @@ public class E3CommandParser {
   /** warning constants */
   protected static final int C_ALWAYS = 0, C_AMOUNT = 1, C_UNIT = 2, C_HIDDEN = 3, C_NEVER = 4;
 
-  private static final String S_ENDURANCE = EresseaConstants.S_AUSDAUER.toString();
+  private static String S_ENDURANCE = EresseaConstants.S_AUSDAUER.toString();
 
   private OrderParser parser;
+  private Logger log;
 
   /**
    * Creates and initializes the parser.
@@ -159,6 +171,7 @@ public class E3CommandParser {
     E3CommandParser.world = world;
     E3CommandParser.helper = helper;
     parser = world.getGameSpecificStuff().getOrderParser(world);
+    log = Logger.getInstance("E3CommandParser");
   }
 
   protected OrderParser getParser() {
@@ -210,6 +223,7 @@ public class E3CommandParser {
    * Current state for the Lösche command
    */
   protected String clear = null;
+  private int progress = -1;
 
   /**
    * Parses scripts and confirms units according to the "confirm" tag. Call this for the faction
@@ -234,23 +248,44 @@ public class E3CommandParser {
     if (faction == null)
       throw new NullPointerException();
 
+    executeFrom(faction, region, region);
+  }
+
+  /**
+   * Parses scripts and confirms units according to the "confirm" tag. Call this for the faction
+   * container to execute all unit commands. Ignore regions before first (in the report order).
+   * 
+   * @param faction
+   * @param region only commands of unit in this region are executed, may be <code>null</code> to
+   *          execute for all regions.
+   * @param first First region to execute, may be <code>null</code> to not ignore any regions
+   * @throws NullPointerException if <code>faction == null</code>
+   */
+  public void executeFrom(Faction faction, Region region, Region first) {
+    if (faction == null)
+      throw new NullPointerException();
+
     currentFaction = faction;
 
     initLocales();
+
+    // comment out the following two lines if you don't have the newest nighthly build of Magellan
+    helper.getUI().setMaximum(world.getRegions().size() + 4);
+    helper.getUI().setProgress("preprocessing", ++progress);
 
     // sometimes we need an arbitrary unit. This is a shorthand for it.
     someUnit = faction.units().iterator().next();
     if (someUnit == null)
       throw new RuntimeException("No units in report!");
 
-    if (faction.units().size() >= EINHEITENLIMIT) {
-      addWarning(someUnit, "Einheitenlimit erreicht (" + faction.units().size() + "/"
-          + EINHEITENLIMIT + ")! ");
+    if (faction.units().size() >= UNIT_LIMIT) {
+      addWarning(someUnit, "Einheitenlimit erreicht (" + faction.units().size() + "/" + UNIT_LIMIT
+          + ")! ");
     }
 
-    if (faction.units().size() * 1.1 > EINHEITENLIMIT) {
+    if (faction.units().size() * 1.1 > UNIT_LIMIT) {
       addWarning(someUnit, "Einheitenlimit fast erreicht (" + faction.units().size() + "/"
-          + EINHEITENLIMIT + ")! ");
+          + UNIT_LIMIT + ")! ");
     }
 
     collectStats();
@@ -258,43 +293,65 @@ public class E3CommandParser {
     // Parses the orders of the units for commands of the form "// $cript ..." and
     // tries to execute them.
     if (region == null) {
+      boolean go = first == null;
       for (Region r : world.regions().values()) {
-        execute(r);
+        if (r == first) {
+          go = true;
+        }
+        if (go) {
+          execute(r);
+        }
       }
     } else {
       execute(region);
     }
 
+    // comment out the following line if you don't have the newest nightly build of Magellan
+    helper.getUI().setProgress("postprocessing", ++progress);
+
     for (Unit u : faction.units()) {
       if ("1".equals(getProperty(u, "confirm"))) {
         u.setOrdersConfirmed(true);
-        u.addOrder("; autoconfirmed");
+        // u.addOrder("; autoconfirmed");
       } else if ("0".equals(getProperty(u, "confirm"))) {
         u.setOrdersConfirmed(false);
       }
       notifyMagellan(u);
     }
+    // comment out the following line if you don't have the newest nightly build of Magellan
+    helper.getUI().setProgress("ready", ++progress);
   }
 
   protected void execute(Region region) {
-    currentRegion = region;
-    initSupply();
+    try {
+      currentRegion = region;
+      initSupply();
 
-    for (Unit u : region.units()) {
-      if (u.getFaction().equals(currentFaction)) {
-        currentUnit = u;
-        // uncomment the following lines if you have the newest nighthly build of Magellan
-        // ---start uncomment for BeanShell
-        // helper.getUI().setProgress(region.toString() + " - " + u.toString(), 0);
-        // ---stop uncomment for BeanShell
-        parseScripts();
+      for (Unit u : region.units()) {
+        if (u.getFaction().equals(currentFaction)) {
+          currentUnit = u;
+          // comment out the following line if you don't have the newest nightly build of Magellan
+          helper.getUI().setProgress(region.toString() + " - " + u.toString(), progress);
+
+          try {
+            parseScripts();
+          } catch (RuntimeException e) {
+            addWarning(u, "error " + e.getClass().getSimpleName());
+            log.error(e.getClass().getSimpleName() + " script error for " + u);
+            throw new RuntimeException("script error for " + u, e);
+          }
+        }
       }
+      // comment out the following line if you don't have the newest nightly build of Magellan
+      helper.getUI().setProgress(region.toString() + " - postprocessing", ++progress);
+
+      satisfyNeeds();
+      region.refreshUnitRelations();
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      // log.error(e.getClass().getSimpleName() + " script error for " + region);
+      throw new RuntimeException("script error for " + region, e);
     }
-    // uncomment the following lines if you have the newest nighthly build of Magellan
-    // ---start uncomment for BeanShell
-    // helper.getUI().setProgress(region.toString() + " - postprocessing ", 0);
-    // ---stop uncomment for BeanShell
-    satisfyNeeds();
   }
 
   /**
@@ -307,29 +364,29 @@ public class E3CommandParser {
     int shipScripts = 0;
     int unitScripts = 0;
     int regionScripts = 0;
-    // uncomment the following lines if you have the newest nighthly build of Magellan
+    // comment out the following lines if you don't have the newest nightly build of Magellan
     // ---start uncomment for BeanShell
-    for (Building b : world.getBuildings()) {
-      if (helper.hasScript(b)) {
-        buildingScripts++;
-      }
-    }
-    for (Ship s : world.getShips()) {
-      if (helper.hasScript(s)) {
-        shipScripts++;
-      }
-    }
-    for (Unit u : world.getUnits()) {
-      if (helper.hasScript(u)) {
-        u.addOrder(COMMENTOrder + " has script");
-        unitScripts++;
-      }
-    }
-    for (Region r : world.getRegions()) {
-      if (helper.hasScript(r)) {
-        regionScripts++;
-      }
-    }
+    // for (Building b : world.getBuildings()) {
+    // if (helper.hasScript(b)) {
+    // buildingScripts++;
+    // }
+    // }
+    // for (Ship s : world.getShips()) {
+    // if (helper.hasScript(s)) {
+    // shipScripts++;
+    // }
+    // }
+    // for (Unit u : world.getUnits()) {
+    // if (helper.hasScript(u)) {
+    // u.addOrder(COMMENTOrder + " hat Skript", false);
+    // unitScripts++;
+    // }
+    // }
+    // for (Region r : world.getRegions()) {
+    // if (helper.hasScript(r)) {
+    // regionScripts++;
+    // }
+    // }
     // ---stop uncomment for BeanShell
     someUnit.addOrderAt(0, "; " + unitScripts + " unit scripts, " + buildingScripts
         + " building scripts, " + shipScripts + " ship scripts, " + regionScripts
@@ -349,22 +406,26 @@ public class E3CommandParser {
    * <code>// $cript Benoetige JE amount item</code><br />
    * <code>// $cript Benoetige ALLES [item]</code> -- acquire things from other units<br />
    * <code>// $cript BenoetigeFremd unit [JE] minAmount [maxAmount] item</code><br />
+   * <code>// $cript Versorge [[item]...] priority</code> -- set supply priority.<br />
+   * <code>// $cript BerufDepotVerwalter [Zusatzbetrag]</code> Collects all free items in the
+   * region, Versorge 100, calls Ueberwache<br />
    * <code>// $cript Soldat [Talent [Waffe [Schild [Rüstung]]]] [nie|Talent|Waffe|Schild|Rüstung]</code>
    * -- learn skill and reserve equipment<br />
    * <code>// $cript Lerne Talent1 Stufe1 [[Talent2 Stufe2]...]</code> -- learn skills in given
    * ratio <br />
-   * <code>// $cript BerufBotschter [Talent]</code> -- earn money if necessary, otherwise learn
+   * <code>// $cript BerufBotschafter [Talent]</code> -- earn money if necessary, otherwise learn
    * skill<br />
    * <code>// $cript Ueberwache</code> -- look out for unknown units<br />
    * <code>// $cript Erlaube faction unit [unit...]</code> -- allow units for Ueberwache<br />
    * <code>// $cript Verlange faction unit [unit...]</code> -- allow and require units for
    * Ueberwache<br />
    * <code>// $cript Ernaehre [amount]</code> -- earn money<br />
-   * <code>// $cript Handel []</code> -- trade luxuries<br />
+   * <code>// $cript Handel amount [good...]</code> -- trade luxuries<br />
    * <code>// $cript Steuermann minSilver maxSilver</code> -- be responsible for ship<br />
    * <code>// $cript Mannschaft skill</code> -- be crew and learn<br />
    * <code>// $cript Quartiermeister [[amount item]...]</code> -- be lookout<br />
    * <code>// $cript Sammler [interval]</code> -- collect and research HERBS<br />
+   * <code>// $cript KrautKontrolle [route]</code> -- FORSCHE KRÄUTER in several regions<br />
    */
   protected void parseScripts() {
     newOrders = new ArrayList<String>();
@@ -398,6 +459,9 @@ public class E3CommandParser {
         if (command.startsWith("+")) {
           commandWarning(tokens);
           changedOrders = true;
+        } else if (command.equals("KrautKontrolle")) {
+          commandKontrolle(tokens);
+          changedOrders = true;
         } else {
           // order remains
           addNewOrder(currentOrder, false);
@@ -412,10 +476,12 @@ public class E3CommandParser {
             commandClear(tokens);
           } else if (command.equals("GibWenn")) {
             commandGibWenn(tokens);
-          } else if (command.equals("Benoetige")) {
+          } else if (command.equals("Benoetige") || command.equals("BenoetigeFremd")) {
             commandBenoetige(tokens);
-            // } else if (command.equals("Versorge")) {
-            // commandVersorge(tokens);
+          } else if (command.equals("Versorge")) {
+            commandVersorge(tokens);
+          } else if (command.equals("BerufDepotVerwalter")) {
+            commandDepotVerwalter(tokens);
           } else if (command.equals("Soldat")) {
             commandSoldier(tokens);
           } else if (command.equals("Lerne")) {
@@ -432,13 +498,17 @@ public class E3CommandParser {
             commandTrade(tokens);
           } else if (command.equals("Steuermann")) {
             if (tokens.length < 3) {
-              addNewError("too few parameters");
+              addNewError("zu wenige Argumente");
             } else {
               commandBenoetige(new String[] { "Benoetige", tokens[1], tokens[2], "Silber" });
             }
           } else if (command.equals("Mannschaft")) {
-            commandSoldier(new String[] { "Soldat", tokens[1], "Talent" });
-            setConfirm(currentUnit, true);
+            if (tokens.length < 3) {
+              addNewError("zu wenige Argumente");
+            } else {
+              commandLearn(new String[] { "Lerne", tokens[1], tokens[2] });
+              setConfirm(currentUnit, true);
+            }
           } else if (command.equals("Quartiermeister")) {
             commandQuartermaster(tokens);
           } else if (command.equals("Sammler")) {
@@ -500,7 +570,7 @@ public class E3CommandParser {
     } else if (tokens.length == 2 && tokens[1].equals(LONG)) {
       clear = LONG;
     } else {
-      addNewError("too many parameters");
+      addNewError("zu viele Argumente");
     }
   }
 
@@ -645,10 +715,10 @@ public class E3CommandParser {
       }
       Supply supply = getSupply(item, currentUnit);
       if (supply == null) {
-        addNewWarning("supply 0");
+        addNewWarning("supply 0 " + item);
         return;
       }
-      supply.reduceAmount(fullAmount);
+      supply.reduceAmount(amount);
       if (target != null) {
         addNeed(item, target, -amount, -amount);
       }
@@ -672,20 +742,21 @@ public class E3CommandParser {
    * <code>// $cript Benoetige minAmount [maxAmount] item</code><br />
    * <code>// $cript Benoetige JE amount item</code><br />
    * <code>// $cript Benoetige ALLES [item]</code><br />
-   * <code>// $cript BenoetigeFremd unit (JE amount)|(minAmount [maxAmount]) item</code><br />
    * Tries to transfer the maxAmount of item from other units to this unit. Issues warning if
    * minAmount cannot be supplied. <code>Benoetige JE</code> tries to reserve 1 item for every
    * person in the unit. <code>Benoetige ALLES item</code> is equivalent to
    * <code>Benoetige 0 infinity item</code>, <code>Benoetige ALLES</code> is equivalent to
    * <code>Benoetige ALLES</code> for every itemtype in the region.<br/>
+   * <code>Benoetige KRAUT</code> is the same for every herb type in the region.<br/>
+   * <code>BenoetigeFremd unit (JE amount)|(minAmount [maxAmount]) item</code><br />
    * <code>BenoetigeFremd</code> does the same, but for the given unit instead of the current unit.
    */
   protected void commandBenoetige(String[] tokens) {
     Unit unit = currentUnit;
     if (tokens[0].equals("BenoetigeFremd")) {
       unit = helper.getUnit(tokens[1]);
-      if (unit.getRegion() != currentUnit.getRegion()) {
-        addNewMessage("target unit not in same region");
+      if (unit == null || unit.getRegion() != currentUnit.getRegion()) {
+        addNewMessage("Ziel ist nicht in unserer Region");
         return;
       }
       // erase unit token for easier processing afterwards
@@ -715,6 +786,17 @@ public class E3CommandParser {
           String item = tokens[3];
           addNeed(item, unit, amount, amount);
         }
+      } else if (KRAUTOrder.equals(tokens[1])) {
+        if (tokens.length > 2) {
+          addNewError("zu viele Parameter");
+        }
+        for (Item item : currentUnit.getItems()) {
+          if (item.getItemType().getCategory().equals(world.rules.getItemCategory("herbs"))) {
+            addNeed(item.getOrderName(), unit, 0, Integer.MAX_VALUE);
+          }
+        }
+      } else if (tokens.length > 4) {
+        addNewError("zu viele Parameter");
       } else {
         int minAmount = Integer.parseInt(tokens[1]);
         int maxAmount = tokens.length == 3 ? minAmount : Integer.parseInt(tokens[2]);
@@ -723,6 +805,66 @@ public class E3CommandParser {
       }
     } catch (NumberFormatException exc) {
       addNewError("Ungültige Zahl in Benoetige");
+    }
+  }
+
+  /**
+   * <code>// $cript BerufDepotVerwalter [Zusatzbetrag]</code><br />
+   * Collects all free items in the region, Versorge 100, calls Ueberwache
+   */
+  protected void commandDepotVerwalter(String[] tokens) {
+    commandMonitor(new String[] { "Ueberwache" });
+
+    int costs = 0;
+    for (Unit u : currentRegion.units()) {
+      if (u.getFaction() == currentFaction) {
+        costs += u.getRace().getMaintenance() * u.getPersons();
+      }
+    }
+    if (tokens.length == 2) {
+      try {
+        int zusatz = Integer.parseInt(tokens[1]);
+        costs += zusatz;
+      } catch (NumberFormatException e) {
+        addNewError("Zahl erwartet");
+      }
+    }
+    addNeed("Silber", currentUnit, costs, costs);
+
+    commandBenoetige(new String[] { "Benoetige ", ALLOrder });
+    commandVersorge(new String[] { "Versorge", "100" });
+  }
+
+  /**
+   * <code>Versorge [[item1]...] priority</code> -- set supply priority. Units with negative
+   * priority only deliver for minimum needs. Needs are satisfied in descending order of priority.
+   * If no items are given, the priority is adjusted for alle the unit's items.
+   */
+  protected void commandVersorge(String[] tokens) {
+    int priority = 0;
+    if (tokens.length < 2) {
+      addNewError("zu wenig Argumente");
+    }
+    try {
+      priority = Integer.parseInt(tokens[tokens.length - 1]);
+    } catch (NumberFormatException e) {
+      addNewError("Zahl erwartet");
+      return;
+    }
+    if (tokens.length == 2) {
+      for (Item item : currentUnit.getItems()) {
+        Supply supply = getSupply(item.getOrderName(), currentUnit);
+        if (supply != null) {
+          supply.priority = priority;
+        }
+      }
+    } else {
+      for (int i = 1; i < tokens.length - 1; ++i) {
+        Supply supply = getSupply(tokens[i], currentUnit);
+        if (supply != null) {
+          supply.priority = priority;
+        }
+      }
     }
   }
 
@@ -740,10 +882,10 @@ public class E3CommandParser {
       return;
     }
     if (delay <= 1) {
-      StringBuilder warning = new StringBuilder("; TODO: ");
+      StringBuilder warning = new StringBuilder();
       String foo = currentOrder.substring(currentOrder.indexOf("+"));
       warning.append(foo.indexOf(" ") >= 0 ? foo.substring(foo.indexOf(" ") + 1) : "");
-      addNewOrder(warning.toString(), true);
+      addNewWarning(warning.toString());
     }
     if (delay != 1) {
       StringBuilder newCommand =
@@ -771,14 +913,14 @@ public class E3CommandParser {
           SkillType skill = world.rules.getSkillType(tokens[i++]);
           int level = Integer.parseInt(tokens[i]);
           if (skill == null) {
-            addNewError("invalid skill " + tokens[i - 1]);
+            addNewError("unbekanntes Talent " + tokens[i - 1]);
           }
           targetSkills.add(new Skill(skill, 0, level, 1, true));
         } else {
-          addNewError("stray token " + tokens[i]);
+          addNewError("unerwartetes Token " + tokens[i]);
         }
       } catch (NumberFormatException e) {
-        addNewError("invalid skill level " + tokens[i]);
+        addNewError("ungültige Stufe " + tokens[i]);
       }
     }
 
@@ -840,38 +982,51 @@ public class E3CommandParser {
   }
 
   protected void commandEmbassador(String[] tokens) {
+    removeOrdersLike(ENTERTAINOrder + ".*", true);
+    removeOrdersLike(WORKOrder + ".*", true);
+    removeOrdersLike(LEARNOrder + ".*", true);
+    Skill defaultSkill = getSkill(EresseaConstants.S_WAHRNEHMUNG.toString(), 10);
+    if (defaultSkill == null) {
+      defaultSkill = getSkill(EresseaConstants.S_AUSDAUER.toString(), 10);
+    }
+
     if (helper.getSilver(currentUnit) < 100) {
       if (hasEntertain()) {
         addNewOrder(ENTERTAINOrder, true);
       } else if (hasWork()) {
         addNewOrder(WORKOrder, true);
       } else {
-        addNewWarning("unit is going to starve");
+        addNewWarning("Einheit verhungert");
       }
     } else if (tokens.length > 1) {
-      learn(currentUnit, Collections.singleton(getSkill(tokens[1], 10)));
+      Skill skill = getSkill(tokens[1], 10);
+      if (skill == null) {
+        addNewError("unknown skill " + tokens[1]);
+        skill = defaultSkill;
+      }
+
+      learn(currentUnit, Collections.singleton(skill));
       if (tokens.length > 2) {
-        addNewError("too many parameters");
+        addNewError("zu viele Argumente");
       }
     } else {
-      learn(currentUnit, Collections.singleton(getSkill(EresseaConstants.S_WAHRNEHMUNG.toString(),
-          10)));
+      learn(currentUnit, Collections.singleton(defaultSkill));
     }
   }
 
   protected void commandMonitor(String[] tokens) {
     if (tokens.length > 1) {
-      addNewError("too many parameters");
+      addNewError("zu viele Argumente");
     }
 
     // check if region units are allowed
     Map<Faction, Unit> warnings = new HashMap<Faction, Unit>();
     for (Unit u : currentRegion.units()) {
       if (u.getFaction() != currentUnit.getFaction()) {
-        if (!allowedUnits.containsKey(u.getFaction())
-            || !allowedUnits.get(u.getFaction()).contains(u)) {
-          if (!requiredUnits.containsKey(u.getFaction())
-              || !requiredUnits.get(u.getFaction()).contains(u)) {
+        if (!(allowedUnits.containsKey(u.getFaction()) && (allowedUnits.get(u.getFaction())
+            .contains(u) || allowedUnits.get(u.getFaction()).contains(currentRegion.getZeroUnit())))) {
+          if (!(requiredUnits.containsKey(u.getFaction()) && requiredUnits.get(u.getFaction())
+              .contains(u))) {
             warnings.put(u.getFaction(), u);
           }
         }
@@ -879,14 +1034,14 @@ public class E3CommandParser {
     }
 
     for (Entry<Faction, Unit> entry : warnings.entrySet()) {
-      addNewWarning("faction " + entry.getKey() + " has unauthorized units: " + entry.getValue());
+      addNewWarning(entry.getKey() + " hat unerlaubte Einheiten: " + entry.getValue());
     }
 
     // check if required units are present
     for (Faction f : requiredUnits.keySet()) {
       for (Unit u : requiredUnits.get(f)) {
         if (u.getRegion() != currentUnit.getRegion()) {
-          addNewWarning("unit " + u + " of faction " + f + " is not here any more.");
+          addNewWarning("Einheit " + u + " der Partei " + f + " nicht mehr da.");
         }
       }
     }
@@ -894,7 +1049,8 @@ public class E3CommandParser {
 
   protected void commandAllow(String[] tokens) {
     if (tokens.length < 3) {
-      addNewError("too few parameters");
+      addNewError("zu wenige Argumente");
+      return;
     }
 
     Faction faction = helper.getFaction(tokens[1]);
@@ -904,34 +1060,50 @@ public class E3CommandParser {
     } else {
       map = requiredUnits;
     }
-    if (faction != null) {
+    if (faction == null) {
+      addNewError("unbekannte Partei");
+    } else {
       Set<Unit> set = map.get(faction);
       if (set == null) {
         set = new HashSet<Unit>();
         map.put(faction, set);
       }
-      for (int i = 2; i < tokens.length; ++i) {
-        Unit u = helper.getUnit(tokens[i]);
-        if (u != null) {
-          set.add(u);
+      if (ALLOrder.equals(tokens[2])) {
+        set.add(currentRegion.getZeroUnit());
+        if (tokens.length > 3) {
+          addNewError("zu viele Argumente");
+        }
+      } else {
+        for (int i = 2; i < tokens.length; ++i) {
+          Unit u = helper.getUnit(tokens[i]);
+          if (u != null) {
+            set.add(u);
+          }
         }
       }
     }
   }
 
+  /**
+   * <code>// $cript Ernaehre [amount]</code> -- Earn as much money as possible (or the specified
+   * amount), Versorge 200
+   */
   protected void commandEarn(String[] tokens) {
     int amount = -1;
     if (tokens.length > 1) {
       try {
         amount = Integer.parseInt(tokens[1]);
       } catch (NumberFormatException e) {
-        addNewError("invalid number " + tokens[1]);
+        addNewError("ungültige Zahl " + tokens[1]);
         return;
       }
       if (tokens.length > 2) {
-        addNewError("too many parameters");
+        addNewError("zu viele Argumente");
       }
     }
+
+    // Ernaehre includes Versorge
+    commandVersorge(new String[] { "Versorge", "200" });
 
     // remove previous orders
     removeOrdersLike(TAXOrder + ".*", true);
@@ -947,56 +1119,76 @@ public class E3CommandParser {
         currentUnit.getModifiedSkill(world.rules.getSkillType(EresseaConstants.S_STEUEREINTREIBEN));
     int entertain = 0, tax = 0;
     if (entertaining != null) {
-      entertain = Math.min(currentRegion.maxEntertain(), 20 * entertaining.getLevel());
+      entertain =
+          Math.min(currentRegion.maxEntertain(), 20 * entertaining.getLevel()
+              * currentUnit.getPersons());
     }
     if (taxing != null && isSoldier(currentUnit)) {
-      tax = Math.min(currentRegion.getSilver(), 20 * taxing.getLevel());
+      tax = Math.min(currentRegion.getSilver(), 20 * taxing.getLevel() * currentUnit.getPersons());
     }
 
     if (tax > entertain) {
-      addNewOrder(TAXOrder + " " + (amount > 0 ? amount : "") + COMMENTOrder + " " + tax, true);
+      addNewOrder(TAXOrder + " " + (amount > 0 ? amount : "") + COMMENTOrder + " " + tax + ">"
+          + entertain, true);
       if (tax > currentRegion.getSilver() + workers * 10 - currentRegion.getPeasants() * 10) {
-        addNewWarning("peasants will starve");
+        addNewWarning("Bauern verhungern");
       }
     } else if (entertain > 0) {
-      addNewOrder(ENTERTAINOrder + " " + (amount > 0 ? amount : "") + COMMENTOrder + " " + tax,
-          true);
+      addNewOrder(ENTERTAINOrder + " " + (amount > 0 ? amount : "") + COMMENTOrder + " "
+          + entertain + ">" + tax, true);
       if (amount > currentRegion.maxEntertain()) {
-        addNewWarning("too many workers");
+        addNewWarning("zu viele Arbeiter");
       }
     } else {
       addNewOrder(WORKOrder + " " + (amount > 0 ? amount : ""), true);
       if ((maxWorkers - workers) * 10 < Math.min(amount, currentUnit.getModifiedPersons() * 10)) {
-        addNewWarning("too many workers");
+        addNewWarning("zu viele Arbeiter");
       }
     }
     setConfirm(currentUnit, true);
   }
 
+  /**
+   * <code>// $cript Handel Menge [Verkaufsgut...] Warnung</code>: trade luxuries, Versorge 200.
+   * Warnung can be "Talent", "Menge", or "nie"<br />
+   */
   protected void commandTrade(String[] tokens) {
     if (tokens.length < 2) {
-      addNewError("too few parameters");
+      addNewError("zu wenige Argumente");
+    }
+
+    commandVersorge(new String[] { "Versorge", "200" });
+
+    String warning = null;
+    if (W_SKILL.equals(tokens[tokens.length - 1]) || W_AMOUNT.equals(tokens[tokens.length - 1])
+        || W_NEVER.equals(tokens[tokens.length - 1])) {
+      warning = tokens[tokens.length - 1];
     }
 
     int amount = -1;
     try {
       amount = Integer.parseInt(tokens[1]);
     } catch (NumberFormatException e) {
-      addNewError("invalid number " + tokens[1]);
+      addNewError("ungültige Zahl " + tokens[1]);
       return;
     }
 
     Skill buySkill =
         currentUnit.getModifiedSkill(world.rules.getSkillType(EresseaConstants.S_HANDELN));
     if (buySkill == null) {
-      addNewError("no skill");
+      addNewError("kein Handelstalent");
       return;
     }
 
     LuxuryPrice buyGood = null;
-    for (LuxuryPrice price : currentRegion.getPrices().values()) {
+    for (Entry<StringID, LuxuryPrice> entry : currentRegion.getPrices().entrySet()) {
+      LuxuryPrice price = entry.getValue();
       if (price.getPrice() < 0) {
         buyGood = price;
+      } else {
+        if (price.getPrice() < currentRegion.getOldPrices().get(entry.getKey()).getPrice()) {
+          addNewWarning("Preis gesunken: " + price.getItemType());
+        }
       }
     }
 
@@ -1004,31 +1196,26 @@ public class E3CommandParser {
 
     // Soll eingekauft werden?
     if (volume > 0 && amount > 0 && buyGood != null) {
-      removeOrdersLike("VERKAUFE.*", true);
-      removeOrdersLike("KAUFE.*", true);
+      removeOrdersLike(SELLOrder + ".*", true);
+      removeOrdersLike(BUYOrder + ".*", true);
 
       // Berechne noetige Geldmenge fuer Einkauf (einfacher: Modulorechnung, aber wegen
       // Rundungsfehler nicht umsetzbar)
-      int hilfNochUEbrig = amount;
+      int hilfNochUebrig = amount;
       int hilfFaktor = 1;
       int geldNoetig = 0;
-      while (hilfNochUEbrig > 0) {
-        if (hilfNochUEbrig > volume) {
-          hilfNochUEbrig -= volume;
-          geldNoetig += (volume * hilfFaktor * buyGood.getPrice());
+      while (hilfNochUebrig > 0) {
+        if (hilfNochUebrig > volume) {
+          hilfNochUebrig -= volume;
+          geldNoetig -= (volume * hilfFaktor * buyGood.getPrice()); // price is negative
           hilfFaktor++;
         } else {
-          geldNoetig += (hilfNochUEbrig * hilfFaktor * buyGood.getPrice());
-          hilfNochUEbrig = 0;
+          geldNoetig -= (hilfNochUebrig * hilfFaktor * buyGood.getPrice());
+          hilfNochUebrig = 0;
         }
       }
 
       addNeed("Silber", currentUnit, geldNoetig, geldNoetig);
-
-      // Zu verkaufende Handelsgueter verarbeiten
-      for (int i = 2; i < tokens.length; ++i) {
-        addNeed(tokens[i], currentUnit, amount, amount);
-      }
 
       // Gueterzahl intitialisieren
       int guetersumme = 0;
@@ -1039,63 +1226,185 @@ public class E3CommandParser {
         guetersumme += amount;
       }
 
+      List<String> goods = new LinkedList<String>();
       // Verkaufsbefehl setzen, wenn notwendig
-      for (int i = 2; i < tokens.length; ++i) {
-        addNewOrder(SELLOrder + " " + volume + " " + tokens[i], true);
-        guetersumme += volume;
+      if (tokens.length > 2 && ALLOrder.equals(tokens[2])) {
+        for (ItemType luxury : world.getRules().getItemTypes()) {
+          if (!luxury.equals(buyGood.getItemType()) && luxury.getCategory() != null
+              && luxury.getCategory().equals(world.rules.getItemCategory("luxuries"))) {
+            goods.add(luxury.getOrderName());
+          }
+        }
+      } else {
+        for (int i = 2; i < (warning == null ? tokens.length : tokens.length - 1); ++i) {
+          goods.add(tokens[i]);
+        }
+      }
+
+      int maxAmount = buySkill.getLevel() * currentUnit.getPersons() * 10;
+
+      boolean skillWarning = false;
+      for (String luxury : goods) {
+        int goodAmount = Math.min(volume, maxAmount - guetersumme);
+        if (W_NEVER.equals(warning)) {
+          if (goodAmount > 0) {
+            addNeed(luxury, currentUnit, 0, goodAmount);
+          }
+        } else if (W_SKILL.equals(warning)) {
+          goodAmount = 0;
+          Map<Unit, Supply> map = supplyMap.get(luxury);
+          if (map != null) {
+            for (Supply s : map.values()) {
+              goodAmount += s.getAmount();
+            }
+          }
+          goodAmount = Math.min(goodAmount, volume);
+          if (goodAmount > maxAmount - guetersumme) {
+            goodAmount = Math.min(goodAmount, maxAmount - guetersumme);
+            skillWarning = true;
+          }
+          if (goodAmount > 0) {
+            addNeed(luxury, currentUnit, 0, goodAmount);
+          }
+        } else {
+          if (goodAmount > maxAmount - guetersumme) {
+            goodAmount = Math.min(goodAmount, maxAmount - guetersumme);
+            skillWarning = true;
+          }
+          if (goodAmount > 0) {
+            addNeed(luxury, currentUnit, goodAmount, goodAmount);
+          }
+        }
+        if (goodAmount > 0) {
+          if (goodAmount == volume) {
+            addNewOrder(SELLOrder + " " + ALLOrder + " " + luxury, true);
+          } else {
+            addNewOrder(SELLOrder + " " + goodAmount + " " + luxury, true);
+          }
+        }
+        guetersumme += goodAmount;
       }
 
       // Einheit gut genug?
-      if (guetersumme > buySkill.getLevel() * currentUnit.getPersons() * 10) {
-        addNewWarning("Einheit hat zuwenig Handelstalent!");
+      if (skillWarning && (W_SKILL.equals(warning) || warning == null)) {
+        addNewWarning("Einheit hat zu wenig Handelstalent!");
       }
     } else {
-      addNewError("nothing to trade");
+      addNewError("Kein Handel möglich");
     }
+
+    setConfirm(currentUnit, true);
   }
 
+  /**
+   * <code>// $cript Quartiermeister [[Menge1 Gut 1]...]</code>: learn perception, allow listed
+   * amount of goods. If other goods are detected, do not confirm orders.
+   */
   protected void commandQuartermaster(String[] tokens) {
     learn(currentUnit, Collections.singleton(new Skill(world.rules
         .getSkillType(EresseaConstants.S_WAHRNEHMUNG), 30, 10, 1, true)));
-    for (Item item : currentUnit.getItems()) {
-      boolean okay = false;
-      if (item.getItemType().getID().equals(EresseaConstants.I_USILVER) && item.getAmount() < 1000) {
-        okay = true;
-      }
-      for (int i = 1; !okay && i < tokens.length; i += 2) {
-        if (item.getName().equals(tokens[i + 1]) && item.getAmount() < Integer.parseInt(tokens[i])) {
+    try {
+      for (Item item : currentUnit.getItems()) {
+        boolean okay = false;
+        if (item.getItemType().getID().equals(EresseaConstants.I_USILVER)
+            && item.getAmount() < 1000) {
           okay = true;
-          break;
         }
+        for (int i = 1; !okay && i < tokens.length - 1; i += 2) {
+          if (item.getName().equals(tokens[i + 1])) {
+            if (item.getAmount() <= Integer.parseInt(tokens[i])) {
+              okay = true;
+              break;
+            }
+          }
+        }
+        setConfirm(currentUnit, okay);
       }
-      setConfirm(currentUnit, okay);
+    } catch (NumberFormatException e) {
+      addNewError("ungültige Zahl ");
     }
+    setConfirm(currentUnit, true);
   }
 
+  /**
+   * <code>// $cript Sammler [frequenz]</code>: collect herbs if there are at least "viele",
+   * research herbs every frequenz rounds.
+   */
   protected void commandCollector(String[] tokens) {
     if (tokens.length > 2) {
-      addNewError("too many arguments");
+      addNewError("zu viele Argumente");
     }
     int modulo = Integer.MAX_VALUE;
     if (tokens.length > 1) {
       try {
         modulo = Integer.parseInt(tokens[1]);
       } catch (NumberFormatException e) {
-        addNewError("invalid number " + tokens[1]);
+        addNewError("ungültige Zahl " + tokens[1]);
         return;
       }
     }
 
     removeOrdersLike(MAKEOrder + " " + "[^T].*", true);
-    removeOrdersLike(RESEARCHOrder + ".*", true);
+    removeOrdersLike(getResearchOrder() + ".*", true);
     if (modulo != Integer.MAX_VALUE
         && (world.getDate().getDate() % modulo == 0 || !currentRegion.getHerbAmount().contains(
             "viele"))) {
-      addNewOrder(RESEARCHOrder + " " + getLocalizedOrder(EresseaConstants.O_HERBS, "KRÄUTER"),
-          true);
+      addNewOrder(getResearchOrder(), true);
     } else {
       addNewOrder(MAKEOrder + " " + getLocalizedOrder(EresseaConstants.O_HERBS, "KRÄUTER"), true);
     }
+  }
+
+  /**
+   * <code>KrautKontrolle [[[direction...] PAUSE]...]</code> move until the next PAUSE, if pause is
+   * reached, research herbs.
+   */
+  protected void commandKontrolle(String[] tokens) {
+    for (String order : currentUnit.getOrders()) {
+      if (order.startsWith(ROUTEOrder)) {
+        if (order.substring(order.indexOf(" ")).trim().startsWith(PAUSEOrder)) {
+          // end of route, FORSCHE
+          addNewOrder(currentOrder, false);
+          addNewOrder(getResearchOrder(), true);
+          removeOrdersLike(ROUTEOrder + ".*", true);
+        } else {
+          // continue on route
+          addNewOrder(currentOrder, false);
+        }
+        return;
+      }
+    }
+    // no route order -- create new one
+    removeOrdersLike(getResearchOrder() + ".*", true);
+    StringBuilder newOrder = new StringBuilder();
+    newOrder.append(PCOMMENTOrder).append(" ").append(scriptMarker).append(" ").append(tokens[0]);
+    StringBuilder moveOrder = new StringBuilder(ROUTEOrder);
+    boolean pause = false;
+    for (int i = 1; i < tokens.length; ++i) {
+      if (!pause) {
+        // add move order until first PAUSE
+        moveOrder.append(" ").append(tokens[i]);
+      } else {
+        // add to $cript order after first PAUSE
+        newOrder.append(" ").append(tokens[i]);
+      }
+      if (PAUSEOrder.equalsIgnoreCase(tokens[i])) {
+        pause = true;
+      }
+    }
+    moveOrder.append(" ").append(PAUSEOrder);
+    pause = false;
+    for (int i = 1; i < tokens.length; ++i) {
+      if (!pause) {
+        // append movement until first PAUSE to back of $cript order
+        newOrder.append(" ").append(tokens[i]);
+      }
+      if (PAUSEOrder.equalsIgnoreCase(tokens[i])) {
+        pause = true;
+      }
+    }
+    addNewOrder(newOrder.toString(), true);
+    addNewOrder(moveOrder.toString(), true);
   }
 
   // ///////////////////////////////////////////////////////
@@ -1127,7 +1436,7 @@ public class E3CommandParser {
     for (Unit u : currentRegion.units()) {
       if (u.getFaction() == currentFaction) {
         for (Item item : u.getItems()) {
-          putSupply(item.getName(), u, item.getAmount());
+          putSupply(item.getOrderName(), u, item.getAmount());
         }
 
         // TODO take RESERVE or GIVE orders into account?
@@ -1159,13 +1468,15 @@ public class E3CommandParser {
    * @param unit
    * @param amount
    */
-  protected void putSupply(String item, Unit unit, int amount) {
+  protected Supply putSupply(String item, Unit unit, int amount) {
     Map<Unit, Supply> itemSupplyMap = supplyMap.get(item);
     if (itemSupplyMap == null) {
-      itemSupplyMap = new HashMap<Unit, Supply>();
+      itemSupplyMap = new LinkedHashMap<Unit, Supply>();
       supplyMap.put(item, itemSupplyMap);
     }
-    itemSupplyMap.put(unit, new Supply(unit, item, getItemCount(unit, item)));
+    Supply result = new Supply(unit, item, getItemCount(unit, item));
+    itemSupplyMap.put(unit, result);
+    return result;
   }
 
   /**
@@ -1173,6 +1484,34 @@ public class E3CommandParser {
    */
   protected void satisfyNeeds() {
     for (String item : needMap.keySet()) {
+      // sort supplies by priority
+      Map<Unit, Supply> itemSupply = supplyMap.get(item);
+      if (itemSupply == null) {
+        itemSupply = Collections.emptyMap();
+      } else {
+        Supply[] sorted = null;
+        sorted = itemSupply.values().toArray(new Supply[0]);
+
+        // this causes problems in BeansShell; I don't know why
+        // Arrays.sort(sorted);
+        // doing insertion sort instead
+        for (int j = 1; j < sorted.length; ++j) {
+          for (int i = 0; i < j; ++i) {
+            if (sorted[j].compareTo(sorted[i]) < 0) {
+              // if (current.priority > sorted[i].priority) {
+              Supply temp = sorted[i];
+              sorted[i] = sorted[j];
+              sorted[j] = temp;
+            }
+          }
+        }
+
+        itemSupply.clear();
+        for (Supply supply : sorted) {
+          itemSupply.put(supply.unit, supply);
+        }
+      }
+
       // try to satisfy minimum need by own items
       for (Need need : needMap.get(item).values()) {
         reserveNeed(need, true);
@@ -1186,7 +1525,7 @@ public class E3CommandParser {
       // add warnings for unsatisfied needs
       for (Need need : needMap.get(item).values()) {
         if (need.getMinAmount() > 0) {
-          addWarning(need.getUnit(), "needs " + need.getMinAmount() + " more " + need.getItem());
+          addWarning(need.getUnit(), "braucht " + need.getMinAmount() + " mehr " + need.getItem());
         }
       }
 
@@ -1220,8 +1559,8 @@ public class E3CommandParser {
       for (Need need : needMap.get(item).values()) {
         if (need.getMinAmount() <= 0 && need.getMaxAmount() > 0
             && need.getMaxAmount() != Integer.MAX_VALUE) {
-          helper.addOrder(need.getUnit(), "; needs " + need.getMaxAmount() + " more "
-              + need.getItem());
+          need.getUnit().addOrder("; braucht " + need.getMaxAmount() + " mehr " + need.getItem(),
+              false);
         }
       }
 
@@ -1239,17 +1578,25 @@ public class E3CommandParser {
     Supply supply = getSupply(need.getItem(), need.getUnit());
     if (supply == null)
       return;
+
+    // only suppliers with positive priority serve maximum needs
+
     amount = Math.min(amount, supply.getAmount());
     if (amount > 0) {
-      if (amount == need.getUnit().getPersons()) {
-        addReserveOrder(need.getUnit(), need.getItem(), 1, true);
-      } else {
-        addReserveOrder(need.getUnit(), need.getItem(), amount, false);
+      if (min) {
+        if (amount == need.getUnit().getPersons()) {
+          need.getUnit().addOrder(
+              getReserveOrder(need.getUnit(), need.getItem() + COMMENTOrder + need.toString(), 1,
+                  true), false);
+        } else {
+          need.getUnit().addOrder(
+              getReserveOrder(need.getUnit(), need.getItem() + COMMENTOrder + need.toString(),
+                  amount, false), false);
+        }
       }
       need.reduceAmount(amount);
       need.reduceMinAmount(amount);
       supply.reduceAmount(amount);
-
     }
   }
 
@@ -1265,10 +1612,13 @@ public class E3CommandParser {
       if (!supplyMap.containsKey(need.getItem()))
         return;
       for (Supply supply : supplyMap.get(need.getItem()).values()) {
-        if (supply.getUnit() != need.getUnit()) {
+        if (supply.getUnit() != need.getUnit() && (min || supply.priority > 0)) {
           int giveAmount = Math.min(amount, supply.getAmount());
           if (giveAmount > 0) {
-            addGiveOrder(supply.getUnit(), need.getUnit(), need.getItem(), giveAmount, false);
+            supply.getUnit().addOrder(
+                getGiveOrder(supply.getUnit(), need.getUnit().getID().toString(), need.getItem(),
+                    giveAmount, false)
+                    + COMMENTOrder + need.toString(), false);
             need.reduceAmount(giveAmount);
             need.reduceMinAmount(giveAmount);
             supply.reduceAmount(giveAmount);
@@ -1285,7 +1635,7 @@ public class E3CommandParser {
   /**
    * Returns a supply of a unit for an item.
    * 
-   * @param item
+   * @param item Order name of the supplied item
    * @param unit
    * @return The supply or null, if none has been registered.
    */
@@ -1299,7 +1649,7 @@ public class E3CommandParser {
   /**
    * Adds the specified amounts to the need of a unit for an item to the needMap.
    * 
-   * @param item
+   * @param item Order name of the required item
    * @param unit
    * @param minAmount
    * @param maxAmount
@@ -1316,14 +1666,26 @@ public class E3CommandParser {
       map.put(unit, need);
     }
 
-    need.reduceAmount(-maxAmount);
-    need.reduceMinAmount(-minAmount);
+    if (need.getAmount() != Integer.MAX_VALUE) {
+      if (maxAmount == Integer.MAX_VALUE) {
+        need.setAmount(maxAmount);
+      } else {
+        need.reduceAmount(-maxAmount);
+      }
+    }
+    if (need.getMinAmount() != Integer.MAX_VALUE) {
+      if (minAmount == Integer.MAX_VALUE) {
+        need.setMinAmount(minAmount);
+      } else {
+        need.reduceMinAmount(-minAmount);
+      }
+    }
   }
 
   /**
    * Returns a need of a unit for an item.
    * 
-   * @param item
+   * @param item Order name of the required item
    * @param unit
    * @return The need or <code>null</code> if none has been registered.
    */
@@ -1370,7 +1732,7 @@ public class E3CommandParser {
         }
       }
       if (weaponSkill == null && !W_NEVER.equals(warning)) {
-        addNewWarning("no weapon skill");
+        addNewWarning("kein Kampftalent");
         return;
       }
     }
@@ -1390,24 +1752,26 @@ public class E3CommandParser {
           }
         }
       }
+      if (weapons.isEmpty()) {
+        addNewError("keine passenden Waffen bekannt für " + weaponSkill);
+      }
     } else {
       if (u.getItem(weapon) != null) {
         weapons.add(u.getItem(weapon));
+      } else {
+        addNewError("keine " + weapon);
       }
-    }
-    if (weapons.isEmpty()) {
-      addNewError("no known matching weapon types");
     }
 
     ArrayList<Item> shields = findItems(shield, u, "shield");
     if (shields.isEmpty()) {
-      addNewError("no known shield types");
+      addNewError("keine Schilde bekannt");
     }
 
     ArrayList<Item> armors = findItems(armor, u, "armour");
     // FIXME: shield is subcategory of armour!
     if (armors.isEmpty()) {
-      addNewError("no known armour types");
+      addNewError("keine Rüstungn bekannt");
     }
 
     if (weaponSkill != null) {
@@ -1426,14 +1790,14 @@ public class E3CommandParser {
 
     if (!NULL.equals(sWeapon)
         && !reserveEquipment(weapon, weapons, !W_NEVER.equals(warning) && !W_SKILL.equals(warning))) {
-      addNewError("could not reserve weapons");
+      addNewError("konnte Waffe nicht reservieren");
     }
     if (!NULL.equals(sShield)
         && !reserveEquipment(shield, shields, W_ARMOR.equals(warning) || W_SHIELD.equals(warning))) {
-      addNewError("could not reserve shields");
+      addNewError("konnte Schilde nicht reservieren");
     }
     if (!NULL.equals(sArmor) && !reserveEquipment(armor, armors, W_ARMOR.equals(warning))) {
-      addNewError("could not reserve armour");
+      addNewError("konnte Rüstung nicht reservieren");
     }
 
     setConfirm(u, true);
@@ -1464,7 +1828,7 @@ public class E3CommandParser {
     addNewOrder(comment.toString(), true);
 
     if (maxSkill == null) {
-      addNewError("no weapon skill");
+      addNewError("kein Kampftalent");
     } else {
       removeOrdersLike(LEARNOrder + ".*", true);
       removeOrdersLike(TEACHOrder + ".*", true);
@@ -1608,6 +1972,9 @@ public class E3CommandParser {
     BUYOrder = getLocalizedOrder(EresseaConstants.O_BUY, BUYOrder);
     SELLOrder = getLocalizedOrder(EresseaConstants.O_SELL, SELLOrder);
     MAKEOrder = getLocalizedOrder(EresseaConstants.O_MAKE, MAKEOrder);
+    MOVEOrder = getLocalizedOrder(EresseaConstants.O_MOVE, MOVEOrder);
+    ROUTEOrder = getLocalizedOrder(EresseaConstants.O_ROUTE, ROUTEOrder);
+    PAUSEOrder = getLocalizedOrder(EresseaConstants.O_PAUSE, PAUSEOrder);
     RESEARCHOrder = getLocalizedOrder(EresseaConstants.O_RESEARCH, RESEARCHOrder);
 
     if (currentFaction.getLocale().getLanguage() != "de") {
@@ -1654,8 +2021,8 @@ public class E3CommandParser {
   }
 
   /**
-   * Registers a pattern. All lines matching this regular expression will be removed from here on.
-   * If retroActively, also orders that are already in {@link #newOrders}.
+   * Registers a pattern. All lines matching this regular expression (case sensitive!) will be
+   * removed from here on. If retroActively, also orders that are already in {@link #newOrders}.
    * 
    * @param regEx
    * @param retroActively
@@ -1681,7 +2048,7 @@ public class E3CommandParser {
   protected void addNewError(String hint) {
     error = line;
     // errMsg = hint;
-    addNewOrder(COMMENTOrder + " TODO: Fehler im Skript in Zeile " + error + ": " + hint, true);
+    addNewOrder(COMMENTOrder + " TODO: " + hint + " (Fehler in Zeile " + error + ")", true);
   }
 
   /**
@@ -1702,7 +2069,7 @@ public class E3CommandParser {
   protected void addNewWarning(String hint) {
     error = line;
     // errMsg = hint;
-    addNewOrder(COMMENTOrder + " TODO: Fehler im Skript in Zeile " + error + ": " + hint, true);
+    addNewOrder(COMMENTOrder + " TODO: " + hint + " (Warnung in Zeile " + error + ")", true);
   }
 
   // ///////////////////////////////////////////////////////
@@ -1865,6 +2232,13 @@ public class E3CommandParser {
   }
 
   /**
+   * Returns a <code>RESEARCH HERBS</code> order.
+   */
+  protected String getResearchOrder() {
+    return RESEARCHOrder + " " + getLocalizedOrder(EresseaConstants.O_HERBS, "KRÄUTER");
+  }
+
+  /**
    * Return the amount of item that a unit has.
    * 
    * @param unit
@@ -1999,8 +2373,14 @@ public class E3CommandParser {
     initLocales();
 
     if (region == null) {
+      // comment out the following line if you don't have the newest nightly build of Magellan
+      helper.getUI().setMaximum(world.getRegions().size());
+
       // call self for all regions
-      for (Region r : world.regions().values()) {
+      for (Region r : world.getRegions()) {
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(r.toString(), ++progress);
+
         convertVorlage(faction, r);
       }
       return;
@@ -2010,10 +2390,9 @@ public class E3CommandParser {
     final String scriptStart = PCOMMENTOrder + " " + scriptMarker + " ";
     for (Unit u : region.units())
       if (faction.getID().equals(u.getFaction().getID())) {
-        // uncomment the following lines if you have the newest nighthly build of Magellan
-        // ---start uncomment for BeanShell
-        helper.getUI().setProgress(region.toString() + " - " + u.toString(), 0);
-        // ---stop uncomment for BeanShell
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(region.toString() + " - " + u.toString(), progress);
+
         currentUnit = u;
         newOrders = new ArrayList<String>();
         removedOrderPatterns = new ArrayList<String>();
@@ -2023,9 +2402,10 @@ public class E3CommandParser {
 
         // loop over orders
         line = 0;
-        for (Object o : u.getOrders()) {
+        for (String o : u.getOrders()) {
           ++line;
-          currentOrder = (String) o;
+          currentOrder = o;
+
           if (currentOrder.startsWith("// #")) {
             String[] tokens = detectVorlageCommand(currentOrder);
             if (tokens != null) {
@@ -2059,27 +2439,22 @@ public class E3CommandParser {
                 addNewOrder(scriptStart + " BerufBotschafter "
                     + (tokens.length > 1 ? tokens[1] : ""), true);
               } else if (command.equals("BerufDepotVerwalter")) {
+                int number = Integer.MIN_VALUE;
                 if (tokens.length > 1) {
                   try {
-                    int number = Integer.parseInt(tokens[1]);
-                    addNewOrder(scriptStart
-                        + "Benoetige "
-                        + number
-                        + " "
-                        + Resources.getRuleItemTranslation(EresseaConstants.I_USILVER.toString(),
-                            faction.getLocale()), true);
+                    number = Integer.parseInt(tokens[1]);
                   } catch (Exception e) {
-                    // no number -- ignore
+                    number = Integer.MIN_VALUE;
                   }
                 }
-                addNewOrder(scriptStart + "Ueberwache", true);
+                addNewOrder(scriptStart + "BerufDepotVerwalter " + (number > 0 ? number : ""), true);
               } else if (command.equals("BerufWahrnehmer")) {
                 addNewOrder(scriptStart
                     + "Lerne "
                     + world.getRules().getSkillType(EresseaConstants.S_WAHRNEHMUNG.toString())
-                        .getName(), true);
+                        .getName() + " 10", true);
               } else if (command.equals("Depot")) {
-                addNewOrder(COMMENTOrder + " Depot ignored", true);
+                addNewOrder(scriptStart + "Benoetige " + ALLOrder, true);
               } else if (command.equals("Versorge")) {
                 addNewOrder(COMMENTOrder + " Versorge ignored", true);
               } else if (command.equals("Erlerne")) {
@@ -2095,6 +2470,9 @@ public class E3CommandParser {
               } else if (command.equals("Ernaehre")) {
                 StringBuilder order = new StringBuilder(scriptStart);
                 for (String token : tokens) {
+                  if (order.length() > 0) {
+                    order.append(" ");
+                  }
                   order.append(token);
                 }
                 addNewOrder(order.toString(), true);
@@ -2111,11 +2489,14 @@ public class E3CommandParser {
                 if (tokens[tokens.length - 1].equals("aus")) {
                   order.append(" Menge");
                 }
+                if (tokens[tokens.length - 1].equals("nie")) {
+                  order.append(" nie");
+                }
                 addNewOrder(order.toString(), true);
                 if (command.equals("Steuermann") && tokens.length != 3) {
-                  addNewError("unsupported arguments");
+                  addNewError("unzulässige Argumente");
                 }
-              } else if (command.equals("VersorgeFremd")) {
+              } else if (command.equals("VersorgeFremd") || command.equals("BenoetigeFremd")) {
                 if (tokens.length > 3 && tokens[3].equals("aus")) {
                   addNewOrder(scriptStart + "BenoetigeFremd " + tokens[1] + " 0 " + tokens[2] + " "
                       + tokens[3], true);
@@ -2139,14 +2520,14 @@ public class E3CommandParser {
                 // simply copy order
                 StringBuilder order = new StringBuilder(scriptStart);
                 for (String token : tokens) {
-                  if (order.length() > 0) {
+                  if (order.length() > scriptStart.length()) {
                     order.append(" ");
                   }
                   order.append(token);
                 }
                 addNewOrder(order.toString(), true);
                 if (command.equals("Steuermann") && tokens.length != 3) {
-                  addNewError("unsupported arguments");
+                  addNewError("unzulässige Argumente");
                 }
 
               } else {
@@ -2162,7 +2543,7 @@ public class E3CommandParser {
             } else {
               addNewOrder(currentOrder, false);
               addNewError("unbekannter Befehl: " + currentOrder);
-              Logger.getInstance("E3CommandParser").fine("unknown order " + currentOrder);
+              log.fine("unknown order " + currentOrder);
             }
           } else {
             addNewOrder(currentOrder, false);
@@ -2208,6 +2589,67 @@ public class E3CommandParser {
       }
     }
     return null;
+  }
+
+  public void cleanScripts(Faction faction, Region region) {
+    if (faction == null)
+      throw new NullPointerException();
+    currentFaction = faction;
+
+    initLocales();
+
+    if (region == null) {
+      // comment out the following line if you don't have the newest nightly build of Magellan
+      helper.getUI().setMaximum(world.getRegions().size());
+
+      // call self for all regions
+      for (Region r : world.getRegions()) {
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(r.toString(), ++progress);
+
+        cleanScripts(faction, r);
+      }
+      return;
+    }
+
+    // loop for all units of faction
+    for (Unit u : region.units()) {
+      if (faction.getID().equals(u.getFaction().getID())) {
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(region.toString() + " - " + u.toString(), progress);
+
+        currentUnit = u;
+        newOrders = new ArrayList<String>();
+        removedOrderPatterns = new ArrayList<String>();
+        changedOrders = false;
+        error = -1;
+
+        // loop over orders
+        line = 0;
+        for (Order command : u.getOrders2()) {
+          currentOrder = command.getText();
+          if (currentOrder.startsWith("@RESERVIEREN")) {
+            addNewOrder("// $cript Benoetige " + currentOrder.substring(currentOrder.indexOf(" ")),
+                true);
+            addNewOrder(currentOrder.substring(1), true);
+          } else {
+            if (command.isLong() || command.isPersistent() || command.getText().startsWith("//")) {
+              addNewOrder(command.getText(), false);
+            } else {
+              // omit
+              changedOrders = true;
+            }
+          }
+        }
+        if (changedOrders) {
+          currentUnit.setOrders(newOrders);
+        }
+        notifyMagellan(currentUnit);
+
+        newOrders = null;
+      }
+    }
+
   }
 
   /**
@@ -2320,19 +2762,25 @@ public class E3CommandParser {
     return line.matches("[ ]*//.*") || line.matches("[ ]*[*].*");
   }
   // ---stop comment for BeanShell
+
 }
 
-class Supply {
+class Supply implements Comparable<Supply> {
 
   Unit unit;
+  /** The order name of the item. */
   String item;
   int amount;
+  int priority;
 
   public Supply(Unit unit, String item, int amount) {
     super();
+    if (unit == null)
+      throw new NullPointerException();
     this.unit = unit;
     this.item = item;
     this.amount = amount;
+    priority = E3CommandParser.DEFAULT_SUPPLY_PRIORITY;
   }
 
   public Unit getUnit() {
@@ -2369,6 +2817,10 @@ class Supply {
     return unit + " has " + amount + " " + item;
   }
 
+  public int compareTo(Supply o) {
+    return o.priority - priority;
+  }
+
 }
 
 class Need extends Supply {
@@ -2389,7 +2841,7 @@ class Need extends Supply {
   }
 
   public void reduceMinAmount(int change) {
-    if (amount == Integer.MAX_VALUE || amount == Integer.MIN_VALUE)
+    if (minAmount == Integer.MAX_VALUE || minAmount == Integer.MIN_VALUE)
       return;
     long newValue = (long) minAmount - (long) change;
     if (newValue > Integer.MAX_VALUE) {

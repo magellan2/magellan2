@@ -137,6 +137,10 @@ public class EresseaRelationFactory implements RelationFactory {
     return createRelations(u, orders, 0);
   }
 
+  public void createRelations(Region region) {
+    processOrders(region);
+  }
+
   static class GDEntry {
 
     public GameData data;
@@ -954,7 +958,7 @@ public class EresseaRelationFactory implements RelationFactory {
     return rel;
   }
 
-  protected static class OrderInfo {
+  protected static final class OrderInfo implements Comparable<OrderInfo> {
     public Order order;
     public Unit unit;
     public int line;
@@ -970,6 +974,10 @@ public class EresseaRelationFactory implements RelationFactory {
     @Override
     public String toString() {
       return order.toString();
+    }
+
+    public int compareTo(OrderInfo o) {
+      return priority - o.priority;
     }
   }
 
@@ -1005,6 +1013,9 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       u.clearRelations();
+      if (u.getFaction() != null) {
+        u.getFaction().clearRelations();
+      }
     }
     r.getZeroUnit().clearRelations();
     for (UnitContainer uc : r.buildings()) {
@@ -1013,8 +1024,10 @@ public class EresseaRelationFactory implements RelationFactory {
     for (UnitContainer uc : r.ships()) {
       uc.clearRelations();
     }
+    r.clearRelations();
 
-    Arrays.sort(orders, getOrderComparator());
+    // Arrays.sort(orders, getOrderComparator());
+    Arrays.sort(orders);
     EresseaExecutionState state = new EresseaExecutionState(r.getData());
     for (OrderInfo o : orders) {
       o.order.execute(state, data, o.unit, o.line);

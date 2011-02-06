@@ -16,6 +16,7 @@ package magellan.library.gamebinding;
 import java.util.List;
 
 import magellan.library.Orders;
+import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.relation.UnitRelation;
 
@@ -51,5 +52,7 @@ public interface RelationFactory {
    * @return A List of Relations for this unit
    */
   public List<?> createRelations(Unit u, Orders orders);
+
+  public void createRelations(Region region);
 
 }

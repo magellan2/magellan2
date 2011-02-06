@@ -73,10 +73,10 @@ import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Cache;
 import magellan.library.utils.CacheHandler;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderWriter;
-import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.LinearUnitTempUnitComparator;
@@ -727,7 +727,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    */
   public Item addItem(Item i) {
     if (items == null) {
-      items = new OrderedHashtable<StringID, Item>(3, .8f);
+      items = CollectionFactory.<StringID, Item> createOrderedMap(3, .8f);
     }
 
     items.put(i.getItemType().getID(), i);
@@ -1638,7 +1638,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    */
   public Skill addSkill(Skill s) {
     if (skills == null) {
-      skills = new OrderedHashtable<StringID, Skill>(3, .8f);
+      skills = CollectionFactory.<StringID, Skill> createSyncOrderedMap(3, .8f);
     }
 
     skills.put(s.getSkillType().getID(), s);
@@ -2246,7 +2246,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     if (ordersAreNull() || (getRegion() == null))
       return;
 
-    getData().getGameSpecificStuff().getRelationFactory().createRelations(this, from);
+    getData().getGameSpecificStuff().getRelationFactory().createRelations(getRegion());
     // invalidateCache();
     // removeRelationsOriginatingFromUs(from);
     // addAndSpreadRelations(getData().getGameSpecificStuff().getRelationFactory().createRelations(

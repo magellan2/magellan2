@@ -150,6 +150,9 @@ public class Score<K> implements Comparable<Score<K>> {
       }
       b.append(t);
     }
+    if (b.length() == 0) {
+      b.append("???");
+    }
     b.append(": ").append(key.toString()).append(" = ").append(score);
     return b.toString();
   }

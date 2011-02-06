@@ -53,7 +53,6 @@ import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
-import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
@@ -105,33 +104,33 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   }
 
   private void initCommands() {
-    String exampleScript = "// example for beginners...\n";
-    exampleScript += "// \n";
-    exampleScript += "// import magellan.library.*;\n";
-    exampleScript += "// \n";
-    exampleScript += "// int getHorses(Region region) {\n";
-    exampleScript += "// return region.getHorses();\n";
-    exampleScript += "// }\n";
-    exampleScript += "// check the Magellan web pages for more examples...";
-    exampleScript += "//\n";
+    String exampleScript = "// example for beginners...\n" //
+        + "// \n" //
+        + "// import magellan.library.*;\n" //
+        + "// \n" //
+        + "// int getHorses(Region region) {\n" //
+        + "// return region.getHorses();\n" //
+        + "// }\n" //
+        + "// check the Magellan web pages for more examples..."//
+        + "//\n";
     commands.setDefaultLibrary(exampleScript);
 
-    exampleScript = "// example for beginners...\n";
-    exampleScript += "//\n";
-    exampleScript += "//if (!unit.isOrdersConfirmed()) {\n";
-    exampleScript += "//  unit.setOrdersConfirmed(true);\n";
-    exampleScript += "//}\n";
-    exampleScript += "// check the Magellan web pages for more examples...";
+    exampleScript = "// example for beginners...\n" //
+        + "//\n" //
+        + "//if (!unit.isOrdersConfirmed()) {\n" //
+        + "//  unit.setOrdersConfirmed(true);\n" //
+        + "//}\n" //
+        + "// check the Magellan web pages for more examples...";
     commands.setDefaultUnitScript(exampleScript);
 
-    exampleScript = "// example for beginners...\n";
-    exampleScript += "//\n";
-    exampleScript += "// for (Unit u : container.units()) {\n";
-    exampleScript += "//   helper.addOrder(u, \"; gotcha\");\n";
-    exampleScript += "//   helper.updateUnit(u);\n";
-    exampleScript += "// }\n";
-    exampleScript += "//\n";
-    exampleScript += "// check the Magellan web pages for more examples...";
+    exampleScript = "// example for beginners...\n" //
+        + "//\n" //
+        + "// for (Unit u : container.units()) {\n" //
+        + "//   helper.addOrder(u, \" gotcha\");\n" //
+        + "//   helper.updateUnit(u);\n" //
+        + "// }\n" //
+        + "//\n" //
+        + "// check the Magellan web pages for more examples...";
     commands.setDefaultContainerScript(exampleScript);
   }
 
@@ -414,7 +413,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // execute the commands for this container.
     commands.execute(data, container);
 
-    client.getDispatcher().fire(new GameDataEvent(this, data));
+    // client.getDispatcher().fire(new GameDataEvent(this, data));
   }
 
   /**

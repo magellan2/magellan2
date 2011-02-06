@@ -78,8 +78,8 @@ public class ExtendedCommandsHelper {
 
   private Client client;
   private GameData world;
-  private Unit unit;
-  private UnitContainer container;
+  private Unit currentUnit;
+  private UnitContainer currentContainer;
 
   private UserInterface ui;
 
@@ -98,8 +98,8 @@ public class ExtendedCommandsHelper {
   protected ExtendedCommandsHelper(Client client, GameData world, Unit unit, UnitContainer container) {
     this.client = client;
     this.world = world;
-    this.unit = unit;
-    this.container = container;
+    currentUnit = unit;
+    currentContainer = container;
     ui = new NullUserInterface();
   }
 
@@ -168,10 +168,10 @@ public class ExtendedCommandsHelper {
    *         unit or container
    */
   public Region getCurrentRegion() {
-    if (unit != null)
-      return unit.getRegion();
-    else if (container != null && (container instanceof HasRegion))
-      return ((HasRegion) container).getRegion();
+    if (currentUnit != null)
+      return currentUnit.getRegion();
+    else if (currentContainer != null && (currentContainer instanceof HasRegion))
+      return ((HasRegion) currentContainer).getRegion();
     else
       return null;
   }
@@ -263,8 +263,8 @@ public class ExtendedCommandsHelper {
    *         <code>null</code> if the current unit is <code>null</code>.
    */
   public boolean isUnitInRegion(String regionName) {
-    if (unit != null)
-      return regionName.equalsIgnoreCase(unit.getRegion().getName());
+    if (currentUnit != null)
+      return regionName.equalsIgnoreCase(currentUnit.getRegion().getName());
     else
       return false;
   }
@@ -287,14 +287,14 @@ public class ExtendedCommandsHelper {
    * @return {@link NullPointerException} if there is no active unit.
    */
   public boolean unitPerceivesOtherUnit(String unitId) {
-    if (unit == null)
+    if (currentUnit == null)
       throw new NullPointerException();
     Unit otherunit = getUnitInRegion(unitId);
     if (otherunit == null)
       return false;
-    if (otherunit.getFaction().equals(unit.getFaction()))
+    if (otherunit.getFaction().equals(currentUnit.getFaction()))
       return true;
-    return getRegionSkillLevel(unit.getRegion(), unit.getFaction(), world.rules
+    return getRegionSkillLevel(currentUnit.getRegion(), currentUnit.getFaction(), world.rules
         .getSkillType(EresseaConstants.S_WAHRNEHMUNG)) >= otherunit.getSkill(
         world.rules.getSkillType(EresseaConstants.S_TARNUNG)).getLevel();
   }
@@ -355,6 +355,8 @@ public class ExtendedCommandsHelper {
       for (Item item : items) {
         if (item.getItemType().getName().equalsIgnoreCase(itemTypeName))
           return item.getAmount();
+        if (item.getOrderName().equalsIgnoreCase(itemTypeName))
+          return item.getAmount();
       }
     }
     return 0;
@@ -378,6 +380,8 @@ public class ExtendedCommandsHelper {
     if (items != null) {
       for (Item item : items) {
         if (item.getItemType().getName().equalsIgnoreCase(itemTypeName))
+          return item.getAmount();
+        if (item.getOrderName().equalsIgnoreCase(itemTypeName))
           return item.getAmount();
       }
     }
@@ -450,7 +454,7 @@ public class ExtendedCommandsHelper {
    * Adds an order to the current unit.
    */
   public void addOrder(String order) {
-    addOrder(unit, order);
+    addOrder(currentUnit, order);
   }
 
   /**
@@ -466,7 +470,7 @@ public class ExtendedCommandsHelper {
    * Sets the command for the current unit and replaces all given commands.
    */
   public void setOrder(String order) {
-    setOrder(unit, order);
+    setOrder(currentUnit, order);
   }
 
   /**
@@ -534,7 +538,7 @@ public class ExtendedCommandsHelper {
    * This method tries to find out, if the current unit has a weapon and a skill to use this weapon.
    */
   public boolean isSoldier() {
-    Collection<Item> items = unit.getItems();
+    Collection<Item> items = currentUnit.getItems();
     ItemCategory weapons = world.rules.getItemCategory(StringID.create("weapons"));
     if (weapons == null) {
       // we don't know something about weapons.
@@ -555,7 +559,7 @@ public class ExtendedCommandsHelper {
         if (useSkill != null) {
           ExtendedCommandsHelper.log.info("Skill needed " + useSkill.getName());
           // okay, has the unit the skill?
-          for (Skill skill : unit.getSkills()) {
+          for (Skill skill : currentUnit.getSkills()) {
             ExtendedCommandsHelper.log.info("Skill " + skill.getName());
             if (useSkill.getSkillType().equals(skill.getSkillType())) {
               ExtendedCommandsHelper.log.info("Unit is a soldier.");

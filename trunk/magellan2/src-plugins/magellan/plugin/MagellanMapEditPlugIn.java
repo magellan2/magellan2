@@ -377,6 +377,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
       MagellanMapEditPlugIn.log.error("MapEdit runDelName with no region");
       return;
     }
+
     r.setName(null);
     updateClient();
   }
@@ -389,14 +390,39 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
       MagellanMapEditPlugIn.log.error("MapEdit runDelRegion with no region");
       return;
     }
-    Region rGone = data.removeRegion(r);
-    if (rGone != null) {
-      // ok..ist wech
-      r = null;
-      updateClient();
+
+    Map<CoordinateID, Region> selection = client.getSelectedRegions();
+    if (selection.containsKey(r.getCoordinate())) {
+      int result = JOptionPane.showConfirmDialog(client, "delete the selection?");
+      if (result == JOptionPane.YES_OPTION) {
+        for (Region r : selection.values()) {
+          if (data.removeRegion(r) == null) {
+            MagellanMapEditPlugIn.log.error("MapEdit runDelRegion: removing region not successful");
+          }
+        }
+
+        updateClient();
+      } else if (result == JOptionPane.NO_OPTION) {
+        Region rGone = data.removeRegion(r);
+        if (rGone != null) {
+          // ok..ist wech
+          r = null;
+          updateClient();
+        } else {
+          // konnte nicht entfernt werden
+          MagellanMapEditPlugIn.log.error("MapEdit runDelRegion: removing region not successful");
+        }
+      }
     } else {
-      // konnte nicht entfernt werden
-      MagellanMapEditPlugIn.log.error("MapEdit runDelRegion: removing region not successful");
+      Region rGone = data.removeRegion(r);
+      if (rGone != null) {
+        // ok..ist wech
+        r = null;
+        updateClient();
+      } else {
+        // konnte nicht entfernt werden
+        MagellanMapEditPlugIn.log.error("MapEdit runDelRegion: removing region not successful");
+      }
     }
   }
 

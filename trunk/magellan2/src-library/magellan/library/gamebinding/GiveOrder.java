@@ -124,9 +124,9 @@ public class GiveOrder extends UnitArgumentOrder {
       return;
     }
 
-    Unit tUnit = getTargetUnit(data, unit, line, true, true);
+    Unit tUnit = getTargetUnit(data, unit, line, true);
 
-    if (tUnit != null) {
+    if (tUnit != null && tUnit.getRegion() == unit.getRegion()) {
       EresseaExecutionState eState = (EresseaExecutionState) state;
 
       if (!tUnit.equals(unit)) {
@@ -207,9 +207,10 @@ public class GiveOrder extends UnitArgumentOrder {
         // relation to myself? you're sick
         setWarning(unit, line, Resources.get("order.give.warning.reflexive"));
       }
-    } else {
-      setWarning(unit, line, Resources.get("order.give.warning.unknowntarget", target));
-    }
+    } // unknown unit okay, may be hidden
+    // else {
+    // setWarning(unit, line, Resources.get("order.give.warning.unknowntarget", target));
+    // }
 
   }
 

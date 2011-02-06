@@ -57,8 +57,8 @@ public class TransportOrder extends UnitArgumentOrder {
     // if (!isValid())
     // return;
 
-    Unit tUnit = getTargetUnit(data, unit, line, true, false);
-    if (tUnit != null) {
+    Unit tUnit = getTargetUnit(data, unit, line, false);
+    if (tUnit != null && tUnit.getRegion() == unit.getRegion()) {
       if (tUnit == unit) {
         setWarning(unit, line, Resources.get("order.transport.warning.treflexive"));
       } else {

@@ -26,6 +26,7 @@ package magellan.library.gamebinding;
 import java.util.List;
 
 import magellan.library.GameData;
+import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.relation.InterUnitRelation;
@@ -65,10 +66,11 @@ public class UnitArgumentOrder extends SimpleOrder {
    * 
    * @param data
    * @param unit
-   * @param sameRegionOnly
+   * @param zeroAllowed If the target is 0, the ZeroUnit of the will be returned if this is true,
+   *          <code>null</code> otherwise.
+   * @see {@link Region#getZeroUnit()}
    */
-  protected Unit getTargetUnit(GameData data, Unit unit, int line, boolean sameRegionOnly,
-      boolean zeroAllowed) {
+  protected Unit getTargetUnit(GameData data, Unit unit, int line, boolean zeroAllowed) {
     if (target == null)
       return null;
     Unit tUnit = null;
@@ -84,10 +86,7 @@ public class UnitArgumentOrder extends SimpleOrder {
         tUnit = data.getTempUnit(target);
       }
     }
-    if (tUnit != null && (!sameRegionOnly || tUnit.getRegion() == unit.getRegion()))
-      return tUnit;
-    else
-      return null;
+    return tUnit;
   }
 
   @Override
@@ -95,9 +94,9 @@ public class UnitArgumentOrder extends SimpleOrder {
     if (!isValid())
       return;
 
-    Unit tUnit = getTargetUnit(data, unit, line, true, true);
+    Unit tUnit = getTargetUnit(data, unit, line, true);
 
-    if (tUnit != null) {
+    if (tUnit != null && tUnit.getRegion() == unit.getRegion()) {
       new InterUnitRelation(unit, tUnit, line).add();
     } else {
       setWarning(unit, line, Resources.get("order.all.warning.unknowntarget", target));

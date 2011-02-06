@@ -94,8 +94,8 @@ public class AttackOrder extends UnitArgumentOrder {
     if (!isValid())
       return;
 
-    Unit tUnit = getTargetUnit(data, unit, line, true, false);
-    if (tUnit != null) {
+    Unit tUnit = getTargetUnit(data, unit, line, false);
+    if (tUnit != null && tUnit.getRegion() == unit.getRegion()) {
       AttackRelation rel = new AttackRelation(unit, tUnit, line);
       rel.add();
     } else {

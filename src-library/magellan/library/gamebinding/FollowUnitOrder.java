@@ -47,8 +47,8 @@ public class FollowUnitOrder extends UnitArgumentOrder {
 
   @Override
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
-    Unit tUnit = getTargetUnit(data, unit, line, true, false);
-    if (tUnit != null) {
+    Unit tUnit = getTargetUnit(data, unit, line, false);
+    if (tUnit != null && tUnit.getRegion() == unit.getRegion()) {
 
       if (tUnit != unit) {
         FollowUnitRelation rel = new FollowUnitRelation(unit, tUnit, line);

@@ -261,7 +261,14 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   public String toString(boolean printExtended) {
     final StringBuffer sb = new StringBuffer();
 
-    sb.append(getModifiedName()).append(" (").append(getID().toString()).append(")");
+    // we could use getModifiedName here but it seems a bit obtrusive (and hard to handle tree
+    // updates)
+    String myName = getName();
+    if (myName == null) {
+      myName = getType().toString() + " " + getID();
+    }
+
+    sb.append(myName).append(" (").append(getID().toString()).append(")");
 
     if (printExtended) {
       sb.append(", ").append(getType());

@@ -24,14 +24,21 @@
 package magellan.client.actions.desktop;
 
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import javax.swing.JOptionPane;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.desktop.DockingFrameworkBuilder;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
+
+import org.apache.tools.ant.filters.StringInputStream;
+import org.xml.sax.SAXException;
 
 /**
  * With the help of the action it is possible to create new docking layouts.
@@ -88,22 +95,41 @@ public class LayoutNewAction extends MenuAction {
   public void menuActionPerformed(ActionEvent e) {
     LayoutNewAction.log.info("LayoutNewAction.actionPerformed() called");
 
-    Object result =
-        JOptionPane.showInputDialog(Client.INSTANCE, Resources
-            .get("desktop.magellandesktop.msg.layout.new.caption"), Resources
-            .get("desktop.magellandesktop.msg.layout.new.title"), JOptionPane.PLAIN_MESSAGE, null,
-            null, Resources.get("desktop.magellandesktop.msg.layout.new.default"));
-    if (result == null)
-      return;
-    String newLayoutName = result.toString();
+    Object result;
+    do {
+      result =
+          JOptionPane.showInputDialog(Client.INSTANCE, Resources
+              .get("desktop.magellandesktop.msg.layout.new.caption"), Resources
+              .get("desktop.magellandesktop.msg.layout.new.title"), JOptionPane.PLAIN_MESSAGE,
+              null, null, Resources.get("desktop.magellandesktop.msg.layout.new.default"));
+      if (result != null) {
+        String newLayoutName = result.toString();
 
-    if (DockingFrameworkBuilder.getInstance().getLayout(newLayoutName) != null) {
-      JOptionPane.showMessageDialog(Client.INSTANCE, Resources
-          .get("desktop.magellandesktop.msg.layout.new.exists"));
-      return;
-    }
-
-    DockingFrameworkBuilder.getInstance().createNewLayout(newLayoutName);
+        if (DockingFrameworkBuilder.getInstance().getLayout(newLayoutName) != null) {
+          JOptionPane.showMessageDialog(Client.INSTANCE, Resources
+              .get("desktop.magellandesktop.msg.layout.new.exists"));
+        } else {
+          DocumentBuilder builder;
+          try {
+            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            builder.parse(new StringInputStream("<rootwindow name='" + newLayoutName
+                + "' isActive='false'></rootwindow>"));
+          } catch (ParserConfigurationException ex) {
+            // not our problem now
+          } catch (SAXException ex) {
+            // not our problem now
+          } catch (IOException ex) {
+            // probably invalid name
+            JOptionPane.showMessageDialog(Client.INSTANCE, Resources
+                .get("desktop.magellandesktop.msg.layout.new.invalidname"));
+            result = null;
+          }
+          if (result != null) {
+            DockingFrameworkBuilder.getInstance().createNewLayout(newLayoutName);
+          }
+        }
+      }
+    } while (result == null);
   }
 
 }

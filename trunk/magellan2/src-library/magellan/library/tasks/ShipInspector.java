@@ -13,15 +13,19 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import magellan.library.Alliance;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.RegionType;
@@ -39,7 +43,8 @@ public class ShipInspector extends AbstractInspector {
   // public static final ShipInspector INSPECTOR = new ShipInspector();
 
   enum ShipProblemTypes {
-    EMPTY, NOCREW, NONEXTREGION, NOOCEAN, WRONGSHORE, WRONGSHOREHARBOUR, SHIPWRECK, OVERLOADED;
+    EMPTY, NOCREW, NONEXTREGION, NOOCEAN, WRONGSHORE, WRONGSHOREHARBOUR, WRONGSHOREHARBOUR_INFO,
+    SHIPWRECK, OVERLOADED;
 
     private ProblemType type;
 
@@ -157,10 +162,11 @@ public class ShipInspector extends AbstractInspector {
       return Collections.emptyList();
 
     List<Problem> problems = new ArrayList<Problem>();
-    if (ship.getModifiedOwnerUnit() == null)
+    Unit captain = ship.getModifiedOwnerUnit();
+    if (captain == null)
       return problems;
 
-    List<CoordinateID> modifiedMovement = ship.getModifiedOwnerUnit().getModifiedMovement();
+    List<CoordinateID> modifiedMovement = captain.getModifiedMovement();
 
     if (modifiedMovement.isEmpty())
       return problems;
@@ -190,13 +196,22 @@ public class ShipInspector extends AbstractInspector {
       // move to an ocean region
       Direction d = Regions.getDirectionObjectsOfCoordinates(getData(), modifiedMovement).get(0);
       if (d.getDifference(ship.getShoreId()) > 1 || d.getDifference(ship.getShoreId()) < -1) {
-        if (!hasHarbourInRegion(ship.getRegion())) {
+        Unit owner = hasHarbourInRegion(ship.getRegion());
+        if (owner == null) {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.WRONGSHORE
               .getType(), ship, this));
         } else {
-          // harbour in Region -> just warn, no error
-          problems.add(ProblemFactory.createProblem(Severity.WARNING,
-              ShipProblemTypes.WRONGSHOREHARBOUR.getType(), ship, this));
+          boolean isAllied = false;
+          Map<EntityID, Alliance> allies = owner.getFaction().getAllies();
+          if (Units.isAllied(captain.getFaction(), owner.getFaction(), EresseaConstants.A_GUARD)) {
+            // harbour in Region -> just warn, no error
+            problems.add(ProblemFactory.createProblem(Severity.INFORMATION,
+                ShipProblemTypes.WRONGSHOREHARBOUR_INFO.getType(), ship, this));
+          } else {
+            // harbour in Region -> just warn, no error
+            problems.add(ProblemFactory.createProblem(Severity.WARNING,
+                ShipProblemTypes.WRONGSHOREHARBOUR.getType(), ship, this));
+          }
         }
         return problems;
       }
@@ -219,7 +234,7 @@ public class ShipInspector extends AbstractInspector {
       if (isShip
           && (nextRegion == null || !(getGameSpecificStuff().getGameSpecificRules()
               .canLandInRegion(ship, nextRegion)))) {
-        if (nextRegion == null || !hasHarbourInRegion(nextRegion)
+        if (nextRegion == null || hasHarbourInRegion(nextRegion) == null
             || nextRegion.getRegionType().equals(RegionType.theVoid)) {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.SHIPWRECK
               .getType(), ship, this));
@@ -248,7 +263,7 @@ public class ShipInspector extends AbstractInspector {
    * @param nextRegion
    * @return
    */
-  private boolean hasHarbourInRegion(Region nextRegion) {
+  private Unit hasHarbourInRegion(Region nextRegion) {
     if (nextRegion.buildings() != null && nextRegion.buildings().size() > 0) {
       // check all buildings
       // i have no reference to the rules, do I?
@@ -258,11 +273,11 @@ public class ShipInspector extends AbstractInspector {
           // lets check size
           if (b.getSize() >= b.getBuildingType().getMaxSize())
             // ok...there is an harbour
-            return true;
+            return b.getOwnerUnit();
         }
       }
     }
-    return false;
+    return null;
   }
 
   /**

@@ -47,32 +47,49 @@ public class SetGirthAction extends MenuAction {
   @Override
   public void menuActionPerformed(ActionEvent e) {
     GameData data = client.getData();
-    int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, maxY =
-        Integer.MIN_VALUE;
+    BBox box = new BBox();
+    boolean alternative = false;
+
     for (Region wrapper : data.wrappers().values()) {
-      Region original = client.getData().getOriginal(wrapper);
-      if (original != null) {
-        if (original.getCoordY() == wrapper.getCoordY()) {
-          if (original.getCoordX() < minX) {
-            minX = original.getCoordX();
+      if (wrapper.getCoordinate().getZ() == 0) {
+        Region original = client.getData().getOriginal(wrapper);
+        if (original != null) {
+          if (original.getCoordY() == wrapper.getCoordY()) {
+            int min;
+            int max;
+            if (wrapper.getCoordX() < original.getCoordX()) {
+              min = wrapper.getCoordX() + 1 + original.getCoordY() / 2;
+              max = original.getCoordX() + original.getCoordY() / 2;
+            } else {
+              max = wrapper.getCoordX() - 1 + original.getCoordY() / 2;
+              min = original.getCoordX() + original.getCoordY() / 2;
+            }
+            if (box.maxx != Integer.MIN_VALUE && (box.maxx != max || box.minx != min)) {
+              if (box.maxx - box.minx != max - min) {
+                // error
+                box = new BBox();
+                break;
+              }
+              alternative = true;
+            }
+            if (alternative) {
+              box.setX((max - min + 1) / 2 - (max - min), (max - min + 1) / 2);
+            } else {
+              box.setX(min, max);
+            }
+
           }
-          if (original.getCoordX() > maxX) {
-            maxX = original.getCoordX();
-          }
-        }
-        if (original.getCoordX() == wrapper.getCoordX()) {
-          if (original.getCoordY() < minY) {
-            minY = original.getCoordY();
-          }
-          if (original.getCoordY() > maxY) {
-            maxY = original.getCoordY();
+          if (original.getCoordX() == wrapper.getCoordX()) {
+            if (wrapper.getCoordY() < original.getCoordY()) {
+              box.setY(wrapper.getCoordY() + 1, original.getCoordY());
+            } else {
+              box.setY(original.getCoordY(), wrapper.getCoordY() - 1);
+            }
           }
         }
       }
     }
-    BBox box = new BBox();
-    box.setX(minX, maxX);
-    box.setY(minY, maxY);
+
     SetGirthDialog dialog = new SetGirthDialog(client, box, null);
     dialog.setVisible(true);
     if (dialog.approved()) {

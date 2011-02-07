@@ -1843,8 +1843,8 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-      if (region.maxRecruit() > 0) {
-        write(region.maxRecruit() + ";Rekruten");
+      if (region.getRecruits() > 0) {
+        write(region.getRecruits() + ";Rekruten");
         newLine();
       }
 

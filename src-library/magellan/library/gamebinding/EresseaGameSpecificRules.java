@@ -278,6 +278,6 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
           rrel.amount / rrel.race.getRecruitmentFactor()
               + (rrel.amount % rrel.race.getRecruitmentFactor() > 0 ? 1 : 0);
     }
-    return (u.getRegion().getRecruits() - recruited) * race.getRecruitmentFactor();
+    return (u.getRegion().maxRecruit() - recruited) * race.getRecruitmentFactor();
   }
 }

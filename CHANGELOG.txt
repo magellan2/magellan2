@@ -1,3 +1,12 @@
+2011-02-08 / Build 461 - stm (stm_@users.sourceforge.net)
+    * changes to order processing/relations/tree updates
+    * improvements to box finding in wrapping worlds
+    * improved saving and processing of ExtCmds
+    * re-added completion for KÄMPFE HINTEN
+    * enable deletion of multiple regions (MapEdit)
+    * fixed Trac bug #26
+    * fixed some warnings
+
 2010-11-23 / Build 454 - stm (stm_@users.sourceforge.net)
     * fixed bug with unknown tags in CRParser
     

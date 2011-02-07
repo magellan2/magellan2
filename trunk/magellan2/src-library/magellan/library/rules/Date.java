@@ -106,8 +106,8 @@ public abstract class Date extends Object implements ID, Cloneable {
    * value.
    * 
    * @param o the date to compare this date to
-   * @return &gt; 0 if this date is greater than <tt>o</tt><br/>
-   *         , &lt; 0 if this date is smaller, 0 if the dates are equal
+   * @return &gt; 0 if this date is greater than <tt>o</tt>,<br/>
+   *         &lt; 0 if this date is smaller, 0 if the dates are equal
    */
   public int compareTo(Object o) {
     Date d = (Date) o;

@@ -58,8 +58,8 @@ public interface MagellanPlugIn {
   public void init(Client client, Properties properties);
 
   /**
-   * This method is called everytime the user has load a file into Magellan (open or add). You
-   * should use this method to load report specific informations.
+   * This method is called every time the user has loaded a file into Magellan (open or add). You
+   * should use this method to load report specific information.
    * 
    * @param data the loaded and merged gamedata
    */
@@ -77,14 +77,14 @@ public interface MagellanPlugIn {
   public void quit(boolean storeSettings);
 
   /**
-   * This method is used to find out, if the plugin has a preferences dialog that should be used
+   * This method is used to find out, if the PlugIn has a preferences dialog that should be used
    * inside the options window of Magellan. If you don't want to build a preferences dialog return
    * null.
    */
   public PreferencesFactory getPreferencesProvider();
 
   /**
-   * Returns a list of dock elements or null, if the plugin has no docks.
+   * Returns a list of dock elements or null, if the PlugIn has no docks.
    */
   public Map<String, Component> getDocks();
 }

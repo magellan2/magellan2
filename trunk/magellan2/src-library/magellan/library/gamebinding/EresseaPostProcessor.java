@@ -286,7 +286,7 @@ public class EresseaPostProcessor {
         }
         Region original = idMap.get(wrappingRegion.getUID());
         if (original == null) {
-          log.warn("wrapping region without actual region" + wrappingRegion);
+          log.warn("wrapping region without actual region " + wrappingRegion);
           continue;
         }
         if (Regions.getDist(wrappingRegion.getCoordinate(), original.getCoordinate()) < 2) {
@@ -312,7 +312,7 @@ public class EresseaPostProcessor {
     for (Region wrappingRegion : data.getRegions()) {
       if (wrappingRegion.getType().getID().equals(EresseaConstants.RT_WRAP)) {
         toDelete.put(wrappingRegion, wrappingRegion);
-        log.warn("removed orphan wrapper " + wrappingRegion);
+        log.fine("removed orphan wrapper " + wrappingRegion);
       }
     }
     for (Region r : toDelete.keySet()) {

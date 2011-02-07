@@ -20,6 +20,7 @@ import magellan.library.Alliance;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.gamebinding.EresseaConstants;
 
 /**
  * DOCUMENT ME!
@@ -72,10 +73,7 @@ public class TrustLevels {
             if (!ally.isTrustLevelSetByUser()) {
               ally.setTrustLevel(Math.max(ally.getTrustLevel(), alliance.getTrustLevel()));
             }
-            /**
-             * FIXME not really fine..but bitmask 8 means "GIVE" Fiete
-             */
-            if (alliance.getState(8)) {
+            if (alliance.getState(EresseaConstants.A_GIVE)) {
               ally.setHasGiveAlliance(true);
             }
           }

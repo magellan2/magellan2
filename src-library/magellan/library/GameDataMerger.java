@@ -1954,6 +1954,10 @@ public class GameDataMerger {
       resultRegion.setPeasants(curRegion.getPeasants());
     }
 
+    if (curRegion.getRecruits() != -1) {
+      resultRegion.setRecruits(curRegion.getRecruits());
+    }
+
     if (curRegion.getSilver() != -1) {
       resultRegion.setSilver(curRegion.getSilver());
     }

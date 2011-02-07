@@ -932,7 +932,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Returns the maximum number of persons that can be recruited in this region.
+   * Returns the maximum number of persons that can be recruited in this region. If it was manually
+   * set, this value is returned, otherwise the value is calculated from the number of peasants.
+   * 
+   * @see #getRecruits()
+   * @see #maxRecruit(int)
    */
   public int maxRecruit() {
     // pavkovic 2002.05.10: in case we dont have a recruit max set we evaluate
@@ -952,6 +956,9 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Returns the maximum number of persons available for recruitment in a region with the specified
    * number of peasants.
+   * 
+   * @see #maxRecruit()
+   * @see #getRecruits()
    */
   private static int maxRecruit(int peasants) {
     if (peasants >= 0)
@@ -1770,9 +1777,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Returns the value of recruits.
+   * Returns the value of recruits if it is in the report, -1 otherwise.
    * 
    * @return Returns recruits.
+   * @see #maxRecruit()
+   * @see #maxRecruit(int)
    */
   public int getRecruits() {
     return recruits;

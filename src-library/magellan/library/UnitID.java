@@ -262,7 +262,7 @@ public class UnitID extends EntityID {
    * TEMP id aware, i.e. the string "TEMP 909" would return an Integer object with the numerical
    * value -909.
    * 
-   * @param s string represenation of the unit id
+   * @param s string representation of the unit id
    * @param radix radix to parse integer
    * @return integer representation of the given string based on given radix
    * @throws NumberFormatException if unit id is not parseable

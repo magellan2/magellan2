@@ -1766,7 +1766,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
         GameData data = null;
 
-          data = loadCR(ui, fileName);
+        data = loadCR(ui, fileName);
 
         if (data != null) {
           client.setData(data);
@@ -2350,7 +2350,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param newData
    */
   public void setData(GameData newData) {
-    log.fine("setData " + newData.getFileType().getName());
+    log.fine("setData " + (newData.getFileType() != null ? newData.getFileType().getName() : "???"));
     context.setGameData(newData);
     postProcessLoadedCR(newData);
     log.fine("fire(GameDataEvent)");

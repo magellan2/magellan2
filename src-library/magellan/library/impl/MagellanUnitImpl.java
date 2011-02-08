@@ -1852,8 +1852,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
           if (equals(itr.source)) {
             modifiedItem = new Item(itr.itemType, -itr.amount);
-          } else {
+          } else if (equals(itr.target)) {
             modifiedItem = new Item(itr.itemType, itr.amount);
+          } else {
+            // we're neither source nor target, but we triggered a transfer between two unit
+            // (material pool)
+            modifiedItem = new Item(itr.itemType, 0);
           }
 
           cache1.modifiedItems.put(itr.itemType.getID(), modifiedItem);

@@ -77,7 +77,7 @@ public class E3CommandParser {
   public static int UNIT_LIMIT = 250;
 
   /** If this is true, some more hints will be added to the orders if expected units are missing */
-  public static final boolean ADD_NOT_THERE_INFO = false;
+  public static boolean ADD_NOT_THERE_INFO = false;
 
   /**
    * If this is > 0, all units are suppliers, otherwise suppliers must be set with Versorge (the
@@ -465,8 +465,7 @@ public class E3CommandParser {
         } else if (command.equals("KrautKontrolle")) {
           commandKontrolle(tokens);
           changedOrders = true;
-        }
-        if (command.equals("auto")) {
+        } else if (command.equals("auto")) {
           commandAuto(tokens);
         } else {
           // order remains

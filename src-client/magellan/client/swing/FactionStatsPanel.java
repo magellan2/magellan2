@@ -1443,7 +1443,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
                   if (itemCategory == null) {
                     FactionStatsPanel.log.info("Item without category: " + resource);
-                  } else {
+                    itemCategory = data.rules.getItemCategory("misc");
+                  }
+                  if (itemCategory != null) {
                     // add the data
                     Map<String, ProductionStats> h = production.get(itemCategory);
 

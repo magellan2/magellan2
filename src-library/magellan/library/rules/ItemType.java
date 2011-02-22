@@ -95,7 +95,7 @@ public class ItemType extends ObjectType {
   }
 
   /**
-   * Returns the items category.
+   * Returns the items category. May return <code>null</code>.
    */
   public ItemCategory getCategory() {
     return category;

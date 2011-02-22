@@ -2099,3 +2099,15 @@ REGIONTYPE "Aktiver Vulkan"
 250;roadstones
 "true";isAstralVisible
 "true";isLand
+
+REGIONTYPE "Gang"
+"Gang";name
+"true";isLand
+
+REGIONTYPE "Halle"
+"Halle";name
+"true";isLand
+
+REGIONTYPE "Wand"
+"Wand";name
+"true";isLand

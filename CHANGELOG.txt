@@ -1,3 +1,9 @@
+2011-02-22 / Build 462 - stm (stm_@users.sourceforge.net)
+    * added Halle and Gang region types
+    * fixed old prices merging
+    * fixes for item types without category
+    * fixes to E3CommandParser
+
 2011-02-08 / Build 461 - stm (stm_@users.sourceforge.net)
     * changes to order processing/relations/tree updates
     * improvements to box finding in wrapping worlds

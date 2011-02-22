@@ -460,6 +460,7 @@ public class E3CommandParserTest {
    */
   @Test
   public final void testCommandGibWenn2() {
+    E3CommandParser.ADD_NOT_THERE_INFO = true;
     // add other unit with Silber
     Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
     builder.addItem(data, unit2, "Silber", 5);
@@ -542,6 +543,7 @@ public class E3CommandParserTest {
    */
   @Test
   public final void testCommandGibWenn() {
+    E3CommandParser.ADD_NOT_THERE_INFO = true;
     // add other unit with Silber
     Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
     builder.addItem(data, unit2, "Silber", 5);
@@ -707,6 +709,7 @@ public class E3CommandParserTest {
    */
   @Test
   public final void testCommandGibWennAndBenoetige() {
+    E3CommandParser.ADD_NOT_THERE_INFO = true;
     // add other unit with Silber
     Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
     builder.addItem(data, unit2, "Silber", 5);

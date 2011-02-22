@@ -3595,7 +3595,7 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isString(t) && (getRules() != null)
           && ((type = getRules().getItemType(t.getText())) != null) && (luxuryCategory != null)
-          && type.getCategory().equals(luxuryCategory)) {
+          && luxuryCategory.equals(type.getCategory())) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);

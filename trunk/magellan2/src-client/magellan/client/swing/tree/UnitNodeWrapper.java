@@ -452,6 +452,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
                 categories.get(j).add(item);
               }
             } catch (Exception exc) {
+              // skip items without category?
             }
           }
 

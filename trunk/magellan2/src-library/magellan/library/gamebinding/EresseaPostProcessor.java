@@ -385,7 +385,7 @@ public class EresseaPostProcessor {
   }
 
   /**
-   * Removes the FoW for regions with visibility greaterthan lighthouse
+   * Removes the FoW for regions with visibility greater than lighthouse
    * 
    * @param data World
    */

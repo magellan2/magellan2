@@ -76,6 +76,9 @@ public class E3CommandParser {
   /** Unit limit, used to warn if we get too many units. */
   public static int UNIT_LIMIT = 250;
 
+  /** If this is true, some more hints will be added to the orders if expected units are missing */
+  public static final boolean ADD_NOT_THERE_INFO = false;
+
   /**
    * If this is > 0, all units are suppliers, otherwise suppliers must be set with Versorge (the
    * default)
@@ -462,17 +465,14 @@ public class E3CommandParser {
         } else if (command.equals("KrautKontrolle")) {
           commandKontrolle(tokens);
           changedOrders = true;
+        }
+        if (command.equals("auto")) {
+          commandAuto(tokens);
         } else {
           // order remains
           addNewOrder(currentOrder, false);
 
-          if (command.equals("auto")) {
-            if (tokens.length == 2 && NOT.equals(tokens[1])) {
-              setConfirm(currentUnit, false);
-            } else {
-              setConfirm(currentUnit, true);
-            }
-          } else if (command.equals("Loeschen")) {
+          if (command.equals("Loeschen")) {
             commandClear(tokens);
           } else if (command.equals("GibWenn")) {
             commandGibWenn(tokens);
@@ -575,6 +575,52 @@ public class E3CommandParser {
   }
 
   /**
+   * <code>// $cript auto [NICHT]|[length [period]]</code><br />
+   * Autoconfirms a unit (or prevents autoconfirmation if NICHT). If length is given, the unit is
+   * autoconfirmed for length rounds (length is decreased each round). If period is given, the unit
+   * is <em>not</em> confirmed every period rounds, otherwise confirmed.
+   * 
+   * @param tokens
+   */
+  protected void commandAuto(String[] tokens) {
+    if (tokens.length == 1) {
+      setConfirm(currentUnit, true);
+      addNewOrder(currentOrder, false);
+    } else if (NOT.equals(tokens[1])) {
+      setConfirm(currentUnit, false);
+      addNewOrder(currentOrder, false);
+    } else {
+      int length = 0, period = 0;
+      try {
+        length = Integer.parseInt(tokens[1]);
+        if (tokens.length > 2) {
+          period = Integer.parseInt(tokens[2]);
+        }
+        if (length > 0) {
+          setConfirm(currentUnit, true);
+        } else {
+          setConfirm(currentUnit, false);
+          if (period > 0) {
+            length = period;
+          }
+        }
+        StringBuilder newOrder = new StringBuilder();
+        newOrder.append(PCOMMENTOrder).append(" ").append(scriptMarker).append(" ").append(
+            tokens[0]);
+        newOrder.append(" ").append(length - 1);
+        if (period > 0) {
+          newOrder.append(" ").append(period);
+        }
+        addNewOrder(newOrder.toString(), true);
+      } catch (NumberFormatException e) {
+        addNewOrder(currentOrder, false);
+        addNewError("Zahl erwartet");
+        return;
+      }
+    }
+  }
+
+  /**
    * <code>// $cript GibWenn receiver [[JE] amount|ALLES|KRAUT|LUXUS] [item] [warning]</code><br />
    * Adds a GIB order to the unit. Warning may be one of "immer", "Menge", "Einheit", "versteckt"
    * "nie". "versteckt" informiert nur, wenn die Einheit nicht da ist, übergibt aber trotzdem.
@@ -632,11 +678,15 @@ public class E3CommandParser {
         if (tokens.length > (warning == -1 ? 3 : 4)) {
           addNewError("zu viele Parameter");
         }
-        for (Item item : currentUnit.getItems())
-          if (item.getItemType().getCategory().equals(world.rules.getItemCategory("herbs"))) {
-            addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
-                Integer.MAX_VALUE, false), true);
-          }
+        if (world.rules.getItemCategory("herbs") == null) {
+          addNewError("Spiel kennt keine Kräuter");
+        } else {
+          for (Item item : currentUnit.getItems())
+            if (world.rules.getItemCategory("herbs").equals(item.getItemType().getCategory())) {
+              addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
+                  Integer.MAX_VALUE, false), true);
+            }
+        }
       }
       return;
     }
@@ -647,11 +697,15 @@ public class E3CommandParser {
         if (tokens.length > (warning == -1 ? 3 : 4)) {
           addNewError("zu viele Parameter");
         }
-        for (Item item : currentUnit.getItems())
-          if (item.getItemType().getCategory().equals(world.rules.getItemCategory("luxuries"))) {
-            addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
-                Integer.MAX_VALUE, false), true);
-          }
+        if (world.rules.getItemCategory("herbs") == null) {
+          addNewError("Spiel kennt keine Kräuter");
+        } else {
+          for (Item item : currentUnit.getItems())
+            if (world.rules.getItemCategory("luxuries").equals(item.getItemType().getCategory())) {
+              addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
+                  Integer.MAX_VALUE, false), true);
+            }
+        }
       }
       return;
     }
@@ -729,7 +783,9 @@ public class E3CommandParser {
   private boolean testUnit(String sOther, Unit other, int warning) {
     if (other == null || other.getRegion() != currentUnit.getRegion()) {
       if (warning == C_AMOUNT || warning == C_HIDDEN || warning == C_NEVER) {
-        addNewOrder("; " + sOther + " nicht da", true);
+        if (ADD_NOT_THERE_INFO) {
+          addNewOrder("; " + sOther + " nicht da", true);
+        }
       } else {
         addNewWarning(sOther + " nicht da");
       }
@@ -790,9 +846,13 @@ public class E3CommandParser {
         if (tokens.length > 2) {
           addNewError("zu viele Parameter");
         }
-        for (Item item : currentUnit.getItems()) {
-          if (item.getItemType().getCategory().equals(world.rules.getItemCategory("herbs"))) {
-            addNeed(item.getOrderName(), unit, 0, Integer.MAX_VALUE);
+        if (world.rules.getItemCategory("herbs") == null) {
+          addNewError("Spiel kennt keine Kräuter");
+        } else {
+          for (Item item : currentUnit.getItems()) {
+            if (world.rules.getItemCategory("herbs").equals(item.getItemType().getCategory())) {
+              addNeed(item.getOrderName(), unit, 0, Integer.MAX_VALUE);
+            }
           }
         }
       } else if (tokens.length > 4) {
@@ -991,7 +1051,7 @@ public class E3CommandParser {
     }
 
     if (helper.getSilver(currentUnit) < 100) {
-      if (hasEntertain()) {
+      if (hasEntertain() && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG).getLevel() > 0) {
         addNewOrder(ENTERTAINOrder, true);
       } else if (hasWork()) {
         addNewOrder(WORKOrder, true);
@@ -1118,7 +1178,7 @@ public class E3CommandParser {
     Skill taxing =
         currentUnit.getModifiedSkill(world.rules.getSkillType(EresseaConstants.S_STEUEREINTREIBEN));
     int entertain = 0, tax = 0;
-    if (entertaining != null) {
+    if (entertaining != null && hasEntertain()) {
       entertain =
           Math.min(currentRegion.maxEntertain(), 20 * entertaining.getLevel()
               * currentUnit.getPersons());
@@ -1230,8 +1290,8 @@ public class E3CommandParser {
       // Verkaufsbefehl setzen, wenn notwendig
       if (tokens.length > 2 && ALLOrder.equals(tokens[2])) {
         for (ItemType luxury : world.getRules().getItemTypes()) {
-          if (!luxury.equals(buyGood.getItemType()) && luxury.getCategory() != null
-              && luxury.getCategory().equals(world.rules.getItemCategory("luxuries"))) {
+          if (!luxury.equals(buyGood.getItemType())
+              && world.rules.getItemCategory("luxuries").equals(luxury.getCategory())) {
             goods.add(luxury.getOrderName());
           }
         }
@@ -1906,7 +1966,7 @@ public class E3CommandParser {
     ItemCategory itemCategory = world.rules.getItemCategory(StringID.create(category));
     if (itemType == null) {
       for (Item item : u.getItems()) {
-        if (item.getItemType().getCategory().equals(itemCategory)) {
+        if (itemCategory.equals(item.getItemType().getCategory())) {
           items.add(item);
         }
       }
@@ -1917,7 +1977,7 @@ public class E3CommandParser {
     }
     if (items.isEmpty()) {
       for (ItemType type : world.rules.getItemTypes()) {
-        if (type.getCategory().equals(itemCategory)) {
+        if (itemCategory.equals(type.getCategory())) {
           items.add(new Item(type, 0));
           break;
         }

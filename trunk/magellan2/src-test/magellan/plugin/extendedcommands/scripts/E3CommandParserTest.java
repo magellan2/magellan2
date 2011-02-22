@@ -229,6 +229,7 @@ public class E3CommandParserTest {
   @Test
   public final void testCommandAuto() {
     unit.clearOrders();
+    unit.deleteAllTags();
     unit.addOrder("// $cript auto");
     unit.addOrder("LERNEN Hiebwaffen");
 
@@ -237,9 +238,10 @@ public class E3CommandParserTest {
     assertEquals(3, unit.getOrders2().size());
     assertOrder("// $cript auto", unit, 1);
     assertOrder("LERNEN Hiebwaffen", unit, 2);
-    assertTrue(unit.isOrdersConfirmed());
+    assertTrue(E3CommandParser.getProperty(unit, "confirm").equals("1"));
 
     unit.clearOrders();
+    unit.deleteAllTags();
     unit.addOrder("LERNEN Hiebwaffen");
     unit.addOrder("// $cript auto");
 
@@ -248,10 +250,11 @@ public class E3CommandParserTest {
     assertEquals(3, unit.getOrders2().size());
     assertOrder("LERNEN Hiebwaffen", unit, 1);
     assertOrder("// $cript auto", unit, 2);
-    assertTrue(unit.isOrdersConfirmed());
+    assertTrue(E3CommandParser.getProperty(unit, "confirm").equals("1"));
 
     // test auto nicht
     unit.clearOrders();
+    unit.deleteAllTags();
     unit.addOrder("// $cript   auto   nicht");
     unit.addOrder("LERNEN Hiebwaffen");
 
@@ -260,7 +263,43 @@ public class E3CommandParserTest {
     assertEquals(3, unit.getOrders2().size());
     assertOrder("// $cript   auto   nicht", unit, 1);
     assertOrder("LERNEN Hiebwaffen", unit, 2);
-    assertFalse(unit.isOrdersConfirmed());
+    assertTrue(E3CommandParser.getProperty(unit, "confirm").equals("0"));
+
+    // test auto period
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript auto 0");
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("// $cript auto -1", unit, 1);
+    assertTrue(E3CommandParser.getProperty(unit, "confirm").equals("0"));
+
+    // test auto period
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript auto 1");
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("// $cript auto 0", unit, 1);
+    assertTrue(E3CommandParser.getProperty(unit, "confirm").equals("1"));
+
+    // test auto period
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript auto 2 5");
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("// $cript auto 1 5", unit, 1);
+    assertTrue(E3CommandParser.getProperty(unit, "confirm").equals("1"));
+
+    // test auto period
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript auto 0 5");
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("// $cript auto 4 5", unit, 1);
+    assertTrue(E3CommandParser.getProperty(unit, "confirm").equals("0"));
   }
 
   /**
@@ -470,6 +509,32 @@ public class E3CommandParserTest {
     assertOrder("GIB 1 ALLES Flachwurz", unit2, 2);
     assertOrder("GIB 1 ALLES Myrrhe", unit2, 4);
     assertOrder("GIB 1 ALLES Seide", unit2, 5);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   */
+  @Test
+  public final void testCommandGibWenn4() {
+    // add other unit with Kraut
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    // should not crash for unknown items
+    builder.addItem(data, unit2, "Geheimnisvolles Teil", 2);
+    builder.addItem(data, unit2, "Flachwurz", 5);
+    builder.addItem(data, unit2, "Myrrhe", 5);
+    builder.addItem(data, unit2, "Seide", 5);
+
+    // test one GibWenn order
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit2.addOrder("// $cript GibWenn 1 KRAUT");
+    unit2.addOrder("// $cript GibWenn 1 LUXUS");
+
+    parser.execute(unit.getFaction());
+    assertEquals(5, unit2.getOrders2().size());
+    assertOrder("GIB 1 ALLES Flachwurz", unit2, 1);
+    assertOrder("GIB 1 ALLES Myrrhe", unit2, 3);
+    assertOrder("GIB 1 ALLES Seide", unit2, 4);
   }
 
   /**

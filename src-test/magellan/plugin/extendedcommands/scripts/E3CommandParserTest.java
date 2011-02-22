@@ -224,6 +224,54 @@ public class E3CommandParserTest {
   }
 
   /**
+   * Test method for the repeat command.
+   */
+  @Test
+  public final void testCommandRepeat() {
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 2 LERNEN Hiebwaffen");
+
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("// $cript 1 LERNEN Hiebwaffen", unit, 1);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1 LERNEN Hiebwaffen");
+
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("LERNEN Hiebwaffen", unit, 1);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 2 5 // $cript GibWenn abc 100 Silber");
+
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("// $cript 1 5 // $cript GibWenn abc 100 Silber", unit, 1);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1 5 // $cript GibWenn abc 100 Silber");
+
+    parser.execute(unit.getFaction());
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript 5 5 // $cript GibWenn abc 100 Silber", unit, 1);
+    assertOrder("// $cript GibWenn abc 100 Silber", unit, 2);
+    assertError("abc nicht da", unit, 3);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 2 5 // $cript GibWenn abc 100 Silber");
+
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("// $cript 1 5 // $cript GibWenn abc 100 Silber", unit, 1);
+  }
+
+  /**
    * Test method for the auto command.
    */
   @Test

@@ -401,7 +401,8 @@ public class E3CommandParser {
    * them. Known commands:<br />
    * <tt>// $cript +X text</tt> -- If X<=1 then a warning containing text is added to the unit's
    * orders. Otherwise X is decreased by one.<br />
-   * <tt>// $cript auto [nicht]</tt> -- autoconfirm orders<br />
+   * <code>// $cript [length [period]] text</code> -- Adds text (or commands) to the orders<br />
+   * <code>// $cript auto [NICHT]|[length [period]]</code> -- autoconfirm orders<br />
    * <code>// $cript Loeschen [lang]</code> -- clears all orders except comments<br />
    * <code>// $cript GibWenn receiver [JE] amount item [warning]</code> -- add give order (if
    * possible)<br />
@@ -457,68 +458,86 @@ public class E3CommandParser {
         } else {
           changedOrders = true;
         }
-      } else {
-        String command = tokens[0];
-        if (command.startsWith("+")) {
-          commandWarning(tokens);
-          changedOrders = true;
-        } else if (command.equals("KrautKontrolle")) {
-          commandKontrolle(tokens);
-          changedOrders = true;
-        } else if (command.equals("auto")) {
-          commandAuto(tokens);
-        } else {
-          // order remains
-          addNewOrder(currentOrder, false);
-
-          if (command.equals("Loeschen")) {
-            commandClear(tokens);
-          } else if (command.equals("GibWenn")) {
-            commandGibWenn(tokens);
-          } else if (command.equals("Benoetige") || command.equals("BenoetigeFremd")) {
-            commandBenoetige(tokens);
-          } else if (command.equals("Versorge")) {
-            commandVersorge(tokens);
-          } else if (command.equals("BerufDepotVerwalter")) {
-            commandDepotVerwalter(tokens);
-          } else if (command.equals("Soldat")) {
-            commandSoldier(tokens);
-          } else if (command.equals("Lerne")) {
-            commandLearn(tokens);
-          } else if (command.equals("BerufBotschafter")) {
-            commandEmbassador(tokens);
-          } else if (command.equals("Ueberwache")) {
-            commandMonitor(tokens);
-          } else if (command.equals("Erlaube") || command.equals("Verlange")) {
-            commandAllow(tokens);
-          } else if (command.equals("Ernaehre")) {
-            commandEarn(tokens);
-          } else if (command.equals("Handel")) {
-            commandTrade(tokens);
-          } else if (command.equals("Steuermann")) {
-            if (tokens.length < 3) {
-              addNewError("zu wenige Argumente");
-            } else {
-              commandBenoetige(new String[] { "Benoetige", tokens[1], tokens[2], "Silber" });
-            }
-          } else if (command.equals("Mannschaft")) {
-            if (tokens.length < 3) {
-              addNewError("zu wenige Argumente");
-            } else {
-              commandLearn(new String[] { "Lerne", tokens[1], tokens[2] });
-              setConfirm(currentUnit, true);
-            }
-          } else if (command.equals("Quartiermeister")) {
-            commandQuartermaster(tokens);
-          } else if (command.equals("Sammler")) {
-            commandCollector(tokens);
-          } else {
-            addNewOrder(currentOrder, false);
-            addNewError("unbekannter Befehl: " + command);
-          }
-        }
-
         currentOrder = null;
+      } else {
+        try {
+          Integer.parseInt(tokens[0]);
+          currentOrder = commandRepeat(tokens);
+          if (currentOrder == null) {
+            tokens = null;
+          } else {
+            tokens = detectScriptCommand(currentOrder);
+            if (tokens == null) {
+              addNewOrder(currentOrder, true);
+              currentOrder = null;
+            }
+          }
+        } catch (NumberFormatException e) {
+          // not a repeating order
+        }
+        if (tokens != null) {
+          String command = tokens[0];
+          if (command.startsWith("+")) {
+            commandWarning(tokens);
+            changedOrders = true;
+          } else if (command.equals("KrautKontrolle")) {
+            commandKontrolle(tokens);
+            changedOrders = true;
+          } else if (command.equals("auto")) {
+            commandAuto(tokens);
+          } else {
+            // order remains
+            addNewOrder(currentOrder, false);
+
+            if (command.equals("Loeschen")) {
+              commandClear(tokens);
+            } else if (command.equals("GibWenn")) {
+              commandGibWenn(tokens);
+            } else if (command.equals("Benoetige") || command.equals("BenoetigeFremd")) {
+              commandBenoetige(tokens);
+            } else if (command.equals("Versorge")) {
+              commandVersorge(tokens);
+            } else if (command.equals("BerufDepotVerwalter")) {
+              commandDepotVerwalter(tokens);
+            } else if (command.equals("Soldat")) {
+              commandSoldier(tokens);
+            } else if (command.equals("Lerne")) {
+              commandLearn(tokens);
+            } else if (command.equals("BerufBotschafter")) {
+              commandEmbassador(tokens);
+            } else if (command.equals("Ueberwache")) {
+              commandMonitor(tokens);
+            } else if (command.equals("Erlaube") || command.equals("Verlange")) {
+              commandAllow(tokens);
+            } else if (command.equals("Ernaehre")) {
+              commandEarn(tokens);
+            } else if (command.equals("Handel")) {
+              commandTrade(tokens);
+            } else if (command.equals("Steuermann")) {
+              if (tokens.length < 3) {
+                addNewError("zu wenige Argumente");
+              } else {
+                commandBenoetige(new String[] { "Benoetige", tokens[1], tokens[2], "Silber" });
+              }
+            } else if (command.equals("Mannschaft")) {
+              if (tokens.length < 3) {
+                addNewError("zu wenige Argumente");
+              } else {
+                commandLearn(new String[] { "Lerne", tokens[1], tokens[2] });
+                setConfirm(currentUnit, true);
+              }
+            } else if (command.equals("Quartiermeister")) {
+              commandQuartermaster(tokens);
+            } else if (command.equals("Sammler")) {
+              commandCollector(tokens);
+            } else {
+              addNewOrder(currentOrder, false);
+              addNewError("unbekannter Befehl: " + command);
+            }
+          }
+          currentOrder = null;
+
+        }
       }
     }
     if (changedOrders) {
@@ -571,6 +590,63 @@ public class E3CommandParser {
     } else {
       addNewError("zu viele Argumente");
     }
+  }
+
+  /**
+   * <code>// $cript [length [period]] text</code><br />
+   * Adds text (or commands) to the orders. If <code>length==1</code>, text is added to the unit's
+   * orders after the current order. If text is a script order itself, it will be executed. If
+   * period is set, length will be reset to period and the modified order added instead of the
+   * current order. If <code>length>1</code>, it is decreased and the modified order added instead
+   * of the current one.
+   * 
+   * @param tokens
+   * @return <code>text</code>, if <code>length==1</code>, otherwise <code>null</code>
+   */
+  protected String commandRepeat(String[] tokens) {
+    StringBuilder result = null;
+    try {
+      int length = Integer.parseInt(tokens[0]);
+      int period = 0;
+      int textIndex;
+      try {
+        period = Integer.parseInt(tokens[1]);
+        textIndex = 2;
+      } catch (NumberFormatException nfe) {
+        // second argument not a number
+        textIndex = 1;
+      }
+      if (length == 1) {
+        result = new StringBuilder();
+        if (period > 0) {
+          length = period + 1;
+        }
+        for (int i = textIndex; i < tokens.length; ++i) {
+          if (i > textIndex) {
+            result.append(" ");
+          }
+          result.append(tokens[i]);
+        }
+      }
+      if (length > 1 || period > 0) {
+        StringBuilder newOrder = new StringBuilder();
+        newOrder.append(PCOMMENTOrder).append(" ").append(scriptMarker);
+        newOrder.append(" ").append(length - 1);
+        if (period > 0) {
+          newOrder.append(" ").append(period);
+        }
+        for (int i = textIndex; i < tokens.length; ++i) {
+          newOrder.append(" ").append(tokens[i]);
+        }
+        addNewOrder(newOrder.toString(), true);
+      }
+    } catch (NumberFormatException e) {
+      addNewOrder(currentOrder, false);
+      addNewError("Zahl erwartet");
+      result = null;
+    }
+
+    return result != null ? result.toString() : null;
   }
 
   /**

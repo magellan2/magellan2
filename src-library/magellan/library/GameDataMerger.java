@@ -1795,18 +1795,30 @@ public class GameDataMerger {
       resultRegion.setOldRecruits(curRegion.getOldRecruits());
     }
 
-    /******************* PRICES ******************************/
-    if ((resultRegion.getPrices() != null) && (curRegion.getPrices() != null)
+    /******************* OLD PRICES ******************************/
+    if (newTurn && !firstPass && curRegion.getPrices() != null && resultRegion.getPrices() != null
         && !curRegion.getPrices().equals(resultRegion.getPrices())) {
+      // this means that the new report is from a newer round than the old report,
+      // the old report's prices have been merged into the current report's prices and
+      // the new prices are different
       resultRegion.setOldPrices(new LinkedHashMap<StringID, LuxuryPrice>());
 
       for (LuxuryPrice curPrice : resultRegion.getPrices().values()) {
         final LuxuryPrice newPrice =
             new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
                 .getPrice());
-        resultRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
+        if (newPrice.getItemType() == null) {
+          // this happens if there does exist an unknown tag in
+          // the current block description
+          log.warn("WARNING: Invalid tag \"" + curPrice.getItemType() + "\" found in Region "
+              + curRegion + ", ignoring it.");
+          log.warn("curRegion Encoding: " + curRegion.getData().getEncoding() + ", newRegion Enc: "
+              + resultRegion.getData().getEncoding());
+        } else {
+          resultRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
+        }
       }
-    } else if (curRegion.getOldPrices() != null) {
+    } else if (!newTurn && curRegion.getOldPrices() != null) {
       resultRegion.setOldPrices(new LinkedHashMap<StringID, LuxuryPrice>());
 
       for (LuxuryPrice curPrice : curRegion.getOldPrices().values()) {

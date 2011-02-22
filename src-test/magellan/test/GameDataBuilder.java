@@ -314,7 +314,7 @@ public class GameDataBuilder {
    * Adds the specified item to the unit.
    */
   public void addItem(GameData data, Unit unit, String item, int amount) {
-    unit.addItem(new Item(data.rules.getItemType(item), amount));
+    unit.addItem(new Item(data.rules.getItemType(item, true), amount));
   }
 
   /**

@@ -2276,6 +2276,13 @@ public class GameDataMerger {
           }
         }
       }
+
+      if (curRegion.getItems() != null) {
+        for (Item currentItem : curRegion.getItems()) {
+          resultRegion.addItem(currentItem);
+        }
+      }
+
     }
   }
 

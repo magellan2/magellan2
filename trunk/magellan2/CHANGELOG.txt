@@ -1,7 +1,8 @@
-2011-02-22 / Build 463 - stm (stm_@users.sourceforge.net)
+2011-02-22 / Build 464 - stm (stm_@users.sourceforge.net)
     * added "open orders as ISO" option
     * added support for region items (non standard-Eressea)
-    * fix to FileNameGenerator (did this ever work) 
+    * TARNE PARTEI [NICHT] allowed again for E3
+    * fix to FileNameGenerator (did this ever work?) 
     
 2011-02-22 / Build 462 - stm (stm_@users.sourceforge.net)
     * added Halle and Gang region types

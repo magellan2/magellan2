@@ -89,15 +89,15 @@ public class FileNameGenerator {
     // Lets work in extra String
     String res = pattern.toString();
 
-    res = res.replaceAll("{faction}", feed.getFaction());
-    res = res.replaceAll("{factionnr}", feed.getFactionnr());
+    res = res.replaceAll("\\{faction\\}", feed.getFaction());
+    res = res.replaceAll("\\{factionnr\\}", feed.getFactionnr());
     int i = feed.getRound();
     if (i > -1) {
-      res = res.replaceAll("{round}", Integer.toString(i));
+      res = res.replaceAll("\\{round\\}", String.valueOf(i));
     } else {
-      res = res.replaceAll("{round}", null);
+      res = res.replaceAll("\\{round\\}", null);
     }
-    res = res.replaceAll("{group}", feed.getGroup());
+    res = res.replaceAll("\\{group\\}", feed.getGroup());
 
     return res;
   }

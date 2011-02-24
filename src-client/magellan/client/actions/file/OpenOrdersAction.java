@@ -16,7 +16,6 @@ package magellan.client.actions.file;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
@@ -33,7 +32,9 @@ import magellan.client.swing.ProgressBarUI;
 import magellan.library.CoordinateID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.io.BOMReader;
 import magellan.library.io.file.FileType;
+import magellan.library.utils.Encoding;
 import magellan.library.utils.OrderReader;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -103,15 +104,22 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 
         try {
           // apexo (Fiete) 20061205: if in properties, force ISO encoding
-          if (!PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
-            // old = default = system dependent
-            r.read(new FileReader(fc.getSelectedFile().getAbsolutePath()));
-          } else {
+          if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
             // new: force our default = ISO
             Reader stream =
                 new InputStreamReader(new FileInputStream(fc.getSelectedFile().getAbsolutePath()),
                     FileType.DEFAULT_ENCODING.toString());
             r.read(stream);
+          } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTFopenOrders", false)) {
+            // new: force UTF
+            Reader stream =
+                new InputStreamReader(new FileInputStream(fc.getSelectedFile().getAbsolutePath()),
+                    Encoding.UTF8.toString());
+            r.read(stream);
+          } else {
+            // old = default = system dependent
+            r.read(new BOMReader(new FileInputStream(fc.getSelectedFile()), null));
+            // r.read(new FileReader(fc.getSelectedFile().getAbsolutePath()));
           }
 
           OrderReader.Status status = r.getStatus();

@@ -41,6 +41,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
   static Properties settings;
   protected JCheckBox saveISOOrders;
   protected JCheckBox openISOOrders;
+  protected JCheckBox openUTFOrders;
   protected JCheckBox runISOEcheck;
   protected JCheckBox runJVorlage;
   protected JCheckBox saveUTFOrders;
@@ -91,29 +92,20 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
     textEncodingPrefrencesPanel.add(openISOOrders, c);
 
     c.gridy++;
+    openUTFOrders =
+        new JCheckBox(Resources
+            .get("util.textencodingpreferences.checkbox.textEncodingUTFopenOrders.label"),
+            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
+                "TextEncoding.UTFopenOrders", false));
+    textEncodingPrefrencesPanel.add(openUTFOrders, c);
+
+    c.gridy++;
     saveISOOrders =
         new JCheckBox(Resources
             .get("util.textencodingpreferences.checkbox.textEncodingISOsaveOrders.label"),
             PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
                 "TextEncoding.ISOsaveOrders", false));
     textEncodingPrefrencesPanel.add(saveISOOrders, c);
-
-    c.gridy++;
-    runISOEcheck =
-        new JCheckBox(Resources
-            .get("util.textencodingpreferences.checkbox.textEncodingISOECheck.label"),
-            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
-                "TextEncoding.ISOrunEcheck", false));
-    textEncodingPrefrencesPanel.add(runISOEcheck, c);
-
-    c.gridy++;
-    runJVorlage =
-        new JCheckBox(Resources
-            .get("util.textencodingpreferences.checkbox.textEncodingISOJVorlage.label"),
-            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
-                "TextEncoding.ISOrunJVorlage", false));
-    runJVorlage.setEnabled(false);
-    textEncodingPrefrencesPanel.add(runJVorlage, c);
 
     // TextEncoding.UTF8saveOrders
     c.gridy++;
@@ -124,7 +116,14 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
                 "TextEncoding.UTF8saveOrders", false));
     textEncodingPrefrencesPanel.add(saveUTFOrders, c);
 
-    // TextEncoding.UTF8runEcheck
+    c.gridy++;
+    runISOEcheck =
+        new JCheckBox(Resources
+            .get("util.textencodingpreferences.checkbox.textEncodingISOECheck.label"),
+            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
+                "TextEncoding.ISOrunEcheck", false));
+    textEncodingPrefrencesPanel.add(runISOEcheck, c);
+
     c.gridy++;
     runUTFEcheck =
         new JCheckBox(Resources
@@ -133,12 +132,29 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
                 "TextEncoding.UTF8runEcheck", false));
     textEncodingPrefrencesPanel.add(runUTFEcheck, c);
 
+    c.gridy++;
+    runJVorlage =
+        new JCheckBox(Resources
+            .get("util.textencodingpreferences.checkbox.textEncodingISOJVorlage.label"),
+            PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
+                "TextEncoding.ISOrunJVorlage", false));
+    runJVorlage.setEnabled(false);
+    textEncodingPrefrencesPanel.add(runJVorlage, c);
+
     if (saveISOOrders.isSelected()) {
       saveUTFOrders.setEnabled(false);
       saveUTFOrders.setSelected(false);
     } else if (saveUTFOrders.isSelected()) {
       saveISOOrders.setEnabled(false);
       saveISOOrders.setSelected(false);
+    }
+
+    if (openISOOrders.isSelected()) {
+      openUTFOrders.setEnabled(false);
+      openUTFOrders.setSelected(false);
+    } else if (openUTFOrders.isSelected()) {
+      openISOOrders.setEnabled(false);
+      openISOOrders.setSelected(false);
     }
 
     if (runISOEcheck.isSelected()) {
@@ -167,6 +183,28 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
           saveISOOrders.setSelected(false);
         } else {
           saveISOOrders.setEnabled(true);
+        }
+      }
+    });
+
+    openISOOrders.addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent e) {
+        if (openISOOrders.isSelected()) {
+          openUTFOrders.setEnabled(false);
+          openUTFOrders.setSelected(false);
+        } else {
+          openUTFOrders.setEnabled(true);
+        }
+      }
+    });
+
+    openUTFOrders.addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent e) {
+        if (openUTFOrders.isSelected()) {
+          openISOOrders.setEnabled(false);
+          openISOOrders.setSelected(false);
+        } else {
+          openISOOrders.setEnabled(true);
         }
       }
     });
@@ -210,6 +248,8 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
         .isSelected() ? "true" : "false"));
     ClientTextEncodingPreferences.settings.setProperty("TextEncoding.UTF8saveOrders",
         (saveUTFOrders.isSelected() ? "true" : "false"));
+    ClientTextEncodingPreferences.settings.setProperty("TextEncoding.UTFopenOrders", (openUTFOrders
+        .isSelected() ? "true" : "false"));
     ClientTextEncodingPreferences.settings.setProperty("TextEncoding.UTF8runEcheck", (runUTFEcheck
         .isSelected() ? "true" : "false"));
   }

@@ -304,13 +304,13 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     checkOrder("@ARBEITE");
     checkOrder(" @ARBEITE");
     checkOrder("@", false);
-    checkOrder("@@ARBEITE", false); // server actually accepts this and turn it into @AREITE...
+    checkOrder("@@ARBEITE", false); // server actually accepts this and turn it into @ARBEITE...
     checkOrder("@@", false);
     checkOrder("@ARBEITE 1", false);
     checkOrder(";@", true);
     checkOrder("@; ", false);
     checkOrder("@  ; ", false);
-    checkOrder("@// ", true); // dodgy...
+    checkOrder("@// ", false); // Server actually accepts this; dodgy...
   }
 
   /**
@@ -982,12 +982,13 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @Test
   public void testRegionReader() {
     // this is a valid order, but not /inside/ a unit
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_REGION) + " 1,1", false);
     // FIXME read comma'd coordinate
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_REGION) + " 1,1");
-    checkOrder("REGION", false);
-    checkOrder("REGION 1 3", false);
-    checkOrder("REGION 123", false);
-    checkOrder("REGION abc,def", false);
+    /*
+     * checkOrder(Resources.getOrderTranslation(EresseaConstants.O_REGION) + " 1,1");
+     * checkOrder("REGION", false); checkOrder("REGION 1 3", false); checkOrder("REGION 123",
+     * false); checkOrder("REGION abc,def", false);
+     */
   }
 
   /**

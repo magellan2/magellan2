@@ -2371,7 +2371,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        retVal = readDescription(false) != null;
+        retVal = readDescription(t, false) != null;
       } else {
         unexpected(t);
       }

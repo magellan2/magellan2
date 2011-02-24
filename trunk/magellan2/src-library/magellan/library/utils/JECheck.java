@@ -35,6 +35,7 @@ import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.io.BOMReader;
 import magellan.library.io.file.FileType;
 import magellan.library.utils.logging.Logger;
 
@@ -150,14 +151,19 @@ public class JECheck extends Reader {
     try {
       // apexo (Fiete) 20061205: if in properties, force ISO encoding
 
-      if (!PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
-        // old = default = system dependend
-        outputReader = new FileReader(tempFile);
-      } else {
+      if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
         // new: force our default = ISO
         outputReader =
             new InputStreamReader(new FileInputStream(tempFile), FileType.DEFAULT_ENCODING
                 .toString());
+      } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTFopenOrders", false)) {
+        // new: force our default = ISO
+        outputReader =
+            new InputStreamReader(new FileInputStream(tempFile), FileType.DEFAULT_ENCODING
+                .toString());
+      } else {
+        // old = default = system dependent
+        outputReader = new BOMReader(new FileInputStream(tempFile), null);
       }
     } catch (Exception e) {
       JECheck.log.error(

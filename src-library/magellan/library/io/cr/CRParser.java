@@ -1981,6 +1981,9 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("ZAT")) {
         /* Verdanon tag */
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("nmr")) {
+        /* we do not use this info */
+        sc.getNextToken();
       } else if ((sc.argc == 1)
           && (sc.argv[0].equals("EREIGNISSE") || sc.argv[0].equals("EINKOMMEN")
               || sc.argv[0].equals("HANDEL") || sc.argv[0].equals("PRODUKTION")
@@ -3049,6 +3052,9 @@ public class CRParser implements RulesIO, GameDataIO {
         }
       } else if (sc.isBlock && sc.argv[0].startsWith("SCHEMEN ")) {
         parseScheme(region);
+      } else if (sc.isBlock && sc.argv[0].equals("GEGENSTAENDE")) {
+        /* not used in standard Eressea */
+        parseItems(region);
       } else if (sc.isBlock && sc.argv[0].equals("MESSAGETYPES")) {
         break;
       } else if (sc.isBlock && sc.argv[0].startsWith("REGION ")) {

@@ -1965,6 +1965,7 @@ public class CRWriter extends BufferedWriter {
         writeMessageBlock("DURCHSCHIFFUNG", region.getTravelThruShips());
         writeMessages(region.getMessages());
       }
+      writeItems(region.getItems().iterator());
     }
 
     writeSchemes(region.schemes());

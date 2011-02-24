@@ -889,6 +889,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // peasants
     appendRegionPeasantInfo(r, parent, expandableNodes);
 
+    appendRegionItemInfo(r, parent, expandableNodes);
+
     // luxuries
     appendRegionLuxuriesInfo(r, parent, expandableNodes);
 
@@ -1093,6 +1095,22 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       // entertain
       peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.entertainment") + ": "
           + getDiffString(r.maxEntertain(), r.maxOldEntertain()), "items/silber"));
+    }
+  }
+
+  private void appendRegionItemInfo(Region r, DefaultMutableTreeNode parent,
+      Collection<NodeWrapper> expandableNodes) {
+    if (r.getItems() != null && r.getItems().size() > 0) {
+      DefaultMutableTreeNode itemsNode =
+          createSimpleNode(Resources.get("emapdetailspanel.node.items"), "things");
+      parent.add(itemsNode);
+      expandableNodes.add(new NodeWrapper(itemsNode, "EMapDetailsPanel.UnitItemsExpanded"));
+      for (Item curItem : r.getItems()) {
+        ItemNodeWrapper itemNodeWrapper = nodeWrapperFactory.createItemNodeWrapper(curItem);
+        DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(itemNodeWrapper);
+        itemsNode.add(itemNode);
+      }
+      rootNode.add(itemsNode);
     }
   }
 

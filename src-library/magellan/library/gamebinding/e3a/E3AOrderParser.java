@@ -52,7 +52,6 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     removeCommand(EresseaConstants.O_SPY);
     removeCommand(EresseaConstants.O_STEAL);
-    removeCommand(EresseaConstants.O_HIDE);
 
     removeCommand(EresseaConstants.O_STEAL);
 
@@ -78,6 +77,10 @@ public class E3AOrderParser extends EresseaOrderParser {
     addCommand(EresseaConstants.O_MAKE, new E3MacheReader());
     addCommand(EresseaConstants.O_RECRUIT, new RekrutiereReader());
     // addCommand(E3AConstants.O_LEARNMAGIC, new XYZReader());
+
+    // only TARNE PARTEI!
+    removeCommand(EresseaConstants.O_HIDE);
+    addCommand(EresseaConstants.O_HIDE, new TarneReader());
   }
 
   @Override
@@ -313,6 +316,66 @@ public class E3AOrderParser extends EresseaOrderParser {
           && content.equalsIgnoreCase(getOrderTranslation("race." + r.getRecruitmentName())))
         return r;
     return null;
+  }
+
+  // ************* TARNE
+  /**
+   * Only TARNE PARTEI [NICHT] is allowed in E3.
+   */
+  protected class TarneReader extends EresseaOrderParser.TarneReader {
+    @Override
+    protected boolean readIt(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      OrderToken t = getNextToken();
+
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+        retVal = readTarnePartei(t);
+      } else {
+        retVal = checkFinal(t);
+        if (shallComplete(token, t)) {
+          getCompleter().cmpltTarne(false);
+        }
+      }
+
+      return retVal;
+    }
+
+    /**
+     * TARNE PARTEI NUMMER not allowed in E3!
+     * 
+     * @see magellan.library.gamebinding.EresseaOrderParser.TarneReader#readTarnePartei(magellan.library.utils.OrderToken)
+     */
+    @Override
+    protected boolean readTarnePartei(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      OrderToken t = getNextToken();
+
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+        retVal = readFinalKeyword(t);
+      } else {
+        retVal = checkFinal(t);
+      }
+
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltTarnePartei();
+      }
+      return retVal;
+    }
+
+    /**
+     * This is not allowed in E3!
+     * 
+     * @see magellan.library.gamebinding.EresseaOrderParser.TarneReader#readTarneParteiNummer(magellan.library.utils.OrderToken)
+     * @throws IllegalStateException always!
+     */
+    @Override
+    protected boolean readTarneParteiNummer(OrderToken token) {
+      throw new IllegalStateException();
+    }
   }
 
 }

@@ -162,6 +162,8 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_ROUTE), " "));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_SORT), " "));
 
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_HIDE), " "));
+
     // addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_STIRB),
     // " ")); // don't blame me...
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_CARRY), " "));
@@ -238,6 +240,9 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     super.cmpltRekrutiere();
   }
 
+  /**
+   * Complete REKTUTIERE x Rasse
+   */
   public void cmpltRekrutiereAmount() {
     for (Race r : getData().rules.getRaces()) {
       if (r.getRecruitmentName() != null) {
@@ -246,6 +251,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     }
   }
 
+  /** Complete ALLIANZ order */
   public void cmpltAllianz() {
     addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_COMMAND), " "));
     addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_INVITE), " "));
@@ -253,6 +259,34 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_KICK), " "));
     addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_LEAVE), ""));
     addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE_NEW), " "));
+  }
+
+  /** Only TARNE PARTEI [NICHT] allowed in E3! */
+  @Override
+  public void cmpltTarne(boolean quoted) {
+    if (!quoted) {
+      if (getUnit().isHideFaction()) {
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_FACTION) + " "
+            + getOrderTranslation(EresseaConstants.O_NOT),
+            getOrderTranslation(EresseaConstants.O_FACTION), " "
+                + getOrderTranslation(EresseaConstants.O_NOT)));
+      } else {
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_FACTION), " "));
+      }
+    }
+  }
+
+  @Override
+  public void cmpltTarnePartei() {
+    if (getUnit().isHideFaction()) {
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_NOT)));
+    }
+  }
+
+  /** @throws IllegalStateException always! */
+  @Override
+  public void cmpltTarneParteiNummer() {
+    throw new IllegalStateException();
   }
 
 }

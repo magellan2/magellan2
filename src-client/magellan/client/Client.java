@@ -1904,6 +1904,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     if ((aData != null) && (aData.getFactions() != null)) {
+      boolean yesToAll = false, noToAll = false;
       for (Faction f : aData.getFactions()) {
 
         if (f.getPassword() == null) {
@@ -1950,13 +1951,41 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                   if (!password.equals("") && !password.equals(f.getPassword())) {
                     // ask user for confirmation to take new
                     // password from message
-                    Object msgArgs[] = { f.toString() };
-
-                    if (JOptionPane.showConfirmDialog(getRootPane(), (new java.text.MessageFormat(
-                        Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.text")))
-                        .format(msgArgs), Resources
-                        .get("client.msg.postprocessloadedcr.acceptnewpassword.title"),
-                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    String oMessage =
+                        Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.text",
+                            new Object[] { f.toString() });
+                    String oTitle =
+                        Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.title");
+                    String[] oOptions =
+                        { Resources.get("button.yes"), Resources.get("button.no"),
+                            Resources.get("button.yestoall"), Resources.get("button.notoall") };
+                    boolean usePasswd = yesToAll;
+                    if (!noToAll && !yesToAll) {
+                      int answer =
+                          JOptionPane.showOptionDialog(getRootPane(), oMessage, oTitle,
+                              JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                              oOptions, 0);
+                      switch (answer) {
+                      case 0:
+                        usePasswd = true;
+                        break;
+                      case 1:
+                        usePasswd = false;
+                        break;
+                      case 2:
+                        usePasswd = true;
+                        yesToAll = true;
+                        break;
+                      case 3:
+                        usePasswd = false;
+                        noToAll = true;
+                        break;
+                      default:
+                        usePasswd = false;
+                        break;
+                      }
+                    }
+                    if (!noToAll && usePasswd) {
                       f.setPassword(password);
 
                       if (!f.isTrustLevelSetByUser()) { // password

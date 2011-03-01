@@ -120,11 +120,11 @@ public class Units {
   public static boolean isAllied(Faction faction, Faction ally, int aState, boolean any) {
     boolean result = false;
     if (!any)
-      return Units.data.getGameSpecificRules().isAllied(faction, ally, aState);
+      return faction.getData().getGameSpecificRules().isAllied(faction, ally, aState);
     else {
       for (int i = 1; aState != 0; aState = aState >> 1) {
         if ((aState & 1) != 0) {
-          result |= Units.data.getGameSpecificRules().isAllied(faction, ally, i);
+          result |= faction.getData().getGameSpecificRules().isAllied(faction, ally, i);
         }
         i = i << 1;
       }

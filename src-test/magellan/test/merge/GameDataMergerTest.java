@@ -24,6 +24,7 @@
 package magellan.test.merge;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import magellan.library.AllianceGroup;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -157,6 +158,7 @@ public class GameDataMergerTest {
   public final void testMergeAlliance2() throws Exception {
     create("e3");
 
+    // alliance does not change state
     builder.addAlliance(faction011, faction012, EresseaConstants.A_GIVE);
     AllianceGroup alliance = new AllianceGroup(EntityID.createEntityID("alli", 36), "Allianz 1");
     alliance.addFaction(faction021);
@@ -201,6 +203,51 @@ public class GameDataMergerTest {
     assertEquals(EresseaConstants.A_GIVE, gd0m.getFaction(faction011.getID()).getAllies().values()
         .iterator().next().getState());
 
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.library.GameDataMerger#mergeFaction(magellan.library.GameData, magellan.library.Faction, magellan.library.GameData, magellan.library.Faction, boolean, magellan.library.utils.transformation.ReportTransformer)}
+   * .
+   * 
+   * @throws Exception
+   */
+  @Test
+  public final void testMergeAlliance4() throws Exception {
+    create("eressea");
+
+    // old help states are kept in new round if new state is unknown
+    builder.addAlliance(faction011, faction012, EresseaConstants.A_GIVE);
+
+    GameData gd0m = GameDataMerger.merge(gd01, gd11);
+
+    assertEquals(1, gd0m.getFaction(faction011.getID()).getAllies().size());
+    assertEquals(faction012.getID(), gd0m.getFaction(faction011.getID()).getAllies().values()
+        .iterator().next().getFaction().getID());
+    assertEquals(EresseaConstants.A_GIVE, gd0m.getFaction(faction011.getID()).getAllies().values()
+        .iterator().next().getState());
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.library.GameDataMerger#mergeFaction(magellan.library.GameData, magellan.library.Faction, magellan.library.GameData, magellan.library.Faction, boolean, magellan.library.utils.transformation.ReportTransformer)}
+   * .
+   * 
+   * @throws Exception
+   */
+  @Test
+  public final void testMergeAlliance4b() throws Exception {
+    create("eressea");
+
+    // old help states are reset in new round if new alliance is empty, but we are report owners
+    builder.addAlliance(faction011, faction012, EresseaConstants.A_GIVE);
+
+    gd11.setOwnerFaction(faction011.getID());
+
+    GameData gd0m = GameDataMerger.merge(gd01, gd11);
+
+    assertTrue(gd0m.getFaction(faction011.getID()).getAllies() == null
+        || 0 == gd0m.getFaction(faction011.getID()).getAllies().size());
   }
 
 }

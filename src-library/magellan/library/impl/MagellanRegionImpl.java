@@ -337,7 +337,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       if (visibility.equalsIgnoreCase(Region.VIS_STR_WRAP)) {
         result = Visibility.WRAP;
       }
-    }
+      }
     visibilityConstant = result;
     return result;
   }

@@ -49,6 +49,7 @@ import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Group;
 import magellan.library.ID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
@@ -291,13 +292,22 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
             for (Faction dummy : data.getFactions()) {
               // let's check, if one faction outside the selection has an alliance with this
               // faction. If so, we should NOT delete the faction.
-              if ((dummy.units().size() > 0) && !victims.contains(dummy)
-                  && (dummy.getAllies() != null) && dummy.getAllies().containsKey(f.getID())) {
-                Object msgArgs[] = { f, dummy.getAllies().get(f.getID()) };
+              Object msgArgs[] = null;
+              if (dummy.units().size() > 0 && !victims.contains(dummy)) {
+                if ((dummy.getAllies() != null && dummy.getAllies().containsKey(f.getID()))
+                    || dummy.getAlliance().getFactions().contains(f.getID())) {
+                  msgArgs = new Object[] { f, dummy };
+                }
+                if (dummy.getGroups() != null) {
+                  for (Group group : dummy.getGroups().values()) {
+                    if (group.allies() != null && group.allies().containsKey(f.getID())) {
+                      msgArgs = new Object[] { f, dummy };
+                    }
+                  }
+                }
                 JOptionPane.showMessageDialog(d, (new java.text.MessageFormat(Resources
                     .get("factionstatsdialog.msg.factionisallied.text"))).format(msgArgs));
                 veto = true;
-
                 break;
               }
             }

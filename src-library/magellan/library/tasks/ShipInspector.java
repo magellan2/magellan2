@@ -13,12 +13,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import magellan.library.Alliance;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
-import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Rules;
@@ -201,8 +198,6 @@ public class ShipInspector extends AbstractInspector {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.WRONGSHORE
               .getType(), ship, this));
         } else {
-          boolean isAllied = false;
-          Map<EntityID, Alliance> allies = owner.getFaction().getAllies();
           if (Units.isAllied(captain.getFaction(), owner.getFaction(), EresseaConstants.A_GUARD)) {
             // harbour in Region -> just warn, no error
             problems.add(ProblemFactory.createProblem(Severity.INFORMATION,

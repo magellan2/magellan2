@@ -48,7 +48,7 @@ public class FactionNodeWrapper extends DefaultNodeWrapper implements CellObject
    * 
    * @param f
    * @param r
-   * @param activeAlliances
+   * @param activeAlliances should not be <code>null</code>!
    */
   public FactionNodeWrapper(Faction f, Region r, Map<EntityID, Alliance> activeAlliances) {
     if (f == null)

@@ -59,22 +59,31 @@ public class TrustLevels {
           if (!f.isTrustLevelSetByUser()) {
             f.setTrustLevel(-100);
           }
-        } else if (f.isPrivileged() && (f.getAllies() != null)) { // privileged
+        } else if (f.isPrivileged())
+          if (f.getAllies() != null) { // privileged
 
-          Iterator<Map.Entry<EntityID, Alliance>> iter = f.getAllies().entrySet().iterator();
+            Iterator<Map.Entry<EntityID, Alliance>> iter = f.getAllies().entrySet().iterator();
 
-          while (iter.hasNext()) {
-            Alliance alliance = (iter.next()).getValue();
+            while (iter.hasNext()) {
+              Alliance alliance = (iter.next()).getValue();
 
-            // update the trustlevel of the allied factions if their
-            // trustlevels were not set by the user
-            Faction ally = alliance.getFaction();
+              // update the trustlevel of the allied factions if their
+              // trustlevels were not set by the user
+              Faction ally = alliance.getFaction();
 
-            if (!ally.isTrustLevelSetByUser()) {
-              ally.setTrustLevel(Math.max(ally.getTrustLevel(), alliance.getTrustLevel()));
+              if (!ally.isTrustLevelSetByUser()) {
+                ally.setTrustLevel(Math.max(ally.getTrustLevel(), alliance.getTrustLevel()));
+              }
+              if (alliance.getState(EresseaConstants.A_GIVE)) {
+                ally.setHasGiveAlliance(true);
+              }
             }
-            if (alliance.getState(EresseaConstants.A_GIVE)) {
-              ally.setHasGiveAlliance(true);
+          }
+        if (f.isPrivileged() && f.getAlliance() != null) {
+          for (magellan.library.ID allyID : f.getAlliance().getFactions()) {
+            Faction ally = data.getFaction(allyID);
+            if (ally != null && ally != f && !ally.isTrustLevelSetByUser()) {
+              ally.setTrustLevel(Faction.TL_PRIVILEGED - 1);
             }
           }
         }

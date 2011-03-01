@@ -1951,10 +1951,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
         for (Unit u : item.units) {
 
-          Skill skill = u.getSkill(item.skill.getSkillType());
-          Skill modSkill = u.getModifiedSkill(item.skill.getSkillType());
+          // Skill skill = u.getSkill(item.skill.getSkillType());
+          // Skill modSkill = u.getModifiedSkill(item.skill.getSkillType());
 
-          text = nodeWrapperFactory.createSkillNodeWrapper(u, skill, modSkill).toString();
+          // text = nodeWrapperFactory.createSkillNodeWrapper(u, skill, modSkill).toString();
           skillNode.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, u
               .getPersons())));
         }
@@ -2037,7 +2037,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       parent.add(n);
       expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.AlliancesExpanded"));
 
-      FactionStatsPanel.showAlliances(data, g.allies(), g.getFaction().getAlliance(), n);
+      FactionStatsPanel.showAlliances(data, g.getFaction(), g.allies(), g.getFaction()
+          .getAlliance(), n);
     }
   }
 
@@ -2523,7 +2524,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         fNode.add(n);
         expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.AlliancesExpanded"));
 
-        FactionStatsPanel.showAlliances(data, allies, alliance, n);
+        FactionStatsPanel.showAlliances(data, f, allies, alliance, n);
       }
 
       if (f.getTreasury() > 0) {
@@ -3252,9 +3253,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       for (Spell spell : sortedSpells) {
         // do not use Named variant here; we want to use Spell.toString() instead of Spell.getName()
         // in order to display spell level, type, etc.
-        spellsNode.add(createSimpleNode((Object) spell, "spell"));
+          spellsNode.add(createSimpleNode((Object) spell, "spell"));
+        }
       }
-    }
   }
 
   private void appendUnitCombatSpells(Map<? extends ID, CombatSpell> spells,

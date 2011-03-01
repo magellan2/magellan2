@@ -7,16 +7,8 @@
 
 package magellan.library.gamebinding.e3a;
 
-import magellan.library.Alliance;
-import magellan.library.AllianceGroup;
-import magellan.library.EntityID;
-import magellan.library.Faction;
 import magellan.library.GameData;
-import magellan.library.ID;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaPostProcessor;
-import magellan.library.utils.CollectionFactory;
-import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -45,43 +37,44 @@ public class E3APostProcessor extends EresseaPostProcessor {
   public void postProcess(GameData data) {
     super.postProcess(data);
 
-    int fightState = 2;
-    try {
-      fightState =
-          data.rules.getAllianceCategory(
-              Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT)).getBitMask();
-    } catch (NullPointerException e) {
-      // TODO (stm) I think I found the bug that caused this, but leave it here for now...
-      E3APostProcessor.log.error("postProcess " + e);
-      e.printStackTrace();
-      fightState = 2;
-    }
-
-    // for every pair of factions in the AllianceGroup set the "help fight" state
-    for (AllianceGroup allianceGroup : data.getAllianceGroups()) {
-      for (ID id1 : allianceGroup.getFactions()) {
-        Faction faction1 = data.getFaction(id1);
-        for (ID id2 : allianceGroup.getFactions()) {
-          Faction faction2 = data.getFaction(id2);
-          if (faction1 != faction2) {
-            boolean found = false;
-            if (faction1.getAllies() != null) {
-              for (Alliance alliance : faction1.getAllies().values()) {
-                if (alliance.getFaction().equals(faction2)) {
-                  alliance.addState(fightState);
-                  found = true;
-                }
-              }
-            }
-            if (!found) {
-              if (faction1.getAllies() == null) {
-                faction1.setAllies(CollectionFactory.<EntityID, Alliance> createSyncOrderedMap());
-              }
-              faction1.getAllies().put(faction2.getID(), new Alliance(faction2, fightState));
-            }
-          }
-        }
-      }
-    }
+    // Don't do this any more, it's fishy.
+    // int fightState = 2;
+    // try {
+    // fightState =
+    // data.rules.getAllianceCategory(
+    // Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT)).getBitMask();
+    // } catch (NullPointerException e) {
+    // // TODO (stm) I think I found the bug that caused this, but leave it here for now...
+    // E3APostProcessor.log.error("postProcess " + e);
+    // e.printStackTrace();
+    // fightState = 2;
+    // }
+    //
+    // // for every pair of factions in the AllianceGroup set the "help fight" state
+    // for (AllianceGroup allianceGroup : data.getAllianceGroups()) {
+    // for (ID id1 : allianceGroup.getFactions()) {
+    // Faction faction1 = data.getFaction(id1);
+    // for (ID id2 : allianceGroup.getFactions()) {
+    // Faction faction2 = data.getFaction(id2);
+    // if (faction1 != faction2) {
+    // boolean found = false;
+    // if (faction1.getAllies() != null) {
+    // for (Alliance alliance : faction1.getAllies().values()) {
+    // if (alliance.getFaction().equals(faction2)) {
+    // alliance.addState(fightState);
+    // found = true;
+    // }
+    // }
+    // }
+    // if (!found) {
+    // if (faction1.getAllies() == null) {
+    // faction1.setAllies(CollectionFactory.<EntityID, Alliance> createSyncOrderedMap());
+    // }
+    // faction1.getAllies().put(faction2.getID(), new Alliance(faction2, fightState));
+    // }
+    // }
+    // }
+    // }
+    // }
   }
 }

@@ -1,3 +1,6 @@
+2011-03-01 / Build 465 - stm (stm_@users.sourceforge.net)
+    * fixed merging of alliances in E3, handling of alliance groups in various areas and a few alliance bugs on the way
+    
 2011-02-22 / Build 464 - stm (stm_@users.sourceforge.net)
     * added "open orders as ISO" option
     * added support for region items (non standard-Eressea)

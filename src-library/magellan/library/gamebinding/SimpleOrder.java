@@ -30,11 +30,11 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Unit;
-import magellan.library.tasks.OrderSyntaxInspector;
+import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
+import magellan.library.tasks.OrderSyntaxInspector.OrderSyntaxProblemTypes;
 import magellan.library.tasks.Problem;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ProblemFactory;
-import magellan.library.tasks.ProblemType;
 import magellan.library.tasks.SimpleProblem;
 import magellan.library.utils.OrderToken;
 
@@ -43,17 +43,6 @@ import magellan.library.utils.OrderToken;
  */
 public class SimpleOrder implements Order {
 
-  /**
-   * Marks a syntactic error.
-   */
-  public static final ProblemType SyntaxProblem =
-      OrderSyntaxInspector.OrderSyntaxProblemTypes.PARSE_WARNING.type;
-
-  /**
-   * Marks a semantic error.
-   */
-  public static final ProblemType OrderProblem =
-      OrderSyntaxInspector.OrderSemanticsProblemTypes.SEMANTIC_ERROR.type;
 
   private List<OrderToken> tokens;
   private String text;
@@ -118,7 +107,9 @@ public class SimpleOrder implements Order {
     if (valid && !isValid()) {
       problem = null;
     } else if (!valid && isValid()) {
-      problem = ProblemFactory.createProblem(Severity.WARNING, SyntaxProblem);
+      problem =
+          ProblemFactory
+              .createProblem(Severity.WARNING, OrderSyntaxProblemTypes.PARSE_WARNING.type);
     }
   }
 
@@ -201,8 +192,8 @@ public class SimpleOrder implements Order {
    * @see SimpleProblem
    */
   protected void setWarning(Unit unit, int line, String string) {
-    setProblem(ProblemFactory.createProblem(Severity.WARNING, OrderProblem, unit, null, string,
-        line));
+    setProblem(ProblemFactory.createProblem(Severity.WARNING,
+        OrderSemanticsProblemTypes.SEMANTIC_ERROR.type, unit, null, string, line));
   }
 
   /**
@@ -211,6 +202,7 @@ public class SimpleOrder implements Order {
    * @see SimpleProblem
    */
   protected void setError(Unit unit, int line, String string) {
-    setProblem(ProblemFactory.createProblem(Severity.ERROR, OrderProblem, unit, null, string, line));
+    setProblem(ProblemFactory.createProblem(Severity.ERROR,
+        OrderSemanticsProblemTypes.SEMANTIC_ERROR.type, unit, null, string, line));
   }
 }

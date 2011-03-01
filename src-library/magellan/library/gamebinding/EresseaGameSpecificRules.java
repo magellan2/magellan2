@@ -24,7 +24,11 @@
 package magellan.library.gamebinding;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
+import magellan.library.Alliance;
+import magellan.library.EntityID;
+import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
@@ -279,5 +283,17 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
               + (rrel.amount % rrel.race.getRecruitmentFactor() > 0 ? 1 : 0);
     }
     return (u.getRegion().maxRecruit() - recruited) * race.getRecruitmentFactor();
+  }
+
+  public boolean isAllied(Faction faction, Faction ally, int aState) {
+    if (faction == null || ally == null)
+      return false;
+    if (faction.equals(ally))
+      return true;
+    Map<EntityID, Alliance> allies = faction.getAllies();
+    if (allies == null)
+      return false;
+    Alliance alliance = allies.get(ally.getID());
+    return alliance != null && alliance.getState(aState);
   }
 }

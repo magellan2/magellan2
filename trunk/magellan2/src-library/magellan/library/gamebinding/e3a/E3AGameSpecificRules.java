@@ -26,6 +26,7 @@ package magellan.library.gamebinding.e3a;
 import java.math.BigDecimal;
 
 import magellan.library.Building;
+import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
@@ -228,5 +229,19 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
   @Override
   public boolean isPooled(Unit unit, ItemType type) {
     return true;
+  }
+
+  /**
+   * Interprets Alliance as HELp COMBAT.
+   * 
+   * @see magellan.library.gamebinding.EresseaGameSpecificRules#isAllied(magellan.library.Faction,
+   *      magellan.library.Faction, int)
+   */
+  @Override
+  public boolean isAllied(Faction faction, Faction ally, int aState) {
+    return super.isAllied(faction, ally, aState)
+        || ((aState | EresseaConstants.A_COMBAT) != 0 && faction.getAlliance() != null
+            && faction.getAlliance().getFactions().contains(ally.getID()) && super.isAllied(
+            faction, ally, aState ^ EresseaConstants.A_COMBAT));
   }
 }

@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -111,9 +112,11 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.TransferRelation;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Units;
 import magellan.library.utils.comparator.BestSkillComparator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
@@ -775,7 +778,19 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     } else if ((allies != null) && !activeAlliances.equals(allies)) {
       // set new active alliances
       activeAlliances.clear();
-      activeAlliances.putAll(allies);
+      /* this is a hack, E3 alliance implies combat state */
+      if (f.getAlliance() != null) {
+        activeAlliances.putAll(allies);
+      } else {
+        for (Entry<EntityID, Alliance> entry : allies.entrySet()) {
+          boolean helpCombat =
+              Units.isAllied(f, entry.getValue().getFaction(), EresseaConstants.A_COMBAT);
+          Alliance all =
+              new Alliance(entry.getValue().getFaction(), entry.getValue().getState()
+                  | (helpCombat ? EresseaConstants.A_COMBAT : 0));
+          activeAlliances.put(entry.getKey(), all);
+        }
+      }
       activeAlliancesAreDefault = false;
 
       // add the selected group or faction to be able to show, on whose
@@ -1800,7 +1815,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       if (f.isPrivileged()) {
         privilegedFactions.add(f);
 
-        if ((f.getAllies() == null) || (f.getAllies().values().size() <= 0)) {
+        if ((f.getAllies() == null || f.getAllies().values().size() <= 0)
+            && f.getAlliance() == null) {
           // remember that one privileged faction had no allies
           // so it is not necessary to do further calculations
           privilegedWithoutAllies = true;

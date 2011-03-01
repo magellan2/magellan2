@@ -23,6 +23,7 @@
 // 
 package magellan.library.gamebinding;
 
+import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.StringID;
@@ -139,6 +140,11 @@ public interface GameSpecificRules {
    * @param race
    */
   public int getRecruitmentLimit(Unit u, Race race);
+
+  /**
+   * Returns true if the faction has the specified HELP state to an ally.
+   */
+  public boolean isAllied(Faction faction, Faction ally, int aState);
 
   // /**
   // * Returns true, if the world wraps around at x- or y-coordinates.

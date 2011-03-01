@@ -89,26 +89,26 @@ public interface Faction extends UnitContainer {
   public void setAge(int age);
 
   /**
-   * Returns the value of allies.
+   * Returns the value of allies (HELP statuses).
    * 
    * @return Returns allies. May return <code>null</code>
    */
   public Map<EntityID, Alliance> getAllies();
 
   /**
-   * Sets the value of allies.
+   * Sets the value of allies (HELP statuses).
    * 
    * @param allies The value for allies. May be <code>null</code>.
    */
   public void setAllies(Map<EntityID, Alliance> allies);
 
   /**
-   * Returns the alliance this faction is a member of or <code>null</code>.
+   * Returns the alliance this faction is a member of or <code>null</code> (E3 ALLIANCE order).
    */
   public AllianceGroup getAlliance();
 
   /**
-   * Sets the alliance this faction is a member of.
+   * Sets the alliance this faction is a member of (E3 ALLIANCE order).
    */
   public void setAlliance(AllianceGroup alliance);
 

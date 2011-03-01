@@ -32,10 +32,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -53,6 +56,7 @@ import magellan.client.swing.basics.SpringUtilities;
 import magellan.client.swing.layout.GridLayout2;
 import magellan.client.utils.SwingUtils;
 import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
 import magellan.library.Battle;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
@@ -61,6 +65,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Group;
+import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Potion;
@@ -746,7 +751,11 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     new Thread(new Runnable() {
 
       public void run() {
-        doWrite(ui, out);
+        try {
+          doWrite(ui, out);
+        } finally {
+          ui.ready();
+        }
       }
     }).start();
     setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -1003,7 +1012,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
           lookup = regions;
         }
         // ArrayList of Factions to be removed
-        ArrayList<Faction> factionRemoveList = new ArrayList<Faction>();
+        Set<Faction> factionRemoveList = new HashSet<Faction>();
         // Looping through the factions
         if (newData.getFactions() != null) {
           for (Faction actF : newData.getFactions()) {
@@ -1024,9 +1033,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
               }
 
               if (!found) {
-                if (!factionRemoveList.contains(actF)) {
-                  factionRemoveList.add(actF);
-                }
+                factionRemoveList.add(actF);
               }
             }
           }
@@ -1041,6 +1048,13 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
             // alliances...if one of the partners is our delete Faction->delete
             cleanAllianzes(newData, removeF);
+          }
+          for (Iterator<AllianceGroup> iterator = newData.getAllianceGroups().iterator(); iterator
+              .hasNext();) {
+            AllianceGroup alliance = iterator.next();
+            if (alliance.getFactions().size() == 0) {
+              iterator.remove();
+            }
           }
         }
       }
@@ -1104,7 +1118,17 @@ public class CRWriterDialog extends InternationalizedDataDialog {
           }
         }
       }
+      if (actF.getAlliance() != null) {
+        for (Iterator<ID> iterator = actF.getAlliance().getFactions().iterator(); iterator
+            .hasNext();) {
+          ID id = iterator.next();
+          if (id.equals(factionToDel.getID())) {
+            iterator.remove();
+          }
+        }
+      }
     }
+
   }
 
   /**

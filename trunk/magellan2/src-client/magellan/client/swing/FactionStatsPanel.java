@@ -529,12 +529,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
 
       /* alliances node */
-      if ((f.getAllies() != null) && (f.getAllies().size() > 0)) {
+      if ((f.getAllies() != null && f.getAllies().size() > 0) || f.getAlliance() != null) {
         currentNode =
             new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
                 .get("factionstatspanel.node.alliances"), "alliance"));
         rootNode.add(currentNode);
-        FactionStatsPanel.showAlliances(data, f.getAllies(), f.getAlliance(), currentNode);
+        FactionStatsPanel.showAlliances(data, f, f.getAllies(), f.getAlliance(), currentNode);
       }
 
       /* group alliances node */
@@ -554,7 +554,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 + g.getRaceNamePrefix()));
           }
 
-          FactionStatsPanel.showAlliances(data, g.allies(), f.getAlliance(), subNode);
+          FactionStatsPanel.showAlliances(data, f, g.allies(), f.getAlliance(), subNode);
         }
       }
 
@@ -1563,7 +1563,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     setCursor(Cursor.getDefaultCursor());
   }
 
-  public static void showAlliances(GameData data, Map<EntityID, Alliance> allies,
+  public static void showAlliances(GameData data, Faction owner, Map<EntityID, Alliance> allies,
       AllianceGroup allianceGroup, DefaultMutableTreeNode rootNode) {
     if (rootNode == null)
       return;
@@ -1577,7 +1577,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         // probably just a stray selection event...
         FactionStatsPanel.log.warn("alliance without leader: " + allianceGroup);
       } else {
-        FactionNodeWrapper wrapper = new FactionNodeWrapper(leader, null, allies);
+        FactionNodeWrapper wrapper =
+            new FactionNodeWrapper(leader, null, Collections.<EntityID, Alliance> emptyMap());
         DefaultMutableTreeNode factionNode = new DefaultMutableTreeNode(wrapper);
         m.add(factionNode);
       }
@@ -1586,7 +1587,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         if (faction == null) {
           FactionStatsPanel.log.warn("unknown faction in alliance: " + id);
         } else if (faction != leader) {
-          FactionNodeWrapper wrapper = new FactionNodeWrapper(faction, null, allies);
+          FactionNodeWrapper wrapper =
+              new FactionNodeWrapper(faction, null, Collections.<EntityID, Alliance> emptyMap());
           DefaultMutableTreeNode factionNode = new DefaultMutableTreeNode(wrapper);
           m.add(factionNode);
         }

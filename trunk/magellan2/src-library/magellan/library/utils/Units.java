@@ -30,8 +30,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import magellan.library.Alliance;
-import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.ID;
@@ -106,15 +104,32 @@ public class Units {
    * @return true if the faction's alliance value for the ally includes the state.
    */
   public static boolean isAllied(Faction faction, Faction ally, int aState) {
-    if (faction == null || ally == null)
-      return false;
-    if (faction.equals(ally))
-      return true;
-    Map<EntityID, Alliance> allies = faction.getAllies();
-    if (allies == null)
-      return false;
-    Alliance alliance = allies.get(ally.getID());
-    return alliance != null && alliance.getState(aState);
+    return isAllied(faction, ally, aState, false);
+  }
+
+  /**
+   * Returns true if the help status for aState of the faction includes ally.
+   * 
+   * @param faction The source faction
+   * @param ally The potential ally
+   * @param aState The help state, e.g. {@link EresseaConstants#A_GUARD}.
+   * @param any if <code>true</code>, this method returns true if the state matches exactly.
+   *          Otherwise only one of the states that <code>aState</code> is composed of must match.
+   * @return true if the faction's alliance value for the ally includes the state.
+   */
+  public static boolean isAllied(Faction faction, Faction ally, int aState, boolean any) {
+    boolean result = false;
+    if (!any)
+      return Units.data.getGameSpecificRules().isAllied(faction, ally, aState);
+    else {
+      for (int i = 1; aState != 0; aState = aState >> 1) {
+        if ((aState & 1) != 0) {
+          result |= Units.data.getGameSpecificRules().isAllied(faction, ally, i);
+        }
+        i = i << 1;
+      }
+    }
+    return result;
   }
 
   /**

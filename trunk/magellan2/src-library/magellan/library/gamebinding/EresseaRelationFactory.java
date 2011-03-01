@@ -61,6 +61,7 @@ import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.tasks.OrderSyntaxInspector;
+import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
 import magellan.library.tasks.Problem;
 import magellan.library.utils.Direction;
 import magellan.library.utils.Locales;
@@ -315,7 +316,7 @@ public class EresseaRelationFactory implements RelationFactory {
             for (Unit otherUnit : leftUC.modifiedUnits()) {
               if (otherUnit != u) {
                 ControlRelation cRel = new ControlRelation(u, otherUnit, line);
-                cRel.setWarning("???", SimpleOrder.OrderProblem);
+                cRel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
                 relations.add(cRel);
                 break;
               }
@@ -525,7 +526,7 @@ public class EresseaRelationFactory implements RelationFactory {
                             // if not, only transfer the minimum amount
                             // the unit has
                             if (i.getAmount() < rel.amount) {
-                              rel.setWarning("???", SimpleOrder.OrderProblem);
+                              rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
                             }
                             // FIXME getPersons() or getModifiedPersons()? this is only correct if
                             // units are parsed in order; also, REKRUTIERE is after GIBs
@@ -534,7 +535,7 @@ public class EresseaRelationFactory implements RelationFactory {
                                     * (hasEach ? target.getModifiedPersons() : 1));
                             if (hasEach && target.getPersonTransferRelations().size() != 0) {
                               // so we add a warning here, to indicate that we're not sure
-                              rel.setWarning("???", SimpleOrder.OrderProblem);
+                              rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
                             }
                           }
                         }
@@ -601,7 +602,7 @@ public class EresseaRelationFactory implements RelationFactory {
                 rel = new RecruitmentRelation(u, amount, cost, race, line);
               } else {
                 rel = new RecruitmentRelation(u, amount, 0, race, line);
-                rel.setWarning("???", SimpleOrder.OrderProblem);
+                rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
               }
               relations.add(rel);
             } else {
@@ -616,7 +617,7 @@ public class EresseaRelationFactory implements RelationFactory {
                       line);
             } else {
               rel = new RecruitmentRelation(u, amount, 0, line);
-              rel.setWarning("???", SimpleOrder.OrderProblem);
+              rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
             }
             relations.add(rel);
           }
@@ -779,7 +780,7 @@ public class EresseaRelationFactory implements RelationFactory {
       for (int i = 0; i < relations.size(); ++i) {
         UnitRelation r = relations.get(i);
         if (r instanceof ControlRelation) {
-          relations.get(i).setWarning("???", SimpleOrder.OrderProblem);
+          relations.get(i).setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
         }
       }
     }
@@ -864,13 +865,13 @@ public class EresseaRelationFactory implements RelationFactory {
           Item i = modItems.get(rel.itemType.getID());
           if (i != null) {
             if (i.getAmount() < rel.amount) {
-              rel.setWarning("???", SimpleOrder.OrderProblem);
+              rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
               rel.amount = i.getAmount();
             }
             i.setAmount(i.getAmount() - rel.amount);
           } else {
             rel.amount = 0;
-            rel.setWarning("???", SimpleOrder.OrderProblem);
+            rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
           }
           rels.add(rel);
         }
@@ -936,19 +937,19 @@ public class EresseaRelationFactory implements RelationFactory {
       if (i == null) {
         // item unknown
         rel.amount = 0;
-        rel.setWarning("???", SimpleOrder.OrderProblem);
+        rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
       } else {
         if (rOrder.amount == Order.ALL) {
           // if the specified amount is 'all', convert u to a decent number
           // TODO how exactly does RESERVIERE ALLES <item> work??
           rel.amount = i.getAmount();
-          rel.setWarning("???", SimpleOrder.OrderProblem);
+          rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
         } else {
           // // if not, only transfer the minimum amount the unit has
           // TODO (stm) should this be persons or modified persons?
           rel.amount = rOrder.amount * (rOrder.each ? source.getModifiedPersons() : 1);
           if (i.getAmount() < rel.amount) {
-            rel.setWarning("???", SimpleOrder.OrderProblem);
+            rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
           }
           rel.amount = Math.min(i.getAmount(), rel.amount);
         }
@@ -1049,7 +1050,7 @@ public class EresseaRelationFactory implements RelationFactory {
             for (LeaveRelation lrel : leaveRelations)
               if (lrel.origin == u && lrel.line > 0 && !lrel.isImplicit()) {
                 cRel.setWarning(Resources.get("order.leave.warning.control"),
-                    SimpleOrder.OrderProblem);
+                    OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
               }
           }
         }
@@ -1062,7 +1063,7 @@ public class EresseaRelationFactory implements RelationFactory {
               tRel.target = tRel.origin;
               if (tRel.problem == null) {
                 tRel.setWarning(Resources.get("order.transport.warning.notcarrying", tRel.source),
-                    SimpleOrder.OrderProblem);
+                    OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
               }
             } else {
               carrying = tRel;
@@ -1071,7 +1072,7 @@ public class EresseaRelationFactory implements RelationFactory {
               } else if (tRel.source.getRelations(MovementRelation.class).isEmpty()) {
                 if (tRel.source.getRelations(FollowUnitRelation.class).isEmpty()) {
                   tRel.setWarning(Resources.get("order.transport.warning.notmoving"),
-                      SimpleOrder.OrderProblem);
+                      OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
                 }
               }
             }
@@ -1083,7 +1084,7 @@ public class EresseaRelationFactory implements RelationFactory {
       }
       if (riding != null && carrying != null) {
         riding.setWarning(Resources.get("order.transport.warning.rideandcarry"),
-            SimpleOrder.OrderProblem);
+            OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
       }
     }
   }

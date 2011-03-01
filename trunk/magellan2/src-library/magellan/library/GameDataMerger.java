@@ -760,7 +760,7 @@ public class GameDataMerger {
       for (AllianceGroup curAlliance : newerGD.getAllianceGroups()) {
         AllianceGroup newAlliance = resultGD.getAllianceGroup(curAlliance.getID());
 
-        GameDataMerger.mergeAlliance(olderGD, curAlliance, resultGD, newAlliance);
+        GameDataMerger.mergeAlliance(newerGD, curAlliance, resultGD, newAlliance);
       }
     }
 
@@ -1109,7 +1109,7 @@ public class GameDataMerger {
       newFaction.setAlliance(curFaction.getAlliance());
     }
 
-    // keep allies information from last round if now new info is known
+    // keep allies information from last round if no new info is known
     if ((curFaction.getAllies() != null && curFaction.getAllies().size() > 0)
         || curFaction.getID().equals(curGD.getOwnerFaction())) {
       if (newFaction.getAllies() == null) {

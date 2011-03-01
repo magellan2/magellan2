@@ -26,7 +26,6 @@ import magellan.library.Alliance;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
-import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -2159,26 +2158,8 @@ public class EresseaOrderCompleter implements Completer {
       if (f == null) {
         addUnit(curUnit, postfix);
       } else if (!f.equals(unit.getFaction())) {
-        Alliance testAlliance = null;
-        if (unit.getGroup() != null) {
-          final Map<EntityID, Alliance> allies = unit.getGroup().allies();
-          if (allies != null) {
-            testAlliance = unit.getGroup().allies().get(f.getID());
-          }
-        } else {
-          final Map<EntityID, Alliance> allies = unit.getFaction().getAllies();
-          if (allies != null) {
-            testAlliance = unit.getFaction().getAllies().get(f.getID());
-          }
-        }
-        if (testAlliance == null) {
-          // curUnit is not allied
+        if (!Units.isAllied(f, curUnit.getFaction(), alliance.getState())) {
           addUnit(curUnit, postfix);
-        } else {
-          if ((testAlliance.getState() & alliance.getState()) != alliance.getState()) {
-            // curUnit doesn't fit all alliance-states and is therefor added
-            addUnit(curUnit, postfix);
-          }
         }
       }
     }

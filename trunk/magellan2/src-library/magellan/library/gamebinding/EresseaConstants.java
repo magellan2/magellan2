@@ -635,11 +635,11 @@ public class EresseaConstants {
 
   /** A state selector for the "Helfe Silber" state. */
 
-  // public static final int A_SILVER = 1 << 0;
+  public static final int A_SILVER = 1 << 0;
 
   /** A state selector for the "Helfe Kämpfe" state. */
 
-  // public static final int A_COMBAT = 1 << 1;
+  public static final int A_COMBAT = 1 << 1;
 
   /** A state selector for the "Helfe Gib" state. */
   public static final int A_GIVE = 1 << 3;
@@ -649,7 +649,7 @@ public class EresseaConstants {
 
   /** A state selector for the "Helfe Parteitarnung" state. */
 
-  // public static final int A_GUISE = 1 << 5;
+  public static final int A_GUISE = 1 << 5;
 
   /** A state selector for the "Helfe ?" state. */
 

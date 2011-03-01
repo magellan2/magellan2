@@ -29,6 +29,7 @@ import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.relation.TransportRelation;
+import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -76,7 +77,7 @@ public class TransportOrder extends UnitArgumentOrder {
           relation = new TransportRelation(unit, null, tUnit, line);
           relation.add();
           relation.setWarning(Resources.get("order.transport.warning.notriding", target),
-              SimpleOrder.OrderProblem);
+              OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
         }
       }
     } else {

@@ -58,6 +58,7 @@ import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.SkillType;
@@ -341,6 +342,9 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
           if ((f.getAllies() != null) && f.getAllies().containsKey(fac.getID())) {
             Alliance a = f.getAllies().get(fac.getID());
             minTrust &= a.getState();
+          } else if (f.getAlliance().getFactions().contains(fac.getID())) {
+            // alliance implies HELP combat (in E3!)
+            minTrust &= EresseaConstants.A_COMBAT;
           } else {
             minTrust = 0;
           }

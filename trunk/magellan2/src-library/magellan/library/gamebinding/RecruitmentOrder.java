@@ -32,6 +32,7 @@ import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState
 import magellan.library.relation.RecruitmentRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.Race;
+import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -96,7 +97,7 @@ public class RecruitmentOrder extends SimpleOrder {
       }
     }
     if (warning != null) {
-      recRel.setWarning(warning, SimpleOrder.OrderProblem);
+      recRel.setWarning(warning, OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
     }
     recRel.add();
 
@@ -107,7 +108,8 @@ public class RecruitmentOrder extends SimpleOrder {
     for (UnitRelation rel : relations) {
       rel.add();
       if (rel.problem != null) {
-        rel.setWarning(Resources.get("order.recruit.warning.silver"), SimpleOrder.OrderProblem);
+        rel.setWarning(Resources.get("order.recruit.warning.silver"),
+            OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
       }
     }
 

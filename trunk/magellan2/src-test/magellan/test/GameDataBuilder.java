@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import magellan.library.Alliance;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
@@ -15,6 +16,7 @@ import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Island;
 import magellan.library.Item;
+import magellan.library.LuxuryPrice;
 import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Ship;
@@ -23,14 +25,18 @@ import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.impl.MagellanBuildingImpl;
 import magellan.library.impl.MagellanShipImpl;
 import magellan.library.impl.SpellBuilder;
 import magellan.library.io.GameDataReader;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.EresseaDate;
+import magellan.library.rules.ItemCategory;
+import magellan.library.rules.ItemType;
 import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillType;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.MagellanFactory;
 
 public class GameDataBuilder {
@@ -364,4 +370,40 @@ public class GameDataBuilder {
     return ship;
   }
 
+  public void setPrices(Region region, String buy) {
+    Map<StringID, LuxuryPrice> prices = region.getPrices();
+    ItemCategory cat = region.getData().rules.getItemCategory(EresseaConstants.C_LUXURIES);
+    if (cat == null)
+      throw new IllegalStateException("no luxuries known");
+    int pr = 4;
+    for (ItemType type : region.getData().getRules().getItemTypes())
+      if (type.getCategory() != null && type.getCategory().equals(cat)) {
+        if (prices == null) {
+          prices = CollectionFactory.<StringID, LuxuryPrice> createSyncOrderedMap(8, .9f);
+        }
+        if (type.getName().equals(buy)) {
+          prices.put(type.getID(), new LuxuryPrice(type, -(pr++)));
+        } else {
+          prices.put(type.getID(), new LuxuryPrice(type, pr++));
+        }
+      }
+    region.setPrices(prices);
+  }
+
+  /**
+   * Adds a HELP state from faction to ally. New state is ORed with existing help states.
+   */
+  public void addAlliance(Faction faction, Faction ally, int state) {
+    Map<EntityID, Alliance> allies1 = faction.getAllies();
+    if (allies1 == null) {
+      allies1 = CollectionFactory.createMap();
+      faction.setAllies(allies1);
+    }
+    Alliance alliance = allies1.get(ally.getID());
+    if (alliance == null) {
+      alliance = new Alliance(ally);
+      allies1.put(ally.getID(), alliance);
+    }
+    alliance.addState(state);
+  }
 }

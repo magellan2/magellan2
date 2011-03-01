@@ -15,8 +15,7 @@ import java.util.Set;
 import magellan.library.utils.Resources;
 
 /**
- * A class representing an alliance status between two factions. The faction having this alliance is
- * implicit, the target faction is an explicite field of this class.
+ * A class representing an alliance with several members.
  */
 public class AllianceGroup {
 
@@ -26,23 +25,21 @@ public class AllianceGroup {
   private Set<ID> factions;
 
   /**
-   * Create a new Alliance object for an alliance with the specified faction and without any
-   * alliance status set.
+   * Create a new Alliance object.
    * 
-   * @param id the faction to establish an alliance with.
+   * @param id the ID of this alliance group
+   * @throws NullPointerException if the id is null.
    */
   public AllianceGroup(EntityID id) {
     this(id, null);
   }
 
   /**
-   * Create a new Alliance object for an alliance with the specified faction and the specified
-   * status.
+   * Create a new Alliance object with name.
    * 
-   * @param id the faction to establish an alliance with
-   * @param name the alliance status, must be one of constants SILVER, FIGHT, GIVE, GUARD, GUISE or
-   *          ALL.
-   * @throws NullPointerException if the faction parameter is null.
+   * @param id the ID of this alliance group
+   * @param name The alliance name
+   * @throws NullPointerException if the id is null.
    */
   public AllianceGroup(EntityID id, String name) {
     if (id == null)
@@ -103,17 +100,17 @@ public class AllianceGroup {
   }
 
   /**
-   * A method to convert an alliance into a trustlevel. This method should be uses when Magellan
+   * A method to convert an alliance into a trustlevel. This method should be used when Magellan
    * calculates trust levels on its own.
    * 
    * @return the trustlevel of this alliance
    */
   public int getTrustLevel() {
-    return 100;
+    return Faction.TL_PRIVILEGED - 1;
   }
 
   /**
-   * Adds a faction to the list of factions beloning to this alliance.
+   * Adds a faction to the list of factions belonging to this alliance.
    */
   public void addFaction(Faction faction) {
     if (factions == null) {

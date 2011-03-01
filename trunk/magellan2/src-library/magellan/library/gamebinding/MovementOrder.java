@@ -36,6 +36,7 @@ import magellan.library.relation.ControlRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.MovementRelation;
 import magellan.library.relation.UnitRelation;
+import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
 import magellan.library.utils.Direction;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
@@ -122,7 +123,8 @@ public class MovementOrder extends SimpleOrder {
         if (leftUC.getModifiedOwnerUnit() == unit) {
           leftUC = null;
         } else if (leftUC.getModifiedUnit(unit.getID()) != null) {
-          mRel.setWarning(Resources.get("order.move.warning.leaveship"), SimpleOrder.OrderProblem);
+          mRel.setWarning(Resources.get("order.move.warning.leaveship"),
+              OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
         }
     }
 
@@ -134,7 +136,7 @@ public class MovementOrder extends SimpleOrder {
           if (otherUnit != unit) {
             ControlRelation crel = new ControlRelation(unit, otherUnit, line);
             crel.setWarning(Resources.get("order.move.warning.implicitcommand"),
-                SimpleOrder.OrderProblem);
+                OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
             crel.add();
             break;
           }

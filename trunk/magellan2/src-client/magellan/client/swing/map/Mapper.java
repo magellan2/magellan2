@@ -732,7 +732,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     }
 
     if (main == null) {
-    main = new LinkedList<Sorted>();
+      main = new LinkedList<Sorted>();
     } else {
       main.clear();
     }

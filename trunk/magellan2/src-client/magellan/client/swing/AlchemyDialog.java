@@ -553,8 +553,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           final int row = view2modelRow(planner.rowAtPoint(e.getPoint()));
           Object val = tableModel.getValueAt(row, col);
           StringBuilder text = new StringBuilder();
-          text.append(tableModel.getColumnName(col)).append("/").append(tableModel.getValueAt(row, 0))
-              .append(": ").append(val == null ? 0 : val);
+          text.append(tableModel.getColumnName(col)).append("/").append(
+              tableModel.getValueAt(row, 0)).append(": ").append(val == null ? 0 : val);
           JMenuItem item = new JMenuItem(text.toString());
           item.setEnabled(false);
           menu.add(item);

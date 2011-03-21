@@ -93,6 +93,13 @@ public class E3CommandParserTest {
     return unit2.getOrders().contains(string);
   }
 
+  protected void assertComment(Unit u, int number, boolean shortComment, boolean longComment) {
+    assertTrue("expected comment, but not enough orders", u.getOrders2().size() > number);
+    String actual = u.getOrders2().get(number).getText();
+    assertTrue("no long comment: " + actual, !longComment || actual.startsWith("// "));
+    assertTrue("no short comment: " + actual, !shortComment || actual.startsWith(";"));
+  }
+
   protected void assertOrder(String expected, Unit u, int number) {
     assertTrue("expected " + expected + ", but not enough orders", u.getOrders2().size() > number);
     String actual = u.getOrders2().get(number).getText();
@@ -269,6 +276,30 @@ public class E3CommandParserTest {
     parser.execute(unit.getFaction());
     assertEquals(2, unit.getOrders2().size());
     assertOrder("// $cript 1 5 // $cript GibWenn abc 100 Silber", unit, 1);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 2 5 1 LERNEN Hiebwaffen");
+
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("// $cript 1 5 0 LERNEN Hiebwaffen", unit, 1);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1 5 0 LERNEN Hiebwaffen");
+
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("LERNEN Hiebwaffen", unit, 1);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 2 5 0 LERNEN Hiebwaffen");
+
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("", unit, 1);
   }
 
   /**
@@ -1087,6 +1118,78 @@ public class E3CommandParserTest {
     assertOrder("// $cript KrautKontrolle NO NO PAUSE SO SO PAUSE", unit, 1);
     assertOrder("FORSCHEN KRÄUTER", unit, 2);
     assertEquals(3, unit.getOrders2().size());
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandTrade(String[])}.
+   */
+  @Test
+  public final void testCommandTrade() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Handel 100 ALLES Talent");
+    parser.execute(unit.getFaction());
+    assertOrder("// $cript Handel 100 ALLES Talent", unit, 1);
+    assertError("kein Handelstalent", unit, 2);
+
+    builder.addSkill(unit, "Handeln", 10);
+    builder.setPrices(unit.getRegion(), "Balsam");
+    builder.addItem(data, unit, "Öl", 2);
+    builder.addItem(data, unit, "Myrrhe", 200);
+    unit.getRegion().setPeasants(1000);
+    unit.clearOrders();
+    unit.addOrder("// $cript Handel 100 ALLES Talent");
+    parser.execute(unit.getFaction());
+    assertOrder("// $cript Handel 100 ALLES Talent", unit, 1);
+    assertOrder("KAUFEN 100 Balsam", unit, 2);
+    assertError("Einheit hat zu wenig Handelstalent", unit, 3);
+    assertError("braucht 3300 mehr Silber", unit, 4);
+    assertEquals(5, unit.getOrders2().size());
+
+    builder.addItem(data, unit, "Silber", 5000);
+    unit.clearOrders();
+    unit.addOrder("// $cript Handel 20 ALLES Talent");
+    parser.execute(unit.getFaction());
+    assertOrder("// $cript Handel 20 ALLES Talent", unit, 1);
+    assertOrder("KAUFEN 20 Balsam", unit, 2);
+    assertOrder("VERKAUFEN ALLES Myrrhe", unit, 3);
+    assertOrder("VERKAUFEN 2 Öl", unit, 4);
+    assertOrder("RESERVIEREN 180 Silber", unit, 5);
+    assertEquals(6, unit.getOrders2().size());
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandClear(String[])}.
+   */
+  @Test
+  public final void testCommandClear() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Loeschen");
+    unit.addOrder("Foobar");
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertComment(unit, 0, true, false);
+    assertOrder("// $cript Loeschen", unit, 1);
+
+    unit.clearOrders();
+    unit.addOrder("Foobar");
+    unit.addOrder("// $cript Loeschen");
+    parser.execute(unit.getFaction());
+    assertEquals(3, unit.getOrders2().size());
+    assertComment(unit, 0, true, false);
+    assertOrder("Foobar", unit, 1);
+    assertOrder("// $cript Loeschen", unit, 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Loeschen lang");
+    unit.addOrder("Foobar");
+    unit.addOrder("LERNEN Reiten");
+    unit.addOrder("; bla");
+    parser.execute(unit.getFaction());
+    assertEquals(4, unit.getOrders2().size());
+    assertComment(unit, 0, true, false);
+    assertOrder("// $cript Loeschen lang", unit, 1);
+    assertOrder("Foobar", unit, 2);
+    assertOrder("; bla", unit, 3);
   }
 
   /**

@@ -99,7 +99,8 @@ public class AttackInspector extends AbstractInspector {
           if (relation.target == relation.source) {
             problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.ATTACKSELF
                 .getType(), u, this, relation.line));
-          } else if (relation.source.getFaction() == relation.target.getFaction()
+          } else if (relation.target != null
+              && relation.source.getFaction() == relation.target.getFaction()
               || (relation.source.getFaction().getAllies() != null && relation.source.getFaction()
                   .getAllies().containsKey(relation.target.getFaction().getID()))
               || (relation.source.getFaction().getAlliance().getFactions().contains(relation.target

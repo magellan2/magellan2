@@ -452,8 +452,9 @@ public class E3CommandParser {
         if (clear == null
             || currentOrder.trim().startsWith(EresseaConstants.O_PCOMMENT)
             || currentOrder.trim().startsWith(EresseaConstants.O_COMMENT)
-            || !(clear == LONG && (world.getGameSpecificStuff().getOrderChanger().isLongOrder(
-                currentOrder) || currentOrder.trim().startsWith(EresseaConstants.O_PERSISTENT)))) {
+            || (clear == LONG
+                && !world.getGameSpecificStuff().getOrderChanger().isLongOrder(currentOrder) && !currentOrder
+                .trim().startsWith(EresseaConstants.O_PERSISTENT))) {
           addNewOrder(currentOrder, false);
         } else {
           changedOrders = true;

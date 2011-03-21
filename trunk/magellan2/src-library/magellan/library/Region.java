@@ -29,9 +29,15 @@ public interface Region extends UnitContainer {
   static final String VIS_STR_LIGHTHOUSE = "lighthouse";
   /** A visibility string for {@link Visibility#TRAVEL} */
   static final String VIS_STR_TRAVEL = "travel";
+  /** A visibility string for {@link Visibility#UNIT} */
+  static final String VIS_STR_UNIT = "unit";
+  /** A visibility string for {@link Visibility#FAR} */
+  static final String VIS_STR_FAR = "far";
 
   /** A visibility string for {@link Visibility#WRAP} */
   static final String VIS_STR_WRAP = "wrap";
+  /** A visibility string for {@link Visibility#BATTLE} */
+  static final String VIS_STR_BATTLE = "battle";
 
   /**
    * 0..very poor - no info (->visibility=null)<br />
@@ -94,13 +100,21 @@ public interface Region extends UnitContainer {
      */
     public static final Visibility TRAVEL = new Visibility(3, "TRAVEL");
     /**
-     * 4..qualified unit in region (->visibility=null)
+     * 4..this also exists, but I'm not sure what it does
      */
-    public static final Visibility UNIT = new Visibility(4, "UNIT");
+    public static final Visibility FAR = new Visibility(4, "FAR");
     /**
-     * 5..for toroidal worlds
+     * 5..qualified unit in region (->visibility=null)
      */
-    public static final Visibility WRAP = new Visibility(5, "WRAP");
+    public static final Visibility UNIT = new Visibility(5, "UNIT");
+    /**
+     * 6..this also exists, but I'm not sure what it does
+     */
+    public static final Visibility BATTLE = new Visibility(6, "BATTLE");
+    /**
+     * 7..for toroidal worlds
+     */
+    public static final Visibility WRAP = new Visibility(7, "WRAP");
 
     protected int ordinal() {
       return vis;

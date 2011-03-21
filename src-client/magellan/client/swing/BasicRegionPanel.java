@@ -70,7 +70,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
@@ -79,11 +79,15 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent e) {
     Object o = e.getActiveObject();
 
+    // do not delete on null even if displayed information might be incorrect...
+    // if (o == null) {
+    // show(null);
+    // } else
     if (o instanceof Region) {
       show((Region) o);
     } else if (o instanceof HasRegion) {
@@ -195,20 +199,20 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     return htmlText;
   }
 
-  protected Dimension getDimension(String def) {
+  protected Dimension getDimension(String newDef) {
     int cols = 1;
     int rows = 1;
     int index = 0;
     int curcols = 1;
 
-    while ((def.indexOf("&&", index) >= 0) || (def.indexOf("\\\\", index) >= 0)) {
-      int index1 = def.indexOf("&&", index);
+    while ((newDef.indexOf("&&", index) >= 0) || (newDef.indexOf("\\\\", index) >= 0)) {
+      int index1 = newDef.indexOf("&&", index);
 
       if (index1 == -1) {
         index1 = Integer.MAX_VALUE;
       }
 
-      int index2 = def.indexOf("\\\\", index);
+      int index2 = newDef.indexOf("\\\\", index);
 
       if (index2 == -1) {
         index2 = Integer.MAX_VALUE;
@@ -235,30 +239,30 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     return new Dimension(cols, rows);
   }
 
-  protected void parseDefinition(String def) {
-    replacer = ReplacerHelp.createReplacer(def);
+  protected void parseDefinition(String newDef) {
+    replacer = ReplacerHelp.createReplacer(newDef);
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns this class's PreferenceAdapter.
    */
   public PreferencesAdapter getPreferredAdapter() {
     return new BRPPreferences();
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the current html definition.
    */
   public String getDefinition() {
     return def;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets a new html definition.
    */
-  public void setDefinition(String d) {
-    settings.setProperty("BasicRegionPanel.Def", d);
-    def = d;
+  public void setDefinition(String newDef) {
+    settings.setProperty("BasicRegionPanel.Def", newDef);
+    def = newDef;
     parseDefinition(def);
     show(lastRegion);
   }
@@ -285,11 +289,11 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     public void initPreferences() {
-      // TODO: implement it
+      defText.setText(getDefinition());
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
      */
     public void applyPreferences() {
       String t = defText.getText();
@@ -300,14 +304,14 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
      */
     public Component getComponent() {
       return this;
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
      */
     public String getTitle() {
       return Resources.get("basicregionpanel.prefs.title");
@@ -331,7 +335,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
+     * @see java.util.Iterator#hasNext()
      */
     public boolean hasNext() {
       newPosition = skipDelims(currentPosition);
@@ -369,9 +373,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @throws java.util.NoSuchElementException DOCUMENT-ME
+     * @see java.util.Iterator#next()
      */
     public String next() {
       currentPosition = (newPosition > 0) ? newPosition : skipDelims(currentPosition);
@@ -391,9 +393,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @throws UnsupportedOperationException DOCUMENT-ME
+     * @see java.util.Iterator#remove()
      */
     public void remove() {
       throw new UnsupportedOperationException();
@@ -401,13 +401,10 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @author $Author: $
-   * @version $Revision: 352 $
+   * A component that displays (and interpretes) a html string.
    */
   public static class HTMLLabel extends JComponent {
-    private static final Logger log = Logger.getInstance(HTMLLabel.class);
+    private static final Logger llog = Logger.getInstance(HTMLLabel.class);
 
     private String text;
     private transient View view;
@@ -429,7 +426,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.JComponent#updateUI()
      */
     @Override
     public void updateUI() {
@@ -440,7 +437,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     /**
      * requires: 's' is HTML string.
      * 
-     * @throws IllegalArgumentException DOCUMENT-ME
+     * @throws IllegalArgumentException if s is not a valid HTML string.
      */
     public void setText(String s) {
       if (HTMLLabel.equal(s, text))
@@ -458,14 +455,14 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns the current text.
      */
     public String getText() {
       return text;
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.JComponent#getMinimumSize()
      */
     @Override
     public Dimension getMinimumSize() {
@@ -483,7 +480,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.JComponent#getPreferredSize()
      */
     @Override
     public Dimension getPreferredSize() {
@@ -501,7 +498,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.JComponent#getMaximumSize()
      */
     @Override
     public Dimension getMaximumSize() {
@@ -527,7 +524,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.JComponent#setForeground(java.awt.Color)
      */
     @Override
     public void setForeground(Color c) {
@@ -539,7 +536,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.JComponent#setFont(java.awt.Font)
      */
     @Override
     public void setFont(Font f) {
@@ -547,8 +544,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
         view = null;
       }
 
-      if (HTMLLabel.log.isDebugEnabled()) {
-        HTMLLabel.log.debug("HTMLLabel.setFont(" + f + " called");
+      if (HTMLLabel.llog.isDebugEnabled()) {
+        HTMLLabel.llog.debug("HTMLLabel.setFont(" + f + " called");
       }
 
       super.setFont(f);
@@ -570,9 +567,9 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
     }
 
     /**
-     * DOCUMENT-ME
+     * Calculates the usable area
      */
-    public static Rectangle calculateInnerArea(JComponent c, Rectangle r) {
+    protected static Rectangle calculateInnerArea(JComponent c, Rectangle r) {
       if (c == null)
         return null;
 

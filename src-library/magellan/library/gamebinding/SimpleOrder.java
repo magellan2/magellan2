@@ -43,7 +43,6 @@ import magellan.library.utils.OrderToken;
  */
 public class SimpleOrder implements Order {
 
-
   private List<OrderToken> tokens;
   private String text;
   private boolean persistent;

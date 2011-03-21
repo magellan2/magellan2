@@ -100,11 +100,10 @@ public class EresseaPostProcessor {
 
     adjustFogOfWar2Visibility(data);
 
-    int sortIndex = 0;
-
     Unit[] sortedUnits = data.getUnits().toArray(new Unit[0]);
     Arrays.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
 
+    int sortIndex = 0;
     for (Unit unit : sortedUnits) {
       unit.setSortIndex(sortIndex++);
       sortIndex = unit.extractTempUnits(data, sortIndex);

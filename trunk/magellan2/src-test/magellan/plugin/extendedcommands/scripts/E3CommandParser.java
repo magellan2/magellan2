@@ -452,7 +452,7 @@ public class E3CommandParser {
         if (clear == null
             || currentOrder.trim().startsWith(EresseaConstants.O_PCOMMENT)
             || currentOrder.trim().startsWith(EresseaConstants.O_COMMENT)
-            || (clear == LONG && (world.getGameSpecificStuff().getOrderChanger().isLongOrder(
+            || !(clear == LONG && (world.getGameSpecificStuff().getOrderChanger().isLongOrder(
                 currentOrder) || currentOrder.trim().startsWith(EresseaConstants.O_PERSISTENT)))) {
           addNewOrder(currentOrder, false);
         } else {
@@ -531,7 +531,6 @@ public class E3CommandParser {
             } else if (command.equals("Sammler")) {
               commandCollector(tokens);
             } else {
-              addNewOrder(currentOrder, false);
               addNewError("unbekannter Befehl: " + command);
             }
           }
@@ -585,7 +584,7 @@ public class E3CommandParser {
   protected void commandClear(String[] tokens) {
     if (tokens.length == 1) {
       clear = ALLOrder;
-    } else if (tokens.length == 2 && tokens[1].equals(LONG)) {
+    } else if (tokens.length == 2 && tokens[1].equalsIgnoreCase(LONG)) {
       clear = LONG;
     } else {
       addNewError("zu viele Argumente");
@@ -593,12 +592,13 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript [length [period]] text</code><br />
-   * Adds text (or commands) to the orders. If <code>length==1</code>, text is added to the unit's
-   * orders after the current order. If text is a script order itself, it will be executed. If
-   * period is set, length will be reset to period and the modified order added instead of the
-   * current order. If <code>length>1</code>, it is decreased and the modified order added instead
-   * of the current one.
+   * <code>// $cript [length [period [length]]] text</code><br />
+   * Adds text (or commands) to the orders after rest rounds. If <code>rest==1</code>, text is added
+   * to the unit's orders after the current order. If text is a script order itself, it will be
+   * executed. If period is set, rest will be reset to period and the modified order added instead
+   * of the current order. If <code>rest>1</code>, it is decreased and the modified order added
+   * instead of the current one. If length is given, the whole order will be removed after length
+   * rounds.
    * 
    * @param tokens
    * @return <code>text</code>, if <code>length==1</code>, otherwise <code>null</code>
@@ -606,20 +606,34 @@ public class E3CommandParser {
   protected String commandRepeat(String[] tokens) {
     StringBuilder result = null;
     try {
-      int length = Integer.parseInt(tokens[0]);
+      int rest = Integer.parseInt(tokens[0]);
       int period = 0;
-      int textIndex;
-      try {
-        period = Integer.parseInt(tokens[1]);
-        textIndex = 2;
-      } catch (NumberFormatException nfe) {
-        // second argument not a number
-        textIndex = 1;
+      int length = Integer.MAX_VALUE;
+      int textIndex = 1;
+      if (tokens.length >= 2) {
+        try {
+          period = Integer.parseInt(tokens[1]);
+          textIndex = 2;
+          if (tokens.length >= 3) {
+            try {
+              length = Integer.parseInt(tokens[2]);
+              textIndex = 3;
+            } catch (NumberFormatException nfe) {
+              // third argument not a number
+              length = Integer.MAX_VALUE;
+              textIndex = 2;
+            }
+          }
+        } catch (NumberFormatException nfe) {
+          // second argument not a number
+          period = 0;
+          textIndex = 1;
+        }
       }
-      if (length == 1) {
+      if (rest == 1) {
         result = new StringBuilder();
         if (period > 0) {
-          length = period + 1;
+          rest = period + 1;
         }
         for (int i = textIndex; i < tokens.length; ++i) {
           if (i > textIndex) {
@@ -627,13 +641,19 @@ public class E3CommandParser {
           }
           result.append(tokens[i]);
         }
+      } else if (length == 0) {
+        // return empty string to signal success
+        result = new StringBuilder();
       }
-      if (length > 1 || period > 0) {
+      if ((rest > 1 || period > 0) && length > 0) {
         StringBuilder newOrder = new StringBuilder();
         newOrder.append(PCOMMENTOrder).append(" ").append(scriptMarker);
-        newOrder.append(" ").append(length - 1);
+        newOrder.append(" ").append(rest - 1);
         if (period > 0) {
           newOrder.append(" ").append(period);
+        }
+        if (length != Integer.MAX_VALUE) {
+          newOrder.append(" ").append(length - 1);
         }
         for (int i = textIndex; i < tokens.length; ++i) {
           newOrder.append(" ").append(tokens[i]);
@@ -772,8 +792,8 @@ public class E3CommandParser {
         if (tokens.length > (warning == -1 ? 3 : 4)) {
           addNewError("zu viele Parameter");
         }
-        if (world.rules.getItemCategory("herbs") == null) {
-          addNewError("Spiel kennt keine Kräuter");
+        if (world.rules.getItemCategory("luxuries") == null) {
+          addNewError("Spiel kennt keine Luxusgüter");
         } else {
           for (Item item : currentUnit.getItems())
             if (world.rules.getItemCategory("luxuries").equals(item.getItemType().getCategory())) {
@@ -1315,13 +1335,20 @@ public class E3CommandParser {
       return;
     }
 
+    if (currentRegion.getPrices() == null) {
+      addNewError("kein Handel möglich");
+      return;
+    }
+
     LuxuryPrice buyGood = null;
     for (Entry<StringID, LuxuryPrice> entry : currentRegion.getPrices().entrySet()) {
       LuxuryPrice price = entry.getValue();
       if (price.getPrice() < 0) {
         buyGood = price;
       } else {
-        if (price.getPrice() < currentRegion.getOldPrices().get(entry.getKey()).getPrice()) {
+        if (currentRegion.getOldPrices() != null
+            && currentRegion.getOldPrices().get(entry.getKey()) != null
+            && price.getPrice() < currentRegion.getOldPrices().get(entry.getKey()).getPrice()) {
           addNewWarning("Preis gesunken: " + price.getItemType());
         }
       }
@@ -1364,10 +1391,14 @@ public class E3CommandParser {
       List<String> goods = new LinkedList<String>();
       // Verkaufsbefehl setzen, wenn notwendig
       if (tokens.length > 2 && ALLOrder.equals(tokens[2])) {
-        for (ItemType luxury : world.getRules().getItemTypes()) {
-          if (!luxury.equals(buyGood.getItemType())
-              && world.rules.getItemCategory("luxuries").equals(luxury.getCategory())) {
-            goods.add(luxury.getOrderName());
+        if (world.rules.getItemCategory("luxuries") == null) {
+          addNewError("Spiel kennt keine Luxusgüter");
+        } else {
+          for (ItemType luxury : world.getRules().getItemTypes()) {
+            if (!luxury.equals(buyGood.getItemType())
+                && world.rules.getItemCategory("luxuries").equals(luxury.getCategory())) {
+              goods.add(luxury.getOrderName());
+            }
           }
         }
       } else {
@@ -1422,7 +1453,7 @@ public class E3CommandParser {
 
       // Einheit gut genug?
       if (skillWarning && (W_SKILL.equals(warning) || warning == null)) {
-        addNewWarning("Einheit hat zu wenig Handelstalent!");
+        addNewError("Einheit hat zu wenig Handelstalent!");
       }
     } else {
       addNewError("Kein Handel möglich");
@@ -1482,8 +1513,8 @@ public class E3CommandParser {
     removeOrdersLike(MAKEOrder + " " + "[^T].*", true);
     removeOrdersLike(getResearchOrder() + ".*", true);
     if (modulo != Integer.MAX_VALUE
-        && (world.getDate().getDate() % modulo == 0 || !currentRegion.getHerbAmount().contains(
-            "viele"))) {
+        && (world.getDate().getDate() % modulo == 0 || (!currentRegion.getHerbAmount().equals(
+            "viele") && !currentRegion.getHerbAmount().equals("sehr viele")))) {
       addNewOrder(getResearchOrder(), true);
     } else {
       addNewOrder(MAKEOrder + " " + getLocalizedOrder(EresseaConstants.O_HERBS, "KRÄUTER"), true);
@@ -1904,7 +1935,6 @@ public class E3CommandParser {
     }
 
     ArrayList<Item> armors = findItems(armor, u, "armour");
-    // FIXME: shield is subcategory of armour!
     if (armors.isEmpty()) {
       addNewError("keine Rüstungn bekannt");
     }
@@ -2726,6 +2756,13 @@ public class E3CommandParser {
     return null;
   }
 
+  /**
+   * Private utility script written to convert some of my faction's orders. Not interesting for the
+   * general public.
+   * 
+   * @param faction
+   * @param region
+   */
   public void cleanScripts(Faction faction, Region region) {
     if (faction == null)
       throw new NullPointerException();
@@ -2774,6 +2811,72 @@ public class E3CommandParser {
               // omit
               changedOrders = true;
             }
+          }
+        }
+        if (changedOrders) {
+          currentUnit.setOrders(newOrders);
+        }
+        notifyMagellan(currentUnit);
+
+        newOrders = null;
+      }
+    }
+
+  }
+
+  /**
+   * Private utility script written to handle unwanted orders created by the TeachPlugin. Not
+   * interesting for the general public.
+   * 
+   * @param faction
+   * @param region
+   */
+  public void undoTeaching(Faction faction, Region region) {
+    if (faction == null)
+      throw new NullPointerException();
+    currentFaction = faction;
+
+    initLocales();
+
+    if (region == null) {
+      // comment out the following line if you don't have the newest nightly build of Magellan
+      helper.getUI().setMaximum(world.getRegions().size());
+
+      // call self for all regions
+      for (Region r : world.getRegions()) {
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(r.toString(), ++progress);
+
+        undoTeaching(faction, r);
+      }
+      return;
+    }
+
+    // loop for all units of faction
+    for (Unit u : region.units()) {
+      if (faction.getID().equals(u.getFaction().getID())) {
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(region.toString() + " - " + u.toString(), progress);
+
+        currentUnit = u;
+        newOrders = new ArrayList<String>();
+        removedOrderPatterns = new ArrayList<String>();
+        changedOrders = false;
+        error = -1;
+
+        // loop over orders
+        line = 0;
+        for (Order command : u.getOrders2()) {
+          currentOrder = command.getText();
+          if (currentOrder.startsWith("; $$$ LE")) {
+            addNewOrder(currentOrder.substring(currentOrder.indexOf("$$$") + 4) + " ; restored",
+                true);
+            changedOrders = true;
+          } else if (changedOrders
+              && (currentOrder.startsWith("LERNE") || currentOrder.startsWith("LEHRE"))) {
+            // skip
+          } else {
+            addNewOrder(command.getText(), false);
           }
         }
         if (changedOrders) {

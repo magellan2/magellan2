@@ -337,7 +337,19 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       if (visibility.equalsIgnoreCase(Region.VIS_STR_WRAP)) {
         result = Visibility.WRAP;
       }
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_UNIT)) {
+        // standard eressea reports don't have this...
+        result = Visibility.UNIT;
       }
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_FAR)) {
+        // standard eressea reports don't have this...
+        result = Visibility.FAR;
+      }
+      if (visibility.equalsIgnoreCase(Region.VIS_STR_BATTLE)) {
+        // standard eressea reports don't have this...
+        result = Visibility.BATTLE;
+      }
+    }
     visibilityConstant = result;
     return result;
   }
@@ -371,6 +383,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       visibility = Region.VIS_STR_LIGHTHOUSE;
     } else if (vis == Visibility.TRAVEL) {
       visibility = Region.VIS_STR_TRAVEL;
+    } else if (vis == Visibility.UNIT) {
+      visibility = Region.VIS_STR_UNIT;
+    } else if (vis == Visibility.BATTLE) {
+      visibility = Region.VIS_STR_BATTLE;
+    } else if (vis == Visibility.FAR) {
+      visibility = Region.VIS_STR_FAR;
     } else if (vis == Visibility.WRAP) {
       visibility = Region.VIS_STR_WRAP;
     }

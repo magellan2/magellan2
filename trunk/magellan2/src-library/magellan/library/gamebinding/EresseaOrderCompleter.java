@@ -82,6 +82,9 @@ public class EresseaOrderCompleter implements Completer {
   private Region region = null;
   private Unit unit = null;
   private CompleterSettingsProvider completerSettingsProvider = null;
+  protected String oneQuote = "\"";
+  protected String twoQuotes = "\"\"";
+  protected String spaceQuotes = " \"\"";
 
   /**
    * Returns the value of completerSettingsProvider.
@@ -139,6 +142,22 @@ public class EresseaOrderCompleter implements Completer {
 
   protected void setParser(OrderParser parser) {
     this.parser = parser;
+  }
+
+  protected void setQuote(char quote) {
+    if (quote == '\'') {
+      oneQuote = "'";
+      twoQuotes = "''";
+      spaceQuotes = " ''";
+    } else if (quote == '"') {
+      oneQuote = "\"";
+      twoQuotes = "\"\"";
+      spaceQuotes = " \"\"";
+    } else {
+      oneQuote = String.valueOf(quote);
+      twoQuotes = "" + quote + quote;
+      spaceQuotes = " " + twoQuotes;
+    }
   }
 
   /**
@@ -216,7 +235,7 @@ public class EresseaOrderCompleter implements Completer {
     completions.addAll(completerSettingsProvider.getSelfDefinedCompletions());
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_WORK)));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_ATTACK), " "));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_BANNER), " \"\"",
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_BANNER), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
     if (unit.getFaction() != null && unit.getFaction().getItems().size() > 0) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.O_CLAIM), " "));
@@ -264,12 +283,13 @@ public class EresseaOrderCompleter implements Completer {
     }
 
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_MESSAGE), " "));
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_DEFAULT),
+        getOrderTranslation(EresseaConstants.O_DEFAULT) + " " + oneQuote, "",
+        Completion.DEFAULT_PRIORITY, 0));
     completions
-        .add(new Completion(getOrderTranslation(EresseaConstants.O_DEFAULT),
-            getOrderTranslation(EresseaConstants.O_DEFAULT) + " '", "",
-            Completion.DEFAULT_PRIORITY, 0));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_EMAIL),
-        getOrderTranslation(EresseaConstants.O_EMAIL), " \"\"", Completion.DEFAULT_PRIORITY, 1));
+        .add(new Completion(getOrderTranslation(EresseaConstants.O_EMAIL),
+            getOrderTranslation(EresseaConstants.O_EMAIL), spaceQuotes,
+            Completion.DEFAULT_PRIORITY, 1));
     // we focus auf our temp generation dialog FF
     // completions.add(new Completion(getOrderTranslation(EresseaConstants.O_END)));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_RIDE), " "));
@@ -301,7 +321,7 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_MOVE), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_NUMBER), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_OPTION), " "));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_PASSWORD), " \"\"",
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_PASSWORD), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
 
     if (hasSkill(unit, EresseaConstants.S_KRAEUTERKUNDE, 6)) {
@@ -318,8 +338,10 @@ public class EresseaOrderCompleter implements Completer {
       }
     }
 
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_PREFIX),
-        getOrderTranslation(EresseaConstants.O_PREFIX), " \"\"", Completion.DEFAULT_PRIORITY, 1));
+    completions
+        .add(new Completion(getOrderTranslation(EresseaConstants.O_PREFIX),
+            getOrderTranslation(EresseaConstants.O_PREFIX), spaceQuotes,
+            Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_RECRUIT), " "));
 
     if (!(unit instanceof TempUnit)) {
@@ -489,26 +511,26 @@ public class EresseaOrderCompleter implements Completer {
 
   /** Add completions for command Benenne. */
   public void cmpltBenenne() {
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_UNIT), " \"\"",
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_UNIT), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_FOREIGNFACTION), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_FOREIGNSHIP), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_FOREIGNUNIT), " "));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_FACTION), " \"\"",
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_FACTION), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
 
     // use old owner unit (BENENNE before GIB)
     if ((unit.getBuilding() != null) && unit.equals(unit.getBuilding().getOwnerUnit())) {
-      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_CASTLE), " \"\"",
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_CASTLE), spaceQuotes,
           Completion.DEFAULT_PRIORITY, 1));
-      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_REGION), " \"\"",
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_REGION), spaceQuotes,
           Completion.DEFAULT_PRIORITY, 1));
     }
 
     if ((unit.getShip() != null) && (unit.getShip().getOwnerUnit() != null)
         && unit.getShip().getOwnerUnit().equals(unit)) {
-      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_SHIP), " \"\"",
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_SHIP), spaceQuotes,
           Completion.DEFAULT_PRIORITY, 1));
     }
   }
@@ -539,7 +561,7 @@ public class EresseaOrderCompleter implements Completer {
         final Unit u = units.next();
 
         if (u.getFaction().equals(ownerFaction) == false) {
-          addUnit(u, " \"\"", 1);
+          addUnit(u, spaceQuotes, 1);
         }
       }
     }
@@ -557,7 +579,7 @@ public class EresseaOrderCompleter implements Completer {
         // use old owner unit (BENENNE before GIB)
         if ((b.getOwnerUnit() != null)
             && (b.getOwnerUnit().getFaction().equals(ownerFaction) == false)) {
-          addNamed(b, " \"\"", 1, false);
+          addNamed(b, spaceQuotes, 1, false);
         }
       }
     }
@@ -571,7 +593,7 @@ public class EresseaOrderCompleter implements Completer {
       for (Faction f : data.getFactions()) {
 
         if (f.equals(ownerFaction) == false) {
-          addNamed(f, " \"\"", 1, false);
+          addNamed(f, spaceQuotes, 1, false);
         }
       }
     }
@@ -592,9 +614,9 @@ public class EresseaOrderCompleter implements Completer {
           final String id = s.getID().toString();
           final String name = s.getName();
           completions.add(new Completion(s.getType().getName() + " " + name + " (" + id + ")", id,
-              " \"\"", Completion.DEFAULT_PRIORITY - 1, 1));
+              spaceQuotes, Completion.DEFAULT_PRIORITY - 1, 1));
           completions.add(new Completion(id + " (" + s.getType().getName() + " " + name + ")", id,
-              " \"\"", Completion.DEFAULT_PRIORITY, 1));
+              spaceQuotes, Completion.DEFAULT_PRIORITY, 1));
         }
       }
     }
@@ -602,7 +624,7 @@ public class EresseaOrderCompleter implements Completer {
 
   /** Add completions for command Description. */
   public void cmpltDescription() {
-    completions.add(new Completion("\"\"", "\"\"", " ", Completion.DEFAULT_PRIORITY, 2));
+    completions.add(new Completion(twoQuotes, twoQuotes, " ", Completion.DEFAULT_PRIORITY, 2));
   }
 
   /**
@@ -626,22 +648,22 @@ public class EresseaOrderCompleter implements Completer {
 
   /** Add completions for command Beschreibe. */
   public void cmpltBeschreibe() {
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_UNIT), " \"\"",
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_UNIT), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_PRIVATE), " \"\"",
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_PRIVATE), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
 
     // use old owner unit (BENENNE before GIB)
     if ((unit.getBuilding() != null) && unit.getBuilding().getOwnerUnit().equals(unit)) {
-      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_CASTLE), " \"\"",
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_CASTLE), spaceQuotes,
           Completion.DEFAULT_PRIORITY, 1));
-      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_REGION), " \"\"",
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_REGION), spaceQuotes,
           Completion.DEFAULT_PRIORITY, 1));
     }
 
     if ((unit.getShip() != null) && (unit.getShip().getOwnerUnit() != null)
         && unit.getShip().getOwnerUnit().equals(unit)) {
-      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_SHIP), " \"\"",
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_SHIP), spaceQuotes,
           Completion.DEFAULT_PRIORITY, 1));
     }
   }
@@ -688,43 +710,43 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_UNIT), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_CASTLE), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_FACTION), " "));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_REGION), " \"\"",
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_REGION), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_SHIP), " "));
   }
 
   /** Add completions for command BotschaftEinheit. */
   public void cmpltBotschaftEinheit(boolean tempToken) {
-    addRegionUnits(" \"\"", 1, tempToken);
+    addRegionUnits(spaceQuotes, 1, tempToken);
   }
 
   /** Add completions for command BotschaftPartei. */
   public void cmpltBotschaftPartei() {
-    addOtherFactions(" \"\"", 1, false);
+    addOtherFactions(spaceQuotes, 1, false);
   }
 
   /** Add completions for command BotschaftGebaeude. */
   public void cmpltBotschaftGebaeude() {
     for (final Building uc : region.buildings()) {
-      addNamed(uc, " \"\"", 1, false);
+      addNamed(uc, spaceQuotes, 1, false);
     }
   }
 
   /** Add completions for command BotschaftGebaeudeID. */
   public void cmpltBotschaftGebaeudeID() {
-    completions.add(new Completion(" \"\"", " \"\"", "", Completion.DEFAULT_PRIORITY, 1));
+    completions.add(new Completion(spaceQuotes, spaceQuotes, "", Completion.DEFAULT_PRIORITY, 1));
   }
 
   /** Add completions for command BotschaftSchiff. */
   public void cmpltBotschaftSchiff() {
     for (final Ship s : region.ships()) {
-      addNamed(s, " \"\"", 1, false);
+      addNamed(s, spaceQuotes, 1, false);
     }
   }
 
   /** Add completions for command BotschaftSchiffID. */
   public void cmpltBotschaftSchiffID() {
-    completions.add(new Completion(" \"\"", " \"\"", "", Completion.DEFAULT_PRIORITY, 1));
+    completions.add(new Completion(spaceQuotes, spaceQuotes, "", Completion.DEFAULT_PRIORITY, 1));
   }
 
   /** Add completions for command Fahre. */
@@ -855,30 +877,30 @@ public class EresseaOrderCompleter implements Completer {
     return result.toString();
   }
 
-  /** Add completions for command FinalQuote. */
-  public void cmpltFinalQuote(char quote) {
-    final List<Completion> oldList = new ArrayList<Completion>(completions);
-    completions.clear();
-    for (final Completion c : oldList) {
-      if (c.getValue().length() > 1 && c.getValue().charAt(c.getValue().length() - 1) == quote
-          && c.getValue().charAt(c.getValue().length() - 2) != '\\') {
-        completions.add(c);
-      } else {
-        completions.add(new Completion(c.getName() + quote, c.getValue().trim() + quote, c
-            .getPostfix(), c.getPriority(), c.getCursorOffset()));
-      }
-    }
-  }
-
-  /** Add completions for command OpeningQuote. */
-  public void cmpltOpeningQuote(char quote, boolean cmplName) {
-    final List<Completion> oldList = new LinkedList<Completion>(completions);
-    completions.clear();
-    for (final Completion c : oldList) {
-      completions.add(new Completion(cmplName ? quote + c.getName() : c.getName(), quote
-          + c.getValue(), c.getPostfix(), c.getPriority(), c.getCursorOffset()));
-    }
-  }
+  // /** Add completions for command FinalQuote. */
+  // public void cmpltFinalQuote(char quote) {
+  // final List<Completion> oldList = new ArrayList<Completion>(completions);
+  // completions.clear();
+  // for (final Completion c : oldList) {
+  // if (c.getValue().length() > 1 && c.getValue().charAt(c.getValue().length() - 1) == quote
+  // && c.getValue().charAt(c.getValue().length() - 2) != '\\') {
+  // completions.add(c);
+  // } else {
+  // completions.add(new Completion(c.getName() + quote, c.getValue().trim() + quote, c
+  // .getPostfix(), c.getPriority(), c.getCursorOffset()));
+  // }
+  // }
+  // }
+  //
+  // /** Add completions for command OpeningQuote. */
+  // public void cmpltOpeningQuote(char quote, boolean cmplName) {
+  // final List<Completion> oldList = new LinkedList<Completion>(completions);
+  // completions.clear();
+  // for (final Completion c : oldList) {
+  // completions.add(new Completion(cmplName ? quote + c.getName() : c.getName(), quote
+  // + c.getValue(), c.getPostfix(), c.getPriority(), c.getCursorOffset()));
+  // }
+  // }
 
   /** Add completions for command Folge. */
   public void cmpltFolge() {
@@ -1284,9 +1306,9 @@ public class EresseaOrderCompleter implements Completer {
       }
       if (t.equals(data.rules.getSkillType(EresseaConstants.S_MAGIE))
           && (unit.getFaction() == null || unit.getFaction().getSpellSchool() == null)) {
-        completions.add(new Completion("\""
-            + getTranslation("gamebinding.eressea.eresseaordercompleter.magicarea") + "\"", "\"\"",
-            "", Completion.DEFAULT_PRIORITY, 1));
+        completions.add(new Completion(oneQuote
+            + getTranslation("gamebinding.eressea.eresseaordercompleter.magicarea") + oneQuote,
+            twoQuotes, "", Completion.DEFAULT_PRIORITY, 1));
       }
     }
   }
@@ -1361,8 +1383,8 @@ public class EresseaOrderCompleter implements Completer {
 
   /** Add completions for command Locale. */
   public void cmpltLocale() {
-    completions.add(new Completion("deutsch", "\"de\"", ""));
-    completions.add(new Completion("english", "\"en\"", ""));
+    completions.add(new Completion("deutsch", oneQuote + "de" + oneQuote, ""));
+    completions.add(new Completion("english", oneQuote + "en" + oneQuote, ""));
   }
 
   /** Add completions for command Mache. */
@@ -1490,7 +1512,7 @@ public class EresseaOrderCompleter implements Completer {
 
   /** Add completions for command MacheTempID. */
   public void cmpltMacheTempID() {
-    completions.add(new Completion("\"\""));
+    completions.add(new Completion(twoQuotes));
   }
 
   /** Add completions for command MacheBurg. */
@@ -1620,7 +1642,7 @@ public class EresseaOrderCompleter implements Completer {
 
   /** Add completions for command Praefix. */
   public void cmpltPraefix() {
-    completions.add(new Completion("\"\"", "\"\"", "", Completion.DEFAULT_PRIORITY, 1));
+    completions.add(new Completion(twoQuotes, twoQuotes, "", Completion.DEFAULT_PRIORITY, 1));
   }
 
   /** Add completions for command Rekrutiere. */
@@ -1706,7 +1728,7 @@ public class EresseaOrderCompleter implements Completer {
             String quotedName = name;
 
             if ((name.indexOf(" ") > -1)) {
-              quotedName = "\"" + name + "\"";
+              quotedName = oneQuote + name + oneQuote;
             }
 
             completions.add(new Completion(name, quotedName, "", Completion.DEFAULT_PRIORITY + 1));
@@ -1822,9 +1844,9 @@ public class EresseaOrderCompleter implements Completer {
   /** Add completions for command Stirb. */
   public void cmpltStirb() {
     if (Units.isPrivilegedAndNoSpy(unit)) {
-      completions.add(new Completion(
-          '"' + getTranslation("gamebinding.eressea.eresseaordercompleter.password") + '"', "\"\"",
-          ""));
+      completions.add(new Completion(oneQuote
+          + getTranslation("gamebinding.eressea.eresseaordercompleter.password") + oneQuote,
+          twoQuotes, ""));
     }
   }
 

@@ -54,7 +54,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_WORK)));
     addCompletion(new Completion(getOrderTranslation(E3AConstants.O_ALLIANCE), " "));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_ATTACK), " "));
-    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_BANNER), " \"\"",
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_BANNER), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
     if (getUnit().getFaction() != null && getUnit().getFaction().getItems().size() > 0) {
       addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_CLAIM), " "));
@@ -106,9 +106,10 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     }
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_MESSAGE), " "));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_DEFAULT),
-        getOrderTranslation(EresseaConstants.O_DEFAULT) + " '", "", Completion.DEFAULT_PRIORITY, 0));
+        getOrderTranslation(EresseaConstants.O_DEFAULT) + " " + oneQuote, "",
+        Completion.DEFAULT_PRIORITY, 0));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_EMAIL),
-        getOrderTranslation(EresseaConstants.O_EMAIL), " \"\"", Completion.DEFAULT_PRIORITY, 1));
+        getOrderTranslation(EresseaConstants.O_EMAIL), spaceQuotes, Completion.DEFAULT_PRIORITY, 1));
     // we focus auf our temp generation dialog FF
     // addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_END)));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_RIDE), " "));
@@ -134,7 +135,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_MOVE), " "));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_NUMBER), " "));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_OPTION), " "));
-    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_PASSWORD), " \"\"",
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_PASSWORD), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
 
     if (hasSkill(getUnit(), EresseaConstants.S_KRAEUTERKUNDE, 6)) {
@@ -152,7 +153,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     }
 
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_PREFIX),
-        getOrderTranslation(EresseaConstants.O_PREFIX), " \"\"", Completion.DEFAULT_PRIORITY, 1));
+        getOrderTranslation(EresseaConstants.O_PREFIX), spaceQuotes, Completion.DEFAULT_PRIORITY, 1));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_RECRUIT), " "));
 
     if (!(getUnit() instanceof TempUnit)) {

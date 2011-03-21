@@ -784,7 +784,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       } else {
         for (Entry<EntityID, Alliance> entry : allies.entrySet()) {
           boolean helpCombat =
-              Units.isAllied(f, entry.getValue().getFaction(), EresseaConstants.A_COMBAT);
+              Units.isAllied(f, entry.getValue().getFaction(), EresseaConstants.A_COMBAT, false);
           Alliance all =
               new Alliance(entry.getValue().getFaction(), entry.getValue().getState()
                   | (helpCombat ? EresseaConstants.A_COMBAT : 0));

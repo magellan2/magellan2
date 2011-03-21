@@ -1801,8 +1801,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendUnitsInfo(Collection<Unit> units, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
 
-    String text = "";
-
     Map<String, SkillStatItem> skills = new Hashtable<String, SkillStatItem>();
 
     // key: racename (string), Value: Integer-Object containing number of persons of that race
@@ -1815,6 +1813,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     float uWeight = 0;
     float modUWeight = 0;
+    float pWeight = 0;
+    float modPWeight = 0;
 
     // count persons of different races, weight and modified weight and skills within this loop
     for (Unit u : units) {
@@ -1836,6 +1836,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       rInfo.amount += u.getPersons();
       rInfo.amount_modified += u.getModifiedPersons();
+
+      pWeight += u.getPersons() * u.getRace().getWeight();
+      modPWeight += u.getModifiedPersons() * u.getRace().getWeight();
+
       allInfo.amount += u.getPersons();
       allInfo.amount_modified += u.getModifiedPersons();
 
@@ -1892,16 +1896,31 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     // show weight (Fiete)
-    text =
-        Resources.get("emapdetailspanel.node.totalweight") + ": "
-            + EMapDetailsPanel.weightNumberFormat.format(uWeight);
+    StringBuilder text = new StringBuilder();
+    text.append(Resources.get("emapdetailspanel.node.totalweight")).append(": ").append(
+        EMapDetailsPanel.weightNumberFormat.format(uWeight));
 
     if (uWeight != modUWeight) {
-      text += (" (" + EMapDetailsPanel.weightNumberFormat.format(modUWeight) + ")");
+      text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modUWeight)).append(")");
     }
+    text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
 
-    text += (" " + Resources.get("emapdetailspanel.node.weightunits"));
-    parent.add(createSimpleNode(text, "gewicht"));
+    text.append(", ").append(Resources.get("emapdetailspanel.node.load")).append(" ").append(
+        EMapDetailsPanel.weightNumberFormat.format(uWeight - pWeight));
+    if (uWeight != modUWeight) {
+      text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modUWeight - modPWeight))
+          .append(")");
+    }
+    text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
+
+    text.append(", ").append(Resources.get("emapdetailspanel.node.persons")).append(" ").append(
+        EMapDetailsPanel.weightNumberFormat.format(pWeight));
+    if (uWeight != modUWeight) {
+      text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modPWeight)).append(")");
+    }
+    text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
+
+    parent.add(createSimpleNode(text.toString(), "gewicht"));
 
     // categorized items
     Collection<TreeNode> catNodes =
@@ -2716,15 +2735,35 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       Collection<NodeWrapper> expandableNodes) {
     float uWeight = getMovementEvaluator().getWeight(u) / 100.0F;
     float modUWeight = getMovementEvaluator().getModifiedWeight(u) / 100.0F;
-    String text =
-        Resources.get("emapdetailspanel.node.totalweight") + ": "
-            + EMapDetailsPanel.weightNumberFormat.format(uWeight);
+
+    float pWeight = u.getPersons() * u.getRace().getWeight();
+    float modPWeight = u.getModifiedPersons() * u.getRace().getWeight();
+
+    StringBuilder text = new StringBuilder();
+    text.append(Resources.get("emapdetailspanel.node.totalweight")).append(": ").append(
+        EMapDetailsPanel.weightNumberFormat.format(uWeight));
 
     if (uWeight != modUWeight) {
-      text += (" (" + EMapDetailsPanel.weightNumberFormat.format(modUWeight) + ")");
+      text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modUWeight)).append(")");
     }
 
-    text += (" " + Resources.get("emapdetailspanel.node.weightunits"));
+    text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
+
+    text.append(", ").append(Resources.get("emapdetailspanel.node.load")).append(" ").append(
+        EMapDetailsPanel.weightNumberFormat.format(uWeight - pWeight));
+    if (uWeight != modUWeight) {
+      text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modUWeight - modPWeight))
+          .append(")");
+    }
+    text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
+
+    text.append(", ").append(Resources.get("emapdetailspanel.node.persons")).append(" ").append(
+        EMapDetailsPanel.weightNumberFormat.format(pWeight));
+    if (uWeight != modUWeight) {
+      text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modPWeight)).append(")");
+    }
+    text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
+
     parent.add(createSimpleNode(text, "gewicht"));
   }
 
@@ -3253,9 +3292,62 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       for (Spell spell : sortedSpells) {
         // do not use Named variant here; we want to use Spell.toString() instead of Spell.getName()
         // in order to display spell level, type, etc.
+        char type = spell.getType() == null ? '?' : spell.getType().charAt(2);
+        if (type != 'm' && type != 's' && type != 'e') {
           spellsNode.add(createSimpleNode((Object) spell, "spell"));
         }
       }
+
+      boolean typeFound = false;
+
+      for (Spell spell : sortedSpells) {
+        // do not use Named variant here; we want to use Spell.toString() instead of Spell.getName()
+        // in order to display spell level, type, etc.
+        char type = spell.getType() == null ? '?' : spell.getType().charAt(2);
+        if (type == 'e') {
+          if (!typeFound) {
+            spellsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.precombatspells"),
+                (String) null));
+          }
+          typeFound = true;
+          spellsNode.add(createSimpleNode((Object) spell, "spell"));
+          expandableNodes.add(new NodeWrapper(spellsNode,
+              "EMapDetailsPanel.PrecombatSpellsExpanded"));
+        }
+      }
+
+      typeFound = false;
+
+      for (Spell spell : sortedSpells) {
+        // do not use Named variant here; we want to use Spell.toString() instead of Spell.getName()
+        // in order to display spell level, type, etc.
+        char type = spell.getType() == null ? '?' : spell.getType().charAt(2);
+        if (type == 'm') {
+          if (!typeFound) {
+            spellsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.combatspells"),
+                (String) null));
+          }
+          typeFound = true;
+          spellsNode.add(createSimpleNode((Object) spell, "spell"));
+        }
+      }
+
+      typeFound = false;
+
+      for (Spell spell : sortedSpells) {
+        // do not use Named variant here; we want to use Spell.toString() instead of Spell.getName()
+        // in order to display spell level, type, etc.
+        char type = spell.getType() == null ? '?' : spell.getType().charAt(2);
+        if (type == 's') {
+          if (!typeFound) {
+            spellsNode.add(createSimpleNode(
+                Resources.get("emapdetailspanel.node.postcombatspells"), (String) null));
+          }
+          typeFound = true;
+          spellsNode.add(createSimpleNode((Object) spell, "spell"));
+        }
+      }
+    }
   }
 
   private void appendUnitCombatSpells(Map<? extends ID, CombatSpell> spells,
@@ -4507,7 +4599,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * sets the name "" not editable sets the description "" not editable shows an empty tree
    */
   private void showNothing() {
+    setActiveSelection(null);
+    contextManager.setFailFallback(null, null);
+
+    // store state, empty tree and expandableNodes
+    storeExpansionState();
+    myExpandableNodes.clear();
+    rootNode.removeAllChildren();
     setNameAndDescription("", "", false);
+    treeModel.reload();
+    restoreExpansionState();
   }
 
   private void storeExpansionState() {
@@ -4556,7 +4657,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
      */
     Collection<?> c = se.getSelectedObjects();
 
-    if ((c != null) && (c.size() > 1)) {
+    if (c != null && c.size() >= 1 && !se.isSingleSelection()) {
       if (showMultiple(se))
         return;
     }

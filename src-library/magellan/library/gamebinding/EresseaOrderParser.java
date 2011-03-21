@@ -88,6 +88,8 @@ public class EresseaOrderParser implements OrderParser {
 
   private OrderHandler emptyReader;
 
+  private char defaultQuote = '"';
+
   protected static enum Type {
     EMPTY, OPENING, CLOSING
   }
@@ -1453,15 +1455,20 @@ public class EresseaOrderParser implements OrderParser {
 
       public DefaultChecker() {
         super(false, true, true, false);
-        defaultQuote = '\'';
+        defaultQuote = '"';
       }
 
       @Override
       protected boolean checkInner() {
         // parse the string inside the quote(s); this has side-effects on the completer!
         innerParser = new EresseaOrderParser(getData(), getCompleter());
+        innerParser.setDefaultQuote('\'');
+        if (getCompleter() != null) {
+          getCompleter().setQuote('\'');
+        }
         boolean ok = innerParser.parse(content, getLocale()).isValid();
         if (getCompleter() != null) {
+          getCompleter().setQuote('"');
           oldList = new ArrayList<Completion>(getCompleter().getCompletions());
         }
         return ok && content.length() != 0 && super.checkInner();
@@ -4050,7 +4057,7 @@ public class EresseaOrderParser implements OrderParser {
 
   /** The StringChecker class may serve as a utility template for checking string tokens */
   protected class StringChecker {
-    protected char defaultQuote = '"';
+    protected char defaultQuote = EresseaOrderParser.this.defaultQuote;
     private boolean forceQuotes;
     private boolean allowQuotes;
     private boolean allowEmpty;
@@ -4223,6 +4230,10 @@ public class EresseaOrderParser implements OrderParser {
    */
   protected String readDescription() {
     return readDescription(true);
+  }
+
+  public void setDefaultQuote(char c) {
+    defaultQuote = c;
   }
 
   /**

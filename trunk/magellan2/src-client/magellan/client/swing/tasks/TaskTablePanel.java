@@ -463,7 +463,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         try {
           int iProgress = 0;
           for (Inspector i : getInspectors()) {
+            i.unSuppressGlobal();
+            for (Faction f : data.getFactions()) {
+              i.unSuppress(f);
+            }
             for (Region r : data.getRegions()) {
+              i.unSuppress(r);
               progressUI.setProgress(r.getName(), ++iProgress);
               for (Unit u : r.units()) {
                 i.unSuppress(u);

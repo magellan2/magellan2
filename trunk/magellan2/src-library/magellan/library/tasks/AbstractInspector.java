@@ -39,6 +39,14 @@ public abstract class AbstractInspector implements Inspector {
    */
   public static final String SUPPRESS_LINE_PREFIX = Inspector.SUPPRESS_PREFIX + "Line";
 
+  /**
+   * This prefix is prepended to suppress markers. It is a permanent comment
+   * 
+   * @see #suppress(Problem)
+   */
+  public static final String SUPPRESS_LINE_PREFIX_PERMANENT = Inspector.SUPPRESS_PREFIX_PERMANENT
+      + "Line";
+
   private GameData data;
 
   private GameSpecificStuff gameSpecStuff;
@@ -127,9 +135,11 @@ public abstract class AbstractInspector implements Inspector {
 
   protected boolean isSuppressMarkerFor(Order line, Problem p, boolean lineMode) {
     if (lineMode)
-      return line.getText().equals(getSuppressLineComment(p.getType()));
+      return line.getText().equals(getSuppressLineComment(p.getType(), false))
+          || line.getText().equals(getSuppressLineComment(p.getType(), true));
     else
-      return line.getText().equals(getSuppressUnitComment(p.getType()));
+      return line.getText().equals(getSuppressUnitComment(p.getType()))
+          || line.getText().equals(getSuppressUnitComment(p.getType(), true));
   }
 
   /**
@@ -243,6 +253,24 @@ public abstract class AbstractInspector implements Inspector {
     return p.getOwner();
   }
 
+  protected String getSuppressUnitComment(ProblemType p, boolean permanent) {
+    StringBuffer sb =
+        new StringBuffer(permanent ? Inspector.SUPPRESS_PREFIX_PERMANENT
+            : Inspector.SUPPRESS_PREFIX);
+    sb.append(" ");
+    sb.append(p.getName());
+    return sb.toString();
+  }
+
+  protected String getSuppressLineComment(ProblemType p, boolean permanent) {
+    StringBuffer sb =
+        new StringBuffer(permanent ? AbstractInspector.SUPPRESS_LINE_PREFIX_PERMANENT
+            : AbstractInspector.SUPPRESS_LINE_PREFIX);
+    sb.append(" ");
+    sb.append(p.getName());
+    return sb.toString();
+  }
+
   protected String getSuppressUnitComment(ProblemType p) {
     StringBuffer sb = new StringBuffer(Inspector.SUPPRESS_PREFIX);
     sb.append(" ");
@@ -280,6 +308,33 @@ public abstract class AbstractInspector implements Inspector {
     if (changed) {
       u.setOrders2(newOrders);
     }
+  }
+
+  /**
+   * Does nothing.
+   * 
+   * @see magellan.library.tasks.Inspector#unSuppress(magellan.library.Region)
+   */
+  public void unSuppress(Region r) {
+    // nothing to do for inspectors that suppress problems by changing unit orders
+  }
+
+  /**
+   * Does nothing.
+   * 
+   * @see magellan.library.tasks.Inspector#unSuppress(magellan.library.Faction)
+   */
+  public void unSuppress(Faction f) {
+    // nothing to do for inspectors that suppress problems by changing unit orders
+  }
+
+  /**
+   * Does nothing.
+   * 
+   * @see magellan.library.tasks.Inspector#unSuppressGlobal()
+   */
+  public void unSuppressGlobal() {
+    // nothing to do for inspectors that suppress problems by changing unit orders
   }
 
   public void setGameData(GameData gameData) {

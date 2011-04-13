@@ -49,7 +49,7 @@ public class MagellanBattleImpl extends MagellanIdentifiableImpl implements Batt
    */
   public MagellanBattleImpl(CoordinateID id, boolean spec) {
     this(id);
-    isBattleSpec = true;
+    isBattleSpec = spec;
   }
 
   /**

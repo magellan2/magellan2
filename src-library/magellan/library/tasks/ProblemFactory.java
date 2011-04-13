@@ -23,6 +23,7 @@
 // 
 package magellan.library.tasks;
 
+import magellan.library.Battle;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -33,7 +34,9 @@ import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
+import magellan.library.impl.MagellanMessageImpl;
 import magellan.library.tasks.Problem.Severity;
+import magellan.library.utils.Resources;
 
 /**
  * Creates problems for the TaskTable.
@@ -165,6 +168,11 @@ public class ProblemFactory {
     return new SimpleProblem(severity, type, null, null, null, null, null, null, -1);
   }
 
+  public static Problem createProblem(GameData data, Battle b, Faction faction, Region region,
+      Unit owner, Object object, MessageInspector inspector) {
+    return new BattleProblem(b, faction, region, owner, object, inspector);
+  }
+
   public static Problem createProblem(GameData data, Message m, Faction faction, Region region,
       Unit owner, Object object, MessageInspector inspector) {
 
@@ -250,24 +258,22 @@ public class ProblemFactory {
   }
 
   /**
-   * Problem implementation taylored for {@link Message}s
+   * Problem implementation tailored for {@link Message}s
    * 
    * @author stm
    * @version 1.0, Nov 22, 2010
    */
-  public static class MessageProblem implements Problem {
+  protected static abstract class MessageOrBattleProblem implements Problem {
 
-    private Message message;
-    private Faction faction;
-    private Region region;
-    private Unit unit;
-    private MessageInspector inspector;
-    private Object object;
+    protected Faction faction;
+    protected Region region;
+    protected Unit unit;
+    protected MessageInspector inspector;
+    protected Object object;
 
-    public MessageProblem(Message message, Faction faction, Region region, Unit unit,
-        Object object, MessageInspector inspector) {
+    public MessageOrBattleProblem(Faction faction, Region region, Unit unit, Object object,
+        MessageInspector inspector) {
       super();
-      this.message = message;
       this.faction = faction;
       this.region = region;
       this.unit = unit;
@@ -280,13 +286,6 @@ public class ProblemFactory {
      */
     public Severity getSeverity() {
       return Severity.INFORMATION;
-    }
-
-    /**
-     * @see magellan.library.tasks.Problem#getType()
-     */
-    public ProblemType getType() {
-      return inspector.getProblemType(message);
     }
 
     /**
@@ -332,6 +331,40 @@ public class ProblemFactory {
     }
 
     /**
+     * @see magellan.library.tasks.Problem#addSuppressComment()
+     */
+    public Unit addSuppressComment() {
+      if (getInspector() != null)
+        return getInspector().suppress(this);
+      return null;
+    }
+
+  }
+
+  /**
+   * Problem implementation tailored for {@link Message}s
+   * 
+   * @author stm
+   * @version 1.0, Nov 22, 2010
+   */
+  public static class MessageProblem extends MessageOrBattleProblem {
+
+    private Message message;
+
+    public MessageProblem(Message message, Faction faction, Region region, Unit unit,
+        Object object, MessageInspector inspector) {
+      super(faction, region, unit, object, inspector);
+      this.message = message;
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getType()
+     */
+    public ProblemType getType() {
+      return inspector.getProblemType(message);
+    }
+
+    /**
      * @see magellan.library.tasks.Problem#getMessage()
      */
     public String getMessage() {
@@ -341,6 +374,7 @@ public class ProblemFactory {
     /**
      * @see magellan.library.tasks.Problem#addSuppressComment()
      */
+    @Override
     public Unit addSuppressComment() {
       if (getInspector() != null)
         return getInspector().suppress(this);
@@ -353,6 +387,62 @@ public class ProblemFactory {
     }
 
     public Message getReportMessage() {
+      return message;
+    }
+  }
+
+  /**
+   * Problem implementation tailored for {@link Message}s
+   * 
+   * @author stm
+   * @version 1.0, Nov 22, 2010
+   */
+  public static class BattleProblem extends MessageOrBattleProblem {
+
+    private Battle battle;
+    private Message message;
+
+    public BattleProblem(Battle battle, Faction faction, Region region, Unit unit, Object object,
+        MessageInspector inspector) {
+      super(faction, region, unit, object, inspector);
+      this.battle = battle;
+      message =
+          new MagellanMessageImpl(Message.ambiguousID, Resources.get(
+              "tasks.messageinspector.battle.message", region), MessageInspector.BATTLE, null);
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getType()
+     */
+    public ProblemType getType() {
+      return inspector.getProblemType(battle);
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#getMessage()
+     */
+    public String getMessage() {
+      return message.getText();
+    }
+
+    /**
+     * @see magellan.library.tasks.Problem#addSuppressComment()
+     */
+    @Override
+    public Unit addSuppressComment() {
+      if (getInspector() != null)
+        return getInspector().suppress(this);
+      return null;
+    }
+
+    @Override
+    public String toString() {
+      return message.getText();
+    }
+
+    public Message getReportMessage() {
+      for (Message m : battle.messages())
+        return m;
       return message;
     }
 

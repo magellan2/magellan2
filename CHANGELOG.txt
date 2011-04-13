@@ -1,3 +1,8 @@
+2011-04-13 / Build 470 - stm (stm_@users.sourceforge.net)
+    * fix item order in unit nodes (trac bug #23)
+    * get rid of BATTLESPEC
+    * fix (un)suppression of open tasks, enable suppression with //-comments , enable suppression of battle messages
+
 2011-03-21 / Build 468 - stm (stm_@users.sourceforge.net)
     * show person weight, categorize spells
 

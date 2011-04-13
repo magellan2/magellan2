@@ -29,6 +29,7 @@ public interface Inspector {
 
   /** All lines suppressing problems must start with this prefix. */
   public static final String SUPPRESS_PREFIX = "; @suppressProblem";
+  public static final String SUPPRESS_PREFIX_PERMANENT = "// @suppressProblem";
 
   /**
    * Reviews global problems and returns a list of <tt>Problem</tt>s.
@@ -79,6 +80,21 @@ public interface Inspector {
    * @param u
    */
   public void unSuppress(Unit u);
+
+  /**
+   * Removes all additions made by suppress of this Inspector to the region.
+   */
+  public void unSuppress(Region r);
+
+  /**
+   * Removes all additions made by suppress of this Inspector to the faction.
+   */
+  public void unSuppress(Faction f);
+
+  /**
+   * Removes all additions made by suppress of this Inspector to the global objects.
+   */
+  public void unSuppressGlobal();
 
   /**
    * Returns all ProblemTypes this Inspector may return.

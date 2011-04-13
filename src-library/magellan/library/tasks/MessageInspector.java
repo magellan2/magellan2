@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import magellan.library.Battle;
 import magellan.library.Building;
@@ -45,6 +46,7 @@ import magellan.library.Unit;
 import magellan.library.impl.MagellanMessageImpl;
 import magellan.library.rules.MessageType;
 import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory.BattleProblem;
 import magellan.library.tasks.ProblemFactory.MessageProblem;
 import magellan.library.utils.Resources;
 
@@ -71,7 +73,7 @@ public class MessageInspector extends AbstractInspector {
       "SHIP--EFFECT");
   private static final MessageType UNITEFFECT = new MessageType(IntegerID.create(-46),
       "UNIT--EFFECT");
-  private static final MessageType BATTLE = new MessageType(IntegerID.create(-47), "BATTLE");
+  protected static final MessageType BATTLE = new MessageType(IntegerID.create(-47), "BATTLE");
 
   private static final int C_FACTION = 1;
   private static final int C_REGION = 2;
@@ -164,9 +166,20 @@ public class MessageInspector extends AbstractInspector {
   }
 
   private String getPhrase(String s) {
-    if (s.indexOf('.') < 0)
-      return s;
-    return s.substring(0, s.indexOf('.'));
+    String result = s;
+    if (s.indexOf('.') >= 0) {
+      result = s.substring(0, s.indexOf('.'));
+    }
+    try {
+      // hack to simplify messages like "2 Gehirmschmalz"
+      StringTokenizer tok = new StringTokenizer(result);
+      String number = tok.nextToken();
+      Integer.parseInt(number);
+      result = "#" + result.substring(number.length());
+    } catch (Exception e) {
+      // no number
+    }
+    return result.trim();
   }
 
   private ProblemType createProblemType(String effect, int category) {
@@ -192,6 +205,10 @@ public class MessageInspector extends AbstractInspector {
     return new ProblemType(Resources.get("tasks.messageinspector.message.name", mt.getID()),
         Resources.get("tasks.messageinspector.message.group"), Resources.get(
             "tasks.messageinspector.message.description", mt.getPattern()), null);
+  }
+
+  public ProblemType getProblemType(Battle battle) {
+    return problemTypes.get(BATTLE.getID());
   }
 
   public ProblemType getProblemType(Message message) {
@@ -231,7 +248,11 @@ public class MessageInspector extends AbstractInspector {
     if (p instanceof MessageProblem) {
       ((MessageProblem) p).getReportMessage().setAcknowledged(true);
       suppressedProblems.add(((MessageProblem) p).getReportMessage());
+    } else if (p instanceof BattleProblem) {
+      ((BattleProblem) p).getReportMessage().setAcknowledged(true);
+      suppressedProblems.add(((BattleProblem) p).getReportMessage());
     }
+
     return null;
   }
 
@@ -244,8 +265,61 @@ public class MessageInspector extends AbstractInspector {
   }
 
   @Override
-  public List<Problem> reviewGlobal() {
-    return super.reviewGlobal();
+  public void unSuppress(Region r) {
+    if (r.getMessages() != null) {
+      for (Message m : r.getMessages()) {
+        m.setAcknowledged(false);
+      }
+    }
+    if (r.getEvents() != null) {
+      for (Message m : r.getEvents()) {
+        m.setAcknowledged(false);
+      }
+    }
+
+    if (r.getPlayerMessages() != null) {
+      for (Message m : r.getPlayerMessages()) {
+        m.setAcknowledged(false);
+      }
+    }
+
+    if (r.getEffects() != null) {
+      // FIXME do something
+    }
+
+    for (Building b : r.buildings()) {
+      if (b.getEffects() != null) {
+        // FIXME
+      }
+    }
+
+    for (Ship s : r.ships()) {
+      if (s.getEffects() != null) {
+        // FIXME
+      }
+    }
+  }
+
+  @Override
+  public void unSuppress(Faction f) {
+    if (f.getMessages() != null) {
+      for (Message m : f.getMessages()) {
+        m.setAcknowledged(false);
+      }
+    }
+    if (f.getBattles() != null) {
+      for (Battle b : f.getBattles()) {
+        setAcknowledged(b, false);
+      }
+    }
+
+    if (f.getEffects() != null) {
+      // FIXME do something
+    }
+
+    if (f.getErrors() != null) {
+      // FIXME do something
+    }
   }
 
   @Override
@@ -262,12 +336,13 @@ public class MessageInspector extends AbstractInspector {
     if (f.getBattles() != null) {
       for (Battle b : f.getBattles()) {
         Region region = getData().getRegion(b.getID());
-        Message m =
-            new MagellanMessageImpl(Message.ambiguousID, Resources.get(
-                "tasks.messageinspector.battle.message", region), BATTLE, null);
-        if (!m.isAcknowledged())
-          if (!suppressedTypes.contains(getProblemType(m))) {
-            problems.add(ProblemFactory.createProblem(getData(), m, f, region, null, null, this));
+        // Message m =
+        // new MagellanMessageImpl(Message.ambiguousID, Resources.get(
+        // "tasks.messageinspector.battle.message", region), BATTLE, null);
+        // m.setAcknowledged(b.isAcknowledged());
+        if (isAcknowledged(b))
+          if (!suppressedTypes.contains(getProblemType(b))) {
+            problems.add(ProblemFactory.createProblem(getData(), b, f, region, null, null, this));
           }
       }
     }
@@ -295,6 +370,18 @@ public class MessageInspector extends AbstractInspector {
     }
 
     return problems;
+  }
+
+  protected static void setAcknowledged(Battle b, boolean value) {
+    for (Message m : b.messages()) {
+      m.setAcknowledged(value);
+    }
+  }
+
+  protected static boolean isAcknowledged(Battle b) {
+    for (Message m : b.messages())
+      return m.isAcknowledged();
+    return false;
   }
 
   @Override

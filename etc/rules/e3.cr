@@ -89,7 +89,7 @@ ITEMCATEGORY "silver"
 
 ITEMCATEGORY "weapons"
 "Waffen";name
-0;naturalorder
+1;naturalorder
 
 ITEMCATEGORY "front weapons"
 "Front-Waffen";name
@@ -108,7 +108,7 @@ ITEMCATEGORY "ammunition"
 
 ITEMCATEGORY "armour"
 "Rüstungen";name
-1;naturalorder
+2;naturalorder
 
 ITEMCATEGORY "shield"
 "Schilde";name
@@ -117,28 +117,28 @@ ITEMCATEGORY "shield"
 
 ITEMCATEGORY "resources"
 "Ressourcen";name
-2;naturalorder
+3;naturalorder
 
 ITEMCATEGORY "luxuries"
 "Luxusgüter";name
-3;naturalorder
+4;naturalorder
 
 ITEMCATEGORY "herbs"
 "Kräuter";name
 "kraeuter";iconname
-4;naturalorder
+5;naturalorder
 
 ITEMCATEGORY "potions"
 "Tränke";name
-5;naturalorder
+6;naturalorder
 
 ITEMCATEGORY "trophies"
 "Trophäen";name
-6;naturalorder
+7;naturalorder
 
 ITEMCATEGORY "misc"
 "Sonstiges";name
-7;naturalorder
+8;naturalorder
 
 SKILLCATEGORY "war"
 "Kampf";name

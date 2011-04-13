@@ -60,9 +60,11 @@ import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
 
 /**
  * Call from the script of your faction with<br />
- * "(new E3CommandParser(world, helper)).execute(container);" or from the script of a region with
- * "(new E3CommandParser(world, helper)).execute(helper.getFaction("drac"), (Region) container);"
- * (for just this region).
+ * "<code>(new E3CommandParser(world, helper)).execute(container);</code>" or from the script of a
+ * region with<br />
+ * "
+ * <code>(new E3CommandParser(world, helper)).execute(helper.getFaction("drac"), (Region) container);</code>
+ * " (for just this region).
  * 
  * @author stm
  */
@@ -284,9 +286,7 @@ public class E3CommandParser {
     if (faction.units().size() >= UNIT_LIMIT) {
       addWarning(someUnit, "Einheitenlimit erreicht (" + faction.units().size() + "/" + UNIT_LIMIT
           + ")! ");
-    }
-
-    if (faction.units().size() * 1.1 > UNIT_LIMIT) {
+    } else if (faction.units().size() * 1.1 > UNIT_LIMIT) {
       addWarning(someUnit, "Einheitenlimit fast erreicht (" + faction.units().size() + "/"
           + UNIT_LIMIT + ")! ");
     }
@@ -761,8 +761,12 @@ public class E3CommandParser {
         return;
       if (tokens.length == (warning == -1 ? 3 : 4)) {
         for (Item item : currentUnit.getItems()) {
-          addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(), Integer.MAX_VALUE,
-              false), true);
+          if (item.getAmount() > 0) {
+            addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
+                Integer.MAX_VALUE, false), true);
+          } else if (ADD_NOT_THERE_INFO) {
+            addNewMessage("we have no " + item);
+          }
         }
         return;
       }
@@ -781,6 +785,16 @@ public class E3CommandParser {
             if (world.rules.getItemCategory("herbs").equals(item.getItemType().getCategory())) {
               addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
                   Integer.MAX_VALUE, false), true);
+              Supply supply = getSupply(item.getOrderName(), currentUnit);
+              if (supply == null) {
+                addNewWarning("supply 0 " + item);
+              } else {
+                int amount = item.getAmount();
+                supply.reduceAmount(amount);
+                if (target != null) {
+                  addNeed(item.getOrderName(), target, -amount, -amount);
+                }
+              }
             }
         }
       }
@@ -800,6 +814,16 @@ public class E3CommandParser {
             if (world.rules.getItemCategory("luxuries").equals(item.getItemType().getCategory())) {
               addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
                   Integer.MAX_VALUE, false), true);
+              Supply supply = getSupply(item.getOrderName(), currentUnit);
+              if (supply == null) {
+                addNewWarning("supply 0 " + item);
+              } else {
+                int amount = item.getAmount();
+                supply.reduceAmount(amount);
+                if (target != null) {
+                  addNeed(item.getOrderName(), target, -amount, -amount);
+                }
+              }
             }
         }
       }
@@ -2072,7 +2096,7 @@ public class E3CommandParser {
     ItemCategory itemCategory = world.rules.getItemCategory(StringID.create(category));
     if (itemType == null) {
       for (Item item : u.getItems()) {
-        if (itemCategory.equals(item.getItemType().getCategory())) {
+        if (itemCategory.isInstance(item.getItemType())) {
           items.add(item);
         }
       }
@@ -2083,7 +2107,7 @@ public class E3CommandParser {
     }
     if (items.isEmpty()) {
       for (ItemType type : world.rules.getItemTypes()) {
-        if (itemCategory.equals(type.getCategory())) {
+        if (itemCategory.isInstance(type)) {
           items.add(new Item(type, 0));
           break;
         }
@@ -2457,8 +2481,7 @@ public class E3CommandParser {
     Collection<Item> items = unit.getItems();
     ItemCategory weapons = world.rules.getItemCategory(StringID.create("weapons"));
     for (Item item : items) {
-      ItemCategory itemCategory = item.getItemType().getCategory();
-      if (weapons.equals(itemCategory)) {
+      if (weapons.isInstance(item.getItemType())) {
         // ah, a weapon...
         Skill useSkill = item.getItemType().getUseSkill();
         if (useSkill != null) {
@@ -2758,6 +2781,115 @@ public class E3CommandParser {
   }
 
   /**
+   * @param u
+   * @param orderFilter
+   */
+  protected boolean changeOrders(Unit u, OrderFilter orderFilter) {
+    List<String> newOrders2 = new ArrayList<String>();
+    boolean changedOrders2 = false;
+
+    // loop over orders
+    for (Order command : u.getOrders2()) {
+      if (orderFilter.changeOrder(command)) {
+        changedOrders2 = true;
+        if (orderFilter.changedOrder() != null) {
+          newOrders2.add(orderFilter.changedOrder());
+        }
+      } else {
+        newOrders2.add(command.getText());
+      }
+    }
+    if (changedOrders2) {
+      u.setOrders(newOrders2);
+    }
+    return changedOrders2;
+  }
+
+  /**
+   * Private utility script written to convert some of my faction's orders. Not interesting for the
+   * general public.
+   * 
+   * @param faction
+   * @param region
+   */
+  public void cleanShortOrders(Faction faction, Region region) {
+    if (faction == null)
+      throw new NullPointerException();
+    currentFaction = faction;
+
+    initLocales();
+
+    if (region == null) {
+      // comment out the following line if you don't have the newest nightly build of Magellan
+      helper.getUI().setMaximum(world.getRegions().size());
+
+      // call self for all regions
+      for (Region r : world.getRegions()) {
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(r.toString(), ++progress);
+
+        cleanShortOrders(faction, r);
+      }
+      return;
+    }
+
+    // loop for all units of faction
+    for (Unit u : region.units()) {
+      if (faction.getID().equals(u.getFaction().getID())) {
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(region.toString() + " - " + u.toString(), progress);
+
+        if (changeOrders(u, new OrderFilter() {
+
+          private String result;
+
+          public boolean changeOrder(String command) {
+            if (world.getGameSpecificStuff().getOrderChanger().isLongOrder(command))
+              return false;
+            else {
+              if (command.startsWith("@") || command.startsWith("//"))
+                return false;
+              else {
+                if (currentOrder.startsWith(";")) {
+                  result = null;
+                  return true;
+                } else {
+                  result = ";" + command;
+                  return true;
+                }
+              }
+            }
+          }
+
+          public boolean changeOrder(Order command) {
+            if (world.getGameSpecificStuff().getOrderChanger().isLongOrder(command))
+              return false;
+            else {
+              if (command.isLong() || command.isPersistent() || command.getText().startsWith("//"))
+                return false;
+              else {
+                if (command.getText().startsWith(";")) {
+                  result = null;
+                  return true;
+                } else {
+                  result = ";" + command.getText();
+                  return true;
+                }
+              }
+            }
+          }
+
+          public String changedOrder() {
+            return result;
+          }
+        })) {
+          notifyMagellan(u);
+        }
+      }
+    }
+  }
+
+  /**
    * Private utility script written to convert some of my faction's orders. Not interesting for the
    * general public.
    * 
@@ -2889,6 +3021,32 @@ public class E3CommandParser {
       }
     }
 
+  }
+
+  /**
+   * Again, a very specialized procedure
+   */
+  protected void markTRound(int round) {
+    if (world.getDate().getDate() == round) {
+      for (Unit u : world.getUnits()) {
+        changeOrders(u, new OrderFilter() {
+          public boolean changeOrder(Order order) {
+            return changeOrder(order.getText());
+          }
+
+          public boolean changeOrder(String order) {
+            if (order.startsWith("// $$L"))
+              return true;
+            return false;
+          }
+
+          public String changedOrder() {
+            return null;
+          }
+        });
+        u.addOrder("// $$L" + (round + 1));
+      }
+    }
   }
 
   /**
@@ -3060,6 +3218,24 @@ class Supply implements Comparable<Supply> {
     return o.priority - priority;
   }
 
+}
+
+interface OrderFilter {
+  /**
+   * @return true if the order should be changed or deleted
+   */
+  public boolean changeOrder(String order);
+
+  /**
+   * @return true if the order should be changed or deleted
+   */
+  public boolean changeOrder(Order order);
+
+  /**
+   * @return the string that should replace order, <code>null</code> if the order should be be
+   *         removed. If changeOrder returns <code>false</code>, the return value is undefined!
+   */
+  public String changedOrder();
 }
 
 class Need extends Supply {

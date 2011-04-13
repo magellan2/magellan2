@@ -818,6 +818,21 @@ public class E3CommandParserTest {
     assertError("braucht 2 mehr Silber", unit, 2);
     assertOrder("GIB 2 3 Silber", unit2, 2);
     assertOrder("GIB 1 2 Silber", unit2, 3);
+
+    // test with depot
+    unit.clearOrders();
+    unit2.clearOrders();
+
+    builder.addItem(data, unit2, "Würziger Wagemut", 5);
+    builder.addItem(data, unit, "Silber", 20); // maintenance silver
+    unit2.addOrder("// $cript GibWenn 2 Kraut versteckt");
+    unit.addOrder("// $cript BerufDepotVerwalter");
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit2.getOrders2().size());
+    assertMessage("2 nicht da", unit2, 1);
+    assertOrder("GIB 2 ALLES Würziger~Wagemut", unit2, 2);
+    assertOrder("GIB 1 5 Silber", unit2, 3);
   }
 
   /**
@@ -1292,6 +1307,55 @@ public class E3CommandParserTest {
   @Test
   public final void testParseScripts() {
     // fail("Not yet implemented");
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#cleanShortOrders(Faction, magellan.library.Region)}.
+   */
+  @Test
+  public final void testCleanShort() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Loeschen");
+    unit.addOrder("// bla");
+    unit.addOrder("LERNEN Segeln");
+    unit.addOrder("@RESERVIEREN 10 Silber");
+    unit.addOrder("; @RESERVIEREN 10 Silber");
+    unit.addOrder("Foobar");
+    parser.cleanShortOrders(unit.getFaction(), null);
+    assertEquals(5, unit.getOrders2().size());
+    assertEquals("// $cript Loeschen", unit.getOrders2().get(0).toString());
+    assertEquals("// bla", unit.getOrders2().get(1).toString());
+    assertEquals("LERNEN Segeln", unit.getOrders2().get(2).toString());
+    assertEquals("@RESERVIEREN 10 Silber", unit.getOrders2().get(3).toString());
+    // assertEquals(";; @RESERVIEREN 10 Silber", unit.getOrders2().get(4).toString());
+    assertEquals(";Foobar", unit.getOrders2().get(4).toString());
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#markTRound(int)}.
+   */
+  @Test
+  public final void testMarkTRoad() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Loeschen");
+    unit.addOrder("// $$L716 bla");
+    unit.addOrder("// $$L717 bla");
+    unit.addOrder("// $$718 bla");
+    unit.addOrder("// bla");
+    unit.addOrder("LERNEN Segeln");
+    unit.addOrder("@RESERVIEREN 10 Silber");
+    unit.addOrder("; @RESERVIEREN 10 Silber");
+    unit.addOrder("Foobar");
+    parser.markTRound(350);
+    assertEquals(8, unit.getOrders2().size());
+    assertEquals("// $cript Loeschen", unit.getOrders2().get(0).toString());
+    assertEquals("// $$718 bla", unit.getOrders2().get(1).toString());
+    assertEquals("// bla", unit.getOrders2().get(2).toString());
+    assertEquals("LERNEN Segeln", unit.getOrders2().get(3).toString());
+    assertEquals("@RESERVIEREN 10 Silber", unit.getOrders2().get(4).toString());
+    assertEquals("; @RESERVIEREN 10 Silber", unit.getOrders2().get(5).toString());
+    assertEquals("Foobar", unit.getOrders2().get(6).toString());
+    assertEquals("// $$L351", unit.getOrders2().get(7).toString());
   }
 
 }

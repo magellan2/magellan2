@@ -174,8 +174,10 @@ public class MessageInspector extends AbstractInspector {
       // hack to simplify messages like "2 Gehirmschmalz"
       StringTokenizer tok = new StringTokenizer(result);
       String number = tok.nextToken();
-      Integer.parseInt(number);
-      result = "#" + result.substring(number.length());
+      int n = Integer.parseInt(number);
+      if (n > 1) {
+        result = "#" + result.substring(number.length());
+      }
     } catch (Exception e) {
       // no number
     }

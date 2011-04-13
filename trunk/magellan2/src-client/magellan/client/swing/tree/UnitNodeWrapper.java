@@ -265,7 +265,9 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   /**
    * Returns the accordant option of the draw policy.
    */
-  public boolean isShowingCatagorized(int type) {
+  public boolean isShowingCategorized(int type) {
+    if (type < 0)
+      return false;
     return adapter.properties[UnitNodeWrapperDrawPolicy.CATEGORIZE_START + type];
   }
 
@@ -335,14 +337,29 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
       others = new LinkedList<Item>(u.getModifiedItems());
       // sort items by category
       Collections.sort(others, new Comparator<Item>() {
+        final List<Integer> catIndices1 = new ArrayList<Integer>();
+        final List<Integer> catIndices2 = new ArrayList<Integer>();
+
         public int compare(Item o1, Item o2) {
-          int i;
           if (o1.getItemType().getCategory() != null)
             if (o2.getItemType().getCategory() != null) {
-              Category c1 = Category.getTopLevelAncestor(o1.getItemType().getCategory());
-              Category c2 = Category.getTopLevelAncestor(o2.getItemType().getCategory());
-              if (c1 != c2)
-                return c1.getSortIndex() - c2.getSortIndex();
+              catIndices1.clear();
+              catIndices2.clear();
+              Category c1 = o1.getItemType().getCategory();
+              Category c2 = o2.getItemType().getCategory();
+              while (c1 != null) {
+                catIndices1.add(c1.getSortIndex());
+                c1 = c1.getParent();
+              }
+              while (c2 != null) {
+                catIndices2.add(c2.getSortIndex());
+                c2 = c2.getParent();
+              }
+              for (int depth1 = catIndices1.size() - 1, depth2 = catIndices2.size() - 1; depth2 >= 0
+                  && depth1 >= 0; depth2--, depth1--) {
+                if (catIndices1.get(depth1) != catIndices2.get(depth2))
+                  return catIndices1.get(depth1) - catIndices2.get(depth2);
+              }
             } else
               return -1;
           else if (o2.getItemType().getCategory() != null)
@@ -439,102 +456,11 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     if (others != null) {
       if (isShowingCategorized()) {
         adapter.sortCategories(u.getData().getRules());
-
-        ArrayList<List<Item>> categories =
-            new ArrayList<List<Item>>(UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES);
-        boolean anything = false;
-
-        for (int i = 0; i < UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES; i++) {
-          if (isShowingCatagorized(i)) {
-            categories.add(new LinkedList<Item>());
-            anything = true;
-          } else {
-            categories.add(null);
-          }
-        }
-
-        if (anything) {
-          for (Iterator<Item> it = others.iterator(); it.hasNext();) {
-            Item item = it.next();
-            if (item.getItemType().getCategory() != null) {
-              try {
-                String cat =
-                    Category.getTopLevelAncestor(item.getItemType().getCategory()).getID()
-                        .toString();
-
-                int j = -1;
-
-                for (int i = 0; i < UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES; i++) {
-                  if (adapter.categories[i].equals(cat) && isShowingCatagorized(i)) {
-                    j = i;
-                  }
-                }
-
-                if (j != -1) {
-                  it.remove();
-                  categories.get(j).add(item);
-                }
-              } catch (Exception exc) {
-                // skip items without category?
-                Logger.getInstance(this.getClass()).warn("", exc);
-              }
-            }
-          }
-
-          StringBuffer buffer = new StringBuffer();
-
-          for (int i = 0; i < UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES; i++) {
-            if (categories.get(i) != null) {
-
-              int count = 0;
-              buffer.setLength(0);
-              Item item = null;
-
-              for (Iterator<Item> it = categories.get(i).iterator(); it.hasNext();) {
-                item = it.next();
-                buffer.append(item.getAmount());
-                buffer.append(' ');
-                buffer.append(item.getName());
-
-                if (it.hasNext()) {
-                  buffer.append(',');
-                }
-
-                count += item.getAmount();
-              }
-
-              if (item != null && (count > 0 || !isShowingExpectedOnly())) {
-                Category catP = Category.getTopLevelAncestor(item.getItemType().getCategory());
-                String iconName = magellan.library.utils.Umlaut.convertUmlauts(catP.getName());
-
-                if (categories.get(i).size() == 1) {
-                  iconName = "items/" + item.getItemType().getIconName();
-                }
-                /**
-                 * if(isShowingIconText()) { ge = new GraphicsElement(new Integer(count), null,
-                 * null, "items/" + item.getItemType().getIconName()); } else { ge = new
-                 * GraphicsElement(null, null, "items/" + item.getItemType().getIconName()); }
-                 */
-                if (isShowingIconText()) {
-                  ge = new GraphicsElement(Integer.valueOf(count), null, null, iconName);
-                } else {
-                  ge = new GraphicsElement(null, null, iconName);
-                }
-                ge.setTooltip(buffer.toString());
-                ge.setType(GraphicsElement.ADDITIONAL);
-                Tag2Element.apply(ge);
-                names.add(ge);
-              }
-
-              categories.set(i, null);
-            }
-          }
-
-          buffer = null;
-        }
-
-        categories = null;
       }
+
+      int currentCategory = -1, count = 0;
+      StringBuilder buffer = new StringBuilder();
+      String iconName = null;
 
       for (Item s : others) {
         if (isShowingExpectedOnly()) {
@@ -546,38 +472,82 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
         ge = null;
 
-        if (isShowingIconText()) {
-          ge = new GraphicsElement(null, null, null, "items/" + s.getItemType().getIconName());
-
-          Item oldItem = u.getItem(s.getItemType());
-          int oldAmount = 0;
-
-          if (oldItem != null) {
-            oldAmount = oldItem.getAmount();
+        int newCategory = getCategory(s);
+        if (isShowingCategorized()) {
+          if (currentCategory >= 0 && currentCategory != newCategory) {
+            if (iconName != null) {
+              names.add(createGE(count, iconName, buffer));
+            }
           }
-
-          if (oldAmount != s.getAmount()) {
-            if (isShowingExpectedOnly()) {
-              // only show expected future value
-              ge.setObject(String.valueOf(s.getAmount()));
+          if (newCategory != currentCategory)
+            if (isShowingCategorized(newCategory)) {
+              // init
+              buffer.setLength(0);
+              count = 0;
+              iconName = "items/" + s.getItemType().getIconName();
             } else {
-              ge.setObject(String.valueOf(oldAmount) + "(" + String.valueOf(s.getAmount()) + ")");
+              iconName = null;
+            }
+
+          if (isShowingCategorized(newCategory)) {
+            // append
+            if (buffer.length() > 0) {
+              buffer.append(',');
+            }
+            buffer.append(s.getAmount());
+            buffer.append(' ');
+            buffer.append(s.getName());
+
+            if (count > 0) {
+              iconName =
+                  magellan.library.utils.Umlaut.convertUmlauts(adapter.categories[newCategory]);
+              if (iconName == null) {
+                Logger.getInstance(this.getClass()).warn(
+                    "category without icon: " + adapter.categories[newCategory]);
+                iconName = "items/" + s.getItemType().getIconName();
+              }
+            }
+            count += s.getAmount();
+          }
+        }
+        currentCategory = newCategory;
+        if (!isShowingCategorized() || !isShowingCategorized(currentCategory)) {
+          if (isShowingIconText()) {
+            ge = new GraphicsElement(null, null, null, "items/" + s.getItemType().getIconName());
+
+            Item oldItem = u.getItem(s.getItemType());
+            int oldAmount = 0;
+
+            if (oldItem != null) {
+              oldAmount = oldItem.getAmount();
+            }
+
+            if (oldAmount != s.getAmount()) {
+              if (isShowingExpectedOnly()) {
+                // only show expected future value
+                ge.setObject(String.valueOf(s.getAmount()));
+              } else {
+                ge.setObject(String.valueOf(oldAmount) + "(" + String.valueOf(s.getAmount()) + ")");
+              }
+            } else {
+              if (oldAmount == 0) {
+                continue;
+              }
+
+              ge.setObject(Integer.valueOf(oldAmount));
             }
           } else {
-            if (oldAmount == 0) {
-              continue;
-            }
-
-            ge.setObject(Integer.valueOf(oldAmount));
+            ge = new GraphicsElement(null, null, "items/" + s.getItemType().getIconName());
           }
-        } else {
-          ge = new GraphicsElement(null, null, "items/" + s.getItemType().getIconName());
-        }
 
-        ge.setTooltip(s.getName());
-        ge.setType(GraphicsElement.ADDITIONAL);
-        Tag2Element.apply(ge);
-        names.add(ge);
+          ge.setTooltip(s.getName());
+          ge.setType(GraphicsElement.ADDITIONAL);
+          Tag2Element.apply(ge);
+          names.add(ge);
+        }
+      }
+      if (iconName != null) {
+        names.add(createGE(count, iconName, buffer));
       }
     }
 
@@ -598,6 +568,40 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
     // others.clear();
     return names;
+  }
+
+  private int getCategory(Item s) {
+    if (s.getItemType().getCategory() == null)
+      return -1;
+
+    // Integer val = itemCatMap.get(s.getItemType());
+    // if (val != null)
+    // return val;
+
+    Category cat = s.getItemType().getCategory();
+    while (cat != null) {
+      for (int i = 0; i < adapter.categories.length; ++i) {
+        if (adapter.categories[i].equals(cat.getID().toString()))
+          // itemCatMap.put(s.getItemType(), i);
+          return i;
+      }
+      cat = cat.getParent();
+    }
+    // itemCatMap.put(s.getItemType(), -1);
+    return -1;
+  }
+
+  private GraphicsElement createGE(int count, String iconName, StringBuilder buffer) {
+    GraphicsElement ge;
+    if (isShowingIconText()) {
+      ge = new GraphicsElement(Integer.valueOf(count), null, null, iconName);
+    } else {
+      ge = new GraphicsElement(null, null, iconName);
+    }
+    ge.setTooltip(buffer.toString());
+    ge.setType(GraphicsElement.ADDITIONAL);
+    Tag2Element.apply(ge);
+    return ge;
   }
 
   /**

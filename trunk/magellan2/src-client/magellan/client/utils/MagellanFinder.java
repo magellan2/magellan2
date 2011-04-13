@@ -62,7 +62,8 @@ public class MagellanFinder {
 
     if (!sFile.exists() && !oFile.exists()) {
       StringBuilder msg =
-          new StringBuilder("Using default directory ").append(settFileDir).append(".");
+          new StringBuilder("Using default directory ").append(magDirectory.getAbsolutePath())
+              .append(".");
       MagellanFinder.log.info(msg);
       settFileDir = magDirectory;
     } else {
@@ -117,7 +118,7 @@ public class MagellanFinder {
       try {
         if (path.endsWith(".jar") && MagellanFinder.checkJar(path)) {
           File file = new File(MagellanFinder.extractDir(path));
-          MagellanFinder.log.info("Magellan directory: " + file + "(found JAR)");
+          MagellanFinder.log.info("Magellan directory: " + file.getAbsolutePath() + "(found JAR)");
 
           return file;
         } else {
@@ -133,7 +134,8 @@ public class MagellanFinder {
             if (list.length > 0) {
               for (File element : list) {
                 if (MagellanFinder.checkJar(element)) {
-                  MagellanFinder.log.info("Magellan directory: " + file + "(found JAR)");
+                  MagellanFinder.log.info("Magellan directory: " + file.getAbsolutePath()
+                      + "(found JAR)");
 
                   return file;
                 }
@@ -164,7 +166,7 @@ public class MagellanFinder {
             if (list.length > 0) {
               for (String element : list) {
                 if (element.equals("Client.class")) {
-                  MagellanFinder.log.info("Magellan directory: " + file
+                  MagellanFinder.log.info("Magellan directory: " + file.getAbsolutePath()
                       + "(found magellan.client.Client class)");
 
                   return file;
@@ -178,6 +180,8 @@ public class MagellanFinder {
       }
     }
 
+    MagellanFinder.log.info("Magellan directory: " + new File(".").getAbsolutePath()
+        + "(found JAR)");
     return new File(".");
   }
 

@@ -80,7 +80,7 @@ public class RulesReader {
     File rules = new File(Resources.getResourceDirectory(), "etc/rules/" + name + ending);
     // workaround for working with eclipse...
     if (!rules.exists()) {
-      RulesReader.log.error("Rule file '" + rules.getAbsolutePath()
+      RulesReader.log.warn("Rule file '" + rules.getAbsolutePath()
           + "' could not be found. Switching to local.");
       rules = new File("etc/rules/" + name + ending);
 

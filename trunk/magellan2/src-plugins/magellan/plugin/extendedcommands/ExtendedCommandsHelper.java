@@ -547,12 +547,7 @@ public class ExtendedCommandsHelper {
     }
 
     for (Item item : items) {
-      ItemCategory itemCategory = item.getItemType().getCategory();
-      if (itemCategory == null) {
-
-        continue;
-      }
-      if (itemCategory.equals(weapons)) {
+      if (weapons.isInstance(item.getItemType())) {
         ExtendedCommandsHelper.log.info("Unit has a weapon");
         // ah, a weapon...
         Skill useSkill = item.getItemType().getUseSkill();

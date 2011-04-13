@@ -17,7 +17,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -34,12 +34,14 @@ import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
 import magellan.library.Faction;
 import magellan.library.Item;
+import magellan.library.Rules;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.rules.Category;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.SkillComparator;
 import magellan.library.utils.comparator.SkillRankComparator;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A UnitNodeWrapper serves as an abstraction layer between a tree cell renderer and the unit to
@@ -327,10 +329,27 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
       }
     }
 
-    Collection<Item> others = null;
+    List<Item> others = null;
 
     if (isShowingOtherIcons()) {
-      others = new ArrayList<Item>(u.getModifiedItems());
+      others = new LinkedList<Item>(u.getModifiedItems());
+      // sort items by category
+      Collections.sort(others, new Comparator<Item>() {
+        public int compare(Item o1, Item o2) {
+          int i;
+          if (o1.getItemType().getCategory() != null)
+            if (o2.getItemType().getCategory() != null) {
+              Category c1 = Category.getTopLevelAncestor(o1.getItemType().getCategory());
+              Category c2 = Category.getTopLevelAncestor(o2.getItemType().getCategory());
+              if (c1 != c2)
+                return c1.getSortIndex() - c2.getSortIndex();
+            } else
+              return -1;
+          else if (o2.getItemType().getCategory() != null)
+            return 1;
+          return o1.getItemType().compareTo(o2.getItemType());
+        }
+      });
     }
 
     // main
@@ -419,6 +438,8 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     // items
     if (others != null) {
       if (isShowingCategorized()) {
+        adapter.sortCategories(u.getData().getRules());
+
         ArrayList<List<Item>> categories =
             new ArrayList<List<Item>>(UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES);
         boolean anything = false;
@@ -435,24 +456,28 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
         if (anything) {
           for (Iterator<Item> it = others.iterator(); it.hasNext();) {
             Item item = it.next();
+            if (item.getItemType().getCategory() != null) {
+              try {
+                String cat =
+                    Category.getTopLevelAncestor(item.getItemType().getCategory()).getID()
+                        .toString();
 
-            try {
-              String cat = item.getItemType().getCategory().getID().toString();
+                int j = -1;
 
-              int j = -1;
-
-              for (int i = 0; i < UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES; i++) {
-                if (adapter.categories[i].equals(cat) && isShowingCatagorized(i)) {
-                  j = i;
+                for (int i = 0; i < UnitNodeWrapperDrawPolicy.NUMBER_OF_CATEGORIES; i++) {
+                  if (adapter.categories[i].equals(cat) && isShowingCatagorized(i)) {
+                    j = i;
+                  }
                 }
-              }
 
-              if (j != -1) {
-                it.remove();
-                categories.get(j).add(item);
+                if (j != -1) {
+                  it.remove();
+                  categories.get(j).add(item);
+                }
+              } catch (Exception exc) {
+                // skip items without category?
+                Logger.getInstance(this.getClass()).warn("", exc);
               }
-            } catch (Exception exc) {
-              // skip items without category?
             }
           }
 
@@ -479,10 +504,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
               }
 
               if (item != null && (count > 0 || !isShowingExpectedOnly())) {
-                Category catP = item.getItemType().getCategory();
-                while (catP.getParent() != null) {
-                  catP = catP.getParent();
-                }
+                Category catP = Category.getTopLevelAncestor(item.getItemType().getCategory());
                 String iconName = magellan.library.utils.Umlaut.convertUmlauts(catP.getName());
 
                 if (categories.get(i).size() == 1) {
@@ -789,8 +811,25 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     }
 
     /**
-     * DOCUMENT-ME
-     * 
+     * Sort item categories by priority specified in rules.
+     */
+    public void sortCategories(final Rules rules) {
+      Arrays.sort(categories, new Comparator<String>() {
+        public int compare(String o1, String o2) {
+          int p1 =
+              rules.getItemCategory(o1) == null ? Integer.MAX_VALUE : rules.getItemCategory(o1)
+                  .getSortIndex();
+          int p2 =
+              rules.getItemCategory(o2) == null ? Integer.MAX_VALUE : rules.getItemCategory(o2)
+                  .getSortIndex();
+          if (p1 == p2)
+            return o1.compareTo(o2);
+          return p1 - p2;
+        }
+      });
+    }
+
+    /**
      * @see magellan.client.swing.tree.AbstractNodeWrapperDrawPolicy#applyPreferences()
      */
     @Override

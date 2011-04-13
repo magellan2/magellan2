@@ -161,7 +161,7 @@ public abstract class Category extends ObjectType {
   }
 
   /**
-   * DOCUMENT-ME
+   * Ascends the chain of parents to the top-most element.
    */
   public static Category getTopLevelAncestor(Category i) {
     while (i.getParent() != null) {

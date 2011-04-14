@@ -14,6 +14,7 @@
 package magellan.client.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -312,8 +313,21 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     });
 
+    JButton gmButton = new JButton("Save all");
+    if (PropertiesHelper.getBoolean(settings, "GM.enabled", false)) {
+      gmButton.setToolTipText(Resources.get("orderwriterdialog.btn.gm.tooltip", false));
+      gmButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          saveAll();
+        }
+      });
+    }
+
     JPanel buttonPanel = new JPanel(new GridLayout2(0, 1, 0, 6));
     buttonPanel.add(saveButton);
+    if (PropertiesHelper.getBoolean(settings, "GM.enabled", false)) {
+      buttonPanel.add(gmButton);
+    }
     buttonPanel.add(clipboardButton);
     buttonPanel.add(mailButton);
     buttonPanel.add(autoFileNameButton);
@@ -420,8 +434,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         switch (e.getStateChange()) {
         case ItemEvent.SELECTED:
 
-          Faction f = (Faction) e.getItem();
-          setGroups(f);
+          Faction fSel = (Faction) e.getItem();
+          setGroups(fSel);
 
           break;
 
@@ -836,7 +850,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    */
   protected void factionChanged() {
     Faction faction = (Faction) cmbFaction.getSelectedItem();
-    String suffix = "." + faction.getID();
+    String suffix = faction != null ? "." + faction.getID() : "";
 
     if (settings
         .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS + suffix, null) != null) {
@@ -979,7 +993,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   protected void updateRecipient() {
     Faction faction = (Faction) cmbFaction.getSelectedItem();
-    String suffix = "." + faction.getID();
+    String suffix = faction != null ? "." + faction.getID() : "";
 
     if (!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected()) {
       txtMailRecipient.setText(settings.getProperty(
@@ -1087,9 +1101,13 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     settings.setProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT + suffix,
         String.valueOf(chkWriteUnitTagsAsVorlageComment.isSelected()));
 
-    settings.setProperty(PropertiesHelper.ORDERWRITER_FACTION, (((Faction) cmbFaction
-        .getSelectedItem()).getID()).intValue()
-        + "");
+    if (cmbFaction.getSelectedItem() != null) {
+      settings.setProperty(PropertiesHelper.ORDERWRITER_FACTION, (((Faction) cmbFaction
+          .getSelectedItem()).getID()).intValue()
+          + "");
+    } else {
+      settings.setProperty(PropertiesHelper.ORDERWRITER_FACTION, "-1");
+    }
 
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST, txtMailServer.getText());
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST + suffix, txtMailServer
@@ -1202,14 +1220,17 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     return retVal;
   }
 
-  private boolean write(Writer out, boolean forceUnixLineBreaks) {
-    return write(out, forceUnixLineBreaks, true);
+  private Object[] write(Writer out, boolean forceUnixLineBreaks, Faction faction) {
+    return write(out, forceUnixLineBreaks, true, false, faction);
   }
 
-  private boolean write(Writer out, boolean forceUnixLineBreaks, boolean closeStream) {
-    setCursor(new Cursor(Cursor.WAIT_CURSOR));
+  private Object[] write(Writer out, boolean forceUnixLineBreaks, boolean closeStream,
+      boolean confirm, Faction faction) {
+    if (faction == null)
+      return null;
+    Object[] result = null;
 
-    Faction faction = (Faction) cmbFaction.getSelectedItem();
+    setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
     try {
       Writer stream = null;
@@ -1224,7 +1245,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           JOptionPane.showMessageDialog(this, Resources
               .get("orderwriterdialog.msg.invalidfixedwidth.text"), Resources
               .get("orderwriterdialog.msg.invalidfixedwidth.title"), JOptionPane.WARNING_MESSAGE);
-          return false;
+          return null;
         }
 
         stream = new FixedWidthWriter(new BufferedWriter(out), fixedWidth, forceUnixLineBreaks);
@@ -1264,27 +1285,22 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         }
       }
 
-      JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
-          .get("orderwriterdialog.msg.writtenunits.text"))).format(new Object[] {
-          String.valueOf(writtenUnits), String.valueOf(allUnits), faction }), Resources
-          .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
+      result = new Object[] { writtenUnits, allUnits, faction };
     } catch (IOException ioe) {
       setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
       JOptionPane.showMessageDialog(this, Resources.get("orderwriterdialog.msg.erroronsave.text")
           + ioe.toString(), Resources.get("orderwriterdialog.msg.erroronsave.title"),
           JOptionPane.WARNING_MESSAGE);
 
-      return false;
+      return null;
     }
 
     setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
-    return true;
+    return result;
   }
 
-  private boolean checkPassword() {
-    Faction f = (Faction) cmbFaction.getSelectedItem();
-
+  private boolean checkPassword(Faction f) {
     if (f == null || f.getPassword() == null) {
       Object msgArgs[] = { f == null ? "null" : f.toString() };
       JOptionPane.showMessageDialog(getRootPane(), (new java.text.MessageFormat(Resources
@@ -1302,17 +1318,29 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   protected boolean copyToClipboard() {
-    if (!checkPassword())
+    Faction faction = (Faction) cmbFaction.getSelectedItem();
+    if (faction != null)
+      return copyToClipboard(faction);
+    else
+      return false;
+  }
+
+  protected boolean copyToClipboard(Faction faction) {
+    if (!checkPassword(faction))
       return false;
 
     StringWriter sw = new StringWriter();
 
-    if (write(sw, true)) {
+    Object[] parameters = write(sw, true, faction);
+    if (parameters != null) {
       // there seems to be a problem with '\r\n'-style linebreaks
       // in the clipboard (you get two linebreaks instead of one)
       // so Unix-style linebreaks have to be enforced
       getToolkit().getSystemClipboard().setContents(
           new java.awt.datatransfer.StringSelection(sw.toString()), null);
+      JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
+          .get("orderwriterdialog.msg.writtenunits.text"))).format(parameters), Resources
+          .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
       // storeSettings();
       return true;
     } else
@@ -1356,7 +1384,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   protected boolean sendMail() {
-    if (!checkPassword())
+    Faction faction = (Faction) cmbFaction.getSelectedItem();
+    if (faction == null)
+      return false;
+
+    if (!checkPassword(faction))
       return false;
 
     JButton ae = sendButton;
@@ -1438,7 +1470,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     OrderWriterDialog.log.debug("attempting to send mail: " + mailHost + ", " + port + ", "
         + username + ", " + password + ", " + sender + ", " + recipient + ", " + subject);
-    sendMailImpl(mailHost, port, username, password, sender, recipient, subject, ae, recipient2);
+    sendMailImpl(mailHost, port, username, password, sender, recipient, subject, ae, recipient2,
+        faction);
 
     ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
@@ -1447,7 +1480,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void sendMailImpl(final String mailHost, int port, String username, String password,
-      String sender, String recipient, String subject, final JButton ae, String cc) {
+      String sender, String recipient, String subject, final JButton ae, String cc, Faction faction) {
 
     final MultiPartEmail mailMessage;
     String contentType = "text/plain; charset=" + Encoding.DEFAULT;
@@ -1499,7 +1532,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     mailMessage.setTLS(chkUseTLS.isSelected());
 
     StringWriter mailWriter = new StringWriter();
-    write(mailWriter, false, false);
+    final Object[] parameters = write(mailWriter, false, false, true, faction);
 
     mailMessage.setContent(mailWriter.toString(), contentType);
 
@@ -1512,6 +1545,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     // mailMessage.setPopBeforeSmtp(true, "host", "username", "password");
 
     OrderWriterDialog.log.info("sending...");
+    final Component parent = this;
     final UserInterface ui = new ProgressBarUI(this);
     ui.setTitle(Resources.get("orderwriterdialog.btn.mail.caption"));
     ui.setMaximum(0);
@@ -1522,6 +1556,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         ui.setProgress(mailHost, 0);
         try {
           mailMessage.send();
+          JOptionPane.showMessageDialog(parent, (new java.text.MessageFormat(Resources
+              .get("orderwriterdialog.msg.writtenunits.text"))).format(parameters), Resources
+              .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
+
         } catch (EmailException e) {
           OrderWriterDialog.log.info("exception while sending message", e);
 
@@ -1588,11 +1626,74 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     return saveToFile();
   }
 
+  protected boolean saveAll() {
+    boolean result = false;
+    File outputFile = new File((String) cmbOutputFile.getSelectedItem());
+    Writer stream = null;
+
+    try {
+      stream = getWriter(outputFile);
+
+      if (stream != null) {
+        result = true;
+        int[] parameters = new int[4];
+        for (Faction f : data.getFactions()) {
+          Object[] written = write(stream, false, false, false, f);
+          if (written != null) {
+            parameters[0] = parameters[0] + (Integer) written[0];
+            parameters[1] = parameters[1] + (Integer) written[1];
+            ++parameters[2];
+          }
+          ++parameters[3];
+        }
+        JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
+            .get("orderwriterdialog.msg.writtenunits.text"))).format(new Object[] { parameters[0],
+            parameters[1], "" + parameters[2] + "/" + parameters[3] }), Resources
+            .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
+
+        stream.close();
+      }
+    } catch (IOException ioe) {
+      JOptionPane.showMessageDialog(this, Resources.getFormatted(
+          "orderwriterdialog.msg.writeerror.text", outputFile.toString(), ioe), Resources
+          .get("orderwriterdialog.msg.writeerror.title"), JOptionPane.WARNING_MESSAGE);
+    }
+    return result;
+  }
+
   protected boolean saveToFile() {
-    if (!checkPassword())
+    Faction faction = (Faction) cmbFaction.getSelectedItem();
+    if (faction == null)
+      return false;
+    if (!checkPassword(faction))
       return false;
 
     File outputFile = new File((String) cmbOutputFile.getSelectedItem());
+    Writer stream = null;
+
+    try {
+
+      stream = getWriter(outputFile);
+      Object[] parameters = write(stream, false, faction);
+
+      if (parameters != null) {
+        JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
+            .get("orderwriterdialog.msg.writtenunits.text"))).format(parameters), Resources
+            .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
+      }
+
+      return parameters != null;
+
+    } catch (IOException ioe) {
+      JOptionPane.showMessageDialog(this, Resources.getFormatted(
+          "orderwriterdialog.msg.writeerror.text", outputFile.toString(), ioe), Resources
+          .get("orderwriterdialog.msg.writeerror.title"), JOptionPane.WARNING_MESSAGE);
+    }
+
+    return false;
+  }
+
+  protected Writer getWriter(File outputFile) throws IOException {
 
     if (outputFile.exists() && outputFile.canWrite()) {
       // create backup file
@@ -1604,30 +1705,21 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     }
 
-    try {
-      if (outputFile.exists() && !outputFile.canWrite())
-        throw new IOException("cannot write " + outputFile);
+    if (outputFile.exists() && !outputFile.canWrite())
+      throw new IOException("cannot write " + outputFile);
 
-      // apexo (Fiete) 20061205: if in properties, force ISO encoding
-      Writer stream = null;
-      if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOsaveOrders", false)) {
-        // new: force our default = ISO
-        stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.ISO.toString());
-      } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8saveOrders", false)) {
-        // new: force our default = UTF-8
-        stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.UTF8.toString());
-      } else {
-        // old = default = system dependend
-        stream = new FileWriter(outputFile);
-      }
-      if (write(stream, false))
-        // storeSettings();
-        return true;
-    } catch (IOException ioe) {
-      JOptionPane.showMessageDialog(this, Resources.getFormatted(
-          "orderwriterdialog.msg.writeerror.text", outputFile.toString(), ioe), Resources
-          .get("orderwriterdialog.msg.writeerror.title"), JOptionPane.WARNING_MESSAGE);
+    // apexo (Fiete) 20061205: if in properties, force ISO encoding
+    Writer stream = null;
+    if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOsaveOrders", false)) {
+      // new: force our default = ISO
+      stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.ISO.toString());
+    } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8saveOrders", false)) {
+      // new: force our default = UTF-8
+      stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.UTF8.toString());
+    } else {
+      // old = default = system dependent
+      stream = new FileWriter(outputFile);
     }
-    return false;
+    return stream;
   }
 }

@@ -16,7 +16,6 @@ package magellan.client.swing.tree;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,6 +38,7 @@ import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.rules.Category;
 import magellan.library.utils.Resources;
+import magellan.library.utils.comparator.ItemCategoryComparator;
 import magellan.library.utils.comparator.SkillComparator;
 import magellan.library.utils.comparator.SkillRankComparator;
 import magellan.library.utils.logging.Logger;
@@ -336,37 +336,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     if (isShowingOtherIcons()) {
       others = new LinkedList<Item>(u.getModifiedItems());
       // sort items by category
-      Collections.sort(others, new Comparator<Item>() {
-        final List<Integer> catIndices1 = new ArrayList<Integer>();
-        final List<Integer> catIndices2 = new ArrayList<Integer>();
-
-        public int compare(Item o1, Item o2) {
-          if (o1.getItemType().getCategory() != null)
-            if (o2.getItemType().getCategory() != null) {
-              catIndices1.clear();
-              catIndices2.clear();
-              Category c1 = o1.getItemType().getCategory();
-              Category c2 = o2.getItemType().getCategory();
-              while (c1 != null) {
-                catIndices1.add(c1.getSortIndex());
-                c1 = c1.getParent();
-              }
-              while (c2 != null) {
-                catIndices2.add(c2.getSortIndex());
-                c2 = c2.getParent();
-              }
-              for (int depth1 = catIndices1.size() - 1, depth2 = catIndices2.size() - 1; depth2 >= 0
-                  && depth1 >= 0; depth2--, depth1--) {
-                if (catIndices1.get(depth1) != catIndices2.get(depth2))
-                  return catIndices1.get(depth1) - catIndices2.get(depth2);
-              }
-            } else
-              return -1;
-          else if (o2.getItemType().getCategory() != null)
-            return 1;
-          return o1.getItemType().compareTo(o2.getItemType());
-        }
-      });
+      Collections.sort(others, ItemCategoryComparator.getInstance());
     }
 
     // main
@@ -476,12 +446,13 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
         if (isShowingCategorized()) {
           if (currentCategory >= 0 && currentCategory != newCategory) {
             if (iconName != null) {
+              // new category starts, add old category node
               names.add(createGE(count, iconName, buffer));
             }
           }
           if (newCategory != currentCategory)
             if (isShowingCategorized(newCategory)) {
-              // init
+              // init new category node
               buffer.setLength(0);
               count = 0;
               iconName = "items/" + s.getItemType().getIconName();
@@ -490,7 +461,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
             }
 
           if (isShowingCategorized(newCategory)) {
-            // append
+            // append to current node
             if (buffer.length() > 0) {
               buffer.append(',');
             }
@@ -512,6 +483,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
         }
         currentCategory = newCategory;
         if (!isShowingCategorized() || !isShowingCategorized(currentCategory)) {
+          // add uncategorized item
           if (isShowingIconText()) {
             ge = new GraphicsElement(null, null, null, "items/" + s.getItemType().getIconName());
 
@@ -547,6 +519,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
         }
       }
       if (iconName != null) {
+        // add last category node
         names.add(createGE(count, iconName, buffer));
       }
     }

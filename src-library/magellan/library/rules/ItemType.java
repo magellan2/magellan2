@@ -190,6 +190,11 @@ public class ItemType extends ObjectType {
     return storableInBonw;
   }
 
+  /**
+   * Compares this type to another type by name.
+   * 
+   * @see magellan.library.impl.MagellanIdentifiableImpl#compareTo(java.lang.Object)
+   */
   @Override
   public int compareTo(Object o) {
     ItemType cmpItemType = (ItemType) o;

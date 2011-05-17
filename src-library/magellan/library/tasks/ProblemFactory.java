@@ -178,15 +178,17 @@ public class ProblemFactory {
 
     // try to guess missing arguments by evaluating attributes
     if (m.getAttributes() != null) {
-      String attribute = m.getAttributes().get("unit");
-      if (owner == null && attribute != null) {
-        UnitID id = UnitID.createUnitID(attribute, 10, data.base);
-        if (id != null) {
-          owner = data.getUnit(id);
+      if (owner == null) {
+        String attribute = m.getAttributes().get("unit");
+        if (attribute != null) {
+          UnitID id = UnitID.createUnitID(attribute, 10, data.base);
+          if (id != null) {
+            owner = data.getUnit(id);
+          }
         }
       }
       if (object == null) {
-        attribute = m.getAttributes().get("target");
+        String attribute = m.getAttributes().get("target");
         if (attribute != null) {
           UnitID id = UnitID.createUnitID(attribute, 10, data.base);
           if (id != null) {
@@ -195,7 +197,7 @@ public class ProblemFactory {
         }
       }
       if (object == null) {
-        attribute = m.getAttributes().get("mage");
+        String attribute = m.getAttributes().get("mage");
         if (attribute != null) {
           UnitID id = UnitID.createUnitID(attribute, 10, data.base);
           if (id != null) {
@@ -204,29 +206,32 @@ public class ProblemFactory {
         }
       }
 
-      attribute = m.getAttributes().get("region");
-      if (region == null && attribute != null) {
-        CoordinateID coord = CoordinateID.parse(attribute, ",");
-        if (coord == null) {
-          coord = CoordinateID.parse(attribute, " ");
-        }
-        if (coord != null) {
-          region = data.getRegion(coord);
-        }
-      }
-      attribute = m.getAttributes().get("end");
-      if (region == null && attribute != null && m.getAttributes().get("start") != null) {
-        CoordinateID coord = CoordinateID.parse(attribute, ",");
-        if (coord == null) {
-          coord = CoordinateID.parse(attribute, " ");
-        }
-        if (coord != null) {
-          region = data.getRegion(coord);
+      if (region == null) {
+        String attribute = m.getAttributes().get("region");
+        if (attribute != null) {
+          CoordinateID coord = CoordinateID.parse(attribute, ",");
+          if (coord == null) {
+            coord = CoordinateID.parse(attribute, " ");
+          }
+          if (coord != null) {
+            region = data.getRegion(coord);
+          }
         }
       }
-
+      if (region == null) {
+        String attribute = m.getAttributes().get("end");
+        if (attribute != null && m.getAttributes().get("start") != null) {
+          CoordinateID coord = CoordinateID.parse(attribute, ",");
+          if (coord == null) {
+            coord = CoordinateID.parse(attribute, " ");
+          }
+          if (coord != null) {
+            region = data.getRegion(coord);
+          }
+        }
+      }
       if (object == null) {
-        attribute = m.getAttributes().get("ship");
+        String attribute = m.getAttributes().get("ship");
         if (attribute != null) {
           EntityID id = EntityID.createEntityID(attribute, 10, data.base);
           if (id != null) {
@@ -235,7 +240,7 @@ public class ProblemFactory {
         }
       }
       if (object == null) {
-        attribute = m.getAttributes().get("building");
+        String attribute = m.getAttributes().get("building");
         if (attribute != null) {
           EntityID id = EntityID.createEntityID(attribute, 10, data.base);
           if (id != null) {

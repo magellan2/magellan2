@@ -121,7 +121,8 @@ public abstract class AbstractInspector implements Inspector {
         } else {
           for (int l = p.getLine() - 2; l >= 0; --l) {
             Order line = unit.getOrders2().get(l);
-            if (!line.getText().startsWith(Inspector.SUPPRESS_PREFIX)) {
+            if (!(line.getText().startsWith(Inspector.SUPPRESS_PREFIX) || line.getText()
+                .startsWith(Inspector.SUPPRESS_PREFIX_PERMANENT))) {
               break;
             } else if (isSuppressMarkerFor(line, p, true)) {
               it.remove();

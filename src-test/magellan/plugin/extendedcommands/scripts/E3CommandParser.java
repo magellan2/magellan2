@@ -154,7 +154,7 @@ public class E3CommandParser {
   /** The NULL token (for soldier) */
   public static String NULL = "null";
   /** The NOT token (for auto and others) */
-  public static String NOT = "nicht";
+  public static String NOT = "NICHT";
   /** The LONG token (for clear) */
   public static String LONG = "lang";
 
@@ -682,7 +682,7 @@ public class E3CommandParser {
     if (tokens.length == 1) {
       setConfirm(currentUnit, true);
       addNewOrder(currentOrder, false);
-    } else if (NOT.equals(tokens[1])) {
+    } else if (NOT.equalsIgnoreCase(tokens[1])) {
       setConfirm(currentUnit, false);
       addNewOrder(currentOrder, false);
     } else {
@@ -832,6 +832,7 @@ public class E3CommandParser {
 
     if (tokens.length != 4 + je + (warning == -1 ? 0 : 1)) {
       addNewError("zu viele Parameter");
+      return;
     }
 
     if (warning == -1) {
@@ -1954,6 +1955,7 @@ public class E3CommandParser {
       }
     }
 
+    // note that "shield" is a subcategory of "armour"
     ArrayList<Item> shields = findItems(shield, u, "shield");
     if (shields.isEmpty()) {
       addNewError("keine Schilde bekannt");
@@ -2096,7 +2098,7 @@ public class E3CommandParser {
     ItemCategory itemCategory = world.rules.getItemCategory(StringID.create(category));
     if (itemType == null) {
       for (Item item : u.getItems()) {
-        if (itemCategory.isInstance(item.getItemType())) {
+        if (itemCategory.equals(item.getItemType().getCategory())) {
           items.add(item);
         }
       }
@@ -2106,11 +2108,10 @@ public class E3CommandParser {
       }
     }
     if (items.isEmpty()) {
-      for (ItemType type : world.rules.getItemTypes()) {
-        if (itemCategory.isInstance(type)) {
-          items.add(new Item(type, 0));
-          break;
-        }
+      for (Object o : itemCategory.getInstances()) {
+        ItemType type = (ItemType) o;
+        items.add(new Item(type, 0));
+        break;
       }
     }
     return items;

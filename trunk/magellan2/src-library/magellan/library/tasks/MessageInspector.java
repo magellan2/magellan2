@@ -171,7 +171,7 @@ public class MessageInspector extends AbstractInspector {
       result = s.substring(0, s.indexOf('.'));
     }
     try {
-      // hack to simplify messages like "2 Gehirmschmalz"
+      // hack to simplify messages like "2 Gehirnschmalz"
       StringTokenizer tok = new StringTokenizer(result);
       String number = tok.nextToken();
       int n = Integer.parseInt(number);

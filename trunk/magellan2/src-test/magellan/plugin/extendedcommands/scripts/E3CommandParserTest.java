@@ -334,14 +334,29 @@ public class E3CommandParserTest {
     // test auto nicht
     unit.clearOrders();
     unit.deleteAllTags();
-    unit.addOrder("// $cript   auto   nicht");
+    unit.addOrder("// $cript   auto   NICHT");
     unit.addOrder("LERNEN Hiebwaffen");
 
     parser.execute(unit.getFaction());
 
     assertEquals(3, unit.getOrders2().size());
-    assertOrder("// $cript   auto   nicht", unit, 1);
+    assertOrder("// $cript   auto   NICHT", unit, 1);
     assertOrder("LERNEN Hiebwaffen", unit, 2);
+    assertTrue(E3CommandParser.getProperty(unit, "confirm").equals("0"));
+
+    // test nicht precedemce
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript   auto   NICHT");
+    unit.addOrder("// $cript   auto");
+    unit.addOrder("LERNEN Hiebwaffen");
+
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript   auto   NICHT", unit, 1);
+    assertOrder("// $cript   auto", unit, 2);
+    assertOrder("LERNEN Hiebwaffen", unit, 3);
     assertTrue(E3CommandParser.getProperty(unit, "confirm").equals("0"));
 
     // test auto period
@@ -711,10 +726,9 @@ public class E3CommandParserTest {
     unit2.addOrder("// $cript GibWenn 2 3 Silber bla");
     parser.execute(unit.getFaction());
 
-    assertEquals(3, unit2.getOrders2().size());
+    assertEquals(2, unit2.getOrders2().size());
     assertError("zu viele Parameter", unit2, 1);
-
-    assertError("2 nicht da", unit2, 2);
+    // assertError("2 nicht da", unit2, 2);
     // assertOrder("GIB 2 3 Silber", unit2, 3);
 
     // test receiver unit not there (with nonsense warning)
@@ -724,9 +738,9 @@ public class E3CommandParserTest {
     unit2.addOrder("// $cript GibWenn 1 3 Silber bla");
     parser.execute(unit.getFaction());
 
-    assertEquals(3, unit2.getOrders2().size());
+    assertEquals(2, unit2.getOrders2().size());
     assertError("zu viele Parameter", unit2, 1);
-    assertOrder("GIB 1 3 Silber", unit2, 2);
+    // assertOrder("GIB 1 3 Silber", unit2, 2);
 
     // test supplyer does not have item
     unit.clearOrders();
@@ -780,6 +794,29 @@ public class E3CommandParserTest {
     assertEquals(2, unit2.getOrders2().size());
     assertError("JE ALLES geht nicht", unit2, 1);
 
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   */
+  @Test
+  public final void testCommandGibWenn5() {
+    E3CommandParser.ADD_NOT_THERE_INFO = true;
+    // add other unit with Silber
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 5);
+
+    // test GibWenn with error
+    unit.clearOrders();
+    unit2.clearOrders();
+
+    unit2.addOrder("// $cript GibWenn ALLES Silber");
+    parser.execute(unit.getFaction());
+
+    assertEquals(1, unit.getOrders2().size());
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("// $cript GibWenn ALLES Silber", unit2, 0);
+    assertError("zu viele Parameter", unit2, 1);
   }
 
   /**
@@ -1078,6 +1115,7 @@ public class E3CommandParserTest {
     builder.addSkill(unit3, "Hiebwaffen", 2);
     builder.addItem(data, unit3, "Schild", 10);
 
+    unit2.clearOrders();
     unit2.addOrder("// $cript Soldat Talent");
     unit3.clearOrders();
     unit3.addOrder("// $cript Soldat Talent");

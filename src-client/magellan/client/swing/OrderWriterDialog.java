@@ -139,7 +139,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     try {
       settings.load(new FileInputStream(new File(System.getProperty("user.home"),
-          "OrderWriterDialog.ini")));
+      "OrderWriterDialog.ini")));
     } catch (IOException e) {
       OrderWriterDialog.log.error("OrderWriterDialog.OrderWriterDialog(),", e);
     }
@@ -290,7 +290,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     sendButton = mailButton;
 
     JButton autoFileNameButton =
-        new JButton(Resources.get("orderwriterdialog.btn.autofilename.caption"));
+      new JButton(Resources.get("orderwriterdialog.btn.autofilename.caption"));
     autoFileNameButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         autoFileName();
@@ -340,9 +340,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   private Container getControlsPanel() {
     int fixedWidth =
-        Integer.parseInt(settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, "76"));
+      Integer.parseInt(settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, "76"));
     chkFixedWidth =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.wordwrap.caption"), fixedWidth > 0);
+      new JCheckBox(Resources.get("orderwriterdialog.chk.wordwrap.caption"), fixedWidth > 0);
     chkFixedWidth.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         txtFixedWidth.setEnabled(chkFixedWidth.isSelected());
@@ -362,31 +362,31 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     pnlFixedWidth.add(lblFixedWidth2);
 
     chkECheckComments =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.addecheckcomments.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS,
-                "true"))).booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.addecheckcomments.caption"),
+          (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS,
+          "true"))).booleanValue());
     chkRemoveSCComments =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.removesemicoloncomments.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS,
-                "false"))).booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.removesemicoloncomments.caption"),
+          (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS,
+          "false"))).booleanValue());
     chkRemoveSSComments =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.removedoubleslashcomments.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS,
-                "false"))).booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.removedoubleslashcomments.caption"),
+          (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS,
+          "false"))).booleanValue());
     chkConfirmedOnly =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.skipunconfirmedorders.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY,
-                "false"))).booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.skipunconfirmedorders.caption"),
+          (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY,
+          "false"))).booleanValue());
     chkSelRegionsOnly =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.selectedregions.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS, "false")))
-            .booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.selectedregions.caption"), (Boolean
+          .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS, "false")))
+          .booleanValue());
     chkSelRegionsOnly.setEnabled((regions != null) && (regions.size() > 0));
     chkWriteUnitTagsAsVorlageComment =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.writeUnitTagsAsVorlageComment.caption"),
-            (Boolean.valueOf(settings.getProperty(
-                PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT, "false")))
-                .booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.writeUnitTagsAsVorlageComment.caption"),
+          (Boolean.valueOf(settings.getProperty(
+              PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT, "false")))
+              .booleanValue());
 
     JPanel pnlCmdSave = new JPanel();
     pnlCmdSave.setLayout(new BoxLayout(pnlCmdSave, BoxLayout.Y_AXIS));
@@ -415,8 +415,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
 
     Faction f =
-        data.getFaction(EntityID.createEntityID(settings.getProperty(
-            PropertiesHelper.ORDERWRITER_FACTION, "-1"), 10, data.base));
+      data.getFaction(EntityID.createEntityID(settings.getProperty(
+          PropertiesHelper.ORDERWRITER_FACTION, "-1"), 10, data.base));
 
     if (f != null) {
       cmbFaction.setSelectedItem(f);
@@ -488,8 +488,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   private Container getFilePanel() {
     cmbOutputFile =
-        new JComboBox(PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE)
-            .toArray());
+      new JComboBox(PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE)
+          .toArray());
     cmbOutputFile.setEditable(true);
 
     JButton btnOutputFile = new JButton("...");
@@ -524,38 +524,38 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private Container getMailPanel() {
     JLabel lblMailServer = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.name"));
     txtMailServer =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST,
-            "smtp.bar.net"), 20);
+      new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST,
+          "smtp.bar.net"), 20);
     lblMailServer.setLabelFor(txtMailServer);
 
     JLabel lblMailServerPort = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.port"));
     txtMailServerPort =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT, "25"), 4);
+      new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT, "25"), 4);
     lblMailServerPort.setLabelFor(txtMailServerPort);
 
     lblServerUsername = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.user"));
     txtServerUsername =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME, ""),
-            20);
+      new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME, ""),
+          20);
     lblServerUsername.setLabelFor(txtServerUsername);
 
     lblServerPassword = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.password"));
     txtServerPassword =
-        new JPasswordField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD,
-            ""), 20);
+      new JPasswordField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD,
+          ""), 20);
     lblServerPassword.setLabelFor(txtServerPassword);
 
     chkAskPassword =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.askpassword.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD, "true")))
-            .booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.askpassword.caption"), (Boolean
+          .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD, "true")))
+          .booleanValue());
     chkAskPassword.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int answer = 0;
         if (!chkAskPassword.isSelected()) {
           answer =
-              JOptionPane.showConfirmDialog(chkAskPassword, Resources
-                  .get("orderwriterdialog.msg.passwordwarning"), "", JOptionPane.YES_NO_OPTION);
+            JOptionPane.showConfirmDialog(chkAskPassword, Resources
+                .get("orderwriterdialog.msg.passwordwarning"), "", JOptionPane.YES_NO_OPTION);
         }
         if (answer == 0) {
           lblServerPassword.setEnabled(!chkAskPassword.isSelected() || !chkAskPassword.isEnabled());
@@ -570,9 +570,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     });
 
     chkUseAuth =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.useauth.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH,
-                "false"))).booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.useauth.caption"),
+          (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH,
+          "false"))).booleanValue());
     chkUseAuth.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         lblServerUsername.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled());
@@ -593,7 +593,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     lblMailRecipient = new JLabel(Resources.get("orderwriterdialog.lbl.recipient"));
 
     String email =
-        settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT, defaultEmail);
+      settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT, defaultEmail);
 
     // stm 2008.03.02: enno wanted this change undone ;)
     // // pavkovic 2002.01.23: enno wanted this change...
@@ -615,21 +615,21 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     JLabel lblMailSender = new JLabel(Resources.get("orderwriterdialog.lbl.sender"));
     txtMailSender =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER,
-            "foo@bar.net"), 20);
+      new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER,
+          "foo@bar.net"), 20);
     lblMailSender.setLabelFor(txtMailSender);
 
     lblMailSubject = new JLabel(Resources.get("orderwriterdialog.lbl.subject"));
     txtMailSubject =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT,
-            defaultSubject), 20);
+      new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT,
+          defaultSubject), 20);
     lblMailSubject.setLabelFor(txtMailSubject);
 
     // CC: (Fiete 20090120)
     lblMailRecipient2 = new JLabel("CC:");
     txtMailRecipient2 =
-        new JTextField(
-            settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2, ""), 20);
+      new JTextField(
+          settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2, ""), 20);
     lblMailRecipient2.setLabelFor(txtMailRecipient2);
 
     JPanel pnlMail = new JPanel(new GridBagLayout());
@@ -638,9 +638,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         .get("orderwriterdialog.border.mailoptions")));
 
     chkUseSettingsFromCR =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.usesettingsfromcr.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS,
-                "true"))).booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.usesettingsfromcr.caption"), (Boolean
+          .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS,
+              "true"))).booleanValue());
     chkUseSettingsFromCR.setEnabled((data != null) && (data.mailTo != null)
         && (data.mailSubject != null));
     chkUseSettingsFromCR.addActionListener(new ActionListener() {
@@ -652,18 +652,18 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     updateRecipient();
 
     chkCCToSender =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.cctosender.caption"), (Boolean
-            .valueOf(settings
-                .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER, "true")))
-            .booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.cctosender.caption"), (Boolean
+          .valueOf(settings
+              .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER, "true")))
+              .booleanValue());
     chkUseSSL =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.usessl.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL, "false")))
-            .booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.usessl.caption"), (Boolean
+          .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL, "false")))
+          .booleanValue());
     chkUseTLS =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.usetls.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS, "false")))
-            .booleanValue());
+      new JCheckBox(Resources.get("orderwriterdialog.chk.usetls.caption"), (Boolean
+          .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS, "false")))
+          .booleanValue());
 
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
@@ -884,8 +884,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     if (settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, null) != null) {
       int fixedWidth =
-          Integer.parseInt(settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix,
-              "76"));
+        Integer.parseInt(settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix,
+            "76"));
       chkFixedWidth.setSelected(fixedWidth > 0);
       txtFixedWidth.setText("" + Math.abs(fixedWidth));
       txtFixedWidth.setEnabled(chkFixedWidth.isSelected());
@@ -977,7 +977,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         cmbOutputFile.removeItemAt(0);
       }
       List<String> files =
-          PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix);
+        PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix);
       for (String file : files) {
         cmbOutputFile.addItem(file);
       }
@@ -1157,7 +1157,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     if (standAlone) {
       try {
         settings.store(new FileOutputStream(new File(System.getProperty("user.home"),
-            "OrderWriterDialog.ini")), "");
+        "OrderWriterDialog.ini")), "");
       } catch (IOException e) {
         OrderWriterDialog.log.error("OrderWriterDialog.storeSettings()", e);
       }
@@ -1564,9 +1564,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           OrderWriterDialog.log.info("exception while sending message", e);
 
           Object msgArgs[] = { e.toString() };
-          ui.showDialog((new JOptionPane(Resources.get("orderwriterdialog.msg.transfererror.text",
-              msgArgs), JOptionPane.OK_OPTION)).createDialog(OrderWriterDialog.this, Resources
-              .get("orderwriterdialog.msg.mailerror.title")));
+          ui.showDialog(Resources.get("orderwriterdialog.msg.mailerror.title"),Resources.get("orderwriterdialog.msg.transfererror.text",msgArgs), JOptionPane.ERROR_MESSAGE, JOptionPane.OK_OPTION);
         } finally {
           ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
           ui.ready();
@@ -1611,8 +1609,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     panel.add(passwdLabel);
     panel.add(passwd);
     int value =
-        JOptionPane.showOptionDialog(ae, panel, title, JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null, null, null);
+      JOptionPane.showOptionDialog(ae, panel, title, JOptionPane.OK_CANCEL_OPTION,
+          JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (value == 0)
       return new String(passwd.getPassword());
     else
@@ -1648,8 +1646,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         }
         JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
             .get("orderwriterdialog.msg.writtenunits.text"))).format(new Object[] { parameters[0],
-            parameters[1], "" + parameters[2] + "/" + parameters[3] }), Resources
-            .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
+                parameters[1], "" + parameters[2] + "/" + parameters[3] }), Resources
+                .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
 
         stream.close();
       }

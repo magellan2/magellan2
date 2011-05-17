@@ -89,8 +89,8 @@ public abstract class AbstractPlugInLoader<T> {
     // String classpath = System.getProperty("java.class.path");
     // classpath += System.getProperty("path.separator")+path;
     StringTokenizer st =
-        new StringTokenizer(System.getProperty("java.class.path"), System
-            .getProperty("path.separator"));
+      new StringTokenizer(System.getProperty("java.class.path"), System
+          .getProperty("path.separator"));
 
     while (st.hasMoreTokens()) {
       paths.add(st.nextToken());
@@ -225,7 +225,7 @@ public abstract class AbstractPlugInLoader<T> {
     // a) read possible paths from ResourcePathClassLoader
     // b) read property java.class.path and iterate over the entries
     if (settings.getProperty("ExternalModuleLoader.searchResourcePathClassLoader", "true").equals(
-        "true")) {
+    "true")) {
       paths.addAll(getPathsFromResourcePathClassLoader(resLoader, settings));
     }
 

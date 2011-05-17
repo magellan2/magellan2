@@ -48,8 +48,10 @@ import javax.swing.Timer;
 
 import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Resources;
+import magellan.library.utils.SetGirthDialog;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.transformation.BoxTransformer.BBox;
 
 public class ProgressBarUI implements UserInterface, ActionListener {
   private static final Logger log = Logger.getInstance(ProgressBarUI.class);
@@ -262,30 +264,16 @@ public class ProgressBarUI implements UserInterface, ActionListener {
 
   public void showException(String message, String description, Exception exception) {
     ErrorWindow ew =
-        message == null ? new ErrorWindow(Resources.get("progressbarui.message.unknownerror"),
-            exception) : new ErrorWindow(message, description, exception);
-    ew.setShutdownOnCancel(false);
-    ew.setVisible(true);
+      message == null ? new ErrorWindow(Resources.get("progressbarui.message.unknownerror"),
+          exception) : new ErrorWindow(message, description, exception);
+      ew.setShutdownOnCancel(false);
+      ew.setVisible(true);
 
-    // throw new RuntimeException(exception);
+      // throw new RuntimeException(exception);
   }
 
   public void showMessageDialog(String message) {
     JOptionPane.showMessageDialog(dlg, message);
-  }
-
-  public void showDialog(final JDialog dialog) {
-    try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-
-        public void run() {
-          dialog.setVisible(true);
-        }
-      });
-    } catch (Exception e) {
-      ProgressBarUI.log.error(e);
-    }
-
   }
 
   public static ClosingListener getDefaultClosingListener(final Component parent) {
@@ -471,9 +459,41 @@ public class ProgressBarUI implements UserInterface, ActionListener {
      */
     public void run() {
       sResult =
-          JOptionPane.showInputDialog(dlg, strMessage, strTitle, JOptionPane.QUESTION_MESSAGE,
-              null, values, initialSelection);
+        JOptionPane.showInputDialog(dlg, strMessage, strTitle, JOptionPane.QUESTION_MESSAGE,
+            null, values, initialSelection);
     }
+  }
+
+  public void showDialog(String title, String message, int messageType, int options) {
+    final JDialog dialog = (new JOptionPane(message, messageType, options)).createDialog(dlg, title);
+    try {
+      SwingUtilities.invokeAndWait(new Runnable() {
+
+        public void run() {
+          dialog.setVisible(true);
+        }
+      });
+    } catch (Exception e) {
+      ProgressBarUI.log.error(e);
+    }
+  }
+
+  public BBox askForGirth(BBox best, int layer) {
+    final SetGirthDialog dialog = new SetGirthDialog(null, best, layer);
+    try {
+      SwingUtilities.invokeAndWait(new Runnable() {
+
+        public void run() {
+          dialog.setVisible(true);
+        }
+      });
+    } catch (Exception e) {
+      ProgressBarUI.log.error(e);
+    }
+    if (dialog.approved())
+      return dialog.getNewBorders().getBox(layer);
+    else
+      return null;
   }
 
 }

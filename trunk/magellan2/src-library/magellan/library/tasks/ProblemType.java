@@ -10,21 +10,27 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.library.tasks;
 
 import magellan.library.utils.Resources;
 
+/**
+ * 
+ *
+ * @author ...
+ * @version 1.0, 14.03.2011
+ */
 public class ProblemType {
 
   private String name;
@@ -126,7 +132,7 @@ public class ProblemType {
    * @see Resources#get(String)
    */
   public static ProblemType create(String prefix, String name) {
-    String message = Resources.get(prefix + "." + name + ".message", false);
+    String message = Resources.get(prefix + "." + name + ".message", true);
     String typeName = Resources.get(prefix + "." + name + ".name", false);
     if (typeName == null) {
       typeName = message;

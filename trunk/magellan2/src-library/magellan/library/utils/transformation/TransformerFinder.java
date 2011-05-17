@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.utils.transformation;
 
 import java.io.IOException;
@@ -104,7 +104,7 @@ public class TransformerFinder {
         // getTransformer(bestTranslation.getKey(), bestAstralTranslation.getKey());
 
         ReportTransformer[] result =
-            getTransformers(bestTranslation.getKey(), bestAstralTranslation.getKey(), boxes);
+          getTransformers(bestTranslation.getKey(), bestAstralTranslation.getKey(), boxes);
         return result;
       }
     }
@@ -119,7 +119,7 @@ public class TransformerFinder {
   private Score<CoordinateID> findRealSpaceTranslation() {
     MapMergeEvaluator mhelp = globalData.getGameSpecificStuff().getMapMergeEvaluator();
     Collection<Score<CoordinateID>> translationList =
-        mhelp.getDataMappings(globalData, addedData, 0);
+      mhelp.getDataMappings(globalData, addedData, 0);
 
     // try to find a translation for the new report's owner faction in the
     // global data's owner faction
@@ -144,7 +144,7 @@ public class TransformerFinder {
     Score<CoordinateID> bestAstralTranslation = null;
     if (!hasRegionsInLayer(EresseaSpecificStuff.ASTRAL_LAYER, addedData)) {
       bestAstralTranslation =
-          new Score<CoordinateID>(CoordinateID.create(0, 0, EresseaSpecificStuff.ASTRAL_LAYER), -1);
+        new Score<CoordinateID>(CoordinateID.create(0, 0, EresseaSpecificStuff.ASTRAL_LAYER), -1);
     } else if (!hasRegionsInLayer(EresseaSpecificStuff.ASTRAL_LAYER, globalData)) {
       Collection<Score<CoordinateID>> empty = Collections.emptyList();
       if (interactive) {
@@ -157,20 +157,20 @@ public class TransformerFinder {
       Collection<CoordinateID> otherLevels = new ArrayList<CoordinateID>(1);
       otherLevels.add(bestTranslation.getKey());
       Collection<Score<CoordinateID>> astralTranslationList =
-          mhelp.getDataMappings(globalData, addedData, EresseaSpecificStuff.ASTRAL_LAYER,
-              otherLevels);
+        mhelp.getDataMappings(globalData, addedData, EresseaSpecificStuff.ASTRAL_LAYER,
+            otherLevels);
 
       Score<CoordinateID> savedAstralTranslation =
-          findSavedMapping(EresseaSpecificStuff.ASTRAL_LAYER);
+        findSavedMapping(EresseaSpecificStuff.ASTRAL_LAYER);
 
       if (interactive) {
         bestAstralTranslation =
-            askTranslation(astralTranslationList, savedAstralTranslation,
-                EresseaSpecificStuff.ASTRAL_LAYER);
+          askTranslation(astralTranslationList, savedAstralTranslation,
+              EresseaSpecificStuff.ASTRAL_LAYER);
       } else {
         bestAstralTranslation =
-            decideTranslation(astralTranslationList, savedAstralTranslation,
-                EresseaSpecificStuff.ASTRAL_LAYER);
+          decideTranslation(astralTranslationList, savedAstralTranslation,
+              EresseaSpecificStuff.ASTRAL_LAYER);
       }
     }
     return bestAstralTranslation;
@@ -213,8 +213,8 @@ public class TransformerFinder {
     CoordinateID correct = addedData.getCoordinateTranslation(newReportOwner, layer);
     if (correct != null) {
       correct =
-          CoordinateID.create(bestTranslation.getX() + correct.getX(), bestTranslation.getY()
-              + correct.getY(), layer);
+        CoordinateID.create(bestTranslation.getX() + correct.getX(), bestTranslation.getY()
+            + correct.getY(), layer);
       globalData.setCoordinateTranslation(newReportOwner, correct);
     }
 
@@ -228,9 +228,9 @@ public class TransformerFinder {
         Faction firstFaction = addedData.getFactions().iterator().next();
 
         Object result =
-            ui.input(Resources.getFormatted("util.reportmerger.msg.inputowner.msg", filename),
-                Resources.get("util.reportmerger.msg.inputowner.title"), addedData.getFactions()
-                    .toArray(), firstFaction);
+          ui.input(Resources.getFormatted("util.reportmerger.msg.inputowner.msg", filename),
+              Resources.get("util.reportmerger.msg.inputowner.title"), addedData.getFactions()
+              .toArray(), firstFaction);
         if (result != null && result instanceof Faction) {
           addedData.setOwnerFaction(((Faction) result).getID());
         }
@@ -238,7 +238,7 @@ public class TransformerFinder {
     }
 
     CoordinateID translation =
-        SavedTranslationsMapping.getSingleton().getMapping(globalData, addedData, layer);
+      SavedTranslationsMapping.getSingleton().getMapping(globalData, addedData, layer);
     if (translation != null)
       return new Score<CoordinateID>(translation, 0);
     return null;
@@ -257,7 +257,7 @@ public class TransformerFinder {
   private Score<CoordinateID> decideTranslation(Collection<Score<CoordinateID>> translationList,
       Score<CoordinateID> savedTranslation, int layer) {
     Score<CoordinateID> bestTranslation =
-        new Score<CoordinateID>(CoordinateID.create(0, 0, layer), -1);
+      new Score<CoordinateID>(CoordinateID.create(0, 0, layer), -1);
 
     if (translationList != null && translationList.size() > 0) {
       bestTranslation = Collections.max(translationList);
@@ -312,13 +312,13 @@ public class TransformerFinder {
   private Score<CoordinateID> askTranslation(Collection<Score<CoordinateID>> translationList,
       Score<CoordinateID> savedTranslation, int layer) {
     Score<CoordinateID> bestTranslation =
-        decideTranslation(translationList, savedTranslation, layer);
+      decideTranslation(translationList, savedTranslation, layer);
 
     // sanity check: translation changed since last time?
     boolean isTranslationSame =
-        savedTranslation != null && bestTranslation.getKey().equals(savedTranslation.getKey());
+      savedTranslation != null && bestTranslation.getKey().equals(savedTranslation.getKey());
     boolean isTranslationChanged =
-        savedTranslation != null && !bestTranslation.getKey().equals(savedTranslation.getKey());
+      savedTranslation != null && !bestTranslation.getKey().equals(savedTranslation.getKey());
 
     // sanity check: more than one good translation?
     Set<CoordinateID> distinct = new HashSet<CoordinateID>();
@@ -353,11 +353,11 @@ public class TransformerFinder {
 
       // setup dialog
       String message =
-          Resources.getFormatted("util.reportmerger.msg.method", filename, layer)
-              + (isTranslationChanged ? Resources.get("util.reportmerger.msg.changed") : "");
+        Resources.getFormatted("util.reportmerger.msg.method", filename, layer)
+        + (isTranslationChanged ? Resources.get("util.reportmerger.msg.changed") : "");
 
       String bestMethod =
-          Resources.getFormatted("util.reportmerger.msg.method.best", bestTranslation);
+        Resources.getFormatted("util.reportmerger.msg.method.best", bestTranslation);
       String chooseMethod = Resources.get("util.reportmerger.msg.method.choose");
       String inputMethod = Resources.get("util.reportmerger.msg.method.input");
       String skipMethod = Resources.get("util.reportmerger.msg.method.skip");
@@ -373,8 +373,8 @@ public class TransformerFinder {
 
       // ask the question
       Object choice =
-          ui.input(message, Resources.get("util.reportmerger.msg.method.title"), choices.toArray(),
-              bestMethod);
+        ui.input(message, Resources.get("util.reportmerger.msg.method.title"), choices.toArray(),
+            bestMethod);
       if (choice == null || choice.equals(skipMethod))
         return null;
 
@@ -385,17 +385,17 @@ public class TransformerFinder {
       else if (choice.equals(chooseMethod)) {
         // choose among found translations, deprecated
         Collection<Score<CoordinateID>> tChoices =
-            new ArrayList<Score<CoordinateID>>(translationList);
+          new ArrayList<Score<CoordinateID>>(translationList);
         if (savedTranslation != null) {
           tChoices.add(savedTranslation);
         }
         tChoices.add(new Score<CoordinateID>(CoordinateID.create(0, 0, layer), -1));
 
         Score<?> help =
-            (Score<?>) ui.input(Resources.getFormatted(
-                "util.reportmerger.msg.usertranslation.choose", filename, layer), Resources
-                .get("util.reportmerger.msg.usertranslation.title"), tChoices.toArray(),
-                bestTranslation);
+          (Score<?>) ui.input(Resources.getFormatted(
+              "util.reportmerger.msg.usertranslation.choose", filename, layer), Resources
+              .get("util.reportmerger.msg.usertranslation.title"), tChoices.toArray(),
+              bestTranslation);
         Score<CoordinateID> chosenTranslation = null;
         // workaround since we cannot cast Object to Score<CoordinateID>
         for (Score<CoordinateID> s : tChoices) {
@@ -437,21 +437,21 @@ public class TransformerFinder {
     do {
       badInput = false;
       String message =
-          Resources.getFormatted("util.reportmerger.msg.usertranslation.x", filename, layer);
+        Resources.getFormatted("util.reportmerger.msg.usertranslation.x", filename, layer);
       Object xS =
-          ui.input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null, "0");
+        ui.input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null, "0");
       if (xS != null) {
         message =
-            Resources.getFormatted("util.reportmerger.msg.usertranslation.y", filename, layer);
+          Resources.getFormatted("util.reportmerger.msg.usertranslation.y", filename, layer);
         Object yS =
-            ui.input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null,
-                "0");
+          ui.input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null,
+          "0");
         if (yS != null) {
           cancelled = false;
           try {
             CoordinateID trans =
-                CoordinateID.create(Integer.parseInt((String) xS), Integer.parseInt((String) yS),
-                    layer);
+              CoordinateID.create(Integer.parseInt((String) xS), Integer.parseInt((String) yS),
+                  layer);
             resultTranslation = new Score<CoordinateID>(trans, 1, "user");
             log.debug("using user translation: " + resultTranslation.getKey() + " in layer "
                 + layer);
@@ -478,7 +478,7 @@ public class TransformerFinder {
     // get new box of combination of both
     BBoxes idBoxes = new BBoxes();
     problem |=
-        !getTransformBox(globalData, addedData, bestTranslation, bestAstralTranslation, idBoxes);
+      !getTransformBox(globalData, addedData, bestTranslation, bestAstralTranslation, idBoxes);
 
     Set<Integer> layers = new HashSet<Integer>(outBoxes.getLayers());
     layers.addAll(inBoxes.getLayers());
@@ -617,18 +617,15 @@ public class TransformerFinder {
     choices.add(skipMethod);
 
     Object choice =
-        ui.input(message, Resources.get("util.reportmerger.msg.box.title"), choices.toArray(),
-            choices.get(0));
+      ui.input(message, Resources.get("util.reportmerger.msg.box.title"), choices.toArray(),
+          choices.get(0));
     if (choice == null || choice.equals(skipMethod))
       return null;
 
     if (choice.equals(inputMethod)) {
       SetGirthDialog girthDialog;
-      ui.showDialog(girthDialog = new SetGirthDialog(null, best, layer));
-      if (girthDialog.approved())
-        return girthDialog.getNewBorders().getBox(layer);
-      else
-        return null;
+      BBox box = ui.askForGirth(best,layer);
+      return box;
     } else if (choice.equals(skipMethod))
       return null;
     else {
@@ -672,15 +669,15 @@ public class TransformerFinder {
           if (rOld != null) {
             int layer = rNew.getCoordinate().getZ();
             CoordinateID translation =
-                rNew.getCoordinate().inverseTranslateInLayer(rOld.getCoordinate());
+              rNew.getCoordinate().inverseTranslateInLayer(rOld.getCoordinate());
             if (layer == bestTranslation.getZ()) {
               translation = translation.inverseTranslateInLayer(bestTranslation);
             } else if (layer == bestAstralTranslation.getZ()) {
               translation = translation.inverseTranslateInLayer(bestAstralTranslation);
             }
             translation =
-                CoordinateID.create(Math.abs(translation.getX()), Math.abs(translation.getY()),
-                    layer);
+              CoordinateID.create(Math.abs(translation.getX()), Math.abs(translation.getY()),
+                  layer);
             if (translation.getX() != 0 || translation.getY() != 0) {
               if (log.isDebugEnabled()) {
                 log.debug("translation: " + translation);
@@ -694,7 +691,7 @@ public class TransformerFinder {
                   if (boxes.getBox(layer) != null) {
                     if (boxes.getBox(layer).maxx != Integer.MAX_VALUE
                         && boxes.getBox(layer).maxx - boxes.getBox(layer).minx != translation
-                            .getX() - 1) {
+                        .getX() - 1) {
                       log.warnOnce("box mismatch: " + (translation.getX() - 1) + " vs. "
                           + boxes.getBox(layer).minx + "," + boxes.getBox(layer).maxx);
                       result = false;
@@ -711,7 +708,7 @@ public class TransformerFinder {
                   if (boxes.getBox(layer) != null) {
                     if (boxes.getBox(layer).maxy != Integer.MAX_VALUE
                         && boxes.getBox(layer).maxy - boxes.getBox(layer).miny != translation
-                            .getY() - 1) {
+                        .getY() - 1) {
                       log.warn("box mismatch: " + (translation.getY() - 1) + " vs. "
                           + boxes.getBox(layer).miny + "," + boxes.getBox(layer).maxy);
                       result = false;
@@ -750,22 +747,22 @@ public class TransformerFinder {
         if (original.getCoordY() == w.getCoordY()) {
           if (original.getCoordX() - w.getCoordX() > 0) {
             result &=
-                changeBoxX(boxes, w.getCoordinate().getZ(), w.getCoordX() + 1 + w.getCoordY() / 2,
-                    original.getCoordX() + w.getCoordY() / 2);
+              changeBoxX(boxes, w.getCoordinate().getZ(), w.getCoordX() + 1 + w.getCoordY() / 2,
+                  original.getCoordX() + w.getCoordY() / 2);
           }
           if (original.getCoordX() - w.getCoordX() < 0) {
             result &=
-                changeBoxX(boxes, w.getCoordinate().getZ(), original.getCoordX() + w.getCoordY()
-                    / 2, w.getCoordX() - 1 + w.getCoordY() / 2);
+              changeBoxX(boxes, w.getCoordinate().getZ(), original.getCoordX() + w.getCoordY()
+                  / 2, w.getCoordX() - 1 + w.getCoordY() / 2);
           }
         } else {
           if (original.getCoordY() - w.getCoordY() > 0) {
             result &=
-                changeBoxY(boxes, w.getCoordinate().getZ(), w.getCoordY() + 1, original.getCoordY());
+              changeBoxY(boxes, w.getCoordinate().getZ(), w.getCoordY() + 1, original.getCoordY());
           }
           if (original.getCoordY() - w.getCoordY() < 0) {
             result &=
-                changeBoxY(boxes, w.getCoordinate().getZ(), original.getCoordY(), w.getCoordY() - 1);
+              changeBoxY(boxes, w.getCoordinate().getZ(), original.getCoordY(), w.getCoordY() - 1);
           }
         }
       }
@@ -842,7 +839,7 @@ public class TransformerFinder {
           CoordinateID newID;
           // add mapping if the new region has an older date
           transformerUID2.addMapping(rNew.getID(), newID =
-              transformers[0].transform(rOld.getCoordinate()));
+            transformers[0].transform(rOld.getCoordinate()));
 
           if (!newID.equals(oldID = resultBoxes.putInBox(transformers[1].transform(rNew.getID())))) {
             log.info(rOld + "/" + rNew + " has moved " + oldID + "->" + newID);
@@ -860,7 +857,7 @@ public class TransformerFinder {
           CoordinateID oldID;
           // add mapping if the new region has same or newer date
           transformerUID1.addMapping(rOld.getID(), newID =
-              resultBoxes.putInBox(transformers[1].transform(rNew.getCoordinate())));
+            resultBoxes.putInBox(transformers[1].transform(rNew.getCoordinate())));
 
           if (!newID.equals(oldID = transformers[0].transform(rOld.getCoordinate()))) {
             log.info(rOld + "/" + rNew + " has moved " + oldID + "->" + newID);

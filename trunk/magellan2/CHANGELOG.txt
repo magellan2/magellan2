@@ -1,3 +1,6 @@
+2011-05-17 / Build 470 - trickert (thoralf@m84.de)
+    * Changed some library methods to not use Swing JDialog
+          
 2011-04-13 / Build 470 - stm (stm_@users.sourceforge.net)
     * fix item order in unit nodes (trac bug #23)
     * get rid of BATTLESPEC
@@ -5,6 +8,11 @@
 
 2011-03-21 / Build 468 - stm (stm_@users.sourceforge.net)
     * show person weight, categorize spells
+
+2011-02-20 / Build 465 - trickert (thoralf@m84.de)
+    * long ago - a new checkin: The improvement for the extcmds plugins to fire an event is problematic
+      if there are other plugins that wait for an event. Then the operation over all needs much longer
+      then expected. This was fixed by adding a function to avoid such events in specific situations.
 
 2011-03-01 / Build 465 - stm (stm_@users.sourceforge.net)
     * fixed merging of alliances in E3, handling of alliance groups in various areas and a few alliance bugs on the way

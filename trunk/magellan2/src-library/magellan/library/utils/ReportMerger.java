@@ -357,16 +357,12 @@ public class ReportMerger extends Object {
 
     // inform user about memory problems
     if (globalData.isOutOfMemory()) {
-      ui.showDialog((new JOptionPane(Resources.get("client.msg.outofmemory.text"),
-          JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
-          .get("client.msg.outofmemory.title")));
+      ui.showDialog(Resources.get("client.msg.outofmemory.title"),Resources.get("client.msg.outofmemory.text"),JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION);
       ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
       error = true;
     }
     if (!MemoryManagment.isFreeMemory(globalData.estimateSize())) {
-      ui.showDialog((new JOptionPane(Resources.get("client.msg.lowmem.text"),
-          JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
-          .get("client.msg.lowmem.title")));
+      ui.showDialog(Resources.get("client.msg.outofmemory.title"),Resources.get("client.msg.outofmemory.text"),JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION);
       log.warn(Resources.get("client.msg.lowmem.text"));
     }
     int bE = 0, rE = 0, ruE = 0, sE = 0, uE = 0, mE = 0;
@@ -392,9 +388,7 @@ public class ReportMerger extends Object {
     }
     if (bE > 0 || rE > 0 || ruE > 0 || sE > 0 || uE > 0) {
       log.error("report with errors: " + (rE + ruE) + " " + uE + " " + bE + " " + sE);
-      ui.showDialog((new JOptionPane(Resources.get("client.msg.reporterrors.text", "", rE + ruE,
-          uE, bE, sE), JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)
-          .createDialog(Resources.get("client.msg.reporterrors.title"))));
+      ui.showDialog(Resources.get("client.msg.reporterrors.title"),Resources.get("client.msg.reporterrors.text"),JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION);
     }
 
     if (ui != null) {
@@ -410,7 +404,7 @@ public class ReportMerger extends Object {
 
   private boolean askToCancel() {
     StringBuilder strMessage =
-        new StringBuilder(Resources.get("util.reportmerger.msg.noconnection.text.1")).append("\n");
+      new StringBuilder(Resources.get("util.reportmerger.msg.noconnection.text.1")).append("\n");
 
     int notmerged = 0;
     String lastName = null;
@@ -438,8 +432,8 @@ public class ReportMerger extends Object {
     strMessage.append(".\n");
     if (strMessage.length() > 300) {
       strMessage =
-          new StringBuilder(Resources.get("util.reportmerger.msg.noconnection.text.1"))
-              .append("\n");
+        new StringBuilder(Resources.get("util.reportmerger.msg.noconnection.text.1"))
+      .append("\n");
       strMessage.append(Resources.get("util.reportmerger.msg.noconnection.text.3", listed));
     }
     strMessage.append(Resources.get("util.reportmerger.msg.noconnection.text.4"));
@@ -511,7 +505,7 @@ public class ReportMerger extends Object {
       }
       // old: globalData = GameDataMerger.merge(globalData, clonedData);
       globalData =
-          GameDataMerger.merge(globalData, newReport.getData(), transformers[0], transformers[1]);
+        GameDataMerger.merge(globalData, newReport.getData(), transformers[0], transformers[1]);
 
       for (ReportTransformer t : transformers) {
         t.storeTranslations(globalData, newReport.getData());
@@ -545,14 +539,12 @@ public class ReportMerger extends Object {
         || bestAstralTranslation.getKey().getX() != 0 || bestAstralTranslation.getKey().getY() != 0) {
       try {
         clonedData =
-            clonedData.clone(new TwoLevelTransformer(bestTranslation.getKey(),
-                bestAstralTranslation.getKey()));
+          clonedData.clone(new TwoLevelTransformer(bestTranslation.getKey(),
+              bestAstralTranslation.getKey()));
         if (clonedData == null)
           throw new RuntimeException("problems during cloning");
         if (clonedData.isOutOfMemory()) {
-          ui.showDialog((new JOptionPane(Resources.get("client.msg.outofmemory.text"),
-              JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
-              .get("client.msg.outofmemory.title")));
+          ui.showDialog(Resources.get("client.msg.outofmemory.title"),Resources.get("client.msg.outofmemory.text"),JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION);
           // ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources
           // .get("client.msg.outofmemory.title"));
           ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
@@ -562,9 +554,7 @@ public class ReportMerger extends Object {
         throw new RuntimeException("problems while cloning", e);
       }
       if (!MemoryManagment.isFreeMemory(clonedData.estimateSize())) {
-        ui.showDialog((new JOptionPane(Resources.get("client.msg.lowmem.text"),
-            JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION)).createDialog(Resources
-            .get("client.msg.lowmem.title")));
+        ui.showDialog(Resources.get("client.msg.outofmemory.title"),Resources.get("client.msg.outofmemory.text"),JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION);
         log.warn(Resources.get("client.msg.lowmem.text"));
         // ui.confirm(Resources.get("client.msg.lowmem.text"), Resources
         // .get("client.msg.lowmem.title"));

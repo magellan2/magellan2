@@ -419,7 +419,9 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * @see magellan.library.Ship#getMaxPersons()
    */
   public int getMaxPersons() {
-    return (maxPersons != -1) ? maxPersons : getMaxCapacity(getShipType().getMaxPersons());
+    /* max persons are not modified by damage */
+    /* return (maxPersons != -1) ? maxPersons : getMaxCapacity(getShipType().getMaxPersons()); */
+    return (maxPersons != -1) ? maxPersons : getShipType().getMaxPersons();
   }
 
   /**

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.plugin.groupeditor;
 
 import java.awt.BorderLayout;
@@ -66,6 +66,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class GroupEditorDock extends JPanel implements ActionListener, GameDataListener {
   private static Logger log = Logger.getInstance(GroupEditorDock.class);
+  /** DOCK Identifier */
   public static final String IDENTIFIER = "GroupEditor";
   private Client client = null;
   private GameData world = null;
@@ -121,8 +122,8 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
     south.add(Box.createHorizontalGlue());
 
     JButton saveButton =
-        new JButton(Resources.get("dock.GroupEditor.save.button"), MagellanImages
-            .getImageIcon("etc/images/gui/actions/save_edit.gif"));
+      new JButton(Resources.get("dock.GroupEditor.save.button"), MagellanImages
+          .getImageIcon("etc/images/gui/actions/save_edit.gif"));
     saveButton.setRequestFocusEnabled(false);
     saveButton.setVerticalTextPosition(SwingConstants.CENTER);
     saveButton.setHorizontalTextPosition(SwingConstants.LEADING);
@@ -143,10 +144,10 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
     factionBox.removeActionListener(this);
     factionBox.removeAllItems();
 
-    if (world.factions() == null)
+    if (world.getFactions() == null)
       return;
 
-    List<Faction> factions = new ArrayList<Faction>(world.factions().values());
+    List<Faction> factions = new ArrayList<Faction>(world.getFactions());
     Collections.sort(factions, FactionTrustComparator.DEFAULT_COMPARATOR);
     Faction owner = null;
 
@@ -203,7 +204,7 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
     } else if (event.getActionCommand().equals("button.save")) {
       if (JOptionPane.showConfirmDialog(getClient(),
           Resources.get("dock.GroupEditor.save.message"), Resources
-              .get("dock.GroupEditor.save.title"), JOptionPane.YES_NO_OPTION,
+          .get("dock.GroupEditor.save.title"), JOptionPane.YES_NO_OPTION,
           JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
         model.save();
       }

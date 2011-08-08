@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.plugin.groupeditor;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
   protected int offset = 2;
   protected Map<Faction, AllianceState> newStates = new HashMap<Faction, AllianceState>();
   protected Map<Group, Map<Faction, AllianceState>> newGroupStates =
-      new HashMap<Group, Map<Faction, AllianceState>>();
+    new HashMap<Group, Map<Faction, AllianceState>>();
 
   /**
    * Returns the value of faction.
@@ -170,9 +170,9 @@ public class GroupEditorTableModel extends AbstractTableModel {
       // return group specific settings
       Group group = columns.get(columnIndex - offset);
       if (newGroupStates.containsKey(group)) {
-        Map<Faction, AllianceState> newStates = newGroupStates.get(group);
-        if (newStates.containsKey(faction))
-          return newStates.get(faction);
+        Map<Faction, AllianceState> myNewStates = newGroupStates.get(group);
+        if (myNewStates.containsKey(faction))
+          return myNewStates.get(faction);
       }
       return getAlliedState(faction, group.allies().values());
     }
@@ -192,12 +192,12 @@ public class GroupEditorTableModel extends AbstractTableModel {
       // find group
       Group group = columns.get(columnIndex - offset);
       if (newGroupStates.containsKey(group)) {
-        Map<Faction, AllianceState> newStates = newGroupStates.get(group);
-        newStates.put(faction, state);
+        Map<Faction, AllianceState> myNewStates = newGroupStates.get(group);
+        myNewStates.put(faction, state);
       } else {
-        HashMap<Faction, AllianceState> newStates = new HashMap<Faction, AllianceState>();
-        newStates.put(faction, state);
-        newGroupStates.put(group, newStates);
+        HashMap<Faction, AllianceState> myNewStates = new HashMap<Faction, AllianceState>();
+        myNewStates.put(faction, state);
+        newGroupStates.put(group, myNewStates);
       }
     }
 
@@ -226,11 +226,11 @@ public class GroupEditorTableModel extends AbstractTableModel {
         if (group.units() == null) {
           continue;
         }
-        Map<Faction, AllianceState> newStates = newGroupStates.get(group);
-        if (!newStates.isEmpty()) {
+        Map<Faction, AllianceState> myNewStates = newGroupStates.get(group);
+        if (!myNewStates.isEmpty()) {
           for (Unit unit : group.units()) {
             // ok, let's save the alliance settings
-            save(helpcommand, unit, newStates);
+            save(helpcommand, unit, myNewStates);
             break;
           }
         }

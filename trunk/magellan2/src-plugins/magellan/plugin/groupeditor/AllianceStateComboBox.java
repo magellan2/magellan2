@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.plugin.groupeditor;
 
 import java.awt.Component;
@@ -48,6 +48,9 @@ public class AllianceStateComboBox extends JComboBox {
   private GameData world = null;
   private List<AllianceState> states = new ArrayList<AllianceState>();
 
+  /**
+   * Constructor to create a combobox with the alliance states.
+   */
   public AllianceStateComboBox(GameData world) {
     this.world = world;
     removeAllItems();
@@ -106,7 +109,7 @@ public class AllianceStateComboBox extends JComboBox {
   /**
    * recursive method to find all possible alliance category assignments
    */
-  protected void addItems(AllianceCategory category, List<AllianceState> states,
+  protected void addItems(AllianceCategory category, List<AllianceState> myStates,
       List<AllianceCategory> cats) {
     if (cats.contains(category))
       return;
@@ -115,10 +118,10 @@ public class AllianceStateComboBox extends JComboBox {
     state.addCategory(category);
     state.addCategories(cats);
 
-    if (contains(states, state))
+    if (contains(myStates, state))
       return;
 
-    states.add(state);
+    myStates.add(state);
 
     if (category.getParent() == null)
       return;
@@ -136,15 +139,15 @@ public class AllianceStateComboBox extends JComboBox {
           && category.getName().equalsIgnoreCase("PERCEPTON")) {
         continue;
       }
-      addItems(nextcat, states, cats);
+      addItems(nextcat, myStates, cats);
     }
   }
 
   /**
    * Checks, if this is already a state inside the given list.
    */
-  protected boolean contains(List<AllianceState> states, AllianceState state) {
-    for (AllianceState s : states) {
+  protected boolean contains(List<AllianceState> myStates, AllianceState state) {
+    for (AllianceState s : myStates) {
       if (state.equals(s))
         return true;
     }
@@ -203,8 +206,8 @@ class AllianceState {
   /**
    * Adds an alliance category list to this state
    */
-  public void addCategories(List<AllianceCategory> categories) {
-    this.categories.addAll(categories);
+  public void addCategories(List<AllianceCategory> myCategories) {
+    categories.addAll(myCategories);
   }
 
   /**
@@ -249,7 +252,7 @@ class AllianceState {
     StringBuffer buffer = new StringBuffer();
     for (AllianceCategory category : categories) {
       buffer.append(Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + category.getName()))
-          .append(" ");
+      .append(" ");
     }
     return buffer.toString();
   }

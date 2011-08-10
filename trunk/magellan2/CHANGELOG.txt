@@ -1,3 +1,9 @@
+2011-08-09 / Build 473 - trickert (thoralf@m84.de)
+    * RELEASE 2.0.6 
+    * fixed a minor performance bug inside ExtCmds Plugin (concurrent thread operations)
+    * fixed a minor bug during report merge process
+    * added MAC OS download version for Magellan
+    
 2011-05-17 / Build 470 - trickert (thoralf@m84.de)
     * Changed some library methods to not use Swing JDialog
           

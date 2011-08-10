@@ -372,9 +372,13 @@ public class ReportMerger extends Object {
       }
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONID.type) {
         rE++;
+        Region c = (Region)p.getObject();
+        log.info("Problem: Duplicate Region ID: '"+p.getRegion().getName()+"' ("+ p.getRegion().getID()+ ") <> '"+c.getName()+"' ("+c.getID()+")");
       }
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONUID.type) {
         ruE++;
+        Region c = (Region)p.getObject();
+        log.info("Problem: Duplicate Region UID: '"+p.getRegion().getName()+"' ("+ p.getRegion().getID()+ ") <> '"+c.getName()+"' ("+c.getID()+")");
       }
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATESHIPID.type) {
         sE++;
@@ -388,7 +392,7 @@ public class ReportMerger extends Object {
     }
     if (bE > 0 || rE > 0 || ruE > 0 || sE > 0 || uE > 0) {
       log.error("report with errors: " + (rE + ruE) + " " + uE + " " + bE + " " + sE);
-      ui.showDialog(Resources.get("client.msg.reporterrors.title"),Resources.get("client.msg.reporterrors.text"),JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION);
+      ui.showDialog(Resources.get("client.msg.reporterrors.title"),Resources.get("client.msg.reporterrors.text", globalData.getFileType().getName(), rE + ruE, uE, bE, sE),JOptionPane.WARNING_MESSAGE, JOptionPane.DEFAULT_OPTION);
     }
 
     if (ui != null) {

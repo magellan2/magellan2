@@ -45,8 +45,8 @@ import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Problem;
-import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ProblemFactory;
+import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.IDBaseConverter;
@@ -55,11 +55,11 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.Regions;
 import magellan.library.utils.ReportMerger;
-import magellan.library.utils.ReportMerger.AssignData;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.Translations;
 import magellan.library.utils.UserInterface;
+import magellan.library.utils.ReportMerger.AssignData;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.logging.Logger;
@@ -115,10 +115,10 @@ public abstract class GameData implements Cloneable, Addeable {
   private EntityID ownerFaction;
 
   private Map<EntityID, Map<Integer, CoordinateID>> coordinateTranslations =
-      new LinkedHashMap<EntityID, Map<Integer, CoordinateID>>();
+    new LinkedHashMap<EntityID, Map<Integer, CoordinateID>>();
 
   private Map<Integer, Map<Integer, LevelRelation>> levelRelations =
-      new LinkedHashMap<Integer, Map<Integer, LevelRelation>>();
+    new LinkedHashMap<Integer, Map<Integer, LevelRelation>>();
 
   private Map<ID, AllianceGroup> alliancegroups;
 
@@ -425,11 +425,8 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * is set to true, if while proceeding some functions (e.g. CRParse) and we are running out of
    * memory... data may be corrupted or empty then
-   * 
-   * @deprecated Use {@link #isOutOfMemory()} instead
    */
-  @Deprecated
-  public boolean outOfMemory = false;
+  protected boolean outOfMemory = false;
 
   /**
    * sortIndex is used to keep objects from CRParser to CRWriter in an order. maxSortIndex is set
@@ -1209,7 +1206,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
     // create a map of region maps for every Island
     final Map<Island, Map<CoordinateID, Region>> islandMap =
-        new Hashtable<Island, Map<CoordinateID, Region>>();
+      new Hashtable<Island, Map<CoordinateID, Region>>();
 
     for (final Region r : data.getRegions()) {
       if (r.getIsland() != null) {
@@ -1790,7 +1787,7 @@ public abstract class GameData implements Cloneable, Addeable {
   public Faction getNullFaction() {
     if (nullFaction == null) {
       nullFaction =
-          MagellanFactory.createFaction(EntityID.createEntityID(Integer.MIN_VALUE, base), this);
+        MagellanFactory.createFaction(EntityID.createEntityID(Integer.MIN_VALUE, base), this);
     }
     return nullFaction;
   }
@@ -1852,20 +1849,6 @@ public abstract class GameData implements Cloneable, Addeable {
   public GameData repair(UserInterface ui2) {
     MyAssigner assigner = new MyAssigner();
     final GameData data = this;
-    try {
-      new ReportMerger(this, data.filetype.getFile(), new ReportMerger.Loader() {
-        public GameData load(File aFile) {
-          return data;
-        }
-      }, assigner).merge(ui2, true, false, false);
-    } catch (IOException e) {
-      log.error("invalid filetype");
-      // this will probably not happen, since the Exception would have been thrown before. Anyway...
-      assigner.data2 = this;
-    }
-    if (assigner.data2 == null) {
-      assigner.data2 = this;
-    }
 
     for (Problem p : data.getErrors()) {
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONUID.type) {
@@ -1881,6 +1864,22 @@ public abstract class GameData implements Cloneable, Addeable {
         }
       }
     }
+
+    try {
+      new ReportMerger(this, data.filetype.getFile(), new ReportMerger.Loader() {
+        public GameData load(File aFile) {
+          return data;
+        }
+      }, assigner).merge(ui2, true, false, false);
+    } catch (IOException e) {
+      log.error("invalid filetype");
+      // this will probably not happen, since the Exception would have been thrown before. Anyway...
+      assigner.data2 = this;
+    }
+    if (assigner.data2 == null) {
+      assigner.data2 = this;
+    }
+
 
     return assigner.data2;
   }

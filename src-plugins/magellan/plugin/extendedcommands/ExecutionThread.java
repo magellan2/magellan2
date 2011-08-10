@@ -72,6 +72,7 @@ public class ExecutionThread extends Thread {
     int counter = 0;
 
     commands.setFireChangeEvent(false);
+    commands.setUseThread(false);
 
     ExecutionThread.log.info("Executing commands for all configured containers...");
     Collections.sort(containers, new ContainerPriorityComparator(commands));
@@ -90,6 +91,7 @@ public class ExecutionThread extends Thread {
     }
 
     commands.setFireChangeEvent(true);
+    commands.setUseThread(true);
     ExecutionThread.log.info("Fire event - gamedata changed");
     client.getDispatcher().fire(new GameDataEvent(commands, client.getData()));
     ui.ready();

@@ -352,15 +352,6 @@
       <fileset dir="${release}/" includes="**"/>
     </copy>
 
-
-    <tar destfile="${basedir}/magellan_v${VERSION.POINTED}_macos.tgz" compression="gzip">
-      <tarfileset dir="${basedir}/macos" includes="**"/>
-    </tar>
-      
-    <delete includeEmptyDirs="true" failonerror="false">
-      <fileset dir="${basedir}/macos" includes="**"/>
-    </delete>
-    
     <antcall target="clear-release"/>
   </target>
   

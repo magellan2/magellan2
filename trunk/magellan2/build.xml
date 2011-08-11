@@ -341,7 +341,7 @@
     <mkdir dir="${basedir}/macos/Magellan.app" />
     <mkdir dir="${basedir}/macos/Magellan.app/Contents" />
     <copy file="${basedir}/installer/macos/PkgInfo" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
-    <copy file="${basedir}/installer/macos/Info.Plist" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
+    <copy file="${basedir}/installer/macos/Info.plist" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
     <mkdir dir="${basedir}/macos/Magellan.app/Contents/MacOS" />
     <copy file="${basedir}/installer/macos/JavaApplicationStub" todir="${basedir}/macos/Magellan.app/Contents/MacOS/" overwrite="yes"/>
     <chmod dir="${basedir}/macos/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>

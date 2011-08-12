@@ -7,13 +7,16 @@
 
 package magellan.client;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +24,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
@@ -125,6 +129,7 @@ import magellan.client.preferences.ClientPreferences;
 import magellan.client.swing.AskForPasswordDialog;
 import magellan.client.swing.DebugDock;
 import magellan.client.swing.ECheckPanel;
+import magellan.client.swing.InfoDialog;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MagellanLookAndFeel;
 import magellan.client.swing.MapperPanel;
@@ -192,6 +197,11 @@ import magellan.library.utils.transformation.BoxTransformer;
 import magellan.library.utils.transformation.BoxTransformer.BBox;
 import magellan.library.utils.transformation.BoxTransformer.BBoxes;
 
+import org.simplericity.macify.eawt.Application;
+import org.simplericity.macify.eawt.ApplicationEvent;
+import org.simplericity.macify.eawt.ApplicationListener;
+import org.simplericity.macify.eawt.DefaultApplication;
+
 /**
  * This class is the root of all evil. It represents also the main entry point into the application
  * and also the basic frame the application creates. It is a singleton which is instantiated from
@@ -200,7 +210,7 @@ import magellan.library.utils.transformation.BoxTransformer.BBoxes;
  * @author $Author: $
  * @version $Revision: 388 $
  */
-public class Client extends JFrame implements ShortcutListener, PreferencesFactory {
+public class Client extends JFrame implements ShortcutListener, PreferencesFactory, ApplicationListener {
   private static final Logger log = Logger.getInstance(Client.class);
 
   /** The name of the magellan settings file. */
@@ -282,7 +292,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /** start window, disposed after first init */
   protected static StartWindow startWindow;
 
+  /** contains the list of all loadable plugins */
   protected Collection<MagellanPlugIn> plugIns = new ArrayList<MagellanPlugIn>();
+
+  /** Contains at startup the application icon of Magellan - most time only on a mac */
+  private BufferedImage appIcon = null;
+  /** Contains the macify application context of Magellan. */
+  private Application application = null;
 
   /**
    * Creates a new Client object taking its data from <tt>gd</tt>.
@@ -1186,6 +1202,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             }
           }
 
+          c.application  = new DefaultApplication();
+          c.application.addPreferencesMenuItem();
+          c.application.setEnabledPreferencesMenu(true);
+          c.application.addAboutMenuItem();
+          c.application.setEnabledAboutMenu(true);
+          c.application.addApplicationListener(c);
+
+          Client.log.info("Is Mac extension working:"+c.application.isMac());
+
+          c.appIcon = c.application.getApplicationIconImage();
+
           File crFile = null;
 
           if (tReport == null) {
@@ -1775,6 +1802,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         if (data != null) {
           client.setData(data);
           client.setReportChanged(false);
+          client.setAdditionalIconInfo(data.getDate().getDate());
         }
       }
     }, "loadCRThread").start();
@@ -2199,6 +2227,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       try {
         getData().setCurTempID("".equals(s) ? 0 : Integer.parseInt(s, getData().base));
       } catch (java.lang.NumberFormatException nfe) {
+        // do nothing
       }
     }
 
@@ -2713,6 +2742,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
   }
 
+  /**
+   * Returns all currenty selected objects.
+   */
   public SelectionEvent getSelectedObjects() {
     return overviewPanel.getSelectedObjects();
   }
@@ -2801,4 +2833,120 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
   }
 
+  /**
+   * Handles mac specific about menu action event
+   * 
+   * @see org.simplericity.macify.eawt.ApplicationListener#handleAbout(org.simplericity.macify.eawt.ApplicationEvent)
+   */
+  public void handleAbout(ApplicationEvent event) {
+    Client.log.info("app open about event");
+    event.setHandled(true);
+    new InfoDialog(Client.INSTANCE).setVisible(true);
+  }
+
+  /**
+   * Handles mac specific open application event (I think, we don't use it)
+   * 
+   * @see org.simplericity.macify.eawt.ApplicationListener#handleOpenApplication(org.simplericity.macify.eawt.ApplicationEvent)
+   */
+  public void handleOpenApplication(ApplicationEvent event) {
+    Client.log.info("app open event");
+  }
+
+  /**
+   * Handles mac specific file open operation (if someone opens a cr in the finder)
+   * 
+   * @see org.simplericity.macify.eawt.ApplicationListener#handleOpenFile(org.simplericity.macify.eawt.ApplicationEvent)
+   */
+  public void handleOpenFile(ApplicationEvent event) {
+    Client.log.info("app open file event");
+    // not implemented
+  }
+
+  /**
+   * Handles mac specific preferences menu action event
+   * 
+   * @see org.simplericity.macify.eawt.ApplicationListener#handlePreferences(org.simplericity.macify.eawt.ApplicationEvent)
+   */
+  public void handlePreferences(ApplicationEvent event) {
+    Client.log.info("app open prev event");
+    event.setHandled(true);
+    Client.INSTANCE.optionAction.menuActionPerformed(null);
+  }
+
+  /**
+   * Handles mac specific print event
+   * 
+   * @see org.simplericity.macify.eawt.ApplicationListener#handlePrintFile(org.simplericity.macify.eawt.ApplicationEvent)
+   */
+  public void handlePrintFile(ApplicationEvent event) {
+    Client.log.info("app print file event");
+  }
+
+  /**
+   * Handles mac specific quit menu event
+   * 
+   * @see org.simplericity.macify.eawt.ApplicationListener#handleQuit(org.simplericity.macify.eawt.ApplicationEvent)
+   */
+  public void handleQuit(ApplicationEvent event) {
+    Client.log.info("app quit event");
+    event.setHandled(true);
+    quit(true);
+  }
+
+  /**
+   * Handles a reopen event - what ever that means
+   * 
+   * @see org.simplericity.macify.eawt.ApplicationListener#handleReOpenApplication(org.simplericity.macify.eawt.ApplicationEvent)
+   */
+  public void handleReOpenApplication(ApplicationEvent event) {
+    Client.log.info("app reopen event");
+  }
+
+  /**
+   * Replaces the application icon in a Mac application with the default mac icon of Magellan.
+   * This can be used, when the icon was changed (f.e. with the blue circle)
+   * 
+   * @see #setAdditionalIconInfo(int)
+   */
+  public void setDefaultIconInfo() {
+    if (appIcon == null) {
+      appIcon = application.getApplicationIconImage();
+    }
+    BufferedImage originalIcon = appIcon;
+
+    BufferedImage newIcon = new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    application.setApplicationIconImage(newIcon);
+  }
+
+  /**
+   * Adds a small hint to the icon (only available on mac os)
+   */
+  public void setAdditionalIconInfo(int data) {
+    if (appIcon == null) {
+      appIcon = application.getApplicationIconImage();
+    }
+    BufferedImage originalIcon = appIcon;
+
+    int width = originalIcon.getWidth() / 4;
+
+    BufferedImage newIcon = new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+    Graphics2D graphics = (Graphics2D) newIcon.getGraphics();
+
+    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    graphics.setColor(Color.decode("#0000E4"));
+
+    graphics.drawImage(originalIcon, 0, 0, null);
+
+    graphics.fillOval(originalIcon.getWidth()-width, 0, width-5, width-5);
+
+    graphics.setColor(Color.WHITE);
+    graphics.setFont(new Font("Helvetica", Font.BOLD, (width/4)));
+    graphics.drawString(Integer.toString(data), originalIcon.getWidth()-(width-(width/4)), width-(int)(width/2.5));
+
+    graphics.dispose();
+
+    application.setApplicationIconImage(newIcon);
+  }
 }

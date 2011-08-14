@@ -123,6 +123,7 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("posY", regionMethod, args);
 
     drf.putReplacer("maxtrade", MaxTradeReplacer.class);
+    drf.putReplacer("tradetype", TradeReplacer.class);
     drf.putReplacer("herb", HerbReplacer.class);
 
     drf.putReplacer("maxWorkers", MaxWorkersReplacer.class);

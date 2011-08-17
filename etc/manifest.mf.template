@@ -33,3 +33,4 @@ Class-Path: magellan-client.jar
             lib/skins/metouia.jar
             lib/skins/looks-1.3b1.jar 
             lib/skins/skinsCollected.jar
+            lib/macify-1.4.jar

@@ -1,3 +1,10 @@
+2011-08-24 / Build 475 - stm (stm_@users.sourceforge.net)
+    * fixed island renaming (trac bug #37)
+    * search for groups in find dialog (trac bug #34)
+    * fixed JVorlage, which was defunct for a loong time
+    * fixed order detection of ENTER (which is a prefix of ENTERTAIN!)
+    * additions to echeck txt files
+
 2011-08-09 / Build 473 - trickert (thoralf@m84.de)
     * RELEASE 2.0.6 
     * fixed a minor performance bug inside ExtCmds Plugin (concurrent thread operations)

@@ -121,6 +121,7 @@ PASSWORDCLEARED, Passwort gelöscht
 PASSWORDMSG1, Nicht das korrekte Passwort eingesetzt
 PASSWORDMSG2, \n\n  ****  A C H T U N G !  ****\n\n  ****  Passwort fehlt!  ****\n\n
 PASSWORDMSG3, ~** FEHLER!! ** 
+PLANTPARAMETER, PFLANZE was?
 POST, Post-
 PRE, Prä-
 PROCESSINGFILE, Verarbeite Datei '%s'.

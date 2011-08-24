@@ -848,6 +848,24 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
+   * Appends information about this faction.
+   * 
+   * @param alliance
+   * @param allies
+   * @param u
+   * @param parent
+   * @param expandableNodes
+   */
+  private void appendIslandInfo(Island i, DefaultMutableTreeNode parent,
+      Collection<NodeWrapper> expandableNodes) {
+    DefaultMutableTreeNode fNode;
+    fNode =
+        createSimpleNode(i.getName() + ": " + (i.regions() == null ? "???" : i.regions().size()),
+            "insel");
+    parent.add(fNode);
+  }
+
+  /**
    * Shows a tree: Terrain : region.type Coordinates : region.coordinates guarding units (Orc
    * Infestination) (resources) (peasants) (luxuries) (schemes) (comments) (tags)
    * 
@@ -4591,8 +4609,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * sets the island name editable sets the island description editable shows an empty tree
    */
   private void showIsland(Island i) {
-    showNothing();
+    // make editable for privileged units
     setNameAndDescription(i, true);
+
+    // build tree
+    appendIslandInfo(i, rootNode, myExpandableNodes);
+
+    addTag.setEnabled(false);
+    removeTag.setEnabled(false);
   }
 
   /**

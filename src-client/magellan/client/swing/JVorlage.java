@@ -66,6 +66,7 @@ public class JVorlage extends InternationalizedDialog {
   private JComboBox comboInputFile = null;
   private JComboBox comboOutputFile = null;
   private JComboBox comboScriptFile = null;
+  private JComboBox comboScriptDirectory = null;
   private JTextField txtVorlageFile = null;
   private JCheckBox chkOptionCR = null;
   private JTextField txtOptions = null;
@@ -220,7 +221,7 @@ public class JVorlage extends InternationalizedDialog {
       public void actionPerformed(ActionEvent e) {
         String inputFile =
             getFileName((String) comboInputFile.getSelectedItem(), true, new EresseaFileFilter(
-                EresseaFileFilter.CR_FILTER));
+                EresseaFileFilter.CR_FILTER), false);
 
         if (inputFile != null) {
           comboInputFile.addItem(inputFile);
@@ -244,7 +245,7 @@ public class JVorlage extends InternationalizedDialog {
       public void actionPerformed(ActionEvent e) {
         String outputFile =
             getFileName((String) comboOutputFile.getSelectedItem(), false, new EresseaFileFilter(
-                EresseaFileFilter.CR_FILTER));
+                EresseaFileFilter.CR_FILTER), false);
 
         if (outputFile != null) {
           comboOutputFile.addItem(outputFile);
@@ -266,13 +267,39 @@ public class JVorlage extends InternationalizedDialog {
     btnScriptFile.setToolTipText(Resources.get("jvorlage.btn.scriptfile.tooltip"));
     btnScriptFile.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        List<String> extensions = new LinkedList<String>();
+        extensions.add(".txt");
+        extensions.add(".vms");
         String scriptFile =
             getFileName((String) comboScriptFile.getSelectedItem(), false, new EresseaFileFilter(
-                EresseaFileFilter.TXT_FILTER));
+                extensions, Resources.get("JVorlage.filefilter.script.description")), false);
 
-        if (scriptFile != null) {
+        if (scriptFile != null && new File(scriptFile).isFile()) {
           comboScriptFile.addItem(scriptFile);
           comboScriptFile.setSelectedItem(scriptFile);
+        }
+      }
+    });
+
+    comboScriptDirectory =
+        new JComboBox(getList(settings.getProperty("JVorlage.scriptdirectory", "")).toArray());
+    comboScriptDirectory.setEditable(true);
+    comboScriptDirectory.setToolTipText(Resources.get("jvorlage.combo.scriptdirectory.tooltip"));
+
+    JLabel lblScriptDirectory = new JLabel(Resources.get("jvorlage.lbl.scriptdirectory.caption"));
+    lblScriptDirectory.setLabelFor(comboScriptDirectory);
+    lblScriptDirectory.setToolTipText(comboScriptDirectory.getToolTipText());
+
+    JButton btnScriptDirectory = new JButton("...");
+    btnScriptDirectory.setToolTipText(Resources.get("jvorlage.btn.scriptdirectory.tooltip"));
+    btnScriptDirectory.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        String scriptDirectory =
+            getFileName((String) comboScriptDirectory.getSelectedItem(), false, null, true);
+
+        if (scriptDirectory != null && new File(scriptDirectory).isDirectory()) {
+          comboScriptDirectory.addItem(scriptDirectory);
+          comboScriptDirectory.setSelectedItem(scriptDirectory);
         }
       }
     });
@@ -337,7 +364,7 @@ public class JVorlage extends InternationalizedDialog {
     // outputFile
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
-    c.gridy = 1;
+    c.gridy++;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
@@ -346,7 +373,7 @@ public class JVorlage extends InternationalizedDialog {
     pnlFiles.add(lblOutputFile, c);
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 1;
-    c.gridy = 1;
+    // c.gridy = 1;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
@@ -355,7 +382,7 @@ public class JVorlage extends InternationalizedDialog {
     pnlFiles.add(comboOutputFile, c);
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 2;
-    c.gridy = 1;
+    // c.gridy = 1;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
@@ -366,7 +393,7 @@ public class JVorlage extends InternationalizedDialog {
     // scriptFile
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
-    c.gridy = 2;
+    c.gridy++;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
@@ -375,7 +402,7 @@ public class JVorlage extends InternationalizedDialog {
     pnlFiles.add(lblScriptFile, c);
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 1;
-    c.gridy = 2;
+    // c.gridy = 2;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
@@ -384,7 +411,7 @@ public class JVorlage extends InternationalizedDialog {
     pnlFiles.add(comboScriptFile, c);
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 2;
-    c.gridy = 2;
+    // c.gridy = 2;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
@@ -392,10 +419,39 @@ public class JVorlage extends InternationalizedDialog {
     c.weighty = 0.0;
     pnlFiles.add(btnScriptFile, c);
 
+    // scriptDirectory
+    c.anchor = GridBagConstraints.WEST;
+    c.gridx = 0;
+    c.gridy++;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    pnlFiles.add(lblScriptDirectory, c);
+    c.anchor = GridBagConstraints.CENTER;
+    c.gridx = 1;
+    // c.gridy = 2;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.weightx = 0.1;
+    c.weighty = 0.0;
+    pnlFiles.add(comboScriptDirectory, c);
+    c.anchor = GridBagConstraints.CENTER;
+    c.gridx = 2;
+    // c.gridy = 2;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    pnlFiles.add(btnScriptDirectory, c);
+
     // vorlageFile
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
-    c.gridy = 3;
+    c.gridy++;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.NONE;
@@ -404,7 +460,7 @@ public class JVorlage extends InternationalizedDialog {
     pnlFiles.add(lblVorlageFile, c);
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 1;
-    c.gridy = 3;
+    // c.gridy = 3;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
@@ -524,6 +580,7 @@ public class JVorlage extends InternationalizedDialog {
     settings.setProperty("JVorlage.inputFile", getString(comboInputFile));
     settings.setProperty("JVorlage.outputFile", getString(comboOutputFile));
     settings.setProperty("JVorlage.scriptFile", getString(comboScriptFile));
+    settings.setProperty("JVorlage.scriptDirectory", getString(comboScriptDirectory));
     // settings.setProperty("JVorlage.vorlageFile", txtVorlageFile.getText());
 
     settings.setProperty("JVorlage.optionCR", String.valueOf(chkOptionCR.isSelected()));
@@ -571,8 +628,11 @@ public class JVorlage extends InternationalizedDialog {
       commandLine +=
           (" -e " + tempFile.getAbsolutePath() + " -do " + tempFile.getAbsolutePath() + " -to " + tempFile
               .getAbsolutePath());
-    } else {
+    }
 
+    {
+
+      commandLine += " ";
       commandLine += options;
 
       Process p = null;
@@ -580,7 +640,16 @@ public class JVorlage extends InternationalizedDialog {
 
       try {
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        p = Runtime.getRuntime().exec(commandLine);
+        File dir = null;
+        if (comboScriptDirectory.getSelectedItem() != null) {
+          dir = new File((String) comboScriptDirectory.getSelectedItem());
+        }
+        if (dir != null && dir.isDirectory()) {
+          p = Runtime.getRuntime().exec(commandLine, null, dir);
+        } else {
+          p = Runtime.getRuntime().exec(commandLine);
+        }
+
       } catch (Exception e) {
         JVorlage.log.error("JVorlage.execVorlage()", e);
       }
@@ -590,9 +659,10 @@ public class JVorlage extends InternationalizedDialog {
           try {
             Thread.sleep(300);
           } catch (InterruptedException e) {
+            // do nothing
           }
 
-          if ((System.currentTimeMillis() - start) > 5000) {
+          if ((System.currentTimeMillis() - start) > 10000) {
             if (JOptionPane.showConfirmDialog(this, Resources.get("jvorlage.msg.stopvorlage.text"),
                 Resources.get("jvorlage.msg.stopvorlage.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
               p.destroy();
@@ -647,6 +717,8 @@ public class JVorlage extends InternationalizedDialog {
       try {
         reader.close();
       } catch (IOException e) {
+        log.error("error closing temp file", e);
+        // let's hope for the best...
       }
     }
 
@@ -738,15 +810,22 @@ public class JVorlage extends InternationalizedDialog {
   /**
    * Returns a a file name by showing the user a file selection dialog. If the user's selection is
    * empty, null is returned.
+   * 
+   * @param directories
    */
-  private String getFileName(String defaultFile, boolean multSel, FileFilter ff) {
+  private String getFileName(String defaultFile, boolean multSel, FileFilter ff, boolean directories) {
     StringBuffer sb = new StringBuffer();
     File files[] = null;
 
     JFileChooser fc = new JFileChooser();
-    fc.addChoosableFileFilter(ff);
-    fc.setFileFilter(ff);
+    if (ff != null) {
+      fc.addChoosableFileFilter(ff);
+      fc.setFileFilter(ff);
+    }
     fc.setMultiSelectionEnabled(multSel);
+    if (directories) {
+      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    }
 
     if (defaultFile != null) {
       fc.setSelectedFile(new File(defaultFile));
@@ -779,9 +858,9 @@ public class JVorlage extends InternationalizedDialog {
   }
 
   /**
-   * DOCUMENT-ME
+   * Main method for standalone app.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException If an I/O error occurred.
    */
   public static void main(String args[]) throws IOException {
     Properties settings = new Properties();

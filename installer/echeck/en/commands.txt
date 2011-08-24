@@ -52,7 +52,7 @@ DEFAULT,  Default
 COMMENT,  //
 ROUTE,    Route
 SABOTAGE, Sabotage
-BREED,    Breed
+BREED,    Grow
 ORIGIN,   Origin
 EMAIL,    Email
 RESERVE,  Reserve

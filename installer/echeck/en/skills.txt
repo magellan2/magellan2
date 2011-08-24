@@ -8,6 +8,7 @@
 # Comments start with a #; empty lines are allowed.
 #############################################################################
 
+unarmed combat
 alchemy, 200
 crossbow
 endurance

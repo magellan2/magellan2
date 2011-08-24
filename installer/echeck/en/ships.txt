@@ -9,3 +9,16 @@ Longboat
 Longship
 Caravel
 Trireme
+
+# E3
+Canoe
+Raft
+Cutter
+Barge
+Royal Barge
+Catamaran
+Cog
+Caravel
+Frigate
+Galleon
+Dragonship

@@ -12,6 +12,7 @@
 #   zweiter Eintrag: Lernkosten (optional)
 ############################################################################
 
+Waffenloser Kampf
 Alchemie, 200
 Armbrustschieﬂen
 Ausdauer

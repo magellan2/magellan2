@@ -118,9 +118,10 @@ ORDERNUMBER, NUMBER SHIP, NUMBER CASTLE, NUMBER FACTION or NUMBER UNIT
 ORDERSOK, The orders look good.\n
 ORDERSREAD, \nOrders have been read for %d %s and %d %s.\n
 PASSWORDCLEARED, Password cleared
-PASSWORDMSG1, Incorrect passowrd
+PASSWORDMSG1, Incorrect password
 PASSWORDMSG2, \n\n  ****  A T T E N T I O N !  ****\n\n  ****  Password missing!  ****\n\n
 PASSWORDMSG3, ~** ERROR!! **
+PLANTPARAMETER, PLANT what?
 POST, post-
 PRE, pre-
 PROCESSINGFILE, Processing file '%s'.

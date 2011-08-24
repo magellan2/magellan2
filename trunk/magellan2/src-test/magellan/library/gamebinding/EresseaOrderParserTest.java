@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
@@ -32,7 +32,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 
@@ -1249,7 +1249,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetHandlers() {
-    ArrayList<OrderHandler> list = parser.getHandlers(new OrderToken("a"));
+    List<OrderHandler> list = parser.getHandlers(new OrderToken("a"));
     assertTrue(list != null);
     if (list == null)
       return;
@@ -1527,7 +1527,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     assertTrue(parser.getErrorMessage() == null);
     parser.read(new StringReader("ARBEITEN 2"));
     assertTrue(parser.getErrorMessage().equals(
-        "Unexpected token 2: Undefined(9, 10), not followed by Space"));
+    "Unexpected token 2: Undefined(9, 10), not followed by Space"));
   }
 
   /**
@@ -1784,9 +1784,9 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     if (orderToken == null || nextToken == null)
       return orderToken == nextToken;
     return orderToken.getText().equals(nextToken.getText())
-        && orderToken.getStart() == nextToken.getStart()
-        && orderToken.getEnd() == nextToken.getEnd() && orderToken.ttype == nextToken.ttype
-        && orderToken.followedBySpace() == nextToken.followedBySpace();
+    && orderToken.getStart() == nextToken.getStart()
+    && orderToken.getEnd() == nextToken.getEnd() && orderToken.ttype == nextToken.ttype
+    && orderToken.followedBySpace() == nextToken.followedBySpace();
   }
 
   /**
@@ -1811,7 +1811,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
       assertFalse(parser.isEmailAddress("a.@b.com")); // shouldn't be allowed, but is
       assertFalse(parser.isEmailAddress(".a@b.com")); // shouldn't be allowed, but is
       assertTrue(parser.isEmailAddress("\"!#$%&'*+-/=?^_`{|}~\"@example.com")); // shouldn't be
-                                                                                // allowed, but is
+      // allowed, but is
     }
   }
 }

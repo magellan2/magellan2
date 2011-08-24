@@ -55,6 +55,7 @@ import magellan.library.Building;
 import magellan.library.Described;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Group;
 import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Message;
@@ -83,6 +84,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   private JCheckBox chkIDs = null;
   private JCheckBox chkNames = null;
   private JCheckBox chkDescs = null;
+  private JCheckBox chkGroups = null;
   private JCheckBox chkCmds = null;
   private JCheckBox chkMessages = null;
   private JCheckBox chkItems = null;
@@ -239,6 +241,11 @@ public class FindDialog extends InternationalizedDataDialog implements
             "FindDialog.Descriptions", "true").equals("true"));
     chkDescs.setMnemonic(Resources.get("finddialog.chk.descriptions.mnemonic").charAt(0));
 
+    chkGroups =
+        new JCheckBox(Resources.get("finddialog.chk.groups.caption"), settings.getProperty(
+            "FindDialog.Groups", "true").equals("true"));
+    chkGroups.setMnemonic(Resources.get("finddialog.chk.groups.mnemonic").charAt(0));
+
     chkCmds =
         new JCheckBox(Resources.get("finddialog.chk.orders.caption"), settings.getProperty(
             "FindDialog.Orders", "true").equals("true"));
@@ -294,6 +301,10 @@ public class FindDialog extends InternationalizedDataDialog implements
 
     c.gridx++;
     pnlAttributeCheckBoxes.add(chkItems, c);
+
+    c.gridx = 0;
+    c.gridy++;
+    pnlAttributeCheckBoxes.add(chkGroups, c);
 
     c.gridx = 0;
     c.gridy++;
@@ -675,6 +686,10 @@ public class FindDialog extends InternationalizedDataDialog implements
         hits.add(item);
       }
 
+      if (chkGroups.isSelected() && (filterGroup(item, patterns) == true)) {
+        hits.add(item);
+      }
+
       if (chkCmds.isSelected() && (filterCmd(item, patterns) == true)) {
         hits.add(item);
       }
@@ -834,6 +849,34 @@ public class FindDialog extends InternationalizedDataDialog implements
     }
 
     return desc;
+  }
+
+  /**
+   * Return true if item matches patterns.
+   * 
+   * @param item
+   * @param patterns
+   * @return
+   */
+  private boolean filterGroup(Unique item, Collection<Pattern> patterns) {
+    boolean retVal = false;
+    String name = getGroup(item);
+
+    if (name != null) {
+      if (match(name, patterns))
+        return true;
+    }
+
+    return retVal;
+  }
+
+  private String getGroup(Unique item) {
+    if (item instanceof Unit) {
+      Group g = ((Unit) item).getGroup();
+      if (g != null)
+        return g.getName();
+    }
+    return null;
   }
 
   /**
@@ -1124,6 +1167,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     storeCheckbox(chkIDs, "IDs");
     storeCheckbox(chkNames, "Names");
     storeCheckbox(chkDescs, "Descriptions");
+    storeCheckbox(chkGroups, "Groups");
     storeCheckbox(chkCmds, "Orders");
     storeCheckbox(chkMessages, "Messages");
     storeCheckbox(chkItems, "Items");

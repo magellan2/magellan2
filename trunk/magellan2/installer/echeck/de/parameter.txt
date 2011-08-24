@@ -14,6 +14,7 @@ PEASANTS,    Bauern
 CASTLE,      Burg
 BUILDING,    Gebäude
 UNIT,        Einheit
+EACH,        Je
 FLEE,        Fliehe
 REAR,        Hinten
 FRONT,       Vorne
@@ -47,6 +48,9 @@ HORSES,      Pferde
 FOREIGN,     fremdes
 NUMBER,      Nummer
 # ^^ TARNE PARTEI NUMMER
+SEED,        Samen
+MALLORNSEED, Mallornsamen
+# ^^ PFLANZE
 LOCALE, Locale
 
 BEFORE,      vor

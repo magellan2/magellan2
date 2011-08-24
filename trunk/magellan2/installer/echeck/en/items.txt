@@ -36,6 +36,7 @@ seed; seeds
 chainmail; chainmails
 platemail; platemails
 broadsword; broadswords
+claymore; claymores
 axe; axes
 great bow; great bows
 laensword; laenswords; laen sword; laen swords

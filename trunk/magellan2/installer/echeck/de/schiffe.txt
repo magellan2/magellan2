@@ -12,3 +12,15 @@ Langboot
 Drachenschiff
 Karavelle
 Trireme
+
+# E3
+Einbaum
+Floß
+Kutter
+Barke
+Königsbarke
+Katamaran
+Kogge
+Karavelle
+Fregatte
+Galeone

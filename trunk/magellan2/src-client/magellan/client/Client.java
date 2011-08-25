@@ -2919,6 +2919,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (application == null) return;
     if (appIcon == null) {
       appIcon = application.getApplicationIconImage();
+      if (appIcon == null) return;
     }
     BufferedImage originalIcon = appIcon;
 
@@ -2933,6 +2934,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (application == null) return;
     if (appIcon == null) {
       appIcon = application.getApplicationIconImage();
+      if (appIcon == null) return;
     }
     BufferedImage originalIcon = appIcon;
 

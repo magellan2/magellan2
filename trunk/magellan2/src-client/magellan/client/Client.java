@@ -2916,6 +2916,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @see #setAdditionalIconInfo(int)
    */
   public void setDefaultIconInfo() {
+    if (application == null) return;
     if (appIcon == null) {
       appIcon = application.getApplicationIconImage();
     }
@@ -2929,6 +2930,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Adds a small hint to the icon (only available on mac os)
    */
   public void setAdditionalIconInfo(int data) {
+    if (application == null) return;
     if (appIcon == null) {
       appIcon = application.getApplicationIconImage();
     }

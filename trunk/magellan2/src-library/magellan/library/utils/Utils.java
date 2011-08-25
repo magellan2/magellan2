@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.utils;
 
 import java.awt.Color;
@@ -44,15 +44,38 @@ import org.w3c.dom.NodeList;
  */
 public class Utils {
 
+  /**
+   * Checks, if a Boolean is true (and not null)
+   */
   public static boolean is(Boolean bool) {
     return (bool != null && bool.booleanValue());
   }
 
+  /**
+   * Parses a string into a int, if possible
+   * 
+   * otherwise it returns 0.
+   */
   public static int getIntValue(String value) {
     if (value == null)
       return 0;
     try {
       return Integer.parseInt(value);
+    } catch (Exception exception) {
+      return 0;
+    }
+  }
+
+  /**
+   * Parses a string into a long, if possible
+   * 
+   * otherwise it returns 0d.
+   */
+  public static long getLongValue(String value) {
+    if (value == null)
+      return 0;
+    try {
+      return Long.parseLong(value);
     } catch (Exception exception) {
       return 0;
     }
@@ -72,6 +95,9 @@ public class Utils {
     return defaultValue;
   }
 
+  /**
+   * Returns the boolean value of a string.
+   */
   public static boolean getBoolValue(String value, boolean defaultValue) {
     if (Utils.isEmpty(value))
       return defaultValue;
@@ -180,10 +206,16 @@ public class Utils {
     return number == null || number.floatValue() == 0;
   }
 
+  /**
+   * Returns a never null string.
+   */
   public static String notNullString(Object string) {
     return Utils.notNullString(string, "");
   }
 
+  /**
+   * Returns a never null string.
+   */
   public static String notNullString(Object object, String nullString) {
     if (object == null)
       return nullString;
@@ -218,6 +250,9 @@ public class Utils {
     return xmlString;
   }
 
+  /**
+   * Returns all XML child nodes of a root node.
+   */
   public static List<Element> getChildNodes(Element root) {
     NodeList subnodes = root.getChildNodes();
     List<Element> result = new ArrayList<Element>();
@@ -231,6 +266,9 @@ public class Utils {
     return result;
   }
 
+  /**
+   * Returns all XML child nodes of a root node with the given name
+   */
   public static List<Element> getChildNodes(Element root, String name) {
     NodeList subnodes = root.getChildNodes();
     List<Element> result = new ArrayList<Element>();
@@ -247,6 +285,9 @@ public class Utils {
     return result;
   }
 
+  /**
+   * Returns the first child node of a root node with the given name
+   */
   public static Element getChildNode(Element root, String name) {
     List<Element> children = Utils.getChildNodes(root, name);
     if (Utils.isEmpty(children))
@@ -254,6 +295,9 @@ public class Utils {
     return children.get(0);
   }
 
+  /**
+   * Returns the first child node of a root node
+   */
   public static Element getChildNode(Element root) {
     NodeList subnodes = root.getChildNodes();
     for (int i = 0; i < subnodes.getLength(); i++) {
@@ -266,6 +310,9 @@ public class Utils {
     return null;
   }
 
+  /**
+   * Returns al character data inside a root element
+   */
   public static String getCData(Element root) {
     if (root == null)
       return "";
@@ -370,6 +417,9 @@ public class Utils {
     return "#" + r + g + b;
   }
 
+  /**
+   * Returns the decimal value of a hex number
+   */
   public static int hexadecimalToDecimal(String hexadecimal) {
     int power = 1, decimal = 0, number = 0;
     String digit;
@@ -418,8 +468,11 @@ public class Utils {
   }
 
   private static final String hex[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B",
-      "C", "D", "E", "F" };
+    "C", "D", "E", "F" };
 
+  /**
+   * Returns the hex value of a decimal number
+   */
   public static String decimalToHexadecimal(long decimal) {
     long rest;
 
@@ -455,6 +508,7 @@ public class Utils {
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return formater.parse(date);
       } catch (ParseException exception) {
+        // do nothing
       }
     }
     return null;

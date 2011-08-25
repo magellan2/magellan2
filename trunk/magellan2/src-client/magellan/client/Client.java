@@ -1802,7 +1802,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         if (data != null) {
           client.setData(data);
           client.setReportChanged(false);
-          client.setAdditionalIconInfo(data.getDate().getDate());
+          //          client.setAdditionalIconInfo(data.getDate().getDate());
         }
       }
     }, "loadCRThread").start();
@@ -2220,6 +2220,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     updateTitleCaption();
     updateConfirmMenu();
     updatePlugIns();
+    updateAppIconCaption();
 
     if (getData().getCurTempID() == -1) {
       String s = getProperties().getProperty("ClientPreferences.TempIDsInitialValue", "");
@@ -2677,11 +2678,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     public void orderConfirmationChanged(OrderConfirmEvent e) {
       if ((getData() != null) && isShowingStatus()) {
         updateTitleCaption();
+        updateAppIconCaption();
       }
 
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
         updateTitleCaption();
+        updateAppIconCaption();
       }
     }
 
@@ -2694,6 +2697,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
         updateTitleCaption();
+        updateAppIconCaption();
       }
     }
 
@@ -2706,6 +2710,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
         updateTitleCaption();
+        updateAppIconCaption();
       }
     }
 
@@ -2735,6 +2740,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         if (!stateChanged) {
           stateChanged = true;
           updateTitleCaption();
+          updateAppIconCaption();
         } else {
           stateChanged = true;
         }
@@ -2949,4 +2955,47 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     application.setApplicationIconImage(newIcon);
   }
+
+  /**
+   * This method updates the app icon based on not confirmed units
+   */
+  protected void updateAppIconCaption() {
+
+    GameData data = getData();
+    if (data == null) return;
+
+    int units = 0;
+    int done = 0;
+
+    for (Unit u : data.getUnits()) {
+      if (u.getFaction().isPrivileged()) {
+        units++;
+
+        if (u.isOrdersConfirmed()) {
+          done++;
+        }
+      }
+
+      // also count temp units
+      for (Iterator<TempUnit> iter2 = u.tempUnits().iterator(); iter2.hasNext();) {
+        Unit u2 = iter2.next();
+
+        if (u2.getFaction().isPrivileged()) {
+          units++;
+
+          if (u2.isOrdersConfirmed()) {
+            done++;
+          }
+        }
+      }
+    }
+
+    if (units > 0 && done < units) {
+      setAdditionalIconInfo(units-done);
+    } else {
+      setDefaultIconInfo();
+    }
+  }
+
+
 }

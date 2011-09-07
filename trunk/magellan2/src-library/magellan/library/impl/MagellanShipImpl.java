@@ -220,7 +220,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
       modLoad += getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u);
       // if persons and cargo are counted separately (E3), remove persons' weight here
       if (getShipType().getMaxPersons() > 0) {
-        modLoad -= u.getPersons() * u.getRace().getWeight() * 100;
+        modLoad -= u.getModifiedPersons() * u.getRace().getWeight() * 100;
       }
     }
     return modLoad;
@@ -428,22 +428,22 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * @see magellan.library.Ship#getModifiedPersonLoad() TODO: move to {@link MovementEvaluator}
    */
   public int getModifiedPersonLoad() {
-    int inmates = 0;
+    int modInmates = 0;
     for (final Unit u : modifiedUnits()) {
-      inmates += u.getPersons() * u.getRace().getWeight() * 100;
+      modInmates += u.getModifiedPersons() * u.getRace().getWeight() * 100;
     }
-    return inmates;
+    return modInmates;
   }
 
   /**
    * @see magellan.library.Ship#getPersonLoad()
    */
   public int getPersonLoad() {
-    int modInmates = 0;
-    for (final Unit u : modifiedUnits()) {
-      modInmates += u.getModifiedPersons() * u.getRace().getWeight() * 100;
+    int inmates = 0;
+    for (final Unit u : units()) {
+      inmates += u.getPersons() * u.getRace().getWeight() * 100;
     }
-    return modInmates;
+    return inmates;
   }
 
   /**

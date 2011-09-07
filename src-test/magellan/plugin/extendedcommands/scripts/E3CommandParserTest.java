@@ -550,6 +550,42 @@ public class E3CommandParserTest {
   }
 
   /**
+   * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
+   */
+  @Test
+  public final void testCommandEmbassador() {
+    // no skill, no money --> work
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertOrder("ARBEITEN", unit, 2);
+
+    // with entertain skill
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    builder.addItem(data, unit, "Silber", 90);
+    builder.addSkill(unit, "Unterhaltung", 1);
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertOrder("UNTERHALTEN", unit, 2);
+
+    // with money --> learn
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    builder.addItem(data, unit, "Silber", 110);
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertOrder("LERNEN Segeln", unit, 3);
+  }
+
+  /**
    * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
    */
   @Test

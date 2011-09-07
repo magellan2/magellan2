@@ -349,12 +349,13 @@ public class E3CommandParser {
       helper.getUI().setProgress(region.toString() + " - postprocessing", ++progress);
 
       satisfyNeeds();
-      region.refreshUnitRelations();
     } catch (RuntimeException e) {
       e.printStackTrace();
       // log.error(e.getClass().getSimpleName() + " script error for " + region);
       throw new RuntimeException("script error for " + region, e);
     }
+    // refresh relations, just in case
+    region.refreshUnitRelations(true);
   }
 
   /**
@@ -1172,7 +1173,8 @@ public class E3CommandParser {
     }
 
     if (helper.getSilver(currentUnit) < 100) {
-      if (hasEntertain() && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG).getLevel() > 0) {
+      if (hasEntertain() && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG) != null
+          && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG).getLevel() > 0) {
         addNewOrder(ENTERTAINOrder, true);
       } else if (hasWork()) {
         addNewOrder(WORKOrder, true);
@@ -1201,21 +1203,36 @@ public class E3CommandParser {
     }
 
     // check if region units are allowed
-    Map<Faction, Unit> warnings = new HashMap<Faction, Unit>();
+    Map<Faction, List<Unit>> warnings = new HashMap<Faction, List<Unit>>();
     for (Unit u : currentRegion.units()) {
       if (u.getFaction() != currentUnit.getFaction()) {
         if (!(allowedUnits.containsKey(u.getFaction()) && (allowedUnits.get(u.getFaction())
             .contains(u) || allowedUnits.get(u.getFaction()).contains(currentRegion.getZeroUnit())))) {
           if (!(requiredUnits.containsKey(u.getFaction()) && requiredUnits.get(u.getFaction())
               .contains(u))) {
-            warnings.put(u.getFaction(), u);
+            List<Unit> list = warnings.get(u.getFaction());
+            if (list == null) {
+              list = new LinkedList<Unit>();
+              warnings.put(u.getFaction(), list);
+            }
+            list.add(u);
           }
         }
       }
     }
 
-    for (Entry<Faction, Unit> entry : warnings.entrySet()) {
-      addNewWarning(entry.getKey() + " hat unerlaubte Einheiten: " + entry.getValue());
+    for (Entry<Faction, List<Unit>> entry : warnings.entrySet()) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(entry.getKey()).append(" hat unerlaubte Einheiten:");
+      int i = 0;
+      for (Unit u : entry.getValue()) {
+        if (++i < 4) {
+          sb.append(" ");
+          sb.append(u.toString());
+        }
+      }
+      entry.getValue().clear();
+      addNewWarning(sb.toString());
     }
 
     // check if required units are present
@@ -2240,6 +2257,7 @@ public class E3CommandParser {
     error = line;
     // errMsg = hint;
     addNewOrder(COMMENTOrder + " TODO: " + hint + " (Fehler in Zeile " + error + ")", true);
+    setConfirm(currentUnit, false);
   }
 
   /**
@@ -2261,6 +2279,7 @@ public class E3CommandParser {
     error = line;
     // errMsg = hint;
     addNewOrder(COMMENTOrder + " TODO: " + hint + " (Warnung in Zeile " + error + ")", true);
+    setConfirm(currentUnit, false);
   }
 
   // ///////////////////////////////////////////////////////
@@ -2840,50 +2859,7 @@ public class E3CommandParser {
         // comment out the following line if you don't have the newest nightly build of Magellan
         helper.getUI().setProgress(region.toString() + " - " + u.toString(), progress);
 
-        if (changeOrders(u, new OrderFilter() {
-
-          private String result;
-
-          public boolean changeOrder(String command) {
-            if (world.getGameSpecificStuff().getOrderChanger().isLongOrder(command))
-              return false;
-            else {
-              if (command.startsWith("@") || command.startsWith("//"))
-                return false;
-              else {
-                if (currentOrder.startsWith(";")) {
-                  result = null;
-                  return true;
-                } else {
-                  result = ";" + command;
-                  return true;
-                }
-              }
-            }
-          }
-
-          public boolean changeOrder(Order command) {
-            if (world.getGameSpecificStuff().getOrderChanger().isLongOrder(command))
-              return false;
-            else {
-              if (command.isLong() || command.isPersistent() || command.getText().startsWith("//"))
-                return false;
-              else {
-                if (command.getText().startsWith(";")) {
-                  result = null;
-                  return true;
-                } else {
-                  result = ";" + command.getText();
-                  return true;
-                }
-              }
-            }
-          }
-
-          public String changedOrder() {
-            return result;
-          }
-        })) {
+        if (changeOrders(u, new ShortOrderFilter(world))) {
           notifyMagellan(u);
         }
       }
@@ -3030,21 +3006,7 @@ public class E3CommandParser {
   protected void markTRound(int round) {
     if (world.getDate().getDate() == round) {
       for (Unit u : world.getUnits()) {
-        changeOrders(u, new OrderFilter() {
-          public boolean changeOrder(Order order) {
-            return changeOrder(order.getText());
-          }
-
-          public boolean changeOrder(String order) {
-            if (order.startsWith("// $$L"))
-              return true;
-            return false;
-          }
-
-          public String changedOrder() {
-            return null;
-          }
-        });
+        changeOrders(u, new TeachRoundOrderFilter());
         u.addOrder("// $$L" + (round + 1));
       }
     }
@@ -3237,6 +3199,72 @@ interface OrderFilter {
    *         removed. If changeOrder returns <code>false</code>, the return value is undefined!
    */
   public String changedOrder();
+}
+
+class TeachRoundOrderFilter implements OrderFilter {
+  public boolean changeOrder(Order order) {
+    return changeOrder(order.getText());
+  }
+
+  public boolean changeOrder(String order) {
+    if (order.startsWith("// $$L"))
+      return true;
+    return false;
+  }
+
+  public String changedOrder() {
+    return null;
+  }
+}
+
+class ShortOrderFilter implements OrderFilter {
+
+  private String result;
+  private GameData world;
+
+  public ShortOrderFilter(GameData world) {
+    this.world = world;
+  }
+
+  public boolean changeOrder(String command) {
+    if (world.getGameSpecificStuff().getOrderChanger().isLongOrder(command))
+      return false;
+    else {
+      if (command.startsWith("@") || command.startsWith("//"))
+        return false;
+      else {
+        if (command.startsWith(";")) {
+          result = null;
+          return true;
+        } else {
+          result = ";" + command;
+          return true;
+        }
+      }
+    }
+  }
+
+  public boolean changeOrder(Order command) {
+    if (world.getGameSpecificStuff().getOrderChanger().isLongOrder(command))
+      return false;
+    else {
+      if (command.isLong() || command.isPersistent() || command.getText().startsWith("//"))
+        return false;
+      else {
+        if (command.getText().startsWith(";")) {
+          result = null;
+          return true;
+        } else {
+          result = ";" + command.getText();
+          return true;
+        }
+      }
+    }
+  }
+
+  public String changedOrder() {
+    return result;
+  }
 }
 
 class Need extends Supply {

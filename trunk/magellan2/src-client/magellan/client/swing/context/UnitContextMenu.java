@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
@@ -453,11 +454,16 @@ public class UnitContextMenu extends JPopupMenu {
         new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
     String s[] = giveOderDialog.showGiveOrderDialog();
     if (s[0] != null) {
+      Set<Region> regions = new HashSet<Region>();
       for (Unit u : selectedUnits) {
         if (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
-          magellan.client.utils.Units.addOrders(u, s);
+          magellan.client.utils.Units.addOrders(u, s, false);
           dispatcher.fire(new UnitOrdersEvent(this, u));
         }
+        regions.add(u.getRegion());
+      }
+      for (Region r : regions) {
+        r.refreshUnitRelations(true);
       }
     }
 
@@ -473,12 +479,17 @@ public class UnitContextMenu extends JPopupMenu {
         new RemoveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
     String s[] = removeOderDialog.showDialog();
     if (s[0] != null) {
+      Set<Region> regions = new HashSet<Region>();
       for (Unit u : selectedUnits) {
 
         if (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
           magellan.client.utils.Units.removeOrders(u, s);
           dispatcher.fire(new UnitOrdersEvent(this, u));
+          regions.add(u.getRegion());
         }
+      }
+      for (Region r : regions) {
+        r.refreshUnitRelations(true);
       }
     }
 

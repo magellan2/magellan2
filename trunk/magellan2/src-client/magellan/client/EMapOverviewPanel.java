@@ -1824,12 +1824,11 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       }
     }
 
-    if (!privilegedWithoutAllies) {
+    if (!privilegedWithoutAllies && !privilegedFactions.isEmpty()
+        && (privilegedFactions.get(0)).getAllies() != null) {
       // take the alliances of the first found privileged faction as
       // activeAlliances
-      if (privilegedFactions.size() > 0) {
-        activeAlliances.putAll((privilegedFactions.get(0)).getAllies());
-      }
+      activeAlliances.putAll((privilegedFactions.get(0)).getAllies());
 
       // now check whether they are contained in the alliances-Maps of the other
       // privileged factions and adjust their states if necessary
@@ -2035,7 +2034,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
             // if (lastRelations.contains(r)) {
             // intersection.add(r);
             // } else
-            if (r.target != u) {
+            if (r.target != u && r.target != null) {
               if (!visited.contains(r.target)) {
                 update((r).target, updateRelationPartnersDistance - 1, visited);
               }
@@ -2048,7 +2047,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           // update related units from removed relations
           for (TransferRelation r : lastRelations) {
             // if (!intersection.contains(r))
-            if (r.target != u) {
+            if (r.target != u && r.target != null) {
               if (!visited.contains(r.target)) {
                 update((r).target, updateRelationPartnersDistance - 1, visited);
               }

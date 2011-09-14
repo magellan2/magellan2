@@ -36,6 +36,9 @@ import magellan.library.utils.transformation.BoxTransformer.BBox;
  */
 public interface UserInterface {
 
+  /**
+   * A listener that reacts on WINDOW_CLOSING events of the dialog.
+   */
   public interface ClosingListener {
 
     /**
@@ -60,6 +63,11 @@ public interface UserInterface {
    */
   public void ready();
 
+  /**
+   * Adds a listener that is called on WINDOW_CLOSING events.
+   * 
+   * @param listener
+   */
   public void addClosingListener(ClosingListener listener);
 
   /**
@@ -67,6 +75,9 @@ public interface UserInterface {
    */
   public void setProgress(String strMessage, int iProgress);
 
+  /**
+   * @return the current progress.
+   */
   public int getProgress();
 
   /**
@@ -100,23 +111,32 @@ public interface UserInterface {
   public Object input(String strMessage, String strTitle, Object[] values, Object initial);
 
   /**
-   * Shows a message with an ok option
+   * Shows a message with an OK option
    * 
    * @param message
    */
   public void showMessageDialog(String message);
 
   /**
-   * Displays the dialog.
+   * Displays a dialog. See JOptionPane.
    * 
-   * @param dialog
+   * @param title The title of a dialog
+   * @param message The displayed object
+   * @param messageType the type of message to be displayed: <code>ERROR_MESSAGE</code>,
+   *          <code>INFORMATION_MESSAGE</code>, <code>WARNING_MESSAGE</code>,
+   *          <code>QUESTION_MESSAGE</code>, or <code>PLAIN_MESSAGE</code>
+   * @param options the options to display in the pane: <code>DEFAULT_OPTION</code>,
+   *          <code>YES_NO_OPTION</code>, <code>YES_NO_CANCEL_OPTION</code>,
+   *          <code>OK_CANCEL_OPTION</code>
    */
   public void showDialog(String title, String message, int messageType, int options);
 
   /**
-   * Displays the dialog.
+   * Displays a {@link SetGirthDialog}.
    * 
-   * @param dialog
+   * @param best see {@link SetGirthDialog}.
+   * @param layer see {@link SetGirthDialog}.
+   * @return {@link SetGirthDialog}.
    */
   public BBox askForGirth(BBox best, int layer);
 }

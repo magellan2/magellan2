@@ -264,12 +264,12 @@ public class ProgressBarUI implements UserInterface, ActionListener {
 
   public void showException(String message, String description, Exception exception) {
     ErrorWindow ew =
-      message == null ? new ErrorWindow(Resources.get("progressbarui.message.unknownerror"),
-          exception) : new ErrorWindow(message, description, exception);
-      ew.setShutdownOnCancel(false);
-      ew.setVisible(true);
+        message == null ? new ErrorWindow(Resources.get("progressbarui.message.unknownerror"),
+            exception) : new ErrorWindow(message, description, exception);
+    ew.setShutdownOnCancel(false);
+    ew.setVisible(true);
 
-      // throw new RuntimeException(exception);
+    // throw new RuntimeException(exception);
   }
 
   public void showMessageDialog(String message) {
@@ -354,6 +354,11 @@ public class ProgressBarUI implements UserInterface, ActionListener {
       pack();
     }
 
+    /**
+     * Adds a listener that is called on WINDOW_CLOSING events.
+     * 
+     * @param listener
+     */
     public void addClosingListener(ClosingListener listener) {
       closingListeners.add(listener);
     }
@@ -459,13 +464,14 @@ public class ProgressBarUI implements UserInterface, ActionListener {
      */
     public void run() {
       sResult =
-        JOptionPane.showInputDialog(dlg, strMessage, strTitle, JOptionPane.QUESTION_MESSAGE,
-            null, values, initialSelection);
+          JOptionPane.showInputDialog(dlg, strMessage, strTitle, JOptionPane.QUESTION_MESSAGE,
+              null, values, initialSelection);
     }
   }
 
   public void showDialog(String title, String message, int messageType, int options) {
-    final JDialog dialog = (new JOptionPane(message, messageType, options)).createDialog(dlg, title);
+    final JDialog dialog =
+        (new JOptionPane(message, messageType, options)).createDialog(dlg, title);
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
 

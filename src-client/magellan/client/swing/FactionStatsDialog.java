@@ -446,7 +446,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
               (String) JOptionPane.showInputDialog(FactionStatsDialog.this, Resources
                   .get("factionstatsdialog.msg.trustlevelinput.text"), Resources
                   .get("factionstatsdialog.msg.trustlevelinput.title"),
-                  JOptionPane.OK_CANCEL_OPTION, null, null, oldTrustLevel);
+                  JOptionPane.QUESTION_MESSAGE, null, null, oldTrustLevel);
 
           if (stringValue != null) {
             for (Object selectedFaction : selectedFactions) {

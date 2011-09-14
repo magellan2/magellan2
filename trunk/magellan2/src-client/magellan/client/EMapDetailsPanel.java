@@ -3789,12 +3789,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         String text = i.getName();
 
         DefaultMutableTreeNode m;
-        if (text.endsWith(" pro Grï¿½ï¿½enpunkt")) {
+        if (text.endsWith(" pro Größenpunkt")) {
           int amount = b.getSize() * i.getAmount();
-          String newText = text.substring(0, text.indexOf(" pro Grï¿½ï¿½enpunkt"));
+          String newText = text.substring(0, text.indexOf(" pro Größenpunkt"));
           m =
               new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(amount + " "
-                  + newText, "items/" + i.getItemType().getID().toString()));
+                  + newText, "items/" + data.getRules().getItemType(newText)));
         } else {
           m =
               new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(i.getAmount()
@@ -4447,6 +4447,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         // DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.spell.ship")));
         parent
             .add(createSimpleNode(Resources.get("emapdetailspanel.node.spell.ship"), "spell_ship"));
+      }
+
+      if (s.getOnOcean()) {
+        parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.spell.ocean"),
+            "spell_ocean"));
       }
 
       if (s.getIsFar()) {

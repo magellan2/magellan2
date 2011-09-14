@@ -26,8 +26,6 @@ package magellan.library.tasks;
 import magellan.library.utils.Resources;
 
 /**
- * 
- *
  * @author ...
  * @version 1.0, 14.03.2011
  */
@@ -132,11 +130,8 @@ public class ProblemType {
    * @see Resources#get(String)
    */
   public static ProblemType create(String prefix, String name) {
-    String message = Resources.get(prefix + "." + name + ".message", true);
-    String typeName = Resources.get(prefix + "." + name + ".name", false);
-    if (typeName == null) {
-      typeName = message;
-    }
+    String message = Resources.get(prefix + "." + name + ".message", false);
+    String typeName = Resources.get(prefix + "." + name + ".name", true);
     String description = Resources.get(prefix + "." + name + ".description", false);
     String group = Resources.get(prefix + "." + name + ".group", false);
     return new ProblemType(typeName, group, description, message);

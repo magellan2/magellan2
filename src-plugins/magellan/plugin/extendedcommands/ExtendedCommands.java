@@ -301,7 +301,7 @@ public class ExtendedCommands {
       }
       case RACE: {
         UnitContainer container =
-          world.getFaction(EntityID.createEntityID(unitContainerId, world.base));
+            world.getFaction(EntityID.createEntityID(unitContainerId, world.base));
         if (container != null) {
           containers.add(container);
         }
@@ -309,7 +309,7 @@ public class ExtendedCommands {
       }
       case BUILDINGTYPE: {
         UnitContainer container =
-          world.getBuilding(EntityID.createEntityID(unitContainerId, world.base));
+            world.getBuilding(EntityID.createEntityID(unitContainerId, world.base));
         if (container != null) {
           containers.add(container);
         }
@@ -317,7 +317,7 @@ public class ExtendedCommands {
       }
       case SHIPTYPE: {
         UnitContainer container =
-          world.getShip(EntityID.createEntityID(unitContainerId, world.base));
+            world.getShip(EntityID.createEntityID(unitContainerId, world.base));
         if (container != null) {
           containers.add(container);
         }
@@ -371,7 +371,7 @@ public class ExtendedCommands {
       }
       case RACE: {
         UnitContainer container =
-          world.getFaction(EntityID.createEntityID(unitContainerId, world.base));
+            world.getFaction(EntityID.createEntityID(unitContainerId, world.base));
         if (container == null) {
           keys.add(unitContainerId);
           counter++;
@@ -380,7 +380,7 @@ public class ExtendedCommands {
       }
       case BUILDINGTYPE: {
         UnitContainer container =
-          world.getBuilding(EntityID.createEntityID(unitContainerId, world.base));
+            world.getBuilding(EntityID.createEntityID(unitContainerId, world.base));
         if (container == null) {
           keys.add(unitContainerId);
           counter++;
@@ -389,7 +389,7 @@ public class ExtendedCommands {
       }
       case SHIPTYPE: {
         UnitContainer container =
-          world.getShip(EntityID.createEntityID(unitContainerId, world.base));
+            world.getShip(EntityID.createEntityID(unitContainerId, world.base));
         if (container == null) {
           keys.add(unitContainerId);
           counter++;
@@ -426,7 +426,7 @@ public class ExtendedCommands {
     execute(script.toString(), world, unit, null);
     unit.setOrdersChanged(true);
     if (client != null && isFireChangeEvent()) {
-      System.out.println("huhu");
+      // System.out.println("huhu");
       client.getDispatcher().fire(new UnitOrdersEvent(unit, unit));
     }
   }
@@ -457,7 +457,8 @@ public class ExtendedCommands {
     execute(getLibrary().getScript(), world, null, null);
   }
 
-  protected void execute(final String script, final GameData world, final Unit unit, final UnitContainer container) {
+  protected void execute(final String script, final GameData world, final Unit unit,
+      final UnitContainer container) {
 
     if (isUseThread()) {
       final UserInterface ui;
@@ -466,9 +467,10 @@ public class ExtendedCommands {
       } else {
         ui = new NullUserInterface();
       }
-      ui.setTitle(Resources.get("dock.ExtendedCommands.title",false));
+      ui.setTitle(Resources.get("dock.ExtendedCommands.title", false));
       ui.setMaximum(-1);
-      ui.setProgress(unit != null ? unit.toString() : container != null ? container.toString() : "???", 0);
+      ui.setProgress(unit != null ? unit.toString() : container != null ? container.toString()
+          : "???", 0);
       ui.show();
       new Thread(new Runnable() {
         public void run() {
@@ -481,10 +483,12 @@ public class ExtendedCommands {
     }
   }
 
-  protected void runExecute(final String script, final GameData world, final Unit unit, final UnitContainer container, final UserInterface ui) {
+  protected void runExecute(final String script, final GameData world, final Unit unit,
+      final UnitContainer container, final UserInterface ui) {
 
     ExtendedCommandsHelper helper;
-    log.info("ExtCmds Thread started for world "+world+", unit "+unit+", container "+container);
+    log.info("ExtCmds Thread started for world " + world + ", unit " + unit + ", container "
+        + container);
     try {
       Interpreter interpreter = new Interpreter();
       interpreter.set("world", world);
@@ -494,8 +498,8 @@ public class ExtendedCommands {
       if (container != null) {
         interpreter.set("container", container);
       }
-      interpreter.set("helper", helper =
-        new ExtendedCommandsHelper(client, world, unit, container));
+      interpreter
+          .set("helper", helper = new ExtendedCommandsHelper(client, world, unit, container));
       if (ui != null) {
         helper.setUI(ui);
       }
@@ -570,11 +574,11 @@ public class ExtendedCommands {
 
       if (client != null) {
         ErrorWindow errorWindow =
-          new ErrorWindow(client, message.toString(), description.toString(), error);
+            new ErrorWindow(client, message.toString(), description.toString(), error);
         errorWindow.setShutdownOnCancel(false);
         errorWindow.setVisible(true);
       } else {
-        log.error(message.toString()+" "+description.toString());
+        log.error(message.toString() + " " + description.toString());
       }
     } catch (Throwable throwable) {
       ExtendedCommands.log.info("", throwable);
@@ -729,7 +733,7 @@ public class ExtendedCommands {
 
   public Script createScript(Unit unit) {
     Script script =
-      new Script(unit.getID().toString(), Script.SCRIPTTYPE_UNIT, ContainerType.UNKNOWN, "");
+        new Script(unit.getID().toString(), Script.SCRIPTTYPE_UNIT, ContainerType.UNKNOWN, "");
     if (Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) {
       // show some examples for beginners...
       script.setScript(getDefaultUnitScript());
@@ -739,8 +743,8 @@ public class ExtendedCommands {
 
   public Script createScript(UnitContainer container) {
     Script script =
-      new Script(container.getID().toString(), Script.SCRIPTTYPE_CONTAINER, ContainerType
-          .getType(container.getType()), "");
+        new Script(container.getID().toString(), Script.SCRIPTTYPE_CONTAINER, ContainerType
+            .getType(container.getType()), "");
     if (Utils.isEmpty(script.getScript())) {
       // show some examples for beginners...
       script.setScript(getDefaultContainerScript());
@@ -771,7 +775,6 @@ public class ExtendedCommands {
     this.fireChangeEvent = fireChangeEvent;
   }
 
-
   /**
    * Returns true, if any command execution should be done inside it's own execution thread
    */
@@ -785,6 +788,5 @@ public class ExtendedCommands {
   public void setUseThread(boolean useThread) {
     this.useThread = useThread;
   }
-
 
 }

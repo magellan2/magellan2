@@ -26,6 +26,7 @@ import magellan.library.gamebinding.MovementOrder;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ShipInspector.ShipProblemTypes;
 import magellan.library.utils.Regions;
+import magellan.library.utils.logging.Logger;
 
 /**
  * Checks land movement for overload or too many horses.
@@ -98,6 +99,7 @@ public class MovementInspector extends AbstractInspector {
           movementOrderLine = line;
         }
       } catch (Exception e) {
+        Logger.getInstance(getClass()).fine("", e);
       }
     }
 
@@ -177,7 +179,7 @@ public class MovementInspector extends AbstractInspector {
             return true;
         }
       } catch (Exception e) {
-
+        Logger.getInstance(getClass()).fine("", e);
       }
     }
     return false;

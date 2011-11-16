@@ -29,6 +29,7 @@ import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
+import magellan.library.Sign;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
@@ -473,6 +474,8 @@ public class Regions {
    */
   public static void getDistances(Map<CoordinateID, Region> regions, CoordinateID start,
       CoordinateID dest, int maxDist, Metric metric) {
+    boolean DEBUG = false;
+
     if (!regions.containsKey(start) || (dest != null && !regions.containsKey(dest)))
       return;
 
@@ -488,14 +491,14 @@ public class Regions {
     while (!queue.isEmpty() && queue.peek().getDistance() <= maxDist
         && !queue.peek().getID().equals(dest)) {
       RegionInfo current = queue.poll();
-      // for debugging
-      if (regions.get(current.getID()) != null
-          && (metric instanceof LandMetric || metric instanceof ShipMetric)) {
-        // regions.get(current.id).clearSigns();
-        // regions.get(current.getID()).addSign(new Sign(touched + " " + current.distString()));
-      } else {
-        touched += 0;
-      }
+      if (DEBUG)
+        if (regions.get(current.getID()) != null
+            && (metric instanceof LandMetric || metric instanceof ShipMetric)) {
+          regions.get(current.getID()).clearSigns();
+          regions.get(current.getID()).addSign(new Sign(touched + " " + current.distString()));
+        } else {
+          touched += 0;
+        }
       touched++;
       current.setVisited();
       Map<CoordinateID, Region> neighbors = metric.getNeighbours(current.getID());
@@ -510,6 +513,19 @@ public class Regions {
       }
       if (queue.size() > maxQueue) {
         maxQueue = queue.size();
+      }
+    }
+    if (DEBUG) {
+      while (!queue.isEmpty()) {
+        RegionInfo current = queue.poll();
+        if (regions.get(current.getID()) != null
+            && (metric instanceof LandMetric || metric instanceof ShipMetric)) {
+          regions.get(current.getID()).clearSigns();
+          regions.get(current.getID()).addSign(new Sign(touched + "*" + current.distString()));
+        } else {
+          touched += 0;
+        }
+        touched++;
       }
     }
   }
@@ -642,16 +658,6 @@ public class Regions {
       dist = Integer.MAX_VALUE;
     }
 
-    /**
-     * Sets this distance to zero
-     */
-    public void setZero() {
-      dist = 0;
-      plus = 0;
-      realDist = 0;
-      pot = 0;
-    }
-
     void set(int dist2, int plus2, int realDist2, int pot2) {
       dist = dist2;
       plus = plus2;
@@ -760,13 +766,6 @@ public class Regions {
     }
 
     /**
-     * Sets the distance to zero.
-     */
-    public void setZero() {
-      dist.setZero();
-    }
-
-    /**
      * @see magellan.library.utils.Regions.RegionInfo#isInfinity()
      */
     public boolean isInfinity() {
@@ -813,13 +812,6 @@ public class Regions {
      */
     public void setVisited() {
       visited = true;
-    }
-
-    /**
-     * Returns a new info with zero distance for the region.
-     */
-    public static MultiDimensionalInfo createZero(Region region) {
-      return new MultiDimensionalInfo(region);
     }
 
     /**
@@ -883,7 +875,8 @@ public class Regions {
      * @see magellan.library.utils.Regions.Metric#createZero(magellan.library.CoordinateID)
      */
     public MultiDimensionalInfo createZero(CoordinateID id) {
-      MultiDimensionalInfo record = MultiDimensionalInfo.createZero(regions.get(id));
+      MultiDimensionalInfo record = new MultiDimensionalInfo(regions.get(id));
+      record.dist.pot = getPotential(regions.get(start), regions.get(start));
       records.put(id, record);
       return record;
     }
@@ -948,13 +941,20 @@ public class Regions {
       // if d(next)=\infty OR d(current)+d(current,next) < d(next)
       // decrease key
       if (next2.dist.compareTo(newValues[0], newValues[1], newValues[2], newValues[3]) > 0) {
-        next2.dist.set(newValues[0], newValues[1], newValues[2], newValues[3]);
-        // FIXME this if was necessary, but I'm not sure if that is due to a broken metric
-        if (records.get(next2.pre) == null
-            || records.get(next2.pre).dist.compareTo(current2.dist) > 0) {
-          next2.pre = current.getID();
+        // debugging code
+        if (records.get(next2.pre) != null
+            && current2.dist.compareTo(newValues[0], newValues[1], newValues[2], newValues[3]) > 0) {
+          log.finest(current2 + " -> " + next2 + " (" + newValues[0] + "," + newValues[1] + ","
+              + newValues[2] + "," + newValues[3] + ")" + records.get(next2.pre));
         }
+        if (current2.dist.compareTo(newValues[0], newValues[1], newValues[2], newValues[3]) > 0) {
+          log.finest(current2 + " -> " + next2 + " (" + newValues[0] + "," + newValues[1] + ","
+              + newValues[2] + "," + newValues[3] + ")" + records.get(next2.pre));
+        }
+        // debugging end
 
+        next2.dist.set(newValues[0], newValues[1], newValues[2], newValues[3]);
+        next2.pre = current.getID();
         return true;
       }
       return false;
@@ -966,15 +966,13 @@ public class Regions {
      * speed-up search.
      */
     protected int getPotential(Region r1, Region r2) {
-      // TODO(stm) does this still work for wrapped coordinates?
       if (dest == null)
         return 0;
-      // add potential for goal-directed search:
-      int xdiff1 = Math.abs(r1.getID().getX() - dest.getX());
-      int ydiff1 = Math.abs(r1.getID().getY() - dest.getY());
-      int xdiff2 = Math.abs(r2.getID().getX() - dest.getX());
-      int ydiff2 = Math.abs(r2.getID().getY() - dest.getY());
-      return Math.max(xdiff2, ydiff2) - Math.max(xdiff1, ydiff1);
+      if (r1.getData().wrappers().isEmpty())
+        // this potential does not work for wrapped coordinates!
+        return getDist(r2.getCoordinate(), dest);
+      else
+        return 0;
     }
 
     /**

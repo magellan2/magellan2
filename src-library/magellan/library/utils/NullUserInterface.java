@@ -49,19 +49,23 @@ public class NullUserInterface implements UserInterface {
    * @see magellan.library.utils.UserInterface#ready()
    */
   public void ready() {
+    // do nothing
+    log.info("Null user interface is ready...");
   }
 
   /**
    * @see magellan.library.utils.UserInterface#show()
    */
   public void show() {
+    // do nothing
+    log.info("Show null user interface...");
   }
 
   /**
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
   public void setProgress(String strMessage, int iProgress) {
-    NullUserInterface.log.debug("Progress: " + strMessage + " (" + getPercent(iProgress) + "%)");
+    log.info("Progress: " + strMessage + " (" + getPercent(iProgress) + "%)");
     progress = iProgress;
   }
 
@@ -69,10 +73,9 @@ public class NullUserInterface implements UserInterface {
     return progress;
   }
 
-  protected int getPercent(int progress) {
-    if (max == 0)
-      return 0;
-    return progress * 100 / max;
+  protected int getPercent(int iProgress) {
+    if (max == 0) return 0;
+    return iProgress * 100 / max;
   }
 
   /**
@@ -101,6 +104,7 @@ public class NullUserInterface implements UserInterface {
    * @see magellan.library.utils.UserInterface#setTitle(java.lang.String)
    */
   public void setTitle(String title) {
+    log.info("Null user interface: '"+title+"'");
   }
 
   public void showException(String message, String description, Exception exception) {
@@ -111,12 +115,15 @@ public class NullUserInterface implements UserInterface {
     NullUserInterface.log.debug("Error: " + message + ")");
   }
 
+  /**
+   * @param optionPane
+   */
   public void showDialog(JDialog optionPane) {
-    NullUserInterface.log.debug("dialog suppressed");
+    log.debug("dialog suppressed");
   }
 
   public void addClosingListener(ClosingListener listener) {
-
+    // do nothing
   }
 
   public void showDialog(String title, String message, int messageType, int options) {

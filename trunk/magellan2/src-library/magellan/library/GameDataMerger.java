@@ -652,9 +652,14 @@ public class GameDataMerger {
         }
       }
     } else if (newerGD.unitView() != null) {
-      for (Unit u : newerGD.unitView().values()) {
-        if (resultGD.getUnit(u.getID()) == null) {
-          resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
+      int sortIndex = 0;
+      if (newerGD.getOwnerFaction() != null) {
+        sortIndex =
+            addUnits(newerGD.getFaction(newerGD.getOwnerFaction()).units(), resultGD, sortIndex);
+      }
+      for (Faction f : newerGD.getFactions()) {
+        if (!f.getID().equals(newerGD.getOwnerFaction())) {
+          sortIndex = addUnits(f.units(), resultGD, sortIndex);
         }
       }
     }

@@ -14,7 +14,6 @@
 package magellan.library.gamebinding;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -39,8 +38,6 @@ import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Regions;
-import magellan.library.utils.comparator.IDComparator;
-import magellan.library.utils.comparator.SortIndexComparator;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -100,14 +97,15 @@ public class EresseaPostProcessor {
 
     adjustFogOfWar2Visibility(data);
 
-    Unit[] sortedUnits = data.getUnits().toArray(new Unit[0]);
-    Arrays.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
-
-    int sortIndex = 0;
-    for (Unit unit : sortedUnits) {
-      unit.setSortIndex(sortIndex++);
-      sortIndex = unit.extractTempUnits(data, sortIndex);
-    }
+    // this has already been done in mergeIt, where units have been added faction per faction
+    // Unit[] sortedUnits = data.getUnits().toArray(new Unit[0]);
+    // Arrays.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
+    //
+    // int sortIndex = 0;
+    // for (Unit unit : sortedUnits) {
+    // unit.setSortIndex(sortIndex++);
+    // sortIndex = unit.extractTempUnits(data, sortIndex);
+    // }
 
     postProcessNullInformation(data);
 

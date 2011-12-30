@@ -580,7 +580,7 @@ public class ExtendedCommandsHelper {
   }
 
   /**
-   * Searches the best path from the current position of an unit to the given region. <br/>
+   * Searches the best path from the current position of a unit to the given region. <br/>
    * This method is only useful for persons on land!
    * 
    * @param unit The unit that should go to another region

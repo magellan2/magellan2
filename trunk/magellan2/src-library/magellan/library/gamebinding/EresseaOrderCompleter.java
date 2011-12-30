@@ -1658,10 +1658,38 @@ public class EresseaOrderCompleter implements Completer {
         getTranslation("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
 
     // reserve all items that the unit has
+    StringBuilder all = new StringBuilder();
     for (final Item item : unit.getItems()) {
+      int newAmount = item.getAmount();
+      // reserve new amount if it has decreased
+      for (final Item newItem : unit.getModifiedItems()) {
+        if (item.getItemType() == newItem.getItemType()) {
+          newAmount = Math.min(newItem.getAmount(), newAmount);
+        }
+      }
+      if (newAmount > 0) {
+        if (all.length() > 0) {
+          all.append("\n").append(getOrderTranslation(EresseaConstants.O_RESERVE)).append(" ");
+        }
+        if (newAmount == unit.getModifiedPersons()) {
+          all.append(getOrderTranslation(EresseaConstants.O_EACH)).append(" 1 ");
+        } else {
+          all.append(newAmount).append(" ");
+        }
+        all.append(item.getOrderName());
+      }
+
+      // RESERVE <Item (all)>
       completions.add(new Completion(item.getName() + " "
           + getTranslation("gamebinding.eressea.eresseaordercompleter.allamount"), item.getAmount()
-          + " " + item.getName(), ""));
+          + " " + item.getOrderName(), ""));
+    }
+
+    // RESERVE <(all remaining items)>
+    if (all.length() > 0) {
+      completions.add(new Completion(
+          getTranslation("gamebinding.eressea.eresseaordercompleter.allremaining"), all.toString(),
+          ""));
     }
 
     addMaxReserve(unit);
@@ -1686,12 +1714,13 @@ public class EresseaOrderCompleter implements Completer {
       if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)) {
         final int weight = (int) (type.getWeight() * 100);
         if (weight > 0) {
-          if ((maxOnFoot - modLoad) > 0) {
+          if (maxOnFoot > 0 && (maxOnFoot - modLoad) >= weight) {
             completions.add(new Completion(type.getName() + " "
                 + getTranslation("gamebinding.eressea.eresseaordercompleter.maxfootamount"),
                 (maxOnFoot - modLoad) / weight + " " + type.getOrderName(), ""));
           }
-          if ((maxOnHorse - modLoad) > 0) {
+          // maxOnHorse could be MIN_INT, so check > 0!
+          if (maxOnHorse > 0 && (maxOnHorse - modLoad) >= weight) {
             completions.add(new Completion(type.getName() + " "
                 + getTranslation("gamebinding.eressea.eresseaordercompleter.maxhorseamount"),
                 (maxOnHorse - modLoad) / weight + " " + type.getOrderName(), ""));

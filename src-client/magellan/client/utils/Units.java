@@ -174,7 +174,31 @@ public class Units {
       DefaultMutableTreeNode parentNode, Comparator<Item> itemComparator,
       Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory,
       ContextFactory reserveContextFactory) {
+    return addCategorizedUnitItems(units, parentNode, itemComparator, unitComparator, showUnits,
+        factory, reserveContextFactory, true);
+  }
 
+  /**
+   * This method takes all items carried by units in the units Collection and sorts them by their
+   * category. Then it adds the non-empty categories to the specified parent node and puts the
+   * corresponding items in each category node. Optionally, the units carrying an item are listed as
+   * child nodes of the respective item nodes.
+   * 
+   * @param units a collection of Unit objects carrying items.
+   * @param parentNode a tree node to add the new nodes to.
+   * @param itemComparator a comparator to sort the items with. If itemComparator is null the items
+   *          are sorted by name.
+   * @param unitComparator a comparator to sort the units with. If unitComparator is null the units
+   *          are sorted by the amount of the item carried underneath which they appear.
+   * @param showUnits if true each item node gets child nodes containing the unit(s) carrying that
+   *          item.
+   * @return a collection of DefaultMutableTreeNode objects with user objects of class ItemCategory
+   *         or null if the categorization of the items failed.
+   */
+  public Collection<TreeNode> addCategorizedUnitItems(Collection<Unit> units,
+      DefaultMutableTreeNode parentNode, Comparator<Item> itemComparator,
+      Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory,
+      ContextFactory reserveContextFactory, boolean createCategoryNodes) {
     DefaultMutableTreeNode categoryNode = null;
     final Collection<TreeNode> categoryNodes = new LinkedList<TreeNode>();
 
@@ -189,21 +213,21 @@ public class Units {
     for (StatItemContainer currentCategoryMap : listOfCategorizedItems) {
       if (currentCategoryMap.size() > 0) {
 
-        final String catIconName =
-          magellan.library.utils.Umlaut
-          .convertUmlauts(currentCategoryMap.getCategory().getName());
-        final String nodeName = Resources.get("util.units." + catIconName);
-        final ItemCategoryNodeWrapper wrapper = // TODO use factory
-          new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
-        wrapper.setIcons(catIconName);
-        categoryNode = new DefaultMutableTreeNode(wrapper);
-
-        /**
-         * catNode = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(wrapper,
-         * catIconName));
-         */
-        parentNode.add(categoryNode);
-        categoryNodes.add(categoryNode);
+        ItemCategoryNodeWrapper wrapper = null;
+        if (createCategoryNodes) {
+          final String catIconName =
+            magellan.library.utils.Umlaut.convertUmlauts(currentCategoryMap.getCategory()
+                .getName());
+          final String nodeName = Resources.get("util.units." + catIconName);
+          wrapper = // TODO use factory
+            new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
+          wrapper.setIcons(catIconName);
+          categoryNode = new DefaultMutableTreeNode(wrapper);
+          parentNode.add(categoryNode);
+          categoryNodes.add(categoryNode);
+        } else {
+          categoryNode = parentNode;
+        }
 
         final List<StatItem> sortedItems = new LinkedList<StatItem>(currentCategoryMap.values());
 
@@ -227,11 +251,11 @@ public class Units {
           unmodifiedCatNumber += currentItem.getUnmodifiedAmount();
         }
 
-        if ((catNumber > 0)
+        if (wrapper != null && catNumber > 0
             && !currentCategoryMap.category.equals(rules.getItemCategory(StringID.create("misc")))) {
           wrapper.setAmount(catNumber);
         }
-        if ((unmodifiedCatNumber > 0)
+        if (wrapper != null && unmodifiedCatNumber > 0
             && !currentCategoryMap.category.equals(rules.getItemCategory(StringID.create("misc")))) {
           // wrapper.setAmount(catNumber);
           wrapper.setUnmodifiedAmount(unmodifiedCatNumber);

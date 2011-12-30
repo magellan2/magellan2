@@ -199,6 +199,25 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
   private static final Logger log = Logger.getInstance(EMapDetailsPanel.class);
 
+  /**
+   * Constants declaring which items are shown in the region overview (in the capacity node)
+   */
+  public enum ShowItems {
+    /**
+     * show all item types in the region
+     */
+    SHOW_ALL, /**
+     * show items of privileged factions in the region
+     */
+    SHOW_PRIVILEGED_FACTIONS, /**
+     * show items of own faction in the region
+     */
+    SHOW_MY_FACTION, /**
+     * show items of all factions in the region
+     */
+    SHOW_IN_REGION
+  }
+
   // GUI elements
   private JPanel nameDescPanel = null;
   private JPanel pnlRegionInfoTree = null;
@@ -268,6 +287,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private GameSpecificRules gameRules = null;
 
   private GameSpecificStuff gameSpecStuff = null;
+
+  private ShowItems showItems = ShowItems.SHOW_IN_REGION;
 
   /**
    * Creates a new EMapDetailsPanel object.
@@ -622,6 +643,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         settings.getProperty("EMapDetailsPanel.AllowCustomIcons", "true").equals("true");
 
     compactLayout = settings.getProperty("EMapDetailsPanel.CompactLayout", "false").equals("true");
+
+    initShowItems();
 
     // split pane combining name, desc & tree
     topSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, nameDescPanel, pnlRegionInfoTree);
@@ -3549,35 +3572,71 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
     ItemType silver = data.rules.getItemType(EresseaConstants.I_USILVER);
     // Fiete: feature request...showing not only capacity for "good" items in region...
-    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", true)
-        && u.getRegion() != null) {
-      for (Item item : magellan.library.utils.Units.getContainerPrivilegedUnitItems(u.getRegion())) {
-        ItemType type = item.getItemType();
+    switch (showItems) {
+    case SHOW_PRIVILEGED_FACTIONS:
+      if (u.getRegion() != null) {
+        for (Item item : magellan.library.utils.Units
+            .getContainerPrivilegedUnitItems(u.getRegion())) {
+          ItemType type = item.getItemType();
 
-        if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)
-            && !type.equals(silver)) {
-          int weight = (int) (type.getWeight() * 100);
-          parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
-              "items/" + type.getIconName()));
+          if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)
+              && !type.equals(silver)) {
+            int weight = (int) (type.getWeight() * 100);
+            parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
+                "items/" + type.getIconName()));
+          }
         }
       }
-    }
+      break;
 
-    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowSome", false)
-        && u.getRegion() != null) {
-      for (Item item : magellan.library.utils.Units.getContainerAllUnitItems(u.getRegion())) {
-        ItemType type = item.getItemType();
+    case SHOW_MY_FACTION:
+      if (u.getRegion() != null) {
+        Map<StringID, Item> result = new HashMap<StringID, Item>();
+        for (Unit u2 : u.getRegion().units()) {
+          if (u.getFaction() == u2.getFaction()) {
+            for (Item item : u2.getItems()) {
+              Item i = result.get(item.getItemType().getID());
 
-        if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)
-            && !type.equals(silver)) {
-          int weight = (int) (type.getWeight() * 100);
-          parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
-              "items/" + type.getIconName()));
+              if (i == null) {
+                i = new Item(item.getItemType(), 0);
+                result.put(item.getItemType().getID(), i);
+              }
+
+              i.setAmount(i.getAmount() + item.getAmount());
+            }
+          }
+        }
+
+        for (Item item : result.values()) {
+          ItemType type = item.getItemType();
+
+          if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)
+              && !type.equals(silver)) {
+            int weight = (int) (type.getWeight() * 100);
+            parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
+                "items/" + type.getIconName()));
+          }
         }
       }
-    }
+      break;
 
-    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowAll", false)) {
+    case SHOW_IN_REGION:
+      if (u.getRegion() != null) {
+        for (Item item : magellan.library.utils.Units.getContainerAllUnitItems(u.getRegion())) {
+          ItemType type = item.getItemType();
+
+          if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)
+              && !type.equals(silver)) {
+            int weight = (int) (type.getWeight() * 100);
+            parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
+                "items/" + type.getIconName()));
+          }
+        }
+      }
+
+      break;
+
+    case SHOW_ALL: {
       // show all itemtypes...need to built and sort a list
       // we take natural order - it works - added Comparable to ItemType (Fiete)
       TreeSet<ItemType> l = new TreeSet<ItemType>();
@@ -3607,6 +3666,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               "items/" + type.getIconName()));
         }
       }
+    }
+      break;
     }
 
   }
@@ -5092,17 +5153,91 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-	 */
+   * Returns if the buttons for adding tags are shown.
+   * 
+   * @return <code>true</code> if the buttons for adding tags are shown
+   */
   public boolean isShowingTagButtons() {
     return showTagButtons;
   }
 
+  /**
+   * Returns if custom (faction) icons are shown.
+   * 
+   * @return <code>true</code> if custom (faction) icons are shown
+   */
   public boolean isAllowingCustomIcons() {
     return allowCustomIcons;
   }
 
+  /**
+   * Returns if more compact layout is used.
+   * 
+   * @return <code>true</code> if more compact layout is used
+   */
   public boolean isCompactLayout() {
     return compactLayout;
+  }
+
+  private void initShowItems() {
+    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", false)) {
+      showItems = ShowItems.SHOW_PRIVILEGED_FACTIONS;
+    }
+    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowMy", false)) {
+      showItems = ShowItems.SHOW_MY_FACTION;
+    }
+    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowAll", false)) {
+      showItems = ShowItems.SHOW_ALL;
+    }
+    if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowSome", false)) {
+      showItems = ShowItems.SHOW_IN_REGION;
+    }
+  }
+
+  /**
+   * Returns which items are shown (in capacity nodes).
+   * 
+   * @return which items are shown (in capacity nodes)
+   */
+  public ShowItems getShowItems() {
+    return showItems;
+  }
+
+  /**
+   * Sets the types of items displayed (in capacity nodes).
+   */
+  public void setShowItems(ShowItems newValue) {
+    if (showItems != newValue) {
+      showItems = newValue;
+      settings.setProperty("unitCapacityContextMenuShowAll", "false");
+      settings.setProperty("unitCapacityContextMenuShowFriendly", "false");
+      settings.setProperty("unitCapacityContextMenuShowSome", "false");
+      settings.setProperty("unitCapacityContextMenuShowMy", "false");
+      switch (showItems) {
+      case SHOW_ALL:
+        settings.setProperty("unitCapacityContextMenuShowAll", "true");
+        break;
+      case SHOW_PRIVILEGED_FACTIONS:
+        settings.setProperty("unitCapacityContextMenuShowFriendly", "true");
+        break;
+      case SHOW_IN_REGION:
+        settings.setProperty("unitCapacityContextMenuShowSome", "true");
+        break;
+      case SHOW_MY_FACTION:
+        settings.setProperty("unitCapacityContextMenuShowMy", "true");
+        break;
+
+      default:
+        log.error("invalid value for unitCapacityContextMenuShow...");
+        settings.setProperty("unitCapacityContextMenuShowSome", "true");
+        break;
+      }
+      // must repaint tree
+      treeContainer.doLayout();
+      treeContainer.validate();
+      treeContainer.invalidate();
+      treeContainer.repaint();
+    }
   }
 
   /**
@@ -5126,20 +5261,26 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
   }
 
-  public void setAllowCustomIcons(boolean bool) {
-    if (bool != isAllowingCustomIcons()) {
-      allowCustomIcons = bool;
-      settings.setProperty("EMapDetailsPanel.AllowCustomIcons", bool ? "true" : "false");
+  /**
+   * Sets if custom (faction) items are displayd.
+   */
+  public void setAllowCustomIcons(boolean allow) {
+    if (allow != isAllowingCustomIcons()) {
+      allowCustomIcons = allow;
+      settings.setProperty("EMapDetailsPanel.AllowCustomIcons", allow ? "true" : "false");
       treeContainer.doLayout();
       treeContainer.validate();
       treeContainer.repaint();
     }
   }
 
-  public void setCompactLayout(boolean selected) {
-    if (selected != isCompactLayout()) {
-      compactLayout = selected;
-      settings.setProperty("EMapDetailsPanel.CompactLayout", selected ? "true" : "false");
+  /**
+   * Enables or disabled a more compact layout of the panel.
+   */
+  public void setCompactLayout(boolean compact) {
+    if (compact != isCompactLayout()) {
+      compactLayout = compact;
+      settings.setProperty("EMapDetailsPanel.CompactLayout", compact ? "true" : "false");
     }
   }
 
@@ -6146,7 +6287,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               Resources.get("emapdetailspanel.node.capacityonfoot").toLowerCase())
               || actSNW.toString().toLowerCase().startsWith(
                   Resources.get("emapdetailspanel.node.capacityonhorse").toLowerCase()))
-            return new UnitCapacityContextMenu(dispatcher, data, settings);
+            return new UnitCapacityContextMenu(EMapDetailsPanel.this, dispatcher, data, settings);
         }
       } else {
         log.finest("unknown argument");
@@ -6277,4 +6418,5 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
   }
+
 }

@@ -1,3 +1,13 @@
+2011-12-31 / Build 48x (planned) - stm (stm_@users.sourceforge.net)
+    * better calculation of ship range
+    * added calculation of building and unit upkeep
+    * added MaintenanceInspactor
+
+2011-12-30 / Build 480 - stm (stm_@users.sourceforge.net)
+    * EMapDetailsPanel: testing "compact mode"
+    * add option for unit capacity nodes: show only items of own faction
+    * fixing unit sorting (trac bug #59)
+    
 2011-09-07 / Build 477 - stm (stm_@users.sourceforge.net)
     * ship cargo calculation fix (trac bug #40)
     

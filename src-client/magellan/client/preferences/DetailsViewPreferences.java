@@ -35,6 +35,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
@@ -45,6 +46,9 @@ import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
+/**
+ * Preferences adapter for EMapDetails
+ */
 public class DetailsViewPreferences extends JPanel implements ExtendedPreferencesAdapter {
   private EMapDetailsPanel source = null;
   private List<PreferencesAdapter> subAdapters;
@@ -52,11 +56,10 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
   private JCheckBox chkShowTagButtons;
   private JCheckBox chkAllowCustomIcons;
   private JCheckBox chkCompact;
-  private JRadioButton rdbAllItems;
-  private JRadioButton rdbFriendlyItems;
-  private JRadioButton rdbMyItems;
-  private JRadioButton rdbSomeItems;
-  private JCheckBox chkShowPrivileged;
+  private JRadioButton rdbCapacityAllItems;
+  private JRadioButton rdbCapacityFriendlyItems;
+  private JRadioButton rdbCapacityMyItems;
+  private JRadioButton rdbCapacitySomeItems;
 
   /**
    * Creates a new EMapDetailsPreferences object.
@@ -114,37 +117,35 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
     outerPanel.add(innerPanel, c);
 
     innerPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
+    JLabel lblCapacity = new JLabel(Resources.get("emapdetailspanel.prefs.capacity.label"));
     ButtonGroup showButtons = new ButtonGroup();
-    rdbAllItems =
-        new JRadioButton(Resources.get("emapdetailspanel.prefs.allitems"),
-            source.getShowItems() == ShowItems.SHOW_ALL);
-    rdbFriendlyItems =
-        new JRadioButton(Resources.get("emapdetailspanel.prefs.friendlyitems"), source
-            .getShowItems() == ShowItems.SHOW_PRIVILEGED_FACTIONS);
-    rdbMyItems =
-        new JRadioButton(Resources.get("emapdetailspanel.prefs.myitems"),
-            source.getShowItems() == ShowItems.SHOW_MY_FACTION);
-    rdbSomeItems =
-        new JRadioButton(Resources.get("emapdetailspanel.prefs.someitems"),
-            source.getShowItems() == ShowItems.SHOW_IN_REGION);
-    showButtons.add(rdbAllItems);
-    showButtons.add(rdbFriendlyItems);
-    showButtons.add(rdbMyItems);
-    showButtons.add(rdbSomeItems);
-    innerPanel.add(rdbAllItems);
-    innerPanel.add(rdbFriendlyItems);
-    innerPanel.add(rdbMyItems);
-    innerPanel.add(rdbSomeItems);
+    rdbCapacityAllItems =
+        new JRadioButton(Resources.get("emapdetailspanel.prefs.capacity.all"), source
+            .getShowCapacityItems() == ShowItems.SHOW_ALL);
+    rdbCapacityFriendlyItems =
+        new JRadioButton(Resources.get("emapdetailspanel.prefs.capacity.privilegedfactions"),
+            source.getShowCapacityItems() == ShowItems.SHOW_PRIVILEGED_FACTIONS);
+    rdbCapacityMyItems =
+        new JRadioButton(Resources.get("emapdetailspanel.prefs.capacity.myfaction"), source
+            .getShowCapacityItems() == ShowItems.SHOW_MY_FACTION);
+    rdbCapacitySomeItems =
+        new JRadioButton(Resources.get("emapdetailspanel.prefs.capacity.allfactions"), source
+            .getShowCapacityItems() == ShowItems.SHOW_ALL_FACTIONS);
+    showButtons.add(rdbCapacityAllItems);
+    showButtons.add(rdbCapacityFriendlyItems);
+    showButtons.add(rdbCapacityMyItems);
+    showButtons.add(rdbCapacitySomeItems);
+
+    lblCapacity.setLabelFor(rdbCapacityAllItems);
+
+    innerPanel.add(lblCapacity);
+    innerPanel.add(rdbCapacityAllItems);
+    innerPanel.add(rdbCapacityFriendlyItems);
+    innerPanel.add(rdbCapacityMyItems);
+    innerPanel.add(rdbCapacitySomeItems);
 
     c.gridy++;
     outerPanel.add(innerPanel, c);
-
-    chkShowPrivileged =
-        new JCheckBox(Resources.get("emapdetailspanel.prefs.showprivileged"),
-            source.getShowItems() == ShowItems.SHOW_PRIVILEGED_FACTIONS);
-
-    c.gridy++;
-    outerPanel.add(chkShowPrivileged, c);
 
     return outerPanel;
   }
@@ -157,26 +158,20 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
   }
 
   /**
-   * @deprecated not implemented?
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
-  @Deprecated
   public void initPreferences() {
     chkShowTagButtons.setSelected(source.isShowingTagButtons());
     chkAllowCustomIcons.setSelected(source.isAllowingCustomIcons());
     chkCompact.setSelected(source.isCompactLayout());
-    chkShowPrivileged.setSelected(source.getShowItems() == ShowItems.SHOW_PRIVILEGED_FACTIONS);
-    if (source.getShowItems() == ShowItems.SHOW_ALL) {
-      rdbAllItems.setSelected(true);
-    }
-    if (source.getShowItems() == ShowItems.SHOW_IN_REGION) {
-      rdbSomeItems.setSelected(true);
-    }
-    if (source.getShowItems() == ShowItems.SHOW_MY_FACTION) {
-      rdbMyItems.setSelected(true);
-    }
-    if (source.getShowItems() == ShowItems.SHOW_PRIVILEGED_FACTIONS) {
-      rdbFriendlyItems.setSelected(true);
+    if (source.getShowCapacityItems() == ShowItems.SHOW_ALL) {
+      rdbCapacityAllItems.setSelected(true);
+    } else if (source.getShowCapacityItems() == ShowItems.SHOW_ALL_FACTIONS) {
+      rdbCapacitySomeItems.setSelected(true);
+    } else if (source.getShowCapacityItems() == ShowItems.SHOW_MY_FACTION) {
+      rdbCapacityMyItems.setSelected(true);
+    } else {
+      rdbCapacityFriendlyItems.setSelected(true);
     }
     regionPref.initPreferences();
   }
@@ -190,14 +185,14 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
     source.setShowTagButtons(chkShowTagButtons.isSelected());
     source.setAllowCustomIcons(chkAllowCustomIcons.isSelected());
     source.setCompactLayout(chkCompact.isSelected());
-    if (rdbAllItems.isSelected()) {
-      source.setShowItems(ShowItems.SHOW_ALL);
-    } else if (rdbSomeItems.isSelected()) {
-      source.setShowItems(ShowItems.SHOW_IN_REGION);
-    } else if (rdbMyItems.isSelected()) {
-      source.setShowItems(ShowItems.SHOW_MY_FACTION);
+    if (rdbCapacityAllItems.isSelected()) {
+      source.setShowCapacityItems(ShowItems.SHOW_ALL);
+    } else if (rdbCapacitySomeItems.isSelected()) {
+      source.setShowCapacityItems(ShowItems.SHOW_ALL_FACTIONS);
+    } else if (rdbCapacityMyItems.isSelected()) {
+      source.setShowCapacityItems(ShowItems.SHOW_MY_FACTION);
     } else {
-      source.setShowItems(ShowItems.SHOW_PRIVILEGED_FACTIONS);
+      source.setShowCapacityItems(ShowItems.SHOW_PRIVILEGED_FACTIONS);
     }
     regionPref.applyPreferences();
   }

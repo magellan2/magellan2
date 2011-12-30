@@ -11,11 +11,6 @@
  *
  */
 
-/*
- * ItemNodeWrapper.java
- *
- * Created on 16. August 2001, 16:26
- */
 package magellan.client.swing.tree;
 
 import java.util.Collections;
@@ -24,15 +19,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import magellan.library.Faction;
+import magellan.client.EMapDetailsPanel.ShowItems;
 import magellan.library.Item;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
+import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.StringFactory;
 import magellan.library.utils.Units;
 
 /**
- * DOCUMENT ME!
+ * A wrapper for items. Created on 16. August 2001, 16:26
  * 
  * @author Andreas
  * @version 1.0
@@ -46,7 +43,7 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
   protected int unmodifiedAmount;
 
   // protected ItemNodeWrapperPreferencesAdapter adapter=null;
-  protected boolean showRegionItemAmount = false;
+  protected ShowItems showRegionItemAmount = ShowItems.SHOW_PRIVILEGED_FACTIONS;
   protected DetailsNodeWrapperDrawPolicy adapter;
   protected static final java.text.NumberFormat weightNumberFormat = java.text.NumberFormat
       .getNumberInstance();
@@ -78,9 +75,20 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
   /**
    * @return true if the item amount of all units in the region should be displayed.
    */
-  public boolean isShowingRegionItemAmount() {
-    if (adapter != null)
-      return adapter.properties[0];
+  protected ShowItems isShowingRegionItemAmount() {
+    if (adapter != null) {
+      ShowItems result = ShowItems.SHOW_NONE;
+      if (adapter.properties[0]) {
+        result = ShowItems.SHOW_MY_FACTION;
+      }
+      if (adapter.properties.length > 1 && adapter.properties[1]) {
+        result = ShowItems.SHOW_PRIVILEGED_FACTIONS;
+      }
+      if (adapter.properties.length > 2 && adapter.properties[2]) {
+        result = ShowItems.SHOW_ALL_FACTIONS;
+      }
+      return result;
+    }
 
     return showRegionItemAmount;
   }
@@ -88,9 +96,9 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
   /**
    * Determines if the item amount of all units in the region should be displayed.
    */
-  public void setShowRegionItemAmount(boolean b) {
+  protected void setShowRegionItemAmount(ShowItems newValue) {
     adapter = null;
-    showRegionItemAmount = b;
+    showRegionItemAmount = newValue;
     propertiesChanged();
   }
 
@@ -137,12 +145,13 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
   @Override
   public String toString() {
     if (text == null) {
-      boolean showRegion = isShowingRegionItemAmount();
+      ShowItems showRegion = isShowingRegionItemAmount();
 
       // do not show region amounts if faction is not privileged
-      // TODO: make this configurable
-      if ((unit == null) || (unit.getFaction().getTrustLevel() < Faction.TL_PRIVILEGED)) {
-        showRegion = false;
+      // (stm-2011-12-30 who wants this? deactivated:
+      // || (unit.getFaction().getTrustLevel() < Faction.TL_PRIVILEGED)
+      if ((unit == null)) {
+        showRegion = ShowItems.SHOW_NONE;
       }
 
       Item item = null;
@@ -171,13 +180,17 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
           nodeText.append(" (!!!) ");
         }
 
-        if (showRegion) {
-          Item ri = Units.getContainerPrivilegedUnitItem(unit.getRegion(), modItem.getItemType());
-
-          if (ri != null) {
-            nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(
-                ri.getAmount()).append(' ');
-          }
+        Item ri = null;
+        if (showRegion == ShowItems.SHOW_PRIVILEGED_FACTIONS) {
+          ri = Units.getContainerPrivilegedUnitItem(unit.getRegion(), modItem.getItemType());
+        } else if (showRegion == ShowItems.SHOW_ALL_FACTIONS) {
+          ri = Units.getContainerAllUnitItem(unit.getRegion(), modItem.getItemType());
+        } else if (showRegion == ShowItems.SHOW_MY_FACTION) {
+          ri = getContainerFactionUnitItem(unit.getRegion(), unit, modItem.getItemType());
+        }
+        if (ri != null) {
+          nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(
+              ri.getAmount()).append(' ');
         }
 
         nodeText.append(modItem.getName());
@@ -214,13 +227,17 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
           }
         }
 
-        if (showRegion) {
-          Item ri = Units.getContainerPrivilegedUnitItem(unit.getRegion(), modItem.getItemType());
-
-          if (ri != null) {
-            nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(
-                ri.getAmount()).append(' ');
-          }
+        Item ri = null;
+        if (showRegion == ShowItems.SHOW_PRIVILEGED_FACTIONS) {
+          ri = Units.getContainerPrivilegedUnitItem(unit.getRegion(), modItem.getItemType());
+        } else if (showRegion == ShowItems.SHOW_ALL_FACTIONS) {
+          ri = Units.getContainerAllUnitItem(unit.getRegion(), modItem.getItemType());
+        } else if (showRegion == ShowItems.SHOW_MY_FACTION) {
+          ri = getContainerFactionUnitItem(unit.getRegion(), unit, modItem.getItemType());
+        }
+        if (ri != null) {
+          nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(
+              ri.getAmount()).append(' ');
         }
 
         nodeText.append(modItem.getName());
@@ -249,10 +266,33 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
     return text;
   }
 
+  /**
+   * Returns an item corresponding to unit's faction's total amount of this item in unit's region.
+   * TODO is it worth moving this to Units and caching it for each faction and region?
+   */
+  private static Item getContainerFactionUnitItem(UnitContainer container, Unit unit, ItemType type) {
+    Item result = new Item(type, 0);
+    int amount = 0;
+    for (Unit u : container.units()) {
+      if (u.getFaction() == unit.getFaction()) {
+        Item uItem = u.getItem(type);
+        if (uItem != null) {
+          amount += uItem.getAmount();
+        }
+      }
+    }
+    result.setAmount(amount);
+    return result;
+  }
+
   protected NodeWrapperDrawPolicy createItemDrawPolicy(Properties settings, String prefix) {
-    return new DetailsNodeWrapperDrawPolicy(1, null, settings, prefix, new String[][] { {
-        "units.showRegionItemAmount", "true" } }, new String[] { "prefs.region.text" }, 0,
-        "tree.itemnodewrapper.");
+    // return new DetailsNodeWrapperDrawPolicy(1, null, settings, prefix, new String[][] { {
+    // "units.showRegionItemAmount", "true" } }, new String[] { "prefs.region.text" }, 0,
+    // "tree.itemnodewrapper.");
+    return new DetailsNodeWrapperDrawPolicy(3, null, settings, prefix, new String[][] {
+        { "units.showMyTotalAmount", "false" }, { "units.showPrivilegedTotalAmount", "true" },
+        { "units.showAllTotalAmount", "false" } }, new String[] { "prefs.total.my.text",
+        "prefs.total.privileged.text", "prefs.total.all.text" }, 0, "tree.itemnodewrapper.");
   }
 
   /**
@@ -269,8 +309,8 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
    * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
    *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
-  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
-    return init(settings, "ItemNodeWrapper", adapter);
+  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy anAdapter) {
+    return init(settings, "ItemNodeWrapper", anAdapter);
   }
 
   /**
@@ -278,15 +318,15 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
    *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
-      NodeWrapperDrawPolicy adapter) {
-    if (adapter == null) {
-      adapter = createItemDrawPolicy(settings, prefix);
+      NodeWrapperDrawPolicy anAdapter) {
+    if (anAdapter == null) {
+      anAdapter = createItemDrawPolicy(settings, prefix);
     }
 
-    adapter.addCellObject(this);
-    this.adapter = (DetailsNodeWrapperDrawPolicy) adapter;
+    anAdapter.addCellObject(this);
+    adapter = (DetailsNodeWrapperDrawPolicy) anAdapter;
 
-    return adapter;
+    return anAdapter;
   }
 
 }

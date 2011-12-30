@@ -24,6 +24,7 @@ import magellan.client.EMapDetailsPanel;
 import magellan.client.EMapDetailsPanel.ShowItems;
 import magellan.client.event.EventDispatcher;
 import magellan.library.GameData;
+import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
 
 /**
@@ -34,8 +35,8 @@ import magellan.library.utils.Resources;
  */
 public class UnitCapacityContextMenu extends JPopupMenu {
 
-  // private GameData data;
-  // private EventDispatcher dispatcher;
+  private GameData data;
+  private EventDispatcher dispatcher;
 
   private EMapDetailsPanel details;
 
@@ -51,8 +52,8 @@ public class UnitCapacityContextMenu extends JPopupMenu {
     super(":-)");
 
     this.details = details;
-    // this.data = data;
-    // this.dispatcher = dispatcher;
+    this.data = data;
+    this.dispatcher = dispatcher;
 
     init();
   }
@@ -66,7 +67,9 @@ public class UnitCapacityContextMenu extends JPopupMenu {
             .get("context.unitcapacitycontextmenu.menu.toggleShowAllItems.caption"));
     toogleAllItems.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        details.setShowItems(ShowItems.SHOW_ALL);
+        details.setShowCapacityItems(ShowItems.SHOW_ALL);
+        GameDataEvent newE = new GameDataEvent(this, data, false);
+        dispatcher.fire(newE);
       }
     });
     add(toogleAllItems);
@@ -78,7 +81,9 @@ public class UnitCapacityContextMenu extends JPopupMenu {
             .get("context.unitcapacitycontextmenu.menu.toggleShowSomeItems.caption"));
     toogleSomeItems.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        details.setShowItems(ShowItems.SHOW_IN_REGION);
+        details.setShowCapacityItems(ShowItems.SHOW_ALL_FACTIONS);
+        GameDataEvent newE = new GameDataEvent(this, data, false);
+        dispatcher.fire(newE);
       }
     });
     add(toogleSomeItems);
@@ -90,7 +95,9 @@ public class UnitCapacityContextMenu extends JPopupMenu {
             .get("context.unitcapacitycontextmenu.menu.toggleShowFriendlyItems.caption"));
     toogleFriendlyItems.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        details.setShowItems(ShowItems.SHOW_PRIVILEGED_FACTIONS);
+        details.setShowCapacityItems(ShowItems.SHOW_PRIVILEGED_FACTIONS);
+        GameDataEvent newE = new GameDataEvent(this, data, false);
+        dispatcher.fire(newE);
       }
     });
     add(toogleFriendlyItems);
@@ -102,7 +109,9 @@ public class UnitCapacityContextMenu extends JPopupMenu {
             .get("context.unitcapacitycontextmenu.menu.toggleShowMyItems.caption"));
     toogleMyItems.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        details.setShowItems(ShowItems.SHOW_MY_FACTION);
+        details.setShowCapacityItems(ShowItems.SHOW_MY_FACTION);
+        GameDataEvent newE = new GameDataEvent(this, data, false);
+        dispatcher.fire(newE);
       }
     });
     add(toogleMyItems);

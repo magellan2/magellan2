@@ -672,6 +672,28 @@ public class E3CommandParserTest {
    * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
    */
   @Test
+  public final void testCommandGibWennStupid() {
+    E3CommandParser.ADD_NOT_THERE_INFO = true;
+    // add other unit with Silber
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 5);
+
+    // test one GibWenn order
+    unit.clearOrders();
+    unit2.clearOrders();
+
+    unit2.addOrder("// $cript GibWenn");
+    parser.execute(unit.getFaction());
+
+    assertEquals(2, unit2.getOrders2().size());
+    assertError("falsche Anzahl Argumente", unit2, 1);
+
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   */
+  @Test
   public final void testCommandGibWenn() {
     E3CommandParser.ADD_NOT_THERE_INFO = true;
     // add other unit with Silber
@@ -1030,6 +1052,76 @@ public class E3CommandParserTest {
                                                              // cut away by the server
     parser.execute(unit.getFaction());
     assertError("; TODO bug armbrustagabe?", unit, 1);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandLearn(String[])}.
+   */
+  @Test
+  public final void testCommandLearn() {
+    Unit unit2 = builder.addUnit(data, "s", "Soldat", unit.getFaction(), unit.getRegion());
+    unit2.setPersons(10);
+
+    // error: no skill
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit2.addOrder("// $cript Lerne");
+    parser.execute(unit.getFaction());
+
+    assertEquals(1, unit.getOrders2().size());
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("// $cript Lerne", unit2, 0);
+    assertError("falsche Anzahl Argumente", unit2, 1);
+
+    // normal operation
+    builder.addSkill(unit2, "Hiebwaffen", 2);
+
+    // unit.clearOrders();
+    // unit2.clearOrders();
+    // unit2.addOrder("LERNEN Ausdauer");
+    // unit2.addOrder("// $cript Lerne");
+    // parser.execute(unit.getFaction());
+    //
+    // assertEquals(3, unit2.getOrders2().size());
+    // assertOrder("// $cript Lerne", unit2, 0);
+    // // 1 is debug comment
+    // assertOrder("LERNEN Hiebwaffen", unit2, 2);
+
+    // normal operation
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit2.addOrder("LERNEN Unterhaltung");
+    unit2.addOrder("// $cript Lerne Ausdauer 1");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit2.getOrders2().size());
+    assertOrder("// $cript Lerne Ausdauer 1", unit2, 0);
+    // 1 is debug comment
+    assertOrder("LERNEN Ausdauer", unit2, 2);
+
+    // normal operation
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit2.addOrder("LERNEN Unterhaltung");
+    unit2.addOrder("// $cript Lerne Hiebwaffen 1");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit2.getOrders2().size());
+    assertOrder("// $cript Lerne Hiebwaffen 1", unit2, 0);
+    // 1 is debug comment
+    assertOrder("LERNEN Hiebwaffen", unit2, 2);
+
+    // normal operation
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit2.addOrder("LERNEN Hiebwaffen");
+    unit2.addOrder("// $cript Lerne Ausdauer 2 Hiebwaffen 2");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit2.getOrders2().size());
+    assertOrder("// $cript Lerne Ausdauer 2 Hiebwaffen 2", unit2, 0);
+    // 1 is debug comment
+    assertOrder("LERNEN Ausdauer", unit2, 2);
   }
 
   /**

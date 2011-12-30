@@ -520,6 +520,7 @@ public class E3CommandParser {
                 addNewError("zu wenige Argumente");
               } else {
                 commandBenoetige(new String[] { "Benoetige", tokens[1], tokens[2], "Silber" });
+                setConfirm(currentUnit, false);
               }
             } else if (command.equals("Mannschaft")) {
               if (tokens.length < 3) {
@@ -680,6 +681,10 @@ public class E3CommandParser {
    * @param tokens
    */
   protected void commandAuto(String[] tokens) {
+    if (tokens.length > 4) {
+      addNewError("zu viele Argumente");
+      return;
+    }
     if (tokens.length == 1) {
       setConfirm(currentUnit, true);
       addNewOrder(currentOrder, false);
@@ -723,9 +728,8 @@ public class E3CommandParser {
    * "nie". "versteckt" informiert nur, wenn die Einheit nicht da ist, übergibt aber trotzdem.
    */
   protected void commandGibWenn(String[] tokens) {
-
-    if (tokens.length < 3 && tokens.length > 6) {
-      addNewError("Fehler in GibWenn");
+    if (tokens.length < 3 || tokens.length > 6) {
+      addNewError("falsche Anzahl Argumente");
       return;
     }
 
@@ -943,7 +947,7 @@ public class E3CommandParser {
     }
 
     if (tokens.length < 2 || tokens.length > 5) {
-      addNewError("Fehler in Benoetige");
+      addNewError("falsche Anzahl Argumente");
       return;
     }
 
@@ -958,7 +962,7 @@ public class E3CommandParser {
         }
       } else if (EACHOrder.equals(tokens[1])) {
         if (tokens.length != 4) {
-          addNewError("Ungültige Argumente für Benoetige JE x Ding");
+          addNewError("ungültige Argumente für Benoetige JE x Ding");
         } else {
           int amount = unit.getPersons() * Integer.parseInt(tokens[2]);
           String item = tokens[3];
@@ -995,6 +999,9 @@ public class E3CommandParser {
    * Collects all free items in the region, Versorge 100, calls Ueberwache
    */
   protected void commandDepotVerwalter(String[] tokens) {
+    if (tokens.length > 2) {
+      addNewError("zu viele Argumente");
+    }
     commandMonitor(new String[] { "Ueberwache" });
 
     int costs = 0;
@@ -1087,6 +1094,10 @@ public class E3CommandParser {
    * 1), (Hiebwaffen 4, Ausdauer 2), and so forth.
    */
   protected void commandLearn(String[] tokens) {
+    if (tokens.length < 3 || tokens.length % 2 != 1) {
+      addNewError("falsche Anzahl Argumente");
+      return;
+    }
     List<Skill> targetSkills = new LinkedList<Skill>();
 
     for (int i = 1; i < tokens.length; i++) {
@@ -1163,7 +1174,16 @@ public class E3CommandParser {
     soldier(currentUnit, skill, weapon, shield, armor, warning);
   }
 
+  /**
+   * <code>// $cript BerufBotschafter [Talent]</code> -- earn money if necessary, otherwise learn
+   * skill<br />
+   */
   protected void commandEmbassador(String[] tokens) {
+    if (tokens.length > 2) {
+      addNewError("zu viele Argumente");
+      return;
+    }
+
     removeOrdersLike(ENTERTAINOrder + ".*", true);
     removeOrdersLike(WORKOrder + ".*", true);
     removeOrdersLike(LEARNOrder + ".*", true);
@@ -1911,7 +1931,7 @@ public class E3CommandParser {
 
   /**
    * Marks the unit as soldier. Learns its best weapon skill. Reserves suitable weapon, armor, and
-   * shield if available. Confirms unit if there's no problem.
+   * shield if available.
    * 
    * @param u The unit in question
    * @param sWeaponSkill The desired skill. If <code>null</code>, the unit's best weapon skill is
@@ -2012,9 +2032,6 @@ public class E3CommandParser {
     if (!NULL.equals(sArmor) && !reserveEquipment(armor, armors, W_ARMOR.equals(warning))) {
       addNewError("konnte Rüstung nicht reservieren");
     }
-
-    setConfirm(u, true);
-    notifyMagellan(u);
   }
 
   /**

@@ -66,7 +66,7 @@ public class Units {
    * items of the corresponding category.
    */
   private final Map<ItemCategory, StatItemContainer> itemCategoriesMap =
-      new Hashtable<ItemCategory, StatItemContainer>();
+    new Hashtable<ItemCategory, StatItemContainer>();
 
   private static ItemType silberbeutel = new ItemType(StringID.create("Silberbeutel"));
   private static ItemType silberkassette = new ItemType(StringID.create("Silberkassette"));
@@ -147,7 +147,7 @@ public class Units {
     }
 
     final List<StatItemContainer> sortedCategories =
-        new LinkedList<StatItemContainer>(itemCategoriesMap.values());
+      new LinkedList<StatItemContainer>(itemCategoriesMap.values());
     Collections.sort(sortedCategories);
 
     return sortedCategories;
@@ -190,11 +190,11 @@ public class Units {
       if (currentCategoryMap.size() > 0) {
 
         final String catIconName =
-            magellan.library.utils.Umlaut
-                .convertUmlauts(currentCategoryMap.getCategory().getName());
+          magellan.library.utils.Umlaut
+          .convertUmlauts(currentCategoryMap.getCategory().getName());
         final String nodeName = Resources.get("util.units." + catIconName);
         final ItemCategoryNodeWrapper wrapper = // TODO use factory
-            new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
+          new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
         wrapper.setIcons(catIconName);
         categoryNode = new DefaultMutableTreeNode(wrapper);
 
@@ -265,7 +265,7 @@ public class Units {
       NodeWrapperFactory factory, ContextFactory reserveContextFactory) {
 
     final ItemNodeWrapper itemNodeWrapper =
-        factory.createItemNodeWrapper(u, currentItem, currentItem.getUnmodifiedAmount());
+      factory.createItemNodeWrapper(u, currentItem, currentItem.getUnmodifiedAmount());
     final DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(itemNodeWrapper);
 
     categoryNode.add(itemNode);
@@ -286,9 +286,9 @@ public class Units {
         icons.add("reserve");
 
         UnitRelationNodeWrapper reserveNodeWrapper = // factory.createSimpleNodeWrapper(rrel,
-                                                     // text.toString(), icons);
-            factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
-                .toString(), icons));
+          // text.toString(), icons);
+          factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
+              .toString(), icons));
         itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
 
         addItemNode = true;
@@ -323,11 +323,11 @@ public class Units {
           DefaultNodeWrapper relationWrapper;
           if (u2 instanceof ZeroUnit) {
             relationWrapper =
-                factory.createRegionNodeWrapper(u2.getRegion(), currentRelation.amount);
+              factory.createRegionNodeWrapper(u2.getRegion(), currentRelation.amount);
           } else {
             UnitNodeWrapper giveNodeWrapper =
-                factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2
-                    .getModifiedPersons());
+              factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2
+                  .getModifiedPersons());
             giveNodeWrapper.setReverseOrder(true);
 
             if (currentRelation.problem != null) {
@@ -338,7 +338,7 @@ public class Units {
             }
             giveNodeWrapper.addAdditionalIcon(addIcon);
             relationWrapper =
-                factory.createRelationNodeWrapper(u2, currentRelation, giveNodeWrapper);
+              factory.createRelationNodeWrapper(u2, currentRelation, giveNodeWrapper);
           }
 
           itemNode.add(new DefaultMutableTreeNode(relationWrapper));
@@ -351,7 +351,7 @@ public class Units {
           final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
           final List<String> icons = new LinkedList<String>();
           text.append(Resources.get("util.units.node.recruit")).append(" ").append(rrel.amount)
-              .append(" ").append(rrel.race);
+          .append(" ").append(rrel.race);
 
           icons.add("rekruten");
           if (rrel.problem != null) {
@@ -362,8 +362,8 @@ public class Units {
           }
 
           final UnitRelationNodeWrapper recruitNodeWrapper =
-              factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
-                  .toString(), icons));
+            factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
+                .toString(), icons));
           itemNode.add(new DefaultMutableTreeNode(recruitNodeWrapper));
 
           addItemNode = true;
@@ -544,7 +544,7 @@ public class Units {
    * This will be a Map&lt;ItemType.id, StatItem&gt;, which is a Map of items of one category.
    */
   private static class StatItemContainer extends Hashtable<ID, StatItem> implements
-      Comparable<StatItemContainer> {
+  Comparable<StatItemContainer> {
     private ItemCategory category = null;
 
     /**
@@ -622,6 +622,20 @@ public class Units {
    *          [3] : One of {@link GiveOrderDialog#FIRST_POS}, {@link GiveOrderDialog#LAST_POS}
    */
   public static void addOrders(Unit u, String[] s) {
+    addOrders(u, s, true);
+  }
+
+  /**
+   * Modifies <code>u</code>'s orders as specified in <code>s</code>.
+   * 
+   * @see GiveOrderDialog#showGiveOrderDialog()
+   * @param s A string array with the following values: <br/>
+   *          [0] : The order that was given <br/>
+   *          [1] : A String representative of the boolean value for "Replace orders" <br/>
+   *          [2] : A String representative of the boolean value for "Keep comments" <br/>
+   *          [3] : One of {@link GiveOrderDialog#FIRST_POS}, {@link GiveOrderDialog#LAST_POS}
+   */
+  public static void addOrders(Unit u, String[] s, boolean refreshRelations) {
     if (s == null || s.length != 4)
       throw new IllegalArgumentException("expecting exactly 4 arguments");
 
@@ -651,23 +665,23 @@ public class Units {
               newOrders.add(newOrders.size(), u.createOrder(sHelp));
             }
           }
-          u.setOrders2(newOrders);
+          u.setOrders2(newOrders, refreshRelations);
         } else {
 
           final List<String> newOrders = new LinkedList<String>();
           for (final String sHelp : newOrderArray) {
             newOrders.add(sHelp);
           }
-          u.setOrders(newOrders);
+          u.setOrders(newOrders, refreshRelations);
         }
       } else {
         if (position.equals(GiveOrderDialog.FIRST_POS)) {
           for (int i = newOrderArray.length - 1; i >= 0; --i) {
-            u.addOrderAt(0, newOrderArray[i], true);
+            u.addOrderAt(0, newOrderArray[i], refreshRelations);
           }
         } else {
           for (final String sHelp : newOrderArray) {
-            u.addOrderAt(u.getOrders2().size(), sHelp, true);
+            u.addOrderAt(u.getOrders2().size(), sHelp, refreshRelations);
           }
         }
       }

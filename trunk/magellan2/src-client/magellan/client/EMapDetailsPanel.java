@@ -206,16 +206,23 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     /**
      * show all item types in the region
      */
-    SHOW_ALL, /**
+    SHOW_ALL,
+    /**
      * show items of privileged factions in the region
      */
-    SHOW_PRIVILEGED_FACTIONS, /**
+    SHOW_PRIVILEGED_FACTIONS,
+    /**
      * show items of own faction in the region
      */
-    SHOW_MY_FACTION, /**
+    SHOW_MY_FACTION,
+    /**
      * show items of all factions in the region
      */
-    SHOW_IN_REGION
+    SHOW_ALL_FACTIONS,
+    /**
+     * show no items
+     */
+    SHOW_NONE
   }
 
   // GUI elements
@@ -288,7 +295,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   private GameSpecificStuff gameSpecStuff = null;
 
-  private ShowItems showItems = ShowItems.SHOW_IN_REGION;
+  private ShowItems showCapacityItems = ShowItems.SHOW_ALL_FACTIONS;
 
   /**
    * Creates a new EMapDetailsPanel object.
@@ -3572,7 +3579,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
     ItemType silver = data.rules.getItemType(EresseaConstants.I_USILVER);
     // Fiete: feature request...showing not only capacity for "good" items in region...
-    switch (showItems) {
+    switch (showCapacityItems) {
     case SHOW_PRIVILEGED_FACTIONS:
       if (u.getRegion() != null) {
         for (Item item : magellan.library.utils.Units
@@ -3620,7 +3627,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
       break;
 
-    case SHOW_IN_REGION:
+    case SHOW_ALL_FACTIONS:
       if (u.getRegion() != null) {
         for (Item item : magellan.library.utils.Units.getContainerAllUnitItems(u.getRegion())) {
           ItemType type = item.getItemType();
@@ -3668,6 +3675,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
     }
       break;
+    default:
+      throw new IllegalArgumentException();
     }
 
   }
@@ -5181,16 +5190,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   private void initShowItems() {
     if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", false)) {
-      showItems = ShowItems.SHOW_PRIVILEGED_FACTIONS;
+      showCapacityItems = ShowItems.SHOW_PRIVILEGED_FACTIONS;
     }
     if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowMy", false)) {
-      showItems = ShowItems.SHOW_MY_FACTION;
+      showCapacityItems = ShowItems.SHOW_MY_FACTION;
     }
     if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowAll", false)) {
-      showItems = ShowItems.SHOW_ALL;
+      showCapacityItems = ShowItems.SHOW_ALL;
     }
     if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowSome", false)) {
-      showItems = ShowItems.SHOW_IN_REGION;
+      showCapacityItems = ShowItems.SHOW_ALL_FACTIONS;
     }
   }
 
@@ -5199,28 +5208,28 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * 
    * @return which items are shown (in capacity nodes)
    */
-  public ShowItems getShowItems() {
-    return showItems;
+  public ShowItems getShowCapacityItems() {
+    return showCapacityItems;
   }
 
   /**
    * Sets the types of items displayed (in capacity nodes).
    */
-  public void setShowItems(ShowItems newValue) {
-    if (showItems != newValue) {
-      showItems = newValue;
+  public void setShowCapacityItems(ShowItems newValue) {
+    if (showCapacityItems != newValue) {
+      showCapacityItems = newValue;
       settings.setProperty("unitCapacityContextMenuShowAll", "false");
       settings.setProperty("unitCapacityContextMenuShowFriendly", "false");
       settings.setProperty("unitCapacityContextMenuShowSome", "false");
       settings.setProperty("unitCapacityContextMenuShowMy", "false");
-      switch (showItems) {
+      switch (showCapacityItems) {
       case SHOW_ALL:
         settings.setProperty("unitCapacityContextMenuShowAll", "true");
         break;
       case SHOW_PRIVILEGED_FACTIONS:
         settings.setProperty("unitCapacityContextMenuShowFriendly", "true");
         break;
-      case SHOW_IN_REGION:
+      case SHOW_ALL_FACTIONS:
         settings.setProperty("unitCapacityContextMenuShowSome", "true");
         break;
       case SHOW_MY_FACTION:

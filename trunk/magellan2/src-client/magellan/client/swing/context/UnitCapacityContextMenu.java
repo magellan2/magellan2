@@ -20,35 +20,39 @@ import java.util.Properties;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import magellan.client.EMapDetailsPanel;
+import magellan.client.EMapDetailsPanel.ShowItems;
 import magellan.client.event.EventDispatcher;
 import magellan.library.GameData;
-import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT-ME
+ * Context menu for the capacity nodes (in EmapDetailsPanel)
  * 
  * @author Fiete
  * @version $Revision: 313 $
  */
 public class UnitCapacityContextMenu extends JPopupMenu {
 
-  private GameData data;
-  private EventDispatcher dispatcher;
-  private Properties settings;
+  // private GameData data;
+  // private EventDispatcher dispatcher;
+
+  private EMapDetailsPanel details;
 
   /**
    * Creates new UnitCapacityContextMenu
    * 
+   * @param details
    * @param dispatcher EventDispatcher
    * @param data the actual GameData or World
    */
-  public UnitCapacityContextMenu(EventDispatcher dispatcher, GameData data, Properties settings) {
+  public UnitCapacityContextMenu(EMapDetailsPanel details, EventDispatcher dispatcher,
+      GameData data, Properties settings) {
     super(":-)");
 
-    this.data = data;
-    this.dispatcher = dispatcher;
-    this.settings = settings;
+    this.details = details;
+    // this.data = data;
+    // this.dispatcher = dispatcher;
 
     init();
   }
@@ -62,31 +66,19 @@ public class UnitCapacityContextMenu extends JPopupMenu {
             .get("context.unitcapacitycontextmenu.menu.toggleShowAllItems.caption"));
     toogleAllItems.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        settings.setProperty("unitCapacityContextMenuShowAll", "true");
-        settings.setProperty("unitCapacityContextMenuShowSome", "false");
-        settings.setProperty("unitCapacityContextMenuShowFriendly", "false");
-        // FIXME how to notify to rebuild the tree
-        // just for now only one idea: gamedatachangevent
-        GameDataEvent newE = new GameDataEvent(this, data);
-        dispatcher.fire(newE);
+        details.setShowItems(ShowItems.SHOW_ALL);
       }
     });
     add(toogleAllItems);
 
-    // new: all Items in region, regardles which faction (= some)
+    // new: all Items in region, regardless which faction (= some)
     JMenuItem toogleSomeItems = null;
     toogleSomeItems =
         new JMenuItem(Resources
             .get("context.unitcapacitycontextmenu.menu.toggleShowSomeItems.caption"));
     toogleSomeItems.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        settings.setProperty("unitCapacityContextMenuShowAll", "false");
-        settings.setProperty("unitCapacityContextMenuShowSome", "true");
-        settings.setProperty("unitCapacityContextMenuShowFriendly", "false");
-        // FIXME how to notify to rebuild the tree
-        // just for now only one idea: gamedatachangevent
-        GameDataEvent newE = new GameDataEvent(this, data);
-        dispatcher.fire(newE);
+        details.setShowItems(ShowItems.SHOW_IN_REGION);
       }
     });
     add(toogleSomeItems);
@@ -98,16 +90,22 @@ public class UnitCapacityContextMenu extends JPopupMenu {
             .get("context.unitcapacitycontextmenu.menu.toggleShowFriendlyItems.caption"));
     toogleFriendlyItems.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        settings.setProperty("unitCapacityContextMenuShowAll", "false");
-        settings.setProperty("unitCapacityContextMenuShowSome", "false");
-        settings.setProperty("unitCapacityContextMenuShowFriendly", "true");
-        // FIXME how to notify to rebuild the tree
-        // just for now only one idea: gamedatachangevent
-        GameDataEvent newE = new GameDataEvent(this, data);
-        dispatcher.fire(newE);
+        details.setShowItems(ShowItems.SHOW_PRIVILEGED_FACTIONS);
       }
     });
     add(toogleFriendlyItems);
+
+    // new: all Items in region, only own faction
+    JMenuItem toogleMyItems = null;
+    toogleMyItems =
+        new JMenuItem(Resources
+            .get("context.unitcapacitycontextmenu.menu.toggleShowMyItems.caption"));
+    toogleMyItems.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        details.setShowItems(ShowItems.SHOW_MY_FACTION);
+      }
+    });
+    add(toogleMyItems);
 
   }
 }

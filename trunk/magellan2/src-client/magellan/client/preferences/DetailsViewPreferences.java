@@ -25,6 +25,7 @@ package magellan.client.preferences;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -32,11 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
 
 import magellan.client.EMapDetailsPanel;
+import magellan.client.EMapDetailsPanel.ShowItems;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
@@ -48,6 +52,11 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
   private JCheckBox chkShowTagButtons;
   private JCheckBox chkAllowCustomIcons;
   private JCheckBox chkCompact;
+  private JRadioButton rdbAllItems;
+  private JRadioButton rdbFriendlyItems;
+  private JRadioButton rdbMyItems;
+  private JRadioButton rdbSomeItems;
+  private JCheckBox chkShowPrivileged;
 
   /**
    * Creates a new EMapDetailsPreferences object.
@@ -72,36 +81,72 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
   }
 
   private JPanel getDataViewPanel() {
-    JPanel help = new JPanel(new GridBagLayout());
-    help.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+    JPanel outerPanel = new JPanel(new GridBagLayout());
+    outerPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("emapdetailspanel.prefs.datadisplay")));
 
     GridBagConstraints c =
         new GridBagConstraints(0, 0, 2, 1, 1.0, 0, GridBagConstraints.NORTH,
-            GridBagConstraints.HORIZONTAL, new Insets(3, 3, 3, 3), 0, 0);
+            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
 
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
     c.gridy = 0;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.weightx = 0.1;
+
+    JPanel innerPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
+
     chkShowTagButtons =
         new JCheckBox(Resources.get("emapdetailspanel.prefs.showTagButtons"), source
             .isShowingTagButtons());
-    help.add(chkShowTagButtons, c);
+    innerPanel.add(chkShowTagButtons);
 
-    c.gridy++;
     chkAllowCustomIcons =
         new JCheckBox(Resources.get("emapdetailspanel.prefs.allowCustomIcons"), source
             .isAllowingCustomIcons());
-    help.add(chkAllowCustomIcons, c);
+    innerPanel.add(chkAllowCustomIcons);
 
-    c.gridy++;
     chkCompact =
         new JCheckBox(Resources.get("emapdetailspanel.prefs.compact"), source.isCompactLayout());
-    help.add(chkCompact, c);
+    innerPanel.add(chkCompact);
 
-    return help;
+    outerPanel.add(innerPanel, c);
+
+    innerPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
+    ButtonGroup showButtons = new ButtonGroup();
+    rdbAllItems =
+        new JRadioButton(Resources.get("emapdetailspanel.prefs.allitems"),
+            source.getShowItems() == ShowItems.SHOW_ALL);
+    rdbFriendlyItems =
+        new JRadioButton(Resources.get("emapdetailspanel.prefs.friendlyitems"), source
+            .getShowItems() == ShowItems.SHOW_PRIVILEGED_FACTIONS);
+    rdbMyItems =
+        new JRadioButton(Resources.get("emapdetailspanel.prefs.myitems"),
+            source.getShowItems() == ShowItems.SHOW_MY_FACTION);
+    rdbSomeItems =
+        new JRadioButton(Resources.get("emapdetailspanel.prefs.someitems"),
+            source.getShowItems() == ShowItems.SHOW_IN_REGION);
+    showButtons.add(rdbAllItems);
+    showButtons.add(rdbFriendlyItems);
+    showButtons.add(rdbMyItems);
+    showButtons.add(rdbSomeItems);
+    innerPanel.add(rdbAllItems);
+    innerPanel.add(rdbFriendlyItems);
+    innerPanel.add(rdbMyItems);
+    innerPanel.add(rdbSomeItems);
+
+    c.gridy++;
+    outerPanel.add(innerPanel, c);
+
+    chkShowPrivileged =
+        new JCheckBox(Resources.get("emapdetailspanel.prefs.showprivileged"),
+            source.getShowItems() == ShowItems.SHOW_PRIVILEGED_FACTIONS);
+
+    c.gridy++;
+    outerPanel.add(chkShowPrivileged, c);
+
+    return outerPanel;
   }
 
   /**
@@ -117,8 +162,23 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
    */
   @Deprecated
   public void initPreferences() {
+    chkShowTagButtons.setSelected(source.isShowingTagButtons());
+    chkAllowCustomIcons.setSelected(source.isAllowingCustomIcons());
+    chkCompact.setSelected(source.isCompactLayout());
+    chkShowPrivileged.setSelected(source.getShowItems() == ShowItems.SHOW_PRIVILEGED_FACTIONS);
+    if (source.getShowItems() == ShowItems.SHOW_ALL) {
+      rdbAllItems.setSelected(true);
+    }
+    if (source.getShowItems() == ShowItems.SHOW_IN_REGION) {
+      rdbSomeItems.setSelected(true);
+    }
+    if (source.getShowItems() == ShowItems.SHOW_MY_FACTION) {
+      rdbMyItems.setSelected(true);
+    }
+    if (source.getShowItems() == ShowItems.SHOW_PRIVILEGED_FACTIONS) {
+      rdbFriendlyItems.setSelected(true);
+    }
     regionPref.initPreferences();
-    // TODO: implement it
   }
 
   /**
@@ -129,6 +189,16 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
   public void applyPreferences() {
     source.setShowTagButtons(chkShowTagButtons.isSelected());
     source.setAllowCustomIcons(chkAllowCustomIcons.isSelected());
+    source.setCompactLayout(chkCompact.isSelected());
+    if (rdbAllItems.isSelected()) {
+      source.setShowItems(ShowItems.SHOW_ALL);
+    } else if (rdbSomeItems.isSelected()) {
+      source.setShowItems(ShowItems.SHOW_IN_REGION);
+    } else if (rdbMyItems.isSelected()) {
+      source.setShowItems(ShowItems.SHOW_MY_FACTION);
+    } else {
+      source.setShowItems(ShowItems.SHOW_PRIVILEGED_FACTIONS);
+    }
     regionPref.applyPreferences();
   }
 

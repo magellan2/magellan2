@@ -2467,7 +2467,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
     // set the sortIndex so the original ordering of the units
     // can be restored
-    unit.setSortIndex(sortIndex++);
+    unit.setSortIndex(sortIndex);
 
     final Faction faction = getAddFaction(factionID);
 

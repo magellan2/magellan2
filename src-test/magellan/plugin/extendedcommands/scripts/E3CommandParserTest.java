@@ -1173,6 +1173,27 @@ public class E3CommandParserTest {
   }
 
   /**
+   * Another Test method for {@link E3CommandParser#commandSoldier(String...)}.
+   */
+  @Test
+  public final void testCommandSoldier2() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Soldat best Hellebarde null Plattenpanzer");
+    builder.addSkill(unit, "Hiebwaffen", 2);
+    builder.addItem(data, unit, "Hellebarde", 1);
+    builder.addItem(data, unit, "Plattenpanzer", 1);
+    parser.execute(unit.getFaction());
+
+    assertEquals(6, unit.getOrders2().size());
+    // 0 is debug comment
+    assertOrder("// $cript Soldat best Hellebarde null Plattenpanzer", unit, 1);
+    // 2 is debug comment
+    assertOrder("LERNEN Hiebwaffen", unit, 3);
+    assertOrder("RESERVIEREN JE 1 Hellebarde", unit, 4);
+    assertOrder("RESERVIEREN JE 1 Plattenpanzer", unit, 5);
+  }
+
+  /**
    * Test method for {@link E3CommandParser#commandKontrolle(String...)}.
    */
   @Test
@@ -1214,6 +1235,7 @@ public class E3CommandParserTest {
    */
   @Test
   public final void testCommandTrade() {
+    // test missing skill
     unit.clearOrders();
     unit.addOrder("// $cript Handel 100 ALLES Talent");
     parser.execute(unit.getFaction());
@@ -1224,7 +1246,18 @@ public class E3CommandParserTest {
     builder.setPrices(unit.getRegion(), "Balsam");
     builder.addItem(data, unit, "Öl", 2);
     builder.addItem(data, unit, "Myrrhe", 200);
+
+    // no trade because volume is 0
+    unit.clearOrders();
+    unit.addOrder("// $cript Handel 100 ALLES Talent");
+    parser.execute(unit.getFaction());
+    assertOrder("// $cript Handel 100 ALLES Talent", unit, 1);
+    assertError("Kein Handel möglich", unit, 2);
+    assertEquals(3, unit.getOrders2().size());
+
+    // test missing skill and silver
     unit.getRegion().setPeasants(1000);
+
     unit.clearOrders();
     unit.addOrder("// $cript Handel 100 ALLES Talent");
     parser.execute(unit.getFaction());
@@ -1234,6 +1267,7 @@ public class E3CommandParserTest {
     assertError("braucht 3300 mehr Silber", unit, 4);
     assertEquals(5, unit.getOrders2().size());
 
+    // test normal operation
     builder.addItem(data, unit, "Silber", 5000);
     unit.clearOrders();
     unit.addOrder("// $cript Handel 20 ALLES Talent");
@@ -1244,6 +1278,15 @@ public class E3CommandParserTest {
     assertOrder("VERKAUFEN 2 Öl", unit, 4);
     assertOrder("RESERVIEREN 180 Silber", unit, 5);
     assertEquals(6, unit.getOrders2().size());
+
+    // test buy amount 0
+    unit.clearOrders();
+    unit.addOrder("// $cript Handel 0 ALLES Talent");
+    parser.execute(unit.getFaction());
+    assertOrder("// $cript Handel 0 ALLES Talent", unit, 1);
+    assertOrder("VERKAUFEN ALLES Myrrhe", unit, 2);
+    assertOrder("VERKAUFEN 2 Öl", unit, 3);
+    assertEquals(4, unit.getOrders2().size());
   }
 
   /**

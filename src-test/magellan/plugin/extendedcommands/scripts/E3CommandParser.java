@@ -1399,11 +1399,18 @@ public class E3CommandParser {
 
     int volume = currentRegion.maxLuxuries();
 
+    removeOrdersLike(SELLOrder + ".*", true);
+    removeOrdersLike(BUYOrder + ".*", true);
+
+    // Gueterzahl intitialisieren
+    int guetersumme = 0;
+
+    if (amount > 0 && (volume <= 0 || buyGood == null)) {
+      addNewError("Kein Handel möglich");
+    }
+
     // Soll eingekauft werden?
     if (volume > 0 && amount > 0 && buyGood != null) {
-      removeOrdersLike(SELLOrder + ".*", true);
-      removeOrdersLike(BUYOrder + ".*", true);
-
       // Berechne noetige Geldmenge fuer Einkauf (einfacher: Modulorechnung, aber wegen
       // Rundungsfehler nicht umsetzbar)
       int hilfNochUebrig = amount;
@@ -1422,15 +1429,14 @@ public class E3CommandParser {
 
       addNeed("Silber", currentUnit, geldNoetig, geldNoetig);
 
-      // Gueterzahl intitialisieren
-      int guetersumme = 0;
-
       // Einkaufsbefehl setzen, wenn notwendig
       if (amount > 0) {
         addNewOrder(BUYOrder + " " + amount + " " + buyGood.getItemType().getOrderName(), true);
         guetersumme += amount;
       }
+    }
 
+    if (volume > 0 && buyGood != null) {
       List<String> goods = new LinkedList<String>();
       // Verkaufsbefehl setzen, wenn notwendig
       if (tokens.length > 2 && ALLOrder.equals(tokens[2])) {
@@ -1498,8 +1504,6 @@ public class E3CommandParser {
       if (skillWarning && (W_SKILL.equals(warning) || warning == null)) {
         addNewError("Einheit hat zu wenig Handelstalent!");
       }
-    } else {
-      addNewError("Kein Handel möglich");
     }
 
     setConfirm(currentUnit, true);

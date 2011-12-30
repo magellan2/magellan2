@@ -70,6 +70,7 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
   /**
    * @see magellan.client.swing.tree.CellObject#emphasized()
    */
+  @Override
   public boolean emphasized() {
     return false;
   }

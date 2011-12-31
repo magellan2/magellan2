@@ -90,9 +90,10 @@ public class Loader {
         public void run() {
           try {
             d[0] = r.readGameData(filetype, coordinateTranslator, data.getGameName());
-            done = true;
           } catch (IOException e1) {
             e1.printStackTrace();
+          } finally {
+            done = true;
           }
         }
       }
@@ -103,6 +104,9 @@ public class Loader {
 
       try {
         crw.writeSynchronously();
+      } catch (RuntimeException exc) {
+        exc.printStackTrace();
+        throw exc;
       } finally {
         crw.close();
       }

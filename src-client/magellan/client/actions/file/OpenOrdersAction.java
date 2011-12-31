@@ -29,7 +29,6 @@ import magellan.client.desktop.MagellanDesktop;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.OpenOrdersAccessory;
 import magellan.client.swing.ProgressBarUI;
-import magellan.library.CoordinateID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.io.BOMReader;
@@ -150,14 +149,16 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
               .get("actions.openordersaction.msg.fileordersopen.error.title"),
               JOptionPane.ERROR_MESSAGE);
         }
-
-        // client.getDispatcher().fire(new GameDataEvent(client,
-        // client.getData()));
         // in order to refresh relations, force a complete new init of the game data, using
         // data.clone, using for that client.setOrigin...(Fiete)
-        client.setOrigin(CoordinateID.ZERO);
-        // setOrigin already fires a GameDataEvent
+        // client.setOrigin(CoordinateID.ZERO);
+
+        // setOrigin and set Data already fire a GameDataEvent
         // client.getDispatcher().fire(new GameDataEvent(this, client.getData()));
+
+        // (stm) this should be sufficient, as long as unit relations are (forcedly) refreshed via
+        // postProcess in OrderReader
+        client.setData(client.getData());
         client.setReportChanged(true);
         ui.ready();
       }

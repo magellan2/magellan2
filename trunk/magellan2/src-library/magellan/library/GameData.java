@@ -45,8 +45,8 @@ import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Problem;
-import magellan.library.tasks.ProblemFactory;
 import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.IDBaseConverter;
@@ -55,11 +55,11 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.Regions;
 import magellan.library.utils.ReportMerger;
+import magellan.library.utils.ReportMerger.AssignData;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.Translations;
 import magellan.library.utils.UserInterface;
-import magellan.library.utils.ReportMerger.AssignData;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.logging.Logger;
@@ -115,10 +115,10 @@ public abstract class GameData implements Cloneable, Addeable {
   private EntityID ownerFaction;
 
   private Map<EntityID, Map<Integer, CoordinateID>> coordinateTranslations =
-    new LinkedHashMap<EntityID, Map<Integer, CoordinateID>>();
+      new LinkedHashMap<EntityID, Map<Integer, CoordinateID>>();
 
   private Map<Integer, Map<Integer, LevelRelation>> levelRelations =
-    new LinkedHashMap<Integer, Map<Integer, LevelRelation>>();
+      new LinkedHashMap<Integer, Map<Integer, LevelRelation>>();
 
   private Map<ID, AllianceGroup> alliancegroups;
 
@@ -1160,7 +1160,7 @@ public abstract class GameData implements Cloneable, Addeable {
       }
     }
     for (Region r : getRegions()) {
-      r.refreshUnitRelations();
+      r.refreshUnitRelations(true);
     }
 
     postProcessed = true;
@@ -1206,7 +1206,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
     // create a map of region maps for every Island
     final Map<Island, Map<CoordinateID, Region>> islandMap =
-      new Hashtable<Island, Map<CoordinateID, Region>>();
+        new Hashtable<Island, Map<CoordinateID, Region>>();
 
     for (final Region r : data.getRegions()) {
       if (r.getIsland() != null) {
@@ -1787,7 +1787,7 @@ public abstract class GameData implements Cloneable, Addeable {
   public Faction getNullFaction() {
     if (nullFaction == null) {
       nullFaction =
-        MagellanFactory.createFaction(EntityID.createEntityID(Integer.MIN_VALUE, base), this);
+          MagellanFactory.createFaction(EntityID.createEntityID(Integer.MIN_VALUE, base), this);
     }
     return nullFaction;
   }
@@ -1879,7 +1879,6 @@ public abstract class GameData implements Cloneable, Addeable {
     if (assigner.data2 == null) {
       assigner.data2 = this;
     }
-
 
     return assigner.data2;
   }

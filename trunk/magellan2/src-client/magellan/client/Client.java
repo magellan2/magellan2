@@ -173,8 +173,8 @@ import magellan.library.io.GameDataReader;
 import magellan.library.io.cr.CRWriter;
 import magellan.library.io.file.FileBackup;
 import magellan.library.io.file.FileType;
-import magellan.library.io.file.FileTypeFactory;
 import magellan.library.io.file.FileType.ReadOnlyException;
+import magellan.library.io.file.FileTypeFactory;
 import magellan.library.rules.Date;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Problem;
@@ -210,7 +210,8 @@ import org.simplericity.macify.eawt.DefaultApplication;
  * @author $Author: $
  * @version $Revision: 388 $
  */
-public class Client extends JFrame implements ShortcutListener, PreferencesFactory, ApplicationListener {
+public class Client extends JFrame implements ShortcutListener, PreferencesFactory,
+    ApplicationListener {
   private static final Logger log = Logger.getInstance(Client.class);
 
   /** The name of the magellan settings file. */
@@ -350,7 +351,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     showStatus = PropertiesHelper.getBoolean(settings, "Client.ShowOrderStatus", false);
 
     Properties completionSettings =
-      Client.loadSettings(Client.settingsDirectory, COMPLETIONSETTINGS_FILENAME);
+        Client.loadSettings(Client.settingsDirectory, COMPLETIONSETTINGS_FILENAME);
     if (completionSettings != null) {
       log.warn(COMPLETIONSETTINGS_FILENAME + " is no longer supported.");
     } else {
@@ -415,42 +416,42 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private void fixSettings(Properties settings) {
     // backward compatibility for white message tags (it's now the text color)
     if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR, "-").equals(
-    "#FFFFFF")) {
+        "#FFFFFF")) {
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR, "#009999"); // Format:
       // #RRGGBB
     }
     if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR, "-").equals(
-    "#FFFFFF")) {
+        "#FFFFFF")) {
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR, "#000000");// Format:
       // #RRGGBB
     }
     if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR, "-").equals(
-    "#FFFFFF")) {
+        "#FFFFFF")) {
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR, "#000066");// Format:
       // #RRGGBB
     }
     if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR, "-").equals(
-    "#FFFFFF")) {
+        "#FFFFFF")) {
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR, "#666600");// Format:
       // #RRGGBB
     }
     if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR, "-").equals(
-    "#FFFFFF")) {
+        "#FFFFFF")) {
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR, "#006666");// Format:
       // #RRGGBB
     }
     if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR, "-").equals(
-    "#FFFFFF")) {
+        "#FFFFFF")) {
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR, "#009900");// Format:
       // #RRGGBB
     }
     if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR, "-").equals(
-    "#FFFFFF")) {
+        "#FFFFFF")) {
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR, "#990000");// Format:
       // #RRGGBB
     }
     if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "-").equals(
-    "#FFFFFF")) {
+        "#FFFFFF")) {
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "#999900");// Format:
       // #RRGGBB
     }
@@ -462,17 +463,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ",Einkaufsgut");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET, "Einkaufsgut");
     settings
-    .setProperty(
-        PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-        + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
-    "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
+        .setProperty(
+            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+                + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
+            "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, "10");
     settings
-    .setProperty(
-        PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-        + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
-    "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
+        .setProperty(
+            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+                + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
+            "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
@@ -673,7 +674,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // load custom renderers
     // ForcedFileClassLoader.directory = filesDirectory;
     RendererLoader rl =
-      new RendererLoader(Client.getResourceDirectory(), ".", geo, getProperties());
+        new RendererLoader(Client.getResourceDirectory(), ".", geo, getProperties());
     Collection<MapCellRenderer> cR = rl.loadRenderers();
 
     // init mapper
@@ -720,7 +721,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     topLevel.add(overviewPanel);
 
     echeckPanel =
-      new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions().values());
+        new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions().values());
     components.put(MagellanDesktop.ECHECK_IDENTIFIER, echeckPanel);
 
     taskPanel = new TaskTablePanel(getDispatcher(), getData(), getProperties());
@@ -1131,7 +1132,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         parameters.resourceDir = parameters.binDir;
       }
       parameters.settingsDir =
-        MagellanFinder.findSettingsDirectory(parameters.resourceDir, parameters.settingsDir);
+          MagellanFinder.findSettingsDirectory(parameters.resourceDir, parameters.settingsDir);
       Resources.getInstance().initialize(parameters.resourceDir, "");
       MagellanLookAndFeel.setMagellanDirectory(parameters.resourceDir);
       MagellanImages.setMagellanDirectory(parameters.resourceDir);
@@ -1182,7 +1183,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           Client.INSTANCE = c;
 
           String newestVersion =
-            VersionInfo.getNewestVersion(c.getProperties(), Client.startWindow);
+              VersionInfo.getNewestVersion(c.getProperties(), Client.startWindow);
           String currentVersion = VersionInfo.getVersion(tResourceDir);
           if (!Utils.isEmpty(newestVersion)) {
             Client.log.info("Newest Version on server: " + newestVersion);
@@ -1202,14 +1203,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             }
           }
 
-          c.application  = new DefaultApplication();
+          c.application = new DefaultApplication();
           c.application.addPreferencesMenuItem();
           c.application.setEnabledPreferencesMenu(true);
           c.application.addAboutMenuItem();
           c.application.setEnabledAboutMenu(true);
           c.application.addApplicationListener(c);
 
-          Client.log.info("Is Mac extension working:"+c.application.isMac());
+          Client.log.info("Is Mac extension working:" + c.application.isMac());
 
           c.appIcon = c.application.getApplicationIconImage();
 
@@ -1219,8 +1220,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             // if no report is given on startup, we check if we can load the last
             // loaded report.
             boolean loadLastReport =
-              PropertiesHelper.getBoolean(c.getProperties(),
-                  PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true);
+                PropertiesHelper.getBoolean(c.getProperties(),
+                    PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true);
             if (loadLastReport) {
               crFile = c.fileHistory.getLastExistingReport();
               if (crFile == null) {
@@ -1443,8 +1444,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             && getData().getFileType().getFile() != null) {
           Object msgArgs[] = { getData().getFileType().getFile().getAbsolutePath() };
           msg =
-            (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text")))
-            .format(msgArgs);
+              (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text")))
+                  .format(msgArgs);
         } else {
           msg = Resources.get("client.msg.quit.confirmsavenofile.text");
         }
@@ -1455,12 +1456,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       switch (JOptionPane.showConfirmDialog(this, msg, Resources
           .get("client.msg.quit.confirmsave.title"), JOptionPane.YES_NO_CANCEL_OPTION)) {
-          case JOptionPane.YES_OPTION:
+      case JOptionPane.YES_OPTION:
 
-            return JOptionPane.YES_OPTION;
+        return JOptionPane.YES_OPTION;
 
-          case JOptionPane.CANCEL_OPTION:
-            return JOptionPane.CANCEL_OPTION;
+      case JOptionPane.CANCEL_OPTION:
+        return JOptionPane.CANCEL_OPTION;
       }
     }
 
@@ -1529,9 +1530,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Client.log.info("Client.saveReport Using encoding: " + getData().getEncoding());
       ProgressBarUI ui = new ProgressBarUI(this);
       crw =
-        new CRWriter(getData(), ui, filetype, getData().getEncoding(), Integer
-            .parseInt(getProperties().getProperty("Client.CRBackups.count",
-                FileBackup.DEFAULT_BACKUP_LEVEL + "")));
+          new CRWriter(getData(), ui, filetype, getData().getEncoding(), Integer
+              .parseInt(getProperties().getProperty("Client.CRBackups.count",
+                  FileBackup.DEFAULT_BACKUP_LEVEL + "")));
       crw.writeAsynchronously();
       crw.close();
 
@@ -1676,8 +1677,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       ui.show();
       // FIXME(stm) maybe not pass ui to the reader here!?!
       data =
-        new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName,
-            true, new ClientFileTypeChooser(client)));
+          new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName,
+              true, new ClientFileTypeChooser(client)));
       if (data == null)
         throw new NullPointerException();
     } catch (FileTypeFactory.NoValidEntryException e) {
@@ -1715,13 +1716,16 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     for (Problem p : data.getErrors()) {
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONID.type) {
         rE++;
-        Region c = (Region)p.getObject();
-        log.info("Problem: Duplicate Region ID: '"+p.getRegion().getName()+"' ("+ p.getRegion().getID()+ ") <> '"+c.getName()+"' ("+c.getID()+")");
+        Region c = (Region) p.getObject();
+        log.info("Problem: Duplicate Region ID: '" + p.getRegion().getName() + "' ("
+            + p.getRegion().getID() + ") <> '" + c.getName() + "' (" + c.getID() + ")");
       }
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONUID.type) {
         ruE++;
-        Region c = (Region)p.getObject();
-        log.info("Problem: Duplicate Region UID: '"+p.getRegion().getName()+"' ("+p.getRegion().getID()+" - "+ p.getRegion().getUID()+ ") <> '"+c.getName()+"' ("+c.getID()+" - "+c.getUID()+")");
+        Region c = (Region) p.getObject();
+        log.info("Problem: Duplicate Region UID: '" + p.getRegion().getName() + "' ("
+            + p.getRegion().getID() + " - " + p.getRegion().getUID() + ") <> '" + c.getName()
+            + "' (" + c.getID() + " - " + c.getUID() + ")");
       }
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEBUILDINGID.type) {
         bE++;
@@ -1802,7 +1806,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         if (data != null) {
           client.setData(data);
           client.setReportChanged(false);
-          //          client.setAdditionalIconInfo(data.getDate().getDate());
+          // client.setAdditionalIconInfo(data.getDate().getDate());
         }
       }
     }, "loadCRThread").start();
@@ -1830,7 +1834,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         Client.log.error(Resources.get("client.msg.outofmemory.text"));
       }
     } catch (final CloneNotSupportedException e) {
-      throw new IllegalStateException("cannot happen");
+      throw new IllegalStateException("implementation error");
     }
     if (!MemoryManagment.isFreeMemory(newData.estimateSize())) {
       JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources
@@ -1902,10 +1906,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
 
       Object selected =
-        JOptionPane.showInputDialog(client.getRootPane(), Resources
-            .get("client.msg.loadcr.multiplezipentries.text"), Resources
-            .get("client.msg.loadcr.multiplezipentries.title"), JOptionPane.QUESTION_MESSAGE,
-            null, stringEntries, stringEntries[0]);
+          JOptionPane.showInputDialog(client.getRootPane(), Resources
+              .get("client.msg.loadcr.multiplezipentries.text"), Resources
+              .get("client.msg.loadcr.multiplezipentries.title"), JOptionPane.QUESTION_MESSAGE,
+              null, stringEntries, stringEntries[0]);
 
       if (selected == null)
         return null;
@@ -1943,7 +1947,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           // take password from settings but only if it is not an
           // empty string
           String pwd =
-            getProperties().getProperty("Faction.password." + (f.getID()).intValue(), null);
+              getProperties().getProperty("Faction.password." + (f.getID()).intValue(), null);
 
           if ((pwd != null) && !pwd.equals("")) {
             f.setPassword(pwd);
@@ -1984,19 +1988,19 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                     // ask user for confirmation to take new
                     // password from message
                     String oMessage =
-                      Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.text",
-                          new Object[] { f.toString() });
+                        Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.text",
+                            new Object[] { f.toString() });
                     String oTitle =
-                      Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.title");
+                        Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.title");
                     String[] oOptions =
-                    { Resources.get("button.yes"), Resources.get("button.no"),
-                        Resources.get("button.yestoall"), Resources.get("button.notoall") };
+                        { Resources.get("button.yes"), Resources.get("button.no"),
+                            Resources.get("button.yestoall"), Resources.get("button.notoall") };
                     boolean usePasswd = yesToAll;
                     if (!noToAll && !yesToAll) {
                       int answer =
-                        JOptionPane.showOptionDialog(getRootPane(), oMessage, oTitle,
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                            oOptions, 0);
+                          JOptionPane.showOptionDialog(getRootPane(), oMessage, oTitle,
+                              JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                              oOptions, 0);
                       switch (answer) {
                       case 0:
                         usePasswd = true;
@@ -2014,7 +2018,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                         break;
                       default:
                         usePasswd = false;
-                      break;
+                        break;
                       }
                     }
                     if (!noToAll && usePasswd) {
@@ -2088,7 +2092,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     public String createTitle(GameData data, boolean showStatusOverride, boolean longTitle) {
       // set frame title (date)
       StringBuilder title1 =
-        new StringBuilder(reportState.isStateChanged() ? "*" : "").append("Magellan");
+          new StringBuilder(reportState.isStateChanged() ? "*" : "").append("Magellan");
       StringBuilder title2 = new StringBuilder();
       StringBuilder title3 = new StringBuilder();
 
@@ -2124,7 +2128,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           title2.append(" - ").append(
               data.getDate().toString(
                   showStatusOverride ? Date.TYPE_SHORT : Date.TYPE_PHRASE_AND_SEASON)).append(" (")
-                  .append(data.getDate().getDate()).append(")");
+              .append(data.getDate().getDate()).append(")");
         }
 
         if (longTitle) {
@@ -2157,13 +2161,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
             if (units > 0) {
               BigDecimal percent =
-                (new BigDecimal((done * 100) / ((float) units))).setScale(2,
-                    BigDecimal.ROUND_DOWN);
+                  (new BigDecimal((done * 100) / ((float) units))).setScale(2,
+                      BigDecimal.ROUND_DOWN);
               title3.append(" (").append(units).append(" ").append(
                   Resources.get("client.title.unit")).append(", ").append(done).append(" ").append(
-                      Resources.get("client.title.done")).append(", ").append(
-                          Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
-                          .append(Resources.get("client.title.percent")).append(")");
+                  Resources.get("client.title.done")).append(", ").append(
+                  Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
+                  .append(Resources.get("client.title.percent")).append(")");
             }
           }
 
@@ -2633,7 +2637,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Simple class to look for events changing the data.
    */
   protected class ReportObserver implements GameDataListener, OrderConfirmListener,
-  TempUnitListener, UnitOrdersListener {
+      TempUnitListener, UnitOrdersListener {
     protected boolean stateChanged = false;
 
     protected long lastClear;
@@ -2772,7 +2776,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     properties.setProperty("plugin.helper.bindir", Client.getBinaryDirectory().toString());
     properties.setProperty("plugin.helper.resourcedir", Client.getResourceDirectory().toString());
     List<Class<MagellanPlugIn>> plugInClasses =
-      new ArrayList<Class<MagellanPlugIn>>(loader.getExternalModuleClasses(properties));
+        new ArrayList<Class<MagellanPlugIn>>(loader.getExternalModuleClasses(properties));
     Collections.sort(plugInClasses, new Comparator<Class<MagellanPlugIn>>() {
 
       public int compare(Class<MagellanPlugIn> o1, Class<MagellanPlugIn> o2) {
@@ -2910,20 +2914,24 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Replaces the application icon in a Mac application with the default mac icon of Magellan.
-   * This can be used, when the icon was changed (f.e. with the blue circle)
+   * Replaces the application icon in a Mac application with the default mac icon of Magellan. This
+   * can be used, when the icon was changed (f.e. with the blue circle)
    * 
    * @see #setAdditionalIconInfo(int)
    */
   public void setDefaultIconInfo() {
-    if (application == null) return;
+    if (application == null)
+      return;
     if (appIcon == null) {
       appIcon = application.getApplicationIconImage();
-      if (appIcon == null) return;
+      if (appIcon == null)
+        return;
     }
     BufferedImage originalIcon = appIcon;
 
-    BufferedImage newIcon = new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    BufferedImage newIcon =
+        new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(),
+            BufferedImage.TYPE_INT_ARGB);
     application.setApplicationIconImage(newIcon);
   }
 
@@ -2931,16 +2939,20 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Adds a small hint to the icon (only available on mac os)
    */
   public void setAdditionalIconInfo(int data) {
-    if (application == null) return;
+    if (application == null)
+      return;
     if (appIcon == null) {
       appIcon = application.getApplicationIconImage();
-      if (appIcon == null) return;
+      if (appIcon == null)
+        return;
     }
     BufferedImage originalIcon = appIcon;
 
     int width = originalIcon.getWidth() / 4;
 
-    BufferedImage newIcon = new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    BufferedImage newIcon =
+        new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(),
+            BufferedImage.TYPE_INT_ARGB);
 
     Graphics2D graphics = (Graphics2D) newIcon.getGraphics();
 
@@ -2949,11 +2961,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     graphics.drawImage(originalIcon, 0, 0, null);
 
-    graphics.fillOval(originalIcon.getWidth()-width, 0, width-5, width-5);
+    graphics.fillOval(originalIcon.getWidth() - width, 0, width - 5, width - 5);
 
     graphics.setColor(Color.WHITE);
-    graphics.setFont(new Font("Helvetica", Font.BOLD, (width/4)));
-    graphics.drawString(Integer.toString(data), originalIcon.getWidth()-(width-(width/4)), width-(int)(width/2.5));
+    graphics.setFont(new Font("Helvetica", Font.BOLD, (width / 4)));
+    graphics.drawString(Integer.toString(data), originalIcon.getWidth() - (width - (width / 4)),
+        width - (int) (width / 2.5));
 
     graphics.dispose();
 
@@ -2966,7 +2979,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   protected void updateAppIconCaption() {
 
     GameData data = getData();
-    if (data == null) return;
+    if (data == null)
+      return;
 
     int units = 0;
     int done = 0;
@@ -2995,11 +3009,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     if (units > 0 && done < units) {
-      setAdditionalIconInfo(units-done);
+      setAdditionalIconInfo(units - done);
     } else {
       setDefaultIconInfo();
     }
   }
-
 
 }

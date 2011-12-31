@@ -118,7 +118,7 @@ public class OrderReader {
       line = stream.readLine();
     }
 
-    // TODO is this necessary?
+    // necessary to refresh unit relations
     data.postProcess();
   }
 

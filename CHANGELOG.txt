@@ -8,6 +8,7 @@
     * added warning for unknown units in GIVE orders
     * re-activated tooltips in DetailsPanel
     * added tooltips for potion and spell nodes
+    * made OrderReader more robust and faster (Erchamion's bug)
 
 2011-12-30 / Build 480 - stm (stm_@users.sourceforge.net)
     * EMapDetailsPanel: testing "compact mode"

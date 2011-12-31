@@ -80,8 +80,17 @@ import javax.swing.table.TableModel;
 public class TableSorter extends AbstractTableModel {
   protected TableModel tableModel;
 
+  /**
+   * Descending sort order.
+   */
   public static final int DESCENDING = -1;
+  /**
+   * Unsorted sort order.
+   */
   public static final int NOT_SORTED = 0;
+  /**
+   * Ascending sort order.
+   */
   public static final int ASCENDING = 1;
 
   private static Directive EMPTY_DIRECTIVE = new Directive(-1, TableSorter.NOT_SORTED);
@@ -91,6 +100,13 @@ public class TableSorter extends AbstractTableModel {
   public static final Comparator<Object> COMPARABLE_COMAPRATOR = new Comparator<Object>() {
     @SuppressWarnings("unchecked")
     public int compare(Object o1, Object o2) {
+      if (o1 == null)
+        if (o2 != null)
+          return -1;
+        else
+          return 0;
+      else if (o2 == null)
+        return 1;
       if (o1 instanceof Comparable && o2 instanceof Comparable)
         return ((Comparable) o1).compareTo(o2);
       else
@@ -99,6 +115,13 @@ public class TableSorter extends AbstractTableModel {
   };
   public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
     public int compare(Object o1, Object o2) {
+      if (o1 == null)
+        if (o2 != null)
+          return -1;
+        else
+          return 0;
+      else if (o2 == null)
+        return 1;
       return o1.toString().compareTo(o2.toString());
     }
   };
@@ -113,16 +136,25 @@ public class TableSorter extends AbstractTableModel {
       new HashMap<Class<?>, Comparator<Object>>();
   private List<Directive> sortingColumns = new ArrayList<Directive>();
 
+  /**
+   * Creates a Table Sorter without model.
+   */
   public TableSorter() {
     mouseListener = new MouseHandler();
     tableModelListener = new TableModelHandler();
   }
 
+  /**
+   * Creates a Table Sorter with specified model.
+   */
   public TableSorter(TableModel tableModel) {
     this();
     setTableModel(tableModel);
   }
 
+  /**
+   * Creates a TableSorter with specified model and header.
+   */
   public TableSorter(TableModel tableModel, JTableHeader tableHeader) {
     this();
     setTableHeader(tableHeader);
@@ -134,10 +166,18 @@ public class TableSorter extends AbstractTableModel {
     modelToView = null;
   }
 
+  /**
+   * Returns this sorter's model
+   * 
+   * @return the table model, <code>null</code> if none was set.
+   */
   public TableModel getTableModel() {
     return tableModel;
   }
 
+  /**
+   * Changes the table model calls {@link #fireTableStructureChanged()}.
+   */
   public void setTableModel(TableModel tableModel) {
     if (this.tableModel != null) {
       this.tableModel.removeTableModelListener(tableModelListener);
@@ -152,10 +192,20 @@ public class TableSorter extends AbstractTableModel {
     fireTableStructureChanged();
   }
 
+  /**
+   * Returns the table header
+   * 
+   * @return the table header or <code>null</code> if none was set.
+   */
   public JTableHeader getTableHeader() {
     return tableHeader;
   }
 
+  /**
+   * Changes the table header.
+   * 
+   * @param tableHeader The new header
+   */
   public void setTableHeader(JTableHeader tableHeader) {
     if (this.tableHeader != null) {
       this.tableHeader.removeMouseListener(mouseListener);
@@ -173,6 +223,11 @@ public class TableSorter extends AbstractTableModel {
     }
   }
 
+  /**
+   * Returns <code>true</code> if this sorter is sorting for at least one column.
+   * 
+   * @return <code>true</code> if a sorting column has been set
+   */
   public boolean isSorting() {
     return sortingColumns.size() != 0;
   }
@@ -186,6 +241,13 @@ public class TableSorter extends AbstractTableModel {
     return TableSorter.EMPTY_DIRECTIVE;
   }
 
+  /**
+   * Returns how the specified column is sorted.
+   * 
+   * @param column A column number betwwen 0 and (number of columns -1)
+   * @return The sorting mode of the column, one of {@link #ASCENDING}, {@link #DESCENDING}, or
+   *         {@link #NOT_SORTED}
+   */
   public int getSortingStatus(int column) {
     return getDirective(column).direction;
   }
@@ -198,6 +260,12 @@ public class TableSorter extends AbstractTableModel {
     }
   }
 
+  /**
+   * Changes the sorting status of a column. Appends this column as last of the sorting columns!
+   * 
+   * @param column A column number
+   * @param status The new status
+   */
   public void setSortingStatus(int column, int status) {
     Directive directive = getDirective(column);
     if (directive != TableSorter.EMPTY_DIRECTIVE) {
@@ -222,6 +290,12 @@ public class TableSorter extends AbstractTableModel {
     sortingStatusChanged();
   }
 
+  /**
+   * Changes the comparator used for sorting columns
+   * 
+   * @param type A column class
+   * @param comparator The new comparator for sorting columns of this type
+   */
   public void setColumnComparator(Class<?> type, Comparator<Object> comparator) {
     if (comparator == null) {
       columnComparators.remove(type);
@@ -255,6 +329,12 @@ public class TableSorter extends AbstractTableModel {
     return viewToModel;
   }
 
+  /**
+   * Returns the row number in the model corresponding to the specified row index of the view.
+   * 
+   * @param viewIndex A row number
+   * @return The corresponding row of the model
+   */
   public int modelIndex(int viewIndex) {
     return getViewToModel()[viewIndex].modelIndex;
   }
@@ -326,11 +406,15 @@ public class TableSorter extends AbstractTableModel {
 
         int comparison = 0;
         // Define null less than everything, except null.
-        // if (o1 == null && o2 == null) {
+        // removed (stm): the user should decide this; comparators must make sure to work on null
+        // values...
+        // if (o1 == null)
+        // if (o2 == null) {
         // comparison = 0;
-        // } else if (o1 == null) {
+        // } else {
         // comparison = -1;
-        // } else if (o2 == null) {
+        // }
+        // else if (o2 == null) {
         // comparison = 1;
         // } else {
         comparison = getComparator(column).compare(o1, o2);

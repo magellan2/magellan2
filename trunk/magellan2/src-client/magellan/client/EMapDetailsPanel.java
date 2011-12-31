@@ -60,6 +60,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.ToolTipManager;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
@@ -105,6 +106,7 @@ import magellan.client.swing.tree.NodeWrapperFactory;
 import magellan.client.swing.tree.PotionNodeWrapper;
 import magellan.client.swing.tree.RegionNodeWrapper;
 import magellan.client.swing.tree.SimpleNodeWrapper;
+import magellan.client.swing.tree.SpellNodeWrapper;
 import magellan.client.swing.tree.TreeUpdate;
 import magellan.client.swing.tree.UnitCommentNodeWrapper;
 import magellan.client.swing.tree.UnitContainerCommentNodeWrapper;
@@ -492,6 +494,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
       }
     });
+
+    ToolTipManager.sharedInstance().registerComponent(tree);
 
     // keeping track of selection changes for mySelectedUnits (fiete)
     tree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -3413,7 +3417,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         // in order to display spell level, type, etc.
         char type = spell.getType() == null ? '?' : spell.getType().charAt(2);
         if (type != 'm' && type != 's' && type != 'e') {
-          spellsNode.add(createSimpleNode((Object) spell, "spell"));
+          spellsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory
+              .createSpellNodeWrapper(spell)));
+          // spellsNode.add(createSpellNode(spell, "spell"));
         }
       }
 
@@ -3429,7 +3435,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 (String) null));
           }
           typeFound = true;
-          spellsNode.add(createSimpleNode((Object) spell, "spell"));
+          spellsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory
+              .createSpellNodeWrapper(spell)));
           expandableNodes.add(new NodeWrapper(spellsNode,
               "EMapDetailsPanel.PrecombatSpellsExpanded"));
         }
@@ -3447,7 +3454,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 (String) null));
           }
           typeFound = true;
-          spellsNode.add(createSimpleNode((Object) spell, "spell"));
+          spellsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory
+              .createSpellNodeWrapper(spell)));
         }
       }
 
@@ -3463,7 +3471,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 Resources.get("emapdetailspanel.node.postcombatspells"), (String) null));
           }
           typeFound = true;
-          spellsNode.add(createSimpleNode((Object) spell, "spell"));
+          spellsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory
+              .createSpellNodeWrapper(spell)));
         }
       }
     }
@@ -3482,7 +3491,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     expandableNodes.add(new NodeWrapper(combatSpells, "EMapDetailsPanel.UnitCombatSpellsExpanded"));
 
     for (CombatSpell spell : spells.values()) {
-      combatSpells.add(createSimpleNode(spell, "spell"));
+      combatSpells
+          .add(new DefaultMutableTreeNode(nodeWrapperFactory.createSpellNodeWrapper(spell)));
+      // combatSpells.add(createSimpleNode(spell, "spell"));
     }
   }
 
@@ -5053,6 +5064,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       fireObj = o;
     } else if (o instanceof Ship) {
       fireObj = o;
+    } else if (o instanceof SpellNodeWrapper) {
+      fireObj = ((SpellNodeWrapper) o).getSpell();
     } else if (o instanceof Spell) {
       fireObj = o;
     } else if (o instanceof CombatSpell) {

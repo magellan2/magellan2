@@ -13,86 +13,56 @@
 
 package magellan.client.swing.tree;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import magellan.library.Item;
-import magellan.library.Potion;
+import magellan.library.CombatSpell;
+import magellan.library.Spell;
 
 /**
- * Displays a potion.
+ * Displays a spell.
  * 
- * @author $Author: $
- * @version $Revision: 259 $
+ * @author $Author: stm$
  */
-public class PotionNodeWrapper extends DefaultNodeWrapper implements CellObject2, SupportsClipboard {
-  private Potion potion = null;
-  private String name = null;
-  private String postfix = null;
-  /*
-   * We want Icons besides PotionNodes
-   */
-  protected List<String> icon;
+public class SpellNodeWrapper extends DefaultNodeWrapper implements CellObject2, SupportsClipboard {
+  private Spell spell;
 
-  private List<GraphicsElement> graphicElements = null;
+  private CombatSpell cSpell;
+
+  private List<GraphicsElement> graphicElements;
 
   /**
-   * Creates a new PotionNodeWrapper object.
+   * Creates a new spellNodeWrapper object.
    */
-  public PotionNodeWrapper(Potion p) {
-    this(p, null);
+  public SpellNodeWrapper(Spell s) {
+    spell = s;
   }
 
   /**
-   * Creates a new PotionNodeWrapper object.
+   * Creates a node wrapper from a combat spell.
    */
-  public PotionNodeWrapper(Potion p, String postfix) {
-    this(p, p.getName(), postfix);
+  public SpellNodeWrapper(CombatSpell spell2) {
+    cSpell = spell2;
+    spell = spell2.getSpell();
   }
 
   /**
-   * Creates a new PotionNodeWrapper object.
-   * 
-   * @param p
-   * @param name
-   * @param postfix
-   */
-  public PotionNodeWrapper(Potion p, String name, String postfix) {
-    potion = p;
-    this.name = name;
-    this.postfix = postfix;
-  }
-
-  /**
-   * @return The corresponding potion
-   */
-  public Potion getPotion() {
-    return potion;
-  }
-
-  /**
-   * @return potion name + postfix
+   * @return spell name + postfix
    */
   @Override
   public String toString() {
-    return postfix == null ? name : (name + postfix);
+    if (cSpell == null)
+      return spell.toString();
+    else
+      return cSpell.toString();
   }
 
   /**
    * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
-    if (icon == null) {
-      icon = new ArrayList<String>(1);
-
-      if (potion != null) {
-        icon.add("items/" + potion.getName());
-      }
-    }
-
-    return icon;
+    return Collections.singletonList("spell");
   }
 
   /**
@@ -114,10 +84,7 @@ public class PotionNodeWrapper extends DefaultNodeWrapper implements CellObject2
    * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
   public String getClipboardValue() {
-    if (potion != null)
-      return potion.getName();
-    else
-      return toString();
+    return toString();
   }
 
   /**
@@ -142,14 +109,16 @@ public class PotionNodeWrapper extends DefaultNodeWrapper implements CellObject2
    */
   public List<GraphicsElement> getGraphicsElements() {
     if (graphicElements == null) {
-      GraphicsElement ge = new GraphicsElement(toString(), null, null, "items/" + potion.getName());
+      GraphicsElement ge = new GraphicsElement(toString(), null, null, "spell");
       StringBuilder tip = new StringBuilder();
-      for (Item ingredient : potion.ingredients()) {
+      for (Spell.Component ingredient : spell.getParsedComponents()) {
         if (tip.length() > 0) {
           tip.append(", ");
         }
-        tip.append(ingredient.getName()).append(" ").append(ingredient.getAmount());
+        tip.append(ingredient.toString());
       }
+      tip.append(";\n");
+      tip.append(spell.getSyntaxString());
       ge.setTooltip(tip.toString());
 
       graphicElements = Collections.singletonList(ge);
@@ -164,5 +133,9 @@ public class PotionNodeWrapper extends DefaultNodeWrapper implements CellObject2
 
   public int getLabelPosition() {
     return graphicElements.size() - 1;
+  }
+
+  public Spell getSpell() {
+    return spell;
   }
 }

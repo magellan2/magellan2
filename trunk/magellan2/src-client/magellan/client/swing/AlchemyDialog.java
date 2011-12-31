@@ -340,6 +340,13 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         AlchemyDialog.this.repaint();
       }
     });
+    // // the java 1.6 way:
+    // final JTable table = new AlchemyTable(tableModel = new PlannerModel(getData()));
+    // table.setAutoCreateRowSorter(true);
+    // TableRowSorter<PlannerModel> sorter = new TableRowSorter<PlannerModel>(tableModel);
+    // table.setRowSorter(sorter);
+    // for (int i = 2; i < tableModel.getColumnCount() - 1; ++i)
+    // sorter.setComparator(i, getComp1(false));
     sorter.setTableHeader(table.getTableHeader());
     sorter.setColumnComparator(PotionValue.class, getComp1(false));
     sorter.setColumnComparator(String.class, getComp2(true));

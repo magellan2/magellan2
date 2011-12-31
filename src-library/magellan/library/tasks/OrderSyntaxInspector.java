@@ -57,13 +57,13 @@ public class OrderSyntaxInspector extends AbstractInspector {
       type = ProblemType.create("tasks.ordersyntaxinspector", name);
     }
 
-    ProblemType getType() {
+    public ProblemType getType() {
       return type;
     }
   }
 
   public enum OrderSemanticsProblemTypes {
-    SEMANTIC_ERROR, GIVE_ERROR, GIVE_WARNING;
+    SEMANTIC_ERROR, GIVE_ERROR, GIVE_WARNING, GIVE_UNKNOWN_TARGET, GIVE_UNKNOWN_TARGET_SPECIAL;
 
     public ProblemType type;
 

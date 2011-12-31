@@ -101,11 +101,11 @@ public class EresseaPostProcessor {
     // Unit[] sortedUnits = data.getUnits().toArray(new Unit[0]);
     // Arrays.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
     //
-    // int sortIndex = 0;
-    // for (Unit unit : sortedUnits) {
-    // unit.setSortIndex(sortIndex++);
-    // sortIndex = unit.extractTempUnits(data, sortIndex);
-    // }
+
+    int sortIndex = data.getUnits().size();
+    for (Unit unit : data.getUnits()) {
+      sortIndex = unit.extractTempUnits(data, sortIndex);
+    }
 
     postProcessNullInformation(data);
 

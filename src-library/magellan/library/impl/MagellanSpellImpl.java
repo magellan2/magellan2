@@ -408,7 +408,9 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
       // pr?fix:
       StringBuffer oldRetVal = retVal;
       retVal = new StringBuffer("Syntax: ");
-      if (getType().contains("combat")) {
+      if (getType() == null) {
+        retVal.append(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL)).append("?");
+      } else if (getType().contains("combat")) {
         retVal.append(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL));
       } else {
         retVal.append(Resources.getOrderTranslation(EresseaConstants.O_CAST));

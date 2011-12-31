@@ -30,6 +30,7 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.Alliance;
 import magellan.library.Border;
+import magellan.library.CombatSpell;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.Group;
@@ -38,6 +39,7 @@ import magellan.library.Item;
 import magellan.library.Potion;
 import magellan.library.Region;
 import magellan.library.Skill;
+import magellan.library.Spell;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.impl.MagellanFactionImpl;
@@ -75,19 +77,22 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   /** The index of the policy adapter for potion nodes */
   public static final int POTION = 6;
 
+  /** The index of the policy adapter for spell nodes */
+  private static final int SPELL = 7;
+
   /** The index of the policy adapter for item nodes */
-  public static final int ITEM = 7;
+  public static final int ITEM = 8;
 
   /** The index of the policy adapter for skill nodes */
-  public static final int SKILL = 8;
+  public static final int SKILL = 9;
 
   /** The index of the policy adapter for group nodes */
-  public static final int GROUP = 9;
+  public static final int GROUP = 10;
 
   /** The index of the policy adapter for simple nodes */
-  public static final int SIMPLE = 10;
+  public static final int SIMPLE = 11;
 
-  private static final int NUM_ADAPTERS = 11;
+  private static final int NUM_ADAPTERS = 12;
 
   protected NodeWrapperDrawPolicy adapters[];
 
@@ -471,6 +476,26 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
     init(pnw, NodeWrapperFactory.POTION);
 
     return pnw;
+  }
+
+  /**
+   * Create a node for a spell.
+   */
+  public DefaultNodeWrapper createSpellNodeWrapper(Spell spell) {
+    SpellNodeWrapper snw = new SpellNodeWrapper(spell);
+    init(snw, NodeWrapperFactory.SPELL);
+
+    return snw;
+  }
+
+  /**
+   * Create a node for a combat spell.
+   */
+  public DefaultNodeWrapper createSpellNodeWrapper(CombatSpell spell) {
+    SpellNodeWrapper snw = new SpellNodeWrapper(spell);
+    init(snw, NodeWrapperFactory.SPELL);
+
+    return snw;
   }
 
   /**

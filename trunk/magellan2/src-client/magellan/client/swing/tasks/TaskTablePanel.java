@@ -144,6 +144,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   private Map<String, ProblemType> pMap;
 
+  private boolean runInThisThread = false;
+
   /**
    * Creates a new TaskTablePanel object.
    * 
@@ -723,6 +725,18 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     private Map<Object, Integer> delObjects = new HashMap<Object, Integer>();
     private boolean clear = false;
 
+    // private Timer suspendTimer;
+
+    public EQueue() {
+      // suspendTimer = new Timer(100, new ActionListener() {
+      //
+      // public void actionPerformed(ActionEvent e) {
+      //
+      // }
+      // });
+      // suspendTimer.setRepeats(false);
+    }
+
     /**
      * Take an object out of the queue. Returns the first event that was not inserted again later in
      * the queue.
@@ -812,6 +826,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         }
       }
       events.add(e);
+      // suspendTimer.restart();
       notifyAll();
     }
 
@@ -856,7 +871,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      */
     public UpdateEventDispatcher() {
       queue = new EQueue();
-      refreshThread = new Thread(new Runner(), "TaskTableRefresher");
+      refreshThread = new Thread(new TaskSearchRunner(), "TaskTableRefresher");
       // FIXME The constructor starts a thread. This is likely to be wrong if the class is ever
       // extended/subclassed, since the thread will be started before the subclass constructor is
       // started.
@@ -879,14 +894,19 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * @author stm
      * @version 1.0, Aug 23, 2008
      */
-    protected class Runner implements Runnable {
+    protected class TaskSearchRunner implements Runnable {
       public void run() {
         int progress = 1;
         while (!stop) {
           try {
             UpdateEvent event;
             // wait for next event
-            event = queue.waitFor();
+            while (queue.size() < 1) {
+              Thread.sleep(200);
+            }
+            event = queue.poll();
+
+            // event = queue.waitFor();
 
             // update progress bar as good as possible...
             if (progressbar.getMaximum() < queue.size() + 1) {
@@ -936,7 +956,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         }
         stop = true;
       }
-
     }
 
     /**
@@ -1073,6 +1092,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MESSAGE, true)) {
       inspectors.add(MessageInspector.getInstance(gameData));
     }
+
+    // if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MAINTENANCE,
+    // true)) {
+    // inspectors.add(MaintenanceInspector.getInstance(gameData));
+    // }
 
     for (Inspector i : inspectors) {
       i.setGameData(gameData);
@@ -1245,11 +1269,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   private void clearProblems() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        model.clearProblems();
-      }
-    });
+    if (runInThisThread) {
+      model.clearProblems();
+    } else {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          model.clearProblems();
+        }
+      });
+    }
   }
 
   /**
@@ -1273,11 +1301,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       // add problems in the AWT event dispatching thread to avoid
       // synchronization issues!
       if (!gproblems.isEmpty()) {
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            addProblems(gproblems);
-          }
-        });
+        if (runInThisThread) {
+          addProblems(gproblems);
+        } else {
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              addProblems(gproblems);
+            }
+          });
+        }
       }
       for (Faction f : data.getFactions())
         if (isValidFaction(f)) {
@@ -1285,11 +1317,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           // add problems in the AWT event dispatching thread to avoid
           // synchronization issues!
           if (!fproblems.isEmpty()) {
-            SwingUtilities.invokeLater(new Runnable() {
-              public void run() {
-                addProblems(fproblems);
-              }
-            });
+            if (runInThisThread) {
+              addProblems(fproblems);
+            } else {
+              SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                  addProblems(fproblems);
+                }
+              });
+            }
           }
         }
     }
@@ -1341,25 +1377,33 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   private void removeRegion(final Region r) {
     for (final Inspector c : getInspectors()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          // remove problems in the AWT event dispatching thread to avoid
-          // synchronization issues!
-          model.removeProblems(c, r);
-        }
-      });
+      if (runInThisThread) {
+        model.removeProblems(c, r);
+      } else {
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            // remove problems in the AWT event dispatching thread to avoid
+            // synchronization issues!
+            model.removeProblems(c, r);
+          }
+        });
+      }
     }
   }
 
   private void unReviewUnit(final Unit u) {
     for (final Inspector c : getInspectors()) {
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-          // remove problems in the AWT event dispatching thread to avoid
-          // synchronization issues!
-          model.removeProblems(c, u);
-        }
-      });
+      if (runInThisThread) {
+        model.removeProblems(c, u);
+      } else {
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+            // remove problems in the AWT event dispatching thread to avoid
+            // synchronization issues!
+            model.removeProblems(c, u);
+          }
+        });
+      }
     }
   }
 
@@ -1370,6 +1414,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     for (Inspector c : getInspectors()) {
       if (r != null) {
         final List<Problem> problems = c.reviewRegion(r);
+        if (runInThisThread) {
+          addProblems(problems);
+        } else
         // add problems in the AWT event dispatching thread to avoid
         // synchronization issues!
         if (!problems.isEmpty()) {
@@ -1400,13 +1447,17 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     for (Inspector c : getInspectors()) {
       if (u != null) {
         final List<Problem> problems = c.reviewUnit(u);
-        // add problems in the AWT event dispatching thread to avoid
-        // synchronization issues!
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            addProblems(problems);
-          }
-        });
+        if (runInThisThread) {
+          addProblems(problems);
+        } else {
+          // add problems in the AWT event dispatching thread to avoid
+          // synchronization issues!
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              addProblems(problems);
+            }
+          });
+        }
       }
     }
   }
@@ -1547,6 +1598,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   private boolean checkActive(Problem p) {
     if (ignoredProblems != null && ignoredProblems.contains(p.getType()))
+      return false;
+    if (!isValidFaction(p.getFaction()))
       return false;
     if (restrictToActiveRegion()) {
       if (lastActiveRegion != null)

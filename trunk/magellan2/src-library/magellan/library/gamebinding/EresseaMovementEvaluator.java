@@ -89,18 +89,17 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
     int horsesWithoutCarts = horses - (carts * 2);
 
-    Race race = getRace(unit);
 
     if (horsesWithoutCarts >= 0) {
       capacity =
-          (((carts * 140) + (horsesWithoutCarts * 20)) * 100)
-              - (((int) ((race.getWeight()) * 100)) * unit.getModifiedPersons());
+        (((carts * 140) + (horsesWithoutCarts * 20)) * 100)
+        - (getRaceWeight(unit) * unit.getModifiedPersons());
     } else {
       int cartsWithoutHorses = carts - (horses / 2);
       horsesWithoutCarts = horses % 2;
       capacity =
-          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
-              - (((int) ((race.getWeight()) * 100)) * unit.getModifiedPersons());
+        (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
+        - (getRaceWeight(unit) * unit.getModifiedPersons());
     }
     // Fiete 20070421 (Runde 519)
     // GOTS not active when riding! (tested)
@@ -174,13 +173,13 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       horsesWithoutCarts = horses - (carts * 2);
     }
 
-    Race race = getRace(unit);
+    Race race = unit.getRace();
 
     if ((race == null) || (race.getID().equals(EresseaConstants.R_TROLLE) == false)) {
       capacity =
-          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
-              + (((int) ((race == null ? 10 : race.getCapacity()) * 100)) * unit
-                  .getModifiedPersons());
+        (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
+        + (((int) ((race == null ? 10 : race.getCapacity()) * 100)) * unit
+            .getModifiedPersons());
     } else {
       int horsesMasteredPerPerson = (skillLevel * 4) + 1;
       int trollsMasteringHorses = horses / horsesMasteredPerPerson;
@@ -190,12 +189,12 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       }
 
       int cartsTowedByTrolls =
-          Math.min((unit.getModifiedPersons() - trollsMasteringHorses) / 4, cartsWithoutHorses);
+        Math.min((unit.getModifiedPersons() - trollsMasteringHorses) / 4, cartsWithoutHorses);
       int trollsTowingCarts = cartsTowedByTrolls * 4;
       int untowedCarts = cartsWithoutHorses - cartsTowedByTrolls;
       capacity =
-          (((((carts - untowedCarts) * 140) + (horsesWithoutCarts * 20)) - (untowedCarts * 40)) * 100)
-              + (((int) (race.getCapacity() * 100)) * (unit.getModifiedPersons() - trollsTowingCarts));
+        (((((carts - untowedCarts) * 140) + (horsesWithoutCarts * 20)) - (untowedCarts * 40)) * 100)
+        + (((int) (race.getCapacity() * 100)) * (unit.getModifiedPersons() - trollsTowingCarts));
     }
 
     return respectGOTS(unit, capacity);
@@ -208,7 +207,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       return capacity;
 
     int multiplier = Math.max(0, Math.min(unit.getPersons(), gots.getAmount()));
-    Race race = getRace(unit);
+    Race race = unit.getRace();
 
     if ((multiplier == 0) || (race == null))
       return capacity;
@@ -249,10 +248,12 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     }
   }
 
-  private Race getRace(Unit unit) {
+  private int getRaceWeight(Unit unit) {
     Race race = unit.getRace();
-
-    return race;
+    if (race==null)
+      return 1000;
+    else
+      return (int) race.getWeight()*100;
   }
 
   /**
@@ -376,7 +377,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    */
   private int getWeight(Unit unit, Collection<Item> items, int persons) {
     int weight = 0;
-    float personWeight = getRace(unit).getWeight();
+    int personWeight = getRaceWeight(unit);
     // darcduck 2007-10-31: take care of bags of negative weight
     ItemType bonw = rules.getItemType(EresseaConstants.I_BONW, true);
 
@@ -391,7 +392,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       }
     }
 
-    weight += (persons * (int) (personWeight * 100));
+    weight += persons * personWeight;
 
     return weight;
   }
@@ -583,7 +584,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       if (getTransportMessageType().equals(m.getMessageType()) && (m.getAttributes() != null)
           && (m.getAttributes().get("unit") != null)
           && u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) { // FIXME
-                                                                                         // 10,data.base
+        // 10,data.base
         // found a transport message; this is only valid in
         // units with active movement
         if (log.isDebugEnabled()) {

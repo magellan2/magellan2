@@ -66,6 +66,8 @@ public class DebugDock extends JPanel implements LogListener {
     }
   };
 
+  private Object lock = new Object();
+
   protected DebugDock() {
     Logger.addLogListener(this);
     // Logger.activateDefaultLogListener(true);
@@ -146,18 +148,24 @@ public class DebugDock extends JPanel implements LogListener {
    */
   protected void setStatus(String message, Throwable throwable) {
     if (logArea != null) {
-      StringBuffer buffer = new StringBuffer(logArea.getText().trim());
+      synchronized (getLock()) {
+        StringBuffer buffer = new StringBuffer(logArea.getText().trim());
 
-      buffer.append("\n").append(message);
+        buffer.append("\n").append(message);
 
-      // Text-Area eingrenzen
-      if (buffer.length() > DebugDock.BUFFER_LENGTH) {
-        buffer.delete(0, buffer.length() - DebugDock.BUFFER_LENGTH);
+        // Text-Area eingrenzen
+        if (buffer.length() > DebugDock.BUFFER_LENGTH) {
+          buffer.delete(0, buffer.length() - DebugDock.BUFFER_LENGTH);
+        }
+
+        logArea.setText(buffer.toString());
+        logArea.setCaretPosition(buffer.length() - message.length() + 2);
       }
-
-      logArea.setText(buffer.toString());
-      logArea.setCaretPosition(buffer.length() - message.length() + 2);
     }
+  }
+
+  private Object getLock() {
+    return lock;
   }
 
   /**

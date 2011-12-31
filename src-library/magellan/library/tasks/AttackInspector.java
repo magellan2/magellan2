@@ -100,11 +100,12 @@ public class AttackInspector extends AbstractInspector {
             problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.ATTACKSELF
                 .getType(), u, this, relation.line));
           } else if (relation.target != null
-              && relation.source.getFaction() == relation.target.getFaction()
-              || (relation.source.getFaction().getAllies() != null && relation.source.getFaction()
-                  .getAllies().containsKey(relation.target.getFaction().getID()))
-              || (relation.source.getFaction().getAlliance().getFactions().contains(relation.target
-                  .getFaction().getID()))) {
+              && (relation.source.getFaction() == relation.target.getFaction() || (relation.source
+                  .getFaction() != null
+                  && (relation.source.getFaction().getAllies() != null && relation.source
+                      .getFaction().getAllies().containsKey(relation.target.getFaction().getID())) || (relation.source
+                  .getFaction().getAlliance() != null && relation.source.getFaction().getAlliance()
+                  .getFactions().contains(relation.target.getFaction().getID()))))) {
             problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.FRIENDLYFIRE
                 .getType(), u, this, relation.line));
           }

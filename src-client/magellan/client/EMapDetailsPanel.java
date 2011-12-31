@@ -2513,7 +2513,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             Resources.get("emapdetailspanel.node.compactpersons", u.getPersons(), u
                 .getRaceName(data), u.getFaction() != null ? u.getFaction() : Resources
                 .get("emapdetailspanel.node.unknownfaction"))
-                + (u.getGroup() != null ? Resources.get("emapdetailspanel.node.group") + " "
+                + (u.getGroup() != null ? " " + Resources.get("emapdetailspanel.node.group") + " "
                     + u.getGroup().getName() : "");
       }
     }

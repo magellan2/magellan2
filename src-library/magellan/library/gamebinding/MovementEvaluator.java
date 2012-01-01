@@ -9,6 +9,7 @@ package magellan.library.gamebinding;
 
 import java.util.List;
 
+import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.rules.MessageType;
@@ -108,6 +109,23 @@ public interface MovementEvaluator {
    */
   public int getModifiedRadius(Unit unit, List<Region> path);
 
+  /**
+   * Returns the destination region where this unit is able to travel within one turn based on
+   * modified riding skill, horses, carts, load of this unit and roads <i>on the given path</i>. The
+   * result may be inaccurate when some regions corresponding to coordinates in the path are not in
+   * the data.
+   * 
+   * @param unit
+   * @param path A sequence of coordinates. The first region must be the current region of the unit.
+   *          If two successive elements of the path are the same region, this is interpreted as a
+   *          PAUSE, which always ends a turn. See {@link Unit#getModifiedMovement()}.
+   * @return The number of regions, the unit may move on this path. The result is always
+   *         <code><= path.size()-1</code>.
+   * @throws IllegalArgumentException if the unit is not in the first path region or the path is not
+   *           continuous
+   */
+  public CoordinateID getDestination(Unit unit, List<CoordinateID> path);
+
   public MessageType getTransportMessageType();
 
   /**
@@ -146,4 +164,25 @@ public interface MovementEvaluator {
    * @return <code>true</code> if the unit's past movement was passive
    */
   public boolean isPastMovementPassive(Unit unit);
+
+  /**
+   * Returns the list of regions that the unit will move through in the next turn.
+   * 
+   * @param u
+   * @return A list of regions, starting with the current region. An empty list if the unit doesn't
+   *         move.
+   */
+  public List<CoordinateID> getModifiedMovement(Unit u);
+
+  /**
+   * Returns the list of regions that the unit will move through <em>after</em> the next turn.
+   * 
+   * @param u
+   * @return A list of regions, starting with the destination of the current turn. If there is a
+   *         PAUSE, the region repeats. An empty list if the unit doesn't move.
+   */
+  public List<CoordinateID> getAdditionalMovement(Unit u);
+
+  public List<CoordinateID> getPassiveMovement(Unit u);
+
 }

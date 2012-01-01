@@ -38,6 +38,7 @@ import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.io.cr.Loader;
 import magellan.library.io.file.FileType;
+import magellan.library.rules.BuildingType;
 import magellan.library.rules.Date;
 import magellan.library.rules.MessageType;
 import magellan.library.rules.Race;
@@ -1315,6 +1316,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * adding Default Translations to the translations
    */
   public void postProcessDefaultTranslations() {
+    // FIXME we should probably add translations directly to the rules files!
     // Skilltypes
     for (Iterator<SkillType> iter = rules.getSkillTypeIterator(); iter.hasNext();) {
       SkillType skillType = iter.next();
@@ -1322,7 +1324,18 @@ public abstract class GameData implements Cloneable, Addeable {
       if (!translations().contains(key)) {
         // we have to add
         String translated = Resources.getRuleItemTranslation(key);
-        addTranslation(key, translated, TranslationType.sourceMagellan);
+        addTranslation(skillType.getID().toString(), translated, TranslationType.sourceMagellan);
+      }
+    }
+
+    for (Iterator<BuildingType> iter = rules.getBuildingTypeIterator(); iter.hasNext();) {
+      BuildingType type = iter.next();
+      String key = "building." + type.getID().toString();
+      if (!translations().contains(key)) {
+        // we have to add
+        String translated = Resources.getRuleItemTranslation(key);
+        ;
+        addTranslation(type.getID().toString(), translated, TranslationType.sourceMagellan);
       }
     }
   }

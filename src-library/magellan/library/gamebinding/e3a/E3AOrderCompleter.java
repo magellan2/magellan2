@@ -153,7 +153,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     }
 
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_PREFIX),
-        getOrderTranslation(EresseaConstants.O_PREFIX), spaceQuotes, Completion.DEFAULT_PRIORITY, 1));
+        getOrderTranslation(EresseaConstants.O_PREFIX), " ", Completion.DEFAULT_PRIORITY, 0));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.O_RECRUIT), " "));
 
     if (!(getUnit() instanceof TempUnit)) {

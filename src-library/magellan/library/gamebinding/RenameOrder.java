@@ -43,23 +43,41 @@ import magellan.library.utils.Resources;
  */
 public class RenameOrder extends SimpleOrder {
 
-  /** unknown type */
-  public static final int T_UNKNOWN = 0;
-  /** marks a BENENNE EINHEIT order */
-  public static final int T_UNIT = 1;
-  /** marks a BENENNE BURG order */
-  public static final int T_BUILDING = 2;
-  /** marks a BENENNE SCHIFF order */
-  public static final int T_SHIP = 3;
-  /** marks a BENENNE PARTEI order */
-  public static final int T_FACTION = 4;
-  /** marks a BENENNE REGION order */
-  public static final int T_REGION = 5;
+  public enum RenameObject {
+    /** unknown type */
+    T_UNKNOWN,
+    /** marks a BENENNE EINHEIT order */
+    T_UNIT,
+    /** marks a BENENNE BURG order */
+    T_BUILDING,
+    /** marks a BENENNE SCHIFF order */
+    T_SHIP,
+    /** marks a BENENNE PARTEI order */
+    T_FACTION,
+    /** marks a BENENNE REGION order */
+    T_REGION,
+    /** marks a BENENNE ALLIANZ order */
+    T_ALLIANCE,
+    /** unknown type -- description */
+    T_DESCRIBE_UNKNOWN,
+    /** marks a BESCHREIBE EINHEIT order */
+    T_DESCRIBE_UNIT,
+    /** marks a BESCHREIBE BURG order */
+    T_DESCRIBE_BUILDING,
+    /** marks a BESCHREIBE SCHIFF order */
+    T_DESCRIBE_SHIP,
+    /** marks a BESCHREIBE PARTEI order */
+    T_DESCRIBE_FACTION,
+    /** marks a BESCHREIBE REGION order */
+    T_DESCRIBE_REGION,
+    /** does not exist, currently */
+    T_DESCRIBE_ALLIANCE;
+  }
 
   /**
    * The order type (Unit, Faction, etc.)
    */
-  public int type;
+  public RenameObject type;
 
   /**
    * A target != <code>null</code> indicates BENNENE FREMDE... order
@@ -75,7 +93,8 @@ public class RenameOrder extends SimpleOrder {
    * @param text
    * @param name
    */
-  public RenameOrder(List<OrderToken> tokens, String text, int type, EntityID target, String name) {
+  public RenameOrder(List<OrderToken> tokens, String text, RenameObject type, EntityID target,
+      String name) {
     super(tokens, text);
     this.type = type;
     this.target = target;
@@ -108,6 +127,7 @@ public class RenameOrder extends SimpleOrder {
     Named named = null;
     switch (type) {
     case T_UNIT:
+    case T_DESCRIBE_UNIT:
       if (target != null) {
         Unit u = unit.getData().getUnit(target);
         if (u != null) {
@@ -118,6 +138,7 @@ public class RenameOrder extends SimpleOrder {
       }
       break;
     case T_BUILDING:
+    case T_DESCRIBE_BUILDING:
       if (target != null) {
         Building b = unit.getData().getBuilding(target);
         if (b != null) {
@@ -133,6 +154,7 @@ public class RenameOrder extends SimpleOrder {
       }
       break;
     case T_SHIP:
+    case T_DESCRIBE_SHIP:
       if (target != null) {
         Ship s = unit.getData().getShip(target);
         if (s != null) {
@@ -147,6 +169,7 @@ public class RenameOrder extends SimpleOrder {
       }
       break;
     case T_FACTION:
+    case T_DESCRIBE_FACTION:
       if (target != null) {
         named = unit.getData().getFaction(target);
       } else {
@@ -154,6 +177,7 @@ public class RenameOrder extends SimpleOrder {
       }
       break;
     case T_REGION:
+    case T_DESCRIBE_REGION:
       if (target != null) {
         magellan.library.utils.logging.Logger.getInstance(this.getClass()).warn(
             "BENENNE FREMDE REGION geht nicht");
@@ -166,14 +190,20 @@ public class RenameOrder extends SimpleOrder {
       }
       break;
 
-    default:
+    case T_UNKNOWN:
+      setWarning(unit, line, Resources.get("order.name.warning.namewhat"));
+      break;
+    case T_DESCRIBE_UNKNOWN:
+      setWarning(unit, line, Resources.get("order.name.warning.describewhat"));
+      break;
+    case T_ALLIANCE:
+      break;
+    case T_DESCRIBE_ALLIANCE:
       break;
     }
-    if (named != null) {
+    if (named != null && type.ordinal() < RenameObject.T_DESCRIBE_UNKNOWN.ordinal()) {
       UnitRelation rel = new RenameNamedRelation(unit, named, name, line);
       rel.add();
-    } else if (getProblem() == null) {
-      setWarning(unit, line, Resources.get("order.name.warning.namewhat"));
     }
   }
 

@@ -12,7 +12,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderParser;
-import magellan.library.gamebinding.RenameOrder;
+import magellan.library.gamebinding.RenameOrder.RenameObject;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.Race;
 import magellan.library.utils.OrderToken;
@@ -172,27 +172,27 @@ public class E3AOrderParser extends EresseaOrderParser {
       OrderToken t = getNextToken();
       t.ttype = OrderToken.TT_KEYWORD;
       if (t.equalsToken(getOrderTranslation(E3AConstants.O_ALLIANCE))) {
-        // FIXME getOrder().type = RenameOrder.T_ALLIANCE;
+        getOrder().type = RenameObject.T_ALLIANCE;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
-        getOrder().type = RenameOrder.T_BUILDING;
+        getOrder().type = RenameObject.T_BUILDING;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
-        getOrder().type = RenameOrder.T_UNIT;
+        getOrder().type = RenameObject.T_UNIT;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
-        getOrder().type = RenameOrder.T_FACTION;
+        getOrder().type = RenameObject.T_FACTION;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_REGION))) {
-        getOrder().type = RenameOrder.T_REGION;
+        getOrder().type = RenameObject.T_REGION;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
-        getOrder().type = RenameOrder.T_SHIP;
+        getOrder().type = RenameObject.T_SHIP;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))) {

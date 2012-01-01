@@ -15,8 +15,10 @@ package magellan.library.gamebinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import magellan.library.CoordinateID;
 import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.Message;
@@ -92,13 +94,13 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
     if (horsesWithoutCarts >= 0) {
       capacity =
-        (((carts * 140) + (horsesWithoutCarts * 20)) * 100)
+          (((carts * 140) + (horsesWithoutCarts * 20)) * 100)
         - (getRaceWeight(unit) * unit.getModifiedPersons());
     } else {
       int cartsWithoutHorses = carts - (horses / 2);
       horsesWithoutCarts = horses % 2;
       capacity =
-        (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
+          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
         - (getRaceWeight(unit) * unit.getModifiedPersons());
     }
     // Fiete 20070421 (Runde 519)
@@ -276,7 +278,9 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
     // also take care of passengers
     for (Unit passenger : unit.getPassengers()) {
-      load += getModifiedWeight(passenger);
+      if (passenger != null) {
+        load += getModifiedWeight(passenger);
+      }
     }
 
     return load;
@@ -422,6 +426,45 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       return onRoad ? 2 : 1;
 
     return 0;
+  }
+
+  public CoordinateID getDestination(Unit unit, List<CoordinateID> path) {
+    if (path.size() == 0)
+      return null;
+    CoordinateID start = path.iterator().next();
+    if (start != unit.getRegion().getCoordinate())
+      throw new IllegalArgumentException("unit not in first path region");
+
+    int radius = getModifiedRadius(unit, false), streetRadius = getModifiedRadius(unit, true);
+    int etappe = 0;
+    Region lastRegion = null;
+    CoordinateID lastCoord = null;
+    boolean road = true;
+    int length = 0;
+    for (CoordinateID coord : path) {
+      Region r = unit.getData().getRegion(coord);
+      if (lastCoord != null) {
+        if (lastCoord == coord)
+          return coord;
+        else {
+          etappe++;
+          if (r == null || lastRegion == null || !Regions.isCompleteRoadConnection(lastRegion, r)) {
+            road = false;
+          }
+          if (road) {
+            if (etappe >= streetRadius)
+              return coord;
+          } else {
+            if (etappe >= radius)
+              return coord;
+          }
+        }
+      }
+      lastRegion = r;
+      lastCoord = coord;
+      length++;
+    }
+    return path.get(path.size() - 1);
   }
 
   /**
@@ -600,6 +643,76 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     }
 
     return true;
+  }
+
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getModifiedMovement(magellan.library.Unit)
+   */
+  public List<CoordinateID> getModifiedMovement(Unit u) {
+    return getMovement(u, false);
+  }
+
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getAdditionalMovement(magellan.library.Unit)
+   */
+  public List<CoordinateID> getAdditionalMovement(Unit u) {
+    return getMovement(u, true);
+  }
+
+  public List<CoordinateID> getPassiveMovement(Unit unit) {
+    List<CoordinateID> passiveMovement = null;
+    if (unit.getModifiedShip() != null) {
+      // we are on a ship. try to render movemement from ship owner
+      passiveMovement = getModifiedMovement(unit.getModifiedShip().getModifiedOwnerUnit());
+    } else {
+      // the unit is not on a ship, search for carriers
+      Collection<Unit> carriers = unit.getCarriers();
+
+      if (log.isDebugEnabled()) {
+        log.debug("PathCellRenderer.render: " + unit + " has " + carriers.size() + " carriers");
+      }
+
+      if (carriers.size() == 1) {
+        Unit trans = carriers.iterator().next();
+        passiveMovement = getModifiedMovement(trans);
+      }
+    }
+    if (passiveMovement == null)
+      return Collections.emptyList();
+    else
+      return passiveMovement;
+  }
+
+  private static List<CoordinateID> getMovement(Unit u, boolean isSuffix) {
+    if (u == null)
+      return Collections.emptyList();
+    List<CoordinateID> movement = u.getModifiedMovement();
+    CoordinateID last = movement.size() > 0 ? movement.get(0) : null;
+
+    if (last != null) {
+      List<CoordinateID> result = new ArrayList<CoordinateID>(2);
+      List<CoordinateID> suffix = new ArrayList<CoordinateID>(0);
+      for (CoordinateID coord : movement) {
+        if (result.size() == 0) {
+          result.add(coord);
+        } else if (coord.equals(result.get(result.size() - 1)) || suffix.size() > 0) {
+          // pause found
+          if (isSuffix) {
+            suffix.add(coord);
+          } else {
+            break;
+          }
+        } else {
+          result.add(coord);
+        }
+      }
+
+      if (isSuffix)
+        return suffix;
+      else
+        return result;
+    } else
+      return Collections.emptyList();
   }
 
   protected Rules getRules() {

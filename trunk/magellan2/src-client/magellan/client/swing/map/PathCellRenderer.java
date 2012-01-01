@@ -22,9 +22,6 @@ import java.awt.Toolkit;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,66 +151,27 @@ public class PathCellRenderer extends ImageCellRenderer {
     } else if (drawPassivePath) {
       // unit does not move itself, check for passive movement
       // Perhaps it is on a ship?
-      List<CoordinateID> passiveMovement = null;
-
-      if (unit.getModifiedShip() != null) {
-        // we are on a ship. try to render movemement from ship owner
-        passiveMovement = getModifiedMovement(unit.getModifiedShip().getModifiedOwnerUnit());
-      } else {
-        // the unit is not on a ship, search for carriers
-        Collection<Unit> carriers = unit.getCarriers();
-
-        if (PathCellRenderer.log.isDebugEnabled()) {
-          PathCellRenderer.log.debug("PathCellRenderer.render: " + unit + " has " + carriers.size()
-              + " carriers");
-        }
-
-        if (carriers.size() == 1) {
-          Unit trans = carriers.iterator().next();
-          passiveMovement = getModifiedMovement(trans);
-        }
-      }
+      List<CoordinateID> passiveMovement = getPassiveMovement(unit);
 
       renderPath(unit, passiveMovement, PathCellRenderer.PASSIVE);
     }
   }
 
-  private List<CoordinateID> getModifiedMovement(Unit u) {
-    return getMovement(u, false);
+  protected List<CoordinateID> getModifiedMovement(Unit u) {
+    return u.getData().getGameSpecificStuff().getMovementEvaluator().getModifiedMovement(u);
   }
 
-  private List<CoordinateID> getAdditionalMovement(Unit u) {
-    return getMovement(u, true);
+  protected List<CoordinateID> getAdditionalMovement(Unit u) {
+    return u.getData().getGameSpecificStuff().getMovementEvaluator().getAdditionalMovement(u);
+
   }
 
-  private List<CoordinateID> getMovement(Unit u, boolean isSuffix) {
-    if (u == null)
-      return Collections.emptyList();
-    List<CoordinateID> movement = u.getModifiedMovement();
-    CoordinateID last = movement.size() > 0 ? movement.get(0) : null;
-    if (last != null) {
-      List<CoordinateID> result = new ArrayList<CoordinateID>(2);
-      List<CoordinateID> suffix = new ArrayList<CoordinateID>(0);
-      for (CoordinateID coord : movement) {
-        if (result.size() == 0) {
-          result.add(coord);
-        } else if (coord.equals(result.get(result.size() - 1)) || suffix.size() > 0) {
-          if (isSuffix) {
-            suffix.add(coord);
-          } else {
-            break;
-          }
-        } else {
-          result.add(coord);
-        }
-      }
-      if (isSuffix)
-        return suffix;
-      else
-        return result;
-    } else
-      return Collections.emptyList();
+  protected List<CoordinateID> getPassiveMovement(Unit u) {
+    return u.getData().getGameSpecificStuff().getMovementEvaluator().getPassiveMovement(u);
   }
+
+  // moved to MovementEvaluator:
+  // protected static List<CoordinateID> getMovement(Unit u, boolean isSuffix) {
 
   private void renderPath(Unit u, List<CoordinateID> coordinates, int imageType) {
     if ((coordinates != null) && (coordinates.size() > 0)) {

@@ -338,10 +338,8 @@ public class EresseaOrderCompleter implements Completer {
       }
     }
 
-    completions
-        .add(new Completion(getOrderTranslation(EresseaConstants.O_PREFIX),
-            getOrderTranslation(EresseaConstants.O_PREFIX), spaceQuotes,
-            Completion.DEFAULT_PRIORITY, 1));
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_PREFIX),
+        getOrderTranslation(EresseaConstants.O_PREFIX), " ", Completion.DEFAULT_PRIORITY, 0));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.O_RECRUIT), " "));
 
     if (!(unit instanceof TempUnit)) {
@@ -961,7 +959,7 @@ public class EresseaOrderCompleter implements Completer {
   public void cmpltGruppe() {
     if ((unit != null) && (unit.getFaction() != null) && (unit.getFaction().getGroups() != null)) {
       for (Group g : unit.getFaction().getGroups().values()) {
-        completions.add(new Completion(g.getName(), ""));
+        completions.add(new Completion("\"" + g.getName() + "\"", ""));
       }
     }
   }
@@ -1284,8 +1282,12 @@ public class EresseaOrderCompleter implements Completer {
         final SkillType t = iter.next();
         final int cost = getSkillCost(t, unit);
         // add quotes if needed
-        // TODO localize
-        final String name = t.getName().replace(' ', '~');
+        String name =
+            Resources.getRuleItemTranslation("skill." + t.getID().toString(), getLocale());
+        if (name.startsWith("rules.skill")) {
+          name = t.getName();
+        }
+        name = name.replace(' ', '~');
 
         if (cost > 0) {
           completions.add(new Completion(name, " " + cost));
@@ -1409,7 +1411,14 @@ public class EresseaOrderCompleter implements Completer {
               && hasSkill(unit, EresseaConstants.S_BURGENBAU, t.getBuildSkillLevel())
               && (!completerSettingsProvider.getLimitMakeCompletion() || checkForMaterials(t
                   .getRawMaterials().iterator()))) {
-            completions.add(new Completion(t.getName(), " "));
+            String name =
+                Resources.getRuleItemTranslation("building." + t.getID().toString(), getLocale());
+            if (name.startsWith("rules.skill")) {
+              name = t.getName();
+            }
+            name = name.replace(' ', '~');
+
+            completions.add(new Completion(name, " "));
           }
         }
       }
@@ -1428,6 +1437,7 @@ public class EresseaOrderCompleter implements Completer {
             .getContainerPrivilegedUnitItem(region, data.rules.getItemType(EresseaConstants.I_WOOD)) != null))) {
       if ((data != null) && (data.rules != null)) {
         for (final Iterator<ShipType> iter = data.rules.getShipTypeIterator(); iter.hasNext();) {
+        	// TODO localize
           final ShipType t = iter.next();
 
           if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU, t.getBuildSkillLevel())) {
@@ -1460,6 +1470,10 @@ public class EresseaOrderCompleter implements Completer {
             .getContainerPrivilegedUnitItem(region, data.rules
                 .getItemType(EresseaConstants.I_USTONE)) != null)) && canMake) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.O_ROAD), " "));
+    }
+
+    if (hasSkill(unit, EresseaConstants.S_KRAEUTERKUNDE)) {
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_HERBS), " "));
     }
 
     // items
@@ -1642,7 +1656,8 @@ public class EresseaOrderCompleter implements Completer {
 
   /** Add completions for command Praefix. */
   public void cmpltPraefix() {
-    completions.add(new Completion(twoQuotes, twoQuotes, "", Completion.DEFAULT_PRIORITY, 1));
+    completions.add(new Completion(
+        getTranslation("gamebinding.eressea.eresseaordercompleter.prefix"), "", ""));
   }
 
   /** Add completions for command Rekrutiere. */
@@ -2189,7 +2204,8 @@ public class EresseaOrderCompleter implements Completer {
   protected void addEnemyUnits(String postfix) {
     if ((data != null) && (unit != null) && (region != null)) {
       for (Unit u : region.units()) {
-        if ((u.getFaction().getTrustLevel() <= Faction.TL_DEFAULT) || u.isSpy()) {
+        if ((u.getFaction() == null || u.getFaction().getTrustLevel() <= Faction.TL_DEFAULT)
+            || u.isSpy()) {
           addUnit(u, postfix);
         }
       }

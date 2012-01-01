@@ -17,10 +17,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import magellan.library.Border;
 import magellan.library.Building;
@@ -68,56 +71,59 @@ import magellan.library.utils.logging.Logger;
 public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Region {
   private static final Logger log = Logger.getInstance(MagellanUnitContainerImpl.class);
 
-  /** DOCUMENT-ME */
+  /** Number of trees */
   private int trees = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of trees last round */
   private int oldTrees = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of sprouts */
   private int sprouts = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of Sprouts last round */
   private int oldSprouts = -1;
 
   /** DOCUMENT-ME */
   private boolean mallorn = false;
 
-  /** DOCUMENT-ME */
+  /** Number of iron */
   private int iron = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of Iron last round */
   private int oldIron = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of laen */
   private int laen = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of Laen last round */
   private int oldLaen = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of peasants */
   private int peasants = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of Peasants last round */
   private int oldPeasants = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of silver */
   private int silver = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of Silver last round */
   private int oldSilver = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of horses */
   private int horses = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of Horses last round */
   private int oldHorses = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of stones */
   private int stones = -1;
 
-  /** DOCUMENT-ME */
+  /** Number of Stones last round */
   private int oldStones = -1;
+
+  /** Trade volume last round */
+  private int oldLuxuries = -1;
 
   /**
    * The wage persons can earn by working in this region. Unfortunately this is not the wage
@@ -219,7 +225,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   private ZeroUnit cachedZeroUnit;
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Region#getZeroUnit()
    */
   public Unit getZeroUnit() {
     // only create if needed
@@ -1006,7 +1012,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * penalty.
    */
   public int maxLuxuries() {
-    return MagellanRegionImpl.maxLuxuries(peasants);
+    return getData().getGameSpecificRules().getMaxTrade(this);
   }
 
   /**
@@ -1014,15 +1020,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * penalty.
    */
   public int maxOldLuxuries() {
-    return MagellanRegionImpl.maxLuxuries(oldPeasants);
+    return oldLuxuries;
   }
 
   /**
-   * Return the maximum number of luxury items that can be bought without a price increase in a
-   * region with the specified number of peasants.
+   * @see magellan.library.Region#setOldLuxuries(int)
    */
-  private static int maxLuxuries(int peasants) {
-    return (peasants >= 0) ? (peasants / 100) : (-1);
+  public void setOldLuxuries(int amount) {
+    oldLuxuries = amount;
   }
 
   @Override

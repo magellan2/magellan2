@@ -2970,6 +2970,9 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("maxLuxus")) {
         // Has not to be stored.
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("letzteluxus")) {
+        region.setOldLuxuries(Integer.parseInt(sc.argv[0]));
+        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Mallorn")) {
         if (Integer.parseInt(sc.argv[0]) > 0) {
           region.setMallorn(true);

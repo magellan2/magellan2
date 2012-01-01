@@ -1854,6 +1854,11 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
+      if (!serverConformance && (region.maxOldLuxuries() > -1)) {
+        write(region.maxOldLuxuries() + ";letzteluxus");
+        newLine();
+      }
+
       if (region.getWage() > 0) {
         if (includeBuildings) {
           write(region.getWage() + ";Lohn");

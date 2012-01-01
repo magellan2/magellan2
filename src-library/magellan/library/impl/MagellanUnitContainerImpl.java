@@ -120,12 +120,15 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   /**
    * Tries to return the new owner. TODO: not yet fail-proof
    * 
-   * @return
+   * @return The unit that is going to be the new owner.
    */
   public Unit getModifiedOwnerUnit() {
     Unit oldOwner = getOwnerUnit();
-    if (oldOwner == null)
+    if (oldOwner == null) {
+      for (EnterRelation rel : getRelations(EnterRelation.class))
+        return rel.source;
       return null;
+    }
 
     if (oldOwner.getRelations(LeaveRelation.class).isEmpty()) {
       // if the current owner does not leave container and gives command to a unit who will be on

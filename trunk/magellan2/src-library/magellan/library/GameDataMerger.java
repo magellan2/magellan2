@@ -1800,6 +1800,14 @@ public class GameDataMerger {
       resultRegion.setOldRecruits(curRegion.getOldRecruits());
     }
 
+    // *** Old luxury volume ****
+    if (newTurn && firstPass && curRegion.maxLuxuries() != -1) {
+      // current luxuries is a computed value...
+      resultRegion.setOldLuxuries(curRegion.maxLuxuries());
+    } else if (!newTurn && curRegion.maxOldLuxuries() != -1) {
+      resultRegion.setOldLuxuries(curRegion.maxOldLuxuries());
+    }
+
     /******************* OLD PRICES ******************************/
     if (newTurn && !firstPass && curRegion.getPrices() != null && resultRegion.getPrices() != null
         && !curRegion.getPrices().equals(resultRegion.getPrices())) {
@@ -2132,25 +2140,27 @@ public class GameDataMerger {
             if (curRegion.getVisibility().greaterEqual(Visibility.TRAVEL)) {
               // we have. So we know now for sure, that this
               // resource disappeared. So lets delete it.
-              if (deleteRegionRessources == null) {
-                deleteRegionRessources = new ArrayList<ItemType>();
-              }
-              deleteRegionRessources.add(newRes.getType());
+              // if (deleteRegionRessources == null) {
+              // deleteRegionRessources = new ArrayList<ItemType>();
+              // }
+              // deleteRegionRessources.add(newRes.getType());
+              newRes.setAmount(0);
+              newRes.setDate(curGD.getDate().getDate());
             }
 
           }
 
         }
       }
-      if (deleteRegionRessources != null) {
-        // so we have Resources, that are not present any more
-        for (final ItemType regResID : deleteRegionRessources) {
-          // newRegion.resources().remove(regResID);
-          // doesn't work, as it doesn't modify the
-          // collection (only the hashset)
-          resultRegion.removeResource(regResID);
-        }
-      }
+      // if (deleteRegionRessources != null) {
+      // // so we have Resources, that are not present any more
+      // for (final ItemType regResID : deleteRegionRessources) {
+      // // newRegion.resources().remove(regResID);
+      // // doesn't work, as it doesn't modify the
+      // // collection (only the hashset)
+      // resultRegion.removeResource(regResID);
+      // }
+      // }
     }
 
     /******************** SCHEMES *************************************/

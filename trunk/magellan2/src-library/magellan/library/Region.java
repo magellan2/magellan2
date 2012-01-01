@@ -181,7 +181,7 @@ public interface Region extends UnitContainer {
   public void setFogOfWar(int fog);
 
   /**
-   * Returns the zero unit of this world
+   * Returns the zero unit ("the peasants") of this region.
    */
   public Unit getZeroUnit();
 
@@ -446,6 +446,13 @@ public interface Region extends UnitContainer {
    * penalty.
    */
   public int maxOldLuxuries();
+
+  /**
+   * Sets the number of luxury items that could be bought last round.
+   * 
+   * @param amount The new value
+   */
+  public void setOldLuxuries(int amount);
 
   /**
    * Calculates the wage a peasant earns according to the biggest castle in this region. While the

@@ -244,4 +244,11 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
             && faction.getAlliance().getFactions().contains(ally.getID()) && super.isAllied(
             faction, ally, aState ^ EresseaConstants.A_COMBAT));
   }
+
+  @Override
+  public int getMaxTrade(Region region) {
+    // we could use the unofficial official rule here or even compute the volume of neighboring
+    // regions, but that would be somewhat pointless and fragile...
+    return -1;
+  }
 }

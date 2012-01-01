@@ -76,7 +76,7 @@ public class GameDataBuilder {
    * Creates a GameData object with one faction, one island, one region, and (if
    * <code>addUnit</code>) one unit.
    */
-  private GameData createSimplestGameData(String gameName, int round, boolean addUnit,
+  public GameData createSimplestGameData(String gameName, int round, boolean addUnit,
       boolean postProcess) throws Exception {
     final GameData data = new GameDataReader(null).createGameData(gameName);
 
@@ -204,12 +204,21 @@ public class GameDataBuilder {
   }
 
   public Unit addUnit(GameData data, String name, Region region) {
+    return addUnit(data, name, region, false);
+  }
+
+  public Unit addUnit(GameData data, String name, Region region, boolean wellKnown) {
     final String number = "g" + (data.getUnits().size() + 1);
     final Faction faction = data.getFactions().iterator().next();
-    return addUnit(data, number, name, faction, region);
+    return addUnit(data, number, name, faction, region, wellKnown);
   }
 
   public Unit addUnit(GameData data, String number, String name, Faction faction, Region region) {
+    return addUnit(data, number, name, faction, region, false);
+  }
+
+  public Unit addUnit(GameData data, String number, String name, Faction faction, Region region,
+      boolean wellKnown) {
     final UnitID id = UnitID.createUnitID(number, data.base);
 
     final Unit unit = MagellanFactory.createUnit(id, data);
@@ -226,6 +235,9 @@ public class GameDataBuilder {
 
     unit.setOrders(Collections.singleton(""));
 
+    if (wellKnown) {
+      unit.setCombatStatus(EresseaConstants.CS_NOT);
+    }
     return unit;
   }
 

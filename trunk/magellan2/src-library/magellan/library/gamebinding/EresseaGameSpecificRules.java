@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import magellan.library.Alliance;
+import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.Region;
@@ -41,6 +42,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.UnitContainerType;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This class implements all Eressea specific rule informations.
@@ -140,7 +142,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   public int getWage(Region region, Race race) {
     int wage = region.getWage() - 1;
     if (getRules().getRace(EresseaConstants.R_ORKS) == null
-        || race.getName().equalsIgnoreCase(getRules().getRace(EresseaConstants.R_ORKS).getName())) {
+        || race.getID().equals(getRules().getRace(EresseaConstants.R_ORKS).getID())) {
       switch (wage) {
       case 12:
         wage = 11;
@@ -252,6 +254,10 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
         && getRules().getGameSpecificStuff().getName().equalsIgnoreCase("eressea"))
       // the pools were activated in Eressea starting from report no. 559
       return true;
+    if (unit.getFaction() == null || unit.getFaction().getOptions() == null) {
+      Logger.getInstance(getClass()).fine("Don't know if pool is active for " + unit);
+      return false;
+    }
     if (EresseaConstants.I_USILVER.equals(type))
       return unit.getFaction().getOptions() != null
           && unit.getFaction().getOptions()
@@ -295,5 +301,17 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
       return false;
     Alliance alliance = allies.get(ally.getID());
     return alliance != null && alliance.getState(aState);
+  }
+
+  public int getMaxTrade(Region region) {
+    if (region.getPeasants() > 0) {
+      int volume = region.getPeasants() / 100;
+      for (Building b : region.buildings())
+        if (b.getBuildingType().getID().equals(EresseaConstants.B_CARAVANSEREI)) {
+          volume *= 2;
+        }
+      return volume;
+    }
+    return -1;
   }
 }

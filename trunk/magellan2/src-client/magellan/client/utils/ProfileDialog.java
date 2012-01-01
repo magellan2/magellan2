@@ -33,11 +33,13 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 
 import magellan.client.utils.ProfileManager.ProfileException;
@@ -83,6 +85,18 @@ public class ProfileDialog extends JDialog {
     GridBagConstraints gc =
         new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.FIRST_LINE_START,
             GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 1, 1);
+
+    JTextArea comment = new JTextArea(Resources.get("profiledialog.explanation"));
+    comment.setEditable(false);
+    comment.setWrapStyleWord(true);
+    comment.setLineWrap(true);
+    comment.setSelectionColor(getBackground());
+    comment.setSelectedTextColor(getForeground());
+    comment.setRequestFocusEnabled(false);
+    comment.setBackground(getBackground());
+    comment.setSelectionColor(getBackground());
+    comment.setSelectedTextColor(getForeground());
+    comment.setFont(new JLabel().getFont());
 
     profiles = initProfiles();
     profileList = new JList(profiles);
@@ -150,12 +164,21 @@ public class ProfileDialog extends JDialog {
     buttonPanel.add(btnRemove, gc);
 
     gc.gridy = 0;
+    gc.gridwidth = 2;
+    gc.weightx = 1.0;
+    gc.fill = GridBagConstraints.HORIZONTAL;
+    mainPanel.add(comment, gc);
+    gc.gridwidth = 1;
+    gc.gridy++;
     gc.fill = GridBagConstraints.BOTH;
+    gc.weightx = 1.0;
     mainPanel.add(new JScrollPane(profileList), gc);
-    gc.fill = GridBagConstraints.VERTICAL;
+    gc.fill = GridBagConstraints.NONE;
+    gc.weightx = 0.0;
     gc.gridx++;
     mainPanel.add(buttonPanel, gc);
     gc.fill = GridBagConstraints.HORIZONTAL;
+    gc.weighty = 1.0;
     gc.gridx = 0;
     gc.gridy++;
     mainPanel.add(bAlwaysAsk, gc);

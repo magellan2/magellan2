@@ -342,7 +342,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
           if ((f.getAllies() != null) && f.getAllies().containsKey(fac.getID())) {
             Alliance a = f.getAllies().get(fac.getID());
             minTrust &= a.getState();
-          } else if (f.getAlliance().getFactions().contains(fac.getID())) {
+          } else if (f.getAlliance() != null && f.getAlliance().getFactions().contains(fac.getID())) {
             // alliance implies HELP combat (in E3!)
             minTrust &= EresseaConstants.A_COMBAT;
           } else {

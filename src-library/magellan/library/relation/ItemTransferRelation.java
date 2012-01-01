@@ -26,6 +26,13 @@ public class ItemTransferRelation extends TransferRelation {
   /**
    * Creates a new ItemTransferRelation object without warning.
    */
+  /**
+   * @param source
+   * @param target
+   * @param amount
+   * @param type
+   * @param line
+   */
   public ItemTransferRelation(Unit source, Unit target, int amount, ItemType type, int line) {
     this(source, source, target, amount, type, line);
   }
@@ -38,6 +45,7 @@ public class ItemTransferRelation extends TransferRelation {
    * @param amount The amount to transfer
    * @param type The item to transfer
    * @param line The line in the source's orders
+   * @param warning
    */
   public ItemTransferRelation(Unit source, Unit target, int amount, ItemType type, int line,
       boolean warning) {
@@ -57,6 +65,8 @@ public class ItemTransferRelation extends TransferRelation {
   public ItemTransferRelation(Unit origin, Unit source, Unit target, int amount, ItemType type,
       int line) {
     super(origin, source, target, amount, line);
+    if (type == null)
+      throw new NullPointerException();
     itemType = type;
   }
 

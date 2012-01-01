@@ -23,8 +23,6 @@ import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.relation.ControlRelation;
-import magellan.library.relation.UnitRelation;
 import magellan.library.rules.RegionType;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Direction;
@@ -40,8 +38,8 @@ public class ShipInspector extends AbstractInspector {
   // public static final ShipInspector INSPECTOR = new ShipInspector();
 
   enum ShipProblemTypes {
-    EMPTY, NOCREW, NONEXTREGION, NOOCEAN, WRONGSHORE, WRONGSHOREHARBOUR, WRONGSHOREHARBOUR_INFO,
-    SHIPWRECK, OVERLOADED;
+    EMPTY, CAPTAIN_FACTION, NOCAPTAIN, NOCREW, NONEXTREGION, NOOCEAN, WRONGSHORE,
+    WRONGSHOREHARBOUR, WRONGSHOREHARBOUR_INFO, SHIPWRECK, OVERLOADED;
 
     private ProblemType type;
 
@@ -129,24 +127,31 @@ public class ShipInspector extends AbstractInspector {
 
     Unit owner = s.getOwnerUnit();
     // the problem also belongs to the faction of the new owner...
-    Unit newOwner = null;
-    if (owner != null) {
-      for (UnitRelation u : owner.getRelations(ControlRelation.class)) {
-        if (u instanceof ControlRelation) {
-          ControlRelation ctr = (ControlRelation) u;
-          if (u.source == owner) {
-            newOwner = ctr.target;
-          }
-        }
-      }
-    }
+    // Unit newOwner = null;
+    // if (owner != null) {
+    // for (UnitRelation u : owner.getRelations(ControlRelation.class)) {
+    // if (u instanceof ControlRelation) {
+    // ControlRelation ctr = (ControlRelation) u;
+    // if (u.source == owner) {
+    // newOwner = ctr.target;
+    // }
+    // }
+    // }
+    // }
+    Unit newOwner = s.getModifiedOwnerUnit();
 
-    if ((!empty && ((owner != null && Units.isPrivilegedAndNoSpy(owner)) || (newOwner != null && Units
-        .isPrivilegedAndNoSpy(newOwner))))
-        && (Units.getCaptainSkillAmount(s) < s.getShipType().getCaptainSkillLevel() || Units
-            .getSailingSkillAmount(s) < s.getShipType().getSailorSkillLevel())) {
-      problems.add(ProblemFactory.createProblem(Severity.WARNING,
-          ShipProblemTypes.NOCREW.getType(), s, this));
+    if (!empty) {
+      if (newOwner == null
+          || Units.getCaptainSkillAmount(s) < s.getShipType().getCaptainSkillLevel()) {
+        problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.NOCAPTAIN
+            .getType(), s, this));
+      } else if (!Units.isPrivilegedAndNoSpy(newOwner)) {
+        problems.add(ProblemFactory.createProblem(Severity.WARNING,
+            ShipProblemTypes.CAPTAIN_FACTION.getType(), s, this));
+      } else if (Units.getSailingSkillAmount(s) < s.getShipType().getSailorSkillLevel()) {
+        problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.NOCREW
+            .getType(), s, this));
+      }
     }
 
     // moving ships are taken care of while checking units...

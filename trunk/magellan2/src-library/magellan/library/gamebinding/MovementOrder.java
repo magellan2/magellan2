@@ -119,13 +119,17 @@ public class MovementOrder extends SimpleOrder {
 
     if (leftUC == null) {
       leftUC = unit.getShip();
-      if (leftUC != null)
+      if (leftUC != null) {
+        // unit is on ship: issue warning if it's not the owner
         if (leftUC.getModifiedOwnerUnit() == unit) {
           leftUC = null;
         } else if (leftUC.getModifiedUnit(unit.getID()) != null) {
-          mRel.setWarning(Resources.get("order.move.warning.leaveship"),
-              OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
+          if (leftUC.getModifiedOwnerUnit() != unit) {
+            mRel.setWarning(Resources.get("order.move.warning.leaveship"),
+                OrderSemanticsProblemTypes.SEMANTIC_WARNING.type);
+          }
         }
+      }
     }
 
     if (leftUC != null) {

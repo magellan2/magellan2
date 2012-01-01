@@ -63,7 +63,8 @@ public class OrderSyntaxInspector extends AbstractInspector {
   }
 
   public enum OrderSemanticsProblemTypes {
-    SEMANTIC_ERROR, GIVE_ERROR, GIVE_WARNING, GIVE_UNKNOWN_TARGET, GIVE_UNKNOWN_TARGET_SPECIAL;
+    SEMANTIC_ERROR, SEMANTIC_WARNING, GIVE_ERROR, GIVE_WARNING, GIVE_UNKNOWN_TARGET,
+    GIVE_UNKNOWN_TARGET_SPECIAL;
 
     public ProblemType type;
 

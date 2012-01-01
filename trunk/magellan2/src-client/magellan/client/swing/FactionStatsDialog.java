@@ -295,7 +295,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
               Object msgArgs[] = null;
               if (dummy.units().size() > 0 && !victims.contains(dummy)) {
                 if ((dummy.getAllies() != null && dummy.getAllies().containsKey(f.getID()))
-                    || dummy.getAlliance().getFactions().contains(f.getID())) {
+                    || (dummy.getAlliance() != null && dummy.getAlliance().getFactions().contains(
+                        f.getID()))) {
                   msgArgs = new Object[] { f, dummy };
                 }
                 if (dummy.getGroups() != null) {

@@ -24,7 +24,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 
 /**
- * DOCUMENT-ME
+ * Common subclass for use as template for most magellan panel components.
  * 
  * @author $Author: $
  * @version $Revision: 242 $
@@ -53,6 +53,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
    * Creates a new InternationalizedDataPanel object. Adds this object as GameDataListener.
    */
   public InternationalizedDataPanel(EventDispatcher ed, GameData initData, Properties p) {
+    // FIXME hmm...?!?
     this(ed.getMagellanContext());
   }
 
@@ -115,7 +116,8 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
     this.data = data;
   }
 
-  // TODO(stm) listeners almost never get properly removed. We could remove this from the dispatcher
+  // FIXME(stm) listeners almost never get properly removed. We could remove this from the
+  // dispatcher
   // whenever this component is no longer used, but where?
   // @Override
   // public void removeNotify() {

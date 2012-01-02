@@ -1,9 +1,15 @@
 2011-12-32 / Build 48x (planned) - stm (stm_@users.sourceforge.net)
-    * better calculation of ship range
     * added calculation of building and unit upkeep
-    * added MaintenanceInspactor
+    * added MaintenanceInspector
+
+2011-12-31 / Build 482 - stm (stm_@users.sourceforge.net)
+    * fixed most of Kildarion's bugs:
+    * improved checking ships with VERLASSE orders
+    * improved completion, order parsing, and language support for PREFIX, COMBAT, DESCRIBE, and more
+    * improved calculation of trade volume with karavansereis 
+    * added explanation to ProfileDialog
     
-2011-12-31 / Build 481 (planned) - stm (stm_@users.sourceforge.net)
+2011-12-31 / Build 481 - stm (stm_@users.sourceforge.net)
     * fixed TaskTablePanel sorting bug
     * added warning for unknown units in GIVE orders
     * re-activated tooltips in DetailsPanel

@@ -121,6 +121,8 @@ public class Cache {
   /** DOCUMENT-ME */
   public Boolean movementPathIsPassive = null;
 
+  public CoordinateID destination;
+
   public Cache() {
     super();
   }
@@ -194,5 +196,6 @@ public class Cache {
 
     movementPath = null;
     movementPathIsPassive = null;
+    destination = null;
   }
 }

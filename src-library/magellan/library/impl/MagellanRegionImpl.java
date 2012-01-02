@@ -1193,6 +1193,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   private int mourning = -1;
 
+  // private Map<Faction, Integer> maintenance = new HashMap<Faction, Integer>();
+
+  private Set<Unit> maintained = new HashSet<Unit>();
+
   /**
    * @see magellan.library.Region#setNeighbours(java.util.Collection)
    * @throws IllegalArgumentException if one of the neighbours doesn't exist in the data.
@@ -2076,6 +2080,33 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public void setMourning(int newMourning) {
     mourning = newMourning;
+  }
+
+  /**
+   * @see magellan.library.Region#removeMaintenance(magellan.library.Unit)
+   */
+  public void removeMaintenance(Unit u) {
+    maintained.remove(u);
+  }
+
+  /**
+   * @see magellan.library.Region#addMaintenance(magellan.library.Unit)
+   */
+  public void addMaintenance(Unit u) {
+    maintained.add(u);
+  }
+
+  /**
+   * @see magellan.library.Region#getMaintained()
+   */
+  public Set<Unit> getMaintained() {
+    for (Iterator<Unit> it = maintained.iterator(); it.hasNext();) {
+      Unit u = it.next();
+      if (!u.getNewRegion().equals(getCoordinate())) {
+        it.remove();
+      }
+    }
+    return Collections.unmodifiableSet(maintained);
   }
 
 }

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-//
+// 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//
+// 
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc.,
+// Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-//
+// 
 package magellan.library.gamebinding;
 
 import java.util.List;
@@ -33,7 +33,9 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.ControlRelation;
+import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.PersonTransferRelation;
+import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.relation.UnitTransferRelation;
 import magellan.library.rules.ItemCategory;
@@ -183,7 +185,7 @@ public class GiveOrder extends UnitArgumentOrder {
           }
         } else if (type == EresseaConstants.O_MEN) {
           PersonTransferRelation rel =
-            new PersonTransferRelation(unit, zeroOrTarget, -1, unit.getRace(), line);
+              new PersonTransferRelation(unit, zeroOrTarget, -1, unit.getRace(), line);
 
           if (all) {
             rel.amount = unit.getModifiedPersons();
@@ -200,28 +202,28 @@ public class GiveOrder extends UnitArgumentOrder {
           if ((herbCategory != null)) {
             for (ItemType i : eState.getHerbTypes()) {
               if (unit.getItem(i) != null || unit.getModifiedItem(i) != null) {
-                List<UnitRelation> relations = eState.giveItem(unit, zeroOrTarget, true, 0, i, line,
-                    this);
+                // List<UnitRelation> relations = eState.giveItem(unit, tUnit, true, 0, i, line,
+                // this);
+                // for (UnitRelation rel : relations) {
+                // rel.add();
+                // }
+                List<UnitRelation> relations =
+                    eState.acquireItem(unit, i, 0, true, false, false, line, this);
                 for (UnitRelation rel : relations) {
-                  rel.add();
+                  if (rel instanceof ReserveRelation) {
+                    UnitRelation ownRelation =
+                        new ItemTransferRelation(unit, zeroOrTarget,
+                            ((ReserveRelation) rel).amount, i, line, false);
+                    // if (!all && reservedAmount != requiredAmount) {
+                    // ownRelation.setWarning(Resources.get("order.give.warning.insufficient",
+                    // type.toString()),
+                    // OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
+                    // }
+                    ownRelation.add();
+                  } else {
+                    rel.add();
+                  }
                 }
-                //                List<UnitRelation> relations =
-                //                  eState.acquireItem(unit, i, 0, true, false, false, line, this);
-                //                for (UnitRelation rel : relations) {
-                //                  if (rel instanceof ReserveRelation) {
-                //                    UnitRelation ownRelation =
-                //                      new ItemTransferRelation(unit, zeroOrTarget,
-                //                          ((ReserveRelation) rel).amount, i, line, false);
-                //                    // if (!all && reservedAmount != requiredAmount) {
-                //                    // ownRelation.setWarning(Resources.get("order.give.warning.insufficient",
-                //                    // type.toString()),
-                //                    // OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
-                //                    // }
-                //                    ownRelation.add();
-                //                  } else {
-                //                    rel.add();
-                //                  }
-                //                }
               }
             }
           }
@@ -232,55 +234,55 @@ public class GiveOrder extends UnitArgumentOrder {
             if (EresseaConstants.I_UPEASANT.equals(itemType.getID())) {
               setWarning(unit, line, Resources.get("order.give.warning.invaliditem", itemType));
             }
+            // List<UnitRelation> relations =
+            // eState.giveItem(unit, tUnit, all, each ? tUnit.getModifiedPersons() * amount
+            // : amount, itemType, line, this);
+            // for (UnitRelation rel : relations) {
+            // rel.add();
+            // }
+            int requiredAmount =
+                all ? 0 : (each ? zeroOrTarget.getModifiedPersons() * amount : amount);
             List<UnitRelation> relations =
-              eState.giveItem(unit, zeroOrTarget, all, each ? zeroOrTarget.getModifiedPersons() * amount
-                  : amount, itemType, line, this);
+                eState.acquireItem(unit, itemType, requiredAmount, all, false, false, line, this);
             for (UnitRelation rel : relations) {
-              rel.add();
+              if (rel instanceof ReserveRelation) {
+
+                UnitRelation ownRelation =
+                    new ItemTransferRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
+                        itemType, line, false);
+                if (((ReserveRelation) rel).problem != null) {
+                  ownRelation.setWarning(Resources.get("order.give.warning.insufficient", itemType
+                      .toString()),
+                      OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
+                }
+                ownRelation.add();
+              } else {
+                rel.add();
+              }
             }
-            //            int requiredAmount =
-            //              all ? 0 : (each ? zeroOrTarget.getModifiedPersons() * amount : amount);
-            //            List<UnitRelation> relations =
-            //              eState.acquireItem(unit, itemType, requiredAmount, all, false, false, line, this);
-            //            for (UnitRelation rel : relations) {
-            //              if (rel instanceof ReserveRelation) {
-            //
-            //                UnitRelation ownRelation =
-            //                  new ItemTransferRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
-            //                      itemType, line, false);
-            //                if (((ReserveRelation) rel).problem != null) {
-            //                  ownRelation.setWarning(Resources.get("order.give.warning.insufficient", itemType
-            //                      .toString()),
-            //                      OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
-            //                }
-            //                ownRelation.add();
-            //              } else {
-            //                rel.add();
-            //              }
-            //            }
           } else {
 
             // in this case the order looks like:
             // GIVE <unit id> ALLES<EOC>
             if (all) {
               for (Item i : unit.getModifiedItems()) {
+                // List<UnitRelation> relations =
+                // eState.giveItem(unit, tUnit, all, 0, i.getItemType(), line, this);
+                // for (UnitRelation rel : relations) {
+                // rel.add();
+                // }
                 List<UnitRelation> relations =
-                  eState.giveItem(unit, zeroOrTarget, all, 0, i.getItemType(), line, this);
+                    eState.acquireItem(unit, i.getItemType(), 0, all, false, false, line, this);
                 for (UnitRelation rel : relations) {
-                  rel.add();
+                  if (rel instanceof ReserveRelation) {
+                    UnitRelation ownRelation =
+                        new ItemTransferRelation(unit, zeroOrTarget,
+                            ((ReserveRelation) rel).amount, i.getItemType(), line, false);
+                    ownRelation.add();
+                  } else {
+                    rel.add();
+                  }
                 }
-                //                List<UnitRelation> relations =
-                //                    eState.acquireItem(unit, i.getItemType(), 0, all, false, false, line, this);
-                //                for (UnitRelation rel : relations) {
-                //                  if (rel instanceof ReserveRelation) {
-                //                    UnitRelation ownRelation =
-                //                        new ItemTransferRelation(unit, zeroOrTarget,
-                //                            ((ReserveRelation) rel).amount, i.getItemType(), line, false);
-                //                    ownRelation.add();
-                //                  } else {
-                //                    rel.add();
-                //                  }
-                //                }
               }
             }
           }

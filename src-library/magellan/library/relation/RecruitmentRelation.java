@@ -22,6 +22,7 @@ import magellan.library.rules.Race;
 public class RecruitmentRelation extends PersonTransferRelation {
   /** Recruitment costs in silver */
   public int costs;
+  public UnitRelation reserveRelation;
 
   /* pavkovic 2003.02.17: made RecruitmentRelation an inverse PersonTransferRelation! */
   /**
@@ -59,5 +60,9 @@ public class RecruitmentRelation extends PersonTransferRelation {
   public void add() {
     origin.addRelation(this);
     source.addRelation(this);
+  }
+
+  public void setReserve(UnitRelation rel) {
+    reserveRelation = rel;
   }
 }

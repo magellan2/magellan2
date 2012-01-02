@@ -1310,4 +1310,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public void reparseOrders();
 
+  public CoordinateID getNewRegion();
+
+  public void setNewRegion(CoordinateID destination);
+
 }

@@ -30,6 +30,7 @@ import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.RecruitmentRelation;
+import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.Race;
 import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
@@ -63,52 +64,57 @@ public class RecruitmentOrder extends SimpleOrder {
     if (!isValid())
       return;
 
-    RecruitmentRelation recRel;
     Race effRace = race;
     String warning = null;
+    int costs = 0;
     if (race == null) {
       effRace = unit.getRace();
       if (unit.getRace() != null && unit.getRace().getRecruitmentCosts() > 0) {
-        recRel =
-            new RecruitmentRelation(unit, amount, amount * unit.getRace().getRecruitmentCosts(),
-                line);
+        costs = amount * unit.getRace().getRecruitmentCosts();
       } else {
-        recRel = new RecruitmentRelation(unit, amount, 0, line);
         warning = Resources.get("order.recruit.warning.unknowncost", unit.getRace());
       }
     } else {
       Race unitRace =
           (unit instanceof TempUnit) ? ((TempUnit) unit).getParent().getRace() : unit.getRace();
       if (race.getRecruitmentCosts() > 0) {
-        int cost = amount * race.getRecruitmentCosts();
-        recRel = new RecruitmentRelation(unit, getAmount(), cost, race, line);
+        costs = amount * race.getRecruitmentCosts();
       } else {
-        recRel = new RecruitmentRelation(unit, getAmount(), 0, race, line);
         warning = Resources.get("order.recruit.warning.unknowncost", race);
       }
       if (unit.getPersons() != 0 && !unitRace.equals(race)) {
         warning = Resources.get("order.recruit.warning.wrongrace");
       }
     }
-    if (effRace != null
-        && data.getGameSpecificRules().getRecruitmentLimit(unit, effRace) < recRel.amount) {
+    if (effRace != null && data.getGameSpecificRules().getRecruitmentLimit(unit, effRace) < amount) {
       if (getProblem() == null) {
         warning = Resources.get("order.recruit.warning.recruitlimit");
       }
     }
+
+    EresseaExecutionState eState = (EresseaExecutionState) state;
+    // List<UnitRelation> relations =
+    // eState.reserveItem(data.getRules().getItemType(EresseaConstants.I_USILVER), false, true,
+    // costs, unit, line, this);
+    List<UnitRelation> relations =
+        eState.acquireItem(unit, data.getRules().getItemType(EresseaConstants.I_USILVER), costs,
+            false, true, true, line, this);
+
+    RecruitmentRelation recRel = new RecruitmentRelation(unit, amount, costs, unit.getRace(), line);
     if (warning != null) {
       recRel.setWarning(warning, OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
     }
     recRel.add();
 
-    EresseaExecutionState eState = (EresseaExecutionState) state;
-    List<UnitRelation> relations =
-        eState.reserveItem(data.getRules().getItemType(EresseaConstants.I_USILVER), false,
-            recRel.costs, unit, line, this);
     for (UnitRelation rel : relations) {
-      rel.add();
+      if (rel instanceof ReserveRelation) {
+        recRel.setReserve(rel);
+        recRel.costs = ((ReserveRelation) rel).amount;
+      } else {
+        rel.add();
+      }
       if (rel.problem != null) {
-        rel.setWarning(Resources.get("order.recruit.warning.silver"),
+        recRel.setWarning(Resources.get("order.recruit.warning.silver"),
             OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
       }
     }

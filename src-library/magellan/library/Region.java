@@ -10,6 +10,7 @@ package magellan.library;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
@@ -1139,5 +1140,32 @@ public interface Region extends UnitContainer {
    * Sets the current mourning state.
    */
   public void setMourning(int newMourning);
+
+  // public void changeMaintenance(Faction faction, int delta);
+  //
+  // public int getMaintenance(Faction f);
+
+  /**
+   * Remove a unit from the list of units that may be in this region in the next turn.
+   * 
+   * @param u
+   */
+  public void removeMaintenance(Unit u);
+
+  /**
+   * Add a unit that may be in this region in the next turn.
+   * 
+   * @param u
+   */
+  public void addMaintenance(Unit u);
+
+  /**
+   * Returns a set of units that <em>may</em> be new in this region and thus need to be maintained.
+   * Does not include units from {@link #units()}, but may contain units that won't actually be in
+   * this region. Check {@link Unit#getNewRegion()} to verify.
+   * 
+   * @return The set of additional units
+   */
+  public Set<Unit> getMaintained();
 
 }

@@ -77,6 +77,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.tasks.AttackInspector;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Inspector;
+import magellan.library.tasks.MaintenanceInspector;
 import magellan.library.tasks.MessageInspector;
 import magellan.library.tasks.MovementInspector;
 import magellan.library.tasks.OrderSyntaxInspector;
@@ -1093,10 +1094,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       inspectors.add(MessageInspector.getInstance(gameData));
     }
 
-    // if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MAINTENANCE,
-    // true)) {
-    // inspectors.add(MaintenanceInspector.getInstance(gameData));
-    // }
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MAINTENANCE,
+        true)) {
+      inspectors.add(MaintenanceInspector.getInstance(gameData));
+    }
 
     for (Inspector i : inspectors) {
       i.setGameData(gameData);

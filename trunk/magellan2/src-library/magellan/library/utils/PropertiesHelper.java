@@ -274,6 +274,9 @@ public class PropertiesHelper {
   /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_GAMEDATA = "TaskTable.insepctors.gamedata";
 
+  /** Property type boolean: */
+  public static final String TASKTABLE_INSPECTORS_MAINTENANCE = "TaskTable.inspectors.maintenance";
+
   /**
    * Property type list of names
    * 

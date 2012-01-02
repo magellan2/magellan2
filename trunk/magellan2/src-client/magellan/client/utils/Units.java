@@ -44,8 +44,10 @@ import magellan.library.Unit;
 import magellan.library.ZeroUnit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.ItemTransferRelation;
+import magellan.library.relation.MaintenanceRelation;
 import magellan.library.relation.RecruitmentRelation;
 import magellan.library.relation.ReserveRelation;
+import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.OrderToken;
@@ -66,7 +68,7 @@ public class Units {
    * items of the corresponding category.
    */
   private final Map<ItemCategory, StatItemContainer> itemCategoriesMap =
-    new Hashtable<ItemCategory, StatItemContainer>();
+      new Hashtable<ItemCategory, StatItemContainer>();
 
   private static ItemType silberbeutel = new ItemType(StringID.create("Silberbeutel"));
   private static ItemType silberkassette = new ItemType(StringID.create("Silberkassette"));
@@ -147,7 +149,7 @@ public class Units {
     }
 
     final List<StatItemContainer> sortedCategories =
-      new LinkedList<StatItemContainer>(itemCategoriesMap.values());
+        new LinkedList<StatItemContainer>(itemCategoriesMap.values());
     Collections.sort(sortedCategories);
 
     return sortedCategories;
@@ -216,11 +218,11 @@ public class Units {
         ItemCategoryNodeWrapper wrapper = null;
         if (createCategoryNodes) {
           final String catIconName =
-            magellan.library.utils.Umlaut.convertUmlauts(currentCategoryMap.getCategory()
-                .getName());
+              magellan.library.utils.Umlaut.convertUmlauts(currentCategoryMap.getCategory()
+                  .getName());
           final String nodeName = Resources.get("util.units." + catIconName);
           wrapper = // TODO use factory
-            new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
+              new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
           wrapper.setIcons(catIconName);
           categoryNode = new DefaultMutableTreeNode(wrapper);
           parentNode.add(categoryNode);
@@ -289,7 +291,7 @@ public class Units {
       NodeWrapperFactory factory, ContextFactory reserveContextFactory) {
 
     final ItemNodeWrapper itemNodeWrapper =
-      factory.createItemNodeWrapper(u, currentItem, currentItem.getUnmodifiedAmount());
+        factory.createItemNodeWrapper(u, currentItem, currentItem.getUnmodifiedAmount());
     final DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(itemNodeWrapper);
 
     categoryNode.add(itemNode);
@@ -297,100 +299,137 @@ public class Units {
     if (!showUnits && units.size() == 1) {
       boolean addItemNode = false;
 
-      for (final ReserveRelation rrel : u.getItemReserveRelations(currentItem.getItemType())) {
-        final StringBuilder text = new StringBuilder().append(rrel.amount).append(" ");
-        final List<String> icons = new LinkedList<String>();
-        text.append(Resources.get("util.units.node.reserved"));
-        if (rrel.problem != null) {
-          itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
-          // text.append("(!!!) ");
-          icons.add("warnung");
-          // reserveNodeWrapper.setAdditionalIcon("warnung");
-        }
-        icons.add("reserve");
-
-        UnitRelationNodeWrapper reserveNodeWrapper = // factory.createSimpleNodeWrapper(rrel,
-          // text.toString(), icons);
-          factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
-              .toString(), icons));
-        itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
-
-        addItemNode = true;
-      }
-
-      for (final ItemTransferRelation currentRelation : u.getItemTransferRelations(currentItem
-          .getItemType())) {
-        final StringBuilder prefix = new StringBuilder().append(currentRelation.amount).append(" ");
-
-        String addIcon = null;
-        Unit u2 = null;
-
-        if (currentRelation.source == u) {
-          if (currentRelation.target == u) {
-            addIcon = "getgive";
-          } else if (currentRelation.origin == currentRelation.source) {
-            addIcon = "give";
-          } else {
-            addIcon = "givetrans";
-          }
-          u2 = currentRelation.target;
-        } else if (currentRelation.target == u) {
-          if (currentRelation.origin == currentRelation.source) {
-            addIcon = "get";
-          } else {
-            addIcon = "gettrans";
-          }
-          u2 = currentRelation.source;
-        }
-
-        if (u2 != null) {
-          DefaultNodeWrapper relationWrapper;
-          if (u2 instanceof ZeroUnit) {
-            relationWrapper =
-              factory.createRegionNodeWrapper(u2.getRegion(), currentRelation.amount);
-          } else {
-            UnitNodeWrapper giveNodeWrapper =
-              factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2
-                  .getModifiedPersons());
-            giveNodeWrapper.setReverseOrder(true);
-
-            if (currentRelation.problem != null) {
-              itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
-              // prefix.append("(!!!) ");
-              giveNodeWrapper.addAdditionalIcon("warnung");
-              // relationWrapper.setAdditionalIcon("warnung");
-            }
-            giveNodeWrapper.addAdditionalIcon(addIcon);
-            relationWrapper =
-              factory.createRelationNodeWrapper(u2, currentRelation, giveNodeWrapper);
-          }
-
-          itemNode.add(new DefaultMutableTreeNode(relationWrapper));
-
-          addItemNode = true;
-        }
-      }
-      if (currentItem.getItemType().getID().equals(EresseaConstants.I_USILVER)) {
-        for (final RecruitmentRelation rrel : u.getRelations(RecruitmentRelation.class)) {
-          final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
+      // for (UnitRelation relation : u.getItemReserveRelations(currentItem.getItemType())) {
+      for (UnitRelation relation : u.getRelations()) {
+        if (relation instanceof ReserveRelation
+            && currentItem.getItemType() == ((ReserveRelation) relation).itemType) {
+          final ReserveRelation rrel = (ReserveRelation) relation;
+          final StringBuilder text = new StringBuilder().append(rrel.amount).append(" ");
           final List<String> icons = new LinkedList<String>();
-          text.append(Resources.get("util.units.node.recruit")).append(" ").append(rrel.amount)
-          .append(" ").append(rrel.race);
-
-          icons.add("rekruten");
+          text.append(Resources.get("util.units.node.reserved"));
           if (rrel.problem != null) {
             itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
             // text.append("(!!!) ");
             icons.add("warnung");
-            // recruitNodeWrapper.setAdditionalIcon("warnung");
+            // reserveNodeWrapper.setAdditionalIcon("warnung");
           }
+          icons.add("reserve");
 
-          final UnitRelationNodeWrapper recruitNodeWrapper =
-            factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
-                .toString(), icons));
-          itemNode.add(new DefaultMutableTreeNode(recruitNodeWrapper));
+          UnitRelationNodeWrapper reserveNodeWrapper = // factory.createSimpleNodeWrapper(rrel,
+                                                       // text.toString(), icons);
+              factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
+                  .toString(), icons));
+          itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
 
           addItemNode = true;
+        }
+
+        // for (final ItemTransferRelation currentRelation : u.getItemTransferRelations(currentItem
+        // .getItemType())) {
+        if (relation instanceof ItemTransferRelation
+            && currentItem.getItemType() == ((ItemTransferRelation) relation).itemType) {
+          final ItemTransferRelation currentRelation = (ItemTransferRelation) relation;
+
+          final StringBuilder prefix =
+              new StringBuilder().append(currentRelation.amount).append(" ");
+
+          String addIcon = null;
+          Unit u2 = null;
+
+          if (currentRelation.source == u) {
+            if (currentRelation.target == u) {
+              addIcon = "getgive";
+            } else if (currentRelation.origin == currentRelation.source) {
+              addIcon = "give";
+            } else {
+              addIcon = "givetrans";
+            }
+            u2 = currentRelation.target;
+          } else if (currentRelation.target == u) {
+            if (currentRelation.origin == currentRelation.source) {
+              addIcon = "get";
+            } else {
+              addIcon = "gettrans";
+            }
+            u2 = currentRelation.source;
+          }
+
+          if (u2 != null) {
+            DefaultNodeWrapper relationWrapper;
+            if (u2 instanceof ZeroUnit) {
+              relationWrapper =
+                  factory.createRegionNodeWrapper(u2.getRegion(), currentRelation.amount);
+            } else {
+              UnitNodeWrapper giveNodeWrapper =
+                  factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2
+                      .getModifiedPersons());
+              giveNodeWrapper.setReverseOrder(true);
+
+              if (currentRelation.problem != null) {
+                itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
+                // prefix.append("(!!!) ");
+                giveNodeWrapper.addAdditionalIcon("warnung");
+                // relationWrapper.setAdditionalIcon("warnung");
+              }
+              giveNodeWrapper.addAdditionalIcon(addIcon);
+              relationWrapper =
+                  factory.createRelationNodeWrapper(u2, currentRelation, giveNodeWrapper);
+            }
+
+            itemNode.add(new DefaultMutableTreeNode(relationWrapper));
+
+            addItemNode = true;
+          }
+        }
+        if (currentItem.getItemType().getID().equals(EresseaConstants.I_USILVER)) {
+          // for (final RecruitmentRelation rrel : u.getRelations(RecruitmentRelation.class)) {
+          if (relation instanceof RecruitmentRelation) {
+            final RecruitmentRelation rrel = (RecruitmentRelation) relation;
+            final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
+            final List<String> icons = new LinkedList<String>();
+            text.append(Resources.get("util.units.node.recruit")).append(" ").append(rrel.amount)
+                .append(" ").append(rrel.race);
+
+            icons.add("rekruten");
+            if (rrel.problem != null) {
+              itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
+              // text.append("(!!!) ");
+              icons.add("warnung");
+              // recruitNodeWrapper.setAdditionalIcon("warnung");
+            }
+
+            final UnitRelationNodeWrapper recruitNodeWrapper =
+                factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
+                    .toString(), icons));
+            itemNode.add(new DefaultMutableTreeNode(recruitNodeWrapper));
+
+            addItemNode = true;
+          }
+          // }
+          // for (final MaintenanceRelation rrel : u.getRelations(MaintenanceRelation.class)) {
+          if (relation instanceof MaintenanceRelation) {
+            final MaintenanceRelation rrel = (MaintenanceRelation) relation;
+            final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
+            final List<String> icons = new LinkedList<String>();
+            text.append(Resources.get("util.units.node.maintenance")).append(" ").append(
+                rrel.container);
+
+            icons.add("upkeep");
+            if (rrel.problem != null || rrel.warning) {
+              itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
+              // text.append("(!!!) ");
+              icons.add("warnung");
+              // recruitNodeWrapper.setAdditionalIcon("warnung");
+            }
+
+            UnitRelationNodeWrapper wrapper =
+                factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
+                    .toString(), icons));
+            // factory.createRelationNodeWrapper(u, rrel, factory.createUnitContainerNodeWrapper(
+            // rrel.building, false, true, rrel.costs + " "));
+            itemNode.add(new DefaultMutableTreeNode(wrapper));
+            addItemNode = true;
+          }
         }
       }
 
@@ -568,7 +607,7 @@ public class Units {
    * This will be a Map&lt;ItemType.id, StatItem&gt;, which is a Map of items of one category.
    */
   private static class StatItemContainer extends Hashtable<ID, StatItem> implements
-  Comparable<StatItemContainer> {
+      Comparable<StatItemContainer> {
     private ItemCategory category = null;
 
     /**
@@ -759,7 +798,7 @@ public class Units {
         newOrders.add(order);
 
       }
-      u.setOrders2(newOrders);
+      u.setOrders2(newOrders, false);
     }
   }
 }

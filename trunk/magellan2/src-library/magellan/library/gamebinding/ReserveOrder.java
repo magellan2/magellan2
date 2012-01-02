@@ -121,8 +121,11 @@ public class ReserveOrder extends SimpleOrder {
           realAmount = amount * unit.getModifiedPersons();
         }
       }
+      // List<UnitRelation> relations =
+      // eState.reserveItem(itemType, amount == Order.ALL, false, realAmount, unit, line, this);
       List<UnitRelation> relations =
-          eState.reserveItem(itemType, amount == Order.ALL, realAmount, unit, line, this);
+          eState.acquireItem(unit, itemType, realAmount, amount == Order.ALL, false, false, line,
+              this);
       UnitRelation lastRelation = null;
       for (UnitRelation rel : relations) {
         lastRelation = rel;

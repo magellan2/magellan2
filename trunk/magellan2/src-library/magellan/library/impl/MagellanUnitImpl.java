@@ -59,6 +59,7 @@ import magellan.library.relation.GuardRegionRelation;
 import magellan.library.relation.InterUnitRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.LeaveRelation;
+import magellan.library.relation.MaintenanceRelation;
 import magellan.library.relation.MovementRelation;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.RecruitmentRelation;
@@ -1214,6 +1215,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   @Override
   public void addRelation(UnitRelation rel) {
     super.addRelation(rel);
+    // FIXME proactive recalculation of modified items!?!
     invalidateCache();
   }
 
@@ -1429,7 +1431,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       final MagellanUnitImpl srcUnit = (MagellanUnitImpl) unit;
 
       for (UnitRelation unitRel : srcUnit.getRelations()) {
-        if (!(unitRel.source.equals(srcUnit)) || !(unitRel instanceof PersonTransferRelation)) {
+        if ((unitRel.source != null && !(unitRel.source.equals(srcUnit)))
+            || !(unitRel instanceof PersonTransferRelation)) {
           continue;
         }
 
@@ -1823,71 +1826,97 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     // 3a. now check relations for possible modifications; RESERVE orders first
     for (UnitRelation rel : getRelations()) {
       if (rel instanceof ReserveRelation) {
-        final ReserveRelation resr = (ReserveRelation) rel;
-        Item modifiedItem = cache1.modifiedItems.get(resr.itemType.getID());
-
-        if (modifiedItem != null) { // the transferred item can be found among this unit's items
-          // nothing to do
-        } else { // the transferred item is not among the items the unit already has
-          modifiedItem = new Item(resr.itemType, 0);
-          cache1.modifiedItems.put(resr.itemType.getID(), modifiedItem);
-        }
+        applyRelation(cache1, (ReserveRelation) rel);
       }
-    }
-    // 3b. now check relations for possible modifications; GIVE orders second
-    for (UnitRelation rel : getRelations()) {
+      // }
+      // // 3b. now check relations for possible modifications; GIVE orders second
+      // for (UnitRelation rel : getRelations()) {
       if (rel instanceof ItemTransferRelation) {
-        final ItemTransferRelation itr = (ItemTransferRelation) rel;
-        Item modifiedItem = cache1.modifiedItems.get(itr.itemType.getID());
-
-        if (modifiedItem != null) { // the transferred item can be found among this unit's items
-
-          if (equals(itr.source)) {
-            modifiedItem.setAmount(modifiedItem.getAmount() - itr.amount);
-          }
-          if (equals(itr.target)) {
-            modifiedItem.setAmount(modifiedItem.getAmount() + itr.amount);
-          }
-        } else { // the transferred item is not among the items the unit already has
-
-          if (equals(itr.source)) {
-            modifiedItem = new Item(itr.itemType, -itr.amount);
-          } else if (equals(itr.target)) {
-            modifiedItem = new Item(itr.itemType, itr.amount);
-          } else {
-            // we're neither source nor target, but we triggered a transfer between two unit
-            // (material pool)
-            modifiedItem = new Item(itr.itemType, 0);
-          }
-
-          cache1.modifiedItems.put(itr.itemType.getID(), modifiedItem);
-        }
+        applyRelation(cache1, (ItemTransferRelation) rel);
+      }
+      // }
+      //
+      // /*
+      // * 4. iterate again to mimick that recruit orders are processed after give orders, not very
+      // nice
+      // * but probably not very expensive
+      // */
+      // for (UnitRelation rel : getRelations()) {
+      if (rel instanceof RecruitmentRelation) {
+        applyRelation(cache1, (RecruitmentRelation) rel);
+      }
+      // }
+      // // 5. check building upkeep
+      // for (UnitRelation rel : getRelations()) {
+      if (rel instanceof MaintenanceRelation) {
+        applyRelation(cache1, (MaintenanceRelation) rel);
       }
     }
+  }
 
-    /*
-     * 4. iterate again to mimick that recruit orders are processed after give orders, not very nice
-     * but probably not very expensive
-     */
-    for (UnitRelation rel : getRelations()) {
-      if (rel instanceof RecruitmentRelation) {
-        final RecruitmentRelation rr = (RecruitmentRelation) rel;
+  private void applyRelation(Cache cache1, ReserveRelation resr) {
+    Item modifiedItem = cache1.modifiedItems.get(resr.itemType.getID());
 
-        Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_USILVER);
+    if (modifiedItem != null) { // the transferred item can be found among this unit's items
+      // nothing to do
+    } else { // the transferred item is not among the items the unit already has
+      modifiedItem = new Item(resr.itemType, 0);
+      cache1.modifiedItems.put(resr.itemType.getID(), modifiedItem);
+    }
+  }
 
-        if (modifiedItem != null) {
-          modifiedItem.setAmount(modifiedItem.getAmount() - rr.costs);
-        } else {
-          if (equals(rr.target)) {
-            modifiedItem =
-                new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER), -rr.costs);
-            // } else {
-            // modifiedItem = new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER),
-            // rr.costs);
-            cache1.modifiedItems.put(EresseaConstants.I_USILVER, modifiedItem);
-          }
-        }
+  private void applyRelation(Cache cache1, ItemTransferRelation itr) {
+    Item modifiedItem = cache1.modifiedItems.get(itr.itemType.getID());
+
+    if (modifiedItem != null) {
+      // the transferred item can be found among this unit's items
+      if (equals(itr.source)) {
+        modifiedItem.setAmount(modifiedItem.getAmount() - itr.amount);
       }
+      if (equals(itr.target)) {
+        modifiedItem.setAmount(modifiedItem.getAmount() + itr.amount);
+      }
+    } else {
+      // the transferred item is not among the items the unit already has
+      if (equals(itr.source)) {
+        modifiedItem = new Item(itr.itemType, -itr.amount);
+      } else if (equals(itr.target)) {
+        modifiedItem = new Item(itr.itemType, itr.amount);
+      } else {
+        // we're neither source nor target, but we triggered a transfer between two unit
+        // (material pool)
+        modifiedItem = new Item(itr.itemType, 0);
+      }
+
+      cache1.modifiedItems.put(itr.itemType.getID(), modifiedItem);
+    }
+  }
+
+  private void applyRelation(Cache cache1, RecruitmentRelation rr) {
+    Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_USILVER);
+
+    if (modifiedItem != null) {
+      modifiedItem.setAmount(modifiedItem.getAmount() - rr.costs);
+    } else {
+      if (equals(rr.target)) {
+        modifiedItem =
+            new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER), -rr.costs);
+        // } else {
+        // modifiedItem = new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER),
+        // rr.costs);
+        cache1.modifiedItems.put(EresseaConstants.I_USILVER, modifiedItem);
+      }
+    }
+  }
+
+  private void applyRelation(Cache cache1, MaintenanceRelation rr) {
+    Item modifiedItem = cache1.modifiedItems.get(rr.itemType.getID());
+
+    if (modifiedItem != null) {
+      modifiedItem.setAmount(modifiedItem.getAmount() - rr.costs);
+    } else {
+      modifiedItem = new Item(rr.itemType, -rr.costs);
+      cache1.modifiedItems.put(rr.itemType.getID(), modifiedItem);
     }
   }
 
@@ -2258,6 +2287,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     // TODO invalidateCache();
   }
 
+  /** Deprecated! This is done proactively via UnitRelation.add() now. */
   private void addAndSpreadRelations(Collection<UnitRelation> newRelations) {
     if (MagellanUnitImpl.log.isDebugEnabled()) {
       MagellanUnitImpl.log.debug("Relations for " + this);
@@ -3103,6 +3133,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
         getOrdersObject().set(i, createOrder(ordersObject.get(i).getText()));
       }
     }
+  }
+
+  public void setNewRegion(CoordinateID destination) {
+    getCache().destination = destination;
+  }
+
+  /**
+   * @see magellan.library.Unit#getNewRegion()
+   */
+  public CoordinateID getNewRegion() {
+    if (getCache().destination == null)
+      return getCache().destination = getRegion().getCoordinate();
+    return getCache().destination;
   }
 
 }

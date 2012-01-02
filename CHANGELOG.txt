@@ -1,6 +1,7 @@
-2011-12-32 / Build 48x (planned) - stm (stm_@users.sourceforge.net)
+2012-01-02 / Build 485 - stm (stm_@users.sourceforge.net)
     * added calculation of building and unit upkeep
     * added MaintenanceInspector
+    * added money transfer relations for give, reserve and recruitment cost
 
 2011-12-31 / Build 482 - stm (stm_@users.sourceforge.net)
     * fixed most of Kildarion's bugs:

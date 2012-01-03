@@ -2271,17 +2271,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     StringBuilder combatString = new StringBuilder();
-    combatString.append(Resources.get("emapdetailspanel.node.combatstatus")).append(": ").append(
-        MagellanFactory.combatStatusToString(u));
     if (isCompactLayout()) {
+      combatString.append(MagellanFactory.combatStatusToString(u));
       if (u.isStarving()) {
         combatString.append(", ").append(Resources.get("emapdetailspanel.node.starved"));
       }
       combatString.append(", ").append(
-          Resources.get("emapdetailspanel.node.health")
-              + ": "
-              + (u.getHealth() != null ? data.getTranslation(u.getHealth()) : Resources
-                  .get("tree.treehelper.healthy")));
+          (u.getHealth() != null ? data.getTranslation(u.getHealth()) : Resources
+              .get("tree.treehelper.healthy")));
+    } else {
+      combatString.append(Resources.get("emapdetailspanel.node.combatstatus")).append(": ").append(
+          MagellanFactory.combatStatusToString(u));
     }
 
     // Kampfreihenanzeige

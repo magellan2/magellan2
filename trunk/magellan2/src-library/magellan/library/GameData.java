@@ -1324,6 +1324,9 @@ public abstract class GameData implements Cloneable, Addeable {
       if (!translations().contains(key)) {
         // we have to add
         String translated = Resources.getRuleItemTranslation(key);
+        if (translated.startsWith("rules.skill.")) {
+          translated = skillType.getID().toString();
+        }
         addTranslation(skillType.getID().toString(), translated, TranslationType.sourceMagellan);
       }
     }
@@ -1334,7 +1337,10 @@ public abstract class GameData implements Cloneable, Addeable {
       if (!translations().contains(key)) {
         // we have to add
         String translated = Resources.getRuleItemTranslation(key);
-        ;
+        if (translated.startsWith("rules.building.")) {
+          translated = type.getID().toString();
+        }
+
         addTranslation(type.getID().toString(), translated, TranslationType.sourceMagellan);
       }
     }

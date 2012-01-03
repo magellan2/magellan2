@@ -99,7 +99,7 @@ public class OrderToken {
    * @param followedBySpace defines whether the token was followed by either '\r' '\n' '\t' or ' '
    */
   public OrderToken(String text, int start, int end, int ttype, boolean followedBySpace) {
-    if (text.length() > 0 && Character.isSpace(text.charAt(0)) && ttype != TT_STRING)
+    if (text.length() > 0 && Character.isWhitespace(text.charAt(0)) && ttype != TT_STRING)
       throw new IllegalArgumentException("Order text starts with space");
     this.text = text;
     this.start = start;
@@ -143,16 +143,16 @@ public class OrderToken {
     if (ttype != OrderToken.TT_STRING)
       return getText();
 
-    int begin = 0, end = text.length();
+    int opening = 0, closing = text.length();
     if (text.length() == 0)
       return text;
     if (Arrays.binarySearch(delimiters, text.charAt(0)) > 0) {
-      begin = 1;
+      opening = 1;
     }
     if (text.length() > 1 && Arrays.binarySearch(delimiters, text.charAt(0)) > 0) {
-      end = text.length() - 1;
+      closing = text.length() - 1;
     }
-    return text.substring(begin, end);
+    return text.substring(opening, closing);
   }
 
   /**
@@ -284,8 +284,29 @@ public class OrderToken {
   }
 
   /**
+   * As {@link #equalsToken(String)}, but also accepts prefixes if {@link #followedBySpace} is
+   * <code>false</code>.
+   * 
+   * @return true if strKeyword is equal (disregarding case and umlauts) to this token
+   */
+  public boolean equalsCompletedToken(String strKeyword) {
+    if (text.length() == 0)
+      return false;
+
+    String strText = Umlaut.convertUmlauts(text.toLowerCase());
+    String strTest = Umlaut.convertUmlauts(strKeyword.toLowerCase());
+
+    return strTest.startsWith(strText);
+  }
+
+  /**
    * Compares the token and the specified keyword with respect to abbreviations as used by the
-   * eressea game server.
+   * eressea game server. Prefixes are accepted <strong>if {@link #followedBySpace()} is
+   * <code>true</code></strong>.
+   * 
+   * @return true if strKeyword is equal (disregarding case and umlauts) to this token or <strong>if
+   *         {@link #followedBySpace} is <code>true</code></strong> and <code>strKeyWord</code>
+   *         starts with this token.
    */
   public boolean equalsToken(String strKeyword) {
     if (text.length() == 0)
@@ -297,7 +318,7 @@ public class OrderToken {
     if (followedBySpace)
       return strTest.startsWith(strText);
     else
-      return strTest.equalsIgnoreCase(strText);
+      return strTest.equals(strText);
   }
 
   // FIXME this could be dangerous!

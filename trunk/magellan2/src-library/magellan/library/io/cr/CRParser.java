@@ -7,10 +7,14 @@
 
 package magellan.library.io.cr;
 
+import static org.apache.commons.beanutils.PropertyUtils.setProperty;
+
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -122,6 +126,12 @@ public class CRParser implements RulesIO, GameDataIO {
   private Faction firstFaction;
 
   protected ReportTransformer transformer;
+
+  private BlockParser unitParser;
+
+  private BlockParser regionParser;
+
+  private static long tRParse, tUParse;
 
   /**
    * Creates a new parser.
@@ -358,6 +368,11 @@ public class CRParser implements RulesIO, GameDataIO {
     return ship;
   }
 
+  /**
+   * Returns the value of the configuration tag ("Konfiguration") as it has been read from the CR.
+   * 
+   * @return The configuration string or <code>null</code> if the tag hasn't been read (yet)
+   */
   public String getConfiguration() {
     return configuration;
   }
@@ -374,7 +389,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * the messages themselves.
    * 
    * @return the resulting list of <tt>MessageType</tt> objects.
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private List<MessageType> parseMessageTypes(GameData data) throws IOException {
     final List<MessageType> list = new LinkedList<MessageType>();
@@ -411,7 +426,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Read a MESSAGETYPE block. Note that message type stubs have already been created by parsing the
    * messages themselves.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private void parseMessageType(GameData data) throws IOException {
     final IntegerID id = IntegerID.create(sc.argv[0].substring(12).trim());
@@ -586,7 +601,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * object for this type of message, a stub MessageType object is created and added to world.
    * 
    * @return a list containing <tt>Message</tt> objects for all messages read.
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private List<Message> parseMessages(List<Message> list) throws IOException {
     while (sc.isBlock && sc.argv[0].startsWith("MESSAGE ")) {
@@ -654,7 +669,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Parse a battle block sequence. Currently this is a block of message blocks.
    * 
    * @return A List of instances of class Battle. May be <code>null</code>.
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private List<Battle> parseBattles(List<Battle> list) throws IOException {
     while (!sc.eof && sc.argv[0].startsWith("BATTLE ")) {
@@ -683,7 +698,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Parse a battlespec block sequence. Currently this is a block of message blocks.
    * 
    * @return A List of instances of class Battle.
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private List<Battle> parseBattleSpecs(List<Battle> list) throws IOException {
     while (!sc.eof && sc.argv[0].startsWith("BATTLESPEC ")) {
@@ -710,7 +725,7 @@ public class CRParser implements RulesIO, GameDataIO {
   /**
    * Parse a sequence of spell blocks. Do not confuse this with the spells block of a unit!
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private void parseSpells() throws IOException {
     while (!sc.eof && sc.isBlock && sc.argv[0].startsWith("ZAUBER ")) {
@@ -783,7 +798,7 @@ public class CRParser implements RulesIO, GameDataIO {
   /**
    * Parse a sequence of potion (TRANK) blocks.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private void parsePotions() throws IOException {
     while (!sc.eof && sc.isBlock && sc.argv[0].startsWith("TRANK ")) {
@@ -828,7 +843,7 @@ public class CRParser implements RulesIO, GameDataIO {
   /**
    * Parse a sequence of island blocks.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private void parseIslands() throws IOException {
     while (!sc.eof && sc.isBlock && sc.argv[0].startsWith("ISLAND ")) {
@@ -2119,7 +2134,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Accesses unit.persons which must be > 0 and just adds new skills, existing skills are not
    * deleted.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private void parseSkills(Unit unit) throws IOException {
     sc.getNextToken(); // skip TALENTE
@@ -2231,6 +2246,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
     sc.getNextToken(); // skip "EINHEIT nr"
 
+    long t = System.currentTimeMillis();
     while (!sc.eof) {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Name")) {
         unit.setName(sc.argv[0]);
@@ -2464,6 +2480,7 @@ public class CRParser implements RulesIO, GameDataIO {
         }
       }
     }
+    tUParse += System.currentTimeMillis() - t;
 
     // set the sortIndex so the original ordering of the units
     // can be restored
@@ -2680,7 +2697,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Parse consecutive GRENZE sub blocks of the REGION block.
    * 
    * @param r a list to add the read borders to
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private void parseBorders(Region r) throws IOException {
     while (!sc.eof && sc.isBlock && sc.argv[0].startsWith("GRENZE ")) {
@@ -2693,7 +2710,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Parse consecutive SIGN sub blocks of the REGION block.
    * 
    * @param r the actual region
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private void parseSigns(Region r) throws IOException {
     while (!sc.eof && sc.isBlock && sc.argv[0].startsWith("SIGN ")) {
@@ -2706,7 +2723,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Parse one GRENZE sub block of the REGION block.
    * 
    * @return the resulting <tt>Border</tt> object.
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private Border parseBorder() throws IOException {
     final IntegerID id = IntegerID.create(sc.argv[0].substring(7));
@@ -2753,7 +2770,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Parse one SIGN sub block of the REGION block.
    * 
    * @return the resulting <tt>SIGN</tt> object.
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if the scanner throws an IOException
    */
   private Sign parseSign() throws IOException {
     final Sign s = new Sign();
@@ -2827,6 +2844,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
     region.setSortIndex(sortIndex);
 
+    long t = System.currentTimeMillis();
     while (!sc.eof) {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Name")) {
         // regions doesn't have name if name == type; e.g. "Ozean"=="Ozean"
@@ -3072,6 +3090,7 @@ public class CRParser implements RulesIO, GameDataIO {
         unknown("REGION", true);
       }
     }
+    tRParse += System.currentTimeMillis() - t;
 
     // validate region before add to world data
     if ((iValidateFlags & 1) == 0) {
@@ -3249,6 +3268,9 @@ public class CRParser implements RulesIO, GameDataIO {
     ui.setMaximum(10000);
     ui.setProgress(Resources.get("progressdialog.loadcr.step01"), 1);
     ui.show();
+
+    CRParser.tUParse = CRParser.tRParse = 0;
+
     try {
       world = data;
       sc = new Scanner(in);
@@ -3301,6 +3323,8 @@ public class CRParser implements RulesIO, GameDataIO {
     }
     // FIXME(stm) this could be too soon if called via the load menu!
     ui.ready();
+
+    log.fine(CRParser.tRParse + " " + CRParser.tUParse);
 
     CRParser.log.fine("Done reading.");
 
@@ -3365,4 +3389,1212 @@ public class CRParser implements RulesIO, GameDataIO {
       }
     }
   }
+
+  // (stm) the following is an experiment to simplify the parser using a tag map and Java Beans. It
+  // didn't bring the performance boost I had hoped for...
+
+  /**
+   * A state object that is maintained by the parser. Individual handlers should implement their own
+   * state.
+   * 
+   * @author stm
+   */
+  public interface ParseState {
+    // marker interface
+  }
+
+  /**
+   * A class that handles individual tags or blocks as they are read by the parser.
+   * 
+   * @author stm
+   */
+  public static abstract class TagHandler {
+    /**
+     * The parser that uses this handler.
+     */
+    public BlockParser parserReference;
+    /**
+     * The scanner used by the parser.
+     */
+    public Scanner sc;
+
+    /**
+     * Initializes the handler.
+     * 
+     * @param parser The parser that uses this handler
+     */
+    public TagHandler(BlockParser parser) {
+      parserReference = parser;
+      sc = parser.sc;
+    }
+
+    /**
+     * Handles a tag or block, probably by accessing {@link #sc}.
+     * 
+     * @param state The current state
+     * @return true if the tag has been handled.
+     * @throws IOException If the scanner throws an exception.
+     */
+    public abstract boolean handle(ParseState state) throws IOException;
+
+  }
+
+  /**
+   * A Parse state that can be used by {@link BeanHandler}.
+   * 
+   * @author stm
+   */
+  public static interface BeanState extends ParseState {
+
+    /**
+     * @return The report base {@link GameData#base}.
+     */
+    public int getBase();
+
+    /**
+     * The bean that is modified by the handler.
+     * 
+     * @return the bean that is modified by the handler.
+     */
+    public Object getBean();
+  }
+
+  /**
+   * A ParseState for parsing unit blocks ("EINHEIT").
+   * 
+   * @author stm
+   */
+  public static class UnitParseState implements BeanState {
+
+    /**
+     * The new unit object.
+     */
+    public Unit unit;
+    /**
+     * The unit's factionID if it has been read.
+     */
+    public EntityID factionID;
+    /**
+     * The unit's groupID if it has been read.
+     */
+    public ID groupID;
+    private int base;
+
+    /**
+     * Initializes the parser.
+     * 
+     * @param unit The new unit
+     * @param base The report base, see {@link GameData#base}.
+     */
+    public UnitParseState(Unit unit, int base) {
+      this.unit = unit;
+      this.base = base;
+    }
+
+    public int getBase() {
+      return base;
+    }
+
+    public Object getBean() {
+      return unit;
+    }
+
+  }
+
+  /**
+   * A handler that handles unit tags or blocks.
+   * 
+   * @author stm
+   */
+  public static abstract class UnitTagHandler extends TagHandler {
+
+    protected UnitParseState parseState;
+
+    /**
+     * Creates a new handler
+     * 
+     * @param unitParser The parser calling this handler.
+     */
+    public UnitTagHandler(BlockParser unitParser) {
+      super(unitParser);
+    }
+
+    /**
+     * Handle a unit tag (acces via the Scanner)
+     * 
+     * @param unit The new unit object
+     * @throws IOException if the scanner throws an exception
+     */
+    public abstract void handle(Unit unit) throws IOException;
+
+    @Override
+    public boolean handle(ParseState state) throws IOException {
+      parseState = (UnitParseState) state;
+      handle(parseState.unit);
+      return true;
+    }
+  }
+
+  /**
+   * The fallback handler for unit tags.
+   * 
+   * @author stm
+   */
+  public static class UnitDefaultTagHandler extends TagHandler {
+
+    /**
+     * @param parser
+     */
+    public UnitDefaultTagHandler(BlockParser parser) {
+      super(parser);
+    }
+
+    @Override
+    public boolean handle(ParseState state) throws IOException {
+      UnitParseState parseState = (UnitParseState) state;
+
+      parseState.unit.putTag(parserReference.sc.argv[1], parserReference.sc.argv[0]);
+      boolean handled = false;
+      // check for wellknown tags...ejcTaggable etc...
+      if (parserReference.sc.argv[1].equalsIgnoreCase(CRParser.TAGGABLE_STRING)) {
+        handled = true;
+      }
+      if (parserReference.sc.argv[1].equalsIgnoreCase(CRParser.TAGGABLE_STRING2)) {
+        handled = true;
+      }
+      if (parserReference.sc.argv[1].equalsIgnoreCase(CRParser.TAGGABLE_STRING3)) {
+        handled = true;
+      }
+      if (parserReference.sc.argv[1].equalsIgnoreCase(CRParser.TAGGABLE_STRING4)) {
+        handled = true;
+      }
+      if (parserReference.sc.argv[1].equalsIgnoreCase(CRParser.TAGGABLE_STRING5)) {
+        handled = true;
+      }
+      if (!handled) {
+        parserReference.crParser.unknown("EINHEIT", false);
+        return false;
+      }
+      return true;
+    }
+  }
+
+  /**
+   * A ParseState for regions.
+   * 
+   * @author stm
+   */
+  public static class RegionParseState implements BeanState {
+    /**
+     * The new region.
+     */
+    public Region region;
+    private int base;
+    protected int iValidateFlags;
+    protected int unitSortIndex;
+    protected int shipSortIndex;
+    protected int buildingSortIndex;
+
+    /**
+     * @param region
+     * @param base
+     */
+    public RegionParseState(Region region, int base) {
+      this.region = region;
+      this.base = base;
+    }
+
+    public int getBase() {
+      return base;
+    }
+
+    public Object getBean() {
+      return region;
+    }
+
+  }
+
+  /**
+   * A handler that handles tags or blocks in a region block ("REGION").
+   * 
+   * @author stm
+   */
+  public static abstract class RegionTagHandler extends TagHandler {
+
+    protected RegionParseState parseState;
+
+    /**
+     * @param unitParser
+     */
+    public RegionTagHandler(BlockParser unitParser) {
+      super(unitParser);
+    }
+
+    /**
+     * Handles a tag by accessing the scanner
+     * 
+     * @param region The new region
+     * @throws IOException if the scanner throws an exception.
+     */
+    public abstract void handle(Region region) throws IOException;
+
+    @Override
+    public boolean handle(ParseState state) throws IOException {
+      parseState = (RegionParseState) state;
+      handle(parseState.region);
+      return true;
+    }
+  }
+
+  /**
+   * The fallback handler for regions.
+   * 
+   * @author stm
+   */
+  public static abstract class RegionDefaultTagHandler extends TagHandler {
+
+    /**
+     * @param parser
+     */
+    public RegionDefaultTagHandler(BlockParser parser) {
+      super(parser);
+    }
+
+    @Override
+    public boolean handle(ParseState state) throws IOException {
+      RegionParseState parseState = (RegionParseState) state;
+
+      parseState.region.putTag(parserReference.sc.argv[1], parserReference.sc.argv[0]);
+
+      parserReference.crParser.unknown("REGION", true);
+
+      return false;
+    }
+  }
+
+  /**
+   * The bean type
+   * 
+   * @author stm
+   */
+  public static enum Type {
+    /**
+     * Integer
+     */
+    INTEGER,
+    /**
+     * Long
+     */
+    LONG,
+    /**
+     * String
+     */
+    STRING,
+    /**
+     * 0 = false, true otherwise
+     */
+    ZERO_ONE,
+    /**
+     * UnitID
+     */
+    UNIT_ID
+  }
+
+  /**
+   * A handler that accesses java bean properties.
+   * 
+   * @author stm
+   */
+  public static class BeanHandler extends TagHandler {
+
+    private Type type;
+    private String propertyName;
+
+    /**
+     * Creates a bean handler that changes a property of a bean.
+     * 
+     * @param parser The parser calling this handler.
+     * @param propertyName The name of the property being modified
+     * @param type The property type
+     */
+    public BeanHandler(BlockParser parser, String propertyName, Type type) {
+      super(parser);
+      this.type = type;
+      this.propertyName = propertyName;
+    }
+
+    @Override
+    public boolean handle(ParseState state) throws IOException {
+      Object bean = ((BeanState) state).getBean();
+      Object value = null;
+      try {
+        switch (type) {
+        case INTEGER:
+          setProperty(bean, propertyName, value = Integer.parseInt(parserReference.sc.argv[0]));
+          break;
+        case LONG:
+          setProperty(bean, propertyName, value = Long.parseLong(parserReference.sc.argv[0]));
+          break;
+        case STRING:
+          setProperty(bean, propertyName, value = parserReference.sc.argv[0]);
+          break;
+        case ZERO_ONE:
+          setProperty(bean, propertyName, Integer.parseInt(parserReference.sc.argv[0]) != 0);
+          break;
+        case UNIT_ID:
+          setProperty(bean, propertyName, UnitID.createUnitID(Integer
+              .parseInt(parserReference.sc.argv[0]), ((BeanState) state).getBase()));
+          break;
+        }
+      } catch (IllegalAccessException e) {
+        throw new IllegalArgumentException("No access to setter method possible for property "
+            + fullPropertyName(bean, propertyName) + " with value " + value);
+      } catch (InvocationTargetException e) {
+        throw new RuntimeException("Unexpected exception setting property "
+            + fullPropertyName(bean, propertyName) + " with value " + value);
+      } catch (NoSuchMethodException e) {
+        throw new IllegalArgumentException("No setter method found for property "
+            + fullPropertyName(bean, propertyName) + " with value " + value);
+      }
+      return true;
+    }
+
+    private static String fullPropertyName(Object bean, String propertyName) {
+      return bean.getClass().getName() + '#' + propertyName;
+    }
+
+  }
+
+  /**
+   * A class to parse a block by reading properties and blocks using a scanner.
+   * 
+   * @author stm
+   */
+  public static class BlockParser {
+
+    private Map<String, TagHandler> tagHandlers;
+    private Map<String, TagHandler> blockHandlers;
+
+    /**
+     * Creates a new parser.
+     */
+    public BlockParser() {
+      tagHandlers = new HashMap<String, CRParser.TagHandler>();
+      blockHandlers = new HashMap<String, CRParser.TagHandler>();
+    }
+
+    /**
+     * Adds a handler that is called if the specified tag (i.e., a line like "<value>;tagName" is
+     * encountered.
+     * 
+     * @param tagName The name of the tag triggering this handler
+     * @param handler The handler for the tag
+     */
+    public void addTagHandler(String tagName, TagHandler handler) {
+      if (tagHandlers.put(tagName, handler) != null)
+        throw new IllegalArgumentException("tag name already registered");
+
+      if (!tagName.toLowerCase().equals(tagName))
+        if (tagHandlers.put(tagName.toLowerCase(), handler) != null)
+          throw new IllegalArgumentException("tag name already registered");
+
+    }
+
+    /**
+     * Adds a handler that manipulates a bean.
+     * 
+     * @param tagName The name of the tag triggering this handler
+     * @param propertyName The property manipulated by the handler
+     * @param type The type of the property
+     */
+    public void addBeanHandler(String tagName, String propertyName, Type type) {
+      addTagHandler(tagName, new BeanHandler(this, propertyName, type));
+    }
+
+    /**
+     * Adds a handler that does nothing (but doesn't cause an error) for the specified tag.
+     * 
+     * @param tagName The tag triggering this handler
+     */
+    public void addNullHandler(String tagName) {
+      addTagHandler(tagName, new TagHandler(this) {
+        @Override
+        public boolean handle(ParseState state) throws IOException {
+          // never do anything
+          return true;
+        }
+      });
+    }
+
+    /**
+     * Add a handler for a block, called if a block line like "NAME ..." is read.
+     * 
+     * @param name the block name, i.e. the first word of the BLOCK line.
+     * @param tagHandler The handler that is called upon reading the block.
+     */
+    public void addBlockHandler(String name, TagHandler tagHandler) {
+      if (name.contains(" "))
+        throw new IllegalArgumentException("space not allowed in block name");
+      if (blockHandlers.put(name, tagHandler) != null)
+        throw new IllegalArgumentException("tag name already registered");
+    }
+
+    protected Scanner sc;
+    protected CRParser crParser;
+    private TagHandler defaultTagHandler;
+    private TagHandler defaultBlockHandler;
+
+    /**
+     * Parses the block by calling {@link Scanner#getNextToken()} and calling appropriate handlers.
+     * Terminates if a block is encountered that has no handler or on end of file.
+     * 
+     * @param crParser the CRParser, mainly used for calls to
+     *          {@link CRParser#unknown(String, boolean)}.
+     * @param state The initial state which is passed to handlers.
+     * @throws IOException If the scanner throws an exception
+     */
+    public void parse(CRParser crParser, ParseState state) throws IOException {
+      this.crParser = crParser;
+      sc = crParser.sc;
+      // for (TagHandler handler: tagHandlers.values()) handler.init();
+      // for (TagHandler handler: blockHandlers.values()) handler.init();
+
+      sc.getNextToken(); // skip "EINHEIT nr"
+
+      while (!sc.eof) {
+        if (sc.argc == 2) {
+          TagHandler handler = tagHandlers.get(sc.argv[1]);
+          if (handler == null) {
+            handler = tagHandlers.get(sc.argv[1].toLowerCase());
+          }
+          if (handler != null) {
+            handler.handle(state);
+          } else if (getDefaultTagHandler() != null) {
+            getDefaultTagHandler().handle(state);
+          } else {
+            crParser.unknown("unknown context", false);
+          }
+          sc.getNextToken();
+        } else if (sc.isBlock) {
+          TagHandler handler;
+          if (sc.argv[0].contains(" ")) {
+            handler = blockHandlers.get(sc.argv[0].substring(0, sc.argv[0].indexOf(" ")));
+          } else {
+            handler = blockHandlers.get(sc.argv[0]);
+          }
+          if (handler != null) {
+            handler.handle(state);
+          } else if (getDefaultBlockHandler() != null) {
+            getDefaultBlockHandler().handle(state);
+          } else {
+            break;
+          }
+        }
+      }
+    }
+
+    /**
+     * Returns the value of defaultTagHandler.
+     * 
+     * @return Returns defaultTagHandler.
+     */
+    public TagHandler getDefaultTagHandler() {
+      return defaultTagHandler;
+    }
+
+    /**
+     * Sets the value of defaultTagHandler.
+     * 
+     * @param defaultTagHandler The value for defaultTagHandler.
+     */
+    public void setDefaultTagHandler(TagHandler defaultTagHandler) {
+      this.defaultTagHandler = defaultTagHandler;
+    }
+
+    /**
+     * Returns the value of defaultBlockHandler.
+     * 
+     * @return Returns defaultBlockHandler.
+     */
+    public TagHandler getDefaultBlockHandler() {
+      return defaultBlockHandler;
+    }
+
+    /**
+     * Sets the value of defaultBlockHandler.
+     * 
+     * @param defaultBlockHandler The value for defaultBlockHandler.
+     */
+    public void setDefaultBlockHandler(TagHandler defaultBlockHandler) {
+      this.defaultBlockHandler = defaultBlockHandler;
+    }
+
+  }
+
+  private int parseUnitFast(Region region, int sortIndex) throws IOException {
+    final Unit newUnit = getAddUnit(UnitID.createUnitID(sc.argv[0].substring(8), 10, world.base));
+
+    if (region != newUnit.getRegion()) {
+      newUnit.setRegion(region);
+    }
+
+    /**
+     * this was created by regexp replacements: <code>
+     * if \(\(sc\.argc == 2\) && sc\.argv\[1\]\.equalsIgnoreCase\(("[^"]*")\)\) \{(\R[^#]*)sc\.getNextToken\(\);\R \}#else
+     * 
+     * parser.addTagHandler(\1, new TagHandler() { public void handle(Unit unit){\2}});
+     * 
+     * 
+     * 
+     * if \(\(sc\.isBlock\) && sc\.argv\[0\]\.equals\(("[^"]*")\)\) \{(\R[^#]*)\R      \}#else
+     *       
+     * parser.addBlockHandler(\1, new TagHandler() { public void handle(Unit unit) throws IOException {\2}});
+     * <code>
+     */
+    if (unitParser == null) {
+      unitParser = new BlockParser();
+
+      unitParser.addBeanHandler("Name", "name", Type.STRING);
+      unitParser.addBeanHandler("Beschr", "description", Type.STRING);
+      unitParser.addTagHandler("Typ", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          unit.setRace(world.rules.getRace(StringID.create(sc.argv[0]), true));
+        }
+      });
+      unitParser.addTagHandler("wahrerTyp", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          unit.setRealRace(world.rules.getRace(StringID.create(sc.argv[0]), true));
+        }
+      });
+      unitParser.addTagHandler("temp", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          unit.setTempID(UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base));
+        }
+      });
+      unitParser.addTagHandler("alias", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          unit.setAlias(UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base));
+        }
+      });
+      unitParser.addBeanHandler("privat", "privDesc", Type.STRING);
+      unitParser.addBeanHandler("Anzahl", "persons", Type.INTEGER);
+      unitParser.addTagHandler("Partei", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          parseState.factionID =
+              (EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+        }
+      });
+      unitParser.addNullHandler("Parteiname");
+      unitParser.addBeanHandler("Parteitarnung", "hideFaction", Type.ZERO_ONE);
+      unitParser.addTagHandler("bewacht", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          unit.setGuard(Integer.parseInt(sc.argv[0]));
+
+          final Region r = unit.getRegion();
+
+          if (r != null) {
+            r.addGuard(unit);
+          }
+
+        }
+      });
+      unitParser.addTagHandler("belagert", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          unit.setSiege(getAddBuilding(EntityID.createEntityID(Integer.parseInt(sc.argv[0]),
+              world.base)));
+        }
+      });
+      unitParser.addTagHandler("folgt", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          unit.setFollows(getAddUnit(UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base)));
+        }
+      });
+      unitParser.addBeanHandler("familiarmage", "familiarmageID", Type.UNIT_ID);
+      unitParser.addTagHandler("Silber", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          final int money = Integer.parseInt(sc.argv[0]);
+          final Item item =
+              new Item(world.rules.getItemType(EresseaConstants.I_USILVER, true), money);
+          unit.addItem(item);
+        }
+      });
+      unitParser.addTagHandler("Burg", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          Integer.parseInt(sc.argv[0]);
+
+          final Building b =
+              getAddBuilding(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+
+          if (unit.getBuilding() != b) {
+            unit.setBuilding(b);
+          }
+
+        }
+      });
+      unitParser.addTagHandler("Schiff", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          final Ship s =
+              getAddShip(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+
+          if (unit.getShip() != s) {
+            unit.setShip(s);
+          }
+
+        }
+      });
+      unitParser.addTagHandler("Kampfstatus", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          // pre 57:
+          // 0: VORNE
+          // 1: HINTEN
+          // 2: NICHT
+          // 3: FLIEHE
+          //
+          // 57 and later:
+          // 0 AGGRESSIV: 1. Reihe, flieht nie.
+          // 1 VORNE: 1. Reihe, kaempfen bis 20% HP
+          // 2 HINTEN: 2. Reihe, kaempfen bis 20% HP
+          // 3 DEFENSIV: 2. Reihe, kaempfen bis 90% HP
+          // 4 NICHT: 3. Reihe, kaempfen bis 90% HP
+          // 5 FLIEHE: 4. Reihe, flieht immer.
+          unit.setCombatStatus(Integer.parseInt(sc.argv[0]));
+
+          // convert status from old to new
+          if (version < 57) {
+            unit.setCombatStatus(unit.getCombatStatus() + 1);
+
+            if (unit.getCombatStatus() > 2) {
+              unit.setCombatStatus(unit.getCombatStatus() + 1);
+            }
+          }
+
+        }
+      });
+      unitParser.addBeanHandler("unaided", "unaided", Type.ZERO_ONE);
+      unitParser.addBeanHandler("Tarnung", "stealth", Type.INTEGER);
+      unitParser.addBeanHandler("Aura", "aura", Type.INTEGER);
+      unitParser.addBeanHandler("Auramax", "auraMax", Type.INTEGER);
+      unitParser.addBeanHandler("hp", "health", Type.STRING);
+      unitParser.addBeanHandler("hunger", "starving", Type.ZERO_ONE);
+      unitParser.addBeanHandler("ejcOrdersConfirmed", "ordersConfirmed", Type.ZERO_ONE);
+      unitParser.addTagHandler("gruppe", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          parseState.groupID = IntegerID.create(sc.argv[0]);
+        }
+      });
+      unitParser.addBeanHandler("verraeter", "spy", Type.ZERO_ONE);
+
+      /*
+       * currently, verkleidung was announced but it seems that anderepartei is used. Please remove
+       * one as soon as it is clear which one can be discarded
+       */
+      TagHandler verkleidungHandler;
+      unitParser.addTagHandler("verkleidung", verkleidungHandler = new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) {
+          final EntityID fid = EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base);
+
+          /*
+           * currently (2004-02) the cr is inconsistent with nr. There may be a situation where the
+           * corresponding faction of this tag does not exist in the game data so add it
+           * automagically (bugzilla bug 794).
+           */
+          Faction faction = world.getFaction(fid);
+
+          if (faction == null) {
+            faction = MagellanFactory.createFaction(fid, world);
+          }
+
+          unit.setGuiseFaction(faction);
+        }
+      });
+      unitParser.addTagHandler("anderepartei", verkleidungHandler);
+
+      unitParser.addBeanHandler("typprefix", "raceNamePrefix", Type.STRING);
+      unitParser.addNullHandler("ladung");
+      unitParser.addNullHandler("kapazitaet");
+      unitParser.addBeanHandler("hero", "hero", Type.ZERO_ONE);
+      unitParser.addBeanHandler("weight", "weight", Type.INTEGER);
+
+      unitParser.addBlockHandler("COMMANDS", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) throws IOException {
+          // there can be only one order block for a unit, replace existing ones
+          unit.setOrders(parseStringSequence(null), false);
+        }
+      });
+      unitParser.addBlockHandler("TALENTE", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) throws IOException {
+          // there can be only one skills block for a unit, replace existing ones
+          unit.clearSkills();
+          parseSkills(unit);
+        }
+      });
+      unitParser.addBlockHandler("SPRUECHE", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) throws IOException {
+          // there can be only one spells block for a unit, replace existing ones
+          unit.setSpells(parseUnitSpells(null));
+        }
+      });
+      unitParser.addBlockHandler("GEGENSTAENDE", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) throws IOException {
+          /*
+           * in verdanon reports the silver can already be included in the items
+           */
+          parseItems(unit);
+        }
+      });
+      unitParser.addBlockHandler("EINHEITSBOTSCHAFTEN", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) throws IOException {
+          unit.setUnitMessages(parseMessageSequence(unit.getUnitMessages()));
+        }
+      });
+      unitParser.addBlockHandler("COMMENTS", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) throws IOException {
+          unit.setComments(parseStringSequence(unit.getComments()));
+        }
+      });
+      unitParser.addBlockHandler("EFFECTS", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) throws IOException {
+          unit.setEffects(parseStringSequence(unit.getEffects()));
+        }
+      });
+      unitParser.addBlockHandler("KAMPFZAUBER", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) throws IOException {
+          parseUnitCombatSpells(unit);
+        }
+      });
+      unitParser.addBlockHandler("ATTRIBUTES", new UnitTagHandler(unitParser) {
+        @Override
+        public void handle(Unit unit) throws IOException {
+          parseAttributes(unit);
+        }
+      });
+
+      unitParser.setDefaultTagHandler(new UnitDefaultTagHandler(unitParser));
+
+    }
+
+    long t = System.currentTimeMillis();
+    UnitParseState parserState = new UnitParseState(newUnit, world.base);
+
+    unitParser.parse(this, parserState);
+    tUParse += System.currentTimeMillis() - t;
+
+    // set the sortIndex so the original ordering of the units
+    // can be restored
+    newUnit.setSortIndex(sortIndex);
+
+    EntityID factionID = parserState.factionID;
+    if (factionID == null) {
+      factionID = EntityID.createEntityID(-1, world.base);
+    }
+    ID groupID = parserState.groupID;
+
+    final Faction faction = getAddFaction(factionID);
+
+    if (faction.getName() == null) {
+      if (factionID.intValue() == -1) {
+        faction.setName(Resources.get("crparser.nofaction"));
+      } else {
+        faction.setName(Resources.get("crparser.unknownfaction", factionID));
+      }
+    }
+
+    if (newUnit.getFaction() != faction) {
+      newUnit.setFaction(faction);
+    }
+
+    if (groupID != null) {
+      Group g = null;
+
+      if ((faction.getGroups() != null) && ((g = faction.getGroups().get(groupID)) != null)) {
+        newUnit.setGroup(g);
+      } else {
+        CRParser.log.warn("CRParser.parseUnit(): Unable to assign group " + groupID + " to unit "
+            + newUnit.getID());
+      }
+    }
+
+    /*
+     * a missing combat status can have two meanings: 1. this is a unit we know everything about and
+     * the combat status is AGGRESSIVE 2. this is a unit we just see but does not belong to us so we
+     * do not know its combat status.
+     */
+    if (!newUnit.ordersAreNull() && (newUnit.getCombatStatus() < 0)) {
+      newUnit.setCombatStatus(0);
+    }
+
+    return sortIndex;
+  }
+
+  /**
+   * Parse everything within one region.
+   */
+  @SuppressWarnings("unused")
+  private void parseRegionFast(int sortIndex) throws IOException {
+
+    CoordinateID c = CoordinateID.parse(sc.argv[0].substring(sc.argv[0].indexOf(" ", 0)), " ");
+
+    if (c == null) {
+      unknown("REGION", true);
+      // without CoordinateID Region is not accessible
+      return;
+    }
+
+    // this we should make after checking c!=null
+    c = originTranslate(c);
+
+    Region newregion = world.getRegion(c);
+
+    if (newregion == null) {
+      newregion = MagellanFactory.createRegion(c, world);
+    }
+
+    newregion.setSortIndex(sortIndex);
+
+    if (regionParser == null) {
+      regionParser = new BlockParser();
+
+      regionParser.addTagHandler("Name", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          // regions doesn't have name if name == type; e.g. "Ozean"=="Ozean"
+          region.setName(sc.argv[0]);
+          ui.setProgress(Resources.get("progressdialog.loadcr.step03", new Object[] { region
+              .getName() }), 2);
+        }
+      });
+      // this does not work; I'm not sure why
+      // regionParser.addBeanHandler("id", "uID", Type.LONG);
+      regionParser.addTagHandler("id", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setUID(Long.parseLong(sc.argv[0]));
+        }
+      });
+      regionParser.addBeanHandler("Beschr", "description", Type.STRING);
+      regionParser.addNullHandler("Strasse");
+      regionParser.addTagHandler("ejcIsSelected", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          world.addSelectedRegionCoordinate(region);
+
+        }
+      });
+      regionParser.addTagHandler("Insel", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          try {
+            final IntegerID islandID = IntegerID.create(sc.argv[0]);
+            Island island = world.getIsland(islandID);
+
+            if (island == null) {
+              CRParser.log.warn("CRParser.parseRegion(): unknown island " + sc.argv[0]
+                  + " with region " + region + " in line " + sc.lnr + ", creating it dynamically.");
+              island = new MagellanIslandImpl(islandID, world);
+              island.setName(islandID.toString());
+              world.addIsland(island);
+            }
+            region.setIsland(island);
+
+          } catch (final NumberFormatException nfe) {
+            CRParser.log.warn("CRParser.parseRegion(): unknown island " + sc.argv[0]
+                + " with region " + region + " in line " + sc.lnr);
+          }
+
+        }
+      });
+      regionParser.addBeanHandler("Lohn", "wage", Type.INTEGER);
+
+      regionParser.addBeanHandler("letzterlohn", "oldWage", Type.INTEGER);
+      regionParser.addTagHandler("aktiveRegion", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          world.setActiveRegion(region);
+
+        }
+      });
+      regionParser.addTagHandler("Terrain", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          try {
+            final RegionType type = world.rules.getRegionType(StringID.create(sc.argv[0]), true);
+            region.setType(type);
+          } catch (final IllegalArgumentException e) {
+            // can happen in StringID constructor if sc.argv[0] == ""
+            CRParser.log
+                .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                    + sc.lnr);
+          }
+
+          // regions doesn't have name if name == type; e.g. "Ozean"=="Ozean"
+          if (region.getType() != null) {
+            if (region.getType().getName() != null) {
+              // could set region name here...
+            } else {
+              CRParser.log
+                  .warn("CRParser.parseRegion(): found region type without a valid name in line "
+                      + sc.lnr);
+            }
+          } else {
+            CRParser.log
+                .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                    + sc.lnr);
+          }
+
+          parseState.iValidateFlags |= 1;
+
+        }
+      });
+      regionParser.addTagHandler("owner", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          final Faction f =
+              world.getFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+          region.setOwnerFaction(f);
+
+        }
+      });
+      regionParser.addBeanHandler("morale", "morale", Type.INTEGER);
+      regionParser.addBeanHandler("mourning", "mourning", Type.INTEGER);
+
+      regionParser.addBeanHandler("Baeume", "trees", Type.INTEGER);
+
+      regionParser.addBeanHandler("letztebaeume", "oldTrees", Type.INTEGER);
+
+      regionParser.addBeanHandler("Bauern", "peasants", Type.INTEGER);
+
+      regionParser.addBeanHandler("letztebauern", "oldPeasants", Type.INTEGER);
+
+      regionParser.addBeanHandler("Silber", "silver", Type.INTEGER);
+
+      regionParser.addBeanHandler("letztessilber", "oldSilver", Type.INTEGER);
+
+      regionParser.addBeanHandler("Eisen", "iron", Type.INTEGER);
+
+      regionParser.addBeanHandler("letzteseisen", "oldIron", Type.INTEGER);
+
+      regionParser.addBeanHandler("Laen", "laen", Type.INTEGER);
+
+      regionParser.addBeanHandler("letzteslaen", "oldLaen", Type.INTEGER);
+      regionParser.addTagHandler("Adamantium", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          // we don't need to record it, it will also appear under RESOURCES
+          region.putTag("Adamantium", sc.argv[0]);
+
+        }
+      });
+      regionParser.addBeanHandler("Pferde", "horses", Type.INTEGER);
+
+      regionParser.addBeanHandler("letztepferde", "oldHorses", Type.INTEGER);
+      regionParser.addNullHandler("Unterh");
+      // pavkovic 2002.05.10: recruits (and old recruits are used from cr)
+      regionParser.addBeanHandler("Rekruten", "recruits", Type.INTEGER);
+
+      regionParser.addBeanHandler("letzterekruten", "oldRecruits", Type.INTEGER);
+      regionParser.addNullHandler("maxLuxus");
+      regionParser.addBeanHandler("letzteluxus", "oldLuxuries", Type.INTEGER);
+      regionParser.addBeanHandler("Mallorn", "mallorn", Type.ZERO_ONE);
+      regionParser.addTagHandler("herb", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          final ItemType type = world.rules.getItemType(StringID.create(sc.argv[0]), true);
+          region.setHerb(type);
+        }
+      });
+      regionParser.addBeanHandler("herbamount", "herbAmount", Type.STRING);
+
+      regionParser.addNullHandler("Runde");
+
+      regionParser.addBeanHandler("Verorkt", "orcInfested", Type.ZERO_ONE);
+      regionParser.addBeanHandler("Schoesslinge", "sprouts", Type.INTEGER);
+
+      regionParser.addBeanHandler("letzteSchoesslinge", "oldSprouts", Type.INTEGER);
+      regionParser.addBeanHandler("Steine", "stones", Type.INTEGER);
+      regionParser.addBeanHandler("Stein", "stones", Type.INTEGER);
+      regionParser.addBeanHandler("letztesteine", "oldStones", Type.INTEGER);
+      regionParser.addBeanHandler("visibility", "visibilityString", Type.STRING);
+
+      regionParser.addBlockHandler("PREISE", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setPrices(parsePrices(region.getPrices()));
+        }
+      });
+      regionParser.addBlockHandler("LETZTEPREISE", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setOldPrices(parsePrices(region.getOldPrices()));
+        }
+      });
+      regionParser.addBlockHandler("GRENZE", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          parseBorders(region);
+        }
+      });
+      regionParser.addBlockHandler("SIGN", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          parseSigns(region);
+        }
+      });
+      regionParser.addBlockHandler("EINHEIT", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          parseState.unitSortIndex = parseUnitFast(region, ++parseState.unitSortIndex);
+        }
+      });
+      regionParser.addBlockHandler("SCHIFF", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          parseShip(region, ++parseState.shipSortIndex);
+        }
+      });
+      regionParser.addBlockHandler("BURG", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          parseBuilding(region, ++parseState.buildingSortIndex);
+        }
+      });
+      regionParser.addBlockHandler("MESSAGE", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setMessages(parseMessages(region.getMessages()));
+        }
+      });
+      regionParser.addBlockHandler("REGIONSEREIGNISSE", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setEvents(parseMessageSequence(region.getEvents()));
+
+          /*
+           * } else if(sc.argc == 1 && sc.argv[0].equals("REGIONSKOMMENTAR")) { region.comments =
+           * parseMessageSequence(region.comments);
+           */
+        }
+      });
+      regionParser.addBlockHandler("REGIONSBOTSCHAFTEN", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setPlayerMessages(parseMessageSequence(region.getPlayerMessages()));
+        }
+      });
+      regionParser.addBlockHandler("UMGEBUNG", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setSurroundings(parseMessageSequence(region.getSurroundings()));
+        }
+      });
+      regionParser.addBlockHandler("DURCHREISE", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setTravelThru(parseMessageSequence(region.getTravelThru()));
+        }
+      });
+      regionParser.addBlockHandler("DURCHSCHIFFUNG", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setTravelThruShips(parseMessageSequence(region.getTravelThruShips()));
+        }
+      });
+      regionParser.addBlockHandler("EFFECTS", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setEffects(parseStringSequence(region.getEffects()));
+        }
+      });
+      regionParser.addBlockHandler("ATTRIBUTES", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          parseAttributes(region);
+        }
+      });
+      regionParser.addBlockHandler("COMMENTS", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          region.setComments(parseStringSequence(region.getComments()));
+        }
+      });
+      regionParser.addBlockHandler("RESOURCE", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          final RegionResource res = parseRegionResource(world.rules, region);
+
+          if (res != null) {
+            region.addResource(res);
+          }
+        }
+      });
+      regionParser.addBlockHandler("SCHEMEN", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          parseScheme(region);
+        }
+      });
+      regionParser.addBlockHandler("GEGENSTAENDE", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          /* not used in standard Eressea */
+          parseItems(region);
+        }
+      });
+      // if (sc.isBlock && sc.argv[0].equals("MESSAGETYPES")) {
+      // break;
+      // } else if (sc.isBlock && sc.argv[0].startsWith("REGION ")) {
+      // break;
+      // } else if (sc.isBlock) {
+      // break;
+      // } else {
+      // if (sc.argc == 2) {
+      // region.putTag(sc.argv[1], sc.argv[0]);
+      // }
+      //
+      // unknown("REGION", true);
+      // }
+    }
+
+    long t = System.currentTimeMillis();
+    RegionParseState parserState = new RegionParseState(newregion, world.base);
+
+    regionParser.parse(this, parserState);
+    tRParse += System.currentTimeMillis() - t;
+
+    // validate region before add to world data
+    if ((parserState.iValidateFlags & 1) == 0) {
+      if (Region.VIS_STR_WRAP.equals(newregion.getVisibilityString())) {
+        newregion.setType(RegionType.wrap);
+      } else {
+        CRParser.log.warn("Warning: No region type is given for region '" + newregion.toString()
+            + "' - it is ignored.");
+        newregion.setType(RegionType.unknown);
+      }
+      world.addRegion(newregion);
+    } else {
+      world.addRegion(newregion);
+    }
+  }
+
 }

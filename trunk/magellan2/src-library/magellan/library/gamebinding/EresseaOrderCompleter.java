@@ -620,6 +620,13 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
+  /** Add completions for command BEWACHE. */
+  public void cmpltBewache() {
+    if (unit.getGuard() != 0) {
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.O_NOT)));
+    }
+  }
+
   /** Add completions for command Description. */
   public void cmpltDescription() {
     completions.add(new Completion(twoQuotes, twoQuotes, " ", Completion.DEFAULT_PRIORITY, 2));
@@ -1437,7 +1444,6 @@ public class EresseaOrderCompleter implements Completer {
             .getContainerPrivilegedUnitItem(region, data.rules.getItemType(EresseaConstants.I_WOOD)) != null))) {
       if ((data != null) && (data.rules != null)) {
         for (final Iterator<ShipType> iter = data.rules.getShipTypeIterator(); iter.hasNext();) {
-        	// TODO localize
           final ShipType t = iter.next();
 
           if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU, t.getBuildSkillLevel())) {

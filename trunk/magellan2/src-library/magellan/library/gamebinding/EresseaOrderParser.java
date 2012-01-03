@@ -1290,6 +1290,10 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltBewache();
+      }
+
       return retVal;
     }
 

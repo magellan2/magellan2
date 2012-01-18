@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library;
 
 import java.util.Collection;
@@ -63,15 +63,15 @@ public class EmptyData extends GameData {
   }
 
   /**
-   * Takes rules, game name, date, base, version and "noSkillPoints" from data.
+   * Takes rules, game name, date, base, version, locale and "noSkillPoints" from data.
    */
   public EmptyData(GameData data) {
     super(data.rules, data.getGameName());
     setDate(data.getDate());
-    base = data.base;
-    version = data.version;
-    noSkillPoints = data.noSkillPoints;
-    // this.mailSubject = data.mailSubject;
+    this.base = data.base;
+    this.version = data.version;
+    this.noSkillPoints = data.noSkillPoints;
+    this.locale = data.getLocale();
   }
 
   /**
@@ -150,7 +150,7 @@ public class EmptyData extends GameData {
    * @see magellan.library.GameData#islandView()
    */
   @Override
-  protected Map<IntegerID, Island> islandView() {
+  public Map<IntegerID, Island> islandView() {
     return Collections.emptyMap();
   }
 

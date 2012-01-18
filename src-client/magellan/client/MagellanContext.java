@@ -120,7 +120,7 @@ public class MagellanContext implements MagellanEnvironment {
   /**
    * Returns the completion settings (from magellan.ini)
    * 
-   * @return the completion settings (from magellan.ini)
+   * @return the completion settings (from magellan.ini) or <code>null</code>.
    * @deprecated extra completion settings are no longer supported
    */
   @Deprecated

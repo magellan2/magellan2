@@ -55,7 +55,7 @@ import magellan.library.utils.logging.Logger;
  * @author Andreas Gampe, Ulrich Küster
  */
 public class AutoCompletion implements SelectionListener, KeyListener, ActionListener,
-    CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
+CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
   private static final Logger log = Logger.getInstance(AutoCompletion.class);
   private OrderEditorList editors;
   private Vector<CompletionGUI> completionGUIs;
@@ -149,7 +149,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     limitMakeCompletion =
         settings.getProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, "true")
-            .equalsIgnoreCase("true");
+        .equalsIgnoreCase("true");
 
     String stubMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, "true");
     emptyStubMode = stubMode.equalsIgnoreCase("true");
@@ -225,7 +225,9 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     selfDefinedCompletions = getSelfDefinedCompletions(settings);
-    selfDefinedCompletions2 = getSelfDefinedCompletions(completionSettings);
+    if (completionSettings!=null) {
+      selfDefinedCompletions2 = getSelfDefinedCompletions(completionSettings);
+    }
 
   }
 
@@ -430,7 +432,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       // try to get stub from last token
       if (completer.getParser() != null) {
         List<OrderToken> tokens = completer.getParser().getTokens(); // .parse(line,
-                                                                     // editors.getCurrentUnit().getLocale())
+        // editors.getCurrentUnit().getLocale())
         stub = AutoCompletion.getStub(tokens);
       } else {
         stub = AutoCompletion.getStub(line);
@@ -547,7 +549,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     if (currentGUI.isOfferingCompletion()) {
       currentGUI
-          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+      .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
@@ -568,7 +570,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     if (currentGUI.isOfferingCompletion()) {
       currentGUI
-          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+      .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
@@ -914,7 +916,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   public void setHotKeyMode(boolean b) {
     hotKeyMode = b;
     settings
-        .setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
+    .setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
   }
 
   /**

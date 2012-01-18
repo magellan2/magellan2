@@ -17,7 +17,7 @@ import magellan.library.utils.Resources;
 /**
  * A class representing an alliance with several members.
  */
-public class AllianceGroup {
+public class AllianceGroup implements Unique {
 
   private EntityID id;
   private String name;

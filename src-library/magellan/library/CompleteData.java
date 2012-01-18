@@ -199,7 +199,7 @@ public class CompleteData extends GameData {
    * @see magellan.library.GameData#islandView()
    */
   @Override
-  protected Map<IntegerID, Island> islandView() {
+  public Map<IntegerID, Island> islandView() {
     return islands;
   }
 

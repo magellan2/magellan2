@@ -360,16 +360,6 @@ public abstract class MagellanFactory {
   }
 
   /**
-   * Merges island.
-   * 
-   * @deprecated Use {@link GameDataMerger#mergeIsland(GameData,Island,GameData,Island)} instead
-   */
-  @Deprecated
-  public static void mergeIsland(GameData curGD, Island curIsland, GameData newGD, Island newIsland) {
-    GameDataMerger.mergeIsland(curGD, curIsland, newGD, newIsland);
-  }
-
-  /**
    * Merges all info from curRegion into newRegion. The result is influenced by the
    * <code>sameRound</code> parameter (indicating if the region infos are from the same round) and
    * the <code>firstPass</code> parameter. Merging is usually done in two passes. In the first pass,

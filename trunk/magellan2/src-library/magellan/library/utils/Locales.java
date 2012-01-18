@@ -47,7 +47,7 @@ public class Locales {
   public static Locale getGUILocale() throws IllegalStateException {
     if (Locales.guiLocale == null) {
       Locales.log
-          .warn("Locales.getGUILocale: Locales is not initialized, falling back to default locale");
+      .warn("Locales.getGUILocale: Locales is not initialized, falling back to default locale");
       return Locale.getDefault();
     }
 
@@ -69,13 +69,12 @@ public class Locales {
   /**
    * Returns the locale applicable for the unit orders.
    * 
-   * @throws IllegalStateException when the method is invoked and neither the init() nor the
-   *           setGUILocale() methodes were invoked earlier with valid arguments.
+   * Defaults to {Locale.GERMAN} when {#setOrderLocale} has not been invoked before.
    */
   public static Locale getOrderLocale() throws IllegalStateException {
     if (Locales.orderLocale == null) {
       Locales.log
-          .warn("Locales.getOrderLocale: Locales is not initialized, falling back to GERMAN locale");
+      .warn("Locales.getOrderLocale: Locales is not initialized, falling back to GERMAN locale");
       Locales.setOrderLocale(Locale.GERMAN);
       return Locale.GERMAN;
     }

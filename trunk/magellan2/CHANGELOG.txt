@@ -1,3 +1,6 @@
+2012-01-18 / Build 487 - stm (stm_@users.sourceforge.net)
+    * added Pvblivs' patch to GameDataMerger with beanutils
+  
 2012-01-02 / Build 485 - stm (stm_@users.sourceforge.net)
     * added calculation of building and unit upkeep
     * added MaintenanceInspector

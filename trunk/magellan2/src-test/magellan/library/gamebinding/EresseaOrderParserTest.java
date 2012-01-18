@@ -30,15 +30,11 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.StringReader;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Properties;
 
-import magellan.client.MagellanContext;
 import magellan.client.completion.AutoCompletion;
-import magellan.client.event.EventDispatcher;
 import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -50,7 +46,6 @@ import magellan.library.gamebinding.EresseaOrderParser.OrderHandler;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
-import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -80,16 +75,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
-    // PARSER_SETTINGS_FILE);
-    Resources.getInstance().initialize(new File("."), "");
-    System.out.println(new File(".").getAbsolutePath());
-    context = new MagellanContext(null);
-    context.setProperties(settings);
-    context.setEventDispatcher(new EventDispatcher());
-    context.setCompletionProperties(completionSettings = new SelfCleaningProperties());
-    Logger.setLevel(Logger.ERROR);
-    context.init();
+    MagellanTestWithResources.initResources();
   }
 
   /**
@@ -438,7 +424,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
 
     // FIXME: these ambiguous commands shouldn't be accepted (maybe?)
     for (String thing : new String[] { "E", "S" }) {
-      checkOrder("BENENNEN " + thing + " \"Foo\"", false);
+      checkOrder("BENENNEN " + thing + " \"Foo\"", false); // is it SCHIFF or Sägewerk or Steinbruch??
       checkOrder("BENENNE " + thing + " \"Foo\"; comment", false);
     }
   }
@@ -1527,7 +1513,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     assertTrue(parser.getErrorMessage() == null);
     parser.read(new StringReader("ARBEITEN 2"));
     assertTrue(parser.getErrorMessage().equals(
-    "Unexpected token 2: Undefined(9, 10), not followed by Space"));
+        "Unexpected token 2: Undefined(9, 10), not followed by Space"));
   }
 
   /**
@@ -1784,9 +1770,9 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     if (orderToken == null || nextToken == null)
       return orderToken == nextToken;
     return orderToken.getText().equals(nextToken.getText())
-    && orderToken.getStart() == nextToken.getStart()
-    && orderToken.getEnd() == nextToken.getEnd() && orderToken.ttype == nextToken.ttype
-    && orderToken.followedBySpace() == nextToken.followedBySpace();
+        && orderToken.getStart() == nextToken.getStart()
+        && orderToken.getEnd() == nextToken.getEnd() && orderToken.ttype == nextToken.ttype
+        && orderToken.followedBySpace() == nextToken.followedBySpace();
   }
 
   /**

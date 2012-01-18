@@ -40,6 +40,7 @@ import magellan.library.io.cr.Loader;
 import magellan.library.io.file.FileType;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.Date;
+import magellan.library.rules.EresseaDate;
 import magellan.library.rules.MessageType;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
@@ -150,12 +151,12 @@ public abstract class GameData implements Cloneable, Addeable {
    * date information can be applied to game data or certain parts of it. This will probably have to
    * be changed the one or the other way.
    */
-  protected Date date = null;
+  protected Date date = new EresseaDate(0);
 
   /**
    * Contains the date of the report (it's not the date of the report).
    */
-  protected long timestamp = 0;
+  protected long timestamp = System.currentTimeMillis() / 1000;
 
   /** The 'mail' connection this game data belongs to. This may be null */
   public String mailTo = null;
@@ -384,7 +385,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /** Returns a modifiable view of the islands. */
-  protected abstract Map<IntegerID, Island> islandView();
+  public abstract Map<IntegerID, Island> islandView();
 
   /**
    * All HotSpots existing for this game data. Hot spots are used to quickly access regions of
@@ -1902,6 +1903,10 @@ public abstract class GameData implements Cloneable, Addeable {
     return assigner.data2;
   }
 
+  public boolean isSameRound(GameData otherGameData) {
+    return date.equals(otherGameData.date);
+  }
+
   protected static class MyAssigner implements AssignData {
     GameData data2 = null;
 
@@ -1909,5 +1914,4 @@ public abstract class GameData implements Cloneable, Addeable {
       data2 = _data;
     }
   }
-
 }

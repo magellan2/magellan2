@@ -1,3 +1,7 @@
+2012-01-20 / Build 490 - stm (stm_@users.sourceforge.net)
+    * fix for island merging
+    * made verbose NullUserInterface shut up
+  
 2012-01-18 / Build 487 - stm (stm_@users.sourceforge.net)
     * added Pvblivs' patch to GameDataMerger with beanutils
   

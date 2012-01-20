@@ -10,6 +10,7 @@ Class-Path: magellan-client.jar
             lib/ant-1.7.0.jar 
             lib/ant-launcher-1.7.0.jar
             lib/bsh-2.0b4.jar 
+            lib/commons-beanutils-core-1.8.3.jar
             lib/forms-1.0.4.jar 
             lib/idw-gpl-1.6.1.jar 
             lib/jflap4_0b7.jar 

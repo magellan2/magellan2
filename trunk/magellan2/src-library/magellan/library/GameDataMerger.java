@@ -618,6 +618,9 @@ public class GameDataMerger {
       }
     }
 
+    islandMerger.firstPass();
+
+
     /**************************** MERGE REGIONS ***************************/
     // complex object FIRST PASS
     if (olderGD.regionView() != null) {
@@ -629,8 +632,6 @@ public class GameDataMerger {
             transformer1);
       }
     }
-
-    islandMerger.firstPass();
 
     /**************************** MERGE HOTSPOTS ***************************/
     // complex object FIRST PASS

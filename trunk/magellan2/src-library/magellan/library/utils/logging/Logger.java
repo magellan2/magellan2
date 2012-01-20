@@ -61,6 +61,8 @@ public class Logger {
   /** AWT messages are printed for debugging awt purposes */
   public static final int AWT = 9;
 
+  public static final int MAX_LEVEL = 9;
+
   private static Logger DEFAULT = new Logger("");
   private static int verboseLevel = Logger.INFO;
   private static Object awtLogger = null;
@@ -116,8 +118,8 @@ public class Logger {
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public static void setLevel(String aLevel) {
     String level = aLevel.toUpperCase();
 
@@ -207,8 +209,8 @@ public class Logger {
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   private void log(int aLevel, Object aObj, Throwable aThrowable) {
     if (Logger.verboseLevel >= aLevel) {
       if (Logger.logListeners.isEmpty()) {
@@ -476,8 +478,8 @@ public class Logger {
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public boolean isAwtEnabled() {
     return Logger.verboseLevel >= Logger.AWT;
   }

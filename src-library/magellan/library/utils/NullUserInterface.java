@@ -40,6 +40,7 @@ public class NullUserInterface implements UserInterface {
   private int progress;
 
   private static NullUserInterface singleton = new NullUserInterface();
+  private static int logLevel = Logger.MAX_LEVEL;
 
   public static UserInterface getInstance() {
     return NullUserInterface.singleton;
@@ -50,7 +51,9 @@ public class NullUserInterface implements UserInterface {
    */
   public void ready() {
     // do nothing
-    log.info("Null user interface is ready...");
+    if (logLevel >= Logger.INFO) {
+      log.info("Null user interface is ready...");
+    }
   }
 
   /**
@@ -58,14 +61,18 @@ public class NullUserInterface implements UserInterface {
    */
   public void show() {
     // do nothing
-    log.info("Show null user interface...");
+    if (logLevel >= Logger.INFO) {
+      log.info("Show null user interface...");
+    }
   }
 
   /**
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
   public void setProgress(String strMessage, int iProgress) {
-    log.info("Progress: " + strMessage + " (" + getPercent(iProgress) + "%)");
+    if (logLevel >= Logger.INFO) {
+      log.info("Progress: " + strMessage + " (" + getPercent(iProgress) + "%)");
+    }
     progress = iProgress;
   }
 
@@ -104,7 +111,9 @@ public class NullUserInterface implements UserInterface {
    * @see magellan.library.utils.UserInterface#setTitle(java.lang.String)
    */
   public void setTitle(String title) {
-    log.info("Null user interface: '"+title+"'");
+    if (logLevel >= Logger.INFO) {
+      log.info("Null user interface: '"+title+"'");
+    }
   }
 
   public void showException(String message, String description, Exception exception) {
@@ -112,14 +121,18 @@ public class NullUserInterface implements UserInterface {
   }
 
   public void showMessageDialog(String message) {
-    NullUserInterface.log.debug("Error: " + message + ")");
+    if (logLevel >= Logger.INFO) {
+      NullUserInterface.log.info("Error: " + message + ")");
+    }
   }
 
   /**
    * @param optionPane
    */
   public void showDialog(JDialog optionPane) {
-    log.debug("dialog suppressed");
+    if (logLevel >= Logger.WARN) {
+      log.warn("dialog suppressed");
+    }
   }
 
   public void addClosingListener(ClosingListener listener) {
@@ -127,11 +140,28 @@ public class NullUserInterface implements UserInterface {
   }
 
   public void showDialog(String title, String message, int messageType, int options) {
-    NullUserInterface.log.info(title+" - "+message);
+    if (logLevel >= Logger.WARN) {
+      NullUserInterface.log.warn(title+" - "+message);
+    }
   }
 
   public BBox askForGirth(BBox best, int layer) {
     return best;
+  }
+
+  /**
+   * @see Logger#setLevel(int)
+   */
+  public static void setLogLevel(int level) {
+    logLevel = level;
+  }
+
+  /**
+   * @see Logger#getLevel()
+   * @return the current log level
+   */
+  public static int getLogLevel() {
+    return logLevel;
   }
 
 }

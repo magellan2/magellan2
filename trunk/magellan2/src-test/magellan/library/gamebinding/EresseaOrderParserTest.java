@@ -23,10 +23,12 @@
 //
 package magellan.library.gamebinding;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -43,6 +45,7 @@ import magellan.library.Ship;
 import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
 import magellan.library.gamebinding.EresseaOrderParser.OrderHandler;
+import magellan.library.gamebinding.EresseaOrderParser.TokenBucket;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
@@ -1775,6 +1778,56 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
         && orderToken.followedBySpace() == nextToken.followedBySpace();
   }
 
+  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}.  */
+  @Test
+  public void testMergeTempTokensWithoutTemps() {
+    TokenBucket bucket = parser.new TokenBucket();
+    bucket.read(new StringReader("LEHREN 123 456 678"));
+    bucket.mergeTempTokens(36);
+    assertThat(bucket.size(), is(5));
+    assertThat(bucket.get(0).getText(), is("LEHREN"));
+    assertThat(bucket.get(1).getText(), is("123"));
+    assertThat(bucket.get(2).getText(), is("456"));
+    assertThat(bucket.get(3).getText(), is("678"));
+    assertTrue(new OrderToken(OrderToken.TT_EOC).equalsAll(bucket.get(4)));
+  }
+
+  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}.  */
+  @Test
+  public void testMergeTempTokensWithTemp() {
+    TokenBucket bucket = parser.new TokenBucket();
+    bucket.read(new StringReader("LEHREN TEMP 123"));
+    bucket.mergeTempTokens(36);
+    assertThat(bucket.size(), is(3));
+    assertThat(bucket.get(0).getText(), is("LEHREN"));
+    assertThat(bucket.get(1).getText(), is("TEMP 123"));
+  }
+
+  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}.  */
+  @Test
+  public void testMergeTempTokensWithTwoTemps() {
+    TokenBucket bucket = parser.new TokenBucket();
+    bucket.read(new StringReader("LEHREN TEMP 123 TEMP 456"));
+    bucket.mergeTempTokens(36);
+    assertThat(bucket.size(), is(4));
+    assertThat(bucket.get(0).getText(), is("LEHREN"));
+    assertThat(bucket.get(1).getText(), is("TEMP 123"));
+    assertThat(bucket.get(2).getText(), is("TEMP 456"));
+  }
+
+  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}.  */
+  @Test
+  public void testMergeTempTokensWithMixed() {
+    TokenBucket bucket = parser.new TokenBucket();
+    bucket.read(new StringReader("LEHREN TEMP 123 456 TEMP abc"));
+    bucket.mergeTempTokens(36);
+    assertThat(bucket.size(), is(5));
+    assertThat(bucket.get(0).getText(), is("LEHREN"));
+    assertThat(bucket.get(1).getText(), is("TEMP 123"));
+    assertThat(bucket.get(2).getText(), is("456"));
+    assertThat(bucket.get(3).getText(), is("TEMP abc"));
+  }
+
   /**
    * Test method for
    * {@link magellan.library.gamebinding.EresseaOrderParser#isEmailAddress(java.lang.String)}.
@@ -1800,4 +1853,5 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
       // allowed, but is
     }
   }
+
 }

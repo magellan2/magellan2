@@ -15,6 +15,8 @@ package magellan.library.utils;
 
 import java.util.Arrays;
 
+import magellan.library.utils.logging.Logger;
+
 /**
  * A class representing a token of an Eressea order.
  */
@@ -326,10 +328,28 @@ public class OrderToken {
    * Returns <code>true</code> if this is a prefix of token or vice versa. <b>Attention</b> This
    * method does not override {@link Object#equals(Object)}!
    * 
-   * @deprecated Use <code>equalsToken(token.getText()) || token.equalsToken(this.getText())</code>.
+   * @deprecated Use {@link #equivalentText(OrderToken)}
    */
   @Deprecated
   public boolean equals(OrderToken token) {
+    Logger.getInstance(this.getClass()).fine("calling deprecated OrderToken.equals()");
     return equalsToken(token.text) || token.equalsToken(text);
+  }
+
+  /**
+   * @return <code>equalsToken(token.text) || token.equalsToken(text)</code>
+   */
+  public boolean equivalentText(OrderToken token) {
+    return equalsToken(token.text) || token.equalsToken(text);
+  }
+
+  /**
+   * Deep equals.
+   * 
+   * @return <code>true</code> if the token has identical text, start, end, type and followedBySpace.
+   */
+  public boolean equalsAll(OrderToken token) {
+    return token!=null && text.equals(token.text) && start == token.start && end == token.end
+        && ttype == token.ttype && followedBySpace == token.followedBySpace;
   }
 }

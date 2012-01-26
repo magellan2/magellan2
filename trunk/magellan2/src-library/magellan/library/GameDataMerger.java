@@ -620,7 +620,6 @@ public class GameDataMerger {
 
     islandMerger.firstPass();
 
-
     /**************************** MERGE REGIONS ***************************/
     // complex object FIRST PASS
     if (olderGD.regionView() != null) {
@@ -753,6 +752,8 @@ public class GameDataMerger {
       }
     }
 
+    islandMerger.secondPass();
+
     /**************************** MERGE REGIONS, SECOND PASS ***************************/
     if (newerGD.regionView() != null) {
       for (Region newerRegion : newerGD.regionView().values()) {
@@ -761,8 +762,6 @@ public class GameDataMerger {
             transformer2);
       }
     }
-
-    islandMerger.secondPass();
 
     /**************************** MERGE HOTSPOTS, SECOND PASS ***************************/
     if (newerGD.hotSpotView() != null) {

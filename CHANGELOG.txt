@@ -1,3 +1,6 @@
+2012-01-26 / Build 492 - stm (stm_@users.sourceforge.net)
+    * fix for parsing orders with multiple TEMP units
+
 2012-01-20 / Build 490 - stm (stm_@users.sourceforge.net)
     * fix for island merging
     * made verbose NullUserInterface shut up

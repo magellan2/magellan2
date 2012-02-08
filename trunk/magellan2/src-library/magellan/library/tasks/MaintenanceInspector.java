@@ -138,29 +138,32 @@ public class MaintenanceInspector extends AbstractInspector {
         int has = 0, needs = 0;
         Unit lastUnit = null;
         for (Unit u : r2.units()) {
-          if (f == u.getFaction()) {
+          if (f == u.getFaction() && u.getNewRegion().equals(r2.getCoordinate())) {
             Item item = u.getModifiedItem(silverType);
             int silver = 0;
             if (item != null) {
               silver = item.getAmount();
             }
             has += silver;
-            needs += u.getRace().getMaintenance();
-            if (silver <= u.getRace().getMaintenance()) {
+            needs += u.getRace().getMaintenance()*u.getModifiedPersons();
+            if (silver <= u.getRace().getMaintenance()*u.getModifiedPersons()) {
               lastUnit = u;
             }
           }
         }
         for (Unit u : r2.getMaintained()) {
           if (f == u.getFaction()) {
+            if (!u.getNewRegion().equals(r2.getCoordinate())) {
+              Logger.getInstance(this.getClass()).info("hmmm....");
+            }
             Item item = u.getModifiedItem(silverType);
             int silver = 0;
             if (item != null) {
               silver = item.getAmount();
             }
             has += silver;
-            needs += u.getRace().getMaintenance();
-            if (silver <= u.getRace().getMaintenance()) {
+            needs += u.getRace().getMaintenance()*u.getModifiedPersons();
+            if (silver <= u.getRace().getMaintenance()*u.getModifiedPersons()) {
               lastUnit = u;
             }
           }
@@ -170,7 +173,7 @@ public class MaintenanceInspector extends AbstractInspector {
           // MaintenanceProblemTypes.UNITSTARVING.getType(), lastUnit, this, -1));
           problems.add(ProblemFactory.createProblem(Severity.WARNING,
               MaintenanceProblemTypes.UNITSTARVING.getType(), r, null, f, lastUnit, this, Resources
-                  .get("tasks.maintenanceinspector.unitstarving.message", r2), -1));
+              .get("tasks.maintenanceinspector.unitstarving.message", r2), -1));
         }
       }
     }

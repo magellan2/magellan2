@@ -239,7 +239,7 @@ public class BattleInfo {
     private Set<Integer> helped;
     private int[][] rows;
 
-    private List<UnitInfo> units;
+    private Map<UnitID, UnitInfo> units;
     private boolean changed;
 
     /** Standard constructor */
@@ -419,7 +419,7 @@ public class BattleInfo {
      */
     public int[][] getRows() {
       if (changed) {
-        for (UnitInfo info : units) {
+        for (UnitInfo info : getUnits()) {
           rows[0][info.getRow() - 1] += info.getPersons();
         }
         for (int round = 0; round < rows.length; ++round) {
@@ -451,16 +451,18 @@ public class BattleInfo {
     }
 
     /** Add a unit */
-    public void addUnit(UnitInfo unitInfo) {
+    public void addUnit(UnitID id_, UnitInfo unitInfo) {
       if (units == null) {
-        units = new ArrayList<UnitInfo>();
+        units = new LinkedHashMap<UnitID, BattleInfo.UnitInfo>();
       }
-      units.add(unitInfo);
+      units.put(id_, unitInfo);
       changed = true;
     }
 
+
+    /** Return units */
     public Collection<UnitInfo> getUnits() {
-      return units;
+      return units.values();
     }
 
   }
@@ -883,7 +885,7 @@ public class BattleInfo {
   private CoordinateID coordinate;
   private Map<String, EntityID> factions;
 
-  private List<EntityID> started;
+  private Set<EntityID> started;
   private Map<SpellID, SpellInfo> spells; // unit, round
   private Map<Integer, HostInfo> hosts; // index
   private Map<UnitID, UnitInfo> allUnits; // ID
@@ -893,7 +895,7 @@ public class BattleInfo {
   private HostInfo currentHost;
   private int currentRow;
   private int currentRound;
-  private List<UnitID> tactics;
+  private Set<UnitID> tactics;
   private Locale locale;
   private List<Set<Integer>> sides;
 
@@ -922,10 +924,10 @@ public class BattleInfo {
       factions.put(f.getName(), f.getID());
     }
 
-    started = new LinkedList<EntityID>();
+    started = new LinkedHashSet<EntityID>();
     spells = new LinkedHashMap<BattleInfo.SpellID, BattleInfo.SpellInfo>();
     hosts = new TreeMap<Integer, BattleInfo.HostInfo>();
-    tactics = new LinkedList<UnitID>();
+    tactics = new LinkedHashSet<UnitID>();
     errors = new LinkedList<String>();
     allUnits = new HashMap<UnitID, UnitInfo>();
 
@@ -1418,7 +1420,7 @@ public class BattleInfo {
         }
       } finally {
         unitInfo.setHost(currentHost.getIndex());
-        currentHost.addUnit(unitInfo);
+        currentHost.addUnit(unitInfo.getUnit(), unitInfo);
       }
     } else if (hostPattern2.matcher(string).matches()) {
       // "Heer  0(phos): 17, Heer  1(orks): 0+0+0+2";string
@@ -2118,6 +2120,7 @@ public class BattleInfo {
         totalWeapons += info.getPersons();
       }
       for (Item item : weapons) {
+        // FIXME use weapon frequencies (crossbows)
         if (!sideHits.containsKey(item.getItemType())) {
           sideHits.put(item.getItemType(), new HitInfo());
         }
@@ -2344,19 +2347,21 @@ public class BattleInfo {
             }
             builder.append("\n");
 
-            for (String status : statuses.keySet()) {
-              // ////// COMBAT STATUS
-              boolean hasStatusNode = false;
-              for (UnitInfo unitInfo : allUnits.values()) {
-                if (side.contains(unitInfo.getHost()) && unitInfo.getCombatStatus().equals(status)) {
-                  if (!hasStatusNode) {
-                    builder.setLevel(4);
-                    builder.append(status).append("\n");
-                    hasStatusNode = true;
+            if (round==0) {
+              for (String status : statuses.keySet()) {
+                // ////// COMBAT STATUS
+                boolean hasStatusNode = false;
+                for (UnitInfo unitInfo : allUnits.values()) {
+                  if (side.contains(unitInfo.getHost()) && unitInfo.getCombatStatus().equals(status)) {
+                    if (!hasStatusNode) {
+                      builder.setLevel(4);
+                      builder.append(status).append("\n");
+                      hasStatusNode = true;
+                    }
+                    // ////// UNIT abc 1 persons 1 dead 2 fled 3 survived etc.
+                    builder.setLevel(5);
+                    show(builder, unitInfo, mages[sideNum].contains(unitInfo), killedAll[sideNum], tacticwon[sideNum]);
                   }
-                  // ////// UNIT abc 1 persons 1 dead 2 fled 3 survived etc.
-                  builder.setLevel(5);
-                  show(builder, unitInfo, mages[sideNum].contains(unitInfo), killedAll[sideNum], tacticwon[sideNum]);
                 }
               }
             }
@@ -2459,8 +2464,10 @@ public class BattleInfo {
             total.maxStrikes += hits.maxStrikes;
             show(builder, hits);
           }
-          builder.append(Resources.get("plugin.battle.tostring.total")).append(": ");
-          show(builder, total);
+          if (sideHits[sideNum].entrySet().size()>1) {
+            builder.append(Resources.get("plugin.battle.tostring.total")).append(": ");
+            show(builder, total);
+          }
         }
 
         if (!loot[sideNum].isEmpty()) {
@@ -2518,6 +2525,7 @@ public class BattleInfo {
         for (Skill skill : unitInfo.getSkills()) {
           if (first) {
             builder.append(" ");
+            first=false;
           } else {
             builder.append(", ");
           }
@@ -2530,6 +2538,7 @@ public class BattleInfo {
         for (Item item : unitInfo.getItems()) {
           if (first) {
             builder.append(" ");
+            first=false;
           } else {
             builder.append(", ");
           }
@@ -2558,8 +2567,10 @@ public class BattleInfo {
           total.maxStrikes += hits.maxStrikes;
           show(builder, hits);
         }
-        builder.append(Resources.get("plugin.battle.tostring.total")).append(": ");
-        show(builder, total);
+        if (unitHits.entrySet().size()>1) {
+          builder.append(Resources.get("plugin.battle.tostring.total")).append(": ");
+          show(builder, total);
+        }
         builder.setLevel(builder.getLevel()-1);
       }
     }

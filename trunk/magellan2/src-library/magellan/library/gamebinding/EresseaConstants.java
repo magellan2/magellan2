@@ -62,6 +62,9 @@ public class EresseaConstants {
   public static final StringID C_WEAPONS = StringID.create("WEAPONS");
 
   /** DOCUMENT-ME */
+  public static final StringID C_RANGED_WEAPONS = StringID.create("DISTANCE WEAPONS");
+
+  /** DOCUMENT-ME */
   public static final StringID C_ARMOUR = StringID.create("ARMOUR");
 
   /** DOCUMENT-ME */

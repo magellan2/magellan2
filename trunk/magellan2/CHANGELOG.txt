@@ -1,3 +1,7 @@
+2012-02-08 / Build 494 - stm (stm_@users.sourceforge.net)
+    * fixes to EresseaDate and MaintenanceInspector
+    * experimental battle plugin
+
 2012-01-26 / Build 492 - stm (stm_@users.sourceforge.net)
     * fix for parsing orders with multiple TEMP units
 

@@ -13,7 +13,7 @@
 
 package magellan.library.impl;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import magellan.library.Battle;
@@ -37,7 +37,7 @@ public class MagellanBattleImpl extends MagellanIdentifiableImpl implements Batt
    */
   public MagellanBattleImpl(CoordinateID id) {
     super(id);
-    messages = new LinkedList<Message>();
+    messages = new ArrayList<Message>();
   }
 
   /**

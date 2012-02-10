@@ -198,7 +198,7 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 390 $
  */
 public class EMapDetailsPanel extends InternationalizedDataPanel implements SelectionListener,
-    ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
+ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
   private static final Logger log = Logger.getInstance(EMapDetailsPanel.class);
 
   /**
@@ -386,7 +386,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           } else {
             JOptionPane.showMessageDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
                 Resources.get("emapdetailspanel.msg.cannotrename.text"), Resources
-                    .get("emapdetailspanel.error"), javax.swing.JOptionPane.WARNING_MESSAGE);
+                .get("emapdetailspanel.error"), javax.swing.JOptionPane.WARNING_MESSAGE);
             tree.grabFocus();
           }
         } else if (getDisplayedObject() instanceof Island) {
@@ -459,7 +459,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           } else {
             JOptionPane.showMessageDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
                 Resources.get("emapdetailspanel.msg.cannotdescribe.text"), Resources
-                    .get("emapdetailspanel.error"), javax.swing.JOptionPane.WARNING_MESSAGE);
+                .get("emapdetailspanel.error"), javax.swing.JOptionPane.WARNING_MESSAGE);
             tree.grabFocus();
           }
         } else if (getDisplayedObject() instanceof Island) {
@@ -745,8 +745,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public NodeWrapperFactory getNodeWrapperFactory() {
     return nodeWrapperFactory;
   }
@@ -1284,7 +1284,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     if (resourceNode.getChildCount() > 0) {
       parent.add(resourceNode);
       expandableNodes
-          .add(new NodeWrapper(resourceNode, "EMapDetailsPanel.RegionResourcesExpanded"));
+      .add(new NodeWrapper(resourceNode, "EMapDetailsPanel.RegionResourcesExpanded"));
     }
   }
 
@@ -1472,7 +1472,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     if (resourcesNode.getChildCount() > 0) {
       parent.add(resourcesNode);
       expandableNodes
-          .add(new NodeWrapper(resourcesNode, "EMapDetailsPanel.RegionResourcesExpanded"));
+      .add(new NodeWrapper(resourcesNode, "EMapDetailsPanel.RegionResourcesExpanded"));
     }
 
     // herbs of the regions sorted by name, id of herb
@@ -1961,7 +1961,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         EMapDetailsPanel.weightNumberFormat.format(uWeight - pWeight));
     if (uWeight != modUWeight) {
       text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modUWeight - modPWeight))
-          .append(")");
+      .append(")");
     }
     text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
 
@@ -2503,18 +2503,20 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     } else {
       if (u.isHero()) {
         strPersons =
-            Resources.get("emapdetailspanel.node.compactheropersons", u.getPersons(), u
+            Resources.get("emapdetailspanel.node.compactheropersons", u.getPersons() + (u.getModifiedPersons()!=u.getPersons()?" ("+u.getModifiedPersons()+")":""), u
                 .getRaceName(data), u.getFaction() != null ? u.getFaction() : Resources
-                .get("emapdetailspanel.node.unknownfaction"))
-                + (u.getGroup() != null ? Resources.get("emapdetailspanel.node.group") + " "
-                    + u.getGroup().getName() : "");
+                    .get("emapdetailspanel.node.unknownfaction"))
+
+                    + (u.getGroup() != null ? Resources.get("emapdetailspanel.node.group") + " "
+                        + u.getGroup().getName() : "");
       } else {
         strPersons =
-            Resources.get("emapdetailspanel.node.compactpersons", u.getPersons(), u
+            Resources.get("emapdetailspanel.node.compactpersons", u.getPersons() + (u.getModifiedPersons()!=u.getPersons()?" ("+u.getModifiedPersons()+")":""), u
                 .getRaceName(data), u.getFaction() != null ? u.getFaction() : Resources
-                .get("emapdetailspanel.node.unknownfaction"))
-                + (u.getGroup() != null ? " " + Resources.get("emapdetailspanel.node.group") + " "
-                    + u.getGroup().getName() : "");
+                    .get("emapdetailspanel.node.unknownfaction"))
+
+                    + (u.getGroup() != null ? " " + Resources.get("emapdetailspanel.node.group") + " "
+                        + u.getGroup().getName() : "");
       }
     }
     String iconPersonName = "person";
@@ -2753,7 +2755,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     if (u.getGuiseFaction() != null) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.disguisedas") + " "
           + u.getGuiseFaction(), ((stealth != null) ? stealth.getSkillType().getID().toString()
-          : "tarnung")));
+              : "tarnung")));
     }
 
     /*
@@ -2809,7 +2811,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                   .get("emapdetailspanel.node.FamiliarChilds"), "aura"));
           parent.add(childsNode);
           expandableNodes
-              .add(new NodeWrapper(childsNode, "EMapDetailsPanel.FamiliarChildsExpanded"));
+          .add(new NodeWrapper(childsNode, "EMapDetailsPanel.FamiliarChildsExpanded"));
           for (Unit uT : familiars) {
             UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(uT);
             DefaultMutableTreeNode parentUnitNode = new DefaultMutableTreeNode(w);
@@ -2876,7 +2878,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       if (modHorseWeight != horseWeight) {
         text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modHorseWeight))
-            .append(")");
+        .append(")");
       }
 
       // text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
@@ -3102,7 +3104,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
         if (id != null) {
           expandableNodes
-              .add(new NodeWrapper(node, "EMapDetailsPanel.ShipItems" + id + "Expanded"));
+          .add(new NodeWrapper(node, "EMapDetailsPanel.ShipItems" + id + "Expanded"));
         }
       }
     }
@@ -3297,7 +3299,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               .get("emapdetailspanel.node.passengers"), null, passengers, "passengers"));
       parent.add(passengersNode);
       expandableNodes
-          .add(new NodeWrapper(passengersNode, "EMapDetailsPanel.UnitPassengersExpanded"));
+      .add(new NodeWrapper(passengersNode, "EMapDetailsPanel.UnitPassengersExpanded"));
     }
 
     DefaultMutableTreeNode carriersNode = null;
@@ -3381,7 +3383,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               .get("emapdetailspanel.node.attackedBy"), null, attackedBy, "attacker"));
       parent.add(attackedByNode);
       expandableNodes
-          .add(new NodeWrapper(attackedByNode, "EMapDetailsPanel.UnitAttackedByExpanded"));
+      .add(new NodeWrapper(attackedByNode, "EMapDetailsPanel.UnitAttackedByExpanded"));
 
       for (Unit victim : attackedBy) {
         UnitNodeWrapper w =
@@ -3492,7 +3494,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     for (CombatSpell spell : spells.values()) {
       combatSpells
-          .add(new DefaultMutableTreeNode(nodeWrapperFactory.createSpellNodeWrapper(spell)));
+      .add(new DefaultMutableTreeNode(nodeWrapperFactory.createSpellNodeWrapper(spell)));
       // combatSpells.add(createSimpleNode(spell, "spell"));
     }
   }
@@ -3756,7 +3758,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
       }
     }
-      break;
+    break;
     default:
       throw new IllegalArgumentException();
     }
@@ -3934,7 +3936,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           createSimpleNode(Resources.get("emapdetailspanel.node.upkeep"), "upkeep");
       parent.add(maintNode);
       expandableNodes
-          .add(new NodeWrapper(maintNode, "EMapDetailsPanel.BuildingMaintenanceExpanded"));
+      .add(new NodeWrapper(maintNode, "EMapDetailsPanel.BuildingMaintenanceExpanded"));
 
       while (iter.hasNext()) {
         Item i = iter.next();
@@ -4032,7 +4034,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 ? (Resources.get("emapdetailspanel.node.size") + ": " + inmates) : (Resources
                     .get("emapdetailspanel.node.size")
                     + ": " + inmates + " (" + modInmates + ")"))
-                + " / " + b.getSize(), "build_size"));
+                    + " / " + b.getSize(), "build_size"));
     parent.insert(n, 0);
 
   }
@@ -4089,7 +4091,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     n =
         createSimpleNode(
             Resources.get("emapdetailspanel.node.type") + ": " + b.getType().getName(), b.getType()
-                .getID().toString());
+            .getID().toString());
     parent.add(n);
   }
 
@@ -4369,7 +4371,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     String strLoad = EMapDetailsPanel.weightNumberFormat.format(new Float(s.getLoad() / 100.0F));
     String strUnknownLoad =
         EMapDetailsPanel.weightNumberFormat
-            .format(new Float((s.getCargo() - s.getLoad()) / 100.0F));
+        .format(new Float((s.getCargo() - s.getLoad()) / 100.0F));
 
     String strModLoad =
         EMapDetailsPanel.weightNumberFormat.format(new Float(s.getModifiedLoad() / 100.0F));
@@ -4406,7 +4408,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       if (modInmates != inmates) {
         loadText.append(" (").append(
             EMapDetailsPanel.weightNumberFormat.format(new Float(modInmates / 100.0F))).append(
-            ") / ");
+                ") / ");
       } else {
         loadText.append(" / ");
       }
@@ -4598,7 +4600,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         // parent.add(new
         // DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.spell.ship")));
         parent
-            .add(createSimpleNode(Resources.get("emapdetailspanel.node.spell.ship"), "spell_ship"));
+        .add(createSimpleNode(Resources.get("emapdetailspanel.node.spell.ship"), "spell_ship"));
       }
 
       if (s.getOnOcean()) {
@@ -5134,7 +5136,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           new UnitCommentListNode(u, Resources.get("emapdetailspanel.node.comments"));
       parent.add(unitCommentNode);
       expandableNodes
-          .add(new NodeWrapper(unitCommentNode, "EMapDetailsPanel.UnitCommentsExpanded"));
+      .add(new NodeWrapper(unitCommentNode, "EMapDetailsPanel.UnitCommentsExpanded"));
 
       int i = 0;
 
@@ -5811,7 +5813,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           String result =
               JOptionPane.showInputDialog(RelationContextMenu.this, getOrder("...", each),
                   Resources
-                      .get("emapdetailspanel.contextmenu.reserve.getamount." + each + ".title"),
+                  .get("emapdetailspanel.contextmenu.reserve.getamount." + each + ".title"),
                   JOptionPane.QUESTION_MESSAGE);
           if (result != null) {
             try {
@@ -6114,7 +6116,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
         if (uc.getComments().size() != parent.getChildCount()) {
           contextLog
-              .info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
+          .info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
 
           return;
         }
@@ -6146,7 +6148,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             uc.getComments().remove(parent.getIndex(node));
           } else {
             contextLog
-                .info("EMapDetailsPanel.DetailsContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
+            .info("EMapDetailsPanel.DetailsContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
 
             return;
           }
@@ -6278,7 +6280,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
         if (u.getComments().size() != parent.getChildCount()) {
           contextLog
-              .info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
+          .info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
 
           return;
         }
@@ -6309,7 +6311,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             u.getComments().remove(parent.getIndex(node));
           } else {
             contextLog
-                .info("EMapDetailsPanel.DetailsUnitContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
+            .info("EMapDetailsPanel.DetailsUnitContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
             return;
           }
         }
@@ -6365,7 +6367,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             dispatcher, data);
       else if (argument instanceof UnitNodeWrapper)
         return new UnitContextMenu(((UnitNodeWrapper) argument).getUnit(), selectedObjects == null
-            ? null : selectedObjects.getSelectedObjects(), dispatcher, data);
+        ? null : selectedObjects.getSelectedObjects(), dispatcher, data);
       else if (argument instanceof UnitListNodeWrapper) {
         Collection<Unit> col = ((UnitListNodeWrapper) argument).getUnits();
 

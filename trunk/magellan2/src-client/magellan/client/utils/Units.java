@@ -405,32 +405,32 @@ public class Units {
 
             addItemNode = true;
           }
-          // }
-          // for (final MaintenanceRelation rrel : u.getRelations(MaintenanceRelation.class)) {
-          if (relation instanceof MaintenanceRelation) {
-            final MaintenanceRelation rrel = (MaintenanceRelation) relation;
-            final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
-            final List<String> icons = new LinkedList<String>();
-            text.append(Resources.get("util.units.node.maintenance")).append(" ").append(
-                rrel.container);
-
-            icons.add("upkeep");
-            if (rrel.problem != null || rrel.warning) {
-              itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
-              // text.append("(!!!) ");
-              icons.add("warnung");
-              // recruitNodeWrapper.setAdditionalIcon("warnung");
-            }
-
-            UnitRelationNodeWrapper wrapper =
-                factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
-                    .toString(), icons));
-            // factory.createRelationNodeWrapper(u, rrel, factory.createUnitContainerNodeWrapper(
-            // rrel.building, false, true, rrel.costs + " "));
-            itemNode.add(new DefaultMutableTreeNode(wrapper));
-            addItemNode = true;
-          }
         }
+        if ((relation instanceof MaintenanceRelation)
+            && (currentItem.getItemType() == ((MaintenanceRelation) relation).itemType)) {
+          final MaintenanceRelation rrel = (MaintenanceRelation) relation;
+          final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
+          final List<String> icons = new LinkedList<String>();
+          text.append(Resources.get("util.units.node.maintenance")).append(" ").append(
+              rrel.container);
+
+          icons.add("upkeep");
+          if (rrel.problem != null || rrel.warning) {
+            itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
+            // text.append("(!!!) ");
+            icons.add("warnung");
+            // recruitNodeWrapper.setAdditionalIcon("warnung");
+          }
+
+          UnitRelationNodeWrapper wrapper =
+              factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
+                  .toString(), icons));
+          // factory.createRelationNodeWrapper(u, rrel, factory.createUnitContainerNodeWrapper(
+          // rrel.building, false, true, rrel.costs + " "));
+          itemNode.add(new DefaultMutableTreeNode(wrapper));
+          addItemNode = true;
+        }
+
       }
 
       if (addItemNode) {

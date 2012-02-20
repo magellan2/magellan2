@@ -35,11 +35,11 @@ import javax.swing.JPanel;
 
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.Colors;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Sign;
-import magellan.library.utils.Colors;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 

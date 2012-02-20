@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import magellan.library.CoordinateID;
-import magellan.library.utils.MagellanImages;
+import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -96,7 +96,7 @@ public class CellGeometry {
     Properties p = new Properties();
 
     try {
-      URL url = MagellanImages.getResource("etc/images/map/" + fileName);
+      URL url = Resources.getResourceURL("etc/images/map/" + fileName);
       InputStream is = url.openStream();
       p.load(is);
       is.close();

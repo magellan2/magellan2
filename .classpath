@@ -27,7 +27,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/skins/looks-1.3b1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/skins/skinsCollected.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/skins/xplookandfeel.jar"/>
-	<classpathentry kind="lib" path="lib/RadixTree-0.3.jar" sourcepath="libsrc/RadixTree-0.3.zip"/>
 	<classpathentry kind="lib" path="lib/javadocking.jar" sourcepath="libsrc/javadocking/javadocking/src"/>
 	<classpathentry kind="lib" path="lib/macify-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-core-1.8.3.jar"/>

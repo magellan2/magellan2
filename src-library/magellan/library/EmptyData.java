@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.help.UnsupportedOperationException;
-
 import magellan.library.rules.MessageType;
 import magellan.library.utils.Translations;
 import magellan.library.utils.transformation.ReportTransformer;
@@ -68,10 +66,10 @@ public class EmptyData extends GameData {
   public EmptyData(GameData data) {
     super(data.rules, data.getGameName());
     setDate(data.getDate());
-    this.base = data.base;
-    this.version = data.version;
-    this.noSkillPoints = data.noSkillPoints;
-    this.locale = data.getLocale();
+    base = data.base;
+    version = data.version;
+    noSkillPoints = data.noSkillPoints;
+    locale = data.getLocale();
   }
 
   /**

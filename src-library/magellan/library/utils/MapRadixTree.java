@@ -25,8 +25,6 @@ package magellan.library.utils;
 
 import java.util.Map;
 
-import ds.tree.RadixTree;
-
 /**
  * A radix tree that implements the {@link Map} interface.
  * 

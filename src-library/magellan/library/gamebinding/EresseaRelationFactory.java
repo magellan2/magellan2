@@ -83,7 +83,7 @@ public class EresseaRelationFactory implements RelationFactory {
   /** Order priority */
   public static final int P_BENENNE = 301;
   /** Order priority */
-  public static final int P_KÄMPFE = 302;
+  public static final int P_KAEMPFE = 302;
   /** Order priority */
   public static final int P_BETRETE = 701;
   /** Order priority */
@@ -1222,7 +1222,7 @@ public class EresseaRelationFactory implements RelationFactory {
     else if (order instanceof EnterOrder)
       return P_BETRETE;
     else if (order instanceof CombatOrder)
-      return P_KÄMPFE;
+      return P_KAEMPFE;
     else if (order instanceof GuardOrder)
       return P_BEWACHE;
     else if (order instanceof LeaveOrder)

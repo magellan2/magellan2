@@ -37,9 +37,9 @@ import javax.swing.JScrollPane;
 
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.Colors;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
-import magellan.library.utils.Colors;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -72,6 +72,7 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
         setFontColor(Colors.decode(settings.getProperty("TextCellRenderer.textColor", Colors
             .encode(fontColor))));
       } catch (NumberFormatException e) {
+        Logger.getInstance(this.getClass()).error("settings error", e);
       }
 
       setScalingFont((Boolean.valueOf(settings.getProperty("TextCellRenderer.isScalingFont",

@@ -11,17 +11,17 @@
  *
  */
 
-package magellan.library.utils;
+package magellan.client.utils;
 
 import java.awt.Color;
 
 import magellan.library.utils.logging.Logger;
 
 /**
- * DOCUMENT ME!
- * 
- * @author Ilja Pavkovic A class to unify encoding and decoding of colors stored in string
+ * A class to unify encoding and decoding of colors stored in string
  *         representation (e.g. in magellan.ini).
+ * 
+ * @author Ilja Pavkovic 
  */
 public class Colors {
   private static final Logger log = Logger.getInstance(Colors.class);

@@ -140,10 +140,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
     Icon icon = null;
     JLabel iconLabel = null;
 
-    try {
-      icon = MagellanImages.GUI_TOTD;
-    } catch (RuntimeException exc) {
-    }
+    icon = MagellanImages.GUI_TOTD;
 
     if (icon != null) {
       iconLabel = new JLabel(icon);

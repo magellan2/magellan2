@@ -79,7 +79,8 @@ public class PropertyMerger<T> {
     return this;
   }
 
-  public PropertyMerger<T> mergeResources(boolean firstPass, boolean newTurn, String... resourceNames) {
+  public PropertyMerger<T> mergeResources(boolean firstPass, boolean newTurn,
+      String... resourceNames) {
     for (String resourceName : resourceNames) {
       mergeResource(firstPass, newTurn, resourceName);
     }
@@ -88,7 +89,8 @@ public class PropertyMerger<T> {
 
   public PropertyMerger<T> mergeResource(boolean firstPass, boolean newTurn, String resourceName) {
     // first pass, copy to old property
-    String oldResourceName = "old" + Character.toLowerCase(resourceName.charAt(0)) + resourceName.substring(1);
+    String oldResourceName =
+        "old" + Character.toLowerCase(resourceName.charAt(0)) + resourceName.substring(1);
     if (newTurn) {
       if (firstPass) {
         copyInt(resourceName, oldResourceName);
@@ -123,7 +125,8 @@ public class PropertyMerger<T> {
     return this;
   }
 
-  public PropertyMerger<T> mergeInt(String sourcePropertyName, String targetPropertyName, int threshold) {
+  public PropertyMerger<T> mergeInt(String sourcePropertyName, String targetPropertyName,
+      int threshold) {
     int value = (Integer) read(sourcePropertyName);
     if (value >= threshold) {
       write(targetPropertyName, value);
@@ -185,14 +188,14 @@ public class PropertyMerger<T> {
     try {
       return getProperty(sourceBean, propertyName);
     } catch (IllegalAccessException e) {
-      throw new IllegalArgumentException("No access to getter method possible for property " +
-          fullPropertyName(sourceBean, propertyName));
+      throw new IllegalArgumentException("No access to getter method possible for property "
+          + fullPropertyName(sourceBean, propertyName));
     } catch (InvocationTargetException e) {
-      throw new RuntimeException("Unexpected exception getting property " +
-          fullPropertyName(sourceBean, propertyName));
+      throw new RuntimeException("Unexpected exception getting property "
+          + fullPropertyName(sourceBean, propertyName));
     } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException("No getter method found for property " +
-          fullPropertyName(sourceBean, propertyName));
+      throw new IllegalArgumentException("No getter method found for property "
+          + fullPropertyName(sourceBean, propertyName));
     }
   }
 
@@ -200,14 +203,14 @@ public class PropertyMerger<T> {
     try {
       setProperty(targetBean, propertyName, value);
     } catch (IllegalAccessException e) {
-      throw new IllegalArgumentException("No access to setter method possible for property " +
-          fullPropertyName(targetBean, propertyName) + " with value " + value);
+      throw new IllegalArgumentException("No access to setter method possible for property "
+          + fullPropertyName(targetBean, propertyName) + " with value " + value);
     } catch (InvocationTargetException e) {
-      throw new RuntimeException("Unexpected exception setting property " +
-          fullPropertyName(targetBean, propertyName) + " with value " + value);
+      throw new RuntimeException("Unexpected exception setting property "
+          + fullPropertyName(targetBean, propertyName) + " with value " + value);
     } catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException("No setter method found for property " +
-          fullPropertyName(targetBean, propertyName) + " with value " + value);
+      throw new IllegalArgumentException("No setter method found for property "
+          + fullPropertyName(targetBean, propertyName) + " with value " + value);
     }
   }
 

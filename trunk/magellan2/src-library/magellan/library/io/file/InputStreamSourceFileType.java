@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
-import magellan.library.utils.MagellanImages;
+import magellan.library.utils.Resources;
 
 /**
  * This FileType represent a "File" via an input stream URL. This is a convenient object for
@@ -33,11 +33,11 @@ public class InputStreamSourceFileType extends FileType {
 
   @Override
   protected InputStream createInputStream() throws IOException {
-    URL url = MagellanImages.getResource(filename.getPath().toLowerCase());
+    URL url = Resources.getResourceURL(filename.getPath().toLowerCase());
 
     if (url == null) {
 
-      url = MagellanImages.getResource(filename.getPath());
+      url = Resources.getResourceURL(filename.getPath());
 
       if (url == null)
         throw new IOException("URL '" + filename.getPath() + "' not readable (abs: '"

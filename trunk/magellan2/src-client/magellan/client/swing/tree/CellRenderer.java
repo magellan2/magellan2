@@ -47,7 +47,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
 import magellan.client.MagellanContext;
-import magellan.library.utils.Colors;
+import magellan.client.utils.Colors;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Umlaut;

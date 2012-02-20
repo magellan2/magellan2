@@ -59,6 +59,7 @@ import magellan.client.desktop.Initializable;
 import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.Colors;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
@@ -67,7 +68,6 @@ import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.rules.RegionType;
-import magellan.library.utils.Colors;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 

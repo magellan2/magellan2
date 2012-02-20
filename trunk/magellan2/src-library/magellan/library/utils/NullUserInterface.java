@@ -81,7 +81,8 @@ public class NullUserInterface implements UserInterface {
   }
 
   protected int getPercent(int iProgress) {
-    if (max == 0) return 0;
+    if (max == 0)
+      return 0;
     return iProgress * 100 / max;
   }
 
@@ -112,7 +113,7 @@ public class NullUserInterface implements UserInterface {
    */
   public void setTitle(String title) {
     if (logLevel >= Logger.INFO) {
-      log.info("Null user interface: '"+title+"'");
+      log.info("Null user interface: '" + title + "'");
     }
   }
 
@@ -141,7 +142,7 @@ public class NullUserInterface implements UserInterface {
 
   public void showDialog(String title, String message, int messageType, int options) {
     if (logLevel >= Logger.WARN) {
-      NullUserInterface.log.warn(title+" - "+message);
+      NullUserInterface.log.warn(title + " - " + message);
     }
   }
 

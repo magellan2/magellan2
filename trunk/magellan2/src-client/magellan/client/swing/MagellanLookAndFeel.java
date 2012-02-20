@@ -36,7 +36,7 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.MetalTheme;
 
 import magellan.client.desktop.DesktopEnvironment;
-import magellan.library.utils.Colors;
+import magellan.client.utils.Colors;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.logging.Logger;
 

@@ -115,21 +115,21 @@ public class Resources {
    * initialize("mapedit_") to search and load resource files from files called
    * "mapedit_resources.properties".
    */
-  public void initialize(File resourceDirectory, String prefix) {
+  public void initialize(File pResourceDirectory, String prefix) {
     if (prefix == null) {
       prefix = "";
     }
-    this.resourceDirectory = resourceDirectory;
+    resourceDirectory = pResourceDirectory;
 
-    Resources.log.info("Initializing resources for prefix '" + prefix + "' in "
-        + this.resourceDirectory);
+    Resources.log
+        .info("Initializing resources for prefix '" + prefix + "' in " + resourceDirectory);
 
-    File etcDirectory = new File(this.resourceDirectory, "etc");
+    File etcDirectory = new File(resourceDirectory, "etc");
 
     if (!etcDirectory.exists()) {
       Resources.log.info("Could not find resources in directory " + etcDirectory);
       // hmmm, maybe one directory level up (special Eclipse problem with bin directory)
-      etcDirectory = new File(this.resourceDirectory.getParentFile(), "etc");
+      etcDirectory = new File(resourceDirectory.getParentFile(), "etc");
       if (!etcDirectory.exists()) {
         Resources.log.info("Could not find resources in directory " + etcDirectory);
         // okay, I'll give up...
@@ -647,29 +647,51 @@ public class Resources {
   public static URL file2URL(File file) throws MalformedURLException {
     return new URL("jar:" + file.toURI().toURL().toString() + "!/");
   }
-}
 
-/**
- * A small filter for resource file names...
- */
-class ResourceFilenameFilter implements FilenameFilter {
-  private String prefix;
-
-  public ResourceFilenameFilter() {
-    this(null);
-  }
-
-  public ResourceFilenameFilter(String prefix) {
-    if (prefix == null) {
-      prefix = "";
+  /**
+   * Returns an URL pointing to the file indicated by path. If the file does not exist, a
+   * corresponding file in the resource directory is tried.
+   * 
+   * @param path
+   */
+  public static URL getResourceURL(String path) {
+    try {
+      File resFile = new File(path);
+      if (!resFile.exists()) {
+        // try to use MagDir
+        resFile = new File(getResourceDirectory(), path);
+        if (!resFile.exists())
+          // OK give up here
+          return null;
+      }
+      return resFile.toURI().toURL();
+    } catch (MalformedURLException exception) {
+      return null;
     }
-    this.prefix = prefix;
   }
 
-  public boolean accept(File dir, String name) {
-    return (name.startsWith(prefix + "resources") && name.endsWith(".properties"));
-  }
+  /**
+   * A small filter for resource file names...
+   */
+  public static class ResourceFilenameFilter implements FilenameFilter {
+    private String prefix;
 
+    public ResourceFilenameFilter() {
+      this(null);
+    }
+
+    public ResourceFilenameFilter(String prefix) {
+      if (prefix == null) {
+        prefix = "";
+      }
+      this.prefix = prefix;
+    }
+
+    public boolean accept(File dir, String name) {
+      return (name.startsWith(prefix + "resources") && name.endsWith(".properties"));
+    }
+
+  }
 }
 
 /**
@@ -719,7 +741,7 @@ class MyResourceBundle extends PropertyResourceBundle {
    * 
    * @see java.util.ResourceBundle#containsKey(java.lang.String)
    */
-  // @Override
+  // this method exists in ResourceBundle since 1.6
   @Override
   public boolean containsKey(String key) {
     try {

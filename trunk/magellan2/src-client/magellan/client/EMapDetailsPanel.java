@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1520,16 +1521,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * Returns a simple node
    */
-  private DefaultMutableTreeNode createSimpleNode(Object obj, String icons) {
-    return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, icons));
+  private DefaultMutableTreeNode createSimpleNode(Object obj, String icon) {
+    return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, icon));
   }
 
-  private DefaultMutableTreeNode createSimpleNode(Named obj, String icons) {
+  private DefaultMutableTreeNode createSimpleNode(Named obj, String icon) {
     return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, data
-        .getTranslation(obj), icons));
+        .getTranslation(obj), icon));
   }
 
-  private DefaultMutableTreeNode createSimpleNode(Object obj, ArrayList<String> icons) {
+  private DefaultMutableTreeNode createSimpleNode(Object obj, List<String> icons) {
     return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, icons));
   }
 
@@ -2311,26 +2312,42 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     // guard state
     if (u.getGuard() != 0 || (u.getGuard() != u.getModifiedGuard())) {
-      String text = "";
+      StringBuilder text = new StringBuilder();
       if (u.getGuard() != 0) {
-        text =
-            Resources.get("emapdetailspanel.node.guards") + ": "
-                + MagellanFactory.guardFlagsToString(u.getGuard());
+        text.append(Resources.get("emapdetailspanel.node.guards")).append(": ").append(
+            MagellanFactory.guardFlagsToString(u.getGuard()));
       } else {
-        text = Resources.get("emapdetailspanel.node.guardsnot");
+        text.append(Resources.get("emapdetailspanel.node.guardsnot"));
       }
       if (u.getGuard() != u.getModifiedGuard()) {
-        text += " (";
+        text.append(" (");
         if (u.getModifiedGuard() != 0) {
-          text +=
-              Resources.get("emapdetailspanel.node.guards") + ": "
-                  + MagellanFactory.guardFlagsToString(u.getModifiedGuard());
+          text.append(Resources.get("emapdetailspanel.node.guards")).append(": ").append(
+              MagellanFactory.guardFlagsToString(u.getModifiedGuard()));
         } else {
-          text += Resources.get("emapdetailspanel.node.guardsnot");
+          text.append(Resources.get("emapdetailspanel.node.guardsnot"));
         }
-        text += ")";
+        text.append(")");
       }
-      parent.add(createSimpleNode(text, "bewacht"));
+      if (u.getSiege() != null) {
+        DefaultMutableTreeNode siegeNode = null;
+        if (isCompactLayout()) {
+          text.append(", ").append(
+              Resources.get("emapdetailspanel.node.besieges", u.getSiege().toString()));
+        } else {
+          siegeNode =
+              new DefaultMutableTreeNode(nodeWrapperFactory.createUnitContainerNodeWrapper(u
+                  .getSiege(), Resources.get("emapdetailspanel.node.besiegeprefix")));
+        }
+        DefaultMutableTreeNode node;
+        parent.add(node =
+            createSimpleNode(text, Arrays.asList(new String[] { "bewacht", "siege" })));
+        if (siegeNode != null) {
+          node.add(siegeNode);
+        }
+      } else {
+        parent.add(createSimpleNode(text, "bewacht"));
+      }
     }
 
     // stealth info
@@ -3835,6 +3852,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // Insassen
     appendBuildingInmatesInfo(b, parent, expandableNodes);
 
+    appendBuildingSiegeInfo(b, parent, expandableNodes);
+
     // Gebaeudeunterhalt
     appendBuildingMaintenance(b, parent, expandableNodes);
 
@@ -3844,6 +3863,24 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // Kommentare
     appendComments(b, parent, expandableNodes);
     appendTags(b, parent, expandableNodes);
+  }
+
+  private void appendBuildingSiegeInfo(Building b, DefaultMutableTreeNode parent,
+      Collection<NodeWrapper> expandableNodes) {
+    if (b.getBesiegers() > 0) {
+      String text = Resources.get("emapdetailspanel.node.besieged", b.getBesiegers());
+      DefaultMutableTreeNode n = createSimpleNode(text, "siege");
+
+      parent.add(n);
+      if (b.getBesiegerUnits() != null) {
+        for (UnitID besieger : b.getBesiegerUnits()) {
+          Unit bs = data.getUnit(besieger);
+          n.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(bs, bs
+              .getPersons())));
+        }
+      }
+    }
+
   }
 
   /**

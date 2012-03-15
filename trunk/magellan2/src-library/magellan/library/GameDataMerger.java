@@ -1343,7 +1343,7 @@ public class GameDataMerger {
       // \(([\+\-]?\d+)\,\ ?([\+\-]?\d+)(\,\ ?(([\+\-]?\d+)|Astralraum))?\)
       pattern =
           "\\((" + number + ")\\,\\ ?(" + number + ")(\\,\\ ?((" + number + ")|" + astral
-          + "))?\\)";
+              + "))?\\)";
       // \(([\+\-]?\d+) ([\+\-]?\d+)( (([\+\-]?\d+)|Astralraum))?\)
       regionsPattern1 =
           "\\((" + number + ") (" + number + ")( ((" + number + ")|" + astral + "))?\\)";
@@ -1470,6 +1470,16 @@ public class GameDataMerger {
     // added support for wahrerTyp
     if (curBuilding.getTrueBuildingType() != null) {
       newBuilding.setTrueBuildingType(curBuilding.getTrueBuildingType());
+    }
+
+    if (curGD.isSameRound(newGD)) {
+      // besiegers are visible to all
+      newBuilding.setBesiegers(curBuilding.getBesiegers());
+      if (curBuilding.getBesiegerUnits() != null) {
+        for (UnitID b : curBuilding.getBesiegerUnits()) {
+          newBuilding.addBesiegerUnit(b);
+        }
+      }
     }
 
   }

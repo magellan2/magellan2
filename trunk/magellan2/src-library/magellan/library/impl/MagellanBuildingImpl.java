@@ -13,11 +13,17 @@
 
 package magellan.library.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
 import magellan.library.Region;
+import magellan.library.UnitID;
 import magellan.library.rules.BuildingType;
 
 /**
@@ -80,6 +86,10 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 
   /** The region this building is in. */
   private Region region = null;
+
+  private int besiegers;
+
+  private Set<UnitID> besiegerUnits;
 
   /**
    * Sets the region this building is in. If this building already has a region set, this method
@@ -168,5 +178,35 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
   @Override
   public EntityID getID() {
     return (EntityID) super.getID();
+  }
+
+  public int getBesiegers() {
+    return besiegers;
+  }
+
+  public void setBesiegers(int number) {
+    besiegers = number;
+  }
+
+  public void addBesiegerUnit(UnitID besieger) {
+    if (besiegerUnits == null) {
+      besiegerUnits = new HashSet<UnitID>();
+    }
+    besiegerUnits.add(besieger);
+  }
+
+  public void setBesiegerUnits(Collection<UnitID> besiegers) {
+    if (besiegers == null) {
+      besiegerUnits = null;
+    } else {
+      besiegerUnits.clear();
+      besiegerUnits.addAll(besiegers);
+    }
+  }
+
+  public Collection<UnitID> getBesiegerUnits() {
+    if (besiegerUnits == null)
+      return null;
+    return Collections.unmodifiableCollection(besiegerUnits);
   }
 }

@@ -1086,6 +1086,12 @@ public class CRWriter extends BufferedWriter {
       newLine();
     }
 
+    // ships cannot be besieged...
+    // if (ship.getBesiegers() > 0) {
+    // write(ship.getBesiegers() + ";Belagerer");
+    // newLine();
+    // }
+
     if (!serverConformance) {
       writeAttributes(ship);
     }
@@ -1161,6 +1167,11 @@ public class CRWriter extends BufferedWriter {
 
     if (building.getCost() > 0) {
       write(building.getCost() + ";Unterhalt");
+      newLine();
+    }
+
+    if (building.getBesiegers() > 0) {
+      write(building.getBesiegers() + ";Belagerer");
       newLine();
     }
 
@@ -1520,6 +1531,11 @@ public class CRWriter extends BufferedWriter {
 
     if (unit.getRaceNamePrefix() != null) {
       writeQuotedTag(unit.getRaceNamePrefix(), "typprefix");
+    }
+
+    if (unit.getSiege() != null) {
+      write(unit.getSiege().getID().intValue() + ";belagert");
+      newLine();
     }
 
     if (getIncludeUnitDetails() && unit.hasTags()) {

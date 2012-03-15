@@ -13,6 +13,8 @@
 
 package magellan.library;
 
+import java.util.Collection;
+
 import magellan.library.rules.BuildingType;
 
 /**
@@ -103,5 +105,32 @@ public interface Building extends UnitContainer, HasRegion {
    * @see magellan.library.Identifiable#getID()
    */
   public EntityID getID();
+
+  /**
+   * @return the number of persons besieging the building
+   */
+  public int getBesiegers();
+
+  /**
+   * Changes the number of persons besieging the building
+   */
+  public void setBesiegers(int number);
+
+  /**
+   * Add a besieging unit.
+   * 
+   * @param besieger
+   */
+  public void addBesiegerUnit(UnitID besieger);
+
+  /**
+   * Removes all besieging units.
+   */
+  public void setBesiegerUnits(Collection<UnitID> besiegers);
+
+  /**
+   * @return a collection of all besieging units or <code>null</code> if no besiegers are known
+   */
+  public Collection<UnitID> getBesiegerUnits();
 
 }

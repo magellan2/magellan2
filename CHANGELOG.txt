@@ -1,3 +1,6 @@
+2012-03-15 / Build 497 - stm (stm_@users.sourceforge.net)
+    * units can besiege buildings and we show that now!
+    
 2012-02-08 / Build 494 - stm (stm_@users.sourceforge.net)
     * fixes to EresseaDate and MaintenanceInspector
     * experimental battle plugin

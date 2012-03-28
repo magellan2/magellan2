@@ -21,6 +21,8 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -143,6 +145,22 @@ public class TextAreaDialog extends InternationalizedDialog implements Hyperlink
 
     pack();
 
+    // close dialog on Enter or ESC
+    KeyAdapter closeAdapter = new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+        case KeyEvent.VK_ESCAPE:
+        case KeyEvent.VK_ENTER:
+          quit();
+          break;
+        }
+        super.keyTyped(e);
+      }
+    };
+    jPanel.addKeyListener(closeAdapter);
+    jTextArea1.addKeyListener(closeAdapter);
+    scrollPane.addKeyListener(closeAdapter);
   }
 
   public void hyperlinkUpdate(HyperlinkEvent e) {

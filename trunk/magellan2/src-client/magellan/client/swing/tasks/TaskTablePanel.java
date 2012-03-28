@@ -17,6 +17,8 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -36,9 +38,10 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -82,6 +85,8 @@ import magellan.library.tasks.MessageInspector;
 import magellan.library.tasks.MovementInspector;
 import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.Problem;
+import magellan.library.tasks.Problem.Severity;
+import magellan.library.tasks.ProblemFactory;
 import magellan.library.tasks.ProblemType;
 import magellan.library.tasks.ShipInspector;
 import magellan.library.tasks.SkillInspector;
@@ -102,17 +107,22 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   @Deprecated
   public static final String IDENTIFIER = MagellanDesktop.TASKS_IDENTIFIER;
 
+  private static final ProblemType INTERNAL = ProblemType
+      .create("tasks.tasktablepanel", "internal");
+
   private JTable table;
   private TableSorter sorter;
   private TaskTableModel model;
 
   private JProgressBar progressbar;
 
-  private JLabel selectionLabel;
+  private JButton refreshButton;
 
-  private JLabel activeRegionLabel;
+  private JCheckBox selectionLabel;
 
-  private JLabel globalLabel;
+  private JCheckBox activeRegionLabel;
+
+  private JCheckBox globalLabel;
 
   private List<Inspector> inspectors;
 
@@ -140,7 +150,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   private magellan.client.swing.tasks.TaskTablePanel.UpdateEventDispatcher updateDispatcher;
 
-  // private Set<ProblemType> activeProblems;
   private Set<ProblemType> ignoredProblems;
 
   private Map<String, ProblemType> pMap;
@@ -202,18 +211,24 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     JPanel statusBar = new JPanel(new GridBagLayout());
 
-    selectionLabel = new JLabel(Resources.get("tasks.selectionlabel.title"));
+    refreshButton = new JButton(Resources.get("tasks.contextmenu.refresh.title"));
+    refreshButton.addActionListener(popupListener);
+    refreshButton.setMargin(new Insets(1, 1, 1, 1));
+    selectionLabel = new JCheckBox(Resources.get("tasks.selectionlabel.title"));
     selectionLabel.setToolTipText(Resources.get("tasks.selectionlabel.tooltip"));
-    selectionLabel.setEnabled(restrictToSelection());
+    selectionLabel.setSelected(restrictToSelection());
     selectionLabel.addMouseListener(popupListener);
-    activeRegionLabel = new JLabel(Resources.get("tasks.activeregionlabel.title"));
+    selectionLabel.addItemListener(popupListener);
+    activeRegionLabel = new JCheckBox(Resources.get("tasks.activeregionlabel.title"));
     activeRegionLabel.setToolTipText(Resources.get("tasks.activeregionlabel.tooltip"));
-    activeRegionLabel.setEnabled(restrictToActiveRegion());
+    activeRegionLabel.setSelected(restrictToActiveRegion());
     activeRegionLabel.addMouseListener(popupListener);
-    globalLabel = new JLabel(Resources.get("tasks.globallabel.title"));
+    activeRegionLabel.addItemListener(popupListener);
+    globalLabel = new JCheckBox(Resources.get("tasks.globallabel.title"));
     globalLabel.setToolTipText(Resources.get("tasks.globallabel.tooltip"));
-    globalLabel.setEnabled(showGlobal());
+    globalLabel.setSelected(showGlobal());
     globalLabel.addMouseListener(popupListener);
+    globalLabel.addItemListener(popupListener);
 
     progressbar = new JProgressBar();
     GridBagConstraints c =
@@ -228,6 +243,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     c.weightx = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
     statusBar.add(progressbar, c);
+    c.gridx++;
+    c.weightx = 0;
+    c.fill = GridBagConstraints.NONE;
+    statusBar.add(refreshButton);
 
     this.add(statusBar, BorderLayout.PAGE_END);
 
@@ -244,7 +263,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   }
 
-  class PopupListener extends MouseAdapter {
+  class PopupListener extends MouseAdapter implements ActionListener, ItemListener {
     JPopupMenu tableMenu;
     JPopupMenu busyMenu;
     JPopupMenu activeRegionMenu;
@@ -288,30 +307,38 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         return;
       if (e.getSource() == table) {
         if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
-          JTable target = (JTable) e.getSource();
-          int row = target.getSelectedRow();
+          if (e.isControlDown()) {
+            int row = table.getSelectedRow();
+            if (row >= 0 && row < sorter.getRowCount()) {
+              showObjectOnRow(row);
+            }
+          } else {
+            JTable target = (JTable) e.getSource();
+            int row = target.getSelectedRow();
 
-          if (TaskTablePanel.log.isDebugEnabled()) {
-            TaskTablePanel.log.debug("TaskTablePanel: Double click on row " + row);
+            if (TaskTablePanel.log.isDebugEnabled()) {
+              TaskTablePanel.log.debug("TaskTablePanel: Double click on row " + row);
+            }
+            selectObjectOnRow(row);
           }
-          selectObjectOnRow(row);
         }
       }
     }
 
     private void maybeShowPopup(MouseEvent e) {
-      if (updateDispatcher.isBusy()) {
-        busyMenu.show(e.getComponent(), e.getX(), e.getY());
-        return;
-      }
-
       if (e.getSource() == activeRegionLabel) {
-        activeRegionMenu.show(e.getComponent(), e.getX(), e.getY());
+        // activeRegionMenu.show(e.getComponent(), e.getX(), e.getY());
       } else if (e.getSource() == selectionLabel) {
-        selectionMenu.show(e.getComponent(), e.getX(), e.getY());
+        // selectionMenu.show(e.getComponent(), e.getX(), e.getY());
       } else if (e.getSource() == globalLabel) {
-        globalMenu.show(e.getComponent(), e.getX(), e.getY());
+        // globalMenu.show(e.getComponent(), e.getX(), e.getY());
+      } else if (e.getSource() == refreshButton) {
+        //
       } else {
+        if (updateDispatcher.isBusy()) {
+          busyMenu.show(e.getComponent(), e.getX(), e.getY());
+          return;
+        }
         // unselected rows if user clicks another row
         int rowClicked = table.rowAtPoint(e.getPoint());
         if (rowClicked >= 0) {
@@ -406,13 +433,21 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         public void actionPerformed(ActionEvent menuEvent) {
           removeType(table.getSelectedRows());
         }
-
       });
 
       busyMenu = new JPopupMenu();
       JMenuItem busyMenuItem = new JMenuItem(Resources.get("tasks.contextmenu.busy.title"));
       busyMenuItem.setEnabled(false);
       busyMenu.add(busyMenuItem);
+
+      JMenuItem resetMenuItem = new JMenuItem(Resources.get("tasks.contextmenu.reset.title"));
+      resetMenuItem.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent menuEvent) {
+          updateDispatcher.reset();
+          refreshProblems();
+        }
+      });
+      busyMenu.add(resetMenuItem);
 
       activeRegionMenu = new JPopupMenu();
       JMenuItem arMenuItem =
@@ -450,6 +485,28 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         }
       });
 
+    }
+
+    public void actionPerformed(ActionEvent e) {
+      if (e.getSource() == refreshButton) {
+        refreshProblems();
+      }
+    }
+
+    public void itemStateChanged(ItemEvent e) {
+      Object source = e.getItemSelectable();
+      if (source == selectionLabel) {
+        setRestrictToSelection(selectionLabel.isSelected());
+        refreshProblems();
+      }
+      if (source == activeRegionLabel) {
+        setRestrictToActiveRegion(activeRegionLabel.isSelected());
+        refreshProblems();
+      }
+      if (source == globalLabel) {
+        setShowGlobal(globalLabel.isSelected());
+        refreshProblems();
+      }
     }
   }
 
@@ -492,24 +549,19 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   }
 
-  protected void acknowledge(int rows[]) {
-    // selecting the acknowledge object seems weird
-    // if (rows.length == 1) {
-    // selectObjectOnRow(rows[0]);
-    // }
-
+  protected void acknowledge(int selectedRows[]) {
     // sort problems by line
     List<Problem> problems = new ArrayList<Problem>();
-    for (int row : rows) {
+    for (int row : selectedRows) {
       if (row < 0 || row >= sorter.getRowCount())
         throw new IndexOutOfBoundsException();
       Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
       problems.add(p);
     }
 
-    int[] sortedRows = new int[rows.length];
+    int[] sortedRows = new int[selectedRows.length];
     int i = 0;
-    for (int row : rows) {
+    for (int row : selectedRows) {
       sortedRows[i++] = sorter.modelIndex(row);
     }
     Arrays.sort(sortedRows);
@@ -569,7 +621,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     if (row < 0 || row >= sorter.getRowCount())
       throw new IndexOutOfBoundsException();
     Object obj = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
-    dispatcher.fire(SelectionEvent.create(this, obj, SelectionEvent.ST_DEFAULT));
+    if (obj != null) {
+      dispatcher.fire(SelectionEvent.create(this, obj, SelectionEvent.ST_DEFAULT));
+    }
   }
 
   protected void showObjectOnRow(int row) {
@@ -580,7 +634,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     text.append(p.getMessage()).append("\n").append(p.getObject()).append("\n").append(
         p.getRegion()).append("\n").append(p.getFaction()).append("\n").append(p.getLine()).append(
         "\n").append(p.getType());
-    TextAreaDialog d =
+    final TextAreaDialog d =
         (new TextAreaDialog((JFrame) null, Resources.get("tasks.showfull.dialog.title"), text
             .toString()));
     d.setPreferredSize(new Dimension(400, 200));
@@ -726,16 +780,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     private Map<Object, Integer> delObjects = new HashMap<Object, Integer>();
     private boolean clear = false;
 
-    // private Timer suspendTimer;
-
     public EQueue() {
-      // suspendTimer = new Timer(100, new ActionListener() {
       //
-      // public void actionPerformed(ActionEvent e) {
-      //
-      // }
-      // });
-      // suspendTimer.setRepeats(false);
     }
 
     /**
@@ -827,7 +873,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         }
       }
       events.add(e);
-      // suspendTimer.restart();
       notifyAll();
     }
 
@@ -855,6 +900,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @author stm
    * @version 1.0, Aug 23, 2008
    */
+  // NOTE The constructor starts a thread. This is likely to be wrong if the class is ever
+  // extended, since the thread will be started before the subclass constructor is
+  // started.
   protected final class UpdateEventDispatcher {
 
     /**
@@ -873,9 +921,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     public UpdateEventDispatcher() {
       queue = new EQueue();
       refreshThread = new Thread(new TaskSearchRunner(), "TaskTableRefresher");
-      // FIXME The constructor starts a thread. This is likely to be wrong if the class is ever
-      // extended/subclassed, since the thread will be started before the subclass constructor is
-      // started.
       refreshThread.start();
     }
 
@@ -899,15 +944,13 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       public void run() {
         int progress = 1;
         while (!stop) {
+          UpdateEvent event = null;
           try {
-            UpdateEvent event;
             // wait for next event
             while (queue.size() < 1) {
               Thread.sleep(200);
             }
-            event = queue.poll();
-
-            // event = queue.waitFor();
+            event = queue.waitFor();
 
             // update progress bar as good as possible...
             if (progressbar.getMaximum() < queue.size() + 1) {
@@ -947,12 +990,21 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
                 }
               }
             }
+
             if (queue.size() == 0) {
-              progressbar.setMaximum(0);
+              progressbar.setMaximum(1);
+              progress = 1;
+              progressbar.setValue(progress);
+              progressbar.repaint();
             }
           } catch (Throwable t) {
-            TaskTablePanel.log.error("Exception in TaskTable update thread:" + t);
-            t.printStackTrace();
+            // try to handle errors gracefully
+            TaskTablePanel.log.error("Exception in TaskTable update thread:", t);
+            try {
+              error(event);
+            } catch (Throwable t2) {
+              TaskTablePanel.log.error("Error in TaskTable update thread:", t2);
+            }
           }
         }
         stop = true;
@@ -1182,6 +1234,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       return;
     // rebuild warning list
     refreshProblems();
+  }
+
+  protected void error(UpdateEvent event) {
+    model.addProblem(ProblemFactory.createProblem(Severity.INFORMATION, INTERNAL, event != null
+        ? event.region : null, null, null, event != null ? event.unit : null, null, INTERNAL
+        .getMessage(), -1));
   }
 
   /**
@@ -1663,7 +1721,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   public void setRestrictToSelection(boolean value) {
     settings.put(PropertiesHelper.TASKTABLE_RESTRICT_TO_SELECTION, String.valueOf(value));
-    selectionLabel.setEnabled(value);
+    // selectionLabel.setEnabled(value);
   }
 
   /**
@@ -1671,7 +1729,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   public void setRestrictToActiveRegion(boolean value) {
     settings.put(PropertiesHelper.TASKTABLE_RESTRICT_TO_ACTIVEREGION, String.valueOf(value));
-    activeRegionLabel.setEnabled(value);
+    // activeRegionLabel.setEnabled(value);
   }
 
   /**
@@ -1686,7 +1744,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   public void setShowGlobal(boolean value) {
     settings.put(PropertiesHelper.TASKTABLE_SHOW_GLOBAL, String.valueOf(value));
-    globalLabel.setEnabled(value);
+    // globalLabel.setEnabled(value);
   }
 
   private Vector<String> getHeaderTitles() {
@@ -1731,6 +1789,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     /**
      * Adds a list of problems one by one. Should be called in the AWT event dispatch thread!
      */
+    @SuppressWarnings("unused")
     public void addProblems(List<Problem> problems) {
       for (Problem p : problems) {
         addProblem(p);
@@ -1761,7 +1820,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       newRow[i++] = faction == null ? "" : faction;
       newRow[i++] = (p.getLine() < 1) ? "" : Integer.toString(p.getLine());
       newRow[i++] = p.getType().getName();// Resources.get("tasks.tasktablepanel.problemtype_" +
-                                          // p.getSeverity().toString());
+      // p.getSeverity().toString());
       newRow[i++] = null;
       addRow(newRow);
     }
@@ -1904,22 +1963,5 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   private boolean isShown() {
     return shown;
   }
-
-  // /**
-  // * @see
-  // net.infonode.docking.DockingWindowListener#windowHidden(net.infonode.docking.DockingWindow)
-  // */
-  // public void windowHidden(DockingWindow arg0) {
-  // this.setShown(false);
-  // }
-  //
-  // /**
-  // * @see
-  // net.infonode.docking.DockingWindowListener#windowShown(net.infonode.docking.DockingWindow)
-  // */
-  // public void windowShown(DockingWindow arg0) {
-  // this.setShown(true);
-  // this.refreshProblems();
-  // }
 
 }

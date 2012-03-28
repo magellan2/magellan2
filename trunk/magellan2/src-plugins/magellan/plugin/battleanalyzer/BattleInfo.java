@@ -1463,7 +1463,7 @@ public class BattleInfo {
     }
     messageHost.setIndex(index);
 
-    if (name.matches(".*\\([a-zL0-9]+\\)")) {
+    if (name.matches(".*\\([a-zL0-9?-]+\\)")) {
       EntityID id =
           EntityID.createEntityID(name.substring(name.lastIndexOf('(') + 1, name.lastIndexOf(')')),
               world.base);
@@ -2266,7 +2266,16 @@ public class BattleInfo {
         builder.append("\n");
 
         builder.setLevel(3);
-        builder.append(Resources.get("plugin.battle.tostring.overview", side.size())).append("\n");
+        builder.append(Resources.get("plugin.battle.tostring.overview", side.size())).append(": ");
+        boolean first = true;
+        for (int hostNum : side) {
+          if (!first) {
+            builder.append(", ");
+          }
+          builder.append(hosts.get(hostNum).getName());
+          first = false;
+        }
+        builder.append("\n");
 
         for (int hostNum : side) {
           // //// HOST X: 1+2+3+4=5
@@ -2274,7 +2283,7 @@ public class BattleInfo {
           builder.append(Resources
               .get("plugin.battle.tostring.host", String.format("%2d", hostNum)));
           HostInfo hostInfo = hosts.get(hostNum);
-          builder.append(" (").append(hostInfo.getAbbrev()).append(",").append(hostInfo.getId())
+          builder.append(": ").append(hostInfo.getName()).append(" (").append(hostInfo.getAbbrev())
               .append("): ");
           show(builder, hostInfo.getRows()[0]);
           builder.append("; ");
@@ -2287,9 +2296,7 @@ public class BattleInfo {
           builder.append("\n");
 
           builder.setLevel(5);
-          builder.append(hostInfo.getName()).append("(").append(hostInfo.getAbbrev()).append(")")
-              .append("\n");
-          boolean first = true;
+          first = true;
           builder.append(Resources.get("plugin.battle.attacks"));
           for (Integer num : hostInfo.getAttacked()) {
             if (first) {

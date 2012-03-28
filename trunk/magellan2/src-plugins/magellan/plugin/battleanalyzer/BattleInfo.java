@@ -1010,27 +1010,28 @@ public class BattleInfo {
         case 210897516: // Schlaf
         case 2045311619: // Furcht
         case 1619294438: // Basilisk
+        case 1677670293: // Trugbilder
         case 1402218402: // zaubert
           currentSpellInfo = addSpell(m, true);
           break;
         case 672044929: // Wölfe
           currentSpellInfo =
-          addSpell(m, Resources.get("plugin.battle.spell.wolves", getLocale(), false), true);
+              addSpell(m, Resources.get("plugin.battle.spell.wolves", getLocale(), false), true);
           break;
         case 588447428: // Tumult, legt sich
         case 130687857: // Tumult, legt sich
         case 46549538: // Tumult
         case 354013025: // Tumult
           currentSpellInfo =
-          addSpell(m, Resources.get("plugin.battle.spell.tumult", getLocale(), false), true);
+              addSpell(m, Resources.get("plugin.battle.spell.tumult", getLocale(), false), true);
           break;
         case 855292180: // Sturm
           currentSpellInfo =
-          addSpell(m, Resources.get("plugin.battle.spell.sturm", getLocale(), false), true);
+              addSpell(m, Resources.get("plugin.battle.spell.sturm", getLocale(), false), true);
           break;
         case 1694084197: // Windschild, nobody there
           currentSpellInfo =
-          addSpell(m, Resources.get("plugin.battle.spell.sturm2", getLocale(), false), true);
+              addSpell(m, Resources.get("plugin.battle.spell.sturm2", getLocale(), false), true);
           break;
         case 1697874555: // zaubert, tote
           currentSpellInfo = addSpell(m, true);
@@ -1040,18 +1041,18 @@ public class BattleInfo {
           break;
         case 788716474: // zaubert Wiederbelebung
           currentSpellInfo =
-          addSpell(m, Resources.get("plugin.battle.spell.wiederbelebung", getLocale(), false),
-              true);
+              addSpell(m, Resources.get("plugin.battle.spell.wiederbelebung", getLocale(), false),
+                  true);
           break;
         case 2046934159: // zaubert Heilung
           currentSpellInfo =
-          addSpell(m, Resources.get("plugin.battle.spell.heilung", getLocale(), false), true);
+              addSpell(m, Resources.get("plugin.battle.spell.heilung", getLocale(), false), true);
           break;
         case 728970757: // Untote helden
         case 813109076: // keine Untoten
           currentSpellInfo =
-          addSpell(m, Resources.get("plugin.battle.spell.untote_helden", getLocale(), false),
-              true);
+              addSpell(m, Resources.get("plugin.battle.spell.untote_helden", getLocale(), false),
+                  true);
           // 11 27 0;region ignored
           break;
         case 1281520191: // Flammenschwert
@@ -1125,7 +1126,7 @@ public class BattleInfo {
             // "Der Kampf wurde ausgelöst von Clan Donald (gvs6).";string
             Matcher matcher =
                 Pattern.compile(Resources.get("plugin.battle.pattern.started", getLocale(), false))
-                .matcher(m.getText());
+                    .matcher(m.getText());
             matcher.matches();
             addStarter(m, matcher.group(1));
             currentSpellInfo = null;
@@ -1134,7 +1135,7 @@ public class BattleInfo {
             // "Heer 0: Clan Donald (gvs6)";string
             Matcher matcher =
                 Pattern.compile(Resources.get("plugin.battle.pattern.army", getLocale(), false))
-                .matcher(m.getText());
+                    .matcher(m.getText());
             matcher.matches();
             currentHost = addHost(m, matcher.group(1), matcher.group(2));
             hosts.put(currentHost.getIndex(), currentHost);
@@ -1283,31 +1284,31 @@ public class BattleInfo {
               + " *[0-9]+.*");
       unitPattern =
           Pattern.compile(
-              // 1: name, 2: ID
+          // 1: name, 2: ID
               " *[*+-] (.+) \\(([0-9a-zL]{1,4})\\)"
-              // 3: number 4:race
-              + ", ([0-9]+) ([^,;.()]+)"
-              // 5: hero?
-              + "(, "
-              + Resources.get("plugin.battle.hero", getLocale(), false)
-              + ")*"
-              // 6:combat status, 8: health?, 10: hunger?
-              + ", ([^,;.()]+)( \\(([^,;.)]+)(, ([^,;.)]+))*\\))*"
-              // 11:guarding?
-              + "(, "
-              + Resources.get("plugin.battle.guards", getLocale(), false)
-              + "[^,;.()]*)*"
-              // 12: skills?
-              + "(, " + Resources.get("plugin.battle.skills", getLocale(), false)
-              + " ([^.,;:0-9]* [0-9]+)(, [^.,;:0-9]* [0-9]+)*)*"
-              // 15: items?
-              + "(, " + Resources.get("plugin.battle.has", getLocale(), false)
-              + " (([0-9]+ )*[^;,.:0-9]+)(, ([0-9]+ )*[^;,.:0-9]+)*)*" + "([,;.].*)");
+                  // 3: number 4:race
+                  + ", ([0-9]+) ([^,;.()]+)"
+                  // 5: hero?
+                  + "(, "
+                  + Resources.get("plugin.battle.hero", getLocale(), false)
+                  + ")*"
+                  // 6:combat status, 8: health?, 10: hunger?
+                  + ", ([^,;.()]+)( \\(([^,;.)]+)(, ([^,;.)]+))*\\))*"
+                  // 11:guarding?
+                  + "(, "
+                  + Resources.get("plugin.battle.guards", getLocale(), false)
+                  + "[^,;.()]*)*"
+                  // 12: skills?
+                  + "(, " + Resources.get("plugin.battle.skills", getLocale(), false)
+                  + " ([^.,;:0-9]* [0-9]+)(, [^.,;:0-9]* [0-9]+)*)*"
+                  // 15: items?
+                  + "(, " + Resources.get("plugin.battle.has", getLocale(), false)
+                  + " (([0-9]+ )*[^;,.:0-9]+)(, ([0-9]+ )*[^;,.:0-9]+)*)*" + "([,;.].*)");
       skillPattern = Pattern.compile(" *(\\p{L}[^0-9]*[^ ]) ([0-9]+) *");
       itemPattern = Pattern.compile(" *(([0-9]+) )*(\\p{L}[^0-9]*[^ ]) *"); // \p{L}: letter
       overviewPattern =
           Pattern.compile(" *" + Resources.get("plugin.battle.host", getLocale(), false)
-              // 1: number, 2: id
+          // 1: number, 2: id
               + " *([0-9]+)\\(([^)]*)\\): "
               // 3: first row, 4: second row?
               + "([0-9]+)(\\+([0-9]+)(\\+([0-9]+)(\\+([0-9]+))*)*)*");
@@ -1494,7 +1495,7 @@ public class BattleInfo {
         if (und > 0
             && (faction.substring(0, und).matches(".*\\(([^)]{1,4})\\) ") || faction.substring(0,
                 und).matches(
-                    Resources.get("plugin.battle.pattern.anunknownfaction", getLocale(), false)))) {
+                Resources.get("plugin.battle.pattern.anunknownfaction", getLocale(), false)))) {
           addStarter(faction.substring(0, und));
           addStarter(faction.substring(und + 4));
         } else {
@@ -1681,6 +1682,17 @@ public class BattleInfo {
     int maxStrikes;
     int avgStrikes;
 
+    public void add(HitInfo hits) {
+      minHits += hits.minHits;
+      minKills += hits.minKills;
+      minStrikes += hits.minStrikes;
+      avgHits += hits.avgHits;
+      avgKills += hits.avgKills;
+      avgStrikes += hits.avgStrikes;
+      maxHits += hits.maxHits;
+      maxKills += hits.maxKills;
+      maxStrikes += hits.maxStrikes;
+    }
   }
 
   interface Builder {
@@ -1944,7 +1956,7 @@ public class BattleInfo {
       killedAll = new boolean[sides.size()];
 
       catapultVictims = new int[sides.size()];
-      spellVictims = new int[sides.size()*2];
+      spellVictims = new int[sides.size() * 2];
       healed = new int[sides.size()];
       revived = new int[sides.size()];
       raised = new int[sides.size()];
@@ -2012,8 +2024,8 @@ public class BattleInfo {
               if (info.getDead() > 0) {
                 spellVictims[sideNum] += info.getDead();
               }
-              if (info.getAmount()>0) {
-                spellVictims[sides.size()+sideNum] += info.getAmount();
+              if (info.getAmount() > 0) {
+                spellVictims[sides.size() + sideNum] += info.getAmount();
               }
             }
           }
@@ -2139,11 +2151,11 @@ public class BattleInfo {
           hits.avgKills += info.kills;
           hits.minStrikes +=
               (info.getPersons() - info.getFallen() - info.getRun())
-              * (getMaxRound() - (pKilledAll ? 1 : 0)) * (info.isHero() ? heroFactor : 1);
+                  * (getMaxRound() - (pKilledAll ? 1 : 0)) * (info.isHero() ? heroFactor : 1);
           hits.avgStrikes +=
               (info.getPersons() - (info.getFallen() + info.getRun()) / 2)
-              * (info.isHero() ? heroFactor : 1)
-              * ((getMaxRound() + (pTacticWon ? 1 : 0)) * 2 - (pKilledAll ? 1 : 0)) / 2;
+                  * (info.isHero() ? heroFactor : 1)
+                  * ((getMaxRound() + (pTacticWon ? 1 : 0)) * 2 - (pKilledAll ? 1 : 0)) / 2;
         } else {
           hits.avgHits += (int) Math.round(item.getAmount() / (double) totalWeapons * info.hits);
           hits.avgKills += (int) Math.round(item.getAmount() / (double) totalWeapons * info.kills);
@@ -2156,7 +2168,7 @@ public class BattleInfo {
         hits.maxHits += info.hits;
         hits.maxStrikes +=
             Math.min(item.getAmount(), info.getPersons()) * (getMaxRound() + (pTacticWon ? 1 : 0))
-            * (info.isHero() ? heroFactor : 1);
+                * (info.isHero() ? heroFactor : 1);
         hits.maxKills += info.kills;
       }
     }
@@ -2212,7 +2224,7 @@ public class BattleInfo {
       builder.setObject(world.getRegion(coordinate));
       builder.append(
           Resources.get("plugin.battle.tostring.battle", world.getRegion(coordinate) != null
-          ? world.getRegion(coordinate).toString() : ("??? " + coordinate))).append("\n");
+              ? world.getRegion(coordinate).toString() : ("??? " + coordinate))).append("\n");
 
       if (appendMessages) {
         // // REPORT
@@ -2253,14 +2265,17 @@ public class BattleInfo {
         // }
         builder.append("\n");
 
+        builder.setLevel(3);
+        builder.append(Resources.get("plugin.battle.tostring.overview", side.size())).append("\n");
+
         for (int hostNum : side) {
           // //// HOST X: 1+2+3+4=5
-          builder.setLevel(3);
+          builder.setLevel(4);
           builder.append(Resources
               .get("plugin.battle.tostring.host", String.format("%2d", hostNum)));
           HostInfo hostInfo = hosts.get(hostNum);
-          builder.append("(").append(hostInfo.getAbbrev()).append(",").append(hostInfo.getId())
-          .append("): ");
+          builder.append(" (").append(hostInfo.getAbbrev()).append(",").append(hostInfo.getId())
+              .append("): ");
           show(builder, hostInfo.getRows()[0]);
           builder.append("; ");
           builder.append(dead[sideNum][hostNum + 1]).append(" ").append(
@@ -2271,9 +2286,9 @@ public class BattleInfo {
               Resources.get("plugin.battle.tostring.survived"));
           builder.append("\n");
 
-          builder.setLevel(4);
+          builder.setLevel(5);
           builder.append(hostInfo.getName()).append("(").append(hostInfo.getAbbrev()).append(")")
-          .append("\n");
+              .append("\n");
           boolean first = true;
           builder.append(Resources.get("plugin.battle.attacks"));
           for (Integer num : hostInfo.getAttacked()) {
@@ -2359,6 +2374,21 @@ public class BattleInfo {
             builder.append("\n");
 
             if (round == 0) {
+              int[][] stats = new int[statuses.size()][3];
+              int r = 0;
+              for (String status : statuses.keySet()) {
+                for (UnitInfo unitInfo : allUnits.values()) {
+                  if (side.contains(unitInfo.getHost())
+                      && unitInfo.getCombatStatus().equals(status)) {
+                    stats[r][0] += unitInfo.getFallen();
+                    stats[r][1] += unitInfo.getRun();
+                    stats[r][2] +=
+                        unitInfo.getAlive() >= 0 ? unitInfo.getAlive() : unitInfo.getPersons();
+                  }
+                }
+                ++r;
+              }
+              r = 0;
               for (String status : statuses.keySet()) {
                 // ////// COMBAT STATUS
                 boolean hasStatusNode = false;
@@ -2367,7 +2397,16 @@ public class BattleInfo {
                       && unitInfo.getCombatStatus().equals(status)) {
                     if (!hasStatusNode) {
                       builder.setLevel(4);
-                      builder.append(status).append("\n");
+                      builder.append(status);
+
+                      builder.append(", ").append(stats[r][0]).append(" ").append(
+                          Resources.get("plugin.battle.tostring.dead"));
+                      builder.append(", ").append(stats[r][1]).append(" ").append(
+                          Resources.get("plugin.battle.tostring.fled"));
+                      builder.append(", ").append(stats[r][2]).append(" ").append(
+                          Resources.get("plugin.battle.tostring.survived"));
+
+                      builder.append("\n");
                       hasStatusNode = true;
                     }
                     // ////// UNIT abc 1 persons 1 dead 2 fled 3 survived etc.
@@ -2376,6 +2415,7 @@ public class BattleInfo {
                         tacticWon[sideNum]);
                   }
                 }
+                ++r;
               }
             }
 
@@ -2389,6 +2429,20 @@ public class BattleInfo {
               show(builder, hostInfo.getRows()[round]);
               builder.append("\n");
               if (round == 0) {
+                int[][] stats = new int[statuses.size()][3];
+                int r = 0;
+                for (String status : statuses.keySet()) {
+                  for (UnitInfo unitInfo : hostInfo.getUnits()) {
+                    if (unitInfo.getCombatStatus().equals(status)) {
+                      stats[r][0] += unitInfo.getFallen();
+                      stats[r][1] += unitInfo.getRun();
+                      stats[r][2] +=
+                          unitInfo.getAlive() >= 0 ? unitInfo.getAlive() : unitInfo.getPersons();
+                    }
+                  }
+                  ++r;
+                }
+                r = 0;
                 for (String status : statuses.keySet()) {
                   // ////// COMBAT STATUS
                   boolean hasStatusNode = false;
@@ -2396,7 +2450,16 @@ public class BattleInfo {
                     if (unitInfo.getCombatStatus().equals(status)) {
                       if (!hasStatusNode) {
                         builder.setLevel(5);
-                        builder.append(status).append("\n");
+                        builder.append(status);
+
+                        builder.append(", ").append(stats[r][0]).append(" ").append(
+                            Resources.get("plugin.battle.tostring.dead"));
+                        builder.append(", ").append(stats[r][1]).append(" ").append(
+                            Resources.get("plugin.battle.tostring.fled"));
+                        builder.append(", ").append(stats[r][2]).append(" ").append(
+                            Resources.get("plugin.battle.tostring.survived"));
+
+                        builder.append("\n");
                         hasStatusNode = true;
                       }
                       // ////// UNIT abc 1 persons 1 dead 2 fled 3 survived
@@ -2405,6 +2468,7 @@ public class BattleInfo {
                           killedAll[sideNum], tacticWon[sideNum]);
                     }
                   }
+                  ++r;
                 }
               }
             }
@@ -2425,7 +2489,7 @@ public class BattleInfo {
         for (int hostNum : side) {
           builder.append(
               Resources.get("plugin.battle.tostring.host", String.format("%2d", hostNum))).append(
-                  ": ");
+              ": ");
           builder.append(dead[sideNum][hostNum + 1]).append(" ").append(
               Resources.get("plugin.battle.tostring.dead"));
           builder.append(", ").append(fled[sideNum][hostNum + 1]).append(" ").append(
@@ -2457,22 +2521,26 @@ public class BattleInfo {
         if (spellVictims[sideNum] > 0 || mages[sideNum].size() > 0 || failed[sideNum] > 0
             || cast[sideNum] > 0) {
           builder.append(Resources.get("plugin.battle.tostring.spellvictims",
-              spellVictims[sideNum], mages[sideNum].size(), failed[sideNum], cast[sideNum], spellVictims[sides.size()+sideNum]));
+              spellVictims[sideNum], mages[sideNum].size(), failed[sideNum], cast[sideNum],
+              spellVictims[sides.size() + sideNum]));
           builder.append("\n");
           for (UnitInfo mage : mages[sideNum]) {
             builder.setLevel(4);
             show(builder, mage, true, killedAll[sideNum], tacticWon[sideNum]);
-            for (SpellInfo spellInfo: spells.values()){
+            for (SpellInfo spellInfo : spells.values()) {
               if (spellInfo.getUnit().equals(mage.getUnit())) {
                 builder.setLevel(5);
-                builder.append(Resources.get("plugin.battle.tostring.spellround", spellInfo.getRound(),spellInfo.getName()));
-                if (spellInfo.getAmount()>0) {
-                  builder.append(" ").append(Resources.get("plugin.battle.tostring.spellamount", spellInfo.getAmount()));
+                builder.append(Resources.get("plugin.battle.tostring.spellround", spellInfo
+                    .getRound(), spellInfo.getName()));
+                if (spellInfo.getAmount() > 0) {
+                  builder.append(" ").append(
+                      Resources.get("plugin.battle.tostring.spellamount", spellInfo.getAmount()));
                 }
-                if (spellInfo.getDead()>0) {
-                  builder.append(" ").append(Resources.get("plugin.battle.tostring.spelldead", spellInfo.getDead()));
+                if (spellInfo.getDead() > 0) {
+                  builder.append(" ").append(
+                      Resources.get("plugin.battle.tostring.spelldead", spellInfo.getDead()));
                 }
-                if(!spellInfo.isCompleted()) {
+                if (!spellInfo.isCompleted()) {
                   builder.append(" ").append(Resources.get("plugin.battle.tostring.fumble"));
                 }
                 builder.append("\n");
@@ -2495,21 +2563,53 @@ public class BattleInfo {
           // ////// hits: 1/2/3, kills: 1/2/3, strikes 1/2/3, accuracy: 1%/2%/3%
           builder.setLevel(4);
           HitInfo total = new HitInfo();
+          HitInfo front = new HitInfo();
+          HitInfo rear = new HitInfo();
+          Set<ItemType> frontWeapons = new HashSet<ItemType>();
+          Set<ItemType> rangedWeapons = new HashSet<ItemType>();
           for (Entry<ItemType, HitInfo> entry : sideHits[sideNum].entrySet()) {
             HitInfo hits = entry.getValue();
             builder.append(entry.getKey()).append(":");
-            total.minHits += hits.minHits;
-            total.minKills += hits.minKills;
-            total.minStrikes += hits.minStrikes;
-            total.avgHits += hits.avgHits;
-            total.avgKills += hits.avgKills;
-            total.avgStrikes += hits.avgStrikes;
-            total.maxHits += hits.maxHits;
-            total.maxKills += hits.maxKills;
-            total.maxStrikes += hits.maxStrikes;
+            if (entry.getKey().getCategory() != null) {
+              if (entry.getKey().getCategory().isDescendant(
+                  world.rules.getItemCategory(EresseaConstants.C_RANGED_WEAPONS))) {
+                rear.add(hits);
+                rangedWeapons.add(entry.getKey());
+              } else if (entry.getKey().getCategory().isDescendant(
+                  world.rules.getItemCategory(EresseaConstants.C_WEAPONS))) {
+                front.add(hits);
+                frontWeapons.add(entry.getKey());
+              }
+            }
+
+            total.add(hits);
             show(builder, hits);
           }
           if (sideHits[sideNum].entrySet().size() > 1) {
+            StringBuilder frontString = new StringBuilder(" (");
+            for (ItemType type : frontWeapons) {
+              if (frontString.length() > 2) {
+                frontString.append(", ");
+              }
+              frontString.append(type.getName());
+            }
+            frontString.append(")");
+            builder.append(Resources.get("plugin.battle.tostring.melee")).append(
+                frontString.toString()).append(": ");
+            show(builder, front);
+
+            StringBuilder rangedString = new StringBuilder(" (");
+            for (ItemType type : rangedWeapons) {
+              if (rangedString.length() > 2) {
+                rangedString.append(", ");
+              }
+              rangedString.append(type.getName());
+            }
+            rangedString.append(")");
+            builder.append(Resources.get("plugin.battle.tostring.ranged")).append(
+                rangedString.toString()).append(": ");
+            show(builder, rear);
+
             builder.append(Resources.get("plugin.battle.tostring.total")).append(": ");
             show(builder, total);
           }
@@ -2638,16 +2738,16 @@ public class BattleInfo {
 
     private void show(Builder builder, HitInfo hits) {
       builder.append(hits.minHits).append("/").append(hits.avgHits).append("/")
-      .append(hits.maxHits).append(" ").append(Resources.get("plugin.battle.tostring.hits"));
+          .append(hits.maxHits).append(" ").append(Resources.get("plugin.battle.tostring.hits"));
       builder.append(", ").append(hits.minKills).append("/").append(hits.avgKills).append("/")
-      .append(hits.maxKills).append(" ").append(Resources.get("plugin.battle.tostring.kills"));
+          .append(hits.maxKills).append(" ").append(Resources.get("plugin.battle.tostring.kills"));
       builder.append(", ").append(hits.minStrikes).append("/").append(hits.avgStrikes).append("/")
-      .append(hits.maxStrikes).append(" ").append(
-          Resources.get("plugin.battle.tostring.strikes"));
+          .append(hits.maxStrikes).append(" ").append(
+              Resources.get("plugin.battle.tostring.strikes"));
       builder.append("; ").append(
           String.format("%02.1f%%/%02.1f%%/%02.1f%%",
               100 * hits.minHits / (double) hits.maxStrikes, 100 * hits.avgHits
-              / (double) hits.avgStrikes, 100 * hits.maxHits / (double) hits.minStrikes));
+                  / (double) hits.avgStrikes, 100 * hits.maxHits / (double) hits.minStrikes));
 
       builder.append("\n");
     }

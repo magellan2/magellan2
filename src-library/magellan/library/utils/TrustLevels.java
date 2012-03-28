@@ -23,9 +23,9 @@ import magellan.library.GameData;
 import magellan.library.gamebinding.EresseaConstants;
 
 /**
- * DOCUMENT ME!
+ * A class providing useful methods on handling factions' trustlevels.
  * 
- * @author Ulrich Küster A class providing useful methods on handling factions' trustlevels
+ * @author Ulrich Küster
  */
 public class TrustLevels {
   /**
@@ -52,12 +52,12 @@ public class TrustLevels {
         if (f.getID().equals(EntityID.createEntityID(-1, data.base))) { // monster or disguised
 
           if (!f.isTrustLevelSetByUser()) {
-            f.setTrustLevel(-20);
+            f.setTrustLevel(Faction.TL_DEFAULT - Faction.TL_PRIVILEGED / 5);
           }
         } else if (f.getID().equals(EntityID.createEntityID(0, data.base))) { // faction disguised
 
           if (!f.isTrustLevelSetByUser()) {
-            f.setTrustLevel(-100);
+            f.setTrustLevel(Faction.TL_DEFAULT - Faction.TL_PRIVILEGED);
           }
         } else if (f.isPrivileged())
           if (f.getAllies() != null) { // privileged
@@ -82,8 +82,10 @@ public class TrustLevels {
         if (f.isPrivileged() && f.getAlliance() != null) {
           for (magellan.library.ID allyID : f.getAlliance().getFactions()) {
             Faction ally = data.getFaction(allyID);
-            if (ally != null && ally != f && !ally.isTrustLevelSetByUser()) {
-              ally.setTrustLevel(Faction.TL_PRIVILEGED - 1);
+            if (ally != null && ally != f && !ally.isTrustLevelSetByUser()
+                && ally.getPassword() == null) {
+              ally.setTrustLevel(Faction.TL_DEFAULT + (Faction.TL_PRIVILEGED - Faction.TL_DEFAULT)
+                  * 9 / 10);
             }
           }
         }

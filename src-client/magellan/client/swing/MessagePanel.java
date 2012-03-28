@@ -670,7 +670,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       }
 
       if (section == null) {
-        section = Resources.get("messagepanel.node.others");
+        section = "others"; // Resources.get("messagepanel.node.others");
       }
 
       List<Message> l = categories.get(section);

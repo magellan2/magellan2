@@ -35,7 +35,9 @@ public class UnitFactionTLFilter extends UnitFilter {
   }
 
   /**
-   * DOCUMENT-ME
+   * Accepts units with trustlevel between (or including) specified min an max.
+   * 
+   * @see magellan.library.utils.filters.UnitFilter#acceptUnit(magellan.library.Unit)
    */
   @Override
   public boolean acceptUnit(Unit u) {
@@ -45,28 +47,28 @@ public class UnitFactionTLFilter extends UnitFilter {
   }
 
   /**
-   * DOCUMENT-ME
+   * @return minimum trustlevel
    */
   public int getMinTL() {
     return minTL;
   }
 
   /**
-   * DOCUMENT-ME
+   * @return maximum trustlevel
    */
   public int getMaxTL() {
     return maxTL;
   }
 
   /**
-   * DOCUMENT-ME
+   * Set minimal accepted trustlevel.
    */
   public void setMinTL(int minTL) {
     this.minTL = minTL;
   }
 
   /**
-   * DOCUMENT-ME
+   * Set maximal accepted trustlevel.
    */
   public void setMaxTL(int maxTL) {
     this.maxTL = maxTL;

@@ -718,6 +718,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
       for (Message msg : faction.getMessages()) {
         if (msg.getAttributes() == null) {
+          log.warn("message without attributes: " + msg.getID());
           continue;
         }
 
@@ -906,6 +907,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               if ((actM.getMessageType() != null) && (actM.getMessageType().getID() != null)) {
                 int msgID = (actM.getMessageType().getID()).intValue();
                 if (msgID == 1682429624) {
+                  if (actM.getAttributes() == null) {
+                    log.warn("message without attributes: " + actM.getID());
+                    continue;
+                  }
                   // Almosen
                   // check, ob from unsere Faction ist
                   String from = actM.getAttributes().get("from");

@@ -89,8 +89,8 @@ public abstract class AbstractPlugInLoader<T> {
     // String classpath = System.getProperty("java.class.path");
     // classpath += System.getProperty("path.separator")+path;
     StringTokenizer st =
-      new StringTokenizer(System.getProperty("java.class.path"), System
-          .getProperty("path.separator"));
+        new StringTokenizer(System.getProperty("java.class.path"), System
+            .getProperty("path.separator"));
 
     while (st.hasMoreTokens()) {
       paths.add(st.nextToken());
@@ -139,15 +139,19 @@ public abstract class AbstractPlugInLoader<T> {
 
           for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
             ZipEntry entry = e.nextElement();
+            AbstractPlugInLoader.log.finer("entry " + entry.getName());
 
             if (!entry.isDirectory() && entry.getName().toLowerCase().endsWith(postfix)) {
               // class file found!
               // check whether it implements ExternalModule
               String name = entry.getName();
               name = name.substring(0, name.indexOf(".class")).replace('\\', '.').replace('/', '.');
+              // AbstractPlugInLoader.log.fine("entry1 " + name);
 
               Class<?> foundClass = resLoader.loadClass(name);
+              // AbstractPlugInLoader.log.fine("entry2 " + foundClass);
               Class<?> interfaces[] = foundClass.getInterfaces();
+              // AbstractPlugInLoader.log.fine("entry3 " + interfaces.length);
               boolean found = false;
 
               for (Class<?> ainterface : interfaces) {
@@ -225,7 +229,7 @@ public abstract class AbstractPlugInLoader<T> {
     // a) read possible paths from ResourcePathClassLoader
     // b) read property java.class.path and iterate over the entries
     if (settings.getProperty("ExternalModuleLoader.searchResourcePathClassLoader", "true").equals(
-    "true")) {
+        "true")) {
       paths.addAll(getPathsFromResourcePathClassLoader(resLoader, settings));
     }
 

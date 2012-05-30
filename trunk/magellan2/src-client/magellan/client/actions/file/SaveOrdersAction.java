@@ -15,6 +15,7 @@ import javax.swing.KeyStroke;
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.OrderWriterDialog;
+import magellan.library.Faction;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.Resources;
@@ -111,10 +112,22 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
   }
 
   private void showDialog() {
-    OrderWriterDialog d =
-        new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
-            .getSelectedRegions().values());
-    d.setVisible(true);
+    Faction faction = null;
+    for (Faction f : client.getData().getFactions()) {
+      if (f.isPrivileged()) {
+        faction = f;
+        break;
+      }
+    }
+    if (faction == null) {
+      JOptionPane.showMessageDialog(client, Resources
+          .get("actions.saveordersaction.dialog.nofaction.message"));
+    } else {
+      OrderWriterDialog d =
+          new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
+              .getSelectedRegions().values());
+      d.setVisible(true);
+    }
   }
 
   private void execMail() {

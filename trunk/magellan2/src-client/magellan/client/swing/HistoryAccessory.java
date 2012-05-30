@@ -49,13 +49,15 @@ public class HistoryAccessory extends JPanel {
     settings = setting;
     chooser = fileChooser;
 
-    if (PropertiesHelper.getList(settings, "HistoryAccessory.directoryHistory").isEmpty()) {
-      PropertiesHelper.setList(settings, "HistoryAccessory.directoryHistory", Collections
-          .singletonList(fileChooser.getCurrentDirectory()));
+    if (PropertiesHelper.getList(settings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY)
+        .isEmpty()) {
+      PropertiesHelper.setList(settings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY,
+          Collections.singletonList(fileChooser.getCurrentDirectory()));
     }
 
     // load history fifo buffer
-    for (String dirName : PropertiesHelper.getList(settings, "HistoryAccessory.directoryHistory")) {
+    for (String dirName : PropertiesHelper.getList(settings,
+        PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY)) {
       File dir = new File(dirName);
 
       if (dir.exists() && dir.isDirectory()) {
@@ -121,7 +123,7 @@ public class HistoryAccessory extends JPanel {
     }
 
     Collections.reverse(dirs);
-    PropertiesHelper.setList(settings, "HistoryAccessory.directoryHistory", dirs);
+    PropertiesHelper.setList(settings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY, dirs);
   }
 }
 

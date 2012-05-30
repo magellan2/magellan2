@@ -49,7 +49,9 @@ public class FileNameGenerator {
    * Returns the generator
    * 
    * @throws IllegalStateException if instance hasn't been called before.
+   * @deprecated Who needs this?
    */
+  @Deprecated
   public static FileNameGenerator getInstance() {
     if (FileNameGenerator.gen == null)
       throw new IllegalStateException("not initialized");
@@ -94,8 +96,10 @@ public class FileNameGenerator {
     int i = feed.getRound();
     if (i > -1) {
       res = res.replaceAll("\\{round\\}", String.valueOf(i));
+      res = res.replaceAll("\\{round+1\\}", String.valueOf(i));
     } else {
       res = res.replaceAll("\\{round\\}", null);
+      res = res.replaceAll("\\{round+1\\}", null);
     }
     res = res.replaceAll("\\{group\\}", feed.getGroup());
 

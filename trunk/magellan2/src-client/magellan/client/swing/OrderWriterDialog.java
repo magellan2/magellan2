@@ -17,7 +17,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,25 +38,36 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESedeKeySpec;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
@@ -85,6 +95,9 @@ import magellan.library.utils.logging.Logger;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 /**
  * A GUI for writing orders to a file or copy them to the clipboard. This class can be used as a
  * stand-alone application or can be integrated as dialog into another application.
@@ -92,43 +105,68 @@ import org.apache.commons.mail.MultiPartEmail;
 public class OrderWriterDialog extends InternationalizedDataDialog {
   private static final Logger log = Logger.getInstance(OrderWriterDialog.class);
 
-  final String defaultEmail = "eressea-server@eressea.kn-bremen.de";
-  final String defaultSubject = "Eressea Befehle";
+  private static final int FILE_PANEL = 0;
+  private static final int CLIPBOARD_PANEL = 1;
+  private static final int EMAIL_PANEL = 2;
+
+  protected static final int DEFAULT_MAILSERVER_PORT = 25;
+  protected static final int DEFAULT_FIXED_WIDTH = 76;
+
+  protected static final String DEFAULT_EMAIL = "eressea-server@eressea.de";
+  protected static final String DEFAULT_SUBJECT = "Eressea Befehle";
 
   private boolean standAlone = false;
-  private Collection<Region> regions = null;
-  private JComboBox cmbOutputFile = null;
-  private JCheckBox chkUseSettingsFromCR = null;
-  private JCheckBox chkFixedWidth = null;
-  private JTextField txtFixedWidth = null;
-  private JCheckBox chkECheckComments = null;
-  private JCheckBox chkRemoveSCComments = null;
-  private JCheckBox chkRemoveSSComments = null;
-  private JCheckBox chkConfirmedOnly = null;
-  private JCheckBox chkSelRegionsOnly = null;
-  private JCheckBox chkWriteUnitTagsAsVorlageComment = null;
-  private JCheckBox chkCCToSender = null;
-  private JCheckBox chkUseSSL = null;
-  private JCheckBox chkUseTLS = null;
-  private JComboBox cmbFaction = null;
-  private JComboBox cmbGroup = null;
-  private JTextField txtMailServer = null;
-  private JTextField txtMailServerPort = null;
-  private JTextField txtMailRecipient = null;
-  private JTextField txtMailRecipient2 = null;
-  private JTextField txtMailSender = null;
-  private JTextField txtMailSubject = null;
-  private JTextField txtServerUsername = null;
-  private JPasswordField txtServerPassword = null;
-  private JCheckBox chkUseAuth = null;
-  private JCheckBox chkAskPassword = null;
+  private Collection<Region> regions;
 
-  private JButton sendButton;
+  // file
+  private JComboBox cmbOutputFile;
+  private JTextField txtOutputFileGenerated;
+
+  // email
+  private JCheckBox chkUseSettingsFromCR;
+  private JCheckBox chkCCToSender;
+  private JCheckBox chkUseSSL;
+  private JCheckBox chkUseTLS;
+  private JTextField txtMailServer;
+  private JTextField txtMailServerPort;
+  private JTextField txtMailRecipient;
+  private JTextField txtMailRecipient2;
+  private JTextField txtMailSender;
+  private JTextField txtMailSubject;
+  private JTextField txtServerUsername;
+  private JPasswordField txtServerPassword;
+  private JCheckBox chkUseAuth;
+  private JCheckBox chkAskPassword;
   private JLabel lblServerUsername;
   private JLabel lblServerPassword;
   private JLabel lblMailRecipient;
   private JLabel lblMailSubject;
   private JLabel lblMailRecipient2;
+
+  // all
+  private JCheckBox chkFixedWidth[] = new JCheckBox[3];
+  private JTextField txtFixedWidth[] = new JTextField[3];
+  private JCheckBox chkECheckComments[] = new JCheckBox[3];
+  private JCheckBox chkRemoveSCComments[] = new JCheckBox[3];
+  private JCheckBox chkRemoveSSComments[] = new JCheckBox[3];
+  private JCheckBox chkConfirmedOnly[] = new JCheckBox[3];
+  private JCheckBox chkSelRegionsOnly[] = new JCheckBox[3];
+  private JCheckBox chkWriteUnitTagsAsVorlageComment[] = new JCheckBox[3];
+
+  private JComboBox cmbFactions;
+  private JComboBox cmbGroups;
+
+  private Container ancestor;
+
+  private JCheckBox chkAutoFileName;
+
+  private Properties localSettings;
+
+  private String algorithm = "DESede";
+
+  private Cipher cipher;
+
+  private SecretKey key;
 
   /**
    * Create a stand-alone instance of OrderWriterDialog.
@@ -169,6 +207,39 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void init() {
+    localSettings = new Properties();
+    for (Entry<Object, Object> entry : settings.entrySet()) {
+      if (((String) entry.getKey()).startsWith(PropertiesHelper.ORDEREDITOR_PREFIX)) {
+        localSettings.put(entry.getKey(), entry.getValue());
+      }
+    }
+    List<String> history =
+        PropertiesHelper.getList(settings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY);
+    PropertiesHelper.setList(localSettings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY,
+        history);
+
+    try {
+      String myEncryptionKey = "Magellan2!SuperSecretKey";
+      byte[] keyAsBytes = myEncryptionKey.getBytes("UTF8");
+      DESedeKeySpec myKeySpec = new DESedeKeySpec(keyAsBytes);
+      SecretKeyFactory mySecretKeyFactory = SecretKeyFactory.getInstance(algorithm);
+      cipher = Cipher.getInstance(algorithm);
+      key = mySecretKeyFactory.generateSecret(myKeySpec);
+    } catch (Exception e) {
+      log.error("Could not initialize cipher!", e);
+      cipher = null;
+    }
+
+    Faction faction = null;
+    for (Faction f : data.getFactions()) {
+      if (f.isPrivileged()) {
+        faction = f;
+        break;
+      }
+    }
+    // if (faction == null)
+    // throw new RuntimeException("no privileged faction in report");
+
     addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
@@ -183,7 +254,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         quit(false);
       }
     });
-    setContentPane(getMainPane());
+    JComponent mainPane = getMainPane();
+    ancestor = mainPane.getTopLevelAncestor();
+
+    setContentPane(mainPane);
     setTitle(Resources.get("orderwriterdialog.window.title"));
     pack();
     // setSize(550, 580);
@@ -191,109 +265,35 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     SwingUtils.setLocation(this, settings, "OrderWriterDialog.x", "OrderWriterDialog.y");
   }
 
-  private Container getMainPane() {
+  private JComponent getMainPane() {
+
     JPanel mainPanel = new JPanel(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
-    mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
 
-    c.anchor = GridBagConstraints.CENTER;
-    c.gridx = 0;
-    c.gridy = 0;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.weightx = 0.1;
-    c.weighty = 0.0;
-    mainPanel.add(getFilePanel(), c);
-
-    c.anchor = GridBagConstraints.NORTH;
-    c.gridx = 1;
-    c.gridy = 0;
-    c.gridwidth = 1;
-    c.gridheight = 4;
-    c.fill = GridBagConstraints.NONE;
-    c.insets = new Insets(8, 5, 0, 0);
-    c.weightx = 0.0;
-    c.weighty = 0.0;
-    mainPanel.add(getButtonPanel(), c);
-
-    c.anchor = GridBagConstraints.CENTER;
-    c.gridx = 0;
-    c.gridy = 2;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.insets = new Insets(0, 0, 0, 0);
-    c.weightx = 0.0;
-    c.weighty = 0.0;
-    mainPanel.add(getGroupPanel(), c);
-
-    c.anchor = GridBagConstraints.CENTER;
+    // insert groups first, so getFactionPanel can call setGroups
+    c.anchor = GridBagConstraints.NORTHWEST;
     c.gridx = 0;
     c.gridy = 1;
     c.gridwidth = 1;
     c.gridheight = 1;
     c.fill = GridBagConstraints.HORIZONTAL;
-    c.insets = new Insets(0, 0, 0, 0);
-    c.weightx = 0.0;
+    c.insets = new Insets(14, 4, 4, 4);
+    c.weightx = 0.1;
     c.weighty = 0.0;
+    mainPanel.add(getGroupPanel(), c);
+
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.gridx = 0;
+    c.gridy = 0;
     mainPanel.add(getFactionPanel(), c);
 
-    c.anchor = GridBagConstraints.CENTER;
-    c.gridx = 0;
-    c.gridy = 3;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.insets = new Insets(0, 0, 0, 0);
-    c.weightx = 0.0;
-    c.weighty = 0.0;
-    mainPanel.add(getControlsPanel(), c);
+    JPanel buttonPanel = new JPanel(new GridLayout2(0, 1, 0, 6));
 
-    c.anchor = GridBagConstraints.CENTER;
-    c.gridx = 0;
-    c.gridy = 4;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.BOTH;
-    c.insets = new Insets(0, 0, 0, 0);
-    c.weightx = 0.0;
-    c.weighty = 0.0;
-    mainPanel.add(getMailPanel(), c);
-
-    factionChanged();
-
-    return mainPanel;
-  }
-
-  private Container getButtonPanel() {
-    JButton saveButton = new JButton(Resources.get("orderwriterdialog.btn.save.caption"));
-    saveButton.addActionListener(new ActionListener() {
+    JButton cancelButton = new JButton(Resources.get("orderwriterdialog.btn.cancel.caption"));
+    cancelButton.setToolTipText(Resources.get("orderwriterdialog.btn.cancel.tooltip", false));
+    cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        saveToFile();
-      }
-    });
-
-    JButton clipboardButton = new JButton(Resources.get("orderwriterdialog.btn.clipboard.caption"));
-    clipboardButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        copyToClipboard();
-      }
-    });
-
-    JButton mailButton = new JButton(Resources.get("orderwriterdialog.btn.mail.caption"));
-    mailButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent ae) {
-        sendMail();
-      }
-    });
-    sendButton = mailButton;
-
-    JButton autoFileNameButton =
-        new JButton(Resources.get("orderwriterdialog.btn.autofilename.caption"));
-    autoFileNameButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent ae) {
-        autoFileName();
+        quit(false);
       }
     });
 
@@ -305,16 +305,140 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     });
 
-    JButton cancelButton = new JButton(Resources.get("orderwriterdialog.btn.cancel.caption"));
-    cancelButton.setToolTipText(Resources.get("orderwriterdialog.btn.cancel.tooltip", false));
-    cancelButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        quit(false);
+    buttonPanel.add(cancelButton);
+    buttonPanel.add(closeButton);
+
+    c.gridx = 1;
+    c.gridy = 0;
+    c.gridheight = 2;
+    c.weightx = 0.01;
+    mainPanel.add(buttonPanel, c);
+
+    c.gridx = 0;
+    c.gridy = 2;
+    c.gridwidth = 2;
+    c.gridheight = 1;
+
+    JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
+
+    Component panel = getOptionPanel(FILE_PANEL);
+    tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + FILE_PANEL), panel);
+
+    panel = getOptionPanel(EMAIL_PANEL);
+    tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + EMAIL_PANEL), panel);
+
+    panel = getOptionPanel(CLIPBOARD_PANEL);
+    tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + CLIPBOARD_PANEL), panel);
+
+    mainPanel.add(tabbedPane, c);
+
+    return mainPanel;
+  }
+
+  private Container getOptionPanel(int type) {
+    JPanel mainPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints();
+    mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
+
+    c.gridy = 0;
+
+    if (type == FILE_PANEL) {
+      c.anchor = GridBagConstraints.NORTHWEST;
+      c.gridx = 0;
+      c.gridy++;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.weightx = 0.1;
+      c.weighty = 0.0;
+      mainPanel.add(getFilePanel(), c);
+    }
+
+    if (type == EMAIL_PANEL) {
+      c.anchor = GridBagConstraints.NORTHWEST;
+      c.gridx = 0;
+      c.gridy++;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.fill = GridBagConstraints.BOTH;
+      c.insets = new Insets(0, 0, 0, 0);
+      c.weightx = 0.1;
+      c.weighty = 0.0;
+      mainPanel.add(getMailPanel(), c);
+    }
+    if (type == CLIPBOARD_PANEL) {
+      c.anchor = GridBagConstraints.NORTHWEST;
+      c.gridx = 0;
+      c.gridy++;
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.fill = GridBagConstraints.BOTH;
+      c.insets = new Insets(0, 0, 0, 0);
+      c.weightx = 0.1;
+      c.weighty = 0.0;
+      mainPanel.add(new JPanel(), c);
+    }
+
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.gridx = 0;
+    c.gridy += 2;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0, 0, 0, 0);
+    c.weightx = 0.1;
+    c.weighty = 0.0;
+    final Container controls;
+    mainPanel.add(controls = getControlsPanel(type), c);
+    controls.setVisible(false);
+
+    c.gridy--;
+    c.weightx = 0;
+    c.fill = GridBagConstraints.NONE;
+    final JButton detailsButton;
+    mainPanel.add(detailsButton = new JButton("Details>>"), c);
+    detailsButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        if (detailsButton.getText().contains(">>")) {
+          controls.setVisible(true);
+          detailsButton.setText("Details<<");
+          pack();
+        } else {
+          controls.setVisible(false);
+          detailsButton.setText("Details>>");
+          pack();
+        }
       }
     });
 
+    // if (c.gridy < 4) {
+    c.gridy += 2;
+    c.weighty = 1;
+    mainPanel.add(new JPanel(), c);
+    // }
+
+    c.anchor = GridBagConstraints.NORTH;
+    c.gridwidth = 1;
+    c.gridheight = 3;
+    c.gridx = 1;
+    c.gridy = 0;
+    c.fill = GridBagConstraints.NONE;
+    c.insets = new Insets(8, 5, 5, 5);
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    mainPanel.add(getButtonPanel(type), c);
+
+    factionChanged(null, type);
+
+    return mainPanel;
+  }
+
+  private Container getButtonPanel(final int type) {
+    JPanel buttonPanel = new JPanel(new GridLayout2(0, 1, 0, 6));
+
+    // a hack for writing all faction's orders (useful for testing the eressea server)
     JButton gmButton = new JButton("Save all");
-    if (PropertiesHelper.getBoolean(settings, "GM.enabled", false)) {
+    if (type == FILE_PANEL && PropertiesHelper.getBoolean(localSettings, "GM.enabled", false)) {
       gmButton.setToolTipText(Resources.get("orderwriterdialog.btn.gm.tooltip", false));
       gmButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -322,174 +446,219 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         }
       });
     }
-
-    JPanel buttonPanel = new JPanel(new GridLayout2(0, 1, 0, 6));
-    buttonPanel.add(saveButton);
-    if (PropertiesHelper.getBoolean(settings, "GM.enabled", false)) {
+    if (PropertiesHelper.getBoolean(localSettings, "GM.enabled", false)) {
       buttonPanel.add(gmButton);
     }
-    buttonPanel.add(clipboardButton);
-    buttonPanel.add(mailButton);
-    buttonPanel.add(autoFileNameButton);
-    buttonPanel.add(new JSeparator());
-    buttonPanel.add(cancelButton);
-    buttonPanel.add(closeButton);
 
+    if (type == FILE_PANEL) {
+      JButton saveButton = new JButton(Resources.get("orderwriterdialog.btn.save.caption"));
+      saveButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          saveToFile();
+        }
+      });
+
+      buttonPanel.add(saveButton);
+    }
+
+    if (type == CLIPBOARD_PANEL) {
+      JButton clipboardButton =
+          new JButton(Resources.get("orderwriterdialog.btn.clipboard.caption"));
+      clipboardButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          copyToClipboard();
+        }
+      });
+      buttonPanel.add(clipboardButton);
+    }
+
+    if (type == EMAIL_PANEL) {
+      JButton mailButton = new JButton(Resources.get("orderwriterdialog.btn.mail.caption"));
+      mailButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent ae) {
+          sendMail();
+        }
+      });
+      buttonPanel.add(mailButton);
+    }
+
+    // buttonPanel.add(new JSeparator());
     return buttonPanel;
   }
 
-  private Container getControlsPanel() {
+  private Container getControlsPanel(final int type) {
+    Faction faction = getFaction(type);
+    String suffix = getSuffix(faction, type);
+
     int fixedWidth =
-        Integer.parseInt(settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, "76"));
-    chkFixedWidth =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.wordwrap.caption"), fixedWidth > 0);
-    chkFixedWidth.addActionListener(new ActionListener() {
+        PropertiesHelper.getInteger(localSettings, PropertiesHelper.ORDERWRITER_FIXED_WIDTH
+            + suffix, DEFAULT_FIXED_WIDTH);
+    chkFixedWidth[type] = createCheckBox("wordwrap", null, null, fixedWidth > 0);
+    chkFixedWidth[type].addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        txtFixedWidth.setEnabled(chkFixedWidth.isSelected());
+        txtFixedWidth[type].setEnabled(chkFixedWidth[type].isSelected());
       }
     });
 
     JLabel lblFixedWidth1 = new JLabel(Resources.get("orderwriterdialog.lbl.wordwrapafter"));
-    txtFixedWidth = new JTextField(10);
-    txtFixedWidth.setText("" + Math.abs(fixedWidth));
-    txtFixedWidth.setEnabled(chkFixedWidth.isSelected());
+    txtFixedWidth[type] = new JTextField(10);
+    txtFixedWidth[type].setText("" + Math.abs(fixedWidth));
+    txtFixedWidth[type].setEnabled(chkFixedWidth[type].isSelected());
 
     JLabel lblFixedWidth2 = new JLabel(Resources.get("orderwriterdialog.lbl.wordwrapchars"));
 
     JPanel pnlFixedWidth = new JPanel();
     pnlFixedWidth.add(lblFixedWidth1);
-    pnlFixedWidth.add(txtFixedWidth);
+    pnlFixedWidth.add(txtFixedWidth[type]);
     pnlFixedWidth.add(lblFixedWidth2);
 
-    chkECheckComments =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.addecheckcomments.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS,
-                "true"))).booleanValue());
-    chkRemoveSCComments =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.removesemicoloncomments.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS,
-                "false"))).booleanValue());
-    chkRemoveSSComments =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.removedoubleslashcomments.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS,
-                "false"))).booleanValue());
-    chkConfirmedOnly =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.skipunconfirmedorders.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY,
-                "false"))).booleanValue());
-    chkSelRegionsOnly =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.selectedregions.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS, "false")))
-            .booleanValue());
-    chkSelRegionsOnly.setEnabled((regions != null) && (regions.size() > 0));
-    chkWriteUnitTagsAsVorlageComment =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.writeUnitTagsAsVorlageComment.caption"),
-            (Boolean.valueOf(settings.getProperty(
-                PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT, "false")))
-                .booleanValue());
+    chkECheckComments[type] =
+        createCheckBox("addecheckcomments", PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS,
+            suffix, true);
+    chkRemoveSCComments[type] =
+        createCheckBox("removesemicoloncomments", PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS,
+            suffix, false);
+    chkRemoveSSComments[type] =
+        createCheckBox("removedoubleslashcomments",
+            PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS, suffix, false);
+    chkConfirmedOnly[type] =
+        createCheckBox("skipunconfirmedorders", PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY,
+            suffix, false);
+    chkSelRegionsOnly[type] =
+        createCheckBox("selectedregions", PropertiesHelper.ORDERWRITER_SELECTED_REGIONS, suffix,
+            false);
+    chkSelRegionsOnly[type].setEnabled((regions != null) && (regions.size() > 0));
+    chkWriteUnitTagsAsVorlageComment[type] =
+        createCheckBox("writeUnitTagsAsVorlageComment",
+            PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT, suffix, false);
 
     JPanel pnlCmdSave = new JPanel();
-    pnlCmdSave.setLayout(new BoxLayout(pnlCmdSave, BoxLayout.Y_AXIS));
+    pnlCmdSave.setLayout(new GridBagLayout());
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHEAST,
+            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 1, 1);
     pnlCmdSave.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("orderwriterdialog.border.outputoptions")));
-    pnlCmdSave.add(chkFixedWidth);
-    pnlCmdSave.add(pnlFixedWidth);
-
-    pnlCmdSave.add(chkECheckComments);
-    pnlCmdSave.add(chkRemoveSCComments);
-    pnlCmdSave.add(chkRemoveSSComments);
-    pnlCmdSave.add(chkConfirmedOnly);
-    pnlCmdSave.add(chkSelRegionsOnly);
-    pnlCmdSave.add(chkWriteUnitTagsAsVorlageComment);
+    pnlCmdSave.add(chkFixedWidth[type], c);
+    c.gridy++;
+    pnlCmdSave.add(pnlFixedWidth, c);
+    c.gridy++;
+    pnlCmdSave.add(chkECheckComments[type], c);
+    c.gridy++;
+    pnlCmdSave.add(chkRemoveSCComments[type], c);
+    c.gridy++;
+    pnlCmdSave.add(chkRemoveSSComments[type], c);
+    c.gridy++;
+    pnlCmdSave.add(chkConfirmedOnly[type], c);
+    c.gridy++;
+    pnlCmdSave.add(chkSelRegionsOnly[type], c);
+    c.gridy++;
+    pnlCmdSave.add(chkWriteUnitTagsAsVorlageComment[type], c);
 
     return pnlCmdSave;
   }
 
+  private Group getGroup(int type) {
+    return (Group) cmbGroups.getSelectedItem();
+  }
+
+  private Faction getFaction(int type) {
+    return (Faction) cmbFactions.getSelectedItem();
+  }
+
   private Container getFactionPanel() {
-    cmbFaction = new JComboBox();
+    cmbFactions = new JComboBox();
 
     for (Faction f : data.getFactions()) {
       if (f.isPrivileged()) {
-        cmbFaction.addItem(f);
+        cmbFactions.addItem(f);
       }
     }
 
     Faction f =
-        data.getFaction(EntityID.createEntityID(settings.getProperty(
+        data.getFaction(EntityID.createEntityID(localSettings.getProperty(
             PropertiesHelper.ORDERWRITER_FACTION, "-1"), 10, data.base));
 
     if (f != null) {
-      cmbFaction.setSelectedItem(f);
+      cmbFactions.setSelectedItem(f);
       setGroups(f);
     } else {
-      f = (Faction) cmbFaction.getSelectedItem();
+      f = (Faction) cmbFactions.getSelectedItem();
       setGroups(f);
     }
 
-    cmbFaction.addItemListener(new ItemListener() {
+    cmbFactions.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         // in this situation we need to reinitialize the groups list
-        OrderWriterDialog.log.debug("Item even on faction combobox:" + e);
+        OrderWriterDialog.log.finer("Item event on faction combobox:" + e + " "
+            + cmbFactions.getSelectedItem());
 
         switch (e.getStateChange()) {
         case ItemEvent.SELECTED:
-
           Faction fSel = (Faction) e.getItem();
           setGroups(fSel);
 
+          for (int type = 0; type < 3; ++type) {
+            factionChanged((Faction) e.getItem(), type);
+          }
           break;
 
         case ItemEvent.DESELECTED:
           setGroups(null);
-
+          for (int type = 0; type < 3; ++type) {
+            storeSettings(localSettings, (Faction) e.getItem(), type);
+          }
           break;
         }
 
-        factionChanged();
       }
     });
 
     JPanel pnlCmdSave = new JPanel(new GridLayout(1, 1));
     pnlCmdSave.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("orderwriterdialog.border.faction")));
-    pnlCmdSave.add(cmbFaction);
+    pnlCmdSave.add(cmbFactions);
 
     return pnlCmdSave;
   }
 
   private void setGroups(Faction f) {
-    cmbGroup.removeAllItems();
+    cmbGroups.removeAllItems();
 
     if ((f == null) || (f.getGroups() == null) || f.getGroups().isEmpty())
       return;
 
-    cmbGroup.addItem("");
+    cmbGroups.addItem("");
 
     List<Group> sorted = new ArrayList<Group>(f.getGroups().values());
     Collections.sort(sorted, new NameComparator(null));
 
     for (Group g : sorted) {
-      cmbGroup.addItem(g);
+      cmbGroups.addItem(g);
     }
 
-    cmbGroup.setSelectedItem(null);
+    cmbGroups.setSelectedItem(null);
   }
 
   private Container getGroupPanel() {
-    cmbGroup = new JComboBox();
+    cmbGroups = new JComboBox();
 
     JPanel pnlCmdSave = new JPanel(new GridLayout(1, 1));
     pnlCmdSave.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("orderwriterdialog.border.group")));
-    pnlCmdSave.add(cmbGroup);
+    pnlCmdSave.add(cmbGroups);
 
     return pnlCmdSave;
   }
 
   private Container getFilePanel() {
-    cmbOutputFile =
-        new JComboBox(PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE)
-            .toArray());
+    Faction faction = getFaction(FILE_PANEL);
+    String suffix = getSuffix(faction, FILE_PANEL);
+
+    Object[] list =
+        PropertiesHelper.getList(localSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix)
+            .toArray();
+    cmbOutputFile = new JComboBox(list == null ? new Object[0] : list);
     cmbOutputFile.setEditable(true);
 
     JButton btnOutputFile = new JButton("...");
@@ -498,16 +667,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         String outputFile = getFileName((String) cmbOutputFile.getSelectedItem());
 
         if (outputFile != null) {
-          // delete old entry to prevent to many items...
-          for (int i = 0; i < cmbOutputFile.getItemCount(); i++) {
-            String file = (String) cmbOutputFile.getItemAt(i);
-            if (file.equals(outputFile)) {
-              cmbOutputFile.removeItemAt(i);
-              break;
-            }
-          }
-          cmbOutputFile.insertItemAt(outputFile, 0);
-          cmbOutputFile.setSelectedItem(outputFile);
+          addFileName(outputFile);
         }
       }
     });
@@ -515,40 +675,85 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     JPanel pnlFile = new JPanel(new BorderLayout());
     pnlFile.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("orderwriterdialog.border.outputfile")));
+
     pnlFile.add(cmbOutputFile, BorderLayout.CENTER);
+    cmbOutputFile.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        if (arg0.getActionCommand().equals("comboBoxEdited")) {
+          log.finer(arg0.getActionCommand());
+          updateAutoFileName();
+          addFileName((String) cmbOutputFile.getSelectedItem());
+        }
+      }
+    });
     pnlFile.add(btnOutputFile, BorderLayout.EAST);
-    pnlFile.setPreferredSize(new Dimension(150, cmbOutputFile.getPreferredSize().height * 2));
+
+    JPanel pnl2 = new JPanel(new BorderLayout());
+    pnl2.add(chkAutoFileName =
+        createCheckBox("autofilename", PropertiesHelper.ORDERWRITER_AUTO_FILENAME, suffix, false),
+        BorderLayout.WEST);
+    chkAutoFileName.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        txtOutputFileGenerated.setEnabled(chkAutoFileName.isSelected());
+        updateAutoFileName();
+      }
+    });
+
+    pnl2.add(txtOutputFileGenerated = new JTextField(), BorderLayout.CENTER);
+    txtOutputFileGenerated.setEditable(false);
+    txtOutputFileGenerated.setEnabled(chkAutoFileName.isSelected());
+    updateAutoFileName();
+
+    pnlFile.add(pnl2, BorderLayout.SOUTH);
+
+    // pnlFile.setPreferredSize(new Dimension(150, cmbOutputFile.getPreferredSize().height * 4));
     return pnlFile;
   }
 
+  protected void addFileName(String outputFile) {
+    // delete old entry to prevent too many items...
+    for (int i = 0; i < cmbOutputFile.getItemCount(); i++) {
+      String file = (String) cmbOutputFile.getItemAt(i);
+      if (file.equals(outputFile)) {
+        cmbOutputFile.removeItemAt(i);
+        break;
+      }
+    }
+    cmbOutputFile.insertItemAt(outputFile, 0);
+    cmbOutputFile.setSelectedItem(outputFile);
+  }
+
   private Container getMailPanel() {
+    Faction faction = getFaction(EMAIL_PANEL);
+    String suffix = getSuffix(faction, EMAIL_PANEL);
+
     JLabel lblMailServer = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.name"));
     txtMailServer =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST,
-            "smtp.bar.net"), 20);
+        new JTextField(localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST
+            + suffix, "smtp.bar.net"), 20);
     lblMailServer.setLabelFor(txtMailServer);
 
     JLabel lblMailServerPort = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.port"));
     txtMailServerPort =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT, "25"), 4);
+        new JTextField(""
+            + PropertiesHelper.getInteger(localSettings,
+                PropertiesHelper.ORDERWRITER_MAILSERVER_PORT + suffix, DEFAULT_MAILSERVER_PORT), 4);
     lblMailServerPort.setLabelFor(txtMailServerPort);
 
     lblServerUsername = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.user"));
     txtServerUsername =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME, ""),
-            20);
+        new JTextField(localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME
+            + suffix, ""), 20);
     lblServerUsername.setLabelFor(txtServerUsername);
 
     lblServerPassword = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.password"));
-    txtServerPassword =
-        new JPasswordField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD,
-            ""), 20);
+
+    String pw = getPassword(localSettings, suffix);
+    txtServerPassword = new JPasswordField(pw, 20);
     lblServerPassword.setLabelFor(txtServerPassword);
 
     chkAskPassword =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.askpassword.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD, "true")))
-            .booleanValue());
+        createCheckBox("askpassword", PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD, suffix, true);
     chkAskPassword.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int answer = 0;
@@ -570,9 +775,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     });
 
     chkUseAuth =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.useauth.caption"),
-            (Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH,
-                "false"))).booleanValue());
+        createCheckBox("useauth", PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH, suffix, false);
     chkUseAuth.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         lblServerUsername.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled());
@@ -593,21 +796,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     lblMailRecipient = new JLabel(Resources.get("orderwriterdialog.lbl.recipient"));
 
     String email =
-        settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT, defaultEmail);
-
-    // stm 2008.03.02: enno wanted this change undone ;)
-    // // pavkovic 2002.01.23: enno wanted this change...
-    // if(email.toLowerCase().equals("eressea@kn-bremen.de")) {
-    // email = defaultEmail;
-    // }
-    //
-    // if(email.toLowerCase().equals("eressea@eressea.kn-bremen.de")) {
-    // email = defaultEmail;
-    // }
-    //
-    // if(email.toLowerCase().equals("eressea@eressea.amber.kn-bremen.de")) {
-    // email = defaultEmail;
-    // }
+        localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix,
+            DEFAULT_EMAIL);
 
     txtMailRecipient = new JTextField(email, 20);
 
@@ -615,21 +805,21 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     JLabel lblMailSender = new JLabel(Resources.get("orderwriterdialog.lbl.sender"));
     txtMailSender =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER,
-            "foo@bar.net"), 20);
+        new JTextField(localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER
+            + suffix, "myname@example.net"), 20);
     lblMailSender.setLabelFor(txtMailSender);
 
     lblMailSubject = new JLabel(Resources.get("orderwriterdialog.lbl.subject"));
     txtMailSubject =
-        new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT,
-            defaultSubject), 20);
+        new JTextField(localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT
+            + suffix, DEFAULT_SUBJECT), 20);
     lblMailSubject.setLabelFor(txtMailSubject);
 
     // CC: (Fiete 20090120)
     lblMailRecipient2 = new JLabel("CC:");
     txtMailRecipient2 =
-        new JTextField(
-            settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2, ""), 20);
+        new JTextField(localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2
+            + suffix, ""), 20);
     lblMailRecipient2.setLabelFor(txtMailRecipient2);
 
     JPanel pnlMail = new JPanel(new GridBagLayout());
@@ -638,9 +828,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         .get("orderwriterdialog.border.mailoptions")));
 
     chkUseSettingsFromCR =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.usesettingsfromcr.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS,
-                "true"))).booleanValue());
+        createCheckBox("usesettingsfromcr",
+            PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS, suffix, true);
     chkUseSettingsFromCR.setEnabled((data != null) && (data.mailTo != null)
         && (data.mailSubject != null));
     chkUseSettingsFromCR.addActionListener(new ActionListener() {
@@ -652,18 +841,13 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     updateRecipient();
 
     chkCCToSender =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.cctosender.caption"), (Boolean
-            .valueOf(settings
-                .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER, "true")))
-            .booleanValue());
+        createCheckBox("cctosender", PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER, suffix,
+            true);
+
     chkUseSSL =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.usessl.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL, "false")))
-            .booleanValue());
+        createCheckBox("usessl", PropertiesHelper.ORDERWRITER_MAILSERVER_SSL, suffix, false);
     chkUseTLS =
-        new JCheckBox(Resources.get("orderwriterdialog.chk.usetls.caption"), (Boolean
-            .valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS, "false")))
-            .booleanValue());
+        createCheckBox("usetls", PropertiesHelper.ORDERWRITER_MAILSERVER_TLS, suffix, false);
 
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
@@ -844,71 +1028,53 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     return pnlMail;
   }
 
+  private JCheckBox createCheckBox(String name, String resourceKey, String suffix, boolean selected) {
+    JCheckBox chkBox =
+        new JCheckBox(Resources.get("orderwriterdialog.chk." + name + ".caption"),
+            resourceKey == null ? selected : PropertiesHelper.getBoolean(localSettings,
+                suffix == null ? resourceKey : (resourceKey + suffix), selected));
+    chkBox.setToolTipText(Resources.get("orderwriterdialog.chk." + name + ".tooltip", false));
+    return chkBox;
+  }
+
   /**
    * If the faction changed, the configuration for the mailserver and the selected output file may
    * changed...this method checks this.
+   * 
+   * @param faction
    */
-  protected void factionChanged() {
-    Faction faction = (Faction) cmbFaction.getSelectedItem();
-    String suffix = faction != null ? "." + faction.getID() : "";
+  protected void factionChanged(Faction faction, int type) {
+    if (faction == null) {
+      faction = getFaction(type);
+    }
+    String suffix = getSuffix(faction, type);
 
-    if (settings
-        .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS + suffix, null) != null) {
-      chkUseSettingsFromCR.setSelected(PropertiesHelper.getBoolean(settings,
+    if (type == EMAIL_PANEL) {
+      // if (localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS +
+      // suffix,
+      // null) != null) {
+      chkUseSettingsFromCR.setSelected(PropertiesHelper.getBoolean(localSettings,
           PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS + suffix, true));
-
       updateRecipient();
-    }
+      // }
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER + suffix, null) != null) {
-      chkCCToSender.setSelected(PropertiesHelper.getBoolean(settings,
+      chkCCToSender.setSelected(PropertiesHelper.getBoolean(localSettings,
           PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER + suffix, true));
-    }
 
-    // PropertiesHelper.ORDERWRITER_MAILSERVER_SSL+suffix
-    // PropertiesHelper.ORDERWRITER_MAILSERVER_TLS+suffix
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL + suffix, null) != null) {
-      chkUseSSL.setSelected(PropertiesHelper.getBoolean(settings,
+      chkUseSSL.setSelected(PropertiesHelper.getBoolean(localSettings,
           PropertiesHelper.ORDERWRITER_MAILSERVER_SSL + suffix, false));
-    }
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS + suffix, null) != null) {
-      chkUseTLS.setSelected(PropertiesHelper.getBoolean(settings,
+      chkUseTLS.setSelected(PropertiesHelper.getBoolean(localSettings,
           PropertiesHelper.ORDERWRITER_MAILSERVER_TLS + suffix, false));
-    }
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS + suffix, null) != null) {
-      chkSelRegionsOnly.setSelected(PropertiesHelper.getBoolean(settings,
-          PropertiesHelper.ORDERWRITER_SELECTED_REGIONS + suffix, false));
-    }
+      txtMailServer.setText(localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST
+          + suffix, ""));
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, null) != null) {
-      int fixedWidth =
-          Integer.parseInt(settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix,
-              "76"));
-      chkFixedWidth.setSelected(fixedWidth > 0);
-      txtFixedWidth.setText("" + Math.abs(fixedWidth));
-      txtFixedWidth.setEnabled(chkFixedWidth.isSelected());
-    }
+      txtMailServerPort.setText(""
+          + PropertiesHelper.getInteger(localSettings, PropertiesHelper.ORDERWRITER_MAILSERVER_PORT
+              + suffix, DEFAULT_MAILSERVER_PORT));
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT + suffix,
-        null) != null) {
-      chkWriteUnitTagsAsVorlageComment.setSelected(PropertiesHelper.getBoolean(settings,
-          PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT + suffix, false));
-    }
-
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST + suffix, null) != null) {
-      txtMailServer.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST
-          + suffix));
-    }
-
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT + suffix, null) != null) {
-      txtMailServerPort.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT
-          + suffix));
-    }
-
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH + suffix, null) != null) {
-      chkUseAuth.setSelected(PropertiesHelper.getBoolean(settings,
+      chkUseAuth.setSelected(PropertiesHelper.getBoolean(localSettings,
           PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH + suffix, false));
       lblServerUsername.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled());
       lblServerPassword.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled()
@@ -917,89 +1083,96 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       txtServerPassword.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled()
           && !chkAskPassword.isSelected());
       chkAskPassword.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled());
-    }
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME + suffix, null) != null) {
-      txtServerUsername.setText(settings
+      txtServerUsername.setText(localSettings
           .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME + suffix));
-    }
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD + suffix, null) != null) {
-      chkAskPassword.setSelected(PropertiesHelper.getBoolean(settings,
+      chkAskPassword.setSelected(PropertiesHelper.getBoolean(localSettings,
           PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD + suffix, false));
       lblServerPassword.setEnabled(!chkAskPassword.isSelected() || !chkAskPassword.isEnabled());
       txtServerPassword.setEnabled(!chkAskPassword.isSelected() || !chkAskPassword.isEnabled());
-    }
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD + suffix, null) != null) {
-      txtServerPassword.setText(settings
-          .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD + suffix));
-    }
+      txtServerPassword.setText(getPassword(localSettings, suffix));
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix, null) != null) {
-      txtMailRecipient.setText(settings
+      txtMailRecipient.setText(localSettings
           .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix));
+
+      txtMailSender.setText(localSettings
+          .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER + suffix));
+
+      txtMailSubject.setText(localSettings
+          .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT + suffix));
+
+      txtMailRecipient2.setText(localSettings
+          .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2 + suffix));
     }
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER + suffix, null) != null) {
-      txtMailSender.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER
-          + suffix));
-    }
+    chkSelRegionsOnly[type].setSelected(PropertiesHelper.getBoolean(localSettings,
+        PropertiesHelper.ORDERWRITER_SELECTED_REGIONS + suffix, false));
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT + suffix, null) != null) {
-      txtMailSubject.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT
-          + suffix));
-    }
+    int fixedWidth =
+        PropertiesHelper.getInteger(localSettings, PropertiesHelper.ORDERWRITER_FIXED_WIDTH
+            + suffix, DEFAULT_FIXED_WIDTH);
+    chkFixedWidth[type].setSelected(fixedWidth > 0);
+    txtFixedWidth[type].setText("" + Math.abs(fixedWidth));
+    txtFixedWidth[type].setEnabled(chkFixedWidth[type].isSelected());
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS + suffix, null) != null) {
-      chkECheckComments.setSelected(PropertiesHelper.getBoolean(settings,
-          PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS + suffix, false));
-    }
+    chkWriteUnitTagsAsVorlageComment[type].setSelected(PropertiesHelper.getBoolean(localSettings,
+        PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT + suffix, false));
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS + suffix, null) != null) {
-      chkRemoveSCComments.setSelected(PropertiesHelper.getBoolean(settings,
-          PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS + suffix, false));
-    }
+    chkECheckComments[type].setSelected(PropertiesHelper.getBoolean(localSettings,
+        PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS + suffix, false));
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS + suffix, null) != null) {
-      chkRemoveSSComments.setSelected(PropertiesHelper.getBoolean(settings,
-          PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS + suffix, false));
-    }
+    chkRemoveSCComments[type].setSelected(PropertiesHelper.getBoolean(localSettings,
+        PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS + suffix, false));
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY + suffix, null) != null) {
-      chkConfirmedOnly.setSelected(PropertiesHelper.getBoolean(settings,
-          PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY + suffix, false));
-    }
+    chkRemoveSSComments[type].setSelected(PropertiesHelper.getBoolean(localSettings,
+        PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS + suffix, false));
 
-    if (PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix)
-        .size() > 0) {
+    chkConfirmedOnly[type].setSelected(PropertiesHelper.getBoolean(localSettings,
+        PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY + suffix, false));
+
+    if (type == FILE_PANEL) {
+      List<String> files =
+          PropertiesHelper
+              .getList(localSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix);
       while (cmbOutputFile.getItemCount() > 0) {
         cmbOutputFile.removeItemAt(0);
       }
-      List<String> files =
-          PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix);
-      for (String file : files) {
-        cmbOutputFile.addItem(file);
+      if (files != null) {
+        for (String file : files) {
+          cmbOutputFile.addItem(file);
+        }
       }
-    }
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2 + suffix, null) != null) {
-      txtMailRecipient2.setText(settings
-          .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2 + suffix));
+      if (localSettings.getProperty(PropertiesHelper.ORDERWRITER_AUTO_FILENAME + suffix, null) != null) {
+        chkAutoFileName.setSelected(PropertiesHelper.getBoolean(localSettings,
+            PropertiesHelper.ORDERWRITER_AUTO_FILENAME + suffix, false));
+
+      } else {
+        chkAutoFileName.setSelected(PropertiesHelper.getBoolean(localSettings,
+            PropertiesHelper.ORDERWRITER_AUTO_FILENAME, false));
+      }
+      updateAutoFileName();
     }
 
     setGroups(faction);
   }
 
+  private String getSuffix(Faction faction, int type) {
+    String suffix = "." + (faction == null ? "-" : faction.getID()) + "." + type;
+    return suffix;
+  }
+
   protected void updateRecipient() {
-    Faction faction = (Faction) cmbFaction.getSelectedItem();
-    String suffix = faction != null ? "." + faction.getID() : "";
+    Faction faction = getFaction(EMAIL_PANEL);
+    String suffix = getSuffix(faction, EMAIL_PANEL);
 
     if (!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected()) {
-      txtMailRecipient.setText(settings.getProperty(
-          PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix, defaultEmail));
-      txtMailSubject.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT
-          + suffix, defaultSubject));
+      txtMailRecipient.setText(localSettings.getProperty(
+          PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix, DEFAULT_EMAIL));
+      txtMailSubject.setText(localSettings.getProperty(
+          PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT + suffix, DEFAULT_SUBJECT));
     } else {
       txtMailRecipient.setText(data.mailTo);
       txtMailSubject.setText(data.mailSubject);
@@ -1015,145 +1188,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void storeSettings() {
-    Faction faction = (Faction) cmbFaction.getSelectedItem();
-    String suffix = "." + (faction == null ? "-" : faction.getID());
-
-    settings.setProperty("OrderWriterDialog.x", getX() + "");
-    settings.setProperty("OrderWriterDialog.y", getY() + "");
-    PropertiesHelper.setList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE,
-        getNewOutputFiles(cmbOutputFile));
-    PropertiesHelper.setList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix,
-        getNewOutputFiles(cmbOutputFile));
-
-    if (chkFixedWidth.isSelected() == true) {
-      try {
-        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, Integer
-            .parseInt(txtFixedWidth.getText())
-            + "");
-        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, Integer
-            .parseInt(txtFixedWidth.getText())
-            + "");
-      } catch (NumberFormatException e) {
-        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, "0");
-        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, "0");
-      }
-    } else {
-      try {
-        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, (-1 * Integer
-            .parseInt(txtFixedWidth.getText()))
-            + "");
-        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, (-1 * Integer
-            .parseInt(txtFixedWidth.getText()))
-            + "");
-      } catch (NumberFormatException e) {
-        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, "0");
-        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, "0");
-      }
-    }
-
-    settings.setProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS, String
-        .valueOf(chkECheckComments.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS + suffix, String
-        .valueOf(chkECheckComments.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS, String
-        .valueOf(chkRemoveSCComments.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS + suffix, String
-        .valueOf(chkRemoveSCComments.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS, String
-        .valueOf(chkRemoveSSComments.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS + suffix, String
-        .valueOf(chkRemoveSSComments.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY, String
-        .valueOf(chkConfirmedOnly.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY + suffix, String
-        .valueOf(chkConfirmedOnly.isSelected()));
-
-    if (chkUseSettingsFromCR.isEnabled()) {
-      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS, String
-          .valueOf(chkUseSettingsFromCR.isSelected()));
-      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS + suffix, String
-          .valueOf(chkUseSettingsFromCR.isSelected()));
-    }
-
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER, String
-        .valueOf(chkCCToSender.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER + suffix, String
-        .valueOf(chkCCToSender.isSelected()));
-
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL, String.valueOf(chkUseSSL
-        .isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL + suffix, String
-        .valueOf(chkUseSSL.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS, String.valueOf(chkUseTLS
-        .isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS + suffix, String
-        .valueOf(chkUseTLS.isSelected()));
-
-    if (chkSelRegionsOnly.isEnabled()) {
-      settings.setProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS, String
-          .valueOf(chkSelRegionsOnly.isSelected()));
-      settings.setProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS + suffix, String
-          .valueOf(chkSelRegionsOnly.isSelected()));
-    }
-
-    settings.setProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT, String
-        .valueOf(chkWriteUnitTagsAsVorlageComment.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT + suffix,
-        String.valueOf(chkWriteUnitTagsAsVorlageComment.isSelected()));
-
-    if (cmbFaction.getSelectedItem() != null) {
-      settings.setProperty(PropertiesHelper.ORDERWRITER_FACTION, (((Faction) cmbFaction
-          .getSelectedItem()).getID()).intValue()
-          + "");
-    } else {
-      settings.setProperty(PropertiesHelper.ORDERWRITER_FACTION, "-1");
-    }
-
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST, txtMailServer.getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST + suffix, txtMailServer
-        .getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT, txtMailServerPort.getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT + suffix, txtMailServerPort
-        .getText());
-
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH, String.valueOf(chkUseAuth
-        .isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH + suffix, String
-        .valueOf(chkUseAuth.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME, txtServerUsername
-        .getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME + suffix,
-        txtServerUsername.getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD, String
-        .valueOf(chkAskPassword.isSelected()));
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD + suffix, String
-        .valueOf(chkAskPassword.isSelected()));
-    // for security reasons only store password if the user explicitly wants it
-    if (!chkAskPassword.isSelected() && chkUseAuth.isSelected()) {
-      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD, new String(
-          txtServerPassword.getPassword()));
-      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD + suffix, new String(
-          txtServerPassword.getPassword()));
-    } else {
-      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD, "");
-      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD + suffix, "");
-    }
-
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT, txtMailRecipient
-        .getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix,
-        txtMailRecipient.getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER, txtMailSender.getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER + suffix, txtMailSender
-        .getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT, txtMailSubject.getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT + suffix, txtMailSubject
-        .getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2, txtMailRecipient2
-        .getText());
-    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2 + suffix,
-        txtMailRecipient2.getText());
-
+    storeSettings(localSettings, null, EMAIL_PANEL);
+    storeSettings(localSettings, null, FILE_PANEL);
+    storeSettings(localSettings, null, CLIPBOARD_PANEL);
+    settings.putAll(localSettings);
     if (standAlone) {
       try {
         settings.store(new FileOutputStream(new File(System.getProperty("user.home"),
@@ -1162,6 +1200,165 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         OrderWriterDialog.log.error("OrderWriterDialog.storeSettings()", e);
       }
     }
+  }
+
+  private void storeSettings(Properties pSettings, Faction faction, int type) {
+    // Faction faction = (Faction) cmbFaction[type].getSelectedItem();
+    String suffix = getSuffix(faction, type);
+
+    pSettings.setProperty("OrderWriterDialog.x", getX() + "");
+    pSettings.setProperty("OrderWriterDialog.y", getY() + "");
+
+    if (getFaction(type) != null) {
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_FACTION, getFaction(type).getID()
+          .intValue()
+          + "");
+    } else {
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_FACTION, "-1");
+    }
+
+    if (type == FILE_PANEL) {
+      // addFileName((String) cmbOutputFile.getSelectedItem());
+      PropertiesHelper.setList(pSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix,
+          getNewOutputFiles(cmbOutputFile));
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_AUTO_FILENAME + suffix, String
+          .valueOf(chkAutoFileName.isSelected()));
+      log.finest(getNewOutputFiles(cmbOutputFile).get(0) + " " + chkAutoFileName.isSelected());
+    }
+
+    if (chkFixedWidth[type].isSelected() == true) {
+      try {
+        pSettings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, Integer
+            .parseInt(txtFixedWidth[type].getText())
+            + "");
+      } catch (NumberFormatException e) {
+        pSettings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, "0");
+      }
+    } else {
+      try {
+        pSettings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, (-1 * Integer
+            .parseInt(txtFixedWidth[type].getText()))
+            + "");
+      } catch (NumberFormatException e) {
+        pSettings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH + suffix, "0");
+      }
+    }
+
+    pSettings.setProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS + suffix, String
+        .valueOf(chkECheckComments[type].isSelected()));
+    pSettings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS + suffix, String
+        .valueOf(chkRemoveSCComments[type].isSelected()));
+    pSettings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS + suffix, String
+        .valueOf(chkRemoveSSComments[type].isSelected()));
+    pSettings.setProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY + suffix, String
+        .valueOf(chkConfirmedOnly[type].isSelected()));
+
+    if (chkSelRegionsOnly[type].isEnabled()) {
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS + suffix, String
+          .valueOf(chkSelRegionsOnly[type].isSelected()));
+    }
+
+    pSettings.setProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT + suffix,
+        String.valueOf(chkWriteUnitTagsAsVorlageComment[type].isSelected()));
+
+    if (type == EMAIL_PANEL) {
+      if (chkUseSettingsFromCR.isEnabled()) {
+        pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS + suffix,
+            String.valueOf(chkUseSettingsFromCR.isSelected()));
+      }
+
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER + suffix, String
+          .valueOf(chkCCToSender.isSelected()));
+
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL + suffix, String
+          .valueOf(chkUseSSL.isSelected()));
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS + suffix, String
+          .valueOf(chkUseTLS.isSelected()));
+
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST + suffix, txtMailServer
+          .getText());
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT + suffix,
+          txtMailServerPort.getText());
+
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH + suffix, String
+          .valueOf(chkUseAuth.isSelected()));
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME + suffix,
+          txtServerUsername.getText());
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD + suffix, String
+          .valueOf(chkAskPassword.isSelected()));
+      // for security reasons only store password if the user explicitly wants it
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD + suffix, "");
+      if (!chkAskPassword.isSelected() && chkUseAuth.isSelected()) {
+        String pw = new String(txtServerPassword.getPassword());
+        try {
+          String encrypted = encrypt(pw);
+          pSettings.setProperty(
+              PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD_ENCRYPTED + suffix, encrypted);
+        } catch (Exception e) {
+          log.error("Could not encrypt password", e);
+          pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD + suffix, pw);
+        }
+      } else {
+        pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD_ENCRYPTED + suffix,
+            "");
+      }
+
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix,
+          txtMailRecipient.getText());
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER + suffix, txtMailSender
+          .getText());
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT + suffix,
+          txtMailSubject.getText());
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2 + suffix,
+          txtMailRecipient2.getText());
+    }
+  }
+
+  private String getPassword(Properties pSettings, String suffix) {
+    String pw = null;
+    if (pSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD_ENCRYPTED + suffix) != null) {
+      try {
+        pw =
+            decrypt(pSettings
+                .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD_ENCRYPTED + suffix));
+      } catch (Exception e) {
+        log.error("Error retrieving password.", e);
+      }
+    }
+    if (pw == null) {
+      pw = pSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD + suffix, "");
+    }
+    return pw;
+  }
+
+  /**
+   * Returns encrypted and base64-encoded password using super secret key.
+   */
+  private String encrypt(String plaintext) throws InvalidKeyException, BadPaddingException,
+      IllegalBlockSizeException {
+    cipher.init(Cipher.ENCRYPT_MODE, key);
+    byte[] inputBytes = new byte[0];
+    try {
+      inputBytes = plaintext.getBytes("UTF8");
+    } catch (UnsupportedEncodingException e1) {
+      // how could this possibly happen?!
+      e1.printStackTrace();
+    }
+    byte[] raw = cipher.doFinal(inputBytes);
+    String encoded = new BASE64Encoder().encode(raw);
+
+    return encoded;
+  }
+
+  /** Returns decrypted text for given encrypted, base64-encoded ciphertext using super secret key. */
+  private String decrypt(String ciphertext) throws InvalidKeyException, BadPaddingException,
+      IllegalBlockSizeException, InvalidAlgorithmParameterException, IOException {
+    cipher.init(Cipher.DECRYPT_MODE, key);// , new IvParameterSpec(iv));
+
+    byte[] raw = new BASE64Decoder().decodeBuffer(ciphertext);
+    byte[] recoveredBytes = cipher.doFinal(raw);
+    String recovered = new String(recoveredBytes);
+    return recovered;
   }
 
   private List<String> getNewOutputFiles(JComboBox combo) {
@@ -1206,7 +1403,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     String retVal = null;
 
     JFileChooser fc = new JFileChooser();
-    fc.setAccessory(new HistoryAccessory(settings, fc));
+    fc.setAccessory(new HistoryAccessory(localSettings, fc));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.TXT_FILTER));
 
     if (defaultFile != null) {
@@ -1220,12 +1417,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     return retVal;
   }
 
-  private Object[] write(Writer out, boolean forceUnixLineBreaks, Faction faction) {
-    return write(out, forceUnixLineBreaks, true, false, faction);
+  private Object[] write(Writer out, boolean forceUnixLineBreaks, Faction faction, int type) {
+    return write(out, forceUnixLineBreaks, true, false, faction, type);
   }
 
   private Object[] write(Writer out, boolean forceUnixLineBreaks, boolean closeStream,
-      boolean confirm, Faction faction) {
+      boolean confirm, Faction faction, int type) {
     if (faction == null)
       return null;
     Object[] result = null;
@@ -1235,11 +1432,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     try {
       Writer stream = null;
 
-      if (chkFixedWidth.isSelected()) {
+      if (chkFixedWidth[type].isSelected()) {
         int fixedWidth = -1;
 
         try {
-          fixedWidth = Integer.parseInt(txtFixedWidth.getText());
+          fixedWidth = Integer.parseInt(txtFixedWidth[type].getText());
         } catch (NumberFormatException e) {
           setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
           JOptionPane.showMessageDialog(this, Resources
@@ -1254,18 +1451,19 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
 
       OrderWriter cw = new OrderWriter(data, faction);
-      cw.setAddECheckComments(chkECheckComments.isSelected());
-      cw.setRemoveComments(chkRemoveSCComments.isSelected(), chkRemoveSSComments.isSelected());
-      cw.setConfirmedOnly(chkConfirmedOnly.isSelected());
-      cw.setWriteUnitTagsAsVorlageComment(chkWriteUnitTagsAsVorlageComment.isSelected());
+      cw.setAddECheckComments(chkECheckComments[type].isSelected());
+      cw.setRemoveComments(chkRemoveSCComments[type].isSelected(), chkRemoveSSComments[type]
+          .isSelected());
+      cw.setConfirmedOnly(chkConfirmedOnly[type].isSelected());
+      cw.setWriteUnitTagsAsVorlageComment(chkWriteUnitTagsAsVorlageComment[type].isSelected());
 
-      if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
+      if (chkSelRegionsOnly[type].isSelected() && (regions != null) && (regions.size() > 0)) {
         cw.setRegions(regions);
       }
 
       cw.setForceUnixLineBreaks(forceUnixLineBreaks);
 
-      Object group = cmbGroup.getSelectedItem();
+      Object group = getGroup(type);
 
       if (!"".equals(group)) {
         cw.setGroup((Group) group);
@@ -1318,7 +1516,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   protected boolean copyToClipboard() {
-    Faction faction = (Faction) cmbFaction.getSelectedItem();
+    Faction faction = getFaction(CLIPBOARD_PANEL);
     if (faction != null)
       return copyToClipboard(faction);
     else
@@ -1331,7 +1529,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     StringWriter sw = new StringWriter();
 
-    Object[] parameters = write(sw, true, faction);
+    Object[] parameters = write(sw, true, faction, CLIPBOARD_PANEL);
     if (parameters != null) {
       // there seems to be a problem with '\r\n'-style linebreaks
       // in the clipboard (you get two linebreaks instead of one)
@@ -1339,40 +1537,44 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       getToolkit().getSystemClipboard().setContents(
           new java.awt.datatransfer.StringSelection(sw.toString()), null);
       JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
-          .get("orderwriterdialog.msg.writtenunits.text"))).format(parameters), Resources
+          .get("orderwriterdialog.msg.writtenunits.text.clipboard"))).format(parameters), Resources
           .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
-      // storeSettings();
       return true;
     } else
       return false;
   }
 
-  /**
-   * Generates a new Filename according to the predefined (and stored) pattern
-   */
-  protected void autoFileName() {
-    FileNameGeneratorFeed feed = new FileNameGeneratorFeed(super.getData().getDate().getDate());
-    Faction f = (Faction) cmbFaction.getSelectedItem();
-    if (f != null) {
-      feed.setFaction(f.getName());
-      feed.setFactionnr(f.getID().toString());
-    }
-    Object o = cmbGroup.getSelectedItem();
-    Group g = null;
-    if (o != null && !"".equals(o)) {
-      g = (Group) o;
-    }
-    if (g != null) {
-      feed.setGroup(g.getName());
-    }
+  private void updateAutoFileName() {
+    String pattern = (String) cmbOutputFile.getSelectedItem();
 
-    String pattern = settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern");
+    // this global setting is deprecated, using filename as pattern if appropriate now
+    // settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern");
 
-    if (pattern != null) {
+    if (chkAutoFileName.isSelected()) {
+      FileNameGeneratorFeed feed = new FileNameGeneratorFeed(super.getData().getDate().getDate());
+      Faction f = getFaction(FILE_PANEL);
+      if (f != null) {
+        feed.setFaction(f.getName());
+        feed.setFactionnr(f.getID().toString());
+      }
+      Object o = getGroup(FILE_PANEL);
+      Group g = null;
+      if (o != null && !"".equals(o)) {
+        g = (Group) o;
+      }
+      if (g != null) {
+        feed.setGroup(g.getName());
+      }
+
       String newFileName = FileNameGenerator.getFileName(pattern, feed);
 
-      cmbOutputFile.insertItemAt(newFileName, 0);
-      cmbOutputFile.setSelectedItem(newFileName);
+      txtOutputFileGenerated.setText(newFileName);
+      if (pattern == null || !pattern.contains("{")) {
+        JOptionPane.showMessageDialog(ancestor, Resources
+            .get("orderwriterdialog.msg.nopattern2.text"));
+      }
+    } else {
+      txtOutputFileGenerated.setText(pattern);
     }
   }
 
@@ -1384,15 +1586,14 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   protected boolean sendMail() {
-    Faction faction = (Faction) cmbFaction.getSelectedItem();
+    Faction faction = getFaction(EMAIL_PANEL);
     if (faction == null)
       return false;
 
     if (!checkPassword(faction))
       return false;
 
-    JButton ae = sendButton;
-    ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+    setWaitCursor(true);
 
     // get mail parameters
     String mailHost = txtMailServer.getText();
@@ -1417,8 +1618,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     // check mail parameters
     if (sender.equals("")) {
-      ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-      JOptionPane.showMessageDialog(ae, Resources
+      setWaitCursor(false);
+      JOptionPane.showMessageDialog(ancestor, Resources
           .get("orderwriterdialog.msg.invalidfromaddress.text"), Resources
           .get("orderwriterdialog.msg.mailerror.title"), JOptionPane.WARNING_MESSAGE);
 
@@ -1426,8 +1627,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
 
     if (recipient.equals("")) {
-      ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-      JOptionPane.showMessageDialog(ae, Resources
+      setWaitCursor(false);
+      JOptionPane.showMessageDialog(ancestor, Resources
           .get("orderwriterdialog.msg.invalidrecipient.text"), Resources
           .get("orderwriterdialog.msg.mailerror.title"), JOptionPane.WARNING_MESSAGE);
 
@@ -1435,8 +1636,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
 
     if (mailHost.equals("")) {
-      ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-      JOptionPane.showMessageDialog(ae, Resources
+      setWaitCursor(false);
+      JOptionPane.showMessageDialog(ancestor, Resources
           .get("orderwriterdialog.msg.invalidsmtpserver.text"), Resources
           .get("orderwriterdialog.msg.mailerror.title"), JOptionPane.WARNING_MESSAGE);
 
@@ -1449,9 +1650,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       port = -1;
     }
     if (port <= 0) {
-      ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-      // TODO update resource
-      JOptionPane.showMessageDialog(ae, Resources
+      setWaitCursor(false);
+      JOptionPane.showMessageDialog(ancestor, Resources
           .get("orderwriterdialog.msg.invalidsmtpserverport.text"), Resources
           .get("orderwriterdialog.msg.mailerror.title"), JOptionPane.WARNING_MESSAGE);
 
@@ -1460,34 +1660,44 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     if (username != null) {
       if (password == null) {
-        password = showPasswordDialog(ae);
+        password = showPasswordDialog();
       }
       if (password == null) {
-        ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        setWaitCursor(false);
         return false;
       }
     }
 
     OrderWriterDialog.log.debug("attempting to send mail: " + mailHost + ", " + port + ", "
         + username + ", " + password + ", " + sender + ", " + recipient + ", " + subject);
-    sendMailImpl(mailHost, port, username, password, sender, recipient, subject, ae, recipient2,
+    sendMailImpl(mailHost, port, username, password, sender, recipient, subject, recipient2,
         faction);
 
-    ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    setWaitCursor(false);
 
-    // storeSettings();
     return true;
   }
 
+  private void setWaitCursor(boolean wait) {
+    if (ancestor == null) {
+      ancestor = ((JComponent) getContentPane()).getTopLevelAncestor();
+    }
+    if (wait) {
+      ancestor.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+    } else {
+      ancestor.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    }
+  }
+
   private void sendMailImpl(final String mailHost, int port, String username, String password,
-      String sender, String recipient, String subject, final JButton ae, String cc, Faction faction) {
+      String sender, String recipient, String subject, String cc, Faction faction) {
 
     final MultiPartEmail mailMessage;
     String contentType = "text/plain; charset=" + Encoding.DEFAULT;
-    if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOsaveOrders", false)) {
+    if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.ISOsaveOrders", false)) {
       // new: force our default = ISO
       contentType = "text/plain; charset=" + Encoding.ISO;
-    } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8saveOrders", false)) {
+    } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", false)) {
       // new: force our default = UTF-8
       contentType = "text/plain; charset=" + Encoding.UTF8;
     } else {
@@ -1514,10 +1724,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
 
     } catch (EmailException e) {
-      ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+      setWaitCursor(false);
 
       Object msgArgs[] = { mailHost, e.toString() };
-      JOptionPane.showMessageDialog(ae, (new java.text.MessageFormat(Resources
+      JOptionPane.showMessageDialog(ancestor, (new java.text.MessageFormat(Resources
           .get("orderwriterdialog.msg.smtpserverunreachable.text"))).format(msgArgs), Resources
           .get("orderwriterdialog.msg.mailerror.title"), JOptionPane.WARNING_MESSAGE);
 
@@ -1532,7 +1742,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     mailMessage.setTLS(chkUseTLS.isSelected());
 
     StringWriter mailWriter = new StringWriter();
-    final Object[] parameters = write(mailWriter, false, false, true, faction);
+    final Object[] parameters = write(mailWriter, false, false, true, faction, EMAIL_PANEL);
 
     mailMessage.setContent(mailWriter.toString(), contentType);
 
@@ -1541,11 +1751,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
     mailMessage.setSmtpPort(port);
 
-    // TODO support for POP befor SMTP?
+    // TODO support for POP before SMTP?
     // mailMessage.setPopBeforeSmtp(true, "host", "username", "password");
 
     OrderWriterDialog.log.info("sending...");
-    final Component parent = this;
     final UserInterface ui = new ProgressBarUI(this);
     ui.setTitle(Resources.get("orderwriterdialog.btn.mail.caption"));
     ui.setMaximum(0);
@@ -1556,7 +1765,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         ui.setProgress(mailHost, 0);
         try {
           mailMessage.send();
-          JOptionPane.showMessageDialog(parent, (new java.text.MessageFormat(Resources
+          JOptionPane.showMessageDialog(ancestor, (new java.text.MessageFormat(Resources
               .get("orderwriterdialog.msg.writtenunits.text"))).format(parameters), Resources
               .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
 
@@ -1568,7 +1777,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
               "orderwriterdialog.msg.transfererror.text", msgArgs), JOptionPane.ERROR_MESSAGE,
               JOptionPane.DEFAULT_OPTION);
         } finally {
-          ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+          setWaitCursor(false);
           ui.ready();
         }
       }
@@ -1579,10 +1788,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   /**
    * Shows a dialog asking for a password
    * 
-   * @param ae
    * @return The user input or <code>null</code> if the user has canceled
    */
-  private String showPasswordDialog(JButton ae) {
+  private String showPasswordDialog() {
     String title = Resources.get("orderwriterdialog.lbl.smtpserver.password");
     JPasswordField passwd = new JPasswordField(20) {
       @Override
@@ -1611,7 +1819,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     panel.add(passwdLabel);
     panel.add(passwd);
     int value =
-        JOptionPane.showOptionDialog(ae, panel, title, JOptionPane.OK_CANCEL_OPTION,
+        JOptionPane.showOptionDialog(ancestor, panel, title, JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (value == 0)
       return new String(passwd.getPassword());
@@ -1628,7 +1836,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   protected boolean saveAll() {
     boolean result = false;
-    File outputFile = new File((String) cmbOutputFile.getSelectedItem());
+    File outputFile = new File(getOutputFileName());
     Writer stream = null;
 
     try {
@@ -1638,7 +1846,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         result = true;
         int[] parameters = new int[4];
         for (Faction f : data.getFactions()) {
-          Object[] written = write(stream, false, false, false, f);
+          Object[] written = write(stream, false, false, false, f, FILE_PANEL);
           if (written != null) {
             parameters[0] = parameters[0] + (Integer) written[0];
             parameters[1] = parameters[1] + (Integer) written[1];
@@ -1647,9 +1855,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           ++parameters[3];
         }
         JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
-            .get("orderwriterdialog.msg.writtenunits.text"))).format(new Object[] { parameters[0],
-            parameters[1], "" + parameters[2] + "/" + parameters[3] }), Resources
-            .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
+            .get("orderwriterdialog.msg.writtenunits.text.file"))).format(new Object[] {
+            parameters[0], parameters[1], "" + parameters[2] + "/" + parameters[3], outputFile }),
+            Resources.get("orderwriterdialog.msg.writtenunits.title"),
+            JOptionPane.INFORMATION_MESSAGE);
 
         stream.close();
       }
@@ -1661,24 +1870,30 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     return result;
   }
 
+  private String getOutputFileName() {
+    // updateAutoFileName();
+    return txtOutputFileGenerated.getText();
+  }
+
   protected boolean saveToFile() {
-    Faction faction = (Faction) cmbFaction.getSelectedItem();
+    Faction faction = getFaction(FILE_PANEL);
     if (faction == null)
       return false;
     if (!checkPassword(faction))
       return false;
 
-    File outputFile = new File((String) cmbOutputFile.getSelectedItem());
+    File outputFile = new File(getOutputFileName());
     Writer stream = null;
 
     try {
 
       stream = getWriter(outputFile);
-      Object[] parameters = write(stream, false, faction);
+      Object[] parameters = write(stream, false, faction, FILE_PANEL);
 
       if (parameters != null) {
         JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
-            .get("orderwriterdialog.msg.writtenunits.text"))).format(parameters), Resources
+            .get("orderwriterdialog.msg.writtenunits.text.file"))).format(new Object[] {
+            parameters[0], parameters[1], parameters[2], outputFile }), Resources
             .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
       }
 
@@ -1710,10 +1925,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     // apexo (Fiete) 20061205: if in properties, force ISO encoding
     Writer stream = null;
-    if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOsaveOrders", false)) {
+    if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.ISOsaveOrders", false)) {
       // new: force our default = ISO
       stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.ISO.toString());
-    } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8saveOrders", false)) {
+    } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", false)) {
       // new: force our default = UTF-8
       stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.UTF8.toString());
     } else {
@@ -1722,4 +1937,5 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
     return stream;
   }
+
 }

@@ -183,6 +183,9 @@ public class PropertiesHelper {
 
   public static final String BUILDINGRENDERER_RENDER = "BuildingTypeRenderer.Render.";
 
+  /** prefix of OrderWriter's property, not a property itself */
+  public static final String ORDEREDITOR_PREFIX = "OrderWriter.";
+
   public static final String ORDERWRITER_MAILSERVER_HOST = "OrderWriter.mailServer";
 
   public static final String ORDERWRITER_MAILSERVER_PORT = "OrderWriter.mailServerPort";
@@ -190,6 +193,9 @@ public class PropertiesHelper {
   public static final String ORDERWRITER_MAILSERVER_USERNAME = "OrderWriter.serverUsername";
 
   public static final String ORDERWRITER_MAILSERVER_PASSWORD = "OrderWriter.serverPassword";
+
+  public static final String ORDERWRITER_MAILSERVER_PASSWORD_ENCRYPTED =
+      "OrderWriter.serverPassword.encrypted";
 
   public static final String ORDERWRITER_MAILSERVER_ASKPWD = "OrderWriter.askPassword";
 
@@ -213,6 +219,8 @@ public class PropertiesHelper {
   public static final String ORDERWRITER_MAILSERVER_TLS = "OrderWriter.encryptionTLS";
 
   public static final String ORDERWRITER_OUTPUT_FILE = "OrderWriter.outputFile";
+
+  public static String ORDERWRITER_AUTO_FILENAME = "OrderWriter.autoFileName";
 
   public static final String ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT =
       "OrderWriter.writeUnitTagsAsVorlageComment";
@@ -276,6 +284,10 @@ public class PropertiesHelper {
 
   /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_MAINTENANCE = "TaskTable.inspectors.maintenance";
+
+  /** Property type list (of strings) **/
+  public static final String HISTORY_ACCESSORY_DIRECTORY_HISTORY =
+      "HistoryAccessory.directoryHistory";
 
   /**
    * Property type list of names
@@ -369,6 +381,8 @@ public class PropertiesHelper {
   /**
    * Extracts properties by given prefix. If there exists a key called prefix.count this is used as
    * order
+   * 
+   * @return list of strings; empty list if the property is undefined
    */
   public static List<String> getList(Properties p, String prefix) {
     List<String> ret = new LinkedList<String>();

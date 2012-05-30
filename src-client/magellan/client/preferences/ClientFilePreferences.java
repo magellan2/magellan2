@@ -133,25 +133,26 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
     con.fill = GridBagConstraints.HORIZONTAL;
     jpanel_CRBackups.add(txtDescription2, con);
 
-    JPanel fileNameGeneratorPanel =
-        addPanel(Resources.get("util.filenamegenerator.prefs.title"), new GridBagLayout());
+    // this is set directly in the orderwriterDialog now
+    // JPanel fileNameGeneratorPanel =
+    // addPanel(Resources.get("util.filenamegenerator.prefs.title"), new GridBagLayout());
+    //
+    // con =
+    // new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
+    // GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 1);
 
-    con =
-        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
-            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 1);
-
-    JLabel ordersSaveFileNamePatternLabel =
-        new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNamePattern.label"));
-    fileNameGeneratorPanel.add(ordersSaveFileNamePatternLabel, con);
-
-    con.gridy++;
-    patternField = new JTextField("", 20);
-    fileNameGeneratorPanel.add(patternField, con);
-
-    con.gridy++;
-    JLabel ordersSaveFileNamePatternInfo =
-        new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNameInfo.label"));
-    fileNameGeneratorPanel.add(ordersSaveFileNamePatternInfo, con);
+    // JLabel ordersSaveFileNamePatternLabel =
+    // new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNamePattern.label"));
+    // fileNameGeneratorPanel.add(ordersSaveFileNamePatternLabel, con);
+    //
+    // con.gridy++;
+    // patternField = new JTextField("", 20);
+    // fileNameGeneratorPanel.add(patternField, con);
+    //
+    // con.gridy++;
+    // JLabel ordersSaveFileNamePatternInfo =
+    // new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNameInfo.label"));
+    // fileNameGeneratorPanel.add(ordersSaveFileNamePatternInfo, con);
 
   }
 
@@ -176,7 +177,7 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
     txtFileHistorySize.setValue(source.getMaxFileHistorySize());
     txtCRBackupsCount.setValue(PropertiesHelper.getInteger(settings, "Client.CRBackups.count",
         FileBackup.DEFAULT_BACKUP_LEVEL));
-    patternField.setText(settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern"));
+    // patternField.setText(settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern"));
   }
 
   /**
@@ -197,12 +198,12 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
       log.error("ClientPreferences(): Unable to set CR-Backup count", e);
     }
 
-    String newPattern = patternField.getText();
-    if (newPattern != null && newPattern.length() > 2) {
-      settings.setProperty("FileNameGenerator.ordersSaveFileNamePattern", newPattern);
-    } else {
-      settings.remove("FileNameGenerator.ordersSaveFileNamePattern");
-    }
+    // String newPattern = patternField.getText();
+    // if (newPattern != null && newPattern.length() > 2) {
+    // settings.setProperty("FileNameGenerator.ordersSaveFileNamePattern", newPattern);
+    // } else {
+    // settings.remove("FileNameGenerator.ordersSaveFileNamePattern");
+    // }
     FileNameGenerator.init(settings);
   }
 }

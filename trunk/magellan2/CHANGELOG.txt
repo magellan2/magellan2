@@ -1,3 +1,7 @@
+2012-06-02 / Build 503 - stm (stm_@users.sourceforge.net)
+    * revamped OrderWriterDialog
+    * 
+
 2012-03-15 / Build 497 - stm (stm_@users.sourceforge.net)
     * units can besiege buildings and we show that now!
     

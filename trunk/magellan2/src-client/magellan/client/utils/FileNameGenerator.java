@@ -93,13 +93,13 @@ public class FileNameGenerator {
 
     res = res.replaceAll("\\{faction\\}", feed.getFaction());
     res = res.replaceAll("\\{factionnr\\}", feed.getFactionnr());
-    int i = feed.getRound();
-    if (i > -1) {
-      res = res.replaceAll("\\{round\\}", String.valueOf(i));
-      res = res.replaceAll("\\{round+1\\}", String.valueOf(i));
+    int round = feed.getRound();
+    if (round > -1) {
+      res = res.replaceAll("\\{round\\}", String.valueOf(round));
+      res = res.replaceAll("\\{round\\+1\\}", String.valueOf(round + 1));
     } else {
       res = res.replaceAll("\\{round\\}", null);
-      res = res.replaceAll("\\{round+1\\}", null);
+      res = res.replaceAll("\\{round\\+1\\}", null);
     }
     res = res.replaceAll("\\{group\\}", feed.getGroup());
 

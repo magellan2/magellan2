@@ -92,11 +92,9 @@ import magellan.library.utils.UserInterface;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.logging.Logger;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /**
  * A GUI for writing orders to a file or copy them to the clipboard. This class can be used as a
@@ -1345,7 +1343,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       e1.printStackTrace();
     }
     byte[] raw = cipher.doFinal(inputBytes);
-    String encoded = new BASE64Encoder().encode(raw);
+    String encoded = new String(Base64.encodeBase64(raw));
 
     return encoded;
   }
@@ -1355,7 +1353,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       IllegalBlockSizeException, InvalidAlgorithmParameterException, IOException {
     cipher.init(Cipher.DECRYPT_MODE, key);// , new IvParameterSpec(iv));
 
-    byte[] raw = new BASE64Decoder().decodeBuffer(ciphertext);
+    byte[] raw = Base64.decodeBase64(ciphertext.getBytes());
     byte[] recoveredBytes = cipher.doFinal(raw);
     String recovered = new String(recoveredBytes);
     return recovered;

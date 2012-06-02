@@ -1186,9 +1186,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void storeSettings() {
-    storeSettings(localSettings, null, EMAIL_PANEL);
-    storeSettings(localSettings, null, FILE_PANEL);
-    storeSettings(localSettings, null, CLIPBOARD_PANEL);
+    for (int i = 0; i < Math.min(cmbFactions.getItemCount(), 6); i++) {
+      Faction f = (Faction) cmbFactions.getItemAt(i);
+      storeSettings(localSettings, f, EMAIL_PANEL);
+      storeSettings(localSettings, f, FILE_PANEL);
+      storeSettings(localSettings, f, CLIPBOARD_PANEL);
+    }
     settings.putAll(localSettings);
     if (standAlone) {
       try {

@@ -1869,6 +1869,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     Item modifiedItem = cache1.modifiedItems.get(itr.itemType.getID());
 
     if (modifiedItem != null) {
+      modifiedItem.setChanged(true);
       // the transferred item can be found among this unit's items
       if (equals(itr.source)) {
         modifiedItem.setAmount(modifiedItem.getAmount() - itr.amount);
@@ -1888,6 +1889,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
         modifiedItem = new Item(itr.itemType, 0);
       }
 
+      modifiedItem.setChanged(true);
       cache1.modifiedItems.put(itr.itemType.getID(), modifiedItem);
     }
   }
@@ -1896,6 +1898,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_USILVER);
 
     if (modifiedItem != null) {
+      modifiedItem.setChanged(true);
       modifiedItem.setAmount(modifiedItem.getAmount() - rr.costs);
     } else {
       if (equals(rr.target)) {
@@ -1904,6 +1907,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
         // } else {
         // modifiedItem = new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER),
         // rr.costs);
+        modifiedItem.setChanged(true);
         cache1.modifiedItems.put(EresseaConstants.I_USILVER, modifiedItem);
       }
     }
@@ -1913,9 +1917,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     Item modifiedItem = cache1.modifiedItems.get(rr.itemType.getID());
 
     if (modifiedItem != null) {
+      modifiedItem.setChanged(true);
       modifiedItem.setAmount(modifiedItem.getAmount() - rr.costs);
     } else {
       modifiedItem = new Item(rr.itemType, -rr.costs);
+      modifiedItem.setChanged(true);
       cache1.modifiedItems.put(rr.itemType.getID(), modifiedItem);
     }
   }

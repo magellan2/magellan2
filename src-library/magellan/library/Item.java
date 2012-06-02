@@ -23,6 +23,7 @@ import magellan.library.rules.ItemType;
 public class Item {
   private ItemType type;
   private int amount;
+  private boolean changed = false;
 
   /**
    * Creates a new item of the specified type and with the specified amount.
@@ -88,5 +89,13 @@ public class Item {
    */
   public String getOrderName() {
     return type.getOrderName();
+  }
+
+  public boolean isChanged() {
+    return changed;
+  }
+
+  public void setChanged(boolean changed) {
+    this.changed = changed;
   }
 }

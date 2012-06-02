@@ -494,7 +494,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
               oldAmount = oldItem.getAmount();
             }
 
-            if (oldAmount != s.getAmount()) {
+            if (s.isChanged()) {
               if (isShowingExpectedOnly()) {
                 // only show expected future value
                 ge.setObject(String.valueOf(s.getAmount()));

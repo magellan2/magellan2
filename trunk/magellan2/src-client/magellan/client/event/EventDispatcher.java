@@ -33,13 +33,17 @@ import magellan.library.utils.logging.Logger;
  */
 public class EventDispatcher implements EventDispatcherInterface {
   private static final Logger log = Logger.getInstance(EventDispatcher.class);
+
   private ArrayList<List<EventListener>> listenerss;
+
   private boolean notifierIsAliveOnList[];
   private boolean notifierIsAlive = false;
   private boolean stopNotification = false;
+
   private int eventsFired = 0;
   private int eventsDispatched = 0;
   private int lastPriority = Integer.MAX_VALUE;
+
   private static final int GAMEDATA = 0;
   private static final int SELECTION = 1;
   private static final int UNITORDERS = 2;
@@ -47,7 +51,12 @@ public class EventDispatcher implements EventDispatcherInterface {
   private static final int ORDERCONFIRM = 4;
 
   private static final int PRIORITIES[] = { 0, 4, 1, 1, 1 };
+
   private EQueue queue;
+
+  private MagellanContext context;
+
+  private int magnitude = 100;
 
   private static final int infoMilliSeks = 1000;
 
@@ -82,9 +91,6 @@ public class EventDispatcher implements EventDispatcherInterface {
   public MagellanContext getMagellanContext() {
     return context;
   }
-
-  private MagellanContext context;
-  private int magnitude = 100;
 
   /**
    * Sets the Magellan Context.

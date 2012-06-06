@@ -39,11 +39,13 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Islands;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
+import magellan.library.utils.RoutePlanner;
+import magellan.library.utils.ShipRoutePlanner;
+import magellan.library.utils.UnitRoutePlanner;
 
 /**
  * A context menu for Islands.
@@ -56,6 +58,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
   private static final int MOVE_NACH = 1;
   private static final int MOVE_ROUTE = 2;
   private static final int MOVE_ROUTEBACK = 3;
+  private static final int MOVE_ROUTESTOP = 4;
 
   private EventDispatcher dispatcher = null;
 
@@ -109,7 +112,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
     routeLand.setEnabled(false);
     routeLand.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        doNachLand(MOVE_ROUTE);
+        doNachLand(MOVE_ROUTESTOP);
       }
     });
     add(routeLand);
@@ -137,7 +140,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
     routeSea.setEnabled(false);
     routeSea.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        doNachSea(MOVE_ROUTE);
+        doNachSea(MOVE_ROUTESTOP);
       }
     });
     add(routeSea);
@@ -160,34 +163,38 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
    * @param mode
    */
   private void doNachLand(int mode) {
-    Region actRegion = null;
-    String path = "";
-    List<Region> regionList = null;
-    Map<ID, RegionType> excludeMap = Regions.getNonLandRegionTypes(data.rules);
+    UnitRoutePlanner planner = new UnitRoutePlanner();
     for (Unit u : getSelectedUnits()) {
       if (onSameIsland(u.getRegion(), destRegion)) {
-        if (actRegion == null || !u.getRegion().equals(actRegion)) {
-          // String path = Regions.getDirections(u.getScriptMain().gd_ScriptMain.regions(), act,
-          // dest, excludeMap);
-          actRegion = u.getRegion();
-          int streetRadius =
-              data.getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(u, true);
-          if (streetRadius == 0) {
-            streetRadius = 2;
-          }
-          int radius =
-              data.getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(u, false);
-          if (radius == 0) {
-            radius = 1;
-          }
-          regionList =
-              Regions.getLandPath(data, actRegion.getCoordinate(), destRegion.getCoordinate(),
-                  excludeMap, radius, streetRadius);
-          path = Regions.getDirections(regionList);
+        List<String> orders = null;
+        int mode2;
+        if (mode == MOVE_NACH) {
+          mode2 = 0;
+        } else if (mode == MOVE_ROUTE) {
+          mode2 = RoutePlanner.MODE_CONTINUOUS;
+        } else if (mode == MOVE_ROUTEBACK) {
+          mode2 = RoutePlanner.MODE_CONTINUOUS | RoutePlanner.MODE_RETURN;
+        } else {
+          mode2 = RoutePlanner.MODE_CONTINUOUS | RoutePlanner.MODE_STOP;
         }
-        if (path != null && path.length() > 0) {
+        CoordinateID start;
+        CoordinateID dest;
+        orders =
+            planner.getOrders(u, data, start = u.getRegion().getCoordinate(), dest =
+                destRegion.getCoordinate(), null, mode == MOVE_NACH, mode2, false);
+
+        if (orders != null) {
           // Pfad gefunden
-          setOrder(u, regionList, mode, path);
+          Map<ID, RegionType> excludeMap = Regions.getNonLandRegionTypes(data.rules);
+
+          int speed =
+              Math.max(1, u.getData().getGameSpecificStuff().getMovementEvaluator()
+                  .getModifiedRadius(u, false));
+          int speedRoad =
+              Math.max(1, u.getData().getGameSpecificStuff().getMovementEvaluator()
+                  .getModifiedRadius(u, false));
+          setOrders(u, Regions.getLandDistance(data, start, dest, excludeMap, speed, speedRoad),
+              orders);
         }
       }
     }
@@ -199,16 +206,31 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
    * @param mode
    */
   private void doNachSea(int mode) {
+    ShipRoutePlanner planner = new ShipRoutePlanner();
 
-    String path = "";
-    List<Region> regionList = null;
     for (Unit u : getSelectedUnits()) {
       if (isSeaConnPossible(u) && u.getModifiedShip() != null) {
-        regionList = Regions.planShipRoute(u.getModifiedShip(), data, destRegion.getCoordinate());
-        path = Regions.getDirections(regionList);
-        if (path != null && path.length() > 0) {
+        List<String> orders = null;
+        int mode2;
+        if (mode == MOVE_NACH) {
+          mode2 = 0;
+        } else if (mode == MOVE_ROUTE) {
+          mode2 = RoutePlanner.MODE_CONTINUOUS | RoutePlanner.MODE_STOP;
+        } else {
+          mode2 = RoutePlanner.MODE_CONTINUOUS | RoutePlanner.MODE_RETURN;
+        }
+
+        CoordinateID dest;
+        CoordinateID start;
+        Ship ship;
+        orders =
+            planner.getOrders(ship = u.getModifiedShip(), data, start =
+                u.getRegion().getCoordinate(), dest = destRegion.getCoordinate(), null, true,
+                mode2, false);
+        if (orders != null) {
           // Pfad gefunden
-          setOrder(u, regionList, mode, path);
+          setOrders(u, Regions.getShipDistance(data, start, ship.getShoreId(), dest, Math.max(1,
+              data.getGameSpecificRules().getShipRange(ship))), orders);
         }
       }
     }
@@ -218,34 +240,15 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
    * Setzt den gefundenen path als order
    * 
    * @param u
-   * @param regionList
+   * @param distance
    * @param mode
-   * @param path
+   * @param orders
    */
-  private void setOrder(Unit u, List<Region> regionList, int mode, String path) {
-    String order = "";
-
-    if (mode == MOVE_NACH) {
-      order = PathfinderMapContextMenu.getOrder(EresseaConstants.O_MOVE) + " " + path;
-    } else {
-      order =
-          PathfinderMapContextMenu.getOrder(EresseaConstants.O_ROUTE) + " " + path + " "
-              + PathfinderMapContextMenu.getOrder(EresseaConstants.O_PAUSE);
-    }
-    if (mode == MOVE_ROUTEBACK) {
-      // Route zurück ergänzen
-      Collections.reverse(regionList);
-      order += " " + Regions.getDirections(regionList);
-      order += " " + PathfinderMapContextMenu.getOrder(EresseaConstants.O_PAUSE);
-      Collections.reverse(regionList);
-    }
-
-    // TODO ?? alle anderen langen Befehle löschen?
+  private void setOrders(Unit u, int distance, List<String> orders) {
     // Order setzen, anderes NACH ersetzen
     data.getGameSpecificStuff().getOrderChanger().disableLongOrders(u);
-    u.addOrder(order, true, 1);
-    // Fiete: addOn : give as comment number of regions to travel
-    u.addOrder("; path is " + (regionList.size() - 1) + " regions long.", true, 1);
+    u.addOrders(orders);
+    u.addOrder("; path is " + distance + " regions long.", true, 1);
     dispatcher.fire(new UnitOrdersEvent(this, u));
   }
 
@@ -524,13 +527,6 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
     this.destRegion = destRegion;
 
-  }
-
-  /**
-   * Returns a translation for the specified order key.
-   */
-  private static String getOrder(String key) {
-    return Resources.getOrderTranslation(key);
   }
 
 }

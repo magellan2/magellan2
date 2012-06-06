@@ -16,7 +16,6 @@ package magellan.client.swing.tree;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -159,7 +158,21 @@ public class ContextManager extends MouseAdapter implements GameDataListener {
    */
   @Override
   public void mouseClicked(MouseEvent e) {
-    if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
+    maybeShowPopup(e);
+  }
+
+  @Override
+  public void mousePressed(MouseEvent e) {
+    maybeShowPopup(e);
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent e) {
+    maybeShowPopup(e);
+  }
+
+  private void maybeShowPopup(MouseEvent e) {
+    if (e.isPopupTrigger()) {
       TreePath path = source.getPathForLocation(e.getX(), e.getY());
       DefaultMutableTreeNode node = null;
       boolean found = false;

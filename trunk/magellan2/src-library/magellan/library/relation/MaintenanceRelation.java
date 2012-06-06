@@ -21,7 +21,7 @@ import magellan.library.rules.ItemType;
  * A relation indicating that a unit pays maintenance of a building or ship.
  */
 public class MaintenanceRelation extends UnitRelation {
-  /** Maintenance costs in silver */
+  /** Maintenance costs */
   public int costs;
 
   /**

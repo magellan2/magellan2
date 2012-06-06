@@ -35,8 +35,6 @@ public interface RoutingDialogData {
 
   public boolean useRange();
 
-  public boolean makeRoute();
-
-  public boolean makeSingle();
+  public int getMode();
 
 }

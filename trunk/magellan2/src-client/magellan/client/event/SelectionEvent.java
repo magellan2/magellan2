@@ -10,12 +10,12 @@ package magellan.client.event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
 
 import magellan.library.HasRegion;
 import magellan.library.Region;
+import magellan.library.event.TimeStampedEvent;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -25,7 +25,7 @@ import magellan.library.utils.logging.Logger;
  * @see SelectionListener
  * @see EventDispatcher
  */
-public class SelectionEvent extends EventObject {
+public class SelectionEvent extends TimeStampedEvent {
   @SuppressWarnings("unused")
   private static final Logger log = Logger.getInstance(SelectionEvent.class);
 

@@ -30,27 +30,39 @@ import magellan.library.Region;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.guiwrapper.RoutingDialogData;
 
+/**
+ * Base class for route planners that show a dialog and add movement orders to units.
+ * 
+ * @author stm
+ */
 public class RoutePlanner {
 
   /** A cost function which never exhausts. */
   public final static Costs ZERO_COSTS = new ZeroCosts();
+  /** mode for ROUTE routes */
+  public static final int MODE_CONTINUOUS = 2;
+  /** mode for there and back routes */
+  public static final int MODE_RETURN = 4;
+  /** mode for stop after route is finished */
+  public static final int MODE_STOP = 8;
 
   /**
    * Creates unit movement orders using the cost function provided as argument.
    * 
    * @param orders New orders will be appended to this list.
    * @param path The path to convert to orders
-   * @param makeRoute ROUTE commands will be created if this is <code>true</code>.
-   * @param useVorlage Vorlage meta orders will be created if this is <code>true</code>.
+   * @param mode a combination of {@link RoutePlanner#MODE_CONTINUOUS},
+   *          {@link RoutePlanner#MODE_RETURN}, {@link RoutePlanner#MODE_STOP}
+   * @param useVorlage <em>Vorlage</em> meta orders will be created if this is <code>true</code>.
    * @param costs A cost function specific to the kind of movement used.
    * @return Number of added order lines
    * @see RoutingDialogData
    */
-  public static int addOrders(List<String> orders, List<Region> path, boolean makeRoute,
-      boolean useVorlage, Costs costs) {
+  public static int addOrders(List<String> orders, List<Region> path, int mode, boolean useVorlage,
+      Costs costs) {
     // the movement command
     String localCommand;
-    if (makeRoute) {
+    if ((mode & MODE_CONTINUOUS) > 0) {
       localCommand = Resources.getOrderTranslation(EresseaConstants.O_ROUTE);
     } else {
       localCommand = Resources.getOrderTranslation(EresseaConstants.O_MOVE);
@@ -60,7 +72,7 @@ public class RoutePlanner {
 
     int size = orders.size();
 
-    String temp = ""; // saves whether a closing bracket must be added: "}"
+    String closing = ""; // saves whether a closing bracket must be added: "}"
 
     List<Region> curPath = new LinkedList<Region>();
 
@@ -79,14 +91,14 @@ public class RoutePlanner {
 
             if (useVorlage) {
               // create Vorlage meta order
-              order.append(temp);
+              order.append(closing);
               orders.add(order.toString());
               order =
                   new StringBuilder(EresseaConstants.O_PCOMMENT).append(" #after ").append(
                       orders.size() - size).append(" { ").append(localCommand).append(" ");
-              temp = "}";
+              closing = "}";
             } else {
-              if (makeRoute) {
+              if ((mode & MODE_CONTINUOUS) > 0) {
                 // insert PAUSE
                 order.append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
               } else {
@@ -109,13 +121,16 @@ public class RoutePlanner {
     }
 
     // add last order
-    if (makeRoute) {
+    if ((mode & MODE_CONTINUOUS) > 0) {
       // add PAUSE at end
       order.append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
-      order.append(temp);
+      if ((mode & MODE_STOP) > 0) {
+        order.append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
+      }
+      order.append(closing);
       orders.add(order.toString());
     } else {
-      order.append(temp);
+      order.append(closing);
       orders.add(order.toString());
     }
 

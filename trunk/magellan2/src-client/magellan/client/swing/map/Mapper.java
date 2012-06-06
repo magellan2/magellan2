@@ -256,6 +256,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           voidRegion = data.voids().get(c);
         }
 
+        // FIXME on Mac platforms CTRL+Button1 is the popup trigger, which conflicts with this
+        // behaviour
         if ((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
           if ((me.getModifiers() & InputEvent.CTRL_MASK) != 0) {
             if (region != null) {
@@ -459,6 +461,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
             return "-?-";
         }
       } catch (Exception exc) {
+        // not critical
       }
     }
 
@@ -470,8 +473,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    */
   public void unitOrdersChanged(UnitOrdersEvent e) {
     // TODO: do we really need to repaint this?
-    repaint();
-  }
+      repaint();
+    }
 
   /**
    * Add a cell renderer object to the mapper. Each cell renderer has a rendering plane associated

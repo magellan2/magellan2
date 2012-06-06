@@ -24,8 +24,10 @@ import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.utils.Locales;
 import magellan.library.utils.Resources;
@@ -643,6 +645,32 @@ public class EresseaOrderChanger implements OrderChanger {
       value.add(line);
       put(key, value);
       return value.size();
+    }
+
+  }
+
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#addGiveOrder(magellan.library.Unit,
+   *      magellan.library.Unit, int, magellan.library.StringID)
+   */
+  public void addGiveOrder(Unit source, Unit target, int amount, StringID item, String comment) {
+    // FIXME methods like this should throw RulesExceptions if anything goes wrong...
+    ItemType itemType = getRules().getItemType(item);
+    if (item == null || itemType != null || item.equals(EresseaConstants.I_MEN)) {
+      String tmpOrders =
+          Resources.getOrderTranslation(EresseaConstants.O_GIVE)
+              + " "
+              + (target.getID().intValue() < 0 ? "TEMP " : "")
+              + target.getID().toString()
+              + " "
+              + (amount < 0 ? Resources.getOrderTranslation(EresseaConstants.O_EACH) : "")
+              + " "
+              + (amount == OrderChanger.ALL ? Resources.getOrderTranslation(EresseaConstants.O_ALL)
+                  : Math.abs(amount))
+              + (item == null ? "" : (" " + (item.equals(EresseaConstants.I_MEN) ? Resources
+                  .getOrderTranslation(EresseaConstants.O_MEN) : itemType.getOrderName())))
+              + (comment != null ? ("; " + comment) : "");
+      source.addOrder(tmpOrders);
     }
 
   }

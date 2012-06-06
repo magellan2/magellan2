@@ -90,17 +90,18 @@ public class UnitRoutePlanner {
 
     picker.initialize(data, island, true);
     // get the data:
-    RoutingDialogData v = picker.showRoutingDialog();
+    RoutingDialogData options = picker.showRoutingDialog();
 
-    if (v != null) {
+    if (options != null) {
       List<String> orders =
-          getOrders(unit, data, start.getCoordinate(), v.getDestination(), ui, v.makeSingle(), v
-              .useRange(), v.makeRoute(), v.useVorlage());
+          getOrders(unit, data, start.getCoordinate(), options.getDestination(), ui, options
+              .useRange(), options.getMode(), options.useVorlage());
 
       // change unit's orders
-      if (v.replaceOrders()) {
+      if (options.replaceOrders()) {
         unit.setOrders(orders);
       } else {
+        data.getGameSpecificStuff().getOrderChanger().disableLongOrders(unit);
         for (String string : orders) {
           unit.addOrder(string);
         }
@@ -114,7 +115,7 @@ public class UnitRoutePlanner {
           Unit u = it.next();
 
           if (!u.equals(unit)) {
-            if (v.replaceOrders()) {
+            if (options.replaceOrders()) {
               u.setOrders(orders);
             } else {
               for (String string : orders) {
@@ -138,22 +139,21 @@ public class UnitRoutePlanner {
    * @param start The region where to start, not necessarily equal to the ship's region
    * @param destination The target region
    * @param ui The parent component for message panes
-   * @param makeSingle If this is <code>false</code>, a return trip is constructed
    * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so
    *          that the ship's range is not exceeded.
-   * @param makeRoute If this is <code>true</code>, ROUTE commands are produced, as opposed to NACH
-   *          commands.
+   * @param mode a combination of {@link RoutePlanner#MODE_CONTINUOUS},
+   *          {@link RoutePlanner#MODE_RETURN}, {@link RoutePlanner#MODE_STOP}
    * @param useVorlage If this is <code>true</code>, Vorlage meta commands are produced.
    * @return The list of new orders.
    */
   public List<String> getOrders(Unit unit, GameData data, CoordinateID start,
-      CoordinateID destination, Component ui, boolean makeSingle, boolean useRange,
-      boolean makeRoute, boolean useVorlage) {
+      CoordinateID destination, Component ui, boolean useRange, int mode, boolean useVorlage) {
     // find a path
     Map<ID, RegionType> excludeMap = Regions.getNonLandRegionTypes(data.rules);
 
-    int speed = UnitRoutePlanner.getModifiedRadius(unit, true);
-    List<Region> path = Regions.getLandPath(data, start, destination, excludeMap, speed, speed);
+    int speed = Math.max(1, UnitRoutePlanner.getModifiedRadius(unit, false));
+    int speedRoad = Math.max(1, UnitRoutePlanner.getModifiedRadius(unit, true));
+    List<Region> path = Regions.getLandPath(data, start, destination, excludeMap, speed, speedRoad);
 
     if (path == null || path.size() <= 1) {
       if (ui != null) {
@@ -167,7 +167,7 @@ public class UnitRoutePlanner {
 
     // optionally find a return path
     List<Region> returnPath = null;
-    if (!makeSingle) {
+    if ((mode & RoutePlanner.MODE_RETURN) > 0) {
       returnPath = Regions.getLandPath(data, destination, start, excludeMap, speed, speed);
       path.addAll(returnPath);
     }
@@ -186,7 +186,7 @@ public class UnitRoutePlanner {
 
     // create orders
     List<String> orders = new LinkedList<String>();
-    RoutePlanner.addOrders(orders, path, makeRoute, useVorlage, costs);
+    RoutePlanner.addOrders(orders, path, mode, useVorlage, costs);
 
     return orders;
   }
@@ -203,6 +203,11 @@ public class UnitRoutePlanner {
     private boolean onlyStreets = true;
     int steps = 0;
 
+    /**
+     * Creates costs for a unit on land.
+     * 
+     * @param unit
+     */
     public LandCosts(Unit unit) {
       this.unit = unit;
     }
@@ -218,7 +223,7 @@ public class UnitRoutePlanner {
      * @see magellan.library.utils.RoutePlanner.Costs#isExhausted()
      */
     public boolean isExhausted() {
-      return steps >= UnitRoutePlanner.getModifiedRadius(unit, onlyStreets);
+      return steps >= Math.max(1, UnitRoutePlanner.getModifiedRadius(unit, onlyStreets));
     }
 
     public void reset() {

@@ -44,6 +44,7 @@ import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
+import magellan.library.utils.RoutePlanner;
 import magellan.library.utils.guiwrapper.RoutingDialogData;
 import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
 
@@ -61,6 +62,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
   private JButton cancel;
   private JCheckBox createRoute;
   private JCheckBox createSingleTrip;
+  private JCheckBox createStop;
   private JCheckBox considerShipRange;
   private JCheckBox createVorlageOrders;
   private JCheckBox replaceOrdersBox;
@@ -228,14 +230,20 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     createRoute.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         createVorlageOrders.setEnabled(!createRoute.isSelected());
+        createStop.setEnabled(createRoute.isSelected());
       }
     });
+
+    createStop = new JCheckBox(Resources.get("routingdialog.radiobtn.createstop.title"));
 
     createSingleTrip.setSelected(true);
     createRoute.setSelected(true);
 
     c.gridy++;
     cp.add(createRoute, c);
+
+    c.gridy++;
+    cp.add(createStop, c);
 
     c.gridy++;
     cp.add(createSingleTrip, c);
@@ -288,7 +296,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
    * @return A RetValue or <code>null</code> if no destination has been selected
    */
   public RetValue showRoutingDialog() {
-    final RetValue retVal = new RetValue(null, false, false, false, false, false);
+    final RetValue retVal = new RetValue(null, 0, false, false, false);
     ActionListener okButtonAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int x = 0;
@@ -298,15 +306,19 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
           x = Integer.parseInt(xCor.getText());
           y = Integer.parseInt(yCor.getText());
           retVal.dest = CoordinateID.create(x, y);
-          retVal.makeRoute = createRoute.isSelected();
+
+          retVal.mode |= createRoute.isSelected() ? RoutePlanner.MODE_CONTINUOUS : 0;
+          retVal.mode |= createSingleTrip.isSelected() ? 0 : RoutePlanner.MODE_RETURN;
+          retVal.mode |= createStop.isSelected() ? RoutePlanner.MODE_STOP : 0;
+
           retVal.useRange = considerShipRange.isSelected();
           retVal.useVorlage = createVorlageOrders.isSelected();
           retVal.replaceOrders = replaceOrdersBox.isSelected();
-          retVal.makeSingle = createSingleTrip.isSelected();
+          quit();
         } catch (NumberFormatException exc) {
+          // do not accept;
         }
 
-        quit();
       }
     };
 
@@ -373,9 +385,6 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     /** The coordinates of the destination */
     public CoordinateID dest;
 
-    /** whether to create a route rather than a simple path */
-    public boolean makeRoute;
-
     /** whether to consider the ship's range */
     public boolean useRange;
 
@@ -385,7 +394,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     /** whether to replace the unit's orders */
     public boolean replaceOrders;
 
-    public boolean makeSingle;
+    public int mode;
 
     /**
      * Creates a new RetValue object.
@@ -396,22 +405,20 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
      * @param vorlage whether to create Vorlage orders
      * @param replace whether to replace the unit's orders
      */
-    public RetValue(CoordinateID d, boolean route, boolean range, boolean vorlage, boolean replace,
-        boolean single) {
+    public RetValue(CoordinateID d, int mode, boolean range, boolean vorlage, boolean replace) {
       dest = d;
-      makeRoute = route;
+      this.mode = mode;
       useRange = range;
       useVorlage = vorlage;
       replaceOrders = replace;
-      makeSingle = single;
     }
 
     public CoordinateID getDestination() {
       return dest;
     }
 
-    public boolean makeRoute() {
-      return makeRoute;
+    public int getMode() {
+      return mode;
     }
 
     public boolean useRange() {
@@ -426,8 +433,5 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
       return useVorlage;
     }
 
-    public boolean makeSingle() {
-      return makeSingle;
-    }
   }
 }

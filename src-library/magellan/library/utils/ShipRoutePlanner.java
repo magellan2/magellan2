@@ -25,6 +25,7 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.BuildingType;
 import magellan.library.utils.guiwrapper.RoutingDialogData;
 import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
+import magellan.library.utils.logging.Logger;
 
 /**
  * Works together with com.eressea.swing.RoutingDialog to calculate the route for a ship.
@@ -34,6 +35,8 @@ import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
  * @author stm
  */
 public class ShipRoutePlanner extends RoutePlanner {
+  private static final Logger log = Logger.getInstance(ShipRoutePlanner.class);
+
   /**
    * Returns <code>true</code> if the ship is complete and ship's owner belongs to a privileged
    * faction.
@@ -80,22 +83,20 @@ public class ShipRoutePlanner extends RoutePlanner {
     // Map oceans = Regions.getOceanRegionTypes(data.rules);
     Collection<Region> coast = new LinkedList<Region>();
 
-    try {
-      for (Region region : data.getRegions()) {
-        try {
-          for (Region r2 : region.getNeighbors().values()) {
+    for (Region region : data.getRegions()) {
+      try {
+        for (Region r2 : region.getNeighbors().values()) {
 
-            // if(oceans.values().contains(r2.getRegionType())) {
-            if (r2.getRegionType().isOcean()) {
-              coast.add(region);
+          // if(oceans.values().contains(r2.getRegionType())) {
+          if (r2.getRegionType().isOcean()) {
+            coast.add(region);
 
-              break;
-            }
+            break;
           }
-        } catch (Exception exc) {
         }
+      } catch (Exception exc) {
+        log.error(exc);
       }
-    } catch (Exception coastException) {
     }
 
     // get the data:
@@ -105,18 +106,18 @@ public class ShipRoutePlanner extends RoutePlanner {
       picker.initialize(data, coast, true);
     }
 
-    RoutingDialogData v = picker.showRoutingDialog();
+    RoutingDialogData options = picker.showRoutingDialog();
 
     // find the route
-    if (v != null) {
+    if (options != null) {
       List<String> orders =
-          getOrders(ship, data, ship.getRegion().getID(), v.getDestination(), ui, v.makeSingle(), v
-              .useRange(), v.makeRoute(), v.useVorlage());
+          getOrders(ship, data, ship.getRegion().getID(), options.getDestination(), ui, options
+              .useRange(), options.getMode(), options.useVorlage());
       if (orders.size() == 0)
         return null;
 
       // add orders to captain
-      if (v.replaceOrders()) {
+      if (options.replaceOrders()) {
         shipOwner.setOrders(orders);
       } else {
         data.getGameSpecificStuff().getOrderChanger().disableLongOrders(shipOwner);
@@ -140,19 +141,17 @@ public class ShipRoutePlanner extends RoutePlanner {
    * @param start The region where to start, not necessarily equal to the ship's region
    * @param destination The target region
    * @param ui The parent component for message panes
-   * @param makeSingle If this is <code>false</code>, a return trip is constructed
    * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so
    *          that the ship's range is not exceeded.
-   * @param makeRoute If this is <code>true</code>, ROUTE commands are produced, as opposed to NACH
-   *          commands.
-   * @param useVorlage If this is <code>true</code>, Vorlage meta commands are produced.
+   * @param mode a combination of {@link RoutePlanner#MODE_CONTINUOUS},
+   *          {@link RoutePlanner#MODE_RETURN}, {@link RoutePlanner#MODE_STOP}
+   * @param useVorlage If this is <code>true</code>, <em>Vorlage</em> meta commands are produced.
    * @return The list of new orders.
    */
   public List<String> getOrders(Ship ship, GameData data, CoordinateID start,
-      CoordinateID destination, Component ui, boolean makeSingle, boolean useRange,
-      boolean makeRoute, boolean useVorlage) {
+      CoordinateID destination, Component ui, boolean useRange, int mode, boolean useVorlage) {
     BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
-    int speed = data.getGameSpecificRules().getShipRange(ship);
+    int speed = Math.max(1, data.getGameSpecificRules().getShipRange(ship));
     List<Region> path =
         Regions
             .planShipRoute(data, ship.getRegion().getID(), ship.getShoreId(), destination, speed);
@@ -168,7 +167,7 @@ public class ShipRoutePlanner extends RoutePlanner {
 
     // ...and optionally the return path
     List<Region> returnPath = null;
-    if (!makeSingle) {
+    if ((mode & RoutePlanner.MODE_RETURN) > 0) {
       Region lastRegion = path.get(path.size() - 1);
       Direction returnDirection = Direction.INVALID;
       if (!lastRegion.getRegionType().isOcean() || !Regions.containsBuilding(lastRegion, harbour)) {
@@ -196,7 +195,7 @@ public class ShipRoutePlanner extends RoutePlanner {
 
     // compute new orders
     List<String> orders = new LinkedList<String>();
-    RoutePlanner.addOrders(orders, path, makeRoute, useVorlage, shipCosts);
+    RoutePlanner.addOrders(orders, path, mode, useVorlage, shipCosts);
     return orders;
   }
 
@@ -208,12 +207,12 @@ public class ShipRoutePlanner extends RoutePlanner {
    */
   protected static class ShipCosts implements RoutePlanner.Costs {
     private BuildingType harbour;
-    private Ship ship;
+    // private Ship ship;
     private int costs;
     private int speed;
 
     public ShipCosts(Ship ship, int speed, BuildingType harbour) {
-      this.ship = ship;
+      // this.ship = ship;
       this.harbour = harbour;
       this.speed = speed;
     }

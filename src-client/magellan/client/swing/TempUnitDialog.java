@@ -63,6 +63,7 @@ public class TempUnitDialog extends InternationalizedDialog {
   protected JPanel moreButtonPanel;
   protected JPanel morePanel;
   protected JTextField recruit;
+  protected JTextField transfer;
   protected JTextArea descript;
   protected JTextField order;
   protected JCheckBox giveRecruitCost;
@@ -221,13 +222,15 @@ public class TempUnitDialog extends InternationalizedDialog {
     con.gridwidth = 1;
     con.gridheight = 1;
     morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.recruit.label")), con);
-    con.gridy = 2;
+    con.gridy++;
+    morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.transfer.label")), con);
+    con.gridy += 2;
     morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.order.label")), con);
-    con.gridy = 3;
+    con.gridy++;
     con.anchor = GridBagConstraints.NORTHWEST;
     morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.descript.label")), con);
     con.anchor = GridBagConstraints.CENTER;
-    con.gridy = 1;
+    con.gridy = 2;
     con.gridx = 1;
     con.fill = GridBagConstraints.HORIZONTAL;
     morePanel.add(giveRecruitCost =
@@ -244,9 +247,11 @@ public class TempUnitDialog extends InternationalizedDialog {
     con.gridwidth = 2;
     con.gridy = 0;
     morePanel.add(recruit = new JTextField(5), con);
-    con.gridy = 2;
+    con.gridy++;
+    morePanel.add(transfer = new JTextField(5), con);
+    con.gridy += 2;
     morePanel.add(order = new JTextField(10), con);
-    con.gridy = 3;
+    con.gridy++;
     con.fill = GridBagConstraints.BOTH;
     morePanel.add(new JScrollPane(descript = new TablessTextArea(3, 10)), con);
     descript.setLineWrap(true);
@@ -307,6 +312,7 @@ public class TempUnitDialog extends InternationalizedDialog {
     components.add(name);
     if (extended) {
       components.add(recruit);
+      components.add(transfer);
       components.add(giveRecruitCost);
       components.add(giveMaintainCost);
       components.add(order);
@@ -330,6 +336,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
     id.setText(newID);
     recruit.setText(null);
+    transfer.setText(null);
 
     if (settings.getProperty("TempUnitDialog.LastOrderEmpty", "false").equals("true")) {
       order.setText(null);
@@ -418,6 +425,13 @@ public class TempUnitDialog extends InternationalizedDialog {
    */
   public String getRecruit() {
     return recruit.getText();
+  }
+
+  /**
+   * @return The value of the transfer input box
+   */
+  public String getTransfer() {
+    return transfer.getText();
   }
 
   /**

@@ -554,7 +554,21 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     return new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
+        maybeShowPopup(e);
+      }
+
+      @Override
+      public void mousePressed(MouseEvent e) {
+        maybeShowPopup(e);
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        maybeShowPopup(e);
+      }
+
+      private void maybeShowPopup(MouseEvent e) {
+        if (e.isPopupTrigger()) {
           JPopupMenu menu = new JPopupMenu();
           final int col = view2modelColumn(planner.columnAtPoint(e.getPoint()));
           final int row = view2modelRow(planner.rowAtPoint(e.getPoint()));
@@ -567,7 +581,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           menu.add(item);
           item = new JMenuItem(Resources.get("alchemydialog.contextmenu.removerow.title"));
           item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e2) {
               tableModel.removeHerb(row);
             }
           });
@@ -575,7 +589,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           item = new JMenuItem(Resources.get("alchemydialog.contextmenu.removecol.title"));
           item.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e2) {
               tableModel.removePotion(col);
             }
           });

@@ -59,6 +59,7 @@ import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.Resources;
+import magellan.library.utils.RoutePlanner;
 import magellan.library.utils.ShipRoutePlanner;
 import magellan.library.utils.UnitRoutePlanner;
 import magellan.library.utils.UserInterface;
@@ -607,7 +608,8 @@ public class ExtendedCommandsHelper {
   public String getPathToRegion(Unit unit, Region destination, boolean useSpeed, boolean makeRoute) {
     List<String> orders =
         (new UnitRoutePlanner()).getOrders(unit, world, unit.getRegion().getID(), destination
-            .getCoordinate(), null, true, true, makeRoute, false);
+            .getCoordinate(), null, true, makeRoute ? RoutePlanner.MODE_CONTINUOUS
+            | RoutePlanner.MODE_RETURN : 0, false);
     if (orders.size() == 1)
       return orders.get(0);
 
@@ -646,7 +648,8 @@ public class ExtendedCommandsHelper {
   public String getPathToRegion(Ship ship, Region destination, boolean useSpeed, boolean makeRoute) {
     List<String> orders =
         (new ShipRoutePlanner()).getOrders(ship, world, ship.getRegion().getCoordinate(),
-            destination.getCoordinate(), null, true, useSpeed, makeRoute, false);
+            destination.getCoordinate(), null, useSpeed, makeRoute ? RoutePlanner.MODE_CONTINUOUS
+                | RoutePlanner.MODE_RETURN : 0, false);
     if (orders.size() == 1)
       return orders.get(0);
 

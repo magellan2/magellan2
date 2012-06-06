@@ -1,3 +1,8 @@
+2012-06-06 / Build 505 - stm (stm_@users.sourceforge.net)
+    * fixed some mouselisteners for more compatible popup menu behavior
+    * added STOP option to RoutePlanners, changed context route planner to be compatible with routeplanners
+    * added person transfer option to TempUnitDialog 
+
 2012-06-02 / Build 503 - stm (stm_@users.sourceforge.net)
     * revamped OrderWriterDialog
     * showing changed item amount even if their is no net change or amount zero

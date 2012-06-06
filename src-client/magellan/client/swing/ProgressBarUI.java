@@ -192,7 +192,11 @@ public class ProgressBarUI implements UserInterface, ActionListener {
       public void run() {
         if (!ready) {
           showing = true;
-          dlg.setVisible(true);
+          try {
+            dlg.setVisible(true);
+          } catch (RuntimeException t) {
+            throw t;
+          }
         }
       }
     });

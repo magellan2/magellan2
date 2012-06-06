@@ -41,7 +41,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -95,7 +94,6 @@ import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
 import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.rules.ItemType;
 import magellan.library.utils.Cache;
 import magellan.library.utils.CacheHandler;
 import magellan.library.utils.IDBaseConverter;
@@ -675,26 +673,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
    */
   public void mouseClicked(MouseEvent e) {
-    if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
-      MultiEditorOrderEditorList.log.debug("mouseClicked " + e.getSource());
-    }
-    if (e.getSource() instanceof OrderEditor) {
-      OrderEditor editor = (OrderEditor) e.getSource();
-      if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
-        // Right click -> UnitContextMenu (Fiete)
-        Unit u = editor.getUnit();
-        if (currentUnit != null) {
-          if (u != null) {
-            JPopupMenu unitContextMenu =
-                editor.getContextFactory().createContextMenu(dispatcher, data, u, null, null);
-            if (unitContextMenu != null) {
-              unitContextMenu.show(this, e.getX(), e.getY());
-            }
-          }
-        }
-      }
-    }
-
+    // maybeShowPopup(e);
   }
 
   /**
@@ -722,13 +701,32 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       // rightclick does select too(Fiete)
       dispatcher.fire(SelectionEvent.create(e.getSource(), editor.getUnit()));
     }
+    maybeShowPopup(e);
   }
 
   /**
    * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
    */
   public void mouseReleased(MouseEvent e) {
-    // do not react
+    maybeShowPopup(e);
+  }
+
+  private void maybeShowPopup(MouseEvent e) {
+    if (e.getSource() instanceof OrderEditor) {
+      OrderEditor editor = (OrderEditor) e.getSource();
+      if (e.isPopupTrigger()) {
+        Unit u = editor.getUnit();
+        if (currentUnit != null) {
+          if (u != null) {
+            JPopupMenu unitContextMenu =
+                editor.getContextFactory().createContextMenu(dispatcher, data, u, null, null);
+            if (unitContextMenu != null) {
+              unitContextMenu.show(this, e.getX(), e.getY());
+            }
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -1979,89 +1977,65 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                 // extended features
                 if (dialog.wasExtendedDialog()) {
                   // Recruiting
-                  String recruit = dialog.getRecruit();
+                  try {
+                    int recruits =
+                        Math.max(0, dialog.getRecruit() != null ? Integer.parseInt(dialog
+                            .getRecruit()) : 0);
+                    int transfers =
+                        Math.max(0, dialog.getTransfer() != null ? Integer.parseInt(dialog
+                            .getTransfer()) : 0);
 
-                  if (recruit != null) {
-                    try {
-                      int i = Integer.parseInt(recruit);
-
-                      if (i > 0) {
-                        data.getGameSpecificStuff().getOrderChanger().addRecruitOrder(tempUnit, i);
-
-                        if (dialog.isGiveMaintainCost() || dialog.isGiveRecruitCost()) {
-                          ItemType silverType = data.rules.getItemType(EresseaConstants.I_USILVER);
-                          String silver = null;
-
-                          if (silverType != null) {
-                            silver = silverType.getName();
-                          } else {
-                            silver = "Silver";
-                          }
-
-                          if (dialog.isGiveRecruitCost()) {
-                            int recCost = 0;
-
-                            recCost = parentUnit.getRace().getRecruitmentCosts();
-
-                            recCost = i * recCost;
-
-                            // TODO(pavkovic) extract to EresseaOrderChanger
-                            String tmpOrders =
-                                Resources.getOrderTranslation(EresseaConstants.O_GIVE)
-                                    + " "
-                                    + tempUnit.toString(false)
-                                    + " "
-                                    + recCost
-                                    + " "
-                                    + silver
-                                    + "; "
-                                    + Resources
-                                        .get("completion.multieditorordereditorlist.tempunit.recruitCost");
-                            parentUnit.addOrder(tmpOrders);
-                          }
-
-                          if (dialog.isGiveMaintainCost()) {
-                            String tmpOrders =
-                                Resources.getOrderTranslation(EresseaConstants.O_GIVE)
-                                    + " "
-                                    + tempUnit.toString(false)
-                                    + " "
-                                    + String.valueOf(parentUnit.getRace().getMaintenance() * i)
-                                    + " "
-                                    + silver
-                                    + "; "
-                                    + Resources
-                                        .get("completion.multieditorordereditorlist.tempunit.maintainCost");
-                            parentUnit.addOrder(tmpOrders);
-                          }
-
-                          // TODO(pavkovic) extract to EresseaOrderChanger
-                          dispatcher.fire(new UnitOrdersEvent(this, parentUnit));
-                        }
-                      }
-                    } catch (NumberFormatException nfe) {
-                    } catch (MissingResourceException mre) {
+                    if (recruits > 0) {
+                      data.getGameSpecificStuff().getOrderChanger().addRecruitOrder(tempUnit,
+                          recruits);
                     }
-                  }
+                    if (transfers > 0) {
+                      data.getGameSpecificStuff().getOrderChanger().addGiveOrder(parentUnit,
+                          tempUnit, transfers, EresseaConstants.I_MEN, null);
+                    }
+                    if (dialog.isGiveRecruitCost()) {
+                      data.getGameSpecificStuff().getOrderChanger().addGiveOrder(
+                          parentUnit,
+                          tempUnit,
+                          recruits * parentUnit.getRace().getRecruitmentCosts(),
+                          EresseaConstants.I_USILVER,
+                          Resources
+                              .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
+                    }
+                    if (dialog.isGiveMaintainCost()) {
+                      data.getGameSpecificStuff().getOrderChanger().addGiveOrder(
+                          parentUnit,
+                          tempUnit,
+                          parentUnit.getRace().getMaintenance() * (transfers + recruits),
+                          EresseaConstants.I_USILVER,
+                          Resources
+                              .get("completion.multieditorordereditorlist.tempunit.maintainCost"));
+                    }
 
-                  // simple order
-                  String order = dialog.getOrder();
-
-                  if ((order != null) && !order.trim().equals("")) {
-                    tempUnit.addOrder(order);
-                  }
-
-                  // description
-                  String descript = dialog.getDescript();
-
-                  if ((descript != null) && !descript.trim().equals("")) {
-                    descript = descript.replace('\n', ' ');
-                    tempUnit.setDescription(descript);
-                    data.getGameSpecificStuff().getOrderChanger().addDescribeUnitOrder(tempUnit,
-                        descript);
+                    dispatcher.fire(new UnitOrdersEvent(this, parentUnit));
+                  } catch (NumberFormatException nfe) {
+                    // user input error, ignore
                   }
                 }
 
+                // simple order
+                String order = dialog.getOrder();
+
+                if ((order != null) && !order.trim().equals("")) {
+                  tempUnit.addOrder(order);
+                }
+
+                // description
+                String descript = dialog.getDescript();
+
+                if ((descript != null) && !descript.trim().equals("")) {
+                  descript = descript.replace('\n', ' ');
+                  tempUnit.setDescription(descript);
+                  data.getGameSpecificStuff().getOrderChanger().addDescribeUnitOrder(tempUnit,
+                      descript);
+                }
+
+                parentUnit.refreshRelations();
                 // data update
                 dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.CREATED), true);
                 selectEditor(tempUnit);

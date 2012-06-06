@@ -15,6 +15,7 @@ package magellan.library.gamebinding;
 
 import magellan.library.Order;
 import magellan.library.Orders;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 
@@ -80,6 +81,15 @@ public interface OrderChanger {
    * Adds a REKRUTIERE amount order.
    */
   public void addRecruitOrder(Unit u, int amount);
+
+  public static final int ALL = Integer.MAX_VALUE;
+
+  /**
+   * Adds a GIVE target amount item order.
+   * 
+   * @param amount use ALL for all, negative amount for each
+   */
+  public void addGiveOrder(Unit source, Unit target, int amount, StringID item, String comment);
 
   // for UnitContextMenu
   /**

@@ -43,4 +43,9 @@ public abstract class TimeStampedEvent extends EventObject {
   public long getTimestamp() {
     return timestamp;
   }
+
+  @Override
+  public String toString() {
+    return super.toString() + "[t=" + timestamp + "]";
+  }
 }

@@ -120,6 +120,15 @@ public class BattleDock extends JPanel implements ActionListener, GameDataListen
     MouseListener ml = new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
+        maybeShowPopup(e);
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        maybeShowPopup(e);
+      }
+
+      private void maybeShowPopup(MouseEvent e) {
         TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
         tree.setSelectionPath(selPath);
         if (selPath == null)

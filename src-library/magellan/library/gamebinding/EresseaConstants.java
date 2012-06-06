@@ -709,6 +709,9 @@ public class EresseaConstants {
   /** The resource peasants */
   public static final StringID I_PEASANTS = StringID.create("Bauern");
 
+  /** The "item" PERSONS */
+  public static final StringID I_MEN = StringID.create("Personen");
+
   /** The item peasant */
   public static final StringID I_UPEASANT = StringID.create("Bauer");
 

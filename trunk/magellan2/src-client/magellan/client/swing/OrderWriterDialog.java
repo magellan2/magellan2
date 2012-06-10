@@ -205,6 +205,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void init() {
+    if (!canShow(data))
+      throw new IllegalArgumentException("no faction with password");
+
     localSettings = new Properties();
     for (Entry<Object, Object> entry : settings.entrySet()) {
       if (((String) entry.getKey()).startsWith(PropertiesHelper.ORDEREDITOR_PREFIX)) {
@@ -227,16 +230,6 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       log.error("Could not initialize cipher!", e);
       cipher = null;
     }
-
-    Faction faction = null;
-    for (Faction f : data.getFactions()) {
-      if (f.isPrivileged()) {
-        faction = f;
-        break;
-      }
-    }
-    // if (faction == null)
-    // throw new RuntimeException("no privileged faction in report");
 
     addKeyListener(new KeyAdapter() {
       @Override
@@ -434,17 +427,18 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private Container getButtonPanel(final int type) {
     JPanel buttonPanel = new JPanel(new GridLayout2(0, 1, 0, 6));
 
-    // a hack for writing all faction's orders (useful for testing the eressea server)
-    JButton gmButton = new JButton("Save all");
-    if (type == FILE_PANEL && PropertiesHelper.getBoolean(localSettings, "GM.enabled", false)) {
-      gmButton.setToolTipText(Resources.get("orderwriterdialog.btn.gm.tooltip", false));
-      gmButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          saveAll();
-        }
-      });
-    }
-    if (PropertiesHelper.getBoolean(localSettings, "GM.enabled", false)) {
+    if (isGmEnabled()) {
+      // a hack for writing all faction's orders (useful for testing the eressea server)
+      JButton gmButton = new JButton("Save all");
+      if (type == FILE_PANEL) {
+        gmButton.setToolTipText(Resources.get("orderwriterdialog.btn.gm.tooltip", false));
+        gmButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            saveAll();
+          }
+        });
+      }
+
       buttonPanel.add(gmButton);
     }
 
@@ -588,8 +582,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     cmbFactions.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         // in this situation we need to reinitialize the groups list
-        OrderWriterDialog.log.finer("Item event on faction combobox:" + e + " "
-            + cmbFactions.getSelectedItem());
+        // OrderWriterDialog.log.finer("Item event on faction combobox:" + e + " "
+        // + cmbFactions.getSelectedItem());
 
         switch (e.getStateChange()) {
         case ItemEvent.SELECTED:
@@ -677,11 +671,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     pnlFile.add(cmbOutputFile, BorderLayout.CENTER);
     cmbOutputFile.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
+        // log.finer(arg0.getActionCommand());
         if (arg0.getActionCommand().equals("comboBoxEdited")) {
-          log.finer(arg0.getActionCommand());
-          updateAutoFileName();
           addFileName((String) cmbOutputFile.getSelectedItem());
         }
+        updateAutoFileName();
       }
     });
     pnlFile.add(btnOutputFile, BorderLayout.EAST);
@@ -690,8 +684,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     pnl2.add(chkAutoFileName =
         createCheckBox("autofilename", PropertiesHelper.ORDERWRITER_AUTO_FILENAME, suffix, false),
         BorderLayout.WEST);
-    chkAutoFileName.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent arg0) {
+    chkAutoFileName.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
         txtOutputFileGenerated.setEnabled(chkAutoFileName.isSelected());
         updateAutoFileName();
       }
@@ -701,6 +695,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     txtOutputFileGenerated.setEditable(false);
     txtOutputFileGenerated.setEnabled(chkAutoFileName.isSelected());
     updateAutoFileName();
+
+    pnl2.add(
+        new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNameInfo.label")),
+        BorderLayout.SOUTH);
 
     pnlFile.add(pnl2, BorderLayout.SOUTH);
 
@@ -1151,6 +1149,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         chkAutoFileName.setSelected(PropertiesHelper.getBoolean(localSettings,
             PropertiesHelper.ORDERWRITER_AUTO_FILENAME, false));
       }
+
       updateAutoFileName();
     }
 
@@ -1186,11 +1185,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void storeSettings() {
-    for (int i = 0; i < Math.min(cmbFactions.getItemCount(), 6); i++) {
-      Faction f = (Faction) cmbFactions.getItemAt(i);
-      storeSettings(localSettings, f, EMAIL_PANEL);
-      storeSettings(localSettings, f, FILE_PANEL);
-      storeSettings(localSettings, f, CLIPBOARD_PANEL);
+    for (int type = 0; type < 3; ++type) {
+      Faction f = getFaction(type);
+      if (f != null) {
+        storeSettings(localSettings, f, type);
+      }
     }
     settings.putAll(localSettings);
     if (standAlone) {
@@ -1224,7 +1223,6 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           getNewOutputFiles(cmbOutputFile));
       pSettings.setProperty(PropertiesHelper.ORDERWRITER_AUTO_FILENAME + suffix, String
           .valueOf(chkAutoFileName.isSelected()));
-      log.finest(getNewOutputFiles(cmbOutputFile).get(0) + " " + chkAutoFileName.isSelected());
     }
 
     if (chkFixedWidth[type].isSelected() == true) {
@@ -1570,10 +1568,6 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       String newFileName = FileNameGenerator.getFileName(pattern, feed);
 
       txtOutputFileGenerated.setText(newFileName);
-      if (pattern == null || !pattern.contains("{")) {
-        JOptionPane.showMessageDialog(ancestor, Resources
-            .get("orderwriterdialog.msg.nopattern2.text"));
-      }
     } else {
       txtOutputFileGenerated.setText(pattern);
     }
@@ -1937,6 +1931,21 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       stream = new FileWriter(outputFile);
     }
     return stream;
+  }
+
+  public static boolean canShow(GameData data) {
+    Faction faction = null;
+    for (Faction f : data.getFactions()) {
+      if (f.isPrivileged()) {
+        faction = f;
+        break;
+      }
+    }
+    return faction != null;
+  }
+
+  private boolean isGmEnabled() {
+    return PropertiesHelper.getBoolean(settings, "GM.enabled", false);
   }
 
 }

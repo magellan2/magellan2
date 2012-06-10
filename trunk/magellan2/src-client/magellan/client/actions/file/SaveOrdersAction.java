@@ -15,7 +15,6 @@ import javax.swing.KeyStroke;
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.OrderWriterDialog;
-import magellan.library.Faction;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.Resources;
@@ -112,14 +111,7 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
   }
 
   private void showDialog() {
-    Faction faction = null;
-    for (Faction f : client.getData().getFactions()) {
-      if (f.isPrivileged()) {
-        faction = f;
-        break;
-      }
-    }
-    if (faction == null) {
+    if (!OrderWriterDialog.canShow(client.getData())) {
       JOptionPane.showMessageDialog(client, Resources
           .get("actions.saveordersaction.dialog.nofaction.message"));
     } else {
@@ -131,8 +123,11 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
   }
 
   private void execMail() {
-    if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
-        .getSelectedRegions().values()).runMail()) {
+    if (!OrderWriterDialog.canShow(client.getData())) {
+      JOptionPane.showMessageDialog(client, Resources
+          .get("actions.saveordersaction.dialog.nofaction.message"));
+    } else if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(),
+        client.getSelectedRegions().values()).runMail()) {
       JOptionPane.showMessageDialog(client, Resources
           .get("actions.saveordersaction.action.error.message"), Resources
           .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
@@ -140,8 +135,11 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
   }
 
   private void execSave() {
-    if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
-        .getSelectedRegions().values()).runSave()) {
+    if (!OrderWriterDialog.canShow(client.getData())) {
+      JOptionPane.showMessageDialog(client, Resources
+          .get("actions.saveordersaction.dialog.nofaction.message"));
+    } else if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(),
+        client.getSelectedRegions().values()).runSave()) {
       JOptionPane.showMessageDialog(client, Resources
           .get("actions.saveordersaction.action.error.message"), Resources
           .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
@@ -149,11 +147,16 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
   }
 
   private void execClipboard() {
-    if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
-        .getSelectedRegions().values()).runClipboard()) {
+    if (!OrderWriterDialog.canShow(client.getData())) {
       JOptionPane.showMessageDialog(client, Resources
-          .get("actions.saveordersaction.action.error.message"), Resources
-          .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
+          .get("actions.saveordersaction.dialog.nofaction.message"));
+    } else {
+      if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
+          .getSelectedRegions().values()).runClipboard()) {
+        JOptionPane.showMessageDialog(client, Resources
+            .get("actions.saveordersaction.action.error.message"), Resources
+            .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
+      }
     }
   }
 

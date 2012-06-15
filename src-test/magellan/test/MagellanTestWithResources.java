@@ -23,6 +23,9 @@
 //
 package magellan.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import java.io.File;
 import java.util.Locale;
 import java.util.Properties;
@@ -70,6 +73,9 @@ public abstract class MagellanTestWithResources {
     // context.setCompletionProperties(completionSettings = new SelfCleaningProperties());
     Logger.setLevel(Logger.ERROR);
     context.init();
+
+    assertEquals(true, true);
+    assertSame(true, true);
   }
 
 }

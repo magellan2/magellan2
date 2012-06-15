@@ -457,6 +457,9 @@ public class EventDispatcher implements EventDispatcherInterface {
           lastPriority = prio;
           SwingUtilities.invokeLater(new Notifier(o));
         } catch (InterruptedException ie) {
+          Thread.currentThread().interrupt();
+          log.warn("event dispatcher exiting");
+          return;
         }
       }
     }

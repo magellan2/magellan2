@@ -113,10 +113,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     super(d, initData, p);
     setLayout(new BorderLayout());
     this.add(getStatPanel(), BorderLayout.CENTER);
-    factions = new Hashtable<ID, Faction>(data.factions());
-    regions = new Hashtable<CoordinateID, Region>(data.regions());
+    factions = new Hashtable<ID, Faction>(getData().factions());
+    regions = new Hashtable<CoordinateID, Region>(getData().regions());
     dispatcher.addSelectionListener(this);
-    unitsTools = (data != null) ? new Units(data.rules) : new Units(null);
+    unitsTools = (getData() != null) ? new Units(getData().rules) : new Units(null);
     nodeWrapperFactory = new NodeWrapperFactory(settings);
 
     // to get the pref-adapter FIXME remove
@@ -131,7 +131,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
-    data = e.getGameData();
+    setData(e.getGameData());
 
     /**
      * Don't clear factions as the SelectionEvent of the updated List in FactionStatsDialog might be
@@ -139,12 +139,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
      */
 
     // factions.clear();
-    if (data != null) {
-      unitsTools.setRules(data.rules);
+    if (getData() != null) {
+      unitsTools.setRules(getData().rules);
       // FIXME need to clear, or updateTree may be called on invalid faction list...
       // factions.clear();
       // regions.clear();
-      setRegions(data.getRegions());
+      setRegions(getData().getRegions());
     }
   }
 
@@ -198,7 +198,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
    */
   public void setRegions(Collection<Region> rs) {
     if ((rs == null) || rs.isEmpty()) {
-      regions = new Hashtable<CoordinateID, Region>(data.regions());
+      regions = new Hashtable<CoordinateID, Region>(getData().regions());
     } else {
       regions.clear();
 
@@ -459,7 +459,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
 
       /* Report owner node */
-      if (f.getID().equals(data.getOwnerFaction())) {
+      if (f.getID().equals(getData().getOwnerFaction())) {
         currentNode =
             new DefaultMutableTreeNode(new SimpleNodeWrapper(Resources
                 .get("factionstatspanel.node.reportowner"), "reportowner"));
@@ -467,14 +467,14 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
 
       /* Translation node */
-      Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap(f.getID());
+      Map<Integer, CoordinateID> map = getData().getCoordinateTranslationMap(f.getID());
       if (map != null) {
         currentNode =
             new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
                 .get("factionstatspanel.node.translations"), "coordinatetranslation"));
         SortedSet<Integer> layers = new TreeSet<Integer>(map.keySet());
         for (Integer i : layers) {
-          CoordinateID translation = data.getCoordinateTranslation(f.getID(), i);
+          CoordinateID translation = getData().getCoordinateTranslation(f.getID(), i);
           DefaultMutableTreeNode translationNode =
               new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
                   (new java.text.MessageFormat(Resources.get("factionstatspanel.node.layer")))
@@ -534,7 +534,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
                 .get("factionstatspanel.node.alliances"), "alliance"));
         rootNode.add(currentNode);
-        FactionStatsPanel.showAlliances(data, f, f.getAllies(), f.getAlliance(), currentNode);
+        FactionStatsPanel.showAlliances(getData(), f, f.getAllies(), f.getAlliance(), currentNode);
       }
 
       /* group alliances node */
@@ -554,7 +554,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 + g.getRaceNamePrefix()));
           }
 
-          FactionStatsPanel.showAlliances(data, f, g.allies(), f.getAlliance(), subNode);
+          FactionStatsPanel.showAlliances(getData(), f, g.allies(), f.getAlliance(), subNode);
         }
       }
 
@@ -740,8 +740,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           value = msg.getAttributes().get("unit");
           if (value != null) {
             String number = value;
-            UnitID id = UnitID.createUnitID(number, 10, data.base);
-            Unit unit = data.getUnit(id);
+            UnitID id = UnitID.createUnitID(number, 10, getData().base);
+            Unit unit = getData().getUnit(id);
 
             if (unit != null) {
               Region r = unit.getRegion();
@@ -794,15 +794,15 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             String buildingNR = msg.getAttributes().get("building");
             if (buildingNR != null) {
               int i = Integer.parseInt(buildingNR);
-              EntityID id = EntityID.createEntityID(i, data.base);
+              EntityID id = EntityID.createEntityID(i, getData().base);
               // get the building
-              Building b = data.getBuilding(id);
+              Building b = getData().getBuilding(id);
               if (b != null) {
                 // get Building type
                 ConstructibleType bT = b.getBuildingType();
                 if (bT != null) {
                   // get Maintenance cost Silver
-                  ItemType silverType = data.rules.getItemType(EresseaConstants.I_USILVER);
+                  ItemType silverType = getData().rules.getItemType(EresseaConstants.I_USILVER);
                   if (silverType != null) {
                     Item silverItem = bT.getMaintenance(silverType.getID());
                     if (silverItem != null) {
@@ -837,8 +837,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             // Diebstahl
             try {
               Unit unit =
-                  data.getUnit(UnitID.createUnitID(Integer
-                      .parseInt(msg.getAttributes().get("unit")), data.base));
+                  getData().getUnit(UnitID.createUnitID(Integer
+                      .parseInt(msg.getAttributes().get("unit")), getData().base));
               int amount = Integer.parseInt(msg.getAttributes().get("amount"));
               if (factions.containsKey(unit.getFaction().getID())) {
                 spent[S_THEFT] += amount;
@@ -858,17 +858,17 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 && value2 != null) {
               int menge = Integer.parseInt(value2);
               value = msg.getAttributes().get("unit");
-              UnitID id = UnitID.createUnitID(value, 10, data.base);
-              Unit giver = data.getUnit(id);
+              UnitID id = UnitID.createUnitID(value, 10, getData().base);
+              Unit giver = getData().getUnit(id);
               ID giverID =
                   (giver == null || giver.getFaction() == null) ? EntityID.createEntityID(-1,
-                      data.base) : giver.getFaction().getID();
+                      getData().base) : giver.getFaction().getID();
               value = msg.getAttributes().get("target");
-              id = UnitID.createUnitID(value, 10, data.base);
-              Unit target = data.getUnit(id);
+              id = UnitID.createUnitID(value, 10, getData().base);
+              Unit target = getData().getUnit(id);
               ID targetID =
                   (target == null || target.getFaction() == null) ? EntityID.createEntityID(-1,
-                      data.base) : target.getFaction().getID();
+                      getData().base) : target.getFaction().getID();
               // von factions an andere Parteien
               if (giver != null && factions.containsKey(giverID)) {
                 Integer actV = factionGivings.get(targetID);
@@ -914,15 +914,15 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   // Almosen
                   // check, ob from unsere Faction ist
                   String from = actM.getAttributes().get("from");
-                  EntityID fromID = EntityID.createEntityID(Integer.parseInt(from), data.base);
+                  EntityID fromID = EntityID.createEntityID(Integer.parseInt(from), getData().base);
                   // Faction beziehen
                   ID fromFactionID =
-                      data.getFaction(fromID) == null ? EntityID.createEntityID(-1, data.base)
-                          : data.getFaction(fromID).getID();
+                      getData().getFaction(fromID) == null ? EntityID.createEntityID(-1, getData().base)
+                          : getData().getFaction(fromID).getID();
                   String to = actM.getAttributes().get("to");
-                  EntityID toID = EntityID.createEntityID(Integer.parseInt(to), data.base);
+                  EntityID toID = EntityID.createEntityID(Integer.parseInt(to), getData().base);
                   ID toFactionID =
-                      data.getFaction(toID) == null ? EntityID.createEntityID(-1, data.base) : data
+                      getData().getFaction(toID) == null ? EntityID.createEntityID(-1, getData().base) : getData()
                           .getFaction(toID).getID();
                   Integer amount = Integer.parseInt(actM.getAttributes().get("amount"));
                   if (fromFactionID.equals(faction.getID())) {
@@ -1074,7 +1074,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           if (factionAlmsGotten.size() > 0) {
             for (ID actFID : factionAlmsGotten.keySet()) {
               Integer actV = factionAlmsGotten.get(actFID);
-              Faction actThisF = data.getFaction(actFID);
+              Faction actThisF = getData().getFaction(actFID);
               if (actV != null) {
                 // node für diese Faction hinzu
                 DefaultMutableTreeNode subSubNode =
@@ -1110,7 +1110,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           if (factionGettings.size() > 0) {
             for (ID fID : factionGettings.keySet()) {
               Integer actV = factionGettings.get(fID);
-              Faction actTF = data.getFaction(fID);
+              Faction actTF = getData().getFaction(fID);
               if (actV != null && actV.intValue() > 0) {
                 DefaultMutableTreeNode subSubNode =
                     new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
@@ -1159,7 +1159,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             if (buildingUpkeep.size() > 0) {
               for (StringID btID : buildingUpkeep.keySet()) {
                 Integer actV = buildingUpkeep.get(btID);
-                ConstructibleType bT = data.rules.getBuildingType(btID);
+                ConstructibleType bT = getData().rules.getBuildingType(btID);
                 if (bT != null && actV != null && actV.intValue() > 0) {
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(bT
@@ -1175,7 +1175,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             if (factionAlmsGiven.size() > 0) {
               for (ID actFID : factionAlmsGiven.keySet()) {
                 Integer actV = factionAlmsGiven.get(actFID);
-                Faction actThisF = data.getFaction(actFID);
+                Faction actThisF = getData().getFaction(actFID);
                 if (actV != null) {
                   // node für diese Faction hinzu
                   DefaultMutableTreeNode subSubNode =
@@ -1208,7 +1208,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             if (factionGivings.size() > 0) {
               for (ID fID : factionGivings.keySet()) {
                 Integer actV = factionGivings.get(fID);
-                Faction actTF = data.getFaction(fID);
+                Faction actTF = getData().getFaction(fID);
                 if (actTF != null && actV != null && actV.intValue() > 0) {
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(actTF
@@ -1357,7 +1357,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           for (Unit u : unitList) {
             String text = u.toString();
 
-            if (!data.noSkillPoints) {
+            if (!getData().noSkillPoints) {
               int bonus = u.getRace().getSkillBonus(type);
               int currentDays = u.getSkill(type).getPointsPerPerson();
               int nextLevelDays = Skill.getPointsAtLevel(skill.getLevel() - bonus + 1);
@@ -1439,7 +1439,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
                 if (resource != null) {
                   // find the category
-                  ItemType itemType = data.rules.getItemType(StringID.create(resource));
+                  ItemType itemType = getData().rules.getItemType(StringID.create(resource));
                   ItemCategory itemCategory = null;
 
                   if (itemType != null) {
@@ -1448,7 +1448,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
                   if (itemCategory == null) {
                     FactionStatsPanel.log.info("Item without category: " + resource);
-                    itemCategory = data.rules.getItemCategory("misc");
+                    itemCategory = getData().rules.getItemCategory("misc");
                   }
                   if (itemCategory != null) {
                     // add the data
@@ -1474,8 +1474,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                     if (value != null) {
                       int number = Integer.parseInt(value);
 
-                      UnitID id = UnitID.createUnitID(number, data.base);
-                      Unit u = data.getUnit(id);
+                      UnitID id = UnitID.createUnitID(number, getData().base);
+                      Unit u = getData().getUnit(id);
 
                       if (u != null) {
                         p.units.put(u, amount);
@@ -1514,11 +1514,11 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         // o = new DefaultMutableTreeNode(resource + ": " + stats.totalAmount);
         if (catIconName.equalsIgnoreCase("kraeuter")) {
           o =
-              createSimpleNode(data.getTranslation(resource) + ": " + stats.totalAmount, "items/"
+              createSimpleNode(getData().getTranslation(resource) + ": " + stats.totalAmount, "items/"
                   + "kraeuter");
         } else {
           o =
-              createSimpleNode(data.getTranslation(resource) + ": " + stats.totalAmount, "items/"
+              createSimpleNode(getData().getTranslation(resource) + ": " + stats.totalAmount, "items/"
                   + resource);
         }
 

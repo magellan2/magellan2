@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +32,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.utils.Locales;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * OrderChanger class for the game Eressea.
@@ -39,6 +41,8 @@ public class EresseaOrderChanger implements OrderChanger {
   public static final String eresseaOrderChangedMarker = ";changed by Magellan";
 
   protected static final String PCOMMENTSTART = EresseaConstants.O_PCOMMENT + " ";
+
+  private static final Logger log = Logger.getInstance(EresseaOrderChanger.class);
 
   private Rules rules;
 
@@ -561,13 +565,19 @@ public class EresseaOrderChanger implements OrderChanger {
       // only KAUFE and VERKAUFE and only one KAUFE are allowed
       if (map.size() > 2 || (map.size() == 2 && !(map.containsKey(buy) && map.containsKey(sell)))) {
         // there is another order except buy and sell
-        int line2 = 0;
-        for (Order order : orders) {
-          if (isLongOrder(order) && !orders.isToken(order, 0, buy)
-              && !orders.isToken(order, 0, sell))
-            return line2;
-          line2++;
+        boolean firstIsBuySell =
+            map.keySet().iterator().next().equals(EresseaConstants.O_BUY)
+                || map.keySet().iterator().next().equals(EresseaConstants.O_SELL);
+        for (String order : map.keySet()) {
+          if (order.equals(EresseaConstants.O_BUY) || order.equals(EresseaConstants.O_SELL)) {
+            if (!firstIsBuySell)
+              return map.get(order).get(0);
+          } else {
+            if (firstIsBuySell)
+              return map.get(order).get(0);
+          }
         }
+        log.warn("unexpected case in areCompatibleLongOrders");
         return 0; // should not occur
       } else { // size <= 2 and map does contain only buy and sell
         if (map.containsKey(buy) && map.get(buy).size() > 1)
@@ -578,14 +588,25 @@ public class EresseaOrderChanger implements OrderChanger {
 
     String zaubere;
     if (map.containsKey(zaubere = EresseaConstants.O_CAST)) {
+      // multiple ZAUBERE allowed
       if (map.size() == 1)
         return -1;
-      int line2 = 0;
-      for (Order order : orders) {
-        if (isLongOrder(order) && !orders.isToken(order, 0, zaubere))
-          return line2;
-        line2++;
+
+      // combination with other long orders not allowed
+      boolean firstIsCast = map.keySet().iterator().next().equals(EresseaConstants.O_CAST);
+      boolean first = true;
+      for (String order : map.keySet()) {
+        if (order.equals(EresseaConstants.O_CAST)) {
+          if (!firstIsCast)
+            return map.get(order).get(0);
+        } else {
+          if (firstIsCast || !first)
+            return map.get(order).get(0);
+        }
+        first = false;
       }
+      log.warn("unexpected case in areCompatibleLongOrders");
+      return 0; // should not occur
     }
 
     if (map.size() == 0)
@@ -596,16 +617,13 @@ public class EresseaOrderChanger implements OrderChanger {
       else
         return map.values().iterator().next().get(1).intValue(); // multiple long orders of one type
     else { // map size > 1, more than one lone order
-      int n = 0, line3 = 0;
-      for (Order order : orders) {
-        if (isLongOrder(order)) {
-          n++;
-        }
-        if (n >= 2)
-          return line3;
-        line3++;
+      String first = map.keySet().iterator().next();
+      for (String order : map.keySet()) {
+        if (!order.equals(first))
+          return map.get(order).get(0);
       }
-      return 0; // should never happen
+      log.warn("unexpected case in areCompatibleLongOrders");
+      return 0; // should not occur
     }
 
   }
@@ -632,7 +650,7 @@ public class EresseaOrderChanger implements OrderChanger {
   /**
    * A map that counts occurrences of keys
    */
-  public static class CountMap<T> extends HashMap<T, List<Integer>> {
+  public static class CountMap<T> extends LinkedHashMap<T, List<Integer>> {
     /**
      * Increase the value of key by delta. The value is assumed 0 if it's not present in the map.
      */

@@ -20,17 +20,14 @@ import magellan.library.rules.ItemType;
 /**
  * A relation indicating that a unit pays maintenance of a building or ship.
  */
-public class MaintenanceRelation extends UnitRelation {
+public class MaintenanceRelation extends UnitContainerRelation {
   /** Maintenance costs */
   public int costs;
 
-  /**
-   * The maintained building.
-   */
-  public UnitContainer container;
-
+  /** The required item type */
   public ItemType itemType;
 
+  /** indicates whether there is some kind of problem with this relation */
   public boolean warning;
 
   /**
@@ -45,8 +42,7 @@ public class MaintenanceRelation extends UnitRelation {
    */
   public MaintenanceRelation(Unit unit, UnitContainer container, int amount, ItemType itemType,
       int line, boolean warning) {
-    super(unit, line);
-    this.container = container;
+    super(unit, container, line);
     costs = amount;
     this.itemType = itemType;
     this.warning = warning;
@@ -58,6 +54,7 @@ public class MaintenanceRelation extends UnitRelation {
   @Override
   public void add() {
     super.add();
-    container.addRelation(this);
+    target.addRelation(this);
   }
+
 }

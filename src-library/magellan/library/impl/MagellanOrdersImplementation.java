@@ -195,7 +195,7 @@ class MagellanOrdersImplementation implements Orders {
     if (locale == null) {
       locale = Locales.getOrderLocale();
     }
-    return order.getToken(i).equalsToken(Resources.getOrderTranslation(token, locale));
+    return order.getToken(i).equalsCompletedToken(Resources.getOrderTranslation(token, locale));
   }
 
   /**

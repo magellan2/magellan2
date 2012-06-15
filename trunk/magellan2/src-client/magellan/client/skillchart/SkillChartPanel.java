@@ -256,8 +256,8 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
       if (e.getSelectedObjects().isEmpty()) {
         regions.clear();
 
-        if (getData() != null) {
-          regions.addAll(getData().getRegions());
+        if (getGameData() != null) {
+          regions.addAll(getGameData().getRegions());
         }
 
         modified = true;
@@ -320,9 +320,9 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
    */
   @Override
   public void gameDataChanged(magellan.library.event.GameDataEvent e) {
-    setData(e.getGameData());
+    setGameData(e.getGameData());
 
-    if (getData().noSkillPoints) {
+    if (getGameData().noSkillPoints) {
       totalSkillPoints.setVisible(false);
     } else {
       totalSkillPoints.setVisible(true);

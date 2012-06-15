@@ -68,7 +68,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
       dispatcher.addGameDataListener(this);
     }
 
-    setData(context.getGameData());
+    setGameData(context.getGameData());
     settings = context.getProperties();
   }
 
@@ -104,24 +104,6 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
    * @return Returns data.
    */
   public GameData getGameData() {
-    return getData();
-  }
-
-  /**
-   * Sets the value of data.
-   * 
-   * @param data The value for data.
-   */
-  public void setGameData(GameData data) {
-    this.setData(data);
-  }
-
-  /**
-   * Returns the value of data.
-   * 
-   * @return Returns data.
-   */
-  protected GameData getData() {
     return data;
   }
 
@@ -130,7 +112,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
    *
    * @param data The value for data.
    */
-  protected void setData(GameData data) {
+  protected void setGameData(GameData data) {
     this.data = data;
   }
 

@@ -100,7 +100,7 @@ import magellan.library.utils.logging.Logger;
  * A panel for showing reviews about unit, region and/or gamedata.
  */
 public class TaskTablePanel extends InternationalizedDataPanel implements UnitOrdersListener,
-    SelectionListener, PreferencesFactory {
+SelectionListener, PreferencesFactory {
   private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
   /** @deprecated Use {@link MagellanDesktop#TASKS_IDENTIFIER} instead */
@@ -515,7 +515,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     final ProgressBarUI progressUI = new ProgressBarUI((JFrame) (w instanceof JFrame ? w : null));
     progressUI.setTitle(Resources.get("tasks.progressbar.unack.title"));
 
-    progressUI.setMaximum(getData().getRegions().size());
+    progressUI.setMaximum(getGameData().getRegions().size());
 
     progressUI.show();
     new Thread(new Runnable() {
@@ -524,10 +524,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           int iProgress = 0;
           for (Inspector i : getInspectors()) {
             i.unSuppressGlobal();
-            for (Faction f : getData().getFactions()) {
+            for (Faction f : getGameData().getFactions()) {
               i.unSuppress(f);
             }
-            for (Region r : getData().getRegions()) {
+            for (Region r : getGameData().getRegions()) {
               i.unSuppress(r);
               progressUI.setProgress(r.getName(), ++iProgress);
               for (Unit u : r.units()) {
@@ -535,7 +535,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
               }
             }
           }
-          dispatcher.fire(new GameDataEvent(this, getData()));
+          dispatcher.fire(new GameDataEvent(this, getGameData()));
         } finally {
           try {
             progressUI.ready();
@@ -633,7 +633,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     StringBuilder text = new StringBuilder();
     text.append(p.getMessage()).append("\n").append(p.getObject()).append("\n").append(
         p.getRegion()).append("\n").append(p.getFaction()).append("\n").append(p.getLine()).append(
-        "\n").append(p.getType());
+            "\n").append(p.getType());
     final TextAreaDialog d =
         (new TextAreaDialog((JFrame) null, Resources.get("tasks.showfull.dialog.title"), text
             .toString()));
@@ -668,7 +668,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     } else if (restrictToSelection() && lastSelection != null && !lastSelection.isEmpty()) {
       updateDispatcher.addRegions(lastSelection);
     } else {
-      updateDispatcher.addRegions(getData().getRegions());
+      updateDispatcher.addRegions(getGameData().getRegions());
     }
   }
 
@@ -792,37 +792,37 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       UpdateEvent event = events.remove(0);
       Integer rank =
           event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event.getObject());
-      // remove obsolete events
-      while (rank > 1 || clear) {
-        if (rank > 1 || (clear && event.getObject() != UpdateEvent.CLEAR)) {
-          // this is not the last event for the object or we are in clear mode
-          // and this is not the last clear event
-          if (TaskTablePanel.log.isDebugEnabled()) {
-            TaskTablePanel.log
+          // remove obsolete events
+          while (rank > 1 || clear) {
+            if (rank > 1 || (clear && event.getObject() != UpdateEvent.CLEAR)) {
+              // this is not the last event for the object or we are in clear mode
+              // and this is not the last clear event
+              if (TaskTablePanel.log.isDebugEnabled()) {
+                TaskTablePanel.log
                 .debug("skip " + event.getObject() + " " + event.isAdd() + " " + rank);
+              }
+              if (event.isAdd()) {
+                addObjects.put(event.getObject(), rank - 1);
+              } else {
+                delObjects.put(event.getObject(), rank - 1);
+              }
+              event = events.remove(0);
+              rank =
+                  event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event.getObject());
+            } else {
+              // this is the last clear event in the queue
+              clear = false;
+            }
+          }
+          if (TaskTablePanel.log.isDebugEnabled()) {
+            TaskTablePanel.log.debug("poll " + event.getObject() + " " + event.isAdd() + " " + rank);
           }
           if (event.isAdd()) {
-            addObjects.put(event.getObject(), rank - 1);
+            addObjects.remove(event.getObject());
           } else {
-            delObjects.put(event.getObject(), rank - 1);
+            delObjects.remove(event.getObject());
           }
-          event = events.remove(0);
-          rank =
-              event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event.getObject());
-        } else {
-          // this is the last clear event in the queue
-          clear = false;
-        }
-      }
-      if (TaskTablePanel.log.isDebugEnabled()) {
-        TaskTablePanel.log.debug("poll " + event.getObject() + " " + event.isAdd() + " " + rank);
-      }
-      if (event.isAdd()) {
-        addObjects.remove(event.getObject());
-      } else {
-        delObjects.remove(event.getObject());
-      }
-      return event;
+          return event;
     }
 
     /**
@@ -1239,7 +1239,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   protected void error(UpdateEvent event) {
     model.addProblem(ProblemFactory.createProblem(Severity.INFORMATION, INTERNAL, event != null
         ? event.region : null, null, null, event != null ? event.unit : null, null, INTERNAL
-        .getMessage(), -1));
+            .getMessage(), -1));
   }
 
   /**
@@ -1259,7 +1259,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         // no selection: refresh all
         if (e.getSelectedObjects().isEmpty()) {
           // copy to Hashset to improve performance!
-          lastSelection = new HashSet<Region>(getData().getRegions());
+          lastSelection = new HashSet<Region>(getGameData().getRegions());
           refreshProblems();
         } else {
           // copy to Hashset to improve performance!
@@ -1318,7 +1318,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     synchronized (this) {
-      if (restrictToActiveRegion() && r != null && r.getData() == getData() && r != lastActiveRegion) {
+      if (restrictToActiveRegion() && r != null && r.getData() == getGameData() && r != lastActiveRegion) {
         lastActiveRegion = r;
         refreshProblems();
       }
@@ -1370,7 +1370,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           });
         }
       }
-      for (Faction f : getData().getFactions())
+      for (Faction f : getGameData().getFactions())
         if (isValidFaction(f)) {
           final List<Problem> fproblems = c.reviewFaction(f);
           // add problems in the AWT event dispatching thread to avoid
@@ -1476,15 +1476,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         if (runInThisThread) {
           addProblems(problems);
         } else
-        // add problems in the AWT event dispatching thread to avoid
-        // synchronization issues!
-        if (!problems.isEmpty()) {
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              addProblems(problems);
-            }
-          });
-        }
+          // add problems in the AWT event dispatching thread to avoid
+          // synchronization issues!
+          if (!problems.isEmpty()) {
+            SwingUtilities.invokeLater(new Runnable() {
+              public void run() {
+                addProblems(problems);
+              }
+            });
+          }
       }
     }
   }
@@ -1537,8 +1537,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     // faction owner.
     if (restrictToOwner()
         && !restrictToPassword()
-        && (getData().getOwnerFaction() == null || f == null || !getData().getOwnerFaction()
-            .equals(f.getID())))
+        && (getGameData().getOwnerFaction() == null || f == null || !getGameData().getOwnerFaction()
+        .equals(f.getID())))
       return false;
     if (restrictToPassword()
         && (f == null || f.getPassword() == null || f.getPassword().length() == 0))
@@ -1665,7 +1665,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         return p.getRegion() == null || p.getRegion() == lastActiveRegion;
     } else if (restrictToSelection())
       return p.getRegion() == null || lastSelection == null
-          || lastSelection.contains(p.getRegion());
+      || lastSelection.contains(p.getRegion());
 
     return true;
   }
@@ -1908,7 +1908,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
-    return new TaskTablePreferences(this, settings, getData());
+    return new TaskTablePreferences(this, settings, getGameData());
   }
 
   @Override

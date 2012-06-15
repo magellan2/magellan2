@@ -271,11 +271,11 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 	 */
   @Override
   public void gameDataChanged(GameDataEvent e) {
-    setData(e.getGameData());
+    setGameData(e.getGameData());
 
     if (cmbFactions != null) {
       cmbFactions.removeAllItems();
-      for (Faction f : getData().getFactions()) {
+      for (Faction f : getGameData().getFactions()) {
         if (f.isPrivileged()) {
           cmbFactions.addItem(f);
         }
@@ -398,7 +398,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
         // old = default = system dependent
         stream = new FileWriter(orderFile);
       }
-      OrderWriter cmdWriter = new OrderWriter(getData(), selectedFaction, options);
+      OrderWriter cmdWriter = new OrderWriter(getGameData(), selectedFaction, options);
 
       if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
         cmdWriter.setRegions(regions);
@@ -442,7 +442,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
           new LinkedList<ECheckMessage>(JECheck.getMessages(exeFile, orderFile, options, settings));
 
       if (messages.size() > 0) {
-        JECheck.determineAffectedObjects(getData(), orderFile, messages);
+        JECheck.determineAffectedObjects(getGameData(), orderFile, messages);
       } else {
         JOptionPane.showMessageDialog(getRootPane(), Resources
             .get("echeckpanel.msg.noecheckmessages.text"), Resources
@@ -522,7 +522,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     cmbFactions = new JComboBox();
     lblFactions.setLabelFor(cmbFactions);
 
-    for (Faction f : getData().getFactions()) {
+    for (Faction f : getGameData().getFactions()) {
       if (f.isPrivileged()) {
         cmbFactions.addItem(f);
       }

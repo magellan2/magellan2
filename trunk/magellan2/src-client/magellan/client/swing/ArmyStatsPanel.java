@@ -224,8 +224,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
   public void recreate(GameData data) {
     dividerPos = content.getDividerLocation();
 
-    createArmies(data, data.equals(this.getData()) ? lastSelected : null);
-    this.setData(data);
+    createArmies(data, data.equals(this.getGameData()) ? lastSelected : null);
+    this.setGameData(data);
     createTrees();
     content.setDividerLocation(dividerPos);
   }
@@ -334,10 +334,10 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
     if (fac.isPrivileged()) {
       icon = "alliancestate_basisfaction";
-    } else if (getData() != null) {
+    } else if (getGameData() != null) {
       int minTrust = 255;
 
-      for (Faction f : getData().getFactions()) {
+      for (Faction f : getGameData().getFactions()) {
         if (f.isPrivileged()) {
           if ((f.getAllies() != null) && f.getAllies().containsKey(fac.getID())) {
             Alliance a = f.getAllies().get(fac.getID());
@@ -503,7 +503,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
       armies.clear();
     }
 
-    this.setData(data);
+    this.setGameData(data);
     createArmies(data, regions, categorize);
   }
 
@@ -1330,7 +1330,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
   public void selectionChanged(SelectionEvent e) {
     if ((e.getSource() != this) && (e.getSelectionType() == SelectionEvent.ST_REGIONS)) {
       lastSelected = CollectionFilters.filter(e.getSelectedObjects(), Region.class);
-      updateData(getData(), lastSelected);
+      updateData(getGameData(), lastSelected);
     }
   }
 

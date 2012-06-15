@@ -107,8 +107,8 @@ import magellan.library.utils.logging.Logger;
  * A panel holding one or more {@link OrderEditor}s.
  */
 public class MultiEditorOrderEditorList extends InternationalizedDataPanel implements
-    OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
-    MouseListener, CacheHandler {
+OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
+MouseListener, CacheHandler {
   private static final Logger log = Logger.getInstance(MultiEditorOrderEditorList.class);
 
   private boolean multiEditorLayout = false;
@@ -253,7 +253,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   @Override
   public void setGameData(GameData d) {
     super.setGameData(d);
-    parser = getData().getGameSpecificStuff().getOrderParser(d);
+    parser = getGameData().getGameSpecificStuff().getOrderParser(d);
     initContent();
     if (!multiEditorLayout) {
       initSingleEditor();
@@ -276,7 +276,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     hideButtons =
         Boolean.valueOf(
             settings
-                .getProperty(PropertiesHelper.ORDEREDITOR_HIDEBUTTONS, Boolean.FALSE.toString()))
+            .getProperty(PropertiesHelper.ORDEREDITOR_HIDEBUTTONS, Boolean.FALSE.toString()))
             .booleanValue();
     editAllFactions =
         Boolean.valueOf(
@@ -336,11 +336,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     // remember if we want to have the focus (see below)
     boolean restoreFocus =
         (getEditor(currentUnit) != null && getEditor(currentUnit).hasFocus()) || content.hasFocus()
-            || hasFocus();
+        || hasFocus();
     // if WE triggered the selection change, the new unit DOES get the focus
     restoreFocus =
         restoreFocus || (se.getSource() == this)
-            || (se.getSource().getClass().equals(OrderEditor.class));
+        || (se.getSource().getClass().equals(OrderEditor.class));
 
     if (multiEditorLayout) {
       deselectEditor(currentUnit);
@@ -361,7 +361,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           currentUnit.setOrderEditor(null);
           deselectEditor(editorSingelton);
           editorSingelton
-              .setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, ""));
+          .setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, ""));
           currentUnit = null;
           editorSingelton.setUnit(null);
           editorSingelton.setEditable(false);
@@ -438,8 +438,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if ((newUnit == currentUnit && newUnit != null)
         || (newUnit != null && currentUnit != null
-            && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
-            .getFaction())) {
+        && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
+        .getFaction())) {
       // no change necessary
     } else {
       loadEditors(newIsland, newRegion, newFaction, newUnit);
@@ -719,7 +719,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         if (currentUnit != null) {
           if (u != null) {
             JPopupMenu unitContextMenu =
-                editor.getContextFactory().createContextMenu(dispatcher, getData(), u, null, null);
+                editor.getContextFactory().createContextMenu(dispatcher, getGameData(), u, null, null);
             if (unitContextMenu != null) {
               unitContextMenu.show(this, e.getX(), e.getY());
             }
@@ -758,8 +758,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     settings.setProperty("OrderEditor.highlightSyntax", String.valueOf(bool));
 
     if (multiEditorLayout) {
-      if (getData().getUnits() != null) {
-        for (Unit u : getData().getUnits()) {
+      if (getGameData().getUnits() != null) {
+        for (Unit u : getGameData().getUnits()) {
           if (getEditor(u) != null) {
             getEditor(u).setUseSyntaxHighlighting(bool);
           }
@@ -786,8 +786,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
 
-      if (getData().getUnits() != null) {
-        for (Unit u : getData().getUnits()) {
+      if (getGameData().getUnits() != null) {
+        for (Unit u : getGameData().getUnits()) {
           if (getEditor(u) != null) {
             getEditor(u).setTokenColor(styleName, color);
           }
@@ -818,8 +818,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     if (multiEditorLayout) {
-      if (getData().getUnits() != null) {
-        for (Unit u : getData().getUnits()) {
+      if (getGameData().getUnits() != null) {
+        for (Unit u : getGameData().getUnits()) {
           if (getEditor(u) != null) {
             getEditor(u).setErrorBackround(c);
           }
@@ -848,8 +848,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     if (multiEditorLayout) {
-      if (getData().getUnits() != null) {
-        for (Unit u : getData().getUnits()) {
+      if (getGameData().getUnits() != null) {
+        for (Unit u : getGameData().getUnits()) {
           if (getEditor(u) != null) {
             if (!u.isOrdersConfirmed() && u != currentUnit) {
               getEditor(u).setBackground(c);
@@ -877,8 +877,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     if (multiEditorLayout) {
-      if (getData().getUnits() != null) {
-        for (Unit u : getData().getUnits()) {
+      if (getGameData().getUnits() != null) {
+        for (Unit u : getGameData().getUnits()) {
           if (getEditor(u) != null) {
             if (u.isOrdersConfirmed() && u != currentUnit) {
               getEditor(u).setBackground(c);
@@ -964,7 +964,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   private void initSingleEditor() {
-    editorSingelton = new OrderEditor(getData(), settings, undoMgr, dispatcher, parser);
+    editorSingelton = new OrderEditor(getGameData(), settings, undoMgr, dispatcher, parser);
     editorSingelton.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 
     // add listeners
@@ -1341,7 +1341,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       return null;
     CacheableOrderEditor cEditor = getEditor(u);
     if (cEditor == null || !(cEditor instanceof OrderEditor)) {
-      OrderEditor editor = new OrderEditor(getData(), settings, undoMgr, dispatcher, parser);
+      OrderEditor editor = new OrderEditor(getGameData(), settings, undoMgr, dispatcher, parser);
       u.addCacheHandler(this);
       attachOrderEditor(u, editor);
       return editor;
@@ -1686,14 +1686,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
       if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
         MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" + viewRect);
+        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" + viewRect);
       }
 
       if (getEditor(currentUnit) != null) {
         OrderEditor editor = getEditor(currentUnit);
         Rectangle bounds = editor.getBounds();
         MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
+        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
 
         while (!viewRect.contains(viewRect.x, bounds.y, viewRect.width, Math.min(viewRect.height,
             bounds.height))) {
@@ -1709,7 +1709,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
           if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
             MultiEditorOrderEditorList.log
-                .debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " + newPos);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " + newPos);
           }
 
           Rectangle newRect = new Rectangle(viewRect);
@@ -1733,10 +1733,10 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         }
 
         MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:"
-                + viewRect);
+        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:"
+            + viewRect);
         MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" + bounds);
+        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" + bounds);
       }
 
       content.validate();
@@ -1922,13 +1922,13 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     private void createTempImpl(Unit parentUnit, Region parentRegion) {
-      UnitID id = UnitID.createTempID(getData(), settings, parentUnit);
+      UnitID id = UnitID.createTempID(getGameData(), settings, parentUnit);
 
       if (!settings
           .getProperty("MultiEditorOrderEditorList.ButtonPanel.ShowTempUnitDialog", "true")
           .equalsIgnoreCase("true")) {
         // don't show any dialogs, simply create the tempunit and finish.
-        TempUnit tempUnit = parentUnit.createTemp(getData(), id);
+        TempUnit tempUnit = parentUnit.createTemp(getGameData(), id);
         dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.CREATED));
         dispatcher.fire(SelectionEvent.create(this, tempUnit));
       } else {
@@ -1944,7 +1944,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         while (true) {
           if (first) { // reset if it's the first dialog for this temp unit
             // unit id is non-negative on views
-            UnitID newID = UnitID.createUnitID(-id.intValue(), getData().base);
+            UnitID newID = UnitID.createUnitID(-id.intValue(), getGameData().base);
             dialog.show(newID.toString(), parentUnit.getName());
           } else { // do not reset if we had formerly wrong data
             dialog.show(parentUnit.getName());
@@ -1960,18 +1960,18 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
               return;
 
             try {
-              int realNewIDInt = IDBaseConverter.parse(tempID, getData().base);
-              UnitID checkID = UnitID.createUnitID(-realNewIDInt, getData().base);
+              int realNewIDInt = IDBaseConverter.parse(tempID, getGameData().base);
+              UnitID checkID = UnitID.createUnitID(-realNewIDInt, getGameData().base);
 
-              if (getData().getTempUnit(checkID) == null) {
-                TempUnit tempUnit = parentUnit.createTemp(getData(), checkID);
+              if (getGameData().getTempUnit(checkID) == null) {
+                TempUnit tempUnit = parentUnit.createTemp(getGameData(), checkID);
 
                 // Name
                 String name = dialog.getName();
 
                 if ((name != null) && !name.trim().equals("")) {
                   tempUnit.setName(name);
-                  getData().getGameSpecificStuff().getOrderChanger().addNamingOrder(tempUnit, name);
+                  getGameData().getGameSpecificStuff().getOrderChanger().addNamingOrder(tempUnit, name);
                 }
 
                 // extended features
@@ -1986,30 +1986,30 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                             .getTransfer()) : 0);
 
                     if (recruits > 0) {
-                      getData().getGameSpecificStuff().getOrderChanger().addRecruitOrder(tempUnit,
+                      getGameData().getGameSpecificStuff().getOrderChanger().addRecruitOrder(tempUnit,
                           recruits);
                     }
                     if (transfers > 0) {
-                      getData().getGameSpecificStuff().getOrderChanger().addGiveOrder(parentUnit,
+                      getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(parentUnit,
                           tempUnit, transfers, EresseaConstants.I_MEN, null);
                     }
                     if (dialog.isGiveRecruitCost()) {
-                      getData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
+                      getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
                           parentUnit,
                           tempUnit,
                           recruits * parentUnit.getRace().getRecruitmentCosts(),
                           EresseaConstants.I_USILVER,
                           Resources
-                              .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
+                          .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
                     }
                     if (dialog.isGiveMaintainCost()) {
-                      getData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
+                      getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
                           parentUnit,
                           tempUnit,
                           parentUnit.getRace().getMaintenance() * (transfers + recruits),
                           EresseaConstants.I_USILVER,
                           Resources
-                              .get("completion.multieditorordereditorlist.tempunit.maintainCost"));
+                          .get("completion.multieditorordereditorlist.tempunit.maintainCost"));
                     }
 
                     dispatcher.fire(new UnitOrdersEvent(this, parentUnit));
@@ -2031,7 +2031,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                 if ((descript != null) && !descript.trim().equals("")) {
                   descript = descript.replace('\n', ' ');
                   tempUnit.setDescription(descript);
-                  getData().getGameSpecificStuff().getOrderChanger().addDescribeUnitOrder(tempUnit,
+                  getGameData().getGameSpecificStuff().getOrderChanger().addDescribeUnitOrder(tempUnit,
                       descript);
                 }
 
@@ -2048,7 +2048,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                 JOptionPane.showMessageDialog(this, Resources
                     .get("completion.multieditorordereditorlist.msg.duplicatetempid.text"),
                     Resources
-                        .get("completion.multieditorordereditorlist.msg.duplicatetempid.title"),
+                    .get("completion.multieditorordereditorlist.msg.duplicatetempid.title"),
                     JOptionPane.ERROR_MESSAGE);
               }
             } catch (NumberFormatException nfe) {
@@ -2074,7 +2074,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         }
         dispatcher.fire(SelectionEvent.create(this, parentUnit), true);
         dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.DELETING), true);
-        parentUnit.deleteTemp(tempUnit.getID(), getData());
+        parentUnit.deleteTemp(tempUnit.getID(), getGameData());
       }
     }
 
@@ -2105,7 +2105,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     public void currentUnitChanged() {
       boolean enabled =
           (currentUnit != null) && currentUnit.getFaction() != null
-              && currentUnit.getFaction().isPrivileged();
+          && currentUnit.getFaction().isPrivileged();
 
       setConfirmEnabled(enabled);
       setCreationEnabled(enabled);

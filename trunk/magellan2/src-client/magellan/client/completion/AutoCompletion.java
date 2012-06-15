@@ -55,7 +55,7 @@ import magellan.library.utils.logging.Logger;
  * @author Andreas Gampe, Ulrich Küster
  */
 public class AutoCompletion implements SelectionListener, KeyListener, ActionListener,
-CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
+    CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
   private static final Logger log = Logger.getInstance(AutoCompletion.class);
   private OrderEditorList editors;
   private Vector<CompletionGUI> completionGUIs;
@@ -149,7 +149,7 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
 
     limitMakeCompletion =
         settings.getProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, "true")
-        .equalsIgnoreCase("true");
+            .equalsIgnoreCase("true");
 
     String stubMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, "true");
     emptyStubMode = stubMode.equalsIgnoreCase("true");
@@ -225,7 +225,7 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
     }
 
     selfDefinedCompletions = getSelfDefinedCompletions(settings);
-    if (completionSettings!=null) {
+    if (completionSettings != null) {
       selfDefinedCompletions2 = getSelfDefinedCompletions(completionSettings);
     }
 
@@ -549,7 +549,7 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
 
     if (currentGUI.isOfferingCompletion()) {
       currentGUI
-      .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
@@ -570,7 +570,7 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
 
     if (currentGUI.isOfferingCompletion()) {
       currentGUI
-      .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
@@ -916,7 +916,7 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
   public void setHotKeyMode(boolean b) {
     hotKeyMode = b;
     settings
-    .setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
+        .setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
   }
 
   /**

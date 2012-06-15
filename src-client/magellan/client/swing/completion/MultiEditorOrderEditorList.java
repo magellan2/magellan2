@@ -165,6 +165,8 @@ MouseListener, CacheHandler {
 
   private OrderParser parser;
 
+  private boolean guiInitialized = false;
+
   /**
    * Creates a new MultiEditorOrderEditorList object.
    */
@@ -237,6 +239,7 @@ MouseListener, CacheHandler {
         }
       }
     });
+    guiInitialized = true;
   }
 
   /**
@@ -247,17 +250,16 @@ MouseListener, CacheHandler {
     setGameData(e.getGameData());
   }
 
-  /**
-   * @see magellan.client.swing.InternationalizedDataPanel#setGameData(magellan.library.GameData)
-   */
   @Override
-  public void setGameData(GameData d) {
-    super.setGameData(d);
-    parser = getGameData().getGameSpecificStuff().getOrderParser(d);
+  public void setGameData(GameData data) {
+    super.setGameData(data);
+    if (guiInitialized) { // might be called from constructor
+      parser = data.getGameSpecificStuff().getOrderParser(data);
     initContent();
     if (!multiEditorLayout) {
       initSingleEditor();
     }
+  }
   }
 
   /**

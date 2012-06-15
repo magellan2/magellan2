@@ -316,7 +316,7 @@ public class Units {
           icons.add("reserve");
 
           UnitRelationNodeWrapper reserveNodeWrapper = // factory.createSimpleNodeWrapper(rrel,
-                                                       // text.toString(), icons);
+              // text.toString(), icons);
               factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
                   .toString(), icons));
           itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
@@ -388,7 +388,7 @@ public class Units {
             final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
             final List<String> icons = new LinkedList<String>();
             text.append(Resources.get("util.units.node.recruit")).append(" ").append(rrel.amount)
-                .append(" ").append(rrel.race);
+            .append(" ").append(rrel.race);
 
             icons.add("rekruten");
             if (rrel.problem != null) {
@@ -412,7 +412,7 @@ public class Units {
           final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
           final List<String> icons = new LinkedList<String>();
           text.append(Resources.get("util.units.node.maintenance")).append(" ").append(
-              rrel.container);
+              rrel.target);
 
           icons.add("upkeep");
           if (rrel.problem != null || rrel.warning) {
@@ -607,7 +607,7 @@ public class Units {
    * This will be a Map&lt;ItemType.id, StatItem&gt;, which is a Map of items of one category.
    */
   private static class StatItemContainer extends Hashtable<ID, StatItem> implements
-      Comparable<StatItemContainer> {
+  Comparable<StatItemContainer> {
     private ItemCategory category = null;
 
     /**

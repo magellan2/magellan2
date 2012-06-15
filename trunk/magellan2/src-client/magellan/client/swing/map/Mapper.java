@@ -240,20 +240,20 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         CoordinateID c =
             cellGeometry.getCoordinate(me.getPoint().x + mapToScreenBounds.x, me.getPoint().y
                 + mapToScreenBounds.y, showLevel);
-        Region region = data.getRegion(c);
-        Region voidRegion = data.voids().get(c);
+        Region region = getData().getRegion(c);
+        Region voidRegion = getData().voids().get(c);
         Region wrapper = null;
 
         // might be a wrapping region: find original
         if (region == null) {
-          wrapper = data.wrappers().get(c);
+          wrapper = getData().wrappers().get(c);
           if (wrapper != null) {
-            region = data.getOriginal(wrapper);
+            region = getData().getOriginal(wrapper);
           }
         }
 
         if (region == null && PropertiesHelper.getBoolean(settings, "map.creating.void", false)) {
-          voidRegion = data.voids().get(c);
+          voidRegion = getData().voids().get(c);
         }
 
         // FIXME on Mac platforms CTRL+Button1 is the popup trigger, which conflicts with this
@@ -270,7 +270,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
                 selectedRegions.remove(region.getID());
               }
 
-              data.setSelectedRegionCoordinates(selectedRegions);
+              getData().setSelectedRegionCoordinates(selectedRegions);
               dispatcher.fire(SelectionEvent.create(mapper, selectedRegions.values()));
               repaint();
               prevDragRegion = region;
@@ -321,7 +321,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           CoordinateID c =
               cellGeometry.getCoordinate(me.getPoint().x + mapToScreenBounds.x, me.getPoint().y
                   + mapToScreenBounds.y, showLevel);
-          Region r = data.getRegion(c);
+          Region r = getData().getRegion(c);
 
           if ((r != null) && ((prevDragRegion == null) || !prevDragRegion.equals(r))) {
             boolean regionAlreadySelected = selectedRegions.containsKey(c);
@@ -340,7 +340,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
             }
 
             if (doFire) {
-              data.setSelectedRegionCoordinates(selectedRegions);
+              getData().setSelectedRegionCoordinates(selectedRegions);
               dispatcher.fire(SelectionEvent.create(mapper, selectedRegions.values()));
             }
 
@@ -411,8 +411,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
         if (translationCoord != null) {
           activeCoordinate = activeCoordinate.translate(translationCoord);
-          activeRegion = data.getRegion(activeCoordinate);
-          data.setSelectedRegionCoordinates(null);
+          activeRegion = getData().getRegion(activeCoordinate);
+          getData().setSelectedRegionCoordinates(null);
           dispatcher.fire(SelectionEvent.create(mapper, activeRegion));
           repaint();
         }
@@ -444,12 +444,12 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         CoordinateID c =
             cellGeometry.getCoordinate(e.getPoint().x + mapToScreenBounds.x, e.getPoint().y
                 + mapToScreenBounds.y, showLevel);
-        Region r = data.getRegion(c);
+        Region r = getData().getRegion(c);
         if (r == null) {
-          r = data.wrappers().get(c);
+          r = getData().wrappers().get(c);
         }
         if (r == null && PropertiesHelper.getBoolean(settings, "map.creating.void", false)) {
-          r = data.voids().get(c);
+          r = getData().voids().get(c);
         }
 
         if (r != null) {
@@ -581,10 +581,10 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
-    data = e.getGameData();
+    setData(e.getGameData());
 
     // FIXME (stm) shouldn't we make contextMenu a GameDataListener, too?
-    conMenu.setGameData(data);
+    conMenu.setGameData(getData());
 
     mapToScreenBounds = getMapToScreenBounds();
 
@@ -593,7 +593,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     }
 
     setPreferredSize(getSize());
-    activeRegion = data.getActiveRegion();
+    activeRegion = getData().getActiveRegion();
     if (activeRegion != null) {
       activeCoordinate = activeRegion.getCoordinate();
     }
@@ -763,12 +763,12 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
         for (int x = xstart; x < xend; x++) {
           CoordinateID c = CoordinateID.create(x, y, upperLeft.getZ());
-          Region r = data.getRegion(c);
+          Region r = getData().getRegion(c);
           if (r == null) {
-            r = data.wrappers().get(c);
+            r = getData().wrappers().get(c);
           }
           if (r == null && PropertiesHelper.getBoolean(settings, "map.creating.void", false)) {
-            r = data.voids().get(c);
+            r = getData().voids().get(c);
           }
 
           if (r != null) {
@@ -783,17 +783,17 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
      * FIX: Have to look at the level...
      */
     else {
-      for (Region r : data.getRegions()) {
+      for (Region r : getData().getRegions()) {
         if (r.getCoordinate().getZ() == upperLeft.getZ()) {
           main.add(r);
         }
       }
-      for (Region r : data.wrappers().values()) {
+      for (Region r : getData().wrappers().values()) {
         if (r.getCoordinate().getZ() == upperLeft.getZ()) {
           main.add(r);
         }
       }
-      for (Region r : data.voids().values()) {
+      for (Region r : getData().voids().values()) {
         if (r.getCoordinate().getZ() == upperLeft.getZ()) {
           main.add(r);
         }
@@ -942,7 +942,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           continue;
         }
 
-        renderer.init(data, bg, offset);
+        renderer.init(getData(), bg, offset);
 
         for (Sorted obj : regList) {
           boolean selected = false;
@@ -998,7 +998,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           continue;
         }
 
-        renderer.init(data, g, offset);
+        renderer.init(getData(), g, offset);
 
         for (Sorted obj : regList) {
           boolean selected = false;
@@ -1032,7 +1032,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           // collect schemes
           if ((activeRegion.schemes() != null) && !activeRegion.schemes().isEmpty()) {
             for (Scheme scheme : activeRegion.schemes()) {
-              Region r = data.getRegion(scheme.getID());
+              Region r = getData().getRegion(scheme.getID());
 
               if (r != null) {
                 regionSchemeList.add(r);
@@ -1043,7 +1043,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
             MapCellRenderer renderer = planes[Mapper.PLANE_SCHEMES].getRenderer();
 
             if (renderer != null) {
-              renderer.init(data, g, offset);
+              renderer.init(getData(), g, offset);
 
               for (Region region : regionSchemeList) {
                 renderer.render(region, true, true);
@@ -1076,7 +1076,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
       if ((renderer != null) && (regList != null) && (regList.size() > 0)) {
 
-        renderer.init(data, g, offset);
+        renderer.init(getData(), g, offset);
 
         for (Object obj : regList) {
           boolean selected = false;
@@ -1179,8 +1179,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   public List<Integer> getLevels() {
     List<Integer> levels = new LinkedList<Integer>();
 
-    if (data != null) {
-      for (CoordinateID c : data.regions().keySet()) {
+    if (getData() != null) {
+      for (CoordinateID c : getData().regions().keySet()) {
         Integer i = Integer.valueOf(c.getZ());
 
         if (levels.contains(i) == false) {
@@ -1370,13 +1370,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * height=cellheight.
    */
   private Rectangle getMapToScreenBounds() {
-    if ((data == null) || (cellGeometry == null))
+    if ((getData() == null) || (cellGeometry == null))
       return null;
 
     Point upperLeft = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
     Point lowerRight = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
 
-    for (CoordinateID c : data.regions().keySet()) {
+    for (CoordinateID c : getData().regions().keySet()) {
 
       if (c.getZ() == showLevel) {
         int x = cellGeometry.getCellPositionX(c.getX(), c.getY());

@@ -515,7 +515,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     final ProgressBarUI progressUI = new ProgressBarUI((JFrame) (w instanceof JFrame ? w : null));
     progressUI.setTitle(Resources.get("tasks.progressbar.unack.title"));
 
-    progressUI.setMaximum(data.getRegions().size());
+    progressUI.setMaximum(getData().getRegions().size());
 
     progressUI.show();
     new Thread(new Runnable() {
@@ -524,10 +524,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           int iProgress = 0;
           for (Inspector i : getInspectors()) {
             i.unSuppressGlobal();
-            for (Faction f : data.getFactions()) {
+            for (Faction f : getData().getFactions()) {
               i.unSuppress(f);
             }
-            for (Region r : data.getRegions()) {
+            for (Region r : getData().getRegions()) {
               i.unSuppress(r);
               progressUI.setProgress(r.getName(), ++iProgress);
               for (Unit u : r.units()) {
@@ -535,7 +535,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
               }
             }
           }
-          dispatcher.fire(new GameDataEvent(this, data));
+          dispatcher.fire(new GameDataEvent(this, getData()));
         } finally {
           try {
             progressUI.ready();
@@ -668,7 +668,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     } else if (restrictToSelection() && lastSelection != null && !lastSelection.isEmpty()) {
       updateDispatcher.addRegions(lastSelection);
     } else {
-      updateDispatcher.addRegions(data.getRegions());
+      updateDispatcher.addRegions(getData().getRegions());
     }
   }
 
@@ -1259,7 +1259,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         // no selection: refresh all
         if (e.getSelectedObjects().isEmpty()) {
           // copy to Hashset to improve performance!
-          lastSelection = new HashSet<Region>(data.getRegions());
+          lastSelection = new HashSet<Region>(getData().getRegions());
           refreshProblems();
         } else {
           // copy to Hashset to improve performance!
@@ -1318,7 +1318,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     synchronized (this) {
-      if (restrictToActiveRegion() && r != null && r.getData() == data && r != lastActiveRegion) {
+      if (restrictToActiveRegion() && r != null && r.getData() == getData() && r != lastActiveRegion) {
         lastActiveRegion = r;
         refreshProblems();
       }
@@ -1370,7 +1370,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           });
         }
       }
-      for (Faction f : data.getFactions())
+      for (Faction f : getData().getFactions())
         if (isValidFaction(f)) {
           final List<Problem> fproblems = c.reviewFaction(f);
           // add problems in the AWT event dispatching thread to avoid
@@ -1537,7 +1537,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     // faction owner.
     if (restrictToOwner()
         && !restrictToPassword()
-        && (data.getOwnerFaction() == null || f == null || !data.getOwnerFaction()
+        && (getData().getOwnerFaction() == null || f == null || !getData().getOwnerFaction()
             .equals(f.getID())))
       return false;
     if (restrictToPassword()
@@ -1908,7 +1908,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
-    return new TaskTablePreferences(this, settings, data);
+    return new TaskTablePreferences(this, settings, getData());
   }
 
   @Override

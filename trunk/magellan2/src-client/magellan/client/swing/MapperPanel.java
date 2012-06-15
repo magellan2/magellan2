@@ -143,7 +143,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
-    data = e.getGameData();
+    setData(e.getGameData());
     mapper.gameDataChanged(e);
     minimap.gameDataChanged(e);
 
@@ -169,8 +169,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // fill hot spot combo
     cmbHotSpots.removeAllItems();
 
-    if ((data != null) && (data.getHotSpots() != null)) {
-      List<HotSpot> hotSpots = new LinkedList<HotSpot>(data.getHotSpots());
+    if ((getData() != null) && (getData().getHotSpots() != null)) {
+      List<HotSpot> hotSpots = new LinkedList<HotSpot>(getData().getHotSpots());
       Collections.sort(hotSpots, new Comparator<HotSpot>() {
         public int compare(HotSpot o1, HotSpot o2) {
           return o1.getName().compareTo(o2.getName());
@@ -757,9 +757,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       HotSpot h = MagellanFactory.createHotSpot(id);
       h.setName(name);
       h.setCenter(center);
-      data.setHotSpot(h);
+      getData().setHotSpot(h);
 
-      List<HotSpot> hotSpots = new LinkedList<HotSpot>(data.getHotSpots());
+      List<HotSpot> hotSpots = new LinkedList<HotSpot>(getData().getHotSpots());
       Collections.sort(hotSpots, new Comparator<HotSpot>() {
         public int compare(HotSpot o1, HotSpot o2) {
           return o1.getName().compareTo(o2.getName());
@@ -808,7 +808,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * @param h the hot spot to remove.
    */
   public void removeHotSpot(HotSpot h) {
-    data.removeHotSpot(h.getID());
+    getData().removeHotSpot(h.getID());
     cmbHotSpots.removeItem(h);
 
     if (cmbHotSpots.getItemCount() == 0) {
@@ -859,7 +859,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     do {
       i = IntegerID.create(r.nextInt());
-    } while (data.getHotSpot(i) != null);
+    } while (getData().getHotSpot(i) != null);
 
     return i;
   }
@@ -936,8 +936,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     cmbHotSpots = new JComboBox();
 
-    if ((data != null) && (data.getHotSpots() != null)) {
-      for (HotSpot h : data.getHotSpots()) {
+    if ((getData() != null) && (getData().getHotSpots() != null)) {
+      for (HotSpot h : getData().getHotSpots()) {
         cmbHotSpots.addItem(h);
       }
     }

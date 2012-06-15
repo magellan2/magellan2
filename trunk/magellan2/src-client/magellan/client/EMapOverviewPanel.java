@@ -359,17 +359,17 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
-    data = e.getGameData();
+    setData(e.getGameData());
 
     // activeObject is from the old report. Convert it to the corresponding object in the new report
     if (activeObject instanceof Unit) {
-      activeObject = data.getUnit(activeObject.getID());
+      activeObject = getData().getUnit(activeObject.getID());
     } else if (activeObject instanceof Building) {
-      activeObject = data.getBuilding(activeObject.getID());
+      activeObject = getData().getBuilding(activeObject.getID());
     } else if (activeObject instanceof Ship) {
-      activeObject = data.getShip(activeObject.getID());
+      activeObject = getData().getShip(activeObject.getID());
     } else if (activeObject instanceof Region) {
-      activeObject = data.getRegion(((Region) activeObject).getCoordinate());
+      activeObject = getData().getRegion(((Region) activeObject).getCoordinate());
     } else {
       activeObject = null;
     }
@@ -444,9 +444,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     treeBuilder.setUnitComparator(EMapOverviewPanel.getUnitSorting(settings));
     treeBuilder.setTreeStructure(EMapOverviewPanel.getTreeStructure(settings));
 
-    treeBuilder.buildTree(rootNode, data);
+    treeBuilder.buildTree(rootNode, getData());
 
-    for (Unit u : data.getUnits()) {
+    for (Unit u : getData().getUnits()) {
       List<TransferRelation> relations = u.getRelations(TransferRelation.class);
       if (relations != null && !relations.isEmpty()) {
         lastUnitRelations.put(u.getID(), new HashSet<TransferRelation>(relations));
@@ -1708,7 +1708,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
-    return new RegionOverviewPreferences(this, settings, data);
+    return new RegionOverviewPreferences(this, settings, getData());
   }
 
   /**
@@ -1811,7 +1811,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     boolean privilegedWithoutAllies = false;
 
-    for (Faction f : data.getFactions()) {
+    for (Faction f : getData().getFactions()) {
       if (f.isPrivileged()) {
         privilegedFactions.add(f);
 

@@ -108,7 +108,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
-    data = e.getGameData();
+    setData(e.getGameData());
     rootNode.removeAllChildren();
     treeModel.reload();
   }
@@ -156,13 +156,13 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
    * Shows the messages for the specified island.
    */
   public void show(Island i, DefaultMutableTreeNode parent) {
-    if (data.getFactions() == null)
+    if (getData().getFactions() == null)
       return;
 
     // collect messages
     List<Message> sortedMessages = new LinkedList<Message>();
 
-    for (Faction f : data.getFactions()) {
+    for (Faction f : getData().getFactions()) {
       if (f.getMessages() != null) {
         Iterator<Message> msgs = f.getMessages().iterator();
 
@@ -286,10 +286,10 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       }
     }
 
-    if (data.getFactions() != null) {
+    if (getData().getFactions() != null) {
       List<Message> sortedMessages = new LinkedList<Message>();
 
-      for (Faction f : data.getFactions()) {
+      for (Faction f : getData().getFactions()) {
         if (f.getMessages() != null) {
           Iterator<Message> msgs = f.getMessages().iterator();
 
@@ -436,7 +436,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     DefaultMutableTreeNode subNode = null;
 
     CoordinateID c = b.getID();
-    Region r = data.getRegion(c);
+    Region r = getData().getRegion(c);
 
     if (r != null) {
       node = new DefaultMutableTreeNode(nodeFactory.createRegionNodeWrapper(r));
@@ -477,8 +477,8 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     }
 
     // TODO do something more efficient than searching all faction messages here!?
-    if (data.getFactions() != null) {
-      for (Faction f : data.getFactions()) {
+    if (getData().getFactions() != null) {
+      for (Faction f : getData().getFactions()) {
         if (f.getMessages() != null) {
           Iterator<Message> msgs = f.getMessages().iterator();
 
@@ -525,7 +525,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       if (value != null) {
         try {
           int i = Integer.parseInt(value);
-          Unit u = data.getUnit(UnitID.createUnitID(i, data.base));
+          Unit u = getData().getUnit(UnitID.createUnitID(i, getData().base));
 
           if (u != null) {
             subNode = new DefaultMutableTreeNode(nodeFactory.createUnitNodeWrapper(u));
@@ -543,7 +543,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
         }
 
         if (c != null) {
-          Region r = data.getRegion(c);
+          Region r = getData().getRegion(c);
 
           if (r != null) {
             subNode = new DefaultMutableTreeNode(nodeFactory.createRegionNodeWrapper(r));

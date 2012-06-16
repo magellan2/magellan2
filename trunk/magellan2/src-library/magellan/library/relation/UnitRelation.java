@@ -144,4 +144,16 @@ public abstract class UnitRelation {
         ProblemFactory.createProblem(Problem.Severity.ERROR, type, origin, null, string, line);
   }
 
+  /**
+   * Returns true if this relation somehow relates to the specified object. Subclasses should
+   * overwrite this method if they involve relations to other report objects.
+   * 
+   * @param object
+   * @return <code>true</code> if the object is source or origin or otherwise affected by this
+   *         relation
+   */
+  public boolean isRelated(Object object) {
+    return origin == object || source == object;
+  }
+
 }

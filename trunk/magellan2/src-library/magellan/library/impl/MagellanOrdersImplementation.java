@@ -24,7 +24,6 @@ import magellan.library.utils.Resources;
  */
 class MagellanOrdersImplementation implements Orders {
   private List<Order> orders = null;
-  private boolean changed = false;
   private Unit unit;
 
   /**
@@ -44,20 +43,6 @@ class MagellanOrdersImplementation implements Orders {
   public MagellanOrdersImplementation(Unit u, List<Order> list) {
     unit = u;
     orders = list;
-  }
-
-  /**
-   * @see magellan.library.Orders#ordersHaveChanged()
-   */
-  public boolean ordersHaveChanged() {
-    return changed;
-  }
-
-  /**
-   * @see magellan.library.Orders#setOrdersChanged(boolean)
-   */
-  public void setOrdersChanged(boolean changed) {
-    this.changed = changed;
   }
 
   /**
@@ -238,10 +223,9 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#add(java.lang.Object)
    */
   public boolean add(Order e) {
-    if (orders.add(e)) {
-      setOrdersChanged(true);
+    if (orders.add(e))
       return true;
-    } else
+    else
       return false;
   }
 
@@ -249,10 +233,9 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#remove(java.lang.Object)
    */
   public boolean remove(Object o) {
-    if (orders.remove(o)) {
-      setOrdersChanged(true);
+    if (orders.remove(o))
       return true;
-    } else
+    else
       return false;
   }
 
@@ -269,10 +252,9 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#addAll(java.util.Collection)
    */
   public boolean addAll(Collection<? extends Order> c) {
-    if (orders.addAll(c)) {
-      setOrdersChanged(true);
+    if (orders.addAll(c))
       return true;
-    } else
+    else
       return false;
   }
 
@@ -282,10 +264,9 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#addAll(int, java.util.Collection)
    */
   public boolean addAll(int index, Collection<? extends Order> c) {
-    if (orders.addAll(index, c)) {
-      setOrdersChanged(true);
+    if (orders.addAll(index, c))
       return true;
-    } else
+    else
       return false;
   }
 
@@ -294,10 +275,9 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#removeAll(java.util.Collection)
    */
   public boolean removeAll(Collection<?> c) {
-    if (orders.removeAll(c)) {
-      setOrdersChanged(true);
+    if (orders.removeAll(c))
       return true;
-    } else
+    else
       return false;
   }
 
@@ -306,10 +286,9 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#retainAll(java.util.Collection)
    */
   public boolean retainAll(Collection<?> c) {
-    if (orders.retainAll(c)) {
-      setOrdersChanged(true);
+    if (orders.retainAll(c))
       return true;
-    } else
+    else
       return false;
   }
 
@@ -317,7 +296,6 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#clear()
    */
   public void clear() {
-    setOrdersChanged(size() > 0);
     orders.clear();
   }
 
@@ -353,7 +331,6 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#set(int, java.lang.Object)
    */
   public Order set(int index, Order element) {
-    setOrdersChanged(true);
     return orders.set(index, element);
   }
 
@@ -363,7 +340,6 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#add(int, java.lang.Object)
    */
   public void add(int index, Order element) {
-    setOrdersChanged(true);
     orders.add(index, element);
   }
 
@@ -372,7 +348,6 @@ class MagellanOrdersImplementation implements Orders {
    * @see java.util.List#remove(int)
    */
   public Order remove(int index) {
-    setOrdersChanged(true);
     return orders.remove(index);
   }
 
@@ -478,7 +453,6 @@ class MagellanOrdersImplementation implements Orders {
      * @see java.util.ListIterator#remove()
      */
     public void remove() {
-      setOrdersChanged(true);
       delegate.remove();
     }
 
@@ -487,7 +461,6 @@ class MagellanOrdersImplementation implements Orders {
      * @see java.util.ListIterator#set(java.lang.Object)
      */
     public void set(Order e) {
-      setOrdersChanged(true);
       delegate.set(e);
     }
 
@@ -503,6 +476,6 @@ class MagellanOrdersImplementation implements Orders {
 
   @Override
   public String toString() {
-    return "@Unit:" + unit + "@changed:" + changed + "," + orders.toString();
+    return "@Unit:" + unit + "," + orders.toString();
   }
 }

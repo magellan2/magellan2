@@ -8,7 +8,9 @@ import magellan.library.Unit;
  * A relation indicating that the source unit renames the Named Object
  */
 public class RenameNamedRelation extends UnitRelation {
+  /** The object that is named */
   public Named named;
+  /** The given name */
   public String name;
 
   /**
@@ -34,6 +36,11 @@ public class RenameNamedRelation extends UnitRelation {
     if (named instanceof Related && named != source && named != origin) {
       ((Related) named).addRelation(this);
     }
+  }
+
+  @Override
+  public boolean isRelated(Object object) {
+    return super.isRelated(object) || named == object;
   }
 
 }

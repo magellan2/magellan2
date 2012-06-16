@@ -224,8 +224,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
   public void recreate(GameData data) {
     dividerPos = content.getDividerLocation();
 
-    createArmies(data, data.equals(this.getGameData()) ? lastSelected : null);
-    this.setGameData(data);
+    setGameData(data);
+    createArmies(data, data.equals(getGameData()) ? lastSelected : null);
     createTrees();
     content.setDividerLocation(dividerPos);
   }
@@ -503,7 +503,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
       armies.clear();
     }
 
-    this.setGameData(data);
+    setGameData(data);
     createArmies(data, regions, categorize);
   }
 

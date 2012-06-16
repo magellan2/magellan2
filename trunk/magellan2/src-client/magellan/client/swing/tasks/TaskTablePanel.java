@@ -63,7 +63,6 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.event.UnitOrdersEvent;
-import magellan.client.event.UnitOrdersListener;
 import magellan.client.preferences.TaskTablePreferences;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.ProgressBarUI;
@@ -77,6 +76,8 @@ import magellan.library.HasRegion;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
+import magellan.library.event.UnitChangeEvent;
+import magellan.library.event.UnitChangeListener;
 import magellan.library.tasks.AttackInspector;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Inspector;
@@ -99,8 +100,8 @@ import magellan.library.utils.logging.Logger;
 /**
  * A panel for showing reviews about unit, region and/or gamedata.
  */
-public class TaskTablePanel extends InternationalizedDataPanel implements UnitOrdersListener,
-SelectionListener, PreferencesFactory {
+public class TaskTablePanel extends InternationalizedDataPanel implements UnitChangeListener,
+    SelectionListener, PreferencesFactory {
   private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
   /** @deprecated Use {@link MagellanDesktop#TASKS_IDENTIFIER} instead */
@@ -583,6 +584,7 @@ SelectionListener, PreferencesFactory {
         dispatcher.fire(new UnitOrdersEvent(this, u));
       }
     }
+
   }
 
   private void removeType(int[] rows) {
@@ -633,7 +635,7 @@ SelectionListener, PreferencesFactory {
     StringBuilder text = new StringBuilder();
     text.append(p.getMessage()).append("\n").append(p.getObject()).append("\n").append(
         p.getRegion()).append("\n").append(p.getFaction()).append("\n").append(p.getLine()).append(
-            "\n").append(p.getType());
+        "\n").append(p.getType());
     final TextAreaDialog d =
         (new TextAreaDialog((JFrame) null, Resources.get("tasks.showfull.dialog.title"), text
             .toString()));
@@ -792,37 +794,37 @@ SelectionListener, PreferencesFactory {
       UpdateEvent event = events.remove(0);
       Integer rank =
           event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event.getObject());
-          // remove obsolete events
-          while (rank > 1 || clear) {
-            if (rank > 1 || (clear && event.getObject() != UpdateEvent.CLEAR)) {
-              // this is not the last event for the object or we are in clear mode
-              // and this is not the last clear event
-              if (TaskTablePanel.log.isDebugEnabled()) {
-                TaskTablePanel.log
-                .debug("skip " + event.getObject() + " " + event.isAdd() + " " + rank);
-              }
-              if (event.isAdd()) {
-                addObjects.put(event.getObject(), rank - 1);
-              } else {
-                delObjects.put(event.getObject(), rank - 1);
-              }
-              event = events.remove(0);
-              rank =
-                  event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event.getObject());
-            } else {
-              // this is the last clear event in the queue
-              clear = false;
-            }
-          }
+      // remove obsolete events
+      while (rank > 1 || clear) {
+        if (rank > 1 || (clear && event.getObject() != UpdateEvent.CLEAR)) {
+          // this is not the last event for the object or we are in clear mode
+          // and this is not the last clear event
           if (TaskTablePanel.log.isDebugEnabled()) {
-            TaskTablePanel.log.debug("poll " + event.getObject() + " " + event.isAdd() + " " + rank);
+            TaskTablePanel.log
+                .debug("skip " + event.getObject() + " " + event.isAdd() + " " + rank);
           }
           if (event.isAdd()) {
-            addObjects.remove(event.getObject());
+            addObjects.put(event.getObject(), rank - 1);
           } else {
-            delObjects.remove(event.getObject());
+            delObjects.put(event.getObject(), rank - 1);
           }
-          return event;
+          event = events.remove(0);
+          rank =
+              event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event.getObject());
+        } else {
+          // this is the last clear event in the queue
+          clear = false;
+        }
+      }
+      if (TaskTablePanel.log.isDebugEnabled()) {
+        TaskTablePanel.log.debug("poll " + event.getObject() + " " + event.isAdd() + " " + rank);
+      }
+      if (event.isAdd()) {
+        addObjects.remove(event.getObject());
+      } else {
+        delObjects.remove(event.getObject());
+      }
+      return event;
     }
 
     /**
@@ -1199,7 +1201,7 @@ SelectionListener, PreferencesFactory {
 
   private void removeListeners() {
     if (dispatcher != null) {
-      dispatcher.removeUnitOrdersListener(this);
+      // dispatcher.removeUnitOrdersListener(this);
       dispatcher.removeGameDataListener(this);
       dispatcher.removeSelectionListener(this);
     }
@@ -1207,7 +1209,7 @@ SelectionListener, PreferencesFactory {
 
   private void registerListeners() {
     if (dispatcher != null) {
-      dispatcher.addUnitOrdersListener(this);
+      // dispatcher.addUnitOrdersListener(this);
       // unnecessary
       // dispatcher.addGameDataListener(this);
       dispatcher.addSelectionListener(this);
@@ -1239,7 +1241,7 @@ SelectionListener, PreferencesFactory {
   protected void error(UpdateEvent event) {
     model.addProblem(ProblemFactory.createProblem(Severity.INFORMATION, INTERNAL, event != null
         ? event.region : null, null, null, event != null ? event.unit : null, null, INTERNAL
-            .getMessage(), -1));
+        .getMessage(), -1));
   }
 
   /**
@@ -1318,7 +1320,8 @@ SelectionListener, PreferencesFactory {
     }
 
     synchronized (this) {
-      if (restrictToActiveRegion() && r != null && r.getData() == getGameData() && r != lastActiveRegion) {
+      if (restrictToActiveRegion() && r != null && r.getData() == getGameData()
+          && r != lastActiveRegion) {
         lastActiveRegion = r;
         refreshProblems();
       }
@@ -1346,8 +1349,25 @@ SelectionListener, PreferencesFactory {
    * @see magellan.client.event.UnitOrdersListener#unitOrdersChanged(magellan.client.event.UnitOrdersEvent)
    */
   public void unitOrdersChanged(UnitOrdersEvent e) {
-    updateDispatcher.removeRegion(e.getUnit().getRegion());
-    updateDispatcher.addRegion(e.getUnit().getRegion());
+    update(e.getUnit());
+  }
+
+  protected void update(Unit unit) {
+    Region r1 = unit.getRegion();
+    Region r2 = unit.getData().getRegion(unit.getNewRegion());
+
+    if (r1 != null) {
+      updateDispatcher.removeRegion(r1);
+    }
+    if (r2 != null) {
+      updateDispatcher.removeRegion(r2);
+    }
+    if (r1 != null) {
+      updateDispatcher.addRegion(r1);
+    }
+    if (r2 != null) {
+      updateDispatcher.addRegion(r2);
+    }
   }
 
   private void reviewGlobal() {
@@ -1476,15 +1496,15 @@ SelectionListener, PreferencesFactory {
         if (runInThisThread) {
           addProblems(problems);
         } else
-          // add problems in the AWT event dispatching thread to avoid
-          // synchronization issues!
-          if (!problems.isEmpty()) {
-            SwingUtilities.invokeLater(new Runnable() {
-              public void run() {
-                addProblems(problems);
-              }
-            });
-          }
+        // add problems in the AWT event dispatching thread to avoid
+        // synchronization issues!
+        if (!problems.isEmpty()) {
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              addProblems(problems);
+            }
+          });
+        }
       }
     }
   }
@@ -1538,7 +1558,7 @@ SelectionListener, PreferencesFactory {
     if (restrictToOwner()
         && !restrictToPassword()
         && (getGameData().getOwnerFaction() == null || f == null || !getGameData().getOwnerFaction()
-        .equals(f.getID())))
+            .equals(f.getID())))
       return false;
     if (restrictToPassword()
         && (f == null || f.getPassword() == null || f.getPassword().length() == 0))
@@ -1665,7 +1685,7 @@ SelectionListener, PreferencesFactory {
         return p.getRegion() == null || p.getRegion() == lastActiveRegion;
     } else if (restrictToSelection())
       return p.getRegion() == null || lastSelection == null
-      || lastSelection.contains(p.getRegion());
+          || lastSelection.contains(p.getRegion());
 
     return true;
   }
@@ -1964,4 +1984,14 @@ SelectionListener, PreferencesFactory {
     return shown;
   }
 
+  @Override
+  public void setGameData(GameData data) {
+    getGameData().removeUnitChangeListener(this);
+    super.setGameData(data);
+    data.addUnitChangeListener(this);
+  }
+
+  public void unitChanged(UnitChangeEvent event) {
+    update(event.getUnit());
+  }
 }

@@ -795,7 +795,6 @@ public class GameDataMerger {
     }
 
     resultGD.postProcess();
-    resultGD.resetToUnchanged();
 
     return resultGD;
   }

@@ -1121,12 +1121,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Refreshes all the relations of all units in this region. It is preferrable to call this method
+   * Refreshes all the relations of all units in this region. It is preferable to call this method
    * instead of refreshing the unit relations 'manually'.
    * 
    * @param forceRefresh to enforce refreshment, false for one refreshment only
+   * @deprecated should be triggered implicitly by UnitOrdersEvents
    */
 
+  @Deprecated
   public synchronized void refreshUnitRelations(boolean forceRefresh) {
 
     if (unitRelationsRefreshed == false || forceRefresh) {

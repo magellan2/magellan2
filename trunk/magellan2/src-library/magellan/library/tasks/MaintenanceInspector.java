@@ -145,8 +145,8 @@ public class MaintenanceInspector extends AbstractInspector {
               silver = item.getAmount();
             }
             has += silver;
-            needs += u.getRace().getMaintenance()*u.getModifiedPersons();
-            if (silver <= u.getRace().getMaintenance()*u.getModifiedPersons()) {
+            needs += u.getRace().getMaintenance() * u.getModifiedPersons();
+            if (silver <= u.getRace().getMaintenance() * u.getModifiedPersons()) {
               lastUnit = u;
             }
           }
@@ -162,19 +162,20 @@ public class MaintenanceInspector extends AbstractInspector {
               silver = item.getAmount();
             }
             has += silver;
-            needs += u.getRace().getMaintenance()*u.getModifiedPersons();
-            if (silver <= u.getRace().getMaintenance()*u.getModifiedPersons()) {
+            needs += u.getRace().getMaintenance() * u.getModifiedPersons();
+            if (silver <= u.getRace().getMaintenance() * u.getModifiedPersons()) {
               lastUnit = u;
             }
           }
         }
-        if (has < needs) {
-          // problems.add(ProblemFactory.createProblem(Severity.WARNING,
-          // MaintenanceProblemTypes.UNITSTARVING.getType(), lastUnit, this, -1));
-          problems.add(ProblemFactory.createProblem(Severity.WARNING,
-              MaintenanceProblemTypes.UNITSTARVING.getType(), r, null, f, lastUnit, this, Resources
-              .get("tasks.maintenanceinspector.unitstarving.message", r2), -1));
-        }
+        if (has < needs)
+          if (!checkIgnoreUnit(lastUnit, MaintenanceProblemTypes.UNITSTARVING.getType())) {
+            // problems.add(ProblemFactory.createProblem(Severity.WARNING,
+            // MaintenanceProblemTypes.UNITSTARVING.getType(), lastUnit, this, -1));
+            problems.add(ProblemFactory.createProblem(Severity.WARNING,
+                MaintenanceProblemTypes.UNITSTARVING.getType(), r, null, f, lastUnit, this,
+                Resources.get("tasks.maintenanceinspector.unitstarving.message", r2), -1));
+          }
       }
     }
     return problems;
@@ -231,5 +232,11 @@ public class MaintenanceInspector extends AbstractInspector {
   public void setGameData(GameData gameData) {
     super.setGameData(gameData);
     movements.clear();
+  }
+
+  @Override
+  public Unit suppress(Problem p) {
+    ((Unit) p.getObject()).addOrderAt(0, getSuppressUnitComment(p.getType()));
+    return (Unit) p.getObject();
   }
 }

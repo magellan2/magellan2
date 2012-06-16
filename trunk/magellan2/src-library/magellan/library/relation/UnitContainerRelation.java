@@ -56,4 +56,8 @@ public class UnitContainerRelation extends UnitRelation {
     }
   }
 
+  @Override
+  public boolean isRelated(Object object) {
+    return super.isRelated(object) || target == object;
+  }
 }

@@ -31,6 +31,7 @@ import magellan.library.event.GameDataListener;
  */
 public abstract class InternationalizedDataPanel extends JPanel implements GameDataListener {
   private GameData data;
+
   protected Properties settings;
   protected EventDispatcher dispatcher;
   private MagellanContext context;
@@ -68,7 +69,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
       dispatcher.addGameDataListener(this);
     }
 
-    setGameData(context.getGameData());
+    data = context.getGameData();
     settings = context.getProperties();
   }
 
@@ -109,10 +110,10 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
 
   /**
    * Sets the value of data.
-   *
+   * 
    * @param data The value for data.
    */
-  protected void setGameData(GameData data) {
+  public void setGameData(GameData data) {
     this.data = data;
   }
 

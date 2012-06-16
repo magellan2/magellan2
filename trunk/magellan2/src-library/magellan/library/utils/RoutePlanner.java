@@ -98,7 +98,7 @@ public class RoutePlanner {
                       orders.size() - size).append(" { ").append(localCommand).append(" ");
               closing = "}";
             } else {
-              if ((mode & MODE_CONTINUOUS) > 0) {
+              if ((mode & MODE_CONTINUOUS) > 0) { // FIXME
                 // insert PAUSE
                 order.append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
               } else {

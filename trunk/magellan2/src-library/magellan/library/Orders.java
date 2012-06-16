@@ -46,18 +46,6 @@ public interface Orders extends List<Order> {
   public abstract boolean removeOrder(Order order, int length);
 
   /**
-   * Returns <code>true</code> if orders have been added and
-   * <code>setOrdersChanged(<code>false</code>)</code> has not been called subsequently. Or if
-   * <code>setOrdersChanged(<code>true</code>)</code> has been called.
-   */
-  public abstract boolean ordersHaveChanged();
-
-  /**
-   * Manual override of ordersHaveChanged status.
-   */
-  public abstract void setOrdersChanged(boolean changed);
-
-  /**
    * Returns the unit owning these orders. It is not guaranteed, that this orders object is actually
    * attached to the unit.
    * 

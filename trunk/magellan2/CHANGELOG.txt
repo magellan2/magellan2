@@ -1,11 +1,16 @@
-2012-06-16 / Build 508 - stm (stm_@users.sourceforge.net)
+2012-06-16 / Build 509 - stm (stm_@users.sourceforge.net)
     * improved exception handling in Client on load report and quit
     * encapsulated InternatioalizedDataPanel.data
     * OrderSyntaxInspector: "two long orders" reported wrong line
     * added testing target to build.xml 
+    * deprecated Unit.addOrder(..., refreshRelations)
+    * order parsing is now not always done after every single unit order change, but automatically after a batch of order changes 
+    * introduced UnitChangeListener to react to changes
+    * HELFE KÄMPFE  no longer accepted by E3OrderParser
+    * created test for E3AOrderParser
     
 2012-06-06 / Build 505 - stm (stm_@users.sourceforge.net)
-    * fixed some mouse listeners for more compatible popup menu behavior
+    * fixed some mouselisteners for more compatible popup menu behavior
     * added STOP option to RoutePlanners, changed context route planner to be compatible with RoutePlanners
     * added person transfer option to TempUnitDialog 
 

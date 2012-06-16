@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +34,8 @@ import java.util.Set;
 
 import magellan.library.Region.Visibility;
 import magellan.library.completion.OrderParser;
+import magellan.library.event.UnitChangeEvent;
+import magellan.library.event.UnitChangeListener;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
@@ -163,11 +166,6 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /** The 'mail' subject for this game data. This may be null */
   public String mailSubject = null;
-
-  /** Post processes the game data (if necessary) once */
-  private boolean postProcessed = false;
-
-  private boolean fixNeighborsWithWraparound;
 
   private Region activeRegion;
 
@@ -439,6 +437,8 @@ public abstract class GameData implements Cloneable, Addeable {
   private Random random;
 
   private Set<Long> inventedUIDs = new HashSet<Long>();
+
+  private Set<UnitChangeListener> changeListeners;
 
   /**
    * Creates a new GameData object with the name of "default".
@@ -1032,34 +1032,6 @@ public abstract class GameData implements Cloneable, Addeable {
   public abstract Locale getLocale();
 
   /**
-   * This function checks if the game data have been manipulated somehow (merge will lead to a
-   * filetype null).
-   * 
-   * @deprecated nobody uses this, @see Client#ReportObserver
-   */
-  @Deprecated
-  public boolean gameDataChanged(GameData g) {
-    if (g.getFileType() == null)
-      return true;
-
-    for (Unit u : g.unitView().values()) {
-      if (u.ordersHaveChanged())
-        return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * reset change state of all units to false
-   */
-  public void resetToUnchanged() {
-    for (Unit u : unitView().values()) {
-      u.setOrdersChanged(false);
-    }
-  }
-
-  /**
    * returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader)
    * 
    * @throws CloneNotSupportedException If cloning doesn't succeed
@@ -1135,9 +1107,6 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * This method can be called after loading or merging a report to avoid double messages and to set
    * some game specific stuff.
-   * 
-   * @param addVoid
-   * @param addVoid
    */
   public void postProcess() {
     // FIXME(stm) does it harm to call this more than once???
@@ -1165,15 +1134,11 @@ public abstract class GameData implements Cloneable, Addeable {
       r.refreshUnitRelations(true);
     }
 
-    postProcessed = true;
-
     log.fine("finished GameData postProcess");
   }
 
   public void postProcessErrors() {
     Map<Long, Region> regionMap = new HashMap<Long, Region>(getRegions().size() * 5 / 4 + 5, .8f);
-    int count = 0;
-    StringBuilder message = new StringBuilder();
     Region original = null;
     Region copy = null;
     for (Region r : getRegions()) {
@@ -1914,4 +1879,40 @@ public abstract class GameData implements Cloneable, Addeable {
       data2 = _data;
     }
   }
+
+  public void fireOrdersChanged(Object source, Unit u, Object cause) {
+    if (changeListeners != null) {
+      UnitChangeEvent event = new UnitChangeEvent(source, u, cause);
+      for (UnitChangeListener listener : getUnitChangeListeners()) {
+        listener.unitChanged(event);
+      }
+    }
+  }
+
+  public void addUnitChangeListener(UnitChangeListener l) {
+    if (changeListeners == null) {
+      changeListeners = new LinkedHashSet<UnitChangeListener>();
+    }
+    changeListeners.add(l);
+  }
+
+  public void removeUnitChangeListener(UnitChangeListener l) {
+    if (changeListeners != null) {
+      changeListeners.remove(l);
+    }
+  }
+
+  protected Collection<UnitChangeListener> getUnitChangeListeners() {
+    if (changeListeners == null)
+      return Collections.emptyList();
+    return changeListeners;
+  }
+
+  public void fireOrdersChanged(Object source, Region r) {
+    Object cause = new Object();
+    for (Unit u : r.units()) {
+      fireOrdersChanged(source, u, cause);
+    }
+  }
+
 }

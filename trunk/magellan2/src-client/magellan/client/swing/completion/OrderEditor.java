@@ -128,8 +128,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   /**
    * Creates a new OrderEditor object.
    */
-  public OrderEditor(GameData data, Properties settings, UndoManager _undoMgr, EventDispatcher d,
-      OrderParser parser) {
+  public OrderEditor(GameData data, Properties settings, UndoManager _undoMgr,
+      EventDispatcher d, OrderParser parser) {
     super();
 
     // pavkovic 2002.11.11: use own caret for more logical refreshing
@@ -164,7 +164,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     orderListener = new UnitOrdersListener() {
       public void unitOrdersChanged(UnitOrdersEvent e) {
         // refresh local copy of orders in editor
-        if ((e.getSource() != OrderEditor.this) && e.getUnit().equals(unit)) {
+        if (e.getUnit() != null && e.getSource() != OrderEditor.this && e.getUnit().equals(unit)) {
           setOrders(unit.getOrders2());
         }
       }

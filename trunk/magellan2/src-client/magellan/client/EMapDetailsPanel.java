@@ -82,7 +82,6 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.event.UnitOrdersEvent;
-import magellan.client.event.UnitOrdersListener;
 import magellan.client.preferences.DetailsViewPreferences;
 import magellan.client.swing.BasicRegionPanel;
 import magellan.client.swing.FactionStatsPanel;
@@ -146,6 +145,8 @@ import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
+import magellan.library.event.UnitChangeEvent;
+import magellan.library.event.UnitChangeListener;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
@@ -199,7 +200,7 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 390 $
  */
 public class EMapDetailsPanel extends InternationalizedDataPanel implements SelectionListener,
-ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
+    ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
   private static final Logger log = Logger.getInstance(EMapDetailsPanel.class);
 
   /**
@@ -294,19 +295,45 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
   private final StringID rsilverID = EresseaConstants.I_RSILVER; // StringID.create("Silber");
   private final StringID rpeasantsID = EresseaConstants.I_PEASANTS; // StringID.create("Bauern");
 
-  private GameSpecificRules gameRules = null;
+  private GameSpecificRules gameRules;
 
-  private GameSpecificStuff gameSpecStuff = null;
+  private GameSpecificStuff gameSpecStuff;
 
   private ShowItems showCapacityItems = ShowItems.SHOW_ALL_FACTIONS;
+  private UnitChangeListener unitChangeListener;
+  protected Object lastCause;
 
   /**
    * Creates a new EMapDetailsPanel object.
    */
   public EMapDetailsPanel(EventDispatcher d, GameData data, Properties p, UndoManager _undoMgr) {
     super(d, data, p);
+
+    unitChangeListener = new UnitChangeListener() {
+      public void unitChanged(UnitChangeEvent event) {
+        if (lastCause == event.getCause())
+          return;
+
+        if (event.getUnit() == getDisplayedObject()) {
+          lastCause = event.getCause();
+          EMapDetailsPanel.this.refresh();
+          return;
+        }
+
+        for (UnitRelation rel : event.getUnit().getRelations()) {
+          if (rel.isRelated(getDisplayedObject())) {
+            lastCause = event.getCause();
+            EMapDetailsPanel.this.refresh();
+            break;
+          }
+        }
+
+      }
+    };
+
     initGUI(_undoMgr);
     init(data);
+
   }
 
   private void initGUI(UndoManager _undoMgr) {
@@ -387,7 +414,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
           } else {
             JOptionPane.showMessageDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
                 Resources.get("emapdetailspanel.msg.cannotrename.text"), Resources
-                .get("emapdetailspanel.error"), javax.swing.JOptionPane.WARNING_MESSAGE);
+                    .get("emapdetailspanel.error"), javax.swing.JOptionPane.WARNING_MESSAGE);
             tree.grabFocus();
           }
         } else if (getDisplayedObject() instanceof Island) {
@@ -423,7 +450,8 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
 
             if (((u.getPrivDesc() == null) && (privat.length() > 0))
                 || ((u.getPrivDesc() != null) && !privat.equals(u.getPrivDesc()))) {
-              getGameData().getGameSpecificStuff().getOrderChanger().addDescribeUnitPrivateOrder(u, privat);
+              getGameData().getGameSpecificStuff().getOrderChanger().addDescribeUnitPrivateOrder(u,
+                  privat);
               u.setPrivDesc(privat);
             }
 
@@ -449,8 +477,8 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
             if (((uc.getDescription() == null) && (description.getText().equals("") == false))
                 || ((uc.getDescription() != null) && (description.getText().equals(
                     uc.getDescription()) == false))) {
-              getGameData().getGameSpecificStuff().getOrderChanger().addDescribeUnitContainerOrder(modUnit,
-                  uc, normalizeDescription(description.getText()));
+              getGameData().getGameSpecificStuff().getOrderChanger().addDescribeUnitContainerOrder(
+                  modUnit, uc, normalizeDescription(description.getText()));
               dispatcher.fire(new UnitOrdersEvent(EMapDetailsPanel.this, modUnit));
 
               // if (modUnit.cache != null && modUnit.cache.orderEditor != null) {
@@ -460,7 +488,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
           } else {
             JOptionPane.showMessageDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
                 Resources.get("emapdetailspanel.msg.cannotdescribe.text"), Resources
-                .get("emapdetailspanel.error"), javax.swing.JOptionPane.WARNING_MESSAGE);
+                    .get("emapdetailspanel.error"), javax.swing.JOptionPane.WARNING_MESSAGE);
             tree.grabFocus();
           }
         } else if (getDisplayedObject() instanceof Island) {
@@ -707,13 +735,13 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
     DesktopEnvironment.registerShortcutListener(this);
 
     // update this component if the orders of the currently displayed unit changed
-    dispatcher.addUnitOrdersListener(new UnitOrdersListener() {
-      public void unitOrdersChanged(UnitOrdersEvent e) {
-        // if (e.getRelatedUnits().contains(EMapDetailsPanel.this.getDisplayedObject())) {
-        EMapDetailsPanel.this.refresh();
-        // }
-      }
-    });
+    // dispatcher.addUnitOrdersListener(new UnitOrdersListener() {
+    // public void unitOrdersChanged(UnitOrdersEvent e) {
+    // if (!e.isChanging()) {
+    // EMapDetailsPanel.this.refresh();
+    // }
+    // }
+    // });
 
     excludeTags.add("magStyle");
     excludeTags.add("regionicon");
@@ -750,6 +778,18 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
    */
   public NodeWrapperFactory getNodeWrapperFactory() {
     return nodeWrapperFactory;
+  }
+
+  @Override
+  public void setGameData(GameData data) {
+    getGameData().removeUnitChangeListener(unitChangeListener);
+    super.setGameData(data);
+    data.addUnitChangeListener(unitChangeListener);
+  }
+
+  protected boolean isRelated(Object object) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    return false;
   }
 
   private void init(GameData gameData) {
@@ -1285,7 +1325,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
     if (resourceNode.getChildCount() > 0) {
       parent.add(resourceNode);
       expandableNodes
-      .add(new NodeWrapper(resourceNode, "EMapDetailsPanel.RegionResourcesExpanded"));
+          .add(new NodeWrapper(resourceNode, "EMapDetailsPanel.RegionResourcesExpanded"));
     }
   }
 
@@ -1473,7 +1513,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
     if (resourcesNode.getChildCount() > 0) {
       parent.add(resourcesNode);
       expandableNodes
-      .add(new NodeWrapper(resourcesNode, "EMapDetailsPanel.RegionResourcesExpanded"));
+          .add(new NodeWrapper(resourcesNode, "EMapDetailsPanel.RegionResourcesExpanded"));
     }
 
     // herbs of the regions sorted by name, id of herb
@@ -1962,7 +2002,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
         EMapDetailsPanel.weightNumberFormat.format(uWeight - pWeight));
     if (uWeight != modUWeight) {
       text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modUWeight - modPWeight))
-      .append(")");
+          .append(")");
     }
     text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
 
@@ -2534,10 +2574,10 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
       strPersons =
           Resources.get(res, u.getPersons(), u.getModifiedPersons(), u.getRaceName(getGameData()), u
               .getFaction() != null ? u.getFaction() : Resources
-                  .get("emapdetailspanel.node.unknownfaction"))
+              .get("emapdetailspanel.node.unknownfaction"))
 
-                  + (u.getGroup() != null ? Resources.get("emapdetailspanel.node.group") + " "
-                      + u.getGroup().getName() : "");
+              + (u.getGroup() != null ? Resources.get("emapdetailspanel.node.group") + " "
+                  + u.getGroup().getName() : "");
     }
     String iconPersonName = "person";
     /**
@@ -2775,7 +2815,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
     if (u.getGuiseFaction() != null) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.disguisedas") + " "
           + u.getGuiseFaction(), ((stealth != null) ? stealth.getSkillType().getID().toString()
-              : "tarnung")));
+          : "tarnung")));
     }
 
     /*
@@ -2831,7 +2871,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
                   .get("emapdetailspanel.node.FamiliarChilds"), "aura"));
           parent.add(childsNode);
           expandableNodes
-          .add(new NodeWrapper(childsNode, "EMapDetailsPanel.FamiliarChildsExpanded"));
+              .add(new NodeWrapper(childsNode, "EMapDetailsPanel.FamiliarChildsExpanded"));
           for (Unit uT : familiars) {
             UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(uT);
             DefaultMutableTreeNode parentUnitNode = new DefaultMutableTreeNode(w);
@@ -2853,7 +2893,9 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
       Collection<NodeWrapper> expandableNodes) {
     ItemType cart = getGameData().getRules().getItemType(EresseaConstants.I_CART, false);
     // load
+    @SuppressWarnings("unused")
     float load = getMovementEvaluator().getLoad(u) / 100.0F;
+    @SuppressWarnings("unused")
     float modLoad = getMovementEvaluator().getModifiedLoad(u) / 100.0F;
 
     float uWeight = getMovementEvaluator().getWeight(u) / 100.0F;
@@ -2898,7 +2940,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
 
       if (modHorseWeight != horseWeight) {
         text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modHorseWeight))
-        .append(")");
+            .append(")");
       }
 
       // text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
@@ -2946,6 +2988,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
   private void appendUnitLoadInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     // load
+    @SuppressWarnings("unused")
     int load = getMovementEvaluator().getLoad(u);
     int modLoad = getMovementEvaluator().getModifiedLoad(u);
 
@@ -3124,7 +3167,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
 
         if (id != null) {
           expandableNodes
-          .add(new NodeWrapper(node, "EMapDetailsPanel.ShipItems" + id + "Expanded"));
+              .add(new NodeWrapper(node, "EMapDetailsPanel.ShipItems" + id + "Expanded"));
         }
       }
     }
@@ -3174,18 +3217,20 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
           os = currentSkill;
         }
 
-        if (!isTrader && (os != null)) { // check for trader
-
-          if ((tradeCat != null) && tradeCat.isInstance(os.getSkillType())) {
-            isTrader = true;
-          } else if ((tradeSkill != null) && tradeSkill.equals(os.getSkillType())) {
-            isTrader = true;
+        if (os != null) {
+          if (!isTrader) { // check for trader
+            if ((tradeCat != null) && tradeCat.isInstance(os.getSkillType())) {
+              isTrader = true;
+            } else if ((tradeSkill != null) && tradeSkill.equals(os.getSkillType())) {
+              isTrader = true;
+            }
           }
-        }
-        skillNodes.add(new DefaultMutableTreeNode(nodeWrapperFactory.createSkillNodeWrapper(u, os,
-            ms)));
-        if (isCompactLayout()) {
-          skillList.append(" ").append((ms == null ? os.toString() : ms.toString()));
+
+          skillNodes.add(new DefaultMutableTreeNode(nodeWrapperFactory.createSkillNodeWrapper(u,
+              os, ms)));
+          if (isCompactLayout()) {
+            skillList.append(" ").append((ms == null ? os.toString() : ms.toString()));
+          }
         }
       }
       DefaultMutableTreeNode skillsNode =
@@ -3319,7 +3364,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
               .get("emapdetailspanel.node.passengers"), null, passengers, "passengers"));
       parent.add(passengersNode);
       expandableNodes
-      .add(new NodeWrapper(passengersNode, "EMapDetailsPanel.UnitPassengersExpanded"));
+          .add(new NodeWrapper(passengersNode, "EMapDetailsPanel.UnitPassengersExpanded"));
     }
 
     DefaultMutableTreeNode carriersNode = null;
@@ -3403,7 +3448,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
               .get("emapdetailspanel.node.attackedBy"), null, attackedBy, "attacker"));
       parent.add(attackedByNode);
       expandableNodes
-      .add(new NodeWrapper(attackedByNode, "EMapDetailsPanel.UnitAttackedByExpanded"));
+          .add(new NodeWrapper(attackedByNode, "EMapDetailsPanel.UnitAttackedByExpanded"));
 
       for (Unit victim : attackedBy) {
         UnitNodeWrapper w =
@@ -3514,7 +3559,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
 
     for (CombatSpell spell : spells.values()) {
       combatSpells
-      .add(new DefaultMutableTreeNode(nodeWrapperFactory.createSpellNodeWrapper(spell)));
+          .add(new DefaultMutableTreeNode(nodeWrapperFactory.createSpellNodeWrapper(spell)));
       // combatSpells.add(createSimpleNode(spell, "spell"));
     }
   }
@@ -3778,7 +3823,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
         }
       }
     }
-    break;
+      break;
     default:
       throw new IllegalArgumentException();
     }
@@ -3976,7 +4021,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
           createSimpleNode(Resources.get("emapdetailspanel.node.upkeep"), "upkeep");
       parent.add(maintNode);
       expandableNodes
-      .add(new NodeWrapper(maintNode, "EMapDetailsPanel.BuildingMaintenanceExpanded"));
+          .add(new NodeWrapper(maintNode, "EMapDetailsPanel.BuildingMaintenanceExpanded"));
 
       while (iter.hasNext()) {
         Item i = iter.next();
@@ -4074,7 +4119,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
                 ? (Resources.get("emapdetailspanel.node.size") + ": " + inmates) : (Resources
                     .get("emapdetailspanel.node.size")
                     + ": " + inmates + " (" + modInmates + ")"))
-                    + " / " + b.getSize(), "build_size"));
+                + " / " + b.getSize(), "build_size"));
     parent.insert(n, 0);
 
   }
@@ -4131,7 +4176,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
     n =
         createSimpleNode(
             Resources.get("emapdetailspanel.node.type") + ": " + b.getType().getName(), b.getType()
-            .getID().toString());
+                .getID().toString());
     parent.add(n);
   }
 
@@ -4411,7 +4456,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
     String strLoad = EMapDetailsPanel.weightNumberFormat.format(new Float(s.getLoad() / 100.0F));
     String strUnknownLoad =
         EMapDetailsPanel.weightNumberFormat
-        .format(new Float((s.getCargo() - s.getLoad()) / 100.0F));
+            .format(new Float((s.getCargo() - s.getLoad()) / 100.0F));
 
     String strModLoad =
         EMapDetailsPanel.weightNumberFormat.format(new Float(s.getModifiedLoad() / 100.0F));
@@ -4448,7 +4493,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
       if (modInmates != inmates) {
         loadText.append(" (").append(
             EMapDetailsPanel.weightNumberFormat.format(new Float(modInmates / 100.0F))).append(
-                ") / ");
+            ") / ");
       } else {
         loadText.append(" / ");
       }
@@ -4640,7 +4685,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
         // parent.add(new
         // DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.spell.ship")));
         parent
-        .add(createSimpleNode(Resources.get("emapdetailspanel.node.spell.ship"), "spell_ship"));
+            .add(createSimpleNode(Resources.get("emapdetailspanel.node.spell.ship"), "spell_ship"));
       }
 
       if (s.getOnOcean()) {
@@ -4716,7 +4761,8 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
               }
 
             } else {
-              compNode = createSimpleNode(getGameData().getTranslation(key) + ": " + val, "permanentaura");
+              compNode =
+                  createSimpleNode(getGameData().getTranslation(key) + ": " + val, "permanentaura");
             }
 
           } else {
@@ -4741,7 +4787,8 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
                 // magic thinks (TR)
                 // okay (FF), now using the correct translation
                 compNode =
-                    createSimpleNode(usage + " " + getGameData().getTranslation(key), "items/" + keyIcon);
+                    createSimpleNode(usage + " " + getGameData().getTranslation(key), "items/"
+                        + keyIcon);
               } else if (getLevelAtDays.equals("1")) {
                 // okay, this was Resources.getOrderTranslation(key) but it doesn't make sense for
                 // magic thinks (TR)
@@ -4999,7 +5046,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
           getActiveSelection() == null ? null : getActiveSelection().getActiveObject();
       setActiveSelection(se);
 
-      if ((newObject != null) && newObject instanceof SimpleNodeWrapper) {
+      if (newObject instanceof SimpleNodeWrapper) {
         newObject = ((SimpleNodeWrapper) newObject).getObject();
       }
 
@@ -5176,7 +5223,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
           new UnitCommentListNode(u, Resources.get("emapdetailspanel.node.comments"));
       parent.add(unitCommentNode);
       expandableNodes
-      .add(new NodeWrapper(unitCommentNode, "EMapDetailsPanel.UnitCommentsExpanded"));
+          .add(new NodeWrapper(unitCommentNode, "EMapDetailsPanel.UnitCommentsExpanded"));
 
       int i = 0;
 
@@ -5545,12 +5592,19 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
       // no change
     }
 
-    public NodeWrapperDrawPolicy init(Properties settings, String prefix,
-        NodeWrapperDrawPolicy adapter) {
+    /**
+     * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
+     *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
+     */
+    public NodeWrapperDrawPolicy init(Properties sett, String prefix, NodeWrapperDrawPolicy adapter) {
       return null;
     }
 
-    public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
+    /**
+     * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
+     *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
+     */
+    public NodeWrapperDrawPolicy init(Properties sett, NodeWrapperDrawPolicy adapter) {
       return null;
     }
   }
@@ -5609,12 +5663,13 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
      * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
      *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
-    public javax.swing.JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data,
+    public javax.swing.JPopupMenu createContextMenu(EventDispatcher disp, GameData world,
         Object argument, SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
       if (argument instanceof Unit) {
         try {
           return new StealthContextMenu((Unit) argument);
         } catch (IllegalArgumentException exc) {
+          // unit cannot hide
         }
       }
 
@@ -5716,7 +5771,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
      * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
      *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
-    public javax.swing.JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data,
+    public javax.swing.JPopupMenu createContextMenu(EventDispatcher disp, GameData world,
         Object argument, SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
       if (argument instanceof Unit)
         return new CombatStateContextMenu((Unit) argument);
@@ -5733,7 +5788,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
      * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
      *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
-    public javax.swing.JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data,
+    public javax.swing.JPopupMenu createContextMenu(EventDispatcher disp, GameData world,
         Object argument, SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
       try {
         if (argument instanceof UnitRelationNodeWrapper)
@@ -5741,6 +5796,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
         else
           return null;
       } catch (IllegalArgumentException exc) {
+        // no action for relation
       }
 
       return null;
@@ -5853,7 +5909,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
           String result =
               JOptionPane.showInputDialog(RelationContextMenu.this, getOrder("...", each),
                   Resources
-                  .get("emapdetailspanel.contextmenu.reserve.getamount." + each + ".title"),
+                      .get("emapdetailspanel.contextmenu.reserve.getamount." + each + ".title"),
                   JOptionPane.QUESTION_MESSAGE);
           if (result != null) {
             try {
@@ -6061,11 +6117,11 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
   private class CommentContextFactory implements ContextFactory {
 
     /**
-     * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
+     * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
      *      magellan.library.GameData, java.lang.Object, magellan.client.event.SelectionEvent,
      *      javax.swing.tree.DefaultMutableTreeNode)
      */
-    public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
+    public JPopupMenu createContextMenu(EventDispatcher disp, GameData world, Object argument,
         SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
       if (argument instanceof UnitContainer)
         return new CommentContextMenu((UnitContainer) argument, node, false);
@@ -6156,7 +6212,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
 
         if (uc.getComments().size() != parent.getChildCount()) {
           contextLog
-          .info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
+              .info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
 
           return;
         }
@@ -6188,7 +6244,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
             uc.getComments().remove(parent.getIndex(node));
           } else {
             contextLog
-            .info("EMapDetailsPanel.DetailsContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
+                .info("EMapDetailsPanel.DetailsContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
 
             return;
           }
@@ -6232,7 +6288,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
      * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
      *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
-    public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
+    public JPopupMenu createContextMenu(EventDispatcher disp, GameData world, Object argument,
         SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
       if (argument instanceof Unit)
         return new UnitCommentContextMenu((Unit) argument, node, false);
@@ -6320,7 +6376,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
 
         if (u.getComments().size() != parent.getChildCount()) {
           contextLog
-          .info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
+              .info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
 
           return;
         }
@@ -6351,7 +6407,7 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
             u.getComments().remove(parent.getIndex(node));
           } else {
             contextLog
-            .info("EMapDetailsPanel.DetailsUnitContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
+                .info("EMapDetailsPanel.DetailsUnitContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
             return;
           }
         }
@@ -6399,20 +6455,20 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
      * @see magellan.client.swing.context.ContextFactory#createContextMenu(EventDispatcher,
      *      GameData, Object, SelectionEvent, DefaultMutableTreeNode)
      */
-    public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
+    public JPopupMenu createContextMenu(EventDispatcher disp, GameData world, Object argument,
         SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
 
       if (argument instanceof Unit)
         return new UnitContextMenu((Unit) argument, selectedObjects.getSelectedObjects(),
-            dispatcher, data);
+            dispatcher, getGameData());
       else if (argument instanceof UnitNodeWrapper)
         return new UnitContextMenu(((UnitNodeWrapper) argument).getUnit(), selectedObjects == null
-        ? null : selectedObjects.getSelectedObjects(), dispatcher, data);
+            ? null : selectedObjects.getSelectedObjects(), dispatcher, getGameData());
       else if (argument instanceof UnitListNodeWrapper) {
         Collection<Unit> col = ((UnitListNodeWrapper) argument).getUnits();
 
         if ((col != null) && (col.size() > 0))
-          return new UnitContextMenu(col.iterator().next(), col, dispatcher, data);
+          return new UnitContextMenu(col.iterator().next(), col, dispatcher, getGameData());
       } else if (argument instanceof DefaultMutableTreeNode) {
         DefaultMutableTreeNode actArg = (DefaultMutableTreeNode) argument;
         Object actUserObject = actArg.getUserObject();
@@ -6422,7 +6478,8 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
               Resources.get("emapdetailspanel.node.capacityonfoot").toLowerCase())
               || actSNW.toString().toLowerCase().startsWith(
                   Resources.get("emapdetailspanel.node.capacityonhorse").toLowerCase()))
-            return new UnitCapacityContextMenu(EMapDetailsPanel.this, dispatcher, data, settings);
+            return new UnitCapacityContextMenu(EMapDetailsPanel.this, dispatcher, getGameData(),
+                settings);
         }
       } else {
         log.finest("unknown argument");
@@ -6446,11 +6503,11 @@ ShortcutListener, ActionListener, TreeUpdate, PreferencesFactory, MenuProvider {
    * @see magellan.client.swing.MenuProvider#getMenu()
    */
   public JMenu getMenu() {
-    JMenu tree = new JMenu(Resources.get("emapdetailspanel.menu.caption"));
-    tree.setMnemonic(Resources.get("emapdetailspanel.menu.mnemonic").charAt(0));
-    tree.add(nodeWrapperFactory.getContextMenu());
+    JMenu menu = new JMenu(Resources.get("emapdetailspanel.menu.caption"));
+    menu.setMnemonic(Resources.get("emapdetailspanel.menu.mnemonic").charAt(0));
+    menu.add(nodeWrapperFactory.getContextMenu());
 
-    return tree;
+    return menu;
   }
 
   /**

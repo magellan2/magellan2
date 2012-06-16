@@ -454,16 +454,11 @@ public class UnitContextMenu extends JPopupMenu {
         new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
     String s[] = giveOderDialog.showGiveOrderDialog();
     if (s[0] != null) {
-      Set<Region> regions = new HashSet<Region>();
       for (Unit u : selectedUnits) {
         if (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
           magellan.client.utils.Units.addOrders(u, s, false);
           dispatcher.fire(new UnitOrdersEvent(this, u));
         }
-        regions.add(u.getRegion());
-      }
-      for (Region r : regions) {
-        r.refreshUnitRelations(true);
       }
     }
 
@@ -679,7 +674,6 @@ public class UnitContextMenu extends JPopupMenu {
       if (key != null) {
         for (Unit u : selectedUnits) {
           u.removeTag(key);
-          // TODO: Coalesce unitordersevent
           dispatcher.fire(new UnitOrdersEvent(this, u));
         }
       }
@@ -901,8 +895,6 @@ public class UnitContextMenu extends JPopupMenu {
       }
       dispatcher.fire(new UnitOrdersEvent(this, teacher));
       dispatcher.fire(new UnitOrdersEvent(this, student));
-      unit.getRegion().refreshUnitRelations(true);
-      // dispatcher.fire(new GameDataEvent(this, gameData));
     }
 
     private String pruneOrder(Order order, String id) {

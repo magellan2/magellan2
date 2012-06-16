@@ -680,7 +680,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    */
   public void repaintAllComponents() {
     try {
-      // hmm.... what's the best way to do this?
+      // FIXME hmm.... what's the best way to do this?
       context.getEventDispatcher().fire(new GameDataEvent(this, context.getGameData()), true);
       // EMapDetailsPanel details = (EMapDetailsPanel) components.get(DETAILS_IDENTIFIER);
       // if (details != null) {

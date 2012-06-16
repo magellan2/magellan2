@@ -1,3 +1,12 @@
-#Sun Apr 12 09:10:27 CEST 2009
 eclipse.preferences.version=1
+encoding//etc/battleanalyzer_resources.properties=ISO-8859-1
+encoding//etc/battleanalyzer_resources_de.properties=ISO-8859-1
+encoding//etc/extendedcommands_resources.properties=ISO-8859-1
+encoding//etc/extendedcommands_resources_de.properties=ISO-8859-1
+encoding//etc/groupeditor_resources.properties=ISO-8859-1
+encoding//etc/groupeditor_resources_de.properties=ISO-8859-1
+encoding//etc/mapedit_resources.properties=ISO-8859-1
+encoding//etc/mapedit_resources_de.properties=ISO-8859-1
+encoding//etc/resources.properties=ISO-8859-1
+encoding//etc/resources_de.properties=ISO-8859-1
 encoding/<project>=ISO-8859-1

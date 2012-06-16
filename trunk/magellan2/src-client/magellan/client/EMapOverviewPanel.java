@@ -72,8 +72,6 @@ import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.event.TempUnitEvent;
 import magellan.client.event.TempUnitListener;
-import magellan.client.event.UnitOrdersEvent;
-import magellan.client.event.UnitOrdersListener;
 import magellan.client.preferences.RegionOverviewPreferences;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MenuProvider;
@@ -101,6 +99,7 @@ import magellan.library.Alliance;
 import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.Faction;
+import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.ID;
 import magellan.library.Named;
@@ -112,8 +111,9 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
+import magellan.library.event.UnitChangeEvent;
+import magellan.library.event.UnitChangeListener;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.relation.TransferRelation;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Units;
@@ -153,12 +153,12 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private Map<ID, TreeNode> buildingNodes = new Hashtable<ID, TreeNode>();
   private Map<ID, TreeNode> shipNodes = new Hashtable<ID, TreeNode>();
 
-  /**
-   * relation map, mapping unit's id to its relations; used to store the last known relations and
-   * update related units when relations change
-   */
-  private Map<ID, Set<TransferRelation>> lastUnitRelations =
-      new HashMap<ID, Set<TransferRelation>>();
+  // /**
+  // * relation map, mapping unit's id to its relations; used to store the last known relations and
+  // * update related units when relations change
+  // */
+  // private Map<ID, Set<TransferRelation>> lastUnitRelations =
+  // new HashMap<ID, Set<TransferRelation>>();
   private boolean ignoreTreeSelections = false;
 
   // region with previously selected item
@@ -205,6 +205,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private Set<TreeNode> collapseInfo = new HashSet<TreeNode>();
   private Set<TreeNode> expandInfo = new HashSet<TreeNode>();
   private Set<TreePath> selectionTransfer = new HashSet<TreePath>();
+
+  private UnitChangeListener unitChangeListener;
+
+  protected Object lastCause;
   private static final Comparator<Unique> idCmp = IDComparator.DEFAULT;
   private static final Comparator<Named> nameCmp = new NameComparator(EMapOverviewPanel.idCmp);
 
@@ -220,6 +224,16 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   public EMapOverviewPanel(EventDispatcher d, Properties p) {
     super(d, p);
+
+    unitChangeListener = new UnitChangeListener() {
+      public void unitChanged(UnitChangeEvent event) {
+        // if (lastCause != event.getCause()) {
+        lastCause = event.getCause();
+        update(event.getUnit());
+        // }
+      }
+    };
+
     loadExpandProperties();
     loadCollapseProperty();
 
@@ -326,8 +340,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
 
-    // register order change listener
-    d.addUnitOrdersListener(new UnitWrapperUpdater());
+    // (stm) we listen to UnitChangeEvents now
+    // // register order change listener
+    // d.addUnitOrdersListener(new UnitWrapperUpdater());
   }
 
   /**
@@ -380,6 +395,16 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     setDefaultAlliances();
   }
 
+  @Override
+  public void setGameData(GameData data) {
+    getGameData().removeUnitChangeListener(unitChangeListener);
+    super.setGameData(data);
+    data.addUnitChangeListener(unitChangeListener);
+  }
+
+  /**
+   * Rebuild the region tree from scratch.
+   */
   public void rebuildTree() {
     Unique oldActiveObject = activeObject;
 
@@ -395,8 +420,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     shipNodes.clear();
     rootNode.removeAllChildren();
 
-    // clear relation map
-    lastUnitRelations.clear();
+    // // clear relation map
+    // lastUnitRelations.clear();
 
     // clear other buffers
     selectedObjects.clear();
@@ -446,12 +471,12 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     treeBuilder.buildTree(rootNode, getGameData());
 
-    for (Unit u : getGameData().getUnits()) {
-      List<TransferRelation> relations = u.getRelations(TransferRelation.class);
-      if (relations != null && !relations.isEmpty()) {
-        lastUnitRelations.put(u.getID(), new HashSet<TransferRelation>(relations));
-      }
-    }
+    // for (Unit u : data.getUnits()) {
+    // List<TransferRelation> relations = u.getRelations(TransferRelation.class);
+    // if (relations != null && !relations.isEmpty()) {
+    // lastUnitRelations.put(u.getID(), new HashSet<TransferRelation>(relations));
+    // }
+    // }
 
     tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings,
         "EMapOverviewPanel.treeRootHandles", true));
@@ -709,14 +734,15 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
 
     if (!supressSelections) {
-      ArrayList<List<Object>> contexts = new ArrayList<List<Object>>(selectedObjects.size());
+      ArrayList<List<Object>> selectionContexts =
+          new ArrayList<List<Object>>(selectedObjects.size());
       if (tree != null && tree.getSelectionPaths() != null) {
         for (TreePath path : tree.getSelectionPaths()) {
-          contexts.add(translate(path));
+          selectionContexts.add(translate(path));
         }
       }
 
-      dispatcher.fire(SelectionEvent.create(this, contexts));
+      dispatcher.fire(SelectionEvent.create(this, selectionContexts));
     }
   }
 
@@ -877,6 +903,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * @see javax.swing.event.TreeExpansionListener#treeCollapsed(javax.swing.event.TreeExpansionEvent)
    */
   public void treeCollapsed(TreeExpansionEvent e) {
+    // nothing to do
   }
 
   /**
@@ -1959,114 +1986,114 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
   }
 
+  // /**
+  // * Updates UnitNodeWrappers on changes of orders
+  // */
+  // private class UnitWrapperUpdater implements UnitOrdersListener {
+  //
+  // Set<Unit> dirtyUnits = new HashSet<Unit>();
+  //
+  // /**
+  // * Invoked when the orders of a unit are modified.
+  // *
+  // * @see
+  // magellan.client.event.UnitOrdersListener#unitOrdersChanged(magellan.client.event.UnitOrdersEvent)
+  // */
+  // public void unitOrdersChanged(UnitOrdersEvent e) {
+  // synchronized (dirtyUnits) {
+  // if (dirtyUnits == null) {
+  // dirtyUnits = new HashSet<Unit>();
+  // }
+  // if (e.getUnit() != null) {
+  // // a changed order can change the unit's own node, all nodes that are related to the unit,
+  // // and
+  // // also all units that are related by two degrees;
+  // // FIXME order interpreter should do this for us!
+  // markDirty(e.getUnit(), 2, dirtyUnits);
+  // }
+  // if (!e.isChanging()) {
+  // int i = dirtyUnits.size();
+  // while (!dirtyUnits.isEmpty() && i-- >= 0) {
+  // Unit u = dirtyUnits.iterator().next();
+  // update(u);
+  // dirtyUnits.remove(u);
+  // }
+  // if (!dirtyUnits.isEmpty()) {
+  // log.error("dirty units remain!");
+  // }
+  // dirtyUnits.clear();
+  // }
+  // }
+  // }
+  //
+  // /**
+  // * Updates the nodes of this unit and all nodes that are related to this unit indirectly by no
+  // * more than <code>updateRelationPartersDistance</code>.
+  // *
+  // * @param u The updated unit
+  // * @param updateRelationPartnersDistance maximum distance to this unit of units that should be
+  // * updated as well
+  // */
+  // protected synchronized void markDirty(Unit u, int updateRelationPartnersDistance,
+  // Set<Unit> visited) {
+  // if (u != null && unitNodes.containsKey(u.getID())) {
+  // visited.add(u);
+  //
+  // if (updateRelationPartnersDistance > 0) {
+  // for (UnitRelation rel : u.getRelations()) {
+  // if (rel.origin != u) {
+  // markDirty(rel.origin, updateRelationPartnersDistance - 1, visited);
+  // }
+  // if (rel.source != rel.origin) {
+  // markDirty(rel.source, updateRelationPartnersDistance - 1, visited);
+  // }
+  // if (rel instanceof InterUnitRelation) {
+  // InterUnitRelation iuRel = (InterUnitRelation) rel;
+  // if (iuRel.target != u && iuRel.target != rel.source) {
+  // markDirty(iuRel.target, updateRelationPartnersDistance - 1, visited);
+  // }
+  // }
+  // }
+  // }
+  // }
+  // }
+  //
+  // }
+
   /**
-   * Updates UnitNodeWrappers on changes of orders
+   * Updates the nodes of this unit and all nodes that are related to this unit indirectly by no
+   * more than <code>updateRelationPartersDistance</code>.
+   * 
+   * @param u The updated unit
+   * @param updateRelationPartnersDistance maximum distance to this unit of units that should be
+   *          updated as well
    */
-  private class UnitWrapperUpdater implements UnitOrdersListener {
+  protected synchronized void update(Unit u) {
+    if (unitNodes.containsKey(u.getID())) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) unitNodes.get(u.getID());
+      UnitNodeWrapper unw = (UnitNodeWrapper) node.getUserObject();
+      unw.clearBuffer();
+      treeModel.nodeChanged(node);
 
-    /**
-     * Invoked when the orders of a unit are modified.
-     * 
-     * @see magellan.client.event.UnitOrdersListener#unitOrdersChanged(magellan.client.event.UnitOrdersEvent)
-     */
-    public void unitOrdersChanged(UnitOrdersEvent e) {
-      // a changed order can change the unit's own node, all nodes that are related to the unit, and
-      // also all units that are related by two degrees;
-      HashSet<Unit> visited = new HashSet<Unit>();
-      update(e.getUnit(), 2, visited);
-      visited.clear();
-    }
-
-    /**
-     * Updates the nodes of this unit and all nodes that are related to this unit indirectly by no
-     * more than <code>updateRelationPartersDistance</code>.
-     * 
-     * @param u The updated unit
-     * @param updateRelationPartnersDistance maximum distance to this unit of units that should be
-     *          updated as well
-     */
-    protected synchronized void update(Unit u, int updateRelationPartnersDistance, Set<Unit> visited) {
-      if (unitNodes.containsKey(u.getID())) {
-        visited.add(u);
-
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) unitNodes.get(u.getID());
-        UnitNodeWrapper unw = (UnitNodeWrapper) node.getUserObject();
-        unw.clearBuffer();
-        treeModel.nodeChanged(node);
-
-        // update building or ship nodes, which may have been modified, too
-        Ship ship = u.getShip();
-        if (ship != null && shipNodes.containsKey(ship.getID())) {
-          treeModel.nodeChanged(shipNodes.get(ship.getID()));
-        }
-        ship = u.getModifiedShip();
-        if (ship != null && shipNodes.containsKey(ship.getID())) {
-          treeModel.nodeChanged(shipNodes.get(ship.getID()));
-        }
-
-        UnitContainer container = u.getBuilding();
-        if (container != null && buildingNodes.containsKey(container.getID())) {
-          treeModel.nodeChanged(buildingNodes.get(container.getID()));
-        }
-        container = u.getModifiedBuilding();
-        if (container != null && buildingNodes.containsKey(container.getID())) {
-          treeModel.nodeChanged(buildingNodes.get(container.getID()));
-        }
-
-        // update related units
-        List<TransferRelation> newRelations = u.getRelations(TransferRelation.class);
-
-        // ensure that unitRelations has an entry for u
-        if (!lastUnitRelations.containsKey(u.getID())) {
-          if (newRelations.size() == 0)
-            return;
-          lastUnitRelations.put(u.getID(), new HashSet<TransferRelation>(4));
-        }
-
-        Collection<TransferRelation> lastRelations = lastUnitRelations.get(u.getID());
-        // Set<TransferRelation> intersection =
-        // new HashSet<TransferRelation>(Math.min(lastRelations.size(), newRelations.size()) * 2);
-
-        // if (!newRelations.equals(lastRelations)) {
-        if (updateRelationPartnersDistance > 0) {
-          // update related units from added relations
-          for (TransferRelation r : newRelations) {
-            // if (lastRelations.contains(r)) {
-            // intersection.add(r);
-            // } else
-            if (r.target != u && r.target != null) {
-              if (!visited.contains(r.target)) {
-                update((r).target, updateRelationPartnersDistance - 1, visited);
-              }
-            } else if (r.source != u) {
-              if (!visited.contains(r.source)) {
-                update((r).source, updateRelationPartnersDistance - 1, visited);
-              }
-            }
-          }
-          // update related units from removed relations
-          for (TransferRelation r : lastRelations) {
-            // if (!intersection.contains(r))
-            if (r.target != u && r.target != null) {
-              if (!visited.contains(r.target)) {
-                update((r).target, updateRelationPartnersDistance - 1, visited);
-              }
-            } else if (r.source != u) {
-              if (!visited.contains(r.source)) {
-                update((r).source, updateRelationPartnersDistance - 1, visited);
-              }
-            }
-          }
-        }
-        // update map entry, but make sure that instances lower down in the recursion tree are not
-        // influenced!
-        // lastRelations.clear();
-        // lastRelations.addAll(newRelations);
-        lastUnitRelations.put(u.getID(), new HashSet<TransferRelation>(newRelations));
-
-        // }
-
+      // update building or ship nodes, which may have been modified, too
+      Ship ship = u.getShip();
+      if (ship != null && shipNodes.containsKey(ship.getID())) {
+        treeModel.nodeChanged(shipNodes.get(ship.getID()));
       }
+      ship = u.getModifiedShip();
+      if (ship != null && shipNodes.containsKey(ship.getID())) {
+        treeModel.nodeChanged(shipNodes.get(ship.getID()));
+      }
+
+      UnitContainer container = u.getBuilding();
+      if (container != null && buildingNodes.containsKey(container.getID())) {
+        treeModel.nodeChanged(buildingNodes.get(container.getID()));
+      }
+      container = u.getModifiedBuilding();
+      if (container != null && buildingNodes.containsKey(container.getID())) {
+        treeModel.nodeChanged(buildingNodes.get(container.getID()));
+      }
+
       // tree.validate();
       // tree.repaint();
     }

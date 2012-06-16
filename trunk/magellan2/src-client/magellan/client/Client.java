@@ -211,7 +211,7 @@ import org.simplericity.macify.eawt.DefaultApplication;
  * @version $Revision: 388 $
  */
 public class Client extends JFrame implements ShortcutListener, PreferencesFactory,
-    ApplicationListener {
+ApplicationListener {
   private static final Logger log = Logger.getInstance(Client.class);
 
   /** The name of the magellan settings file. */
@@ -315,6 +315,24 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param settingsDir The directory where the settings are situated
    */
   protected Client(GameData gd, File binDir, File resourceDir, File settingsDir) {
+    this(gd, binDir, resourceDir, settingsDir, true);
+  }
+
+  /**
+   * Creates a new Client object taking its data from <tt>gd</tt>.
+   * <p>
+   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is
+   * usually located in the user's home directory, which is the Windows directory in a Microsoft
+   * Windows environment.
+   * </p>
+   * 
+   * @param gd
+   * @param binDir The directory where magellan files are situated
+   * @param resourceDir The directory where magellan configuration files are situated
+   * @param settingsDir The directory where the settings are situated
+   * @param ask show the ask password dialog, used for testing only
+   */
+  protected Client(GameData gd, File binDir, File resourceDir, File settingsDir, boolean ask) {
     Client.INSTANCE = this;
     Client.binDirectory = binDir;
     Client.resourceDirectory = resourceDir;
@@ -330,7 +348,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Client.log.info("Client.loadSettings: settings file " + Client.SETTINGS_FILENAME
           + " does not exist, using default values.");
       settings = initNewSettings();
-      initLocales(settings, true);
+      initLocales(settings, ask);
     } else {
       initLocales(settings, false);
 
@@ -466,17 +484,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ",Einkaufsgut");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET, "Einkaufsgut");
     settings
-        .setProperty(
-            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-                + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
-            "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
+    .setProperty(
+        PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+            + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
+        "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, "10");
     settings
-        .setProperty(
-            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-                + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
-            "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
+    .setProperty(
+        PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+            + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
+        "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
@@ -1448,7 +1466,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           Object msgArgs[] = { getData().getFileType().getFile().getAbsolutePath() };
           msg =
               (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text")))
-                  .format(msgArgs);
+              .format(msgArgs);
         } else {
           msg = Resources.get("client.msg.quit.confirmsavenofile.text");
         }
@@ -1459,12 +1477,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       switch (JOptionPane.showConfirmDialog(this, msg, Resources
           .get("client.msg.quit.confirmsave.title"), JOptionPane.YES_NO_CANCEL_OPTION)) {
-      case JOptionPane.YES_OPTION:
+          case JOptionPane.YES_OPTION:
 
-        return JOptionPane.YES_OPTION;
+            return JOptionPane.YES_OPTION;
 
-      case JOptionPane.CANCEL_OPTION:
-        return JOptionPane.CANCEL_OPTION;
+          case JOptionPane.CANCEL_OPTION:
+            return JOptionPane.CANCEL_OPTION;
       }
     }
 
@@ -2004,8 +2022,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                     String oTitle =
                         Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.title");
                     String[] oOptions =
-                        { Resources.get("button.yes"), Resources.get("button.no"),
-                            Resources.get("button.yestoall"), Resources.get("button.notoall") };
+                      { Resources.get("button.yes"), Resources.get("button.no"),
+                        Resources.get("button.yestoall"), Resources.get("button.notoall") };
                     boolean usePasswd = yesToAll;
                     if (!noToAll && !yesToAll) {
                       int answer =
@@ -2139,7 +2157,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           title2.append(" - ").append(
               data.getDate().toString(
                   showStatusOverride ? Date.TYPE_SHORT : Date.TYPE_PHRASE_AND_SEASON)).append(" (")
-              .append(data.getDate().getDate()).append(")");
+                  .append(data.getDate().getDate()).append(")");
         }
 
         if (longTitle) {
@@ -2176,9 +2194,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                       BigDecimal.ROUND_DOWN);
               title3.append(" (").append(units).append(" ").append(
                   Resources.get("client.title.unit")).append(", ").append(done).append(" ").append(
-                  Resources.get("client.title.done")).append(", ").append(
-                  Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
-                  .append(Resources.get("client.title.percent")).append(")");
+                      Resources.get("client.title.done")).append(", ").append(
+                          Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
+                          .append(Resources.get("client.title.percent")).append(")");
             }
           }
 
@@ -2188,7 +2206,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // this prevents that the title "flickers" when it changes too often
       if (!title1.toString().equals(oldTitle1)
           || ((data == null || data.getDate() == null) ? date != null : !data.getDate()
-              .equals(date)) || !title3.toString().equals(oldTitle3)) {
+          .equals(date)) || !title3.toString().equals(oldTitle3)) {
         date = data != null ? data.getDate() : null;
         oldTitle1 = title1.toString();
         oldTitle3 = title3.toString();
@@ -2648,7 +2666,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Simple class to look for events changing the data.
    */
   protected class ReportObserver implements GameDataListener, OrderConfirmListener,
-      TempUnitListener, UnitOrdersListener {
+  TempUnitListener, UnitOrdersListener {
     protected boolean stateChanged = false;
 
     protected long lastClear;

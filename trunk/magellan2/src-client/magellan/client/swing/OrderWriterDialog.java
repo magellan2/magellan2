@@ -649,7 +649,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     Object[] list =
         PropertiesHelper.getList(localSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix)
-            .toArray();
+        .toArray();
     cmbOutputFile = new JComboBox(list == null ? new Object[0] : list);
     cmbOutputFile.setEditable(true);
 
@@ -771,7 +771,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     });
 
     chkUseAuth =
-        createCheckBox("useauth", PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH, suffix, false);
+        createCheckBox("useauth", PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH, suffix, true);
     chkUseAuth.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         lblServerUsername.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled());
@@ -1131,7 +1131,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     if (type == FILE_PANEL) {
       List<String> files =
           PropertiesHelper
-              .getList(localSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix);
+          .getList(localSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix);
       while (cmbOutputFile.getItemCount() > 0) {
         cmbOutputFile.removeItemAt(0);
       }
@@ -1334,7 +1334,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    * Returns encrypted and base64-encoded password using super secret key.
    */
   private String encrypt(String plaintext) throws InvalidKeyException, BadPaddingException,
-      IllegalBlockSizeException {
+  IllegalBlockSizeException {
     cipher.init(Cipher.ENCRYPT_MODE, key);
     byte[] inputBytes = new byte[0];
     try {
@@ -1351,7 +1351,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   /** Returns decrypted text for given encrypted, base64-encoded ciphertext using super secret key. */
   private String decrypt(String ciphertext) throws InvalidKeyException, BadPaddingException,
-      IllegalBlockSizeException, InvalidAlgorithmParameterException, IOException {
+  IllegalBlockSizeException, InvalidAlgorithmParameterException, IOException {
     cipher.init(Cipher.DECRYPT_MODE, key);// , new IvParameterSpec(iv));
 
     byte[] raw = Base64.decodeBase64(ciphertext.getBytes());
@@ -1851,9 +1851,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         }
         JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
             .get("orderwriterdialog.msg.writtenunits.text.file"))).format(new Object[] {
-            parameters[0], parameters[1], "" + parameters[2] + "/" + parameters[3], outputFile }),
-            Resources.get("orderwriterdialog.msg.writtenunits.title"),
-            JOptionPane.INFORMATION_MESSAGE);
+                parameters[0], parameters[1], "" + parameters[2] + "/" + parameters[3], outputFile }),
+                Resources.get("orderwriterdialog.msg.writtenunits.title"),
+                JOptionPane.INFORMATION_MESSAGE);
 
         stream.close();
       }
@@ -1888,8 +1888,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       if (parameters != null) {
         JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
             .get("orderwriterdialog.msg.writtenunits.text.file"))).format(new Object[] {
-            parameters[0], parameters[1], parameters[2], outputFile }), Resources
-            .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
+                parameters[0], parameters[1], parameters[2], outputFile }), Resources
+                .get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
       }
 
       return parameters != null;

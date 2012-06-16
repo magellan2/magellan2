@@ -6,17 +6,19 @@ import magellan.library.GameData;
 import magellan.library.IntegerID;
 import magellan.library.impl.MagellanIslandImpl;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class IslandMergerTest {
+public class IslandMergerTest extends MagellanTestWithResources {
   private static final IntegerID SOME_ID = IntegerID.create(42);
   private static final String OLDER_NAME = "Eine Insel mit 2 Bergen";
   private static final String NEWER_NAME = "Eine Insel mit 1 Berg";
 
   private IslandMerger merger;
   private GameData olderGD, newerGD, resultGD;
+
 
   @Before
   public void setUp() throws Exception {

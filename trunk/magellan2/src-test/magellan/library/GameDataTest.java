@@ -4,10 +4,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import magellan.library.rules.GenericRules;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
 import org.junit.Test;
 
-public class GameDataTest {
+/**
+ * 
+ */
+public class GameDataTest extends MagellanTestWithResources {
 
   private static final int SOME_ROUND = 1, ANOTHER_ROUND = 42;
 

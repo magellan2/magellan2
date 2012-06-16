@@ -12,22 +12,20 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Properties;
 
 import magellan.client.Client;
 import magellan.client.ClientProvider;
-import magellan.client.MagellanContext;
-import magellan.client.event.EventDispatcher;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.MissingData;
 import magellan.library.Skill;
 import magellan.library.Unit;
-import magellan.library.utils.Resources;
+import magellan.library.utils.Locales;
 import magellan.library.utils.logging.Logger;
 import magellan.plugin.extendedcommands.ExtendedCommandsProvider;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -37,11 +35,8 @@ import org.junit.Test;
 /**
  * @author stm
  */
-public class E3CommandParserTest {
+public class E3CommandParserTest extends MagellanTestWithResources {
 
-  private static MagellanContext context;
-  // private static Properties completionSettings;
-  private static Properties settings;
   private static Client client;
   private static GameDataBuilder builder;
 
@@ -50,20 +45,21 @@ public class E3CommandParserTest {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
+    initResources();
+
     Logger.setLevel(Logger.WARN);
     Logger.getInstance(E3CommandParserTest.class).info(new File(".").getAbsolutePath());
-    settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
-    // PARSER_SETTINGS_FILE);
-    Resources.getInstance().initialize(new File("../Magellan2-current"), "");
-    context = new MagellanContext(null);
-    context.setProperties(settings);
-    context.setEventDispatcher(new EventDispatcher());
 
-    context.init();
     data = new MissingData();
-    client = ClientProvider.getClient(data);
+    client = ClientProvider.getClient(data, new File("."));
+    settings.setProperty("locales.orders", DE_LOCALE.getLanguage());
+    Locales.setGUILocale(DE_LOCALE);
+    Locales.setOrderLocale(DE_LOCALE);
+
     data = new GameDataBuilder().createSimplestGameData();
     client.setData(data);
+
+
     builder = new GameDataBuilder();
   }
 
@@ -1049,7 +1045,7 @@ public class E3CommandParserTest {
 
     unit.clearOrders();
     unit.addOrder("// $cript +1 ; TODO bug armbrustagabe?"); // actually, this ;-comment would be
-                                                             // cut away by the server
+    // cut away by the server
     parser.execute(unit.getFaction());
     assertError("; TODO bug armbrustagabe?", unit, 1);
   }

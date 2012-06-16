@@ -9,6 +9,8 @@ import magellan.client.event.EventDispatcher;
 
 public abstract class MagellanTestSetup extends TestSetup {
 
+  private MagellanContext context;
+
   public MagellanTestSetup() {
     super(new TestSuite());
   }
@@ -19,7 +21,7 @@ public abstract class MagellanTestSetup extends TestSetup {
 
   @Override
   protected void setUp() {
-    MagellanContext context = new MagellanContext(null);
+    context = new MagellanContext(null);
     context.setProperties(new Properties());
     context.setEventDispatcher(new EventDispatcher());
     context.init();
@@ -27,6 +29,7 @@ public abstract class MagellanTestSetup extends TestSetup {
 
   @Override
   protected void tearDown() {
+    context.getEventDispatcher().quit();
   }
 
   public void testNothing() {

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.utils;
 
 import static org.junit.Assert.assertFalse;
@@ -33,6 +33,7 @@ import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ import org.junit.Test;
  * @author ...
  * @version 1.0, Mar 1, 2011
  */
-public class LibraryUnitsTest {
+public class LibraryUnitsTest extends MagellanTestWithResources{
 
   private GameDataBuilder builder;
   private GameData gd01;

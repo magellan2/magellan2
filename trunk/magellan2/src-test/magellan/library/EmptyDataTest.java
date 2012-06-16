@@ -7,15 +7,19 @@ import java.util.Locale;
 
 import magellan.library.rules.GenericRules;
 import magellan.library.utils.Locales;
+import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class EmptyDataTest {
+public class EmptyDataTest extends MagellanTestWithResources {
   private static final Locale SOME_LOCALE = Locale.CANADA_FRENCH;
 
   private GameData sourceGameData;
 
+  /**
+   * @throws Exception
+   */
   @Before
   public void setUp() throws Exception {
     Locales.setOrderLocale(SOME_LOCALE);
@@ -23,6 +27,9 @@ public class EmptyDataTest {
     sourceGameData.setLocale(SOME_LOCALE);
   }
 
+  /**
+   * 
+   */
   @Test
   public void emptyDataGetsLocaleFromSourceGameData() {
     EmptyData target = new EmptyData(sourceGameData);

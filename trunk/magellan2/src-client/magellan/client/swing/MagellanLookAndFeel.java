@@ -143,7 +143,7 @@ public class MagellanLookAndFeel {
           if (!plafFile.exists()) {
             // OK give up here
             MagellanLookAndFeel.log
-                .error("MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini");
+            .error("MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini");
             return null;
           }
         }
@@ -342,13 +342,13 @@ public class MagellanLookAndFeel {
 
     } catch (IllegalAccessException e) {
       MagellanLookAndFeel.log
-          .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to access instantiation method.");
+      .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to access instantiation method.");
     } catch (NoSuchMethodException e) {
       MagellanLookAndFeel.log
-          .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to find method setSkin.");
+      .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to find method setSkin.");
     } catch (InvocationTargetException e) {
       MagellanLookAndFeel.log
-          .error("MagellanLookAndfeel.prepareSkinLFTheme(): InvocationTargetException.");
+      .error("MagellanLookAndfeel.prepareSkinLFTheme(): InvocationTargetException.");
     }
 
     return false;
@@ -365,7 +365,7 @@ public class MagellanLookAndFeel {
     LookAndFeel olaf = MagellanLookAndFeel.getLookAndFeels().get(laf);
 
     if (olaf == null) {
-      MagellanLookAndFeel.log.error("Could not switch look and feel to " + laf + ")" + olaf);
+      MagellanLookAndFeel.log.error("Could not switch look and feel to " + laf + " (" + olaf+")");
 
       return false;
     }
@@ -373,7 +373,7 @@ public class MagellanLookAndFeel {
     try {
       UIManager.setLookAndFeel(olaf);
     } catch (Exception e) {
-      MagellanLookAndFeel.log.info("Could not switch look and feel to " + laf + "(" + olaf + ")");
+      MagellanLookAndFeel.log.info("Could not switch look and feel to " + laf + " (" + olaf + ")");
 
       if (MagellanLookAndFeel.log.isDebugEnabled()) {
         MagellanLookAndFeel.log.debug(

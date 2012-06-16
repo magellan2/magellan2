@@ -58,6 +58,10 @@ public class EventDispatcher implements EventDispatcherInterface {
 
   private int magnitude = 100;
 
+  private Thread dispatchThread;
+
+  private EManager eManager;
+
   private static final int infoMilliSeks = 1000;
 
   /**
@@ -75,13 +79,13 @@ public class EventDispatcher implements EventDispatcherInterface {
 
     queue = new EQueue();
 
-    Thread t = new Thread(new EManager(), "EventDispatcher");
+    dispatchThread = new Thread(eManager = new EManager(), "EventDispatcher");
 
     // t.setPriority(Thread.MIN_PRIORITY);
     // FIXME The constructor starts a thread. This is likely to be wrong if the class is ever
     // extended/subclassed, since the thread will be started before the subclass constructor is
     // started.
-    t.start();
+    dispatchThread.start();
   }
 
   /**
@@ -282,8 +286,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeGameDataListener((GameDataListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-              .debug("EventDispatcher.removeAllListeners: stale GameDataListener entry for "
-                  + o.getClass());
+          .debug("EventDispatcher.removeAllListeners: stale GameDataListener entry for "
+              + o.getClass());
         }
 
         result = true;
@@ -294,8 +298,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeTempUnitListener((TempUnitListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-              .debug("EventDispatcher.removeAllListeners: stale TempUnitListener entry for "
-                  + o.getClass());
+          .debug("EventDispatcher.removeAllListeners: stale TempUnitListener entry for "
+              + o.getClass());
         }
 
         result = true;
@@ -306,8 +310,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeUnitOrdersListener((UnitOrdersListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-              .debug("EventDispatcher.removeAllListeners: stale UnitOrdersListener entry for "
-                  + o.getClass());
+          .debug("EventDispatcher.removeAllListeners: stale UnitOrdersListener entry for "
+              + o.getClass());
         }
 
         result = true;
@@ -318,8 +322,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeSelectionListener((SelectionListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-              .debug("EventDispatcher.removeAllListeners: stale SelectionListener entry for "
-                  + o.getClass());
+          .debug("EventDispatcher.removeAllListeners: stale SelectionListener entry for "
+              + o.getClass());
         }
 
         result = true;
@@ -330,8 +334,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeOrderConfirmListener((OrderConfirmListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-              .debug("EventDispatcher.removeAllListeners: stale OrderConfirmListener entry for "
-                  + o.getClass());
+          .debug("EventDispatcher.removeAllListeners: stale OrderConfirmListener entry for "
+              + o.getClass());
         }
 
         result = true;
@@ -414,11 +418,16 @@ public class EventDispatcher implements EventDispatcherInterface {
 
   private class EManager implements Runnable {
 
+
+    private Thread thread;
+    private boolean quit;
+
     /**
      * @see java.lang.Runnable#run()
      */
     public void run() {
-      while (true) {
+      thread = Thread.currentThread();
+      while (!quit) {
         try {
           EventObject o = queue.waitFor();
 
@@ -463,6 +472,11 @@ public class EventDispatcher implements EventDispatcherInterface {
         }
       }
     }
+
+    public void quit() {
+      quit = true;
+      thread.interrupt();
+    }
   }
 
   private class EQueue {
@@ -477,6 +491,8 @@ public class EventDispatcher implements EventDispatcherInterface {
         try {
           this.wait();
         } catch (InterruptedException ie) {
+          Thread.currentThread().interrupt();
+          return null;
         }
       }
 
@@ -736,5 +752,9 @@ public class EventDispatcher implements EventDispatcherInterface {
       notifierIsAlive = false;
       lastPriority = Integer.MAX_VALUE;
     }
+  }
+
+  public void quit() {
+    eManager.quit();
   }
 }

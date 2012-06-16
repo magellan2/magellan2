@@ -37,6 +37,7 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.logging.Logger;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
@@ -58,15 +59,25 @@ public abstract class MagellanTestWithResources {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
+    Logger.setLevel(Logger.WARN);
     initResources();
+  }
+
+  /**
+   * 
+   */
+  @AfterClass
+  public static void tearDownAfterClass() throws Exception{
+    context.getEventDispatcher().quit();
   }
 
   protected static void initResources() {
     Locales.setOrderLocale(DE_LOCALE);
     settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
     // PARSER_SETTINGS_FILE);
+    settings.setProperty("locales.orders", "de");
     Resources.getInstance().initialize(new File("."), "");
-    System.out.println(new File(".").getAbsolutePath());
+    // System.out.println(new File(".").getAbsolutePath());
     context = new MagellanContext(null);
     context.setProperties(settings);
     context.setEventDispatcher(new EventDispatcher());

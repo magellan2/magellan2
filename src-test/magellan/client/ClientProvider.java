@@ -21,15 +21,15 @@ public class ClientProvider {
    * @param data
    * @return a new Client object
    */
-  public static Client getClient(GameData data) {
+  public static Client getClient(GameData data, File dir) {
     Parameters parameters = new Client.Parameters();
     parameters.binDir = MagellanFinder.findMagellanDirectory();
-    parameters.resourceDir = new File(parameters.binDir.getParentFile(), "sandbox");
+    parameters.resourceDir = dir;
     parameters.settingsDir = parameters.resourceDir;
     parameters.profile = "de";
     ProfileManager.init(parameters);
     parameters.settingsDir = ProfileManager.getProfileDirectory();
     Client.startWindow = new StartWindow(MagellanImages.ABOUT_MAGELLAN, 5, new File("."));
-    return new Client(data, parameters.binDir, parameters.resourceDir, parameters.settingsDir);
+    return new Client(data, parameters.binDir, parameters.resourceDir, parameters.settingsDir, false);
   }
 }

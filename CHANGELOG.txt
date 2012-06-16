@@ -1,6 +1,12 @@
+2012-06-16 / Build 508 - stm (stm_@users.sourceforge.net)
+    * improved exception handling in Client on load report and quit
+    * encapsulated InternatioalizedDataPanel.data
+    * OrderSyntaxInspector: "two long orders" reported wrong line
+    * added testing target to build.xml 
+    
 2012-06-06 / Build 505 - stm (stm_@users.sourceforge.net)
-    * fixed some mouselisteners for more compatible popup menu behavior
-    * added STOP option to RoutePlanners, changed context route planner to be compatible with routeplanners
+    * fixed some mouse listeners for more compatible popup menu behavior
+    * added STOP option to RoutePlanners, changed context route planner to be compatible with RoutePlanners
     * added person transfer option to TempUnitDialog 
 
 2012-06-02 / Build 503 - stm (stm_@users.sourceforge.net)

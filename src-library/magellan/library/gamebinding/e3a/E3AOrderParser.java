@@ -7,6 +7,9 @@
 
 package magellan.library.gamebinding.e3a;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -44,7 +47,8 @@ public class E3AOrderParser extends EresseaOrderParser {
   protected void initCommands() {
     super.initCommands();
 
-    // TODO
+    removeCommand(EresseaConstants.O_HELP);
+
     removeCommand(EresseaConstants.O_RESEARCH);
     // removeCommand(EresseaConstants.O_FACTION);
     // removeCommand(EresseaConstants.O_REGION);
@@ -70,8 +74,8 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     // removeCommand(EresseaConstants.O_SIEGE);
 
-    // TODO?
     addCommand(E3AConstants.O_ALLIANCE, new AllianzReader());
+    addCommand(EresseaConstants.O_HELP, new HelfeReader());
     addCommand(E3AConstants.O_PAY, new BezahleReader());
     // addCommand(E3AConstants.O_GIVE, new GibReader());
     addCommand(EresseaConstants.O_MAKE, new E3MacheReader());
@@ -161,6 +165,30 @@ public class E3AOrderParser extends EresseaOrderParser {
     }
   }
 
+  protected class HelfeReader extends EresseaOrderParser.HelfeReader {
+    private Collection<String> categories;
+
+    /**
+     * Returns all categories except KÄMPFE, which is implicit in E3 and cannot be set with the
+     * HELFE order, and PARTEITARNUNG.
+     * 
+     * @see magellan.library.gamebinding.EresseaOrderParser.HelfeReader#getCategories()
+     */
+    @Override
+    protected Collection<String> getCategories() {
+      if (categories == null) {
+        categories =
+            Arrays.asList(EresseaConstants.O_ALL,
+                // EresseaConstants.O_HELP_COMBAT,
+                EresseaConstants.O_HELP_GIVE, EresseaConstants.O_HELP_GUARD,
+                EresseaConstants.O_HELP_SILVER
+            // , EresseaConstants.O_HELP_FACTIONSTEALTH
+                );
+      }
+      return categories;
+    }
+  }
+
   // ************* BENENNE
   protected class BenenneReader extends EresseaOrderParser.BenenneReader {
 
@@ -218,6 +246,18 @@ public class E3AOrderParser extends EresseaOrderParser {
 
   // ************* BEZAHLE
   protected class BezahleReader extends OrderHandler {
+
+    @Override
+    protected void init(OrderToken token, String text) {
+      order = new MaintainOrder(getTokens(), text);
+    }
+
+    @Override
+    public MaintainOrder getOrder() {
+      MaintainOrder corder = (MaintainOrder) super.getOrder();
+      return corder;
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -228,6 +268,7 @@ public class E3AOrderParser extends EresseaOrderParser {
       if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
         retVal = readBewacheNicht(t);
       } else {
+        getOrder().setNot(false);
         retVal = false;
 
       }
@@ -240,6 +281,8 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     protected boolean readBewacheNicht(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
+
+      getOrder().setNot(true);
 
       return checkNextFinal();
     }

@@ -75,11 +75,11 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.JECheck;
+import magellan.library.utils.JECheck.ECheckMessage;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.OrderWriter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
-import magellan.library.utils.JECheck.ECheckMessage;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -90,6 +90,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   private static final Logger log = Logger.getInstance(ECheckPanel.class);
 
   /** @deprecated Use {@link MagellanDesktop#ECHECK_IDENTIFIER} instead */
+  @Deprecated
   public static final String IDENTIFIER = MagellanDesktop.ECHECK_IDENTIFIER;
 
   // private JTextField txtECheckEXE = null;

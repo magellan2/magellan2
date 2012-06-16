@@ -37,23 +37,19 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import magellan.client.completion.AutoCompletion;
-import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
-import magellan.library.Ship;
 import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
 import magellan.library.gamebinding.EresseaOrderParser.OrderHandler;
 import magellan.library.gamebinding.EresseaOrderParser.TokenBucket;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
-import magellan.library.utils.SelfCleaningProperties;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -64,22 +60,13 @@ import org.junit.Test;
  */
 public class EresseaOrderParserTest extends MagellanTestWithResources {
 
-  private static final boolean DO_KNOWN_FAILURES = false;
-  private static SelfCleaningProperties completionSettings;
-  private GameData data;
+  private static boolean DO_KNOWN_FAILURES = System.getenv("MAGELLAN2_TESTING") == null ? false
+      : System.getenv("MAGELLAN2_TESTING").equalsIgnoreCase("INTERNAL");
+  protected GameData data;
   private EresseaOrderParser parser;
-  private EresseaOrderParser parserCompleter;
-  private AutoCompletion completion;
+  protected AutoCompletion completion;
   private EresseaOrderCompleter completer;
-  private GameDataBuilder builder;
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    MagellanTestWithResources.initResources();
-  }
+  protected GameDataBuilder builder;
 
   /**
    * @throws java.lang.Exception
@@ -91,14 +78,13 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
 
     Region region = data.getRegions().iterator().next();
     Faction faction = data.getFactions().iterator().next();
-    Building castle = builder.addBuilding(data, region, "burg", "Burg", "große Burg", 200);
-    Ship ship = builder.addShip(data, region, "ship", "Langboot", "ein Langboot", 50);
+    builder.addBuilding(data, region, "burg", "Burg", "große Burg", 200);
+    builder.addShip(data, region, "ship", "Langboot", "ein Langboot", 50);
     builder.addUnit(data, "zwei", "Zweite", faction, region);
 
-    parser = new EresseaOrderParser(data);
+    setParser(new EresseaOrderParser(data));
     completion = new AutoCompletion(context);
-    completer = new EresseaOrderCompleter(data, completion);
-    parserCompleter = new EresseaOrderParser(data, completer);
+    setCompleter(new EresseaOrderCompleter(data, completion));
   }
 
   /**
@@ -108,9 +94,9 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testEresseaOrderParserGameDataEresseaOrderCompleter() {
-    EresseaOrderParser localParser = new EresseaOrderParser(data, completer);
+    EresseaOrderParser localParser = new EresseaOrderParser(data, getCompleter());
     assertTrue(localParser.getData() == data);
-    assertTrue(localParser.getCompleter() == completer);
+    assertTrue(localParser.getCompleter() == getCompleter());
     assertSame(61, localParser.getCommands().size());
     assertSame(61, localParser.getHandlers().size());
   }
@@ -120,11 +106,11 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testInitCommands() {
-    assertSame(61, parser.getCommands().size());
-    assertSame(61, parser.getHandlers().size());
-    assertTrue(parser.getCommands().contains("WORK"));
-    assertTrue(parser.getCommands().contains("DESTROY"));
-    assertTrue(parser.getCommands().contains("SABOTAGE"));
+    assertSame(61, getParser().getCommands().size());
+    assertSame(61, getParser().getHandlers().size());
+    assertTrue(getParser().getCommands().contains("WORK"));
+    assertTrue(getParser().getCommands().contains("DESTROY"));
+    assertTrue(getParser().getCommands().contains("SABOTAGE"));
   }
 
   /**
@@ -134,21 +120,21 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testAddCommand() {
-    OrderHandler fooHandler = parser.new OrderHandler() {
+    OrderHandler fooHandler = getParser().new OrderHandler() {
       @Override
       protected boolean readIt(OrderToken token) {
         return false;
       }
     };
-    assertFalse(parser.getCommands().contains("foo"));
-    assertFalse(parser.getHandlers().contains(fooHandler));
-    assertTrue(parser.getHandlers(new OrderToken("foo")).size() == 0);
-    parser.addCommand("foo", fooHandler);
-    assertTrue(parser.getCommands().contains("foo"));
-    assertTrue(parser.getHandlers().contains(fooHandler));
+    assertFalse(getParser().getCommands().contains("foo"));
+    assertFalse(getParser().getHandlers().contains(fooHandler));
+    assertTrue(getParser().getHandlers(new OrderToken("foo")).size() == 0);
+    getParser().addCommand("foo", fooHandler);
+    assertTrue(getParser().getCommands().contains("foo"));
+    assertTrue(getParser().getHandlers().contains(fooHandler));
 
-    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).contains(fooHandler));
-    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).size() == 1);
+    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).contains(fooHandler));
+    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).size() == 1);
   }
 
   /**
@@ -157,22 +143,22 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testRemoveCommand() {
-    OrderHandler fooHandler = parser.new OrderHandler() {
+    OrderHandler fooHandler = getParser().new OrderHandler() {
       @Override
       protected boolean readIt(OrderToken token) {
         return false;
       }
     };
-    parser.addCommand("foo", fooHandler);
-    assertTrue(parser.getCommands().contains("foo"));
-    assertTrue(parser.getHandlers().contains(fooHandler));
+    getParser().addCommand("foo", fooHandler);
+    assertTrue(getParser().getCommands().contains("foo"));
+    assertTrue(getParser().getHandlers().contains(fooHandler));
 
-    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).contains(fooHandler));
-    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).size() == 1);
-    parser.removeCommand("foo");
-    assertFalse(parser.getCommands().contains("foo"));
-    assertFalse(parser.getHandlers().contains(fooHandler));
-    assertTrue(parser.getHandlers(new OrderToken("orders.foo")).size() == 0);
+    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).contains(fooHandler));
+    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).size() == 1);
+    getParser().removeCommand("foo");
+    assertFalse(getParser().getCommands().contains("foo"));
+    assertFalse(getParser().getHandlers().contains(fooHandler));
+    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).size() == 0);
   }
 
   /**
@@ -180,27 +166,28 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetNextToken() {
-    assertTrue(parser.getLastToken() == null);
-    assertFalse(parser.hasNextToken());
-    assertEquals(parser.getTokenIndex(), 0);
+    assertTrue(getParser().getLastToken() == null);
+    assertFalse(getParser().hasNextToken());
+    assertEquals(getParser().getTokenIndex(), 0);
 
-    parser.read(new StringReader("123 abc"));
+    getParser().read(new StringReader("123 abc"));
 
-    assertTrue(parser.hasNextToken());
-    assertTrue(equals(parser.getLastToken(), new OrderToken("123", 0, 3, OrderToken.TT_UNDEF, true)));
-    assertTrue(parser.hasNextToken());
-    assertEquals(parser.getTokenIndex(), 1);
+    assertTrue(getParser().hasNextToken());
+    assertTrue(equals(getParser().getLastToken(), new OrderToken("123", 0, 3, OrderToken.TT_UNDEF,
+        true)));
+    assertTrue(getParser().hasNextToken());
+    assertEquals(getParser().getTokenIndex(), 1);
 
-    OrderToken token = parser.getNextToken();
+    OrderToken token = getParser().getNextToken();
 
     assertTrue(token.getText().equals("abc"));
-    assertTrue(parser.hasNextToken());
-    assertEquals(parser.getLastToken(), token);
-    assertEquals(parser.getTokenIndex(), 2);
+    assertTrue(getParser().hasNextToken());
+    assertEquals(getParser().getLastToken(), token);
+    assertEquals(getParser().getTokenIndex(), 2);
 
-    assertTrue(equals(parser.getNextToken(), new OrderToken(OrderToken.TT_EOC)));
-    assertFalse(parser.hasNextToken());
-    assertEquals(parser.getTokenIndex(), 3);
+    assertTrue(equals(getParser().getNextToken(), new OrderToken(OrderToken.TT_EOC)));
+    assertFalse(getParser().hasNextToken());
+    assertEquals(getParser().getTokenIndex(), 3);
   }
 
   /**
@@ -208,7 +195,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test(expected = NullPointerException.class)
   public void testGetNextTokenNull() {
-    assertTrue(parser.getNextToken() != null);
+    assertTrue(getParser().getNextToken() != null);
   }
 
   /**
@@ -232,12 +219,12 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   // fail("Not yet implemented");
   // }
 
-  private void checkOrder(String string) {
+  protected void checkOrder(String string) {
     checkOrder(string, true);
   }
 
-  private void checkOrder(String string, boolean result) {
-    boolean retVal = parser.read(new StringReader(string));
+  protected void checkOrder(String string, boolean result) {
+    boolean retVal = getParser().read(new StringReader(string));
     assertEquals("checking " + string, result, retVal);
   }
 
@@ -420,8 +407,9 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
 
     // FIXME: these ambiguous commands shouldn't be accepted (maybe?)
     if (DO_KNOWN_FAILURES) {
-      for (String thing : new String[] { "E", "S" }) {
-        checkOrder("BENENNEN " + thing + " \"Foo\"", false); // is it SCHIFF or Sägewerk or Steinbruch??
+      for (String thing : new String[] { "S", "E" }) {
+        checkOrder("BENENNEN " + thing + " \"Foo\"", false); // is it SCHIFF or Sägewerk or
+                                                             // Steinbruch??
         checkOrder("BENENNE " + thing + " \"Foo\"; comment", false);
       }
     }
@@ -600,9 +588,17 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.GibReader}.
    */
   @Test
-  public void testGibReader() {
+  public void testSupplyReader() {
+    // there is an undocumented supply order in Eressea
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SUPPLY) + " 123 "
         + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.GibReader}.
+   */
+  @Test
+  public void testGibReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GIVE) + " 123 "
         + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
     checkOrder("GIB KRÄUTER", false);
@@ -1233,61 +1229,66 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetHandlers() {
-    List<OrderHandler> list = parser.getHandlers(new OrderToken("a"));
+    List<OrderHandler> list = getParser().getHandlers(new OrderToken("a"));
     assertTrue(list != null);
     if (list == null)
       return;
     assertTrue(list.size() == 2);
     assertTrue(list.get(0).getClass().equals(ArbeiteReader.class));
     assertTrue(list.get(1).getClass().equals(AttackReader.class));
-    list = parser.getHandlers(new OrderToken("arbei"));
+    list = getParser().getHandlers(new OrderToken("arbei"));
     assertTrue(list != null);
     if (list == null)
       return;
     assertTrue(list.size() == 1);
-    list = parser.getHandlers(new OrderToken("aga"));
+    list = getParser().getHandlers(new OrderToken("aga"));
     assertTrue(list != null);
     if (list == null)
       return;
     assertTrue(list.size() == 0);
   }
 
+  /**
+   * Null token should be matched by no handler
+   */
   @Test(expected = NullPointerException.class)
   public void testGetHandlersNull() {
-    parser.getHandlers(null);
+    getParser().getHandlers(null);
   }
 
   /**
    * Test method for {@link magellan.library.gamebinding.EresseaOrderParser#readDescription()}.
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testReadDescription() {
-    parser.read(new StringReader("a \"abc\""));
-    assertNotNull(parser.readDescription());
-    parser.read(new StringReader("\"abc\""));
-    assertEquals(null, parser.readDescription());
-    parser.read(new StringReader("a \"\""));
-    assertEquals("", parser.readDescription());
-    parser.read(new StringReader("a \"\" a"));
-    assertEquals(null, parser.readDescription());
+    getParser().read(new StringReader("a \"abc\""));
+    assertNotNull(getParser().readDescription());
+    getParser().read(new StringReader("\"abc\""));
+    assertEquals(null, getParser().readDescription());
+    getParser().read(new StringReader("a \"\""));
+    assertEquals("", getParser().readDescription());
+    getParser().read(new StringReader("a \"\" a"));
+    assertEquals(null, getParser().readDescription());
   }
 
   /**
    * Test method for
    * {@link magellan.library.gamebinding.EresseaOrderParser#readDescription(boolean)}.
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testReadDescriptionBoolean() {
-    parser.read(new StringReader("a \"abc\""));
-    assertNotNull(parser.readDescription(true));
-    parser.read(new StringReader("\"abc\""));
-    assertEquals(null, parser.readDescription(true));
-    parser.read(new StringReader("a \"\""));
-    assertNotNull(parser.readDescription(true));
-    parser.read(new StringReader("a \"\""));
-    assertEquals(null, parser.readDescription(false));
-    parser.read(new StringReader("a \"\" a"));
-    assertEquals(null, parser.readDescription(true));
+    getParser().read(new StringReader("a \"abc\""));
+    assertNotNull(getParser().readDescription(true));
+    getParser().read(new StringReader("\"abc\""));
+    assertEquals(null, getParser().readDescription(true));
+    getParser().read(new StringReader("a \"\""));
+    assertNotNull(getParser().readDescription(true));
+    getParser().read(new StringReader("a \"\""));
+    assertEquals(null, getParser().readDescription(false));
+    getParser().read(new StringReader("a \"\" a"));
+    assertEquals(null, getParser().readDescription(true));
   }
 
   /**
@@ -1305,50 +1306,51 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * {@link magellan.library.gamebinding.EresseaOrderParser#readDescription(magellan.library.utils.OrderToken, boolean)}
    * .
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testReadDescriptionOrderTokenBoolean() {
-    parser.read(new StringReader("abc"));
-    OrderToken token = parser.getLastToken();
-    assertEquals(null, parser.readDescription(token, true));
-    parser.read(new StringReader("abc"));
-    token = parser.getLastToken();
-    assertEquals(null, parser.readDescription(token, false));
-    parser.read(new StringReader("\"abc\" \"abc\""));
-    token = parser.getLastToken();
-    assertEquals(null, parser.readDescription(token, false));
-    parser.read(new StringReader(""));
-    token = parser.getLastToken();
-    assertEquals(null, parser.readDescription(token, true));
-    parser.read(new StringReader("abc ; abc"));
-    token = parser.getLastToken();
-    assertEquals(null, parser.readDescription(token, true));
-    parser.read(new StringReader("abc ; abc"));
-    token = parser.getLastToken();
-    assertEquals(null, parser.readDescription(token, false));
-    parser.read(new StringReader("\"abc\""));
-    token = parser.getLastToken();
-    assertNotNull(parser.readDescription(token, true));
-    parser.read(new StringReader("\"abc\""));
-    token = parser.getLastToken();
-    assertNotNull(parser.readDescription(token, false));
-    parser.read(new StringReader("\"abc\"; 123"));
-    token = parser.getLastToken();
-    assertNotNull(parser.readDescription(token, true));
-    parser.read(new StringReader("\"abc\"; 123"));
-    token = parser.getLastToken();
-    assertNotNull(parser.readDescription(token, false));
-    parser.read(new StringReader("\"\""));
-    token = parser.getLastToken();
-    assertNotNull(parser.readDescription(token, true));
-    parser.read(new StringReader("\"\""));
-    token = parser.getLastToken();
-    assertEquals(null, parser.readDescription(token, false));
-    parser.read(new StringReader("\"\";abc"));
-    token = parser.getLastToken();
-    assertNotNull(parser.readDescription(token, true));
-    parser.read(new StringReader("\"\";abc"));
-    token = parser.getLastToken();
-    assertEquals(null, parser.readDescription(token, false));
+    getParser().read(new StringReader("abc"));
+    OrderToken token = getParser().getLastToken();
+    assertEquals(null, getParser().readDescription(token, true));
+    getParser().read(new StringReader("abc"));
+    token = getParser().getLastToken();
+    assertEquals(null, getParser().readDescription(token, false));
+    getParser().read(new StringReader("\"abc\" \"abc\""));
+    token = getParser().getLastToken();
+    assertEquals(null, getParser().readDescription(token, false));
+    getParser().read(new StringReader(""));
+    token = getParser().getLastToken();
+    assertEquals(null, getParser().readDescription(token, true));
+    getParser().read(new StringReader("abc ; abc"));
+    token = getParser().getLastToken();
+    assertEquals(null, getParser().readDescription(token, true));
+    getParser().read(new StringReader("abc ; abc"));
+    token = getParser().getLastToken();
+    assertEquals(null, getParser().readDescription(token, false));
+    getParser().read(new StringReader("\"abc\""));
+    token = getParser().getLastToken();
+    assertNotNull(getParser().readDescription(token, true));
+    getParser().read(new StringReader("\"abc\""));
+    token = getParser().getLastToken();
+    assertNotNull(getParser().readDescription(token, false));
+    getParser().read(new StringReader("\"abc\"; 123"));
+    token = getParser().getLastToken();
+    assertNotNull(getParser().readDescription(token, true));
+    getParser().read(new StringReader("\"abc\"; 123"));
+    token = getParser().getLastToken();
+    assertNotNull(getParser().readDescription(token, false));
+    getParser().read(new StringReader("\"\""));
+    token = getParser().getLastToken();
+    assertNotNull(getParser().readDescription(token, true));
+    getParser().read(new StringReader("\"\""));
+    token = getParser().getLastToken();
+    assertEquals(null, getParser().readDescription(token, false));
+    getParser().read(new StringReader("\"\";abc"));
+    token = getParser().getLastToken();
+    assertNotNull(getParser().readDescription(token, true));
+    getParser().read(new StringReader("\"\";abc"));
+    token = getParser().getLastToken();
+    assertEquals(null, getParser().readDescription(token, false));
   }
 
   /**
@@ -1356,19 +1358,20 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * {@link magellan.library.gamebinding.EresseaOrderParser#readFinalKeyword(magellan.library.utils.OrderToken)}
    * .
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testReadFinalKeyword() {
-    parser.read(new StringReader("abc"));
-    OrderToken token = parser.getLastToken();
-    assertTrue(parser.readFinalKeyword(token));
+    getParser().read(new StringReader("abc"));
+    OrderToken token = getParser().getLastToken();
+    assertTrue(getParser().readFinalKeyword(token));
     assertTrue(token.ttype == OrderToken.TT_KEYWORD);
-    parser.read(new StringReader("abc abc"));
-    token = parser.getLastToken();
-    assertFalse(parser.readFinalKeyword(token));
+    getParser().read(new StringReader("abc abc"));
+    token = getParser().getLastToken();
+    assertFalse(getParser().readFinalKeyword(token));
     assertTrue(token.ttype == OrderToken.TT_KEYWORD);
-    parser.read(new StringReader(""));
-    token = parser.getLastToken();
-    assertFalse(parser.readFinalKeyword(token));
+    getParser().read(new StringReader(""));
+    token = getParser().getLastToken();
+    assertFalse(getParser().readFinalKeyword(token));
     assertTrue(token.ttype == OrderToken.TT_KEYWORD);
   }
 
@@ -1377,30 +1380,31 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * {@link magellan.library.gamebinding.EresseaOrderParser#readFinalString(magellan.library.utils.OrderToken)}
    * .
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testReadFinalString() {
-    parser.read(new StringReader("abc"));
-    OrderToken token = parser.getLastToken();
-    assertTrue(parser.readFinalString(token));
-    parser.read(new StringReader("abc ;123"));
-    token = parser.getLastToken();
-    assertTrue(parser.readFinalString(token));
-    parser.read(new StringReader("abc abc"));
-    token = parser.getLastToken();
-    assertFalse(parser.readFinalString(token));
-    parser.read(new StringReader("\"abc abc\""));
-    token = parser.getLastToken();
-    assertTrue(parser.readFinalString(token));
-    parser.read(new StringReader("\"abc abc"));
-    token = parser.getLastToken();
-    assertFalse(parser.readFinalString(token));
-    parser.read(new StringReader(""));
-    token = parser.getLastToken();
-    assertFalse(parser.readFinalString(token));
-    parser.read(new StringReader("1234#"));
-    token = parser.getLastToken();
+    getParser().read(new StringReader("abc"));
+    OrderToken token = getParser().getLastToken();
+    assertTrue(getParser().readFinalString(token));
+    getParser().read(new StringReader("abc ;123"));
+    token = getParser().getLastToken();
+    assertTrue(getParser().readFinalString(token));
+    getParser().read(new StringReader("abc abc"));
+    token = getParser().getLastToken();
+    assertFalse(getParser().readFinalString(token));
+    getParser().read(new StringReader("\"abc abc\""));
+    token = getParser().getLastToken();
+    assertTrue(getParser().readFinalString(token));
+    getParser().read(new StringReader("\"abc abc"));
+    token = getParser().getLastToken();
+    assertFalse(getParser().readFinalString(token));
+    getParser().read(new StringReader(""));
+    token = getParser().getLastToken();
+    assertFalse(getParser().readFinalString(token));
+    getParser().read(new StringReader("1234#"));
+    token = getParser().getLastToken();
     try {
-      parser.readFinalString(token);
+      getParser().readFinalString(token);
       assertFalse(true);
     } catch (IllegalArgumentException e) {
       // should throw exception!
@@ -1412,22 +1416,23 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * {@link magellan.library.gamebinding.EresseaOrderParser#readFinalID(magellan.library.utils.OrderToken)}
    * .
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testReadFinalID() {
-    parser.read(new StringReader("abc"));
-    OrderToken token = parser.getLastToken();
-    assertTrue(parser.readFinalID(token));
+    getParser().read(new StringReader("abc"));
+    OrderToken token = getParser().getLastToken();
+    assertTrue(getParser().readFinalID(token));
     assertTrue(token.ttype == OrderToken.TT_ID);
 
-    parser.read(new StringReader("abc abc"));
-    token = parser.getLastToken();
-    assertFalse(parser.readFinalID(token));
+    getParser().read(new StringReader("abc abc"));
+    token = getParser().getLastToken();
+    assertFalse(getParser().readFinalID(token));
     assertTrue(token.ttype == OrderToken.TT_ID);
 
-    parser.read(new StringReader("")); // TODO what should happen here?
-    token = parser.getLastToken();
+    getParser().read(new StringReader("")); // TODO what should happen here?
+    token = getParser().getLastToken();
     try {
-      parser.readFinalID(token);
+      getParser().readFinalID(token);
       fail("should throw exception");
     } catch (NoSuchElementException e) {
       // okay
@@ -1440,37 +1445,39 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * {@link magellan.library.gamebinding.EresseaOrderParser#readFinalNumber(magellan.library.utils.OrderToken)}
    * .
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testReadFinalNumber() {
-    parser.read(new StringReader("abc"));
-    OrderToken token = parser.getLastToken();
-    assertTrue(parser.readFinalNumber(token));
+    getParser().read(new StringReader("abc"));
+    OrderToken token = getParser().getLastToken();
+    assertTrue(getParser().readFinalNumber(token));
     assertTrue(token.ttype == OrderToken.TT_NUMBER);
-    parser.read(new StringReader("abc abc"));
-    token = parser.getLastToken();
-    assertFalse(parser.readFinalNumber(token));
+    getParser().read(new StringReader("abc abc"));
+    token = getParser().getLastToken();
+    assertFalse(getParser().readFinalNumber(token));
     assertTrue(token.ttype == OrderToken.TT_NUMBER);
-    parser.read(new StringReader(""));
-    token = parser.getLastToken();
-    assertFalse(parser.readFinalNumber(token));
+    getParser().read(new StringReader(""));
+    token = getParser().getLastToken();
+    assertFalse(getParser().readFinalNumber(token));
     assertTrue(token.ttype == OrderToken.TT_NUMBER);
   }
 
   /**
    * Test method for {@link magellan.library.gamebinding.EresseaOrderParser#checkNextFinal()}.
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testCheckNextFinal() {
-    parser.read(new StringReader("abc"));
-    assertTrue(parser.checkNextFinal());
-    parser.read(new StringReader(""));
-    assertFalse(parser.checkNextFinal());
-    parser.read(new StringReader("; abc"));
-    assertFalse(parser.checkNextFinal());
-    parser.read(new StringReader("abc; abc"));
-    assertTrue(parser.checkNextFinal());
-    parser.read(new StringReader("abc abc"));
-    assertFalse(parser.checkNextFinal());
+    getParser().read(new StringReader("abc"));
+    assertTrue(getParser().checkNextFinal());
+    getParser().read(new StringReader(""));
+    assertFalse(getParser().checkNextFinal());
+    getParser().read(new StringReader("; abc"));
+    assertFalse(getParser().checkNextFinal());
+    getParser().read(new StringReader("abc; abc"));
+    assertTrue(getParser().checkNextFinal());
+    getParser().read(new StringReader("abc abc"));
+    assertFalse(getParser().checkNextFinal());
   }
 
   /**
@@ -1478,21 +1485,22 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * {@link magellan.library.gamebinding.EresseaOrderParser#checkFinal(magellan.library.utils.OrderToken)}
    * .
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testCheckFinal() {
-    assertTrue(parser.checkFinal(new OrderToken(OrderToken.TT_EOC)));
-    assertTrue(parser.checkFinal(new OrderToken(OrderToken.TT_COMMENT)));
-    assertFalse(parser.checkFinal(new OrderToken(OrderToken.TT_STRING)));
-    parser.read(new StringReader(""));
-    assertTrue(parser.checkFinal(parser.getLastToken()));
-    parser.read(new StringReader("; abc"));
-    assertTrue(parser.checkFinal(parser.getLastToken()));
-    parser.read(new StringReader("abc; abc"));
-    assertFalse(parser.checkFinal(parser.getLastToken()));
-    assertTrue(parser.checkFinal(parser.getNextToken()));
-    parser.read(new StringReader("abc"));
-    assertFalse(parser.checkFinal(parser.getLastToken()));
-    assertTrue(parser.checkFinal(parser.getNextToken()));
+    assertTrue(getParser().checkFinal(new OrderToken(OrderToken.TT_EOC)));
+    assertTrue(getParser().checkFinal(new OrderToken(OrderToken.TT_COMMENT)));
+    assertFalse(getParser().checkFinal(new OrderToken(OrderToken.TT_STRING)));
+    getParser().read(new StringReader(""));
+    assertTrue(getParser().checkFinal(getParser().getLastToken()));
+    getParser().read(new StringReader("; abc"));
+    assertTrue(getParser().checkFinal(getParser().getLastToken()));
+    getParser().read(new StringReader("abc; abc"));
+    assertFalse(getParser().checkFinal(getParser().getLastToken()));
+    assertTrue(getParser().checkFinal(getParser().getNextToken()));
+    getParser().read(new StringReader("abc"));
+    assertFalse(getParser().checkFinal(getParser().getLastToken()));
+    assertTrue(getParser().checkFinal(getParser().getNextToken()));
   }
 
   /**
@@ -1500,17 +1508,18 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * {@link magellan.library.gamebinding.EresseaOrderParser#unexpected(magellan.library.utils.OrderToken)}
    * .
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testUnexpected() {
-    assertTrue(parser.getErrorMessage() == null);
-    parser.setErrMsg("error");
-    assertTrue(parser.getErrorMessage().equals("error"));
-    parser.setErrMsg(null);
-    assertTrue(parser.getErrorMessage() == null);
-    parser.read(new StringReader("ARBEITEN"));
-    assertTrue(parser.getErrorMessage() == null);
-    parser.read(new StringReader("ARBEITEN 2"));
-    assertTrue(parser.getErrorMessage().equals(
+    assertTrue(getParser().getErrorMessage() == null);
+    getParser().setErrMsg("error");
+    assertTrue(getParser().getErrorMessage().equals("error"));
+    getParser().setErrMsg(null);
+    assertTrue(getParser().getErrorMessage() == null);
+    getParser().read(new StringReader("ARBEITEN"));
+    assertTrue(getParser().getErrorMessage() == null);
+    getParser().read(new StringReader("ARBEITEN 2"));
+    assertTrue(getParser().getErrorMessage().equals(
         "Unexpected token 2: Undefined(9, 10), not followed by Space"));
   }
 
@@ -1530,17 +1539,17 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testIsNumericString() {
-    assertTrue(parser.isNumeric("123456567"));
-    assertTrue(parser.isNumeric("-2", 10, -10, 0));
-    assertTrue(parser.isNumeric("abc", 36, 13368, 13368));
-    assertTrue(parser.isNumeric("ff", 16, 0, 256));
-    assertFalse(parser.isNumeric("ff", 16, 0, 100));
-    assertFalse(parser.isNumeric("-2"));
-    assertFalse(parser.isNumeric("1 2"));
-    assertFalse(parser.isNumeric("1,2"));
-    assertFalse(parser.isNumeric("1.2"));
-    assertFalse(parser.isNumeric("--"));
-    assertFalse(parser.isNumeric("a"));
+    assertTrue(getParser().isNumeric("123456567"));
+    assertTrue(getParser().isNumeric("-2", 10, -10, 0));
+    assertTrue(getParser().isNumeric("abc", 36, 13368, 13368));
+    assertTrue(getParser().isNumeric("ff", 16, 0, 256));
+    assertFalse(getParser().isNumeric("ff", 16, 0, 100));
+    assertFalse(getParser().isNumeric("-2"));
+    assertFalse(getParser().isNumeric("1 2"));
+    assertFalse(getParser().isNumeric("1,2"));
+    assertFalse(getParser().isNumeric("1.2"));
+    assertFalse(getParser().isNumeric("--"));
+    assertFalse(getParser().isNumeric("a"));
   }
 
   /**
@@ -1548,13 +1557,13 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testIsID() {
-    assertTrue(parser.isID("TEMP abc"));
-    assertFalse(parser.isID("TEMP abc", false));
-    assertTrue(parser.isID("12"));
-    assertTrue(parser.isID("abc"));
-    assertTrue(parser.isID("2ac"));
-    assertFalse(parser.isID("12345"));
-    assertFalse(parser.isID("1,3"));
+    assertTrue(getParser().isID("TEMP abc"));
+    assertFalse(getParser().isID("TEMP abc", false));
+    assertTrue(getParser().isID("12"));
+    assertTrue(getParser().isID("abc"));
+    assertTrue(getParser().isID("2ac"));
+    assertFalse(getParser().isID("12345"));
+    assertFalse(getParser().isID("1,3"));
   }
 
   /**
@@ -1563,12 +1572,12 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testIsTempID() {
-    assertTrue(parser.isTempID("TEMP abc"));
-    assertTrue(parser.isTempID("TEMP 1"));
-    assertFalse(parser.isTempID("1,3"));
-    assertFalse(parser.isTempID("abc"));
-    assertFalse(parser.isTempID(" TEMP abc "));
-    assertFalse(parser.isTempID(" TEMP TEMP temp"));
+    assertTrue(getParser().isTempID("TEMP abc"));
+    assertTrue(getParser().isTempID("TEMP 1"));
+    assertFalse(getParser().isTempID("1,3"));
+    assertFalse(getParser().isTempID("abc"));
+    assertFalse(getParser().isTempID(" TEMP abc "));
+    assertFalse(getParser().isTempID(" TEMP TEMP temp"));
   }
 
   /**
@@ -1577,19 +1586,19 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testIsRID() {
-    assertTrue(parser.isRID("1,3"));
-    assertTrue(parser.isRID("1,-3"));
-    assertTrue(parser.isRID("-1,-3323"));
-    assertTrue(parser.isRID("1,3,4"));
-    assertFalse(parser.isRID("1, 3"));
-    assertFalse(parser.isRID(" 1,3"));
-    assertFalse(parser.isRID("1,3 "));
-    assertFalse(parser.isRID("1,, 3"));
-    assertFalse(parser.isRID("1 3"));
-    assertFalse(parser.isRID("1 -3"));
-    assertFalse(parser.isRID("-a, 1"));
-    assertFalse(parser.isRID("123"));
-    assertFalse(parser.isRID("a, b"));
+    assertTrue(getParser().isRID("1,3"));
+    assertTrue(getParser().isRID("1,-3"));
+    assertTrue(getParser().isRID("-1,-3323"));
+    assertTrue(getParser().isRID("1,3,4"));
+    assertFalse(getParser().isRID("1, 3"));
+    assertFalse(getParser().isRID(" 1,3"));
+    assertFalse(getParser().isRID("1,3 "));
+    assertFalse(getParser().isRID("1,, 3"));
+    assertFalse(getParser().isRID("1 3"));
+    assertFalse(getParser().isRID("1 -3"));
+    assertFalse(getParser().isRID("-a, 1"));
+    assertFalse(getParser().isRID("123"));
+    assertFalse(getParser().isRID("a, b"));
   }
 
   /**
@@ -1599,13 +1608,13 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @SuppressWarnings("deprecation")
   @Test
   public void testIsQuoted() {
-    assertFalse(parser.isQuoted("abc"));
-    assertTrue(parser.isQuoted("\"abc\""));
-    assertFalse(parser.isQuoted("'abc'"));
-    assertFalse(parser.isQuoted("abc5d"));
-    assertFalse(parser.isQuoted("567"));
-    assertFalse(parser.isQuoted("\"abc'"));
-    assertFalse(parser.isQuoted("'123"));
+    assertFalse(getParser().isQuoted("abc"));
+    assertTrue(getParser().isQuoted("\"abc\""));
+    assertFalse(getParser().isQuoted("'abc'"));
+    assertFalse(getParser().isQuoted("abc5d"));
+    assertFalse(getParser().isQuoted("567"));
+    assertFalse(getParser().isQuoted("\"abc'"));
+    assertFalse(getParser().isQuoted("'123"));
   }
 
   /**
@@ -1615,13 +1624,13 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @SuppressWarnings("deprecation")
   @Test
   public void testIsSingleQuoted() {
-    assertFalse(parser.isSingleQuoted("abc"));
-    assertFalse(parser.isSingleQuoted("\"abc\""));
-    assertTrue(parser.isSingleQuoted("'abc'"));
-    assertFalse(parser.isSingleQuoted("abc5d"));
-    assertFalse(parser.isSingleQuoted("567"));
-    assertFalse(parser.isSingleQuoted("\"abc'"));
-    assertFalse(parser.isSingleQuoted("'123"));
+    assertFalse(getParser().isSingleQuoted("abc"));
+    assertFalse(getParser().isSingleQuoted("\"abc\""));
+    assertTrue(getParser().isSingleQuoted("'abc'"));
+    assertFalse(getParser().isSingleQuoted("abc5d"));
+    assertFalse(getParser().isSingleQuoted("567"));
+    assertFalse(getParser().isSingleQuoted("\"abc'"));
+    assertFalse(getParser().isSingleQuoted("'123"));
   }
 
   /**
@@ -1630,13 +1639,13 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testIsSimpleString() {
-    assertTrue(parser.isSimpleString("abc"));
-    assertFalse(parser.isSimpleString("\"abc\""));
-    assertFalse(parser.isSimpleString("'abc'"));
-    assertTrue(parser.isSimpleString("abc5d"));
-    assertFalse(parser.isSimpleString("567"));
-    assertFalse(parser.isSimpleString("\"abc'"));
-    assertFalse(parser.isSimpleString("'123"));
+    assertTrue(getParser().isSimpleString("abc"));
+    assertFalse(getParser().isSimpleString("\"abc\""));
+    assertFalse(getParser().isSimpleString("'abc'"));
+    assertTrue(getParser().isSimpleString("abc5d"));
+    assertFalse(getParser().isSimpleString("567"));
+    assertFalse(getParser().isSimpleString("\"abc'"));
+    assertFalse(getParser().isSimpleString("'123"));
   }
 
   /**
@@ -1646,13 +1655,13 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @SuppressWarnings("deprecation")
   @Test
   public void testIsStringString() {
-    assertTrue(parser.isString("abc"));
-    assertTrue(parser.isString("\"abc\""));
-    assertTrue(parser.isString("'abc'"));
-    assertTrue(parser.isString("abc5d"));
-    assertFalse(parser.isString("567"));
-    assertFalse(parser.isString("\"abc'"));
-    assertFalse(parser.isString("'123"));
+    assertTrue(getParser().isString("abc"));
+    assertTrue(getParser().isString("\"abc\""));
+    assertTrue(getParser().isString("'abc'"));
+    assertTrue(getParser().isString("abc5d"));
+    assertFalse(getParser().isString("567"));
+    assertFalse(getParser().isString("\"abc'"));
+    assertFalse(getParser().isString("'123"));
   }
 
   /**
@@ -1663,9 +1672,9 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @Test
   public void testIsStringOrderToken() {
     OrderToken token = new OrderToken("");
-    assertTrue(parser.isString(token, false) == parser.isString(token));
+    assertTrue(getParser().isString(token, false) == getParser().isString(token));
     token = new OrderToken(OrderToken.TT_OPENING_QUOTE);
-    assertTrue(parser.isString(token, false) == parser.isString(token));
+    assertTrue(getParser().isString(token, false) == getParser().isString(token));
   }
 
   /**
@@ -1676,23 +1685,23 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @Test
   public void testIsStringOrderTokenBoolean() {
     OrderToken token = new OrderToken("");
-    assertFalse(parser.isString(token, true));
-    assertFalse(parser.isString(token, false));
+    assertFalse(getParser().isString(token, true));
+    assertFalse(getParser().isString(token, false));
     token = new OrderToken("a");
-    assertFalse(parser.isString(token, true));
-    assertTrue(parser.isString(token, false));
+    assertFalse(getParser().isString(token, true));
+    assertTrue(getParser().isString(token, false));
     token = new OrderToken(OrderToken.TT_OPENING_QUOTE);
-    assertTrue(parser.isString(token, true));
-    assertTrue(parser.isString(token, false));
+    assertTrue(getParser().isString(token, true));
+    assertTrue(getParser().isString(token, false));
     token = new OrderToken("'abc");
-    assertFalse(parser.isString(token, true));
-    assertFalse(parser.isString(token, false));
+    assertFalse(getParser().isString(token, true));
+    assertFalse(getParser().isString(token, false));
     token = new OrderToken("5");
-    assertFalse(parser.isString(token, true));
-    assertFalse(parser.isString(token, false));
+    assertFalse(getParser().isString(token, true));
+    assertFalse(getParser().isString(token, false));
     token = new OrderToken(OrderToken.TT_EOC);
-    assertTrue(parser.isString(token, true));
-    assertTrue(parser.isString(token, false));
+    assertTrue(getParser().isString(token, true));
+    assertTrue(getParser().isString(token, false));
   }
 
   /**
@@ -1700,10 +1709,11 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * {@link magellan.library.gamebinding.EresseaOrderParser#getString(magellan.library.utils.OrderToken)}
    * .
    */
+  @SuppressWarnings({ "deprecation", "null" })
   @Test
   public void testGetString() {
-    parser.read(new StringReader("abc"));
-    OrderToken[] result = parser.getString(parser.getLastToken());
+    getParser().read(new StringReader("abc"));
+    OrderToken[] result = getParser().getString(getParser().getLastToken());
     assertTrue(result[0] == null);
     OrderToken contentToken = new OrderToken("abc", 0, 3, OrderToken.TT_STRING, false);
     assertTrue(result[1] != null && equals(result[1], contentToken));
@@ -1711,15 +1721,15 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     OrderToken nextToken = new OrderToken(OrderToken.TT_EOC);
     assertTrue(equals(result[3], nextToken));
 
-    parser.read(new StringReader("@"));
-    result = parser.getString(parser.getLastToken());
+    getParser().read(new StringReader("@"));
+    result = getParser().getString(getParser().getLastToken());
     assertTrue(result[0] == null);
     contentToken = new OrderToken("@", 0, 1, OrderToken.TT_STRING, false);
     assertTrue(result[1] == null);
     assertTrue(result[2] == null);
 
-    parser.read(new StringReader("\"abc\""));
-    result = parser.getString(parser.getLastToken());
+    getParser().read(new StringReader("\"abc\""));
+    result = getParser().getString(getParser().getLastToken());
     OrderToken openingToken = new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
     assertTrue(equals(result[0], openingToken));
     contentToken = new OrderToken("abc", 1, 4, OrderToken.TT_STRING, false);
@@ -1729,8 +1739,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     nextToken = new OrderToken(OrderToken.TT_EOC);
     assertTrue(equals(result[3], nextToken));
 
-    parser.read(new StringReader("'abc'"));
-    result = parser.getString(parser.getLastToken());
+    getParser().read(new StringReader("'abc'"));
+    result = getParser().getString(getParser().getLastToken());
     openingToken = new OrderToken("'", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
     assertTrue(equals(result[0], openingToken));
     contentToken = new OrderToken("abc", 1, 4, OrderToken.TT_STRING, false);
@@ -1740,8 +1750,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     nextToken = new OrderToken(OrderToken.TT_EOC);
     assertTrue(equals(result[3], nextToken));
 
-    parser.read(new StringReader("\"a"));
-    result = parser.getString(parser.getLastToken());
+    getParser().read(new StringReader("\"a"));
+    result = getParser().getString(getParser().getLastToken());
     openingToken = new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
     assertTrue(equals(result[0], openingToken));
     contentToken = new OrderToken("a", 1, 2, OrderToken.TT_STRING, false);
@@ -1751,8 +1761,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     nextToken = new OrderToken(OrderToken.TT_EOC);
     assertTrue(equals(result[3], nextToken));
 
-    parser.read(new StringReader("\"a'"));
-    result = parser.getString(parser.getLastToken());
+    getParser().read(new StringReader("\"a'"));
+    result = getParser().getString(getParser().getLastToken());
     openingToken = new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
     assertTrue(equals(result[0], openingToken));
     contentToken = new OrderToken("a'", 1, 3, OrderToken.TT_STRING, false);
@@ -1773,10 +1783,10 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
         && orderToken.followedBySpace() == nextToken.followedBySpace();
   }
 
-  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}.  */
+  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}. */
   @Test
   public void testMergeTempTokensWithoutTemps() {
-    TokenBucket bucket = parser.new TokenBucket();
+    TokenBucket bucket = getParser().new TokenBucket();
     bucket.read(new StringReader("LEHREN 123 456 678"));
     bucket.mergeTempTokens(36);
     assertThat(bucket.size(), is(5));
@@ -1787,10 +1797,10 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     assertTrue(new OrderToken(OrderToken.TT_EOC).equalsAll(bucket.get(4)));
   }
 
-  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}.  */
+  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}. */
   @Test
   public void testMergeTempTokensWithTemp() {
-    TokenBucket bucket = parser.new TokenBucket();
+    TokenBucket bucket = getParser().new TokenBucket();
     bucket.read(new StringReader("LEHREN TEMP 123"));
     bucket.mergeTempTokens(36);
     assertThat(bucket.size(), is(3));
@@ -1798,10 +1808,10 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     assertThat(bucket.get(1).getText(), is("TEMP 123"));
   }
 
-  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}.  */
+  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}. */
   @Test
   public void testMergeTempTokensWithTwoTemps() {
-    TokenBucket bucket = parser.new TokenBucket();
+    TokenBucket bucket = getParser().new TokenBucket();
     bucket.read(new StringReader("LEHREN TEMP 123 TEMP 456"));
     bucket.mergeTempTokens(36);
     assertThat(bucket.size(), is(4));
@@ -1810,10 +1820,10 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     assertThat(bucket.get(2).getText(), is("TEMP 456"));
   }
 
-  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}.  */
+  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}. */
   @Test
   public void testMergeTempTokensWithMixed() {
-    TokenBucket bucket = parser.new TokenBucket();
+    TokenBucket bucket = getParser().new TokenBucket();
     bucket.read(new StringReader("LEHREN TEMP 123 456 TEMP abc"));
     bucket.mergeTempTokens(36);
     assertThat(bucket.size(), is(5));
@@ -1829,27 +1839,63 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testIsEmailAddress() {
-    assertTrue(parser != null);
-    if (parser != null) {
-      assertTrue(parser.isEmailAddress("a@b.com"));
-      assertTrue(parser.isEmailAddress("123@234.com"));
-      assertTrue(parser.isEmailAddress("a.b.c.defg.a@hallo.bla.bla.com"));
-      assertFalse(parser.isEmailAddress(""));
-      assertFalse(parser.isEmailAddress("a"));
-      assertFalse(parser.isEmailAddress("a.b"));
-      assertFalse(parser.isEmailAddress("@b"));
-      assertFalse(parser.isEmailAddress("@b.com"));
-      assertTrue(parser.isEmailAddress("jsmith@[192.168.2.1]"));
+    assertTrue(getParser() != null);
+    if (getParser() != null) {
+      assertTrue(getParser().isEmailAddress("a@b.com"));
+      assertTrue(getParser().isEmailAddress("123@234.com"));
+      assertTrue(getParser().isEmailAddress("a.b.c.defg.a@hallo.bla.bla.com"));
+      assertFalse(getParser().isEmailAddress(""));
+      assertFalse(getParser().isEmailAddress("a"));
+      assertFalse(getParser().isEmailAddress("a.b"));
+      assertFalse(getParser().isEmailAddress("@b"));
+      assertFalse(getParser().isEmailAddress("@b.com"));
+      assertTrue(getParser().isEmailAddress("jsmith@[192.168.2.1]"));
       // FIXME these tests fail
       if (DO_KNOWN_FAILURES) {
-        assertFalse(parser.isEmailAddress(".@.")); // shouldn't be allowed, but is
-        assertFalse(parser.isEmailAddress("a@b")); // shouldn't be allowed, but is
-        assertFalse(parser.isEmailAddress("a.@b.com")); // shouldn't be allowed, but is
-        assertFalse(parser.isEmailAddress(".a@b.com")); // shouldn't be allowed, but is
-        assertTrue(parser.isEmailAddress("\"!#$%&'*+-/=?^_`{|}~\"@example.com")); // shouldn't be
-        // allowed, but is
+        assertFalse(getParser().isEmailAddress(".@.")); // shouldn't be allowed, but is
+        assertFalse(getParser().isEmailAddress("a@b")); // shouldn't be allowed, but is
+        assertFalse(getParser().isEmailAddress("a.@b.com")); // shouldn't be allowed, but is
+        assertFalse(getParser().isEmailAddress(".a@b.com")); // shouldn't be allowed, but is
+        // shouldn't be allowed, but is
+        assertTrue(getParser().isEmailAddress("\"!#$%&'*+-/=?^_`{|}~\"@example.com"));
       }
     }
+  }
+
+  /**
+   * Returns the value of parser.
+   * 
+   * @return Returns parser.
+   */
+  protected EresseaOrderParser getParser() {
+    return parser;
+  }
+
+  /**
+   * Sets the value of parser.
+   * 
+   * @param parser The value for parser.
+   */
+  protected void setParser(EresseaOrderParser parser) {
+    this.parser = parser;
+  }
+
+  /**
+   * Returns the value of completer.
+   * 
+   * @return Returns completer.
+   */
+  protected EresseaOrderCompleter getCompleter() {
+    return completer;
+  }
+
+  /**
+   * Sets the value of completer.
+   * 
+   * @param completer The value for completer.
+   */
+  protected void setCompleter(EresseaOrderCompleter completer) {
+    this.completer = completer;
   }
 
 }

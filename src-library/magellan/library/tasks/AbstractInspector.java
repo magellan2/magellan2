@@ -152,16 +152,21 @@ public abstract class AbstractInspector implements Inspector {
    */
   protected boolean checkIgnoreUnit(Unit u) {
     for (ProblemType p : getTypes()) {
-      boolean found = false;
-      for (Order order : u.getOrders2()) {
-        if (order.getText().equals(getSuppressUnitComment(p))) {
-          found = true;
-        }
-      }
-      if (!found)
-        return false;
+      if (checkIgnoreUnit(u, p))
+        return true;
     }
     return false;
+  }
+
+  protected boolean checkIgnoreUnit(Unit u, ProblemType p) {
+    boolean found = false;
+    for (Order order : u.getOrders2()) {
+      if (order.getText().equals(getSuppressUnitComment(p))) {
+        found = true;
+        break;
+      }
+    }
+    return found;
   }
 
   /**

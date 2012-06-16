@@ -107,8 +107,8 @@ import magellan.library.utils.logging.Logger;
  * A panel holding one or more {@link OrderEditor}s.
  */
 public class MultiEditorOrderEditorList extends InternationalizedDataPanel implements
-OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
-MouseListener, CacheHandler {
+    OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
+    MouseListener, CacheHandler {
   private static final Logger log = Logger.getInstance(MultiEditorOrderEditorList.class);
 
   private boolean multiEditorLayout = false;
@@ -255,11 +255,11 @@ MouseListener, CacheHandler {
     super.setGameData(data);
     if (guiInitialized) { // might be called from constructor
       parser = data.getGameSpecificStuff().getOrderParser(data);
-    initContent();
-    if (!multiEditorLayout) {
-      initSingleEditor();
+      initContent();
+      if (!multiEditorLayout) {
+        initSingleEditor();
+      }
     }
-  }
   }
 
   /**
@@ -278,7 +278,7 @@ MouseListener, CacheHandler {
     hideButtons =
         Boolean.valueOf(
             settings
-            .getProperty(PropertiesHelper.ORDEREDITOR_HIDEBUTTONS, Boolean.FALSE.toString()))
+                .getProperty(PropertiesHelper.ORDEREDITOR_HIDEBUTTONS, Boolean.FALSE.toString()))
             .booleanValue();
     editAllFactions =
         Boolean.valueOf(
@@ -338,11 +338,11 @@ MouseListener, CacheHandler {
     // remember if we want to have the focus (see below)
     boolean restoreFocus =
         (getEditor(currentUnit) != null && getEditor(currentUnit).hasFocus()) || content.hasFocus()
-        || hasFocus();
+            || hasFocus();
     // if WE triggered the selection change, the new unit DOES get the focus
     restoreFocus =
         restoreFocus || (se.getSource() == this)
-        || (se.getSource().getClass().equals(OrderEditor.class));
+            || (se.getSource().getClass().equals(OrderEditor.class));
 
     if (multiEditorLayout) {
       deselectEditor(currentUnit);
@@ -363,7 +363,7 @@ MouseListener, CacheHandler {
           currentUnit.setOrderEditor(null);
           deselectEditor(editorSingelton);
           editorSingelton
-          .setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, ""));
+              .setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, ""));
           currentUnit = null;
           editorSingelton.setUnit(null);
           editorSingelton.setEditable(false);
@@ -440,8 +440,8 @@ MouseListener, CacheHandler {
 
     if ((newUnit == currentUnit && newUnit != null)
         || (newUnit != null && currentUnit != null
-        && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
-        .getFaction())) {
+            && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
+            .getFaction())) {
       // no change necessary
     } else {
       loadEditors(newIsland, newRegion, newFaction, newUnit);
@@ -1688,14 +1688,14 @@ MouseListener, CacheHandler {
 
       if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
         MultiEditorOrderEditorList.log
-        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" + viewRect);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" + viewRect);
       }
 
       if (getEditor(currentUnit) != null) {
         OrderEditor editor = getEditor(currentUnit);
         Rectangle bounds = editor.getBounds();
         MultiEditorOrderEditorList.log
-        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
 
         while (!viewRect.contains(viewRect.x, bounds.y, viewRect.width, Math.min(viewRect.height,
             bounds.height))) {
@@ -1711,7 +1711,7 @@ MouseListener, CacheHandler {
 
           if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
             MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " + newPos);
+                .debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " + newPos);
           }
 
           Rectangle newRect = new Rectangle(viewRect);
@@ -1735,10 +1735,10 @@ MouseListener, CacheHandler {
         }
 
         MultiEditorOrderEditorList.log
-        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:"
-            + viewRect);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:"
+                + viewRect);
         MultiEditorOrderEditorList.log
-        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" + bounds);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" + bounds);
       }
 
       content.validate();
@@ -2002,7 +2002,7 @@ MouseListener, CacheHandler {
                           recruits * parentUnit.getRace().getRecruitmentCosts(),
                           EresseaConstants.I_USILVER,
                           Resources
-                          .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
+                              .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
                     }
                     if (dialog.isGiveMaintainCost()) {
                       getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
@@ -2011,7 +2011,7 @@ MouseListener, CacheHandler {
                           parentUnit.getRace().getMaintenance() * (transfers + recruits),
                           EresseaConstants.I_USILVER,
                           Resources
-                          .get("completion.multieditorordereditorlist.tempunit.maintainCost"));
+                              .get("completion.multieditorordereditorlist.tempunit.maintainCost"));
                     }
 
                     dispatcher.fire(new UnitOrdersEvent(this, parentUnit));
@@ -2050,7 +2050,7 @@ MouseListener, CacheHandler {
                 JOptionPane.showMessageDialog(this, Resources
                     .get("completion.multieditorordereditorlist.msg.duplicatetempid.text"),
                     Resources
-                    .get("completion.multieditorordereditorlist.msg.duplicatetempid.title"),
+                        .get("completion.multieditorordereditorlist.msg.duplicatetempid.title"),
                     JOptionPane.ERROR_MESSAGE);
               }
             } catch (NumberFormatException nfe) {
@@ -2107,7 +2107,7 @@ MouseListener, CacheHandler {
     public void currentUnitChanged() {
       boolean enabled =
           (currentUnit != null) && currentUnit.getFaction() != null
-          && currentUnit.getFaction().isPrivileged();
+              && currentUnit.getFaction().isPrivileged();
 
       setConfirmEnabled(enabled);
       setCreationEnabled(enabled);

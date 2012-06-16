@@ -42,6 +42,7 @@ import magellan.library.utils.MagellanFactory;
 public class GameDataBuilder {
 
   private static final int BASE_ROUND = 360;
+  private String gameName = "Eressea";
 
   public GameData createSimplestGameData() throws Exception {
     return createSimplestGameData(BASE_ROUND);
@@ -135,7 +136,7 @@ public class GameDataBuilder {
    * Steinbau -. Add a unit if <code>addUnit</code>.
    */
   public GameData createSimpleGameData(int round, boolean addUnit) throws Exception {
-    return createSimpleGameData("Eressea", round, addUnit);
+    return createSimpleGameData(getGameName(), round, addUnit);
   }
 
   /**
@@ -417,5 +418,23 @@ public class GameDataBuilder {
       allies1.put(ally.getID(), alliance);
     }
     alliance.addState(state);
+  }
+
+  /**
+   * Returns the value of gameName.
+   * 
+   * @return Returns gameName.
+   */
+  public String getGameName() {
+    return gameName;
+  }
+
+  /**
+   * Sets the value of gameName.
+   * 
+   * @param gameName The value for gameName.
+   */
+  public void setGameName(String gameName) {
+    this.gameName = gameName;
   }
 }

@@ -501,8 +501,9 @@ public interface Region extends UnitContainer {
    * instead of refreshing the unit relations 'manually'.
    * 
    * @param forceRefresh to enforce refreshment, false for one refreshment only
+   * @deprecated should be triggered implicitly by UnitOrdersEvents
    */
-
+  @Deprecated
   public void refreshUnitRelations(boolean forceRefresh);
 
   /**

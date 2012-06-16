@@ -713,7 +713,6 @@ public class ExtendedCommandsHelper {
    * @param u The unit that shall be updated in the GUI.
    */
   public void updateUnit(Unit u) {
-    u.setOrdersChanged(true);
     // FIXME reactivate
     // if (client != null) {
     // client.getDispatcher().fire(new UnitOrdersEvent(this, u));

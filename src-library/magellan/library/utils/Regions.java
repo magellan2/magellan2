@@ -1530,8 +1530,7 @@ public class Regions {
   }
 
   /**
-   * Returns the distance on a shortest path over land from start to dest, excluding certain region
-   * types and considering streets.
+   * Returns the distance on a shortest path for a ship from start to dest.
    * 
    * @param data
    * @param start

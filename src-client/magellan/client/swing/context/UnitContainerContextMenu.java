@@ -25,11 +25,9 @@ import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -529,7 +527,6 @@ public class UnitContainerContextMenu extends JPopupMenu {
         new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
     String s[] = giveOderDialog.showGiveOrderDialog();
     for (Object o : selectedObjects) {
-      Set<Region> regions = new HashSet<Region>();
       if (o instanceof Ship) {
         Ship ship = (Ship) o;
         Unit u = ship.getModifiedOwnerUnit();
@@ -537,14 +534,8 @@ public class UnitContainerContextMenu extends JPopupMenu {
         if (u != null && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))) {
           magellan.client.utils.Units.addOrders(u, s, false);
           dispatcher.fire(new UnitOrdersEvent(this, u));
-          regions.add(u.getRegion());
         }
       }
-
-      for (Region r : regions) {
-        r.refreshUnitRelations(true);
-      }
-
     }
   }
 

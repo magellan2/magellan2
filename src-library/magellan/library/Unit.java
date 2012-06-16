@@ -72,18 +72,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public boolean ordersAreNull();
 
   /**
-   * Returns true if the orders have changed.
-   */
-  public boolean ordersHaveChanged();
-
-  /**
-   * Manually change orders change status.
-   * 
-   * @see #ordersHaveChanged()
-   */
-  public void setOrdersChanged(boolean changed);
-
-  /**
    * Clears the orders and refreshes the relations
    */
   public void clearOrders();
@@ -92,7 +80,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Clears the orders and possibly refreshes the relations
    * 
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void clearOrders(boolean refreshRelations);
 
   /**
@@ -104,7 +94,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Removes the order at position <tt>i</tt> and possibly refreshes the relations
    * 
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void removeOrderAt(int i, boolean refreshRelations);
 
   /**
@@ -127,7 +119,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    *          replaced but not all "BENENNE" orders.
    * @param refreshRelations
    * @return <tt>true</tt> if at least one order was removed
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public boolean removeOrder(String order, int length, boolean refreshRelations);
 
   /**
@@ -136,15 +130,25 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @param pos An index between 0 and getOrders().getSize() (inclusively)
    * @param newOrder
    */
+  public void replaceOrder(int pos, Order newOrder);
+
+  /**
+   * Replaces the order at the position by the given new order.
+   * 
+   * @param pos An index between 0 and getOrders().getSize() (inclusively)
+   * @param newOrder
+   * @deprecated relation refreshing is now done event-based
+   */
+  @Deprecated
   public void replaceOrder(int pos, Order newOrder, boolean refreshRelations);
 
-  // /**
-  // * Adds the order at position <tt>i</tt> and refreshes the relations
-  // *
-  // * @param i An index between 0 and getOrders().getSize() (inclusively)
-  // * @param newOrder
-  // */
-  // public void addOrderAt(int i, String newOrder);
+  /**
+   * Adds the order at position <tt>i</tt> and refreshes the relations
+   * 
+   * @param i An index between 0 and getOrders().getSize() (inclusively)
+   * @param newOrder
+   */
+  public void addOrderAt(int i, String newOrder);
 
   /**
    * Adds the order at position <tt>i</tt> and possibly refreshes the relations
@@ -152,7 +156,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end
    * @param newOrders
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void addOrderAt(int i, String newOrders, boolean refreshRelations);
 
   // /**
@@ -182,7 +188,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @param newOrders
    * @param refreshRelations If true also refresh the relations of the unit
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void addOrders(Collection<String> newOrders, boolean refreshRelations);
 
   /**
@@ -197,7 +205,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @param newOrders
    * @param refreshRelations If true also refresh the relations of the unit
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void addOrders2(Collection<Order> newOrders, boolean refreshRelations);
 
   /**
@@ -212,7 +222,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @param newOrders may be <code>null</code>
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void setOrders(Collection<String> newOrders, boolean refreshRelations);
 
   /**
@@ -227,7 +239,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @param newOrders my be <code>null</code>
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void setOrders2(Collection<Order> newOrders, boolean refreshRelations);
 
   /**
@@ -804,7 +818,10 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * to be determined, this method has to be called for each unit in the same region. Since
    * relations are defined by unit orders, modified orders may lead to different relations.
    * Therefore refreshRelations() has to be invoked on a unit after its orders were modified.
+   * 
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void refreshRelations();
 
   /**
@@ -817,7 +834,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * on a unit after its orders were modified.
    * 
    * @param from Start from this line
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void refreshRelations(int from);
 
   /**
@@ -843,7 +862,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @param order the new order line
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public boolean addOrder(String order, boolean refreshRelations);
 
   /**
@@ -865,7 +886,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @param newOrder
    * @param refreshRelations if true also refresh the relations of the unit.
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void addOrder(Order newOrder, boolean refreshRelations);
 
   /**
@@ -873,8 +896,18 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end
    * @param newOrder
-   * @param refreshRelations if true also refresh the relations of the unit.
    */
+  public void addOrderAt(int i, Order newOrder);
+
+  /**
+   * Adds the order at position <tt>i</tt> and possibly refreshes the relations
+   * 
+   * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end
+   * @param newOrder
+   * @param refreshRelations if true also refresh the relations of the unit.
+   * @deprecated relation refreshing is now done event-based
+   */
+  @Deprecated
   public void addOrderAt(int i, Order newOrder, boolean refreshRelations);
 
   /**

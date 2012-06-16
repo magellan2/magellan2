@@ -837,8 +837,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             // Diebstahl
             try {
               Unit unit =
-                  getGameData().getUnit(UnitID.createUnitID(Integer
-                      .parseInt(msg.getAttributes().get("unit")), getGameData().base));
+                  getGameData().getUnit(
+                      UnitID.createUnitID(Integer.parseInt(msg.getAttributes().get("unit")),
+                          getGameData().base));
               int amount = Integer.parseInt(msg.getAttributes().get("amount"));
               if (factions.containsKey(unit.getFaction().getID())) {
                 spent[S_THEFT] += amount;
@@ -917,13 +918,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   EntityID fromID = EntityID.createEntityID(Integer.parseInt(from), getGameData().base);
                   // Faction beziehen
                   ID fromFactionID =
-                      getGameData().getFaction(fromID) == null ? EntityID.createEntityID(-1, getGameData().base)
-                          : getGameData().getFaction(fromID).getID();
+                      getGameData().getFaction(fromID) == null ? EntityID.createEntityID(-1,
+                          getGameData().base) : getGameData().getFaction(fromID).getID();
                   String to = actM.getAttributes().get("to");
                   EntityID toID = EntityID.createEntityID(Integer.parseInt(to), getGameData().base);
                   ID toFactionID =
-                      getGameData().getFaction(toID) == null ? EntityID.createEntityID(-1, getGameData().base) : getGameData()
-                          .getFaction(toID).getID();
+                      getGameData().getFaction(toID) == null ? EntityID.createEntityID(-1,
+                          getGameData().base) : getGameData().getFaction(toID).getID();
                   Integer amount = Integer.parseInt(actM.getAttributes().get("amount"));
                   if (fromFactionID.equals(faction.getID())) {
                     // alms from us
@@ -1514,12 +1515,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         // o = new DefaultMutableTreeNode(resource + ": " + stats.totalAmount);
         if (catIconName.equalsIgnoreCase("kraeuter")) {
           o =
-              createSimpleNode(getGameData().getTranslation(resource) + ": " + stats.totalAmount, "items/"
-                  + "kraeuter");
+              createSimpleNode(getGameData().getTranslation(resource) + ": " + stats.totalAmount,
+                  "items/" + "kraeuter");
         } else {
           o =
-              createSimpleNode(getGameData().getTranslation(resource) + ": " + stats.totalAmount, "items/"
-                  + resource);
+              createSimpleNode(getGameData().getTranslation(resource) + ": " + stats.totalAmount,
+                  "items/" + resource);
         }
 
         // subNode.add(o);
@@ -1531,7 +1532,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           o.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, amount)));
         }
       }
-      if (subNodeChildList != null && subNodeChildList.size() > 0) {
+      if (subNodeChildList.size() > 0) {
         subNode = createSimpleNode(nodeName + ":" + totalAmount, catIconName);
         for (DefaultMutableTreeNode defaultMutableTreeNode : subNodeChildList) {
           subNode.add(defaultMutableTreeNode);

@@ -1,7 +1,7 @@
-// class magellan.library.utils.EventDispatcherInterface
-// created on 27.04.2007
+// class magellan.library.event.EventDispatcherInterface
+// created on Jun 7, 2012
 //
-// Copyright 2003-2007 by magellan project team
+// Copyright 2003-2012 by magellan project team
 //
 // Author : $Author: $
 // $Id: $
@@ -23,10 +23,70 @@
 // 
 package magellan.library.utils.guiwrapper;
 
+import java.util.EventObject;
+
+import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 
+/**
+ * A class forwarding events from event sources to listeners.
+ */
 public interface EventDispatcherInterface {
 
-  public void addPriorityGameDataListener(GameDataListener help);
+  /**
+   * Adds a listener for game data events.
+   * 
+   * @param l the listener to add.
+   * @see GameDataEvent
+   */
+  public abstract void addGameDataListener(GameDataListener l);
+
+  /**
+   * Adds the given game-data listener to the front of all registered listeners. Warning: The order
+   * will change if another listener is added with priority.
+   */
+  public abstract void addPriorityGameDataListener(GameDataListener l);
+
+  /**
+   * Removes the specified listener for game data events.
+   * 
+   * @param l the listener to remove.
+   * @return true if this list contained the specified element.
+   * @see GameDataEvent
+   */
+  public abstract boolean removeGameDataListener(GameDataListener l);
+
+  /**
+   * Removes the specified listener from all event queues
+   * 
+   * @param o the listener to remove.
+   * @return true if one of the list contained the specified element.
+   */
+  public abstract boolean removeAllListeners(Object o);
+
+  /**
+   * Forwards an event to all registered listeners for this event type.
+   * <p>
+   * If synchronous is false, the forwarding is done asynchronously in a separate dispatcher thread.
+   * If the fire method is called before the dispatcher thread has finished the previous request, it
+   * is stopped and starts forwarding the new event.
+   * </p>
+   */
+  public abstract void fire(EventObject e, boolean synchronous);
+
+  /**
+   * Asynchronously forwards an event to all registered listeners for this event type.
+   */
+  public abstract void fire(EventObject e);
+
+  /**
+   * Returns the number of events that were passed to this dispatcher for forwarding.
+   */
+  public abstract int getEventsFired();
+
+  /**
+   * Returns the number of events that were actually forwarded to event listeners.
+   */
+  public abstract int getEventsDispatched();
 
 }

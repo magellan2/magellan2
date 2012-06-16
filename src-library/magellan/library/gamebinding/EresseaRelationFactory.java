@@ -13,18 +13,25 @@
 
 package magellan.library.gamebinding;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import magellan.library.Building;
 import magellan.library.CoordinateID;
@@ -40,6 +47,7 @@ import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.completion.OrderParser;
+import magellan.library.gamebinding.e3a.MaintainOrder;
 import magellan.library.relation.AttackRelation;
 import magellan.library.relation.CombatStatusRelation;
 import magellan.library.relation.ControlRelation;
@@ -79,6 +87,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
   private static final Logger log = Logger.getInstance(EresseaRelationFactory.class);
   private Rules rules;
+  private Updater updater;
 
   /** Order priority */
   public static final int P_BENENNE = 301;
@@ -114,9 +123,52 @@ public class EresseaRelationFactory implements RelationFactory {
 
   protected EresseaRelationFactory(Rules rules) {
     this.rules = rules;
+    updater = new Updater();
   }
 
   private static final int REFRESHRELATIONS_ALL = -2;
+
+  protected class Processor implements Runnable {
+    private Region region;
+
+    public Processor(Region r) {
+      region = r;
+    }
+
+    public void run() {
+      processOrders(region);
+    }
+
+  }
+
+  protected class Updater implements ActionListener {
+
+    Set<Region> regions;
+    private Timer timer;
+
+    public Updater() {
+      regions = new HashSet<Region>();
+      timer = new Timer(100, this);
+    }
+
+    public synchronized void add(Region region) {
+      regions.add(region);
+      timer.restart();
+      // log.finer("add " + region);
+    }
+
+    public synchronized void actionPerformed(ActionEvent e) {
+      if (!regions.isEmpty()) {
+        log.finer("updating " + regions.size());
+      }
+      // timer fired
+      for (Region r : regions) {
+        SwingUtilities.invokeLater(new Processor(r));
+      }
+      regions.clear();
+    }
+
+  }
 
   /**
    * Creates a list of com.eressea.util.Relation objects for a unit starting at order position
@@ -147,7 +199,9 @@ public class EresseaRelationFactory implements RelationFactory {
   }
 
   public void createRelations(Region region) {
-    processOrders(region);
+    updater.add(region);
+
+    // processOrders(region);
   }
 
   static class GDEntry {
@@ -157,6 +211,7 @@ public class EresseaRelationFactory implements RelationFactory {
   }
 
   WeakReference<GDEntry> lastData = new WeakReference<GDEntry>(null);
+  private Set<Region> affected;
 
   private OrderParser getParser(GameData data) {
     // we try to reduce the number of instances by caching the last one
@@ -990,13 +1045,16 @@ public class EresseaRelationFactory implements RelationFactory {
     }
   }
 
-  public void processOrders(Region r) {
+  protected synchronized void processOrders(Region r) {
     GameData data = r.getData();
+    affected = new HashSet<Region>();
+    affected.add(r);
 
     // count orders
     int count = 0;
     for (Unit u : r.units()) {
       count += u.getOrders2().size();
+      affected.add(data.getRegion(u.getNewRegion()));
       // for (Order o : u.getOrders2()) {
       // // FIXME create TEMP unit!!
       // // if (u.getOrders2().isToken(o, 0, EresseaConstants.O_MAKE)
@@ -1071,49 +1129,70 @@ public class EresseaRelationFactory implements RelationFactory {
   }
 
   protected void postProcess(Region r) {
+
     for (Unit u : r.units()) {
       checkTransport(u);
       // updateSilver(u);
     }
+
+    GameData data = r.getData();
+
+    for (Region r2 : affected) {
+      if (r2 != null) {
+        data.fireOrdersChanged(this, r2);
+      }
+    }
+    affected.clear();
   }
 
   private void updateBuildingMaintenance(Region r, EresseaExecutionState state) {
-    // HIGHTODO implement
     for (Building b : r.buildings()) {
+      boolean maintain = true;
       if (b.getEffects() != null) {
         for (String eff : b.getEffects()) {
           if (eff.startsWith("Der Zahn der Zeit kann diesen Mauern nichts anhaben.")
               || eff.startsWith("Time cannot touch these walls.")) {
-            continue;
+            maintain = false;
+            break;
           }
         }
       }
 
       Unit owner = b.getModifiedOwnerUnit();
       if (owner != null) {
-        for (Item i : b.getBuildingType().getMaintenanceItems()) {
-          // List<UnitRelation> relations =
-          // state.reserveItem(i.getItemType(), false, true, i.getAmount(), owner, -1, null);
-          List<UnitRelation> relations =
-              state.acquireItem(owner, i.getItemType(), i.getAmount(), false, true, true, -1, null);
-          MaintenanceRelation mRel =
-              new MaintenanceRelation(owner, b, i.getAmount(), i.getItemType(), -1, false);
-          for (UnitRelation rel : relations) {
-            if (rel instanceof ReserveRelation) {
-              // mRel.setReserve((ReserveRelation)rel);
-              mRel.costs = ((ReserveRelation) rel).amount;
-            } else {
-              rel.add();
+        for (Order order : owner.getOrders2()) {
+          if (order instanceof MaintainOrder)
+            if (((MaintainOrder) order).isNot()) {
+              maintain = false;
+              break;
             }
-            if (rel.problem != null) {
-              mRel.warning = true;
-              mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
-                  MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
-              // mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
-              // OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
+        }
+        if (maintain) {
+          for (Item i : b.getBuildingType().getMaintenanceItems()) {
+            // List<UnitRelation> relations =
+            // state.reserveItem(i.getItemType(), false, true, i.getAmount(), owner, -1, null);
+            List<UnitRelation> relations =
+                state.acquireItem(owner, i.getItemType(), i.getAmount(), false, true, true, -1,
+                    null);
+            MaintenanceRelation mRel =
+                new MaintenanceRelation(owner, b, i.getAmount(), i.getItemType(), -1, false);
+            for (UnitRelation rel : relations) {
+              if (rel instanceof ReserveRelation) {
+                // mRel.setReserve((ReserveRelation)rel);
+                mRel.costs = ((ReserveRelation) rel).amount;
+              } else {
+                rel.add();
+              }
+              if (rel.problem != null) {
+                mRel.warning = true;
+                mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
+                    MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
+                // mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
+                // OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
+              }
             }
+            mRel.add();
           }
-          mRel.add();
         }
       }
     }

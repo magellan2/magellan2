@@ -68,4 +68,13 @@ public class InterUnitRelation extends UnitRelation {
     }
   }
 
+  /**
+   * @return true if the object is source, origin or target
+   * @see magellan.library.relation.UnitRelation#isRelated(java.lang.Object)
+   */
+  @Override
+  public boolean isRelated(Object object) {
+    return super.isRelated(object) || target == object;
+  }
+
 }

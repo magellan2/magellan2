@@ -48,18 +48,20 @@ import magellan.client.desktop.Initializable;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.event.UnitOrdersEvent;
-import magellan.client.event.UnitOrdersListener;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.context.MapContextMenu;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
+import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
+import magellan.library.event.UnitChangeEvent;
+import magellan.library.event.UnitChangeListener;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -81,7 +83,7 @@ import magellan.library.utils.replacers.ReplacerSystem;
  * </p>
  */
 public class Mapper extends InternationalizedDataPanel implements SelectionListener, Scrollable,
-    UnitOrdersListener, Initializable {
+    UnitChangeListener, Initializable {
   private static final Logger log = Logger.getInstance(Mapper.class);
 
   /**
@@ -420,7 +422,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     });
 
     dispatcher.addSelectionListener(this);
-    dispatcher.addUnitOrdersListener(this);
+    // we are now a UnitChangeListener
+    // dispatcher.addUnitOrdersListener(this);
 
     conMenu.updateRenderers(this);
     conMenu.updateTooltips(this);
@@ -473,8 +476,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    */
   public void unitOrdersChanged(UnitOrdersEvent e) {
     // TODO: do we really need to repaint this?
-      repaint();
-    }
+    repaint();
+  }
 
   /**
    * Add a cell renderer object to the mapper. Each cell renderer has a rendering plane associated
@@ -602,6 +605,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     pathRegions.clear();
 
     reprocessTooltipDefinition();
+  }
+
+  @Override
+  public void setGameData(GameData data) {
+    getGameData().removeUnitChangeListener(this);
+    super.setGameData(data);
+    data.addUnitChangeListener(this);
   }
 
   /**
@@ -1769,5 +1779,15 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   public AdvancedTextCellRenderer getATR() {
     return atr;
+  }
+
+  /**
+   * @see magellan.library.event.UnitChangeListener#unitChanged(magellan.library.event.UnitChangeEvent)
+   */
+  public void unitChanged(UnitChangeEvent event) {
+    // we need this for paths
+    if (activeObject == event.getUnit()) {
+      repaint();
+    }
   }
 }

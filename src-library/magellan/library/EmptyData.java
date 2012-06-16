@@ -301,14 +301,6 @@ public class EmptyData extends GameData {
   }
 
   /**
-   * @see magellan.library.GameData#gameDataChanged(magellan.library.GameData)
-   */
-  @Override
-  public boolean gameDataChanged(GameData g) {
-    return false;
-  }
-
-  /**
    * @see magellan.library.GameData#getActiveRegion()
    */
   @Override

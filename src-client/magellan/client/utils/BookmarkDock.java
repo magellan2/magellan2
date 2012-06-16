@@ -51,6 +51,7 @@ import magellan.client.event.SelectionListener;
  */
 public class BookmarkDock extends JPanel implements SelectionListener {
   /** @deprecated Use {@link MagellanDesktop#BOOKMARKS_IDENTIFIER} instead */
+  @Deprecated
   public static final String IDENTIFIER = MagellanDesktop.BOOKMARKS_IDENTIFIER;
   private static BookmarkDock _INSTANCE = null;
   private JList list;

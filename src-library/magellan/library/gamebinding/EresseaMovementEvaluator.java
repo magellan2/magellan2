@@ -24,6 +24,7 @@ import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Rules;
+import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.UnitID;
@@ -91,17 +92,16 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
     int horsesWithoutCarts = horses - (carts * 2);
 
-
     if (horsesWithoutCarts >= 0) {
       capacity =
           (((carts * 140) + (horsesWithoutCarts * 20)) * 100)
-        - (getRaceWeight(unit) * unit.getModifiedPersons());
+              - (getRaceWeight(unit) * unit.getModifiedPersons());
     } else {
       int cartsWithoutHorses = carts - (horses / 2);
       horsesWithoutCarts = horses % 2;
       capacity =
           (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
-        - (getRaceWeight(unit) * unit.getModifiedPersons());
+              - (getRaceWeight(unit) * unit.getModifiedPersons());
     }
     // Fiete 20070421 (Runde 519)
     // GOTS not active when riding! (tested)
@@ -179,9 +179,9 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
     if ((race == null) || (race.getID().equals(EresseaConstants.R_TROLLE) == false)) {
       capacity =
-        (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
-        + (((int) ((race == null ? 10 : race.getCapacity()) * 100)) * unit
-            .getModifiedPersons());
+          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
+              + (((int) ((race == null ? 10 : race.getCapacity()) * 100)) * unit
+                  .getModifiedPersons());
     } else {
       int horsesMasteredPerPerson = (skillLevel * 4) + 1;
       int trollsMasteringHorses = horses / horsesMasteredPerPerson;
@@ -191,12 +191,12 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       }
 
       int cartsTowedByTrolls =
-        Math.min((unit.getModifiedPersons() - trollsMasteringHorses) / 4, cartsWithoutHorses);
+          Math.min((unit.getModifiedPersons() - trollsMasteringHorses) / 4, cartsWithoutHorses);
       int trollsTowingCarts = cartsTowedByTrolls * 4;
       int untowedCarts = cartsWithoutHorses - cartsTowedByTrolls;
       capacity =
-        (((((carts - untowedCarts) * 140) + (horsesWithoutCarts * 20)) - (untowedCarts * 40)) * 100)
-        + (((int) (race.getCapacity() * 100)) * (unit.getModifiedPersons() - trollsTowingCarts));
+          (((((carts - untowedCarts) * 140) + (horsesWithoutCarts * 20)) - (untowedCarts * 40)) * 100)
+              + (((int) (race.getCapacity() * 100)) * (unit.getModifiedPersons() - trollsTowingCarts));
     }
 
     return respectGOTS(unit, capacity);
@@ -252,10 +252,10 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
   private int getRaceWeight(Unit unit) {
     Race race = unit.getRace();
-    if (race==null)
+    if (race == null)
       return 1000;
     else
-      return (int) race.getWeight()*100;
+      return (int) race.getWeight() * 100;
   }
 
   /**
@@ -429,6 +429,28 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   }
 
   public CoordinateID getDestination(Unit unit, List<CoordinateID> path) {
+    if (unit.getModifiedShip() != null && unit.getModifiedShip().getModifiedOwnerUnit() == unit) {
+      CoordinateID lastCoord = null;
+      Ship ship = unit.getModifiedShip();
+      int range = getRules().getGameSpecificStuff().getGameSpecificRules().getShipRange(ship);
+      int etappe = 0;
+      for (CoordinateID coord : path) {
+        if (lastCoord != null) {
+          if (lastCoord == coord)
+            return coord; // PAUSE
+          else {
+            Region r = unit.getData().getRegion(coord);
+            etappe++;
+            if (etappe >= range || (r != null && !r.getRegionType().isOcean()))
+              return coord;
+          }
+        }
+        lastCoord = coord;
+      }
+      return path.get(path.size() - 1);
+      // return getDestination(unit, unit.getModifiedShip(), path);
+    }
+
     if (path.size() == 0)
       return null;
     CoordinateID start = path.iterator().next();
@@ -445,7 +467,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       Region r = unit.getData().getRegion(coord);
       if (lastCoord != null) {
         if (lastCoord == coord)
-          return coord;
+          return coord; // PAUSE
         else {
           etappe++;
           if (r == null || lastRegion == null || !Regions.isCompleteRoadConnection(lastRegion, r)) {
@@ -466,6 +488,11 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     }
     return path.get(path.size() - 1);
   }
+
+  // protected CoordinateID getDestination(Unit unit, Ship modifiedShip, List<CoordinateID> path) {
+  // // HIGHTODO Automatisch generierte Methode implementieren
+  // return null;
+  // }
 
   /**
    * @see magellan.library.gamebinding.MovementEvaluator#getModifiedRadius(magellan.library.Unit,

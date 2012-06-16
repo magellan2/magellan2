@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,7 +25,6 @@ import java.util.regex.Pattern;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import magellan.library.Alliance;
 import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -40,7 +40,6 @@ import magellan.library.UnitID;
 import magellan.library.completion.Completion;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.RenameOrder.RenameObject;
-import magellan.library.rules.AllianceCategory;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
@@ -1989,6 +1988,20 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* HELFE
   protected class HelfeReader extends OrderHandler {
+
+    private Collection<String> categories;
+
+    protected Collection<String> getCategories() {
+      if (categories == null) {
+        categories =
+            Arrays.asList(EresseaConstants.O_ALL, EresseaConstants.O_HELP_COMBAT,
+                EresseaConstants.O_HELP_GIVE, EresseaConstants.O_HELP_GUARD,
+                EresseaConstants.O_HELP_SILVER, EresseaConstants.O_HELP_FACTIONSTEALTH);
+
+      }
+      return categories;
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2014,9 +2027,8 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      for (Iterator<AllianceCategory> it = getRules().getAllianceCategoryIterator(); it.hasNext();) {
-        AllianceCategory all = it.next();
-        if (t.equalsToken(getOrderTranslation(Alliance.ORDER_KEY_PREFIX + all.getName()))) {
+      for (String key : getCategories()) {
+        if (t.equalsToken(getOrderTranslation(key))) {
           retVal = readHelfeFIDModifier(t);
           break;
         }

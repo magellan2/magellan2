@@ -36,11 +36,9 @@ import magellan.library.Group;
 import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Message;
-import magellan.library.Named;
 import magellan.library.Order;
 import magellan.library.Orders;
 import magellan.library.Region;
-import magellan.library.Related;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Spell;
@@ -63,7 +61,6 @@ import magellan.library.relation.MaintenanceRelation;
 import magellan.library.relation.MovementRelation;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.RecruitmentRelation;
-import magellan.library.relation.RenameNamedRelation;
 import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.TeachRelation;
 import magellan.library.relation.TransportRelation;
@@ -228,25 +225,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   private Collection<TempUnit> tempUnitCollection;
   private GameData data;
 
+  private static int deprecationCounter = 0;
+
   /**
    * @see magellan.library.Unit#ordersAreNull()
    */
   public boolean ordersAreNull() {
     return ordersObject == null;
-  }
-
-  /**
-   * @see magellan.library.Unit#ordersHaveChanged()
-   */
-  public boolean ordersHaveChanged() {
-    return !ordersAreNull() && ordersObject.ordersHaveChanged();
-  }
-
-  /**
-   * @see magellan.library.Unit#setOrdersChanged(boolean)
-   */
-  public void setOrdersChanged(boolean changed) {
-    getOrdersObject().setOrdersChanged(changed);
   }
 
   /**
@@ -260,12 +245,16 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   }
 
   /**
-   * Clears the orders and refreshes the relations
+   * Clears the orders
    * 
    * @see magellan.library.Unit#clearOrders()
    */
   public void clearOrders() {
-    clearOrders(true);
+    if (!ordersAreNull()) {
+      ordersObject.clear();
+    }
+
+    refreshRelations(0);
   }
 
   /**
@@ -273,15 +262,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * 
    * @param refreshRelations if true also refresh the relations of the unit.
    * @see magellan.library.Unit#clearOrders(boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void clearOrders(boolean refreshRelations) {
-    if (!ordersAreNull()) {
-      ordersObject.clear();
-    }
-
-    if (refreshRelations) {
-      refreshRelations();
-    }
+    clearOrders();
   }
 
   /**
@@ -290,7 +275,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @see magellan.library.Unit#removeOrderAt(int)
    */
   public void removeOrderAt(int i) {
-    removeOrderAt(i, true);
+    ordersObject.remove(i);
+
+    refreshRelations(i);
   }
 
   /**
@@ -298,20 +285,26 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * 
    * @param refreshRelations if true also refresh the relations of the unit.
    * @see magellan.library.Unit#removeOrderAt(int, boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void removeOrderAt(int i, boolean refreshRelations) {
-    ordersObject.remove(i);
-
-    if (refreshRelations) {
-      refreshRelations(i);
-    }
+    removeOrderAt(i);
   }
 
   /**
    * @see magellan.library.Unit#removeOrder(java.lang.String, int)
    */
   public boolean removeOrder(String order, int length) {
-    return removeOrder(order, length, true);
+    if (ordersAreNull())
+      return false;
+    boolean retVal = getOrdersObject().removeOrder(createOrder(order), length);
+
+    if (retVal) {
+      refreshRelations(0);
+    }
+
+    return retVal;
   }
 
   /**
@@ -324,17 +317,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @param refreshRelations
    * @return <tt>true</tt> if at least one order was removed
    * @see magellan.library.Unit#removeOrder(java.lang.String, int, boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public boolean removeOrder(String order, int length, boolean refreshRelations) {
-    if (ordersAreNull())
-      return false;
-    boolean retVal = getOrdersObject().removeOrder(createOrder(order), length);
-
-    if (refreshRelations) {
-      refreshRelations();
-    }
-
-    return retVal;
+    return removeOrder(order, length);
   }
 
   /**
@@ -345,7 +332,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @see magellan.library.Unit#addOrder(java.lang.String)
    */
   public boolean addOrder(String order) {
-    return addOrder(order, true);
+    if ((order == null) || order.trim().equals(""))
+      return false;
+    addOrderAt(-1, createOrder(order));
+
+    refreshRelations(-1);
+
+    return true;
   }
 
   /**
@@ -354,13 +347,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * 
    * @return <tt>true</tt> if the order was successfully added.
    * @see magellan.library.Unit#addOrder(java.lang.String, boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public boolean addOrder(String order, boolean refreshRelations) {
-    if ((order == null) || order.trim().equals(""))
-      return false;
-    addOrderAt(-1, createOrder(order), refreshRelations);
-
-    return true;
+    return addOrder(order);
   }
 
   /**
@@ -380,32 +371,46 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     if ((order == null) || order.trim().equals("") || (replace && (length < 1)))
       return false;
 
+    boolean removed = false;
     if (replace) {
-      removeOrder(order, length, false);
+      removed = removeOrder(order, length);
     }
 
-    addOrderAt(-1, order, true);
+    addOrderAt(-1, order);
+
+    refreshRelations(removed ? 0 : -1);
 
     return true;
   }
 
   /**
-   * @see magellan.library.Unit#addOrder(magellan.library.Order, boolean)
+   * Add specified order at the end.
+   * 
+   * @param line
    */
-  public void addOrder(Order line, boolean refreshRelations) {
-    addOrders2(Collections.singletonList(line), refreshRelations);
+  public void addOrder(Order line) {
+    addOrders2(Collections.singletonList(line));
   }
 
-  // /**
-  // * Adds the order at position <tt>i</tt> and refreshes the relations
-  // *
-  // * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
-  // * @param newOrders
-  // * @see magellan.library.Unit#addOrderAt(int, java.lang.String)
-  // */
-  // public void addOrderAt(int i, String newOrders) {
-  // addOrderAt(i, newOrders, true);
-  // }
+  /**
+   * @see magellan.library.Unit#addOrder(magellan.library.Order, boolean)
+   * @deprecated relation refreshing is now done event-based
+   */
+  @Deprecated
+  public void addOrder(Order line, boolean refreshRelations) {
+    addOrders2(Collections.singletonList(line));
+  }
+
+  /**
+   * Adds the order at position <tt>i</tt> and refreshes the relations
+   * 
+   * @param pos An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
+   * @param newOrder
+   * @see magellan.library.Unit#addOrderAt(int, java.lang.String)
+   */
+  public void addOrderAt(int pos, String newOrder) {
+    addOrderAt(pos, createOrder(newOrder));
+  }
 
   /**
    * Adds the order at position <tt>i</tt> and possibly refreshes the relations
@@ -414,51 +419,51 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @param newOrder
    * @param refreshRelations if true also refresh the relations of the unit.
    * @see magellan.library.Unit#addOrderAt(int, java.lang.String, boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void addOrderAt(int pos, String newOrder, boolean refreshRelations) {
-    addOrderAt(pos, createOrder(newOrder), refreshRelations);
+    addOrderAt(pos, newOrder);
   }
 
-  // /**
-  // * @see magellan.library.Unit#addOrderAt(int, magellan.library.Order)
-  // */
-  // public void addOrderAt(int pos, Order newOrder) {
-  // addOrderAt(pos, newOrder, true);
-  // }
-
   /**
-   * @see magellan.library.Unit#addOrderAt(int, magellan.library.Order, boolean)
+   * @see magellan.library.Unit#addOrderAt(int, magellan.library.Order)
    */
-  public void addOrderAt(int pos, Order newOrder, boolean refreshRelations) {
-
+  public void addOrderAt(int pos, Order newOrder) {
     if (pos < 0) {
       getOrdersObject().add(newOrder);
     } else {
       getOrdersObject().add(pos, newOrder);
     }
 
-    if (refreshRelations) {
-      refreshRelations(pos);
-    }
-
+    refreshRelations(pos);
   }
 
-  // /**
-  // * @see magellan.library.Unit#replaceOrder(int, java.lang.String)
-  // */
-  // public void replaceOrder(int pos, String newOrder) {
-  // replaceOrder(pos, createOrder(newOrder), true);
-  // }
+  /**
+   * @see magellan.library.Unit#addOrderAt(int, magellan.library.Order, boolean)
+   * @deprecated relation refreshing is now done event-based
+   */
+  @Deprecated
+  public void addOrderAt(int pos, Order newOrder, boolean refreshRelations) {
+    addOrderAt(pos, newOrder);
+  }
+
+  /**
+   * @see magellan.library.Unit#replaceOrder(int, Order)
+   */
+  public void replaceOrder(int pos, Order newOrder) {
+    ordersObject.set(pos, newOrder);
+
+    refreshRelations(pos);
+  }
 
   /**
    * @see magellan.library.Unit#replaceOrder(int, magellan.library.Order, boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void replaceOrder(int pos, Order newOrder, boolean refreshRelations) {
-    ordersObject.set(pos, newOrder);
-
-    if (refreshRelations) {
-      refreshRelations(pos);
-    }
+    replaceOrder(pos, newOrder);
   }
 
   /**
@@ -468,35 +473,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     return getData().getOrderParser().parse(newOrder, getLocale());
   }
 
-  // /**
-  // * Adds the order and refreshes the relations
-  // *
-  // * @param newOrders
-  // */
-  // public void addOrders(String newOrders) {
-  // addOrders(newOrders, true);
-  // }
-
-  // /**
-  // * Adds the order and possibly refreshes the relations
-  // *
-  // * @param newOrders
-  // * @param refreshRelations if true also refresh the relations of the unit.
-  // */
-  // public void addOrders(String newOrders, boolean refreshRelations) {
-  // try {
-  // LineNumberReader stream =
-  // new LineNumberReader(new MergeLineReader(new StringReader(newOrders)));
-  // String line;
-  // while ((line = stream.readLine()) != null) {
-  // addOrders(Collections.singleton(line), refreshRelations);
-  // }
-  // } catch (IOException e) {
-  // // StringReader should never throw an exception
-  // log.error("StringReaderException!", e);
-  // }
-  // }
-
   /**
    * Adds the orders and refreshes the relations
    * 
@@ -504,7 +480,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @see magellan.library.Unit#addOrders(java.util.Collection)
    */
   public void addOrders(Collection<String> newOrders) {
-    addOrders(newOrders, true);
+    final int newPos = getOrdersObject().size();
+    for (String line : newOrders) {
+      getOrdersObject().add(createOrder(line));
+    }
+
+    refreshRelations(newPos);
   }
 
   /**
@@ -513,34 +494,29 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @param newOrders
    * @param refreshRelations If true also refresh the relations of the unit
    * @see magellan.library.Unit#addOrders(java.util.Collection, boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void addOrders(Collection<String> newOrders, boolean refreshRelations) {
-    final int newPos = getOrdersObject().size();
-    for (String line : newOrders) {
-      getOrdersObject().add(createOrder(line));
-    }
-
-    if (refreshRelations) {
-      refreshRelations(newPos);
-    }
+    addOrders(newOrders);
   }
 
   /**
    * @see magellan.library.Unit#addOrders2(java.util.Collection, boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void addOrders2(Collection<Order> newOrders, boolean refreshRelations) {
-    final int newPos = getOrdersObject().size();
-    getOrdersObject().addAll(newOrders);
-    if (refreshRelations) {
-      refreshRelations(newPos);
-    }
+    addOrders2(newOrders);
   }
 
   /**
    * @see magellan.library.Unit#addOrders2(java.util.Collection, boolean)
    */
   public void addOrders2(Collection<Order> newOrders) {
-    addOrders2(newOrders, true);
+    final int newPos = getOrdersObject().size();
+    getOrdersObject().addAll(newOrders);
+    refreshRelations(newPos);
   }
 
   /**
@@ -550,7 +526,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @see magellan.library.Unit#setOrders(java.util.Collection)
    */
   public void setOrders(Collection<String> newOrders) {
-    setOrders(newOrders, true);
+    if (newOrders == null) {
+      ordersObject = null;
+      return;
+    }
+    if (!ordersAreNull()) {
+      ordersObject.clear();
+    }
+    addOrders(newOrders);
   }
 
   /**
@@ -559,40 +542,33 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @param newOrders
    * @param refreshRelations if true also refresh the relations of the unit.
    * @see magellan.library.Unit#setOrders(java.util.Collection, boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void setOrders(Collection<String> newOrders, boolean refreshRelations) {
-    if (newOrders == null) {
-      ordersObject = null;
-      return;
-    }
-    if (!ordersAreNull()) {
-      ordersObject.clear();
-    }
-    addOrders(newOrders, refreshRelations);
+    setOrders(newOrders);
   }
 
   /**
    * @see magellan.library.Unit#setOrders2(java.util.Collection)
    */
   public void setOrders2(Collection<Order> newOrders) {
-    setOrders2(newOrders, true);
+    if (newOrders == null) {
+      ordersObject = null;
+    } else {
+      getOrdersObject().clear();
+      getOrdersObject().addAll(newOrders);
+    }
+    refreshRelations(0);
   }
 
   /**
    * @see magellan.library.Unit#setOrders2(java.util.Collection, boolean)
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void setOrders2(Collection<Order> newOrders, boolean refresh) {
-    if (newOrders == null) {
-      ordersObject = null;
-      return;
-    }
-
-    getOrdersObject().clear();
-    getOrdersObject().addAll(newOrders);
-
-    if (refresh) {
-      refreshRelations();
-    }
+    setOrders2(newOrders);
   }
 
   /**
@@ -1155,10 +1131,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       gdata.removeTemp(key);
       // data.tempUnits().remove(key);
 
-      // enforce refreshing of unit relations in the whole region
-      if (getRegion() != null) {
-        getRegion().refreshUnitRelations(true);
-      }
+      refreshRelations();
 
     }
   }
@@ -1197,8 +1170,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns a Collection over the relations this unit has to other units. The iterator returns
    * <tt>UnitRelation</tt> objects. An empty iterator is returned if the relations have not been set
-   * up so far or if there are no relations. To have the relations to other units properly set up
-   * the refreshRelations() method has to be invoked.
+   * up so far or if there are no relations.
    */
   @Override
   public List<UnitRelation> getRelations() {
@@ -2214,49 +2186,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     return ret;
   }
 
-  /**
-   * remove relations that are originating from us with a line number &gt;= <tt>from</tt>
-   */
-  @Deprecated
-  private void removeRelationsOriginatingFromUs(int from) {
-    final Collection<UnitRelation> deathRow = new LinkedList<UnitRelation>();
-
-    for (UnitRelation r : getRelations()) {
-      if (equals(r.origin) && (r.line >= from)) {
-        if (r instanceof InterUnitRelation) {
-          InterUnitRelation ir = (InterUnitRelation) r;
-          if (ir.target != null) {
-            // remove relations in target units
-            if (ir.target.equals(this)) {
-              if (ir.source != this) {
-                ir.source.removeRelation(r);
-              }
-            } else {
-              if (ir.target != this) {
-                ir.target.removeRelation(r);
-              }
-            }
-          }
-        } else {
-          if (r instanceof UnitContainerRelation) {
-            // remove relations in target unit containers
-            if (((UnitContainerRelation) r).target != null) {
-              ((UnitContainerRelation) r).target.removeRelation(r);
-            }
-          }
-        }
-
-        // remove relation afterwards
-        deathRow.add(r);
-      }
-    }
-
-    for (UnitRelation unitRelation : deathRow) {
-      removeRelation(unitRelation);
-    }
-  }
-
-  // FIXME "No relation of a unit can affect an object outside the region". This might not be true
+  // "No relation of a unit can affect an object outside the region". This might not be true
   // any more for familiars or ZAUBERE.
   /**
    * Parses the orders of this unit and detects relations between units established by those orders.
@@ -2265,7 +2195,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * to be determined, this method has to be called for each unit in the same region. Since
    * relations are defined by unit orders, modified orders may lead to different relations.
    * Therefore refreshRelations() has to be invoked on a unit after its orders were modified.
+   * 
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public void refreshRelations() {
     refreshRelations(1);
   }
@@ -2280,8 +2213,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * on a unit after its orders were modified.
    * 
    * @param from Start from this line
+   * @deprecated relation refreshing is now done event-based
    */
+  @Deprecated
   public synchronized void refreshRelations(int from) {
+    if (deprecationCounter++ < 10) {
+      log.warn("calling deprecated refreshRelations", new Exception());
+    }
     if (ordersAreNull() || (getRegion() == null))
       return;
 
@@ -2291,52 +2229,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     // addAndSpreadRelations(getData().getGameSpecificStuff().getRelationFactory().createRelations(
     // this, from));
     // TODO invalidateCache();
-  }
-
-  /** Deprecated! This is done proactively via UnitRelation.add() now. */
-  private void addAndSpreadRelations(Collection<UnitRelation> newRelations) {
-    if (MagellanUnitImpl.log.isDebugEnabled()) {
-      MagellanUnitImpl.log.debug("Relations for " + this);
-      MagellanUnitImpl.log.debug(newRelations);
-    }
-
-    for (UnitRelation r : newRelations) {
-      addRelation(r);
-
-      if (r.source != this) {
-        r.source.addRelation(r);
-
-        continue;
-      }
-
-      if (r instanceof InterUnitRelation) {
-        final InterUnitRelation iur = (InterUnitRelation) r;
-
-        if ((iur.target != null) && (iur.target != this)) {
-          iur.target.addRelation(r);
-        }
-
-        continue;
-      }
-
-      if (r instanceof UnitContainerRelation) {
-        final UnitContainerRelation ucr = (UnitContainerRelation) r;
-
-        if (ucr.target != null) {
-          ucr.target.addRelation(r);
-        }
-
-        continue;
-      }
-      if (r instanceof RenameNamedRelation) {
-        Named named = ((RenameNamedRelation) r).named;
-        if (named != null && named instanceof Related) {
-          ((Related) named).addRelation(r);
-        }
-
-        continue;
-      }
-    }
   }
 
   /**

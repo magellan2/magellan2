@@ -136,7 +136,10 @@ public class EresseaRelationFactory implements RelationFactory {
     }
 
     public void run() {
+      // long time = System.currentTimeMillis();
+      // log.finest(0);
       processOrders(region);
+      // log.finest("rr " + (System.currentTimeMillis() - time));
     }
 
   }
@@ -160,10 +163,10 @@ public class EresseaRelationFactory implements RelationFactory {
     public synchronized void actionPerformed(ActionEvent e) {
       if (!regions.isEmpty()) {
         log.finer("updating " + regions.size());
-      }
-      // timer fired
-      for (Region r : regions) {
-        SwingUtilities.invokeLater(new Processor(r));
+        // timer fired
+        for (Region r : regions) {
+          SwingUtilities.invokeLater(new Processor(r));
+        }
       }
       regions.clear();
     }
@@ -1046,6 +1049,7 @@ public class EresseaRelationFactory implements RelationFactory {
   }
 
   protected synchronized void processOrders(Region r) {
+    // long time = System.currentTimeMillis();
     GameData data = r.getData();
     affected = new HashSet<Region>();
     affected.add(r);
@@ -1116,6 +1120,7 @@ public class EresseaRelationFactory implements RelationFactory {
       updateBuildingMaintenance(r, state);
       buildingsPaid = true;
     }
+    // log.finest("pp" + (System.currentTimeMillis() - time));
 
     postProcess(r);
   }
@@ -1129,7 +1134,8 @@ public class EresseaRelationFactory implements RelationFactory {
   }
 
   protected void postProcess(Region r) {
-
+    // long time = System.currentTimeMillis();
+    // log.finest(0);
     for (Unit u : r.units()) {
       checkTransport(u);
       // updateSilver(u);
@@ -1137,12 +1143,15 @@ public class EresseaRelationFactory implements RelationFactory {
 
     GameData data = r.getData();
 
+    // log.finest(System.currentTimeMillis() - time);
+    Object cause = new Object();
     for (Region r2 : affected) {
       if (r2 != null) {
-        data.fireOrdersChanged(this, r2);
+        data.fireOrdersChanged(this, r2, cause);
       }
     }
     affected.clear();
+    // log.finest(System.currentTimeMillis() - time);
   }
 
   private void updateBuildingMaintenance(Region r, EresseaExecutionState state) {

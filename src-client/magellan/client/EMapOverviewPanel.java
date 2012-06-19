@@ -108,7 +108,6 @@ import magellan.library.Ship;
 import magellan.library.TempUnit;
 import magellan.library.Unique;
 import magellan.library.Unit;
-import magellan.library.UnitContainer;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.UnitChangeEvent;
@@ -209,6 +208,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private UnitChangeListener unitChangeListener;
 
   protected Object lastCause;
+  protected Region lastRegion;
   private static final Comparator<Unique> idCmp = IDComparator.DEFAULT;
   private static final Comparator<Named> nameCmp = new NameComparator(EMapOverviewPanel.idCmp);
 
@@ -227,10 +227,11 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     unitChangeListener = new UnitChangeListener() {
       public void unitChanged(UnitChangeEvent event) {
-        // if (lastCause != event.getCause()) {
-        lastCause = event.getCause();
-        update(event.getUnit());
-        // }
+        if (lastCause != event.getCause() || lastRegion != event.getUnit().getRegion()) {
+          lastCause = event.getCause();
+          lastRegion = event.getUnit().getRegion();
+          update(event.getUnit());
+        }
       }
     };
 
@@ -2069,34 +2070,62 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    *          updated as well
    */
   protected synchronized void update(Unit u) {
-    if (unitNodes.containsKey(u.getID())) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) unitNodes.get(u.getID());
+    log.finest(u);
+    // long time = System.currentTimeMillis();
+    // TreeNode regionNode = regionNodes.get(u.getRegion().getID());
+    // Set<TreeNode> parents = new HashSet<TreeNode>();
+    // parents.add(regionNode);
+    //
+    for (Unit u2 : u.getRegion().units()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) unitNodes.get(u2.getID());
+      // TreeNode[] path = treeModel.getPathToRoot(node);
+      // TreeNode parent = path[path.length - 2];
       UnitNodeWrapper unw = (UnitNodeWrapper) node.getUserObject();
       unw.clearBuffer();
-      treeModel.nodeChanged(node);
+      // parents.add(parent);
 
-      // update building or ship nodes, which may have been modified, too
-      Ship ship = u.getShip();
-      if (ship != null && shipNodes.containsKey(ship.getID())) {
-        treeModel.nodeChanged(shipNodes.get(ship.getID()));
-      }
-      ship = u.getModifiedShip();
-      if (ship != null && shipNodes.containsKey(ship.getID())) {
-        treeModel.nodeChanged(shipNodes.get(ship.getID()));
-      }
-
-      UnitContainer container = u.getBuilding();
-      if (container != null && buildingNodes.containsKey(container.getID())) {
-        treeModel.nodeChanged(buildingNodes.get(container.getID()));
-      }
-      container = u.getModifiedBuilding();
-      if (container != null && buildingNodes.containsKey(container.getID())) {
-        treeModel.nodeChanged(buildingNodes.get(container.getID()));
-      }
-
-      // tree.validate();
-      // tree.repaint();
     }
+
+    // log.finest(System.currentTimeMillis() - time);
+    // for (TreeNode parent : parents) {
+    // int[] childIndices = new int[parent.getChildCount()];
+    // for (int i = 0; i < childIndices.length; ++i) {
+    // childIndices[i] = i;
+    // }
+    // treeModel.nodesChanged(parent, childIndices);
+    // log.finest(System.currentTimeMillis() - time);
+    // }
+
+    tree.repaint();
+
+    // if (unitNodes.containsKey(u.getID())) {
+    // DefaultMutableTreeNode node = (DefaultMutableTreeNode) unitNodes.get(u.getID());
+    // UnitNodeWrapper unw = (UnitNodeWrapper) node.getUserObject();
+    // unw.clearBuffer();
+    // treeModel.nodeChanged(node);
+    //
+    // // update building or ship nodes, which may have been modified, too
+    // Ship ship = u.getShip();
+    // if (ship != null && shipNodes.containsKey(ship.getID())) {
+    // treeModel.nodeChanged(shipNodes.get(ship.getID()));
+    // }
+    // ship = u.getModifiedShip();
+    // if (ship != null && shipNodes.containsKey(ship.getID())) {
+    // treeModel.nodeChanged(shipNodes.get(ship.getID()));
+    // }
+    //
+    // UnitContainer container = u.getBuilding();
+    // if (container != null && buildingNodes.containsKey(container.getID())) {
+    // treeModel.nodeChanged(buildingNodes.get(container.getID()));
+    // }
+    // container = u.getModifiedBuilding();
+    // if (container != null && buildingNodes.containsKey(container.getID())) {
+    // treeModel.nodeChanged(buildingNodes.get(container.getID()));
+    // }
+    //
+    // // tree.validate();
+    // // tree.repaint();
+    // }
   }
 
   protected TreeBuilder createTreeBuilder() {

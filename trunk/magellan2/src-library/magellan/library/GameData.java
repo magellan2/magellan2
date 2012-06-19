@@ -1908,10 +1908,16 @@ public abstract class GameData implements Cloneable, Addeable {
     return changeListeners;
   }
 
-  public void fireOrdersChanged(Object source, Region r) {
-    Object cause = new Object();
-    for (Unit u : r.units()) {
-      fireOrdersChanged(source, u, cause);
+  public void fireOrdersChanged(Object source, Region r, Object cause) {
+    for (UnitChangeListener listener : getUnitChangeListeners()) {
+//      long time = System.currentTimeMillis();
+      for (Unit u : r.units()) {
+        if (changeListeners != null) {
+          UnitChangeEvent event = new UnitChangeEvent(source, u, cause);
+          listener.unitChanged(event);
+        }
+      }
+      // log.finest((System.currentTimeMillis() - time) + " " + listener);
     }
   }
 

@@ -9,7 +9,6 @@ package magellan.library.rules;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,6 +27,7 @@ import magellan.library.gamebinding.GameSpecificStuffProvider;
 import magellan.library.impl.MagellanSpellImpl;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Umlaut;
+import magellan.library.utils.UnionCollection;
 import magellan.library.utils.filters.CollectionFilters;
 import magellan.library.utils.logging.Logger;
 
@@ -205,7 +205,7 @@ public class GenericRules implements Rules {
   }
 
   public Collection<BuildingType> getBuildingTypes() {
-    return new CompoundCollection<BuildingType>(getMap(CastleType.class).values(), getMap(
+    return new UnionCollection<BuildingType>(getMap(CastleType.class).values(), getMap(
         BuildingType.class).values());
     // return getMap(BuildingType.class).values();
   }
@@ -842,66 +842,6 @@ public class GenericRules implements Rules {
    */
   public void setOrderfileStartingString(String startingString) {
     orderFileStartingString = startingString;
-  }
-
-  /**
-   * An iterator that iterates over the union of two collections. Unmodifiable.
-   */
-  public static class CompoundIterator<T> implements Iterator<T> {
-
-    private Iterator<? extends T> iterator1;
-    private Iterator<? extends T> iterator2;
-
-    public CompoundIterator(Collection<? extends T> collection1, Collection<? extends T> collection2) {
-      this.iterator1 = collection1.iterator();
-      this.iterator2 = collection2.iterator();
-    }
-
-    public boolean hasNext() {
-      return iterator1.hasNext() || iterator2.hasNext();
-    }
-
-    public T next() {
-      if (iterator1.hasNext())
-        return iterator1.next();
-      return iterator2.next();
-    }
-
-    public void remove() {
-      throw new UnsupportedOperationException();
-    }
-
-  }
-
-  /**
-   * A collection which acts as the union of two collections. Unmodifiable.
-   */
-  public static class CompoundCollection<T> extends AbstractCollection<T> {
-
-    private Collection<? extends T> collection1;
-    private Collection<? extends T> collection2;
-
-    // public CompoundCollection(){
-    // }
-
-    public CompoundCollection(Collection<? extends T> collection1,
-        Collection<? extends T> collection2) {
-      if (collection1 == null || collection2 == null)
-        throw new NullPointerException();
-      this.collection1 = collection1;
-      this.collection2 = collection2;
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-      return new CompoundIterator<T>(collection1, collection2);
-    }
-
-    @Override
-    public int size() {
-      return collection1.size() + collection2.size();
-    }
-
   }
 
   @SuppressWarnings("unused")

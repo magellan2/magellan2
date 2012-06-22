@@ -40,10 +40,20 @@ import magellan.library.utils.guiwrapper.CacheableOrderEditor;
  * @version $Revision: 389 $
  */
 public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
-  /** The unit does not possess horses */
+  /**
+   * The unit does not possess horses.
+   * 
+   * @deprecated Use {@link MovementEvaluator#CAP_NO_HORSES}
+   */
+  @Deprecated
   public static final int CAP_NO_HORSES = MovementEvaluator.CAP_NO_HORSES;
 
-  /** The unit is not sufficiently skilled in horse riding */
+  /**
+   * The unit is not sufficiently skilled in horse riding.
+   * 
+   * @deprecated Use {@link MovementEvaluator#CAP_UNSKILLED}
+   */
+  @Deprecated
   public static final int CAP_UNSKILLED = MovementEvaluator.CAP_UNSKILLED;
 
   // hmmm....

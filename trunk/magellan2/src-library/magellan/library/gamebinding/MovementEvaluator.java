@@ -12,21 +12,17 @@ import java.util.List;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.Unit;
-import magellan.library.rules.MessageType;
+import magellan.library.relation.MovementRelation;
+import magellan.library.utils.Direction;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 171 $
+ * Provides game specific methods concerning movement, load and such.
  */
 public interface MovementEvaluator {
   /** The unit does not possess horses */
   public static final int CAP_NO_HORSES = Integer.MIN_VALUE;
 
-  /* The unit is not sufficiently skilled in horse riding */
-
-  /** DOCUMENT-ME */
+  /** The unit is not sufficiently skilled in horse riding */
   public static final int CAP_UNSKILLED = MovementEvaluator.CAP_NO_HORSES + 1;
 
   /**
@@ -83,7 +79,7 @@ public interface MovementEvaluator {
    * Returns the unit's speed based on payload and horses.
    * 
    * @param unit
-   * @return
+   * @return the unit's speed based on payload and horses
    */
   public int getModifiedRadius(Unit unit);
 
@@ -126,15 +122,13 @@ public interface MovementEvaluator {
    */
   public CoordinateID getDestination(Unit unit, List<CoordinateID> path);
 
-  public MessageType getTransportMessageType();
-
   /**
    * Returns the number of turns that the unit needs to travel on the specified path based on
    * modified riding skill, horses, carts, load of this unit and roads <i>on the given path</i>.
    * 
    * @param unit
    * @param path A sequence of regions. The first region must be the current region of the unit.
-   * @return
+   * @return the number of rounds needed to complete the path
    */
   public int getDistance(Unit unit, List<Region> path);
 
@@ -183,6 +177,22 @@ public interface MovementEvaluator {
    */
   public List<CoordinateID> getAdditionalMovement(Unit u);
 
+  /**
+   * Returns the list of regions that the unit will be transported through.
+   * 
+   * @param u
+   * @return A list of regions, starting with the current region. If there is a PAUSE, the region
+   *         repeats. An empty list if the unit doesn't move.
+   */
   public List<CoordinateID> getPassiveMovement(Unit u);
+
+  /**
+   * Computes the movement of a unit with the given directions as orders
+   * 
+   * @param unit
+   * @param directions
+   * @return A MovementRelation expressing the future movement of the unit
+   */
+  public MovementRelation getMovement(Unit unit, List<Direction> directions);
 
 }

@@ -188,13 +188,27 @@ public class GameDataBuilder {
     return island;
   }
 
+  /**
+   * Adds or replaces a region to the report.
+   * 
+   * @param data The report
+   * @param coordinate
+   * @param name
+   * @param type RegionType, e.g., "Ebene"
+   * @param sortIndex
+   * @return The new region
+   */
   public Region addRegion(GameData data, String coordinate, String name, String type, int sortIndex) {
     final CoordinateID c = CoordinateID.parse(coordinate, " ");
 
     final Region region = MagellanFactory.createRegion(c, data);
     data.addRegion(region);
 
-    region.setName(name);
+    if (name != null) {
+      region.setName(name);
+    } else {
+      region.setName(type +"_" + c);
+    }
 
     if (type != null) {
       region.setType(data.rules.getRegionType(StringID.create(type), true));

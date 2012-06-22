@@ -19,10 +19,9 @@ import magellan.library.Order;
 import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Unit;
-import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.gamebinding.FollowUnitOrder;
-import magellan.library.gamebinding.MovementOrder;
+import magellan.library.gamebinding.MovementEvaluator;
+import magellan.library.relation.MovementRelation;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ShipInspector.ShipProblemTypes;
 import magellan.library.utils.Regions;
@@ -35,8 +34,9 @@ public class MovementInspector extends AbstractInspector {
   /** The singleton instance of this Inspector */
   // public static final MovementInspector INSPECTOR = new MovementInspector(data);
 
-  enum MovementProblemTypes {
-    FOOTOVERLOADED, HORSEOVERLOADED, TOOMANYHORSESFOOT, TOOMANYHORSESRIDE, UNITFOLLOWSSELF;
+  public enum MovementProblemTypes {
+    FOOTOVERLOADED, HORSEOVERLOADED, TOOMANYHORSESFOOT, TOOMANYHORSESRIDE, UNITFOLLOWSSELF,
+    MOVE_INVALID, UNKNOWNREGION, MOVEMENTTOOLONG, ROUTETOOLONG;
 
     private ProblemType type;
 
@@ -45,7 +45,7 @@ public class MovementInspector extends AbstractInspector {
       type = ProblemType.create("tasks.movementinspector", name);
     }
 
-    ProblemType getType() {
+    public ProblemType getType() {
       return type;
     }
   }
@@ -76,53 +76,54 @@ public class MovementInspector extends AbstractInspector {
       return Collections.emptyList();
 
     // we only warn
-    if (severity != Severity.WARNING)
+    if (severity != Severity.WARNING && severity != Severity.ERROR)
       return Collections.emptyList();
 
     List<Problem> problems = new ArrayList<Problem>();
 
-    int movementOrderLine = -1;
-    int line = 0;
     Orders orders = u.getOrders2();
-    for (Order order : orders) {
-      line++;
-      try {
-        if (order.isValid() && order instanceof FollowUnitOrder) {
-          movementOrderLine = line;
-          if (orders.isToken(order, 1, EresseaConstants.O_UNIT)) {
-            if (UnitID.createUnitID(order.getToken(2).getText(), getData().base).equals(u.getID())) {
-              problems.add(ProblemFactory.createProblem(Severity.ERROR,
-                  MovementProblemTypes.UNITFOLLOWSSELF.getType(), u, this, line));
-            }
-          }
-        } else if (order.isValid() && order instanceof MovementOrder) {
-          movementOrderLine = line;
-        }
-      } catch (Exception e) {
-        Logger.getInstance(getClass()).fine("", e);
-      }
+    List<MovementRelation> rels = u.getRelations(MovementRelation.class);
+    if (rels.size() == 0)
+      return Collections.emptyList();
+    MovementRelation mRel = rels.iterator().next();
+
+    List<CoordinateID> movement = mRel.getMovement();
+
+    if (severity == Severity.ERROR && movement.size() > 1
+        && movement.get(0).equals(movement.get(1))) {
+      // this happens when we have some kind of movement and an startRegion
+      // but no next region
+      // example: ROUTE PAUSE NO
+      problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.NONEXTREGION
+          .getType(), u, this, mRel.line));
     }
 
-    if (!u.getModifiedMovement().isEmpty() || movementOrderLine > 0) {
-
-      if (u.getModifiedMovement().size() > 1
-          && u.getModifiedMovement().get(0).equals(u.getModifiedMovement().get(1))) {
-        // this happens when we have some kind of movement and an startRegion
-        // but no next region
-        // example: ROUTE PAUSE NO
-        problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.NONEXTREGION
-            .getType(), u, this, movementOrderLine));
+    if (severity == Severity.WARNING && mRel.getTransporter() == u) {
+      if (mRel.unknown) {
+        problems.add(ProblemFactory.createProblem(Severity.WARNING,
+            MovementProblemTypes.UNKNOWNREGION.getType(), u, this, mRel.line));
+      }
+      if (mRel.getFutureMovement().size() > 1) {
+        if (orders.isToken(orders.get(mRel.line - 1), 0, EresseaConstants.O_MOVE)) {
+          problems.add(ProblemFactory.createProblem(Severity.WARNING,
+              MovementProblemTypes.MOVEMENTTOOLONG.getType(), u, this, mRel.line));
+        } else {
+          if (!mRel.getFutureMovement().get(1).equals(mRel.getFutureMovement().get(0))) {
+            // future does not start with pause
+            problems.add(ProblemFactory.createProblem(Severity.WARNING,
+                MovementProblemTypes.ROUTETOOLONG.getType(), u, this, mRel.line));
+          }
+        }
       }
 
       // only test for foot/horse movement if unit is not owner of a modified ship
       if ((u.getModifiedShip() == null) || !u.equals(u.getModifiedShip().getModifiedOwnerUnit())) {
-        problems.addAll(reviewUnitOnFoot(u, movementOrderLine));
-        if (u.getModifiedMovement().size() > 0) {
-
+        problems.addAll(reviewUnitOnFoot(u, mRel.line));
+        if (movement.size() > 0) {
           int count = 0;
           boolean road = true;
           CoordinateID lastID = null;
-          for (CoordinateID coordinate : u.getModifiedMovement()) {
+          for (CoordinateID coordinate : movement) {
             Region currentRegion = getData().getRegion(coordinate);
             if (lastID == null) {
               lastID = coordinate;
@@ -142,22 +143,12 @@ public class MovementInspector extends AbstractInspector {
             }
           }
           if ((count == 2 && !road) || count > 2) {
-            problems.addAll(reviewUnitOnHorse(u, movementOrderLine));
+            problems.addAll(reviewUnitOnHorse(u, mRel.line));
           }
         }
       }
     }
 
-    // TODO: check for movement length
-    // TODO: check for roads
-
-    // Reminder: Regions.isCompleteRoadConnection (Fiete) (nur für 2 benachbarte Regionen)
-
-    /*
-     * switch(u.getRadius()) { case 0: problems.add(new CriticizedWarning(u, this,
-     * "Cannot move, radius is on "+u.getRadius()+"!")); case 1: problems.add(new
-     * CriticizedWarning(u, this, "Cannot ride, radius is on "+u.getRadius()+"!")); default: ; }
-     */
     if (problems.isEmpty())
       return Collections.emptyList();
     else
@@ -188,7 +179,7 @@ public class MovementInspector extends AbstractInspector {
   private List<Problem> reviewUnitOnFoot(Unit u, int line) {
     int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(u);
 
-    if (maxOnFoot == Unit.CAP_UNSKILLED)
+    if (maxOnFoot == MovementEvaluator.CAP_UNSKILLED)
       return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
           MovementProblemTypes.TOOMANYHORSESFOOT.getType(), u, this, line)));
 
@@ -204,11 +195,11 @@ public class MovementInspector extends AbstractInspector {
   private List<Problem> reviewUnitOnHorse(Unit u, int line) {
     int maxOnHorse = getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(u);
 
-    if (maxOnHorse == Unit.CAP_UNSKILLED)
+    if (maxOnHorse == MovementEvaluator.CAP_UNSKILLED)
       return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
           MovementProblemTypes.TOOMANYHORSESRIDE.getType(), u, this, line)));
 
-    if (maxOnHorse != Unit.CAP_NO_HORSES) {
+    if (maxOnHorse != MovementEvaluator.CAP_NO_HORSES) {
       int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(u);
 
       if ((maxOnHorse - modLoad) < 0)

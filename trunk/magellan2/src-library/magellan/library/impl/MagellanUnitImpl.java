@@ -1267,7 +1267,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     if (movementRelations.isEmpty())
       return Collections.emptyList();
 
-    return Collections.unmodifiableList((movementRelations.iterator().next()).movement);
+    return Collections.unmodifiableList((movementRelations.iterator().next()).getMovement());
   }
 
   /**

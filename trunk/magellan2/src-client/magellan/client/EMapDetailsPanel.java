@@ -381,7 +381,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               && !u.ordersAreNull()) {
             // the following code only changes the name
             // right now it is not necessary to refresh the relations; are we sure??
-            getGameData().getGameSpecificStuff().getOrderChanger().addNamingOrder(u, name.getText());
+            getGameData().getGameSpecificStuff().getOrderChanger()
+                .addNamingOrder(u, name.getText());
             dispatcher.fire(new UnitOrdersEvent(EMapDetailsPanel.this, u));
 
             // if (u.cache != null && u.cache.orderEditor != null) {
@@ -2572,9 +2573,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
 
       strPersons =
-          Resources.get(res, u.getPersons(), u.getModifiedPersons(), u.getRaceName(getGameData()), u
-              .getFaction() != null ? u.getFaction() : Resources
-              .get("emapdetailspanel.node.unknownfaction"))
+          Resources.get(res, u.getPersons(), u.getModifiedPersons(), u.getRaceName(getGameData()),
+              u.getFaction() != null ? u.getFaction() : Resources
+                  .get("emapdetailspanel.node.unknownfaction"))
 
               + (u.getGroup() != null ? Resources.get("emapdetailspanel.node.group") + " "
                   + u.getGroup().getName() : "");
@@ -2995,7 +2996,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // payload
     int maxOnFoot = getMovementEvaluator().getPayloadOnFoot(u);
 
-    if (maxOnFoot == Unit.CAP_UNSKILLED) {
+    if (maxOnFoot == MovementEvaluator.CAP_UNSKILLED) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.capacityonfoot") + ": "
           + Resources.get("emapdetailspanel.node.toomanyhorses"), "warnung"));
     } else {
@@ -3036,10 +3037,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     int maxOnHorse = getMovementEvaluator().getPayloadOnHorse(u);
 
-    if (maxOnHorse == Unit.CAP_UNSKILLED) {
+    if (maxOnHorse == MovementEvaluator.CAP_UNSKILLED) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.capacityonhorse") + ": "
           + Resources.get("emapdetailspanel.node.toomanyhorses"), "warnung"));
-    } else if (maxOnHorse != Unit.CAP_NO_HORSES) {
+    } else if (maxOnHorse != MovementEvaluator.CAP_NO_HORSES) {
       float max = maxOnHorse / 100.0F;
       float free = Math.abs(maxOnHorse - modLoad) / 100.0F;
       DefaultMutableTreeNode capacityNode;
@@ -3842,7 +3843,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         // units can not own peasants!
         int amount = 0;
 
-        if (ingredient.getItemType().equals(getGameData().rules.getItemType(StringID.create("Bauer")))) {
+        if (ingredient.getItemType().equals(
+            getGameData().rules.getItemType(StringID.create("Bauer")))) {
           amount = region.getPeasants();
         } else {
           Item item =
@@ -4805,7 +4807,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               }
             } else {
               compNode =
-                  createSimpleNode(getGameData().getTranslation(key) + ": " + val, "items/" + keyIcon);
+                  createSimpleNode(getGameData().getTranslation(key) + ": " + val, "items/"
+                      + keyIcon);
             }
           }
           componentsNode.add(compNode);
@@ -5649,8 +5652,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     public void actionPerformed(ActionEvent e) {
       Unit unit =
           (new ShipRoutePlanner()).planShipRoute(target, getGameData(), EMapDetailsPanel.this,
-              new RoutingDialog(JOptionPane.getFrameForComponent(EMapDetailsPanel.this), getGameData(),
-                  false));
+              new RoutingDialog(JOptionPane.getFrameForComponent(EMapDetailsPanel.this),
+                  getGameData(), false));
 
       if (unit != null) {
         dispatcher.fire(new UnitOrdersEvent(EMapDetailsPanel.this, unit));

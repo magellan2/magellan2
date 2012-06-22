@@ -163,7 +163,6 @@ public class PathCellRenderer extends ImageCellRenderer {
 
   protected List<CoordinateID> getAdditionalMovement(Unit u) {
     return u.getData().getGameSpecificStuff().getMovementEvaluator().getAdditionalMovement(u);
-
   }
 
   protected List<CoordinateID> getPassiveMovement(Unit u) {
@@ -468,7 +467,8 @@ public class PathCellRenderer extends ImageCellRenderer {
     }
 
     public void initPreferences() {
-      // TODO: implement it
+      chkDrawPassivePath.setSelected(source.getDrawPassivePath());
+      chkDrawPastPath.setSelected(source.getDrawPastPath());
     }
 
     /**

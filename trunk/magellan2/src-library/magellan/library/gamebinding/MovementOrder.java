@@ -24,18 +24,20 @@
 package magellan.library.gamebinding;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
-import magellan.library.CoordinateID;
 import magellan.library.GameData;
-import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.MovementRelation;
+import magellan.library.relation.TransportRelation;
 import magellan.library.relation.UnitRelation;
+import magellan.library.tasks.MovementInspector;
 import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
 import magellan.library.utils.Direction;
 import magellan.library.utils.OrderToken;
@@ -56,7 +58,6 @@ public class MovementOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    * @param permanent
    */
   public MovementOrder(List<OrderToken> tokens, String text, boolean permanent) {
@@ -73,47 +74,59 @@ public class MovementOrder extends SimpleOrder {
     if (!isValid())
       return;
 
-    List<CoordinateID> modifiedMovement = new ArrayList<CoordinateID>(2);
+    MovementRelation mRel =
+        data.getGameSpecificStuff().getMovementEvaluator().getMovement(unit,
+            getDirections(getTokens(), unit.getFaction().getLocale()));
+    mRel.line = line;
 
-    // dissect the order into pieces to detect which way the unit
-    // is taking
-    Region currentRegion = unit.getRegion();
-    CoordinateID currentCoord = unit.getRegion().getCoordinate();
-
-    Locale locale = unit.getFaction().getLocale();
-    for (OrderToken token : getTokens()) {
-      if (modifiedMovement.isEmpty()) {
-        modifiedMovement.add(currentCoord);
-        // skip first token
-        continue;
-      }
-
-      Direction movement = Direction.toDirection(token.getText(), locale);
-
-      // try to get the next region; take "wrap around" regions into account
-      CoordinateID nextCoord = currentCoord;
-      Region nextRegion = currentRegion;
-      if (movement != Direction.INVALID) {
-        // try to get next region from the neighbor relation; not possible if the movement goes
-        // through an unknown region
-        nextRegion = currentRegion != null ? currentRegion.getNeighbors().get(movement) : null;
-        // if the nextRegion is unknown for some region, fall back to coordinte movement
-        nextCoord =
-            nextRegion == null ? currentCoord.translate(movement.toCoordinate()) : nextRegion
-                .getCoordinate();
-        if (nextRegion == null) {
-          nextRegion = unit.getRegion().getData().getRegion(nextCoord);
-        }
-      }
-
-      modifiedMovement.add(nextCoord);
-      currentCoord = nextCoord;
-      currentRegion = nextRegion;
+    if (mRel.invalidRegion != null) {
+      mRel.setWarning(Resources.get("order.move.warning.moveinvalid", mRel.invalidRegion),
+          MovementInspector.MovementProblemTypes.MOVE_INVALID.getType());
     }
+    removeMovements(unit);
 
-    MovementRelation mRel = new MovementRelation(unit, modifiedMovement, line);
     mRel.add();
 
+    Set<Unit> passengers = new HashSet<Unit>();
+    if (unit.getModifiedShip() != null && unit.getModifiedShip().getModifiedOwnerUnit() == unit) {
+      for (Unit passenger : unit.getModifiedShip().modifiedUnits()) {
+        if (passenger != unit && passenger.getRelations(MovementRelation.class).isEmpty()) {
+          passengers.add(passenger);
+        }
+      }
+    } else {
+      for (TransportRelation transportRel : unit.getRelations(TransportRelation.class)) {
+        if (transportRel.target != null && transportRel.target != unit) {
+          removeMovements(transportRel.target);
+          passengers.add(transportRel.target);
+          implicitLeave(transportRel.target, mRel, line);
+        }
+      }
+    }
+    for (Unit passenger : passengers) {
+      MovementRelation transportRel =
+          new MovementRelation(passenger, unit, mRel.getInitialMovement(),
+              mRel.getFutureMovement(), mRel.unknown, mRel.invalidRegion, mRel.rounds, line);
+      transportRel.add();
+    }
+
+    implicitLeave(unit, mRel, line);
+  }
+
+  private List<Direction> getDirections(List<OrderToken> tokens, Locale locale) {
+    List<Direction> result = new ArrayList<Direction>(tokens.size());
+
+    int i = 0;
+    for (OrderToken token : tokens) {
+      if (i++ != 0) {
+        Direction movement = Direction.toDirection(token.getText(), locale);
+        result.add(movement);
+      }
+    }
+    return result;
+  }
+
+  private void implicitLeave(Unit unit, MovementRelation mRel, int line) {
     // check whether the unit leaves a container
     UnitContainer leftUC = unit.getBuilding();
 
@@ -147,6 +160,14 @@ public class MovementOrder extends SimpleOrder {
         }
       }
       rel.add();
+    }
+  }
+
+  private void removeMovements(Unit unit) {
+    if (unit.getRelations(MovementRelation.class) != null) {
+      for (MovementRelation oldRelation : unit.getRelations(MovementRelation.class)) {
+        unit.removeRelation(oldRelation);
+      }
     }
   }
 

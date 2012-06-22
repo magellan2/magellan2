@@ -1,3 +1,6 @@
+2012-06-22 / Build 510 - stm (stm_@users.sourceforge.net)
+    * improved, unified and more tested implementation of movement orders
+
 2012-06-16 / Build 509 - stm (stm_@users.sourceforge.net)
     * improved exception handling in Client on load report and quit
     * encapsulated InternatioalizedDataPanel.data

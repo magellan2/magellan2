@@ -19,18 +19,20 @@ import java.util.Collections;
 import java.util.List;
 
 import magellan.library.CoordinateID;
+import magellan.library.GameData;
 import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Rules;
-import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.relation.MovementRelation;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.MessageType;
 import magellan.library.rules.Race;
+import magellan.library.utils.Direction;
 import magellan.library.utils.Regions;
 import magellan.library.utils.logging.Logger;
 
@@ -40,6 +42,25 @@ import magellan.library.utils.logging.Logger;
  */
 public class EresseaMovementEvaluator implements MovementEvaluator {
   private static Logger log = Logger.getInstance(EresseaMovementEvaluator.class);
+
+  /** normal walking speed */
+  public static final int FOOT_NORMAL_SPEED = 1;
+  /** walking speed on road */
+  public static final int FOOT_ROAD_SPEED = 2;
+  /** normal riding speed */
+  public static final int HORSE_NORMAL_SPEED = 2;
+  /** riding speed on road */
+  public static final int HORSE_ROAD_SPEED = 3;
+
+  /** The movement cost for normal movement */
+  public static final int BF_NORMAL = 3;
+  /** The movement cost for road movement */
+  public static final int BF_ROAD = 2;
+
+  /** The movement budget for walking units */
+  public static final int BF_WALKING = 4;
+  /** The movement budget for riding units */
+  public static final int BF_RIDING = 6;
 
   private Rules rules;
   private Collection<ItemType> horseTypes;
@@ -234,7 +255,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    */
   @Deprecated
   public int getRadius(Unit u, boolean onRoad) {
-    // pavkovic 2003.10.02: use modified load here...int load = getLoad();
+    // pavkovic 2003.10.02: use modified load here...
     int load = getModifiedLoad(u);
     int payload = getPayloadOnHorse(u);
 
@@ -413,181 +434,34 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    *      boolean)
    */
   public int getModifiedRadius(Unit unit, boolean onRoad) {
-    int load = getModifiedLoad(unit);
+    if (canRide(unit))
+      return onRoad ? HORSE_ROAD_SPEED : HORSE_NORMAL_SPEED;
 
-    int payload = getPayloadOnHorse(unit);
-
-    if ((payload >= 0) && (payload >= load))
-      return onRoad ? 3 : 2;
-
-    payload = getPayloadOnFoot(unit);
-
-    if ((payload >= 0) && (payload >= load))
-      return onRoad ? 2 : 1;
+    if (canWalk(unit))
+      return onRoad ? FOOT_ROAD_SPEED : FOOT_NORMAL_SPEED;
 
     return 0;
   }
 
-  public CoordinateID getDestination(Unit unit, List<CoordinateID> path) {
-    if (unit.getModifiedShip() != null && unit.getModifiedShip().getModifiedOwnerUnit() == unit) {
-      CoordinateID lastCoord = null;
-      Ship ship = unit.getModifiedShip();
-      int range = getRules().getGameSpecificStuff().getGameSpecificRules().getShipRange(ship);
-      int etappe = 0;
-      for (CoordinateID coord : path) {
-        if (lastCoord != null) {
-          if (lastCoord == coord)
-            return coord; // PAUSE
-          else {
-            Region r = unit.getData().getRegion(coord);
-            etappe++;
-            if (etappe >= range || (r != null && !r.getRegionType().isOcean()))
-              return coord;
-          }
-        }
-        lastCoord = coord;
-      }
-      return path.get(path.size() - 1);
-      // return getDestination(unit, unit.getModifiedShip(), path);
-    }
-
-    if (path.size() == 0)
-      return null;
-    CoordinateID start = path.iterator().next();
-    if (start != unit.getRegion().getCoordinate())
-      throw new IllegalArgumentException("unit not in first path region");
-
-    int radius = getModifiedRadius(unit, false), streetRadius = getModifiedRadius(unit, true);
-    int etappe = 0;
-    Region lastRegion = null;
-    CoordinateID lastCoord = null;
-    boolean road = true;
-    int length = 0;
-    for (CoordinateID coord : path) {
-      Region r = unit.getData().getRegion(coord);
-      if (lastCoord != null) {
-        if (lastCoord == coord)
-          return coord; // PAUSE
-        else {
-          etappe++;
-          if (r == null || lastRegion == null || !Regions.isCompleteRoadConnection(lastRegion, r)) {
-            road = false;
-          }
-          if (road) {
-            if (etappe >= streetRadius)
-              return coord;
-          } else {
-            if (etappe >= radius)
-              return coord;
-          }
-        }
-      }
-      lastRegion = r;
-      lastCoord = coord;
-      length++;
-    }
-    return path.get(path.size() - 1);
-  }
-
-  // protected CoordinateID getDestination(Unit unit, Ship modifiedShip, List<CoordinateID> path) {
-  // // HIGHTODO Automatisch generierte Methode implementieren
-  // return null;
-  // }
-
   /**
-   * @see magellan.library.gamebinding.MovementEvaluator#getModifiedRadius(magellan.library.Unit,
-   *      java.util.List)
+   * @return <code>true</code> if the movement can walk and is not overloaded.
    */
-  public int getModifiedRadius(Unit unit, List<Region> path) {
-    if (path.size() == 0)
-      return 0;
-    Region start = path.iterator().next();
-    if (start != unit.getRegion())
-      throw new IllegalArgumentException("unit not in first path region");
-
-    int radius = getModifiedRadius(unit, false), streetRadius = getModifiedRadius(unit, true);
-    int etappe = 0;
-    Region lastRegion = null;
-    boolean road = true;
-    int length = 0;
-    for (Region r : path) {
-      if (lastRegion != null) {
-        if (lastRegion == r)
-          return length;
-        else {
-          etappe++;
-          if (!Regions.isCompleteRoadConnection(lastRegion, r)) {
-            road = false;
-          }
-          if (road) {
-            if (etappe >= streetRadius)
-              return length;
-          } else {
-            if (etappe >= radius)
-              return length;
-          }
-        }
-      }
-      lastRegion = r;
-      length++;
-    }
-    return length;
+  public boolean canWalk(Unit unit) {
+    int load = getModifiedLoad(unit);
+    int payload = getPayloadOnFoot(unit);
+    return (payload >= 0) && (payload >= load);
   }
 
   /**
-   * @see magellan.library.gamebinding.MovementEvaluator#getDistance(magellan.library.Unit,
-   *      java.util.List)
+   * @return <code>true</code> if the movement can ride without being overloaded.
    */
-  public int getDistance(Unit unit, List<Region> path) {
-    if (path.size() == 0)
-      return 0;
-    Region start = path.iterator().next();
-    if (start != unit.getRegion())
-      throw new IllegalArgumentException("unit not in first path region");
-
-    int radius = getModifiedRadius(unit, false), streetRadius = getModifiedRadius(unit, true);
-    int weeks = 0, etappe = 0;
-    Region lastRegion = null;
-    boolean road = true;
-    for (Region r : path) {
-      if (lastRegion != null) {
-        if (lastRegion == r) {
-          if (etappe > 0) {
-            weeks++;
-            etappe = 0;
-            road = true;
-          }
-        } else {
-          etappe++;
-          if (!Regions.isCompleteRoadConnection(lastRegion, r)) {
-            road = false;
-          }
-          if (road) {
-            if (etappe >= streetRadius) {
-              weeks++;
-              etappe = 0;
-            }
-          } else {
-            if (etappe == radius) {
-              weeks++;
-              etappe = 0;
-              road = true;
-            } else if (etappe >= streetRadius) {
-              weeks++;
-              etappe = 1;
-            }
-          }
-        }
-      }
-      lastRegion = r;
-    }
-    if (etappe > 0) {
-      ++weeks;
-    }
-    return weeks;
+  public boolean canRide(Unit unit) {
+    int load = getModifiedLoad(unit);
+    int payload = getPayloadOnHorse(unit);
+    return (payload >= 0) && (payload >= load);
   }
 
-  public MessageType getTransportMessageType() {
+  protected MessageType getTransportMessageType() {
     return transportMessageType;
   }
 
@@ -597,6 +471,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    * @param u
    * @return <code>true</code> if there is evidence that the unit's past movement was passive
    *         (transported, shipped...)
+   * @see magellan.library.gamebinding.MovementEvaluator#isPastMovementPassive(magellan.library.Unit)
    */
   public boolean isPastMovementPassive(Unit u) {
     if (u.getShip() != null) {
@@ -643,18 +518,18 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
           if ((m.getAttributes() != null) && (m.getAttributes().get("unit") != null)) {
             log.debug("PathCellRenderer(" + u + ") Unit   " + m.getAttributes().get("unit"));
-            // FIXME actually it should be creatUnitID(*, 10, data.base), but it doesn't matter
-            // here
+            // actually it should be creatUnitID(*, 10, data.base), but it doesn't matter here
             log.debug("PathCellRenderer(" + u + ") UnitID "
                 + UnitID.createUnitID(m.getAttributes().get("unit"), 10));
           }
         }
       }
 
-      if (getTransportMessageType().equals(m.getMessageType()) && (m.getAttributes() != null)
+      if (getTransportMessageType().equals(m.getMessageType())
+          && (m.getAttributes() != null)
           && (m.getAttributes().get("unit") != null)
-          && u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) { // FIXME
-        // 10,data.base
+          && u.getID().equals(
+              UnitID.createUnitID(m.getAttributes().get("unit"), 10, u.getData().base))) {
         // found a transport message; this is only valid in
         // units with active movement
         if (log.isDebugEnabled()) {
@@ -676,73 +551,243 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    * @see magellan.library.gamebinding.MovementEvaluator#getModifiedMovement(magellan.library.Unit)
    */
   public List<CoordinateID> getModifiedMovement(Unit u) {
-    return getMovement(u, false);
+    return getMovement(u, true, false);
   }
 
   /**
    * @see magellan.library.gamebinding.MovementEvaluator#getAdditionalMovement(magellan.library.Unit)
    */
   public List<CoordinateID> getAdditionalMovement(Unit u) {
-    return getMovement(u, true);
+    return getMovement(u, true, true);
   }
 
-  public List<CoordinateID> getPassiveMovement(Unit unit) {
-    List<CoordinateID> passiveMovement = null;
-    if (unit.getModifiedShip() != null) {
-      // we are on a ship. try to render movemement from ship owner
-      passiveMovement = getModifiedMovement(unit.getModifiedShip().getModifiedOwnerUnit());
-    } else {
-      // the unit is not on a ship, search for carriers
-      Collection<Unit> carriers = unit.getCarriers();
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getPassiveMovement(magellan.library.Unit)
+   */
+  public List<CoordinateID> getPassiveMovement(Unit u) {
+    return getMovement(u, false, false);
+  }
 
-      if (log.isDebugEnabled()) {
-        log.debug("PathCellRenderer.render: " + unit + " has " + carriers.size() + " carriers");
-      }
-
-      if (carriers.size() == 1) {
-        Unit trans = carriers.iterator().next();
-        passiveMovement = getModifiedMovement(trans);
-      }
-    }
-    if (passiveMovement == null)
+  private List<CoordinateID> getMovement(Unit u, boolean active, boolean suffix) {
+    List<MovementRelation> rels = u.getRelations(MovementRelation.class);
+    if (rels.size() == 0)
       return Collections.emptyList();
+
+    MovementRelation rel = rels.get(0);
+
+    if (active ^ (rel.origin == u))
+      return Collections.emptyList();
+
+    if (active)
+      if (suffix)
+        return rel.getFutureMovement();
+      else
+        return rel.getInitialMovement();
     else
-      return passiveMovement;
+      return rel.getMovement();
   }
 
-  private static List<CoordinateID> getMovement(Unit u, boolean isSuffix) {
-    if (u == null)
-      return Collections.emptyList();
-    List<CoordinateID> movement = u.getModifiedMovement();
-    CoordinateID last = movement.size() > 0 ? movement.get(0) : null;
+  protected interface Metric {
+    public boolean update(CoordinateID currentCoord, Region currentRegion, CoordinateID nextCoord,
+        Region nextRegion);
 
-    if (last != null) {
-      List<CoordinateID> result = new ArrayList<CoordinateID>(2);
-      List<CoordinateID> suffix = new ArrayList<CoordinateID>(0);
-      for (CoordinateID coord : movement) {
-        if (result.size() == 0) {
-          result.add(coord);
-        } else if (coord.equals(result.get(result.size() - 1)) || suffix.size() > 0) {
-          // pause found
-          if (isSuffix) {
-            suffix.add(coord);
-          } else {
-            break;
-          }
+    public int getRounds();
+  }
+
+  protected class ShipMetric implements Metric {
+
+    private int etappe;
+    private int rounds;
+    private int speed;
+
+    public ShipMetric(int speed) {
+      this.speed = speed;
+    }
+
+    public boolean update(CoordinateID currentCoord, Region currentRegion, CoordinateID nextCoord,
+        Region nextRegion) {
+      if (nextRegion != null && !nextRegion.getRegionType().isOcean()) {
+        etappe = speed;
+      } else if (++etappe > speed) {
+        etappe -= speed;
+        ++rounds;
+      }
+      return (currentRegion == null || nextRegion == null || (currentRegion.getRegionType()
+          .isOcean() || nextRegion.getRegionType().isOcean()));
+    }
+
+    public int getRounds() {
+      return rounds;
+    }
+
+    public int getEtappe() {
+      return etappe;
+    }
+  }
+
+  protected class LandMetric implements Metric {
+
+    private int rounds;
+    private int roadEtappe;
+    private int normalEtappe;
+    private int bfSpeed;
+
+    LandMetric(int speed) {
+      bfSpeed = speed;
+    }
+
+    public boolean update(CoordinateID currentCoord, Region currentRegion, CoordinateID nextCoord,
+        Region nextRegion) {
+      if (nextRegion != null && nextRegion.getRegionType().isOcean()) {
+        ++rounds;
+        normalEtappe = 1;
+        roadEtappe = 0;
+        return false;
+      }
+      boolean road = false;
+      if (currentRegion != null && nextRegion != null
+          && Regions.isCompleteRoadConnection(currentRegion, nextRegion)) {
+        road = true;
+      }
+      int distance = BF_ROAD * roadEtappe + BF_NORMAL * normalEtappe + (road ? BF_ROAD : BF_NORMAL);
+      if (distance > bfSpeed) {
+        rounds++;
+        normalEtappe = road ? 0 : 1;
+        roadEtappe = road ? 1 : 0;
+      } else {
+        if (road) {
+          ++roadEtappe;
         } else {
-          result.add(coord);
+          ++normalEtappe;
+        }
+      }
+      return true;
+    }
+
+    public int getRounds() {
+      return rounds;
+    }
+
+  }
+
+  public MovementRelation getMovement(Unit unit, List<Direction> directions) {
+    GameData data = unit.getData();
+    List<CoordinateID> initialMovement = new ArrayList<CoordinateID>(2);
+    List<CoordinateID> futureMovement = new ArrayList<CoordinateID>(2);
+
+    Metric metric;
+    if (unit.getModifiedShip() != null && unit.getModifiedShip().getModifiedOwnerUnit() == unit) {
+      metric = new ShipMetric(data.getGameSpecificRules().getShipRange(unit.getModifiedShip()));
+    } else {
+      EresseaMovementEvaluator evaluator =
+          (EresseaMovementEvaluator) data.getRules().getGameSpecificStuff().getMovementEvaluator();
+      metric =
+          new LandMetric(evaluator.canWalk(unit) ? (evaluator.canRide(unit) ? BF_RIDING
+              : BF_WALKING) : 0);
+    }
+
+    // dissect the order into pieces to detect which way the unit is taking
+    Region currentRegion = unit.getRegion();
+    CoordinateID currentCoord = unit.getRegion().getCoordinate();
+
+    boolean unknown = false;
+
+    Region invalidRegion = null;
+
+    initialMovement.add(currentCoord);
+    for (Direction movement : directions) {
+
+      // try to get the next region; take "wrap around" regions into account
+      CoordinateID nextCoord = currentCoord;
+      Region nextRegion = currentRegion;
+      if (movement != Direction.INVALID) {
+        // try to get next region from the neighbor relation; not possible if the movement goes
+        // through an unknown region
+        nextRegion = currentRegion != null ? currentRegion.getNeighbors().get(movement) : null;
+        // if the nextRegion is unknown for some region, fall back to coordinate movement
+        if (nextRegion == null) {
+          nextCoord = currentCoord.translate(movement.toCoordinate());
+          unknown = true;
+        } else {
+          nextCoord = nextRegion.getCoordinate();
+        }
+        if (nextRegion == null) {
+          nextRegion = unit.getRegion().getData().getRegion(nextCoord);
+        }
+
+        if (!metric.update(currentCoord, currentRegion, nextCoord, nextRegion)) {
+          if (invalidRegion == null) {
+            invalidRegion = nextRegion;
+          }
+          if (futureMovement.isEmpty()) {
+            futureMovement.add(currentCoord);
+          }
+        } else if (metric.getRounds() > 0) {
+          if (futureMovement.isEmpty()) {
+            futureMovement.add(currentCoord);
+          }
+        }
+      } else {
+        if (futureMovement.isEmpty()) {
+          futureMovement.add(currentCoord);
         }
       }
 
-      if (isSuffix)
-        return suffix;
-      else
-        return result;
-    } else
-      return Collections.emptyList();
+      if (!futureMovement.isEmpty()) {
+        futureMovement.add(nextCoord);
+      } else {
+        initialMovement.add(nextCoord);
+      }
+      currentCoord = nextCoord;
+      currentRegion = nextRegion;
+    }
+
+    MovementRelation mRel =
+        new MovementRelation(unit, unit, initialMovement, futureMovement, unknown, invalidRegion,
+            metric.getRounds(), -1);
+
+    return mRel;
+  }
+
+  public int getModifiedRadius(Unit unit, List<Region> path) {
+    MovementRelation mRel = getMovement(unit, pathToDirections(path));
+    return mRel.getInitialMovement().size() - 1;
+  }
+
+  protected static List<Direction> pathToDirections(List<?> path) {
+    List<Direction> result = new ArrayList<Direction>(path.size());
+    CoordinateID lastRegion = null;
+    for (Object region : path) {
+      CoordinateID currentRegion;
+      if (region instanceof Region) {
+        currentRegion = ((Region) region).getCoordinate();
+      } else {
+        currentRegion = (CoordinateID) region;
+      }
+      if (lastRegion != null) {
+        result.add(Direction.toDirection(lastRegion, currentRegion));
+      }
+      lastRegion = currentRegion;
+    }
+    return result;
+  }
+
+  public CoordinateID getDestination(Unit unit, List<CoordinateID> path) {
+    MovementRelation mRel = getMovement(unit, pathToDirections(path));
+    return mRel.getDestination();
+  }
+
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getDistance(magellan.library.Unit,
+   *      java.util.List)
+   */
+  public int getDistance(Unit unit, List<Region> path) {
+    MovementRelation mRel = getMovement(unit, pathToDirections(path));
+    return mRel.rounds;
   }
 
   protected Rules getRules() {
     return rules;
   }
+
 }

@@ -2070,7 +2070,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    *          updated as well
    */
   protected synchronized void update(Unit u) {
-    log.finest(u);
+    // log.finest(u);
     // long time = System.currentTimeMillis();
     // TreeNode regionNode = regionNodes.get(u.getRegion().getID());
     // Set<TreeNode> parents = new HashSet<TreeNode>();

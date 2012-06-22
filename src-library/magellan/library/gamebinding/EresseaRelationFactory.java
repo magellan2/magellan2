@@ -33,7 +33,6 @@ import java.util.Set;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.ID;
@@ -47,7 +46,6 @@ import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.completion.OrderParser;
-import magellan.library.gamebinding.e3a.MaintainOrder;
 import magellan.library.relation.AttackRelation;
 import magellan.library.relation.CombatStatusRelation;
 import magellan.library.relation.ControlRelation;
@@ -56,7 +54,6 @@ import magellan.library.relation.FollowUnitRelation;
 import magellan.library.relation.GuardRegionRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.LeaveRelation;
-import magellan.library.relation.MaintenanceRelation;
 import magellan.library.relation.MovementRelation;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.RecruitmentRelation;
@@ -70,7 +67,6 @@ import magellan.library.relation.UnitTransferRelation;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
-import magellan.library.tasks.MaintenanceInspector;
 import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
 import magellan.library.tasks.Problem;
@@ -117,9 +113,10 @@ public class EresseaRelationFactory implements RelationFactory {
   public static final int P_BEWACHE = 2501;
 
   /** Order priority */
-  public static final int P_MAINTENANCE = 3001;
-  /** Order priority */
   public static final int P_BUILDING_MAINTENANCE = 1601;
+
+  /** Order priority */
+  public static final int P_UNIT_MAINTENANCE = 3001;
 
   protected EresseaRelationFactory(Rules rules) {
     this.rules = rules;
@@ -127,6 +124,7 @@ public class EresseaRelationFactory implements RelationFactory {
   }
 
   private static final int REFRESHRELATIONS_ALL = -2;
+  public static final int PROCESS_DELAY = 100;
 
   protected class Processor implements Runnable {
     private Region region;
@@ -148,16 +146,19 @@ public class EresseaRelationFactory implements RelationFactory {
 
     Set<Region> regions;
     private Timer timer;
+    private boolean stopped;
 
     public Updater() {
       regions = new HashSet<Region>();
-      timer = new Timer(100, this);
+      timer = new Timer(PROCESS_DELAY, this);
     }
 
     public synchronized void add(Region region) {
       regions.add(region);
-      timer.restart();
-      // log.finer("add " + region);
+      if (!stopped) {
+        timer.restart();
+        // log.finer("add " + region);
+      }
     }
 
     public synchronized void actionPerformed(ActionEvent e) {
@@ -171,6 +172,14 @@ public class EresseaRelationFactory implements RelationFactory {
       regions.clear();
     }
 
+    public void stop() {
+      stopped = true;
+      timer.stop();
+    }
+  }
+
+  protected void stopUpdating() {
+    updater.stop();
   }
 
   /**
@@ -196,6 +205,8 @@ public class EresseaRelationFactory implements RelationFactory {
    * @param u The unit
    * @param orders Use these orders instead of the unit's orders
    * @return A List of Relations for this unit
+   * @see magellan.library.gamebinding.RelationFactory#createRelations(magellan.library.Unit,
+   *      magellan.library.Orders)
    */
   public List<UnitRelation> createRelations(Unit u, Orders orders) {
     return createRelations(u, orders, 0);
@@ -356,7 +367,7 @@ public class EresseaRelationFactory implements RelationFactory {
           currentRegion = nextRegion;
         }
 
-        relations.add(new MovementRelation(u, modifiedMovement, line));
+        relations.add(new MovementRelation(u, u, modifiedMovement, null, true, null, 1, line));
 
         // check whether the unit leaves a container
         UnitContainer leftUC = u.getBuilding();
@@ -1055,7 +1066,7 @@ public class EresseaRelationFactory implements RelationFactory {
     affected.add(r);
 
     // count orders
-    int count = 0;
+    int count = 2; // two for maintenance orders
     for (Unit u : r.units()) {
       count += u.getOrders2().size();
       affected.add(data.getRegion(u.getNewRegion()));
@@ -1088,6 +1099,10 @@ public class EresseaRelationFactory implements RelationFactory {
         u.getFaction().clearRelations();
       }
     }
+    orders[count++] = new OrderInfo(new UnitMaintenanceOrder(r), P_UNIT_MAINTENANCE, null, -1);
+    orders[count++] =
+        new OrderInfo(new BuildingMaintenanceOrder(r), P_BUILDING_MAINTENANCE, null, -1);
+
     r.getZeroUnit().clearRelations();
     for (UnitContainer uc : r.buildings()) {
       uc.clearRelations();
@@ -1100,37 +1115,12 @@ public class EresseaRelationFactory implements RelationFactory {
     // Arrays.sort(orders, getOrderComparator());
     Arrays.sort(orders);
     EresseaExecutionState state = new EresseaExecutionState(r.getData());
-    boolean maintenancePaid = false, buildingsPaid = false;
     for (OrderInfo o : orders) {
-      if (!maintenancePaid && o.priority > getMaintenancePriority()) {
-        updateMaintenance(r, state);
-        maintenancePaid = true;
-      }
-      if (!buildingsPaid && o.priority > getBuildingMaintenancePriority()) {
-        updateBuildingMaintenance(r, state);
-        buildingsPaid = true;
-      }
       o.order.execute(state, data, o.unit, o.line);
-    }
-    if (!maintenancePaid) {
-      updateMaintenance(r, state);
-      maintenancePaid = true;
-    }
-    if (!buildingsPaid) {
-      updateBuildingMaintenance(r, state);
-      buildingsPaid = true;
     }
     // log.finest("pp" + (System.currentTimeMillis() - time));
 
     postProcess(r);
-  }
-
-  private int getBuildingMaintenancePriority() {
-    return P_BUILDING_MAINTENANCE;
-  }
-
-  private int getMaintenancePriority() {
-    return P_MAINTENANCE;
   }
 
   protected void postProcess(Region r) {
@@ -1152,93 +1142,6 @@ public class EresseaRelationFactory implements RelationFactory {
     }
     affected.clear();
     // log.finest(System.currentTimeMillis() - time);
-  }
-
-  private void updateBuildingMaintenance(Region r, EresseaExecutionState state) {
-    for (Building b : r.buildings()) {
-      boolean maintain = true;
-      if (b.getEffects() != null) {
-        for (String eff : b.getEffects()) {
-          if (eff.startsWith("Der Zahn der Zeit kann diesen Mauern nichts anhaben.")
-              || eff.startsWith("Time cannot touch these walls.")) {
-            maintain = false;
-            break;
-          }
-        }
-      }
-
-      Unit owner = b.getModifiedOwnerUnit();
-      if (owner != null) {
-        for (Order order : owner.getOrders2()) {
-          if (order instanceof MaintainOrder)
-            if (((MaintainOrder) order).isNot()) {
-              maintain = false;
-              break;
-            }
-        }
-        if (maintain) {
-          for (Item i : b.getBuildingType().getMaintenanceItems()) {
-            // List<UnitRelation> relations =
-            // state.reserveItem(i.getItemType(), false, true, i.getAmount(), owner, -1, null);
-            List<UnitRelation> relations =
-                state.acquireItem(owner, i.getItemType(), i.getAmount(), false, true, true, -1,
-                    null);
-            MaintenanceRelation mRel =
-                new MaintenanceRelation(owner, b, i.getAmount(), i.getItemType(), -1, false);
-            for (UnitRelation rel : relations) {
-              if (rel instanceof ReserveRelation) {
-                // mRel.setReserve((ReserveRelation)rel);
-                mRel.costs = ((ReserveRelation) rel).amount;
-              } else {
-                rel.add();
-              }
-              if (rel.problem != null) {
-                mRel.warning = true;
-                mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
-                    MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
-                // mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
-                // OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
-              }
-            }
-            mRel.add();
-          }
-        }
-      }
-    }
-  }
-
-  private void updateMaintenance(Region r, EresseaExecutionState state) {
-    GameData data = r.getData();
-    MovementEvaluator evaluator = r.getData().getGameSpecificStuff().getMovementEvaluator();
-    for (Unit u : r.units()) {
-      List<CoordinateID> movement = evaluator.getModifiedMovement(u);
-
-      if (movement.size() == 0) {
-        movement = evaluator.getPassiveMovement(u);
-      }
-
-      CoordinateID destination;
-      if (movement.size() == 0) {
-        destination = u.getRegion().getCoordinate();
-      } else {
-        destination = evaluator.getDestination(u, movement);
-      }
-      CoordinateID oldDestination = u.getNewRegion();
-      if (destination != oldDestination) {
-        Region newRegion;
-        if (oldDestination != null) {
-          newRegion = data.getRegion(oldDestination);
-          if (newRegion != null) {
-            newRegion.removeMaintenance(u);
-          }
-        }
-        u.setNewRegion(destination);
-        newRegion = data.getRegion(destination);
-        if (newRegion != null && newRegion != u.getRegion()) {
-          newRegion.addMaintenance(u);
-        }
-      }
-    }
   }
 
   private void checkTransport(Unit u) {
@@ -1358,7 +1261,7 @@ public class EresseaRelationFactory implements RelationFactory {
      * @param all <code>true</code> if ALL of the unit's item should be acquired
      * @param includeReserved <code>true</code> if the amount of item that was reserved by the unit
      *          counts toward the acquired amount.
-     * @param getReserved <code>true</code> if the amount of item that the unit has reveived counts
+     * @param getReserved <code>true</code> if the amount of item that the unit has received counts
      *          toward the acquired amount.
      * @param line The line number of the order (used for relations)
      * @param order The order that caused this

@@ -286,8 +286,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeGameDataListener((GameDataListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-          .debug("EventDispatcher.removeAllListeners: stale GameDataListener entry for "
-              + o.getClass());
+              .debug("EventDispatcher.removeAllListeners: stale GameDataListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -298,8 +298,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeTempUnitListener((TempUnitListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-          .debug("EventDispatcher.removeAllListeners: stale TempUnitListener entry for "
-              + o.getClass());
+              .debug("EventDispatcher.removeAllListeners: stale TempUnitListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -310,8 +310,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeUnitOrdersListener((UnitOrdersListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-          .debug("EventDispatcher.removeAllListeners: stale UnitOrdersListener entry for "
-              + o.getClass());
+              .debug("EventDispatcher.removeAllListeners: stale UnitOrdersListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -322,8 +322,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeSelectionListener((SelectionListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-          .debug("EventDispatcher.removeAllListeners: stale SelectionListener entry for "
-              + o.getClass());
+              .debug("EventDispatcher.removeAllListeners: stale SelectionListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -334,8 +334,8 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (removeOrderConfirmListener((OrderConfirmListener) o)) {
         if (EventDispatcher.log.isDebugEnabled()) {
           EventDispatcher.log
-          .debug("EventDispatcher.removeAllListeners: stale OrderConfirmListener entry for "
-              + o.getClass());
+              .debug("EventDispatcher.removeAllListeners: stale OrderConfirmListener entry for "
+                  + o.getClass());
         }
 
         result = true;
@@ -418,7 +418,6 @@ public class EventDispatcher implements EventDispatcherInterface {
 
   private class EManager implements Runnable {
 
-
     private Thread thread;
     private boolean quit;
 
@@ -475,7 +474,9 @@ public class EventDispatcher implements EventDispatcherInterface {
 
     public void quit() {
       quit = true;
-      thread.interrupt();
+      if (thread != null) {
+        thread.interrupt();
+      }
     }
   }
 

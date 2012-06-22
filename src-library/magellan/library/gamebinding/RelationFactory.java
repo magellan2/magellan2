@@ -41,7 +41,9 @@ public interface RelationFactory {
    * @param u The unit
    * @param from The line of the <code>unit</code>'s orders where to start. Must be > 0
    * @return A List of Relations for this unit
+   * @deprecated use {@link #createRelations(Region)} instead
    */
+  @Deprecated
   public List<UnitRelation> createRelations(Unit u, int from);
 
   /**
@@ -50,7 +52,9 @@ public interface RelationFactory {
    * @param u The unit
    * @param orders Use these orders instead of the unit's orders
    * @return A List of Relations for this unit
+   * @deprecated use {@link #createRelations(Region)} instead
    */
+  @Deprecated
   public List<?> createRelations(Unit u, Orders orders);
 
   public void createRelations(Region region);

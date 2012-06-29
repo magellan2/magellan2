@@ -214,7 +214,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
         int mode2;
         if (mode == MOVE_NACH) {
           mode2 = 0;
-        } else if (mode == MOVE_ROUTE) {
+        } else if (mode == MOVE_ROUTESTOP) {
           mode2 = RoutePlanner.MODE_CONTINUOUS | RoutePlanner.MODE_STOP;
         } else {
           mode2 = RoutePlanner.MODE_CONTINUOUS | RoutePlanner.MODE_RETURN;
@@ -225,12 +225,12 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
         Ship ship;
         orders =
             planner.getOrders(ship = u.getModifiedShip(), data, start =
-                u.getRegion().getCoordinate(), dest = destRegion.getCoordinate(), null, true,
-                mode2, false);
+                u.getRegion().getCoordinate(), dest = destRegion.getCoordinate(), null,
+                mode == MOVE_NACH, mode2, false);
         if (orders != null) {
           // Pfad gefunden
-          setOrders(u, Regions.getShipDistance(data, start, ship.getShoreId(), dest, Math.max(1,
-              data.getGameSpecificRules().getShipRange(ship))), orders);
+          setOrders(u, Regions.planShipRoute(data, start, ship.getShoreId(), dest,
+              Math.max(1, data.getGameSpecificRules().getShipRange(ship))).size() - 1, orders);
         }
       }
     }

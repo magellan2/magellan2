@@ -695,19 +695,23 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     Region invalidRegion = null;
 
     initialMovement.add(currentCoord);
+    int stopped = 0;
     for (Direction movement : directions) {
 
       // try to get the next region; take "wrap around" regions into account
       CoordinateID nextCoord = currentCoord;
       Region nextRegion = currentRegion;
       if (movement != Direction.INVALID) {
+        if (stopped < 2) {
+          stopped = 0;
+        }
         // try to get next region from the neighbor relation; not possible if the movement goes
         // through an unknown region
         nextRegion = currentRegion != null ? currentRegion.getNeighbors().get(movement) : null;
         // if the nextRegion is unknown for some region, fall back to coordinate movement
         if (nextRegion == null) {
           nextCoord = currentCoord.translate(movement.toCoordinate());
-          unknown = true;
+          unknown = stopped < 2;
         } else {
           nextCoord = nextRegion.getCoordinate();
         }
@@ -716,7 +720,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
         }
 
         if (!metric.update(currentCoord, currentRegion, nextCoord, nextRegion)) {
-          if (invalidRegion == null) {
+          if (invalidRegion == null && stopped < 2) { // two PAUSES -> end of route -> do not warn
             invalidRegion = nextRegion;
           }
           if (futureMovement.isEmpty()) {
@@ -728,6 +732,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
           }
         }
       } else {
+        stopped++;
         if (futureMovement.isEmpty()) {
           futureMovement.add(currentCoord);
         }

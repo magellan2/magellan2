@@ -721,7 +721,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         if (currentUnit != null) {
           if (u != null) {
             JPopupMenu unitContextMenu =
-                editor.getContextFactory().createContextMenu(dispatcher, getGameData(), u, null, null);
+                editor.getContextFactory().createContextMenu(dispatcher, getGameData(), u, null,
+                    null);
             if (unitContextMenu != null) {
               unitContextMenu.show(this, e.getX(), e.getY());
             }
@@ -1973,7 +1974,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
                 if ((name != null) && !name.trim().equals("")) {
                   tempUnit.setName(name);
-                  getGameData().getGameSpecificStuff().getOrderChanger().addNamingOrder(tempUnit, name);
+                  getGameData().getGameSpecificStuff().getOrderChanger().addNamingOrder(tempUnit,
+                      name);
                 }
 
                 // extended features
@@ -1981,19 +1983,21 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                   // Recruiting
                   try {
                     int recruits =
-                        Math.max(0, dialog.getRecruit() != null ? Integer.parseInt(dialog
-                            .getRecruit()) : 0);
+                        Math.max(0,
+                            (dialog.getRecruit() != null && dialog.getRecruit().length() > 0)
+                                ? Integer.parseInt(dialog.getRecruit()) : 0);
                     int transfers =
-                        Math.max(0, dialog.getTransfer() != null ? Integer.parseInt(dialog
-                            .getTransfer()) : 0);
+                        Math.max(0,
+                            (dialog.getTransfer() != null && dialog.getTransfer().length() > 0)
+                                ? Integer.parseInt(dialog.getTransfer()) : 0);
 
                     if (recruits > 0) {
-                      getGameData().getGameSpecificStuff().getOrderChanger().addRecruitOrder(tempUnit,
-                          recruits);
+                      getGameData().getGameSpecificStuff().getOrderChanger().addRecruitOrder(
+                          tempUnit, recruits);
                     }
                     if (transfers > 0) {
-                      getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(parentUnit,
-                          tempUnit, transfers, EresseaConstants.I_MEN, null);
+                      getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
+                          parentUnit, tempUnit, transfers, EresseaConstants.I_MEN, null);
                     }
                     if (dialog.isGiveRecruitCost()) {
                       getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
@@ -2033,8 +2037,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                 if ((descript != null) && !descript.trim().equals("")) {
                   descript = descript.replace('\n', ' ');
                   tempUnit.setDescription(descript);
-                  getGameData().getGameSpecificStuff().getOrderChanger().addDescribeUnitOrder(tempUnit,
-                      descript);
+                  getGameData().getGameSpecificStuff().getOrderChanger().addDescribeUnitOrder(
+                      tempUnit, descript);
                 }
 
                 parentUnit.refreshRelations();

@@ -2080,9 +2080,11 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) unitNodes.get(u2.getID());
       // TreeNode[] path = treeModel.getPathToRoot(node);
       // TreeNode parent = path[path.length - 2];
-      UnitNodeWrapper unw = (UnitNodeWrapper) node.getUserObject();
-      unw.clearBuffer();
-      // parents.add(parent);
+      if (node != null) {
+        UnitNodeWrapper unw = (UnitNodeWrapper) node.getUserObject();
+        unw.clearBuffer();
+        // parents.add(parent);
+      }
 
     }
 

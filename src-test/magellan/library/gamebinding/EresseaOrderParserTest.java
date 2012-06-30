@@ -671,7 +671,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     checkOrder("HELFEN 123 GIB");
     checkOrder("HELFEN 123 GIB NICHT");
     checkOrder("HELFE 123 KÄMPFE");
-    checkOrder("HELFE 123 BEWACHE");
+    checkOrder("HELFE 123 BEWACHEN");
     checkOrder("HELFE 123 SILBER");
     checkOrder("HELFE 123 PARTEITARNUNG");
     checkOrder("HELFE 123 bla", false);

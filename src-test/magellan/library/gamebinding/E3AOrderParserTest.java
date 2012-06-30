@@ -141,7 +141,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
     checkOrder("HELFE 123 ALLES NICHT");
     checkOrder("HELFEN 123 GIB");
     checkOrder("HELFEN 123 GIB NICHT");
-    checkOrder("HELFE 123 BEWACHE");
+    checkOrder("HELFE 123 BEWACHEN");
     checkOrder("HELFE 123 SILBER");
     checkOrder("HELFE 123 PARTEITARNUNG", false);
     checkOrder("HELFE 123 bla", false);

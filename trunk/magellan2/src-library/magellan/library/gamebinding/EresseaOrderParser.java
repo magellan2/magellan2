@@ -120,7 +120,7 @@ public class EresseaOrderParser implements OrderParser {
       return getOrder().isValid();
     }
 
-    protected void init(@SuppressWarnings("unused") OrderToken token, String text) {
+    protected void init(OrderToken token, String text) {
       order = new SimpleOrder(getTokens(), text);
     }
 
@@ -137,6 +137,9 @@ public class EresseaOrderParser implements OrderParser {
      */
     protected abstract boolean readIt(OrderToken token);
 
+    /**
+     * @return The order
+     */
     public SimpleOrder getOrder() {
       return order;
     }

@@ -47,6 +47,7 @@ import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
@@ -129,6 +130,8 @@ public class E3CommandParser {
   private static String PAUSEOrder = "PAUSE";
   /** The RESEARCH order */
   private static String RESEARCHOrder = "FORSCHE";
+  /** The RECRUIT order */
+  private static String RECRUITOrder = "REKRUTIERE";
 
   // warning constants
   /** The NEVER warning type token */
@@ -431,6 +434,7 @@ public class E3CommandParser {
    * <code>// $cript Quartiermeister [[amount item]...]</code> -- be lookout<br />
    * <code>// $cript Sammler [interval]</code> -- collect and research HERBS<br />
    * <code>// $cript KrautKontrolle [route]</code> -- FORSCHE KRÄUTER in several regions<br />
+   * <code>// $cript RekrutiereMax</code> -- recruit as much as possible<br />
    */
   protected void parseScripts() {
     newOrders = new ArrayList<String>();
@@ -533,6 +537,8 @@ public class E3CommandParser {
               commandQuartermaster(tokens);
             } else if (command.equals("Sammler")) {
               commandCollector(tokens);
+            } else if (command.equals("RekrutiereMax")) {
+              commandRecruit(tokens);
             } else {
               addNewError("unbekannter Befehl: " + command);
             }
@@ -1511,7 +1517,7 @@ public class E3CommandParser {
           }
         }
         if (goodAmount > 0) {
-          if (goodAmount == volume) {
+          if (goodAmount == volume || W_NEVER.equals(warning)) {
             addNewOrder(SELLOrder + " " + ALLOrder + " " + luxury, true);
           } else {
             addNewOrder(SELLOrder + " " + goodAmount + " " + luxury, true);
@@ -1638,6 +1644,76 @@ public class E3CommandParser {
     }
     addNewOrder(newOrder.toString(), true);
     addNewOrder(moveOrder.toString(), true);
+  }
+
+  /**
+   * <code>// $cript RekrutiereMax [min [max]] [race]</code>: recruit as much as possible; warn if
+   * less than min are possible
+   */
+  protected void commandRecruit(String[] tokens) {
+    if (tokens.length > 4) {
+      addNewError("zu viele Argumente");
+    }
+    int min = 0;
+    String race = null;
+    int max = Integer.MAX_VALUE;
+    if (tokens.length > 1) {
+      try {
+        min = Integer.parseInt(tokens[1]);
+        if (tokens.length > 2) {
+          try {
+            max = Integer.parseInt(tokens[2]);
+            if (tokens.length > 3) {
+              race = tokens[3];
+            }
+          } catch (NumberFormatException e) {
+            max = Integer.MAX_VALUE;
+            race = tokens[2];
+            if (tokens.length > 3) {
+              addNewError("zu viele Argumente");
+            }
+          }
+        }
+      } catch (NumberFormatException e) {
+        min = 0;
+        race = tokens[1];
+        if (tokens.length > 2) {
+          addNewError("zu viele Argumente");
+        }
+      }
+    }
+
+    Race effRace = race == null ? currentUnit.getRace() : helper.getRace(race);
+    if (effRace == null) {
+      addNewError("Unknown race");
+      return;
+    }
+
+    if (currentUnit.getPersons() != 0 && !effRace.equals(currentUnit.getRace())) {
+      addNewWarning("race != unit race");
+    }
+
+    int amount = world.getGameSpecificRules().getRecruitmentLimit(currentUnit, effRace);
+
+    if (currentUnit.getPersons() + amount >= max) {
+      addNewError("recruitment limit reached");
+    }
+
+    amount = Math.min(max - currentUnit.getPersons(), amount);
+    if (amount < min) {
+      addNewError("not enough recruits");
+    }
+
+    if (effRace.getRecruitmentCosts() > 0) {
+      int costs = amount * effRace.getRecruitmentCosts();
+      addNeed("Silber", currentUnit, costs, costs);
+    } else {
+      addNewWarning("unknown recruitment costs");
+    }
+    if (amount > 0) {
+      getRecruitOrder(amount, effRace);
+      addNewOrder(getRecruitOrder(amount, effRace != currentUnit.getRace() ? effRace : null), true);
+    }
   }
 
   // ///////////////////////////////////////////////////////
@@ -2205,6 +2281,7 @@ public class E3CommandParser {
     ROUTEOrder = getLocalizedOrder(EresseaConstants.O_ROUTE, ROUTEOrder);
     PAUSEOrder = getLocalizedOrder(EresseaConstants.O_PAUSE, PAUSEOrder);
     RESEARCHOrder = getLocalizedOrder(EresseaConstants.O_RESEARCH, RESEARCHOrder);
+    RECRUITOrder = getLocalizedOrder(EresseaConstants.O_RECRUIT, RECRUITOrder);
 
     if (currentFaction.getLocale().getLanguage() != "de") {
       // warning constants
@@ -2467,6 +2544,14 @@ public class E3CommandParser {
    */
   protected String getResearchOrder() {
     return RESEARCHOrder + " " + getLocalizedOrder(EresseaConstants.O_HERBS, "KRÄUTER");
+  }
+
+  /**
+   * Returns a <code>RECRUIT amount race</code> order.
+   */
+  protected String getRecruitOrder(int amount, Race race) {
+    return RECRUITOrder + " " + amount
+        + (race != null ? (" " + getLocalizedOrder("race." + race.getID(), race.getName())) : "");
   }
 
   /**

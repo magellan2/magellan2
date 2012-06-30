@@ -59,7 +59,6 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     data = new GameDataBuilder().createSimplestGameData();
     client.setData(data);
 
-
     builder = new GameDataBuilder();
   }
 
@@ -1375,6 +1374,23 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("VERKAUFEN ALLES Myrrhe", unit, 2);
     assertOrder("VERKAUFEN 2 Öl", unit, 3);
     assertEquals(4, unit.getOrders2().size());
+
+    // test normal operation
+    builder.addItem(data, unit, "Silber", 20000);
+    unit.clearOrders();
+    unit.addOrder("// $cript Handel 45 ALLES nie");
+    parser.execute(unit.getFaction());
+    assertOrder("// $cript Handel 45 ALLES nie", unit, 1);
+    assertOrder("KAUFEN 45 Balsam", unit, 2);
+    assertOrder("VERKAUFEN ALLES Juwel", unit, 3);
+    assertOrder("VERKAUFEN ALLES Weihrauch", unit, 4);
+    assertOrder("VERKAUFEN ALLES Gewürz", unit, 5);
+    assertOrder("VERKAUFEN ALLES Myrrhe", unit, 6);
+    assertOrder("VERKAUFEN ALLES Öl", unit, 7);
+    assertOrder("VERKAUFEN ALLES Seide", unit, 8);
+    assertOrder("RESERVIEREN 750 Silber", unit, 9);
+    assertEquals(15, unit.getOrders2().size()); // 6 resource warnings
+
   }
 
   /**
@@ -1563,4 +1579,43 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals("// $$L351", unit.getOrders2().get(7).toString());
   }
 
+  /**
+   * Test method for {@link E3CommandParser#commandRecruit(String [])}.
+   */
+  @Test
+  public final void testCommandRecruit() {
+    unit.clearOrders();
+    unit.addOrder("// $cript RekrutiereMax");
+    parser.execute(unit.getFaction());
+    assertOrder("// $cript RekrutiereMax", unit, 1);
+    assertError("not enough recruits", unit, 2);
+
+    unit.getRegion().setPeasants(1000); // 100 peasants = 25 recruits
+
+    unit.clearOrders();
+    unit.addOrder("// $cript RekrutiereMax");
+    parser.execute(unit.getFaction());
+    assertOrder("// $cript RekrutiereMax", unit, 1);
+    assertOrder("REKRUTIEREN 25", unit, 2);
+    assertError("braucht 2000 mehr Silber", unit, 3);
+
+    builder.addItem(data, unit, "Silber", 10000);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript RekrutiereMax");
+    parser.execute(unit.getFaction());
+    assertOrder("REKRUTIEREN 25", unit, 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript RekrutiereMax 0 10");
+    parser.execute(unit.getFaction());
+    assertError("recruitment limit reached", unit, 2);
+    assertOrder("REKRUTIEREN 9", unit, 3);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript RekrutiereMax 0 1");
+    parser.execute(unit.getFaction());
+    assertError("recruitment limit reached", unit, 2);
+
+  }
 }

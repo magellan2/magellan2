@@ -1500,7 +1500,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       return false;
     try {
       while (crw.savingInProgress()) {
-        this.wait(500);
+        Thread.sleep(500);
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();

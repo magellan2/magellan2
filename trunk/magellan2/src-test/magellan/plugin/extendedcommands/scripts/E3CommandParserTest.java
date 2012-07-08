@@ -19,8 +19,10 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.MissingData;
+import magellan.library.Rules;
 import magellan.library.Skill;
 import magellan.library.Unit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.Locales;
 import magellan.library.utils.logging.Logger;
 import magellan.plugin.extendedcommands.ExtendedCommandsProvider;
@@ -1617,5 +1619,23 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertError("recruitment limit reached", unit, 2);
 
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandRecruit(String [])}.
+   */
+  @Test
+  public final void testCommandRecruitOrks() {
+    unit.clearOrders();
+    unit.setPersons(344);
+    unit.setRace(getRules().getRace(EresseaConstants.R_ORKS));
+    unit.setRealRace(getRules().getRace(EresseaConstants.R_ORKS));
+    unit.addOrder("// $cript RekrutiereMax 1 400");
+    parser.execute(unit.getFaction());
+    assertOrder("REKRUTIEREN 50", unit, 2);
+  }
+
+  private Rules getRules() {
+    return data.getRules();
   }
 }

@@ -1696,10 +1696,10 @@ public class E3CommandParser {
     int amount = world.getGameSpecificRules().getRecruitmentLimit(currentUnit, effRace);
 
     if (currentUnit.getPersons() + amount >= max) {
-      addNewError("recruitment limit reached");
+      addNewWarning("recruitment limit reached");
+      amount = Math.min(max - currentUnit.getPersons(), amount);
     }
 
-    amount = Math.min(max - currentUnit.getPersons(), amount);
     if (amount < min) {
       addNewError("not enough recruits");
     }

@@ -2803,6 +2803,10 @@ public class EresseaOrderCompleter implements Completer {
     return Resources.getOrderTranslation(orderKey, getLocale());
   }
 
+  protected String getRuleItemTranslation(String orderKey) {
+    return Resources.getRuleItemTranslation(orderKey, getLocale());
+  }
+
   protected String getTranslation(String key) {
     return Resources.get(key);
   }

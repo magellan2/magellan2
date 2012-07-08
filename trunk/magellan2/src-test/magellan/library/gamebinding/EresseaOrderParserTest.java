@@ -133,8 +133,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     assertTrue(getParser().getCommands().contains("foo"));
     assertTrue(getParser().getHandlers().contains(fooHandler));
 
-    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).contains(fooHandler));
-    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).size() == 1);
+    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).contains(fooHandler));
+    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).size() == 1);
   }
 
   /**
@@ -153,12 +153,12 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     assertTrue(getParser().getCommands().contains("foo"));
     assertTrue(getParser().getHandlers().contains(fooHandler));
 
-    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).contains(fooHandler));
-    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).size() == 1);
+    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).contains(fooHandler));
+    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).size() == 1);
     getParser().removeCommand("foo");
     assertFalse(getParser().getCommands().contains("foo"));
     assertFalse(getParser().getHandlers().contains(fooHandler));
-    assertTrue(getParser().getHandlers(new OrderToken("orders.foo")).size() == 0);
+    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).size() == 0);
   }
 
   /**

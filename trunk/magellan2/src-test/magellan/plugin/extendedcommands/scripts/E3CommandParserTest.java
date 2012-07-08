@@ -1626,6 +1626,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    */
   @Test
   public final void testCommandRecruitOrks() {
+    unit.getRegion().setPeasants(1000); // 100 peasants = 25 recruits
+
     unit.clearOrders();
     unit.setPersons(344);
     unit.setRace(getRules().getRace(EresseaConstants.R_ORKS));

@@ -55,7 +55,6 @@ public class E3AOrderParser extends EresseaOrderParser {
     // removeCommand(EresseaConstants.O_GROW);
 
     removeCommand(EresseaConstants.O_SPY);
-    removeCommand(EresseaConstants.O_STEAL);
 
     removeCommand(EresseaConstants.O_STEAL);
 
@@ -353,11 +352,12 @@ public class E3AOrderParser extends EresseaOrderParser {
     }
   }
 
-  private Race getRace(String content) {
+  protected Race getRace(String content) {
     for (Race r : getRules().getRaces())
-      if (r.getRecruitmentName() != null
-          && content.equalsIgnoreCase(getOrderTranslation("race." + r.getRecruitmentName())))
-        return r;
+      if (r.getRecruitmentCosts() > 0)
+        if (content.equalsIgnoreCase(getRuleItemTranslation("race." + r.getID()))
+            || content.equalsIgnoreCase(getRuleItemTranslation("race.1." + r.getID())))
+          return r;
     return null;
   }
 

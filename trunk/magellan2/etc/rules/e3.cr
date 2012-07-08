@@ -5,6 +5,177 @@ MAGELLAN
 "magellan.library.gamebinding.e3a.E3ASpecificStuff";class
 "ERESSEA";orderFileStartingString
 
+ORDER "COMMENT"
+"// Text1*";syntax
+
+ORDER "ALLIANCE"
+"ALLIANZ (AUSSTOSSEN f1) | (VERLASSEN) | (KOMMANDO f1) | NEU | (EINLADEN f1) | (BEITRETEN a1)";syntax
+
+ORDER "WORK"
+"ARBEITE";syntax
+
+ORDER "ATTACK"
+"ATTACKIERE u1";syntax
+
+ORDER "BANNER"
+"BANNER Text";syntax
+
+ORDER "CLAIM"
+"BEANSPRUCHE [1] Ding";syntax
+
+ORDER "PROMOTION"
+"BEFÖRDERUNG";syntax
+
+ORDER "SIEGE"
+"BELAGERE b1";syntax
+
+ORDER "NAME"
+"BENENNE EINHEIT | PARTEI | GEBÄUDE | BURG | SCHIFF | REGION | ALLIANZ | (FREMDE EINHEIT u1) | (FREMDES SCHIFF s1) | (FREMDES GEBÄUDE b1) | (FREMDE BURG b1) | (FREMDE PARTEI f1) Text";syntax
+
+ORDER "USE"
+"BENUTZE [1] Ding";syntax
+
+ORDER "DESCRIBE"
+"BESCHREIBE REGION | SCHIFF | GEBÄUDE | BURG | EINHEIT | PRIVAT  Text";syntax
+
+ORDER "ENTER"
+"BETRETE (BURG b1 | SCHIFF s1 | Ding x1)";syntax
+
+ORDER "GUARD"
+"BEWACHE [NICHT]";syntax
+
+ORDER "PAY"
+"BEZAHLE NICHT";syntax
+
+ORDER "MESSAGE"
+"BOTSCHAFT REGION | (SCHIFF s1) | (GEBÄUDE b2) | (BURG b3) | (EINHEIT u4) | (PARTEI f5)  Text";syntax
+
+ORDER "DEFAULT"
+"DEFAULT Order";syntax
+
+ORDER "UNIT"
+"EINHEIT u1";syntax
+1;internal
+
+ORDER "EMAIL"
+"EMAIL Email";syntax
+
+ORDER "END"
+"ENDE";syntax
+
+ORDER "RIDE"
+"FAHRE u1";syntax
+
+ORDER "FOLLOW"
+"FOLGE (EINHEIT u1) | (SCHIFF s2)";syntax
+
+ORDER "GIVE"
+"GIB (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
+
+ORDER "GROUP"
+"GRUPPE [Name]";syntax
+
+ORDER "HELP"
+"HELFE f1 ALLES|GIB|BEWACHE|SILBER [NICHT] ";syntax
+
+ORDER "COMBAT"
+"KÄMPFE [AGGRESSIV|HINTEN|DEFENSIV|NICHT|FLIEHE|(HELFE [NICHT])]";syntax
+
+ORDER "COMBATSPELL"
+"KAMPFZAUBER [STUFE 1] Zauber [NICHT]";syntax
+
+ORDER "CONTACT"
+"KONTAKTIERE u1";syntax
+
+ORDER "LEARN"
+"LERNE Talent [1]";syntax
+
+ORDER "LOCALE"
+"LOCALE";syntax
+1;internal
+
+ORDER "MAKE"
+"MACHE [(TEMP u1 [Name]) | ([1] Ding [s1|b1]) | ([1] STRAßE Richtung)]";syntax
+
+ORDER "MOVE"
+"NACH Richtung1+";syntax
+
+ORDER "NEXT"
+"Invalid";syntax
+1;internal
+
+ORDER "RESTART"
+"NEUSTART Rasse Passwort";syntax
+0;active
+
+ORDER "NUMBER"
+"NUMMER (EINHEIT) | (SCHIFF) | (GEBÄUDE) | (BURG) | (PARTEI) [x1]";syntax
+
+ORDER "OPTION"
+"OPTION Option [Nicht]";syntax
+
+ORDER "FACTION"
+"PARTEI f1";syntax
+1;internal
+
+ORDER "PASSWORD"
+"PASSWORT passwort";syntax
+
+ORDER "PLANT"
+"PFLANZE [1] (KRÄUTER) | (BÄUME) | (SAMEN) | (MALLORNSAMEN)";syntax
+
+ORDER "PIRACY"
+"PIRATERIE f1*";syntax
+
+ORDER "PREFIX"
+"PRÄFIX [Name]";syntax
+
+ORDER "REGION"
+"REGION 1 , 2";syntax
+1;internal
+
+ORDER "RECRUIT"
+"REKRUTIERE 1 [Race]";syntax
+
+ORDER "RESERVE"
+"RESERVIERE (1) | (ALLES) | (JE 2) Gegenstand";syntax
+
+ORDER "ROUTE"
+"ROUTE Richtung1+";syntax
+
+ORDER "SORT"
+"SORTIERE (VOR) | (HINTER) u1";syntax
+
+ORDER "QUIT"
+"STIRB Password";syntax
+
+ORDER "HIDE"
+"TARNE ([1]) | (PARTEI [NICHT])";syntax
+
+ORDER "CARRY"
+"TRANSPORTIERE u1";syntax
+
+ORDER "ORIGIN"
+"URSPRUNG 1 2";syntax
+
+ORDER "FORGET"
+"VERGESSE Talent";syntax
+
+ORDER "LEAVE"
+"VERLASSE";syntax
+
+ORDER "CAST"
+"ZAUBERE [REGION 1 2] [STUFE 3] Zauber Parameter1*";syntax
+
+ORDER "SHOW"
+"ZEIGE (ding)|(ALLE [ZAUBER|TRÄNKE])";syntax
+
+ORDER "DESTROY"
+"ZERSTÖRE [1] [STRASSE richtung]";syntax
+
+ORDER "GROW"
+"(ZÜCHTE PFERDE)|(ZÜCHTE [1] KRÄUTER)";syntax
+
 OPTIONCATEGORY "REPORT"
 "REPORT";name
 "true";order
@@ -420,7 +591,6 @@ SKILL "Wagenbau"
 RACE "Zwerge"
 "Zwerge";name
 240;recruitmentcosts
-"Zwerg";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -447,7 +617,6 @@ TALENTBONI "Gletscher"
 RACE "Orks"
 "Orks";name
 100;recruitmentcosts
-"Ork";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -466,7 +635,6 @@ TALENTBONI
 RACE "Elfen"
 "Elfen";name
 200;recruitmentcosts
-"Elf";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -487,7 +655,6 @@ TALENTBONI "Wald"
 RACE "Dämonen"
 "Dämonen";name
 360;recruitmentcosts
-"Dämon";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -505,7 +672,6 @@ TALENTBONI
 RACE "Halblinge"
 "Halblinge";name
 100;recruitmentcosts
-"Halbling";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -526,7 +692,6 @@ TALENTBONI
 RACE "Menschen"
 "Menschen";name
 100;recruitmentcosts
-"Mensch";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -537,7 +702,6 @@ TALENTBONI
 RACE "Goblins"
 "Goblins";name
 60;recruitmentcosts
-"Goblin";recruitmentname
 2;recruitmentfactor
 6;maintenance
 6;weight
@@ -557,7 +721,6 @@ TALENTBONI
 RACE "Trolle"
 "Trolle";name
 260;recruitmentcosts
-"Troll";recruitmentname
 20;weight
 10.8;capacity
 TALENTBONI

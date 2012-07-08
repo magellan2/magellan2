@@ -519,7 +519,7 @@ public class Resources {
     if (trimkey != key) {
       log.warn("key was invalid: " + key);
     }
-    trimkey = "orders." + trimkey;
+    trimkey = "rules.orders." + trimkey;
     String translation = resources.getResource(trimkey, locale);
 
     if (translation != null) {

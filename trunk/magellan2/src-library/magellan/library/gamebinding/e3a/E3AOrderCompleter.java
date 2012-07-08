@@ -246,8 +246,8 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
    */
   public void cmpltRekrutiereAmount() {
     for (Race r : getData().rules.getRaces()) {
-      if (r.getRecruitmentName() != null) {
-        addCompletion(new Completion(r.getRecruitmentName()));
+      if (r.getRecruitmentCosts() > 0) {
+        addCompletion(new Completion(getRuleItemTranslation("race.1." + r.getID())));
       }
     }
   }

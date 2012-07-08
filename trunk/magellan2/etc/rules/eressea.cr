@@ -5,6 +5,201 @@ MAGELLAN
 "magellan.library.gamebinding.EresseaSpecificStuff";class
 "ERESSEA";orderFileStartingString
 
+ORDER "COMMENT"
+"// Text1*";syntax
+
+ORDER "WORK"
+"ARBEITE";syntax
+
+ORDER "ATTACK"
+"ATTACKIERE u1";syntax
+
+ORDER "BANNER"
+"BANNER Text";syntax
+
+ORDER "CLAIM"
+"BEANSPRUCHE [1] Ding";syntax
+
+ORDER "PROMOTION"
+"BEFÖRDERUNG";syntax
+
+ORDER "STEAL"
+"BEKLAUE u1";syntax
+
+ORDER "SIEGE"
+"BELAGERE b1";syntax
+
+ORDER "NAME"
+"BENENNE EINHEIT | PARTEI | GEBÄUDE | BURG | SCHIFF | REGION | (FREMDE EINHEIT u1) | (FREMDES SCHIFF s1) | (FREMDES GEBÄUDE b1) | (FREMDE BURG b1) | (FREMDE PARTEI f1) Text";syntax
+
+ORDER "USE"
+"BENUTZE [1] Ding";syntax
+
+ORDER "DESCRIBE"
+"BESCHREIBE REGION | SCHIFF | GEBÄUDE | BURG | EINHEIT | PRIVAT  Text";syntax
+
+ORDER "ENTER"
+"BETRETE (BURG b1 | SCHIFF s1 | Ding x1)";syntax
+
+ORDER "GUARD"
+"BEWACHE [NICHT]";syntax
+
+ORDER "MESSAGE"
+"BOTSCHAFT REGION | (SCHIFF s1) | (GEBÄUDE b2) | (BURG b3) | (EINHEIT u4) | (PARTEI f5)  Text";syntax
+
+ORDER "DEFAULT"
+"DEFAULT Order";syntax
+
+ORDER "UNIT"
+"EINHEIT u1";syntax
+1;internal
+
+ORDER "EMAIL"
+"EMAIL Email";syntax
+
+ORDER "END"
+"ENDE";syntax
+
+ORDER "RIDE"
+"FAHRE u1";syntax
+
+ORDER "FOLLOW"
+"FOLGE (EINHEIT u1) | (SCHIFF s2)";syntax
+
+ORDER "RESEARCH"
+"FORSCHE KRÄUTER";syntax
+
+ORDER "GIVE"
+"GIB (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
+
+ORDER "GROUP"
+"GRUPPE [Name]";syntax
+
+ORDER "HELP"
+"HELFE f1 ALLES|GIB|KÄMPFE|BEWACHE|SILBER|PARTEITARNUNG [NICHT] ";syntax
+
+ORDER "COMBAT"
+"KÄMPFE [AGGRESSIV|HINTEN|DEFENSIV|NICHT|FLIEHE|(HELFE [NICHT])]";syntax
+
+ORDER "COMBATSPELL"
+"KAMPFZAUBER [STUFE 1] Zauber [NICHT]";syntax
+
+ORDER "BUY"
+"KAUFE 1 Luxus";syntax
+
+ORDER "CONTACT"
+"KONTAKTIERE u1";syntax
+
+ORDER "TEACH"
+"LEHRE u1+";syntax
+
+ORDER "LEARN"
+"LERNE Talent [1]";syntax
+
+ORDER "SUPPLY"
+"LIEFERE (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
+
+ORDER "LOCALE"
+"LOCALE";syntax
+1;internal
+
+ORDER "MAKE"
+"MACHE [(TEMP u1 [Name]) | ([1] Ding [s1|b1]) | ([1] STRAßE Richtung)]";syntax
+
+ORDER "MOVE"
+"NACH Richtung1+";syntax
+
+ORDER "NEXT"
+"Invalid";syntax
+1;internal
+
+ORDER "RESTART"
+"NEUSTART Rasse Passwort";syntax
+0;active
+
+ORDER "NUMBER"
+"NUMMER (EINHEIT) | (SCHIFF) | (GEBÄUDE) | (BURG) | (PARTEI) [x1]";syntax
+
+ORDER "OPTION"
+"OPTION Option [Nicht]";syntax
+
+ORDER "FACTION"
+"PARTEI f1";syntax
+1;internal
+
+ORDER "PASSWORD"
+"PASSWORT passwort";syntax
+
+ORDER "PLANT"
+"PFLANZE [1] (KRÄUTER) | (BÄUME) | (SAMEN) | (MALLORNSAMEN)";syntax
+
+ORDER "PIRACY"
+"PIRATERIE f1*";syntax
+
+ORDER "PREFIX"
+"PRÄFIX [Name]";syntax
+
+ORDER "REGION"
+"REGION 1 , 2";syntax
+1;internal
+
+ORDER "RECRUIT"
+"REKRUTIERE 1";syntax
+
+ORDER "RESERVE"
+"RESERVIERE (1) | (ALLES) | (JE 2) Gegenstand";syntax
+
+ORDER "ROUTE"
+"ROUTE Richtung1+";syntax
+
+ORDER "SABOTAGE"
+"SABOTIERE SCHIFF";syntax
+
+ORDER "SORT"
+"SORTIERE (VOR) | (HINTER) u1";syntax
+
+ORDER "SPY"
+"SPIONIERE u1";syntax
+
+ORDER "QUIT"
+"STIRB Password";syntax
+
+ORDER "HIDE"
+"TARNE ([1]) | (Rasse) | (PARTEI [NICHT]) | (PARTEI NUMMER f1)";syntax
+
+ORDER "CARRY"
+"TRANSPORTIERE u1";syntax
+
+ORDER "TAX"
+"TREIBE [1]";syntax
+
+ORDER "ENTERTAIN"
+"UNTERHALTE [1]";syntax
+
+ORDER "ORIGIN"
+"URSPRUNG 1 2";syntax
+
+ORDER "FORGET"
+"VERGESSE Talent";syntax
+
+ORDER "SELL"
+"VERKAUFE 1 | ALLES  Luxus";syntax
+
+ORDER "LEAVE"
+"VERLASSE";syntax
+
+ORDER "CAST"
+"ZAUBERE [REGION 1 2] [STUFE 3] Zauber Parameter1*";syntax
+
+ORDER "SHOW"
+"ZEIGE (ding)|(ALLE [ZAUBER|TRÄNKE])";syntax
+
+ORDER "DESTROY"
+"ZERSTÖRE [1] [STRASSE richtung]";syntax
+
+ORDER "GROW"
+"(ZÜCHTE PFERDE)|(ZÜCHTE [1] KRÄUTER)";syntax
+
 OPTIONCATEGORY "REPORT"
 "REPORT";name
 "true";order

@@ -870,7 +870,7 @@ public class EresseaRelationFactory implements RelationFactory {
   private Race getRace(String content) {
     for (Race r : rules.getRaces()) {
       if (r.getRecruitmentCosts() > 0
-          && content.equalsIgnoreCase(Resources.getOrderTranslation("recruit." + r.getID())))
+          && content.equalsIgnoreCase(Resources.getRuleItemTranslation("race." + r.getID())))
         return r;
     }
     return null;

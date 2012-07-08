@@ -29,7 +29,7 @@
 	<property name="lib_internal"      location="${basedir}/lib/internal"/>
 	<property name="bin"               location="${basedir}/bin"/>
 	<property name="release"           location="${basedir}/release"/>
-    <property name="sandbox"           location="${basedir}/sandbox"/>
+	<property name="sandbox"           location="${basedir}/sandbox"/>
 
 	<property name="junit.output.dir" value="${basedir}/test/junit"/>
 
@@ -350,6 +350,7 @@
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
 	<target name="run_tests" description="This target runs the unit tests">
+
 		<antcall target="build_library" />
 		<antcall target="build_client" />
 		<antcall target="build_plugins" />
@@ -372,9 +373,14 @@
 			<classpath refid="magellan.class.path.test" />
 		</junit>
 
-		<fail message="test failed" if="test.failure" />
-
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${basedir}">
+				<filename name="default????*/**" />
+			</fileset>
+		</delete>
 		<!--        <antcall target="clear-classes"/> -->
+
+		<fail message="test failed" if="test.failure" />
 	</target>
 
 	<!-- *************************************************************** -->
@@ -460,93 +466,93 @@
 		<antcall target="clear-release"/>
 	</target>
 
-    <!-- *************************************************************** -->
-    <!-- *                                                             * -->
-    <!-- *  This target compiles and packs the whole magellan app.     * -->
-    <!-- *                                                             * -->
-    <!-- *************************************************************** -->
-    <target name="distribute_no_tests" description=" This target compiles and packs the whole magellan application.">
-        <buildnumber file=".build.number"/>
+	<!-- *************************************************************** -->
+	<!-- *                                                             * -->
+	<!-- *  This target compiles and packs the whole magellan app.     * -->
+	<!-- *                                                             * -->
+	<!-- *************************************************************** -->
+	<target name="distribute_no_tests" description=" This target compiles and packs the whole magellan application.">
+		<buildnumber file=".build.number"/>
 
-        <antcall target="clear-classes"/>
-        <antcall target="clear-release"/>
-        <mkdir dir="${classes}" />
+		<antcall target="clear-classes"/>
+		<antcall target="clear-release"/>
+		<mkdir dir="${classes}" />
 
-    	<antcall target="build_library" />
-    	
-        <antcall target="build_library_jar">
-            <param name="build.number" value="${build.number}"/>
-        </antcall>
+		<antcall target="build_library" />
 
-        <antcall target="build_client" />
+		<antcall target="build_library_jar">
+			<param name="build.number" value="${build.number}"/>
+		</antcall>
 
-        <antcall target="build_client_jar">
-            <param name="build.number" value="${build.number}"/>
-        </antcall>
+		<antcall target="build_client" />
 
-        <antcall target="build_plugins" />
+		<antcall target="build_client_jar">
+			<param name="build.number" value="${build.number}"/>
+		</antcall>
 
-        <antcall target="build_plugins_jar">
-            <param name="build.number" value="${build.number}"/>
-        </antcall>
+		<antcall target="build_plugins" />
 
-        <antcall target="build_help">
-            <param name="build.number" value="${build.number}"/>
-        </antcall>
+		<antcall target="build_plugins_jar">
+			<param name="build.number" value="${build.number}"/>
+		</antcall>
 
-        <antcall target="copy_release_data">
-            <param name="build.number" value="${build.number}"/>
-        </antcall>
+		<antcall target="build_help">
+			<param name="build.number" value="${build.number}"/>
+		</antcall>
 
-        <copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+		<antcall target="copy_release_data">
+			<param name="build.number" value="${build.number}"/>
+		</antcall>
 
-        <property name="installer" location="${basedir}/installer"/>
+		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
 
-        <java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
-            <arg value="${installer}/izpack-install.xml"/>
-            <arg value="-b"/>
-            <arg value="."/>
-            <arg value="-o"/>
-            <arg value="magellan_v${VERSION.POINTED}.jar"/>
-            <arg value="-k"/>
-            <arg value="standard"/>
+		<property name="installer" location="${basedir}/installer"/>
 
-            <classpath>
-                <pathelement path="${java.class.path}/" />
-                <fileset dir="${installer}/izpack/">
-                    <include name="**/*.jar" />
-                </fileset>
-            </classpath>
-        </java>
+		<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
+			<arg value="${installer}/izpack-install.xml"/>
+			<arg value="-b"/>
+			<arg value="."/>
+			<arg value="-o"/>
+			<arg value="magellan_v${VERSION.POINTED}.jar"/>
+			<arg value="-k"/>
+			<arg value="standard"/>
 
-        <echo message="Creating ZIP Distribution"/>
-        <delete file="${basedir}/magellan_v${VERSION.POINTED}.zip" failonerror="false"/>
-        <zip destfile="${basedir}/magellan_v${VERSION.POINTED}.zip">
-            <fileset dir="${release}" includes="**"/>
-        </zip>
+			<classpath>
+				<pathelement path="${java.class.path}/" />
+				<fileset dir="${installer}/izpack/">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</java>
 
-        <echo message="Creating MacOS Distribution"/>
-        <delete file="${basedir}/magellan_v${VERSION.POINTED}_macos.zip" failonerror="false"/>
+		<echo message="Creating ZIP Distribution"/>
+		<delete file="${basedir}/magellan_v${VERSION.POINTED}.zip" failonerror="false"/>
+		<zip destfile="${basedir}/magellan_v${VERSION.POINTED}.zip">
+			<fileset dir="${release}" includes="**"/>
+		</zip>
 
-        <mkdir dir="${basedir}/macos/Magellan.app" />
-        <mkdir dir="${basedir}/macos/Magellan.app" />
-        <mkdir dir="${basedir}/macos/Magellan.app/Contents" />
-        <copy file="${basedir}/installer/macos/PkgInfo" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
-        <copy file="${basedir}/installer/macos/Info.plist" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
-        <mkdir dir="${basedir}/macos/Magellan.app/Contents/MacOS" />
-        <copy file="${basedir}/installer/macos/JavaApplicationStub" todir="${basedir}/macos/Magellan.app/Contents/MacOS/" overwrite="yes"/>
-        <chmod dir="${basedir}/macos/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>
-        <mkdir dir="${basedir}/macos/Magellan.app/Contents/Resources" />
-        <copy file="${basedir}/installer/macos/icon/Magellan.icns" todir="${basedir}/macos/Magellan.app/Contents/Resources/" overwrite="yes"/>
-        <mkdir dir="${basedir}/macos/Magellan.app/Contents/Resources/Java" />
-        <copy todir="${basedir}/macos/Magellan.app/Contents/Resources/Java/" overwrite="true">
-            <fileset dir="${release}/" includes="**"/>
-        </copy>
+		<echo message="Creating MacOS Distribution"/>
+		<delete file="${basedir}/magellan_v${VERSION.POINTED}_macos.zip" failonerror="false"/>
 
-        <antcall target="clear-classes"/>
-        <antcall target="clear-release"/>
-        
-    </target>
+		<mkdir dir="${basedir}/macos/Magellan.app" />
+		<mkdir dir="${basedir}/macos/Magellan.app" />
+		<mkdir dir="${basedir}/macos/Magellan.app/Contents" />
+		<copy file="${basedir}/installer/macos/PkgInfo" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
+		<copy file="${basedir}/installer/macos/Info.plist" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
+		<mkdir dir="${basedir}/macos/Magellan.app/Contents/MacOS" />
+		<copy file="${basedir}/installer/macos/JavaApplicationStub" todir="${basedir}/macos/Magellan.app/Contents/MacOS/" overwrite="yes"/>
+		<chmod dir="${basedir}/macos/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>
+		<mkdir dir="${basedir}/macos/Magellan.app/Contents/Resources" />
+		<copy file="${basedir}/installer/macos/icon/Magellan.icns" todir="${basedir}/macos/Magellan.app/Contents/Resources/" overwrite="yes"/>
+		<mkdir dir="${basedir}/macos/Magellan.app/Contents/Resources/Java" />
+		<copy todir="${basedir}/macos/Magellan.app/Contents/Resources/Java/" overwrite="true">
+			<fileset dir="${release}/" includes="**"/>
+		</copy>
+
+		<antcall target="clear-classes"/>
+		<antcall target="clear-release"/>
+
+	</target>
 
 	<!-- *************************************************************** -->
 	<!-- *                                                             * -->

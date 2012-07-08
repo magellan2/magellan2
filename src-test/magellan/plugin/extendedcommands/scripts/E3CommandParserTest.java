@@ -107,10 +107,18 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   protected void assertError(String expected, Unit u, int number) {
+    assertError(expected, u, number, "(Fehler");
+  }
+
+  protected void assertWarning(String expected, Unit u, int number) {
+    assertError(expected, u, number, "(Warnung");
+  }
+
+  protected void assertError(String expected, Unit u, int number, String warning) {
     assertTrue("expected " + expected + ", but not enough orders", u.getOrders2().size() > number);
     String actual = u.getOrders2().get(number).getText();
-    if (!(actual.contains(expected) && actual.startsWith("; TODO"))) {
-      assertEquals("; TODO: " + expected, actual);
+    if (!(actual.contains(expected) && actual.startsWith("; TODO") && actual.contains(warning))) {
+      assertEquals("; TODO: " + expected + " " + warning, actual);
     }
   }
 
@@ -264,7 +272,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(4, unit.getOrders2().size());
     assertOrder("// $cript 5 5 // $cript GibWenn abc 100 Silber", unit, 1);
     assertOrder("// $cript GibWenn abc 100 Silber", unit, 2);
-    assertError("abc nicht da", unit, 3);
+    assertWarning("abc nicht da", unit, 3);
 
     unit.clearOrders();
     unit.deleteAllTags();
@@ -297,6 +305,15 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertEquals(2, unit.getOrders2().size());
     assertOrder("", unit, 1);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1 1 // $cript +1 bla");
+
+    parser.execute(unit.getFaction());
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("// $cript 1 1 // $cript +1 bla", unit, 1);
+    assertWarning("bla", unit, 2);
   }
 
   /**
@@ -716,7 +733,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     assertEquals(2, unit2.getOrders2().size());
     assertOrder("// $cript GibWenn 2 3 Silber", unit2, 0);
-    assertError("nicht da", unit2, 1);//
+    assertWarning("nicht da", unit2, 1);//
     // assertOrder("GIB 2 3 Silber", unit2, 2);
 
     // test receiver unit not there (with warning)
@@ -727,7 +744,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
 
     assertEquals(2, unit2.getOrders2().size());
-    assertError("nicht da", unit2, 1);
+    assertWarning("nicht da", unit2, 1);
     // assertOrder("GIB 2 3 Silber", unit2, 2);
 
     // test receiver unit not there (without warning)
@@ -749,7 +766,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
 
     assertEquals(2, unit2.getOrders2().size());
-    assertError("2 nicht da", unit2, 1);
+    assertWarning("2 nicht da", unit2, 1);
     // assertOrder("GIB 2 3 Silber", unit2, 2);
 
     // test receiver unit not there (with hidden unit warning)
@@ -805,7 +822,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
 
     assertEquals(2, unit2.getOrders2().size());
-    assertError("zu wenig Schwert", unit2, 1);
+    assertWarning("zu wenig Schwert", unit2, 1);
 
     // test supplyer does not have item
     unit.clearOrders();
@@ -815,7 +832,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
 
     assertEquals(3, unit2.getOrders2().size());
-    assertError("zu wenig Silber", unit2, 1);
+    assertWarning("zu wenig Silber", unit2, 1);
     assertOrder("GIB 1 ALLES Silber", unit2, 2);
 
     // test supplyer does not have item
@@ -1020,23 +1037,23 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertFalse(containsOrder(unit, "// $cript +1 foo"));
     assertFalse(containsOrder(unit, "// $cript +0 foo"));
-    assertError("foo", unit, 1);
+    assertWarning("foo", unit, 1);
     assertEquals(2, unit.getOrders2().size());
 
     unit.clearOrders();
     unit.addOrder("// $cript +1");
     parser.execute(unit.getFaction());
-    assertError("", unit, 1);
+    assertWarning("", unit, 1);
 
     unit.clearOrders();
     unit.addOrder("// $cript +1 ");
     parser.execute(unit.getFaction());
-    assertError("", unit, 1);
+    assertWarning("", unit, 1);
 
     unit.clearOrders();
     unit.addOrder("// $cript +1 +foo    bar bla blubb");
     parser.execute(unit.getFaction());
-    assertError("+foo    bar bla blubb", unit, 1);
+    assertWarning("+foo    bar bla blubb", unit, 1);
 
     unit.clearOrders();
     unit.addOrder("// $cript +2 foo");
@@ -1048,7 +1065,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.addOrder("// $cript +1 ; TODO bug armbrustagabe?"); // actually, this ;-comment would be
     // cut away by the server
     parser.execute(unit.getFaction());
-    assertError("; TODO bug armbrustagabe?", unit, 1);
+    assertWarning("; TODO bug armbrustagabe?", unit, 1);
   }
 
   /**
@@ -1140,7 +1157,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(1, unit.getOrders2().size());
     assertEquals(2, unit2.getOrders2().size());
     assertOrder("// $cript Soldat", unit2, 0);
-    assertError("kein Kampftalent", unit2, 1);
+    assertWarning("kein Kampftalent", unit2, 1);
 
     // normal operation
     builder.addSkill(unit2, "Hiebwaffen", 2);
@@ -1611,13 +1628,13 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.clearOrders();
     unit.addOrder("// $cript RekrutiereMax 0 10");
     parser.execute(unit.getFaction());
-    assertError("recruitment limit reached", unit, 2);
+    assertWarning("recruitment limit reached", unit, 2);
     assertOrder("REKRUTIEREN 9", unit, 3);
 
     unit.clearOrders();
     unit.addOrder("// $cript RekrutiereMax 0 1");
     parser.execute(unit.getFaction());
-    assertError("recruitment limit reached", unit, 2);
+    assertWarning("recruitment limit reached", unit, 2);
 
   }
 

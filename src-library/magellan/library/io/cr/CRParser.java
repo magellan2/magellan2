@@ -77,6 +77,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.MessageType;
 import magellan.library.rules.OptionCategory;
 import magellan.library.rules.Options;
+import magellan.library.rules.OrderType;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.Resource;
@@ -1108,9 +1109,6 @@ public class CRParser implements RulesIO, GameDataIO {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("recruitmentcosts")) {
         race.setRecruitmentCosts(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
-      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("recruitmentname")) {
-        race.setRecruitmentName(sc.argv[0]);
-        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("recruitmentfactor")) {
         race.setRecruitmentFactor(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
@@ -1705,6 +1703,8 @@ public class CRParser implements RulesIO, GameDataIO {
         parseOptionCategory(rules);
       } else if (sc.argv[0].startsWith("ALLIANCECATEGORY ")) {
         parseAllianceCategory(rules);
+      } else if (sc.argv[0].startsWith("ORDER ")) {
+        parseOrder(rules);
       } else {
         unknown("RULES", true);
       }
@@ -1781,6 +1781,30 @@ public class CRParser implements RulesIO, GameDataIO {
         cat.setBitMask(Integer.parseInt(sc.argv[0]));
       } else if (!sc.isBlock) {
         unknown("ALLIANCECATEGORY", true);
+      } else {
+        break;
+      }
+
+      sc.getNextToken();
+    }
+  }
+
+  private void parseOrder(Rules rules) throws IOException {
+    final int f = sc.argv[0].indexOf("\"", 0);
+    final int t = sc.argv[0].indexOf("\"", f + 1);
+    final StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
+    final OrderType ord = rules.getOrder(id, true);
+    sc.getNextToken(); // skip ORDER xx
+
+    while (!sc.eof) {
+      if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("syntax")) {
+        ord.setSyntax(sc.argv[0]);
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("internal")) {
+        ord.setInternal(sc.argv[0].equals("1"));
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("active")) {
+        ord.setActive(sc.argv[0].equals("1"));
+      } else if (!sc.isBlock) {
+        unknown("ORDER", true);
       } else {
         break;
       }

@@ -25,6 +25,7 @@ import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.ObjectType;
 import magellan.library.rules.OptionCategory;
+import magellan.library.rules.OrderType;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.ShipType;
@@ -446,5 +447,7 @@ public interface Rules {
    * @param startingString
    */
   public void setOrderfileStartingString(String startingString);
+
+  public OrderType getOrder(StringID id, boolean b);
 
 }

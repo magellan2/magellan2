@@ -23,7 +23,6 @@ public class Race extends UnitContainerType {
   private Map<ID, Integer> skillBonuses = null;
   private Map<ID, Map<ID, Integer>> skillRegionBonuses = null;
   private int additiveShipBonus;
-  private String recruitName;
   private int maintenance = 10;
   private int recruitFactor = 1;
 
@@ -46,20 +45,6 @@ public class Race extends UnitContainerType {
    */
   public int getRecruitmentCosts() {
     return recruit;
-  }
-
-  /**
-   * Sets the string needed for recruiting orders.
-   */
-  public void setRecruitmentName(String name) {
-    recruitName = name;
-  }
-
-  /**
-   * Returns the string needed for recruiting orders if applicable, otherwise <code>null</code>.
-   */
-  public String getRecruitmentName() {
-    return recruitName;
   }
 
   /**

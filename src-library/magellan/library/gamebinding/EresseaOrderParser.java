@@ -43,6 +43,7 @@ import magellan.library.gamebinding.RenameOrder.RenameObject;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Direction;
 import magellan.library.utils.IDBaseConverter;
@@ -326,6 +327,15 @@ public class EresseaOrderParser implements OrderParser {
    */
   protected String getOrderTranslation(String key) {
     return Resources.getOrderTranslation(key, getLocale());
+  }
+
+  /**
+   * Returns the localized rule item (skill, race) in the current locale.
+   * 
+   * @see Resources#getRuleItemTranslation(String, Locale)
+   */
+  protected String getRuleItemTranslation(String key) {
+    return Resources.getRuleItemTranslation(key, getLocale());
   }
 
   /**
@@ -2691,8 +2701,16 @@ public class EresseaOrderParser implements OrderParser {
         retVal = new StringChecker(false, false, true, false) {
           @Override
           protected boolean checkInner() {
-            return super.checkInner() && (getRules() != null)
-                && (getRules().getRace(content) != null);
+            if (super.checkInner() && (getRules() != null)) {
+              for (Race race : getRules().getRaces()) {
+                if (normalizeName(getRuleItemTranslation("race." + race.getID())).equalsIgnoreCase(
+                    normalizeName(content))
+                    || normalizeName(getRuleItemTranslation("race.1." + race.getID()))
+                        .equalsIgnoreCase(normalizeName(content)))
+                  return true;
+              }
+            }
+            return false;
           }
 
           @Override

@@ -641,6 +641,17 @@ public class GenericRules implements Rules {
     return getMap(MagellanSpellImpl.class).values();
   }
 
+  public OrderType getOrder(StringID id, boolean add) {
+    return getObjectType(OrderType.class, id, add);
+  }
+
+  /**
+   * Returns all spells.
+   */
+  public Collection<OrderType> getOrders() {
+    return getMap(OrderType.class).values();
+  }
+
   /**
    * @see magellan.library.Rules#changeName(java.lang.String, java.lang.String)
    */
@@ -862,4 +873,5 @@ public class GenericRules implements Rules {
     new SkillType(StringID.create("foo"));
     new MagellanSpellImpl(StringID.create("foo"), null);
   }
+
 }

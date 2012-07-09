@@ -672,25 +672,39 @@ public class EresseaOrderChanger implements OrderChanger {
    *      magellan.library.Unit, int, magellan.library.StringID)
    */
   public void addGiveOrder(Unit source, Unit target, int amount, StringID item, String comment) {
+    String sItem = "";
+    String tmpOrders = null;
     // FIXME methods like this should throw RulesExceptions if anything goes wrong...
-    ItemType itemType = getRules().getItemType(item);
-    if (item == null || itemType != null || item.equals(EresseaConstants.I_MEN)) {
-      String tmpOrders =
+    if (item != null) {
+      ItemType itemType = getRules().getItemType(item);
+      if (itemType == null)
+        if (item.equals(EresseaConstants.I_MEN)) {
+          sItem = " " + Resources.getOrderTranslation(EresseaConstants.O_MEN);
+        } else {
+          tmpOrders = "; unknown item " + item;
+        }
+      else {
+        sItem = " " + itemType.getOrderName();
+      }
+    } else {
+      if (amount != OrderChanger.ALL) {
+        tmpOrders = "; illegal amount and no item " + amount;
+      }
+      sItem = "";
+    }
+    if (tmpOrders != null) {
+      log.error(tmpOrders);
+    } else {
+      tmpOrders =
           Resources.getOrderTranslation(EresseaConstants.O_GIVE)
               + " "
-              + (target.getID().intValue() < 0 ? "TEMP " : "")
-              + target.getID().toString()
-              + " "
-              + (amount < 0 ? Resources.getOrderTranslation(EresseaConstants.O_EACH) : "")
-              + " "
+              + target.getID().toString(true, source.getLocale())
+              + (amount < 0 ? (" " + Resources.getOrderTranslation(EresseaConstants.O_EACH) + " ")
+                  : " ")
               + (amount == OrderChanger.ALL ? Resources.getOrderTranslation(EresseaConstants.O_ALL)
-                  : Math.abs(amount))
-              + (item == null ? "" : (" " + (item.equals(EresseaConstants.I_MEN) ? Resources
-                  .getOrderTranslation(EresseaConstants.O_MEN) : itemType.getOrderName())))
-              + (comment != null ? ("; " + comment) : "");
-      source.addOrder(tmpOrders);
+                  : Math.abs(amount)) + sItem + (comment != null ? ("; " + comment) : "");
     }
-
+    source.addOrder(tmpOrders);
   }
 
 }

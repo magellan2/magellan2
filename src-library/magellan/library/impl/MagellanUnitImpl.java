@@ -1025,7 +1025,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     for (TempUnit u : tempUnits()) {
       // FIXME should use OrderFactory
       cmds.add(createOrder(Resources.getOrderTranslation(EresseaConstants.O_MAKE) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_TEMP) + " " + u.getID().toString()));
+          + u.getID().toString(true, getLocale())));
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
       if (u.isOrdersConfirmed()) {

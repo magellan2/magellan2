@@ -44,6 +44,7 @@ import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ProblemFactory;
 import magellan.library.tasks.ProblemType;
+import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -154,7 +155,8 @@ public class GiveOrder extends UnitArgumentOrder {
       } else {
         setProblem(ProblemFactory.createProblem(Severity.WARNING,
             OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_UNKNOWN_TARGET.type, unit, null,
-            Resources.get("order.give.warning.unknowntarget", target), line));
+            Resources.get("order.give.warning.unknowntarget", target.toString(true, Locales
+                .getGUILocale())), line));
       }
     } else {
       zeroOrTarget = tUnit;

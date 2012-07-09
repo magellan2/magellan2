@@ -110,7 +110,7 @@ public abstract class AbstractInspector implements Inspector {
       Unit unit = p.getOwner();
       if (unit != null) {
         for (Order line : unit.getOrders2()) {
-          if (isSuppressMarkerFor(line, p, false)) {
+          if (isSuppressMarkerFor(line, p.getType(), false)) {
             it.remove();
             break;
           }
@@ -124,7 +124,7 @@ public abstract class AbstractInspector implements Inspector {
             if (!(line.getText().startsWith(Inspector.SUPPRESS_PREFIX) || line.getText()
                 .startsWith(Inspector.SUPPRESS_PREFIX_PERMANENT))) {
               break;
-            } else if (isSuppressMarkerFor(line, p, true)) {
+            } else if (isSuppressMarkerFor(line, p.getType(), true)) {
               it.remove();
               break;
             }
@@ -134,13 +134,17 @@ public abstract class AbstractInspector implements Inspector {
     }
   }
 
-  protected boolean isSuppressMarkerFor(Order line, Problem p, boolean lineMode) {
+  protected boolean isSuppressMarkerFor(Order line, ProblemType p) {
+    return isSuppressMarkerFor(line, p, true) || isSuppressMarkerFor(line, p, false);
+  }
+
+  protected boolean isSuppressMarkerFor(Order line, ProblemType p, boolean lineMode) {
     if (lineMode)
-      return line.getText().equals(getSuppressLineComment(p.getType(), false))
-          || line.getText().equals(getSuppressLineComment(p.getType(), true));
+      return line.getText().equals(getSuppressLineComment(p, false))
+          || line.getText().equals(getSuppressLineComment(p, true));
     else
-      return line.getText().equals(getSuppressUnitComment(p.getType()))
-          || line.getText().equals(getSuppressUnitComment(p.getType(), true));
+      return line.getText().equals(getSuppressUnitComment(p, false))
+          || line.getText().equals(getSuppressUnitComment(p, true));
   }
 
   /**
@@ -151,10 +155,19 @@ public abstract class AbstractInspector implements Inspector {
    * @return
    */
   protected boolean checkIgnoreUnit(Unit u) {
-    for (ProblemType p : getTypes()) {
-      if (checkIgnoreUnit(u, p))
-        return true;
-    }
+    // boolean found = false;
+    // for (Order order : u.getOrders2()) {
+    // if (order.getText().equals(getSuppressComment())) {
+    // found = true;
+    // break;
+    // }
+    // }
+    // return found;
+
+    // for (ProblemType p : getTypes()) {
+    // if (checkIgnoreUnit(u, p))
+    // return true;
+    // }
     return false;
   }
 
@@ -278,17 +291,11 @@ public abstract class AbstractInspector implements Inspector {
   }
 
   protected String getSuppressUnitComment(ProblemType p) {
-    StringBuffer sb = new StringBuffer(Inspector.SUPPRESS_PREFIX);
-    sb.append(" ");
-    sb.append(p.getName());
-    return sb.toString();
+    return getSuppressUnitComment(p, false);
   }
 
   protected String getSuppressLineComment(ProblemType p) {
-    StringBuffer sb = new StringBuffer(AbstractInspector.SUPPRESS_LINE_PREFIX);
-    sb.append(" ");
-    sb.append(p.getName());
-    return sb.toString();
+    return getSuppressLineComment(p, false);
   }
 
   /**
@@ -300,8 +307,7 @@ public abstract class AbstractInspector implements Inspector {
     for (Order o : u.getOrders2()) {
       boolean match = false;
       for (ProblemType p : getTypes()) {
-        if (o.getText().equals(getSuppressLineComment(p))
-            || o.getText().equals(getSuppressUnitComment(p))) {
+        if (isSuppressMarkerFor(o, p)) {
           match = true;
         }
       }

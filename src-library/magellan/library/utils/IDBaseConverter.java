@@ -7,8 +7,6 @@
 
 package magellan.library.utils;
 
-import magellan.library.event.GameDataEvent;
-import magellan.library.event.GameDataListener;
 
 /**
  * A class for handling the input and output of ids at certain bases.
@@ -53,44 +51,10 @@ public class IDBaseConverter {
   }
 
   /**
-   * Field <code>listener</code>
-   * 
-   * @deprecated is not used any more
-   */
-  @Deprecated
-  private static GameDataListener listener = null;
-
-  /**
 	 * 
 	 */
   public static void init() {
-    if (IDBaseConverter.listener == null) {
-      IDBaseConverter.listener = new IDBaseConverterListener();
-      // TODO!!!!!!! EventDispatcher.getDispatcher().addGameDataListener(listener);
-    }
+    // TODO!!!!!!! EventDispatcher.getDispatcher().addGameDataListener(listener);
   }
 
-  /**
-   * @deprecated Does not do anything (any more?)
-   */
-  @Deprecated
-  private static class IDBaseConverterListener implements GameDataListener {
-    /**
-     * Creates a new IDBaseConverterListener object.
-     */
-    public IDBaseConverterListener() {
-    }
-
-    /**
-     * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
-     */
-    public void gameDataChanged(GameDataEvent e) {
-      // IDBaseConverter.getBase();
-
-      try {
-        // IDBaseConverter.setBase(e.getGameData().base);
-      } catch (IllegalArgumentException iae) {
-      }
-    }
-  }
 }

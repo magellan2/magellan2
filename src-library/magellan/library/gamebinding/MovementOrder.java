@@ -118,7 +118,7 @@ public class MovementOrder extends SimpleOrder {
 
     int i = 0;
     for (OrderToken token : tokens) {
-      if (i++ != 0) {
+      if (i++ != 0 && token.ttype != OrderToken.TT_EOC) {
         Direction movement = Direction.toDirection(token.getText(), locale);
         result.add(movement);
       }

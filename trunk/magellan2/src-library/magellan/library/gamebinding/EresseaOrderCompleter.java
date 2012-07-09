@@ -721,8 +721,8 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   /** Add completions for command BotschaftEinheit. */
-  public void cmpltBotschaftEinheit(boolean tempToken) {
-    addRegionUnits(spaceQuotes, 1, tempToken);
+  public void cmpltBotschaftEinheit(boolean omitTemp) {
+    addRegionUnits(spaceQuotes, 1, omitTemp);
   }
 
   /** Add completions for command BotschaftPartei. */
@@ -755,8 +755,8 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   /** Add completions for command Fahre. */
-  public void cmpltFahre(boolean tempToken) {
-    addRegionUnits("", tempToken);
+  public void cmpltFahre(boolean omitTemp) {
+    addRegionUnits("", omitTemp);
   }
 
   /**
@@ -914,8 +914,8 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   /** Add completions for command FolgeEinheit. */
-  public void cmpltFolgeEinheit(boolean tempToken) {
-    addRegionUnits("", tempToken);
+  public void cmpltFolgeEinheit(boolean omitTemp) {
+    addRegionUnits("", omitTemp);
   }
 
   /** Add completions for command FolgeSchiff. */
@@ -979,9 +979,9 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   /** Add completions for command GibUID. */
-  public void cmpltGibUID(boolean tempToken) {
-    if (tempToken) {
-      addRegionUnits(" ", tempToken);
+  public void cmpltGibUID(boolean omitTemp) {
+    if (omitTemp) {
+      addRegionUnits(" ", omitTemp);
       return;
     }
 
@@ -1057,9 +1057,7 @@ public class EresseaOrderCompleter implements Completer {
        * units
        */
       String order = "";
-      final String tounit =
-          (uid.intValue() >= 0) ? uid.toString() : getOrderTranslation(EresseaConstants.O_TEMP)
-              + " " + uid.toString();
+      final String tounit = uid.toString(true, getLocale());
       if (persons && (unit.getPersons() >= i)) {
         order = getOrderTranslation(EresseaConstants.O_MEN);
       }
@@ -1278,8 +1276,8 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   /** Add completions for command Lehre. */
-  public void cmpltLehre(boolean tempToken) {
-    addRegionUnits(" ", tempToken);
+  public void cmpltLehre(boolean omitTemp) {
+    addRegionUnits(" ", omitTemp);
   }
 
   /** Add completions for command Lerne. */
@@ -1943,8 +1941,8 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   /** Add completions for command Transportiere. */
-  public void cmpltTransportiere(boolean tempToken) {
-    addRegionUnits("", tempToken);
+  public void cmpltTransportiere(boolean omitTemp) {
+    addRegionUnits("", omitTemp);
   }
 
   /** Add completions for command Vergesse. */
@@ -2241,18 +2239,18 @@ public class EresseaOrderCompleter implements Completer {
   /**
    * Adds all units in the region to the completions.
    */
-  protected void addRegionUnits(String postfix, boolean tempOnly) {
-    addRegionUnits(postfix, 0, tempOnly);
+  protected void addRegionUnits(String postfix, boolean omitTemp) {
+    addRegionUnits(postfix, 0, omitTemp);
   }
 
   /**
    * Adds all units in the region to the completions.
    */
-  protected void addRegionUnits(String postfix, int cursorOffset, boolean tempOnly) {
+  protected void addRegionUnits(String postfix, int cursorOffset, boolean omitTemp) {
     if (region != null) {
       for (final Unit u : region.units()) {
-        if (((unit == null) || !u.equals(unit)) && (!tempOnly || u instanceof TempUnit)) {
-          addUnit(u, postfix, cursorOffset, tempOnly);
+        if (((unit == null) || !u.equals(unit)) && (!omitTemp || u instanceof TempUnit)) {
+          addUnit(u, postfix, cursorOffset, omitTemp);
         }
       }
     }
@@ -2508,13 +2506,10 @@ public class EresseaOrderCompleter implements Completer {
   /**
    * Adds a unit to the completions in a standard manner without comments.
    */
-  protected void addUnit(Unit u, String postfix, int cursorOffset, boolean tempOnly) {
-    final String id = u.getID().toString();
-
+  protected void addUnit(Unit u, String postfix, int cursorOffset, boolean omitTemp) {
     if (u instanceof TempUnit) {
-      completions.add(new Completion((tempOnly ? "" : getOrderTranslation(EresseaConstants.O_TEMP)
-          + " ")
-          + id, postfix, Completion.DEFAULT_PRIORITY - 1, cursorOffset));
+      completions.add(new Completion(u.getID().toString(!omitTemp, getLocale()), postfix,
+          Completion.DEFAULT_PRIORITY - 1, cursorOffset));
     } else {
       addNamed(u, postfix, cursorOffset, false);
     }

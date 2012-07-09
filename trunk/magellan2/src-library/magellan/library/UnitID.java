@@ -8,11 +8,13 @@
 package magellan.library;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.IDBaseConverter;
+import magellan.library.utils.Locales;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -224,38 +226,28 @@ public class UnitID extends EntityID {
    */
   @Override
   public String toString() {
-    return IDBaseConverter.toString(Math.abs(intValue()), radix);
+    return toString(false, Locales.getGUILocale());
+  }
+
+  /**
+   * Returns a String representation of this UnitID. The radix of the output depends on the default
+   * set in the IDBaseConverter class. If <code>temp</code> is <code>true</code>, "TEMP " is
+   * prefixed if this is a negative ID.
+   * 
+   * @param temp
+   * @param locale
+   * @return String representation of this UnitID
+   */
+  public String toString(boolean temp, Locale locale) {
+    if (temp && intValue() < 0)
+      return Resources.getOrderTranslation(EresseaConstants.O_TEMP, locale) + " "
+          + IDBaseConverter.toString(Math.abs(intValue()), radix);
+    else
+      return IDBaseConverter.toString(Math.abs(intValue()), radix);
   }
 
   // (stm) equals and compareTo already have been overridden by IntegerID. Overriding it here is
   // unnecessary (and dangerous).
-  // /**
-  // * Indicates that this UnitID is equal to some other object.
-  // *
-  // * @param o object to compare
-  // * @return true, if o is an instance of UnitID and the integer values of this and the specfied
-  // * object o are equal.
-  // */
-  // @Override
-  // public boolean equals(Object o) {
-  // try {
-  // return this == o || id == ((EntityID) o).id;
-  // } catch (ClassCastException e) {
-  // return false;
-  // }
-  // }
-  //
-  // /**
-  // * Imposes a natural ordering on UnitID objects based on the natural ordering of the absolute
-  // * values of the underlying integers.
-  // *
-  // * @param o object to compare
-  // * @return int based on comparability
-  // */
-  // @Override
-  // public int compareTo(Object o) {
-  // return Math.abs(intValue()) - Math.abs(((EntityID) o).intValue());
-  // }
 
   /**
    * Returns the integer contained in the specified string with the specified radix. This method is

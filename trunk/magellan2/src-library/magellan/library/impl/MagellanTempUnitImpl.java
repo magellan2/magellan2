@@ -18,9 +18,7 @@ import java.util.Collections;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitID;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.Race;
-import magellan.library.utils.Resources;
 
 /**
  * DOCUMENT-ME
@@ -67,10 +65,8 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
   public String toString(boolean withName) {
     if (withName)
       return super.toString(withName);
-    else {
-      String temp = Resources.getOrderTranslation(EresseaConstants.O_TEMP);
-      return temp + " " + id.toString();
-    }
+    else
+      return getID().toString(true, getLocale());
   }
 
   public void setTempRace(Race r) {

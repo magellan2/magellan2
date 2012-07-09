@@ -32,6 +32,7 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Skill;
 import magellan.library.Unit;
+import magellan.library.ZeroUnit;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.tasks.Problem.Severity;
 
@@ -68,40 +69,42 @@ public class SkillInspector extends AbstractInspector {
     for (PersonTransferRelation relation : u.getRelations(PersonTransferRelation.class)) {
       Unit u1 = relation.source;
       Unit u2 = relation.target;
-      if (u1 != u) {
+      if (u1 != u || (u2 instanceof ZeroUnit)
+          || !(u2.getPersons() > 0 || u2.getRelations(PersonTransferRelation.class).size() > 1)) {
         break;
       }
       List<Skill> skills = new LinkedList<Skill>(u1.getModifiedSkills());
       skills.addAll(u2.getModifiedSkills());
+      boolean found1 = false, found2 = false;
       for (Skill skill : skills) {
         Skill skill1 = u1.getSkill(skill.getSkillType());
         Skill skill2 = u2.getSkill(skill.getSkillType());
         // if a skill of the source unit is higher than the target unit, issue a warning at the
         // source
-        if (skill1 != null) {
+        if (!found1 && skill1 != null) {
           if (skill2 == null || skill1.getLevel() > skill2.getLevel()) {
             // when passing persons to an empty unit, no warning is necessary
             // except when multiple units pass persons to the empty unit
             // this is not perfect yet:
-            if (u2.getPersons() > 0 || (u2.getRelations(PersonTransferRelation.class).size() > 1)) {
-              problems.add(ProblemFactory.createProblem(Severity.WARNING,
-                  SkillInspector.SKILLDECREASE, u, this, relation.line));
-              break;
-            }
+            found1 = true;
+            problems.add(ProblemFactory.createProblem(Severity.WARNING,
+                SkillInspector.SKILLDECREASE, u, this, relation.line));
           }
         }
         // if a skill of the target unit is higher than the source unit, issue a warning at the
         // target
-        if (skill2 != null) {
+        if (!found2 && skill2 != null) {
           if (skill1 == null || skill2.getLevel() > skill1.getLevel()) {
+            found2 = true;
             problems.add(ProblemFactory.createProblem(Severity.WARNING,
                 SkillInspector.SKILLDECREASE, u.getRegion(), u, u.getFaction(), u2, this,
                 SkillInspector.SKILLDECREASE.getMessage(), relation.line));
-            break;
           }
         }
+        if (found1 && found2) {
+          break;
+        }
       }
-
     }
 
     if (problems.isEmpty())

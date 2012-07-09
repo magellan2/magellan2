@@ -25,7 +25,10 @@ package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
 import magellan.library.GameData;
+import magellan.library.StringID;
+import magellan.library.TempUnit;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -121,6 +124,54 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     unit.addOrder("ZAUBERE 'Katzeklo'");
     assertEquals(2, changer.areCompatibleLongOrders(unit.getOrders2()));
 
+  }
+
+  /**
+   * Test for
+   * {@link EresseaOrderChanger#addGiveOrder(Unit, Unit, int, magellan.library.StringID, String)}
+   */
+  @Test
+  public void testAddGiveOrder() throws Exception {
+    Unit unit2 = builder.addUnit(data, "targ", "Target", unit.getFaction(), unit.getRegion());
+    unit.clearOrders();
+    changer.addGiveOrder(unit, unit2, 1, EresseaConstants.I_WOOD, null);
+    assertEquals("GIB targ 1 Holz", unit.getOrders2().get(0).toString());
+
+    unit.clearOrders();
+    changer.addGiveOrder(unit, unit2, -1, EresseaConstants.I_WOOD, null);
+    assertEquals("GIB targ JE 1 Holz", unit.getOrders2().get(0).toString());
+
+    unit.clearOrders();
+    changer.addGiveOrder(unit, unit2, OrderChanger.ALL, EresseaConstants.I_WOOD, null);
+    assertEquals("GIB targ ALLES Holz", unit.getOrders2().get(0).toString());
+
+    unit.clearOrders();
+    changer.addGiveOrder(unit, unit2, OrderChanger.ALL, null, null);
+    assertEquals("GIB targ ALLES", unit.getOrders2().get(0).toString());
+
+    unit.clearOrders();
+    changer.addGiveOrder(unit, unit2, 2, EresseaConstants.I_MEN, null);
+    assertEquals("GIB targ 2 PERSONEN", unit.getOrders2().get(0).toString());
+
+    unit.clearOrders();
+    changer.addGiveOrder(unit, unit2, 1, StringID.create("Foo"), null);
+    assertEquals("; unknown item Foo", unit.getOrders2().get(0).toString());
+
+    unit.clearOrders();
+    changer.addGiveOrder(unit, unit2, 1, null, null);
+    assertEquals("; illegal amount and no item 1", unit.getOrders2().get(0).toString());
+  }
+
+  /**
+   * Test for
+   * {@link EresseaOrderChanger#addGiveOrder(Unit, Unit, int, magellan.library.StringID, String)}
+   */
+  @Test
+  public void testAddGiveOrderTemp() throws Exception {
+    TempUnit unit2 = unit.createTemp(data, UnitID.createUnitID(-42, data.base));
+    unit.clearOrders();
+    changer.addGiveOrder(unit, unit2, 4, EresseaConstants.I_UHORSE, "to temp");
+    assertEquals("GIB TEMP 16 4 Pferd; to temp", unit.getOrders2().get(0).toString());
   }
 
 }

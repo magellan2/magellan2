@@ -98,7 +98,33 @@ public class MovementOrderTest extends MagellanTestWithResources {
     assertSame(unit, relation.origin);
     assertSame(unit, relation.source);
     assertEquals(unit, relation.getTransporter());
-    assertMovement(relation, 1, region0, region1, region2, region2);
+    assertMovement(relation, 1, region0, region1, region2);
+    assertEquals(false, relation.unknown);
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.library.gamebinding.MovementOrder#execute(magellan.library.gamebinding.ExecutionState, magellan.library.GameData, magellan.library.Unit, int)}
+   * .
+   */
+  @Test
+  public final void testExecuteMoreNormal() {
+    Region region1 = builder.addRegion(data, "1 0", "Region_1_0", "Ebene", 0);
+    Region region2 = builder.addRegion(data, "2 0", "Region_2_0", "Ebene", 0);
+    unit.clearOrders();
+    unit.addOrder("NACH o");
+
+    Order order = unit.getOrders2().get(0);
+    assertTrue(order instanceof MovementOrder);
+    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 0);
+    List<UnitRelation> relations = unit.getRelations();
+    assertTrue(relations.size() == 1);
+    MovementRelation relation = (MovementRelation) relations.get(0);
+    assertEquals(0, relation.line);
+    assertSame(unit, relation.origin);
+    assertSame(unit, relation.source);
+    assertEquals(unit, relation.getTransporter());
+    assertMovement(relation, 1, region0, region1);
     assertEquals(false, relation.unknown);
   }
 
@@ -121,7 +147,7 @@ public class MovementOrderTest extends MagellanTestWithResources {
     List<UnitRelation> relations = unit.getRelations();
     MovementRelation relation = (MovementRelation) relations.get(0);
     assertEquals(unit, relation.getTransporter());
-    assertMovement(relation, region2, region0, region1, region2, coord3, coord3);
+    assertMovement(relation, region2, region0, region1, region2, coord3);
     assertEquals(true, relation.unknown);
   }
 
@@ -144,7 +170,30 @@ public class MovementOrderTest extends MagellanTestWithResources {
     List<UnitRelation> relations = unit.getRelations();
     MovementRelation relation = (MovementRelation) relations.get(0);
     assertEquals(unit, relation.getTransporter());
-    assertMovement(relation, 1, region0, region1, region1, region2, coord3, coord3);
+    assertMovement(relation, 1, region0, region1, region1, region2, coord3);
+    assertEquals(true, relation.unknown);
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.library.gamebinding.MovementOrder#execute(magellan.library.gamebinding.ExecutionState, magellan.library.GameData, magellan.library.Unit, int)}
+   * .
+   */
+  @Test
+  public final void testExecutePause2() {
+    Region region1 = builder.addRegion(data, "1 0", "Region_1_0", "Ebene", 0);
+    Region region2 = builder.addRegion(data, "2 0", "Region_2_0", "Ebene", 0);
+    unit.clearOrders();
+    unit.addOrder("ROUTE o o PAUSE o");
+    builder.addItem(data, unit, "Pferd", 1);
+    builder.addSkill(unit, "Reiten", 1);
+
+    Order order = unit.getOrders2().get(0);
+    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 0);
+    List<UnitRelation> relations = unit.getRelations();
+    MovementRelation relation = (MovementRelation) relations.get(0);
+    assertEquals(unit, relation.getTransporter());
+    assertMovement(relation, 2, region0, region1, region2, region2, coord3);
     assertEquals(true, relation.unknown);
   }
 
@@ -163,7 +212,7 @@ public class MovementOrderTest extends MagellanTestWithResources {
     order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 0);
     List<UnitRelation> relations = unit.getRelations();
     MovementRelation relation = (MovementRelation) relations.get(0);
-    assertMovement(relation, region0, region0, region1, coord2, coord2);
+    assertMovement(relation, region0, region0, region1, coord2);
     assertNotNull(relation.problem);
     assertNull(order.getProblem());
   }
@@ -184,7 +233,7 @@ public class MovementOrderTest extends MagellanTestWithResources {
     order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 0);
     List<UnitRelation> relations = unit.getRelations();
     MovementRelation relation = (MovementRelation) relations.get(0);
-    assertMovement(relation, region0, region0, region1, coord2, coord2);
+    assertMovement(relation, region0, region0, region1, coord2);
     assertNull(relation.problem);
     assertNull(order.getProblem());
   }
@@ -202,7 +251,7 @@ public class MovementOrderTest extends MagellanTestWithResources {
     Region region4 = builder.addRegion(data, "4 0", "Region_4_0", "Ozean", 0);
     unit.clearOrders();
     unit.addOrder("NACH o o o o");
-    Ship ship = builder.addShip(data, region0, "boot", "Boot", "Boot", 5);
+    Ship ship = builder.addShip(data, region0, "boot", "Boot", "Boot", 5); // range 3
     unit.setShip(ship);
     ship.setOwner(unit);
 
@@ -215,7 +264,7 @@ public class MovementOrderTest extends MagellanTestWithResources {
     assertSame(unit, relation.origin);
     assertSame(unit, relation.source);
     assertEquals(unit, relation.getTransporter());
-    assertMovement(relation, region3, region0, region1, region2, region3, region4, region4);
+    assertMovement(relation, region3, region0, region1, region2, region3, region4);
     assertEquals(false, relation.unknown);
   }
 
@@ -238,7 +287,7 @@ public class MovementOrderTest extends MagellanTestWithResources {
     List<UnitRelation> relations = unit.getRelations();
     MovementRelation relation = (MovementRelation) relations.get(0);
 
-    assertMovement(relation, region0, region0, region1, coord2, coord2);
+    assertMovement(relation, region0, region0, region1, coord2);
   }
 
   /**
@@ -261,7 +310,7 @@ public class MovementOrderTest extends MagellanTestWithResources {
     List<UnitRelation> relations = unit.getRelations();
     MovementRelation relation = (MovementRelation) relations.get(0);
 
-    assertMovement(relation, region2, region0, region1, region2, coord3, coord3);
+    assertMovement(relation, region2, region0, region1, region2, coord3);
   }
 
   /**
@@ -292,7 +341,7 @@ public class MovementOrderTest extends MagellanTestWithResources {
     assertSame(unit, relation.origin);
     assertSame(unit2, relation.source);
     assertEquals(unit, relation.getTransporter());
-    assertMovement(relation, region2, region0, region1, region2, region2);
+    assertMovement(relation, region2, region0, region1, region2);
     assertEquals(false, relation.unknown);
   }
 
@@ -414,12 +463,16 @@ public class MovementOrderTest extends MagellanTestWithResources {
     assertEquals(regions.length, movement.getMovement().size());
     assertRegionOrCoordinate(regions[destination], movement.getDestination());
     assertEquals(destination + 1, movement.getInitialMovement().size());
-    assertEquals(regions.length - destination, movement.getFutureMovement().size());
     for (int i = 0; i <= destination; ++i) {
       assertRegionOrCoordinate(regions[i], movement.getInitialMovement().get(i));
     }
-    for (int i = 0; i < regions.length - destination; ++i) {
-      assertRegionOrCoordinate(regions[i + destination], movement.getFutureMovement().get(i));
+    if (regions.length - destination > 1) {
+      assertEquals(regions.length - destination, movement.getFutureMovement().size());
+      for (int i = 0; i < regions.length - destination; ++i) {
+        assertRegionOrCoordinate(regions[i + destination], movement.getFutureMovement().get(i));
+      }
+    } else {
+      assertEquals(0, movement.getFutureMovement().size());
     }
 
   }

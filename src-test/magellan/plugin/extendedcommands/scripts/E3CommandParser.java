@@ -164,6 +164,12 @@ public class E3CommandParser {
   /** warning constants */
   protected static final int C_ALWAYS = 0, C_AMOUNT = 1, C_UNIT = 2, C_HIDDEN = 3, C_NEVER = 4;
 
+  private static final int DEFAULT_PRIORITY = 100;
+  private static final int GIB_WENN_PRIORITY = DEFAULT_PRIORITY;
+  private static final int DEPOT_SILVER_PRIORITY = 150;
+  private static final int DEPOT_PRIORITY = -1;
+  private static final int TRADE_PRIORITY = DEFAULT_PRIORITY;
+
   private static String S_ENDURANCE = EresseaConstants.S_AUSDAUER.toString();
 
   private OrderParser parser;
@@ -206,7 +212,7 @@ public class E3CommandParser {
   /**
    * The item/unit/need map. Stores all needed items.
    */
-  protected Map<String, Map<Unit, Need>> needMap;
+  protected Map<String, Map<Integer, Map<Unit, Need>>> needMap;
 
   /**
    * The item/unit/supply map. Stores all available items.
@@ -410,10 +416,10 @@ public class E3CommandParser {
    * <code>// $cript Loeschen [lang]</code> -- clears all orders except comments<br />
    * <code>// $cript GibWenn receiver [JE] amount item [warning]</code> -- add give order (if
    * possible)<br />
-   * <code>// $cript Benoetige minAmount [maxAmount] item</code><br />
-   * <code>// $cript Benoetige JE amount item</code><br />
-   * <code>// $cript Benoetige ALLES [item]</code> -- acquire things from other units<br />
-   * <code>// $cript BenoetigeFremd unit [JE] minAmount [maxAmount] item</code><br />
+   * <code>// $cript Benoetige minAmount [maxAmount] item [priority]</code><br />
+   * <code>// $cript Benoetige JE amount item [priority]</code><br />
+   * <code>// $cript Benoetige ALLES [item] [priority]</code> -- acquire things from other units<br />
+   * <code>// $cript BenoetigeFremd unit [JE] minAmount [maxAmount] item [priority]</code><br />
    * <code>// $cript Versorge [[item]...] priority</code> -- set supply priority.<br />
    * <code>// $cript BerufDepotVerwalter [Zusatzbetrag]</code> Collects all free items in the
    * region, Versorge 100, calls Ueberwache<br />
@@ -523,7 +529,8 @@ public class E3CommandParser {
               if (tokens.length < 3) {
                 addNewError("zu wenige Argumente");
               } else {
-                commandBenoetige(new String[] { "Benoetige", tokens[1], tokens[2], "Silber" });
+                commandBenoetige(new String[] { "Benoetige", tokens[1], tokens[2], "Silber",
+                    String.valueOf(DEFAULT_PRIORITY + 1) });
                 setConfirm(currentUnit, false);
               }
             } else if (command.equals("Mannschaft")) {
@@ -803,7 +810,7 @@ public class E3CommandParser {
                 int amount = item.getAmount();
                 supply.reduceAmount(amount);
                 if (target != null) {
-                  addNeed(item.getOrderName(), target, -amount, -amount);
+                  addNeed(item.getOrderName(), target, -amount, -amount, GIB_WENN_PRIORITY);
                 }
               }
             }
@@ -832,7 +839,7 @@ public class E3CommandParser {
                 int amount = item.getAmount();
                 supply.reduceAmount(amount);
                 if (target != null) {
-                  addNeed(item.getOrderName(), target, -amount, -amount);
+                  addNeed(item.getOrderName(), target, -amount, -amount, GIB_WENN_PRIORITY);
                 }
               }
             }
@@ -906,7 +913,7 @@ public class E3CommandParser {
       }
       supply.reduceAmount(amount);
       if (target != null) {
-        addNeed(item, target, -amount, -amount);
+        addNeed(item, target, -amount, -amount, GIB_WENN_PRIORITY);
       }
     }
 
@@ -927,9 +934,9 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript Benoetige minAmount [maxAmount] item</code><br />
-   * <code>// $cript Benoetige JE amount item</code><br />
-   * <code>// $cript Benoetige ALLES [item]</code><br />
+   * <code>// $cript Benoetige minAmount [maxAmount] item [priority]</code><br />
+   * <code>// $cript Benoetige JE amount item [priority]</code><br />
+   * <code>// $cript Benoetige ALLES [item] [priority]</code><br />
    * Tries to transfer the maxAmount of item from other units to this unit. Issues warning if
    * minAmount cannot be supplied. <code>Benoetige JE</code> tries to reserve 1 item for every
    * person in the unit. <code>Benoetige ALLES item</code> is equivalent to
@@ -938,6 +945,8 @@ public class E3CommandParser {
    * <code>Benoetige KRAUT</code> is the same for every herb type in the region.<br/>
    * <code>BenoetigeFremd unit (JE amount)|(minAmount [maxAmount]) item</code><br />
    * <code>BenoetigeFremd</code> does the same, but for the given unit instead of the current unit.
+   * Needs with higher priority are satisfied first. If no priority is given,
+   * {@link #DEFAULT_PRIORITY} is used.
    */
   protected void commandBenoetige(String[] tokens) {
     Unit unit = currentUnit;
@@ -952,6 +961,14 @@ public class E3CommandParser {
       tokens[0] = "BenoetigeFremd";
     }
 
+    int priority;
+    try {
+      priority = Integer.parseInt(tokens[tokens.length - 1]);
+      tokens = Arrays.copyOf(tokens, tokens.length - 1);
+    } catch (NumberFormatException e) {
+      priority = DEFAULT_PRIORITY;
+    }
+
     if (tokens.length < 2 || tokens.length > 5) {
       addNewError("falsche Anzahl Argumente");
       return;
@@ -960,10 +977,10 @@ public class E3CommandParser {
     try {
       if (ALLOrder.equals(tokens[1])) {
         if (tokens.length > 2) {
-          addNeed(tokens[2], unit, 0, Integer.MAX_VALUE);
+          addNeed(tokens[2], unit, 0, Integer.MAX_VALUE, priority);
         } else {
           for (String item : supplyMap.keySet()) {
-            addNeed(item, unit, 0, Integer.MAX_VALUE);
+            addNeed(item, unit, 0, Integer.MAX_VALUE, priority);
           }
         }
       } else if (EACHOrder.equals(tokens[1])) {
@@ -972,7 +989,7 @@ public class E3CommandParser {
         } else {
           int amount = unit.getPersons() * Integer.parseInt(tokens[2]);
           String item = tokens[3];
-          addNeed(item, unit, amount, amount);
+          addNeed(item, unit, amount, amount, priority);
         }
       } else if (KRAUTOrder.equals(tokens[1])) {
         if (tokens.length > 2) {
@@ -983,7 +1000,7 @@ public class E3CommandParser {
         } else {
           for (Item item : currentUnit.getItems()) {
             if (world.rules.getItemCategory("herbs").equals(item.getItemType().getCategory())) {
-              addNeed(item.getOrderName(), unit, 0, Integer.MAX_VALUE);
+              addNeed(item.getOrderName(), unit, 0, Integer.MAX_VALUE, priority);
             }
           }
         }
@@ -993,7 +1010,7 @@ public class E3CommandParser {
         int minAmount = Integer.parseInt(tokens[1]);
         int maxAmount = tokens.length == 3 ? minAmount : Integer.parseInt(tokens[2]);
         String item = tokens[tokens.length - 1];
-        addNeed(item, unit, minAmount, maxAmount);
+        addNeed(item, unit, minAmount, maxAmount, priority);
       }
     } catch (NumberFormatException exc) {
       addNewError("Ungültige Zahl in Benoetige");
@@ -1024,9 +1041,9 @@ public class E3CommandParser {
         addNewError("Zahl erwartet");
       }
     }
-    addNeed("Silber", currentUnit, costs, costs);
+    addNeed("Silber", currentUnit, costs, costs, DEPOT_SILVER_PRIORITY);
 
-    commandBenoetige(new String[] { "Benoetige ", ALLOrder });
+    commandBenoetige(new String[] { "Benoetige ", ALLOrder, String.valueOf(DEPOT_PRIORITY) });
     commandVersorge(new String[] { "Versorge", "100" });
   }
 
@@ -1453,7 +1470,7 @@ public class E3CommandParser {
         }
       }
 
-      addNeed("Silber", currentUnit, geldNoetig, geldNoetig);
+      addNeed("Silber", currentUnit, geldNoetig, geldNoetig, TRADE_PRIORITY);
 
       // Einkaufsbefehl setzen, wenn notwendig
       if (amount > 0) {
@@ -1489,7 +1506,7 @@ public class E3CommandParser {
         int goodAmount = Math.min(volume, maxAmount - guetersumme);
         if (W_NEVER.equals(warning)) {
           if (goodAmount > 0) {
-            addNeed(luxury, currentUnit, 0, goodAmount);
+            addNeed(luxury, currentUnit, 0, goodAmount, TRADE_PRIORITY);
           }
         } else if (W_SKILL.equals(warning)) {
           goodAmount = 0;
@@ -1505,7 +1522,7 @@ public class E3CommandParser {
             skillWarning = true;
           }
           if (goodAmount > 0) {
-            addNeed(luxury, currentUnit, 0, goodAmount);
+            addNeed(luxury, currentUnit, 0, goodAmount, TRADE_PRIORITY);
           }
         } else {
           if (goodAmount > maxAmount - guetersumme) {
@@ -1513,7 +1530,7 @@ public class E3CommandParser {
             skillWarning = true;
           }
           if (goodAmount > 0) {
-            addNeed(luxury, currentUnit, goodAmount, goodAmount);
+            addNeed(luxury, currentUnit, goodAmount, goodAmount, TRADE_PRIORITY);
           }
         }
         if (goodAmount > 0) {
@@ -1706,7 +1723,7 @@ public class E3CommandParser {
 
     if (effRace.getRecruitmentCosts() > 0) {
       int costs = amount * effRace.getRecruitmentCosts();
-      addNeed("Silber", currentUnit, costs, costs);
+      addNeed("Silber", currentUnit, costs, costs, DEFAULT_PRIORITY);
     } else {
       addNewWarning("unknown recruitment costs");
     }
@@ -1732,7 +1749,7 @@ public class E3CommandParser {
 
   protected void initSupply() {
     if (needMap == null) {
-      needMap = new LinkedHashMap<String, Map<Unit, Need>>();
+      needMap = new LinkedHashMap<String, Map<Integer, Map<Unit, Need>>>();
     } else {
       needMap.clear();
     }
@@ -1821,58 +1838,68 @@ public class E3CommandParser {
         }
       }
 
-      // try to satisfy minimum need by own items
-      for (Need need : needMap.get(item).values()) {
-        reserveNeed(need, true);
-      }
+      Map<Integer, Map<Unit, Need>> pMap = needMap.get(item);
 
-      // try to satisfy minimum needs with GIVE
-      for (Need need : needMap.get(item).values()) {
-        giveNeed(need, true);
+      List<Integer> prios = new ArrayList<Integer>();
+      for (Integer key : pMap.keySet()) {
+        prios.add(key);
       }
+      Collections.sort(prios);
+      Collections.reverse(prios);
 
-      // add warnings for unsatisfied needs
-      for (Need need : needMap.get(item).values()) {
-        if (need.getMinAmount() > 0) {
-          addWarning(need.getUnit(), "braucht " + need.getMinAmount() + " mehr " + need.getItem());
+      for (Integer prio : prios) {
+        Map<Unit, Need> nMap = pMap.get(prio);
+        // try to satisfy minimum need by own items
+        for (Need need : nMap.values()) {
+          reserveNeed(need, true);
+        }
+
+        // try to satisfy minimum needs with GIVE
+        for (Need need : nMap.values()) {
+          giveNeed(need, true);
+        }
+
+        // add warnings for unsatisfied needs
+        for (Need need : nMap.values()) {
+          if (need.getMinAmount() > 0) {
+            addWarning(need.getUnit(), "braucht " + need.getMinAmount() + " mehr " + need.getItem());
+          }
+        }
+
+        // try to satisfy max needs, ignore infinite needs first
+        for (Need need : nMap.values()) {
+          if (need.getAmount() != Integer.MAX_VALUE) {
+            reserveNeed(need, false);
+          }
+        }
+
+        for (Need need : nMap.values()) {
+          if (need.getAmount() != Integer.MAX_VALUE) {
+            giveNeed(need, false);
+          }
+        }
+
+        // now, finally, satisfy infinite needs
+        for (Need need : nMap.values()) {
+          if (need.getAmount() == Integer.MAX_VALUE) {
+            reserveNeed(need, false);
+          }
+        }
+
+        for (Need need : nMap.values()) {
+          if (need.getAmount() == Integer.MAX_VALUE) {
+            giveNeed(need, false);
+          }
+        }
+        // add messages for unsatisfied needs
+        for (Need need : nMap.values()) {
+          if (need.getMinAmount() <= 0 && need.getMaxAmount() > 0
+              && need.getMaxAmount() != Integer.MAX_VALUE) {
+            need.getUnit().addOrder("; braucht " + need.getMaxAmount() + " mehr " + need.getItem(),
+                false);
+          }
         }
       }
-
-      // try to satisfy max needs, ignore infinite needs first
-      for (Need need : needMap.get(item).values()) {
-        if (need.getAmount() != Integer.MAX_VALUE) {
-          reserveNeed(need, false);
-        }
-      }
-
-      for (Need need : needMap.get(item).values()) {
-        if (need.getAmount() != Integer.MAX_VALUE) {
-          giveNeed(need, false);
-        }
-      }
-
-      // now, finally, satisfy infinite needs
-      for (Need need : needMap.get(item).values()) {
-        if (need.getAmount() == Integer.MAX_VALUE) {
-          reserveNeed(need, false);
-        }
-      }
-
-      for (Need need : needMap.get(item).values()) {
-        if (need.getAmount() == Integer.MAX_VALUE) {
-          giveNeed(need, false);
-        }
-      }
-
-      // add messages for unsatisfied needs
-      for (Need need : needMap.get(item).values()) {
-        if (need.getMinAmount() <= 0 && need.getMaxAmount() > 0
-            && need.getMaxAmount() != Integer.MAX_VALUE) {
-          need.getUnit().addOrder("; braucht " + need.getMaxAmount() + " mehr " + need.getItem(),
-              false);
-        }
-      }
-
     }
   }
 
@@ -1963,16 +1990,21 @@ public class E3CommandParser {
    * @param minAmount
    * @param maxAmount
    */
-  protected void addNeed(String item, Unit unit, int minAmount, int maxAmount) {
-    Map<Unit, Need> map = needMap.get(item);
+  protected void addNeed(String item, Unit unit, int minAmount, int maxAmount, int priority) {
+    Map<Integer, Map<Unit, Need>> map = needMap.get(item);
     if (map == null) {
-      map = new LinkedHashMap<Unit, Need>();
+      map = new LinkedHashMap<Integer, Map<Unit, Need>>();
       needMap.put(item, map);
     }
-    Need need = map.get(unit);
+    Map<Unit, Need> pMap = map.get(priority);
+    if (pMap == null) {
+      pMap = new LinkedHashMap<Unit, Need>();
+      map.put(priority, pMap);
+    }
+    Need need = pMap.get(unit);
     if (need == null) {
       need = new Need(unit, item, 0, 0);
-      map.put(unit, need);
+      pMap.put(unit, need);
     }
 
     if (need.getAmount() != Integer.MAX_VALUE) {
@@ -1998,11 +2030,15 @@ public class E3CommandParser {
    * @param unit
    * @return The need or <code>null</code> if none has been registered.
    */
-  protected Need getNeed(String item, Unit unit) {
-    Map<Unit, Need> map = needMap.get(item);
+  protected Need getNeed(String item, Unit unit, int priority) {
+    Map<Integer, Map<Unit, Need>> map = needMap.get(item);
     if (map == null)
       return null;
-    return map.get(unit);
+    Map<Unit, Need> pMap = map.get(priority);
+    if (pMap == null)
+      return null;
+
+    return pMap.get(unit);
   }
 
   /**
@@ -2234,7 +2270,8 @@ public class E3CommandParser {
   protected boolean reserveEquipment(ItemType preferred, List<Item> ownStuff, boolean warn) {
     if (preferred != null) {
       // reserve requested weapon
-      commandBenoetige(new String[] { "Benoetige", EACHOrder, "1", preferred.getOrderName() });
+      commandBenoetige(new String[] { "Benoetige", EACHOrder, "1", preferred.getOrderName(),
+          String.valueOf(DEFAULT_PRIORITY) });
     } else if (!ownStuff.isEmpty()) {
       int supply = 0;
       for (Item w : ownStuff) {
@@ -2242,7 +2279,7 @@ public class E3CommandParser {
         if (supply > 0) {
           commandBenoetige(new String[] { "Benoetige",
               Integer.toString(Math.min(currentUnit.getPersons() - supply, w.getAmount())),
-              w.getOrderName() });
+              w.getOrderName(), String.valueOf(DEFAULT_PRIORITY) });
         }
         supply += w.getAmount();
       }
@@ -2254,7 +2291,8 @@ public class E3CommandParser {
           Integer.toString(Math.max(0, Math.min(currentUnit.getPersons() - supply + w.getAmount(),
               currentUnit.getPersons())));
       String min = warn ? max : Integer.toString(Math.min(currentUnit.getPersons(), w.getAmount()));
-      commandBenoetige(new String[] { "Benoetige", min, max, w.getOrderName() });
+      commandBenoetige(new String[] { "Benoetige", min, max, w.getOrderName(),
+          String.valueOf(DEFAULT_PRIORITY) });
     } else
       return false;
     return true;

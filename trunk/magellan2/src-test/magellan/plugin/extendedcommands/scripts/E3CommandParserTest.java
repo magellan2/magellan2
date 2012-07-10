@@ -564,6 +564,42 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
+   * Test method for {@link E3CommandParser#commandBenoetige(String...)}.
+   */
+  @Test
+  public final void testCommandBenoetigePrio() {
+    // add other unit with Silber
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 6);
+
+    // test conflicting
+    unit.clearOrders();
+    unit.addOrder("// $cript Benoetige 4 Silber");
+    unit2.clearOrders();
+    unit2.addOrder("// $cript Benoetige 4 Silber 101");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertEquals(3, unit2.getOrders2().size());
+    assertWarning("braucht 2 mehr Silber", unit, 2);
+    assertOrder("RESERVIEREN 4 Silber", unit2, 1);
+    assertOrder("GIB 1 2 Silber", unit2, 2);
+
+    // test conflicting
+    unit.clearOrders();
+    unit.addOrder("// $cript Benoetige 4 Silber");
+    unit2.clearOrders();
+    unit2.addOrder("// $cript Benoetige 4 Silber 99");
+    parser.execute(unit.getFaction());
+
+    assertEquals(2, unit.getOrders2().size());
+    assertEquals(4, unit2.getOrders2().size());
+    assertOrder("GIB 1 4 Silber", unit2, 1);
+    assertOrder("RESERVIEREN 2 Silber", unit2, 2);
+    assertWarning("braucht 2 mehr Silber", unit2, 3);
+  }
+
+  /**
    * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
    */
   @Test

@@ -1,12 +1,13 @@
 package magellan.library.relation;
 
 import magellan.library.Unit;
+import magellan.library.gamebinding.EresseaConstants;
 
 /**
  * A relation indicating that the source unit changes its battle status
  */
 public class CombatStatusRelation extends UnitRelation {
-  public int newCombatStatus;
+  public int newCombatStatus = Integer.MIN_VALUE;
   public boolean newUnaided = false;
   public boolean newUnaidedSet = false;
 
@@ -31,6 +32,7 @@ public class CombatStatusRelation extends UnitRelation {
    */
   public CombatStatusRelation(Unit s, boolean newUnaidedStatus, int line) {
     super(s, line);
+    newCombatStatus = EresseaConstants.CS_HELPNOT;
     newUnaidedSet = true;
     newUnaided = newUnaidedStatus;
   }

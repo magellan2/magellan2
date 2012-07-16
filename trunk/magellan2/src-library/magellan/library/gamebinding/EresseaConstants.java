@@ -834,6 +834,8 @@ public class EresseaConstants {
   // 4 NICHT: 3. Reihe, kämpfen bis 90% HP
   // 5 FLIEHE: 4. Reihe, flieht immer.
 
+  /** "undefined" value for combat status */
+  public static final int CS_INIT = -31;
   /** The {@link #O_COMBAT_AGGRESSIVE} combat status */
   public static final int CS_AGGRESSIVE = 0;
   /** The {@link #O_COMBAT_FRONT} combat status */

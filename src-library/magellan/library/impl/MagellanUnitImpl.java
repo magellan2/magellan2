@@ -95,8 +95,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * grammar for ejcTag: ";ejcTempTag tag numbervalue|'stringvalue'"
    */
   private static final String TAG_PREFIX_TEMP = EresseaConstants.O_COMMENT + "ejcTagTemp ";
-  /** "undefined" value for combat status */
-  private static final int CS_INIT = -13;
 
   /** The private description of the unit. */
   private String privDesc; // private description
@@ -1149,7 +1147,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       cache1.unitWeight = -1;
       cache1.modifiedUnitWeight = -1;
       cache1.modifiedPersons = -1;
-      cache1.modifiedCombatStatus = CS_INIT;
+      cache1.modifiedCombatStatus = EresseaConstants.CS_INIT;
       cache1.modifiedUnaidedValidated = false;
       cache1.modifiedGuard = -1;
     }
@@ -1931,13 +1929,15 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    */
   public int getModifiedCombatStatus() {
     final Cache cache1 = getCache();
-    if (cache1.modifiedCombatStatus == CS_INIT) {
+    if (cache1.modifiedCombatStatus == EresseaConstants.CS_INIT) {
       cache1.modifiedCombatStatus = getCombatStatus();
       // we only need to check relations for units, we know the
       // the actual combat status - do we?
       if (cache1.modifiedCombatStatus > -1) {
         for (CombatStatusRelation rel : getRelations(CombatStatusRelation.class)) {
-          cache1.modifiedCombatStatus = rel.newCombatStatus;
+          if (!rel.newUnaidedSet) {
+            cache1.modifiedCombatStatus = rel.newCombatStatus;
+          }
         }
       }
     }

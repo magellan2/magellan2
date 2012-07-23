@@ -276,11 +276,21 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     unit.clearOrders();
     unit.deleteAllTags();
-    unit.addOrder("// $cript 2 5 // $cript GibWenn abc 100 Silber");
+    unit.addOrder("// $cript 2 5 $cript GibWenn abc 100 Silber");
 
     parser.execute(unit.getFaction());
     assertEquals(2, unit.getOrders2().size());
-    assertOrder("// $cript 1 5 // $cript GibWenn abc 100 Silber", unit, 1);
+    assertOrder("// $cript 1 5 $cript GibWenn abc 100 Silber", unit, 1);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1 5 $cript GibWenn abc 100 Silber");
+
+    parser.execute(unit.getFaction());
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript 5 5 $cript GibWenn abc 100 Silber", unit, 1);
+    assertOrder("; $cript GibWenn abc 100 Silber", unit, 2);
+    assertWarning("abc nicht da", unit, 3);
 
     unit.clearOrders();
     unit.deleteAllTags();
@@ -690,6 +700,27 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB 1 ALLES Flachwurz", unit2, 2);
     assertOrder("GIB 1 ALLES Myrrhe", unit2, 4);
     assertOrder("GIB 1 ALLES Seide", unit2, 5);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   */
+  @Test
+  public final void testCommandGibWenn3b() {
+    // add other unit with Kraut
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Würziger Wagemut", 5);
+    builder.addItem(data, unit2, "Myrrhe", 5);
+    builder.addItem(data, unit2, "Wasser des Lebens", 5);
+
+    // test one GibWenn order
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit2.addOrder("// $cript GibWenn 1 TRANK nie");
+
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("GIB 1 ALLES Wasser~des~Lebens", unit2, 1);
   }
 
   /**

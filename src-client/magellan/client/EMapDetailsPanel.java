@@ -3218,20 +3218,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           os = currentSkill;
         }
 
-        if (os != null) {
-          if (!isTrader) { // check for trader
-            if ((tradeCat != null) && tradeCat.isInstance(os.getSkillType())) {
-              isTrader = true;
-            } else if ((tradeSkill != null) && tradeSkill.equals(os.getSkillType())) {
-              isTrader = true;
-            }
+        if (!isTrader) { // check for trader
+          if ((tradeCat != null) && tradeCat.isInstance(currentSkill.getSkillType())) {
+            isTrader = true;
+          } else if ((tradeSkill != null) && tradeSkill.equals(currentSkill.getSkillType())) {
+            isTrader = true;
           }
+        }
 
-          skillNodes.add(new DefaultMutableTreeNode(nodeWrapperFactory.createSkillNodeWrapper(u,
-              os, ms)));
-          if (isCompactLayout()) {
-            skillList.append(" ").append((ms == null ? os.toString() : ms.toString()));
-          }
+        skillNodes.add(new DefaultMutableTreeNode(nodeWrapperFactory.createSkillNodeWrapper(u, os,
+            ms)));
+        if (isCompactLayout()) {
+          skillList.append(" ").append((ms == null ? os.toString() : ms.toString()));
         }
       }
       DefaultMutableTreeNode skillsNode =

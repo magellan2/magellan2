@@ -58,10 +58,12 @@ import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.ID;
 import magellan.library.Item;
+import magellan.library.LuxuryPrice;
 import magellan.library.Message;
 import magellan.library.Named;
 import magellan.library.Order;
 import magellan.library.Region;
+import magellan.library.RegionResource;
 import magellan.library.Ship;
 import magellan.library.TempUnit;
 import magellan.library.Unique;
@@ -88,6 +90,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   private JCheckBox chkCmds = null;
   private JCheckBox chkMessages = null;
   private JCheckBox chkItems = null;
+  private JCheckBox chkResources = null;
   private JComboBox factionCombo = null;
   private JCheckBox addUnits = null;
   private JCheckBox addRegions = null;
@@ -261,6 +264,11 @@ public class FindDialog extends InternationalizedDataDialog implements
             "FindDialog.Items", "true").equals("true"));
     chkItems.setMnemonic(Resources.get("finddialog.chk.items.mnemonic").charAt(0));
 
+    chkResources =
+        new JCheckBox(Resources.get("finddialog.chk.resources.caption"), settings.getProperty(
+            "FindDialog.Resources", "true").equals("true"));
+    chkResources.setMnemonic(Resources.get("finddialog.chk.resources.mnemonic").charAt(0));
+
     chkCase =
         new JCheckBox(Resources.get("finddialog.chk.matchcase.caption"), settings.getProperty(
             "FindDialog.matchcase", "true").equals("true"));
@@ -305,6 +313,9 @@ public class FindDialog extends InternationalizedDataDialog implements
     c.gridx = 0;
     c.gridy++;
     pnlAttributeCheckBoxes.add(chkGroups, c);
+
+    c.gridx++;
+    pnlAttributeCheckBoxes.add(chkResources, c);
 
     c.gridx = 0;
     c.gridy++;
@@ -635,9 +646,9 @@ public class FindDialog extends InternationalizedDataDialog implements
 
     if (addShips.isSelected() == true) {
       if ((selectedRegions == null) || selectedRegions.isEmpty()) {
-        items.addAll(data.ships().values());
+        items.addAll(data.getShips());
       } else {
-        for (Ship s : data.ships().values()) {
+        for (Ship s : data.getShips()) {
           if (selectedRegions.contains(s.getRegion())) {
             items.add(s);
           }
@@ -695,6 +706,10 @@ public class FindDialog extends InternationalizedDataDialog implements
       }
 
       if (chkMessages.isSelected() && (filterMessage(item, patterns) == true)) {
+        hits.add(item);
+      }
+
+      if (chkResources.isSelected() && (filterResource(item, patterns) == true)) {
         hits.add(item);
       }
 
@@ -1054,6 +1069,35 @@ public class FindDialog extends InternationalizedDataDialog implements
   }
 
   /**
+   * Return true if item matches patterns.
+   * 
+   * @param item
+   * @param patterns
+   * @return
+   */
+  private boolean filterResource(Unique item, Collection<Pattern> patterns) {
+    if (item instanceof Region) {
+      Region region = (Region) item;
+      for (RegionResource res : region.resources()) {
+        if (match(res.getName(), patterns))
+          return true;
+      }
+
+      if (region.getHerb() != null && match(region.getHerb().getName(), patterns))
+        return true;
+      if (region.getPrices() != null) {
+        for (LuxuryPrice price : region.getPrices().values())
+          if (((price.getPrice() >= 0 && getData().getGameSpecificRules().getMaxTrade(region) < 0) || (price
+              .getPrice() < 0 && getData().getGameSpecificRules().getMaxTrade(region) >= 0))
+              && match(price.getItemType().getName(), patterns))
+            return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Surround each item with a wrapper
    * 
    * @param items
@@ -1171,6 +1215,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     storeCheckbox(chkCmds, "Orders");
     storeCheckbox(chkMessages, "Messages");
     storeCheckbox(chkItems, "Items");
+    storeCheckbox(chkResources, "Resources");
 
     storeCheckbox(chkCase, "matchcase");
 

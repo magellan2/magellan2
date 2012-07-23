@@ -102,6 +102,8 @@ public class E3CommandParser {
   public static String KRAUTOrder = "KRAUT";
   /** The LUXUS order parameter */
   public static String LUXUSOrder = "LUXUS";
+  /** The LUXUS order parameter */
+  public static String TRANKOrder = "TRANK";
   /** The persistent comment order */
   public static String PCOMMENTOrder = EresseaConstants.O_PCOMMENT;
   /** The persistent comment order */
@@ -411,7 +413,7 @@ public class E3CommandParser {
    * them. Known commands:<br />
    * <tt>// $cript +X text</tt> -- If X<=1 then a warning containing text is added to the unit's
    * orders. Otherwise X is decreased by one.<br />
-   * <code>// $cript [length [period]] text</code> -- Adds text (or commands) to the orders<br />
+   * <code>// $cript [rest [period [length]] text</code> -- Adds text (or commands) to the orders<br />
    * <code>// $cript auto [NICHT]|[length [period]]</code> -- autoconfirm orders<br />
    * <code>// $cript Loeschen [lang]</code> -- clears all orders except comments<br />
    * <code>// $cript GibWenn receiver [JE] amount item [warning]</code> -- add give order (if
@@ -572,7 +574,7 @@ public class E3CommandParser {
     StringTokenizer tokenizer = new StringTokenizer(order, " ");
     if (tokenizer.hasMoreTokens()) {
       String part = tokenizer.nextToken();
-      if (part.equals(PCOMMENTOrder)) {
+      if (part.equals(PCOMMENTOrder) || part.equals(COMMENTOrder)) {
         if (tokenizer.hasMoreTokens()) {
           part = tokenizer.nextToken();
           if (part.equals(scriptMarker)) {
@@ -608,7 +610,7 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript [length [period [length]]] text</code><br />
+   * <code>// $cript [rest [period [length]]] text</code><br />
    * Adds text (or commands) to the orders after rest rounds. If <code>rest==1</code>, text is added
    * to the unit's orders after the current order. If text is a script order itself, it will be
    * executed. If period is set, rest will be reset to period and the modified order added instead
@@ -617,7 +619,7 @@ public class E3CommandParser {
    * rounds.
    * 
    * @param tokens
-   * @return <code>text</code>, if <code>length==1</code>, otherwise <code>null</code>
+   * @return <code>text</code>, if <code>rest==1</code>, otherwise <code>null</code>
    */
   protected String commandRepeat(String[] tokens) {
     StringBuilder result = null;
@@ -650,6 +652,9 @@ public class E3CommandParser {
         result = new StringBuilder();
         if (period > 0) {
           rest = period + 1;
+        }
+        if (tokens[textIndex].equals(scriptMarker)) {
+          result.append(COMMENTOrder).append(" ");
         }
         for (int i = textIndex; i < tokens.length; ++i) {
           if (i > textIndex) {
@@ -736,7 +741,7 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript GibWenn receiver [[JE] amount|ALLES|KRAUT|LUXUS] [item] [warning]</code><br />
+   * <code>// $cript GibWenn receiver [[JE] amount|ALLES|KRAUT|LUXUS|TRANK] [item] [warning]</code><br />
    * Adds a GIB order to the unit. Warning may be one of "immer", "Menge", "Einheit", "versteckt"
    * "nie". "versteckt" informiert nur, wenn die Einheit nicht da ist, übergibt aber trotzdem.
    */
@@ -753,7 +758,7 @@ public class E3CommandParser {
     if (EACHOrder.equals(tokens[2])) {
       je = 1;
       if (ALLOrder.equals(tokens[3]) || KRAUTOrder.equals(tokens[3])
-          || LUXUSOrder.equals(tokens[3])) {
+          || LUXUSOrder.equals(tokens[3]) || TRANKOrder.equals(tokens[3])) {
         addNewError("JE " + tokens[3] + " geht nicht");
         return;
       }
@@ -790,61 +795,51 @@ public class E3CommandParser {
       }
     }
 
-    // handle GIB xyz KRAUT
-    if (KRAUTOrder.equalsIgnoreCase(tokens[2])) {
-      if (testUnit(tokens[1], target, warning)) {
-        if (tokens.length > (warning == -1 ? 3 : 4)) {
-          addNewError("zu viele Parameter");
-        }
+    if (KRAUTOrder.equalsIgnoreCase(tokens[2]) || LUXUSOrder.equalsIgnoreCase(tokens[2])
+        || TRANKOrder.equalsIgnoreCase(tokens[2])) {
+      // handle GIB xyz KRAUT
+      if (KRAUTOrder.equalsIgnoreCase(tokens[2])) {
         if (world.rules.getItemCategory("herbs") == null) {
           addNewError("Spiel kennt keine Kräuter");
         } else {
-          for (Item item : currentUnit.getItems())
-            if (world.rules.getItemCategory("herbs").equals(item.getItemType().getCategory())) {
-              addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
-                  Integer.MAX_VALUE, false), true);
-              Supply supply = getSupply(item.getOrderName(), currentUnit);
-              if (supply == null) {
-                addNewWarning("supply 0 " + item);
-              } else {
-                int amount = item.getAmount();
-                supply.reduceAmount(amount);
-                if (target != null) {
-                  addNeed(item.getOrderName(), target, -amount, -amount, GIB_WENN_PRIORITY);
-                }
-              }
+          giveAll(tokens, target, warning, new Filter() {
+
+            public boolean approve(Item item) {
+              return world.rules.getItemCategory("herbs").equals(item.getItemType().getCategory());
             }
+          });
         }
       }
-      return;
-    }
 
-    // handle GIB xyz LUXUS
-    if (LUXUSOrder.equalsIgnoreCase(tokens[2])) {
-      if (testUnit(tokens[1], target, warning)) {
-        if (tokens.length > (warning == -1 ? 3 : 4)) {
-          addNewError("zu viele Parameter");
-        }
+      // handle GIB xyz LUXUS
+      if (LUXUSOrder.equalsIgnoreCase(tokens[2])) {
         if (world.rules.getItemCategory("luxuries") == null) {
           addNewError("Spiel kennt keine Luxusgüter");
         } else {
-          for (Item item : currentUnit.getItems())
-            if (world.rules.getItemCategory("luxuries").equals(item.getItemType().getCategory())) {
-              addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(),
-                  Integer.MAX_VALUE, false), true);
-              Supply supply = getSupply(item.getOrderName(), currentUnit);
-              if (supply == null) {
-                addNewWarning("supply 0 " + item);
-              } else {
-                int amount = item.getAmount();
-                supply.reduceAmount(amount);
-                if (target != null) {
-                  addNeed(item.getOrderName(), target, -amount, -amount, GIB_WENN_PRIORITY);
-                }
-              }
+          giveAll(tokens, target, warning, new Filter() {
+
+            public boolean approve(Item item) {
+              return world.rules.getItemCategory("luxuries").equals(
+                  item.getItemType().getCategory());
             }
+          });
         }
       }
+
+      // handle GIB xyz TRANK
+      if (TRANKOrder.equalsIgnoreCase(tokens[2])) {
+        if (world.rules.getItemCategory("potions") == null) {
+          addNewError("Spiel kennt keine Tränke");
+        } else {
+          giveAll(tokens, target, warning, new Filter() {
+            public boolean approve(Item item) {
+              return world.rules.getItemCategory("potions")
+                  .equals(item.getItemType().getCategory());
+            }
+          });
+        }
+      }
+
       return;
     }
 
@@ -917,6 +912,37 @@ public class E3CommandParser {
       }
     }
 
+  }
+
+  interface Filter {
+
+    boolean approve(Item item);
+
+  }
+
+  private void giveAll(String[] tokens, Unit target, int warning, Filter filter) {
+    if (testUnit(tokens[1], target, warning)) {
+      if (tokens.length > (warning == -1 ? 3 : 4)) {
+        addNewError("zu viele Parameter");
+      }
+
+      for (Item item : currentUnit.getItems())
+        if (filter.approve(item)) {
+          addNewOrder(getGiveOrder(currentUnit, tokens[1], item.getOrderName(), Integer.MAX_VALUE,
+              false), true);
+          Supply supply = getSupply(item.getOrderName(), currentUnit);
+          if (supply == null) {
+            addNewWarning("supply 0 " + item);
+          } else {
+            int amount = item.getAmount();
+            supply.reduceAmount(amount);
+            if (target != null) {
+              addNeed(item.getOrderName(), target, -amount, -amount, GIB_WENN_PRIORITY);
+            }
+          }
+        }
+
+    }
   }
 
   private boolean testUnit(String sOther, Unit other, int warning) {

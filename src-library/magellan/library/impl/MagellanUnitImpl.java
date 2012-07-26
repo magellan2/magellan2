@@ -2296,7 +2296,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
         final Order line = cmdIterator.next();
 
         if (tempUnit == null) {
-          if (line.getProblem() != null && !line.isEmpty()
+          if (line.getProblem() == null && !line.isEmpty()
               && ordersObject.isToken(line, 0, EresseaConstants.O_MAKE)) {
             if (line.getToken(1).getText().toLowerCase().startsWith(
                 Resources.getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase())) {

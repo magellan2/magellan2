@@ -187,7 +187,7 @@ public class MaintenanceInspector extends AbstractInspector {
     Orders orders = u.getOrders2();
     for (Order order : orders) {
       line++;
-      if (order.getProblem() != null && order instanceof MovementOrder) {
+      if (order.getProblem() == null && order instanceof MovementOrder) {
         movementOrderLine = line;
       }
     }

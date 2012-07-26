@@ -98,7 +98,7 @@ public class ReserveOrder extends SimpleOrder {
 
     EresseaExecutionState eState = (EresseaExecutionState) state;
     if (eState.getReserve(unit, itemID) != null) {
-      setWarning(unit, line, Resources.get("order.reserve.warning.duplicateitem"));
+      setWarning(unit, line, Resources.get("order.reserve.warning.duplicateitem", itemID));
     }
     eState.addReserve(unit, itemID, amount);
 

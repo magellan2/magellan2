@@ -732,7 +732,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     }
 
     Order order = parser.parse(text, getUnit().getLocale());
-    boolean valid = order.getProblem() != null; // parser.read(new StringReader(text));
+    boolean valid = order.getProblem() == null; // parser.read(new StringReader(text));
 
     // doc.setCharacterAttributes(pos[0]+(pos[1]-pos[0])/4, pos[1]-(pos[1]-pos[0])/4,
     // doc.getStyle(S_REGULAR), true);

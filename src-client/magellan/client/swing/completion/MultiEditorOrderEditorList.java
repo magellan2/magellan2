@@ -1999,7 +1999,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                       getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
                           parentUnit, tempUnit, transfers, EresseaConstants.I_MEN, null);
                     }
-                    if (dialog.isGiveRecruitCost()) {
+                    if (dialog.isGiveRecruitCost() && recruits > 0) {
                       getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
                           parentUnit,
                           tempUnit,
@@ -2008,7 +2008,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                           Resources
                               .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
                     }
-                    if (dialog.isGiveMaintainCost()) {
+                    if (dialog.isGiveMaintainCost() && transfers + recruits > 0) {
                       getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
                           parentUnit,
                           tempUnit,

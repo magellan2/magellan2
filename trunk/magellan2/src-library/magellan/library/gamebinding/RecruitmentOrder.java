@@ -98,7 +98,7 @@ public class RecruitmentOrder extends SimpleOrder {
     // costs, unit, line, this);
     List<UnitRelation> relations =
         eState.acquireItem(unit, data.getRules().getItemType(EresseaConstants.I_USILVER), costs,
-            false, true, true, line, this);
+            false, true, false, line, this);
 
     RecruitmentRelation recRel = new RecruitmentRelation(unit, amount, costs, unit.getRace(), line);
     if (warning != null) {

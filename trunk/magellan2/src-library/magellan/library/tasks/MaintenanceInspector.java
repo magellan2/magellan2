@@ -187,7 +187,7 @@ public class MaintenanceInspector extends AbstractInspector {
     Orders orders = u.getOrders2();
     for (Order order : orders) {
       line++;
-      if (order.isValid() && order instanceof MovementOrder) {
+      if (order.getProblem() != null && order instanceof MovementOrder) {
         movementOrderLine = line;
       }
     }
@@ -197,7 +197,7 @@ public class MaintenanceInspector extends AbstractInspector {
   private boolean hasMovementOrder(Unit u) {
     Orders orders = u.getOrders2();
     for (Order order : orders) {
-      if (order.isEmpty() || !order.isValid()) {
+      if (order.isEmpty() || order.getProblem() != null) {
         continue;
       }
       if (orders.isToken(order, 0, EresseaConstants.O_MOVE)

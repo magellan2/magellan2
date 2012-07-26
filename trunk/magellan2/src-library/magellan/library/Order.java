@@ -44,6 +44,10 @@ public interface Order {
   public boolean isEmpty();
 
   /**
+   * This method returns true if there's a syntactic problem with the order. Use
+   * {@link #getProblem()} to include other problems. If isValid returns <code>true</code>,
+   * {@link #getProblem()} must return a problem.
+   * 
    * @return <code>true</code> if the order has been found valid by the order parser.
    */
   public boolean isValid();
@@ -116,9 +120,10 @@ public interface Order {
   public void setProblem(Problem problem);
 
   /**
-   * Returns the problem.
+   * If a problem has been set, it is returned here. If the order is invalid, at least an
+   * OrderSyntaxProblem should is returned.
    * 
-   * @return Returns warning.
+   * @return Returns the problem or <code>null</code>
    */
   public Problem getProblem();
 }

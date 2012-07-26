@@ -219,10 +219,10 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   }
 
   /** All units that are in this container. */
-  private Map<EntityID, Unit> units = null;
+  private Map<EntityID, Unit> units;
 
   /** Provides a collection view of the unit map. */
-  private Collection<Unit> unitCollection = null;
+  private Collection<Unit> unitCollection;
 
   /**
    * Returns an unmodifiable collection of all the units in this container.

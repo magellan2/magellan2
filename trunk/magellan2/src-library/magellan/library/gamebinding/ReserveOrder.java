@@ -97,6 +97,10 @@ public class ReserveOrder extends SimpleOrder {
     }
 
     EresseaExecutionState eState = (EresseaExecutionState) state;
+    if (eState.getReserve(unit, itemID) != null) {
+      setWarning(unit, line, Resources.get("order.reserve.warning.duplicateitem"));
+    }
+    eState.addReserve(unit, itemID, amount);
 
     ItemType itemType = data.getRules().getItemType(itemID);
 
@@ -124,7 +128,7 @@ public class ReserveOrder extends SimpleOrder {
       // List<UnitRelation> relations =
       // eState.reserveItem(itemType, amount == Order.ALL, false, realAmount, unit, line, this);
       List<UnitRelation> relations =
-          eState.acquireItem(unit, itemType, realAmount, amount == Order.ALL, false, false, line,
+          eState.acquireItem(unit, itemType, realAmount, amount == Order.ALL, true, false, line,
               this);
       UnitRelation lastRelation = null;
       for (UnitRelation rel : relations) {

@@ -158,7 +158,7 @@ public class MovementInspector extends AbstractInspector {
   private boolean hasMovementOrder(Unit u) {
     Orders orders = u.getOrders2();
     for (Order order : orders) {
-      if (order.isEmpty() || !order.isValid()) {
+      if (order.isEmpty() || order.getProblem() != null) {
         continue;
       }
       if (orders.isToken(order, 0, EresseaConstants.O_MOVE)

@@ -414,7 +414,7 @@ public class GameDataMerger {
     }
 
     /**************************** REGIONS ***************************/
-    // complex object, just add faction without merging here
+    // complex object, just add region without merging here
     // this just adds all the regions to newGD. No content yet.
     if (olderGD.regionView() != null) {
       for (Region r : olderGD.regionView().values()) {

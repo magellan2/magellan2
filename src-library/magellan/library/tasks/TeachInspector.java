@@ -95,7 +95,7 @@ public class TeachInspector extends AbstractInspector {
       }
       boolean found = false;
       for (Order o : u2.getOrders2())
-        if (o.isValid() && o instanceof LearnOrder) {
+        if (o.getProblem() == null && o instanceof LearnOrder) {
           found = true;
           SkillType skillType = getData().getRules().getSkillType(((LearnOrder) o).skillName);
           Skill ss = u2.getModifiedSkill(skillType);

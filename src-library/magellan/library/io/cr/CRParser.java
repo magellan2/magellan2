@@ -2265,6 +2265,9 @@ public class CRParser implements RulesIO, GameDataIO {
     ID groupID = null;
 
     if (region != unit.getRegion()) {
+      if (unit.getRegion() != null) {
+        log.warn(unit + " " + unit.getRegion() + " --> " + region);
+      }
       unit.setRegion(region);
     }
 
@@ -2521,6 +2524,9 @@ public class CRParser implements RulesIO, GameDataIO {
     }
 
     if (unit.getFaction() != faction) {
+      if (unit.getFaction() != null) {
+        log.warn(unit + " " + unit.getFaction() + " --> " + faction);
+      }
       unit.setFaction(faction);
     }
 
@@ -2582,6 +2588,9 @@ public class CRParser implements RulesIO, GameDataIO {
     final Ship ship = getAddShip(id);
 
     if (ship.getRegion() != region) {
+      if (ship.getRegion() != null) {
+        log.warn(ship + " " + ship.getRegion() + " --> " + region);
+      }
       ship.setRegion(region);
     }
 
@@ -2599,11 +2608,12 @@ public class CRParser implements RulesIO, GameDataIO {
         ship.setDescription(sc.argv[0]);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Partei")) {
-        if ((ship.getOwnerUnit() != null) && (ship.getOwnerUnit().getFaction() == null)) {
-          final Faction f =
-              world.getFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
-          ship.getOwnerUnit().setFaction(f);
-        }
+        // this info is largely redundant (and destroys the faction's unit order)
+        // if ((ship.getOwnerUnit() != null) && (ship.getOwnerUnit().getFaction() == null)) {
+        // final Faction f =
+        // world.getFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+        // ship.getOwnerUnit().setFaction(f);
+        // }
 
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Kapitaen")) {
@@ -2668,6 +2678,9 @@ public class CRParser implements RulesIO, GameDataIO {
     final Building bld = getAddBuilding(id);
 
     if (bld.getRegion() != region) {
+      if (bld.getRegion() != null) {
+        log.warn(bld + " " + bld.getRegion() + " --> " + region);
+      }
       bld.setRegion(region);
     }
 
@@ -2692,10 +2705,11 @@ public class CRParser implements RulesIO, GameDataIO {
         bld.setOwner(getAddUnit(unitID));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Partei")) {
-        if ((bld.getOwnerUnit() != null) && (bld.getOwnerUnit().getFaction() == null)) {
-          final Faction f = world.getFaction(EntityID.createEntityID(sc.argv[0], 10, world.base));
-          bld.getOwnerUnit().setFaction(f);
-        }
+        // this info is largely redundant (and destroys the faction's unit order)
+        // if ((bld.getOwnerUnit() != null) && (bld.getOwnerUnit().getFaction() == null)) {
+        // final Faction f = world.getFaction(EntityID.createEntityID(sc.argv[0], 10, world.base));
+        // bld.getOwnerUnit().setFaction(f);
+        // }
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Groesse")) {
         bld.setSize(Integer.parseInt(sc.argv[0]));
@@ -3962,6 +3976,9 @@ public class CRParser implements RulesIO, GameDataIO {
     final Unit newUnit = getAddUnit(UnitID.createUnitID(sc.argv[0].substring(8), 10, world.base));
 
     if (region != newUnit.getRegion()) {
+      if (newUnit.getRegion() != null) {
+        log.warn(newUnit + " " + newUnit.getRegion() + " --> " + region);
+      }
       newUnit.setRegion(region);
     }
 
@@ -4249,6 +4266,9 @@ public class CRParser implements RulesIO, GameDataIO {
     }
 
     if (newUnit.getFaction() != faction) {
+      if (newUnit.getFaction() != null) {
+        log.warn(newUnit + " " + newUnit.getFaction() + " --> " + faction);
+      }
       newUnit.setFaction(faction);
     }
 

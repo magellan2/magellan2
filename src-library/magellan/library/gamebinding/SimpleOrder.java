@@ -48,6 +48,7 @@ public class SimpleOrder implements Order {
   private boolean persistent;
   private boolean isLong;
   private Problem problem;
+  private boolean valid = true;
 
   /**
    * Creates a new order from a list of tokens.
@@ -94,22 +95,14 @@ public class SimpleOrder implements Order {
    * @see magellan.library.Order#isValid()
    */
   public boolean isValid() {
-    // FIXME setting a problem makes the order valid??
-    return problem == null;
-    // return problem == null || problem.getType() != SyntaxProblem;
+    return valid;
   }
 
   /**
    * Marks the order as valid or unvalid.
    */
   public void setValid(boolean valid) {
-    if (valid && !isValid()) {
-      problem = null;
-    } else if (!valid && isValid()) {
-      problem =
-          ProblemFactory
-              .createProblem(Severity.WARNING, OrderSyntaxProblemTypes.PARSE_WARNING.type);
-    }
+    this.valid = valid;
   }
 
   /**
@@ -175,7 +168,12 @@ public class SimpleOrder implements Order {
    * @see magellan.library.Order#getProblem()
    */
   public Problem getProblem() {
-    return problem;
+    if (problem != null)
+      return problem;
+    else if (!isValid())
+      return ProblemFactory.createProblem(Severity.WARNING,
+          OrderSyntaxProblemTypes.PARSE_WARNING.type);
+    return null;
   }
 
   /**

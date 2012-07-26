@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 
+import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -501,6 +502,63 @@ public class ReportSortingTest extends MagellanTestWithResources {
     //
     assertEquals(0, units.get(0).getSortIndex());
     assertEquals(1, units.get(1).getSortIndex());
+  }
+
+  /**
+   * Test that a building owner info doesn't disturb unit sorting.
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testUnitSorting5() throws Exception {
+    GameDataBuilder builder = new GameDataBuilder();
+    GameData gd2 = builder.createSimplestGameData("Eressea", 351, false);
+    Faction faction21 = gd2.getFactions().iterator().next();
+    gd2.setOwnerFaction(faction21.getID());
+    Region region21 = gd2.getRegions().iterator().next();
+    Unit unit211 = builder.addUnit(gd2, "z11", "1_1", faction21, region21);
+    Unit unit212 = builder.addUnit(gd2, "y12", "1_2", faction21, region21);
+    Unit unit213 = builder.addUnit(gd2, "x12", "1_3", faction21, region21);
+    unit211.setSortIndex(1);
+    unit212.setSortIndex(2);
+    unit213.setSortIndex(3);
+    Building b21 = builder.addBuilding(gd2, region21, "b1", "BURG", "Burg 1", 10);
+    unit211.setBuilding(b21);
+    unit212.setBuilding(b21);
+    b21.setOwner(unit211);
+    b21.setOwnerUnit(unit211);
+    Building b22 = builder.addBuilding(gd2, region21, "b2", "BURG", "Burg 2", 10);
+    unit213.setBuilding(b22);
+    b22.setOwner(unit213);
+    b22.setOwnerUnit(unit213);
+
+    WriteGameData.writeCR(gd2, new File("./test/tc010/gd2.cr"));
+
+    GameData gd1 = builder.createSimplestGameData("Eressea", 350, false);
+    gd2 =
+        new GameDataReader(null).readGameData(FileTypeFactory.singleton().createFileType(
+            new File("./test/tc010/gd2.cr"), true, new FileTypeFactory.FileTypeChooser()));
+    faction21 = gd2.getFactions().iterator().next();
+    ArrayList<Unit> units = new ArrayList<Unit>(faction21.units());
+    assertSame(3, units.size());
+
+    assertOrder(gd2, "z11", "y12", "x12");
+
+    GameData gdm = GameDataMerger.merge(gd1, gd2);
+
+    faction21 = gdm.getFactions().iterator().next();
+    units = new ArrayList<Unit>(faction21.units());
+    assertSame(3, units.size());
+
+    assertOrder(gdm, "z11", "y12", "x12");
+
+    assertEquals("z11", units.get(0).getID().toString());
+    assertEquals("y12", units.get(1).getID().toString());
+    assertEquals("x12", units.get(2).getID().toString());
+
+    assertEquals(0, units.get(0).getSortIndex());
+    assertEquals(1, units.get(1).getSortIndex());
+    assertEquals(2, units.get(2).getSortIndex());
   }
 
 }

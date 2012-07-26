@@ -51,7 +51,7 @@ public class ReserveRelation extends UnitRelation {
    * @param origin The reserving unit
    * @param source The reserving unit
    * @param amount The amount. {@link ReserveOrder#ALL} for "ALLES"
-   * @param itemID The item (type)
+   * @param type The item (type)
    * @param line The line number in the unit's orders
    */
   public ReserveRelation(Unit origin, Unit source, int amount, ItemType type, int line) {

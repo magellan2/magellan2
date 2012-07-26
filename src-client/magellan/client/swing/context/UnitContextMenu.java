@@ -876,7 +876,7 @@ public class UnitContextMenu extends JPopupMenu {
 
       // look for teaching orders
       for (Order order : orders) {
-        if (!order.isValid() || order.isEmpty()) {
+        if (order.getProblem() != null || order.isEmpty()) {
           continue;
         }
 

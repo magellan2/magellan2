@@ -31,6 +31,7 @@ import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.ZeroUnit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.ItemTransferRelation;
@@ -216,6 +217,12 @@ public class GiveOrder extends UnitArgumentOrder {
                     UnitRelation ownRelation =
                         new ItemTransferRelation(unit, zeroOrTarget,
                             ((ReserveRelation) rel).amount, i, line, false);
+                    if (!(zeroOrTarget instanceof ZeroUnit)) {
+                      ReserveRelation targetRelation =
+                          new ReserveRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
+                              i, line);
+                      targetRelation.add();
+                    }
                     // if (!all && reservedAmount != requiredAmount) {
                     // ownRelation.setWarning(Resources.get("order.give.warning.insufficient",
                     // type.toString()),
@@ -245,10 +252,9 @@ public class GiveOrder extends UnitArgumentOrder {
             int requiredAmount =
                 all ? 0 : (each ? zeroOrTarget.getModifiedPersons() * amount : amount);
             List<UnitRelation> relations =
-                eState.acquireItem(unit, itemType, requiredAmount, all, false, false, line, this);
+                eState.acquireItem(unit, itemType, requiredAmount, all, !all, false, line, this);
             for (UnitRelation rel : relations) {
               if (rel instanceof ReserveRelation) {
-
                 UnitRelation ownRelation =
                     new ItemTransferRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
                         itemType, line, false);
@@ -258,6 +264,12 @@ public class GiveOrder extends UnitArgumentOrder {
                       OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
                 }
                 ownRelation.add();
+                if (!(zeroOrTarget instanceof ZeroUnit)) {
+                  ReserveRelation targetRelation =
+                      new ReserveRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
+                          itemType, line);
+                  targetRelation.add();
+                }
               } else {
                 rel.add();
               }
@@ -281,6 +293,13 @@ public class GiveOrder extends UnitArgumentOrder {
                         new ItemTransferRelation(unit, zeroOrTarget,
                             ((ReserveRelation) rel).amount, i.getItemType(), line, false);
                     ownRelation.add();
+                    if (!(zeroOrTarget instanceof ZeroUnit)) {
+                      ReserveRelation targetRelation =
+                          new ReserveRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount, i
+                              .getItemType(), line);
+                      targetRelation.add();
+                    }
+
                   } else {
                     rel.add();
                   }

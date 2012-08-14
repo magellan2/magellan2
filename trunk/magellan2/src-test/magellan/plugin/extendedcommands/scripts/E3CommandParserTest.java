@@ -1012,6 +1012,36 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
+   * Test method for {@link E3CommandParser#commandDepotVerwalter(String[])}.
+   */
+  @Test
+  public final void testCommandDepot() {
+    E3CommandParser.DEFAULT_SUPPLY_PRIORITY = 0;
+
+    Unit unit2 = builder.addUnit(data, "u2", "Unit 2", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 500);
+    builder.addItem(data, unit, "Holz", 10);
+
+    // test GibWenn and Benoetige
+    unit.clearOrders();
+    unit2.clearOrders();
+
+    unit.addOrder("// $cript BerufDepotVerwalter 100 200");
+    unit2.addOrder("// $cript Benoetige 280 Silber");
+    unit2.addOrder("// $cript Benoetige 0 1 Holz");
+    unit2.addOrder("// $cript Versorge 1");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("GIB u2 1 Holz", unit, 2);
+    assertEquals(6, unit2.getOrders2().size());
+    assertOrder("GIB 1 120 Silber", unit2, 3);
+    assertOrder("GIB 1 100 Silber", unit2, 4);
+    assertOrder("RESERVIEREN 280 Silber", unit2, 5);
+
+  }
+
+  /**
    * Test method for {@link E3CommandParser#commandBenoetige(String...)}.
    */
   @Test

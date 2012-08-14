@@ -2775,7 +2775,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       stealthLevel = stealth.getLevel();
     }
 
-    if (u.isHideFaction() || stealthLevel > 0) {
+    if (u.isHideFaction() || (stealthLevel > 0 && u.getStealth() != -1)) {
       String strHide = Resources.get("emapdetailspanel.node.stealth") + ":";
 
       if (stealthLevel > 0) {

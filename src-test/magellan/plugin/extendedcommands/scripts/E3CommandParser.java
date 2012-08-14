@@ -88,6 +88,17 @@ public class E3CommandParser {
    */
   public static int DEFAULT_SUPPLY_PRIORITY = 0;
 
+  /** default need priority */
+  private static final int DEFAULT_PRIORITY = 100;
+  /** need priority for GibWenn command */
+  private static final int GIB_WENN_PRIORITY = DEFAULT_PRIORITY;
+  /** need priority for Depot command and silver */
+  private static final int DEPOT_SILVER_PRIORITY = 150;
+  /** need priority for Depot command and other items */
+  private static final int DEPOT_PRIORITY = -1;
+  /** need priority for traders */
+  private static final int TRADE_PRIORITY = DEFAULT_PRIORITY;
+
   /** All script commands begin with this text. */
   public static final String scriptMarker = "$cript";
   /** The GIVE order */
@@ -163,16 +174,10 @@ public class E3CommandParser {
   /** The LONG token (for clear) */
   public static String LONG = "lang";
 
+  private static String S_ENDURANCE = EresseaConstants.S_AUSDAUER.toString();
+
   /** warning constants */
   protected static final int C_ALWAYS = 0, C_AMOUNT = 1, C_UNIT = 2, C_HIDDEN = 3, C_NEVER = 4;
-
-  private static final int DEFAULT_PRIORITY = 100;
-  private static final int GIB_WENN_PRIORITY = DEFAULT_PRIORITY;
-  private static final int DEPOT_SILVER_PRIORITY = 150;
-  private static final int DEPOT_PRIORITY = -1;
-  private static final int TRADE_PRIORITY = DEFAULT_PRIORITY;
-
-  private static String S_ENDURANCE = EresseaConstants.S_AUSDAUER.toString();
 
   private OrderParser parser;
   private Logger log;
@@ -1044,11 +1049,11 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript BerufDepotVerwalter [Zusatzbetrag]</code><br />
+   * <code>// $cript BerufDepotVerwalter [[ZusatzMin] ZusatzMax]</code><br />
    * Collects all free items in the region, Versorge 100, calls Ueberwache
    */
   protected void commandDepotVerwalter(String[] tokens) {
-    if (tokens.length > 2) {
+    if (tokens.length > 3) {
       addNewError("zu viele Argumente");
     }
     commandMonitor(new String[] { "Ueberwache" });
@@ -1059,15 +1064,18 @@ public class E3CommandParser {
         costs += u.getRace().getMaintenance() * u.getPersons();
       }
     }
-    if (tokens.length == 2) {
+    int zusatz1 = 0, zusatz2 = 0;
+    if (tokens.length > 1) {
       try {
-        int zusatz = Integer.parseInt(tokens[1]);
-        costs += zusatz;
+        zusatz1 = Integer.parseInt(tokens[1]);
+        if (tokens.length > 2) {
+          zusatz2 = Integer.parseInt(tokens[2]);
+        }
       } catch (NumberFormatException e) {
         addNewError("Zahl erwartet");
       }
     }
-    addNeed("Silber", currentUnit, costs, costs, DEPOT_SILVER_PRIORITY);
+    addNeed("Silber", currentUnit, costs + zusatz1, costs + zusatz2, DEPOT_SILVER_PRIORITY);
 
     commandBenoetige(new String[] { "Benoetige ", ALLOrder, String.valueOf(DEPOT_PRIORITY) });
     commandVersorge(new String[] { "Versorge", "100" });

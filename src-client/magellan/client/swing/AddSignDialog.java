@@ -133,7 +133,7 @@ public class AddSignDialog extends InternationalizedDialog {
       region.addSign(new Sign(s2));
     }
     // TODO this should be a smaller scale event... Only the map should be interested...
-    dispatcher.fire(new GameDataEvent(this, region.getData()));
+    dispatcher.fire(new GameDataEvent(this, region.getData(), false));
     quit();
   }
 

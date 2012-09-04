@@ -57,8 +57,10 @@ public class SelectionHistory {
 
     @Override
     public String toString() {
-      return event.getActiveObject()
-          + ((event.getContexts().size() > 1) ? "+" + (event.getContexts().size() - 1) : "");
+      if (event.getContexts().size() > 1)
+        return event.getActiveObject() + "+" + (event.getContexts().size() - 1);
+      else
+        return event.getActiveObject().toString();
     }
 
     @Override
@@ -204,7 +206,7 @@ public class SelectionHistory {
      * @see magellan.client.event.TempUnitListener#tempUnitCreated(magellan.client.event.TempUnitEvent)
      */
     public void tempUnitCreated(TempUnitEvent e) {
-
+      // no change necessary
     }
 
     /**
@@ -228,4 +230,5 @@ public class SelectionHistory {
       }
     }
   }
+
 }

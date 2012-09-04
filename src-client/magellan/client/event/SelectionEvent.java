@@ -13,8 +13,19 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import magellan.library.Border;
+import magellan.library.Building;
+import magellan.library.Faction;
+import magellan.library.GameData;
+import magellan.library.Group;
 import magellan.library.HasRegion;
+import magellan.library.Island;
+import magellan.library.Potion;
 import magellan.library.Region;
+import magellan.library.Ship;
+import magellan.library.Spell;
+import magellan.library.Unit;
+import magellan.library.ZeroUnit;
 import magellan.library.event.TimeStampedEvent;
 import magellan.library.utils.logging.Logger;
 
@@ -336,4 +347,138 @@ public class SelectionEvent extends TimeStampedEvent {
 
     return result;
   }
+
+  public static SelectionEvent convert(SelectionEvent event, GameData data) {
+    List<List<Object>> contexts = event.getContexts();
+    List<List<Object>> newContexts = new ArrayList<List<Object>>(contexts.size());
+    boolean valid = true;
+    for (List<Object> context : contexts) {
+      ArrayList<Object> newContext = new ArrayList<Object>(context.size());
+      for (Object o : context) {
+        if (o == null) {
+          newContext.add(null);
+        } else {
+          Object converted = convert(o, context, data);
+          if (converted != null) {
+            newContext.add(converted);
+          } else {
+            valid = false;
+            break;
+          }
+        }
+      }
+      if (!valid) {
+        break;
+      }
+      newContexts.add(newContext);
+    }
+    if (!valid)
+      return null;
+    return SelectionEvent.create(event.getSource(), newContexts);
+  }
+
+  private static Object convert(Object o, List<Object> context, GameData data) {
+    if (o instanceof Region) {
+      Region r = (Region) o;
+      Region newRegion = data.getRegion(r.getCoordinate());
+      if (newRegion != null && (newRegion.getUID() < 0 || newRegion.getUID() == r.getUID())
+          && (newRegion.getName() == null || newRegion.getName().equals(r.getName())))
+        return newRegion;
+      return null;
+    } else if (o instanceof ZeroUnit) {
+      ZeroUnit old = (ZeroUnit) o;
+      Region r = old.getRegion();
+      ZeroUnit converted = (ZeroUnit) data.getRegion(r.getCoordinate()).getZeroUnit();
+      Region newRegion = converted == null ? null : converted.getRegion();
+      if (newRegion != null && (newRegion.getUID() < 0 || newRegion.getUID() == r.getUID())
+          && (newRegion.getName() == null || newRegion.getName().equals(r.getName())))
+        return converted;
+      return null;
+    } else if (o instanceof Faction) {
+      Faction old = (Faction) o;
+      Faction converted = data.getFaction(old.getID());
+      if (converted != null && converted.getName() != null
+          && converted.getName().equals(old.getName()))
+        return converted;
+      return null;
+    } else if (o instanceof Building) {
+      Building old = (Building) o;
+      Building converted = data.getBuilding(old.getID());
+      if (converted != null && converted.getName() != null
+          && converted.getName().equals(old.getName()))
+        return converted;
+      return null;
+    } else if (o instanceof Ship) {
+      Ship old = (Ship) o;
+      Ship converted = data.getShip(old.getID());
+      if (converted != null && converted.getName() != null
+          && converted.getName().equals(old.getName()))
+        return converted;
+      return null;
+    } else if (o instanceof Building) {
+      Building old = (Building) o;
+      Building converted = data.getBuilding(old.getID());
+      if (converted != null && converted.getName() != null
+          && converted.getName().equals(old.getName()))
+        return converted;
+      return null;
+    } else if (o instanceof Island) {
+      Island old = (Island) o;
+      Island converted = data.getIsland(old.getID());
+      if (converted != null && converted.getName() != null
+          && converted.getName().equals(old.getName()))
+        return converted;
+      return null;
+    } else if (o instanceof Unit) {
+      Unit old = (Unit) o;
+      Unit converted = data.getUnit(old.getID());
+      if (converted != null && converted.getName() != null
+          && converted.getName().equals(old.getName()))
+        return converted;
+      return null;
+    } else if (o instanceof Group) {
+      Group old = (Group) o;
+      if (old != null) {
+        Faction f = old.getFaction();
+        if (f != null) {
+          Group converted = data.getFaction(f.getID()).getGroups().get(old.getID());
+          if (converted != null && converted.getName() != null
+              && converted.getName().equals(old.getName()))
+            return converted;
+        }
+      }
+      return null;
+    } else if (o instanceof Border) {
+      Border old = (Border) o;
+      Region r = null;
+      for (Object c : context) {
+        if (c instanceof Region) {
+          r = (Region) c;
+        }
+      }
+      if (r != null) {
+        Region newRegion = (Region) convert(r, context, data);
+        if (newRegion != null)
+          return newRegion.getBorder(old.getID());
+      }
+      return null;
+    } else if (o instanceof Spell) {
+      Spell old = (Spell) o;
+      Spell converted = data.getSpell(old.getID());
+      if (converted != null && converted.getName() != null
+          && converted.getName().equals(old.getName()))
+        return converted;
+      return null;
+    } else if (o instanceof Potion) {
+      Potion old = (Potion) o;
+      Potion converted = data.getPotion(old.getID());
+      if (converted != null && converted.getName() != null
+          && converted.getName().equals(old.getName()))
+        return converted;
+      return null;
+    }
+
+    return null;
+  }
+
 }

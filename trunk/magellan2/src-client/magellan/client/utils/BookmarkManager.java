@@ -27,6 +27,7 @@ import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
+import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.Resources;
@@ -50,6 +51,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
   // the number of the current bookmark
   private int activeBookmark = 0;
   private BookmarkDock dialog;
+  private GameData data;
 
   /**
    * Creates a new BookmarkManager object.
@@ -57,6 +59,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
   public BookmarkManager(EventDispatcher dispatcher) {
     this.dispatcher = dispatcher;
     dispatcher.addSelectionListener(this);
+    dispatcher.addGameDataListener(this);
 
     shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0));
     shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_MASK));
@@ -217,12 +220,15 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
    * Resets bookmark list.
    */
   public void gameDataChanged(GameDataEvent ge) {
-    activeObject = null;
-    bookmarks.clear();
-    activeBookmark = 0;
+    if (ge.getGameData() != data) {
+      data = ge.getGameData();
+      activeObject = null;
+      bookmarks.clear();
+      activeBookmark = 0;
 
-    if (dialog != null) {
-      dialog.updateData();
+      if (dialog != null) {
+        dialog.updateData();
+      }
     }
   }
 

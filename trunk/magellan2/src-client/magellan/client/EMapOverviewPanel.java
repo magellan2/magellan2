@@ -375,6 +375,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
+    GameData oldData = getGameData();
     setGameData(e.getGameData());
 
     // activeObject is from the old report. Convert it to the corresponding object in the new report
@@ -388,6 +389,12 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       activeObject = getGameData().getRegion(((Region) activeObject).getCoordinate());
     } else {
       activeObject = null;
+    }
+
+    if (oldData != getGameData()) {
+      // clear the history
+      SelectionHistory.clear();
+      setLstHistory();
     }
 
     rebuildTree();
@@ -408,11 +415,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   public void rebuildTree() {
     Unique oldActiveObject = activeObject;
-
-    // clear the history
-    SelectionHistory.clear();
-
-    setLstHistory();
 
     // clear node maps
     regionNodes.clear();
@@ -483,6 +485,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         "EMapOverviewPanel.treeRootHandles", true));
 
     treeModel.reload();
+
     if (oldActiveObject != null) {
       dispatcher.fire(SelectionEvent.create(treeModel, oldActiveObject, SelectionEvent.ST_DEFAULT));
     } else {
@@ -1931,7 +1934,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       ui2.setLeftChildIndent(100);
       ui2.setLeftChildIndent(i);
     }
-    tree.revalidate();
+    tree.validate();
     tree.repaint();
   }
 
@@ -2081,12 +2084,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       // TreeNode[] path = treeModel.getPathToRoot(node);
       // TreeNode parent = path[path.length - 2];
       if (node != null) {
+        treeModel.nodeChanged(node);
         UnitNodeWrapper unw = (UnitNodeWrapper) node.getUserObject();
         unw.clearBuffer();
         // parents.add(parent);
       }
-
     }
+
+    updateTree(this);
 
     // log.finest(System.currentTimeMillis() - time);
     // for (TreeNode parent : parents) {
@@ -2097,8 +2102,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     // treeModel.nodesChanged(parent, childIndices);
     // log.finest(System.currentTimeMillis() - time);
     // }
-
-    tree.repaint();
 
     // if (unitNodes.containsKey(u.getID())) {
     // DefaultMutableTreeNode node = (DefaultMutableTreeNode) unitNodes.get(u.getID());

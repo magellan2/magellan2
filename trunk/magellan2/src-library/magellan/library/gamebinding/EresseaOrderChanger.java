@@ -358,11 +358,11 @@ public class EresseaOrderChanger implements OrderChanger {
      * LongButShort, genau dann ist es eine long Order
      */
     String rOrder = order;
+    if (rOrder.startsWith(EresseaConstants.O_COMMENT))
+      return false;
     if (rOrder.startsWith(EresseaConstants.O_PERSISTENT)) {
       rOrder = rOrder.substring(1);
     }
-    if (rOrder.startsWith(EresseaConstants.O_COMMENT))
-      return false;
     if (rOrder.startsWith(EresseaConstants.O_PCOMMENT))
       return false;
     boolean isInLongorder = false;

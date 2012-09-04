@@ -441,7 +441,7 @@ public class E3CommandParser {
    * <code>// $cript Verlange faction unit [unit...]</code> -- allow and require units for
    * Ueberwache<br />
    * <code>// $cript Ernaehre [amount]</code> -- earn money<br />
-   * <code>// $cript Handel amount [good...]</code> -- trade luxuries<br />
+   * <code>// $cript Handel amount [ALLES | good...]</code> -- trade luxuries<br />
    * <code>// $cript Steuermann minSilver maxSilver</code> -- be responsible for ship<br />
    * <code>// $cript Mannschaft skill</code> -- be crew and learn<br />
    * <code>// $cript Quartiermeister [[amount item]...]</code> -- be lookout<br />
@@ -467,15 +467,10 @@ public class E3CommandParser {
       String[] tokens = detectScriptCommand(currentOrder);
       if (tokens == null) {
         // add order if
-        if (clear == null
-            || currentOrder.trim().startsWith(EresseaConstants.O_PCOMMENT)
-            || currentOrder.trim().startsWith(EresseaConstants.O_COMMENT)
-            || (clear == LONG
-                && !world.getGameSpecificStuff().getOrderChanger().isLongOrder(currentOrder) && !currentOrder
-                .trim().startsWith(EresseaConstants.O_PERSISTENT))) {
-          addNewOrder(currentOrder, false);
+        if (shallClear(currentOrder)) {
+          addNewOrder(COMMENTOrder + " " + currentOrder, true);
         } else {
-          changedOrders = true;
+          addNewOrder(currentOrder, false);
         }
         currentOrder = null;
       } else {
@@ -611,7 +606,24 @@ public class E3CommandParser {
       clear = LONG;
     } else {
       addNewError("zu viele Argumente");
+      return;
     }
+    for (int i = 0; i < newOrders.size(); i++) {
+      String order = newOrders.get(i);
+      if (shallClear(order)) {
+        changedOrders = true;
+        newOrders.set(i, COMMENTOrder + " " + order);
+      }
+    }
+  }
+
+  protected boolean shallClear(String order) {
+    if (clear == null)
+      return false;
+    return !order.trim().startsWith(PCOMMENTOrder)
+        && !order.trim().startsWith(COMMENTOrder)
+        && (clear == ALLOrder || (clear == LONG && world.getGameSpecificStuff().getOrderChanger()
+            .isLongOrder(order)));
   }
 
   /**
@@ -969,10 +981,11 @@ public class E3CommandParser {
    * <code>// $cript Benoetige JE amount item [priority]</code><br />
    * <code>// $cript Benoetige ALLES [item] [priority]</code><br />
    * Tries to transfer the maxAmount of item from other units to this unit. Issues warning if
-   * minAmount cannot be supplied. <code>Benoetige JE</code> tries to reserve 1 item for every
-   * person in the unit. <code>Benoetige ALLES item</code> is equivalent to
-   * <code>Benoetige 0 infinity item</code>, <code>Benoetige ALLES</code> is equivalent to
-   * <code>Benoetige ALLES</code> for every itemtype in the region.<br/>
+   * minAmount cannot be supplied. <code>Benoetige JE</code> tries to reserve amount of item for
+   * every person in the unit. Fractional amounts are possible and rounded up.
+   * <code>Benoetige ALLES item</code> is equivalent to <code>Benoetige 0 infinity item</code>,
+   * <code>Benoetige ALLES</code> is equivalent to <code>Benoetige ALLES</code> for every itemtype
+   * in the region.<br/>
    * <code>Benoetige KRAUT</code> is the same for every herb type in the region.<br/>
    * <code>BenoetigeFremd unit (JE amount)|(minAmount [maxAmount]) item</code><br />
    * <code>BenoetigeFremd</code> does the same, but for the given unit instead of the current unit.
@@ -1018,7 +1031,7 @@ public class E3CommandParser {
         if (tokens.length != 4) {
           addNewError("ungültige Argumente für Benoetige JE x Ding");
         } else {
-          int amount = unit.getPersons() * Integer.parseInt(tokens[2]);
+          int amount = (int) Math.ceil(unit.getPersons() * Double.parseDouble(tokens[2]));
           String item = tokens[3];
           addNeed(item, unit, amount, amount, priority);
         }
@@ -1392,14 +1405,14 @@ public class E3CommandParser {
         currentUnit.getModifiedSkill(world.rules.getSkillType(EresseaConstants.S_UNTERHALTUNG));
     Skill taxing =
         currentUnit.getModifiedSkill(world.rules.getSkillType(EresseaConstants.S_STEUEREINTREIBEN));
-    int entertain = 0, tax = 0;
+    int entertain = 0, entertain2 = 0, tax = 0, tax2 = 0;
     if (entertaining != null && hasEntertain()) {
-      entertain =
-          Math.min(currentRegion.maxEntertain(), 20 * entertaining.getLevel()
-              * currentUnit.getPersons());
+      entertain2 = 20 * entertaining.getLevel() * currentUnit.getPersons();
+      entertain = Math.max(0, Math.min(currentRegion.maxEntertain(), entertain2));
     }
     if (taxing != null && isSoldier(currentUnit)) {
-      tax = Math.min(currentRegion.getSilver(), 20 * taxing.getLevel() * currentUnit.getPersons());
+      tax2 = 20 * taxing.getLevel() * currentUnit.getPersons();
+      tax = Math.min(currentRegion.getSilver(), tax2);
     }
 
     if (tax > entertain) {
@@ -1408,11 +1421,18 @@ public class E3CommandParser {
       if (tax > currentRegion.getSilver() + workers * 10 - currentRegion.getPeasants() * 10) {
         addNewWarning("Bauern verhungern");
       }
+      if (tax2 > tax * 2) {
+        addNewWarning("Treiber unterbeschäftigt " + tax2 + ">" + tax);
+        entertain = currentRegion.maxEntertain();
+      }
     } else if (entertain > 0) {
       addNewOrder(ENTERTAINOrder + " " + (amount > 0 ? amount : "") + COMMENTOrder + " "
           + entertain + ">" + tax, true);
       if (amount > currentRegion.maxEntertain()) {
         addNewWarning("zu viele Arbeiter");
+      } else if (entertain2 > entertain * 2) {
+        addNewWarning("Unterhalter unterbeschäftigt " + entertain2 + ">" + entertain);
+        entertain = currentRegion.maxEntertain();
       }
     } else {
       addNewOrder(WORKOrder + " " + (amount > 0 ? amount : ""), true);
@@ -1424,8 +1444,8 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript Handel Menge [Verkaufsgut...] Warnung</code>: trade luxuries, Versorge 200.
-   * Warnung can be "Talent", "Menge", or "nie"<br />
+   * <code>// $cript Handel Menge [ALLES | Verkaufsgut...] Warnung</code>: trade luxuries, Versorge
+   * 200. Warnung can be "Talent", "Menge", or "nie"<br />
    */
   protected void commandTrade(String[] tokens) {
     if (tokens.length < 2) {

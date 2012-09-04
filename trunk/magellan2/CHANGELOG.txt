@@ -1,3 +1,6 @@
+2012-09-04 / Build 521 - stm (stm_@users.sourceforge.net)
+    * improved History's and Bookmarkmanager's reaction on "fake" GameDataEvents
+
 2012-07-23 / Build 517 - stm (stm_@users.sourceforge.net)
     * FindDialog can now search for resources, herbs and luxuries
 

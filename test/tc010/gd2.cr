@@ -2,7 +2,7 @@ VERSION 66
 "ISO-8859-1";charset
 "de";locale
 1;noskillpoints
-1343300321;date
+1346763616;date
 "Eressea";Spiel
 "Java-Tools";Konfiguration
 "Hex";Koordinaten
@@ -19,7 +19,7 @@ ISLAND 1
 "Island_1";name
 REGION 0 0
 "Region_0_0";Name
-"Gletscher";Terrain
+"Ebene";Terrain
 "1";Insel
 BURG 397
 "Burg";Typ

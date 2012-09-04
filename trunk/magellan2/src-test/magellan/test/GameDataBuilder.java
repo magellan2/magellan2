@@ -102,7 +102,7 @@ public class GameDataBuilder {
 
     final Island island = addIsland(data, 1, "Island_1");
 
-    final Region region_0_0 = addRegion(data, "0 0", "Region_0_0", "Gletscher", 1);
+    final Region region_0_0 = addRegion(data, "0 0", "Region_0_0", "Ebene", 1);
     region_0_0.setIsland(island);
 
     if (addUnit) {
@@ -152,7 +152,7 @@ public class GameDataBuilder {
 
       addSkill(unit, "Hiebwaffen", 4, 3, true); // Hiebwaffen 4 (+3)
       addSkill(unit, "Segeln", -1, -3, false); // Segeln - (-3)
-      addSkill(unit, "Magie", 4, 0, true); // Magie 4
+      // addSkill(unit, "Magie", 4, 0, true); // Magie 4
       addSkill(unit, "Steinbau", -1, -3, false); // Steinbau -
     }
 
@@ -207,7 +207,7 @@ public class GameDataBuilder {
     if (name != null) {
       region.setName(name);
     } else {
-      region.setName(type +"_" + c);
+      region.setName(type + "_" + c);
     }
 
     if (type != null) {

@@ -25,13 +25,14 @@ public interface PreferencesAdapter {
 
   /**
    * This function is called for initializing the preferences. It is recommended to use this method
-   * to reinitialze the values that you set within the constructor because it is possible that there
-   * is multithread problem (see for examle bug #156 in mantis).
+   * to re-initialize the values that you set within the constructor because it is possible that
+   * there is multithread problem (see for example bug #156 in mantis).
    */
   public void initPreferences();
 
   /**
-   * This function is called for applying the preferences.
+   * This function is called for applying the preferences. After calling this method, the
+   * Preferences should reflect the changes made in the adapter. But not before.
    */
   public void applyPreferences();
 

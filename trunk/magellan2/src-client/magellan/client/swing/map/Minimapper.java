@@ -13,6 +13,8 @@
 
 package magellan.client.swing.map;
 
+import java.util.Iterator;
+
 import javax.swing.ToolTipManager;
 
 import magellan.client.MagellanContext;
@@ -92,6 +94,13 @@ public class Minimapper extends Mapper {
     p[Mapper.PLANE_REGION].setRenderer(myRenderer =
         new RegionShapeCellRenderer(getCellGeometry(), context, "Minimap.FactionColors",
             "Minimap.RegionColors", "Minimap.PoliticsMode"));
+
+    for (Iterator<MapCellRenderer> it = getAvailableRenderers().iterator(); it.hasNext();)
+      if (it.next().getClass().getName().equals(myRenderer.getClass().getName())) {
+        it.remove();
+      }
+    getAvailableRenderers().add(myRenderer);
+
     return p;
   }
 

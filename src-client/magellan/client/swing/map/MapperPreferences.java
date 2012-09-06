@@ -93,6 +93,8 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
   private ToolTipSwitcherDialog ttsDialog;
   private boolean dialogShown = false;
 
+  private Map<RenderingPlane, JComboBox> renderBoxes = new HashMap<RenderingPlane, JComboBox>();
+
   /**
    * Creates a new MapperPreferences object.
    */
@@ -143,6 +145,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
               GridBagConstraints.BOTH, new Insets(3, 3, 3, 3), 0, 0);
 
       JComboBox availableRenderers = new JComboBox();
+      renderBoxes.put(plane, availableRenderers);
       availableRenderers.setEditable(false);
       availableRenderers.addItem(Resources.get("map.mapperpreferences.cmb.renderers.disabled"));
 
@@ -201,8 +204,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
       gbc.weighty = 1;
       aRendererPanel.add(temp, gbc);
 
-      MapCellRenderer r = null;
-      r = plane.getRenderer();
+      MapCellRenderer r = plane.getRenderer();
 
       if (r != null) {
         availableRenderers.setSelectedItem(r);
@@ -221,6 +223,19 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
   public void initPreferences() {
     for (PreferencesAdapter adap : rendererAdapters) {
       adap.initPreferences();
+    }
+    for (RenderingPlane plane : source.getPlanes()) {
+      if (plane == null) {
+        continue;
+      }
+      MapCellRenderer r = plane.getRenderer();
+      JComboBox box = renderBoxes.get(plane);
+      if (box != null)
+        if (r != null) {
+          box.setSelectedItem(r);
+        } else {
+          box.setSelectedIndex(0);
+        }
     }
   }
 
@@ -269,7 +284,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(java.awt.event.ActionEvent p1) {
     if (ttsDialog == null) {
@@ -336,7 +351,9 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
       }
 
       /**
-       * DOCUMENT-ME
+       * Show dialog to export or import the tooltips.
+       * 
+       * @param doImport show import dialog if this is <code>true</code>, otherwise export dialog
        */
       public void showDialog(boolean doImport) {
         File file = null;
@@ -371,6 +388,8 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
                     }
                   } while (s2 != null);
                 } catch (Exception inner) {
+                  // bad data
+                  log.warn("bad data: " + s1 + "/" + s2);
                 }
 
                 if (data.size() > 0) {
@@ -952,7 +971,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
       }
 
       /**
-       * DOCUMENT-ME
+       * @see java.awt.Container#getMinimumSize()
        */
       @Override
       public Dimension getMinimumSize() {
@@ -960,7 +979,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
       }
 
       /**
-       * DOCUMENT-ME
+       * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
        */
       public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
         if (actionEvent.getSource() != cancel) {
@@ -1238,7 +1257,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
     }
 
     /**
-     * DOCUMENT-ME
+     * @see java.awt.Container#getMinimumSize()
      */
     @Override
     public Dimension getMinimumSize() {
@@ -1293,7 +1312,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
     }
 
     /**
-     * DOCUMENT-ME
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
       if (e.getSource() == importT) {
@@ -1373,7 +1392,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
     }
 
     /**
-     * DOCUMENT-ME
+     * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
      */
     public void valueChanged(javax.swing.event.ListSelectionEvent e) {
       if (tooltipList.getSelectedIndex() >= 0) {
@@ -1389,7 +1408,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
     }
 
     /**
-     * DOCUMENT-ME
+     * Return the currently selected tooltip in the list (the first one if none are selected).
      */
     public String getSelectedToolTip() {
       if (tooltipList != null) {

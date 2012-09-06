@@ -1724,7 +1724,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   }
 
   /**
-   * Implemented for interface Initializable to set configuration data to this component.
+   * Implemented for interface {@link Initializable} to set configuration data to this component.
    * 
    * @param p1 the configuration string from magellan_desktop.ini
    */

@@ -1925,16 +1925,17 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   public void updateTree(Object src) {
     tree.treeDidChange();
 
-    // Use the UI Fix
-    javax.swing.plaf.TreeUI treeUI = tree.getUI();
-
-    if (treeUI instanceof javax.swing.plaf.basic.BasicTreeUI) {
-      javax.swing.plaf.basic.BasicTreeUI ui2 = (javax.swing.plaf.basic.BasicTreeUI) treeUI;
-      int i = ui2.getLeftChildIndent();
-      ui2.setLeftChildIndent(100);
-      ui2.setLeftChildIndent(i);
-    }
-    tree.validate();
+    // (stm 09-2012) I don't think this is needed any more and it hurts performance
+    // // Use the UI Fix
+    // javax.swing.plaf.TreeUI treeUI = tree.getUI();
+    //
+    // if (treeUI instanceof javax.swing.plaf.basic.BasicTreeUI) {
+    // javax.swing.plaf.basic.BasicTreeUI ui2 = (javax.swing.plaf.basic.BasicTreeUI) treeUI;
+    // int i = ui2.getLeftChildIndent();
+    // ui2.setLeftChildIndent(100);
+    // ui2.setLeftChildIndent(i);
+    // }
+    tree.revalidate();
     tree.repaint();
   }
 

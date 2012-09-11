@@ -1117,11 +1117,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     int workers = Math.min(maxWorkers, r.getPeasants());
     int surplus = (workers * r.getPeasantWage()) - (r.getPeasants() * getPeasantMaintenance(r));
     int oldWorkers = Math.min(maxWorkers, r.getOldPeasants());
-    int oldSurplus = -1;
+    int wagePlus = -1;
 
     if ((oldWorkers != -1) && (r.getOldWage() != -1) && (r.getOldPeasants() != -1)) {
-      oldSurplus =
-          (oldWorkers * (r.getOldWage() + 1)) - (r.getOldPeasants() * getPeasantMaintenance(r));
+      // old peasant wage isn't saved in the report; workaround: work with difference using
+      // r.getWage and r.getOldWage
+      int surplus2 = (workers * r.getWage()) - (r.getPeasants() * getPeasantMaintenance(r));
+      int oldSurplus2 =
+          (oldWorkers * (r.getOldWage())) - (r.getOldPeasants() * getPeasantMaintenance(r));
+      wagePlus = oldSurplus2 - surplus2;
     }
 
     String peasantsInfo =
@@ -1142,7 +1146,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     // surplus
     peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.surplus") + ": "
-        + getDiffString(surplus, oldSurplus), "items/silber"));
+        + getDiffString(surplus, surplus + wagePlus), "items/silber"));
 
     // wage
     int wage = r.getWage();

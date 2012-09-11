@@ -1985,7 +1985,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Returns <code>true</code> if this region is the activ region.
+   * Returns <code>true</code> if this region is the active region.
    * 
    * @deprecated Use {@link GameData#getActiveRegion()} instead.
    */

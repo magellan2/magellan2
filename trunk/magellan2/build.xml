@@ -1,4 +1,4 @@
-<project name="magellan" default="distribute_no_tests">
+<project name="magellan" default="distribute">
 	<description>
     This is the ANT compile script for magellan. This script helps you
     to compile a distributable version of magellan.
@@ -349,7 +349,7 @@
 	<!-- *  This target runs all the unit tests                        * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="run_tests" description="This target runs the unit tests">
+	<target name="run_tests" description="This target runs the unit tests.">
 
 		<antcall target="build_library" />
 		<antcall target="build_client" />
@@ -388,7 +388,7 @@
 	<!-- *  This target compiles and packs the whole magellan app.     * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="distribute" description=" This target compiles and packs the whole magellan application.">
+	<target name="test_and_distribute" description=" This target compiles, tests and packs the whole magellan application.">
 		<buildnumber file=".build.number"/>
 
 		<antcall target="clear-classes"/>
@@ -471,7 +471,7 @@
 	<!-- *  This target compiles and packs the whole magellan app.     * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="distribute_no_tests" description=" This target compiles and packs the whole magellan application.">
+	<target name="distribute" description=" This target compiles and packs the whole magellan application.">
 		<buildnumber file=".build.number"/>
 
 		<antcall target="clear-classes"/>

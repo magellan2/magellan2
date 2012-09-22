@@ -139,16 +139,19 @@ public abstract class AbstractPlugInLoader<T> {
 
           for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
             ZipEntry entry = e.nextElement();
-            AbstractPlugInLoader.log.finer("entry " + entry.getName());
 
             if (!entry.isDirectory() && entry.getName().toLowerCase().endsWith(postfix)) {
+              AbstractPlugInLoader.log.finer("entry " + entry.getName());
               // class file found!
               // check whether it implements ExternalModule
               String name = entry.getName();
               name = name.substring(0, name.indexOf(".class")).replace('\\', '.').replace('/', '.');
               // AbstractPlugInLoader.log.fine("entry1 " + name);
 
+              AbstractPlugInLoader.log.finer("loading " + name + " from " + resLoader.getClass()
+                  + " from " + ((ResourcePathClassLoader) resLoader).getPaths() + "...");
               Class<?> foundClass = resLoader.loadClass(name);
+              AbstractPlugInLoader.log.finer("... loaded");
               // AbstractPlugInLoader.log.fine("entry2 " + foundClass);
               Class<?> interfaces[] = foundClass.getInterfaces();
               // AbstractPlugInLoader.log.fine("entry3 " + interfaces.length);

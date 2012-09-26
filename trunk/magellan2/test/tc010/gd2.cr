@@ -2,7 +2,7 @@ VERSION 66
 "ISO-8859-1";charset
 "de";locale
 1;noskillpoints
-1346763616;date
+1348687497;date
 "Eressea";Spiel
 "Java-Tools";Konfiguration
 "Hex";Koordinaten
@@ -39,6 +39,7 @@ EINHEIT 45397
 1;Anzahl
 "Meermenschen";Typ
 "Meermenschen";wahrerTyp
+4;Kampfstatus
 397;Burg
 COMMANDS
 ""
@@ -48,6 +49,7 @@ EINHEIT 44102
 1;Anzahl
 "Meermenschen";Typ
 "Meermenschen";wahrerTyp
+4;Kampfstatus
 397;Burg
 COMMANDS
 ""
@@ -57,6 +59,7 @@ EINHEIT 42806
 1;Anzahl
 "Meermenschen";Typ
 "Meermenschen";wahrerTyp
+4;Kampfstatus
 398;Burg
 COMMANDS
 ""

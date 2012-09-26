@@ -24,6 +24,11 @@ import magellan.library.rules.SkillType;
  * between each other.
  */
 public class Skill {
+  /**
+   * DOCUMENT-ME
+   */
+  public static final int SPECIAL_LEVEL = Integer.MIN_VALUE / 2;
+
   private final SkillType type;
   private final boolean noSkillPoints;
 
@@ -32,8 +37,8 @@ public class Skill {
    * contain skill point values that are not dividable by the unit's number of persons (e.g. 65
    * skill point with a unit of 2 persons)
    */
-  private int points = 0;
-  private int level = 0;
+  private int points;
+  private int level;
 
   /**
    * The number of persons in the unit this skill belongs to.
@@ -41,13 +46,13 @@ public class Skill {
    * @deprecated (stm) This seems to be obsolete.
    */
   @Deprecated
-  private int persons = 0;
+  private int persons;
 
   /** The level of change. Only important in merged reports. */
-  private int changeLevel = 0;
+  private int changeLevel;
 
-  /** Holds value of property levelChanged. */
-  private boolean levelChanged;
+  // /** Holds value of property levelChanged. */
+  // private boolean levelChanged;
 
   /**
    * Creates a new Skill object.
@@ -65,6 +70,11 @@ public class Skill {
     this.level = level;
     this.persons = persons;
     this.noSkillPoints = noSkillPoints;
+
+    if (level < 0 && level != SPECIAL_LEVEL) {
+      magellan.library.utils.logging.Logger.getInstance(this.getClass()).warn(
+          "negative skill level " + this + " " + level);
+    }
   }
 
   /**
@@ -90,7 +100,7 @@ public class Skill {
   }
 
   /**
-   * Recalculate the skill level from skill points according to the formula
+   * Calculate the skill level from skill points according to the formula
    * {@link #getLevelAtPoints(int)} including given bonuses.
    * 
    * @param pointsPerPerson
@@ -98,7 +108,6 @@ public class Skill {
    * @param terrainBonus
    * @param buildingBonus
    * @param isStarving
-   * @return
    */
   public static final int getLevel(int pointsPerPerson, int raceBonus, int terrainBonus,
       int buildingBonus, boolean isStarving) {
@@ -122,11 +131,12 @@ public class Skill {
 
   /**
    * Re-calculate the skill level from the skillPoints including race bonus, terrain bonus and (if
-   * includeBuilding==true) building bonus.
+   * includeBuilding==true) building bonus of the given unit. This skill is not changed by this
+   * method.
    * 
    * @param unit
    * @param includeBuilding
-   * @return
+   * @return The changed skill level.
    */
   public int getLevel(Unit unit, boolean includeBuilding) {
     if ((unit != null) && (unit.getPersons() != 0)) {
@@ -194,7 +204,6 @@ public class Skill {
    * @param skillType
    * @param race
    * @param terrain
-   * @return
    */
   public static int getModifier(SkillType skillType, Race race, RegionType terrain) {
     int modifier = 0;
@@ -216,7 +225,6 @@ public class Skill {
    * 
    * @param skillType
    * @param unit
-   * @return
    */
   public static int getModifier(SkillType skillType, Unit unit) {
     Race realRace = unit.getRace();
@@ -230,7 +238,6 @@ public class Skill {
    * specified unit resides in.
    * 
    * @param unit
-   * @return
    */
   public int getModifier(Unit unit) {
     return Skill.getModifier(type, unit);
@@ -246,8 +253,6 @@ public class Skill {
 
   /**
    * Return the skill type of this skill.
-   * 
-   * @return
    */
   public SkillType getSkillType() {
     return type;
@@ -255,8 +260,6 @@ public class Skill {
 
   /**
    * Return the name of this skill (which is the name of its SkillType).
-   * 
-   * @return
    */
   public String getName() {
     return type.getName();
@@ -270,6 +273,20 @@ public class Skill {
    */
   public void setLevel(int l) {
     level = l;
+    if (level < 0 && level != SPECIAL_LEVEL) {
+      magellan.library.utils.logging.Logger.getInstance(this.getClass()).warn(
+          "negative skill level " + this + " " + l);
+    }
+  }
+
+  /**
+   * Indicates a lost skill. -{@link #getChangeLevel()} is the old level.
+   * 
+   * @param oldLevel
+   */
+  public void setLostLevel(int oldLevel) {
+    level = SPECIAL_LEVEL;
+    changeLevel = -oldLevel;
   }
 
   /**
@@ -281,8 +298,6 @@ public class Skill {
 
   /**
    * Return the level of the skill, which may be negative (indicating a lost skill).
-   * 
-   * @return
    */
   public int getRealLevel() {
     return level;
@@ -338,9 +353,9 @@ public class Skill {
   public void setChangeLevel(int change) {
     changeLevel = change;
 
-    if (changeLevel != 0) {
-      setLevelChanged(true);
-    }
+    // if (changeLevel != 0) {
+    // setLevelChanged(true);
+    // }
   }
 
   /**
@@ -360,16 +375,18 @@ public class Skill {
    * @return Value of property levelChanged.
    */
   public boolean isLevelChanged() {
-    return levelChanged;
+    return changeLevel != 0;
   }
 
   /**
    * Setter for property levelChanged.
    * 
    * @param levelChanged New value of property levelChanged.
+   * @deprecated just use {@link #setChangeLevel(int)}
    */
+  @Deprecated
   public void setLevelChanged(boolean levelChanged) {
-    this.levelChanged = levelChanged;
+    // this.levelChanged = levelChanged;
   }
 
   /**
@@ -378,4 +395,5 @@ public class Skill {
   public boolean isLostSkill() {
     return level < 0;
   }
+
 }

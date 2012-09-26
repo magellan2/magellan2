@@ -39,11 +39,22 @@ import magellan.library.rules.SkillType;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.MagellanFactory;
 
+/**
+ * A helper class for creating reports for tests.
+ * 
+ * @author ...
+ * @version 1.0, Sep 26, 2012
+ */
 public class GameDataBuilder {
 
   private static final int BASE_ROUND = 360;
   private String gameName = "Eressea";
 
+  /**
+   * Creates a report at round {@value #BASE_ROUND}.
+   * 
+   * @see #createSimplestGameData(int)
+   */
   public GameData createSimplestGameData() throws Exception {
     return createSimplestGameData(BASE_ROUND);
   }
@@ -68,18 +79,18 @@ public class GameDataBuilder {
    * Creates a GameData object that is always postProcessed with one faction, one island, one
    * region, and (if <code>addUnit</code>) one unit
    */
-  public GameData createSimplestGameData(String gameName, int round, boolean addUnit)
+  public GameData createSimplestGameData(String aGameName, int round, boolean addUnit)
       throws Exception {
-    return createSimplestGameData(gameName, round, addUnit, true);
+    return createSimplestGameData(aGameName, round, addUnit, true);
   }
 
   /**
    * Creates a GameData object with one faction, one island, one region, and (if
    * <code>addUnit</code>) one unit.
    */
-  public GameData createSimplestGameData(String gameName, int round, boolean addUnit,
+  public GameData createSimplestGameData(String aGameName, int round, boolean addUnit,
       boolean postProcess) throws Exception {
-    final GameData data = new GameDataReader(null).createGameData(gameName);
+    final GameData data = new GameDataReader(null).createGameData(aGameName);
 
     data.base = 36;
     // this is sadly needed
@@ -143,23 +154,33 @@ public class GameDataBuilder {
    * Creates a GameData object of the specified type where all units have Hiebwaffen 4 (+3), Segeln
    * - (-3), Magie 4, Steinbau -. Add a unit if <code>addUnit</code>.
    */
-  public GameData createSimpleGameData(String gameName, int round, boolean addUnit)
+  public GameData createSimpleGameData(String aGameName, int round, boolean addUnit)
       throws Exception {
-    final GameData data = createSimplestGameData(gameName, round, addUnit, false);
+    final GameData data = createSimplestGameData(aGameName, round, addUnit, false);
 
     if (data.getUnits().size() > 0) {
       final Unit unit = data.getUnits().iterator().next();
 
-      addSkill(unit, "Hiebwaffen", 4, 3, true); // Hiebwaffen 4 (+3)
-      addSkill(unit, "Segeln", -1, -3, false); // Segeln - (-3)
+      addSkill(unit, "Hiebwaffen", 4, 3); // Hiebwaffen 4 (+3)
+      addSkill(unit, "Segeln", -1, -3); // Segeln - (-3)
       // addSkill(unit, "Magie", 4, 0, true); // Magie 4
-      addSkill(unit, "Steinbau", -1, -3, false); // Steinbau -
+      addSkill(unit, "Steinbau", -1, 9); // Steinbau -
     }
 
     data.postProcess();
     return data;
   }
 
+  /**
+   * Add a faction to the given report.
+   * 
+   * @param data
+   * @param number
+   * @param name
+   * @param race
+   * @param sortIndex
+   * @return The new faction
+   */
   public Faction addFaction(GameData data, String number, String name, String race, int sortIndex) {
     final EntityID id = EntityID.createEntityID(number, data.base);
 
@@ -177,6 +198,14 @@ public class GameDataBuilder {
     return faction;
   }
 
+  /**
+   * Add an island to the report
+   * 
+   * @param data
+   * @param number
+   * @param name
+   * @return The new island.
+   */
   public Island addIsland(GameData data, int number, String name) {
     final IntegerID id = IntegerID.create(number);
 
@@ -218,20 +247,49 @@ public class GameDataBuilder {
     return region;
   }
 
+  /**
+   * Calls {@link #addUnit(GameData, String, String, Faction, Region, boolean)} with generated
+   * details. "well known" is set to <code>false</code>.
+   * 
+   * @return the new unit
+   */
   public Unit addUnit(GameData data, String name, Region region) {
     return addUnit(data, name, region, false);
   }
 
+  /**
+   * Calls {@link #addUnit(GameData, String, String, Faction, Region, boolean)} with generated
+   * details.
+   * 
+   * @return the new unit
+   */
   public Unit addUnit(GameData data, String name, Region region, boolean wellKnown) {
     final String number = "g" + (data.getUnits().size() + 1);
     final Faction faction = data.getFactions().iterator().next();
     return addUnit(data, number, name, faction, region, wellKnown);
   }
 
+  /**
+   * Calls {@link #addUnit(GameData, String, String, Faction, Region, boolean)} with generated
+   * details. "well known" is set to <code>true</code>.
+   * 
+   * @return the new unit
+   */
   public Unit addUnit(GameData data, String number, String name, Faction faction, Region region) {
-    return addUnit(data, number, name, faction, region, false);
+    return addUnit(data, number, name, faction, region, true);
   }
 
+  /**
+   * Adds a new unit with the given details to the report
+   * 
+   * @param data
+   * @param number
+   * @param name
+   * @param faction
+   * @param region
+   * @param wellKnown
+   * @return The new unit.
+   */
   public Unit addUnit(GameData data, String number, String name, Faction faction, Region region,
       boolean wellKnown) {
     final UnitID id = UnitID.createUnitID(number, data.base);
@@ -248,27 +306,37 @@ public class GameDataBuilder {
 
     unit.setRegion(region);
 
-    unit.setOrders(Collections.singleton(""));
-
     if (wellKnown) {
+      unit.setOrders(Collections.singleton(""));
       unit.setCombatStatus(EresseaConstants.CS_NOT);
     }
     return unit;
   }
 
-  public Skill addLostSkill(Unit unit, String name, int level) {
-    return addSkill(unit, name, -1, level, true);
+  /**
+   * Add a skill which was lost (unknown) to the given unit.
+   */
+  public Skill addLostSkill(Unit unit, String name, int oldLevel) {
+    return addSkill(unit, name, -1, -oldLevel);
   }
 
+  /**
+   * Add a skill to the given unit.
+   */
   public Skill addSkill(Unit unit, String name, int level) {
-    return addSkill(unit, name, level, level, false);
+    return addSkill(unit, name, level, 0);
   }
 
+  /**
+   * Add a skill with change
+   */
   public Skill addChangedSkill(Unit unit, String name, int level, int fromLevel) {
-    return addSkill(unit, name, level, fromLevel, true);
+    if (fromLevel == level)
+      throw new IllegalArgumentException("changed level " + level + " = fromLevel");
+    return addSkill(unit, name, level, level - fromLevel);
   }
 
-  protected Skill addSkill(Unit unit, String name, int level, int change, boolean changed) {
+  protected Skill addSkill(Unit unit, String name, int level, int change) {
 
     final SkillType skt = unit.getData().rules.getSkillType(StringID.create(name), true);
     final int raceBonus = unit.getRace().getSkillBonus(skt);
@@ -279,19 +347,31 @@ public class GameDataBuilder {
 
     skill.setChangeLevel(change);
 
-    skill.setLevelChanged(changed);
+    // skill.setLevelChanged(changed);
 
     unit.addSkill(skill);
 
     return skill;
   }
 
+  /**
+   * Creates a new message with the given text.
+   */
   public static Message createMessage(String text) {
     // EINHEITSBOTSCHAFTEN
     // "Eine Botschaft von Kr‰uterlager (ax1a): 'MessMach99?99?99!Wundsalbe!xxxx'"
     return MagellanFactory.createMessage(text);
   }
 
+  /**
+   * Adds a road to the given region
+   * 
+   * @param region
+   * @param id
+   * @param direction
+   * @param buildRatio
+   * @return The new road
+   */
   public Border addRoad(Region region, int id, int direction, int buildRatio) {
     // GRENZE 1
     // "Straﬂe";typ
@@ -308,6 +388,11 @@ public class GameDataBuilder {
     return road;
   }
 
+  /**
+   * Add some default spells to the report.
+   * 
+   * @param data
+   */
   public static void addSpells(GameData data) {
     Unit mage = data.getUnits().iterator().next();
     Map<ID, Spell> spellMap = new HashMap<ID, Spell>();
@@ -397,6 +482,12 @@ public class GameDataBuilder {
     return ship;
   }
 
+  /**
+   * Set some default luxury prices.
+   * 
+   * @param region
+   * @param buy The buyable luxury good
+   */
   public void setPrices(Region region, String buy) {
     Map<StringID, LuxuryPrice> prices = region.getPrices();
     ItemCategory cat = region.getData().rules.getItemCategory(EresseaConstants.C_LUXURIES);

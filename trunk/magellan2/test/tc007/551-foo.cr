@@ -1,54 +1,55 @@
 VERSION 64
 "ISO-8859-1";charset
-"en";locale
+"de";locale
 1;noskillpoints
-1196682612;date
+1196682700;date
 "Eressea";Spiel
 "Standard";Konfiguration
 "Hex";Koordinaten
 36;Basis
-550;Runde
+551;Runde
 2;Zeitalter
 "eressea-server@eressea.kn-bremen.de";mailto
-"ERESSEA ORDERS";mailcmd
-PARTEI 696873
-"en";locale
-216;age
-603;Optionen
-0;Punkte
-0;Punktedurchschnitt
-"Katzen";Typ
-90;Rekrutierungskosten
-8462;Anzahl Personen
+"ERESSEA BEFEHLE";mailcmd
+PARTEI 1234
+"de";locale
+217;age
+6987;Optionen
+296796;Punkte
+223489;Punktedurchschnitt
+"Menschen";Typ
+100;Rekrutierungskosten
+1;Anzahl Personen
 "gwyrrd";Magiegebiet
-44;heroes
-44;max_heroes
-"The Others";Parteiname
-"others@example.com";email
-"";banner
+0;heroes
+50;max_heroes
+"Die Verstecker";Parteiname
+"foo@example.com";email
 OPTIONEN
 1;AUSWERTUNG
 1;COMPUTER
 0;ZUGVORLAGE
 1;SILBERPOOL
-1;STATISTIK
+0;STATISTIK
 0;DEBUG
 1;ZIPPED
 0;ZEITUNG
-0;MATERIALPOOL
+1;MATERIALPOOL
 1;ADRESSEN
 0;BZIP2
-0;PUNKTE
-0;SHOWSKCHANGE
+1;PUNKTE
+1;SHOWSKCHANGE
 0;XML
-ALLIANZ 15289
-"Die Spielkinder";Parteiname
-1;Status
 PARTEI 15289
 "Die Spielkinder";Parteiname
 "foo@example.com";email
 "Wir müssen für alle Experimente herhalten...";banner
 "de";locale
+PARTEI 696873
+"The Others";Parteiname
+"others@example.com";email
+"";banner
+"en";locale
 REGION 0 1
 "Ozean";Terrain
 "neighbour";visibility
@@ -129,15 +130,8 @@ EINHEIT 1
 696873;Partei
 1;Anzahl
 "Menschen";Typ
-5;Kampfstatus
-COMMANDS
-"PLAY"
-TALENTE
-180 3;Taktik
-90 2;Wahrnehmung
-30 1;Ausdauer
 GEGENSTAENDE
-1000;Silber
+1;Silberbeutel
 EINHEIT 2
 "Seefahrer";Name
 15289;Partei
@@ -146,3 +140,16 @@ EINHEIT 2
 443122;Schiff
 GEGENSTAENDE
 1;Silberbeutel
+EINHEIT 3
+"Verstecker";Name
+1234;Partei
+1;Anzahl
+"Menschen";Typ
+4;Kampfstatus
+COMMANDS
+"ARBEITEN"
+TALENTE
+30 1;Tarnung
+90 2 -1;Wahrnehmung
+GEGENSTAENDE
+990;Silber

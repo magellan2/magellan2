@@ -66,7 +66,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
     GameDataBuilder builder = new GameDataBuilder();
 
     GameData gd1 = builder.createSimpleGameData(350);
-    GameData gd2 = builder.createSimpleGameData(350);
+    GameData gd2 = builder.createSimpleGameData(350, false);
 
     Region r1 = gd1.regions().values().iterator().next();
     builder.addRoad(r1, 1, 1, 100);

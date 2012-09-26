@@ -1,5 +1,8 @@
+2012-09-26 / Build 524 - stm (stm_@users.sourceforge.net)
+    * changed calculation of skill updates; old unit skills now stay until there is definite info that they're not there any more
+
 2012-09-06 / Build 522 - stm (stm_@users.sourceforge.net)
-    *improved behavior of "region/politics" renderer for map and minimap, including fix for trac bug #38
+    * improved behavior of "region/politics" renderer for map and minimap, including fix for trac bug #38
     
 2012-09-04 / Build 521 - stm (stm_@users.sourceforge.net)
     * improved History's and Bookmarkmanager's reaction on "fake" GameDataEvents

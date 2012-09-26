@@ -310,10 +310,11 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
       boolean bool2 = isShowingSkillsLessThanTwo();
       for (Skill s : u.getSkills()) {
         boolean addSkill = true;
-        if (s.getLevel() < 1 && !bool) {
+        // maybe show skills if above user-defined threshold; also respect big changes
+        if (s.getLevel() < 1 && s.getChangeLevel() >= -1 && !bool) {
           addSkill = false;
         }
-        if (s.getLevel() < 2 && !bool2) {
+        if (s.getLevel() < 2 && s.getChangeLevel() >= -2 && !bool2) {
           addSkill = false;
         }
         if (addSkill) {

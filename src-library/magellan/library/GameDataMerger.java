@@ -2496,11 +2496,11 @@ public class GameDataMerger {
     // this block requires newUnit.person to be already set!
     final Collection<Skill> oldSkills = new LinkedList<Skill>();
 
-    if (resultUnit.getSkillMap() == null) {
-      // TODO is this necessary?
-      resultUnit.setSkills(CollectionFactory.<StringID, Skill> createSyncOrderedMap(2));
-    } else {
+    final boolean resultWellKnown = resultUnit.getSkillMap() != null;
+    if (resultUnit.getSkillMap() != null) {
       oldSkills.addAll(resultUnit.getSkills());
+    } else if (curWellKnown || curUnit.getSkillMap() != null) {
+      resultUnit.setSkills(CollectionFactory.<StringID, Skill> createSyncOrderedMap(2));
     }
 
     if ((curUnit.getSkills() != null) && (curUnit.getSkills().size() > 0)) {
@@ -2511,57 +2511,66 @@ public class GameDataMerger {
             new Skill(newSkillType, curSkill.getPoints(), curSkill.getLevel(), resultUnit
                 .getPersons(), curSkill.noSkillPoints());
 
-        if (curSkill.isLevelChanged()) {
-          newSkill.setLevelChanged(true);
-          newSkill.setChangeLevel(curSkill.getChangeLevel());
-        }
-
-        if (curSkill.isLostSkill()) {
-          newSkill.setLevel(-1);
-        }
-
         // NOTE: Maybe some decision about change-level computation in reports
         // of same date here
         final Skill oldSkill = resultUnit.getSkillMap().put(newSkillType.getID(), newSkill);
 
-        if (!sameRound) {
-          // notify change as we are not in the same round.
-          if (oldSkill != null) {
-            final int dec = oldSkill.getLevel();
-            newSkill.setChangeLevel(newSkill.getLevel() - dec);
-          } else {
-            // the skill is new as we did not have it before
-            newSkill.setLevelChanged(true);
-            newSkill.setChangeLevel(newSkill.getLevel());
-          }
-        } else {
-          // TR 2008-03-25
-          // okay, this is a try to make it possible to show level changes
-          // of multiple factions in one week. Problem: If you load a second
-          // report from the same round, the level changes are not updates
-          //
-          // my solution now is to set the level if we found an old skill. The
-          // old skill is actually the negative current level of the first pass
-          //
-          // there is a known problem if there are more known factions with
-          // unknown skills (not imported factions). At the moment I don't
-          // have an idea, how to handle this, because this happens in the
-          // second pass...
-          if (oldSkill != null) {
-            if (oldSkill.getLevel() != newSkill.getLevel() && !newSkill.isLevelChanged()) {
-              if (!firstPass) {
-                newSkill.setChangeLevel(newSkill.getLevel() - oldSkill.getLevel());
-                newSkill.setLevelChanged(true);
-              } else {
-                newSkill.setLevelChanged(false);
-              }
+        // if (!sameRound) {
+        // // notify change as we are not in the same round.
+        // if (oldSkill != null) {
+        // final int dec = oldSkill.getLevel();
+        // newSkill.setChangeLevel(newSkill.getLevel() - dec);
+        // } else {
+        // // the skill is new as we did not have it before
+        // newSkill.setChangeLevel(newSkill.getLevel());
+        // }
+        // } else {
+        // // TR 2008-03-25
+        // // okay, this is a try to make it possible to show level changes
+        // // of multiple factions in one week. Problem: If you load a second
+        // // report from the same round, the level changes are not updates
+        // //
+        // // my solution now is to set the level if we found an old skill. The
+        // // old skill is actually the negative current level of the first pass
+        // //
+        // // there is a known problem if there are more known factions with
+        // // unknown skills (not imported factions). At the moment I don't
+        // // have an idea, how to handle this, because this happens in the
+        // // second pass...
+        // if (oldSkill != null) {
+        // if (oldSkill.getLevel() != newSkill.getLevel() && !newSkill.isLevelChanged()) {
+        // if (!firstPass) {
+        // newSkill.setChangeLevel(newSkill.getLevel() - oldSkill.getLevel()); // FIXME
+        // } else {
+        // // newSkill.setLevelChanged(false);
+        // }
+        // }
+        // } else {
+        // if (curSkill.getLevel() == 0 && newSkill.getLevel() == 0 && curSkill.isLevelChanged()
+        // && !curWellKnown) {
+        // // newSkill.setLevel(curSkill.getLevel() + curSkill.getChangeLevel() * (-1));
+        // }
+        // }
+        // }
+
+        // (stm 2012-09) just keep old skills; set change level if old skill was well known
+        if (!firstPass) {
+          if (oldSkill == null) {
+            if (resultWellKnown) {
+              newSkill.setChangeLevel(newSkill.getLevel());
             }
           } else {
-            if (curSkill.getLevel() == 0 && newSkill.getLevel() == 0 && curSkill.isLevelChanged()
-                && !curWellKnown) {
-              newSkill.setLevel(curSkill.getLevel() + curSkill.getChangeLevel() * (-1));
-            }
+            newSkill.setChangeLevel(newSkill.getLevel() - oldSkill.getLevel());
           }
+        }
+
+        // put this at the end to overwrite automatic changes
+        if (curSkill.isLevelChanged()) {
+          newSkill.setChangeLevel(curSkill.getChangeLevel());
+        }
+
+        if (curSkill.isLostSkill()) {
+          newSkill.setLostLevel(-curSkill.getChangeLevel());
         }
 
         if (oldSkill != null) {
@@ -2576,14 +2585,17 @@ public class GameDataMerger {
     // before with items)
     // andreasg 2003.10.05: ...but if old skills from earlier date!
     // pavkovic 2004.01.27: now we remove oldSkills only if the round changed.
-    if (!sameRound) {
+    // stm 2012.09.26: mark skill as lost whenever the current skills should be well known
+    if (!sameRound || curWellKnown) {
       // Now remove all skills that are lost
       for (Skill oldSkill : oldSkills) {
-        if (oldSkill.isLostSkill()) { // remove if it was lost
+        if (oldSkill.isLostSkill()) { // remove if it was lost // TODO does this ever happen?
           resultUnit.getSkillMap().remove(oldSkill.getSkillType().getID());
         } else { // dont remove it but mark it as a lostSkill
-          oldSkill.setChangeLevel(-oldSkill.getLevel());
-          oldSkill.setLevel(-1);
+          if (curWellKnown) {
+            Skill newSkill = resultUnit.getSkill(oldSkill.getSkillType());
+            newSkill.setLostLevel(oldSkill.getLevel());
+          }
         }
       }
     }

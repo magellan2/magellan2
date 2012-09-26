@@ -1395,7 +1395,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
      * Integer.MIN_VALUE to avoid wrap- around effects but should also be fairly negative so no
      * modifier can push it up to positive values.
      */
-    final int lostSkillLevel = (Integer.MIN_VALUE / 2);
+    final int lostSkillLevel = Skill.SPECIAL_LEVEL;
 
     for (Unit unit : sortedUnits) {
       final MagellanUnitImpl srcUnit = (MagellanUnitImpl) unit;

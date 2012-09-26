@@ -2191,7 +2191,7 @@ public class CRParser implements RulesIO, GameDataIO {
       int points = 0;
       int level = 0;
       int change = 0;
-      boolean changed = false;
+      // boolean changed = false;
 
       final int s = sc.argv[0].indexOf(' ', 0);
       final int s2 = sc.argv[0].indexOf(' ', s + 1);
@@ -2202,7 +2202,7 @@ public class CRParser implements RulesIO, GameDataIO {
         if (s2 > -1) {
           level = Integer.parseInt(sc.argv[0].substring(s + 1, s2));
           change = Integer.parseInt(sc.argv[0].substring(s2 + 1));
-          changed = true;
+          // changed = true;
         } else {
           level = Integer.parseInt(sc.argv[0].substring(s + 1));
         }
@@ -2214,7 +2214,7 @@ public class CRParser implements RulesIO, GameDataIO {
           new Skill(world.rules.getSkillType(StringID.create(sc.argv[1]), true), points, level,
               unit.getPersons(), world.noSkillPoints);
       skill.setChangeLevel(change);
-      skill.setLevelChanged(changed);
+      // skill.setLevelChanged(changed);
       unit.addSkill(skill);
       sc.getNextToken();
     }

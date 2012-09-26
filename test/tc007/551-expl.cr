@@ -7,7 +7,7 @@ VERSION 64
 "Standard";Konfiguration
 "Hex";Koordinaten
 36;Basis
-550;Runde
+551;Runde
 2;Zeitalter
 "eressea-server@eressea.kn-bremen.de";mailto
 "ERESSEA ORDERS";mailcmd
@@ -133,9 +133,8 @@ EINHEIT 1
 COMMANDS
 "PLAY"
 TALENTE
-180 3;Taktik
+180 4;Taktik
 90 2;Wahrnehmung
-30 1;Ausdauer
 GEGENSTAENDE
 1000;Silber
 EINHEIT 2

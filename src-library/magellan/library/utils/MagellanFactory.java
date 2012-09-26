@@ -489,6 +489,7 @@ public abstract class MagellanFactory {
           continue;
         }
 
+        // FIXME use getRealLevel instead?
         final Skill newSkill =
             new Skill(sk.getSkillType(), sk.getPoints(), sk.getLevel(), v.getPersons(), sk
                 .noSkillPoints());

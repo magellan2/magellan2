@@ -94,6 +94,8 @@ public class E3CommandParser {
   private static final int GIB_WENN_PRIORITY = DEFAULT_PRIORITY;
   /** need priority for Depot command and silver */
   private static final int DEPOT_SILVER_PRIORITY = 150;
+  /** need priority for earn command */
+  private static final int DEFAULT_EARN_PRIORITY = 200;
   /** need priority for Depot command and other items */
   private static final int DEPOT_PRIORITY = -1;
   /** need priority for traders */
@@ -1374,7 +1376,7 @@ public class E3CommandParser {
 
   /**
    * <code>// $cript Ernaehre [amount]</code> -- Earn as much money as possible (or the specified
-   * amount), Versorge 200
+   * amount), Versorge {@value #DEFAULT_EARN_PRIORITY}
    */
   protected void commandEarn(String[] tokens) {
     int amount = -1;
@@ -1391,7 +1393,7 @@ public class E3CommandParser {
     }
 
     // Ernaehre includes Versorge
-    commandVersorge(new String[] { "Versorge", "200" });
+    commandVersorge(new String[] { "Versorge", String.valueOf(DEFAULT_EARN_PRIORITY) });
 
     // remove previous orders
     removeOrdersLike(TAXOrder + ".*", true);
@@ -1418,7 +1420,7 @@ public class E3CommandParser {
     if (tax > entertain) {
       addNewOrder(TAXOrder + " " + (amount > 0 ? amount : "") + COMMENTOrder + " " + tax + ">"
           + entertain, true);
-      if (tax > currentRegion.getSilver() + workers * 10 - currentRegion.getPeasants() * 10) {
+      if (tax >= currentRegion.getSilver() + workers * 10 - currentRegion.getPeasants() * 10) {
         addNewWarning("Bauern verhungern");
       }
       if (tax2 > tax * 2) {
@@ -1445,14 +1447,14 @@ public class E3CommandParser {
 
   /**
    * <code>// $cript Handel Menge [ALLES | Verkaufsgut...] Warnung</code>: trade luxuries, Versorge
-   * 200. Warnung can be "Talent", "Menge", or "nie"<br />
+   * {@value #DEFAULT_EARN_PRIORITY}. Warnung can be "Talent", "Menge", or "nie"<br />
    */
   protected void commandTrade(String[] tokens) {
     if (tokens.length < 2) {
       addNewError("zu wenige Argumente");
     }
 
-    commandVersorge(new String[] { "Versorge", "200" });
+    commandVersorge(new String[] { "Versorge", String.valueOf(DEFAULT_EARN_PRIORITY) });
 
     String warning = null;
     if (W_SKILL.equals(tokens[tokens.length - 1]) || W_AMOUNT.equals(tokens[tokens.length - 1])
@@ -1725,7 +1727,7 @@ public class E3CommandParser {
     if (tokens.length > 4) {
       addNewError("zu viele Argumente");
     }
-    int min = 0;
+    int min = 1;
     String race = null;
     int max = Integer.MAX_VALUE;
     if (tokens.length > 1) {
@@ -1746,7 +1748,7 @@ public class E3CommandParser {
           }
         }
       } catch (NumberFormatException e) {
-        min = 0;
+        min = 1;
         race = tokens[1];
         if (tokens.length > 2) {
           addNewError("zu viele Argumente");

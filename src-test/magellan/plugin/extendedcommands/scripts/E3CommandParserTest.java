@@ -107,27 +107,24 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   protected void assertError(String expected, Unit u, int number) {
-    assertError(expected, u, number, "(Fehler");
+    assertError(expected, u, number, "; TODO", "(Fehler");
   }
 
   protected void assertWarning(String expected, Unit u, int number) {
-    assertError(expected, u, number, "");
+    assertError(expected, u, number, "; TODO", "");
   }
 
-  protected void assertError(String expected, Unit u, int number, String warning) {
-    assertTrue("expected " + expected + ", but not enough orders", u.getOrders2().size() > number);
+  protected void assertError(String expected, Unit u, int number, String prefix, String warning) {
+    assertTrue("expected order \"" + expected + "\", but not enough orders",
+        u.getOrders2().size() > number);
     String actual = u.getOrders2().get(number).getText();
-    if (!(actual.contains(expected) && actual.startsWith("; TODO") && actual.contains(warning))) {
+    if (!(actual.contains(expected) && actual.startsWith(prefix) && actual.contains(warning))) {
       assertEquals("; TODO: " + expected + " " + warning, actual);
     }
   }
 
   protected void assertMessage(String expected, Unit u, int number) {
-    assertTrue("expected " + expected + ", but not enough orders", u.getOrders2().size() > number);
-    String actual = u.getOrders2().get(number).getText();
-    if (!(actual.contains(expected) && actual.startsWith("; "))) {
-      assertEquals("; " + expected, actual);
-    }
+    assertError(expected, u, number, "; ", "");
   }
 
   /**
@@ -1837,8 +1834,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     // tax too high
     unit.clearOrders();
     unit.addOrder("// $cript Ernaehre");
-    unit.getRegion().setSilver(10000);
-    builder.addSkill(unit, "Steuereintreiben", 10);
+    unit.getRegion().setSilver(9999);
+    builder.addSkill(unit, "Steuereintreiben", 9);
     builder.addItem(data, unit, "Schwert", 100);
 
     parser.execute(unit.getFaction());

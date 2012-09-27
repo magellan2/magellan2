@@ -154,7 +154,7 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     jComboBoxLaF = new JList(renderer);
     jComboBoxLaF.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     jComboBoxLaF.setSelectedValue(settings.getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL,
-        "Metal"), true);
+        Client.DEFAULT_LAF), true);
     con.gridx = 1;
     con.weightx = 1;
     panel.add(new JScrollPane(jComboBoxLaF), con);

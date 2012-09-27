@@ -225,6 +225,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   @Deprecated
   public static final String COMPLETIONSETTINGS_FILENAME = "magellan_completions.ini";
 
+  public static final String DEFAULT_LAF = "Windows";
+
+  public static final String FALLBACK_LAF = "Metal";
+
   /** This is the instance of this class */
   public static Client INSTANCE;
 
@@ -480,7 +484,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   protected Properties initNewSettings() {
     SelfCleaningProperties settings = new SelfCleaningProperties();
-    settings.setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, "Windows");
+    settings.setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, Client.DEFAULT_LAF);
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ",Einkaufsgut");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET, "Einkaufsgut");
     settings
@@ -2315,12 +2319,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       lafSet = MagellanLookAndFeel.setLookAndFeel(laf);
 
       if (!lafSet) {
-        laf = "Metal";
-        lafSet = MagellanLookAndFeel.setLookAndFeel("Metal");
+        laf = Client.FALLBACK_LAF;
+        lafSet = MagellanLookAndFeel.setLookAndFeel(Client.FALLBACK_LAF);
       }
     }
 
-    if (laf.equals("Metal")) {
+    if (laf.equals(Client.FALLBACK_LAF)) {
       MagellanLookAndFeel.loadBackground(getProperties());
     }
 
@@ -2348,7 +2352,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   private void initLookAndFeels() {
-    setLookAndFeel(getProperties().getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, "Metal"));
+    setLookAndFeel(getProperties().getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL,
+        Client.DEFAULT_LAF));
   }
 
   /**

@@ -1,3 +1,7 @@
+2012-09-27 / Build 526 - stm (stm_@users.sourceforge.net)
+    * remembering units from last week in order to be able to remember skills
+    * added block ALTEINHEIT to CR
+
 2012-09-26 / Build 524 - stm (stm_@users.sourceforge.net)
     * changed calculation of skill updates; old unit skills now stay until there is definite info that they're not there any more
 

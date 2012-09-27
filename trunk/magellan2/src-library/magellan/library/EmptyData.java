@@ -413,4 +413,9 @@ public class EmptyData extends GameData {
     return Collections.emptyMap();
   }
 
+  @Override
+  protected Map<UnitID, Unit> oldUnitsView() {
+    return Collections.emptyMap();
+  }
+
 }

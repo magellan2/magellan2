@@ -281,9 +281,13 @@ public class CRParser implements RulesIO, GameDataIO {
    *          the line stays still at the front of the input.
    */
   private void unknown(String context, boolean fetch) throws IOException {
+    unknown(context, fetch, Logger.WARN);
+  }
+
+  private void unknown(String context, boolean fetch, int logLevel) throws IOException {
     int i;
 
-    final StringBuffer msg = new StringBuffer();
+    final StringBuilder msg = new StringBuilder();
 
     for (i = 0; i < sc.argc; i++) {
       if (sc.isString[i]) {
@@ -303,8 +307,8 @@ public class CRParser implements RulesIO, GameDataIO {
 
     if (!warnedLines.contains(context + "_" + msg)) {
       // only warn once for context and message combination
-      CRParser.log.warn("unknown in line " + sc.lnr + ": (" + context + ")");
-      CRParser.log.warn(msg);
+      CRParser.log.log(logLevel, "unknown in line " + sc.lnr + ": (" + context + ")", null);
+      CRParser.log.log(logLevel, msg, null);
       warnedLines.add(context + "_" + msg);
     }
 
@@ -330,15 +334,26 @@ public class CRParser implements RulesIO, GameDataIO {
   /**
    * Helper function: Find a unit in world. If not found, create one and insert it.
    */
-  private Unit getAddUnit(UnitID id) {
-    Unit unit = world.getUnit(id);
+  private Unit getAddUnit(UnitID id, boolean old) {
+    if (old) {
+      Unit unit = world.getOldUnit(id);
 
-    if (unit == null) {
-      unit = MagellanFactory.createUnit(id, world);
-      world.addUnit(unit);
+      if (unit == null) {
+        unit = MagellanFactory.createUnit(id, world);
+        world.addOldUnit(unit);
+      }
+
+      return unit;
+    } else {
+      Unit unit = world.getUnit(id);
+
+      if (unit == null) {
+        unit = MagellanFactory.createUnit(id, world);
+        world.addUnit(unit);
+      }
+
+      return unit;
     }
-
-    return unit;
   }
 
   /**
@@ -1074,7 +1089,11 @@ public class CRParser implements RulesIO, GameDataIO {
         world.setEncoding(sc.argv[0]);
         sc.getNextToken();
       } else {
-        unknown("VERSION", true);
+        if (sc.isBlock) {
+          parseUnknownBlock();
+        } else {
+          unknown("VERSION", true);
+        }
       }
     }
   }
@@ -2260,7 +2279,15 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   private int parseUnit(Region region, int sortIndex) throws IOException {
-    final Unit unit = getAddUnit(UnitID.createUnitID(sc.argv[0].substring(8), 10, world.base));
+    return parseUnit(region, sortIndex, "EINHEIT");
+  }
+
+  private int parseUnit(Region region, int sortIndex, String blockName) throws IOException {
+    boolean oldUnit;
+    final Unit unit =
+        getAddUnit(UnitID
+            .createUnitID(sc.argv[0].substring(blockName.length() + 1), 10, world.base), oldUnit =
+            blockName.equals("ALTEINHEIT"));
     EntityID factionID = EntityID.createEntityID(-1, world.base);
     ID groupID = null;
 
@@ -2327,7 +2354,8 @@ public class CRParser implements RulesIO, GameDataIO {
             world.base)));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("folgt")) {
-        unit.setFollows(getAddUnit(UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base)));
+        unit.setFollows(getAddUnit(UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base),
+            oldUnit));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("familiarmage")) {
         unit.setFamiliarmageID(UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base));
@@ -2501,7 +2529,7 @@ public class CRParser implements RulesIO, GameDataIO {
           }
         }
         if (isUnknown) {
-          unknown("EINHEIT", true);
+          unknown(blockName, true);
         } else {
           sc.getNextToken();
         }
@@ -2548,6 +2576,10 @@ public class CRParser implements RulesIO, GameDataIO {
      */
     if (!unit.ordersAreNull() && (unit.getCombatStatus() < 0)) {
       unit.setCombatStatus(0);
+    }
+
+    if (oldUnit) {
+      unit.detach();
     }
 
     return sortIndex;
@@ -2617,7 +2649,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Kapitaen")) {
-        ship.setOwner(getAddUnit(UnitID.createUnitID(sc.argv[0], 10, world.base)));
+        ship.setOwner(getAddUnit(UnitID.createUnitID(sc.argv[0], 10, world.base), false));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Kueste")) {
         ship.setShoreId(Integer.parseInt(sc.argv[0]));
@@ -2702,7 +2734,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Besitzer")) {
         final UnitID unitID = UnitID.createUnitID(sc.argv[0], 10, world.base);
-        bld.setOwner(getAddUnit(unitID));
+        bld.setOwner(getAddUnit(unitID, false));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Partei")) {
         // this info is largely redundant (and destroys the faction's unit order)
@@ -3079,6 +3111,8 @@ public class CRParser implements RulesIO, GameDataIO {
         parseSigns(region);
       } else if (sc.isBlock && sc.argv[0].startsWith("EINHEIT ")) {
         unitSortIndex = parseUnit(region, ++unitSortIndex);
+      } else if (sc.isBlock && sc.argv[0].startsWith("ALTEINHEIT ")) {
+        unitSortIndex = parseUnit(region, ++unitSortIndex, "ALTEINHEIT");
       } else if (sc.isBlock && sc.argv[0].startsWith("SCHIFF ")) {
         parseShip(region, ++shipSortIndex);
       } else if (sc.isBlock && sc.argv[0].startsWith("BURG ")) {
@@ -3431,6 +3465,18 @@ public class CRParser implements RulesIO, GameDataIO {
     }
   }
 
+  private void parseUnknownBlock() throws IOException {
+    String block = sc.argv[0];
+    unknown("start of unknown block ", true);
+
+    while (!sc.eof) {
+      if (!sc.isBlock) {
+        unknown(block, true, Logger.INFO);
+      } else
+        return;
+    }
+  }
+
   // (stm) the following is an experiment to simplify the parser using a tag map and Java Beans. It
   // didn't bring the performance boost I had hoped for...
 
@@ -3583,6 +3629,8 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   public static class UnitDefaultTagHandler extends TagHandler {
 
+    private String blockName;
+
     /**
      * @param parser
      */
@@ -3613,10 +3661,14 @@ public class CRParser implements RulesIO, GameDataIO {
         handled = true;
       }
       if (!handled) {
-        parserReference.crParser.unknown("EINHEIT", false);
+        parserReference.crParser.unknown(blockName, false);
         return false;
       }
       return true;
+    }
+
+    public void setBlockName(String blockName) {
+      this.blockName = blockName;
     }
   }
 
@@ -3884,6 +3936,7 @@ public class CRParser implements RulesIO, GameDataIO {
     protected CRParser crParser;
     private TagHandler defaultTagHandler;
     private TagHandler defaultBlockHandler;
+    private String blockName;
 
     /**
      * Parses the block by calling {@link Scanner#getNextToken()} and calling appropriate handlers.
@@ -3931,6 +3984,7 @@ public class CRParser implements RulesIO, GameDataIO {
             break;
           }
         }
+        // TODO add handler for sc.argc==1 and sc.isBlock==false
       }
     }
 
@@ -3970,10 +4024,22 @@ public class CRParser implements RulesIO, GameDataIO {
       this.defaultBlockHandler = defaultBlockHandler;
     }
 
+    public void setBlockName(String blockName) {
+      this.blockName = blockName;
+    }
+
   }
 
   private int parseUnitFast(Region region, int sortIndex) throws IOException {
-    final Unit newUnit = getAddUnit(UnitID.createUnitID(sc.argv[0].substring(8), 10, world.base));
+    return parseUnitFast(region, sortIndex, "EINHEIT");
+  }
+
+  private int parseUnitFast(Region region, int sortIndex, String blockName) throws IOException {
+    final boolean oldUnit;
+    final Unit newUnit =
+        getAddUnit(UnitID
+            .createUnitID(sc.argv[0].substring(blockName.length() + 1), 10, world.base), oldUnit =
+            blockName.equals("ALTEINHEIT"));
 
     if (region != newUnit.getRegion()) {
       if (newUnit.getRegion() != null) {
@@ -3982,6 +4048,7 @@ public class CRParser implements RulesIO, GameDataIO {
       newUnit.setRegion(region);
     }
 
+    UnitDefaultTagHandler defaultUnitParser = null;
     /**
      * this was created by regexp replacements: <code>
      * if \(\(sc\.argc == 2\) && sc\.argv\[1\]\.equalsIgnoreCase\(("[^"]*")\)\) \{(\R[^#]*)sc\.getNextToken\(\);\R \}#else
@@ -4058,7 +4125,8 @@ public class CRParser implements RulesIO, GameDataIO {
       unitParser.addTagHandler("folgt", new UnitTagHandler(unitParser) {
         @Override
         public void handle(Unit unit) {
-          unit.setFollows(getAddUnit(UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base)));
+          unit.setFollows(getAddUnit(UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base),
+              oldUnit));
         }
       });
       unitParser.addBeanHandler("familiarmage", "familiarmageID", Type.UNIT_ID);
@@ -4235,9 +4303,12 @@ public class CRParser implements RulesIO, GameDataIO {
         }
       });
 
-      unitParser.setDefaultTagHandler(new UnitDefaultTagHandler(unitParser));
+      unitParser.setDefaultTagHandler(defaultUnitParser = new UnitDefaultTagHandler(unitParser));
 
     }
+
+    unitParser.setBlockName(blockName);
+    defaultUnitParser.setBlockName(blockName);
 
     long t = System.currentTimeMillis();
     UnitParseState parserState = new UnitParseState(newUnit, world.base);
@@ -4290,6 +4361,10 @@ public class CRParser implements RulesIO, GameDataIO {
      */
     if (!newUnit.ordersAreNull() && (newUnit.getCombatStatus() < 0)) {
       newUnit.setCombatStatus(0);
+    }
+
+    if (oldUnit) {
+      newUnit.detach();
     }
 
     return sortIndex;
@@ -4512,6 +4587,13 @@ public class CRParser implements RulesIO, GameDataIO {
         @Override
         public void handle(Region region) throws IOException {
           parseState.unitSortIndex = parseUnitFast(region, ++parseState.unitSortIndex);
+        }
+      });
+      regionParser.addBlockHandler("ALTEINHEIT", new RegionTagHandler(regionParser) {
+        @Override
+        public void handle(Region region) throws IOException {
+          parseState.unitSortIndex =
+              parseUnitFast(region, ++parseState.unitSortIndex, "ALTEINHEIT");
         }
       });
       regionParser.addBlockHandler("SCHIFF", new RegionTagHandler(regionParser) {

@@ -7,7 +7,7 @@ VERSION 64
 "Standard";Konfiguration
 "Hex";Koordinaten
 36;Basis
-551;Runde
+550;Runde
 2;Zeitalter
 "eressea-server@eressea.kn-bremen.de";mailto
 "ERESSEA BEFEHLE";mailcmd
@@ -149,7 +149,6 @@ EINHEIT 3
 COMMANDS
 "ARBEITEN"
 TALENTE
-90 2;Tarnung
-90 2 -1;Wahrnehmung
+30 1;Tarnung
 GEGENSTAENDE
 990;Silber

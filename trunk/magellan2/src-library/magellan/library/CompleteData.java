@@ -37,6 +37,7 @@ public class CompleteData extends GameData {
   protected Map<CoordinateID, Region> regions = CollectionFactory
       .<CoordinateID, Region> createSyncOrderedMap();
   protected Map<UnitID, Unit> units = CollectionFactory.<UnitID, Unit> createSyncOrderedMap();
+  protected Map<UnitID, Unit> oldUnits = CollectionFactory.<UnitID, Unit> createSyncOrderedMap();
   protected Map<UnitID, TempUnit> tempUnits = CollectionFactory
       .<UnitID, TempUnit> createSyncOrderedMap();
   protected Map<EntityID, Faction> factions = CollectionFactory
@@ -257,6 +258,11 @@ public class CompleteData extends GameData {
   @Override
   protected Map<UnitID, Unit> unitView() {
     return units;
+  }
+
+  @Override
+  protected Map<UnitID, Unit> oldUnitsView() {
+    return oldUnits;
   }
 
 }

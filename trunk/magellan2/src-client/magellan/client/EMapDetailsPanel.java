@@ -2656,8 +2656,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendUnitFactionInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    appendFactionInfo(u.getFaction(), u.getGroup() == null ? u.getFaction().getAllies() : u
-        .getGroup().allies(), u.getFaction().getAlliance(), parent, expandableNodes);
+    if (u.getFaction() != null) {
+      appendFactionInfo(u.getFaction(), u.getGroup() == null ? u.getFaction().getAllies() : u
+          .getGroup().allies(), u.getFaction().getAlliance(), parent, expandableNodes);
+    }
   }
 
   /**
@@ -5365,6 +5367,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   public boolean isCompactLayout() {
     return compactLayout;
   }
+
 
   private void initShowItems() {
     if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", false)) {

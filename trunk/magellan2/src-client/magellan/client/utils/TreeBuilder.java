@@ -44,6 +44,7 @@ import magellan.library.Island;
 import magellan.library.Region;
 import magellan.library.Unique;
 import magellan.library.Unit;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
@@ -64,6 +65,9 @@ public class TreeBuilder {
 
   /** Comments are interesting. */
   public static final int COMMENTS = 8;
+
+  /** Comments are interesting. */
+  public static final int SHOW_HOMELESS = 16;
 
   /** Islands should be displayed. */
   public static final int CREATE_ISLANDS = 16384;
@@ -193,22 +197,23 @@ public class TreeBuilder {
   }
 
   /**
-   * DOCUMENT-ME
+   * constructs a region tree from scratch
    */
   public void buildTree(DefaultMutableTreeNode rootNode, GameData data) {
     if (data == null)
       return;
 
-    buildTree(rootNode, sortRegions(data.getRegions()), data.getUnits(), regionNodes, unitNodes,
-        buildingNodes, shipNodes, unitComparator, activeAlliances, treeStructure, data);
+    buildTree(rootNode, sortRegions(data.getRegions()), data.getUnits(), data.getOldUnits(),
+        regionNodes, unitNodes, buildingNodes, shipNodes, unitComparator, activeAlliances,
+        treeStructure, data);
   }
 
   /**
    * DOCUMENT-ME
    */
   public void buildTree(DefaultMutableTreeNode rootNode, Collection<Region> regionCollection,
-      Collection<Unit> units, Map<ID, TreeNode> regionNodes, Map<ID, TreeNode> unitNodes,
-      Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes,
+      Collection<Unit> units, Collection<Unit> oldUnits, Map<ID, TreeNode> regionNodes,
+      Map<ID, TreeNode> unitNodes, Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes,
       Comparator<? super Unit> unitSorting, Map<EntityID, Alliance> activeAlliances,
       int treeStructure[], GameData data) {
     boolean unitInteresting = (getDisplayMode() & TreeBuilder.UNITS) != 0;
@@ -216,12 +221,42 @@ public class TreeBuilder {
     boolean shipInteresting = (getDisplayMode() & TreeBuilder.SHIPS) != 0;
     boolean commentInteresting = (getDisplayMode() & TreeBuilder.COMMENTS) != 0;
     boolean createIslandNodes = (getDisplayMode() & TreeBuilder.CREATE_ISLANDS) != 0;
+    boolean showHomeless = (getDisplayMode() & TreeBuilder.SHOW_HOMELESS) != 0;
 
     DefaultMutableTreeNode islandNode = null;
     DefaultMutableTreeNode regionNode = null;
     Island curIsland = null;
 
     TreeHelper treehelper = new TreeHelper();
+
+    // create nodes for homeless units
+    DefaultMutableTreeNode homelessNode = null;
+    Map<Region, DefaultMutableTreeNode> regionSubNodes = CollectionFactory.createOrderedMap();
+    if (showHomeless) {
+      // add the homeless
+      homelessNode =
+          new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+              .get("emapoverviewpanel.node.regionlessunits"), "homeless"));
+
+      for (Unit un : oldUnits) {
+        if (un.getRegion() == null || un.getRegion() == data.getNullRegion()) {
+          homelessNode
+              .add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(un)));
+        } else {
+          DefaultMutableTreeNode parent = regionSubNodes.get(un.getRegion());
+          if (parent == null) {
+            regionSubNodes.put(un.getRegion(), parent =
+                new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                    .get("emapoverviewpanel.node.missingunits"), "homeless")));
+          }
+          DefaultMutableTreeNode unitNode =
+              new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(un));
+          parent.add(unitNode);
+          unitNodes.put(un.getID(), unitNode);
+        }
+      }
+    }
+
     for (Region r : regionCollection) {
       // check preferences if we want to include this region
       if (!((unitInteresting && !r.units().isEmpty())
@@ -236,6 +271,14 @@ public class TreeBuilder {
           (DefaultMutableTreeNode) treehelper.createRegionNode(r, nodeWrapperFactory,
               activeAlliances, unitNodes, buildingNodes, shipNodes, unitSorting, treeStructure,
               data, sortShipUnderUnitParent);
+
+      if (regionSubNodes.containsKey(r)) {
+        DefaultMutableTreeNode subNode = regionSubNodes.get(r);
+        if (regionNode == null) {
+          regionNode = new DefaultMutableTreeNode(nodeWrapperFactory.createRegionNodeWrapper(r));
+        }
+        regionNode.add(subNode);
+      }
 
       if (regionNode == null) {
         continue;
@@ -264,19 +307,8 @@ public class TreeBuilder {
       regionNodes.put(r.getID(), regionNode);
     }
 
-    // add the homeless
-    DefaultMutableTreeNode n =
-        new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
-            .get("emapoverviewpanel.node.regionlessunits"), "homeless"));
-
-    for (Unit un : units) {
-      if (un.getRegion() == null || un.getRegion() == data.getNullRegion()) {
-        n.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(un)));
-      }
-    }
-
-    if (n.getChildCount() > 0) {
-      rootNode.add(n);
+    if (homelessNode != null && homelessNode.getChildCount() > 0) {
+      rootNode.add(homelessNode);
     }
   }
 }

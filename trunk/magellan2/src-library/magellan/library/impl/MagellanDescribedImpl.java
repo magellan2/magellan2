@@ -21,7 +21,7 @@ import magellan.library.rules.ObjectType;
  * A class representing a uniquely identifiable object with a modifiable name and description.
  */
 public abstract class MagellanDescribedImpl extends ObjectType implements Described {
-  protected String description = null;
+  protected String description;
 
   /**
    * Constructs a new described object that is uniquely identifiable by the specified id.

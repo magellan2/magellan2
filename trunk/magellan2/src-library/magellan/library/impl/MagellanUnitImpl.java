@@ -3046,4 +3046,26 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     return getCache().destination;
   }
 
+  /**
+   * @see magellan.library.Unit#detach()
+   */
+  public void detach() {
+    if (region != null) {
+      region.removeUnit(getID());
+    }
+    if (faction != null) {
+      faction.removeUnit(getID());
+    }
+    if (group != null) {
+      group.removeUnit(getID());
+    }
+    if (building != null) {
+      building.removeUnit(getID());
+    }
+    if (ship != null) {
+      ship.removeUnit(getID());
+    }
+    clearCache();
+  }
+
 }

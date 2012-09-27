@@ -60,6 +60,7 @@ import magellan.library.rules.Options;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.UnitContainerType;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
@@ -97,6 +98,7 @@ public class CRWriter extends BufferedWriter {
   private UserInterface ui = null;
   private boolean savingInProgress = false;
   private GameData world;
+  private Map<Region, List<Unit>> oldUnitMap;
 
   /**
    * Creates a CR writer which uses the specified writer.
@@ -1365,6 +1367,19 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
+   * Write a sequence of old unit (ALTEINHEIT) blocks for the given region to the underlying stream.
+   * 
+   * @throws IOException If an I/O error occurs.
+   */
+  public void writeOldUnits(Map<Region, List<Unit>> oldUnitMap2, Region region) throws IOException {
+    if (oldUnitMap2.get(region) != null) {
+      for (Unit u : oldUnitMap2.get(region)) {
+        writeUnit(u, true);
+      }
+    }
+  }
+
+  /**
    * @param u the unit to export
    * @return true iff units == null or empty or units contains u
    */
@@ -1378,11 +1393,24 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeUnit(Unit unit) throws IOException {
+    writeUnit(unit, false);
+  }
+
+  /**
+   * Write the cr representation of a <tt>Unit</tt> object to the underyling
+   * 
+   * @throws IOException If an I/O error occurs.
+   */
+  public void writeUnit(Unit unit, boolean old) throws IOException {
     if (unit instanceof TempUnit || !shallExportUnit(unit))
       return;
 
     unitsWritten++;
-    write("EINHEIT " + (unit.getID()).intValue());
+    if (old) {
+      write("ALTEINHEIT " + (unit.getID()).intValue());
+    } else {
+      write("EINHEIT " + (unit.getID()).intValue());
+    }
     newLine();
 
     if (unit.getName() != null) {
@@ -2001,6 +2029,7 @@ public class CRWriter extends BufferedWriter {
 
     if (includeUnits) {
       writeUnits(region.units());
+      writeOldUnits(oldUnitMap, region);
     }
   }
 
@@ -2296,6 +2325,17 @@ public class CRWriter extends BufferedWriter {
       }
 
       if (includeRegions) {
+        if (!getServerConformance() && getIncludeRegions()) {
+          oldUnitMap = CollectionFactory.createMap();
+          for (Unit u : world.getOldUnits()) {
+            List<Unit> oldUnits = oldUnitMap.get(u.getRegion());
+            if (oldUnits == null) {
+              oldUnitMap.put(u.getRegion(), oldUnits = new ArrayList<Unit>());
+            }
+            oldUnits.add(u);
+          }
+        }
+
         ui.setProgress(Resources.get("crwriterdialog.progress.07"), 7);
         if ((regions != null) && (regions.size() > 0)) {
           writeRegions(regions);
@@ -2334,10 +2374,11 @@ public class CRWriter extends BufferedWriter {
               }
             }
 
-            if ((world.getUnits().size() - homelessUnitsCounter) != unitsWritten)
+            if ((world.getUnits().size() + world.getOldUnits().size()) != unitsWritten
+                + homelessUnitsCounter)
               throw new IOException("Although there are "
-                  + (world.getUnits().size() - homelessUnitsCounter) + " units, only "
-                  + unitsWritten + " were written!");
+                  + (world.getUnits().size() + world.getOldUnits().size()) + " units, only "
+                  + (unitsWritten + homelessUnitsCounter) + " were written!");
           }
         }
       }

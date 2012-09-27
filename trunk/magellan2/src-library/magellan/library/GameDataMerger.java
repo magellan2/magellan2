@@ -550,10 +550,6 @@ public class GameDataMerger {
      * new one and temp units are ignored. IDs are used for comparison.
      */
 
-    // // FIXME(stm) !!!! turn experimental off!!!
-    // // experimental: add regionless units from last round which are not visible any more
-    boolean experimental = false;
-
     if (sameRound) {
       // adding units faction by faction and for owner factions first (units from the owner faction
       // should be ensured to have the correct order in the server report); this still doesn't
@@ -580,17 +576,26 @@ public class GameDataMerger {
           sortIndex = addUnits(f.units(), resultGD, sortIndex);
         }
       }
-    } else if (newerGD.unitView() != null) {
-      int sortIndex = 0;
-      if (newerGD.getOwnerFaction() != null) {
-        sortIndex =
-            addUnits(newerGD.getFaction(newerGD.getOwnerFaction()).units(), resultGD, sortIndex);
-      }
-      for (Faction f : newerGD.getFactions()) {
-        if (!f.getID().equals(newerGD.getOwnerFaction())) {
-          sortIndex = addUnits(f.units(), resultGD, sortIndex);
+
+      int sortIndex2 = Integer.MAX_VALUE / 2 + resultGD.getOldUnits().size();
+      sortIndex2 = addOldUnits(olderGD.getOldUnits(), resultGD.units(), resultGD, sortIndex2);
+      addOldUnits(newerGD.getOldUnits(), resultGD.units(), resultGD, sortIndex2);
+    } else {
+      if (newerGD.unitView() != null) {
+        int sortIndex = 0;
+        if (newerGD.getOwnerFaction() != null) {
+          sortIndex =
+              addUnits(newerGD.getFaction(newerGD.getOwnerFaction()).units(), resultGD, sortIndex);
+        }
+        for (Faction f : newerGD.getFactions()) {
+          if (!f.getID().equals(newerGD.getOwnerFaction())) {
+            sortIndex = addUnits(f.units(), resultGD, sortIndex);
+          }
         }
       }
+      int sortIndex2 = Integer.MAX_VALUE / 2 + resultGD.getOldUnits().size();
+      sortIndex2 = addOldUnits(olderGD.getUnits(), resultGD.units(), resultGD, sortIndex2);
+      addOldUnits(newerGD.getOldUnits(), resultGD.units(), resultGD, sortIndex2);
     }
 
     /***********************************************************************/
@@ -701,6 +706,33 @@ public class GameDataMerger {
       }
     }
 
+    /**************************** MERGE OLD UNITS ***************************/
+    // merge before real units to get proper base
+    for (Unit resultUnit : resultGD.oldUnitsView().values()) {
+      Unit olderUnit;
+      if (sameRound) {
+        olderUnit = olderGD.getOldUnit(resultUnit.getID());
+      } else {
+        olderUnit = olderGD.getUnit(resultUnit.getID());
+      }
+      if (olderUnit != null) {
+        mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound, true, transformer1);
+        // mergeUnits calls resultUnit.setRegion, which calls region.addUnit
+        resultUnit.detach();
+        // MagellanFactory.copySkills(olderUnit, resultUnit);
+      }
+
+      Unit newerUnit = newerGD.getOldUnit(resultUnit.getID());
+      if (newerUnit != null) {
+        mergeUnit(newerGD, newerUnit, resultGD, resultUnit, sameRound, false, transformer2);
+        resultUnit.detach();
+        // MagellanFactory.copySkills(newerUnit, resultUnit);
+      }
+      if (newerUnit == null && olderUnit == null) {
+        log.warn("Unknown old unit " + resultUnit);
+      }
+    }
+
     /**************************** MERGE UNITS ***************************/
     /*
      * Note: To gather level change informations all units are used. If the dates are equal, a fully
@@ -722,25 +754,30 @@ public class GameDataMerger {
         }
       }
 
-      // now get the unit of the first report
-      Unit olderUnit;
-      if (tempID != null) {
-        olderUnit = olderGD.getTempUnit(tempID);
-      } else {
-        olderUnit = olderGD.getUnit(resultUnit.getID());
-      }
-      // first merge step
-      if (olderUnit != null) {
-        if (experimental || sameRound) { // full merge
-          GameDataMerger.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound, true,
-              transformer1);
-          if (!sameRound && experimental && newerUnit == null) {
-            resultUnit.setRegion(null);
+      {
+        // now get the unit of the first report
+        Unit olderUnit;
+        if (tempID != null) {
+          olderUnit = olderGD.getTempUnit(tempID);
+        } else {
+          olderUnit = olderGD.getUnit(resultUnit.getID());
+          if (olderUnit == null) {
+            olderUnit = newerGD.getOldUnit(resultUnit.getID());
+            if (sameRound && olderUnit == null) {
+              olderUnit = olderGD.getOldUnit(resultUnit.getID());
+            }
           }
-        } else { // only copy the skills to get change-level base
-          if ((newerUnit != null)
-              && ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged()))) {
-            MagellanFactory.copySkills(olderUnit, resultUnit);
+        }
+        // first merge step
+        if (olderUnit != null) {
+          if (sameRound) { // full merge
+            GameDataMerger.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound, true,
+                transformer1);
+          } else { // only copy the skills to get change-level base
+            if ((newerUnit != null)
+                && ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged()))) {
+              MagellanFactory.copySkills(olderUnit, resultUnit);
+            }
           }
         }
       }
@@ -814,12 +851,34 @@ public class GameDataMerger {
     return sortIndex;
   }
 
+  private static int addOldUnits(Collection<Unit> sourceUnits, Map<UnitID, Unit> subtractUnits,
+      GameData targetGD, int sortIndex) {
+    for (Unit u : sourceUnits) {
+      // Attention: UnitContainer.units() returns temp units (GameData.units() doesn't)
+      if (u instanceof TempUnit) {
+        continue;
+      }
+      if (subtractUnits.get(u.getID()) == null) {
+        if (u.getFaction() != null
+            && u.getID() != null
+            && (u.getFaction().getID().toString().contains("drac") || u.getID().toString()
+                .contains("ehv"))) {
+          log.info("hu");
+        }
+        Unit newUnit = MagellanFactory.createUnit(u.getID(), targetGD);
+        newUnit.setSortIndex(sortIndex++);
+        targetGD.addOldUnit(newUnit);
+      }
+    }
+    return sortIndex;
+  }
+
   /**
    * Add units from older and newer to resultGD; this doesn't preserve the correct unit order.
    */
   @SuppressWarnings("unused")
   private void joinUnits0(GameData olderGD, GameData newerGD, final GameData resultGD,
-      boolean sameRound, boolean experimental) {
+      boolean sameRound) {
     // try to merge units in the correct order; this doesn't work any more if we merge more
     // than two reports.
     // joinUnits(olderGD, newerGD, resultGD);
@@ -829,10 +888,6 @@ public class GameDataMerger {
       for (Unit u : olderGD.unitView().values()) {
         if (sameRound || (newerGD.getUnit(u.getID()) != null)) {
           resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
-        } else if (experimental) { // FIXME changes unit order
-          resultGD.addUnit(MagellanFactory.createUnit(u.getID(), resultGD));
-          resultGD.getUnit(u.getID()).putTag("old", "was present in last report");
-          // resultGD.getUnit(u.getID()).setRegion(u.getRegion());
         }
       }
     }
@@ -2469,7 +2524,7 @@ public class GameDataMerger {
     if (curUnit.getDisguiseRace() != null) {
       resultUnit.setRealRace(resultGD.rules.getRace(curUnit.getRace().getID(), true));
       resultUnit.setRace(resultGD.rules.getRace(curUnit.getDisguiseRace().getID(), true));
-    } else {
+    } else if (curUnit.getRace() != null) {
       resultUnit.setRace(resultGD.rules.getRace(curUnit.getRace().getID(), true));
     }
 

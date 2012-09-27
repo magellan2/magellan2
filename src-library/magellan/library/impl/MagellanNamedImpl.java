@@ -20,7 +20,7 @@ import magellan.library.Named;
  * A class representing a uniquely identifiable object with a modifiable name.
  */
 public abstract class MagellanNamedImpl extends MagellanIdentifiableImpl implements Named {
-  private String name = null;
+  private String name;
 
   /**
    * Constructs a new named object that is uniquely identifiable by the specified id.

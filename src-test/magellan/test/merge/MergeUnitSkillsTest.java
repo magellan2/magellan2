@@ -48,6 +48,7 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
   private GameDataBuilder builder;
   private GameData gd01;
   private GameData gd02;
+  private GameData gd03;
   private GameData gd11;
   private GameData gd12;
   private GameData gd13;
@@ -55,6 +56,7 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
   private Faction faction01b;
   private Faction faction02a;
   private Faction faction02b;
+  private Faction faction03c;
   private Faction faction11a;
   private Faction faction11b;
   private Faction faction12a;
@@ -64,6 +66,7 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
   private Faction faction13c;
   private Region region01;
   private Region region02;
+  private Region region03;
   private Region region11;
   private Region region12;
   private Region region13;
@@ -71,6 +74,7 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
   private Unit unit01b;
   private Unit unit02a;
   private Unit unit02b;
+  private Unit unit03c;
   private Unit unit11a;
   private Unit unit11b;
   private Unit unit12a;
@@ -83,6 +87,7 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
     builder = new GameDataBuilder();
     gd01 = builder.createSimpleGameData(game, 350, false);
     gd02 = builder.createSimpleGameData(game, 350, false);
+    gd03 = builder.createSimpleGameData(game, 350, false);
     gd11 = builder.createSimpleGameData(game, 351, false);
     gd12 = builder.createSimpleGameData(game, 351, false);
     gd13 = builder.createSimpleGameData(game, 351, false);
@@ -91,6 +96,8 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
     faction01b = builder.addFaction(gd01, "bbb", "BBB", "Menschen", 1);
     faction02a = builder.addFaction(gd02, "aaa", "AAA", "Menschen", 1);
     faction02b = builder.addFaction(gd02, "bbb", "BBB", "Menschen", 1);
+    faction03c = builder.addFaction(gd03, "ccc", "CCC", "Menschen", 1);
+
     faction11a = builder.addFaction(gd11, "aaa", "AAA", "Menschen", 1);
     faction11b = builder.addFaction(gd11, "bbb", "BBB", "Menschen", 1);
     faction12a = builder.addFaction(gd12, "aaa", "AAA", "Menschen", 1);
@@ -101,6 +108,7 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
 
     region01 = gd01.getRegions().iterator().next();
     region02 = gd02.getRegions().iterator().next();
+    region03 = gd03.getRegions().iterator().next();
     region11 = gd11.getRegions().iterator().next();
     region12 = gd12.getRegions().iterator().next();
     region13 = gd13.getRegions().iterator().next();
@@ -109,6 +117,8 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
     unit01b = builder.addUnit(gd01, "bb", "BB", faction01b, region01, false);
     unit02a = builder.addUnit(gd02, "aa", "AA", faction02a, region02, false);
     unit02b = builder.addUnit(gd02, "bb", "BB", faction02b, region02, true);
+    unit03c = builder.addUnit(gd03, "cc", "CC", faction03c, region03, true);
+
     unit11a = builder.addUnit(gd11, "aa", "AA", faction11a, region11, true);
     unit11b = builder.addUnit(gd11, "bb", "BB", faction11b, region11, false);
     unit12a = builder.addUnit(gd12, "aa", "AA", faction12a, region12, false);
@@ -123,13 +133,15 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
     builder.addSkill(unit02b, "Taktik", 3);
     builder.addSkill(unit02b, "Wahrnehmung", 2);
     builder.addSkill(unit02b, "Ausdauer", 1);
+    builder.addSkill(unit03c, "Tarnung", 1);
+    builder.addSkill(unit03c, "Wahrnehmung", 2);
 
     builder.addSkill(unit11a, "Hiebwaffen", 8);
     builder.addSkill(unit11a, "Wahrnehmung", 2);
     builder.addSkill(unit11a, "Bergbau", 3);
     builder.addSkill(unit12b, "Taktik", 4);
     builder.addSkill(unit12b, "Wahrnehmung", 2);
-    builder.addSkill(unit13c, "Tarnung", 1);
+    builder.addSkill(unit13c, "Tarnung", 2);
     builder.addSkill(unit13c, "Wahrnehmung", 2);
   }
 
@@ -242,7 +254,30 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
     assertSkill(gdm, "bb", "Ausdauer", 0, -1);
     assertSkill(gdm, "bb", "Wahrnehmung", 2, 0);
 
-    assertSkill(gdm, "cc", "Tarnung", 1, 0);
+    assertSkill(gdm, "cc", "Tarnung", 2, 0);
+    assertSkill(gdm, "cc", "Wahrnehmung", 2, 0);
+  }
+
+  /**
+   * Test method for hidden units in
+   * {@link magellan.library.GameDataMerger#mergeUnit(GameData, Unit, GameData, Unit, boolean, boolean, magellan.library.utils.transformation.ReportTransformer)}
+   * 
+   * @throws Exception
+   */
+  @Test
+  public final void testMergeSkills6() throws Exception {
+    create("eressea");
+
+    GameData gdm = GameDataMerger.merge(gd01, gd03);
+    gdm = GameDataMerger.merge(gdm, gd11);
+    gdm = GameDataMerger.merge(gdm, gd13);
+
+    assertSkill(gdm, "aa", "Hiebwaffen", 8, 1);
+    assertSkill(gdm, "aa", "Ausdauer", 0, -3);
+    assertSkill(gdm, "aa", "Wahrnehmung", 2, 0);
+    assertSkill(gdm, "aa", "Bergbau", 3, 3);
+
+    assertSkill(gdm, "cc", "Tarnung", 2, 1);
     assertSkill(gdm, "cc", "Wahrnehmung", 2, 0);
   }
 

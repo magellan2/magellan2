@@ -1357,4 +1357,10 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
 
   public void setNewRegion(CoordinateID destination);
 
+  /**
+   * Detach a unit from the active report, i.e. remove it from its region, faction and other
+   * containers.
+   */
+  public void detach();
+
 }

@@ -1,6 +1,7 @@
 package magellan.library.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,7 +18,7 @@ import magellan.library.relation.UnitRelation;
 public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implements Related {
 
   /** Contains all attributes */
-  private Map<String, String> attributes = new LinkedHashMap<String, String>();
+  private Map<String, String> attributes;
 
   /**
    * Constructs a new described object that is uniquely identifiable by the specified id.
@@ -82,6 +83,9 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
    * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
    */
   public void addAttribute(String key, String value) {
+    if (attributes == null) {
+      attributes = new LinkedHashMap<String, String>();
+    }
     attributes.put(key, value);
   }
 
@@ -89,6 +93,8 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
    * @see magellan.library.Addeable#containsAttribute(java.lang.String)
    */
   public boolean containsAttribute(String key) {
+    if (attributes == null)
+      return false;
     return attributes.containsKey(key);
   }
 
@@ -96,6 +102,8 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
    * @see magellan.library.Addeable#getAttribute(java.lang.String)
    */
   public String getAttribute(String key) {
+    if (attributes == null)
+      return null;
     return attributes.get(key);
   }
 
@@ -103,6 +111,8 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
    * @see magellan.library.Addeable#getAttributeKeys()
    */
   public List<String> getAttributeKeys() {
+    if (attributes == null)
+      return Collections.emptyList();
     return new ArrayList<String>(attributes.keySet());
   }
 
@@ -110,6 +120,9 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
    * @see magellan.library.Addeable#getAttributeSize()
    */
   public int getAttributeSize() {
+    if (attributes == null)
+      return 0;
+
     return attributes.size();
   }
 }

@@ -76,12 +76,12 @@ import magellan.library.utils.logging.Logger;
 public class EresseaOrderCompleter implements Completer {
   private static final Logger log = Logger.getInstance(EresseaOrderCompleter.class);
   private static final Comparator<Completion> prioComp = new PrioComp();
-  private OrderParser parser = null;
-  private List<Completion> completions = null;
-  private GameData data = null;
-  private Region region = null;
-  private Unit unit = null;
-  private CompleterSettingsProvider completerSettingsProvider = null;
+  private OrderParser parser;
+  private List<Completion> completions;
+  private GameData data;
+  private Region region;
+  private Unit unit;
+  private CompleterSettingsProvider completerSettingsProvider;
   protected String oneQuote = "\"";
   protected String twoQuotes = "\"\"";
   protected String spaceQuotes = " \"\"";
@@ -125,6 +125,9 @@ public class EresseaOrderCompleter implements Completer {
   public List<Completion> getCompletions(Unit u, String cmd) {
     unit = u;
     region = unit.getRegion();
+    if (region == null) {
+      region = unit.getData().getNullRegion();
+    }
     completions = new LinkedList<Completion>();
     // getParser().read(new StringReader(cmd));
 

@@ -67,6 +67,7 @@ import magellan.library.GameData;
 import magellan.library.io.cr.CRParser;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * Provides Panel (Extended Preferences Adapter) for Preferences
@@ -76,61 +77,50 @@ import magellan.library.utils.Resources;
  */
 public class RegionOverviewPreferences extends JPanel implements ExtendedPreferencesAdapter {
 
-  private EMapOverviewPanel overviewPanel = null;
+  private EMapOverviewPanel overviewPanel;
   private Properties settings;
 
-  /** DOCUMENT-ME */
-  public JCheckBox chkSortRegions = null;
+  private JCheckBox chkSortRegions;
 
-  /**
-   * TODO DOCUMENT ME! Comment for <code>chkSortShipUnderUnitParent</code>.
-   */
-  public JCheckBox chkSortShipUnderUnitParent = null;
+  private JCheckBox chkSortShipUnderUnitParent;
 
-  /** DOCUMENT-ME */
-  public JRadioButton rdbSortRegionsCoordinates = null;
+  private JRadioButton rdbSortRegionsCoordinates;
 
-  /** DOCUMENT-ME */
-  public JRadioButton rdbSortRegionsIslands = null;
+  private JRadioButton rdbSortRegionsIslands;
 
-  /** DOCUMENT-ME */
-  public JCheckBox chkDisplayIslands = null;
+  private JCheckBox chkDisplayIslands;
 
-  /** DOCUMENT-ME */
-  public JRadioButton rdbSortUnitsUnsorted = null;
+  private JRadioButton rdbSortUnitsUnsorted;
 
-  /** DOCUMENT-ME */
-  public JRadioButton rdbSortUnitsSkills = null;
+  private JRadioButton rdbSortUnitsSkills;
 
   // use the best skill of the unit to sort it
-
-  /** DOCUMENT-ME */
-  public JRadioButton useBestSkill = null;
+  private JRadioButton useBestSkill;
 
   /**
    * if true, regiontree will contain regions without own units but with buildings known in it
    */
-  public JCheckBox chkRegionTreeBuilder_withBuildings = null;
+  private JCheckBox chkRegionTreeBuilder_withBuildings;
 
   /**
    * if true, regiontree will contain regions without own units but with Ships known in it
    */
-  public JCheckBox chkRegionTreeBuilder_withShips = null;
+  private JCheckBox chkRegionTreeBuilder_withShips;
 
   /**
    * if true, regiontree will contain regions without own units but with Comments known in it
    */
-  public JCheckBox chkRegionTreeBuilder_withComments = null;
+  private JCheckBox chkRegionTreeBuilder_withComments;
+
+  private JCheckBox chkShowHomeless;
 
   // use the topmost skill in (selfdefined) skilltype-list to sort it
 
-  /** DOCUMENT-ME */
-  public JRadioButton useTopmostSkill = null;
+  private JRadioButton useTopmostSkill;
 
-  /** DOCUMENT-ME */
-  public JRadioButton rdbSortUnitsNames = null;
-  protected ExpandPanel ePanel;
-  protected CollapsePanel cPanel;
+  private JRadioButton rdbSortUnitsNames;
+  private ExpandPanel ePanel;
+  private CollapsePanel cPanel;
   private RegionOverviewSkillPreferences skillSort;
   private List<PreferencesAdapter> subAdapters;
   private JList useList;
@@ -138,8 +128,6 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
   /**
    * Creates a new EMapOverviewPreferences object.
-   * 
-   * @param settings DOCUMENT-ME
    */
   public RegionOverviewPreferences(EMapOverviewPanel parent, Properties settings, GameData data) {
     this.settings = settings;
@@ -175,6 +163,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         new JCheckBox(Resources.get("emapoverviewpanel.prefs.treeships"));
     chkRegionTreeBuilder_withComments =
         new JCheckBox(Resources.get("emapoverviewpanel.prefs.treecomments"));
+    chkShowHomeless = new JCheckBox(Resources.get("emapoverviewpanel.prefs.showhomeless"));
 
     JPanel pnlTreeStructure = new JPanel();
     pnlTreeStructure.setLayout(new GridBagLayout());
@@ -415,33 +404,20 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     c.weightx = 0.0;
     this.add(chkDisplayIslands, c);
 
-    c.anchor = GridBagConstraints.WEST;
     c.gridy++;
-    c.insets.left = 10;
-    c.fill = GridBagConstraints.NONE;
-    c.weightx = 0.0;
     this.add(chkSortShipUnderUnitParent, c);
 
-    c.anchor = GridBagConstraints.WEST;
     c.gridy++;
-    c.insets.left = 10;
-    c.fill = GridBagConstraints.NONE;
-    c.weightx = 0.0;
     this.add(chkRegionTreeBuilder_withBuildings, c);
 
-    c.anchor = GridBagConstraints.WEST;
     c.gridy++;
-    c.insets.left = 10;
-    c.fill = GridBagConstraints.NONE;
-    c.weightx = 0.0;
     this.add(chkRegionTreeBuilder_withShips, c);
 
-    c.anchor = GridBagConstraints.WEST;
     c.gridy++;
-    c.insets.left = 10;
-    c.fill = GridBagConstraints.NONE;
-    c.weightx = 0.0;
     this.add(chkRegionTreeBuilder_withComments, c);
+
+    c.gridy++;
+    this.add(chkShowHomeless, c);
 
     c.insets.left = 0;
     c.anchor = GridBagConstraints.CENTER;
@@ -491,6 +467,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     chkDisplayIslands.setSelected(PropertiesHelper.getBoolean(settings,
         "EMapOverviewPanel.displayIslands", true));
 
+    chkShowHomeless.setSelected(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.showHomeless", false));
+
     String criteria =
         settings.getProperty("EMapOverviewPanel.treeStructure", " " + TreeHelper.FACTION + " "
             + TreeHelper.GROUP);
@@ -508,6 +487,13 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
           model2.add(model2.size(), "unknown");
         }
       } catch (NumberFormatException e) {
+        if (model2.isEmpty()) {
+          try {
+            model2.add(0, elementsList.getModel().getElementAt(TreeHelper.FACTION));
+          } catch (ArrayIndexOutOfBoundsException e2) {
+            model2.add(model2.size(), "unknown");
+          }
+        }
       }
     }
     useList.setModel(model2);
@@ -523,12 +509,12 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     rdbSortUnitsNames.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria",
         "skills").equals("names"));
 
-    // FIXME (stm) this is strictly not necessary
+    // this is strictly not necessary
     skillSort.initPreferences();
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
     settings.setProperty("EMapOverviewPanel.sortRegions", String.valueOf(chkSortRegions
@@ -569,6 +555,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     settings.setProperty("EMapOverviewPanel.displayIslands", String.valueOf(chkDisplayIslands
         .isSelected()));
 
+    settings.setProperty("EMapOverviewPanel.showHomeless", String.valueOf(chkShowHomeless
+        .isSelected()));
+
     if (rdbSortUnitsUnsorted.isSelected()) {
       settings.setProperty("EMapOverviewPanel.sortUnitsCriteria", "unsorted");
     } else if (rdbSortUnitsSkills.isSelected()) {
@@ -593,8 +582,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     settings.setProperty("EMapOverviewPanel.treeStructure", definition.toString());
 
-    ePanel.apply();
-    cPanel.apply();
+    ePanel.applyPreferences();
+    cPanel.applyPreferences();
 
     // We have to assure, that SkillPreferences.applyPreferences is called
     // before we rebuild the tree, i.e. before we call gameDataChanged().
@@ -734,9 +723,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     }
 
     /**
-     * DOCUMENT-ME
+     * Apply settings to EmapOverviewPanel.
      */
-    public void apply() {
+    public void applyPreferences() {
       if (radioButtons[0].isSelected()) {
         overviewPanel.setExpandMode(overviewPanel.getExpandMode()
             & (0xFFFFFFFF ^ EMapOverviewPanel.EXPAND_FLAG));
@@ -767,15 +756,16 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       try {
         overviewPanel.setExpandTrustLevel(Integer.parseInt(trustlevel.getText()));
       } catch (NumberFormatException nfe) {
+        Logger.getInstance(this.getClass()).error("invalid trust level", nfe);
       }
 
       saveExpandProperties();
     }
 
     /**
-     * DOCUMENT-ME
+     * Update ui
      * 
-     * @param actionEvent DOCUMENT-ME
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
       checkBox.setEnabled(actionEvent.getSource() != radioButtons[0]);
@@ -855,18 +845,16 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @param actionEvent DOCUMENT-ME
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
       checkBox.setEnabled(actionEvent.getSource() != radioButtons[0]);
     }
 
     /**
-     * DOCUMENT-ME
+     * Appliy settings to EmapOverviewPanel.
      */
-    public void apply() {
+    public void applyPreferences() {
       if (radioButtons[0].isSelected()) {
         overviewPanel.setCollapseMode(overviewPanel.getCollapseMode()
             & (0xFFFFFFFF ^ EMapOverviewPanel.COLLAPSE_FLAG));
@@ -909,7 +897,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       }
 
       /**
-       * DOCUMENT-ME
+       * @see javax.swing.border.AbstractBorder#getBorderInsets(java.awt.Component)
        */
       @Override
       public Insets getBorderInsets(Component c) {
@@ -917,7 +905,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       }
 
       /**
-       * DOCUMENT-ME
+       * @see javax.swing.border.AbstractBorder#getBorderInsets(java.awt.Component, java.awt.Insets)
        */
       @Override
       public Insets getBorderInsets(Component c, Insets in) {
@@ -934,7 +922,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       }
 
       /**
-       * DOCUMENT-ME
+       * @see javax.swing.border.AbstractBorder#paintBorder(java.awt.Component, java.awt.Graphics,
+       *      int, int, int, int)
        */
       @Override
       public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {

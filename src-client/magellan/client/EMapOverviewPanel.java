@@ -451,6 +451,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     boolean sortShipUnderUnitParent =
         PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortShipUnderUnitParent", true);
+    boolean showHomeless =
+        PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.showHomeless", false);
 
     TreeBuilder treeBuilder = getTreeBuilder();
     treeBuilder.setSortShipUnderUnitParent(sortShipUnderUnitParent);
@@ -466,6 +468,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       displayMode = displayMode | TreeBuilder.COMMENTS;
     }
     treeBuilder.setDisplayMode(displayMode | (createIslandNodes ? TreeBuilder.CREATE_ISLANDS : 0));
+
+    treeBuilder.setDisplayMode(displayMode | (showHomeless ? TreeBuilder.SHOW_HOMELESS : 0));
 
     // creation of Comparator outsourced to Comparator
     // getUnitSorting(java.util.Properties)
@@ -670,7 +674,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         Group g = ((Unit) activeObject).getGroup();
         if (g == null) {
           Faction f = ((Unit) activeObject).getFaction();
-          setAlliances(f.getAllies(), f);
+          if (f != null) {
+            setAlliances(f.getAllies(), f);
+          }
         } else {
           setAlliances(g.allies(), g.getFaction());
         }

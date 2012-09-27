@@ -2,7 +2,7 @@ VERSION 64
 "ISO-8859-1";charset
 "de";locale
 1;noskillpoints
-1348678268;date
+1348743772;date
 "Eressea";Spiel
 "Java-Tools";Konfiguration
 "Hex";Koordinaten
@@ -234,7 +234,7 @@ EINHEIT 3
 COMMANDS
 "ARBEITEN"
 TALENTE
-30 1;Tarnung
+90 2 1;Tarnung
 90 2 -1;Wahrnehmung
 GEGENSTAENDE
 990;Silber

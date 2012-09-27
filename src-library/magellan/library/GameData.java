@@ -25,7 +25,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -212,6 +211,9 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /** Returns a modifiable of the temp units. */
   protected abstract Map<UnitID, TempUnit> tempUnitView();
+
+  /** Returns a modifiable view of the old units. */
+  protected abstract Map<UnitID, Unit> oldUnitsView();
 
   /**
    * All regions in this game data. The keys are <tt>Coordinate</tt> objects containing the id of
@@ -500,12 +502,40 @@ public abstract class GameData implements Cloneable, Addeable {
           GameDataInspector.GameDataProblemTypes.DUPLICATEUNITID.type, u.getRegion(), u, null, u,
           null, Resources.get("gamedata.problem.duplicateunit.message", u, old), -1));
     }
+    oldUnitsView().remove(u.getID());
   }
 
   /**
    * Add a temp unit.
    */
   public abstract void addTempUnit(TempUnit t);
+
+  /**
+   * Add a unit that doesn't exist any more.
+   */
+  public void addOldUnit(Unit newUnit) {
+    if (oldUnitsView().containsKey(newUnit.getID()))
+      throw new IllegalArgumentException(newUnit + " already exists");
+
+    oldUnitsView().put(newUnit.getID(), newUnit);
+  }
+
+  /**
+   * Returns a collection of all old units in the data.
+   */
+  public Collection<Unit> getOldUnits() {
+    return Collections.unmodifiableCollection(oldUnitsView().values());
+  }
+
+  /**
+   * Returns an old unit
+   * 
+   * @param id
+   * @return the old unit with the given id, or <code>null</code> if it doesn't exist
+   */
+  public Unit getOldUnit(UnitID id) {
+    return (oldUnitsView() == null) ? null : oldUnitsView().get(id);
+  }
 
   /**
    * Add a region to the specified game data. If regions() is <tt>null</tt>, this method has no
@@ -1251,13 +1281,18 @@ public abstract class GameData implements Cloneable, Addeable {
       }
     }
 
-    // there can be dummy units (UnitContainer owners and such), find and remove these
-    if (data.getUnits() != null) {
-      Collection<UnitID> dummyUnitIDs = new LinkedList<UnitID>();
+    fixUnknown(data.getUnits(), data);
+    fixUnknown(data.getOldUnits(), data);
+  }
 
-      for (Unit unit : data.getUnits()) {
+  private void fixUnknown(Collection<Unit> units, GameData data) {
+    // there can be dummy units (UnitContainer owners and such), find and remove these
+    if (units != null) {
+      // Collection<UnitID> dummyUnitIDs = new LinkedList<UnitID>();
+
+      for (Unit unit : units) {
         if (unit.getName() == null) {
-          dummyUnitIDs.add(unit.getID());
+          // dummyUnitIDs.add(unit.getID());
           unit.setName("???");
         }
         if (unit.getRegion() == null) {
@@ -1275,7 +1310,6 @@ public abstract class GameData implements Cloneable, Addeable {
       // data.removeUnit(id);
       // }
     }
-
   }
 
   /**

@@ -138,7 +138,9 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
 
     lblCapacity.setLabelFor(rdbCapacityAllItems);
 
-    innerPanel.add(lblCapacity);
+    c.gridy++;
+    outerPanel.add(lblCapacity, c);
+
     innerPanel.add(rdbCapacityAllItems);
     innerPanel.add(rdbCapacityFriendlyItems);
     innerPanel.add(rdbCapacityMyItems);
@@ -164,6 +166,7 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
     chkShowTagButtons.setSelected(source.isShowingTagButtons());
     chkAllowCustomIcons.setSelected(source.isAllowingCustomIcons());
     chkCompact.setSelected(source.isCompactLayout());
+
     if (source.getShowCapacityItems() == ShowItems.SHOW_ALL) {
       rdbCapacityAllItems.setSelected(true);
     } else if (source.getShowCapacityItems() == ShowItems.SHOW_ALL_FACTIONS) {
@@ -185,6 +188,7 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
     source.setShowTagButtons(chkShowTagButtons.isSelected());
     source.setAllowCustomIcons(chkAllowCustomIcons.isSelected());
     source.setCompactLayout(chkCompact.isSelected());
+
     if (rdbCapacityAllItems.isSelected()) {
       source.setShowCapacityItems(ShowItems.SHOW_ALL);
     } else if (rdbCapacitySomeItems.isSelected()) {

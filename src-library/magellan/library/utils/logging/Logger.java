@@ -211,7 +211,7 @@ public class Logger {
   /**
    * 
    */
-  private void log(int aLevel, Object aObj, Throwable aThrowable) {
+  public void log(int aLevel, Object aObj, Throwable aThrowable) {
     if (Logger.verboseLevel >= aLevel) {
       if (Logger.logListeners.isEmpty()) {
         Logger.DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);

@@ -1,0 +1,31 @@
+##################  tränke.txt      ECheck V4 und höher ####################
+# Diese Datei enthält die Liste aller Tränke
+#
+# Umlaute dürfen nicht umschrieben werden, sondern als ISO-Latin1 benutzt:
+# ae=ä, oe=ö, ue=ü, Ae=Ä, Oe=Ö, Ue=Ü, sz=ß. Trennzeichen ist , oder ;
+#
+# Bitte keine Doppeleinträge bei Singular=Plural!
+# Kommentare mit einem # davor; Leerzeilen sind erlaubt
+############################################################################
+
+Bauernblut
+Bauernlieb
+Berserkerblut
+Dumpfbackenbrote
+Elixier der Macht
+Elixiere der Macht
+Gehirnschmalz
+Goliathwasser
+Heiltrank
+Heiltränke
+Nestwärme
+Pferdeglück
+Schaffenstrunk
+Schaffenstrünke
+Siebenmeilentees
+Trank der Wahrheit
+Tränke der Wahrheit
+Wasser des Lebens
+Wundsalben
+Lerntrank
+Lerntränke

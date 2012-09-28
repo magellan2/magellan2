@@ -1,0 +1,24 @@
+##################  gebäude.txt      ECheck V4 und höher ###################
+# Diese Datei enthält die Liste aller Gebäude
+# 
+# Umlaute dürfen nicht umschrieben werden, sondern als ISO-Latin1 benutzt:
+# ae=ä, oe=ö, ue=ü, Ae=Ä, Oe=Ö, Ue=Ü, sz=ß. Trennzeichen ist , oder ;
+#
+# Kommentare mit einem # davor; Leerzeilen sind erlaubt
+############################################################################
+
+Burg
+Leuchtturm
+Bergwerk
+Steinbruch
+Hafen
+Akademie
+Magierturm
+Schmiede
+Sägewerk
+Pferdezucht
+Monument
+Damm
+Karawanserei
+Tunnel
+Taverne

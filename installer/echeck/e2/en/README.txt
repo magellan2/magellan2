@@ -1,4 +1,4 @@
-These are the additional files for ECheck V4 and above in English.
+These are the additonal files for ECheck V4 and above in english.
 
 The are are the following files:
 
@@ -10,7 +10,7 @@ The are are the following files:
   - items.txt
   - messages.txt
   - options.txt
-  - params.txt
+  - parameters.txt
   - potions.txt
   - races.txt
   - ships.txt
@@ -22,17 +22,12 @@ ore more parts into the file
 
   - tokens.txt
 
-if you proceed them by special keywords. You can obtain the list of keywords
+if you preceed them by special keywords. You can obtain the list of keywords
 by using "echeck -hk".
 
 Further instructions are inside the files.
 
 English translation of the files: Alexander Klauer.
-
-For DOS (using 8.3-filenames) you could either use
-
-  - builds.txt		instead of buildings.txt
-  - directs.txt		instead of directions.txt
 
 See "echeck -hf" for a complete list of filenames.
 

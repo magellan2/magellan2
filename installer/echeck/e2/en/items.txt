@@ -1,0 +1,72 @@
+######################  items.txt   ECheck V4 and above  ####################
+# This file contains the list of items
+#
+# These are all items with all their names as known by the server
+# Per line applies:
+#    first entry: singular
+#    second entry: plural
+#    third and additional entries: further alternatives
+#	if the third entry is a numeric value, this is the basic-price
+#	for buying a luxury
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+balm; balms, 4
+spice; spice; spices, 5
+gem; gems, 7
+myrrh; myrrh, 5
+oil; oil, 3
+silk; silk, 6
+incense; incense, 4
+#
+iron; iron
+wood; wood
+stone; stones
+horse; horses
+cart; carts
+catapult; catapults
+sword; swords
+spear; spears
+crossbow; crossbows
+bow; bows
+#great bow; great bows
+mallorn spear; mallorn spears
+mallorn crossbow; mallorn crossbows
+mallorn bow; mallorn bows;
+mallorn lance; mallorn lances
+chainmail; chainmails
+platemail; platemails
+claymore; claymores
+#broadsword; broadswords
+axe; axes
+#
+elven bow; elven bows
+laen sword; laen swords
+laen shield; laen shields
+laen chainmail; laen chainmails
+laen; laen
+shield; shields
+halberd; halberds
+lance; lances
+mallorn; mallorn
+ammunition; ammunition;
+adamantium; adamantium
+adamantium axe; adamantium axes
+adamantium plate; adamantium plates
+
+seed; seeds
+rusty sword; rusty swords
+rusty shield; rusty shields
+rusty halberd; rusty halberd
+rustychainmail; rustychainmail
+rustyplatemail; rustyplatemails
+amulet of true seeing; amulets of true seeing
+ring of invisibility;rings of invisibility
+ring of power; rings of power
+# Ok, these were the official items; you shouldn't change this list
+# if you count on the results of ECheck...
+# However, you can append additional items; no, I won't answer any
+# questions related to possible new items, as well as anyone else
+# of the design-team - Faroul
+
+

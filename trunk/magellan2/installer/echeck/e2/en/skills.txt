@@ -1,0 +1,47 @@
+######################  skills.txt   ECheck V4 and above  ###################
+# This file contains the list of skills
+#
+# These are all skills as known by the server.
+# Per line applies:
+# first entry: name;
+# second entry: study costs (optional)
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+unarmed combat
+alchemy, 200
+crossbow
+endurance
+bow
+catapult
+herbalism, 200
+riding
+tactics, 200
+mining
+masonry
+trade
+forestry
+
+magic, -1
+# because study costs are level dependent in Eressea, you can write
+# "LEARN MAGIC 250", if it currently costs 250 silver. To make this work,
+# you need a value <0 here.
+
+taming
+armoursmithing
+sailing
+quarrying
+roadwork
+stealth
+entertainment
+weaponsmithing
+cartmaking
+perception
+espionage, 100
+taxation
+melee
+polearm
+shipcraft
+
+# additional talents can be added at will
+

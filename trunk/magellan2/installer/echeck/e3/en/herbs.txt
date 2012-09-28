@@ -1,0 +1,31 @@
+######################  herbs.txt   ECheck V4 and above  ####################
+# This file contains the list of herbs
+#
+# You can obtain the list of commands using "echeck -hc"
+#
+# Please no double entries, if singular is similar to plural.
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+
+flatroot;           flatroots
+tangy temerity;     tangy temerities
+owlsgaze;           owlsgazes
+spider ivy;         spider ivies
+cobalt fungus;      cobalt fungi
+elvendear;          elvendears
+bugleweed;          bugleweeds
+knotroot;           knotroots
+bubblemorel;        bubblemorels
+Waterfinder;        waterfinders
+peyote;             peyote
+sand reeker;        sand reekers
+windbag;            windbags
+fjord fungus;       fjord fungi
+mandrake;           mandrakes
+rock weed;          rock weed
+gapgrowth;          gapgrowths
+cave lichen;        cave lichen
+ice begonia;        ice begonias
+white hemlock;      white hemlocks
+snowcrystal petal;  snowcrystal petals

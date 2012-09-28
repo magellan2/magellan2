@@ -1,0 +1,64 @@
+##################  befehle.txt      ECheck V4 und höher ###################
+# Diese Datei enthält die Liste aller Befehle, die ECheck versteht.
+#
+# Die Schlüsselworte kann man mit "echeck -hb" erhalten
+# Umlaute dürfen nicht umschrieben werden.
+#
+# Kommentare mit einem # davor; Leerzeilen sind erlaubt
+############################################################################
+
+ALLIANCE,     Allianz
+WORK,         Arbeiten
+ATTACK,       Attackieren
+SIEGE,        Belagere
+NAME,         Benennen
+USE,          Benutzen
+DESCRIBE,     Beschreiben
+ENTER,        Betreten
+GUARD,        Bewachen
+PAY,          Bezahlen
+MESSAGE,      Botschaft
+END,          Ende
+RIDE,         Fahren
+FOLLOW,       Folgen
+GIVE,         Gib
+HELP,         Helfen
+FIGHT,        Kämpfen
+COMBATMAGIC,  Kampfzauber
+CONTACT,      Kontaktieren
+STUDY,        Lernen
+MAKE,         Machen
+MOVE,         Nach
+PASSWORD,     Passwort
+PAY,          Bezahlen
+RECRUIT,      Rekrutieren
+REPORT,       Report
+OPTION,       Option
+SETSTEALTH,   Tarnen
+CARRY,        Transportieren
+QUIT,         Stirb
+LEAVE,        Verlassen
+CAST,         Zaubere
+SHOW,         Zeigen
+DESTROY,      Zerstören
+FORGET,       Vergessen
+DEFAULT,      Default
+COMMENT,      //
+ROUTE,        Route
+BREED,        Züchten
+ORIGIN,       Ursprung
+EMAIL,        Email
+RESERVE,      Reservieren
+CLAIM, Beanspruchen
+BANNER,       Banner
+NUMBER,       Nummer
+PIRACY,       Piraterie
+RESTART,      Neustart
+GROUP,        Gruppe
+SORT,         Sortieren
+PREFIX,       Präfix
+PROMOTION,    Beförderung
+CLAIM,        Beanspruchen
+
+# NEXT, Nächster     ist KEIN BEFEHL für ECheck, sondern ein PARAMETER!
+# dies ist aus internen Gründen notwendig, also entsprechend dort eintragen

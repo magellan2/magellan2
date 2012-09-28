@@ -1,0 +1,23 @@
+#################  richtungen.txt      ECheck V4 und höher #################
+# Diese Datei enthält die Liste aller Richtungen, die ECheck versteht.
+#
+# Die Schlüsselworte kann man mit "echeck -hr" erhalten
+# 
+# Umlaute dürfen nicht umschrieben werden, sondern als ISO-Latin1 benutzt:
+# ae=ä, oe=ö, ue=ü, Ae=Ä, Oe=Ö, Ue=Ü, sz=ß. Trennzeichen ist , oder ;
+#
+# Kommentare mit einem # davor; Leerzeilen sind erlaubt
+############################################################################
+
+EAST, Osten
+WEST, Westen
+PAUSE, Pause
+NORTHEAST, Nordosten
+NORTHWEST, Nordwesten
+NORTHEAST, NO
+# "NO" muß nach den "Nord..." Richtungen kommen, damit diese erkannt werden
+NORTHWEST, NW
+SOUTHEAST, Südosten
+SOUTHWEST, Südwesten
+SOUTHEAST, SO
+SOUTHWEST, SW

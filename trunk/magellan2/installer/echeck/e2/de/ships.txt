@@ -1,0 +1,14 @@
+##################  schiffe.txt      ECheck V4 und höher ###################
+# Diese Datei enthält die Liste aller Schiffe
+# 
+# Umlaute dürfen nicht umschrieben werden, sondern als ISO-Latin1 benutzt:
+# ae=ä, oe=ö, ue=ü, Ae=Ä, Oe=Ö, Ue=Ü, sz=ß. Trennzeichen ist , oder ;
+#
+# Kommentare mit einem # davor; Leerzeilen sind erlaubt
+############################################################################
+
+Boot
+Langboot
+Drachenschiff
+Karavelle
+Trireme

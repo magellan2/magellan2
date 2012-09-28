@@ -1,0 +1,39 @@
+#####################  potions.txt   ECheck V4 and above  ###################
+# This file contains the list of potions
+#
+# You can obtain the list of commands using "echeck -hc"
+#
+# Please no double entries, if singular equals to plural
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+berserkers blood potions
+berserkers blood potion
+brain waxes
+brain wax
+busybeers
+busybeer
+duncebuns
+duncebun
+elixir of power
+elixirs of power
+goliath waters
+goliath water
+healing potions
+healing potion
+horsepower potions
+horsepower potion
+ointments
+ointment
+peasant bloods
+peasant blood
+peasant love potion
+peasant love potion
+potion of nest warmth
+potions of nest warmth
+potion of truth
+potions of truth
+seven mile teas
+seven mile tea
+water of life
+waters of life

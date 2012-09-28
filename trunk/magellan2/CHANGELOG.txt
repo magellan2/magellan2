@@ -1,3 +1,6 @@
+2012-09-28 / Build 527 - stm (stm_@users.sourceforge.net)
+    * updating echeck to version 4.3.4
+    
 2012-09-27 / Build 526 - stm (stm_@users.sourceforge.net)
     * remembering units from last week in order to be able to remember skills
     * added block ALTEINHEIT to CR

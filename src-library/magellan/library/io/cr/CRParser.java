@@ -3098,6 +3098,9 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("letztesteine")) {
         region.setOldStones(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("regionicon")) {
+        region.putTag(sc.argv[1], sc.argv[0]);
+        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("visibility")) {
         region.setVisibilityString(sc.argv[0]);
         sc.getNextToken();

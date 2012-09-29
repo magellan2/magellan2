@@ -579,19 +579,22 @@ public class EresseaRelationFactory implements RelationFactory {
       if (reservedAmount < requiredAmount) {
         if (unit.getData().getGameSpecificRules().isPooled(unit, type)) {
           result = new LinkedList<UnitRelation>();
-          for (Unit u : unit.getRegion().units()) {
-            if (u.getFaction() == unit.getFaction() && u != unit) {
-              int givenAmount =
-                  Math.min(getFreeAmount(u, type, getReserved), requiredAmount - reservedAmount);
-              if (givenAmount > 0) {
-                UnitRelation giveRelation =
-                    new ItemTransferRelation(unit, u, unit, givenAmount, type, line);
-                result.add(giveRelation);
-                reservedAmount += givenAmount;
+          // afoid NPE for "lost" units
+          if (unit.getRegion() != null) {
+            for (Unit u : unit.getRegion().units()) {
+              if (u.getFaction() == unit.getFaction() && u != unit) {
+                int givenAmount =
+                    Math.min(getFreeAmount(u, type, getReserved), requiredAmount - reservedAmount);
+                if (givenAmount > 0) {
+                  UnitRelation giveRelation =
+                      new ItemTransferRelation(unit, u, unit, givenAmount, type, line);
+                  result.add(giveRelation);
+                  reservedAmount += givenAmount;
+                }
               }
-            }
-            if (reservedAmount >= requiredAmount) {
-              break;
+              if (reservedAmount >= requiredAmount) {
+                break;
+              }
             }
           }
         }

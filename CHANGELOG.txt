@@ -1,3 +1,6 @@
+2012-09-29 / Build 530 - Fiete (sf@fietefietz.de)
+    * added ";regionicon" to the known REGION-tags (eleminating log.Warn-Messages)
+
 2012-09-29 / Build 529 - Fiete (sf@fietefietz.de)
     * fixed #67: sorting with islands was broken
 

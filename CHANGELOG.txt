@@ -1,3 +1,7 @@
+2012-09-28 / Build 528 - Fiete (sf@fietefietz.de)
+    * disabling 1 E3 Extended Command Parser Test
+    * added stop + restart to EresseaRelationFactory.Updater (for use in Scripter-PlugIns)
+
 2012-09-28 / Build 527 - stm (stm_@users.sourceforge.net)
     * updating echeck to version 4.3.4
     

@@ -156,10 +156,54 @@ public class EresseaRelationFactory implements RelationFactory {
       stopped = true;
       timer.stop();
     }
+
+    public void restart() {
+      stopped = false;
+      timer.restart();
+    }
+
+    public boolean isStopped() {
+      return stopped;
+    }
+
   }
 
-  protected void stopUpdating() {
+  /**
+   * stops the updater
+   */
+  public void stopUpdating() {
+    if (updater.isStopped())
+      return;
     updater.stop();
+  }
+
+  /**
+   * restarts the updater
+   */
+  public void restartUpdating() {
+    if (updater.isStopped()) {
+      updater.restart();
+    }
+  }
+
+  /**
+   * Recreates all relations in this region Updater has to be stopped
+   * 
+   * @param r - the Region to be processed
+   */
+  public void processRegionNow(Region r) {
+    if (updater.isStopped()) {
+      processOrders(r);
+    } else {
+      log.warn("processRegionNow called while updater is running - aborted");
+    }
+  }
+
+  /**
+   * @return true, if updater is stopped
+   */
+  public boolean isUpdaterStopped() {
+    return updater.isStopped();
   }
 
   /**
@@ -386,7 +430,9 @@ public class EresseaRelationFactory implements RelationFactory {
     Object cause = new Object();
     for (Region r2 : affected) {
       if (r2 != null) {
-        data.fireOrdersChanged(this, r2, cause);
+        if (!updater.isStopped()) {
+          data.fireOrdersChanged(this, r2, cause);
+        }
       }
     }
     affected.clear();

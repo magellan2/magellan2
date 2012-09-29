@@ -366,7 +366,7 @@
 		</junit>
 		<junit fork="yes" failureProperty="test.failure" includeantruntime="false" printsummary="withOutAndErr">
 			<batchtest todir="${junit.output.dir}">
-				<fileset dir="${src.test}" includes="**/*Test.java" excludes="**/E3CommandParserTest.java"/>
+				<fileset dir="${src.test}" includes="**/*Test.java" />
 			</batchtest>
 
 			<formatter type="brief" usefile="true" />

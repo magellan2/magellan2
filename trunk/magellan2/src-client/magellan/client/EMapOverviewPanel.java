@@ -467,9 +467,16 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     if (PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithComments", true)) {
       displayMode = displayMode | TreeBuilder.COMMENTS;
     }
-    treeBuilder.setDisplayMode(displayMode | (createIslandNodes ? TreeBuilder.CREATE_ISLANDS : 0));
 
-    treeBuilder.setDisplayMode(displayMode | (showHomeless ? TreeBuilder.SHOW_HOMELESS : 0));
+    if (createIslandNodes) {
+      displayMode = displayMode | TreeBuilder.CREATE_ISLANDS;
+    }
+
+    if (showHomeless) {
+      displayMode = displayMode | TreeBuilder.SHOW_HOMELESS;
+    }
+
+    treeBuilder.setDisplayMode(displayMode);
 
     // creation of Comparator outsourced to Comparator
     // getUnitSorting(java.util.Properties)

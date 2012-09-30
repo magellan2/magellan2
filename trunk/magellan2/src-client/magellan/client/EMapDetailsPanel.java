@@ -964,6 +964,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       regionKoordinateInfo +=
           " (ID:" + Integer.toString((int) r.getUID(), getGameData().base).replace("l", "L") + ")";
     }
+    if (r.getIsland() != null) {
+      regionKoordinateInfo += ", " + r.getIsland().toString();
+    }
     parent.add(createSimpleNode(regionKoordinateInfo, "koordinaten"));
 
     appendRegionOwnerInfo(r, parent, expandableNodes);
@@ -5367,7 +5370,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   public boolean isCompactLayout() {
     return compactLayout;
   }
-
 
   private void initShowItems() {
     if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", false)) {

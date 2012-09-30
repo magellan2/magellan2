@@ -2,7 +2,7 @@ VERSION 66
 "ISO-8859-1";charset
 "de";locale
 1;noskillpoints
-1348849679;date
+1348998354;date
 "Eressea";Spiel
 "Java-Tools";Konfiguration
 "Hex";Koordinaten
@@ -12,6 +12,7 @@ VERSION 66
 2;Zeitalter
 867718;reportowner
 PARTEI 867718
+"de";locale
 "Meermenschen";Typ
 80;Rekrutierungskosten
 "Faction_867718";Parteiname

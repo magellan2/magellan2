@@ -793,6 +793,7 @@ public class ExtendedCommandsHelper {
    * @param name
    * @param parameterTypes
    * @param arguments
+   * @return The result of the invoked method, or <code>null</code> if it doesn't return a value
    * @throws SecurityException
    * @throws NoSuchMethodException
    * @throws IllegalArgumentException
@@ -801,13 +802,13 @@ public class ExtendedCommandsHelper {
    * @see Class#getMethod(String, Class...)
    * @see Method#invoke(Object, Object...)
    */
-  public static void invoke(Object object, String name, Class<?>[] parameterTypes,
+  public static Object invoke(Object object, String name, Class<?>[] parameterTypes,
       Object[] arguments) throws SecurityException, NoSuchMethodException,
       IllegalArgumentException, IllegalAccessException, InvocationTargetException {
     Method executeMethod = object.getClass().getMethod(name, parameterTypes);
-    if (executeMethod != null) {
-      executeMethod.invoke(object, arguments);
-    }
+    if (executeMethod != null)
+      return executeMethod.invoke(object, arguments);
+    return null;
   }
 
   /**

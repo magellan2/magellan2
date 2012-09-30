@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -33,6 +34,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import magellan.client.extern.MagellanPlugIn;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
@@ -3209,6 +3211,88 @@ public class E3CommandParser {
         changeOrders(u, new TeachRoundOrderFilter());
         u.addOrder("// $$L" + (round + 1));
       }
+    }
+  }
+
+  private void setNamespaces(MagellanPlugIn plugin, String namespaces) throws SecurityException,
+      IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
+      InvocationTargetException {
+    ExtendedCommandsHelper.invoke(plugin, "setNamespaces", new Class[] { String.class },
+        new Object[] { namespaces });
+  }
+
+  private String getNamespaces(MagellanPlugIn plugin) throws SecurityException,
+      IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
+      InvocationTargetException {
+    return (String) ExtendedCommandsHelper.invoke(plugin, "getNamespacesString", new Class[] {},
+        new Object[] {});
+  }
+
+  protected void teachRegion(Collection<Region> regions, String namespaces) {
+    log.info("trying to call TeachPlugin method..");
+    MagellanPlugIn plugin = helper.getPlugin("magellan.plugin.teacher.TeachPlugin");
+    if (plugin != null) {
+      try {
+        String oldNameSpaces = null;
+        if (namespaces != null) {
+          oldNameSpaces = getNamespaces(plugin);
+          setNamespaces(plugin, namespaces);
+        }
+        for (Region r : regions) {
+          ExtendedCommandsHelper.invoke(plugin, "doTeachUnits", new Class[] { Region.class },
+              new Object[] { r });
+        }
+        if (oldNameSpaces != null) {
+          setNamespaces(plugin, oldNameSpaces);
+        }
+      } catch (ClassCastException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (SecurityException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (NoSuchMethodException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (IllegalArgumentException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (IllegalAccessException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (InvocationTargetException e) {
+        log.warn("error calling TeachPlugin", e);
+      }
+    } else {
+      log.warn("TeachPlugin not found");
+    }
+  }
+
+  protected void teachAll(String namespaces) {
+    log.info("trying to call TeachPlugin method..");
+    MagellanPlugIn plugin = helper.getPlugin("magellan.plugin.teacher.TeachPlugin");
+    if (plugin != null) {
+      try {
+        String oldNamespaces = null;
+        if (namespaces != null) {
+          oldNamespaces = getNamespaces(plugin);
+          setNamespaces(plugin, namespaces);
+        }
+        ExtendedCommandsHelper.invoke(plugin, "execute", new Class[] { String.class },
+            new Object[] { "EXECUTE_ALL" });
+        if (oldNamespaces != null) {
+          setNamespaces(plugin, oldNamespaces);
+        }
+      } catch (ClassCastException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (SecurityException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (NoSuchMethodException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (IllegalArgumentException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (IllegalAccessException e) {
+        log.warn("error calling TeachPlugin", e);
+      } catch (InvocationTargetException e) {
+        log.warn("error calling TeachPlugin", e);
+      }
+    } else {
+      log.warn("TeachPlugin not found");
     }
   }
 

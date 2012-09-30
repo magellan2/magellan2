@@ -366,7 +366,8 @@
 		</junit>
 		<junit fork="yes" failureProperty="test.failure" includeantruntime="false" printsummary="withOutAndErr">
 			<batchtest todir="${junit.output.dir}">
-				<fileset dir="${src.test}" includes="**/*Test.java" />
+                <!-- E3CommandParser is not part of the release -->				   
+				<fileset dir="${src.test}" includes="**/*Test.java" excludes="**/E3CommandParserTest.java" />
 			</batchtest>
 
 			<formatter type="brief" usefile="true" />

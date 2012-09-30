@@ -579,7 +579,7 @@ public class EresseaRelationFactory implements RelationFactory {
       if (reservedAmount < requiredAmount) {
         if (unit.getData().getGameSpecificRules().isPooled(unit, type)) {
           result = new LinkedList<UnitRelation>();
-          // afoid NPE for "lost" units
+          // avoid NPE for "lost" units
           if (unit.getRegion() != null) {
             for (Unit u : unit.getRegion().units()) {
               if (u.getFaction() == unit.getFaction() && u != unit) {

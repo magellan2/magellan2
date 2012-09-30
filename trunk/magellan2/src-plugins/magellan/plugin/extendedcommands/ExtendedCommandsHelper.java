@@ -23,6 +23,8 @@
 // 
 package magellan.plugin.extendedcommands;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,6 +80,7 @@ public class ExtendedCommandsHelper {
   private static final String CONFIGURATION_MARKER = EresseaConstants.O_PCOMMENT + " extcmds:";
 
   private Client client;
+
   private GameData world;
   private Unit currentUnit;
   private UnitContainer currentContainer;
@@ -780,6 +783,46 @@ public class ExtendedCommandsHelper {
    */
   public UserInterface getUI() {
     return ui;
+  }
+
+  /**
+   * Invoke public method called <code>name</code> on object with given parameters.
+   * <em>Warning:</em> Only use if you know what you're doing!
+   * 
+   * @param object
+   * @param name
+   * @param parameterTypes
+   * @param arguments
+   * @throws SecurityException
+   * @throws NoSuchMethodException
+   * @throws IllegalArgumentException
+   * @throws IllegalAccessException
+   * @throws InvocationTargetException
+   * @see Class#getMethod(String, Class...)
+   * @see Method#invoke(Object, Object...)
+   */
+  public static void invoke(Object object, String name, Class<?>[] parameterTypes,
+      Object[] arguments) throws SecurityException, NoSuchMethodException,
+      IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    Method executeMethod = object.getClass().getMethod(name, parameterTypes);
+    if (executeMethod != null) {
+      executeMethod.invoke(object, arguments);
+    }
+  }
+
+  /**
+   * Get plugin with given name.
+   * 
+   * @param string The fully qualified plugin class name (e.g. "magellan.plugin.foo.FooPlugin")
+   * @return The plugin or <code>null</code> if no such plugin is active
+   */
+  public MagellanPlugIn getPlugin(String string) {
+    for (MagellanPlugIn plugin : client.getPlugIns()) {
+      log.info(plugin.getClass().getName());
+      if (plugin.getClass().getName().equals(string))
+        return plugin;
+    }
+    return null;
   }
 
 }

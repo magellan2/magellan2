@@ -53,6 +53,7 @@ public abstract class MagellanTestWithResources {
   protected static Properties settings;
   protected static MagellanContext context;
   protected static SelfCleaningProperties completionSettings;
+  private static File resourceDir = new File(".");
 
   /**
    * @throws java.lang.Exception
@@ -67,7 +68,7 @@ public abstract class MagellanTestWithResources {
    * 
    */
   @AfterClass
-  public static void tearDownAfterClass() throws Exception{
+  public static void tearDownAfterClass() throws Exception {
     context.getEventDispatcher().quit();
   }
 
@@ -76,7 +77,7 @@ public abstract class MagellanTestWithResources {
     settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
     // PARSER_SETTINGS_FILE);
     settings.setProperty("locales.orders", "de");
-    Resources.getInstance().initialize(new File("."), "");
+    Resources.getInstance().initialize(resourceDir, "");
     // System.out.println(new File(".").getAbsolutePath());
     context = new MagellanContext(null);
     context.setProperties(settings);
@@ -87,6 +88,10 @@ public abstract class MagellanTestWithResources {
 
     assertEquals(true, true);
     assertSame(true, true);
+  }
+
+  protected static void setResourceDir(String dir) {
+    resourceDir = new File(dir);
   }
 
 }

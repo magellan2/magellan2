@@ -195,6 +195,8 @@ public class GameDataBuilder {
 
     faction.setSortIndex(sortIndex);
 
+    faction.setLocale(Locale.GERMAN);
+
     return faction;
   }
 

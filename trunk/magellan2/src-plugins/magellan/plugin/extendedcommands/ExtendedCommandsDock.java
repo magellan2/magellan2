@@ -162,7 +162,9 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
         return; // we don't execute everything here....
       ExtendedCommandsDocument doc = (ExtendedCommandsDocument) tab.getContentComponent();
 
-      ExtendedCommandsDock.log.debug("Execute button selected on tab " + tab.getText());
+      if (log.isDebugEnabled()) {
+        ExtendedCommandsDock.log.debug("Execute button selected on tab " + tab.getText());
+      }
       doc.actionPerformed(e);
     } else if (e.getActionCommand().equalsIgnoreCase("button.save")) {
 
@@ -242,10 +244,12 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     if (tab == null)
       return;
     ExtendedCommandsDocument doc = (ExtendedCommandsDocument) tab.getContentComponent();
-    ExtendedCommandsDock.log.debug("Save tab '" + tab.getText() + "' contents");
+    if (log.isDebugEnabled()) {
+      ExtendedCommandsDock.log.debug("Save tab '" + tab.getText() + "' contents");
+    }
 
+    doc.getScript().setScript(doc.getScriptingArea().getText());
     Script newScript = (Script) doc.getScript().clone();
-    newScript.setScript(doc.getScriptingArea().getText());
 
     if (doc.getUnit() != null) {
       commands.setCommands(doc.getUnit(), newScript);

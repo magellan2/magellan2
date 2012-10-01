@@ -262,7 +262,7 @@ public class EresseaConstants {
   /** DOCUMENT-ME */
   public static final String O_GUARD = "GUARD";
 
-  /** DOCUMENT-ME */
+  /** The "HELFE" command */
   public static final String O_HELP = "HELP";
 
   /** The "GIB" from HELFE GIB */

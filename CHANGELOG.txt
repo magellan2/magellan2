@@ -1,3 +1,6 @@
+2012-10-01 / Build 531 - stm (sf@fietefietz.de)
+    * fixed trac "bug" #33: GroupEditor 
+    
 2012-09-29 / Build 530 - Fiete (sf@fietefietz.de)
     * added ";regionicon" to the known REGION-tags (eleminating log.Warn-Messages)
 

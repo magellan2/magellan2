@@ -33,9 +33,12 @@ import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
 import magellan.library.Alliance;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.Group;
+import magellan.library.Order;
 import magellan.library.Unit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.AllianceCategory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
@@ -56,7 +59,10 @@ public class GroupEditorTableModel extends AbstractTableModel {
   protected int offset = 2;
   protected Map<Faction, AllianceState> newStates = new HashMap<Faction, AllianceState>();
   protected Map<Group, Map<Faction, AllianceState>> newGroupStates =
-    new HashMap<Group, Map<Faction, AllianceState>>();
+      new HashMap<Group, Map<Faction, AllianceState>>();
+  private String[] columnNames;
+  private Map<Group, Unit> representatives = new HashMap<Group, Unit>();
+  protected static final String signature = "; ---------- GroupEditor";
 
   /**
    * Returns the value of faction.
@@ -88,6 +94,16 @@ public class GroupEditorTableModel extends AbstractTableModel {
     newStates.clear();
     newGroupStates.clear();
 
+    representatives.clear();
+    columnNames = null;
+    for (Unit u : owner.units()) {
+      if (u.getGroup() != null) {
+        continue;
+      }
+      representatives.put(null, u);
+      break;
+    }
+
     if (owner.getGroups() != null) {
       List<Group> groups = new ArrayList<Group>(owner.getGroups().values());
       Collections.sort(groups, new NameComparator(IDComparator.DEFAULT));
@@ -116,6 +132,11 @@ public class GroupEditorTableModel extends AbstractTableModel {
    */
   public void addColumn(Group group) {
     columns.add(group);
+    columnNames = null;
+    for (Unit u : group.units()) {
+      representatives.put(group, u);
+      break;
+    }
   }
 
   /**
@@ -137,11 +158,23 @@ public class GroupEditorTableModel extends AbstractTableModel {
    */
   @Override
   public String getColumnName(int pos) {
-    if (pos == 0)
-      return Resources.get("dock.GroupEditor.table.header.faction.title");
-    if (pos == 1 && hasAllied)
-      return Resources.get("dock.GroupEditor.table.header.default.title");
-    return columns.get(pos - offset).getName();
+    if (columnNames == null) {
+      columnNames = new String[columns.size() + offset];
+      for (int col = 0; col < columns.size() + offset; ++col)
+        if (col == 0) {
+          columnNames[col] = Resources.get("dock.GroupEditor.table.header.faction.title");
+        } else if (col == 1 && hasAllied) {
+          columnNames[col] =
+              Resources.get("dock.GroupEditor.table.header.default.title") + " ("
+                  + representatives.get(null) + ")";
+        } else {
+          columnNames[col] =
+              columns.get(col - offset).getName() + " ("
+                  + representatives.get(columns.get(col - offset)) + ")";
+        }
+    }
+
+    return columnNames[pos];
   }
 
   /**
@@ -208,18 +241,11 @@ public class GroupEditorTableModel extends AbstractTableModel {
    * Saves the settings from the world.
    */
   public void save() {
-    String helpcommand = Resources.getOrderTranslation("HELP");
+    String helpcommand = Resources.getOrderTranslation(EresseaConstants.O_HELP);
 
     if (!newStates.isEmpty()) {
-      // ok, let's find a suitable unit (without a group)
-      for (Unit unit : owner.units()) {
-        if (unit.getGroup() != null) {
-          continue;
-        }
-        // ok, let's save the alliance settings
-        save(helpcommand, unit, newStates);
-        break;
-      }
+      // ok, let's save the alliance settings
+      save(helpcommand, representatives.get(null), newStates);
     }
     if (!newGroupStates.isEmpty()) {
       for (Group group : newGroupStates.keySet()) {
@@ -228,11 +254,8 @@ public class GroupEditorTableModel extends AbstractTableModel {
         }
         Map<Faction, AllianceState> myNewStates = newGroupStates.get(group);
         if (!myNewStates.isEmpty()) {
-          for (Unit unit : group.units()) {
-            // ok, let's save the alliance settings
-            save(helpcommand, unit, myNewStates);
-            break;
-          }
+          // ok, let's save the alliance settings
+          save(helpcommand, representatives.get(group), myNewStates);
         }
       }
     }
@@ -242,18 +265,92 @@ public class GroupEditorTableModel extends AbstractTableModel {
    * Adds multiple commands per faction to the given unit.
    */
   protected void save(String helpcommand, Unit unit, Map<Faction, AllianceState> states) {
-    for (Faction faction : states.keySet()) {
-      AllianceState state = states.get(faction);
-      unit.addOrder("; ----------------------");
-      unit.addOrder("; reset " + faction);
-      unit.addOrder(helpcommand + " " + faction.getID() + " "
-          + Resources.getOrderTranslation("ALL") + " " + Resources.getOrderTranslation("NOT"));
-      unit.addOrder("; new help states for " + faction);
-      for (AllianceCategory category : state.getCategories()) {
-        unit.addOrder(helpcommand + " " + faction.getID() + " "
-            + Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + category.getName()));
+    if (unit == null)
+      return;
+    Map<EntityID, Alliance> allies =
+        unit.getGroup() != null ? unit.getGroup().allies() : unit.getFaction().getAllies();
+
+    Collection<Order> newOrders = new ArrayList<Order>();
+    for (Order order : unit.getOrders2()) {
+      if (!order.getText().startsWith(signature)) {
+        newOrders.add(order);
       }
     }
+    if (newOrders.size() != unit.getOrders2().size()) {
+      unit.setOrders2(newOrders);
+    }
+
+    boolean firstAdded = false;
+    for (Faction faction : states.keySet()) {
+      AllianceState newState = states.get(faction);
+      Alliance oldState = allies != null ? allies.get(faction.getID()) : null;
+      if (oldState == null) {
+        oldState = new Alliance(faction);
+      }
+
+      if (newState.getCategories().isEmpty()) {
+        unit.addOrder(signature + " reset " + faction);
+        unit.addOrder(helpcommand + " " + faction.getID() + " "
+            + Resources.getOrderTranslation("ALL") + " " + Resources.getOrderTranslation("NOT"),
+            !firstAdded, 1);
+        firstAdded = true;
+      } else {
+        unit.addOrder(signature + "new help states for " + faction, true, 1);
+        // remove states no longer present
+
+        boolean all = false;
+        for (AllianceCategory cat : newState.getCategories()) {
+          if (cat.getName().equals(EresseaConstants.O_ALL)) {
+            unit.addOrder(helpcommand + " " + faction.getID() + " "
+                + Resources.getOrderTranslation("ALL"), !firstAdded, 1);
+            all = true;
+            firstAdded = true;
+          }
+        }
+
+        if (!all) {
+          for (AllianceCategory cat : minus(oldState.getAllianceCategories(), newState
+              .getCategories())) {
+            if (cat.getName().equals(EresseaConstants.O_ALL)) {
+              continue;
+            }
+            unit.addOrder(helpcommand + " " + faction.getID() + " "
+                + Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()) + " "
+                + Resources.getOrderTranslation("NOT"), !firstAdded, 1);
+            firstAdded = true;
+          }
+          // add new states
+          for (AllianceCategory cat : newState.getCategories()) {
+            if (oldState.getAllianceCategories().contains(cat)) {
+              unit.addOrder(signature + helpcommand + " " + faction.getID() + " "
+                  + Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()));
+            } else {
+              unit.addOrder(helpcommand + " " + faction.getID() + " "
+                  + Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()),
+                  !firstAdded, 1);
+            }
+            firstAdded = true;
+          }
+        }
+      }
+    }
+  }
+
+  private <T> List<T> minus(List<T> list1, List<T> list2) {
+    ArrayList<T> difference = new ArrayList<T>();
+    for (T obj : list1) {
+      boolean found = false;
+      for (T obj2 : list2) {
+        if (obj2.equals(obj)) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        difference.add(obj);
+      }
+    }
+    return difference;
   }
 
   /**
@@ -290,4 +387,9 @@ public class GroupEditorTableModel extends AbstractTableModel {
     return new AllianceState();
   }
 
+  public Unit getRepresentative(int column) {
+    if (column < offset)
+      return representatives.get(null);
+    return representatives.get(columns.get(column - offset));
+  }
 }

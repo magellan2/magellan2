@@ -25,6 +25,7 @@ package magellan.plugin.groupeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -47,8 +48,10 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 import magellan.client.Client;
+import magellan.client.event.SelectionEvent;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.MagellanImages;
@@ -108,8 +111,36 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
               return "";
             return tip.toString();
           }
+
+          @Override
+          protected void processMouseEvent(MouseEvent e) {
+            // select representative unit
+            if (e.getClickCount() > 0) {
+              selectUnit(e.getPoint());
+            }
+            super.processMouseEvent(e);
+          }
+
         };
       }
+
+      @Override
+      protected void processMouseEvent(MouseEvent e) {
+        if (e.getClickCount() > 0) {
+          selectUnit(e.getPoint());
+        }
+        super.processMouseEvent(e);
+      }
+
+      private void selectUnit(Point point) {
+        int column = columnAtPoint(point);
+        column = convertColumnIndexToModel(column);
+        Unit unit = model.getRepresentative(column);
+        if (unit != null) {
+          client.getDispatcher().fire(SelectionEvent.create(this, unit));
+        }
+      }
+
     };
 
     table.setDefaultRenderer(AllianceState.class, new AllianceStateRenderer());
@@ -122,8 +153,8 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
     south.add(Box.createHorizontalGlue());
 
     JButton saveButton =
-      new JButton(Resources.get("dock.GroupEditor.save.button"), MagellanImages
-          .getImageIcon("etc/images/gui/actions/save_edit.gif"));
+        new JButton(Resources.get("dock.GroupEditor.save.button"), MagellanImages
+            .getImageIcon("etc/images/gui/actions/save_edit.gif"));
     saveButton.setRequestFocusEnabled(false);
     saveButton.setVerticalTextPosition(SwingConstants.CENTER);
     saveButton.setHorizontalTextPosition(SwingConstants.LEADING);
@@ -202,9 +233,18 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
         column.setCellEditor(editor);
       }
     } else if (event.getActionCommand().equals("button.save")) {
+      // warn if no representative -- might occur in merged reports
+      for (int col = 1; col < model.getColumnCount(); ++col) {
+        if (model.getRepresentative(col) == null) {
+          JOptionPane.showMessageDialog(getClient(), Resources.get(
+              "dock.GroupEditor.nounit.message", table.getColumnName(col)), Resources
+              .get("dock.GroupEditor.nounit.title"), JOptionPane.WARNING_MESSAGE);
+        }
+      }
+
       if (JOptionPane.showConfirmDialog(getClient(),
           Resources.get("dock.GroupEditor.save.message"), Resources
-          .get("dock.GroupEditor.save.title"), JOptionPane.YES_NO_OPTION,
+              .get("dock.GroupEditor.save.title"), JOptionPane.YES_NO_OPTION,
           JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
         model.save();
       }

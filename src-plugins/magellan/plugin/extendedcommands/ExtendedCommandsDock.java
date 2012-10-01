@@ -248,6 +248,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
       ExtendedCommandsDock.log.debug("Save tab '" + tab.getText() + "' contents");
     }
 
+    // update doc script from scripting area, then clone
     doc.getScript().setScript(doc.getScriptingArea().getText());
     Script newScript = (Script) doc.getScript().clone();
 

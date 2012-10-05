@@ -518,6 +518,17 @@ public class PropertiesHelper {
     }
   }
 
+  /**
+   * Sets the given color to the key using the format #RRGGBB
+   */
+  public static void setBoolean(Properties p, String key, boolean value) {
+    if (value) {
+      p.setProperty(key, "true");
+    } else {
+      p.setProperty(key, "false");
+    }
+  }
+
   private static File settingsDir = null;
 
   /**
@@ -539,4 +550,5 @@ public class PropertiesHelper {
   public static File getSettingsDirectory() {
     return PropertiesHelper.settingsDir;
   }
+
 }

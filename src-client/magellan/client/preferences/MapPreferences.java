@@ -34,12 +34,17 @@ import javax.swing.JPanel;
 import magellan.client.swing.MapperPanel;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
-import magellan.library.event.GameDataEvent;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
+/**
+ * Preferences adapter for Mapper and Minimapper.
+ * 
+ * @author ...
+ * @version 1.0, Oct 5, 2012
+ */
 public class MapPreferences extends AbstractPreferencesAdapter implements
-ExtendedPreferencesAdapter {
+    ExtendedPreferencesAdapter {
 
   // The source component to configure
   private MapperPanel source = null;
@@ -72,7 +77,7 @@ ExtendedPreferencesAdapter {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
   public Component getComponent() {
     JPanel erg =
@@ -99,39 +104,20 @@ ExtendedPreferencesAdapter {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
     prefMapper.applyPreferences();
 
-    boolean needUpdate = false;
+    source.setShowNavigation(showNavigation.isSelected());
+    source.setUseSeasonImages(useSeasonImages.isSelected());
 
-    if (showNavigation.isSelected() != source.getContext().getProperties().getProperty(
-        "MapperPannel.Details.showNavigation", "true").equals("true")) {
-      // we have a change here
-      source.getContext().getProperties().setProperty("MapperPannel.Details.showNavigation",
-          showNavigation.isSelected() ? "true" : "false");
-      needUpdate = true;
-    }
-    if (useSeasonImages.isSelected() != source.getContext().getProperties().getProperty(
-        PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, "true").equals("true")) {
-      // we have a change here
-      source.getContext().getProperties().setProperty(
-          PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES,
-          useSeasonImages.isSelected() ? "true" : "false");
-      needUpdate = true;
-    }
-
-    if (needUpdate) {
-      source.getContext().getEventDispatcher().fire(new GameDataEvent(this, source.getGameData()));
-    } else {
-      source.getMapper().repaint(100);
-    }
+    source.getMapper().repaint(100);
 
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
     return Resources.get("mapperpanel.prefs.title");

@@ -31,7 +31,6 @@ import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.rules.Date;
 import magellan.library.rules.UnitContainerType;
-import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -41,13 +40,15 @@ import magellan.library.utils.logging.Logger;
  * @author $Author: $
  * @version $Revision: 299 $
  */
-public class RegionImageCellRenderer extends ImageCellRenderer implements ContextChangeable {
-  /** DOCUMENT-ME */
+public class RegionImageCellRenderer extends ImageCellRenderer implements ContextChangeable,
+    MapperAware {
+  /** Report tag for defining a different region image */
   public static final String MAP_TAG = "mapicon";
   private static final Logger log = Logger.getInstance(RegionImageCellRenderer.class);
   private boolean fogOfWar = true;
   protected JCheckBoxMenuItem item = null;
   protected ContextObserver obs = null;
+  private Mapper mapper;
 
   /**
    * Creates a new RegionImageCellRenderer object.
@@ -84,7 +85,9 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	 */
   @Override
   public void render(Object obj, boolean active, boolean selected) {
-    RegionImageCellRenderer.log.debug("render()");
+    if (RegionImageCellRenderer.log.isDebugEnabled()) {
+      RegionImageCellRenderer.log.debug("render()");
+    }
     if (obj instanceof Region) {
       Region r = (Region) obj;
       CoordinateID c = r.getCoordinate();
@@ -109,9 +112,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 
         // first try a season specific icon
         // Fiete 20080518: check, if seasonal images wanted...
-        if ((r.getData().getDate() != null)
-            && (Boolean.valueOf(settings.getProperty(
-                PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, "false")))) {
+        if (r.getData().getDate() != null && getMapper().isUseSeasonImages()) {
           switch (r.getData().getDate().getSeason()) {
           case Date.SPRING:
             imageName += "_spring";
@@ -178,23 +179,23 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
   }
 
   /**
-	 * 
-	 */
+   * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
+   */
   @Override
   public int getPlaneIndex() {
     return Mapper.PLANE_REGION;
   }
 
   /**
-	 * 
-	 */
+   * Returns the fog of war property.
+   */
   public boolean getFogOfWar() {
     return fogOfWar;
   }
 
   /**
-	 * 
-	 */
+   * Changes the fog of war property.
+   */
   public void setFogOfWar(boolean bool) {
     fogOfWar = bool;
     settings.setProperty("RegionImageCellRenderer.fogOfWar", String.valueOf(fogOfWar));
@@ -202,23 +203,23 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
   }
 
   /**
-	 * 
-	 */
+   * @see magellan.client.swing.map.HexCellRenderer#getPreferencesAdapter()
+   */
   @Override
   public PreferencesAdapter getPreferencesAdapter() {
     return new Preferences(this);
   }
 
   /**
-	 * 
-	 */
+   * @see magellan.client.swing.context.ContextChangeable#getContextAdapter()
+   */
   public JMenuItem getContextAdapter() {
     return item;
   }
 
   /**
-	 * 
-	 */
+   * @see magellan.client.swing.context.ContextChangeable#setContextObserver(magellan.client.swing.context.ContextObserver)
+   */
   public void setContextObserver(ContextObserver co) {
     obs = co;
   }
@@ -257,29 +258,48 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
       this.add(chkFogOfWar);
     }
 
+    /**
+     * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
+     */
     public void initPreferences() {
-      // TODO: implement it
+      chkFogOfWar.setSelected(source.getFogOfWar());
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
      */
     public void applyPreferences() {
       source.setFogOfWar(chkFogOfWar.isSelected());
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
      */
     public Component getComponent() {
       return this;
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
      */
     public String getTitle() {
       return source.getName();
     }
+  }
+
+  /**
+   * @param mapper
+   */
+  public void setMapper(Mapper mapper) {
+    this.mapper = mapper;
+  }
+
+  /**
+   * Returns the value of mapper.
+   * 
+   * @return Returns mapper.
+   */
+  public Mapper getMapper() {
+    return mapper;
   }
 }

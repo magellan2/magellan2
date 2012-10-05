@@ -77,6 +77,7 @@ import magellan.client.swing.map.MapCellRenderer;
 import magellan.client.swing.map.Mapper;
 import magellan.client.swing.map.Minimapper;
 import magellan.client.swing.map.RegionImageCellRenderer;
+import magellan.client.swing.map.RegionShapeCellRenderer;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.CoordinateID;
@@ -131,7 +132,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   protected float lastScale = 1;
 
   // shortcuts
-  private List<KeyStroke> shortcuts;
+  private List<KeyStroke> mapperShortcuts;
   private TooltipShortcut tooltipShortcut;
 
   protected MagellanContext context;
@@ -147,9 +148,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     mapper.gameDataChanged(e);
     minimap.gameDataChanged(e);
 
-    boolean showNavi =
-        context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals(
-            "true");
+    // showNavi =
+    // context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals(
+    // "true");
 
     lblScaling.setVisible(showNavi);
     sldScaling.setVisible(showNavi);
@@ -270,8 +271,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
       if (!island.regions().isEmpty()) {
         // first set right level
-        Region r = island.regions().iterator().next();
-        CoordinateID coord = r.getCoordinate();
+        Region r1 = island.regions().iterator().next();
+        CoordinateID coord = r1.getCoordinate();
 
         if (cmbLevel.isVisible()) {
           Integer level = Integer.valueOf(coord.getZ());
@@ -283,10 +284,10 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
         // then set center rectangle on right pane
         class ParamRunnable implements Runnable {
-          Island island;
+          Island island1;
 
           ParamRunnable(Island i) {
-            island = i;
+            island1 = i;
           }
 
           /**
@@ -297,13 +298,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
           public void run() {
             Rectangle islandBounds = null;
 
-            for (Region r : island.regions()) {
-              CoordinateID coord = r.getCoordinate();
+            for (Region r2 : island1.regions()) {
+              CoordinateID coord2 = r2.getCoordinate();
 
               if (islandBounds == null) {
-                islandBounds = mapper.getCellRect(coord);
+                islandBounds = mapper.getCellRect(coord2);
               } else {
-                islandBounds.add(mapper.getCellRect(coord));
+                islandBounds.add(mapper.getCellRect(coord2));
               }
             }
 
@@ -332,7 +333,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
   Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 
-  private Random r = new Random();
+  private Random random = new Random();
+
+  private boolean showNavi = true;
 
   /**
    * Action event handler for timer events related to the scaling slider.
@@ -436,40 +439,40 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // (stm) deactivated, too obfuscating for user
     tooltipShortcut = new TooltipShortcut();
 
-    shortcuts = new ArrayList<KeyStroke>(13);
+    mapperShortcuts = new ArrayList<KeyStroke>(13);
     // 0: request Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_MASK));
     // 1: request Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.ALT_MASK));
     // 2: add Hotspot
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_MASK));
     // 3: remove Hotspot
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_MASK
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_MASK
         | InputEvent.SHIFT_MASK));
     // 4: fog of war
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
     // 5: tooltip selection
-    shortcuts
-        .add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK
+        | InputEvent.ALT_MASK));
 
     // 6,7: Map Zoom in First is numpad, scnd is normal key
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.CTRL_MASK));
     // 8,9: Map Zoom out
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_MASK));
 
     // 3 Level Zoom in
     // 10,11 Fast Zoom In
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.ALT_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.ALT_MASK));
     // 12,13 Fast Zoom out
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.ALT_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.ALT_MASK));
 
     // 14: ATR selection
-    shortcuts
-        .add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK
+        | InputEvent.ALT_MASK));
 
     DesktopEnvironment.registerShortcutListener(this);
 
@@ -525,8 +528,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Change scale of the minimap.
    * 
+   * @param scale A value greater than 1. Larger scale means larger regions.
    * @throws IllegalArgumentException if scaleFactor <= 0.
    */
   public void setMinimapScale(int scale) {
@@ -547,9 +551,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets the autoscale property.
    * 
-   * @param bool DOCUMENT-ME
+   * @param bool the new value
    */
   public void setAutoScaling(boolean bool) {
     resizeMinimap = bool;
@@ -561,7 +565,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the value of the auto scaling property.
    */
   public boolean isAutoScaling() {
     return resizeMinimap;
@@ -573,23 +577,27 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Update the minimap's colors.
+   * 
+   * @see Minimapper#synchronizeColors()
    */
   public void synchronizeMinimap() {
     minimap.synchronizeColors();
   }
 
   /**
-   * DOCUMENT-ME
+   * Change the minimap's paint mode.
    * 
-   * @param mode DOCUMENT-ME
+   * @see RegionShapeCellRenderer#setPaintMode(int)
    */
   public void setMinimapMode(int mode) {
     minimap.setPaintMode(mode);
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the minimap's paint mode.
+   * 
+   * @see RegionShapeCellRenderer#setPaintMode(int)
    */
   public int getMinimapMode() {
     return minimap.getPaintMode();
@@ -664,16 +672,19 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the mapper's current level.
+   * 
+   * @see Mapper#getLevel()
    */
   public int getLevel() {
     return mapper.getLevel();
   }
 
   /**
-   * DOCUMENT-ME
+   * Changes the mappers' map level
    * 
-   * @param level DOCUMENT-ME
+   * @param level the new level
+   * @see Mapper#setLevel(int)
    */
   public void setLevel(int level) {
     minimap.setLevel(level);
@@ -858,7 +869,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     IntegerID i = null;
 
     do {
-      i = IntegerID.create(r.nextInt());
+      i = IntegerID.create(random.nextInt());
     } while (getGameData().getHotSpot(i) != null);
 
     return i;
@@ -954,12 +965,10 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       }
     });
 
-    // initial visibility...all other elements are invisisble at start up anyway
-    boolean showNavi =
+    // initial visibility...all other elements are invisible at start up anyway
+    showNavi =
         context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals(
             "true");
-    sldScaling.setVisible(showNavi);
-    lblScaling.setVisible(showNavi);
 
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 0;
@@ -1042,13 +1051,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * Called when the viewed rect of the main mapper changes. In further implementations a rect of
    * the visible bounds should be displayed in the minimap.
    * 
-   * @param p1 DOCUMENT-ME
+   * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
    */
   public void stateChanged(javax.swing.event.ChangeEvent p1) {
+    // not implemented
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the minimap's main component.
    */
   public Component getMinimapComponent() {
     return minimapPane;
@@ -1059,16 +1069,16 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * javax.swing.KeyStroke
    */
   public Iterator<KeyStroke> getShortCuts() {
-    return shortcuts.iterator();
+    return mapperShortcuts.iterator();
   }
 
   /**
    * This method is called when a shortcut from getShortCuts() is recognized.
    * 
-   * @param shortcut DOCUMENT-ME
+   * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
    */
   public void shortCut(javax.swing.KeyStroke shortcut) {
-    int index = shortcuts.indexOf(shortcut);
+    int index = mapperShortcuts.indexOf(shortcut);
 
     switch (index) {
     case -1:
@@ -1187,17 +1197,17 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       final int number = i;
       JMenuItem item =
           new JMenuItem(new AbstractAction(String.valueOf(number) + " "
-              + (list == null || 2 * i >= list.size() ? "---" : list.get(2 * i))) {
+              + (2 * i >= list.size() ? "---" : list.get(2 * i))) {
 
             public void actionPerformed(ActionEvent e) {
-              if ((list != null) && (list.size() > (2 * number))) {
+              if (list.size() > (2 * number)) {
                 mapper.setTooltipDefinition((String) list.get((2 * number) + 1));
               }
             }
           });
       item.setMnemonic(Character.forDigit(i, 10));
       menu.add(item);
-      if ((list != null) && (list.size() > (2 * number))) {
+      if (list.size() > (2 * number)) {
         item.setEnabled(true);
       } else {
         item.setEnabled(false);
@@ -1207,7 +1217,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * Creates a popup menu for changing tooltips
+   * Creates a popup menu for changing tooltips.
    */
   private void changeATR() {
     final List<String> sets = mapper.getATR().getAllSets();
@@ -1294,18 +1304,17 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    */
   public boolean isExtendedShortcut(KeyStroke stroke) {
     // (stm) extended shortcuts are too obfuscated for the user, so I disabled them
-    if (true)
-      return false;
-    int index = shortcuts.indexOf(stroke);
-
-    return (index == 5);
+    return false;
+    // int index = shortcuts.indexOf(stroke);
+    //
+    // return (index == 5);
   }
 
   /**
    * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(KeyStroke)
    */
   public String getShortcutDescription(KeyStroke stroke) {
-    int index = shortcuts.indexOf(stroke);
+    int index = mapperShortcuts.indexOf(stroke);
 
     return Resources.get("mapperpanel.shortcuts.description." + String.valueOf(index));
   }
@@ -1319,9 +1328,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   protected class MinimapScaler extends ComponentAdapter {
     /**
-     * DOCUMENT-ME
-     * 
-     * @param e DOCUMENT-ME
+     * @see java.awt.event.ComponentAdapter#componentResized(java.awt.event.ComponentEvent)
      */
     @Override
     public void componentResized(ComponentEvent e) {
@@ -1355,6 +1362,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
               sc = ((float) newSize.width) / ((float) prefSize.width);
             }
           } catch (Exception exc) {
+            sc = 1.0f;
           }
 
           try {
@@ -1366,6 +1374,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
               }
             }
           } catch (Exception exc) {
+            // leave value of sc
           }
 
           try {
@@ -1377,6 +1386,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
               minimap.setScaleFactor(minimap.getScaleFactor() * sc);
             }
           } catch (Exception exc) {
+            // leave value of sc
           }
 
           prefSize = minimap.getPreferredSize();
@@ -1391,19 +1401,19 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   protected class TooltipShortcut implements ShortcutListener {
-    protected java.util.List<KeyStroke> shortcuts;
+    protected java.util.List<KeyStroke> shortcuts1;
 
     /**
      * Creates a new TooltipShortcut object.
      */
     public TooltipShortcut() {
-      shortcuts = new ArrayList<KeyStroke>(10);
+      shortcuts1 = new ArrayList<KeyStroke>(10);
 
       for (int i = 1; i < 10; i++) {
-        shortcuts.add(KeyStroke.getKeyStroke(Character.forDigit(i, 10)));
+        shortcuts1.add(KeyStroke.getKeyStroke(Character.forDigit(i, 10)));
       }
 
-      shortcuts.add(KeyStroke.getKeyStroke(Character.forDigit(0, 10)));
+      shortcuts1.add(KeyStroke.getKeyStroke(Character.forDigit(0, 10)));
     }
 
     protected void setTooltip(int index) {
@@ -1420,7 +1430,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
      * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
      */
     public void shortCut(javax.swing.KeyStroke shortcut) {
-      int index = shortcuts.indexOf(shortcut);
+      int index = shortcuts1.indexOf(shortcut);
 
       if ((index >= 0) && (index < 10)) {
         setTooltip(index);
@@ -1431,14 +1441,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
      * @see magellan.client.desktop.ShortcutListener#getShortCuts()
      */
     public Iterator<KeyStroke> getShortCuts() {
-      return shortcuts.iterator();
+      return shortcuts1.iterator();
     }
 
     /**
      * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(KeyStroke)
      */
     public String getShortcutDescription(KeyStroke stroke) {
-      int index = shortcuts.indexOf(stroke);
+      int index = shortcuts1.indexOf(stroke);
 
       return Resources.get("mapperpanel.shortcuts.tooltips." + String.valueOf(index));
     }
@@ -1492,5 +1502,38 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    */
   public Minimapper getMinimap() {
     return minimap;
+  }
+
+  /**
+   * Returns the value of showNavi.
+   * 
+   * @return Returns showNavi.
+   */
+  public boolean isShowNavigation() {
+    return showNavi;
+  }
+
+  /**
+   * Sets the value of showNavi.
+   * 
+   * @param showNavi The value for showNavi.
+   */
+  public void setShowNavigation(boolean showNavi) {
+    this.showNavi = showNavi;
+    PropertiesHelper.setBoolean(context.getProperties(), "MapperPannel.Details.showNavigation",
+        showNavi);
+    lblScaling.setVisible(showNavi);
+    sldScaling.setVisible(showNavi);
+    lblLevel.setVisible((cmbLevel.getItemCount() > 1) && showNavi);
+    cmbLevel.setVisible((cmbLevel.getItemCount() > 1) && showNavi);
+    cmbHotSpots.setVisible((cmbHotSpots.getItemCount() > 0) && showNavi);
+  }
+
+  /**
+   * @param use
+   */
+  public void setUseSeasonImages(boolean use) {
+    mapper.setUseSeasonImages(use);
+    minimap.setUseSeasonImages(use);
   }
 }

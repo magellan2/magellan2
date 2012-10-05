@@ -40,6 +40,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import magellan.client.Client;
@@ -135,7 +136,16 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /** Number of available planes */
   private static final int PLANES = 12;
 
+  /**
+   * Default tooltip
+   * 
+   * @deprecated use {@link #DEFAULT_TOOLTIP}
+   */
+  @Deprecated
   public static final String DEFAULT_TOOLTIP_DEFINITION = "<html><font=-1>§rname§</font></html>";
+  /**
+   * Default tooltip
+   */
   public static final String DEFAULT_TOOLTIP = "Standard~<html><font=-1>§rname§</font></html>";
 
   private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
@@ -162,7 +172,9 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   private CellGeometry cellGeometry = null;
 
   /** Holds value of property renderContextChanged. */
-  private static boolean renderContextChanged;
+  private boolean renderContextChanged;
+
+  private static Collection<Mapper> instances = new ArrayList<Mapper>();
 
   // protected StringBuffer tooltipBuffer=new StringBuffer();
   protected boolean showTooltip = false;
@@ -183,6 +195,12 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   private AdvancedTextCellRenderer atr;
 
+  private boolean defer = true;
+
+  private boolean deferredPainting = true;
+
+  private boolean useSeasonImages = true;
+
   /**
    * Creates a new Mapper object.
    */
@@ -190,16 +208,20 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       CellGeometry geom) {
     super(context.getEventDispatcher(), context.getProperties());
 
+    instances.add(this);
+
     this.context = context;
 
     conMenu =
         new MapContextMenu(context.getClient(), context.getEventDispatcher(), context
             .getProperties());
 
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition",
-        Mapper.DEFAULT_TOOLTIP_DEFINITION));
+    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP));
 
-    setShowTooltip(settings.getProperty("Mapper.showTooltips", "false").equals("true"));
+    setShowTooltip(PropertiesHelper.getBoolean(settings, "Mapper.showTooltips", false));
+
+    setUseSeasonImages(PropertiesHelper.getBoolean(settings,
+        PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, true));
 
     setDoubleBuffered(false); // we mainly use our own buffer
 
@@ -207,11 +229,11 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     // set the tracker used to repaint when loading and scaling images takes a
     // while
-    // TODO: remove this decision from options. This is a developer decision!!!
-    if ((Boolean.valueOf(settings.getProperty("Mapper.deferPainting", "true"))).booleanValue()) {
-      tracker = new MediaTracker(this);
-      ImageCellRenderer.setTracker(tracker);
-    }
+    // removed this decision from options. This is a developer decision!!!
+    // if ((Boolean.valueOf(settings.getProperty("Mapper.deferPainting", "true"))).booleanValue()) {
+    // tracker = new MediaTracker(this);
+    // ImageCellRenderer.setTracker(tracker);
+    // }
 
     // load the cell geometry to be used for painting cells
     cellGeometry = geom;
@@ -433,8 +455,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * 
    */
   protected void reprocessTooltipDefinition() {
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition",
-        Mapper.DEFAULT_TOOLTIP_DEFINITION));
+    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP));
   }
 
   /**
@@ -818,7 +839,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
       /*
        * Note: On some computers this occasionally throws Concurrent Mod Exceptions. In this case
-       * stop out-sorting an return.
+       * stop out-sorting and return.
        */
       try {
         while (it.hasNext()) {
@@ -841,6 +862,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           }
         }
       } catch (Exception exc) {
+        log.info(exc);
+        // just return with incomplete list
       }
     }
 
@@ -905,10 +928,25 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         cellGeometry.getCoordinate(offset.x + clipBounds.width, offset.y + clipBounds.height,
             showLevel);
 
+    // synchronized (trackLock) {
+    if (isDeferringPainting()) {
+      defer = defer || (tracker != null && !tracker.checkAll());
+    } else {
+      defer = false;
+      try {
+        if (tracker != null) {
+          tracker.waitForAll();
+        }
+      } catch (InterruptedException e1) {
+        log.warn("painting interrupted", e1);
+        return;
+      }
+    }
+
     // if nothing about the drawing area changed we can simply
     // paint our buffer
-    if (!clipBounds.equals(currentBounds) || Mapper.isRenderContextChanged()) {
-      Mapper.setRenderContextChanged(false);
+    if (!clipBounds.equals(currentBounds) || isRenderContextChanged()) {
+      renderContextChanged = false;
 
       if ((buffer == null) || !clipBounds.equals(currentBounds)) {
         setLastRegionRenderingType(-1); // full redraw
@@ -937,38 +975,42 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           continue;
         }
 
-        // maybe another region set
-        // FIXME (stm) background doesn't get rendered at startup
-        // FIXME2 (stm) this is a performance hole: too many lists copied unnecesarily
-        if (planes[planeIndex].getRegionTypes() != getLastRegionRenderingType()) {
-          setLastRegionRenderingType(planes[planeIndex].getRegionTypes());
-          regList =
-              createSubList(getLastRegionRenderingType(), upperLeftCorner, lowerRightCorner,
-                  regList, duration, paintNumber);
-          duration++;
-        }
+        if (planes[planeIndex].getRegionTypes() == RenderingPlane.ALWAYS_ONCE) {
+          renderer.init(getGameData(), bg, offset);
+          renderer.render(null, false, false);
+        } else {
 
-        if ((regList == null) || (regList.size() == 0)) {
-          continue;
-        }
-
-        renderer.init(getGameData(), bg, offset);
-
-        for (Sorted obj : regList) {
-          boolean selected = false;
-          boolean active = false;
-
-          if (obj instanceof Region) {
-            Region r = (Region) obj;
-
-            selected = selectedRegions.containsKey(r.getID());
-
-            if (activeRegion != null) {
-              active = activeRegion.equals(r);
-            }
+          // maybe another region set
+          if (planes[planeIndex].getRegionTypes() != getLastRegionRenderingType()) {
+            setLastRegionRenderingType(planes[planeIndex].getRegionTypes());
+            regList =
+                createSubList(getLastRegionRenderingType(), upperLeftCorner, lowerRightCorner,
+                    regList, duration, paintNumber);
+            duration++;
           }
 
-          renderer.render(obj, active, selected);
+          if ((regList == null) || (regList.size() == 0)) {
+            continue;
+          }
+
+          renderer.init(getGameData(), bg, offset);
+
+          for (Sorted obj : regList) {
+            boolean selected = false;
+            boolean active = false;
+
+            if (obj instanceof Region) {
+              Region r = (Region) obj;
+
+              selected = selectedRegions.containsKey(r.getID());
+
+              if (activeRegion != null) {
+                active = activeRegion.equals(r);
+              }
+            }
+
+            renderer.render(obj, active, selected);
+          }
         }
       }
 
@@ -977,6 +1019,16 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     }
 
     g.drawImage(buffer, clipBounds.x, clipBounds.y, this);
+    // ThreadMXBean bean = java.lang.management.ManagementFactory.getThreadMXBean();
+    // if (bean instanceof com.sun.management.ThreadMXBean) {
+    // Thread[] list = new Thread[Thread.currentThread().getThreadGroup().activeCount() * 2];
+    // Thread.currentThread().getThreadGroup().enumerate(list);
+    // for (Thread t : list)
+    // if (t != null) {
+    // log.fine("Thread " + t.getName() + " "
+    // + ((com.sun.management.ThreadMXBean) bean).getThreadAllocatedBytes(t.getId()));
+    // }
+    // }
 
     offset.x = mapToScreenBounds.x;
     offset.y = mapToScreenBounds.y;
@@ -1113,19 +1165,31 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     currentBounds = clipBounds;
 
-    if (isDeferringPainting() && !tracker.checkAll()) {
+    if (defer) {
       (new Thread() {
+
         @Override
         public void run() {
-          if (!tracker.checkAll()) {
-            try {
+          try {
+            if (defer) {
               tracker.waitForAll();
-              Thread.sleep(500);
-            } catch (InterruptedException e) {
-            }
+              // Thread.sleep(500);
+              defer = false;
 
-            currentBounds.x = -1;
-            repaint();
+              Object[] errors = tracker.getErrorsAny();
+              if (errors != null) {
+                log.warnOnce("Image tracker errors: " + errors.length + " (" + tracker + ")");
+              }
+              currentBounds.x = -1;
+              SwingUtilities.invokeLater(new Runnable() {
+
+                public void run() {
+                  repaint();
+                }
+              });
+            }
+          } catch (InterruptedException e) {
+            // return
           }
         }
       }).start();
@@ -1155,6 +1219,10 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   public void setScaleFactor(float scaleFactor) {
     if (scaleFactor <= 0 || Float.isInfinite(scaleFactor))
       throw new IllegalArgumentException("factor < 0: " + scaleFactor);
+    // reset tracker to avoid memory leak
+    deferPainting(!isDeferringPainting());
+    deferPainting(!isDeferringPainting());
+
     this.scaleFactor = scaleFactor;
     cellGeometry.setScaleFactor(scaleFactor);
 
@@ -1190,8 +1258,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     List<Integer> levels = new LinkedList<Integer>();
 
     if (getGameData() != null) {
-      for (CoordinateID c : getGameData().regions().keySet()) {
-        Integer i = Integer.valueOf(c.getZ());
+      for (Region r : getGameData().getRegions()) {
+        Integer i = Integer.valueOf(r.getCoordinate().getZ());
 
         if (levels.contains(i) == false) {
           levels.add(i);
@@ -1351,7 +1419,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * redraw after a short amount of time.
    */
   public boolean isDeferringPainting() {
-    return (tracker != null);
+    return deferredPainting;
   }
 
   /**
@@ -1362,14 +1430,11 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    */
   public void deferPainting(boolean bool) {
     if (bool != isDeferringPainting()) {
-      if (bool) {
-        tracker = new MediaTracker(this);
-      } else {
-        tracker = null;
-      }
-
+      deferredPainting = bool;
+      tracker = new MediaTracker(this);
+      defer = true;
       ImageCellRenderer.setTracker(tracker);
-      settings.setProperty("Mapper.deferPainting", String.valueOf(bool));
+      // settings.setProperty("Mapper.deferPainting", String.valueOf(bool));
     }
   }
 
@@ -1386,8 +1451,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     Point upperLeft = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
     Point lowerRight = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
 
-    for (CoordinateID c : getGameData().regions().keySet()) {
-
+    for (Region r : getGameData().getRegions()) {
+      CoordinateID c = r.getCoordinate();
       if (c.getZ() == showLevel) {
         int x = cellGeometry.getCellPositionX(c.getX(), c.getY());
         int y = cellGeometry.getCellPositionY(c.getX(), c.getY());
@@ -1415,10 +1480,9 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   protected RenderingPlane[] initRenderingPlanes() {
     RenderingPlane p[] = new RenderingPlane[Mapper.PLANES];
-    // FIXME (stm) background doesn't get rendered at startup
     p[Mapper.PLANE_BACKGROUND] =
         new RenderingPlane(Mapper.PLANE_BACKGROUND, Resources
-            .get("map.mapper.plane.background.name"), RenderingPlane.ACTIVE_OBJECT);
+            .get("map.mapper.plane.background.name"), RenderingPlane.ALWAYS_ONCE);
     p[Mapper.PLANE_BACKGROUND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes."
         + Mapper.PLANE_STRINGS[Mapper.PLANE_BACKGROUND], BackgroundImageRenderer.class.getName())));
 
@@ -1485,8 +1549,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     return p;
   }
 
-  private Collection<MapCellRenderer> initAvailableRenderers(CellGeometry geo, Properties settings,
-      Collection<MapCellRenderer> cRenderers) {
+  private Collection<MapCellRenderer> initAvailableRenderers(CellGeometry geo,
+      Properties aSettings, Collection<MapCellRenderer> cRenderers) {
     Collection<MapCellRenderer> renderers = new LinkedList<MapCellRenderer>();
     renderers.add(new RegionImageCellRenderer(geo, context));
     renderers.add(new RegionShapeCellRenderer(geo, context));
@@ -1509,7 +1573,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     if (cRenderers != null) {
       for (MapCellRenderer map : cRenderers) {
         if (map instanceof HexCellRenderer) {
-          ((HexCellRenderer) map).settings = settings;
+          ((HexCellRenderer) map).settings = aSettings;
         }
 
         map.setCellGeometry(geo);
@@ -1560,8 +1624,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * 
    * @return Value of property renderContextChanged.
    */
-  public static boolean isRenderContextChanged() {
-    return Mapper.renderContextChanged;
+  public boolean isRenderContextChanged() {
+    return renderContextChanged;
   }
 
   /**
@@ -1570,7 +1634,9 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * @param r New value of property renderContextChanged.
    */
   public static void setRenderContextChanged(boolean r) {
-    Mapper.renderContextChanged = r;
+    for (Mapper mapper : instances) {
+      mapper.renderContextChanged = r;
+    }
   }
 
   /**
@@ -1773,10 +1839,15 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           }
         }
       } catch (Exception exc) {
+        // just try to continue
+        log.info(exc);
       }
     }
   }
 
+  /**
+   * Returns the currend ATR.
+   */
   public AdvancedTextCellRenderer getATR() {
     return atr;
   }
@@ -1789,5 +1860,24 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     if (activeObject == event.getUnit()) {
       repaint();
     }
+  }
+
+  /**
+   * @param use
+   */
+  public void setUseSeasonImages(boolean use) {
+    useSeasonImages = use;
+    // we use a property of border cell renderer for historical reasons...
+    PropertiesHelper.setBoolean(context.getProperties(),
+        PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, use);
+  }
+
+  /**
+   * Returns the value of useSeasonImages.
+   * 
+   * @return Returns useSeasonImages.
+   */
+  public boolean isUseSeasonImages() {
+    return useSeasonImages;
   }
 }

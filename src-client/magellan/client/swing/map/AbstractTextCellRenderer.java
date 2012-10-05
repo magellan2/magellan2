@@ -158,7 +158,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
    */
   @Override
   public void render(Object obj, boolean active, boolean selected) {

@@ -875,7 +875,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
   // MAPPER things
   /**
-   * DOCUMENT-ME
+   * Returns the tooltip definition of the responsible mapper.
    */
   public String getMapperTooltip() {
     if (mapper != null)
@@ -885,7 +885,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   }
 
   /**
-   * DOCUMENT-ME
+   * Changes the responsible mapper's tooltip definition
    */
   public boolean setMapperTooltip(String tooltip) {
     if (mapper != null) {
@@ -900,7 +900,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.map.MapperAware#setMapper(magellan.client.swing.map.Mapper)
    */
   public void setMapper(Mapper mapper) {
     this.mapper = mapper;

@@ -168,6 +168,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
           new magellan.client.swing.ArmyStatsDialog(new Frame(), ed, data, set, armystatsSel)
               .setVisible(true);
         } catch (Exception exc) {
+          // somebody elses problem
+          log.warn(exc);
         }
       }
     });
@@ -342,9 +344,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
                 (MapperPanel) client.getDesktop().getManagedComponents().get(
                     MagellanDesktop.MAP_IDENTIFIER);
             IntegerID id = IntegerID.create(e.getActionCommand());
-            HotSpot h = data.getHotSpot(id);
-            if (h != null) {
-              mp.showHotSpot(h);
+            HotSpot h2 = data.getHotSpot(id);
+            if (h2 != null) {
+              mp.showHotSpot(h2);
             } else {
               MapContextMenu.log.error("Hotspot not found: " + e.getActionCommand());
             }
@@ -432,18 +434,20 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
   }
 
   /**
-   * DOCUMENT-ME
+   * Update the menu items from the sources tooltip definition.
+   * 
+   * @param src The current source is set to this value
    */
-  public void updateTooltips(Mapper source) {
-    this.source = source;
+  public void updateTooltips(Mapper src) {
+    source = src;
     tooltips.removeAll();
 
-    Iterator<String> it = source.getAllTooltipDefinitions().iterator();
+    Iterator<String> it = src.getAllTooltipDefinitions().iterator();
 
     while (it.hasNext()) {
-      String name = it.next();
+      String ttName = it.next();
       String tip = it.next();
-      String s = name + ": " + tip;
+      String s = ttName + ": " + tip;
 
       if (s.length() > 25) {
         s = s.substring(0, 23) + "...";
@@ -461,14 +465,14 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
   /**
    * DOCUMENT-ME
    */
-  public void updateRenderers(Mapper source) {
-    this.source = source;
+  public void updateRenderers(Mapper src) {
+    source = src;
     renderer.removeAll();
 
     // add renderers that are context changeable
     boolean added = false;
 
-    for (RenderingPlane rp : source.getPlanes()) {
+    for (RenderingPlane rp : src.getPlanes()) {
       if (rp == null) {
         continue;
       }
@@ -494,12 +498,12 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
       renderer.addSeparator();
     }
 
-    for (RenderingPlane rp : source.getPlanes()) {
+    for (RenderingPlane rp : src.getPlanes()) {
       if (rp == null) {
         continue;
       }
       JMenu help = new JMenu(rp.getName());
-      Collection<MapCellRenderer> rs = source.getRenderers(rp.getIndex());
+      Collection<MapCellRenderer> rs = src.getRenderers(rp.getIndex());
       boolean addedi = false;
 
       if (rs != null) {
@@ -606,7 +610,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.context.ContextObserver#contextDataChanged()
    */
   public void contextDataChanged() {
     if (source != null) {
@@ -661,6 +665,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
           Mapper.setRenderContextChanged(true);
           source.repaint();
         } catch (Exception exc) {
+          log.warn(exc);
         }
       }
     }

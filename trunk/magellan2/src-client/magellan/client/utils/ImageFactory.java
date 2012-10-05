@@ -226,7 +226,7 @@ public class ImageFactory implements GameDataListener {
   }
 
   /**
-   * DOCUMENT-ME
+   * Wait until an image is loaded.
    */
   public void waitForImage(Image img) {
     MediaTracker mt = new MediaTracker(new Frame());
@@ -235,6 +235,7 @@ public class ImageFactory implements GameDataListener {
       mt.addImage(img, 0);
       mt.waitForAll();
     } catch (InterruptedException e) {
+      // return
     }
   }
 

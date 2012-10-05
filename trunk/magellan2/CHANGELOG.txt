@@ -1,14 +1,14 @@
-2012-10-01 / Build 531 - stm (sf@fietefietz.de)
+2012-10-05 / Build 533 - stm (stm_@users.sourceforge.net)
     * fixed a probable cause of incomplete map drawings (see trac bug #23)
     * fixed a memory leak in mapper
     * removed option "draw map before icons are completely loaded"
 
-2012-10-01 / Build 531 - stm (sf@fietefietz.de)
+2012-10-01 / Build 531 - stm (stm_@users.sourceforge.net)
     * fixed trac "bug" #33: GroupEditor 
     * fixed trac bug #12 (I think); saving of ExtendedCommands
     
 2012-09-29 / Build 530 - Fiete (sf@fietefietz.de)
-    * added ";regionicon" to the known REGION-tags (eleminating log.Warn-Messages)
+    * added ";regionicon" to the known REGION-tags (eliminating log.Warn-Messages)
 
 2012-09-29 / Build 529 - Fiete (sf@fietefietz.de)
     * fixed #67: sorting with islands was broken

@@ -46,6 +46,10 @@ public class RenderingPlane {
 
   /** Indicates that the renderer will determine the regions itself. */
   public static final int ACTIVE_OBJECT = 32;
+
+  /** Indicates that the renderer does not depend on visible objects and should always be called. */
+  public static final int ALWAYS_ONCE = 1 << 15;
+
   private int index = -1;
   private String name = null;
   private MapCellRenderer renderer = null;
@@ -134,4 +138,5 @@ public class RenderingPlane {
   public int hashCode() {
     return getIndex();
   }
+
 }

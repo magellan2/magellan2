@@ -78,7 +78,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
   private Mapper source = null;
 
   // GUI elements
-  private JCheckBox chkDeferPainting = null;
+  // private JCheckBox chkDeferPainting = null;
   private JCheckBox showTooltips;
 
   private JTabbedPane planes;
@@ -104,9 +104,9 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
   }
 
   private void init() {
-    chkDeferPainting =
-        new JCheckBox(Resources.get("map.mapperpreferences.chk.deferpainting.caption"), source
-            .isDeferringPainting());
+    // chkDeferPainting =
+    // new JCheckBox(Resources.get("map.mapperpreferences.chk.deferpainting.caption"), source
+    // .isDeferringPainting());
     showTooltips =
         new JCheckBox(Resources.get("map.mapperpreferences.showtooltips.caption"), source
             .isShowingTooltip());
@@ -120,7 +120,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
     GridBagConstraints gbc =
         new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, new Insets(3, 3, 3, 3), 0, 0);
-    helpPanel.add(chkDeferPainting, gbc);
+    // helpPanel.add(chkDeferPainting, gbc);
     gbc.gridy++;
     gbc.gridwidth = 1;
     gbc.weightx = 0;
@@ -243,7 +243,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    source.deferPainting(chkDeferPainting.isSelected());
+    // source.deferPainting(chkDeferPainting.isSelected());
     source.setShowTooltip(showTooltips.isSelected());
 
     if (dialogShown) {

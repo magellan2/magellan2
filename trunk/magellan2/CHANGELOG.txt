@@ -1,4 +1,9 @@
 2012-10-01 / Build 531 - stm (sf@fietefietz.de)
+    * fixed a probable cause of incomplete map drawings (see trac bug #23)
+    * fixed a memory leak in mapper
+    * removed option "draw map before icons are completely loaded"
+
+2012-10-01 / Build 531 - stm (sf@fietefietz.de)
     * fixed trac "bug" #33: GroupEditor 
     * fixed trac bug #12 (I think); saving of ExtendedCommands
     

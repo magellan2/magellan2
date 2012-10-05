@@ -27,13 +27,12 @@ import magellan.library.Border;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.rules.Date;
-import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
 /**
  * This renderer renders borders, like streets, coasts and the like.
  */
-public class BorderCellRenderer extends ImageCellRenderer {
+public class BorderCellRenderer extends ImageCellRenderer implements MapperAware {
   private static int noRandomImages = -1;
 
   // for border specific region images
@@ -41,6 +40,8 @@ public class BorderCellRenderer extends ImageCellRenderer {
 
   // the border type names we can handle in renderOtherBorders
   String[] borderTypes = { "FEUERWAND", "IRRLICHTER" };
+
+  private Mapper mapper;
 
   /**
    * Creates a new BorderCellRenderer object.
@@ -181,7 +182,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
     Image img = null;
     // first try a season specific icon, if preferences say so!
     // FIXME shouldn't access getData() from here
-    if (r.getData().getDate() != null && isUseSeasonImages()) {
+    if (r.getData().getDate() != null && getMapper().isUseSeasonImages()) {
       switch (r.getData().getDate().getSeason()) {
       case Date.SPRING:
         imageName += "_spring";
@@ -291,16 +292,23 @@ public class BorderCellRenderer extends ImageCellRenderer {
     }
   }
 
-  public boolean isUseSeasonImages() {
-    // return useSeasonImages;
-    return (Boolean.valueOf(settings.getProperty(
-        PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, Boolean.TRUE.toString())))
-        .booleanValue();
-  }
-
   @Override
   public PreferencesAdapter getPreferencesAdapter() {
     return new Preferences(this);
+  }
+
+  public void setMapper(Mapper mapper) {
+    this.mapper = mapper;
+
+  }
+
+  /**
+   * Returns the value of mapper.
+   * 
+   * @return Returns mapper.
+   */
+  public Mapper getMapper() {
+    return mapper;
   }
 
 }

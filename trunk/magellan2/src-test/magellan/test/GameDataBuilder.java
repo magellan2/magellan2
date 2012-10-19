@@ -230,7 +230,10 @@ public class GameDataBuilder {
    * @return The new region
    */
   public Region addRegion(GameData data, String coordinate, String name, String type, int sortIndex) {
-    final CoordinateID c = CoordinateID.parse(coordinate, " ");
+    CoordinateID c = CoordinateID.parse(coordinate, " ");
+    if (c == null) {
+      c = CoordinateID.parse(coordinate, ",");
+    }
 
     final Region region = MagellanFactory.createRegion(c, data);
     data.addRegion(region);

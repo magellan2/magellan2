@@ -93,18 +93,24 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
     gd13 = builder.createSimpleGameData(game, 351, false);
 
     faction01a = builder.addFaction(gd01, "aaa", "AAA", "Menschen", 1);
+    gd01.setOwnerFaction(faction01a.getID());
     faction01b = builder.addFaction(gd01, "bbb", "BBB", "Menschen", 1);
-    faction02a = builder.addFaction(gd02, "aaa", "AAA", "Menschen", 1);
     faction02b = builder.addFaction(gd02, "bbb", "BBB", "Menschen", 1);
+    gd02.setOwnerFaction(faction02b.getID());
+    faction02a = builder.addFaction(gd02, "aaa", "AAA", "Menschen", 1);
     faction03c = builder.addFaction(gd03, "ccc", "CCC", "Menschen", 1);
+    gd03.setOwnerFaction(faction03c.getID());
 
     faction11a = builder.addFaction(gd11, "aaa", "AAA", "Menschen", 1);
+    gd11.setOwnerFaction(faction11a.getID());
     faction11b = builder.addFaction(gd11, "bbb", "BBB", "Menschen", 1);
-    faction12a = builder.addFaction(gd12, "aaa", "AAA", "Menschen", 1);
     faction12b = builder.addFaction(gd12, "bbb", "BBB", "Menschen", 1);
+    gd12.setOwnerFaction(faction12b.getID());
+    faction12a = builder.addFaction(gd12, "aaa", "AAA", "Menschen", 1);
+    faction13c = builder.addFaction(gd13, "ccc", "CCC", "Menschen", 1);
+    gd13.setOwnerFaction(faction13c.getID());
     faction13a = builder.addFaction(gd13, "aaa", "AAA", "Menschen", 1);
     faction13b = builder.addFaction(gd13, "bbb", "BBB", "Menschen", 1);
-    faction13c = builder.addFaction(gd13, "ccc", "CCC", "Menschen", 1);
 
     region01 = gd01.getRegions().iterator().next();
     region02 = gd02.getRegions().iterator().next();
@@ -279,6 +285,39 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
 
     assertSkill(gdm, "cc", "Tarnung", 2, 1);
     assertSkill(gdm, "cc", "Wahrnehmung", 2, 0);
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.library.GameDataMerger#mergeUnit(GameData, Unit, GameData, Unit, boolean, boolean, magellan.library.utils.transformation.ReportTransformer)}
+   * 
+   * @throws Exception
+   */
+  @Test
+  public final void testMergeSkills7() throws Exception {
+    create("eressea");
+
+    Region ost0 = builder.addRegion(gd01, "1,0", "Ost", "Ebene", 1);
+    Region ost1 = builder.addRegion(gd11, "1,0", "Ost", "Ebene", 1);
+    builder.addUnit(gd01, "oo", "Ost", faction01a, ost0, true);
+    builder.addUnit(gd11, "oo", "Ost", faction11a, ost1, true);
+
+    GameData gdm = GameDataMerger.merge(gd01, gd02);
+
+    gdm = GameDataMerger.merge(gdm, gd12);
+    gdm = GameDataMerger.merge(gdm, gd11);
+
+    assertSkill(gdm, "aa", "Hiebwaffen", 8, 1);
+    assertSkill(gdm, "aa", "Ausdauer", 0, -3);
+    assertSkill(gdm, "aa", "Wahrnehmung", 2, 0);
+    assertSkill(gdm, "aa", "Bergbau", 3, 3);
+
+    assertSkill(gdm, "bb", "Taktik", 4, 1);
+    assertSkill(gdm, "bb", "Ausdauer", 0, -1);
+    assertSkill(gdm, "bb", "Wahrnehmung", 2, 0);
+
+    assertEquals(0, gdm.getOldUnits().size());
+    assertEquals(3, gdm.getUnits().size());
   }
 
   protected static void assertSkill(GameData gd, String id, String skillName, int level, int change) {

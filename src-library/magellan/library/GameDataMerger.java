@@ -556,23 +556,26 @@ public class GameDataMerger {
       // enforce correct unit sorting, but it enforces it within factions, which is the most
       // important for order evaluation...
       int sortIndex = 0;
+      EntityID added1 = null, added2 = null;
       if (olderGD.getOwnerFaction() != null) {
         sortIndex =
             addUnits(olderGD.getFaction(olderGD.getOwnerFaction()).units(), resultGD, sortIndex);
+        added1 = olderGD.getOwnerFaction();
       }
       if (newerGD.getOwnerFaction() != null
           && !newerGD.getOwnerFaction().equals(olderGD.getOwnerFaction())
           && newerGD.getFaction(newerGD.getOwnerFaction()) != null) {
         sortIndex =
             addUnits(newerGD.getFaction(newerGD.getOwnerFaction()).units(), resultGD, sortIndex);
+        added2 = newerGD.getOwnerFaction();
       }
       for (Faction f : olderGD.getFactions()) {
-        if (!f.getID().equals(olderGD.getOwnerFaction())) {
+        if (!f.getID().equals(added1)) {
           sortIndex = addUnits(f.units(), resultGD, sortIndex);
         }
       }
       for (Faction f : newerGD.getFactions()) {
-        if (!f.getID().equals(newerGD.getOwnerFaction())) {
+        if (!f.getID().equals(added2)) {
           sortIndex = addUnits(f.units(), resultGD, sortIndex);
         }
       }

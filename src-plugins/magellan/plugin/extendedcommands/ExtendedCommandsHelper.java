@@ -819,7 +819,6 @@ public class ExtendedCommandsHelper {
    */
   public MagellanPlugIn getPlugin(String string) {
     for (MagellanPlugIn plugin : client.getPlugIns()) {
-      log.info(plugin.getClass().getName());
       if (plugin.getClass().getName().equals(string))
         return plugin;
     }

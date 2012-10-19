@@ -400,6 +400,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    *      net.infonode.docking.View)
    */
   public void viewFocusChanged(View previouslyFocusedView, View focusedView) {
+    // no action
   }
 
   /**
@@ -407,30 +408,35 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    *      net.infonode.docking.DockingWindow)
    */
   public void windowAdded(DockingWindow addedToWindow, DockingWindow addedWindow) {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowClosed(net.infonode.docking.DockingWindow)
    */
   public void windowClosed(DockingWindow window) {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowClosing(net.infonode.docking.DockingWindow)
    */
   public void windowClosing(DockingWindow window) throws OperationAbortedException {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowDocked(net.infonode.docking.DockingWindow)
    */
   public void windowDocked(DockingWindow window) {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowDocking(net.infonode.docking.DockingWindow)
    */
   public void windowDocking(DockingWindow window) throws OperationAbortedException {
+    // no action
   }
 
   /**
@@ -444,24 +450,28 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    * @see net.infonode.docking.DockingWindowListener#windowMaximized(net.infonode.docking.DockingWindow)
    */
   public void windowMaximized(DockingWindow window) {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowMaximizing(net.infonode.docking.DockingWindow)
    */
   public void windowMaximizing(DockingWindow window) throws OperationAbortedException {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowMinimized(net.infonode.docking.DockingWindow)
    */
   public void windowMinimized(DockingWindow window) {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowMinimizing(net.infonode.docking.DockingWindow)
    */
   public void windowMinimizing(DockingWindow window) throws OperationAbortedException {
+    // no action
   }
 
   /**
@@ -469,18 +479,21 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    *      net.infonode.docking.DockingWindow)
    */
   public void windowRemoved(DockingWindow removedFromWindow, DockingWindow removedWindow) {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowRestored(net.infonode.docking.DockingWindow)
    */
   public void windowRestored(DockingWindow window) {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowRestoring(net.infonode.docking.DockingWindow)
    */
   public void windowRestoring(DockingWindow window) throws OperationAbortedException {
+    // no action
   }
 
   /**
@@ -494,12 +507,14 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    * @see net.infonode.docking.DockingWindowListener#windowUndocked(net.infonode.docking.DockingWindow)
    */
   public void windowUndocked(DockingWindow window) {
+    // no action
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowUndocking(net.infonode.docking.DockingWindow)
    */
   public void windowUndocking(DockingWindow window) throws OperationAbortedException {
+    // no action
   }
 
   /**

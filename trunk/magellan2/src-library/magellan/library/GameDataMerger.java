@@ -859,12 +859,6 @@ public class GameDataMerger {
         continue;
       }
       if (subtractUnits.get(u.getID()) == null) {
-        if (u.getFaction() != null
-            && u.getID() != null
-            && (u.getFaction().getID().toString().contains("drac") || u.getID().toString()
-                .contains("ehv"))) {
-          log.info("hu");
-        }
         Unit newUnit = MagellanFactory.createUnit(u.getID(), targetGD);
         newUnit.setSortIndex(sortIndex++);
         targetGD.addOldUnit(newUnit);

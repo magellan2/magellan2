@@ -210,14 +210,18 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   public synchronized void ready() {
     timer.stop();
     ready = true;
+    if (!showing) {
+      try {
+        Thread.sleep(300);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         if (!showing) {
-          try {
-            Thread.sleep(1000);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
+          log.finer("sleep disabled");
         }
         if (dlg.isVisible()) {
           dlg.setVisible(false);

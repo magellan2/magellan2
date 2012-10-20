@@ -1549,11 +1549,13 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.clearOrders();
     unit.addOrder("Foobar");
     unit.addOrder("// $cript Loeschen");
+    unit.addOrder("Foobar");
     parser.execute(unit.getFaction());
-    assertEquals(3, unit.getOrders2().size());
+    assertEquals(4, unit.getOrders2().size());
     assertComment(unit, 0, true, false);
     assertOrder("; Foobar", unit, 1);
     assertOrder("// $cript Loeschen", unit, 2);
+    assertOrder("; Foobar", unit, 3);
 
     unit.clearOrders();
     unit.addOrder("// $cript Loeschen lang");
@@ -1585,6 +1587,18 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("; LERNEN Reiten", unit, 2);
     assertOrder("; bla", unit, 3);
     assertOrder("// $cript Loeschen lang", unit, 4);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript 1 LERNEN Reiten");
+    unit.addOrder("// $cript Loeschen lang");
+    unit.addOrder("// $cript 1 LERNEN Reiten");
+
+    parser.execute(unit.getFaction());
+    assertEquals(4, unit.getOrders2().size());
+    assertComment(unit, 0, true, false);
+    assertOrder("; LERNEN Reiten", unit, 1);
+    assertOrder("// $cript Loeschen lang", unit, 2);
+    assertOrder("LERNEN Reiten", unit, 3);
   }
 
   /**

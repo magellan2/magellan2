@@ -2442,7 +2442,7 @@ public class E3CommandParser {
   }
 
   /**
-   * Adds an error line
+   * Adds an error line.
    * 
    * @param line The current order line
    * @param hint
@@ -3238,10 +3238,8 @@ public class E3CommandParser {
           oldNameSpaces = getNamespaces(plugin);
           setNamespaces(plugin, namespaces);
         }
-        for (Region r : regions) {
-          ExtendedCommandsHelper.invoke(plugin, "doTeachUnits", new Class[] { Region.class },
-              new Object[] { r });
-        }
+        ExtendedCommandsHelper.invoke(plugin, "doTeachUnits", new Class[] { Collection.class },
+            new Collection[] { regions });
         if (oldNameSpaces != null) {
           setNamespaces(plugin, oldNameSpaces);
         }

@@ -18,7 +18,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Properties;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -70,40 +69,8 @@ public class QuickFindAction extends MenuAction {
     Named o = findEntity(input.trim());
     if (o != null) {
       client.getDispatcher().fire(SelectionEvent.create(this, o, SelectionEvent.ST_DEFAULT));
-    } else if (false) {
+    } else {
       // we could optionally display a short error message here...
-      JDialog err = new JDialog(client) {
-        boolean started = false;
-
-        @Override
-        public void setVisible(boolean vis) {
-          if (vis) {
-            // hide dialog after 500 ms
-            new Thread(new Runnable() {
-
-              public void run() {
-                try {
-                  while (!started) {
-                    Thread.sleep(500);
-                  }
-                } catch (InterruptedException e) {
-                }
-                setVisible(false);
-              }
-            }).start();
-          }
-          super.setVisible(vis);
-          started = true;
-        }
-      };
-      JPanel content = new JPanel();
-      content.add(new JLabel(Resources.get("quickfindaction.notfound.label", new Object[] { input
-          .trim() })));
-      err.setLocationRelativeTo(client);
-      err.setUndecorated(true);
-      err.add(content);
-      err.pack();
-      err.setVisible(true);
     }
   }
 

@@ -935,4 +935,8 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     else
       return toString();
   }
+
+  public void setText(String text) {
+    this.text = text;
+  }
 }

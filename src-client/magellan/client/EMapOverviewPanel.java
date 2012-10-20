@@ -1948,8 +1948,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     // ui2.setLeftChildIndent(100);
     // ui2.setLeftChildIndent(i);
     // }
-    tree.revalidate();
-    tree.repaint();
+    // tree.revalidate();
+    // tree.repaint();
   }
 
   /**

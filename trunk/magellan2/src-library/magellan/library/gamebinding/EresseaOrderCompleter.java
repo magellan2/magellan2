@@ -1729,6 +1729,9 @@ public class EresseaOrderCompleter implements Completer {
     final int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(otherUnit);
     final int maxOnHorse =
         getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(otherUnit);
+    final int maxOnShip =
+        otherUnit.getModifiedShip() == null ? 0 : otherUnit.getModifiedShip().getCapacity()
+            - otherUnit.getModifiedShip().getModifiedLoad();
 
     for (Item item : Units.getContainerAllUnitItems(otherUnit.getRegion())) {
       final ItemType type = item.getItemType();
@@ -1746,6 +1749,12 @@ public class EresseaOrderCompleter implements Completer {
             completions.add(new Completion(type.getName() + " "
                 + getTranslation("gamebinding.eressea.eresseaordercompleter.maxhorseamount"),
                 (maxOnHorse - modLoad) / weight + " " + type.getOrderName(), ""));
+          }
+          // maxOnHorse could be MIN_INT, so check > 0!
+          if (maxOnShip >= weight && maxOnShip > 0) {
+            completions.add(new Completion(type.getName() + " "
+                + getTranslation("gamebinding.eressea.eresseaordercompleter.maxshipamount"),
+                (maxOnShip / weight) + " " + type.getOrderName(), ""));
           }
         }
       }

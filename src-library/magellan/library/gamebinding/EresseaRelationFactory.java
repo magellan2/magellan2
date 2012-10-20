@@ -50,7 +50,6 @@ import magellan.library.relation.TransportRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
-import magellan.library.rules.Race;
 import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
 import magellan.library.utils.Resources;
@@ -63,6 +62,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
   private static final Logger log = Logger.getInstance(EresseaRelationFactory.class);
   private Rules rules;
+
   private Updater updater;
 
   /** Order priority */
@@ -103,7 +103,9 @@ public class EresseaRelationFactory implements RelationFactory {
     updater = new Updater();
   }
 
-  private static final int REFRESHRELATIONS_ALL = -2;
+  /**
+   * Time in ms to wait before orders are processed after an order change event.
+   */
   public static final int PROCESS_DELAY = 100;
 
   protected class Processor implements Runnable {
@@ -141,10 +143,14 @@ public class EresseaRelationFactory implements RelationFactory {
       }
     }
 
+    /**
+     * Called when timer fired.
+     * 
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
     public synchronized void actionPerformed(ActionEvent e) {
       if (!regions.isEmpty()) {
         log.finer("updating " + regions.size());
-        // timer fired
         for (Region r : regions) {
           SwingUtilities.invokeLater(new Processor(r));
         }
@@ -152,17 +158,23 @@ public class EresseaRelationFactory implements RelationFactory {
       regions.clear();
     }
 
-    public void stop() {
+    /**
+     * Stop timer.
+     */
+    public synchronized void stop() {
       stopped = true;
       timer.stop();
     }
 
-    public void restart() {
+    /**
+     * Restart timer.
+     */
+    public synchronized void restart() {
       stopped = false;
       timer.restart();
     }
 
-    public boolean isStopped() {
+    public synchronized boolean isStopped() {
       return stopped;
     }
 
@@ -171,7 +183,7 @@ public class EresseaRelationFactory implements RelationFactory {
   /**
    * stops the updater
    */
-  public void stopUpdating() {
+  public synchronized void stopUpdating() {
     if (updater.isStopped())
       return;
     updater.stop();
@@ -180,14 +192,14 @@ public class EresseaRelationFactory implements RelationFactory {
   /**
    * restarts the updater
    */
-  public void restartUpdating() {
+  public synchronized void restartUpdating() {
     if (updater.isStopped()) {
       updater.restart();
     }
   }
 
   /**
-   * Recreates all relations in this region Updater has to be stopped
+   * Recreates all relations in this region. Updater has to be stopped.
    * 
    * @param r - the Region to be processed
    */
@@ -207,15 +219,26 @@ public class EresseaRelationFactory implements RelationFactory {
   }
 
   /**
+   * Returns the value of rules.
+   * 
+   * @return Returns rules.
+   */
+  protected Rules getRules() {
+    return rules;
+  }
+
+  /**
    * Creates a list of com.eressea.util.Relation objects for a unit starting at order position
    * <tt>from</tt>. Note: The parameter <code>from</code> is ignored by this implementation!
    * 
    * @param u The unit
    * @param from The line of the <code>unit</code>'s orders where to start. Must be > 0
-   * @return A List of Relations for this unit
+   * @return null
+   * @deprecated
    */
   // TODO (stm 2007-02-24) Should we remove the parameter from from the interface? It violates the
   // unit execution order but it might be useful for other games.
+  @Deprecated
   public List<UnitRelation> createRelations(Unit u, int from) {
     processOrders(u.getRegion());
     return null;
@@ -229,7 +252,6 @@ public class EresseaRelationFactory implements RelationFactory {
   }
 
   static class GDEntry {
-
     public GameData data;
     public OrderParser parser;
   }
@@ -251,15 +273,6 @@ public class EresseaRelationFactory implements RelationFactory {
     return last.parser;
   }
 
-  private Race getRace(String content) {
-    for (Race r : rules.getRaces()) {
-      if (r.getRecruitmentCosts() > 0
-          && content.equalsIgnoreCase(Resources.getRuleItemTranslation("race." + r.getID())))
-        return r;
-    }
-    return null;
-  }
-
   /**
    * Ensures that {@link ReserveRelation}s are sorted before all other relations.
    */
@@ -272,61 +285,6 @@ public class EresseaRelationFactory implements RelationFactory {
         return 1;
       return 0;
     }
-  }
-
-  /**
-   * Removes quotes at the beginning and at the end of str or replaces tilde characters with spaces.
-   * 
-   * @param str
-   */
-  private static String stripQuotes(String str) {
-    if (str == null)
-      return null;
-
-    int strLen = str.length();
-
-    if ((strLen >= 2) && (str.charAt(0) == '"') && (str.charAt(strLen - 1) == '"'))
-      return str.substring(1, strLen - 1);
-    else
-      return str.replace('~', ' ');
-  }
-
-  private static String getOrder(String key) {
-    return Resources.getOrderTranslation(key);
-  }
-
-  protected ReserveRelation createReserveRelation(Unit source, int line, Order order) {
-    ReserveOrder rOrder = (ReserveOrder) order;
-    ItemType type = source.getData().getRules().getItemType(rOrder.itemID);
-    ReserveRelation rel = new ReserveRelation(source, 0, type, line);
-
-    if (rel.itemType != null) {
-      // get the item from the list of modified items
-      Item i = source.getModifiedItem(rel.itemType);
-
-      if (i == null) {
-        // item unknown
-        rel.amount = 0;
-        rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
-      } else {
-        if (rOrder.amount == Order.ALL) {
-          // if the specified amount is 'all', convert u to a decent number
-          // TODO how exactly does RESERVIERE ALLES <item> work??
-          rel.amount = i.getAmount();
-          rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
-        } else {
-          // // if not, only transfer the minimum amount the unit has
-          // TODO (stm) should this be persons or modified persons?
-          rel.amount = rOrder.amount * (rOrder.each ? source.getModifiedPersons() : 1);
-          if (i.getAmount() < rel.amount) {
-            rel.setWarning("???", OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
-          }
-          rel.amount = Math.min(i.getAmount(), rel.amount);
-        }
-
-      }
-    }
-    return rel;
   }
 
   protected static final class OrderInfo implements Comparable<OrderInfo> {

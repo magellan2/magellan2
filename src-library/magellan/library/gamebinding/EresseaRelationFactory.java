@@ -15,7 +15,6 @@ package magellan.library.gamebinding;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,7 +38,6 @@ import magellan.library.Rules;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
-import magellan.library.completion.OrderParser;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.FollowUnitRelation;
 import magellan.library.relation.ItemTransferRelation;
@@ -251,27 +249,7 @@ public class EresseaRelationFactory implements RelationFactory {
     // processOrders(region);
   }
 
-  static class GDEntry {
-    public GameData data;
-    public OrderParser parser;
-  }
-
-  WeakReference<GDEntry> lastData = new WeakReference<GDEntry>(null);
   private Set<Region> affected;
-
-  private OrderParser getParser(GameData data) {
-    // we try to reduce the number of instances by caching the last one
-    // if the last one was created for the same data, we return that one
-    GDEntry last = lastData.get();
-    if (last != null && last.data == data)
-      return last.parser;
-
-    last = new GDEntry();
-    last.data = data;
-    last.parser = data.getGameSpecificStuff().getOrderParser(data);
-    lastData = new WeakReference<GDEntry>(last);
-    return last.parser;
-  }
 
   /**
    * Ensures that {@link ReserveRelation}s are sorted before all other relations.
@@ -666,7 +644,7 @@ public class EresseaRelationFactory implements RelationFactory {
      * @param type
      * @param line
      * @param order
-     * @return
+     * @return A list of all created relations
      */
     public List<UnitRelation> giveItem(Unit source, Unit target, boolean all, int requiredAmount,
         ItemType type, int line, Order order) {

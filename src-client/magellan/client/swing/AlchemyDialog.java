@@ -489,10 +489,10 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     final TableCellRenderer defaultRenderer = table.getDefaultRenderer(Integer.class);
     return new TableCellRenderer() {
 
-      public Component getTableCellRendererComponent(JTable table, Object value,
+      public Component getTableCellRendererComponent(JTable pTable, Object value,
           boolean isSelected, boolean hasFocus, int row, int column) {
         Component c =
-            defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
+            defaultRenderer.getTableCellRendererComponent(pTable, value, isSelected, hasFocus, row,
                 column);
 
         if (value instanceof StockValue) {

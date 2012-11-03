@@ -34,8 +34,6 @@ public interface HasCache {
    * new cache.<br/>
    * If this method returns <code>true</code>, a subsequent call to getCache() may or may not create
    * a new cache.<br/>
-   * 
-   * @return
    */
   public abstract boolean hasCache();
 

@@ -523,16 +523,14 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a spells (ZAUBER) block to the underlying stream.
    * 
-   * @param map a map containing the spells to write. The keys are expected to be <tt>Integer</tt>
-   *          objects containing the ids of the spells. The values are expected to be instances of
-   *          class <tt>Spell</tt>.
+   * @param spells a collection containing the spells to write.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeSpells(Map<?, Spell> map) throws IOException {
-    if (map == null)
+  public void writeSpells(Collection<Spell> spells) throws IOException {
+    if (spells == null)
       return;
 
-    for (Spell spell : map.values()) {
+    for (Spell spell : spells) {
       write(spell);
     }
   }
@@ -596,16 +594,14 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of potion (TRANK) blocks to the underlying stream.
    * 
-   * @param map a map containing the potions to write. The keys are expected to be <tt>Integer</tt>
-   *          objects containing the ids of the potions. The values are expected to be instances of
-   *          class <tt>Potion</tt>.
+   * @param potions a collections containing the potions to write.
    * @throws IOException If an I/O error occurs.
    */
-  public void writePotions(Map<? extends ID, Potion> map) throws IOException {
-    if (map == null)
+  public void writePotions(Collection<Potion> potions) throws IOException {
+    if (potions == null)
       return;
 
-    for (Potion potion : map.values()) {
+    for (Potion potion : potions) {
       write(potion);
     }
   }
@@ -1703,21 +1699,6 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write a sequence of region blocks to the underlying stream.
-   * 
-   * @param map a map containing the region to write. The keys are expected to be <tt>Integer</tt>
-   *          objects containing the ids of the regions. The values are expected to be instances of
-   *          class <tt>Region</tt>.
-   * @throws IOException If an I/O error occurs.
-   */
-  public void writeRegions(Map<CoordinateID, Region> map) throws IOException {
-    if (map == null)
-      return;
-
-    writeRegions(map.values());
-  }
-
-  /**
    * Write a sequence of region (REGION) blocks to the underlying stream.
    * 
    * @param regions a collection containing the regions to write.
@@ -2299,7 +2280,7 @@ public class CRWriter extends BufferedWriter {
 
       if (!serverConformance && exportHotspots) {
         ui.setProgress(Resources.get("crwriterdialog.progress.02"), 2);
-        writeHotSpots(world.hotSpots());
+        writeHotSpots(world.getHotSpots());
       }
 
       // this assumes that if somebody doesn't write units
@@ -2313,15 +2294,15 @@ public class CRWriter extends BufferedWriter {
 
       if (includeSpellsAndPotions) {
         ui.setProgress(Resources.get("crwriterdialog.progress.04"), 4);
-        writeSpells(world.spells());
+        writeSpells(world.getSpells());
 
         ui.setProgress(Resources.get("crwriterdialog.progress.05"), 5);
-        writePotions(world.potions());
+        writePotions(world.getPotions());
       }
 
       if (!serverConformance && includeIslands) {
         ui.setProgress(Resources.get("crwriterdialog.progress.06"), 6);
-        writeIslands(world.islands());
+        writeIslands(world.getIslands());
       }
 
       if (includeRegions) {
@@ -2346,11 +2327,11 @@ public class CRWriter extends BufferedWriter {
               ws.put(w.getCoordinate(), w);
             }
           }
-          writeRegions(ws);
+          writeRegions(ws.values());
         } else {
-          writeRegions(world.regions());
+          writeRegions(world.getRegions());
         }
-        writeRegions(world.wrappers());
+        writeRegions(world.wrappers().values());
       }
 
       if (includeMessages) {
@@ -2664,16 +2645,14 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of island blocks to the underlying stream.
    * 
-   * @param map a map containing the islands to write. The keys are expected to be <tt>Integer</tt>
-   *          objects containing the ids of the islands. The values are expected to be instances of
-   *          class <tt>Island</tt>.
+   * @param islands a collection containing the islands to write.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeIslands(Map<IntegerID, Island> map) throws IOException {
-    if (map == null)
+  public void writeIslands(Collection<Island> islands) throws IOException {
+    if (islands == null)
       return;
 
-    for (Island island : map.values()) {
+    for (Island island : islands) {
       write(island);
     }
   }
@@ -2708,11 +2687,11 @@ public class CRWriter extends BufferedWriter {
    * 
    * @throws IOException If an I/O error occurs.
    */
-  public void writeHotSpots(Map<? extends ID, HotSpot> hotSpots) throws IOException {
+  public void writeHotSpots(Collection<HotSpot> hotSpots) throws IOException {
     if (hotSpots == null)
       return;
 
-    for (HotSpot hotSpot : hotSpots.values()) {
+    for (HotSpot hotSpot : hotSpots) {
       write(hotSpot);
     }
   }

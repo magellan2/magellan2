@@ -425,6 +425,8 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     try {
       observer.join();
     } catch (Exception e) {
+      // should not happen, but when it does, we should fail badly
+      throw new RuntimeException(e);
     }
   }
 

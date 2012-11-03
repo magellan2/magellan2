@@ -788,11 +788,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     data.addUnitChangeListener(unitChangeListener);
   }
 
-  protected boolean isRelated(Object object) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return false;
-  }
-
   private void init(GameData gameData) {
     setGameData(gameData);
     gameSpecStuff = gameData.getGameSpecificStuff();
@@ -2866,11 +2861,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           parentsNode.add(parentUnitNode);
         }
       } else {
+        // TODO increase efficiency by pre-computing familiars
         // ok..we have a real mage..may be he has an familiar...
         // for further purpose lets look for all familiars...
         Collection<Unit> familiars = new LinkedList<Unit>();
-        for (UnitID uID : getGameData().units().keySet()) {
-          Unit uTest = getGameData().getUnit(uID);
+        for (Unit uTest : getGameData().getUnits()) {
           if (uTest.getFamiliarmageID() == u.getID()) {
             familiars.add(uTest);
           }
@@ -3342,7 +3337,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         duplicatePupilWarning = " (!!!)";
       }
 
-      pupilsNode.setUserObject(new UnitListNodeWrapper(Resources
+      pupilsNode.setUserObject(nodeWrapperFactory.createUnitListNodeWrapper(Resources
           .get("emapdetailspanel.node.pupils")
           + ": "
           + pupilCounter

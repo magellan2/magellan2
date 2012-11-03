@@ -87,14 +87,16 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
     } else if (skillType.getID().equals(EresseaConstants.S_MAGIE)) {
       // get magic level without modifier
       int level = 0;
-      Skill skill = (unit != null) ? unit.getSkill(skillType) : null;
-
-      if (skill != null) {
-        if (skill.noSkillPoints()) {
-          level = skill.getLevel() - skill.getModifier(unit);
-        } else {
-          int days = unit.getSkill(skillType).getPointsPerPerson();
-          level = (int) Math.floor(Math.sqrt((days / 15.0) + 0.25) - 0.5);
+      Skill skill = null;
+      if (unit != null) {
+        skill = unit.getSkill(skillType);
+        if (skill != null) {
+          if (skill.noSkillPoints()) {
+            level = skill.getLevel() - skill.getModifier(unit);
+          } else {
+            int days = unit.getSkill(skillType).getPointsPerPerson();
+            level = (int) Math.floor(Math.sqrt((days / 15.0) + 0.25) - 0.5);
+          }
         }
       }
 

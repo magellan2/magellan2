@@ -97,10 +97,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   // self defined completion objects (mapping a name (String) to a value
   // (String))
   private Map<String, String> selfDefinedCompletions = new LinkedHashMap<String, String>();
-  private Map<String, String> selfDefinedCompletions2 = new LinkedHashMap<String, String>();
 
   protected Properties settings;
-  private Properties completionSettings;
 
   /**
    * Creates new AutoCompletion
@@ -109,7 +107,6 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   public AutoCompletion(MagellanContext context) {
     settings = context.getProperties();
-    completionSettings = context.getCompletionProperties();
     context.getEventDispatcher().addSelectionListener(this);
     context.getEventDispatcher().addGameDataListener(this);
 
@@ -225,10 +222,6 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     selfDefinedCompletions = getSelfDefinedCompletions(settings);
-    if (completionSettings != null) {
-      selfDefinedCompletions2 = getSelfDefinedCompletions(completionSettings);
-    }
-
   }
 
   /**
@@ -430,9 +423,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if (editors.getCurrentUnit() != null) {
       completions = completer.getCompletions(editors.getCurrentUnit(), line, completions);
       // try to get stub from last token
-      if (completer.getParser() != null) {
-        List<OrderToken> tokens = completer.getParser().getTokens(); // .parse(line,
-        // editors.getCurrentUnit().getLocale())
+      List<OrderToken> tokens = completer.getParserTokens();
+      if (tokens != null) {
         stub = AutoCompletion.getStub(tokens);
       } else {
         stub = AutoCompletion.getStub(line);
@@ -594,10 +586,11 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     int lineBounds[] = AutoCompletion.getCurrentLineBounds(j.getText(), caretPos);
     String line = AutoCompletion.getCurrentLine(j).substring(0, caretPos - lineBounds[0]);
     String stub;
-    if (completer.getParser() != null) {
-      // completer.getParser().read(new StringReader(line));
-      List<OrderToken> tokens =
-          completer.getParser().parse(line, editors.getCurrentUnit().getLocale()).getTokens();
+    completer.getCompletions(editors.getCurrentUnit(), line, null);
+    List<OrderToken> tokens = completer.getParserTokens();
+    if (tokens != null) {
+      // if (completer.getParser() != null) {
+      // completer.getParser().parse(line, editors.getCurrentUnit().getLocale()).getTokens();
       stub = AutoCompletion.getStub(tokens);
     } else {
       // try your best...
@@ -1000,12 +993,6 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     for (String name : selfDefinedCompletions.keySet()) {
       String value = selfDefinedCompletions.get(name);
-      Completion c = new Completion(name, value, "", 1);
-      retVal.add(c);
-    }
-
-    for (String name : selfDefinedCompletions2.keySet()) {
-      String value = selfDefinedCompletions2.get(name);
       Completion c = new Completion(name, value, "", 1);
       retVal.add(c);
     }

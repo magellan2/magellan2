@@ -481,7 +481,7 @@ public class EresseaOrderParser implements OrderParser {
 
   /**
    * Adds the specified handler for the specified command (and removes any previous handler for the
-   * command). The caller must make sure that {@link getOrderTranslation(String)}(prefix, locale)
+   * command). The caller must make sure that {@link #getOrderTranslation(String)}(prefix, locale)
    * returns the localized command for any order language.
    * 
    * @param prefix A command ID
@@ -1826,13 +1826,10 @@ public class EresseaOrderParser implements OrderParser {
     protected boolean readGibUID(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_ID;
-      Unit tUnit;
       if (isTempID(token.getText())) {
         target = UnitID.createUnitID(token.getText(), getData().base);
-        tUnit = getData().getTempUnit(target);
       } else {
         target = UnitID.createUnitID(token.getText(), getData().base);
-        tUnit = getData().getUnit(target);
       }
       // do not test for existence -- unit may be invisible
 
@@ -3860,10 +3857,8 @@ public class EresseaOrderParser implements OrderParser {
         // checken, ob der Zauberspruch bekannt ist
         // Problem: keine Referenz auf die Unit, wir können nicht die spells der unit durchgehen
         // wir müssen spells der GameData durchgehen
-        if (getData().spells() == null || getData().spells().size() == 0)
-          return false;
         foundSpell = null;
-        for (Spell s : getData().spells().values()) {
+        for (Spell s : getData().getSpells()) {
           if (content.equalsIgnoreCase(s.getName())) {
             // here we return just true
             // toDo: get Spell Syntax, check, if more tokens expected and

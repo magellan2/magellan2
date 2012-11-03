@@ -254,8 +254,8 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
     if (doc.getUnit() != null) {
       commands.setCommands(doc.getUnit(), newScript);
-    } else if (doc.getContainer() != null) {
-      commands.setCommands(doc.getContainer(), newScript);
+    } else if (doc.getUnitContainer() != null) {
+      commands.setCommands(doc.getUnitContainer(), newScript);
     } else {
       commands.setLibrary(newScript);
     }

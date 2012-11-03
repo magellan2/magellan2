@@ -16,6 +16,7 @@ package magellan.library.completion;
 import java.util.List;
 
 import magellan.library.Unit;
+import magellan.library.utils.OrderToken;
 
 /**
  * DOCUMENT ME!
@@ -39,9 +40,10 @@ public interface Completer {
   public List<Completion> getCompletions(Unit u, String line, List<Completion> old);
 
   /**
-   * Returns the {@link OrderParser} that is used by this Completer.
+   * If this completer has an {@link OrderParser} and it has been used to find completions, this
+   * method returns the tokens read by the parser.
    * 
-   * @return the OrderParser used by this completer which <em>may</em> be <code>null</code>.
+   * @return The list of tokens of this Completer's OrderParser, or <code>null</code>.
    */
-  public OrderParser getParser();
+  public List<OrderToken> getParserTokens();
 }

@@ -102,9 +102,7 @@ public class MultiIconNodeWrapper extends DefaultNodeWrapper implements CellObje
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @return
+   * Returns the according option of the draw policy.
    */
   public boolean isShowingAdditional() {
     return adapter.properties[adapter.SHOW_ADDITIONAL];
@@ -430,9 +428,7 @@ public class MultiIconNodeWrapper extends DefaultNodeWrapper implements CellObje
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @return
+     * Returns the settings.
      */
     public Properties getSettings() {
       return settings;

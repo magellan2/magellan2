@@ -12,6 +12,9 @@ import magellan.test.MagellanTestWithResources;
 
 import org.junit.Test;
 
+/**
+ * 
+ */
 public class MergeWithUnitMessages extends MagellanTestWithResources {
 
   // public MergeWithUnitMessages(String aName) {
@@ -40,10 +43,15 @@ public class MergeWithUnitMessages extends MagellanTestWithResources {
     Unit u4 = gd4.getUnit(u1.getID());
 
     Assert.assertTrue(u4 != null);
-    Assert.assertTrue(u4.getUnitMessages() != null);
-    Assert.assertEquals(1, u4.getUnitMessages().size());
+    if (u4 != null) {
+      Assert.assertTrue(u4.getUnitMessages() != null);
+      Assert.assertEquals(1, u4.getUnitMessages().size());
+    }
   }
 
+  /**
+   * @throws Exception
+   */
   @Test
   public void testMergeSameRound() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
@@ -65,8 +73,10 @@ public class MergeWithUnitMessages extends MagellanTestWithResources {
     Unit u4 = gd4.getUnit(u1.getID());
 
     Assert.assertTrue(u4 != null);
-    Assert.assertTrue(u4.getUnitMessages() != null);
-    Assert.assertEquals(2, u4.getUnitMessages().size());
+    if (u4 != null) {
+      Assert.assertTrue(u4.getUnitMessages() != null);
+      Assert.assertEquals(2, u4.getUnitMessages().size());
+    }
   }
 
 }

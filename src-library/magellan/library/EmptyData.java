@@ -293,7 +293,7 @@ public class EmptyData extends GameData {
   }
 
   /**
-   * @see magellan.library.GameData#clone(magellan.library.utils.ReportMerger.ReportTransformer)
+   * @see magellan.library.GameData#clone(ReportTransformer)
    */
   @Override
   public GameData clone(ReportTransformer coordinateTranslator) throws CloneNotSupportedException {
@@ -381,7 +381,7 @@ public class EmptyData extends GameData {
   }
 
   /**
-   * @see magellan.library.GameData#makeWrapper(magellan.library.Region)
+   * @see magellan.library.GameData#makeWrapper(Region, Region)
    */
   @Override
   public void makeWrapper(Region w, Region o) {

@@ -534,7 +534,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
                 .get("factionstatspanel.node.alliances"), "alliance"));
         rootNode.add(currentNode);
-        FactionStatsPanel.showAlliances(getGameData(), f, f.getAllies(), f.getAlliance(), currentNode);
+        FactionStatsPanel.showAlliances(getGameData(), f, f.getAllies(), f.getAlliance(),
+            currentNode);
       }
 
       /* group alliances node */
@@ -915,7 +916,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   // Almosen
                   // check, ob from unsere Faction ist
                   String from = actM.getAttributes().get("from");
-                  EntityID fromID = EntityID.createEntityID(Integer.parseInt(from), getGameData().base);
+                  EntityID fromID =
+                      EntityID.createEntityID(Integer.parseInt(from), getGameData().base);
                   // Faction beziehen
                   ID fromFactionID =
                       getGameData().getFaction(fromID) == null ? EntityID.createEntityID(-1,
@@ -1525,10 +1527,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
         // subNode.add(o);
         subNodeChildList.add(o);
-        int resAmount = 0;
         for (Unit u : stats.units.keySet()) {
           int amount = stats.units.get(u).intValue();
-          resAmount += amount;
           o.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, amount)));
         }
       }

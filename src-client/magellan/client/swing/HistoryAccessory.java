@@ -32,10 +32,8 @@ import magellan.library.utils.Bucket;
 import magellan.library.utils.PropertiesHelper;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 203 $
+ * A FileChooser that provides a combobox with previously used directories (loading them from and
+ * storing them to properties).
  */
 public class HistoryAccessory extends JPanel {
   protected Properties settings = null;
@@ -127,6 +125,9 @@ public class HistoryAccessory extends JPanel {
   }
 }
 
+/**
+ * Wrapper class to put a File (directory) into a bucket.
+ */
 class DirWrapper {
   private File dir = null;
 
@@ -138,7 +139,7 @@ class DirWrapper {
   }
 
   /**
-   * @return
+   * Returns the directory.
    */
   public File getDirectory() {
     return dir;

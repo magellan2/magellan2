@@ -71,15 +71,21 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
   private Region region12;
   private Region region13;
   private Unit unit01a;
+  @SuppressWarnings("unused")
   private Unit unit01b;
+  @SuppressWarnings("unused")
   private Unit unit02a;
   private Unit unit02b;
   private Unit unit03c;
   private Unit unit11a;
+  @SuppressWarnings("unused")
   private Unit unit11b;
+  @SuppressWarnings("unused")
   private Unit unit12a;
   private Unit unit12b;
+  @SuppressWarnings("unused")
   private Unit unit13a;
+  @SuppressWarnings("unused")
   private Unit unit13b;
   private Unit unit13c;
 

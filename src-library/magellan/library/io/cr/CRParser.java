@@ -3419,7 +3419,9 @@ public class CRParser implements RulesIO, GameDataIO {
         CRParser.log.info("setOwner of Report to: " + firstFaction2.toString());
         // set translation to (0,0,...) in all existing layers
         final Set<Integer> layers = new HashSet<Integer>();
-        for (final CoordinateID coord : newData.regions().keySet()) {
+        for (Region r : newData.getRegions()) {
+          // for (final CoordinateID coord : newData.regions().keySet()) {
+          CoordinateID coord = r.getCoordinate();
           if (!layers.contains(coord.getZ())) {
             newData.setCoordinateTranslation(firstFaction2.getID(), CoordinateID.create(0, 0, coord
                 .getZ()));

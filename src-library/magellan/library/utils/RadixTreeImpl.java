@@ -53,7 +53,8 @@ public class RadixTreeImpl<T> implements MapRadixTree<T> {
    * @author Javid Jamae
    * @author Dennis Heidsiek
    * @author stm
-   * @param <T,R>
+   * @param <T> The content type
+   * @param <R> The result type
    */
   public interface Visitor<T, R> {
     /**
@@ -79,7 +80,7 @@ public class RadixTreeImpl<T> implements MapRadixTree<T> {
   }
 
   /**
-   * A simple standard implementation for a {@link visitor}.
+   * A simple standard implementation for a {@link magellan.library.utils.RadixTreeImpl.Visitor}
    * 
    * @author Dennis Heidsiek
    * @author stm
@@ -116,7 +117,7 @@ public class RadixTreeImpl<T> implements MapRadixTree<T> {
    * 
    * @author Tahseen Ur Rehman
    * @email tahseen.ur.rehman {at.spam.me.not} gmail.com
-   * @param <T>
+   * @param <T> The content type
    */
   static class RadixTreeNode<T> {
     private String key;
@@ -304,9 +305,7 @@ public class RadixTreeImpl<T> implements MapRadixTree<T> {
   }
 
   /**
-   * @param prefix
-   * @param recordLimit
-   * @return
+   * @see magellan.library.utils.RadixTree#searchPrefix(java.lang.String, int)
    */
   public ArrayList<T> searchPrefix(String prefix, int recordLimit) {
     return new ArrayList<T>(searchPrefixMap(prefix, recordLimit).values());
@@ -566,8 +565,6 @@ public class RadixTreeImpl<T> implements MapRadixTree<T> {
   /**
    * Display the Trie on console. WARNING! Do not use this for a large Trie, it's for testing
    * purpose only.
-   * 
-   * @see formatTo
    */
   @Deprecated
   public void display() {
@@ -575,7 +572,7 @@ public class RadixTreeImpl<T> implements MapRadixTree<T> {
   }
 
   @Deprecated
-  private void display(int level, RadixTreeNode<T> node) {
+  protected void display(int level, RadixTreeNode<T> node) {
     formatNodeTo(new Formatter(System.out), level, node);
   }
 

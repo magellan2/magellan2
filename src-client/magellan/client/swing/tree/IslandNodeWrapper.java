@@ -66,6 +66,7 @@ public class IslandNodeWrapper extends DefaultNodeWrapper implements SupportsCli
   /**
    * @see magellan.client.swing.tree.CellObject#emphasized()
    */
+  @Override
   public boolean emphasized() {
     for (Region region : island.regions()) {
       Iterator<Unit> it = (region).units().iterator();

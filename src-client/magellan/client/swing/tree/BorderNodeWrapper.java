@@ -65,6 +65,7 @@ public class BorderNodeWrapper extends DefaultNodeWrapper implements SupportsCli
   /**
    * @see magellan.client.swing.tree.CellObject#emphasized()
    */
+  @Override
   public boolean emphasized() {
     return false;
   }

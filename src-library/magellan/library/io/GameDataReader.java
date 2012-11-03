@@ -74,7 +74,7 @@ public class GameDataReader {
    * <code>GameNameReader</code>. With this name the corresponding rules and game can be parsed.
    * 
    * @param aFileType the filetype representing a cr or xml file.
-   * @param newOrigin the loaded report is translated by this coordinates.
+   * @param transformer the loaded report is translated by this transformer.
    * @return a GameData object read from the cr or xml file.
    * @throws IOException If an I/O error occurs
    */
@@ -102,7 +102,7 @@ public class GameDataReader {
    * Read a gamedata from a given File.
    * 
    * @param aFileType the filetype representing a cr or xml file.
-   * @param coordinateTransformer the loaded report is translated by this coordinates.
+   * @param coordinateTransformer the loaded report is translated by this transformer.
    * @param gameName
    * @return a GameData object read from the cr or xml file.
    * @throws IOException If an I/O error occurs

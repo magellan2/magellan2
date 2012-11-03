@@ -657,14 +657,12 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   }
 
   /**
-   * Always returns <code>null</code>. UnitContainers do not have order editors.
-   * 
-   * @return
+   * FIXME Always returns <code>null</code>. UnitContainers do not have order editors.
    */
   public CacheableOrderEditor getOrderEditor() {
-    Cache cache = getCache();
-    if (hasCache() && cache.orderEditor != null)
-      return cache.orderEditor;
+    Cache cache2 = getCache();
+    if (hasCache() && cache2.orderEditor != null)
+      return cache2.orderEditor;
     else
       return null;
   }

@@ -20,7 +20,7 @@ import magellan.library.ID;
  * 
  * @author Sebastian
  */
-public abstract class Date extends Object implements ID, Cloneable {
+public abstract class Date extends Object implements ID {
   protected int iDate = 0;
 
   /** Short format */

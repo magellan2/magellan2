@@ -46,8 +46,6 @@ public class UnitMaintenanceOrder extends SimpleOrder {
 
   /**
    * @param r
-   * @param tokens
-   * @param text
    */
   public UnitMaintenanceOrder(Region r) {
     super(Collections.singletonList(new OrderToken(OrderToken.TT_EOC)), "");

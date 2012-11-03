@@ -164,6 +164,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   /**
    * Test method for {@link magellan.library.gamebinding.EresseaOrderParser#getNextToken()}.
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testGetNextToken() {
     assertTrue(getParser().getLastToken() == null);
@@ -224,6 +225,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   }
 
   protected void checkOrder(String string, boolean result) {
+    @SuppressWarnings("deprecation")
     boolean retVal = getParser().read(new StringReader(string));
     assertEquals("checking " + string, result, retVal);
   }
@@ -266,7 +268,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.AtReader}.
+   * Test method for @ orders.
    */
   @Test
   public void testAtReader() {

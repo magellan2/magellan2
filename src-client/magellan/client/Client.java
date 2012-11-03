@@ -372,19 +372,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     showStatus = PropertiesHelper.getBoolean(settings, "Client.ShowOrderStatus", false);
 
-    Properties completionSettings =
-        Client.loadSettings(Client.settingsDirectory, COMPLETIONSETTINGS_FILENAME);
-    if (completionSettings != null) {
-      log.warn(COMPLETIONSETTINGS_FILENAME + " is no longer supported.");
-    } else {
-      completionSettings = new SelfCleaningProperties();
-    }
-
     // initialize the context, this has to be very early.
     context = new MagellanContext(this);
     context.setEventDispatcher(dispatcher);
     context.setProperties(settings);
-    context.setCompletionProperties(completionSettings);
     context.init();
 
     context.setGameData(gd);
@@ -1069,8 +1060,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * @param font
-   * @return
+   * @return the screen metrics of the specified font in the default toolkit
    * @deprecated As of Java 1.2, the Font method getLineMetrics should be used.
+   * @see Toolkit#getFontMetrics(Font)
    */
   @Deprecated
   public static FontMetrics getDefaultFontMetrics(Font font) {
@@ -1197,104 +1189,111 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
-          // can't call loadRules from here, so we initially work with an
-          // empty ruleset.
-          // This is not very nice, though...
-          GameData data = new MissingData();
+          try {
+            // can't call loadRules from here, so we initially work with an
+            // empty ruleset.
+            // This is not very nice, though...
+            GameData data = new MissingData();
 
-          // new CompleteData(new com.eressea.rules.Eressea(), "void");
-          Client c = new Client(data, tBinDir, tResourceDir, tsettFileDir);
-          // setup a singleton instance of this client
-          Client.INSTANCE = c;
+            // new CompleteData(new com.eressea.rules.Eressea(), "void");
+            Client c = new Client(data, tBinDir, tResourceDir, tsettFileDir);
+            // setup a singleton instance of this client
+            Client.INSTANCE = c;
 
-          String newestVersion =
-              VersionInfo.getNewestVersion(c.getProperties(), Client.startWindow);
-          String currentVersion = VersionInfo.getVersion(tResourceDir);
-          if (!Utils.isEmpty(newestVersion)) {
-            Client.log.info("Newest Version on server: " + newestVersion);
-            Client.log.info("Current Version: " + currentVersion);
-            if (VersionInfo.isNewer(newestVersion, currentVersion)) {
-              JOptionPane.showMessageDialog(Client.startWindow, Resources.get("client.new_version",
-                  new Object[] { newestVersion }));
-            }
-          }
-
-          String lastVersion = c.getProperties().getProperty("Client.LastVersion");
-          if (lastVersion == null || !lastVersion.equals(currentVersion)) {
-            UpdateDialog dlg = new UpdateDialog(c, lastVersion, currentVersion);
-            dlg.setVisible(true);
-            if (!dlg.getResult()) {
-              c.quit(false);
-            }
-          }
-
-          c.application = new DefaultApplication();
-          c.application.addPreferencesMenuItem();
-          c.application.setEnabledPreferencesMenu(true);
-          c.application.addAboutMenuItem();
-          c.application.setEnabledAboutMenu(true);
-          c.application.addApplicationListener(c);
-
-          Client.log.info("Is Mac extension working:" + c.application.isMac());
-
-          c.appIcon = c.application.getApplicationIconImage();
-
-          File crFile = null;
-
-          if (tReport == null) {
-            // if no report is given on startup, we check if we can load the last
-            // loaded report.
-            boolean loadLastReport =
-                PropertiesHelper.getBoolean(c.getProperties(),
-                    PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true);
-            if (loadLastReport) {
-              crFile = c.fileHistory.getLastExistingReport();
-              if (crFile == null) {
-                // okay, ask for a file...
-                crFile = OpenCRAction.getFileFromFileChooser(c, Client.startWindow);
+            String newestVersion =
+                VersionInfo.getNewestVersion(c.getProperties(), Client.startWindow);
+            String currentVersion = VersionInfo.getVersion(tResourceDir);
+            if (!Utils.isEmpty(newestVersion)) {
+              Client.log.info("Newest Version on server: " + newestVersion);
+              Client.log.info("Current Version: " + currentVersion);
+              if (VersionInfo.isNewer(newestVersion, currentVersion)) {
+                JOptionPane.showMessageDialog(Client.startWindow, Resources.get(
+                    "client.new_version", new Object[] { newestVersion }));
               }
             }
-          } else {
-            crFile = new File(tReport);
-          }
 
-          if (crFile != null) {
-            Client.startWindow.progress(4, Resources.get("clientstart.4"));
-
-            c.loadCRThread(crFile);
-          }
-
-          c.setReportChanged(false);
-
-          Client.startWindow.progress(5, Resources.get("clientstart.5"));
-          c.setAllVisible(true);
-          Client.startWindow.setVisible(false);
-          Client.startWindow.dispose();
-          Client.startWindow = null;
-
-          // show tip of the day window
-          if (c.getProperties().getProperty("TipOfTheDay.showTips", "true").equals("true")
-              || c.getProperties().getProperty("TipOfTheDay.firstTime", "true").equals("true")) {
-            TipOfTheDay totd = new TipOfTheDay(c, c.getProperties());
-
-            if (totd.doShow()) {
-              // totd.setVisible(true);
-              totd.showTipDialog();
-              totd.showNextTip();
+            String lastVersion = c.getProperties().getProperty("Client.LastVersion");
+            if (lastVersion == null || !lastVersion.equals(currentVersion)) {
+              UpdateDialog dlg = new UpdateDialog(c, lastVersion, currentVersion);
+              dlg.setVisible(true);
+              if (!dlg.getResult()) {
+                c.quit(false);
+              }
             }
+
+            c.application = new DefaultApplication();
+            c.application.addPreferencesMenuItem();
+            c.application.setEnabledPreferencesMenu(true);
+            c.application.addAboutMenuItem();
+            c.application.setEnabledAboutMenu(true);
+            c.application.addApplicationListener(c);
+
+            Client.log.info("Is Mac extension working:" + c.application.isMac());
+
+            c.appIcon = c.application.getApplicationIconImage();
+
+            File crFile = null;
+
+            if (tReport == null) {
+              // if no report is given on startup, we check if we can load the last
+              // loaded report.
+              boolean loadLastReport =
+                  PropertiesHelper.getBoolean(c.getProperties(),
+                      PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true);
+              if (loadLastReport) {
+                crFile = c.fileHistory.getLastExistingReport();
+                if (crFile == null) {
+                  // okay, ask for a file...
+                  crFile = OpenCRAction.getFileFromFileChooser(c, Client.startWindow);
+                }
+              }
+            } else {
+              crFile = new File(tReport);
+            }
+
+            if (crFile != null) {
+              Client.startWindow.progress(4, Resources.get("clientstart.4"));
+
+              c.loadCRThread(crFile);
+            }
+
+            c.setReportChanged(false);
+
+            Client.startWindow.progress(5, Resources.get("clientstart.5"));
+            c.setAllVisible(true);
+            Client.startWindow.setVisible(false);
+            Client.startWindow.dispose();
+            Client.startWindow = null;
+
+            // show tip of the day window
+            if (c.getProperties().getProperty("TipOfTheDay.showTips", "true").equals("true")
+                || c.getProperties().getProperty("TipOfTheDay.firstTime", "true").equals("true")) {
+              TipOfTheDay totd = new TipOfTheDay(c, c.getProperties());
+
+              if (totd.doShow()) {
+                // totd.setVisible(true);
+                totd.showTipDialog();
+                totd.showNextTip();
+              }
+            }
+          } catch (Throwable t) {
+            bailOut(t);
           }
         }
       });
     } catch (Throwable exc) { // any fatal error
-      Client.log.error(exc); // print it so it can be written to errors.txt
-
-      // try to create a nice output
-      String out = "A fatal error occured: " + exc.toString();
-
-      Client.log.error(out, exc);
-      JOptionPane.showMessageDialog(new JFrame(), out);
-      System.exit(1);
+      bailOut(exc);
     }
+  }
+
+  protected static void bailOut(Throwable t) {
+    Client.log.error("A fatal error occured: ", t); // print it so it can be written to errors.txt
+
+    // try to create a nice output
+    String out = "A fatal error occured: " + t.toString();
+
+    JOptionPane.showMessageDialog(new JFrame(), out);
+    System.exit(1);
   }
 
   /**
@@ -1744,6 +1743,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.lowmem.text"), Resources
           .get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
     }
+    @SuppressWarnings("unused")
     int bE = 0, rE = 0, ruE = 0, sE = 0, uE = 0, mE = 0;
     for (Problem p : data.getErrors()) {
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONID.type) {

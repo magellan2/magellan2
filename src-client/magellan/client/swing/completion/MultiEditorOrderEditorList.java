@@ -431,7 +431,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       } else if (activeObject instanceof Island) {
         newIsland = (Island) activeObject;
       } else { // some other node or non privileged unit selected
-        newUnit = null;
+        // newUnit = null;
         newIsland = null;
         newRegion = null;
         newFaction = null;

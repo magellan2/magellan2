@@ -237,9 +237,8 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   }
 
   /**
-   * FIXME (stm) implement or not?
-   * 
-   * @see magellan.library.gamebinding.GameSpecificRules#isToroidal()
+   * FIXME (stm) implement or not? // * @see
+   * magellan.library.gamebinding.GameSpecificRules#isToroidal()
    */
   public boolean isToroidal() {
     return false;

@@ -251,7 +251,7 @@ public class OrderedHashtable<K, V> extends Hashtable<K, V> {
    * @param t Mappings to be stored in this map.
    * @see java.util.Hashtable#putAll(java.util.Map)
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public synchronized void putAll(Map<? extends K, ? extends V> t) {
     Iterator<? extends Map.Entry<? extends K, ? extends V>> iter = null;
@@ -458,7 +458,7 @@ public class OrderedHashtable<K, V> extends Hashtable<K, V> {
         return false;
       try {
         // if this throws a ClassCastException, the entries are not equal...
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         OHEntry<K, V> e2 = (OHEntry) o;
 
         return ((key == null) ? (e2.key == null) : key.equals(e2.key))

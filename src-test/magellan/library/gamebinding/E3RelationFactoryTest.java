@@ -62,7 +62,9 @@ public class E3RelationFactoryTest extends MagellanTestWithResources {
     MagellanTestWithResources.initResources();
   }
 
+  @SuppressWarnings("unused")
   private E3AOrderParser parser;
+  @SuppressWarnings("unused")
   private E3AOrderCompleter completer;
   private GameDataBuilder builder;
   private GameData data;

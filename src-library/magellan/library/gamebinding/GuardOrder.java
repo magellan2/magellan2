@@ -42,7 +42,6 @@ public class GuardOrder extends SimpleOrder {
   /**
    * @param tokens
    * @param text
-   * @param valid
    */
   public GuardOrder(List<OrderToken> tokens, String text) {
     super(tokens, text);

@@ -317,7 +317,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       boolean qualifiedUnitInCurRegion = false;
       if (units() != null && units().size() > 0) {
         for (Unit actUnit : units()) {
-          if (actUnit.getCombatStatus() != -1) {
+          if (actUnit.isDetailsKnown()) {
             // -1 is default for this int and stays, if no info is available
             qualifiedUnitInCurRegion = true;
             break;

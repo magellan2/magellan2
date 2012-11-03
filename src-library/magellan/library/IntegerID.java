@@ -140,8 +140,6 @@ public class IntegerID implements ID {
 
   /**
    * Returns a copy of this IntegerID object.
-   * 
-   * @throws CloneNotSupportedException Never
    */
   @Override
   public IntegerID clone() {

@@ -3068,4 +3068,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     clearCache();
   }
 
+  public boolean isDetailsKnown() {
+    return !ordersAreNull() && getCombatStatus() != -1;
+  }
+
 }

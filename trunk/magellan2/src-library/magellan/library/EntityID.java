@@ -82,8 +82,6 @@ public class EntityID extends IntegerID {
 
   /**
    * Returns the radix which was used to create this ID.
-   * 
-   * @return
    */
   public int getRadix() {
     return radix;
@@ -129,8 +127,6 @@ public class EntityID extends IntegerID {
 
   /**
    * Returns a copy of this EntityID object.
-   * 
-   * @throws CloneNotSupportedException Never
    */
   @Override
   public EntityID clone() {

@@ -202,7 +202,8 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
   }
 
   /**
-   * @see magellan.library.gamebinding.GameSpecificRules#isToroidal()
+   * @see magellan.library.gamebinding.EresseaGameSpecificRules#isToroidal()
+   *      // * @see magellan.library.gamebinding.GameSpecificRules#isToroidal()
    */
   @Override
   public boolean isToroidal() {

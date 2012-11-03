@@ -467,6 +467,9 @@ public class EresseaPostProcessor {
           region.clearSchemes();
           continue;
         }
+        if (max == null || min == null) {
+          continue;
+        }
         boolean centerFound = false;
         for (int x = max.x - 2; (x <= min.x + 2) && !centerFound; x++) {
           for (int y = max.y - 2; (y <= min.y + 2) && !centerFound; y++) {

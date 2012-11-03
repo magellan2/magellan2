@@ -15,7 +15,6 @@ import java.util.List;
 
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
-import magellan.library.Order;
 import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Unit;
@@ -25,7 +24,6 @@ import magellan.library.relation.MovementRelation;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ShipInspector.ShipProblemTypes;
 import magellan.library.utils.Regions;
-import magellan.library.utils.logging.Logger;
 
 /**
  * Checks land movement for overload or too many horses.
@@ -34,6 +32,7 @@ public class MovementInspector extends AbstractInspector {
   /** The singleton instance of this Inspector */
   // public static final MovementInspector INSPECTOR = new MovementInspector(data);
 
+  @SuppressWarnings("javadoc")
   public enum MovementProblemTypes {
     FOOTOVERLOADED, HORSEOVERLOADED, TOOMANYHORSESFOOT, TOOMANYHORSESRIDE, UNITFOLLOWSSELF,
     MOVE_INVALID, UNKNOWNREGION, MOVEMENTTOOLONG, ROUTETOOLONG;
@@ -153,27 +152,6 @@ public class MovementInspector extends AbstractInspector {
       return Collections.emptyList();
     else
       return problems;
-  }
-
-  private boolean hasMovementOrder(Unit u) {
-    Orders orders = u.getOrders2();
-    for (Order order : orders) {
-      if (order.isEmpty() || order.getProblem() != null) {
-        continue;
-      }
-      if (orders.isToken(order, 0, EresseaConstants.O_MOVE)
-          || orders.isToken(order, 0, EresseaConstants.O_ROUTE))
-        return true;
-      try {
-        if (orders.isToken(order, 0, EresseaConstants.O_FOLLOW)) {
-          if (orders.isToken(order, 1, EresseaConstants.O_UNIT))
-            return true;
-        }
-      } catch (Exception e) {
-        Logger.getInstance(getClass()).fine("", e);
-      }
-    }
-    return false;
   }
 
   private List<Problem> reviewUnitOnFoot(Unit u, int line) {

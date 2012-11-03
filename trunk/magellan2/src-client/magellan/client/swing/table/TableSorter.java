@@ -97,8 +97,9 @@ public class TableSorter extends AbstractTableModel {
 
   // FIXME (stm) This is a bit dodgy but should be safe. Maybe once I understand Java generics
   // better, I will change it
+  /** Compares two objects that must implement Comparable<T> (for a common T) */
   public static final Comparator<Object> COMPARABLE_COMAPRATOR = new Comparator<Object>() {
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public int compare(Object o1, Object o2) {
       if (o1 == null)
         if (o2 != null)
@@ -107,12 +108,18 @@ public class TableSorter extends AbstractTableModel {
           return 0;
       else if (o2 == null)
         return 1;
-      if (o1 instanceof Comparable && o2 instanceof Comparable)
-        return ((Comparable) o1).compareTo(o2);
-      else
-        throw new RuntimeException("invalid arguments");
+      Exception exc = null;
+      if (o1 instanceof Comparable && o2 instanceof Comparable) {
+        try {
+          return ((Comparable) o1).compareTo(o2);
+        } catch (Exception e) {
+          exc = e;
+        }
+      }
+      throw new RuntimeException("invalid arguments", exc);
     }
   };
+  /** Compares alphebetically using toString() */
   public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
     public int compare(Object o1, Object o2) {
       if (o1 == null)

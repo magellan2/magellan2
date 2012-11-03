@@ -295,6 +295,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
            * 
            * @see java.lang.Runnable#run()
            */
+          @SuppressWarnings("null")
           public void run() {
             Rectangle islandBounds = null;
 
@@ -316,7 +317,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
             }
 
             if (!scpMapper.getViewport().getViewRect().contains(centerRect)) {
-              /* FIX these numbers should get some bounding */
+              /* FIXME these numbers should get some bounding */
               centerRect.x -=
                   ((scpMapper.getViewport().getViewRect().getWidth() - centerRect.getWidth()) / 2);
               centerRect.y -=

@@ -69,10 +69,8 @@ public class SkillType extends ObjectType {
   }
 
   /**
-   * Returns the cost of learning to <code>level</code>. If no costs have ben set, the default is 0.
-   * 
-   * @param level
-   * @return
+   * Returns the cost of learning to <code>level</code>. If no costs have been set, the default is
+   * 0.
    */
   public int getCost(int level) {
     if (costMap.get(level) == null)

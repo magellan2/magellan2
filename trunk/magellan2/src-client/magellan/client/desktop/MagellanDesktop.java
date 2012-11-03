@@ -368,16 +368,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
       dockingFrameworkBuilder = DockingFrameworkBuilder.getInstance();
     }
 
-    try {
-      splitRoot =
-          dockingFrameworkBuilder.buildDesktop(components, new File(settingsDir,
-              MagellanDesktop.DOCKING_LAYOUT_FILE));
-      if (splitRoot != null) {
-        splitRoot.addListener(this);
-      }
-    } catch (Exception exc) {
-      MagellanDesktop.log.error(exc);
-      return false;
+    splitRoot =
+        dockingFrameworkBuilder.buildDesktop(components, new File(settingsDir,
+            MagellanDesktop.DOCKING_LAYOUT_FILE));
+    if (splitRoot != null) {
+      splitRoot.addListener(this);
     }
 
     if (splitRoot == null)

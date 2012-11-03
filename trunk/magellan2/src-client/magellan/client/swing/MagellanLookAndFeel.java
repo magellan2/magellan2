@@ -143,62 +143,61 @@ public class MagellanLookAndFeel {
           if (!plafFile.exists()) {
             // OK give up here
             MagellanLookAndFeel.log
-            .error("MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini");
+                .error("MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini");
             return null;
           }
         }
 
         FileInputStream ir = new FileInputStream(plafFile);
 
-        if (ir != null) {
-          Properties plaf_ini = new Properties();
-          plaf_ini.load(ir);
-          ir.close();
+        Properties plaf_ini = new Properties();
+        plaf_ini.load(ir);
+        ir.close();
 
-          String s = (String) plaf_ini.get("plaf.count");
-          int plafCount = 0;
+        String s = (String) plaf_ini.get("plaf.count");
+        int plafCount = 0;
 
-          if (s != null) {
-            plafCount = Integer.parseInt(s);
-          }
+        if (s != null) {
+          plafCount = Integer.parseInt(s);
+        }
 
-          for (int i = 0; i < plafCount; i++) {
-            String name = plaf_ini.getProperty("plaf.name." + i);
-            String clazz = plaf_ini.getProperty("plaf.class." + i);
-            String theme = plaf_ini.getProperty("plaf.themepack." + i);
-            String jre = plaf_ini.getProperty("plaf.jre." + i, "1.3");
+        for (int i = 0; i < plafCount; i++) {
+          String name = plaf_ini.getProperty("plaf.name." + i);
+          String clazz = plaf_ini.getProperty("plaf.class." + i);
+          String theme = plaf_ini.getProperty("plaf.themepack." + i);
+          String jre = plaf_ini.getProperty("plaf.jre." + i, "1.3");
 
-            if ((name != null) && (clazz != null)) {
-              try {
-                Class<?> c = Class.forName(clazz);
-                LookAndFeel laf = (LookAndFeel) c.newInstance();
+          if ((name != null) && (clazz != null)) {
+            try {
+              Class<?> c = Class.forName(clazz);
+              LookAndFeel laf = (LookAndFeel) c.newInstance();
 
-                if (laf.isSupportedLookAndFeel()) {
-                  if (MagellanLookAndFeel.checkJREIsRunning(jre)) {
-                    if ((theme == null) || MagellanLookAndFeel.canLoadSkinLFThemepack(theme)) {
-                      MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name
-                          + "," + clazz + "): " + laf.getID());
-                      lookAndFeels.put(name, new MagLookAndFeelWrapper(name, laf, theme));
+              if (laf.isSupportedLookAndFeel()) {
+                if (MagellanLookAndFeel.checkJREIsRunning(jre)) {
+                  if ((theme == null) || MagellanLookAndFeel.canLoadSkinLFThemepack(theme)) {
+                    MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name
+                        + "," + clazz + "): " + laf.getID());
+                    lookAndFeels.put(name, new MagLookAndFeelWrapper(name, laf, theme));
 
-                      // defaultMap.put(prio,name);
-                    }
+                    // defaultMap.put(prio,name);
                   }
                 }
-              } catch (ClassNotFoundException e) {
-                if (MagellanLookAndFeel.log.isDebugEnabled()) {
-                  MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name + ","
-                      + clazz + "): class not found.");
-                }
-              } catch (InstantiationException e) {
-                MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeel(" + name + ","
-                    + clazz + "): unable to instantiate.");
-              } catch (IllegalAccessException e) {
-                MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeel(" + name + ","
-                    + clazz + "): unable to access instantiation method.");
               }
+            } catch (ClassNotFoundException e) {
+              if (MagellanLookAndFeel.log.isDebugEnabled()) {
+                MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name + ","
+                    + clazz + "): class not found.");
+              }
+            } catch (InstantiationException e) {
+              MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeel(" + name + ","
+                  + clazz + "): unable to instantiate.");
+            } catch (IllegalAccessException e) {
+              MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeel(" + name + ","
+                  + clazz + "): unable to access instantiation method.");
             }
           }
         }
+
       } catch (IOException ioe) {
         MagellanLookAndFeel.log.error(
             "MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini", ioe);
@@ -342,13 +341,13 @@ public class MagellanLookAndFeel {
 
     } catch (IllegalAccessException e) {
       MagellanLookAndFeel.log
-      .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to access instantiation method.");
+          .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to access instantiation method.");
     } catch (NoSuchMethodException e) {
       MagellanLookAndFeel.log
-      .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to find method setSkin.");
+          .error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to find method setSkin.");
     } catch (InvocationTargetException e) {
       MagellanLookAndFeel.log
-      .error("MagellanLookAndfeel.prepareSkinLFTheme(): InvocationTargetException.");
+          .error("MagellanLookAndfeel.prepareSkinLFTheme(): InvocationTargetException.");
     }
 
     return false;
@@ -365,7 +364,7 @@ public class MagellanLookAndFeel {
     LookAndFeel olaf = MagellanLookAndFeel.getLookAndFeels().get(laf);
 
     if (olaf == null) {
-      MagellanLookAndFeel.log.error("Could not switch look and feel to " + laf + " (" + olaf+")");
+      MagellanLookAndFeel.log.error("Could not switch look and feel to " + laf + " (" + olaf + ")");
 
       return false;
     }
@@ -427,9 +426,7 @@ public class MagellanLookAndFeel {
       this.theme = theme;
     }
 
-    /**
-     * DOCUMENT-ME
-     */
+    @SuppressWarnings("unused")
     public String getTheme() {
       return theme;
     }

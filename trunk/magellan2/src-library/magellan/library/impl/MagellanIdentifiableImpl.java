@@ -158,8 +158,7 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
     if (!(getClass().isInstance(o) || o.getClass().isInstance(this)))
       throw new ClassCastException("invariant types");
 
-    int result;
-    return result = getID().compareTo(((MagellanIdentifiableImpl) o).getID());
+    return getID().compareTo(((MagellanIdentifiableImpl) o).getID());
     // if (result == 0 && getClass() != o.getClass())
     // return getClass().toString().compareTo(o.getClass().toString());
     //

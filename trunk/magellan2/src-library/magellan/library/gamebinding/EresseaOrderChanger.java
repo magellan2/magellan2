@@ -335,14 +335,6 @@ public class EresseaOrderChanger implements OrderChanger {
     u.refreshRelations();
   }
 
-  private List<String> toLowerCase(List<String> orders, Locale locale) {
-    ArrayList<String> result = new ArrayList<String>();
-    for (String order : orders) {
-      result.add(order.toLowerCase(locale));
-    }
-    return result;
-  }
-
   public boolean isLongOrder(Order order) {
     return order.isLong();
   }
@@ -586,8 +578,7 @@ public class EresseaOrderChanger implements OrderChanger {
       }
     }
 
-    String zaubere;
-    if (map.containsKey(zaubere = EresseaConstants.O_CAST)) {
+    if (map.containsKey(EresseaConstants.O_CAST)) {
       // multiple ZAUBERE allowed
       if (map.size() == 1)
         return -1;
@@ -628,25 +619,6 @@ public class EresseaOrderChanger implements OrderChanger {
 
   }
 
-  private int findFirst(Orders orders, String... orderTypes) {
-    return findNth(orders, 1, orderTypes);
-  }
-
-  private int findNth(Orders orders, int n, String... orderTypes) {
-    int line = 0;
-    int found = 0;
-    for (Order order : orders) {
-      for (String candidate : orderTypes)
-        if (orders.isToken(order, 0, candidate)) {
-          found++;
-          if (found == n)
-            return line;
-        }
-      line++;
-    }
-    return -1;
-  }
-
   /**
    * A map that counts occurrences of keys
    */
@@ -668,8 +640,7 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   /**
-   * @see magellan.library.gamebinding.OrderChanger#addGiveOrder(magellan.library.Unit,
-   *      magellan.library.Unit, int, magellan.library.StringID)
+   * @see magellan.library.gamebinding.OrderChanger#addGiveOrder(Unit, Unit, int, StringID, String)
    */
   public void addGiveOrder(Unit source, Unit target, int amount, StringID item, String comment) {
     String sItem = "";

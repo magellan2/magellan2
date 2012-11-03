@@ -35,7 +35,7 @@ public interface ContextFactory {
    * @param argument The object for which the context menu should be created
    * @param selection Additional selected objects
    * @param node
-   * @return
+   * @return A context menu
    */
   public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
       SelectionEvent selection, DefaultMutableTreeNode node);

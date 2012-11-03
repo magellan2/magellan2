@@ -80,7 +80,7 @@ public class MemoryManagment {
    * checks, if there is enough free memory for the JVM if not, invokes the garbage collector if not
    * successful returns false, otherwise true
    * 
-   * @param The requested amount of memory.
+   * @param min The requested amount of memory.
    * @return true, if enough memory available
    */
   public static boolean isFreeMemory(long min) {

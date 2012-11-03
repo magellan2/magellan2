@@ -215,7 +215,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
    * 
    * @return Returns container.
    */
-  public UnitContainer getContainer() {
+  public UnitContainer getUnitContainer() {
     return container;
   }
 

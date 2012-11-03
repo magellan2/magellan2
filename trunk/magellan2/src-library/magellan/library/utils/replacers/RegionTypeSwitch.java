@@ -69,8 +69,6 @@ public class RegionTypeSwitch extends AbstractRegionSwitch {
 
   /**
    * Returns the defining region type ID.
-   * 
-   * @return
    */
   public StringID getStringID() {
     return id;

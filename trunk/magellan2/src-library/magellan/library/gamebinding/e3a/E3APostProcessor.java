@@ -9,13 +9,12 @@ package magellan.library.gamebinding.e3a;
 
 import magellan.library.GameData;
 import magellan.library.gamebinding.EresseaPostProcessor;
-import magellan.library.utils.logging.Logger;
 
 /**
  * @author $Author: stm$
  */
 public class E3APostProcessor extends EresseaPostProcessor {
-  private static final Logger log = Logger.getInstance(E3APostProcessor.class);
+  // private static final Logger log = Logger.getInstance(E3APostProcessor.class);
   private static final E3APostProcessor singleton = new E3APostProcessor();
 
   protected E3APostProcessor() {

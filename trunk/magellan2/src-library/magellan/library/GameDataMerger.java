@@ -2000,7 +2000,6 @@ public class GameDataMerger {
     }
 
     if ((resultRegion.resources() != null) && !resultRegion.resources().isEmpty()) {
-      List<ItemType> deleteRegionRessources = null;
       for (final RegionResource newRes : resultRegion.resources()) {
         final RegionResource curRes = curRegion.getResource(newRes.getType());
 
@@ -2379,14 +2378,13 @@ public class GameDataMerger {
     /*
      * True, when curUnit is seen by the faction it belongs to and is therefore fully specified.
      */
-    final boolean curWellKnown = !curUnit.ordersAreNull() || (curUnit.getCombatStatus() != -1);
+    final boolean curWellKnown = curUnit.isDetailsKnown();
 
     /*
      * True, when newUnit is seen by the faction it belongs to and is therefore fully specified.
      * This is only meaningful in the second pass.
      */
-    final boolean newWellKnown =
-        !resultUnit.ordersAreNull() || (resultUnit.getCombatStatus() != -1);
+    final boolean newWellKnown = resultUnit.isDetailsKnown();
 
     if (curUnit.getName() != null) {
       resultUnit.setName(curUnit.getName());

@@ -145,10 +145,6 @@ public class DockingFrameworkBuilder {
       } else {
         window = createDefault(viewMap, views);
       }
-      if (window == null) {
-        ErrorWindow errorWindow = new ErrorWindow("Could not load docking layouts.");
-        errorWindow.open();
-      }
     } catch (NullPointerException npe) {
       // okay, sometimes this happens without a reason (setToolTipText())...
       DockingFrameworkBuilder.log.error("NPE", npe);
@@ -156,6 +152,11 @@ public class DockingFrameworkBuilder {
       DockingFrameworkBuilder.log.fatal(t.getMessage(), t);
       ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t.getMessage(), "", t);
       errorWindow.setVisible(true);
+    }
+    if (window == null) {
+      ErrorWindow errorWindow = new ErrorWindow("Could not load docking layouts.");
+      errorWindow.open();
+      throw new RuntimeException("Could not load docking layouts.");
     }
 
     DockingWindowsTheme theme = new ShapedGradientDockingTheme();

@@ -194,26 +194,26 @@ public class MaintenanceInspector extends AbstractInspector {
     return movementOrderLine;
   }
 
-  private boolean hasMovementOrder(Unit u) {
-    Orders orders = u.getOrders2();
-    for (Order order : orders) {
-      if (order.isEmpty() || order.getProblem() != null) {
-        continue;
-      }
-      if (orders.isToken(order, 0, EresseaConstants.O_MOVE)
-          || orders.isToken(order, 0, EresseaConstants.O_ROUTE))
-        return true;
-      try {
-        if (orders.isToken(order, 0, EresseaConstants.O_FOLLOW)) {
-          if (orders.isToken(order, 1, EresseaConstants.O_UNIT))
-            return true;
-        }
-      } catch (Exception e) {
-        Logger.getInstance(getClass()).fine("", e);
-      }
-    }
-    return false;
-  }
+  // private boolean hasMovementOrder(Unit u) {
+  // Orders orders = u.getOrders2();
+  // for (Order order : orders) {
+  // if (order.isEmpty() || order.getProblem() != null) {
+  // continue;
+  // }
+  // if (orders.isToken(order, 0, EresseaConstants.O_MOVE)
+  // || orders.isToken(order, 0, EresseaConstants.O_ROUTE))
+  // return true;
+  // try {
+  // if (orders.isToken(order, 0, EresseaConstants.O_FOLLOW)) {
+  // if (orders.isToken(order, 1, EresseaConstants.O_UNIT))
+  // return true;
+  // }
+  // } catch (Exception e) {
+  // Logger.getInstance(getClass()).fine("", e);
+  // }
+  // }
+  // return false;
+  // }
 
   public Collection<ProblemType> getTypes() {
     if (types == null) {

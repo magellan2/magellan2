@@ -970,7 +970,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         }
 
         if (checkSpells) {
-          for (Spell sp : data.spells().values()) {
+          for (Spell sp : data.getSpells()) {
             trans.remove(sp.getID().toString());
             trans.remove(sp.getName());
 

@@ -133,8 +133,6 @@ class MagellanOrdersImplementation implements Orders {
 
   /**
    * Returns an unmodifiable copy of this object.
-   * 
-   * @see magellan.library.Orders#getView()
    */
   public Orders getView() {
     return new MagellanOrdersImplementation(unit, Collections.unmodifiableList(orders));

@@ -318,8 +318,6 @@ public class HTTPClient {
 
   /**
    * Liefert true genau dann, wenn keine verbindung hergestellt werden konnte
-   * 
-   * @return
    */
   public boolean isConnectionFailed() {
     return connectionFailed;

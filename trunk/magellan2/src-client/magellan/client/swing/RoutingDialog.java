@@ -394,13 +394,14 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     /** whether to replace the unit's orders */
     public boolean replaceOrders;
 
+    /** The route mode, a combination of {@link RoutePlanner}.MODE_... constants */
     public int mode;
 
     /**
      * Creates a new RetValue object.
      * 
      * @param d The destination
-     * @param route whether to create a route rather than a simple path
+     * @param mode The mode, a combination of {@link RoutePlanner}.MODE_... constants
      * @param range whether to consider the ship's range
      * @param vorlage whether to create Vorlage orders
      * @param replace whether to replace the unit's orders

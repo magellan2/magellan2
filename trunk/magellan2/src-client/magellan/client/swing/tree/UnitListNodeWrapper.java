@@ -35,7 +35,6 @@ public class UnitListNodeWrapper extends DefaultNodeWrapper implements SupportsC
   /** The student list type */
   public static final int STUDENT_LIST = 1;
 
-  private int type = 0;
   protected Collection<Unit> units = null;
   protected String text = null;
   protected String clipboardValue = null;
@@ -43,20 +42,6 @@ public class UnitListNodeWrapper extends DefaultNodeWrapper implements SupportsC
   protected Collection<String> icons;
   protected Collection<String> returnIcons;
   protected DetailsNodeWrapperDrawPolicy adapter;
-
-  /**
-   * Creates new UnitListNodeWrapper
-   * 
-   * @param text
-   * @param clipboardValue
-   * @param units
-   * @param type
-   * @param typed nodes seem to have fallen out of use...
-   */
-  public UnitListNodeWrapper(String text, String clipboardValue, Collection<Unit> units, int type) {
-    this(text, clipboardValue, units);
-    this.type = type;
-  }
 
   /**
    * Creates a new UnitListNodeWrapper object.
@@ -92,15 +77,6 @@ public class UnitListNodeWrapper extends DefaultNodeWrapper implements SupportsC
     this(text, clipboardValue, units);
     this.icons = icons;
 
-  }
-
-  /**
-   * @return the list type
-   * @deprecated This seems to have fallen out of use.
-   */
-  @Deprecated
-  public int getType() {
-    return type;
   }
 
   /**
@@ -146,6 +122,7 @@ public class UnitListNodeWrapper extends DefaultNodeWrapper implements SupportsC
   /**
    * @see magellan.client.swing.tree.CellObject#emphasized()
    */
+  @Override
   public boolean emphasized() {
     return false;
   }
@@ -154,8 +131,8 @@ public class UnitListNodeWrapper extends DefaultNodeWrapper implements SupportsC
    * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
    *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
-  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
-    return init(settings, "UnitListNodeWrapper", adapter);
+  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy anAdapter) {
+    return init(settings, "UnitListNodeWrapper", anAdapter);
   }
 
   /**
@@ -163,15 +140,15 @@ public class UnitListNodeWrapper extends DefaultNodeWrapper implements SupportsC
    *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
-      NodeWrapperDrawPolicy adapter) {
-    if (adapter == null) {
-      adapter = createSimpleDrawPolicy(settings, prefix);
+      NodeWrapperDrawPolicy anAdapter) {
+    if (anAdapter == null) {
+      anAdapter = createSimpleDrawPolicy(settings, prefix);
     }
 
-    adapter.addCellObject(this);
-    this.adapter = (DetailsNodeWrapperDrawPolicy) adapter;
+    anAdapter.addCellObject(this);
+    this.adapter = (DetailsNodeWrapperDrawPolicy) anAdapter;
 
-    return adapter;
+    return anAdapter;
   }
 
   /**

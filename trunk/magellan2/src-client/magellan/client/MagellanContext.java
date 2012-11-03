@@ -23,21 +23,25 @@ import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Resources;
 import magellan.library.utils.replacers.ReplacerHelp;
 
-// FIXME use this class more!?!
 /**
  * This class keeps all anchors to global resources e.g. EventDispatcher, Properties...<br>
  */
 public class MagellanContext implements MagellanEnvironment {
   private Properties settings;
-  private Properties completionSettings;
   private EventDispatcher dispatcher;
   private GameData data;
   private Client client;
 
+  /**
+   * Creates a context for the given client.
+   */
   public MagellanContext(Client client) {
     this.client = client;
   }
 
+  /**
+   * Returns the associated client.
+   */
   public Client getClient() {
     return client;
   }
@@ -50,7 +54,7 @@ public class MagellanContext implements MagellanEnvironment {
   }
 
   /**
-   * DOCUMENT-ME
+   * Assigns the Properties for the client.
    */
   public void setProperties(Properties p) {
     settings = p;
@@ -63,11 +67,12 @@ public class MagellanContext implements MagellanEnvironment {
     return dispatcher;
   }
 
+  /**
+   * @param d
+   */
   public void setEventDispatcher(EventDispatcher d) {
     dispatcher = d;
     dispatcher.setMagellanContext(this);
-    // FIXME should this be here?
-    // dispatcher.addGameDataListener(Units.getGameDataListener());
   }
 
   /**
@@ -117,25 +122,4 @@ public class MagellanContext implements MagellanEnvironment {
     replacerHelp = new ReplacerHelp(getEventDispatcher(), getGameData());
   }
 
-  /**
-   * Returns the completion settings (from magellan.ini)
-   * 
-   * @return the completion settings (from magellan.ini) or <code>null</code>.
-   * @deprecated extra completion settings are no longer supported
-   */
-  @Deprecated
-  public Properties getCompletionProperties() {
-    return completionSettings;
-  }
-
-  /**
-   * Sets additional completion settings (e.g. from magellan_completions.ini)
-   * 
-   * @param completionSettings2
-   * @deprecated extra completion settings are no longer supported
-   */
-  @Deprecated
-  public void setCompletionProperties(Properties completionSettings2) {
-    completionSettings = completionSettings2;
-  }
 }

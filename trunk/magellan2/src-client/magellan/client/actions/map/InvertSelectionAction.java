@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 
 import magellan.client.Client;
 import magellan.library.CoordinateID;
+import magellan.library.Region;
 
 /**
  * Inverts the current selections (selects unselected regions). Works only on current layer!
@@ -38,7 +39,8 @@ public class InvertSelectionAction extends AbstractSelectionAction {
     getSelectedRegions().clear();
 
     // add all regions that belong to the active level XOR were selected befor
-    for (CoordinateID c : client.getData().regions().keySet()) {
+    for (Region r : client.getData().getRegions()) {
+      CoordinateID c = r.getCoordinate();
       if ((c.getZ() == client.getLevel()) ^ client.getSelectedRegions().containsKey(c)) {
         getSelectedRegions().put(c, client.getData().getRegion(c));
       }

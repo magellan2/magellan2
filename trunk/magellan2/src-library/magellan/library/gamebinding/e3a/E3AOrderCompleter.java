@@ -38,7 +38,10 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   /**
    * @see magellan.library.gamebinding.EresseaOrderCompleter#getCompletions(magellan.library.Unit,
    *      java.lang.String, java.util.List) FIXME implement E2K9 subtleties!
+   * @deprecated Use {@link #getCompletions(Unit, String)}
+   * @see EresseaOrderCompleter#getCompletions(Unit, String, List)
    */
+  @Deprecated
   @Override
   public List<Completion> getCompletions(Unit u, String line, List<Completion> old) {
     return super.getCompletions(u, line, old);

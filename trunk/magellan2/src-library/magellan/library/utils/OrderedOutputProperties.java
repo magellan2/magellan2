@@ -24,7 +24,7 @@ import java.util.Properties;
 import magellan.library.utils.logging.Logger;
 
 /**
- * DOCUMENT ME!
+ * A Properties class with sorted keys.
  * 
  * @author Andreas Gampe
  * @version 1.0
@@ -46,7 +46,7 @@ public class OrderedOutputProperties extends Properties {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns a sorted enumeration of all keys.
    * 
    * @see java.util.Hashtable#keys()
    */
@@ -94,7 +94,7 @@ public class OrderedOutputProperties extends Properties {
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     // The class cast exception is caught...
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public int compare(Object o1, Object o2) {
       if (o1 == null)
         return Integer.MAX_VALUE;
@@ -105,7 +105,7 @@ public class OrderedOutputProperties extends Properties {
         Comparable c2 = (Comparable) o2;
         try {
           return c1.compareTo(c2);
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
           Logger.getInstance(OrderedOutputProperties.class).warn(e);
         }
       }

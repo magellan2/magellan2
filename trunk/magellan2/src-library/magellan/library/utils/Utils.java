@@ -52,9 +52,7 @@ public class Utils {
   }
 
   /**
-   * Parses a string into a int, if possible
-   * 
-   * otherwise it returns 0.
+   * Parses a string into a int, if possible otherwise it returns 0.
    */
   public static int getIntValue(String value) {
     if (value == null)
@@ -67,9 +65,7 @@ public class Utils {
   }
 
   /**
-   * Parses a string into a long, if possible
-   * 
-   * otherwise it returns 0d.
+   * Parses a string into a long, if possible otherwise it returns 0d.
    */
   public static long getLongValue(String value) {
     if (value == null)
@@ -468,7 +464,7 @@ public class Utils {
   }
 
   private static final String hex[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B",
-    "C", "D", "E", "F" };
+      "C", "D", "E", "F" };
 
   /**
    * Returns the hex value of a decimal number

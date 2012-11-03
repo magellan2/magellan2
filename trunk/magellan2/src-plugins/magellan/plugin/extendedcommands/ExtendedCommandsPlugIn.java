@@ -205,8 +205,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
 
   /**
    * @see magellan.client.swing.context.UnitContextMenuProvider#createContextMenu(EventDispatcher,
-   *      GameData, Unit, Collection), magellan.library.GameData, magellan.library.Unit,
-   *      java.util.Collection)
+   *      GameData, Unit, Collection)
    */
   public JMenuItem createContextMenu(final EventDispatcher dispatcher, final GameData data,
       final Unit unit, Collection<?> selectedObjects) {

@@ -322,7 +322,7 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<IntegerID, MessageType> msgTypeView();
 
   /**
-   * All magic spells in this game data. The keys are <tt>Integer</tt> objects containg the id of
+   * All magic spells in this game data. The keys are <tt>Integer</tt> objects containing the id of
    * each spell. The values consist of objects of class <tt>Spell</tt>.
    * 
    * @return returns the spells map

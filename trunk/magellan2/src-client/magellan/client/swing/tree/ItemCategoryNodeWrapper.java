@@ -160,6 +160,7 @@ public class ItemCategoryNodeWrapper extends DefaultNodeWrapper {
   /**
    * @see magellan.client.swing.tree.CellObject#emphasized()
    */
+  @Override
   public boolean emphasized() {
     return false;
   }

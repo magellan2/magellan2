@@ -39,9 +39,9 @@ import magellan.test.MagellanTestWithResources;
 import org.junit.Test;
 
 /**
- * DOCUMENT-ME
+ * Test for game data merger.
  * 
- * @author ...
+ * @author stm
  * @version 1.0, Feb 28, 2011
  */
 public class GameDataMergerTest extends MagellanTestWithResources {
@@ -51,10 +51,13 @@ public class GameDataMergerTest extends MagellanTestWithResources {
   private GameData gd02;
   private GameData gd11;
   private GameData gd12;
+  @SuppressWarnings("unused")
   private GameData gd21;
+  @SuppressWarnings("unused")
   private GameData gd22;
   private Unit unit011;
   private Unit unit021;
+  @SuppressWarnings("unused")
   private Unit unit012;
   private Unit unit111;
   private Unit unit121;
@@ -64,10 +67,11 @@ public class GameDataMergerTest extends MagellanTestWithResources {
   private Faction faction012;
   private Faction faction022;
   private Faction faction111;
+  @SuppressWarnings("unused")
   private Faction faction121;
   private Faction faction112;
+  @SuppressWarnings("unused")
   private Faction faction122;
-
 
   private void create(String game) throws Exception {
     builder = new GameDataBuilder();

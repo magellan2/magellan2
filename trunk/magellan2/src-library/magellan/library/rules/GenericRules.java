@@ -92,12 +92,14 @@ public class GenericRules implements Rules {
             break;
           }
         }
+        if (constructor == null)
+          throw new RuntimeException("no constructor found");
         GenericRules.addObjectType(objectType = constructor.newInstance(id), map, mapNames);// new
         // T(id),
         // mapT,
         // mapTNames);
       } catch (Exception e) {
-        GenericRules.log.error("class has no constructor C(ID)");
+        GenericRules.log.error("class has no constructor C(ID)", e);
         throw new RuntimeException(e);
       }
       objectType.setName(id.toString());

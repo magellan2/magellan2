@@ -111,6 +111,7 @@ public class FileHistory {
    * Uses the current contents of the file history bucket to remove these menu items from the file
    * history menu.
    */
+  @SuppressWarnings("unused")
   public void clearFileHistoryMenu() {
     if (history != null) {
       for (FileHistoryAction fileHistoryAction : history) {

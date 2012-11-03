@@ -64,7 +64,6 @@ import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.Units;
-import magellan.library.utils.logging.Logger;
 
 /**
  * A class for offering possible completions on incomplete orders. This class relies on the
@@ -74,7 +73,7 @@ import magellan.library.utils.logging.Logger;
  * with any of the cmpltX methods. They are solely called by the internal <tt>OrderParser</tt>.
  */
 public class EresseaOrderCompleter implements Completer {
-  private static final Logger log = Logger.getInstance(EresseaOrderCompleter.class);
+  // private static final Logger log = Logger.getInstance(EresseaOrderCompleter.class);
   private static final Comparator<Completion> prioComp = new PrioComp();
   private OrderParser parser;
   private List<Completion> completions;
@@ -85,6 +84,7 @@ public class EresseaOrderCompleter implements Completer {
   protected String oneQuote = "\"";
   protected String twoQuotes = "\"\"";
   protected String spaceQuotes = " \"\"";
+  private List<OrderToken> parserTokens = null;
 
   /**
    * Returns the value of completerSettingsProvider.
@@ -131,15 +131,28 @@ public class EresseaOrderCompleter implements Completer {
     completions = new LinkedList<Completion>();
     // getParser().read(new StringReader(cmd));
 
-    final List<OrderToken> tokens = getParser().parse(cmd, u.getLocale()).getTokens();
+    parserTokens = getParser().parse(cmd, u.getLocale()).getTokens();
 
-    if ((tokens.size() > 1) && (tokens.get(tokens.size() - 2).ttype == OrderToken.TT_COMMENT))
+    if ((parserTokens.size() > 1)
+        && (parserTokens.get(parserTokens.size() - 2).ttype == OrderToken.TT_COMMENT))
       return Collections.emptyList();
     else
-      return crop(completions, tokens);
+      return crop(completions, parserTokens);
   }
 
-  public OrderParser getParser() {
+  /**
+   * @see magellan.library.completion.Completer#getCompletions(magellan.library.Unit,
+   *      java.lang.String, java.util.List)
+   * @deprecated Use {@link #getCompletions(Unit, String)}
+   */
+  @Deprecated
+  public List<Completion> getCompletions(Unit u, String line, List<Completion> old) {
+    return this.getCompletions(u, line);
+    // final List<OrderToken> tokens = getParser().parse(line, u.getLocale()).getTokens();
+    // return crop(old, tokens);
+  }
+
+  protected OrderParser getParser() {
     return parser;
   }
 
@@ -2772,20 +2785,6 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   /**
-   * @see magellan.library.completion.Completer#getCompletions(magellan.library.Unit,
-   *      java.lang.String, java.util.List)
-   */
-  public List<Completion> getCompletions(Unit u, String line, List<Completion> old) {
-    if (true || (old == null) || (old.size() == 0))
-      return this.getCompletions(u, line);
-    else {
-      // getParser().read(new StringReader(line));
-      final List<OrderToken> tokens = getParser().parse(line, u.getLocale()).getTokens();
-      return crop(old, tokens);
-    }
-  }
-
-  /**
    * Returns the value of data.
    * 
    * @return Returns data.
@@ -2843,6 +2842,10 @@ public class EresseaOrderCompleter implements Completer {
    */
   public Unit getUnit() {
     return unit;
+  }
+
+  public List<OrderToken> getParserTokens() {
+    return parserTokens;
   }
 
 }

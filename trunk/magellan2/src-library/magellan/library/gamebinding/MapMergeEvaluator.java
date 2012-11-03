@@ -144,7 +144,8 @@ public class MapMergeEvaluator {
    * @param data
    * @param fromLevel
    * @param toLevel
-   * @return
+   * @return A relation between the specified levels, or <code>null</code> if no mapping can be
+   *         determined
    */
   public final LevelRelation getLevelRelation(GameData data, int fromLevel, int toLevel) {
     Collection<LevelMapping> mappingVariants = getLevelMappingVariants(fromLevel, toLevel);

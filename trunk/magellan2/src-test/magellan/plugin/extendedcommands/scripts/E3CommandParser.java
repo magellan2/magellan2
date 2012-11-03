@@ -175,8 +175,13 @@ public class E3CommandParser {
   public static String NULL = "null";
   /** The NOT token (for auto and others) */
   public static String NOT = "NICHT";
+
   /** The LONG token (for clear) */
-  public static String LONG = "lang";
+  public static String LONG = "$lang";
+  /** The SHORT token (for clear) */
+  public static String SHORT = "$kurz";
+  /** The COMMENT token (for clear) */
+  public static String COMMENT = "$kommentar";
 
   private static String S_ENDURANCE = EresseaConstants.S_AUSDAUER.toString();
 
@@ -245,9 +250,12 @@ public class E3CommandParser {
   protected Map<Faction, Set<Unit>> requiredUnits = new HashMap<Faction, Set<Unit>>();
 
   /**
-   * Current state for the Lösche command
+   * Current state for the Loesche command
    */
   protected String clear = null;
+  /** Current prefix for the Loesche command */
+  protected String clearPrefix = "";
+
   private int progress = -1;
 
   /**
@@ -317,7 +325,7 @@ public class E3CommandParser {
     // tries to execute them.
     if (region == null) {
       boolean go = first == null;
-      for (Region r : world.regions().values()) {
+      for (Region r : world.getRegions()) {
         if (r == first) {
           go = true;
         }
@@ -424,7 +432,7 @@ public class E3CommandParser {
    * orders. Otherwise X is decreased by one.<br />
    * <code>// $cript [rest [period [length]] text</code> -- Adds text (or commands) to the orders<br />
    * <code>// $cript auto [NICHT]|[length [period]]</code> -- autoconfirm orders<br />
-   * <code>// $cript Loeschen [lang]</code> -- clears all orders except comments<br />
+   * <code>// $cript Loeschen [$kurz] [<prefix>]</code> -- clears orders except comments<br />
    * <code>// $cript GibWenn receiver [JE] amount item [warning]</code> -- add give order (if
    * possible)<br />
    * <code>// $cript Benoetige minAmount [maxAmount] item [priority]</code><br />
@@ -465,9 +473,9 @@ public class E3CommandParser {
     clear = null;
 
     // NOTE: must not change currentUnit's orders directly! Always change newOrders!
-    for (Object o : currentUnit.getOrders()) {
+    for (Order o : currentUnit.getOrders2()) {
       ++line;
-      currentOrder = (String) o;
+      currentOrder = o.getText();
       String[] tokens = detectScriptCommand(currentOrder);
       if (tokens == null) {
         // add order if
@@ -597,20 +605,28 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript Loeschen [lang]</code><br />
-   * Remove orders except comments from here on. If lang=={@value #LONG}, remove only long and
-   * permanent (@) orders, otherwise remove all orders.
+   * <code>// $cript Loeschen [$kurz] [<prefix>]</code><br />
+   * Remove orders except comments from here on. If "$kurz", remove all orders, otherwise only long
+   * and permanent (@) orders. If prefix is set, remove only orders starting with that prefix.
    * 
    * @param tokens
    */
   protected void commandClear(String[] tokens) {
+    clearPrefix = "";
     if (tokens.length == 1) {
-      clear = ALLOrder;
-    } else if (tokens.length == 2 && tokens[1].equalsIgnoreCase(LONG)) {
       clear = LONG;
     } else {
-      addNewError("zu viele Argumente");
-      return;
+      if (tokens[1].equalsIgnoreCase(SHORT)) {
+        clear = ALLOrder;
+        clearPrefix =
+            currentOrder.substring(Math.min(currentOrder.length(), currentOrder.indexOf(SHORT)
+                + SHORT.length() + 1));
+      } else {
+        clear = LONG;
+        clearPrefix =
+            currentOrder.substring(Math.min(currentOrder.length(), currentOrder.indexOf("Loeschen")
+                + "Loeschen".length() + 1));
+      }
     }
     for (int i = 0; i < newOrders.size(); i++) {
       String order = newOrders.get(i);
@@ -624,10 +640,13 @@ public class E3CommandParser {
   protected boolean shallClear(String order) {
     if (clear == null)
       return false;
-    return !order.trim().startsWith(PCOMMENTOrder)
-        && !order.trim().startsWith(COMMENTOrder)
+    String trimmed = order.trim();
+
+    return !trimmed.startsWith(PCOMMENTOrder)
+        && !trimmed.startsWith(COMMENTOrder)
         && (clear == ALLOrder || (clear == LONG && world.getGameSpecificStuff().getOrderChanger()
-            .isLongOrder(order)));
+            .isLongOrder(order)))
+        && (clearPrefix == null || clearPrefix.length() == 0 || trimmed.startsWith(clearPrefix));
   }
 
   /**
@@ -1674,7 +1693,8 @@ public class E3CommandParser {
    * reached, research herbs.
    */
   protected void commandKontrolle(String[] tokens) {
-    for (String order : currentUnit.getOrders()) {
+    for (Order o : currentUnit.getOrders2()) {
+      String order = o.getText();
       if (order.startsWith(ROUTEOrder)) {
         if (order.substring(order.indexOf(" ")).trim().startsWith(PAUSEOrder)) {
           // end of route, FORSCHE
@@ -1760,7 +1780,7 @@ public class E3CommandParser {
 
     Race effRace = race == null ? currentUnit.getRace() : helper.getRace(race);
     if (effRace == null) {
-      addNewError("Unknown race");
+      addNewError("Unbekannte Rasse");
       return;
     }
 
@@ -1771,19 +1791,19 @@ public class E3CommandParser {
     int amount = world.getGameSpecificRules().getRecruitmentLimit(currentUnit, effRace);
 
     if (currentUnit.getPersons() + amount >= max) {
-      addNewWarning("recruitment limit reached");
+      addNewWarning("Rekrutierungslimit erreicht");
       amount = Math.min(max - currentUnit.getPersons(), amount);
     }
 
     if (amount < min) {
-      addNewError("not enough recruits");
+      addNewError("Nicht genug Rekruten");
     }
 
     if (effRace.getRecruitmentCosts() > 0) {
       int costs = amount * effRace.getRecruitmentCosts();
       addNeed("Silber", currentUnit, costs, costs, DEFAULT_PRIORITY);
     } else {
-      addNewWarning("unknown recruitment costs");
+      addNewWarning("Rekrutierungskosten unbekannt");
     }
     if (amount > 0) {
       getRecruitOrder(amount, effRace);
@@ -2727,7 +2747,8 @@ public class E3CommandParser {
   public static void parseShipLoaderTag(magellan.library.Region r) {
     for (Unit u : r.units()) {
       String name = null;
-      for (String line : u.getOrders()) {
+      for (Order order : u.getOrders2()) {
+        String line = order.getText();
         java.util.regex.Pattern p = Pattern.compile(".*[$]([^$]*)[$]sl.*");
         java.util.regex.Matcher m = p.matcher(line);
         if (m.matches()) {
@@ -2813,9 +2834,9 @@ public class E3CommandParser {
 
         // loop over orders
         line = 0;
-        for (String o : u.getOrders()) {
+        for (Order o : u.getOrders2()) {
           ++line;
-          currentOrder = o;
+          currentOrder = o.getText();
 
           if (currentOrder.startsWith("// #")) {
             String[] tokens = detectVorlageCommand(currentOrder);

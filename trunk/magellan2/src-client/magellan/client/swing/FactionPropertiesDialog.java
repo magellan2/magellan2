@@ -251,8 +251,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
         int pos = translationList.getSelectedIndex();
         if (pos == -1)
           return;
-        DefaultListModel model = getModel();
-        model.remove(pos);
+        DefaultListModel listModel = getModel();
+        listModel.remove(pos);
       }
     });
 

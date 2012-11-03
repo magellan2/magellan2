@@ -149,11 +149,8 @@ public class EresseaConstants {
   public static final String O_COMBAT_FLEE = "COMBAT_FLEE";
 
   /**
-   * argument of COMBAT order
-   * 
-   * @deprecated "KÄMPFE" is now preferred to "KÄMPFE VORNE"
+   * argument of COMBAT order NOTE: "KÄMPFE" is now preferred to "KÄMPFE VORNE"
    */
-  @Deprecated
   public static final String O_COMBAT_FRONT = "COMBAT_FRONT";
 
   /** argument of COMBAT order */

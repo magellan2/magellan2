@@ -127,9 +127,9 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     mainPanel.add(label, c);
 
     // Vector<FactionItem> items = new Vector<FactionItem>();
-    Vector<FactionItem> items = getProbablyPriviligedFactionItems(data);
+    Vector<FactionItem> items = getProbablyPriviligedFactionItems();
     if (items == null) {
-      items = getAllFactionItems(data);
+      items = getAllFactionItems();
     }
     if (items.size() > 1) {
       // add only a "plz select" if we have more than one candidate
@@ -248,9 +248,9 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
    * @param data
    * @return
    */
-  private boolean isProbablyPriviligedFaction(Faction f, GameData data) {
+  private boolean isProbablyPriviligedFaction(Faction f) {
     for (Unit u : data.getUnits()) {
-      if (u.getFaction().equals(f) && u.getCombatStatus() != -1)
+      if (u.getFaction().equals(f) && u.isDetailsKnown())
         return true;
     }
     return false;
@@ -258,14 +258,11 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
 
   /**
    * Builds a list with factions with </code>isProbablyPriviligedFaction=true</code>
-   * 
-   * @param data
-   * @return
    */
-  private Vector<FactionItem> getProbablyPriviligedFactionItems(GameData data) {
+  private Vector<FactionItem> getProbablyPriviligedFactionItems() {
     Vector<FactionItem> erg = null;
     for (Faction f : data.getFactions()) {
-      if (isProbablyPriviligedFaction(f, data)) {
+      if (isProbablyPriviligedFaction(f)) {
         if (erg == null) {
           erg = new Vector<FactionItem>();
         }
@@ -278,10 +275,9 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
   /**
    * Builds a list with factions with </code>isProbablyPriviligedFaction=true</code>
    * 
-   * @param data
    * @return
    */
-  private Vector<FactionItem> getAllFactionItems(GameData data) {
+  private Vector<FactionItem> getAllFactionItems() {
     Vector<FactionItem> erg = null;
     for (Faction f : data.getFactions()) {
       if (erg == null) {

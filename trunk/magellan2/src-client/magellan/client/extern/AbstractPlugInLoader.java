@@ -103,7 +103,7 @@ public abstract class AbstractPlugInLoader<T> {
    * 
    */
   protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader,
-      Class<?> externalModuleClass, String path) {
+      Class<T> externalModuleClass, String path) {
     return getClassesFromPath(resLoader, externalModuleClass, path, null, getLastCapitalizedString(
         externalModuleClass.getName()).toLowerCase()
         + ".class");
@@ -113,7 +113,7 @@ public abstract class AbstractPlugInLoader<T> {
    * 
    */
   protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader,
-      Class<?> externalModuleClass, String path, String packagePrefix, String postfix) {
+      Class<T> externalModuleClass, String path, String packagePrefix, String postfix) {
     Collection<Class<T>> classes = new ArrayList<Class<T>>();
 
     try {
@@ -157,8 +157,10 @@ public abstract class AbstractPlugInLoader<T> {
               // AbstractPlugInLoader.log.fine("entry3 " + interfaces.length);
               boolean found = false;
 
-              for (Class<?> ainterface : interfaces) {
-                AbstractPlugInLoader.log.debug("interface: " + ainterface.getName());
+              if (AbstractPlugInLoader.log.isDebugEnabled()) {
+                for (Class<?> ainterface : interfaces) {
+                  AbstractPlugInLoader.log.debug("interface: " + ainterface.getName());
+                }
               }
 
               for (int i = 0; (i < interfaces.length) && !found; i++) {
@@ -170,9 +172,15 @@ public abstract class AbstractPlugInLoader<T> {
 
               if (found) {
                 // found a class that implements ExternalModule
-                // TODO this cast is... probably okay
-                classes.add((Class<T>) foundClass);
                 AbstractPlugInLoader.log.info("Found " + foundClass.getName());
+                try {
+                  // should be okay, we checked the interface above
+                  @SuppressWarnings("unchecked")
+                  Class<T> c = (Class<T>) foundClass;
+                  classes.add(c);
+                } catch (Exception exc) {
+                  AbstractPlugInLoader.log.error("cannot use " + foundClass.getName(), exc);
+                }
               }
             }
           }
@@ -195,10 +203,15 @@ public abstract class AbstractPlugInLoader<T> {
           for (Class<?> interface1 : interfaces) {
             if (interface1.equals(externalModuleClass)) {
               // found a class that implements ExternalModule
-              // TODO this cast is... probably okay
-              classes.add((Class<T>) foundClass);
               AbstractPlugInLoader.log.info("Found " + foundClass.getName());
-
+              try {
+                // should be okay, we checked the interface above
+                @SuppressWarnings("unchecked")
+                Class<T> c = (Class<T>) foundClass;
+                classes.add(c);
+              } catch (Exception exc) {
+                AbstractPlugInLoader.log.error("cannot use " + foundClass.getName(), exc);
+              }
               break;
             }
           }
@@ -221,7 +234,7 @@ public abstract class AbstractPlugInLoader<T> {
    * 
    */
   protected Collection<Class<T>> getExternalModuleClasses(Properties settings,
-      Class<?> externalModuleClass) {
+      Class<T> externalModuleClass) {
     Collection<Class<T>> classes = new HashSet<Class<T>>();
 
     ResourcePathClassLoader resLoader = new ResourcePathClassLoader(settings);

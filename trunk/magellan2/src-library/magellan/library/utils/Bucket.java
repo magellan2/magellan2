@@ -127,8 +127,6 @@ public class Bucket<E> extends AbstractCollection<E> {
    * @param o object to be compared with.
    * @return true if it is the same, false if not.
    */
-  // only the instanceof operator is unchecked, but the following cast is safe
-  @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object o) {
     if (o == this)
@@ -138,8 +136,8 @@ public class Bucket<E> extends AbstractCollection<E> {
       Bucket<?> b = (Bucket<?>) o;
 
       if ((this.getMaxSize() == b.getMaxSize()) && (this.size() == b.size())) {
-        Iterator i1 = this.iterator();
-        Iterator i2 = b.iterator();
+        Iterator<E> i1 = this.iterator();
+        Iterator<?> i2 = b.iterator();
 
         while (i1.hasNext() && i2.hasNext()) {
           if (!i1.next().equals(i2.next()))

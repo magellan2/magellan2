@@ -1363,4 +1363,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public void detach();
 
+  public boolean isDetailsKnown();
+
 }

@@ -69,10 +69,14 @@ import javax.swing.tree.TreePath;
 
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tree.CellRenderer;
+import magellan.client.swing.tree.GraphicsElement;
 import magellan.client.swing.tree.GraphicsStyleset;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
+/**
+ * Preferences adapter for icon styles (see {@link GraphicsElement}, {@link CellRenderer}).
+ */
 public class IconStyleSetPreferences extends JPanel implements ActionListener,
     TreeSelectionListener, PreferencesAdapter {
 
@@ -125,32 +129,14 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     stylesetCopies = new HashMap<String, GraphicsStyleset>();
     stylesetOriginals = new HashMap<String, GraphicsStyleset>();
 
-    for (int i = 0; i < 3; i++) {
-      String key = null;
-
-      switch (i) {
-      case 0:
-        key = "SIMPLE";
-
-        break;
-
-      case 1:
-        key = "MAIN";
-
-        break;
-
-      case 2:
-        key = "ADDITIONAL";
-
-        break;
-      }
-
-      stylesetCopies.put(key, CellRenderer.getTypeset(i).clone());
-      stylesetOriginals.put(key, CellRenderer.getTypeset(i));
+    for (int i : new int[] { CellRenderer.SIMPLE_STYLE, CellRenderer.MAIN_STYLE,
+        CellRenderer.ADDITIONAL_STYLE }) {
+      stylesetCopies.put(CellRenderer.STYLE_NAMES[i], CellRenderer.getTypeset(i).clone());
+      stylesetOriginals.put(CellRenderer.STYLE_NAMES[i], CellRenderer.getTypeset(i));
     }
 
     // this is re-initialized every time a new styleset is selected in the tree
-    styleSetPanel = new StylesetPanel(CellRenderer.getTypeset(0));
+    styleSetPanel = new StylesetPanel(CellRenderer.getTypeset(CellRenderer.SIMPLE_STYLE));
 
     GridBagConstraints gbc =
         new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
@@ -181,30 +167,33 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     }
 
     DefaultMutableTreeNode node =
-        new DefaultMutableTreeNode(new TreeObject("SIMPLE", Resources
-            .get("tree.iconadapter.styles.simple")));
+        new DefaultMutableTreeNode(new TreeObject(
+            CellRenderer.STYLE_NAMES[CellRenderer.SIMPLE_STYLE], Resources
+                .get("tree.iconadapter.styles.simple")));
     DefaultMutableTreeNode firstNode = node;
     newRoot.add(node);
-    nodeMap.put("SIMPLE", node);
+    nodeMap.put(CellRenderer.STYLE_NAMES[CellRenderer.SIMPLE_STYLE], node);
     node =
-        new DefaultMutableTreeNode(new TreeObject("MAIN", Resources
-            .get("tree.iconadapter.styles.main")));
+        new DefaultMutableTreeNode(new TreeObject(
+            CellRenderer.STYLE_NAMES[CellRenderer.MAIN_STYLE], Resources
+                .get("tree.iconadapter.styles.main")));
     newRoot.add(node);
-    nodeMap.put("MAIN", node);
+    nodeMap.put(CellRenderer.STYLE_NAMES[CellRenderer.MAIN_STYLE], node);
     node =
-        new DefaultMutableTreeNode(new TreeObject("ADDITIONAL", Resources
-            .get("tree.iconadapter.styles.additional")));
+        new DefaultMutableTreeNode(new TreeObject(
+            CellRenderer.STYLE_NAMES[CellRenderer.ADDITIONAL_STYLE], Resources
+                .get("tree.iconadapter.styles.additional")));
     newRoot.add(node);
-    nodeMap.put("MAIN", node);
+    nodeMap.put(CellRenderer.STYLE_NAMES[CellRenderer.ADDITIONAL_STYLE], node);
 
     List<String> stylesetNames = null;
 
     if (CellRenderer.getStylesets() != null) {
       stylesetNames = new LinkedList<String>(CellRenderer.getStylesets().keySet());
-      stylesetNames.remove("DEFAULT");
-      stylesetNames.remove("MAIN");
-      stylesetNames.remove("SIMPLE");
-      stylesetNames.remove("ADDITIONAL");
+      stylesetNames.remove(CellRenderer.STYLE_NAMES[CellRenderer.DEFAULT_STYLE]);
+      stylesetNames.remove(CellRenderer.STYLE_NAMES[CellRenderer.MAIN_STYLE]);
+      stylesetNames.remove(CellRenderer.STYLE_NAMES[CellRenderer.SIMPLE_STYLE]);
+      stylesetNames.remove(CellRenderer.STYLE_NAMES[CellRenderer.ADDITIONAL_STYLE]);
 
       if (stylesetNames.size() > 0) {
         Collections.sort(stylesetNames);
@@ -238,28 +227,12 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     stylesetCopies.clear();
     stylesetOriginals.clear();
 
-    for (int i = 0; i < 3; i++) {
-      String key = null;
-
-      switch (i) {
-      case 0:
-        key = "SIMPLE";
-
-        break;
-
-      case 1:
-        key = "MAIN";
-
-        break;
-
-      case 2:
-        key = "ADDITIONAL";
-
-        break;
-      }
-
-      stylesetCopies.put(key, oldCopies.get(key));
-      stylesetOriginals.put(key, oldOriginals.get(key));
+    for (int type : new int[] { CellRenderer.SIMPLE_STYLE, CellRenderer.MAIN_STYLE,
+        CellRenderer.ADDITIONAL_STYLE }) {
+      stylesetCopies.put(CellRenderer.STYLE_NAMES[type], oldCopies
+          .get(CellRenderer.STYLE_NAMES[type]));
+      stylesetOriginals.put(CellRenderer.STYLE_NAMES[type], oldOriginals
+          .get(CellRenderer.STYLE_NAMES[type]));
     }
 
     if ((stylesetNames != null) && (stylesetNames.size() > 0)) {
@@ -405,7 +378,9 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
 
         boolean removeEnabled = true;
 
-        if (obj.name.equals("SIMPLE") || obj.name.equals("MAIN") || obj.name.equals("ADDITIONAL")) {
+        if (obj.name.equals(CellRenderer.STYLE_NAMES[CellRenderer.SIMPLE_STYLE])
+            || obj.name.equals(CellRenderer.STYLE_NAMES[CellRenderer.MAIN_STYLE])
+            || obj.name.equals(CellRenderer.STYLE_NAMES[CellRenderer.ADDITIONAL_STYLE])) {
           removeEnabled = false;
         }
 

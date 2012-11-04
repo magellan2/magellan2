@@ -71,6 +71,7 @@ import javax.swing.event.ListSelectionListener;
 
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tree.CellRenderer;
+import magellan.library.utils.NumberStringComparator;
 import magellan.library.utils.Resources;
 
 /**
@@ -174,7 +175,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
     Set<String> s = m.keySet();
     List<String> l = new ArrayList<String>(s.size());
     l.addAll(s);
-    Collections.sort(l);
+    Collections.sort(l, NumberStringComparator.getInstance());
 
     Iterator<String> it = l.iterator();
 
@@ -260,7 +261,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
 
     Color col =
         JColorChooser.showDialog(this, Resources.get("tree.iconadapter.colormap.create.color"),
-            CellRenderer.getTypeset(3).getForeground());
+            CellRenderer.getTypeset(CellRenderer.TALENT_INC_STYLE).getForeground());
 
     if (col != null) {
       addPair(value, col);
@@ -320,7 +321,8 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
     listModel.clear();
 
     for (int i = 1; i < 31; i++) {
-      addPair(String.valueOf(i), CellRenderer.getTypeset(3).getForeground());
+      addPair(String.valueOf(i), CellRenderer.getTypeset(CellRenderer.TALENT_INC_STYLE)
+          .getForeground());
     }
   }
 
@@ -328,6 +330,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
+    // FIXME implement?
   }
 
   /**
@@ -354,14 +357,14 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
     return Resources.get("tree.iconadapter.colormap.title");
   }
 
   /**
-   * DOCUMENT-ME
+   * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
    */
   public void valueChanged(ListSelectionEvent e) {
     int indices[] = list.getSelectedIndices();
@@ -385,7 +388,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
    */
   public void keyPressed(KeyEvent e) {
     if (e.getModifiers() != 0)
@@ -417,12 +420,14 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
    * Does nothing.
    */
   public void keyReleased(KeyEvent e) {
+    // does nothing
   }
 
   /**
    * Does nothing.
    */
   public void keyTyped(KeyEvent e) {
+    // does nothing
   }
 
   /**
@@ -465,21 +470,21 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
       }
 
       /**
-       * DOCUMENT-ME
+       * Changes the width.
        */
       public void setIconWidth(int w) {
         width = w;
       }
 
       /**
-       * DOCUMENT-ME
+       * Changes the color.
        */
       public void setColor(Color c) {
         color = c;
       }
 
       /**
-       * DOCUMENT-ME
+       * Sets selected property.
        */
       public void setSelected(boolean s) {
         selected = s;

@@ -51,16 +51,37 @@ import magellan.client.utils.Colors;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Umlaut;
-import magellan.library.utils.logging.Logger;
 
 /**
- * DOCUMENT ME!
+ * TreeCellRenderer with stylesets.
  * 
  * @author Sebastian
  * @version 1.0
  */
 public class CellRenderer extends JPanel implements TreeCellRenderer {
-  private static final Logger log = Logger.getInstance(CellRenderer.class);
+  // private static final Logger log = Logger.getInstance(CellRenderer.class);
+
+  public static final String SKILL_CHANGE_STYLE_PREFIX = "Talent";
+
+  /** Names (for preferences etc.) of styles */
+  public static final String STYLE_NAMES[] = new String[] { "SIMPLE", "MAIN", "ADDITIONAL",
+      "Talent>.Talent", "Talent>.Talent1", "Talent>.Talent2", "Talent>.Talent3", "Talent<.Talent",
+      "Talent<.Talent-1", "Talent<.Talent-2", "Talent<.Talent3", "Talent?", "DEFAULT" };
+
+  /** SIMPLE STYLE */
+  public static final int SIMPLE_STYLE = GraphicsElement.SIMPLE;
+  /** MAIN PART STYLE */
+  public static final int MAIN_STYLE = GraphicsElement.MAIN;
+  /** ADDITIONAL PART */
+  public static final int ADDITIONAL_STYLE = GraphicsElement.ADDITIONAL;
+  /** SKILL INCREASED TYPE */
+  public static final int TALENT_INC_STYLE = 3;
+  /** SKILL DECREASE TYPE */
+  public static final int TALENT_DEC_STYLE = 7;
+  /** SKILL UNKNOWN */
+  public static final int TALENT_UNKNOWN_STYLE = 11;
+  /** DEFAULT TYPE */
+  public static final int DEFAULT_STYLE = 12;
 
   private DefaultTreeCellRenderer defaultRenderer = null;
   private Border focusedBorder = null;
@@ -141,40 +162,49 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
   }
 
   protected void loadTypesets() {
-    CellRenderer.typeSets = new GraphicsStyleset[12];
+    CellRenderer.typeSets = new GraphicsStyleset[DEFAULT_STYLE + 1];
 
     // load the stylesets
-    CellRenderer.loadStyleset("SIMPLE");
-    CellRenderer.loadStyleset("MAIN");
-    CellRenderer.loadStyleset("ADDITIONAL");
-    CellRenderer.loadStyleset("DEFAULT");
+    CellRenderer.loadStyleset(STYLE_NAMES[SIMPLE_STYLE]);
+    CellRenderer.loadStyleset(STYLE_NAMES[MAIN_STYLE]);
+    CellRenderer.loadStyleset(STYLE_NAMES[ADDITIONAL_STYLE]);
+    CellRenderer.loadStyleset(STYLE_NAMES[DEFAULT_STYLE]);
 
-    // load predifined "custom" sets
-    CellRenderer.loadStyleset("Talent>");
-    CellRenderer.loadStyleset("Talent>.Talent1");
-    CellRenderer.loadStyleset("Talent>.Talent2");
-    CellRenderer.loadStyleset("Talent>.Talent3");
-    CellRenderer.loadStyleset("Talent<");
-    CellRenderer.loadStyleset("Talent<.Talent-1");
-    CellRenderer.loadStyleset("Talent<.Talent-2");
-    CellRenderer.loadStyleset("Talent<.Talent-3");
+    // load predefined "custom" sets
+    CellRenderer.loadStyleset(STYLE_NAMES[TALENT_INC_STYLE]);
+    for (int i = 1; i <= 3; ++i) {
+      CellRenderer.loadStyleset(STYLE_NAMES[TALENT_INC_STYLE] + i);
+    }
+    CellRenderer.loadStyleset(STYLE_NAMES[TALENT_DEC_STYLE]);
+    for (int i = -1; i >= -3; --i) {
+      CellRenderer.loadStyleset(STYLE_NAMES[TALENT_DEC_STYLE] + i);
+    }
 
-    CellRenderer.typeSets[0] = CellRenderer.stylesets.get("SIMPLE");
-    CellRenderer.typeSets[1] = CellRenderer.stylesets.get("MAIN");
-    CellRenderer.typeSets[2] = CellRenderer.stylesets.get("ADDITIONAL");
-    CellRenderer.typeSets[3] = CellRenderer.stylesets.get("Talent>");
-    CellRenderer.typeSets[4] = CellRenderer.stylesets.get("Talent>.Talent1");
-    CellRenderer.typeSets[5] = CellRenderer.stylesets.get("Talent>.Talent2");
-    CellRenderer.typeSets[6] = CellRenderer.stylesets.get("Talent>.Talent3");
-    CellRenderer.typeSets[7] = CellRenderer.stylesets.get("Talent<");
-    CellRenderer.typeSets[8] = CellRenderer.stylesets.get("Talent<.Talent-1");
-    CellRenderer.typeSets[9] = CellRenderer.stylesets.get("Talent<.Talent-2");
-    CellRenderer.typeSets[10] = CellRenderer.stylesets.get("Talent<.Talent-3");
-    CellRenderer.typeSets[11] = CellRenderer.stylesets.get("DEFAULT");
+    CellRenderer.loadStyleset(STYLE_NAMES[TALENT_UNKNOWN_STYLE]);
 
-    CellRenderer.typeSets[0].setParent("DEFAULT");
-    CellRenderer.typeSets[1].setParent("DEFAULT");
-    CellRenderer.typeSets[2].setParent("DEFAULT");
+    CellRenderer.typeSets[SIMPLE_STYLE] = CellRenderer.stylesets.get(STYLE_NAMES[SIMPLE_STYLE]);
+    CellRenderer.typeSets[MAIN_STYLE] = CellRenderer.stylesets.get(STYLE_NAMES[MAIN_STYLE]);
+    CellRenderer.typeSets[ADDITIONAL_STYLE] =
+        CellRenderer.stylesets.get(STYLE_NAMES[ADDITIONAL_STYLE]);
+    CellRenderer.typeSets[TALENT_INC_STYLE] =
+        CellRenderer.stylesets.get(STYLE_NAMES[TALENT_INC_STYLE]);
+    for (int i = 1; i <= 3; ++i) {
+      CellRenderer.typeSets[3 + i] = CellRenderer.stylesets.get(STYLE_NAMES[TALENT_INC_STYLE] + i);
+    }
+    CellRenderer.typeSets[TALENT_DEC_STYLE] =
+        CellRenderer.stylesets.get(STYLE_NAMES[TALENT_DEC_STYLE]);
+    for (int i = -1; i >= -3; --i) {
+      CellRenderer.typeSets[TALENT_DEC_STYLE - i] =
+          CellRenderer.stylesets.get(STYLE_NAMES[TALENT_INC_STYLE] + i);
+    }
+    CellRenderer.typeSets[TALENT_UNKNOWN_STYLE] =
+        CellRenderer.stylesets.get(STYLE_NAMES[TALENT_UNKNOWN_STYLE]);
+
+    CellRenderer.typeSets[DEFAULT_STYLE] = CellRenderer.stylesets.get(STYLE_NAMES[DEFAULT_STYLE]);
+
+    CellRenderer.typeSets[SIMPLE_STYLE].setParent(STYLE_NAMES[DEFAULT_STYLE]);
+    CellRenderer.typeSets[MAIN_STYLE].setParent(STYLE_NAMES[DEFAULT_STYLE]);
+    CellRenderer.typeSets[ADDITIONAL_STYLE].setParent(STYLE_NAMES[DEFAULT_STYLE]);
   }
 
   /**
@@ -338,24 +368,25 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
   protected void applyUIDefaults() {
     defaultRenderer = new DefaultTreeCellRenderer();
 
-    CellRenderer.typeSets[11].setForeground((Color) UIManager.getDefaults().get(
+    CellRenderer.typeSets[DEFAULT_STYLE].setForeground((Color) UIManager.getDefaults().get(
         "Tree.textForeground"));
-    CellRenderer.typeSets[11].setBackground((Color) UIManager.getDefaults().get(
+    CellRenderer.typeSets[DEFAULT_STYLE].setBackground((Color) UIManager.getDefaults().get(
         "Tree.textBackground"));
-    CellRenderer.typeSets[11].setSelectedForeground((Color) UIManager.getDefaults().get(
+    CellRenderer.typeSets[DEFAULT_STYLE].setSelectedForeground((Color) UIManager.getDefaults().get(
         "Tree.selectionForeground"));
-    CellRenderer.typeSets[11].setSelectedBackground((Color) UIManager.getDefaults().get(
+    CellRenderer.typeSets[DEFAULT_STYLE].setSelectedBackground((Color) UIManager.getDefaults().get(
         "Tree.selectionBackground"));
 
     // pavkovic 2003.10.17: prevent jvm 1.4.2_01 bug
     focusedBorder = new MatteBorder(1, 1, 1, 1, JVMUtilities.getTreeSelectionBorderColor());
-    selectedBorder = new MatteBorder(1, 1, 1, 1, CellRenderer.typeSets[3].getSelectedBackground());
+    selectedBorder =
+        new MatteBorder(1, 1, 1, 1, CellRenderer.typeSets[TALENT_INC_STYLE].getSelectedBackground());
     plainBorder = new EmptyBorder(1, 1, 1, 1);
 
     setOpaque(false);
     setLayout(new SameHeightBoxLayout());
-    setBackground(CellRenderer.typeSets[11].getBackground());
-    setForeground(CellRenderer.typeSets[11].getBackground());
+    setBackground(CellRenderer.typeSets[DEFAULT_STYLE].getBackground());
+    setForeground(CellRenderer.typeSets[DEFAULT_STYLE].getBackground());
 
     label = new JLabel();
     label.setOpaque(false);
@@ -364,9 +395,9 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
     this.add(label);
 
     Font plainFont = label.getFont().deriveFont(Font.PLAIN);
-    CellRenderer.typeSets[11].setFont(plainFont);
+    CellRenderer.typeSets[DEFAULT_STYLE].setFont(plainFont);
 
-    GraphicsStyleset set = getStyleset(1);
+    GraphicsStyleset set = getStyleset(MAIN_STYLE);
     defaultRenderer.setFont(set.getFont());
   }
 
@@ -429,7 +460,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
     Collection<String> iconNames = cellObj.getIconNames();
 
     // we have to use a "full" styleset
-    GraphicsStyleset set = getStyleset(1);
+    GraphicsStyleset set = getStyleset(MAIN_STYLE);
 
     resizeLabels(iconNames == null ? 1 : iconNames.size() + 1);
     label = iconLabels[iconLabels.length - 1];
@@ -674,7 +705,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
   }
 
   /**
-   * Returns a full styleset created out if the given styleset.
+   * Returns a full styleset created out of the given styleset.
    */
   protected GraphicsStyleset getStyleset(int type) {
     fallbackCode(CellRenderer.typeSets[type], type);
@@ -867,14 +898,17 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
         }
       } else { // Make a random styleset to attract user interest
 
-        if (!name.equals("SIMPLE") && !name.equals("MAIN") && !name.equals("ADDITIONAL")
-            && !name.equals("DEFAULT")) {
+        if (!name.equals(STYLE_NAMES[SIMPLE_STYLE]) && !name.equals(STYLE_NAMES[MAIN_STYLE])
+            && !name.equals(STYLE_NAMES[ADDITIONAL_STYLE])
+            && !name.equals(STYLE_NAMES[DEFAULT_STYLE])) {
           // Note: With extended Stylesets which have parents do not do this.
           if (set.getParent() == null) {
-            try {
-              set.setForeground(Color.black);
-              set.setBackground(Color.red);
-            } catch (Exception exc) {
+            if (name.equals(STYLE_NAMES[TALENT_UNKNOWN_STYLE])) {
+              set.setForeground(Color.BLACK);
+              set.setBackground(Color.LIGHT_GRAY);
+            } else {
+              set.setForeground(Color.BLACK);
+              set.setBackground(Color.RED);
             }
           }
 

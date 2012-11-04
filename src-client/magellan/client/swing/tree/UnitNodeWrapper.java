@@ -55,7 +55,6 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   private static final Comparator<Skill> skillComparator = new SkillComparator();
   private static Comparator<Skill> rankComparator = null;
 
-  private static final String SKILL_CHANGE_STYLE_PREFIX = "Talent";
   private Unit unit = null;
   private int amount = -1;
   private int modified = -1;
@@ -156,7 +155,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   }
 
   /**
-   * Returns the accordant option of the draw policy.
+   * Returns the according option of the draw policy.
    */
   public boolean isShowingAdditional() {
     return adapter.properties[UnitNodeWrapperDrawPolicy.SHOW_ADDITIONAL];
@@ -405,11 +404,15 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
       ge.setTooltip(s.getSkillType().getName());
       ge.setType(GraphicsElement.ADDITIONAL);
 
-      if (isShowingChanges() && s.isLevelChanged()) {
+      if (isShowingChanges() && (s.isLevelChanged() || !u.isDetailsKnown())) {
         if (isShowingChangesStyled()) {
-          ge.setStyleset(UnitNodeWrapper.SKILL_CHANGE_STYLE_PREFIX
-              + ((s.getChangeLevel() >= 0) ? ">." : "<.")
-              + UnitNodeWrapper.SKILL_CHANGE_STYLE_PREFIX + String.valueOf(s.getChangeLevel()));
+          if (s.isLevelChanged()) {
+            ge.setStyleset(CellRenderer.SKILL_CHANGE_STYLE_PREFIX
+                + ((s.getChangeLevel() >= 0) ? ">." : "<.")
+                + CellRenderer.SKILL_CHANGE_STYLE_PREFIX + String.valueOf(s.getChangeLevel()));
+          } else {
+            ge.setStyleset(CellRenderer.STYLE_NAMES[CellRenderer.TALENT_UNKNOWN_STYLE]);
+          }
         }
 
         if (isShowingChangesText() && isShowingIconText()) {
@@ -620,8 +623,6 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   }
 
   /**
-   * DOCUMENT-ME
-   * 
    * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
    *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
@@ -630,8 +631,6 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   }
 
   /**
-   * DOCUMENT-ME
-   * 
    * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
    *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
@@ -676,55 +675,58 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   private static class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements
       ContextChangeable, ActionListener {
-    /** DOCUMENT-ME */
+    /** Show additional icons */
     public static final int SHOW_ADDITIONAL = 0;
 
-    /** DOCUMENT-ME */
+    /** Show unit's container */
     public static final int SHOW_CONTAINER = 1;
 
-    /** DOCUMENT-ME */
+    /** Show skills */
     public static final int SHOW_SKILL = 2;
 
-    /** DOCUMENT-ME */
+    /** Show skills less than one */
     public static final int SHOW_SKILL_LESS_ONE = 3;
 
-    /** DOCUMENT-ME */
+    /** Show skills less than two */
     public static final int SHOW_SKILL_LESS_TWO = 4;
 
     /** DOCUMENT-ME */
     public static final int SHOW_OTHER = 5;
 
-    /** DOCUMENT-ME */
+    /** Show additional text */
     public static final int SHOW_TEXT = 6;
 
-    /** DOCUMENT-ME */
+    /** Show name before icons */
     public static final int SHOW_NAMEFIRST = 7;
 
-    /** DOCUMENT-ME */
+    /** Show only expected, not current stuff */
     public static final int SHOW_EXPECTED_ONLY = 8;
 
     /** option for showing only first x skills */
     public static final int NUMBER_OF_SHOWN_SKILLS = 9;
 
+    /** positions for show one/two/three skills */
     public static final int NUMBER_OF_SHOWN_SKILLS_START = 10;
 
+    /** positions for show one/two/three skills */
     public static final int NUMBER_OF_SHOWN_SKILLS_END = 14;
 
-    /** DOCUMENT-ME */
+    /** show (item/skill) changes */
     public static final int SHOW_CHANGES = 15;
 
-    /** DOCUMENT-ME */
+    /** apply styles to changes */
     public static final int SHOW_CHANGE_STYLED = 16;
 
-    /** DOCUMENT-ME */
+    /** show changes as (text) */
     public static final int SHOW_CHANGE_TEXT = 17;
 
-    /** DOCUMENT-ME */
+    /** show items categorized */
     public static final int SHOW_CATEGORIZED = 18;
 
-    /** DOCUMENT-ME */
+    /** start index for various categories */
     public static final int CATEGORIZE_START = 19;
 
+    /** Number of said categories */
     public static final int NUMBER_OF_CATEGORIES = 7;
 
     protected String categories[] = { "weapons", "armour", "resources", "luxuries", "herbs",
@@ -822,8 +824,6 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     }
 
     /**
-     * DOCUMENT-ME
-     * 
      * @see magellan.client.swing.context.ContextChangeable#getContextAdapter()
      */
     public JMenuItem getContextAdapter() {
@@ -831,8 +831,6 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     }
 
     /**
-     * DOCUMENT-ME
-     * 
      * @see magellan.client.swing.context.ContextChangeable#setContextObserver(magellan.client.swing.context.ContextObserver)
      */
     public void setContextObserver(ContextObserver co) {
@@ -840,8 +838,6 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     }
 
     /**
-     * DOCUMENT-ME
-     * 
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
@@ -886,9 +882,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @return
+     * Returns the settings.
      */
     public Properties getSettings() {
       return settings;

@@ -58,8 +58,6 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
   /** The index of the show change text property */
   public static final int SHOW_CHANGE_TEXT = 5;
 
-  private static final String SKILL_CHANGE_STYLE_PREFIX = "Talent";
-
   /**
    * Creates a new SkillNodeWrapper object.
    * 
@@ -85,9 +83,7 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @return "Skillname Level|- (+|-change) [points -> nextlevelpoints  {turns to learn }] ..."
+   * Return "Skillname Level|- (+|-change) [points -> nextlevelpoints  {turns to learn }] ..."
    */
   @Override
   public String toString() {
@@ -215,7 +211,7 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
   }
 
   /**
-   * @return if thsi wrapper shows skill level changes
+   * @return if this wrapper shows skill level changes
    */
   public boolean isShowingChanges() {
     if (adapter != null)
@@ -225,9 +221,7 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @return
+   * Returns <code>true</code> if the appropriate style is applied to changed skills.
    */
   public boolean isShowingChangesStyled() {
     if (adapter != null)
@@ -237,9 +231,7 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @return
+   * Returns true if skill change is shown as text.
    */
   public boolean isShowingChangesText() {
     if (adapter != null)
@@ -336,16 +328,14 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
         ge.setImageName(modSkill.getSkillType().getID().toString());
       }
 
-      boolean isDiff = false;
-
-      if (skill != null) {
-        isDiff = skill.isLevelChanged();
-      }
-
-      if (isDiff && isShowingChanges() && isShowingChangesStyled()) {
-        ge.setStyleset(SkillNodeWrapper.SKILL_CHANGE_STYLE_PREFIX
-            + ((skill.getChangeLevel() >= 0) ? ">." : "<.")
-            + SkillNodeWrapper.SKILL_CHANGE_STYLE_PREFIX + String.valueOf(skill.getChangeLevel()));
+      if (skill != null && isShowingChanges() && isShowingChangesStyled()) {
+        if (skill.isLevelChanged()) {
+          ge.setStyleset(CellRenderer.SKILL_CHANGE_STYLE_PREFIX
+              + ((skill.getChangeLevel() >= 0) ? ">." : "<.")
+              + CellRenderer.SKILL_CHANGE_STYLE_PREFIX + String.valueOf(skill.getChangeLevel()));
+        } else if (!unit.isDetailsKnown()) {
+          ge.setStyleset(CellRenderer.STYLE_NAMES[CellRenderer.TALENT_UNKNOWN_STYLE]);
+        }
       }
 
       elements = Collections.singletonList(ge);
@@ -374,8 +364,8 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
    * @see magellan.client.swing.tree.CellObject#init(java.util.Properties,
    *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
-  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
-    return init(settings, "SkillNodeWrapper", adapter);
+  public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy anAdapter) {
+    return init(settings, "SkillNodeWrapper", anAdapter);
   }
 
   /**

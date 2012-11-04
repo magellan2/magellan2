@@ -168,7 +168,7 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
-    // TODO: implement it
+    // FIXME: implement it
   }
 
   /**

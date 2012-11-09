@@ -2441,7 +2441,8 @@ public class GameDataMerger {
       resultUnit.setOrders2(curUnit.getCompleteOrders(), false);
     }
 
-    resultUnit.setOrdersConfirmed(resultUnit.isOrdersConfirmed() || curUnit.isOrdersConfirmed());
+    resultUnit.setOrdersConfirmed((sameRound && resultUnit.isOrdersConfirmed())
+        || curUnit.isOrdersConfirmed());
 
     if ((curUnit.getEffects() != null) && (curUnit.getEffects().size() > 0)) {
       if (resultUnit.getEffects() == null) {

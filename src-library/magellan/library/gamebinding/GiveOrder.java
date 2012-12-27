@@ -117,17 +117,24 @@ public class GiveOrder extends UnitArgumentOrder {
     return all;
   }
 
+  /**
+   * Problem types from give orders.
+   */
   public enum GiveProblemTypes {
+    /** target unit unknown */
     UNKNOWN_UNIT;
 
-    public ProblemType type;
+    protected ProblemType type;
 
     GiveProblemTypes() {
       String name = name().toLowerCase();
       type = ProblemType.create("tasks.ordersemanticsinspector", name);
     }
 
-    ProblemType getType() {
+    /**
+     * Returns the problem type.
+     */
+    public ProblemType getType() {
       return type;
     }
   }

@@ -523,14 +523,10 @@ public class ReportSortingTest extends MagellanTestWithResources {
     unit212.setSortIndex(2);
     unit213.setSortIndex(3);
     Building b21 = builder.addBuilding(gd2, region21, "b1", "BURG", "Burg 1", 10);
-    unit211.setBuilding(b21);
-    unit212.setBuilding(b21);
-    b21.setOwner(unit211);
-    b21.setOwnerUnit(unit211);
+    builder.addUnitToBuilding(unit211, b21);
+    builder.addUnitToBuilding(unit212, b21);
     Building b22 = builder.addBuilding(gd2, region21, "b2", "BURG", "Burg 2", 10);
-    unit213.setBuilding(b22);
-    b22.setOwner(unit213);
-    b22.setOwnerUnit(unit213);
+    builder.addUnitToBuilding(unit213, b22);
 
     WriteGameData.writeCR(gd2, new File("./test/tc010/gd2.cr"));
 

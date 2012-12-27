@@ -144,9 +144,14 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
         }
       }
       return newOwner;
-    } else
+    } else {
+      for (ControlRelation rel : oldOwner.getRelations(ControlRelation.class)) {
+        if (rel.source == oldOwner && rel.target != null && rel.problem == null)
+          return rel.target;
+      }
       // otherwise it's unclear
       return null;
+    }
   }
 
   /**

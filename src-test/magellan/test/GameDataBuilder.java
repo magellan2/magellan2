@@ -547,4 +547,18 @@ public class GameDataBuilder {
   public void setGameName(String gameName) {
     this.gameName = gameName;
   }
+
+  /**
+   * Add the unit to the building. If it is the first unit, make it building owner.
+   * 
+   * @param unit
+   * @param building
+   */
+  public void addUnitToBuilding(Unit unit, Building building) {
+    unit.setBuilding(building);
+    if (building.getUnits().size() == 1) {
+      building.setOwner(unit);
+      building.setOwnerUnit(unit);
+    }
+  }
 }

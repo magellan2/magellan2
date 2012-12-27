@@ -97,15 +97,19 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
         sb.append('-');
       }
 
-      if (skill.isLevelChanged() && isShowingChanges() && isShowingChangesText()) {
-        sb.append('(');
+      if (isShowingChanges() && isShowingChangesText()) {
+        if (skill.isLevelChanged()) {
+          sb.append('(');
 
-        if (skill.getChangeLevel() >= 0) {
-          sb.append('+');
+          if (skill.getChangeLevel() >= 0) {
+            sb.append('+');
+          }
+
+          sb.append(skill.getChangeLevel());
+          sb.append(')');
+        } else if (!unit.isDetailsKnown()) {
+          sb.append("?");
         }
-
-        sb.append(skill.getChangeLevel());
-        sb.append(')');
       }
 
       // FIX!

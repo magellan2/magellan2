@@ -30,7 +30,7 @@ public class LeaveRelation extends UnitContainerRelation {
    * @param line The order line that caused this
    */
   public LeaveRelation(Unit s, UnitContainer t, int line) {
-    super(s, t, line);
+    this(s, t, line, false);
   }
 
   /**

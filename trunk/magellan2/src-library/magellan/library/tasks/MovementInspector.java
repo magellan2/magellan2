@@ -20,6 +20,7 @@ import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.MovementEvaluator;
+import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.MovementRelation;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ShipInspector.ShipProblemTypes;
@@ -35,7 +36,7 @@ public class MovementInspector extends AbstractInspector {
   @SuppressWarnings("javadoc")
   public enum MovementProblemTypes {
     FOOTOVERLOADED, HORSEOVERLOADED, TOOMANYHORSESFOOT, TOOMANYHORSESRIDE, UNITFOLLOWSSELF,
-    MOVE_INVALID, UNKNOWNREGION, MOVEMENTTOOLONG, ROUTETOOLONG;
+    MOVE_INVALID, UNKNOWNREGION, MOVEMENTTOOLONG, ROUTETOOLONG, OWNERLEAVES;
 
     private ProblemType type;
 
@@ -148,6 +149,25 @@ public class MovementInspector extends AbstractInspector {
       }
     }
 
+    Unit newOwner = u.getBuilding().getModifiedOwnerUnit();
+    if (severity == Severity.WARNING && u.getBuilding() != null
+        && (u.equals(newOwner) || newOwner == null)) {
+      SimpleProblem problem = null;
+      for (LeaveRelation rel : u.getRelations(LeaveRelation.class)) {
+        if (rel.isImplicit()) {
+          problem =
+              ProblemFactory.createProblem(Severity.WARNING, MovementProblemTypes.OWNERLEAVES
+                  .getType(), u, this, mRel.line);
+        } else {
+          problem = null;
+          break;
+        }
+      }
+      if (problem != null) {
+        problems.add(problem);
+      }
+    }
+
     if (problems.isEmpty())
       return Collections.emptyList();
     else
@@ -184,7 +204,6 @@ public class MovementInspector extends AbstractInspector {
         return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
             MovementProblemTypes.HORSEOVERLOADED.getType(), u, this, line)));
     }
-    // FIXME if unit has no horses, we should report an error
 
     return Collections.emptyList();
   }

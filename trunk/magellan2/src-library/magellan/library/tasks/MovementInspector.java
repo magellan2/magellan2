@@ -149,22 +149,23 @@ public class MovementInspector extends AbstractInspector {
       }
     }
 
-    Unit newOwner = u.getBuilding().getModifiedOwnerUnit();
-    if (severity == Severity.WARNING && u.getBuilding() != null
-        && (u.equals(newOwner) || newOwner == null)) {
-      SimpleProblem problem = null;
-      for (LeaveRelation rel : u.getRelations(LeaveRelation.class)) {
-        if (rel.isImplicit()) {
-          problem =
-              ProblemFactory.createProblem(Severity.WARNING, MovementProblemTypes.OWNERLEAVES
-                  .getType(), u, this, mRel.line);
-        } else {
-          problem = null;
-          break;
+    if (severity == Severity.WARNING && u.getBuilding() != null) {
+      Unit newOwner = u.getBuilding().getModifiedOwnerUnit();
+      if (u.equals(newOwner) || newOwner == null) {
+        SimpleProblem problem = null;
+        for (LeaveRelation rel : u.getRelations(LeaveRelation.class)) {
+          if (rel.isImplicit()) {
+            problem =
+                ProblemFactory.createProblem(Severity.WARNING, MovementProblemTypes.OWNERLEAVES
+                    .getType(), u, this, mRel.line);
+          } else {
+            problem = null;
+            break;
+          }
         }
-      }
-      if (problem != null) {
-        problems.add(problem);
+        if (problem != null) {
+          problems.add(problem);
+        }
       }
     }
 

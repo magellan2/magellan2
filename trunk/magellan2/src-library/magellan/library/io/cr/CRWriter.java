@@ -834,17 +834,14 @@ public class CRWriter extends BufferedWriter {
    * @param factions The Collection of factions to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeFactions(Collection<Faction> factions) throws IOException {
+  public void writeFactions(Collection<Faction> factions, boolean noDetails) throws IOException {
     if (factions == null)
       return;
 
     // write owner first
-    Faction ownerFaction = null;
-    if (factions.size() > 0) {
-      ownerFaction = factions.iterator().next();
-    }
+    Faction ownerFaction = getOwnerFaction(factions);
     if (ownerFaction != null) {
-      writeFaction(ownerFaction);
+      writeFaction(ownerFaction, noDetails);
     }
     List<Faction> sorted = new ArrayList<Faction>(factions);
     Comparator<Faction> sortIndexComparator =
@@ -854,7 +851,7 @@ public class CRWriter extends BufferedWriter {
     // write other factions
     for (Faction f : sorted) {
       if (ownerFaction == null || !f.equals(ownerFaction)) {
-        writeFaction(f);
+        writeFaction(f, noDetails);
       }
     }
   }
@@ -864,7 +861,7 @@ public class CRWriter extends BufferedWriter {
    * 
    * @throws IOException If an I/O error occurs.
    */
-  public void writeFaction(Faction faction) throws IOException {
+  public void writeFaction(Faction faction, boolean noDetails) throws IOException {
     if ((faction.getID()).intValue() == -1)
       return;
 
@@ -883,66 +880,68 @@ public class CRWriter extends BufferedWriter {
       newLine();
     }
 
-    if (faction.getScore() != -1) {
-      write(faction.getScore() + ";Punkte");
-      newLine();
-    }
-
-    if (faction.getAverageScore() != -1) {
-      write(faction.getAverageScore() + ";Punktedurchschnitt");
-      newLine();
-    }
-
-    if (getIncludeUnitDetails() && faction.getAlliance() != null) {
-      write(faction.getAlliance().getID().intValue() + ";alliance");
-      newLine();
-    }
-
-    Race race = faction.getRace();
-
-    if (race != null) {
-      if (race.toString() != null) {
-        writeQuotedTag(race.getID().toString(), "Typ");
-      }
-
-      if (race.getRecruitmentCosts() != -1) {
-        write(race.getRecruitmentCosts() + ";Rekrutierungskosten");
+    if (!noDetails) {
+      if (faction.getScore() != -1) {
+        write(faction.getScore() + ";Punkte");
         newLine();
       }
-    }
 
-    if (faction.getPersons() != -1) {
-      write(faction.getPersons() + ";Anzahl Personen");
-      newLine();
-    }
+      if (faction.getAverageScore() != -1) {
+        write(faction.getAverageScore() + ";Punktedurchschnitt");
+        newLine();
+      }
 
-    if (faction.getMigrants() != -1) {
-      write(faction.getMigrants() + ";Anzahl Immigranten");
-      newLine();
-    }
+      if (getIncludeUnitDetails() && faction.getAlliance() != null) {
+        write(faction.getAlliance().getID().intValue() + ";alliance");
+        newLine();
+      }
 
-    if (faction.getHeroes() != -1) {
-      write(faction.getHeroes() + ";heroes");
-      newLine();
-    }
+      Race race = faction.getRace();
 
-    if (faction.getMaxHeroes() != -1) {
-      write(faction.getMaxHeroes() + ";max_Heroes");
-      newLine();
-    }
+      if (race != null) {
+        if (race.toString() != null) {
+          writeQuotedTag(race.getID().toString(), "Typ");
+        }
 
-    if (faction.getAge() != -1) {
-      write(faction.getAge() + ";age");
-      newLine();
-    }
+        if (race.getRecruitmentCosts() != -1) {
+          write(race.getRecruitmentCosts() + ";Rekrutierungskosten");
+          newLine();
+        }
+      }
 
-    if (faction.getMaxMigrants() != -1) {
-      write(faction.getMaxMigrants() + ";Max. Immigranten");
-      newLine();
-    }
+      if (faction.getPersons() != -1) {
+        write(faction.getPersons() + ";Anzahl Personen");
+        newLine();
+      }
 
-    if (faction.getSpellSchool() != null) {
-      writeQuotedTag(faction.getSpellSchool(), "Magiegebiet");
+      if (faction.getMigrants() != -1) {
+        write(faction.getMigrants() + ";Anzahl Immigranten");
+        newLine();
+      }
+
+      if (faction.getHeroes() != -1) {
+        write(faction.getHeroes() + ";heroes");
+        newLine();
+      }
+
+      if (faction.getMaxHeroes() != -1) {
+        write(faction.getMaxHeroes() + ";max_Heroes");
+        newLine();
+      }
+
+      if (faction.getAge() != -1) {
+        write(faction.getAge() + ";age");
+        newLine();
+      }
+
+      if (faction.getMaxMigrants() != -1) {
+        write(faction.getMaxMigrants() + ";Max. Immigranten");
+        newLine();
+      }
+
+      if (faction.getSpellSchool() != null) {
+        writeQuotedTag(faction.getSpellSchool(), "Magiegebiet");
+      }
     }
 
     if (faction.getName() != null) {
@@ -957,37 +956,39 @@ public class CRWriter extends BufferedWriter {
       writeQuotedTag(faction.getDescription(), "banner");
     }
 
-    if (faction.getRaceNamePrefix() != null) {
-      writeQuotedTag(faction.getRaceNamePrefix(), "typprefix");
-    }
+    if (!noDetails) {
+      if (faction.getRaceNamePrefix() != null) {
+        writeQuotedTag(faction.getRaceNamePrefix(), "typprefix");
+      }
 
-    if (faction.getTreasury() != 0) {
-      write(faction.getTreasury() + ";Schatz");
-      newLine();
-    }
+      if (faction.getTreasury() != 0) {
+        write(faction.getTreasury() + ";Schatz");
+        newLine();
+      }
 
-    if (!serverConformance && faction.isTrustLevelSetByUser()) {
-      write(faction.getTrustLevel() + ";trustlevel");
-      newLine();
-    }
+      if (!serverConformance && faction.isTrustLevelSetByUser()) {
+        write(faction.getTrustLevel() + ";trustlevel");
+        newLine();
+      }
 
-    writeItems(faction.getItems().iterator());
+      writeItems(faction.getItems().iterator());
 
-    if (faction.getOptions() != null) {
-      write(faction.getOptions());
-    }
+      if (faction.getOptions() != null) {
+        write(faction.getOptions());
+      }
 
-    writeAlliances(faction.getAllies());
-    writeGroups(faction.getGroups());
+      writeAlliances(faction.getAllies());
+      writeGroups(faction.getGroups());
 
-    if (includeMessages) {
-      writeStringBlock("FEHLER", faction.getErrors());
-      writeMessages(faction.getMessages());
-      writeBattles(faction.getBattles());
+      if (includeMessages) {
+        writeStringBlock("FEHLER", faction.getErrors());
+        writeMessages(faction.getMessages());
+        writeBattles(faction.getBattles());
 
-      if (!serverConformance) {
-        writeStringBlock("COMMENTS", faction.getComments());
-        writeAttributes(faction);
+        if (!serverConformance) {
+          writeStringBlock("COMMENTS", faction.getComments());
+          writeAttributes(faction);
+        }
       }
     }
   }
@@ -2289,7 +2290,9 @@ public class CRWriter extends BufferedWriter {
       if (includeUnits) {
         ui.setProgress(Resources.get("crwriterdialog.progress.03"), 3);
         writeAlliances(world.getAllianceGroups());
-        writeFactions(world.getFactions());
+        writeFactions(world.getFactions(), true);
+      } else if (getOwnerFaction(world.getFactions()) != null) {
+        writeFactions(Collections.singletonList(getOwnerFaction(world.getFactions())), true);
       }
 
       if (includeSpellsAndPotions) {
@@ -2368,6 +2371,20 @@ public class CRWriter extends BufferedWriter {
       ui.ready();
     }
     CRWriter.log.info("Done saving report");
+  }
+
+  private Faction getOwnerFaction(Collection<Faction> factions) {
+    Faction ownerFaction = null;
+
+    if (world.getOwnerFaction() != null) {
+      ownerFaction = world.getFaction(world.getOwnerFaction());
+    }
+    if (ownerFaction == null) {
+      if (factions.size() > 0) {
+        ownerFaction = factions.iterator().next();
+      }
+    }
+    return ownerFaction;
   }
 
   /**

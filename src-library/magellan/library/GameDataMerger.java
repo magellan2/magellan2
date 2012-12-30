@@ -557,16 +557,14 @@ public class GameDataMerger {
       // important for order evaluation...
       int sortIndex = 0;
       EntityID added1 = null, added2 = null;
-      if (olderGD.getOwnerFaction() != null) {
-        sortIndex =
-            addUnits(olderGD.getFaction(olderGD.getOwnerFaction()).units(), resultGD, sortIndex);
+      if (getOwnerFaction(olderGD) != null) {
+        sortIndex = addUnits(getOwnerFaction(olderGD).units(), resultGD, sortIndex);
         added1 = olderGD.getOwnerFaction();
       }
       if (newerGD.getOwnerFaction() != null
           && !newerGD.getOwnerFaction().equals(olderGD.getOwnerFaction())
-          && newerGD.getFaction(newerGD.getOwnerFaction()) != null) {
-        sortIndex =
-            addUnits(newerGD.getFaction(newerGD.getOwnerFaction()).units(), resultGD, sortIndex);
+          && getOwnerFaction(newerGD) != null) {
+        sortIndex = addUnits(getOwnerFaction(newerGD).units(), resultGD, sortIndex);
         added2 = newerGD.getOwnerFaction();
       }
       for (Faction f : olderGD.getFactions()) {
@@ -586,9 +584,8 @@ public class GameDataMerger {
     } else {
       if (newerGD.unitView() != null) {
         int sortIndex = 0;
-        if (newerGD.getOwnerFaction() != null) {
-          sortIndex =
-              addUnits(newerGD.getFaction(newerGD.getOwnerFaction()).units(), resultGD, sortIndex);
+        if (getOwnerFaction(newerGD) != null) {
+          sortIndex = addUnits(getOwnerFaction(newerGD).units(), resultGD, sortIndex);
         }
         for (Faction f : newerGD.getFactions()) {
           if (!f.getID().equals(newerGD.getOwnerFaction())) {
@@ -837,6 +834,12 @@ public class GameDataMerger {
     resultGD.postProcess();
 
     return resultGD;
+  }
+
+  private static Faction getOwnerFaction(GameData olderGD) {
+    if (olderGD.getOwnerFaction() != null)
+      return olderGD.getFaction(olderGD.getOwnerFaction());
+    return null;
   }
 
   private static int addUnits(Collection<Unit> units, GameData resultGD, int sortIndex) {

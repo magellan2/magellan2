@@ -1586,13 +1586,7 @@ public class E3CommandParser {
             addNeed(luxury, currentUnit, 0, goodAmount, TRADE_PRIORITY);
           }
         } else if (W_SKILL.equals(warning)) {
-          goodAmount = 0;
-          Map<Unit, Supply> map = supplyMap.get(luxury);
-          if (map != null) {
-            for (Supply s : map.values()) {
-              goodAmount += s.getAmount();
-            }
-          }
+          goodAmount = getSupply(luxury);
           goodAmount = Math.min(goodAmount, volume);
           if (goodAmount > maxAmount - guetersumme) {
             goodAmount = Math.min(goodAmount, maxAmount - guetersumme);
@@ -2044,6 +2038,23 @@ public class E3CommandParser {
         }
       }
     }
+  }
+
+  /**
+   * Returns the total supply for an item.
+   * 
+   * @param item Order name of the supplied item
+   * @return The supply or 0, if none has been registered.
+   */
+  protected int getSupply(String item) {
+    Map<Unit, Supply> map = supplyMap.get(item);
+    int goodAmount = 0;
+    if (map != null) {
+      for (Supply s : map.values()) {
+        goodAmount += s.getAmount();
+      }
+    }
+    return goodAmount;
   }
 
   /**

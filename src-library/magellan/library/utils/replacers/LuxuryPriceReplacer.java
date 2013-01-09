@@ -21,7 +21,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Returns price of luxury given as parameter.
  * 
  * @author unknown
  * @version 1.0
@@ -35,7 +35,9 @@ public class LuxuryPriceReplacer extends AbstractParameterReplacer {
   }
 
   /**
-   * DOCUMENT-ME
+   * Return price of luxury defined by parameter, <code>null</code> if none is found.
+   * 
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
    */
   public Object getReplacement(Object o) {
     if (o instanceof Region) {

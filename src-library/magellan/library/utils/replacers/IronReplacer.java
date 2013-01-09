@@ -15,7 +15,6 @@ package magellan.library.utils.replacers;
 
 import magellan.library.Region;
 import magellan.library.RegionResource;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
@@ -26,15 +25,25 @@ import magellan.library.utils.Resources;
  * @version 1.0
  */
 public class IronReplacer extends AbstractRegionReplacer {
+  private ItemType resourceType;
+
   /**
-   * DOCUMENT-ME
+   * @param resourceType
+   */
+  public IronReplacer(ItemType resourceType) {
+    this.resourceType = resourceType;
+  }
+
+  /**
+   * Returns the amount of iron of the region.
+   * 
+   * @see magellan.library.utils.replacers.AbstractRegionReplacer#getRegionReplacement(magellan.library.Region)
    */
   @Override
   public Object getRegionReplacement(Region region) {
-    ItemType ironType = region.getData().rules.getItemType(EresseaConstants.I_RIRON);
-    if (ironType == null)
+    if (resourceType == null)
       return Integer.valueOf(0);
-    RegionResource ironResource = region.getResource(ironType);
+    RegionResource ironResource = region.getResource(resourceType);
     if (ironResource == null)
       return Integer.valueOf(0);
     return Integer.valueOf(ironResource.getAmount());

@@ -22,7 +22,7 @@ import magellan.library.Described;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Replacer returning the description of Described objects.
  * 
  * @author Andreas
  * @version 1.0
@@ -38,14 +38,21 @@ public class DescriptionReplacer implements Replacer {
   }
 
   /**
-   * Creates new TagReplacer
+   * Creates new DescriptionReplacer
+   * 
+   * @param mode {@link #getReplacement(Object)} returns {@link Replacer#EMPTY} for objects that are
+   *          not descendents of {@link Described} if this is true, otherwise <code>null</code>.
    */
   public DescriptionReplacer(boolean mode) {
     this.mode = mode;
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the description.
+   * 
+   * @return the description. If the argument does no inherit from {@link Described}, returns
+   *         {@link Replacer#EMPTY} or null, depending on the mode.
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
    */
   public Object getReplacement(Object o) {
     if (o instanceof Described)
@@ -58,7 +65,7 @@ public class DescriptionReplacer implements Replacer {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   public String getDescription() {
     return Resources.get("util.replacers.descriptionreplacer.description");

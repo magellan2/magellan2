@@ -15,28 +15,37 @@ package magellan.library.utils.replacers;
 
 import magellan.library.Region;
 import magellan.library.RegionResource;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Returns mallorn amount
  * 
  * @author Fiete
  * @version 1.0
  */
 public class MallornReplacer extends AbstractRegionReplacer {
+  private ItemType resourceType;
+
   /**
-   * DOCUMENT-ME
+   * @param resourceType
+   */
+  public MallornReplacer(ItemType resourceType) {
+    this.resourceType = resourceType;
+  }
+
+  /**
+   * Returns the mallorn of the region.
+   * 
+   * @see magellan.library.utils.replacers.AbstractRegionReplacer#getRegionReplacement(magellan.library.Region)
    */
   @Override
   public Object getRegionReplacement(Region region) {
+    if (resourceType == null)
+      return Integer.valueOf(0);
     if (!region.isMallorn())
       return Integer.valueOf(0);
-    ItemType mallornType = region.getData().rules.getItemType(EresseaConstants.I_RMALLORN);
-    if (mallornType == null)
-      return Integer.valueOf(0);
-    RegionResource mallornResource = region.getResource(mallornType);
+    RegionResource mallornResource = region.getResource(resourceType);
     if (mallornResource == null)
       return Integer.valueOf(0);
     return Integer.valueOf(mallornResource.getAmount());

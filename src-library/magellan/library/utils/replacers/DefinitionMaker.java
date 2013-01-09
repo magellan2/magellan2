@@ -31,7 +31,7 @@ import java.util.StringTokenizer;
  * @version 1.0
  */
 public class DefinitionMaker {
-  /** DOCUMENT-ME */
+  /** The string escape marker */
   public static final String ESCAPE = "\\";
   protected String unknown = "";
 
@@ -69,15 +69,20 @@ public class DefinitionMaker {
   }
 
   /**
-   * DOCUMENT-ME
+   * Parses defStr and sets up a replacers system accordingly.
    */
   public ReplacerSystem createDefinition(String defStr, String cmdChars, ReplacerFactory factory) {
     return DefinitionMaker.createDefinition(defStr, cmdChars, factory, unknown);
   }
 
   /**
-	 *
-	 */
+   * Parses defStr and sets up a replacers system accordingly.
+   * 
+   * @param defStr The definition
+   * @param cmdChars separator chars
+   * @param factory Replacer provider
+   * @param unknown The string to be returned by replacers for "unknown" results
+   */
   public static ReplacerSystem createDefinition(String defStr, String cmdChars,
       ReplacerFactory factory, String unknown) {
     ReplacerSystem sys = new ReplacerSystem();

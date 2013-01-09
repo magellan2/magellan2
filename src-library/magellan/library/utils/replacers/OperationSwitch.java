@@ -41,14 +41,13 @@ public class OperationSwitch extends AbstractParameterReplacer implements Enviro
       ((OperationMode) environment.getPart(ReplacerEnvironment.OPERATION_PART))
           .setNullEqualsZero(fName.equals("true"));
     } catch (NullPointerException npe) {
+      // default to EMPTY on error
     }
 
     return Replacer.EMPTY;
   }
 
   /**
-   * DOCUMENT-ME
-   * 
    * @see magellan.library.utils.replacers.EnvironmentDependent#setEnvironment(magellan.library.utils.replacers.ReplacerEnvironment)
    */
   public void setEnvironment(ReplacerEnvironment env) {

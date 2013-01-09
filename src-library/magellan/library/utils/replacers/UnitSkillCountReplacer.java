@@ -53,10 +53,11 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
   /**
    * Creates new UnitSkillCountReplacer
    * 
-   * @param mode {@link #MODE_SKILL} : counts all persons with the skill<br /> {@link #MODE_SKILL_MIN} :
-   *          count all persons with at least a certain skill level<br /> {@link #MODE_SKILL_SUM}: count
-   *          the skill points of units with the given skill.<br /> {@link #MODE_SKILL_SUM_MIN}: count all
-   *          skill points of units with at least a certain skill level.
+   * @param mode {@link #MODE_SKILL} : counts all persons with the skill<br />
+   *          {@link #MODE_SKILL_MIN} : count all persons with at least a certain skill level<br />
+   *          {@link #MODE_SKILL_SUM}: count the skill points of units with the given skill.<br />
+   *          {@link #MODE_SKILL_SUM_MIN}: count all skill points of units with at least a certain
+   *          skill level.
    */
   public UnitSkillCountReplacer(int mode) {
     super(UnitSkillCountReplacer.MODE_LENGTHS[mode]);
@@ -91,6 +92,7 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
         try {
           min = (int) Double.parseDouble(obj.toString());
         } catch (NumberFormatException nfe) {
+          // default to 1 on error
         }
       }
     }

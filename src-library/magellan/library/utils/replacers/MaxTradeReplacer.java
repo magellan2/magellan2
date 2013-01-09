@@ -17,7 +17,7 @@ import magellan.library.Region;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Returns trade volume.
  * 
  * @author unknown
  * @version 1.0
@@ -26,7 +26,9 @@ public class MaxTradeReplacer extends AbstractRegionReplacer {
   protected static final Integer ZERO = Integer.valueOf(0);
 
   /**
-   * DOCUMENT-ME
+   * Returns the luxury volume.
+   * 
+   * @see magellan.library.utils.replacers.AbstractRegionReplacer#getRegionReplacement(magellan.library.Region)
    */
   @Override
   public Object getRegionReplacement(Region r) {
@@ -40,6 +42,9 @@ public class MaxTradeReplacer extends AbstractRegionReplacer {
     return null;
   }
 
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
   public String getDescription() {
     return Resources.get("util.replacers.maxtradereplacer.description");
   }

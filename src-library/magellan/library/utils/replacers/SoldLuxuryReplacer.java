@@ -27,7 +27,7 @@ import magellan.library.StringID;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Returns name of available luxury
  * 
  * @author Andreas
  * @version 1.0
@@ -37,13 +37,18 @@ public class SoldLuxuryReplacer extends AbstractRegionReplacer {
 
   /**
    * Creates new SoldLuxuryReplacer
+   * 
+   * @param mode if 0: return name, if 1: return first letter, if 2: return first two letters, if 3:
+   *          return price
    */
   public SoldLuxuryReplacer(int mode) {
     this.mode = mode;
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns name or value of available luxury.
+   * 
+   * @see magellan.library.utils.replacers.AbstractRegionReplacer#getRegionReplacement(magellan.library.Region)
    */
   @Override
   public Object getRegionReplacement(Region r) {
@@ -76,7 +81,7 @@ public class SoldLuxuryReplacer extends AbstractRegionReplacer {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   public String getDescription() {
     return Resources.get("util.replacers.soldluxuryreplacer.description." + mode);

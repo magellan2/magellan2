@@ -41,7 +41,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
   }
 
   /**
-   * DOCUMENT-ME
+   * Registers a replacer for the given name and arguments.
    */
   public void putReplacer(String name, Class<?> repClass, Object args[]) {
     putReplacer(name, repClass);
@@ -52,7 +52,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
   }
 
   /**
-   * DOCUMENT-ME
+   * Registers a replacer for the given name and arguments.
    */
   public void putReplacer(String name, Class<?> repClass, Object arg) {
     putReplacer(name, repClass);
@@ -63,14 +63,14 @@ public class DefaultReplacerFactory implements ReplacerFactory {
   }
 
   /**
-   * DOCUMENT-ME
+   * Registers a replacer for the given name without arguments.
    */
   public void putReplacer(String name, Class<?> repClass) {
     replacers.put(name, new ReplacerInfo(repClass));
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets arguments for the given replacer.
    */
   public void setArguments(String name, Object arg) {
     Object args[] = new Object[1];
@@ -79,7 +79,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets arguments for the given replacer.
    */
   public void setArguments(String name, Object args[]) {
     Object argCopy[] = new Object[args.length];
@@ -88,7 +88,9 @@ public class DefaultReplacerFactory implements ReplacerFactory {
   }
 
   /**
-   * DOCUMENT-ME
+   * Looks up and instanciates a replacer.
+   * 
+   * @see magellan.library.utils.replacers.ReplacerFactory#createReplacer(java.lang.String)
    */
   public Replacer createReplacer(String name) {
     ReplacerInfo repInfo = replacers.get(name);
@@ -107,14 +109,14 @@ public class DefaultReplacerFactory implements ReplacerFactory {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.ReplacerFactory#isReplacer(java.lang.String)
    */
   public boolean isReplacer(String name) {
     return replacers.containsKey(name);
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.ReplacerFactory#getReplacers()
    */
   public java.util.Set<String> getReplacers() {
     return replacers.keySet();
@@ -133,7 +135,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
     }
 
     /**
-     * DOCUMENT-ME
+     * Sets the constructor arguments.
      */
     public void setArgs(Object arg[]) {
       args = arg;

@@ -77,6 +77,7 @@ public class FactionSwitch extends AbstractParameterReplacer implements Environm
             .removeFilters(UnitFactionFilter.class);
       }
     } catch (NullPointerException npe) {
+      // return empty on error
     }
 
     return Replacer.EMPTY;

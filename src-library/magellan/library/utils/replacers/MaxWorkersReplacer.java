@@ -33,6 +33,9 @@ public class MaxWorkersReplacer extends AbstractRegionReplacer {
     return region.getData().getGameSpecificRules().getMaxWorkers(region);
   }
 
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
   public String getDescription() {
     return Resources.get("util.replacers.maxworkersreplacer.description");
   }

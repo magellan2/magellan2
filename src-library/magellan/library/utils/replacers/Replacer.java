@@ -17,7 +17,7 @@ package magellan.library.utils.replacers;
  * Base interface for Replacer architecture.
  * <p>
  * A Replacer's getReplacement method takes an object and replaces it by something else. Replacers
- * with several arguments can by implemented by using a {@link BranchReplacer}.
+ * with several arguments can be implemented using a {@link BranchReplacer}.
  * </p>
  * <p>
  * Our replacers are usually created in {@link ReplacerFactory} and therefore have only default

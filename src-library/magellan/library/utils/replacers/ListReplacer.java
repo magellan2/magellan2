@@ -22,8 +22,10 @@ import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.List;
 
+import magellan.library.utils.Resources;
+
 /**
- * DOCUMENT ME!
+ * A replacer that maintains a list of replacers and simply concatenates their results.
  * 
  * @author Andreas
  * @version 1.0
@@ -72,20 +74,21 @@ public class ListReplacer implements Replacer {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   public String getDescription() {
-    return "list replacer";
+    return Resources.get("util.replacers.listreplacer.description");
   }
 
   /**
-   * DOCUMENT-ME
+   * Concatenates results of sub-replacers.
+   * 
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
    */
   public Object getReplacement(Object o) {
     if (evolved != null)
       return evolved;
 
-    // try{
     if (list == null)
       return null;
 
@@ -115,13 +118,10 @@ public class ListReplacer implements Replacer {
     buffer.setLength(0);
 
     return str;
-
-    // }catch(Exception exc) {}
-    // return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {

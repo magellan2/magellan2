@@ -52,6 +52,7 @@ public abstract class AbstractOperator extends AbstractParameterReplacer impleme
       try {
         evolved = (Float) getReplacement(null);
       } catch (RuntimeException exc) {
+        // default to null on (improbable) error
       }
     }
   }

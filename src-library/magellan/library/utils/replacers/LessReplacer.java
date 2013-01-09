@@ -36,7 +36,7 @@ public class LessReplacer extends AbstractParameterSwitch {
    * Checks the following two elements and evaluates their replacements. They are treated as Strings
    * through <i>toString()</i> and compared for equality.
    * 
-   * @throws IllegalArgumentException DOCUMENT-ME
+   * @throws IllegalArgumentException If there are not enough arguments
    */
   @Override
   public boolean isSwitchingObject(Object o) {
@@ -63,6 +63,7 @@ public class LessReplacer extends AbstractParameterSwitch {
 
         return f1 < f2;
       } catch (NumberFormatException nfe) {
+        // treat unknowns as zero
       }
 
       return o1.toString().compareTo(o2.toString()) < 0;

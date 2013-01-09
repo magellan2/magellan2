@@ -461,6 +461,9 @@ public class BattleInfo {
 
     /** Return units */
     public Collection<UnitInfo> getUnits() {
+      if (units == null) {
+        units = new LinkedHashMap<UnitID, BattleInfo.UnitInfo>();
+      }
       return units.values();
     }
 

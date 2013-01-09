@@ -3056,15 +3056,18 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     if (faction != null) {
       faction.removeUnit(getID());
     }
-    if (group != null) {
-      group.removeUnit(getID());
-    }
-    if (building != null) {
-      building.removeUnit(getID());
-    }
-    if (ship != null) {
-      ship.removeUnit(getID());
-    }
+    setGroup(null);
+    setShip(null);
+    setBuilding(null);
+    // if (group != null) {
+    // group.removeUnit(getID());
+    // }
+    // if (building != null) {
+    // building.removeUnit(getID());
+    // }
+    // if (ship != null) {
+    // ship.removeUnit(getID());
+    // }
     clearCache();
   }
 

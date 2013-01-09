@@ -23,10 +23,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -126,7 +129,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
                                                                                       * different
                                                                                       * weighty!
                                                                                       */
-    GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
+        GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
 
     // html = new JLabel();
 
@@ -284,6 +287,14 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
       panel.setPreferredSize(new Dimension(300, 300));
       panel.add(new JScrollPane(defText), BorderLayout.CENTER);
+      JButton defaultButton = new JButton(Resources.get("basicregionpanel.prefs.button.default"));
+      defaultButton.addActionListener(new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+          defText.setText(Resources.get("basicregionpanel.default"));
+        }
+      });
+      panel.add(defaultButton, BorderLayout.SOUTH);
 
       this.add(panel, BorderLayout.CENTER);
     }

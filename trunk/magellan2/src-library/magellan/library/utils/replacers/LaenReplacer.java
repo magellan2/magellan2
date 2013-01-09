@@ -33,11 +33,11 @@ public class LaenReplacer extends AbstractRegionReplacer {
   public Object getRegionReplacement(Region region) {
     ItemType laenType = region.getData().rules.getItemType(EresseaConstants.I_RLAEN);
     if (laenType == null)
-      return new Integer(0);
+      return Integer.valueOf(0);
     RegionResource laenResource = region.getResource(laenType);
     if (laenResource == null)
-      return new Integer(0);
-    return new Integer(laenResource.getAmount());
+      return Integer.valueOf(0);
+    return Integer.valueOf(laenResource.getAmount());
   }
 
   public String getDescription() {

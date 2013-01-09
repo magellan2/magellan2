@@ -560,15 +560,15 @@ public class UnitContainerContextMenu extends JPopupMenu {
         cntMaxLoad += ship.getMaxCapacity();
         s.append(ship.toString(true));
         s.append(":");
-        s.append(UnitContainerContextMenu.weightNumberFormat.format(new Float((ship
+        s.append(UnitContainerContextMenu.weightNumberFormat.format(Float.valueOf((ship
             .getMaxCapacity() - ship.getModifiedLoad()) / 100.0F)));
         s.append("\n");
       }
     }
     if (cntShips > 0) {
       s.append(cntShips).append(" ships with ").append(
-          UnitContainerContextMenu.weightNumberFormat.format(new Float(
-              (cntMaxLoad - cntActModifiedLoad) / 100.0F))).append(" free space.");
+          UnitContainerContextMenu.weightNumberFormat.format(Float
+              .valueOf((cntMaxLoad - cntActModifiedLoad) / 100.0F))).append(" free space.");
       s.append("\n");
     } else {
       s = new StringBuilder("no ships.");

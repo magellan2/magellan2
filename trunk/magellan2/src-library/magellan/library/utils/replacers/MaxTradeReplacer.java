@@ -23,7 +23,7 @@ import magellan.library.utils.Resources;
  * @version 1.0
  */
 public class MaxTradeReplacer extends AbstractRegionReplacer {
-  protected static final Integer ZERO = new Integer(0);
+  protected static final Integer ZERO = Integer.valueOf(0);
 
   /**
    * DOCUMENT-ME
@@ -34,7 +34,7 @@ public class MaxTradeReplacer extends AbstractRegionReplacer {
       if (r.maxLuxuries() == 0)
         return MaxTradeReplacer.ZERO;
 
-      return new Integer(r.maxLuxuries());
+      return Integer.valueOf(r.maxLuxuries());
     }
 
     return null;

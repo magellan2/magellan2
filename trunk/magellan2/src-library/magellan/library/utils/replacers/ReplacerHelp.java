@@ -41,18 +41,18 @@ public class ReplacerHelp implements GameDataListener {
 
     Object args[] = new Object[2];
     args[0] = "getName";
-    args[1] = new Integer(0);
+    args[1] = Integer.valueOf(0);
 
     drf.putReplacer("rname", RegionMethodReplacer.class, args);
 
     args[0] = "getCoordinate";
-    args[1] = new Integer(0);
+    args[1] = Integer.valueOf(0);
     drf.putReplacer("coordinate", RegionMethodReplacer.class, args);
 
     args[0] = "getType";
     drf.putReplacer("rtype", RegionMethodReplacer.class, args);
 
-    args[1] = new Integer(RegionFieldReplacer.MODE_NON_NEGATIVE);
+    args[1] = Integer.valueOf(RegionFieldReplacer.MODE_NON_NEGATIVE);
 
     Class<?> regionField = RegionFieldReplacer.class;
 
@@ -102,7 +102,7 @@ public class ReplacerHelp implements GameDataListener {
     args[0] = "oldSprouts";
     drf.putReplacer("oldSprouts", regionField, args);
 
-    args[1] = new Integer(RegionMethodReplacer.MODE_NON_NEGATIVE);
+    args[1] = Integer.valueOf(RegionMethodReplacer.MODE_NON_NEGATIVE);
 
     Class<?> regionMethod = RegionMethodReplacer.class;
 
@@ -116,7 +116,7 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("morale", regionMethod, args);
 
     // Fiete 20061222 coords
-    args[1] = new Integer(RegionMethodReplacer.MODE_ALL);
+    args[1] = Integer.valueOf(RegionMethodReplacer.MODE_ALL);
     args[0] = "getCoordX";
     drf.putReplacer("posX", regionMethod, args);
     args[0] = "getCoordY";
@@ -134,10 +134,10 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("price", LuxuryPriceReplacer.class);
 
     Class<?> soldClass = SoldLuxuryReplacer.class;
-    drf.putReplacer("soldname", soldClass, new Integer(0));
-    drf.putReplacer("soldchar1", soldClass, new Integer(1));
-    drf.putReplacer("soldchar2", soldClass, new Integer(2));
-    drf.putReplacer("soldprice", soldClass, new Integer(3));
+    drf.putReplacer("soldname", soldClass, Integer.valueOf(0));
+    drf.putReplacer("soldchar1", soldClass, Integer.valueOf(1));
+    drf.putReplacer("soldchar2", soldClass, Integer.valueOf(2));
+    drf.putReplacer("soldprice", soldClass, Integer.valueOf(3));
 
     // item replacer
     drf.putReplacer("item", ItemTypeReplacer.class);
@@ -147,13 +147,13 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("countUnits", UnitCountReplacer.class, Boolean.FALSE);
 
     // skill count
-    Integer iarg = new Integer(0);
+    Integer iarg = Integer.valueOf(0);
     drf.putReplacer("skill", UnitSkillCountReplacer.class, iarg);
-    iarg = new Integer(1);
+    iarg = Integer.valueOf(1);
     drf.putReplacer("skillmin", UnitSkillCountReplacer.class, iarg);
-    iarg = new Integer(2);
+    iarg = Integer.valueOf(2);
     drf.putReplacer("skillsum", UnitSkillCountReplacer.class, iarg);
-    iarg = new Integer(3);
+    iarg = Integer.valueOf(3);
     drf.putReplacer("skillminsum", UnitSkillCountReplacer.class, iarg);
 
     // tag replacement
@@ -168,9 +168,9 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("faction", FactionSwitch.class);
 
     // trustlevel switch
-    iarg = new Integer(0);
+    iarg = Integer.valueOf(0);
     drf.putReplacer("priv", TrustlevelSwitch.class, iarg);
-    iarg = new Integer(1);
+    iarg = Integer.valueOf(1);
     drf.putReplacer("privminmax", TrustlevelSwitch.class, iarg);
 
     // unit filter

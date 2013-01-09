@@ -185,7 +185,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 
       while (st.hasMoreTokens()) {
         try {
-          excludeCombatStates.add(new Integer(st.nextToken()));
+          excludeCombatStates.add(Integer.parseInt(st.nextToken()));
         } catch (Exception exc) {
         }
       }
@@ -519,7 +519,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 
       for (int i = 0; i < 7; i++) {
         if (states[i].isSelected()) {
-          sl.add(new Integer(i - 1));
+          sl.add(Integer.valueOf(i - 1));
         }
       }
 

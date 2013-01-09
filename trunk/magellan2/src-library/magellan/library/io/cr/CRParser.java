@@ -910,7 +910,7 @@ public class CRParser implements RulesIO, GameDataIO {
       return map;
     }
     try {
-      map.put("_version_", new Integer(sc.argv[0].substring(sc.argv[0].indexOf(' ')).trim()));
+      map.put("_version_", Integer.parseInt(sc.argv[0].substring(sc.argv[0].indexOf(' ')).trim()));
     } catch (final Exception exc) {
       CRParser.log.warn("CRParser.readHeader(): Failed to parse  VERSION number. (setting 0)");
       CRParser.log.warn(exc.toString());

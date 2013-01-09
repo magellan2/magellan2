@@ -202,11 +202,11 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
           if (unmodifiedAmount > -1 && unmodifiedAmount != modItem.getAmount()) {
             float unmodifiedWeight =
                 (((int) (modItem.getItemType().getWeight() * 100)) * unmodifiedAmount) / 100.0f;
-            nodeText.append(ItemNodeWrapper.weightNumberFormat.format(new Float(unmodifiedWeight)));
+            nodeText.append(ItemNodeWrapper.weightNumberFormat.format(Float.valueOf(unmodifiedWeight)));
             nodeText.append(" (").append(
-                ItemNodeWrapper.weightNumberFormat.format(new Float(weight))).append(")");
+                ItemNodeWrapper.weightNumberFormat.format(Float.valueOf(weight))).append(")");
           } else {
-            nodeText.append(ItemNodeWrapper.weightNumberFormat.format(new Float(weight)));
+            nodeText.append(ItemNodeWrapper.weightNumberFormat.format(Float.valueOf(weight)));
           }
           nodeText.append(" " + Resources.get("tree.itemnodewrapper.node.weightunits"));
         }
@@ -247,13 +247,13 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
             float weight =
                 (((int) (item.getItemType().getWeight() * 100)) * item.getAmount()) / 100.0f;
             nodeText.append(": ").append(
-                ItemNodeWrapper.weightNumberFormat.format(new Float(weight)));
+                ItemNodeWrapper.weightNumberFormat.format(Float.valueOf(weight)));
 
             if (modItem.getAmount() != item.getAmount()) {
               float modWeight =
                   (((int) (modItem.getItemType().getWeight() * 100)) * modItem.getAmount()) / 100.0f;
               nodeText.append(" (").append(
-                  ItemNodeWrapper.weightNumberFormat.format(new Float(modWeight))).append(")");
+                  ItemNodeWrapper.weightNumberFormat.format(Float.valueOf(modWeight))).append(")");
             }
             nodeText.append(" " + Resources.get("tree.itemnodewrapper.node.weightunits"));
           }

@@ -66,7 +66,7 @@ public class SoldLuxuryReplacer extends AbstractRegionReplacer {
             return new String(lp.getItemType().getName().toCharArray(), 0, 2);
 
           case 3:
-            return new Integer(-lp.getPrice());
+            return Integer.valueOf(-lp.getPrice());
           }
         }
       }

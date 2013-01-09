@@ -218,7 +218,7 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
    */
   public void applyPreferences() {
     try {
-      float fScale = new Float(editFontSize.getText()).floatValue();
+      float fScale = Float.valueOf(editFontSize.getText()).floatValue();
       fScale /= 100.0f;
 
       settings.setProperty("Client.FontScale", Float.toString(fScale));

@@ -32,14 +32,14 @@ public class MallornReplacer extends AbstractRegionReplacer {
   @Override
   public Object getRegionReplacement(Region region) {
     if (!region.isMallorn())
-      return new Integer(0);
+      return Integer.valueOf(0);
     ItemType mallornType = region.getData().rules.getItemType(EresseaConstants.I_RMALLORN);
     if (mallornType == null)
-      return new Integer(0);
+      return Integer.valueOf(0);
     RegionResource mallornResource = region.getResource(mallornType);
     if (mallornResource == null)
-      return new Integer(0);
-    return new Integer(mallornResource.getAmount());
+      return Integer.valueOf(0);
+    return Integer.valueOf(mallornResource.getAmount());
   }
 
   public String getDescription() {

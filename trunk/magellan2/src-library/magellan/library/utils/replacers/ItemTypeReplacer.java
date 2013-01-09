@@ -29,7 +29,7 @@ import magellan.library.utils.Resources;
  * @version 1.0
  */
 public class ItemTypeReplacer extends AbstractParameterReplacer implements EnvironmentDependent {
-  private static final Integer ZERO = new Integer(0);
+  private static final Integer ZERO = Integer.valueOf(0);
   protected ReplacerEnvironment environment;
 
   /**
@@ -76,7 +76,7 @@ public class ItemTypeReplacer extends AbstractParameterReplacer implements Envir
       }
 
       if (count != 0)
-        return new Integer(count);
+        return Integer.valueOf(count);
 
       return ItemTypeReplacer.ZERO;
     }

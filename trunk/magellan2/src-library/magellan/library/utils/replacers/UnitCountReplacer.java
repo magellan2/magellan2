@@ -32,7 +32,7 @@ import magellan.library.utils.Resources;
  * @version 1.0
  */
 public class UnitCountReplacer extends AbstractRegionReplacer implements EnvironmentDependent {
-  private static final Integer ZERO = new Integer(0);
+  private static final Integer ZERO = Integer.valueOf(0);
   protected ReplacerEnvironment environment;
   protected boolean countPersons;
 
@@ -72,7 +72,7 @@ public class UnitCountReplacer extends AbstractRegionReplacer implements Environ
       }
 
       if (count > 0)
-        return new Integer(count);
+        return Integer.valueOf(count);
 
       return UnitCountReplacer.ZERO;
     }

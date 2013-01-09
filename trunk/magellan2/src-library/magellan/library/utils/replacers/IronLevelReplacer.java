@@ -39,7 +39,7 @@ public class IronLevelReplacer extends AbstractRegionReplacer {
     RegionResource ironResource = region.getResource(ironType);
     if (ironResource == null)
       return null;
-    return new Integer(ironResource.getSkillLevel());
+    return Integer.valueOf(ironResource.getSkillLevel());
   }
 
   public String getDescription() {

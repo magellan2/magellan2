@@ -404,7 +404,7 @@ public class PropertiesHelper {
         }
       }
     } else {
-      for (int i = 0, max = new Integer(count).intValue(); i < max; i++) {
+      for (int i = 0, max = Integer.parseInt(count); i < max; i++) {
         String prop = p.getProperty(prefix + "." + i);
 
         if (prop != null) {

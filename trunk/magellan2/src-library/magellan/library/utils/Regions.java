@@ -1301,9 +1301,9 @@ public class Regions {
     }
 
     Map<CoordinateID, Double> distances = new HashMap<CoordinateID, Double>();
-    // distances.put(start, new Float(0.0f)); // contains the distances from the start region to all
+    // distances.put(start, Float.valueOf(0.0f)); // contains the distances from the start region to all
     // other regions as Float objects
-    distances.put(start, new Double(0)); // contains the distances from the start region to all
+    distances.put(start, Double.valueOf(0)); // contains the distances from the start region to all
     // other regions as Float objects
 
     LinkedList<Region> path = new LinkedList<Region>();
@@ -1414,7 +1414,7 @@ public class Regions {
         consecutiveReenlistings = 0;
         backlogList.removeFirst();
         backlogMap.remove(curCoord);
-        distances.put(curCoord, new Double(minDistance));
+        distances.put(curCoord, Double.valueOf(minDistance));
       } else {
         backlogList.removeFirst();
 

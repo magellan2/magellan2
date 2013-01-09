@@ -391,7 +391,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
       if (isShowingIconText()) {
         ge =
-            new GraphicsElement(new Integer(s.getLevel()), null, null, s.getSkillType().getID()
+            new GraphicsElement(Integer.valueOf(s.getLevel()), null, null, s.getSkillType().getID()
                 .toString());
 
         if (s.isLostSkill()) {

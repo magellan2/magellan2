@@ -100,7 +100,7 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
             .getUnits((Region) region);
 
     if ((units == null) || (units.size() == 0))
-      return new Integer(0);
+      return Integer.valueOf(0);
 
     int count = 0;
     Iterator<Unit> it = units.iterator();
@@ -127,7 +127,7 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
       }
     }
 
-    return new Integer(count);
+    return Integer.valueOf(count);
   }
 
   /**

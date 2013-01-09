@@ -1,3 +1,9 @@
+2013-01-08 / Build 538 - stm (stm_@users.sourceforge.net)
+ * cleaned up Replacer code, behavior should be unchanged
+ * fixed bug where Units' outdated ship or building information persisted
+ * replaced new Float by Float.valueIf (hopefully) improving performance a tiny bit
+ * handle reports where owner faction does not exist
+
 2012-11-04 / Build 538 - stm (stm_@users.sourceforge.net)
     * out-of-date skills (see Build 526 below) get a style in Unit- and SkillNodeWrappers
 

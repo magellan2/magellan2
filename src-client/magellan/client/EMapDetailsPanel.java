@@ -2538,8 +2538,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendUnitPersonInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-
-    String strPersons;
+    StringBuilder strPersons = new StringBuilder();
     if (!isCompactLayout()) {
       // display custom Unit Icon ?
       String customUnitIconFileName = "custom/units/" + u.toString(false);
@@ -2555,10 +2554,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         parent.add(customUnitIconNode);
       }
 
-      strPersons = Resources.get("emapdetailspanel.node.persons") + ": " + u.getPersons();
+      strPersons.append(Resources.get("emapdetailspanel.node.persons")).append(": ").append(
+          u.getPersons());
 
       if (u.getPersons() != u.getModifiedPersons()) {
-        strPersons += (" (" + u.getModifiedPersons() + ")");
+        strPersons.append(" (").append(u.getModifiedPersons()).append(")");
       }
     } else {
       String res;
@@ -2574,13 +2574,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         res = "emapdetailspanel.node.compactpersons";
       }
 
-      strPersons =
-          Resources.get(res, u.getPersons(), u.getModifiedPersons(), u.getRaceName(getGameData()),
-              u.getFaction() != null ? u.getFaction() : Resources
-                  .get("emapdetailspanel.node.unknownfaction"))
-
-              + (u.getGroup() != null ? Resources.get("emapdetailspanel.node.group") + " "
-                  + u.getGroup().getName() : "");
+      strPersons.append(Resources.get(res, u.getPersons(), u.getModifiedPersons(), u
+          .getRaceName(getGameData()), u.getFaction() != null ? u.getFaction() : Resources
+          .get("emapdetailspanel.node.unknownfaction")));
+      if (u.getGroup() != null) {
+        strPersons.append(", ").append(Resources.get("emapdetailspanel.node.group")).append(" ")
+            .append(u.getGroup().getName());
+      }
     }
     String iconPersonName = "person";
     /**
@@ -2593,7 +2593,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     if (getMagellanContext().getImageFactory().existImageIcon(u.getSimpleRealRaceName())) {
       iconPersonName = u.getSimpleRealRaceName();
     }
-    DefaultMutableTreeNode personNode = createSimpleNode(strPersons, iconPersonName);
+    DefaultMutableTreeNode personNode = createSimpleNode(strPersons.toString(), iconPersonName);
     parent.add(personNode);
     expandableNodes.add(new NodeWrapper(personNode, "EMapDetailsPanel.PersonsExpanded"));
 

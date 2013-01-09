@@ -47,6 +47,9 @@ public class NullReplacer extends AbstractParameterReplacer {
     return Replacer.FALSE;
   }
 
+  /**
+   * @see magellan.library.utils.replacers.AbstractParameterReplacer#getDescription()
+   */
   @Override
   public String getDescription() {
     return Resources.get("util.replacers.null.description") + "\n\n" + super.getDescription();

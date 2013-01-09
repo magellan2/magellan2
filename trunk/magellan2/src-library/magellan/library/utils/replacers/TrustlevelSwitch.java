@@ -17,7 +17,7 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.filters.UnitFactionTLFilter;
 
 /**
- * DOCUMENT ME!
+ * Selects unit with given trust level
  * 
  * @author Andreas
  * @version 1.0
@@ -27,14 +27,18 @@ public class TrustlevelSwitch extends AbstractParameterReplacer implements Envir
   protected ReplacerEnvironment environment;
 
   /**
-   * Creates new FactionSwitch
+   * Creates new FactionSwitch.
+   * 
+   * @param mode if 0: only min level, if 1: min and max level as parameters
    */
   public TrustlevelSwitch(int mode) {
     super((mode == 0) ? 1 : 2);
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns EMPTY and sets filter to units with given trust level.
+   * 
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
    */
   public Object getReplacement(Object src) {
     try {
@@ -62,13 +66,14 @@ public class TrustlevelSwitch extends AbstractParameterReplacer implements Envir
       ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART))
           .addFilter(new UnitFactionTLFilter(min, max));
     } catch (RuntimeException npe) {
+      // do not filter on error
     }
 
     return Replacer.EMPTY;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.EnvironmentDependent#setEnvironment(magellan.library.utils.replacers.ReplacerEnvironment)
    */
   public void setEnvironment(ReplacerEnvironment env) {
     environment = env;

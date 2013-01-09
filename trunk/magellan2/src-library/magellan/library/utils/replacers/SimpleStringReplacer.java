@@ -19,7 +19,7 @@
 package magellan.library.utils.replacers;
 
 /**
- * DOCUMENT ME!
+ * Returns a certain string.
  * 
  * @author Andreas
  * @version 1.0
@@ -35,14 +35,14 @@ public class SimpleStringReplacer implements Replacer {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the string defined in the constructor.
    */
   public Object getReplacement(Object o) {
     return string;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   public String getDescription() {
     return "simple string";

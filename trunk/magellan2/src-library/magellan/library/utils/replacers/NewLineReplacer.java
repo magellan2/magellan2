@@ -16,7 +16,7 @@ package magellan.library.utils.replacers;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Evaluates to the newline character.
  * 
  * @author Andreas
  * @version 1.0
@@ -25,14 +25,14 @@ public class NewLineReplacer implements Replacer {
   protected static final String NEWLINE = "\n";
 
   /**
-   * DOCUMENT-ME
+   * Evaluates to the newline character.
    */
   public Object getReplacement(Object o) {
     return NewLineReplacer.NEWLINE;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   public String getDescription() {
     return Resources.get("util.replacers.newlinereplacer.description");

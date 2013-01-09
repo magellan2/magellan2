@@ -21,7 +21,7 @@ package magellan.library.utils.replacers;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Implements if statement
  * 
  * @author Andreas
  * @version 1.0rn
@@ -96,34 +96,37 @@ public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   public String getDescription() {
     return Resources.get("util.replacers.ifbranch.description");
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns 1
+   * 
+   * @see magellan.library.utils.replacers.ParameterReplacer#getParameterCount()
    */
   public int getParameterCount() {
     return 1;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.ParameterReplacer#setParameter(int, java.lang.Object)
    */
   public void setParameter(int index, Object obj) {
     criterion = obj;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
     try {
       return "if " + criterion + " then " + branches[0] + " else " + branches[1];
     } catch (Exception exc) {
+      // return default on error
     }
 
     return "IfReplacer";

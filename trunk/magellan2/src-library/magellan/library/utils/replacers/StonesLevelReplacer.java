@@ -15,26 +15,35 @@ package magellan.library.utils.replacers;
 
 import magellan.library.Region;
 import magellan.library.RegionResource;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Returns the skill level for stones of the region.
  * 
  * @author Fiete
  * @version 1.0
  */
 public class StonesLevelReplacer extends AbstractRegionReplacer {
+  private ItemType resourceType;
+
   /**
-   * DOCUMENT-ME
+   * @param resourceType
+   */
+  public StonesLevelReplacer(ItemType resourceType) {
+    this.resourceType = resourceType;
+  }
+
+  /**
+   * Returns the skill level for stones of the region.
+   * 
+   * @see magellan.library.utils.replacers.AbstractRegionReplacer#getRegionReplacement(magellan.library.Region)
    */
   @Override
   public Object getRegionReplacement(Region region) {
-    ItemType ironType = region.getData().rules.getItemType(EresseaConstants.I_RSTONES);
-    if (ironType == null)
+    if (resourceType == null)
       return null;
-    RegionResource ironResource = region.getResource(ironType);
+    RegionResource ironResource = region.getResource(resourceType);
     if (ironResource == null)
       return null;
     return Integer.valueOf(ironResource.getSkillLevel());

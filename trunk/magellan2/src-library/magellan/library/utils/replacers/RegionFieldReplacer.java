@@ -21,19 +21,19 @@ import magellan.library.impl.MagellanRegionImpl;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Returns a field of an object of class {@link Region}.
  * 
  * @author unknown
  * @version 1.0rn
  */
 public class RegionFieldReplacer extends AbstractRegionReplacer {
-  /** DOCUMENT-ME */
+  /** Identifier for "any value mode" */
   public static final int MODE_ALL = 0;
 
-  /** DOCUMENT-ME */
+  /** Identifier for "non-negative mode" */
   public static final int MODE_NON_NEGATIVE = 1;
 
-  /** DOCUMENT-ME */
+  /** Identifier for "positive mode" */
   public static final int MODE_POSITIVE = 2;
   protected Field field;
   protected int mode;
@@ -45,7 +45,9 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
   /**
    * Creates a new RegionFieldReplacer object.
    * 
-   * @throws RuntimeException DOCUMENT-ME
+   * @param field A field name of Region
+   * @param mode Defines what is returned for negative values.
+   * @throws RuntimeException if the given field is not accessible
    */
   public RegionFieldReplacer(String field, int mode) {
     try {
@@ -69,8 +71,25 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
     this.mode = mode;
   }
 
+  protected void setMethod(Method method) {
+    this.method = method;
+  }
+
+  protected void setMode(int mode) {
+    this.mode = mode;
+  }
+
+  protected RegionFieldReplacer() {
+    //
+  }
+
   /**
-   * DOCUMENT-ME
+   * Returns the value of the property for the region. If {@link #MODE_ALL} is set, returns any
+   * number, if {@link #MODE_NON_NEGATIVE} is set, returns null on negatives, if
+   * {@link #MODE_POSITIVE} is set, return <code>null</code> on non-positives.
+   * 
+   * @return the value or null
+   * @see magellan.library.utils.replacers.AbstractRegionReplacer#getRegionReplacement(magellan.library.Region)
    */
   @Override
   public Object getRegionReplacement(Region r) {
@@ -114,11 +133,15 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
         }
       }
     } catch (Exception exc) {
+      // return null on error
     }
 
     return null;
   }
 
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
   public String getDescription() {
     return Resources.get("util.replacers.regionfieldreplacer."
         + (field != null ? field.getName() : method != null ? method.getName() : "")

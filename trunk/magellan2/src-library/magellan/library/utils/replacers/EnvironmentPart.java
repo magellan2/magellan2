@@ -14,14 +14,12 @@
 package magellan.library.utils.replacers;
 
 /**
- * DOCUMENT ME!
- * 
  * @author Andreas
  * @version 1.0
  */
 public abstract class EnvironmentPart {
   /**
-   * DOCUMENT-ME
+   * Resets the environment (for a new, independent evaluation like a new region).
    */
   public abstract void reset();
 }

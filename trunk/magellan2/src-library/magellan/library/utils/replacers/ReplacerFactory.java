@@ -21,24 +21,24 @@ package magellan.library.utils.replacers;
 import java.util.Set;
 
 /**
- * DOCUMENT ME!
+ * Provides replacer instances.
  * 
  * @author Andreas
  * @version 1.0
  */
 public interface ReplacerFactory {
   /**
-   * DOCUMENT-ME
+   * Get names of all available replacers.
    */
   public Set<String> getReplacers();
 
   /**
-   * DOCUMENT-ME
+   * Checks if a replacer exists.
    */
   public boolean isReplacer(String name);
 
   /**
-   * DOCUMENT-ME
+   * Return an instance for the given name.
    */
   public Replacer createReplacer(String name);
 }

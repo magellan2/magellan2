@@ -17,14 +17,16 @@ import magellan.library.Region;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Returns region herb.
  * 
  * @author unknown
  * @version 1.0
  */
 public class HerbReplacer extends AbstractRegionReplacer {
   /**
-   * DOCUMENT-ME
+   * Returns region herb.
+   * 
+   * @see magellan.library.utils.replacers.AbstractRegionReplacer#getRegionReplacement(magellan.library.Region)
    */
   @Override
   public Object getRegionReplacement(Region r) {
@@ -36,6 +38,9 @@ public class HerbReplacer extends AbstractRegionReplacer {
     return null;
   }
 
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
   public String getDescription() {
     return Resources.get("util.replacers.herbreplacer.description");
   }

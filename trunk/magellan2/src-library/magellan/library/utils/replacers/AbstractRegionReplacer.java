@@ -16,14 +16,14 @@ package magellan.library.utils.replacers;
 import magellan.library.Region;
 
 /**
- * DOCUMENT ME!
+ * A replacer action on a region argument.
  * 
  * @author unknown
  * @version 1.0
  */
 public abstract class AbstractRegionReplacer implements Replacer {
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
    */
   public Object getReplacement(Object r) {
     if ((r instanceof Region))
@@ -33,15 +33,8 @@ public abstract class AbstractRegionReplacer implements Replacer {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns replacemenet for given region
    */
   public abstract Object getRegionReplacement(Region r);
 
-  /**
-   * DOCUMENT-ME
-   */
-  /*
-   * public String getDescription() { return
-   * magellan.library.utils.Translations.getTranslation(this, "description"); }
-   */
 }

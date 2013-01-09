@@ -26,7 +26,7 @@ import magellan.library.Unit;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Counts persons of all units.
  * 
  * @author Andreas
  * @version 1.0
@@ -51,7 +51,10 @@ public class UnitCountReplacer extends AbstractRegionReplacer implements Environ
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the sum of persons of all filtered units.
+   * 
+   * @return The sum of persons of filtered units as Integer, or <code>null</code> if no unit
+   * @see magellan.library.utils.replacers.AbstractRegionReplacer#getRegionReplacement(magellan.library.Region)
    */
   @Override
   public Object getRegionReplacement(Region r) {
@@ -81,14 +84,14 @@ public class UnitCountReplacer extends AbstractRegionReplacer implements Environ
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.EnvironmentDependent#setEnvironment(magellan.library.utils.replacers.ReplacerEnvironment)
    */
   public void setEnvironment(ReplacerEnvironment env) {
     environment = env;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
   public String getDescription() {
     return Resources.get("util.replacers.unitcountreplacer.description." + countPersons);

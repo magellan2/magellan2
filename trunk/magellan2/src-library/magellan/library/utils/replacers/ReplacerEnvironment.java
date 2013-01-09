@@ -18,16 +18,16 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * DOCUMENT ME!
+ * Provides a global environment.
  * 
  * @author Andreas
  * @version 1.0
  */
 public class ReplacerEnvironment {
-  /** DOCUMENT-ME */
+  /** Identifier for "operation" part (null acts as zero). */
   public static final String OPERATION_PART = "Op";
 
-  /** DOCUMENT-ME */
+  /** Identifier for the unit selection part. */
   public static final String UNITSELECTION_PART = "Unit";
   private Map<String, EnvironmentPart> parts;
 
@@ -43,21 +43,23 @@ public class ReplacerEnvironment {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the part identified by the parameter part.
    */
   public EnvironmentPart getPart(String part) {
     return parts.get(part);
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets a part for the given name.
    */
   public void setPart(String name, EnvironmentPart part) {
     parts.put(name, part);
   }
 
   /**
-   * DOCUMENT-ME
+   * Resets all parts.
+   * 
+   * @see EnvironmentPart#reset()
    */
   public void reset() {
     Iterator<EnvironmentPart> it = parts.values().iterator();

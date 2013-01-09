@@ -15,26 +15,35 @@ package magellan.library.utils.replacers;
 
 import magellan.library.Region;
 import magellan.library.RegionResource;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Returns laen amount
  * 
  * @author Fiete
  * @version 1.0
  */
 public class LaenReplacer extends AbstractRegionReplacer {
+  private ItemType resourceType;
+
   /**
-   * DOCUMENT-ME
+   * @param resourceType
+   */
+  public LaenReplacer(ItemType resourceType) {
+    this.resourceType = resourceType;
+  }
+
+  /**
+   * Returns the laen amount of the region.
+   * 
+   * @see magellan.library.utils.replacers.AbstractRegionReplacer#getRegionReplacement(magellan.library.Region)
    */
   @Override
   public Object getRegionReplacement(Region region) {
-    ItemType laenType = region.getData().rules.getItemType(EresseaConstants.I_RLAEN);
-    if (laenType == null)
+    if (resourceType == null)
       return Integer.valueOf(0);
-    RegionResource laenResource = region.getResource(laenType);
+    RegionResource laenResource = region.getResource(resourceType);
     if (laenResource == null)
       return Integer.valueOf(0);
     return Integer.valueOf(laenResource.getAmount());

@@ -51,6 +51,9 @@ public class NotReplacer extends AbstractParameterReplacer {
     return null;
   }
 
+  /**
+   * @see magellan.library.utils.replacers.AbstractParameterReplacer#getDescription()
+   */
   @Override
   public String getDescription() {
     return Resources.get("util.replacers.not.description") + "\n\n" + super.getDescription();

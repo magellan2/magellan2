@@ -16,14 +16,14 @@ package magellan.library.utils.replacers;
 import magellan.library.Unit;
 
 /**
- * DOCUMENT ME!
+ * A replacer action on a region argument.
  * 
  * @author unknown
  * @version 1.0
  */
 public abstract class AbstractUnitReplacer implements Replacer {
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
    */
   public Object getReplacement(Object r) {
     if (r instanceof Unit)
@@ -33,15 +33,8 @@ public abstract class AbstractUnitReplacer implements Replacer {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns replacement for given unit
    */
-  public abstract Object getUnitReplacement(Unit r);
+  public abstract Object getUnitReplacement(Unit u);
 
-  /**
-   * DOCUMENT-ME
-   */
-  /*
-   * public String getDescription() { return
-   * magellan.library.utils.Translations.getTranslation(this, "description"); }
-   */
 }

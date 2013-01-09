@@ -18,11 +18,12 @@ import java.util.Iterator;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.guiwrapper.EventDispatcherInterface;
 
 /**
- * DOCUMENT ME!
+ * Sets up and provides the replacers.
  * 
  * @author Andreas
  * @version 1.0
@@ -31,7 +32,7 @@ public class ReplacerHelp implements GameDataListener {
   protected static DefaultReplacerFactory defaultFactory;
 
   /**
-   * DOCUMENT-ME
+   * Creates all replacers.
    */
   public void init(GameData data) {
 
@@ -66,18 +67,7 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("trees", regionField, args);
     args[0] = "horses";
     drf.putReplacer("horses", regionField, args);
-    // Fiete 20070123
-    // args[0] = "iron";
-    // drf.putReplacer("iron", regionField, args);
-    drf.putReplacer("iron", IronReplacer.class);
 
-    drf.putReplacer("ironlevel", IronLevelReplacer.class);
-    drf.putReplacer("stoneslevel", StonesLevelReplacer.class);
-    drf.putReplacer("laenlevel", LaenLevelReplacer.class);
-
-    // args[0] = "laen";
-    // drf.putReplacer("laen", regionField, args);
-    drf.putReplacer("laen", LaenReplacer.class);
     args[0] = "wage";
     drf.putReplacer("wage", regionField, args);
     args[0] = "sprouts";
@@ -102,7 +92,7 @@ public class ReplacerHelp implements GameDataListener {
     args[0] = "oldSprouts";
     drf.putReplacer("oldSprouts", regionField, args);
 
-    args[1] = Integer.valueOf(RegionMethodReplacer.MODE_NON_NEGATIVE);
+    args[1] = Integer.valueOf(RegionFieldReplacer.MODE_NON_NEGATIVE);
 
     Class<?> regionMethod = RegionMethodReplacer.class;
 
@@ -116,22 +106,21 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("morale", regionMethod, args);
 
     // Fiete 20061222 coords
-    args[1] = Integer.valueOf(RegionMethodReplacer.MODE_ALL);
+    args[1] = Integer.valueOf(RegionFieldReplacer.MODE_ALL);
     args[0] = "getCoordX";
     drf.putReplacer("posX", regionMethod, args);
     args[0] = "getCoordY";
     drf.putReplacer("posY", regionMethod, args);
 
-    drf.putReplacer("maxtrade", MaxTradeReplacer.class);
-    drf.putReplacer("tradetype", TradeReplacer.class);
     drf.putReplacer("herb", HerbReplacer.class);
 
     drf.putReplacer("maxWorkers", MaxWorkersReplacer.class);
-    // FF 20070123
-    drf.putReplacer("mallorn", MallornReplacer.class);
 
     // luxury price, sold luxury
     drf.putReplacer("price", LuxuryPriceReplacer.class);
+
+    drf.putReplacer("maxtrade", MaxTradeReplacer.class);
+    drf.putReplacer("tradetype", TradeReplacer.class); // == soldname
 
     Class<?> soldClass = SoldLuxuryReplacer.class;
     drf.putReplacer("soldname", soldClass, Integer.valueOf(0));
@@ -200,9 +189,9 @@ public class ReplacerHelp implements GameDataListener {
     // special: mallornregion
     drf.putReplacer("mallornregion", MallornRegionSwitch.class);
 
+    ReplacerHelp.defaultFactory = drf;
     ReplacerHelp.reworkRegionSwitches(data);
 
-    ReplacerHelp.defaultFactory = drf;
   }
 
   protected static void reworkRegionSwitches(GameData data) {
@@ -216,6 +205,22 @@ public class ReplacerHelp implements GameDataListener {
       arg[0] = type;
       ReplacerHelp.defaultFactory.putReplacer(name, RegionTypeSwitch.class, arg);
     }
+
+    ReplacerHelp.defaultFactory.putReplacer("ironlevel", IronLevelReplacer.class, data.getRules()
+        .getItemType(EresseaConstants.I_RIRON));
+    ReplacerHelp.defaultFactory.putReplacer("stoneslevel", StonesLevelReplacer.class, data
+        .getRules().getItemType(EresseaConstants.I_RSTONES));
+    ReplacerHelp.defaultFactory.putReplacer("laenlevel", LaenLevelReplacer.class, data.getRules()
+        .getItemType(EresseaConstants.I_RLAEN));
+
+    ReplacerHelp.defaultFactory.putReplacer("iron", IronReplacer.class, data.getRules()
+        .getItemType(EresseaConstants.I_RIRON));
+    ReplacerHelp.defaultFactory.putReplacer("laen", LaenReplacer.class, data.getRules()
+        .getItemType(EresseaConstants.I_RLAEN));
+
+    ReplacerHelp.defaultFactory.putReplacer("mallorn", MallornReplacer.class, data.getRules()
+        .getItemType(EresseaConstants.I_RMALLORN));
+
   }
 
   /**
@@ -228,26 +233,29 @@ public class ReplacerHelp implements GameDataListener {
   }
 
   /**
-   * DOCUMENT-ME
+   * Applies the given replacer to the argument.
+   * 
+   * @return the replacer result or <code>null</code> on error.
    */
   public static Object getReplacement(Replacer replacer, Object arg) {
     try {
       return replacer.getReplacement(arg);
     } catch (Exception exc) {
+      // return null on error
     }
 
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the default factory.
    */
   public static ReplacerFactory getDefaultReplacerFactory() {
     return ReplacerHelp.defaultFactory;
   }
 
   /**
-   * DOCUMENT-ME
+   * Parses defStr and sets up a replacers system accordingly.
    */
   public static ReplacerSystem createReplacer(String def, String cmd, String unknown) {
     if (ReplacerHelp.defaultFactory != null)
@@ -257,14 +265,16 @@ public class ReplacerHelp implements GameDataListener {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns a replacer for the given definition string, using the default separator § and unknown
+   * result "-?".
    */
   public static ReplacerSystem createReplacer(String def) {
     return ReplacerHelp.createReplacer(def, "§", "-?-");
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns a replacer for the given definition string, using the default separator § and given
+   * unknown result.
    */
   public static ReplacerSystem createReplacer(String def, String unknown) {
     return ReplacerHelp.createReplacer(def, "§", unknown);

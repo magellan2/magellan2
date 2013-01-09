@@ -14,7 +14,7 @@
 package magellan.library.utils.replacers;
 
 /**
- * A replacer that modifies the definition list by skipping all elements till next occurence of the
+ * A replacer that modifies the definition list by skipping all elements till next occurrence of the
  * implemented class if a certain condition is true.
  * 
  * @author Andreas

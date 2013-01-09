@@ -18,7 +18,8 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.filters.UnitFilter;
 
 /**
- * DOCUMENT ME!
+ * Acts as a unit filter that filters units where TRUE is returned by the replacer given as
+ * parameter (and that evaluates on units).
  * 
  * @author Andreas
  * @version 1.0
@@ -102,8 +103,6 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
   }
 
   /**
-   * DOCUMENT-ME
-   * 
    * @see magellan.library.utils.replacers.EnvironmentDependent#setEnvironment(magellan.library.utils.replacers.ReplacerEnvironment)
    */
   public void setEnvironment(ReplacerEnvironment env) {
@@ -144,6 +143,8 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 
     /**
      * Returns <code>true</code> iff the predicate replacer returns true for the unit.
+     * 
+     * @see magellan.library.utils.filters.UnitFilter#acceptUnit(magellan.library.Unit)
      */
     @Override
     public boolean acceptUnit(Unit u) {
@@ -155,6 +156,7 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 
         return s.equals(Replacer.TRUE);
       } catch (Exception exc) {
+        // return false on error
       }
 
       return false;

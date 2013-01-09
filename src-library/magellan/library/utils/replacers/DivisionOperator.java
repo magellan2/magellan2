@@ -40,7 +40,7 @@ public class DivisionOperator extends AbstractOperator {
     if (((Number) numbers[1]).floatValue() == 0)
       return null;
 
-    return new Float(((Number) numbers[0]).floatValue() / ((Number) numbers[1]).floatValue());
+    return Float.valueOf(((Number) numbers[0]).floatValue() / ((Number) numbers[1]).floatValue());
   }
 
   /**

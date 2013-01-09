@@ -3387,12 +3387,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         int pmodweight = getMovementEvaluator().getModifiedWeight(passenger);
         String str =
             passenger.toString() + ": "
-                + EMapDetailsPanel.weightNumberFormat.format(new Float(pweight / 100.0f)) + " "
+                + EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(pweight / 100.0f)) + " "
                 + Resources.get("emapdetailspanel.node.weightunits");
 
         if (pweight != pmodweight) {
           str +=
-              (" (" + EMapDetailsPanel.weightNumberFormat.format(new Float(pmodweight / 100.0f))
+              (" (" + EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(pmodweight / 100.0f))
                   + " " + Resources.get("emapdetailspanel.node.weightunits") + ")");
         }
 
@@ -4456,17 +4456,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendShipLoadInfo(Ship s, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    String strCargo = EMapDetailsPanel.weightNumberFormat.format(new Float(s.getCargo() / 100.0F));
-    String strLoad = EMapDetailsPanel.weightNumberFormat.format(new Float(s.getLoad() / 100.0F));
+    String strCargo = EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s.getCargo() / 100.0F));
+    String strLoad = EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s.getLoad() / 100.0F));
     String strUnknownLoad =
         EMapDetailsPanel.weightNumberFormat
-            .format(new Float((s.getCargo() - s.getLoad()) / 100.0F));
+            .format(Float.valueOf((s.getCargo() - s.getLoad()) / 100.0F));
 
     String strModLoad =
-        EMapDetailsPanel.weightNumberFormat.format(new Float(s.getModifiedLoad() / 100.0F));
+        EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s.getModifiedLoad() / 100.0F));
 
     String strCap =
-        EMapDetailsPanel.weightNumberFormat.format(new Float(s.getMaxCapacity() / 100.0F));
+        EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s.getMaxCapacity() / 100.0F));
 
     StringBuffer loadText = new StringBuffer();
     loadText.append(Resources.get("emapdetailspanel.node.load")).append(": ");
@@ -4493,15 +4493,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       int inmates = s.getPersonLoad(), modInmates = s.getModifiedPersonLoad();
 
       loadText.append(Resources.get("emapdetailspanel.node.persons")).append(": ");
-      loadText.append(EMapDetailsPanel.weightNumberFormat.format(new Float(inmates / 100.0F)));
+      loadText.append(EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(inmates / 100.0F)));
       if (modInmates != inmates) {
         loadText.append(" (").append(
-            EMapDetailsPanel.weightNumberFormat.format(new Float(modInmates / 100.0F))).append(
+            EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(modInmates / 100.0F))).append(
             ") / ");
       } else {
         loadText.append(" / ");
       }
-      loadText.append(EMapDetailsPanel.weightNumberFormat.format(new Float(maxInmates / 100.0F)));
+      loadText.append(EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(maxInmates / 100.0F)));
       loadText.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
 
       if (modInmates > maxInmates) {
@@ -4524,7 +4524,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       loadText.append(Resources.get("emapdetailspanel.node.load")).append(": ");
       loadText.append(Resources.get("emapdetailspanel.node.overloadedby")).append(" ");
       loadText.append(
-          EMapDetailsPanel.weightNumberFormat.format(new Float((s.getModifiedLoad() - s
+          EMapDetailsPanel.weightNumberFormat.format(Float.valueOf((s.getModifiedLoad() - s
               .getMaxCapacity()) / 100.0F))).append(" ");
       loadText.append(Resources.get("emapdetailspanel.node.weightunits"));
 

@@ -52,7 +52,7 @@ public class LuxuryPriceReplacer extends AbstractParameterReplacer {
         ItemType ity = lp.getItemType();
 
         if (ity.getName().equals(luxury) || ity.getID().toString().equals(luxury))
-          return new Integer(lp.getPrice());
+          return Integer.valueOf(lp.getPrice());
       }
     }
 

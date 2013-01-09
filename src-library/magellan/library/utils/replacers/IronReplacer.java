@@ -33,11 +33,11 @@ public class IronReplacer extends AbstractRegionReplacer {
   public Object getRegionReplacement(Region region) {
     ItemType ironType = region.getData().rules.getItemType(EresseaConstants.I_RIRON);
     if (ironType == null)
-      return new Integer(0);
+      return Integer.valueOf(0);
     RegionResource ironResource = region.getResource(ironType);
     if (ironResource == null)
-      return new Integer(0);
-    return new Integer(ironResource.getAmount());
+      return Integer.valueOf(0);
+    return Integer.valueOf(ironResource.getAmount());
   }
 
   public String getDescription() {

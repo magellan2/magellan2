@@ -24,7 +24,7 @@ public abstract class AbstractOperator extends AbstractParameterReplacer impleme
     EnvironmentDependent {
   protected Object numbers[];
   protected Float evolved = null;
-  protected static final Float ZERO = new Float(0);
+  protected static final Float ZERO = Float.valueOf(0);
   protected ReplacerEnvironment environment;
 
   /**

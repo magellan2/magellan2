@@ -120,9 +120,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     protected String mapperTooltip;
 
-    public final String zero = (new Float(0)).toString();
-    public final String pointFive = (new Float(0.5)).toString();
-    public final String one = (new Float(1)).toString();
+    public final String zero = (Float.valueOf(0f)).toString();
+    public final String pointFive = (Float.valueOf(0.5f)).toString();
+    public final String one = (Float.valueOf(1f)).toString();
 
     ARRSet(String set) {
       if (set == null)
@@ -546,8 +546,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      * DOCUMENT-ME
      */
     public float addEntry(float val, float mval) {
-      Float fval = new Float(val);
-      Float old = values.put(fval, new Float(mval));
+      Float old = values.put(Float.valueOf(val), Float.valueOf(mval));
 
       if (old != null)
         return old.floatValue();
@@ -559,7 +558,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      * DOCUMENT-ME
      */
     public void removeEntry(float val) {
-      values.remove(new Float(val));
+      values.remove(Float.valueOf(val));
     }
 
     /**
@@ -608,21 +607,21 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      * DOCUMENT-ME
      */
     public boolean hasValue(float f) {
-      return values.containsKey(new Float(f));
+      return values.containsKey(Float.valueOf(f));
     }
 
     /**
      * DOCUMENT-ME
      */
     public float getValueAt(float f) {
-      return (values.get(new Float(f))).floatValue();
+      return (values.get(Float.valueOf(f))).floatValue();
     }
 
     /**
      * DOCUMENT-ME
      */
     public float interpolate(float f) {
-      Float fl = new Float(f);
+      Float fl = Float.valueOf(f);
       SortedMap<Float, Float> m1 = values.headMap(fl);
 
       if ((m1 == null) || (m1.size() == 0))
@@ -674,7 +673,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      * DOCUMENT-ME
      */
     public Color addEntry(float val, Color col) {
-      Float fval = new Float(val);
+      Float fval = Float.valueOf(val);
       Color old = colors.put(fval, col);
 
       if (old != null) { // clear interpolation buffer
@@ -688,7 +687,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      * DOCUMENT-ME
      */
     public void removeEntry(float val) {
-      Object old = colors.remove(new Float(val));
+      Object old = colors.remove(Float.valueOf(val));
 
       if (old != null) {
         clearBuffer();
@@ -747,21 +746,21 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      * DOCUMENT-ME
      */
     public boolean hasValue(float f) {
-      return colors.containsKey(new Float(f));
+      return colors.containsKey(Float.valueOf(f));
     }
 
     /**
      * DOCUMENT-ME
      */
     public Color getColorAt(float f) {
-      return colors.get(new Float(f));
+      return colors.get(Float.valueOf(f));
     }
 
     /**
      * DOCUMENT-ME
      */
     public Color interpolate(float f) {
-      Float fl = new Float(f);
+      Float fl = Float.valueOf(f);
       SortedMap<Float, Color> m1 = colors.headMap(fl);
 
       if ((m1 == null) || (m1.size() == 0))
@@ -1895,7 +1894,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           }
         }
 
-        value.set(index, new Float(newValue));
+        value.set(index, Float.valueOf(newValue));
         setText(index);
         save();
         dataChanged();
@@ -1935,7 +1934,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
               newHoriz = (rx - 1) / width;
             }
 
-            value.set(moveIndex, new Float(newHoriz));
+            value.set(moveIndex, Float.valueOf(newHoriz));
             setText(moveIndex);
             save();
             dataChanged();
@@ -2028,7 +2027,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
             }
 
             textValue.setText(number.format(fl));
-            value.set(lastMoveIndex, new Float(fl));
+            value.set(lastMoveIndex, Float.valueOf(fl));
             save();
             dataChanged();
           } catch (java.text.ParseException exc) {
@@ -2066,7 +2065,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
                 .get("map.advancedregionshapecellrenderer.prefs.newcolor"), Color.white);
 
         if (col != null) {
-          value.add(index, new Float(((float) x) / ((float) width)));
+          value.add(index, Float.valueOf(((float) x) / ((float) width)));
           mapping.add(index, col);
           setText(index);
           save();
@@ -2369,7 +2368,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
             // don't move endings horizontally
             if ((moveIndex == 0) || (moveIndex == (value.size() - 1))) {
               if (newVert != oldY) {
-                mapping.set(moveIndex, new Float(newVert));
+                mapping.set(moveIndex, Float.valueOf(newVert));
               } else
                 return;
             } else {
@@ -2389,11 +2388,11 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
                   newHoriz = (rx - 1) / width;
                 }
 
-                value.set(moveIndex, new Float(newHoriz));
+                value.set(moveIndex, Float.valueOf(newHoriz));
               }
 
               if (newVert != oldY) {
-                mapping.set(moveIndex, new Float(newVert));
+                mapping.set(moveIndex, Float.valueOf(newVert));
               }
             }
 
@@ -2426,8 +2425,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           index++;
         }
 
-        value.add(index, new Float(((float) x) / ((float) width)));
-        mapping.add(index, new Float(((float) (mapPainter.getHeight() - y))
+        value.add(index, Float.valueOf(((float) x) / ((float) width)));
+        mapping.add(index, Float.valueOf(((float) (mapPainter.getHeight() - y))
             / ((float) mapPainter.getHeight())));
         save();
         dataChanged();

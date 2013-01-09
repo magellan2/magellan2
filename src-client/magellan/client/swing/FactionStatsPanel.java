@@ -811,9 +811,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                       // entry in building categories
                       Integer actV = buildingUpkeep.get(bT.getID());
                       if (actV == null) {
-                        actV = new Integer(silverItem.getAmount());
+                        actV = (silverItem.getAmount());
                       } else {
-                        actV = new Integer(actV.intValue() + silverItem.getAmount());
+                        actV = (actV.intValue() + silverItem.getAmount());
                       }
                       buildingUpkeep.put(bT.getID(), actV);
                     }
@@ -875,9 +875,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               if (giver != null && factions.containsKey(giverID)) {
                 Integer actV = factionGivings.get(targetID);
                 if (actV == null) {
-                  actV = new Integer(menge);
+                  actV = Integer.valueOf(menge);
                 } else {
-                  actV = new Integer(menge + actV.intValue());
+                  actV = Integer.valueOf(menge + actV.intValue());
                 }
                 factionGivings.put(targetID, actV);
                 spent[S_TRANSFERS] += menge;
@@ -886,9 +886,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               if (target != null && factions.containsKey(target.getFaction().getID())) {
                 Integer actV = factionGettings.get(giverID);
                 if (actV == null) {
-                  actV = new Integer(menge);
+                  actV = Integer.valueOf(menge);
                 } else {
-                  actV = new Integer(menge + actV.intValue());
+                  actV = Integer.valueOf(menge + actV.intValue());
                 }
                 factionGettings.put(giverID, actV);
                 extraEarned[EE_TRANSFERS] += menge;
@@ -934,9 +934,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                     // collect data for subnodes
                     Integer actV = factionAlmsGiven.get(toFactionID);
                     if (actV == null) {
-                      actV = new Integer(amount);
+                      actV = Integer.valueOf(amount);
                     } else {
-                      actV = new Integer(actV.intValue() + amount);
+                      actV = Integer.valueOf(actV.intValue() + amount);
                     }
                     factionAlmsGiven.put(toFactionID, actV);
 
@@ -946,9 +946,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                     }
                     actV = actRI.get(actR);
                     if (actV == null) {
-                      actV = new Integer(amount);
+                      actV = Integer.valueOf(amount);
                     } else {
-                      actV = new Integer(amount + actV.intValue());
+                      actV = Integer.valueOf(amount + actV.intValue());
                     }
                     actRI.put(actR, actV);
                     almGivenRegions.put(toFactionID, actRI);
@@ -958,9 +958,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                     // collect data for subnodes
                     Integer actV = factionAlmsGotten.get(fromFactionID);
                     if (actV == null) {
-                      actV = new Integer(amount);
+                      actV = Integer.valueOf(amount);
                     } else {
-                      actV = new Integer(actV.intValue() + amount);
+                      actV = Integer.valueOf(actV.intValue() + amount);
                     }
                     factionAlmsGotten.put(fromFactionID, actV);
 
@@ -970,9 +970,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                     }
                     actV = actRI.get(actR);
                     if (actV == null) {
-                      actV = new Integer(amount);
+                      actV = Integer.valueOf(amount);
                     } else {
-                      actV = new Integer(amount + actV.intValue());
+                      actV = Integer.valueOf(amount + actV.intValue());
                     }
                     actRI.put(actR, actV);
                     almGottenRegions.put(fromFactionID, actRI);
@@ -1017,7 +1017,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     String incomeGroupIcon2[] = { "Alliance", "Persons" };
 
     if ((totalIncome != 0) || (totalWanted != 0)) {
-      Object msgArgs[] = { new Integer(totalIncome), new Integer(totalWanted) };
+      Object msgArgs[] = { Integer.valueOf(totalIncome), Integer.valueOf(totalWanted) };
       // n = new DefaultMutableTreeNode((new
       // java.text.MessageFormat(Resources.get("factionstatspanel.node.income"))).format(msgArgs));
       currentNode =
@@ -1030,13 +1030,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     for (int i = 0; i < earned.length; i++) {
       // income by work, entertain, tax, theft, trade
       if ((earned[i] != 0) || (wanted[i] != 0)) {
-        Object msgArgs[] = { new Integer(earned[i]) };
+        Object msgArgs[] = { Integer.valueOf(earned[i]) };
         StringBuffer sb = new StringBuffer();
         sb.append(new java.text.MessageFormat(Resources.get("factionstatspanel.node.income" + i))
             .format(msgArgs));
 
         if (earned[i] != wanted[i]) {
-          msgArgs = new Object[] { new Integer(wanted[i]) };
+          msgArgs = new Object[] { Integer.valueOf(wanted[i]) };
           sb.append(" ");
           sb.append((new java.text.MessageFormat(Resources
               .get("factionstatspanel.node.incomewanted"))).format(msgArgs));
@@ -1050,7 +1050,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       if (i == E_TRADETAX && spent[S_TRADE] != 0) {
         // already included in "spent", below
         // // insert extra node for trade expenses
-        // Object msgArgs[] = { new Integer(-spent[S_TRADE]) };
+        // Object msgArgs[] = { Integer.valueOf(-spent[S_TRADE]) };
         // String s =
         // (new java.text.MessageFormat(Resources.get("factionstatspanel.node.spentfortrade"))
         // .format(msgArgs));

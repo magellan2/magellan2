@@ -22,6 +22,7 @@ import java.util.Properties;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.rules.SkillType;
+import magellan.library.utils.Resources;
 
 /**
  * A node that wraps a skill
@@ -108,7 +109,7 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
           sb.append(skill.getChangeLevel());
           sb.append(')');
         } else if (!unit.isDetailsKnown()) {
-          sb.append("?");
+          sb.append(' ').append(Resources.get("skillnodewrapper.outdated"));
         }
       }
 

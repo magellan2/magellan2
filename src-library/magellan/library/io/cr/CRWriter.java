@@ -2287,10 +2287,10 @@ public class CRWriter extends BufferedWriter {
       // this assumes that if somebody doesn't write units
       // also factions aren't necessary; maybe this needs further
       // specification
+      ui.setProgress(Resources.get("crwriterdialog.progress.03"), 3);
       if (includeUnits) {
-        ui.setProgress(Resources.get("crwriterdialog.progress.03"), 3);
         writeAlliances(world.getAllianceGroups());
-        writeFactions(world.getFactions(), true);
+        writeFactions(world.getFactions(), false);
       } else if (getOwnerFaction(world.getFactions()) != null) {
         writeFactions(Collections.singletonList(getOwnerFaction(world.getFactions())), true);
       }

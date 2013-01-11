@@ -109,7 +109,7 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
           sb.append(skill.getChangeLevel());
           sb.append(')');
         } else if (!unit.isDetailsKnown()) {
-          sb.append(' ').append(Resources.get("skillnodewrapper.outdated"));
+          sb.append(' ').append(Resources.get("tree.skillnodewrapper.outdated"));
         }
       }
 

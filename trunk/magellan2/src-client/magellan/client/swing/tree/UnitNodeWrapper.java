@@ -46,7 +46,8 @@ import magellan.library.utils.logging.Logger;
 /**
  * A UnitNodeWrapper serves as an abstraction layer between a tree cell renderer and the unit to
  * render. It manages a list of icons and text(s) that are to be displayed. It maintains a
- * {@link UnitNodeWrapperDrawPolicy} adapter which governs many of the object's properties.
+ * {@link UnitNodeWrapper.UnitNodeWrapperDrawPolicy} adapter which governs many of the object's
+ * properties.
  * 
  * @author $Author: $
  * @version $Revision: 288 $
@@ -583,7 +584,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   /**
    * Specifies if the icons should be displayed in reverse order. This overrides the settings if the
-   * {@link UnitNodeWrapperDrawPolicy}.
+   * {@link UnitNodeWrapper.UnitNodeWrapperDrawPolicy}.
    * 
    * @param bool
    */

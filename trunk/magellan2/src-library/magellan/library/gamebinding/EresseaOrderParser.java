@@ -668,7 +668,6 @@ public class EresseaOrderParser implements OrderParser {
    * applied.
    * 
    * @param firstToken
-   * @return
    */
   protected Order readOrder(OrderToken firstToken, String text) {
     OrderToken t = firstToken;
@@ -711,7 +710,6 @@ public class EresseaOrderParser implements OrderParser {
    * Returns a set of handlers that match the specified token.
    * 
    * @param t
-   * @return
    */
   protected ArrayList<OrderHandler> getHandlers(OrderToken t) {
     return getCommandTrie().searchPrefix(t.getText().toLowerCase(), Integer.MAX_VALUE);
@@ -4226,8 +4224,6 @@ public class EresseaOrderParser implements OrderParser {
      * <code>innerToken</code>.
      * 
      * @see EresseaOrderParser#getString(OrderToken)
-     * @param tokens
-     * @return
      */
     protected boolean checkInner() {
       return allowEmpty || content.trim().length() > 0;
@@ -4448,7 +4444,6 @@ public class EresseaOrderParser implements OrderParser {
    * @param radix
    * @param min
    * @param max
-   * @return
    */
   protected boolean isNumeric(String txt, int radix, int min, int max) {
     boolean retVal = false;
@@ -4478,7 +4473,6 @@ public class EresseaOrderParser implements OrderParser {
    * and {@link #MAX_UID}.
    * 
    * @param txt
-   * @return
    */
   protected boolean isID(String txt, boolean allowTemp) {
     boolean retVal = isNumeric(txt, getData().base, 0, EresseaOrderParser.MAX_UID);
@@ -4494,7 +4488,6 @@ public class EresseaOrderParser implements OrderParser {
    * Tests if <code>txt</code> represents a valid TEMP id.
    * 
    * @param txt
-   * @return
    */
   protected boolean isTempID(String txt) {
     boolean retVal = false;
@@ -4580,7 +4573,6 @@ public class EresseaOrderParser implements OrderParser {
    * double quotes, or is composed solely by the characters [A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:].
    * 
    * @param txt
-   * @return
    * @deprecated you should prefer {@link #isString(OrderToken)} and {@link StringChecker}
    */
   @Deprecated
@@ -4682,7 +4674,6 @@ public class EresseaOrderParser implements OrderParser {
    * Tests if <code>txt</code> is (syntactically) a valid email address.
    * 
    * @param txt
-   * @return
    */
   protected boolean isEmailAddress(String txt) {
     try {

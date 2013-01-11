@@ -836,7 +836,7 @@ public class Regions {
     protected CoordinateID dest;
 
     /**
-     * @dest may be null
+     * @param dest may be null
      */
     public MultidimensionalMetric(Map<CoordinateID, Region> regions,
         Map<ID, RegionType> excludedRegionTypes, CoordinateID start, CoordinateID dest) {
@@ -891,7 +891,9 @@ public class Regions {
     }
 
     /**
-     * Should be called by {@link #relax(RegionInfo, RegionInfo)} to exclude some special cases.
+     * Should be called by
+     * {@link Regions.MultidimensionalMetric#relax(Regions.RegionInfo, Regions.RegionInfo)} to
+     * exclude some special cases.
      * 
      * @return <code>true</code> if a special case occurred
      */
@@ -915,9 +917,10 @@ public class Regions {
 
     /**
      * Checks the argument and decreases next's distance if the new distance created by
-     * {@link #getNewValue(Region, Region, MultiDimensionalInfo, MultiDimensionalInfo, int[])} is
-     * smaller than the old one. Subclasses should usually not overwrite this method, but
-     * {@link #getNewValue(Region, Region, MultiDimensionalInfo, MultiDimensionalInfo, int[])}.
+     * {@link Regions.MultidimensionalMetric#getNewValue(Region, Region, Regions.MultiDimensionalInfo, Regions.MultiDimensionalInfo, int[])}
+     * is smaller than the old one. Subclasses should usually not overwrite this method, but
+     * {@link Regions.MultidimensionalMetric#getNewValue(Region, Region, Regions.MultiDimensionalInfo, Regions.MultiDimensionalInfo, int[])}
+     * .
      * 
      * @see magellan.library.utils.Regions.Metric#relax(magellan.library.utils.Regions.RegionInfo,
      *      magellan.library.utils.Regions.RegionInfo)
@@ -1149,7 +1152,7 @@ public class Regions {
      * @param regions
      * @param excludedRegionTypes
      * @param start
-     * @dest may be <code>null</code>
+     * @param dest may be <code>null</code>
      * @param radius
      * @param streetRadius
      */
@@ -1301,7 +1304,8 @@ public class Regions {
     }
 
     Map<CoordinateID, Double> distances = new HashMap<CoordinateID, Double>();
-    // distances.put(start, Float.valueOf(0.0f)); // contains the distances from the start region to all
+    // distances.put(start, Float.valueOf(0.0f)); // contains the distances from the start region to
+    // all
     // other regions as Float objects
     distances.put(start, Double.valueOf(0)); // contains the distances from the start region to all
     // other regions as Float objects

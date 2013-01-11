@@ -148,29 +148,19 @@ public abstract class AbstractInspector implements Inspector {
   }
 
   /**
-   * Returns <code>true</code> iff this unit's orders contain {@link #getSuppressComment()}.
-   * Sub-classes should overwrite this to add more sophisticated ignoring of errors.
-   * 
-   * @param u
-   * @return
+   * Returns false
    */
   protected boolean checkIgnoreUnit(Unit u) {
-    // boolean found = false;
-    // for (Order order : u.getOrders2()) {
-    // if (order.getText().equals(getSuppressComment())) {
-    // found = true;
-    // break;
-    // }
-    // }
-    // return found;
-
-    // for (ProblemType p : getTypes()) {
-    // if (checkIgnoreUnit(u, p))
-    // return true;
-    // }
     return false;
   }
 
+  /**
+   * Returns <code>true</code> iff this unit's orders contain
+   * {@link AbstractInspector#getSuppressUnitComment(ProblemType)}. Sub-classes should overwrite
+   * this to add more sophisticated ignoring of errors.
+   * 
+   * @param u
+   */
   protected boolean checkIgnoreUnit(Unit u, ProblemType p) {
     boolean found = false;
     for (Order order : u.getOrders2()) {
@@ -183,12 +173,10 @@ public abstract class AbstractInspector implements Inspector {
   }
 
   /**
-   * Returns <code>true</code> iff this container's owner unit's orders contain
-   * {@link #getSuppressComment()}. Sub-classes should overwrite this to add more sophisticated
-   * ignoring of errors.
+   * Calls {@link AbstractInspector#checkIgnoreUnit(Unit)} for the container's owner unit.
+   * Sub-classes may overwrite this to add more sophisticated ignoring of errors.
    * 
-   * @param u
-   * @return
+   * @param c
    */
   protected boolean checkIgnoreUnitContainer(UnitContainer c) {
     // TODO should we use getModifiedOnwerUnit() here?
@@ -199,7 +187,8 @@ public abstract class AbstractInspector implements Inspector {
 
   /**
    * Returns an empty list. Sub-classes should usually overwrite this method or
-   * {@link #reviewRegion(Region, Severity)} (or both).
+   * {@link AbstractInspector#reviewRegion(magellan.library.Region, magellan.library.tasks.Problem.Severity)}
+   * (or both).
    * 
    * @see magellan.library.tasks.Inspector#reviewUnit(magellan.library.Unit,
    *      magellan.library.tasks.Problem.Severity)
@@ -241,7 +230,7 @@ public abstract class AbstractInspector implements Inspector {
    * Returns <code>false</code>. Sub-classes should overwrite this method to add more sophisticated
    * ignoring of errors.
    * 
-   * @param u
+   * @param r
    * @return <code>true</code> iff this region should be ignored for problems
    */
   protected boolean checkIgnoreRegion(Region r) {
@@ -250,16 +239,18 @@ public abstract class AbstractInspector implements Inspector {
 
   /**
    * Returns an empty list. Sub-classes should usually overwrite this method or
-   * {@link #reviewUnit(Unit, Severity)} (or both).
+   * {@link Inspector#reviewUnit(magellan.library.Unit, magellan.library.tasks.Problem.Severity)}
+   * (or both).
    * 
-   * @see magellan.library.tasks.Inspector#reviewRegion(magellan.library.Region, Severity)
+   * @see magellan.library.tasks.Inspector#reviewRegion(magellan.library.Region,
+   *      magellan.library.tasks.Problem.Severity)
    */
   public List<Problem> reviewRegion(Region r, Severity severity) {
     return Collections.emptyList();
   }
 
   /**
-   * @see magellan.library.tasks.Inspector#suppress(magellan.library.tasks.Problem)
+   * @see Inspector#suppress(Problem)
    */
   public Unit suppress(Problem p) {
     if (p.getOwner() == null)

@@ -100,7 +100,6 @@ public class TextAreaDialog extends InternationalizedDialog implements Hyperlink
    * @param type the non-<code>null</code> mime type for the content editing support, for example
    *          "text/html" or "text/plain" (the default).
    * @see JEditorPane#setContentType(String)
-   * @beaninfo description: the type of content
    * @throws NullPointerException if the <code>type</code> parameter is <code>null</code>
    */
   public void setContentType(String type) {

@@ -17,10 +17,9 @@ import magellan.library.GameData;
 
 /**
  * An event indicating that the previous game data object is no longer valid e.g. after the user
- * loaded a report.
+ * loaded a report. See magellan.client.event.EventDispatcher.
  * 
  * @see GameDataListener
- * @see magellan.client.event.EventDispatcher
  */
 public class GameDataEvent extends TimeStampedEvent {
   private GameData data;

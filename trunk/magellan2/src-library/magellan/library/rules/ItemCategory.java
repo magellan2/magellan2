@@ -44,9 +44,8 @@ public class ItemCategory extends Category {
   /**
    * Returns <code>true</code> if o is an ItemType and (transitively) belongs to this category.
    * 
-   * @returns <code>true</code> if the top level ancestor of the item type o is a descendant of
-   *          this, <code>false</code> otherwise, including if o is not an ItemType or
-   *          <code>null</code>.
+   * @return <code>true</code> if the top level ancestor of the item type o is a descendant of this,
+   *         <code>false</code> otherwise, including if o is not an ItemType or <code>null</code>.
    */
   @Override
   public boolean isInstance(Object o) {

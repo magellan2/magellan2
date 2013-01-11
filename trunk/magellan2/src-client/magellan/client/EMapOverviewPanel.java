@@ -2083,8 +2083,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * more than <code>updateRelationPartersDistance</code>.
    * 
    * @param u The updated unit
-   * @param updateRelationPartnersDistance maximum distance to this unit of units that should be
-   *          updated as well
    */
   protected synchronized void update(Unit u) {
     // log.finest(u);

@@ -617,14 +617,15 @@
 	<!-- *************************************************************** -->
 	<target name="doc" description="==> Creates the JavaDocs">
 		<echo message="Running JavaDoc" />
-		<javadoc packagenames="magellan.*" destdir="${javadoc.api}" author="true" version="true" use="true" private="false" windowtitle="Magellan ${VERSION.POINTED}" doctitle="Magellan ${VERSION.POINTED}" maxmemory="256M" locale="de_DE">
+		<javadoc encoding="iso-8859-1" packagenames="magellan.*" destdir="${javadoc.api}" author="true" version="true" use="true" private="false" windowtitle="Magellan ${VERSION.POINTED}" doctitle="Magellan ${VERSION.POINTED}" maxmemory="256M" locale="de_DE">
 			<classpath refid="magellan.class.path" />
-			<link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+			<link href="http://docs.oracle.com/javase/6/docs/api/" />
 			<fileset dir="${basedir}">
 				<include name="**/*.java"/>
 				<!-- src-test causes javadoc to crash. Could have something to do with this: http://forums.sun.com/thread.jspa?threadID=5333060&tstart=0
              if you need javadoc for src-test, please investigate! -->
 				<exclude name="src-test/**"/>
+				<exclude name="src-internal/**"/>
 				<!-- does this do anything at all? -->
 				<exclude name="magellan/test/**"/>
 				<exclude name="magellan/client/**"/>

@@ -319,7 +319,6 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   }
 
   /**
-   * @return
    * @deprecated this may change if the constructor is changed to not include a reference to the
    *             GameData any more.
    */

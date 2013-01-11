@@ -78,7 +78,8 @@ public class TeachInspector extends AbstractInspector {
   }
 
   /**
-   * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, Severity)
+   * @see AbstractInspector#reviewUnit(magellan.library.Unit,
+   *      magellan.library.tasks.Problem.Severity)
    */
   @Override
   public List<Problem> reviewUnit(Unit u, Severity severity) {

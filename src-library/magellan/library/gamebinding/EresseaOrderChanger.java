@@ -449,8 +449,6 @@ public class EresseaOrderChanger implements OrderChanger {
    * ARBEITE, ATTACKIERE, BEKLAUE, BELAGERE, FAHRE, FOLGE, FORSCHE, KAUFE, LEHRE, LERNE, MACHE
    * (Ausnahme: MACHE TEMP), NACH, PFLANZE, PIRATERIE, ROUTE, SABOTIERE SCHIFF, SPIONIERE, TREIBE,
    * UNTERHALTE, VERKAUFE, ZAUBERE, ZÜCHTE.
-   * 
-   * @return
    */
   protected ArrayList<String> getLongOrderTokens() {
     if (longOrderTokens == null) {

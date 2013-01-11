@@ -830,7 +830,6 @@ public class EresseaOrderCompleter implements Completer {
    * @param forceQuotes
    * @param doClose
    * @param preferredQuote
-   * @return
    */
   protected String fixQuotes(OrderTokenizer innerTokenizer, OrderToken openingToken,
       OrderToken contentToken, OrderToken closingToken, boolean preferQuotes, boolean forceQuotes,

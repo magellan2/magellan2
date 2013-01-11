@@ -17,10 +17,9 @@ package magellan.library.event;
  * The listener interface for receiving game data events. A class interested in game data events
  * implements this interface and registers with an instance of the EventDispatcher class to receive
  * game data events. Game data events are issued when the current game data object becomes invalid
- * e.g. after the user loads a report.
+ * e.g. after the user loads a report. See magellan.client.event.EventDispatcher.
  * 
  * @see GameDataEvent
- * @see magellan.client.event.EventDispatcher
  */
 public interface GameDataListener extends EventListener {
   /**

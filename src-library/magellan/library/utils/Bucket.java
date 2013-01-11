@@ -247,7 +247,7 @@ public class Bucket<E> extends AbstractCollection<E> {
   }
 
   /**
-   * @see java.util.AbstractCollection#toArray(T[])
+   * @see AbstractCollection#toArray(Object[])
    */
   @Override
   public <T> T[] toArray(T a[]) {

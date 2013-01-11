@@ -2255,7 +2255,6 @@ public class CRWriter extends BufferedWriter {
    * Write the complete game data from <tt>world</tt> in the cr format. This method is called by the
    * public method write(). This method can be run in a thread.
    * 
-   * @param world the game data to write.
    * @throws IOException If an I/O error occurs.
    */
   protected synchronized void doWrite() throws IOException {

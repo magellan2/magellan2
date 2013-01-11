@@ -26,7 +26,6 @@ package magellan.library.gamebinding;
 import java.util.List;
 
 import magellan.library.GameData;
-import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.relation.InterUnitRelation;
@@ -68,7 +67,7 @@ public class UnitArgumentOrder extends SimpleOrder {
    * @param unit
    * @param zeroAllowed If the target is 0, the ZeroUnit of the will be returned if this is true,
    *          <code>null</code> otherwise.
-   * @see {@link Region#getZeroUnit()}
+   * @see magellan.library.Region#getZeroUnit()
    */
   protected Unit getTargetUnit(GameData data, Unit unit, int line, boolean zeroAllowed) {
     if (target == null)
@@ -78,7 +77,7 @@ public class UnitArgumentOrder extends SimpleOrder {
       if (zeroAllowed) {
         tUnit = unit.getRegion().getZeroUnit();
       } else {
-        setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
+        setWarning(unit, line, Resources.get("order.all.war.ning.zeronotallowed"));
       }
     } else {
       tUnit = data.getUnit(target);

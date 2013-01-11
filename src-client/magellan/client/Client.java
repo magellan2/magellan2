@@ -1376,7 +1376,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * <tt>file.[cr|bz2|zip]</tt> -- set report<br />
    * 
    * @param args
-   * @return
    */
   protected static Parameters parseCommandLine(String[] args) {
     Parameters result = new Parameters();

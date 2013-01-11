@@ -1873,11 +1873,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-   * Filters units for being in all of the regions in context.
+   * Adds all units from input to result that are excepted by filter.
    * 
-   * @param result
-   * @param input
-   * @param context
+   * @param result Results are appended to this collection
+   * @param input Input collections
+   * @param filter
    */
   protected void addFiltered(Collection<Unit> result, Collection<Unit> input, UnitFilter filter) {
     for (Unit u : input) {
@@ -3392,7 +3392,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
         if (pweight != pmodweight) {
           str +=
-              (" (" + EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(pmodweight / 100.0f))
+              (" ("
+                  + EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(pmodweight / 100.0f))
                   + " " + Resources.get("emapdetailspanel.node.weightunits") + ")");
         }
 
@@ -4456,11 +4457,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendShipLoadInfo(Ship s, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    String strCargo = EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s.getCargo() / 100.0F));
-    String strLoad = EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s.getLoad() / 100.0F));
+    String strCargo =
+        EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s.getCargo() / 100.0F));
+    String strLoad =
+        EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s.getLoad() / 100.0F));
     String strUnknownLoad =
-        EMapDetailsPanel.weightNumberFormat
-            .format(Float.valueOf((s.getCargo() - s.getLoad()) / 100.0F));
+        EMapDetailsPanel.weightNumberFormat.format(Float
+            .valueOf((s.getCargo() - s.getLoad()) / 100.0F));
 
     String strModLoad =
         EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s.getModifiedLoad() / 100.0F));
@@ -4501,7 +4504,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       } else {
         loadText.append(" / ");
       }
-      loadText.append(EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(maxInmates / 100.0F)));
+      loadText.append(EMapDetailsPanel.weightNumberFormat
+          .format(Float.valueOf(maxInmates / 100.0F)));
       loadText.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
 
       if (modInmates > maxInmates) {
@@ -5028,8 +5032,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * Changes to a new object and displays its information depending on the active region.
    * 
-   * @param o Report object to display
-   * @param newRegion The region which contains the displayed object
    * @param dontForceRefresh If <code>true</code>, nothing is done if the new object is the already
    *          displayed object.
    */

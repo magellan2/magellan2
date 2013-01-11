@@ -146,7 +146,7 @@ public class UnitListNodeWrapper extends DefaultNodeWrapper implements SupportsC
     }
 
     anAdapter.addCellObject(this);
-    this.adapter = (DetailsNodeWrapperDrawPolicy) anAdapter;
+    adapter = (DetailsNodeWrapperDrawPolicy) anAdapter;
 
     return anAdapter;
   }
@@ -154,7 +154,6 @@ public class UnitListNodeWrapper extends DefaultNodeWrapper implements SupportsC
   /**
    * @param settings
    * @param prefix
-   * @return
    */
   protected NodeWrapperDrawPolicy createSimpleDrawPolicy(Properties settings, String prefix) {
     return new DetailsNodeWrapperDrawPolicy(1, null, settings, prefix, new String[][] { {

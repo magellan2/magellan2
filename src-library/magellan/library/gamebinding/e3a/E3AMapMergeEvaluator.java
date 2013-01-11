@@ -40,10 +40,9 @@ import magellan.library.utils.mapping.SchemeOverlapMapping;
 import magellan.library.utils.mapping.UnitIDMapping;
 
 /**
- * @author
+ * @author stm
  * @version 1.1, 21.05.2008
  */
-
 public class E3AMapMergeEvaluator extends EresseaMapMergeEvaluator {
   protected E3AMapMergeEvaluator(Rules rules) {
     super(rules);

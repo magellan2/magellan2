@@ -6562,23 +6562,34 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     List<Unit> mySelectedUnitss = new LinkedList<Unit>();
     TreePath paths[] = tree.getSelectionPaths();
     Unit activeUnit = null;
+    Unit actUnit = null;
     if (paths != null) {
       for (TreePath path : paths) {
         DefaultMutableTreeNode actNode = (DefaultMutableTreeNode) path.getLastPathComponent();
         Object o = actNode.getUserObject();
         if (o instanceof UnitNodeWrapper) {
           UnitNodeWrapper unitNodeWrapper = (UnitNodeWrapper) o;
-          Unit actUnit = unitNodeWrapper.getUnit();
+          actUnit = unitNodeWrapper.getUnit();
           mySelectedUnitss.add(actUnit);
         }
       }
 
-      DefaultMutableTreeNode actNode =
-          (DefaultMutableTreeNode) tslE.getNewLeadSelectionPath().getLastPathComponent();
-      Object o = actNode.getUserObject();
-      if (o instanceof UnitNodeWrapper) {
-        UnitNodeWrapper unitNodeWrapper = (UnitNodeWrapper) o;
-        activeUnit = unitNodeWrapper.getUnit();
+      if (tslE.getNewLeadSelectionPath() != null) {
+        // FF: I had an exception here, but nobody else...
+        DefaultMutableTreeNode actNode =
+            (DefaultMutableTreeNode) tslE.getNewLeadSelectionPath().getLastPathComponent();
+        Object o = actNode.getUserObject();
+        if (o instanceof UnitNodeWrapper) {
+          UnitNodeWrapper unitNodeWrapper = (UnitNodeWrapper) o;
+          activeUnit = unitNodeWrapper.getUnit();
+        }
+      } else {
+        // no logging
+        // log.error("!!! NPE in TreeSelectionEvent");
+        if (actUnit != null && mySelectedUnitss.size() == 1) {
+          // important for having the selected unit as activeUnit too
+          activeUnit = actUnit;
+        }
       }
     }
     if (mySelectedUnitss.size() > 0) {

@@ -1,3 +1,6 @@
+2013-01-13 / Build 548 - Fiete (sf@fietefietz.de)
+	* Avoid NPE in EMapDetailsPanel after DBLClick
+
 2013-01-08 / Build 538 - stm (stm_@users.sourceforge.net)
  * cleaned up Replacer code, behavior should be unchanged
  * fixed bug where Units' outdated ship or building information persisted

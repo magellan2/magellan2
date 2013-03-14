@@ -1,6 +1,7 @@
 2013-03-14 / Build 549 - trickert (thoralf@m84.de)
     * added Group-Combobox to TempUnit Dialog to choose the group for a new unit
     * bugfix for Magellan icon on MacOS X
+    * changed update server from magellan.log-out.net (deprecated) to magellan.narabi.de
 
 2013-01-13 / Build 548 - Fiete (sf@fietefietz.de)
 	* Avoid NPE in EMapDetailsPanel after DBLClick

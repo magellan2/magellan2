@@ -676,4 +676,14 @@ public class EresseaOrderChanger implements OrderChanger {
     source.addOrder(tmpOrders);
   }
 
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#addGroupOrder(magellan.library.Unit,
+   *      java.lang.String)
+   */
+  public void addGroupOrder(Unit unit, String name) {
+    String group = Resources.getOrderTranslation(EresseaConstants.O_GROUP) + " \"" + name + "\"";
+    unit.addOrder(group, true, 1);
+
+  }
+
 }

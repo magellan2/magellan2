@@ -35,14 +35,17 @@ import magellan.library.utils.logging.Logger;
 public class VersionInfo {
   private static final Logger log = Logger.getInstance(VersionInfo.class);
 
+  /** Boolean Property to set, if UpdateCheck should be done */
   public static final String PROPERTY_KEY_UPDATECHECK_CHECK = "UpdateCheck.Check";
+  /** Timestamp of failed UpdateCheck */
   public static final String PROPERTY_KEY_UPDATECHECK_FAILED = "UpdateCheck.Failed";
+  /** ResourceKey to show that the update process failed */
   public static final String RESOURCE_KEY_NOUPDATE_AVAIL = "versioninfo.infodlg.updatefailed";
+  /** ResourceKey to show that the nightly update check failed */
   public static final String PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK = "UpdateCheck.Nightly.Check";
 
-  private static final String DEFAULT_CHECK_URL = "http://magellan.log-out.net/release/VERSION";
-  private static final String NIGHTLY_CHECK_URL =
-      "http://magellan.log-out.net/nightly-build/VERSION";
+  private static final String DEFAULT_CHECK_URL = "http://magellan.narabi.de/release/VERSION";
+  private static final String NIGHTLY_CHECK_URL = "http://magellan.narabi.de/nightly-build/VERSION";
 
   private static String Version = null;
   private static boolean versionIsSet = false;
@@ -75,7 +78,9 @@ public class VersionInfo {
       VersionInfo.Version = bundle.getString("VERSION");
       return VersionInfo.Version;
     } catch (IOException e) {
+      // do nothing, not important
     } catch (MissingResourceException e) {
+      // do nothing, not important
     }
 
     return null;

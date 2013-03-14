@@ -1944,6 +1944,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         // ask the user for a valid id repeatedly
         boolean first = true;
 
+        dialog.setFaction(parentUnit.getFaction());
+        dialog.setParentGroup(parentUnit.getGroup());
+
         while (true) {
           if (first) { // reset if it's the first dialog for this temp unit
             // unit id is non-negative on views
@@ -2029,6 +2032,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
                 if ((order != null) && !order.trim().equals("")) {
                   tempUnit.addOrder(order);
+                }
+
+                String group = dialog.getGroup();
+                if (group != null) {
+                  getGameData().getGameSpecificStuff().getOrderChanger().addGroupOrder(tempUnit,
+                      group);
                 }
 
                 // description

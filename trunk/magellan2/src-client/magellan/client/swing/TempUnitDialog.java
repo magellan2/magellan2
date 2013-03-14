@@ -35,6 +35,7 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -44,6 +45,8 @@ import javax.swing.SwingUtilities;
 
 import magellan.client.utils.NameGenerator;
 import magellan.client.utils.SwingUtils;
+import magellan.library.Faction;
+import magellan.library.Group;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.PropertiesHelper;
@@ -55,6 +58,10 @@ import magellan.library.utils.logging.Logger;
  */
 public class TempUnitDialog extends InternationalizedDialog {
   private static final Logger log = Logger.getInstance(TempUnitDialog.class);
+
+  protected Faction faction = null;
+  protected Group parentGroup = null;
+
   protected JTextField id;
   protected JTextField name;
   protected JButton more;
@@ -66,6 +73,7 @@ public class TempUnitDialog extends InternationalizedDialog {
   protected JTextField transfer;
   protected JTextArea descript;
   protected JTextField order;
+  protected JComboBox group;
   protected JCheckBox giveRecruitCost;
   protected JCheckBox giveMaintainCost;
   protected GridBagConstraints con;
@@ -227,6 +235,8 @@ public class TempUnitDialog extends InternationalizedDialog {
     con.gridy += 2;
     morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.order.label")), con);
     con.gridy++;
+    morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.group.label")), con);
+    con.gridy++;
     con.anchor = GridBagConstraints.NORTHWEST;
     morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.descript.label")), con);
     con.anchor = GridBagConstraints.CENTER;
@@ -251,6 +261,8 @@ public class TempUnitDialog extends InternationalizedDialog {
     morePanel.add(transfer = new JTextField(5), con);
     con.gridy += 2;
     morePanel.add(order = new JTextField(10), con);
+    con.gridy++;
+    morePanel.add(group = new JComboBox(), con);
     con.gridy++;
     con.fill = GridBagConstraints.BOTH;
     morePanel.add(new JScrollPane(descript = new TablessTextArea(3, 10)), con);
@@ -316,6 +328,7 @@ public class TempUnitDialog extends InternationalizedDialog {
       components.add(giveRecruitCost);
       components.add(giveMaintainCost);
       components.add(order);
+      components.add(group);
       components.add(descript);
     }
     components.add(more);
@@ -361,6 +374,8 @@ public class TempUnitDialog extends InternationalizedDialog {
     name.getCaret().moveDot(name.getText().length());
 
     checkNameGen();
+    updateGroupList();
+
     super.setVisible(true);
     saveCostStates();
   }
@@ -439,6 +454,15 @@ public class TempUnitDialog extends InternationalizedDialog {
    */
   public String getOrder() {
     return order.getText();
+  }
+
+  /**
+   * @return The value of the group input box
+   */
+  public String getGroup() {
+    if (group.getSelectedItem() == null)
+      return null;
+    return group.getSelectedItem().toString();
   }
 
   /**
@@ -574,4 +598,55 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   }
 
+  /**
+   * Returns the value of faction.
+   * 
+   * @return Returns faction.
+   */
+  public Faction getFaction() {
+    return faction;
+  }
+
+  /**
+   * Sets the value of faction.
+   * 
+   * @param faction The value for faction.
+   */
+  public void setFaction(Faction faction) {
+    this.faction = faction;
+  }
+
+  /**
+   * Returns the value of parentGroup.
+   * 
+   * @return Returns parentGroup.
+   */
+  public Group getParentGroup() {
+    return parentGroup;
+  }
+
+  /**
+   * Sets the value of parentGroup.
+   * 
+   * @param parentGroup The value for parentGroup.
+   */
+  public void setParentGroup(Group parentGroup) {
+    this.parentGroup = parentGroup;
+  }
+
+  public void updateGroupList() {
+    group.removeAllItems();
+    group.addItem(""); // default
+    if (faction != null) {
+      for (Group factionGroup : faction.getGroups().values()) {
+        group.addItem(factionGroup.getName());
+      }
+    }
+
+    if (parentGroup != null) {
+      group.setSelectedItem(parentGroup.getName());
+    }
+
+    group.setEditable(true);
+  }
 }

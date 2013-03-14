@@ -66,6 +66,12 @@ public interface OrderChanger {
   public void addHideOrder(Unit unit, String level);
 
   /**
+   * Adds a command line "GROUP \"name\"" ("GRUPPE \"name\"") , e.g. "GROUP \"Magellan.\""
+   * ("GRUPPE \"Magellan.\"") to the given unit. See EMapDetailsPanel.
+   */
+  public void addGroupOrder(Unit unit, String name);
+
+  /**
    * Adds a command line "NAME UNIT \"name\"" ("BENENNE EINHEIT \"name\"") , e.g. "NAME UNIT
    * \"Magellan.\"" ("BENENNE EINHEIT \"Magellan.\"") to the given unit. See EMapDetailsPanel.
    */

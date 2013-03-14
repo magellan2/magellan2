@@ -2179,8 +2179,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               }
 
               // also count temp units
-              for (Iterator<TempUnit> iter2 = u.tempUnits().iterator(); iter2.hasNext();) {
-                Unit u2 = iter2.next();
+              for (TempUnit tempUnit : u.tempUnits()) {
+                Unit u2 = tempUnit;
 
                 if (u2.getFaction().isPrivileged()) {
                   units++;
@@ -2966,6 +2966,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     BufferedImage newIcon =
         new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(),
             BufferedImage.TYPE_INT_ARGB);
+
+    Graphics2D graphics = (Graphics2D) newIcon.getGraphics();
+    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    graphics.setColor(Color.decode("#0000E4"));
+
+    graphics.drawImage(originalIcon, 0, 0, null);
+
     application.setApplicationIconImage(newIcon);
   }
 
@@ -3029,8 +3036,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
 
       // also count temp units
-      for (Iterator<TempUnit> iter2 = u.tempUnits().iterator(); iter2.hasNext();) {
-        Unit u2 = iter2.next();
+      for (TempUnit tempUnit : u.tempUnits()) {
+        Unit u2 = tempUnit;
 
         if (u2.getFaction().isPrivileged()) {
           units++;

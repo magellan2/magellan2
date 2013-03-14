@@ -71,6 +71,13 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
   private JScrollPane releaseNotesPane;
 
+  /**
+   * The constructor of the dialogs sets some variables and initializes the GUI.
+   * 
+   * @param c The Magellan Client instance
+   * @param lastVersion latest version
+   * @param currentVersion current Magellan version
+   */
   public UpdateDialog(Client c, String lastVersion, String currentVersion) {
     super(c, true);
     client = c;

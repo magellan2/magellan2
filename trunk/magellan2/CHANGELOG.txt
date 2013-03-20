@@ -1,10 +1,13 @@
+2013-03-20 / Build 550 - trickert (thoralf@m84.de)
+    * added Combat State Comboxbox to TempUnit dialog to choose combat state for a new unit during creation
+
 2013-03-14 / Build 549 - trickert (thoralf@m84.de)
     * added Group-Combobox to TempUnit Dialog to choose the group for a new unit
     * bugfix for Magellan icon on MacOS X
     * changed update server from magellan.log-out.net (deprecated) to magellan.narabi.de
 
 2013-01-13 / Build 548 - Fiete (sf@fietefietz.de)
-	* Avoid NPE in EMapDetailsPanel after DBLClick
+    * Avoid NPE in EMapDetailsPanel after DBLClick
 
 2013-01-08 / Build 538 - stm (stm_@users.sourceforge.net)
     * cleaned up Replacer code, behavior should be unchanged

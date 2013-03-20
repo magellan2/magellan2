@@ -30,6 +30,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -61,6 +62,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   protected Faction faction = null;
   protected Group parentGroup = null;
+  protected int combatStatus = 0;
 
   protected JTextField id;
   protected JTextField name;
@@ -74,6 +76,7 @@ public class TempUnitDialog extends InternationalizedDialog {
   protected JTextArea descript;
   protected JTextField order;
   protected JComboBox group;
+  protected JComboBox combatState;
   protected JCheckBox giveRecruitCost;
   protected JCheckBox giveMaintainCost;
   protected GridBagConstraints con;
@@ -235,6 +238,8 @@ public class TempUnitDialog extends InternationalizedDialog {
     con.gridy += 2;
     morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.order.label")), con);
     con.gridy++;
+    morePanel.add(new JLabel(Resources.get("emapdetailspanel.node.combatstatus")), con);
+    con.gridy++;
     morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.group.label")), con);
     con.gridy++;
     con.anchor = GridBagConstraints.NORTHWEST;
@@ -261,6 +266,8 @@ public class TempUnitDialog extends InternationalizedDialog {
     morePanel.add(transfer = new JTextField(5), con);
     con.gridy += 2;
     morePanel.add(order = new JTextField(10), con);
+    con.gridy++;
+    morePanel.add(combatState = new JComboBox(), con);
     con.gridy++;
     morePanel.add(group = new JComboBox(), con);
     con.gridy++;
@@ -375,6 +382,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
     checkNameGen();
     updateGroupList();
+    updateCombatState();
 
     super.setVisible(true);
     saveCostStates();
@@ -634,6 +642,10 @@ public class TempUnitDialog extends InternationalizedDialog {
     this.parentGroup = parentGroup;
   }
 
+  /**
+   * This method updates the group data inside the TEMP Unit dialog. It adds all available groups.
+   * Then it selecteds the Group of the current unit.
+   */
   public void updateGroupList() {
     group.removeAllItems();
     group.addItem(""); // default
@@ -648,5 +660,38 @@ public class TempUnitDialog extends InternationalizedDialog {
     }
 
     group.setEditable(true);
+  }
+
+  /**
+   * Sets the value of combatStatus.
+   * 
+   * @param combatStatus The value for combatStatus.
+   */
+  public void setCombatState(int combatStatus) {
+    this.combatStatus = combatStatus;
+  }
+
+  /**
+   * Returns the selected combatState or -1 if it is not set.
+   */
+  public int getCombatState() {
+    return combatState.getSelectedIndex();
+  }
+
+  /**
+   * This method updates the combobox with the possible combat states and sets the new possible
+   * combat state based on the parent unit combat state.
+   */
+  public void updateCombatState() {
+    combatState.removeAllItems();
+    if (faction != null) {
+      Map<Integer, String> combatStates =
+          faction.getData().getGameSpecificStuff().getCombatStates();
+      for (Integer key : combatStates.keySet()) {
+        combatState.addItem(Resources.get(combatStates.get(key)));
+      }
+    }
+
+    combatState.setSelectedIndex(combatStatus);
   }
 }

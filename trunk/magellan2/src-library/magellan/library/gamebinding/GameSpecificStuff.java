@@ -13,6 +13,8 @@
 
 package magellan.library.gamebinding;
 
+import java.util.Map;
+
 import magellan.library.GameData;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
@@ -130,5 +132,10 @@ public interface GameSpecificStuff {
    */
   public ReportTransformer[] getTransformers(GameData globalData, GameData addedData,
       UserInterface ui, boolean interactive);
+
+  /**
+   * Returns a list of possible combat states.
+   */
+  public Map<Integer, String> getCombatStates();
 
 }

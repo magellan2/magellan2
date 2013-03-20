@@ -1946,6 +1946,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
         dialog.setFaction(parentUnit.getFaction());
         dialog.setParentGroup(parentUnit.getGroup());
+        dialog.setCombatState(parentUnit.getCombatStatus());
 
         while (true) {
           if (first) { // reset if it's the first dialog for this temp unit
@@ -2038,6 +2039,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                 if (group != null) {
                   getGameData().getGameSpecificStuff().getOrderChanger().addGroupOrder(tempUnit,
                       group);
+                }
+
+                int combatState = dialog.getCombatState();
+                if (combatState >= 0) {
+                  getGameData().getGameSpecificStuff().getOrderChanger().addCombatOrder(tempUnit,
+                      combatState);
                 }
 
                 // description

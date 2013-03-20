@@ -13,6 +13,11 @@
 
 package magellan.library.gamebinding.e3a;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import magellan.library.CompleteData;
 import magellan.library.GameData;
 import magellan.library.Rules;
@@ -50,6 +55,17 @@ public class E3ASpecificStuff implements GameSpecificStuff {
   private RelationFactory relationFactory;
 
   private E3AOrderChanger orderChanger;
+
+  private static final SortedMap<Integer, String> combatStates = new TreeMap<Integer, String>();
+
+  static {
+    combatStates.put(0, "unit.combatstatus.aggressive");
+    combatStates.put(1, "unit.combatstatus.front");
+    combatStates.put(2, "unit.combatstatus.back");
+    combatStates.put(3, "unit.combatstatus.defensive");
+    combatStates.put(4, "unit.combatstatus.passive");
+    combatStates.put(5, "unit.combatstatus.escape");
+  }
 
   /**
    * Returns the value of rules.
@@ -193,4 +209,10 @@ public class E3ASpecificStuff implements GameSpecificStuff {
     return (new TransformerFinder(globalData, addedData, ui, interactive, true)).getTransformers();
   }
 
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getCombatStates()
+   */
+  public Map<Integer, String> getCombatStates() {
+    return Collections.unmodifiableSortedMap(combatStates);
+  }
 }

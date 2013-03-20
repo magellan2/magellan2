@@ -13,6 +13,11 @@
 
 package magellan.library.gamebinding;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import magellan.library.CompleteData;
 import magellan.library.GameData;
 import magellan.library.Rules;
@@ -47,6 +52,17 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   private RelationFactory relationFactory;
 
   private EresseaOrderChanger orderChanger;
+
+  private static final SortedMap<Integer, String> combatStates = new TreeMap<Integer, String>();
+
+  static {
+    combatStates.put(0, "unit.combatstatus.aggressive");
+    combatStates.put(1, "unit.combatstatus.front");
+    combatStates.put(2, "unit.combatstatus.back");
+    combatStates.put(3, "unit.combatstatus.defensive");
+    combatStates.put(4, "unit.combatstatus.passive");
+    combatStates.put(5, "unit.combatstatus.escape");
+  }
 
   /**
    * Returns the value of rules.
@@ -188,6 +204,13 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
       UserInterface ui, boolean interactive) {
 
     return (new TransformerFinder(globalData, addedData, ui, interactive, false)).getTransformers();
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getCombatStates()
+   */
+  public Map<Integer, String> getCombatStates() {
+    return Collections.unmodifiableSortedMap(combatStates);
   }
 
 }

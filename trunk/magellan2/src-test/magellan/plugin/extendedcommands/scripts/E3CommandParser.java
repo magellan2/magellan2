@@ -1914,6 +1914,8 @@ public class E3CommandParser {
         }
       }
 
+      Map<Unit, Integer> reserves = new HashMap<Unit, Integer>();
+
       Map<Integer, Map<Unit, Need>> pMap = needMap.get(item);
 
       List<Integer> prios = new ArrayList<Integer>();
@@ -1927,7 +1929,7 @@ public class E3CommandParser {
         Map<Unit, Need> nMap = pMap.get(prio);
         // try to satisfy minimum need by own items
         for (Need need : nMap.values()) {
-          reserveNeed(need, true);
+          reserveNeed(need, true, reserves);
         }
 
         // try to satisfy minimum needs with GIVE
@@ -1945,7 +1947,7 @@ public class E3CommandParser {
         // try to satisfy max needs, ignore infinite needs first
         for (Need need : nMap.values()) {
           if (need.getAmount() != Integer.MAX_VALUE) {
-            reserveNeed(need, false);
+            reserveNeed(need, false, reserves);
           }
         }
 
@@ -1958,7 +1960,7 @@ public class E3CommandParser {
         // now, finally, satisfy infinite needs
         for (Need need : nMap.values()) {
           if (need.getAmount() == Integer.MAX_VALUE) {
-            reserveNeed(need, false);
+            reserveNeed(need, false, reserves);
           }
         }
 
@@ -1967,6 +1969,7 @@ public class E3CommandParser {
             giveNeed(need, false);
           }
         }
+
         // add messages for unsatisfied needs
         for (Need need : nMap.values()) {
           if (need.getMinAmount() <= 0 && need.getMaxAmount() > 0
@@ -1976,7 +1979,20 @@ public class E3CommandParser {
           }
         }
       }
+      for (Unit u : reserves.keySet()) {
+
+        int amount = reserves.get(u);
+        if (amount > 0) {
+          if (amount == u.getPersons()) {
+            u.addOrder(getReserveOrder(u, item // + COMMENTOrder + need.toString()
+                , 1, true), false);
+          } else {
+            u.addOrder(getReserveOrder(u, item, amount, false), false);
+          }
+        }
+      }
     }
+
   }
 
   /**
@@ -1984,31 +2000,26 @@ public class E3CommandParser {
    * 
    * @param need
    * @param min
+   * @param reserves
    */
-  protected void reserveNeed(Need need, boolean min) {
+  protected void reserveNeed(Need need, boolean min, Map<Unit, Integer> reserves) {
     int amount = min ? need.getMinAmount() : need.getAmount();
     Supply supply = getSupply(need.getItem(), need.getUnit());
     if (supply == null)
       return;
 
     // only suppliers with positive priority serve maximum needs
-
     amount = Math.min(amount, supply.getAmount());
     if (amount > 0) {
-      if (min) {
-        if (amount == need.getUnit().getPersons()) {
-          need.getUnit().addOrder(
-              getReserveOrder(need.getUnit(), need.getItem() + COMMENTOrder + need.toString(), 1,
-                  true), false);
-        } else {
-          need.getUnit().addOrder(
-              getReserveOrder(need.getUnit(), need.getItem() + COMMENTOrder + need.toString(),
-                  amount, false), false);
-        }
-      }
       need.reduceAmount(amount);
       need.reduceMinAmount(amount);
       supply.reduceAmount(amount);
+      if (min) {
+        if (reserves.containsKey(need.getUnit())) {
+          amount += reserves.get(need.getUnit());
+        }
+        reserves.put(need.getUnit(), amount);
+      }
     }
   }
 

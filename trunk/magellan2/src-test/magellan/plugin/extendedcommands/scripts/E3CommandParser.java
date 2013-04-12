@@ -507,7 +507,7 @@ public class E3CommandParser {
             commandWarning(tokens);
             changedOrders = true;
           } else if (command.equals("KrautKontrolle")) {
-            commandKontrolle(tokens);
+            commandControl(tokens);
             changedOrders = true;
           } else if (command.equals("auto")) {
             commandAuto(tokens);
@@ -518,13 +518,13 @@ public class E3CommandParser {
             if (command.equals("Loeschen")) {
               commandClear(tokens);
             } else if (command.equals("GibWenn")) {
-              commandGibWenn(tokens);
+              commandGiveIf(tokens);
             } else if (command.equals("Benoetige") || command.equals("BenoetigeFremd")) {
-              commandBenoetige(tokens);
+              commandNeed(tokens);
             } else if (command.equals("Versorge")) {
-              commandVersorge(tokens);
+              commandSupply(tokens);
             } else if (command.equals("BerufDepotVerwalter")) {
-              commandDepotVerwalter(tokens);
+              commandDepot(tokens);
             } else if (command.equals("Soldat")) {
               commandSoldier(tokens);
             } else if (command.equals("Lerne")) {
@@ -543,7 +543,7 @@ public class E3CommandParser {
               if (tokens.length < 3) {
                 addNewError("zu wenige Argumente");
               } else {
-                commandBenoetige(new String[] { "Benoetige", tokens[1], tokens[2], "Silber",
+                commandNeed(new String[] { "Benoetige", tokens[1], tokens[2], "Silber",
                     String.valueOf(DEFAULT_PRIORITY + 1) });
                 setConfirm(currentUnit, false);
               }
@@ -785,7 +785,7 @@ public class E3CommandParser {
    * Adds a GIB order to the unit. Warning may be one of "immer", "Menge", "Einheit", "versteckt"
    * "nie". "versteckt" informiert nur, wenn die Einheit nicht da ist, übergibt aber trotzdem.
    */
-  protected void commandGibWenn(String[] tokens) {
+  protected void commandGiveIf(String[] tokens) {
     if (tokens.length < 3 || tokens.length > 6) {
       addNewError("falsche Anzahl Argumente");
       return;
@@ -1015,7 +1015,7 @@ public class E3CommandParser {
    * Needs with higher priority are satisfied first. If no priority is given,
    * {@link #DEFAULT_PRIORITY} is used.
    */
-  protected void commandBenoetige(String[] tokens) {
+  protected void commandNeed(String[] tokens) {
     Unit unit = currentUnit;
     if (tokens[0].equals("BenoetigeFremd")) {
       unit = helper.getUnit(tokens[1]);
@@ -1088,7 +1088,7 @@ public class E3CommandParser {
    * <code>// $cript BerufDepotVerwalter [[ZusatzMin] ZusatzMax]</code><br />
    * Collects all free items in the region, Versorge 100, calls Ueberwache
    */
-  protected void commandDepotVerwalter(String[] tokens) {
+  protected void commandDepot(String[] tokens) {
     if (tokens.length > 3) {
       addNewError("zu viele Argumente");
     }
@@ -1113,8 +1113,8 @@ public class E3CommandParser {
     }
     addNeed("Silber", currentUnit, costs + zusatz1, costs + zusatz2, DEPOT_SILVER_PRIORITY);
 
-    commandBenoetige(new String[] { "Benoetige ", ALLOrder, String.valueOf(DEPOT_PRIORITY) });
-    commandVersorge(new String[] { "Versorge", "100" });
+    commandNeed(new String[] { "Benoetige ", ALLOrder, String.valueOf(DEPOT_PRIORITY) });
+    commandSupply(new String[] { "Versorge", "100" });
   }
 
   /**
@@ -1122,7 +1122,7 @@ public class E3CommandParser {
    * priority only deliver for minimum needs. Needs are satisfied in descending order of priority.
    * If no items are given, the priority is adjusted for alle the unit's items.
    */
-  protected void commandVersorge(String[] tokens) {
+  protected void commandSupply(String[] tokens) {
     int priority = 0;
     if (tokens.length < 2) {
       addNewError("zu wenig Argumente");
@@ -1414,7 +1414,7 @@ public class E3CommandParser {
     }
 
     // Ernaehre includes Versorge
-    commandVersorge(new String[] { "Versorge", String.valueOf(DEFAULT_EARN_PRIORITY) });
+    commandSupply(new String[] { "Versorge", String.valueOf(DEFAULT_EARN_PRIORITY) });
 
     // remove previous orders
     removeOrdersLike(TAXOrder + ".*", true);
@@ -1475,7 +1475,7 @@ public class E3CommandParser {
       addNewError("zu wenige Argumente");
     }
 
-    commandVersorge(new String[] { "Versorge", String.valueOf(DEFAULT_EARN_PRIORITY) });
+    commandSupply(new String[] { "Versorge", String.valueOf(DEFAULT_EARN_PRIORITY) });
 
     String warning = null;
     if (W_SKILL.equals(tokens[tokens.length - 1]) || W_AMOUNT.equals(tokens[tokens.length - 1])
@@ -1686,7 +1686,7 @@ public class E3CommandParser {
    * <code>KrautKontrolle [[[direction...] PAUSE]...]</code> move until the next PAUSE, if pause is
    * reached, research herbs.
    */
-  protected void commandKontrolle(String[] tokens) {
+  protected void commandControl(String[] tokens) {
     for (Order o : currentUnit.getOrders2()) {
       String order = o.getText();
       if (order.startsWith(ROUTEOrder)) {
@@ -2359,14 +2359,14 @@ public class E3CommandParser {
   protected boolean reserveEquipment(ItemType preferred, List<Item> ownStuff, boolean warn) {
     if (preferred != null) {
       // reserve requested weapon
-      commandBenoetige(new String[] { "Benoetige", EACHOrder, "1", preferred.getOrderName(),
+      commandNeed(new String[] { "Benoetige", EACHOrder, "1", preferred.getOrderName(),
           String.valueOf(DEFAULT_PRIORITY) });
     } else if (!ownStuff.isEmpty()) {
       int supply = 0;
       for (Item w : ownStuff) {
         // reserve all matching weapons, except first one
         if (supply > 0) {
-          commandBenoetige(new String[] { "Benoetige",
+          commandNeed(new String[] { "Benoetige",
               Integer.toString(Math.min(currentUnit.getPersons() - supply, w.getAmount())),
               w.getOrderName(), String.valueOf(DEFAULT_PRIORITY) });
         }
@@ -2380,7 +2380,7 @@ public class E3CommandParser {
           Integer.toString(Math.max(0, Math.min(currentUnit.getPersons() - supply + w.getAmount(),
               currentUnit.getPersons())));
       String min = warn ? max : Integer.toString(Math.min(currentUnit.getPersons(), w.getAmount()));
-      commandBenoetige(new String[] { "Benoetige", min, max, w.getOrderName(),
+      commandNeed(new String[] { "Benoetige", min, max, w.getOrderName(),
           String.valueOf(DEFAULT_PRIORITY) });
     } else
       return false;

@@ -981,6 +981,9 @@ public class EresseaOrderCompleter implements Completer {
   public void cmpltGruppe() {
     if ((unit != null) && (unit.getFaction() != null) && (unit.getFaction().getGroups() != null)) {
       for (Group g : unit.getFaction().getGroups().values()) {
+        if (!g.getName().contains(" ")) {
+          completions.add(new Completion(g.getName(), ""));
+        }
         completions.add(new Completion("\"" + g.getName() + "\"", ""));
       }
     }

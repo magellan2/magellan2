@@ -1975,6 +1975,9 @@ public class EresseaOrderParser implements OrderParser {
       if (isEoC(t)) {
         // just "GRUPPE" without explicit group is valid
         retVal = checkFinal(t);
+        if (shallComplete(token, t)) {
+          getCompleter().cmpltGruppe();
+        }
       } else if (isString(t)) {
         retVal = new StringChecker(false, true, true, false) {
           @Override
@@ -1986,9 +1989,10 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null) {
-        getCompleter().cmpltGruppe();
-      }
+      // if (getCompleter() != null) {
+      // if (shallComplete(token, t)) {
+      // getCompleter().cmpltGruppe();
+      // }
 
       return retVal;
     }

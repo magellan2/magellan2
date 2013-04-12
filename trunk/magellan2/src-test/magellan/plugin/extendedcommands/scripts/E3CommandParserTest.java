@@ -656,11 +656,13 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     // no skill, no money --> work
     unit.clearOrders();
     unit.addOrder("// $cript BerufBotschafter Segeln");
+    unit.addOrder("LERNEN Segeln");
     parser.execute(unit.getFaction());
 
-    assertEquals(3, unit.getOrders2().size());
+    assertEquals(4, unit.getOrders2().size());
     assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
     assertOrder("ARBEITEN", unit, 2);
+    assertOrder("; LERNEN Segeln", unit, 3);
 
     // with entertain skill
     unit.clearOrders();
@@ -673,6 +675,29 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
     assertOrder("UNTERHALTEN", unit, 2);
 
+    // other command
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter MACHEN Holz");
+    unit.addOrder("MACHEN Stein");
+    builder.addItem(data, unit, "Silber", 90);
+    builder.addSkill(unit, "Unterhaltung", 1);
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter MACHEN Holz", unit, 1);
+    assertOrder("UNTERHALTEN", unit, 2);
+    assertOrder("; MACHEN Stein", unit, 3);
+
+    // with money --> learn default
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter");
+    builder.addItem(data, unit, "Silber", 110);
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter", unit, 1);
+    assertOrder("LERNEN Wahrnehmung", unit, 3);
+
     // with money --> learn
     unit.clearOrders();
     unit.addOrder("// $cript BerufBotschafter Segeln");
@@ -682,6 +707,18 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(4, unit.getOrders2().size());
     assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
     assertOrder("LERNEN Segeln", unit, 3);
+
+    // with money, other command
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter MACHEN 5 Holz");
+    unit.addOrder("UNTERHALTEN");
+    builder.addItem(data, unit, "Silber", 110);
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter MACHEN 5 Holz", unit, 1);
+    assertOrder("MACHEN 5 Holz", unit, 2);
+    assertOrder("; UNTERHALTEN", unit, 3);
   }
 
   /**

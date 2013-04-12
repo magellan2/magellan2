@@ -1671,6 +1671,10 @@ public class E3CommandParser {
       }
     }
 
+    if (currentRegion.getRegionType().isOcean()) {
+      addNewError("Sammeln nicht möglich!");
+      return;
+    }
     removeOrdersLike(MAKEOrder + " " + "[^T].*", true);
     removeOrdersLike(getResearchOrder() + ".*", true);
     if (modulo != Integer.MAX_VALUE

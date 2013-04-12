@@ -3265,6 +3265,15 @@ public class E3CommandParser {
   }
 
   protected void teachRegion(Collection<Region> regions, String namespaces) {
+    ArrayList<Region> regions2 = new ArrayList<Region>(regions);
+    for (Region r : regions) {
+      if (r != null) {
+        regions2.add(r);
+      }
+    }
+    if (regions2.isEmpty())
+      return;
+
     log.info("trying to call TeachPlugin method..");
     MagellanPlugIn plugin = helper.getPlugin("magellan.plugin.teacher.TeachPlugin");
     if (plugin != null) {
@@ -3275,7 +3284,7 @@ public class E3CommandParser {
           setNamespaces(plugin, namespaces);
         }
         ExtendedCommandsHelper.invoke(plugin, "doTeachUnits", new Class[] { Collection.class },
-            new Collection[] { regions });
+            new Collection[] { regions2 });
         if (oldNameSpaces != null) {
           setNamespaces(plugin, oldNameSpaces);
         }

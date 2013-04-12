@@ -1837,6 +1837,25 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("REKRUTIEREN 50", unit, 2);
   }
 
+  /**
+   * Test method for {@link E3CommandParser#commandCollector(String[])}.
+   */
+  @Test
+  public final void testCommandCollector() {
+    unit.addOrder("// $cript Sammler 5");
+
+    parser.execute(unit.getFaction());
+    assertOrder("FORSCHEN KRÄUTER", unit, 3);
+
+    unit.clearOrders();
+    unit.getRegion().setType(getRules().getRegionType(EresseaConstants.RT_OCEAN));
+    unit.addOrder("// $cript Sammler 5");
+
+    parser.execute(unit.getFaction());
+    assertError("Sammeln nicht möglich!", unit, 2);
+
+  }
+
   private Rules getRules() {
     return data.getRules();
   }

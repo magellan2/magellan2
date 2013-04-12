@@ -1272,18 +1272,17 @@ public class E3CommandParser {
    * skill<br />
    */
   protected void commandEmbassador(String[] tokens) {
-    if (tokens.length > 2) {
-      addNewError("zu viele Argumente");
-      return;
+    Skill skill = null;
+    if (tokens.length > 1) {
+      skill = getSkill(tokens[1], 10);
+    } else {
+      skill = getSkill(EresseaConstants.S_WAHRNEHMUNG.toString(), 10);
+      if (skill == null) {
+        skill = getSkill(EresseaConstants.S_AUSDAUER.toString(), 10);
+      }
     }
 
-    removeOrdersLike(ENTERTAINOrder + ".*", true);
-    removeOrdersLike(WORKOrder + ".*", true);
-    removeOrdersLike(LEARNOrder + ".*", true);
-    Skill defaultSkill = getSkill(EresseaConstants.S_WAHRNEHMUNG.toString(), 10);
-    if (defaultSkill == null) {
-      defaultSkill = getSkill(EresseaConstants.S_AUSDAUER.toString(), 10);
-    }
+    commandClear(new String[] { "Loeschen" });
 
     if (helper.getSilver(currentUnit) < 100) {
       if (hasEntertain() && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG) != null
@@ -1294,19 +1293,20 @@ public class E3CommandParser {
       } else {
         addNewWarning("Einheit verhungert");
       }
-    } else if (tokens.length > 1) {
-      Skill skill = getSkill(tokens[1], 10);
-      if (skill == null) {
-        addNewError("unknown skill " + tokens[1]);
-        skill = defaultSkill;
+    } else if (skill == null) {
+      StringBuilder order = new StringBuilder();
+      if (tokens.length > 1) {
+        order.append(tokens[1]);
       }
-
+      for (int i = 2; i < tokens.length; ++i) {
+        order.append(" ").append(tokens[i]);
+      }
+      addNewOrder(order.toString(), true);
+    } else {
       learn(currentUnit, Collections.singleton(skill));
       if (tokens.length > 2) {
         addNewError("zu viele Argumente");
       }
-    } else {
-      learn(currentUnit, Collections.singleton(defaultSkill));
     }
   }
 
@@ -3276,7 +3276,7 @@ public class E3CommandParser {
   }
 
   protected void teachRegion(Collection<Region> regions, String namespaces) {
-    ArrayList<Region> regions2 = new ArrayList<Region>(regions);
+    ArrayList<Region> regions2 = new ArrayList<Region>();
     for (Region r : regions) {
       if (r != null) {
         regions2.add(r);

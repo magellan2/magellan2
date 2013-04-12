@@ -1,3 +1,7 @@
+2013-04-12 / Build 551 - stm (stm_@users.sourceforge.net)
+	* introduced http://magellan-client.sourceforge.net/locations.properties as primary register for URLs concerning Magellan
+    * fixed typos in about/update/version dialogs
+    
 2013-03-20 / Build 550 - trickert (thoralf@m84.de)
     * added Combat State Comboxbox to TempUnit dialog to choose combat state for a new unit during creation
 

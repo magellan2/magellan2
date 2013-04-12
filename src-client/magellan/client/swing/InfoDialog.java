@@ -33,6 +33,7 @@ import javax.swing.event.HyperlinkListener;
 
 import magellan.client.utils.SwingUtils;
 import magellan.library.utils.MagellanImages;
+import magellan.library.utils.MagellanUrl;
 import magellan.library.utils.Resources;
 import magellan.library.utils.VersionInfo;
 
@@ -70,7 +71,9 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     magellanImage.setText("");
     magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
     jPanel.add(magellanImage);
-    String text = Resources.get("infodlg.infotext", getVersionString());
+    String text =
+        Resources.get("infodlg.infotext", getVersionString(), MagellanUrl.getRootUrl(), MagellanUrl
+            .getMagellanUrl("www.fernando"));
 
     jTextArea1 = new JEditorPane();
     jTextArea1.setContentType("text/html");
@@ -111,7 +114,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     if (versionInfo == null) {
       versionInfo = "not available";
     }
-    return "Magellan " + Resources.get("infodlg.infotext.version") + ": " + versionInfo + "\n";
+    return Resources.get("infodlg.infotext.version", versionInfo) + "\n";
   }
 
   public void hyperlinkUpdate(HyperlinkEvent e) {

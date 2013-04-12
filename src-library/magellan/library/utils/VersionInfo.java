@@ -100,7 +100,11 @@ public class VersionInfo {
         Boolean.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK,
             String.valueOf(false)));
 
-    String urlstring = VersionInfo.DEFAULT_CHECK_URL;
+    MagellanUrl.retrieveLocations(properties);
+    String urlstring = MagellanUrl.getMagellanUrl("version.release");
+    if (urlstring == null) {
+      urlstring = VersionInfo.DEFAULT_CHECK_URL;
+    }
     long failedTimestamp =
         Long.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, String
             .valueOf(0)));
@@ -108,7 +112,10 @@ public class VersionInfo {
     boolean doCheck = check;
 
     if (checkNightly) {
-      urlstring = VersionInfo.NIGHTLY_CHECK_URL;
+      urlstring = MagellanUrl.getMagellanUrl("version.nightly");
+      if (urlstring == null) {
+        urlstring = VersionInfo.NIGHTLY_CHECK_URL;
+      }
     }
 
     // if the last failed time was now-7 days, then we try to check again.

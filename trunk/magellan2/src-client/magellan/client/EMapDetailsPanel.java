@@ -3678,8 +3678,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       if (u.getUnitContainer() instanceof Ship) {
         Ship s = (Ship) u.getUnitContainer();
         if (s.getShoreId() > -1) {
-          parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.shore") + ": "
-              + Direction.toString(s.getShoreId()), "shore_" + String.valueOf(s.getShoreId())));
+          StringBuilder text = new StringBuilder();
+          text.append(Resources.get("emapdetailspanel.node.shore")).append(": ").append(
+              Direction.toString(s.getShoreId())).append(", ").append(
+              Resources.get("emapdetailspanel.node.range")).append(": ").append(
+              getRules().getShipRange(s));
+          parent.add(createSimpleNode(text.toString(), "shore_" + String.valueOf(s.getShoreId())));
         }
       }
     }

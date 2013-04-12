@@ -182,6 +182,7 @@ import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Locales;
 import magellan.library.utils.Log;
 import magellan.library.utils.MagellanImages;
+import magellan.library.utils.MagellanUrl;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
@@ -1208,7 +1209,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               Client.log.info("Current Version: " + currentVersion);
               if (VersionInfo.isNewer(newestVersion, currentVersion)) {
                 JOptionPane.showMessageDialog(Client.startWindow, Resources.get(
-                    "client.new_version", new Object[] { newestVersion }));
+                    "client.new_version", new Object[] { newestVersion,
+                        MagellanUrl.getMagellanUrl("www.download") }));
               }
             }
 
@@ -1228,7 +1230,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             c.application.setEnabledAboutMenu(true);
             c.application.addApplicationListener(c);
 
-            Client.log.info("Is Mac extension working:" + c.application.isMac());
+            Client.log.info("Is Mac extension working: " + c.application.isMac());
 
             c.appIcon = c.application.getApplicationIconImage();
 

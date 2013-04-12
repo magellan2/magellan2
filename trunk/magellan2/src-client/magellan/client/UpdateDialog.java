@@ -47,6 +47,7 @@ import javax.swing.event.HyperlinkListener;
 import magellan.client.swing.InternationalizedDialog;
 import magellan.client.utils.SwingUtils;
 import magellan.library.utils.MagellanImages;
+import magellan.library.utils.MagellanUrl;
 import magellan.library.utils.Resources;
 import magellan.library.utils.VersionInfo;
 import magellan.library.utils.logging.Logger;
@@ -114,7 +115,8 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       showFile("RELEASENOTES.txt");
     } else
       throw new IllegalArgumentException("???");
-    text.append(Resources.get("updatedialog.infotext"));
+    text.append(Resources.get("updatedialog.infotext", MagellanUrl.getMagellanUrl("www.download"),
+        MagellanUrl.getMagellanUrl("www.files"), MagellanUrl.getMagellanUrl("www.root")));
     text.append(Resources.get("updatedialog.htmlfooter"));
 
     versionInfo.setText(text.toString());

@@ -432,7 +432,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandBenoetige(String...)}.
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
   @Test
   public final void testCommandBenoetige() {
@@ -553,7 +553,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandBenoetige(String...)}.
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
   @Test
   public final void testCommandBenoetige2() {
@@ -575,7 +575,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandBenoetige(String...)}.
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
   @Test
   public final void testCommandBenoetige3() {
@@ -597,7 +597,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandBenoetige(String...)}.
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
   @Test
   public final void testCommandBenoetigePrio() {
@@ -669,7 +669,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   * Test method for {@link E3CommandParser#commandGiveIf(String[])}.
    */
   @Test
   public final void testCommandGibWenn2() {
@@ -700,7 +700,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   * Test method for {@link E3CommandParser#commandGiveIf(String[])}.
    */
   @Test
   public final void testCommandGibWenn3() {
@@ -726,7 +726,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   * Test method for {@link E3CommandParser#commandGiveIf(String[])}.
    */
   @Test
   public final void testCommandGibWenn3b() {
@@ -747,7 +747,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   * Test method for {@link E3CommandParser#commandGiveIf(String[])}.
    */
   @Test
   public final void testCommandGibWenn4() {
@@ -773,7 +773,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   * Test method for {@link E3CommandParser#commandGiveIf(String[])}.
    */
   @Test
   public final void testCommandGibWennStupid() {
@@ -795,7 +795,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   * Test method for {@link E3CommandParser#commandGiveIf(String[])}.
    */
   @Test
   public final void testCommandGibWenn() {
@@ -959,7 +959,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandGibWenn(String[])}.
+   * Test method for {@link E3CommandParser#commandGiveIf(String[])}.
    */
   @Test
   public final void testCommandGibWenn5() {
@@ -982,8 +982,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandGibWenn(String...)} and
-   * {@link E3CommandParser#commandBenoetige(String...)}.
+   * Test method for {@link E3CommandParser#commandGiveIf(String...)} and
+   * {@link E3CommandParser#commandNeed(String...)}.
    */
   @Test
   public final void testCommandGibWennAndBenoetige() {
@@ -1035,7 +1035,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandDepotVerwalter(String[])}.
+   * Test method for {@link E3CommandParser#commandDepot(String[])}.
    */
   @Test
   public final void testCommandDepot() {
@@ -1065,7 +1065,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandBenoetige(String...)}.
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
   @Test
   public final void testCommandVersorge() {
@@ -1420,7 +1420,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#commandKontrolle(String...)}.
+   * Test method for {@link E3CommandParser#commandControl(String...)}.
    */
   @Test
   public final void testCommandKontrolle() {

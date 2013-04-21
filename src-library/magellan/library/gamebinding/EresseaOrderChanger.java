@@ -41,6 +41,7 @@ public class EresseaOrderChanger implements OrderChanger {
   public static final String eresseaOrderChangedMarker = ";changed by Magellan";
 
   protected static final String PCOMMENTSTART = EresseaConstants.O_PCOMMENT + " ";
+  protected static final String COMMENTSTART = EresseaConstants.O_COMMENT + " ";
 
   private static final Logger log = Logger.getInstance(EresseaOrderChanger.class);
 
@@ -218,7 +219,7 @@ public class EresseaOrderChanger implements OrderChanger {
 
     case 1:
       // KÄMPFE VORNE is deprecated
-      str += PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FRONT);
+      str += COMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FRONT);
 
       break;
 
@@ -681,7 +682,12 @@ public class EresseaOrderChanger implements OrderChanger {
    *      java.lang.String)
    */
   public void addGroupOrder(Unit unit, String name) {
-    String group = Resources.getOrderTranslation(EresseaConstants.O_GROUP) + " \"" + name + "\"";
+    String group;
+    if (name != null && name.trim().length() > 0) {
+      group = Resources.getOrderTranslation(EresseaConstants.O_GROUP) + " \"" + name + "\"";
+    } else {
+      group = Resources.getOrderTranslation(EresseaConstants.O_GROUP);
+    }
     unit.addOrder(group, true, 1);
 
   }

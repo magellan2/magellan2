@@ -1167,7 +1167,7 @@ public class E3CommandParser {
       StringBuilder warning = new StringBuilder();
       String foo = currentOrder.substring(currentOrder.indexOf("+"));
       warning.append(foo.indexOf(" ") >= 0 ? foo.substring(foo.indexOf(" ") + 1) : "");
-      addNewWarning(warning.toString());
+      addNewWarning(warning.toString(), false);
     }
     if (delay != 1) {
       StringBuilder newCommand =
@@ -2516,9 +2516,14 @@ public class E3CommandParser {
    * @param hint
    */
   protected void addNewWarning(String hint) {
+    addNewWarning(hint, true);
+  }
+
+  protected void addNewWarning(String hint, boolean addLine) {
     error = line;
     // errMsg = hint;
-    addNewOrder(COMMENTOrder + " TODO: " + hint + " (Warnung in Zeile " + error + ")", true);
+    addNewOrder(COMMENTOrder + " TODO: " + hint
+        + (addLine ? " (Warnung in Zeile " + error + ")" : ""), true);
     setConfirm(currentUnit, false);
   }
 

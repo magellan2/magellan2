@@ -151,7 +151,8 @@ public class ProfileManager {
       }
     }
     if (parameters.profile != null) {
-      setProfile(parameters.profile);
+      if (!setProfile(parameters.profile))
+        return null;
     }
     return getCurrentProfile();
   }

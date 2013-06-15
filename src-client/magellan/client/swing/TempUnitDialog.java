@@ -649,7 +649,7 @@ public class TempUnitDialog extends InternationalizedDialog {
   public void updateGroupList() {
     group.removeAllItems();
     group.addItem(""); // default
-    if (faction != null) {
+    if (faction != null && faction.getGroups() != null) {
       for (Group factionGroup : faction.getGroups().values()) {
         group.addItem(factionGroup.getName());
       }

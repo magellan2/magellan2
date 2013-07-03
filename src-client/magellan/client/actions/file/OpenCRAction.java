@@ -80,7 +80,6 @@ public class OpenCRAction extends MenuAction {
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ATLANTIS_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
-    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ATLANTIS_FILTER));
 
     int lastFileFilter =
         Integer.parseInt(settings.getProperty("Client.lastSelectedOpenCRFileFilter", "5"));

@@ -67,6 +67,7 @@ public class AddCRAction extends MenuAction implements GameDataListener {
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.GZ_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.BZ2_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER));
+    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ATLANTIS_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
 
     int lastFileFilter =

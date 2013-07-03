@@ -143,10 +143,13 @@ public interface OrderChanger {
 
   public String getTokenLocalized(Locale orderLocale, Object arg) throws RulesException;
 
-  public String getOrder(Locale orderLocale, StringID orderId, Object... args);
+  public String getOrder(Locale orderLocale, StringID orderId);
 
-  public String getOrder(StringID orderId, Locale orderLocale, Object... args)
-      throws RulesException;
+  public String getOrder(Locale orderLocale, StringID orderId, Object[] args);
+
+  public String getOrder(StringID orderId, Locale orderLocale) throws RulesException;
+
+  public String getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException;
 
   public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale, Unit unit);
 

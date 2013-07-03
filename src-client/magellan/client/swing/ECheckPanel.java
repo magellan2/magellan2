@@ -745,7 +745,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       options += (" -r" + f.getRace().getRecruitmentCosts());
     }
 
-    if ((f.getOptions() != null) && f.getOptions().isActive(EresseaConstants.O_SILVERPOOL)) {
+    if ((f.getOptions() != null) && f.getOptions().isActive(EresseaConstants.OC_SILVERPOOL)) {
       options += " -l";
     }
 

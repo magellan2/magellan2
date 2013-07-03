@@ -20,7 +20,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.Alliance;
-import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.Faction;
@@ -50,7 +49,6 @@ import magellan.library.utils.OrderToken;
 import magellan.library.utils.OrderTokenizer;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
-import magellan.library.utils.Umlaut;
 import magellan.library.utils.Units;
 import magellan.library.utils.logging.Logger;
 
@@ -282,44 +280,6 @@ public abstract class AbstractOrderCompleter implements Completer {
     } else {
       completions.add(new Completion("=== Magier nicht in Reichweite ===", "", ""));
     }
-  }
-
-  /** Add completions for command Zeige. */
-  public void cmpltZeige() {
-    addUnitItems("");
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_ALL), " ",
-        Completion.DEFAULT_PRIORITY - 1));
-  }
-
-  /** Add completions for command ZeigeAlle. */
-  public void cmpltZeigeAlle() {
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_POTIONS)));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_SPELLS)));
-  }
-
-  /** Add completions for command Zerstoere. */
-  public void cmpltZerstoere() {
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_ROAD), " "));
-  }
-
-  /** Add completions for command ZerstoereStrasse. */
-  public void cmpltZerstoereStrasse() {
-    if (region != null) {
-      for (Border b : region.borders()) {
-        if (Umlaut.convertUmlauts(b.getType()).equalsIgnoreCase(
-            getOrderTranslation(EresseaConstants.O_ROAD))) {
-          completions.add(new Completion(getOrderTranslation(directions[b.getDirection()]), ""));
-        }
-      }
-    } else {
-      addDirections("");
-    }
-  }
-
-  /** Add completions for command Zuechte. */
-  public void cmpltZuechte() {
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_HORSES)));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.O_HERBS)));
   }
 
   /** Add completions for command Factions. */
@@ -587,9 +547,9 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  private static StringID directions[] = new StringID[] { EresseaConstants.O_NW,
-      EresseaConstants.O_NE, EresseaConstants.O_E, EresseaConstants.O_SE, EresseaConstants.O_SW,
-      EresseaConstants.O_W };
+  private static StringID directions[] = new StringID[] { EresseaConstants.OC_NW,
+      EresseaConstants.OC_NE, EresseaConstants.OC_E, EresseaConstants.OC_SE,
+      EresseaConstants.OC_SW, EresseaConstants.OC_W };
 
   protected void addDirections(String postfix) {
     ArrayList<List<String>> dirs = new ArrayList<List<String>>(6);
@@ -604,6 +564,10 @@ public abstract class AbstractOrderCompleter implements Completer {
           completions.add(new Completion(dirs.get(dir).get(i), dirs.get(dir).get(i), postfix));
         }
     }
+  }
+
+  protected void addDirection(String postfix, int dir) {
+    completions.add(new Completion(getOrderTranslation(directions[dir]), ""));
   }
 
   protected void addUnitLuxuries(String postfix) {

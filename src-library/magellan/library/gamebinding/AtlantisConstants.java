@@ -20,89 +20,89 @@ import magellan.library.StringID;
  */
 public class AtlantisConstants extends GameConstants {
   /** Order MAKE */
-  public static final StringID O_MAKE = StringID.create("MAKE");
+  public static final StringID OC_MAKE = StringID.create("MAKE");
 
   /** Order FORM */
-  public static final StringID O_FORM = StringID.create("FORM");
+  public static final StringID OC_FORM = StringID.create("FORM");
   /** Order ACCEPT */
-  public static final StringID O_ACCEPT = StringID.create("ACCEPT");
+  public static final StringID OC_ACCEPT = StringID.create("ACCEPT");
   /** Order ADDRESS */
-  public static final StringID O_ADDRESS = StringID.create("ADDRESS");
+  public static final StringID OC_ADDRESS = StringID.create("ADDRESS");
   /** Order ADMIT */
-  public static final StringID O_ADMIT = StringID.create("ADMIT");
+  public static final StringID OC_ADMIT = StringID.create("ADMIT");
   /** Order ALLY */
-  public static final StringID O_ALLY = StringID.create("ALLY");
+  public static final StringID OC_ALLY = StringID.create("ALLY");
   /** Order BEHIND */
-  public static final StringID O_BEHIND = StringID.create("BEHIND");
+  public static final StringID OC_BEHIND = StringID.create("BEHIND");
   /** Order COMBAT */
-  public static final StringID O_COMBAT = StringID.create("COMBAT");
+  public static final StringID OC_COMBAT = StringID.create("COMBAT");
   /** Order DISPLAY */
-  public static final StringID O_DISPLAY = StringID.create("DISPLAY");
+  public static final StringID OC_DISPLAY = StringID.create("DISPLAY");
   /** Order GUARD */
-  public static final StringID O_GUARD = StringID.create("GUARD");
+  public static final StringID OC_GUARD = StringID.create("GUARD");
   /** Order NAME */
-  public static final StringID O_NAME = StringID.create("NAME");
+  public static final StringID OC_NAME = StringID.create("NAME");
   /** Order PASSWORD */
-  public static final StringID O_PASSWORD = StringID.create("PASSWORD");
+  public static final StringID OC_PASSWORD = StringID.create("PASSWORD");
   /** Order RESHOW */
-  public static final StringID O_RESHOW = StringID.create("RESHOW");
+  public static final StringID OC_RESHOW = StringID.create("RESHOW");
   /** Order FIND */
-  public static final StringID O_FIND = StringID.create("FIND");
+  public static final StringID OC_FIND = StringID.create("FIND");
   /** Order BOARD */
-  public static final StringID O_BOARD = StringID.create("BOARD");
+  public static final StringID OC_BOARD = StringID.create("BOARD");
   /** Order ENTER */
-  public static final StringID O_ENTER = StringID.create("ENTER");
+  public static final StringID OC_ENTER = StringID.create("ENTER");
   /** Order LEAVE */
-  public static final StringID O_LEAVE = StringID.create("LEAVE");
+  public static final StringID OC_LEAVE = StringID.create("LEAVE");
   /** Order PROMOTE */
-  public static final StringID O_PROMOTE = StringID.create("PROMOTE");
+  public static final StringID OC_PROMOTE = StringID.create("PROMOTE");
   /** Order ATTACK */
-  public static final StringID O_ATTACK = StringID.create("ATTACK");
+  public static final StringID OC_ATTACK = StringID.create("ATTACK");
   /** Order DEMOLISH */
-  public static final StringID O_DEMOLISH = StringID.create("DEMOLISH");
+  public static final StringID OC_DEMOLISH = StringID.create("DEMOLISH");
   /** Order GIVE */
-  public static final StringID O_GIVE = StringID.create("GIVE");
+  public static final StringID OC_GIVE = StringID.create("GIVE");
   /** Order PAY */
-  public static final StringID O_PAY = StringID.create("PAY");
+  public static final StringID OC_PAY = StringID.create("PAY");
   /** Order SINK */
-  public static final StringID O_SINK = StringID.create("SINK");
+  public static final StringID OC_SINK = StringID.create("SINK");
   /** Order TRANSFER */
-  public static final StringID O_TRANSFER = StringID.create("TRANSFER");
+  public static final StringID OC_TRANSFER = StringID.create("TRANSFER");
   /** Order TAX */
-  public static final StringID O_TAX = StringID.create("TAX");
+  public static final StringID OC_TAX = StringID.create("TAX");
   /** Order RECRUIT */
-  public static final StringID O_RECRUIT = StringID.create("RECRUIT");
+  public static final StringID OC_RECRUIT = StringID.create("RECRUIT");
   /** Order QUIT */
-  public static final StringID O_QUIT = StringID.create("QUIT");
+  public static final StringID OC_QUIT = StringID.create("QUIT");
   /** Order MOVE */
-  public static final StringID O_MOVE = StringID.create("MOVE");
+  public static final StringID OC_MOVE = StringID.create("MOVE");
   /** Order SAIL */
-  public static final StringID O_SAIL = StringID.create("SAIL");
+  public static final StringID OC_SAIL = StringID.create("SAIL");
   /** Order BUILD */
-  public static final StringID O_BUILD = StringID.create("BUILD");
+  public static final StringID OC_BUILD = StringID.create("BUILD");
   /** Order ENTERTAIN */
-  public static final StringID O_ENTERTAIN = StringID.create("ENTERTAIN");
+  public static final StringID OC_ENTERTAIN = StringID.create("ENTERTAIN");
   /** Order PRODUCE */
-  public static final StringID O_PRODUCE = StringID.create("PRODUCE");
+  public static final StringID OC_PRODUCE = StringID.create("PRODUCE");
   /** Order RESEARCH */
-  public static final StringID O_RESEARCH = StringID.create("RESEARCH");
+  public static final StringID OC_RESEARCH = StringID.create("RESEARCH");
   /** Order STUDY */
-  public static final StringID O_STUDY = StringID.create("STUDY");
+  public static final StringID OC_STUDY = StringID.create("STUDY");
   /** Order TEACH */
-  public static final StringID O_TEACH = StringID.create("TEACH");
+  public static final StringID OC_TEACH = StringID.create("TEACH");
   /** Order WORK */
-  public static final StringID O_WORK = StringID.create("WORK");
+  public static final StringID OC_WORK = StringID.create("WORK");
   /** Order CAST */
-  public static final StringID O_CAST = StringID.create("CAST");
+  public static final StringID OC_CAST = StringID.create("CAST");
 
   /** Order constant UNIT */
-  public static final StringID O_UNIT = StringID.create("UNIT");
+  public static final StringID OC_UNIT = StringID.create("UNIT");
 
   /** Order constant END */
-  public static final StringID O_END = StringID.create("END");
+  public static final StringID OC_END = StringID.create("END");
 
   /** Order constant NEW */
-  public static final StringID O_NEW = StringID.create("NEW");
+  public static final StringID OC_NEW = StringID.create("NEW");
 
   /** The item silver */
   public static final StringID I_USILVER = StringID.create("Silber");

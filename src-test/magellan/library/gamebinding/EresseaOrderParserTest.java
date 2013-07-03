@@ -92,7 +92,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testCommentReader() {
-    checkOrder(EresseaConstants.OS_PCOMMENT);
+    checkOrder(EresseaConstants.O_PCOMMENT);
     checkOrder("//");
     checkOrder("// ");
     checkOrder("// HALLO");
@@ -114,7 +114,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testArbeiteReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_WORK));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_WORK));
     checkOrder("ARBEITE");
     checkOrder("ARBEITEN");
     checkOrder("arbeiten");
@@ -149,7 +149,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testAttackReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_ATTACK) + " 123");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_ATTACK) + " 123");
     checkOrder("ATTACKIERE 123");
     checkOrder("ATTACKIERE xyz");
     checkOrder("ATTACKIERE TEMP xyz"); // this is actually legal
@@ -164,7 +164,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBannerReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_BANNER) + "\"\"");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_BANNER) + "\"\"");
     checkOrder("BANNER  \"abc\"");
     checkOrder("BANNER  \"abc\"; bla");
     checkOrder("BANNER  'abc'");
@@ -177,7 +177,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBeansprucheReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_CLAIM) + " Sonnensegel");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_CLAIM) + " Sonnensegel");
     checkOrder("BEANSPRUCHE 2 Sonnensegel");
     checkOrder("BEANSPRUCHE \"Schönes Geschenk\"");
     checkOrder("BEANSPRUCHE Schönes~Geschenk");
@@ -192,7 +192,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBefoerderungReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_PROMOTION));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_PROMOTION));
     checkOrder("BEFÖRDERUNG");
     checkOrder("BEFÖRDER");
     checkOrder("BEFÖRDERUNG ;");
@@ -205,7 +205,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBeklaueReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_STEAL) + " 123");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_STEAL) + " 123");
     checkOrder("BEKLAUE 1");
     checkOrder("BEKLAUE abc;");
     checkOrder("BEKLAUE TEMP abc;"); // TODO is this legal?
@@ -221,7 +221,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBelagereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_SIEGE) + " burg");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_SIEGE) + " burg");
     checkOrder("BELAGERE burg");
     checkOrder("BELAGERE abc", false);
     checkOrder("BELAGERUNG burg", false);
@@ -236,7 +236,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBenenneReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_NAME) + " EINHEIT \"Foo\"");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_NAME) + " EINHEIT \"Foo\"");
     for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Gebäude", "Sägewerk",
         "SCHIFF", "REGION" }) {
       checkOrder("BENENNEN " + thing + " \"Foo\"");
@@ -282,7 +282,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBenutzeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_USE) + " Siebenmeilentee");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_USE) + " Siebenmeilentee");
     checkOrder("BENUTZEN Wasser~des~Lebens");
     checkOrder("BENUTZEN \"Wasser des Lebens\"");
     checkOrder("BENUTZEN 22 Wasser~des~Lebens");
@@ -299,7 +299,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBeschreibeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_DESCRIBE) + " EINHEIT \"Foo\"");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_DESCRIBE) + " EINHEIT \"Foo\"");
     for (String thing : new String[] { "EINHEIT", "PRIVAT", "BURG", "Sägewerk", "SCHIFF", "REGION" }) {
       checkOrder("BESCHREIBEN " + thing + " \"Foo\"");
       checkOrder("BESCHREIBE " + thing + " \"Foo\"; comment");
@@ -315,8 +315,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBetreteReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_ENTER) + " "
-        + getOrderTranslation(EresseaConstants.O_SHIP) + " ship");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_ENTER) + " "
+        + getOrderTranslation(EresseaConstants.OC_SHIP) + " ship");
     checkOrder("BetreteN BURG burg");
     checkOrder("BetreteN BURG burg; ");
     checkOrder("BetreteN BURG abc", true); // no such building
@@ -330,7 +330,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBewacheReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_GUARD));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_GUARD));
     checkOrder("BEWACHE");
     checkOrder("BEWACHE ; a");
     checkOrder("BEWACHE 2", false);
@@ -341,8 +341,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBotschaftReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_MESSAGE) + " "
-        + getOrderTranslation(EresseaConstants.O_REGION) + " \"hallo\"");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_MESSAGE) + " "
+        + getOrderTranslation(EresseaConstants.OC_REGION) + " \"hallo\"");
     for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Sägewerk", "SCHIFF", "REGION" }) {
       String nr = " abc ";
       if (thing.equals("REGION")) {
@@ -363,8 +363,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testDefaultReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_DEFAULT) + " "
-        + getOrderTranslation(EresseaConstants.O_WORK));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_DEFAULT) + " "
+        + getOrderTranslation(EresseaConstants.OC_WORK));
     checkOrder("DEFAULT \"ARBEITEN\"");
     checkOrder("DEFAULT 'ARBEITEN'");
     checkOrder("DEFAULT 'LERNEN Ausdauer'");
@@ -383,7 +383,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testEmailReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_EMAIL) + " \"a@b.com\"");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_EMAIL) + " \"a@b.com\"");
     checkOrder("EMAIL \'a@b.com\'");
     checkOrder("EMAIL \"123@456.com\"");
     checkOrder("EMAIL \"eressea-server@eressea.upb.de\"");
@@ -402,7 +402,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testEndeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_END));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_END));
     checkOrder("ENDE 123", false);
     checkOrder("ENDE \"123\"", false);
   }
@@ -412,7 +412,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testFahreReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_RIDE) + " zwei");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_RIDE) + " zwei");
     checkOrder("FAHREN zwei");
     checkOrder("FAHREN TEMP 456");
     checkOrder("FAHREN abc"); // invisible unit allowed
@@ -425,8 +425,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testFolgeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_FOLLOW) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT) + " zwei");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_FOLLOW) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT) + " zwei");
     checkOrder("FOLGEN SCHIFF ship");
     checkOrder("FOLGEN SCHIFF 123", false);
     checkOrder("FOLGEN SCHIFF TEMP 123", false);
@@ -440,8 +440,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testForscheReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
-        + getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_RESEARCH) + " "
+        + getOrderTranslation(EresseaConstants.OC_HERBS));
     checkOrder("FORSCHE", false);
     checkOrder("FORSCHE KRÄUTER 123", false);
   }
@@ -452,8 +452,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testSupplyReader() {
     // there is an undocumented supply order in Eressea
-    checkOrder(getOrderTranslation(EresseaConstants.O_SUPPLY) + " 123 "
-        + getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_SUPPLY) + " 123 "
+        + getOrderTranslation(EresseaConstants.OC_HERBS));
   }
 
   /**
@@ -461,8 +461,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testGibReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_GIVE) + " 123 "
-        + getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_GIVE) + " 123 "
+        + getOrderTranslation(EresseaConstants.OC_HERBS));
     checkOrder("GIB KRÄUTER", false);
     checkOrder("GIB abc \"KRÄUTER\"", false);
     checkOrder("GIB 123 KRÄUTER 123", false);
@@ -513,7 +513,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testGruppeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_GROUP));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_GROUP));
     checkOrder("GRUPPE abc");
     checkOrder("GRUPPE \"Die wilden Kerle\"");
     checkOrder("GRUPPE Hallo~Welt");
@@ -527,8 +527,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testHelfeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_HELP) + " 123 "
-        + getOrderTranslation(EresseaConstants.O_ALL));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_HELP) + " 123 "
+        + getOrderTranslation(EresseaConstants.OC_ALL));
     checkOrder("HELFE 123 ALLES NICHT");
     checkOrder("HELFEN 123 GIB");
     checkOrder("HELFEN 123 GIB NICHT");
@@ -550,7 +550,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testKaempfeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_COMBAT));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_COMBAT));
     checkOrder("KÄMPFE AGGRESSIV");
     checkOrder("KÄMPFE HINTEN");
     checkOrder("KÄMPFE DEFENSIV");
@@ -572,7 +572,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   public void testKampfzauberReader() {
     GameDataBuilder.addSpells(data);
 
-    checkOrder(getOrderTranslation(EresseaConstants.O_COMBATSPELL) + " Hagel");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_COMBATSPELL) + " Hagel");
     checkOrder("KAMPFZAUBER STUFE 2 Hagel");
     checkOrder("KAMPFZAUBER Hagel NICHT");
     checkOrder("KAMPFZAUBER STUFE 2 \"Großes Fest\"", false); // no combat spell
@@ -587,7 +587,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testKaufeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_BUY) + " 2 Balsam");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_BUY) + " 2 Balsam");
     checkOrder("KAUFE 2 Öl");
     checkOrder("KAUFE 2 Oel");
     checkOrder("KAUFE Weihrauch", false);
@@ -601,7 +601,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testKontaktiereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_CONTACT) + " 123");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_CONTACT) + " 123");
     checkOrder("KONTAKTIERE a");
     checkOrder("KONTAKTIERE TEMP a");
     checkOrder("KONTAKTIERE abc def", false);
@@ -614,7 +614,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testLehreReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_TEACH) + " abc");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_TEACH) + " abc");
     checkOrder("LEHRE abc 123 456 TEMP zyx");
     checkOrder("LEHRE abc Hiebwaffen", false);
     checkOrder("LEHRE", false);
@@ -626,7 +626,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testLerneReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_LEARN) + " Ausdauer");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_LEARN) + " Ausdauer");
     checkOrder("LERNE Hiebwaffen");
     checkOrder("LERNE \"Hiebwaffen\"");
     checkOrder("LERNE Waffenloser~Kampf");
@@ -643,7 +643,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testLocaleReader() {
     // this is a valid order, but not /inside/ a unit
-    checkOrder(getOrderTranslation(EresseaConstants.O_LOCALE), false);
+    checkOrder(getOrderTranslation(EresseaConstants.OC_LOCALE), false);
   }
 
   /**
@@ -651,7 +651,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testMacheReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_MAKE) + " TEMP 123");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_MAKE) + " TEMP 123");
     checkOrder("MACHE BURG");
     checkOrder("MACHE 2 BURG");
     checkOrder("MACHE BURG 123");
@@ -702,7 +702,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testNachReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_MOVE) + " westen");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_MOVE) + " westen");
     checkOrder("NACH o");
     checkOrder("NACH so");
     checkOrder("NACH sw");
@@ -728,7 +728,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testNeustartReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_RESTART) + " Trolle \"passwort\"");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_RESTART) + " Trolle \"passwort\"");
     checkOrder("NEUSTART Zwerge \"\"", false);
     checkOrder("NEUSTART Zwerge", false);
     checkOrder("NEUSTART", false);
@@ -739,7 +739,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testNummerReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_NUMBER) + " EINHEIT");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_NUMBER) + " EINHEIT");
     checkOrder("NUMMER EINHEIT 123");
     checkOrder("NUMMER PARTEI 123");
     checkOrder("NUMMER SCHIFF 123");
@@ -755,7 +755,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testOptionReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_OPTION) + " AUSWERTUNG");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_OPTION) + " AUSWERTUNG");
     checkOrder("OPTION PUNKTE NICHT");
     checkOrder("OPTION PUNKTE NICHT MEHR", false);
   }
@@ -765,7 +765,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testParteiReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_FACTION), false); // TODO???
+    checkOrder(getOrderTranslation(EresseaConstants.OC_FACTION), false); // TODO???
   }
 
   /**
@@ -773,7 +773,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testPasswortReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_PASSWORD) + " \"squiggy\"");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_PASSWORD) + " \"squiggy\"");
     checkOrder("PASSWORT", true);
     checkOrder("PASSWORT 123", false);
   }
@@ -783,8 +783,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testPflanzeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_PLANT) + " "
-        + getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_PLANT) + " "
+        + getOrderTranslation(EresseaConstants.OC_HERBS));
     checkOrder("PFLANZE BÄUME");
     checkOrder("PFLANZE MALLOrnSamen");
     checkOrder("PFLANZE SAMEN");
@@ -804,7 +804,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testPiraterieReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_PIRACY));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_PIRACY));
   }
 
   /**
@@ -812,7 +812,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testPraefixReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_PREFIX));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_PREFIX));
     checkOrder("PRÄFIX Nebel");
     checkOrder("PRÄFIX Blubb"); // do not currently test for allowed prefixes
     checkOrder("PRÄFIX Bla blubb", false);
@@ -825,10 +825,10 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testRegionReader() {
     // this is a valid order, but not /inside/ a unit
-    checkOrder(getOrderTranslation(EresseaConstants.O_REGION) + " 1,1", false);
+    checkOrder(getOrderTranslation(EresseaConstants.OC_REGION) + " 1,1", false);
     // FIXME read comma'd coordinate
     /*
-     * checkOrder(getOrderTranslation(EresseaConstants.O_REGION) + " 1,1"); checkOrder("REGION",
+     * checkOrder(getOrderTranslation(EresseaConstants.OC_REGION) + " 1,1"); checkOrder("REGION",
      * false); checkOrder("REGION 1 3", false); checkOrder("REGION 123", false);
      * checkOrder("REGION abc,def", false);
      */
@@ -839,7 +839,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testRekrutiereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_RECRUIT) + " 1");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_RECRUIT) + " 1");
     checkOrder("REKRUTIERE 5");
     checkOrder("REKRUTIERE 0", true); // TODO should we return false here?
     checkOrder("REKRUTIERE", false);
@@ -852,7 +852,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testReserviereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_RESERVE) + " 1 "
+    checkOrder(getOrderTranslation(EresseaConstants.OC_RESERVE) + " 1 "
         + data.rules.getItemType(EresseaConstants.I_USILVER).getName());
     checkOrder("RESERVIEREN ALLES Holz");
     checkOrder("RESERVIERE 2 Silber");
@@ -874,8 +874,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testRouteReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_ROUTE) + " "
-        + getOrderTranslation(EresseaConstants.O_NE));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_ROUTE) + " "
+        + getOrderTranslation(EresseaConstants.OC_NE));
     checkOrder("ROUTE o");
     checkOrder("ROUTE so");
     checkOrder("ROUTE sw");
@@ -902,8 +902,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testSortiereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_SORT) + " "
-        + getOrderTranslation(EresseaConstants.O_BEFORE) + " " + "123");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_SORT) + " "
+        + getOrderTranslation(EresseaConstants.OC_BEFORE) + " " + "123");
     checkOrder("SORTIERE VOR abc");
     checkOrder("SORTIERE HINTER abc");
     checkOrder("SORTIERE VOR ", false);
@@ -919,7 +919,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testSpioniereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_SPY) + " abc");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_SPY) + " abc");
     checkOrder("SPIONIERE 123");
     checkOrder("SPIONIERE 123 123", false);
     checkOrder("SPIONIERE", false);
@@ -931,7 +931,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testStirbReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_QUIT) + " \"abc\"");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_QUIT) + " \"abc\"");
     checkOrder("STIRB", false);
     checkOrder("STIRB 123", false);
   }
@@ -941,7 +941,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testTarneReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_HIDE));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_HIDE));
     checkOrder("TARNE 0");
     checkOrder("TARNE 1");
     checkOrder("TARNE NICHT", false);
@@ -954,7 +954,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testTransportiereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_CARRY) + " zwei");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_CARRY) + " zwei");
     checkOrder("TRANSPORTIERE zwei NICHT", false);
     checkOrder("TRANSPORTIERE NICHT", false);
     checkOrder("TRANSPORTIERE zwei zwei", false);
@@ -965,7 +965,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testTreibeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_TAX));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_TAX));
   }
 
   /**
@@ -973,7 +973,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testUnterhalteReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_ENTERTAIN));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_ENTERTAIN));
   }
 
   /**
@@ -981,7 +981,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testUrsprungReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_ORIGIN) + " 1 1");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_ORIGIN) + " 1 1");
     checkOrder("URSPRUNG 1", false);
     checkOrder("URSPRUNG 1 2 3", false);
     checkOrder("URSPRUNG 2,3", false);
@@ -993,7 +993,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testVergesseReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_FORGET) + " Hiebwaffen");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_FORGET) + " Hiebwaffen");
     checkOrder("VERGESSE", false);
     checkOrder("VERGESSE Tuten", false);
     checkOrder("VERGESSE Hiebwaffen Ausdauer", false);
@@ -1004,7 +1004,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testVerkaufeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_SELL) + " 1 Balsam");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_SELL) + " 1 Balsam");
     checkOrder("VERKAUFE ALLES Balsam");
     checkOrder("VERKAUFE Balsam", false);
     checkOrder("VERKAUFE 2 3 Balsam", false);
@@ -1017,7 +1017,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testFinalKeywordReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_LEAVE));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_LEAVE));
   }
 
   /**
@@ -1027,7 +1027,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   public void testZaubereReader() {
     GameDataBuilder.addSpells(data);
 
-    checkOrder(getOrderTranslation(EresseaConstants.O_CAST) + " \"Großes Fest\"");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_CAST) + " \"Großes Fest\"");
 
     checkOrder("ZAUBERE STUFE 2 Schild zwei");
     checkOrder("ZAUBERE STUFE 2 \"Großes Fest\"");
@@ -1045,7 +1045,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testZeigeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_SHOW) + " Schild");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_SHOW) + " Schild");
     checkOrder("ZEIGE ALLES ZAUBER");
     checkOrder("ZEIGE ALLES Tränke");
     checkOrder("ZEIGE Zwerg");
@@ -1058,7 +1058,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testZerstoereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_DESTROY));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_DESTROY));
   }
 
   /**
@@ -1066,7 +1066,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testZuechteReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_GROW) + " PFERDE");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_GROW) + " PFERDE");
     checkOrder("ZÜCHTE KRÄUTER");
     checkOrder("ZÜCHTE 2 KRÄUTER");
     checkOrder("ZÜCHTE 2", false);
@@ -1080,7 +1080,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testSabotiereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_SABOTAGE) + " SCHIFF");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_SABOTAGE) + " SCHIFF");
     checkOrder("SABOTIERE", false);
     checkOrder("SABOTIERE SCHIFF ship", false);
   }

@@ -82,12 +82,12 @@ public class MagellanOrdersImplementation implements Orders {
 
       // FIXME game specific!
       if (false == tempBlock) {
-        if (t.equalsToken(getOrderTranslation(EresseaConstants.O_MAKE))) {
+        if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_MAKE))) {
           t = ct.next();
 
           if (OrderToken.TT_EOC == t.ttype) {
             continue;
-          } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_TEMP))) {
+          } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_TEMP))) {
             tempBlock = true;
 
             continue;
@@ -117,7 +117,7 @@ public class MagellanOrdersImplementation implements Orders {
           continue;
         }
       } else {
-        if (t.equalsToken(getOrderTranslation(EresseaConstants.O_END))) {
+        if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_END))) {
           tempBlock = false;
 
           continue;

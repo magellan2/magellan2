@@ -360,7 +360,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
     // Region, if is far
     if (isFar) {
-      retVal.append("[").append(getOrderTranslation(EresseaConstants.O_REGION)).append(" X Y]");
+      retVal.append("[").append(getOrderTranslation(EresseaConstants.OC_REGION)).append(" X Y]");
     }
 
     // Level...allways possible, but not allways usefull
@@ -379,7 +379,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
     // and maybe we can use this kwowledge for open problems to we
     // built an little private function here
     if (isAuraLevelDependend()) {
-      retVal.append("[").append(getOrderTranslation(EresseaConstants.O_LEVEL)).append(" n]");
+      retVal.append("[").append(getOrderTranslation(EresseaConstants.OC_LEVEL)).append(" n]");
     }
 
     // name of spell in "
@@ -407,11 +407,11 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
       StringBuffer oldRetVal = retVal;
       retVal = new StringBuffer("Syntax: ");
       if (getType() == null) {
-        retVal.append(getOrderTranslation(EresseaConstants.O_COMBATSPELL)).append("?");
+        retVal.append(getOrderTranslation(EresseaConstants.OC_COMBATSPELL)).append("?");
       } else if (getType().contains("combat")) {
-        retVal.append(getOrderTranslation(EresseaConstants.O_COMBATSPELL));
+        retVal.append(getOrderTranslation(EresseaConstants.OC_COMBATSPELL));
       } else {
-        retVal.append(getOrderTranslation(EresseaConstants.O_CAST));
+        retVal.append(getOrderTranslation(EresseaConstants.OC_CAST));
       }
 
       retVal.append(" ").append(oldRetVal.toString());

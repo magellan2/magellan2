@@ -63,79 +63,79 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     clearCommandMap();
 
     // WORK
-    addCommand(AtlantisConstants.O_WORK, new WorkReader(this));
+    addCommand(AtlantisConstants.OC_WORK, new WorkReader(this));
     // FORM u1
-    addCommand(AtlantisConstants.O_FORM, new FormReader(this));
+    addCommand(AtlantisConstants.OC_FORM, new FormReader(this));
     // ACCEPT f1
-    addCommand(AtlantisConstants.O_ACCEPT, new AcceptReader(this));
+    addCommand(AtlantisConstants.OC_ACCEPT, new AcceptReader(this));
     // ADDRESS Address
-    addCommand(AtlantisConstants.O_ADDRESS, new AddressReader(this));
+    addCommand(AtlantisConstants.OC_ADDRESS, new AddressReader(this));
     // ADMIT f1
-    addCommand(AtlantisConstants.O_ADMIT, new AdmitReader(this));
+    addCommand(AtlantisConstants.OC_ADMIT, new AdmitReader(this));
     // ALLY f1 01
-    addCommand(AtlantisConstants.O_ALLY, new AllyReader(this));
+    addCommand(AtlantisConstants.OC_ALLY, new AllyReader(this));
     // BEHIND 01
-    addCommand(AtlantisConstants.O_BEHIND, new BehindReader(this));
+    addCommand(AtlantisConstants.OC_BEHIND, new BehindReader(this));
     // COMBAT spell
-    addCommand(AtlantisConstants.O_COMBAT, new CombatReader(this));
+    addCommand(AtlantisConstants.OC_COMBAT, new CombatReader(this));
     // DISPLAY (UNIT | BUILDING SHIP) string
-    addCommand(AtlantisConstants.O_DISPLAY, new DisplayReader(this));
+    addCommand(AtlantisConstants.OC_DISPLAY, new DisplayReader(this));
     // GUARD 01
-    addCommand(AtlantisConstants.O_GUARD, new GuardReader(this));
+    addCommand(AtlantisConstants.OC_GUARD, new GuardReader(this));
     // NAME (FACTION | UNIT | BUILDING | SHIP) name
-    addCommand(AtlantisConstants.O_NAME, new NameReader(this));
+    addCommand(AtlantisConstants.OC_NAME, new NameReader(this));
     // PASSWORD password
-    addCommand(AtlantisConstants.O_PASSWORD, new PasswordReader(this));
+    addCommand(AtlantisConstants.OC_PASSWORD, new PasswordReader(this));
     // RESHOW spell
-    addCommand(AtlantisConstants.O_RESHOW, new ReshowReader(this));
+    addCommand(AtlantisConstants.OC_RESHOW, new ReshowReader(this));
     // FIND f1
-    addCommand(AtlantisConstants.O_FIND, new FindReader(this));
+    addCommand(AtlantisConstants.OC_FIND, new FindReader(this));
     // BOARD s1
-    addCommand(AtlantisConstants.O_BOARD, new BoardReader(this));
+    addCommand(AtlantisConstants.OC_BOARD, new BoardReader(this));
     // ENTER b1
-    addCommand(AtlantisConstants.O_ENTER, new EnterReader(this));
+    addCommand(AtlantisConstants.OC_ENTER, new EnterReader(this));
     // LEAVE
-    addCommand(AtlantisConstants.O_LEAVE, new LeaveReader(this));
+    addCommand(AtlantisConstants.OC_LEAVE, new LeaveReader(this));
     // PROMOTE u1
-    addCommand(AtlantisConstants.O_PROMOTE, new PromoteReader(this));
+    addCommand(AtlantisConstants.OC_PROMOTE, new PromoteReader(this));
     // ATTACK (u1 | PEASANTS)
-    addCommand(AtlantisConstants.O_ATTACK, new AttackReader(this));
+    addCommand(AtlantisConstants.OC_ATTACK, new AttackReader(this));
     // DEMOLISH
-    addCommand(AtlantisConstants.O_DEMOLISH, new DemolishReader(this));
+    addCommand(AtlantisConstants.OC_DEMOLISH, new DemolishReader(this));
     // GIVE u1 1 item
-    addCommand(AtlantisConstants.O_GIVE, new GiveReader(this));
+    addCommand(AtlantisConstants.OC_GIVE, new GiveReader(this));
     // PAY u1 1
-    addCommand(AtlantisConstants.O_PAY, new PayReader(this));
+    addCommand(AtlantisConstants.OC_PAY, new PayReader(this));
     // SINK
-    addCommand(AtlantisConstants.O_SINK, new SinkReader(this));
+    addCommand(AtlantisConstants.OC_SINK, new SinkReader(this));
     // TRANSFER (u1 | PEASANTS) 1
-    addCommand(AtlantisConstants.O_TRANSFER, new TransferReader(this));
+    addCommand(AtlantisConstants.OC_TRANSFER, new TransferReader(this));
     // TAX
-    addCommand(AtlantisConstants.O_TAX, new TaxReader(this));
+    addCommand(AtlantisConstants.OC_TAX, new TaxReader(this));
     // RECRUIT 1
-    addCommand(AtlantisConstants.O_RECRUIT, new RecruitReader(this));
+    addCommand(AtlantisConstants.OC_RECRUIT, new RecruitReader(this));
     // QUIT password
-    addCommand(AtlantisConstants.O_QUIT, new QuitReader(this));
+    addCommand(AtlantisConstants.OC_QUIT, new QuitReader(this));
     // MOVE (N | W | M | S | W | Y)
-    addCommand(AtlantisConstants.O_MOVE, new MoveReader(this));
+    addCommand(AtlantisConstants.OC_MOVE, new MoveReader(this));
     // SAIL (N | W | M | S | W | Y)
-    addCommand(AtlantisConstants.O_SAIL, new SailReader(this));
+    addCommand(AtlantisConstants.OC_SAIL, new SailReader(this));
     // BUILD (BUILDING [b1]) | (SHIP [s1|type])
-    addCommand(AtlantisConstants.O_BUILD, new BuildReader(this));
+    addCommand(AtlantisConstants.OC_BUILD, new BuildReader(this));
     // ENTERTAIN
-    addCommand(AtlantisConstants.O_ENTERTAIN, new EntertainReader(this));
+    addCommand(AtlantisConstants.OC_ENTERTAIN, new EntertainReader(this));
     // PRODUCE item
-    addCommand(AtlantisConstants.O_PRODUCE, new ProduceReader(this));
+    addCommand(AtlantisConstants.OC_PRODUCE, new ProduceReader(this));
     // RESEARCH [1]
-    addCommand(AtlantisConstants.O_RESEARCH, new ResearchReader(this));
+    addCommand(AtlantisConstants.OC_RESEARCH, new ResearchReader(this));
     // STUDY skill
-    addCommand(AtlantisConstants.O_STUDY, new StudyReader(this));
+    addCommand(AtlantisConstants.OC_STUDY, new StudyReader(this));
     // TEACH u1+
-    addCommand(AtlantisConstants.O_TEACH, new TeachReader(this));
+    addCommand(AtlantisConstants.OC_TEACH, new TeachReader(this));
     // WORK
-    addCommand(AtlantisConstants.O_WORK, new WorkReader(this));
+    addCommand(AtlantisConstants.OC_WORK, new WorkReader(this));
     // CAST spell
-    addCommand(AtlantisConstants.O_CAST, new CastReader(this));
+    addCommand(AtlantisConstants.OC_CAST, new CastReader(this));
 
   }
 
@@ -718,7 +718,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
   @Override
   protected StringID getTemp() {
-    return AtlantisConstants.O_NEW;
+    return AtlantisConstants.OC_NEW;
   }
 
 }

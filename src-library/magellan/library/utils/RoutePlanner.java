@@ -64,9 +64,9 @@ public class RoutePlanner {
     // the movement command
     String localCommand;
     if ((mode & MODE_CONTINUOUS) > 0) {
-      localCommand = getOrderTranslation(EresseaConstants.O_ROUTE);
+      localCommand = getOrderTranslation(EresseaConstants.OC_ROUTE);
     } else {
-      localCommand = getOrderTranslation(EresseaConstants.O_MOVE);
+      localCommand = getOrderTranslation(EresseaConstants.OC_MOVE);
     }
     StringBuilder order = new StringBuilder();
     order.append(localCommand).append(" ");
@@ -95,18 +95,18 @@ public class RoutePlanner {
               order.append(closing);
               orders.add(order.toString());
               order =
-                  new StringBuilder(EresseaConstants.OS_PCOMMENT).append(" #after ").append(
+                  new StringBuilder(EresseaConstants.O_PCOMMENT).append(" #after ").append(
                       orders.size() - size).append(" { ").append(localCommand).append(" ");
               closing = "}";
             } else {
               if ((mode & MODE_CONTINUOUS) > 0) { // FIXME
                 // insert PAUSE
-                order.append(getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
+                order.append(getOrderTranslation(EresseaConstants.OC_PAUSE)).append(" ");
               } else {
                 // add new NACH order as comment
                 orders.add(order.toString());
                 order =
-                    new StringBuilder(EresseaConstants.OS_PCOMMENT).append(" ")
+                    new StringBuilder(EresseaConstants.O_PCOMMENT).append(" ")
                         .append(localCommand).append(" ");
               }
             }
@@ -124,9 +124,9 @@ public class RoutePlanner {
     // add last order
     if ((mode & MODE_CONTINUOUS) > 0) {
       // add PAUSE at end
-      order.append(getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
+      order.append(getOrderTranslation(EresseaConstants.OC_PAUSE)).append(" ");
       if ((mode & MODE_STOP) > 0) {
-        order.append(getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
+        order.append(getOrderTranslation(EresseaConstants.OC_PAUSE)).append(" ");
       }
       order.append(closing);
       orders.add(order.toString());

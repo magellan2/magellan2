@@ -612,7 +612,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     SimpleOrder result = reader.getOrder();
 
     if (firstToken.ttype == OrderToken.TT_PERSIST) {
-      if (t.getText().trim().startsWith(EresseaConstants.OS_COMMENT) && reader == emptyReader) {
+      if (t.getText().trim().startsWith(EresseaConstants.O_COMMENT) && reader == emptyReader) {
         result.setValid(false);
       }
     }
@@ -896,7 +896,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     }
 
     return (tempAllowed || !token.getText().toLowerCase().startsWith(
-        getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase()))
+        getOrderTranslation(EresseaConstants.OC_TEMP).toLowerCase()))
         && checkFinal(t);
   }
 

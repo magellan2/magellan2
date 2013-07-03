@@ -145,7 +145,7 @@ public class GiveOrder extends UnitArgumentOrder {
     if (!isValid())
       return;
 
-    if (unit instanceof TempUnit && type != EresseaConstants.O_CONTROL) {
+    if (unit instanceof TempUnit && type != EresseaConstants.OC_CONTROL) {
       setWarning(unit, line, Resources.get("order.give.warning.temp"));
       return;
     }
@@ -155,7 +155,7 @@ public class GiveOrder extends UnitArgumentOrder {
     Unit zeroOrTarget;
     if (tUnit == null) {
       zeroOrTarget = unit.getRegion().getZeroUnit();
-      if (type == EresseaConstants.O_CONTROL || type == EresseaConstants.O_UNIT) {
+      if (type == EresseaConstants.OC_CONTROL || type == EresseaConstants.OC_UNIT) {
         setProblem(ProblemFactory.createProblem(Severity.WARNING,
             OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_UNKNOWN_TARGET_SPECIAL.type, unit,
             null, Resources.get("order.give.warning.unknowntarget", target), line));
@@ -180,7 +180,7 @@ public class GiveOrder extends UnitArgumentOrder {
       EresseaExecutionState eState = (EresseaExecutionState) state;
 
       if (!unit.equals(tUnit)) {
-        if (type == EresseaConstants.O_CONTROL) {
+        if (type == EresseaConstants.OC_CONTROL) {
           if (target.intValue() == 0) {
             setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
           } else {
@@ -192,14 +192,14 @@ public class GiveOrder extends UnitArgumentOrder {
             }
             rel.add();
           }
-        } else if (type == EresseaConstants.O_UNIT) {
+        } else if (type == EresseaConstants.OC_UNIT) {
           if (target.intValue() == 0) {
             setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
           } else {
             UnitRelation rel = new UnitTransferRelation(unit, zeroOrTarget, unit.getRace(), line);
             rel.add();
           }
-        } else if (type == EresseaConstants.O_MEN) {
+        } else if (type == EresseaConstants.OC_MEN) {
           PersonTransferRelation rel =
               new PersonTransferRelation(unit, zeroOrTarget, -1, unit.getRace(), line);
 
@@ -211,7 +211,7 @@ public class GiveOrder extends UnitArgumentOrder {
           }
 
           rel.add();
-        } else if (type == EresseaConstants.O_HERBS) {
+        } else if (type == EresseaConstants.OC_HERBS) {
           // create relations for all herbs the unit carries
           ItemCategory herbCategory = data.rules.getItemCategory(StringID.create(("HERBS")));
 
@@ -250,7 +250,7 @@ public class GiveOrder extends UnitArgumentOrder {
             }
           }
 
-        } else if (type == EresseaConstants.O_GIVE) {
+        } else if (type == EresseaConstants.OC_GIVE) {
 
           if (itemType != null) {
             if (EresseaConstants.I_UPEASANT.equals(itemType.getID())) {

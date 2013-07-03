@@ -219,7 +219,7 @@ public class OrderWriter {
       }
 
       stream.write(world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(),
-          EresseaConstants.O_REGION));
+          EresseaConstants.OC_REGION));
       writeln(stream, " " + r.getID().toString(",") + " ; " + r.getName());
       writeln(stream, "; " + world.getGameSpecificStuff().getOrderWriter().getCheckerName()
           + " Lohn " + r.getWage());
@@ -240,7 +240,7 @@ public class OrderWriter {
     if (unit instanceof TempUnit)
       return false;
 
-    stream.write(getOrderTranslation(EresseaConstants.O_UNIT) + " " + unit.getID().toString());
+    stream.write(getOrderTranslation(EresseaConstants.OC_UNIT) + " " + unit.getID().toString());
 
     if (addECheckComments) {
       int money = 0;
@@ -288,7 +288,7 @@ public class OrderWriter {
 
     // confirmed?
     if (unit.isOrdersConfirmed() && !removeSCComments) {
-      writeln(stream, EresseaConstants.OS_COMMENT + OrderWriter.CONFIRMED);
+      writeln(stream, EresseaConstants.O_COMMENT + OrderWriter.CONFIRMED);
     }
 
     writeOrders(unit.getCompleteOrders(writeUnitTagsAsVorlageComment), stream);
@@ -300,8 +300,8 @@ public class OrderWriter {
     for (Order cmd : cmds) {
       if (!cmd.isEmpty()
           && ((removeSCComments && cmd.getToken(0).getText()
-              .startsWith(EresseaConstants.OS_COMMENT)) || (removeSSComments && cmd.getToken(0)
-              .getText().startsWith(EresseaConstants.OS_PCOMMENT)))) {
+              .startsWith(EresseaConstants.O_COMMENT)) || (removeSSComments && cmd.getToken(0)
+              .getText().startsWith(EresseaConstants.O_PCOMMENT)))) {
         // consume
       } else {
         writeln(stream, cmd.getText());
@@ -310,7 +310,7 @@ public class OrderWriter {
   }
 
   private void writeFooter(BufferedWriter stream) throws IOException {
-    writeln(stream, getOrderTranslation(EresseaConstants.O_NEXT));
+    writeln(stream, getOrderTranslation(EresseaConstants.OC_NEXT));
   }
 
   private Collection<Unit> filterUnits(Collection<Unit> units) {

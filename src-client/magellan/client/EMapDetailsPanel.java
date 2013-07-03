@@ -5875,11 +5875,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
           if (each)
             return getGameSpecificStuff().getOrderChanger().getOrder(locale,
-                EresseaConstants.O_RESERVE, EresseaConstants.O_EACH, amount,
-                reserveRelation.itemType);
+                EresseaConstants.OC_RESERVE,
+                new Object[] { EresseaConstants.OC_EACH, amount, reserveRelation.itemType });
           else
             return getGameSpecificStuff().getOrderChanger().getOrder(locale,
-                EresseaConstants.O_RESERVE, amount, reserveRelation.itemType);
+                EresseaConstants.OC_RESERVE, new Object[] { amount, reserveRelation.itemType });
 
         }
       }
@@ -5960,13 +5960,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                   .getOrderLocale();
 
           if (each)
-            return getGameSpecificStuff().getOrderChanger().getOrder(locale,
-                EresseaConstants.O_GIVE, transferRelation.target.getID(), EresseaConstants.O_EACH,
-                amount, transferRelation.itemType);
+            return getGameSpecificStuff().getOrderChanger().getOrder(
+                locale,
+                EresseaConstants.OC_GIVE,
+                new Object[] { transferRelation.target.getID(), EresseaConstants.OC_EACH, amount,
+                    transferRelation.itemType });
           else
-            return getGameSpecificStuff().getOrderChanger().getOrder(locale,
-                EresseaConstants.O_GIVE, transferRelation.target.getID(), amount,
-                transferRelation.itemType);
+            return getGameSpecificStuff().getOrderChanger()
+                .getOrder(
+                    locale,
+                    EresseaConstants.OC_GIVE,
+                    new Object[] { transferRelation.target.getID(), amount,
+                        transferRelation.itemType });
 
         }
       }

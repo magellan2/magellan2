@@ -880,7 +880,7 @@ public class UnitContextMenu extends JPopupMenu {
           continue;
         }
 
-        if (orders.isToken(order, 0, EresseaConstants.O_TEACH)) {
+        if (orders.isToken(order, 0, EresseaConstants.OC_TEACH)) {
           String newTeachOrder = pruneOrder(order, id);
           teacher.removeOrderAt(i);
           if (newTeachOrder != null) {

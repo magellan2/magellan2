@@ -52,6 +52,8 @@ import magellan.library.utils.logging.Logger;
 public class AtlantisOrderChanger implements OrderChanger {
   private static final Logger log = Logger.getInstance(AtlantisOrderChanger.class);
 
+  private static final Object[] EMPTY = new Object[0];
+
   private Rules rules;
 
   protected AtlantisOrderChanger(Rules rules) {
@@ -100,7 +102,7 @@ public class AtlantisOrderChanger implements OrderChanger {
 
   public void addRecruitOrder(Unit u, int amount) {
     String order =
-        getOrderTranslation(AtlantisConstants.O_RECRUIT, u) + " " + String.valueOf(amount);
+        getOrderTranslation(AtlantisConstants.OC_RECRUIT, u) + " " + String.valueOf(amount);
     u.addOrder(order);
   }
 
@@ -111,7 +113,7 @@ public class AtlantisOrderChanger implements OrderChanger {
     Item sourceItem = new Item(new ItemType(StringID.create("unknown")), 1);
     if (item != null) {
       if (item.equals(EresseaConstants.I_MEN)) {
-        tmpOrders = getOrder(locale, AtlantisConstants.O_TRANSFER, target.getID(), locale);
+        tmpOrders = getOrder(locale, AtlantisConstants.OC_TRANSFER, target.getID(), locale);
       } else {
         ItemType itemType = getRules().getItemType(item);
         if (itemType == null) {
@@ -130,13 +132,13 @@ public class AtlantisOrderChanger implements OrderChanger {
     } else {
       if (item.equals(AtlantisConstants.I_USILVER)) {
         tmpOrders =
-            getOrder(locale, AtlantisConstants.O_PAY, target.getID(), (amount < 0 ? target
+            getOrder(locale, AtlantisConstants.OC_PAY, target.getID(), (amount < 0 ? target
                 .getPersons()
                 * amount : (amount == OrderChanger.ALL ? (sourceItem == null ? 0 : sourceItem
                 .getAmount()) : amount)), (comment != null ? ("; " + comment) : ""));
       } else {
         tmpOrders =
-            getOrder(locale, AtlantisConstants.O_GIVE, target.getID(), (amount < 0 ? target
+            getOrder(locale, AtlantisConstants.OC_GIVE, target.getID(), (amount < 0 ? target
                 .getPersons()
                 * amount : (amount == OrderChanger.ALL ? (sourceItem == null ? 0 : sourceItem
                 .getAmount()) : amount)), sItem, (comment != null ? ("; " + comment) : ""));
@@ -194,7 +196,15 @@ public class AtlantisOrderChanger implements OrderChanger {
   }
 
   protected String getTemp(Locale locale) {
-    return getOrder(locale, AtlantisConstants.O_NEW);
+    return getOrder(locale, AtlantisConstants.OC_NEW);
+  }
+
+  public String getOrder(Locale orderLocale, StringID orderId) {
+    try {
+      return getOrder(orderId, orderLocale, EMPTY);
+    } catch (RulesException e) {
+      return orderId.toString();
+    }
   }
 
   public String getOrder(Locale orderLocale, StringID orderId, Object... args) {
@@ -203,6 +213,10 @@ public class AtlantisOrderChanger implements OrderChanger {
     } catch (RulesException e) {
       return orderId.toString();
     }
+  }
+
+  public String getOrder(StringID orderId, Locale orderLocale) throws RulesException {
+    return getOrder(orderId, orderLocale, EMPTY);
   }
 
   public String getOrder(StringID orderId, Locale orderLocale, Object... args)
@@ -264,9 +278,9 @@ public class AtlantisOrderChanger implements OrderChanger {
                   tempUnit.setSortIndex(++tempSortIndex);
                   if (line.size() > 4) {
                     tempUnit.addOrders(Collections.singleton(getOrderTranslation(
-                        AtlantisConstants.O_NAME, unit)
+                        AtlantisConstants.OC_NAME, unit)
                         + " "
-                        + getOrderTranslation(AtlantisConstants.O_UNIT, unit)
+                        + getOrderTranslation(AtlantisConstants.OC_UNIT, unit)
                         + " "
                         + line.getToken(3).getText()), false);
                   }
@@ -283,7 +297,7 @@ public class AtlantisOrderChanger implements OrderChanger {
               neworders.add(line);
             }
           } else {
-            if (ordersObject.isToken(line, 0, AtlantisConstants.O_END)) {
+            if (ordersObject.isToken(line, 0, AtlantisConstants.OC_END)) {
               tempUnit = null;
             } else {
               scanTempOrder(tempUnit, line);
@@ -298,7 +312,7 @@ public class AtlantisOrderChanger implements OrderChanger {
 
   private final boolean isTempUnitOrder(Order line, Orders ordersObject, Unit unit) {
     if (line.getProblem() == null && !line.isEmpty()
-        && ordersObject.isToken(line, 0, AtlantisConstants.O_FORM))
+        && ordersObject.isToken(line, 0, AtlantisConstants.OC_FORM))
       return true;
     return false;
   }
@@ -342,7 +356,7 @@ public class AtlantisOrderChanger implements OrderChanger {
     final Locale locale = unit.getLocale();
 
     for (TempUnit u : unit.tempUnits()) {
-      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.O_MAKE, u.getID()), locale));
+      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.OC_MAKE, u.getID()), locale));
 
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
@@ -359,7 +373,7 @@ public class AtlantisOrderChanger implements OrderChanger {
         }
       }
 
-      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.O_END), locale));
+      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.OC_END), locale));
     }
 
     return cmds;

@@ -41,7 +41,7 @@ public class E3APostProcessor extends EresseaPostProcessor {
     // try {
     // fightState =
     // data.rules.getAllianceCategory(
-    // Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT)).getBitMask();
+    // Resources.getOrderTranslation(EresseaConstants.OC_HELP_COMBAT)).getBitMask();
     // } catch (NullPointerException e) {
     // // TODO (stm) I think I found the bug that caused this, but leave it here for now...
     // E3APostProcessor.log.error("postProcess " + e);

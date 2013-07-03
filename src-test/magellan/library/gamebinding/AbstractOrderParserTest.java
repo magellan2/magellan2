@@ -76,9 +76,9 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
   public void testInitCommands() {
     assertSame(61, getParser().getCommands().size());
     assertSame(61, getParser().getHandlers().size());
-    assertTrue(getParser().getCommands().contains(EresseaConstants.O_WORK));
-    assertTrue(getParser().getCommands().contains(EresseaConstants.O_DESTROY));
-    assertTrue(getParser().getCommands().contains(EresseaConstants.O_SABOTAGE));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.OC_WORK));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.OC_DESTROY));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.OC_SABOTAGE));
   }
 
   /**

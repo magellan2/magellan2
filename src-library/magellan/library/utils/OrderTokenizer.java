@@ -76,14 +76,14 @@ public class OrderTokenizer {
           retVal = new OrderToken("@", in.getPos() - 1, in.getPos(), OrderToken.TT_PERSIST, false);
         } else if (c == '"' || c == '\'') {
           retVal = readQuote(c);
-        } else if (c == ';') { // FIXME doesn't use EresseaConstants.O_COMMENT
+        } else if (c == ';') { // FIXME doesn't use EresseaConstants.OC_COMMENT
           retVal = readSCComment();
         } else if ((c == '\r') || (c == '\n')) {
           retVal = new OrderToken(OrderToken.TT_EOC);
         } else {
           in.unread(c);
           retVal = readWord();
-          if (isFirstToken && retVal.getText().equals(EresseaConstants.OS_PCOMMENT)) {
+          if (isFirstToken && retVal.getText().equals(EresseaConstants.O_PCOMMENT)) {
             retVal = readSSComment(retVal);
           }
         }
@@ -176,7 +176,7 @@ public class OrderTokenizer {
    * @throws IOException DOCUMENT-ME
    */
   protected OrderToken readSCComment() throws IOException {
-    StringBuffer sb = new StringBuffer(EresseaConstants.OS_COMMENT);
+    StringBuffer sb = new StringBuffer(EresseaConstants.O_COMMENT);
     int c = 0;
     int start = in.getPos() - 1;
 
@@ -200,7 +200,7 @@ public class OrderTokenizer {
    * @throws IOException DOCUMENT-ME
    */
   protected OrderToken readSSComment(OrderToken retVal2) throws IOException {
-    StringBuffer sb = new StringBuffer(EresseaConstants.OS_PCOMMENT);
+    StringBuffer sb = new StringBuffer(EresseaConstants.O_PCOMMENT);
     int start = in.getPos() - (retVal2.followedBySpace() ? 2 : 3);
     int c;
 

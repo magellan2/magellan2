@@ -34,15 +34,25 @@ import magellan.library.StringID;
  */
 public class AllanonConstants extends EresseaConstants {
   /** order ANWERBEN */
-  public static final StringID O_ANWERBEN = StringID.create("ANWERBEN");
+  public static final String OS_ANWERBEN = "ANWERBEN";
+  /** Order constant ANWERBEN */
+  public static final StringID OC_ANWERBEN = StringID.create("ANWERBEN");
   /** order BEANSPRUCHE */
-  public static final StringID O_BEANSPRUCHE = StringID.create("BEANSPRUCHE");
+  public static final String OS_BEANSPRUCHE = "BEANSPRUCHE";
+  /** Order constant BEANSPRUCHE */
+  public static final StringID OC_BEANSPRUCHE = StringID.create("BEANSPRUCHE");
   /** order ERKUNDEN */
-  public static final StringID O_ERKUNDEN = StringID.create("ERKUNDEN");
+  public static final String OS_ERKUNDEN = "ERKUNDEN";
+  /** Order constant ERKUNDEN */
+  public static final StringID OC_ERKUNDEN = StringID.create("ERKUNDEN");
   /** order KARAWANE */
-  public static final StringID O_KARAWANE = StringID.create("KARAWANE");
+  public static final String OS_KARAWANE = "KARAWANE";
+  /** Order constant KARAWANE */
+  public static final StringID OC_KARAWANE = StringID.create("KARAWANE");
   /** order MEUCHELN */
-  public static final StringID O_MEUCHELN = StringID.create("MEUCHELN");
+  public static final String OS_MEUCHELN = "MEUCHELN";
+  /** Order constant MEUCHELN */
+  public static final StringID OC_MEUCHELN = StringID.create("MEUCHELN");
 
   /** skill ALCHIMIE */
   public static final StringID S_ALCHIMIE = StringID.create("ALCHIMIE");

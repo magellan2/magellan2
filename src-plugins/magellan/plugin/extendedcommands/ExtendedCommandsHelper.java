@@ -76,7 +76,7 @@ public class ExtendedCommandsHelper {
 
   private static final Logger log = Logger.getInstance(ExtendedCommandsHelper.class);
 
-  private static final String CONFIGURATION_MARKER = EresseaConstants.OS_PCOMMENT + " extcmds:";
+  private static final String CONFIGURATION_MARKER = EresseaConstants.O_PCOMMENT + " extcmds:";
 
   private Client client;
 
@@ -509,7 +509,7 @@ public class ExtendedCommandsHelper {
    * 
    * @see EresseaConstants
    * @param unit This order will be converted into this unit's faction's order locale
-   * @param orderConstant Use one of the EresseaConstants.O_... constants here
+   * @param orderConstant Use one of the EresseaConstants.OC_... constants here
    * @param args optional parameters.
    * @return A localized order constant. If no translation can be found, the orderConstant is
    *         returned.
@@ -535,17 +535,17 @@ public class ExtendedCommandsHelper {
     if (each)
       return getOrderTranslation(
           unit,
-          EresseaConstants.O_GIVE,
+          EresseaConstants.OC_GIVE,
           receiver,
-          EresseaConstants.O_EACH,
-          (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.O_ALL) : amount),
+          EresseaConstants.OC_EACH,
+          (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.OC_ALL) : amount),
           item);
     else
       return getOrderTranslation(
           unit,
-          EresseaConstants.O_GIVE,
+          EresseaConstants.OC_GIVE,
           receiver,
-          (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.O_ALL) : amount),
+          (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.OC_ALL) : amount),
           item);
   }
 
@@ -559,8 +559,8 @@ public class ExtendedCommandsHelper {
    * @return a line like <code>GIVE receiver [EACH] amount item</code>.
    */
   public String getReserveOrder(Unit unit, String item, int amount, boolean each) {
-    return getOrderTranslation(unit, EresseaConstants.O_RESERVE)
-        + (each ? " " + getOrderTranslation(unit, EresseaConstants.O_EACH) + " " : " ") + amount
+    return getOrderTranslation(unit, EresseaConstants.OC_RESERVE)
+        + (each ? " " + getOrderTranslation(unit, EresseaConstants.OC_EACH) + " " : " ") + amount
         + " " + item;
   }
 

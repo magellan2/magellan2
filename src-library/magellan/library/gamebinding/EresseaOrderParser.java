@@ -64,81 +64,81 @@ public class EresseaOrderParser extends AbstractOrderParser {
     clearCommandMap();
 
     // addCommand("@", new AtReader());
-    addCommand(EresseaConstants.O_WORK, new ArbeiteReader(this));
+    addCommand(EresseaConstants.OC_WORK, new ArbeiteReader(this));
 
-    addCommand(EresseaConstants.O_ATTACK, new AttackReader(this));
+    addCommand(EresseaConstants.OC_ATTACK, new AttackReader(this));
 
-    addCommand(EresseaConstants.O_BANNER, new BannerReader(this));
-    addCommand(EresseaConstants.O_CLAIM, new BeansprucheReader(this));
-    addCommand(EresseaConstants.O_PROMOTION, new BefoerderungReader(this));
+    addCommand(EresseaConstants.OC_BANNER, new BannerReader(this));
+    addCommand(EresseaConstants.OC_CLAIM, new BeansprucheReader(this));
+    addCommand(EresseaConstants.OC_PROMOTION, new BefoerderungReader(this));
 
-    addCommand(EresseaConstants.O_STEAL, new BeklaueReader(this));
-    addCommand(EresseaConstants.O_SIEGE, new BelagereReader(this));
-    addCommand(EresseaConstants.O_NAME, new BenenneReader(this));
-    addCommand(EresseaConstants.O_USE, new BenutzeReader(this));
-    addCommand(EresseaConstants.O_DESCRIBE, new BeschreibeReader(this));
+    addCommand(EresseaConstants.OC_STEAL, new BeklaueReader(this));
+    addCommand(EresseaConstants.OC_SIEGE, new BelagereReader(this));
+    addCommand(EresseaConstants.OC_NAME, new BenenneReader(this));
+    addCommand(EresseaConstants.OC_USE, new BenutzeReader(this));
+    addCommand(EresseaConstants.OC_DESCRIBE, new BeschreibeReader(this));
 
-    addCommand(EresseaConstants.O_ENTER, new BetreteReader(this));
+    addCommand(EresseaConstants.OC_ENTER, new BetreteReader(this));
 
-    addCommand(EresseaConstants.O_GUARD, new BewacheReader(this));
-    addCommand(EresseaConstants.O_MESSAGE, new BotschaftReader(this));
-    addCommand(EresseaConstants.O_DEFAULT, new DefaultReader(this));
-    addCommand(EresseaConstants.O_EMAIL, new EmailReader(this));
-    addCommand(EresseaConstants.O_END, new EndeReader(this));
-    addCommand(EresseaConstants.O_RIDE, new FahreReader(this));
-    addCommand(EresseaConstants.O_FOLLOW, new FolgeReader(this));
-    addCommand(EresseaConstants.O_RESEARCH, new ForscheReader(this));
-    addCommand(EresseaConstants.O_GIVE, new GibReader(this));
-    addCommand(EresseaConstants.O_GROUP, new GruppeReader(this));
-    addCommand(EresseaConstants.O_HELP, new HelfeReader(this));
-    addCommand(EresseaConstants.O_COMBAT, new KaempfeReader(this));
-    addCommand(EresseaConstants.O_COMBATSPELL, new KampfzauberReader(this));
-    addCommand(EresseaConstants.O_BUY, new KaufeReader(this));
-    addCommand(EresseaConstants.O_CONTACT, new KontaktiereReader(this));
-    addCommand(EresseaConstants.O_TEACH, new LehreReader(this));
-    addCommand(EresseaConstants.O_LEARN, new LerneReader(this));
-    addCommand(EresseaConstants.O_SUPPLY, new GibReader(this));
+    addCommand(EresseaConstants.OC_GUARD, new BewacheReader(this));
+    addCommand(EresseaConstants.OC_MESSAGE, new BotschaftReader(this));
+    addCommand(EresseaConstants.OC_DEFAULT, new DefaultReader(this));
+    addCommand(EresseaConstants.OC_EMAIL, new EmailReader(this));
+    addCommand(EresseaConstants.OC_END, new EndeReader(this));
+    addCommand(EresseaConstants.OC_RIDE, new FahreReader(this));
+    addCommand(EresseaConstants.OC_FOLLOW, new FolgeReader(this));
+    addCommand(EresseaConstants.OC_RESEARCH, new ForscheReader(this));
+    addCommand(EresseaConstants.OC_GIVE, new GibReader(this));
+    addCommand(EresseaConstants.OC_GROUP, new GruppeReader(this));
+    addCommand(EresseaConstants.OC_HELP, new HelfeReader(this));
+    addCommand(EresseaConstants.OC_COMBAT, new KaempfeReader(this));
+    addCommand(EresseaConstants.OC_COMBATSPELL, new KampfzauberReader(this));
+    addCommand(EresseaConstants.OC_BUY, new KaufeReader(this));
+    addCommand(EresseaConstants.OC_CONTACT, new KontaktiereReader(this));
+    addCommand(EresseaConstants.OC_TEACH, new LehreReader(this));
+    addCommand(EresseaConstants.OC_LEARN, new LerneReader(this));
+    addCommand(EresseaConstants.OC_SUPPLY, new GibReader(this));
 
-    addCommand(EresseaConstants.O_LOCALE, new LocaleReader(this));
-    addCommand(EresseaConstants.O_MAKE, new MacheReader(this));
-    addCommand(EresseaConstants.O_MOVE, new NachReader(this));
+    addCommand(EresseaConstants.OC_LOCALE, new LocaleReader(this));
+    addCommand(EresseaConstants.OC_MAKE, new MacheReader(this));
+    addCommand(EresseaConstants.OC_MOVE, new NachReader(this));
     // normalerweise nicht erlaubt...
-    addCommand(EresseaConstants.O_NEXT, new InvalidReader(this));
-    addCommand(EresseaConstants.O_RESTART, new NeustartReader(this));
+    addCommand(EresseaConstants.OC_NEXT, new InvalidReader(this));
+    addCommand(EresseaConstants.OC_RESTART, new NeustartReader(this));
 
-    addCommand(EresseaConstants.O_NUMBER, new NummerReader(this));
+    addCommand(EresseaConstants.OC_NUMBER, new NummerReader(this));
 
-    addCommand(EresseaConstants.O_OPTION, new OptionReader(this));
-    addCommand(EresseaConstants.O_FACTION, new ParteiReader(this));
-    addCommand(EresseaConstants.O_PASSWORD, new PasswortReader(this));
+    addCommand(EresseaConstants.OC_OPTION, new OptionReader(this));
+    addCommand(EresseaConstants.OC_FACTION, new ParteiReader(this));
+    addCommand(EresseaConstants.OC_PASSWORD, new PasswortReader(this));
 
-    addCommand(EresseaConstants.O_PLANT, new PflanzeReader(this));
-    addCommand(EresseaConstants.O_PIRACY, new PiraterieReader(this));
-    addCommand(EresseaConstants.O_PREFIX, new PraefixReader(this));
+    addCommand(EresseaConstants.OC_PLANT, new PflanzeReader(this));
+    addCommand(EresseaConstants.OC_PIRACY, new PiraterieReader(this));
+    addCommand(EresseaConstants.OC_PREFIX, new PraefixReader(this));
     // normalerweise nicht erlaubt...
-    addCommand(EresseaConstants.O_REGION, new InvalidReader(this));
-    addCommand(EresseaConstants.O_RECRUIT, new RekrutiereReader(this));
-    addCommand(EresseaConstants.O_RESERVE, new ReserviereReader(this));
-    addCommand(EresseaConstants.O_ROUTE, new RouteReader(this));
+    addCommand(EresseaConstants.OC_REGION, new InvalidReader(this));
+    addCommand(EresseaConstants.OC_RECRUIT, new RekrutiereReader(this));
+    addCommand(EresseaConstants.OC_RESERVE, new ReserviereReader(this));
+    addCommand(EresseaConstants.OC_ROUTE, new RouteReader(this));
 
-    addCommand(EresseaConstants.O_SORT, new SortiereReader(this));
+    addCommand(EresseaConstants.OC_SORT, new SortiereReader(this));
 
-    addCommand(EresseaConstants.O_SPY, new SpioniereReader(this));
-    addCommand(EresseaConstants.O_QUIT, new StirbReader(this));
-    addCommand(EresseaConstants.O_HIDE, new TarneReader(this));
-    addCommand(EresseaConstants.O_CARRY, new TransportiereReader(this));
-    addCommand(EresseaConstants.O_TAX, new TreibeReader(this));
-    addCommand(EresseaConstants.O_ENTERTAIN, new UnterhalteReader(this));
-    addCommand(EresseaConstants.O_ORIGIN, new UrsprungReader(this));
-    addCommand(EresseaConstants.O_FORGET, new VergesseReader(this));
+    addCommand(EresseaConstants.OC_SPY, new SpioniereReader(this));
+    addCommand(EresseaConstants.OC_QUIT, new StirbReader(this));
+    addCommand(EresseaConstants.OC_HIDE, new TarneReader(this));
+    addCommand(EresseaConstants.OC_CARRY, new TransportiereReader(this));
+    addCommand(EresseaConstants.OC_TAX, new TreibeReader(this));
+    addCommand(EresseaConstants.OC_ENTERTAIN, new UnterhalteReader(this));
+    addCommand(EresseaConstants.OC_ORIGIN, new UrsprungReader(this));
+    addCommand(EresseaConstants.OC_FORGET, new VergesseReader(this));
 
-    addCommand(EresseaConstants.O_SELL, new VerkaufeReader(this));
-    addCommand(EresseaConstants.O_LEAVE, new VerlasseReader(this));
-    addCommand(EresseaConstants.O_CAST, new ZaubereReader(this));
-    addCommand(EresseaConstants.O_SHOW, new ZeigeReader(this));
-    addCommand(EresseaConstants.O_DESTROY, new ZerstoereReader(this));
-    addCommand(EresseaConstants.O_GROW, new ZuechteReader(this));
-    addCommand(EresseaConstants.O_SABOTAGE, new SabotiereReader(this));
+    addCommand(EresseaConstants.OC_SELL, new VerkaufeReader(this));
+    addCommand(EresseaConstants.OC_LEAVE, new VerlasseReader(this));
+    addCommand(EresseaConstants.OC_CAST, new ZaubereReader(this));
+    addCommand(EresseaConstants.OC_SHOW, new ZeigeReader(this));
+    addCommand(EresseaConstants.OC_DESTROY, new ZerstoereReader(this));
+    addCommand(EresseaConstants.OC_GROW, new ZuechteReader(this));
+    addCommand(EresseaConstants.OC_SABOTAGE, new SabotiereReader(this));
   }
 
   // ************* WORK (ARBEITE)
@@ -326,37 +326,37 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
       t.ttype = OrderToken.TT_KEYWORD;
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
         getOrder().type = RenameObject.T_BUILDING;
         getOrder().name = readDescription(false);
         retVal = getOrder().name != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_BUILDING))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_BUILDING))) {
         getOrder().type = RenameObject.T_BUILDING;
         getOrder().name = readDescription(false);
         retVal = getOrder().name != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
         getOrder().type = RenameObject.T_UNIT;
         getOrder().name = readDescription(false);
         retVal = getOrder().name != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
         getOrder().type = RenameObject.T_FACTION;
         getOrder().name = readDescription(false);
         retVal = getOrder().name != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_REGION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
         getOrder().type = RenameObject.T_REGION;
         getOrder().name = readDescription(false);
         retVal = getOrder().name != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         getOrder().type = RenameObject.T_SHIP;
         getOrder().name = readDescription(false);
         retVal = getOrder().name != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNBUILDING))) {
         retVal = readBenenneFremdes(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNFACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNFACTION))) {
         retVal = readBenenneFremdes(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNSHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNSHIP))) {
         retVal = readBenenneFremdes(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNUNIT))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNUNIT))) {
         retVal = readBenenneFremdes(t);
       } else {
         BuildingType found = null;
@@ -394,20 +394,20 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (token.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNUNIT))
-          && t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
+      if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNUNIT))
+          && t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
         retVal = readBenenneFremdeEinheit(t);
-      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))
-          && t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNBUILDING))
+          && t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
         retVal = readBenenneFremdesGebaeude(t);
-      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))
-          && t.equalsToken(getOrderTranslation(EresseaConstants.O_BUILDING))) {
+      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNBUILDING))
+          && t.equalsToken(getOrderTranslation(EresseaConstants.OC_BUILDING))) {
         retVal = readBenenneFremdesGebaeude(t);
-      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNFACTION))
-          && t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNFACTION))
+          && t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
         retVal = readBenenneFremdePartei(t);
-      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNSHIP))
-          && t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNSHIP))
+          && t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         retVal = readBenenneFremdesSchiff(t);
       } else {
         BuildingType found = null;
@@ -599,19 +599,19 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
       t.ttype = OrderToken.TT_KEYWORD;
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
         getOrder().type = RenameObject.T_DESCRIBE_BUILDING;
         retVal = readDescription() != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
         getOrder().type = RenameObject.T_DESCRIBE_UNIT;
         retVal = readDescription() != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_PRIVATE))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PRIVATE))) {
         getOrder().type = RenameObject.T_DESCRIBE_UNIT;
         retVal = readDescription() != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_REGION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
         getOrder().type = RenameObject.T_DESCRIBE_REGION;
         retVal = readDescription() != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         getOrder().type = RenameObject.T_DESCRIBE_SHIP;
         retVal = readDescription() != null;
       } else {
@@ -660,10 +660,10 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
         getOrder().type = UCArgumentOrder.T_BUILDING;
         retVal = readBetreteBurg(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         getOrder().type = UCArgumentOrder.T_SHIP;
         retVal = readBetreteSchiff(t);
       } else {
@@ -757,7 +757,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         retVal = readBewacheNicht(t);
       } else {
         getOrder().setNot(false);
@@ -793,15 +793,15 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
         retVal = readBotschaftEinheit(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
         retVal = readBotschaftPartei(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_REGION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
         retVal = readBotschaftRegion(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
         retVal = readBotschaftGebaeude(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         retVal = readBotschaftSchiff(t);
       } else {
         BuildingType found = null;
@@ -850,7 +850,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       retVal = readDescription(t, false) != null;
 
       if (shallComplete(token, t)
-          && token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP))) {
+          && token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.OC_TEMP))) {
         getCompleter().cmpltBotschaftEinheit(true);
       }
 
@@ -1110,7 +1110,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       target = UnitID.createUnitID(token.getText(), getData().base);
 
       if (shallComplete(token, t)
-          && token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP))) {
+          && token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.OC_TEMP))) {
         getCompleter().cmpltFahre(true);
       }
 
@@ -1139,9 +1139,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT)) == true) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT)) == true) {
         retVal = readFolgeEinheit(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP)) == true) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP)) == true) {
         retVal = readFolgeSchiff(t);
       } else {
         unexpected(t);
@@ -1263,7 +1263,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_HERBS))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_HERBS))) {
         retVal = readFinalKeyword(t);
       } else {
         unexpected(t);
@@ -1328,23 +1328,23 @@ public class EresseaOrderParser extends AbstractOrderParser {
       OrderToken t = getNextToken();
 
       if (isNumeric(t.getText()) == true) {
-        getOrder().type = EresseaConstants.O_GIVE;
+        getOrder().type = EresseaConstants.OC_GIVE;
         retVal = readGibUIDAmount(t, target, Integer.parseInt(t.getText()), true);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_EACH))) {
-        getOrder().type = EresseaConstants.O_GIVE;
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_EACH))) {
+        getOrder().type = EresseaConstants.OC_GIVE;
         retVal = readGibJe(t, target);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_ALL))) {
-        getOrder().type = EresseaConstants.O_GIVE;
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
+        getOrder().type = EresseaConstants.OC_GIVE;
         retVal = readGibUIDAlles(t);
       } else {
-        if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
-          getOrder().type = EresseaConstants.O_UNIT;
+        if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
+          getOrder().type = EresseaConstants.OC_UNIT;
         }
-        if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CONTROL))) {
-          getOrder().type = EresseaConstants.O_CONTROL;
+        if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CONTROL))) {
+          getOrder().type = EresseaConstants.OC_CONTROL;
         }
-        if (t.equalsToken(getOrderTranslation(EresseaConstants.O_HERBS))) {
-          getOrder().type = EresseaConstants.O_HERBS;
+        if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_HERBS))) {
+          getOrder().type = EresseaConstants.OC_HERBS;
         }
         if (getOrder().type != null) {
           // id 0 not allowed
@@ -1356,7 +1356,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (shallComplete(token, t)) {
         getCompleter().cmpltGibUID(
-            token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP)));
+            token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.OC_TEMP)));
       }
       return retVal;
     }
@@ -1373,7 +1373,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
         // is illegal
       } else
       // // GIVE bla JE ALL ... does not make sense
-      // if(t.equalsToken(getOrderTranslation(EresseaConstants.O_ALL))) {
+      // if(t.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
       // retVal = readGibUIDAlles(t);
       // } else
       if (isString(t)) {
@@ -1401,8 +1401,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
         getOrder().itemType = checkItem(t);
         if (getOrder().itemType != null) {
           retVal = true;
-        } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_MEN))) {
-          getOrder().type = EresseaConstants.O_MEN;
+        } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_MEN))) {
+          getOrder().type = EresseaConstants.OC_MEN;
           retVal = true;
         } else {
           getOrder().setValid(false);
@@ -1437,8 +1437,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
         getOrder().itemType = checkItem(t);
         if (getOrder().itemType != null) {
           retVal = true;
-        } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_MEN))) {
-          getOrder().type = EresseaConstants.O_MEN;
+        } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_MEN))) {
+          getOrder().type = EresseaConstants.OC_MEN;
           retVal = true;
         } else {
           getOrder().setValid(false);
@@ -1507,10 +1507,10 @@ public class EresseaOrderParser extends AbstractOrderParser {
     protected Collection<StringID> getCategories() {
       if (categories == null) {
         categories =
-            Arrays.asList(EresseaConstants.O_ALL, EresseaConstants.O_HELP_COMBAT,
-                EresseaConstants.O_HELP_GIVE, EresseaConstants.O_HELP_GUARD,
-                EresseaConstants.O_HELP_SILVER, EresseaConstants.O_HELP_FACTIONSTEALTH,
-                EresseaConstants.O_COMBAT_HELP);
+            Arrays.asList(EresseaConstants.OC_ALL, EresseaConstants.OC_HELP_COMBAT,
+                EresseaConstants.OC_HELP_GIVE, EresseaConstants.OC_HELP_GUARD,
+                EresseaConstants.OC_HELP_SILVER, EresseaConstants.OC_HELP_FACTIONSTEALTH,
+                EresseaConstants.OC_COMBAT_HELP);
 
       }
       return categories;
@@ -1563,7 +1563,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         retVal = readHelfeFIDModifierNicht(t, token.getText());
       } else {
         retVal = checkFinal(t);
@@ -1606,22 +1606,22 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_COMBAT_AGGRESSIVE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_COMBAT_AGGRESSIVE))) {
         retVal = readFinalKeyword(t);
         getOrder().setStatus(EresseaConstants.CS_AGGRESSIVE);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_COMBAT_REAR))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_COMBAT_REAR))) {
         retVal = readFinalKeyword(t);
         getOrder().setStatus(EresseaConstants.CS_REAR);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_COMBAT_DEFENSIVE))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_COMBAT_DEFENSIVE))) {
         retVal = readFinalKeyword(t);
         getOrder().setStatus(EresseaConstants.CS_DEFENSIVE);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_COMBAT_NOT))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_COMBAT_NOT))) {
         retVal = readFinalKeyword(t);
         getOrder().setStatus(EresseaConstants.CS_NOT);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_COMBAT_FLEE))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_COMBAT_FLEE))) {
         retVal = readFinalKeyword(t);
         getOrder().setStatus(EresseaConstants.CS_FLEE);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_COMBAT_HELP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_COMBAT_HELP))) {
         retVal = readKaempfeHelfe(t);
       } else {
         getOrder().setStatus(EresseaConstants.CS_FRONT);
@@ -1640,7 +1640,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         retVal = readFinalKeyword(t);
         getOrder().setStatus(EresseaConstants.CS_HELPNOT);
       } else {
@@ -1668,9 +1668,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_LEVEL))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_LEVEL))) {
         retVal = readZaubereStufe(t, true);
-        // } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+        // } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         // retVal = readFinalKeyword(t);
       } else if (isString(t)) {
         retVal = new ZaubereSpruchChecker(false, true, false, true) {
@@ -1695,7 +1695,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
      */
     @Override
     protected boolean readZaubereEnde(OrderToken token, Spell s) {
-      if (token.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+      if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         token.ttype = OrderToken.TT_KEYWORD;
         return checkNextFinal();
       } else if (isEoC(token)) {
@@ -1847,7 +1847,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (shallComplete(token, t)) {
         getCompleter().cmpltLehre(
-            token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP)));
+            token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.OC_TEMP)));
       }
       return retVal;
     }
@@ -1983,26 +1983,26 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (!hasAmount && isNumeric(t.getText())) {
         retVal = read(t, true);
-      } else if (!hasAmount && t.equalsToken(getOrderTranslation(EresseaConstants.O_TEMP))) {
+      } else if (!hasAmount && t.equalsToken(getOrderTranslation(EresseaConstants.OC_TEMP))) {
         getOrder().setLong(false);
         retVal = readMacheTemp(t);
       } else if (!hasAmount && isTempID(t.getText()) == true) {
         retVal = readMacheTempID(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
         retVal = readMacheBurg(t);
       } else if (isBuilding(t) != null || isCastle(t) != null) {
         retVal = readMacheBuilding(t);
       } else if ((getRules() != null) && (getRules().getShipType(t.getText()) != null)) {
         retVal = readMacheShip(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         retVal = readMacheSchiff(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_ROAD))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_ROAD))) {
         retVal = readMacheStrasse(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SEED))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SEED))) {
         retVal = readFinalKeyword(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_MALLORNSEED))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_MALLORNSEED))) {
         retVal = readFinalKeyword(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_HERBS))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_HERBS))) {
         retVal = readFinalKeyword(t);
       } else if (isEoC(t)) {
         // this is actually allowed, but may be a bit dangerous...
@@ -2295,13 +2295,13 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT)) == true) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT)) == true) {
         retVal = readNummerEinheit(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP)) == true) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP)) == true) {
         retVal = readNummerSchiff(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION)) == true) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION)) == true) {
         retVal = readNummerPartei(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE)) == true) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE)) == true) {
         retVal = readNummerBurg(t);
       } else {
         unexpected(t);
@@ -2399,16 +2399,16 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_ADDRESSES))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_REPORT))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_BZIP2))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_COMPUTER))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_ITEMPOOL))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_SILVERPOOL))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_STATISTICS))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_ZIPPED))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_SCORE))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_TEMPLATE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_ADDRESSES))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_REPORT))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_BZIP2))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_COMPUTER))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_ITEMPOOL))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_SILVERPOOL))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_STATISTICS))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_ZIPPED))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_SCORE))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_TEMPLATE))) {
         retVal = readOptionOption(t);
       } else {
         unexpected(t);
@@ -2426,7 +2426,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         retVal = readFinalKeyword(t);
       } else {
         retVal = checkFinal(t);
@@ -2519,10 +2519,10 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isNumeric(t.getText()) == true) {
         retVal = readPflanzeAmount(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_HERBS))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_SEED))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_MALLORNSEED))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_TREES))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_HERBS))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_SEED))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_MALLORNSEED))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_TREES))) {
         t.ttype = OrderToken.TT_KEYWORD;
         retVal = checkNextFinal();
       } else {
@@ -2549,10 +2549,10 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_HERBS))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_SEED))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_MALLORNSEED))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_TREES))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_HERBS))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_SEED))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_MALLORNSEED))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_TREES))) {
         t.ttype = OrderToken.TT_KEYWORD;
         retVal = checkNextFinal();
       } else {
@@ -2726,9 +2726,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
       if (isNumeric(t.getText()) == true
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_ALL))) {
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
         retVal = readReserviereAmount(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_EACH))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_EACH))) {
         retVal = readReserviereJe(t);
       } else {
         unexpected(t);
@@ -2762,7 +2762,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
     protected boolean readReserviereAmount(OrderToken token) {
       boolean retVal = false; // FIXME use locale!!
-      if (token.equalsToken(getOrderTranslation(EresseaConstants.O_ALL))) {
+      if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
         token.ttype = OrderToken.TT_KEYWORD;
         getOrder().amount = Order.ALL;
       } else {
@@ -2771,7 +2771,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       }
 
       OrderToken t = getNextToken();
-      if (!isEoC(t) && isString(t) && !t.equalsToken(getOrderTranslation(EresseaConstants.O_ALL))) {
+      if (!isEoC(t) && isString(t) && !t.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
         // retVal = checkItem(t) != null && checkFinal(getLastToken());
         OrderToken[] result = getString(t);
         if (result[1] != null) {
@@ -2816,7 +2816,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (toDirection(t.getText(), getLocale()) != Direction.INVALID) {
         retVal = readRouteDirection(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_PAUSE))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PAUSE))) {
         retVal = readRouteDirection(t);
       } else {
         unexpected(t);
@@ -2837,7 +2837,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (toDirection(t.getText(), getLocale()) != Direction.INVALID) {
         retVal = readRouteDirection(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_PAUSE))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PAUSE))) {
         retVal = readRouteDirection(t);
       } else {
         retVal = checkFinal(t);
@@ -2865,7 +2865,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       getOrder().setLong(true);
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         retVal = readFinalKeyword(t);
       } else {
         unexpected(t);
@@ -2892,9 +2892,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
       OrderToken t = getNextToken();
 
       // FIX
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_BEFORE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_BEFORE))) {
         retVal = readSortiereVor(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_AFTER))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_AFTER))) {
         retVal = readSortiereHinter(t);
       } else {
         unexpected(t);
@@ -3026,7 +3026,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isNumeric(t.getText()) == true) {
         retVal = readFinalNumber(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
         retVal = readTarnePartei(t);
       } else if (isString(t) && !checkFinal(t)) {
         retVal = new StringChecker(false, false, true, false) {
@@ -3057,9 +3057,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         retVal = readFinalKeyword(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NUMBER))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NUMBER))) {
         retVal = readTarneParteiNummer(t);
       } else {
         retVal = checkFinal(t);
@@ -3258,7 +3258,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isNumeric(t.getText()) == true) {
         retVal = readVerkaufeAmount(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_ALL))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
         retVal = readVerkaufeAlles(t);
       } else {
         unexpected(t);
@@ -3354,9 +3354,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
       getOrder().setLong(true);
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_REGION))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
         retVal = readZaubereRegion(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_LEVEL))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_LEVEL))) {
         retVal = readZaubereStufe(t, false);
       } else if (isString(t)) {
         retVal = new ZaubereSpruchChecker(false, false, true, true).read(t);
@@ -3401,7 +3401,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
         t.ttype = OrderToken.TT_NUMBER;
         t = getNextToken();
 
-        if (t.equalsToken(getOrderTranslation(EresseaConstants.O_LEVEL))) {
+        if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_LEVEL))) {
           retVal = readZaubereRegionStufe(t);
         } else if (isString(t)) {
           retVal = new ZaubereSpruchChecker(true, false, false, true).read(t);
@@ -3568,18 +3568,18 @@ public class EresseaOrderParser extends AbstractOrderParser {
     // protected boolean readZaubereSyntax(OrderToken token, SpellSyntaxToken sst) {
     // switch (sst.getTokenType()) {
     // case SpellSyntaxToken.SST_KeyWord: {
-    // if(token.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+    // if(token.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
     // token.ttype = OrderToken.TT_KEYWORD;
     // token = tokens.next();
     // token.ttype = OrderToken.TT_ID;
     //
-    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
+    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
     //
-    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
     //
-    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.O_REGION))) {
+    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
     //
-    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
     //
     // }
     // }
@@ -3602,7 +3602,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_ALL))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
         retVal = readZeigeAlle(t);
       } else if (isString(t)) {
         retVal = new StringChecker(false, false, true, false) {
@@ -3627,8 +3627,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_POTIONS))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.O_SPELLS))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_POTIONS))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_SPELLS))) {
         retVal = readFinalKeyword(t);
       } else {
         unexpected(t);
@@ -3656,7 +3656,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isNumeric(t.getText())) {
         retVal = readZerstoereAmount(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_ROAD))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_ROAD))) {
         retVal = readZerstoereStrasse(t);
       } else {
         retVal = checkFinal(t);
@@ -3674,7 +3674,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_ROAD))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_ROAD))) {
         retVal = readZerstoereStrasse(t);
       } else {
         retVal = checkFinal(t);
@@ -3731,10 +3731,10 @@ public class EresseaOrderParser extends AbstractOrderParser {
         t = getNextToken();
       }
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_HERBS))
-          || (!number && t.equalsToken(getOrderTranslation(EresseaConstants.O_HORSES))))
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_HERBS))
+          || (!number && t.equalsToken(getOrderTranslation(EresseaConstants.OC_HORSES))))
       // this is illegal (now?)
-      // || t.equalsToken(getOrderTranslation(EresseaConstants.O_TREES))
+      // || t.equalsToken(getOrderTranslation(EresseaConstants.OC_TREES))
       {
         retVal = readFinalKeyword(t);
       } else {
@@ -3773,7 +3773,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
    */
   @Override
   protected StringID getTemp() {
-    return EresseaConstants.O_TEMP;
+    return EresseaConstants.OC_TEMP;
   }
 
   // private static Map<Locale, String[]> shortNamess = new HashMap<Locale, String[]>();
@@ -3786,22 +3786,22 @@ public class EresseaOrderParser extends AbstractOrderParser {
   // }
   // switch (key) {
   // case Direction.DIR_NW:
-  // return getOrderTranslation(EresseaConstants.O_NORTHWEST, locale);
+  // return getOrderTranslation(EresseaConstants.OC_NORTHWEST, locale);
   //
   // case Direction.DIR_NE:
-  // return getOrderTranslation(EresseaConstants.O_NORTHEAST, locale);
+  // return getOrderTranslation(EresseaConstants.OC_NORTHEAST, locale);
   //
   // case Direction.DIR_E:
-  // return getOrderTranslation(EresseaConstants.O_EAST, locale);
+  // return getOrderTranslation(EresseaConstants.OC_EAST, locale);
   //
   // case Direction.DIR_SE:
-  // return getOrderTranslation(EresseaConstants.O_SOUTHEAST, locale);
+  // return getOrderTranslation(EresseaConstants.OC_SOUTHEAST, locale);
   //
   // case Direction.DIR_SW:
-  // return getOrderTranslation(EresseaConstants.O_SOUTHWEST, locale);
+  // return getOrderTranslation(EresseaConstants.OC_SOUTHWEST, locale);
   //
   // case Direction.DIR_W:
-  // return getOrderTranslation(EresseaConstants.O_WEST, locale);
+  // return getOrderTranslation(EresseaConstants.OC_WEST, locale);
   // }
   //
   // return get("util.direction.name.long.invalid", locale);
@@ -3813,22 +3813,22 @@ public class EresseaOrderParser extends AbstractOrderParser {
   // }
   // switch (key) {
   // case Direction.DIR_NW:
-  // return getOrderTranslation(EresseaConstants.O_NW, locale);
+  // return getOrderTranslation(EresseaConstants.OC_NW, locale);
   //
   // case Direction.DIR_NE:
-  // return getOrderTranslation(EresseaConstants.O_NE, locale);
+  // return getOrderTranslation(EresseaConstants.OC_NE, locale);
   //
   // case Direction.DIR_E:
-  // return getOrderTranslation(EresseaConstants.O_E, locale);
+  // return getOrderTranslation(EresseaConstants.OC_E, locale);
   //
   // case Direction.DIR_SE:
-  // return getOrderTranslation(EresseaConstants.O_SE, locale);
+  // return getOrderTranslation(EresseaConstants.OC_SE, locale);
   //
   // case Direction.DIR_SW:
-  // return getOrderTranslation(EresseaConstants.O_SW, locale);
+  // return getOrderTranslation(EresseaConstants.OC_SW, locale);
   //
   // case Direction.DIR_W:
-  // return getOrderTranslation(EresseaConstants.O_W, locale);
+  // return getOrderTranslation(EresseaConstants.OC_W, locale);
   // }
   //
   // return Resources.get("util.direction.name.short.invalid", locale);

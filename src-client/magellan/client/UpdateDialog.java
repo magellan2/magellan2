@@ -241,6 +241,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     getContentPane().add(mainPanel);
 
     pack();
+    btn_OK.requestFocusInWindow();
   }
 
   private void showFile(String name) {

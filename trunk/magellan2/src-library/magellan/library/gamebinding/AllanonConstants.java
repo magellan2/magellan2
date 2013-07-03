@@ -65,5 +65,6 @@ public class AllanonConstants extends EresseaConstants {
   /** skill MECHANIK */
   public static final StringID S_MECHANIK = StringID.create("MECHANIK");
 
+  /** ship type Karawane */
   public static final ID ST_KARAWANE = StringID.create("KARAWANE");
 }

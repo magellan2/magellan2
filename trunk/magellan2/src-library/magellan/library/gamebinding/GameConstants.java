@@ -24,11 +24,20 @@
 package magellan.library.gamebinding;
 
 import magellan.library.StringID;
+import magellan.library.rules.AllianceCategory;
 
+/**
+ * A set of constants for entities assumed to exist in a game.
+ */
 public abstract class GameConstants {
 
   protected static final String ORDER_KEY_PREFIX = "HELP_";
 
+  /**
+   * Returns an order ID for the HELP order corresponding to the given category.
+   * 
+   * @see AllianceCategory
+   */
   public static StringID getAllianceKey(String cat) {
     return StringID.create(ORDER_KEY_PREFIX + cat);
   }

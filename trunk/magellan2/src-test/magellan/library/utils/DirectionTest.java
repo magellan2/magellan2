@@ -200,7 +200,7 @@ public class DirectionTest extends MagellanTestWithResources {
    */
   @Test
   public void testToString() {
-    assertEquals("NORDOSTEN", Direction.NE.toString());
+    assertEquals("NO", Direction.NE.toString());
   }
 
   /**

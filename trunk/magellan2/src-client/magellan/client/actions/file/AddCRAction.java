@@ -72,7 +72,7 @@ public class AddCRAction extends MenuAction implements GameDataListener {
 
     int lastFileFilter =
         Integer.parseInt(settings.getProperty(
-            PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER, Integer.toString(5)));
+            PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER, Integer.toString(6)));
     // bugzilla #861
     if (lastFileFilter < 0) {
       lastFileFilter = 0;

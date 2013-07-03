@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import magellan.library.GameData;
 import magellan.library.StringID;
 import magellan.library.TempUnit;
@@ -172,6 +173,31 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, 4, EresseaConstants.I_UHORSE, "to temp");
     assertEquals("GIB TEMP 16 4 Pferd ; to temp", unit.getOrders2().get(0).toString());
+  }
+
+  @Test
+  public void testExtractTempOrders() throws Exception {
+    unit.clearOrders();
+    unit.addOrder("LERNEN Unterhaltung");
+    unit.addOrder("MACHEN TEMP 123");
+    unit.addOrder("REKRUTIEREN 1");
+    unit.addOrder("ARBEITEN");
+    unit.addOrder("ENDE");
+    unit.addOrder("GIB TEMP 123 50 Silber");
+
+    int ret = changer.extractTempUnits(data, 0, getLocale(), unit);
+    assertEquals(1, ret);
+    assertEquals(2, unit.getOrders2().size());
+    assertEquals("LERNEN Unterhaltung", unit.getOrders2().get(0).getText());
+    assertEquals("GIB TEMP 123 50 Silber", unit.getOrders2().get(1).getText());
+    UnitID tempID = UnitID.createUnitID("123", data.base);
+    tempID = UnitID.createUnitID(-tempID.intValue(), data.base);
+    TempUnit tempUnit = data.getTempUnit(tempID);
+    Unit tempUnit2 = unit.getTempUnit(tempID);
+    assertSame(tempUnit, tempUnit2);
+    assertEquals(2, tempUnit2.getOrders2().size());
+    assertEquals("REKRUTIEREN 1", tempUnit.getOrders2().get(0).getText());
+    assertEquals("ARBEITEN", tempUnit.getOrders2().get(1).getText());
   }
 
 }

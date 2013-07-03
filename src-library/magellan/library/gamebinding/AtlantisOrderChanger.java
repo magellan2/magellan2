@@ -332,7 +332,7 @@ public class AtlantisOrderChanger implements OrderChanger {
         }
       }
       if (foundTemp) {
-        ArrayList<Order> neworders = new ArrayList<Order>(unit.getOrders2().size());
+        ArrayList<Order> newOrders = new ArrayList<Order>(unit.getOrders2().size());
         orderList.clear();
         Orders ordersObject = unit.getOrders2();
         for (Order line : ordersObject) {
@@ -364,7 +364,7 @@ public class AtlantisOrderChanger implements OrderChanger {
                 // temp unit invalid -- don't create it
               }
             } else {
-              neworders.add(line);
+              newOrders.add(line);
             }
           } else {
             if (ordersObject.isToken(line, 0, AtlantisConstants.OC_END)) {
@@ -374,6 +374,7 @@ public class AtlantisOrderChanger implements OrderChanger {
             }
           }
         }
+        unit.setOrders2(newOrders);
       }
     }
 

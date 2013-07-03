@@ -764,7 +764,7 @@ public class EresseaOrderChanger implements OrderChanger {
         }
       }
       if (foundTemp) {
-        ArrayList<Order> neworders = new ArrayList<Order>(unit.getOrders2().size());
+        ArrayList<Order> newOrders = new ArrayList<Order>(unit.getOrders2().size());
         orderList.clear();
         Orders ordersObject = unit.getOrders2();
         for (Order line : ordersObject) {
@@ -795,7 +795,7 @@ public class EresseaOrderChanger implements OrderChanger {
                 // temp unit invalid -- don't create it
               }
             } else {
-              neworders.add(line);
+              newOrders.add(line);
             }
           } else {
             if (ordersObject.isToken(line, 0, EresseaConstants.OC_END)) {
@@ -805,6 +805,7 @@ public class EresseaOrderChanger implements OrderChanger {
             }
           }
         }
+        unit.setOrders2(newOrders);
       }
     }
 

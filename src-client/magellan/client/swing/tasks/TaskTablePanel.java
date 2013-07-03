@@ -633,9 +633,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
       throw new IndexOutOfBoundsException();
     Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
     StringBuilder text = new StringBuilder();
-    text.append(p.getMessage()).append("\n").append(p.getObject()).append("\n").append(
-        p.getRegion()).append("\n").append(p.getFaction()).append("\n").append(p.getLine()).append(
-        "\n").append(p.getType());
+    String desc = " (" + p.getType().getDescription() + ")";
+    if (desc == null) {
+      desc = "";
+    }
+    text.append(Resources.get("tasks.showfull.message", p.getMessage(), p.getObject(), p
+        .getRegion(), p.getFaction(), p.getLine(), p.getType(), desc));
     final TextAreaDialog d =
         (new TextAreaDialog((JFrame) null, Resources.get("tasks.showfull.dialog.title"), text
             .toString()));
@@ -1557,8 +1560,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     // faction owner.
     if (restrictToOwner()
         && !restrictToPassword()
-        && (getGameData().getOwnerFaction() == null || f == null || !getGameData().getOwnerFaction()
-            .equals(f.getID())))
+        && (getGameData().getOwnerFaction() == null || f == null || !getGameData()
+            .getOwnerFaction().equals(f.getID())))
       return false;
     if (restrictToPassword()
         && (f == null || f.getPassword() == null || f.getPassword().length() == 0))

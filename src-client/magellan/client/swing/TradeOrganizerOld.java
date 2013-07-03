@@ -949,7 +949,7 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
 
       StringID actSID =
           StringID.create(getOriginalLuxuryTranslation((String) luxuries.getSelectedItem()));
-      ItemType luxury = data.rules.getItemType(actSID);
+      ItemType luxury = data.getRules().getItemType(actSID);
 
       for (Iterator<Region> regionIter = tableRegions.iterator(); regionIter.hasNext();) {
         Region r = regionIter.next();
@@ -1082,12 +1082,12 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
       luxuryTranslations.clear();
     }
 
-    if ((data != null) && (data.rules != null)) {
+    if ((data != null) && (data.getRules() != null)) {
       // String help[] =
       // new String[] { "Balsam", "Gewürz", "Juwel", "Myrrhe", "Öl", "Seide", "Weihrauch" };
-      for (ItemType currentType : data.rules.getItemTypes()) {
+      for (ItemType currentType : data.getRules().getItemTypes()) {
         if (currentType.getCategory() != null
-            && currentType.getCategory().equals(data.rules.getItemCategory("luxuries"))) {
+            && currentType.getCategory().equals(data.getRules().getItemCategory("luxuries"))) {
           luxuryTranslations.put(currentType.toString(), data.getTranslation(currentType));
 
           // this.luxuryListTranslated.add(data.getTranslation(currentType));

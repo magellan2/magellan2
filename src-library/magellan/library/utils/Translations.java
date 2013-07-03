@@ -23,8 +23,8 @@
 // 
 package magellan.library.utils;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeSet;
 
 import magellan.library.Rules;
@@ -39,15 +39,16 @@ import magellan.library.Rules;
 public class Translations {
 
   // central structure to hold the translations
-  private HashMap<String, TranslationType> translationMap = null;
+  private final Map<String, TranslationType> translationMap = CollectionFactory
+      .createSyncOrderedMap();
 
   /**
    * Adds a new Translation
    * 
    * @param original
    * @param translated
-   * @param source One of {@link TranslationType#sourceUnknown},{@link TranslationType#sourceCR}, or
-   *          {@link TranslationType#sourceMagellan}
+   * @param source One of {@link TranslationType#SOURCE_UNKNWON},{@link TranslationType#SOURCE_CR},
+   *          or {@link TranslationType#SOURCE_MAGELLAN}
    */
 
   public void addTranslation(String original, String translated, int source) {
@@ -55,19 +56,6 @@ public class Translations {
     if (original == null)
       return;
 
-    // check if we have already a Translation to that string
-    if (translationMap != null) {
-      TranslationType translationType = translationMap.get(original);
-      if (translationType != null) {
-        // yes, we have already an Translation..setting new values
-        translationType.setSource(source);
-        translationType.setTranslation(translated);
-        return;
-      }
-    } else {
-      // translationMap create
-      translationMap = new HashMap<String, TranslationType>();
-    }
     // adding
     translationMap.put(original, new TranslationType(translated, source));
   }
@@ -79,7 +67,7 @@ public class Translations {
    * @return the translated string; if the original was not found, the original is returned.
    */
   public String getTranslation(String original) {
-    return getTranslation(original, TranslationType.sourceUnknown);
+    return getTranslation(original, TranslationType.SOURCE_UNKNWON);
   }
 
   /**
@@ -87,10 +75,10 @@ public class Translations {
    * sourceUnknown is chosen
    * 
    * @param original
-   * @param source One of {@link TranslationType#sourceUnknown},{@link TranslationType#sourceCR}, or
-   *          {@link TranslationType#sourceMagellan}
+   * @param source One of {@link TranslationType#SOURCE_UNKNWON},{@link TranslationType#SOURCE_CR},
+   *          or {@link TranslationType#SOURCE_MAGELLAN}
    * @return the translated string; if the original was not found, the original is returned unless
-   *         <code>source!= {@link TranslationType#sourceUnknown}</code>.
+   *         <code>source!= {@link TranslationType#SOURCE_UNKNWON}</code>.
    */
   public String getTranslation(String original, int source) {
     if (original == null)
@@ -100,10 +88,10 @@ public class Translations {
 
     TranslationType translationType = translationMap.get(original);
     if (translationType != null && translationType.getTranslation() != null) {
-      if (source == TranslationType.sourceUnknown || source == translationType.getSource())
+      if (source == TranslationType.SOURCE_UNKNWON || source == translationType.getSource())
         return translationType.getTranslation();
     }
-    if (source == TranslationType.sourceUnknown)
+    if (source == TranslationType.SOURCE_UNKNWON)
       // if we don´t searched for a specific source, we return original
       return original;
     else
@@ -119,8 +107,6 @@ public class Translations {
   public TranslationType getTranslationType(String original) {
     if (original == null)
       return null;
-    if (translationMap == null || translationMap.size() == 0)
-      return null;
 
     return translationMap.get(original);
 
@@ -130,9 +116,7 @@ public class Translations {
    * clear complete contents of the Translations
    */
   public void clear() {
-    if (translationMap != null) {
-      translationMap.clear();
-    }
+    translationMap.clear();
   }
 
   /**
@@ -142,9 +126,6 @@ public class Translations {
    */
   public void addAll(Translations translations, Rules rules) {
     if (translations != null && translations.iteratorKeys() != null) {
-      if (translationMap == null) {
-        translationMap = new HashMap<String, TranslationType>();
-      }
       for (Iterator<String> iter = translations.iteratorKeys(); iter.hasNext();) {
         String original = iter.next();
         TranslationType translationType = translations.getTranslationType(original);
@@ -160,8 +141,6 @@ public class Translations {
    * provides an Iterator over the keys = original strings
    */
   public Iterator<String> iteratorKeys() {
-    if (translationMap == null)
-      return null;
     return translationMap.keySet().iterator();
   }
 
@@ -169,9 +148,6 @@ public class Translations {
    * returns the size of the translations object (number of translations)
    */
   public int size() {
-    if (translationMap == null)
-      return 0;
-
     return translationMap.size();
   }
 
@@ -179,8 +155,6 @@ public class Translations {
    * provides a sorted set of the keys
    */
   public TreeSet<String> getKeyTreeSet() {
-    if (translationMap == null)
-      return null;
     return new TreeSet<String>(translationMap.keySet());
   }
 
@@ -190,9 +164,6 @@ public class Translations {
    * @param o
    */
   public void remove(String o) {
-    if (translationMap == null || translationMap.size() == 0)
-      return;
-    // we do nothing return...
     translationMap.remove(o);
   }
 
@@ -202,8 +173,6 @@ public class Translations {
    * @param s
    */
   public boolean contains(String s) {
-    if (translationMap == null)
-      return false;
     return translationMap.containsKey(s);
   }
 

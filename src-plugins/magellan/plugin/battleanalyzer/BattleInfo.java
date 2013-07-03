@@ -822,8 +822,8 @@ public class BattleInfo {
         log.warnOnce("unknown item type " + typeName);
       } else if (type.getCategory() != null
           && (type.getCategory().isDescendant(
-              world.rules.getItemCategory(EresseaConstants.C_WEAPONS)) || type.getCategory()
-              .isDescendant(world.rules.getItemCategory(EresseaConstants.C_ARMOUR)))) {
+              world.getRules().getItemCategory(EresseaConstants.C_WEAPONS)) || type.getCategory()
+              .isDescendant(world.getRules().getItemCategory(EresseaConstants.C_ARMOUR)))) {
         addItem(item);
       }
     }
@@ -2128,7 +2128,7 @@ public class BattleInfo {
       for (Item item : info.getItems()) {
         if (item.getItemType().getCategory() != null
             && item.getItemType().getCategory().isDescendant(
-                world.rules.getItemCategory(EresseaConstants.C_WEAPONS))) {
+                world.getRules().getItemCategory(EresseaConstants.C_WEAPONS))) {
           weapons.add(item);
           totalWeapons += item.getAmount();
         }
@@ -2582,11 +2582,11 @@ public class BattleInfo {
             builder.append(entry.getKey()).append(":");
             if (entry.getKey().getCategory() != null) {
               if (entry.getKey().getCategory().isDescendant(
-                  world.rules.getItemCategory(EresseaConstants.C_RANGED_WEAPONS))) {
+                  world.getRules().getItemCategory(EresseaConstants.C_RANGED_WEAPONS))) {
                 rear.add(hits);
                 rangedWeapons.add(entry.getKey());
               } else if (entry.getKey().getCategory().isDescendant(
-                  world.rules.getItemCategory(EresseaConstants.C_WEAPONS))) {
+                  world.getRules().getItemCategory(EresseaConstants.C_WEAPONS))) {
                 front.add(hits);
                 frontWeapons.add(entry.getKey());
               }

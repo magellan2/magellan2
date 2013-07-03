@@ -328,7 +328,7 @@ public class MergeUnitSkillsTest extends MagellanTestWithResources {
 
   protected static void assertSkill(GameData gd, String id, String skillName, int level, int change) {
     Unit unit = gd.getUnit(UnitID.createUnitID(id, gd.base));
-    Skill skill = unit.getSkill(gd.rules.getSkillType(StringID.create(skillName)));
+    Skill skill = unit.getSkill(gd.getRules().getSkillType(StringID.create(skillName)));
     if (skill != null) {
       assertEquals(level, skill.getLevel());
       assertEquals(change, skill.getChangeLevel());

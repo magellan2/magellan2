@@ -82,7 +82,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
         LuxuryPrice lp = r.getPrices().get(id);
 
         if (lp.getPrice() < 0) {
-          ItemType type = data.rules.getItemType(id);
+          ItemType type = data.getRules().getItemType(id);
 
           if (type != null)
             return type.getName().substring(0, 1) + r.maxLuxuries();
@@ -140,12 +140,12 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
     if (data == null)
       return;
 
-    ItemCategory cat = data.rules.getItemCategory(StringID.create("luxuries"));
+    ItemCategory cat = data.getRules().getItemCategory(StringID.create("luxuries"));
 
     if (cat == null)
       return;
 
-    for (Iterator<ItemType> iter = data.rules.getItemTypeIterator(); iter.hasNext();) {
+    for (Iterator<ItemType> iter = data.getRules().getItemTypeIterator(); iter.hasNext();) {
       ItemType type = iter.next();
 
       if ((type.getCategory() != null) && cat.equals(type.getCategory())) {

@@ -1436,7 +1436,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns horses.
    */
   public int getHorses() {
-    ItemType horsesIT = data.rules.getItemType(EresseaConstants.I_RHORSES);
+    ItemType horsesIT = data.getRules().getItemType(EresseaConstants.I_RHORSES);
     if (horsesIT != null) {
       RegionResource horseRR = getResource(horsesIT);
       if (horseRR != null)
@@ -1460,7 +1460,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns iron.
    */
   public int getIron() {
-    ItemType ironIT = data.rules.getItemType(EresseaConstants.I_RIRON);
+    ItemType ironIT = data.getRules().getItemType(EresseaConstants.I_RIRON);
     RegionResource ironRR = getResource(ironIT);
     if (ironRR != null)
       return ironRR.getAmount();
@@ -1482,7 +1482,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns laen.
    */
   public int getLaen() {
-    ItemType laenIT = data.rules.getItemType(EresseaConstants.I_RLAEN);
+    ItemType laenIT = data.getRules().getItemType(EresseaConstants.I_RLAEN);
     RegionResource laenRR = getResource(laenIT);
     if (laenRR != null)
       return laenRR.getAmount();
@@ -1756,7 +1756,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns peasants.
    */
   public int getPeasants() {
-    ItemType peasantType = data.rules.getItemType(EresseaConstants.I_PEASANTS);
+    ItemType peasantType = data.getRules().getItemType(EresseaConstants.I_PEASANTS);
     RegionResource peasantResource = getResource(peasantType);
     if (peasantResource != null)
       return peasantResource.getAmount();
@@ -1834,7 +1834,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns silver.
    */
   public int getSilver() {
-    RegionResource silverRR = getResource(data.rules.getItemType(EresseaConstants.I_RSILVER));
+    RegionResource silverRR = getResource(data.getRules().getItemType(EresseaConstants.I_RSILVER));
     if (silverRR != null)
       return silverRR.getAmount();
     return silver;
@@ -1855,7 +1855,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns sprouts.
    */
   public int getSprouts() {
-    ItemType sproutsIT = data.rules.getItemType(EresseaConstants.I_SPROUTS);
+    ItemType sproutsIT = data.getRules().getItemType(EresseaConstants.I_SPROUTS);
     RegionResource sproutsRR = getResource(sproutsIT);
     if (sproutsRR != null)
       return sproutsRR.getAmount();
@@ -1877,7 +1877,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns stones.
    */
   public int getStones() {
-    ItemType stonesIT = data.rules.getItemType(EresseaConstants.I_RSTONES);
+    ItemType stonesIT = data.getRules().getItemType(EresseaConstants.I_RSTONES);
     RegionResource stonesRR = getResource(stonesIT);
     if (stonesRR != null)
       return stonesRR.getAmount();
@@ -1953,7 +1953,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns trees.
    */
   public int getTrees() {
-    ItemType treesIT = data.rules.getItemType(EresseaConstants.I_TREES);
+    ItemType treesIT = data.getRules().getItemType(EresseaConstants.I_TREES);
     RegionResource treesRR = getResource(treesIT);
     if (treesRR != null)
       return treesRR.getAmount();

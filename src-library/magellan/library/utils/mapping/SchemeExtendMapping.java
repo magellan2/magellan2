@@ -138,15 +138,15 @@ public class SchemeExtendMapping implements LevelMapping {
       }
       HashSet<RegionType> scheme_rt = new HashSet<RegionType>();
       // create possible scheme terrains
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_PLAIN));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_FOREST));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_GLACIER));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_SWAMP));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_HIGHLAND));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_DESERT));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_MOUNTAIN));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_VOLCANO));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_ACTIVE_VOLCANO));
+      scheme_rt.add(data.getRules().getRegionType(EresseaConstants.RT_PLAIN));
+      scheme_rt.add(data.getRules().getRegionType(EresseaConstants.RT_FOREST));
+      scheme_rt.add(data.getRules().getRegionType(EresseaConstants.RT_GLACIER));
+      scheme_rt.add(data.getRules().getRegionType(EresseaConstants.RT_SWAMP));
+      scheme_rt.add(data.getRules().getRegionType(EresseaConstants.RT_HIGHLAND));
+      scheme_rt.add(data.getRules().getRegionType(EresseaConstants.RT_DESERT));
+      scheme_rt.add(data.getRules().getRegionType(EresseaConstants.RT_MOUNTAIN));
+      scheme_rt.add(data.getRules().getRegionType(EresseaConstants.RT_VOLCANO));
+      scheme_rt.add(data.getRules().getRegionType(EresseaConstants.RT_ACTIVE_VOLCANO));
 
       // now loop over all surounding regions for all astral regions
       for (Region region : data.getRegions()) {

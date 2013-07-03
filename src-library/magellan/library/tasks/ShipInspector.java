@@ -185,7 +185,7 @@ public class ShipInspector extends AbstractInspector {
     // travel on land)
     boolean isShip = getGameSpecificStuff().getGameSpecificRules().isShip(ship);
 
-    Rules rules = getData().rules;
+    Rules rules = getData().getRules();
     RegionType ozean = rules.getRegionType("Ozean");
 
     // TODO: We should consider harbors, too. But this is difficult because we don't know if

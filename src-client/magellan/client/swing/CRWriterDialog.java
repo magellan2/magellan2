@@ -84,6 +84,7 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.Translations;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.transformation.IdentityTransformer;
 
 /**
  * A GUI for writing a CR to a file or copy it to the clipboard. This class can be used as a
@@ -113,15 +114,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   private JCheckBox chkDelEmptyFactions = null;
   private JCheckBox chkExportHotspots = null;
 
-  private GameData data = null;
-
   /**
    * Create a stand-alone instance of CRWriterDialog.
    */
   public CRWriterDialog(GameData data) {
     super(null, false, null, data, new Properties());
     standAlone = true;
-    this.data = data;
     try {
       settings.load(new FileInputStream(new File(System.getProperty("user.home"),
           "CRWriterDialog.ini")));
@@ -137,7 +135,6 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    */
   public CRWriterDialog(Frame owner, boolean modal, GameData initData, Properties p) {
     super(owner, modal, null, initData, p);
-    data = initData;
     init();
   }
 
@@ -149,7 +146,6 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       Collection<Region> selectedRegions) {
     super(owner, modal, null, initData, p);
     regions = selectedRegions;
-    data = initData;
     init();
   }
 
@@ -772,299 +768,43 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
       GameData newData = data;
 
-      // if delemptyfactions is selected we need to have the newData cloned too
-      ui.setProgress(Resources.get("crwriterdialog.progress.cloning"), Math
-          .max(2, maxProgress / 20));
       if (chkDelEmptyFactions.isSelected() || chkDelStats.isSelected()
           || chkSelRegionsOnly.isSelected()) {
-        // make the clone here already.
-        try {
-          newData = data.clone();
-          if (newData == null)
-            throw new NullPointerException();
-          if (newData.isOutOfMemory()) {
-            JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"),
-                Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
-            CRWriterDialog.log.error(Resources.get("client.msg.outofmemory.text"));
-          }
-        } catch (CloneNotSupportedException e) {
-          CRWriterDialog.log.error(
-              "CRWriterDialog: trying to clone gamedata failed, fallback to merge method.", e);
-          newData = GameDataMerger.merge(data, data);
-        }
-        if (!MemoryManagment.isFreeMemory(newData.estimateSize())) {
-          JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources
-              .get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
-        }
+        ui.setProgress(Resources.get("crwriterdialog.progress.cloning"), Math.max(2,
+            maxProgress / 20));
+        newData = cloneData(data);
       }
 
-      ui.setProgress(Resources.get("crwriterdialog.progress.cleanfactions"),
-          maxProgress / 2 / 5 * 1);
       if (chkDelStats.isSelected()) {
         // delete points, person counts, spell school, alliances, messages
         // of privileged factions
         // Fiete: why only from privileged factions?
-        if (newData.getFactions() != null) {
-          boolean excludeBRegions =
-              (chkMessages.isSelected() && chkSelRegionsOnly.isSelected() && (regions != null) && (regions
-                  .size() > 0));
-
-          for (Faction f : newData.getFactions()) {
-            boolean found = true;
-
-            if (excludeBRegions) {
-              found = false;
-              for (Region reg : regions) {
-                if (found) {
-                  break;
-                }
-                for (Unit unit : reg.units()) {
-                  if (found) {
-                    break;
-                  }
-                  found = f.equals(unit.getFaction());
-                }
-              }
-            }
-
-            // here we del the stats !
-            f.setAverageScore(-1);
-            f.setScore(-1);
-            f.setPersons(-1);
-            f.setMigrants(-1);
-            f.setMaxMigrants(-1);
-            f.setSpellSchool(null);
-            f.setAllies(null);
-            f.setHeroes(-1);
-            f.setMaxHeroes(-1);
-
-            if (found && f.isPrivileged()) {
-              /**
-               * Fiete: removed here and called for every faction f.setAverageScore(-1);
-               * f.setScore(-1); f.setPersons(-1); f.setMigrants(-1); f.setMaxMigrants(-1);
-               * f.setSpellSchool(null); f.setAllies(null); // FIXED: heroes? (Fiete)
-               * f.setHeroes(-1); f.setMaxHeroes(-1);
-               **/
-              if (excludeBRegions && (f.getMessages() != null)) {
-
-                // ArrayList of Messages to be removed
-                ArrayList<Message> messageRemoveList = null;
-
-                for (Message mes : f.getMessages()) {
-                  found = false;
-
-                  for (Region reg : regions) {
-                    if (found) {
-                      break;
-                    }
-
-                    if (reg.getMessages() != null) {
-                      for (Message message : reg.getMessages()) {
-                        if (found) {
-                          break;
-                        }
-                        found = mes.equals(message);
-                      }
-                    }
-                  }
-
-                  if (!found) {
-                    // removed the remove from used iterator
-                    // it2.remove();
-                    // adding this message to our removeList
-                    if (messageRemoveList == null) {
-                      messageRemoveList = new ArrayList<Message>();
-                    }
-                    if (!messageRemoveList.contains(mes)) {
-                      messageRemoveList.add(mes);
-                    }
-                  }
-                }
-
-                // check if some messages should be removed
-                if (messageRemoveList != null && messageRemoveList.size() > 0) {
-                  for (Message removeM : messageRemoveList) {
-                    f.getMessages().remove(removeM);
-                  }
-                }
-              }
-            }
-          }
-        }
+        ui.setProgress(Resources.get("crwriterdialog.progress.cleanfactions"),
+            maxProgress / 2 / 5 * 1);
+        delStats(newData);
       }
 
-      ui.setProgress(Resources.get("crwriterdialog.progress.cleantranslations"),
-          maxProgress / 2 / 5 * 2);
       if (chkDelTrans.isSelected()) {
         // clean translation table
-        List<String> trans = new LinkedList<String>(newData.translations().getKeyTreeSet());
-        // List<String> trans = new
-        // LinkedList<String>(newData.translations().keySet());
+        ui.setProgress(Resources.get("crwriterdialog.progress.cleantranslations"),
+            maxProgress / 2 / 5 * 2);
 
-        // some static data that is not connected but needed
-        trans.remove("Einheit");
-        trans.remove("Person");
-        trans.remove("verwundet");
-        trans.remove("schwer verwundet");
-        trans.remove("erschöpft");
-
-        Collection<? extends Region> lookup = data.getRegions();
-
-        if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
-          lookup = regions;
-        }
-
-        boolean checkShips = chkShips.isSelected();
-        boolean checkUnits = chkUnits.isSelected();
-        // boolean checkUnitDetails = chkUnitDetails.isSelected();
-        // boolean checkSkills = chkSkills.isSelected();
-        // boolean checkOrders = chkOrders.isSelected();
-        // boolean checkItems = chkItems.isSelected();
-        boolean checkBuildings = chkBuildings.isSelected();
-        boolean checkSpells = chkSpellsAndPotions.isSelected();
-        boolean checkRegDetails = chkRegionDetails.isSelected();
-
-        for (Region r : lookup) {
-          trans.remove(r.getType().getID().toString());
-
-          if (checkRegDetails) {
-            for (magellan.library.RegionResource res : r.resources()) {
-              trans.remove(res.getID().toString());
-              trans.remove(res.getType().getID().toString());
-            }
-          }
-
-          if (checkShips) {
-            for (Ship ship : r.ships()) {
-              trans.remove(ship.getType().getID().toString());
-            }
-          }
-
-          if (checkBuildings) {
-            for (Building b : r.buildings()) {
-              trans.remove(b.getType().getID().toString());
-            }
-          }
-
-          if (checkUnits) {
-            for (Unit u : r.units()) {
-              trans.remove(u.getRace().getID().toString());
-
-              if (u.getRaceNamePrefix() != null) {
-                trans.remove(u.getRaceNamePrefix());
-              } else {
-                if ((u.getFaction() != null) && (u.getFaction().getRaceNamePrefix() != null)) {
-                  trans.remove(u.getFaction().getRaceNamePrefix());
-                }
-              }
-
-              for (Item item : u.getItems()) {
-                trans.remove(item.getItemType().getID().toString());
-              }
-
-              for (Skill skill : u.getSkills()) {
-                trans.remove(skill.getSkillType().getID().toString());
-              }
-            }
-          }
-        }
-
-        if (checkSpells) {
-          for (Spell sp : data.getSpells()) {
-            trans.remove(sp.getID().toString());
-            trans.remove(sp.getName());
-
-            for (String comp : sp.getComponents().keySet()) {
-              trans.remove(comp);
-            }
-          }
-
-          for (Potion potion : data.getPotions()) {
-            trans.remove(potion.getID().toString());
-            for (Item item : potion.ingredients()) {
-              trans.remove(item.getItemType().getID().toString());
-            }
-          }
-        }
-
-        if (trans.size() > 0) {
-          CRWriterDialog.log.debug("Following translations will be removed:");
-
-          // java.util.Map<String,String> newTrans = newData.translations();
-          Translations newTrans = newData.translations();
-
-          for (String translation : trans) {
-            newTrans.remove(translation);
-
-            if (CRWriterDialog.log.isDebugEnabled()) {
-              CRWriterDialog.log.debug("Removing: " + translation);
-            }
-          }
-        }
+        cleanTranslations(newData);
       }
 
-      ui.setProgress(Resources.get("crwriterdialog.progress.cleanemptyfactions"),
-          maxProgress / 2 / 5 * 3);
-      // Deleting empty Factions
       if (chkDelEmptyFactions.isSelected()) {
-        Collection<? extends Region> lookup = data.getRegions();
-        if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
-          lookup = regions;
-        }
-        // ArrayList of Factions to be removed
-        Set<Faction> factionRemoveList = new HashSet<Faction>();
-        // Looping through the factions
-        if (newData.getFactions() != null) {
-          for (Faction actF : newData.getFactions()) {
-            boolean found = false;
-            // Looping through exported regions or all regions to see if the faction has a unit
-            // lookup is set already
-            if (lookup != null && lookup.size() > 0) {
-              for (Region reg : lookup) {
-                if (found) {
-                  break;
-                }
-                for (Unit unit : reg.units()) {
-                  if (found) {
-                    break;
-                  }
-                  found = actF.equals(unit.getFaction());
-                }
-              }
-
-              if (!found) {
-                factionRemoveList.add(actF);
-              }
-            }
-          }
-        }
-
-        // remove code
-        // check if factions should be removed
-        if (factionRemoveList.size() > 0) {
-          for (Faction removeF : factionRemoveList) {
-            // Removing the faction from newData
-            newData.removeFaction(removeF.getID());
-
-            // alliances...if one of the partners is our delete Faction->delete
-            cleanAllianzes(newData, removeF);
-          }
-          for (Iterator<AllianceGroup> iterator = newData.getAllianceGroups().iterator(); iterator
-              .hasNext();) {
-            AllianceGroup alliance = iterator.next();
-            if (alliance.getFactions().size() == 0) {
-              iterator.remove();
-            }
-          }
-        }
+        ui.setProgress(Resources.get("crwriterdialog.progress.cleanemptyfactions"),
+            maxProgress / 2 / 5 * 3);
+        // Deleting empty Factions
+        deleteEmptyFactions(newData);
       }
 
       ui.setProgress(Resources.get("crwriterdialog.progress.cleanmessages"),
           maxProgress / 2 / 5 * 4);
       // Messages: remove all messages concerning regions not in selection
       if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
-        this.cleanMessages(newData, regions);
-        this.cleanBattles(newData, regions);
+        cleanMessages(newData, regions);
+        cleanBattles(newData, regions);
       }
 
       CRWriter crw = new CRWriter(newData, ui, out);
@@ -1098,6 +838,279 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       JOptionPane.showMessageDialog(this, Resources.get("crwriterdialog.msg.exporterror.text")
           + exc.toString(), Resources.get("crwriterdialog.msg.exporterror.title"),
           JOptionPane.WARNING_MESSAGE);
+    }
+  }
+
+  protected GameData cloneData(GameData data2) {
+    // if delemptyfactions is selected we need to have the newData cloned too
+    GameData newData;
+    // make the clone here already.
+    try {
+      newData = data.clone();
+      if (newData == null)
+        throw new NullPointerException();
+      if (newData.isOutOfMemory()) {
+        JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources
+            .get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
+        CRWriterDialog.log.error(Resources.get("client.msg.outofmemory.text"));
+      }
+    } catch (CloneNotSupportedException e) {
+      CRWriterDialog.log.error(
+          "CRWriterDialog: trying to clone gamedata failed, fallback to merge method.", e);
+      newData = GameDataMerger.merge(data, new IdentityTransformer());
+    }
+    if (!MemoryManagment.isFreeMemory(newData.estimateSize())) {
+      JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources
+          .get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
+    }
+    return newData;
+  }
+
+  protected void delStats(GameData newData) {
+    if (newData.getFactions() != null) {
+      boolean excludeBRegions =
+          (chkMessages.isSelected() && chkSelRegionsOnly.isSelected() && (regions != null) && (regions
+              .size() > 0));
+
+      for (Faction f : newData.getFactions()) {
+        boolean found = true;
+
+        if (excludeBRegions) {
+          found = false;
+          for (Region reg : regions) {
+            if (found) {
+              break;
+            }
+            for (Unit unit : reg.units()) {
+              if (found) {
+                break;
+              }
+              found = f.equals(unit.getFaction());
+            }
+          }
+        }
+
+        // here we del the stats !
+        f.setAverageScore(-1);
+        f.setScore(-1);
+        f.setPersons(-1);
+        f.setMigrants(-1);
+        f.setMaxMigrants(-1);
+        f.setSpellSchool(null);
+        f.setAllies(null);
+        f.setHeroes(-1);
+        f.setMaxHeroes(-1);
+
+        if (found && f.isPrivileged()) {
+          /**
+           * Fiete: removed here and called for every faction f.setAverageScore(-1); f.setScore(-1);
+           * f.setPersons(-1); f.setMigrants(-1); f.setMaxMigrants(-1); f.setSpellSchool(null);
+           * f.setAllies(null); // FIXED: heroes? (Fiete) f.setHeroes(-1); f.setMaxHeroes(-1);
+           **/
+          if (excludeBRegions && (f.getMessages() != null)) {
+
+            // ArrayList of Messages to be removed
+            ArrayList<Message> messageRemoveList = null;
+
+            for (Message mes : f.getMessages()) {
+              found = false;
+
+              for (Region reg : regions) {
+                if (found) {
+                  break;
+                }
+
+                if (reg.getMessages() != null) {
+                  for (Message message : reg.getMessages()) {
+                    if (found) {
+                      break;
+                    }
+                    found = mes.equals(message);
+                  }
+                }
+              }
+
+              if (!found) {
+                // removed the remove from used iterator
+                // it2.remove();
+                // adding this message to our removeList
+                if (messageRemoveList == null) {
+                  messageRemoveList = new ArrayList<Message>();
+                }
+                if (!messageRemoveList.contains(mes)) {
+                  messageRemoveList.add(mes);
+                }
+              }
+            }
+
+            // check if some messages should be removed
+            if (messageRemoveList != null && messageRemoveList.size() > 0) {
+              for (Message removeM : messageRemoveList) {
+                f.getMessages().remove(removeM);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  protected void cleanTranslations(GameData newData) {
+    List<String> trans = new LinkedList<String>(newData.translations().getKeyTreeSet());
+    // List<String> trans = new
+    // LinkedList<String>(newData.translations().keySet());
+
+    // some static data that is not connected but needed
+    trans.remove("Einheit");
+    trans.remove("Person");
+    trans.remove("verwundet");
+    trans.remove("schwer verwundet");
+    trans.remove("erschöpft");
+
+    Collection<? extends Region> lookup = data.getRegions();
+
+    if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
+      lookup = regions;
+    }
+
+    boolean checkShips = chkShips.isSelected();
+    boolean checkUnits = chkUnits.isSelected();
+    // boolean checkUnitDetails = chkUnitDetails.isSelected();
+    // boolean checkSkills = chkSkills.isSelected();
+    // boolean checkOrders = chkOrders.isSelected();
+    // boolean checkItems = chkItems.isSelected();
+    boolean checkBuildings = chkBuildings.isSelected();
+    boolean checkSpells = chkSpellsAndPotions.isSelected();
+    boolean checkRegDetails = chkRegionDetails.isSelected();
+
+    for (Region r : lookup) {
+      trans.remove(r.getType().getID().toString());
+
+      if (checkRegDetails) {
+        for (magellan.library.RegionResource res : r.resources()) {
+          trans.remove(res.getID().toString());
+          trans.remove(res.getType().getID().toString());
+        }
+      }
+
+      if (checkShips) {
+        for (Ship ship : r.ships()) {
+          trans.remove(ship.getType().getID().toString());
+        }
+      }
+
+      if (checkBuildings) {
+        for (Building b : r.buildings()) {
+          trans.remove(b.getType().getID().toString());
+        }
+      }
+
+      if (checkUnits) {
+        for (Unit u : r.units()) {
+          trans.remove(u.getRace().getID().toString());
+
+          if (u.getRaceNamePrefix() != null) {
+            trans.remove(u.getRaceNamePrefix());
+          } else {
+            if ((u.getFaction() != null) && (u.getFaction().getRaceNamePrefix() != null)) {
+              trans.remove(u.getFaction().getRaceNamePrefix());
+            }
+          }
+
+          for (Item item : u.getItems()) {
+            trans.remove(item.getItemType().getID().toString());
+          }
+
+          for (Skill skill : u.getSkills()) {
+            trans.remove(skill.getSkillType().getID().toString());
+          }
+        }
+      }
+    }
+
+    if (checkSpells) {
+      for (Spell sp : data.getSpells()) {
+        trans.remove(sp.getID().toString());
+        trans.remove(sp.getName());
+
+        for (String comp : sp.getComponents().keySet()) {
+          trans.remove(comp);
+        }
+      }
+
+      for (Potion potion : data.getPotions()) {
+        trans.remove(potion.getID().toString());
+        for (Item item : potion.ingredients()) {
+          trans.remove(item.getItemType().getID().toString());
+        }
+      }
+    }
+
+    if (trans.size() > 0) {
+      CRWriterDialog.log.debug("Following translations will be removed:");
+
+      Translations newTrans = newData.translations();
+
+      for (String translation : trans) {
+        newTrans.remove(translation);
+
+        if (CRWriterDialog.log.isDebugEnabled()) {
+          CRWriterDialog.log.debug("Removing: " + translation);
+        }
+      }
+    }
+  }
+
+  protected void deleteEmptyFactions(GameData newData) {
+    Collection<? extends Region> lookup = data.getRegions();
+    if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
+      lookup = regions;
+    }
+    // ArrayList of Factions to be removed
+    Set<Faction> factionRemoveList = new HashSet<Faction>();
+    // Looping through the factions
+    if (newData.getFactions() != null) {
+      for (Faction actF : newData.getFactions()) {
+        boolean found = false;
+        // Looping through exported regions or all regions to see if the faction has a unit
+        // lookup is set already
+        if (lookup != null && lookup.size() > 0) {
+          for (Region reg : lookup) {
+            if (found) {
+              break;
+            }
+            for (Unit unit : reg.units()) {
+              if (found) {
+                break;
+              }
+              found = actF.equals(unit.getFaction());
+            }
+          }
+
+          if (!found) {
+            factionRemoveList.add(actF);
+          }
+        }
+      }
+    }
+
+    // remove code
+    // check if factions should be removed
+    if (factionRemoveList.size() > 0) {
+      for (Faction removeF : factionRemoveList) {
+        // Removing the faction from newData
+        newData.removeFaction(removeF.getID());
+
+        // alliances...if one of the partners is our delete Faction->delete
+        cleanAllianzes(newData, removeF);
+      }
+      for (Iterator<AllianceGroup> iterator = newData.getAllianceGroups().iterator(); iterator
+          .hasNext();) {
+        AllianceGroup alliance = iterator.next();
+        if (alliance.getFactions().size() == 0) {
+          iterator.remove();
+        }
+      }
     }
   }
 

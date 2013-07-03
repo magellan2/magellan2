@@ -41,8 +41,6 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.RulesException;
-import magellan.library.gamebinding.atlantis.AtlantisConstants;
-import magellan.library.gamebinding.atlantis.AtlantisOrderChanger;
 import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
@@ -78,7 +76,7 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
     data.base = 10;
     unit = data.getUnits().iterator().next();
     region = unit.getRegion();
-    changer = (AtlantisOrderChanger) data.getRules().getGameSpecificStuff().getOrderChanger();
+    changer = (AtlantisOrderChanger) data.getGameSpecificStuff().getOrderChanger();
   }
 
   @Test

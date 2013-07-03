@@ -158,7 +158,7 @@ public abstract class MagellanFactory {
     r.setName(Resources.get("gamedata.region.thevoid.name"));
     r.setDescription(Resources.get("gamedata.region.thevoid.beschr"));
     gameData.addTranslation(EresseaConstants.RT_VOID.toString(), Resources
-        .get("gamedata.region.thevoid.name"), TranslationType.sourceMagellan);
+        .get("gamedata.region.thevoid.name"), TranslationType.SOURCE_MAGELLAN);
     return r;
   }
 

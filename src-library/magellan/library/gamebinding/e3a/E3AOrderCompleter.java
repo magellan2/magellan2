@@ -233,7 +233,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     super.cmpltMacheAmount();
     if (hasSkill(getUnit(), EresseaConstants.S_BURGENBAU)
         && (!getCompleterSettingsProvider().getLimitMakeCompletion() || (Units
-            .getContainerPrivilegedUnitItem(getRegion(), getData().rules
+            .getContainerPrivilegedUnitItem(getRegion(), getData().getRules()
                 .getItemType(EresseaConstants.I_WOOD)) != null))) {
       addCompletion(new Completion(getOrderTranslation(E3AConstants.OC_WATCH), " "));
     }
@@ -248,7 +248,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
    * Complete REKTUTIERE x Rasse
    */
   public void cmpltRekrutiereAmount() {
-    for (Race r : getData().rules.getRaces()) {
+    for (Race r : getData().getRules().getRaces()) {
       if (r.getRecruitmentCosts() > 0) {
         addCompletion(new Completion(getRuleItemTranslation("race.1." + r.getID())));
       }

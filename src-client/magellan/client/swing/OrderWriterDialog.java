@@ -1449,7 +1449,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         stream = out;
       }
 
-      GameSpecificOrderWriter cw = data.getRules().getGameSpecificStuff().getOrderWriter();
+      GameSpecificOrderWriter cw = data.getGameSpecificStuff().getOrderWriter();
       cw.setGameData(data);
       cw.setFaction(faction);
 

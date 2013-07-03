@@ -185,7 +185,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
         if (orders != null) {
           // Pfad gefunden
-          Map<ID, RegionType> excludeMap = Regions.getNonLandRegionTypes(data.rules);
+          Map<ID, RegionType> excludeMap = Regions.getNonLandRegionTypes(data.getRules());
 
           int speed =
               Math.max(1, u.getData().getGameSpecificStuff().getMovementEvaluator()

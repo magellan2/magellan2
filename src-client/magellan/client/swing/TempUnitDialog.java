@@ -362,8 +362,8 @@ public class TempUnitDialog extends InternationalizedDialog {
     if (settings.getProperty("TempUnitDialog.LastOrderEmpty", "false").equals("true")) {
       order.setText(null);
     } else {
-      order.setText(getFaction().getData().getRules().getGameSpecificStuff().getOrderChanger()
-          .getOrder(getFaction().getLocale(), EresseaConstants.OC_LEARN));
+      order.setText(getFaction().getData().getGameSpecificStuff().getOrderChanger().getOrder(
+          getFaction().getLocale(), EresseaConstants.OC_LEARN));
     }
 
     descript.setText(null);

@@ -1544,8 +1544,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
             StringID id = (StringID) key;
             name = id;
 
-            if ((data != null) && (data.rules != null)) {
-              RegionType rt = data.rules.getRegionType(id);
+            if ((data != null) && (data.getRules() != null)) {
+              RegionType rt = data.getRules().getRegionType(id);
 
               if (rt != null) {
                 name = rt;

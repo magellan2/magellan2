@@ -46,13 +46,13 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
     int maxTerrainMismatches =
         (int) (Math.max(fromData.getRegions().size(), toData.getRegions().size()) * TerrainMappingEvaluator.PERCENT_MISMATCHES);
 
-    RegionType forestTerrain = fromData.rules.getRegionType(StringID.create("Wald"));
-    RegionType plainTerrain = fromData.rules.getRegionType(StringID.create("Ebene"));
-    RegionType oceanTerrain = fromData.rules.getRegionType(StringID.create("Ozean"));
-    RegionType glacierTerrain = fromData.rules.getRegionType(StringID.create("Gletscher"));
+    RegionType forestTerrain = fromData.getRules().getRegionType(StringID.create("Wald"));
+    RegionType plainTerrain = fromData.getRules().getRegionType(StringID.create("Ebene"));
+    RegionType oceanTerrain = fromData.getRules().getRegionType(StringID.create("Ozean"));
+    RegionType glacierTerrain = fromData.getRules().getRegionType(StringID.create("Gletscher"));
     RegionType activeVolcanoTerrain =
-        fromData.rules.getRegionType(StringID.create("Aktiver Vulkan"));
-    RegionType volcanoTerrain = fromData.rules.getRegionType(StringID.create("Vulkan"));
+        fromData.getRules().getRegionType(StringID.create("Aktiver Vulkan"));
+    RegionType volcanoTerrain = fromData.getRules().getRegionType(StringID.create("Vulkan"));
 
     int mismatches = 0;
     int score = 0;

@@ -163,7 +163,7 @@ public class GiveOrder extends UnitArgumentOrder {
         String targetID;
         try {
           targetID =
-              unit.getData().getRules().getGameSpecificStuff().getOrderChanger().getTokenLocalized(
+              unit.getData().getGameSpecificStuff().getOrderChanger().getTokenLocalized(
                   unit.getLocale(), target);
         } catch (RulesException e) {
           targetID = "TEMP " + target;
@@ -213,7 +213,7 @@ public class GiveOrder extends UnitArgumentOrder {
           rel.add();
         } else if (type == EresseaConstants.OC_HERBS) {
           // create relations for all herbs the unit carries
-          ItemCategory herbCategory = data.rules.getItemCategory(StringID.create(("HERBS")));
+          ItemCategory herbCategory = data.getRules().getItemCategory(StringID.create(("HERBS")));
 
           if ((herbCategory != null)) {
             for (ItemType i : eState.getHerbTypes()) {

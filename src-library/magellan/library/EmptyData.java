@@ -64,7 +64,7 @@ public class EmptyData extends GameData {
    * Takes rules, game name, date, base, version, locale and "noSkillPoints" from data.
    */
   public EmptyData(GameData data) {
-    super(data.rules, data.getGameName());
+    super(data.getRules(), data.getGameName());
     setDate(data.getDate());
     base = data.base;
     version = data.version;
@@ -258,16 +258,6 @@ public class EmptyData extends GameData {
   }
 
   /**
-   * @see magellan.library.GameData#addTranslation(java.lang.String, java.lang.String, int)
-   */
-  @Override
-  public void addTranslation(String from, String to, int source) {
-    super.addTranslation(from, to, source);
-    // TODO called from postProces...
-    // throw new UnsupportedOperationException("cannot add to EmptyData");
-  }
-
-  /**
    * @see magellan.library.GameData#clearTranslations(magellan.library.EntityID)
    */
   @Override
@@ -281,7 +271,7 @@ public class EmptyData extends GameData {
   @Override
   public GameData clone() throws CloneNotSupportedException {
     // FIXME need more here...
-    return new EmptyData(rules, getGameName());
+    return new EmptyData(getRules(), getGameName());
   }
 
   /**
@@ -289,7 +279,7 @@ public class EmptyData extends GameData {
    */
   @Override
   public GameData clone(CoordinateID newOrigin) throws CloneNotSupportedException {
-    return new EmptyData(rules, getGameName());
+    return new EmptyData(getRules(), getGameName());
   }
 
   /**
@@ -297,7 +287,7 @@ public class EmptyData extends GameData {
    */
   @Override
   public GameData clone(ReportTransformer coordinateTranslator) throws CloneNotSupportedException {
-    return new EmptyData(rules, getGameName());
+    return new EmptyData(getRules(), getGameName());
   }
 
   /**

@@ -60,7 +60,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
           || name.equalsIgnoreCase(magellan.library.Spell.Component.PERMANENT_AURA))
         return null;
       else
-        return data.rules.getItemType(name);
+        return data.getRules().getItemType(name);
     }
 
     public String getName() {
@@ -421,8 +421,8 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
   private String getOrderTranslation(StringID orderId) {
     // FIXME use correct unit locale
-    return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-        Locales.getOrderLocale(), orderId);
+    return data.getGameSpecificStuff().getOrderChanger()
+        .getOrder(Locales.getOrderLocale(), orderId);
   }
 
   /**

@@ -697,7 +697,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
       weapons.clear();
     }
 
-    Rules r = data.rules;
+    Rules r = data.getRules();
     weapon = r.getItemCategory(StringID.create("weapons"));
 
     if (weapon == null)

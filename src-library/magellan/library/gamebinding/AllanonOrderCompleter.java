@@ -107,7 +107,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
     if (aUnit != null) {
       if ((aUnit.getModifiedBuilding() != null)
           && aUnit.getModifiedBuilding().getType().equals(
-              getData().rules.getBuildingType(EresseaConstants.B_ACADEMY))) {
+              getData().getRules().getBuildingType(EresseaConstants.B_ACADEMY))) {
         if (cost == 0) {
           cost = 100;
         } else {
@@ -234,7 +234,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
             new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1",
                 " "));
     getCompletions().add(
-        new Completion(getData().rules.getItemType(EresseaConstants.I_USILVER).getOrderName()));
+        new Completion(getData().getRules().getItemType(EresseaConstants.I_USILVER).getOrderName()));
   }
 
 }

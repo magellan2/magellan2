@@ -56,7 +56,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     builder = new GameDataBuilder();
     data = builder.createSimpleGameData();
     unit = data.getUnits().iterator().next();
-    changer = (EresseaOrderChanger) data.getRules().getGameSpecificStuff().getOrderChanger();
+    changer = (EresseaOrderChanger) data.getGameSpecificStuff().getOrderChanger();
   }
 
   /**

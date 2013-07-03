@@ -1008,14 +1008,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       }
     }
 
-    cmds.addAll(getData().getRules().getGameSpecificStuff().getOrderChanger().getTempOrders(
+    cmds.addAll(getData().getGameSpecificStuff().getOrderChanger().getTempOrders(
         writeUnitTagsAsVorlageComment, this));
 
     return new MagellanOrdersImplementation(this, Collections.unmodifiableList(cmds));
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
+    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
   /**
@@ -2262,8 +2262,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    *         from this unit's orders.
    */
   public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale) {
-    return gdata.getRules().getGameSpecificStuff().getOrderChanger().extractTempUnits(gdata,
-        tempSortIndex, locale, this);
+    return gdata.getGameSpecificStuff().getOrderChanger().extractTempUnits(gdata, tempSortIndex,
+        locale, this);
   }
 
   /*************************************************************************************

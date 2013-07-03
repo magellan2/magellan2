@@ -30,7 +30,7 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.rules.Date;
-import magellan.library.rules.UnitContainerType;
+import magellan.library.rules.RegionType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -105,10 +105,10 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
         }
       }
 
-      UnitContainerType type = r.getType();
+      RegionType type = r.getRegionType();
 
       if (type != null) {
-        String imageName = type.getID().toString();
+        String imageName = type.getMapImage();
 
         // first try a season specific icon
         // Fiete 20080518: check, if seasonal images wanted...

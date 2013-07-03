@@ -56,10 +56,6 @@ public class CRGameNameIO implements GameNameIO {
     }
 
     CRGameNameIO.log.warn("Loader.getGameName(): report header does not contain 'Spiel' tag!");
-    // oopsa! Fiete 20090105
-    // this means if we load bullshit eressea is returned. checkgametype is going to missfunction
-    // this way!
-    // return "Eressea";
-    return CRGameNameIO.nameUndef;
+    return null;
   }
 }

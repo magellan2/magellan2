@@ -40,6 +40,8 @@ public class FileType {
   // basically identified file types
   public static final String CR = ".cr";
   public static final String XML = ".xml";
+  private static final String NR = ".nr";
+  private static final String R = ".r";
 
   // basically identified compression types with single entry
   public static final String GZIP = ".gz";
@@ -302,6 +304,10 @@ public class FileType {
     return this instanceof BZip2FileType;
   }
 
+  public boolean isNRFile() {
+    return getInnerName().endsWith(FileType.NR) || getInnerName().endsWith(FileType.R);
+  }
+
   /**
    * Signals that the file cannot be written to.
    */
@@ -390,4 +396,5 @@ public class FileType {
     }
     return encoding;
   }
+
 }

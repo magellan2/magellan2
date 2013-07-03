@@ -1792,8 +1792,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       }
       setPaintMode(modeBox.getSelectedIndex());
       // settings.setProperty(paintKey, String.valueOf(paintMode));
-      initFactionColors(data);
-      initRegionColors(data);
+      if (data != null) {
+        initFactionColors(data);
+        initRegionColors(data);
+      }
       saveFactionColors();
       saveRegionColors();
       saveOceanColor();

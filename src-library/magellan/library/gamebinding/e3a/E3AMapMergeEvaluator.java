@@ -44,7 +44,7 @@ import magellan.library.utils.mapping.UnitIDMapping;
  * @version 1.1, 21.05.2008
  */
 public class E3AMapMergeEvaluator extends EresseaMapMergeEvaluator {
-  protected E3AMapMergeEvaluator(Rules rules) {
+  public E3AMapMergeEvaluator(Rules rules) {
     super(rules);
   }
 

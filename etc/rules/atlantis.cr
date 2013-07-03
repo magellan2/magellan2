@@ -2,7 +2,7 @@ VERSION 66
 RULES "$Id: atlantis.cr 1720"
 
 MAGELLAN
-"magellan.library.gamebinding.e3a.AtlantisSpecificStuff";class
+"magellan.library.gamebinding.AtlantisSpecificStuff";class
 "FACTION";orderFileStartingString
 
 ORDER "FORM"
@@ -268,7 +268,7 @@ RACE "Menschen"
 5;capacity
 
 
-ITEM "silver"
+ITEM "Silber"
 "silver";name
 1;weight;
 "silver";category
@@ -295,7 +295,7 @@ ITEM "horse"
 "horse";name
 1;weight;
 "resources";category
-"Horse training"; makeskill
+"Horse Training";makeskill
 1;ishorse
 
 ITEM "sword"
@@ -303,6 +303,7 @@ ITEM "sword"
 1;weight;
 "distance weapons";category
 "Sword";useskill
+"Weaponsmith";makeskill
 1;makeskilllevel
 RESOURCES
 1;iron
@@ -312,6 +313,7 @@ ITEM "longbow"
 1;weight;
 "distance weapons";category
 "Longbow";useskill
+"Weaponsmith";makeskill
 1;makeskilllevel
 RESOURCES
 1;wood
@@ -321,6 +323,7 @@ ITEM "crossbow"
 1;weight;
 "weapons";category
 "Crossbow";useskill
+"Weaponsmith";makeskill
 1;makeskilllevel
 RESOURCES
 1;wood
@@ -331,7 +334,7 @@ ITEM "chain mail"
 "armour";category
 "Armorer";makeskill
 RESOURCES
-3;Eisen
+1;iron
 
 ITEM "plate mail"
 "plate mail";name
@@ -340,7 +343,7 @@ ITEM "plate mail"
 "Armorer";makeskill
 3;makeskilllevel
 RESOURCES
-1;Eisen
+1;iron
 
 
 
@@ -354,7 +357,7 @@ SHIPTYPE "Longboat"
 0;captainlevel
 0;sailorlevel
 RAWMATERIALS
-1;Holz
+1;wood
 
 SHIPTYPE "Clipper"
 "Clipper";name
@@ -365,7 +368,7 @@ SHIPTYPE "Clipper"
 0;captainlevel
 0;sailorlevel
 RAWMATERIALS
-1;Holz
+1;wood
 
 SHIPTYPE "Galleon"
 "Galleon";name
@@ -376,7 +379,7 @@ SHIPTYPE "Galleon"
 0;captainlevel
 0;sailorlevel
 RAWMATERIALS
-1;Holz
+1;wood
 
 CASTLETYPE "Building"
 "Building";name
@@ -390,23 +393,28 @@ REGIONTYPE "mountain"
 "mountain";name
 1666;maxworkers
 "true";isLand
+"Berge";mapImage
 
 REGIONTYPE "plain"
 "plain";name
 6666;maxworkers
 "true";isLand
+"Ebene";mapImage
 
 REGIONTYPE "swamp"
 "swamp";name
 3333;maxworkers
 "true";isLand
+"Sumpf";mapImage
 
 REGIONTYPE "forest"
 "forest";name
 6666;maxworkers
 "true";isLand
+"Wald";mapImage
 
 REGIONTYPE "ocean"	
 "ocean";name
 0;maxworkers
 "true";isOcean
+"Ozean";mapImage

@@ -113,7 +113,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
           if (schemeRegion != null) {
             UnitContainerType type = schemeRegion.getType();
             if (type != null) {
-              String imageName = type.getID().toString();
+              String imageName = type.getIcon();
 
               Rectangle rect =
                   cellGeo.getImageRect(schemeCoord.getX() - relation.getX(), schemeCoord.getY()

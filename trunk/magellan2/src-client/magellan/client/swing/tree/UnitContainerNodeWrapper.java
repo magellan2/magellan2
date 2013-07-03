@@ -133,7 +133,8 @@ public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements Supp
     List<String> iconNames = UnitContainerNodeWrapper.iconNamesLists.get(key);
 
     if (iconNames == null) {
-      iconNames = Collections.singletonList(StringFactory.getFactory().intern(key.toString()));
+      iconNames =
+          Collections.singletonList(StringFactory.getFactory().intern(uc.getType().getIcon()));
       UnitContainerNodeWrapper.iconNamesLists.put(key, iconNames);
     }
 

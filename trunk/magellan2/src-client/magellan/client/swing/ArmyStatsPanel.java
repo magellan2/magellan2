@@ -315,7 +315,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
   protected DefaultMutableTreeNode addRegionArmies(DefaultMutableTreeNode root, RegionArmies armies) {
     DefaultMutableTreeNode regRoot =
-        new DefaultMutableTreeNode(new SimpleNodeWrapper(armies, armies.region.getType().getID()
+        new DefaultMutableTreeNode(new SimpleNodeWrapper(armies, armies.region.getType().getIcon()
             .toString()
             + "-detail"));
     root.add(regRoot);
@@ -389,7 +389,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
   protected void addArmy(DefaultMutableTreeNode root, Army army) {
     DefaultMutableTreeNode armyRoot =
         new DefaultMutableTreeNode(new SimpleNodeWrapper(army, army.shortString ? (army.region
-            .getType().getID().toString() + "-detail") : getArmyIcon(army.owner)));
+            .getType().getIcon() + "-detail") : getArmyIcon(army.owner)));
     root.add(armyRoot);
 
     for (int i = 0; i < 2; i++) {
@@ -407,7 +407,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
               String icon = null;
 
               if (wg.weapon != null) {
-                icon = "items/" + wg.weapon.getIconName();
+                icon = "items/" + wg.weapon.getIcon();
               } else {
                 icon = "warnung";
               }
@@ -464,15 +464,15 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
     }
 
     if (unit.weapon != null) {
-      col.add("items/" + unit.weapon.getIconName());
+      col.add("items/" + unit.weapon.getIcon());
     }
 
     if (unit.armour != null) {
-      col.add("items/" + unit.armour.getIconName());
+      col.add("items/" + unit.armour.getIcon());
     }
 
     if (unit.shield != null) {
-      col.add("items/" + unit.shield.getIconName());
+      col.add("items/" + unit.shield.getIcon());
     }
 
     return col;

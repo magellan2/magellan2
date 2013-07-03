@@ -234,79 +234,95 @@ SKILLCATEGORY "misc"
 SKILL "Mining"
 "Mining";name
 "resource";category
+"Bergbau";iconname
 
 SKILL "Lumberjack"
 "Lumberjack";name
 "resource";category
+"Holzfällen";iconname
 
 SKILL "Quarrying"
 "Quarrying";name
 "resource";category
+"Steinbau";iconname
 
 SKILL "Horse Training"
 "Horse Training";name
 "resource";category
+"Pferdedressur";iconname
 
 SKILL "Weaponsmith"
 "Weaponsmith";name
 "build";category
+"Waffenbau";iconname
 
 SKILL "Armorer"
 "Armorer";name
 "build";category
+"Ruestungsbau";iconname
 
 SKILL "Building"
 "Building";name
 "build";category
+"Burgenbau";iconname
 
 SKILL "Shipbuilding"
 "Shipbuilding";name
 "build";category
+"Schiffbau";iconname
 
 SKILL "Entertainment"
 "Entertainment";name
 "silver";category
+"Unterhaltung";iconname
 
 SKILL "Stealth"
 "Stealth";name
 "misc";category
+"Tarnung";iconname
 
 SKILL "Observation"
 "Observation";name
 "misc";category
+"Wahrnehmung";iconname
 
 SKILL "Tactics"
 "Tactics";name
 "war";category
 200;cost
+"Taktik";iconname
 
 SKILL "Riding"
 "Riding";name
 "misc";category
+"Reiten";iconname
 
 SKILL "Sword"
 "Sword";name
 "war";category
+"Hiebwaffen";iconname
 
 SKILL "Crossbow"
 "Crossbow";name
 "war";category
+"Armbrustschiessen";iconname
 
 SKILL "Longbow"
 "Longbow";name
 "war";category
+"Bogenschiessen";iconname
 
 SKILL "Magic"
 "Magic";name
 "magic";category
 200;cost
+"Magie";iconname
 
 RACE "Menschen"
 "Menschen";name
 50;recruitmentcosts
 10;weight
 5;capacity
-
 
 ITEM "Silber"
 "silver";name
@@ -318,18 +334,21 @@ ITEM "wood"
 1;weight;
 "resources";category
 "Lumberjack";makeskill
+"Holz";iconname
 
 ITEM "stone"
 "stone";name
 50;weight;
 "resources";category
 "Quarrying";makeskill
+"Stein";iconname
 
 ITEM "iron"
 "iron";name
 1;weight;
 "resources";category
 "Mining";makeskill
+"Eisen";iconname
 
 ITEM "horse"
 "horse";name
@@ -337,6 +356,7 @@ ITEM "horse"
 "resources";category
 "Horse Training";makeskill
 1;ishorse
+"Pferd";iconname
 
 ITEM "sword"
 "sword";name
@@ -345,6 +365,7 @@ ITEM "sword"
 "Sword";useskill
 "Weaponsmith";makeskill
 1;makeskilllevel
+"Schwert";iconname
 RESOURCES
 1;iron
 
@@ -355,6 +376,7 @@ ITEM "longbow"
 "Longbow";useskill
 "Weaponsmith";makeskill
 1;makeskilllevel
+"Bogen";iconname
 RESOURCES
 1;wood
 
@@ -365,6 +387,7 @@ ITEM "crossbow"
 "Crossbow";useskill
 "Weaponsmith";makeskill
 1;makeskilllevel
+"Armbrust";iconname
 RESOURCES
 1;wood
 
@@ -373,6 +396,7 @@ ITEM "chain mail"
 1;weight;
 "armour";category
 "Armorer";makeskill
+"Kettenhemd";iconname
 RESOURCES
 1;iron
 
@@ -382,6 +406,7 @@ ITEM "plate mail"
 "armour";category
 "Armorer";makeskill
 3;makeskilllevel
+"Plattenpanzer";iconname
 RESOURCES
 1;iron
 
@@ -396,6 +421,7 @@ SHIPTYPE "Longboat"
 200;capacity
 0;captainlevel
 0;sailorlevel
+"langboot";iconname
 RAWMATERIALS
 1;wood
 
@@ -407,6 +433,7 @@ SHIPTYPE "Clipper"
 800;capacity
 0;captainlevel
 0;sailorlevel
+"schoner";iconname
 RAWMATERIALS
 1;wood
 
@@ -418,6 +445,7 @@ SHIPTYPE "Galleon"
 1800;capacity
 0;captainlevel
 0;sailorlevel
+"galeone";iconname
 RAWMATERIALS
 1;wood
 
@@ -425,6 +453,7 @@ CASTLETYPE "Building"
 "Building";name
 1;level
 1;minsize
+"Burg";iconname
 RAWMATERIALS
 1;stone
 
@@ -433,28 +462,28 @@ REGIONTYPE "mountain"
 "mountain";name
 1666;maxworkers
 "true";isLand
-"Berge";mapImage
+"Berge";iconname
 
 REGIONTYPE "plain"
 "plain";name
 6666;maxworkers
 "true";isLand
-"Ebene";mapImage
+"Ebene";iconname
 
 REGIONTYPE "swamp"
 "swamp";name
 3333;maxworkers
 "true";isLand
-"Sumpf";mapImage
+"Sumpf";iconname
 
 REGIONTYPE "forest"
 "forest";name
 6666;maxworkers
 "true";isLand
-"Wald";mapImage
+"Wald";iconname
 
 REGIONTYPE "ocean"	
 "ocean";name
 0;maxworkers
 "true";isOcean
-"Ozean";mapImage
+"Ozean";iconname

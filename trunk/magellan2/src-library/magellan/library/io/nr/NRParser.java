@@ -21,22 +21,32 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import magellan.library.Alliance;
+import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.MissingData;
 import magellan.library.Region;
 import magellan.library.Rules;
+import magellan.library.Ship;
+import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.gamebinding.AtlantisConstants;
 import magellan.library.io.AbstractReportParser;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesIO;
 import magellan.library.io.file.FileType;
+import magellan.library.rules.ItemType;
+import magellan.library.rules.MessageType;
 import magellan.library.rules.RegionType;
+import magellan.library.rules.ShipType;
+import magellan.library.rules.SkillType;
+import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
@@ -71,28 +81,49 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static String id = "([0-9]+)";
   protected static String id2 = "\\(" + id + "\\)";
   protected static String name = "([^()]*)";
+  protected static String identifier = "([^(),;.]*)";
   protected static String word = "(\\w+)";
   protected static String num = "(" + number + ")";
   protected static String atlantisLine = "\\s*" + name + " Turn Report(.*)";
   protected static String factionLine = "\\s*" + name + " " + id2 + "\\s*";
-  protected static String dateLine = "\\s*" + name + ", Year " + num + "\\s*";
+  protected static String dateLine = "\\s*((In the Beginning)|(" + name + ", Year " + num
+      + "))\\s*";
   protected static String mistakesLine = "\\s*Mistakes\\s*";
   protected static String messageLine = "^(.*)$";
   protected static String messagesLine = "\\s*Messages\\s*";
-  protected static String object = name + " " + id2;
-  protected static String object2 = "\\s" + name + " " + id2 + "\\s*";
+  protected static String object = name + "\\s+" + id2;
+  protected static String object2 = "\\s" + name + "\\s+" + id2 + "\\s*";
   protected static String eventsLine = "\\s*Events During Turn\\s*";
   protected static String statusLine = "\\s*Current Status\\s*";
-  protected static String alliedLine = "You are allied to " + object + "(," + object + ")*\\.";
+  protected static String alliedLine = "You are allied to\\s+" + object + "(," + object + ")*\\.";
   protected static String coord2 = "(\\((" + num + "),(" + num + ")\\))";
   protected static String coord3 = "(\\((" + num + "),(" + num + "),(" + num + ")\\))";
   protected static String ocean = "ocean";
-  protected static String regionLine = "^" + name + " " + coord2 + ", " + word
-      + "(, exits: ([^.]*))?.\\s*(peasants: (" + num + ")(, \\$(" + num + "))?.)?";
-  protected static String peasantsLine = "^peasants: " + num + ", \\$" + num + "\\.";
+  protected static String regionLine = "^" + name + "?\\s+" + coord2 + ",\\s+" + word
+      + "(,\\s+exits:\\s+([^.]*))?.\\s*(peasants:\\s+(" + num + ")(,\\s+\\$(" + num + "))?.)?";
+  protected static String peasantsLine = "^peasants:\\s+" + num + "(,\\s+\\$" + num + ")\\.";
+
+  protected static String exitsPart = "exits:\\s+([^.]*)";
+  protected static String exitPart = word;
+  protected static String peasantsPart = "peasants:\\s+(" + num + ")";
+  protected static String peasantPart = num;
+
   //
-  protected static String unitLine = "  ([*-+]) " + object + "(.*)";
-  protected static String knownUnitLine = "  ([*-+]) " + object + ", faction " + object + "(.*)";
+  protected static String unitLine = "  *([*+-])\\s+" + object + "(,\\s+faction\\s+" + object
+      + ")?([^.]*)?\\.";
+
+  protected static String defaultPart = "default:\\s+\"([^\"]*)\"";
+  protected static String skillsPart = "skills:\\s+" + name + "\\s+" + num + "\\s+\\[" + num
+      + "\\]";
+  protected static String skillPart = name + "\\s+" + num + "\\s+\\[" + num + "\\]";
+  protected static String itemsPart = "has:\\s+" + num + "\\s+" + name;
+  protected static String itemPart = num + "\\s+" + name;
+  protected static String numberPart = "number:\\s+" + num;
+  protected static String combatStatusPart = "behind";
+  protected static String silverPart = "\\$" + num;
+
+  protected static String buildingLine = "   +" + object + "(,\\s+size\\s+" + num + ")(.*)\\.";
+  protected static String shipLine = "   +" + object + "(,\\s+" + identifier + ")(.*)\\.";
 
   protected static Pattern idPattern = Pattern.compile(id);
   protected static Pattern id2Pattern = Pattern.compile(id2);
@@ -118,7 +149,17 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static Pattern peasantsLinePattern = Pattern.compile(peasantsLine);
   //
   protected static Pattern unitLinePattern = Pattern.compile(unitLine);
-  protected static Pattern knownUnitLinePattern = Pattern.compile(knownUnitLine);
+  protected static Pattern defaultPartPattern = Pattern.compile(defaultPart);
+  protected static Pattern skillsPartPattern = Pattern.compile(skillsPart);
+  protected static Pattern skillPartPattern = Pattern.compile(skillPart);
+  protected static Pattern itemsPartPattern = Pattern.compile(itemsPart);
+  protected static Pattern itemPartPattern = Pattern.compile(itemPart);
+  protected static Pattern numberPartPattern = Pattern.compile(numberPart);
+  protected static Pattern combatStatusPartPattern = Pattern.compile(combatStatusPart);
+  protected static Pattern silverPartPattern = Pattern.compile(silverPart);
+
+  protected static Pattern shipLinePattern = Pattern.compile(shipLine);
+  protected static Pattern buildingLinePattern = Pattern.compile(buildingLine);
 
   protected static StringID oceanType = StringID.create(ocean);
 
@@ -141,6 +182,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   public int lnr = 0;
 
   public String directions[] = { "south", "ydd", "east", "north", "mir", "west" };
+
+  public UnitContainerType castleType;
 
   /**
    * Creates a new parser.
@@ -202,6 +245,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     try {
       world = data;
       reader = new BufferedReader(in);
+      castleType = world.getRules().getBuildingType(AtlantisConstants.B_BUILDING);
 
       nextLine();
       while (line != null && line.length() == 0) {
@@ -218,7 +262,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
                 r.parse();
                 break;
               } catch (ParseException e) {
-                log.warn("unexpected line: " + line, e);
+                error(e);
                 if (line.length() == 0) {
                   break;
                 }
@@ -358,13 +402,18 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
         return "expected pattern " + pattern + " but found line: " + line;
     }
 
+    public String getLine() {
+      return line;
+    }
+
   }
 
   protected class AbstractReader {
-    protected Matcher matcher;
+    protected Matcher lineMatcher, partMatcher;
     protected boolean matched;
 
     protected Pattern startPattern;
+    protected Pattern partPattern;
 
     AbstractReader(Pattern pattern) {
       startPattern = pattern;
@@ -380,8 +429,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
           throw new ParseException(pattern, line);
         else
           return false;
-      matcher = pattern.matcher(line);
-      matched = matcher.matches();
+      lineMatcher = pattern.matcher(line);
+      matched = lineMatcher.matches();
       if (!matched && exception)
         throw new ParseException(pattern, line);
       return matched;
@@ -391,6 +440,14 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       return expectLine(pattern, true);
     }
 
+    protected boolean matches(Pattern pattern, String part) {
+      if (part == null)
+        return false;
+      partMatcher = pattern.matcher(part);
+      boolean val = partMatcher.matches();
+      partPattern = val ? pattern : null;
+      return val;
+    }
   }
 
   class HeaderReader extends AbstractReader implements SectionReader {
@@ -401,19 +458,23 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     public void parse() throws IOException, ParseException {
       expectLine(atlantisLinePattern);
-      world.setGameName(matcher.group(1));
+      world.setGameName(lineMatcher.group(1));
       world.base = 10;
       nextLine(false, false);
 
       expectLine(factionLinePattern);
       EntityID factionId;
-      world.setOwnerFaction(factionId = EntityID.createEntityID(matcher.group(2), world.base));
+      world.setOwnerFaction(factionId = EntityID.createEntityID(lineMatcher.group(2), world.base));
       ownerFaction = getAddFaction(factionId);
-      ownerFaction.setName(matcher.group(1));
+      ownerFaction.setName(lineMatcher.group(1));
       nextLine(false, false);
 
       expectLine(dateLinePattern);
-      world.setDate(new SimpleDate(matcher.group(1), matcher.group(2)));
+      if (lineMatcher.group(2) != null && lineMatcher.group(2).length() > 0) {
+        world.setDate(new SimpleDate(null, "0"));
+      } else {
+        world.setDate(new SimpleDate(lineMatcher.group(4), lineMatcher.group(5)));
+      }
       nextLine();
     }
   }
@@ -432,11 +493,12 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       nextLine(true, true);
 
       while (line != null && line.length() > 0) {
-        messages.add(MagellanFactory.createMessage(line));
+        Message message;
+        messages.add(message = MagellanFactory.createMessage(line));
+        message.setType(MessageType.NO_TYPE);
         nextLine(true, false);
       }
     }
-
   }
 
   public class StatusReader extends AbstractReader implements SectionReader {
@@ -452,10 +514,10 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       if (expectLine(alliedLinePattern, false)) {
         Map<EntityID, Alliance> allies =
             CollectionFactory.<EntityID, Alliance> createSyncOrderedMap();
-        addAlly(allies, matcher.group(2), matcher.group(1));
+        addAlly(allies, lineMatcher.group(2), lineMatcher.group(1));
 
-        if (matcher.group(3) != null && matcher.group(3).length() > 0) {
-          StringTokenizer tokenizer = new StringTokenizer(matcher.group(3), ",");
+        if (lineMatcher.group(3) != null && lineMatcher.group(3).length() > 0) {
+          StringTokenizer tokenizer = new StringTokenizer(lineMatcher.group(3), ",");
           while (tokenizer.hasMoreTokens()) {
             String part = tokenizer.nextToken();
             Matcher m = object2Pattern.matcher(part);
@@ -484,84 +546,265 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   public class RegionReader extends AbstractReader implements SectionReader {
 
+    private Region currentRegion;
+    private Unit currentUnit;
+    private Ship currentShip;
+    private Building currentBuilding;
+
     RegionReader() {
       super(regionLinePattern);
     }
 
     public void parse() throws IOException, ParseException {
+      try {
+        if (expectLine(regionLinePattern)) {
+          // "^" + name + "?\\s+" + coord2 + ", " + word +
+          // "(, exits: ([^.]*))?.\\s*(peasants: ("+num+")(, $("+num+"))?.)?";
+          CoordinateID c =
+              CoordinateID.parse(lineMatcher.group(2).substring(1,
+                  lineMatcher.group(2).length() - 1), ",");
 
-      if (expectLine(regionLinePattern)) {
-        // "^" + name + " " + coord2 + ", " + word +
-        // "(, exits: ([^.]*))?.\\s*(peasants: ("+num+")(, $("+num+"))?.)?";
-        CoordinateID c =
-            CoordinateID.parse(matcher.group(2).substring(1, matcher.group(2).length() - 1), ",");
+          if (c == null)
+            throw new ParseException("no region coordinate", line);
 
-        if (c == null)
-          throw new ParseException("no region coordinate", line);
+          c = originTranslate(c);
 
-        c = originTranslate(c);
+          currentRegion = world.getRegion(c);
 
-        Region region = world.getRegion(c);
-
-        if (region == null) {
-          region = MagellanFactory.createRegion(c, world);
-        }
-        if (!ocean.equals(matcher.group(7))) {
-          region.setName(matcher.group(1));
-        }
-
-        try {
-          final RegionType type =
-              world.rules.getRegionType(StringID.create(matcher.group(7)), true);
-          region.setType(type);
-        } catch (final IllegalArgumentException e) {
-          region.setType(RegionType.unknown);
-          // can happen in StringID constructor if sc.argv[0] == ""
-          log.warn("CRParser.parseRegion(): found region without a valid region type in line "
-              + lnr);
-        }
-
-        parseExits(region, matcher.group(9));
-        nextLine(true, false);
-        if (expectLine(peasantsLinePattern, false)) {
-          // TODO
-          nextLine(true, false);
-        }
-        if (world.getRegion(region.getCoordinate()) == null) {
-          world.addRegion(region);
-        }
-
-        while (line != null && line.length() > 0) {
-          Unit unit = null;
-          if (expectLine(knownUnitLinePattern, false)) {
-            unit = getAddUnit(UnitID.createUnitID(matcher.group(3), world.base), false);
-            unit.setName(matcher.group(2));
-            Faction faction = getAddFaction(EntityID.createEntityID(matcher.group(5), world.base));
-            if (faction.getName() == null) {
-              faction.setName(matcher.group(4));
-            }
-            unit.setFaction(faction);
-          } else if (expectLine(unitLinePattern, false)) {
-            unit = getAddUnit(UnitID.createUnitID(matcher.group(3), world.base), false);
-            if (unit.getName() != null) {
-              unit.setName(matcher.group(2));
-            }
-            unit.setHideFaction(true);
+          if (currentRegion == null) {
+            currentRegion = MagellanFactory.createRegion(c, world);
           }
-          if (unit != null) {
-            // if (humans=null)
-            // humans=world.getRules().getRaces().iterator().next();
-            // unit.setRace(humans);
-            unit.setRace(world.getRules().getRaces().iterator().next());
-            unit.setRegion(region);
+          if (lineMatcher.group(1) != null) {
+            currentRegion.setName(lineMatcher.group(1));
           }
+
+          try {
+            final RegionType type =
+                world.rules.getRegionType(StringID.create(lineMatcher.group(7)), true);
+            currentRegion.setType(type);
+          } catch (final IllegalArgumentException e) {
+            currentRegion.setType(RegionType.unknown);
+            // can happen in StringID constructor if sc.argv[0] == ""
+            log.warn("CRParser.parseRegion(): found region without a valid region type in line "
+                + lnr);
+          }
+
+          parseExits(currentRegion, lineMatcher.group(9));
+          if (lineMatcher.group(12) != null) {
+            currentRegion.setPeasants(Integer.parseInt(lineMatcher.group(12)));
+          }
+          if (lineMatcher.group(14) != null) {
+            currentRegion.setSilver(Integer.parseInt(lineMatcher.group(14)));
+          }
+
           nextLine(true, false);
+          if (expectLine(peasantsLinePattern, false)) {
+            // "^peasants: " + num + "(, \\$" + num + ")\\.";
+            if (lineMatcher.group(1) != null) {
+              currentRegion.setPeasants(Integer.parseInt(lineMatcher.group(12)));
+            }
+            if (lineMatcher.group(2) != null) {
+              currentRegion.setSilver(Integer.parseInt(lineMatcher.group(14)));
+            }
+            nextLine(true, false);
+          }
+          if (world.getRegion(currentRegion.getCoordinate()) == null) {
+            world.addRegion(currentRegion);
+          }
+
+          while (line != null) {
+            if (line.length() == 0) {
+              currentBuilding = null;
+              currentShip = null;
+              nextLine(true, false);
+              if (expectLine(regionLinePattern, false)) {
+                break;
+              }
+            } else if (expectLine(unitLinePattern, false)) {
+              parseUnit();
+            } else if (expectLine(buildingLinePattern, false)) {
+              parseBuilding();
+            } else if (expectLine(shipLinePattern, false)) {
+              parseShip();
+            } else {
+              log.warn("unmatched line: " + line);
+              currentBuilding = null;
+              currentShip = null;
+              nextLine(true, false);
+            }
+          }
+          if (line != null && line.length() == 0) {
+            nextLine(true, true);
+          }
         }
-        if (line != null && line.length() == 0) {
-          nextLine(true, true);
+      } finally {
+        currentRegion = null;
+      }
+    }
+
+    protected void parseShip() throws IOException {
+      // shipLine = "    " + object + "(,\\s+" + identifier + ")(.*)\\.";
+      currentShip =
+          MagellanFactory.createShip(EntityID.createEntityID(lineMatcher.group(2), world.base),
+              world);
+      world.addShip(currentShip);
+      currentShip.setRegion(currentRegion);
+      currentShip.setName(lineMatcher.group(1));
+      if (lineMatcher.group(3) != null) {
+        if (world.getRules().getShipType(lineMatcher.group(4)) == null) {
+          log.warn("unknown ship type " + lineMatcher.group(4));
         }
+        ShipType type = world.getRules().getShipType(lineMatcher.group(4), true);
+        currentShip.setType(type);
       }
 
+      int semi = lineMatcher.group(5).indexOf(";");
+      String predesc;
+      if (semi >= 0) {
+        predesc = lineMatcher.group(5).substring(0, semi);
+        currentShip.setDescription(lineMatcher.group(5).substring(semi + 2));
+      } else {
+        predesc = lineMatcher.group(5);
+      }
+
+      currentBuilding = null;
+      nextLine(true, false);
+    }
+
+    protected void parseBuilding() throws IOException {
+      // buildingLine = "   " + object + "(,\\s+size\\s+" + num + ")?(.*)\\.";
+      currentBuilding =
+          MagellanFactory.createBuilding(EntityID.createEntityID(lineMatcher.group(2), world.base),
+              world);
+      world.addBuilding(currentBuilding);
+      currentBuilding.setRegion(currentRegion);
+      currentBuilding.setName(lineMatcher.group(1));
+      currentBuilding.setType(castleType);
+      if (lineMatcher.group(3) != null) {
+        currentBuilding.setSize(Integer.parseInt(lineMatcher.group(4)));
+      }
+
+      int semi = lineMatcher.group(5).indexOf(";");
+      String predesc;
+      if (semi >= 0) {
+        predesc = lineMatcher.group(5).substring(0, semi);
+        currentBuilding.setDescription(lineMatcher.group(5).substring(semi + 2));
+      } else {
+        predesc = lineMatcher.group(5);
+      }
+
+      currentShip = null;
+      nextLine(true, false);
+    }
+
+    private void parseUnit() throws ParseException, IOException {
+      // unitLine = "  ([*-+]) " + object + "(, faction " + object + ")?([^.]*)?\\.";
+      try {
+        currentUnit = getAddUnit(UnitID.createUnitID(lineMatcher.group(3), world.base), false);
+        currentUnit.setName(lineMatcher.group(2));
+
+        Faction faction = null;
+        if (lineMatcher.group(4) != null) {
+          faction = getAddFaction(EntityID.createEntityID(lineMatcher.group(6), world.base));
+          if (faction.getName() == null) {
+            faction.setName(lineMatcher.group(5));
+          }
+        } else {
+          faction = getAddFaction(EntityID.createEntityID(-1, world.base));
+          faction.setName(Resources.get("crparser.nofaction"));
+          currentUnit.setHideFaction(true);
+        }
+        currentUnit.setFaction(faction);
+
+        // if (humans=null)
+        // humans=world.getRules().getRaces().iterator().next();
+        // unit.setRace(humans);
+        currentUnit.setRace(world.getRules().getRaces().iterator().next());
+        currentUnit.setRegion(currentRegion);
+
+        if (currentBuilding != null) {
+          currentUnit.setBuilding(currentBuilding);
+          if (currentBuilding.getOwnerUnit() == null) {
+            currentBuilding.setOwner(currentUnit);
+          }
+        }
+        if (currentShip != null) {
+          currentUnit.setShip(currentShip);
+          if (currentShip.getOwnerUnit() == null) {
+            currentShip.setOwner(currentUnit);
+          }
+        }
+
+        int semi = lineMatcher.group(7).indexOf(";");
+        String predesc;
+        if (semi >= 0) {
+          predesc = lineMatcher.group(7).substring(0, semi);
+          currentUnit.setDescription(lineMatcher.group(7).substring(semi + 2));
+        } else {
+          predesc = lineMatcher.group(7);
+        }
+        StringTokenizer tokenizer = new StringTokenizer(predesc, ",");
+        while (tokenizer.hasMoreTokens()) {
+          // defaultPart = "default: \"([^\"]*)\"";
+          // skillsPart = "skills: " + name + " " + num +"\\[" + num + "\\]";
+          // skillPart = name + " " + num +"\\[" + num + "\\]";
+          // itemsPart = "has: " + num + " " + name;
+          // itemPart = num + " " + name;
+          // numberPart = "number: " + num;
+          String part = tokenizer.nextToken().trim();
+          if (matches(defaultPartPattern, part)) {
+            currentUnit.addOrder(partMatcher.group(1));
+            if (currentUnit.getCombatStatus() == -1) {
+              currentUnit.setCombatStatus(AtlantisConstants.CS_FRONT);
+            }
+          } else if (matches(skillsPartPattern, part)) {
+            addSkill(currentUnit, partMatcher.group(1), Integer.parseInt(partMatcher.group(2)),
+                Integer.parseInt(partMatcher.group(3)));
+          } else if (matches(skillPartPattern, part)) {
+            if (partPattern == skillsPartPattern || partPattern == skillPartPattern) {
+              addSkill(currentUnit, partMatcher.group(1), Integer.parseInt(partMatcher.group(2)),
+                  Integer.parseInt(partMatcher.group(3)));
+            }
+          } else if (matches(itemsPartPattern, part)) {
+            addItem(currentUnit, partMatcher.group(2), Integer.parseInt(partMatcher.group(1)));
+          } else if (matches(itemPartPattern, part)) {
+            if (partPattern == itemsPartPattern || partPattern == itemPartPattern) {
+              addItem(currentUnit, partMatcher.group(2), Integer.parseInt(partMatcher.group(1)));
+            }
+          } else if (matches(numberPartPattern, part)) {
+            currentUnit.setPersons(Integer.parseInt(partMatcher.group(1)));
+          } else if (matches(combatStatusPartPattern, part)) {
+            currentUnit.setCombatStatus(AtlantisConstants.CS_REAR);
+          } else if (matches(silverPartPattern, part)) {
+            addItem(currentUnit, "silver", Integer.parseInt(partMatcher.group(1)));
+          } else {
+            log.warn("unmatched part: " + part);
+          }
+        }
+
+        partMatcher = null;
+        nextLine(true, false);
+      } finally {
+        currentUnit = null;
+      }
+    }
+
+    protected void addItem(Unit unit, String item, int amount) {
+      if (world.getRules().getItemType(item) == null) {
+        log.warn("unknown item " + item);
+      }
+      ItemType itemType = world.getRules().getItemType(item, true);
+      unit.addItem(new Item(itemType, amount));
+    }
+
+    protected void addSkill(Unit unit, String skillName, int level, int days) {
+      if (world.getRules().getSkillType(skillName) == null) {
+        log.warn("unknown skill " + skillName);
+      }
+      SkillType skillType = world.getRules().getSkillType(skillName, true);
+      Skill skill;
+      unit.addSkill(skill = new Skill(skillType, days, level, unit.getPersons(), false));
+      skill.setChangeLevel(0);
     }
 
     private void parseExits(Region region, String group) throws ParseException {
@@ -600,4 +843,5 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       }
     }
   }
+
 }

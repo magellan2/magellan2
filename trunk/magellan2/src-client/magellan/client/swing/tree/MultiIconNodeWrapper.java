@@ -118,13 +118,13 @@ public class MultiIconNodeWrapper extends DefaultNodeWrapper implements CellObje
     //
     // if(isShowingIconText()) {
     // ge = new GraphicsElement(Integer.valueOf(s.getLevel()), null, null,
-    // s.getSkillType().getID().toString());
+    // s.getSkillType().getIcon());
     //
     // if(s.isLostSkill()) {
     // ge.setObject("-");
     // }
     // } else {
-    // ge = new GraphicsElement(null, null, s.getSkillType().getID().toString());
+    // ge = new GraphicsElement(null, null, s.getSkillType().getIcon());
     // }
     //
     // ge.setTooltip(s.getSkillType().getName());

@@ -24,9 +24,11 @@
 package magellan.library.gamebinding;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.CompleteData;
+import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Message;
 import magellan.library.Region;
@@ -88,6 +90,14 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    */
   public void postProcess(GameData data) {
     // TODO implement
+    if (data.getLocale() == null) {
+      data.setLocale(Locale.ENGLISH);
+    }
+    for (Faction f : data.getFactions()) {
+      if (f.getLocale() == null) {
+        f.setLocale(Locale.ENGLISH);
+      }
+    }
   }
 
   /**

@@ -31,12 +31,12 @@ public class SimpleDate extends Date {
   private int month;
   private int year;
 
-  public SimpleDate(String month2, String year) {
+  public SimpleDate(String aMonth, String year) {
     super(1);
 
     month = 0;
     for (month = 0; month < months.length; ++month)
-      if (months[month].equals(month2)) {
+      if (months[month].equals(aMonth)) {
         break;
       }
     try {

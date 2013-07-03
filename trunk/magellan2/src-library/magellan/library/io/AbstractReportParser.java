@@ -34,12 +34,15 @@ import magellan.library.GameData;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.io.nr.NRParser.ParseException;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.UserInterface;
+import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.ReportTransformer;
 
 public class AbstractReportParser {
+  protected static final Logger log = Logger.getInstance(AbstractReportParser.class);
 
   protected GameData world;
   protected String game;
@@ -47,6 +50,11 @@ public class AbstractReportParser {
   protected UserInterface ui = null;
   protected Faction firstFaction;
   protected ReportTransformer transformer;
+  protected int errors;
+
+  private Exception firstError;
+  private Exception lastError;
+
   protected static final String number = "[\\+\\-]?\\d+";
 
   /**
@@ -229,6 +237,19 @@ public class AbstractReportParser {
    */
   public Faction getFirstFaction() {
     return firstFaction;
+  }
+
+  public int getErrors() {
+    return errors;
+  }
+
+  protected void error(ParseException e) {
+    errors++;
+    log.warn("unexpected line: ", e);
+    if (firstError != null) {
+      firstError = e;
+    }
+    lastError = e;
   }
 
 }

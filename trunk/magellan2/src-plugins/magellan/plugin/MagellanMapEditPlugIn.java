@@ -142,7 +142,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
       toAdd.setActionCommand(regionTypeIdentifier + rType.getID().toString());
       toAdd.addActionListener(this);
       toAdd.setIcon(client.getMagellanContext().getImageFactory().loadImageIcon(
-          rType.getID().toString() + "-detail"));
+          rType.getIcon() + "-detail"));
       menu.add(toAdd);
     }
   }
@@ -179,7 +179,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
           toAdd.setActionCommand(herbTypeIdentifier + type.getID().toString());
           toAdd.addActionListener(this);
           toAdd.setIcon(client.getMagellanContext().getImageFactory().loadImageIcon(
-              "/items/" + type.getIconName()));
+              "/items/" + type.getIcon()));
           menu.add(toAdd);
         }
         menu.addSeparator();

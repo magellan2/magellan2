@@ -23,11 +23,32 @@ import magellan.library.impl.MagellanNamedImpl;
  * @version $Revision: 203 $
  */
 public abstract class ObjectType extends MagellanNamedImpl {
+  private String icon;
+  private boolean iconNameEvaluated;
+
   /**
    * Creates a new ObjectType object.
    */
   public ObjectType(ID id) {
     super(id);
+  }
+
+  /**
+   * Returns the file name of the icon to use for this object.
+   */
+  public String getIcon() {
+    if (icon != null)
+      return icon;
+    else
+      return icon = getID().toString().toLowerCase();
+  }
+
+  /**
+   * Sets the file name of the icon used for this object.
+   */
+  public void setIcon(String icon) {
+    this.icon = icon.toLowerCase();
+    iconNameEvaluated = false;
   }
 
 }

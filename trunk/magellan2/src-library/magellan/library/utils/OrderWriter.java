@@ -159,7 +159,7 @@ public class OrderWriter {
     this.group = group;
   }
 
-  private void writeHeader(BufferedWriter stream) throws IOException {
+  protected void writeHeader(BufferedWriter stream) throws IOException {
     // FIXME this might be locale dependent
     stream.write(world.rules.getOrderfileStartingString());
     stream.write(" " + faction.getID());

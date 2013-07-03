@@ -116,7 +116,7 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
    * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
-    String key = modItem.getItemType().getIconName();
+    String key = modItem.getItemType().getIcon();
     List<String> iconNames = ItemNodeWrapper.iconNamesLists.get(key);
 
     if (iconNames == null) {

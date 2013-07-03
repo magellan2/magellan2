@@ -544,6 +544,14 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
   }
 
+  /**
+   * Translates c by newOrigin if it's in the same z-level and returns it.
+   */
+  @Override
+  protected CoordinateID originTranslate(CoordinateID c) {
+    return transformer.transform(c).translate(CoordinateID.create(c.getY() * -1, 0));
+  }
+
   public class RegionReader extends AbstractReader implements SectionReader {
 
     private Region currentRegion;

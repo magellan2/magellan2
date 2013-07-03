@@ -61,7 +61,7 @@ public class AbstractReportParser {
    * Translates c by newOrigin if it's in the same z-level and returns it.
    */
   protected CoordinateID originTranslate(CoordinateID c) {
-    return transformer.transform(c).translate(CoordinateID.create(c.getY() * -1, 0));
+    return transformer.transform(c);
   }
 
   /**

@@ -194,7 +194,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
 
   protected void firstHandle(String line) throws IOException {
     List<LineHandler> matching = applyHandler(line);
-    if (matching.size() != 1 || !(matching.get(0) instanceof StartingHandler)) {
+    if (matching == null || matching.size() != 1 || !(matching.get(0) instanceof StartingHandler)) {
       log.warn("order file does not start with orde file starting string");
       status.errors++;
     }
@@ -269,6 +269,8 @@ public abstract class OrderReader implements GameSpecificOrderReader {
           OrderReader.log.info("OrderReader.read(): The faction with id " + fID + " (" + token
               + ") is not present in the game data, skipping this faction.");
           status.errors++;
+        } else {
+          status.factions++;
         }
       } catch (NumberFormatException e) {
         OrderReader.log.error("OrderReader.read(): Unable to parse faction id: " + e.toString()

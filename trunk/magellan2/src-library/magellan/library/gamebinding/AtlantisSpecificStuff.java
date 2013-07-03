@@ -292,7 +292,11 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
 
       @Override
       protected List<LineHandler> getHandlers(String token) {
-        return Collections.singletonList(handlers.find(normalize(token)));
+        LineHandler found = handlers.find(normalize(token));
+        if (found != null)
+          return Collections.singletonList(found);
+        else
+          return Collections.emptyList();
       }
 
     };

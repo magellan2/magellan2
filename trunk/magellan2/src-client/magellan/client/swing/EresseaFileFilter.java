@@ -27,7 +27,12 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
   /** Selects .cr-files */
   public static final int CR_FILTER = 0;
 
-  /** Selects .txt-files */
+  /**
+   * Selects .txt-files
+   * 
+   * @deprecated replaced by TXT_ORDERS_FILTER
+   */
+  @Deprecated
   public static final int TXT_FILTER = 1;
 
   /** Selects .zip-files */
@@ -48,11 +53,19 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
   /** Selects .nr files */
   public static final int NR_FILTER = 7;
 
-  /** Selects .r files */
-  public static final int ATLANTIS_FILTER = 8;
+  /** Selects .json files */
+  public static final int JSON_FILTER = 8;
+
+  /** Selects .txt-files */
+  public static final int TXT_ORDERS_FILTER = TXT_FILTER;
+
+  /** Selects .txt-files */
+  public static final int ANY_TXT_FILTER = 9;
 
   private List<String> extensions;
   protected String description = "";
+
+  protected int flag = -1;
 
   /**
    * Creates a new EresseaFileFilter object.
@@ -63,12 +76,13 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
     extensions = new LinkedList<String>();
     switch (flag) {
     case CR_FILTER:
-    case TXT_FILTER:
     case ZIP_FILTER:
     case GZ_FILTER:
     case BZ2_FILTER:
-    case ATLANTIS_FILTER:
+    case JSON_FILTER:
     case NR_FILTER:
+    case TXT_ORDERS_FILTER: // == TXT_FILTER
+    case ANY_TXT_FILTER:
       extensions.add(getExtension(flag));
       break;
     case ALLCR_FILTER:
@@ -76,6 +90,7 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
       extensions.add(getExtension(EresseaFileFilter.ZIP_FILTER));
       extensions.add(getExtension(EresseaFileFilter.GZ_FILTER));
       extensions.add(getExtension(EresseaFileFilter.BZ2_FILTER));
+      extensions.add(getExtension(EresseaFileFilter.JSON_FILTER));
       break;
     case ALLCR_COMPRESSED_FILTER:
       extensions.add(getExtension(EresseaFileFilter.ZIP_FILTER));
@@ -86,6 +101,7 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
       throw new IllegalArgumentException("Unsupported filter type");
     }
     description = getDescription(flag);
+    this.flag = flag;
   }
 
   /**
@@ -118,6 +134,7 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
    * @return A File with the filename extended by the current extension
    */
   public File addExtension(File aFile) {
+    flag = -1;
     return accept(aFile) ? aFile : new File(aFile.getPath() + getExtension());
   }
 
@@ -184,4 +201,10 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
     return retVal;
   }
 
+  /**
+   * @return the appropriate FILTER_... flag if this filter is one of the default types.
+   */
+  public int getType() {
+    return flag;
+  }
 }

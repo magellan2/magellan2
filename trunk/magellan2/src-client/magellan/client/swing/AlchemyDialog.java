@@ -657,7 +657,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    */
   protected void loadTable() {
     JFileChooser fc = new JFileChooser();
-    fc.addChoosableFileFilter(new EresseaFileFilter(AlchemyDialog.FILE_EXTENSION,
+    EresseaFileFilter filter;
+    fc.setFileFilter(new EresseaFileFilter(AlchemyDialog.FILE_EXTENSION,
         AlchemyDialog.FILE_EXTENSION_DECRIPTION));
     fc.setSelectedFile(new File(settings.getProperty(AlchemyDialog.PROPERTYNAME_LAST_SAVED, "")));
     fc.setDialogTitle(Resources.get("alchemydialog.loaddialog.title"));
@@ -693,7 +694,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    */
   protected void saveTable() {
     JFileChooser fc = new JFileChooser();
-    fc.addChoosableFileFilter(new EresseaFileFilter(AlchemyDialog.FILE_EXTENSION,
+    fc.setFileFilter(new EresseaFileFilter(AlchemyDialog.FILE_EXTENSION,
         AlchemyDialog.FILE_EXTENSION_DECRIPTION));
     fc.setSelectedFile(new File(settings.getProperty(AlchemyDialog.PROPERTYNAME_LAST_SAVED, "")));
     fc.setDialogTitle(Resources.get("alchemydialog.savedialog.title"));

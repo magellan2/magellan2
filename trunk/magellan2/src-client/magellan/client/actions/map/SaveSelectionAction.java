@@ -66,7 +66,7 @@ public class SaveSelectionAction extends AbstractSelectionAction {
   @Override
   public void menuActionPerformed(ActionEvent e) {
     JFileChooser fc = new JFileChooser();
-    fc.addChoosableFileFilter(new EresseaFileFilter(SaveSelectionAction.EXTENSION, Resources
+    fc.setFileFilter(new EresseaFileFilter(SaveSelectionAction.EXTENSION, Resources
         .get("actions.saveselectionaction.selectionfilter.name")));
     fc.setSelectedFile(new File(client.getProperties().getProperty(getPropertyName(), "")));
     fc.setDialogTitle(Resources.get("actions.saveselectionaction.title"));

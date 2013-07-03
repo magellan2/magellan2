@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import magellan.library.io.cr.CRGameNameIO;
 import magellan.library.io.file.FileType;
+import magellan.library.io.json.JSONGameNameIO;
 import magellan.library.io.nr.NRGameNameIO;
 import magellan.library.io.xml.XMLGameNameIO;
 import magellan.library.utils.logging.Logger;
@@ -42,6 +43,10 @@ public class GameNameReader {
         return gameName;
 
       gameName = new XMLGameNameIO().getGameName(filetype);
+      if (gameName != null)
+        return gameName;
+
+      gameName = new JSONGameNameIO().getGameName(filetype);
       if (gameName != null)
         return gameName;
 

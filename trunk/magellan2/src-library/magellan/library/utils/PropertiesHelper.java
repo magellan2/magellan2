@@ -181,6 +181,15 @@ public class PropertiesHelper {
   public static final String CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER =
       "Client.lastSelectedAddCRFileFilter";
 
+  public static final String CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER_ID =
+      "Client.lastSelectedAddCRFileFilterId";
+
+  public static final String CLIENT_LAST_SELECTED_OPEN_CR_FILEFILTER =
+      "Client.lastSelectedOpenCRFileFilter";
+
+  public static final String CLIENT_LAST_SELECTED_OPEN_CR_FILEFILTER_ID =
+      "Client.lastSelectedOpenCRFileFilterId";
+
   public static final String BUILDINGRENDERER_RENDER = "BuildingTypeRenderer.Render.";
 
   /** prefix of OrderWriter's property, not a property itself */

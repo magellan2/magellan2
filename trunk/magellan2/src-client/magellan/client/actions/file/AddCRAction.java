@@ -18,6 +18,7 @@ import java.io.File;
 import java.util.Properties;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
@@ -63,24 +64,42 @@ public class AddCRAction extends MenuAction implements GameDataListener {
     JFileChooser fc = new JFileChooser();
     fc.setMultiSelectionEnabled(true);
 
+    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.CR_FILTER));
+    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.JSON_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.GZ_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.BZ2_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER));
-    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ATLANTIS_FILTER));
-    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
+    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ANY_TXT_FILTER));
 
     int lastFileFilter =
         Integer.parseInt(settings.getProperty(
-            PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER, Integer.toString(6)));
-    // bugzilla #861
-    if (lastFileFilter < 0) {
-      lastFileFilter = 0;
-    } else {
-      lastFileFilter = Math.min(lastFileFilter, fc.getChoosableFileFilters().length - 1);
+            PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER_ID, String
+                .valueOf(EresseaFileFilter.ALLCR_FILTER)));
+    if (lastFileFilter >= 0) {
+      for (FileFilter filter : fc.getChoosableFileFilters()) {
+        if (filter instanceof EresseaFileFilter) {
+          if (((EresseaFileFilter) filter).getType() == lastFileFilter) {
+            fc.setFileFilter(filter);
+          }
+          break;
+        }
+      }
     }
 
-    fc.setFileFilter(fc.getChoosableFileFilters()[lastFileFilter]);
+    if (!(fc.getFileFilter() instanceof EresseaFileFilter)) {
+      lastFileFilter =
+          Integer.parseInt(settings.getProperty(
+              PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER, Integer.toString(6)));
+      // bugzilla #861
+      if (lastFileFilter < 0) {
+        lastFileFilter = 0;
+      } else {
+        lastFileFilter = Math.min(lastFileFilter, fc.getChoosableFileFilters().length - 1);
+      }
+
+      fc.setFileFilter(fc.getChoosableFileFilters()[lastFileFilter]);
+    }
 
     File file = new File(settings.getProperty(PropertiesHelper.CLIENT_LAST_CR_ADDED, ""));
     fc.setSelectedFile(file);

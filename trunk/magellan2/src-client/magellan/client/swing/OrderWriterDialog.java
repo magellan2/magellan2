@@ -1404,7 +1404,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     JFileChooser fc = new JFileChooser();
     fc.setAccessory(new HistoryAccessory(localSettings, fc));
-    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.TXT_FILTER));
+    fc.setFileFilter(new EresseaFileFilter(EresseaFileFilter.TXT_ORDERS_FILTER));
 
     if (defaultFile != null) {
       fc.setSelectedFile(new File(defaultFile));

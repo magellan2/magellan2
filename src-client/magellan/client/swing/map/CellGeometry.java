@@ -22,6 +22,8 @@ import java.net.URL;
 import java.util.Properties;
 
 import magellan.library.CoordinateID;
+import magellan.library.gamebinding.GameSpecificStuff;
+import magellan.library.gamebinding.GameSpecificStuff.CoordMapper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -48,6 +50,7 @@ public class CellGeometry {
   private float cellShiftXX = 0.0f; // unscaledCellSize.width
   private float cellShiftXY = 0.0f; // unscaledCellSize.width / 2.0f
   private float cellShiftYY = 0.0f; // -(cell.ypoints[2] + 1)
+  private CoordMapper coordMapper;
 
   /**
    * Creates a new CellGeometry object with no geometry data set.
@@ -120,6 +123,7 @@ public class CellGeometry {
     ypoints[3] = Integer.parseInt(p.getProperty("y3", "63"));
     ypoints[4] = Integer.parseInt(p.getProperty("y4", "47"));
     ypoints[5] = Integer.parseInt(p.getProperty("y5", "16"));
+    coordMapper = GameSpecificStuff.ERESSEA_MAPPER;
     setGeometry(xpoints, ypoints);
     setImageOffset(Integer.parseInt(p.getProperty("imgOffsetx", "8")), Integer.parseInt(p
         .getProperty("imgOffsety", "8")));
@@ -144,9 +148,12 @@ public class CellGeometry {
       unscaledCellSize.width++;
       unscaledCellSize.height++;
       scaledCellSize = new Dimension(unscaledCellSize);
-      cellShiftXX = (unscaledCellSize.width);
-      cellShiftXY = (unscaledCellSize.width / 2.0f);
-      cellShiftYY = (-1.0f * (ypoints[2] + 1.0f));
+      if (coordMapper == null) {
+        coordMapper = GameSpecificStuff.ERESSEA_MAPPER;
+      }
+      cellShiftXX = coordMapper.getXX(unscaledCellSize.width);
+      cellShiftXY = coordMapper.getXY(unscaledCellSize.width);
+      cellShiftYY = coordMapper.getYY(ypoints[2]);
     }
   }
 
@@ -315,7 +322,13 @@ public class CellGeometry {
     int mx = 0;
     float mfy = sy / (cellShiftYY * scaleFactor);
     int my = CellGeometry.roundPosUp(mfy);
+    if (cellShiftYY > 0) {
+      my -= 1;
+    }
     mx = CellGeometry.roundNegDown(((sx / scaleFactor) - (my * cellShiftXY)) / cellShiftXX);
+    if (cellShiftXX < 0) {
+      my++;
+    }
 
     float capHeight = scaleFactor * cell.ypoints[1];
     int yPixelInCell = sy - getCellPositionY(mx, my);
@@ -328,10 +341,10 @@ public class CellGeometry {
       int xPixelOffCenter = xPixelInCell - (int) halfCellWidth;
 
       if (xPixelOffCenter < -xMaxPixelOffCenter) {
-        my += 1;
-        mx -= 1;
+        my -= Math.signum(cellShiftYY);
+        mx -= Math.signum(cellShiftXX);
       } else if (xPixelOffCenter > xMaxPixelOffCenter) {
-        my += 1;
+        my -= Math.signum(cellShiftYY);
       }
     }
 
@@ -370,5 +383,12 @@ public class CellGeometry {
       return (int) f;
     else
       return ((int) f + 1);
+  }
+
+  public void setCoordMapper(CoordMapper coordMapper) {
+    this.coordMapper = coordMapper;
+    cellShiftXX = coordMapper.getXX(unscaledCellSize.width);
+    cellShiftXY = coordMapper.getXY(unscaledCellSize.width);
+    cellShiftYY = coordMapper.getYY(cell.ypoints[2]);
   }
 }

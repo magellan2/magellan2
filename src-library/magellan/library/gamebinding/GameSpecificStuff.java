@@ -15,6 +15,7 @@ package magellan.library.gamebinding;
 
 import java.util.Map;
 
+import magellan.client.swing.map.CellGeometry;
 import magellan.library.GameData;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
@@ -27,6 +28,7 @@ import magellan.library.utils.transformation.ReportTransformer;
  * This utility class provides game specific methods for certain properties of the game.
  */
 public interface GameSpecificStuff {
+
   /**
    * Return a GameData object for the specified game
    * 
@@ -138,4 +140,46 @@ public interface GameSpecificStuff {
    */
   public Map<Integer, String> getCombatStates();
 
+  /**
+   * Return the mapper to adjust map grid cells.
+   */
+  public CoordMapper getCoordMapper(CellGeometry cellGeometry);
+
+  /**
+   * Mapper to adjust map grid cells.
+   */
+  public interface CoordMapper {
+
+    /** Returns the x axis offset for a cell with given x coordinate. */
+    float getXX(int x);
+
+    /** Returns the y axis offset for a cell with given x coordinate. */
+    float getXY(int x);
+
+    /** Returns the y axis offset for a cell with given y coordinate. */
+    float getYY(int y);
+
+    /** Returns the x axis offset for a cell with given y coordinate. */
+    float getYX(int y);
+  }
+
+  /** The mapper that works for Eressea's coordinate system. */
+  CoordMapper ERESSEA_MAPPER = new CoordMapper() {
+
+    public float getYY(int y) {
+      return (-1.0f * (y + 1.0f));
+    }
+
+    public float getXY(int x) {
+      return .5f * x;
+    }
+
+    public float getXX(int x) {
+      return x;
+    }
+
+    public float getYX(int y) {
+      return 0;
+    }
+  };
 }

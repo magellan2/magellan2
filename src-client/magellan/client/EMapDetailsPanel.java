@@ -5867,10 +5867,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           // relation.origin.getFaction() != null ? relation.origin.getFaction().getLocale() :
 
           StringBuffer reserve =
-              new StringBuffer(Resources.getOrderTranslation(EresseaConstants.O_RESERVE, locale));
+              new StringBuffer(getGameData().getRules().getOrder(EresseaConstants.O_RESERVE)
+                  .getName(locale));
           reserve.append(" ");
           if (each) {
-            reserve.append(Resources.getOrderTranslation(EresseaConstants.O_EACH, locale));
+            reserve.append(getGameData().getRules().getOrder(EresseaConstants.O_EACH).getName(
+                locale));
             reserve.append(" ");
           }
           reserve.append(amount);
@@ -5956,12 +5958,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           // relation.origin.getFaction() != null ? relation.origin.getFaction().getLocale() :
 
           StringBuffer reserve =
-              new StringBuffer(Resources.getOrderTranslation(EresseaConstants.O_GIVE, locale));
+              new StringBuffer(getGameData().getRules().getOrder(EresseaConstants.O_GIVE).getName(
+                  locale));
           reserve.append(" ");
           reserve.append(transferRelation.target.getID());
           reserve.append(" ");
           if (each) {
-            reserve.append(Resources.getOrderTranslation(EresseaConstants.O_EACH, locale));
+            reserve.append(getGameData().getRules().getOrder(EresseaConstants.O_EACH).getName(
+                locale));
             reserve.append(" ");
           }
           reserve.append(amount);

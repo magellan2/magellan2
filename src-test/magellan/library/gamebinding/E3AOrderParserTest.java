@@ -38,7 +38,6 @@ import magellan.library.gamebinding.e3a.E3AConstants;
 import magellan.library.gamebinding.e3a.E3AOrderCompleter;
 import magellan.library.gamebinding.e3a.E3AOrderParser;
 import magellan.library.utils.OrderToken;
-import magellan.library.utils.Resources;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -111,8 +110,8 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
    */
   @Test
   public void testBezahleReader() {
-    checkOrder(Resources.getOrderTranslation(E3AConstants.O_PAY) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_NOT));
+    checkOrder(getOrderTranslation(E3AConstants.O_PAY) + " "
+        + getOrderTranslation(EresseaConstants.O_NOT));
     checkOrder("BEZAHLE", false);
   }
 
@@ -136,8 +135,8 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   @Override
   @Test
   public void testHelfeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_HELP) + " 123 "
-        + Resources.getOrderTranslation(EresseaConstants.O_ALL));
+    checkOrder(getOrderTranslation(EresseaConstants.O_HELP) + " 123 "
+        + getOrderTranslation(EresseaConstants.O_ALL));
     checkOrder("HELFE 123 ALLES NICHT");
     checkOrder("HELFEN 123 GIB");
     checkOrder("HELFEN 123 GIB NICHT");
@@ -169,7 +168,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   @Override
   @Test
   public void testMacheReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MAKE) + " TEMP 123");
+    checkOrder(getOrderTranslation(EresseaConstants.O_MAKE) + " TEMP 123");
     checkOrder("MACHE BURG");
     checkOrder("MACHE 2 BURG");
     checkOrder("MACHE BURG 123");
@@ -221,7 +220,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   @Override
   @Test
   public void testRekrutiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RECRUIT) + " 1");
+    checkOrder(getOrderTranslation(EresseaConstants.O_RECRUIT) + " 1");
     checkOrder("REKRUTIERE 5");
     checkOrder("REKRUTIERE 0", true); // TODO should we return false here?
     checkOrder("REKRUTIERE 1 Zwerg", true); // for E2, this is an error

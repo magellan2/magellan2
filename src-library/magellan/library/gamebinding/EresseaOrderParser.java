@@ -1512,7 +1512,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
         categories =
             Arrays.asList(EresseaConstants.O_ALL, EresseaConstants.O_HELP_COMBAT,
                 EresseaConstants.O_HELP_GIVE, EresseaConstants.O_HELP_GUARD,
-                EresseaConstants.O_HELP_SILVER, EresseaConstants.O_HELP_FACTIONSTEALTH);
+                EresseaConstants.O_HELP_SILVER, EresseaConstants.O_HELP_FACTIONSTEALTH,
+                EresseaConstants.O_COMBAT_HELP);
 
       }
       return categories;
@@ -2183,7 +2184,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       getOrder().setLong(true);
       OrderToken t = getNextToken();
 
-      if (Direction.toDirection(t.getText(), getLocale()) != Direction.INVALID) {
+      if (toDirection(t.getText(), getLocale()) != Direction.INVALID) {
         retVal = readNachDirection(t);
       } else {
         unexpected(t);
@@ -2815,7 +2816,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       getOrder().setLong(true);
       OrderToken t = getNextToken();
 
-      if (Direction.toDirection(t.getText(), getLocale()) != Direction.INVALID) {
+      if (toDirection(t.getText(), getLocale()) != Direction.INVALID) {
         retVal = readRouteDirection(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_PAUSE))) {
         retVal = readRouteDirection(t);

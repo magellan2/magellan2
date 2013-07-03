@@ -7,23 +7,19 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
 
-import magellan.library.EntityID;
 import magellan.library.Order;
 import magellan.library.Orders;
 import magellan.library.Unit;
-import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
-import magellan.library.utils.Resources;
 
 /**
  * A class for handling orders in the Unit object.
  */
 class MagellanOrdersImplementation implements Orders {
   private List<Order> orders = null;
+
   private Unit unit;
 
   /**
@@ -84,12 +80,12 @@ class MagellanOrdersImplementation implements Orders {
       }
 
       if (false == tempBlock) {
-        if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE))) {
+        if (t.equalsToken(getOrderTranslation(EresseaConstants.O_MAKE))) {
           t = ct.next();
 
           if (OrderToken.TT_EOC == t.ttype) {
             continue;
-          } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+          } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_TEMP))) {
             tempBlock = true;
 
             continue;
@@ -119,7 +115,7 @@ class MagellanOrdersImplementation implements Orders {
           continue;
         }
       } else {
-        if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END))) {
+        if (t.equalsToken(getOrderTranslation(EresseaConstants.O_END))) {
           tempBlock = false;
 
           continue;
@@ -129,6 +125,10 @@ class MagellanOrdersImplementation implements Orders {
 
     return result;
 
+  }
+
+  protected String getOrderTranslation(String orderId) {
+    return unit.getData().getRules().getOrder(orderId).getName(unit.getLocale());
   }
 
   /**
@@ -145,17 +145,17 @@ class MagellanOrdersImplementation implements Orders {
     return unit;
   }
 
-  public int getBase() {
-    return unit.getData().base;
-  }
+  // public int getBase() {
+  // return unit.getData().base;
+  // }
 
-  public EntityID getEntityID(Order order, int pos) {
-    return EntityID.createEntityID(order.getToken(pos).getText(), getBase());
-  }
-
-  public UnitID getUnitID(Order order, int pos) {
-    return UnitID.createUnitID(order.getToken(pos).getText(), getBase());
-  }
+  // public EntityID getEntityID(Order order, int pos) {
+  // return EntityID.createEntityID(order.getToken(pos).getText(), getBase());
+  // }
+  //
+  // public UnitID getUnitID(Order order, int pos) {
+  // return UnitID.createUnitID(order.getToken(pos).getText(), getBase());
+  // }
 
   /**
    * @see magellan.library.Orders#getNumber(Order, int)
@@ -171,14 +171,8 @@ class MagellanOrdersImplementation implements Orders {
    * @see magellan.library.Orders#isToken(magellan.library.Order, int, java.lang.String)
    */
   public boolean isToken(Order order, int i, String token) {
-    Locale locale = null;
-    if (getUnit().getFaction() != null) {
-      locale = getUnit().getFaction().getLocale();
-    }
-    if (locale == null) {
-      locale = Locales.getOrderLocale();
-    }
-    return order.getToken(i).equalsCompletedToken(Resources.getOrderTranslation(token, locale));
+    // FIXME: is token localized?
+    return order.getToken(i).equalsCompletedToken(getOrderTranslation(token));
   }
 
   /**
@@ -476,4 +470,5 @@ class MagellanOrdersImplementation implements Orders {
   public String toString() {
     return "@Unit:" + unit + "," + orders.toString();
   }
+
 }

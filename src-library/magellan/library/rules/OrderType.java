@@ -13,8 +13,14 @@
 
 package magellan.library.rules;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import magellan.library.ID;
 import magellan.library.StringID;
+import magellan.library.utils.CollectionFactory;
 
 /**
  * This class contains an abstract order.
@@ -26,6 +32,7 @@ public class OrderType extends ObjectType {
   String syntax;
   boolean internal;
   boolean active;
+  private Map<String, List<String>> names = CollectionFactory.createMap(2, .8f);
 
   /**
    * @param id
@@ -93,7 +100,8 @@ public class OrderType extends ObjectType {
    */
   @Override
   public String toString() {
-    return "Order[" + getID() + "," + getSyntax();
+    // return getName(Locales.getOrderLocale());
+    return "Order[" + getID() + "," + getSyntax() + "]";
   }
 
   /**
@@ -104,6 +112,39 @@ public class OrderType extends ObjectType {
   @Override
   public StringID getID() {
     return (StringID) id;
+  }
+
+  public void addName(Locale loc, String name) {
+    List<String> list = names.get(loc);
+    if (list == null) {
+      list = new ArrayList<String>(1);
+      names.put(loc.getLanguage(), list);
+    }
+    list.add(name);
+  }
+
+  /**
+   * Returns all registered localized order names.
+   * 
+   * @param loc
+   * @return The list of names or <code>null</code> if no such name has been added.
+   */
+  public List<String> getNames(Locale loc) {
+    return names.get(loc);
+  }
+
+  /**
+   * Returns a localized order name.
+   * 
+   * @param loc
+   * @return The name or <code>null</code> if no such name has been added.
+   */
+  public String getName(Locale loc) {
+    List<String> list = names.get(loc.getLanguage());
+    if (list != null)
+      return list.get(0);
+    else
+      return null;
   }
 
 }

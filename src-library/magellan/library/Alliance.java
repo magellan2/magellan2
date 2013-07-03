@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import magellan.library.rules.AllianceCategory;
-import magellan.library.utils.Resources;
 
 /**
  * A class representing an alliance status between two factions. The faction having this alliance is
@@ -124,7 +123,7 @@ public class Alliance {
       return "";
 
     if (getState(maxAC.getBitMask()))
-      return Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + maxAC.getName());
+      return getOrderTranslation(Alliance.ORDER_KEY_PREFIX + maxAC.getName());
 
     StringBuffer ret = new StringBuffer();
 
@@ -136,7 +135,7 @@ public class Alliance {
 
       if (!ac.equals(maxAC) && getState(ac.getBitMask())) {
         // TODO (stm) This is a hack.
-        ret.append(Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + ac.getName()));
+        ret.append(getOrderTranslation(Alliance.ORDER_KEY_PREFIX + ac.getName()));
 
         if (iter.hasNext()) {
           ret.append(" ");
@@ -145,6 +144,11 @@ public class Alliance {
     }
 
     return ret.toString();
+  }
+
+  protected String getOrderTranslation(String orderId) {
+    // we could also use Locales.getGUILocale()
+    return getFaction().getData().getRules().getOrder(orderId).getName(getFaction().getLocale());
   }
 
   /**

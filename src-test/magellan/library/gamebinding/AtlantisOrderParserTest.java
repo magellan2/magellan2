@@ -29,7 +29,6 @@ import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.completion.OrderParser;
-import magellan.library.utils.Resources;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -125,74 +124,18 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
     assertTrue(!getParser().getCommands().contains("SABOTAGE"));
   }
 
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.FormReader}.
-   */
-  @Test
-  public void testFormReader() {
-    // FORM u1
-    idTest(Resources.getOrderTranslation(AtlantisConstants.O_FORM), false);
+  protected void bareTest(String command) {
+    checkOrder(command);
+    checkOrder(command + " 1", false);
+    checkOrder(command + " string", false);
   }
 
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AcceptReader}.
-   */
-  @Test
-  public void testAcceptReader() {
-    // ACCEPT f1
-    idTest(Resources.getOrderTranslation(AtlantisConstants.O_ACCEPT), false);
-  }
-
-  public void idTest(String command, boolean multi) {
+  protected void idTest(String command, boolean multi) {
     checkOrder(command + " " + 2);
     checkOrder(command, false);
     checkOrder(command + " 1 2", multi);
     checkOrder(command + " 1 2 3", multi);
     checkOrder(command + " NOT", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AddressReader}.
-   */
-  @Test
-  public void testAddressReader() {
-    // ADDRESS Address
-    checkOrder(Resources.getOrderTranslation(AtlantisConstants.O_ADDRESS) + " " + "123@abc.com");
-    checkOrder("ADDRESS \"a@foo.com\"");
-    checkOrder("ADDRESS", false);
-    checkOrder("ADDRESS 1 2", false);
-    checkOrder("ADDRESS abc", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AdmitReader}.
-   */
-  @Test
-  public void testAdmitReader() {
-    // ADMIT f1
-    idTest(Resources.getOrderTranslation(AtlantisConstants.O_ADMIT), false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AllyReader}.
-   */
-  @Test
-  public void testAllyReader() {
-    // ALLY f1 01
-    checkOrder(Resources.getOrderTranslation(AtlantisConstants.O_ALLY) + " 3 0");
-    checkOrder("ALLY 3 1");
-    checkOrder("ALLY", false);
-    checkOrder("ALLY 1", false);
-    checkOrder("ALLY 3 NOT", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.BehindReader}.
-   */
-  @Test
-  public void testBehindReader() {
-    // BEHIND 01
-    flagTest(Resources.getOrderTranslation(AtlantisConstants.O_BEHIND));
   }
 
   protected void flagTest(String command) {
@@ -203,242 +146,12 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
     checkOrder(command + " NOT", false);
   }
 
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.CombatReader}.
-   */
-  @Test
-  public void testCombatReader() {
-    // COMBAT spell
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_COMBAT));
-  }
-
   protected void stringTest(String command) {
     checkOrder(command + "string");
     checkOrder(command + "\"string\"");
     checkOrder(command + "string not", false);
     checkOrder(command + "\"string\" \"not\"", false);
     checkOrder(command, false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.DisplayReader}.
-   */
-  @Test
-  public void testDisplayReader() {
-    // DISPLAY (UNIT | BUILDING SHIP) string
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_DISPLAY) + " UNIT");
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_DISPLAY) + " BUILDING");
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_DISPLAY) + " SHIP");
-
-    checkOrder("DISPLAY", false);
-    checkOrder("DISPLAY UNIT", false);
-    checkOrder("DISPLAY string", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.GuardReader}.
-   */
-  @Test
-  public void testGuardReader() {
-    // GUARD 01
-    flagTest(Resources.getOrderTranslation(AtlantisConstants.O_GUARD));
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.NameReader}.
-   */
-  @Test
-  public void testNameReader() {
-    // NAME (FACTION | UNIT | BUILDING | SHIP) name
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_NAME) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_NOT));
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_NAME) + " UNIT");
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_NAME) + " BUILDING");
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_NAME) + " SHIP");
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_NAME) + " FACTION");
-
-    checkOrder("DISPLAY", false);
-    checkOrder("DISPLAY UNIT", false);
-    checkOrder("DISPLAY string", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.PasswordReader}.
-   */
-  @Test
-  public void testPasswordReader() {
-    // PASSWORD password
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_PASSWORD));
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.ReshowReader}.
-   */
-  @Test
-  public void testReshowReader() {
-    // RESHOW spell
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_RESHOW));
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.FindReader}.
-   */
-  @Test
-  public void testFindReader() {
-    // FIND f1
-    idTest(Resources.getOrderTranslation(AtlantisConstants.O_FIND), false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.BoardReader}.
-   */
-  @Test
-  public void testBoardReader() {
-    // BOARD s1
-    idTest(Resources.getOrderTranslation(AtlantisConstants.O_BOARD), false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.EnterReader}.
-   */
-  @Test
-  public void testEnterReader() {
-    // ENTER b1
-    idTest(Resources.getOrderTranslation(AtlantisConstants.O_ENTER), false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.LeaveReader}.
-   */
-  @Test
-  public void testLeaveReader() {
-    // LEAVE
-    bareTest(Resources.getOrderTranslation(AtlantisConstants.O_LEAVE));
-  }
-
-  protected void bareTest(String command) {
-    checkOrder(command);
-    checkOrder(command + " 1", false);
-    checkOrder(command + " string", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.PromoteReader}.
-   */
-  @Test
-  public void testPromoteReader() {
-    // PROMOTE u1
-    idTest(Resources.getOrderTranslation(AtlantisConstants.O_PROMOTE), false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AttackReader}.
-   */
-  @Override
-  @Test
-  public void testAttackReader() {
-    // ATTACK (u1 | PEASANTS)
-    idTest(Resources.getOrderTranslation(AtlantisConstants.O_ATTACK), false);
-    checkOrder("ATTACK PEASANTS");
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.DemolishReader}.
-   */
-  @Test
-  public void testDemolishReader() {
-    // DEMOLISH
-    bareTest(Resources.getOrderTranslation(AtlantisConstants.O_DEMOLISH));
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.GiveReader}.
-   */
-  @Test
-  public void testGiveReader() {
-    // GIVE u1 1 item
-    checkOrder(Resources.getOrderTranslation(AtlantisConstants.O_GIVE) + " " + " 3 5 wood");
-    checkOrder("GIVE", false);
-    checkOrder("GIVE 3", false);
-    checkOrder("GIVE 3 5", false);
-    checkOrder("GIVE 3 5 6", false);
-    checkOrder("GIVE a b c", false);
-    checkOrder("GIVE 1 5 wood 5", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.PayReader}.
-   */
-  @Test
-  public void testPayReader() {
-    // PAY u1 1
-    checkOrder(Resources.getOrderTranslation(AtlantisConstants.O_PAY) + " 5 17");
-    checkOrder("PAY", false);
-    checkOrder("PAY 5", false);
-    checkOrder("PAY 5 7 8", false);
-    checkOrder("PAY a b", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.SinkReader}.
-   */
-  @Test
-  public void testSinkReader() {
-    // SINK
-    bareTest(Resources.getOrderTranslation(AtlantisConstants.O_SINK));
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.TransferReader}.
-   */
-  @Test
-  public void testTransferReader() {
-    // TRANSFER (u1 | PEASANTS) 1
-    checkOrder(Resources.getOrderTranslation(AtlantisConstants.O_TRANSFER) + " 3 15");
-    checkOrder("TRANSFER PEASANTS 5");
-    checkOrder("TRANSFER", false);
-    checkOrder("TRANSFER 5", false);
-    checkOrder("TRANSFER 5 6 7", false);
-    checkOrder("TRANSFER a b", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.TaxReader}.
-   */
-  @Test
-  public void testTaxReader() {
-    // TAX
-    bareTest(Resources.getOrderTranslation(AtlantisConstants.O_TAX));
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.RecruitReader}.
-   */
-  @Test
-  public void testRecruitReader() {
-    // RECRUIT 1
-    checkOrder(Resources.getOrderTranslation(AtlantisConstants.O_RECRUIT) + " 999");
-    checkOrder("RECRUIT", false);
-    checkOrder("RECRUIT a", false);
-    checkOrder("RECRUIT 1 2", false);
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.QuitReader}.
-   */
-  @Test
-  public void testQuitReader() {
-    // QUIT password
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_QUIT));
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.MoveReader}.
-   */
-  @Test
-  public void testMoveReader() {
-    // MOVE (N | W | M | S | W | Y)
-    directionTest(Resources.getOrderTranslation(AtlantisConstants.O_MOVE));
   }
 
   protected void directionTest(String command) {
@@ -456,12 +169,298 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   }
 
   /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.FormReader}.
+   */
+  @Test
+  public void testFormReader() {
+    // FORM u1
+    idTest(getOrderTranslation(AtlantisConstants.O_FORM), false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AcceptReader}.
+   */
+  @Test
+  public void testAcceptReader() {
+    // ACCEPT f1
+    idTest(getOrderTranslation(AtlantisConstants.O_ACCEPT), false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AddressReader}.
+   */
+  @Test
+  public void testAddressReader() {
+    // ADDRESS Address
+    checkOrder(getOrderTranslation(AtlantisConstants.O_ADDRESS) + " " + "123@abc.com");
+    checkOrder("ADDRESS \"a@foo.com\"");
+    checkOrder("ADDRESS", false);
+    checkOrder("ADDRESS 1 2", false);
+    checkOrder("ADDRESS abc", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AdmitReader}.
+   */
+  @Test
+  public void testAdmitReader() {
+    // ADMIT f1
+    idTest(getOrderTranslation(AtlantisConstants.O_ADMIT), false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AllyReader}.
+   */
+  @Test
+  public void testAllyReader() {
+    // ALLY f1 01
+    checkOrder(getOrderTranslation(AtlantisConstants.O_ALLY) + " 3 0");
+    checkOrder("ALLY 3 1");
+    checkOrder("ALLY", false);
+    checkOrder("ALLY 1", false);
+    checkOrder("ALLY 3 NOT", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.BehindReader}.
+   */
+  @Test
+  public void testBehindReader() {
+    // BEHIND 01
+    flagTest(getOrderTranslation(AtlantisConstants.O_BEHIND));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.CombatReader}.
+   */
+  @Test
+  public void testCombatReader() {
+    // COMBAT spell
+    stringTest(getOrderTranslation(AtlantisConstants.O_COMBAT));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.DisplayReader}.
+   */
+  @Test
+  public void testDisplayReader() {
+    // DISPLAY (UNIT | BUILDING SHIP) string
+    stringTest(getOrderTranslation(AtlantisConstants.O_DISPLAY) + " UNIT");
+    stringTest(getOrderTranslation(AtlantisConstants.O_DISPLAY) + " BUILDING");
+    stringTest(getOrderTranslation(AtlantisConstants.O_DISPLAY) + " SHIP");
+
+    checkOrder("DISPLAY", false);
+    checkOrder("DISPLAY UNIT", false);
+    checkOrder("DISPLAY string", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.GuardReader}.
+   */
+  @Test
+  public void testGuardReader() {
+    // GUARD 01
+    flagTest(getOrderTranslation(AtlantisConstants.O_GUARD));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.NameReader}.
+   */
+  @Test
+  public void testNameReader() {
+    // NAME (FACTION | UNIT | BUILDING | SHIP) name
+    stringTest(getOrderTranslation(AtlantisConstants.O_NAME) + " "
+        + getOrderTranslation(EresseaConstants.O_NOT));
+    stringTest(getOrderTranslation(AtlantisConstants.O_NAME) + " UNIT");
+    stringTest(getOrderTranslation(AtlantisConstants.O_NAME) + " BUILDING");
+    stringTest(getOrderTranslation(AtlantisConstants.O_NAME) + " SHIP");
+    stringTest(getOrderTranslation(AtlantisConstants.O_NAME) + " FACTION");
+
+    checkOrder("DISPLAY", false);
+    checkOrder("DISPLAY UNIT", false);
+    checkOrder("DISPLAY string", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.PasswordReader}.
+   */
+  @Test
+  public void testPasswordReader() {
+    // PASSWORD password
+    stringTest(getOrderTranslation(AtlantisConstants.O_PASSWORD));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.ReshowReader}.
+   */
+  @Test
+  public void testReshowReader() {
+    // RESHOW spell
+    stringTest(getOrderTranslation(AtlantisConstants.O_RESHOW));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.FindReader}.
+   */
+  @Test
+  public void testFindReader() {
+    // FIND f1
+    idTest(getOrderTranslation(AtlantisConstants.O_FIND), false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.BoardReader}.
+   */
+  @Test
+  public void testBoardReader() {
+    // BOARD s1
+    idTest(getOrderTranslation(AtlantisConstants.O_BOARD), false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.EnterReader}.
+   */
+  @Test
+  public void testEnterReader() {
+    // ENTER b1
+    idTest(getOrderTranslation(AtlantisConstants.O_ENTER), false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.LeaveReader}.
+   */
+  @Test
+  public void testLeaveReader() {
+    // LEAVE
+    bareTest(getOrderTranslation(AtlantisConstants.O_LEAVE));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.PromoteReader}.
+   */
+  @Test
+  public void testPromoteReader() {
+    // PROMOTE u1
+    idTest(getOrderTranslation(AtlantisConstants.O_PROMOTE), false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AttackReader}.
+   */
+  @Override
+  @Test
+  public void testAttackReader() {
+    // ATTACK (u1 | PEASANTS)
+    idTest(getOrderTranslation(AtlantisConstants.O_ATTACK), false);
+    checkOrder("ATTACK PEASANTS");
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.DemolishReader}.
+   */
+  @Test
+  public void testDemolishReader() {
+    // DEMOLISH
+    bareTest(getOrderTranslation(AtlantisConstants.O_DEMOLISH));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.GiveReader}.
+   */
+  @Test
+  public void testGiveReader() {
+    // GIVE u1 1 item
+    checkOrder(getOrderTranslation(AtlantisConstants.O_GIVE) + " " + " 3 5 wood");
+    checkOrder("GIVE", false);
+    checkOrder("GIVE 3", false);
+    checkOrder("GIVE 3 5", false);
+    checkOrder("GIVE 3 5 6", false);
+    checkOrder("GIVE a b c", false);
+    checkOrder("GIVE 1 5 wood 5", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.PayReader}.
+   */
+  @Test
+  public void testPayReader() {
+    // PAY u1 1
+    checkOrder(getOrderTranslation(AtlantisConstants.O_PAY) + " 5 17");
+    checkOrder("PAY", false);
+    checkOrder("PAY 5", false);
+    checkOrder("PAY 5 7 8", false);
+    checkOrder("PAY a b", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.SinkReader}.
+   */
+  @Test
+  public void testSinkReader() {
+    // SINK
+    bareTest(getOrderTranslation(AtlantisConstants.O_SINK));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.TransferReader}.
+   */
+  @Test
+  public void testTransferReader() {
+    // TRANSFER (u1 | PEASANTS) 1
+    checkOrder(getOrderTranslation(AtlantisConstants.O_TRANSFER) + " 3 15");
+    checkOrder("TRANSFER PEASANTS 5");
+    checkOrder("TRANSFER", false);
+    checkOrder("TRANSFER 5", false);
+    checkOrder("TRANSFER 5 6 7", false);
+    checkOrder("TRANSFER a b", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.TaxReader}.
+   */
+  @Test
+  public void testTaxReader() {
+    // TAX
+    bareTest(getOrderTranslation(AtlantisConstants.O_TAX));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.RecruitReader}.
+   */
+  @Test
+  public void testRecruitReader() {
+    // RECRUIT 1
+    checkOrder(getOrderTranslation(AtlantisConstants.O_RECRUIT) + " 999");
+    checkOrder("RECRUIT", false);
+    checkOrder("RECRUIT a", false);
+    checkOrder("RECRUIT 1 2", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.QuitReader}.
+   */
+  @Test
+  public void testQuitReader() {
+    // QUIT password
+    stringTest(getOrderTranslation(AtlantisConstants.O_QUIT));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.MoveReader}.
+   */
+  @Test
+  public void testMoveReader() {
+    // MOVE (N | W | M | S | W | Y)
+    directionTest(getOrderTranslation(AtlantisConstants.O_MOVE));
+  }
+
+  /**
    * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.SailReader}.
    */
   @Test
   public void testSailReader() {
     // SAIL (N | W | M | S | W | Y)
-    directionTest(Resources.getOrderTranslation(AtlantisConstants.O_SAIL));
+    directionTest(getOrderTranslation(AtlantisConstants.O_SAIL));
   }
 
   /**
@@ -470,8 +469,8 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   @Test
   public void testBuildReader() {
     // BUILD (BUILDING [b1]) | (SHIP [s1|type])
-    checkOrder(Resources.getOrderTranslation(AtlantisConstants.O_BUILD) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_NOT));
+    checkOrder(getOrderTranslation(AtlantisConstants.O_BUILD) + " "
+        + getOrderTranslation(EresseaConstants.O_NOT));
     checkOrder("BUILD", false);
   }
 
@@ -481,7 +480,7 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   @Test
   public void testEntertainReader() {
     // ENTERTAIN
-    bareTest(Resources.getOrderTranslation(AtlantisConstants.O_ENTERTAIN));
+    bareTest(getOrderTranslation(AtlantisConstants.O_ENTERTAIN));
   }
 
   /**
@@ -490,7 +489,7 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   @Test
   public void testProduceReader() {
     // PRODUCE item
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_PRODUCE));
+    stringTest(getOrderTranslation(AtlantisConstants.O_PRODUCE));
   }
 
   /**
@@ -499,7 +498,7 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   @Test
   public void testResearchReader() {
     // RESEARCH [1]
-    checkOrder(Resources.getOrderTranslation(AtlantisConstants.O_RESEARCH) + " 5");
+    checkOrder(getOrderTranslation(AtlantisConstants.O_RESEARCH) + " 5");
     checkOrder("RESEARCH");
     checkOrder("RESEARCH 1 2", false);
   }
@@ -510,7 +509,7 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   @Test
   public void testStudyReader() {
     // STUDY skill
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_STUDY));
+    stringTest(getOrderTranslation(AtlantisConstants.O_STUDY));
   }
 
   /**
@@ -519,7 +518,7 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   @Test
   public void testTeachReader() {
     // TEACH u1+
-    idTest(Resources.getOrderTranslation(AtlantisConstants.O_TEACH), true);
+    idTest(getOrderTranslation(AtlantisConstants.O_TEACH), true);
   }
 
   /**
@@ -528,7 +527,7 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   @Test
   public void testWorkReader() {
     // WORK
-    bareTest(Resources.getOrderTranslation(AtlantisConstants.O_WORK));
+    bareTest(getOrderTranslation(AtlantisConstants.O_WORK));
   }
 
   /**
@@ -537,7 +536,7 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   @Test
   public void testCastReader() {
     // CAST spell
-    stringTest(Resources.getOrderTranslation(AtlantisConstants.O_CAST));
+    stringTest(getOrderTranslation(AtlantisConstants.O_CAST));
   }
 
 }

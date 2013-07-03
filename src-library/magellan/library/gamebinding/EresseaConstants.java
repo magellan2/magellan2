@@ -349,7 +349,8 @@ public class EresseaConstants {
   /** DOCUMENT-ME */
   public static final String O_PIRACY = "PIRACY";
 
-  /** DOCUMENT-ME */
+  /** @deprecated Same as O_REPORT */
+  @Deprecated
   public static final String O_PLAINTEXT = "PLAINTEXT";
 
   /** DOCUMENT-ME */

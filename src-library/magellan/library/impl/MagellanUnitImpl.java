@@ -1022,7 +1022,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
     for (TempUnit u : tempUnits()) {
       // FIXME should use OrderFactory
-      cmds.add(createOrder(Resources.getOrderTranslation(EresseaConstants.O_MAKE) + " "
+      cmds.add(createOrder(getOrderTranslation(EresseaConstants.O_MAKE) + " "
           + u.getID().toString(true, getLocale())));
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
@@ -1039,10 +1039,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
         }
       }
 
-      cmds.add(createOrder(Resources.getOrderTranslation(EresseaConstants.O_END)));
+      cmds.add(createOrder(getOrderTranslation(EresseaConstants.O_END)));
     }
 
     return cmds;
+  }
+
+  protected String getOrderTranslation(String orderId) {
+    return getData().getRules().getOrder(orderId).getName(getLocale());
   }
 
   /**
@@ -2299,7 +2303,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
           if (line.getProblem() == null && !line.isEmpty()
               && ordersObject.isToken(line, 0, EresseaConstants.O_MAKE)) {
             if (line.getToken(1).getText().toLowerCase().startsWith(
-                Resources.getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase())) {
+                getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase())) {
               // if (ordersObject.isToken(line, 1, EresseaConstants.O_TEMP)) {
               try {
                 final int base = (getID()).getRadix();
@@ -2310,11 +2314,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
                   tempUnit.setSortIndex(++tempSortIndex);
                   cmdIterator.remove();
                   if (line.size() > 4) {
-                    tempUnit.addOrders(Collections.singleton(Resources.getOrderTranslation(
-                        EresseaConstants.O_NAME, locale)
-                        + " "
-                        + Resources.getOrderTranslation(EresseaConstants.O_UNIT, locale)
-                        + " " + line.getToken(3).getText()), false);
+                    tempUnit.addOrders(Collections
+                        .singleton(getOrderTranslation(EresseaConstants.O_NAME) + " "
+                            + getOrderTranslation(EresseaConstants.O_UNIT) + " "
+                            + line.getToken(3).getText()), false);
                   }
                 } else {
                   MagellanUnitImpl.log.warn("Unit.extractTempUnits(): region " + getRegion()

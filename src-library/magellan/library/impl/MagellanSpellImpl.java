@@ -18,6 +18,7 @@ import magellan.library.StringID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.CollectionFactory;
+import magellan.library.utils.Locales;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SpellSyntax;
 import magellan.library.utils.logging.Logger;
@@ -359,8 +360,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
     // Region, if is far
     if (isFar) {
-      retVal.append("[").append(Resources.getOrderTranslation(EresseaConstants.O_REGION)).append(
-          " X Y]");
+      retVal.append("[").append(getOrderTranslation(EresseaConstants.O_REGION)).append(" X Y]");
     }
 
     // Level...allways possible, but not allways usefull
@@ -379,8 +379,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
     // and maybe we can use this kwowledge for open problems to we
     // built an little private function here
     if (isAuraLevelDependend()) {
-      retVal.append("[").append(Resources.getOrderTranslation(EresseaConstants.O_LEVEL)).append(
-          " n]");
+      retVal.append("[").append(getOrderTranslation(EresseaConstants.O_LEVEL)).append(" n]");
     }
 
     // name of spell in "
@@ -408,16 +407,21 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
       StringBuffer oldRetVal = retVal;
       retVal = new StringBuffer("Syntax: ");
       if (getType() == null) {
-        retVal.append(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL)).append("?");
+        retVal.append(getOrderTranslation(EresseaConstants.O_COMBATSPELL)).append("?");
       } else if (getType().contains("combat")) {
-        retVal.append(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL));
+        retVal.append(getOrderTranslation(EresseaConstants.O_COMBATSPELL));
       } else {
-        retVal.append(Resources.getOrderTranslation(EresseaConstants.O_CAST));
+        retVal.append(getOrderTranslation(EresseaConstants.O_CAST));
       }
 
       retVal.append(" ").append(oldRetVal.toString());
     }
     return retVal == null ? null : retVal.toString();
+  }
+
+  private String getOrderTranslation(String orderId) {
+    // FIXME use correct unit locale
+    return data.getRules().getOrder(orderId).getName(Locales.getOrderLocale());
   }
 
   /**

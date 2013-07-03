@@ -496,8 +496,10 @@ public class JECheck extends Reader {
     List<String> orders = new LinkedList<String>();
 
     /* frequently used strings */
-    String unitOrder = Resources.getOrderTranslation(EresseaConstants.O_UNIT);
-    String regionOrder = Resources.getOrderTranslation(EresseaConstants.O_REGION);
+    String unitOrder =
+        data.getRules().getOrder(EresseaConstants.O_UNIT).getName(Locales.getOrderLocale());
+    String regionOrder =
+        data.getRules().getOrder(EresseaConstants.O_REGION).getName(Locales.getOrderLocale());
 
     /*
      * first read in all the orders into a list to access them quickly later

@@ -49,6 +49,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import magellan.library.Rules;
+import magellan.library.rules.OrderType;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -447,7 +449,9 @@ public class Resources {
    * 
    * @param key An order key
    * @return The translation as found in the Resources or the key if no translation is found
+   * @deprecated use {@link Rules#getOrder(String)}, {@link OrderType#getName(Locale)}.
    */
+  @Deprecated
   public static String getOrderTranslation(String key) {
     return Resources.getOrderTranslation(key, Locales.getOrderLocale());
   }
@@ -512,7 +516,9 @@ public class Resources {
    * @param key An order key. May contain spaces, but they will be removed before lookup.
    * @param locale If this is <code>null</code>, the {@link #DEFAULT} locale is used.
    * @return The translation as found in the Resources or the key if no translation is found
+   * @deprecated Use Rules.getOrder(key).getTranslation(locale)
    */
+  @Deprecated
   public static String getOrderTranslation(String key, Locale locale) {
     Resources resources = Resources.getInstance();
     String trimkey = key.trim().replaceAll(" ", "");

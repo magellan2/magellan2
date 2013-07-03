@@ -94,8 +94,7 @@ public class OrderReader {
       if (tokenizer.hasMoreTokens()) {
         String token = Umlaut.normalize(tokenizer.nextToken());
 
-        if (Resources.getOrderTranslation(EresseaConstants.O_FACTION).startsWith(token)
-            || Resources.getOrderTranslation(EresseaConstants.O_ERESSEA).startsWith(token)) {
+        if (data.rules.getOrderfileStartingString().startsWith(token)) {
           token = tokenizer.nextToken();
 
           try {
@@ -139,9 +138,10 @@ public class OrderReader {
      * the locale changes
      */
     String naechsterOrder =
-        Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_NEXT, currentLocale));
+        Umlaut.normalize(data.getRules().getOrder(EresseaConstants.O_NEXT).getName(currentLocale));
     String localeOrder =
-        Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_LOCALE, currentLocale));
+        Umlaut
+            .normalize(data.getRules().getOrder(EresseaConstants.O_LOCALE).getName(currentLocale));
 
     if (status == null) {
       status = new Status();
@@ -201,18 +201,18 @@ public class OrderReader {
 
           /* update the locale dependent cached orders */
           naechsterOrder =
-              Umlaut.normalize(Resources
-                  .getOrderTranslation(EresseaConstants.O_NEXT, currentLocale));
+              Umlaut.normalize(data.getRules().getOrder(EresseaConstants.O_NEXT).getName(
+                  currentLocale));
           localeOrder =
-              Umlaut.normalize(Resources.getOrderTranslation(EresseaConstants.O_LOCALE,
+              Umlaut.normalize(data.getRules().getOrder(EresseaConstants.O_LOCALE).getName(
                   currentLocale));
         }
-      } else if (Resources.getOrderTranslation(EresseaConstants.O_REGION, currentLocale)
+      } else if (data.getRules().getOrder(EresseaConstants.O_REGION).getName(currentLocale)
           .startsWith(token)) {
         // ignore
         currentUnit = null;
-      } else if (Resources.getOrderTranslation(EresseaConstants.O_UNIT, currentLocale).startsWith(
-          token)) {
+      } else if (data.getRules().getOrder(EresseaConstants.O_UNIT).getName(currentLocale)
+          .startsWith(token)) {
         token = tokenizer.nextToken();
 
         UnitID unitID = null;

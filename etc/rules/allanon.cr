@@ -4,6 +4,259 @@ RULES "Allanon Regeln $Id: "
 MAGELLAN
 "magellan.library.gamebinding.AllanonSpecificStuff";class
 
+ORDER "COMMENT"
+"// Text1*";syntax
+"//";locale_de
+
+ORDER "EMAIL"
+"ADRESSE Email";syntax
+"ADRESSE";locale_de
+
+ORDER "WORK"
+"ARBEITE";syntax
+"ARBEITE";locale_de
+
+ORDER "ATTACK"
+"ATTACKIERE u1";syntax
+"ATTACKIERE";locale_de
+
+ORDER "CLAIM"
+"BEANSPRUCHE [1] Ding";syntax
+"BEANSPRUCHE";locale_de
+
+ORDER "STEAL"
+"BEKLAUE u1";syntax
+"BEKLAUE";locale_de
+
+ORDER "SIEGE"
+"BELAGERE b1";syntax
+"BELAGERE";locale_de
+
+ORDER "NAME"
+"BENENNE EINHEIT | PARTEI | GEBÄUDE | BURG | SCHIFF | REGION | (FREMDE EINHEIT u1) | (FREMDES SCHIFF s1) | (FREMDES GEBÄUDE b1) | (FREMDE BURG b1) | (FREMDE PARTEI f1) Text";syntax
+"BENENNE";locale_de
+
+ORDER "USE"
+"BENUTZE [1] Ding";syntax
+"BENUTZE";locale_de
+
+ORDER "DESCRIBE"
+"BESCHREIBE REGION | SCHIFF | GEBÄUDE | BURG | EINHEIT | PRIVAT  Text";syntax
+"BESCHREIBE";locale_de
+
+ORDER "ENTER"
+"BETRETE (BURG b1 | SCHIFF s1 | Ding x1)";syntax
+"BETRETE";locale_de
+
+ORDER "GUARD"
+"BEWACHE [NICHT]";syntax
+"BEWACHE";locale_de
+
+ORDER "MESSAGE"
+"BOTSCHAFT REGION | (SCHIFF s1) | (GEBÄUDE b2) | (BURG b3) | (EINHEIT u4) | (PARTEI f5)  Text";syntax
+"BOTSCHAFT";locale_de
+
+ORDER "DEFAULT"
+"DEFAULT Order";syntax
+"DEFAULT";locale_de
+
+ORDER "UNIT"
+"EINHEIT u1";syntax
+"EINHEIT";locale_de
+1;internal
+
+ORDER "END"
+"ENDE";syntax
+"ENDE";locale_de
+
+ORDER "FOLLOW"
+"FOLGE (EINHEIT u1) | (SCHIFF s2)";syntax
+"FOLGE";locale_de
+
+ORDER "RESEARCH"
+"FORSCHE KRÄUTER";syntax
+"FORSCHE";locale_de
+
+ORDER "GIVE"
+"GIB (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
+"GIB";locale_de
+
+ORDER "GROUP"
+"GRUPPE [Name]";syntax
+"GRUPPE";locale_de
+
+ORDER "HELP"
+"HELFE f1 ALLES|GIB|KÄMPFE|BEWACHE|SILBER|PARTEITARNUNG [NICHT] ";syntax
+"HELFE";locale_de
+
+ORDER "COMBAT"
+"KÄMPFE [AGGRESSIV|HINTEN|DEFENSIV|NICHT|FLIEHE|(HELFE [NICHT])]";syntax
+"KÄMPFE";locale_de
+
+ORDER "COMBATSPELL"
+"KAMPFZAUBER [STUFE 1] Zauber [NICHT]";syntax
+"KAMPFZAUBER";locale_de
+
+ORDER "BUY"
+"KAUFE 1 Luxus";syntax
+"KAUFE";locale_de
+
+ORDER "CONTACT"
+"KONTAKTIERE u1";syntax
+"KONTAKTIERE";locale_de
+
+ORDER "TEACH"
+"LEHRE u1+";syntax
+"LEHRE";locale_de
+
+ORDER "LEARN"
+"LERNE Talent [1]";syntax
+"LERNE";locale_de
+
+ORDER "SUPPLY"
+"LIEFERE (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
+"LIEFERE";locale_de
+
+ORDER "LOCALE"
+"LOCALE";syntax
+"LOCALE";locale_de
+1;internal
+
+ORDER "MAKE"
+"MACHE [(TEMP u1 [Name]) | ([1] Ding [s1|b1]) | ([1] STRAßE Richtung)]";syntax
+"MACHE";locale_de
+
+ORDER "MOVE"
+"NACH Richtung1+";syntax
+"NACH";locale_de
+
+ORDER "NEXT"
+"Invalid";syntax
+"NÄCHSTER";locale_de
+1;internal
+
+ORDER "NUMBER"
+"NUMMER (EINHEIT) | (SCHIFF) | (GEBÄUDE) | (BURG) | (PARTEI) [x1]";syntax
+"NUMMER";locale_de
+
+ORDER "OPTION"
+"OPTION Option [Nicht]";syntax
+"OPTION";locale_de
+
+ORDER "FACTION"
+"PARTEI f1";syntax
+"PARTEI";locale_de
+1;internal
+
+ORDER "PASSWORD"
+"PASSWORT passwort";syntax
+"PASSWORT";locale_de
+
+ORDER "PREFIX"
+"PRÄFIX [Name]";syntax
+"PRÄFIX";locale_de
+
+ORDER "REGION"
+"REGION 1 , 2";syntax
+"REGION";locale_de
+1;internal
+
+ORDER "RECRUIT"
+"REKRUTIERE 1";syntax
+"REKRUTIERE";locale_de
+
+ORDER "RESERVE"
+"SAMMEL (1) | (ALLES) | (JE 2) Gegenstand";syntax
+"SAMMEL";locale_de
+
+ORDER "ROUTE"
+"ROUTE Richtung1+";syntax
+"ROUTE";locale_de
+
+ORDER "SABOTAGE"
+"SABOTIERE SCHIFF";syntax
+"SABOTIERE";locale_de
+
+ORDER "SORT"
+"SORTIERE (VOR) | (HINTER) u1";syntax
+"SORTIERE";locale_de
+
+ORDER "SPY"
+"SPIONIERE u1";syntax
+"SPIONIERE";locale_de
+
+ORDER "QUIT"
+"STIRB Password";syntax
+"STIRB";locale_de
+
+ORDER "HIDE"
+"TARNE ([1]) | (Rasse) | (PARTEI [NICHT]) | (PARTEI NUMMER f1)";syntax
+"TARNE";locale_de
+
+ORDER "TAX"
+"TREIBE [1]";syntax
+"TREIBE";locale_de
+
+ORDER "ENTERTAIN"
+"UNTERHALTE [1]";syntax
+"UNTERHALTE";locale_de
+
+ORDER "ORIGIN"
+"URSPRUNG 1 2";syntax
+"URSPRUNG";locale_de
+
+ORDER "FORGET"
+"VERGESSE Talent";syntax
+"VERGESSE";locale_de
+
+ORDER "SELL"
+"VERKAUFE 1 | ALLES  Luxus";syntax
+"VERKAUFE";locale_de
+
+ORDER "LEAVE"
+"VERLASSE";syntax
+"VERLASSE";locale_de
+
+ORDER "CAST"
+"ZAUBERE [REGION 1 2] [STUFE 3] Zauber Parameter1*";syntax
+"ZAUBERE";locale_de
+
+ORDER "SHOW"
+"ZEIGE (ding)|(ALLE [ZAUBER|TRÄNKE])";syntax
+"ZEIGE";locale_de
+
+ORDER "DESTROY"
+"ZERSTÖRE [1] [STRASSE richtung]";syntax
+"ZERSTÖRE";locale_de
+
+ORDER "ANWERBEN"
+"ANWERBEN";syntax
+"ANWERBEN";locale_de
+
+ORDER "ERKUNDEN"
+"ERKUNDEN";syntax
+"ERKUNDE";locale_de
+
+ORDER "FINDE"
+"FINDE (ALLES | f1)";syntax
+"FINDE";locale_de
+
+ORDER "MAGIEGEBIET"
+"MAGIEGEBIET string";syntax
+"MAGIEGEBIET";locale_de
+
+ORDER "MEUCHELN"
+"MEUCHELN u1+";syntax
+"MEUCHELN";locale_de
+
+ORDER "UNTERSTUTZE"
+"UNTERSTUETZE u1";syntax
+"UNTERSTUETZE";locale_de
+
+ORDER "WEIHE"
+"WEIHE string";syntax
+"WEIHE";locale_de
+
 SKILLCATEGORY "war"
 "Kampf";name
 0;naturalorder

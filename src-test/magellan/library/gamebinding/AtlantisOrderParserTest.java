@@ -37,21 +37,11 @@ import magellan.library.Region;
 import magellan.library.completion.OrderParser;
 import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
-import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AtlantisOrderParserTest extends AbstractOrderParserTest {
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    MagellanTestWithResources.initResources();
-  }
 
   /**
    * @throws java.lang.Exception
@@ -180,6 +170,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testFormReader() {
     // FORM u1
+    testLong(getOrderTranslation(AtlantisConstants.OC_FORM), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_FORM), false);
   }
 
@@ -189,6 +180,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testEndReader() {
     // FORM u1
+    testLong(getOrderTranslation(AtlantisConstants.OC_END), false);
     bareTest(getOrderTranslation(AtlantisConstants.OC_END));
   }
 
@@ -198,6 +190,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testAcceptReader() {
     // ACCEPT f1
+    testLong(getOrderTranslation(AtlantisConstants.OC_ACCEPT), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_ACCEPT), false);
   }
 
@@ -207,6 +200,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testAddressReader() {
     // ADDRESS Address
+    testLong(getOrderTranslation(AtlantisConstants.OC_ADDRESS) + " " + "123@abc.com", false);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_ADDRESS) + " " + "123@abc.com");
     checkOrder("ADDRESS \"a@foo.com\"");
     checkOrder("ADDRESS", false);
@@ -220,6 +214,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testAdmitReader() {
     // ADMIT f1
+    testLong(getOrderTranslation(AtlantisConstants.OC_ADMIT), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_ADMIT), false);
   }
 
@@ -229,6 +224,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testAllyReader() {
     // ALLY f1 01
+    testLong(getOrderTranslation(AtlantisConstants.OC_ALLY) + " 3 0", false);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_ALLY) + " 3 0");
     checkOrder("ALLY 3 1");
     checkOrder("ALLY", false);
@@ -242,6 +238,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testBehindReader() {
     // BEHIND 01
+    testLong(getOrderTranslation(AtlantisConstants.OC_BEHIND), false);
     flagTest(getOrderTranslation(AtlantisConstants.OC_BEHIND));
   }
 
@@ -251,6 +248,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testCombatReader() {
     // COMBAT spell
+    testLong(getOrderTranslation(AtlantisConstants.OC_COMBAT), false);
     stringTest(getOrderTranslation(AtlantisConstants.OC_COMBAT));
   }
 
@@ -260,6 +258,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testDisplayReader() {
     // DISPLAY (UNIT | BUILDING SHIP) string
+    testLong(getOrderTranslation(AtlantisConstants.OC_DISPLAY) + " UNIT", false);
     stringTest(getOrderTranslation(AtlantisConstants.OC_DISPLAY) + " UNIT");
     stringTest(getOrderTranslation(AtlantisConstants.OC_DISPLAY) + " BUILDING");
     stringTest(getOrderTranslation(AtlantisConstants.OC_DISPLAY) + " SHIP");
@@ -275,6 +274,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testGuardReader() {
     // GUARD 01
+    testLong(getOrderTranslation(AtlantisConstants.OC_GUARD), false);
     flagTest(getOrderTranslation(AtlantisConstants.OC_GUARD));
   }
 
@@ -284,6 +284,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testNameReader() {
     // NAME (FACTION | UNIT | BUILDING | SHIP) name
+    testLong(getOrderTranslation(AtlantisConstants.OC_NAME) + " "
+        + getOrderTranslation(EresseaConstants.OC_NOT), false);
     stringTest(getOrderTranslation(AtlantisConstants.OC_NAME) + " "
         + getOrderTranslation(EresseaConstants.OC_NOT));
     stringTest(getOrderTranslation(AtlantisConstants.OC_NAME) + " UNIT");
@@ -302,6 +304,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testPasswordReader() {
     // PASSWORD password
+    testLong(getOrderTranslation(AtlantisConstants.OC_PASSWORD), false);
     stringTest(getOrderTranslation(AtlantisConstants.OC_PASSWORD));
   }
 
@@ -311,6 +314,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testReshowReader() {
     // RESHOW spell
+    testLong(getOrderTranslation(AtlantisConstants.OC_RESHOW), false);
     stringTest(getOrderTranslation(AtlantisConstants.OC_RESHOW));
   }
 
@@ -320,6 +324,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testFindReader() {
     // FIND f1
+    testLong(getOrderTranslation(AtlantisConstants.OC_FIND), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_FIND), false);
   }
 
@@ -329,6 +334,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testBoardReader() {
     // BOARD s1
+    testLong(getOrderTranslation(AtlantisConstants.OC_BOARD), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_BOARD), false);
   }
 
@@ -338,6 +344,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testEnterReader() {
     // ENTER b1
+    testLong(getOrderTranslation(AtlantisConstants.OC_ENTER), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_ENTER), false);
   }
 
@@ -347,6 +354,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testLeaveReader() {
     // LEAVE
+    testLong(getOrderTranslation(AtlantisConstants.OC_LEAVE), false);
     bareTest(getOrderTranslation(AtlantisConstants.OC_LEAVE));
   }
 
@@ -356,6 +364,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testPromoteReader() {
     // PROMOTE u1
+    testLong(getOrderTranslation(AtlantisConstants.OC_PROMOTE), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_PROMOTE), false);
   }
 
@@ -365,6 +374,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testAttackReader() {
     // ATTACK (u1 | PEASANTS)
+    testLong(getOrderTranslation(AtlantisConstants.OC_ATTACK), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_ATTACK), false);
     checkOrder("ATTACK PEASANTS");
   }
@@ -375,6 +385,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testDemolishReader() {
     // DEMOLISH
+    testLong(getOrderTranslation(AtlantisConstants.OC_DEMOLISH), false);
     bareTest(getOrderTranslation(AtlantisConstants.OC_DEMOLISH));
   }
 
@@ -384,6 +395,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testGiveReader() {
     // GIVE u1 1 item
+    testLong(getOrderTranslation(AtlantisConstants.OC_GIVE) + " " + " 3 5 wood", false);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_GIVE) + " " + " 3 5 wood");
     checkOrder("GIVE", false);
     checkOrder("GIVE 3", false);
@@ -399,6 +411,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testPayReader() {
     // PAY u1 1
+    testLong(getOrderTranslation(AtlantisConstants.OC_PAY) + " 5 17", false);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_PAY) + " 5 17");
     checkOrder("PAY", false);
     checkOrder("PAY 5", false);
@@ -412,6 +425,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testSinkReader() {
     // SINK
+    testLong(getOrderTranslation(AtlantisConstants.OC_SINK), false);
     bareTest(getOrderTranslation(AtlantisConstants.OC_SINK));
   }
 
@@ -421,6 +435,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testTransferReader() {
     // TRANSFER (u1 | PEASANTS) 1
+    testLong(getOrderTranslation(AtlantisConstants.OC_TRANSFER) + " 3 15", false);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_TRANSFER) + " 3 15");
     checkOrder("TRANSFER PEASANTS 5");
     checkOrder("TRANSFER", false);
@@ -435,6 +450,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testTaxReader() {
     // TAX
+    testLong(getOrderTranslation(AtlantisConstants.OC_TAX), false);
     bareTest(getOrderTranslation(AtlantisConstants.OC_TAX));
   }
 
@@ -444,6 +460,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testRecruitReader() {
     // RECRUIT 1
+    testLong(getOrderTranslation(AtlantisConstants.OC_RECRUIT) + " 999", false);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_RECRUIT) + " 999");
     checkOrder("RECRUIT", false);
     checkOrder("RECRUIT a", false);
@@ -456,6 +473,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testQuitReader() {
     // QUIT password
+    testLong(getOrderTranslation(AtlantisConstants.OC_QUIT), false);
     stringTest(getOrderTranslation(AtlantisConstants.OC_QUIT));
   }
 
@@ -465,6 +483,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testMoveReader() {
     // MOVE (N | W | M | S | W | Y)
+    testLong(getOrderTranslation(AtlantisConstants.OC_MOVE), true);
     directionTest(getOrderTranslation(AtlantisConstants.OC_MOVE));
   }
 
@@ -474,6 +493,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testSailReader() {
     // SAIL (N | W | M | S | W | Y)
+    testLong(getOrderTranslation(AtlantisConstants.OC_SAIL), true);
     directionTest(getOrderTranslation(AtlantisConstants.OC_SAIL));
   }
 
@@ -483,6 +503,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testBuildReader() {
     // BUILD (BUILDING [b1]) | (SHIP [s1|type])
+    testLong(getOrderTranslation(AtlantisConstants.OC_BUILD) + " "
+        + getOrderTranslation(EresseaConstants.OC_NOT), true);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_BUILD) + " "
         + getOrderTranslation(EresseaConstants.OC_NOT));
     checkOrder("BUILD", false);
@@ -494,6 +516,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testEntertainReader() {
     // ENTERTAIN
+    testLong(getOrderTranslation(AtlantisConstants.OC_ENTERTAIN), true);
     bareTest(getOrderTranslation(AtlantisConstants.OC_ENTERTAIN));
   }
 
@@ -503,6 +526,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testProduceReader() {
     // PRODUCE item
+    testLong(getOrderTranslation(AtlantisConstants.OC_PRODUCE), true);
     stringTest(getOrderTranslation(AtlantisConstants.OC_PRODUCE));
   }
 
@@ -512,6 +536,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testResearchReader() {
     // RESEARCH [1]
+    testLong(getOrderTranslation(AtlantisConstants.OC_RESEARCH) + " 5", true);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_RESEARCH) + " 5");
     checkOrder("RESEARCH");
     checkOrder("RESEARCH 1 2", false);
@@ -523,6 +548,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testStudyReader() {
     // STUDY skill
+    testLong(getOrderTranslation(AtlantisConstants.OC_STUDY), true);
     stringTest(getOrderTranslation(AtlantisConstants.OC_STUDY));
   }
 
@@ -541,6 +567,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testWorkReader() {
     // WORK
+    testLong(getOrderTranslation(AtlantisConstants.OC_WORK), true);
     bareTest(getOrderTranslation(AtlantisConstants.OC_WORK));
   }
 
@@ -550,6 +577,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testCastReader() {
     // CAST spell
+    testLong(getOrderTranslation(AtlantisConstants.OC_CAST), true);
     stringTest(getOrderTranslation(AtlantisConstants.OC_CAST));
   }
 

@@ -39,10 +39,8 @@ import magellan.library.gamebinding.e3a.E3AOrderCompleter;
 import magellan.library.gamebinding.e3a.E3AOrderParser;
 import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
-import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -50,14 +48,6 @@ import org.junit.Test;
  * where required.
  */
 public class E3AOrderParserTest extends EresseaOrderParserTest {
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    MagellanTestWithResources.initResources();
-  }
 
   private E3AOrderParser parser;
   private E3AOrderCompleter completer;

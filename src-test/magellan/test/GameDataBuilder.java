@@ -223,7 +223,7 @@ public class GameDataBuilder {
    * Adds or replaces a region to the report.
    * 
    * @param data The report
-   * @param coordinate
+   * @param coordinate as "1 0" or "2,3"
    * @param name
    * @param type RegionType, e.g., "Ebene"
    * @param sortIndex

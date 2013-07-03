@@ -15,6 +15,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -59,6 +60,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
@@ -663,6 +665,22 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     } catch (Exception e) {
       Client.log.error(e);
     }
+
+    // select all in textfields on focus gain globally
+    KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(
+        "permanentFocusOwner", new PropertyChangeListener() {
+          public void propertyChange(final PropertyChangeEvent e) {
+            if (e.getNewValue() instanceof JTextField) {
+              // invokeLater needed for JFormattedTextField
+              SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                  JTextField textField = (JTextField) e.getNewValue();
+                  textField.selectAll();
+                }
+              });
+            }
+          }
+        });
 
     // initialize client shortcut - F5 to repaint
     DesktopEnvironment.registerShortcutListener(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), this);

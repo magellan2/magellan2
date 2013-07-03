@@ -3388,7 +3388,7 @@ public class CRParser implements RulesIO, GameDataIO {
           // marking the problem
           world.setOutOfMemory(true);
 
-          ui.ready();
+          // ui.ready();
           // end exit
           return world;
         }
@@ -3396,11 +3396,12 @@ public class CRParser implements RulesIO, GameDataIO {
       }
       world.setMaxSortIndex(++regionSortIndex);
     } catch (final RuntimeException e) {
-      ui.ready();
+      // ui.ready();
       throw e;
+    } finally {
+      // FIXME(stm) this could be too soon if called via the load menu!
+      ui.ready();
     }
-    // FIXME(stm) this could be too soon if called via the load menu!
-    ui.ready();
 
     log.fine(CRParser.tRParse + " " + CRParser.tUParse);
 

@@ -1090,14 +1090,18 @@ public abstract class GameData implements Cloneable, Addeable {
    * @throws CloneNotSupportedException If cloning doesn't succeed
    */
   public GameData clone(ReportTransformer coordinateTranslator) throws CloneNotSupportedException {
-    if (MemoryManagment.isFreeMemory(estimateSize() * 3)) {
-      GameData.log.info("cloning in memory");
-      GameData clonedData = new Loader().cloneGameDataInMemory(this, coordinateTranslator);
-      if (clonedData == null || clonedData.isOutOfMemory()) {
-        GameData.log.info("cloning externally after failed memory-clone-attempt");
-        clonedData = new Loader().cloneGameData(this, coordinateTranslator);
+    try {
+      if (MemoryManagment.isFreeMemory(estimateSize() * 3)) {
+        GameData.log.info("cloning in memory");
+        GameData clonedData = new Loader().cloneGameDataInMemory(this, coordinateTranslator);
+        if (clonedData == null || clonedData.isOutOfMemory()) {
+          GameData.log.info("cloning externally after failed memory-clone-attempt");
+          clonedData = new Loader().cloneGameData(this, coordinateTranslator);
+        }
+        return clonedData;
       }
-      return clonedData;
+    } catch (Exception e) {
+      log.error("Loader.cloneGameData failed!", e);
     }
     GameData.log.info("cloning externally");
     return new Loader().cloneGameData(this, coordinateTranslator);

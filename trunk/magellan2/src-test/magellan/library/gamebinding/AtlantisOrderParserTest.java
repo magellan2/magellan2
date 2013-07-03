@@ -119,9 +119,9 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   public void testInitCommands() {
     assertSame(36, getParser().getCommands().size());
     assertSame(36, getParser().getHandlers().size());
-    assertTrue(getParser().getCommands().contains("WORK"));
-    assertTrue(getParser().getCommands().contains("DEMOLISH"));
-    assertTrue(!getParser().getCommands().contains("SABOTAGE"));
+    assertTrue(getParser().getCommands().contains(AtlantisConstants.O_WORK));
+    assertTrue(getParser().getCommands().contains(AtlantisConstants.O_DEMOLISH));
+    assertTrue(!getParser().getCommands().contains(EresseaConstants.O_SABOTAGE));
   }
 
   protected void bareTest(String command) {

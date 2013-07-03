@@ -16,622 +16,622 @@ package magellan.library.gamebinding;
 import magellan.library.StringID;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 389 $
+ * Constants for the Eressea game
  */
-public class EresseaConstants {
-  /** DOCUMENT-ME */
+public class EresseaConstants extends GameConstants {
+  /** Option category ID AUSWERTUNG */
   public static final StringID OPT_AUSWERTUNG = StringID.create("AUSWERTUNG");
 
-  /** DOCUMENT-ME */
+  /** Option category ID COMPUTER */
   public static final StringID OPT_COMPUTER = StringID.create("COMPUTER");
 
-  /** DOCUMENT-ME */
+  /** Option category ID ZUGVORLAGE */
   public static final StringID OPT_ZUGVORLAGE = StringID.create("ZUGVORLAGE");
 
-  /** DOCUMENT-ME */
+  /** Option category ID SILBERPOOL */
   public static final StringID OPT_SILBERPOOL = StringID.create("SILBERPOOL");
 
-  /** DOCUMENT-ME */
+  /** Option category ID STATISTIK */
   public static final StringID OPT_STATISTIK = StringID.create("STATISTIK");
 
-  /** DOCUMENT-ME */
+  /** Option category ID DEBUG */
   public static final StringID OPT_DEBUG = StringID.create("DEBUG");
 
-  /** DOCUMENT-ME */
+  /** Option category ID ZIPPED */
   public static final StringID OPT_ZIPPED = StringID.create("ZIPPED");
 
-  /** DOCUMENT-ME */
+  /** Option category ID ZEITUNG */
   public static final StringID OPT_ZEITUNG = StringID.create("ZEITUNG");
 
-  /** DOCUMENT-ME */
+  /** Option category ID MATERIALPOOL */
   public static final StringID OPT_MATERIALPOOL = StringID.create("MATERIALPOOL");
 
-  /** DOCUMENT-ME */
+  /** Option category ID ADRESSEN */
   public static final StringID OPT_ADRESSEN = StringID.create("ADRESSEN");
 
-  /** DOCUMENT-ME */
+  /** Option category ID BZIP2 */
   public static final StringID OPT_BZIP2 = StringID.create("BZIP2");
 
-  /** DOCUMENT-ME */
+  /** Option category ID PUNKTE */
   public static final StringID OPT_PUNKTE = StringID.create("PUNKTE");
 
-  /** DOCUMENT-ME */
+  /** Item category ID WEAPONS */
   public static final StringID C_WEAPONS = StringID.create("WEAPONS");
 
-  /** DOCUMENT-ME */
+  /** Item category ID DISTANCE WEAPONS */
   public static final StringID C_RANGED_WEAPONS = StringID.create("DISTANCE WEAPONS");
 
-  /** DOCUMENT-ME */
+  /** Item category ID ARMOUR */
   public static final StringID C_ARMOUR = StringID.create("ARMOUR");
 
-  /** DOCUMENT-ME */
+  /** Item category ID RESOURCES */
   public static final StringID C_RESOURCES = StringID.create("RESOURCES");
 
-  /** DOCUMENT-ME */
+  /** Item category ID LUXURIES */
   public static final StringID C_LUXURIES = StringID.create("LUXURIES");
 
-  /** DOCUMENT-ME */
+  /** Item category ID HERBS */
   public static final StringID C_HERBS = StringID.create("HERBS");
 
-  /** DOCUMENT-ME */
+  /** Item category ID MISC */
   public static final StringID C_MISC = StringID.create("MISC");
 
-  /** An end-of-line comment */
-  public static final String O_COMMENT = ";";
+  // /** An end-of-line comment */
+  // public static final StringID O_COMMENT = StringID.create(";");
+  //
+  // /** A persistent comment */
+  // public static final StringID O_PCOMMENT = StringID.create("//");
+  // /** A persistent order marker */
+  // public static final StringID O_PERSISTENT = StringID.create("@");
 
-  /** A persistent comment */
-  public static final String O_PCOMMENT = "//";
+  public static final String OS_COMMENT = ";";
+  public static final String OS_PCOMMENT = "//";
+  public static final String OS_PERSISTENT = "@";
 
-  /** A persistent order marker */
-  public static final String O_PERSISTENT = "@";
-
-  /** DOCUMENT-ME */
-  public static final String O_ADDRESSES = "ADDRESSES";
+  /** Order constant ADDRESSES */
+  public static final StringID O_ADDRESSES = StringID.create("ADDRESSES");
 
   /**
    * @deprecated replaced by COMBAT_AGGRESSIVE
    */
   @Deprecated
-  public static final String O_AGGRESSIVE = "AGGRESSIVE";
+  public static final StringID O_AGGRESSIVE = StringID.create("AGGRESSIVE");
 
-  /** DOCUMENT-ME */
-  public static final String O_AFTER = "AFTER";
+  /** Order constant AFTER */
+  public static final StringID O_AFTER = StringID.create("AFTER");
 
-  /** DOCUMENT-ME */
-  public static final String O_ALL = "ALL";
+  /** Order constant ALL */
+  public static final StringID O_ALL = StringID.create("ALL");
 
-  /** DOCUMENT-ME */
-  public static final String O_ATTACK = "ATTACK";
+  /** Order constant ATTACK */
+  public static final StringID O_ATTACK = StringID.create("ATTACK");
 
-  /** DOCUMENT-ME */
-  public static final String O_AURA = "AURA";
+  /** Order constant AURA */
+  public static final StringID O_AURA = StringID.create("AURA");
 
-  /** DOCUMENT-ME */
-  public static final String O_BANNER = "BANNER";
+  /** Order constant BANNER */
+  public static final StringID O_BANNER = StringID.create("BANNER");
 
-  /** DOCUMENT-ME */
-  public static final String O_BEFORE = "BEFORE";
+  /** Order constant BEFORE */
+  public static final StringID O_BEFORE = StringID.create("BEFORE");
 
-  /** DOCUMENT-ME */
-  public static final String O_BUY = "BUY";
+  /** Order constant BUY */
+  public static final StringID O_BUY = StringID.create("BUY");
 
-  /** DOCUMENT-ME */
-  public static final String O_BZIP2 = "BZIP2";
+  /** Order constant BZIP2 */
+  public static final StringID O_BZIP2 = StringID.create("BZIP2");
 
-  /** DOCUMENT-ME */
-  public static final String O_CARRY = "CARRY";
+  /** Order constant CARRY */
+  public static final StringID O_CARRY = StringID.create("CARRY");
 
-  /** DOCUMENT-ME */
-  public static final String O_CAST = "CAST";
+  /** Order constant CAST */
+  public static final StringID O_CAST = StringID.create("CAST");
 
-  /** DOCUMENT-ME */
-  public static final String O_CASTLE = "CASTLE";
+  /** Order constant CASTLE */
+  public static final StringID O_CASTLE = StringID.create("CASTLE");
 
   /** BENNEN GEBÄUDE xyz */
-  public static final String O_BUILDING = "BUILDING";
+  public static final StringID O_BUILDING = StringID.create("BUILDING");
 
-  /** DOCUMENT-ME */
-  public static final String O_CLAIM = "CLAIM";
+  /** Order constant CLAIM */
+  public static final StringID O_CLAIM = StringID.create("CLAIM");
 
   /** "KÄMPFE [AGGRESSIV|HINTEN|DEFENSIV...]" */
-  public static final String O_COMBAT = "COMBAT";
+  public static final StringID O_COMBAT = StringID.create("COMBAT");
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_AGGRESSIVE = "COMBAT_AGGRESSIVE";
+  public static final StringID O_COMBAT_AGGRESSIVE = StringID.create("COMBAT_AGGRESSIVE");
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_DEFENSIVE = "COMBAT_DEFENSIVE";
+  public static final StringID O_COMBAT_DEFENSIVE = StringID.create("COMBAT_DEFENSIVE");
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_FLEE = "COMBAT_FLEE";
+  public static final StringID O_COMBAT_FLEE = StringID.create("COMBAT_FLEE");
 
   /**
    * argument of COMBAT order NOTE: "KÄMPFE" is now preferred to "KÄMPFE VORNE"
    */
-  public static final String O_COMBAT_FRONT = "COMBAT_FRONT";
+  public static final StringID O_COMBAT_FRONT = StringID.create("COMBAT_FRONT");
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_REAR = "COMBAT_REAR";
+  public static final StringID O_COMBAT_REAR = StringID.create("COMBAT_REAR");
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_NOT = "COMBAT_NOT";
+  public static final StringID O_COMBAT_NOT = StringID.create("COMBAT_NOT");
 
-  /** DOCUMENT-ME */
-  public static final String O_COMBATSPELL = "COMBATSPELL";
+  /** Order constant COMBATSPELL */
+  public static final StringID O_COMBATSPELL = StringID.create("COMBATSPELL");
 
-  /** DOCUMENT-ME */
-  public static final String O_COMPUTER = "COMPUTER";
+  /** Order constant COMPUTER */
+  public static final StringID O_COMPUTER = StringID.create("COMPUTER");
 
-  /** DOCUMENT-ME */
-  public static final String O_CONTACT = "CONTACT";
+  /** Order constant CONTACT */
+  public static final StringID O_CONTACT = StringID.create("CONTACT");
 
-  /** DOCUMENT-ME */
-  public static final String O_CONTROL = "CONTROL";
+  /** Order constant CONTROL */
+  public static final StringID O_CONTROL = StringID.create("CONTROL");
 
-  /** DOCUMENT-ME */
-  public static final String O_DEFAULT = "DEFAULT";
+  /** Order constant DEFAULT */
+  public static final StringID O_DEFAULT = StringID.create("DEFAULT");
 
   /**
    * @deprecated replaced by O_COMBAT_DEFENSIVE
    */
   @Deprecated
-  public static final String O_DEFENSIVE = "DEFENSIVE";
+  public static final StringID O_DEFENSIVE = StringID.create("DEFENSIVE");
 
-  /** DOCUMENT-ME */
-  public static final String O_DESCRIBE = "DESCRIBE";
+  /** Order constant DESCRIBE */
+  public static final StringID O_DESCRIBE = StringID.create("DESCRIBE");
 
-  /** DOCUMENT-ME */
-  public static final String O_DESTROY = "DESTROY";
+  /** Order constant DESTROY */
+  public static final StringID O_DESTROY = StringID.create("DESTROY");
 
   /** EACH/JE keyword */
-  public static final String O_EACH = "EACH";
+  public static final StringID O_EACH = StringID.create("EACH");
 
-  /** DOCUMENT-ME */
-  public static final String O_EMAIL = "EMAIL";
+  /** Order constant EMAIL */
+  public static final StringID O_EMAIL = StringID.create("EMAIL");
 
-  /** DOCUMENT-ME */
-  public static final String O_END = "END";
+  /** Order constant END */
+  public static final StringID O_END = StringID.create("END");
 
-  /** DOCUMENT-ME */
-  public static final String O_ENTER = "ENTER";
+  /** Order constant ENTER */
+  public static final StringID O_ENTER = StringID.create("ENTER");
 
-  /** DOCUMENT-ME */
-  public static final String O_ENTERTAIN = "ENTERTAIN";
+  /** Order constant ENTERTAIN */
+  public static final StringID O_ENTERTAIN = StringID.create("ENTERTAIN");
 
-  /** DOCUMENT-ME */
-  public static final String O_ERESSEA = "ERESSEA";
+  /** Order constant ERESSEA */
+  public static final StringID O_ERESSEA = StringID.create("ERESSEA");
 
-  /** DOCUMENT-ME */
-  public static final String O_FACTION = "FACTION";
+  /** Order constant FACTION */
+  public static final StringID O_FACTION = StringID.create("FACTION");
 
   /**
    * @deprecated replaced by HELP_FACTIONSTEALTH
    */
   @Deprecated
-  public static final String O_FACTIONSTEALTH = "FACTIONSTEALTH";
+  public static final StringID O_FACTIONSTEALTH = StringID.create("FACTIONSTEALTH");
 
   /**
    * @deprecated replaced by COMBAT_FLEE
    */
   @Deprecated
-  public static final String O_FLEE = "FLEE";
+  public static final StringID O_FLEE = StringID.create("FLEE");
 
-  /** DOCUMENT-ME */
-  public static final String O_FOLLOW = "FOLLOW";
+  /** Order constant FOLLOW */
+  public static final StringID O_FOLLOW = StringID.create("FOLLOW");
 
   /** @deprecated you should use one of <code>O_FOREIGNUNIT, -FACTION, -BUILDING, -SHIP</code> */
   @Deprecated
-  public static final String O_FOREIGN = "FOREIGN";
+  public static final StringID O_FOREIGN = StringID.create("FOREIGN");
 
   /** BENENNE FREMDE EINHEIT */
-  public static final String O_FOREIGNUNIT = "FOREIGNUNIT";
+  public static final StringID O_FOREIGNUNIT = StringID.create("FOREIGNUNIT");
 
   /** BENENNE FREMDE PARTEI */
-  public static final String O_FOREIGNFACTION = "FOREIGNFACTION";
+  public static final StringID O_FOREIGNFACTION = StringID.create("FOREIGNFACTION");
 
   /** BENENNE FREMDE BURG */
-  public static final String O_FOREIGNBUILDING = "FOREIGNBUILDING";
+  public static final StringID O_FOREIGNBUILDING = StringID.create("FOREIGNBUILDING");
 
   /** BENENNE FREMDES SCHIFF */
-  public static final String O_FOREIGNSHIP = "FOREIGNSHIP";
+  public static final StringID O_FOREIGNSHIP = StringID.create("FOREIGNSHIP");
 
-  /** DOCUMENT-ME */
-  public static final String O_FORGET = "FORGET";
+  /** Order constant FORGET */
+  public static final StringID O_FORGET = StringID.create("FORGET");
 
   /**
    * @deprecated replaced by COMBAT_FRONT
    */
   @Deprecated
-  public static final String O_FRONT = "FRONT";
+  public static final StringID O_FRONT = StringID.create("FRONT");
 
-  /** DOCUMENT-ME */
-  public static final String O_GIVE = "GIVE";
+  /** Order constant GIVE */
+  public static final StringID O_GIVE = StringID.create("GIVE");
 
-  /** DOCUMENT-ME */
-  public static final String O_GROUP = "GROUP";
+  /** Order constant GROUP */
+  public static final StringID O_GROUP = StringID.create("GROUP");
 
-  /** DOCUMENT-ME */
-  public static final String O_GROW = "GROW";
+  /** Order constant GROW */
+  public static final StringID O_GROW = StringID.create("GROW");
 
-  /** DOCUMENT-ME */
-  public static final String O_GUARD = "GUARD";
+  /** Order constant GUARD */
+  public static final StringID O_GUARD = StringID.create("GUARD");
 
   /** The "HELFE" command */
-  public static final String O_HELP = "HELP";
+  public static final StringID O_HELP = StringID.create("HELP");
 
   /** The "GIB" from HELFE GIB */
-  public static final String O_HELP_GIVE = "HELP_GIVE";
+  public static final StringID O_HELP_GIVE = StringID.create("HELP_GIVE");
 
   /** The "KÄMPFE" from HELFE KÄMPFE */
-  public static final String O_HELP_COMBAT = "HELP_COMBAT";
+  public static final StringID O_HELP_COMBAT = StringID.create("HELP_COMBAT");
 
   /** The "SILBER" from HELFE SILBER */
-  public static final String O_HELP_SILVER = "HELP_SILVER";
+  public static final StringID O_HELP_SILVER = StringID.create("HELP_SILVER");
 
   /** The "BEWACHE" from HELFE BEWACHE */
-  public static final String O_HELP_GUARD = "HELP_GUARD";
+  public static final StringID O_HELP_GUARD = StringID.create("HELP_GUARD");
 
   /** The "PARTEITARNUNG" from HELFE PARTEITARNUNG */
-  public static final String O_HELP_FACTIONSTEALTH = "HELP_FACTIONSTEALTH";
+  public static final StringID O_HELP_FACTIONSTEALTH = StringID.create("HELP_FACTIONSTEALTH");
 
   // FIXME(pavkovic) 2003.04.16: this is only used for german to distinguish between "HELFEN" and
   // "HELFE"
 
   /** The "HELFE" from KÄMPFE HELFE [NICHT] */
-  public static final String O_COMBAT_HELP = "COMBAT_HELP";
+  public static final StringID O_COMBAT_HELP = StringID.create("COMBAT_HELP");
 
-  /** DOCUMENT-ME */
-  public static final String O_HERBS = "HERBS";
+  /** Order constant HERBS */
+  public static final StringID O_HERBS = StringID.create("HERBS");
 
-  /** DOCUMENT-ME */
-  public static final String O_HIDE = "HIDE";
+  /** Order constant HIDE */
+  public static final StringID O_HIDE = StringID.create("HIDE");
 
-  /** DOCUMENT-ME */
-  public static final String O_HORSES = "HORSES";
+  /** Order constant HORSES */
+  public static final StringID O_HORSES = StringID.create("HORSES");
 
-  /** DOCUMENT-ME */
-  public static final String O_ITEMPOOL = "ITEMPOOL";
+  /** Order constant ITEMPOOL */
+  public static final StringID O_ITEMPOOL = StringID.create("ITEMPOOL");
 
-  /** DOCUMENT-ME */
-  public static final String O_LEARN = "LEARN";
+  /** Order constant LEARN */
+  public static final StringID O_LEARN = StringID.create("LEARN");
 
-  /** DOCUMENT-ME */
-  public static final String O_LEAVE = "LEAVE";
+  /** Order constant LEAVE */
+  public static final StringID O_LEAVE = StringID.create("LEAVE");
 
-  /** DOCUMENT-ME */
-  public static final String O_LEVEL = "LEVEL";
+  /** Order constant LEVEL */
+  public static final StringID O_LEVEL = StringID.create("LEVEL");
 
-  /** DOCUMENT-ME */
-  public static final String O_LOCALE = "LOCALE";
+  /** Order constant LOCALE */
+  public static final StringID O_LOCALE = StringID.create("LOCALE");
 
-  /** DOCUMENT-ME */
-  public static final String O_MAKE = "MAKE";
+  /** Order constant MAKE */
+  public static final StringID O_MAKE = StringID.create("MAKE");
 
-  /** DOCUMENT-ME */
-  public static final String O_MALLORNSEED = "MALLORNSEED";
+  /** Order constant MALLORNSEED */
+  public static final StringID O_MALLORNSEED = StringID.create("MALLORNSEED");
 
   /** As in GIB 123 2 PERSONEN */
-  public static final String O_MEN = "MEN";
+  public static final StringID O_MEN = StringID.create("MEN");
 
-  /** DOCUMENT-ME */
-  public static final String O_MESSAGE = "MESSAGE";
+  /** Order constant MESSAGE */
+  public static final StringID O_MESSAGE = StringID.create("MESSAGE");
 
-  /** DOCUMENT-ME */
-  public static final String O_MOVE = "MOVE";
+  /** Order constant MOVE */
+  public static final StringID O_MOVE = StringID.create("MOVE");
 
-  /** DOCUMENT-ME */
-  public static final String O_NAME = "NAME";
+  /** Order constant NAME */
+  public static final StringID O_NAME = StringID.create("NAME");
 
-  /** DOCUMENT-ME */
-  public static final String O_NEXT = "NEXT";
+  /** Order constant NEXT */
+  public static final StringID O_NEXT = StringID.create("NEXT");
 
-  /** DOCUMENT-ME */
-  public static final String O_NOT = "NOT";
+  /** Order constant NOT */
+  public static final StringID O_NOT = StringID.create("NOT");
 
-  /** DOCUMENT-ME */
-  public static final String O_NUMBER = "NUMBER";
+  /** Order constant NUMBER */
+  public static final StringID O_NUMBER = StringID.create("NUMBER");
 
-  /** DOCUMENT-ME */
-  public static final String O_OPTION = "OPTION";
+  /** Order constant OPTION */
+  public static final StringID O_OPTION = StringID.create("OPTION");
 
-  /** DOCUMENT-ME */
-  public static final String O_ORIGIN = "ORIGIN";
+  /** Order constant ORIGIN */
+  public static final StringID O_ORIGIN = StringID.create("ORIGIN");
 
-  /** DOCUMENT-ME */
-  public static final String O_PASSWORD = "PASSWORD";
+  /** Order constant PASSWORD */
+  public static final StringID O_PASSWORD = StringID.create("PASSWORD");
 
-  /** DOCUMENT-ME */
-  public static final String O_PAUSE = "PAUSE";
+  /** Order constant PAUSE */
+  public static final StringID O_PAUSE = StringID.create("PAUSE");
 
-  /** DOCUMENT-ME */
-  public static final String O_PIRACY = "PIRACY";
+  /** Order constant PIRACY */
+  public static final StringID O_PIRACY = StringID.create("PIRACY");
 
   /** @deprecated Same as O_REPORT */
   @Deprecated
-  public static final String O_PLAINTEXT = "PLAINTEXT";
+  public static final StringID O_PLAINTEXT = StringID.create("PLAINTEXT");
 
-  /** DOCUMENT-ME */
-  public static final String O_PLANT = "PLANT";
+  /** Order constant PLANT */
+  public static final StringID O_PLANT = StringID.create("PLANT");
 
-  /** DOCUMENT-ME */
-  public static final String O_POTIONS = "POTIONS";
+  /** Order constant POTIONS */
+  public static final StringID O_POTIONS = StringID.create("POTIONS");
 
-  /** DOCUMENT-ME */
-  public static final String O_PREFIX = "PREFIX";
+  /** Order constant PREFIX */
+  public static final StringID O_PREFIX = StringID.create("PREFIX");
 
-  /** DOCUMENT-ME */
-  public static final String O_PRIVATE = "PRIVATE";
+  /** Order constant PRIVATE */
+  public static final StringID O_PRIVATE = StringID.create("PRIVATE");
 
-  /** DOCUMENT-ME */
-  public static final String O_PROMOTION = "PROMOTION";
+  /** Order constant PROMOTION */
+  public static final StringID O_PROMOTION = StringID.create("PROMOTION");
 
-  /** DOCUMENT-ME */
-  public static final String O_QUIT = "QUIT";
+  /** Order constant QUIT */
+  public static final StringID O_QUIT = StringID.create("QUIT");
 
   /**
    * @deprecated replaced by O_COMBAT_REAR
    */
   @Deprecated
-  public static final String O_REAR = "REAR";
+  public static final StringID O_REAR = StringID.create("REAR");
 
-  /** DOCUMENT-ME */
-  public static final String O_RECRUIT = "RECRUIT";
+  /** Order constant RECRUIT */
+  public static final StringID O_RECRUIT = StringID.create("RECRUIT");
 
-  /** DOCUMENT-ME */
-  public static final String O_REGION = "REGION";
+  /** Order constant REGION */
+  public static final StringID O_REGION = StringID.create("REGION");
 
-  /** DOCUMENT-ME */
-  public static final String O_REPORT = "REPORT";
+  /** Order constant REPORT */
+  public static final StringID O_REPORT = StringID.create("REPORT");
 
-  /** DOCUMENT-ME */
-  public static final String O_RESEARCH = "RESEARCH";
+  /** Order constant RESEARCH */
+  public static final StringID O_RESEARCH = StringID.create("RESEARCH");
 
-  /** DOCUMENT-ME */
-  public static final String O_RESERVE = "RESERVE";
+  /** Order constant RESERVE */
+  public static final StringID O_RESERVE = StringID.create("RESERVE");
 
-  /** DOCUMENT-ME */
-  public static final String O_RESTART = "RESTART";
+  /** Order constant RESTART */
+  public static final StringID O_RESTART = StringID.create("RESTART");
 
-  /** DOCUMENT-ME */
-  public static final String O_RIDE = "RIDE";
+  /** Order constant RIDE */
+  public static final StringID O_RIDE = StringID.create("RIDE");
 
-  /** DOCUMENT-ME */
-  public static final String O_ROAD = "ROAD";
+  /** Order constant ROAD */
+  public static final StringID O_ROAD = StringID.create("ROAD");
 
-  /** DOCUMENT-ME */
-  public static final String O_ROUTE = "ROUTE";
+  /** Order constant ROUTE */
+  public static final StringID O_ROUTE = StringID.create("ROUTE");
 
   /** TODO: DOCUMENT ME! */
-  public static final String O_SCORE = "SCORE";
+  public static final StringID O_SCORE = StringID.create("SCORE");
 
-  /** DOCUMENT-ME */
-  public static final String O_SEED = "SEED";
+  /** Order constant SEED */
+  public static final StringID O_SEED = StringID.create("SEED");
 
-  /** DOCUMENT-ME */
-  public static final String O_SELL = "SELL";
+  /** Order constant SELL */
+  public static final StringID O_SELL = StringID.create("SELL");
 
-  /** DOCUMENT-ME */
-  public static final String O_SABOTAGE = "SABOTAGE";
+  /** Order constant SABOTAGE */
+  public static final StringID O_SABOTAGE = StringID.create("SABOTAGE");
 
-  /** DOCUMENT-ME */
-  public static final String O_SHIP = "SHIP";
+  /** Order constant SHIP */
+  public static final StringID O_SHIP = StringID.create("SHIP");
 
-  /** DOCUMENT-ME */
-  public static final String O_SHOW = "SHOW";
+  /** Order constant SHOW */
+  public static final StringID O_SHOW = StringID.create("SHOW");
 
-  /** DOCUMENT-ME */
-  public static final String O_SIEGE = "SIEGE";
+  /** Order constant SIEGE */
+  public static final StringID O_SIEGE = StringID.create("SIEGE");
 
   /**
    * @deprecated use rules.getItemType(EresseaConstants.I_SILVER) instead
    */
   @Deprecated
-  public static final String O_SILVER = "SILVER";
+  public static final StringID O_SILVER = StringID.create("SILVER");
 
-  /** DOCUMENT-ME */
-  public static final String O_SILVERPOOL = "SILVERPOOL";
+  /** Order constant SILVERPOOL */
+  public static final StringID O_SILVERPOOL = StringID.create("SILVERPOOL");
 
-  /** DOCUMENT-ME */
-  public static final String O_SORT = "SORT";
+  /** Order constant SORT */
+  public static final StringID O_SORT = StringID.create("SORT");
 
-  /** DOCUMENT-ME */
-  public static final String O_SPELLS = "SPELLS";
+  /** Order constant SPELLS */
+  public static final StringID O_SPELLS = StringID.create("SPELLS");
 
-  /** DOCUMENT-ME */
-  public static final String O_SPY = "SPY";
+  /** Order constant SPY */
+  public static final StringID O_SPY = StringID.create("SPY");
 
-  /** DOCUMENT-ME */
-  public static final String O_STATISTICS = "STATISTICS";
+  /** Order constant STATISTICS */
+  public static final StringID O_STATISTICS = StringID.create("STATISTICS");
 
-  /** DOCUMENT-ME */
-  public static final String O_STEAL = "STEAL";
+  /** Order constant STEAL */
+  public static final StringID O_STEAL = StringID.create("STEAL");
 
-  /** DOCUMENT-ME */
-  public static final String O_SUPPLY = "SUPPLY";
+  /** Order constant SUPPLY */
+  public static final StringID O_SUPPLY = StringID.create("SUPPLY");
 
-  /** DOCUMENT-ME */
-  public static final String O_TAX = "TAX";
+  /** Order constant TAX */
+  public static final StringID O_TAX = StringID.create("TAX");
 
-  /** DOCUMENT-ME */
-  public static final String O_TEACH = "TEACH";
+  /** Order constant TEACH */
+  public static final StringID O_TEACH = StringID.create("TEACH");
 
-  /** DOCUMENT-ME */
-  public static final String O_TEMP = "TEMP";
+  /** Order constant TEMP */
+  public static final StringID O_TEMP = StringID.create("TEMP");
 
-  /** DOCUMENT-ME */
-  public static final String O_TEMPLATE = "TEMPLATE";
+  /** Order constant TEMPLATE */
+  public static final StringID O_TEMPLATE = StringID.create("TEMPLATE");
 
-  /** DOCUMENT-ME */
-  public static final String O_TREES = "TREES";
+  /** Order constant TREES */
+  public static final StringID O_TREES = StringID.create("TREES");
 
-  /** DOCUMENT-ME */
-  public static final String O_UNIT = "UNIT";
+  /** Order constant UNIT */
+  public static final StringID O_UNIT = StringID.create("UNIT");
 
-  /** DOCUMENT-ME */
-  public static final String O_USE = "USE";
+  /** Order constant USE */
+  public static final StringID O_USE = StringID.create("USE");
 
-  /** DOCUMENT-ME */
-  public static final String O_WORK = "WORK";
+  /** Order constant WORK */
+  public static final StringID O_WORK = StringID.create("WORK");
 
-  /** DOCUMENT-ME */
-  public static final String O_ZIPPED = "ZIPPED";
+  /** Order constant ZIPPED */
+  public static final StringID O_ZIPPED = StringID.create("ZIPPED");
 
   // directions:
 
-  /** DOCUMENT-ME */
-  public static final String O_NORTHWEST = "NORTHWEST";
+  /** Order constant NORTHWEST */
+  public static final StringID O_NORTHWEST = StringID.create("NORTHWEST");
 
-  /** DOCUMENT-ME */
-  public static final String O_NORTHEAST = "NORTHEAST";
+  /** Order constant NORTHEAST */
+  public static final StringID O_NORTHEAST = StringID.create("NORTHEAST");
 
-  /** DOCUMENT-ME */
-  public static final String O_EAST = "EAST";
+  /** Order constant EAST */
+  public static final StringID O_EAST = StringID.create("EAST");
 
-  /** DOCUMENT-ME */
-  public static final String O_SOUTHEAST = "SOUTHEAST";
+  /** Order constant SOUTHEAST */
+  public static final StringID O_SOUTHEAST = StringID.create("SOUTHEAST");
 
-  /** DOCUMENT-ME */
-  public static final String O_SOUTHWEST = "SOUTHWEST";
+  /** Order constant SOUTHWEST */
+  public static final StringID O_SOUTHWEST = StringID.create("SOUTHWEST");
 
-  /** DOCUMENT-ME */
-  public static final String O_WEST = "WEST";
+  /** Order constant WEST */
+  public static final StringID O_WEST = StringID.create("WEST");
 
-  /** DOCUMENT-ME */
-  public static final String O_NW = "NW";
+  /** Order constant NW */
+  public static final StringID O_NW = StringID.create("NW");
 
-  /** DOCUMENT-ME */
-  public static final String O_NE = "NE";
+  /** Order constant NE */
+  public static final StringID O_NE = StringID.create("NE");
 
-  /** DOCUMENT-ME */
-  public static final String O_E = "E";
+  /** Order constant E */
+  public static final StringID O_E = StringID.create("E");
 
-  /** DOCUMENT-ME */
-  public static final String O_SE = "SE";
+  /** Order constant SE */
+  public static final StringID O_SE = StringID.create("SE");
 
-  /** DOCUMENT-ME */
-  public static final String O_SW = "SW";
+  /** Order constant SW */
+  public static final StringID O_SW = StringID.create("SW");
 
-  /** DOCUMENT-ME */
-  public static final String O_W = "W";
+  /** Order constant W */
+  public static final StringID O_W = StringID.create("W");
 
-  /** DOCUMENT-ME */
+  /** Race DAEMONEN */
   public static final StringID R_DAEMONEN = StringID.create("DAEMONEN");
 
-  /** DOCUMENT-ME */
+  /** Race ELFEN */
   public static final StringID R_ELFEN = StringID.create("ELFEN");
 
-  /** DOCUMENT-ME */
+  /** Race GOBLINS */
   public static final StringID R_GOBLINS = StringID.create("GOBLINS");
 
-  /** DOCUMENT-ME */
+  /** Race HALBLINGE */
   public static final StringID R_HALBLINGE = StringID.create("HALBLINGE");
 
-  /** DOCUMENT-ME */
+  /** Race INSEKTEN */
   public static final StringID R_INSEKTEN = StringID.create("INSEKTEN");
 
-  /** DOCUMENT-ME */
+  /** Race KATZEN */
   public static final StringID R_KATZEN = StringID.create("KATZEN");
 
-  /** DOCUMENT-ME */
+  /** Race MEERMENSCHEN */
   public static final StringID R_MEERMENSCHEN = StringID.create("MEERMENSCHEN");
 
-  /** DOCUMENT-ME */
+  /** Race MENSCHEN */
   public static final StringID R_MENSCHEN = StringID.create("MENSCHEN");
 
-  /** DOCUMENT-ME */
+  /** Race ORKS */
   public static final StringID R_ORKS = StringID.create("ORKS");
 
-  /** DOCUMENT-ME */
+  /** Race TROLLE */
   public static final StringID R_TROLLE = StringID.create("TROLLE");
 
-  /** DOCUMENT-ME */
+  /** Race ZWERGE */
   public static final StringID R_ZWERGE = StringID.create("ZWERGE");
 
-  /** DOCUMENT-ME */
+  /** Skill ALCHEMIE */
   public static final StringID S_ALCHEMIE = StringID.create("ALCHEMIE");
 
-  /** DOCUMENT-ME */
+  /** Skill ARMBRUSTSCHIESSEN */
   public static final StringID S_ARMBRUSTSCHIESSEN = StringID.create("ARMBRUSTSCHIESSEN");
 
-  /** DOCUMENT-ME */
+  /** Skill AUSDAUER */
   public static final StringID S_AUSDAUER = StringID.create("AUSDAUER");
 
-  /** DOCUMENT-ME */
+  /** Skill BERGBAU */
   public static final StringID S_BERGBAU = StringID.create("BERGBAU");
 
-  /** DOCUMENT-ME */
+  /** Skill BOGENSCHIESSEN */
   public static final StringID S_BOGENSCHIESSEN = StringID.create("BOGENSCHIESSEN");
 
-  /** DOCUMENT-ME */
+  /** Skill BURGENBAU */
   public static final StringID S_BURGENBAU = StringID.create("BURGENBAU");
 
-  /** DOCUMENT-ME */
+  /** Skill HANDELN */
   public static final StringID S_HANDELN = StringID.create("HANDELN");
 
-  /** DOCUMENT-ME */
+  /** Skill HIEBWAFFEN */
   public static final StringID S_HIEBWAFFEN = StringID.create("HIEBWAFFEN");
 
-  /** DOCUMENT-ME */
+  /** Skill HOLZFAELLEN */
   public static final StringID S_HOLZFAELLEN = StringID.create("HOLZFAELLEN");
 
-  /** DOCUMENT-ME */
+  /** Skill KATAPULTBEDIENUNG */
   public static final StringID S_KATAPULTBEDIENUNG = StringID.create("KATAPULTBEDIENUNG");
 
-  /** DOCUMENT-ME */
+  /** Skill KRAEUTERKUNDE */
   public static final StringID S_KRAEUTERKUNDE = StringID.create("KRAEUTERKUNDE");
 
-  /** DOCUMENT-ME */
+  /** Skill MAGIE */
   public static final StringID S_MAGIE = StringID.create("MAGIE");
 
-  /** DOCUMENT-ME */
+  /** Skill PFERDEDRESSUR */
   public static final StringID S_PFERDEDRESSUR = StringID.create("PFERDEDRESSUR");
 
-  /** DOCUMENT-ME */
+  /** Skill REITEN */
   public static final StringID S_REITEN = StringID.create("REITEN");
 
-  /** DOCUMENT-ME */
+  /** Skill RUESTUNGSBAU */
   public static final StringID S_RUESTUNGSBAU = StringID.create("RUESTUNGSBAU");
 
-  /** DOCUMENT-ME */
+  /** Skill SCHIFFBAU */
   public static final StringID S_SCHIFFBAU = StringID.create("SCHIFFBAU");
 
-  /** DOCUMENT-ME */
+  /** Skill SEGELN */
   public static final StringID S_SEGELN = StringID.create("SEGELN");
 
-  /** DOCUMENT-ME */
+  /** Skill SPIONAGE */
   public static final StringID S_SPIONAGE = StringID.create("SPIONAGE");
 
-  /** DOCUMENT-ME */
+  /** Skill STANGENWAFFEN */
   public static final StringID S_STANGENWAFFEN = StringID.create("STANGENWAFFEN");
 
-  /** DOCUMENT-ME */
+  /** Skill STEINBAU */
   public static final StringID S_STEINBAU = StringID.create("STEINBAU");
 
-  /** DOCUMENT-ME */
+  /** Skill STEUEREINTREIBEN */
   public static final StringID S_STEUEREINTREIBEN = StringID.create("STEUEREINTREIBEN");
 
-  /** DOCUMENT-ME */
+  /** Skill STRASSENBAU */
   public static final StringID S_STRASSENBAU = StringID.create("STRASSENBAU");
 
-  /** DOCUMENT-ME */
+  /** Skill TAKTIK */
   public static final StringID S_TAKTIK = StringID.create("TAKTIK");
 
-  /** DOCUMENT-ME */
+  /** Skill TARNUNG */
   public static final StringID S_TARNUNG = StringID.create("TARNUNG");
 
-  /** DOCUMENT-ME */
+  /** Skill UNTERHALTUNG */
   public static final StringID S_UNTERHALTUNG = StringID.create("UNTERHALTUNG");
 
-  /** DOCUMENT-ME */
+  /** Skill WAFFENBAU */
   public static final StringID S_WAFFENBAU = StringID.create("WAFFENBAU");
 
-  /** DOCUMENT-ME */
+  /** Skill WAGENBAU */
   public static final StringID S_WAGENBAU = StringID.create("WAGENBAU");
 
-  /** DOCUMENT-ME */
+  /** Skill WAHRNEHMUNG */
   public static final StringID S_WAHRNEHMUNG = StringID.create("WAHRNEHMUNG");
 
   /** A state selector for the "Helfe Silber" state. */
@@ -668,10 +668,10 @@ public class EresseaConstants {
    */
   public static final StringID I_BONW = StringID.create("Zauberbeutel");
 
-  /** DOCUMENT-ME */
+  /** Item cart */
   public static final StringID I_CART = StringID.create("Wagen");
 
-  /** DOCUMENT-ME */
+  /** Item belt of troll strength */
   public static final StringID I_GOTS = StringID.create("Gürtel der Trollstärke");
 
   /** @deprecated use either {@link #I_UHORSE} or {@link #I_RHORSES}. */
@@ -723,6 +723,7 @@ public class EresseaConstants {
   @Deprecated
   public static final StringID I_SILVER = StringID.create("Silber");
 
+  /** The resource sprouts */
   public static final StringID I_SPROUTS = StringID.create("Schösslinge");
 
   /** The item Stein */
@@ -735,8 +736,10 @@ public class EresseaConstants {
   @Deprecated
   public static final StringID I_STONES = StringID.create("Steine");
 
+  /** The resource trees */
   public static final StringID I_TREES = StringID.create("Bäume");
 
+  /** The item wood */
   public static final StringID I_WOOD = StringID.create("Holz");
 
   /** The item Mallorn */
@@ -749,9 +752,10 @@ public class EresseaConstants {
   @Deprecated
   public static final StringID I_MALLORN = StringID.create("Mallorn");
 
+  /** The resource mallorn sprouts */
   public static final StringID I_MALLORNSPROUTS = StringID.create("Mallornschößlinge");
 
-  /** DOCUMENT-ME */
+  /** The RegionType ocean */
   public static final StringID RT_OCEAN = StringID.create("Ozean");
 
   /** The RegionType firewall */

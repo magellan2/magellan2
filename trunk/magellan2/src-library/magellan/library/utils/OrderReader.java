@@ -26,6 +26,7 @@ import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
+import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitID;
@@ -137,11 +138,8 @@ public class OrderReader {
      * normalized orders that have to be checked often in the loop these have to be updated whenever
      * the locale changes
      */
-    String naechsterOrder =
-        Umlaut.normalize(data.getRules().getOrder(EresseaConstants.O_NEXT).getName(currentLocale));
-    String localeOrder =
-        Umlaut
-            .normalize(data.getRules().getOrder(EresseaConstants.O_LOCALE).getName(currentLocale));
+    String naechsterOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.O_NEXT));
+    String localeOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.O_LOCALE));
 
     if (status == null) {
       status = new Status();
@@ -159,7 +157,7 @@ public class OrderReader {
        * new order instead of parsing this line as a comment. So treat lines, that start with a
        * semicolon special!
        */
-      if (line.trim().startsWith(EresseaConstants.O_COMMENT)) {
+      if (line.trim().startsWith(EresseaConstants.OS_COMMENT)) {
         if (currentUnit != null) {
           // mark orders as confirmed on a ";bestaetigt" comment
           String rest = Umlaut.normalize(line.substring(line.indexOf(';') + 1).trim());
@@ -200,19 +198,13 @@ public class OrderReader {
           currentLocale = new Locale(token, "");
 
           /* update the locale dependent cached orders */
-          naechsterOrder =
-              Umlaut.normalize(data.getRules().getOrder(EresseaConstants.O_NEXT).getName(
-                  currentLocale));
-          localeOrder =
-              Umlaut.normalize(data.getRules().getOrder(EresseaConstants.O_LOCALE).getName(
-                  currentLocale));
+          naechsterOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.O_NEXT));
+          localeOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.O_LOCALE));
         }
-      } else if (data.getRules().getOrder(EresseaConstants.O_REGION).getName(currentLocale)
-          .startsWith(token)) {
+      } else if (getOrderTranslation(EresseaConstants.O_REGION).startsWith(token)) {
         // ignore
         currentUnit = null;
-      } else if (data.getRules().getOrder(EresseaConstants.O_UNIT).getName(currentLocale)
-          .startsWith(token)) {
+      } else if (getOrderTranslation(EresseaConstants.O_UNIT).startsWith(token)) {
         token = tokenizer.nextToken();
 
         UnitID unitID = null;
@@ -274,6 +266,11 @@ public class OrderReader {
         currentUnit.addOrder(line, isRefreshUnitRelations());
       }
     }
+  }
+
+  private String getOrderTranslation(StringID orderId) {
+    return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+        Locales.getOrderLocale(), orderId);
   }
 
   /**

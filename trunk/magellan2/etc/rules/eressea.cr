@@ -621,7 +621,7 @@ ORDER "NORTHWEST"
 1;internal
 
 ORDER "NORTHEAST"
-"NORDEN";locale_de
+"NORDOSTEN";locale_de
 "NORTHEAST";locale_en
 1;internal
 
@@ -657,9 +657,9 @@ ORDER "NW"
 1;internal
 
 ORDER "NE"
-"N";locale_de
-"N";locale_en
-"NORDEN";locale_de
+"NO";locale_de
+"NE";locale_en
+"NORDOSTEN";locale_de
 "NORTHEAST";locale_en
 1;internal
 

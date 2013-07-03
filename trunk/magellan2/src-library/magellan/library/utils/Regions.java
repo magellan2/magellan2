@@ -260,7 +260,8 @@ public class Regions {
         dir.append(" ");
       }
 
-      dir.append(d.toString(true));
+      // FIXME Direction.toString() not localized
+      dir.append(d.toString());
     }
 
     return dir.toString();

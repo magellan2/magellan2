@@ -68,14 +68,14 @@ public class ToDoInspector extends AbstractInspector {
         continue;
       }
       String order = o.getText();
-      if (order.startsWith(EresseaConstants.O_PCOMMENT)) {
+      if (order.startsWith(EresseaConstants.OS_PCOMMENT)) {
         order = order.substring(2).trim();
 
         if (order.toLowerCase().startsWith("todo")) {
           problems.add(ProblemFactory.createProblem(Severity.INFORMATION, ToDoInspector.TODOTYPE,
               u, this, order, line));
         }
-      } else if (order.startsWith(EresseaConstants.O_COMMENT)) {
+      } else if (order.startsWith(EresseaConstants.OS_COMMENT)) {
         order = order.substring(1).trim();
 
         if (order.toLowerCase().startsWith("todo")) {

@@ -47,6 +47,7 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.RulesException;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
@@ -119,9 +120,9 @@ public class E3CommandParser {
   /** The LUXUS order parameter */
   public static String TRANKOrder = "TRANK";
   /** The persistent comment order */
-  public static String PCOMMENTOrder = EresseaConstants.O_PCOMMENT;
+  public static String PCOMMENTOrder = EresseaConstants.OS_PCOMMENT;
   /** The persistent comment order */
-  public static String COMMENTOrder = EresseaConstants.O_COMMENT;
+  public static String COMMENTOrder = EresseaConstants.OS_COMMENT;
   /** The LEARN order */
   public static String LEARNOrder = "LERNE";
   /** The TEACH order */
@@ -2441,15 +2442,21 @@ public class E3CommandParser {
     }
   }
 
+  protected String getLocalizedOrder(StringID orderKey, String fallback) {
+    try {
+      return world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(orderKey,
+          currentFaction.getLocale());
+    } catch (RulesException e) {
+      return fallback;
+    }
+  }
+
   /**
    * Tries to translate the given order to the current locale.
    */
-  protected String getLocalizedOrder(String orderKey, String fallBack) {
-    String translation = world.getRules().getOrder(orderKey).getName(currentFaction.getLocale());
-    if (translation == orderKey)
-      return fallBack;
-    else
-      return translation;
+  protected String getLocalizedOrder(StringID orderKey, Object... args) {
+    return world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+        currentFaction.getLocale(), orderKey, args);
   }
 
   /**
@@ -2699,8 +2706,12 @@ public class E3CommandParser {
    * Returns a <code>RECRUIT amount race</code> order.
    */
   protected String getRecruitOrder(int amount, Race race) {
-    return RECRUITOrder + " " + amount
-        + (race != null ? (" " + getLocalizedOrder("race." + race.getID(), race.getName())) : "");
+    if (race != null)
+      return getLocalizedOrder(EresseaConstants.O_RECRUIT, amount, race);
+    else
+      return getLocalizedOrder(EresseaConstants.O_RECRUIT, amount);
+    // return RECRUITOrder + " " + amount
+    // + (race != null ? (" " + getLocalizedOrder("race." + race.getID(), race.getName())) : "");
   }
 
   /**

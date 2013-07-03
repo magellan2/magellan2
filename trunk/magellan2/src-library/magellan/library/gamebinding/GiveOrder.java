@@ -56,7 +56,7 @@ import magellan.library.utils.Resources;
  */
 public class GiveOrder extends UnitArgumentOrder {
 
-  protected String type;
+  protected StringID type;
   protected boolean each;
   protected int amount;
   protected ItemType itemType;
@@ -67,7 +67,7 @@ public class GiveOrder extends UnitArgumentOrder {
    * @param text
    * @param type
    */
-  public GiveOrder(List<OrderToken> tokens, String text, UnitID target, String type) {
+  public GiveOrder(List<OrderToken> tokens, String text, UnitID target, StringID type) {
     super(tokens, text, target);
     this.type = type;
   }
@@ -77,7 +77,7 @@ public class GiveOrder extends UnitArgumentOrder {
    * 
    * @return Returns type.
    */
-  public String getType() {
+  public StringID getType() {
     return type;
   }
 

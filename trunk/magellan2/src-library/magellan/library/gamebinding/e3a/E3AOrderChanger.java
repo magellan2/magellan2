@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import magellan.library.Rules;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderChanger;
@@ -97,7 +98,7 @@ public class E3AOrderChanger extends EresseaOrderChanger {
     unit.addOrders(orders);
   }
 
-  private ArrayList<String> longOrderTokens;
+  private ArrayList<StringID> longOrderTokens;
 
   /**
    * Returns list of long order tokens in E3.
@@ -105,9 +106,9 @@ public class E3AOrderChanger extends EresseaOrderChanger {
    * @see magellan.library.gamebinding.EresseaOrderChanger#getLongOrderTokens()
    */
   @Override
-  protected ArrayList<String> getLongOrderTokens() {
+  protected ArrayList<StringID> getLongOrderTokens() {
     if (longOrderTokens == null) {
-      longOrderTokens = new ArrayList<String>();
+      longOrderTokens = new ArrayList<StringID>();
       longOrderTokens.add(EresseaConstants.O_WORK);
       longOrderTokens.add(EresseaConstants.O_ATTACK);
       longOrderTokens.add(EresseaConstants.O_STEAL);
@@ -131,20 +132,6 @@ public class E3AOrderChanger extends EresseaOrderChanger {
       longOrderTokens.add(EresseaConstants.O_GROW);
     }
     return longOrderTokens;
-  }
-
-  private ArrayList<String> longButShortOrderTokens = null;
-
-  /**
-   * @see magellan.library.gamebinding.EresseaOrderChanger#getLongButShortOrderTokens()
-   */
-  @Override
-  protected ArrayList<String> getLongButShortOrderTokens() {
-    if (longButShortOrderTokens == null) {
-      longButShortOrderTokens = new ArrayList<String>();
-      longButShortOrderTokens.add(EresseaConstants.O_MAKE + " " + EresseaConstants.O_TEMP);
-    }
-    return longButShortOrderTokens;
   }
 
 }

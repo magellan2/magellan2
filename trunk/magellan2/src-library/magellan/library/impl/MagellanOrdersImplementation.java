@@ -10,6 +10,7 @@ import java.util.ListIterator;
 
 import magellan.library.Order;
 import magellan.library.Orders;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.OrderToken;
@@ -17,7 +18,7 @@ import magellan.library.utils.OrderToken;
 /**
  * A class for handling orders in the Unit object.
  */
-class MagellanOrdersImplementation implements Orders {
+public class MagellanOrdersImplementation implements Orders {
   private List<Order> orders = null;
 
   private Unit unit;
@@ -127,8 +128,9 @@ class MagellanOrdersImplementation implements Orders {
 
   }
 
-  protected String getOrderTranslation(String orderId) {
-    return unit.getData().getRules().getOrder(orderId).getName(unit.getLocale());
+  protected String getOrderTranslation(StringID orderId) {
+    return unit.getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+        unit.getLocale(), orderId);
   }
 
   /**
@@ -168,9 +170,9 @@ class MagellanOrdersImplementation implements Orders {
   }
 
   /**
-   * @see magellan.library.Orders#isToken(magellan.library.Order, int, java.lang.String)
+   * @see magellan.library.Orders#isToken(magellan.library.Order, int, StringID)
    */
-  public boolean isToken(Order order, int i, String token) {
+  public boolean isToken(Order order, int i, StringID token) {
     // FIXME: is token localized?
     return order.getToken(i).equalsCompletedToken(getOrderTranslation(token));
   }

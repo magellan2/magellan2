@@ -26,7 +26,6 @@ package magellan.library.gamebinding;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import magellan.library.GameData;
@@ -54,6 +53,7 @@ public class MovementOrder extends SimpleOrder {
    * true if this is a ROUTE order
    */
   private boolean permanent;
+  private List<Direction> directions = new ArrayList<Direction>(2);
 
   /**
    * @param tokens
@@ -75,8 +75,7 @@ public class MovementOrder extends SimpleOrder {
       return;
 
     MovementRelation mRel =
-        data.getGameSpecificStuff().getMovementEvaluator().getMovement(unit,
-            getDirections(getTokens(), unit.getFaction().getLocale()));
+        data.getGameSpecificStuff().getMovementEvaluator().getMovement(unit, getDirections());
     mRel.line = line;
 
     if (mRel.invalidRegion != null) {
@@ -113,17 +112,8 @@ public class MovementOrder extends SimpleOrder {
     implicitLeave(unit, mRel, line);
   }
 
-  private List<Direction> getDirections(List<OrderToken> tokens, Locale locale) {
-    List<Direction> result = new ArrayList<Direction>(tokens.size());
-
-    int i = 0;
-    for (OrderToken token : tokens) {
-      if (i++ != 0 && token.ttype != OrderToken.TT_EOC) {
-        Direction movement = Direction.toDirection(token.getText(), locale);
-        result.add(movement);
-      }
-    }
-    return result;
+  private List<Direction> getDirections() {
+    return directions;
   }
 
   private void implicitLeave(Unit unit, MovementRelation mRel, int line) {
@@ -187,6 +177,10 @@ public class MovementOrder extends SimpleOrder {
    */
   public boolean isPermanent() {
     return permanent;
+  }
+
+  protected void addDirection(Direction direction) {
+    directions.add(direction);
   }
 
 }

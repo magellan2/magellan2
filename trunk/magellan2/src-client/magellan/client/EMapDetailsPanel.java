@@ -3680,7 +3680,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         if (s.getShoreId() > -1) {
           StringBuilder text = new StringBuilder();
           text.append(Resources.get("emapdetailspanel.node.shore")).append(": ").append(
-              Direction.toString(s.getShoreId())).append(", ").append(
+              getTranslation(s.getShoreId())).append(", ").append(
               Resources.get("emapdetailspanel.node.range")).append(": ").append(
               getRules().getShipRange(s));
           parent.add(createSimpleNode(text.toString(), "shore_" + String.valueOf(s.getShoreId())));
@@ -3730,6 +3730,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
       parent.add(commandNode);
     }
+  }
+
+  private String getTranslation(int shore) {
+    return getGameData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(),
+        StringID.create(Direction.toDirection(shore).name()));
   }
 
   private void appendUnitCapacityByItems(DefaultMutableTreeNode parent, Unit u, int freeCapacity) {
@@ -4231,7 +4236,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       // Kueste
       if (s.getShoreId() > -1) {
         parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.shore") + ": "
-            + Direction.toString(s.getShoreId()), "shore_" + String.valueOf(s.getShoreId())));
+            + getTranslation(s.getShoreId()), "shore_" + String.valueOf(s.getShoreId())));
       }
 
       // Reichweite
@@ -4648,7 +4653,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": " + b.getType(), b
         .getType()));
     parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.direction") + ": "
-        + Direction.toString(b.getDirection()), "border_" + String.valueOf(b.getDirection())));
+        + getTranslation(b.getDirection()), "border_" + String.valueOf(b.getDirection())));
 
     if ((b.getBuildRatio() > -1) && (b.getBuildRatio() != 100)) {
       String str =
@@ -5863,22 +5868,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
          * Creates a RESERVIERE order.
          */
         public String getOrder(String amount, boolean each) {
-          Locale locale = Locales.getOrderLocale();
-          // relation.origin.getFaction() != null ? relation.origin.getFaction().getLocale() :
+          Locale locale =
+              reserveRelation.origin != null ? relation.origin.getLocale() : Locales
+                  .getOrderLocale();
 
-          StringBuffer reserve =
-              new StringBuffer(getGameData().getRules().getOrder(EresseaConstants.O_RESERVE)
-                  .getName(locale));
-          reserve.append(" ");
-          if (each) {
-            reserve.append(getGameData().getRules().getOrder(EresseaConstants.O_EACH).getName(
-                locale));
-            reserve.append(" ");
-          }
-          reserve.append(amount);
-          reserve.append(" ");
-          reserve.append(reserveRelation.itemType);
-          return reserve.toString();
+          if (each)
+            return getGameSpecificStuff().getOrderChanger().getOrder(locale,
+                EresseaConstants.O_RESERVE, EresseaConstants.O_EACH, amount,
+                reserveRelation.itemType);
+          else
+            return getGameSpecificStuff().getOrderChanger().getOrder(locale,
+                EresseaConstants.O_RESERVE, amount, reserveRelation.itemType);
+
         }
       }
 
@@ -5953,25 +5954,19 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
          * Creates the give order
          */
         public String getOrder(String amount, boolean each) {
-          // FIXME data.getGameSpecificStuff().getOrderChanger().getGiveAction()
-          Locale locale = Locales.getOrderLocale();
-          // relation.origin.getFaction() != null ? relation.origin.getFaction().getLocale() :
+          Locale locale =
+              transferRelation.origin != null ? relation.origin.getLocale() : Locales
+                  .getOrderLocale();
 
-          StringBuffer reserve =
-              new StringBuffer(getGameData().getRules().getOrder(EresseaConstants.O_GIVE).getName(
-                  locale));
-          reserve.append(" ");
-          reserve.append(transferRelation.target.getID());
-          reserve.append(" ");
-          if (each) {
-            reserve.append(getGameData().getRules().getOrder(EresseaConstants.O_EACH).getName(
-                locale));
-            reserve.append(" ");
-          }
-          reserve.append(amount);
-          reserve.append(" ");
-          reserve.append(transferRelation.itemType);
-          return reserve.toString();
+          if (each)
+            return getGameSpecificStuff().getOrderChanger().getOrder(locale,
+                EresseaConstants.O_GIVE, transferRelation.target.getID(), EresseaConstants.O_EACH,
+                amount, transferRelation.itemType);
+          else
+            return getGameSpecificStuff().getOrderChanger().getOrder(locale,
+                EresseaConstants.O_GIVE, transferRelation.target.getID(), amount,
+                transferRelation.itemType);
+
         }
       }
 

@@ -18,14 +18,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import magellan.library.Building;
 import magellan.library.CombatSpell;
@@ -88,13 +86,14 @@ import magellan.library.utils.logging.Logger;
  */
 public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   private static final Logger log = Logger.getInstance(MagellanUnitImpl.class);
-  private static final String CONFIRMEDTEMPCOMMENT = EresseaConstants.O_COMMENT
+
+  public static final String CONFIRMEDTEMPCOMMENT = EresseaConstants.OS_COMMENT
       + OrderWriter.CONFIRMEDTEMP;
 
   /**
    * grammar for ejcTag: ";ejcTempTag tag numbervalue|'stringvalue'"
    */
-  private static final String TAG_PREFIX_TEMP = EresseaConstants.O_COMMENT + "ejcTagTemp ";
+  public static final String TAG_PREFIX_TEMP = EresseaConstants.OS_COMMENT + "ejcTagTemp ";
 
   /** The private description of the unit. */
   private String privDesc; // private description
@@ -1004,49 +1003,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
     if (writeUnitTagsAsVorlageComment && hasTags()) {
       for (String tag : getTagMap().keySet()) {
-        cmds.add(createOrder(EresseaConstants.O_PCOMMENT + " #after 1 { #tag EINHEIT "
+        cmds.add(createOrder(EresseaConstants.OS_PCOMMENT + " #after 1 { #tag EINHEIT "
             + tag.replace(' ', '~') + " '" + getTag(tag) + "' }"));
       }
     }
 
-    cmds.addAll(getTempOrders(writeUnitTagsAsVorlageComment));
+    cmds.addAll(getData().getRules().getGameSpecificStuff().getOrderChanger().getTempOrders(
+        writeUnitTagsAsVorlageComment, this));
 
     return new MagellanOrdersImplementation(this, Collections.unmodifiableList(cmds));
   }
 
-  /**
-   * Returns the orders necessary to issue the creation of all the child temp units of this unit.
-   */
-  protected List<Order> getTempOrders(boolean writeUnitTagsAsVorlageComment) {
-    final List<Order> cmds = new LinkedList<Order>();
-
-    for (TempUnit u : tempUnits()) {
-      // FIXME should use OrderFactory
-      cmds.add(createOrder(getOrderTranslation(EresseaConstants.O_MAKE) + " "
-          + u.getID().toString(true, getLocale())));
-      cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
-
-      if (u.isOrdersConfirmed()) {
-        cmds.add(createOrder(MagellanUnitImpl.CONFIRMEDTEMPCOMMENT));
-      }
-
-      if (u.hasTags()) {
-        final Map<String, String> tempUnitTags = u.getTagMap();
-        for (String tag : u.getTagMap().keySet()) {
-          final String value = tempUnitTags.get(tag);
-          cmds.add(createOrder(MagellanUnitImpl.TAG_PREFIX_TEMP + tag + " "
-              + value.replace(' ', '~')));
-        }
-      }
-
-      cmds.add(createOrder(getOrderTranslation(EresseaConstants.O_END)));
-    }
-
-    return cmds;
-  }
-
-  protected String getOrderTranslation(String orderId) {
-    return getData().getRules().getOrder(orderId).getName(getLocale());
+  protected String getOrderTranslation(StringID orderId) {
+    return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
   /**
@@ -2279,7 +2248,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    *         from this unit's orders.
    */
   public int extractTempUnits(GameData gdata, int tempSortIndex) {
-    return extractTempUnits(gdata, tempSortIndex, Locales.getOrderLocale());
+    return extractTempUnits(gdata, tempSortIndex, getLocale());
   }
 
   /**
@@ -2293,86 +2262,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    *         from this unit's orders.
    */
   public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale) {
-    if (!ordersAreNull()) {
-      TempUnit tempUnit = null;
-
-      for (final Iterator<Order> cmdIterator = ordersObject.iterator(); cmdIterator.hasNext();) {
-        final Order line = cmdIterator.next();
-
-        if (tempUnit == null) {
-          if (line.getProblem() == null && !line.isEmpty()
-              && ordersObject.isToken(line, 0, EresseaConstants.O_MAKE)) {
-            if (line.getToken(1).getText().toLowerCase().startsWith(
-                getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase())) {
-              // if (ordersObject.isToken(line, 1, EresseaConstants.O_TEMP)) {
-              try {
-                final int base = (getID()).getRadix();
-                final UnitID orderTempID = UnitID.createUnitID(line.getToken(1).getText(), base);
-
-                if (getRegion() == null || getRegion().getUnit(orderTempID) == null) {
-                  tempUnit = createTemp(gdata, orderTempID);
-                  tempUnit.setSortIndex(++tempSortIndex);
-                  cmdIterator.remove();
-                  if (line.size() > 4) {
-                    tempUnit.addOrders(Collections
-                        .singleton(getOrderTranslation(EresseaConstants.O_NAME) + " "
-                            + getOrderTranslation(EresseaConstants.O_UNIT) + " "
-                            + line.getToken(3).getText()), false);
-                  }
-                } else {
-                  MagellanUnitImpl.log.warn("Unit.extractTempUnits(): region " + getRegion()
-                      + " already contains a temp unit with the id " + orderTempID
-                      + ". This temp unit remains in the orders of its parent "
-                      + "unit instead of being created as a unit in its own right.");
-                }
-              } catch (final NumberFormatException e) {
-                // temp unit invalid -- don't create it
-              }
-            }
-          }
-        } else {
-          cmdIterator.remove();
-
-          if (ordersObject.isToken(line, 0, EresseaConstants.O_END)) {
-            tempUnit = null;
-          } else {
-            scanTempOrder(tempUnit, line);
-          }
-        }
-      }
-    }
-
-    return tempSortIndex;
-  }
-
-  private void scanTempOrder(TempUnit tempUnit, Order line) {
-    boolean scanned = false;
-    if (MagellanUnitImpl.CONFIRMEDTEMPCOMMENT.equals(line.toString())) {
-      tempUnit.setOrdersConfirmed(true);
-      scanned = true;
-    }
-    if (!scanned && !line.isEmpty() && line.getText().startsWith(MagellanUnitImpl.TAG_PREFIX_TEMP)) {
-      String tag = null;
-      String value = null;
-      final StringTokenizer st = new StringTokenizer(line.getText());
-      if (st.hasMoreTokens()) {
-        // ignore TAG_PREFIX_TEMP
-        st.nextToken();
-      }
-      if (st.hasMoreTokens()) {
-        tag = st.nextToken();
-      }
-      if (st.hasMoreTokens()) {
-        value = st.nextToken().replace('~', ' ');
-      }
-      if (tag != null && value != null) {
-        tempUnit.putTag(tag, value);
-        scanned = true;
-      }
-    }
-    if (!scanned) {
-      tempUnit.addOrder(line, false);
-    }
+    return gdata.getRules().getGameSpecificStuff().getOrderChanger().extractTempUnits(gdata,
+        tempSortIndex, locale, this);
   }
 
   /*************************************************************************************

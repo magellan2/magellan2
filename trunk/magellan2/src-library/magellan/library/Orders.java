@@ -65,7 +65,7 @@ public interface Orders extends List<Order> {
    *         translation of the given order token
    * @see OrderToken#equalsLocalToken(String)
    */
-  public boolean isToken(Order order, int pos, String token);
+  public boolean isToken(Order order, int pos, StringID token);
 
   // /**
   // * @return The base (radix) for ids used by this orders

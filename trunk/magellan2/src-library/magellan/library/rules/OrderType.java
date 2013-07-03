@@ -115,7 +115,7 @@ public class OrderType extends ObjectType {
   }
 
   public void addName(Locale loc, String name) {
-    List<String> list = names.get(loc);
+    List<String> list = names.get(loc.getLanguage());
     if (list == null) {
       list = new ArrayList<String>(1);
       names.put(loc.getLanguage(), list);
@@ -130,7 +130,7 @@ public class OrderType extends ObjectType {
    * @return The list of names or <code>null</code> if no such name has been added.
    */
   public List<String> getNames(Locale loc) {
-    return names.get(loc);
+    return names.get(loc.getLanguage());
   }
 
   /**

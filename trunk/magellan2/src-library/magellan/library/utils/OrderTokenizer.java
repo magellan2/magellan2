@@ -83,7 +83,7 @@ public class OrderTokenizer {
         } else {
           in.unread(c);
           retVal = readWord();
-          if (isFirstToken && retVal.getText().equals(EresseaConstants.O_PCOMMENT)) {
+          if (isFirstToken && retVal.getText().equals(EresseaConstants.OS_PCOMMENT)) {
             retVal = readSSComment(retVal);
           }
         }
@@ -176,7 +176,7 @@ public class OrderTokenizer {
    * @throws IOException DOCUMENT-ME
    */
   protected OrderToken readSCComment() throws IOException {
-    StringBuffer sb = new StringBuffer(EresseaConstants.O_COMMENT);
+    StringBuffer sb = new StringBuffer(EresseaConstants.OS_COMMENT);
     int c = 0;
     int start = in.getPos() - 1;
 
@@ -200,7 +200,7 @@ public class OrderTokenizer {
    * @throws IOException DOCUMENT-ME
    */
   protected OrderToken readSSComment(OrderToken retVal2) throws IOException {
-    StringBuffer sb = new StringBuffer(EresseaConstants.O_PCOMMENT);
+    StringBuffer sb = new StringBuffer(EresseaConstants.OS_PCOMMENT);
     int start = in.getPos() - (retVal2.followedBySpace() ? 2 : 3);
     int c;
 

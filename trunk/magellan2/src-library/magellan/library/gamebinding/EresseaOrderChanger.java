@@ -9,6 +9,7 @@ package magellan.library.gamebinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -20,14 +21,19 @@ import java.util.StringTokenizer;
 
 import magellan.library.Building;
 import magellan.library.Faction;
+import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.StringID;
+import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.UnitID;
+import magellan.library.completion.OrderParser;
+import magellan.library.impl.MagellanUnitImpl;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.OrderType;
 import magellan.library.rules.Race;
@@ -40,8 +46,8 @@ import magellan.library.utils.logging.Logger;
 public class EresseaOrderChanger implements OrderChanger {
   public static final String eresseaOrderChangedMarker = ";changed by Magellan";
 
-  protected static final String PCOMMENTSTART = EresseaConstants.O_PCOMMENT + " ";
-  protected static final String COMMENTSTART = EresseaConstants.O_COMMENT + " ";
+  protected static final String PCOMMENTSTART = EresseaConstants.OS_PCOMMENT + " ";
+  protected static final String COMMENTSTART = EresseaConstants.OS_COMMENT + " ";
 
   private static final Logger log = Logger.getInstance(EresseaOrderChanger.class);
 
@@ -195,6 +201,10 @@ public class EresseaOrderChanger implements OrderChanger {
     return createOrder(unit, getOrderTranslation(EresseaConstants.O_HIDE, unit) + " " + level);
   }
 
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#createOrder(magellan.library.Unit,
+   *      java.lang.String)
+   */
   public Order createOrder(Unit unit, String string) {
     return unit.createOrder(string);
   }
@@ -324,7 +334,7 @@ public class EresseaOrderChanger implements OrderChanger {
   public void disableLongOrders(Unit u) {
     int i = 0;
     for (Order order : u.getOrders2()) {
-      for (String longOrder : getLongOrderTokens()) {
+      for (StringID longOrder : getLongOrderTokens()) {
         if (u.getOrders2().isToken(order, 0, longOrder)) {
           u.replaceOrder(i, createOrder(u, "; " + order.getText()), false);
         }
@@ -349,12 +359,12 @@ public class EresseaOrderChanger implements OrderChanger {
      * LongButShort, genau dann ist es eine long Order
      */
     String rOrder = order;
-    if (rOrder.startsWith(EresseaConstants.O_COMMENT))
+    if (rOrder.startsWith(EresseaConstants.OS_COMMENT))
       return false;
-    if (rOrder.startsWith(EresseaConstants.O_PERSISTENT)) {
+    if (rOrder.startsWith(EresseaConstants.OS_PERSISTENT)) {
       rOrder = rOrder.substring(1);
     }
-    if (rOrder.startsWith(EresseaConstants.O_PCOMMENT))
+    if (rOrder.startsWith(EresseaConstants.OS_PCOMMENT))
       return false;
     boolean isInLongorder = false;
     for (String s : getLongOrdersTranslated()) {
@@ -366,17 +376,12 @@ public class EresseaOrderChanger implements OrderChanger {
     if (!isInLongorder)
       return false;
 
-    // Abgleich mit "NegativListe"
-    boolean isInLongButShortOrders = false;
-    for (String s : getLongButShortOrdersTranslated()) {
-      if (rOrder.toLowerCase().startsWith(s.toLowerCase())) {
-        isInLongButShortOrders = true;
-        break;
-      }
-    }
-    if (isInLongButShortOrders)
-      return false;
-    return true;
+    return !isLongButShort(rOrder, Locales.getOrderLocale());
+  }
+
+  protected boolean isLongButShort(String rOrder, Locale orderLocale) {
+    return rOrder.startsWith(getOrder(Locales.getOrderLocale(), EresseaConstants.O_MAKE,
+        EresseaConstants.O_TEMP));
   }
 
   /**
@@ -414,34 +419,7 @@ public class EresseaOrderChanger implements OrderChanger {
     return orders;
   }
 
-  /**
-   * List of orders in the default locale.
-   */
-  protected ArrayList<String> getLongButShortOrdersTranslated() {
-    return getLongButShortOrders(null);
-  }
-
-  // implementation must permit null key!
-  private Map<Locale, ArrayList<String>> longButShortOrders =
-      new HashMap<Locale, ArrayList<String>>();
-
-  /**
-   * List of orders in the selected locale, which could be identified as long, but in the listed
-   * form are short orders.. make temp = short (in this list) make sword = long (not in this list)
-   */
-  protected ArrayList<String> getLongButShortOrders(Locale locale) {
-    if (locale == null) {
-      locale = Locales.getOrderLocale();
-    }
-    ArrayList<String> orders = longButShortOrders.get(locale);
-    if (orders == null) {
-      orders = translateOrders(getLongButShortOrderTokens(), locale);
-      longButShortOrders.put(locale, orders);
-    }
-    return orders;
-  }
-
-  private ArrayList<String> longOrderTokens = null;
+  private ArrayList<StringID> longOrderTokens = null;
 
   /**
    * list of long orders in Eressea. <br />
@@ -449,9 +427,9 @@ public class EresseaOrderChanger implements OrderChanger {
    * (Ausnahme: MACHE TEMP), NACH, PFLANZE, PIRATERIE, ROUTE, SABOTIERE SCHIFF, SPIONIERE, TREIBE,
    * UNTERHALTE, VERKAUFE, ZAUBERE, ZÜCHTE.
    */
-  protected ArrayList<String> getLongOrderTokens() {
+  protected ArrayList<StringID> getLongOrderTokens() {
     if (longOrderTokens == null) {
-      longOrderTokens = new ArrayList<String>();
+      longOrderTokens = new ArrayList<StringID>();
       longOrderTokens.add(EresseaConstants.O_WORK);
       longOrderTokens.add(EresseaConstants.O_ATTACK);
       longOrderTokens.add(EresseaConstants.O_STEAL);
@@ -478,31 +456,10 @@ public class EresseaOrderChanger implements OrderChanger {
     return longOrderTokens;
   }
 
-  private ArrayList<String> longButShortOrderTokens = null;
-
-  /**
-   * list of orders, which could be identified as long, but in the listed form are short orders..
-   * make temp = short (in this list) make sword = long (not in this list)
-   */
-  protected ArrayList<String> getLongButShortOrderTokens() {
-    if (longButShortOrderTokens == null) {
-      longButShortOrderTokens = new ArrayList<String>();
-      longButShortOrderTokens.add(EresseaConstants.O_MAKE + " " + EresseaConstants.O_TEMP);
-    }
-    return longButShortOrderTokens;
-  }
-
-  private ArrayList<String> translateOrders(ArrayList<String> orders, Locale locale) {
+  private ArrayList<String> translateOrders(ArrayList<StringID> orders, Locale locale) {
     ArrayList<String> result = new ArrayList<String>();
-    for (String order : orders) {
-      StringBuilder translation = new StringBuilder();
-      for (StringTokenizer tokenizer = new StringTokenizer(order); tokenizer.hasMoreTokens();) {
-        if (translation.length() != 0) {
-          translation.append(" ");
-        }
-        translation.append(rules.getOrder(tokenizer.nextToken()).getName(locale));
-      }
-      result.add(translation.toString());
+    for (StringID order : orders) {
+      result.add(getOrder(locale, order));
     }
     return result;
   }
@@ -514,14 +471,13 @@ public class EresseaOrderChanger implements OrderChanger {
     if (orders.size() <= 1)
       return -1;
 
-    CountMap<String> map = new CountMap<String>();
+    CountMap<StringID> map = new CountMap<StringID>();
 
     // count frequency of orders
-    Collection<String> longOrders = getLongOrderTokens();
     int line = 0;
     for (Order order : orders) {
       if (isLongOrder(order)) {
-        for (String longOrder : longOrders) {
+        for (StringID longOrder : getLongOrderTokens()) {
           if (orders.isToken(order, 0, longOrder)
               && !orders.isToken(order, 0, EresseaConstants.O_ATTACK)) {
             map.increase(longOrder, line);
@@ -532,7 +488,7 @@ public class EresseaOrderChanger implements OrderChanger {
       line++;
     }
 
-    String follow;
+    StringID follow;
     if (map.containsKey(follow = EresseaConstants.O_FOLLOW)) {
       // ignore FOLGE EINHEIT
       for (Iterator<Integer> it = map.get(follow).iterator(); it.hasNext();) {
@@ -547,8 +503,8 @@ public class EresseaOrderChanger implements OrderChanger {
       }
     }
 
-    String sell;
-    String buy;
+    StringID sell;
+    StringID buy;
     if (map.containsKey(buy = EresseaConstants.O_BUY)
         | map.containsKey(sell = EresseaConstants.O_SELL)) {
       // only KAUFE and VERKAUFE and only one KAUFE are allowed
@@ -557,7 +513,7 @@ public class EresseaOrderChanger implements OrderChanger {
         boolean firstIsBuySell =
             map.keySet().iterator().next().equals(EresseaConstants.O_BUY)
                 || map.keySet().iterator().next().equals(EresseaConstants.O_SELL);
-        for (String order : map.keySet()) {
+        for (StringID order : map.keySet()) {
           if (order.equals(EresseaConstants.O_BUY) || order.equals(EresseaConstants.O_SELL)) {
             if (!firstIsBuySell)
               return map.get(order).get(0);
@@ -583,7 +539,7 @@ public class EresseaOrderChanger implements OrderChanger {
       // combination with other long orders not allowed
       boolean firstIsCast = map.keySet().iterator().next().equals(EresseaConstants.O_CAST);
       boolean first = true;
-      for (String order : map.keySet()) {
+      for (StringID order : map.keySet()) {
         if (order.equals(EresseaConstants.O_CAST)) {
           if (!firstIsCast)
             return map.get(order).get(0);
@@ -605,15 +561,14 @@ public class EresseaOrderChanger implements OrderChanger {
       else
         return map.values().iterator().next().get(1).intValue(); // multiple long orders of one type
     else { // map size > 1, more than one lone order
-      String first = map.keySet().iterator().next();
-      for (String order : map.keySet()) {
+      StringID first = map.keySet().iterator().next();
+      for (StringID order : map.keySet()) {
         if (!order.equals(first))
           return map.get(order).get(0);
       }
       log.warn("unexpected case in areCompatibleLongOrders");
       return 0; // should not occur
     }
-
   }
 
   /**
@@ -633,7 +588,6 @@ public class EresseaOrderChanger implements OrderChanger {
       put(key, value);
       return value.size();
     }
-
   }
 
   /**
@@ -680,18 +634,13 @@ public class EresseaOrderChanger implements OrderChanger {
    *      java.lang.String)
    */
   public void addGroupOrder(Unit unit, String name) {
-<<<<<<< HEAD
     String group;
     if (name != null && name.trim().length() > 0) {
-      group = Resources.getOrderTranslation(EresseaConstants.O_GROUP) + " \"" + name + "\"";
+      group = getOrderTranslation(EresseaConstants.O_GROUP) + " \"" + name + "\"";
     } else {
-      group = Resources.getOrderTranslation(EresseaConstants.O_GROUP);
+      group = getOrderTranslation(EresseaConstants.O_GROUP);
     }
-=======
-    String group = getOrderTranslation(EresseaConstants.O_GROUP, unit) + " \"" + name + "\"";
->>>>>>> temp moving local order handling from resources to rules file
     unit.addOrder(group, true, 1);
-
   }
 
   /**
@@ -699,8 +648,185 @@ public class EresseaOrderChanger implements OrderChanger {
    * 
    * @see OrderType#getName(Locale)
    */
-  protected String getOrderTranslation(String id, Unit unit) {
-    return getRules().getOrder(id).getName(unit.getLocale());
+  protected String getOrderTranslation(StringID id, Unit unit) {
+    return getOrder(unit.getLocale(), id);
   }
 
+  public String getOrder(Locale orderLocale, StringID orderId, Object... args) {
+    try {
+      return getOrder(orderId, orderLocale, args);
+    } catch (RulesException e) {
+      return orderId.toString();
+    }
+  }
+
+  public String getOrder(StringID orderId, Locale orderLocale, Object... args)
+      throws RulesException {
+    StringBuilder order = new StringBuilder();
+    order.append(getOrder1(orderId, orderLocale));
+    for (Object arg : args) {
+      order.append(" ");
+      if (arg instanceof StringID) {
+        order.append(getOrder1((StringID) arg, orderLocale));
+      } else {
+        order.append(arg.toString());
+      }
+    }
+    return order.toString();
+  }
+
+  private String getOrder1(StringID orderId, Locale orderLocale) throws RulesException {
+    OrderType order = getRules().getOrder(orderId);
+    if (order == null)
+      throw new RulesException("unknown order " + orderId);
+    String name = order.getName(orderLocale);
+    if (name == null)
+      throw new RulesException("no translation for " + orderId + " into " + orderLocale);
+    return name;
+  }
+
+  private List<Order> orderList = new ArrayList<Order>(100);
+
+  /**
+   * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
+   * removes the corresponding orders from this unit.
+   * 
+   * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
+   *          the report) which is incremented with each new temp unit.
+   * @param locale the locale to parse the orders with.
+   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   *         from this unit's orders.
+   */
+  public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale, Unit unit) {
+    if (!unit.ordersAreNull()) {
+      TempUnit tempUnit = null;
+
+      boolean foundTemp = false;
+      for (Order order : unit.getOrders2()) {
+        if (isTempUnitOrder(order, unit.getOrders2(), unit)) {
+          foundTemp = true;
+          break;
+        }
+      }
+      if (foundTemp) {
+        ArrayList<Order> neworders = new ArrayList<Order>(unit.getOrders2().size());
+        orderList.clear();
+        Orders ordersObject = unit.getOrders2();
+        for (Order line : ordersObject) {
+          if (tempUnit == null) {
+            if (isTempUnitOrder(line, ordersObject, unit)) {
+              try {
+                final int base = (unit.getID()).getRadix();
+                final UnitID orderTempID = UnitID.createUnitID(line.getToken(1).getText(), base);
+
+                if (unit.getRegion() == null || unit.getRegion().getUnit(orderTempID) == null) {
+                  tempUnit = unit.createTemp(gdata, orderTempID);
+                  tempUnit.setSortIndex(++tempSortIndex);
+                  if (line.size() > 4) {
+                    tempUnit.addOrders(Collections.singleton(getOrderTranslation(
+                        EresseaConstants.O_NAME, unit)
+                        + " "
+                        + getOrderTranslation(EresseaConstants.O_UNIT, unit)
+                        + " "
+                        + line.getToken(3).getText()), false);
+                  }
+                } else {
+                  log.warn("region " + unit.getRegion()
+                      + " already contains a temp unit with the id " + orderTempID
+                      + ". This temp unit remains in the orders of its parent "
+                      + "unit instead of being created as a unit in its own right.");
+                }
+              } catch (final NumberFormatException e) {
+                // temp unit invalid -- don't create it
+              }
+            } else {
+              neworders.add(line);
+            }
+          } else {
+            if (ordersObject.isToken(line, 0, EresseaConstants.O_END)) {
+              tempUnit = null;
+            } else {
+              scanTempOrder(tempUnit, line);
+            }
+          }
+        }
+      }
+    }
+
+    return tempSortIndex;
+  }
+
+  private final boolean isTempUnitOrder(Order line, Orders ordersObject, Unit unit) {
+    if (line.getProblem() == null && !line.isEmpty()
+        && ordersObject.isToken(line, 0, EresseaConstants.O_MAKE)) {
+      if (line.getToken(1).getText().toLowerCase().startsWith(
+          getOrderTranslation(EresseaConstants.O_TEMP, unit).toLowerCase()))
+        // if (ordersObject.isToken(line, 1, EresseaConstants.O_TEMP)) }
+        return true;
+    }
+    return false;
+  }
+
+  private void scanTempOrder(TempUnit tempUnit, Order line) {
+    boolean scanned = false;
+    if (MagellanUnitImpl.CONFIRMEDTEMPCOMMENT.equals(line.toString())) {
+      tempUnit.setOrdersConfirmed(true);
+      scanned = true;
+    }
+    if (!scanned && !line.isEmpty() && line.getText().startsWith(MagellanUnitImpl.TAG_PREFIX_TEMP)) {
+      String tag = null;
+      String value = null;
+      final StringTokenizer st = new StringTokenizer(line.getText());
+      if (st.hasMoreTokens()) {
+        // ignore TAG_PREFIX_TEMP
+        st.nextToken();
+      }
+      if (st.hasMoreTokens()) {
+        tag = st.nextToken();
+      }
+      if (st.hasMoreTokens()) {
+        value = st.nextToken().replace('~', ' ');
+      }
+      if (tag != null && value != null) {
+        tempUnit.putTag(tag, value);
+        scanned = true;
+      }
+    }
+    if (!scanned) {
+      tempUnit.addOrder(line, false);
+    }
+  }
+
+  /**
+   * Returns the orders necessary to issue the creation of all the child temp units of this unit.
+   */
+  public Collection<? extends Order> getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
+    final OrderParser parser = getRules().getGameSpecificStuff().getOrderParser(unit.getData());
+    final List<Order> cmds = new LinkedList<Order>();
+    final Locale locale = unit.getLocale();
+
+    for (TempUnit u : unit.tempUnits()) {
+      cmds.add(parser.parse(getOrder(locale, EresseaConstants.O_MAKE, u.getID().toString(true,
+          locale)), locale));
+
+      cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
+
+      if (u.isOrdersConfirmed()) {
+        cmds.add(parser.parse(MagellanUnitImpl.CONFIRMEDTEMPCOMMENT, locale));
+      }
+
+      if (u.hasTags()) {
+        final Map<String, String> tempUnitTags = u.getTagMap();
+        for (String tag : u.getTagMap().keySet()) {
+          final String value = tempUnitTags.get(tag);
+          cmds.add(parser.parse(MagellanUnitImpl.TAG_PREFIX_TEMP + tag + " "
+              + value.replace(' ', '~'), locale));
+        }
+      }
+
+      cmds.add(parser.parse(getOrder(locale, EresseaConstants.O_END), locale));
+    }
+
+    return cmds;
+  }
 }

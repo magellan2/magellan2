@@ -149,21 +149,6 @@ public class DirectionTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#toDirection(java.lang.String)}.
-   */
-  @Test
-  public void testToDirectionString() {
-    assertSame(Direction.NW, Direction.toDirection("NW"));
-    assertSame(Direction.NE, Direction.toDirection("NO"));
-    assertSame(Direction.E, Direction.toDirection("O"));
-    assertSame(Direction.SE, Direction.toDirection("SO"));
-    assertSame(Direction.SW, Direction.toDirection("SW"));
-    assertSame(Direction.W, Direction.toDirection("W"));
-    assertSame(Direction.NW, Direction.toDirection("NordWEsten"));
-    assertSame(Direction.INVALID, Direction.toDirection("Nach Hause"));
-  }
-
-  /**
    * Test method for {@link magellan.library.utils.Direction#toDirection(int)}.
    */
   @Test
@@ -219,42 +204,6 @@ public class DirectionTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#toString(boolean)}.
-   */
-  @Test
-  public void testToStringBoolean() {
-    assertEquals("NORDOSTEN", Direction.NE.toString(false));
-    assertEquals("SÜDWESTEN", Direction.SW.toString(false));
-    assertEquals("NO", Direction.NE.toString(true));
-  }
-
-  /**
-   * Test method for {@link magellan.library.utils.Direction#toString(int)}.
-   */
-  @Test
-  public void testToStringInt() {
-    assertEquals("NORDOSTEN", Direction.toString(Direction.DIR_NE));
-  }
-
-  /**
-   * Test method for {@link magellan.library.utils.Direction#toString(int, boolean)}.
-   */
-  @Test
-  public void testToStringIntBoolean() {
-    assertEquals("NORDOSTEN", Direction.toString(Direction.DIR_NE, false));
-    assertEquals("NO", Direction.toString(Direction.DIR_NE, true));
-  }
-
-  /**
-   * Test method for
-   * {@link magellan.library.utils.Direction#toString(magellan.library.CoordinateID)}.
-   */
-  @Test
-  public void testToStringCoordinateID() {
-    assertEquals("NORDWESTEN", Direction.toString(CoordinateID.create(-1, 1)));
-  }
-
-  /**
    * Test method for {@link magellan.library.utils.Direction#toInt(magellan.library.CoordinateID)}.
    */
   @SuppressWarnings("deprecation")
@@ -263,32 +212,14 @@ public class DirectionTest extends MagellanTestWithResources {
     assertSame(Direction.DIR_NW, Direction.toInt(CoordinateID.create(-1, 1)));
   }
 
-  /**
-   * Test method for {@link magellan.library.utils.Direction#toInt(java.lang.String)}.
-   */
-  @SuppressWarnings("deprecation")
-  @Test
-  public void testToIntString() {
-    assertSame(Direction.DIR_NE, Direction.toInt("NO"));
-  }
-
-  /**
-   * Test method for {@link magellan.library.utils.Direction#getShortNames()}.
-   */
-  @Test
-  public void testGetShortNames() {
-    assertArrayEquals(new String[] { "nw", "no", "o", "so", "sw", "w" }, Direction.getShortNames()
-        .toArray());
-  }
-
-  /**
-   * Test method for {@link magellan.library.utils.Direction#getLongNames()}.
-   */
-  @Test
-  public void testGetLongNames() {
-    assertArrayEquals(new String[] { "nordwesten", "nordosten", "osten", "südosten", "südwesten",
-        "westen" }, Direction.getLongNames().toArray());
-  }
+  // /**
+  // * Test method for {@link magellan.library.utils.Direction#toInt(java.lang.String)}.
+  // */
+  // @SuppressWarnings("deprecation")
+  // @Test
+  // public void testToIntString() {
+  // assertSame(Direction.DIR_NE, Direction.toInt("NO"));
+  // }
 
   /**
    * Test method for

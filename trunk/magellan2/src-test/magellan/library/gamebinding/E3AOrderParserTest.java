@@ -91,9 +91,9 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   public void testInitCommands() {
     assertSame(53, getParser().getCommands().size());
     assertSame(53, getParser().getHandlers().size());
-    assertTrue(getParser().getCommands().contains("WORK"));
-    assertTrue(getParser().getCommands().contains("DESTROY"));
-    assertTrue(!getParser().getCommands().contains("SABOTAGE"));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.O_WORK));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.O_DESTROY));
+    assertTrue(!getParser().getCommands().contains(EresseaConstants.O_SABOTAGE));
   }
 
   /**
@@ -311,8 +311,8 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
     if (list == null)
       return;
     assertTrue(list.size() == 3);
-    assertTrue(list.get(0).getClass().equals(ArbeiteReader.class));
-    assertTrue(list.get(1).getClass().equals(AttackReader.class));
+    assertTrue(list.get(1).getClass().equals(ArbeiteReader.class));
+    assertTrue(list.get(0).getClass().equals(AttackReader.class));
     list = getParser().getHandlers(new OrderToken("arbei"));
     assertTrue(list != null);
     if (list == null)

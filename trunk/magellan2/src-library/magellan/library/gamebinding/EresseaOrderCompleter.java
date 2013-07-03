@@ -847,8 +847,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     for (final Iterator<AllianceCategory> it = getData().rules.getAllianceCategoryIterator(); it
         .hasNext();) {
       final AllianceCategory all = it.next();
-      completions
-          .add(new Completion(getOrderTranslation(Alliance.ORDER_KEY_PREFIX + all.getName())));
+      completions.add(new Completion(getOrderTranslation(StringID
+          .create(GameConstants.ORDER_KEY_PREFIX + all.getName()))));
     }
   }
 

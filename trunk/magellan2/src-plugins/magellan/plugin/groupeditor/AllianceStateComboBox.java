@@ -35,6 +35,7 @@ import javax.swing.JTable;
 
 import magellan.library.Alliance;
 import magellan.library.GameData;
+import magellan.library.gamebinding.GameConstants;
 import magellan.library.rules.AllianceCategory;
 import magellan.library.utils.Locales;
 
@@ -258,8 +259,9 @@ class AllianceState {
     StringBuffer buffer = new StringBuffer();
     for (AllianceCategory category : categories) {
       buffer.append(
-          world.getRules().getOrder(Alliance.ORDER_KEY_PREFIX + category.getName()).getName(
-              Locales.getGUILocale())).append(" ");
+          world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+              Locales.getGUILocale(), GameConstants.getAllianceKey(category.getName())))
+          .append(" ");
     }
     return buffer.toString();
   }

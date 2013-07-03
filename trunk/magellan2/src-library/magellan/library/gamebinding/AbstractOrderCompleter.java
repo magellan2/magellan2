@@ -45,7 +45,6 @@ import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
-import magellan.library.utils.Direction;
 import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.OrderTokenizer;
@@ -306,7 +305,7 @@ public abstract class AbstractOrderCompleter implements Completer {
       for (Border b : region.borders()) {
         if (Umlaut.convertUmlauts(b.getType()).equalsIgnoreCase(
             getOrderTranslation(EresseaConstants.O_ROAD))) {
-          completions.add(new Completion(Direction.toString(b.getDirection()), ""));
+          completions.add(new Completion(getOrderTranslation(directions[b.getDirection()]), ""));
         }
       }
     } else {
@@ -585,13 +584,22 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addDirections(String postfix) {
-    for (String dir : Direction.getShortNames(getUnit().getLocale())) {
-      completions.add(new Completion(dir, dir, postfix));
-    }
+  private static StringID directions[] = new StringID[] { EresseaConstants.O_NW,
+      EresseaConstants.O_NE, EresseaConstants.O_E, EresseaConstants.O_SE, EresseaConstants.O_SW,
+      EresseaConstants.O_W };
 
-    for (String dir : Direction.getLongNames(getUnit().getLocale())) {
-      completions.add(new Completion(dir, dir, postfix));
+  protected void addDirections(String postfix) {
+    ArrayList<List<String>> dirs = new ArrayList<List<String>>(6);
+    int max = Integer.MIN_VALUE;
+    for (StringID dir : directions) {
+      dirs.add(getData().getRules().getOrder(dir).getNames(getLocale()));
+      max = Math.max(max, dirs.get(dirs.size() - 1).size());
+    }
+    for (int i = 0; i < max; ++i) {
+      for (int dir = 0; dir < dirs.size(); ++dir)
+        if (i < dirs.get(dir).size()) {
+          completions.add(new Completion(dirs.get(dir).get(i), dirs.get(dir).get(i), postfix));
+        }
     }
   }
 
@@ -903,8 +911,9 @@ public abstract class AbstractOrderCompleter implements Completer {
       return locale;
   }
 
-  protected String getOrderTranslation(String orderKey) {
-    return getData().getRules().getOrder(orderKey).getName(getLocale());
+  protected String getOrderTranslation(StringID orderKey) {
+    return getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(),
+        orderKey);
   }
 
   protected String getRuleItemTranslation(String orderKey) {

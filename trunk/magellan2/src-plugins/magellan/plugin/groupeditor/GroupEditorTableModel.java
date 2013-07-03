@@ -37,8 +37,10 @@ import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.Group;
 import magellan.library.Order;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameConstants;
 import magellan.library.rules.AllianceCategory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
@@ -261,8 +263,9 @@ public class GroupEditorTableModel extends AbstractTableModel {
     }
   }
 
-  protected String getOrderTranslation(String orderId) {
-    return getOwner().getData().getRules().getOrder(orderId).getName(getOwner().getLocale());
+  protected String getOrderTranslation(StringID orderId) {
+    return getOwner().getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+        getOwner().getLocale(), orderId);
   }
 
   /**
@@ -319,7 +322,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
               continue;
             }
             unit.addOrder(helpcommand + " " + faction.getID() + " "
-                + getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()) + " "
+                + getOrderTranslation(GameConstants.getAllianceKey(cat.getName())) + " "
                 + getOrderTranslation(EresseaConstants.O_NOT), !firstAdded, 1);
             firstAdded = true;
           }
@@ -327,10 +330,11 @@ public class GroupEditorTableModel extends AbstractTableModel {
           for (AllianceCategory cat : newState.getCategories()) {
             if (oldState.getAllianceCategories().contains(cat)) {
               unit.addOrder(signature + helpcommand + " " + faction.getID() + " "
-                  + getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()));
+                  + getOrderTranslation(GameConstants.getAllianceKey(cat.getName())));
             } else {
               unit.addOrder(helpcommand + " " + faction.getID() + " "
-                  + getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()), !firstAdded, 1);
+                  + getOrderTranslation(GameConstants.getAllianceKey(cat.getName())), !firstAdded,
+                  1);
             }
             firstAdded = true;
           }

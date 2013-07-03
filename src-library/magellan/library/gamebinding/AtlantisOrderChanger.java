@@ -33,11 +33,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import magellan.library.Building;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.Order;
 import magellan.library.Orders;
 import magellan.library.Rules;
+import magellan.library.Ship;
 import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
@@ -47,6 +49,7 @@ import magellan.library.completion.OrderParser;
 import magellan.library.impl.MagellanUnitImpl;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.OrderType;
+import magellan.library.utils.Locales;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -58,6 +61,8 @@ public class AtlantisOrderChanger implements OrderChanger {
   private static final Object[] EMPTY = new Object[0];
 
   private Rules rules;
+
+  private GameData dummyData;
 
   protected AtlantisOrderChanger(Rules rules) {
     this.rules = rules;
@@ -79,31 +84,53 @@ public class AtlantisOrderChanger implements OrderChanger {
   }
 
   public void addDescribeUnitContainerOrder(Unit unit, UnitContainer uc, String descr) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    if (uc instanceof Ship) {
+      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_DISPLAY, new Object[] {
+          AtlantisConstants.OC_SHIP, "\"" + descr + "\"" }));
+    } else if (uc instanceof Building) {
+      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_DISPLAY, new Object[] {
+          AtlantisConstants.OC_BUILDING, "\"" + descr + "\"" }));
+    } else {
+      unit.addOrder(AtlantisConstants.O_COMMENT + "can't describe " + uc);
+    }
   }
 
   public void addDescribeUnitOrder(Unit unit, String descr) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_DISPLAY, new Object[] {
+        AtlantisConstants.OC_UNIT, "\"" + descr + "\"" }));
   }
 
   public void addDescribeUnitPrivateOrder(Unit unit, String descr) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    // impossible
   }
 
   public void addHideOrder(Unit unit, String level) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    // impossible
   }
 
   public void addGroupOrder(Unit unit, String name) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    // impossible
   }
 
   public void addNamingOrder(Unit unit, String name) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_NAME, new Object[] {
+        AtlantisConstants.OC_UNIT, "\"" + name + "\"" }));
   }
 
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#addNamingOrder(magellan.library.Unit,
+   *      magellan.library.UnitContainer, java.lang.String)
+   */
   public void addNamingOrder(Unit unit, UnitContainer uc, String name) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    if (uc instanceof Ship) {
+      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_NAME, new Object[] {
+          AtlantisConstants.OC_SHIP, "\"" + name + "\"" }));
+    } else if (uc instanceof Building) {
+      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_NAME, new Object[] {
+          AtlantisConstants.OC_BUILDING, "\"" + name + "\"" }));
+    } else {
+      unit.addOrder(AtlantisConstants.O_COMMENT + "can't name " + uc);
+    }
   }
 
   public void addRecruitOrder(Unit u, int amount) {
@@ -157,21 +184,44 @@ public class AtlantisOrderChanger implements OrderChanger {
   }
 
   public void addMultipleHideOrder(Unit u) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    u.addOrder(getOrder(u.getLocale(), AtlantisConstants.OC_NAME, new Object[] {
+        AtlantisConstants.OC_UNIT, "Unit" }));
+    u.addOrder(getOrder(u.getLocale(), AtlantisConstants.OC_DISPLAY, new Object[] {
+        AtlantisConstants.OC_UNIT, "\"\"" }));
   }
 
   public void disableLongOrders(Unit u) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    Collection<String> newOrders = new ArrayList<String>(u.getOrders2().size());
+    boolean changed = false;
+    for (Order order : u.getOrders2()) {
+      if (order.isLong()) {
+        changed = true;
+        newOrders.add(AtlantisConstants.O_COMMENT + order.getText());
+      } else {
+        newOrders.add(order.getText());
+      }
+    }
+    if (changed) {
+      u.setOrders(newOrders);
+    }
   }
 
   public boolean isLongOrder(String order) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return false;
+    return getRules().getGameSpecificStuff().getOrderParser(getDummyData()).parse(order,
+        Locales.getOrderLocale()).isLong();
+  }
+
+  protected GameData getDummyData() {
+    if (dummyData == null) {
+      dummyData =
+          getRules().getGameSpecificStuff().createGameData(
+              getRules().getGameSpecificStuff().getName());
+    }
+    return dummyData;
   }
 
   public boolean isLongOrder(Order order) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return false;
+    return order.isLong();
   }
 
   public int areCompatibleLongOrders(Orders orders) {
@@ -287,7 +337,8 @@ public class AtlantisOrderChanger implements OrderChanger {
             if (isTempUnitOrder(line, ordersObject, unit)) {
               try {
                 final int base = (unit.getID()).getRadix();
-                final UnitID orderTempID = UnitID.createUnitID(line.getToken(1).getText(), base);
+                UnitID orderTempID = UnitID.createUnitID(line.getToken(1).getText(), base);
+                orderTempID = UnitID.createUnitID(-orderTempID.intValue(), base);
 
                 if (unit.getRegion() == null || unit.getRegion().getUnit(orderTempID) == null) {
                   tempUnit = unit.createTemp(gdata, orderTempID);
@@ -372,8 +423,8 @@ public class AtlantisOrderChanger implements OrderChanger {
     final Locale locale = unit.getLocale();
 
     for (TempUnit u : unit.tempUnits()) {
-      cmds.add(parser.parse(
-          getOrder(locale, AtlantisConstants.OC_MAKE, new Object[] { u.getID() }), locale));
+      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.OC_FORM, new Object[] { -u.getID()
+          .intValue() }), locale));
 
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 

@@ -24,10 +24,21 @@
 package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+
+import magellan.library.Building;
 import magellan.library.GameData;
+import magellan.library.Order;
+import magellan.library.Region;
+import magellan.library.Ship;
+import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -41,6 +52,7 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
   private GameDataBuilder builder;
   private Unit unit;
   private AtlantisOrderChanger changer;
+  private Region region;
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -59,12 +71,15 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
     data = builder.createSimpleGameData();
     data.base = 10;
     unit = data.getUnits().iterator().next();
+    region = unit.getRegion();
     changer = (AtlantisOrderChanger) data.getRules().getGameSpecificStuff().getOrderChanger();
   }
 
   @Test
   public final void testCreateOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    Order order = changer.createOrder(unit, "Hello, Atlantis!");
+    assertEquals("Hello, Atlantis!", order.getText());
   }
 
   @Test
@@ -74,42 +89,66 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
 
   @Test
   public final void testAddDescribeUnitContainerOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    Ship ship = builder.addShip(data, region, "42", "Longboat", "LB", 100);
+    Building building = builder.addBuilding(data, region, "43", "Building", "Castle", 10);
+    changer.addDescribeUnitContainerOrder(unit, ship, "a ship");
+    changer.addDescribeUnitContainerOrder(unit, building, "a building");
+    assertEquals("DISPLAY SHIP \"a ship\"", unit.getOrders2().get(0).getText());
+    assertEquals("DISPLAY BUILDING \"a building\"", unit.getOrders2().get(1).getText());
   }
 
   @Test
   public final void testAddDescribeUnitOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    changer.addDescribeUnitOrder(unit, "a unit");
+    assertEquals("DISPLAY UNIT \"a unit\"", unit.getOrders2().get(0).getText());
   }
 
   @Test
   public final void testAddDescribeUnitPrivateOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    changer.addDescribeUnitPrivateOrder(unit, "hello");
+    assertEquals(0, unit.getOrders2().size());
   }
 
   @Test
   public final void testAddHideOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    changer.addHideOrder(unit, "15");
+    assertEquals(0, unit.getOrders2().size());
   }
 
   @Test
   public final void testAddGroupOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    changer.addGroupOrder(unit, "Renegades");
+    assertEquals(0, unit.getOrders2().size());
   }
 
   @Test
   public final void testAddNamingOrderUnitString() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    changer.addNamingOrder(unit, "my unit");
+    assertEquals("NAME UNIT \"my unit\"", unit.getOrders2().get(0).getText());
   }
 
   @Test
   public final void testAddNamingOrderUnitUnitContainerString() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    Ship ship = builder.addShip(data, region, "42", "Longboat", "LB", 100);
+    Building building = builder.addBuilding(data, region, "43", "Building", "Castle", 10);
+    changer.addNamingOrder(unit, building, "my building");
+    changer.addNamingOrder(unit, ship, "my ship");
+    assertEquals("NAME BUILDING \"my building\"", unit.getOrders2().get(0).getText());
+    assertEquals("NAME SHIP \"my ship\"", unit.getOrders2().get(1).getText());
   }
 
   @Test
   public final void testAddRecruitOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    changer.addRecruitOrder(unit, 14);
+    assertEquals("RECRUIT 14", unit.getOrders2().get(0).getText());
   }
 
   @Test
@@ -128,57 +167,124 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
 
   @Test
   public final void testAddMultipleHideOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    changer.addMultipleHideOrder(unit);
+    assertEquals("NAME UNIT Unit", unit.getOrders2().get(0).getText());
+    assertEquals("DISPLAY UNIT \"\"", unit.getOrders2().get(1).getText());
   }
 
   @Test
   public final void testDisableLongOrders() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    unit.addOrder("WORK");
+    unit.addOrder("PAY 123 15");
+    changer.disableLongOrders(unit);
+    assertEquals(";WORK", unit.getOrders2().get(0).getText());
+    assertEquals("PAY 123 15", unit.getOrders2().get(1).getText());
   }
 
   @Test
   public final void testIsLongOrderString() {
-    fail("Not yet implemented");
+    assertTrue(changer.isLongOrder("WORK"));
+    assertFalse(changer.isLongOrder("W"));
+    assertTrue(changer.isLongOrder("TEACH"));
+    assertFalse(changer.isLongOrder("TAX"));
   }
 
   @Test
   public final void testIsLongOrderOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    unit.addOrder("WORK");
+    unit.addOrder("W");
+    unit.addOrder("ENTERTAIN");
+    unit.addOrder("DEMOLISH");
+    assertTrue(changer.isLongOrder(unit.getOrders2().get(0)));
+    assertFalse(changer.isLongOrder(unit.getOrders2().get(1)));
+    assertTrue(changer.isLongOrder(unit.getOrders2().get(2)));
+    assertFalse(changer.isLongOrder(unit.getOrders2().get(3)));
   }
 
   @Test
   public final void testAreCompatibleLongOrders() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    unit.addOrder("WORK");
+    unit.addOrder("W");
+    unit.addOrder("ENTERTAIN");
+    unit.addOrder("DEMOLISH");
+    assertSame(2, changer.areCompatibleLongOrders(unit.getOrders2()));
   }
 
   @Test
   public final void testGetOrderTranslation() {
-    fail("Not yet implemented");
+    assertEquals("ALLY", changer.getOrderTranslation(AtlantisConstants.OC_ALLY, unit));
   }
 
   @Test
   public final void testGetOrderLocaleObject() {
-    fail("Not yet implemented");
+    assertEquals("ALLY", changer.getOrder(EN_LOCALE, AtlantisConstants.OC_ALLY));
+    assertEquals("ALLY", changer.getOrder(DE_LOCALE, AtlantisConstants.OC_ALLY));
   }
 
   @Test
   public final void testGetOrderLocaleStringIDObjectArray() {
-    fail("Not yet implemented");
+    assertEquals("ALLY UNIT 1 12345", changer.getOrder(EN_LOCALE, AtlantisConstants.OC_ALLY,
+        new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }));
   }
 
   @Test
   public final void testGetOrderStringIDLocaleObjectArray() {
-    fail("Not yet implemented");
+    try {
+      assertEquals("ALLY UNIT 1 12345", changer.getOrder(AtlantisConstants.OC_ALLY, EN_LOCALE,
+          new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }));
+    } catch (RulesException e) {
+      fail();
+    }
+    try {
+      assertEquals("ALLY UNIT 1 12345", changer.getOrder(AtlantisConstants.OC_ALLY, DE_LOCALE,
+          new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }));
+      fail();
+    } catch (RulesException e) {
+      // wrong locale
+    }
+    try {
+      changer.getOrder(StringID.create("MAKE"), EN_LOCALE, new Object[] {});
+      fail();
+    } catch (RulesException e) {
+      // exception expected
+    }
+    try {
+      changer.getOrder(AtlantisConstants.OC_ADMIT, EN_LOCALE, new Object[] { StringID
+          .create("MAKE") });
+      fail();
+    } catch (RulesException e) {
+      // exception expected
+    }
   }
 
   @Test
   public final void testExtractTempUnits() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    unit.addOrder("TEACH NEW 123");
+    unit.addOrder("FORM 123");
+    unit.addOrder("STUDY Entertainment");
+    unit.addOrder("END");
+    assertEquals(1, changer.extractTempUnits(data, 0, getLocale(), unit));
+    Unit temp = unit.getTempUnit(UnitID.createUnitID(-123, data.base));
+    assertEquals("STUDY Entertainment", temp.getOrders2().get(0).getText());
   }
 
   @Test
   public final void testGetTempOrders() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    unit.addOrder("TEACH NEW 123");
+    unit.addOrder("FORM 123");
+    unit.addOrder("STUDY Entertainment");
+    unit.addOrder("END");
+    changer.extractTempUnits(data, 0, getLocale(), unit);
+    ArrayList<Order> orders = new ArrayList<Order>(changer.getTempOrders(false, unit));
+    assertEquals("FORM 123", orders.get(0).getText());
+    assertEquals("STUDY Entertainment", orders.get(1).getText());
+    assertEquals("END", orders.get(2).getText());
   }
 
 }

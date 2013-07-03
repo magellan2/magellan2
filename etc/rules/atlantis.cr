@@ -157,6 +157,27 @@ ORDER "NEW"
 1;internal
 "NEW";locale_en
 
+ORDER "PEASANTS"
+1;internal
+"PEASANTS";locale_en
+
+ORDER "SHIP"
+1;internal
+"SHIP";locale_en
+
+ORDER "BUILDING"
+1;internal
+"BUILDING";locale_en
+
+ORDER "UNIT"
+1;internal
+"UNIT";locale_en
+
+ORDER "FACTION"
+1;internal
+"FACTION";locale_en
+
+
 ALLIANCECATEGORY "ALLES"
 "ALL";name
 26;bitmask

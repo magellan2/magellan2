@@ -25,6 +25,7 @@ package magellan.library.gamebinding;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -39,7 +40,6 @@ import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.e3a.E3AMapMergeEvaluator;
-import magellan.library.gamebinding.e3a.E3AOrderChanger;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.ReportParser;
 import magellan.library.io.RulesReader;
@@ -48,21 +48,21 @@ import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
 import magellan.library.io.nr.NRGameNameIO;
 import magellan.library.io.nr.NRParser;
+import magellan.library.utils.OrderReader;
+import magellan.library.utils.RadixTreeImpl;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.transformation.ReportTransformer;
 import magellan.library.utils.transformation.TransformerFinder;
 
+/**
+ * Atlantis specific stuff!
+ */
 public class AtlantisSpecificStuff implements GameSpecificStuff {
   private static final String name = "Atlantis";
 
   private Rules rules;
-  private MovementEvaluator movementEvaluator;
   private GameSpecificRules gameSpecificRules;
   private MapMergeEvaluator mapMergeEvaluator;
-
-  private RelationFactory relationFactory;
-
-  private E3AOrderChanger orderChanger;
 
   /**
    * Returns the value of rules.
@@ -73,6 +73,9 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
     return rules;
   }
 
+  /**
+   * 
+   */
   public AtlantisSpecificStuff() {
     rules = new RulesReader().readRules(getName());
   }
@@ -80,10 +83,10 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
   /**
    * This is a callback interface to let the GameSpecificStuff create the GameData object.
    * 
-   * @param name The game name (like "Eressea", "E3", ...)
+   * @param gameName The game name (like "Eressea", "E3", ...)
    */
-  public GameData createGameData(String name) {
-    return new CompleteData(getRules(), name);
+  public GameData createGameData(String gameName) {
+    return new CompleteData(getRules(), gameName);
   }
 
   /**
@@ -187,20 +190,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderWriter()
    */
   public GameSpecificOrderWriter getOrderWriter() {
-    return new GameSpecificOrderWriter() {
-
-      public boolean useChecker() {
-        return false;
-      }
-
-      public String getCheckerName() {
-        return null;
-      }
-
-      public String getCheckerDefaultParameter() {
-        return "";
-      }
-    };
+    return new AtlantisOrderWriter();
   }
 
   /**
@@ -274,5 +264,38 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
     }
 
     return null;
+  }
+
+  public OrderReader getOrderReader(final GameData data) {
+    return new OrderReader(data) {
+      public String getCheckerName() {
+        return null;
+      }
+
+      @Override
+      protected void initHandlers() {
+        handlers = new RadixTreeImpl<OrderReader.LineHandler>();
+        addHandler(data.rules.getOrderfileStartingString(), new StartingHandler());
+        // addHandler(getOrderTranslation(EresseaConstants.OC_REGION), new RegionHandler());
+        addHandler(getOrderTranslation(EresseaConstants.OC_UNIT), new UnitHandler());
+      }
+
+      @Override
+      protected void endHandler() {
+        // no NEXT necessary
+        data.postProcess();
+      }
+
+      @Override
+      protected String normalize(String token) {
+        return token.trim().toLowerCase();
+      }
+
+      @Override
+      protected List<LineHandler> getHandlers(String token) {
+        return Collections.singletonList(handlers.find(normalize(token)));
+      }
+
+    };
   }
 }

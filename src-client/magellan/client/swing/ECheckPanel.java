@@ -72,11 +72,11 @@ import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.JECheck;
 import magellan.library.utils.JECheck.ECheckMessage;
 import magellan.library.utils.JVMUtilities;
-import magellan.library.utils.OrderWriter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -398,7 +398,11 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
         // old = default = system dependent
         stream = new FileWriter(orderFile);
       }
-      OrderWriter cmdWriter = new OrderWriter(getGameData(), selectedFaction, options);
+      GameSpecificOrderWriter cmdWriter =
+          getGameData().getRules().getGameSpecificStuff().getOrderWriter();
+      cmdWriter.setGameData(getGameData());
+      cmdWriter.setFaction(selectedFaction);
+      cmdWriter.setECheckOptions(options);
 
       if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
         cmdWriter.setRegions(regions);

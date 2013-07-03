@@ -9,6 +9,10 @@ ORDER "FORM"
 "FORM u1";syntax
 "FORM";locale_en
 
+ORDER "END"
+"END";syntax
+"END";locale_en
+
 ORDER "ACCEPT"
 "ACCEPT f1";syntax
 "ACCEPT";locale_en

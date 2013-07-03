@@ -186,5 +186,18 @@ public interface GameSpecificStuff {
     }
   };
 
+  /**
+   * Returns a reader for parsing reports of the given FileType.
+   * 
+   * @return The parser or <code>null</code> if no parser applies to the file type
+   * @throws IOException if an I/O exception occurs
+   */
   public ReportParser getParser(FileType aFileType) throws IOException;
+
+  /**
+   * Returns a reader for parsing order files
+   * 
+   * @return The parser or <code>null</code> if order reading is not supported.
+   */
+  public GameSpecificOrderReader getOrderReader(GameData data);
 }

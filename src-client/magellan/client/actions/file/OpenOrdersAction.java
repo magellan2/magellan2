@@ -31,10 +31,11 @@ import magellan.client.swing.OpenOrdersAccessory;
 import magellan.client.swing.ProgressBarUI;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.gamebinding.GameSpecificOrderReader;
+import magellan.library.gamebinding.GameSpecificOrderReader.Status;
 import magellan.library.io.BOMReader;
 import magellan.library.io.file.FileType;
 import magellan.library.utils.Encoding;
-import magellan.library.utils.OrderReader;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -92,55 +93,77 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
         Properties settings = client.getProperties();
         settings.setProperty("Client.lastOrdersOpened", fc.getSelectedFile().getAbsolutePath());
 
-        OrderReader r = new OrderReader(client.getData());
-        r.setAutoConfirm(acc.getAutoConfirm());
-        r.ignoreSemicolonComments(acc.getIgnoreSemicolonComments());
-        r.setDoNotOverwriteConfirmedOrders(acc.getDoNotOverwriteConfirmedOrders());
-
-        // we clone later the hole gamedata, we do not need to
-        // refresh the UnitRelations now
-        r.setRefreshUnitRelations(false);
-
         try {
-          // apexo (Fiete) 20061205: if in properties, force ISO encoding
-          if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
-            // new: force our default = ISO
-            Reader stream =
-                new InputStreamReader(new FileInputStream(fc.getSelectedFile().getAbsolutePath()),
-                    FileType.DEFAULT_ENCODING.toString());
-            r.read(stream);
-          } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTFopenOrders", false)) {
-            // new: force UTF
-            Reader stream =
-                new InputStreamReader(new FileInputStream(fc.getSelectedFile().getAbsolutePath()),
-                    Encoding.UTF8.toString());
-            r.read(stream);
+          GameSpecificOrderReader r =
+              client.getData().getRules().getGameSpecificStuff().getOrderReader(client.getData());
+          StringBuilder messageS;
+          Status status = new Status();
+          if (r == null) {
+            log.warn("OrderReader not available");
+            messageS =
+                new StringBuilder(Resources
+                    .get("actions.openordersaction.msg.fileordersopen.status.noreader"));
           } else {
-            // old = default = system dependent
-            r.read(new BOMReader(new FileInputStream(fc.getSelectedFile()), null));
-            // r.read(new FileReader(fc.getSelectedFile().getAbsolutePath()));
-          }
+            r.setAutoConfirm(acc.getAutoConfirm());
+            r.setIgnoreSemicolonComments(acc.getIgnoreSemicolonComments());
+            r.setDoNotOverwriteConfirmedOrders(acc.getDoNotOverwriteConfirmedOrders());
 
-          OrderReader.Status status = r.getStatus();
-          Object msgArgs[] = { Integer.valueOf(status.factions), Integer.valueOf(status.units) };
-          String messageS =
-              Resources.get("actions.openordersaction.msg.fileordersopen.status.text");
-          if (status.unknownUnits > 0) {
-            messageS +=
-                "\n"
-                    + Resources.get("actions.openordersaction.msg.fileordersopen.status.text3",
-                        Integer.valueOf(status.unknownUnits));
+            // apexo (Fiete) 20061205: if in properties, force ISO encoding
+            if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
+              // new: force our default = ISO
+              Reader stream =
+                  new InputStreamReader(
+                      new FileInputStream(fc.getSelectedFile().getAbsolutePath()),
+                      FileType.DEFAULT_ENCODING.toString());
+              r.read(stream);
+            } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTFopenOrders", false)) {
+              // new: force UTF
+              Reader stream =
+                  new InputStreamReader(
+                      new FileInputStream(fc.getSelectedFile().getAbsolutePath()), Encoding.UTF8
+                          .toString());
+              r.read(stream);
+            } else {
+              // old = default = system dependent
+              r.read(new BOMReader(new FileInputStream(fc.getSelectedFile()), null));
+              // r.read(new FileReader(fc.getSelectedFile().getAbsolutePath()));
+            }
+
+            status = r.getStatus();
+            messageS =
+                new StringBuilder(Resources.get(
+                    "actions.openordersaction.msg.fileordersopen.status.text", status.factions,
+                    status.units));
+            if (status.unknownUnits > 0) {
+              messageS.append("\n").append(
+                  Resources.get("actions.openordersaction.msg.fileordersopen.status.text3", Integer
+                      .valueOf(status.unknownUnits)));
+            }
+            if (status.confirmedUnitsNotOverwritten > 0) {
+              messageS.append("\n").append(status.confirmedUnitsNotOverwritten).append(" ").append(
+                  Resources.get("actions.openordersaction.msg.fileordersopen.status.text2"));
+            }
+            if (status.errors > 0) {
+              messageS.append("\n").append(
+                  Resources.get("actions.openordersaction.msg.fileordersopen.status.errors",
+                      status.errors));
+            }
           }
-          if (status.confirmedUnitsNotOverwritten > 0) {
-            messageS +=
-                "\n" + status.confirmedUnitsNotOverwritten + " "
-                    + Resources.get("actions.openordersaction.msg.fileordersopen.status.text2");
-          }
-          JOptionPane.showMessageDialog(client, (new java.text.MessageFormat(messageS))
-              .format(msgArgs), Resources
-              .get("actions.openordersaction.msg.fileordersopen.status.title"),
+          JOptionPane.showMessageDialog(client, (new java.text.MessageFormat(messageS.toString())),
+              Resources.get("actions.openordersaction.msg.fileordersopen.status.title"),
               (status.factions > 0 && status.units > 0) ? JOptionPane.PLAIN_MESSAGE
                   : JOptionPane.WARNING_MESSAGE);
+          // in order to refresh relations, force a complete new init of the game data, using
+          // data.clone, using for that client.setOrigin...(Fiete)
+          // client.setOrigin(CoordinateID.ZERO);
+
+          // setOrigin and set Data already fire a GameDataEvent
+          // client.getDispatcher().fire(new GameDataEvent(this, client.getData()));
+
+          // (stm) this should be sufficient, as long as unit relations are (forcedly) refreshed via
+          // postProcess in OrderReader
+          client.setData(client.getData());
+          client.setReportChanged(true);
         } catch (Exception exc) {
           OpenOrdersAction.log.error(exc);
           JOptionPane.showMessageDialog(client, Resources
@@ -148,19 +171,9 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
               + exc.toString(), Resources
               .get("actions.openordersaction.msg.fileordersopen.error.title"),
               JOptionPane.ERROR_MESSAGE);
+        } finally {
+          ui.ready();
         }
-        // in order to refresh relations, force a complete new init of the game data, using
-        // data.clone, using for that client.setOrigin...(Fiete)
-        // client.setOrigin(CoordinateID.ZERO);
-
-        // setOrigin and set Data already fire a GameDataEvent
-        // client.getDispatcher().fire(new GameDataEvent(this, client.getData()));
-
-        // (stm) this should be sufficient, as long as unit relations are (forcedly) refreshed via
-        // postProcess in OrderReader
-        client.setData(client.getData());
-        client.setReportChanged(true);
-        ui.ready();
       }
     }).start();
   }

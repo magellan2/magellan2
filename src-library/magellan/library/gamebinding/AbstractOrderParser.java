@@ -79,23 +79,6 @@ public abstract class AbstractOrderParser implements OrderParser {
   // private RadixTree<OrderHandler> commandTrie;
   private HashMap<StringID, OrderHandler> commandMap;
 
-  /**
-   * Returns the value of commandMap.
-   * 
-   * @return Returns commandMap.
-   */
-  protected HashMap<StringID, OrderHandler> getCommandMap() {
-    return commandMap;
-  }
-
-  public void clearCommandMap() {
-    commandMap = new HashMap<StringID, OrderHandler>();
-    commandTries = new HashMap<Locale, RadixTree<OrderHandler>>();
-    // RadixTreeImpl<OrderHandler> commandTrie =
-    // new magellan.library.utils.RadixTreeImpl<OrderHandler>();
-    // commandTries.put(Locales.getOrderLocale(), commandTrie);
-  }
-
   private Locale locale;
 
   private OrderHandler emptyReader;
@@ -379,6 +362,26 @@ public abstract class AbstractOrderParser implements OrderParser {
    */
   public Faction getFaction(String id) {
     return getData().getFaction(EntityID.createEntityID(id, getData().base));
+  }
+
+  /**
+   * Returns the value of commandMap.
+   * 
+   * @return Returns commandMap.
+   */
+  protected HashMap<StringID, OrderHandler> getCommandMap() {
+    return commandMap;
+  }
+
+  /**
+   * 
+   */
+  public void clearCommandMap() {
+    commandMap = new HashMap<StringID, OrderHandler>();
+    commandTries = new HashMap<Locale, RadixTree<OrderHandler>>();
+    // RadixTreeImpl<OrderHandler> commandTrie =
+    // new magellan.library.utils.RadixTreeImpl<OrderHandler>();
+    // commandTries.put(Locales.getOrderLocale(), commandTrie);
   }
 
   protected abstract void initCommands();
@@ -1255,11 +1258,14 @@ public abstract class AbstractOrderParser implements OrderParser {
     return Umlaut.convertUmlauts(name.replace('~', ' '));
   }
 
-  public Direction toDirection(String text, Locale locale) {
-    RadixTree<Direction> directions = dirTranslations.get(locale);
+  /**
+   * Interpret token as direction.
+   */
+  public Direction toDirection(String text, Locale aLocale) {
+    RadixTree<Direction> directions = dirTranslations.get(aLocale);
     if (directions == null) {
       directions = new RadixTreeImpl<Direction>();
-      dirTranslations.put(locale, directions);
+      dirTranslations.put(aLocale, directions);
       for (Direction dir : Direction.getDirections()) {
         for (String ld : getOrderTranslation(dir)) {
           directions.insert(Umlaut.normalize(ld.toLowerCase()), dir);

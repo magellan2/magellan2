@@ -184,6 +184,15 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
+   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.EndReader}.
+   */
+  @Test
+  public void testEndReader() {
+    // FORM u1
+    bareTest(getOrderTranslation(AtlantisConstants.OC_END));
+  }
+
+  /**
    * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AcceptReader}.
    */
   @Test

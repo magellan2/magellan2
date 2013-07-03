@@ -32,6 +32,8 @@ import magellan.library.io.RulesReader;
 import magellan.library.io.cr.CRGameNameIO;
 import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
+import magellan.library.utils.OrderReader;
+import magellan.library.utils.RadixTreeImpl;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.ReportTransformer;
@@ -48,6 +50,9 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   private static final String name = "Eressea";
 
+  /**
+   * Layer index of "Astralraum".
+   */
   public static final int ASTRAL_LAYER = 1;
 
   private Rules rules;
@@ -90,8 +95,8 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    * 
    * @see magellan.library.gamebinding.GameSpecificStuff#createGameData(java.lang.String)
    */
-  public GameData createGameData(String name) {
-    return new CompleteData(rules, name);
+  public GameData createGameData(String gameName) {
+    return new CompleteData(rules, gameName);
   }
 
   /**
@@ -235,6 +240,26 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
     }
 
     return null;
+  }
+
+  public OrderReader getOrderReader(final GameData data) {
+    return new OrderReader(data) {
+
+      @Override
+      protected void initHandlers() {
+        handlers = new RadixTreeImpl<OrderReader.LineHandler>();
+        addHandler(data.rules.getOrderfileStartingString(), new StartingHandler());
+        addHandler(getOrderTranslation(EresseaConstants.OC_REGION), new RegionHandler());
+        addHandler(getOrderTranslation(EresseaConstants.OC_UNIT), new UnitHandler());
+        // Eressea specific
+        addHandler(getOrderTranslation(EresseaConstants.OC_NEXT), new NextHandler());
+        addHandler(getOrderTranslation(EresseaConstants.OC_LOCALE), new LocaleHandler());
+      }
+
+      public String getCheckerName() {
+        return "ECHECK";
+      }
+    };
   }
 
 }

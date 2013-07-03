@@ -99,9 +99,9 @@ public class Loader {
       }
     }
 
-    GameData newData[] = new GameData[1];
-    ReadRunner runner = new ReadRunner(crReader, newData);
-    new Thread(runner).start();
+      GameData newData[] = new GameData[1];
+      ReadRunner runner = new ReadRunner(crReader, newData);
+      new Thread(runner).start();
 
     try {
       crw.writeSynchronously();
@@ -158,6 +158,8 @@ public class Loader {
       }
 
       GameData newData = new GameDataReader(null).readGameData(filetype, coordinateTranslator);
+      if (newData == null)
+        throw new CloneNotSupportedException("no game data");
       newData.setFileType(data.getFileType());
       tempFile.delete();
 

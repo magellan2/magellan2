@@ -32,11 +32,14 @@ import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.rules.ConstructibleType;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A class for writing orders of all units of a certain faction to a stream.
  */
-public class OrderWriter {
+public abstract class OrderWriter implements GameSpecificOrderWriter {
+  private static final Logger log = Logger.getInstance(OrderWriter.class);
+
   /** Marker for confirmed units */
   public static final String CONFIRMED = "bestaetigt";
 
@@ -61,7 +64,7 @@ public class OrderWriter {
    */
   private boolean writeTimeStamp = true;
 
-  private Locale locale;
+  protected String commentStart = EresseaConstants.O_COMMENT;
 
   /**
    * Creates a new OrderWriter object extracting the orders of faction f's units and writing them to
@@ -86,33 +89,49 @@ public class OrderWriter {
     world = g;
     faction = f;
 
-    if (echeckOpts != null) {
-      syntaxCheckOptions = echeckOpts;
-    } else {
-      syntaxCheckOptions = g.getGameSpecificStuff().getOrderWriter().getCheckerDefaultParameter();
-    }
-
-    if (f.getType() != null && faction.getRace().getRecruitmentCosts() > 0) {
-      syntaxCheckOptions = "-r" + faction.getRace().getRecruitmentCosts() + syntaxCheckOptions;
-    }
+    setECheckOptions(echeckOpts);
   }
 
   /**
-   * DOCUMENT-ME
+   * Creates a new OrderWriter.
    */
-  public int write(Writer stream) throws IOException {
-    return write(new BufferedWriter(stream));
+  public OrderWriter() {
+    setECheckOptions(null);
   }
 
   /**
-   * DOCUMENT-ME
+   * As {@link #write(BufferedWriter)}, but using a writer.
+   */
+  public int write(Writer write) throws IOException {
+    return write(new BufferedWriter(write));
+  }
+
+  /**
+   * Writes the faction's orders to the stream. World and faction must be set, possibly using
+   * {@link #setGameData(GameData)} and {@link #setFaction(Faction)}.
+   * 
+   * @param stream
+   * @return The number of written units
+   * @throws IOException If an I/O error occurs
    */
   public synchronized int write(BufferedWriter stream) throws IOException {
+    if (world == null) {
+      log.warn("no game data");
+      return 0;
+    }
+    if (faction == null) {
+      faction = world.getFaction(world.getOwnerFaction());
+    }
+    if (faction == null) {
+      log.warn("no faction");
+      return 0;
+    }
+
     writeHeader(stream);
 
     int units =
-        writeRegions(((regions != null) && (regions.size() > 0)) ? regions : world.regions()
-            .values(), stream);
+        writeRegions(((regions != null) && (regions.size() > 0)) ? regions : world.getRegions(),
+            stream);
     writeFooter(stream);
 
     // we flush on purpose to fill the underlying Writer
@@ -122,22 +141,19 @@ public class OrderWriter {
     return units;
   }
 
-  /**
-   * DOCUMENT-ME
-   */
   public void setWriteUnitTagsAsVorlageComment(boolean bool) {
     writeUnitTagsAsVorlageComment = bool;
   }
 
   /**
-   * DOCUMENT-ME
+   * Write comments used by ECheck order checker.
    */
   public void setAddECheckComments(boolean bool) {
     addECheckComments = bool;
   }
 
   /**
-   * DOCUMENT-ME
+   * Remove transient (semicolon type) and permanent (// type) comments.
    */
   public void setRemoveComments(boolean semicolon, boolean slashslash) {
     removeSCComments = semicolon;
@@ -153,33 +169,37 @@ public class OrderWriter {
   }
 
   /**
-   * DOCUMENT-ME
+   * Set a group. Only orders of units in this group are written.
    */
   public void setGroup(Group group) {
     this.group = group;
   }
 
   protected void writeHeader(BufferedWriter stream) throws IOException {
-    // FIXME this might be locale dependent
-    stream.write(world.rules.getOrderfileStartingString());
-    stream.write(" " + faction.getID());
-    writeln(stream, " \"" + faction.getPassword() + "\"");
+    writeOrderfileStartingString(stream);
 
     if (writeTimeStamp) {
-      writeln(stream, "; TIMESTAMP " + getTimeStamp());
+      writeCommentLine(stream, "TIMESTAMP " + getTimeStamp());
     }
+    writeCommentLine(stream, "Magellan Version " + VersionInfo.getVersion(null));
 
-    GameSpecificOrderWriter writer = world.getGameSpecificStuff().getOrderWriter();
-
-    if (writer.useChecker()) {
-      writeln(stream, "; Magellan Version " + VersionInfo.getVersion(null));
-
+    if (useChecker()) {
       if (addECheckComments) {
-        writeln(stream, "; " + writer.getCheckerName().toUpperCase() + " " + syntaxCheckOptions);
+        writeCommentLine(stream, " " + getCheckerName().toUpperCase() + " "
+            + getSyntaxCheckOptions());
       }
     }
 
-    // TODO (stm) which locale to use here?, string LOCALE might be system/language dependent
+    writeLocale(stream);
+  }
+
+  protected void writeOrderfileStartingString(BufferedWriter stream) throws IOException {
+    stream.write(world.rules.getOrderfileStartingString());
+    stream.write(" " + faction.getID());
+    writeln(stream, " \"" + faction.getPassword() + "\"");
+  }
+
+  protected void writeLocale(BufferedWriter stream) throws IOException {
     writeln(stream, "LOCALE " + getLocale().getLanguage());
   }
 
@@ -191,11 +211,11 @@ public class OrderWriter {
     return world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
-  private int writeRegions(Collection<? extends Region> regions, BufferedWriter stream)
+  protected int writeRegions(Collection<? extends Region> writtenRegions, BufferedWriter stream)
       throws IOException {
     int writtenUnits = 0;
 
-    for (Region r : regions) {
+    for (Region r : writtenRegions) {
       Collection<Unit> units = filterUnits(r.units());
 
       if (units.size() > 0) {
@@ -209,20 +229,10 @@ public class OrderWriter {
     return writtenUnits;
   }
 
-  private int writeRegion(Region r, Collection<Unit> units, BufferedWriter stream)
+  protected int writeRegion(Region r, Collection<Unit> units, BufferedWriter stream)
       throws IOException {
     if (addECheckComments) {
-      String name = r.getName();
-
-      if (name == null) {
-        name = "Ozean";
-      }
-
-      stream.write(world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(),
-          EresseaConstants.OC_REGION));
-      writeln(stream, " " + r.getID().toString(",") + " ; " + r.getName());
-      writeln(stream, "; " + world.getGameSpecificStuff().getOrderWriter().getCheckerName()
-          + " Lohn " + r.getWage());
+      writeRegionLine(stream, r);
     }
 
     int writtenUnits = 0;
@@ -236,10 +246,30 @@ public class OrderWriter {
     return writtenUnits;
   }
 
-  private boolean writeUnit(Unit unit, BufferedWriter stream) throws IOException {
+  protected void writeRegionLine(BufferedWriter stream, Region r) throws IOException {
+    stream.write(getOrderTranslation(EresseaConstants.OC_REGION));
+    stream.write(" " + r.getID().toString(",") + " ");
+    writeCommentLine(stream, " " + r.getName());
+    writeCommentLine(stream, " " + getCheckerName() + " Lohn " + r.getWage());
+  }
+
+  protected boolean writeUnit(Unit unit, BufferedWriter stream) throws IOException {
     if (unit instanceof TempUnit)
       return false;
 
+    writeUnitLine(stream, unit);
+
+    // confirmed?
+    if (unit.isOrdersConfirmed() && !removeSCComments) {
+      writeCommentLine(stream, OrderWriter.CONFIRMED);
+    }
+
+    writeOrders(unit.getCompleteOrders(writeUnitTagsAsVorlageComment), stream);
+
+    return true;
+  }
+
+  protected void writeUnitLine(BufferedWriter stream, Unit unit) throws IOException {
     stream.write(getOrderTranslation(EresseaConstants.OC_UNIT) + " " + unit.getID().toString());
 
     if (addECheckComments) {
@@ -255,7 +285,8 @@ public class OrderWriter {
         money = silver.getAmount();
       }
 
-      stream.write(";\t\t" + unit.getName() + " [" + unit.getPersons() + "," + money + "$");
+      stream.write(commentStart + "\t\t" + unit.getName() + " [" + unit.getPersons() + "," + money
+          + "$");
 
       if (unit.getBuilding() != null) {
         if (unit.equals(unit.getBuilding().getOwnerUnit())) {
@@ -285,23 +316,13 @@ public class OrderWriter {
     }
 
     writeln(stream, null);
-
-    // confirmed?
-    if (unit.isOrdersConfirmed() && !removeSCComments) {
-      writeln(stream, EresseaConstants.O_COMMENT + OrderWriter.CONFIRMED);
-    }
-
-    writeOrders(unit.getCompleteOrders(writeUnitTagsAsVorlageComment), stream);
-
-    return true;
   }
 
-  private void writeOrders(Collection<Order> cmds, BufferedWriter stream) throws IOException {
+  protected void writeOrders(Collection<Order> cmds, BufferedWriter stream) throws IOException {
     for (Order cmd : cmds) {
       if (!cmd.isEmpty()
-          && ((removeSCComments && cmd.getToken(0).getText()
-              .startsWith(EresseaConstants.O_COMMENT)) || (removeSSComments && cmd.getToken(0)
-              .getText().startsWith(EresseaConstants.O_PCOMMENT)))) {
+          && ((removeSCComments && cmd.getToken(0).getText().startsWith(EresseaConstants.O_COMMENT)) || (removeSSComments && cmd
+              .getToken(0).getText().startsWith(EresseaConstants.O_PCOMMENT)))) {
         // consume
       } else {
         writeln(stream, cmd.getText());
@@ -309,11 +330,11 @@ public class OrderWriter {
     }
   }
 
-  private void writeFooter(BufferedWriter stream) throws IOException {
+  protected void writeFooter(BufferedWriter stream) throws IOException {
     writeln(stream, getOrderTranslation(EresseaConstants.OC_NEXT));
   }
 
-  private Collection<Unit> filterUnits(Collection<Unit> units) {
+  protected Collection<Unit> filterUnits(Collection<Unit> units) {
     Collection<Unit> filteredUnits = new LinkedList<Unit>();
 
     for (Unit u : units) {
@@ -325,7 +346,7 @@ public class OrderWriter {
     return filteredUnits;
   }
 
-  private boolean filterUnit(Unit u) {
+  protected boolean filterUnit(Unit u) {
     if (u.getFaction().equals(faction) && !u.isSpy()) {
       if (!confirmedOnly || u.isOrdersConfirmed()) {
         if ((group == null) || group.equals(u.getGroup()))
@@ -347,7 +368,7 @@ public class OrderWriter {
     return false;
   }
 
-  private String getTimeStamp() {
+  protected String getTimeStamp() {
     long time = System.currentTimeMillis();
     int x = System.getProperties().getProperty("user.name").hashCode();
     int y = System.getProperties().getProperty("os.name").hashCode();
@@ -372,7 +393,7 @@ public class OrderWriter {
     return res;
   }
 
-  private String rotate(String str, int amount) {
+  protected String rotate(String str, int amount) {
     char res[] = new char[str.length()];
 
     for (int i = 0; i < res.length; i++) {
@@ -382,7 +403,7 @@ public class OrderWriter {
     return new String(res);
   }
 
-  private void writeln(BufferedWriter stream, String text) throws IOException {
+  protected void writeln(BufferedWriter stream, String text) throws IOException {
     if (text != null) {
       stream.write(text);
     }
@@ -392,6 +413,10 @@ public class OrderWriter {
     } else {
       stream.newLine();
     }
+  }
+
+  protected void writeCommentLine(BufferedWriter stream, String line) throws IOException {
+    writeln(stream, commentStart + line);
   }
 
   /**
@@ -409,7 +434,7 @@ public class OrderWriter {
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets the set of regions to write.
    */
   public void setRegions(Collection<Region> aRegions) {
     regions = aRegions;
@@ -428,4 +453,36 @@ public class OrderWriter {
   public void setWriteTimeStamp(boolean writeTimeStamp) {
     this.writeTimeStamp = writeTimeStamp;
   }
+
+  public void setGameData(GameData gameData) {
+    world = gameData;
+  }
+
+  public void setFaction(Faction selectedFaction) {
+    faction = selectedFaction;
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificOrderWriter#setECheckOptions(java.lang.String)
+   */
+  public void setECheckOptions(String options) {
+    if (options != null) {
+      syntaxCheckOptions = options;
+    } else {
+      syntaxCheckOptions = getCheckerDefaultParameter();
+    }
+  }
+
+  /**
+   * Returns the value of syntaxCheckOptions.
+   * 
+   * @return Returns syntaxCheckOptions.
+   */
+  protected String getSyntaxCheckOptions() {
+    if (faction != null && faction.getType() != null && faction.getRace().getRecruitmentCosts() > 0)
+      return "-r" + faction.getRace().getRecruitmentCosts() + syntaxCheckOptions;
+    else
+      return syntaxCheckOptions;
+  }
+
 }

@@ -18,6 +18,7 @@ import java.io.LineNumberReader;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -31,21 +32,36 @@ import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificOrderReader;
 import magellan.library.rules.GenericRules;
 import magellan.library.utils.logging.Logger;
 
 /**
  * A class for reading a orders file for unit orders.
  */
-public class OrderReader {
+public abstract class OrderReader implements GameSpecificOrderReader {
+
+  protected interface LineHandler {
+
+    void handle(String line, List<LineHandler> matchingHandlers) throws IOException;
+
+  }
+
   private static final Logger log = Logger.getInstance(OrderReader.class);
-  private GameData data = null;
-  private LineNumberReader stream = null;
-  private boolean autoConfirm = false;
-  private boolean ignoreSemicolonComments = false;
-  private Status status = null;
-  private boolean refreshUnitRelations = true;
-  private boolean doNotOverwriteConfirmedOrders = false;
+  private GameData data;
+  private LineNumberReader stream;
+  private boolean autoConfirm;
+  private boolean ignoreSemicolonComments;
+  private Status status = new Status();
+  private boolean doNotOverwriteConfirmedOrders;
+
+  protected String command;
+  protected String comment;
+  protected RadixTree<LineHandler> handlers = new RadixTreeImpl<LineHandler>();
+  protected Faction currentFaction;
+  protected Unit currentUnit;
+  protected String currentRegion;
+  private Locale locale;
 
   /**
    * Creates a new OrderReader object adding the read orders to the units it can find in the
@@ -72,6 +88,24 @@ public class OrderReader {
         uc.clearCache();
       }
     }
+
+    setLocale(Locales.getOrderLocale());
+  }
+
+  /**
+   * Sets the order locale.
+   */
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+
+    initHandlers();
+  }
+
+  /**
+   * Returns the order locale.
+   */
+  public Locale getLocale() {
+    return locale;
   }
 
   /**
@@ -82,195 +116,285 @@ public class OrderReader {
    * insensitive) after an arbitrary number of whitespace characters are never added to a unit's
    * orders, instead they set the order confirmation status of the unit to true.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException if an I/O error occurs
    */
   public void read(Reader in) throws IOException {
     stream = new LineNumberReader(new MergeLineReader(in));
 
     String line = stream.readLine();
+    splitLine(line);
+    firstHandle(line);
 
+    line = stream.readLine();
     while (line != null) {
-      StringTokenizer tokenizer = new StringTokenizer(line);
+      splitLine(line);
+      if (command.trim().length() == 0 && comment.length() > 0) {
+        commentHandle(line);
+      } else {
+        applyHandler(line);
+      }
+      line = stream.readLine();
+    }
 
-      if (tokenizer.hasMoreTokens()) {
-        String token = Umlaut.normalize(tokenizer.nextToken());
+    endHandler();
 
-        if (data.rules.getOrderfileStartingString().startsWith(token)) {
-          token = tokenizer.nextToken();
+  }
 
-          try {
-            EntityID fID = EntityID.createEntityID(token, data.base);
-            Faction f = data.getFaction(fID);
+  protected void splitLine(String line) {
+    int commentPos = line.indexOf(EresseaConstants.O_COMMENT);
+    if (commentPos < 0) {
+      command = line;
+      comment = "";
+    } else {
+      command = line.substring(0, commentPos);
+      comment = line.substring(line.indexOf(EresseaConstants.O_COMMENT));
+    }
+  }
 
-            if (f != null) {
-              readFaction(fID);
-            } else {
-              OrderReader.log.info("OrderReader.read(): The faction with id " + fID + " (" + token
-                  + ") is not present in the game data, skipping this faction.");
-            }
-          } catch (NumberFormatException e) {
-            OrderReader.log.error("OrderReader.read(): Unable to parse faction id: " + e.toString()
-                + " at line " + stream.getLineNumber(), e);
-          }
-        }
+  protected void initHandlers() {
+    handlers = new RadixTreeImpl<OrderReader.LineHandler>();
+    addHandler(data.rules.getOrderfileStartingString(), new StartingHandler());
+    addHandler(getOrderTranslation(EresseaConstants.OC_REGION), new RegionHandler());
+    addHandler(getOrderTranslation(EresseaConstants.OC_UNIT), new UnitHandler());
+  }
+
+  protected void addHandler(String trigger, LineHandler handler) {
+    handlers.insert(normalize(trigger), handler);
+  }
+
+  protected List<LineHandler> applyHandler(String line) throws IOException {
+    StringTokenizer tokenizer = new StringTokenizer(command);
+
+    List<LineHandler> matchingHandlers = null;
+    if (tokenizer.hasMoreTokens()) {
+      String token = tokenizer.nextToken();
+      if (token.trim().length() == 0) {
+        defaultHandle(line);
       }
 
-      line = stream.readLine();
+      matchingHandlers = getHandlers(token);
+      if (matchingHandlers.size() == 0) {
+        defaultHandle(line);
+      } else {
+        for (LineHandler handler : matchingHandlers) {
+          handler.handle(line, matchingHandlers);
+        }
+      }
+    }
+    return matchingHandlers;
+  }
+
+  protected List<LineHandler> getHandlers(String token) {
+    return handlers.searchPrefix(normalize(token), Integer.MAX_VALUE);
+  }
+
+  protected String normalize(String token) {
+    return Umlaut.normalize(token.trim()).toLowerCase();
+  }
+
+  protected void firstHandle(String line) throws IOException {
+    List<LineHandler> matching = applyHandler(line);
+    if (matching.size() != 1 || !(matching.get(0) instanceof StartingHandler)) {
+      log.warn("order file does not start with orde file starting string");
+      status.errors++;
+    }
+  }
+
+  protected void defaultHandle(String line) {
+    if (currentUnit != null) {
+      currentUnit.addOrder(line, false);
+    } else if (!command.trim().isEmpty()) {
+      log.warn("unknown command outside UNIT encountered:\n" + line);
+      status.errors++;
+    }
+  }
+
+  protected void commentHandle(String line) {
+    /*
+     * There was a problem using this StringTokenizer: If a unit had an order like
+     * " ; Einheit hat Kommando" the tokenizer skipped the leading semicolon and tried to parse a
+     * new order instead of parsing this line as a comment. So treat lines, that start with a
+     * semicolon special!
+     */
+    if (currentUnit != null) {
+      // mark orders as confirmed on a ";bestaetigt" comment
+      String rest = Umlaut.normalize(line.substring(line.indexOf(';') + 1).trim());
+
+      if (rest.equalsIgnoreCase(OrderWriter.CONFIRMED)) {
+        currentUnit.setOrdersConfirmed(true);
+      } else if ((ignoreSemicolonComments == false) && getCheckerName() != null
+          && (rest.startsWith(getCheckerName().toUpperCase()) == false)) {
+        // add all other comments except "; ECHECK ..." to the orders
+        currentUnit.addOrder(line, false);
+      }
+    } else {
+      defaultHandle(line);
+    }
+
+  }
+
+  protected void endHandler() {
+    if (currentFaction != null) {
+      log.warn("missing NEXT");
+      status.errors++;
     }
 
     // necessary to refresh unit relations
     data.postProcess();
   }
 
-  private void readFaction(EntityID id) throws IOException {
-    Faction faction = data.getFaction(id);
+  protected void endFaction() {
+    currentFaction = null;
+    currentRegion = null;
+    currentUnit = null;
+    // currentUnit.extractTempUnits(data, 0, getLocale());
+  }
 
-    if (faction == null) {
-      data.addFaction(MagellanFactory.createFaction(id, data));
-    }
+  /**
+   * Handles lines with order starting string
+   */
+  public class StartingHandler implements LineHandler {
 
-    String line = null; // the line read from the file
-    Unit currentUnit = null; // keeps track of the unit which is currently processed
-    Locale currentLocale = Locales.getOrderLocale(); // start out with the currently set default
-    // order locale
-
-    /*
-     * normalized orders that have to be checked often in the loop these have to be updated whenever
-     * the locale changes
-     */
-    String naechsterOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.OC_NEXT));
-    String localeOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.OC_LOCALE));
-
-    if (status == null) {
-      status = new Status();
-    }
-
-    status.factions++;
-
-    while ((line = stream.readLine()) != null) {
-      StringTokenizer tokenizer = new StringTokenizer(line, " ;");
-
-      // FIXME adapt to new Order class
-      /*
-       * There was a problem using this StringTokenizer: If a unit had an order like
-       * " ; Einheit hat Kommando" the tokenizer skipped the leading semicolon and tried to parse a
-       * new order instead of parsing this line as a comment. So treat lines, that start with a
-       * semicolon special!
-       */
-      if (line.trim().startsWith(EresseaConstants.O_COMMENT)) {
-        if (currentUnit != null) {
-          // mark orders as confirmed on a ";bestaetigt" comment
-          String rest = Umlaut.normalize(line.substring(line.indexOf(';') + 1).trim());
-
-          if (rest.equalsIgnoreCase(OrderWriter.CONFIRMED)) {
-            currentUnit.setOrdersConfirmed(true);
-          } else if ((ignoreSemicolonComments == false) && (rest.startsWith("ECHECK") == false)) {
-            // add all other comments except "; ECHECK ..." to the orders
-            currentUnit.addOrder(line, isRefreshUnitRelations());
-          }
-        }
-
-        continue;
-      }
-
-      if (!tokenizer.hasMoreTokens() || line.trim().equals("")) {
-        // empty line
-        if (currentUnit != null) {
-          currentUnit.addOrder(line, isRefreshUnitRelations());
-        }
-
-        continue;
-      }
-
-      String token = Umlaut.normalize(tokenizer.nextToken().trim());
-
-      if (naechsterOrder.startsWith(token)) {
-        /* turn orders into 'real' temp units */
-        if (currentUnit != null) {
-          // FIXME find correct sortIndex
-          currentUnit.extractTempUnits(data, 0, currentLocale);
-        }
-
-        break;
-      } else if (localeOrder.startsWith(token)) {
-        if (tokenizer.hasMoreTokens()) {
-          token = tokenizer.nextToken().replace('"', ' ').trim();
-          currentLocale = new Locale(token, "");
-
-          /* update the locale dependent cached orders */
-          naechsterOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.OC_NEXT));
-          localeOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.OC_LOCALE));
-        }
-      } else if (getOrderTranslation(EresseaConstants.OC_REGION).startsWith(token)) {
-        // ignore
+    public void handle(String line, List<LineHandler> matchingHandlers) throws IOException {
+      StringTokenizer tokenizer = new StringTokenizer(line);
+      String token = tokenizer.nextToken();
+      token = tokenizer.nextToken();
+      try {
+        EntityID fID = EntityID.createEntityID(token, data.base);
+        currentFaction = data.getFaction(fID);
         currentUnit = null;
-      } else if (getOrderTranslation(EresseaConstants.OC_UNIT).startsWith(token)) {
-        token = tokenizer.nextToken();
+        currentRegion = null;
 
-        UnitID unitID = null;
-
-        try {
-          unitID = UnitID.createUnitID(token, data.base);
-        } catch (NumberFormatException e) {
-          OrderReader.log.error("OrderReader.readFaction(): " + e.toString() + " at line "
-              + stream.getLineNumber(), e);
+        if (currentFaction == null) {
+          OrderReader.log.info("OrderReader.read(): The faction with id " + fID + " (" + token
+              + ") is not present in the game data, skipping this faction.");
+          status.errors++;
         }
-
-        if (unitID != null) {
-          status.units++;
-
-          /* turn orders into 'real' temp units */
-          if (currentUnit != null) {
-            currentUnit.extractTempUnits(data, 0, currentLocale);
-          }
-
-          currentUnit = data.getUnit(unitID);
-
-          if (currentUnit == null) {
-            // do not add unknown units
-            // currentUnit = MagellanFactory.createUnit(unitID);
-            // currentUnit.setFaction(faction);
-            //
-            // data.addUnit(currentUnit);
-            status.unknownUnits++;
-          } else {
-            if (currentUnit.isOrdersConfirmed() && doNotOverwriteConfirmedOrders) {
-              // we have a unit with confirmed orders and no OK for
-              // changing anything
-              // feature request #296, Fiete
-              currentUnit = null;
-              status.confirmedUnitsNotOverwritten++;
-            } else {
-              /*
-               * the unit already exists so delete all its temp units
-               */
-              Collection<UnitID> victimIDs = new LinkedList<UnitID>();
-
-              for (TempUnit tempUnit : currentUnit.tempUnits()) {
-                victimIDs.add((tempUnit).getID());
-              }
-
-              for (UnitID id2 : victimIDs) {
-                currentUnit.deleteTemp(id2, data);
-              }
-            }
-          }
-          if (currentUnit != null) {
-            currentUnit.clearOrders();
-            currentUnit.setOrdersConfirmed(autoConfirm);
-          }
-        } else {
-          currentUnit = null;
-        }
-      } else if (currentUnit != null) {
-        currentUnit.addOrder(line, isRefreshUnitRelations());
+      } catch (NumberFormatException e) {
+        OrderReader.log.error("OrderReader.read(): Unable to parse faction id: " + e.toString()
+            + " at line " + stream.getLineNumber(), e);
+        status.errors++;
       }
     }
   }
 
-  private String getOrderTranslation(StringID orderId) {
-    return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-        Locales.getOrderLocale(), orderId);
+  /**
+   * Handles NEXT command.
+   */
+  public class NextHandler implements LineHandler {
+
+    public void handle(String line, List<LineHandler> matchingHandlers) throws IOException {
+      endFaction();
+    }
+  }
+
+  /**
+   * Handles LOCALE lines.
+   */
+  public class LocaleHandler implements LineHandler {
+
+    public void handle(String line, List<LineHandler> matchingHandlers) throws IOException {
+      if (currentUnit != null || currentRegion != null) {
+        log.warn("LOCALE encountered outside order header");
+        status.errors++;
+      }
+      StringTokenizer tokenizer = new StringTokenizer(command);
+      String token = tokenizer.nextToken();
+
+      if (tokenizer.hasMoreTokens()) {
+        token = tokenizer.nextToken().replace('"', ' ').trim();
+        setLocale(new Locale(token, ""));
+      } else {
+        log.warn("locale command without locale");
+        status.errors++;
+      }
+    }
+  }
+
+  /**
+   * Handles REGION lines.
+   */
+  public class RegionHandler implements LineHandler {
+
+    public void handle(String line, List<LineHandler> matchingHandlers) throws IOException {
+      // ignore
+      currentRegion =
+          command.substring(getOrderTranslation(EresseaConstants.OC_REGION).length()).trim();
+      currentUnit = null;
+    }
+  }
+
+  /**
+   * Handles UNIT lines.
+   */
+  public class UnitHandler implements LineHandler {
+
+    public void handle(String line, List<LineHandler> matchingHandlers) throws IOException {
+      StringTokenizer tokenizer = new StringTokenizer(command);
+      String token = tokenizer.nextToken();
+      token = tokenizer.nextToken();
+
+      UnitID unitID = null;
+
+      try {
+        unitID = UnitID.createUnitID(token, data.base);
+      } catch (NumberFormatException e) {
+        OrderReader.log.error("could not parse unit ID at line " + stream.getLineNumber() + ":\n"
+            + line);
+        status.errors++;
+      }
+
+      if (unitID != null) {
+        status.units++;
+
+        /* turn orders into 'real' temp units */
+        if (currentUnit != null) {
+          currentUnit.extractTempUnits(data, 0, getLocale());
+        }
+
+        currentUnit = data.getUnit(unitID);
+
+        if (currentUnit == null) {
+          // do not add unknown units
+          // currentUnit = MagellanFactory.createUnit(unitID);
+          // currentUnit.setFaction(faction);
+          //
+          // data.addUnit(currentUnit);
+          status.unknownUnits++;
+        } else {
+          if (currentUnit.isOrdersConfirmed() && doNotOverwriteConfirmedOrders) {
+            // we have a unit with confirmed orders and no OK for
+            // changing anything
+            // feature request #296, Fiete
+            currentUnit = null;
+            status.confirmedUnitsNotOverwritten++;
+          } else {
+            /*
+             * the unit already exists so delete all its temp units
+             */
+            Collection<UnitID> victimIDs = new LinkedList<UnitID>();
+
+            for (TempUnit tempUnit : currentUnit.tempUnits()) {
+              victimIDs.add((tempUnit).getID());
+            }
+
+            for (UnitID id2 : victimIDs) {
+              currentUnit.deleteTemp(id2, data);
+            }
+          }
+        }
+        if (currentUnit != null) {
+          currentUnit.clearOrders();
+          currentUnit.setOrdersConfirmed(autoConfirm);
+        }
+      } else {
+        currentUnit = null;
+      }
+    }
+  }
+
+  protected String getOrderTranslation(StringID orderId) {
+    return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
   /**
@@ -299,7 +423,7 @@ public class OrderReader {
    * Sets whether all comments in the orders starting with a semicolon (except confirmation
    * comments) are ignored.
    */
-  public void ignoreSemicolonComments(boolean ignoreSemicolonComments) {
+  public void setIgnoreSemicolonComments(boolean ignoreSemicolonComments) {
     this.ignoreSemicolonComments = ignoreSemicolonComments;
   }
 
@@ -308,50 +432,7 @@ public class OrderReader {
    * after reading the orders has finished.
    */
   public Status getStatus() {
-    if (status == null) {
-      status = new Status();
-    }
     return status;
-  }
-
-  /**
-   * Describes a few aspects of the orders read.
-   */
-  public static class Status {
-    /** Counts the number of units for which orders where read. */
-    public int units = 0;
-
-    /** Counts the number of factions for which orders where read. */
-    public int factions = 0;
-
-    /** counts units in orders that were not present in the report */
-    public int unknownUnits = 0;
-
-    /**
-     * if doNotOverwriteConfirmedorders=true then this is a counter of the units which were
-     * protected by this setting and left unchanged
-     */
-    public int confirmedUnitsNotOverwritten = 0;
-  }
-
-  /**
-   * Returns whether unit relations should be refreshed while reading the orders.
-   * 
-   * @return Returns doNotOverwriteConfirmedOrders.
-   * @see OrderReader#setRefreshUnitRelations(boolean)
-   */
-  public boolean isRefreshUnitRelations() {
-    return refreshUnitRelations;
-  }
-
-  /**
-   * Sets whether unit relations should be refreshed while reading the orders. If this is set to
-   * <code>false</code>, the relations will not be updated.
-   * 
-   * @param refreshUnitRelations
-   */
-  public void setRefreshUnitRelations(boolean refreshUnitRelations) {
-    this.refreshUnitRelations = refreshUnitRelations;
   }
 
   /**
@@ -372,4 +453,5 @@ public class OrderReader {
   public void setDoNotOverwriteConfirmedOrders(boolean doNotOverwriteConfirmedOrders) {
     this.doNotOverwriteConfirmedOrders = doNotOverwriteConfirmedOrders;
   }
+
 }

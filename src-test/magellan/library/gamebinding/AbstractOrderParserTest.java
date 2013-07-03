@@ -78,8 +78,7 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
 
   /**
    * Test method for
-   * {@link magellan.library.gamebinding.EresseaOrderParser#addCommand(java.lang.String, magellan.library.gamebinding.EresseaOrderParser.OrderHandler)}
-   * .
+   * {@link magellan.library.gamebinding.AbstractOrderParser#addCommand(StringID, OrderHandler)}.
    */
   @Test
   public void testAddCommand() {
@@ -102,7 +101,7 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
 
   /**
    * Test method for
-   * {@link magellan.library.gamebinding.EresseaOrderParser#removeCommand(java.lang.String)}.
+   * {@link magellan.library.gamebinding.AbstractOrderParser#removeCommand(StringID)}.
    */
   @Test
   public void testRemoveCommand() {
@@ -253,16 +252,6 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
     assertEquals(null, getParser().readDescription(false));
     getParser().read(new StringReader("a \"\" a"));
     assertEquals(null, getParser().readDescription(true));
-  }
-
-  /**
-   * Test method for
-   * {@link magellan.library.gamebinding.EresseaOrderParser#readDescription(magellan.library.utils.OrderToken)}
-   * .
-   */
-  @Test
-  public void testReadDescriptionOrderToken() {
-
   }
 
   /**
@@ -493,15 +482,6 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
    * .
    */
   @Test
-  public void testIsNumericStringIntIntInt() {
-
-  }
-
-  /**
-   * Test method for
-   * {@link magellan.library.gamebinding.EresseaOrderParser#isNumeric(java.lang.String)}.
-   */
-  @Test
   public void testIsNumericString() {
     assertTrue(getParser().isNumeric("123456567"));
     assertTrue(getParser().isNumeric("-2", 10, -10, 0));
@@ -662,7 +642,7 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
 
   /**
    * Test method for
-   * {@link magellan.library.gamebinding.EresseaOrderParser#isString(magellan.library.utils.OrderToken, boolean)}
+   * {@link magellan.library.gamebinding.EresseaOrderParser#isString(magellan.library.utils.OrderToken, boolean, boolean)}
    * .
    */
   @Test

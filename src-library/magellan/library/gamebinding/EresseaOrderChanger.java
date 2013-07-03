@@ -647,9 +647,9 @@ public class EresseaOrderChanger implements OrderChanger {
   public void addGroupOrder(Unit unit, String name) {
     String group;
     if (name != null && name.trim().length() > 0) {
-      group = getOrderTranslation(EresseaConstants.OC_GROUP) + " \"" + name + "\"";
+      group = getOrderTranslation(EresseaConstants.OC_GROUP, unit) + " \"" + name + "\"";
     } else {
-      group = getOrderTranslation(EresseaConstants.OC_GROUP);
+      group = getOrderTranslation(EresseaConstants.OC_GROUP, unit);
     }
     unit.addOrder(group, true, 1);
   }

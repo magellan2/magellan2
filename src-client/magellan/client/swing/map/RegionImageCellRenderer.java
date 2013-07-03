@@ -108,7 +108,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
       RegionType type = r.getRegionType();
 
       if (type != null) {
-        String imageName = type.getMapImage();
+        String imageName = type.getIcon();
 
         // first try a season specific icon
         // Fiete 20080518: check, if seasonal images wanted...
@@ -133,7 +133,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 
         // if we cannot find it, try a default icon.
         if (img == null) {
-          imageName = type.getID().toString();
+          imageName = type.getIcon();
           img = getImage(imageName);
         }
 

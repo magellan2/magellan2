@@ -1079,7 +1079,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         rules.getRegionType(regionID, true);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("iconname")) {
-        itemType.setIconName(sc.argv[0]);
+        itemType.setIcon(sc.argv[0]);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("useskill")) {
         final Skill useSkill =
@@ -1147,6 +1147,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         sc.getNextToken();
       } else if (sc.isBlock && sc.argv[0].equals("COSTS")) {
         parseSkillCosts(skillType, rules);
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("iconname")) {
+        skillType.setIcon(sc.argv[0]);
+        sc.getNextToken();
       } else if (sc.isBlock) {
         break;
       } else {
@@ -1216,6 +1219,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         sc.getNextToken();
         // } else if(sc.isBlock && sc.argv[0].equals("TALENTBONI")) {
         // parseBuildingSkillBonuses(shipType, rules);
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("iconname")) {
+        shipType.setIcon(sc.argv[0]);
+        sc.getNextToken();
       } else if (sc.isBlock && sc.argv[0].equals("RAWMATERIALS")) {
         parseBuildingRawMaterials(shipType, rules);
       } else if (sc.isBlock && sc.argv[0].equals("MAINTENANCE")) {
@@ -1276,6 +1282,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           ((CastleType) bType).setTradeTax(Integer.parseInt(sc.argv[0]));
         }
 
+        sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("iconname")) {
+        bType.setIcon(sc.argv[0]);
         sc.getNextToken();
       } else if (sc.isBlock && sc.argv[0].equals("TALENTBONI")) {
         parseBuildingSkillBonuses(bType, rules);
@@ -1392,8 +1401,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("peasantWage")) {
         regionType.setPeasantWage(Integer.parseInt(sc.argv[1]));
         sc.getNextToken();
-      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("mapImage")) {
-        regionType.setMapImage(sc.argv[0]);
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("iconname")) {
+        regionType.setIcon(sc.argv[0]);
         sc.getNextToken();
       } else if (sc.isBlock) {
         break;

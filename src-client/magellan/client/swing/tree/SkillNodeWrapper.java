@@ -273,7 +273,7 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
     List<String> iconNames = iconNamesLists.get(key);
 
     if (iconNames == null) {
-      iconNames = Collections.singletonList(key.getID().toString());
+      iconNames = Collections.singletonList(key.getIcon());
       iconNamesLists.put(key, iconNames);
     }
 
@@ -288,9 +288,9 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
   // icon = new ArrayList<String>(1);
   //
   // if (skill != null) {
-  // icon.add(skill.getSkillType().getID().toString());
+  // icon.add(skill.getSkillType().getIcon());
   // } else if (modSkill != null) {
-  // icon.add(modSkill.getSkillType().getID().toString());
+  // icon.add(modSkill.getSkillType().getIcon());
   // } else {
   // icon = null;
   // }
@@ -328,9 +328,9 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
       ge.setType(GraphicsElement.MAIN);
 
       if (skill != null) {
-        ge.setImageName(skill.getSkillType().getID().toString());
+        ge.setImageName(skill.getSkillType().getIcon());
       } else if (modSkill != null) {
-        ge.setImageName(modSkill.getSkillType().getID().toString());
+        ge.setImageName(modSkill.getSkillType().getIcon());
       }
 
       if (skill != null && isShowingChanges() && isShowingChangesStyled()) {

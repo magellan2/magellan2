@@ -112,4 +112,12 @@ public class AtlantisConstants extends GameConstants {
 
   public static StringID I_WOOD = StringID.create("wood");
 
+  /** Building type 2building" */
+  public static final StringID B_BUILDING = StringID.create("Building");
+
+  /** The {@link #O_COMBAT_FRONT} combat status */
+  public static final int CS_FRONT = 1;
+  /** The {@link #O_COMBAT_REAR} combat status */
+  public static final int CS_REAR = 2;
+
 }

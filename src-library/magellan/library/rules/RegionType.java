@@ -46,7 +46,7 @@ public class RegionType extends UnitContainerType {
   private int peasantWage = 11;
 
   private List<Resource> resources = new LinkedList<Resource>();
-  private String mapImage;
+  private String icon;
 
   /**
    * Creates a new RegionType object.
@@ -200,20 +200,4 @@ public class RegionType extends UnitContainerType {
     return (StringID) id;
   }
 
-  /**
-   * @see magellan.library.rules.UnitContainerType#getMapImage()
-   */
-  @Override
-  public String getMapImage() {
-    return mapImage != null ? mapImage : getID().toString();
-  }
-
-  /**
-   * Sets the value of mapImage.
-   * 
-   * @param mapImage The value for mapImage.
-   */
-  public void setMapImage(String mapImage) {
-    this.mapImage = mapImage;
-  }
 }

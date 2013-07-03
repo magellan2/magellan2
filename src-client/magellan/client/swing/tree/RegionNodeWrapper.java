@@ -121,7 +121,7 @@ public class RegionNodeWrapper extends DefaultNodeWrapper implements CellObject2
       region.refreshUnitRelations(); // true
 
       GraphicsElement ge =
-          new RegionGraphicsElement(toString(), null, null, region.getType().getID().toString());
+          new RegionGraphicsElement(toString(), null, null, region.getType().getIcon());
       ge.setTooltip(region.getType().getName());
       ge.setType(GraphicsElement.MAIN);
 
@@ -151,8 +151,8 @@ public class RegionNodeWrapper extends DefaultNodeWrapper implements CellObject2
     /**
      * Creates a new RegionGraphicsElement object.
      */
-    public RegionGraphicsElement(Object o, Icon i, Image im, String s) {
-      super(o, i, im, s);
+    public RegionGraphicsElement(Object o, Icon i, Image im, String imageName) {
+      super(o, i, im, imageName);
       setType(GraphicsElement.MAIN);
     }
 

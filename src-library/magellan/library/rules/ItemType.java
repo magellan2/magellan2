@@ -33,6 +33,7 @@ public class ItemType extends ObjectType {
   private ItemCategory category = null;
   private Map<StringID, Item> resources = null;
   private boolean storableInBonw = false;
+  private String icon;
 
   /**
    * Creates a new ItemType object.
@@ -136,7 +137,8 @@ public class ItemType extends ObjectType {
   /**
    * Returns the file name of the icon to use for this item.
    */
-  public String getIconName() {
+  @Override
+  public String getIcon() {
     if (!iconNameEvaluated && (iconName == null)) {
       if (category != null) {
         iconName = category.getIconName();
@@ -160,7 +162,9 @@ public class ItemType extends ObjectType {
   /**
    * Sets the file name of the icon to use for this item.
    */
-  public void setIconName(String iName) {
+  @Override
+  public void setIcon(String iName) {
+    super.setIcon(iName);
     iconName = iName;
     iconNameEvaluated = false;
   }

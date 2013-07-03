@@ -359,7 +359,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
     if (isShowingContainerIcons()) {
       if (unit.getBuilding() != null && unit.getBuilding().getType() != null) {
-        ge = new GraphicsElement(null, null, unit.getBuilding().getType().getID().toString());
+        ge = new GraphicsElement(null, null, unit.getBuilding().getType().getIcon());
         ge.setTooltip(unit.getBuilding().getName());
         ge.setType(GraphicsElement.ADDITIONAL);
         names.add(ge);
@@ -369,7 +369,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
         if (unit.getShip().getType() == null) {
           ge = new GraphicsElement(null, null, "ERROR");
         } else {
-          ge = new GraphicsElement(null, null, unit.getShip().getType().getID().toString());
+          ge = new GraphicsElement(null, null, unit.getShip().getType().getIcon());
           ge.setTooltip(unit.getShip().getName());
           ge.setType(GraphicsElement.ADDITIONAL);
         }
@@ -392,14 +392,14 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
       if (isShowingIconText()) {
         ge =
-            new GraphicsElement(Integer.valueOf(s.getLevel()), null, null, s.getSkillType().getID()
-                .toString());
+            new GraphicsElement(Integer.valueOf(s.getLevel()), null, null, s.getSkillType()
+                .getIcon());
 
         if (s.isLostSkill()) {
           ge.setObject("-");
         }
       } else {
-        ge = new GraphicsElement(null, null, s.getSkillType().getID().toString());
+        ge = new GraphicsElement(null, null, s.getSkillType().getIcon());
       }
 
       ge.setTooltip(s.getSkillType().getName());
@@ -460,7 +460,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
               // init new category node
               buffer.setLength(0);
               count = 0;
-              iconName = "items/" + s.getItemType().getIconName();
+              iconName = "items/" + s.getItemType().getIcon();
             } else {
               iconName = null;
             }
@@ -480,7 +480,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
               if (iconName == null) {
                 Logger.getInstance(this.getClass()).warn(
                     "category without icon: " + adapter.categories[newCategory]);
-                iconName = "items/" + s.getItemType().getIconName();
+                iconName = "items/" + s.getItemType().getIcon();
               }
             }
             count += s.getAmount();
@@ -490,7 +490,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
         if (!isShowingCategorized() || !isShowingCategorized(currentCategory)) {
           // add uncategorized item
           if (isShowingIconText()) {
-            ge = new GraphicsElement(null, null, null, "items/" + s.getItemType().getIconName());
+            ge = new GraphicsElement(null, null, null, "items/" + s.getItemType().getIcon());
 
             Item oldItem = u.getItem(s.getItemType());
             int oldAmount = 0;
@@ -514,7 +514,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
               ge.setObject(Integer.valueOf(oldAmount));
             }
           } else {
-            ge = new GraphicsElement(null, null, "items/" + s.getItemType().getIconName());
+            ge = new GraphicsElement(null, null, "items/" + s.getItemType().getIcon());
           }
 
           ge.setTooltip(s.getName());

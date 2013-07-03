@@ -37,8 +37,4 @@ public abstract class UnitContainerType extends ObjectType {
     return (StringID) id;
   }
 
-  public String getMapImage() {
-    return getID().toString();
-  }
-
 }

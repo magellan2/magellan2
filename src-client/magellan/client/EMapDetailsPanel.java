@@ -950,7 +950,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.terrain") + ": "
         + r.getType().getName() + " ("
         + Resources.get("emapdetailspanel.node.terrain.visibility." + r.getVisibility().toString())
-        + ")", r.getType().getID() + "-detail"));
+        + ")", r.getType().getIcon() + "-detail"));
 
     // terrain coordinates
     String regionKoordinateInfo =
@@ -1078,7 +1078,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
 
       luxuriesNode.add(createSimpleNode(p.getItemType().getName() + ": "
-          + getDiffString(p.getPrice(), oldPrice), "items/" + p.getItemType().getIconName()));
+          + getDiffString(p.getPrice(), oldPrice), "items/" + p.getItemType().getIcon()));
     }
   }
 
@@ -1317,7 +1317,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       // bug 254..use the herb specified icon..at least try to find it
       // icon = r.getHerb().getMakeSkill().getSkillType().getID().toString();
       if (r.getHerb() != null) {
-        icon = "items/" + r.getHerb().getIconName();
+        icon = "items/" + r.getHerb().getIcon();
       } else {
         icon = "kraeuterkunde";
       }
@@ -1469,7 +1469,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       Collections.sort(list, new NameComparator(IDComparator.DEFAULT));
 
       DefaultMutableTreeNode regionsNode =
-          createSimpleNode(rType.getName() + ": " + list.size(), rType.getID().toString());
+          createSimpleNode(rType.getName() + ": " + list.size(), rType.getIcon());
       terrainsNode.add(regionsNode);
 
       for (Region region : list) {
@@ -1509,7 +1509,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       if (amount > 0) {
         resourcesNode.add(createSimpleNode(resType.getName() + ": " + amount, "items/"
-            + resType.getIconName()));
+            + resType.getIcon()));
       }
     }
 
@@ -1717,7 +1717,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     // Icon bauen
-    String icon = res.getType().getIconName();
+    String icon = res.getType().getIcon();
 
     if (icon.equalsIgnoreCase("Steine")) {
       icon = "stein";
@@ -2055,7 +2055,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       for (SkillStatItem item : sortedSkills) {
         DefaultMutableTreeNode skillNode =
             createSimpleNode(item.skill.getName() + " " + item.skill.getLevel() + ": "
-                + item.unitCounter, item.skill.getSkillType().getID().toString());
+                + item.unitCounter, item.skill.getSkillType().getIcon());
         skillsNode.add(skillNode);
 
         Comparator<Unique> idCmp = IDComparator.DEFAULT;
@@ -2818,9 +2818,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
     // disguise
     if (u.getGuiseFaction() != null) {
-      parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.disguisedas") + " "
-          + u.getGuiseFaction(), ((stealth != null) ? stealth.getSkillType().getID().toString()
-          : "tarnung")));
+      parent
+          .add(createSimpleNode(Resources.get("emapdetailspanel.node.disguisedas") + " "
+              + u.getGuiseFaction(), ((stealth != null) ? stealth.getSkillType().getIcon()
+              : "tarnung")));
     }
 
     /*
@@ -3752,7 +3753,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               && !type.equals(silver)) {
             int weight = (int) (type.getWeight() * 100);
             parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
-                "items/" + type.getIconName()));
+                "items/" + type.getIcon()));
           }
         }
       }
@@ -3783,7 +3784,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               && !type.equals(silver)) {
             int weight = (int) (type.getWeight() * 100);
             parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
-                "items/" + type.getIconName()));
+                "items/" + type.getIcon()));
           }
         }
       }
@@ -3798,7 +3799,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               && !type.equals(silver)) {
             int weight = (int) (type.getWeight() * 100);
             parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
-                "items/" + type.getIconName()));
+                "items/" + type.getIcon()));
           }
         }
       }
@@ -3832,7 +3833,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             && !type.equals(silver)) {
           int weight = (int) (type.getWeight() * 100);
           parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
-              "items/" + type.getIconName()));
+              "items/" + type.getIcon()));
         }
       }
     }
@@ -4190,7 +4191,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     n =
         createSimpleNode(
             Resources.get("emapdetailspanel.node.type") + ": " + b.getType().getName(), b.getType()
-                .getID().toString());
+                .getIcon());
     parent.add(n);
   }
 
@@ -4219,7 +4220,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // Schiffstyp
     if ((s.getName() != null) && (s.getType().getName() != null)) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": "
-          + s.getType().getName(), s.getType().getID().toString()));
+          + s.getType().getName(), s.getType().getIcon()));
     }
 
     int nominalShipSize = s.getShipType().getMaxSize();
@@ -4791,9 +4792,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             // or another ItemType...just in case
             String keyIcon = key;
             ItemType someItemType = getGameData().rules.getItemType(key);
-            if (someItemType != null && someItemType.getIconName() != null
-                && someItemType.getIconName().length() > 0) {
-              keyIcon = someItemType.getIconName();
+            if (someItemType != null && someItemType.getIcon() != null
+                && someItemType.getIcon().length() > 0) {
+              keyIcon = someItemType.getIcon();
             }
 
             if ((blankPos > 0) && (blankPos < val.length())) {
@@ -4863,7 +4864,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       for (Item ingredient : p.ingredients()) {
         ingredientsNode.add(createSimpleNode(ingredient.getItemType(), "items/"
-            + ingredient.getItemType().getIconName()));
+            + ingredient.getItemType().getIcon()));
       }
     }
     parent.add(new DefaultMutableTreeNode(new BackButton(backTarget)));

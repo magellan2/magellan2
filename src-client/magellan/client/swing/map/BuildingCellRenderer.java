@@ -76,7 +76,7 @@ public class BuildingCellRenderer extends ImageCellRenderer {
           UnitContainerType type = b.getType();
 
           if (type != null && isEnabled(region, type)) {
-            Image img = getImage(type.getID().toString());
+            Image img = getImage(type.getIcon());
 
             if (img != null) {
               graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);

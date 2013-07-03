@@ -72,7 +72,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
 
           if (shipInformations[s.getShoreId() + 1] == null) {
             shipInformations[s.getShoreId() + 1] =
-                new ShipInformation(s.getShipType().getCapacity(), s.getType().getID().toString());
+                new ShipInformation(s.getShipType().getCapacity(), s.getType().getIcon());
           }
 
           ShipInformation actShip = shipInformations[s.getShoreId() + 1];
@@ -81,7 +81,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
             multipleTypes[s.getShoreId() + 1] = true;
             if (actShip.capacity < s.getShipType().getCapacity()) {
               actShip.capacity = s.getDeprecatedCapacity();
-              actShip.typeName = s.getType().getName();
+              actShip.typeName = s.getType().getIcon();
             }
           }
         }

@@ -204,4 +204,6 @@ public interface GameSpecificStuff {
    */
   public GameSpecificOrderReader getOrderReader(GameData data);
 
+  public MapMetric getMapMetric();
+
 }

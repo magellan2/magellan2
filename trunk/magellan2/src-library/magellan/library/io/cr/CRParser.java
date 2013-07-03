@@ -84,8 +84,6 @@ import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillCategory;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.CollectionFactory;
-import magellan.library.utils.Direction;
-import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
@@ -2638,13 +2636,14 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     while (!sc.eof) {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("richtung")) {
         b.setDirection(-1);
-        b.setDirectionName(Resources.get("util.direction.name.long.invalid"));
+        // b.setDirectionName(Resources.get("util.direction.name.long.invalid"));
 
         try {
           b.setDirection(Integer.parseInt(sc.argv[0]));
-          b.setDirectionName(world.rules.getGameSpecificStuff().getOrderChanger().getOrder(
-              Locales.getGUILocale(),
-              StringID.create(Direction.toDirection(Integer.parseInt(sc.argv[0])).name())));
+          // b.setDirectionName(world.rules.getGameSpecificStuff().getOrderChanger().getOrder(
+          // Locales.getGUILocale(),
+          // world.getGameSpecificStuff().getMapMetric().toDirection(Integer.parseInt(sc.argv[0]))
+          // .getId()));
         } catch (final NumberFormatException e) {
           final String dirNames[] =
               { "Nordwesten", "Nordosten", "Osten", "Südosten", "Südwesten", "Westen" };
@@ -2652,8 +2651,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           for (int i = 0; i < dirNames.length; i++) {
             if (sc.argv[0].equalsIgnoreCase(dirNames[i])) {
               b.setDirection(i);
-              b.setDirectionName(world.rules.getGameSpecificStuff().getOrderChanger().getOrder(
-                  Locales.getGUILocale(), StringID.create(Direction.toDirection(i).name())));
+              // b.setDirectionName(world.rules.getGameSpecificStuff().getOrderChanger().getOrder(
+              // Locales.getGUILocale(),
+              // world.getGameSpecificStuff().getMapMetric().toDirection(i).getId()));
               break;
             }
           }

@@ -32,6 +32,7 @@ import magellan.library.Item;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Unit;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.MovementRelation;
 import magellan.library.rules.ItemType;
@@ -48,6 +49,7 @@ public class AtlantisMovementEvaluator implements MovementEvaluator {
 
   private Rules rules;
   private ArrayList<ItemType> horseTypes;
+  private MapMetric metric;
 
   protected AtlantisMovementEvaluator(Rules rules) {
     this.rules = rules;
@@ -57,6 +59,7 @@ public class AtlantisMovementEvaluator implements MovementEvaluator {
         horseTypes.add(type);
       }
     }
+    metric = rules.getGameSpecificStuff().getMapMetric();
   }
 
   public int getPayloadOnHorse(Unit unit) {
@@ -180,7 +183,7 @@ public class AtlantisMovementEvaluator implements MovementEvaluator {
     CoordinateID c;
     initialMovement.add(c = unit.getRegion().getCoordinate());
     if (directions.size() > 0) {
-      initialMovement.add(c.translate(directions.get(0).toCoordinate()));
+      initialMovement.add(metric.translate(c, directions.get(0)));
     }
     return new MovementRelation(unit, unit, initialMovement,
         Collections.<CoordinateID> emptyList(), false, (Region) null, 1, -1);
@@ -200,7 +203,7 @@ public class AtlantisMovementEvaluator implements MovementEvaluator {
     return mRel.rounds;
   }
 
-  protected static List<Direction> pathToDirections(List<?> path) {
+  protected List<Direction> pathToDirections(List<?> path) {
     List<Direction> result = new ArrayList<Direction>(path.size());
     CoordinateID lastRegion = null;
     for (Object region : path) {
@@ -211,7 +214,7 @@ public class AtlantisMovementEvaluator implements MovementEvaluator {
         currentRegion = (CoordinateID) region;
       }
       if (lastRegion != null) {
-        result.add(Direction.toDirection(lastRegion, currentRegion));
+        result.add(metric.getDirection(lastRegion, currentRegion));
       }
       lastRegion = currentRegion;
     }

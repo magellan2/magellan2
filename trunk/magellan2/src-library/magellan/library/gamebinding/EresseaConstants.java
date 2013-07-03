@@ -1102,6 +1102,9 @@ public class EresseaConstants extends GameConstants {
   /** Shiptype longboat */
   public static final StringID ST_LONGBOAT = StringID.create("Langboot");
 
+  /** Border type Straﬂe */
+  public static final StringID BT_STRASSE = StringID.create("Straﬂe");
+
   // pre 57:
   // 0: VORNE
   // 1: HINTEN

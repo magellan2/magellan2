@@ -19,6 +19,8 @@ import java.util.List;
  * Container class for a region border based on its representation in a cr version > 45.
  */
 public interface Border extends Identifiable {
+  StringID STRASSE = StringID.create("STRASSE");
+
   /**
    * The direction in which the border lies. The value must be one of the DIR_XXX constants in class
    * Direction.
@@ -59,12 +61,12 @@ public interface Border extends Identifiable {
    */
   public void setEffects(List<String> effects);
 
-  /**
-   * Return a string representation of this <tt>Border</tt> object.
-   * 
-   * @return Border object as string.
-   */
-  public String toString();
+  // /**
+  // * Return a string representation of this <tt>Border</tt> object.
+  // *
+  // * @return Border object as string.
+  // */
+  // public String toString();
 
   /**
    * Returns the id uniquely identifying this object.
@@ -73,10 +75,10 @@ public interface Border extends Identifiable {
    */
   public IntegerID getID();
 
-  /** Returns the localized direction name */
-  public String getDirectionName();
-
-  /** Sets the localized direction name */
-  public void setDirectionName(String name);
+  // /** Returns the localized direction name */
+  // public String getDirectionName();
+  //
+  // /** Sets the localized direction name */
+  // public void setDirectionName(String name);
 
 }

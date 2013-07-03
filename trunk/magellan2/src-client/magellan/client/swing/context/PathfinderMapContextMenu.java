@@ -229,7 +229,8 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
                 mode == MOVE_NACH, mode2, false);
         if (orders != null) {
           // Pfad gefunden
-          setOrders(u, Regions.planShipRoute(data, start, ship.getShoreId(), dest,
+          setOrders(u, Regions.planShipRoute(data, start,
+              data.getGameSpecificStuff().getMapMetric().toDirection(ship.getShoreId()), dest,
               Math.max(1, data.getGameSpecificRules().getShipRange(ship))).size() - 1, orders);
         }
       }

@@ -119,6 +119,19 @@ public class AtlantisConstants extends GameConstants {
   /** Order constant NEW */
   public static final StringID OC_NEW = StringID.create("NEW");
 
+  /** Order constant Mir */
+  public static final StringID OC_M = StringID.create("M");
+  /** Order constant North */
+  public static final StringID OC_N = StringID.create("N");
+  /** Order constant East */
+  public static final StringID OC_E = StringID.create("E");
+  /** Order constant Ydd */
+  public static final StringID OC_Y = StringID.create("Y");
+  /** Order constant South */
+  public static final StringID OC_S = StringID.create("S");
+  /** Order constant West */
+  public static final StringID OC_W = StringID.create("W");
+
   /** The item silver */
   public static final StringID I_USILVER = StringID.create("Silber");
 

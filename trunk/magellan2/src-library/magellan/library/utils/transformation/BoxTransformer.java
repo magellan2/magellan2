@@ -8,6 +8,7 @@ import java.util.Map;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 
@@ -279,6 +280,7 @@ public class BoxTransformer implements ReportTransformer {
     BBox box = getBoxes().getBox(r.getCoordinate().getZ());
 
     if (box != null) {
+      MapMetric metric = data.getGameSpecificStuff().getMapMetric();
       // if the region is at the edge of the box, shift it in every direction, put in box and shift
       // back again to get wrapper position
       CoordinateID c = box.putInBox(r.getCoordinate());
@@ -286,11 +288,11 @@ public class BoxTransformer implements ReportTransformer {
           || c.getX() == box.maxx - c.getY() / 2 + box.centerx || c.getY() == box.miny
           || c.getY() == box.maxy) {
         Map<CoordinateID, Region> result = new HashMap<CoordinateID, Region>();
-        for (Direction d : Direction.values()) {
-          CoordinateID c2 = c.add(d.toCoordinate());
+        for (Direction d : metric.getDirections()) {
+          CoordinateID c2 = metric.translate(c, d); // c.add(d.toCoordinate());
           CoordinateID c3 = box.putInBox(c2);
           if (!c2.equals(c3)) {
-            c3 = c3.translate(d.add(3).toCoordinate());
+            c3 = metric.translate(c3, metric.opposite(d)); // c3.translate(d.add(3).toCoordinate());
             result.put(c3, MagellanFactory.createWrapper(c3, r, data));
           }
         }

@@ -1794,7 +1794,7 @@ public class GameDataMerger {
 
         newBorder =
             MagellanFactory.createBorder(curBorder.getID(), curBorder.getDirection(), curBorder
-                .getDirectionName(), curBorder.getType(), curBorder.getBuildRatio());
+                .getType(), curBorder.getBuildRatio());
 
         resultRegion.addBorder(newBorder);
       }
@@ -1818,8 +1818,8 @@ public class GameDataMerger {
           final IntegerID newID = Regions.getNewBorderID(resultRegion, curBorder);
 
           newBorder =
-              MagellanFactory.createBorder(newID, curBorder.getDirection(), curBorder
-                  .getDirectionName(), curBorder.getType(), curBorder.getBuildRatio());
+              MagellanFactory.createBorder(newID, curBorder.getDirection(), curBorder.getType(),
+                  curBorder.getBuildRatio());
 
           if (newBorder != null) {
             resultRegion.addBorder(newBorder);

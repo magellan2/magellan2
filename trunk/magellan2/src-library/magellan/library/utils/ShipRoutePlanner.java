@@ -153,8 +153,8 @@ public class ShipRoutePlanner extends RoutePlanner {
     BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
     int speed = Math.max(1, data.getGameSpecificRules().getShipRange(ship));
     List<Region> path =
-        Regions
-            .planShipRoute(data, ship.getRegion().getID(), ship.getShoreId(), destination, speed);
+        Regions.planShipRoute(data, ship.getRegion().getID(), data.getGameSpecificStuff()
+            .getMapMetric().toDirection(ship.getShoreId()), destination, speed);
     if (path == null || path.size() <= 1) {
       if (ui != null) {
         // No path could be found from start to destination region.
@@ -172,11 +172,12 @@ public class ShipRoutePlanner extends RoutePlanner {
       Direction returnDirection = Direction.INVALID;
       if (!lastRegion.getRegionType().isOcean() || !Regions.containsBuilding(lastRegion, harbour)) {
         Region preLastRegion = path.get(path.size() - 2);
-        returnDirection = Direction.toDirection(lastRegion, preLastRegion);
+        returnDirection =
+            data.getGameSpecificStuff().getMapMetric().getDirection(lastRegion, preLastRegion);
       }
       returnPath =
-          Regions.planShipRoute(data, destination, returnDirection.getDir(), ship.getRegion()
-              .getID(), speed);
+          Regions
+              .planShipRoute(data, destination, returnDirection, ship.getRegion().getID(), speed);
       path.addAll(returnPath);
     }
 

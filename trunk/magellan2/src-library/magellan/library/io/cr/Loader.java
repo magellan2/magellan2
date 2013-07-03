@@ -99,9 +99,9 @@ public class Loader {
       }
     }
 
-      GameData newData[] = new GameData[1];
-      ReadRunner runner = new ReadRunner(crReader, newData);
-      new Thread(runner).start();
+    GameData newData[] = new GameData[1];
+    ReadRunner runner = new ReadRunner(crReader, newData);
+    new Thread(runner).start();
 
     try {
       crw.writeSynchronously();

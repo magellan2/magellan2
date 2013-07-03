@@ -23,9 +23,13 @@
 // 
 package magellan.library.gamebinding;
 
+import java.util.Iterator;
+
 import magellan.library.GameData;
+import magellan.library.StringID;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.Completion;
+import magellan.library.rules.ItemType;
 
 /**
  * Order completer for Atlantis game
@@ -58,42 +62,42 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
     // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CLAIM), " "));
     // }
 
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_FORM)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ACCEPT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ADDRESS)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ADMIT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ALLY)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_BEHIND)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_COMBAT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_DISPLAY)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_GUARD)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_NAME)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PASSWORD)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_RESHOW)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_FIND)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_BOARD)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ENTER)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_LEAVE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PROMOTE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ATTACK)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_DEMOLISH)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_GIVE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PAY)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_SINK)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_TRANSFER)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_TAX)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_RECRUIT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_QUIT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_MOVE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_SAIL)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_BUILD)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ENTERTAIN)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PRODUCE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_RESEARCH)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_STUDY)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_TEACH)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_WORK)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_CAST)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_FORM), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ACCEPT), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ADDRESS), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ADMIT), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ALLY), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_BEHIND), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_COMBAT), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_DISPLAY), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_GUARD), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_NAME), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PASSWORD), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_RESHOW), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_FIND), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_BOARD), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ENTER), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_LEAVE), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PROMOTE), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ATTACK), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_DEMOLISH), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_GIVE), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PAY), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_SINK), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_TRANSFER), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_TAX), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_RECRUIT), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_QUIT), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_MOVE), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_SAIL), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_BUILD), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ENTERTAIN), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PRODUCE), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_RESEARCH), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_STUDY), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_TEACH), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_WORK), " "));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_CAST), " "));
   }
 
   /**
@@ -113,13 +117,68 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
       }
     } else {
       completions.add(new Completion("<num>", String.valueOf(min == Integer.MIN_VALUE
-          ? (max == Integer.MAX_VALUE ? 1 : max) : min)));
+          ? (max == Integer.MAX_VALUE ? 1 : max) : min), " "));
     }
   }
 
   @Override
   protected String getTemp() {
     return "NEW";
+  }
+
+  public void cmpltAttack() {
+    cmpltId();
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PEASANTS)));
+  }
+
+  public void cmpltItem(StringID... exclude) {
+    this.addUnitItems(0, "", exclude);
+
+  }
+
+  public void cmpltMache() {
+    // items
+    for (final Iterator<ItemType> iter = data.rules.getItemTypeIterator(); iter.hasNext();) {
+      final ItemType itemType = iter.next();
+      boolean canMake = true;
+
+      if (itemType.getMakeSkill() == null) {
+        // some items can not be made like dragonblood or magic artefacts
+        canMake = false;
+      } else if (!hasSkill(unit, itemType.getMakeSkill().getSkillType().getID(), itemType
+          .getMakeSkill().getLevel())) {
+        canMake = false;
+      } else if (completerSettingsProvider.getLimitMakeCompletion()
+          && !checkForMaterials(itemType.getResources())) {
+        canMake = false;
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UIRON))
+          && (region.getIron() <= 0)) {
+        canMake = false;
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_ULAEN))
+          && (region.getLaen() <= 0)) {
+        canMake = false;
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_WOOD)) &&
+      // bugzilla enhancement 599: also allow completion on sprouts
+      // also take care of mallorn flag
+          (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || region.isMallorn())) {
+        canMake = false;
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UMALLORN)) &&
+      // bugzilla enhancement 599: also allow completion on sprouts
+          (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || !region.isMallorn())) {
+        canMake = false;
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UHORSE))
+          && (region.getHorses() <= 0)) {
+        canMake = false;
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_USTONE))
+          && (region.getStones() <= 0)) {
+        canMake = false;
+      }
+
+      if (canMake) {
+        addItem(itemType, "");
+      }
+    }
+
   }
 
 }

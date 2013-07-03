@@ -269,6 +269,7 @@ public enum Direction {
   /**
    * Returns a String representation for this direction.
    */
+  @SuppressWarnings("deprecation")
   @Override
   public String toString() {
     Logger.getInstance(this.getClass().getName()).warnOnce(
@@ -277,6 +278,7 @@ public enum Direction {
     // Direction.toString(dir, false);
   }
 
+  /** Short for toDirection(dir).toString() */
   public static String toString(int dir) {
     return toDirection(dir).toString();
   }

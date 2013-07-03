@@ -486,20 +486,23 @@ public class E3CommandParser {
         }
         currentOrder = null;
       } else {
-        try {
-          Integer.parseInt(tokens[0]);
-          currentOrder = commandRepeat(tokens);
-          if (currentOrder == null) {
-            tokens = null;
-          } else {
-            tokens = detectScriptCommand(currentOrder);
-            if (tokens == null) {
-              addNewOrder(currentOrder, true);
-              currentOrder = null;
+        // as of Java 7 the first character of an integer may be a '+' sign
+        if (!tokens[0].startsWith("+")) {
+          try {
+            Integer.parseInt(tokens[0]);
+            currentOrder = commandRepeat(tokens);
+            if (currentOrder == null) {
+              tokens = null;
+            } else {
+              tokens = detectScriptCommand(currentOrder);
+              if (tokens == null) {
+                addNewOrder(currentOrder, true);
+                currentOrder = null;
+              }
             }
+          } catch (NumberFormatException e) {
+            // not a repeating order
           }
-        } catch (NumberFormatException e) {
-          // not a repeating order
         }
         if (tokens != null) {
           String command = tokens[0];

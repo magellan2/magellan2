@@ -130,6 +130,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static final String CSPELL_PART = NAME;
   protected static final String NUMBER_PART = "number:\\s+" + NUM;
   protected static final String COMBAT_STATUS_PART = "behind";
+  protected static final String GUARD_STATUS_PART = "on guard";
   protected static final String SILVER_PART = "\\$" + NUM;
 
   protected static final String BUILDING_LINE = "   +" + OBJECT + "(,\\s+size\\s+" + NUM + ")(.*)"
@@ -172,6 +173,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static Pattern cspellPartPattern = Pattern.compile(CSPELL_PART);
   protected static Pattern numberPartPattern = Pattern.compile(NUMBER_PART);
   protected static Pattern combatStatusPartPattern = Pattern.compile(COMBAT_STATUS_PART);
+  protected static Pattern guardStatusPartPattern = Pattern.compile(GUARD_STATUS_PART);
   protected static Pattern silverPartPattern = Pattern.compile(SILVER_PART);
 
   protected static Pattern shipLinePattern = Pattern.compile(SHIP_LINE);
@@ -820,6 +822,9 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             currentUnit.setPersons(Integer.parseInt(partMatcher.group(1)));
           } else if (matches(combatStatusPartPattern, part)) {
             currentUnit.setCombatStatus(AtlantisConstants.CS_REAR);
+          } else if (matches(guardStatusPartPattern, part)) {
+            currentUnit.setGuard(1);
+            currentRegion.addGuard(currentUnit);
           } else if (matches(silverPartPattern, part)) {
             addItem(currentUnit, "silver", Integer.parseInt(partMatcher.group(1)));
             // sub parts:

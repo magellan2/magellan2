@@ -80,7 +80,10 @@ public class AtlantisOrderChanger implements OrderChanger {
   }
 
   public void addCombatOrder(Unit unit, int newstate) {
-    // HIGHTODO Automatisch generierte Methode implementieren
+    if (newstate > 0) {
+      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_BEHIND,
+          new Object[] { newstate - 1 }));
+    }
   }
 
   public void addDescribeUnitContainerOrder(Unit unit, UnitContainer uc, String descr) {

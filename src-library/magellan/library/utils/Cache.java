@@ -25,6 +25,7 @@ import magellan.library.Item;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.UnitRelation;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 
@@ -36,7 +37,7 @@ import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 public class Cache {
   private Collection<CacheHandler> handlers = null;
 
-  /* used in Unit and UnitContainer for modified name */
+  /** used in Unit and UnitContainer for modified name */
   public String modifiedName = null;
 
   /** used in swing.completion.* classes per unit */
@@ -67,15 +68,16 @@ public class Cache {
   @Deprecated
   public int modifiedUnitWeight = -1;
 
-  /** DOCUMENT-ME */
+  /** number of persons after orders */
   public int modifiedPersons = -1;
 
   /**
    * The expected combat status at beginning next turn acording to actual orders If cache is not
-   * calculated, status is -2
+   * calculated, status is EresseaConstants.CS_INIT;
    */
-  public int modifiedCombatStatus = -2;
+  public int modifiedCombatStatus = EresseaConstants.CS_INIT;
 
+  /** guard status after orders */
   public int modifiedGuard = -1;
 
   /**
@@ -123,6 +125,7 @@ public class Cache {
 
   public CoordinateID destination;
 
+  /** */
   public Cache() {
     super();
   }
@@ -180,7 +183,7 @@ public class Cache {
     modifiedUnitWeight = -1;
     modifiedPersons = -1;
     modifiedContainerUnits = null;
-    modifiedCombatStatus = -2;
+    modifiedCombatStatus = EresseaConstants.CS_INIT;
     modifiedUnaidedValidated = false;
     modifiedGuard = -1;
 

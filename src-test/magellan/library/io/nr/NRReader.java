@@ -63,11 +63,11 @@ public class NRReader extends MockReader {
   }
 
   public void addUnit(String name, int uid, String faction, int fid, int money, String order) {
-    addUnit(name, null, uid, faction, fid, money, order, 1, null, null);
+    addUnit(name, null, uid, faction, fid, money, order, 1, false, null, null);
   }
 
   public void addUnit(String name, String description, int uid, String faction, int fid, int money,
-      String order, int number, Object[] skills, Object[] items) {
+      String order, int number, boolean behind, Object[] skills, Object[] items) {
 
     if (faction != null) {
       add(String.format("  * %s (%d), faction %s (%d)", name, uid, faction, fid));
@@ -79,6 +79,9 @@ public class NRReader extends MockReader {
     }
     if (number > 1) {
       add(", number: " + number);
+    }
+    if (behind) {
+      add(", behind");
     }
     if (skills != null) {
       for (int i = 0; i < skills.length;) {

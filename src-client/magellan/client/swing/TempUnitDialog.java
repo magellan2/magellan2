@@ -31,6 +31,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -675,7 +676,24 @@ public class TempUnitDialog extends InternationalizedDialog {
    * Returns the selected combatState or -1 if it is not set.
    */
   public int getCombatState() {
-    return combatState.getSelectedIndex();
+    return ((CSEntry) combatState.getSelectedItem()).status;
+  }
+
+  static final class CSEntry {
+    int status;
+    String resourceKey;
+    String display;
+
+    CSEntry(int status, String resourceKey, String display) {
+      this.status = status;
+      this.resourceKey = resourceKey;
+      this.display = display;
+    }
+
+    @Override
+    public String toString() {
+      return display;
+    }
   }
 
   /**
@@ -683,15 +701,20 @@ public class TempUnitDialog extends InternationalizedDialog {
    * combat state based on the parent unit combat state.
    */
   public void updateCombatState() {
+
     combatState.removeAllItems();
     if (faction != null) {
       Map<Integer, String> combatStates =
           faction.getData().getGameSpecificStuff().getCombatStates();
-      for (Integer key : combatStates.keySet()) {
-        combatState.addItem(Resources.get(combatStates.get(key)));
+      for (Entry<Integer, String> stateEntry : combatStates.entrySet()) {
+        CSEntry item;
+        combatState.addItem(item =
+            new CSEntry(stateEntry.getKey(), stateEntry.getValue(), Resources.get(stateEntry
+                .getValue())));
+        if (combatStatus == stateEntry.getKey()) {
+          combatState.setSelectedItem(item);
+        }
       }
     }
-
-    combatState.setSelectedIndex(combatStatus);
   }
 }

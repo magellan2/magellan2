@@ -803,7 +803,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
           // multi starting parts:
           if (matches(defaultPartPattern, part)) {
             currentUnit.addOrder(partMatcher.group(1));
-            if (currentUnit.getCombatStatus() == -1) {
+            if (currentUnit.getCombatStatus() < 0) {
               currentUnit.setCombatStatus(AtlantisConstants.CS_FRONT);
             }
           } else if (matches(skillsPartPattern, part)) {

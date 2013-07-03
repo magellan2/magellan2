@@ -55,6 +55,7 @@ import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.impl.MagellanBattleImpl;
 import magellan.library.impl.MagellanBorderImpl;
 import magellan.library.impl.MagellanBuildingImpl;
@@ -503,9 +504,15 @@ public abstract class MagellanFactory {
    * Returns a locale specific string representation of the specified unit combat status.
    */
   public static String combatStatusToString(Unit u) {
-    String retVal = MagellanFactory.combatStatusToString(u.getCombatStatus());
+    String retVal =
+        Resources
+            .get(u.getData().getGameSpecificStuff().getCombatStates().get(u.getCombatStatus()));
+    // MagellanFactory.combatStatusToString(u.getCombatStatus());
     if (u.getModifiedCombatStatus() != u.getCombatStatus()) {
-      retVal += " (" + MagellanFactory.combatStatusToString(u.getModifiedCombatStatus()) + ")";
+      retVal +=
+          " ("
+              + Resources.get(u.getData().getGameSpecificStuff().getCombatStates().get(
+                  u.getModifiedCombatStatus())) + ")";
     }
 
     if (u.isUnaided()) {
@@ -525,7 +532,10 @@ public abstract class MagellanFactory {
 
   /**
    * Returns a locale specific string representation of the specified unit combat status.
+   * 
+   * @deprecated This is Eressea specific. Use {@link GameSpecificStuff#getCombatStates()}.
    */
+  @Deprecated
   public static String combatStatusToString(int combatStatus) {
     String retVal = null;
 

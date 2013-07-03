@@ -88,8 +88,8 @@ public class NRParserTest {
     NRReader reader = new NRReader();
     reader.addHeader(1, "January", 1);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
-    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth",
-        1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
+    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, false, new Object[] {
+        "stealth", 1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
 
     parser.read(reader, data);
 
@@ -102,6 +102,23 @@ public class NRParserTest {
     assertEquals(5, unit1.getPersons());
     assertEquals(1, getSkill(unit1, "stealth"));
     assertEquals(3, getSkill(unit1, "observation"));
+    assertEquals(1, unit1.getCombatStatus());
+  }
+
+  @Test
+  public final void testUnitBehind() throws IOException {
+    NRReader reader = new NRReader();
+    reader.addHeader(1, "January", 1);
+    reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
+    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, true, new Object[] {
+        "stealth", 1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
+
+    parser.read(reader, data);
+
+    assertSame(0, parser.getErrors());
+    Unit unit1;
+    assertEquals("Unit 1", (unit1 = data.getUnit(EntityID.createEntityID(42, 10))).getName());
+    assertEquals(2, unit1.getCombatStatus());
   }
 
   @Test
@@ -213,8 +230,8 @@ public class NRParserTest {
     reader.addHeader(1, "January", 1);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
     reader.addShip("Ship1", 99, "longboat", "desc s99");
-    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth",
-        1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
+    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, false, new Object[] {
+        "stealth", 1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
     reader.addLine("");
     reader.addUnit("Unit 2", 43, "Faction 1", 1, 1000, "work");
 
@@ -241,8 +258,8 @@ public class NRParserTest {
     reader.addHeader(1, "January", 1);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
     reader.addBuilding("Castle 99", 98, 12, "desc c99");
-    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth",
-        1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
+    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, false, new Object[] {
+        "stealth", 1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
     reader.addLine("");
     reader.addUnit("Unit 2", 43, "Faction 1", 1, 1000, "work");
 

@@ -84,7 +84,15 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
 
   @Test
   public final void testAddCombatOrder() {
-    fail("Not yet implemented");
+    unit.clearOrders();
+    changer.addCombatOrder(unit, -1);
+    assertEquals(0, unit.getOrders2().size());
+    unit.clearOrders();
+    changer.addCombatOrder(unit, AtlantisConstants.CS_FRONT);
+    assertEquals("BEHIND 0", unit.getOrders2().get(0).getText());
+    unit.clearOrders();
+    changer.addCombatOrder(unit, AtlantisConstants.CS_REAR);
+    assertEquals("BEHIND 1", unit.getOrders2().get(0).getText());
   }
 
   @Test

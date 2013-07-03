@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import magellan.library.CompleteData;
 import magellan.library.Faction;
@@ -216,11 +218,18 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
     return (new TransformerFinder(globalData, addedData, ui, interactive, true)).getTransformers();
   }
 
+  private static final SortedMap<Integer, String> combatStates = new TreeMap<Integer, String>();
+
+  static {
+    combatStates.put(1, "unit.combatstatus.front");
+    combatStates.put(2, "unit.combatstatus.back");
+  }
+
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getCombatStates()
    */
   public Map<Integer, String> getCombatStates() {
-    return Collections.emptyMap();
+    return combatStates;
   }
 
   public CoordMapper getCoordMapper() {

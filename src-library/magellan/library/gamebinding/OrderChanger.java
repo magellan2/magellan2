@@ -39,7 +39,11 @@ public interface OrderChanger {
   public Order createOrder(Unit unit, String order);
 
   /**
-   * Adds a KÄMPFE order. TODO: state are defined... somewhere
+   * Adds a KÄMPFE order.
+   * 
+   * @param unit
+   * @param newstate an internal value, as used in {@link Unit#getCombatStatus()}
+   * @see GameSpecificStuff#getCombatStates()
    */
   public void addCombatOrder(Unit unit, int newstate);
 

@@ -28,6 +28,7 @@ import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Resources;
 
 /**
@@ -133,7 +134,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    * The different groups in this faction. The map contains <tt>ID</tt> objects with the group id as
    * keys and <tt>Group</tt> objects as values.
    */
-  protected Map<IntegerID, Group> groups = null;
+  protected Map<IntegerID, Group> groups = CollectionFactory.createSyncOrderedMap(0);
 
   /** The country code indicating the locale for this faction. */
   private Locale locale = null;

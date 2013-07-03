@@ -32,7 +32,7 @@ public class NRGameNameIO implements GameNameIO {
 
   private static final String nameUndef = "undef";
 
-  protected static Pattern eresseaPattern = Pattern.compile("\\s*Report f.r ([^,]+),.*");
+  protected static Pattern eresseaPattern = Pattern.compile("\\s*Report f..?r ([^,]+),.*");
   protected static Pattern atlantisPattern = Pattern.compile("\\s*(.+) Turn Report.*");
 
   /**
@@ -40,15 +40,16 @@ public class NRGameNameIO implements GameNameIO {
    * returns "Eressea" if no such tag is found.
    * 
    * @param filetype
-   * @return A String representing the name of the game.
+   * @return A String representing the name of the game or null if the game was not recognized
    * @throws IOException If an I/O error occurs
    */
   public String getGameName(FileType filetype) throws IOException {
     BufferedReader report = new BufferedReader(filetype.createReader());
 
     try {
+      int lnr = 0;
       String line = report.readLine();
-      while (line != null) {
+      while (line != null && lnr++ < 10) {
         if (line.length() > 0) {
           Matcher matcher = eresseaPattern.matcher(line);
           if (matcher.matches())
@@ -68,7 +69,8 @@ public class NRGameNameIO implements GameNameIO {
       report.close();
     }
 
-    NRGameNameIO.log.warn("report does appear to be a valid Atlantis type human readable report.");
-    return NRGameNameIO.nameUndef;
+    NRGameNameIO.log
+        .warn("report does not appear to be a valid Atlantis type human readable report.");
+    return null;
   }
 }

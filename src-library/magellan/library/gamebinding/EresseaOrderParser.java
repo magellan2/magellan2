@@ -7,30 +7,14 @@
 
 package magellan.library.gamebinding;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-import java.util.regex.Pattern;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 import magellan.library.Building;
 import magellan.library.EntityID;
-import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Order;
-import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.Spell;
 import magellan.library.StringID;
@@ -46,14 +30,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Direction;
-import magellan.library.utils.IDBaseConverter;
-import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
-import magellan.library.utils.OrderTokenizer;
-import magellan.library.utils.RadixTree;
-import magellan.library.utils.RadixTreeImpl;
-import magellan.library.utils.Resources;
-import magellan.library.utils.Umlaut;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -62,661 +39,114 @@ import magellan.library.utils.logging.Logger;
  * <tt>OrderParser</tt> will call the corresponding methods of the <tt>OrderCompleter</tt> if it
  * encounters an incomplete order.
  */
-public class EresseaOrderParser implements OrderParser {
+public class EresseaOrderParser extends AbstractOrderParser {
   private static final Logger log = Logger.getInstance(EresseaOrderParser.class);
-
-  // this is not entirely true with dynamic bases but it probably doesn't really hurt
-  protected static final int MAX_UID = 1679615;
-
-  /**
-   * The set of allowed quotes in orders
-   */
-  public static final char[] QUOTES = new char[] { '\'', '"' };
-
-  private String errMsg;
-  private TokenBucket tokenBucket;
-  private Iterator<OrderToken> tokensIterator;
-  private OrderToken lastToken;
-  private int tokenIndex;
   private EresseaOrderCompleter completer;
-  private GameData data;
-
-  private Map<Locale, RadixTree<OrderHandler>> commandTries;
-  // private RadixTree<OrderHandler> commandTrie;
-  private HashMap<String, OrderHandler> commandMap;
-
-  private Locale locale;
-
-  private OrderHandler emptyReader;
-
-  private char defaultQuote = '"';
-
-  protected static enum Type {
-    EMPTY, OPENING, CLOSING
-  }
 
   /**
-   * An OrderHandler tries to match the {@link #tokensIterator}
-   * 
-   * @author stm
-   * @version 1.0, Jun 11, 2009
+   * @param data
+   * @param completer
    */
-  public abstract class OrderHandler {
-
-    protected SimpleOrder order;
-    protected boolean valid;
-
-    /**
-     * Reads an order.
-     * 
-     * @param token First token of the order ("GIB", "LERNE" or the like) that must match the
-     *          concrete OrderHandler class.
-     * @return true if the order is valid
-     */
-    public boolean read(OrderToken token, String text) {
-      init(token, text);
-      valid = readIt(token);
-      getOrder().setValid(valid);
-      postProcess();
-      return getOrder().isValid();
-    }
-
-    protected void init(OrderToken token, String text) {
-      order = new SimpleOrder(getTokens(), text);
-    }
-
-    protected void postProcess() {
-      // nothing to do, but can be overwritten
-    }
-
-    /**
-     * Reads an order.
-     * 
-     * @param token First token of the order ("GIB", "LERNE" or the like) that must match the
-     *          concrete OrderHandler class.
-     * @return true if the order is valid
-     */
-    protected abstract boolean readIt(OrderToken token);
-
-    /**
-     * @return The order
-     */
-    public SimpleOrder getOrder() {
-      return order;
-    }
-
+  public EresseaOrderParser(GameData data, EresseaOrderCompleter completer) {
+    super(data, completer);
   }
 
-  /**
-   * Reader for orders with unit argument.
-   */
-  public abstract class UnitOrderHandler extends OrderHandler {
-    protected UnitID target;
-
-    @Override
-    protected void init(OrderToken token, String text) {
-      target = null;
-      order = new UnitArgumentOrder(getTokens(), text, target);
-    }
-
-    @Override
-    public UnitArgumentOrder getOrder() {
-      UnitArgumentOrder uorder = (UnitArgumentOrder) super.getOrder();
-      uorder.target = target;
-      return uorder;
-    }
-  }
-
-  /**
-   * Reader for orders with unit container argument.
-   */
-  public abstract class UCOrderHandler extends OrderHandler {
-    protected EntityID target;
-
-    @Override
-    protected void init(OrderToken token, String text) {
-      target = null;
-      order = new UCArgumentOrder(getTokens(), text, target, UCArgumentOrder.T_UNKNOWN);
-    }
-
-    @Override
-    public UCArgumentOrder getOrder() {
-      UCArgumentOrder uorder = (UCArgumentOrder) super.getOrder();
-      uorder.container = target;
-      return uorder;
-    }
-  }
-
-  /**
-   * Reader for orders with building argument.
-   */
-  public abstract class BuildingOrderHandler extends OrderHandler {
-    protected EntityID target;
-
-    @Override
-    protected void init(OrderToken token, String text) {
-      target = null;
-      order = new UCArgumentOrder(getTokens(), text, target, UCArgumentOrder.T_BUILDING);
-    }
-
-    @Override
-    public UCArgumentOrder getOrder() {
-      UCArgumentOrder uorder = (UCArgumentOrder) super.getOrder();
-      uorder.container = target;
-      return uorder;
-    }
-  }
-
-  /**
-   * Reader for orders with building argument.
-   */
-  public abstract class ShipOrderHandler extends OrderHandler {
-    protected EntityID target;
-
-    @Override
-    protected void init(OrderToken token, String text) {
-      target = null;
-      order = new UCArgumentOrder(getTokens(), text, target, UCArgumentOrder.T_SHIP);
-    }
-
-    @Override
-    public UCArgumentOrder getOrder() {
-      UCArgumentOrder uorder = (UCArgumentOrder) super.getOrder();
-      uorder.container = target;
-      return uorder;
-    }
-  }
-
-  /**
-   * Creates a new <tt>EresseaOrderParser</tt> object.
-   */
   public EresseaOrderParser(GameData data) {
-    this(data, null);
-  }
-
-  /**
-   * Creates a new <tt>EresseaOrderParser</tt> object and registers the specified
-   * <tt>OrderCompleter</tt> object. This constructor should be used only by the
-   * <tt>OrderCompleter</tt> class itself.
-   */
-  public EresseaOrderParser(GameData data, EresseaOrderCompleter cc) {
-    if (data == null)
-      throw new NullPointerException();
-    this.data = data;
-    // rules = data.getGameSpecificRules();
-    setCompleter(cc);
-    init();
-    initCommands();
-    emptyReader = new OrderHandler() {
-      @Override
-      protected void init(OrderToken token, String text) {
-        order = new SimpleOrder(getTokens(), text);
-      }
-
-      @Override
-      protected boolean readIt(OrderToken token) {
-        boolean valid;
-        if (token.ttype == OrderToken.TT_COMMENT) {
-          OrderToken t = getNextToken();
-          valid = checkFinal(t);
-        } else {
-          valid = checkFinal(token) && !order.getText().startsWith("@");
-        }
-        return valid;
-      }
-    };
-  }
-
-  protected void init() {
-    errMsg = null;
-    tokenBucket = new TokenBucket();
-    tokensIterator = null;
-    lastToken = null;
-    tokenIndex = 0;
-  }
-
-  /**
-   * Returns the value of data.
-   * 
-   * @return Returns data.
-   */
-  public GameData getData() {
-    return data;
-  }
-
-  /**
-   * Sets the value of data.
-   * 
-   * @param data The value for data.
-   */
-  protected void setData(GameData data) {
-    this.data = data;
-    // rules = data.getGameSpecificRules();
-  }
-
-  protected Rules getRules() {
-    return data.rules;
-  }
-
-  /**
-   * Returns the value of completer.
-   * 
-   * @return Returns completer.
-   */
-  public EresseaOrderCompleter getCompleter() {
-    return completer;
-  }
-
-  /**
-   * Sets the value of completer.
-   * 
-   * @param completer The value for completer.
-   */
-  protected void setCompleter(EresseaOrderCompleter completer) {
-    this.completer = completer;
-  }
-
-  public Locale getLocale() {
-    return locale == null ? Locales.getOrderLocale() : locale;
-  }
-
-  /**
-   * Returns the localized order in the current locale.
-   * 
-   * @see Resources#getOrderTranslation(String, Locale)
-   */
-  protected String getOrderTranslation(String key) {
-    return Resources.getOrderTranslation(key, getLocale());
-  }
-
-  /**
-   * Returns the localized rule item (skill, race) in the current locale.
-   * 
-   * @see Resources#getRuleItemTranslation(String, Locale)
-   */
-  protected String getRuleItemTranslation(String key) {
-    return Resources.getRuleItemTranslation(key, getLocale());
-  }
-
-  /**
-   * Tries to find the unit with the given ID in the data.
-   * 
-   * @param id the target's ID (as text in the report's base)
-   * @return The unit if it is in the data, otherwise <code>null</code>
-   * @throws NumberFormatException if unit id is not parseable
-   * @throws NullPointerException if unit id is null
-   */
-  public Unit getUnit(String id) {
-    return getData().getUnit(UnitID.createUnitID(id, getData().base));
-  }
-
-  /**
-   * Tries to find the building with the given ID in the data.
-   * 
-   * @param id the target's ID (as text in the report's base)
-   * @return The building if it is in the data, otherwise <code>null</code>
-   * @throws NumberFormatException if unit id is not parseable
-   * @throws NullPointerException if unit id is null
-   */
-  public Building getBuilding(String id) {
-    return getData().getBuilding(EntityID.createEntityID(id, getData().base));
-  }
-
-  /**
-   * Tries to find the ship with the given ID in the data.
-   * 
-   * @param id the target's ID (as text in the report's base)
-   * @return The ship if it is in the data, otherwise <code>null</code>
-   * @throws NumberFormatException if unit id is not parseable
-   * @throws NullPointerException if unit id is null
-   */
-  public Ship getShip(String id) {
-    return getData().getShip(EntityID.createEntityID(id, getData().base));
-  }
-
-  /**
-   * Tries to find the faction with the given ID in the data.
-   * 
-   * @param id the target's ID (as text in the report's base)
-   * @return The faction if it is in the data, otherwise <code>null</code>
-   * @throws NumberFormatException if unit id is not parseable
-   * @throws NullPointerException if unit id is null
-   */
-  public Faction getFaction(String id) {
-    return getData().getFaction(EntityID.createEntityID(id, getData().base));
-  }
-
-  public int getNumber(String text) {
-    return Integer.parseInt(text);
+    super(data, null);
   }
 
   /**
    * Fills the trie with all known orders. Subclasses may override this in order to set a different
    * set of orders.
    */
+  @Override
   protected void initCommands() {
-    commandMap = new HashMap<String, OrderHandler>();
-    commandTries = new HashMap<Locale, RadixTree<OrderHandler>>();
-    RadixTreeImpl<OrderHandler> commandTrie =
-        new magellan.library.utils.RadixTreeImpl<OrderHandler>();
-    commandTries.put(Locales.getOrderLocale(), commandTrie);
+    clearCommandMap();
 
     // addCommand("@", new AtReader());
-    addCommand(EresseaConstants.O_WORK, new ArbeiteReader());
+    addCommand(EresseaConstants.O_WORK, new ArbeiteReader(this));
 
-    addCommand(EresseaConstants.O_ATTACK, new AttackReader());
+    addCommand(EresseaConstants.O_ATTACK, new AttackReader(this));
 
-    addCommand(EresseaConstants.O_BANNER, new BannerReader());
-    addCommand(EresseaConstants.O_CLAIM, new BeansprucheReader());
-    addCommand(EresseaConstants.O_PROMOTION, new BefoerderungReader());
+    addCommand(EresseaConstants.O_BANNER, new BannerReader(this));
+    addCommand(EresseaConstants.O_CLAIM, new BeansprucheReader(this));
+    addCommand(EresseaConstants.O_PROMOTION, new BefoerderungReader(this));
 
-    addCommand(EresseaConstants.O_STEAL, new BeklaueReader());
-    addCommand(EresseaConstants.O_SIEGE, new BelagereReader());
-    addCommand(EresseaConstants.O_NAME, new BenenneReader());
-    addCommand(EresseaConstants.O_USE, new BenutzeReader());
-    addCommand(EresseaConstants.O_DESCRIBE, new BeschreibeReader());
+    addCommand(EresseaConstants.O_STEAL, new BeklaueReader(this));
+    addCommand(EresseaConstants.O_SIEGE, new BelagereReader(this));
+    addCommand(EresseaConstants.O_NAME, new BenenneReader(this));
+    addCommand(EresseaConstants.O_USE, new BenutzeReader(this));
+    addCommand(EresseaConstants.O_DESCRIBE, new BeschreibeReader(this));
 
-    addCommand(EresseaConstants.O_ENTER, new BetreteReader());
+    addCommand(EresseaConstants.O_ENTER, new BetreteReader(this));
 
-    addCommand(EresseaConstants.O_GUARD, new BewacheReader());
-    addCommand(EresseaConstants.O_MESSAGE, new BotschaftReader());
-    addCommand(EresseaConstants.O_DEFAULT, new DefaultReader());
-    addCommand(EresseaConstants.O_EMAIL, new EmailReader());
-    addCommand(EresseaConstants.O_END, new EndeReader());
-    addCommand(EresseaConstants.O_RIDE, new FahreReader());
-    addCommand(EresseaConstants.O_FOLLOW, new FolgeReader());
-    addCommand(EresseaConstants.O_RESEARCH, new ForscheReader());
-    addCommand(EresseaConstants.O_GIVE, new GibReader());
-    addCommand(EresseaConstants.O_GROUP, new GruppeReader());
-    addCommand(EresseaConstants.O_HELP, new HelfeReader());
-    addCommand(EresseaConstants.O_COMBAT, new KaempfeReader());
-    addCommand(EresseaConstants.O_COMBATSPELL, new KampfzauberReader());
-    addCommand(EresseaConstants.O_BUY, new KaufeReader());
-    addCommand(EresseaConstants.O_CONTACT, new KontaktiereReader());
-    addCommand(EresseaConstants.O_TEACH, new LehreReader());
-    addCommand(EresseaConstants.O_LEARN, new LerneReader());
-    addCommand(EresseaConstants.O_SUPPLY, new GibReader());
+    addCommand(EresseaConstants.O_GUARD, new BewacheReader(this));
+    addCommand(EresseaConstants.O_MESSAGE, new BotschaftReader(this));
+    addCommand(EresseaConstants.O_DEFAULT, new DefaultReader(this));
+    addCommand(EresseaConstants.O_EMAIL, new EmailReader(this));
+    addCommand(EresseaConstants.O_END, new EndeReader(this));
+    addCommand(EresseaConstants.O_RIDE, new FahreReader(this));
+    addCommand(EresseaConstants.O_FOLLOW, new FolgeReader(this));
+    addCommand(EresseaConstants.O_RESEARCH, new ForscheReader(this));
+    addCommand(EresseaConstants.O_GIVE, new GibReader(this));
+    addCommand(EresseaConstants.O_GROUP, new GruppeReader(this));
+    addCommand(EresseaConstants.O_HELP, new HelfeReader(this));
+    addCommand(EresseaConstants.O_COMBAT, new KaempfeReader(this));
+    addCommand(EresseaConstants.O_COMBATSPELL, new KampfzauberReader(this));
+    addCommand(EresseaConstants.O_BUY, new KaufeReader(this));
+    addCommand(EresseaConstants.O_CONTACT, new KontaktiereReader(this));
+    addCommand(EresseaConstants.O_TEACH, new LehreReader(this));
+    addCommand(EresseaConstants.O_LEARN, new LerneReader(this));
+    addCommand(EresseaConstants.O_SUPPLY, new GibReader(this));
 
-    addCommand(EresseaConstants.O_LOCALE, new LocaleReader());
-    addCommand(EresseaConstants.O_MAKE, new MacheReader());
-    addCommand(EresseaConstants.O_MOVE, new NachReader());
+    addCommand(EresseaConstants.O_LOCALE, new LocaleReader(this));
+    addCommand(EresseaConstants.O_MAKE, new MacheReader(this));
+    addCommand(EresseaConstants.O_MOVE, new NachReader(this));
     // normalerweise nicht erlaubt...
-    addCommand(EresseaConstants.O_NEXT, new InvalidReader());
-    addCommand(EresseaConstants.O_RESTART, new NeustartReader());
+    addCommand(EresseaConstants.O_NEXT, new InvalidReader(this));
+    addCommand(EresseaConstants.O_RESTART, new NeustartReader(this));
 
-    addCommand(EresseaConstants.O_NUMBER, new NummerReader());
+    addCommand(EresseaConstants.O_NUMBER, new NummerReader(this));
 
-    addCommand(EresseaConstants.O_OPTION, new OptionReader());
-    addCommand(EresseaConstants.O_FACTION, new ParteiReader());
-    addCommand(EresseaConstants.O_PASSWORD, new PasswortReader());
+    addCommand(EresseaConstants.O_OPTION, new OptionReader(this));
+    addCommand(EresseaConstants.O_FACTION, new ParteiReader(this));
+    addCommand(EresseaConstants.O_PASSWORD, new PasswortReader(this));
 
-    addCommand(EresseaConstants.O_PLANT, new PflanzeReader());
-    addCommand(EresseaConstants.O_PIRACY, new PiraterieReader());
-    addCommand(EresseaConstants.O_PREFIX, new PraefixReader());
+    addCommand(EresseaConstants.O_PLANT, new PflanzeReader(this));
+    addCommand(EresseaConstants.O_PIRACY, new PiraterieReader(this));
+    addCommand(EresseaConstants.O_PREFIX, new PraefixReader(this));
     // normalerweise nicht erlaubt...
-    addCommand(EresseaConstants.O_REGION, new InvalidReader());
-    addCommand(EresseaConstants.O_RECRUIT, new RekrutiereReader());
-    addCommand(EresseaConstants.O_RESERVE, new ReserviereReader());
-    addCommand(EresseaConstants.O_ROUTE, new RouteReader());
+    addCommand(EresseaConstants.O_REGION, new InvalidReader(this));
+    addCommand(EresseaConstants.O_RECRUIT, new RekrutiereReader(this));
+    addCommand(EresseaConstants.O_RESERVE, new ReserviereReader(this));
+    addCommand(EresseaConstants.O_ROUTE, new RouteReader(this));
 
-    addCommand(EresseaConstants.O_SORT, new SortiereReader());
+    addCommand(EresseaConstants.O_SORT, new SortiereReader(this));
 
-    addCommand(EresseaConstants.O_SPY, new SpioniereReader());
-    addCommand(EresseaConstants.O_QUIT, new StirbReader());
-    addCommand(EresseaConstants.O_HIDE, new TarneReader());
-    addCommand(EresseaConstants.O_CARRY, new TransportiereReader());
-    addCommand(EresseaConstants.O_TAX, new TreibeReader());
-    addCommand(EresseaConstants.O_ENTERTAIN, new UnterhalteReader());
-    addCommand(EresseaConstants.O_ORIGIN, new UrsprungReader());
-    addCommand(EresseaConstants.O_FORGET, new VergesseReader());
+    addCommand(EresseaConstants.O_SPY, new SpioniereReader(this));
+    addCommand(EresseaConstants.O_QUIT, new StirbReader(this));
+    addCommand(EresseaConstants.O_HIDE, new TarneReader(this));
+    addCommand(EresseaConstants.O_CARRY, new TransportiereReader(this));
+    addCommand(EresseaConstants.O_TAX, new TreibeReader(this));
+    addCommand(EresseaConstants.O_ENTERTAIN, new UnterhalteReader(this));
+    addCommand(EresseaConstants.O_ORIGIN, new UrsprungReader(this));
+    addCommand(EresseaConstants.O_FORGET, new VergesseReader(this));
 
-    addCommand(EresseaConstants.O_SELL, new VerkaufeReader());
-    addCommand(EresseaConstants.O_LEAVE, new VerlasseReader());
-    addCommand(EresseaConstants.O_CAST, new ZaubereReader());
-    addCommand(EresseaConstants.O_SHOW, new ZeigeReader());
-    addCommand(EresseaConstants.O_DESTROY, new ZerstoereReader());
-    addCommand(EresseaConstants.O_GROW, new ZuechteReader());
-    addCommand(EresseaConstants.O_SABOTAGE, new SabotiereReader());
-  }
-
-  /**
-   * Adds the specified handler for the specified command (and removes any previous handler for the
-   * command). The caller must make sure that {@link #getOrderTranslation(String)}(prefix, locale)
-   * returns the localized command for any order language.
-   * 
-   * @param prefix A command ID
-   * @param handler The handler for this command
-   */
-  protected void addCommand(String prefix, OrderHandler handler) {
-    commandMap.put(prefix, handler);
-    for (Locale loc : commandTries.keySet()) {
-      RadixTree<OrderHandler> commandTrie = commandTries.get(loc);
-      String order = Resources.getOrderTranslation(prefix, loc).toLowerCase();
-      if (commandTrie.contains(order)) {
-        commandTrie.delete(order);
-      }
-      commandTrie.insert(order, handler);
-    }
-  }
-
-  /**
-   * Removes the handler for the specified command.
-   * 
-   * @param prefix
-   */
-  protected void removeCommand(String prefix) {
-    commandMap.remove(prefix);
-    for (Locale loc : commandTries.keySet()) {
-      RadixTree<OrderHandler> commandTrie = commandTries.get(loc);
-      String order = Resources.getOrderTranslation(prefix, loc).toLowerCase();
-      if (commandTrie.contains(order)) {
-        commandTrie.delete(order);
-      }
-    }
-  }
-
-  /**
-   * Returns a collections of all command registered by {@link #addCommand(String, OrderHandler)}.
-   */
-  protected Set<String> getCommands() {
-    return commandMap.keySet();
-  }
-
-  /**
-   * Returns a collection of all registered command handlers.
-   */
-  protected Collection<OrderHandler> getHandlers() {
-    return commandMap.values();
-  }
-
-  /**
-   * Returns the trie for the current locale ({@link #getLocale()}.
-   */
-  protected RadixTree<OrderHandler> getCommandTrie() {
-    if (!commandTries.containsKey(getLocale())) {
-      initCommands(getLocale());
-    }
-    return commandTries.get(getLocale());
-  }
-
-  /**
-   * Ensures that the commands for the given locale are found by {@link #getHandlers()}.
-   * 
-   * @param loc
-   */
-  protected void initCommands(Locale loc) {
-    if (commandTries.containsKey(loc))
-      return;
-    RadixTree<OrderHandler> commandTrie = new RadixTreeImpl<EresseaOrderParser.OrderHandler>();
-    commandTries.put(loc, commandTrie);
-
-    for (String command : commandMap.keySet()) {
-      String order = Resources.getOrderTranslation(command, loc).toLowerCase();
-      if (commandTrie.contains(order)) {
-        commandTrie.delete(order);
-      }
-      commandTrie.insert(order, commandMap.get(command));
-    }
-  }
-
-  /**
-   * Returns the tokens read by the parser.
-   * 
-   * @return all <tt>OrderToken</tt> object produced by the underlying <tt>OrderTokenizer</tt> by
-   *         reading a order.
-   */
-  public List<OrderToken> getTokens() {
-    return tokenBucket;
-  }
-
-  /**
-   * Returns next token from the <code>tokenBucket</code>.
-   */
-  protected OrderToken getNextToken() {
-    lastToken = tokensIterator.next();
-    tokenIndex++;
-    return lastToken;
-  }
-
-  /**
-   * Returns the last token retrieved by {@link #getNextToken()} or <code>null</code> if there was
-   * none.
-   */
-  protected OrderToken getLastToken() {
-    return lastToken;
-  }
-
-  /**
-   * Returns <code>true</code> if there is a next token
-   */
-  protected boolean hasNextToken() {
-    return tokensIterator != null && tokensIterator.hasNext();
-  }
-
-  /**
-   * @return the index of the last token retrieved by getLastToken() or -1 if no token was retrieved
-   *         yet.
-   */
-  protected int getTokenIndex() {
-    return tokenIndex;
-  }
-
-  /**
-   * Returns the error messages produced by the last invocation of the <tt>read(Reader in)</tt>
-   * method.
-   * 
-   * @return an error message if the last <tt>read</tt> returned <tt>false</tt>, <tt>null</tt> else.
-   */
-  public String getErrorMessage() {
-    return errMsg;
-  }
-
-  /**
-   * Sets the value error message
-   */
-  protected void setErrMsg(String errMsg) {
-    this.errMsg = errMsg;
-  }
-
-  /**
-   * @see magellan.library.completion.OrderParser#parse(String, Locale)
-   */
-  public synchronized Order parse(String text, @SuppressWarnings("hiding") Locale locale) {
-    setErrMsg(null);
-    tokenBucket.read(new StringReader(text));
-    tokenBucket.mergeTempTokens(getData().base);
-    tokensIterator = tokenBucket.iterator();
-    tokenIndex = 0;
-    lastToken = null;
-    this.locale = locale;
-
-    OrderToken token = getNextToken();
-
-    Order result = readOrder(token, text);
-
-    this.locale = null;
-    return result;
-  }
-
-  /**
-   * Parses one line of text from the specified stream by tokenizing it and checking the syntax.
-   * 
-   * @param in the stream to read the order from.
-   * @return <tt>true</tt> if the syntax of the order read is valid, <tt>false</tt> else.
-   * @deprecated Use {@link #parse(String, Locale)}
-   */
-  @Deprecated
-  public boolean read(Reader in) {
-    StringBuffer buffer = new StringBuffer();
-    int ch;
-
-    try {
-      while ((ch = in.read()) != -1) {
-        buffer.append((char) ch);
-      }
-    } catch (IOException e) {
-      log.error("error reding order", e);
-    }
-    return parse(buffer.toString(), Locales.getOrderLocale()).isValid();
-
-  }
-
-  /**
-   * Matches the token with the keys in {@link #getHandlers(OrderToken)}. If there is exactly one
-   * handler, it is applied to the <code>t</code> and the result returned. Otherwise this method
-   * returns <code>true</code> if <code>t</code> is the final token. Afterwards the completer is
-   * applied.
-   * 
-   * @param firstToken
-   */
-  protected Order readOrder(OrderToken firstToken, String text) {
-    OrderToken t = firstToken;
-    if (t.ttype == OrderToken.TT_PERSIST) {
-      t = getNextToken();
-      t.setStart(firstToken.getStart());
-    }
-
-    List<OrderHandler> readers = getHandlers(t);
-    OrderHandler reader;
-    if (readers.size() == 1) {
-      reader = readers.get(0);
-    } else {
-      // more than one possible completion
-      reader = emptyReader;
-      // exception: if there is an exact match, accept this reader
-      if (readers.size() > 1)
-        if (getCommandTrie().contains(t.getText().toLowerCase())) {
-          reader = getCommandTrie().find(t.getText().toLowerCase());
-        }
-    }
-
-    reader.read(t, text);
-    if (getCompleter() != null && !t.followedBySpace() && t.ttype != OrderToken.TT_PERSIST) {
-      getCompleter().cmplt();
-    }
-
-    SimpleOrder result = reader.getOrder();
-
-    if (firstToken.ttype == OrderToken.TT_PERSIST) {
-      if (t.getText().trim().startsWith(EresseaConstants.O_COMMENT) && reader == emptyReader) {
-        result.setValid(false);
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * Returns a set of handlers that match the specified token.
-   * 
-   * @param t
-   */
-  protected ArrayList<OrderHandler> getHandlers(OrderToken t) {
-    return getCommandTrie().searchPrefix(t.getText().toLowerCase(), Integer.MAX_VALUE);
+    addCommand(EresseaConstants.O_SELL, new VerkaufeReader(this));
+    addCommand(EresseaConstants.O_LEAVE, new VerlasseReader(this));
+    addCommand(EresseaConstants.O_CAST, new ZaubereReader(this));
+    addCommand(EresseaConstants.O_SHOW, new ZeigeReader(this));
+    addCommand(EresseaConstants.O_DESTROY, new ZerstoereReader(this));
+    addCommand(EresseaConstants.O_GROW, new ZuechteReader(this));
+    addCommand(EresseaConstants.O_SABOTAGE, new SabotiereReader(this));
   }
 
   // ************* WORK (ARBEITE)
   protected class ArbeiteReader extends OrderHandler {
+    public ArbeiteReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
@@ -728,6 +158,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* ATTACK (ATTACKIERE)
   protected class AttackReader extends UnitOrderHandler {
+    public AttackReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -767,6 +200,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BANNER
   protected class BannerReader extends OrderHandler {
+    public BannerReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
@@ -777,6 +214,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BEF÷RDERUNG
   protected class BefoerderungReader extends OrderHandler {
+    public BefoerderungReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
@@ -787,6 +228,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BEKLAUE
   protected class BeklaueReader extends UnitOrderHandler {
+    public BeklaueReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected boolean readIt(OrderToken token) {
@@ -819,6 +263,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BELAGERE
   protected class BelagereReader extends BuildingOrderHandler {
+    public BelagereReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected boolean readIt(OrderToken token) {
@@ -853,6 +300,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BENENNE
   protected class BenenneReader extends OrderHandler {
+    public BenenneReader(OrderParser parser) {
+      super(parser);
+    }
 
     private EntityID target;
 
@@ -1078,6 +528,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BENUTZE
   protected class BenutzeReader extends OrderHandler {
+    public BenutzeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -1132,6 +586,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BESCHREIBE
   protected class BeschreibeReader extends BenenneReader {
+    public BeschreibeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -1181,6 +639,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BETRETE
   protected class BetreteReader extends UCOrderHandler {
+    public BetreteReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -1274,6 +735,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BEWACHE
   protected class BewacheReader extends OrderHandler {
+    public BewacheReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -1318,6 +782,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BOTSCHAFT
   protected class BotschaftReader extends OrderHandler {
+    public BotschaftReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -1459,6 +927,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* DEFAULT
   protected class DefaultReader extends OrderHandler {
+    public DefaultReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1483,7 +955,7 @@ public class EresseaOrderParser implements OrderParser {
 
       public DefaultChecker() {
         super(false, true, true, false);
-        defaultQuote = '"';
+        innerDefaultQuote = '"';
       }
 
       @Override
@@ -1557,6 +1029,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* EMAIL
   protected class EmailReader extends OrderHandler {
+    public EmailReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -1587,6 +1063,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* ENDE
   protected class EndeReader extends OrderHandler {
+    public EndeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1597,6 +1077,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* FAHRE
   protected class FahreReader extends UnitOrderHandler {
+    public FahreReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -1640,13 +1123,16 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* FOLGE
   protected class FolgeReader extends OrderHandler {
+    public FolgeReader(OrderParser parser) {
+      super(parser);
+    }
 
     private String text;
 
     @Override
-    protected void init(OrderToken token, String text) {
-      order = new SimpleOrder(getTokens(), text);
-      this.text = text;
+    protected void init(OrderToken token, String orderText) {
+      order = new SimpleOrder(getTokens(), orderText);
+      text = orderText;
     }
 
     @Override
@@ -1717,6 +1203,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BEANSPRUCHE (Fiete)
   protected class BeansprucheReader extends OrderHandler {
+    public BeansprucheReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -1763,6 +1253,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* FORSCHE
   protected class ForscheReader extends OrderHandler {
+    public ForscheReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -1787,6 +1281,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* GIB
   protected class GibReader extends UnitOrderHandler {
+    public GibReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -1965,6 +1462,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* GRUPPE
   protected class GruppeReader extends OrderHandler {
+    public GruppeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2000,6 +1501,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* HELFE
   protected class HelfeReader extends OrderHandler {
+    public HelfeReader(OrderParser parser) {
+      super(parser);
+    }
 
     private Collection<String> categories;
 
@@ -2082,6 +1586,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* KAEMPFE
   protected class KaempfeReader extends OrderHandler {
+    public KaempfeReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -2152,6 +1659,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* KAMPFZAUBER
   protected class KampfzauberReader extends ZaubereReader {
+    public KampfzauberReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2203,6 +1714,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* KAUFE
   protected class KaufeReader extends OrderHandler {
+    public KaufeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2250,6 +1765,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* KONTAKTIERE
   protected class KontaktiereReader extends UnitOrderHandler {
+    public KontaktiereReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2279,6 +1798,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* LEHRE
   protected class LehreReader extends OrderHandler {
+    public LehreReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -2335,6 +1857,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* LERNE
   protected class LerneReader extends OrderHandler {
+    public LerneReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -2412,6 +1937,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* LOCALE
   protected class LocaleReader extends OrderHandler {
+    public LocaleReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2434,6 +1963,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* MACHE
   protected class MacheReader extends OrderHandler {
+    public MacheReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       return read(token, false);
@@ -2627,6 +2160,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* NACH
   protected class NachReader extends OrderHandler {
+    public NachReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -2680,6 +2216,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* NEXT (NƒCHSTER)
   protected class InvalidReader extends OrderHandler {
+    public InvalidReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2689,6 +2229,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* NEUSTART
   protected class NeustartReader extends OrderHandler {
+    public NeustartReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2741,6 +2285,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* NUMMER
   protected class NummerReader extends OrderHandler {
+    public NummerReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2841,6 +2389,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* OPTION
   protected class OptionReader extends OrderHandler {
+    public OptionReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2890,6 +2442,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* PARTEI
   protected class ParteiReader extends OrderHandler {
+    public ParteiReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2924,6 +2480,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* PASSWORT
   protected class PasswortReader extends OrderHandler {
+    public PasswortReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -2946,6 +2506,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* PFLANZEN
   protected class PflanzeReader extends OrderHandler {
+    public PflanzeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3006,6 +2570,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* PIRATERIE
   protected class PiraterieReader extends OrderHandler {
+    public PiraterieReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3047,6 +2615,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* PRAEFIX
   protected class PraefixReader extends OrderHandler {
+    public PraefixReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3069,6 +2641,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* REGION
   protected class RegionReader extends OrderHandler {
+    public RegionReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3088,6 +2664,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* REKRUTIERE
   protected class RekrutiereReader extends OrderHandler {
+    public RekrutiereReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -3108,7 +2687,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isNumeric(t.getText()) == true) {
-        int val = getNumber(t.getText());
+        int val = Integer.parseInt(t.getText());
         getOrder().setAmount(val);
 
         retVal = readFinalNumber(t);
@@ -3126,6 +2705,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* RESERVIERE
   protected class ReserviereReader extends OrderHandler {
+    public ReserviereReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -3210,6 +2792,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* ROUTE
   protected class RouteReader extends OrderHandler {
+    public RouteReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -3268,6 +2853,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* SABOTIERE
   protected class SabotiereReader extends OrderHandler {
+    public SabotiereReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3291,6 +2880,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* SORTIERE
   protected class SortiereReader extends UnitOrderHandler {
+    public SortiereReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3358,6 +2951,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* SPIONIERE
   protected class SpioniereReader extends UnitOrderHandler {
+    public SpioniereReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3384,6 +2981,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* STIRB
   protected class StirbReader extends OrderHandler {
+    public StirbReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3412,6 +3013,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* TARNE
   protected class TarneReader extends OrderHandler {
+    public TarneReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3487,6 +3092,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* TRANSPORTIERE
   protected class TransportiereReader extends OrderHandler {
+    public TransportiereReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected void init(OrderToken token, String text) {
       order = new TransportOrder(getTokens(), text, null);
@@ -3507,7 +3116,7 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isID(t.getText()) == true) {
         // Unit target = getUnit(t.getText());
-        getOrder().target = UnitID.createUnitID(t.getText(), data.base);
+        getOrder().target = UnitID.createUnitID(t.getText(), getData().base);
 
         retVal = readFinalID(t, true);
       } else {
@@ -3523,6 +3132,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* TREIBE
   protected class TreibeReader extends OrderHandler {
+    public TreibeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3543,6 +3156,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* UNTERHALTE
   protected class UnterhalteReader extends OrderHandler {
+    public UnterhalteReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3563,6 +3180,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* URSPRUNG
   protected class UrsprungReader extends OrderHandler {
+    public UrsprungReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3597,6 +3218,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* VERGESSE
   protected class VergesseReader extends OrderHandler {
+    public VergesseReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3619,6 +3244,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* VERKAUFE
   protected class VerkaufeReader extends OrderHandler {
+    public VerkaufeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3690,6 +3319,9 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************ VERLASSE
   protected class VerlasseReader extends OrderHandler {
+    public VerlasseReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected void init(OrderToken token, String text) {
@@ -3710,6 +3342,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* ZAUBERE
   protected class ZaubereReader extends OrderHandler {
+    public ZaubereReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -3723,8 +3359,7 @@ public class EresseaOrderParser implements OrderParser {
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_LEVEL))) {
         retVal = readZaubereStufe(t, false);
       } else if (isString(t)) {
-        retVal = new ZaubereSpruchChecker(false, false, true, true) {
-        }.read(t);
+        retVal = new ZaubereSpruchChecker(false, false, true, true).read(t);
       } else {
         unexpected(t);
         if (shallComplete(token, t)) {
@@ -3956,6 +3591,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* ZEIGE
   protected class ZeigeReader extends OrderHandler {
+    public ZeigeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -4004,6 +3643,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* ZERSTOERE
   protected class ZerstoereReader extends OrderHandler {
+    public ZerstoereReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -4064,6 +3707,10 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* ZUECHTE
   protected class ZuechteReader extends OrderHandler {
+    public ZuechteReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -4101,702 +3748,24 @@ public class EresseaOrderParser implements OrderParser {
     }
   }
 
-  // ************* general use
-
-  /** The StringChecker class may serve as a utility template for checking string tokens */
-  protected class StringChecker {
-    protected char defaultQuote = EresseaOrderParser.this.defaultQuote;
-    private boolean forceQuotes;
-    private boolean allowQuotes;
-    private boolean allowEmpty;
-    protected boolean valid;
-    protected String content;
-    private boolean nextValid;
-    private boolean followedBySpace;
-
-    protected OrderToken openingToken;
-    protected OrderToken innerToken;
-    protected OrderToken closingToken;
-    protected OrderToken nextToken;
-    private boolean preferQuotes;
-
-    /**
-     * Creates a StringChecker with default behaviour.
-     * 
-     * @param forceQuotes if this is <code>true</code>, the string must be enclosed in (single or
-     *          double) quotes.
-     * @param preferQuotes if this is <code>true</code>, quotes are inserted by order completers.
-     * @param allowQuotes if this is <code>true</code>, the string may be enclosed in (single or
-     *          double) quotes.
-     * @param allowEmpty if this is <code>true</code>, the content may be empty.
-     * @throws IllegalArgumentException if <code>forceQuotes</code> but not <code>allowQuote</code>
-     *           or if <code>allowEmpty</code> but not <code>allowQuotes</code>.
-     */
-    public StringChecker(boolean forceQuotes, boolean preferQuotes, boolean allowQuotes,
-        boolean allowEmpty) {
-      this.forceQuotes = forceQuotes;
-      this.allowQuotes = allowQuotes;
-      this.preferQuotes = preferQuotes;
-      this.allowEmpty = allowEmpty;
-      if (forceQuotes && !allowQuotes)
-        throw new IllegalArgumentException();
-      if (allowEmpty && !allowQuotes)
-        throw new IllegalArgumentException();
-      if (preferQuotes && !allowQuotes)
-        throw new IllegalArgumentException();
-      if (forceQuotes && !allowQuotes)
-        throw new IllegalArgumentException();
-    }
-
-    /**
-     * Tries to parse a string beginning with <code>token</code>. It first splits the following
-     * string tokens into {@link #openingToken}, {@link #innerToken}, {@link #closingToken}, and
-     * {@link #nextToken} (token after the string). Then it checks them with {@link #checkInner()},
-     * clears completions, calls {@link #checkNext()}. If there is a completer and the last token of
-     * the string is followed by space, it calls {@link #complete()}. The completions are then
-     * garnished with quotes as specified by the do... methods.
-     * 
-     * @return {@link #checkInner()} && {@link #checkNext()}
-     * @see EresseaOrderParser#getString(OrderToken)
-     * @throws IllegalArgumentException If <code>!isString(token)</code>
-     */
-    public boolean read(OrderToken token) {
-      if (!isString(token))
-        throw new IllegalArgumentException(token.toString());
-
-      OrderToken[] tokens = getString(token);
-      openingToken = tokens[0];
-      innerToken = tokens[1];
-      closingToken = tokens[2];
-      nextToken = tokens[3];
-
-      content = "";
-      if (innerToken != null) {
-        content = innerToken.getText();
-      }
-
-      followedBySpace = false;
-      if (closingToken != null) {
-        followedBySpace = closingToken.followedBySpace();
-      } else {
-        followedBySpace =
-            openingToken == null && innerToken != null && innerToken.followedBySpace();
-      }
-
-      valid = checkInner();
-      if (getCompleter() != null) {
-        getCompleter().clear();
-      }
-      nextValid = checkNext();
-
-      if (getCompleter() != null && isComplete()) {
-        complete();
-
-        getCompleter().fixQuotes(openingToken, innerToken, closingToken, preferQuotes, forceQuotes,
-            valid, defaultQuote);
-      }
-      return valid && isQuotesValid() && nextValid;
-    }
-
-    /**
-     * If this returns <code>true</code>, the completer is called. In this implementation this is
-     * the case if the last string token is not followed by space and the completer is not
-     * <code>null</code>.
-     */
-    protected boolean isComplete() {
-      return getCompleter() != null && !followedBySpace;
-    }
-
-    /**
-     * Checks the quotes. According to constructor parameters. Subclasses usually don't need to
-     * overwrite this method.
-     * 
-     * @return <code>false</code> if there are no quotes but quotes are forced or if the closing
-     *         quote doesn't match the opening quote.
-     */
-    protected boolean isQuotesValid() {
-      if (forceQuotes && openingToken == null)
-        return false;
-      if ((openingToken == null && closingToken == null)
-          || (openingToken != null && closingToken != null))
-        return true;
-      return false;
-    }
-
-    /**
-     * Subclasses may override this method if they want to check the content, which is in
-     * <code>innerToken</code>.
-     * 
-     * @see EresseaOrderParser#getString(OrderToken)
-     */
-    protected boolean checkInner() {
-      return allowEmpty || content.trim().length() > 0;
-    }
-
-    /**
-     * Subclasses should call an appropriate method of <code>getCompleter()</code> here.
-     */
-    protected void complete() {
-      if (valid || openingToken == null && content.length() == 0) {
-        getCompleter().addCompletion(
-            new Completion(content, "", Completion.DEFAULT_PRIORITY + 2, allowEmpty
-                && content.length() == 0 && openingToken == null ? 1 : 0));
-      }
-    }
-
-    /**
-     * Returns {@link EresseaOrderParser#checkFinal(OrderToken)}. Subclasses should overwrite to
-     * check the rest of the order.
-     */
-    protected boolean checkNext() {
-      boolean retVal = true;
-      if (forceQuotes) {
-        retVal = openingToken != null && closingToken != null;
-      }
-      if (!allowQuotes) {
-        retVal &= openingToken == null && closingToken == null;
-      }
-      return retVal && checkFinal(nextToken);
-    }
-
-  }
-
-  protected class FinalKeywordReader extends OrderHandler {
-    @Override
-    protected boolean readIt(OrderToken token) {
-      return readFinalKeyword(token);
-    }
-  }
-
   /**
-   * Tests if the next token is a quoted (possibly empty) string at the end of the order.
+   * Returns the value of completer.
    * 
-   * @return The string (without quotes) if a valid description was found, otherwise
-   *         <code>null</code>
+   * @return Returns completer.
    */
-  protected String readDescription() {
-    return readDescription(true);
-  }
-
-  public void setDefaultQuote(char c) {
-    defaultQuote = c;
+  @Override
+  public EresseaOrderCompleter getCompleter() {
+    return completer;
   }
 
   /**
-   * Tests if the next token is a quoted string at the end of the order.
+   * Sets the value of completer.
    * 
-   * @return The string (without quotes) if a valid description was found, otherwise
-   *         <code>null</code>
+   * @param completer The value for completer.
    */
-  protected String readDescription(boolean allowEmpty) {
-    OrderToken t = getNextToken();
-    return readDescription(t, allowEmpty);
+  @Override
+  protected void setCompleter(AbstractOrderCompleter completer) {
+    this.completer = (EresseaOrderCompleter) completer;
   }
 
-  /**
-   * Tests if t is a quoted (possibly empty) string at the end of the order.
-   * 
-   * @return The string (without quotes) if a valid description was found, otherwise
-   *         <code>null</code>
-   */
-  protected String readDescription(OrderToken t) {
-    return readDescription(t, true);
-  }
-
-  /**
-   * Returns <code>true</code> if t is a quoted string at the end of the order. If
-   * <code>allowEmpty</code>, it may also be an empty string.
-   * 
-   * @return The string (without quotes) if a valid description was found, otherwise
-   *         <code>null</code>
-   */
-  protected String readDescription(OrderToken t, boolean allowEmpty) {
-    if (isString(t)) {
-      StringChecker checker = new StringChecker(true, true, true, allowEmpty);
-      if (checker.read(t))
-        return checker.content;
-      else
-        return null;
-    } else {
-      unexpected(t);
-      if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltDescription();
-      }
-    }
-
-    return null;
-  }
-
-  protected boolean readFinalKeyword(OrderToken token) {
-    token.ttype = OrderToken.TT_KEYWORD;
-
-    return checkNextFinal();
-  }
-
-  /**
-   * Returns true if the <code>token</code> is a nonempty string.
-   */
-  protected boolean readFinalString(OrderToken token) {
-    return new StringChecker(false, false, true, false).read(token);
-  }
-
-  protected boolean readFinalID(OrderToken token) {
-    return readFinalID(token, false);
-  }
-
-  protected boolean readFinalID(OrderToken token, boolean tempAllowed) {
-    token.ttype = OrderToken.TT_ID;
-
-    OrderToken t = getNextToken();
-
-    if (shallComplete(token, t)
-        && token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP))
-        && tempAllowed) {
-      getCompleter().addRegionUnits("", true);
-    }
-
-    return (tempAllowed || !token.getText().toLowerCase().startsWith(
-        getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase()))
-        && checkFinal(t);
-  }
-
-  protected boolean readFinalNumber(OrderToken token) {
-    token.ttype = OrderToken.TT_NUMBER;
-
-    return checkNextFinal();
-  }
-
-  /**
-   * Checks whether the next token is the end of line or a comment, i.e. the indicating a valid end
-   * of the order. Reports an unexpected token if that is not the case.
-   */
-  protected boolean checkNextFinal() {
-    if (hasNextToken()) {
-      OrderToken t = getNextToken();
-
-      return checkFinal(t);
-    } else {
-      setErrMsg("Missing token");
-
-      return false;
-    }
-  }
-
-  /**
-   * Checks whether the token t is the end of line or a comment, i.e. the indicating a valid end of
-   * the order. Reports an unexpected token if that is not the case.
-   */
-  protected boolean checkFinal(OrderToken t) {
-    boolean retVal = ((isEoC(t)) || (t.ttype == OrderToken.TT_COMMENT));
-
-    if (retVal == false) {
-      unexpected(t);
-    }
-
-    return retVal;
-  }
-
-  private final class ItemChecker extends StringChecker {
-    protected ItemType itype;
-
-    private ItemChecker(boolean forceQuotes, boolean preferQuotes, boolean allowQuotes,
-        boolean allowEmpty) {
-      super(forceQuotes, preferQuotes, allowQuotes, allowEmpty);
-    }
-
-    @Override
-    protected boolean checkInner() {
-      for (ItemType type : getRules().getItemTypes()) {
-        if (normalizeName(type.getName()).equalsIgnoreCase(normalizeName(content))) {
-          itype = type;
-          return true;
-        }
-      }
-      return false;
-    }
-
-    @Override
-    protected void complete() {
-      // do not complete here
-      // super.complete();
-    }
-
-  }
-
-  /**
-   * Returns <code>true</code> if token represents an item.
-   */
-  protected ItemType checkItem(OrderToken token) {
-    ItemChecker checker = new ItemChecker(false, false, true, false);
-    checker.read(token);
-    return checker.itype;
-  }
-
-  protected void unexpected(OrderToken t) {
-    setErrMsg("Unexpected token " + t.toString());
-  }
-
-  protected static final boolean isEoC(OrderToken t) {
-    return t.ttype == OrderToken.TT_EOC;
-  }
-
-  /**
-   * Tests if <code>txt</code> represents an integer with the given radix between min and max
-   * (inclusively).
-   * 
-   * @param txt
-   * @param radix
-   * @param min
-   * @param max
-   */
-  protected boolean isNumeric(String txt, int radix, int min, int max) {
-    boolean retVal = false;
-
-    try {
-      int i = Integer.parseInt(txt, radix);
-      retVal = ((i >= min) && (i <= max));
-    } catch (NumberFormatException e) {
-    }
-
-    return retVal;
-  }
-
-  /**
-   * Tests if txt represents a non-negative decimal integer number.
-   */
-  protected boolean isNumeric(String txt) {
-    return isNumeric(txt, 10, 0, Integer.MAX_VALUE);
-  }
-
-  protected boolean isID(String txt) {
-    return isID(txt, true);
-  }
-
-  /**
-   * Tests if <code>txt</code> represents a valid ID (or TEMP ID) given the <code>data.base</code>
-   * and {@link #MAX_UID}.
-   * 
-   * @param txt
-   */
-  protected boolean isID(String txt, boolean allowTemp) {
-    boolean retVal = isNumeric(txt, getData().base, 0, EresseaOrderParser.MAX_UID);
-
-    if (!retVal && allowTemp) {
-      retVal = isTempID(txt);
-    }
-
-    return retVal;
-  }
-
-  /**
-   * Tests if <code>txt</code> represents a valid TEMP id.
-   * 
-   * @param txt
-   */
-  protected boolean isTempID(String txt) {
-    boolean retVal = false;
-    int blankPos = txt.indexOf(" ");
-
-    if (blankPos == -1) {
-      blankPos = txt.indexOf("\t");
-    }
-
-    if (blankPos > -1) {
-      String temp = txt.substring(0, blankPos);
-      String nr = txt.substring(blankPos + 1);
-      retVal = (temp.equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP)));
-      retVal = retVal && isNumeric(nr, getData().base, 0, EresseaOrderParser.MAX_UID);
-    }
-
-    return retVal;
-  }
-
-  /**
-   * tests if <code>txt</code> is a region id (coordinates).
-   */
-  protected boolean isRID(String txt) {
-    boolean retVal = false;
-    int firstCommaPos = txt.indexOf(",");
-    int secondCommaPos = txt.lastIndexOf(",");
-
-    if (firstCommaPos > -1) {
-      if (secondCommaPos > firstCommaPos) {
-        try {
-          Integer.parseInt(txt.substring(0, firstCommaPos));
-          Integer.parseInt(txt.substring(firstCommaPos + 1, secondCommaPos));
-          Integer.parseInt(txt.substring(secondCommaPos + 1, txt.length()));
-          retVal = true;
-        } catch (NumberFormatException e) {
-          EresseaOrderParser.log.warn("isRID()", e);
-        }
-      } else {
-        try {
-          Integer.parseInt(txt.substring(0, firstCommaPos));
-          Integer.parseInt(txt.substring(firstCommaPos + 1, txt.length()));
-          retVal = true;
-        } catch (NumberFormatException e) {
-          EresseaOrderParser.log.debug("isRID()", e);
-        }
-      }
-    }
-
-    return retVal;
-  }
-
-  /**
-   * Tests if <code>txt</code> is surrounded by double quotes.
-   * 
-   * @deprecated nobody needs us
-   */
-  @Deprecated
-  protected boolean isQuoted(String txt) {
-    return (txt.startsWith("\"") && txt.endsWith("\"") && txt.length() >= 2);
-  }
-
-  /**
-   * Tests if <code>txt</code> is surrounded by single quotes.
-   * 
-   * @deprecated nobody needs us
-   */
-  @Deprecated
-  protected boolean isSingleQuoted(String txt) {
-    return (txt.startsWith("\'") && txt.endsWith("\'") && txt.length() >= 2);
-  }
-
-  /**
-   * Returns <code>true</code> if <code>txt</code> is a nonempty string composed solely by the
-   * characters [A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:0-9] that does not start with a number. TODO allow unicode
-   * characters
-   */
-  protected boolean isSimpleString(String txt) {
-    return Pattern.matches("[A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:-][A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:0-9-]*", txt);
-  }
-
-  /**
-   * Tests if <code>txt</code> is a nonempty string which is either surrounded by quotes or by
-   * double quotes, or is composed solely by the characters [A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:].
-   * 
-   * @param txt
-   * @deprecated you should prefer {@link #isString(OrderToken)} and {@link StringChecker}
-   */
-  @Deprecated
-  protected boolean isString(String txt) {
-    boolean retVal = isQuoted(txt);
-
-    if (retVal == false) {
-      retVal = isSingleQuoted(txt);
-    }
-    // we only allow numbers within text
-    // otherwise 1234 would also match to isString
-    boolean isNumeric = isNumeric(txt);
-    if ((retVal == false) && (txt.length() > 0)) {
-      retVal = true;
-      for (int i = 0; i < txt.length(); i++) {
-        char c = txt.charAt(i);
-        // we allow numbers if txt is not numeric
-        if (!(((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == 'ƒ') || (c == '÷')
-            || (c == '‹') || (c == '‰') || (c == 'ˆ') || (c == '¸') || (c == '~') || (c == 'ﬂ')
-            || (c == ',') || (c == '.') || (c == '_') || (c == ':') || ((!isNumeric) && (c >= '0') && (c <= '9')))) {
-          retVal = false;
-          break;
-        }
-      }
-    }
-
-    if (retVal != Pattern.matches(
-        "(\".*\")|(\'.*\')|([A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:][A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:0-9]*)", txt))
-      throw new AssertionError("isString \"" + txt + "\"");
-
-    return retVal;
-  }
-
-  /**
-   * Same as {@link #isString(OrderToken, boolean) isString(OrderToken, false)}
-   */
-  protected boolean isString(OrderToken token) {
-    return isString(token, false);
-  }
-
-  /**
-   * Returns <code>true</code> if token starts a string. That is, it must be either a
-   * {@link OrderToken#TT_OPENING_QUOTE} or a string token.
-   * 
-   * @param token the current token
-   * @param forceQuotes if this is <code>true</code>, token must be a TT_OPENING_QUOTE
-   */
-  protected boolean isString(OrderToken token, boolean forceQuotes) {
-    return token.ttype == OrderToken.TT_OPENING_QUOTE
-        || (!forceQuotes && (isSimpleString(token.getText())) || isEoC(token));
-  }
-
-  /**
-   * Parses token and the following tokens to identify a string.
-   * 
-   * @param token The current token which <em>must</em> be either a TT_OPENING_Quote or a simple
-   *          string. You may use {@link #isString(OrderToken)} to test validity of your token.
-   * @return <code>result[0]</code> contains the opening quote, <code>result[1]</code> the content,
-   *         <code>result[2]</code> the closing quote, and <code>result[3]</code> the token that
-   *         follows the string. All except <code>result[3]</code> may be <code>null</code>.
-   */
-  protected OrderToken[] getString(OrderToken token) {
-    OrderToken[] result = new OrderToken[4];
-    if (token.ttype == OrderToken.TT_OPENING_QUOTE) {
-      result[0] = token;
-      OrderToken t = getNextToken();
-      if (isEoC(t)) {
-        result[1] = null;
-        result[2] = null;
-        result[3] = t;
-      } else {
-        result[1] = t;
-        t = getNextToken();
-        if (t.ttype == OrderToken.TT_CLOSING_QUOTE) {
-          result[2] = t;
-          result[3] = getNextToken();
-        } else {
-          result[2] = null;
-          result[3] = t;
-        }
-      }
-    } else if (token.ttype == OrderToken.TT_STRING || isSimpleString(token.getText())) {
-      token.ttype = OrderToken.TT_STRING;
-      result[0] = null;
-      result[1] = token;
-      result[2] = null;
-      result[3] = getNextToken();
-    } else if (isEoC(token)) {
-      result[0] = null;
-      result[1] = null;
-      result[2] = null;
-      result[3] = token;
-    } else
-      throw new IllegalArgumentException(token.toString());
-    return result;
-  }
-
-  /**
-   * Tests if <code>txt</code> is (syntactically) a valid email address.
-   * 
-   * @param txt
-   */
-  protected boolean isEmailAddress(String txt) {
-    try {
-      @SuppressWarnings("unused")
-      InternetAddress foo = new InternetAddress(txt, true);
-    } catch (AddressException e) {
-      return false;
-    }
-    return true;
-
-    // alternative implementation
-    // return Pattern.matches("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}", txt);
-  }
-
-  /**
-   * Return true if a completions should be added to the completer for the current token. The
-   * standard version returns true if there is a OrderCompleter and <code>token</code> is followed
-   * by a space and <code>t</code> is not.
-   * 
-   * @param token The last token read
-   * @param t The current token.
-   */
-  protected boolean shallComplete(OrderToken token, OrderToken t) {
-    return (getCompleter() != null && token.followedBySpace() && !t.followedBySpace());
-  }
-
-  /**
-   * Returns name with '~' replaced by spaces and Umlauts replaced, too.
-   */
-  protected static String normalizeName(String name) {
-    return Umlaut.convertUmlauts(name.replace('~', ' '));
-  }
-
-  /**
-   * A class for collecting and preprocessing order tokens
-   */
-  class TokenBucket extends Vector<OrderToken> {
-    private static final int MAX_TEMP_NR = 1679615; // = (36 ^ 4) - 1;
-
-    /**
-     * @see java.util.Vector#add(java.lang.Object)
-     */
-    @Override
-    public synchronized boolean add(OrderToken o) {
-      super.add(o);
-
-      return true;
-    }
-
-    /**
-     * Reads the tokens from <code>in</code> with an {@link OrderTokenizer} and adds them to
-     * <code>this</code>.
-     * 
-     * @param in
-     * @return The number of tokens <i>after</i> reading
-     */
-    public int read(Reader in) {
-      // TODO reduce object creation
-      OrderTokenizer tokenizer = new OrderTokenizer(in);
-      OrderToken token = null;
-      clear();
-
-      do {
-        token = tokenizer.getNextToken();
-        add(token);
-      } while (token.ttype != OrderToken.TT_EOC);
-
-      return size();
-    }
-
-    /**
-     * Merges two tokens if the first one contains the string TEMP the second one contains an id.
-     * 
-     * @return the number of remaining tokens.
-     */
-    public int mergeTempTokens(int base) {
-      if (size() > 1) {
-        for (int i = 0; i < (size() - 1); i++) {
-          OrderToken tempToken = tokenAt(i);
-          String tempText = tempToken.getText();
-
-          if (tempText.equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP))) {
-            try {
-              OrderToken nrToken = tokenAt(i + 1);
-              String nrText = nrToken.getText();
-              int nr = IDBaseConverter.parse(nrText, base);
-
-              if ((nr >= 0) && (nr <= TokenBucket.MAX_TEMP_NR)) {
-                OrderToken mergedToken =
-                    new OrderToken(getOrderTranslation(EresseaConstants.O_TEMP) + " " + nrText,
-                        tempToken.getStart(), nrToken.getEnd(), OrderToken.TT_ID, nrToken
-                            .followedBySpace());
-                remove(i);
-                remove(i);
-                add(i, mergedToken);
-              }
-            } catch (NumberFormatException e) {
-              // wrong format -- don't merge
-            }
-          }
-        }
-      }
-
-      return size();
-    }
-
-    /**
-     * Returns the same value as {@link #elementAt(int)} but <code>null</code> if
-     * <code>index >= size</code>.
-     */
-    public OrderToken tokenAt(int index) {
-      OrderToken retVal = null;
-
-      if (index < size()) {
-        retVal = elementAt(index);
-      }
-
-      return retVal;
-    }
-
-  }
 }

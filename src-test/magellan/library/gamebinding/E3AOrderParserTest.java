@@ -31,9 +31,9 @@ import java.util.List;
 import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.Region;
+import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
-import magellan.library.gamebinding.EresseaOrderParser.OrderHandler;
 import magellan.library.gamebinding.e3a.E3AConstants;
 import magellan.library.gamebinding.e3a.E3AOrderCompleter;
 import magellan.library.gamebinding.e3a.E3AOrderParser;
@@ -265,7 +265,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
    * @return Returns parser.
    */
   @Override
-  protected E3AOrderParser getParser() {
+  protected AbstractOrderParser getParser() {
     return parser;
   }
 
@@ -275,7 +275,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
    * @param parser The value for parser.
    */
   @Override
-  protected void setParser(EresseaOrderParser parser) {
+  protected void setParser(OrderParser parser) {
     this.parser = (E3AOrderParser) parser;
   }
 
@@ -295,7 +295,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
    * @param completer The value for completer.
    */
   @Override
-  protected void setCompleter(EresseaOrderCompleter completer) {
+  protected void setCompleter(AbstractOrderCompleter completer) {
     this.completer = (E3AOrderCompleter) completer;
   }
 

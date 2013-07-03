@@ -13,8 +13,10 @@ import java.util.Collection;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderParser;
+import magellan.library.gamebinding.OrderHandler;
 import magellan.library.gamebinding.RenameOrder.RenameObject;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.Race;
@@ -30,7 +32,7 @@ public class E3AOrderParser extends EresseaOrderParser {
    * Creates a new <tt>EresseaOrderParser</tt> object.
    */
   public E3AOrderParser(GameData data) {
-    super(data);
+    super(data, null);
   }
 
   /**
@@ -73,17 +75,16 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     // removeCommand(EresseaConstants.O_SIEGE);
 
-    addCommand(E3AConstants.O_ALLIANCE, new AllianzReader());
-    addCommand(EresseaConstants.O_HELP, new HelfeReader());
-    addCommand(E3AConstants.O_PAY, new BezahleReader());
-    // addCommand(E3AConstants.O_GIVE, new GibReader());
-    addCommand(EresseaConstants.O_MAKE, new E3MacheReader());
-    addCommand(EresseaConstants.O_RECRUIT, new RekrutiereReader());
-    // addCommand(E3AConstants.O_LEARNMAGIC, new XYZReader());
+    addCommand(E3AConstants.O_ALLIANCE, new AllianzReader(this));
+    addCommand(EresseaConstants.O_HELP, new HelfeReader(this));
+    addCommand(E3AConstants.O_PAY, new BezahleReader(this));
+    // addCommand(E3AConstants.O_GIVE, new GibReader(this));
+    addCommand(EresseaConstants.O_MAKE, new E3MacheReader(this));
+    addCommand(EresseaConstants.O_RECRUIT, new RekrutiereReader(this));
 
     // only TARNE PARTEI!
     removeCommand(EresseaConstants.O_HIDE);
-    addCommand(EresseaConstants.O_HIDE, new TarneReader());
+    addCommand(EresseaConstants.O_HIDE, new TarneReader(this));
   }
 
   @Override
@@ -93,6 +94,10 @@ public class E3AOrderParser extends EresseaOrderParser {
 
   // ************* ALLIANZ
   protected class AllianzReader extends OrderHandler {
+    AllianzReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -165,6 +170,10 @@ public class E3AOrderParser extends EresseaOrderParser {
   }
 
   protected class HelfeReader extends EresseaOrderParser.HelfeReader {
+    public HelfeReader(OrderParser parser) {
+      super(parser);
+    }
+
     private Collection<String> categories;
 
     /**
@@ -190,6 +199,10 @@ public class E3AOrderParser extends EresseaOrderParser {
 
   // ************* BENENNE
   protected class BenenneReader extends EresseaOrderParser.BenenneReader {
+
+    public BenenneReader(OrderParser parser) {
+      super(parser);
+    }
 
     @Override
     protected boolean readIt(OrderToken token) {
@@ -246,6 +259,10 @@ public class E3AOrderParser extends EresseaOrderParser {
   // ************* BEZAHLE
   protected class BezahleReader extends OrderHandler {
 
+    BezahleReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected void init(OrderToken token, String text) {
       order = new MaintainOrder(getTokens(), text);
@@ -289,6 +306,10 @@ public class E3AOrderParser extends EresseaOrderParser {
 
   // ************* MACHE
   protected class E3MacheReader extends MacheReader {
+    public E3MacheReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected BuildingType isCastle(OrderToken t) {
       if (t.equalsToken(getOrderTranslation(E3AConstants.O_WATCH)))
@@ -300,6 +321,10 @@ public class E3AOrderParser extends EresseaOrderParser {
 
   // ************* REKRUTIERE
   protected class RekrutiereReader extends EresseaOrderParser.RekrutiereReader {
+    public RekrutiereReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -323,7 +348,7 @@ public class E3AOrderParser extends EresseaOrderParser {
     protected boolean readRekrutiereAmount(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_NUMBER;
-      int val = getNumber(token.getText());
+      int val = Integer.parseInt(token.getText());
       getOrder().setAmount(val);
 
       OrderToken t = getNextToken();
@@ -366,6 +391,10 @@ public class E3AOrderParser extends EresseaOrderParser {
    * Only TARNE PARTEI [NICHT] is allowed in E3.
    */
   protected class TarneReader extends EresseaOrderParser.TarneReader {
+    public TarneReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;

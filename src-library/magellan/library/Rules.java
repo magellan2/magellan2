@@ -448,6 +448,10 @@ public interface Rules {
    */
   public void setOrderfileStartingString(String startingString);
 
-  public OrderType getOrder(StringID id, boolean b);
+  /**
+   * Returns the order type with the given id. If add is true and the id is not available, it will
+   * be added.
+   */
+  public OrderType getOrder(StringID id, boolean add);
 
 }

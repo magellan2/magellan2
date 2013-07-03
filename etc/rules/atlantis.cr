@@ -27,7 +27,7 @@ ORDER "COMBAT"
 "COMBAT spell";syntax
 
 ORDER "DISPLAY"
-"DISPLAY (UNIT | BUILDING SHIP) string";syntax
+"DISPLAY (UNIT | BUILDING | SHIP) string";syntax
 
 ORDER "GUARD"
 "GUARD 01";syntax

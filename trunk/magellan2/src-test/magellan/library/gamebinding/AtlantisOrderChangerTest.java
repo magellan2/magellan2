@@ -278,7 +278,13 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
     unit.addOrder("END");
     assertEquals(1, changer.extractTempUnits(data, 0, getLocale(), unit));
     Unit temp = unit.getTempUnit(UnitID.createUnitID(-123, data.base));
+    Unit temp2 = data.getTempUnit(UnitID.createUnitID(-123, data.base));
     assertEquals("STUDY Entertainment", temp.getOrders2().get(0).getText());
+
+    assertEquals(1, unit.getOrders2().size());
+    assertEquals("TEACH NEW 123", unit.getOrders2().get(0).getText());
+    assertSame(temp, temp2);
+    assertEquals(1, temp.getOrders2().size());
   }
 
   @Test

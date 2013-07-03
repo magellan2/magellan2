@@ -862,8 +862,8 @@ public class EresseaOrderChanger implements OrderChanger {
     final Locale locale = unit.getLocale();
 
     for (TempUnit u : unit.tempUnits()) {
-      cmds.add(parser.parse(getOrder(locale, EresseaConstants.OC_MAKE, new Object[] { u.getID()
-          .toString(getTemp(locale)) }), locale));
+      cmds.add(parser.parse(getOrder(locale, EresseaConstants.OC_MAKE, new Object[] { u.getID() }),
+          locale));
 
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 

@@ -30,6 +30,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 import magellan.library.Building;
 import magellan.library.GameData;
@@ -303,6 +305,17 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
     assertEquals("FORM 123", orders.get(0).getText());
     assertEquals("STUDY Entertainment", orders.get(1).getText());
     assertEquals("END", orders.get(2).getText());
+  }
+
+  @Test
+  public void testGetTempOrders2() throws Exception {
+    unit.clearOrders();
+    unit.createTemp(data, UnitID.createTempID(data, null, unit));
+    Collection<? extends Order> orders = changer.getTempOrders(false, unit);
+    assertSame(2, orders.size());
+    Iterator<? extends Order> it = orders.iterator();
+    assertEquals("FORM 1", it.next().getText());
+    assertEquals("END", it.next().getText());
   }
 
 }

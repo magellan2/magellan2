@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.atlantis.AtlantisConstants;
 import magellan.library.utils.IDBaseConverter;
-import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -101,7 +101,10 @@ public class UnitID extends EntityID {
   public static UnitID createTempID(GameData data, Properties settings, Unit parentUnit) {
     if (data.getCurTempID() == -1) {
       // uninitialized
-      String s = settings.getProperty("ClientPreferences.TempIDsInitialValue", "");
+      String s = "1";
+      if (settings != null) {
+        s = settings.getProperty("ClientPreferences.TempIDsInitialValue", "");
+      }
       data.setCurTempID(s);
     }
 
@@ -123,11 +126,16 @@ public class UnitID extends EntityID {
       UnitID checkID = UnitID.createUnitID(-i, data.base);
 
       while (data.getTempUnit(checkID) != null) {
-        boolean ascending =
-            settings.getProperty("ClientPreferences.ascendingOrder", "true").equalsIgnoreCase(
-                "true");
+        boolean ascending = true;
+        if (settings != null) {
+          ascending =
+              settings.getProperty("ClientPreferences.ascendingOrder", "true").equalsIgnoreCase(
+                  "true");
+        }
 
-        if (settings.getProperty("ClientPreferences.countDecimal", "true").equalsIgnoreCase("true")) {
+        if (settings == null
+            || settings.getProperty("ClientPreferences.countDecimal", "true").equalsIgnoreCase(
+                "true")) {
           i = UnitID.getNextDecimalID(i, data.base, ascending);
         } else {
           if (ascending) {
@@ -268,7 +276,9 @@ public class UnitID extends EntityID {
     else {
       String part1 = s.substring(0, blankPos);
 
-      if (part1.equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.OC_TEMP.toString())))
+      // FIXME hack, must be game specific
+      if (part1.equalsIgnoreCase(EresseaConstants.OC_TEMP.toString())
+          || part1.equalsIgnoreCase(AtlantisConstants.OC_NEW.toString()))
         return Integer.valueOf(-1 * Integer.parseInt(s.substring(blankPos).trim(), radix));
       else
         throw new NumberFormatException("UnitID: unable to parse id " + s);

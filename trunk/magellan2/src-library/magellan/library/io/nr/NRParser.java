@@ -63,8 +63,10 @@ import magellan.library.utils.transformation.ReportTransformer;
  * Parser for nr-files.
  */
 public class NRParser extends AbstractReportParser implements RulesIO, GameDataIO {
+  @SuppressWarnings("hiding")
+  protected static final Logger log = Logger.getInstance(NRParser.class);
 
-  public interface SectionReader {
+  protected interface SectionReader {
 
     boolean matches(String line);
 
@@ -72,96 +74,96 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   }
 
-  protected static final Logger log = Logger.getInstance(NRParser.class);
-
   String coordinates;
   boolean umlauts;
   final Collection<String> warnedLines = new HashSet<String>();
 
-  protected static String id = "([0-9]+)";
-  protected static String id2 = "\\(" + id + "\\)";
-  protected static String name = "([^()]*)";
-  protected static String identifier = "([^(),;.]*)";
-  protected static String word = "(\\w+)";
-  protected static String num = "(" + number + ")";
-  protected static String atlantisLine = "\\s*" + name + " Turn Report(.*)";
-  protected static String factionLine = "\\s*" + name + " " + id2 + "\\s*";
-  protected static String dateLine = "\\s*((In the Beginning)|(" + name + ", Year " + num
+  protected static final String ID = "([0-9]+)";
+  protected static final String ID2 = "\\(" + ID + "\\)";
+  protected static final String NAME = "([^()]*)";
+  protected static final String IDENTIFIER = "([^(),;.]*)";
+  protected static final String word = "(\\w+)";
+  protected static final String NUM = "(" + number + ")";
+  protected static final String ANTLANTIS_LINE = "\\s*" + NAME + " Turn Report(.*)";
+  protected static final String FACTION_LINE = "\\s*" + NAME + " " + ID2 + "\\s*";
+  protected static final String DATE_LINE = "\\s*((In the Beginning)|(" + NAME + ", Year " + NUM
       + "))\\s*";
-  protected static String mistakesLine = "\\s*Mistakes\\s*";
-  protected static String messageLine = "^(.*)$";
-  protected static String messagesLine = "\\s*Messages\\s*";
-  protected static String object = name + "\\s+" + id2;
-  protected static String object2 = "\\s" + name + "\\s+" + id2 + "\\s*";
-  protected static String eventsLine = "\\s*Events During Turn\\s*";
-  protected static String statusLine = "\\s*Current Status\\s*";
-  protected static String alliedLine = "You are allied to\\s+" + object + "(," + object + ")*\\.";
-  protected static String coord2 = "(\\((" + num + "),(" + num + ")\\))";
-  protected static String coord3 = "(\\((" + num + "),(" + num + "),(" + num + ")\\))";
-  protected static String ocean = "ocean";
-  protected static String regionLine = "^" + name + "?\\s+" + coord2 + ",\\s+" + word
-      + "(,\\s+exits:\\s+([^.]*))?.\\s*(peasants:\\s+(" + num + ")(,\\s+\\$(" + num + "))?.)?";
-  protected static String peasantsLine = "^peasants:\\s+" + num + "(,\\s+\\$" + num + ")\\.";
+  protected static final String MISTAKES_LINE = "\\s*Mistakes\\s*";
+  protected static final String MESSAGE_LINE = "^(.*)$";
+  protected static final String MESSAGES_LINE = "\\s*Messages\\s*";
+  protected static final String OBJECT = NAME + "\\s+" + ID2;
+  protected static final String OBJECT2 = "\\s" + NAME + "\\s+" + ID2 + "\\s*";
+  protected static final String EVENTS_LINE = "\\s*Events During Turn\\s*";
+  protected static final String STATUS_LINE = "\\s*Current Status\\s*";
+  protected static final String ALLIED_LINE = "You are allied to\\s+" + OBJECT + "(," + OBJECT
+      + ")*\\.";
+  protected static final String COORD2 = "(\\((" + NUM + "),(" + NUM + ")\\))";
+  protected static final String COORD3 = "(\\((" + NUM + "),(" + NUM + "),(" + NUM + ")\\))";
+  protected static final String OCEAN = "ocean";
+  protected static final String REGION_LINE = "^" + NAME + "?\\s+" + COORD2 + ",\\s+" + word
+      + "(,\\s+exits:\\s+([^.]*))?.\\s*(peasants:\\s+(" + NUM + ")(,\\s+\\$(" + NUM + "))?.)?";
+  protected static final String PEASANTS_LINE = "^peasants:\\s+" + NUM + "(,\\s+\\$" + NUM + ")\\.";
 
-  protected static String exitsPart = "exits:\\s+([^.]*)";
-  protected static String exitPart = word;
-  protected static String peasantsPart = "peasants:\\s+(" + num + ")";
-  protected static String peasantPart = num;
+  protected static final String EXITS_PART = "exits:\\s+([^.]*)";
+  protected static final String EXIT_PART = word;
+  protected static final String PEASANTS_PART = "peasants:\\s+(" + NUM + ")";
+  protected static final String PEASANT_PART = NUM;
 
   //
-  protected static String unitLine = "  *([*+-])\\s+" + object + "(,\\s+faction\\s+" + object
-      + ")?([^.]*)?\\.";
+  protected static final String UNIT_LINE = "  *([*+-])\\s+" + OBJECT + "(,\\s+faction\\s+"
+      + OBJECT + ")?([^.]*)?\\.";
 
-  protected static String defaultPart = "default:\\s+\"([^\"]*)\"";
-  protected static String skillsPart = "skills:\\s+" + name + "\\s+" + num + "\\s+\\[" + num
+  protected static final String DEFAULT_PART = "default:\\s+\"([^\"]*)\"";
+  protected static final String SKILLS_PART = "skills:\\s+" + NAME + "\\s+" + NUM + "\\s+\\[" + NUM
       + "\\]";
-  protected static String skillPart = name + "\\s+" + num + "\\s+\\[" + num + "\\]";
-  protected static String itemsPart = "has:\\s+" + num + "\\s+" + name;
-  protected static String itemPart = num + "\\s+" + name;
-  protected static String numberPart = "number:\\s+" + num;
-  protected static String combatStatusPart = "behind";
-  protected static String silverPart = "\\$" + num;
+  protected static final String SKILL_PART = NAME + "\\s+" + NUM + "\\s+\\[" + NUM + "\\]";
+  protected static final String ITEMS_PART = "has:\\s+" + NUM + "\\s+" + NAME;
+  protected static final String ITEM_PART = NUM + "\\s+" + NAME;
+  protected static final String NUMBER_PART = "number:\\s+" + NUM;
+  protected static final String COMBAT_STATUS_PART = "behind";
+  protected static final String SILVER_PART = "\\$" + NUM;
 
-  protected static String buildingLine = "   +" + object + "(,\\s+size\\s+" + num + ")(.*)\\.";
-  protected static String shipLine = "   +" + object + "(,\\s+" + identifier + ")(.*)\\.";
+  protected static final String BUILDING_LINE = "   +" + OBJECT + "(,\\s+size\\s+" + NUM
+      + ")(.*)\\.";
+  protected static final String SHIP_LINE = "   +" + OBJECT + "(,\\s+" + IDENTIFIER + ")(.*)\\.";
 
-  protected static Pattern idPattern = Pattern.compile(id);
-  protected static Pattern id2Pattern = Pattern.compile(id2);
-  protected static Pattern namePattern = Pattern.compile(name);
+  protected static Pattern idPattern = Pattern.compile(ID);
+  protected static Pattern id2Pattern = Pattern.compile(ID2);
+  protected static Pattern namePattern = Pattern.compile(NAME);
   protected static Pattern wordPattern = Pattern.compile(word);
 
   protected static Pattern eresseaPattern = Pattern.compile(" *Report f.r ([^,]+),(.*)");
-  protected static Pattern atlantisLinePattern = Pattern.compile(atlantisLine);
-  protected static Pattern factionLinePattern = Pattern.compile(factionLine);
-  protected static Pattern dateLinePattern = Pattern.compile(dateLine);
-  protected static Pattern mistakesLinePattern = Pattern.compile(mistakesLine);
-  protected static Pattern messageLinePattern = Pattern.compile(messageLine);
-  protected static Pattern messagesLinePattern = Pattern.compile(messagesLine);
-  protected static Pattern objectPattern = Pattern.compile(object);
-  protected static Pattern object2Pattern = Pattern.compile(object2);
-  protected static Pattern eventsLinePattern = Pattern.compile(eventsLine);
-  protected static Pattern statusLinePattern = Pattern.compile(statusLine);
-  protected static Pattern alliedLinePattern = Pattern.compile(alliedLine);
-  protected static Pattern numPattern = Pattern.compile(num);
-  protected static Pattern coord2Pattern = Pattern.compile(coord2);
-  protected static Pattern coord3Pattern = Pattern.compile(coord3);
-  protected static Pattern regionLinePattern = Pattern.compile(regionLine);
-  protected static Pattern peasantsLinePattern = Pattern.compile(peasantsLine);
+  protected static Pattern atlantisLinePattern = Pattern.compile(ANTLANTIS_LINE);
+  protected static Pattern factionLinePattern = Pattern.compile(FACTION_LINE);
+  protected static Pattern dateLinePattern = Pattern.compile(DATE_LINE);
+  protected static Pattern mistakesLinePattern = Pattern.compile(MISTAKES_LINE);
+  protected static Pattern messageLinePattern = Pattern.compile(MESSAGE_LINE);
+  protected static Pattern messagesLinePattern = Pattern.compile(MESSAGES_LINE);
+  protected static Pattern objectPattern = Pattern.compile(OBJECT);
+  protected static Pattern object2Pattern = Pattern.compile(OBJECT2);
+  protected static Pattern eventsLinePattern = Pattern.compile(EVENTS_LINE);
+  protected static Pattern statusLinePattern = Pattern.compile(STATUS_LINE);
+  protected static Pattern alliedLinePattern = Pattern.compile(ALLIED_LINE);
+  protected static Pattern numPattern = Pattern.compile(NUM);
+  protected static Pattern coord2Pattern = Pattern.compile(COORD2);
+  protected static Pattern coord3Pattern = Pattern.compile(COORD3);
+  protected static Pattern regionLinePattern = Pattern.compile(REGION_LINE);
+  protected static Pattern peasantsLinePattern = Pattern.compile(PEASANTS_LINE);
   //
-  protected static Pattern unitLinePattern = Pattern.compile(unitLine);
-  protected static Pattern defaultPartPattern = Pattern.compile(defaultPart);
-  protected static Pattern skillsPartPattern = Pattern.compile(skillsPart);
-  protected static Pattern skillPartPattern = Pattern.compile(skillPart);
-  protected static Pattern itemsPartPattern = Pattern.compile(itemsPart);
-  protected static Pattern itemPartPattern = Pattern.compile(itemPart);
-  protected static Pattern numberPartPattern = Pattern.compile(numberPart);
-  protected static Pattern combatStatusPartPattern = Pattern.compile(combatStatusPart);
-  protected static Pattern silverPartPattern = Pattern.compile(silverPart);
+  protected static Pattern unitLinePattern = Pattern.compile(UNIT_LINE);
+  protected static Pattern defaultPartPattern = Pattern.compile(DEFAULT_PART);
+  protected static Pattern skillsPartPattern = Pattern.compile(SKILLS_PART);
+  protected static Pattern skillPartPattern = Pattern.compile(SKILL_PART);
+  protected static Pattern itemsPartPattern = Pattern.compile(ITEMS_PART);
+  protected static Pattern itemPartPattern = Pattern.compile(ITEM_PART);
+  protected static Pattern numberPartPattern = Pattern.compile(NUMBER_PART);
+  protected static Pattern combatStatusPartPattern = Pattern.compile(COMBAT_STATUS_PART);
+  protected static Pattern silverPartPattern = Pattern.compile(SILVER_PART);
 
-  protected static Pattern shipLinePattern = Pattern.compile(shipLine);
-  protected static Pattern buildingLinePattern = Pattern.compile(buildingLine);
+  protected static Pattern shipLinePattern = Pattern.compile(SHIP_LINE);
+  protected static Pattern buildingLinePattern = Pattern.compile(BUILDING_LINE);
 
-  protected static StringID oceanType = StringID.create(ocean);
+  protected static StringID oceanType = StringID.create(OCEAN);
 
   private List<SectionReader> sectionReaders = new ArrayList<NRParser.SectionReader>();
 
@@ -169,21 +171,24 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   private BufferedReader reader;
 
-  public Faction ownerFaction;
+  protected Faction ownerFaction;
 
-  private List<Message> messages = new ArrayList<Message>();
+  private List<Message> reportMessages = new ArrayList<Message>();
 
-  public int allianceState = 26;
+  protected final int allianceState = 26;
 
   private String nextLine = null;
 
   private RegionReader regionReader;
 
-  public int lnr = 0;
+  private int lnr = 0;
 
-  public String directions[] = { "south", "ydd", "east", "north", "mir", "west" };
+  protected UnitContainerType castleType;
 
-  public UnitContainerType castleType;
+  protected int unmatchedcounter = 0;
+
+  private Exception firstError;
+  private Exception lastError;
 
   /**
    * Creates a new parser.
@@ -216,9 +221,9 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   private void initParsers() {
     sectionReaders.add(new HeaderReader());
-    sectionReaders.add(new MessageReader(mistakesLinePattern, messages));
-    sectionReaders.add(new MessageReader(messagesLinePattern, messages));
-    sectionReaders.add(new MessageReader(eventsLinePattern, messages));
+    sectionReaders.add(new MessageReader(mistakesLinePattern, reportMessages));
+    sectionReaders.add(new MessageReader(messagesLinePattern, reportMessages));
+    sectionReaders.add(new MessageReader(eventsLinePattern, reportMessages));
     sectionReaders.add(new StatusReader());
     regionReader = new RegionReader();
   }
@@ -235,7 +240,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   public synchronized GameData read(Reader in, GameData data) throws IOException {
     int regionSortIndex = 0;
     MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
-    boolean oome = false;
+    boolean error = false;
+    unmatchedcounter = 0;
 
     ui.setTitle(Resources.get("progressdialog.loadnr.title"));
     ui.setMaximum(10000);
@@ -270,7 +276,11 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             }
           }
           if (!matched) {
-            log.warn("unmatched line: " + line);
+            if (unmatchedcounter++ < 100) {
+              log.warn("unmatched line: " + line);
+            } else if (unmatchedcounter == 101) {
+              log.warn("...more unmatched lines");
+            }
             nextLine();
           }
           while (line != null && line.length() == 0) {
@@ -279,23 +289,22 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
         }
       } catch (final OutOfMemoryError ome) {
         NRParser.log.error(ome);
-        oome = true;
+        error = true;
+        world.setOutOfMemory(true);
       }
-      if (messages != null && messages.size() > 0) {
-        ownerFaction.setMessages(messages);
+      if (reportMessages != null && reportMessages.size() > 0) {
+        ownerFaction.setMessages(reportMessages);
       }
 
       setOwner(data);
 
       // Fiete 20061208 check Memory
-      if (!MemoryManagment.isFreeMemory() || oome) {
+      if (!MemoryManagment.isFreeMemory() || error) {
         // we have a problem..
         // like in startup of client..we reset the data
         world = new MissingData();
         // marking the problem
-        world.setOutOfMemory(true);
 
-        ui.ready();
         // end exit
         return world;
       }
@@ -375,7 +384,16 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     return null;
   }
 
-  public static class ParseException extends Exception {
+  protected void error(ParseException e) {
+    errors++;
+    log.warn("unexpected line: ", e);
+    if (firstError != null) {
+      firstError = e;
+    }
+    lastError = e;
+  }
+
+  protected static class ParseException extends Exception {
 
     private Pattern pattern;
     private String line;
@@ -419,8 +437,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       startPattern = pattern;
     }
 
-    public boolean matches(String line) {
-      return startPattern.matcher(line).matches();
+    public boolean matches(String aline) {
+      return startPattern.matcher(aline).matches();
     }
 
     protected boolean expectLine(Pattern pattern, boolean exception) throws ParseException {
@@ -479,7 +497,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
   }
 
-  public class MessageReader extends AbstractReader implements SectionReader {
+  protected class MessageReader extends AbstractReader implements SectionReader {
 
     private List<Message> messages;
 
@@ -501,7 +519,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
   }
 
-  public class StatusReader extends AbstractReader implements SectionReader {
+  protected class StatusReader extends AbstractReader implements SectionReader {
 
     StatusReader() {
       super(statusLinePattern);
@@ -535,8 +553,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       }
     }
 
-    private void addAlly(Map<EntityID, Alliance> allies, String id, String name) {
-      Faction ally = getAddFaction(EntityID.createEntityID(id, world.base));
+    private void addAlly(Map<EntityID, Alliance> allies, String aid, String name) {
+      Faction ally = getAddFaction(EntityID.createEntityID(aid, world.base));
       if (ally.getName() != null) {
         ally.setName(name);
       }
@@ -552,7 +570,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     return transformer.transform(c);// .translate(CoordinateID.create(c.getY() * -1, 0));
   }
 
-  public class RegionReader extends AbstractReader implements SectionReader {
+  protected class RegionReader extends AbstractReader implements SectionReader {
 
     private Region currentRegion;
     private Unit currentUnit;
@@ -635,7 +653,9 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             } else if (expectLine(shipLinePattern, false)) {
               parseShip();
             } else {
-              log.warn("unmatched line: " + line);
+              if (unmatchedcounter++ < 100) {
+                log.warn("unmatched line: " + line);
+              }
               currentBuilding = null;
               currentShip = null;
               nextLine(true, false);
@@ -667,12 +687,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       }
 
       int semi = lineMatcher.group(5).indexOf(";");
-      String predesc;
       if (semi >= 0) {
-        predesc = lineMatcher.group(5).substring(0, semi);
         currentShip.setDescription(lineMatcher.group(5).substring(semi + 2));
-      } else {
-        predesc = lineMatcher.group(5);
       }
 
       currentBuilding = null;
@@ -693,12 +709,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       }
 
       int semi = lineMatcher.group(5).indexOf(";");
-      String predesc;
       if (semi >= 0) {
-        predesc = lineMatcher.group(5).substring(0, semi);
         currentBuilding.setDescription(lineMatcher.group(5).substring(semi + 2));
-      } else {
-        predesc = lineMatcher.group(5);
       }
 
       currentShip = null;
@@ -786,7 +798,9 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
           } else if (matches(silverPartPattern, part)) {
             addItem(currentUnit, "silver", Integer.parseInt(partMatcher.group(1)));
           } else {
-            log.warn("unmatched part: " + part);
+            if (unmatchedcounter++ < 100) {
+              log.warn("unmatched part: " + part);
+            }
           }
         }
 
@@ -857,7 +871,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     translateMap.put("west", CoordinateID.create(-1, 0));
   }
 
-  public CoordinateID translate(CoordinateID coordinate, String string) {
+  protected CoordinateID translate(CoordinateID coordinate, String string) {
     CoordinateID trans = translateMap.get(string);
     if (trans == null)
       return null;

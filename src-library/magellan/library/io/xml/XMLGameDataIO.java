@@ -17,14 +17,15 @@ import java.io.IOException;
 import java.io.Reader;
 
 import magellan.library.GameData;
+import magellan.library.Rules;
 import magellan.library.io.GameDataIO;
-import magellan.library.utils.logging.Logger;
+import magellan.library.io.file.FileType;
 
 /**
  * An unfinished class for reading {@link GameData} from XML files.
  */
 public class XMLGameDataIO implements GameDataIO {
-  public static final Logger log = Logger.getInstance(XMLGameDataIO.class);
+  // public static final Logger log = Logger.getInstance(XMLGameDataIO.class);
 
   /**
    * Unfinished class!
@@ -38,5 +39,10 @@ public class XMLGameDataIO implements GameDataIO {
     // no special implementation found) to read the cr/xml
     //
     // return new XMLGameDataReader(file).readGameData();
+  }
+
+  public GameData read(FileType aFileType, Rules rules) throws IOException {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    throw new IOException("Implementation incomplete");
   }
 }

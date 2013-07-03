@@ -13,6 +13,7 @@
 
 package magellan.library.gamebinding;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.SortedMap;
@@ -26,7 +27,11 @@ import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
 import magellan.library.io.GameDataIO;
+import magellan.library.io.ReportParser;
 import magellan.library.io.RulesReader;
+import magellan.library.io.cr.CRGameNameIO;
+import magellan.library.io.cr.CRParser;
+import magellan.library.io.file.FileType;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.ReportTransformer;
@@ -216,6 +221,20 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   public CoordMapper getCoordMapper(CellGeometry cellGeometry) {
     return GameSpecificStuff.ERESSEA_MAPPER;
+  }
+
+  public ReportParser getParser(FileType aFileType) {
+    if (aFileType.getInnerName().endsWith(FileType.CR))
+      return new CRParser(null);
+
+    try {
+      if (new CRGameNameIO().getGameName(aFileType) != null)
+        return new CRParser(null);
+    } catch (IOException e) {
+      // try something else
+    }
+
+    return null;
   }
 
 }

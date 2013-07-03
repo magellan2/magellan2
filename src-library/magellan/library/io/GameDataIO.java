@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.Reader;
 
 import magellan.library.GameData;
+import magellan.library.Rules;
+import magellan.library.io.file.FileType;
 
 /**
  * A type of reader for GameData.
@@ -25,4 +27,15 @@ public interface GameDataIO {
    * @throws IOException If an I/O error occurs
    */
   public GameData read(Reader in, GameData world) throws IOException;
+
+  /**
+   * Reads a new GameData object from aFileType.
+   * 
+   * @param aFileType Provides the input file (reader).
+   * @param rules This game is expected to be found.
+   * @return a new GameData object, representing the input.
+   * @throws IOException If an I/O error occurs
+   */
+  GameData read(FileType aFileType, Rules rules) throws IOException;
+
 }

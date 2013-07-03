@@ -52,9 +52,11 @@ public class NRGameNameIO implements GameNameIO {
       while (line != null && lnr++ < 10) {
         if (line.length() > 0) {
           Matcher matcher = eresseaPattern.matcher(line);
-          if (matcher.matches())
-            return matcher.group(1);
-          else {
+          if (matcher.matches()) {
+            log.warn("Eressea NR not implemented");
+            return null;
+            // return matcher.group(1);
+          } else {
             matcher = atlantisPattern.matcher(line);
           }
           if (matcher.matches())

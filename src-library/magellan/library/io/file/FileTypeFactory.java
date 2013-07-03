@@ -158,6 +158,7 @@ public class FileTypeFactory {
    * compressed file and none have been selected.
    */
   public static class NotUniqueEntryException extends IOException {
+    //
   }
 
   /**
@@ -165,5 +166,6 @@ public class FileTypeFactory {
    * compressed file.
    */
   public static class NoValidEntryException extends IOException {
+    //
   }
 }

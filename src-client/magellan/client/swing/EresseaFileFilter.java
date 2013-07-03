@@ -21,10 +21,7 @@ import java.util.List;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 350 $
+ * A FileFilter extension for Eressea file types
  */
 public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
   /** Selects .cr-files */
@@ -48,6 +45,12 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
   /** Selects .zip, .gz, and .bz2-files (but not .cr) */
   public static final int ALLCR_COMPRESSED_FILTER = 6;
 
+  /** Selects .nr files */
+  public static final int NR_FILTER = 7;
+
+  /** Selects .r files */
+  public static final int ATLANTIS_FILTER = 8;
+
   private List<String> extensions;
   protected String description = "";
 
@@ -64,6 +67,8 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
     case ZIP_FILTER:
     case GZ_FILTER:
     case BZ2_FILTER:
+    case ATLANTIS_FILTER:
+    case NR_FILTER:
       extensions.add(getExtension(flag));
       break;
     case ALLCR_FILTER:

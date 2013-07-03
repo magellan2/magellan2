@@ -23,6 +23,8 @@
 // 
 package magellan.library.io;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,16 +33,18 @@ import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.io.file.FileType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.ReportTransformer;
 
-public class AbstractReportParser {
+public abstract class AbstractReportParser implements ReportParser {
   protected static final Logger log = Logger.getInstance(AbstractReportParser.class);
 
   protected GameData world;
@@ -237,6 +241,46 @@ public class AbstractReportParser {
 
   public int getErrors() {
     return errors;
+  }
+
+  public void setUI(UserInterface aui) {
+    ui = aui;
+  }
+
+  public void setTransformer(ReportTransformer coordinateTransformer) {
+    transformer = coordinateTransformer;
+  }
+
+  /**
+   * Parses a report provided by aFileType.
+   * 
+   * @param in Reader to cr file
+   * @param data GameData to be filled with informations of given cr file This function is
+   *          synchronized.
+   * @throws IOException If an I/O error occurs
+   * @see magellan.library.io.GameDataIO#read(java.io.Reader, magellan.library.GameData)
+   */
+  /**
+   * @see magellan.library.io.ReportParser#read(magellan.library.io.file.FileType,
+   *      magellan.library.Rules)
+   */
+  public GameData read(FileType aFileType, Rules rules) throws IOException {
+    GameData newData =
+        rules.getGameSpecificStuff().createGameData(rules.getGameSpecificStuff().getName());
+    newData.setFileType(aFileType);
+    Reader reader = aFileType.createReader();
+
+    try {
+      log.info("Loading report " + aFileType.getName());
+      return read(reader, newData);
+    } finally {
+      try {
+        reader.close();
+      } catch (IOException e) {
+        log.error(e);
+        // can't do much here
+      }
+    }
   }
 
 }

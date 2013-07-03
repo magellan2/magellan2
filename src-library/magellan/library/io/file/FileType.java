@@ -304,10 +304,6 @@ public class FileType {
     return this instanceof BZip2FileType;
   }
 
-  public boolean isNRFile() {
-    return getInnerName().endsWith(FileType.NR) || getInnerName().endsWith(FileType.R);
-  }
-
   /**
    * Signals that the file cannot be written to.
    */

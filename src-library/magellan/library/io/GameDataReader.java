@@ -21,7 +21,6 @@ import magellan.library.GameData;
 import magellan.library.Rules;
 import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
-import magellan.library.io.nr.NRParser;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
@@ -110,44 +109,27 @@ public class GameDataReader {
    */
   public GameData readGameData(FileType aFileType, ReportTransformer coordinateTransformer,
       String gameName) throws IOException {
-    if (aFileType.isXMLFile()) {
-      GameData data = readGameDataXML(aFileType, gameName, coordinateTransformer);
+    Rules rules = new RulesReader().readRules(gameName);
 
-      if (data != null) {
-        data.postProcess();
-      }
+    if (rules == null)
+      // This should never happen but who knows
+      throw new IOException("No Rules for game '" + gameName + "' readable!");
 
-      return data;
+    ReportParser parser = rules.getGameSpecificStuff().getParser(aFileType);
+    parser.setUI(ui);
+    parser.setTransformer(coordinateTransformer);
+    GameData data = parser.read(aFileType, rules);
+
+    if (data != null) {
+      data.setFileType(aFileType);
+
+      // after reading, the filetype may be written
+      aFileType.setReadonly(false);
+
+      data.postProcess();
     }
+    return data;
 
-    if (aFileType.isNRFile()) {
-      GameData data = readGameDataNR(aFileType, gameName, coordinateTransformer);
-
-      if (data != null) {
-        data.postProcess();
-      }
-
-      return data;
-    }
-
-    if (aFileType.isZIPFile() || aFileType.isGZIPFile() || aFileType.isBZIP2File()
-        || aFileType.isCRFile()) {
-
-      /*
-       * readGameDataCR invokes method aFileType.createReader(). This method deals wih the different
-       * treatment of different filetypes, hence we can simply say here
-       * "all known cr types are treated the same" 20060917: Jonathan (Fiete)
-       */
-      GameData data = readGameDataCR(aFileType, gameName, coordinateTransformer);
-
-      if (data != null) {
-        data.postProcess();
-      }
-
-      return data;
-    }
-
-    throw new IOException("Don't know how to read unknown file format in " + aFileType);
   }
 
   /**
@@ -191,41 +173,6 @@ public class GameDataReader {
     try {
       GameDataReader.log.info("Loading report " + aFileType.getName());
       CRParser parser = new CRParser(ui, coordinateTranslator);
-      parser.read(reader, newData);
-    } finally {
-      try {
-        reader.close();
-      } catch (IOException e) {
-        log.error(e);
-        // can't do much
-      }
-    }
-
-    // after reading, the filetype may be written
-    aFileType.setReadonly(false);
-
-    return newData;
-  }
-
-  /**
-   * Reads the game data from a NR file
-   * 
-   * @param aFileType The NR file
-   * @param aGameName
-   * @param coordinateTranslator the loaded report is translated by this coordinates.
-   * @return A new GameData object filled in with the information from the file.
-   * @throws IOException If an I/O error occurs
-   */
-  protected GameData readGameDataNR(FileType aFileType, String aGameName,
-      ReportTransformer coordinateTranslator) throws IOException {
-    GameData newData = createGameData(aGameName);
-    newData.setFileType(aFileType);
-
-    Reader reader = aFileType.createReader();
-
-    try {
-      GameDataReader.log.info("Loading report " + aFileType.getName());
-      NRParser parser = new NRParser(ui, coordinateTranslator);
       parser.read(reader, newData);
     } finally {
       try {

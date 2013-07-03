@@ -79,7 +79,7 @@ public class AtlantisOrderReaderTest extends MagellanTestWithResources {
     Status status = orderReader.getStatus();
     assertEquals(0, status.errors);
     assertEquals(0, status.confirmedUnitsNotOverwritten);
-    assertEquals(0, status.factions);
+    assertEquals(1, status.factions);
     assertEquals(0, status.units);
     assertEquals(0, status.unknownUnits);
     assertEquals("en", orderReader.getLocale().getLanguage());

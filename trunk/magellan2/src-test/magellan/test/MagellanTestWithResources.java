@@ -53,8 +53,8 @@ public abstract class MagellanTestWithResources {
   protected static Properties settings;
   protected static MagellanContext context;
   protected static SelfCleaningProperties completionSettings;
-  private static File resourceDir = new File(".");
-  private static Locale locale = DE_LOCALE;
+  private static File resourceDir;
+  private static Locale locale;
 
   protected static void setLocale(Locale alocale) {
     locale = alocale;
@@ -69,6 +69,8 @@ public abstract class MagellanTestWithResources {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
+    resourceDir = new File(".");
+    locale = DE_LOCALE;
     Logger.setLevel(Logger.WARN);
     initResources();
   }

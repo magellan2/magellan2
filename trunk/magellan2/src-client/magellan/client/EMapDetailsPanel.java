@@ -2932,11 +2932,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
 
     text.append(", ").append(Resources.get("emapdetailspanel.node.load")).append(" ").append(
-        EMapDetailsPanel.weightNumberFormat.format(uWeight - pWeight - horseWeight));
+        EMapDetailsPanel.weightNumberFormat.format(load));
     if (uWeight != modUWeight) {
-      text.append(" (").append(
-          EMapDetailsPanel.weightNumberFormat.format(modUWeight - modPWeight - modHorseWeight))
-          .append(")");
+      text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modLoad)).append(")");
     }
     // text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
 

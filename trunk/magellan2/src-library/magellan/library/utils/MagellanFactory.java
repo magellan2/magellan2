@@ -504,15 +504,17 @@ public abstract class MagellanFactory {
    * Returns a locale specific string representation of the specified unit combat status.
    */
   public static String combatStatusToString(Unit u) {
+    String key = u.getData().getGameSpecificStuff().getCombatStates().get(u.getCombatStatus());
     String retVal =
-        Resources
-            .get(u.getData().getGameSpecificStuff().getCombatStates().get(u.getCombatStatus()));
+        key == null ? Resources.get("unit.combatstatus.unknown", u.getCombatStatus()) : Resources
+            .get(key);
     // MagellanFactory.combatStatusToString(u.getCombatStatus());
     if (u.getModifiedCombatStatus() != u.getCombatStatus()) {
+      key = u.getData().getGameSpecificStuff().getCombatStates().get(u.getCombatStatus());
       retVal +=
           " ("
-              + Resources.get(u.getData().getGameSpecificStuff().getCombatStates().get(
-                  u.getModifiedCombatStatus())) + ")";
+              + (key == null ? Resources.get("unit.combatstatus.unknown", u.getCombatStatus())
+                  : Resources.get(key)) + ")";
     }
 
     if (u.isUnaided()) {

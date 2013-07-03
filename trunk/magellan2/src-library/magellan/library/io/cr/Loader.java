@@ -49,11 +49,12 @@ public class Loader {
   }
 
   /**
+   * @throws IOException
    * @deprecated Use {@link #cloneGameData(GameData, ReportTransformer)}
    */
   @Deprecated
   synchronized public GameData cloneGameDataInMemory(final GameData data,
-      final CoordinateID newOrigin) throws CloneNotSupportedException {
+      final CoordinateID newOrigin) throws CloneNotSupportedException, IOException {
     return cloneGameDataInMemory(data, new TwoLevelTransformer(newOrigin, CoordinateID.ZERO));
   }
 
@@ -66,68 +67,69 @@ public class Loader {
    * @throws CloneNotSupportedException if cloning failed
    */
   public synchronized GameData cloneGameDataInMemory(final GameData data,
-      final ReportTransformer coordinateTranslator) throws CloneNotSupportedException {
-    try {
-      final PipeFileType filetype = new PipeFileType();
-      filetype.setEncoding(data.getEncoding());
-      final CRWriter crw = new CRWriter(data, null, filetype, data.getEncoding());
-      GameDataReader crReader = new GameDataReader(null);
+      final ReportTransformer coordinateTranslator) throws CloneNotSupportedException, IOException {
+    // try {
+    final PipeFileType filetype = new PipeFileType();
+    filetype.setEncoding(data.getEncoding());
+    final CRWriter crw = new CRWriter(data, null, filetype, data.getEncoding());
+    GameDataReader crReader = new GameDataReader(null);
 
-      class ReadRunner implements Runnable {
-        boolean done = false;
-        GameDataReader r;
-        GameData d[];
+    class ReadRunner implements Runnable {
+      boolean done = false;
+      GameDataReader r;
+      GameData d[];
 
-        ReadRunner(GameDataReader r, GameData d[]) {
-          this.r = r;
-          this.d = d;
-        }
-
-        public boolean finished() {
-          return done;
-        }
-
-        public void run() {
-          try {
-            d[0] = r.readGameData(filetype, coordinateTranslator, data.getGameName());
-          } catch (IOException e1) {
-            e1.printStackTrace();
-          } finally {
-            done = true;
-          }
-        }
+      ReadRunner(GameDataReader r, GameData d[]) {
+        this.r = r;
+        this.d = d;
       }
 
-      GameData newData[] = new GameData[1];
-      ReadRunner runner = new ReadRunner(crReader, newData);
-      new Thread(runner).start();
-
-      try {
-        crw.writeSynchronously();
-      } catch (RuntimeException exc) {
-        exc.printStackTrace();
-        throw exc;
-      } finally {
-        crw.close();
+      public boolean finished() {
+        return done;
       }
 
-      while (!runner.finished()) {
-        notifyAll();
+      public void run() {
         try {
-          wait(500);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
+          d[0] = r.readGameData(filetype, coordinateTranslator, data.getGameName());
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        } finally {
+          done = true;
         }
       }
-
-      newData[0].setFileType(data.getFileType());
-
-      return newData[0];
-    } catch (IOException ioe) {
-      Loader.log.error("Loader.cloneGameData failed!", ioe);
-      throw new CloneNotSupportedException(ioe.toString());
     }
 
+    GameData newData[] = new GameData[1];
+    ReadRunner runner = new ReadRunner(crReader, newData);
+    new Thread(runner).start();
+
+    try {
+      crw.writeSynchronously();
+    } catch (RuntimeException exc) {
+      exc.printStackTrace();
+      throw exc;
+    } finally {
+      crw.close();
+    }
+
+    while (!runner.finished()) {
+      notifyAll();
+      try {
+        wait(500);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if (newData[0] == null)
+      throw new CloneNotSupportedException("no game data");
+    newData[0].setFileType(data.getFileType());
+
+    return newData[0];
+    // } catch (IOException ioe) {
+    // Loader.log.error("Loader.cloneGameData failed!", ioe);
+    // throw new CloneNotSupportedException(ioe.toString());
+    // }
   }
 
   /**

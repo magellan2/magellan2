@@ -197,8 +197,9 @@ public abstract class MagellanFactory {
   }
 
   /** Creates a new Border */
-  public static Border createBorder(IntegerID id, int direction, String type, int buildratio) {
-    return new MagellanBorderImpl(id, direction, type, buildratio);
+  public static Border createBorder(IntegerID id, int direction, String dirName, String type,
+      int buildratio) {
+    return new MagellanBorderImpl(id, direction, dirName, type, buildratio);
   }
 
   /** Creates a new Building */

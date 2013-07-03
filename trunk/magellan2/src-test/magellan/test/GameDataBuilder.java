@@ -37,6 +37,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.CollectionFactory;
+import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 
 /**
@@ -399,6 +400,8 @@ public class GameDataBuilder {
     final Border road = MagellanFactory.createBorder(IntegerID.create(id));
 
     road.setDirection(direction);
+    road.setDirectionName(region.getData().getRules().getGameSpecificStuff().getOrderChanger()
+        .getOrder(getLocale(), StringID.create(Direction.toDirection(direction).name())));
     road.setBuildRatio(buildRatio);
     road.setType("Straﬂe");
 

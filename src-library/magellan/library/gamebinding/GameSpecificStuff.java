@@ -16,7 +16,6 @@ package magellan.library.gamebinding;
 import java.io.IOException;
 import java.util.Map;
 
-import magellan.client.swing.map.CellGeometry;
 import magellan.library.GameData;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
@@ -146,7 +145,7 @@ public interface GameSpecificStuff {
   /**
    * Return the mapper to adjust map grid cells.
    */
-  public CoordMapper getCoordMapper(CellGeometry cellGeometry);
+  public CoordMapper getCoordMapper();
 
   /**
    * Mapper to adjust map grid cells.
@@ -200,4 +199,5 @@ public interface GameSpecificStuff {
    * @return The parser or <code>null</code> if order reading is not supported.
    */
   public GameSpecificOrderReader getOrderReader(GameData data);
+
 }

@@ -23,6 +23,7 @@
 // 
 package magellan.library.gamebinding;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -40,7 +41,13 @@ import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.e3a.E3AMapMergeEvaluator;
 import magellan.library.gamebinding.e3a.E3AOrderChanger;
 import magellan.library.io.GameDataIO;
+import magellan.library.io.ReportParser;
 import magellan.library.io.RulesReader;
+import magellan.library.io.cr.CRGameNameIO;
+import magellan.library.io.cr.CRParser;
+import magellan.library.io.file.FileType;
+import magellan.library.io.nr.NRGameNameIO;
+import magellan.library.io.nr.NRParser;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.transformation.ReportTransformer;
 import magellan.library.utils.transformation.TransformerFinder;
@@ -248,4 +255,24 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
     };
   }
 
+  public ReportParser getParser(FileType aFileType) throws IOException {
+    if (aFileType.getInnerName().endsWith(FileType.CR))
+      return new CRParser(null);
+
+    try {
+      if (new CRGameNameIO().getGameName(aFileType) != null)
+        return new CRParser(null);
+    } catch (IOException e) {
+      // try something else
+    }
+
+    try {
+      if (new NRGameNameIO().getGameName(aFileType) != null)
+        return new NRParser(null);
+    } catch (IOException e) {
+      // try something else
+    }
+
+    return null;
+  }
 }

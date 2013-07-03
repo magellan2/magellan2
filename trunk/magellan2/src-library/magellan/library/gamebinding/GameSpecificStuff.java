@@ -13,6 +13,7 @@
 
 package magellan.library.gamebinding;
 
+import java.io.IOException;
 import java.util.Map;
 
 import magellan.client.swing.map.CellGeometry;
@@ -21,6 +22,8 @@ import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
 import magellan.library.io.GameDataIO;
+import magellan.library.io.ReportParser;
+import magellan.library.io.file.FileType;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.transformation.ReportTransformer;
 
@@ -182,4 +185,6 @@ public interface GameSpecificStuff {
       return 0;
     }
   };
+
+  public ReportParser getParser(FileType aFileType) throws IOException;
 }

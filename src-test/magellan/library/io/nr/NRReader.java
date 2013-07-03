@@ -96,11 +96,16 @@ public class NRReader extends MockReader {
       }
     }
     if (items != null) {
-      for (int i = 0; i < items.length;) {
+      for (int i = 0; i < items.length; i += 2) {
         if (i == 0) {
-          add(String.format(", has: %d %s", items[i++], items[i++]));
+          add(", has: ");
         } else {
-          add(String.format(", %d %s", items[i++], items[i++]));
+          add(", ");
+        }
+        if (items[i].toString().equals("1")) {
+          add(String.format("%s", items[i + 1]));
+        } else {
+          add(String.format("%d %s", items[i], items[i + 1]));
         }
       }
     }

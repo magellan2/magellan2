@@ -125,8 +125,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static final String SKILLS_PART = "skills:\\s+" + NAME + "\\s+" + NUM + "\\s+\\[" + NUM
       + "\\]";
   protected static final String SKILL_PART = NAME + "\\s+" + NUM + "\\s+\\[" + NUM + "\\]";
-  protected static final String ITEMS_PART = "has:\\s+" + NUM + "\\s+" + NAME;
-  protected static final String ITEM_PART = NUM + "\\s+" + NAME;
+  protected static final String ITEMS_PART = "has:\\s+(" + NUM + "\\s+)?" + NAME;
+  protected static final String ITEM_PART = "(" + NUM + "\\s+)?" + NAME;
   protected static final String SPELLS_PART = "spells:\\s+" + NAME;
   protected static final String SPELL_PART = NAME;
   protected static final String CSPELLS_PART = "combat spell:\\s+" + NAME;
@@ -889,7 +889,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             addSkill(currentUnit, partMatcher.group(1), Integer.parseInt(partMatcher.group(2)),
                 Integer.parseInt(partMatcher.group(3)));
           } else if (matches(itemsPartPattern, part)) {
-            addItem(currentUnit, partMatcher.group(2), Integer.parseInt(partMatcher.group(1)));
+            addItem(currentUnit, partMatcher.group(3), partMatcher.group(1));
           } else if (matches(spellsPartPattern, part)) {
             addSpell(currentUnit, partMatcher.group(1), false);
           } else if (matches(cspellsPartPattern, part)) {
@@ -903,12 +903,11 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             currentUnit.setGuard(1);
             currentRegion.addGuard(currentUnit);
           } else if (matches(silverPartPattern, part)) {
-            addItem(currentUnit, AtlantisConstants.I_USILVER.toString(), Integer
-                .parseInt(partMatcher.group(1)));
+            addItem(currentUnit, AtlantisConstants.I_USILVER.toString(), partMatcher.group(1));
             // sub parts:
           } else if ((partPattern == itemsPartPattern || partPattern == itemPartPattern)
               && matches(itemPartPattern, part)) {
-            addItem(currentUnit, partMatcher.group(2), Integer.parseInt(partMatcher.group(1)));
+            addItem(currentUnit, partMatcher.group(3), partMatcher.group(1));
           } else if ((partPattern == skillsPartPattern || partPattern == skillPartPattern)
               && matches(skillPartPattern, part)) {
             addSkill(currentUnit, partMatcher.group(1), Integer.parseInt(partMatcher.group(2)),
@@ -964,12 +963,25 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       }
     }
 
-    protected void addItem(Unit unit, String item, int amount) {
-      if (world.getRules().getItemType(item) == null) {
-        log.warn("unknown item " + item);
+    protected void addItem(Unit unit, String item, String amount) throws ParseException {
+      ItemType itemType = world.getRules().getItemType(item, false);
+      if (itemType == null) {
+        // this is a hack to recognize plural forms
+        int index = item.indexOf(" ");
+        if (index < 0) {
+          index = item.length();
+        }
+        if (item.charAt(index - 1) == 's') {
+          itemType =
+              world.getRules().getItemType(item.substring(0, index - 1) + item.substring(index),
+                  false);
+        }
       }
-      ItemType itemType = world.getRules().getItemType(item, true);
-      unit.addItem(new Item(itemType, amount));
+      if (itemType == null) {
+        log.warn("unknown item " + item);
+        itemType = world.getRules().getItemType(item, true);
+      }
+      unit.addItem(new Item(itemType, amount == null ? 1 : Integer.parseInt(amount.trim())));
     }
 
     protected void addSkill(Unit unit, String skillName, int level, int days) {

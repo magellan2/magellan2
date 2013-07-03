@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import magellan.library.GameData;
 import magellan.library.Unit;
@@ -119,7 +120,7 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
     assertEquals("GIVE 2 1 wood ; foo", unit.getOrders2().get(0).toString());
 
     changer.addGiveOrder(unit, unit2, 5, AtlantisConstants.I_USILVER, null);
-    assertEquals("PAY 2 5", unit.getOrders2().get(1).toString());
+    assertTrue(unit.getOrders2().get(1).toString().matches("PAY 2 5 *"));
 
     changer.addGiveOrder(unit, unit2, 3, EresseaConstants.I_MEN, null);
     assertEquals("TRANSFER 2 3", unit.getOrders2().get(2).toString());

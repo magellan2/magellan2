@@ -33,6 +33,9 @@ import magellan.library.Unit;
 import magellan.library.relation.MovementRelation;
 import magellan.library.utils.Direction;
 
+/**
+ * Movement evaluator for Atlantis game.
+ */
 public class AtlantisMovementEvaluator implements MovementEvaluator {
 
   public int getPayloadOnHorse(Unit unit) {

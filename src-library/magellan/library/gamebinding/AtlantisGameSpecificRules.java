@@ -33,6 +33,9 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.UnitContainerType;
 
+/**
+ * Rules for Atlantis game
+ */
 public class AtlantisGameSpecificRules implements GameSpecificRules {
 
   private Rules rules;

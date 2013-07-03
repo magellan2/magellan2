@@ -92,6 +92,7 @@ public interface OrderChanger {
    */
   public void addRecruitOrder(Unit u, int amount);
 
+  /** Code for ALL in commands like GIVE xyz ALL item, used in addGiveOrder. */
   public static final int ALL = Integer.MAX_VALUE;
 
   /**
@@ -141,18 +142,66 @@ public interface OrderChanger {
    */
   public int areCompatibleLongOrders(Orders orders);
 
+  /**
+   * Returns localized string for given locale and argument.
+   * 
+   * @param orderLocale
+   * @param arg can be an order ID, a unit ID or anything else
+   * @throws RulesException if argument has no translation
+   */
   public String getTokenLocalized(Locale orderLocale, Object arg) throws RulesException;
 
+  /**
+   * Returns localized order for given order id
+   * 
+   * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
+   */
   public String getOrder(Locale orderLocale, StringID orderId);
 
+  /**
+   * Returns a localized order for given order id concatenated (separated by spaces) with the
+   * argument translations.
+   * 
+   * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
+   * @param args Additional arguments
+   * @return The order
+   */
   public String getOrder(Locale orderLocale, StringID orderId, Object[] args);
 
+  /**
+   * Returns localized order for given order id
+   * 
+   * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
+   * @throws RulesException if argument has no translation
+   */
   public String getOrder(StringID orderId, Locale orderLocale) throws RulesException;
 
+  /**
+   * Returns a localized order for given order id concatenated (separated by spaces) with the
+   * argument translations.
+   * 
+   * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
+   * @param args Additional arguments
+   * @return The order
+   * @throws RulesException if argument has no translation
+   */
   public String getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException;
 
+  /**
+   * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
+   * removes the corresponding orders from this unit.
+   * 
+   * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
+   *          the report) which is incremented with each new temp unit.
+   * @param locale the locale to parse the orders with.
+   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   *         from this unit's orders.
+   */
   public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale, Unit unit);
 
+  /**
+   * Returns the orders necessary to issue the creation of all the child temp units of this unit.
+   */
   public Collection<? extends Order> getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit);
 
 }

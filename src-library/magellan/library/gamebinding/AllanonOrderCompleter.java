@@ -56,12 +56,12 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
    * Returns the learn cost for a specific skill.
    * 
    * @param skillType the skill to be learned
-   * @param unit the Unit
+   * @param aUnit the Unit
    * @return the cost to learn a skill for the given unit. If the unit has no persons the cost for
    *         one person is returned.
    */
   @Override
-  public int getSkillCost(SkillType skillType, Unit unit) {
+  public int getSkillCost(SkillType skillType, Unit aUnit) {
     int cost = 0;
 
     if (skillType.getID().equals(EresseaConstants.S_TAKTIK)
@@ -70,13 +70,13 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
         || skillType.getID().equals(AllanonConstants.S_MEUCHELN)
         || skillType.getID().equals(AllanonConstants.S_MECHANIK)) {
       int level = 0;
-      Skill skill = (unit != null) ? unit.getSkill(skillType) : null;
+      Skill skill = (aUnit != null) ? aUnit.getSkill(skillType) : null;
 
-      if (skill != null && unit != null) {
+      if (skill != null && aUnit != null) {
         if (skill.noSkillPoints()) {
-          level = skill.getLevel() - skill.getModifier(unit);
+          level = skill.getLevel() - skill.getModifier(aUnit);
         } else {
-          int days = unit.getSkill(skillType).getPointsPerPerson();
+          int days = aUnit.getSkill(skillType).getPointsPerPerson();
           level = (int) Math.floor(Math.sqrt((days / 15.0) + 0.25) - 0.5);
         }
       }
@@ -88,13 +88,13 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
       // get magic level without modifier
       int level = 0;
       Skill skill = null;
-      if (unit != null) {
-        skill = unit.getSkill(skillType);
+      if (aUnit != null) {
+        skill = aUnit.getSkill(skillType);
         if (skill != null) {
           if (skill.noSkillPoints()) {
-            level = skill.getLevel() - skill.getModifier(unit);
+            level = skill.getLevel() - skill.getModifier(aUnit);
           } else {
-            int days = unit.getSkill(skillType).getPointsPerPerson();
+            int days = aUnit.getSkill(skillType).getPointsPerPerson();
             level = (int) Math.floor(Math.sqrt((days / 15.0) + 0.25) - 0.5);
           }
         }
@@ -104,9 +104,9 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
       cost = (nextLevel * nextLevel) * 50;
     }
 
-    if (unit != null) {
-      if ((unit.getModifiedBuilding() != null)
-          && unit.getModifiedBuilding().getType().equals(
+    if (aUnit != null) {
+      if ((aUnit.getModifiedBuilding() != null)
+          && aUnit.getModifiedBuilding().getType().equals(
               getData().rules.getBuildingType(EresseaConstants.B_ACADEMY))) {
         if (cost == 0) {
           cost = 100;
@@ -115,7 +115,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
         }
       }
 
-      cost *= Math.max(1, unit.getModifiedPersons());
+      cost *= Math.max(1, aUnit.getModifiedPersons());
     }
 
     return cost;

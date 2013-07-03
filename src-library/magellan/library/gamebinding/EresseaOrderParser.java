@@ -2761,7 +2761,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
     }
 
     protected boolean readReserviereAmount(OrderToken token) {
-      boolean retVal = false; // FIXME use locale!!
+      boolean retVal = false;
       if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
         token.ttype = OrderToken.TT_KEYWORD;
         getOrder().amount = Order.ALL;

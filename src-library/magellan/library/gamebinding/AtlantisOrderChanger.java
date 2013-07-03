@@ -49,6 +49,9 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.OrderType;
 import magellan.library.utils.logging.Logger;
 
+/**
+ * Order changer for Atlantis game.
+ */
 public class AtlantisOrderChanger implements OrderChanger {
   private static final Logger log = Logger.getInstance(AtlantisOrderChanger.class);
 
@@ -60,6 +63,9 @@ public class AtlantisOrderChanger implements OrderChanger {
     this.rules = rules;
   }
 
+  /**
+   * Return rules.
+   */
   public Rules getRules() {
     return rules;
   }
@@ -113,7 +119,8 @@ public class AtlantisOrderChanger implements OrderChanger {
     Item sourceItem = new Item(new ItemType(StringID.create("unknown")), 1);
     if (item != null) {
       if (item.equals(EresseaConstants.I_MEN)) {
-        tmpOrders = getOrder(locale, AtlantisConstants.OC_TRANSFER, target.getID(), locale);
+        tmpOrders =
+            getOrder(locale, AtlantisConstants.OC_TRANSFER, new Object[] { target.getID(), amount });
       } else {
         ItemType itemType = getRules().getItemType(item);
         if (itemType == null) {
@@ -127,21 +134,23 @@ public class AtlantisOrderChanger implements OrderChanger {
       tmpOrders = "; give all not supported";
     }
 
-    if (tmpOrders != null) {
+    if (tmpOrders != null || item == null) {
       log.error(tmpOrders);
     } else {
       if (item.equals(AtlantisConstants.I_USILVER)) {
         tmpOrders =
-            getOrder(locale, AtlantisConstants.OC_PAY, target.getID(), (amount < 0 ? target
-                .getPersons()
-                * amount : (amount == OrderChanger.ALL ? (sourceItem == null ? 0 : sourceItem
-                .getAmount()) : amount)), (comment != null ? ("; " + comment) : ""));
+            getOrder(locale, AtlantisConstants.OC_PAY, new Object[] {
+                target.getID(),
+                (amount < 0 ? target.getPersons() * amount : (amount == OrderChanger.ALL
+                    ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)),
+                (comment != null ? ("; " + comment) : "") });
       } else {
         tmpOrders =
-            getOrder(locale, AtlantisConstants.OC_GIVE, target.getID(), (amount < 0 ? target
-                .getPersons()
-                * amount : (amount == OrderChanger.ALL ? (sourceItem == null ? 0 : sourceItem
-                .getAmount()) : amount)), sItem, (comment != null ? ("; " + comment) : ""));
+            getOrder(locale, AtlantisConstants.OC_GIVE, new Object[] {
+                target.getID(),
+                (amount < 0 ? target.getPersons() * amount : (amount == OrderChanger.ALL
+                    ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)), sItem,
+                (comment != null ? ("; " + comment) : "") });
       }
     }
     source.addOrder(tmpOrders);
@@ -207,7 +216,7 @@ public class AtlantisOrderChanger implements OrderChanger {
     }
   }
 
-  public String getOrder(Locale orderLocale, StringID orderId, Object... args) {
+  public String getOrder(Locale orderLocale, StringID orderId, Object[] args) {
     try {
       return getOrder(orderId, orderLocale, args);
     } catch (RulesException e) {
@@ -219,8 +228,7 @@ public class AtlantisOrderChanger implements OrderChanger {
     return getOrder(orderId, orderLocale, EMPTY);
   }
 
-  public String getOrder(StringID orderId, Locale orderLocale, Object... args)
-      throws RulesException {
+  public String getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException {
     StringBuilder order = new StringBuilder();
     order.append(getOrder1(orderId, orderLocale));
     for (Object arg : args) {
@@ -356,7 +364,8 @@ public class AtlantisOrderChanger implements OrderChanger {
     final Locale locale = unit.getLocale();
 
     for (TempUnit u : unit.tempUnits()) {
-      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.OC_MAKE, u.getID()), locale));
+      cmds.add(parser.parse(
+          getOrder(locale, AtlantisConstants.OC_MAKE, new Object[] { u.getID() }), locale));
 
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 

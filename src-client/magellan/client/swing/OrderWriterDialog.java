@@ -482,6 +482,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     Faction faction = getFaction(type);
     String suffix = getSuffix(faction, type);
 
+    // selection defaults are overwritten by factionChanged...
     int fixedWidth =
         PropertiesHelper.getInteger(localSettings, PropertiesHelper.ORDERWRITER_FIXED_WIDTH
             + suffix, DEFAULT_FIXED_WIDTH);
@@ -1045,7 +1046,6 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
     String suffix = getSuffix(faction, type);
 
-    // TODO synchronize defaults with getControlsPanel
     if (type == EMAIL_PANEL) {
       // if (localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS +
       // suffix,

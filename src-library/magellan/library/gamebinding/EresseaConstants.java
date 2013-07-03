@@ -90,8 +90,11 @@ public class EresseaConstants extends GameConstants {
   /** Order constant @ */
   public static final StringID OC_PERSISTENT = StringID.create("@");
 
+  /** Command marker */
   public static final String O_COMMENT = ";";
+  /** Persistent comments */
   public static final String O_PCOMMENT = "//";
+  /** Marker for persistent orders */
   public static final String O_PERSISTENT = "@";
 
   /** Order constant ADDRESSES */
@@ -401,9 +404,6 @@ public class EresseaConstants extends GameConstants {
   public static final String O_HELP_FACTIONSTEALTH = "HELP_FACTIONSTEALTH";
   /** Order constant HELP_FACTIONSTEALTH */
   public static final StringID OC_HELP_FACTIONSTEALTH = StringID.create("HELP_FACTIONSTEALTH");
-
-  // FIXME(pavkovic) 2003.04.16: this is only used for german to distinguish between "HELFEN" and
-  // "HELFE"
 
   /** The "HELFE" from KÄMPFE HELFE [NICHT] */
   public static final String O_COMBAT_HELP = "COMBAT_HELP";

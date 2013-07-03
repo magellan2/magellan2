@@ -27,8 +27,14 @@ import magellan.library.GameData;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.Completion;
 
+/**
+ * Order completer for Atlantis game
+ */
 public class AtlantisOrderCompleter extends AbstractOrderCompleter {
 
+  /**
+   * 
+   */
   public AtlantisOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
     super(gd, ac);
   }
@@ -90,10 +96,16 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
     completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_CAST)));
   }
 
+  /**
+   * Add completion for an ID.
+   */
   public void cmpltId() {
     completions.add(new Completion("<id>", "", ""));
   }
 
+  /**
+   * Add completions for a number between min and max (inclusively).
+   */
   public void cmpltNumber(int min, int max) {
     if (max < min + 6) {
       for (int i = min; i <= max; ++i) {

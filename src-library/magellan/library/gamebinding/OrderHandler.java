@@ -23,20 +23,17 @@
 // 
 package magellan.library.gamebinding;
 
+import magellan.library.Order;
 import magellan.library.completion.OrderParser;
 import magellan.library.utils.OrderToken;
 
 /**
- * An OrderHandler tries to match the {@link #tokensIterator}
+ * An OrderHandler parses an order and create an {@link Order}.
  * 
  * @author stm
- * @version 1.0, Jun 11, 2009
  */
 public abstract class OrderHandler {
 
-  /**
-   * DOCUMENT-ME
-   */
   private final OrderParser orderParser;
 
   /**

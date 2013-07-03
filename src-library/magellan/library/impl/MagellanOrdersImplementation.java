@@ -174,7 +174,6 @@ public class MagellanOrdersImplementation implements Orders {
    * @see magellan.library.Orders#isToken(magellan.library.Order, int, StringID)
    */
   public boolean isToken(Order order, int i, StringID token) {
-    // FIXME: is token localized?
     return order.getToken(i).equalsCompletedToken(getOrderTranslation(token));
   }
 

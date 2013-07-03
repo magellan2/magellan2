@@ -38,7 +38,7 @@ import magellan.library.utils.OrderToken;
  */
 public class CombatOrder extends SimpleOrder {
 
-  private int status = EresseaConstants.CS_HELPYES;
+  private int status = EresseaConstants.CS_INIT;
 
   /**
    * @param tokens

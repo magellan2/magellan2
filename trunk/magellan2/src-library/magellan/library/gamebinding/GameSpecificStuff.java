@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import magellan.library.GameData;
+import magellan.library.Unit;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
@@ -138,7 +139,10 @@ public interface GameSpecificStuff {
       UserInterface ui, boolean interactive);
 
   /**
-   * Returns a list of possible combat states.
+   * Returns a map of possible combat states.
+   * 
+   * @return A map whose keys are internal values used in {@link Unit#getCombatStatus()} and values
+   *         are resource keys.
    */
   public Map<Integer, String> getCombatStates();
 

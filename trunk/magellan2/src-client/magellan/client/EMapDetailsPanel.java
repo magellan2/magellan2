@@ -5753,14 +5753,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
 
       protected void init() {
-        for (int i = 0; i < 6; i++) {
-          addItem(i);
+        for (Entry<Integer, String> state : getGameSpecificStuff().getCombatStates().entrySet()) {
+          addItem(state.getKey(), Resources.get(state.getValue()));
         }
       }
 
-      protected void addItem(int state) {
-        JMenuItem item = new JMenuItem(MagellanFactory.combatStatusToString(state));
-        item.setActionCommand(String.valueOf(state));
+      protected void addItem(int k, String state) {
+        JMenuItem item = new JMenuItem(state);
+        item.setActionCommand(String.valueOf(k));
         item.addActionListener(this);
         this.add(item);
       }

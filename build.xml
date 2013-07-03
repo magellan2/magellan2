@@ -463,8 +463,7 @@
 			<fileset dir="${release}/" includes="**"/>
 		</copy>
 
-		<antcall target="clear-classes"/>
-		<antcall target="clear-release"/>
+		<antcall target="clear-all"/>
 	</target>
 
 	<!-- *************************************************************** -->
@@ -656,6 +655,24 @@
 			<fileset dir="${release}" includes="**"/>
 		</delete>
 		<mkdir dir="${release}" />
+	</target>
+
+	<!-- *************************************************************** -->
+	<!-- *                                                             * -->
+	<!-- *************************************************************** -->
+	<target name="clear-all">
+		<antcall target="clear-release"/>
+		<antcall target="clear-classes"/>
+		<!-- cleaning release directory by creating&deleting and creating it -->
+		<echo message="Cleaning macos folder"/>
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${basedir}/macos" includes="**"/>
+		</delete>
+		<echo message="Cleaning default"/>
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${basedir}" includes="default-??????*/**"/>
+			<fileset dir="${basedir}" includes="default??????*/**"/>
+		</delete>
 	</target>
 
 </project>

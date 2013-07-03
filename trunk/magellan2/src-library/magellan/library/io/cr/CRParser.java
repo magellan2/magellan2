@@ -1401,7 +1401,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         regionType.setAstralVisible(sc.argv[0].equals("true"));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("peasantWage")) {
-        regionType.setPeasantWage(Integer.parseInt(sc.argv[1]));
+        regionType.setPeasantWage(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("iconname")) {
         regionType.setIcon(sc.argv[0]);

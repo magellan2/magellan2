@@ -127,6 +127,18 @@ public class AtlantisConstants extends GameConstants {
   /** The item wood */
   public static StringID I_WOOD = StringID.create("wood");
 
+  /** The resource iron */
+  public static final StringID I_RIRON = StringID.create("Iron");
+
+  /** The resource stones */
+  public static final StringID I_RSTONE = StringID.create("Stone");
+
+  /** The resource wood */
+  public static final StringID I_RTREES = StringID.create("Wood");
+
+  /** The resource horses */
+  public static final StringID I_RHORSE = StringID.create("Horse");
+
   /** Building type 2building" */
   public static final StringID B_BUILDING = StringID.create("Building");
 
@@ -134,5 +146,29 @@ public class AtlantisConstants extends GameConstants {
   public static final int CS_FRONT = 1;
   /** The rear line combat status */
   public static final int CS_REAR = 2;
+
+  /** The RegionType ocean */
+  public static final StringID RT_OCEAN = StringID.create("Ocean");
+
+  /** The RegionType plain */
+  public static final StringID RT_PLAIN = StringID.create("Plain");
+
+  /** The RegionType forest */
+  public static final StringID RT_FOREST = StringID.create("Forest");
+
+  /** The RegionType swamp */
+  public static final StringID RT_SWAMP = StringID.create("Swamp");
+
+  /** The RegionType mountain */
+  public static final StringID RT_MOUNTAIN = StringID.create("Mountain");
+
+  /** The RegoinType "the void" */
+  public static final StringID RT_VOID = StringID.create("Magellan_Leere");
+
+  /** The RegoinType "the void" */
+  public static final StringID RT_UNKNOWN = StringID.create("unbekannt");
+
+  /** "wrap around" regions */
+  public static final StringID RT_WRAP = StringID.create("Übergang");
 
 }

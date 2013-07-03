@@ -486,24 +486,28 @@ RAWMATERIALS
 REGIONTYPE "mountain"
 "mountain";name
 1666;maxworkers
+12;peasantWage
 "true";isLand
 "Berge";iconname
 
 REGIONTYPE "plain"
 "plain";name
 6666;maxworkers
+15;peasantWage
 "true";isLand
 "Ebene";iconname
 
 REGIONTYPE "swamp"
 "swamp";name
 3333;maxworkers
+12;peasantWage
 "true";isLand
 "Sumpf";iconname
 
 REGIONTYPE "forest"
 "forest";name
 6666;maxworkers
+12;peasantWage
 "true";isLand
 "Wald";iconname
 

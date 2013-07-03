@@ -34,8 +34,10 @@ import java.util.TreeMap;
 import magellan.library.CompleteData;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.LongID;
 import magellan.library.Message;
 import magellan.library.Region;
+import magellan.library.RegionResource;
 import magellan.library.Rules;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
@@ -105,13 +107,59 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#postProcess(magellan.library.GameData)
    */
   public void postProcess(GameData data) {
-    // TODO implement
+    resourceId = 0;
     if (data.getLocale() == null) {
       data.setLocale(Locale.ENGLISH);
     }
     for (Faction f : data.getFactions()) {
       if (f.getLocale() == null) {
         f.setLocale(Locale.ENGLISH);
+      }
+    }
+    for (Region region : data.getRegions()) {
+      if (region.getRegionType().getID().equals(AtlantisConstants.RT_PLAIN)) {
+
+        RegionResource res =
+            new RegionResource(LongID.create(++resourceId), getRules().getItemType(
+                AtlantisConstants.I_RHORSE));
+        res.setDate(data.getDate().getDate());
+        res.setAmount(200);
+        region.addResource(res);
+
+        region.setWage(15);
+      } else if (region.getRegionType().getID().equals(AtlantisConstants.RT_MOUNTAIN)) {
+        RegionResource res =
+            new RegionResource(LongID.create(++resourceId), getRules().getItemType(
+                AtlantisConstants.I_RSTONE));
+        res.setDate(data.getDate().getDate());
+        res.setAmount(200);
+        region.addResource(res);
+        res =
+            new RegionResource(LongID.create(++resourceId), getRules().getItemType(
+                AtlantisConstants.I_RIRON));
+        res.setDate(data.getDate().getDate());
+        res.setAmount(200);
+        region.addResource(res);
+
+        region.setWage(12);
+      } else if (region.getRegionType().getID().equals(AtlantisConstants.RT_FOREST)) {
+        RegionResource res =
+            new RegionResource(LongID.create(++resourceId), getRules().getItemType(
+                AtlantisConstants.I_RTREES));
+        res.setDate(data.getDate().getDate());
+        res.setAmount(200);
+        region.addResource(res);
+
+        region.setWage(12);
+      } else if (region.getRegionType().getID().equals(AtlantisConstants.RT_SWAMP)) {
+        RegionResource res =
+            new RegionResource(LongID.create(++resourceId), getRules().getItemType(
+                AtlantisConstants.I_RTREES));
+        res.setDate(data.getDate().getDate());
+        res.setAmount(100);
+        region.addResource(res);
+
+        region.setWage(12);
       }
     }
   }

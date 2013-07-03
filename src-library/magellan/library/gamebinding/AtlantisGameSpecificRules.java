@@ -45,15 +45,21 @@ public class AtlantisGameSpecificRules implements GameSpecificRules {
   }
 
   public Integer getMaxWorkers(Region region) {
-    return 0;
+    return region.getRegionType().getInhabitants();
   }
 
   public Integer getMaxEntertain(Region region) {
-    return 0;
+    if (region.getSilver() > 0)
+      return region.getSilver() / 20;
+    else
+      return -1;
   }
 
   public Integer getMaxOldEntertain(Region region) {
-    return 0;
+    if (region.getOldSilver() > 0)
+      return region.getOldSilver() / 20;
+    else
+      return -1;
   }
 
   public boolean isShip(Ship ship) {

@@ -1966,8 +1966,8 @@ public class Regions {
     // border of r1 ->
     boolean border1OK = false;
     for (Border b : r1.borders()) {
-      if (b.getType().equals(EresseaConstants.BT_STRASSE) && b.getDirection() == dir1.getDirCode()
-          && b.getBuildRatio() == 100) {
+      if (b.getType().equals(EresseaConstants.BT_STRASSE.toString())
+          && b.getDirection() == dir1.getDirCode() && b.getBuildRatio() == 100) {
         border1OK = true;
         break;
       }

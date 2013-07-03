@@ -682,11 +682,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     if (unit.getModifiedShip() != null && unit.getModifiedShip().getModifiedOwnerUnit() == unit) {
       metric = new ShipMetric(data.getGameSpecificRules().getShipRange(unit.getModifiedShip()));
     } else {
-      EresseaMovementEvaluator evaluator =
-          (EresseaMovementEvaluator) data.getGameSpecificStuff().getMovementEvaluator();
-      metric =
-          new LandMetric(evaluator.canWalk(unit) ? (evaluator.canRide(unit) ? BF_RIDING
-              : BF_WALKING) : 0);
+      metric = new LandMetric(canWalk(unit) ? (canRide(unit) ? BF_RIDING : BF_WALKING) : 0);
     }
 
     // dissect the order into pieces to detect which way the unit is taking

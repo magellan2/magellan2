@@ -79,9 +79,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   // begin of completion methods invoked by OrderParser
   @Override
   protected void cmplt() {
-    // add completions, that were defined by the user in the option pane
-    // and can be accessed by CompleterSettingsProvider.getSelfDefinedCompletions()
-    completions.addAll(completerSettingsProvider.getSelfDefinedCompletions());
+    super.cmplt();
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_WORK)));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_ATTACK), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_BANNER), spaceQuotes,

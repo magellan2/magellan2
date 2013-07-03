@@ -99,7 +99,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * Reader for orders with unit argument.
    */
   public abstract class UnitOrderHandler extends OrderHandler {
-    UnitOrderHandler(OrderParser orderParser) {
+    protected UnitOrderHandler(OrderParser orderParser) {
       super(orderParser);
     }
 
@@ -123,7 +123,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * Reader for orders with unit container argument.
    */
   public abstract class UCOrderHandler extends OrderHandler {
-    UCOrderHandler(OrderParser orderParser) {
+    protected UCOrderHandler(OrderParser orderParser) {
       super(orderParser);
     }
 
@@ -147,7 +147,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * Reader for orders with building argument.
    */
   public abstract class BuildingOrderHandler extends OrderHandler {
-    BuildingOrderHandler(OrderParser orderParser) {
+    protected BuildingOrderHandler(OrderParser orderParser) {
       super(orderParser);
     }
 
@@ -171,7 +171,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * Reader for orders with building argument.
    */
   public abstract class ShipOrderHandler extends OrderHandler {
-    ShipOrderHandler(AbstractOrderParser orderParser) {
+    protected ShipOrderHandler(AbstractOrderParser orderParser) {
       super(orderParser);
     }
 
@@ -647,7 +647,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     private boolean allowQuotes;
     private boolean allowEmpty;
     protected boolean valid;
-    protected String content;
+    public String content;
     private boolean nextValid;
     private boolean followedBySpace;
 

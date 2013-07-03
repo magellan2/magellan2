@@ -21,16 +21,25 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.StringID;
 import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
+import magellan.library.gamebinding.AbstractOrderCompleter;
+import magellan.library.gamebinding.AbstractOrderParser;
+import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GiveOrder;
+import magellan.library.gamebinding.MovementOrder;
+import magellan.library.gamebinding.OrderHandler;
+import magellan.library.gamebinding.TeachOrder;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Direction;
 import magellan.library.utils.OrderToken;
@@ -301,7 +310,8 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        StringChecker checker = new StringChecker(false, false, true, false);
+        AbstractOrderParser.StringChecker checker =
+            new AbstractOrderParser.StringChecker(false, false, true, false);
         retVal = checker.read(t);
         string = checker.content;
       } else {
@@ -958,4 +968,38 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     return AtlantisConstants.OC_NEW;
   }
 
+  @Override
+  protected Set<StringID> getCommands() {
+    return super.getCommands();
+  }
+
+  @Override
+  protected Collection<OrderHandler> getHandlers() {
+    return super.getHandlers();
+  }
+
+  @Override
+  protected List<OrderHandler> getHandlers(OrderToken t) {
+    return super.getHandlers(t);
+  }
+
+  @Override
+  protected void setErrMsg(String errMsg) {
+    super.setErrMsg(errMsg);
+  }
+
+  @Override
+  protected boolean isID(String txt) {
+    return super.isID(txt);
+  }
+
+  @Override
+  protected boolean isID(String txt, boolean allowTemp) {
+    return super.isID(txt, allowTemp);
+  }
+
+  @Override
+  protected boolean isTempID(String txt) {
+    return super.isTempID(txt);
+  }
 }

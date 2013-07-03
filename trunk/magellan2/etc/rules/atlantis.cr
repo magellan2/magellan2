@@ -2,7 +2,7 @@ VERSION 66
 RULES "$Id: atlantis.cr 1720"
 
 MAGELLAN
-"magellan.library.gamebinding.AtlantisSpecificStuff";class
+"magellan.library.gamebinding.atlantis.AtlantisSpecificStuff";class
 "FACTION";orderFileStartingString
 
 ORDER "FORM"
@@ -398,14 +398,14 @@ SKILL "Magic"
 "Magie";iconname
 
 RACE "Menschen"
-"Menschen";name
+"Person";name
 50;recruitmentcosts
 10;weight
 5;capacity
 
 ITEM "Silber"
 "silver";name
-1;weight;
+0;weight;
 "silver";category
 
 ITEM "wood"

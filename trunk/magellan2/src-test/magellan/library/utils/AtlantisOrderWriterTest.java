@@ -29,7 +29,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
-import magellan.library.gamebinding.AtlantisSpecificStuff;
+import magellan.library.gamebinding.atlantis.AtlantisSpecificStuff;
 import magellan.library.utils.logging.Logger;
 
 import org.junit.Before;

@@ -21,7 +21,7 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -35,6 +35,10 @@ import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.completion.OrderParser;
+import magellan.library.gamebinding.AbstractOrderCompleter;
+import magellan.library.gamebinding.AbstractOrderParserTest;
+import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.OrderHandler;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
@@ -181,7 +185,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.FormReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.FormReader}.
    */
   @Test
   public void testFormReader() {
@@ -191,7 +195,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.EndReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.EndReader}.
    */
   @Test
   public void testEndReader() {
@@ -201,7 +205,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AcceptReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.AcceptReader}.
    */
   @Test
   public void testAcceptReader() {
@@ -211,7 +215,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AddressReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.AddressReader}
+   * .
    */
   @Test
   public void testAddressReader() {
@@ -226,7 +231,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AdmitReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.AdmitReader}.
    */
   @Test
   public void testAdmitReader() {
@@ -236,7 +241,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AllyReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.AllyReader}.
    */
   @Test
   public void testAllyReader() {
@@ -250,7 +255,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.BehindReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.BehindReader}.
    */
   @Test
   public void testBehindReader() {
@@ -260,7 +265,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.CombatReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.CombatReader}.
    */
   @Test
   public void testCombatReader() {
@@ -270,7 +275,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.DisplayReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.DisplayReader}
+   * .
    */
   @Test
   public void testDisplayReader() {
@@ -290,7 +296,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.GuardReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.GuardReader}.
    */
   @Test
   public void testGuardReader() {
@@ -300,7 +306,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.NameReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.NameReader}.
    */
   @Test
   public void testNameReader() {
@@ -318,7 +324,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.PasswordReader}.
+   * Test method for
+   * {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.PasswordReader}.
    */
   @Test
   public void testPasswordReader() {
@@ -328,7 +335,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.ReshowReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.ReshowReader}.
    */
   @Test
   public void testReshowReader() {
@@ -338,7 +345,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.FindReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.FindReader}.
    */
   @Test
   public void testFindReader() {
@@ -348,7 +355,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.BoardReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.BoardReader}.
    */
   @Test
   public void testBoardReader() {
@@ -358,7 +365,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.EnterReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.EnterReader}.
    */
   @Test
   public void testEnterReader() {
@@ -368,7 +375,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.LeaveReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.LeaveReader}.
    */
   @Test
   public void testLeaveReader() {
@@ -378,7 +385,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.PromoteReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.PromoteReader}
+   * .
    */
   @Test
   public void testPromoteReader() {
@@ -388,7 +396,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AttackReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.AttackReader}.
    */
   @Test
   public void testAttackReader() {
@@ -399,7 +407,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.DemolishReader}.
+   * Test method for
+   * {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.DemolishReader}.
    */
   @Test
   public void testDemolishReader() {
@@ -409,7 +418,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.GiveReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.GiveReader}.
    */
   @Test
   public void testGiveReader() {
@@ -441,7 +450,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.SinkReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.SinkReader}.
    */
   @Test
   public void testSinkReader() {
@@ -466,7 +475,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.TaxReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.TaxReader}.
    */
   @Test
   public void testTaxReader() {
@@ -476,7 +485,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.RecruitReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.RecruitReader}
+   * .
    */
   @Test
   public void testRecruitReader() {
@@ -489,7 +499,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.QuitReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.QuitReader}.
    */
   @Test
   public void testQuitReader() {
@@ -499,7 +509,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.MoveReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.MoveReader}.
    */
   @Test
   public void testMoveReader() {
@@ -509,7 +519,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.SailReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.SailReader}.
    */
   @Test
   public void testSailReader() {
@@ -519,7 +529,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.BuildReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.BuildReader}.
    */
   @Test
   public void testBuildReader() {
@@ -541,7 +551,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.EntertainReader}.
+   * Test method for
+   * {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.EntertainReader}.
    */
   @Test
   public void testEntertainReader() {
@@ -551,7 +562,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.ProduceReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.ProduceReader}
+   * .
    */
   @Test
   public void testProduceReader() {
@@ -566,7 +578,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.ResearchReader}.
+   * Test method for
+   * {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.ResearchReader}.
    */
   @Test
   public void testResearchReader() {
@@ -578,7 +591,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.StudyReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.StudyReader}.
    */
   @Test
   public void testStudyReader() {
@@ -588,7 +601,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.TeachReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.TeachReader}.
    */
   @Test
   public void testTeachReader() {
@@ -597,7 +610,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.WorkReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.WorkReader}.
    */
   @Test
   public void testWorkReader() {
@@ -607,7 +620,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.CastReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.CastReader}.
    */
   @Test
   public void testCastReader() {

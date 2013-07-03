@@ -11,9 +11,10 @@
  *
  */
 
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 import magellan.library.StringID;
+import magellan.library.gamebinding.GameConstants;
 
 /**
  * Constants for atlantis game.

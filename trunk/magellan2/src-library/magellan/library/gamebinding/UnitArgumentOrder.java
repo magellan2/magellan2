@@ -39,7 +39,7 @@ import magellan.library.utils.Resources;
  */
 public class UnitArgumentOrder extends SimpleOrder {
 
-  protected UnitID target;
+  public UnitID target;
 
   /**
    * @param tokens

@@ -479,8 +479,8 @@ ITEM "chain mail"
 RESOURCES
 1;iron
 
-ITEM "plate mail"
-"plate mail";name
+ITEM "plate armor"
+"plate armor";name
 1;weight;
 "armour";category
 "Armorer";makeskill
@@ -489,7 +489,77 @@ ITEM "plate mail"
 RESOURCES
 1;iron
 
+ITEM "amulet of darkness"
+"Amulet of Darkness";name
+1;weight;
+"misc";category
+"amulett";iconname
 
+ITEM "amulet of death"
+"Amulet of Death";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "amulet of healing"
+"Amulet of Healing";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "amulet of true seeing"
+"Amulet of True Seeing";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "cloak of invulnerability"
+"Cloak of Invulnerability";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "ring of invisibility"
+"Ring of Invisibility";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "ring of power"
+"Ring of Power";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "runesword"
+"Runesword";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "shieldstone"
+"Shieldstone";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "staff of fire"
+"Staff of Fire";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "staff of lightning"
+"Staff of Lightning";name
+1;weight;
+"misc";category
+"amulett";iconname
+
+ITEM "wand of teleportation"
+"Wand of Teleportation";name
+1;weight;
+"misc";category
+"amulett";iconname
 
 
 SHIPTYPE "Longboat"
@@ -570,3 +640,6 @@ REGIONTYPE "ocean"
 0;maxworkers
 "true";isOcean
 "Ozean";iconname
+
+
+

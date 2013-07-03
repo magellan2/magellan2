@@ -35,6 +35,7 @@ import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.RulesException;
 import magellan.library.io.BOMReader;
 import magellan.library.io.file.FileType;
 import magellan.library.utils.logging.Logger;
@@ -495,12 +496,18 @@ public class JECheck extends Reader {
     LineNumberReader lnr = null;
     List<String> orders = new LinkedList<String>();
 
+    String unitOrder = null, regionOrder = null;
     /* frequently used strings */
-    String unitOrder =
-        data.getRules().getOrder(EresseaConstants.O_UNIT).getName(Locales.getOrderLocale());
-    String regionOrder =
-        data.getRules().getOrder(EresseaConstants.O_REGION).getName(Locales.getOrderLocale());
-
+    try {
+      unitOrder =
+          data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+              EresseaConstants.O_UNIT, Locales.getOrderLocale(), true);
+      regionOrder =
+          data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+              EresseaConstants.O_REGION, Locales.getOrderLocale(), true);
+    } catch (RulesException e) {
+      // orrder is null
+    }
     /*
      * first read in all the orders into a list to access them quickly later
      */
@@ -527,7 +534,7 @@ public class JECheck extends Reader {
 
           String token = tokenizer.nextToken();
 
-          if (unitOrder.startsWith(token)) {
+          if (unitOrder != null && unitOrder.startsWith(token)) {
             try {
               ID id = UnitID.createUnitID(tokenizer.nextToken(), data.base);
               Unit u = data.getUnit(id);
@@ -540,7 +547,7 @@ public class JECheck extends Reader {
             } catch (Exception e) {
               JECheck.log.error(e);
             }
-          } else if (regionOrder.startsWith(token)) {
+          } else if (regionOrder != null && regionOrder.startsWith(token)) {
             try {
               CoordinateID id = CoordinateID.parse(tokenizer.nextToken(), ",");
               Region r = data.getRegion(id);

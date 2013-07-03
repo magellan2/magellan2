@@ -70,7 +70,6 @@ import magellan.client.event.SelectionListener;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
-import magellan.library.StringID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.Encoding;
@@ -746,8 +745,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       options += (" -r" + f.getRace().getRecruitmentCosts());
     }
 
-    if ((f.getOptions() != null)
-        && f.getOptions().isActive(StringID.create(EresseaConstants.O_SILVERPOOL))) {
+    if ((f.getOptions() != null) && f.getOptions().isActive(EresseaConstants.O_SILVERPOOL)) {
       options += " -l";
     }
 

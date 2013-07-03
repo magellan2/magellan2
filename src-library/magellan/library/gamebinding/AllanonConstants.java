@@ -33,17 +33,27 @@ import magellan.library.StringID;
  * @version 1.0, 26.02.2009
  */
 public class AllanonConstants extends EresseaConstants {
-  public static final String O_ANWERBEN = "ANWERBEN";
-  public static final String O_BEANSPRUCHE = "BEANSPRUCHE";
-  public static final String O_ERKUNDEN = "ERKUNDEN";
-  public static final String O_KARAWANE = "KARAWANE";
-  public static final String O_MEUCHELN = "MEUCHELN";
+  /** order ANWERBEN */
+  public static final StringID O_ANWERBEN = StringID.create("ANWERBEN");
+  /** order BEANSPRUCHE */
+  public static final StringID O_BEANSPRUCHE = StringID.create("BEANSPRUCHE");
+  /** order ERKUNDEN */
+  public static final StringID O_ERKUNDEN = StringID.create("ERKUNDEN");
+  /** order KARAWANE */
+  public static final StringID O_KARAWANE = StringID.create("KARAWANE");
+  /** order MEUCHELN */
+  public static final StringID O_MEUCHELN = StringID.create("MEUCHELN");
 
-  public static final ID S_ALCHIMIE = StringID.create("ALCHIMIE");
-  public static final ID S_ANWERBEN = StringID.create("ANWERBEN");
-  public static final ID S_BEANSPRUCHE = StringID.create("BEANSPRUCHE");
-  public static final ID S_MEUCHELN = StringID.create("MEUCHELN");
-  public static final ID S_MECHANIK = StringID.create("MECHANIK");
+  /** skill ALCHIMIE */
+  public static final StringID S_ALCHIMIE = StringID.create("ALCHIMIE");
+  /** skill ANWERBEN */
+  public static final StringID S_ANWERBEN = StringID.create("ANWERBEN");
+  /** skill BEANSPRUCHE */
+  public static final StringID S_BEANSPRUCHE = StringID.create("BEANSPRUCHE");
+  /** skill MEUCHELN */
+  public static final StringID S_MEUCHELN = StringID.create("MEUCHELN");
+  /** skill MECHANIK */
+  public static final StringID S_MECHANIK = StringID.create("MECHANIK");
 
   public static final ID ST_KARAWANE = StringID.create("KARAWANE");
 }

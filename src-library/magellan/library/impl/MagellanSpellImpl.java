@@ -419,9 +419,10 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
     return retVal == null ? null : retVal.toString();
   }
 
-  private String getOrderTranslation(String orderId) {
+  private String getOrderTranslation(StringID orderId) {
     // FIXME use correct unit locale
-    return data.getRules().getOrder(orderId).getName(Locales.getOrderLocale());
+    return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+        Locales.getOrderLocale(), orderId);
   }
 
   /**

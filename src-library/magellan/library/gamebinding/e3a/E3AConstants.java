@@ -22,35 +22,35 @@ import magellan.library.gamebinding.EresseaConstants;
 public class E3AConstants extends EresseaConstants {
 
   /** Der ALLIANZ-Befehl */
-  public static final String O_ALLIANCE = "ALLIANCE";
+  public static final StringID O_ALLIANCE = StringID.create("ALLIANCE");
   /**
    * ALLIANZ AUSSTOSSEN <partei-nr> -- eine Partei aus der Allianz ausschließen (nur für den
    * Administrator).
    */
-  public static final String O_ALLIANCE_KICK = "ALLIANCE_KICK";
+  public static final StringID O_ALLIANCE_KICK = StringID.create("ALLIANCE_KICK");
   /** ALLIANZ VERLASSEN -- aus der aktuellen Allianz austreten. */
-  public static final String O_ALLIANCE_LEAVE = "ALLIANCE_LEAVE";
+  public static final StringID O_ALLIANCE_LEAVE = StringID.create("ALLIANCE_LEAVE");
   /**
    * ALLIANZ KOMMANDO <partei-nr> -- eine andere Partei zum Administrator machen (nur für den
    * Administrator).
    */
-  public static final String O_ALLIANCE_COMMAND = "ALLIANCE_COMMAND";
+  public static final StringID O_ALLIANCE_COMMAND = StringID.create("ALLIANCE_COMMAND");
   /** ALLIANZ NEU -- eine neue Allianz mit der eigenen Partei als Administrator erstellen. */
-  public static final String O_ALLIANCE_NEW = "ALLIANCE_NEW";
+  public static final StringID O_ALLIANCE_NEW = StringID.create("ALLIANCE_NEW");
   /**
    * ALLIANZ EINLADEN <partei-nr> -- eine andere Partei in dieser Runde ins Bündnis einladen (nur
    * Administratoren).
    */
-  public static final String O_ALLIANCE_INVITE = "ALLIANCE_INVITE";
+  public static final StringID O_ALLIANCE_INVITE = StringID.create("ALLIANCE_INVITE");
   /**
    * ALLIANZ BEITRETEN <allianz-nr> -- einer anderen Allianz beitreten (wenn sie eine Einladung in
    * der gleichen Runde erhält).
    */
-  public static final String O_ALLIANCE_JOIN = "ALLIANCE_JOIN";
+  public static final StringID O_ALLIANCE_JOIN = StringID.create("ALLIANCE_JOIN");
   /** BEZAHLE (NICHT) */
-  public static final String O_PAY = "PAY";
+  public static final StringID O_PAY = StringID.create("PAY");
   /** MACHE Wache */
-  public static final String O_WATCH = "WATCH";
+  public static final StringID O_WATCH = StringID.create("WATCH");
 
   /** Gerüst */
   public static final StringID B_FRAME = StringID.create("Gerüst");

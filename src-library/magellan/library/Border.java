@@ -15,6 +15,8 @@ package magellan.library;
 
 import java.util.List;
 
+import magellan.library.utils.Direction;
+
 /**
  * Container class for a region border based on its representation in a cr version > 45.
  */
@@ -24,10 +26,9 @@ public interface Border extends Identifiable {
    * Direction.
    */
   public int getDirection();
-
   /**
-   * The direction in which the border lies. The value must be one of the DIR_XXX constants in class
-   * Direction.
+   * The direction in which the border lies. The value must be one of the
+   * DIR_XXX constants in class Direction.
    */
   public void setDirection(int direction);
 

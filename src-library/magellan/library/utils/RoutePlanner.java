@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import magellan.library.Region;
+import magellan.library.StringID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.guiwrapper.RoutingDialogData;
 
@@ -63,9 +64,9 @@ public class RoutePlanner {
     // the movement command
     String localCommand;
     if ((mode & MODE_CONTINUOUS) > 0) {
-      localCommand = Resources.getOrderTranslation(EresseaConstants.O_ROUTE);
+      localCommand = getOrderTranslation(EresseaConstants.O_ROUTE);
     } else {
-      localCommand = Resources.getOrderTranslation(EresseaConstants.O_MOVE);
+      localCommand = getOrderTranslation(EresseaConstants.O_MOVE);
     }
     StringBuilder order = new StringBuilder();
     order.append(localCommand).append(" ");
@@ -94,19 +95,19 @@ public class RoutePlanner {
               order.append(closing);
               orders.add(order.toString());
               order =
-                  new StringBuilder(EresseaConstants.O_PCOMMENT).append(" #after ").append(
+                  new StringBuilder(EresseaConstants.OS_PCOMMENT).append(" #after ").append(
                       orders.size() - size).append(" { ").append(localCommand).append(" ");
               closing = "}";
             } else {
               if ((mode & MODE_CONTINUOUS) > 0) { // FIXME
                 // insert PAUSE
-                order.append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
+                order.append(getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
               } else {
                 // add new NACH order as comment
                 orders.add(order.toString());
                 order =
-                    new StringBuilder(EresseaConstants.O_PCOMMENT).append(" ").append(localCommand)
-                        .append(" ");
+                    new StringBuilder(EresseaConstants.OS_PCOMMENT).append(" ")
+                        .append(localCommand).append(" ");
               }
             }
           } else {
@@ -123,9 +124,9 @@ public class RoutePlanner {
     // add last order
     if ((mode & MODE_CONTINUOUS) > 0) {
       // add PAUSE at end
-      order.append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
+      order.append(getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
       if ((mode & MODE_STOP) > 0) {
-        order.append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
+        order.append(getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
       }
       order.append(closing);
       orders.add(order.toString());
@@ -135,6 +136,11 @@ public class RoutePlanner {
     }
 
     return orders.size() - size;
+  }
+
+  private static String getOrderTranslation(StringID orderId) {
+    return Resources.getOrderTranslation(orderId.toString());
+    // world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
   /**

@@ -28,16 +28,24 @@ import magellan.library.rules.Date;
 public class SimpleDate extends Date {
   private static final String months[] = { "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December" };
+  private int month;
+  private int year;
 
-  public SimpleDate(String month, String year) {
+  public SimpleDate(String month2, String year) {
     super(1);
 
-    int m = 0;
-    for (m = 0; m < months.length; ++m)
-      if (months[m].equals(month)) {
+    month = 0;
+    for (month = 0; month < months.length; ++month)
+      if (months[month].equals(month2)) {
         break;
       }
-    setDate((Integer.parseInt(year) - 1) * 12 + m);
+    try {
+      this.year = Integer.parseInt(year);
+    } catch (NumberFormatException e) {
+      this.year = -1;
+    }
+
+    setDate((Integer.parseInt(year) - 1) * 12 + month);
   }
 
   @Override
@@ -48,8 +56,7 @@ public class SimpleDate extends Date {
 
   @Override
   public String toString(int iDateType) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return null;
+    return months[month] + ", " + year;
   }
 
 }

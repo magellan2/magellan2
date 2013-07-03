@@ -456,6 +456,16 @@ public class Resources {
     return Resources.getOrderTranslation(key, Locales.getOrderLocale());
   }
 
+  // public static String getOrderTranslation(Rules rules, String orderId, Locale orderLocale,
+  // boolean returnKey) {
+  // OrderType order = rules.getOrder(orderId);
+  // if (order != null) {
+  // String localized = order.getName(orderLocale);
+  // return localized != null ? localized : returnKey ? orderId : null;
+  // }
+  // return returnKey ? orderId : null;
+  // }
+
   /**
    * Attempts to get the translation of the given rulesItem (german) key in the current order
    * locale. If no translation is found, the key is returned.
@@ -698,6 +708,7 @@ public class Resources {
     }
 
   }
+
 }
 
 /**

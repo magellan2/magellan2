@@ -13,6 +13,7 @@ import java.util.Collection;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.StringID;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderParser;
@@ -174,7 +175,7 @@ public class E3AOrderParser extends EresseaOrderParser {
       super(parser);
     }
 
-    private Collection<String> categories;
+    private Collection<StringID> categories;
 
     /**
      * Returns all categories except KÄMPFE, which is implicit in E3 and cannot be set with the
@@ -183,7 +184,7 @@ public class E3AOrderParser extends EresseaOrderParser {
      * @see magellan.library.gamebinding.EresseaOrderParser.HelfeReader#getCategories()
      */
     @Override
-    protected Collection<String> getCategories() {
+    protected Collection<StringID> getCategories() {
       if (categories == null) {
         categories =
             Arrays.asList(EresseaConstants.O_ALL,

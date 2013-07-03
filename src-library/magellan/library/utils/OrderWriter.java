@@ -26,6 +26,7 @@ import magellan.library.Group;
 import magellan.library.Item;
 import magellan.library.Order;
 import magellan.library.Region;
+import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
@@ -186,8 +187,8 @@ public class OrderWriter {
     return faction.getLocale();
   }
 
-  protected String getOrderTranslation(String orderId) {
-    return world.getRules().getOrder(orderId).getName(getLocale());
+  protected String getOrderTranslation(StringID orderId) {
+    return world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
   private int writeRegions(Collection<? extends Region> regions, BufferedWriter stream)
@@ -217,7 +218,8 @@ public class OrderWriter {
         name = "Ozean";
       }
 
-      stream.write(world.getRules().getOrder(EresseaConstants.O_REGION).getName(getLocale()));
+      stream.write(world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(),
+          EresseaConstants.O_REGION));
       writeln(stream, " " + r.getID().toString(",") + " ; " + r.getName());
       writeln(stream, "; " + world.getGameSpecificStuff().getOrderWriter().getCheckerName()
           + " Lohn " + r.getWage());
@@ -286,7 +288,7 @@ public class OrderWriter {
 
     // confirmed?
     if (unit.isOrdersConfirmed() && !removeSCComments) {
-      writeln(stream, EresseaConstants.O_COMMENT + OrderWriter.CONFIRMED);
+      writeln(stream, EresseaConstants.OS_COMMENT + OrderWriter.CONFIRMED);
     }
 
     writeOrders(unit.getCompleteOrders(writeUnitTagsAsVorlageComment), stream);
@@ -297,8 +299,9 @@ public class OrderWriter {
   private void writeOrders(Collection<Order> cmds, BufferedWriter stream) throws IOException {
     for (Order cmd : cmds) {
       if (!cmd.isEmpty()
-          && ((removeSCComments && cmd.getToken(0).getText().startsWith(EresseaConstants.O_COMMENT)) || (removeSSComments && cmd
-              .getToken(0).getText().startsWith(EresseaConstants.O_PCOMMENT)))) {
+          && ((removeSCComments && cmd.getToken(0).getText()
+              .startsWith(EresseaConstants.OS_COMMENT)) || (removeSSComments && cmd.getToken(0)
+              .getText().startsWith(EresseaConstants.OS_PCOMMENT)))) {
         // consume
       } else {
         writeln(stream, cmd.getText());

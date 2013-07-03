@@ -76,7 +76,7 @@ public class ExtendedCommandsHelper {
 
   private static final Logger log = Logger.getInstance(ExtendedCommandsHelper.class);
 
-  private static final String CONFIGURATION_MARKER = EresseaConstants.O_PCOMMENT + " extcmds:";
+  private static final String CONFIGURATION_MARKER = EresseaConstants.OS_PCOMMENT + " extcmds:";
 
   private Client client;
 
@@ -495,9 +495,28 @@ public class ExtendedCommandsHelper {
    * @param orderConstant Use one of the EresseaConstants.O_... constants here
    * @return A localized order constant. If no translation can be found, the orderConstant is
    *         returned.
+   * @deprecated Use {@link #getOrderTranslation(Unit, StringID, Object...)}
    */
+  @Deprecated
   public String getOrderTranslation(Unit unit, String orderConstant) {
-    return getData().getRules().getOrder(orderConstant).getName(unit.getFaction().getLocale());
+    return getOrderTranslation(unit, StringID.create(orderConstant));
+  }
+
+  /**
+   * Returns an order in the order locale of the specified unit's faction. If opional arguments are
+   * present, they are appended (separated by spaces). If they are of type StringID, they are
+   * translated as well.
+   * 
+   * @see EresseaConstants
+   * @param unit This order will be converted into this unit's faction's order locale
+   * @param orderConstant Use one of the EresseaConstants.O_... constants here
+   * @param args optional parameters.
+   * @return A localized order constant. If no translation can be found, the orderConstant is
+   *         returned.
+   */
+  public String getOrderTranslation(Unit unit, StringID orderConstant, Object... args) {
+    return unit.getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+        unit.getLocale(), orderConstant, args);
   }
 
   /**
@@ -512,15 +531,22 @@ public class ExtendedCommandsHelper {
    * @return a line like <code>GIVE receiver [EACH] amount item</code>.
    */
   public String getGiveOrder(Unit unit, String receiver, String item, int amount, boolean each) {
-    return unit.getData().getRules().getOrder(EresseaConstants.O_GIVE).getName(
-        unit.getFaction().getLocale())
-        + " "
-        + receiver
-        + (each ? " "
-            + unit.getData().getRules().getOrder(EresseaConstants.O_EACH).getName(
-                unit.getFaction().getLocale()) + " " : " ")
-        + (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.O_ALL) : amount)
-        + " " + item;
+
+    if (each)
+      return getOrderTranslation(
+          unit,
+          EresseaConstants.O_GIVE,
+          receiver,
+          EresseaConstants.O_EACH,
+          (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.O_ALL) : amount),
+          item);
+    else
+      return getOrderTranslation(
+          unit,
+          EresseaConstants.O_GIVE,
+          receiver,
+          (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.O_ALL) : amount),
+          item);
   }
 
   /**

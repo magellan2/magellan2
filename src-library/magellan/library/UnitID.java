@@ -240,7 +240,7 @@ public class UnitID extends EntityID {
    */
   public String toString(boolean temp, Locale locale) {
     if (temp && intValue() < 0)
-      return Resources.getOrderTranslation(EresseaConstants.O_TEMP, locale) + " "
+      return Resources.getOrderTranslation(EresseaConstants.O_TEMP.toString(), locale) + " "
           + IDBaseConverter.toString(Math.abs(intValue()), radix);
     else
       return IDBaseConverter.toString(Math.abs(intValue()), radix);
@@ -270,7 +270,7 @@ public class UnitID extends EntityID {
     else {
       String part1 = s.substring(0, blankPos);
 
-      if (part1.equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)))
+      if (part1.equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP.toString())))
         return Integer.valueOf(-1 * Integer.parseInt(s.substring(blankPos).trim(), radix));
       else
         throw new NumberFormatException("UnitID: unable to parse id " + s);

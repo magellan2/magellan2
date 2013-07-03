@@ -793,10 +793,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken("AN")) {
-        // FIXME whats this?
-        retVal = readIt(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
         retVal = readBotschaftEinheit(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
         retVal = readBotschaftPartei(t);
@@ -1505,9 +1502,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
       super(parser);
     }
 
-    private Collection<String> categories;
+    private Collection<StringID> categories;
 
-    protected Collection<String> getCategories() {
+    protected Collection<StringID> getCategories() {
       if (categories == null) {
         categories =
             Arrays.asList(EresseaConstants.O_ALL, EresseaConstants.O_HELP_COMBAT,
@@ -1544,7 +1541,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      for (String key : getCategories()) {
+      for (StringID key : getCategories()) {
         if (t.equalsToken(getOrderTranslation(key))) {
           retVal = readHelfeFIDModifier(t);
           break;
@@ -2135,7 +2132,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t) && Direction.toDirection(t.getText(), getLocale()) != Direction.INVALID) {
+      if (isString(t) && toDirection(t.getText(), getLocale()) != Direction.INVALID) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -2199,10 +2196,11 @@ public class EresseaOrderParser extends AbstractOrderParser {
     protected boolean readNachDirection(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
+      getOrder().addDirection(toDirection(token.getText(), getLocale()));
 
       OrderToken t = getNextToken();
 
-      if (Direction.toDirection(t.getText(), getLocale()) != Direction.INVALID) {
+      if (toDirection(t.getText(), getLocale()) != Direction.INVALID) {
         retVal = readNachDirection(t);
       } else {
         retVal = checkFinal(t);
@@ -2833,10 +2831,11 @@ public class EresseaOrderParser extends AbstractOrderParser {
     protected boolean readRouteDirection(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
+      getOrder().addDirection(toDirection(token.getText(), getLocale()));
 
       OrderToken t = getNextToken();
 
-      if (Direction.toDirection(t.getText(), getLocale()) != Direction.INVALID) {
+      if (toDirection(t.getText(), getLocale()) != Direction.INVALID) {
         retVal = readRouteDirection(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_PAUSE))) {
         retVal = readRouteDirection(t);
@@ -3693,7 +3692,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t) && Direction.toDirection(t.getText(), getLocale()) != Direction.INVALID) {
+      if (isString(t) && toDirection(t.getText(), getLocale()) != Direction.INVALID) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -3768,5 +3767,253 @@ public class EresseaOrderParser extends AbstractOrderParser {
   protected void setCompleter(AbstractOrderCompleter completer) {
     this.completer = (EresseaOrderCompleter) completer;
   }
+
+  // private static Map<Locale, String[]> shortNamess = new HashMap<Locale, String[]>();
+  // private static Map<Locale, String[]> longNamess = new HashMap<Locale, String[]>();
+  // private static Map<Locale, String[]> normalizedLongNamess = new HashMap<Locale, String[]>();
+  //
+  // private String getLongDirectionString(int key, Locale locale) {
+  // if (locale == null) {
+  // locale = Locales.getOrderLocale();
+  // }
+  // switch (key) {
+  // case Direction.DIR_NW:
+  // return getOrderTranslation(EresseaConstants.O_NORTHWEST, locale);
+  //
+  // case Direction.DIR_NE:
+  // return getOrderTranslation(EresseaConstants.O_NORTHEAST, locale);
+  //
+  // case Direction.DIR_E:
+  // return getOrderTranslation(EresseaConstants.O_EAST, locale);
+  //
+  // case Direction.DIR_SE:
+  // return getOrderTranslation(EresseaConstants.O_SOUTHEAST, locale);
+  //
+  // case Direction.DIR_SW:
+  // return getOrderTranslation(EresseaConstants.O_SOUTHWEST, locale);
+  //
+  // case Direction.DIR_W:
+  // return getOrderTranslation(EresseaConstants.O_WEST, locale);
+  // }
+  //
+  // return get("util.direction.name.long.invalid", locale);
+  // }
+  //
+  // private static String getShortDirectionString(int key, Locale locale) {
+  // if (locale == null) {
+  // locale = Locales.getOrderLocale();
+  // }
+  // switch (key) {
+  // case Direction.DIR_NW:
+  // return getOrderTranslation(EresseaConstants.O_NW, locale);
+  //
+  // case Direction.DIR_NE:
+  // return getOrderTranslation(EresseaConstants.O_NE, locale);
+  //
+  // case Direction.DIR_E:
+  // return getOrderTranslation(EresseaConstants.O_E, locale);
+  //
+  // case Direction.DIR_SE:
+  // return getOrderTranslation(EresseaConstants.O_SE, locale);
+  //
+  // case Direction.DIR_SW:
+  // return getOrderTranslation(EresseaConstants.O_SW, locale);
+  //
+  // case Direction.DIR_W:
+  // return getOrderTranslation(EresseaConstants.O_W, locale);
+  // }
+  //
+  // return Resources.get("util.direction.name.short.invalid", locale);
+  // }
+  //
+  // // /**
+  // // * @param shortForm
+  // // * @return f true, a short form of the direction's string representation is returned.
+  // // */
+  // // public String directionToString(boolean shortForm) {
+  // // if (shortForm)
+  // // return getShortDirectionString(dir, null);
+  // // else
+  // // return getLongDirectionString(dir, null);
+  // // }
+  //
+  // /**
+  // * Returns a String representation of the specified direction. <b>Note:</b> Please prefer using
+  // * {@link #toString()}.
+  // */
+  // public String directionToString(int dir) {
+  // return directionToString(dir, false);
+  // }
+  //
+  // /**
+  // * Returns a String representation of the specified direction. <b>Note:</b> Please prefer using
+  // * {@link #toString(boolean)}.
+  // *
+  // * @param dir if true, a short form of the direction's string representation is returned.
+  // */
+  // public String directionToString(int dir, boolean shortForm) {
+  // if (shortForm)
+  // return getShortDirectionString(dir, null);
+  // else
+  // return getLongDirectionString(dir, null);
+  // }
+  //
+  // /**
+  // * Returns a String representation of the specified direction.
+  // */
+  // public static String directionToString(CoordinateID c) {
+  // return Direction.toDirection(c).toString();
+  // }
+  //
+  // // protected static void initNames(Locale locale) {
+  // // if (locale == null) {
+  // // locale = Locales.getOrderLocale();
+  // // }
+  // // if (shortNamess.containsKey(locale))
+  // // return;
+  // //
+  // // String[] shorty = new String[6];
+  // // String[] longy = new String[6];
+  // // String[] nlongy = new String[6];
+  // // Direction.shortNamess.put(locale, shorty);
+  // // Direction.longNamess.put(locale, longy);
+  // // Direction.normalizedLongNamess.put(locale, nlongy);
+  // //
+  // // for (int i = 0; i < 6; i++) {
+  // // shorty[i] = Direction.getShortDirectionString(i, locale).toLowerCase();
+  // // longy[i] = Direction.getLongDirectionString(i, locale).toLowerCase();
+  // // nlongy[i] = Umlaut.convertUmlauts(Direction.getLongDirectionString(i,
+  // locale)).toLowerCase();
+  // // }
+  // // }
+  //
+  // /**
+  // * Converts a string (in the default order locale) to a direction.
+  // */
+  // public static Direction toDirection(String str) {
+  // return toDirection(str, null);
+  // }
+  //
+  // /**
+  // * Converts a string (in the specified locale) to a direction.
+  // */
+  // public static Direction toDirection(String str, Locale locale) {
+  // int dir = Direction.DIR_INVALID;
+  // String s = Umlaut.normalize(str).toLowerCase();
+  //
+  // initNames(locale);
+  // dir = Direction.find(s, SHORT, locale);
+  //
+  // if (dir == Direction.DIR_INVALID) {
+  // dir = Direction.find(s, NORMLONG, locale);
+  // }
+  //
+  // return toDirection(dir);
+  // }
+  //
+  // /**
+  // * Converts a string to an integer representation of the direction.
+  // *
+  // * @deprecated Prefer using {@link #toDirection(String)}.
+  // */
+  // @Deprecated
+  // public static int toInt(String str) {
+  // return toDirection(str).getDir();
+  // }
+  //
+  // /**
+  // * Returns the names of all valid directions in an all-lowercase short form.
+  // */
+  // public static List<String> getShortNames() {
+  // return getShortNames(null);
+  // }
+  //
+  // /**
+  // * Returns the names of all valid directions in an all-lowercase short form.
+  // */
+  // public static List<String> getShortNames(Locale locale) {
+  // initNames(locale);
+  //
+  // return Arrays.asList(Direction.shortNamess.get(locale == null ? Locales.getOrderLocale()
+  // : locale));
+  // }
+  //
+  // /**
+  // * Returns the names of all valid directions in an all-lowercase long form.
+  // */
+  // public static List<String> getLongNames() {
+  // return getLongNames(null);
+  // }
+  //
+  // /**
+  // * Returns the names of all valid directions in an all-lowercase long form.
+  // */
+  // public static List<String> getLongNames(Locale locale) {
+  // initNames(locale);
+  //
+  // return Arrays.asList(Direction.longNamess.get(locale == null ? Locales.getOrderLocale()
+  // : locale));
+  // }
+  //
+  // /**
+  // * Returns the names of all valid directions in an all-lowercase long form. The names are also
+  // * normalized (umlauts converted etc.)
+  // */
+  // public static List<String> getNormalizedLongNames() {
+  // return getNormalizedLongNames(null);
+  // }
+  //
+  // /**
+  // * Returns the names of all valid directions in an all-lowercase long form. The names are also
+  // * normalized (umlauts converted etc.)
+  // */
+  // public static List<String> getNormalizedLongNames(Locale locale) {
+  // initNames(locale);
+  //
+  // return Arrays.asList(Direction.normalizedLongNamess.get(locale == null ? Locales
+  // .getOrderLocale() : locale));
+  // }
+  //
+  // /**
+  // * Finds pattern in the set of matches (case-sensitively) and returns the index of the hit.
+  // * Pattern may be an abbreviation of any of the matches. If pattern is ambiguous or cannot be
+  // * found among the matches, -1 is returned
+  // *
+  // * @param locale
+  // */
+  // private static int find(String pattern, int mode, Locale locale) {
+  // if (locale == null) {
+  // locale = Locales.getOrderLocale();
+  // }
+  //
+  // int hits = 0;
+  // int hitIndex = -1;
+  // String[] strings;
+  // switch (mode) {
+  // case SHORT:
+  // strings = shortNamess.get(locale);
+  // break;
+  // case LONG:
+  // strings = longNamess.get(locale);
+  // break;
+  // case NORMLONG:
+  // strings = normalizedLongNamess.get(locale);
+  // break;
+  // default:
+  // throw new IllegalStateException();
+  // }
+  //
+  // for (int i = 0; i < strings.length; ++i) {
+  // if (strings[i].startsWith(pattern)) {
+  // hits++;
+  // hitIndex = i;
+  // }
+  // }
+  //
+  // if (hits == 1)
+  // return hitIndex;
+  // else
+  // return -1;
+  // }
 
 }

@@ -13,6 +13,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -31,12 +32,12 @@ import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Rules;
 import magellan.library.Ship;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.completion.Completion;
 import magellan.library.completion.OrderParser;
 import magellan.library.rules.ItemType;
-import magellan.library.rules.OrderType;
 import magellan.library.utils.Direction;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
@@ -75,19 +76,19 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   private Map<Locale, RadixTree<OrderHandler>> commandTries;
   // private RadixTree<OrderHandler> commandTrie;
-  private HashMap<String, OrderHandler> commandMap;
+  private HashMap<StringID, OrderHandler> commandMap;
 
   /**
    * Returns the value of commandMap.
    * 
    * @return Returns commandMap.
    */
-  protected HashMap<String, OrderHandler> getCommandMap() {
+  protected HashMap<StringID, OrderHandler> getCommandMap() {
     return commandMap;
   }
 
   public void clearCommandMap() {
-    commandMap = new HashMap<String, OrderHandler>();
+    commandMap = new HashMap<StringID, OrderHandler>();
     commandTries = new HashMap<Locale, RadixTree<OrderHandler>>();
     // RadixTreeImpl<OrderHandler> commandTrie =
     // new magellan.library.utils.RadixTreeImpl<OrderHandler>();
@@ -100,8 +101,8 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   private char defaultQuote = '"';
 
-  private Map<Locale, Map<String, Direction>> dirTranslations =
-      new HashMap<Locale, Map<String, Direction>>();
+  private Map<Locale, RadixTree<Direction>> dirTranslations =
+      new HashMap<Locale, RadixTree<Direction>>();
 
   protected static enum Type {
     EMPTY, OPENING, CLOSING
@@ -299,12 +300,8 @@ public abstract class AbstractOrderParser implements OrderParser {
    * 
    * @see Resources#getOrderTranslation(String, Locale)
    */
-  protected String getOrderTranslation(String key) {
-    OrderType order = getData().getRules().getOrder(key);
-    if (order != null)
-      return order.getName(getLocale());
-    else
-      return key;
+  protected String getOrderTranslation(StringID key) { // TODO build lookup table
+    return getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), key);
   }
 
   /**
@@ -374,7 +371,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * @param prefix A command ID
    * @param handler The handler for this command
    */
-  protected void addCommand(String prefix, OrderHandler handler) {
+  protected void addCommand(StringID prefix, OrderHandler handler) {
     commandMap.put(prefix, handler);
     for (Locale loc : commandTries.keySet()) {
       RadixTree<OrderHandler> commandTrie = commandTries.get(loc);
@@ -382,7 +379,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     }
   }
 
-  protected void addCommand(String prefix, RadixTree<OrderHandler> commandTrie, Locale loc,
+  protected void addCommand(StringID prefix, RadixTree<OrderHandler> commandTrie, Locale loc,
       OrderHandler handler) {
     String order = normalize(prefix, loc);
     if (commandTrie.contains(order)) {
@@ -392,20 +389,12 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   }
 
-  private String normalize(String prefix, Locale loc) {
+  private String normalize(StringID prefix, Locale loc) {
     String order;
     if (getData() != null) {
-      OrderType orderType = getData().getRules().getOrder(prefix);
-      if (orderType == null) {
-        log.warn("unknown order " + prefix);
-        return prefix;
-      }
-      order = orderType.getName(loc);
-      if (order == null) {
-        order = orderType.getName();
-      }
+      order = getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(loc, prefix);
     } else {
-      order = prefix;
+      order = prefix.toString();
     }
     return order.toLowerCase();
   }
@@ -415,7 +404,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * 
    * @param prefix
    */
-  protected void removeCommand(String prefix) {
+  protected void removeCommand(StringID prefix) {
     commandMap.remove(prefix);
     for (Locale loc : commandTries.keySet()) {
       RadixTree<OrderHandler> commandTrie = commandTries.get(loc);
@@ -429,7 +418,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Returns a collections of all command registered by {@link #addCommand(String, OrderHandler)}.
    */
-  protected Set<String> getCommands() {
+  protected Set<StringID> getCommands() {
     return commandMap.keySet();
   }
 
@@ -459,7 +448,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     RadixTreeImpl<OrderHandler> commandTrie = new RadixTreeImpl<OrderHandler>();
     commandTries.put(loc, commandTrie);
 
-    for (String command : commandMap.keySet()) {
+    for (StringID command : commandMap.keySet()) {
       addCommand(command, commandTrie, loc, commandMap.get(command));
     }
   }
@@ -603,7 +592,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     SimpleOrder result = reader.getOrder();
 
     if (firstToken.ttype == OrderToken.TT_PERSIST) {
-      if (t.getText().trim().startsWith(EresseaConstants.O_COMMENT) && reader == emptyReader) {
+      if (t.getText().trim().startsWith(EresseaConstants.OS_COMMENT) && reader == emptyReader) {
         result.setValid(false);
       }
     }
@@ -1239,17 +1228,33 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   public Direction toDirection(String text, Locale locale) {
-    Map<String, Direction> directions = dirTranslations.get(locale);
+    RadixTree<Direction> directions = dirTranslations.get(locale);
     if (directions == null) {
-      directions = new HashMap<String, Direction>();
+      directions = new RadixTreeImpl<Direction>();
       dirTranslations.put(locale, directions);
       for (Direction dir : Direction.getDirections()) {
-        for (String ld : getData().getRules().getOrder(dir.toString()).getNames(getLocale())) {
-          directions.put(ld, dir);
+        for (String ld : getOrderTranslation(dir)) {
+          directions.insert(Umlaut.normalize(ld.toLowerCase()), dir);
         }
       }
     }
-    return directions.get(text);
+    ArrayList<Direction> dirs = directions.searchPrefix(Umlaut.normalize(text), 2);
+    Set<Direction> dirSet = new HashSet<Direction>(dirs);
+    // anomaly: Eressea server accepts "NACH no" although it is a prefix of nordosten and nordwesten
+    if (dirSet.size() == 1)
+      return dirs.get(0);
+    if (dirSet.size() > 0) {
+      for (Direction dir : dirSet) {
+        for (String ld : getOrderTranslation(dir))
+          if (Umlaut.normalize(ld).equals(Umlaut.normalize(text)))
+            return dir;
+      }
+    }
+    return Direction.INVALID;
+  }
+
+  private List<String> getOrderTranslation(Direction dir) {
+    return getData().getRules().getOrder(dir.name()).getNames(getLocale());
   }
 
   /**

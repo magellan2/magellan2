@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import magellan.library.gamebinding.GameConstants;
 import magellan.library.rules.AllianceCategory;
 
 /**
@@ -24,7 +25,6 @@ import magellan.library.rules.AllianceCategory;
  * implicit, the target faction is an explicite field of this class.
  */
 public class Alliance {
-  public static final String ORDER_KEY_PREFIX = "HELP_";
   private final Faction faction;
   private int state = 0;
 
@@ -56,8 +56,7 @@ public class Alliance {
   }
 
   private AllianceCategory getMaxAllianceCategory() {
-    // FIXME shouldn't access rules like this
-    Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator();
+    Iterator<AllianceCategory> iter = faction.getData().getRules().getAllianceCategoryIterator();
 
     if (iter.hasNext()) {
       AllianceCategory ret = iter.next();
@@ -107,8 +106,8 @@ public class Alliance {
   /**
    * Changes the state to include state.
    */
-  public void addState(int state) {
-    this.state = this.state | state;
+  public void addState(int aState) {
+    state = state | aState;
   }
 
   /**
@@ -123,19 +122,18 @@ public class Alliance {
       return "";
 
     if (getState(maxAC.getBitMask()))
-      return getOrderTranslation(Alliance.ORDER_KEY_PREFIX + maxAC.getName());
+      return getOrderTranslation(GameConstants.getAllianceKey(maxAC.getName()));
 
     StringBuffer ret = new StringBuffer();
 
     // connect all state strings separated by spaces
-    // TODO shouldn't access rules like this
-    for (Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator(); iter
-        .hasNext();) {
+    for (Iterator<AllianceCategory> iter =
+        faction.getData().getRules().getAllianceCategoryIterator(); iter.hasNext();) {
       AllianceCategory ac = iter.next();
 
       if (!ac.equals(maxAC) && getState(ac.getBitMask())) {
         // TODO (stm) This is a hack.
-        ret.append(getOrderTranslation(Alliance.ORDER_KEY_PREFIX + ac.getName()));
+        ret.append(getOrderTranslation(GameConstants.getAllianceKey(ac.getName())));
 
         if (iter.hasNext()) {
           ret.append(" ");
@@ -146,9 +144,10 @@ public class Alliance {
     return ret.toString();
   }
 
-  protected String getOrderTranslation(String orderId) {
+  protected String getOrderTranslation(StringID orderId) {
     // we could also use Locales.getGUILocale()
-    return getFaction().getData().getRules().getOrder(orderId).getName(getFaction().getLocale());
+    return getFaction().getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+        getFaction().getLocale(), orderId);
   }
 
   /**
@@ -166,9 +165,8 @@ public class Alliance {
       return categories;
     }
 
-    // FIXME shouldn't access rules like this
-    for (Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator(); iter
-        .hasNext();) {
+    for (Iterator<AllianceCategory> iter =
+        faction.getData().getRules().getAllianceCategoryIterator(); iter.hasNext();) {
       AllianceCategory ac = iter.next();
 
       if (!ac.equals(maxAC) && getState(ac.getBitMask())) {
@@ -199,9 +197,8 @@ public class Alliance {
     int ret = 0;
 
     // connect all state strings separated by spaces
-    // FIXME shouldn't access rules like this
-    for (Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator(); iter
-        .hasNext();) {
+    for (Iterator<AllianceCategory> iter =
+        faction.getData().getRules().getAllianceCategoryIterator(); iter.hasNext();) {
       AllianceCategory ac = iter.next();
 
       if (getState(ac.getBitMask())) {

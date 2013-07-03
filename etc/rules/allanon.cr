@@ -8,6 +8,11 @@ ORDER "COMMENT"
 "// Text1*";syntax
 "//";locale_de
 
+ORDER "PCOMMENT"
+";";locale_de
+";";locale_en
+1;internal
+
 ORDER "EMAIL"
 "ADRESSE Email";syntax
 "ADRESSE";locale_de
@@ -256,6 +261,372 @@ ORDER "UNTERSTUTZE"
 ORDER "WEIHE"
 "WEIHE string";syntax
 "WEIHE";locale_de
+
+ORDER "PERSISTENT"
+"";locale_de
+"@";locale_en
+1;internal
+
+ORDER "ADDRESSES"
+"ADRESSEN";locale_de
+"ADDRESSES";locale_en
+1;internal
+0;active
+
+ORDER "AFTER"
+"HINTER";locale_de
+"AFTER";locale_en
+1;internal
+
+ORDER "ALL"
+"ALLES";locale_de
+"ALL";locale_en
+1;internal
+
+ORDER "AURA"
+"AURA";locale_de
+"AURA";locale_en
+1;internal
+
+ORDER "BEFORE"
+"VOR";locale_de
+"BEFORE";locale_en
+1;internal
+
+ORDER "CASTLE"
+"BURG";locale_de
+"CASTLE";locale_en
+1;internal
+
+ORDER "BUILDING"
+"GEBÄUDE";locale_de
+"BUILDING";locale_en
+1;internal
+
+ORDER "COMBAT_"
+"KÄMPFE";locale_de
+"COMBAT";locale_en
+1;internal
+
+ORDER "COMBAT_AGGRESSIVE"
+"AGGRESSIV";locale_de
+"AGGRESSIVE";locale_en
+1;internal
+
+ORDER "COMBAT_DEFENSIVE"
+"DEFENSIV";locale_de
+"DEFENSIVE";locale_en
+1;internal
+
+ORDER "COMBAT_FLEE"
+"FLIEHE";locale_de
+"FLEE";locale_en
+1;internal
+
+ORDER "COMBAT_FRONT"
+"VORNE";locale_de
+"FRONT";locale_en
+1;internal
+
+ORDER "COMBAT_REAR"
+"HINTEN";locale_de
+"REAR";locale_en
+1;internal
+
+ORDER "COMBAT_NOT"
+"NICHT";locale_de
+"NOT";locale_en
+1;internal
+
+ORDER "COMBATSPELL"
+"KAMPFZAUBER";locale_de
+"COMBATSPELL";locale_en
+1;internal
+
+ORDER "CONTROL"
+"KOMMANDO";locale_de
+"CONTROL";locale_en
+1;internal
+
+ORDER "EACH"
+"JE";locale_de
+"EACH";locale_en
+1;internal
+
+ORDER "ERESSEA"
+"ERESSEA";locale_de
+"ERESSEA";locale_en
+1;internal
+
+ORDER "FACTION"
+"PARTEI";locale_de
+"FACTION";locale_en
+1;internal
+
+ORDER "FOREIGNUNIT"
+"FREMDE";locale_de
+"FOREIGNUNIT";locale_en
+1;internal
+
+ORDER "FOREIGNFACTION"
+"FREMDE";locale_de
+"FOREIGN";locale_en
+1;internal
+
+ORDER "FOREIGNBUILDING"
+"FREMDE";locale_de
+"FOREIGN";locale_en
+1;internal
+
+ORDER "FOREIGNSHIP"
+"FREMDES";locale_de
+"FOREIGN";locale_en
+1;internal
+
+ORDER "HELP_COMBAT"
+"KÄMPFE";locale_de
+"COMBAT";locale_en
+1;internal
+
+ORDER "HELP_FACTIONSTEALTH"
+"PARTEITARNUNG";locale_de
+"FACTIONSTEALTH";locale_en
+1;internal
+
+ORDER "HELP_GIVE"
+"GIB";locale_de
+"GIVE";locale_en
+1;internal
+
+ORDER "HELP_GUARD"
+"BEWACHEN";locale_de
+"GUARD";locale_en
+1;internal
+
+ORDER "HELP_SILVER"
+"SILBER";locale_de
+"SILVER";locale_en
+1;internal
+
+ORDER "COMBAT_HELP"
+"HELFE";locale_de
+"HELP";locale_en
+1;internal
+
+ORDER "HERBS"
+"KRÄUTER";locale_de
+"HERBS";locale_en
+1;internal
+
+ORDER "HORSES"
+"PFERDE";locale_de
+"HORSES";locale_en
+1;internal
+
+ORDER "LEVEL"
+"STUFE";locale_de
+"LEVEL";locale_en
+1;internal
+
+ORDER "MALLORNSEED"
+"MALLORNSAMEN";locale_de
+"MALLORNSEED";locale_en
+1;internal
+
+ORDER "MEN"
+"PERSONEN";locale_de
+"MEN";locale_en
+1;internal
+
+ORDER "NOT"
+"NICHT";locale_de
+"NOT";locale_en
+1;internal
+
+ORDER "NUMBER"
+"NUMMER";locale_de
+"NUMBER";locale_en
+1;internal
+
+ORDER "PAUSE"
+"PAUSE";locale_de
+"PAUSE";locale_en
+1;internal
+
+ORDER "POTIONS"
+"TRÄNKE";locale_de
+"POTIONS";locale_en
+1;internal
+
+ORDER "PRIVATE"
+"PRIVAT";locale_de
+"PRIVATE";locale_en
+1;internal
+
+ORDER "ROAD"
+"STRAßE";locale_de
+"ROAD";locale_en
+1;internal
+
+ORDER "SEED"
+"SAMEN";locale_de
+"SEED";locale_en
+1;internal
+
+ORDER "SHIP"
+"SCHIFF";locale_de
+"SHIP";locale_en
+1;internal
+
+ORDER "SPELLS"
+"ZAUBER";locale_de
+"SPELLS";locale_en
+1;internal
+
+ORDER "TEMP"
+"TEMP";locale_de
+"TEMP";locale_en
+1;internal
+
+ORDER "TREES"
+"BÄUME";locale_de
+"TREES";locale_en
+1;internal
+
+ORDER "UNIT"
+"EINHEIT";locale_de
+"UNIT";locale_en
+1;internal
+
+
+ORDER "BZIP2"
+"BZIP2";locale_de
+"BZIP2";locale_en
+1;internal
+
+ORDER "COMPUTER"
+"COMPUTER";locale_de
+"COMPUTER";locale_en
+1;internal
+
+ORDER "PLAINTEXT"
+"AUSWERTUNG";locale_de
+"PLAINTEXT";locale_en
+1;internal
+
+ORDER "REPORT"
+"AUSWERTUNG";locale_de
+"PLAINTEXT";locale_en
+1;internal
+
+ORDER "SCORE"
+"PUNKTE";locale_de
+"SCORE";locale_en
+1;internal
+
+ORDER "SILVERPOOL"
+"SILBERPOOL";locale_de
+"SILVERPOOL";locale_en
+1;internal
+
+ORDER "STATISTICS"
+"STATISTIK";locale_de
+"STATISTICS";locale_en
+1;internal
+
+ORDER "TEMPLATE"
+"ZUGVORLAGE";locale_de
+"TEMPLATE";locale_en
+1;internal
+
+ORDER "ZIPPED"
+"ZIPPED";locale_de
+"ZIPPED";locale_en
+1;internal
+
+ORDER "NORTHWEST"
+"NORDWESTEN";locale_de
+"NORTHWEST";locale_en
+"NW";locale_de
+"NW";locale_en
+1;internal
+
+ORDER "NORTHEAST"
+"NORDOSTEN";locale_de
+"NORTHEAST";locale_en
+1;internal
+
+ORDER "EAST"
+"OSTEN";locale_de
+"EAST";locale_en
+1;internal
+
+ORDER "SOUTHEAST"
+"SÜDOSTEN";locale_de
+"SOUTHEAST";locale_en
+"SO";locale_de
+"SE";locale_en
+1;internal
+
+ORDER "SOUTHWEST"
+"SÜDWESTEN";locale_de
+"SOUTHWEST";locale_en
+"SW";locale_de
+"SW";locale_en
+1;internal
+
+ORDER "WEST"
+"WESTEN";locale_de
+"WEST";locale_en
+1;internal
+
+ORDER "NW"
+"NW";locale_de
+"NW";locale_en
+"NORDWESTEN";locale_de
+"NORTHWEST";locale_en
+1;internal
+
+ORDER "NE"
+"NO";locale_de
+"NE";locale_en
+"NORDOSTEN";locale_de
+"NORTHEAST";locale_en
+1;internal
+
+ORDER "E"
+"O";locale_de
+"E";locale_en
+"OSTEN";locale_de
+"EAST";locale_en
+1;internal
+
+ORDER "SE"
+"SO";locale_de
+"SE";locale_en
+"SÜDOSTEN";locale_de
+"SOUTHEAST";locale_en
+1;internal
+
+ORDER "SW"
+"SW";locale_de
+"SW";locale_en
+"SÜDWESTEN";locale_de
+"SOUTHWEST";locale_en
+1;internal
+
+ORDER "W"
+"W";locale_de
+"W";locale_en
+"WESTEN";locale_de
+"WEST";locale_en
+1;internal
+
+ORDER "ITEMPOOL"
+"MATERIALPOOL";locale_de
+"ITEMPOOL";locale_en
+1;internal
+
 
 SKILLCATEGORY "war"
 "Kampf";name

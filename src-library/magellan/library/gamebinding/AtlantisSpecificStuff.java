@@ -101,7 +101,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
   public OrderChanger getOrderChanger() {
-    return new AtlantisOrderChanger();
+    return new AtlantisOrderChanger(getRules());
   }
 
   /**

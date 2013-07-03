@@ -13,6 +13,10 @@
 
 package magellan.library.gamebinding;
 
+import java.util.Collection;
+import java.util.Locale;
+
+import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Orders;
 import magellan.library.StringID;
@@ -31,7 +35,7 @@ public interface OrderChanger {
   /**
    * Turns line of text into an Order object.
    */
-  public Order createOrder(Unit unit, String string);
+  public Order createOrder(Unit unit, String order);
 
   /**
    * Adds a KÄMPFE order. TODO: state are defined... somewhere
@@ -136,5 +140,14 @@ public interface OrderChanger {
    * @return The first offending order
    */
   public int areCompatibleLongOrders(Orders orders);
+
+  public String getOrder(Locale orderLocale, StringID orderId, Object... args);
+
+  public String getOrder(StringID orderId, Locale orderLocale, Object... args)
+      throws RulesException;
+
+  public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale, Unit unit);
+
+  public Collection<? extends Order> getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit);
 
 }

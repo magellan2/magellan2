@@ -41,6 +41,7 @@ import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
+import magellan.library.StringID;
 import magellan.library.completion.Completer;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.AbstractOrderParser.TokenBucket;
@@ -48,7 +49,6 @@ import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
 import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
-import magellan.library.utils.Resources;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -71,8 +71,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   private EresseaOrderCompleter completer;
   protected GameDataBuilder builder;
 
-  protected String getOrderTranslation(String orderId) {
-    return data.getRules().getOrder(orderId).getName(getLocale());
+  protected String getOrderTranslation(StringID orderId) {
+    return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
   protected Locale getLocale() {
@@ -120,9 +120,9 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   public void testInitCommands() {
     assertSame(61, getParser().getCommands().size());
     assertSame(61, getParser().getHandlers().size());
-    assertTrue(getParser().getCommands().contains("WORK"));
-    assertTrue(getParser().getCommands().contains("DESTROY"));
-    assertTrue(getParser().getCommands().contains("SABOTAGE"));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.O_WORK));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.O_DESTROY));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.O_SABOTAGE));
   }
 
   /**
@@ -138,11 +138,11 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
         return false;
       }
     };
-    assertFalse(getParser().getCommands().contains("foo"));
+    assertFalse(getParser().getCommands().contains(StringID.create("foo")));
     assertFalse(getParser().getHandlers().contains(fooHandler));
     assertTrue(getParser().getHandlers(new OrderToken("foo")).size() == 0);
-    getParser().addCommand("foo", fooHandler);
-    assertTrue(getParser().getCommands().contains("foo"));
+    getParser().addCommand(StringID.create("foo"), fooHandler);
+    assertTrue(getParser().getCommands().contains(StringID.create("foo")));
     assertTrue(getParser().getHandlers().contains(fooHandler));
 
     assertTrue(getParser().getHandlers(new OrderToken("foo")).contains(fooHandler));
@@ -161,14 +161,14 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
         return false;
       }
     };
-    getParser().addCommand("foo", fooHandler);
-    assertTrue(getParser().getCommands().contains("foo"));
+    getParser().addCommand(StringID.create("foo"), fooHandler);
+    assertTrue(getParser().getCommands().contains(StringID.create("foo")));
     assertTrue(getParser().getHandlers().contains(fooHandler));
 
     assertTrue(getParser().getHandlers(new OrderToken("foo")).contains(fooHandler));
     assertTrue(getParser().getHandlers(new OrderToken("foo")).size() == 1);
-    getParser().removeCommand("foo");
-    assertFalse(getParser().getCommands().contains("foo"));
+    getParser().removeCommand(StringID.create("foo"));
+    assertFalse(getParser().getCommands().contains(StringID.create("foo")));
     assertFalse(getParser().getHandlers().contains(fooHandler));
     assertTrue(getParser().getHandlers(new OrderToken("foo")).size() == 0);
   }
@@ -244,7 +244,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
 
   @Test
   public void testCommentReader() {
-    checkOrder(EresseaConstants.O_PCOMMENT);
+    checkOrder(EresseaConstants.OS_PCOMMENT);
     checkOrder("//");
     checkOrder("// ");
     checkOrder("// HALLO");
@@ -494,7 +494,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @Test
   public void testBotschaftReader() {
     checkOrder(getOrderTranslation(EresseaConstants.O_MESSAGE) + " "
-        + Resources.get(EresseaConstants.O_REGION) + " \"hallo\"");
+        + getOrderTranslation(EresseaConstants.O_REGION) + " \"hallo\"");
     for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Sägewerk", "SCHIFF", "REGION" }) {
       String nr = " abc ";
       if (thing.equals("REGION")) {
@@ -1249,8 +1249,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     if (list == null)
       return;
     assertTrue(list.size() == 2);
-    assertTrue(list.get(0).getClass().equals(ArbeiteReader.class));
-    assertTrue(list.get(1).getClass().equals(AttackReader.class));
+    assertTrue(list.get(0).getClass().equals(AttackReader.class));
+    assertTrue(list.get(1).getClass().equals(ArbeiteReader.class));
     list = getParser().getHandlers(new OrderToken("arbei"));
     assertTrue(list != null);
     if (list == null)
@@ -1913,4 +1913,73 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     this.completer = (EresseaOrderCompleter) completer;
   }
 
+  // /**
+  // * Test method for {@link magellan.library.utils.Direction#getShortNames()}.
+  // */
+  // @Test
+  // public void testGetShortNames() {
+  // assertArrayEquals(new String[] { "nw", "no", "o", "so", "sw", "w" },
+  // Direction.getShortNames()
+  // .toArray());
+  // }
+  //
+  // /**
+  // * Test method for {@link magellan.library.utils.Direction#getLongNames()}.
+  // */
+  // @Test
+  // public void testGetLongNames() {
+  // assertArrayEquals(new String[] { "nordwesten", "nordosten", "osten", "südosten", "südwesten",
+  // "westen" }, Direction.getLongNames().toArray());
+  // }
+
+  // /**
+  // * Test method for {@link magellan.library.utils.Direction#toDirection(java.lang.String)}.
+  // */
+  // @Test
+  // public void testToDirectionString() {
+  // assertSame(Direction.NW, Direction.toDirection("NW"));
+  // assertSame(Direction.NE, Direction.toDirection("NO"));
+  // assertSame(Direction.E, Direction.toDirection("O"));
+  // assertSame(Direction.SE, Direction.toDirection("SO"));
+  // assertSame(Direction.SW, Direction.toDirection("SW"));
+  // assertSame(Direction.W, Direction.toDirection("W"));
+  // assertSame(Direction.NW, Direction.toDirection("NordWEsten"));
+  // assertSame(Direction.INVALID, Direction.toDirection("Nach Hause"));
+  // }
+
+  // /**
+  // * Test method for {@link magellan.library.utils.Direction#toString(boolean)}.
+  // */
+  // @Test
+  // public void testToStringBoolean() {
+  // assertEquals("NORDOSTEN", Direction.NE.toString(false));
+  // assertEquals("SÜDWESTEN", Direction.SW.toString(false));
+  // assertEquals("NO", Direction.NE.toString(true));
+  // }
+  //
+  // /**
+  // * Test method for {@link magellan.library.utils.Direction#toString(int)}.
+  // */
+  // @Test
+  // public void testToStringInt() {
+  // assertEquals("NORDOSTEN", Direction.toString(Direction.DIR_NE));
+  // }
+  //
+  // /**
+  // * Test method for {@link magellan.library.utils.Direction#toString(int, boolean)}.
+  // */
+  // @Test
+  // public void testToStringIntBoolean() {
+  // assertEquals("NORDOSTEN", Direction.toString(Direction.DIR_NE, false));
+  // assertEquals("NO", Direction.toString(Direction.DIR_NE, true));
+  // }
+  //
+  // /**
+  // * Test method for
+  // * {@link magellan.library.utils.Direction#toString(magellan.library.CoordinateID)}.
+  // */
+  // @Test
+  // public void testToStringCoordinateID() {
+  // assertEquals("NORDWESTEN", Direction.toString(CoordinateID.create(-1, 1)));
+  // }
 }

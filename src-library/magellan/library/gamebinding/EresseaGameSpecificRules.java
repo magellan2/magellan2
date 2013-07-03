@@ -259,10 +259,9 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     }
     if (EresseaConstants.I_USILVER.equals(type))
       return unit.getFaction().getOptions() != null
-          && unit.getFaction().getOptions()
-              .isActive(StringID.create(EresseaConstants.O_SILVERPOOL));
+          && unit.getFaction().getOptions().isActive(EresseaConstants.O_SILVERPOOL);
     else
-      return unit.getFaction().getOptions().isActive(StringID.create(EresseaConstants.O_ITEMPOOL));
+      return unit.getFaction().getOptions().isActive(EresseaConstants.O_ITEMPOOL);
   }
 
   /**

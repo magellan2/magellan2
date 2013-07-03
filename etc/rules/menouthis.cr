@@ -274,6 +274,698 @@ RACE "Zwerge"
 35;capacity
 
 
+ORDER "COMMENT"
+"// Text1*";syntax
+"//";locale_de
+"//";locale_en
+
+ORDER "PCOMMENT"
+";";locale_de
+";";locale_en
+1;internal
+
+ORDER "WORK"
+"ARBEITE";syntax
+"ARBEITEN";locale_de
+"WORK";locale_en
+
+ORDER "ATTACK"
+"ATTACKIERE u1";syntax
+"ATTACKIEREN";locale_de
+"ATTACK";locale_en
+
+ORDER "BANNER"
+"BANNER Text";syntax
+"BANNER";locale_de
+"BANNER";locale_en
+
+ORDER "CLAIM"
+"BEANSPRUCHE [1] Ding";syntax
+"BEANSPRUCHEN";locale_de
+"CLAIM";locale_en
+
+ORDER "PROMOTION"
+"BEFÖRDERUNG";syntax
+"BEFÖRDERUNG";locale_de
+"PROMOTION";locale_en
+
+ORDER "STEAL"
+"BEKLAUE u1";syntax
+"BEKLAUEN";locale_de
+"STEAL";locale_en
+
+ORDER "SIEGE"
+"BELAGERE b1";syntax
+"BELAGERE";locale_de
+"SIEGE";locale_en
+
+ORDER "NAME"
+"BENENNE EINHEIT | PARTEI | GEBÄUDE | BURG | SCHIFF | REGION | (FREMDE EINHEIT u1) | (FREMDES SCHIFF s1) | (FREMDES GEBÄUDE b1) | (FREMDE BURG b1) | (FREMDE PARTEI f1) Text";syntax
+"BENENNEN";locale_de
+"NAME";locale_en
+
+ORDER "USE"
+"BENUTZE [1] Ding";syntax
+"BENUTZEN";locale_de
+"USE";locale_en
+
+ORDER "DESCRIBE"
+"BESCHREIBE REGION | SCHIFF | GEBÄUDE | BURG | EINHEIT | PRIVAT  Text";syntax
+"BESCHREIBEN";locale_de
+"DESCRIBE";locale_en
+
+ORDER "ENTER"
+"BETRETE (BURG b1 | SCHIFF s1 | Ding x1)";syntax
+"BETRETEN";locale_de
+"ENTER";locale_en
+
+ORDER "GUARD"
+"BEWACHE [NICHT]";syntax
+"BEWACHEN";locale_de
+"GUARD";locale_en
+
+ORDER "MESSAGE"
+"BOTSCHAFT REGION | (SCHIFF s1) | (GEBÄUDE b2) | (BURG b3) | (EINHEIT u4) | (PARTEI f5)  Text";syntax
+"BOTSCHAFT";locale_de
+"MESSAGE";locale_en
+
+ORDER "DEFAULT"
+"DEFAULT Order";syntax
+"DEFAULT";locale_de
+"DEFAULT";locale_en
+
+ORDER "UNIT"
+"EINHEIT u1";syntax
+"EINHEIT";locale_de
+"UNIT";locale_en
+1;internal
+
+ORDER "EMAIL"
+"EMAIL Email";syntax
+"EMAIL";locale_de
+"EMAIL";locale_en
+
+ORDER "END"
+"ENDE";syntax
+"ENDE";locale_de
+"END";locale_en
+
+ORDER "RIDE"
+"FAHRE u1";syntax
+"FAHREN";locale_de
+"RIDE";locale_en
+
+ORDER "FOLLOW"
+"FOLGE (EINHEIT u1) | (SCHIFF s2)";syntax
+"FOLGEN";locale_de
+"FOLLOW";locale_en
+
+ORDER "RESEARCH"
+"FORSCHE KRÄUTER";syntax
+"FORSCHEN";locale_de
+"RESEARCH";locale_en
+
+ORDER "GIVE"
+"GIB (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
+"GIB";locale_de
+"GIVE";locale_en
+
+ORDER "GROUP"
+"GRUPPE [Name]";syntax
+"GRUPPE";locale_de
+"GROUP";locale_en
+
+ORDER "HELP"
+"HELFE f1 ALLES|GIB|KÄMPFE|BEWACHE|SILBER|PARTEITARNUNG [NICHT] ";syntax
+"HELFEN";locale_de
+"HELP";locale_en
+
+ORDER "COMBAT"
+"KÄMPFE [AGGRESSIV|HINTEN|DEFENSIV|NICHT|FLIEHE|(HELFE [NICHT])]";syntax
+"KÄMPFEN";locale_de
+"COMBAT";locale_en
+
+ORDER "COMBATSPELL"
+"KAMPFZAUBER [STUFE 1] Zauber [NICHT]";syntax
+"KAMPFZAUBER";locale_de
+"COMBATSPELL";locale_en
+
+ORDER "BUY"
+"KAUFE 1 Luxus";syntax
+"KAUFEN";locale_de
+"BUY";locale_en
+
+ORDER "CONTACT"
+"KONTAKTIERE u1";syntax
+"KONTAKTIEREN";locale_de
+"CONTACT";locale_en
+
+ORDER "TEACH"
+"LEHRE u1+";syntax
+"LEHREN";locale_de
+"TEACH";locale_en
+
+ORDER "LEARN"
+"LERNE Talent [1]";syntax
+"LERNEN";locale_de
+"LEARN";locale_en
+
+ORDER "SUPPLY"
+"LIEFERE (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
+"LIEFERE";locale_de
+"SUPPLY";locale_en
+
+ORDER "LOCALE"
+"LOCALE";syntax
+"LOCALE";locale_de
+"LOCALE";locale_en
+1;internal
+
+ORDER "MAKE"
+"MACHE [(TEMP u1 [Name]) | ([1] Ding [s1|b1]) | ([1] STRAßE Richtung)]";syntax
+"MACHEN";locale_de
+"MAKE";locale_en
+
+ORDER "MOVE"
+"NACH Richtung1+";syntax
+"NACH";locale_de
+"MOVE";locale_en
+
+ORDER "NEXT"
+"Invalid";syntax
+"NÄCHSTER";locale_de
+"NEXT";locale_en
+1;internal
+
+ORDER "RESTART"
+"NEUSTART Rasse Passwort";syntax
+"NEUSTART";locale_de
+"RESTART";locale_en
+0;active
+
+ORDER "NUMBER"
+"NUMMER (EINHEIT) | (SCHIFF) | (GEBÄUDE) | (BURG) | (PARTEI) [x1]";syntax
+"NUMMER";locale_de
+"NUMBER";locale_en
+
+ORDER "OPTION"
+"OPTION Option [Nicht]";syntax
+"OPTION";locale_de
+"OPTION";locale_en
+
+ORDER "FACTION"
+"PARTEI f1";syntax
+"PARTEI";locale_de
+"FACTION";locale_en
+1;internal
+
+ORDER "PASSWORD"
+"PASSWORT passwort";syntax
+"PASSWORT";locale_de
+"PASSWORD";locale_en
+
+ORDER "PLANT"
+"PFLANZE [1] (KRÄUTER) | (BÄUME) | (SAMEN) | (MALLORNSAMEN)";syntax
+"PFLANZEN";locale_de
+"PLANT";locale_en
+
+ORDER "PIRACY"
+"PIRATERIE f1*";syntax
+"PIRATERIE";locale_de
+"PIRACY";locale_en
+
+ORDER "PREFIX"
+"PRÄFIX [Name]";syntax
+"PRÄFIX";locale_de
+"PREFIX";locale_en
+
+ORDER "REGION"
+"REGION 1 , 2";syntax
+"REGION";locale_de
+"REGION";locale_en
+1;internal
+
+ORDER "RECRUIT"
+"REKRUTIERE 1";syntax
+"REKRUTIEREN";locale_de
+"RECRUIT";locale_en
+
+ORDER "RESERVE"
+"RESERVIERE (1) | (ALLES) | (JE 2) Gegenstand";syntax
+"RESERVIEREN";locale_de
+"RESERVE";locale_en
+
+ORDER "ROUTE"
+"ROUTE Richtung1+";syntax
+"ROUTE";locale_de
+"ROUTE";locale_en
+
+ORDER "SABOTAGE"
+"SABOTIERE SCHIFF";syntax
+"SABOTIEREN";locale_de
+"SABOTAGE";locale_en
+
+ORDER "SORT"
+"SORTIERE (VOR) | (HINTER) u1";syntax
+"SORTIEREN";locale_de
+"SORT";locale_en
+
+ORDER "SPY"
+"SPIONIERE u1";syntax
+"SPIONIEREN";locale_de
+"SPY";locale_en
+
+ORDER "QUIT"
+"STIRB Password";syntax
+"STIRB";locale_de
+"QUIT";locale_en
+
+ORDER "HIDE"
+"TARNE ([1]) | (Rasse) | (PARTEI [NICHT]) | (PARTEI NUMMER f1)";syntax
+"TARNEN";locale_de
+"HIDE";locale_en
+
+ORDER "CARRY"
+"TRANSPORTIERE u1";syntax
+"TRANSPORTIEREN";locale_de
+"CARRY";locale_en
+
+ORDER "TAX"
+"TREIBE [1]";syntax
+"TREIBEN";locale_de
+"TAX";locale_en
+
+ORDER "ENTERTAIN"
+"UNTERHALTE [1]";syntax
+"UNTERHALTEN";locale_de
+"ENTERTAIN";locale_en
+
+ORDER "ORIGIN"
+"URSPRUNG 1 2";syntax
+"URSPRUNG";locale_de
+"ORIGIN";locale_en
+
+ORDER "FORGET"
+"VERGESSE Talent";syntax
+"VERGESSEN";locale_de
+"FORGET";locale_en
+
+ORDER "SELL"
+"VERKAUFE 1 | ALLES  Luxus";syntax
+"VERKAUFEN";locale_de
+"SELL";locale_en
+
+ORDER "LEAVE"
+"VERLASSE";syntax
+"VERLASSEN";locale_de
+"LEAVE";locale_en
+
+ORDER "CAST"
+"ZAUBERE [REGION 1 2] [STUFE 3] Zauber Parameter1*";syntax
+"ZAUBERE";locale_de
+"CAST";locale_en
+
+ORDER "SHOW"
+"ZEIGE (ding)|(ALLE [ZAUBER|TRÄNKE])";syntax
+"ZEIGEN";locale_de
+"SHOW";locale_en
+
+ORDER "DESTROY"
+"ZERSTÖRE [1] [STRASSE richtung]";syntax
+"ZERSTÖREN";locale_de
+"DESTROY";locale_en
+
+ORDER "GROW"
+"(ZÜCHTE PFERDE)|(ZÜCHTE [1] KRÄUTER)";syntax
+"ZÜCHTEN";locale_de
+"GROW";locale_en
+
+ORDER "PERSISTENT"
+"";locale_de
+"@";locale_en
+1;internal
+
+ORDER "ADDRESSES"
+"ADRESSEN";locale_de
+"ADDRESSES";locale_en
+1;internal
+0;active
+
+ORDER "AFTER"
+"HINTER";locale_de
+"AFTER";locale_en
+1;internal
+
+ORDER "ALL"
+"ALLES";locale_de
+"ALL";locale_en
+1;internal
+
+ORDER "AURA"
+"AURA";locale_de
+"AURA";locale_en
+1;internal
+
+ORDER "BEFORE"
+"VOR";locale_de
+"BEFORE";locale_en
+1;internal
+
+ORDER "CASTLE"
+"BURG";locale_de
+"CASTLE";locale_en
+1;internal
+
+ORDER "BUILDING"
+"GEBÄUDE";locale_de
+"BUILDING";locale_en
+1;internal
+
+ORDER "COMBAT_"
+"KÄMPFE";locale_de
+"COMBAT";locale_en
+1;internal
+
+ORDER "COMBAT_AGGRESSIVE"
+"AGGRESSIV";locale_de
+"AGGRESSIVE";locale_en
+1;internal
+
+ORDER "COMBAT_DEFENSIVE"
+"DEFENSIV";locale_de
+"DEFENSIVE";locale_en
+1;internal
+
+ORDER "COMBAT_FLEE"
+"FLIEHE";locale_de
+"FLEE";locale_en
+1;internal
+
+ORDER "COMBAT_FRONT"
+"VORNE";locale_de
+"FRONT";locale_en
+1;internal
+
+ORDER "COMBAT_REAR"
+"HINTEN";locale_de
+"REAR";locale_en
+1;internal
+
+ORDER "COMBAT_NOT"
+"NICHT";locale_de
+"NOT";locale_en
+1;internal
+
+ORDER "COMBATSPELL"
+"KAMPFZAUBER";locale_de
+"COMBATSPELL";locale_en
+1;internal
+
+ORDER "CONTROL"
+"KOMMANDO";locale_de
+"CONTROL";locale_en
+1;internal
+
+ORDER "EACH"
+"JE";locale_de
+"EACH";locale_en
+1;internal
+
+ORDER "ERESSEA"
+"ERESSEA";locale_de
+"ERESSEA";locale_en
+1;internal
+
+ORDER "FACTION"
+"PARTEI";locale_de
+"FACTION";locale_en
+1;internal
+
+ORDER "FOREIGNUNIT"
+"FREMDE";locale_de
+"FOREIGNUNIT";locale_en
+1;internal
+
+ORDER "FOREIGNFACTION"
+"FREMDE";locale_de
+"FOREIGN";locale_en
+1;internal
+
+ORDER "FOREIGNBUILDING"
+"FREMDE";locale_de
+"FOREIGN";locale_en
+1;internal
+
+ORDER "FOREIGNSHIP"
+"FREMDES";locale_de
+"FOREIGN";locale_en
+1;internal
+
+ORDER "HELP_COMBAT"
+"KÄMPFE";locale_de
+"COMBAT";locale_en
+1;internal
+
+ORDER "HELP_FACTIONSTEALTH"
+"PARTEITARNUNG";locale_de
+"FACTIONSTEALTH";locale_en
+1;internal
+
+ORDER "HELP_GIVE"
+"GIB";locale_de
+"GIVE";locale_en
+1;internal
+
+ORDER "HELP_GUARD"
+"BEWACHEN";locale_de
+"GUARD";locale_en
+1;internal
+
+ORDER "HELP_SILVER"
+"SILBER";locale_de
+"SILVER";locale_en
+1;internal
+
+ORDER "COMBAT_HELP"
+"HELFE";locale_de
+"HELP";locale_en
+1;internal
+
+ORDER "HERBS"
+"KRÄUTER";locale_de
+"HERBS";locale_en
+1;internal
+
+ORDER "HORSES"
+"PFERDE";locale_de
+"HORSES";locale_en
+1;internal
+
+ORDER "LEVEL"
+"STUFE";locale_de
+"LEVEL";locale_en
+1;internal
+
+ORDER "MALLORNSEED"
+"MALLORNSAMEN";locale_de
+"MALLORNSEED";locale_en
+1;internal
+
+ORDER "MEN"
+"PERSONEN";locale_de
+"MEN";locale_en
+1;internal
+
+ORDER "NOT"
+"NICHT";locale_de
+"NOT";locale_en
+1;internal
+
+ORDER "NUMBER"
+"NUMMER";locale_de
+"NUMBER";locale_en
+1;internal
+
+ORDER "PAUSE"
+"PAUSE";locale_de
+"PAUSE";locale_en
+1;internal
+
+ORDER "POTIONS"
+"TRÄNKE";locale_de
+"POTIONS";locale_en
+1;internal
+
+ORDER "PRIVATE"
+"PRIVAT";locale_de
+"PRIVATE";locale_en
+1;internal
+
+ORDER "ROAD"
+"STRAßE";locale_de
+"ROAD";locale_en
+1;internal
+
+ORDER "SEED"
+"SAMEN";locale_de
+"SEED";locale_en
+1;internal
+
+ORDER "SHIP"
+"SCHIFF";locale_de
+"SHIP";locale_en
+1;internal
+
+ORDER "SPELLS"
+"ZAUBER";locale_de
+"SPELLS";locale_en
+1;internal
+
+ORDER "TEMP"
+"TEMP";locale_de
+"TEMP";locale_en
+1;internal
+
+ORDER "TREES"
+"BÄUME";locale_de
+"TREES";locale_en
+1;internal
+
+ORDER "UNIT"
+"EINHEIT";locale_de
+"UNIT";locale_en
+1;internal
+
+
+ORDER "BZIP2"
+"BZIP2";locale_de
+"BZIP2";locale_en
+1;internal
+
+ORDER "COMPUTER"
+"COMPUTER";locale_de
+"COMPUTER";locale_en
+1;internal
+
+ORDER "PLAINTEXT"
+"AUSWERTUNG";locale_de
+"PLAINTEXT";locale_en
+1;internal
+
+ORDER "REPORT"
+"AUSWERTUNG";locale_de
+"PLAINTEXT";locale_en
+1;internal
+
+ORDER "SCORE"
+"PUNKTE";locale_de
+"SCORE";locale_en
+1;internal
+
+ORDER "SILVERPOOL"
+"SILBERPOOL";locale_de
+"SILVERPOOL";locale_en
+1;internal
+
+ORDER "STATISTICS"
+"STATISTIK";locale_de
+"STATISTICS";locale_en
+1;internal
+
+ORDER "TEMPLATE"
+"ZUGVORLAGE";locale_de
+"TEMPLATE";locale_en
+1;internal
+
+ORDER "ZIPPED"
+"ZIPPED";locale_de
+"ZIPPED";locale_en
+1;internal
+
+ORDER "NORTHWEST"
+"NORDWESTEN";locale_de
+"NORTHWEST";locale_en
+"NW";locale_de
+"NW";locale_en
+1;internal
+
+ORDER "NORTHEAST"
+"NORDOSTEN";locale_de
+"NORTHEAST";locale_en
+1;internal
+
+ORDER "EAST"
+"OSTEN";locale_de
+"EAST";locale_en
+1;internal
+
+ORDER "SOUTHEAST"
+"SÜDOSTEN";locale_de
+"SOUTHEAST";locale_en
+"SO";locale_de
+"SE";locale_en
+1;internal
+
+ORDER "SOUTHWEST"
+"SÜDWESTEN";locale_de
+"SOUTHWEST";locale_en
+"SW";locale_de
+"SW";locale_en
+1;internal
+
+ORDER "WEST"
+"WESTEN";locale_de
+"WEST";locale_en
+1;internal
+
+ORDER "NW"
+"NW";locale_de
+"NW";locale_en
+"NORDWESTEN";locale_de
+"NORTHWEST";locale_en
+1;internal
+
+ORDER "NE"
+"NO";locale_de
+"NE";locale_en
+"NORDOSTEN";locale_de
+"NORTHEAST";locale_en
+1;internal
+
+ORDER "E"
+"O";locale_de
+"E";locale_en
+"OSTEN";locale_de
+"EAST";locale_en
+1;internal
+
+ORDER "SE"
+"SO";locale_de
+"SE";locale_en
+"SÜDOSTEN";locale_de
+"SOUTHEAST";locale_en
+1;internal
+
+ORDER "SW"
+"SW";locale_de
+"SW";locale_en
+"SÜDWESTEN";locale_de
+"SOUTHWEST";locale_en
+1;internal
+
+ORDER "W"
+"W";locale_de
+"W";locale_en
+"WESTEN";locale_de
+"WEST";locale_en
+1;internal
+
+ORDER "ITEMPOOL"
+"MATERIALPOOL";locale_de
+"ITEMPOOL";locale_en
+1;internal
+
+
 ITEMCATEGORY "misc"
 "sonstige Gegenstände";name
 0;naturalorder

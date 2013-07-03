@@ -14,16 +14,13 @@
 package magellan.library.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.CoordinateID;
 import magellan.library.Region;
-import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A class providing convience functions for handling directions like in ships or borders. There are
@@ -96,10 +93,6 @@ public enum Direction {
     tempDirections = null;
   }
 
-  private static Map<Locale, String[]> shortNamess = new HashMap<Locale, String[]>();
-  private static Map<Locale, String[]> longNamess = new HashMap<Locale, String[]>();
-  private static Map<Locale, String[]> normalizedLongNamess = new HashMap<Locale, String[]>();
-
   private int dir;
 
   /**
@@ -114,37 +107,38 @@ public enum Direction {
     }
   }
 
-  /**
-   * Creates a new Direction object interpreting the specified coordinate as a direction.
-   * 
-   * @param c a relative coordinate, e.g. (1, 0) for DIR_E. If c is null an IllegalArgumentException
-   *          is thrown.
-   * @throws NullPointerException if the c param is null.
-   * @deprecated
-   */
-  @Deprecated
-  private Direction(CoordinateID c) {
-    if (c != null) {
-      dir = Direction.toInt(c);
-    } else
-      throw new NullPointerException();
-  }
-
-  /**
-   * Creates a new Direction object interpreting the specified String as a direction.
-   * 
-   * @param str a german name for a direction, e.g. "Osten" for DIR_E. If str is null an
-   *          IllegalArgumentException is thrown.
-   * @throws NullPointerException if the str param is null.
-   * @deprecated
-   */
-  @Deprecated
-  private Direction(String str) {
-    if (str != null) {
-      dir = Direction.toInt(str);
-    } else
-      throw new NullPointerException();
-  }
+  // /**
+  // * Creates a new Direction object interpreting the specified coordinate as a direction.
+  // *
+  // * @param c a relative coordinate, e.g. (1, 0) for DIR_E. If c is null an
+  // IllegalArgumentException
+  // * is thrown.
+  // * @throws NullPointerException if the c param is null.
+  // * @deprecated
+  // */
+  // @Deprecated
+  // private Direction(CoordinateID c) {
+  // if (c != null) {
+  // dir = Direction.toInt(c);
+  // } else
+  // throw new NullPointerException();
+  // }
+  //
+  // /**
+  // * Creates a new Direction object interpreting the specified String as a direction.
+  // *
+  // * @param str a german name for a direction, e.g. "Osten" for DIR_E. If str is null an
+  // * IllegalArgumentException is thrown.
+  // * @throws NullPointerException if the str param is null.
+  // * @deprecated
+  // */
+  // @Deprecated
+  // private Direction(String str) {
+  // if (str != null) {
+  // dir = Direction.toInt(str);
+  // } else
+  // throw new NullPointerException();
+  // }
 
   /**
    * Returns the actual direction of this object. Please prefer using the singletons
@@ -208,30 +202,6 @@ public enum Direction {
     }
 
     return INVALID;
-  }
-
-  /**
-   * Converts a string (in the default order locale) to a direction.
-   */
-  public static Direction toDirection(String str) {
-    return toDirection(str, null);
-  }
-
-  /**
-   * Converts a string (in the specified locale) to a direction.
-   */
-  public static Direction toDirection(String str, Locale locale) {
-    int dir = Direction.DIR_INVALID;
-    String s = Umlaut.normalize(str).toLowerCase();
-
-    initNames(locale);
-    dir = Direction.find(s, SHORT, locale);
-
-    if (dir == Direction.DIR_INVALID) {
-      dir = Direction.find(s, NORMLONG, locale);
-    }
-
-    return toDirection(dir);
   }
 
   /**
@@ -301,100 +271,14 @@ public enum Direction {
    */
   @Override
   public String toString() {
-    return Direction.toString(dir, false);
+    Logger.getInstance(this.getClass().getName()).warnOnce(
+        "calling Direction.toString(), which is not properly localized.");
+    return Resources.getOrderTranslation(name());
+    // Direction.toString(dir, false);
   }
 
-  /**
-   * @param shortForm
-   * @return f true, a short form of the direction's string representation is returned.
-   */
-  public String toString(boolean shortForm) {
-    if (shortForm)
-      return Direction.getShortDirectionString(dir, null);
-    else
-      return Direction.getLongDirectionString(dir, null);
-  }
-
-  /**
-   * Returns a String representation of the specified direction. <b>Note:</b> Please prefer using
-   * {@link #toString()}.
-   */
   public static String toString(int dir) {
-    return Direction.toString(dir, false);
-  }
-
-  /**
-   * Returns a String representation of the specified direction. <b>Note:</b> Please prefer using
-   * {@link #toString(boolean)}.
-   * 
-   * @param dir if true, a short form of the direction's string representation is returned.
-   */
-  public static String toString(int dir, boolean shortForm) {
-    if (shortForm)
-      return Direction.getShortDirectionString(dir, null);
-    else
-      return Direction.getLongDirectionString(dir, null);
-  }
-
-  /**
-   * Returns a String representation of the specified direction.
-   */
-  public static String toString(CoordinateID c) {
-    return toDirection(c).toString();
-  }
-
-  private static String getLongDirectionString(int key, Locale locale) {
-    if (locale == null) {
-      locale = Locales.getOrderLocale();
-    }
-    switch (key) {
-    case DIR_NW:
-      return Resources.getOrderTranslation(EresseaConstants.O_NORTHWEST, locale);
-
-    case DIR_NE:
-      return Resources.getOrderTranslation(EresseaConstants.O_NORTHEAST, locale);
-
-    case DIR_E:
-      return Resources.getOrderTranslation(EresseaConstants.O_EAST, locale);
-
-    case DIR_SE:
-      return Resources.getOrderTranslation(EresseaConstants.O_SOUTHEAST, locale);
-
-    case DIR_SW:
-      return Resources.getOrderTranslation(EresseaConstants.O_SOUTHWEST, locale);
-
-    case DIR_W:
-      return Resources.getOrderTranslation(EresseaConstants.O_WEST, locale);
-    }
-
-    return Resources.get("util.direction.name.long.invalid", locale);
-  }
-
-  private static String getShortDirectionString(int key, Locale locale) {
-    if (locale == null) {
-      locale = Locales.getOrderLocale();
-    }
-    switch (key) {
-    case DIR_NW:
-      return Resources.getOrderTranslation(EresseaConstants.O_NW, locale);
-
-    case DIR_NE:
-      return Resources.getOrderTranslation(EresseaConstants.O_NE, locale);
-
-    case DIR_E:
-      return Resources.getOrderTranslation(EresseaConstants.O_E, locale);
-
-    case DIR_SE:
-      return Resources.getOrderTranslation(EresseaConstants.O_SE, locale);
-
-    case DIR_SW:
-      return Resources.getOrderTranslation(EresseaConstants.O_SW, locale);
-
-    case DIR_W:
-      return Resources.getOrderTranslation(EresseaConstants.O_W, locale);
-    }
-
-    return Resources.get("util.direction.name.short.invalid", locale);
+    return toDirection(dir).toString();
   }
 
   /**
@@ -405,154 +289,6 @@ public enum Direction {
   @Deprecated
   public static int toInt(CoordinateID c) {
     return toDirection(c.getX(), c.getY()).getDir();
-  }
-
-  /**
-   * Converts a string to an integer representation of the direction.
-   * 
-   * @deprecated Prefer using {@link #toDirection(String)}.
-   */
-  @Deprecated
-  public static int toInt(String str) {
-    return toDirection(str).getDir();
-  }
-
-  /**
-   * Returns the names of all valid directions in an all-lowercase short form.
-   */
-  public static List<String> getShortNames() {
-    return getShortNames(null);
-  }
-
-  /**
-   * Returns the names of all valid directions in an all-lowercase short form.
-   */
-  public static List<String> getShortNames(Locale locale) {
-    initNames(locale);
-
-    return Arrays.asList(Direction.shortNamess.get(locale == null ? Locales.getOrderLocale()
-        : locale));
-  }
-
-  /**
-   * Returns the names of all valid directions in an all-lowercase long form.
-   */
-  public static List<String> getLongNames() {
-    return getLongNames(null);
-  }
-
-  /**
-   * Returns the names of all valid directions in an all-lowercase long form.
-   */
-  public static List<String> getLongNames(Locale locale) {
-    initNames(locale);
-
-    return Arrays.asList(Direction.longNamess.get(locale == null ? Locales.getOrderLocale()
-        : locale));
-  }
-
-  /**
-   * Returns the names of all valid directions in an all-lowercase long form. The names are also
-   * normalized (umlauts converted etc.)
-   */
-  public static List<String> getNormalizedLongNames() {
-    return getNormalizedLongNames(null);
-  }
-
-  /**
-   * Returns the names of all valid directions in an all-lowercase long form. The names are also
-   * normalized (umlauts converted etc.)
-   */
-  public static List<String> getNormalizedLongNames(Locale locale) {
-    initNames(locale);
-
-    return Arrays.asList(Direction.normalizedLongNamess.get(locale == null ? Locales
-        .getOrderLocale() : locale));
-  }
-
-  protected static void initNames(Locale locale) {
-    if (locale == null) {
-      locale = Locales.getOrderLocale();
-    }
-    if (shortNamess.containsKey(locale))
-      return;
-
-    String[] shorty = new String[6];
-    String[] longy = new String[6];
-    String[] nlongy = new String[6];
-    Direction.shortNamess.put(locale, shorty);
-    Direction.longNamess.put(locale, longy);
-    Direction.normalizedLongNamess.put(locale, nlongy);
-
-    for (int i = 0; i < 6; i++) {
-      shorty[i] = Direction.getShortDirectionString(i, locale).toLowerCase();
-      longy[i] = Direction.getLongDirectionString(i, locale).toLowerCase();
-      nlongy[i] = Umlaut.convertUmlauts(Direction.getLongDirectionString(i, locale)).toLowerCase();
-    }
-  }
-
-  /**
-   * Finds pattern in the set of matches (case-sensitively) and returns the index of the hit.
-   * Pattern may be an abbreviation of any of the matches. If pattern is ambiguous or cannot be
-   * found among the matches, -1 is returned
-   * 
-   * @param locale
-   */
-  private static int find(String pattern, int mode, Locale locale) {
-    if (locale == null) {
-      locale = Locales.getOrderLocale();
-      // Map<String, Integer> hits;
-      // switch (mode) {
-      // case SHORT:
-      // hits = shortNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
-      // if (hits.size() == 1)
-      // return hits.values().iterator().next();
-      // break;
-      //
-      // case LONG:
-      // hits = longNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
-      // if (hits.size() == 1)
-      // return hits.values().iterator().next();
-      // break;
-      // case NORMLONG:
-      // hits = normalizedLongNames.searchPrefixMap(pattern, Integer.MAX_VALUE);
-      // if (hits.size() == 1)
-      // return hits.values().iterator().next();
-      // break;
-      // default:
-      // throw new IllegalStateException();
-      // }
-      // return -1;
-    }
-
-    int hits = 0;
-    int hitIndex = -1;
-    String[] strings;
-    switch (mode) {
-    case SHORT:
-      strings = shortNamess.get(locale);
-      break;
-    case LONG:
-      strings = longNamess.get(locale);
-      break;
-    case NORMLONG:
-      strings = normalizedLongNamess.get(locale);
-      break;
-    default:
-      throw new IllegalStateException();
-    }
-
-    for (int i = 0; i < strings.length; ++i) {
-      if (strings[i].startsWith(pattern)) {
-        hits++;
-        hitIndex = i;
-      }
-    }
-
-    if (hits == 1)
-      return hitIndex;
-    else
-      return -1;
   }
 
   /**

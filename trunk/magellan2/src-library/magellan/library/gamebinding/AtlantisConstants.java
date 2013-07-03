@@ -19,8 +19,10 @@ import magellan.library.StringID;
  * Constants for atlantis game.
  */
 public class AtlantisConstants extends GameConstants {
-  /** Order MAKE */
-  public static final StringID OC_MAKE = StringID.create("MAKE");
+  /** String to mark comments */
+  public static final String O_COMMENT = ";";
+
+  // all the OC_ constants should have an equivalent in atlantis.cr
 
   /** Order FORM */
   public static final StringID OC_FORM = StringID.create("FORM");
@@ -97,6 +99,18 @@ public class AtlantisConstants extends GameConstants {
 
   /** Order constant UNIT */
   public static final StringID OC_UNIT = StringID.create("UNIT");
+
+  /** Order constant PEASANTS */
+  public static final StringID OC_PEASANTS = StringID.create("PEASANTS");
+
+  /** Order constant SHIP */
+  public static final StringID OC_SHIP = StringID.create("SHIP");
+
+  /** Order constant BUILDING */
+  public static final StringID OC_BUILDING = StringID.create("BUILDING");
+
+  /** Order constant FACTION */
+  public static final StringID OC_FACTION = StringID.create("FACTION");
 
   /** Order constant END */
   public static final StringID OC_END = StringID.create("END");

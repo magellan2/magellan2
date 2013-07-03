@@ -47,7 +47,7 @@ public class SetGirthAction extends MenuAction {
   @Override
   public void menuActionPerformed(ActionEvent e) {
     GameData data = client.getData();
-    BBox box = new BBox();
+    BBox box = data.getGameSpecificStuff().getMapMetric().createBBox();
     boolean alternative = false;
 
     for (Region wrapper : data.wrappers().values()) {
@@ -64,10 +64,10 @@ public class SetGirthAction extends MenuAction {
               max = wrapper.getCoordX() - 1 + original.getCoordY() / 2;
               min = original.getCoordX() + original.getCoordY() / 2;
             }
-            if (box.maxx != Integer.MIN_VALUE && (box.maxx != max || box.minx != min)) {
-              if (box.maxx - box.minx != max - min) {
+            if (box.getMaxx() != Integer.MIN_VALUE && (box.getMaxx() != max || box.getMinx() != min)) {
+              if (box.getMaxx() - box.getMinx() != max - min) {
                 // error
-                box = new BBox();
+                box = data.getGameSpecificStuff().getMapMetric().createBBox();
                 break;
               }
               alternative = true;
@@ -90,7 +90,8 @@ public class SetGirthAction extends MenuAction {
       }
     }
 
-    SetGirthDialog dialog = new SetGirthDialog(client, box, null);
+    SetGirthDialog dialog =
+        new SetGirthDialog(client, box, null, data.getGameSpecificStuff().getMapMetric());
     dialog.setVisible(true);
     if (dialog.approved()) {
       client.setGirth(dialog.getNewBorders());

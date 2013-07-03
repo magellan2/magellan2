@@ -61,8 +61,9 @@ public final class CoordinateID implements ID {
     }
   }
 
-  private static final CoordinateID INVALID = new CoordinateID(Integer.MIN_VALUE,
-      Integer.MIN_VALUE, Integer.MIN_VALUE);
+  /** denotes an invalid coordinate */
+  public static final CoordinateID INVALID = new CoordinateID(Integer.MIN_VALUE, Integer.MIN_VALUE,
+      Integer.MIN_VALUE);
 
   private static final Map<Integer, Map<Integer, CoordinateID>> lookup0 =
       new LinkedHashMap<Integer, Map<Integer, CoordinateID>>();

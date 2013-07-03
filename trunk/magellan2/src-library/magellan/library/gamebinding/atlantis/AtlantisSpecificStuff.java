@@ -39,10 +39,12 @@ import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.RegionResource;
 import magellan.library.Rules;
+import magellan.library.Unit;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.EresseaPostProcessor;
 import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
@@ -121,6 +123,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    */
   public void postProcess(GameData data) {
     resourceId = 0;
+    // enforce locale to be non-null
     if (data.getLocale() == null) {
       data.setLocale(Locale.ENGLISH);
     }
@@ -175,6 +178,35 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
         region.setWage(12);
       }
     }
+
+    // // adding Default Translations to the translations
+    // data.postProcessDefaultTranslations();
+
+    data.postProcessUnknown();
+
+    // remove double messages
+    data.postProcessMessages();
+
+    // postProcessMessages(data);
+
+    // // remove double potions
+    // data.postProcessPotions();
+
+    EresseaPostProcessor.resolveWraparound(data);
+
+    // cleanAstralSchemes(data);
+
+    data.postProcessIslands();
+
+    // adjustFogOfWar2Visibility(data);
+
+    int sortIndex = data.getUnits().size();
+    for (Unit unit : data.getUnits()) {
+      sortIndex = unit.extractTempUnits(data, sortIndex);
+    }
+
+    // postProcessNullInformation(data);
+
   }
 
   /**

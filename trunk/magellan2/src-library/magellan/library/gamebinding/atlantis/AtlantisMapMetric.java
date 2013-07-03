@@ -30,19 +30,31 @@ import magellan.library.CoordinateID;
 import magellan.library.Rules;
 import magellan.library.gamebinding.EresseaMapMetric;
 import magellan.library.utils.Direction;
+import magellan.library.utils.transformation.BoxTransformer.BBox;
 
+/**
+ * The metric for the atlantis game hexagonal map.
+ * 
+ * @author stm
+ */
 public class AtlantisMapMetric extends EresseaMapMetric {
 
+  /** The direction Mir ("northwest") */
   public static final Direction M = new Direction(0, AtlantisConstants.OC_M, CoordinateID.create(
-      -1, -1), "pfeil5");
+      -1, -1), "pfeil0");
+  /** The direction North */
   public static final Direction N = new Direction(1, AtlantisConstants.OC_N, CoordinateID.create(0,
-      -1), "pfeil5");
+      -1), "pfeil1");
+  /** The direction East */
   public static final Direction E = new Direction(2, AtlantisConstants.OC_E, CoordinateID.create(1,
-      0), "pfeil5");
+      0), "pfeil2");
+  /** The direction Mir ("northeast") */
   public static final Direction Y = new Direction(3, AtlantisConstants.OC_Y, CoordinateID.create(1,
-      1), "pfeil5");
+      1), "pfeil3");
+  /** The direction South */
   public static final Direction S = new Direction(4, AtlantisConstants.OC_S, CoordinateID.create(0,
-      1), "pfeil5");
+      1), "pfeil4");
+  /** The direction West */
   public static final Direction W = new Direction(5, AtlantisConstants.OC_W, CoordinateID.create(
       -1, 0), "pfeil5");
 
@@ -58,15 +70,14 @@ public class AtlantisMapMetric extends EresseaMapMetric {
     directions.add(W);
   }
 
+  /**
+   * 
+   */
   public AtlantisMapMetric(Rules rules) {
     super(rules);
   }
 
-  /**
-   * Converts to coordinates to a direction.
-   * 
-   * @see #toDirection(CoordinateID)
-   */
+  @Override
   public Direction toDirection(int x, int y) {
     if (x == -1) {
       if (y == 0)
@@ -119,4 +130,8 @@ public class AtlantisMapMetric extends EresseaMapMetric {
     return directions.get((d.getDirCode() + 3) % 6);
   }
 
+  @Override
+  public BBox createBBox() {
+    return new EresseaMapMetric.EBBox(1, 2, 0, 1);
+  }
 }

@@ -556,10 +556,17 @@ public abstract class GameData implements Cloneable, Addeable {
       voids.remove(r.getID());
     }
     Region old = regionView().put(r.getID(), r);
-    if (old != null && old.getVisibility() != Visibility.WRAP) {
-      addError(ProblemFactory.createProblem(Severity.ERROR,
-          GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONID.type, r, null, null, r, null,
-          Resources.get("gamedata.problem.duplicateregionid.message", r, old), -1));
+    if (old != null) {
+      if (old.getVisibility() != Visibility.WRAP && old.getRegionType() != RegionType.unknown) {
+        if (r.getRegionType() == RegionType.unknown) {
+          regionView().put(r.getID(), old);
+          r = old;
+        } else {
+          addError(ProblemFactory.createProblem(Severity.ERROR,
+              GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONID.type, r, null, null, r,
+              null, Resources.get("gamedata.problem.duplicateregionid.message", r, old), -1));
+        }
+      }
     }
 
     Map<Direction, Region> neighbors = Regions.getCoordinateNeighbours(this, r.getCoordinate());

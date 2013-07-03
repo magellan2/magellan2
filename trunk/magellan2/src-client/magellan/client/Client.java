@@ -1908,10 +1908,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // TODO compare with known borders
     for (Integer layer : newBorders.getLayers()) {
       BBox box = newBorders.getBox(layer);
-      if (box.minx >= box.maxx) {
+      if (box.getMinx() >= box.getMaxx()) {
         box.setX(Integer.MAX_VALUE, Integer.MIN_VALUE);
       }
-      if (box.miny >= box.maxy) {
+      if (box.getMiny() >= box.getMaxy()) {
         box.setY(Integer.MAX_VALUE, Integer.MIN_VALUE);
       }
     }

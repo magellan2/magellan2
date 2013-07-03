@@ -265,7 +265,7 @@ public class EresseaPostProcessor {
     }
   }
 
-  private void resolveWraparound(GameData data) {
+  public static void resolveWraparound(GameData data) {
     if (data.getRegions().size() == 0)
       return;
 
@@ -346,7 +346,7 @@ public class EresseaPostProcessor {
     }
   }
 
-  private Map<Long, Region> setUpIDMap(GameData data) {
+  public static Map<Long, Region> setUpIDMap(GameData data) {
     Map<Long, Region> result =
         CollectionFactory.<Long, Region> createMap(data.getRegions().size() * 5 / 4 + 5, .8f);
     // for each ID in the report, put at least one into the map. Prefer the one with lowest distance

@@ -15,6 +15,7 @@ package magellan.client.swing;
 
 import java.awt.Frame;
 
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.transformation.BoxTransformer.BBox;
 
 /**
@@ -26,7 +27,7 @@ import magellan.library.utils.transformation.BoxTransformer.BBox;
 @Deprecated
 public class SetGirthDialog extends magellan.library.utils.SetGirthDialog {
 
-  public SetGirthDialog(Frame parent, BBox idBox, Integer level) {
-    super(parent, idBox, level);
+  public SetGirthDialog(Frame parent, BBox idBox, Integer level, MapMetric metric) {
+    super(parent, idBox, level, metric);
   }
 }

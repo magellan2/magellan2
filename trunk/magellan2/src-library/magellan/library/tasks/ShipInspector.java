@@ -199,7 +199,7 @@ public class ShipInspector extends AbstractInspector {
       // If ship is shored, it can only move deviate by one from the shore direction and only
       // move to an ocean region
       Direction d = Regions.getDirectionObjectsOfCoordinates(getData(), modifiedMovement).get(0);
-      MapMetric mapMetric = d.getMapMetric();
+      MapMetric mapMetric = getData().getGameSpecificStuff().getMapMetric();
       if (mapMetric.getDifference(d, mapMetric.toDirection(ship.getShoreId())) > 1
           || mapMetric.getDifference(d, mapMetric.toDirection(ship.getShoreId())) < -1) {
         Unit owner = hasHarbourInRegion(ship.getRegion());

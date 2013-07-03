@@ -47,6 +47,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import magellan.client.utils.ErrorWindow;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SetGirthDialog;
 import magellan.library.utils.UserInterface;
@@ -492,8 +493,8 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     }
   }
 
-  public BBox askForGirth(BBox best, int layer) {
-    final SetGirthDialog dialog = new SetGirthDialog(null, best, layer);
+  public BBox askForGirth(BBox best, int layer, MapMetric metric) {
+    final SetGirthDialog dialog = new SetGirthDialog(null, best, layer, metric);
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
 

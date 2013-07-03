@@ -28,34 +28,66 @@ import java.util.List;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.utils.Direction;
+import magellan.library.utils.transformation.BoxTransformer.BBox;
 
+/**
+ * A map metric handles the properties of a coordinate system, mainly that of directions mapping to
+ * coordinates and vice versa.
+ * 
+ * @author stm
+ */
 public interface MapMetric {
 
+  /**
+   * Returns the direction pointim from a coordinate to an adjacent coordinate.
+   * 
+   * @return The corresponding direction, {@link Direction#INVALID} if from and to are not adjacent.
+   */
   Direction getDirection(CoordinateID from, CoordinateID to);
 
+  /**
+   * Returns the direction pointim from a coordinate to an adjacent coordinate.
+   * 
+   * @return The corresponding direction, {@link Direction#INVALID} if from and to are not adjacent.
+   */
   Direction getDirection(Region from, Region to);
 
+  /**
+   * Returns the direction for an internal direction code.
+   * 
+   * @see Direction#getDirCode()
+   */
   Direction toDirection(int dirCode);
 
+  /**
+   * Returns a list of all direction, sorted by ascending direction code.
+   */
   List<Direction> getDirections();
 
+  /**
+   * Returns the direction opposite to d.
+   */
   Direction opposite(Direction d);
 
+  /**
+   * Returns the coordinate that is adjacent to c in the specified direction.
+   * 
+   * @return The translated coordinate, {@link CoordinateID#INVALID} if direction ==
+   *         {@link Direction#INVALID}
+   */
   CoordinateID translate(CoordinateID c, Direction direction);
 
-  // int getDifference(int dirCode);
-
-  // int getDirCode(Direction direction);
-  //
   /**
    * Returns the difference to the specified directions. E.g., <code>getDifference(NE, W) ==
    -2</code> ,
    * <code>getDifference(NE, SE) == 2</code>, <code>getDifference(NE, SW) == 3</code>. Differences
-   * to {@link #INVALID} are always {@link Integer#MAX_VALUE}.
+   * to {@link Direction#INVALID} are always {@link Integer#MAX_VALUE}.
    */
   int getDifference(Direction from, Direction to);
-  //
-  // // TODO essential?
-  // CoordinateID toCoordinate(Direction d);
+
+  /**
+   * Returns a bounding box suited for this coordinate system.
+   */
+  BBox createBBox();
 
 }

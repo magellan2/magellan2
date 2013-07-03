@@ -422,6 +422,7 @@ public class GameDataMerger {
         // if (!r.getRegionType().equals(RegionType.theVoid)) {
         CoordinateID resultID = transform(transformer1, r.getID());
         Region resultRegion = MagellanFactory.createRegion(resultID, resultGD);
+        resultRegion.setType(r.getType());
         resultGD.addRegion(resultRegion);
         // set uid and name here, needed to create the wrapper region
         if (r.hasUID() && r.getUID() >= 0) {
@@ -444,6 +445,7 @@ public class GameDataMerger {
         Region resultRegion = resultGD.getRegion(resultID);
         if (resultRegion == null) {
           resultRegion = MagellanFactory.createRegion(resultID, resultGD);
+          resultRegion.setType(r.getType());
           resultGD.addRegion(resultRegion);
         }
         if (r.hasUID() && r.getUID() >= 0) {

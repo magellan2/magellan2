@@ -19,6 +19,7 @@ import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.guiwrapper.EventDispatcherInterface;
 
@@ -206,20 +207,27 @@ public class ReplacerHelp implements GameDataListener {
       ReplacerHelp.defaultFactory.putReplacer(name, RegionTypeSwitch.class, arg);
     }
 
-    ReplacerHelp.defaultFactory.putReplacer("ironlevel", IronLevelReplacer.class, data.getRules()
-        .getItemType(EresseaConstants.I_RIRON));
-    ReplacerHelp.defaultFactory.putReplacer("stoneslevel", StonesLevelReplacer.class, data
-        .getRules().getItemType(EresseaConstants.I_RSTONES));
-    ReplacerHelp.defaultFactory.putReplacer("laenlevel", LaenLevelReplacer.class, data.getRules()
-        .getItemType(EresseaConstants.I_RLAEN));
+    ItemType resource;
+    if ((resource = data.getRules().getItemType(EresseaConstants.I_RIRON)) != null) {
+      ReplacerHelp.defaultFactory.putReplacer("ironlevel", IronLevelReplacer.class, resource);
+    }
+    if ((resource = data.getRules().getItemType(EresseaConstants.I_RSTONES)) != null) {
+      ReplacerHelp.defaultFactory.putReplacer("stoneslevel", StonesLevelReplacer.class, resource);
+    }
+    if ((resource = data.getRules().getItemType(EresseaConstants.I_RLAEN)) != null) {
+      ReplacerHelp.defaultFactory.putReplacer("laenlevel", LaenLevelReplacer.class, resource);
+    }
 
-    ReplacerHelp.defaultFactory.putReplacer("iron", IronReplacer.class, data.getRules()
-        .getItemType(EresseaConstants.I_RIRON));
-    ReplacerHelp.defaultFactory.putReplacer("laen", LaenReplacer.class, data.getRules()
-        .getItemType(EresseaConstants.I_RLAEN));
+    if ((resource = data.getRules().getItemType(EresseaConstants.I_RIRON)) != null) {
+      ReplacerHelp.defaultFactory.putReplacer("iron", IronReplacer.class, resource);
+    }
+    if ((resource = data.getRules().getItemType(EresseaConstants.I_RLAEN)) != null) {
+      ReplacerHelp.defaultFactory.putReplacer("laen", LaenReplacer.class, resource);
+    }
 
-    ReplacerHelp.defaultFactory.putReplacer("mallorn", MallornReplacer.class, data.getRules()
-        .getItemType(EresseaConstants.I_RMALLORN));
+    if ((resource = data.getRules().getItemType(EresseaConstants.I_RMALLORN)) != null) {
+      ReplacerHelp.defaultFactory.putReplacer("mallorn", MallornReplacer.class, resource);
+    }
 
   }
 

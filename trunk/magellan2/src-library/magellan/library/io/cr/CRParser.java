@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import magellan.library.Addeable;
 import magellan.library.Alliance;
@@ -62,6 +60,7 @@ import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.impl.MagellanIslandImpl;
 import magellan.library.impl.SpellBuilder;
+import magellan.library.io.AbstractReportParser;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesIO;
 import magellan.library.io.file.FileType;
@@ -99,8 +98,8 @@ import magellan.library.utils.transformation.TwoLevelTransformer;
 /**
  * Parser for cr-files.
  */
-public class CRParser implements RulesIO, GameDataIO {
-  private static final Logger log = Logger.getInstance(CRParser.class);
+public class CRParser extends AbstractReportParser implements RulesIO, GameDataIO {
+  protected static final Logger log = Logger.getInstance(CRParser.class);
 
   /** These special tags are used by TreeHelper and are therefore reserved. */
   public static final String TAGGABLE_STRING = "ejcTaggableComparator";
@@ -114,19 +113,10 @@ public class CRParser implements RulesIO, GameDataIO {
   public static final String TAGGABLE_STRING5 = "ejcTaggableComparator5";
 
   Scanner sc;
-  GameData world;
   String configuration;
   String coordinates;
-  String game;
   boolean umlauts;
-  int version = 0; // the version of the report
-
-  private final Collection<String> warnedLines = new HashSet<String>();
-
-  private UserInterface ui = null;
-  private Faction firstFaction;
-
-  protected ReportTransformer transformer;
+  final Collection<String> warnedLines = new HashSet<String>();
 
   private BlockParser unitParser;
 
@@ -170,107 +160,12 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   /**
-   * Translates c by newOrigin if it's in the same z-level and returns it.
-   */
-  CoordinateID originTranslate(CoordinateID c) {
-    return transformer.transform(c);
-  }
-
-  /**
-   * Transform a coordinate translation: mirror at origin, translate, mirror again.
-   */
-  private CoordinateID transformTranslation(CoordinateID oldTranslation) {
-    CoordinateID zero = CoordinateID.create(0, 0, oldTranslation.getZ());
-    return zero.inverseTranslateInLayer(transformer.transform(zero
-        .inverseTranslateInLayer(oldTranslation)));
-  }
-
-  protected static final String number = "[\\+\\-]?\\d+";
-  protected static String astral = Resources.get("rules.astralspacecoordinate");
-  protected static String pattern;
-  protected static String regionsPattern1;
-  protected static String regionsPattern2;
-  static {
-    buildPattern();
-  }
-
-  protected static void buildPattern() {
-    // check if locale has changed
-    if (pattern == null || !astral.equals(Resources.get("rules.astralspacecoordinate"))) {
-      astral = Resources.get("rules.astralspacecoordinate");
-      // \((number)\,\ ?(number)(\,\ ?((number)|Astralraum))?\)
-      // \(([\+\-]?\d+)\,\ ?([\+\-]?\d+)(\,\ ?(([\+\-]?\d+)|Astralraum))?\)
-      pattern =
-          "\\((" + number + ")\\,\\ ?(" + number + ")(\\,\\ ?((" + number + ")|" + astral
-              + "))?\\)";
-      // \(([\+\-]?\d+) ([\+\-]?\d+)( (([\+\-]?\d+)|Astralraum))?\)
-      regionsPattern1 =
-          "\\((" + number + ") (" + number + ")( ((" + number + ")|" + astral + "))?\\)";
-      // \(([\+\-]?\d+) ([\+\-]?\d+)( (([\+\-]?\d+)|Astralraum))?\)*
-      regionsPattern2 =
-          "\\((" + number + ") (" + number + ")( ((" + number + ")|" + astral + "))?\\)*";
-    }
-  }
-
-  /**
-   * special sub to translate coords in ";regions" tags of messages expecting this form
-   * <code>"x1 y1 z1, x2 y2 z2";regions</code>.<br />
-   * There is also an older variant: <code>"der Sumpf von Rudros (-7,23)";regions</code>
+   * Returns the value of the configuration tag ("Konfiguration") as it has been read from the CR.
    * 
-   * @param value
-   * @return
+   * @return The configuration string or <code>null</code> if the tag hasn't been read (yet)
    */
-  private String originTranslateRegions(String value) {
-    final StringBuffer result = new StringBuffer();
-    buildPattern();
-    String content = value.replace("\"", "");
-
-    if (content.matches(regionsPattern2)) {
-      final Matcher matcher = Pattern.compile(regionsPattern1).matcher(content);
-      while (matcher.find()) {
-        final String candi = matcher.group();
-        // candi=candi.replaceAll(astral,
-        // world.getGameSpecificRules().getAstralSpacePlane());
-        CoordinateID coord = CoordinateID.parse(candi, " ");
-        if (coord != null) {
-          coord = originTranslate(coord);
-          matcher.appendReplacement(result, "(" + coord.toString(" ") + ")");
-        } else {
-          matcher.appendReplacement(result, matcher.group());
-        }
-      }
-      matcher.appendTail(result);
-      return result.toString();
-    } else
-      return originTranslate(content);
-  }
-
-  /**
-   * Tries to replace coordinates in string by the translated version. The string is searched for
-   * occurrences of the form "(123,123)" or "(123,123,123)" or "(123,123,Astralraum)", transforms
-   * them and replaces them. This is not completely fool-proof!
-   * 
-   * @param value Usually a message text which might contain coordinates
-   * @see magellan.library.utils.transformation.ReportTransformer#transform(java.lang.String)
-   */
-  private String originTranslate(String value) {
-    final StringBuffer result = new StringBuffer();
-    buildPattern();
-    final Matcher matcher = Pattern.compile(pattern).matcher(value);
-    while (matcher.find()) {
-      final String candi = matcher.group();
-      // candi=candi.replaceAll(astral,
-      // world.getGameSpecificRules().getAstralSpacePlane());
-      CoordinateID coord = CoordinateID.parse(candi.substring(1, candi.length() - 1), ",");
-      if (coord != null) {
-        coord = transformer.transform(coord);
-        matcher.appendReplacement(result, "(" + coord.toString() + ")");
-      } else {
-        matcher.appendReplacement(result, matcher.group());
-      }
-    }
-    matcher.appendTail(result);
-    return result.toString();
+  public String getConfiguration() {
+    return configuration;
   }
 
   /**
@@ -280,11 +175,11 @@ public class CRParser implements RulesIO, GameDataIO {
    * @param fetch If this is true, read the next line and skip the line with the error. Otherwise
    *          the line stays still at the front of the input.
    */
-  private void unknown(String context, boolean fetch) throws IOException {
+  protected void unknown(String context, boolean fetch) throws IOException {
     unknown(context, fetch, Logger.WARN);
   }
 
-  private void unknown(String context, boolean fetch, int logLevel) throws IOException {
+  protected void unknown(String context, boolean fetch, int logLevel) throws IOException {
     int i;
 
     final StringBuilder msg = new StringBuilder();
@@ -315,89 +210,6 @@ public class CRParser implements RulesIO, GameDataIO {
     if (fetch) {
       sc.getNextToken();
     }
-  }
-
-  /**
-   * Helper function: Find a faction in world. If not found, create one and insert it.
-   */
-  private Faction getAddFaction(EntityID id) {
-    Faction faction = world.getFaction(id);
-
-    if (faction == null) {
-      faction = MagellanFactory.createFaction(id, world);
-      world.addFaction(faction);
-    }
-
-    return faction;
-  }
-
-  /**
-   * Helper function: Find a unit in world. If not found, create one and insert it.
-   */
-  private Unit getAddUnit(UnitID id, boolean old) {
-    if (old) {
-      Unit unit = world.getOldUnit(id);
-
-      if (unit == null) {
-        unit = MagellanFactory.createUnit(id, world);
-        world.addOldUnit(unit);
-      }
-
-      return unit;
-    } else {
-      Unit unit = world.getUnit(id);
-
-      if (unit == null) {
-        unit = MagellanFactory.createUnit(id, world);
-        world.addUnit(unit);
-      }
-
-      return unit;
-    }
-  }
-
-  /**
-   * Helper function: Find a building in world. If not found, create one and insert it.
-   */
-  private Building getAddBuilding(EntityID id) {
-    Building building = world.getBuilding(id);
-
-    if (building == null) {
-      building = MagellanFactory.createBuilding(id, world);
-      world.addBuilding(building);
-    }
-
-    return building;
-  }
-
-  /**
-   * Helper function: Find a ship in world. If not found, create one and insert it.
-   */
-  private Ship getAddShip(EntityID id) {
-    Ship ship = world.getShip(id);
-
-    if (ship == null) {
-      ship = MagellanFactory.createShip(id, world);
-      world.addShip(ship);
-    }
-
-    return ship;
-  }
-
-  /**
-   * Returns the value of the configuration tag ("Konfiguration") as it has been read from the CR.
-   * 
-   * @return The configuration string or <code>null</code> if the tag hasn't been read (yet)
-   */
-  public String getConfiguration() {
-    return configuration;
-  }
-
-  /**
-   * @return The first faction encountered while parsing, <code>null</code> if not applicable
-   */
-  public Faction getFirstFaction() {
-    return firstFaction;
   }
 
   /**
@@ -1580,6 +1392,9 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("peasantWage")) {
         regionType.setPeasantWage(Integer.parseInt(sc.argv[1]));
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("mapImage")) {
+        regionType.setMapImage(sc.argv[0]);
+        sc.getNextToken();
       } else if (sc.isBlock) {
         break;
       } else {
@@ -1809,26 +1624,30 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   private void parseOrder(Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
-    final OrderType ord = rules.getOrder(id, true);
-    sc.getNextToken(); // skip ORDER xx
+    try {
+      final int f = sc.argv[0].indexOf("\"", 0);
+      final int t = sc.argv[0].indexOf("\"", f + 1);
+      final StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
+      final OrderType ord = rules.getOrder(id, true);
+      sc.getNextToken(); // skip ORDER xx
 
-    while (!sc.eof) {
-      if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("syntax")) {
-        ord.setSyntax(sc.argv[0]);
-      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("internal")) {
-        ord.setInternal(sc.argv[0].equals("1"));
-      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("active")) {
-        ord.setActive(sc.argv[0].equals("1"));
-      } else if (!sc.isBlock) {
-        unknown("ORDER", true);
-      } else {
-        break;
+      while (!sc.eof) {
+        if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("syntax")) {
+          ord.setSyntax(sc.argv[0]);
+        } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("internal")) {
+          ord.setInternal(sc.argv[0].equals("1"));
+        } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("active")) {
+          ord.setActive(sc.argv[0].equals("1"));
+        } else if (!sc.isBlock) {
+          unknown("ORDER", true);
+        } else {
+          break;
+        }
+
+        sc.getNextToken();
       }
-
-      sc.getNextToken();
+    } catch (RuntimeException e) {
+      throw e;
     }
   }
 

@@ -1678,8 +1678,8 @@ public class E3CommandParser {
     removeOrdersLike(MAKEOrder + " " + "[^T].*", true);
     removeOrdersLike(getResearchOrder() + ".*", true);
     if (modulo != Integer.MAX_VALUE
-        && (world.getDate().getDate() % modulo == 0 || (!currentRegion.getHerbAmount().equals(
-            "viele") && !currentRegion.getHerbAmount().equals("sehr viele")))) {
+        && (world.getDate().getDate() % modulo == 0 || currentRegion.getHerbAmount() == null || (!currentRegion
+            .getHerbAmount().equals("viele") && !currentRegion.getHerbAmount().equals("sehr viele")))) {
       addNewOrder(getResearchOrder(), true);
     } else {
       addNewOrder(MAKEOrder + " " + getLocalizedOrder(EresseaConstants.O_HERBS, "KRÄUTER"), true);

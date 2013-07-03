@@ -318,7 +318,13 @@ public class AtlantisOrderParser extends AbstractOrderParser {
         unexpected(t);
       }
 
+      completeString(token, t);
+
       return retVal;
+    }
+
+    protected void completeString(OrderToken lastToken, OrderToken currentToken) {
+      // may overwrite
     }
   }
 
@@ -880,6 +886,13 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     protected boolean readIt(OrderToken token) {
       getOrder().setLong(true);
       return super.readIt(token);
+    }
+
+    @Override
+    protected void completeString(OrderToken token, OrderToken t) {
+      if (shallComplete(token, t)) {
+        getCompleter().addSkills();
+      }
     }
   }
 

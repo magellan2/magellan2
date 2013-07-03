@@ -998,25 +998,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /** Add completions for command Lerne. */
   public void cmpltLerne() {
-    if ((data != null) && (data.rules != null)) {
-      for (final Iterator<SkillType> iter = data.rules.getSkillTypeIterator(); iter.hasNext();) {
-        final SkillType t = iter.next();
-        final int cost = getSkillCost(t, unit);
-        // add quotes if needed
-        String name =
-            Resources.getRuleItemTranslation("skill." + t.getID().toString(), getLocale());
-        if (name.startsWith("rules.skill")) {
-          name = t.getName();
-        }
-        name = name.replace(' ', '~');
-
-        if (cost > 0) {
-          completions.add(new Completion(name, " " + cost));
-        } else {
-          completions.add(new Completion(name));
-        }
-      }
-    }
+    addSkills();
   }
 
   /** Add completions for command LerneTalent. */

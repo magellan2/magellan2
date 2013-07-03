@@ -32,6 +32,7 @@ import magellan.library.completion.Completion;
 import magellan.library.gamebinding.AbstractOrderCompleter;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.SkillType;
 
 /**
  * Order completer for Atlantis game
@@ -192,6 +193,24 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
   public void cmpltDirection() {
     addDirections(" ");
     addSurroundingRegions(1, " ");
+  }
+
+  /**
+   * Cost is not appended in Atlantis.
+   * 
+   * @see magellan.library.gamebinding.AbstractOrderCompleter#addSkills()
+   */
+  @Override
+  public void addSkills() {
+    if ((data != null) && (data.rules != null)) {
+      for (SkillType t : data.rules.getSkillTypes()) {
+        // add quotes if needed
+        String name = getOrderTranslation(t);
+        name = name.replace(' ', '_');
+
+        completions.add(new Completion(name));
+      }
+    }
   }
 
 }

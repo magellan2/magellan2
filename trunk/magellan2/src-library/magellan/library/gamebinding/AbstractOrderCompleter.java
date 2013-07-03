@@ -639,6 +639,34 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
+  protected void addSkills() {
+    if ((data != null) && (data.rules != null)) {
+      for (SkillType t : data.rules.getSkillTypes()) {
+        final int cost = getSkillCost(t, unit);
+        // add quotes if needed
+        String name = getOrderTranslation(t);
+        name = name.replace(' ', '~');
+
+        if (cost > 0) {
+          completions.add(new Completion(name, " " + cost));
+        } else {
+          completions.add(new Completion(name));
+        }
+      }
+    }
+  }
+
+  protected int getSkillCost(SkillType skillType, Unit aUnit) {
+    Skill skill = aUnit.getSkill(skillType);
+    int cost = 0;
+    if (skill != null) {
+      cost = skillType.getCost(skill.getLevel() + 1);
+    } else {
+      cost = skillType.getCost(1);
+    }
+    return cost;
+  }
+
   /**
    * Adds a unit to the completion in a standard manner without comment.
    */
@@ -958,6 +986,20 @@ public abstract class AbstractOrderCompleter implements Completer {
   protected String getOrderTranslation(StringID orderKey) {
     return getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(),
         orderKey);
+  }
+
+  protected String getOrderTranslation(SkillType skill) {
+    try {
+      return getData().getRules().getGameSpecificStuff().getOrderChanger().getTokenLocalized(
+          getLocale(), skill);
+    } catch (RulesException e) {
+      String name =
+          Resources.getRuleItemTranslation("skill." + skill.getID().toString(), getLocale());
+      if (name.startsWith("rules.skill")) {
+        name = skill.getName();
+      }
+      return name;
+    }
   }
 
   protected String getRuleItemTranslation(String orderKey) {

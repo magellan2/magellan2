@@ -21,6 +21,8 @@ import java.util.Map;
 import magellan.library.ID;
 import magellan.library.StringID;
 import magellan.library.utils.CollectionFactory;
+import magellan.library.utils.Locales;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This class contains an abstract order.
@@ -140,6 +142,11 @@ public class OrderType extends ObjectType {
    * @return The name or <code>null</code> if no such name has been added.
    */
   public String getName(Locale loc) {
+    if (loc == null) {
+      Logger.getInstance(this.getClass()).error("loc null", new RuntimeException());
+      loc = Locales.getOrderLocale();
+    }
+
     List<String> list = names.get(loc.getLanguage());
     if (list != null)
       return list.get(0);

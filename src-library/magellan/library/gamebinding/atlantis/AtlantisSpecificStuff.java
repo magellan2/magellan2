@@ -177,7 +177,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#postProcessAfterTrustlevelChange(magellan.library.GameData)
    */
   public void postProcessAfterTrustlevelChange(GameData data) {
-    // TODO implement?
+    // currently nothing to do
   }
 
   /**
@@ -202,7 +202,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getMovementEvaluator()
    */
   public MovementEvaluator getMovementEvaluator() {
-    return new AtlantisMovementEvaluator();
+    return new AtlantisMovementEvaluator(getRules());
   }
 
   /**

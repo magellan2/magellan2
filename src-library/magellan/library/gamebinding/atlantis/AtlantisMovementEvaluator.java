@@ -42,28 +42,70 @@ import magellan.library.utils.Direction;
  */
 public class AtlantisMovementEvaluator implements MovementEvaluator {
 
+  private static final int CARRYING_CAPACITY = 5;
+  private static final int HORSE_CAPACITY = 50;
+  private static final float GE_IN_SILVER = 100;
+
+  private Rules rules;
+  private ArrayList<ItemType> horseTypes;
+
+  protected AtlantisMovementEvaluator(Rules rules) {
+    this.rules = rules;
+    horseTypes = new ArrayList<ItemType>(2);
+    for (ItemType type : rules.getItemTypes()) {
+      if (type.isHorse()) {
+        horseTypes.add(type);
+      }
+    }
+  }
+
   public int getPayloadOnHorse(Unit unit) {
-    return 0;
+    return getPayloadOnFoot(unit);
   }
 
   public int getPayloadOnFoot(Unit unit) {
-    return 0;
+    int cap = (int) (CARRYING_CAPACITY * unit.getPersons() * GE_IN_SILVER);
+    for (ItemType horseType : horseTypes) {
+      Item item = unit.getItem(horseType);
+      if (item != null) {
+        cap += (int) (HORSE_CAPACITY * item.getAmount() * GE_IN_SILVER);
+      }
+    }
+    return cap;
   }
 
   public int getLoad(Unit unit) {
-    return 0;
+    int load = 0;
+    for (Item item : unit.getItems()) {
+      load += (((int) (item.getItemType().getWeight() * GE_IN_SILVER)) * item.getAmount());
+    }
+    return load;
   }
 
   public int getModifiedLoad(Unit unit) {
-    return 0;
+    int load = 0;
+    for (Item item : unit.getModifiedItems()) {
+      if (!item.getItemType().isHorse()) {
+        load += (((int) (item.getItemType().getWeight() * GE_IN_SILVER)) * item.getAmount());
+      }
+    }
+    return load;
   }
 
   public int getWeight(Unit unit) {
-    return 0;
+    int weight = (int) (10 * GE_IN_SILVER * unit.getPersons());
+    for (Item item : unit.getItems()) {
+      weight += (((int) (item.getItemType().getWeight() * GE_IN_SILVER)) * item.getAmount());
+    }
+    return weight;
   }
 
   public int getModifiedWeight(Unit unit) {
-    return 0;
+    int weight = (int) (10 * GE_IN_SILVER * unit.getModifiedPersons());
+    for (Item item : unit.getModifiedItems()) {
+      weight += (((int) (item.getItemType().getWeight() * GE_IN_SILVER)) * item.getAmount());
+    }
+    return weight;
   }
 
   public int getModifiedRadius(Unit unit) {
@@ -78,14 +120,6 @@ public class AtlantisMovementEvaluator implements MovementEvaluator {
     return 1;
   }
 
-  public CoordinateID getDestination(Unit unit, List<CoordinateID> path) {
-    return null;
-  }
-
-  public int getDistance(Unit unit, List<Region> path) {
-    return 1;
-  }
-
   public int getRadius(Unit u) {
     return 1;
   }
@@ -95,19 +129,50 @@ public class AtlantisMovementEvaluator implements MovementEvaluator {
   }
 
   public boolean isPastMovementPassive(Unit unit) {
+    if (unit.getShip() != null)
+      return !unit.equals(unit.getShip().getOwnerUnit());
+
     return false;
   }
 
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getModifiedMovement(magellan.library.Unit)
+   */
   public List<CoordinateID> getModifiedMovement(Unit u) {
-    return Collections.emptyList();
+    return getMovement(u, true, false);
   }
 
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getAdditionalMovement(magellan.library.Unit)
+   */
   public List<CoordinateID> getAdditionalMovement(Unit u) {
-    return Collections.emptyList();
+    return getMovement(u, true, true);
   }
 
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getPassiveMovement(magellan.library.Unit)
+   */
   public List<CoordinateID> getPassiveMovement(Unit u) {
-    return Collections.emptyList();
+    return getMovement(u, false, false);
+  }
+
+  private List<CoordinateID> getMovement(Unit u, boolean active, boolean suffix) {
+    List<MovementRelation> rels = u.getRelations(MovementRelation.class);
+    if (rels.size() == 0)
+      return Collections.emptyList();
+
+    MovementRelation rel = rels.get(0);
+
+    if (active ^ (rel.origin == u))
+      return Collections.emptyList();
+
+    if (active)
+      if (suffix)
+        return rel.getFutureMovement();
+      else
+        return rel.getInitialMovement();
+    else
+      return rel.getMovement();
   }
 
   public MovementRelation getMovement(Unit unit, List<Direction> directions) {
@@ -119,6 +184,38 @@ public class AtlantisMovementEvaluator implements MovementEvaluator {
     }
     return new MovementRelation(unit, unit, initialMovement,
         Collections.<CoordinateID> emptyList(), false, (Region) null, 1, -1);
+  }
+
+  public CoordinateID getDestination(Unit unit, List<CoordinateID> path) {
+    MovementRelation mRel = getMovement(unit, pathToDirections(path));
+    return mRel.getDestination();
+  }
+
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getDistance(magellan.library.Unit,
+   *      java.util.List)
+   */
+  public int getDistance(Unit unit, List<Region> path) {
+    MovementRelation mRel = getMovement(unit, pathToDirections(path));
+    return mRel.rounds;
+  }
+
+  protected static List<Direction> pathToDirections(List<?> path) {
+    List<Direction> result = new ArrayList<Direction>(path.size());
+    CoordinateID lastRegion = null;
+    for (Object region : path) {
+      CoordinateID currentRegion;
+      if (region instanceof Region) {
+        currentRegion = ((Region) region).getCoordinate();
+      } else {
+        currentRegion = (CoordinateID) region;
+      }
+      if (lastRegion != null) {
+        result.add(Direction.toDirection(lastRegion, currentRegion));
+      }
+      lastRegion = currentRegion;
+    }
+    return result;
   }
 
 }

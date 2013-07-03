@@ -52,6 +52,7 @@ import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.Units;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A class for offering possible completions on incomplete orders. This class relies on the
@@ -61,6 +62,8 @@ import magellan.library.utils.Units;
  * with any of the cmpltX methods. They are solely called by the internal <tt>OrderParser</tt>.
  */
 public abstract class AbstractOrderCompleter implements Completer {
+  private static final Logger log = Logger.getInstance(AbstractOrderCompleter.class);
+
   private static final Comparator<Completion> prioComp = new PrioComp();
   private OrderParser parser;
   protected List<Completion> completions;
@@ -638,13 +641,20 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Adds a unit to the completions in a standard manner without comments.
    */
   protected void addUnit(Unit u, String postfix, int cursorOffset, boolean omitTemp) {
-    if (u instanceof TempUnit) {
-      completions.add(new Completion(u.getID().toString(!omitTemp, getLocale()), postfix,
-          Completion.DEFAULT_PRIORITY - 1, cursorOffset));
-    } else {
-      addNamed(u, postfix, cursorOffset, false);
+    try {
+      if (u instanceof TempUnit) {
+        completions.add(new Completion(omitTemp ? u.getID().toString() : getGameSpecificStuff()
+            .getOrderChanger().getTokenLocalized(getLocale(), u.getID()), postfix,
+            Completion.DEFAULT_PRIORITY - 1, cursorOffset));
+      } else {
+        addNamed(u, postfix, cursorOffset, false);
+      }
+    } catch (RulesException e) {
+      log.warn(e);
     }
   }
+
+  protected abstract String getTemp();
 
   /**
    * Adds a thing to the completions, optionally with comments.

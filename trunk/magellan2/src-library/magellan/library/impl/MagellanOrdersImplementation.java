@@ -80,6 +80,7 @@ public class MagellanOrdersImplementation implements Orders {
         continue;
       }
 
+      // FIXME game specific!
       if (false == tempBlock) {
         if (t.equalsToken(getOrderTranslation(EresseaConstants.O_MAKE))) {
           t = ct.next();

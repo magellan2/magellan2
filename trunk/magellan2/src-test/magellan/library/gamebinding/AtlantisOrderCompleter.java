@@ -94,9 +94,20 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
     completions.add(new Completion("<id>", "", ""));
   }
 
-  public void cmpltFlag() {
-    completions.add(new Completion("0"));
-    completions.add(new Completion("1"));
+  public void cmpltNumber(int min, int max) {
+    if (max < min + 6) {
+      for (int i = min; i <= max; ++i) {
+        completions.add(new Completion(String.valueOf(i)));
+      }
+    } else {
+      completions.add(new Completion("<num>", String.valueOf(min == Integer.MIN_VALUE
+          ? (max == Integer.MAX_VALUE ? 1 : max) : min)));
+    }
+  }
+
+  @Override
+  protected String getTemp() {
+    return "NEW";
   }
 
 }

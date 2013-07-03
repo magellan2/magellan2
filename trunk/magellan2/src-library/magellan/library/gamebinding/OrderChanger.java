@@ -141,6 +141,8 @@ public interface OrderChanger {
    */
   public int areCompatibleLongOrders(Orders orders);
 
+  public String getTokenLocalized(Locale orderLocale, Object arg) throws RulesException;
+
   public String getOrder(Locale orderLocale, StringID orderId, Object... args);
 
   public String getOrder(StringID orderId, Locale orderLocale, Object... args)

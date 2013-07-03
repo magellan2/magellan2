@@ -18,6 +18,7 @@ import java.util.Collections;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.gamebinding.RulesException;
 import magellan.library.rules.Race;
 
 /**
@@ -65,8 +66,14 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
   public String toString(boolean withName) {
     if (withName)
       return super.toString(withName);
-    else
-      return getID().toString(true, getLocale());
+    else {
+      try {
+        return getData().getGameSpecificStuff().getOrderChanger().getTokenLocalized(getLocale(),
+            getID());
+      } catch (RulesException e) {
+        return "TEMP " + getID();
+      }
+    }
   }
 
   public void setTempRace(Race r) {

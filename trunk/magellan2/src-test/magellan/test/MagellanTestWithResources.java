@@ -48,12 +48,17 @@ import org.junit.BeforeClass;
  */
 public abstract class MagellanTestWithResources {
   protected static final Locale DE_LOCALE = Locale.GERMANY;
-  protected static final Locale EN_LOCALE = Locale.GERMANY;
+  protected static final Locale EN_LOCALE = Locale.ENGLISH;
 
   protected static Properties settings;
   protected static MagellanContext context;
   protected static SelfCleaningProperties completionSettings;
   private static File resourceDir = new File(".");
+  private static Locale locale = DE_LOCALE;
+
+  protected static void setLocale(Locale alocale) {
+    locale = alocale;
+  }
 
   /**
    * @throws java.lang.Exception
@@ -73,10 +78,10 @@ public abstract class MagellanTestWithResources {
   }
 
   protected static void initResources() {
-    Locales.setOrderLocale(DE_LOCALE);
+    Locales.setOrderLocale(locale);
     settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
     // PARSER_SETTINGS_FILE);
-    settings.setProperty("locales.orders", "de");
+    settings.setProperty("locales.orders", locale.getLanguage());
     Resources.getInstance().initialize(resourceDir, "");
     // System.out.println(new File(".").getAbsolutePath());
     context = new MagellanContext(null);

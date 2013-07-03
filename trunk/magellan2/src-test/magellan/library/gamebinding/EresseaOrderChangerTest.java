@@ -171,7 +171,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     TempUnit unit2 = unit.createTemp(data, UnitID.createUnitID(-42, data.base));
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, 4, EresseaConstants.I_UHORSE, "to temp");
-    assertEquals("GIB TEMP 16 4 Pferd; to temp", unit.getOrders2().get(0).toString());
+    assertEquals("GIB TEMP 16 4 Pferd ; to temp", unit.getOrders2().get(0).toString());
   }
 
 }

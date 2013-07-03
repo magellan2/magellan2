@@ -25,11 +25,12 @@ package magellan.library.gamebinding;
 
 import magellan.library.StringID;
 
-public class GameConstants {
+public abstract class GameConstants {
 
   protected static final String ORDER_KEY_PREFIX = "HELP_";
 
   public static StringID getAllianceKey(String cat) {
     return StringID.create(ORDER_KEY_PREFIX + cat);
   }
+
 }

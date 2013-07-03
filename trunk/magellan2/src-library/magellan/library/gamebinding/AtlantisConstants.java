@@ -101,10 +101,15 @@ public class AtlantisConstants extends GameConstants {
   /** Order constant END */
   public static final StringID O_END = StringID.create("END");
 
+  /** Order constant NEW */
+  public static final StringID O_NEW = StringID.create("NEW");
+
   /** The item silver */
   public static final StringID I_USILVER = StringID.create("Silber");
 
   /** The resource silver */
   public static final StringID I_RSILVER = StringID.create("Silber");
+
+  public static StringID I_WOOD = StringID.create("wood");
 
 }

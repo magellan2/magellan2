@@ -601,12 +601,12 @@ public class EresseaOrderChanger implements OrderChanger {
       ItemType itemType = getRules().getItemType(item);
       if (itemType == null)
         if (item.equals(EresseaConstants.I_MEN)) {
-          sItem = " " + getOrderTranslation(EresseaConstants.O_MEN, source);
+          sItem = getOrderTranslation(EresseaConstants.O_MEN, source);
         } else {
           tmpOrders = "; unknown item " + item;
         }
       else {
-        sItem = " " + itemType.getOrderName();
+        sItem = itemType.getOrderName();
       }
     } else {
       if (amount != OrderChanger.ALL) {
@@ -618,15 +618,24 @@ public class EresseaOrderChanger implements OrderChanger {
       log.error(tmpOrders);
     } else {
       tmpOrders =
-          getOrderTranslation(EresseaConstants.O_GIVE, source)
-              + " "
-              + target.getID().toString(true, source.getLocale())
-              + (amount < 0 ? (" " + getOrderTranslation(EresseaConstants.O_EACH, source) + " ")
-                  : " ")
-              + (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.O_ALL, source)
-                  : Math.abs(amount)) + sItem + (comment != null ? ("; " + comment) : "");
+          getOrder(source.getLocale(), EresseaConstants.O_GIVE, target.getID(), (amount < 0
+              ? (getOrderTranslation(EresseaConstants.O_EACH, source)) : ""),
+              (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.O_ALL, source)
+                  : Math.abs(amount)), sItem, (comment != null
+                  ? (EresseaConstants.OS_COMMENT + " " + comment) : ""));
+      // getOrderTranslation(EresseaConstants.O_GIVE, source)
+      // + " "
+      // + target.getID().toString(getTemp(target.getLocale()))
+      // + (amount < 0 ? (" " + getOrderTranslation(EresseaConstants.O_EACH, source) + " ")
+      // : " ")
+      // + (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.O_ALL, source)
+      // : Math.abs(amount)) + sItem + (comment != null ? ("; " + comment) : "");
     }
     source.addOrder(tmpOrders);
+  }
+
+  protected String getTemp(Locale locale) {
+    return getOrder(locale, EresseaConstants.O_TEMP);
   }
 
   /**
@@ -652,6 +661,22 @@ public class EresseaOrderChanger implements OrderChanger {
     return getOrder(unit.getLocale(), id);
   }
 
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#getTokenLocalized(java.util.Locale,
+   *      java.lang.Object)
+   */
+  public String getTokenLocalized(Locale orderLocale, Object arg) throws RulesException {
+    if (arg instanceof StringID)
+      return getOrder1((StringID) arg, orderLocale);
+    else if (arg instanceof UnitID)
+      if (((UnitID) arg).intValue() < 0)
+        return getTemp(orderLocale) + " " + arg.toString();
+      else
+        return arg.toString();
+    else
+      return arg.toString();
+  }
+
   public String getOrder(Locale orderLocale, StringID orderId, Object... args) {
     try {
       return getOrder(orderId, orderLocale, args);
@@ -665,11 +690,9 @@ public class EresseaOrderChanger implements OrderChanger {
     StringBuilder order = new StringBuilder();
     order.append(getOrder1(orderId, orderLocale));
     for (Object arg : args) {
-      order.append(" ");
-      if (arg instanceof StringID) {
-        order.append(getOrder1((StringID) arg, orderLocale));
-      } else {
-        order.append(arg.toString());
+      String tok = getTokenLocalized(orderLocale, arg);
+      if (tok.length() > 0) {
+        order.append(" ").append(tok);
       }
     }
     return order.toString();
@@ -806,8 +829,8 @@ public class EresseaOrderChanger implements OrderChanger {
     final Locale locale = unit.getLocale();
 
     for (TempUnit u : unit.tempUnits()) {
-      cmds.add(parser.parse(getOrder(locale, EresseaConstants.O_MAKE, u.getID().toString(true,
-          locale)), locale));
+      cmds.add(parser.parse(getOrder(locale, EresseaConstants.O_MAKE, u.getID().toString(
+          getTemp(locale))), locale));
 
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
@@ -829,4 +852,5 @@ public class EresseaOrderChanger implements OrderChanger {
 
     return cmds;
   }
+
 }

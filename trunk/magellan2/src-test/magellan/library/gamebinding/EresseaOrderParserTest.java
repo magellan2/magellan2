@@ -731,6 +731,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     checkOrder("NACH", false);
     checkOrder("NACH 1", false);
     checkOrder("NACH o PAUSE", false);
+    checkOrder("NACH e", false);
   }
 
   // new FinalKeywordReader());

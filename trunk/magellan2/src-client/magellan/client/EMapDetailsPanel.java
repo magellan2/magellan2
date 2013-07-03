@@ -3734,8 +3734,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   private String getTranslation(int shore) {
-    return getGameData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(),
-        StringID.create(Direction.toDirection(shore).name()));
+    return getGameData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+        Locales.getOrderLocale(), StringID.create(Direction.toDirection(shore).name()));
   }
 
   private void appendUnitCapacityByItems(DefaultMutableTreeNode parent, Unit u, int freeCapacity) {

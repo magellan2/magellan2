@@ -35,6 +35,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import magellan.client.extern.MagellanPlugIn;
+import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
@@ -42,6 +43,7 @@ import magellan.library.LuxuryPrice;
 import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Rules;
+import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
@@ -52,6 +54,7 @@ import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
+import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
@@ -120,9 +123,9 @@ public class E3CommandParser {
   /** The LUXUS order parameter */
   public static String TRANKOrder = "TRANK";
   /** The persistent comment order */
-  public static String PCOMMENTOrder = EresseaConstants.OS_PCOMMENT;
+  public static String PCOMMENTOrder = EresseaConstants.O_PCOMMENT;
   /** The persistent comment order */
-  public static String COMMENTOrder = EresseaConstants.OS_COMMENT;
+  public static String COMMENTOrder = EresseaConstants.O_COMMENT;
   /** The LEARN order */
   public static String LEARNOrder = "LERNE";
   /** The TEACH order */
@@ -300,10 +303,12 @@ public class E3CommandParser {
 
     currentFaction = faction;
 
+    helper.getUI().setMaximum(world.getRegions().size() + 4);
+    helper.getUI().setProgress("init", ++progress);
+
     initLocales();
 
     // comment out the following two lines if you don't have the newest nighthly build of Magellan
-    helper.getUI().setMaximum(world.getRegions().size() + 4);
     helper.getUI().setProgress("preprocessing", ++progress);
 
     // sometimes we need an arbitrary unit. This is a shorthand for it.
@@ -397,29 +402,28 @@ public class E3CommandParser {
     int unitScripts = 0;
     int regionScripts = 0;
     // comment out the following lines if you don't have the newest nightly build of Magellan
-    // ---start uncomment for BeanShell
-    // for (Building b : world.getBuildings()) {
-    // if (helper.hasScript(b)) {
-    // buildingScripts++;
-    // }
-    // }
-    // for (Ship s : world.getShips()) {
-    // if (helper.hasScript(s)) {
-    // shipScripts++;
-    // }
-    // }
-    // for (Unit u : world.getUnits()) {
-    // if (helper.hasScript(u)) {
-    // u.addOrder(COMMENTOrder + " hat Skript", false);
-    // unitScripts++;
-    // }
-    // }
-    // for (Region r : world.getRegions()) {
-    // if (helper.hasScript(r)) {
-    // regionScripts++;
-    // }
-    // }
-    // ---stop uncomment for BeanShell
+    for (Building b : world.getBuildings()) {
+      if (helper.hasScript(b)) {
+        buildingScripts++;
+      }
+    }
+    for (Ship s : world.getShips()) {
+      if (helper.hasScript(s)) {
+        shipScripts++;
+      }
+    }
+    for (Unit u : world.getUnits()) {
+      if (helper.hasScript(u)) {
+        u.addOrder(COMMENTOrder + " hat Skript", false);
+        unitScripts++;
+      }
+    }
+    for (Region r : world.getRegions()) {
+      if (helper.hasScript(r)) {
+        regionScripts++;
+      }
+    }
+
     someUnit.addOrderAt(0, "; " + unitScripts + " unit scripts, " + buildingScripts
         + " building scripts, " + shipScripts + " ship scripts, " + regionScripts
         + " region scripts", true);
@@ -1685,7 +1689,7 @@ public class E3CommandParser {
             .getHerbAmount().equals("viele") && !currentRegion.getHerbAmount().equals("sehr viele")))) {
       addNewOrder(getResearchOrder(), true);
     } else {
-      addNewOrder(MAKEOrder + " " + getLocalizedOrder(EresseaConstants.O_HERBS, "KR훃TER"), true);
+      addNewOrder(MAKEOrder + " " + getLocalizedOrder(EresseaConstants.OC_HERBS, "KR훃TER"), true);
     }
   }
 
@@ -1818,12 +1822,12 @@ public class E3CommandParser {
 
   protected boolean hasEntertain() {
     return world.getGameSpecificStuff().getOrderChanger().isLongOrder(
-        getLocalizedOrder(EresseaConstants.O_ENTERTAIN, ENTERTAINOrder));
+        getLocalizedOrder(EresseaConstants.OC_ENTERTAIN, ENTERTAINOrder));
   }
 
   protected boolean hasWork() {
     return world.getGameSpecificStuff().getOrderChanger().isLongOrder(
-        getLocalizedOrder(EresseaConstants.O_WORK, WORKOrder));
+        getLocalizedOrder(EresseaConstants.OC_WORK, WORKOrder));
   }
 
   protected void initSupply() {
@@ -2409,24 +2413,24 @@ public class E3CommandParser {
    * Tries to init the constants according to the current faction's locale
    */
   protected void initLocales() {
-    GIVEOrder = getLocalizedOrder(EresseaConstants.O_GIVE, GIVEOrder);
-    RESERVEOrder = getLocalizedOrder(EresseaConstants.O_RESERVE, RESERVEOrder);
-    EACHOrder = getLocalizedOrder(EresseaConstants.O_EACH, EACHOrder);
-    ALLOrder = getLocalizedOrder(EresseaConstants.O_ALL, ALLOrder);
+    GIVEOrder = getLocalizedOrder(EresseaConstants.OC_GIVE, GIVEOrder);
+    RESERVEOrder = getLocalizedOrder(EresseaConstants.OC_RESERVE, RESERVEOrder);
+    EACHOrder = getLocalizedOrder(EresseaConstants.OC_EACH, EACHOrder);
+    ALLOrder = getLocalizedOrder(EresseaConstants.OC_ALL, ALLOrder);
     PCOMMENTOrder = "//";
-    LEARNOrder = getLocalizedOrder(EresseaConstants.O_LEARN, LEARNOrder);
-    TEACHOrder = getLocalizedOrder(EresseaConstants.O_TEACH, TEACHOrder);
-    ENTERTAINOrder = getLocalizedOrder(EresseaConstants.O_ENTERTAIN, ENTERTAINOrder);
-    TAXOrder = getLocalizedOrder(EresseaConstants.O_TAX, TAXOrder);
-    WORKOrder = getLocalizedOrder(EresseaConstants.O_WORK, WORKOrder);
-    BUYOrder = getLocalizedOrder(EresseaConstants.O_BUY, BUYOrder);
-    SELLOrder = getLocalizedOrder(EresseaConstants.O_SELL, SELLOrder);
-    MAKEOrder = getLocalizedOrder(EresseaConstants.O_MAKE, MAKEOrder);
-    MOVEOrder = getLocalizedOrder(EresseaConstants.O_MOVE, MOVEOrder);
-    ROUTEOrder = getLocalizedOrder(EresseaConstants.O_ROUTE, ROUTEOrder);
-    PAUSEOrder = getLocalizedOrder(EresseaConstants.O_PAUSE, PAUSEOrder);
-    RESEARCHOrder = getLocalizedOrder(EresseaConstants.O_RESEARCH, RESEARCHOrder);
-    RECRUITOrder = getLocalizedOrder(EresseaConstants.O_RECRUIT, RECRUITOrder);
+    LEARNOrder = getLocalizedOrder(EresseaConstants.OC_LEARN, LEARNOrder);
+    TEACHOrder = getLocalizedOrder(EresseaConstants.OC_TEACH, TEACHOrder);
+    ENTERTAINOrder = getLocalizedOrder(EresseaConstants.OC_ENTERTAIN, ENTERTAINOrder);
+    TAXOrder = getLocalizedOrder(EresseaConstants.OC_TAX, TAXOrder);
+    WORKOrder = getLocalizedOrder(EresseaConstants.OC_WORK, WORKOrder);
+    BUYOrder = getLocalizedOrder(EresseaConstants.OC_BUY, BUYOrder);
+    SELLOrder = getLocalizedOrder(EresseaConstants.OC_SELL, SELLOrder);
+    MAKEOrder = getLocalizedOrder(EresseaConstants.OC_MAKE, MAKEOrder);
+    MOVEOrder = getLocalizedOrder(EresseaConstants.OC_MOVE, MOVEOrder);
+    ROUTEOrder = getLocalizedOrder(EresseaConstants.OC_ROUTE, ROUTEOrder);
+    PAUSEOrder = getLocalizedOrder(EresseaConstants.OC_PAUSE, PAUSEOrder);
+    RESEARCHOrder = getLocalizedOrder(EresseaConstants.OC_RESEARCH, RESEARCHOrder);
+    RECRUITOrder = getLocalizedOrder(EresseaConstants.OC_RECRUIT, RECRUITOrder);
 
     if (currentFaction.getLocale().getLanguage() != "de") {
       // warning constants
@@ -2454,9 +2458,20 @@ public class E3CommandParser {
   /**
    * Tries to translate the given order to the current locale.
    */
-  protected String getLocalizedOrder(StringID orderKey, Object... args) {
+  protected String getLocalizedOrder(StringID orderKey, Object[] args) {
     return world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
         currentFaction.getLocale(), orderKey, args);
+  }
+
+  /**
+   * Tries to translate the given order to the current locale.
+   */
+  protected String getLocalizedOrder(String orderKey, String fallBack) {
+    String translation = Resources.getOrderTranslation(orderKey, currentFaction.getLocale());
+    if (translation == orderKey)
+      return fallBack;
+    else
+      return translation;
   }
 
   /**
@@ -2699,7 +2714,7 @@ public class E3CommandParser {
    * Returns a <code>RESEARCH HERBS</code> order.
    */
   protected String getResearchOrder() {
-    return RESEARCHOrder + " " + getLocalizedOrder(EresseaConstants.O_HERBS, "KR훃TER");
+    return RESEARCHOrder + " " + getLocalizedOrder(EresseaConstants.OC_HERBS, "KR훃TER");
   }
 
   /**
@@ -2707,9 +2722,9 @@ public class E3CommandParser {
    */
   protected String getRecruitOrder(int amount, Race race) {
     if (race != null)
-      return getLocalizedOrder(EresseaConstants.O_RECRUIT, amount, race);
+      return getLocalizedOrder(EresseaConstants.OC_RECRUIT, new Object[] { amount, race });
     else
-      return getLocalizedOrder(EresseaConstants.O_RECRUIT, amount);
+      return getLocalizedOrder(EresseaConstants.OC_RECRUIT, new Object[] { amount });
     // return RECRUITOrder + " " + amount
     // + (race != null ? (" " + getLocalizedOrder("race." + race.getID(), race.getName())) : "");
   }

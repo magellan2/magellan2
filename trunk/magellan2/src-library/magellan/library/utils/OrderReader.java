@@ -138,8 +138,8 @@ public class OrderReader {
      * normalized orders that have to be checked often in the loop these have to be updated whenever
      * the locale changes
      */
-    String naechsterOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.O_NEXT));
-    String localeOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.O_LOCALE));
+    String naechsterOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.OC_NEXT));
+    String localeOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.OC_LOCALE));
 
     if (status == null) {
       status = new Status();
@@ -157,7 +157,7 @@ public class OrderReader {
        * new order instead of parsing this line as a comment. So treat lines, that start with a
        * semicolon special!
        */
-      if (line.trim().startsWith(EresseaConstants.OS_COMMENT)) {
+      if (line.trim().startsWith(EresseaConstants.O_COMMENT)) {
         if (currentUnit != null) {
           // mark orders as confirmed on a ";bestaetigt" comment
           String rest = Umlaut.normalize(line.substring(line.indexOf(';') + 1).trim());
@@ -198,13 +198,13 @@ public class OrderReader {
           currentLocale = new Locale(token, "");
 
           /* update the locale dependent cached orders */
-          naechsterOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.O_NEXT));
-          localeOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.O_LOCALE));
+          naechsterOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.OC_NEXT));
+          localeOrder = Umlaut.normalize(getOrderTranslation(EresseaConstants.OC_LOCALE));
         }
-      } else if (getOrderTranslation(EresseaConstants.O_REGION).startsWith(token)) {
+      } else if (getOrderTranslation(EresseaConstants.OC_REGION).startsWith(token)) {
         // ignore
         currentUnit = null;
-      } else if (getOrderTranslation(EresseaConstants.O_UNIT).startsWith(token)) {
+      } else if (getOrderTranslation(EresseaConstants.OC_UNIT).startsWith(token)) {
         token = tokenizer.nextToken();
 
         UnitID unitID = null;

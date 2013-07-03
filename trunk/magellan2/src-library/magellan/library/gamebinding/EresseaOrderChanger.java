@@ -44,12 +44,14 @@ import magellan.library.utils.logging.Logger;
  * OrderChanger class for the game Eressea.
  */
 public class EresseaOrderChanger implements OrderChanger {
+  private static final Logger log = Logger.getInstance(EresseaOrderChanger.class);
+
   public static final String eresseaOrderChangedMarker = ";changed by Magellan";
 
-  protected static final String PCOMMENTSTART = EresseaConstants.OS_PCOMMENT + " ";
-  protected static final String COMMENTSTART = EresseaConstants.OS_COMMENT + " ";
+  protected static final String PCOMMENTSTART = EresseaConstants.O_PCOMMENT + " ";
+  protected static final String COMMENTSTART = EresseaConstants.O_COMMENT + " ";
 
-  private static final Logger log = Logger.getInstance(EresseaOrderChanger.class);
+  private static final Object[] EMPTY = new Object[0];
 
   private Rules rules;
 
@@ -71,8 +73,8 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected String createNamingOrder(String name, Unit unit) {
-    return getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + name + "\"";
+    return getOrderTranslation(EresseaConstants.OC_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"" + name + "\"";
   }
 
   /**
@@ -88,16 +90,16 @@ public class EresseaOrderChanger implements OrderChanger {
     String order = null;
 
     if (uc instanceof Building) {
-      order = getOrderTranslation(EresseaConstants.O_CASTLE, unit);
+      order = getOrderTranslation(EresseaConstants.OC_CASTLE, unit);
     } else if (uc instanceof Ship) {
-      order = getOrderTranslation(EresseaConstants.O_SHIP, unit);
+      order = getOrderTranslation(EresseaConstants.OC_SHIP, unit);
     } else if (uc instanceof Region) {
-      order = getOrderTranslation(EresseaConstants.O_REGION, unit);
+      order = getOrderTranslation(EresseaConstants.OC_REGION, unit);
     } else if (uc instanceof Faction) {
-      order = getOrderTranslation(EresseaConstants.O_FACTION, unit);
+      order = getOrderTranslation(EresseaConstants.OC_FACTION, unit);
     }
 
-    return getOrderTranslation(EresseaConstants.O_NAME, unit) + " " + order + " \"" + name + "\"";
+    return getOrderTranslation(EresseaConstants.OC_NAME, unit) + " " + order + " \"" + name + "\"";
   }
 
   /**
@@ -115,18 +117,18 @@ public class EresseaOrderChanger implements OrderChanger {
 
     if (uc instanceof Building) {
       order =
-          getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-              + getOrderTranslation(EresseaConstants.O_CASTLE, unit);
+          getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+              + getOrderTranslation(EresseaConstants.OC_CASTLE, unit);
     } else if (uc instanceof Ship) {
       order =
-          getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-              + getOrderTranslation(EresseaConstants.O_SHIP, unit);
+          getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+              + getOrderTranslation(EresseaConstants.OC_SHIP, unit);
     } else if (uc instanceof Region) {
       order =
-          getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-              + getOrderTranslation(EresseaConstants.O_REGION, unit);
+          getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+              + getOrderTranslation(EresseaConstants.OC_REGION, unit);
     } else if (uc instanceof Faction) {
-      order = getOrderTranslation(EresseaConstants.O_BANNER, unit);
+      order = getOrderTranslation(EresseaConstants.OC_BANNER, unit);
     }
 
     return order;
@@ -142,8 +144,8 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected String createDescribeUnitPrivateOrder(String descr, Unit unit) {
-    return getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_PRIVATE, unit) + " \"" + descr + "\"";
+    return getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_PRIVATE, unit) + " \"" + descr + "\"";
   }
 
   /**
@@ -156,8 +158,8 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected String createDescribeUnitOrder(String descr, Unit unit) {
-    return getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + descr + "\"";
+    return getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"" + descr + "\"";
   }
 
   /**
@@ -173,8 +175,8 @@ public class EresseaOrderChanger implements OrderChanger {
     for (Iterator<Order> iter = ordersCopy.iterator(); iter.hasNext();) {
       Order order = iter.next();
 
-      if (orders.isToken(order, 0, EresseaConstants.O_HIDE))
-        if (orders.isToken(order, 1, EresseaConstants.O_FACTION)) {
+      if (orders.isToken(order, 0, EresseaConstants.OC_HIDE))
+        if (orders.isToken(order, 1, EresseaConstants.OC_FACTION)) {
           continue;
         } else {
           boolean raceFound = false;
@@ -198,7 +200,7 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected Order createHideOrder(Unit unit, String level) {
-    return createOrder(unit, getOrderTranslation(EresseaConstants.O_HIDE, unit) + " " + level);
+    return createOrder(unit, getOrderTranslation(EresseaConstants.OC_HIDE, unit) + " " + level);
   }
 
   /**
@@ -218,37 +220,37 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected String getCombatOrder(Unit unit, int newState) {
-    String str = getOrderTranslation(EresseaConstants.O_COMBAT, unit) + " ";
+    String str = getOrderTranslation(EresseaConstants.OC_COMBAT, unit) + " ";
 
     switch (newState) {
     case 0:
-      str += getOrderTranslation(EresseaConstants.O_COMBAT_AGGRESSIVE, unit);
+      str += getOrderTranslation(EresseaConstants.OC_COMBAT_AGGRESSIVE, unit);
 
       break;
 
     case 1:
       // KÄMPFE VORNE is deprecated
-      str += COMMENTSTART + getOrderTranslation(EresseaConstants.O_COMBAT_FRONT, unit);
+      str += COMMENTSTART + getOrderTranslation(EresseaConstants.OC_COMBAT_FRONT, unit);
 
       break;
 
     case 2:
-      str += getOrderTranslation(EresseaConstants.O_COMBAT_REAR, unit);
+      str += getOrderTranslation(EresseaConstants.OC_COMBAT_REAR, unit);
 
       break;
 
     case 3:
-      str += getOrderTranslation(EresseaConstants.O_COMBAT_DEFENSIVE, unit);
+      str += getOrderTranslation(EresseaConstants.OC_COMBAT_DEFENSIVE, unit);
 
       break;
 
     case 4:
-      str += getOrderTranslation(EresseaConstants.O_COMBAT_NOT, unit);
+      str += getOrderTranslation(EresseaConstants.OC_COMBAT_NOT, unit);
 
       break;
 
     case 5:
-      str += getOrderTranslation(EresseaConstants.O_COMBAT_FLEE, unit);
+      str += getOrderTranslation(EresseaConstants.OC_COMBAT_FLEE, unit);
 
       break;
 
@@ -263,7 +265,7 @@ public class EresseaOrderChanger implements OrderChanger {
    * @see magellan.library.gamebinding.OrderChanger#addRecruitOrder(magellan.library.Unit, int)
    */
   public void addRecruitOrder(Unit unit, int i) {
-    String order = getOrderTranslation(EresseaConstants.O_RECRUIT, unit) + " " + String.valueOf(i);
+    String order = getOrderTranslation(EresseaConstants.OC_RECRUIT, unit) + " " + String.valueOf(i);
     unit.addOrder(order);
   }
 
@@ -275,52 +277,52 @@ public class EresseaOrderChanger implements OrderChanger {
    */
   public void addMultipleHideOrder(Unit unit) {
     List<String> orders = new LinkedList<String>();
-    orders.add(getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " ");
-    orders.add(getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"\"");
-    orders.add(getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"\"");
-    orders.add(getOrderTranslation(EresseaConstants.O_HIDE, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_FACTION, unit));
+    orders.add(getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " ");
+    orders.add(getOrderTranslation(EresseaConstants.OC_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"\"");
+    orders.add(getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"\"");
+    orders.add(getOrderTranslation(EresseaConstants.OC_HIDE, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_FACTION, unit));
 
     if (unit.getShip() != null) {
-      orders.add(getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit));
-      orders.add(getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"\"");
-      orders.add(getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"\"");
+      orders.add(getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit));
+      orders.add(getOrderTranslation(EresseaConstants.OC_NAME, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " \"\"");
+      orders.add(getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " \"\"");
     }
 
-    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " " + unit.getID());
-    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + unit.getName() + "\"");
+    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " " + unit.getID());
+    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"" + unit.getName() + "\"");
 
     if (unit.getDescription() != null) {
-      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + unit.getDescription()
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"" + unit.getDescription()
           + "\"");
     }
 
     if (!unit.isHideFaction()) {
-      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_HIDE, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_FACTION, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_NOT, unit));
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_HIDE, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_FACTION, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_NOT, unit));
     }
 
     if (unit.getShip() != null) {
-      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " "
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " "
           + unit.getShip().getID().toString());
-      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"" + unit.getShip().getName()
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_NAME, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " \"" + unit.getShip().getName()
           + "\"");
 
       if (unit.getShip().getDescription() != null) {
-        orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-            + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \""
+        orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+            + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " \""
             + unit.getShip().getDescription() + "\"");
       }
     }
@@ -359,12 +361,12 @@ public class EresseaOrderChanger implements OrderChanger {
      * LongButShort, genau dann ist es eine long Order
      */
     String rOrder = order;
-    if (rOrder.startsWith(EresseaConstants.OS_COMMENT))
+    if (rOrder.startsWith(EresseaConstants.O_COMMENT))
       return false;
-    if (rOrder.startsWith(EresseaConstants.OS_PERSISTENT)) {
+    if (rOrder.startsWith(EresseaConstants.O_PERSISTENT)) {
       rOrder = rOrder.substring(1);
     }
-    if (rOrder.startsWith(EresseaConstants.OS_PCOMMENT))
+    if (rOrder.startsWith(EresseaConstants.O_PCOMMENT))
       return false;
     boolean isInLongorder = false;
     for (String s : getLongOrdersTranslated()) {
@@ -380,8 +382,8 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected boolean isLongButShort(String rOrder, Locale orderLocale) {
-    return rOrder.startsWith(getOrder(Locales.getOrderLocale(), EresseaConstants.O_MAKE,
-        EresseaConstants.O_TEMP));
+    return rOrder.startsWith(getOrder(Locales.getOrderLocale(), EresseaConstants.OC_MAKE,
+        EresseaConstants.OC_TEMP));
   }
 
   /**
@@ -430,28 +432,28 @@ public class EresseaOrderChanger implements OrderChanger {
   protected ArrayList<StringID> getLongOrderTokens() {
     if (longOrderTokens == null) {
       longOrderTokens = new ArrayList<StringID>();
-      longOrderTokens.add(EresseaConstants.O_WORK);
-      longOrderTokens.add(EresseaConstants.O_ATTACK);
-      longOrderTokens.add(EresseaConstants.O_STEAL);
-      longOrderTokens.add(EresseaConstants.O_SIEGE);
-      longOrderTokens.add(EresseaConstants.O_RIDE);
-      longOrderTokens.add(EresseaConstants.O_FOLLOW);
-      longOrderTokens.add(EresseaConstants.O_RESEARCH);
-      longOrderTokens.add(EresseaConstants.O_BUY);
-      longOrderTokens.add(EresseaConstants.O_TEACH);
-      longOrderTokens.add(EresseaConstants.O_LEARN);
-      longOrderTokens.add(EresseaConstants.O_MAKE);
-      longOrderTokens.add(EresseaConstants.O_MOVE);
-      longOrderTokens.add(EresseaConstants.O_PLANT);
-      longOrderTokens.add(EresseaConstants.O_PIRACY);
-      longOrderTokens.add(EresseaConstants.O_ROUTE);
-      longOrderTokens.add(EresseaConstants.O_SABOTAGE);
-      longOrderTokens.add(EresseaConstants.O_SPY);
-      longOrderTokens.add(EresseaConstants.O_TAX);
-      longOrderTokens.add(EresseaConstants.O_ENTERTAIN);
-      longOrderTokens.add(EresseaConstants.O_SELL);
-      longOrderTokens.add(EresseaConstants.O_CAST);
-      longOrderTokens.add(EresseaConstants.O_GROW);
+      longOrderTokens.add(EresseaConstants.OC_WORK);
+      longOrderTokens.add(EresseaConstants.OC_ATTACK);
+      longOrderTokens.add(EresseaConstants.OC_STEAL);
+      longOrderTokens.add(EresseaConstants.OC_SIEGE);
+      longOrderTokens.add(EresseaConstants.OC_RIDE);
+      longOrderTokens.add(EresseaConstants.OC_FOLLOW);
+      longOrderTokens.add(EresseaConstants.OC_RESEARCH);
+      longOrderTokens.add(EresseaConstants.OC_BUY);
+      longOrderTokens.add(EresseaConstants.OC_TEACH);
+      longOrderTokens.add(EresseaConstants.OC_LEARN);
+      longOrderTokens.add(EresseaConstants.OC_MAKE);
+      longOrderTokens.add(EresseaConstants.OC_MOVE);
+      longOrderTokens.add(EresseaConstants.OC_PLANT);
+      longOrderTokens.add(EresseaConstants.OC_PIRACY);
+      longOrderTokens.add(EresseaConstants.OC_ROUTE);
+      longOrderTokens.add(EresseaConstants.OC_SABOTAGE);
+      longOrderTokens.add(EresseaConstants.OC_SPY);
+      longOrderTokens.add(EresseaConstants.OC_TAX);
+      longOrderTokens.add(EresseaConstants.OC_ENTERTAIN);
+      longOrderTokens.add(EresseaConstants.OC_SELL);
+      longOrderTokens.add(EresseaConstants.OC_CAST);
+      longOrderTokens.add(EresseaConstants.OC_GROW);
     }
     return longOrderTokens;
   }
@@ -479,7 +481,7 @@ public class EresseaOrderChanger implements OrderChanger {
       if (isLongOrder(order)) {
         for (StringID longOrder : getLongOrderTokens()) {
           if (orders.isToken(order, 0, longOrder)
-              && !orders.isToken(order, 0, EresseaConstants.O_ATTACK)) {
+              && !orders.isToken(order, 0, EresseaConstants.OC_ATTACK)) {
             map.increase(longOrder, line);
             break;
           }
@@ -489,11 +491,11 @@ public class EresseaOrderChanger implements OrderChanger {
     }
 
     StringID follow;
-    if (map.containsKey(follow = EresseaConstants.O_FOLLOW)) {
+    if (map.containsKey(follow = EresseaConstants.OC_FOLLOW)) {
       // ignore FOLGE EINHEIT
       for (Iterator<Integer> it = map.get(follow).iterator(); it.hasNext();) {
         Integer occ = it.next();
-        if (orders.isToken(orders.get(occ.intValue()), 1, EresseaConstants.O_UNIT)) {
+        if (orders.isToken(orders.get(occ.intValue()), 1, EresseaConstants.OC_UNIT)) {
           it.remove();
           break;
         }
@@ -505,16 +507,16 @@ public class EresseaOrderChanger implements OrderChanger {
 
     StringID sell;
     StringID buy;
-    if (map.containsKey(buy = EresseaConstants.O_BUY)
-        | map.containsKey(sell = EresseaConstants.O_SELL)) {
+    if (map.containsKey(buy = EresseaConstants.OC_BUY)
+        | map.containsKey(sell = EresseaConstants.OC_SELL)) {
       // only KAUFE and VERKAUFE and only one KAUFE are allowed
       if (map.size() > 2 || (map.size() == 2 && !(map.containsKey(buy) && map.containsKey(sell)))) {
         // there is another order except buy and sell
         boolean firstIsBuySell =
-            map.keySet().iterator().next().equals(EresseaConstants.O_BUY)
-                || map.keySet().iterator().next().equals(EresseaConstants.O_SELL);
+            map.keySet().iterator().next().equals(EresseaConstants.OC_BUY)
+                || map.keySet().iterator().next().equals(EresseaConstants.OC_SELL);
         for (StringID order : map.keySet()) {
-          if (order.equals(EresseaConstants.O_BUY) || order.equals(EresseaConstants.O_SELL)) {
+          if (order.equals(EresseaConstants.OC_BUY) || order.equals(EresseaConstants.OC_SELL)) {
             if (!firstIsBuySell)
               return map.get(order).get(0);
           } else {
@@ -531,16 +533,16 @@ public class EresseaOrderChanger implements OrderChanger {
       }
     }
 
-    if (map.containsKey(EresseaConstants.O_CAST)) {
+    if (map.containsKey(EresseaConstants.OC_CAST)) {
       // multiple ZAUBERE allowed
       if (map.size() == 1)
         return -1;
 
       // combination with other long orders not allowed
-      boolean firstIsCast = map.keySet().iterator().next().equals(EresseaConstants.O_CAST);
+      boolean firstIsCast = map.keySet().iterator().next().equals(EresseaConstants.OC_CAST);
       boolean first = true;
       for (StringID order : map.keySet()) {
-        if (order.equals(EresseaConstants.O_CAST)) {
+        if (order.equals(EresseaConstants.OC_CAST)) {
           if (!firstIsCast)
             return map.get(order).get(0);
         } else {
@@ -601,7 +603,7 @@ public class EresseaOrderChanger implements OrderChanger {
       ItemType itemType = getRules().getItemType(item);
       if (itemType == null)
         if (item.equals(EresseaConstants.I_MEN)) {
-          sItem = getOrderTranslation(EresseaConstants.O_MEN, source);
+          sItem = getOrderTranslation(EresseaConstants.OC_MEN, source);
         } else {
           tmpOrders = "; unknown item " + item;
         }
@@ -618,24 +620,24 @@ public class EresseaOrderChanger implements OrderChanger {
       log.error(tmpOrders);
     } else {
       tmpOrders =
-          getOrder(source.getLocale(), EresseaConstants.O_GIVE, target.getID(), (amount < 0
-              ? (getOrderTranslation(EresseaConstants.O_EACH, source)) : ""),
-              (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.O_ALL, source)
+          getOrder(source.getLocale(), EresseaConstants.OC_GIVE, target.getID(), (amount < 0
+              ? (getOrderTranslation(EresseaConstants.OC_EACH, source)) : ""),
+              (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.OC_ALL, source)
                   : Math.abs(amount)), sItem, (comment != null
-                  ? (EresseaConstants.OS_COMMENT + " " + comment) : ""));
-      // getOrderTranslation(EresseaConstants.O_GIVE, source)
+                  ? (EresseaConstants.O_COMMENT + " " + comment) : ""));
+      // getOrderTranslation(EresseaConstants.OC_GIVE, source)
       // + " "
       // + target.getID().toString(getTemp(target.getLocale()))
-      // + (amount < 0 ? (" " + getOrderTranslation(EresseaConstants.O_EACH, source) + " ")
+      // + (amount < 0 ? (" " + getOrderTranslation(EresseaConstants.OC_EACH, source) + " ")
       // : " ")
-      // + (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.O_ALL, source)
+      // + (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.OC_ALL, source)
       // : Math.abs(amount)) + sItem + (comment != null ? ("; " + comment) : "");
     }
     source.addOrder(tmpOrders);
   }
 
   protected String getTemp(Locale locale) {
-    return getOrder(locale, EresseaConstants.O_TEMP);
+    return getOrder(locale, EresseaConstants.OC_TEMP);
   }
 
   /**
@@ -645,9 +647,9 @@ public class EresseaOrderChanger implements OrderChanger {
   public void addGroupOrder(Unit unit, String name) {
     String group;
     if (name != null && name.trim().length() > 0) {
-      group = getOrderTranslation(EresseaConstants.O_GROUP) + " \"" + name + "\"";
+      group = getOrderTranslation(EresseaConstants.OC_GROUP) + " \"" + name + "\"";
     } else {
-      group = getOrderTranslation(EresseaConstants.O_GROUP);
+      group = getOrderTranslation(EresseaConstants.OC_GROUP);
     }
     unit.addOrder(group, true, 1);
   }
@@ -677,12 +679,24 @@ public class EresseaOrderChanger implements OrderChanger {
       return arg.toString();
   }
 
+  public String getOrder(Locale orderLocale, StringID orderId) {
+    try {
+      return getOrder(orderId, orderLocale, EMPTY);
+    } catch (RulesException e) {
+      return orderId.toString();
+    }
+  }
+
   public String getOrder(Locale orderLocale, StringID orderId, Object... args) {
     try {
       return getOrder(orderId, orderLocale, args);
     } catch (RulesException e) {
       return orderId.toString();
     }
+  }
+
+  public String getOrder(StringID orderId, Locale orderLocale) throws RulesException {
+    return getOrder(orderId, orderLocale, EMPTY);
   }
 
   public String getOrder(StringID orderId, Locale orderLocale, Object... args)
@@ -747,9 +761,9 @@ public class EresseaOrderChanger implements OrderChanger {
                   tempUnit.setSortIndex(++tempSortIndex);
                   if (line.size() > 4) {
                     tempUnit.addOrders(Collections.singleton(getOrderTranslation(
-                        EresseaConstants.O_NAME, unit)
+                        EresseaConstants.OC_NAME, unit)
                         + " "
-                        + getOrderTranslation(EresseaConstants.O_UNIT, unit)
+                        + getOrderTranslation(EresseaConstants.OC_UNIT, unit)
                         + " "
                         + line.getToken(3).getText()), false);
                   }
@@ -766,7 +780,7 @@ public class EresseaOrderChanger implements OrderChanger {
               neworders.add(line);
             }
           } else {
-            if (ordersObject.isToken(line, 0, EresseaConstants.O_END)) {
+            if (ordersObject.isToken(line, 0, EresseaConstants.OC_END)) {
               tempUnit = null;
             } else {
               scanTempOrder(tempUnit, line);
@@ -781,10 +795,10 @@ public class EresseaOrderChanger implements OrderChanger {
 
   private final boolean isTempUnitOrder(Order line, Orders ordersObject, Unit unit) {
     if (line.getProblem() == null && !line.isEmpty()
-        && ordersObject.isToken(line, 0, EresseaConstants.O_MAKE)) {
+        && ordersObject.isToken(line, 0, EresseaConstants.OC_MAKE)) {
       if (line.getToken(1).getText().toLowerCase().startsWith(
-          getOrderTranslation(EresseaConstants.O_TEMP, unit).toLowerCase()))
-        // if (ordersObject.isToken(line, 1, EresseaConstants.O_TEMP)) }
+          getOrderTranslation(EresseaConstants.OC_TEMP, unit).toLowerCase()))
+        // if (ordersObject.isToken(line, 1, EresseaConstants.OC_TEMP)) }
         return true;
     }
     return false;
@@ -829,7 +843,7 @@ public class EresseaOrderChanger implements OrderChanger {
     final Locale locale = unit.getLocale();
 
     for (TempUnit u : unit.tempUnits()) {
-      cmds.add(parser.parse(getOrder(locale, EresseaConstants.O_MAKE, u.getID().toString(
+      cmds.add(parser.parse(getOrder(locale, EresseaConstants.OC_MAKE, u.getID().toString(
           getTemp(locale))), locale));
 
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
@@ -847,7 +861,7 @@ public class EresseaOrderChanger implements OrderChanger {
         }
       }
 
-      cmds.add(parser.parse(getOrder(locale, EresseaConstants.O_END), locale));
+      cmds.add(parser.parse(getOrder(locale, EresseaConstants.OC_END), locale));
     }
 
     return cmds;

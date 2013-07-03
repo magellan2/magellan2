@@ -91,9 +91,9 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   public void testInitCommands() {
     assertSame(53, getParser().getCommands().size());
     assertSame(53, getParser().getHandlers().size());
-    assertTrue(getParser().getCommands().contains(EresseaConstants.O_WORK));
-    assertTrue(getParser().getCommands().contains(EresseaConstants.O_DESTROY));
-    assertTrue(!getParser().getCommands().contains(EresseaConstants.O_SABOTAGE));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.OC_WORK));
+    assertTrue(getParser().getCommands().contains(EresseaConstants.OC_DESTROY));
+    assertTrue(!getParser().getCommands().contains(EresseaConstants.OC_SABOTAGE));
   }
 
   /**
@@ -110,8 +110,8 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
    */
   @Test
   public void testBezahleReader() {
-    checkOrder(getOrderTranslation(E3AConstants.O_PAY) + " "
-        + getOrderTranslation(EresseaConstants.O_NOT));
+    checkOrder(getOrderTranslation(E3AConstants.OC_PAY) + " "
+        + getOrderTranslation(EresseaConstants.OC_NOT));
     checkOrder("BEZAHLE", false);
   }
 
@@ -135,8 +135,8 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   @Override
   @Test
   public void testHelfeReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_HELP) + " 123 "
-        + getOrderTranslation(EresseaConstants.O_ALL));
+    checkOrder(getOrderTranslation(EresseaConstants.OC_HELP) + " 123 "
+        + getOrderTranslation(EresseaConstants.OC_ALL));
     checkOrder("HELFE 123 ALLES NICHT");
     checkOrder("HELFEN 123 GIB");
     checkOrder("HELFEN 123 GIB NICHT");
@@ -168,7 +168,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   @Override
   @Test
   public void testMacheReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_MAKE) + " TEMP 123");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_MAKE) + " TEMP 123");
     checkOrder("MACHE BURG");
     checkOrder("MACHE 2 BURG");
     checkOrder("MACHE BURG 123");
@@ -220,7 +220,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   @Override
   @Test
   public void testRekrutiereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.O_RECRUIT) + " 1");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_RECRUIT) + " 1");
     checkOrder("REKRUTIERE 5");
     checkOrder("REKRUTIERE 0", true); // TODO should we return false here?
     checkOrder("REKRUTIERE 1 Zwerg", true); // for E2, this is an error

@@ -362,7 +362,7 @@ public class TempUnitDialog extends InternationalizedDialog {
       order.setText(null);
     } else {
       order.setText(getFaction().getData().getRules().getGameSpecificStuff().getOrderChanger()
-          .getOrder(getFaction().getLocale(), EresseaConstants.O_LEARN));
+          .getOrder(getFaction().getLocale(), EresseaConstants.OC_LEARN));
     }
 
     descript.setText(null);

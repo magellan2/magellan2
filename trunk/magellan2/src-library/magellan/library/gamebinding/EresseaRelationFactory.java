@@ -301,8 +301,8 @@ public class EresseaRelationFactory implements RelationFactory {
       affected.add(data.getRegion(u.getNewRegion()));
       // for (Order o : u.getOrders2()) {
       // // FIXME create TEMP unit!!
-      // // if (u.getOrders2().isToken(o, 0, EresseaConstants.O_MAKE)
-      // // && (u.getOrders2().isToken(o, 1, EresseaConstants.O_TEMP))) {
+      // // if (u.getOrders2().isToken(o, 0, EresseaConstants.OC_MAKE)
+      // // && (u.getOrders2().isToken(o, 1, EresseaConstants.OC_TEMP))) {
       // // } else {
       // count++;
       // // }
@@ -316,8 +316,8 @@ public class EresseaRelationFactory implements RelationFactory {
       int line = 0;
       for (Order o : u.getOrders2()) {
         // FIXME create TEMP unit!!
-        // if (u.getOrders2().isToken(o, 0, EresseaConstants.O_MAKE)
-        // && (u.getOrders2().isToken(o, 1, EresseaConstants.O_TEMP))) {
+        // if (u.getOrders2().isToken(o, 0, EresseaConstants.OC_MAKE)
+        // && (u.getOrders2().isToken(o, 1, EresseaConstants.OC_TEMP))) {
         // } else {
         orders[count++] = new OrderInfo(o, getPriority(o), u, ++line);
         // }

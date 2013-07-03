@@ -87,13 +87,13 @@ import magellan.library.utils.logging.Logger;
 public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   private static final Logger log = Logger.getInstance(MagellanUnitImpl.class);
 
-  public static final String CONFIRMEDTEMPCOMMENT = EresseaConstants.OS_COMMENT
+  public static final String CONFIRMEDTEMPCOMMENT = EresseaConstants.O_COMMENT
       + OrderWriter.CONFIRMEDTEMP;
 
   /**
    * grammar for ejcTag: ";ejcTempTag tag numbervalue|'stringvalue'"
    */
-  public static final String TAG_PREFIX_TEMP = EresseaConstants.OS_COMMENT + "ejcTagTemp ";
+  public static final String TAG_PREFIX_TEMP = EresseaConstants.O_COMMENT + "ejcTagTemp ";
 
   /** The private description of the unit. */
   private String privDesc; // private description
@@ -1003,7 +1003,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
     if (writeUnitTagsAsVorlageComment && hasTags()) {
       for (String tag : getTagMap().keySet()) {
-        cmds.add(createOrder(EresseaConstants.OS_PCOMMENT + " #after 1 { #tag EINHEIT "
+        cmds.add(createOrder(EresseaConstants.O_PCOMMENT + " #after 1 { #tag EINHEIT "
             + tag.replace(' ', '~') + " '" + getTag(tag) + "' }"));
       }
     }

@@ -501,10 +501,10 @@ public class JECheck extends Reader {
     try {
       unitOrder =
           data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-              EresseaConstants.O_UNIT, Locales.getOrderLocale(), true);
+              EresseaConstants.OC_UNIT, Locales.getOrderLocale(), new Object[] { true });
       regionOrder =
           data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-              EresseaConstants.O_REGION, Locales.getOrderLocale(), true);
+              EresseaConstants.OC_REGION, Locales.getOrderLocale(), new Object[] { true });
     } catch (RulesException e) {
       // orrder is null
     }

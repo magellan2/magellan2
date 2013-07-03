@@ -54,9 +54,9 @@ public class AllanonOrderParser extends EresseaOrderParser {
   @Override
   protected void initCommands() {
     super.initCommands();
-    addCommand(AllanonConstants.O_ANWERBEN, new AnwerbenReader(this));
-    addCommand(AllanonConstants.O_ERKUNDEN, new ErkundeReader(this));
-    addCommand(AllanonConstants.O_MEUCHELN, new MeuchelnReader(this));
+    addCommand(AllanonConstants.OC_ANWERBEN, new AnwerbenReader(this));
+    addCommand(AllanonConstants.OC_ERKUNDEN, new ErkundeReader(this));
+    addCommand(AllanonConstants.OC_MEUCHELN, new MeuchelnReader(this));
   }
 
   // ************* ANWERBEN
@@ -139,11 +139,11 @@ public class AllanonOrderParser extends EresseaOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
         retVal = readBetreteBurg(t);
-      } else if (t.equalsToken(getOrderTranslation(AllanonConstants.O_KARAWANE))) {
+      } else if (t.equalsToken(getOrderTranslation(AllanonConstants.OC_KARAWANE))) {
         retVal = readBetreteKarawane(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         retVal = readBetreteSchiff(t);
       } else {
         unexpected(t);
@@ -194,19 +194,19 @@ public class AllanonOrderParser extends EresseaOrderParser {
       OrderToken t = getNextToken();
       t.ttype = OrderToken.TT_KEYWORD;
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_REGION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(AllanonConstants.O_KARAWANE))) {
+      } else if (t.equalsToken(getOrderTranslation(AllanonConstants.OC_KARAWANE))) {
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGN))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGN))) {
         retVal = readBenenneFremdes(t);
       } else {
         t.ttype = OrderToken.TT_UNDEF;

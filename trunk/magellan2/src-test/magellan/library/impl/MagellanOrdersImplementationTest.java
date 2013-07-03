@@ -55,16 +55,16 @@ public class MagellanOrdersImplementationTest extends MagellanTestWithResources 
   @Test
   public final void testIsToken() {
     MagellanOrdersImplementation orders = getOrders(unit, "REKRUTIERE 1");
-    assertEquals(true, orders.isToken(orders.get(0), 0, EresseaConstants.O_RECRUIT));
+    assertEquals(true, orders.isToken(orders.get(0), 0, EresseaConstants.OC_RECRUIT));
 
     orders = getOrders(unit, "ARBEITEN");
-    assertEquals(true, orders.isToken(orders.get(0), 0, EresseaConstants.O_WORK));
+    assertEquals(true, orders.isToken(orders.get(0), 0, EresseaConstants.OC_WORK));
 
     orders = getOrders(unit, "ARBEITE");
-    assertEquals(true, orders.isToken(orders.get(0), 0, EresseaConstants.O_WORK));
+    assertEquals(true, orders.isToken(orders.get(0), 0, EresseaConstants.OC_WORK));
 
     orders = getOrders(unit, "ARBEITEND");
-    assertEquals(false, orders.isToken(orders.get(0), 0, EresseaConstants.O_WORK));
+    assertEquals(false, orders.isToken(orders.get(0), 0, EresseaConstants.OC_WORK));
   }
 
   protected MagellanOrdersImplementation getOrders(Unit unit2, String... string) {

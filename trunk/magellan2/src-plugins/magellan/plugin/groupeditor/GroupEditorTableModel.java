@@ -243,7 +243,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
    * Saves the settings from the world.
    */
   public void save() {
-    String helpcommand = getOrderTranslation(EresseaConstants.O_HELP);
+    String helpcommand = getOrderTranslation(EresseaConstants.OC_HELP);
 
     if (!newStates.isEmpty()) {
       // ok, let's save the alliance settings
@@ -298,8 +298,8 @@ public class GroupEditorTableModel extends AbstractTableModel {
       if (newState.getCategories().isEmpty()) {
         unit.addOrder(signature + " reset " + faction);
         unit.addOrder(helpcommand + " " + faction.getID() + " "
-            + getOrderTranslation(EresseaConstants.O_ALL) + " "
-            + getOrderTranslation(EresseaConstants.O_NOT), !firstAdded, 1);
+            + getOrderTranslation(EresseaConstants.OC_ALL) + " "
+            + getOrderTranslation(EresseaConstants.OC_NOT), !firstAdded, 1);
         firstAdded = true;
       } else {
         unit.addOrder(signature + "new help states for " + faction, true, 1);
@@ -307,9 +307,9 @@ public class GroupEditorTableModel extends AbstractTableModel {
 
         boolean all = false;
         for (AllianceCategory cat : newState.getCategories()) {
-          if (cat.getName().equals(EresseaConstants.O_ALL)) {
+          if (cat.getName().equals(EresseaConstants.OC_ALL)) {
             unit.addOrder(helpcommand + " " + faction.getID() + " "
-                + getOrderTranslation(EresseaConstants.O_ALL), !firstAdded, 1);
+                + getOrderTranslation(EresseaConstants.OC_ALL), !firstAdded, 1);
             all = true;
             firstAdded = true;
           }
@@ -318,12 +318,12 @@ public class GroupEditorTableModel extends AbstractTableModel {
         if (!all) {
           for (AllianceCategory cat : minus(oldState.getAllianceCategories(), newState
               .getCategories())) {
-            if (cat.getName().equals(EresseaConstants.O_ALL)) {
+            if (cat.getName().equals(EresseaConstants.OC_ALL)) {
               continue;
             }
             unit.addOrder(helpcommand + " " + faction.getID() + " "
                 + getOrderTranslation(GameConstants.getAllianceKey(cat.getName())) + " "
-                + getOrderTranslation(EresseaConstants.O_NOT), !firstAdded, 1);
+                + getOrderTranslation(EresseaConstants.OC_NOT), !firstAdded, 1);
             firstAdded = true;
           }
           // add new states

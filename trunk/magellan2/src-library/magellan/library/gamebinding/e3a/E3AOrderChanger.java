@@ -39,7 +39,7 @@ public class E3AOrderChanger extends EresseaOrderChanger {
    */
   @Override
   public void addRecruitOrder(Unit unit, int i) {
-    String order = getOrderTranslation(EresseaConstants.O_RECRUIT, unit) + " " + String.valueOf(i);
+    String order = getOrderTranslation(EresseaConstants.OC_RECRUIT, unit) + " " + String.valueOf(i);
     unit.addOrder(order);
   }
 
@@ -51,46 +51,46 @@ public class E3AOrderChanger extends EresseaOrderChanger {
   @Override
   public void addMultipleHideOrder(Unit unit) {
     List<String> orders = new LinkedList<String>();
-    orders.add(getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " ");
-    orders.add(getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"\"");
-    orders.add(getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"\"");
-    orders.add(getOrderTranslation(EresseaConstants.O_HIDE, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_FACTION, unit));
+    orders.add(getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " ");
+    orders.add(getOrderTranslation(EresseaConstants.OC_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"\"");
+    orders.add(getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"\"");
+    orders.add(getOrderTranslation(EresseaConstants.OC_HIDE, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_FACTION, unit));
 
     if (unit.getShip() != null) {
-      orders.add(getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit));
-      orders.add(getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"\"");
-      orders.add(getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"\"");
+      orders.add(getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit));
+      orders.add(getOrderTranslation(EresseaConstants.OC_NAME, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " \"\"");
+      orders.add(getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " \"\"");
     }
 
-    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " " + unit.getID());
-    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
-        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + unit.getName() + "\"");
+    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " " + unit.getID());
+    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"" + unit.getName() + "\"");
 
     if (unit.getDescription() != null) {
-      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + unit.getDescription()
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"" + unit.getDescription()
           + "\"");
     }
 
     if (unit.getShip() != null) {
-      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " "
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " "
           + unit.getShip().getID().toString());
-      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
-          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"" + unit.getShip().getName()
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_NAME, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " \"" + unit.getShip().getName()
           + "\"");
 
       if (unit.getShip().getDescription() != null) {
-        orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
-            + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \""
+        orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
+            + getOrderTranslation(EresseaConstants.OC_SHIP, unit) + " \""
             + unit.getShip().getDescription() + "\"");
       }
     }
@@ -109,27 +109,27 @@ public class E3AOrderChanger extends EresseaOrderChanger {
   protected ArrayList<StringID> getLongOrderTokens() {
     if (longOrderTokens == null) {
       longOrderTokens = new ArrayList<StringID>();
-      longOrderTokens.add(EresseaConstants.O_WORK);
-      longOrderTokens.add(EresseaConstants.O_ATTACK);
-      longOrderTokens.add(EresseaConstants.O_STEAL);
-      longOrderTokens.add(EresseaConstants.O_SIEGE);
-      longOrderTokens.add(EresseaConstants.O_RIDE);
-      longOrderTokens.add(EresseaConstants.O_FOLLOW);
-      longOrderTokens.add(EresseaConstants.O_RESEARCH);
-      longOrderTokens.add(EresseaConstants.O_BUY);
-      longOrderTokens.add(EresseaConstants.O_TEACH);
-      longOrderTokens.add(EresseaConstants.O_LEARN);
-      longOrderTokens.add(EresseaConstants.O_MAKE);
-      longOrderTokens.add(EresseaConstants.O_MOVE);
-      longOrderTokens.add(EresseaConstants.O_PLANT);
-      longOrderTokens.add(EresseaConstants.O_ROUTE);
-      longOrderTokens.add(EresseaConstants.O_SABOTAGE);
-      longOrderTokens.add(EresseaConstants.O_SPY);
-      longOrderTokens.add(EresseaConstants.O_TAX);
-      longOrderTokens.add(EresseaConstants.O_ENTERTAIN);
-      longOrderTokens.add(EresseaConstants.O_SELL);
-      longOrderTokens.add(EresseaConstants.O_CAST);
-      longOrderTokens.add(EresseaConstants.O_GROW);
+      longOrderTokens.add(EresseaConstants.OC_WORK);
+      longOrderTokens.add(EresseaConstants.OC_ATTACK);
+      longOrderTokens.add(EresseaConstants.OC_STEAL);
+      longOrderTokens.add(EresseaConstants.OC_SIEGE);
+      longOrderTokens.add(EresseaConstants.OC_RIDE);
+      longOrderTokens.add(EresseaConstants.OC_FOLLOW);
+      longOrderTokens.add(EresseaConstants.OC_RESEARCH);
+      longOrderTokens.add(EresseaConstants.OC_BUY);
+      longOrderTokens.add(EresseaConstants.OC_TEACH);
+      longOrderTokens.add(EresseaConstants.OC_LEARN);
+      longOrderTokens.add(EresseaConstants.OC_MAKE);
+      longOrderTokens.add(EresseaConstants.OC_MOVE);
+      longOrderTokens.add(EresseaConstants.OC_PLANT);
+      longOrderTokens.add(EresseaConstants.OC_ROUTE);
+      longOrderTokens.add(EresseaConstants.OC_SABOTAGE);
+      longOrderTokens.add(EresseaConstants.OC_SPY);
+      longOrderTokens.add(EresseaConstants.OC_TAX);
+      longOrderTokens.add(EresseaConstants.OC_ENTERTAIN);
+      longOrderTokens.add(EresseaConstants.OC_SELL);
+      longOrderTokens.add(EresseaConstants.OC_CAST);
+      longOrderTokens.add(EresseaConstants.OC_GROW);
     }
     return longOrderTokens;
   }

@@ -105,7 +105,7 @@ public class MovementInspector extends AbstractInspector {
             MovementProblemTypes.UNKNOWNREGION.getType(), u, this, mRel.line));
       }
       if (mRel.getFutureMovement().size() > 1) {
-        if (orders.isToken(orders.get(mRel.line - 1), 0, EresseaConstants.O_MOVE)) {
+        if (orders.isToken(orders.get(mRel.line - 1), 0, EresseaConstants.OC_MOVE)) {
           problems.add(ProblemFactory.createProblem(Severity.WARNING,
               MovementProblemTypes.MOVEMENTTOOLONG.getType(), u, this, mRel.line));
         } else {

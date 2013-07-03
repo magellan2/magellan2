@@ -50,42 +50,42 @@ public class E3AOrderParser extends EresseaOrderParser {
   protected void initCommands() {
     super.initCommands();
 
-    removeCommand(EresseaConstants.O_HELP);
+    removeCommand(EresseaConstants.OC_HELP);
 
-    removeCommand(EresseaConstants.O_RESEARCH);
-    // removeCommand(EresseaConstants.O_FACTION);
-    // removeCommand(EresseaConstants.O_REGION);
-    // removeCommand(EresseaConstants.O_GROW);
+    removeCommand(EresseaConstants.OC_RESEARCH);
+    // removeCommand(EresseaConstants.OC_FACTION);
+    // removeCommand(EresseaConstants.OC_REGION);
+    // removeCommand(EresseaConstants.OC_GROW);
 
-    removeCommand(EresseaConstants.O_SPY);
+    removeCommand(EresseaConstants.OC_SPY);
 
-    removeCommand(EresseaConstants.O_STEAL);
+    removeCommand(EresseaConstants.OC_STEAL);
 
-    // removeCommand(EresseaConstants.O_WORK);
-    removeCommand(EresseaConstants.O_TAX);
-    removeCommand(EresseaConstants.O_ENTERTAIN);
+    // removeCommand(EresseaConstants.OC_WORK);
+    removeCommand(EresseaConstants.OC_TAX);
+    removeCommand(EresseaConstants.OC_ENTERTAIN);
 
-    removeCommand(EresseaConstants.O_BUY); // ?
-    removeCommand(EresseaConstants.O_SELL);
+    removeCommand(EresseaConstants.OC_BUY); // ?
+    removeCommand(EresseaConstants.OC_SELL);
 
-    removeCommand(EresseaConstants.O_TEACH);
+    removeCommand(EresseaConstants.OC_TEACH);
 
-    removeCommand(EresseaConstants.O_SUPPLY);
+    removeCommand(EresseaConstants.OC_SUPPLY);
 
-    removeCommand(EresseaConstants.O_SABOTAGE);
+    removeCommand(EresseaConstants.OC_SABOTAGE);
 
-    // removeCommand(EresseaConstants.O_SIEGE);
+    // removeCommand(EresseaConstants.OC_SIEGE);
 
-    addCommand(E3AConstants.O_ALLIANCE, new AllianzReader(this));
-    addCommand(EresseaConstants.O_HELP, new HelfeReader(this));
-    addCommand(E3AConstants.O_PAY, new BezahleReader(this));
-    // addCommand(E3AConstants.O_GIVE, new GibReader(this));
-    addCommand(EresseaConstants.O_MAKE, new E3MacheReader(this));
-    addCommand(EresseaConstants.O_RECRUIT, new RekrutiereReader(this));
+    addCommand(E3AConstants.OC_ALLIANCE, new AllianzReader(this));
+    addCommand(EresseaConstants.OC_HELP, new HelfeReader(this));
+    addCommand(E3AConstants.OC_PAY, new BezahleReader(this));
+    // addCommand(E3AConstants.OC_GIVE, new GibReader(this));
+    addCommand(EresseaConstants.OC_MAKE, new E3MacheReader(this));
+    addCommand(EresseaConstants.OC_RECRUIT, new RekrutiereReader(this));
 
     // only TARNE PARTEI!
-    removeCommand(EresseaConstants.O_HIDE);
-    addCommand(EresseaConstants.O_HIDE, new TarneReader(this));
+    removeCommand(EresseaConstants.OC_HIDE);
+    addCommand(EresseaConstants.OC_HIDE, new TarneReader(this));
   }
 
   @Override
@@ -108,19 +108,19 @@ public class E3AOrderParser extends EresseaOrderParser {
 
       if (isEoC(t)) {
         unexpected(t);
-      } else if (t.equalsToken(getOrderTranslation(E3AConstants.O_ALLIANCE_KICK))) {
+      } else if (t.equalsToken(getOrderTranslation(E3AConstants.OC_ALLIANCE_KICK))) {
         retVal = readAllianzFactionID(t);
-      } else if (t.equalsToken(getOrderTranslation(E3AConstants.O_ALLIANCE_LEAVE))) {
+      } else if (t.equalsToken(getOrderTranslation(E3AConstants.OC_ALLIANCE_LEAVE))) {
         t.ttype = OrderToken.TT_KEYWORD;
         retVal = checkNextFinal();
-      } else if (t.equalsToken(getOrderTranslation(E3AConstants.O_ALLIANCE_COMMAND))) {
+      } else if (t.equalsToken(getOrderTranslation(E3AConstants.OC_ALLIANCE_COMMAND))) {
         retVal = readAllianzFactionID(t);
-      } else if (t.equalsToken(getOrderTranslation(E3AConstants.O_ALLIANCE_NEW))) {
+      } else if (t.equalsToken(getOrderTranslation(E3AConstants.OC_ALLIANCE_NEW))) {
         t.ttype = OrderToken.TT_KEYWORD;
         retVal = checkNextFinal();
-      } else if (t.equalsToken(getOrderTranslation(E3AConstants.O_ALLIANCE_INVITE))) {
+      } else if (t.equalsToken(getOrderTranslation(E3AConstants.OC_ALLIANCE_INVITE))) {
         retVal = readAllianzFactionID(t);
-      } else if (t.equalsToken(getOrderTranslation(E3AConstants.O_ALLIANCE_JOIN))) {
+      } else if (t.equalsToken(getOrderTranslation(E3AConstants.OC_ALLIANCE_JOIN))) {
         retVal = readAllianzBeitreten(t);
       } else {
         unexpected(t);
@@ -187,11 +187,11 @@ public class E3AOrderParser extends EresseaOrderParser {
     protected Collection<StringID> getCategories() {
       if (categories == null) {
         categories =
-            Arrays.asList(EresseaConstants.O_ALL,
-                // EresseaConstants.O_HELP_COMBAT,
-                EresseaConstants.O_HELP_GIVE, EresseaConstants.O_HELP_GUARD,
-                EresseaConstants.O_HELP_SILVER
-            // , EresseaConstants.O_HELP_FACTIONSTEALTH
+            Arrays.asList(EresseaConstants.OC_ALL,
+                // EresseaConstants.OC_HELP_COMBAT,
+                EresseaConstants.OC_HELP_GIVE, EresseaConstants.OC_HELP_GUARD,
+                EresseaConstants.OC_HELP_SILVER
+            // , EresseaConstants.OC_HELP_FACTIONSTEALTH
                 );
       }
       return categories;
@@ -212,37 +212,37 @@ public class E3AOrderParser extends EresseaOrderParser {
 
       OrderToken t = getNextToken();
       t.ttype = OrderToken.TT_KEYWORD;
-      if (t.equalsToken(getOrderTranslation(E3AConstants.O_ALLIANCE))) {
+      if (t.equalsToken(getOrderTranslation(E3AConstants.OC_ALLIANCE))) {
         getOrder().type = RenameObject.T_ALLIANCE;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_CASTLE))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
         getOrder().type = RenameObject.T_BUILDING;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_UNIT))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
         getOrder().type = RenameObject.T_UNIT;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
         getOrder().type = RenameObject.T_FACTION;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_REGION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
         getOrder().type = RenameObject.T_REGION;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_SHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         getOrder().type = RenameObject.T_SHIP;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNBUILDING))) {
         retVal = readBenenneFremdes(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNFACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNFACTION))) {
         retVal = readBenenneFremdes(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNSHIP))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNSHIP))) {
         retVal = readBenenneFremdes(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FOREIGNUNIT))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNUNIT))) {
         retVal = readBenenneFremdes(t);
       } else {
         t.ttype = OrderToken.TT_UNDEF;
@@ -282,7 +282,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         retVal = readBewacheNicht(t);
       } else {
         getOrder().setNot(false);
@@ -313,7 +313,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     @Override
     protected BuildingType isCastle(OrderToken t) {
-      if (t.equalsToken(getOrderTranslation(E3AConstants.O_WATCH)))
+      if (t.equalsToken(getOrderTranslation(E3AConstants.OC_WATCH)))
         if (getRules() != null)
           return getRules().getCastleType(E3AConstants.B_GUARDTOWER);
       return null;
@@ -403,7 +403,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_FACTION))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
         retVal = readTarnePartei(t);
       } else {
         retVal = checkFinal(t);
@@ -427,7 +427,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.O_NOT))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         retVal = readFinalKeyword(t);
       } else {
         retVal = checkFinal(t);

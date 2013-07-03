@@ -44,50 +44,50 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
     // add completions, that were defined by the user in the option pane
     // and can be accessed by CompleterSettingsProvider.getSelfDefinedCompletions()
     completions.addAll(completerSettingsProvider.getSelfDefinedCompletions());
-    // completions.add(new Completion(getOrderTranslation(EresseaConstants.O_WORK)));
-    // completions.add(new Completion(getOrderTranslation(EresseaConstants.O_ATTACK), " "));
-    // completions.add(new Completion(getOrderTranslation(EresseaConstants.O_BANNER), spaceQuotes,
+    // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_WORK)));
+    // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_ATTACK), " "));
+    // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_BANNER), spaceQuotes,
     // Completion.DEFAULT_PRIORITY, 1));
     // if (unit.getFaction() != null && unit.getFaction().getItems().size() > 0) {
-    // completions.add(new Completion(getOrderTranslation(EresseaConstants.O_CLAIM), " "));
+    // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CLAIM), " "));
     // }
 
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_FORM)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_ACCEPT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_ADDRESS)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_ADMIT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_ALLY)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_BEHIND)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_COMBAT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_DISPLAY)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_GUARD)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_NAME)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_PASSWORD)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_RESHOW)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_FIND)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_BOARD)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_ENTER)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_LEAVE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_PROMOTE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_ATTACK)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_DEMOLISH)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_GIVE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_PAY)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_SINK)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_TRANSFER)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_TAX)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_RECRUIT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_QUIT)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_MOVE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_SAIL)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_BUILD)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_ENTERTAIN)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_PRODUCE)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_RESEARCH)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_STUDY)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_TEACH)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_WORK)));
-    completions.add(new Completion(getOrderTranslation(AtlantisConstants.O_CAST)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_FORM)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ACCEPT)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ADDRESS)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ADMIT)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ALLY)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_BEHIND)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_COMBAT)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_DISPLAY)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_GUARD)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_NAME)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PASSWORD)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_RESHOW)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_FIND)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_BOARD)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ENTER)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_LEAVE)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PROMOTE)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ATTACK)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_DEMOLISH)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_GIVE)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PAY)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_SINK)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_TRANSFER)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_TAX)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_RECRUIT)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_QUIT)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_MOVE)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_SAIL)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_BUILD)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_ENTERTAIN)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_PRODUCE)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_RESEARCH)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_STUDY)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_TEACH)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_WORK)));
+    completions.add(new Completion(getOrderTranslation(AtlantisConstants.OC_CAST)));
   }
 
   public void cmpltId() {

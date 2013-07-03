@@ -200,12 +200,12 @@ public class MaintenanceInspector extends AbstractInspector {
   // if (order.isEmpty() || order.getProblem() != null) {
   // continue;
   // }
-  // if (orders.isToken(order, 0, EresseaConstants.O_MOVE)
-  // || orders.isToken(order, 0, EresseaConstants.O_ROUTE))
+  // if (orders.isToken(order, 0, EresseaConstants.OC_MOVE)
+  // || orders.isToken(order, 0, EresseaConstants.OC_ROUTE))
   // return true;
   // try {
-  // if (orders.isToken(order, 0, EresseaConstants.O_FOLLOW)) {
-  // if (orders.isToken(order, 1, EresseaConstants.O_UNIT))
+  // if (orders.isToken(order, 0, EresseaConstants.OC_FOLLOW)) {
+  // if (orders.isToken(order, 1, EresseaConstants.OC_UNIT))
   // return true;
   // }
   // } catch (Exception e) {

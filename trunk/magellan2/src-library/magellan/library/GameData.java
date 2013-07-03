@@ -1972,6 +1972,8 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   public void addUnitChangeListener(UnitChangeListener l) {
+    if (l == null)
+      throw new NullPointerException();
     if (changeListeners == null) {
       changeListeners = new LinkedHashSet<UnitChangeListener>();
     }

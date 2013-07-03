@@ -73,6 +73,7 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
    */
   @Override
   public String toString() {
+    // FIXME!
     String name = type + ": ";
     switch (getDirection()) {
     case 0:

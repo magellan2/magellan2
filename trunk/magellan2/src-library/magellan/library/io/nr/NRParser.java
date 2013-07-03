@@ -245,7 +245,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     ui.setTitle(Resources.get("progressdialog.loadnr.title"));
     ui.setMaximum(10000);
-    ui.setProgress(Resources.get("progressdialog.loadnr.step01"), 1);
+    ui.setProgress(Resources.get("progressdialog.loadnr.start"), 1);
     ui.show();
 
     try {
@@ -262,7 +262,6 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
           boolean matched = false;
           for (SectionReader r : sectionReaders) {
             if (r.matches(line)) {
-              ui.setProgress(Resources.get("progressdialog.loadcr.step02"), 2);
               matched = true;
               try {
                 r.parse();
@@ -493,6 +492,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else {
         world.setDate(new SimpleDate(lineMatcher.group(4), lineMatcher.group(5)));
       }
+      ui.setProgress(Resources.get("progressdialog.loadnr.game", world.getDate()), 1);
       nextLine();
     }
   }
@@ -508,6 +508,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     public void parse() throws IOException, ParseException {
       expectLine(startPattern);
+      ui.setProgress(Resources.get("progressdialog.loadnr.messages"), 1);
       nextLine(true, true);
 
       while (line != null && line.length() > 0) {
@@ -603,6 +604,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
           if (lineMatcher.group(1) != null) {
             currentRegion.setName(lineMatcher.group(1));
           }
+          ui.setProgress(Resources.get("progressdialog.loadnr.region", currentRegion), 1);
 
           try {
             final RegionType type =

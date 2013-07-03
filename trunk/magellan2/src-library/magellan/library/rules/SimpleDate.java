@@ -21,24 +21,24 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.rules;
-
-import magellan.library.rules.Date;
+package magellan.library.rules;
 
 public class SimpleDate extends Date {
   private static final String months[] = { "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December" };
+      "July", "August", "September", "October", "November", "December", "Smarch" };
+  private static final String BEGINNING = "In the Beginning";
   private int month;
   private int year;
 
   public SimpleDate(String aMonth, String year) {
     super(1);
-
-    month = 0;
-    for (month = 0; month < months.length; ++month)
-      if (months[month].equals(aMonth)) {
-        break;
-      }
+    month = -1;
+    if (aMonth != null) {
+      for (month = 0; month < months.length - 1; ++month)
+        if (months[month].equals(aMonth)) {
+          break;
+        }
+    }
     try {
       this.year = Integer.parseInt(year);
     } catch (NumberFormatException e) {
@@ -50,13 +50,15 @@ public class SimpleDate extends Date {
 
   @Override
   public int getSeason() {
-    // HIGHTODO Automatisch generierte Methode implementieren
     return 0;
   }
 
   @Override
   public String toString(int iDateType) {
-    return months[month] + ", " + year;
+    if (month >= 0)
+      return months[month] + ", " + year;
+    else
+      return BEGINNING;
   }
 
 }

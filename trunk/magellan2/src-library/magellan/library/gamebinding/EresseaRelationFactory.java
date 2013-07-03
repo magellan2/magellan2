@@ -725,7 +725,7 @@ public class EresseaRelationFactory implements RelationFactory {
     public Collection<ItemType> getHerbTypes() {
       if (herbTypes == null) {
         herbTypes = new ArrayList<ItemType>(10);
-        ItemCategory herbCat = data.rules.getItemCategory(StringID.create(("HERBS")));
+        ItemCategory herbCat = data.getRules().getItemCategory(StringID.create(("HERBS")));
         if (herbCat == null) {
           log.warn("herb category unknown");
         } else {

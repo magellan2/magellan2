@@ -683,7 +683,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       metric = new ShipMetric(data.getGameSpecificRules().getShipRange(unit.getModifiedShip()));
     } else {
       EresseaMovementEvaluator evaluator =
-          (EresseaMovementEvaluator) data.getRules().getGameSpecificStuff().getMovementEvaluator();
+          (EresseaMovementEvaluator) data.getGameSpecificStuff().getMovementEvaluator();
       metric =
           new LandMetric(evaluator.canWalk(unit) ? (evaluator.canRide(unit) ? BF_RIDING
               : BF_WALKING) : 0);

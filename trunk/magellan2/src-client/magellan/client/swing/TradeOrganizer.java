@@ -843,7 +843,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
       StringID actSID =
           StringID.create(getOriginalLuxuryTranslation((String) luxuries.getSelectedItem()));
-      ItemType luxury = data.rules.getItemType(actSID);
+      ItemType luxury = data.getRules().getItemType(actSID);
 
       if (luxury == null)
         return;
@@ -957,10 +957,10 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
       luxuryTranslations.clear();
     }
 
-    if ((data != null) && (data.rules != null)) {
-      for (ItemType currentType : data.rules.getItemTypes()) {
+    if ((data != null) && (data.getRules() != null)) {
+      for (ItemType currentType : data.getRules().getItemTypes()) {
         if (currentType.getCategory() != null
-            && currentType.getCategory().equals(data.rules.getItemCategory("luxuries"))) {
+            && currentType.getCategory().equals(data.getRules().getItemCategory("luxuries"))) {
           luxuryTranslations.put(data.getTranslation(currentType), currentType.getID().toString());
         }
       }

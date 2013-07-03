@@ -72,20 +72,20 @@ public class ResourceMergingTest extends MagellanTestWithResources {
     // same thing using RegionResource
     RegionResource trees;
     region1[1].addResource(trees =
-        new RegionResource(EresseaConstants.I_TREES, gd1.rules
+        new RegionResource(EresseaConstants.I_TREES, gd1.getRules()
             .getItemType(EresseaConstants.I_TREES)));
     trees.setAmount(2);
     trees.setDate(gd1.getDate().getDate());
     // that's what would be nice to have: a resource with 0 trees
     region3[1].addResource(trees =
-        new RegionResource(EresseaConstants.I_TREES, gd3.rules
+        new RegionResource(EresseaConstants.I_TREES, gd3.getRules()
             .getItemType(EresseaConstants.I_TREES)));
     trees.setAmount(0);
     trees.setDate(gd3.getDate().getDate());
 
     // but it's more likely to be like this:
     region1[2].addResource(trees =
-        new RegionResource(EresseaConstants.I_TREES, gd1.rules
+        new RegionResource(EresseaConstants.I_TREES, gd1.getRules()
             .getItemType(EresseaConstants.I_TREES)));
     trees.setAmount(2);
     trees.setDate(gd1.getDate().getDate());

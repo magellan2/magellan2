@@ -116,7 +116,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     factions = new Hashtable<ID, Faction>(getGameData().factions());
     regions = new Hashtable<CoordinateID, Region>(getGameData().regions());
     dispatcher.addSelectionListener(this);
-    unitsTools = (getGameData() != null) ? new Units(getGameData().rules) : new Units(null);
+    unitsTools = (getGameData() != null) ? new Units(getGameData().getRules()) : new Units(null);
     nodeWrapperFactory = new NodeWrapperFactory(settings);
 
     // to get the pref-adapter FIXME remove
@@ -140,7 +140,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     // factions.clear();
     if (getGameData() != null) {
-      unitsTools.setRules(getGameData().rules);
+      unitsTools.setRules(getGameData().getRules());
       // FIXME need to clear, or updateTree may be called on invalid faction list...
       // factions.clear();
       // regions.clear();
@@ -803,7 +803,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 ConstructibleType bT = b.getBuildingType();
                 if (bT != null) {
                   // get Maintenance cost Silver
-                  ItemType silverType = getGameData().rules.getItemType(EresseaConstants.I_USILVER);
+                  ItemType silverType = getGameData().getRules().getItemType(EresseaConstants.I_USILVER);
                   if (silverType != null) {
                     Item silverItem = bT.getMaintenance(silverType.getID());
                     if (silverItem != null) {
@@ -1162,7 +1162,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             if (buildingUpkeep.size() > 0) {
               for (StringID btID : buildingUpkeep.keySet()) {
                 Integer actV = buildingUpkeep.get(btID);
-                ConstructibleType bT = getGameData().rules.getBuildingType(btID);
+                ConstructibleType bT = getGameData().getRules().getBuildingType(btID);
                 if (bT != null && actV != null && actV.intValue() > 0) {
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(bT
@@ -1442,7 +1442,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
                 if (resource != null) {
                   // find the category
-                  ItemType itemType = getGameData().rules.getItemType(StringID.create(resource));
+                  ItemType itemType = getGameData().getRules().getItemType(StringID.create(resource));
                   ItemCategory itemCategory = null;
 
                   if (itemType != null) {
@@ -1451,7 +1451,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
                   if (itemCategory == null) {
                     FactionStatsPanel.log.info("Item without category: " + resource);
-                    itemCategory = getGameData().rules.getItemCategory("misc");
+                    itemCategory = getGameData().getRules().getItemCategory("misc");
                   }
                   if (itemCategory != null) {
                     // add the data

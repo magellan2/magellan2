@@ -149,7 +149,7 @@ public class UnitRoutePlanner {
   public List<String> getOrders(Unit unit, GameData data, CoordinateID start,
       CoordinateID destination, Component ui, boolean useRange, int mode, boolean useVorlage) {
     // find a path
-    Map<ID, RegionType> excludeMap = Regions.getNonLandRegionTypes(data.rules);
+    Map<ID, RegionType> excludeMap = Regions.getNonLandRegionTypes(data.getRules());
 
     int speed = Math.max(1, UnitRoutePlanner.getModifiedRadius(unit, false));
     int speedRoad = Math.max(1, UnitRoutePlanner.getModifiedRadius(unit, true));

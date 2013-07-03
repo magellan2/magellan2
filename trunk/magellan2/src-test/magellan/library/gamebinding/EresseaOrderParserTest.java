@@ -871,7 +871,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testReserviereReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_RESERVE) + " 1 "
-        + data.rules.getItemType(EresseaConstants.I_USILVER).getName());
+        + data.getRules().getItemType(EresseaConstants.I_USILVER).getName());
     checkOrder("RESERVIEREN ALLES Holz");
     checkOrder("RESERVIERE 2 Silber");
     checkOrder("RESERVIERE JE 1 Holz");

@@ -153,7 +153,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
 
   protected void initHandlers() {
     handlers = new RadixTreeImpl<OrderReader.LineHandler>();
-    addHandler(data.rules.getOrderfileStartingString(), new StartingHandler());
+    addHandler(data.getRules().getOrderfileStartingString(), new StartingHandler());
     addHandler(getOrderTranslation(EresseaConstants.OC_REGION), new RegionHandler());
     addHandler(getOrderTranslation(EresseaConstants.OC_UNIT), new UnitHandler());
   }
@@ -396,7 +396,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
+    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
   /**

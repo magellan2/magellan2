@@ -2778,7 +2778,7 @@ public class CRWriter extends BufferedWriter {
     newLine();
 
     for (String key : m.getKeyTreeSet()) {
-      String value = m.getTranslation(key, TranslationType.sourceCR);
+      String value = m.getTranslation(key, TranslationType.SOURCE_CR);
       if (value != null) {
         writeQuotedTag(value, key);
       }

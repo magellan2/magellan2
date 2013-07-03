@@ -29,33 +29,57 @@ package magellan.library.utils;
  * @author Fiete
  * @version 1.0, 20.11.2007
  */
-public class TranslationType {
+public final class TranslationType {
 
   /**
    * Source of this translation type is unknown; should not stay after init.
+   * 
+   * @deprecated SOURCE_UNKNOWN
    */
+  @Deprecated
   public static final int sourceUnknown = 0;
 
-  /** Source of this translation type is the CR */
+  /**
+   * Source of this translation type is the CR
+   * 
+   * @deprecated SOURCE_CR
+   */
+  @Deprecated
   public static final int sourceCR = 1;
 
   /**
    * Source of this translation type are the default Translations of Magellan.
+   * 
+   * @deprecated SOURCE_MAGELLAN
    */
+  @Deprecated
   public static final int sourceMagellan = 2;
 
+  /**
+   * Source of this translation type is unknown; should not stay after init.
+   */
+  public static final int SOURCE_UNKNWON = 0;
+
+  /** Source of this translation type is the CR */
+  public static final int SOURCE_CR = 1;
+
+  /**
+   * Source of this translation type are the default Translations of Magellan.
+   */
+  public static final int SOURCE_MAGELLAN = 2;
+
   /** The translated string */
-  private String translation = null;
+  private final String translation;
 
   /** the source of this translation */
-  private int source = TranslationType.sourceUnknown;
+  private final int source;
 
   /**
    * Returns the value of translation.
    * 
    * @return Returns translation.
    */
-  public String getTranslation() {
+  public final String getTranslation() {
     return translation;
   }
 
@@ -64,7 +88,7 @@ public class TranslationType {
    * 
    * @return Returns source.
    */
-  public int getSource() {
+  public final int getSource() {
     return source;
   }
 
@@ -77,24 +101,6 @@ public class TranslationType {
   public TranslationType(String text, int _source) {
     translation = text;
     source = _source;
-  }
-
-  /**
-   * Sets the value of translation.
-   * 
-   * @param translation The value for translation.
-   */
-  public void setTranslation(String translation) {
-    this.translation = translation;
-  }
-
-  /**
-   * Sets the value of source.
-   * 
-   * @param source The value for source.
-   */
-  public void setSource(int source) {
-    this.source = source;
   }
 
 }

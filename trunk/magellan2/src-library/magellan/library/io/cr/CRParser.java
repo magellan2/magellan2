@@ -654,7 +654,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           sc.getNextToken(); // skip ZUTATEN block
 
           while (!sc.eof && !sc.isBlock && (sc.argc == 1)) {
-            final ItemType it = world.rules.getItemType(StringID.create(sc.argv[0]), true);
+            final ItemType it = world.getRules().getItemType(StringID.create(sc.argv[0]), true);
             final Item i = new Item(it, 1);
             potion.addIngredient(i);
             sc.getNextToken();
@@ -871,7 +871,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 1) && sc.argv[0].startsWith("COORDTRANS")) {
         parseCoordinateTransformation();
       } else if ((sc.argc == 1) && sc.argv[0].startsWith("RULES")) {
-        parseRules(world.rules);
+        parseRules(world.getRules());
       } else if ((sc.argc == 1) && sc.argv[0].startsWith("HOTSPOT ")) {
         parseHotSpot(world);
       } else if ((sc.argc == 1) && sc.argv[0].startsWith("ALLIANCE ")) {
@@ -1803,7 +1803,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Optionen")) {
         if (faction.getOptions() == null) {
-          faction.setOptions(new Options(world.rules));
+          faction.setOptions(new Options(world.getRules()));
         }
 
         faction.getOptions().setValues(Integer.parseInt(sc.argv[0]));
@@ -1823,7 +1823,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2)
           && (sc.argv[1].equalsIgnoreCase("Typ") || sc.argv[1].equalsIgnoreCase("Typus") || sc.argv[1]
               .equalsIgnoreCase("race"))) {
-        type = world.rules.getRace(StringID.create(sc.argv[0]), true);
+        type = world.getRules().getRace(StringID.create(sc.argv[0]), true);
         faction.setType(type);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Rekrutierungskosten")) {
@@ -2030,7 +2030,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       return;
     }
 
-    if (world.rules == null) {
+    if (world.getRules() == null) {
       invalidParam("parseSkills", "rules is null");
 
       return;
@@ -2060,7 +2060,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       }
 
       final Skill skill =
-          new Skill(world.rules.getSkillType(StringID.create(sc.argv[1]), true), points, level,
+          new Skill(world.getRules().getSkillType(StringID.create(sc.argv[1]), true), points, level,
               unit.getPersons(), world.noSkillPoints);
       skill.setChangeLevel(change);
       // skill.setLevelChanged(changed);
@@ -2081,7 +2081,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     while (!sc.eof && (sc.argc == 2)) {
       final Item item =
-          new Item(world.rules.getItemType(StringID.create(sc.argv[1]), true), Integer
+          new Item(world.getRules().getItemType(StringID.create(sc.argv[1]), true), Integer
               .parseInt(sc.argv[0]));
       if (unit != null) {
         unit.addItem(item);
@@ -2099,7 +2099,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     while (!sc.eof && (sc.argc == 2)) {
       final Item item =
-          new Item(world.rules.getItemType(StringID.create(sc.argv[1]), true), Integer
+          new Item(world.getRules().getItemType(StringID.create(sc.argv[1]), true), Integer
               .parseInt(sc.argv[0]));
       if (unitcontainer != null) {
         unitcontainer.addItem(item);
@@ -2139,10 +2139,10 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         unit.setDescription(sc.argv[0]);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Typ")) {
-        unit.setRace(world.rules.getRace(StringID.create(sc.argv[0]), true));
+        unit.setRace(world.getRules().getRace(StringID.create(sc.argv[0]), true));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("wahrerTyp")) {
-        unit.setRealRace(world.rules.getRace(StringID.create(sc.argv[0]), true));
+        unit.setRealRace(world.getRules().getRace(StringID.create(sc.argv[0]), true));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("temp")) {
         unit.setTempID(UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base));
@@ -2193,7 +2193,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Silber")) {
         final int money = Integer.parseInt(sc.argv[0]);
         final Item item =
-            new Item(world.rules.getItemType(EresseaConstants.I_USILVER, true), money);
+            new Item(world.getRules().getItemType(EresseaConstants.I_USILVER, true), money);
         unit.addItem(item);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Burg")) {
@@ -2423,11 +2423,11 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     sc.getNextToken(); // skip PREISE
 
     while (!sc.eof && (sc.argc == 2)) {
-      ItemType itemType = world.rules.getItemType(StringID.create(sc.argv[1]));
+      ItemType itemType = world.getRules().getItemType(StringID.create(sc.argv[1]));
       if (itemType == null) {
         CRParser.log.warn("unknown price added: " + sc.argv[1] + ",maybe wrong coding?(actual:"
             + world.getEncoding() + ")");
-        itemType = world.rules.getItemType(StringID.create(sc.argv[1]), true);
+        itemType = world.getRules().getItemType(StringID.create(sc.argv[1]), true);
       }
       final LuxuryPrice pr = new LuxuryPrice(itemType, Integer.parseInt(sc.argv[0]));
 
@@ -2463,7 +2463,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         ship.setName(sc.argv[0]);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Typ")) {
-        final ShipType type = world.rules.getShipType(StringID.create(sc.argv[0]), true);
+        final ShipType type = world.getRules().getShipType(StringID.create(sc.argv[0]), true);
         ship.setType(type);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Beschr")) {
@@ -2556,7 +2556,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         bld.setTrueBuildingType(sc.argv[0]);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Typ")) {
-        final BuildingType bType = world.rules.getBuildingType(StringID.create(sc.argv[0]), true);
+        final BuildingType bType = world.getRules().getBuildingType(StringID.create(sc.argv[0]), true);
         bld.setType(bType);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Beschr")) {
@@ -2805,7 +2805,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Terrain")) {
         try {
-          final RegionType type = world.rules.getRegionType(StringID.create(sc.argv[0]), true);
+          final RegionType type = world.getRules().getRegionType(StringID.create(sc.argv[0]), true);
           region.setType(type);
         } catch (final IllegalArgumentException e) {
           // can happen in StringID constructor if sc.argv[0] == ""
@@ -2910,7 +2910,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("herb")) {
-        final ItemType type = world.rules.getItemType(StringID.create(sc.argv[0]), true);
+        final ItemType type = world.getRules().getItemType(StringID.create(sc.argv[0]), true);
         region.setHerb(type);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("herbamount")) {
@@ -2981,7 +2981,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if (sc.isBlock && sc.argv[0].equals("COMMENTS")) {
         region.setComments(parseStringSequence(region.getComments()));
       } else if (sc.isBlock && sc.argv[0].startsWith("RESOURCE ")) {
-        final RegionResource res = parseRegionResource(world.rules, region);
+        final RegionResource res = parseRegionResource(world.getRules(), region);
 
         if (res != null) {
           region.addResource(res);
@@ -3046,7 +3046,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     while (!sc.eof) {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("terrain")) {
-        specialRegion.setType(world.rules.getRegionType(StringID.create(sc.argv[0]), true));
+        specialRegion.setType(world.getRules().getRegionType(StringID.create(sc.argv[0]), true));
         sc.getNextToken();
       } else if (sc.isBlock && sc.argv[0].startsWith("SCHEMEN ")) {
         parseScheme(specialRegion);
@@ -3282,7 +3282,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     while (!sc.eof) {
       if (sc.argc == 2) {
         // data.addTranslation(sc.argv[1], sc.argv[0]);
-        data.addTranslation(sc.argv[1], sc.argv[0], TranslationType.sourceCR);
+        data.addTranslation(sc.argv[1], sc.argv[0], TranslationType.SOURCE_CR);
         sc.getNextToken();
       } else if (sc.isBlock) {
         break;
@@ -3913,13 +3913,13 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       unitParser.addTagHandler("Typ", new UnitTagHandler(unitParser) {
         @Override
         public void handle(Unit unit) {
-          unit.setRace(world.rules.getRace(StringID.create(sc.argv[0]), true));
+          unit.setRace(world.getRules().getRace(StringID.create(sc.argv[0]), true));
         }
       });
       unitParser.addTagHandler("wahrerTyp", new UnitTagHandler(unitParser) {
         @Override
         public void handle(Unit unit) {
-          unit.setRealRace(world.rules.getRace(StringID.create(sc.argv[0]), true));
+          unit.setRealRace(world.getRules().getRace(StringID.create(sc.argv[0]), true));
         }
       });
       unitParser.addTagHandler("temp", new UnitTagHandler(unitParser) {
@@ -3978,7 +3978,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         public void handle(Unit unit) {
           final int money = Integer.parseInt(sc.argv[0]);
           final Item item =
-              new Item(world.rules.getItemType(EresseaConstants.I_USILVER, true), money);
+              new Item(world.getRules().getItemType(EresseaConstants.I_USILVER, true), money);
           unit.addItem(item);
         }
       });
@@ -4304,7 +4304,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         @Override
         public void handle(Region region) throws IOException {
           try {
-            final RegionType type = world.rules.getRegionType(StringID.create(sc.argv[0]), true);
+            final RegionType type = world.getRules().getRegionType(StringID.create(sc.argv[0]), true);
             region.setType(type);
           } catch (final IllegalArgumentException e) {
             // can happen in StringID constructor if sc.argv[0] == ""
@@ -4385,7 +4385,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       regionParser.addTagHandler("herb", new RegionTagHandler(regionParser) {
         @Override
         public void handle(Region region) throws IOException {
-          final ItemType type = world.rules.getItemType(StringID.create(sc.argv[0]), true);
+          final ItemType type = world.getRules().getItemType(StringID.create(sc.argv[0]), true);
           region.setHerb(type);
         }
       });
@@ -4513,7 +4513,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       regionParser.addBlockHandler("RESOURCE", new RegionTagHandler(regionParser) {
         @Override
         public void handle(Region region) throws IOException {
-          final RegionResource res = parseRegionResource(world.rules, region);
+          final RegionResource res = parseRegionResource(world.getRules(), region);
 
           if (res != null) {
             region.addResource(res);

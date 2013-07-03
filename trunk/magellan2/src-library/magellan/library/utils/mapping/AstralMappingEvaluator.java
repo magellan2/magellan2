@@ -54,7 +54,7 @@ public class AstralMappingEvaluator extends MappingEvaluator {
   protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData,
       CoordinateID mapping) {
 
-    RegionType fogTerrain = fromData.rules.getRegionType(EresseaConstants.RT_FOG);
+    RegionType fogTerrain = fromData.getRules().getRegionType(EresseaConstants.RT_FOG);
 
     int score = 0;
     int uidMatches = 0;

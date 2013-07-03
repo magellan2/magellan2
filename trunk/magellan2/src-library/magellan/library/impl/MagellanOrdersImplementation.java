@@ -130,8 +130,8 @@ public class MagellanOrdersImplementation implements Orders {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return unit.getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-        unit.getLocale(), orderId);
+    return unit.getData().getGameSpecificStuff().getOrderChanger().getOrder(unit.getLocale(),
+        orderId);
   }
 
   /**

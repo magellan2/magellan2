@@ -271,7 +271,7 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
     if (data != null) {
       List<SkillType> v = new LinkedList<SkillType>();
 
-      for (Iterator<SkillType> iter = data.rules.getSkillTypeIterator(); iter.hasNext();) {
+      for (Iterator<SkillType> iter = data.getRules().getSkillTypeIterator(); iter.hasNext();) {
         SkillType type = iter.next();
         v.add(type);
       }

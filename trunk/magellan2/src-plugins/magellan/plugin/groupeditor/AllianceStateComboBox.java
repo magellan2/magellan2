@@ -63,7 +63,7 @@ public class AllianceStateComboBox extends JComboBox {
     max.addCategory(getMaxAllianceCategory());
     states.add(max);
 
-    Iterator<AllianceCategory> categories = world.rules.getAllianceCategoryIterator();
+    Iterator<AllianceCategory> categories = world.getRules().getAllianceCategoryIterator();
 
     while (categories.hasNext()) {
       AllianceCategory category = categories.next();
@@ -128,7 +128,7 @@ public class AllianceStateComboBox extends JComboBox {
       return;
     cats.add(category);
 
-    Iterator<AllianceCategory> categories = world.rules.getAllianceCategoryIterator();
+    Iterator<AllianceCategory> categories = world.getRules().getAllianceCategoryIterator();
     while (categories.hasNext()) {
       AllianceCategory nextcat = categories.next();
       if (nextcat.getParent() == null) {
@@ -159,7 +159,7 @@ public class AllianceStateComboBox extends JComboBox {
    * returns the maximum alliance category (which must be ALL)
    */
   protected AllianceCategory getMaxAllianceCategory() {
-    Iterator<AllianceCategory> iter = world.rules.getAllianceCategoryIterator();
+    Iterator<AllianceCategory> iter = world.getRules().getAllianceCategoryIterator();
 
     if (iter.hasNext()) {
       AllianceCategory ret = iter.next();
@@ -259,9 +259,8 @@ class AllianceState {
     StringBuffer buffer = new StringBuffer();
     for (AllianceCategory category : categories) {
       buffer.append(
-          world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-              Locales.getGUILocale(), GameConstants.getAllianceKey(category.getName())))
-          .append(" ");
+          world.getGameSpecificStuff().getOrderChanger().getOrder(Locales.getGUILocale(),
+              GameConstants.getAllianceKey(category.getName()))).append(" ");
     }
     return buffer.toString();
   }

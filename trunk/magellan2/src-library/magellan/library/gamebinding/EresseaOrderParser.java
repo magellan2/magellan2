@@ -294,7 +294,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       Building tBuilding = getData().getBuilding(target);
 
       return tBuilding != null
-          && getData().rules.getCastleType(tBuilding.getType().getID()) != null && checkNextFinal();
+          && getData().getRules().getCastleType(tBuilding.getType().getID()) != null && checkNextFinal();
     }
   }
 

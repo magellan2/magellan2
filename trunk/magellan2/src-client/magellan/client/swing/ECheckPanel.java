@@ -398,8 +398,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
         // old = default = system dependent
         stream = new FileWriter(orderFile);
       }
-      GameSpecificOrderWriter cmdWriter =
-          getGameData().getRules().getGameSpecificStuff().getOrderWriter();
+      GameSpecificOrderWriter cmdWriter = getGameData().getGameSpecificStuff().getOrderWriter();
       cmdWriter.setGameData(getGameData());
       cmdWriter.setFaction(selectedFaction);
       cmdWriter.setECheckOptions(options);

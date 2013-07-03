@@ -264,7 +264,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return getOwner().getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+    return getOwner().getData().getGameSpecificStuff().getOrderChanger().getOrder(
         getOwner().getLocale(), orderId);
   }
 

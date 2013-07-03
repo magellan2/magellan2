@@ -1421,8 +1421,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.clearOrders();
     unit2.clearOrders();
 
-    unit2.getItem(data.rules.getItemType("Schwert")).setAmount(0);
-    unit2.getItem(data.rules.getItemType("Plattenpanzer")).setAmount(0);
+    unit2.getItem(data.getRules().getItemType("Schwert")).setAmount(0);
+    unit2.getItem(data.getRules().getItemType("Plattenpanzer")).setAmount(0);
     builder.addItem(data, unit2, "Schild", 10);
     builder.addItem(data, unit, "Schild", 5);
 
@@ -1691,11 +1691,11 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    */
   @Test
   public final void testIsUsable() {
-    assertTrue(E3CommandParser.isUsable(data.rules.getItemType("Schwert"), data.rules
+    assertTrue(E3CommandParser.isUsable(data.getRules().getItemType("Schwert"), data.getRules()
         .getSkillType("Hiebwaffen")));
-    assertTrue(E3CommandParser.isUsable(data.rules.getItemType("Bih‰nder"), data.rules
+    assertTrue(E3CommandParser.isUsable(data.getRules().getItemType("Bih‰nder"), data.getRules()
         .getSkillType("Hiebwaffen")));
-    assertFalse(E3CommandParser.isUsable(data.rules.getItemType("Schwert"), data.rules
+    assertFalse(E3CommandParser.isUsable(data.getRules().getItemType("Schwert"), data.getRules()
         .getSkillType("Bogenschieﬂen")));
   }
 
@@ -1716,7 +1716,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   @Test
   public final void testGetSilber() {
     assertEquals(0, E3CommandParser.getSilber(unit));
-    unit.addItem(new Item(data.rules.getItemType("Silber"), 42));
+    unit.addItem(new Item(data.getRules().getItemType("Silber"), 42));
     assertEquals(42, E3CommandParser.getSilber(unit));
   }
 

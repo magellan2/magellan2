@@ -154,7 +154,7 @@ public class BuildingCellRenderer extends ImageCellRenderer {
       // arrange one box for each building type in a grid
       if (data != null) {
         int i = 0;
-        for (BuildingType type : data.rules.getBuildingTypes()) {
+        for (BuildingType type : data.getRules().getBuildingTypes()) {
 
           boolean selected =
               PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(),

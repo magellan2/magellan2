@@ -194,7 +194,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   }
 
   protected void writeOrderfileStartingString(BufferedWriter stream) throws IOException {
-    stream.write(world.rules.getOrderfileStartingString());
+    stream.write(world.getRules().getOrderfileStartingString());
     stream.write(" " + faction.getID());
     writeln(stream, " \"" + faction.getPassword() + "\"");
   }
@@ -208,7 +208,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
+    return world.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
   protected int writeRegions(Collection<? extends Region> writtenRegions, BufferedWriter stream)
@@ -279,7 +279,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
       // Item silver = unit.getModifiedItem(world.rules.getItemType(StringID.create("Silber"),
       // true));
       // pavkovic 2004.09.13: dont use modified items as it creates some bugs
-      Item silver = unit.getItem(world.rules.getItemType(EresseaConstants.I_USILVER));
+      Item silver = unit.getItem(world.getRules().getItemType(EresseaConstants.I_USILVER));
 
       if (silver != null) {
         money = silver.getAmount();

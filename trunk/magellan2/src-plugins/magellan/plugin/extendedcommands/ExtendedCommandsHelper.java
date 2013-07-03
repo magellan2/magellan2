@@ -121,7 +121,7 @@ public class ExtendedCommandsHelper {
    * @return The SkillType or <code>null</code> if no such skill is known.
    */
   public SkillType getSkillType(String typeName) {
-    return world.rules.getSkillType(StringID.create(typeName));
+    return world.getRules().getSkillType(StringID.create(typeName));
   }
 
   /**
@@ -131,7 +131,7 @@ public class ExtendedCommandsHelper {
    * @return The ItemType or <code>null</code> if no such Item is known.
    */
   public ItemType getItemType(String typeName) {
-    return world.rules.getItemType(StringID.create(typeName));
+    return world.getRules().getItemType(StringID.create(typeName));
   }
 
   /**
@@ -141,7 +141,7 @@ public class ExtendedCommandsHelper {
    * @return The BuildingType or <code>null</code> if no such Building is known.
    */
   public BuildingType getBuildingType(String typeName) {
-    return world.rules.getBuildingType(StringID.create(typeName));
+    return world.getRules().getBuildingType(StringID.create(typeName));
   }
 
   /**
@@ -151,7 +151,7 @@ public class ExtendedCommandsHelper {
    * @return The Race or <code>null</code> if no such race is known.
    */
   public Race getRace(String typeName) {
-    return world.rules.getRace(StringID.create(typeName));
+    return world.getRules().getRace(StringID.create(typeName));
   }
 
   /**
@@ -161,7 +161,7 @@ public class ExtendedCommandsHelper {
    * @return The RegionType or <code>null</code> if no such Region is known.
    */
   public RegionType getRegionType(String typeName) {
-    return world.rules.getRegionType(StringID.create(typeName));
+    return world.getRules().getRegionType(StringID.create(typeName));
   }
 
   /**
@@ -297,9 +297,9 @@ public class ExtendedCommandsHelper {
       return false;
     if (otherunit.getFaction().equals(currentUnit.getFaction()))
       return true;
-    return getRegionSkillLevel(currentUnit.getRegion(), currentUnit.getFaction(), world.rules
+    return getRegionSkillLevel(currentUnit.getRegion(), currentUnit.getFaction(), world.getRules()
         .getSkillType(EresseaConstants.S_WAHRNEHMUNG)) >= otherunit.getSkill(
-        world.rules.getSkillType(EresseaConstants.S_TARNUNG)).getLevel();
+        world.getRules().getSkillType(EresseaConstants.S_TARNUNG)).getLevel();
   }
 
   /**
@@ -515,8 +515,8 @@ public class ExtendedCommandsHelper {
    *         returned.
    */
   public String getOrderTranslation(Unit unit, StringID orderConstant, Object... args) {
-    return unit.getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-        unit.getLocale(), orderConstant, args);
+    return unit.getData().getGameSpecificStuff().getOrderChanger().getOrder(unit.getLocale(),
+        orderConstant, args);
   }
 
   /**
@@ -533,20 +533,13 @@ public class ExtendedCommandsHelper {
   public String getGiveOrder(Unit unit, String receiver, String item, int amount, boolean each) {
 
     if (each)
-      return getOrderTranslation(
-          unit,
-          EresseaConstants.OC_GIVE,
-          receiver,
-          EresseaConstants.OC_EACH,
-          (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.OC_ALL) : amount),
-          item);
+      return getOrderTranslation(unit, EresseaConstants.OC_GIVE, receiver,
+          EresseaConstants.OC_EACH, (amount == Integer.MAX_VALUE ? getOrderTranslation(unit,
+              EresseaConstants.OC_ALL) : amount), item);
     else
-      return getOrderTranslation(
-          unit,
-          EresseaConstants.OC_GIVE,
-          receiver,
-          (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.OC_ALL) : amount),
-          item);
+      return getOrderTranslation(unit, EresseaConstants.OC_GIVE, receiver,
+          (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.OC_ALL)
+              : amount), item);
   }
 
   /**
@@ -569,7 +562,7 @@ public class ExtendedCommandsHelper {
    */
   public boolean isSoldier() {
     Collection<Item> items = currentUnit.getItems();
-    ItemCategory weapons = world.rules.getItemCategory(StringID.create("weapons"));
+    ItemCategory weapons = world.getRules().getItemCategory(StringID.create("weapons"));
     if (weapons == null) {
       // we don't know something about weapons.
       ExtendedCommandsHelper.log.info("World has no weapons rules");

@@ -43,7 +43,7 @@ public class Islands {
    */
   @SuppressWarnings("deprecation")
   public static Map<IntegerID, Island> getIslands(UserInterface ui, GameData data) {
-    return getIslands(ui, data.rules, data.regions(), data.islands(), data);
+    return getIslands(ui, data.getRules(), data.regions(), data.islands(), data);
   }
 
   /**
@@ -134,7 +134,7 @@ public class Islands {
   }
 
   public static Map<CoordinateID, Region> getIsland(Region r) {
-    return getIsland(r.getData().rules, r.getData().regions(), r, null, true);
+    return getIsland(r.getData().getRules(), r.getData().regions(), r, null, true);
   }
 
   /**

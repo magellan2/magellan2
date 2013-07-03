@@ -253,7 +253,7 @@ public class E3ASpecificStuff implements GameSpecificStuff {
       @Override
       protected void initHandlers() {
         handlers = new RadixTreeImpl<OrderReader.LineHandler>();
-        addHandler(normalize(data.rules.getOrderfileStartingString()), new StartingHandler());
+        addHandler(normalize(data.getRules().getOrderfileStartingString()), new StartingHandler());
         addHandler(normalize(getOrderTranslation(EresseaConstants.OC_REGION)), new RegionHandler());
         addHandler(normalize(getOrderTranslation(EresseaConstants.OC_UNIT)), new UnitHandler());
         // Eressea specific

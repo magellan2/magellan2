@@ -737,7 +737,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
     if ((i != 0) && (uid != null)) {
       // add completions, that create multiple Give-Orders for the resources of an item
-      for (final Iterator<ItemType> iter = data.rules.getItemTypeIterator(); iter.hasNext();) {
+      for (final Iterator<ItemType> iter = data.getRules().getItemTypeIterator(); iter.hasNext();) {
         final ItemType iType = iter.next();
 
         if (iType.getResources() != null && iType.getResources().hasNext() // necessary resources
@@ -769,8 +769,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       String tounit;
       try {
         tounit =
-            getData().getRules().getGameSpecificStuff().getOrderChanger().getTokenLocalized(
-                getLocale(), uid);
+            getData().getGameSpecificStuff().getOrderChanger().getTokenLocalized(getLocale(), uid);
       } catch (RulesException e) {
         tounit = "TEMP " + uid;
       }
@@ -851,7 +850,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /** Add completions for command HelfeFID. */
   public void cmpltHelfeFID() {
-    for (final Iterator<AllianceCategory> it = getData().rules.getAllianceCategoryIterator(); it
+    for (final Iterator<AllianceCategory> it = getData().getRules().getAllianceCategoryIterator(); it
         .hasNext();) {
       final AllianceCategory all = it.next();
       completions.add(new Completion(getOrderTranslation(StringID
@@ -942,11 +941,12 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     }
 
     if (item == null) {
-      if ((data != null) && (data.rules != null)) {
-        final ItemCategory luxCat = data.rules.getItemCategory(EresseaConstants.C_LUXURIES);
+      if ((data != null) && (data.getRules() != null)) {
+        final ItemCategory luxCat = data.getRules().getItemCategory(EresseaConstants.C_LUXURIES);
 
         if (luxCat != null) {
-          for (final Iterator<ItemType> iter = data.rules.getItemTypeIterator(); iter.hasNext();) {
+          for (final Iterator<ItemType> iter = data.getRules().getItemTypeIterator(); iter
+              .hasNext();) {
             final ItemType t = iter.next();
 
             if (luxCat.equals(t.getCategory())) {
@@ -974,7 +974,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       }
 
       addFilteredSpells(unit, false, region.getType().equals(
-          data.rules.getRegionType(EresseaConstants.RT_OCEAN)), true, opening, closing);
+          data.getRules().getRegionType(EresseaConstants.RT_OCEAN)), true, opening, closing);
     }
   }
 
@@ -1003,13 +1003,13 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /** Add completions for command LerneTalent. */
   public void cmpltLerneTalent(SkillType t) {
-    if (data != null && data.rules != null && t != null) {
+    if (data != null && data.getRules() != null && t != null) {
       final int cost = getSkillCost(t, unit);
 
       if (cost > 0) {
         completions.add(new Completion(Integer.toString(cost)));
       }
-      if (t.equals(data.rules.getSkillType(EresseaConstants.S_MAGIE))
+      if (t.equals(data.getRules().getSkillType(EresseaConstants.S_MAGIE))
           && (unit.getFaction() == null || unit.getFaction().getSpellSchool() == null)) {
         completions.add(new Completion(oneQuote
             + getTranslation("gamebinding.eressea.eresseaordercompleter.magicarea") + oneQuote,
@@ -1025,6 +1025,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
    * @return the cost to learn a skill for the given unit. If the unit has no persons the cost for
    *         one person is returned.
    */
+  @Override
   public int getSkillCost(SkillType skillType, Unit someUnit) {
     // int cost = 0;
     int c2 = 0;
@@ -1062,7 +1063,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
     if ((someUnit.getModifiedBuilding() != null)
         && someUnit.getModifiedBuilding().getType().equals(
-            data.rules.getBuildingType(EresseaConstants.B_ACADEMY))) {
+            data.getRules().getBuildingType(EresseaConstants.B_ACADEMY))) {
       if (c2 == 0) {
         // cost = 50;
         c2 = 50;
@@ -1104,8 +1105,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   public void cmpltMacheAmount() {
     // buildings
     if (hasSkill(unit, EresseaConstants.S_BURGENBAU)) {
-      if ((data != null) && (data.rules != null)) {
-        for (final Iterator<BuildingType> iter = data.rules.getBuildingTypeIterator(); iter
+      if ((data != null) && (data.getRules() != null)) {
+        for (final Iterator<BuildingType> iter = data.getRules().getBuildingTypeIterator(); iter
             .hasNext();) {
           final BuildingType t = iter.next();
 
@@ -1128,8 +1129,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
       if (hasSkill(unit, EresseaConstants.S_BURGENBAU)
           && !completerSettingsProvider.getLimitMakeCompletion()
-          || (Units.getContainerPrivilegedUnitItem(region, data.rules
-              .getItemType(EresseaConstants.I_USTONE)) != null)) {
+          || (Units.getContainerPrivilegedUnitItem(region, data.getRules().getItemType(
+              EresseaConstants.I_USTONE)) != null)) {
         completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CASTLE), " "));
       }
     }
@@ -1137,9 +1138,10 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     // ships
     if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU)
         && (!completerSettingsProvider.getLimitMakeCompletion() || (Units
-            .getContainerPrivilegedUnitItem(region, data.rules.getItemType(EresseaConstants.I_WOOD)) != null))) {
-      if ((data != null) && (data.rules != null)) {
-        for (final Iterator<ShipType> iter = data.rules.getShipTypeIterator(); iter.hasNext();) {
+            .getContainerPrivilegedUnitItem(region, data.getRules().getItemType(
+                EresseaConstants.I_WOOD)) != null))) {
+      if ((data != null) && (data.getRules() != null)) {
+        for (final Iterator<ShipType> iter = data.getRules().getShipTypeIterator(); iter.hasNext();) {
           final ShipType t = iter.next();
 
           if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU, t.getBuildSkillLevel())) {
@@ -1169,8 +1171,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
     if (hasSkill(unit, EresseaConstants.S_STRASSENBAU)
         && (!completerSettingsProvider.getLimitMakeCompletion() || (Units
-            .getContainerPrivilegedUnitItem(region, data.rules
-                .getItemType(EresseaConstants.I_USTONE)) != null)) && canMake) {
+            .getContainerPrivilegedUnitItem(region, data.getRules().getItemType(
+                EresseaConstants.I_USTONE)) != null)) && canMake) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_ROAD), " "));
     }
 
@@ -1179,7 +1181,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     }
 
     // items
-    for (final Iterator<ItemType> iter = data.rules.getItemTypeIterator(); iter.hasNext();) {
+    for (final Iterator<ItemType> iter = data.getRules().getItemTypeIterator(); iter.hasNext();) {
       final ItemType itemType = iter.next();
       canMake = true;
 
@@ -1192,25 +1194,25 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       } else if (completerSettingsProvider.getLimitMakeCompletion()
           && !checkForMaterials(itemType.getResources())) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UIRON))
+      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_UIRON))
           && (region.getIron() <= 0)) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_ULAEN))
+      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_ULAEN))
           && (region.getLaen() <= 0)) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_WOOD)) &&
+      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_WOOD)) &&
       // bugzilla enhancement 599: also allow completion on sprouts
       // also take care of mallorn flag
           (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || region.isMallorn())) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UMALLORN)) &&
+      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_UMALLORN)) &&
       // bugzilla enhancement 599: also allow completion on sprouts
           (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || !region.isMallorn())) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UHORSE))
+      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_UHORSE))
           && (region.getHorses() <= 0)) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_USTONE))
+      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_USTONE))
           && (region.getStones() <= 0)) {
         canMake = false;
       }
@@ -1250,7 +1252,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     // TODO(pavkovic): korrigieren!!! Hier soll eigentlich das Gebäude über den
     // übersetzten Namen gefunden werden!!!
     // BuildingType type = ((Eressea) data.rules).getBuildingType(typeName);
-    final BuildingType type = data.rules.getBuildingType(StringID.create(typeName));
+    final BuildingType type = data.getRules().getBuildingType(StringID.create(typeName));
 
     if (type != null) {
       final Iterator<Building> i = region.buildings().iterator();
@@ -1420,7 +1422,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
    */
   private void addMaxReserve(Unit otherUnit) {
     final int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(otherUnit);
-    final ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
+    final ItemType carts = data.getRules().getItemType(EresseaConstants.I_CART);
     final int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(otherUnit);
     final int maxOnHorse =
         getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(otherUnit);
@@ -1470,7 +1472,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       // if ((unit.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) == null)
       // && (Units.getContainerPrivilegedUnitItem(region, data.rules
       // .getItemType(EresseaConstants.I_USILVER)) != null)) {
-      completions.add(new Completion(data.rules.getItemType(EresseaConstants.I_USILVER)
+      completions.add(new Completion(data.getRules().getItemType(EresseaConstants.I_USILVER)
           .getOrderName(), Completion.DEFAULT_PRIORITY - 1));
       // }
     }
@@ -1478,7 +1480,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       for (Item item : Units.getContainerAllUnitItems(region)) {
         if (unit.getItem(item.getItemType()) == null) {
           // silver only if silver pool activated or unit has silver
-          if ((item.getItemType() != data.rules.getItemType(EresseaConstants.I_USILVER))) {
+          if ((item.getItemType() != data.getRules().getItemType(EresseaConstants.I_USILVER))) {
             final String name = item.getName();
             String quotedName = name;
 
@@ -1620,11 +1622,11 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       completions.add(new Completion("0"));
     }
 
-    if ((data != null) && (data.rules != null)) {
-      final Race demons = data.rules.getRace(EresseaConstants.R_DAEMONEN);
+    if ((data != null) && (data.getRules() != null)) {
+      final Race demons = data.getRules().getRace(EresseaConstants.R_DAEMONEN);
 
       if ((demons == null) || (unit.getRace().equals(demons))) {
-        for (final Iterator<Race> iter = data.rules.getRaceIterator(); iter.hasNext();) {
+        for (final Iterator<Race> iter = data.getRules().getRaceIterator(); iter.hasNext();) {
           final Race r = iter.next();
           completions.add(new Completion(r.getName(), Completion.DEFAULT_PRIORITY + 1));
         }
@@ -1688,7 +1690,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
             Completion.DEFAULT_PRIORITY - 1));
       }
       addFilteredSpells(unit, far, region.getType().equals(
-          data.rules.getRegionType(EresseaConstants.RT_OCEAN)), combat, opening, closing);
+          data.getRules().getRegionType(EresseaConstants.RT_OCEAN)), combat, opening, closing);
     }
 
     // here we go for spells spoken through the familar
@@ -1710,7 +1712,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /** Add completions for command ZaubereStufe. */
   public void cmpltZaubereStufe() {
-    final Skill magic = unit.getSkill(data.rules.getSkillType(EresseaConstants.S_MAGIE));
+    final Skill magic = unit.getSkill(data.getRules().getSkillType(EresseaConstants.S_MAGIE));
     int level = 1;
     if (magic != null) {
       level = magic.getLevel();

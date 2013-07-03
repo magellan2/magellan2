@@ -355,7 +355,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     EMapDetailsPanel.weightNumberFormat.setMaximumFractionDigits(2);
     EMapDetailsPanel.weightNumberFormat.setMinimumFractionDigits(0);
     // FIXME can rules be null?
-    unitsTools = (getGameData() != null) ? new Units(getGameData().rules) : new Units(null);
+    unitsTools = (getGameData() != null) ? new Units(getGameData().getRules()) : new Units(null);
     dispatcher.addSelectionListener(this);
 
     // name text area
@@ -792,7 +792,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     gameSpecStuff = gameData.getGameSpecificStuff();
     gameRules = gameSpecStuff.getGameSpecificRules();
     orders.gameDataChanged(new GameDataEvent(this, getGameData()));
-    unitsTools.setRules(gameData.rules);
+    unitsTools.setRules(gameData.getRules());
     showNothing();
     // contextManager.setGameData(data);
   }
@@ -1156,7 +1156,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       // find wage most frequent wage value
       Map<Integer, Integer> wages = new HashMap<Integer, Integer>();
       int maxWageCount = 0, majorityWage = 0;
-      for (Race race : getGameData().rules.getRaces()) {
+      for (Race race : getGameData().getRules().getRaces()) {
         wage = getRules().getWage(r, race);
         if (wage <= 0) {
           continue;
@@ -1176,7 +1176,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             " ").append(majorityWage);
       }
 
-      for (Iterator<Race> it = getGameData().rules.getRaceIterator(); it.hasNext();) {
+      for (Iterator<Race> it = getGameData().getRules().getRaceIterator(); it.hasNext();) {
         Race race = it.next();
         int rWage = getRules().getWage(r, race);
         if (rWage > 0 && rWage != majorityWage) {
@@ -1264,8 +1264,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")) {
           icon += "_region";
         }
-        resourceNode.add(createSimpleNode(getGameData().rules.getItemType(EresseaConstants.I_RIRON)
-            .getName()
+        resourceNode.add(createSimpleNode(getGameData().getRules().getItemType(
+            EresseaConstants.I_RIRON).getName()
             + ": " + getDiffString(r.getIron(), r.getOldIron()), icon));
       }
 
@@ -2770,7 +2770,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendUnitStealthInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     // faction hidden, stealth level
-    SkillType type = getGameData().rules.getSkillType(EresseaConstants.S_TARNUNG);
+    SkillType type = getGameData().getRules().getSkillType(EresseaConstants.S_TARNUNG);
     Skill stealth = type != null ? u.getSkill(type) : null;
     int stealthLevel = 0;
 
@@ -3185,11 +3185,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       Collection<NodeWrapper> expandableNodes) {
     // skills
     boolean isTrader = false;
-    SkillCategory tradeCat = getGameData().rules.getSkillCategory(StringID.create("trade"));
+    SkillCategory tradeCat = getGameData().getRules().getSkillCategory(StringID.create("trade"));
     SkillType tradeSkill = null;
 
     if (tradeCat == null) {
-      tradeSkill = getGameData().rules.getSkillType(EresseaConstants.S_HANDELN);
+      tradeSkill = getGameData().getRules().getSkillType(EresseaConstants.S_HANDELN);
     }
 
     Collection<Skill> modSkills = u.getModifiedSkills();
@@ -3731,14 +3731,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   private String getTranslation(int shore) {
-    return getGameData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-        Locales.getOrderLocale(),
-        getGameData().getRules().getGameSpecificStuff().getMapMetric().toDirection(shore).getId());
+    return getGameData().getGameSpecificStuff().getOrderChanger().getOrder(
+        Locales.getOrderLocale(), getGameData().getMapMetric().toDirection(shore).getId());
   }
 
   private void appendUnitCapacityByItems(DefaultMutableTreeNode parent, Unit u, int freeCapacity) {
-    ItemType carts = getGameData().rules.getItemType(EresseaConstants.I_CART);
-    ItemType silver = getGameData().rules.getItemType(EresseaConstants.I_USILVER);
+    ItemType carts = getGameData().getRules().getItemType(EresseaConstants.I_CART);
+    ItemType silver = getGameData().getRules().getItemType(EresseaConstants.I_USILVER);
     // Fiete: feature request...showing not only capacity for "good" items in region...
     switch (showCapacityItems) {
     case SHOW_PRIVILEGED_FACTIONS:
@@ -3820,7 +3819,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       if (actLocale.equalsIgnoreCase("de")) {
         // ok...a de GameData...here we use all defined ItemTypes from the rules...too
         // need no present Translation for those...in CR all in german...
-        for (Iterator<ItemType> iter2 = getGameData().rules.getItemTypeIterator(); iter2.hasNext();) {
+        for (Iterator<ItemType> iter2 = getGameData().getRules().getItemTypeIterator(); iter2
+            .hasNext();) {
           ItemType type = iter2.next();
           l.add(type);
         }
@@ -3855,7 +3855,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         int amount = 0;
 
         if (ingredient.getItemType().equals(
-            getGameData().rules.getItemType(StringID.create("Bauer")))) {
+            getGameData().getRules().getItemType(StringID.create("Bauer")))) {
           amount = region.getPeasants();
         } else {
           Item item =
@@ -4662,7 +4662,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         int stones = r.getRegionType().getRoadStones();
         str +=
             (" (" + ((b.getBuildRatio() * stones) / 100) + " / " + stones + " "
-                + getGameData().rules.getItemType(EresseaConstants.I_USTONE).getName() + ")");
+                + getGameData().getRules().getItemType(EresseaConstants.I_USTONE).getName() + ")");
       }
 
       parent.add(new DefaultMutableTreeNode(str));
@@ -4789,7 +4789,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             // Lets see, if we have an herb here
             // or another ItemType...just in case
             String keyIcon = key;
-            ItemType someItemType = getGameData().rules.getItemType(key);
+            ItemType someItemType = getGameData().getRules().getItemType(key);
             if (someItemType != null && someItemType.getIcon() != null
                 && someItemType.getIcon().length() > 0) {
               keyIcon = someItemType.getIcon();
@@ -5702,7 +5702,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       public StealthContextMenu(Unit u) {
         unit = u;
 
-        SkillType type = getGameData().rules.getSkillType(EresseaConstants.S_TARNUNG);
+        SkillType type = getGameData().getRules().getSkillType(EresseaConstants.S_TARNUNG);
         Skill stealth = type != null ? unit.getSkill(type) : null;
 
         if (stealth != null && stealth.getLevel() > 0) {

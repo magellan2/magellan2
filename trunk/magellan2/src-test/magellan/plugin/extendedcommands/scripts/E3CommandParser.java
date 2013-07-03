@@ -846,13 +846,14 @@ public class E3CommandParser {
         || TRANKOrder.equalsIgnoreCase(tokens[2])) {
       // handle GIB xyz KRAUT
       if (KRAUTOrder.equalsIgnoreCase(tokens[2])) {
-        if (world.rules.getItemCategory("herbs") == null) {
+        if (world.getRules().getItemCategory("herbs") == null) {
           addNewError("Spiel kennt keine Kräuter");
         } else {
           giveAll(tokens, target, warning, new Filter() {
 
             public boolean approve(Item item) {
-              return world.rules.getItemCategory("herbs").equals(item.getItemType().getCategory());
+              return world.getRules().getItemCategory("herbs").equals(
+                  item.getItemType().getCategory());
             }
           });
         }
@@ -860,13 +861,13 @@ public class E3CommandParser {
 
       // handle GIB xyz LUXUS
       if (LUXUSOrder.equalsIgnoreCase(tokens[2])) {
-        if (world.rules.getItemCategory("luxuries") == null) {
+        if (world.getRules().getItemCategory("luxuries") == null) {
           addNewError("Spiel kennt keine Luxusgüter");
         } else {
           giveAll(tokens, target, warning, new Filter() {
 
             public boolean approve(Item item) {
-              return world.rules.getItemCategory("luxuries").equals(
+              return world.getRules().getItemCategory("luxuries").equals(
                   item.getItemType().getCategory());
             }
           });
@@ -875,13 +876,13 @@ public class E3CommandParser {
 
       // handle GIB xyz TRANK
       if (TRANKOrder.equalsIgnoreCase(tokens[2])) {
-        if (world.rules.getItemCategory("potions") == null) {
+        if (world.getRules().getItemCategory("potions") == null) {
           addNewError("Spiel kennt keine Tränke");
         } else {
           giveAll(tokens, target, warning, new Filter() {
             public boolean approve(Item item) {
-              return world.rules.getItemCategory("potions")
-                  .equals(item.getItemType().getCategory());
+              return world.getRules().getItemCategory("potions").equals(
+                  item.getItemType().getCategory());
             }
           });
         }
@@ -1069,11 +1070,11 @@ public class E3CommandParser {
         if (tokens.length > 2) {
           addNewError("zu viele Parameter");
         }
-        if (world.rules.getItemCategory("herbs") == null) {
+        if (world.getRules().getItemCategory("herbs") == null) {
           addNewError("Spiel kennt keine Kräuter");
         } else {
           for (Item item : currentUnit.getItems()) {
-            if (world.rules.getItemCategory("herbs").equals(item.getItemType().getCategory())) {
+            if (world.getRules().getItemCategory("herbs").equals(item.getItemType().getCategory())) {
               addNeed(item.getOrderName(), unit, 0, Integer.MAX_VALUE, priority);
             }
           }
@@ -1203,7 +1204,7 @@ public class E3CommandParser {
     for (int i = 1; i < tokens.length; i++) {
       try {
         if (i < tokens.length - 1) {
-          SkillType skill = world.rules.getSkillType(tokens[i++]);
+          SkillType skill = world.getRules().getSkillType(tokens[i++]);
           int level = Integer.parseInt(tokens[i]);
           if (skill == null) {
             addNewError("unbekanntes Talent " + tokens[i - 1]);
@@ -1432,9 +1433,11 @@ public class E3CommandParser {
         Utils.getIntValue(world.getGameSpecificRules().getMaxWorkers(currentRegion), 0);
     int workers = Math.min(maxWorkers, currentRegion.getPeasants());
     Skill entertaining =
-        currentUnit.getModifiedSkill(world.rules.getSkillType(EresseaConstants.S_UNTERHALTUNG));
+        currentUnit
+            .getModifiedSkill(world.getRules().getSkillType(EresseaConstants.S_UNTERHALTUNG));
     Skill taxing =
-        currentUnit.getModifiedSkill(world.rules.getSkillType(EresseaConstants.S_STEUEREINTREIBEN));
+        currentUnit.getModifiedSkill(world.getRules().getSkillType(
+            EresseaConstants.S_STEUEREINTREIBEN));
     int entertain = 0, entertain2 = 0, tax = 0, tax2 = 0;
     if (entertaining != null && hasEntertain()) {
       entertain2 = 20 * entertaining.getLevel() * currentUnit.getPersons();
@@ -1499,7 +1502,7 @@ public class E3CommandParser {
     }
 
     Skill buySkill =
-        currentUnit.getModifiedSkill(world.rules.getSkillType(EresseaConstants.S_HANDELN));
+        currentUnit.getModifiedSkill(world.getRules().getSkillType(EresseaConstants.S_HANDELN));
     if (buySkill == null) {
       addNewError("kein Handelstalent");
       return;
@@ -1567,12 +1570,12 @@ public class E3CommandParser {
       List<String> goods = new LinkedList<String>();
       // Verkaufsbefehl setzen, wenn notwendig
       if (tokens.length > 2 && ALLOrder.equals(tokens[2])) {
-        if (world.rules.getItemCategory("luxuries") == null) {
+        if (world.getRules().getItemCategory("luxuries") == null) {
           addNewError("Spiel kennt keine Luxusgüter");
         } else {
           for (ItemType luxury : world.getRules().getItemTypes()) {
             if (!luxury.equals(buyGood.getItemType())
-                && world.rules.getItemCategory("luxuries").equals(luxury.getCategory())) {
+                && world.getRules().getItemCategory("luxuries").equals(luxury.getCategory())) {
               goods.add(luxury.getOrderName());
             }
           }
@@ -1635,8 +1638,8 @@ public class E3CommandParser {
    * amount of goods. If other goods are detected, do not confirm orders.
    */
   protected void commandQuartermaster(String[] tokens) {
-    learn(currentUnit, Collections.singleton(new Skill(world.rules
-        .getSkillType(EresseaConstants.S_WAHRNEHMUNG), 30, 10, 1, true)));
+    learn(currentUnit, Collections.singleton(new Skill(world.getRules().getSkillType(
+        EresseaConstants.S_WAHRNEHMUNG), 30, 10, 1, true)));
     try {
       for (Item item : currentUnit.getItems()) {
         boolean okay = false;
@@ -2170,7 +2173,7 @@ public class E3CommandParser {
   protected void soldier(Unit u, String sWeaponSkill, String sWeapon, String sShield,
       String sArmor, String warning) {
 
-    Rules rules = world.rules;
+    Rules rules = world.getRules();
 
     SkillType weaponSkill =
         sWeaponSkill == null ? null : rules.getSkillType(StringID.create(sWeaponSkill));
@@ -2356,7 +2359,7 @@ public class E3CommandParser {
    */
   protected static ArrayList<Item> findItems(ItemType itemType, Unit u, String category) {
     ArrayList<Item> items = new ArrayList<Item>(1);
-    ItemCategory itemCategory = world.rules.getItemCategory(StringID.create(category));
+    ItemCategory itemCategory = world.getRules().getItemCategory(StringID.create(category));
     if (itemType == null) {
       for (Item item : u.getItems()) {
         if (itemCategory.equals(item.getItemType().getCategory())) {
@@ -2448,7 +2451,7 @@ public class E3CommandParser {
 
   protected String getLocalizedOrder(StringID orderKey, String fallback) {
     try {
-      return world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(orderKey,
+      return world.getGameSpecificStuff().getOrderChanger().getOrder(orderKey,
           currentFaction.getLocale());
     } catch (RulesException e) {
       return fallback;
@@ -2459,8 +2462,8 @@ public class E3CommandParser {
    * Tries to translate the given order to the current locale.
    */
   protected String getLocalizedOrder(StringID orderKey, Object[] args) {
-    return world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-        currentFaction.getLocale(), orderKey, args);
+    return world.getGameSpecificStuff().getOrderChanger().getOrder(currentFaction.getLocale(),
+        orderKey, args);
   }
 
   /**
@@ -2618,7 +2621,7 @@ public class E3CommandParser {
    *         exist.
    */
   public static ItemType getItemType(String name) {
-    return world.rules.getItemType(name);
+    return world.getRules().getItemType(name);
   }
 
   /**
@@ -2629,7 +2632,7 @@ public class E3CommandParser {
    *         exist.
    */
   public static SkillType getSkillType(String name) {
-    return world.rules.getSkillType(name);
+    return world.getRules().getSkillType(name);
   }
 
   /**
@@ -2780,7 +2783,7 @@ public class E3CommandParser {
    */
   public static boolean isSoldier(Unit unit) {
     Collection<Item> items = unit.getItems();
-    ItemCategory weapons = world.rules.getItemCategory(StringID.create("weapons"));
+    ItemCategory weapons = world.getRules().getItemCategory(StringID.create("weapons"));
     for (Item item : items) {
       if (weapons.isInstance(item.getItemType())) {
         // ah, a weapon...

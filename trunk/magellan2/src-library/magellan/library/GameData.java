@@ -87,8 +87,19 @@ public abstract class GameData implements Cloneable, Addeable {
 
   private static final Logger log = Logger.getInstance(GameData.class);
 
-  /** Game specific and usually fixed data (like races etc.). */
-  public final Rules rules;
+  /**
+   * Game specific and usually fixed data (like races etc.).
+   * 
+   * @deprecated use {@link #getRules()}
+   */
+  @Deprecated
+  private final Rules rules;
+
+  private final MapMetric mapMetric;
+
+  private final GameSpecificStuff gameSpecific;
+
+  private final GameSpecificRules gameRules;
 
   /** The name of the game. */
   public String gameName;
@@ -443,8 +454,6 @@ public abstract class GameData implements Cloneable, Addeable {
 
   private Set<UnitChangeListener> changeListeners;
 
-  private MapMetric mapMetric;
-
   /**
    * Creates a new GameData object with the name of "default".
    * 
@@ -468,7 +477,9 @@ public abstract class GameData implements Cloneable, Addeable {
     if (rules == null)
       throw new NullPointerException();
     this.rules = rules;
-    mapMetric = rules.getGameSpecificStuff().getMapMetric();
+    gameSpecific = rules.getGameSpecificStuff();
+    mapMetric = gameSpecific.getMapMetric();
+    gameRules = gameSpecific.getGameSpecificRules();
     gameName = name;
 
     random = new Random();
@@ -572,7 +583,7 @@ public abstract class GameData implements Cloneable, Addeable {
     Map<Direction, Region> neighbors = Regions.getCoordinateNeighbours(this, r.getCoordinate());
     for (Direction d : neighbors.keySet()) {
       Region n = neighbors.get(d);
-      n.addNeighbor(mapMetric.opposite(d), r);
+      n.addNeighbor(getMapMetric().opposite(d), r);
       r.addNeighbor(d, n);
     }
   }
@@ -881,11 +892,11 @@ public abstract class GameData implements Cloneable, Addeable {
     Region removed = regionView().remove(r.getID());
     if (removed != null) {
       for (Direction d : removed.getNeighbors().keySet()) {
-        if (removed.getNeighbors().get(d).getNeighbors().get(mapMetric.opposite(d)) == removed) {
-          removed.getNeighbors().get(d).removeNeighbor(mapMetric.opposite(d));
+        if (removed.getNeighbors().get(d).getNeighbors().get(getMapMetric().opposite(d)) == removed) {
+          removed.getNeighbors().get(d).removeNeighbor(getMapMetric().opposite(d));
         }
       }
-      for (Direction d : mapMetric.getDirections()) {
+      for (Direction d : getMapMetric().getDirections()) {
         removed.removeNeighbor(d);
       }
       for (Unit u : removed.units()) {
@@ -1030,9 +1041,9 @@ public abstract class GameData implements Cloneable, Addeable {
   public void addTranslation(String from, String to, int source) {
 
     translations().addTranslation(from, to, source);
-    if (rules != null) {
+    if (getRules() != null) {
       // dynamically add translation key to rules to access object by name
-      rules.changeName(from, to);
+      getRules().changeName(from, to);
     }
 
     /*
@@ -1127,22 +1138,44 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   public abstract long estimateSize();
 
-  public Rules getRules() {
+  /** Game specific and usually fixed data (like races etc.). */
+  public final Rules getRules() {
     return rules;
   }
 
   /**
    * Provides the encapsulating of game specific stuff
+   * 
+   * @see GameSpecificStuff
    */
-  public GameSpecificStuff getGameSpecificStuff() {
-    return rules.getGameSpecificStuff();
+  public final GameSpecificStuff getGameSpecificStuff() {
+    return gameSpecific;
   }
 
-  public GameSpecificRules getGameSpecificRules() {
-    return rules.getGameSpecificStuff().getGameSpecificRules();
+  /**
+   * Shortcut for getGameSpecificStuff().getGameSpecificRules().
+   * 
+   * @see GameSpecificStuff
+   */
+  public final GameSpecificRules getGameSpecificRules() {
+    return gameRules;
   }
 
-  public OrderParser getOrderParser() {
+  /**
+   * Returns the game's map metric.
+   * 
+   * @see GameSpecificStuff
+   */
+  public final MapMetric getMapMetric() {
+    return mapMetric;
+  }
+
+  /**
+   * Returns an appropriate order parser.
+   * 
+   * @see GameSpecificStuff
+   */
+  public final OrderParser getOrderParser() {
     if (parser == null) {
       parser = getGameSpecificStuff().getOrderParser(this);
     }
@@ -1333,7 +1366,7 @@ public abstract class GameData implements Cloneable, Addeable {
   public void postProcessDefaultTranslations() {
     // FIXME we should probably add translations directly to the rules files!
     // Skilltypes
-    for (Iterator<SkillType> iter = rules.getSkillTypeIterator(); iter.hasNext();) {
+    for (Iterator<SkillType> iter = getRules().getSkillTypeIterator(); iter.hasNext();) {
       SkillType skillType = iter.next();
       String key = "skill." + skillType.getID().toString();
       if (!translations().contains(key)) {
@@ -1346,7 +1379,7 @@ public abstract class GameData implements Cloneable, Addeable {
       }
     }
 
-    for (Iterator<BuildingType> iter = rules.getBuildingTypeIterator(); iter.hasNext();) {
+    for (Iterator<BuildingType> iter = getRules().getBuildingTypeIterator(); iter.hasNext();) {
       BuildingType type = iter.next();
       String key = "building." + type.getID().toString();
       if (!translations().contains(key)) {
@@ -1370,10 +1403,10 @@ public abstract class GameData implements Cloneable, Addeable {
     for (Region curRegion : regionView().values()) {
       if (curRegion.getVisibility().greaterEqual(Region.Visibility.TRAVEL)) {
         // should have all neighbors
-        for (Direction d : mapMetric.getDirections()) {
+        for (Direction d : getMapMetric().getDirections()) {
           if (curRegion.getNeighbors().get(d) == null) {
             // Missing Neighbor
-            CoordinateID c = mapMetric.translate(curRegion.getCoordinate(), d);
+            CoordinateID c = getMapMetric().translate(curRegion.getCoordinate(), d);
             addVoid(c);
           }
         }

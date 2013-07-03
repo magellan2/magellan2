@@ -133,7 +133,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
     menu.removeAll();
 
     ArrayList<RegionType> types = new ArrayList<RegionType>();
-    types.addAll(data.rules.getRegionTypes());
+    types.addAll(data.getRules().getRegionTypes());
 
     Collections.sort(types, new RegionTypeComparator());
 
@@ -160,11 +160,11 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
     herbTypes.clear();
 
     // get the right ItemCat from Rules
-    ItemCategory herbCat = data.rules.getItemCategory("herbs");
-    ItemType kraeuterbeutelType = data.rules.getItemType("Kräuterbeutel");
+    ItemCategory herbCat = data.getRules().getItemCategory("herbs");
+    ItemType kraeuterbeutelType = data.getRules().getItemType("Kräuterbeutel");
     if (herbCat != null) {
 
-      for (Iterator<ItemType> iter = data.rules.getItemTypeIterator(); iter.hasNext();) {
+      for (Iterator<ItemType> iter = data.getRules().getItemTypeIterator(); iter.hasNext();) {
         ItemType type = iter.next();
         if (type.getCategory() != null && type.getCategory().equals(herbCat)) {
           if (kraeuterbeutelType != null && !type.equals(kraeuterbeutelType)) {
@@ -441,7 +441,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
     RegionType setRegionType = null;
 
     ArrayList<RegionType> types = new ArrayList<RegionType>();
-    types.addAll(data.rules.getRegionTypes());
+    types.addAll(data.getRules().getRegionTypes());
     for (RegionType rType : types) {
       if (rType.getID().toString().equalsIgnoreCase(regionTypeName)) {
         setRegionType = rType;

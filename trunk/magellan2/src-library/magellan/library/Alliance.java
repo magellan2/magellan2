@@ -147,7 +147,7 @@ public class Alliance {
 
   protected String getOrderTranslation(StringID orderId) {
     // we could also use Locales.getGUILocale()
-    return getFaction().getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
+    return getFaction().getData().getGameSpecificStuff().getOrderChanger().getOrder(
         getFaction().getLocale() == null ? Locales.getOrderLocale() : getFaction().getLocale(),
         orderId);
   }

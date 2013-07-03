@@ -137,7 +137,7 @@ public class Units {
    */
   public static int getCaptainSkillAmount(Ship s) {
     // FIXME shouldn't access getData() from here, maybe move to GameSpecific
-    SkillType sailingSkillType = s.getData().rules.getSkillType(EresseaConstants.S_SEGELN);
+    SkillType sailingSkillType = s.getData().getRules().getSkillType(EresseaConstants.S_SEGELN);
     Unit owner = s.getModifiedOwnerUnit();
     int captainSkillAmount = 0;
     if (owner != null) {
@@ -151,7 +151,7 @@ public class Units {
    * Returns the sailing skill sum of the ship's crew.
    */
   public static int getSailingSkillAmount(Ship s) {
-    SkillType sailingSkillType = s.getData().rules.getSkillType(EresseaConstants.S_SEGELN);
+    SkillType sailingSkillType = s.getData().getRules().getSkillType(EresseaConstants.S_SEGELN);
     int sailingSkillAmount = 0;
     // pavkovic 2003.10.03: use modifiedUnits to reflect FUTURE value?
     Collection<Unit> modUnits = s.modifiedUnits(); // the collection of units on the ship in the

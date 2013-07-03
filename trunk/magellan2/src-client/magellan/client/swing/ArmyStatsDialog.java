@@ -165,7 +165,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 
       while (st.hasMoreTokens()) {
         String skillName = st.nextToken();
-        SkillType skill = data.rules.getSkillType(StringID.create(skillName));
+        SkillType skill = data.getRules().getSkillType(StringID.create(skillName));
 
         if (skill != null) {
           excludeSkills.add(skill);
@@ -361,7 +361,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
           .get("armystatsdialog.names")));
 
       // create skill-type check-boxes
-      Iterator<SkillType> it1 = data.rules.getSkillTypeIterator();
+      Iterator<SkillType> it1 = data.getRules().getSkillTypeIterator();
       List<SkillType> l = new LinkedList<SkillType>();
 
       while (it1.hasNext()) {

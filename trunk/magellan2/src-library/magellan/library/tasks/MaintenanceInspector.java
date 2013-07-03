@@ -74,7 +74,7 @@ public class MaintenanceInspector extends AbstractInspector {
     if (r.units().size() == 0 || severity != Severity.WARNING)
       return Collections.emptyList();
 
-    ItemType silverType = getData().rules.getItemType(EresseaConstants.I_USILVER);
+    ItemType silverType = getData().getRules().getItemType(EresseaConstants.I_USILVER);
 
     /** return value */
     List<Problem> problems = new ArrayList<Problem>();

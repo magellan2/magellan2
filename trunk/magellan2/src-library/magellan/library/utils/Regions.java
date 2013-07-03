@@ -1610,7 +1610,7 @@ public class Regions {
    */
   protected static PathWithLength planShipRouteWithLength(GameData data, CoordinateID start,
       Direction returnDirection, CoordinateID destination, int speed) {
-    BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
+    BuildingType harbour = data.getRules().getBuildingType(EresseaConstants.B_HARBOUR);
 
     if (destination == null || data.getRegion(destination) == null || start == null
         || data.getRegion(start) == null)
@@ -1935,7 +1935,7 @@ public class Regions {
   public static RegionType getFeuerwandRegionType(GameData data) {
     String actFeuerwandName = "Feuerwand";
     actFeuerwandName = data.getTranslation("Feuerwand");
-    return data.rules.getRegionType(StringID.create(actFeuerwandName));
+    return data.getRules().getRegionType(StringID.create(actFeuerwandName));
   }
 
   /**

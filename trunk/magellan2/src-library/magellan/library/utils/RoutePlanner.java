@@ -106,8 +106,8 @@ public class RoutePlanner {
                 // add new NACH order as comment
                 orders.add(order.toString());
                 order =
-                    new StringBuilder(EresseaConstants.O_PCOMMENT).append(" ")
-                        .append(localCommand).append(" ");
+                    new StringBuilder(EresseaConstants.O_PCOMMENT).append(" ").append(localCommand)
+                        .append(" ");
               }
             }
           } else {
@@ -140,7 +140,7 @@ public class RoutePlanner {
 
   private static String getOrderTranslation(StringID orderId) {
     return Resources.getOrderTranslation(orderId.toString());
-    // world.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
+    // world.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
   }
 
   /**

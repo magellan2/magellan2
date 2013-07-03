@@ -118,10 +118,10 @@ public class EresseaPostProcessor {
      * amount of 0. Resolve this ambiguity here:
      */
     if ((data != null) && (data.getRegions() != null)) {
-      /* ItemType sproutResourceID = */data.rules.getItemType("Schößlinge", true);
-      /* ItemType treeResourceID = */data.rules.getItemType("Bäume", true);
-      /* ItemType mallornSproutResourceID = */data.rules.getItemType("Mallornschößlinge", true);
-      /* ItemType mallornTreeResourceID = */data.rules.getItemType("Mallorn", true);
+      /* ItemType sproutResourceID = */data.getRules().getItemType("Schößlinge", true);
+      /* ItemType treeResourceID = */data.getRules().getItemType("Bäume", true);
+      /* ItemType mallornSproutResourceID = */data.getRules().getItemType("Mallornschößlinge", true);
+      /* ItemType mallornTreeResourceID = */data.getRules().getItemType("Mallorn", true);
 
       for (Region region : data.getRegions()) {
         /*
@@ -199,7 +199,7 @@ public class EresseaPostProcessor {
                     String value = message.getAttributes().get("herb");
 
                     if (value != null) {
-                      ItemType type = data.rules.getItemType(StringID.create(value), true);
+                      ItemType type = data.getRules().getItemType(StringID.create(value), true);
                       r.setHerb(type);
                     }
 
@@ -417,7 +417,7 @@ public class EresseaPostProcessor {
    * @param gd
    */
   private void cleanAstralSchemes(GameData gd) {
-    gd.rules.getRegionType(EresseaConstants.RT_FIREWALL);
+    gd.getRules().getRegionType(EresseaConstants.RT_FIREWALL);
     Map<CoordinateID, Collection<Region>> schemeMap =
         CollectionFactory.<CoordinateID, Collection<Region>> createMap();
     for (Region region : gd.getRegions()) {

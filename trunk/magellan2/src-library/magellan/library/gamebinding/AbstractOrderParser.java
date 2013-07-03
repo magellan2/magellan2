@@ -275,7 +275,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   protected Rules getRules() {
-    return data.rules;
+    return data.getRules();
   }
 
   /**
@@ -305,7 +305,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * @see Resources#getOrderTranslation(String, Locale)
    */
   protected String getOrderTranslation(StringID key) { // TODO build lookup table
-    return getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), key);
+    return getData().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), key);
   }
 
   /**
@@ -416,7 +416,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   private String normalize(StringID prefix, Locale loc) {
     String order;
     if (getData() != null) {
-      order = getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(loc, prefix);
+      order = getData().getGameSpecificStuff().getOrderChanger().getOrder(loc, prefix);
     } else {
       order = prefix.toString();
     }

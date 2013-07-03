@@ -640,7 +640,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     data.addUnitChangeListener(this);
 
     if (getGameData() != null) {
-      cellGeometry.setCoordMapper(getGameData().getRules().getGameSpecificStuff().getCoordMapper());
+      cellGeometry.setCoordMapper(getGameData().getGameSpecificStuff().getCoordMapper());
     }
   }
 
@@ -1422,7 +1422,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   public void reloadGraphicSet() {
     cellGeometry = new CellGeometry("cellgeometry.txt");
     if (getGameData() != null) {
-      cellGeometry.setCoordMapper(getGameData().getRules().getGameSpecificStuff().getCoordMapper());
+      cellGeometry.setCoordMapper(getGameData().getGameSpecificStuff().getCoordMapper());
     }
 
     for (RenderingPlane plane : planes) {

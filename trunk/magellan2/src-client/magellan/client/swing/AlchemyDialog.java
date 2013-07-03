@@ -318,7 +318,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     if (answer == null)
       return;
 
-    ItemType ingredient = data.rules.getItemType(answer);
+    ItemType ingredient = data.getRules().getItemType(answer);
     if (ingredient == null) {
       // warning: this is an item type outside the rules!
       ingredient = new ItemType(StringID.create(answer));
@@ -1750,7 +1750,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     }
 
     private ItemType getHerb(Attributes attributes) {
-      for (ItemType type : getData().rules.getItemTypes()) {
+      for (ItemType type : getData().getRules().getItemTypes()) {
         if (type.getName().equals(attributes.getValue("name")))
           return type;
       }

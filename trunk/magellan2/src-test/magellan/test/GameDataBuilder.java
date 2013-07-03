@@ -219,7 +219,7 @@ public class GameDataBuilder {
 
     faction.setPassword(name);
 
-    faction.setType(data.rules.getRace(StringID.create(race), true));
+    faction.setType(data.getRules().getRace(StringID.create(race), true));
 
     faction.setSortIndex(sortIndex);
 
@@ -286,7 +286,7 @@ public class GameDataBuilder {
     }
 
     if (type != null) {
-      region.setType(data.rules.getRegionType(StringID.create(type), true));
+      region.setType(data.getRules().getRegionType(StringID.create(type), true));
     }
 
     region.setSortIndex(sortIndex);
@@ -384,7 +384,7 @@ public class GameDataBuilder {
 
   protected Skill addSkill(Unit unit, String name, int level, int change) {
 
-    final SkillType skt = unit.getData().rules.getSkillType(StringID.create(name), true);
+    final SkillType skt = unit.getData().getRules().getSkillType(StringID.create(name), true);
     final int raceBonus = unit.getRace().getSkillBonus(skt);
     final int points = Skill.getPointsAtLevel(level - raceBonus);
 
@@ -426,10 +426,10 @@ public class GameDataBuilder {
     final Border road = MagellanFactory.createBorder(IntegerID.create(id));
 
     road.setDirection(direction);
-    // road.setDirectionName(region.getData().getRules().getGameSpecificStuff().getOrderChanger()
+    // road.setDirectionName(region.getData().getGameSpecificStuff().getOrderChanger()
     // .getOrder(
     // getLocale(),
-    // region.getData().getRules().getGameSpecificStuff().getMapMetric()
+    // region.getData().getGameSpecificStuff().getMapMetric()
     // .toDirection(direction).getId()));
     road.setBuildRatio(buildRatio);
     road.setType("Straﬂe");
@@ -483,7 +483,7 @@ public class GameDataBuilder {
    * Adds the specified item to the unit.
    */
   public void addItem(GameData data, Unit unit, String item, int amount) {
-    unit.addItem(new Item(data.rules.getItemType(item, true), amount));
+    unit.addItem(new Item(data.getRules().getItemType(item, true), amount));
   }
 
   /**
@@ -501,7 +501,7 @@ public class GameDataBuilder {
     Building building = new MagellanBuildingImpl(EntityID.createEntityID(id, data.base), data);
     building.setName(name);
     building.setRegion(region);
-    building.setType(data.rules.getBuildingType(type));
+    building.setType(data.getRules().getBuildingType(type));
     building.setSize(size);
 
     region.addBuilding(building);
@@ -524,7 +524,7 @@ public class GameDataBuilder {
     Ship ship = new MagellanShipImpl(EntityID.createEntityID(id, data.base), data);
     ship.setName(name);
     ship.setRegion(region);
-    ship.setType(data.rules.getShipType(type));
+    ship.setType(data.getRules().getShipType(type));
     ship.setSize(size);
 
     region.addShip(ship);
@@ -541,7 +541,7 @@ public class GameDataBuilder {
    */
   public void setPrices(Region region, String buy) {
     Map<StringID, LuxuryPrice> prices = region.getPrices();
-    ItemCategory cat = region.getData().rules.getItemCategory(EresseaConstants.C_LUXURIES);
+    ItemCategory cat = region.getData().getRules().getItemCategory(EresseaConstants.C_LUXURIES);
     if (cat == null)
       throw new IllegalStateException("no luxuries known");
     int pr = 4;

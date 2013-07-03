@@ -708,7 +708,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
           try {
             final RegionType type =
-                world.rules.getRegionType(StringID.create(lineMatcher.group(7)), true);
+                world.getRules().getRegionType(StringID.create(lineMatcher.group(7)), true);
             currentRegion.setType(type);
           } catch (final IllegalArgumentException e) {
             currentRegion.setType(RegionType.unknown);
@@ -1005,7 +1005,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             Region r2 = createRegion(c2, world);
             r2.setType(RegionType.unknown);
             world.addRegion(r2);
-            final RegionType type = world.rules.getRegionType(oceanType, true);
+            final RegionType type = world.getRules().getRegionType(oceanType, true);
             r2.setType(type);
           }
         }

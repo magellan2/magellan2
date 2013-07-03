@@ -379,7 +379,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
       @Override
       protected void initHandlers() {
         handlers = new RadixTreeImpl<OrderReader.LineHandler>();
-        addHandler(data.rules.getOrderfileStartingString(), new StartingHandler());
+        addHandler(data.getRules().getOrderfileStartingString(), new StartingHandler());
         // addHandler(getOrderTranslation(EresseaConstants.OC_REGION), new RegionHandler());
         addHandler(getOrderTranslation(EresseaConstants.OC_UNIT), new UnitHandler());
       }

@@ -119,7 +119,7 @@ public class GameDataMerger {
       ReportTransformer transformer1, ReportTransformer transformer2) {
     // 2002.02.20 pavkovic: the newer rules are in GameData gd2. So we take
     // them for the new GameData
-    GameData resultGD = new CompleteData(newerGD.rules, newerGD.getGameName());
+    GameData resultGD = new CompleteData(newerGD.getRules(), newerGD.getGameName());
 
     IslandMerger islandMerger = new IslandMerger(olderGD, newerGD, resultGD);
 
@@ -259,12 +259,12 @@ public class GameDataMerger {
     // after setting the local of the result report
     if (resultGD.translations() != null) {
       if (olderGD.getLocale().equals(resultGD.getLocale())) {
-        resultGD.translations().addAll(olderGD.translations(), resultGD.rules);
+        resultGD.translations().addAll(olderGD.translations(), resultGD.getRules());
       } else {
         resultGD.translations().clear();
       }
       if (newerGD.getLocale().equals(resultGD.getLocale())) {
-        resultGD.translations().addAll(newerGD.translations(), resultGD.rules);
+        resultGD.translations().addAll(newerGD.translations(), resultGD.getRules());
       }
     }
 
@@ -1251,7 +1251,7 @@ public class GameDataMerger {
 
     if (curUC.getType() != null) {
       if (curUC instanceof Building) {
-        newUC.setType(newGD.rules.getBuildingType(curUC.getType().getID(), true));
+        newUC.setType(newGD.getRules().getBuildingType(curUC.getType().getID(), true));
       } else if (curUC instanceof Region) {
         // pavkovic 2004.01.03: (bugzilla bug 801): overwrite with curUC.getType
         // if
@@ -1263,12 +1263,12 @@ public class GameDataMerger {
         // TODO(stm) also test "theVoid"?
         if ((curUC.getType() != null && !curUC.getType().equals(RegionType.unknown))
             || newUC.getType() == null || newUC.getType().equals(RegionType.unknown)) {
-          newUC.setType(newGD.rules.getRegionType(curUC.getType().getID(), true));
+          newUC.setType(newGD.getRules().getRegionType(curUC.getType().getID(), true));
         }
       } else if (curUC instanceof Ship) {
-        newUC.setType(newGD.rules.getShipType(curUC.getType().getID(), true));
+        newUC.setType(newGD.getRules().getShipType(curUC.getType().getID(), true));
       } else if (curUC instanceof Faction) {
-        newUC.setType(newGD.rules.getRace(curUC.getType().getID(), true));
+        newUC.setType(newGD.getRules().getRace(curUC.getType().getID(), true));
       }
     }
 
@@ -1489,7 +1489,7 @@ public class GameDataMerger {
 
       for (Item i : curPotion.ingredients()) {
         final magellan.library.rules.ItemType it =
-            newGD.rules.getItemType(i.getItemType().getID(), true);
+            newGD.getRules().getItemType(i.getItemType().getID(), true);
         newPotion.addIngredient(new Item(it, i.getAmount()));
       }
     }
@@ -1736,7 +1736,7 @@ public class GameDataMerger {
 
       for (LuxuryPrice curPrice : resultRegion.getPrices().values()) {
         final LuxuryPrice newPrice =
-            new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
+            new LuxuryPrice(resultGD.getRules().getItemType(curPrice.getItemType().getID()), curPrice
                 .getPrice());
         if (newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
@@ -1754,7 +1754,7 @@ public class GameDataMerger {
 
       for (LuxuryPrice curPrice : curRegion.getOldPrices().values()) {
         final LuxuryPrice newPrice =
-            new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
+            new LuxuryPrice(resultGD.getRules().getItemType(curPrice.getItemType().getID()), curPrice
                 .getPrice());
 
         if (newPrice.getItemType() == null) {
@@ -1854,7 +1854,7 @@ public class GameDataMerger {
 
     /******************** HERBS *************************************/
     if (curRegion.getHerb() != null) {
-      resultRegion.setHerb(resultGD.rules.getItemType(curRegion.getHerb().getID(), true));
+      resultRegion.setHerb(resultGD.getRules().getItemType(curRegion.getHerb().getID(), true));
     }
 
     if (curRegion.getHerbAmount() != null) {
@@ -1931,7 +1931,7 @@ public class GameDataMerger {
 
       for (LuxuryPrice curPrice : curRegion.getPrices().values()) {
         final LuxuryPrice newPrice =
-            new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
+            new LuxuryPrice(resultGD.getRules().getItemType(curPrice.getItemType().getID()), curPrice
                 .getPrice());
 
         if (newPrice.getItemType() == null) {
@@ -1965,7 +1965,7 @@ public class GameDataMerger {
         if (newRes == null) {
           // add Resource
           newRes =
-              new RegionResource(curRes.getID(), resultGD.rules.getItemType(curRes.getType()
+              new RegionResource(curRes.getID(), resultGD.getRules().getItemType(curRes.getType()
                   .getID(), true));
           resultRegion.addResource(newRes);
         }
@@ -1979,15 +1979,15 @@ public class GameDataMerger {
     // but not in the current one. These are those, that are not seen in the
     // maybe newer report! This maybe because their level has changed.
     // Types for which no skill is needed to see
-    final ItemType horsesType = resultGD.rules.getItemType(EresseaConstants.I_RHORSES);
-    final ItemType treesType = resultGD.rules.getItemType(EresseaConstants.I_TREES);
-    final ItemType mallornType = resultGD.rules.getItemType(EresseaConstants.I_RMALLORN);
-    final ItemType schoesslingeType = resultGD.rules.getItemType(EresseaConstants.I_SPROUTS);
+    final ItemType horsesType = resultGD.getRules().getItemType(EresseaConstants.I_RHORSES);
+    final ItemType treesType = resultGD.getRules().getItemType(EresseaConstants.I_TREES);
+    final ItemType mallornType = resultGD.getRules().getItemType(EresseaConstants.I_RMALLORN);
+    final ItemType schoesslingeType = resultGD.getRules().getItemType(EresseaConstants.I_SPROUTS);
     final ItemType mallornSchoesslingeType =
-        resultGD.rules.getItemType(EresseaConstants.I_MALLORNSPROUTS);
+        resultGD.getRules().getItemType(EresseaConstants.I_MALLORNSPROUTS);
     // FF 20080910...need new resources too
-    final ItemType bauernType = resultGD.rules.getItemType(EresseaConstants.I_PEASANTS);
-    final ItemType silberType = resultGD.rules.getItemType(EresseaConstants.I_RSILVER);
+    final ItemType bauernType = resultGD.getRules().getItemType(EresseaConstants.I_PEASANTS);
+    final ItemType silberType = resultGD.getRules().getItemType(EresseaConstants.I_RSILVER);
 
     // ArrayList of above Types
     final List<ItemType> skillIrrelevantTypes = new ArrayList<ItemType>();
@@ -2507,7 +2507,7 @@ public class GameDataMerger {
 
         for (Item curItem : curUnit.getItems()) {
           final Item newItem =
-              new Item(resultGD.rules.getItemType(curItem.getItemType().getID(), true), curItem
+              new Item(resultGD.getRules().getItemType(curItem.getItemType().getID(), true), curItem
                   .getAmount());
           resultUnit.addItem(newItem);
         }
@@ -2523,10 +2523,10 @@ public class GameDataMerger {
     }
 
     if (curUnit.getDisguiseRace() != null) {
-      resultUnit.setRealRace(resultGD.rules.getRace(curUnit.getRace().getID(), true));
-      resultUnit.setRace(resultGD.rules.getRace(curUnit.getDisguiseRace().getID(), true));
+      resultUnit.setRealRace(resultGD.getRules().getRace(curUnit.getRace().getID(), true));
+      resultUnit.setRace(resultGD.getRules().getRace(curUnit.getDisguiseRace().getID(), true));
     } else if (curUnit.getRace() != null) {
-      resultUnit.setRace(resultGD.rules.getRace(curUnit.getRace().getID(), true));
+      resultUnit.setRace(resultGD.getRules().getRace(curUnit.getRace().getID(), true));
     }
 
     if (curUnit.getRaceNamePrefix() != null) {
@@ -2562,7 +2562,7 @@ public class GameDataMerger {
     if ((curUnit.getSkills() != null) && (curUnit.getSkills().size() > 0)) {
       for (final Skill curSkill : curUnit.getSkills()) {
         final SkillType newSkillType =
-            resultGD.rules.getSkillType(curSkill.getSkillType().getID(), true);
+            resultGD.getRules().getSkillType(curSkill.getSkillType().getID(), true);
         final Skill newSkill =
             new Skill(newSkillType, curSkill.getPoints(), curSkill.getLevel(), resultUnit
                 .getPersons(), curSkill.noSkillPoints());

@@ -33,7 +33,6 @@ import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -47,14 +46,6 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   private GameDataBuilder builder;
   private Unit unit;
   private EresseaOrderChanger changer;
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    MagellanTestWithResources.initResources();
-  }
 
   /**
    * @throws Exception

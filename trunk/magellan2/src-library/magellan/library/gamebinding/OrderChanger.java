@@ -22,6 +22,7 @@ import magellan.library.Orders;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.completion.OrderParser;
 
 /**
  * This class has methods to change unit orders for various purposes, usually related to higher
@@ -123,7 +124,11 @@ public interface OrderChanger {
    * 
    * @param order
    * @return true if the given order is a long order
+   * @deprecated the results of this order are not very accurate and order is always interpreted in
+   *             the global order locale. It's safer to call
+   *             {@link OrderParser#parse(String, Locale)}.isLong() or {@link #isLongOrder(Order)}.
    */
+  @Deprecated
   public boolean isLongOrder(String order);
 
   /**
@@ -135,10 +140,10 @@ public interface OrderChanger {
   public boolean isLongOrder(Order order);
 
   /**
-   * Returns true if the orders in the collection are legal to have at the same time for one unit.
+   * Determines if the orders in the collection are legal to have at the same time for one unit.
    * 
    * @param orders
-   * @return The first offending order
+   * @return The number of the first offending order, -1 if the orders are compatible
    */
   public int areCompatibleLongOrders(Orders orders);
 

@@ -356,6 +356,8 @@ public class EresseaOrderChanger implements OrderChanger {
    */
   @Deprecated
   public boolean isLongOrder(String order) {
+    // getRules().getGameSpecificStuff().getOrderParser(DummyData(getRules())).parse(order,
+    // Locales.getOrderLocale());
     /*
      * Wenn eine Order mit einem Eintrag aus LongOrdersTranslated beginnt, aber nicht mit einem aus
      * LongButShort, genau dann ist es eine long Order

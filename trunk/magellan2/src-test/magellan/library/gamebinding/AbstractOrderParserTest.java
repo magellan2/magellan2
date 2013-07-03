@@ -36,6 +36,7 @@ import java.util.NoSuchElementException;
 
 import magellan.client.completion.AutoCompletion;
 import magellan.library.GameData;
+import magellan.library.Order;
 import magellan.library.StringID;
 import magellan.library.completion.Completer;
 import magellan.library.completion.OrderParser;
@@ -176,9 +177,13 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
   }
 
   protected void checkOrder(String string, boolean result) {
-    @SuppressWarnings("deprecation")
-    boolean retVal = getParser().read(new StringReader(string));
-    assertEquals("checking " + string, result, retVal);
+    Order order = getParser().parse(string, getLocale());
+    assertEquals("checking " + string, result, order.isValid());
+  }
+
+  protected void testLong(String string, boolean isLong) {
+    Order order = getParser().parse(string, getLocale());
+    assertEquals("long order " + string, isLong, order.isLong());
   }
 
   /**

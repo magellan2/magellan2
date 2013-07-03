@@ -45,7 +45,6 @@ import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -53,14 +52,6 @@ import org.junit.Test;
  * where required.
  */
 public class E3RelationFactoryTest extends MagellanTestWithResources {
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    MagellanTestWithResources.initResources();
-  }
 
   @SuppressWarnings("unused")
   private E3AOrderParser parser;

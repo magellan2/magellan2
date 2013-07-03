@@ -47,6 +47,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
+    setLocale(DE_LOCALE);
     initResources();
 
     Logger.setLevel(Logger.WARN);

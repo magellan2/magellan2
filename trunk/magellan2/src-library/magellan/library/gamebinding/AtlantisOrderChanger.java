@@ -175,8 +175,16 @@ public class AtlantisOrderChanger implements OrderChanger {
   }
 
   public int areCompatibleLongOrders(Orders orders) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return orders.size() > 1 ? 1 : -1;
+    int i = 0, l = 0;
+    for (Order order : orders) {
+      if (order.isLong()) {
+        l++;
+      }
+      if (l > 1)
+        return i;
+      i++;
+    }
+    return -1;
   }
 
   /**

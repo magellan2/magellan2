@@ -30,21 +30,11 @@ import java.io.IOException;
 
 import magellan.library.gamebinding.EresseaOrderWriter;
 import magellan.library.gamebinding.EresseaSpecificStuff;
-import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class EresseaOrderWriterTest extends OrderWriterTest {
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-    MagellanTestWithResources.initResources();
-  }
 
   @Before
   public void setUp() throws Exception {

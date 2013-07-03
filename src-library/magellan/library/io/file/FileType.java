@@ -41,7 +41,7 @@ public class FileType {
   public static final String CR = ".cr";
   public static final String XML = ".xml";
   private static final String NR = ".nr";
-  private static final String R = ".r";
+  public static final String JSON = ".json";
 
   // basically identified compression types with single entry
   public static final String GZIP = ".gz";
@@ -255,7 +255,9 @@ public class FileType {
    * 
    * @return true, if the file is of XML type
    * @throws IOException
+   * @deprecated we don't seem to need this any more
    */
+  @Deprecated
   public boolean isXMLFile() throws IOException {
     return getInnerName().endsWith(FileType.XML);
   }
@@ -266,7 +268,9 @@ public class FileType {
    * 
    * @return true, if the file is of CR type or of unknown type
    * @throws IOException
+   * @deprecated we don't seem to need this any more
    */
+  @Deprecated
   public boolean isCRFile() throws IOException {
     /*
      * Unknown files are treated like CR files
@@ -279,7 +283,9 @@ public class FileType {
    * 
    * @return true, if the file is of ZIP type
    * @throws IOException
+   * @deprecated we don't seem to need this any more
    */
+  @Deprecated
   public boolean isZIPFile() throws IOException {
     return this instanceof ZipFileType;
   }
@@ -289,7 +295,9 @@ public class FileType {
    * 
    * @return true, if the file is of GZIP type
    * @throws IOException
+   * @deprecated we don't seem to need this any more
    */
+  @Deprecated
   public boolean isGZIPFile() throws IOException {
     return this instanceof GZipFileType;
   }
@@ -299,7 +307,9 @@ public class FileType {
    * 
    * @return true, if the file is of BZIP2 type
    * @throws IOException
+   * @deprecated we don't seem to need this any more
    */
+  @Deprecated
   public boolean isBZIP2File() throws IOException {
     return this instanceof BZip2FileType;
   }

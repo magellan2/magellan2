@@ -89,13 +89,14 @@ public class FileTypeFactory {
     if (fileNameLC.endsWith(FileType.ZIP))
       return createZipFileType(fileName, readonly, ftc);
 
-    if (fileNameLC.endsWith(FileType.CR) || fileNameLC.endsWith(FileType.XML))
+    if (fileNameLC.endsWith(FileType.CR) || fileNameLC.endsWith(FileType.XML)
+        || fileNameLC.endsWith(FileType.JSON))
       return new FileType(fileName, readonly);
 
     return new UnknownFileType(fileName, readonly);
   }
 
-  private static final String ENDINGS[] = new String[] { FileType.CR, FileType.XML };
+  private static final String ENDINGS[] = new String[] { FileType.CR, FileType.JSON, FileType.XML };
 
   /**
    * This method either loads a Zipfile and checks it content for a CR file or it creates a new
@@ -105,7 +106,7 @@ public class FileTypeFactory {
   protected FileType createZipFileType(File fileName, boolean readonly, FileTypeChooser ftc)
       throws IOException {
     if (fileName != null && !fileName.exists() && !readonly) {
-      // ok, the zipfile doesnt exist and the file mus be writeable
+      // ok, the zipfile doesnt exist and the file must be writeable
       // in this case we cannot use ZipFile because it reads first
       // the content of the file and returns a ZipFileType with one
       // of the entries in this file...

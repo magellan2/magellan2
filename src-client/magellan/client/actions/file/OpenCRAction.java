@@ -14,11 +14,13 @@ import java.util.Properties;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.HistoryAccessory;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
 /**
@@ -74,17 +76,38 @@ public class OpenCRAction extends MenuAction {
   public static File getFileFromFileChooser(Client client, Component parent) {
     JFileChooser fc = new JFileChooser();
     Properties settings = client.getProperties();
+
+    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.CR_FILTER));
+    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.JSON_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.GZ_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.BZ2_FILTER));
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER));
-    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ATLANTIS_FILTER));
-    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
+    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ANY_TXT_FILTER));
 
     int lastFileFilter =
-        Integer.parseInt(settings.getProperty("Client.lastSelectedOpenCRFileFilter", "6"));
-    lastFileFilter = Math.min(fc.getChoosableFileFilters().length - 1, lastFileFilter);
-    fc.setFileFilter(fc.getChoosableFileFilters()[lastFileFilter]);
+        Integer.parseInt(settings.getProperty(
+            PropertiesHelper.CLIENT_LAST_SELECTED_OPEN_CR_FILEFILTER_ID, String
+                .valueOf(EresseaFileFilter.ALLCR_FILTER)));
+    if (lastFileFilter >= 0) {
+      for (FileFilter filter : fc.getChoosableFileFilters()) {
+        if (filter instanceof EresseaFileFilter) {
+          if (((EresseaFileFilter) filter).getType() == lastFileFilter) {
+            fc.setFileFilter(filter);
+          }
+          break;
+        }
+      }
+    }
+
+    if (!(fc.getFileFilter() instanceof EresseaFileFilter)) {
+      lastFileFilter =
+          Integer.parseInt(settings.getProperty(
+              PropertiesHelper.CLIENT_LAST_SELECTED_OPEN_CR_FILEFILTER, String
+                  .valueOf(EresseaFileFilter.ALLCR_FILTER)));
+      lastFileFilter = Math.min(fc.getChoosableFileFilters().length - 1, lastFileFilter);
+      fc.setFileFilter(fc.getChoosableFileFilters()[lastFileFilter]);
+    }
 
     File file = new File(settings.getProperty("Client.lastCROpened", ""));
     fc.setSelectedFile(file);
@@ -100,6 +123,11 @@ public class OpenCRAction extends MenuAction {
     if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
       // find selected FileFilter
       int i = 0;
+
+      if (fc.getFileFilter() instanceof EresseaFileFilter) {
+        int type = ((EresseaFileFilter) fc.getFileFilter()).getType();
+        settings.setProperty("Client.lastSelectedOpenCRFileFilter", String.valueOf(i));
+      }
 
       while (!fc.getChoosableFileFilters()[i].equals(fc.getFileFilter())) {
         i++;

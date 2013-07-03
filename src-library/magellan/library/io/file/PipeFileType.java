@@ -163,6 +163,11 @@ public class PipeFileType extends FileType {
     return false;
   }
 
+  /**
+   * @see magellan.library.io.file.FileType#isCRFile()
+   * @deprecated we don't seem to need any of this any more
+   */
+  @Deprecated
   @Override
   public boolean isCRFile() throws IOException {
     return true;

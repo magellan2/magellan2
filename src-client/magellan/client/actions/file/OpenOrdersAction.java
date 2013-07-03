@@ -67,7 +67,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
   public void menuActionPerformed(ActionEvent e) {
     Properties settings = client.getProperties();
     JFileChooser fc = new JFileChooser();
-    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.TXT_FILTER));
+    fc.setFileFilter(new EresseaFileFilter(EresseaFileFilter.TXT_ORDERS_FILTER));
     fc.setSelectedFile(new File(settings.getProperty("Client.lastOrdersOpened", "")));
 
     OpenOrdersAccessory acc = new OpenOrdersAccessory(settings, fc);

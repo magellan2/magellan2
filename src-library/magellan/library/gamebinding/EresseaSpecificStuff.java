@@ -31,6 +31,8 @@ import magellan.library.io.RulesReader;
 import magellan.library.io.cr.CRGameNameIO;
 import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
+import magellan.library.io.json.JSONGameNameIO;
+import magellan.library.io.json.JSONParser;
 import magellan.library.utils.OrderReader;
 import magellan.library.utils.RadixTreeImpl;
 import magellan.library.utils.UserInterface;
@@ -231,12 +233,22 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   }
 
   public ReportParser getParser(FileType aFileType) {
+    // FIXME code duplication, see Eressea/E3/AtlantisSpecificStuff
     if (aFileType.getInnerName().endsWith(FileType.CR))
       return new CRParser(null);
+    if (aFileType.getInnerName().endsWith(FileType.JSON))
+      return new JSONParser(null);
 
     try {
       if (new CRGameNameIO().getGameName(aFileType) != null)
         return new CRParser(null);
+    } catch (IOException e) {
+      // try something else
+    }
+
+    try {
+      if (new JSONGameNameIO().getGameName(aFileType) != null)
+        return new JSONParser(null);
     } catch (IOException e) {
       // try something else
     }

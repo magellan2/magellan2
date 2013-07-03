@@ -464,12 +464,18 @@ public abstract class AbstractOrderCompleter implements Completer {
     addUnitItems(0, postfix);
   }
 
-  protected void addUnitItems(int amount, String postfix) {
+  protected void addUnitItems(int amount, String postfix, StringID... exclude) {
     for (final Item i : unit.getItems()) {
-      completions
-          .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
-              (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
-                  : Completion.DEFAULT_PRIORITY + 1));
+      boolean include = true;
+      for (StringID ex : exclude)
+        if (i.getType().getID().equals(ex)) {
+          include = false;
+        }
+      if (include) {
+        completions.add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
+            (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
+                : Completion.DEFAULT_PRIORITY + 1));
+      }
     }
   }
 

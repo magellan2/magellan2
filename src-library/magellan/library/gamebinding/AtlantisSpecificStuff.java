@@ -65,6 +65,10 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
   private GameSpecificRules gameSpecificRules;
   private MapMergeEvaluator mapMergeEvaluator;
 
+  private RelationFactory relationFactory;
+
+  protected long resourceId;
+
   /**
    * Returns the value of rules.
    * 
@@ -131,11 +135,10 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    */
   public RelationFactory getRelationFactory() {
     // TODO implement
-    return new RelationFactory() {
-
-      public void createRelations(Region region) {
-      }
-    };
+    if (relationFactory == null) {
+      relationFactory = new EresseaRelationFactory(getRules());
+    }
+    return relationFactory;
   }
 
   /**

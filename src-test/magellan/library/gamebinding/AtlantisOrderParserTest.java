@@ -397,6 +397,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
     // GIVE u1 1 item
     testLong(getOrderTranslation(AtlantisConstants.OC_GIVE) + " " + " 3 5 wood", false);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_GIVE) + " " + " 3 5 wood");
+    checkOrder("GIVE 1 2 silver", false); // give silver not allowed
     checkOrder("GIVE", false);
     checkOrder("GIVE 3", false);
     checkOrder("GIVE 3 5", false);

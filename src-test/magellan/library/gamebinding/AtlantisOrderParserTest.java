@@ -36,12 +36,21 @@ import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.completion.OrderParser;
 import magellan.library.utils.OrderToken;
+import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AtlantisOrderParserTest extends AbstractOrderParserTest {
+
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception {
+    setLocale(EN_LOCALE);
+    Logger.setLevel(Logger.WARN);
+    initResources();
+  }
 
   /**
    * @throws java.lang.Exception
@@ -113,8 +122,8 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Override
   @Test
   public void testInitCommands() {
-    assertSame(36, getParser().getCommands().size());
-    assertSame(36, getParser().getHandlers().size());
+    assertSame(37, getParser().getCommands().size());
+    assertSame(37, getParser().getHandlers().size());
     assertTrue(getParser().getCommands().contains(AtlantisConstants.OC_WORK));
     assertTrue(getParser().getCommands().contains(AtlantisConstants.OC_DEMOLISH));
     assertTrue(!getParser().getCommands().contains(EresseaConstants.OC_SABOTAGE));
@@ -143,7 +152,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   }
 
   protected void stringTest(String command) {
-    checkOrder(command + " string");
+    // checkOrder(command + " string"); // legal, but not preferred
     checkOrder(command + " \"string\"");
     checkOrder(command + " string not", false);
     checkOrder(command + " \"string\" \"not\"", false);
@@ -157,6 +166,13 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
     checkOrder(command + " Ydd");
     checkOrder(command + " South");
     checkOrder(command + " East");
+
+    checkOrder(command + " N");
+    checkOrder(command + " W");
+    checkOrder(command + " M");
+    checkOrder(command + " Y");
+    checkOrder(command + " S");
+    checkOrder(command + " E");
 
     checkOrder(command, false);
     checkOrder(command + " North West", false);
@@ -201,9 +217,10 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   public void testAddressReader() {
     // ADDRESS Address
     testLong(getOrderTranslation(AtlantisConstants.OC_ADDRESS) + " " + "123@abc.com", false);
-    checkOrder(getOrderTranslation(AtlantisConstants.OC_ADDRESS) + " " + "123@abc.com");
+    checkOrder(getOrderTranslation(AtlantisConstants.OC_ADDRESS) + " " + "\"123@abc.com\"");
     checkOrder("ADDRESS \"a@foo.com\"");
     checkOrder("ADDRESS", false);
+    checkOrder("ADDRESS moon@earth.org", false);
     checkOrder("ADDRESS 1 2", false);
     checkOrder("ADDRESS abc", false);
   }
@@ -258,10 +275,14 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testDisplayReader() {
     // DISPLAY (UNIT | BUILDING SHIP) string
-    testLong(getOrderTranslation(AtlantisConstants.OC_DISPLAY) + " UNIT", false);
+    testLong(getOrderTranslation(AtlantisConstants.OC_DISPLAY) + " UNIT \"bla\"", false);
     stringTest(getOrderTranslation(AtlantisConstants.OC_DISPLAY) + " UNIT");
     stringTest(getOrderTranslation(AtlantisConstants.OC_DISPLAY) + " BUILDING");
     stringTest(getOrderTranslation(AtlantisConstants.OC_DISPLAY) + " SHIP");
+
+    // actually, this is legal, but we require it to be included in quotes
+    checkOrder("DISPLAY UNIT 'name'", false);
+    checkOrder("DISPLAY UNIT \"'name'\"", true);
 
     checkOrder("DISPLAY", false);
     checkOrder("DISPLAY UNIT", false);
@@ -285,17 +306,15 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   public void testNameReader() {
     // NAME (FACTION | UNIT | BUILDING | SHIP) name
     testLong(getOrderTranslation(AtlantisConstants.OC_NAME) + " "
-        + getOrderTranslation(EresseaConstants.OC_NOT), false);
-    stringTest(getOrderTranslation(AtlantisConstants.OC_NAME) + " "
-        + getOrderTranslation(EresseaConstants.OC_NOT));
+        + getOrderTranslation(AtlantisConstants.OC_UNIT) + " Name", false);
     stringTest(getOrderTranslation(AtlantisConstants.OC_NAME) + " UNIT");
     stringTest(getOrderTranslation(AtlantisConstants.OC_NAME) + " BUILDING");
     stringTest(getOrderTranslation(AtlantisConstants.OC_NAME) + " SHIP");
     stringTest(getOrderTranslation(AtlantisConstants.OC_NAME) + " FACTION");
 
-    checkOrder("DISPLAY", false);
-    checkOrder("DISPLAY UNIT", false);
-    checkOrder("DISPLAY string", false);
+    checkOrder("NAME", false);
+    checkOrder("NAME UNIT", false);
+    checkOrder("NAME string", false);
   }
 
   /**
@@ -415,6 +434,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
     testLong(getOrderTranslation(AtlantisConstants.OC_PAY) + " 5 17", false);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_PAY) + " 5 17");
     checkOrder("PAY", false);
+    checkOrder("PAY", false);
     checkOrder("PAY 5", false);
     checkOrder("PAY 5 7 8", false);
     checkOrder("PAY a b", false);
@@ -503,11 +523,20 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
    */
   @Test
   public void testBuildReader() {
-    // BUILD (BUILDING [b1]) | (SHIP [s1|type])
+    // BUILD (BUILDING [b1]) | (SHIP s1) | (shiptype)
     testLong(getOrderTranslation(AtlantisConstants.OC_BUILD) + " "
-        + getOrderTranslation(EresseaConstants.OC_NOT), true);
-    checkOrder(getOrderTranslation(AtlantisConstants.OC_BUILD) + " "
-        + getOrderTranslation(EresseaConstants.OC_NOT));
+        + getOrderTranslation(EresseaConstants.OC_BUILDING), true);
+    idTest(getOrderTranslation(AtlantisConstants.OC_BUILD) + " "
+        + getOrderTranslation(EresseaConstants.OC_BUILDING), false);
+    idTest(getOrderTranslation(AtlantisConstants.OC_BUILD) + " "
+        + getOrderTranslation(EresseaConstants.OC_SHIP), false);
+
+    checkOrder("BUILD Longboat");
+    checkOrder("BUILD Clipper");
+    checkOrder("BUILD Galleon");
+
+    checkOrder("BUILD Dragonship", false);
+
     checkOrder("BUILD", false);
   }
 
@@ -528,7 +557,12 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   public void testProduceReader() {
     // PRODUCE item
     testLong(getOrderTranslation(AtlantisConstants.OC_PRODUCE), true);
-    stringTest(getOrderTranslation(AtlantisConstants.OC_PRODUCE));
+    checkOrder("PRODUCE wood");
+    checkOrder("PRODUCE \"wood\"");
+    checkOrder("PRODUCE wood not", false);
+    checkOrder("PRODUCE \"wood\" \"not\"", false);
+    checkOrder("PRODUCE gnargls", false);
+    checkOrder("PRODUCE", false);
   }
 
   /**
@@ -636,6 +670,9 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   /**
    * Test method for {@link magellan.library.gamebinding.EresseaOrderParser#isID(java.lang.String)}.
    */
+  /**
+   * @see magellan.library.gamebinding.AbstractOrderParserTest#testIsID()
+   */
   @Override
   @Test
   public void testIsID() {
@@ -646,7 +683,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
     assertTrue(getParser().isID("12"));
     assertFalse(getParser().isID("abc"));
     assertFalse(getParser().isID("2ac"));
-    assertFalse(getParser().isID("12345"));
+    assertTrue(getParser().isID("1234567"));
     assertFalse(getParser().isID("1,3"));
   }
 

@@ -39,10 +39,12 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificOrderReader.Status;
 import magellan.library.io.MockReader;
 import magellan.library.utils.OrderReader.LineHandler;
+import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AtlantisOrderReaderTest extends MagellanTestWithResources {
@@ -56,6 +58,13 @@ public class AtlantisOrderReaderTest extends MagellanTestWithResources {
   private Faction faction;
   private Region region;
   private Unit unit;
+
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception {
+    setLocale(EN_LOCALE);
+    Logger.setLevel(Logger.WARN);
+    initResources();
+  }
 
   @Before
   public void setUp() throws Exception {

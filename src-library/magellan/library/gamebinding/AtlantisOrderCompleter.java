@@ -181,4 +181,15 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
 
   }
 
+  public void cmpltKeyword(StringID... keys) {
+    for (StringID key : keys) {
+      completions.add(new Completion(getOrderTranslation(key), " "));
+    }
+  }
+
+  public void cmpltDirection() {
+    addDirections(" ");
+    addSurroundingRegions(1, " ");
+  }
+
 }

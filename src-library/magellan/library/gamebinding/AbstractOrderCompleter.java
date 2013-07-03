@@ -43,6 +43,7 @@ import magellan.library.completion.OrderParser;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
+import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
@@ -810,6 +811,18 @@ public abstract class AbstractOrderCompleter implements Completer {
     completions.add(new Completion(iType.getOrderName(), iType.getOrderName(), postfix));
   }
 
+  protected void addShiptypes() {
+    if ((data != null) && (data.rules != null)) {
+      for (final Iterator<ShipType> iter = data.rules.getShipTypeIterator(); iter.hasNext();) {
+        final ShipType t = iter.next();
+
+        if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU, t.getBuildSkillLevel())) {
+          completions.add(new Completion(t.getName(), " "));
+        }
+      }
+    }
+  }
+
   /**
    * Case-insensitive comparator for String and/or Completion objects
    */
@@ -958,14 +971,16 @@ public abstract class AbstractOrderCompleter implements Completer {
     final List<Completion> oldList = new ArrayList<Completion>(completions);
     completions.clear();
     for (final Completion c : oldList) {
-      final OrderTokenizer nameTokenizer = new OrderTokenizer(new StringReader(c.getName()));
+      final OrderTokenizer nameTokenizer =
+          getParser().getOrderTokenizer(new StringReader(c.getName()));
       String newName = c.getName();
       if (openingToken != null || forceQuotes) {
         newName =
             fixQuotes(nameTokenizer, openingToken, contentToken, closingToken, preferQuotes,
                 forceQuotes, doClose, preferredQuote);
       }
-      final OrderTokenizer valueTokenizer = new OrderTokenizer(new StringReader(c.getValue()));
+      final OrderTokenizer valueTokenizer =
+          getParser().getOrderTokenizer(new StringReader(c.getValue()));
       final String newValue =
           fixQuotes(valueTokenizer, openingToken, contentToken, closingToken, preferQuotes,
               forceQuotes, doClose, preferredQuote);

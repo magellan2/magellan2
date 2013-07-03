@@ -37,9 +37,14 @@ public class OrderTokenizerTest {
 
   private static final OrderToken EOC = new OrderToken("", -1, -1, OrderToken.TT_EOC, false);
 
-  protected void doTest(String string, OrderToken... orderToken) {
+  protected void doTest(String string, OrderToken... orderTokens) {
     StringReader in = new StringReader(string);
     OrderTokenizer tokenizer = new OrderTokenizer(in);
+    doTest(tokenizer, string, orderTokens);
+  }
+
+  protected void doTest(OrderTokenizer tokenizer, String string, OrderToken... orderToken) {
+
     OrderToken token = null;
     for (int i = 0; i < orderToken.length; ++i) {
       token = tokenizer.getNextToken();
@@ -136,4 +141,56 @@ public class OrderTokenizerTest {
         4, 6, OrderToken.TT_UNDEF, false), EOC);
   }
 
+  @Test
+  public final void testQuotes() {
+    String string;
+    StringReader in;
+    OrderTokenizer tokenizer;
+
+    string = "";
+    in = new StringReader(string);
+    tokenizer = new OrderTokenizer(in);
+    tokenizer.setQuotes(new char[] { '"' });
+    doTest(tokenizer, string, EOC);
+
+    string = "\"\"";
+    in = new StringReader(string);
+    tokenizer = new OrderTokenizer(in);
+    doTest(tokenizer, string, new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false),
+        new OrderToken("", 1, 1, OrderToken.TT_STRING, false), new OrderToken("\"", 1, 2,
+            OrderToken.TT_CLOSING_QUOTE, false), new OrderToken("", -1, -1, OrderToken.TT_EOC,
+            false));
+
+    string = "\"";
+    in = new StringReader(string);
+    tokenizer = new OrderTokenizer(in);
+    tokenizer.setQuotes(new char[] { '"' });
+    doTest(tokenizer, string, new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false),
+        new OrderToken("", -1, -1, OrderToken.TT_EOC, false));
+
+    string = "\"abc\"";
+    in = new StringReader(string);
+    tokenizer = new OrderTokenizer(in);
+    tokenizer.setQuotes(new char[] { '"' });
+    doTest(tokenizer, string, new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false),
+        new OrderToken("abc", 1, 4, OrderToken.TT_STRING, false), new OrderToken("\"", 4, 5,
+            OrderToken.TT_CLOSING_QUOTE, false), new OrderToken("", -1, -1, OrderToken.TT_EOC,
+            false));
+
+    string = "'abc'";
+    in = new StringReader(string);
+    tokenizer = new OrderTokenizer(in);
+    tokenizer.setQuotes(new char[] { '"' });
+    doTest(tokenizer, string, new OrderToken("'abc'", 0, 5, OrderToken.TT_UNDEF, false),
+        new OrderToken("", -1, -1, OrderToken.TT_EOC, false));
+
+    string = "'one two'";
+    in = new StringReader(string);
+    tokenizer = new OrderTokenizer(in);
+    tokenizer.setQuotes(new char[] { '"' });
+    doTest(tokenizer, string, new OrderToken("'one", 0, 4, OrderToken.TT_UNDEF, true),
+        new OrderToken("two'", 5, 9, OrderToken.TT_UNDEF, false), new OrderToken("", -1, -1,
+            OrderToken.TT_EOC, false));
+
+  }
 }

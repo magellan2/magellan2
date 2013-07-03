@@ -74,21 +74,21 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    * Creates a new Message object.
    */
   public MagellanMessageImpl(String text) {
-    this(Message.ambiguousID, text, null, null);
+    this(Message.ambiguousID, text, MessageType.NO_TYPE, null);
   }
 
   /**
    * Creates a new Message object.
    */
   public MagellanMessageImpl(IntegerID id) {
-    this(id, null, null, null);
+    this(id, null, MessageType.NO_TYPE, null);
   }
 
   /**
    * Creates a new Message object.
    */
   public MagellanMessageImpl(ID id, String text) {
-    this(id, text, null, null);
+    this(id, text, MessageType.NO_TYPE, null);
   }
 
   /**

@@ -27,6 +27,8 @@ import magellan.library.impl.MagellanIdentifiableImpl;
  * @version $Revision: 203 $
  */
 public class MessageType extends MagellanIdentifiableImpl implements Localized {
+  private static IntegerID NO_ID = IntegerID.create(-1);
+  public static final MessageType NO_TYPE = new MessageType(NO_ID);
   private String pattern = null;
   private String section = null;
   private Locale locale = null;

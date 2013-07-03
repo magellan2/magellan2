@@ -23,12 +23,19 @@
 // 
 package magellan.library.gamebinding;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
+import java.io.StringReader;
+import java.util.List;
+
 import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.completion.OrderParser;
+import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -36,7 +43,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class AtlantisOrderParserTest extends EresseaOrderParserTest {
+public class AtlantisOrderParserTest extends AbstractOrderParserTest {
 
   /**
    * @throws java.lang.Exception
@@ -49,7 +56,6 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   /**
    * @throws java.lang.Exception
    */
-  @Override
   @Before
   public void setUp() throws Exception {
     builder = new GameDataBuilder();
@@ -131,7 +137,7 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   }
 
   protected void idTest(String command, boolean multi) {
-    checkOrder(command + " " + 2);
+    checkOrder(command + "  2");
     checkOrder(command, false);
     checkOrder(command + " 1 2", multi);
     checkOrder(command + " 1 2 3", multi);
@@ -147,10 +153,10 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   }
 
   protected void stringTest(String command) {
-    checkOrder(command + "string");
-    checkOrder(command + "\"string\"");
-    checkOrder(command + "string not", false);
-    checkOrder(command + "\"string\" \"not\"", false);
+    checkOrder(command + " string");
+    checkOrder(command + " \"string\"");
+    checkOrder(command + " string not", false);
+    checkOrder(command + " \"string\" \"not\"", false);
     checkOrder(command, false);
   }
 
@@ -347,7 +353,6 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   /**
    * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.AttackReader}.
    */
-  @Override
   @Test
   public void testAttackReader() {
     // ATTACK (u1 | PEASANTS)
@@ -537,6 +542,90 @@ public class AtlantisOrderParserTest extends EresseaOrderParserTest {
   public void testCastReader() {
     // CAST spell
     stringTest(getOrderTranslation(AtlantisConstants.O_CAST));
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser#read(java.io.Reader)}.
+   */
+  @Override
+  @Test
+  public void testRead() {
+    checkOrder("AR", false);
+    checkOrder(""); // FIXME ???!!!
+    checkOrder("A", false);
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.library.gamebinding.EresseaOrderParser#getHandlers(magellan.library.utils.OrderToken)}
+   * .
+   */
+  @Override
+  @Test
+  public void testGetHandlers() {
+    List<OrderHandler> list = getParser().getHandlers(new OrderToken("a"));
+    assertTrue(list != null);
+    if (list == null)
+      return;
+    assertSame(list.size(), 0);
+    list = getParser().getHandlers(new OrderToken("wor"));
+    assertSame(list.size(), 0);
+    list = getParser().getHandlers(new OrderToken("aga"));
+    assertSame(list.size(), 0);
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.library.gamebinding.EresseaOrderParser#unexpected(magellan.library.utils.OrderToken)}
+   * .
+   */
+  @Override
+  @SuppressWarnings("deprecation")
+  @Test
+  public void testUnexpected() {
+    assertTrue(getParser().getErrorMessage() == null);
+    getParser().setErrMsg("error");
+    assertTrue(getParser().getErrorMessage().equals("error"));
+    getParser().setErrMsg(null);
+    assertTrue(getParser().getErrorMessage() == null);
+    getParser().read(new StringReader("WORK"));
+    assertTrue(getParser().getErrorMessage() == null);
+    getParser().read(new StringReader("WORK 2"));
+    assertEquals(getParser().getErrorMessage(),
+        "Unexpected token 2: Undefined(5, 6), not followed by Space");
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser#isID(java.lang.String)}.
+   */
+  @Override
+  @Test
+  public void testIsID() {
+    assertTrue(getParser().isID("NEW 123"));
+    assertFalse(getParser().isID("TEMP 123"));
+    assertFalse(getParser().isID("NEW 123", false));
+    assertFalse(getParser().isID("NEW abc"));
+    assertTrue(getParser().isID("12"));
+    assertFalse(getParser().isID("abc"));
+    assertFalse(getParser().isID("2ac"));
+    assertFalse(getParser().isID("12345"));
+    assertFalse(getParser().isID("1,3"));
+  }
+
+  /**
+   * Test method for
+   * {@link magellan.library.gamebinding.EresseaOrderParser#isTempID(java.lang.String)}.
+   */
+  @Override
+  @Test
+  public void testIsTempID() {
+    assertTrue(getParser().isTempID("NEW 1"));
+    assertFalse(getParser().isTempID("NEW abc"));
+    assertFalse(getParser().isTempID("TEMP 1"));
+    assertFalse(getParser().isTempID("1,3"));
+    assertFalse(getParser().isTempID("abc"));
+    assertFalse(getParser().isTempID(" NEW 123 "));
+    assertFalse(getParser().isTempID(" NEW NEWtemp"));
   }
 
 }

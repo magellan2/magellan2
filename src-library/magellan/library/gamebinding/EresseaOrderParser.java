@@ -3768,6 +3768,14 @@ public class EresseaOrderParser extends AbstractOrderParser {
     this.completer = (EresseaOrderCompleter) completer;
   }
 
+  /**
+   * @see magellan.library.gamebinding.AbstractOrderParser#getTemp()
+   */
+  @Override
+  protected StringID getTemp() {
+    return EresseaConstants.O_TEMP;
+  }
+
   // private static Map<Locale, String[]> shortNamess = new HashMap<Locale, String[]>();
   // private static Map<Locale, String[]> longNamess = new HashMap<Locale, String[]>();
   // private static Map<Locale, String[]> normalizedLongNamess = new HashMap<Locale, String[]>();

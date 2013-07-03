@@ -49,6 +49,7 @@ public class GameDataBuilder {
 
   private static final int BASE_ROUND = 360;
   private String gameName = "Eressea";
+  private Locale locale = Locale.GERMAN;
 
   /**
    * Creates a report at round {@value #BASE_ROUND}.
@@ -195,9 +196,22 @@ public class GameDataBuilder {
 
     faction.setSortIndex(sortIndex);
 
-    faction.setLocale(Locale.GERMAN);
+    faction.setLocale(getLocale());
 
     return faction;
+  }
+
+  public Locale getLocale() {
+    return locale;
+  }
+
+  /**
+   * Sets the value of locale.
+   * 
+   * @param locale The value for locale.
+   */
+  public void setLocale(Locale locale) {
+    this.locale = locale;
   }
 
   /**

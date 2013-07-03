@@ -766,7 +766,14 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
        * units
        */
       String order = "";
-      final String tounit = uid.toString(true, getLocale());
+      String tounit;
+      try {
+        tounit =
+            getData().getRules().getGameSpecificStuff().getOrderChanger().getTokenLocalized(
+                getLocale(), uid);
+      } catch (RulesException e) {
+        tounit = "TEMP " + uid;
+      }
       if (persons && (unit.getPersons() >= i)) {
         order = getOrderTranslation(EresseaConstants.O_MEN);
       }
@@ -1823,6 +1830,11 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     if (spell.getSyntax().contains("s")) {
       addRegionShips("", " ", null, false);
     }
+  }
+
+  @Override
+  protected String getTemp() {
+    return getOrderTranslation(EresseaConstants.O_TEMP);
   }
 
 }

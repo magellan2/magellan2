@@ -59,6 +59,7 @@ public abstract class OrderHandler {
   public boolean read(OrderToken token, String text) {
     init(token, text);
     valid = readIt(token);
+
     getOrder().setValid(valid);
     postProcess();
     return getOrder().isValid();

@@ -23,8 +23,12 @@
 // 
 package magellan.library.gamebinding;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import magellan.library.EntityID;
 import magellan.library.GameData;
+import magellan.library.StringID;
 import magellan.library.completion.OrderParser;
 import magellan.library.utils.OrderToken;
 
@@ -55,6 +59,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
    */
   @Override
   protected void initCommands() {
+    setPrefixMatching(false);
     clearCommandMap();
 
     // WORK
@@ -134,12 +139,36 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
   }
 
+  protected class BareHandler extends OrderHandler {
+
+    protected BareHandler(OrderParser parser) {
+      super(parser);
+    }
+
+    @Override
+    protected boolean readIt(OrderToken token) {
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      return checkNextFinal();
+    }
+
+    protected void completeId() {
+      getCompleter().cmpltId();
+    }
+  }
+
   protected class IdHandler extends OrderHandler {
 
-    protected EntityID id;
+    protected List<EntityID> ids = new ArrayList<EntityID>();
+    private boolean multi;
 
     protected IdHandler(OrderParser parser) {
       super(parser);
+    }
+
+    public IdHandler(OrderParser parser, boolean multi) {
+      super(parser);
+      this.multi = multi;
     }
 
     @Override
@@ -150,8 +179,14 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       OrderToken t = getNextToken();
 
       if (isID(t.getText(), false)) {
-        retVal = readFinalID(t);
-        id = EntityID.createEntityID(t.getText(), getData().base);
+        ids.add(EntityID.createEntityID(t.getText(), getData().base));
+        if (multi) {
+          retVal = readIt(t);
+        } else {
+          retVal = readFinalID(t);
+        }
+      } else if (multi && ids.size() > 0) {
+        retVal = checkFinal(t);
       } else {
         unexpected(t);
       }
@@ -168,12 +203,22 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     }
   }
 
-  protected class FlagHandler extends OrderHandler {
+  protected class NumberHandler extends OrderHandler {
 
-    int flag;
+    int number;
+    private final int min;
+    private final int max;
+    private boolean optional;
 
-    protected FlagHandler(OrderParser parser) {
+    protected NumberHandler(OrderParser parser, int min, int max) {
+      this(parser, min, max, false);
+    }
+
+    public NumberHandler(OrderParser parser, int min, int max, boolean optional) {
       super(parser);
+      this.min = min;
+      this.max = max;
+      this.optional = optional;
     }
 
     @Override
@@ -183,23 +228,35 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNumeric(t.getText(), 10, 0, 1)) {
+      if (isNumeric(t.getText(), 10, min, max)) {
         retVal = readFinalID(t);
-        flag = Integer.parseInt(t.getText());
-      } else {
+        number = Integer.parseInt(t.getText());
+      } else if (optional && checkFinal(t))
+        return true;
+      else {
         unexpected(t);
       }
 
       if (shallComplete(token, t)) {
-        completeFlag();
+        completeNumber();
       }
 
       return retVal;
     }
 
-    private void completeFlag() {
-      getCompleter().cmpltFlag();
+    private void completeNumber() {
+      getCompleter().cmpltNumber(min, max);
     }
+  }
+
+  protected class FlagHandler extends NumberHandler {
+
+    int flag;
+
+    protected FlagHandler(OrderParser parser) {
+      super(parser, 0, 1);
+    }
+
   }
 
   protected class StringHandler extends OrderHandler {
@@ -230,6 +287,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
   }
 
   protected class FormReader extends IdHandler {
+    // FORM id
     public FormReader(OrderParser parser) {
       super(parser);
     }
@@ -237,6 +295,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
   }
 
   protected class AcceptReader extends IdHandler {
+    // ACCEPT f1
     public AcceptReader(OrderParser parser) {
       super(parser);
     }
@@ -272,7 +331,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
       if (isID(t.getText(), false)) {
         retVal = readAlly(t);
-        id = EntityID.createEntityID(t.getText(), getData().base);
+        ids.add(EntityID.createEntityID(t.getText(), getData().base));
       } else {
         unexpected(t);
       }
@@ -298,7 +357,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       }
 
       if (shallComplete(token, t)) {
-        getCompleter().cmpltFlag();
+        getCompleter().cmpltNumber(0, 1);
       }
 
       return retVal;
@@ -309,14 +368,6 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     // BEHIND 01
     public BehindReader(OrderParser parser) {
       super(parser);
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
     }
   }
 
@@ -337,23 +388,14 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
-      getOrder().setLong(true);
-      return checkNextFinal();
+      return true; // FIXME
     }
   }
 
-  protected class GuardReader extends OrderHandler {
+  protected class GuardReader extends FlagHandler {
     // GUARD 01
     public GuardReader(OrderParser parser) {
       super(parser);
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
     }
   }
 
@@ -367,114 +409,59 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
-      getOrder().setLong(true);
-      return checkNextFinal();
+      return true; // FIXME
     }
   }
 
-  protected class PasswordReader extends OrderHandler {
+  protected class PasswordReader extends StringHandler {
     // PASSWORD password
     public PasswordReader(OrderParser parser) {
       super(parser);
     }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
-    }
   }
 
-  protected class ReshowReader extends OrderHandler {
+  protected class ReshowReader extends StringHandler {
     // RESHOW spell
     public ReshowReader(OrderParser parser) {
       super(parser);
     }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
-    }
   }
 
-  protected class FindReader extends OrderHandler {
+  protected class FindReader extends IdHandler {
     // FIND f1
     public FindReader(OrderParser parser) {
       super(parser);
     }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
-    }
   }
 
-  protected class BoardReader extends OrderHandler {
+  protected class BoardReader extends IdHandler {
     // BOARD s1
     public BoardReader(OrderParser parser) {
       super(parser);
     }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
-    }
   }
 
-  protected class EnterReader extends OrderHandler {
+  protected class EnterReader extends IdHandler {
     // ENTER b1
     public EnterReader(OrderParser parser) {
       super(parser);
     }
 
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
-    }
   }
 
-  protected class LeaveReader extends OrderHandler {
+  protected class LeaveReader extends BareHandler {
     // LEAVE
     public LeaveReader(OrderParser parser) {
       super(parser);
     }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
-    }
   }
 
-  protected class PromoteReader extends OrderHandler {
+  protected class PromoteReader extends IdHandler {
     // PROMOTE u1
     public PromoteReader(OrderParser parser) {
       super(parser);
     }
 
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
-    }
   }
 
   protected class AttackReader extends OrderHandler {
@@ -487,23 +474,14 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
-      getOrder().setLong(true);
-      return checkNextFinal();
+      return true; // FIXME
     }
   }
 
-  protected class DemolishReader extends OrderHandler {
+  protected class DemolishReader extends BareHandler {
     // DEMOLISH
     public DemolishReader(OrderParser parser) {
       super(parser);
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
     }
   }
 
@@ -517,8 +495,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
-      getOrder().setLong(true);
-      return checkNextFinal();
+      return true; // FIXME
     }
   }
 
@@ -532,23 +509,14 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
-      getOrder().setLong(true);
-      return checkNextFinal();
+      return true; // FIXME
     }
   }
 
-  protected class SinkReader extends OrderHandler {
+  protected class SinkReader extends BareHandler {
     // SINK
     public SinkReader(OrderParser parser) {
       super(parser);
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
     }
   }
 
@@ -562,53 +530,28 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
-      getOrder().setLong(true);
-      return checkNextFinal();
+      return true; // FIXME
     }
   }
 
-  protected class TaxReader extends OrderHandler {
+  protected class TaxReader extends BareHandler {
     // TAX
     public TaxReader(OrderParser parser) {
       super(parser);
     }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
-    }
   }
 
-  protected class RecruitReader extends OrderHandler {
+  protected class RecruitReader extends NumberHandler {
     // RECRUIT 1
     public RecruitReader(OrderParser parser) {
-      super(parser);
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
+      super(parser, 1, Integer.MAX_VALUE);
     }
   }
 
-  protected class QuitReader extends OrderHandler {
+  protected class QuitReader extends StringHandler {
     // QUIT password
     public QuitReader(OrderParser parser) {
       super(parser);
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      return checkNextFinal();
     }
   }
 
@@ -623,7 +566,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       token.ttype = OrderToken.TT_KEYWORD;
 
       getOrder().setLong(true);
-      return checkNextFinal();
+      return true; // FIXME
     }
   }
 
@@ -638,7 +581,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       token.ttype = OrderToken.TT_KEYWORD;
 
       getOrder().setLong(true);
-      return checkNextFinal();
+      return true; // FIXME
     }
   }
 
@@ -653,11 +596,11 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       token.ttype = OrderToken.TT_KEYWORD;
 
       getOrder().setLong(true);
-      return checkNextFinal();
+      return true; // FIXME
     }
   }
 
-  protected class EntertainReader extends OrderHandler {
+  protected class EntertainReader extends BareHandler {
     // ENTERTAIN
     public EntertainReader(OrderParser parser) {
       super(parser);
@@ -665,74 +608,67 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
     @Override
     protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
       getOrder().setLong(true);
-      return checkNextFinal();
+      return super.readIt(token);
     }
   }
 
-  protected class ProduceReader extends OrderHandler {
+  protected class ProduceReader extends StringHandler {
     // PRODUCE item
     public ProduceReader(OrderParser parser) {
       super(parser);
     }
 
+    // FIXME check item
     @Override
     protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
       getOrder().setLong(true);
-      return checkNextFinal();
+      return super.readIt(token);
     }
   }
 
-  protected class ResearchReader extends OrderHandler {
+  protected class ResearchReader extends NumberHandler {
     // RESEARCH [1]
     public ResearchReader(OrderParser parser) {
-      super(parser);
+      super(parser, 1, Integer.MAX_VALUE, true);
     }
 
     @Override
     protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
       getOrder().setLong(true);
-      return checkNextFinal();
+      return super.readIt(token);
     }
   }
 
-  protected class StudyReader extends OrderHandler {
+  protected class StudyReader extends StringHandler {
     // STUDY skill
     public StudyReader(OrderParser parser) {
       super(parser);
     }
 
+    // FIXME check skill
     @Override
     protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
       getOrder().setLong(true);
-      return checkNextFinal();
+      return super.readIt(token);
     }
   }
 
-  protected class TeachReader extends OrderHandler {
+  protected class TeachReader extends IdHandler {
     // TEACH u1+
     public TeachReader(OrderParser parser) {
-      super(parser);
+      super(parser, true);
     }
 
+    // FIXME check units
     @Override
     protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
       getOrder().setLong(true);
-      return checkNextFinal();
+      return super.readIt(token);
     }
   }
 
-  protected class WorkReader extends OrderHandler {
+  protected class WorkReader extends BareHandler {
     // WORK
     public WorkReader(OrderParser parser) {
       super(parser);
@@ -740,25 +676,23 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
     @Override
     protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
       getOrder().setLong(true);
-      return checkNextFinal();
+      return super.readIt(token);
     }
+
   }
 
-  protected class CastReader extends OrderHandler {
+  protected class CastReader extends StringHandler {
     // CAST spell
     public CastReader(OrderParser parser) {
       super(parser);
     }
 
+    // FIXME check spell
     @Override
     protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
       getOrder().setLong(true);
-      return checkNextFinal();
+      return super.readIt(token);
     }
   }
 
@@ -781,4 +715,10 @@ public class AtlantisOrderParser extends AbstractOrderParser {
   protected void setCompleter(AbstractOrderCompleter completer) {
     this.completer = (AtlantisOrderCompleter) completer;
   }
+
+  @Override
+  protected StringID getTemp() {
+    return AtlantisConstants.O_NEW;
+  }
+
 }

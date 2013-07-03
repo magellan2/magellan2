@@ -8,13 +8,11 @@
 package magellan.library;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.IDBaseConverter;
-import magellan.library.utils.Locales;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -226,25 +224,25 @@ public class UnitID extends EntityID {
    */
   @Override
   public String toString() {
-    return toString(false, Locales.getGUILocale());
+    return IDBaseConverter.toString(Math.abs(intValue()), radix);
   }
 
-  /**
-   * Returns a String representation of this UnitID. The radix of the output depends on the default
-   * set in the IDBaseConverter class. If <code>temp</code> is <code>true</code>, "TEMP " is
-   * prefixed if this is a negative ID.
-   * 
-   * @param temp
-   * @param locale
-   * @return String representation of this UnitID
-   */
-  public String toString(boolean temp, Locale locale) {
-    if (temp && intValue() < 0)
-      return Resources.getOrderTranslation(EresseaConstants.O_TEMP.toString(), locale) + " "
-          + IDBaseConverter.toString(Math.abs(intValue()), radix);
-    else
-      return IDBaseConverter.toString(Math.abs(intValue()), radix);
-  }
+  // /**
+  // * Returns a String representation of this UnitID. The radix of the output depends on the
+  // default
+  // * set in the IDBaseConverter class. If <code>temp</code> is not <code>null</code>, it is
+  // prefixed
+  // * if this is a negative ID.
+  // *
+  // * @param temp
+  // * @return String representation of this UnitID
+  // */
+  // public String toFullString(String temp) {
+  // if (temp != null && intValue() < 0)
+  // return temp + " " + IDBaseConverter.toString(Math.abs(intValue()), radix);
+  // else
+  // return IDBaseConverter.toString(Math.abs(intValue()), radix);
+  // }
 
   // (stm) equals and compareTo already have been overridden by IntegerID. Overriding it here is
   // unnecessary (and dangerous).

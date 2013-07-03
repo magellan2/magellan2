@@ -12,6 +12,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -103,6 +104,8 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   private Map<Locale, RadixTree<Direction>> dirTranslations =
       new HashMap<Locale, RadixTree<Direction>>();
+
+  private boolean prefixMatching = true;
 
   protected static enum Type {
     EMPTY, OPENING, CLOSING
@@ -250,6 +253,23 @@ public abstract class AbstractOrderParser implements OrderParser {
     tokensIterator = null;
     lastToken = null;
     tokenIndex = 0;
+  }
+
+  /**
+   * Returns true if prefixes of tokens are matched to the token, i.e., if abbreviations are
+   * possible.
+   */
+  public boolean isPrefixMatching() {
+    return prefixMatching;
+  }
+
+  /**
+   * Sets the value of prefixMatching.
+   * 
+   * @param prefixMatching The value for prefixMatching.
+   */
+  public void setPrefixMatching(boolean prefixMatching) {
+    this.prefixMatching = prefixMatching;
   }
 
   /**
@@ -605,8 +625,13 @@ public abstract class AbstractOrderParser implements OrderParser {
    * 
    * @param t
    */
-  protected ArrayList<OrderHandler> getHandlers(OrderToken t) {
-    return getCommandTrie().searchPrefix(t.getText().toLowerCase(), Integer.MAX_VALUE);
+  protected List<OrderHandler> getHandlers(OrderToken t) {
+    if (!isPrefixMatching()) {
+      OrderHandler reader = getCommandTrie().find(t.getText().toLowerCase());
+      return reader != null ? Collections.singletonList(reader) : Collections
+          .<OrderHandler> emptyList();
+    } else
+      return getCommandTrie().searchPrefix(t.getText().toLowerCase(), Integer.MAX_VALUE);
   }
 
   // ************* general use
@@ -864,8 +889,8 @@ public abstract class AbstractOrderParser implements OrderParser {
 
     OrderToken t = getNextToken();
 
-    if (shallComplete(token, t)
-        && token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP))
+    // TODO why test for TEMP?
+    if (shallComplete(token, t) && token.getText().equalsIgnoreCase(getOrderTranslation(getTemp()))
         && tempAllowed) {
       getCompleter().addRegionUnits("", true);
     }
@@ -1020,12 +1045,15 @@ public abstract class AbstractOrderParser implements OrderParser {
     if (blankPos > -1) {
       String temp = txt.substring(0, blankPos);
       String nr = txt.substring(blankPos + 1);
-      retVal = (temp.equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP)));
-      retVal = retVal && isNumeric(nr, getData().base, 0, AbstractOrderParser.MAX_UID);
+      retVal =
+          (temp.equalsIgnoreCase(getOrderTranslation(getTemp())))
+              && isNumeric(nr, getData().base, 0, AbstractOrderParser.MAX_UID);
     }
 
     return retVal;
   }
+
+  protected abstract StringID getTemp();
 
   /**
    * tests if <code>txt</code> is a region id (coordinates).
@@ -1305,7 +1333,7 @@ public abstract class AbstractOrderParser implements OrderParser {
           OrderToken tempToken = tokenAt(i);
           String tempText = tempToken.getText();
 
-          if (tempText.equalsIgnoreCase(getOrderTranslation(EresseaConstants.O_TEMP))) {
+          if (tempText.equalsIgnoreCase(getOrderTranslation(getTemp()))) {
             try {
               OrderToken nrToken = tokenAt(i + 1);
               String nrText = nrToken.getText();
@@ -1313,9 +1341,8 @@ public abstract class AbstractOrderParser implements OrderParser {
 
               if ((nr >= 0) && (nr <= TokenBucket.MAX_TEMP_NR)) {
                 OrderToken mergedToken =
-                    new OrderToken(getOrderTranslation(EresseaConstants.O_TEMP) + " " + nrText,
-                        tempToken.getStart(), nrToken.getEnd(), OrderToken.TT_ID, nrToken
-                            .followedBySpace());
+                    new OrderToken(getOrderTranslation(getTemp()) + " " + nrText, tempToken
+                        .getStart(), nrToken.getEnd(), OrderToken.TT_ID, nrToken.followedBySpace());
                 remove(i);
                 remove(i);
                 add(i, mergedToken);

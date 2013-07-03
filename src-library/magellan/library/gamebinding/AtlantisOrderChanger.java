@@ -1,3 +1,5 @@
+package magellan.library.gamebinding;
+
 // class magellan.library.gamebinding.AtlantisOrderChanger
 // created on Apr 16, 2013
 //
@@ -20,8 +22,7 @@
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
-package magellan.library.gamebinding;
+// package magellan.library.gamebinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,16 +109,17 @@ public class AtlantisOrderChanger implements OrderChanger {
     String sItem = "";
     String tmpOrders = null;
     Item sourceItem = new Item(new ItemType(StringID.create("unknown")), 1);
-    if (item.equals(EresseaConstants.I_MEN)) {
-      tmpOrders =
-          getOrder(locale, AtlantisConstants.O_TRANSFER, target.getID().toString(true, locale));
-    } else if (item != null) {
-      ItemType itemType = getRules().getItemType(item);
-      if (itemType == null) {
-        tmpOrders = "; unknown item " + item;
+    if (item != null) {
+      if (item.equals(EresseaConstants.I_MEN)) {
+        tmpOrders = getOrder(locale, AtlantisConstants.O_TRANSFER, target.getID(), locale);
       } else {
-        sItem = itemType.getOrderName();
-        sourceItem = source.getItem(itemType);
+        ItemType itemType = getRules().getItemType(item);
+        if (itemType == null) {
+          tmpOrders = "; unknown item " + item;
+        } else {
+          sItem = itemType.getOrderName();
+          sourceItem = source.getItem(itemType);
+        }
       }
     } else {
       tmpOrders = "; give all not supported";
@@ -128,16 +130,16 @@ public class AtlantisOrderChanger implements OrderChanger {
     } else {
       if (item.equals(AtlantisConstants.I_USILVER)) {
         tmpOrders =
-            getOrder(locale, AtlantisConstants.O_PAY, target.getID().toString(true,
-                source.getLocale()), (amount < 0 ? target.getPersons() * amount
-                : (amount == OrderChanger.ALL ? (sourceItem == null ? 0 : sourceItem.getAmount())
-                    : amount)), (comment != null ? ("; " + comment) : ""));
+            getOrder(locale, AtlantisConstants.O_PAY, target.getID(), (amount < 0 ? target
+                .getPersons()
+                * amount : (amount == OrderChanger.ALL ? (sourceItem == null ? 0 : sourceItem
+                .getAmount()) : amount)), (comment != null ? ("; " + comment) : ""));
       } else {
         tmpOrders =
-            getOrder(locale, AtlantisConstants.O_GIVE, target.getID().toString(true,
-                source.getLocale()), (amount < 0 ? target.getPersons() * amount
-                : (amount == OrderChanger.ALL ? (sourceItem == null ? 0 : sourceItem.getAmount())
-                    : amount)), sItem, (comment != null ? ("; " + comment) : ""));
+            getOrder(locale, AtlantisConstants.O_GIVE, target.getID(), (amount < 0 ? target
+                .getPersons()
+                * amount : (amount == OrderChanger.ALL ? (sourceItem == null ? 0 : sourceItem
+                .getAmount()) : amount)), sItem, (comment != null ? ("; " + comment) : ""));
       }
     }
     source.addOrder(tmpOrders);
@@ -175,6 +177,26 @@ public class AtlantisOrderChanger implements OrderChanger {
     return getOrder(unit.getLocale(), id);
   }
 
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#getTokenLocalized(java.util.Locale,
+   *      java.lang.Object)
+   */
+  public String getTokenLocalized(Locale orderLocale, Object arg) throws RulesException {
+    if (arg instanceof StringID)
+      return getOrder1((StringID) arg, orderLocale);
+    else if (arg instanceof UnitID)
+      if (((UnitID) arg).intValue() < 0)
+        return getTemp(orderLocale) + "  " + arg.toString();
+      else
+        return arg.toString();
+    else
+      return arg.toString();
+  }
+
+  protected String getTemp(Locale locale) {
+    return getOrder(locale, AtlantisConstants.O_NEW);
+  }
+
   public String getOrder(Locale orderLocale, StringID orderId, Object... args) {
     try {
       return getOrder(orderId, orderLocale, args);
@@ -188,12 +210,7 @@ public class AtlantisOrderChanger implements OrderChanger {
     StringBuilder order = new StringBuilder();
     order.append(getOrder1(orderId, orderLocale));
     for (Object arg : args) {
-      order.append(" ");
-      if (arg instanceof StringID) {
-        order.append(getOrder1((StringID) arg, orderLocale));
-      } else {
-        order.append(arg.toString());
-      }
+      order.append(" ").append(getTokenLocalized(orderLocale, arg));
     }
     return order.toString();
   }
@@ -325,8 +342,7 @@ public class AtlantisOrderChanger implements OrderChanger {
     final Locale locale = unit.getLocale();
 
     for (TempUnit u : unit.tempUnits()) {
-      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.O_MAKE, u.getID().toString(true,
-          locale)), locale));
+      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.O_MAKE, u.getID()), locale));
 
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
@@ -348,5 +364,4 @@ public class AtlantisOrderChanger implements OrderChanger {
 
     return cmds;
   }
-
 }

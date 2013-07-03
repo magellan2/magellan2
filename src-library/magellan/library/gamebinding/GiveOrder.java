@@ -45,7 +45,6 @@ import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ProblemFactory;
 import magellan.library.tasks.ProblemType;
-import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -161,10 +160,17 @@ public class GiveOrder extends UnitArgumentOrder {
             OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_UNKNOWN_TARGET_SPECIAL.type, unit,
             null, Resources.get("order.give.warning.unknowntarget", target), line));
       } else {
+        String targetID;
+        try {
+          targetID =
+              unit.getData().getRules().getGameSpecificStuff().getOrderChanger().getTokenLocalized(
+                  unit.getLocale(), target);
+        } catch (RulesException e) {
+          targetID = "TEMP " + target;
+        }
         setProblem(ProblemFactory.createProblem(Severity.WARNING,
             OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_UNKNOWN_TARGET.type, unit, null,
-            Resources.get("order.give.warning.unknowntarget", target.toString(true, Locales
-                .getGUILocale())), line));
+            Resources.get("order.give.warning.unknowntarget", targetID), line));
       }
     } else {
       zeroOrTarget = tUnit;

@@ -34,6 +34,7 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.MapMetric;
+import magellan.library.gamebinding.OrderChanger;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.logging.Logger;
@@ -243,7 +244,7 @@ public class Regions {
    *         contained in regions.
    */
   public static String getDirections(Collection<Region> regions) {
-    if (regions == null)
+    if (regions == null || regions.size() < 2)
       return null;
 
     List<Direction> directions = Regions.getDirectionObjectsOfRegions(regions);
@@ -253,13 +254,15 @@ public class Regions {
 
     StringBuffer dir = new StringBuffer();
 
+    OrderChanger changer =
+        regions.iterator().next().getData().getGameSpecificStuff().getOrderChanger();
+
     for (Direction d : directions) {
       if (dir.length() > 0) {
         dir.append(" ");
       }
 
-      // FIXME Direction.toString() not localized
-      dir.append(d.toString());
+      dir.append(changer.getOrder(Locales.getOrderLocale(), d.getId()));
     }
 
     return dir.toString();

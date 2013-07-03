@@ -45,6 +45,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillType;
+import magellan.library.utils.Direction;
 import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.OrderTokenizer;
@@ -591,25 +592,15 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  private static StringID directions[] = new StringID[] { EresseaConstants.OC_NW,
-      EresseaConstants.OC_NE, EresseaConstants.OC_E, EresseaConstants.OC_SE,
-      EresseaConstants.OC_SW, EresseaConstants.OC_W };
-
   /**
    * Adds completions for all directions.
    */
   public void addDirections(String postfix) {
-    ArrayList<List<String>> dirs = new ArrayList<List<String>>(6);
-    int max = Integer.MIN_VALUE;
-    for (StringID dir : directions) {
-      dirs.add(getData().getRules().getOrder(dir).getNames(getLocale()));
-      max = Math.max(max, dirs.get(dirs.size() - 1).size());
-    }
-    for (int i = 0; i < max; ++i) {
-      for (int dir = 0; dir < dirs.size(); ++dir)
-        if (i < dirs.get(dir).size()) {
-          completions.add(new Completion(dirs.get(dir).get(i), dirs.get(dir).get(i), postfix));
-        }
+
+    for (Direction dir : getData().getRules().getGameSpecificStuff().getMapMetric().getDirections()) {
+      for (String name : getData().getRules().getOrder(dir.getId()).getNames(getLocale())) {
+        completions.add(new Completion(name, postfix));
+      }
     }
   }
 
@@ -619,7 +610,10 @@ public abstract class AbstractOrderCompleter implements Completer {
    * @param dir This corresponds to the index of the direction in the Direction enum.
    */
   public void addDirection(String postfix, int dir) {
-    completions.add(new Completion(getOrderTranslation(directions[dir]), ""));
+    for (String name : getData().getRules().getOrder(
+        getGameSpecificStuff().getMapMetric().toDirection(dir).getId()).getNames(getLocale())) {
+      completions.add(new Completion(name, ""));
+    }
   }
 
   /**

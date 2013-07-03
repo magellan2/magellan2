@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import magellan.library.Alliance;
+import magellan.library.Battle;
 import magellan.library.Building;
 import magellan.library.CombatSpell;
 import magellan.library.CoordinateID;
@@ -93,12 +94,14 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static final String FACTION_LINE = "\\s*" + NAME + " " + ID2 + "\\s*";
   protected static final String DATE_LINE = "\\s*((In the Beginning)|(" + NAME + ", Year " + NUM
       + "))\\s*";
-  protected static final String MISTAKES_LINE = "\\s*Mistakes\\s*";
-  protected static final String MESSAGE_LINE = "^(.*)$";
-  protected static final String MESSAGES_LINE = "\\s*Messages\\s*";
   protected static final String OBJECT = NAME + "\\s+" + ID2;
   protected static final String OBJECT2 = "\\s" + NAME + "\\s+" + ID2 + "\\s*";
+  protected static final String MISTAKES_LINE = "\\s*Mistakes\\s*";
+  protected static final String MESSAGE_LINE = "^(.*)$";
+  protected static final String UNIT_MESSAGE_LINE = "^" + OBJECT + "\\s*(.*)$";
+  protected static final String MESSAGES_LINE = "\\s*Messages\\s*";
   protected static final String EVENTS_LINE = "\\s*Events During Turn\\s*";
+  protected static final String SECTION_LINE = "          \\s*([^\\s].*)\\s*";
   protected static final String STATUS_LINE = "\\s*Current Status\\s*";
   protected static final String ALLIED_LINE = "You are allied to\\s+" + OBJECT + "(," + OBJECT
       + ")*\\.";
@@ -138,6 +141,13 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static final String SHIP_LINE = "   +" + OBJECT + "(,\\s+" + IDENTIFIER + ")(.*)"
       + LINE_END;
 
+  public static final MessageType ERROR_TYPE = new MessageType(IntegerID.create(10000042), "Error");
+  public static final MessageType MESSAGES_TYPE = new MessageType(IntegerID.create(10000043),
+      "Message");
+  public static final MessageType EVENTS_TYPE =
+      new MessageType(IntegerID.create(10000044), "Event");
+  public static final MessageType MISC_TYPE = new MessageType(IntegerID.create(10000045), "Misc");
+
   protected static Pattern idPattern = Pattern.compile(ID);
   protected static Pattern id2Pattern = Pattern.compile(ID2);
   protected static Pattern namePattern = Pattern.compile(NAME);
@@ -149,10 +159,12 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static Pattern dateLinePattern = Pattern.compile(DATE_LINE);
   protected static Pattern mistakesLinePattern = Pattern.compile(MISTAKES_LINE);
   protected static Pattern messageLinePattern = Pattern.compile(MESSAGE_LINE);
+  protected static Pattern unitMessageLinePattern = Pattern.compile(UNIT_MESSAGE_LINE);
   protected static Pattern messagesLinePattern = Pattern.compile(MESSAGES_LINE);
   protected static Pattern objectPattern = Pattern.compile(OBJECT);
   protected static Pattern object2Pattern = Pattern.compile(OBJECT2);
   protected static Pattern eventsLinePattern = Pattern.compile(EVENTS_LINE);
+  protected static Pattern sectionLinePattern = Pattern.compile(SECTION_LINE);
   protected static Pattern statusLinePattern = Pattern.compile(STATUS_LINE);
   protected static Pattern alliedLinePattern = Pattern.compile(ALLIED_LINE);
   protected static Pattern numPattern = Pattern.compile(NUM);
@@ -183,13 +195,15 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   private List<SectionReader> sectionReaders = new ArrayList<NRParser.SectionReader>();
 
-  private String line;
+  private String line = "";
 
   private BufferedReader reader;
 
   protected Faction ownerFaction;
 
   private List<Message> reportMessages = new ArrayList<Message>();
+  private List<String> reportErrors;
+  private List<Battle> reportBattles;
 
   private Map<magellan.library.ID, Spell> spellMap = CollectionFactory
       .<ID, Spell> createSyncOrderedMap();
@@ -247,6 +261,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     sectionReaders.add(new MessageReader(eventsLinePattern, reportMessages));
     sectionReaders.add(new StatusReader());
     regionReader = new RegionReader();
+    // fall back
+    sectionReaders.add(new MessageReader(sectionLinePattern, reportMessages));
   }
 
   /**
@@ -315,6 +331,20 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       if (reportMessages != null && reportMessages.size() > 0) {
         ownerFaction.setMessages(reportMessages);
       }
+      if (reportErrors != null && reportErrors.size() > 0) {
+        ownerFaction.setErrors(reportErrors);
+      }
+      if (reportBattles != null && reportBattles.size() > 0) {
+        ownerFaction.setBattles(reportBattles);
+      }
+      ERROR_TYPE.setSection("errors");
+      MESSAGES_TYPE.setSection("message");
+      MISC_TYPE.setSection("others");
+      EVENTS_TYPE.setSection("events");
+      data.addMsgType(ERROR_TYPE);
+      data.addMsgType(MESSAGES_TYPE);
+      data.addMsgType(MISC_TYPE);
+      data.addMsgType(EVENTS_TYPE);
 
       setOwner(data);
 
@@ -344,6 +374,9 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   protected void nextLine(boolean join, boolean skipEmpty) throws IOException {
+    if (line == null)
+      return;
+
     lnr++;
     if (nextLine != null) {
       line = nextLine;
@@ -372,6 +405,24 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             nextLine = "";
           }
         }
+      }
+    }
+  }
+
+  protected void continueLine() throws IOException {
+    if (line == null)
+      return;
+
+    if (!line.matches(".*" + LINE_END)) {
+      String oldLine = new String(line);
+      nextLine(true, false);
+      if (line == null) {
+        line = oldLine;
+      } else if (line.equals("")) {
+        nextLine = "";
+        line = oldLine;
+      } else {
+        line = oldLine + line;
       }
     }
   }
@@ -523,10 +574,20 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected class MessageReader extends AbstractReader implements SectionReader {
 
     private List<Message> messages;
+    private MessageType fallBackType = MessageType.NO_TYPE;
 
     MessageReader(Pattern header, List<Message> messages) {
       super(header);
       this.messages = messages;
+      if (header == mistakesLinePattern) {
+        fallBackType = ERROR_TYPE;
+      } else if (header == messagesLinePattern) {
+        fallBackType = MESSAGES_TYPE;
+      } else if (header == eventsLinePattern) {
+        fallBackType = EVENTS_TYPE;
+      } else if (header == sectionLinePattern) {
+        fallBackType = MISC_TYPE;
+      }
     }
 
     public void parse() throws IOException, ParseException {
@@ -534,12 +595,28 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
       ui.setProgress(Resources.get("progressdialog.loadnr.messages"), 1);
       nextLine(true, true);
 
-      while (line != null && line.length() > 0) {
-        Message message;
-        messages.add(message = MagellanFactory.createMessage(line));
-        message.setType(MessageType.NO_TYPE);
-        nextLine(true, false);
-      }
+      do {
+        while (line != null && line.length() > 0) {
+          Message message;
+          messages.add(message = MagellanFactory.createMessage(line));
+          Matcher objectMatcher = unitMessageLinePattern.matcher(line);
+          if (objectMatcher.matches()) {
+            Map<String, String> attributes = new HashMap<String, String>();
+            attributes.put("unit", objectMatcher.group(2));
+            message.setAttributes(attributes);
+          }
+          message.setType(fallBackType);
+          nextLine(true, false);
+        }
+        nextLine(false, true);
+        if (line != null) {
+          for (SectionReader r : sectionReaders) {
+            if (r.matches(line))
+              return;
+          }
+          continueLine();
+        }
+      } while (line != null);
     }
   }
 

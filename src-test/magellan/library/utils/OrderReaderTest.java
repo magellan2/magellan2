@@ -29,6 +29,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import magellan.library.Faction;
@@ -40,6 +41,7 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaSpecificStuff;
 import magellan.library.gamebinding.GameSpecificOrderReader.Status;
 import magellan.library.io.MockReader;
+import magellan.library.utils.OrderReader.LineHandler;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -78,10 +80,22 @@ public class OrderReaderTest extends MagellanTestWithResources {
     Status status = orderReader.getStatus();
     assertEquals(0, status.errors);
     assertEquals(0, status.confirmedUnitsNotOverwritten);
-    assertEquals(0, status.factions);
+    assertEquals(1, status.factions);
     assertEquals(0, status.units);
     assertEquals(0, status.unknownUnits);
     assertEquals("de", orderReader.getLocale().getLanguage());
+  }
+
+  @Test
+  public final void testGetHandlers() throws IOException {
+    List<LineHandler> handlers = orderReader.getHandlers("E");
+    assertEquals(2, handlers.size());
+    handlers = orderReader.getHandlers("");
+    assertEquals(5, handlers.size());
+    handlers = orderReader.getHandlers("ER");
+    assertEquals(1, handlers.size());
+    handlers = orderReader.getHandlers("ERESSEA");
+    assertEquals(1, handlers.size());
   }
 
   @Test

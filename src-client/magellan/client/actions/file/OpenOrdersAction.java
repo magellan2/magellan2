@@ -149,8 +149,8 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
                       status.errors));
             }
           }
-          JOptionPane.showMessageDialog(client, (new java.text.MessageFormat(messageS.toString())),
-              Resources.get("actions.openordersaction.msg.fileordersopen.status.title"),
+          JOptionPane.showMessageDialog(client, messageS.toString(), Resources
+              .get("actions.openordersaction.msg.fileordersopen.status.title"),
               (status.factions > 0 && status.units > 0) ? JOptionPane.PLAIN_MESSAGE
                   : JOptionPane.WARNING_MESSAGE);
           // in order to refresh relations, force a complete new init of the game data, using

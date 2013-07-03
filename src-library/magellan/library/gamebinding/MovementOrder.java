@@ -179,7 +179,7 @@ public class MovementOrder extends SimpleOrder {
     return permanent;
   }
 
-  protected void addDirection(Direction direction) {
+  public void addDirection(Direction direction) {
     directions.add(direction);
   }
 

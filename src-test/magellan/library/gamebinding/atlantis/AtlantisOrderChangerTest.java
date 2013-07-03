@@ -21,7 +21,7 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,6 +39,10 @@ import magellan.library.Ship;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.RulesException;
+import magellan.library.gamebinding.atlantis.AtlantisConstants;
+import magellan.library.gamebinding.atlantis.AtlantisOrderChanger;
 import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;

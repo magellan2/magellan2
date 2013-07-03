@@ -41,7 +41,7 @@ import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
-import magellan.library.gamebinding.AtlantisConstants;
+import magellan.library.gamebinding.atlantis.AtlantisConstants;
 import magellan.library.io.AbstractReportParser;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesIO;
@@ -826,7 +826,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             currentUnit.setGuard(1);
             currentRegion.addGuard(currentUnit);
           } else if (matches(silverPartPattern, part)) {
-            addItem(currentUnit, "silver", Integer.parseInt(partMatcher.group(1)));
+            addItem(currentUnit, AtlantisConstants.I_USILVER.toString(), Integer
+                .parseInt(partMatcher.group(1)));
             // sub parts:
           } else if ((partPattern == itemsPartPattern || partPattern == itemPartPattern)
               && matches(itemPartPattern, part)) {

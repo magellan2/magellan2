@@ -1,4 +1,4 @@
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 // class magellan.library.gamebinding.AtlantisOrderChanger
 // created on Apr 16, 2013
@@ -46,6 +46,9 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
+import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.OrderChanger;
+import magellan.library.gamebinding.RulesException;
 import magellan.library.impl.MagellanUnitImpl;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.OrderType;

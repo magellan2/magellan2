@@ -21,16 +21,20 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import magellan.library.CoordinateID;
+import magellan.library.Item;
 import magellan.library.Region;
+import magellan.library.Rules;
 import magellan.library.Unit;
+import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.MovementRelation;
+import magellan.library.rules.ItemType;
 import magellan.library.utils.Direction;
 
 /**

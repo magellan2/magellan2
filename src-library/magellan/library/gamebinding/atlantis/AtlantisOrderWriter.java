@@ -21,12 +21,14 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 
 import magellan.library.Region;
+import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.utils.OrderWriter;
 
 /**

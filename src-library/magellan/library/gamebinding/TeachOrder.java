@@ -85,7 +85,7 @@ public class TeachOrder extends SimpleOrder {
    * 
    * @param newUnit The unit to be added, possibly <code>null</code>.
    */
-  protected void addUnit(UnitID newUnit) {
+  public void addUnit(UnitID newUnit) {
     if (units == null) {
       units = new LinkedList<UnitID>();
     }

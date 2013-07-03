@@ -237,8 +237,8 @@ public abstract class AbstractOrderCompleter implements Completer {
    * @param closing
    * @param opening
    */
-  protected void addFilteredSpells(Unit u, boolean far, boolean ocean, boolean combat,
-      String opening, String closing) {
+  public void addFilteredSpells(Unit u, boolean far, boolean ocean, boolean combat, String opening,
+      String closing) {
     final Collection<Spell> spells = u.getSpells().values();
     for (Spell spell : spells) {
       if ((spell.getDescription() == null) // indicates that no information is available about this
@@ -254,7 +254,10 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addFamilarSpells(Unit mage, Unit familar, String opening, String closing) {
+  /**
+   * Adds completios for a familiar of the mage, enclosed in opening and closing quotes
+   */
+  public void addFamilarSpells(Unit mage, Unit familar, String opening, String closing) {
 
     Skill magic = mage.getSkill(data.rules.getSkillType(EresseaConstants.S_MAGIE));
     if ((magic != null)
@@ -291,7 +294,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   /**
    * adds all units in this region whose faction has a trustlevel not greater than zero (TL_DEFAULT)
    */
-  protected void addEnemyUnits(String postfix) {
+  public void addEnemyUnits(String postfix) {
     if ((data != null) && (unit != null) && (region != null)) {
       for (Unit u : region.units()) {
         if ((u.getFaction() == null || u.getFaction().getTrustLevel() <= Faction.TL_DEFAULT)
@@ -307,7 +310,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Alliance-Object. Example: Given Alliance contains help and give: units are added if they are
    * not allied both: help AND give. The reference-object is the faction of the current unit
    */
-  protected void addNotAlliedUnits(Alliance alliance, String postfix) {
+  public void addNotAlliedUnits(Alliance alliance, String postfix) {
     for (Unit curUnit : region.units()) {
       final Faction f = curUnit.getFaction();
 
@@ -325,14 +328,14 @@ public abstract class AbstractOrderCompleter implements Completer {
   /**
    * Adds all units in the region to the completions.
    */
-  protected void addRegionUnits(String postfix, boolean omitTemp) {
+  public void addRegionUnits(String postfix, boolean omitTemp) {
     addRegionUnits(postfix, 0, omitTemp);
   }
 
   /**
    * Adds all units in the region to the completions.
    */
-  protected void addRegionUnits(String postfix, int cursorOffset, boolean omitTemp) {
+  public void addRegionUnits(String postfix, int cursorOffset, boolean omitTemp) {
     if (region != null) {
       for (final Unit u : region.units()) {
         if (((unit == null) || !u.equals(unit)) && (!omitTemp || u instanceof TempUnit)) {
@@ -346,7 +349,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Add all the ships in the current region except <code>exclude</code> (which may be
    * <code>null</code>). Prefix them with <code>prefix</code>.
    */
-  protected void addRegionShips(String prefix, String postfix, Ship exclude, boolean comment) {
+  public void addRegionShips(String prefix, String postfix, Ship exclude, boolean comment) {
     final Iterator<Ship> iter2 = region.ships().iterator();
     for (; iter2.hasNext();) {
       final UnitContainer uc = iter2.next();
@@ -366,7 +369,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * 
    * @param postfix
    */
-  void addRegionBuildings(String prefix, String postfix, Building exclude, boolean comment) {
+  public void addRegionBuildings(String prefix, String postfix, Building exclude, boolean comment) {
     final Iterator<Building> iter1 = region.buildings().iterator();
     for (; iter1.hasNext();) {
       final UnitContainer uc = iter1.next();
@@ -380,7 +383,10 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addRegionItemsFaction(String postfix, int minAmount) {
+  /**
+   * Adds all items of which the units of the current faction in the region have at least minAmount.
+   */
+  public void addRegionItemsFaction(String postfix, int minAmount) {
     if (region != null) {
       final Map<ItemType, Integer> items = new HashMap<ItemType, Integer>();
       for (final Unit actUnit : region.units()) {
@@ -410,11 +416,17 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addRegionShipCommanders(String postfix) {
+  /**
+   * Adds completions for all owners of ships in the region.
+   */
+  public void addRegionShipCommanders(String postfix) {
     addRegionShipCommanders(postfix, 0);
   }
 
-  protected void addRegionShipCommanders(String postfix, int cursorOffset) {
+  /**
+   * Adds completions for all owners of ships in the region.
+   */
+  public void addRegionShipCommanders(String postfix, int cursorOffset) {
     if (region != null) {
       final Iterator<Ship> ships = region.ships().iterator();
       while (ships.hasNext() == true) {
@@ -431,20 +443,29 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addUnitContainerOwner(UnitContainer s, Unit u, String postfix, int cursorOffset) {
+  /**
+   * Adds completions for the owner u of UnitContainer c.
+   */
+  public void addUnitContainerOwner(UnitContainer uc, Unit u, String postfix, int cursorOffset) {
     final String id = u.getID().toString();
 
-    completions.add(new Completion(s.toString() + " (" + s.getID() + ")", id, postfix,
+    completions.add(new Completion(uc.toString() + " (" + uc.getID() + ")", id, postfix,
         Completion.DEFAULT_PRIORITY + 1, cursorOffset));
-    completions.add(new Completion(s.getID() + " (" + s.toString() + ")", id, postfix,
+    completions.add(new Completion(uc.getID() + " (" + uc.toString() + ")", id, postfix,
         Completion.DEFAULT_PRIORITY + 2, cursorOffset));
   }
 
-  protected void addRegionBuildingOwners(String postfix) {
+  /**
+   * Adds completion for all building owners in the current region.
+   */
+  public void addRegionBuildingOwners(String postfix) {
     addRegionBuildingOwners(postfix, 0);
   }
 
-  protected void addRegionBuildingOwners(String postfix, int cursorOffset) {
+  /**
+   * Adds completion for all building owners in the current region.
+   */
+  public void addRegionBuildingOwners(String postfix, int cursorOffset) {
     if (region != null) {
       final Iterator<Building> buildings = region.buildings().iterator();
       while (buildings.hasNext() == true) {
@@ -461,15 +482,21 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addUnitItems(String postfix) {
-    addUnitItems(0, postfix);
+  /**
+   * Adds completions for all items of the unit, excluding item types in exclude.
+   */
+  public void addUnitItems(String postfix, StringID... exclude) {
+    addUnitItems(0, postfix, exclude);
   }
 
-  protected void addUnitItems(int amount, String postfix, StringID... exclude) {
+  /**
+   * Adds completions for all items of the unit, excluding item types in exclude.
+   */
+  public void addUnitItems(int amount, String postfix, StringID... exclude) {
     for (final Item i : unit.getItems()) {
       boolean include = true;
       for (StringID ex : exclude)
-        if (i.getType().getID().equals(ex)) {
+        if (i.getItemType().getID().equals(ex)) {
           include = false;
         }
       if (include) {
@@ -480,11 +507,17 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addFactionItems(String postfix) {
+  /**
+   * Adds completions for all faction items of the current unit's faction.
+   */
+  public void addFactionItems(String postfix) {
     addFactionItems(0, postfix);
   }
 
-  protected void addFactionItems(int amount, String postfix) {
+  /**
+   * Adds completions for all faction items of the current unit's faction.
+   */
+  public void addFactionItems(int amount, String postfix) {
     for (final Item i : unit.getFaction().getItems()) {
       completions
           .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
@@ -498,7 +531,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * 
    * @param postfix
    */
-  protected void addFactions(String postfix) {
+  public void addFactions(String postfix) {
     if (data != null) {
       for (Faction f : data.getFactions()) {
         addNamed(f, postfix, 0, true);
@@ -514,7 +547,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * @param addComment if <code>true</code>, the faction name is appended as a comment. Does not mix
    *          well with <code>cursorOffset!=0</code>.
    */
-  protected void addOtherFactions(String postfix, int cursorOffset, boolean addComment) {
+  public void addOtherFactions(String postfix, int cursorOffset, boolean addComment) {
     final Faction ownerFaction = unit.getFaction();
     for (Faction f : data.getFactions()) {
 
@@ -524,7 +557,11 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addSurroundingRegions(int radius, String postfix) {
+  /**
+   * Adds completions for all regions surrounding the current region, completing to the appropriate
+   * direction.
+   */
+  public void addSurroundingRegions(int radius, String postfix) {
     if (radius < 1) {
       radius = 1;
     }
@@ -543,11 +580,11 @@ public abstract class AbstractOrderCompleter implements Completer {
         // get a path from the current region to neighbouring
         // translate the path of regions into a string of
         // directions to take
-        final String directions =
+        final String dirs =
             Regions.getDirections(data, region.getID(), r.getID(), excludedRegionTypes, radius);
 
-        if (directions != null) {
-          completions.add(new Completion(r.getName(), directions, postfix,
+        if (dirs != null) {
+          completions.add(new Completion(r.getName(), dirs, postfix,
               Completion.DEFAULT_PRIORITY - 1));
         }
       }
@@ -558,7 +595,10 @@ public abstract class AbstractOrderCompleter implements Completer {
       EresseaConstants.OC_NE, EresseaConstants.OC_E, EresseaConstants.OC_SE,
       EresseaConstants.OC_SW, EresseaConstants.OC_W };
 
-  protected void addDirections(String postfix) {
+  /**
+   * Adds completions for all directions.
+   */
+  public void addDirections(String postfix) {
     ArrayList<List<String>> dirs = new ArrayList<List<String>>(6);
     int max = Integer.MIN_VALUE;
     for (StringID dir : directions) {
@@ -573,11 +613,19 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addDirection(String postfix, int dir) {
+  /**
+   * Adds a completion for the direction specified.
+   * 
+   * @param dir This corresponds to the index of the direction in the Direction enum.
+   */
+  public void addDirection(String postfix, int dir) {
     completions.add(new Completion(getOrderTranslation(directions[dir]), ""));
   }
 
-  protected void addUnitLuxuries(String postfix) {
+  /**
+   * Adds completions for all the unit's luxury items.
+   */
+  public void addUnitLuxuries(String postfix) {
     ItemCategory cat = null;
 
     if ((data != null) && (data.rules != null)) {
@@ -597,21 +645,24 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
-  protected void addUnit(Unit u, String postfix) {
+  /**
+   * Adds a unit to the completion in a standard manner without comment.
+   */
+  public void addUnit(Unit u, String postfix) {
     addUnit(u, postfix, 0);
   }
 
   /**
    * Adds a unit to the completion in a standard manner without comment.
    */
-  protected void addUnit(Unit u, String postfix, int cursorOffset) {
+  public void addUnit(Unit u, String postfix, int cursorOffset) {
     addUnit(u, postfix, cursorOffset, false);
   }
 
   /**
    * Adds a unit to the completions in a standard manner without comments.
    */
-  protected void addUnit(Unit u, String postfix, int cursorOffset, boolean omitTemp) {
+  public void addUnit(Unit u, String postfix, int cursorOffset, boolean omitTemp) {
     try {
       if (u instanceof TempUnit) {
         completions.add(new Completion(omitTemp ? u.getID().toString() : getGameSpecificStuff()
@@ -625,6 +676,9 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
   }
 
+  /**
+   * Returns the localized temp unit token.
+   */
   protected abstract String getTemp();
 
   /**
@@ -635,7 +689,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * @param offset Completion offset (probably doesn't make sense with comment)
    * @param addComment If this is <code>true</code>, the name is inserted as a comment after the id
    */
-  protected void addNamed(Named named, String postfix, int offset, boolean addComment) {
+  public void addNamed(Named named, String postfix, int offset, boolean addComment) {
     addNamed(named, postfix, Completion.DEFAULT_PRIORITY, offset, addComment);
   }
 
@@ -648,7 +702,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * @param offset Completion offset (probably doesn't make sense with comment)
    * @param addComment If this is <code>true</code>, the name is inserted as a comment after the id
    */
-  protected void addNamed(Named named, String postfix, int prio, int offset, boolean addComment) {
+  public void addNamed(Named named, String postfix, int prio, int offset, boolean addComment) {
     String name = named.getName();
     String id = named.getID().toString();
     if (name != null) {
@@ -692,7 +746,7 @@ public abstract class AbstractOrderCompleter implements Completer {
     return canMake;
   }
 
-  private boolean checkForMaterial(Item ingredient, int amount) {
+  protected boolean checkForMaterial(Item ingredient, int amount) {
     // be careful, units cannot own peasants although one is required for the potion "Bauernblut"
     if (ingredient.getItemType() != null) {
       int availableAmount = 0;
@@ -807,11 +861,14 @@ public abstract class AbstractOrderCompleter implements Completer {
   /**
    * Adds an item by type
    */
-  protected void addItem(ItemType iType, String postfix) {
+  public void addItem(ItemType iType, String postfix) {
     completions.add(new Completion(iType.getOrderName(), iType.getOrderName(), postfix));
   }
 
-  protected void addShiptypes() {
+  /**
+   * Adds completions for all ship types in the rules.
+   */
+  public void addShiptypes() {
     if ((data != null) && (data.rules != null)) {
       for (final Iterator<ShipType> iter = data.rules.getShipTypeIterator(); iter.hasNext();) {
         final ShipType t = iter.next();
@@ -948,10 +1005,18 @@ public abstract class AbstractOrderCompleter implements Completer {
     return parserTokens;
   }
 
-  protected abstract void cmplt();
+  /**
+   * Called to produce the basic completions when token has been read. Adds completions for
+   * user-defined commands.
+   */
+  protected void cmplt() {
+    // add completions, that were defined by the user in the option pane
+    // and can be accessed by CompleterSettingsProvider.getSelfDefinedCompletions()
+    completions.addAll(completerSettingsProvider.getSelfDefinedCompletions());
+  }
 
   /** Add completions for command Description. */
-  protected void cmpltDescription() {
+  public void cmpltDescription() {
     completions.add(new Completion(twoQuotes, twoQuotes, " ", Completion.DEFAULT_PRIORITY, 2));
   }
 

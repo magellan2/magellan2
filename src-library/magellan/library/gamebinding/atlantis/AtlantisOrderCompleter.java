@@ -21,7 +21,7 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 import java.util.Iterator;
 
@@ -29,6 +29,8 @@ import magellan.library.GameData;
 import magellan.library.StringID;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.Completion;
+import magellan.library.gamebinding.AbstractOrderCompleter;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 
 /**

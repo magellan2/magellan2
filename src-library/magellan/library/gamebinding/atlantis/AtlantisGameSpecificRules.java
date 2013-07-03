@@ -21,7 +21,7 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 import magellan.library.Faction;
 import magellan.library.Region;
@@ -29,6 +29,7 @@ import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.UnitContainerType;

@@ -55,10 +55,10 @@ import magellan.library.utils.Resources;
  */
 public class GiveOrder extends UnitArgumentOrder {
 
-  protected StringID type;
+  public StringID type;
   protected boolean each;
-  protected int amount;
-  protected ItemType itemType;
+  public int amount;
+  public ItemType itemType;
   protected boolean all;
 
   /**

@@ -21,7 +21,7 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.gamebinding.atlantis;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -42,6 +42,15 @@ import magellan.library.Rules;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
+import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificOrderWriter;
+import magellan.library.gamebinding.GameSpecificRules;
+import magellan.library.gamebinding.GameSpecificStuff;
+import magellan.library.gamebinding.MapMergeEvaluator;
+import magellan.library.gamebinding.MessageRenderer;
+import magellan.library.gamebinding.MovementEvaluator;
+import magellan.library.gamebinding.OrderChanger;
+import magellan.library.gamebinding.RelationFactory;
 import magellan.library.gamebinding.e3a.E3AMapMergeEvaluator;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.ReportParser;
@@ -184,7 +193,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
   public RelationFactory getRelationFactory() {
     // TODO implement
     if (relationFactory == null) {
-      relationFactory = new EresseaRelationFactory(getRules());
+      relationFactory = new AtlantisRelationFactory(getRules());
     }
     return relationFactory;
   }

@@ -212,6 +212,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
     // ACCEPT f1
     testLong(getOrderTranslation(AtlantisConstants.OC_ACCEPT), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_ACCEPT), false);
+    checkOrder("ACCEPT NEW 123", false);
   }
 
   /**
@@ -393,6 +394,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
     // PROMOTE u1
     testLong(getOrderTranslation(AtlantisConstants.OC_PROMOTE), false);
     idTest(getOrderTranslation(AtlantisConstants.OC_PROMOTE), false);
+    checkOrder("PROMOTE NEW 123", true);
   }
 
   /**
@@ -442,6 +444,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
     // PAY u1 1
     testLong(getOrderTranslation(AtlantisConstants.OC_PAY) + " 5 17", false);
     checkOrder(getOrderTranslation(AtlantisConstants.OC_PAY) + " 5 17");
+    checkOrder("PAY NEW 5 999");
     checkOrder("PAY", false);
     checkOrder("PAY", false);
     checkOrder("PAY 5", false);
@@ -607,6 +610,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
   public void testTeachReader() {
     // TEACH u1+
     idTest(getOrderTranslation(AtlantisConstants.OC_TEACH), true);
+    checkOrder("TEACH NEW 123", true);
   }
 
   /**

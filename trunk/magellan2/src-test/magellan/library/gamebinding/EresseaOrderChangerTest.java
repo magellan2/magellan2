@@ -25,7 +25,12 @@ package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+
+import java.util.Collection;
+import java.util.Iterator;
+
 import magellan.library.GameData;
+import magellan.library.Order;
 import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
@@ -200,4 +205,14 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     assertEquals("ARBEITEN", tempUnit.getOrders2().get(1).getText());
   }
 
+  @Test
+  public void testGetTempOrders() throws Exception {
+    unit.clearOrders();
+    unit.createTemp(data, UnitID.createTempID(data, null, unit));
+    Collection<? extends Order> orders = changer.getTempOrders(false, unit);
+    assertSame(2, orders.size());
+    Iterator<? extends Order> it = orders.iterator();
+    assertEquals("MACHEN TEMP 1", it.next().getText());
+    assertEquals("ENDE", it.next().getText());
+  }
 }

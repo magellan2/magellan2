@@ -180,6 +180,8 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
     protected List<EntityID> ids = new ArrayList<EntityID>();
 
+    private boolean temp;
+
     protected IdHandler(OrderParser parser) {
       super(parser);
     }
@@ -202,8 +204,8 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText(), false)) {
-        ids.add(EntityID.createEntityID(t.getText(), getData().base));
+      if (isID(t.getText(), isTemp())) {
+        addId(t);
         if (multi) {
           retVal = readIt(t);
         } else {
@@ -220,6 +222,28 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       }
 
       return retVal;
+    }
+
+    protected void addId(OrderToken t) {
+      ids.add(EntityID.createEntityID(t.getText(), getData().base));
+    }
+
+    /**
+     * Returns the value of temp.
+     * 
+     * @return Returns temp.
+     */
+    public boolean isTemp() {
+      return temp;
+    }
+
+    /**
+     * Sets the value of temp.
+     * 
+     * @param temp The value for temp.
+     */
+    public void setTemp(boolean temp) {
+      this.temp = temp;
     }
 
     protected void completeId() {
@@ -575,6 +599,12 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     // PROMOTE u1
     public PromoteReader(OrderParser parser) {
       super(parser);
+      setTemp(true);
+    }
+
+    @Override
+    protected void addId(OrderToken t) {
+      ids.add(UnitID.createUnitID(t.getText(), getData().base));
     }
 
   }
@@ -658,9 +688,9 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       OrderToken t = getNextToken();
 
       boolean retVal = false;
-      if (isID(t.getText(), false)) {
-        target = UnitID.createUnitID(t.getText(), getData().base);
+      if (isID(t.getText(), true)) {
         t.ttype = OrderToken.TT_ID;
+        target = UnitID.createUnitID(t.getText(), getData().base);
 
         retVal = readId(t);
       } else if (type != AtlantisConstants.OC_GIVE
@@ -900,6 +930,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     // TEACH u1+
     public TeachReader(OrderParser parser) {
       super(parser, true);
+      setTemp(true);
     }
 
     @Override
@@ -926,6 +957,12 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     protected void completeId() {
       getCompleter().addRegionUnits(" ", false);
     }
+
+    @Override
+    protected void addId(OrderToken t) {
+      ids.add(UnitID.createUnitID(t.getText(), getData().base));
+    }
+
   }
 
   protected class WorkReader extends BareHandler {

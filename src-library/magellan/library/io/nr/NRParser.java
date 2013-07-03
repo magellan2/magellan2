@@ -45,6 +45,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.MessageType;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.ShipType;
+import magellan.library.rules.SimpleDate;
 import magellan.library.rules.SkillType;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.CollectionFactory;
@@ -57,7 +58,6 @@ import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.IdentityTransformer;
 import magellan.library.utils.transformation.ReportTransformer;
-import magellan.rules.SimpleDate;
 
 /**
  * Parser for nr-files.

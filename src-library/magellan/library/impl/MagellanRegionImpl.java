@@ -1235,6 +1235,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Adds a neighbor in the specified direction.
+   * 
+   * @return The previous neighbour at that direction
    */
   public Region addNeighbor(Direction dir, Region newNeighbor) {
     if (neighbors == null) {

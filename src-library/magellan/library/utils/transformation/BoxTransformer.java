@@ -22,6 +22,14 @@ public class BoxTransformer implements ReportTransformer {
    */
   public static class BBoxes {
     private Map<Integer, BBox> boxes = new HashMap<Integer, BBox>(3);
+    private MapMetric metric;
+
+    /**
+     * Creates an empty set of boxes suited for the given metric.
+     */
+    public BBoxes(MapMetric metric) {
+      this.metric = metric;
+    }
 
     /**
      * Adjusts the x-dimensions of a box.
@@ -29,7 +37,7 @@ public class BoxTransformer implements ReportTransformer {
     public BBox setBoxX(int layer, int minx, int maxx) {
       BBox result = boxes.get(layer);
       if (result == null) {
-        boxes.put(layer, new BBox());
+        boxes.put(layer, metric.createBBox());
       }
       boxes.get(layer).setX(minx, maxx);
       return result;
@@ -41,7 +49,7 @@ public class BoxTransformer implements ReportTransformer {
     public BBox setBoxY(int layer, int miny, int maxy) {
       BBox result = boxes.get(layer);
       if (result == null) {
-        boxes.put(layer, new BBox());
+        boxes.put(layer, metric.createBBox());
       }
       boxes.get(layer).setY(miny, maxy);
       return result;
@@ -89,149 +97,79 @@ public class BoxTransformer implements ReportTransformer {
   /**
    * A bounding box in two dimensions.
    */
-  public static class BBox {
-    /** The dimensions of the box */
-    public int minx = Integer.MAX_VALUE;
-    /** The dimensions of the box */
-    public int maxx = Integer.MIN_VALUE;
-    /** The dimensions of the box */
-    public int miny = Integer.MAX_VALUE;
-    /** The dimensions of the box */
-    public int maxy = Integer.MIN_VALUE;
+  public static interface BBox {
 
-    private int centery = 0, centerx = 0;
+    /**
+     * Returns the maximum x value for this box. Note that this does not mean that all coordinate in
+     * the box have x<getMaxx.
+     */
+    public abstract int getMaxx();
+
+    /**
+     * Returns the minimum x value for this box. Note that this does not mean that all coordinate in
+     * the box have x>getMinx.
+     */
+    public abstract int getMinx();
+
+    /**
+     * Returns the minimum y value for this box. Note that this does not mean that all coordinate in
+     * the box have y>getMiny.
+     */
+    public abstract int getMiny();
+
+    /**
+     * Returns the maximum y value for this box. Note that this does not mean that all coordinate in
+     * the box have y<getMaxy.
+     */
+    public abstract int getMaxy();
 
     /**
      * Changes the box's x-dimensions.
      */
-    public void setX(int newmin, int newmax) {
-      minx = newmin;
-      maxx = newmax;
-    }
+    public abstract void setX(int minx2, int maxx2);
 
     /**
      * Changes the box's y-dimensions.
      */
-    public void setY(int newmin, int newmax) {
-      miny = newmin;
-      maxy = newmax;
-    }
+    public abstract void setY(int maxValue, int minValue);
 
     /**
-     * Enlarge the box to contain c if necessary.
+     * Returns <code>true</code> if the coordinate is inside the box.
      */
-    public void adjust(CoordinateID c) {
-      adjust(c.getX(), c.getY());
-    }
+    public abstract boolean isInside(CoordinateID c);
 
     /**
-     * Enlarge the box to contain the point (x,y) if necessary.
+     * Returns <code>true</code> if the coordinate is on the border of the Box, i.e., if an adjacent
+     * coordinate is not in the box.
      */
-    public void adjust(int x, int y) {
-      if (x > maxx) {
-        maxx = x;
-      }
-      if (y > maxy) {
-        maxy = y;
-      }
-      if (x < minx) {
-        minx = x;
-      }
-      if (y < miny) {
-        miny = x;
-      }
-    }
+    public abstract boolean isOnBorder(CoordinateID c);
 
     /**
      * Shifts the coordinate by the box's dimension (x- and y- separately) until it is inside and
      * returns the result.
      */
-    public CoordinateID putInBox(CoordinateID c) {
-      return putInBoxX(putInBoxY(putInBoxX(c)));
-    }
+    public abstract CoordinateID putInBox(CoordinateID c);
 
     /**
-     * Shifts the x-coordinate into the box's width until it is inside and returns the result.
+     * Returns true if the coordinate is left of this box (smaller x value).
      */
-    public CoordinateID putInBoxX(CoordinateID c) {
-      if (minx != Integer.MAX_VALUE && maxx != Integer.MIN_VALUE) {
-        while (leftOf(c)) {
-          c = CoordinateID.create(c.getX() + maxx - minx + 1, c.getY(), c.getZ());
-        }
-        while (rightOf(c)) {
-          c = CoordinateID.create(c.getX() - maxx + minx - 1, c.getY(), c.getZ());
-        }
-      }
-      return c;
-    }
+    public abstract boolean leftOf(CoordinateID c);
 
     /**
-     * Shifts the y-coordinate by the box's height until it is inside and returns the result.
+     * Returns true if the coordinate is right of this box (larger x value).
      */
-    public CoordinateID putInBoxY(CoordinateID c) {
-      if (miny != Integer.MAX_VALUE && maxy != Integer.MIN_VALUE) {
-        while (under(c)) {
-          c = CoordinateID.create(c.getX(), c.getY() + maxy - miny + 1, c.getZ());
-        }
-        while (above(c)) {
-          c = CoordinateID.create(c.getX(), c.getY() - maxy + miny - 1, c.getZ());
-        }
-      }
-      return c;
-    }
+    public abstract boolean rightOf(CoordinateID c);
 
     /**
-     * Returns true if the coordinate is above the box.
+     * Returns true if the coordinate is below this box (smaller y value).
      */
-    public boolean above(CoordinateID newC) {
-      return maxy != Integer.MIN_VALUE && newC.getY() > maxy;
-    }
+    public abstract boolean under(CoordinateID c);
 
     /**
-     * Returns true if the coordinate is under the box.
+     * Returns true if the coordinate is above this box (larger y value).
      */
-    public boolean under(CoordinateID newC) {
-      return miny != Integer.MAX_VALUE && newC.getY() < miny;
-    }
+    public abstract boolean above(CoordinateID c);
 
-    /**
-     * Returns true if the coordinate is right of the box.
-     */
-    public boolean rightOf(CoordinateID newC) {
-      return maxx != Integer.MIN_VALUE && newC.getX() > maxx - newC.getY() / 2 + centerx;
-    }
-
-    /**
-     * Returns true if the coordinate is left of the box.
-     */
-    public boolean leftOf(CoordinateID newC) {
-      return minx != Integer.MAX_VALUE && newC.getX() < minx - newC.getY() / 2 + centerx;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (obj == this)
-        return true;
-      if (obj instanceof BBox)
-        return minx == ((BBox) obj).minx && maxx == ((BBox) obj).maxx && miny == ((BBox) obj).miny
-            && maxy == ((BBox) obj).maxy && centerx == ((BBox) obj).centerx
-            && centery == ((BBox) obj).centery;
-      return false;
-    }
-
-    @Override
-    public String toString() {
-      return "x: " + (minx == Integer.MAX_VALUE ? "MIN" : minx) + "/"
-          + (maxx == Integer.MIN_VALUE ? "MAX" : maxx) + ", y: "
-          + (miny == Integer.MAX_VALUE ? "MIN" : miny) + "/"
-          + (maxy == Integer.MIN_VALUE ? "MAX" : maxy);
-      // (" + centerx + "," + centery + ")
-    }
-
-    @Override
-    public int hashCode() {
-      return ((((minx << 5 + maxx) << 5 + miny) << 5 + maxy) << 5 + centerx) << 5 + centery;
-    }
   }
 
   private BBoxes boxes;
@@ -246,9 +184,11 @@ public class BoxTransformer implements ReportTransformer {
       throw new NullPointerException();
     for (int layer : boxes.getLayers()) {
       BBox box = boxes.getBox(layer);
-      if (box.minx >= box.maxx && box.minx != Integer.MAX_VALUE && box.maxx != Integer.MIN_VALUE)
+      if (box.getMinx() >= box.getMaxx() && box.getMinx() != Integer.MAX_VALUE
+          && box.getMaxx() != Integer.MIN_VALUE)
         throw new IllegalArgumentException(box.toString());
-      if (box.miny >= box.maxy && box.miny != Integer.MAX_VALUE && box.maxy != Integer.MIN_VALUE)
+      if (box.getMiny() >= box.getMaxy() && box.getMiny() != Integer.MAX_VALUE
+          && box.getMaxy() != Integer.MIN_VALUE)
         throw new IllegalArgumentException(box.toString());
     }
     this.boxes = boxes;
@@ -284,9 +224,7 @@ public class BoxTransformer implements ReportTransformer {
       // if the region is at the edge of the box, shift it in every direction, put in box and shift
       // back again to get wrapper position
       CoordinateID c = box.putInBox(r.getCoordinate());
-      if (c.getX() == box.minx - c.getY() / 2 + box.centerx
-          || c.getX() == box.maxx - c.getY() / 2 + box.centerx || c.getY() == box.miny
-          || c.getY() == box.maxy) {
+      if (box.isOnBorder(c)) {
         Map<CoordinateID, Region> result = new HashMap<CoordinateID, Region>();
         for (Direction d : metric.getDirections()) {
           CoordinateID c2 = metric.translate(c, d); // c.add(d.toCoordinate());

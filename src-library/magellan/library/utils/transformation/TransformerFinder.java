@@ -39,6 +39,7 @@ import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.gamebinding.EresseaSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Score;
 import magellan.library.utils.SetGirthDialog;
@@ -61,6 +62,8 @@ public class TransformerFinder {
 
   private boolean tryBoxes;
 
+  private MapMetric metric;
+
   public TransformerFinder(GameData globalData, GameData addedData, UserInterface ui,
       boolean interactive, boolean tryFindingBoxes) {
     this.globalData = globalData;
@@ -74,6 +77,7 @@ public class TransformerFinder {
       filename = "???";
     }
     tryBoxes = tryFindingBoxes;
+    metric = globalData.getGameSpecificStuff().getMapMetric();
   }
 
   /**
@@ -92,7 +96,7 @@ public class TransformerFinder {
         log.info("Using this astral translation: " + bestAstralTranslation.getKey());
 
         // compute dimension (of the output report)
-        BBoxes boxes = new BBoxes();
+        BBoxes boxes = new BBoxes(metric);
         if (tryBoxes) {
           boxes = getBoundingBox(bestTranslation.getKey(), bestAstralTranslation.getKey());
         }
@@ -470,13 +474,13 @@ public class TransformerFinder {
 
   private BBoxes getBoundingBox(CoordinateID bestTranslation, CoordinateID bestAstralTranslation) {
     // get existing box of old data
-    BBoxes outBoxes = new BBoxes();
+    BBoxes outBoxes = new BBoxes(metric);
     boolean problem = !getBoundingBox(globalData, outBoxes);
     // get existing box of new data
-    BBoxes inBoxes = new BBoxes();
+    BBoxes inBoxes = new BBoxes(metric);
     problem |= !getBoundingBox(addedData, inBoxes);
     // get new box of combination of both
-    BBoxes idBoxes = new BBoxes();
+    BBoxes idBoxes = new BBoxes(metric);
     problem |=
         !getTransformBox(globalData, addedData, bestTranslation, bestAstralTranslation, idBoxes);
 
@@ -484,7 +488,7 @@ public class TransformerFinder {
     layers.addAll(inBoxes.getLayers());
     layers.addAll(idBoxes.getLayers());
 
-    BBoxes resultBoxes = new BBoxes();
+    BBoxes resultBoxes = new BBoxes(metric);
     for (int layer : layers) {
       // Set<BBox> ask = new HashSet<BoxTransformer.BBox>();
 
@@ -493,7 +497,7 @@ public class TransformerFinder {
       BBox idBox = idBoxes.getBox(layer);
 
       // boxes from combination
-      BBox rBox = new BBox();
+      BBox rBox = metric.createBBox();
 
       // set default: box that was already known
       if (outBox != null) {
@@ -537,50 +541,50 @@ public class TransformerFinder {
 
   private boolean joinBox(BBox rBox, BBox newBox) {
     boolean ask = false;
-    if (newBox.maxx != Integer.MIN_VALUE) {
-      if (rBox.minx == Integer.MAX_VALUE && rBox.maxx == Integer.MIN_VALUE) {
+    if (newBox.getMaxx() != Integer.MIN_VALUE) {
+      if (rBox.getMinx() == Integer.MAX_VALUE && rBox.getMaxx() == Integer.MIN_VALUE) {
         log.info("gone round the world (westward); the world's new girth is "
-            + (newBox.maxx - newBox.minx + 1));
-        rBox.setX(newBox.minx, newBox.maxx);
+            + (newBox.getMaxx() - newBox.getMinx() + 1));
+        rBox.setX(newBox.getMinx(), newBox.getMaxx());
         ask = true;// ask.add(idBox);
-      } else if (rBox.maxx - rBox.minx != newBox.maxx - newBox.minx) {
+      } else if (rBox.getMaxx() - rBox.getMinx() != newBox.getMaxx() - newBox.getMinx()) {
         // boxes do not match
         log.warn("new xbox: " + rBox + " -> " + newBox);
         // old box might be a multiple of new box...
-        if (rBox.maxx != Integer.MIN_VALUE
-            && (newBox.maxx - newBox.minx) % (rBox.maxx - rBox.minx) != 0) {
+        if (rBox.getMaxx() != Integer.MIN_VALUE
+            && (newBox.getMaxx() - newBox.getMinx()) % (rBox.getMaxx() - rBox.getMinx()) != 0) {
           log.warn("cannot continue");
           if (!interactive) {
-            rBox.setX(newBox.minx, newBox.maxx);
+            rBox.setX(newBox.getMinx(), newBox.getMaxx());
           }
         } else {
           log.info("the world has shrunken (westward); the world's new girth is "
-              + (newBox.maxx - newBox.minx + 1));
-          rBox.setX(newBox.minx, newBox.maxx);
+              + (newBox.getMaxx() - newBox.getMinx() + 1));
+          rBox.setX(newBox.getMinx(), newBox.getMaxx());
         }
         ask = true;// ask.add(idBox);
       }
     }
     // same thing for y-box
-    if (newBox.maxy != Integer.MIN_VALUE) {
-      if (rBox.miny == Integer.MAX_VALUE && rBox.maxy == Integer.MIN_VALUE) {
+    if (newBox.getMaxy() != Integer.MIN_VALUE) {
+      if (rBox.getMiny() == Integer.MAX_VALUE && rBox.getMaxy() == Integer.MIN_VALUE) {
         log.info("gone round the world (southward); the world's new girth is "
-            + (newBox.maxy - newBox.miny + 1));
-        rBox.setY(newBox.miny, newBox.maxy);
+            + (newBox.getMaxy() - newBox.getMiny() + 1));
+        rBox.setY(newBox.getMiny(), newBox.getMaxy());
         ask = true;// ask.add(idBox);
-      } else if (rBox.maxy - rBox.miny != newBox.maxy - newBox.miny) {
+      } else if (rBox.getMaxy() - rBox.getMiny() != newBox.getMaxy() - newBox.getMiny()) {
         // boxes do not match
         log.warn("new ybox: " + rBox + " -> " + newBox);
-        if (rBox.maxy != Integer.MIN_VALUE
-            && (newBox.maxy - newBox.miny) % (rBox.maxy - rBox.miny) != 0) {
+        if (rBox.getMaxy() != Integer.MIN_VALUE
+            && (newBox.getMaxy() - newBox.getMiny()) % (rBox.getMaxy() - rBox.getMiny()) != 0) {
           log.warn("cannot continue");
           if (!interactive) {
-            rBox.setY(newBox.miny, newBox.maxy);
+            rBox.setY(newBox.getMiny(), newBox.getMaxy());
           }
         } else {
           log.info("the world has shrunken (southward); the world's new girth is "
-              + (newBox.maxy + 1));
-          rBox.setY(newBox.miny, newBox.maxy);
+              + (newBox.getMaxy() + 1));
+          rBox.setY(newBox.getMiny(), newBox.getMaxy());
         }
         ask = true;// ask.add(idBox);
       }
@@ -624,7 +628,7 @@ public class TransformerFinder {
 
     if (choice.equals(inputMethod)) {
       SetGirthDialog girthDialog;
-      BBox box = ui.askForGirth(best, layer);
+      BBox box = ui.askForGirth(best, layer, metric);
       return box;
     } else if (choice.equals(skipMethod))
       return null;
@@ -689,11 +693,11 @@ public class TransformerFinder {
               } else {
                 if (translation.getX() != 0) {
                   if (boxes.getBox(layer) != null) {
-                    if (boxes.getBox(layer).maxx != Integer.MAX_VALUE
-                        && boxes.getBox(layer).maxx - boxes.getBox(layer).minx != translation
+                    if (boxes.getBox(layer).getMaxx() != Integer.MAX_VALUE
+                        && boxes.getBox(layer).getMaxx() - boxes.getBox(layer).getMinx() != translation
                             .getX() - 1) {
                       log.warnOnce("box mismatch: " + (translation.getX() - 1) + " vs. "
-                          + boxes.getBox(layer).minx + "," + boxes.getBox(layer).maxx);
+                          + boxes.getBox(layer).getMinx() + "," + boxes.getBox(layer).getMaxx());
                       result = false;
                     }
                   } else {
@@ -706,11 +710,11 @@ public class TransformerFinder {
 
                 if (translation.getY() != 0) {
                   if (boxes.getBox(layer) != null) {
-                    if (boxes.getBox(layer).maxy != Integer.MAX_VALUE
-                        && boxes.getBox(layer).maxy - boxes.getBox(layer).miny != translation
+                    if (boxes.getBox(layer).getMaxy() != Integer.MAX_VALUE
+                        && boxes.getBox(layer).getMaxy() - boxes.getBox(layer).getMiny() != translation
                             .getY() - 1) {
                       log.warn("box mismatch: " + (translation.getY() - 1) + " vs. "
-                          + boxes.getBox(layer).miny + "," + boxes.getBox(layer).maxy);
+                          + boxes.getBox(layer).getMiny() + "," + boxes.getBox(layer).getMaxy());
                       result = false;
                     }
                   } else {
@@ -778,10 +782,10 @@ public class TransformerFinder {
     boolean result = true;
     boolean keep = false;
     if (oldBox != null
-        && ((oldBox.minx != Integer.MAX_VALUE && oldBox.minx != newmin) || (oldBox.maxx != Integer.MIN_VALUE && oldBox.maxx != newmax))) {
+        && ((oldBox.getMinx() != Integer.MAX_VALUE && oldBox.getMinx() != newmin) || (oldBox.getMaxx() != Integer.MIN_VALUE && oldBox.getMaxx() != newmax))) {
       log.warn("box changed: " + oldBox + "-> x: " + newmin + "/" + newmax);
-      if (oldBox.maxx - oldBox.minx != newmax - newmin
-          && (oldBox.minx != Integer.MAX_VALUE && oldBox.maxx != Integer.MIN_VALUE)) {
+      if (oldBox.getMaxx() - oldBox.getMinx() != newmax - newmin
+          && (oldBox.getMinx() != Integer.MAX_VALUE && oldBox.getMaxx() != Integer.MIN_VALUE)) {
         result = false;
         keep = false;
       } else {
@@ -801,9 +805,9 @@ public class TransformerFinder {
     boolean result = true;
     BBox oldBox = boxes.getBox(layer);
     if (oldBox != null
-        && ((oldBox.miny != Integer.MAX_VALUE && oldBox.miny != newmin) || (oldBox.maxy != Integer.MIN_VALUE && oldBox.maxy != newmax))) {
+        && ((oldBox.getMiny() != Integer.MAX_VALUE && oldBox.getMiny() != newmin) || (oldBox.getMaxy() != Integer.MIN_VALUE && oldBox.getMaxy() != newmax))) {
       log.warn("box changed: " + oldBox + "-> y: " + newmin + "/" + newmax);
-      if (oldBox.maxy - oldBox.miny != newmax - newmin) {
+      if (oldBox.getMaxy() - oldBox.getMiny() != newmax - newmin) {
         result = false;
       }
     }
@@ -824,9 +828,9 @@ public class TransformerFinder {
       }
     }
 
-    MapTransformer transformerUID1 = new MapTransformer(transformers[0]);
+    MapTransformer transformerUID1 = new MapTransformer(transformers[0], metric);
     transformerUID1.setBoxes(resultBoxes);
-    MapTransformer transformerUID2 = new MapTransformer(transformers[1]);
+    MapTransformer transformerUID2 = new MapTransformer(transformers[1], metric);
     transformerUID2.setBoxes(resultBoxes);
 
     boolean map1 = false, map2 = false;

@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.transformation.BoxTransformer.BBox;
 import magellan.library.utils.transformation.BoxTransformer.BBoxes;
 
@@ -51,13 +52,15 @@ public class SetGirthDialog extends JDialog {
   /**
    * new dimensions, entered eventually by the user
    */
-  private BBoxes newBoxes = new BBoxes();
+  private BBoxes newBoxes;
 
   private Color defaultColor;
 
   private Integer level;
 
   private BBox defaultBox;
+
+  private MapMetric metric;
 
   /**
    * Creates new form SetOriginDialog
@@ -68,13 +71,15 @@ public class SetGirthDialog extends JDialog {
    * @param level if this is <code>null</code>, the level input will be editable, otherwise it will
    *          be fixed to this value
    */
-  public SetGirthDialog(java.awt.Frame parent, BBox idBox, Integer level) {
+  public SetGirthDialog(java.awt.Frame parent, BBox idBox, Integer level, MapMetric metric) {
     super(parent, true);
     approved = false;
+    this.metric = metric;
+    newBoxes = new BBoxes(metric);
     if (idBox != null) {
-      defaultBox = new BBox();
-      defaultBox.setX(idBox.minx, idBox.maxx);
-      defaultBox.setY(idBox.miny, idBox.maxy);
+      defaultBox = metric.createBBox();
+      defaultBox.setX(idBox.getMinx(), idBox.getMaxx());
+      defaultBox.setY(idBox.getMiny(), idBox.getMaxy());
     }
     this.level = level;
     initComponents();
@@ -179,10 +184,10 @@ public class SetGirthDialog extends JDialog {
       editLevel.setText("0");
     }
     if (defaultBox != null) {
-      editXmin.setText(String.valueOf(defaultBox.minx));
-      editXmax.setText(String.valueOf(defaultBox.maxx));
-      editYmin.setText(String.valueOf(defaultBox.miny));
-      editYmax.setText(String.valueOf(defaultBox.maxy));
+      editXmin.setText(String.valueOf(defaultBox.getMinx()));
+      editXmax.setText(String.valueOf(defaultBox.getMaxx()));
+      editYmin.setText(String.valueOf(defaultBox.getMiny()));
+      editYmax.setText(String.valueOf(defaultBox.getMaxy()));
     }
 
     gc.gridwidth = 4;
@@ -298,7 +303,7 @@ public class SetGirthDialog extends JDialog {
       return;
     }
 
-    BBox box = new BBox();
+    BBox box = metric.createBBox();
     box.setX(xmin, xmax);
     box.setY(ymin, ymax);
 

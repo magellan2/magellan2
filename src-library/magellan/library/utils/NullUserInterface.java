@@ -25,6 +25,7 @@ package magellan.library.utils;
 
 import javax.swing.JDialog;
 
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.BoxTransformer.BBox;
 
@@ -146,7 +147,7 @@ public class NullUserInterface implements UserInterface {
     }
   }
 
-  public BBox askForGirth(BBox best, int layer) {
+  public BBox askForGirth(BBox best, int layer, MapMetric metric) {
     return best;
   }
 

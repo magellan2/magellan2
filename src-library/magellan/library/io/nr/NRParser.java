@@ -699,7 +699,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
           currentRegion = world.getRegion(c);
 
           if (currentRegion == null) {
-            currentRegion = MagellanFactory.createRegion(c, world);
+            currentRegion = createRegion(c, world);
           }
           if (lineMatcher.group(1) != null) {
             currentRegion.setName(lineMatcher.group(1));
@@ -994,7 +994,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             throw new ParseException("invalid coordinate in " + group);
           Region r2 = world.getRegion(c2);
           if (r2 == null) {
-            r2 = MagellanFactory.createRegion(c2, world);
+            r2 = createRegion(c2, world);
             r2.setType(RegionType.unknown);
             world.addRegion(r2);
           }
@@ -1002,7 +1002,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
         for (String dir : trans) {
           CoordinateID c2 = region.getCoordinate().translate(translateMap.get(dir));
           if (world.getRegion(c2) == null) {
-            Region r2 = MagellanFactory.createRegion(c2, world);
+            Region r2 = createRegion(c2, world);
             r2.setType(RegionType.unknown);
             world.addRegion(r2);
             final RegionType type = world.rules.getRegionType(oceanType, true);
@@ -1029,6 +1029,17 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     if (trans == null)
       return null;
     return coordinate.translate(trans);
+  }
+
+  public Region createRegion(CoordinateID location, GameData data) {
+    Region region = MagellanFactory.createRegion(location, data);
+    region.setUID(getUid(location));
+    return region;
+  }
+
+  private long getUid(CoordinateID location) {
+    long val = ((long) location.getX() + (2 << 15)) << 31 | ((long) location.getY() + (2 << 15));
+    return val;
   }
 
 }

@@ -5,28 +5,33 @@ import java.util.Map;
 
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
+import magellan.library.gamebinding.MapMetric;
 
 /**
  * Stores arbitrary mappings. Uses another translator as fallback.
  */
 public class MapTransformer extends BoxTransformer {
 
+  private MapMetric metric;
   Map<CoordinateID, CoordinateID> translationMap = new HashMap<CoordinateID, CoordinateID>();
   private ReportTransformer fallBack;
 
   /**
    * Creates a translator without fallback.
    */
-  public MapTransformer() {
-    this(null);
+  public MapTransformer(MapMetric metric) {
+    this(null, metric);
   }
 
   /**
    * Uses the specified translator when no mapping is stored.
+   * 
+   * @param metric
    */
-  public MapTransformer(ReportTransformer fallBack) {
-    super(new BBoxes());
+  public MapTransformer(ReportTransformer fallBack, MapMetric metric) {
+    super(new BBoxes(metric));
     this.fallBack = fallBack;
+    this.metric = metric;
   }
 
   /**

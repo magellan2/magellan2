@@ -78,6 +78,8 @@ public class MessageInspector extends AbstractInspector {
   private static final int C_FACTION = 1;
   private static final int C_REGION = 2;
   private static final int C_UNIT = 3;
+  private static final ProblemType UNKNOWN_TYPE = ProblemType.create("tasks.messageinspector",
+      "unknown");
 
   private Set<ProblemType> suppressedTypes = new HashSet<ProblemType>();
   private Set<Message> suppressedProblems = new HashSet<Message>();
@@ -214,12 +216,18 @@ public class MessageInspector extends AbstractInspector {
   }
 
   public ProblemType getProblemType(Message message) {
+    ProblemType type;
     if (message.getMessageType().getID().intValue() > 0)
       return problemTypes.get(message.getMessageType().getID());
     else if (message.getMessageType().getID() == BATTLE.getID())
       return problemTypes.get(BATTLE.getID());
+    else {
+      type = effectTypes.get(getPhrase(message.getText()));
+    }
+    if (type != null)
+      return type;
     else
-      return effectTypes.get(getPhrase(message.getText()));
+      return UNKNOWN_TYPE;
   }
 
   /**

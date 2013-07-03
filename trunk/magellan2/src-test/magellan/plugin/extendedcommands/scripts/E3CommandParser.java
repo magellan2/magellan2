@@ -51,7 +51,6 @@ import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
-import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
@@ -2446,7 +2445,7 @@ public class E3CommandParser {
    * Tries to translate the given order to the current locale.
    */
   protected String getLocalizedOrder(String orderKey, String fallBack) {
-    String translation = Resources.getOrderTranslation(orderKey, currentFaction.getLocale());
+    String translation = world.getRules().getOrder(orderKey).getName(currentFaction.getLocale());
     if (translation == orderKey)
       return fallBack;
     else

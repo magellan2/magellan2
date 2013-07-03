@@ -60,7 +60,6 @@ import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.NullUserInterface;
-import magellan.library.utils.Resources;
 import magellan.library.utils.RoutePlanner;
 import magellan.library.utils.ShipRoutePlanner;
 import magellan.library.utils.UnitRoutePlanner;
@@ -498,7 +497,7 @@ public class ExtendedCommandsHelper {
    *         returned.
    */
   public String getOrderTranslation(Unit unit, String orderConstant) {
-    return Resources.getOrderTranslation(orderConstant, unit.getFaction().getLocale());
+    return getData().getRules().getOrder(orderConstant).getName(unit.getFaction().getLocale());
   }
 
   /**
@@ -513,12 +512,13 @@ public class ExtendedCommandsHelper {
    * @return a line like <code>GIVE receiver [EACH] amount item</code>.
    */
   public String getGiveOrder(Unit unit, String receiver, String item, int amount, boolean each) {
-    return Resources.getOrderTranslation(EresseaConstants.O_GIVE, unit.getFaction().getLocale())
+    return unit.getData().getRules().getOrder(EresseaConstants.O_GIVE).getName(
+        unit.getFaction().getLocale())
         + " "
         + receiver
         + (each ? " "
-            + Resources.getOrderTranslation(EresseaConstants.O_EACH, unit.getFaction().getLocale())
-            + " " : " ")
+            + unit.getData().getRules().getOrder(EresseaConstants.O_EACH).getName(
+                unit.getFaction().getLocale()) + " " : " ")
         + (amount == Integer.MAX_VALUE ? getOrderTranslation(unit, EresseaConstants.O_ALL) : amount)
         + " " + item;
   }

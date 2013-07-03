@@ -241,7 +241,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
    * Saves the settings from the world.
    */
   public void save() {
-    String helpcommand = Resources.getOrderTranslation(EresseaConstants.O_HELP);
+    String helpcommand = getOrderTranslation(EresseaConstants.O_HELP);
 
     if (!newStates.isEmpty()) {
       // ok, let's save the alliance settings
@@ -259,6 +259,10 @@ public class GroupEditorTableModel extends AbstractTableModel {
         }
       }
     }
+  }
+
+  protected String getOrderTranslation(String orderId) {
+    return getOwner().getData().getRules().getOrder(orderId).getName(getOwner().getLocale());
   }
 
   /**
@@ -291,8 +295,8 @@ public class GroupEditorTableModel extends AbstractTableModel {
       if (newState.getCategories().isEmpty()) {
         unit.addOrder(signature + " reset " + faction);
         unit.addOrder(helpcommand + " " + faction.getID() + " "
-            + Resources.getOrderTranslation("ALL") + " " + Resources.getOrderTranslation("NOT"),
-            !firstAdded, 1);
+            + getOrderTranslation(EresseaConstants.O_ALL) + " "
+            + getOrderTranslation(EresseaConstants.O_NOT), !firstAdded, 1);
         firstAdded = true;
       } else {
         unit.addOrder(signature + "new help states for " + faction, true, 1);
@@ -302,7 +306,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
         for (AllianceCategory cat : newState.getCategories()) {
           if (cat.getName().equals(EresseaConstants.O_ALL)) {
             unit.addOrder(helpcommand + " " + faction.getID() + " "
-                + Resources.getOrderTranslation("ALL"), !firstAdded, 1);
+                + getOrderTranslation(EresseaConstants.O_ALL), !firstAdded, 1);
             all = true;
             firstAdded = true;
           }
@@ -315,19 +319,18 @@ public class GroupEditorTableModel extends AbstractTableModel {
               continue;
             }
             unit.addOrder(helpcommand + " " + faction.getID() + " "
-                + Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()) + " "
-                + Resources.getOrderTranslation("NOT"), !firstAdded, 1);
+                + getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()) + " "
+                + getOrderTranslation(EresseaConstants.O_NOT), !firstAdded, 1);
             firstAdded = true;
           }
           // add new states
           for (AllianceCategory cat : newState.getCategories()) {
             if (oldState.getAllianceCategories().contains(cat)) {
               unit.addOrder(signature + helpcommand + " " + faction.getID() + " "
-                  + Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()));
+                  + getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()));
             } else {
               unit.addOrder(helpcommand + " " + faction.getID() + " "
-                  + Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()),
-                  !firstAdded, 1);
+                  + getOrderTranslation(Alliance.ORDER_KEY_PREFIX + cat.getName()), !firstAdded, 1);
             }
             firstAdded = true;
           }
@@ -379,12 +382,12 @@ public class GroupEditorTableModel extends AbstractTableModel {
   public AllianceState getAlliedState(Faction faction, Collection<Alliance> allied) {
     for (Alliance ally : allied) {
       if (ally.getFaction().equals(faction)) {
-        AllianceState state = new AllianceState();
+        AllianceState state = new AllianceState(faction.getData());
         state.addCategories(ally.getAllianceCategories());
         return state;
       }
     }
-    return new AllianceState();
+    return new AllianceState(faction.getData());
   }
 
   public Unit getRepresentative(int column) {

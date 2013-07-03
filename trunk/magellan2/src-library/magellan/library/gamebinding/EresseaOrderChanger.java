@@ -29,9 +29,9 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.OrderType;
 import magellan.library.rules.Race;
 import magellan.library.utils.Locales;
-import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -60,13 +60,13 @@ public class EresseaOrderChanger implements OrderChanger {
    *      java.lang.String)
    */
   public void addNamingOrder(Unit unit, String name) {
-    String order = createNamingOrder(name);
+    String order = createNamingOrder(name, unit);
     unit.addOrder(order, true, 2);
   }
 
-  protected String createNamingOrder(String name) {
-    return Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + name + "\"";
+  protected String createNamingOrder(String name, Unit unit) {
+    return getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + name + "\"";
   }
 
   /**
@@ -74,25 +74,24 @@ public class EresseaOrderChanger implements OrderChanger {
    *      magellan.library.UnitContainer, java.lang.String)
    */
   public void addNamingOrder(Unit unit, UnitContainer uc, String name) {
-    String order = createNamingOrder(uc, name);
+    String order = createNamingOrder(uc, name, unit);
     unit.addOrder(order, true, 2);
   }
 
-  protected String createNamingOrder(UnitContainer uc, String name) {
+  protected String createNamingOrder(UnitContainer uc, String name, Unit unit) {
     String order = null;
 
     if (uc instanceof Building) {
-      order = Resources.getOrderTranslation(EresseaConstants.O_CASTLE);
+      order = getOrderTranslation(EresseaConstants.O_CASTLE, unit);
     } else if (uc instanceof Ship) {
-      order = Resources.getOrderTranslation(EresseaConstants.O_SHIP);
+      order = getOrderTranslation(EresseaConstants.O_SHIP, unit);
     } else if (uc instanceof Region) {
-      order = Resources.getOrderTranslation(EresseaConstants.O_REGION);
+      order = getOrderTranslation(EresseaConstants.O_REGION, unit);
     } else if (uc instanceof Faction) {
-      order = Resources.getOrderTranslation(EresseaConstants.O_FACTION);
+      order = getOrderTranslation(EresseaConstants.O_FACTION, unit);
     }
 
-    return Resources.getOrderTranslation(EresseaConstants.O_NAME) + " " + order + " \"" + name
-        + "\"";
+    return getOrderTranslation(EresseaConstants.O_NAME, unit) + " " + order + " \"" + name + "\"";
   }
 
   /**
@@ -100,28 +99,28 @@ public class EresseaOrderChanger implements OrderChanger {
    *      magellan.library.UnitContainer, java.lang.String)
    */
   public void addDescribeUnitContainerOrder(Unit unit, UnitContainer uc, String descr) {
-    String suborder = createDescribeUnitContainerOrder(uc);
+    String suborder = createDescribeUnitContainerOrder(uc, unit);
     String order = suborder + " \"" + descr + "\"";
     unit.addOrder(order, true, (suborder.indexOf(" ") >= 0) ? 2 : 1);
   }
 
-  protected String createDescribeUnitContainerOrder(UnitContainer uc) {
+  protected String createDescribeUnitContainerOrder(UnitContainer uc, Unit unit) {
     String order = null;
 
     if (uc instanceof Building) {
       order =
-          Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-              + Resources.getOrderTranslation(EresseaConstants.O_CASTLE);
+          getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+              + getOrderTranslation(EresseaConstants.O_CASTLE, unit);
     } else if (uc instanceof Ship) {
       order =
-          Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-              + Resources.getOrderTranslation(EresseaConstants.O_SHIP);
+          getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+              + getOrderTranslation(EresseaConstants.O_SHIP, unit);
     } else if (uc instanceof Region) {
       order =
-          Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-              + Resources.getOrderTranslation(EresseaConstants.O_REGION);
+          getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+              + getOrderTranslation(EresseaConstants.O_REGION, unit);
     } else if (uc instanceof Faction) {
-      order = Resources.getOrderTranslation(EresseaConstants.O_BANNER);
+      order = getOrderTranslation(EresseaConstants.O_BANNER, unit);
     }
 
     return order;
@@ -132,13 +131,13 @@ public class EresseaOrderChanger implements OrderChanger {
    *      java.lang.String)
    */
   public void addDescribeUnitPrivateOrder(Unit unit, String descr) {
-    String order = createDescribeUnitPrivateOrder(descr);
+    String order = createDescribeUnitPrivateOrder(descr, unit);
     unit.addOrder(order, true, 2);
   }
 
-  protected String createDescribeUnitPrivateOrder(String descr) {
-    return Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_PRIVATE) + " \"" + descr + "\"";
+  protected String createDescribeUnitPrivateOrder(String descr, Unit unit) {
+    return getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_PRIVATE, unit) + " \"" + descr + "\"";
   }
 
   /**
@@ -146,13 +145,13 @@ public class EresseaOrderChanger implements OrderChanger {
    *      java.lang.String)
    */
   public void addDescribeUnitOrder(Unit unit, String descr) {
-    String order = createDescribeUnitOrder(descr);
+    String order = createDescribeUnitOrder(descr, unit);
     unit.addOrder(order, true, 2);
   }
 
-  protected String createDescribeUnitOrder(String descr) {
-    return Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + descr + "\"";
+  protected String createDescribeUnitOrder(String descr, Unit unit) {
+    return getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + descr + "\"";
   }
 
   /**
@@ -193,7 +192,7 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected Order createHideOrder(Unit unit, String level) {
-    return createOrder(unit, Resources.getOrderTranslation(EresseaConstants.O_HIDE) + " " + level);
+    return createOrder(unit, getOrderTranslation(EresseaConstants.O_HIDE, unit) + " " + level);
   }
 
   public Order createOrder(Unit unit, String string) {
@@ -209,37 +208,37 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected String getCombatOrder(Unit unit, int newState) {
-    String str = Resources.getOrderTranslation(EresseaConstants.O_COMBAT) + " ";
+    String str = getOrderTranslation(EresseaConstants.O_COMBAT, unit) + " ";
 
     switch (newState) {
     case 0:
-      str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_AGGRESSIVE);
+      str += getOrderTranslation(EresseaConstants.O_COMBAT_AGGRESSIVE, unit);
 
       break;
 
     case 1:
       // KÄMPFE VORNE is deprecated
-      str += COMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FRONT);
+      str += COMMENTSTART + getOrderTranslation(EresseaConstants.O_COMBAT_FRONT, unit);
 
       break;
 
     case 2:
-      str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_REAR);
+      str += getOrderTranslation(EresseaConstants.O_COMBAT_REAR, unit);
 
       break;
 
     case 3:
-      str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_DEFENSIVE);
+      str += getOrderTranslation(EresseaConstants.O_COMBAT_DEFENSIVE, unit);
 
       break;
 
     case 4:
-      str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_NOT);
+      str += getOrderTranslation(EresseaConstants.O_COMBAT_NOT, unit);
 
       break;
 
     case 5:
-      str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FLEE);
+      str += getOrderTranslation(EresseaConstants.O_COMBAT_FLEE, unit);
 
       break;
 
@@ -254,8 +253,7 @@ public class EresseaOrderChanger implements OrderChanger {
    * @see magellan.library.gamebinding.OrderChanger#addRecruitOrder(magellan.library.Unit, int)
    */
   public void addRecruitOrder(Unit unit, int i) {
-    String order =
-        Resources.getOrderTranslation(EresseaConstants.O_RECRUIT) + " " + String.valueOf(i);
+    String order = getOrderTranslation(EresseaConstants.O_RECRUIT, unit) + " " + String.valueOf(i);
     unit.addOrder(order);
   }
 
@@ -267,52 +265,52 @@ public class EresseaOrderChanger implements OrderChanger {
    */
   public void addMultipleHideOrder(Unit unit) {
     List<String> orders = new LinkedList<String>();
-    orders.add(Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " ");
-    orders.add(Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"\"");
-    orders.add(Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"\"");
-    orders.add(Resources.getOrderTranslation(EresseaConstants.O_HIDE) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_FACTION));
+    orders.add(getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " ");
+    orders.add(getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"\"");
+    orders.add(getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"\"");
+    orders.add(getOrderTranslation(EresseaConstants.O_HIDE, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_FACTION, unit));
 
     if (unit.getShip() != null) {
-      orders.add(Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP));
-      orders.add(Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \"\"");
-      orders.add(Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \"\"");
+      orders.add(getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit));
+      orders.add(getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"\"");
+      orders.add(getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"\"");
     }
 
-    orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " " + unit.getID());
-    orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + unit.getName() + "\"");
+    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " " + unit.getID());
+    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + unit.getName() + "\"");
 
     if (unit.getDescription() != null) {
-      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + unit.getDescription()
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + unit.getDescription()
           + "\"");
     }
 
     if (!unit.isHideFaction()) {
-      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_HIDE) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_FACTION) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_NOT));
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_HIDE, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_FACTION, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_NOT, unit));
     }
 
     if (unit.getShip() != null) {
-      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " "
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " "
           + unit.getShip().getID().toString());
-      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \""
-          + unit.getShip().getName() + "\"");
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"" + unit.getShip().getName()
+          + "\"");
 
       if (unit.getShip().getDescription() != null) {
-        orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-            + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \""
+        orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+            + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \""
             + unit.getShip().getDescription() + "\"");
       }
     }
@@ -502,7 +500,7 @@ public class EresseaOrderChanger implements OrderChanger {
         if (translation.length() != 0) {
           translation.append(" ");
         }
-        translation.append(Resources.getOrderTranslation(tokenizer.nextToken(), locale));
+        translation.append(rules.getOrder(tokenizer.nextToken()).getName(locale));
       }
       result.add(translation.toString());
     }
@@ -649,7 +647,7 @@ public class EresseaOrderChanger implements OrderChanger {
       ItemType itemType = getRules().getItemType(item);
       if (itemType == null)
         if (item.equals(EresseaConstants.I_MEN)) {
-          sItem = " " + Resources.getOrderTranslation(EresseaConstants.O_MEN);
+          sItem = " " + getOrderTranslation(EresseaConstants.O_MEN, source);
         } else {
           tmpOrders = "; unknown item " + item;
         }
@@ -666,12 +664,12 @@ public class EresseaOrderChanger implements OrderChanger {
       log.error(tmpOrders);
     } else {
       tmpOrders =
-          Resources.getOrderTranslation(EresseaConstants.O_GIVE)
+          getOrderTranslation(EresseaConstants.O_GIVE, source)
               + " "
               + target.getID().toString(true, source.getLocale())
-              + (amount < 0 ? (" " + Resources.getOrderTranslation(EresseaConstants.O_EACH) + " ")
+              + (amount < 0 ? (" " + getOrderTranslation(EresseaConstants.O_EACH, source) + " ")
                   : " ")
-              + (amount == OrderChanger.ALL ? Resources.getOrderTranslation(EresseaConstants.O_ALL)
+              + (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.O_ALL, source)
                   : Math.abs(amount)) + sItem + (comment != null ? ("; " + comment) : "");
     }
     source.addOrder(tmpOrders);
@@ -682,14 +680,27 @@ public class EresseaOrderChanger implements OrderChanger {
    *      java.lang.String)
    */
   public void addGroupOrder(Unit unit, String name) {
+<<<<<<< HEAD
     String group;
     if (name != null && name.trim().length() > 0) {
       group = Resources.getOrderTranslation(EresseaConstants.O_GROUP) + " \"" + name + "\"";
     } else {
       group = Resources.getOrderTranslation(EresseaConstants.O_GROUP);
     }
+=======
+    String group = getOrderTranslation(EresseaConstants.O_GROUP, unit) + " \"" + name + "\"";
+>>>>>>> temp moving local order handling from resources to rules file
     unit.addOrder(group, true, 1);
 
+  }
+
+  /**
+   * Returns the order with the given id, localized for the unit's order locale.
+   * 
+   * @see OrderType#getName(Locale)
+   */
+  protected String getOrderTranslation(String id, Unit unit) {
+    return getRules().getOrder(id).getName(unit.getLocale());
   }
 
 }

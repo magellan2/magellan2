@@ -904,7 +904,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   }
 
   protected String getOrderTranslation(String orderKey) {
-    return Resources.getOrderTranslation(orderKey, getLocale());
+    return getData().getRules().getOrder(orderKey).getName(getLocale());
   }
 
   protected String getRuleItemTranslation(String orderKey) {

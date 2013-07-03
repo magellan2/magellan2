@@ -7,174 +7,289 @@ MAGELLAN
 
 ORDER "COMMENT"
 "// Text1*";syntax
+"//";locale_de
+"//";locale_en
+
+ORDER "PCOMMENT"
+";";locale_de
+";";locale_en
+1;internal
 
 ORDER "ALLIANCE"
 "ALLIANZ (AUSSTOSSEN f1) | (VERLASSEN) | (KOMMANDO f1) | NEU | (EINLADEN f1) | (BEITRETEN a1)";syntax
+"ALLIANZ";locale_de
+"ALLIANCE";locale_en
 
 ORDER "WORK"
 "ARBEITE";syntax
+"ARBEITEN";locale_de
+"WORK";locale_en
 
 ORDER "ATTACK"
 "ATTACKIERE u1";syntax
+"ATTACKIEREN";locale_de
+"ATTACK";locale_en
 
 ORDER "BANNER"
 "BANNER Text";syntax
+"BANNER";locale_de
+"BANNER";locale_en
 
 ORDER "CLAIM"
 "BEANSPRUCHE [1] Ding";syntax
+"BEANSPRUCHEN";locale_de
+"CLAIM";locale_en
 
 ORDER "PROMOTION"
 "BEFÖRDERUNG";syntax
+"BEFÖRDERUNG";locale_de
+"PROMOTION";locale_en
 
 ORDER "SIEGE"
 "BELAGERE b1";syntax
+"BELAGERE";locale_de
+"SIEGE";locale_en
 
 ORDER "NAME"
 "BENENNE EINHEIT | PARTEI | GEBÄUDE | BURG | SCHIFF | REGION | ALLIANZ | (FREMDE EINHEIT u1) | (FREMDES SCHIFF s1) | (FREMDES GEBÄUDE b1) | (FREMDE BURG b1) | (FREMDE PARTEI f1) Text";syntax
+"BENENNEN";locale_de
+"NAME";locale_en
 
 ORDER "USE"
 "BENUTZE [1] Ding";syntax
+"BENUTZEN";locale_de
+"USE";locale_en
 
 ORDER "DESCRIBE"
 "BESCHREIBE REGION | SCHIFF | GEBÄUDE | BURG | EINHEIT | PRIVAT  Text";syntax
+"BESCHREIBEN";locale_de
+"DESCRIBE";locale_en
 
 ORDER "ENTER"
 "BETRETE (BURG b1 | SCHIFF s1 | Ding x1)";syntax
+"BETRETEN";locale_de
+"ENTER";locale_en
 
 ORDER "GUARD"
 "BEWACHE [NICHT]";syntax
+"BEWACHEN";locale_de
+"GUARD";locale_en
 
 ORDER "PAY"
 "BEZAHLE NICHT";syntax
+"BEZAHLEN";locale_de
+"PAY";locale_en
 
 ORDER "MESSAGE"
 "BOTSCHAFT REGION | (SCHIFF s1) | (GEBÄUDE b2) | (BURG b3) | (EINHEIT u4) | (PARTEI f5)  Text";syntax
+"BOTSCHAFT";locale_de
+"MESSAGE";locale_en
 
 ORDER "DEFAULT"
 "DEFAULT Order";syntax
+"DEFAULT";locale_de
+"DEFAULT";locale_en
 
 ORDER "UNIT"
 "EINHEIT u1";syntax
+"EINHEIT";locale_de
+"UNIT";locale_en
 1;internal
 
 ORDER "EMAIL"
 "EMAIL Email";syntax
+"EMAIL";locale_de
+"EMAIL";locale_en
 
 ORDER "END"
 "ENDE";syntax
+"ENDE";locale_de
+"END";locale_en
 
 ORDER "RIDE"
 "FAHRE u1";syntax
+"FAHREN";locale_de
+"RIDE";locale_en
 
 ORDER "FOLLOW"
 "FOLGE (EINHEIT u1) | (SCHIFF s2)";syntax
+"FOLGEN";locale_de
+"FOLLOW";locale_en
 
 ORDER "GIVE"
 "GIB (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
+"GIB";locale_de
+"GIVE";locale_en
 
 ORDER "GROUP"
 "GRUPPE [Name]";syntax
+"GRUPPE";locale_de
+"GROUP";locale_en
 
 ORDER "HELP"
 "HELFE f1 ALLES|GIB|BEWACHE|SILBER [NICHT] ";syntax
+"HELFEN";locale_de
+"HELP";locale_en
 
 ORDER "COMBAT"
 "KÄMPFE [AGGRESSIV|HINTEN|DEFENSIV|NICHT|FLIEHE|(HELFE [NICHT])]";syntax
+"KÄMPFEN";locale_de
+"COMBAT";locale_en
 
 ORDER "COMBATSPELL"
 "KAMPFZAUBER [STUFE 1] Zauber [NICHT]";syntax
+"KAMPFZAUBER";locale_de
+"COMBATSPELL";locale_en
 
 ORDER "CONTACT"
 "KONTAKTIERE u1";syntax
+"KONTAKTIEREN";locale_de
+"CONTACT";locale_en
 
 ORDER "LEARN"
 "LERNE Talent [1]";syntax
+"LERNEN";locale_de
+"LEARN";locale_en
 
 ORDER "LOCALE"
 "LOCALE";syntax
+"LOCALE";locale_de
+"LOCALE";locale_en
 1;internal
 
 ORDER "MAKE"
 "MACHE [(TEMP u1 [Name]) | ([1] Ding [s1|b1]) | ([1] STRAßE Richtung)]";syntax
+"MACHEN";locale_de
+"MAKE";locale_en
 
 ORDER "MOVE"
 "NACH Richtung1+";syntax
+"NACH";locale_de
+"MOVE";locale_en
 
 ORDER "NEXT"
 "Invalid";syntax
+"NEXT";locale_de
+"NEXT";locale_en
 1;internal
 
 ORDER "RESTART"
 "NEUSTART Rasse Passwort";syntax
+"NEUSTART";locale_de
+"RESTART";locale_en
 0;active
 
 ORDER "NUMBER"
 "NUMMER (EINHEIT) | (SCHIFF) | (GEBÄUDE) | (BURG) | (PARTEI) [x1]";syntax
+"NUMMER";locale_de
+"NUMBER";locale_en
 
 ORDER "OPTION"
 "OPTION Option [Nicht]";syntax
+"OPTION";locale_de
+"OPTION";locale_en
 
 ORDER "FACTION"
 "PARTEI f1";syntax
+"PARTEI";locale_de
+"FACTION";locale_en
 1;internal
 
 ORDER "PASSWORD"
 "PASSWORT passwort";syntax
+"PASSWORT";locale_de
+"PASSWORD";locale_en
 
 ORDER "PLANT"
 "PFLANZE [1] (KRÄUTER) | (BÄUME) | (SAMEN) | (MALLORNSAMEN)";syntax
+"PFLANZEN";locale_de
+"PLANT";locale_en
 
 ORDER "PIRACY"
 "PIRATERIE f1*";syntax
+"PIRATERIE";locale_de
+"PIRACY";locale_en
 
 ORDER "PREFIX"
 "PRÄFIX [Name]";syntax
+"PRÄFIX";locale_de
+"PREFIX";locale_en
 
 ORDER "REGION"
 "REGION 1 , 2";syntax
+"REGION";locale_de
+"REGION";locale_en
 1;internal
 
 ORDER "RECRUIT"
 "REKRUTIERE 1 [Race]";syntax
+"REKRUTIEREN";locale_de
+"RECRUIT";locale_en
 
 ORDER "RESERVE"
 "RESERVIERE (1) | (ALLES) | (JE 2) Gegenstand";syntax
+"RESERVIEREN";locale_de
+"RESERVE";locale_en
 
 ORDER "ROUTE"
 "ROUTE Richtung1+";syntax
+"ROUTE";locale_de
+"ROUTE";locale_en
 
 ORDER "SORT"
 "SORTIERE (VOR) | (HINTER) u1";syntax
+"SORTIEREN";locale_de
+"SORT";locale_en
 
 ORDER "QUIT"
 "STIRB Password";syntax
+"STIRB";locale_de
+"QUIT";locale_en
 
 ORDER "HIDE"
 "TARNE ([1]) | (PARTEI [NICHT])";syntax
+"TARNEN";locale_de
+"HIDE";locale_en
 
 ORDER "CARRY"
 "TRANSPORTIERE u1";syntax
+"TRANSPORTIEREN";locale_de
+"CARRY";locale_en
 
 ORDER "ORIGIN"
 "URSPRUNG 1 2";syntax
+"URSPRUNG";locale_de
+"ORIGIN";locale_en
 
 ORDER "FORGET"
 "VERGESSE Talent";syntax
+"VERGESSEN";locale_de
+"FORGET";locale_en
 
 ORDER "LEAVE"
 "VERLASSE";syntax
+"VERLASSEN";locale_de
+"LEAVE";locale_en
 
 ORDER "CAST"
 "ZAUBERE [REGION 1 2] [STUFE 3] Zauber Parameter1*";syntax
+"ZAUBERE";locale_de
+"CAST";locale_en
 
 ORDER "SHOW"
 "ZEIGE (ding)|(ALLE [ZAUBER|TRÄNKE])";syntax
+"ZEIGEN";locale_de
+"SHOW";locale_en
 
 ORDER "DESTROY"
 "ZERSTÖRE [1] [STRASSE richtung]";syntax
+"ZERSTÖREN";locale_de
+"DESTROY";locale_en
 
 ORDER "GROW"
 "(ZÜCHTE PFERDE)|(ZÜCHTE [1] KRÄUTER)";syntax
+"ZÜCHTEN";locale_de
+"GROW";locale_en
 
 OPTIONCATEGORY "REPORT"
 "REPORT";name

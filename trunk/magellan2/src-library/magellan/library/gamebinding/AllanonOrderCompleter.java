@@ -145,13 +145,13 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
 
       if (!uc.equals(getUnit().getBuilding())) {
         getCompletions().add(
-            new Completion(uc.getName() + " (" + uc.getID() + ")", Resources
-                .getOrderTranslation(EresseaConstants.O_CASTLE)
-                + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
+            new Completion(uc.getName() + " (" + uc.getID() + ")",
+                getOrderTranslation(EresseaConstants.O_CASTLE) + " " + uc.getID() + " ;"
+                    + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
         getCompletions().add(
-            new Completion(uc.getID() + " (" + uc.getName() + ")", Resources
-                .getOrderTranslation(EresseaConstants.O_CASTLE)
-                + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
+            new Completion(uc.getID() + " (" + uc.getName() + ")",
+                getOrderTranslation(EresseaConstants.O_CASTLE) + " " + uc.getID() + " ;"
+                    + uc.getName(), "", Completion.DEFAULT_PRIORITY));
       }
     }
 
@@ -177,13 +177,13 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
       for (UnitContainer uc : caravans) {
         if (!uc.equals(getUnit().getShip())) {
           getCompletions().add(
-              new Completion(uc.getName() + " (" + uc.getID() + ")", Resources
-                  .getOrderTranslation(AllanonConstants.O_KARAWANE)
-                  + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
+              new Completion(uc.getName() + " (" + uc.getID() + ")",
+                  getOrderTranslation(AllanonConstants.O_KARAWANE) + " " + uc.getID() + " ;"
+                      + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
           getCompletions().add(
-              new Completion(uc.getID() + " (" + uc.getName() + ")", Resources
-                  .getOrderTranslation(AllanonConstants.O_KARAWANE)
-                  + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
+              new Completion(uc.getID() + " (" + uc.getName() + ")",
+                  getOrderTranslation(AllanonConstants.O_KARAWANE) + " " + uc.getID() + " ;"
+                      + uc.getName(), "", Completion.DEFAULT_PRIORITY));
         }
       }
     }
@@ -194,13 +194,13 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
       for (UnitContainer uc : ships) {
         if (!uc.equals(getUnit().getShip())) {
           getCompletions().add(
-              new Completion(uc.getName() + " (" + uc.getID() + ")", Resources
-                  .getOrderTranslation(EresseaConstants.O_SHIP)
-                  + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
+              new Completion(uc.getName() + " (" + uc.getID() + ")",
+                  getOrderTranslation(EresseaConstants.O_SHIP) + " " + uc.getID() + " ;"
+                      + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
           getCompletions().add(
-              new Completion(uc.getID() + " (" + uc.getName() + ")", Resources
-                  .getOrderTranslation(EresseaConstants.O_SHIP)
-                  + " " + uc.getID() + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
+              new Completion(uc.getID() + " (" + uc.getName() + ")",
+                  getOrderTranslation(EresseaConstants.O_SHIP) + " " + uc.getID() + " ;"
+                      + uc.getName(), "", Completion.DEFAULT_PRIORITY));
         }
       }
     }

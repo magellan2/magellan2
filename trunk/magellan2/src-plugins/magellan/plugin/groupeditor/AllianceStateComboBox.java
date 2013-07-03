@@ -36,7 +36,7 @@ import javax.swing.JTable;
 import magellan.library.Alliance;
 import magellan.library.GameData;
 import magellan.library.rules.AllianceCategory;
-import magellan.library.utils.Resources;
+import magellan.library.utils.Locales;
 
 /**
  * Shows a JComboBox as default renderer for the table.
@@ -56,9 +56,9 @@ public class AllianceStateComboBox extends JComboBox {
     removeAllItems();
     states.clear();
 
-    addItem(new AllianceState()); // empty string for nothing set
+    addItem(new AllianceState(world)); // empty string for nothing set
 
-    AllianceState max = new AllianceState();
+    AllianceState max = new AllianceState(world);
     max.addCategory(getMaxAllianceCategory());
     states.add(max);
 
@@ -114,7 +114,7 @@ public class AllianceStateComboBox extends JComboBox {
     if (cats.contains(category))
       return;
 
-    AllianceState state = new AllianceState();
+    AllianceState state = new AllianceState(world);
     state.addCategory(category);
     state.addCategories(cats);
 
@@ -195,6 +195,12 @@ public class AllianceStateComboBox extends JComboBox {
  */
 class AllianceState {
   protected List<AllianceCategory> categories = new ArrayList<AllianceCategory>();
+  private GameData world;
+
+  public AllianceState(GameData world) {
+    // FIXME not the most elegant solution: passing world to get access to localized orders...
+    this.world = world;
+  }
 
   /**
    * Adds an alliance category to this state
@@ -251,8 +257,9 @@ class AllianceState {
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     for (AllianceCategory category : categories) {
-      buffer.append(Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + category.getName()))
-      .append(" ");
+      buffer.append(
+          world.getRules().getOrder(Alliance.ORDER_KEY_PREFIX + category.getName()).getName(
+              Locales.getGUILocale())).append(" ");
     }
     return buffer.toString();
   }

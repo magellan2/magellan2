@@ -67,28 +67,28 @@ public interface Orders extends List<Order> {
    */
   public boolean isToken(Order order, int pos, String token);
 
-  /**
-   * @return The base (radix) for ids used by this orders
-   */
-  public abstract int getBase();
-
-  /**
-   * Converts an order token to EntityID
-   * 
-   * @param order
-   * @param pos A position between 0 (inclusively) and order.size() (exclusively)
-   * @return a unit ID corresponding to the specified token of the order
-   */
-  public abstract EntityID getEntityID(Order order, int pos);
-
-  /**
-   * Converts an order token to UnitID
-   * 
-   * @param order
-   * @param pos A position between 0 (inclusively) and order.size() (exclusively)
-   * @return a unit ID corresponding to the specified token of the order
-   */
-  public abstract UnitID getUnitID(Order order, int pos);
+  // /**
+  // * @return The base (radix) for ids used by this orders
+  // */
+  // public abstract int getBase();
+  //
+  // /**
+  // * Converts an order token to EntityID
+  // *
+  // * @param order
+  // * @param pos A position between 0 (inclusively) and order.size() (exclusively)
+  // * @return a unit ID corresponding to the specified token of the order
+  // */
+  // public abstract EntityID getEntityID(Order order, int pos);
+  //
+  // /**
+  // * Converts an order token to UnitID
+  // *
+  // * @param order
+  // * @param pos A position between 0 (inclusively) and order.size() (exclusively)
+  // * @return a unit ID corresponding to the specified token of the order
+  // */
+  // public abstract UnitID getUnitID(Order order, int pos);
 
   /**
    * Returns the integer number represented by the specified token in the order.

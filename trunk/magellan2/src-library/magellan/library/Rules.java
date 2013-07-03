@@ -449,6 +449,18 @@ public interface Rules {
   public void setOrderfileStartingString(String startingString);
 
   /**
+   * Shorthand for getOrder(StringID.create(id)).
+   * 
+   * @see #getOrder(StringID)
+   */
+  public OrderType getOrder(String id);
+
+  /**
+   * Returns the order type with the given id.
+   */
+  public OrderType getOrder(StringID id);
+
+  /**
    * Returns the order type with the given id. If add is true and the id is not available, it will
    * be added.
    */

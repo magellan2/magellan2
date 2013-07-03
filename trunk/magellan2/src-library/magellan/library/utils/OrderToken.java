@@ -15,6 +15,7 @@ package magellan.library.utils;
 
 import java.util.Arrays;
 
+import magellan.library.rules.OrderType;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -278,7 +279,11 @@ public class OrderToken {
   /**
    * Compares the token and the translation of the specified keyword with respect to abbreviations
    * as used by the eressea game server.
+   * 
+   * @deprecated use proper unit locale
+   * @see Rules#getOrder(String), {@link OrderType#getName()}
    */
+  @Deprecated
   public boolean equalsLocalToken(String strKeyword) {
     if (text.length() == 0)
       return false;
@@ -346,10 +351,11 @@ public class OrderToken {
   /**
    * Deep equals.
    * 
-   * @return <code>true</code> if the token has identical text, start, end, type and followedBySpace.
+   * @return <code>true</code> if the token has identical text, start, end, type and
+   *         followedBySpace.
    */
   public boolean equalsAll(OrderToken token) {
-    return token!=null && text.equals(token.text) && start == token.start && end == token.end
+    return token != null && text.equals(token.text) && start == token.start && end == token.end
         && ttype == token.ttype && followedBySpace == token.followedBySpace;
   }
 }

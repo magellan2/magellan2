@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Locale;
 
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -35,22 +36,22 @@ import magellan.library.rules.ConstructibleType;
  * A class for writing orders of all units of a certain faction to a stream.
  */
 public class OrderWriter {
-  /** DOCUMENT-ME */
+  /** Marker for confirmed units */
   public static final String CONFIRMED = "bestaetigt";
 
-  /** DOCUMENT-ME */
+  /** Marker for confirmed TEMP units */
   public static final String CONFIRMEDTEMP = OrderWriter.CONFIRMED + "_temp";
 
   private String syntaxCheckOptions = "";
-  private GameData world = null;
-  private Faction faction = null;
-  private Group group = null;
+  private GameData world;
+  private Faction faction;
+  private Group group;
   private boolean addECheckComments = true;
   private boolean removeSCComments = false;
   private boolean removeSSComments = false;
   private boolean confirmedOnly = false;
   private boolean forceUnixLineBreaks = false;
-  private Collection<Region> regions = null;
+  private Collection<Region> regions;
   private boolean writeUnitTagsAsVorlageComment = false;
   /**
    * sometimes I don't want the timestamp..
@@ -58,6 +59,8 @@ public class OrderWriter {
    * @author Fiete
    */
   private boolean writeTimeStamp = true;
+
+  private Locale locale;
 
   /**
    * Creates a new OrderWriter object extracting the orders of faction f's units and writing them to
@@ -103,7 +106,7 @@ public class OrderWriter {
   /**
    * DOCUMENT-ME
    */
-  public int write(BufferedWriter stream) throws IOException {
+  public synchronized int write(BufferedWriter stream) throws IOException {
     writeHeader(stream);
 
     int units =
@@ -156,9 +159,7 @@ public class OrderWriter {
   }
 
   private void writeHeader(BufferedWriter stream) throws IOException {
-    // allways ERESSEA? this is not translation-dependend, but
-    // game specific - with ERESSEA as default
-    // stream.write(Resources.getOrderTranslation(EresseaConstants.O_ERESSEA));
+    // FIXME this might be locale dependent
     stream.write(world.rules.getOrderfileStartingString());
     stream.write(" " + faction.getID());
     writeln(stream, " \"" + faction.getPassword() + "\"");
@@ -177,8 +178,16 @@ public class OrderWriter {
       }
     }
 
-    // pavkovic 2003.09.11: use system locale and NOT faction locale!
-    writeln(stream, "LOCALE " + Locales.getOrderLocale().getLanguage());
+    // TODO (stm) which locale to use here?, string LOCALE might be system/language dependent
+    writeln(stream, "LOCALE " + getLocale().getLanguage());
+  }
+
+  protected Locale getLocale() {
+    return faction.getLocale();
+  }
+
+  protected String getOrderTranslation(String orderId) {
+    return world.getRules().getOrder(orderId).getName(getLocale());
   }
 
   private int writeRegions(Collection<? extends Region> regions, BufferedWriter stream)
@@ -208,7 +217,7 @@ public class OrderWriter {
         name = "Ozean";
       }
 
-      stream.write(Resources.getOrderTranslation(EresseaConstants.O_REGION));
+      stream.write(world.getRules().getOrder(EresseaConstants.O_REGION).getName(getLocale()));
       writeln(stream, " " + r.getID().toString(",") + " ; " + r.getName());
       writeln(stream, "; " + world.getGameSpecificStuff().getOrderWriter().getCheckerName()
           + " Lohn " + r.getWage());
@@ -229,8 +238,7 @@ public class OrderWriter {
     if (unit instanceof TempUnit)
       return false;
 
-    stream.write(Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " "
-        + unit.getID().toString());
+    stream.write(getOrderTranslation(EresseaConstants.O_UNIT) + " " + unit.getID().toString());
 
     if (addECheckComments) {
       int money = 0;
@@ -299,7 +307,7 @@ public class OrderWriter {
   }
 
   private void writeFooter(BufferedWriter stream) throws IOException {
-    writeln(stream, Resources.getOrderTranslation(EresseaConstants.O_NEXT));
+    writeln(stream, getOrderTranslation(EresseaConstants.O_NEXT));
   }
 
   private Collection<Unit> filterUnits(Collection<Unit> units) {
@@ -383,19 +391,15 @@ public class OrderWriter {
     }
   }
 
-  // private void write(BufferedWriter stream, String text) throws IOException {
-  // stream.write(text);
-  // }
-
   /**
-   * DOCUMENT-ME
+   * Returns true if only confirmed units written.
    */
   public boolean getConfirmedOnly() {
     return confirmedOnly;
   }
 
   /**
-   * DOCUMENT-ME
+   * If true, only confirmed units are written.
    */
   public void setConfirmedOnly(boolean confirmedOnly) {
     this.confirmedOnly = confirmedOnly;

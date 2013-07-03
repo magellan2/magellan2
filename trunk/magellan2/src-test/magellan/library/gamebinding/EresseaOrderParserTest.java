@@ -34,6 +34,7 @@ import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 
 import magellan.client.completion.AutoCompletion;
@@ -45,6 +46,7 @@ import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.AbstractOrderParser.TokenBucket;
 import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
+import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 import magellan.test.GameDataBuilder;
@@ -68,6 +70,14 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   protected AutoCompletion completion;
   private EresseaOrderCompleter completer;
   protected GameDataBuilder builder;
+
+  protected String getOrderTranslation(String orderId) {
+    return data.getRules().getOrder(orderId).getName(getLocale());
+  }
+
+  protected Locale getLocale() {
+    return Locales.getOrderLocale();
+  }
 
   /**
    * @throws java.lang.Exception
@@ -135,8 +145,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     assertTrue(getParser().getCommands().contains("foo"));
     assertTrue(getParser().getHandlers().contains(fooHandler));
 
-    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).contains(fooHandler));
-    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).size() == 1);
+    assertTrue(getParser().getHandlers(new OrderToken("foo")).contains(fooHandler));
+    assertTrue(getParser().getHandlers(new OrderToken("foo")).size() == 1);
   }
 
   /**
@@ -155,12 +165,12 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     assertTrue(getParser().getCommands().contains("foo"));
     assertTrue(getParser().getHandlers().contains(fooHandler));
 
-    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).contains(fooHandler));
-    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).size() == 1);
+    assertTrue(getParser().getHandlers(new OrderToken("foo")).contains(fooHandler));
+    assertTrue(getParser().getHandlers(new OrderToken("foo")).size() == 1);
     getParser().removeCommand("foo");
     assertFalse(getParser().getCommands().contains("foo"));
     assertFalse(getParser().getHandlers().contains(fooHandler));
-    assertTrue(getParser().getHandlers(new OrderToken("rules.orders.foo")).size() == 0);
+    assertTrue(getParser().getHandlers(new OrderToken("foo")).size() == 0);
   }
 
   /**
@@ -206,8 +216,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testRead() {
-    checkOrder(""); // FIXME ???!!!
     checkOrder("AR");
+    checkOrder(""); // FIXME ???!!!
     checkOrder("A", false);
   }
 
@@ -256,7 +266,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testArbeiteReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_WORK));
+    checkOrder(getOrderTranslation(EresseaConstants.O_WORK));
     checkOrder("ARBEITE");
     checkOrder("ARBEITEN");
     checkOrder("arbeiten");
@@ -291,7 +301,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testAttackReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ATTACK) + " 123");
+    checkOrder(getOrderTranslation(EresseaConstants.O_ATTACK) + " 123");
     checkOrder("ATTACKIERE 123");
     checkOrder("ATTACKIERE xyz");
     checkOrder("ATTACKIERE TEMP xyz"); // this is actually legal
@@ -306,7 +316,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBannerReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_BANNER) + "\"\"");
+    checkOrder(getOrderTranslation(EresseaConstants.O_BANNER) + "\"\"");
     checkOrder("BANNER  \"abc\"");
     checkOrder("BANNER  \"abc\"; bla");
     checkOrder("BANNER  'abc'");
@@ -319,7 +329,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBeansprucheReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CLAIM) + " Sonnensegel");
+    checkOrder(getOrderTranslation(EresseaConstants.O_CLAIM) + " Sonnensegel");
     checkOrder("BEANSPRUCHE 2 Sonnensegel");
     checkOrder("BEANSPRUCHE \"Schönes Geschenk\"");
     checkOrder("BEANSPRUCHE Schönes~Geschenk");
@@ -334,7 +344,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBefoerderungReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PROMOTION));
+    checkOrder(getOrderTranslation(EresseaConstants.O_PROMOTION));
     checkOrder("BEFÖRDERUNG");
     checkOrder("BEFÖRDER");
     checkOrder("BEFÖRDERUNG ;");
@@ -347,7 +357,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBeklaueReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_STEAL) + " 123");
+    checkOrder(getOrderTranslation(EresseaConstants.O_STEAL) + " 123");
     checkOrder("BEKLAUE 1");
     checkOrder("BEKLAUE abc;");
     checkOrder("BEKLAUE TEMP abc;"); // TODO is this legal?
@@ -363,7 +373,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBelagereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SIEGE) + " burg");
+    checkOrder(getOrderTranslation(EresseaConstants.O_SIEGE) + " burg");
     checkOrder("BELAGERE burg");
     checkOrder("BELAGERE abc", false);
     checkOrder("BELAGERUNG burg", false);
@@ -378,7 +388,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBenenneReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_NAME) + " EINHEIT \"Foo\"");
+    checkOrder(getOrderTranslation(EresseaConstants.O_NAME) + " EINHEIT \"Foo\"");
     for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Gebäude", "Sägewerk",
         "SCHIFF", "REGION" }) {
       checkOrder("BENENNEN " + thing + " \"Foo\"");
@@ -424,7 +434,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBenutzeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_USE) + " Siebenmeilentee");
+    checkOrder(getOrderTranslation(EresseaConstants.O_USE) + " Siebenmeilentee");
     checkOrder("BENUTZEN Wasser~des~Lebens");
     checkOrder("BENUTZEN \"Wasser des Lebens\"");
     checkOrder("BENUTZEN 22 Wasser~des~Lebens");
@@ -441,7 +451,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBeschreibeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " EINHEIT \"Foo\"");
+    checkOrder(getOrderTranslation(EresseaConstants.O_DESCRIBE) + " EINHEIT \"Foo\"");
     for (String thing : new String[] { "EINHEIT", "PRIVAT", "BURG", "Sägewerk", "SCHIFF", "REGION" }) {
       checkOrder("BESCHREIBEN " + thing + " \"Foo\"");
       checkOrder("BESCHREIBE " + thing + " \"Foo\"; comment");
@@ -457,8 +467,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBetreteReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ENTER) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " ship");
+    checkOrder(getOrderTranslation(EresseaConstants.O_ENTER) + " "
+        + getOrderTranslation(EresseaConstants.O_SHIP) + " ship");
     checkOrder("BetreteN BURG burg");
     checkOrder("BetreteN BURG burg; ");
     checkOrder("BetreteN BURG abc", true); // no such building
@@ -472,7 +482,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBewacheReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GUARD));
+    checkOrder(getOrderTranslation(EresseaConstants.O_GUARD));
     checkOrder("BEWACHE");
     checkOrder("BEWACHE ; a");
     checkOrder("BEWACHE 2", false);
@@ -483,7 +493,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testBotschaftReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MESSAGE) + " "
+    checkOrder(getOrderTranslation(EresseaConstants.O_MESSAGE) + " "
         + Resources.get(EresseaConstants.O_REGION) + " \"hallo\"");
     for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Sägewerk", "SCHIFF", "REGION" }) {
       String nr = " abc ";
@@ -505,8 +515,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testDefaultReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_DEFAULT) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_WORK));
+    checkOrder(getOrderTranslation(EresseaConstants.O_DEFAULT) + " "
+        + getOrderTranslation(EresseaConstants.O_WORK));
     checkOrder("DEFAULT \"ARBEITEN\"");
     checkOrder("DEFAULT 'ARBEITEN'");
     checkOrder("DEFAULT 'LERNEN Ausdauer'");
@@ -525,7 +535,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testEmailReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_EMAIL) + " \"a@b.com\"");
+    checkOrder(getOrderTranslation(EresseaConstants.O_EMAIL) + " \"a@b.com\"");
     checkOrder("EMAIL \'a@b.com\'");
     checkOrder("EMAIL \"123@456.com\"");
     checkOrder("EMAIL \"eressea-server@eressea.upb.de\"");
@@ -544,7 +554,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testEndeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_END));
+    checkOrder(getOrderTranslation(EresseaConstants.O_END));
     checkOrder("ENDE 123", false);
     checkOrder("ENDE \"123\"", false);
   }
@@ -554,7 +564,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testFahreReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RIDE) + " zwei");
+    checkOrder(getOrderTranslation(EresseaConstants.O_RIDE) + " zwei");
     checkOrder("FAHREN zwei");
     checkOrder("FAHREN TEMP 456");
     checkOrder("FAHREN abc"); // invisible unit allowed
@@ -567,8 +577,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testFolgeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " zwei");
+    checkOrder(getOrderTranslation(EresseaConstants.O_FOLLOW) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT) + " zwei");
     checkOrder("FOLGEN SCHIFF ship");
     checkOrder("FOLGEN SCHIFF 123", false);
     checkOrder("FOLGEN SCHIFF TEMP 123", false);
@@ -582,8 +592,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testForscheReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
+        + getOrderTranslation(EresseaConstants.O_HERBS));
     checkOrder("FORSCHE", false);
     checkOrder("FORSCHE KRÄUTER 123", false);
   }
@@ -594,8 +604,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @Test
   public void testSupplyReader() {
     // there is an undocumented supply order in Eressea
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SUPPLY) + " 123 "
-        + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(getOrderTranslation(EresseaConstants.O_SUPPLY) + " 123 "
+        + getOrderTranslation(EresseaConstants.O_HERBS));
   }
 
   /**
@@ -603,8 +613,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testGibReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GIVE) + " 123 "
-        + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(getOrderTranslation(EresseaConstants.O_GIVE) + " 123 "
+        + getOrderTranslation(EresseaConstants.O_HERBS));
     checkOrder("GIB KRÄUTER", false);
     checkOrder("GIB abc \"KRÄUTER\"", false);
     checkOrder("GIB 123 KRÄUTER 123", false);
@@ -655,7 +665,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testGruppeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GROUP));
+    checkOrder(getOrderTranslation(EresseaConstants.O_GROUP));
     checkOrder("GRUPPE abc");
     checkOrder("GRUPPE \"Die wilden Kerle\"");
     checkOrder("GRUPPE Hallo~Welt");
@@ -669,8 +679,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testHelfeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_HELP) + " 123 "
-        + Resources.getOrderTranslation(EresseaConstants.O_ALL));
+    checkOrder(getOrderTranslation(EresseaConstants.O_HELP) + " 123 "
+        + getOrderTranslation(EresseaConstants.O_ALL));
     checkOrder("HELFE 123 ALLES NICHT");
     checkOrder("HELFEN 123 GIB");
     checkOrder("HELFEN 123 GIB NICHT");
@@ -684,6 +694,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
     checkOrder("HELFE 123 456", false);
     checkOrder("HELFE TEMP 456", false);
     checkOrder("HELFE 123", false);
+    checkOrder("HELFE 123 KÄMPFEN", false);
   }
 
   /**
@@ -691,7 +702,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testKaempfeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_COMBAT));
+    checkOrder(getOrderTranslation(EresseaConstants.O_COMBAT));
     checkOrder("KÄMPFE AGGRESSIV");
     checkOrder("KÄMPFE HINTEN");
     checkOrder("KÄMPFE DEFENSIV");
@@ -713,7 +724,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   public void testKampfzauberReader() {
     GameDataBuilder.addSpells(data);
 
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL) + " Hagel");
+    checkOrder(getOrderTranslation(EresseaConstants.O_COMBATSPELL) + " Hagel");
     checkOrder("KAMPFZAUBER STUFE 2 Hagel");
     checkOrder("KAMPFZAUBER Hagel NICHT");
     checkOrder("KAMPFZAUBER STUFE 2 \"Großes Fest\"", false); // no combat spell
@@ -728,7 +739,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testKaufeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_BUY) + " 2 Balsam");
+    checkOrder(getOrderTranslation(EresseaConstants.O_BUY) + " 2 Balsam");
     checkOrder("KAUFE 2 Öl");
     checkOrder("KAUFE 2 Oel");
     checkOrder("KAUFE Weihrauch", false);
@@ -742,7 +753,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testKontaktiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CONTACT) + " 123");
+    checkOrder(getOrderTranslation(EresseaConstants.O_CONTACT) + " 123");
     checkOrder("KONTAKTIERE a");
     checkOrder("KONTAKTIERE TEMP a");
     checkOrder("KONTAKTIERE abc def", false);
@@ -755,7 +766,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testLehreReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_TEACH) + " abc");
+    checkOrder(getOrderTranslation(EresseaConstants.O_TEACH) + " abc");
     checkOrder("LEHRE abc 123 456 TEMP zyx");
     checkOrder("LEHRE abc Hiebwaffen", false);
     checkOrder("LEHRE", false);
@@ -767,7 +778,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testLerneReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_LEARN) + " Ausdauer");
+    checkOrder(getOrderTranslation(EresseaConstants.O_LEARN) + " Ausdauer");
     checkOrder("LERNE Hiebwaffen");
     checkOrder("LERNE \"Hiebwaffen\"");
     checkOrder("LERNE Waffenloser~Kampf");
@@ -784,7 +795,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @Test
   public void testLocaleReader() {
     // this is a valid order, but not /inside/ a unit
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_LOCALE), false);
+    checkOrder(getOrderTranslation(EresseaConstants.O_LOCALE), false);
   }
 
   /**
@@ -792,7 +803,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testMacheReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MAKE) + " TEMP 123");
+    checkOrder(getOrderTranslation(EresseaConstants.O_MAKE) + " TEMP 123");
     checkOrder("MACHE BURG");
     checkOrder("MACHE 2 BURG");
     checkOrder("MACHE BURG 123");
@@ -843,7 +854,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testNachReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MOVE) + " westen");
+    checkOrder(getOrderTranslation(EresseaConstants.O_MOVE) + " westen");
     checkOrder("NACH o");
     checkOrder("NACH so");
     checkOrder("NACH sw");
@@ -869,7 +880,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testNeustartReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESTART) + " Trolle \"passwort\"");
+    checkOrder(getOrderTranslation(EresseaConstants.O_RESTART) + " Trolle \"passwort\"");
     checkOrder("NEUSTART Zwerge \"\"", false);
     checkOrder("NEUSTART Zwerge", false);
     checkOrder("NEUSTART", false);
@@ -880,7 +891,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testNummerReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " EINHEIT");
+    checkOrder(getOrderTranslation(EresseaConstants.O_NUMBER) + " EINHEIT");
     checkOrder("NUMMER EINHEIT 123");
     checkOrder("NUMMER PARTEI 123");
     checkOrder("NUMMER SCHIFF 123");
@@ -896,7 +907,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testOptionReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_OPTION) + " AUSWERTUNG");
+    checkOrder(getOrderTranslation(EresseaConstants.O_OPTION) + " AUSWERTUNG");
     checkOrder("OPTION PUNKTE NICHT");
     checkOrder("OPTION PUNKTE NICHT MEHR", false);
   }
@@ -906,7 +917,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testParteiReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FACTION), false); // TODO???
+    checkOrder(getOrderTranslation(EresseaConstants.O_FACTION), false); // TODO???
   }
 
   /**
@@ -914,7 +925,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testPasswortReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD) + " \"squiggy\"");
+    checkOrder(getOrderTranslation(EresseaConstants.O_PASSWORD) + " \"squiggy\"");
     checkOrder("PASSWORT", true);
     checkOrder("PASSWORT 123", false);
   }
@@ -924,8 +935,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testPflanzeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PLANT) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(getOrderTranslation(EresseaConstants.O_PLANT) + " "
+        + getOrderTranslation(EresseaConstants.O_HERBS));
     checkOrder("PFLANZE BÄUME");
     checkOrder("PFLANZE MALLOrnSamen");
     checkOrder("PFLANZE SAMEN");
@@ -945,7 +956,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testPiraterieReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PIRACY));
+    checkOrder(getOrderTranslation(EresseaConstants.O_PIRACY));
   }
 
   /**
@@ -953,7 +964,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testPraefixReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PREFIX));
+    checkOrder(getOrderTranslation(EresseaConstants.O_PREFIX));
     checkOrder("PRÄFIX Nebel");
     checkOrder("PRÄFIX Blubb"); // do not currently test for allowed prefixes
     checkOrder("PRÄFIX Bla blubb", false);
@@ -966,12 +977,12 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   @Test
   public void testRegionReader() {
     // this is a valid order, but not /inside/ a unit
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_REGION) + " 1,1", false);
+    checkOrder(getOrderTranslation(EresseaConstants.O_REGION) + " 1,1", false);
     // FIXME read comma'd coordinate
     /*
-     * checkOrder(Resources.getOrderTranslation(EresseaConstants.O_REGION) + " 1,1");
-     * checkOrder("REGION", false); checkOrder("REGION 1 3", false); checkOrder("REGION 123",
-     * false); checkOrder("REGION abc,def", false);
+     * checkOrder(getOrderTranslation(EresseaConstants.O_REGION) + " 1,1"); checkOrder("REGION",
+     * false); checkOrder("REGION 1 3", false); checkOrder("REGION 123", false);
+     * checkOrder("REGION abc,def", false);
      */
   }
 
@@ -980,7 +991,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testRekrutiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RECRUIT) + " 1");
+    checkOrder(getOrderTranslation(EresseaConstants.O_RECRUIT) + " 1");
     checkOrder("REKRUTIERE 5");
     checkOrder("REKRUTIERE 0", true); // TODO should we return false here?
     checkOrder("REKRUTIERE", false);
@@ -993,7 +1004,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testReserviereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESERVE) + " 1 "
+    checkOrder(getOrderTranslation(EresseaConstants.O_RESERVE) + " 1 "
         + data.rules.getItemType(EresseaConstants.I_USILVER).getName());
     checkOrder("RESERVIEREN ALLES Holz");
     checkOrder("RESERVIERE 2 Silber");
@@ -1015,8 +1026,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testRouteReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ROUTE) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_NE));
+    checkOrder(getOrderTranslation(EresseaConstants.O_ROUTE) + " "
+        + getOrderTranslation(EresseaConstants.O_NE));
     checkOrder("ROUTE o");
     checkOrder("ROUTE so");
     checkOrder("ROUTE sw");
@@ -1043,8 +1054,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testSortiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SORT) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_BEFORE) + " " + "123");
+    checkOrder(getOrderTranslation(EresseaConstants.O_SORT) + " "
+        + getOrderTranslation(EresseaConstants.O_BEFORE) + " " + "123");
     checkOrder("SORTIERE VOR abc");
     checkOrder("SORTIERE HINTER abc");
     checkOrder("SORTIERE VOR ", false);
@@ -1060,7 +1071,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testSpioniereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SPY) + " abc");
+    checkOrder(getOrderTranslation(EresseaConstants.O_SPY) + " abc");
     checkOrder("SPIONIERE 123");
     checkOrder("SPIONIERE 123 123", false);
     checkOrder("SPIONIERE", false);
@@ -1072,7 +1083,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testStirbReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_QUIT) + " \"abc\"");
+    checkOrder(getOrderTranslation(EresseaConstants.O_QUIT) + " \"abc\"");
     checkOrder("STIRB", false);
     checkOrder("STIRB 123", false);
   }
@@ -1082,7 +1093,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testTarneReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_HIDE));
+    checkOrder(getOrderTranslation(EresseaConstants.O_HIDE));
     checkOrder("TARNE 0");
     checkOrder("TARNE 1");
     checkOrder("TARNE NICHT", false);
@@ -1095,7 +1106,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testTransportiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CARRY) + " zwei");
+    checkOrder(getOrderTranslation(EresseaConstants.O_CARRY) + " zwei");
     checkOrder("TRANSPORTIERE zwei NICHT", false);
     checkOrder("TRANSPORTIERE NICHT", false);
     checkOrder("TRANSPORTIERE zwei zwei", false);
@@ -1106,7 +1117,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testTreibeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_TAX));
+    checkOrder(getOrderTranslation(EresseaConstants.O_TAX));
   }
 
   /**
@@ -1114,7 +1125,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testUnterhalteReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ENTERTAIN));
+    checkOrder(getOrderTranslation(EresseaConstants.O_ENTERTAIN));
   }
 
   /**
@@ -1122,7 +1133,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testUrsprungReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ORIGIN) + " 1 1");
+    checkOrder(getOrderTranslation(EresseaConstants.O_ORIGIN) + " 1 1");
     checkOrder("URSPRUNG 1", false);
     checkOrder("URSPRUNG 1 2 3", false);
     checkOrder("URSPRUNG 2,3", false);
@@ -1134,7 +1145,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testVergesseReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FORGET) + " Hiebwaffen");
+    checkOrder(getOrderTranslation(EresseaConstants.O_FORGET) + " Hiebwaffen");
     checkOrder("VERGESSE", false);
     checkOrder("VERGESSE Tuten", false);
     checkOrder("VERGESSE Hiebwaffen Ausdauer", false);
@@ -1145,7 +1156,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testVerkaufeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SELL) + " 1 Balsam");
+    checkOrder(getOrderTranslation(EresseaConstants.O_SELL) + " 1 Balsam");
     checkOrder("VERKAUFE ALLES Balsam");
     checkOrder("VERKAUFE Balsam", false);
     checkOrder("VERKAUFE 2 3 Balsam", false);
@@ -1158,7 +1169,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testFinalKeywordReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_LEAVE));
+    checkOrder(getOrderTranslation(EresseaConstants.O_LEAVE));
   }
 
   /**
@@ -1168,7 +1179,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
   public void testZaubereReader() {
     GameDataBuilder.addSpells(data);
 
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CAST) + " \"Großes Fest\"");
+    checkOrder(getOrderTranslation(EresseaConstants.O_CAST) + " \"Großes Fest\"");
 
     checkOrder("ZAUBERE STUFE 2 Schild zwei");
     checkOrder("ZAUBERE STUFE 2 \"Großes Fest\"");
@@ -1186,7 +1197,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testZeigeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SHOW) + " Schild");
+    checkOrder(getOrderTranslation(EresseaConstants.O_SHOW) + " Schild");
     checkOrder("ZEIGE ALLES ZAUBER");
     checkOrder("ZEIGE ALLES Tränke");
     checkOrder("ZEIGE Zwerg");
@@ -1199,7 +1210,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testZerstoereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_DESTROY));
+    checkOrder(getOrderTranslation(EresseaConstants.O_DESTROY));
   }
 
   /**
@@ -1207,7 +1218,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testZuechteReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GROW) + " PFERDE");
+    checkOrder(getOrderTranslation(EresseaConstants.O_GROW) + " PFERDE");
     checkOrder("ZÜCHTE KRÄUTER");
     checkOrder("ZÜCHTE 2 KRÄUTER");
     checkOrder("ZÜCHTE 2", false);
@@ -1221,7 +1232,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testSabotiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SABOTAGE) + " SCHIFF");
+    checkOrder(getOrderTranslation(EresseaConstants.O_SABOTAGE) + " SCHIFF");
     checkOrder("SABOTIERE", false);
     checkOrder("SABOTIERE SCHIFF ship", false);
   }

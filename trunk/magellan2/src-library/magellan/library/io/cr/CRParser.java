@@ -1638,6 +1638,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           ord.setInternal(sc.argv[0].equals("1"));
         } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("active")) {
           ord.setActive(sc.argv[0].equals("1"));
+        } else if ((sc.argc == 2) && sc.argv[1].startsWith("locale_")) {
+          ord.addName(new Locale(sc.argv[1].substring("locale_".length())), sc.argv[0]);
         } else if (!sc.isBlock) {
           unknown("ORDER", true);
         } else {

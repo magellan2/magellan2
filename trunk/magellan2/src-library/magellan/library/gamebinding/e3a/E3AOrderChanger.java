@@ -15,7 +15,6 @@ import magellan.library.Rules;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderChanger;
-import magellan.library.utils.Resources;
 
 /**
  * OrderChanger class for the game Eressea -- The Third Age.
@@ -39,8 +38,7 @@ public class E3AOrderChanger extends EresseaOrderChanger {
    */
   @Override
   public void addRecruitOrder(Unit unit, int i) {
-    String order =
-        Resources.getOrderTranslation(EresseaConstants.O_RECRUIT) + " " + String.valueOf(i);
+    String order = getOrderTranslation(EresseaConstants.O_RECRUIT, unit) + " " + String.valueOf(i);
     unit.addOrder(order);
   }
 
@@ -52,46 +50,46 @@ public class E3AOrderChanger extends EresseaOrderChanger {
   @Override
   public void addMultipleHideOrder(Unit unit) {
     List<String> orders = new LinkedList<String>();
-    orders.add(Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " ");
-    orders.add(Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"\"");
-    orders.add(Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"\"");
-    orders.add(Resources.getOrderTranslation(EresseaConstants.O_HIDE) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_FACTION));
+    orders.add(getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " ");
+    orders.add(getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"\"");
+    orders.add(getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"\"");
+    orders.add(getOrderTranslation(EresseaConstants.O_HIDE, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_FACTION, unit));
 
     if (unit.getShip() != null) {
-      orders.add(Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP));
-      orders.add(Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \"\"");
-      orders.add(Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \"\"");
+      orders.add(getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit));
+      orders.add(getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"\"");
+      orders.add(getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"\"");
     }
 
-    orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " " + unit.getID());
-    orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
-        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + unit.getName() + "\"");
+    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " " + unit.getID());
+    orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
+        + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + unit.getName() + "\"");
 
     if (unit.getDescription() != null) {
-      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + unit.getDescription()
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_UNIT, unit) + " \"" + unit.getDescription()
           + "\"");
     }
 
     if (unit.getShip() != null) {
-      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NUMBER) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " "
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NUMBER, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " "
           + unit.getShip().getID().toString());
-      orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_NAME) + " "
-          + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \""
-          + unit.getShip().getName() + "\"");
+      orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_NAME, unit) + " "
+          + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \"" + unit.getShip().getName()
+          + "\"");
 
       if (unit.getShip().getDescription() != null) {
-        orders.add(PCOMMENTSTART + Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " "
-            + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " \""
+        orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.O_DESCRIBE, unit) + " "
+            + getOrderTranslation(EresseaConstants.O_SHIP, unit) + " \""
             + unit.getShip().getDescription() + "\"");
       }
     }

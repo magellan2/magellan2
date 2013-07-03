@@ -643,6 +643,23 @@ public class GenericRules implements Rules {
     return getMap(MagellanSpellImpl.class).values();
   }
 
+  /**
+   * @see magellan.library.Rules#getOrder(java.lang.String)
+   */
+  public OrderType getOrder(String id) {
+    return getObjectType(OrderType.class, StringID.create(id), false);
+  }
+
+  /**
+   * @see magellan.library.Rules#getOrder(magellan.library.StringID)
+   */
+  public OrderType getOrder(StringID id) {
+    return getObjectType(OrderType.class, id, false);
+  }
+
+  /**
+   * @see magellan.library.Rules#getOrder(magellan.library.StringID, boolean)
+   */
   public OrderType getOrder(StringID id, boolean add) {
     return getObjectType(OrderType.class, id, add);
   }

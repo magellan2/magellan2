@@ -19,6 +19,7 @@ import java.util.List;
 
 import magellan.library.gamebinding.GameConstants;
 import magellan.library.rules.AllianceCategory;
+import magellan.library.utils.Locales;
 
 /**
  * A class representing an alliance status between two factions. The faction having this alliance is
@@ -147,7 +148,8 @@ public class Alliance {
   protected String getOrderTranslation(StringID orderId) {
     // we could also use Locales.getGUILocale()
     return getFaction().getData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-        getFaction().getLocale(), orderId);
+        getFaction().getLocale() == null ? Locales.getOrderLocale() : getFaction().getLocale(),
+        orderId);
   }
 
   /**

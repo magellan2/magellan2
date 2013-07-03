@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,6 @@ import magellan.library.rules.SimpleDate;
 import magellan.library.rules.SkillType;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.CollectionFactory;
-import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
@@ -549,7 +549,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
    */
   @Override
   protected CoordinateID originTranslate(CoordinateID c) {
-    return transformer.transform(c).translate(CoordinateID.create(c.getY() * -1, 0));
+    return transformer.transform(c);// .translate(CoordinateID.create(c.getY() * -1, 0));
   }
 
   public class RegionReader extends AbstractReader implements SectionReader {
@@ -817,18 +817,12 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     private void parseExits(Region region, String group) throws ParseException {
       if (group != null) {
+        Set<String> trans = new HashSet<String>(translateMap.keySet());
         StringTokenizer tokenizer = new StringTokenizer(group, ",");
         while (tokenizer.hasMoreTokens()) {
           String part = tokenizer.nextToken().trim();
-          CoordinateID c2 = null;
-          for (int d = 0; d < directions.length; ++d) {
-            if (directions[d].equals(part)) {
-              c2 =
-                  region.getCoordinate()
-                      .translate(magellan.library.utils.Direction.toCoordinate(d));
-              break;
-            }
-          }
+          trans.remove(part);
+          CoordinateID c2 = translate(region.getCoordinate(), part);
           if (c2 == null)
             throw new ParseException("invalid coordinate in " + group);
           Region r2 = world.getRegion(c2);
@@ -838,8 +832,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
             world.addRegion(r2);
           }
         }
-        for (Direction dir : Direction.getDirections()) {
-          CoordinateID c2 = region.getCoordinate().translate(dir.toCoordinate());
+        for (String dir : trans) {
+          CoordinateID c2 = region.getCoordinate().translate(translateMap.get(dir));
           if (world.getRegion(c2) == null) {
             Region r2 = MagellanFactory.createRegion(c2, world);
             r2.setType(RegionType.unknown);
@@ -850,6 +844,24 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
         }
       }
     }
+  }
+
+  static Map<String, CoordinateID> translateMap = new HashMap<String, CoordinateID>();
+
+  static {
+    translateMap.put("south", CoordinateID.create(0, 1));
+    translateMap.put("ydd", CoordinateID.create(1, 1));
+    translateMap.put("east", CoordinateID.create(1, 0));
+    translateMap.put("north", CoordinateID.create(0, -1));
+    translateMap.put("mir", CoordinateID.create(-1, -1));
+    translateMap.put("west", CoordinateID.create(-1, 0));
+  }
+
+  public CoordinateID translate(CoordinateID coordinate, String string) {
+    CoordinateID trans = translateMap.get(string);
+    if (trans == null)
+      return null;
+    return coordinate.translate(trans);
   }
 
 }

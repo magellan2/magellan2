@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import magellan.client.swing.map.CellGeometry;
 import magellan.library.CompleteData;
 import magellan.library.GameData;
 import magellan.library.Rules;
@@ -211,6 +212,10 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    */
   public Map<Integer, String> getCombatStates() {
     return Collections.unmodifiableSortedMap(combatStates);
+  }
+
+  public CoordMapper getCoordMapper(CellGeometry cellGeometry) {
+    return GameSpecificStuff.ERESSEA_MAPPER;
   }
 
 }

@@ -383,49 +383,54 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           return;
 
         CoordinateID translationCoord = null;
+        final int xsgn =
+            cellGeometry.getUnscaledCellPositionY(1, 0)
+                - cellGeometry.getUnscaledCellPositionY(0, 0) > 0 ? -1 : 1;
+        final int ysgn =
+            cellGeometry.getUnscaledCellPositionY(0, 1)
+                - cellGeometry.getUnscaledCellPositionY(0, 0) > 0 ? -1 : 1;
 
         switch (e.getKeyCode()) {
         case KeyEvent.VK_UP:
         case KeyEvent.VK_NUMPAD9:
-          translationCoord = CoordinateID.create(0, 1);
+          translationCoord = CoordinateID.create(0, ysgn);
 
           break;
 
         case KeyEvent.VK_RIGHT:
         case KeyEvent.VK_NUMPAD6:
-          translationCoord = CoordinateID.create(1, 0);
-
+          translationCoord = CoordinateID.create(xsgn, 0);
           break;
 
         case KeyEvent.VK_DOWN:
         case KeyEvent.VK_NUMPAD1:
-          translationCoord = CoordinateID.create(0, -1);
+          translationCoord = CoordinateID.create(0, -ysgn);
 
           break;
 
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_NUMPAD4:
-          translationCoord = CoordinateID.create(-1, 0);
+          translationCoord = CoordinateID.create(-xsgn, 0);
 
           break;
 
         case KeyEvent.VK_NUMPAD3:
-          translationCoord = CoordinateID.create(1, -1);
+          translationCoord = CoordinateID.create(xsgn, -ysgn);
 
           break;
 
         case KeyEvent.VK_NUMPAD7:
-          translationCoord = CoordinateID.create(-1, 1);
+          translationCoord = CoordinateID.create(-xsgn, ysgn);
 
           break;
 
         case KeyEvent.VK_NUMPAD2:
-          translationCoord = CoordinateID.create(1, -2);
+          translationCoord = CoordinateID.create(xsgn, -2 * ysgn);
 
           break;
 
         case KeyEvent.VK_NUMPAD8:
-          translationCoord = CoordinateID.create(-1, 2);
+          translationCoord = CoordinateID.create(-xsgn, 2 * ysgn);
 
           break;
 
@@ -633,6 +638,11 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     getGameData().removeUnitChangeListener(this);
     super.setGameData(data);
     data.addUnitChangeListener(this);
+
+    if (getGameData() != null) {
+      cellGeometry.setCoordMapper(getGameData().getRules().getGameSpecificStuff().getCoordMapper(
+          cellGeometry));
+    }
   }
 
   /**
@@ -783,11 +793,30 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     // just use visible regions as base
     if ((condition & RenderingPlane.VISIBLE_REGIONS) != 0) {
-      int xstart = upperLeft.getX() - 2;
-      int xend = lowerRight.getX() + 1;
+      int xstart = upperLeft.getX();
+      int xend = lowerRight.getX();
+      int ystart = upperLeft.getY();
+      int yend = (lowerRight.getY());
+      if (xstart > xend) {
+        int dummy = xend;
+        xend = xstart + 1;
+        xstart = dummy - 2;
+      } else {
+        xstart -= 2;
+        xend += 1;
+      }
+      if (ystart < yend) {
+        int dummy = yend;
+        yend = ystart - 1;
+        ystart = dummy + 1;
+      } else {
+        ystart += 1;
+        yend -= 1;
+      }
+
       int yCounter = 0;
 
-      for (int y = upperLeft.getY() + 1; y >= (lowerRight.getY() - 1); y--) {
+      for (int y = ystart; y >= yend; y--) {
         if ((++yCounter % 2) == 0) {
           xstart += 1;
         }
@@ -829,7 +858,6 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           main.add(r);
         }
       }
-
     }
 
     // sort out according to other states, use AND
@@ -1394,6 +1422,10 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    */
   public void reloadGraphicSet() {
     cellGeometry = new CellGeometry("cellgeometry.txt");
+    if (getGameData() != null) {
+      cellGeometry.setCoordMapper(getGameData().getRules().getGameSpecificStuff().getCoordMapper(
+          cellGeometry));
+    }
 
     for (RenderingPlane plane : planes) {
       if ((plane != null) && (plane.getRenderer() != null)) {
@@ -1447,6 +1479,9 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   private Rectangle getMapToScreenBounds() {
     if ((getGameData() == null) || (cellGeometry == null))
       return null;
+
+    if (getGameData().getRegions().size() == 0)
+      return new Rectangle(0, 0, 1, 1);
 
     Point upperLeft = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
     Point lowerRight = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);

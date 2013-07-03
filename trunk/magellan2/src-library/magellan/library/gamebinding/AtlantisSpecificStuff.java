@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
+import magellan.client.swing.map.CellGeometry;
 import magellan.library.CompleteData;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -224,6 +225,27 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    */
   public Map<Integer, String> getCombatStates() {
     return Collections.emptyMap();
+  }
+
+  public CoordMapper getCoordMapper(CellGeometry cellGeometry) {
+    // return GameSpecificStuff.UNIT_MAPPER;
+    return new CoordMapper() {
+      public float getYY(int y) {
+        return (1.0f * (y + 1.0f));
+      }
+
+      public float getXY(int x) {
+        return -.5f * x;
+      }
+
+      public float getXX(int x) {
+        return 1f * x;
+      }
+
+      public float getYX(int y) {
+        return 0;
+      }
+    };
   }
 
 }

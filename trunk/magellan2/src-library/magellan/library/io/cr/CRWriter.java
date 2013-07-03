@@ -502,8 +502,10 @@ public class CRWriter extends BufferedWriter {
     if (world.getDate() != null) {
       write(world.getDate().getDate() + ";Runde");
       newLine();
-      write(((EresseaDate) world.getDate()).getEpoch() + ";Zeitalter");
-      newLine();
+      if (world.getDate() instanceof EresseaDate) {
+        write(((EresseaDate) world.getDate()).getEpoch() + ";Zeitalter");
+        newLine();
+      }
     }
 
     if (world.mailTo != null) {

@@ -169,7 +169,6 @@ import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillCategory;
 import magellan.library.rules.SkillType;
 import magellan.library.rules.UnitContainerType;
-import magellan.library.utils.Direction;
 import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
@@ -3733,7 +3732,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   private String getTranslation(int shore) {
     return getGameData().getRules().getGameSpecificStuff().getOrderChanger().getOrder(
-        Locales.getOrderLocale(), StringID.create(Direction.toDirection(shore).name()));
+        Locales.getOrderLocale(),
+        getGameData().getRules().getGameSpecificStuff().getMapMetric().toDirection(shore).getId());
   }
 
   private void appendUnitCapacityByItems(DefaultMutableTreeNode parent, Unit u, int freeCapacity) {

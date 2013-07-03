@@ -38,7 +38,6 @@ import magellan.library.rules.ShipType;
 import magellan.library.rules.SimpleDate;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.CollectionFactory;
-import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 
 /**
@@ -78,7 +77,7 @@ public class GameDataBuilder {
    * region, and (if <code>addUnit</code>) one unit
    */
   public GameData createSimplestGameData(int round, boolean addUnit) throws Exception {
-    return createSimplestGameData("Eressea", round, addUnit, true);
+    return createSimplestGameData(getGameName(), round, addUnit, true);
   }
 
   /**
@@ -427,8 +426,11 @@ public class GameDataBuilder {
     final Border road = MagellanFactory.createBorder(IntegerID.create(id));
 
     road.setDirection(direction);
-    road.setDirectionName(region.getData().getRules().getGameSpecificStuff().getOrderChanger()
-        .getOrder(getLocale(), StringID.create(Direction.toDirection(direction).name())));
+    // road.setDirectionName(region.getData().getRules().getGameSpecificStuff().getOrderChanger()
+    // .getOrder(
+    // getLocale(),
+    // region.getData().getRules().getGameSpecificStuff().getMapMetric()
+    // .toDirection(direction).getId()));
     road.setBuildRatio(buildRatio);
     road.setType("Straﬂe");
 

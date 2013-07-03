@@ -67,6 +67,8 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
   private MessageType transportMessageType = new MessageType(IntegerID.create(891175669));
 
+  private MapMetric mapMetric;
+
   protected EresseaMovementEvaluator(Rules rules) {
     this.rules = rules;
     horseTypes = new ArrayList<ItemType>(2);
@@ -75,6 +77,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
         horseTypes.add(type);
       }
     }
+    mapMetric = rules.getGameSpecificStuff().getMapMetric();
   }
 
   /**
@@ -708,9 +711,9 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
         // try to get next region from the neighbor relation; not possible if the movement goes
         // through an unknown region
         nextRegion = currentRegion != null ? currentRegion.getNeighbors().get(movement) : null;
-        // if the nextRegion is unknown for some region, fall back to coordinate movement
+        // if the nextRegion is unknown for some reason, fall back to coordinate movement
         if (nextRegion == null) {
-          nextCoord = currentCoord.translate(movement.toCoordinate());
+          nextCoord = mapMetric.translate(currentCoord, movement);
           unknown = stopped < 2;
         } else {
           nextCoord = nextRegion.getCoordinate();
@@ -759,7 +762,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     return mRel.getInitialMovement().size() - 1;
   }
 
-  protected static List<Direction> pathToDirections(List<?> path) {
+  protected List<Direction> pathToDirections(List<?> path) {
     List<Direction> result = new ArrayList<Direction>(path.size());
     CoordinateID lastRegion = null;
     for (Object region : path) {
@@ -770,7 +773,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
         currentRegion = (CoordinateID) region;
       }
       if (lastRegion != null) {
-        result.add(Direction.toDirection(lastRegion, currentRegion));
+        result.add(mapMetric.getDirection(lastRegion, currentRegion));
       }
       lastRegion = currentRegion;
     }

@@ -26,10 +26,12 @@ import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.EresseaMapMetric;
 import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.gamebinding.MessageRenderer;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.gamebinding.OrderChanger;
@@ -64,6 +66,8 @@ public class E3ASpecificStuff implements GameSpecificStuff {
 
   private E3AOrderChanger orderChanger;
 
+  private EresseaMapMetric metric;
+
   private static final SortedMap<Integer, String> combatStates = new TreeMap<Integer, String>();
 
   static {
@@ -86,6 +90,7 @@ public class E3ASpecificStuff implements GameSpecificStuff {
 
   public E3ASpecificStuff() {
     rules = new RulesReader().readRules(getName());
+    metric = new EresseaMapMetric(rules);
   }
 
   /**
@@ -260,5 +265,9 @@ public class E3ASpecificStuff implements GameSpecificStuff {
         return "ECHECK";
       }
     };
+  }
+
+  public MapMetric getMapMetric() {
+    return metric;
   }
 }

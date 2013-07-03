@@ -27,6 +27,7 @@ import magellan.library.Border;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.rules.Date;
+import magellan.library.utils.Direction;
 import magellan.library.utils.Resources;
 
 /**
@@ -75,7 +76,7 @@ public class BorderCellRenderer extends ImageCellRenderer implements MapperAware
 
         for (Border b : r.borders()) {
           if (magellan.library.utils.Umlaut.normalize(b.getType()).equals("STRASSE")
-              && (b.getDirection() != magellan.library.utils.Direction.DIR_INVALID)) {
+              && (b.getDirection() != Direction.DIR_INVALID)) {
             Image img =
                 (b.getBuildRatio() == 100) ? getImage("Strasse" + b.getDirection())
                     : getImage("Strasse_incomplete" + b.getDirection());

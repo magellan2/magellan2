@@ -1275,7 +1275,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     if (directions == null) {
       directions = new RadixTreeImpl<Direction>();
       dirTranslations.put(aLocale, directions);
-      for (Direction dir : Direction.getDirections()) {
+      for (Direction dir : getData().getGameSpecificStuff().getMapMetric().getDirections()) {
         for (String ld : getOrderTranslation(dir)) {
           directions.insert(Umlaut.normalize(ld.toLowerCase()), dir);
         }
@@ -1297,7 +1297,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   private List<String> getOrderTranslation(Direction dir) {
-    return getData().getRules().getOrder(dir.name()).getNames(getLocale());
+    return getData().getRules().getOrder(dir.getId()).getNames(getLocale());
   }
 
   /**

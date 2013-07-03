@@ -36,6 +36,7 @@ import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.Direction;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
@@ -67,6 +68,7 @@ public class PathCellRenderer extends ImageCellRenderer {
    */
   public PathCellRenderer(CellGeometry geo, MagellanContext context) {
     super(geo, context);
+
     drawPassivePath =
         (Boolean.valueOf(settings.getProperty("PathCellRenderer.drawPassivePath", "true")))
             .booleanValue();
@@ -188,11 +190,13 @@ public class PathCellRenderer extends ImageCellRenderer {
     CoordinateID currentCoord = CoordinateID.create(start); // make Coordinate a copy
     Region currentRegion = data.getRegion(currentCoord);
 
+    MapMetric mapMetric = context.getGameData().getGameSpecificStuff().getMapMetric();
+
     for (Direction dirObj : directions) {
       if (dirObj != Direction.INVALID) {
         draw(currentCoord, dirObj, imageType);
 
-        CoordinateID newCoord = currentCoord.translate(dirObj.toCoordinate());
+        CoordinateID newCoord = mapMetric.translate(currentCoord, dirObj);
         Region newRegion = currentRegion != null ? currentRegion.getNeighbors().get(dirObj) : null;
         if (newRegion == null) {
           newRegion = data.getRegion(newCoord);
@@ -200,7 +204,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 
         if (newRegion != null && !newCoord.equals(newRegion.getCoordinate())) {
           // if newRegion is a wraparound region, draw an additional arrow...
-          draw(newRegion.getCoordinate().translate(dirObj.add(3).toCoordinate()), dirObj, imageType);
+          draw(mapMetric.translate(newRegion.getCoordinate(), mapMetric.opposite(dirObj)), dirObj,
+              imageType);
           // ...and continue at the wrapped region
           currentCoord = newRegion.getCoordinate();
         } else {
@@ -217,7 +222,7 @@ public class PathCellRenderer extends ImageCellRenderer {
     Rectangle rect = cellGeo.getImageRect(actCoord.getX(), actCoord.getY());
     rect.translate(-offset.x, -offset.y);
 
-    Image img = getImage("Pfeil" + dirObj.getDir(), imageType);
+    Image img = getImage(dirObj.getIcon(), imageType);
 
     if (img != null) {
       graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);

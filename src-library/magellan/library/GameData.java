@@ -38,6 +38,7 @@ import magellan.library.event.UnitChangeListener;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.io.cr.Loader;
 import magellan.library.io.file.FileType;
 import magellan.library.rules.BuildingType;
@@ -442,6 +443,8 @@ public abstract class GameData implements Cloneable, Addeable {
 
   private Set<UnitChangeListener> changeListeners;
 
+  private MapMetric mapMetric;
+
   /**
    * Creates a new GameData object with the name of "default".
    * 
@@ -465,6 +468,7 @@ public abstract class GameData implements Cloneable, Addeable {
     if (rules == null)
       throw new NullPointerException();
     this.rules = rules;
+    mapMetric = rules.getGameSpecificStuff().getMapMetric();
     gameName = name;
 
     random = new Random();
@@ -561,7 +565,7 @@ public abstract class GameData implements Cloneable, Addeable {
     Map<Direction, Region> neighbors = Regions.getCoordinateNeighbours(this, r.getCoordinate());
     for (Direction d : neighbors.keySet()) {
       Region n = neighbors.get(d);
-      n.addNeighbor(d.add(3), r);
+      n.addNeighbor(mapMetric.opposite(d), r);
       r.addNeighbor(d, n);
     }
   }
@@ -870,11 +874,11 @@ public abstract class GameData implements Cloneable, Addeable {
     Region removed = regionView().remove(r.getID());
     if (removed != null) {
       for (Direction d : removed.getNeighbors().keySet()) {
-        if (removed.getNeighbors().get(d).getNeighbors().get(d.add(3)) == removed) {
-          removed.getNeighbors().get(d).removeNeighbor(d.add(3));
+        if (removed.getNeighbors().get(d).getNeighbors().get(mapMetric.opposite(d)) == removed) {
+          removed.getNeighbors().get(d).removeNeighbor(mapMetric.opposite(d));
         }
       }
-      for (Direction d : Direction.getDirections()) {
+      for (Direction d : mapMetric.getDirections()) {
         removed.removeNeighbor(d);
       }
       for (Unit u : removed.units()) {
@@ -1356,13 +1360,13 @@ public abstract class GameData implements Cloneable, Addeable {
    * some information about it. So we add these Regions with the special RegionType "Leere"
    */
   public void postProcessTheVoid() {
-    for (Region actRegion : regionView().values()) {
-      if (actRegion.getVisibility().greaterEqual(Region.Visibility.TRAVEL)) {
+    for (Region curRegion : regionView().values()) {
+      if (curRegion.getVisibility().greaterEqual(Region.Visibility.TRAVEL)) {
         // should have all neighbors
-        for (Direction d : Direction.getDirections()) {
-          if (actRegion.getNeighbors().get(d) == null) {
+        for (Direction d : mapMetric.getDirections()) {
+          if (curRegion.getNeighbors().get(d) == null) {
             // Missing Neighbor
-            CoordinateID c = actRegion.getCoordinate().translate(Direction.toCoordinate(d));
+            CoordinateID c = mapMetric.translate(curRegion.getCoordinate(), d);
             addVoid(c);
           }
         }

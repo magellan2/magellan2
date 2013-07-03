@@ -33,6 +33,7 @@ import magellan.library.Sign;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.logging.Logger;
@@ -146,35 +147,32 @@ public class Regions {
     int radius = 1;
 
     Map<Direction, Region> neighbours = new HashMap<Direction, Region>(9, .9f);
+    MapMetric metric = data.getGameSpecificStuff().getMapMetric();
+    for (Direction dir : metric.getDirections()) {
+      CoordinateID c = metric.translate(center, dir);
 
-    for (int dx = -radius; dx <= radius; dx++) {
-      for (int dy = (-radius + Math.abs(dx)) - ((dx > 0) ? dx : 0); dy <= ((radius - Math.abs(dx)) - ((dx < 0)
-          ? dx : 0)); dy++) {
-        CoordinateID c = CoordinateID.create(center.getX() + dx, center.getY() + dy, center.getZ());
-
-        Region neighbour = data.getRegion(c);
-        if (neighbour == null) {
-          Region wrapper = data.wrappers().get(c);
-          if (wrapper != null) {
-            neighbour = data.getOriginal(wrapper);
-            if (neighbour.getCoordX() != wrapper.getCoordX()
-                && neighbour.getCoordY() != neighbour.getCoordY()) {
-              log.error("improbable wrapper " + wrapper + "->" + neighbour);
-            }
+      Region neighbour = data.getRegion(c);
+      if (neighbour == null) {
+        Region wrapper = data.wrappers().get(c);
+        if (wrapper != null) {
+          neighbour = data.getOriginal(wrapper);
+          if (neighbour.getCoordX() != wrapper.getCoordX()
+              && neighbour.getCoordY() != neighbour.getCoordY()) {
+            log.error("improbable wrapper " + wrapper + "->" + neighbour);
           }
         }
+      }
 
-        if (neighbour != null && !neighbour.getID().equals(center)) {
-          // if (neighbour.getVisibility().equals(Visibility.WRAP)) {
-          // // find real region
-          // for (Region r : regions.values()) {
-          // if (r.getUID() == neighbour.getUID() && r.getVisibility() != Visibility.WRAP) {
-          // neighbour = r;
-          // }
-          // }
-          // }
-          neighbours.put(Direction.toDirection(center, c), neighbour);
-        }
+      if (neighbour != null && !neighbour.getID().equals(center)) {
+        // if (neighbour.getVisibility().equals(Visibility.WRAP)) {
+        // // find real region
+        // for (Region r : regions.values()) {
+        // if (r.getUID() == neighbour.getUID() && r.getVisibility() != Visibility.WRAP) {
+        // neighbour = r;
+        // }
+        // }
+        // }
+        neighbours.put(dir, neighbour);
       }
     }
 
@@ -211,7 +209,7 @@ public class Regions {
           // }
           // }
           // }
-          neighbours.put(Direction.toDirection(center, c), neighbour);
+          neighbours.put(getMapMetric(neighbour).getDirection(center, c), neighbour);
         }
       }
     }
@@ -341,7 +339,7 @@ public class Regions {
       while (coordIt.hasNext()) {
         CoordinateID curCoord = coordIt.next();
 
-        Direction dir = Direction.toDirection(prevCoord, curCoord);
+        Direction dir = getMapMetric(data).getDirection(prevCoord, curCoord);
 
         // find direction based on neighbors
         if (dir == Direction.INVALID && data.getRegion(prevCoord) != null
@@ -998,7 +996,7 @@ public class Regions {
   public static class ShipMetric extends MultidimensionalMetric {
     private Set<BuildingType> harbourType;
     private int speed;
-    private int returnDirection;
+    private Direction returnDirection;
 
     /**
      * @param regions
@@ -1012,7 +1010,7 @@ public class Regions {
      */
     public ShipMetric(Map<CoordinateID, Region> regions, CoordinateID start, CoordinateID dest,
         Map<ID, RegionType> excludedRegionTypes, Set<BuildingType> harbourTypes, int speed,
-        int returnDirection) {
+        Direction returnDirection) {
       super(regions, excludedRegionTypes, start, dest);
       harbourType = harbourTypes;
       this.speed = speed;
@@ -1057,9 +1055,11 @@ public class Regions {
           Regions.log.warn("ship route to neighboring land region");
           return false;
         }
-        if (!Regions.containsHarbour(r1, harbourType) && r1.getCoordinate() == start
-            && returnDirection != Direction.DIR_INVALID
-            && Math.abs(Direction.toDirection(r1, r2).getDifference(returnDirection)) > 1)
+        if (!Regions.containsHarbour(r1, harbourType)
+            && r1.getCoordinate() == start
+            && returnDirection != Direction.INVALID
+            && Math.abs(getMapMetric(r1).getDifference(getMapMetric(r1).getDirection(r1, r2),
+                returnDirection)) > 1)
           return false;
         else {
           newDist = 1;
@@ -1116,6 +1116,14 @@ public class Regions {
     Regions.getDistances(data.regions(), start, dest, Integer.MAX_VALUE, metric =
         new LandMetric(data.regions(), excludedRegionTypes, start, dest, radius, streetRadius));
     return metric.get(dest).getDistance() / streetRadius / radius;
+  }
+
+  public static MapMetric getMapMetric(Region region) {
+    return region.getData().getGameSpecificStuff().getMapMetric();
+  }
+
+  public static MapMetric getMapMetric(GameData data) {
+    return data.getGameSpecificStuff().getMapMetric();
   }
 
   /**
@@ -1543,7 +1551,7 @@ public class Regions {
    * @param destination
    * @return The distance in turns from start to dest. Integer.MAX_VALUE if there is no connection.
    */
-  public static int getShipDistance(GameData data, CoordinateID start, int returnDirection,
+  public static int getShipDistance(GameData data, CoordinateID start, Direction returnDirection,
       CoordinateID destination, int speed) {
     PathWithLength result =
         planShipRouteWithLength(data, start, returnDirection, destination, speed);
@@ -1554,8 +1562,9 @@ public class Regions {
    * Returns a route for the ship from its current region to its destination.
    */
   public static List<Region> planShipRoute(Ship ship, GameData data, CoordinateID destination) {
-    return Regions.planShipRoute(data, ship.getRegion().getCoordinate(), ship.getShoreId(),
-        destination, data.getGameSpecificRules().getShipRange(ship));
+    return Regions.planShipRoute(data, ship.getRegion().getCoordinate(), getMapMetric(data)
+        .toDirection(ship.getShoreId()), destination, data.getGameSpecificRules()
+        .getShipRange(ship));
   }
 
   static class PathWithLength {
@@ -1578,8 +1587,8 @@ public class Regions {
    * @param speed The number of regions per week
    * @return A list of region from start to destination, or <code>null</code> if no path exists.
    */
-  public static List<Region> planShipRoute(GameData data, CoordinateID start, int returnDirection,
-      CoordinateID destination, int speed) {
+  public static List<Region> planShipRoute(GameData data, CoordinateID start,
+      Direction returnDirection, CoordinateID destination, int speed) {
     PathWithLength result =
         planShipRouteWithLength(data, start, returnDirection, destination, speed);
     return result.path;
@@ -1597,7 +1606,7 @@ public class Regions {
    *         the length (in turns) of this path.
    */
   protected static PathWithLength planShipRouteWithLength(GameData data, CoordinateID start,
-      int returnDirection, CoordinateID destination, int speed) {
+      Direction returnDirection, CoordinateID destination, int speed) {
     BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
 
     if (destination == null || data.getRegion(destination) == null || start == null
@@ -1708,7 +1717,7 @@ public class Regions {
    * Returns the (first) direction from prev to cur even if it is wrapped around.
    */
   public static Direction getDirection(Region from, Region to) {
-    return Direction.toDirection(from, to);
+    return getMapMetric(from).getDirection(from, to);
   }
 
   /**
@@ -1954,8 +1963,8 @@ public class Regions {
     // border of r1 ->
     boolean border1OK = false;
     for (Border b : r1.borders()) {
-      if (magellan.library.utils.Umlaut.normalize(b.getType()).equals("STRASSE")
-          && (b.getDirection() == dir1.getDir()) && b.getBuildRatio() == 100) {
+      if (b.getType().equals(EresseaConstants.BT_STRASSE) && b.getDirection() == dir1.getDirCode()
+          && b.getBuildRatio() == 100) {
         border1OK = true;
         break;
       }
@@ -1980,7 +1989,7 @@ public class Regions {
     boolean border2OK = false;
     for (Border b : r2.borders()) {
       if (magellan.library.utils.Umlaut.normalize(b.getType()).equals("STRASSE")
-          && (b.getDirection() == dir1.getDir()) && b.getBuildRatio() == 100) {
+          && b.getDirection() == dir1.getDirCode() && b.getBuildRatio() == 100) {
         border2OK = true;
         break;
       }
@@ -2070,8 +2079,6 @@ public class Regions {
    * @param data GameData
    */
   public static void calculateCoastBorders(GameData data) {
-    // Bit masks for dir 0 to 5
-    int[] bitMaskArray = { 1, 2, 4, 8, 16, 32, 64, 128 };
 
     // % part of regions with no borders which will
     // be changed as well
@@ -2091,8 +2098,8 @@ public class Regions {
           if (neighbor.getRegionType().isLand()) {
             // not ocean! we should set an 1
             // what is relative coordinate ?
-            int intDir = Regions.getDirection(currentRegion, neighbor).getDir();
-            int bitMask = bitMaskArray[intDir];
+            int intDir = Regions.getDirection(currentRegion, neighbor).getDirCode();
+            int bitMask = 1 << intDir;
             coastBitmap = coastBitmap | bitMask;
             cnt++;
           }
@@ -2106,14 +2113,14 @@ public class Regions {
           // this is poor but I have no better idea..sorry
           switch (intR) {
           case 1:
-            coastBitmap = coastBitmap | bitMaskArray[7];
+            coastBitmap = coastBitmap | 1 << 7;
             break;
           case 2:
-            coastBitmap = coastBitmap | bitMaskArray[6];
+            coastBitmap = coastBitmap | 1 << 6;
             break;
           case 3:
-            coastBitmap = coastBitmap | bitMaskArray[6];
-            coastBitmap = coastBitmap | bitMaskArray[7];
+            coastBitmap = coastBitmap | 1 << 6;
+            coastBitmap = coastBitmap | 1 << 7;
             break;
           }
         }

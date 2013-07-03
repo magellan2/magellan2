@@ -178,11 +178,11 @@ ORDER "FACTION"
 "FACTION";locale_en
 
 
-ORDER "NORTHWEST"
+ORDER "MIR"
 "Mir";locale_en
 1;internal
 
-ORDER "NORTHEAST"
+ORDER "NORTH"
 "NORTH";locale_en
 1;internal
 
@@ -190,11 +190,11 @@ ORDER "EAST"
 "EAST";locale_en
 1;internal
 
-ORDER "SOUTHEAST"
+ORDER "YDD"
 "Ydd";locale_en
 1;internal
 
-ORDER "SOUTHWEST"
+ORDER "SOUTH"
 "SOUTH";locale_en
 1;internal
 
@@ -202,12 +202,12 @@ ORDER "WEST"
 "WEST";locale_en
 1;internal
 
-ORDER "NW"
+ORDER "M"
 "M";locale_en
 "Mir";locale_en
 1;internal
 
-ORDER "NE"
+ORDER "N"
 "N";locale_en
 "NORTH";locale_en
 1;internal
@@ -217,12 +217,12 @@ ORDER "E"
 "EAST";locale_en
 1;internal
 
-ORDER "SE"
+ORDER "Y"
 "Y";locale_en
 "Ydd";locale_en
 1;internal
 
-ORDER "SW"
+ORDER "S"
 "S";locale_en
 "SOUTH";locale_en
 1;internal

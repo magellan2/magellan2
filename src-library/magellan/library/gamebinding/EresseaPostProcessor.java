@@ -269,6 +269,8 @@ public class EresseaPostProcessor {
     if (data.getRegions().size() == 0)
       return;
 
+    MapMetric mapMetric = data.getGameSpecificStuff().getMapMetric();
+
     Map<Long, Region> idMap = null;
     idMap = setUpIDMap(data);
 
@@ -295,7 +297,7 @@ public class EresseaPostProcessor {
         Map<Direction, Region> neighbors =
             Regions.getCoordinateNeighbours(data, wrappingRegion.getCoordinate());
         for (Direction d : neighbors.keySet()) {
-          neighbors.get(d).addNeighbor(d.add(3), idMap.get(wrappingRegion.getUID()));
+          neighbors.get(d).addNeighbor(mapMetric.opposite(d), idMap.get(wrappingRegion.getUID()));
         }
       }
     }

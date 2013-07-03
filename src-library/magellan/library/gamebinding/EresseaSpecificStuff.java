@@ -63,6 +63,8 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   private EresseaOrderChanger orderChanger;
 
+  private EresseaMapMetric mapMetric;
+
   private static final SortedMap<Integer, String> combatStates = new TreeMap<Integer, String>();
 
   static {
@@ -87,6 +89,7 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    */
   public EresseaSpecificStuff() {
     rules = new RulesReader().readRules(getName());
+    mapMetric = new EresseaMapMetric(rules);
   }
 
   /**
@@ -259,6 +262,10 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
         return "ECHECK";
       }
     };
+  }
+
+  public MapMetric getMapMetric() {
+    return mapMetric;
   }
 
 }

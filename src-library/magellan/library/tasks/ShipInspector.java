@@ -23,6 +23,7 @@ import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.rules.RegionType;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Direction;
@@ -198,7 +199,9 @@ public class ShipInspector extends AbstractInspector {
       // If ship is shored, it can only move deviate by one from the shore direction and only
       // move to an ocean region
       Direction d = Regions.getDirectionObjectsOfCoordinates(getData(), modifiedMovement).get(0);
-      if (d.getDifference(ship.getShoreId()) > 1 || d.getDifference(ship.getShoreId()) < -1) {
+      MapMetric mapMetric = d.getMapMetric();
+      if (mapMetric.getDifference(d, mapMetric.toDirection(ship.getShoreId())) > 1
+          || mapMetric.getDifference(d, mapMetric.toDirection(ship.getShoreId())) < -1) {
         Unit owner = hasHarbourInRegion(ship.getRegion());
         if (owner == null) {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.WRONGSHORE

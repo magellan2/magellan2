@@ -1211,7 +1211,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     } else {
       HashMap<Direction, Region> newNeighbors = new LinkedHashMap<Direction, Region>();
       for (CoordinateID id : neighbours) {
-        Direction dir = Direction.toDirection(getCoordinate(), id);
+        Direction dir =
+            getData().getGameSpecificStuff().getMapMetric().getDirection(getCoordinate(), id);
         Region r = data.getRegion(id);
         if (r == null)
           throw new IllegalArgumentException("neighbor region doesn't exist");

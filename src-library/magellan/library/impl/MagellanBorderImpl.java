@@ -19,7 +19,6 @@ import java.util.List;
 import magellan.library.Border;
 import magellan.library.IntegerID;
 import magellan.library.utils.Direction;
-import magellan.library.utils.Resources;
 
 /**
  * Container class for a region border based on its representation in a cr version > 45.
@@ -43,7 +42,7 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
   /** A list containing <tt>String</tt> objects, specifying effects on this border. */
   private List<String> effects;
 
-  private String directionName;
+  // private String directionName;
 
   /**
    * Create a new <tt>Border</tt> object with the specified id.
@@ -51,7 +50,9 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
    * @param id the id of the border
    */
   public MagellanBorderImpl(IntegerID id) {
-    this(id, Direction.DIR_INVALID, null, Resources.get("util.direction.name.short.invalid"), -1);
+    // this(id, Direction.DIR_INVALID, null, Resources.get("util.direction.name.short.invalid"),
+    // -1);
+    this(id, Direction.DIR_INVALID, null, -1);
   }
 
   /**
@@ -61,29 +62,31 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
    * @param direction the direction of the border
    * @param type the type of the border
    * @param buildRatio indicates, to what extend this border type is completed (e.g. street)
-   * @deprecated
    */
-  @Deprecated
   public MagellanBorderImpl(IntegerID id, int direction, String type, int buildRatio) {
-    this(id, direction, null, type, buildRatio);
-  }
-
-  /**
-   * Create a new <tt>Border</tt> object initialized to the specified values.
-   * 
-   * @param id the id of the border
-   * @param direction the direction of the border
-   * @param type the type of the border
-   * @param buildRatio indicates, to what extend this border type is completed (e.g. street)
-   */
-  public MagellanBorderImpl(IntegerID id, int direction, String directionName, String type,
-      int buildRatio) {
+    // this(id, direction, null, type, buildRatio);
     super(id);
     this.direction = direction;
-    this.directionName = directionName;
     this.type = type;
     this.buildRatio = buildRatio;
   }
+
+  // /**
+  // * Create a new <tt>Border</tt> object initialized to the specified values.
+  // *
+  // * @param id the id of the border
+  // * @param direction the direction of the border
+  // * @param type the type of the border
+  // * @param buildRatio indicates, to what extend this border type is completed (e.g. street)
+  // */
+  // public MagellanBorderImpl(IntegerID id, int direction, String directionName, String type,
+  // int buildRatio) {
+  // super(id);
+  // this.direction = direction;
+  // this.directionName = directionName;
+  // this.type = type;
+  // this.buildRatio = buildRatio;
+  // }
 
   /**
    * Return a string representation of this <tt>Border</tt> object.
@@ -92,10 +95,11 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
    */
   @Override
   public String toString() {
-    if (buildRatio == 100 || buildRatio < 0)
-      return type + ": " + getDirectionName();
-    else
-      return type + ": " + getDirectionName() + " (" + buildRatio + "%)";
+    throw new RuntimeException();
+    // if (buildRatio == 100 || buildRatio < 0)
+    // return type + ": " + getDirectionName();
+    // else
+    // return type + ": " + getDirectionName() + " (" + buildRatio + "%)";
   }
 
   public int getBuildRatio() {
@@ -118,16 +122,16 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
     this.direction = direction;
   }
 
-  public void setDirectionName(String directionName) {
-    this.directionName = directionName;
-  }
-
-  public String getDirectionName() {
-    if (directionName == null) {
-      directionName = Direction.toString(direction);
-    }
-    return directionName;
-  }
+  // public void setDirectionName(String directionName) {
+  // this.directionName = directionName;
+  // }
+  //
+  // public String getDirectionName() {
+  // if (directionName == null) {
+  // directionName = Direction.toString(direction);
+  // }
+  // return directionName;
+  // }
 
   public void setType(String type) {
     // fix for reports turn 551 (english) and 552 (all)

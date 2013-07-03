@@ -1,7 +1,7 @@
-// class magellan.library.utils.DirectionTest
-// created on Feb 9, 2010
+// class magellan.library.gamebinding.atlantis.AtlantisMapMetricTest
+// created on Apr 29, 2013
 //
-// Copyright 2003-2010 by magellan project team
+// Copyright 2003-2013 by magellan project team
 //
 // Author : $Author: $
 // $Id: $
@@ -10,62 +10,64 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-//
+// 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//
+// 
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc.,
+// Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-//
-package magellan.library.utils;
+// 
+package magellan.library.gamebinding.atlantis;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
-import magellan.library.gamebinding.EresseaMapMetric;
 import magellan.library.gamebinding.MapMetric;
+import magellan.library.utils.Direction;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Tests for the direction class
- * 
- * @author stm
- * @version 1.0, Feb 9, 2010
- */
-public class DirectionTest extends MagellanTestWithResources {
+public class AtlantisMapMetricTest extends MagellanTestWithResources {
 
-  private static final int DIR_NW = 0;
-  private static final int DIR_NE = 1;
+  private static final int DIR_M = 0;
+  private static final int DIR_N = 1;
   private static final int DIR_E = 2;
-  private static final int DIR_SE = 3;
-  private static final int DIR_SW = 4;
+  private static final int DIR_Y = 3;
+  private static final int DIR_S = 4;
   private static final int DIR_W = 5;
 
-  private Direction NW = EresseaMapMetric.NW;
-  private Direction NE = EresseaMapMetric.NE;
-  private Direction E = EresseaMapMetric.E;
-  private Direction SE = EresseaMapMetric.SE;
-  private Direction SW = EresseaMapMetric.SW;
-  private Direction W = EresseaMapMetric.W;
+  private Direction M = AtlantisMapMetric.M;
+  private Direction N = AtlantisMapMetric.N;
+  private Direction E = AtlantisMapMetric.E;
+  private Direction Y = AtlantisMapMetric.Y;
+  private Direction S = AtlantisMapMetric.S;
+  private Direction W = AtlantisMapMetric.W;
+
   private MapMetric metric;
 
   @Before
   public void setUp() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
+    builder.setGameName("atlantis");
     GameData data = builder.createSimpleGameData();
     metric = data.getGameSpecificStuff().getMapMetric();
+  }
+
+  @Test
+  public void test() {
+    assertTrue(metric instanceof AtlantisMapMetric);
   }
 
   /**
@@ -73,11 +75,11 @@ public class DirectionTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetDir() {
-    assertEquals(0, NW.getDirCode());
-    assertEquals(1, NE.getDirCode());
+    assertEquals(0, M.getDirCode());
+    assertEquals(1, N.getDirCode());
     assertEquals(2, E.getDirCode());
-    assertEquals(3, SE.getDirCode());
-    assertEquals(4, SW.getDirCode());
+    assertEquals(3, Y.getDirCode());
+    assertEquals(4, S.getDirCode());
     assertEquals(5, W.getDirCode());
     assertEquals(Direction.DIR_INVALID, Direction.INVALID.getDirCode());
   }
@@ -89,14 +91,17 @@ public class DirectionTest extends MagellanTestWithResources {
    */
   @Test
   public void testToDirectionCoordinateIDCoordinateID() {
-    assertSame(NW, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(-1, 1)));
-    assertSame(NW, metric.getDirection(CoordinateID.create(0, 0, 1), CoordinateID.create(-1, 1, 1)));
-    assertSame(NE, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(0, 1)));
+    assertSame(M, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(-1, -1)));
+    assertSame(M, metric.getDirection(CoordinateID.create(0, 0, 1), CoordinateID.create(-1, -1, 1)));
+    assertSame(N, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(0, -1)));
     assertSame(E, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(1, 0)));
-    assertSame(SE, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(1, -1)));
-    assertSame(SW, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(0, -1)));
+    assertSame(Y, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(1, 1)));
+    assertSame(S, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(0, 1)));
     assertSame(W, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(-1, 0)));
-    assertSame(Direction.INVALID, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(1, 1)));
+    assertSame(Direction.INVALID, metric
+        .getDirection(CoordinateID.ZERO, CoordinateID.create(-1, 1)));
+    assertSame(Direction.INVALID, metric
+        .getDirection(CoordinateID.ZERO, CoordinateID.create(1, -1)));
     assertSame(Direction.INVALID, metric.getDirection(CoordinateID.ZERO, CoordinateID.create(1, 0,
         1)));
   }
@@ -109,6 +114,7 @@ public class DirectionTest extends MagellanTestWithResources {
   @Test
   public void testToDirectionRegionRegion() {
     GameDataBuilder builder = (new GameDataBuilder());
+    builder.setGameName("atlantis");
     GameData data = null;
     try {
       data = builder.createSimplestGameData();
@@ -156,11 +162,11 @@ public class DirectionTest extends MagellanTestWithResources {
   // */
   // @Test
   // public void testToDirectionIntInt() {
-  // assertSame(Direction.NW, metric.getDirection(-1, 1));
-  // assertSame(Direction.NE, metric.getDirection(0, 1));
+  // assertSame(Direction.M, metric.getDirection(-1, 1));
+  // assertSame(Direction.N, metric.getDirection(0, 1));
   // assertSame(Direction.E, metric.getDirection(1, 0));
-  // assertSame(Direction.SE, metric.getDirection(1, -1));
-  // assertSame(Direction.SW, metric.getDirection(0, -1));
+  // assertSame(Direction.Y, metric.getDirection(1, -1));
+  // assertSame(Direction.S, metric.getDirection(0, -1));
   // assertSame(Direction.W, metric.getDirection(-1, 0));
   // assertSame(Direction.INVALID, metric.getDirection(1, 1));
   // }
@@ -170,11 +176,11 @@ public class DirectionTest extends MagellanTestWithResources {
    */
   @Test
   public void testToDirectionInt() {
-    assertSame(NW, metric.toDirection(DIR_NW));
-    assertSame(NE, metric.toDirection(DIR_NE));
+    assertSame(M, metric.toDirection(DIR_M));
+    assertSame(N, metric.toDirection(DIR_N));
     assertSame(E, metric.toDirection(DIR_E));
-    assertSame(SE, metric.toDirection(DIR_SE));
-    assertSame(SW, metric.toDirection(DIR_SW));
+    assertSame(Y, metric.toDirection(DIR_Y));
+    assertSame(S, metric.toDirection(DIR_S));
     assertSame(W, metric.toDirection(DIR_W));
     assertSame(Direction.INVALID, metric.toDirection(Direction.DIR_INVALID));
     assertSame(Direction.INVALID, metric.toDirection(42));
@@ -185,11 +191,11 @@ public class DirectionTest extends MagellanTestWithResources {
    */
   @Test
   public void testToCoordinate() {
-    assertEquals(NW.toCoordinate(), CoordinateID.create(-1, 1));
-    assertEquals(NE.toCoordinate(), CoordinateID.create(0, 1));
+    assertEquals(M.toCoordinate(), CoordinateID.create(-1, -1));
+    assertEquals(N.toCoordinate(), CoordinateID.create(0, -1));
     assertEquals(E.toCoordinate(), CoordinateID.create(1, 0));
-    assertEquals(SE.toCoordinate(), CoordinateID.create(1, -1));
-    assertEquals(SW.toCoordinate(), CoordinateID.create(0, -1));
+    assertEquals(Y.toCoordinate(), CoordinateID.create(1, 1));
+    assertEquals(S.toCoordinate(), CoordinateID.create(0, 1));
     assertEquals(W.toCoordinate(), CoordinateID.create(-1, 0));
     assertEquals(Direction.INVALID.toCoordinate(), CoordinateID.ZERO);
   }
@@ -218,11 +224,11 @@ public class DirectionTest extends MagellanTestWithResources {
    */
   @Test
   public void testId() {
-    assertEquals("NW", NW.getId().toString());
-    assertEquals("NE", NE.getId().toString());
+    assertEquals("M", M.getId().toString());
+    assertEquals("N", N.getId().toString());
     assertEquals("E", E.getId().toString());
-    assertEquals("SE", SE.getId().toString());
-    assertEquals("SW", SW.getId().toString());
+    assertEquals("Y", Y.getId().toString());
+    assertEquals("S", S.getId().toString());
     assertEquals("W", W.getId().toString());
   }
 
@@ -233,7 +239,7 @@ public class DirectionTest extends MagellanTestWithResources {
   // @SuppressWarnings("deprecation")
   // @Test
   // public void testToIntCoordinateID() {
-  // assertSame(Direction.DIR_NW, Direction.toInt(CoordinateID.create(-1, 1)));
+  // assertSame(Direction.DIR_M, Direction.toInt(CoordinateID.create(-1, 1)));
   // }
 
   // /**
@@ -242,7 +248,7 @@ public class DirectionTest extends MagellanTestWithResources {
   // @SuppressWarnings("deprecation")
   // @Test
   // public void testToIntString() {
-  // assertSame(Direction.DIR_NE, Direction.toInt("NO"));
+  // assertSame(Direction.DIR_N, Direction.toInt("NO"));
   // }
 
   /**
@@ -251,7 +257,7 @@ public class DirectionTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetDifferenceDirection() {
-    assertEquals(0, metric.getDifference(SE, SE));
+    assertEquals(0, metric.getDifference(S, S));
   }
 
   /**
@@ -259,42 +265,42 @@ public class DirectionTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetDifferenceInt() {
-    assertEquals(0, metric.getDifference(NW, NW));
-    assertEquals(1, metric.getDifference(NW, NE));
-    assertEquals(2, metric.getDifference(NW, E));
-    assertEquals(3, metric.getDifference(NW, SE));
-    assertEquals(-2, metric.getDifference(NW, SW));
-    assertEquals(-1, metric.getDifference(NW, W));
-    assertEquals(Integer.MAX_VALUE, metric.getDifference(NW, Direction.INVALID));
-    assertEquals(0 - 1, metric.getDifference(NE, NW));
-    assertEquals(1 - 1, metric.getDifference(NE, NE));
-    assertEquals(2 - 1, metric.getDifference(NE, E));
-    assertEquals(3 - 1, metric.getDifference(NE, SE));
-    assertEquals(3, metric.getDifference(NE, SW));
-    assertEquals(-2, metric.getDifference(NE, W));
-    assertEquals(0 - 2, metric.getDifference(E, NW));
-    assertEquals(1 - 2, metric.getDifference(E, NE));
+    assertEquals(0, metric.getDifference(M, M));
+    assertEquals(1, metric.getDifference(M, N));
+    assertEquals(2, metric.getDifference(M, E));
+    assertEquals(3, metric.getDifference(M, Y));
+    assertEquals(-2, metric.getDifference(M, S));
+    assertEquals(-1, metric.getDifference(M, W));
+    assertEquals(Integer.MAX_VALUE, metric.getDifference(M, Direction.INVALID));
+    assertEquals(0 - 1, metric.getDifference(N, M));
+    assertEquals(1 - 1, metric.getDifference(N, N));
+    assertEquals(2 - 1, metric.getDifference(N, E));
+    assertEquals(3 - 1, metric.getDifference(N, Y));
+    assertEquals(3, metric.getDifference(N, S));
+    assertEquals(-2, metric.getDifference(N, W));
+    assertEquals(0 - 2, metric.getDifference(E, M));
+    assertEquals(1 - 2, metric.getDifference(E, N));
     assertEquals(2 - 2, metric.getDifference(E, E));
-    assertEquals(3 - 2, metric.getDifference(E, SE));
-    assertEquals(2, metric.getDifference(E, SW));
+    assertEquals(3 - 2, metric.getDifference(E, Y));
+    assertEquals(2, metric.getDifference(E, S));
     assertEquals(3, metric.getDifference(E, W));
-    assertEquals(3, metric.getDifference(SE, NW));
-    assertEquals(1 - 3, metric.getDifference(SE, NE));
-    assertEquals(2 - 3, metric.getDifference(SE, E));
-    assertEquals(3 - 3, metric.getDifference(SE, SE));
-    assertEquals(1, metric.getDifference(SE, SW));
-    assertEquals(2, metric.getDifference(SE, W));
-    assertEquals(2, metric.getDifference(SW, NW));
-    assertEquals(3, metric.getDifference(SW, NE));
-    assertEquals(-2, metric.getDifference(SW, E));
-    assertEquals(-1, metric.getDifference(SW, SE));
-    assertEquals(0, metric.getDifference(SW, SW));
-    assertEquals(1, metric.getDifference(SW, W));
-    assertEquals(1, metric.getDifference(W, NW));
-    assertEquals(2, metric.getDifference(W, NE));
+    assertEquals(3, metric.getDifference(Y, M));
+    assertEquals(1 - 3, metric.getDifference(Y, N));
+    assertEquals(2 - 3, metric.getDifference(Y, E));
+    assertEquals(3 - 3, metric.getDifference(Y, Y));
+    assertEquals(1, metric.getDifference(Y, S));
+    assertEquals(2, metric.getDifference(Y, W));
+    assertEquals(2, metric.getDifference(S, M));
+    assertEquals(3, metric.getDifference(S, N));
+    assertEquals(-2, metric.getDifference(S, E));
+    assertEquals(-1, metric.getDifference(S, Y));
+    assertEquals(0, metric.getDifference(S, S));
+    assertEquals(1, metric.getDifference(S, W));
+    assertEquals(1, metric.getDifference(W, M));
+    assertEquals(2, metric.getDifference(W, N));
     assertEquals(3, metric.getDifference(W, E));
-    assertEquals(-2, metric.getDifference(W, SE));
-    assertEquals(-1, metric.getDifference(W, SW));
+    assertEquals(-2, metric.getDifference(W, Y));
+    assertEquals(-1, metric.getDifference(W, S));
     assertEquals(Integer.MAX_VALUE, metric.getDifference(Direction.INVALID, Direction.INVALID));
   }
 
@@ -303,7 +309,7 @@ public class DirectionTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetDirections() {
-    assertArrayEquals(new Direction[] { NW, NE, E, SE, SW, W }, metric.getDirections().toArray());
+    assertArrayEquals(new Direction[] { M, N, E, Y, S, W }, metric.getDirections().toArray());
   }
 
   // /**
@@ -312,21 +318,21 @@ public class DirectionTest extends MagellanTestWithResources {
   // @Test
   // public void testAdd() throws Exception {
   // assertSame(E, metric.add(E, 0));
-  // assertSame(SE, metric.add(E, 1));
-  // assertSame(SW, metric.add(E, 2));
+  // assertSame(Y, metric.add(E, 1));
+  // assertSame(S, metric.add(E, 2));
   // assertSame(W, metric.add(E, 3));
-  // assertSame(NW, metric.add(E, 4));
-  // assertSame(NE, metric.add(E, 5));
+  // assertSame(M, metric.add(E, 4));
+  // assertSame(N, metric.add(E, 5));
   // assertSame(E, metric.add(E, 6));
-  // assertSame(SE, metric.add(E, 7));
-  // assertSame(NE, metric.add(E, -1));
+  // assertSame(Y, metric.add(E, 7));
+  // assertSame(N, metric.add(E, -1));
   // assertSame(W, metric.add(E, -9));
-  // assertSame(W, metric.add(SE, 2));
-  // assertSame(NW, metric.add(SW, 2));
-  // assertSame(NE, metric.add(W, 2));
-  // assertSame(E, metric.add(NW, 2));
-  // assertSame(SE, metric.add(NE, 2));
-  // assertSame(SW, metric.add(E, 2));
+  // assertSame(W, metric.add(Y, 2));
+  // assertSame(M, metric.add(S, 2));
+  // assertSame(N, metric.add(W, 2));
+  // assertSame(E, metric.add(M, 2));
+  // assertSame(Y, metric.add(N, 2));
+  // assertSame(S, metric.add(E, 2));
   // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 0));
   // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 1));
   // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 2));

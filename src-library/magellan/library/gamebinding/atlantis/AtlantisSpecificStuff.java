@@ -47,6 +47,7 @@ import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
+import magellan.library.gamebinding.MapMetric;
 import magellan.library.gamebinding.MessageRenderer;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.gamebinding.OrderChanger;
@@ -80,6 +81,8 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
 
   protected long resourceId;
 
+  private MapMetric metric;
+
   /**
    * Returns the value of rules.
    * 
@@ -94,6 +97,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    */
   public AtlantisSpecificStuff() {
     rules = new RulesReader().readRules(getName());
+    metric = new AtlantisMapMetric(rules);
   }
 
   /**
@@ -369,5 +373,9 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
       }
 
     };
+  }
+
+  public MapMetric getMapMetric() {
+    return metric;
   }
 }

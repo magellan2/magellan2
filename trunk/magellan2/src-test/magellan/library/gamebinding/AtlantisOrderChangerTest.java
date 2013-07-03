@@ -39,6 +39,7 @@ import magellan.library.Ship;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -57,7 +58,8 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
     setLocale(EN_LOCALE);
-    MagellanTestWithResources.setUpBeforeClass();
+    Logger.setLevel(Logger.WARN);
+    initResources();
   }
 
   /**

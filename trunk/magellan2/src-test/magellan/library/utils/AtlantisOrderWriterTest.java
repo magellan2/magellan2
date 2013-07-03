@@ -30,11 +30,20 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import magellan.library.gamebinding.AtlantisSpecificStuff;
+import magellan.library.utils.logging.Logger;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class AtlantisOrderWriterTest extends OrderWriterTest {
+
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception {
+    setLocale(EN_LOCALE);
+    Logger.setLevel(Logger.WARN);
+    initResources();
+  }
 
   @Before
   public void setUp() throws Exception {

@@ -62,6 +62,10 @@ public abstract class OrderHandler {
     return getOrder().isValid();
   }
 
+  /**
+   * Called before readIt. Initialize state here, i.e., all fields that are set while the order is
+   * parssed.
+   */
   protected void init(OrderToken token, String text) {
     order = new SimpleOrder(orderParser.getTokens(), text);
   }

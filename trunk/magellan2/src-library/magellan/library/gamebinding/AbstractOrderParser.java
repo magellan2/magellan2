@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,7 +66,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * The set of allowed quotes in orders
    */
-  public static final char[] QUOTES = new char[] { '\'', '"' };
+  protected char[] quotes = new char[] { '\'', '"' };
 
   private String errMsg;
   private TokenBucket tokenBucket;
@@ -1110,6 +1111,10 @@ public abstract class AbstractOrderParser implements OrderParser {
     return (txt.startsWith("\'") && txt.endsWith("\'") && txt.length() >= 2);
   }
 
+  protected boolean isAnyString(String txt) {
+    return Pattern.matches("[^\\p{Cntrl}]*", txt);
+  }
+
   /**
    * Returns <code>true</code> if <code>txt</code> is a nonempty string composed solely by the
    * characters [A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:0-9] that does not start with a number. TODO allow unicode
@@ -1161,7 +1166,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * Same as {@link #isString(OrderToken, boolean) isString(OrderToken, false)}
    */
   protected boolean isString(OrderToken token) {
-    return isString(token, false);
+    return isString(token, false, true);
   }
 
   /**
@@ -1171,9 +1176,13 @@ public abstract class AbstractOrderParser implements OrderParser {
    * @param token the current token
    * @param forceQuotes if this is <code>true</code>, token must be a TT_OPENING_QUOTE
    */
-  protected boolean isString(OrderToken token, boolean forceQuotes) {
-    return token.ttype == OrderToken.TT_OPENING_QUOTE
-        || (!forceQuotes && (isSimpleString(token.getText())) || isEoC(token));
+  protected boolean isString(OrderToken token, boolean forceQuotes, boolean identifier) {
+    if (token.ttype == OrderToken.TT_OPENING_QUOTE)
+      return true;
+    if (identifier)
+      return (!forceQuotes && (isSimpleString(token.getText())) || isEoC(token));
+    else
+      return (!forceQuotes && (isAnyString(token.getText())) || isEoC(token));
   }
 
   /**
@@ -1316,7 +1325,7 @@ public abstract class AbstractOrderParser implements OrderParser {
      */
     public int read(Reader in) {
       // TODO reduce object creation
-      OrderTokenizer tokenizer = new OrderTokenizer(in);
+      OrderTokenizer tokenizer = getOrderTokenizer(in);
       OrderToken token = null;
       clear();
 
@@ -1377,5 +1386,19 @@ public abstract class AbstractOrderParser implements OrderParser {
       return retVal;
     }
 
+  }
+
+  public OrderTokenizer getOrderTokenizer(Reader in) {
+    OrderTokenizer tokenizer = new OrderTokenizer(in);
+    tokenizer.setQuotes(getQuotes());
+    return tokenizer;
+  }
+
+  protected void setQuotes(char[] quotes) {
+    this.quotes = Arrays.copyOf(quotes, quotes.length);
+  }
+
+  protected char[] getQuotes() {
+    return quotes;
   }
 }

@@ -32,6 +32,7 @@ import magellan.library.StringID;
 import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
 import magellan.library.rules.ItemType;
+import magellan.library.utils.Direction;
 import magellan.library.utils.OrderToken;
 
 /**
@@ -40,12 +41,13 @@ import magellan.library.utils.OrderToken;
 public class AtlantisOrderParser extends AbstractOrderParser {
 
   protected AtlantisOrderCompleter completer;
+  public final ItemType silverType;
 
   /**
    * @param data
    */
   public AtlantisOrderParser(GameData data) {
-    super(data);
+    this(data, null);
   }
 
   /**
@@ -54,6 +56,8 @@ public class AtlantisOrderParser extends AbstractOrderParser {
    */
   public AtlantisOrderParser(GameData data, AtlantisOrderCompleter cc) {
     super(data, cc);
+    setQuotes(new char[] { '"' });
+    silverType = data.getRules().getItemType(AtlantisConstants.I_USILVER);
   }
 
   /**
@@ -107,13 +111,13 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     // DEMOLISH
     addCommand(AtlantisConstants.OC_DEMOLISH, new DemolishReader(this));
     // GIVE u1 1 item
-    addCommand(AtlantisConstants.OC_GIVE, new GiveReader(this));
+    addCommand(AtlantisConstants.OC_GIVE, new GiveReader(this, AtlantisConstants.OC_GIVE));
     // PAY u1 1
-    addCommand(AtlantisConstants.OC_PAY, new PayReader(this));
+    addCommand(AtlantisConstants.OC_PAY, new GiveReader(this, AtlantisConstants.OC_PAY));
     // SINK
     addCommand(AtlantisConstants.OC_SINK, new SinkReader(this));
     // TRANSFER (u1 | PEASANTS) 1
-    addCommand(AtlantisConstants.OC_TRANSFER, new TransferReader(this));
+    addCommand(AtlantisConstants.OC_TRANSFER, new GiveReader(this, AtlantisConstants.OC_TRANSFER));
     // TAX
     addCommand(AtlantisConstants.OC_TAX, new TaxReader(this));
     // RECRUIT 1
@@ -163,11 +167,18 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
   protected class IdHandler extends OrderHandler {
 
-    protected List<EntityID> ids = new ArrayList<EntityID>();
     private boolean multi;
+
+    protected List<EntityID> ids = new ArrayList<EntityID>();
 
     protected IdHandler(OrderParser parser) {
       super(parser);
+    }
+
+    @Override
+    protected void init(OrderToken token, String text) {
+      super.init(token, text);
+      ids.clear();
     }
 
     public IdHandler(OrderParser parser, boolean multi) {
@@ -210,12 +221,19 @@ public class AtlantisOrderParser extends AbstractOrderParser {
   protected class NumberHandler extends OrderHandler {
 
     int number;
+
     private final int min;
     private final int max;
     private boolean optional;
 
     protected NumberHandler(OrderParser parser, int min, int max) {
       this(parser, min, max, false);
+    }
+
+    @Override
+    protected void init(OrderToken token, String text) {
+      super.init(token, text);
+      number = -1;
     }
 
     public NumberHandler(OrderParser parser, int min, int max, boolean optional) {
@@ -255,8 +273,6 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
   protected class FlagHandler extends NumberHandler {
 
-    int flag;
-
     protected FlagHandler(OrderParser parser) {
       super(parser, 0, 1);
     }
@@ -266,6 +282,12 @@ public class AtlantisOrderParser extends AbstractOrderParser {
   protected class StringHandler extends OrderHandler {
 
     private String string;
+
+    @Override
+    protected void init(OrderToken token, String text) {
+      super.init(token, text);
+      string = null;
+    }
 
     protected StringHandler(OrderParser parser) {
       super(parser);
@@ -287,6 +309,45 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       }
 
       return retVal;
+    }
+  }
+
+  protected class DirectionHandler extends OrderHandler {
+    protected DirectionHandler(OrderParser parser) {
+      super(parser);
+    }
+
+    @Override
+    protected void init(OrderToken token, String text) {
+      order = new MovementOrder(getTokens(), text, false);
+    }
+
+    @Override
+    public MovementOrder getOrder() {
+      MovementOrder uorder = (MovementOrder) super.getOrder();
+      return uorder;
+    }
+
+    @Override
+    protected boolean readIt(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      OrderToken t = getNextToken();
+      Direction dir;
+      if ((dir = toDirection(t.getText(), getLocale())) != Direction.INVALID) {
+        t.ttype = OrderToken.TT_KEYWORD;
+        getOrder().addDirection(dir);
+        retVal = checkNextFinal();
+      } else {
+        unexpected(t);
+      }
+
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltDirection();
+      }
+      return retVal;
+
     }
   }
 
@@ -389,18 +450,50 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     }
   }
 
-  protected class DisplayReader extends OrderHandler {
-    // DISPLAY (UNIT | BUILDING SHIP) string
-    public DisplayReader(OrderParser parser) {
+  protected class KeywordStringReader extends OrderHandler {
+    private StringID[] keywords;
+
+    // XYZ (kw1 | kw2 | ...) string
+    public KeywordStringReader(OrderParser parser, StringID... keywords) {
       super(parser);
+      this.keywords = keywords;
     }
 
     @Override
     protected boolean readIt(OrderToken token) {
+      boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
-      return true; // FIXME
+      OrderToken t = getNextToken();
+      String name;
+      boolean kwFound = false;
+      for (StringID key : keywords)
+        if (t.equalsToken(getOrderTranslation(key))) {
+          kwFound = true;
+        }
+      if (kwFound) {
+        t.ttype = OrderToken.TT_KEYWORD;
+        name = readDescription(false);
+        retVal = name != null;
+      } else {
+        unexpected(t);
+      }
+
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltKeyword(keywords);
+      }
+
+      return retVal;
     }
+  }
+
+  protected class DisplayReader extends KeywordStringReader {
+    // DISPLAY (UNIT | BUILDING SHIP) string
+    public DisplayReader(OrderParser parser) {
+      super(parser, AtlantisConstants.OC_UNIT, AtlantisConstants.OC_BUILDING,
+          AtlantisConstants.OC_SHIP);
+    }
+
   }
 
   protected class GuardReader extends FlagHandler {
@@ -410,18 +503,13 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     }
   }
 
-  protected class NameReader extends OrderHandler {
+  protected class NameReader extends KeywordStringReader {
     // NAME (FACTION | UNIT | BUILDING | SHIP) name
     public NameReader(OrderParser parser) {
-      super(parser);
+      super(parser, AtlantisConstants.OC_FACTION, AtlantisConstants.OC_UNIT,
+          AtlantisConstants.OC_BUILDING, AtlantisConstants.OC_SHIP);
     }
 
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      return true; // FIXME
-    }
   }
 
   protected class PasswordReader extends StringHandler {
@@ -517,10 +605,14 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
   protected class GiveReader extends UnitOrderHandler {
     private int number;
+    private StringID type;
 
     // GIVE u1 1 item
-    public GiveReader(OrderParser parser) {
+    // PAY (u1 | PEASANTS) 1
+    // TRANSFER (u1 | PEASANTS) 1
+    public GiveReader(OrderParser parser, StringID type) {
       super(parser);
+      this.type = type;
     }
 
     @Override
@@ -534,7 +626,12 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       GiveOrder uorder = (GiveOrder) super.getOrder();
       uorder.target = target;
       uorder.amount = number;
-      uorder.type = EresseaConstants.OC_GIVE;
+      uorder.type = AtlantisConstants.OC_GIVE;
+      if (type == AtlantisConstants.OC_PAY) {
+        uorder.itemType = silverType;
+      } else if (type == AtlantisConstants.OC_TRANSFER) {
+        uorder.type = EresseaConstants.OC_MEN;
+      }
       return uorder;
     }
 
@@ -549,16 +646,34 @@ public class AtlantisOrderParser extends AbstractOrderParser {
         target = UnitID.createUnitID(t.getText(), getData().base);
         t.ttype = OrderToken.TT_ID;
 
-        token = t;
+        retVal = readId(t);
+      } else if (type != AtlantisConstants.OC_GIVE
+          && t.equalsToken(getOrderTranslation(AtlantisConstants.OC_PEASANTS))) {
+        // only transfer and pay allow PEASANTS as argument
+        target = UnitID.createUnitID(0, getData().base);
+        t.ttype = OrderToken.TT_KEYWORD;
+
+        retVal = readId(t);
+      } else {
+        unexpected(t);
+        if (shallComplete(token, t)) {
+          getCompleter().addRegionUnits(" ", false);
+        }
+      }
+
+      return retVal;
+
+    }
+
+    protected boolean readId(OrderToken token) {
+      OrderToken t = getNextToken();
+      boolean retVal = false;
+      if (isNumeric(t.getText())) {
+        t.ttype = OrderToken.TT_NUMBER;
+        number = Integer.parseInt(t.getText());
+
         t = getNextToken();
-
-        if (isNumeric(t.getText())) {
-          t.ttype = OrderToken.TT_NUMBER;
-          number = Integer.parseInt(t.getText());
-
-          token = t;
-          t = getNextToken();
-
+        if (type == AtlantisConstants.OC_GIVE) {
           if (isString(t)) {
             getOrder().itemType = checkItem(t);
             if (getOrder().itemType != null) {
@@ -576,83 +691,15 @@ public class AtlantisOrderParser extends AbstractOrderParser {
               getCompleter().cmpltItem();
             }
           }
-
         } else {
-          unexpected(t);
-          if (shallComplete(token, t)) {
-            getCompleter().cmpltNumber(1, Integer.MAX_VALUE);
-          }
+          retVal = checkFinal(t);
         }
-
       } else {
         unexpected(t);
         if (shallComplete(token, t)) {
-          getCompleter().addRegionUnits(" ", false);
+          getCompleter().cmpltNumber(1, Integer.MAX_VALUE);
         }
       }
-
-      return retVal;
-
-    }
-  }
-
-  protected class PayReader extends UnitOrderHandler {
-    private int number;
-
-    // PAY u1 1
-    public PayReader(OrderParser parser) {
-      super(parser);
-    }
-
-    @Override
-    protected void init(OrderToken token, String text) {
-      target = null;
-      order = new GiveOrder(getTokens(), text, null, null);
-    }
-
-    @Override
-    public GiveOrder getOrder() {
-      GiveOrder uorder = (GiveOrder) super.getOrder();
-      uorder.target = target;
-      uorder.amount = number;
-      uorder.itemType = getRules().getItemType(AtlantisConstants.I_USILVER);
-      uorder.type = EresseaConstants.OC_GIVE;
-      return uorder;
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      OrderToken t = getNextToken();
-
-      boolean retVal = false;
-      if (isID(t.getText(), false)) {
-        target = UnitID.createUnitID(t.getText(), getData().base);
-        t.ttype = OrderToken.TT_ID;
-
-        token = t;
-        t = getNextToken();
-
-        if (isNumeric(t.getText())) {
-          t.ttype = OrderToken.TT_NUMBER;
-          number = Integer.parseInt(t.getText());
-
-          retVal = checkNextFinal();
-        } else {
-          unexpected(t);
-          if (shallComplete(token, t)) {
-            getCompleter().cmpltNumber(1, Integer.MAX_VALUE);
-          }
-        }
-
-      } else {
-        unexpected(t);
-        if (shallComplete(token, t)) {
-          getCompleter().addRegionUnits(" ", false);
-        }
-      }
-
       return retVal;
 
     }
@@ -662,20 +709,6 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     // SINK
     public SinkReader(OrderParser parser) {
       super(parser);
-    }
-  }
-
-  protected class TransferReader extends OrderHandler {
-    // TRANSFER (u1 | PEASANTS) 1
-    public TransferReader(OrderParser parser) {
-      super(parser);
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      return true; // FIXME
     }
   }
 
@@ -700,7 +733,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     }
   }
 
-  protected class MoveReader extends OrderHandler {
+  protected class MoveReader extends DirectionHandler {
     // MOVE (N | W | M | S | W | Y)
     public MoveReader(OrderParser parser) {
       super(parser);
@@ -711,11 +744,11 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       token.ttype = OrderToken.TT_KEYWORD;
 
       getOrder().setLong(true);
-      return true; // FIXME
+      return super.readIt(token);
     }
   }
 
-  protected class SailReader extends OrderHandler {
+  protected class SailReader extends DirectionHandler {
     // SAIL (N | W | M | S | W | Y)
     public SailReader(OrderParser parser) {
       super(parser);
@@ -726,22 +759,48 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       token.ttype = OrderToken.TT_KEYWORD;
 
       getOrder().setLong(true);
-      return true; // FIXME
+      return super.readIt(token);
     }
   }
 
   protected class BuildReader extends OrderHandler {
-    // BUILD (BUILDING [b1]) | (SHIP [s1|type])
+    // BUILD (BUILDING [b1]) | (SHIP s1) | (shiptype)
     public BuildReader(OrderParser parser) {
       super(parser);
     }
 
     @Override
     protected boolean readIt(OrderToken token) {
+      boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
+      OrderToken t = getNextToken();
+      if (t.equalsToken(getOrderTranslation(AtlantisConstants.OC_BUILDING))
+          || t.equalsToken(getOrderTranslation(AtlantisConstants.OC_SHIP))) {
+        t.ttype = OrderToken.TT_KEYWORD;
+
+        token = t;
+        t = getNextToken();
+        if (isID(t.getText(), false)) {
+          retVal = readFinalID(t, false);
+        } else {
+          unexpected(t);
+          if (shallComplete(token, t)) {
+            getCompleter().cmpltId();
+          }
+        }
+      } else if ((getRules() != null) && (getRules().getShipType(t.getText()) != null)) {
+        retVal = checkNextFinal();
+      } else {
+        unexpected(t);
+        if (shallComplete(token, t)) {
+          getCompleter().cmpltKeyword(AtlantisConstants.OC_BUILDING, AtlantisConstants.OC_SHIP);
+          getCompleter().addShiptypes();
+        }
+      }
+
       getOrder().setLong(true);
-      return true; // FIXME
+      return retVal;
     }
   }
 
@@ -774,7 +833,7 @@ public class AtlantisOrderParser extends AbstractOrderParser {
 
       if (isString(t)) {
         ItemType item = checkItem(t);
-        retVal = item != null && checkNextFinal();
+        retVal = item != null && checkFinal(getLastToken());
       } else {
         unexpected(t);
       }
@@ -820,11 +879,29 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       super(parser, true);
     }
 
-    // FIXME check units
     @Override
-    protected boolean readIt(OrderToken token) {
+    protected void init(OrderToken token, String text) {
+      super.init(token, text);
+      order = new TeachOrder(getTokens(), text);
+    }
+
+    @Override
+    public TeachOrder getOrder() {
+      TeachOrder uorder = (TeachOrder) super.getOrder();
+      return uorder;
+    }
+
+    @Override
+    protected void postProcess() {
       getOrder().setLong(true);
-      return super.readIt(token);
+      for (EntityID id : ids) {
+        getOrder().addUnit(UnitID.createUnitID(id.intValue(), getData().base));
+      }
+    }
+
+    @Override
+    protected void completeId() {
+      getCompleter().addRegionUnits(" ", false);
     }
   }
 

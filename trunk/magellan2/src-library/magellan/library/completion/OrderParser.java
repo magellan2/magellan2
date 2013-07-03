@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import magellan.library.Order;
 import magellan.library.utils.OrderToken;
+import magellan.library.utils.OrderTokenizer;
 
 /**
  * A class that parses and validates orders.
@@ -52,5 +53,7 @@ public interface OrderParser {
    * @return An order object with line as text and the parsed token.
    */
   public Order parse(String text, Locale orderLocale);
+
+  public OrderTokenizer getOrderTokenizer(Reader reader);
 
 }

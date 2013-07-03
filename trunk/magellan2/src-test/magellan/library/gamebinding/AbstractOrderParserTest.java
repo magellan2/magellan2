@@ -599,11 +599,30 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
 
   /**
    * Test method for
+   * {@link magellan.library.gamebinding.EresseaOrderParser#isAnyString(java.lang.String)}.
+   */
+  @Test
+  public void testIsAnyString() {
+    assertTrue(getParser().isAnyString("abc"));
+    assertTrue(getParser().isAnyString("abc@123"));
+    assertTrue(getParser().isAnyString("\"abc\""));
+    assertTrue(getParser().isAnyString("'abc'"));
+    assertTrue(getParser().isAnyString("abc5d"));
+    assertTrue(getParser().isAnyString("567"));
+    assertTrue(getParser().isAnyString("\"abc'"));
+    assertTrue(getParser().isAnyString("'123"));
+    assertFalse(getParser().isAnyString("\n"));
+    assertTrue(getParser().isAnyString("áß#.=łĸ@€❼꧅ﬡ𓁉⼤ヰرالع"));
+  }
+
+  /**
+   * Test method for
    * {@link magellan.library.gamebinding.EresseaOrderParser#isSimpleString(java.lang.String)}.
    */
   @Test
   public void testIsSimpleString() {
     assertTrue(getParser().isSimpleString("abc"));
+    assertFalse(getParser().isSimpleString("abc@123"));
     assertFalse(getParser().isSimpleString("\"abc\""));
     assertFalse(getParser().isSimpleString("'abc'"));
     assertTrue(getParser().isSimpleString("abc5d"));
@@ -636,9 +655,9 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
   @Test
   public void testIsStringOrderToken() {
     OrderToken token = new OrderToken("");
-    assertTrue(getParser().isString(token, false) == getParser().isString(token));
+    assertTrue(getParser().isString(token, false, true) == getParser().isString(token));
     token = new OrderToken(OrderToken.TT_OPENING_QUOTE);
-    assertTrue(getParser().isString(token, false) == getParser().isString(token));
+    assertTrue(getParser().isString(token, false, true) == getParser().isString(token));
   }
 
   /**
@@ -649,23 +668,23 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
   @Test
   public void testIsStringOrderTokenBoolean() {
     OrderToken token = new OrderToken("");
-    assertFalse(getParser().isString(token, true));
-    assertFalse(getParser().isString(token, false));
+    assertFalse(getParser().isString(token, true, true));
+    assertFalse(getParser().isString(token, false, true));
     token = new OrderToken("a");
-    assertFalse(getParser().isString(token, true));
-    assertTrue(getParser().isString(token, false));
+    assertFalse(getParser().isString(token, true, true));
+    assertTrue(getParser().isString(token, false, true));
     token = new OrderToken(OrderToken.TT_OPENING_QUOTE);
-    assertTrue(getParser().isString(token, true));
-    assertTrue(getParser().isString(token, false));
+    assertTrue(getParser().isString(token, true, true));
+    assertTrue(getParser().isString(token, false, true));
     token = new OrderToken("'abc");
-    assertFalse(getParser().isString(token, true));
-    assertFalse(getParser().isString(token, false));
+    assertFalse(getParser().isString(token, true, true));
+    assertFalse(getParser().isString(token, false, true));
     token = new OrderToken("5");
-    assertFalse(getParser().isString(token, true));
-    assertFalse(getParser().isString(token, false));
+    assertFalse(getParser().isString(token, true, true));
+    assertFalse(getParser().isString(token, false, true));
     token = new OrderToken(OrderToken.TT_EOC);
-    assertTrue(getParser().isString(token, true));
-    assertTrue(getParser().isString(token, false));
+    assertTrue(getParser().isString(token, true, true));
+    assertTrue(getParser().isString(token, false, true));
   }
 
   /**

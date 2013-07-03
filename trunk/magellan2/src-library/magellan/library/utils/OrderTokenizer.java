@@ -15,6 +15,7 @@ package magellan.library.utils;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.logging.Logger;
@@ -37,6 +38,7 @@ public class OrderTokenizer {
   private OrderToken closingQuote;
   private OrderToken openingQuote;
   private boolean eos;
+  private char quotes[] = new char[] { '"', '\'' };
 
   /**
    * Creates a new <tt>OrderTokenizer</tt> object which will perform its read operations on the
@@ -74,7 +76,7 @@ public class OrderTokenizer {
       if ((c = in.read()) != -1) {
         if (isFirstToken && (c == '@')) {
           retVal = new OrderToken("@", in.getPos() - 1, in.getPos(), OrderToken.TT_PERSIST, false);
-        } else if (c == '"' || c == '\'') {
+        } else if (isQuote(c)) {
           retVal = readQuote(c);
         } else if (c == ';') { // FIXME doesn't use EresseaConstants.OC_COMMENT
           retVal = readSCComment();
@@ -251,7 +253,6 @@ public class OrderTokenizer {
     int start = in.getPos();
 
     while ((c = in.read()) != -1) {
-      // TODO (stm) check for '\'' here, too?
       if (isSpace(c) || isQuote(c) || (c == ';')) {
         in.unread(c);
         break;
@@ -298,11 +299,19 @@ public class OrderTokenizer {
     eos = c == -1;
   }
 
-  private boolean isQuote(int c) {
-    return (c == '"') || (c == '\'');
+  protected boolean isQuote(int c) {
+    for (char quote : quotes) {
+      if (quote == c)
+        return true;
+    }
+    return false;
   }
 
-  private boolean isSpace(int c) {
+  public void setQuotes(char[] quotes) {
+    this.quotes = Arrays.copyOf(quotes, quotes.length);
+  }
+
+  protected boolean isSpace(int c) {
     return (c == '\r') || (c == '\n') || (c == '\t') || (c == ' ');
   }
 

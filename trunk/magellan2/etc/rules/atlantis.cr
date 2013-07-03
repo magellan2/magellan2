@@ -122,7 +122,7 @@ ORDER "SAIL"
 "SAIL";locale_en
 
 ORDER "BUILD"
-"BUILD (BUILDING [b1]) | (SHIP [s1|type])";syntax
+"BUILD (BUILDING [b1]) | (SHIP s1) | (shiptype)";syntax
 "BUILD";locale_en
 
 ORDER "ENTERTAIN"
@@ -177,6 +177,60 @@ ORDER "FACTION"
 1;internal
 "FACTION";locale_en
 
+
+ORDER "NORTHWEST"
+"Mir";locale_en
+1;internal
+
+ORDER "NORTHEAST"
+"NORTH";locale_en
+1;internal
+
+ORDER "EAST"
+"EAST";locale_en
+1;internal
+
+ORDER "SOUTHEAST"
+"Ydd";locale_en
+1;internal
+
+ORDER "SOUTHWEST"
+"SOUTH";locale_en
+1;internal
+
+ORDER "WEST"
+"WEST";locale_en
+1;internal
+
+ORDER "NW"
+"M";locale_en
+"Mir";locale_en
+1;internal
+
+ORDER "NE"
+"N";locale_en
+"NORTH";locale_en
+1;internal
+
+ORDER "E"
+"E";locale_en
+"EAST";locale_en
+1;internal
+
+ORDER "SE"
+"Y";locale_en
+"Ydd";locale_en
+1;internal
+
+ORDER "SW"
+"S";locale_en
+"SOUTH";locale_en
+1;internal
+
+ORDER "W"
+"W";locale_en
+"WEST";locale_en
+1;internal
 
 ALLIANCECATEGORY "ALLES"
 "ALL";name

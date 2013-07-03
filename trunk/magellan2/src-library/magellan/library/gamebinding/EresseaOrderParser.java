@@ -164,7 +164,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
-      target = null;
+      super.init(token, text);
       order = new AttackOrder(getTokens(), text, target);
     }
 
@@ -645,6 +645,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
     @Override
     protected void init(OrderToken token, String text) {
+      super.init(token, text);
       order = new EnterOrder(getTokens(), text, UCArgumentOrder.T_UNKNOWN);
     }
 

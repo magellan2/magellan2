@@ -9,4 +9,6 @@ encoding//etc/mapedit_resources.properties=ISO-8859-1
 encoding//etc/mapedit_resources_de.properties=ISO-8859-1
 encoding//etc/resources.properties=ISO-8859-1
 encoding//etc/resources_de.properties=ISO-8859-1
+encoding//src-test/magellan/library/gamebinding/AbstractOrderParserTest.java=UTF-8
+encoding//src-test/magellan/library/gamebinding/EresseaOrderParserTest.java=UTF-8
 encoding/<project>=ISO-8859-1

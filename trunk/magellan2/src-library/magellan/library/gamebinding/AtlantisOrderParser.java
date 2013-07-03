@@ -66,6 +66,8 @@ public class AtlantisOrderParser extends AbstractOrderParser {
     addCommand(AtlantisConstants.OC_WORK, new WorkReader(this));
     // FORM u1
     addCommand(AtlantisConstants.OC_FORM, new FormReader(this));
+    // END
+    addCommand(AtlantisConstants.OC_END, new EndReader(this));
     // ACCEPT f1
     addCommand(AtlantisConstants.OC_ACCEPT, new AcceptReader(this));
     // ADDRESS Address
@@ -292,6 +294,13 @@ public class AtlantisOrderParser extends AbstractOrderParser {
       super(parser);
     }
 
+  }
+
+  protected class EndReader extends BareHandler {
+    // END
+    public EndReader(OrderParser parser) {
+      super(parser);
+    }
   }
 
   protected class AcceptReader extends IdHandler {

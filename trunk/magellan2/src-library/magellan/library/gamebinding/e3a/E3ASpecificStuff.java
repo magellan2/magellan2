@@ -26,6 +26,7 @@ import magellan.library.Rules;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
@@ -40,6 +41,8 @@ import magellan.library.io.RulesReader;
 import magellan.library.io.cr.CRGameNameIO;
 import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
+import magellan.library.utils.OrderReader;
+import magellan.library.utils.RadixTreeImpl;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.transformation.ReportTransformer;
 import magellan.library.utils.transformation.TransformerFinder;
@@ -238,5 +241,25 @@ public class E3ASpecificStuff implements GameSpecificStuff {
     }
 
     return null;
+  }
+
+  public OrderReader getOrderReader(final GameData data) {
+    return new OrderReader(data) {
+
+      @Override
+      protected void initHandlers() {
+        handlers = new RadixTreeImpl<OrderReader.LineHandler>();
+        addHandler(normalize(data.rules.getOrderfileStartingString()), new StartingHandler());
+        addHandler(normalize(getOrderTranslation(EresseaConstants.OC_REGION)), new RegionHandler());
+        addHandler(normalize(getOrderTranslation(EresseaConstants.OC_UNIT)), new UnitHandler());
+        // Eressea specific
+        addHandler(normalize(getOrderTranslation(EresseaConstants.OC_NEXT)), new NextHandler());
+        addHandler(normalize(getOrderTranslation(EresseaConstants.OC_LOCALE)), new LocaleHandler());
+      }
+
+      public String getCheckerName() {
+        return "ECHECK";
+      }
+    };
   }
 }

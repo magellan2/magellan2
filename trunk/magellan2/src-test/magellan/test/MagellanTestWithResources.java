@@ -60,6 +60,10 @@ public abstract class MagellanTestWithResources {
     locale = alocale;
   }
 
+  public static Locale getLocale() {
+    return locale;
+  }
+
   /**
    * @throws java.lang.Exception
    */

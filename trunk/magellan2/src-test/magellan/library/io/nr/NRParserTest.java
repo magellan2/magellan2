@@ -61,7 +61,7 @@ public class NRParserTest {
 
   @Test
   public final void testStart() throws IOException {
-    MockReader reader = new MockReader();
+    NRReader reader = new NRReader();
     addStartReport(reader, 1, "In the Beginning");
 
     parser.read(reader, data);
@@ -81,7 +81,7 @@ public class NRParserTest {
 
   @Test
   public final void testUnit() throws IOException {
-    MockReader reader = new MockReader();
+    NRReader reader = new NRReader();
     reader.addHeader(1, "January", 1);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
     reader.addUnit("Unit 1", 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth", 1, 30,
@@ -102,7 +102,7 @@ public class NRParserTest {
 
   @Test
   public final void testShip() throws IOException {
-    MockReader reader = new MockReader();
+    NRReader reader = new NRReader();
     reader.addHeader(1, "January", 1);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
     reader.addShip("Ship1", 99, "longboat", "desc s99");
@@ -130,7 +130,7 @@ public class NRParserTest {
 
   @Test
   public final void testBuilding() throws IOException {
-    MockReader reader = new MockReader();
+    NRReader reader = new NRReader();
     reader.addHeader(1, "January", 1);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
     reader.addBuilding("Castle 99", 98, 12, "desc c99");
@@ -173,12 +173,12 @@ public class NRParserTest {
       return -1;
   }
 
-  protected void addHeader(MockReader reader, int fnum, String date) {
+  protected void addHeader(NRReader reader, int fnum, String date) {
     reader.addHeader(fnum, date);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
   }
 
-  protected void addStartReport(MockReader reader, int fnum, String date) {
+  protected void addStartReport(NRReader reader, int fnum, String date) {
     reader.addHeader(fnum, date);
     reader.addMessage("Your password is 'lichtgriffel'.");
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);

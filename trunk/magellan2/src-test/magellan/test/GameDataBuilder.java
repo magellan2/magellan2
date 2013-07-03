@@ -35,6 +35,7 @@ import magellan.library.rules.EresseaDate;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.ShipType;
+import magellan.library.rules.SimpleDate;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
@@ -49,8 +50,11 @@ import magellan.library.utils.MagellanFactory;
 public class GameDataBuilder {
 
   private static final int BASE_ROUND = 360;
-  private String gameName = "Eressea";
+  private String gameName = ERESSEA;
   private Locale locale = Locale.GERMAN;
+
+  public static final String ERESSEA = "Eressea";
+  public static final String ATLANTIS = "Atlantis";
 
   /**
    * Creates a report at round {@value #BASE_ROUND}.
@@ -94,24 +98,40 @@ public class GameDataBuilder {
       boolean postProcess) throws Exception {
     final GameData data = new GameDataReader(null).createGameData(aGameName);
 
-    data.base = 36;
-    // this is sadly needed
-    // IDBaseConverter.setBase(data.base);
+    if (gameName.equals(ATLANTIS)) {
+      data.base = 10;
+    } else {
+      data.base = 36;
+      // this is sadly needed
+      // IDBaseConverter.setBase(data.base);
+    }
 
     data.noSkillPoints = true;
 
-    data.setLocale(Locale.GERMAN);
+    if (gameName.equals(ATLANTIS)) {
+      data.setLocale(Locale.ENGLISH);
+    } else {
+      data.setLocale(Locale.GERMAN);
+    }
 
-    final EresseaDate ed = new EresseaDate(round);
-    ed.setEpoch(2);
-    data.setDate(ed);
+    if (gameName.equals(ATLANTIS)) {
+      data.setDate(new SimpleDate("July", "15"));
+    } else {
+      final EresseaDate ed = new EresseaDate(round);
+      ed.setEpoch(2);
+      data.setDate(ed);
+    }
 
     // data.setCurTempID
     // data.mailTo
     // data.mailSubject
 
-    // data.addFaction
-    final Faction faction = addFaction(data, "iLja", "Faction_867718", "Meermenschen", 1);
+    final Faction faction;
+    if (gameName.equals(ATLANTIS)) {
+      faction = addFaction(data, "1", "Mooks", "Menschen", 1);
+    } else {
+      faction = addFaction(data, "iLja", "Faction_867718", "Meermenschen", 1);
+    }
 
     final Island island = addIsland(data, 1, "Island_1");
 
@@ -163,10 +183,17 @@ public class GameDataBuilder {
     if (data.getUnits().size() > 0) {
       final Unit unit = data.getUnits().iterator().next();
 
-      addSkill(unit, "Hiebwaffen", 4, 3); // Hiebwaffen 4 (+3)
-      addSkill(unit, "Segeln", -1, -3); // Segeln - (-3)
-      // addSkill(unit, "Magie", 4, 0, true); // Magie 4
-      addSkill(unit, "Steinbau", -1, 9); // Steinbau -
+      if (gameName.equals(ATLANTIS)) {
+        addSkill(unit, "sword", 4, 3); // Hiebwaffen 4 (+3)
+        // addSkill(unit, "", -1, -3); // Segeln - (-3)
+        // addSkill(unit, "Magie", 4, 0, true); // Magie 4
+        addSkill(unit, "quarrying", -1, 9); // Steinbau -
+      } else {
+        addSkill(unit, "Hiebwaffen", 4, 3); // Hiebwaffen 4 (+3)
+        addSkill(unit, "Segeln", -1, -3); // Segeln - (-3)
+        // addSkill(unit, "Magie", 4, 0, true); // Magie 4
+        addSkill(unit, "Steinbau", -1, 9); // Steinbau -
+      }
     }
 
     data.postProcess();

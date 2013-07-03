@@ -81,11 +81,11 @@ import magellan.library.Group;
 import magellan.library.Region;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
+import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.io.file.FileBackup;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.FileNameGeneratorFeed;
 import magellan.library.utils.FixedWidthWriter;
-import magellan.library.utils.OrderWriter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.UserInterface;
@@ -210,9 +210,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     localSettings = new Properties();
     for (Entry<Object, Object> entry : settings.entrySet()) {
-      if (((String) entry.getKey()).startsWith(PropertiesHelper.ORDEREDITOR_PREFIX)) {
-        localSettings.put(entry.getKey(), entry.getValue());
-      }
+      // if (((String) entry.getKey()).startsWith(PropertiesHelper.ORDEREDITOR_PREFIX)) {
+      localSettings.put(entry.getKey(), entry.getValue());
+      // }
     }
     List<String> history =
         PropertiesHelper.getList(settings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY);
@@ -1429,9 +1429,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
+    Writer stream = null;
     try {
-      Writer stream = null;
-
       if (chkFixedWidth[type].isSelected()) {
         int fixedWidth = -1;
 
@@ -1450,7 +1449,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         stream = out;
       }
 
-      OrderWriter cw = new OrderWriter(data, faction);
+      GameSpecificOrderWriter cw = data.getRules().getGameSpecificStuff().getOrderWriter();
+      cw.setGameData(data);
+      cw.setFaction(faction);
+
       cw.setAddECheckComments(chkECheckComments[type].isSelected());
       cw.setRemoveComments(chkRemoveSCComments[type].isSelected(), chkRemoveSSComments[type]
           .isSelected());
@@ -1471,10 +1473,6 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
       int writtenUnits = cw.write(stream);
 
-      if (closeStream) {
-        stream.close();
-      }
-
       int allUnits = 0;
 
       for (Unit u : data.getUnits()) {
@@ -1491,10 +1489,16 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           JOptionPane.WARNING_MESSAGE);
 
       return null;
+    } finally {
+      if (closeStream && stream != null) {
+        try {
+          stream.close();
+        } catch (IOException e) {
+          // ignore (safe)
+        }
+      }
+      setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
-
-    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-
     return result;
   }
 
@@ -1925,7 +1929,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       // new: force our default = ISO
       stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.ISO.toString());
     } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", false)) {
-      // new: force our default = UTF-8
+      // new: force our default = UTF-8 TextEncoding.UTF8saveOrders
       stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.UTF8.toString());
     } else {
       // old = default = system dependent
@@ -1934,6 +1938,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     return stream;
   }
 
+  /**
+   * Returns true if the dialog can be show for the given data, i.e., if it has privileged factions.
+   */
   public static boolean canShow(GameData data) {
     Faction faction = null;
     for (Faction f : data.getFactions()) {

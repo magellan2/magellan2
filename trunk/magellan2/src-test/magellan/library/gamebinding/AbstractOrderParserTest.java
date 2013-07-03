@@ -32,7 +32,6 @@ import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.util.List;
-import java.util.Locale;
 import java.util.NoSuchElementException;
 
 import magellan.client.completion.AutoCompletion;
@@ -42,7 +41,6 @@ import magellan.library.completion.Completer;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
-import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
@@ -63,10 +61,6 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
 
   protected String getOrderTranslation(StringID orderId) {
     return data.getRules().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
-  }
-
-  protected Locale getLocale() {
-    return Locales.getOrderLocale();
   }
 
   /**

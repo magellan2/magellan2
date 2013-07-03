@@ -437,7 +437,7 @@ public interface Rules {
   /**
    * Gets the game specific string with which order files should start.
    * 
-   * @return the game specific string with which order files should start
+   * @return the game specific line with which order files should start, not including line break
    */
   public String getOrderfileStartingString();
 

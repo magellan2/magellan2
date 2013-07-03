@@ -116,6 +116,11 @@ public class GameDataReader {
       throw new IOException("No Rules for game '" + gameName + "' readable!");
 
     ReportParser parser = rules.getGameSpecificStuff().getParser(aFileType);
+    if (parser == null) {
+      log.warn("no report parser available");
+      return null;
+    }
+
     parser.setUI(ui);
     parser.setTransformer(coordinateTransformer);
     GameData data = parser.read(aFileType, rules);

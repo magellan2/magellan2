@@ -1,5 +1,5 @@
-// class magellan.library.io.nr.MockReader
-// created on Apr 19, 2013
+// class magellan.library.io.nr.NRReader
+// created on Apr 24, 2013
 //
 // Copyright 2003-2013 by magellan project team
 //
@@ -23,46 +23,11 @@
 // 
 package magellan.library.io.nr;
 
-import java.io.IOException;
-import java.io.Reader;
+import magellan.library.io.MockReader;
 
-public class MockReader extends Reader {
-
-  private StringBuffer content;
-  private int currentPos;
+public class NRReader extends MockReader {
   private int messages;
   private boolean status;
-
-  public MockReader() {
-    content = new StringBuffer();
-  }
-
-  @Override
-  public int read(char[] cbuf, int off, int len) throws IOException {
-    if (currentPos >= content.length())
-      return -1;
-    int i;
-    for (i = 0; i < len; ++i) {
-      if (currentPos < content.length()) {
-        cbuf[off + i] = content.charAt(currentPos++);
-      } else {
-        break;
-      }
-    }
-    return i;
-  }
-
-  @Override
-  public void close() throws IOException {
-  }
-
-  public void add(String string) {
-    content.append(string);
-  }
-
-  public void addLine(String string) {
-    content.append(string).append("\n");
-  }
 
   protected void addMessage(String message) {
     if (messages == 0) {

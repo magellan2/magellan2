@@ -38,8 +38,10 @@ import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.AbstractOrderParser.TokenBucket;
 import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestWithResources;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -52,6 +54,15 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
 
   EresseaOrderParser parser;
   EresseaOrderCompleter completer;
+
+  /**
+   * @throws java.lang.Exception
+   */
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception {
+    setLocale(DE_LOCALE);
+    MagellanTestWithResources.initResources();
+  }
 
   /**
    * @throws java.lang.Exception

@@ -385,6 +385,11 @@ public class CellGeometry {
       return ((int) f + 1);
   }
 
+  /**
+   * Sets the mapper that affects how map coordinates are mapped to map coordinates.
+   * 
+   * @see CoordMapper
+   */
   public void setCoordMapper(CoordMapper coordMapper) {
     this.coordMapper = coordMapper;
     cellShiftXX = coordMapper.getXX(unscaledCellSize.width);

@@ -40,10 +40,11 @@ import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
+import magellan.library.completion.Completer;
+import magellan.library.completion.OrderParser;
+import magellan.library.gamebinding.AbstractOrderParser.TokenBucket;
 import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
-import magellan.library.gamebinding.EresseaOrderParser.OrderHandler;
-import magellan.library.gamebinding.EresseaOrderParser.TokenBucket;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 import magellan.test.GameDataBuilder;
@@ -94,7 +95,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testEresseaOrderParserGameDataEresseaOrderCompleter() {
-    EresseaOrderParser localParser = new EresseaOrderParser(data, getCompleter());
+    EresseaOrderParser localParser =
+        new EresseaOrderParser(data, (EresseaOrderCompleter) getCompleter());
     assertTrue(localParser.getData() == data);
     assertTrue(localParser.getCompleter() == getCompleter());
     assertSame(61, localParser.getCommands().size());
@@ -120,7 +122,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testAddCommand() {
-    OrderHandler fooHandler = getParser().new OrderHandler() {
+    OrderHandler fooHandler = new OrderHandler(getParser()) {
       @Override
       protected boolean readIt(OrderToken token) {
         return false;
@@ -143,7 +145,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    */
   @Test
   public void testRemoveCommand() {
-    OrderHandler fooHandler = getParser().new OrderHandler() {
+    OrderHandler fooHandler = new OrderHandler(getParser()) {
       @Override
       protected boolean readIt(OrderToken token) {
         return false;
@@ -1869,7 +1871,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * 
    * @return Returns parser.
    */
-  protected EresseaOrderParser getParser() {
+  protected AbstractOrderParser getParser() {
     return parser;
   }
 
@@ -1878,8 +1880,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * 
    * @param parser The value for parser.
    */
-  protected void setParser(EresseaOrderParser parser) {
-    this.parser = parser;
+  protected void setParser(OrderParser parser) {
+    this.parser = (EresseaOrderParser) parser;
   }
 
   /**
@@ -1887,7 +1889,7 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * 
    * @return Returns completer.
    */
-  protected EresseaOrderCompleter getCompleter() {
+  protected Completer getCompleter() {
     return completer;
   }
 
@@ -1896,8 +1898,8 @@ public class EresseaOrderParserTest extends MagellanTestWithResources {
    * 
    * @param completer The value for completer.
    */
-  protected void setCompleter(EresseaOrderCompleter completer) {
-    this.completer = completer;
+  protected void setCompleter(AbstractOrderCompleter completer) {
+    this.completer = (EresseaOrderCompleter) completer;
   }
 
 }

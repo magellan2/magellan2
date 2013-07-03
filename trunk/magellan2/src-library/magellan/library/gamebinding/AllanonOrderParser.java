@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import magellan.library.GameData;
+import magellan.library.completion.OrderParser;
 import magellan.library.utils.OrderToken;
 
 /**
@@ -53,13 +54,17 @@ public class AllanonOrderParser extends EresseaOrderParser {
   @Override
   protected void initCommands() {
     super.initCommands();
-    addCommand(AllanonConstants.O_ANWERBEN, new AnwerbenReader());
-    addCommand(AllanonConstants.O_ERKUNDEN, new ErkundeReader());
-    addCommand(AllanonConstants.O_MEUCHELN, new MeuchelnReader());
+    addCommand(AllanonConstants.O_ANWERBEN, new AnwerbenReader(this));
+    addCommand(AllanonConstants.O_ERKUNDEN, new ErkundeReader(this));
+    addCommand(AllanonConstants.O_MEUCHELN, new MeuchelnReader(this));
   }
 
   // ************* ANWERBEN
   protected class AnwerbenReader extends OrderHandler {
+    AnwerbenReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
@@ -71,6 +76,10 @@ public class AllanonOrderParser extends EresseaOrderParser {
 
   // ************* ERKUNDE
   protected class ErkundeReader extends OrderHandler {
+    ErkundeReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
@@ -82,6 +91,10 @@ public class AllanonOrderParser extends EresseaOrderParser {
 
   // ************* MEUCHELN
   protected class MeuchelnReader extends OrderHandler {
+    MeuchelnReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -115,6 +128,10 @@ public class AllanonOrderParser extends EresseaOrderParser {
 
   // ************* BETRETE
   protected class BetreteReader extends EresseaOrderParser.BetreteReader {
+    public BetreteReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
@@ -165,6 +182,10 @@ public class AllanonOrderParser extends EresseaOrderParser {
 
   // ************* BENENNE
   protected class BenenneReader extends EresseaOrderParser.BenenneReader {
+    public BenenneReader(OrderParser parser) {
+      super(parser);
+    }
+
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;

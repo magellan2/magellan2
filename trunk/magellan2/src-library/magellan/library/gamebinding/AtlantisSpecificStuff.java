@@ -23,28 +23,21 @@
 // 
 package magellan.library.gamebinding;
 
-import java.io.Reader;
 import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.CompleteData;
 import magellan.library.GameData;
 import magellan.library.Message;
-import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Rules;
-import magellan.library.Unit;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
-import magellan.library.completion.Completion;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.e3a.E3AMapMergeEvaluator;
 import magellan.library.gamebinding.e3a.E3AOrderChanger;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesReader;
-import magellan.library.utils.OrderToken;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.transformation.ReportTransformer;
 import magellan.library.utils.transformation.TransformerFinder;
@@ -135,42 +128,14 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    *      magellan.library.completion.CompleterSettingsProvider)
    */
   public Completer getCompleter(GameData data, CompleterSettingsProvider csp) {
-    return new Completer() {
-
-      private String line;
-
-      public List<OrderToken> getParserTokens() {
-        return Collections.singletonList(new OrderToken(line));
-      }
-
-      public List<Completion> getCompletions(Unit u, String line, List<Completion> old) {
-        this.line = line;
-        return Collections.emptyList();
-      }
-    };
+    return new AtlantisOrderCompleter(data, csp);
   }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
    */
   public OrderParser getOrderParser(GameData data) {
-    return new OrderParser() {
-
-      private List<OrderToken> tokens;
-
-      public boolean read(Reader in) {
-        return false;
-      }
-
-      public Order parse(String text, Locale orderLocale) {
-        tokens = Collections.singletonList(new OrderToken(text));
-        return new SimpleOrder(tokens, text);
-      }
-
-      public List<OrderToken> getTokens() {
-        return tokens;
-      }
-    };
+    return new AtlantisOrderParser(data);
   }
 
   /**

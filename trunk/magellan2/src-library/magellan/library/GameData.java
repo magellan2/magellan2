@@ -93,7 +93,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * @deprecated use {@link #getRules()}
    */
   @Deprecated
-  private final Rules rules;
+  public final Rules rules;
 
   private final MapMetric mapMetric;
 

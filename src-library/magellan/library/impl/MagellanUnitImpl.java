@@ -2760,7 +2760,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @param spells The value for spells.
    */
   public void setSpells(Map<ID, Spell> spells) {
-    this.spells = spells;
+    this.spells = CollectionFactory.createSyncOrderedMap(spells.size());
+    this.spells.putAll(spells);
   }
 
   /**

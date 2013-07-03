@@ -31,15 +31,19 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import magellan.library.Building;
+import magellan.library.CombatSpell;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.GameData;
+import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.Skill;
+import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.library.io.RulesReader;
 
 import org.junit.Before;
@@ -84,8 +88,8 @@ public class NRParserTest {
     NRReader reader = new NRReader();
     reader.addHeader(1, "January", 1);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
-    reader.addUnit("Unit 1", 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth", 1, 30,
-        "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
+    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth",
+        1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
 
     parser.read(reader, data);
 
@@ -101,13 +105,116 @@ public class NRParserTest {
   }
 
   @Test
+  public final void testDescription() throws IOException {
+    NRReader reader = new NRReader();
+    reader.addHeader(1, "January", 1);
+    reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
+    reader
+        .addLine("  - Someones's unit (999); A very long description with many words. And punctuation");
+    reader.addLine("    is also included..");
+    reader
+        .addLine("  - Someones's unit (998); A very long description with many words. If the description");
+    reader.addLine("    ends in exclamation mark, the final dot may be omitted!");
+
+    parser.read(reader, data);
+
+    assertSame(0, parser.getErrors());
+    assertEquals(2, data.getUnits().size());
+    Unit unit1 = data.getUnit(UnitID.createUnitID(999, 10));
+    Unit unit2 = data.getUnit(UnitID.createUnitID(998, 10));
+    assertEquals("A very long description with many words. And punctuation is also included.",
+        unit1.getDescription());
+    assertEquals(
+        "A very long description with many words. If the description ends in exclamation mark, the final dot may be omitted!",
+        unit2.getDescription());
+  }
+
+  @Test
+  public final void testDescription2() throws IOException {
+    NRReader reader = new NRReader();
+    reader.addHeader(1, "January", 1);
+    reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
+    reader.addLine("  - Someones's unit (999); Description is question?");
+    reader.addLine("  - Someones's unit (998); Second unit!");
+
+    parser.read(reader, data);
+
+    assertSame(0, parser.getErrors());
+    assertEquals(2, data.getUnits().size());
+    Unit unit1 = data.getUnit(UnitID.createUnitID(999, 10));
+    Unit unit2 = data.getUnit(UnitID.createUnitID(998, 10));
+    assertEquals("Description is question?", unit1.getDescription());
+    assertEquals("Second unit!", unit2.getDescription());
+
+  }
+
+  @Test
+  public final void testDescription3() throws IOException {
+    NRReader reader = new NRReader();
+    reader.addHeader(1, "January", 1);
+    reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
+    reader.addLine("  - Someones's unit (999); This is.");
+    reader.addLine("  not a fair description!");
+
+    parser.read(reader, data);
+
+    assertSame(0, parser.getErrors());
+    assertEquals(1, data.getUnits().size());
+    Unit unit1 = data.getUnit(UnitID.createUnitID(999, 10));
+    assertEquals("This is. not a fair description!", unit1.getDescription());
+  }
+
+  @Test
+  public final void testUnitSpells() throws IOException {
+    NRReader reader = new NRReader();
+    reader.addHeader(1, "January", 1);
+    reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
+    reader
+        .addLine("    * Recruits (3), faction Foos (1), $1390, skills: magic 4 [320], spells: Cause\n"
+            + "    Fear, Fireball, default: \"research\".");
+
+    parser.read(reader, data);
+
+    assertSame(0, parser.getErrors());
+    assertEquals(1, data.getUnits().size());
+    Unit unit = data.getUnit(UnitID.createUnitID(3, 10));
+    assertEquals(2, unit.getSpells().size());
+    Spell spell = unit.getSpells().get(StringID.create("Cause Fear"));
+    assertEquals("Cause Fear", spell.getName());
+    spell = unit.getSpells().get(StringID.create("Fireball"));
+    assertEquals("Fireball", spell.getName());
+
+  }
+
+  @Test
+  public final void testCombatSpell() throws IOException {
+    NRReader reader = new NRReader();
+    reader.addHeader(1, "January", 1);
+    reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
+    reader
+        .addLine("    * Recruits (3), faction Foos (1), $1390, skills: magic 4 [320], spells: Cause\n"
+            + "    Fear, Fireball, combat spell: Fireball, default: \"research\".");
+
+    parser.read(reader, data);
+
+    assertSame(0, parser.getErrors());
+    assertEquals(1, data.getUnits().size());
+    Unit unit = data.getUnit(UnitID.createUnitID(3, 10));
+    assertEquals(2, unit.getSpells().size());
+    // ids are picked by NRparser, so this might change
+    CombatSpell cs = unit.getCombatSpells().get(IntegerID.create(1));
+    assertEquals("Fireball", cs.getSpell().getName());
+    assertEquals(unit, cs.getUnit());
+  }
+
+  @Test
   public final void testShip() throws IOException {
     NRReader reader = new NRReader();
     reader.addHeader(1, "January", 1);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
     reader.addShip("Ship1", 99, "longboat", "desc s99");
-    reader.addUnit("Unit 1", 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth", 1, 30,
-        "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
+    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth",
+        1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
     reader.addLine("");
     reader.addUnit("Unit 2", 43, "Faction 1", 1, 1000, "work");
 
@@ -134,8 +241,8 @@ public class NRParserTest {
     reader.addHeader(1, "January", 1);
     reader.addRegion("Leighlin", 0, 0, "forest", "south, east, mir, ydd", 400, 600);
     reader.addBuilding("Castle 99", 98, 12, "desc c99");
-    reader.addUnit("Unit 1", 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth", 1, 30,
-        "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
+    reader.addUnit("Unit 1", null, 42, "Faction 1", 1, 1000, "work", 5, new Object[] { "stealth",
+        1, 30, "observation", 3, 180 }, new Object[] { 10, "wood", 5, "stone" });
     reader.addLine("");
     reader.addUnit("Unit 2", 43, "Faction 1", 1, 1000, "work");
 

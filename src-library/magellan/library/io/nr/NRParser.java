@@ -23,10 +23,13 @@ import java.util.regex.Pattern;
 
 import magellan.library.Alliance;
 import magellan.library.Building;
+import magellan.library.CombatSpell;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.MissingData;
@@ -34,6 +37,7 @@ import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.Skill;
+import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
@@ -78,6 +82,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   boolean umlauts;
   final Collection<String> warnedLines = new HashSet<String>();
 
+  private static final String LINE_END = "([!?.])";
   protected static final String ID = "([0-9]+)";
   protected static final String ID2 = "\\(" + ID + "\\)";
   protected static final String NAME = "([^()]*)";
@@ -111,7 +116,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   //
   protected static final String UNIT_LINE = "  *([*+-])\\s+" + OBJECT + "(,\\s+faction\\s+"
-      + OBJECT + ")?([^.]*)?\\.";
+      + OBJECT + ")?(.*)" + LINE_END;
 
   protected static final String DEFAULT_PART = "default:\\s+\"([^\"]*)\"";
   protected static final String SKILLS_PART = "skills:\\s+" + NAME + "\\s+" + NUM + "\\s+\\[" + NUM
@@ -119,13 +124,18 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static final String SKILL_PART = NAME + "\\s+" + NUM + "\\s+\\[" + NUM + "\\]";
   protected static final String ITEMS_PART = "has:\\s+" + NUM + "\\s+" + NAME;
   protected static final String ITEM_PART = NUM + "\\s+" + NAME;
+  protected static final String SPELLS_PART = "spells:\\s+" + NAME;
+  protected static final String SPELL_PART = NAME;
+  protected static final String CSPELLS_PART = "combat spell:\\s+" + NAME;
+  protected static final String CSPELL_PART = NAME;
   protected static final String NUMBER_PART = "number:\\s+" + NUM;
   protected static final String COMBAT_STATUS_PART = "behind";
   protected static final String SILVER_PART = "\\$" + NUM;
 
-  protected static final String BUILDING_LINE = "   +" + OBJECT + "(,\\s+size\\s+" + NUM
-      + ")(.*)\\.";
-  protected static final String SHIP_LINE = "   +" + OBJECT + "(,\\s+" + IDENTIFIER + ")(.*)\\.";
+  protected static final String BUILDING_LINE = "   +" + OBJECT + "(,\\s+size\\s+" + NUM + ")(.*)"
+      + LINE_END;
+  protected static final String SHIP_LINE = "   +" + OBJECT + "(,\\s+" + IDENTIFIER + ")(.*)"
+      + LINE_END;
 
   protected static Pattern idPattern = Pattern.compile(ID);
   protected static Pattern id2Pattern = Pattern.compile(ID2);
@@ -156,6 +166,10 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
   protected static Pattern skillPartPattern = Pattern.compile(SKILL_PART);
   protected static Pattern itemsPartPattern = Pattern.compile(ITEMS_PART);
   protected static Pattern itemPartPattern = Pattern.compile(ITEM_PART);
+  protected static Pattern spellsPartPattern = Pattern.compile(SPELLS_PART);
+  protected static Pattern spellPartPattern = Pattern.compile(SPELL_PART);
+  protected static Pattern cspellsPartPattern = Pattern.compile(CSPELLS_PART);
+  protected static Pattern cspellPartPattern = Pattern.compile(CSPELL_PART);
   protected static Pattern numberPartPattern = Pattern.compile(NUMBER_PART);
   protected static Pattern combatStatusPartPattern = Pattern.compile(COMBAT_STATUS_PART);
   protected static Pattern silverPartPattern = Pattern.compile(SILVER_PART);
@@ -175,6 +189,10 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   private List<Message> reportMessages = new ArrayList<Message>();
 
+  private Map<magellan.library.ID, Spell> spellMap = CollectionFactory
+      .<ID, Spell> createSyncOrderedMap();
+  private Map<ID, CombatSpell> combatSpells = CollectionFactory.createSyncOrderedMap();
+
   protected final int allianceState = 26;
 
   private String nextLine = null;
@@ -189,6 +207,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   private Exception firstError;
   private Exception lastError;
+  protected int cSId = 1;
 
   /**
    * Creates a new parser.
@@ -336,16 +355,16 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     nextLine = null;
     if (join && (skipEmpty || (line != null && line.length() > 0))) {
       String newLine = "";
-      while (line != null && !line.endsWith(".") && newLine != null) {
+      while (line != null && !line.matches(".*" + LINE_END) && newLine != null) {
         nextLine = null;
         newLine = reader.readLine();
         if (newLine != null) {
           if (newLine.length() > 0) {
             lnr++;
-            if (line.endsWith("\\s") || newLine.startsWith("\\s")) {
-              line += newLine;
+            if (line.endsWith("\\s")) {
+              line += newLine.trim();
             } else {
-              line = line + " " + newLine;
+              line = line + " " + newLine.trim();
             }
           } else {
             nextLine = "";
@@ -462,7 +481,9 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
         return false;
       partMatcher = pattern.matcher(part);
       boolean val = partMatcher.matches();
-      partPattern = val ? pattern : null;
+      if (val) {
+        partPattern = pattern;
+      }
       return val;
     }
   }
@@ -720,7 +741,8 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
 
     private void parseUnit() throws ParseException, IOException {
-      // unitLine = "  ([*-+]) " + object + "(, faction " + object + ")?([^.]*)?\\.";
+      // UNIT_LINE = "  *([*+-])\\s+" + OBJECT + "(,\\s+faction\\s+" + OBJECT + ")?([^.]*)([.!?])";
+
       try {
         currentUnit = getAddUnit(UnitID.createUnitID(lineMatcher.group(3), world.base), false);
         currentUnit.setName(lineMatcher.group(2));
@@ -761,7 +783,11 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
         String predesc;
         if (semi >= 0) {
           predesc = lineMatcher.group(7).substring(0, semi);
-          currentUnit.setDescription(lineMatcher.group(7).substring(semi + 2));
+          String desc = lineMatcher.group(7).substring(semi + 2);
+          if (!desc.endsWith(".")) {
+            desc += lineMatcher.group(8);
+          }
+          currentUnit.setDescription(desc);
         } else {
           predesc = lineMatcher.group(7);
         }
@@ -774,6 +800,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
           // itemPart = num + " " + name;
           // numberPart = "number: " + num;
           String part = tokenizer.nextToken().trim();
+          // multi starting parts:
           if (matches(defaultPartPattern, part)) {
             currentUnit.addOrder(partMatcher.group(1));
             if (currentUnit.getCombatStatus() == -1) {
@@ -782,23 +809,33 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
           } else if (matches(skillsPartPattern, part)) {
             addSkill(currentUnit, partMatcher.group(1), Integer.parseInt(partMatcher.group(2)),
                 Integer.parseInt(partMatcher.group(3)));
-          } else if (matches(skillPartPattern, part)) {
-            if (partPattern == skillsPartPattern || partPattern == skillPartPattern) {
-              addSkill(currentUnit, partMatcher.group(1), Integer.parseInt(partMatcher.group(2)),
-                  Integer.parseInt(partMatcher.group(3)));
-            }
           } else if (matches(itemsPartPattern, part)) {
             addItem(currentUnit, partMatcher.group(2), Integer.parseInt(partMatcher.group(1)));
-          } else if (matches(itemPartPattern, part)) {
-            if (partPattern == itemsPartPattern || partPattern == itemPartPattern) {
-              addItem(currentUnit, partMatcher.group(2), Integer.parseInt(partMatcher.group(1)));
-            }
+          } else if (matches(spellsPartPattern, part)) {
+            addSpell(currentUnit, partMatcher.group(1), false);
+          } else if (matches(cspellsPartPattern, part)) {
+            addSpell(currentUnit, partMatcher.group(1), true);
+            // single parts:
           } else if (matches(numberPartPattern, part)) {
             currentUnit.setPersons(Integer.parseInt(partMatcher.group(1)));
           } else if (matches(combatStatusPartPattern, part)) {
             currentUnit.setCombatStatus(AtlantisConstants.CS_REAR);
           } else if (matches(silverPartPattern, part)) {
             addItem(currentUnit, "silver", Integer.parseInt(partMatcher.group(1)));
+            // sub parts:
+          } else if ((partPattern == itemsPartPattern || partPattern == itemPartPattern)
+              && matches(itemPartPattern, part)) {
+            addItem(currentUnit, partMatcher.group(2), Integer.parseInt(partMatcher.group(1)));
+          } else if ((partPattern == skillsPartPattern || partPattern == skillPartPattern)
+              && matches(skillPartPattern, part)) {
+            addSkill(currentUnit, partMatcher.group(1), Integer.parseInt(partMatcher.group(2)),
+                Integer.parseInt(partMatcher.group(3)));
+          } else if ((partPattern == spellsPartPattern || partPattern == spellPartPattern)
+              && matches(spellPartPattern, part)) {
+            addSpell(currentUnit, partMatcher.group(1), false);
+          } else if ((partPattern == cspellsPartPattern || partPattern == cspellPartPattern)
+              && matches(cspellPartPattern, part)) {
+            addSpell(currentUnit, partMatcher.group(1), true);
           } else {
             if (unmatchedcounter++ < 100) {
               log.warn("unmatched part: " + part);
@@ -809,7 +846,38 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
         partMatcher = null;
         nextLine(true, false);
       } finally {
+        if (!spellMap.isEmpty()) {
+          if (currentUnit == null)
+            throw new ParseException("spell without unit.");
+          else {
+            currentUnit.setSpells(spellMap);
+          }
+          if (!combatSpells.isEmpty()) {
+            currentUnit.setCombatSpells(combatSpells);
+          }
+        }
+        spellMap.clear();
         currentUnit = null;
+      }
+    }
+
+    protected void addSpell(Unit unit, String name, boolean combat) {
+      final StringID id = StringID.create(name);
+      Spell spell = world.getSpell(id);
+
+      if (spell == null) {
+        spell = MagellanFactory.createSpell(id, world);
+        spell.setName(name);
+        world.addSpell(spell);
+      }
+
+      spellMap.put(spell.getID(), spell);
+      if (combat) {
+
+        CombatSpell cs = MagellanFactory.createCombatSpell(IntegerID.create(cSId++));
+        cs.setSpell(spell);
+        cs.setUnit(currentUnit);
+        combatSpells.put(cs.getID(), cs);
       }
     }
 

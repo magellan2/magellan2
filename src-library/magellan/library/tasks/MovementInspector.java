@@ -91,7 +91,7 @@ public class MovementInspector extends AbstractInspector {
     List<CoordinateID> movement = mRel.getMovement();
 
     if (severity == Severity.ERROR && movement.size() > 1
-        && movement.get(0).equals(movement.get(1))) {
+        && movement.get(0).equals(movement.get(1)) && mRel.getTransporter() == u) {
       // this happens when we have some kind of movement and an startRegion
       // but no next region
       // example: ROUTE PAUSE NO

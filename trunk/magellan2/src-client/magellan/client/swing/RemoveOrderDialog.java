@@ -22,17 +22,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
+import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Resources;
 
 /**
@@ -53,6 +59,8 @@ public class RemoveOrderDialog extends InternationalizedDialog {
   private JButton cancel;
 
   private JCheckBox caseBox;
+  private JRadioButton regexButton;
+  private JLabel attention;
 
   /**
    * Creates a new removeOrderDialog object.
@@ -81,8 +89,7 @@ public class RemoveOrderDialog extends InternationalizedDialog {
         new JRadioButton(Resources.get("removeorderdialog.radio.begins.title"));
     JRadioButton containsButton =
         new JRadioButton(Resources.get("removeorderdialog.radio.contains.title"));
-    final JRadioButton regexButton =
-        new JRadioButton(Resources.get("removeorderdialog.radio.regex.title"));
+    regexButton = new JRadioButton(Resources.get("removeorderdialog.radio.regex.title"));
     regexButton.addChangeListener(new ChangeListener() {
 
       public void stateChanged(ChangeEvent e) {
@@ -115,15 +122,42 @@ public class RemoveOrderDialog extends InternationalizedDialog {
     c.gridy++;
 
     cp.add(new JLabel(Resources.get("removeorderdialog.window.message")), c);
+    JPanel input = new JPanel();
+    ImageIcon icon = MagellanImages.NULL;
+    attention = new JLabel(icon);
+    input.add(attention);
 
     order = new JTextField(25);
+    order.getDocument().addDocumentListener(new DocumentListener() {
+
+      public void removeUpdate(DocumentEvent e) {
+        checkRegex();
+      }
+
+      public void insertUpdate(DocumentEvent e) {
+        checkRegex();
+      }
+
+      public void changedUpdate(DocumentEvent e) {
+        checkRegex();
+      }
+
+    });
+    regexButton.addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent e) {
+        checkRegex();
+      }
+    });
 
     // JScrollPane helperPane = new JScrollPane(order);
 
     c.gridx = 1;
     c.weightx = 0.5;
     c.gridwidth = GridBagConstraints.REMAINDER;
-    cp.add(order, c);
+
+    input.add(order);
+
+    cp.add(input, c);
     // cp.add(helperPane, c);
 
     caseBox = new JCheckBox(Resources.get("removeorderdialog.chkbox.matchcase.title"));
@@ -154,6 +188,24 @@ public class RemoveOrderDialog extends InternationalizedDialog {
     cp.add(cancel, c);
   }
 
+  protected boolean checkRegex() {
+    try {
+      if (regexButton.isSelected()) {
+        String text = order.getDocument().getText(0, order.getDocument().getLength());
+        try {
+          "".matches(text);
+        } catch (Exception ex) {
+          attention.setIcon(MagellanImages.ATTENTION);
+          return false;
+        }
+      }
+      attention.setIcon(MagellanImages.NULL);
+    } catch (BadLocationException e1) {
+      e1.printStackTrace();
+    }
+    return true;
+  }
+
   /**
    * Shows the dialog.
    * 
@@ -167,9 +219,12 @@ public class RemoveOrderDialog extends InternationalizedDialog {
     final String retVal[] = new String[3];
     ActionListener okButtonAction = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        if (!checkRegex())
+          return;
         retVal[0] = order.getText();
         retVal[1] = String.valueOf(position.getSelection().getActionCommand());
         retVal[2] = String.valueOf(caseBox.isSelected());
+
         quit();
       }
     };

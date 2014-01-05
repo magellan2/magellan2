@@ -51,6 +51,9 @@ public class MagellanImages {
   /** Closed node icon for (message) tree */
   public static ImageIcon BULLETS_CLOSED = null;
 
+  public static ImageIcon NULL = null;
+  public static ImageIcon ATTENTION = null;
+
   private static File magellanDirectory = null;
 
   /** The Magellan foreground color (sepia-like, dark brown) */
@@ -107,5 +110,7 @@ public class MagellanImages {
     MagellanImages.BULLETS_OPEN = MagellanImages.getImageIcon("etc/images/bullets/open.gif");
     MagellanImages.BULLETS_CLOSED = MagellanImages.getImageIcon("etc/images/bullets/closed.gif");
 
+    MagellanImages.NULL = MagellanImages.getImageIcon("etc/images/gui/null.gif");
+    MagellanImages.ATTENTION = MagellanImages.getImageIcon("etc/images/gui/attention.gif");
   }
 }

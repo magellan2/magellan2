@@ -509,11 +509,11 @@ public abstract class MagellanFactory {
             .get(key);
     // MagellanFactory.combatStatusToString(u.getCombatStatus());
     if (u.getModifiedCombatStatus() != u.getCombatStatus()) {
-      key = u.getData().getGameSpecificStuff().getCombatStates().get(u.getCombatStatus());
+      key = u.getData().getGameSpecificStuff().getCombatStates().get(u.getModifiedCombatStatus());
       retVal +=
           " ("
-              + (key == null ? Resources.get("unit.combatstatus.unknown", u.getCombatStatus())
-                  : Resources.get(key)) + ")";
+              + (key == null ? Resources.get("unit.combatstatus.unknown", u
+                  .getModifiedCombatStatus()) : Resources.get(key)) + ")";
     }
 
     if (u.isUnaided()) {

@@ -2937,7 +2937,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    */
   public CoordinateID getNewRegion() {
     if (getCache().destination == null)
-      return getCache().destination = getRegion().getCoordinate();
+      if (getRegion() == null)
+        return getCache().destination = getRegion().getCoordinate();
+      else
+        return null;
     return getCache().destination;
   }
 

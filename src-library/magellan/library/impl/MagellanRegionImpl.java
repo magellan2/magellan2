@@ -2107,7 +2107,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   public Set<Unit> getMaintained() {
     for (Iterator<Unit> it = maintained.iterator(); it.hasNext();) {
       Unit u = it.next();
-      if (!u.getNewRegion().equals(getCoordinate())) {
+      if (!getCoordinate().equals(u.getNewRegion())) {
         it.remove();
       }
     }

@@ -298,15 +298,17 @@ public class EresseaRelationFactory implements RelationFactory {
     int count = 2; // two for maintenance orders
     for (Unit u : r.units()) {
       count += u.getOrders2().size();
-      affected.add(data.getRegion(u.getNewRegion()));
-      // for (Order o : u.getOrders2()) {
-      // // FIXME create TEMP unit!!
-      // // if (u.getOrders2().isToken(o, 0, EresseaConstants.OC_MAKE)
-      // // && (u.getOrders2().isToken(o, 1, EresseaConstants.OC_TEMP))) {
-      // // } else {
-      // count++;
-      // // }
-      // }
+      if (u.getNewRegion() != null) {
+        affected.add(data.getRegion(u.getNewRegion()));
+        // for (Order o : u.getOrders2()) {
+        // // FIXME create TEMP unit!!
+        // // if (u.getOrders2().isToken(o, 0, EresseaConstants.OC_MAKE)
+        // // && (u.getOrders2().isToken(o, 1, EresseaConstants.OC_TEMP))) {
+        // // } else {
+        // count++;
+        // // }
+        // }
+      }
     }
     // use array to save memory while sorting, because Collections.sort() makes a copy
     OrderInfo[] orders = new OrderInfo[count];

@@ -1,3 +1,52 @@
+2014-02-11 / Build 581 - stm (stm_@users.sourceforge.net)
+	* improvements to TaskTable: empty/abandoned buildings and ships
+	* bugfix: Unit.newRegion() may be null
+	* updated eclipse formatter settings ("version 12")
+	* bugfix for units without locale
+	* bugfix for E3CommandParser repeat command
+	* small useability improvement for order completion
+
+2014-01-05 / Build 580 - stm (stm_@users.sourceforge.net)
+	* remove orders dialog detects invalid patterns
+	* small tweak to MovementInspector
+	* fix modified combat status display
+	* E3CommandParser: added support for multiple faction processing; now with more detailed warning management
+
+2013-07-03 / Build 570-576 - stm (stm_@users.sourceforge.net)
+	* added support for Enno's Atlantis game
+	* NR Parser
+	* OrderParser/Completer
+	* restructured OrderReader/Writer
+	* moving local order handling from resources to rules file
+	* improved recognition of file types
+	* other localization issues
+	* adjustments for Atlantis coordinate system (cellGeometry, game specific MapMetric, map wrap)
+	* improved support for combat states
+	* Preparations for JSON report support
+	* encapsulated GameData.rules
+	* added fall back message type
+	
+2013-07-03 / Build 567 - stm (stm_@users.sourceforge.net)
+	* fix to E3CommandParser because of changed behaviour of Integer.parseInt in Java 1.7
+	* changing global textfield selection behaviour
+	* fixed clone behaviour
+	* NPE fix for E3CommandParser
+	* added clean-all build target
+	* focus for continue
+	
+2013-06-14 / Build 567 - Fiete (sf@fietefietz.de)
+	* Fixed NPE in TempUnitDialog when faction has no groups.
+
+2013-04-25 / Build 566 - stm (stm_@users.sourceforge.net)
+	* minor behaviour tweaks
+	* resource tweak
+
+2013-04-25 / Build 562 - stm (stm_@users.sourceforge.net)
+	* fix for temp unit dialog
+	* tweak to E3CommandParser
+	* make echeck comments in OrderWriterDialog by default
+	* small tweak for OrderCompleter (GRUPPE)
+
 2013-04-12 / Build 551 - stm (stm_@users.sourceforge.net)
 	* introduced http://magellan-client.sourceforge.net/locations.properties as primary register for URLs concerning Magellan
     * fixed typos in about/update/version dialogs

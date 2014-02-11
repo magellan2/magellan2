@@ -25,7 +25,6 @@ package magellan.library.tasks;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -45,7 +44,6 @@ import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.impl.MagellanMessageImpl;
 import magellan.library.rules.MessageType;
-import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ProblemFactory.BattleProblem;
 import magellan.library.tasks.ProblemFactory.MessageProblem;
 import magellan.library.utils.Resources;
@@ -395,10 +393,7 @@ public class MessageInspector extends AbstractInspector {
   }
 
   @Override
-  public List<Problem> reviewRegion(Region r, Severity severity) {
-    if (!Severity.INFORMATION.equals(severity))
-      return Collections.emptyList();
-
+  public List<Problem> listProblems(Region r) {
     List<Problem> problems = new LinkedList<Problem>();
 
     if (r.getMessages() != null) {
@@ -467,9 +462,7 @@ public class MessageInspector extends AbstractInspector {
   }
 
   @Override
-  public List<Problem> reviewUnit(Unit u, Severity severity) {
-    if (!Severity.INFORMATION.equals(severity))
-      return Collections.emptyList();
+  public List<Problem> findProblems(Unit u) {
 
     List<Problem> problems = new LinkedList<Problem>();
 

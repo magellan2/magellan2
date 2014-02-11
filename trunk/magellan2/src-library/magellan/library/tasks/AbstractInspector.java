@@ -14,12 +14,12 @@ import java.util.List;
 
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Identifiable;
 import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.gamebinding.GameSpecificStuff;
-import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -86,31 +86,32 @@ public abstract class AbstractInspector implements Inspector {
     if (checkIgnoreUnit(u))
       return Collections.emptyList();
 
-    List<Problem> li = reviewUnit(u, Severity.INFORMATION);
-    List<Problem> lw = reviewUnit(u, Severity.WARNING);
-    List<Problem> le = reviewUnit(u, Severity.ERROR);
+    List<Problem> problems = findProblems(u);
 
-    checkIgnore(li);
-    checkIgnore(lw);
-    checkIgnore(le);
+    checkIgnore(problems);
 
-    if (!li.isEmpty() || !lw.isEmpty() || !le.isEmpty()) {
-      List<Problem> problems = new ArrayList<Problem>(10);
-      problems.addAll(li);
-      problems.addAll(lw);
-      problems.addAll(le);
+    if (problems.size() > 0)
       return problems;
-    }
+    return Collections.emptyList();
+  }
+
+  /**
+   * Returns an empty list. Sub-classes should usually overwrite this method or
+   * {@link AbstractInspector#listProblems(magellan.library.Region)} (or both).
+   * 
+   * @see magellan.library.tasks.Inspector#findProblems(magellan.library.Unit)
+   */
+  public List<Problem> findProblems(Unit u) {
     return Collections.emptyList();
   }
 
   private void checkIgnore(List<Problem> problems) {
     for (Iterator<Problem> it = problems.iterator(); it.hasNext();) {
       Problem p = it.next();
-      Unit unit = p.getOwner();
+      Unit unit = getResponsibleUnit(p);
       if (unit != null) {
         for (Order line : unit.getOrders2()) {
-          if (isSuppressMarkerFor(line, p.getType(), false)) {
+          if (isSuppressMarkerFor(line, p, false)) {
             it.remove();
             break;
           }
@@ -124,7 +125,7 @@ public abstract class AbstractInspector implements Inspector {
             if (!(line.getText().startsWith(Inspector.SUPPRESS_PREFIX) || line.getText()
                 .startsWith(Inspector.SUPPRESS_PREFIX_PERMANENT))) {
               break;
-            } else if (isSuppressMarkerFor(line, p.getType(), true)) {
+            } else if (isSuppressMarkerFor(line, p, true)) {
               it.remove();
               break;
             }
@@ -134,11 +135,45 @@ public abstract class AbstractInspector implements Inspector {
     }
   }
 
-  protected boolean isSuppressMarkerFor(Order line, ProblemType p) {
-    return isSuppressMarkerFor(line, p, true) || isSuppressMarkerFor(line, p, false);
+  protected Unit getResponsibleUnit(Problem p) {
+    Unit responsible = null;
+    if (p.getOwner() != null) {
+      responsible = p.getOwner();
+    } else if (p.getRegion() != null && !p.getRegion().units().isEmpty()) {
+      // first unit of owner faction in region
+      if (p.getFaction() != null) {
+        for (Unit u : p.getRegion().units())
+          if (p.getFaction().equals(u.getFaction())) {
+            responsible = u;
+            break;
+          }
+      } else {
+        // first unit
+        responsible = p.getRegion().units().iterator().next();
+      }
+    } else if (p.getFaction() != null) {
+      // first unit of owner faction
+      if (p.getFaction().units() != null) {
+        responsible = p.getFaction().units().iterator().next();
+      }
+    } else if (getData().getOwnerFaction() != null
+        && getData().getFaction(getData().getOwnerFaction()) != null) {
+      for (Unit u : getData().getFaction(getData().getOwnerFaction()).units()) {
+        responsible = u;
+        break;
+      }
+    }
+    return responsible;
   }
 
-  protected boolean isSuppressMarkerFor(Order line, ProblemType p, boolean lineMode) {
+  protected boolean isSuppressMarker(Order order) {
+    return order.getText().startsWith(AbstractInspector.SUPPRESS_LINE_PREFIX_PERMANENT)
+        || order.getText().startsWith(AbstractInspector.SUPPRESS_LINE_PREFIX)
+        || order.getText().startsWith(Inspector.SUPPRESS_PREFIX_PERMANENT)
+        || order.getText().startsWith(Inspector.SUPPRESS_PREFIX);
+  }
+
+  protected boolean isSuppressMarkerFor(Order line, Problem p, boolean lineMode) {
     if (lineMode)
       return line.getText().equals(getSuppressLineComment(p, false))
           || line.getText().equals(getSuppressLineComment(p, true));
@@ -161,7 +196,7 @@ public abstract class AbstractInspector implements Inspector {
    * 
    * @param u
    */
-  protected boolean checkIgnoreUnit(Unit u, ProblemType p) {
+  protected boolean checkIgnoreUnit(Unit u, Problem p) {
     boolean found = false;
     for (Order order : u.getOrders2()) {
       if (order.getText().equals(getSuppressUnitComment(p))) {
@@ -186,18 +221,6 @@ public abstract class AbstractInspector implements Inspector {
   }
 
   /**
-   * Returns an empty list. Sub-classes should usually overwrite this method or
-   * {@link AbstractInspector#reviewRegion(magellan.library.Region, magellan.library.tasks.Problem.Severity)}
-   * (or both).
-   * 
-   * @see magellan.library.tasks.Inspector#reviewUnit(magellan.library.Unit,
-   *      magellan.library.tasks.Problem.Severity)
-   */
-  public List<Problem> reviewUnit(Unit u, Severity severity) {
-    return Collections.emptyList();
-  }
-
-  /**
    * Calls reviewUnit(r,Problem.INFO), reviewUnit(r,Problem.WARNING)... etc. and returns the joint
    * list of problems.
    * 
@@ -207,22 +230,12 @@ public abstract class AbstractInspector implements Inspector {
     if (checkIgnoreRegion(r))
       return Collections.emptyList();
 
-    List<Problem> li = reviewRegion(r, Severity.INFORMATION);
-    List<Problem> lw = reviewRegion(r, Severity.WARNING);
-    List<Problem> le = reviewRegion(r, Severity.ERROR);
+    List<Problem> problems = listProblems(r);
 
-    checkIgnore(li);
-    checkIgnore(lw);
-    checkIgnore(le);
+    checkIgnore(problems);
 
-    int size = li.size() + lw.size() + le.size();
-    if (size > 0) {
-      List<Problem> problems = new ArrayList<Problem>(size);
-      problems.addAll(li);
-      problems.addAll(lw);
-      problems.addAll(le);
+    if (problems.size() > 0)
       return problems;
-    }
     return Collections.emptyList();
   }
 
@@ -239,13 +252,11 @@ public abstract class AbstractInspector implements Inspector {
 
   /**
    * Returns an empty list. Sub-classes should usually overwrite this method or
-   * {@link Inspector#reviewUnit(magellan.library.Unit, magellan.library.tasks.Problem.Severity)}
-   * (or both).
+   * {@link Inspector#findProblems(magellan.library.Unit)} (or both).
    * 
-   * @see magellan.library.tasks.Inspector#reviewRegion(magellan.library.Region,
-   *      magellan.library.tasks.Problem.Severity)
+   * @see magellan.library.tasks.Inspector#listProblems(magellan.library.Region)
    */
-  public List<Problem> reviewRegion(Region r, Severity severity) {
+  public List<Problem> listProblems(Region r) {
     return Collections.emptyList();
   }
 
@@ -253,39 +264,50 @@ public abstract class AbstractInspector implements Inspector {
    * @see Inspector#suppress(Problem)
    */
   public Unit suppress(Problem p) {
-    if (p.getOwner() == null)
+    Unit responsible = getResponsibleUnit(p);
+    if (responsible == null)
       return null;
+
     if (p.getLine() >= 0) {
-      p.getOwner().addOrderAt(p.getLine() - 1, getSuppressLineComment(p.getType()), true);
+      responsible.addOrderAt(p.getLine() - 1, getSuppressLineComment(p), true);
     } else {
-      p.getOwner().addOrderAt(0, getSuppressUnitComment(p.getType()), true);
+      responsible.addOrderAt(0, getSuppressUnitComment(p), true);
     }
-    return p.getOwner();
+    return responsible;
   }
 
-  protected String getSuppressUnitComment(ProblemType p, boolean permanent) {
+  protected String getSuppressUnitComment(Problem p, boolean permanent) {
     StringBuffer sb =
         new StringBuffer(permanent ? Inspector.SUPPRESS_PREFIX_PERMANENT
             : Inspector.SUPPRESS_PREFIX);
-    sb.append(" ");
-    sb.append(p.getName());
+    sb.append(" ").append(p.getType().getName());
+    if (getResponsibleUnit(p) != null && getResponsibleUnit(p) != p.getObject()
+        && (p.getObject() instanceof Identifiable)) {
+      Identifiable object = (Identifiable) p.getObject();
+      sb.append(" ").append(object.getID());
+    }
     return sb.toString();
   }
 
-  protected String getSuppressLineComment(ProblemType p, boolean permanent) {
+  protected String getSuppressLineComment(Problem p, boolean permanent) {
     StringBuffer sb =
         new StringBuffer(permanent ? AbstractInspector.SUPPRESS_LINE_PREFIX_PERMANENT
             : AbstractInspector.SUPPRESS_LINE_PREFIX);
-    sb.append(" ");
-    sb.append(p.getName());
+    sb.append(" ").append(p.getType().getName());
+    if (getResponsibleUnit(p) != null && getResponsibleUnit(p) != p.getObject()
+        && (p.getObject() instanceof Identifiable)) {
+      Identifiable object = (Identifiable) p.getObject();
+      sb.append(" ").append(object.getID());
+    }
+
     return sb.toString();
   }
 
-  protected String getSuppressUnitComment(ProblemType p) {
+  protected String getSuppressUnitComment(Problem p) {
     return getSuppressUnitComment(p, false);
   }
 
-  protected String getSuppressLineComment(ProblemType p) {
+  protected String getSuppressLineComment(Problem p) {
     return getSuppressLineComment(p, false);
   }
 
@@ -296,13 +318,7 @@ public abstract class AbstractInspector implements Inspector {
     List<Order> newOrders = new ArrayList<Order>(u.getOrders2().size());
     boolean changed = false;
     for (Order o : u.getOrders2()) {
-      boolean match = false;
-      for (ProblemType p : getTypes()) {
-        if (isSuppressMarkerFor(o, p)) {
-          match = true;
-        }
-      }
-      if (match) {
+      if (isSuppressMarker(o)) {
         changed = true;
       } else {
         newOrders.add(o);

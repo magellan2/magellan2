@@ -30,7 +30,6 @@ import java.util.List;
 
 import magellan.library.GameData;
 import magellan.library.Region;
-import magellan.library.tasks.Problem.Severity;
 
 /**
  * This inspectors checks all syntax.
@@ -77,13 +76,11 @@ public class GameDataInspector extends AbstractInspector {
   }
 
   @Override
-  public List<Problem> reviewRegion(Region r, Severity severity) {
+  public List<Problem> listProblems(Region r) {
     List<Problem> errors = new ArrayList<Problem>();
     if (r == getData().getRegions().iterator().next()) {
       for (Problem p : getData().getErrors()) {
-        if (p.getSeverity() == severity) {
-          errors.add(p);
-        }
+        errors.add(p);
       }
     }
     return errors;

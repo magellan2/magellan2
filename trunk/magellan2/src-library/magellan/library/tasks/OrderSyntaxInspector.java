@@ -101,13 +101,11 @@ public class OrderSyntaxInspector extends AbstractInspector {
   }
 
   @Override
-  public List<Problem> reviewRegion(Region r, Severity severity) {
+  public List<Problem> listProblems(Region r) {
     List<Problem> errors = new ArrayList<Problem>();
     if (r == getData().getRegions().iterator().next()) {
       for (Problem p : getData().getErrors()) {
-        if (p.getSeverity() == severity) {
-          errors.add(p);
-        }
+        errors.add(p);
       }
     }
 
@@ -130,11 +128,10 @@ public class OrderSyntaxInspector extends AbstractInspector {
   }
 
   /**
-   * @see AbstractInspector#reviewUnit(magellan.library.Unit,
-   *      magellan.library.tasks.Problem.Severity)
+   * @see AbstractInspector#findProblems(magellan.library.Unit)
    */
   @Override
-  public List<Problem> reviewUnit(Unit unit, Severity severity) {
+  public List<Problem> findProblems(Unit unit) {
 
     Orders orders = unit.getOrders2();
     List<Problem> errors = new ArrayList<Problem>();
@@ -152,15 +149,13 @@ public class OrderSyntaxInspector extends AbstractInspector {
 
       if (order.getProblem() != null) {
         Problem problem = order.getProblem();
-        if (severity == problem.getSeverity()) {
-          String message = problem.getMessage();
-          if (message == null) {
-            message = getWarningMessage(OrderSyntaxProblemTypes.PARSE_WARNING, order);
-          }
-          errors.add(ProblemFactory.createProblem(problem.getSeverity(), problem.getType(), unit
-              .getRegion(), unit, unit.getFaction(), unit, this, message, line));
-          // order.getProblem());
+        String message = problem.getMessage();
+        if (message == null) {
+          message = getWarningMessage(OrderSyntaxProblemTypes.PARSE_WARNING, order);
         }
+        errors.add(ProblemFactory.createProblem(problem.getSeverity(), problem.getType(), unit
+            .getRegion(), unit, unit.getFaction(), unit, this, message, line));
+        // order.getProblem());
       } else if (!order.isValid()) {
         errors.add(ProblemFactory.createProblem(Severity.WARNING,
             OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, getWarningMessage(
@@ -170,31 +165,29 @@ public class OrderSyntaxInspector extends AbstractInspector {
       longOrder |= order.isLong();
     }
 
-    if (severity == Severity.ERROR) {
-      if ((Utils.isEmpty(orders) || orders.size() == 0)) {
-        // no orders...that could be a problem.
-        if (!magellan.library.utils.Units.isPrivilegedAndNoSpy(unit))
-          // okay, that isn't our unit... forget it
-          return Collections.emptyList();
-        else {
-          errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS
-              .getType(), unit, this));
-        }
-      } else if (!longOrder) {
-        errors.add(ProblemFactory.createProblem(Severity.ERROR,
-            OrderSyntaxProblemTypes.NO_LONG_ORDER.getType(), unit, this));
-      } else {
-        line = getData().getGameSpecificStuff().getOrderChanger().areCompatibleLongOrders(orders);
-        if (0 <= line) {
-          errors.add(ProblemFactory.createProblem(Severity.ERROR,
-              OrderSyntaxProblemTypes.LONGORDERS.getType(), unit, this, getWarningMessage(
-                  OrderSyntaxProblemTypes.LONGORDERS, orders.get(line)), line + 1));
-        }
+    if ((Utils.isEmpty(orders) || orders.size() == 0)) {
+      // no orders...that could be a problem.
+      if (!magellan.library.utils.Units.isPrivilegedAndNoSpy(unit))
+        // okay, that isn't our unit... forget it
+        return Collections.emptyList();
+      else {
+        errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS
+            .getType(), unit, this));
+      }
+    } else if (!longOrder) {
+      errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_LONG_ORDER
+          .getType(), unit, this));
+    } else {
+      line = getData().getGameSpecificStuff().getOrderChanger().areCompatibleLongOrders(orders);
+      if (0 <= line) {
+        errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.LONGORDERS
+            .getType(), unit, this, getWarningMessage(OrderSyntaxProblemTypes.LONGORDERS, orders
+            .get(line)), line + 1));
       }
     }
 
     for (UnitRelation rel : unit.getRelations(UnitRelation.class))
-      if (rel.problem != null && rel.origin == unit && rel.problem.getSeverity() == severity) {
+      if (rel.problem != null && rel.origin == unit) {
         if (rel.line > 0) {
           Order order = rel.origin.getOrders2().get(rel.line - 1);
           if (order == null || (order.getProblem() == null && order.isValid())) {

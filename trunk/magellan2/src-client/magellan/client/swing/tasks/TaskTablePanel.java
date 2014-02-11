@@ -79,6 +79,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.event.UnitChangeEvent;
 import magellan.library.event.UnitChangeListener;
 import magellan.library.tasks.AttackInspector;
+import magellan.library.tasks.BuildingInspector;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Inspector;
 import magellan.library.tasks.MaintenanceInspector;
@@ -315,12 +316,13 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
             }
           } else {
             JTable target = (JTable) e.getSource();
-            int row = target.getSelectedRow();
 
+            int row = target.rowAtPoint(e.getPoint());
+            int col = target.columnAtPoint(e.getPoint());
             if (TaskTablePanel.log.isDebugEnabled()) {
               TaskTablePanel.log.debug("TaskTablePanel: Double click on row " + row);
             }
-            selectObjectOnRow(row);
+            selectObjectOnRow(row, col);
           }
         }
       }
@@ -397,8 +399,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
       selectMenu.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent menuEvent) {
           int row = table.getSelectedRow();
-          if (row >= 0 && row < sorter.getRowCount()) {
-            selectObjectOnRow(row);
+          int col = table.getSelectedColumn();
+          if (row >= 0 && row < sorter.getRowCount() && col >= 0 && col < sorter.getColumnCount()) {
+            selectObjectOnRow(row, col);
           }
         }
       });
@@ -617,15 +620,21 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   /**
    * Fire selection event for object associated with row
    * 
-   * @param row
+   * @param row row index of the underlying table
+   * @param col column index of the underlying table
    */
-  protected void selectObjectOnRow(int row) {
-    if (row < 0 || row >= sorter.getRowCount())
+  protected void selectObjectOnRow(int row, int col) {
+    if (row < 0 || row >= sorter.getRowCount() || col < 0 || col >= sorter.getColumnCount())
       throw new IndexOutOfBoundsException();
+
     Object obj = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
+    if (table.convertColumnIndexToModel(col) == TaskTableModel.REGION_POS) {
+      obj = sorter.getValueAt(row, table.convertColumnIndexToModel(col));
+    }
     if (obj != null) {
       dispatcher.fire(SelectionEvent.create(this, obj, SelectionEvent.ST_DEFAULT));
     }
+
   }
 
   protected void showObjectOnRow(int row) {
@@ -1134,6 +1143,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true)) {
       inspectors.add(ShipInspector.getInstance(gameData));
     }
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_BUILDING, true)) {
+      inspectors.add(BuildingInspector.getInstance(gameData));
+    }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SKILL, true)) {
       inspectors.add(SkillInspector.getInstance(gameData));
     }
@@ -1274,8 +1286,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
           Collection<Region> delSelection = new HashSet<Region>();
 
           // remove problems of regions that are not selected any more
-          for (Iterator<Region> it = lastSelection.iterator(); it.hasNext();) {
-            Object o = it.next();
+          for (Region region : lastSelection) {
+            Object o = region;
             if (o instanceof Region) {
               if (!eventSelection.contains(o)) {
                 delSelection.add((Region) o);
@@ -1357,7 +1369,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   protected void update(Unit unit) {
     Region r1 = unit.getRegion();
-    Region r2 = unit.getData().getRegion(unit.getNewRegion());
+    Region r2 = unit.getNewRegion() == null ? null : unit.getData().getRegion(unit.getNewRegion());
 
     if (r1 != null) {
       updateDispatcher.removeRegion(r1);
@@ -1563,8 +1575,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
         && (getGameData().getOwnerFaction() == null || f == null || !getGameData()
             .getOwnerFaction().equals(f.getID())))
       return false;
-    if (restrictToPassword()
-        && (f == null || f.getPassword() == null || f.getPassword().length() == 0))
+    if (restrictToPassword() && f != null
+        && (f.getPassword() == null || f.getPassword().length() == 0))
       return false;
 
     return true;

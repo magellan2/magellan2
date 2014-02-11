@@ -67,7 +67,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
   }
 
   /**
-   * Tests {@link MovementInspector#reviewUnit(Unit, magellan.library.tasks.Problem.Severity)}.
+   * Tests {@link MovementInspector#findProblems(Unit)}.
    */
   @Test
   public final void testReviewUnitUnitSeverity() {
@@ -76,7 +76,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
     refreshOrders();
 
     MovementInspector mInspector = new MovementInspector(gd);
-    List<Problem> problems = mInspector.reviewUnit(u, Problem.Severity.WARNING);
+    List<Problem> problems = mInspector.findProblems(u);
     Problem ownerProblem = null;
     for (Problem p : problems) {
       if (p.getType().equals(MovementInspector.MovementProblemTypes.OWNERLEAVES.getType())) {
@@ -88,7 +88,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
   }
 
   /**
-   * Tests {@link MovementInspector#reviewUnit(Unit, magellan.library.tasks.Problem.Severity)}.
+   * Tests {@link MovementInspector#findProblems(Unit)}.
    */
   @Test
   public final void testReviewUnitUnitSeverity2() {
@@ -98,7 +98,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
     refreshOrders();
 
     MovementInspector mInspector = new MovementInspector(gd);
-    List<Problem> problems = mInspector.reviewUnit(u, Problem.Severity.WARNING);
+    List<Problem> problems = mInspector.findProblems(u);
     Problem ownerProblem = null;
     for (Problem p : problems) {
       if (p.getType().equals(MovementInspector.MovementProblemTypes.OWNERLEAVES.getType())) {
@@ -109,7 +109,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
   }
 
   /**
-   * Tests {@link MovementInspector#reviewUnit(Unit, magellan.library.tasks.Problem.Severity)}.
+   * Tests {@link MovementInspector#findProblems(Unit)}.
    */
   @Test
   public final void testReviewUnitUnitSeverity3() {
@@ -121,7 +121,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
     refreshOrders();
 
     MovementInspector mInspector = new MovementInspector(gd);
-    List<Problem> problems = mInspector.reviewUnit(u, Problem.Severity.WARNING);
+    List<Problem> problems = mInspector.findProblems(u);
     Problem ownerProblem = null;
     for (Problem p : problems) {
       if (p.getType().equals(MovementInspector.MovementProblemTypes.OWNERLEAVES.getType())) {

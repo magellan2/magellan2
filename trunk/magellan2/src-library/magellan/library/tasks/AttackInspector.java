@@ -73,15 +73,11 @@ public class AttackInspector extends AbstractInspector {
   }
 
   /**
-   * @see AbstractInspector#reviewUnit(magellan.library.Unit,
-   *      magellan.library.tasks.Problem.Severity)
+   * @see AbstractInspector#findProblems(magellan.library.Unit)
    */
   @Override
-  public List<Problem> reviewUnit(Unit u, Severity severity) {
+  public List<Problem> findProblems(Unit u) {
     if ((u == null) || u.ordersAreNull())
-      return Collections.emptyList();
-
-    if (severity == Severity.INFORMATION)
       return Collections.emptyList();
 
     List<Problem> problems = new ArrayList<Problem>(2);
@@ -96,21 +92,21 @@ public class AttackInspector extends AbstractInspector {
         if (!relation.source.equals(u)) {
           continue;
         }
-        if (severity == Severity.WARNING) {
-          if (relation.target == relation.source) {
-            problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.ATTACKSELF
-                .getType(), u, this, relation.line));
-          } else if (relation.target != null
-              && (relation.source.getFaction() == relation.target.getFaction() || (relation.source
-                  .getFaction() != null
-                  && (relation.source.getFaction().getAllies() != null && relation.source
-                      .getFaction().getAllies().containsKey(relation.target.getFaction().getID())) || (relation.source
-                  .getFaction().getAlliance() != null && relation.source.getFaction().getAlliance()
-                  .getFactions().contains(relation.target.getFaction().getID()))))) {
-            problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.FRIENDLYFIRE
-                .getType(), u, this, relation.line));
-          }
+
+        if (relation.target == relation.source) {
+          problems.add(ProblemFactory.createProblem(Severity.WARNING, AttackProblemTypes.ATTACKSELF
+              .getType(), u, this, relation.line));
+        } else if (relation.target != null
+            && (relation.source.getFaction() == relation.target.getFaction() || (relation.source
+                .getFaction() != null
+                && (relation.source.getFaction().getAllies() != null && relation.source
+                    .getFaction().getAllies().containsKey(relation.target.getFaction().getID())) || (relation.source
+                .getFaction().getAlliance() != null && relation.source.getFaction().getAlliance()
+                .getFactions().contains(relation.target.getFaction().getID()))))) {
+          problems.add(ProblemFactory.createProblem(Severity.WARNING,
+              AttackProblemTypes.FRIENDLYFIRE.getType(), u, this, relation.line));
         }
+
         // TODO define as constants
         // pre 57:
         // 0: VORNE
@@ -133,19 +129,17 @@ public class AttackInspector extends AbstractInspector {
 
       }
     }
-    if (severity == Severity.ERROR) {
-      if (wrongStatus != Integer.MAX_VALUE) {
-        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING
-            .getType(), u, this, wrongStatus));
-      }
-
-      // guard and not fighting (fleeing)?
-      if (u.getModifiedGuard() != 0 && u.getModifiedCombatStatus() == EresseaConstants.CS_FLEE) {
-        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING4GUARD
-            .getType(), u, this));
-      }
-
+    if (wrongStatus != Integer.MAX_VALUE) {
+      problems.add(ProblemFactory.createProblem(Severity.ERROR, AttackProblemTypes.NOTFIGHTING
+          .getType(), u, this, wrongStatus));
     }
+
+    // guard and not fighting (fleeing)?
+    if (u.getModifiedGuard() != 0 && u.getModifiedCombatStatus() == EresseaConstants.CS_FLEE) {
+      problems.add(ProblemFactory.createProblem(Severity.ERROR,
+          AttackProblemTypes.NOTFIGHTING4GUARD.getType(), u, this));
+    }
+
     if (problems.isEmpty())
       return Collections.emptyList();
     else

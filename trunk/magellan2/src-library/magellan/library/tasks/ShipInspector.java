@@ -35,11 +35,8 @@ import magellan.library.utils.Units;
  */
 public class ShipInspector extends AbstractInspector {
 
-  /** The singleton instance of the ShipInspector */
-  // public static final ShipInspector INSPECTOR = new ShipInspector();
-
   enum ShipProblemTypes {
-    EMPTY, CAPTAIN_FACTION, NOCAPTAIN, NOCREW, NONEXTREGION, NOOCEAN, WRONGSHORE,
+    EMPTY, EMPTY_FUSSY, CAPTAIN_FACTION, NOCAPTAIN, NOCREW, NONEXTREGION, NOOCEAN, WRONGSHORE,
     WRONGSHOREHARBOUR, WRONGSHOREHARBOUR_INFO, SHIPWRECK, OVERLOADED;
 
     private ProblemType type;
@@ -72,17 +69,12 @@ public class ShipInspector extends AbstractInspector {
   /**
    * Reviews the region for ships with problems.
    * 
-   * @see AbstractInspector#reviewRegion(magellan.library.Region,
-   *      magellan.library.tasks.Problem.Severity)
+   * @see AbstractInspector#listProblems(magellan.library.Region)
    */
   @Override
-  public List<Problem> reviewRegion(Region r, Severity severity) {
-    // we notify errors only
-    if (severity != Severity.ERROR)
-      return Collections.emptyList();
-
+  public List<Problem> listProblems(Region r) {
     // fail fast if prerequisites are not fulfilled
-    if ((r == null) || (r.units() == null) || r.units().isEmpty())
+    if (r == null)
       return Collections.emptyList();
 
     // this inspector is only interested in ships
@@ -119,27 +111,19 @@ public class ShipInspector extends AbstractInspector {
     // also if not ready yet, there should be someone to take care..
     if (s.modifiedUnits().isEmpty()) {
       empty = true;
-      problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.EMPTY.getType(),
-          s, this));
+      if (s.getRegion().units().isEmpty()) {
+        problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.EMPTY_FUSSY
+            .getType(), s, this));
+      } else {
+        problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.EMPTY
+            .getType(), s, this));
+      }
     }
 
     if (s.getSize() != nominalShipSize)
       // ship will be built, so we don´t go through the other checks
       return problems;
 
-    Unit owner = s.getOwnerUnit();
-    // the problem also belongs to the faction of the new owner...
-    // Unit newOwner = null;
-    // if (owner != null) {
-    // for (UnitRelation u : owner.getRelations(ControlRelation.class)) {
-    // if (u instanceof ControlRelation) {
-    // ControlRelation ctr = (ControlRelation) u;
-    // if (u.source == owner) {
-    // newOwner = ctr.target;
-    // }
-    // }
-    // }
-    // }
     Unit newOwner = s.getModifiedOwnerUnit();
 
     if (!empty) {
@@ -177,7 +161,7 @@ public class ShipInspector extends AbstractInspector {
 
     Iterator<CoordinateID> movementIterator = modifiedMovement.iterator();
     // skip origin
-    CoordinateID startRegion = movementIterator.next();
+    movementIterator.next();
     CoordinateID nextRegionCoord = movementIterator.next();
     Region nextRegion = getData().getRegion(nextRegionCoord);
 
@@ -188,7 +172,7 @@ public class ShipInspector extends AbstractInspector {
     Rules rules = getData().getRules();
     RegionType ozean = rules.getRegionType("Ozean");
 
-    // TODO: We should consider harbors, too. But this is difficult because we don't know if
+    // We should consider harbors, too. But this is difficult because we don't know if
     // harbor owner is allied with ship owner etc. We better leave it up to the user to decide...
     if (ship.getShoreId() != -1 && isShip) {
       if (nextRegion != null && !nextRegion.getRegionType().equals(ozean)) {
@@ -287,14 +271,10 @@ public class ShipInspector extends AbstractInspector {
   /**
    * Reviews the region for ships with problems.
    * 
-   * @see AbstractInspector#reviewRegion(magellan.library.Region,
-   *      magellan.library.tasks.Problem.Severity)
+   * @see AbstractInspector#listProblems(magellan.library.Region)
    */
   @Override
-  public List<Problem> reviewUnit(Unit u, Severity severity) {
-    // we notify errors only
-    if (severity != Severity.ERROR)
-      return Collections.emptyList();
+  public List<Problem> findProblems(Unit u) {
     // we check for captns of ships
     UnitContainer uc = u.getModifiedUnitContainer();
     if (uc == null)

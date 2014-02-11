@@ -598,7 +598,7 @@ public class E3CommandParser {
                 addNewError("zu wenige Argumente");
               } else {
                 commandNeed(new String[] { "Benoetige", tokens[1], tokens[2], "Silber",
-                    String.valueOf(DEFAULT_PRIORITY + 1) });
+                    String.valueOf(DEFAULT_PRIORITY + 10) });
                 setConfirm(currentUnit, false);
               }
             } else if (command.equals("Mannschaft")) {
@@ -747,7 +747,7 @@ public class E3CommandParser {
         if (period > 0) {
           rest = period + 1;
         }
-        if (tokens[textIndex].equals(scriptMarker)) {
+        if (textIndex < tokens.length && tokens[textIndex].equals(scriptMarker)) {
           result.append(COMMENTOrder).append(" ");
         }
         for (int i = textIndex; i < tokens.length; ++i) {

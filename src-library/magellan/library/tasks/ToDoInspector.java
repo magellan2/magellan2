@@ -47,15 +47,11 @@ public class ToDoInspector extends AbstractInspector {
   }
 
   /**
-   * @see AbstractInspector#reviewUnit(magellan.library.Unit,
-   *      magellan.library.tasks.Problem.Severity)
+   * @see AbstractInspector#findProblems(magellan.library.Unit)
    */
   @Override
-  public List<Problem> reviewUnit(Unit u, Severity severity) {
+  public List<Problem> findProblems(Unit u) {
     if ((u == null) || u.ordersAreNull())
-      return Collections.emptyList();
-
-    if (severity != Severity.WARNING)
       return Collections.emptyList();
 
     List<Problem> problems = new ArrayList<Problem>(2);

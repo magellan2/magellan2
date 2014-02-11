@@ -78,14 +78,10 @@ public class TeachInspector extends AbstractInspector {
   }
 
   /**
-   * @see AbstractInspector#reviewUnit(magellan.library.Unit,
-   *      magellan.library.tasks.Problem.Severity)
+   * @see AbstractInspector#findProblems(magellan.library.Unit)
    */
   @Override
-  public List<Problem> reviewUnit(Unit u, Severity severity) {
-    if (severity != Severity.WARNING)
-      return Collections.emptyList();
-
+  public List<Problem> findProblems(Unit u) {
     // check all person transfer relations
     List<Problem> problems = new ArrayList<Problem>(2);
     for (TeachRelation relation : u.getRelations(TeachRelation.class)) {

@@ -20,7 +20,6 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
-import magellan.library.tasks.Problem.Severity;
 
 /**
  * An Inspector reviews the given resource and returns a list of problems
@@ -50,9 +49,8 @@ public interface Inspector {
    * Reviews a unit and returns the list of <tt>Problem</tt> objects which are of the given type.
    * 
    * @param u The unit to review
-   * @param severity The type of problems to filter, e.g. Severity.INFORMATION
    */
-  public List<Problem> reviewUnit(Unit u, Severity severity);
+  public List<Problem> findProblems(Unit u);
 
   /**
    * Reviews a region and returns a list of <code>Problem</code> objects associated with it.
@@ -62,7 +60,7 @@ public interface Inspector {
   /**
    * Reviews a region and returns the list of <tt>Problem</tt> objects which are of the given type.
    */
-  public List<Problem> reviewRegion(Region r, Severity severity);
+  public List<Problem> listProblems(Region r);
 
   /**
    * Modifies the orders such that this problem is not listed by the inspector in the future, i.e.
@@ -70,7 +68,7 @@ public interface Inspector {
    * caller to fire OrderChangedEvents.
    * 
    * @param problem
-   * @return Returns a unit whose orders were changed
+   * @return Returns a unit whose orders were changed or null if this was not possible
    */
   public Unit suppress(Problem problem);
 

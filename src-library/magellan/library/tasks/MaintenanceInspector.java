@@ -70,8 +70,8 @@ public class MaintenanceInspector extends AbstractInspector {
   }
 
   @Override
-  public List<Problem> reviewRegion(Region r, Severity severity) {
-    if (r.units().size() == 0 || severity != Severity.WARNING)
+  public List<Problem> listProblems(Region r) {
+    if (r.units().size() == 0)
       return Collections.emptyList();
 
     ItemType silverType = getData().getRules().getItemType(EresseaConstants.I_USILVER);
@@ -96,7 +96,7 @@ public class MaintenanceInspector extends AbstractInspector {
       // unit upkeep preparation
       int movementOrderLine = getMovementOrderLine(u);
       CoordinateID destination = u.getNewRegion();
-      Region destRegion = getData().getRegion(destination);
+      Region destRegion = destination == null ? null : getData().getRegion(destination);
 
       factions.add(u.getFaction());
       if (movements.containsKey(u)) {
@@ -138,7 +138,7 @@ public class MaintenanceInspector extends AbstractInspector {
         int has = 0, needs = 0;
         Unit lastUnit = null;
         for (Unit u : r2.units()) {
-          if (f == u.getFaction() && u.getNewRegion().equals(r2.getCoordinate())) {
+          if (f == u.getFaction() && r2.getCoordinate().equals(u.getNewRegion())) {
             Item item = u.getModifiedItem(silverType);
             int silver = 0;
             if (item != null) {
@@ -153,7 +153,7 @@ public class MaintenanceInspector extends AbstractInspector {
         }
         for (Unit u : r2.getMaintained()) {
           if (f == u.getFaction()) {
-            if (!u.getNewRegion().equals(r2.getCoordinate())) {
+            if (!r2.getCoordinate().equals(u.getNewRegion())) {
               Logger.getInstance(this.getClass()).info("hmmm....");
             }
             Item item = u.getModifiedItem(silverType);
@@ -168,14 +168,17 @@ public class MaintenanceInspector extends AbstractInspector {
             }
           }
         }
-        if (has < needs)
-          if (!checkIgnoreUnit(lastUnit, MaintenanceProblemTypes.UNITSTARVING.getType())) {
+        if (has < needs) {
+          SimpleProblem problem =
+              ProblemFactory.createProblem(Severity.WARNING, MaintenanceProblemTypes.UNITSTARVING
+                  .getType(), r, null, f, lastUnit, this, Resources.get(
+                  "tasks.maintenanceinspector.unitstarving.message", r2), -1);
+          if (!checkIgnoreUnit(lastUnit, problem)) {
             // problems.add(ProblemFactory.createProblem(Severity.WARNING,
             // MaintenanceProblemTypes.UNITSTARVING.getType(), lastUnit, this, -1));
-            problems.add(ProblemFactory.createProblem(Severity.WARNING,
-                MaintenanceProblemTypes.UNITSTARVING.getType(), r, null, f, lastUnit, this,
-                Resources.get("tasks.maintenanceinspector.unitstarving.message", r2), -1));
+            problems.add(problem);
           }
+        }
       }
     }
     return problems;
@@ -193,27 +196,6 @@ public class MaintenanceInspector extends AbstractInspector {
     }
     return movementOrderLine;
   }
-
-  // private boolean hasMovementOrder(Unit u) {
-  // Orders orders = u.getOrders2();
-  // for (Order order : orders) {
-  // if (order.isEmpty() || order.getProblem() != null) {
-  // continue;
-  // }
-  // if (orders.isToken(order, 0, EresseaConstants.OC_MOVE)
-  // || orders.isToken(order, 0, EresseaConstants.OC_ROUTE))
-  // return true;
-  // try {
-  // if (orders.isToken(order, 0, EresseaConstants.OC_FOLLOW)) {
-  // if (orders.isToken(order, 1, EresseaConstants.OC_UNIT))
-  // return true;
-  // }
-  // } catch (Exception e) {
-  // Logger.getInstance(getClass()).fine("", e);
-  // }
-  // }
-  // return false;
-  // }
 
   public Collection<ProblemType> getTypes() {
     if (types == null) {
@@ -236,7 +218,7 @@ public class MaintenanceInspector extends AbstractInspector {
 
   @Override
   public Unit suppress(Problem p) {
-    ((Unit) p.getObject()).addOrderAt(0, getSuppressUnitComment(p.getType()));
+    ((Unit) p.getObject()).addOrderAt(0, getSuppressUnitComment(p));
     return (Unit) p.getObject();
   }
 }

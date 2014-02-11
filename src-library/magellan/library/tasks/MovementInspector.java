@@ -68,16 +68,11 @@ public class MovementInspector extends AbstractInspector {
   /**
    * Checks the specified movement for overload and too many horses.
    * 
-   * @see AbstractInspector#reviewUnit(magellan.library.Unit,
-   *      magellan.library.tasks.Problem.Severity)
+   * @see AbstractInspector#findProblems(magellan.library.Unit)
    */
   @Override
-  public List<Problem> reviewUnit(Unit u, Severity severity) {
+  public List<Problem> findProblems(Unit u) {
     if ((u == null) || u.ordersAreNull())
-      return Collections.emptyList();
-
-    // we only warn
-    if (severity != Severity.WARNING && severity != Severity.ERROR)
       return Collections.emptyList();
 
     List<Problem> problems = new ArrayList<Problem>();
@@ -90,8 +85,8 @@ public class MovementInspector extends AbstractInspector {
 
     List<CoordinateID> movement = mRel.getMovement();
 
-    if (severity == Severity.ERROR && movement.size() > 1
-        && movement.get(0).equals(movement.get(1)) && mRel.getTransporter() == u) {
+    if (movement.size() > 1 && movement.get(0).equals(movement.get(1))
+        && mRel.getTransporter() == u) {
       // this happens when we have some kind of movement and an startRegion
       // but no next region
       // example: ROUTE PAUSE NO
@@ -99,7 +94,7 @@ public class MovementInspector extends AbstractInspector {
           .getType(), u, this, mRel.line));
     }
 
-    if (severity == Severity.WARNING && mRel.getTransporter() == u) {
+    if (mRel.getTransporter() == u) {
       if (mRel.unknown) {
         problems.add(ProblemFactory.createProblem(Severity.WARNING,
             MovementProblemTypes.UNKNOWNREGION.getType(), u, this, mRel.line));
@@ -150,7 +145,7 @@ public class MovementInspector extends AbstractInspector {
       }
     }
 
-    if (severity == Severity.WARNING && u.getBuilding() != null) {
+    if (u.getBuilding() != null) {
       Unit newOwner = u.getBuilding().getModifiedOwnerUnit();
       if (u.equals(newOwner) || newOwner == null) {
         SimpleProblem problem = null;

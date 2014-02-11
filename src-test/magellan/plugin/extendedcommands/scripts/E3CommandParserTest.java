@@ -409,6 +409,29 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
+   * Test method for the repeat command.
+   */
+  @Test
+  public final void testCommandRepeatNull() {
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1");
+
+    parser.execute(unit.getFaction());
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("", unit, 1);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1 1");
+
+    parser.execute(unit.getFaction());
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("// $cript 1 1", unit, 1);
+    assertOrder("", unit, 2);
+  }
+
+  /**
    * Test method for the auto command.
    */
   @Test

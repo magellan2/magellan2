@@ -332,6 +332,11 @@ ORDER "BUILDING"
 "BUILDING";locale_en
 1;internal
 
+ORDER "WATCH"
+"WACHE";locale_de
+"WATCH";locale_en
+1;internal
+
 ORDER "COMBAT_"
 "KÄMPFE";locale_de
 "COMBAT";locale_en

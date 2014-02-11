@@ -86,7 +86,7 @@ public class BuildingType extends ConstructibleType {
    * @param type
    */
   public boolean containsRegionType(RegionType type) {
-    return (regionTypes != null) && regionTypes.containsKey(type.getID());
+    return (regionTypes == null) || regionTypes.containsKey(type.getID());
   }
 
   /**

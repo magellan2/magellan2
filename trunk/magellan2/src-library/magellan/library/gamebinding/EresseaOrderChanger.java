@@ -734,6 +734,10 @@ public class EresseaOrderChanger implements OrderChanger {
     OrderType order = getRules().getOrder(orderId);
     if (order == null)
       throw new RulesException("unknown order " + orderId);
+    if (orderLocale == null) {
+      orderLocale = Locales.getOrderLocale();
+      Logger.getInstance(this.getClass()).fine("locale null", new RuntimeException());
+    }
     String name = order.getName(orderLocale);
     if (name == null)
       throw new RulesException("no translation for " + orderId + " into " + orderLocale);
@@ -754,11 +758,18 @@ public class EresseaOrderChanger implements OrderChanger {
    */
   public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale, Unit unit) {
     if (!unit.ordersAreNull()) {
+      if (locale == null) {
+        if (Locales.getOrderLocale() != null) {
+          extractTempUnits(gdata, tempSortIndex, Locales.getOrderLocale(), unit);
+        } else
+          return tempSortIndex;
+      }
+
       TempUnit tempUnit = null;
 
       boolean foundTemp = false;
       for (Order order : unit.getOrders2()) {
-        if (isTempUnitOrder(order, unit.getOrders2(), unit)) {
+        if (isTempUnitOrder(order, unit.getOrders2(), locale)) {
           foundTemp = true;
           break;
         }
@@ -769,7 +780,7 @@ public class EresseaOrderChanger implements OrderChanger {
         Orders ordersObject = unit.getOrders2();
         for (Order line : ordersObject) {
           if (tempUnit == null) {
-            if (isTempUnitOrder(line, ordersObject, unit)) {
+            if (isTempUnitOrder(line, ordersObject, locale)) {
               try {
                 final int base = (unit.getID()).getRadix();
                 final UnitID orderTempID = UnitID.createUnitID(line.getToken(1).getText(), base);
@@ -812,12 +823,11 @@ public class EresseaOrderChanger implements OrderChanger {
     return tempSortIndex;
   }
 
-  private final boolean isTempUnitOrder(Order line, Orders ordersObject, Unit unit) {
+  private final boolean isTempUnitOrder(Order line, Orders ordersObject, Locale locale) {
     if (line.getProblem() == null && !line.isEmpty()
         && ordersObject.isToken(line, 0, EresseaConstants.OC_MAKE)) {
       if (line.getToken(1).getText().toLowerCase().startsWith(
-          getOrderTranslation(EresseaConstants.OC_TEMP, unit).toLowerCase()))
-        // if (ordersObject.isToken(line, 1, EresseaConstants.OC_TEMP)) }
+          getOrder(locale, EresseaConstants.OC_TEMP).toLowerCase()))
         return true;
     }
     return false;

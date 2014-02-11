@@ -305,6 +305,10 @@ public class AtlantisOrderChanger implements OrderChanger {
     OrderType order = getRules().getOrder(orderId);
     if (order == null)
       throw new RulesException("unknown order " + orderId);
+    if (orderLocale == null) {
+      orderLocale = Locales.getOrderLocale();
+      Logger.getInstance(this.getClass()).fine("locale null", new RuntimeException());
+    }
     String name = order.getName(orderLocale);
     if (name == null)
       throw new RulesException("no translation for " + orderId + " into " + orderLocale);

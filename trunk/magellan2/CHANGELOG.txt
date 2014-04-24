@@ -1,3 +1,6 @@
+2014-02-23 / Build 583 - stm (stm_@users.sourceforge.net)
+	* added confirmation dialog to TaskTable unacknowledge feature 
+	
 2014-02-11 / Build 581 - stm (stm_@users.sourceforge.net)
 	* improvements to TaskTable: empty/abandoned buildings and ships
 	* bugfix: Unit.newRegion() may be null

@@ -27,6 +27,7 @@ import magellan.library.Addeable;
 import magellan.library.Alliance;
 import magellan.library.AllianceGroup;
 import magellan.library.Battle;
+import magellan.library.BookmarkBuilder;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CombatSpell;
@@ -35,7 +36,6 @@ import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
-import magellan.library.HotSpot;
 import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Island;
@@ -49,6 +49,7 @@ import magellan.library.Region;
 import magellan.library.RegionResource;
 import magellan.library.Rules;
 import magellan.library.Scheme;
+import magellan.library.Selectable;
 import magellan.library.Ship;
 import magellan.library.Sign;
 import magellan.library.Skill;
@@ -566,6 +567,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       spell.setBlockID((id).intValue());
       sc.getNextToken(); // skip ZAUBER nr
 
+      BookmarkBuilder bm = null;
       while (!sc.eof) {
         if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("name")) {
           spell.setName(sc.argv[0]);
@@ -598,6 +600,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("far")) {
           spell.setIsFar(Integer.parseInt(sc.argv[0]) != 0);
           sc.getNextToken();
+        } else if (isBookmark()) {
+          bm = parseBookmark(null);
         } else if (sc.isBlock && sc.argv[0].equals("KOMPONENTEN")) {
           final Map<String, String> map = new LinkedHashMap<String, String>();
           sc.getNextToken(); // skip KOMPONENTEN
@@ -618,7 +622,12 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       if (spell.getName() == null) {
         CRParser.log.warn("found spell without name:" + spell.toString());
       } else {
-        world.addSpell(spell.construct());
+        Spell sp;
+        world.addSpell(sp = spell.construct());
+        if (bm != null) {
+          bm.setObject(sp);
+          world.addBookmark(bm.getBookmark());
+        }
       }
     }
   }
@@ -2060,8 +2069,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       }
 
       final Skill skill =
-          new Skill(world.getRules().getSkillType(StringID.create(sc.argv[1]), true), points, level,
-              unit.getPersons(), world.noSkillPoints);
+          new Skill(world.getRules().getSkillType(StringID.create(sc.argv[1]), true), points,
+              level, unit.getPersons(), world.noSkillPoints);
       skill.setChangeLevel(change);
       // skill.setLevelChanged(changed);
       unit.addSkill(skill);
@@ -2515,6 +2524,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("speed")) {
         ship.setSpeed(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if (isBookmark()) {
+        parseBookmark(ship);
       } else if ((sc.argc == 1) && sc.argv[0].equals("EFFECTS")) {
         ship.setEffects(parseStringSequence(ship.getEffects()));
       } else if ((sc.argc == 1) && sc.argv[0].equals("COMMENTS")) {
@@ -2556,7 +2567,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         bld.setTrueBuildingType(sc.argv[0]);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Typ")) {
-        final BuildingType bType = world.getRules().getBuildingType(StringID.create(sc.argv[0]), true);
+        final BuildingType bType =
+            world.getRules().getBuildingType(StringID.create(sc.argv[0]), true);
         bld.setType(bType);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Beschr")) {
@@ -2582,6 +2594,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Belagerer")) {
         bld.setBesiegers(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if (isBookmark()) {
+        parseBookmark(bld);
       } else if ((sc.argc == 1) && sc.argv[0].equals("EFFECTS")) {
         bld.setEffects(parseStringSequence(bld.getEffects()));
       } else if ((sc.argc == 1) && sc.argv[0].equals("COMMENTS")) {
@@ -2594,6 +2608,24 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         unknown("BURG", true);
       }
     }
+  }
+
+  protected BookmarkBuilder parseBookmark(Selectable object) throws IOException {
+    BookmarkBuilder bm = MagellanFactory.createBookmark();
+    sc.getNextToken();
+    if (sc.argc == 2 && sc.argv[1].equalsIgnoreCase("bookmarkname")) {
+      bm.setName(sc.argv[0]);
+      sc.getNextToken();
+    }
+    if (object != null) {
+      bm.setObject(object);
+      world.addBookmark(bm.getBookmark());
+    }
+    return bm;
+  }
+
+  private boolean isBookmark() {
+    return sc.argc == 2 && sc.argv[1].equalsIgnoreCase("bookmark");
   }
 
   /**
@@ -2703,15 +2735,19 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   private void parseHotSpot(GameData data) throws IOException {
     final IntegerID id = IntegerID.create(sc.argv[0].substring(8));
-    final HotSpot h = MagellanFactory.createHotSpot(id);
+    // HotSpots have been replaced by Bookmarks
+    log.warn("replacing obsolete HOTSPOT by bookmark");
+    BookmarkBuilder bookmark = MagellanFactory.createBookmark();
     sc.getNextToken(); // skip the block
 
     while (!sc.eof) {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("coord")) {
-        h.setCenter(originTranslate(CoordinateID.parse(sc.argv[0], " ")));
+        bookmark.setObject(MagellanFactory.createRegion(originTranslate(CoordinateID.parse(
+            sc.argv[0], " ")), data));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("name")) {
-        h.setName(sc.argv[0]);
+        // ignore
+        bookmark.setName(sc.argv[0]);
         sc.getNextToken();
       } else if (sc.isBlock) {
         break;
@@ -2720,7 +2756,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       }
     }
 
-    data.setHotSpot(h);
+    data.addBookmark(bookmark.getBookmark());
   }
 
   /*
@@ -2941,6 +2977,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("visibility")) {
         region.setVisibilityString(sc.argv[0]);
         sc.getNextToken();
+      } else if (isBookmark()) {
+        parseBookmark(region);
       } else if (sc.isBlock && sc.argv[0].equals("PREISE")) {
         region.setPrices(parsePrices(region.getPrices()));
       } else if (sc.isBlock && sc.argv[0].equals("LETZTEPREISE")) {
@@ -4304,7 +4342,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         @Override
         public void handle(Region region) throws IOException {
           try {
-            final RegionType type = world.getRules().getRegionType(StringID.create(sc.argv[0]), true);
+            final RegionType type =
+                world.getRules().getRegionType(StringID.create(sc.argv[0]), true);
             region.setType(type);
           } catch (final IllegalArgumentException e) {
             // can happen in StringID constructor if sc.argv[0] == ""
@@ -4401,6 +4440,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       regionParser.addBeanHandler("Stein", "stones", Type.INTEGER);
       regionParser.addBeanHandler("letztesteine", "oldStones", Type.INTEGER);
       regionParser.addBeanHandler("visibility", "visibilityString", Type.STRING);
+      // TODO Bookmarks
 
       regionParser.addBlockHandler("PREISE", new RegionTagHandler(regionParser) {
         @Override

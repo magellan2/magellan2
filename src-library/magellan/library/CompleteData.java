@@ -13,6 +13,7 @@
 
 package magellan.library;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -53,8 +54,10 @@ public class CompleteData extends GameData {
       .<StringID, Spell> createSyncOrderedMap();
   protected Map<IntegerID, Potion> potions = CollectionFactory
       .<IntegerID, Potion> createSyncOrderedMap();
-  protected Map<IntegerID, HotSpot> hotSpots = CollectionFactory
-      .<IntegerID, HotSpot> createSyncOrderedMap();
+  // protected Map<IntegerID, HotSpot> hotSpots = CollectionFactory
+  // .<IntegerID, HotSpot> createSyncOrderedMap();
+  private Map<Object, Bookmark> bookmarks = CollectionFactory.createOrderedMap();
+
   protected Translations translations = new Translations();
   protected Locale locale = null;
   protected Map<CoordinateID, Region> selectedRegions = new TreeMap<CoordinateID, Region>();
@@ -116,13 +119,13 @@ public class CompleteData extends GameData {
     }
   }
 
-  @Override
-  public void addHotSpot(HotSpot h) {
-    hotSpots.put(h.getID(), h);
-  }
+  // @Override
+  // public void addHotSpot(HotSpot h) {
+  // hotSpots.put(h.getID(), h);
+  // }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.GameData#translations()
    */
   @Override
   public Translations translations() {
@@ -130,7 +133,7 @@ public class CompleteData extends GameData {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.GameData#setLocale(java.util.Locale)
    */
   @Override
   public void setLocale(Locale l) {
@@ -138,7 +141,7 @@ public class CompleteData extends GameData {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.GameData#getLocale()
    */
   @Override
   public Locale getLocale() {
@@ -188,13 +191,13 @@ public class CompleteData extends GameData {
     return factions;
   }
 
-  /**
-   * @see magellan.library.GameData#hotSpotView()
-   */
-  @Override
-  protected Map<IntegerID, HotSpot> hotSpotView() {
-    return hotSpots;
-  }
+  // /**
+  // * @see magellan.library.GameData#hotSpotView()
+  // */
+  // @Override
+  // protected Map<IntegerID, HotSpot> hotSpotView() {
+  // return hotSpots;
+  // }
 
   /**
    * @see magellan.library.GameData#islandView()
@@ -263,6 +266,26 @@ public class CompleteData extends GameData {
   @Override
   protected Map<UnitID, Unit> oldUnitsView() {
     return oldUnits;
+  }
+
+  @Override
+  public void addBookmark(Bookmark bookmark) {
+    bookmarks.put(bookmark.getObject(), bookmark);
+  }
+
+  @Override
+  public Bookmark getBookmark(Selectable selection) {
+    return bookmarks.get(selection);
+  }
+
+  @Override
+  public Collection<Bookmark> getBookmarks() {
+    return Collections.unmodifiableCollection(bookmarks.values());
+  }
+
+  @Override
+  public void removeBookmark(Selectable selection) {
+    bookmarks.remove(selection);
   }
 
 }

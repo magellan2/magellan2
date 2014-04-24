@@ -46,7 +46,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
@@ -64,12 +63,14 @@ import magellan.library.Named;
 import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.RegionResource;
+import magellan.library.Selectable;
 import magellan.library.Ship;
 import magellan.library.TempUnit;
 import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.event.GameDataEvent;
+import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
@@ -437,6 +438,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     JButton bookmarkResults = new JButton(Resources.get("finddialog.btn.bookmark"));
     bookmarkResults.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         for (int i = 0; i < resultList.getModel().getSize(); i++) {
           Object o = resultList.getModel().getElementAt(i);
 
@@ -445,9 +447,12 @@ public class FindDialog extends InternationalizedDataDialog implements
           } else if (o instanceof UnitWrapper) {
             o = ((UnitWrapper) o).getUnit();
           }
-
-          ((Client) FindDialog.this.getOwner()).getBookmarkManager().addBookmark(o);
+          if (o instanceof Selectable) {
+            data.addBookmark(MagellanFactory.createBookmark((Selectable) o));
+          }
         }
+        dispatcher.fire(new GameDataEvent(this, data, false));
+        setCursor(Cursor.getDefaultCursor());
       }
     });
     pnlResults = new JPanel(new BorderLayout());
@@ -609,8 +614,8 @@ public class FindDialog extends InternationalizedDataDialog implements
               items.add(u);
             }
 
-            for (Iterator<TempUnit> iterator = u.tempUnits().iterator(); iterator.hasNext();) {
-              Unit tu = iterator.next();
+            for (TempUnit tempUnit : u.tempUnits()) {
+              Unit tu = tempUnit;
 
               if (!tu.isOrdersConfirmed()) {
                 items.add(tu);

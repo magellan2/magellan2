@@ -1030,6 +1030,22 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     });
     bookmarks.add(clear);
 
+    JMenuItem save = new JMenuItem(Resources.get("client.menu.bookmarks.save.caption"));
+    save.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        bookmarkManager.saveBookmarks();
+      }
+    });
+    bookmarks.add(save);
+
+    JMenuItem load = new JMenuItem(Resources.get("client.menu.bookmarks.load.caption"));
+    load.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        bookmarkManager.loadBookmarks();
+      }
+    });
+    bookmarks.add(load);
+
     return bookmarks;
   }
 

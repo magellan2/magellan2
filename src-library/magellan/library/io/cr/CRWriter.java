@@ -26,6 +26,7 @@ import magellan.library.Addeable;
 import magellan.library.Alliance;
 import magellan.library.AllianceGroup;
 import magellan.library.Battle;
+import magellan.library.Bookmark;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CombatSpell;
@@ -34,7 +35,6 @@ import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
-import magellan.library.HotSpot;
 import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Island;
@@ -46,6 +46,7 @@ import magellan.library.Potion;
 import magellan.library.Region;
 import magellan.library.RegionResource;
 import magellan.library.Scheme;
+import magellan.library.Selectable;
 import magellan.library.Ship;
 import magellan.library.Sign;
 import magellan.library.Skill;
@@ -444,7 +445,6 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeVersion(GameData world) throws IOException {
-    // write("VERSION 65");
     write("VERSION " + world.version);
     newLine();
 
@@ -588,6 +588,10 @@ public class CRWriter extends BufferedWriter {
 
     if (spell.getSyntax() != null) {
       writeQuotedTag(spell.getSyntax(), "syntax");
+    }
+
+    if (!serverConformance && exportHotspots) {
+      writeBookmark(spell);
     }
 
     writeSpellComponents(spell.getComponents());
@@ -810,6 +814,17 @@ public class CRWriter extends BufferedWriter {
 
     newLine();
     writeMessages(battle.messages());
+  }
+
+  protected void writeBookmark(Selectable selection) throws IOException {
+    Bookmark bookmark = world.getBookmark(selection);
+    if (bookmark != null) {
+      write("1;bookmark");
+      newLine();
+      if (bookmark.getName() != null) {
+        writeQuotedTag(bookmark.getName(), "bookmarkname");
+      }
+    }
   }
 
   /**
@@ -1093,7 +1108,8 @@ public class CRWriter extends BufferedWriter {
     // newLine();
     // }
 
-    if (!serverConformance) {
+    if (!serverConformance && exportHotspots) {
+      writeBookmark(ship);
       writeAttributes(ship);
     }
 
@@ -1176,7 +1192,8 @@ public class CRWriter extends BufferedWriter {
       newLine();
     }
 
-    if (!serverConformance) {
+    if (!serverConformance && exportHotspots) {
+      writeBookmark(building);
       writeAttributes(building);
     }
 
@@ -1563,6 +1580,10 @@ public class CRWriter extends BufferedWriter {
     if (unit.getSiege() != null) {
       write(unit.getSiege().getID().intValue() + ";belagert");
       newLine();
+    }
+
+    if (!serverConformance && exportHotspots) {
+      writeBookmark(unit);
     }
 
     if (getIncludeUnitDetails() && unit.hasTags()) {
@@ -1965,6 +1986,10 @@ public class CRWriter extends BufferedWriter {
         writeQuotedTag(region.getVisibilityString(), "visibility");
       }
 
+      if (!serverConformance && exportHotspots) {
+        writeBookmark(region);
+      }
+
       writeRegionResources(region.resources());
       writePrices(region.getPrices());
 
@@ -2280,10 +2305,10 @@ public class CRWriter extends BufferedWriter {
         writeAttributes(world);
       }
 
-      if (!serverConformance && exportHotspots) {
-        ui.setProgress(Resources.get("crwriterdialog.progress.02"), 2);
-        writeHotSpots(world.getHotSpots());
-      }
+      // if (!serverConformance && exportHotspots) {
+      // ui.setProgress(Resources.get("crwriterdialog.progress.02"), 2);
+      // writeHotSpots(world.getHotSpots());
+      // }
 
       // this assumes that if somebody doesn't write units
       // also factions aren't necessary; maybe this needs further
@@ -2695,39 +2720,40 @@ public class CRWriter extends BufferedWriter {
       writeQuotedTag(island.getDescription(), "Beschr");
     }
 
-    if (!serverConformance) {
+    if (!serverConformance && exportHotspots) {
+      writeBookmark(island);
       writeAttributes(island);
     }
   }
 
-  /**
-   * Write a sequence of hot spot blocks to the underlying stream.
-   * 
-   * @throws IOException If an I/O error occurs.
-   */
-  public void writeHotSpots(Collection<HotSpot> hotSpots) throws IOException {
-    if (hotSpots == null)
-      return;
-
-    for (HotSpot hotSpot : hotSpots) {
-      write(hotSpot);
-    }
-  }
-
-  /**
-   * Write the cr representation of a hot spot to the underlying stream.
-   * 
-   * @throws IOException If an I/O error occurs.
-   */
-  public void write(HotSpot h) throws IOException {
-    if (h == null)
-      return;
-
-    write("HOTSPOT " + h.getID().toString(" "));
-    newLine();
-    writeQuotedTag(h.getName(), "name");
-    writeQuotedTag(h.getCenter().toString(" "), "coord");
-  }
+  // /**
+  // * Write a sequence of hot spot blocks to the underlying stream.
+  // *
+  // * @throws IOException If an I/O error occurs.
+  // */
+  // public void writeHotSpots(Collection<HotSpot> hotSpots) throws IOException {
+  // if (hotSpots == null)
+  // return;
+  //
+  // for (HotSpot hotSpot : hotSpots) {
+  // write(hotSpot);
+  // }
+  // }
+  //
+  // /**
+  // * Write the cr representation of a hot spot to the underlying stream.
+  // *
+  // * @throws IOException If an I/O error occurs.
+  // */
+  // public void write(HotSpot h) throws IOException {
+  // if (h == null)
+  // return;
+  //
+  // write("HOTSPOT " + h.getID().toString(" "));
+  // newLine();
+  // writeQuotedTag(h.getName(), "name");
+  // writeQuotedTag(h.getCenter().toString(" "), "coord");
+  // }
 
   private Collection<Region> regions = null;
 

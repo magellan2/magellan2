@@ -28,6 +28,9 @@ import java.util.Map;
 
 import magellan.library.AllianceGroup;
 import magellan.library.Battle;
+import magellan.library.Bookmark;
+import magellan.library.Bookmark.BookmarkType;
+import magellan.library.BookmarkBuilder;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CombatSpell;
@@ -37,14 +40,15 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Group;
-import magellan.library.HotSpot;
 import magellan.library.IntegerID;
 import magellan.library.Island;
 import magellan.library.Message;
+import magellan.library.Named;
 import magellan.library.Potion;
 import magellan.library.Region;
 import magellan.library.Region.Visibility;
 import magellan.library.Scheme;
+import magellan.library.Selectable;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Spell;
@@ -57,12 +61,12 @@ import magellan.library.ZeroUnit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.impl.MagellanBattleImpl;
+import magellan.library.impl.MagellanBookmarkBuilder;
 import magellan.library.impl.MagellanBorderImpl;
 import magellan.library.impl.MagellanBuildingImpl;
 import magellan.library.impl.MagellanCombatSpellImpl;
 import magellan.library.impl.MagellanFactionImpl;
 import magellan.library.impl.MagellanGroupImpl;
-import magellan.library.impl.MagellanHotSpotImpl;
 import magellan.library.impl.MagellanIslandImpl;
 import magellan.library.impl.MagellanMessageImpl;
 import magellan.library.impl.MagellanPotionImpl;
@@ -121,7 +125,8 @@ public abstract class MagellanFactory {
   }
 
   /** Creates a new Message */
-  public static Message createMessage(IntegerID id, MessageType type, Map<String, String> attributes) {
+  public static Message
+      createMessage(IntegerID id, MessageType type, Map<String, String> attributes) {
     return new MagellanMessageImpl(id, type, attributes);
   }
 
@@ -212,10 +217,10 @@ public abstract class MagellanFactory {
     return new MagellanCombatSpellImpl(id);
   }
 
-  /** Creates a new HotSpot */
-  public static HotSpot createHotSpot(IntegerID id) {
-    return new MagellanHotSpotImpl(id);
-  }
+  // /** Creates a new HotSpot */
+  // public static HotSpot createHotSpot(IntegerID id) {
+  // return new MagellanHotSpotImpl(id);
+  // }
 
   /** Creates a new Island */
   public static Island createIsland(IntegerID id, GameData data) {
@@ -309,7 +314,8 @@ public abstract class MagellanFactory {
    * @deprecated Use {@link GameDataMerger#mergePotion(GameData,Potion,GameData,Potion)} instead
    */
   @Deprecated
-  public static void mergePotion(GameData curGD, Potion curPotion, GameData newGD, Potion newPotion) {
+  public static void
+      mergePotion(GameData curGD, Potion curPotion, GameData newGD, Potion newPotion) {
     GameDataMerger.mergePotion(curGD, curPotion, newGD, newPotion);
   }
 
@@ -348,17 +354,18 @@ public abstract class MagellanFactory {
     GameDataMerger.mergeCombatSpell(curGD, curCS, newGD, newCS);
   }
 
-  /**
-   * Merges two HotSpot objects.
-   * 
-   * @deprecated Use
-   *             {@link GameDataMerger#mergeHotSpot(GameData, HotSpot, GameData, HotSpot, magellan.library.utils.transformation.ReportTransformer)}
-   *             instead
-   */
-  @Deprecated
-  public static void mergeHotSpot(GameData curGD, HotSpot curHS, GameData newGD, HotSpot newHS) {
-    GameDataMerger.mergeHotSpot(curGD, curHS, newGD, newHS, null);
-  }
+  // /**
+  // * Merges two HotSpot objects.
+  // *
+  // * @deprecated Use
+  // * {@link GameDataMerger#mergeHotSpot(GameData, HotSpot, GameData, HotSpot,
+  // magellan.library.utils.transformation.ReportTransformer)}
+  // * instead
+  // */
+  // @Deprecated
+  // public static void mergeHotSpot(GameData curGD, HotSpot curHS, GameData newGD, HotSpot newHS) {
+  // GameDataMerger.mergeHotSpot(curGD, curHS, newGD, newHS, null);
+  // }
 
   /**
    * Merges all info from curRegion into newRegion. The result is influenced by the
@@ -389,7 +396,8 @@ public abstract class MagellanFactory {
    * @deprecated Use {@link GameDataMerger#mergeScheme(GameData,Scheme,GameData,Scheme)} instead
    */
   @Deprecated
-  public static void mergeScheme(GameData curGD, Scheme curScheme, GameData newGD, Scheme newScheme) {
+  public static void
+      mergeScheme(GameData curGD, Scheme curScheme, GameData newGD, Scheme newScheme) {
     GameDataMerger.mergeScheme(curGD, curScheme, newGD, newScheme);
   }
 
@@ -635,6 +643,57 @@ public abstract class MagellanFactory {
   public static void mergeAlliance(GameData curGD, AllianceGroup curAlliance, GameData newGD,
       AllianceGroup newAlliance) {
     GameDataMerger.mergeAlliance(curGD, curAlliance, newGD, newAlliance);
+  }
+
+  public static BookmarkBuilder createBookmark() {
+    return new MagellanBookmarkBuilder();
+  }
+
+  public static Bookmark createBookmark(Selectable o) {
+    String name = null;
+    if (o instanceof Named) {
+      name = ((Named) o).getName();
+    }
+    return new MagellanBookmarkBuilder.BookmarkImpl(o, name);
+  }
+
+  public static Bookmark createBookmark(GameData data, String type, String id, String name) {
+    BookmarkType btype = BookmarkType.valueOf(type);
+    Selectable object = null;
+    switch (btype) {
+    case REGION:
+      object = data.getRegion(CoordinateID.parse(id, ","));
+
+      break;
+    case UNIT:
+      object = data.getUnit(UnitID.createUnitID(id, data.base));
+
+      break;
+    case BUILDING:
+      object = data.getBuilding(EntityID.createEntityID(id, data.base));
+
+      break;
+    case ISLAND:
+      object = data.getIsland(IntegerID.create(id));
+
+      break;
+    case SHIP:
+      object = data.getShip(EntityID.createEntityID(id, data.base));
+
+      break;
+    case SPELL:
+      object = data.getSpell(StringID.create(id));
+
+      break;
+    default:
+
+      break;
+    }
+
+    if (object != null)
+      return new MagellanBookmarkBuilder.BookmarkImpl(object, name);
+    else
+      return new MagellanBookmarkBuilder.BookmarkImpl(BookmarkType.UNKNOWN);
   }
 
 }

@@ -72,13 +72,13 @@ public class EmptyData extends GameData {
     locale = data.getLocale();
   }
 
-  /**
-   * @see magellan.library.GameData#addHotSpot(magellan.library.HotSpot)
-   */
-  @Override
-  public void addHotSpot(HotSpot h) {
-    throw new UnsupportedOperationException("cannot add to EmptyData");
-  }
+  // /**
+  // * @see magellan.library.GameData#addHotSpot(magellan.library.HotSpot)
+  // */
+  // @Override
+  // public void addHotSpot(HotSpot h) {
+  // throw new UnsupportedOperationException("cannot add to EmptyData");
+  // }
 
   /**
    * @see magellan.library.GameData#addSelectedRegionCoordinate(magellan.library.Region)
@@ -136,13 +136,13 @@ public class EmptyData extends GameData {
     return Collections.emptyMap();
   }
 
-  /**
-   * @see magellan.library.GameData#hotSpotView()
-   */
-  @Override
-  protected Map<IntegerID, HotSpot> hotSpotView() {
-    return Collections.emptyMap();
-  }
+  // /**
+  // * @see magellan.library.GameData#hotSpotView()
+  // */
+  // @Override
+  // protected Map<IntegerID, HotSpot> hotSpotView() {
+  // return Collections.emptyMap();
+  // }
 
   /**
    * @see magellan.library.GameData#islandView()
@@ -406,6 +406,26 @@ public class EmptyData extends GameData {
   @Override
   protected Map<UnitID, Unit> oldUnitsView() {
     return Collections.emptyMap();
+  }
+
+  @Override
+  public void addBookmark(Bookmark bookmark) {
+    // nothing to do
+  }
+
+  @Override
+  public Bookmark getBookmark(Selectable selection) {
+    return null;
+  }
+
+  @Override
+  public Collection<Bookmark> getBookmarks() {
+    return Collections.emptyList();
+  }
+
+  @Override
+  public void removeBookmark(Selectable selection) {
+    // NOP
   }
 
 }

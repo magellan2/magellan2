@@ -321,6 +321,9 @@ public class PropertiesHelper {
   /** Property type boolean: hide temp unit buttons */
   public static final String ORDEREDITOR_HIDEBUTTONS = "OrderEditor.hideButtons";
 
+  /** Property type String: last file for loading/saving bookmarks */
+  public static final String BOOKMARKMANAGER_LASTFILE = "Bookmarkmanager.lastFile";
+
   /**
    * Searches the property with the given key and if it exists, it tries to convert it into a
    * boolean and returns that value. If something goes wrong or the key couldn't be found the

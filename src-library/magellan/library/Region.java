@@ -19,7 +19,7 @@ import magellan.library.utils.Direction;
 /**
  * Represents a region of a report.
  */
-public interface Region extends UnitContainer {
+public interface Region extends UnitContainer, Selectable {
 
   /** The invalid region ID */
   static final long INVALID_UID = Integer.MIN_VALUE + 1;

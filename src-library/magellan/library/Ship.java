@@ -21,7 +21,7 @@ import magellan.library.rules.ShipType;
  * @author $Author: $
  * @version $Revision: 389 $
  */
-public interface Ship extends UnitContainer, HasRegion {
+public interface Ship extends UnitContainer, HasRegion, Selectable {
 
   /**
    * Sets the region this ship is in and notifies region about it.

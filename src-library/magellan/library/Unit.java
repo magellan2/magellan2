@@ -39,7 +39,7 @@ import magellan.library.utils.guiwrapper.CacheableOrderEditor;
  * @author $Author: $
  * @version $Revision: 389 $
  */
-public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
+public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Selectable {
   /**
    * The unit does not possess horses.
    * 

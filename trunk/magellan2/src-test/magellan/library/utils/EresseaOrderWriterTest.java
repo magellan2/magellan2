@@ -112,6 +112,7 @@ public class EresseaOrderWriterTest extends OrderWriterTest {
     unit.addOrder("; hello");
     unit.addOrder("// hello");
     unit.addOrder("hello");
+    orderWriter.setRemoveComments(false, false);
     orderWriter.writeOrders(unit.getOrders2(), bwriter);
     assertLines(true, "; hello", "// hello", "hello");
   }

@@ -96,6 +96,7 @@ import magellan.client.swing.tree.UnitNodeWrapper;
 import magellan.client.utils.SelectionHistory;
 import magellan.client.utils.TreeBuilder;
 import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
 import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -1884,10 +1885,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         for (int factionCount = 1; factionCount < privilegedFactions.size(); factionCount++) {
           Faction f = privilegedFactions.get(factionCount);
 
-          if (!f.getAllies().containsKey(id)) {
+          if (f.getAllies() == null || !f.getAllies().containsKey(id)) {
             // mark this alliances as to be deleted out of activeAlliances
             delEntry = true;
-
             break;
           } else {
             Alliance a1 = activeAlliances.get(id);
@@ -1899,6 +1899,33 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         if (delEntry) {
           delEntry = false;
           iter.remove();
+        }
+      }
+    }
+
+    // if all factions are in one E3 type alliance,
+    AllianceGroup commonAlliance = privilegedFactions.get(0).getAlliance();
+    for (Faction f : privilegedFactions) {
+      if (f.getAlliance() == null || f.getAlliance() != commonAlliance) {
+        commonAlliance = null;
+        break;
+      }
+    }
+
+    // ... add all alliance factions with HELP Combat
+    for (Faction f : privilegedFactions) {
+      if (commonAlliance != null) {
+        for (ID allyId : commonAlliance.getFactions()) {
+          Alliance a1 = activeAlliances.get(allyId);
+          Faction f2 = f.getData().getFaction(allyId);
+          if (f2 != null) {
+            if (a1 == null) {
+              activeAlliances.put(f2.getID(), new Alliance(f2, EresseaConstants.A_COMBAT));
+            } else {
+              activeAlliances.put(f2.getID(), new Alliance(f2, a1.getState()
+                  | EresseaConstants.A_COMBAT));
+            }
+          }
         }
       }
     }

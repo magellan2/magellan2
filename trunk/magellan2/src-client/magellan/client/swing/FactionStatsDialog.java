@@ -298,18 +298,20 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
                     || (dummy.getAlliance() != null && dummy.getAlliance().getFactions().contains(
                         f.getID()))) {
                   msgArgs = new Object[] { f, dummy };
-                }
-                if (dummy.getGroups() != null) {
+                } else if (dummy.getGroups() != null) {
                   for (Group group : dummy.getGroups().values()) {
                     if (group.allies() != null && group.allies().containsKey(f.getID())) {
                       msgArgs = new Object[] { f, dummy };
+                      break;
                     }
                   }
                 }
-                JOptionPane.showMessageDialog(d, (new java.text.MessageFormat(Resources
-                    .get("factionstatsdialog.msg.factionisallied.text"))).format(msgArgs));
-                veto = true;
-                break;
+                if (msgArgs != null) {
+                  JOptionPane.showMessageDialog(d, (new java.text.MessageFormat(Resources
+                      .get("factionstatsdialog.msg.factionisallied.text"))).format(msgArgs));
+                  veto = true;
+                  break;
+                }
               }
             }
           }

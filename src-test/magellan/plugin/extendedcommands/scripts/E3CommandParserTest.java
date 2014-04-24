@@ -92,41 +92,41 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     return unit2.getOrders().contains(string);
   }
 
-  protected void assertComment(Unit u, int number, boolean shortComment, boolean longComment) {
-    assertTrue("expected comment, but not enough orders", u.getOrders2().size() > number);
-    String actual = u.getOrders2().get(number).getText();
+  protected void assertComment(Unit u, int lineNr, boolean shortComment, boolean longComment) {
+    assertTrue("expected comment, but not enough orders", u.getOrders2().size() > lineNr);
+    String actual = u.getOrders2().get(lineNr).getText();
     assertTrue("no long comment: " + actual, !longComment || actual.startsWith("// "));
     assertTrue("no short comment: " + actual, !shortComment || actual.startsWith(";"));
   }
 
-  protected void assertOrder(String expected, Unit u, int number) {
-    assertTrue("expected " + expected + ", but not enough orders", u.getOrders2().size() > number);
-    String actual = u.getOrders2().get(number).getText();
+  protected void assertOrder(String expected, Unit u, int lineNr) {
+    assertTrue("expected " + expected + ", but not enough orders", u.getOrders2().size() > lineNr);
+    String actual = u.getOrders2().get(lineNr).getText();
     if (!(actual.startsWith(expected) && (actual.length() == expected.length() || actual.substring(
         expected.length()).trim().startsWith(";")))) {
       assertEquals(expected, actual);
     }
   }
 
-  protected void assertError(String expected, Unit u, int number) {
-    assertError(expected, u, number, "; TODO", "(Fehler");
+  protected void assertError(String expected, Unit u, int lineNr) {
+    assertError(expected, u, lineNr, "; TODO", "(Fehler");
   }
 
-  protected void assertWarning(String expected, Unit u, int number) {
-    assertError(expected, u, number, "; TODO", "");
+  protected void assertWarning(String expected, Unit u, int lineNr) {
+    assertError(expected, u, lineNr, "; TODO", "");
   }
 
-  protected void assertError(String expected, Unit u, int number, String prefix, String warning) {
+  protected void assertError(String expected, Unit u, int lineNr, String prefix, String warning) {
     assertTrue("expected order \"" + expected + "\", but not enough orders",
-        u.getOrders2().size() > number);
-    String actual = u.getOrders2().get(number).getText();
+        u.getOrders2().size() > lineNr);
+    String actual = u.getOrders2().get(lineNr).getText();
     if (!(actual.contains(expected) && actual.startsWith(prefix) && actual.contains(warning))) {
       assertEquals("; TODO: " + expected + " " + warning, actual);
     }
   }
 
-  protected void assertMessage(String expected, Unit u, int number) {
-    assertError(expected, u, number, "; ", "");
+  protected void assertMessage(String expected, Unit u, int lineNr) {
+    assertError(expected, u, lineNr, "; ", "");
   }
 
   /**
@@ -871,6 +871,60 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB v 4 Silber", unit, 3);
     assertMessage("braucht 2 mehr Silber", unit, 4);
     assertOrder("RESERVIEREN 2 Silber", unit, 5);
+
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
+   */
+  @Test
+  public final void testCommandBenoetigeFremdLUXUS() {
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    Unit unit3 = builder.addUnit(data, "lag", "Lager", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit, "Balsam", 6);
+    builder.addItem(data, unit, "Elfenlieb", 7);
+    builder.addItem(data, unit, "Silber", 9);
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit.addOrder("// $cript BenoetigeFremd v KRAUT 91");
+    parser.execute(unit.getFaction());
+
+    assertEquals(0, unit2.getOrders2().size());
+    assertEquals(0, unit3.getOrders2().size());
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("GIB v 7 Elfenlieb", unit, 2);
+
+    builder.addItem(data, unit3, "Elfenlieb", 3);
+    builder.addItem(data, unit3, "Schneekristall", 4);
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit.addOrder("// $cript BenoetigeFremd v KRAUT 91");
+    parser.execute(unit.getFaction());
+
+    assertEquals(0, unit2.getOrders2().size());
+    assertEquals(2, unit3.getOrders2().size());
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("GIB v 7 Elfenlieb", unit, 2);
+    assertOrder("GIB v 3 Elfenlieb", unit3, 0);
+    assertOrder("GIB v 4 Schneekristall", unit3, 1);
+
+    builder.addItem(data, unit3, "Balsam", 3);
+    builder.addItem(data, unit, "Balsam", 4);
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit.addOrder("// $cript Benoetige LUXUS 90");
+    unit.addOrder("// $cript BenoetigeFremd v LUXUS 91");
+    parser.execute(unit.getFaction());
+
+    assertEquals(0, unit2.getOrders2().size());
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("GIB v 4 Balsam", unit, 3);
+    assertEquals(1, unit3.getOrders2().size());
+    assertOrder("GIB v 3 Balsam", unit3, 0);
 
   }
 

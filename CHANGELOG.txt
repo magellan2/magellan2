@@ -1,3 +1,8 @@
+2014-04-22 / Build 585 - stm (stm_@users.sourceforge.net)
+	* fixed NPE in EMapOverview; fixed bug that prevented deletion of factions
+	* E3CommandParser: add Benoetige LUXUS
+	* display completeness of roads in EmapOverview 
+	
 2014-02-23 / Build 583 - stm (stm_@users.sourceforge.net)
 	* added confirmation dialog to TaskTable unacknowledge feature 
 	

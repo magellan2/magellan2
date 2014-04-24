@@ -19,6 +19,8 @@ import java.util.List;
  * Container class for a region border based on its representation in a cr version > 45.
  */
 public interface Border extends Identifiable {
+  /** @deprecated should use EresseaConstants */
+  @Deprecated
   StringID STRASSE = StringID.create("STRASSE");
 
   /**

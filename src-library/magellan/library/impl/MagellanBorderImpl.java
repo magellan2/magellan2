@@ -73,25 +73,36 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
    */
   @Override
   public String toString() {
-    // FIXME!
-    String name = type + ": ";
+    // FIXME should localize, but don't have rules here!
+    StringBuilder name = new StringBuilder(type + ": ");
     switch (getDirection()) {
     case 0:
-      return name + "NW";
+      name.append("NW");
+      break;
     case 1:
-      return name + "NE";
+      name.append("NE");
+      break;
     case 2:
-      return name + "E";
+      name.append("E");
+      break;
     case 3:
-      return name + "SE";
+      name.append("SE");
+      break;
     case 4:
-      return name + "SW";
+      name.append("SW");
+      break;
     case 5:
-      return name + "W";
+      name.append("W");
+      break;
 
     default:
-      return name + getDirection();
+      name.append(getDirection());
     }
+
+    if (getBuildRatio() >= 0 && getBuildRatio() != 100) {
+      name.append(" (").append(getBuildRatio()).append("%)");
+    }
+    return name.toString();
   }
 
   public int getBuildRatio() {

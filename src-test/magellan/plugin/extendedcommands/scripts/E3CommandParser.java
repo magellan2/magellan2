@@ -484,8 +484,8 @@ public class E3CommandParser {
    * <code>// $cript [rest [period [length]] text</code> -- Adds text (or commands) to the orders<br />
    * <code>// $cript auto [NICHT]|[length [period]]</code> -- autoconfirm orders<br />
    * <code>// $cript Loeschen [$kurz] [<prefix>]</code> -- clears orders except comments<br />
-   * <code>// $cript GibWenn receiver [JE] amount item [warning]</code> -- add give order (if
-   * possible)<br />
+   * <code>// $cript GibWenn receiver [[JE] amount|ALLES|KRAUT|LUXUS|TRANK] [item] [warning...]</code>
+   * -- add give order (if possible)<br />
    * <code>// $cript Benoetige minAmount [maxAmount] item [priority]</code><br />
    * <code>// $cript Benoetige JE amount item [priority]</code><br />
    * <code>// $cript Benoetige ALLES [item] [priority]</code> -- acquire things from other units<br />
@@ -1129,9 +1129,22 @@ public class E3CommandParser {
         if (world.getRules().getItemCategory("herbs") == null) {
           addNewError("Spiel kennt keine Kräuter");
         } else {
-          for (Item item : currentUnit.getItems()) {
-            if (world.getRules().getItemCategory("herbs").equals(item.getItemType().getCategory())) {
-              addNeed(item.getOrderName(), unit, 0, Integer.MAX_VALUE, priority, w);
+          for (ItemType itemType : world.getRules().getItemTypes()) { // currentUnit.getItems()
+            if (world.getRules().getItemCategory("herbs").equals(itemType.getCategory())) {
+              addNeed(itemType.getOrderName(), unit, 0, Integer.MAX_VALUE, priority, w);
+            }
+          }
+        }
+      } else if (LUXUSOrder.equals(tokens[1])) {
+        if (tokens.length > 2) {
+          addNewError("zu viele Parameter");
+        }
+        if (world.getRules().getItemCategory("luxuries") == null) {
+          addNewError("Spiel kennt keine Luxusgüter");
+        } else {
+          for (ItemType itemType : world.getRules().getItemTypes()) { // currentUnit.getItems()
+            if (world.getRules().getItemCategory("luxuries").equals(itemType.getCategory())) {
+              addNeed(itemType.getOrderName(), unit, 0, Integer.MAX_VALUE, priority, w);
             }
           }
         }

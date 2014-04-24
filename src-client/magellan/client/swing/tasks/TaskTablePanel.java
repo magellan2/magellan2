@@ -515,6 +515,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   }
 
   protected void unAcknowledge() {
+    if ((JOptionPane.showConfirmDialog(this, Resources.get("tasks.confirmunacknowledge.message"))) != JOptionPane.YES_OPTION)
+      // cancel
+      return;
+
     Window w = SwingUtilities.getWindowAncestor(this);
     final ProgressBarUI progressUI = new ProgressBarUI((JFrame) (w instanceof JFrame ? w : null));
     progressUI.setTitle(Resources.get("tasks.progressbar.unack.title"));

@@ -26,7 +26,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -43,11 +42,12 @@ import magellan.client.swing.MapperPanel;
 import magellan.client.swing.map.MapCellRenderer;
 import magellan.client.swing.map.Mapper;
 import magellan.client.swing.map.RenderingPlane;
+import magellan.library.Bookmark;
+import magellan.library.BookmarkBuilder;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
-import magellan.library.HotSpot;
-import magellan.library.IntegerID;
 import magellan.library.Region;
+import magellan.library.Selectable;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
@@ -333,27 +333,27 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
    */
   private void updateJumpToHotSpot() {
     jumpToHotSpot.removeAll();
-    if (data != null && data.getHotSpots() != null && data.getHotSpots().size() > 0) {
+    if (data != null && data.getBookmarks().size() > 0) {
       jumpToHotSpot.setEnabled(true);
-      for (HotSpot h : data.getHotSpots()) {
-        JMenuItem levelSign = new JMenuItem(h.getName());
-        levelSign.setActionCommand(h.getID().toString());
-        levelSign.addActionListener(new ActionListener() {
+      for (Bookmark h : data.getBookmarks()) {
+        JMenuItem bookmarkItem = new JMenuItem(h.toString());
+        // levelSign.setActionCommand(h.getObject());
+        final Selectable s = h.getObject();
+        bookmarkItem.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             MapperPanel mp =
                 (MapperPanel) client.getDesktop().getManagedComponents().get(
                     MagellanDesktop.MAP_IDENTIFIER);
-            IntegerID id = IntegerID.create(e.getActionCommand());
-            HotSpot h2 = data.getHotSpot(id);
+            Bookmark h2 = data.getBookmark(s);
             if (h2 != null) {
               mp.showHotSpot(h2);
             } else {
-              MapContextMenu.log.error("Hotspot not found: " + e.getActionCommand());
+              MapContextMenu.log.error("Bookmark not found: " + s);
             }
           }
         });
 
-        jumpToHotSpot.add(levelSign);
+        jumpToHotSpot.add(bookmarkItem);
       }
     } else {
       jumpToHotSpot.setEnabled(false);
@@ -570,39 +570,26 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
   }
 
   /**
-   * Sets or delets an hotspot
+   * Sets or deletes an hotspot
    */
   private void changeHotSpot() {
     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     boolean found = false;
 
-    for (HotSpot h : data.getHotSpots()) {
-      if (found) {
-        break;
-      }
-
-      if (h.getCenter().equals(region.getCoordinate())) {
+    for (Bookmark h : data.getBookmarks()) {
+      if (h.getObject() == region || h.getObject().equals(region.getCoordinate())) {
         found = true;
-        data.removeHotSpot(h.getID());
+        data.removeBookmark(h.getObject());
+        break;
       }
     }
 
     if (!found) {
-      IntegerID id;
-      Random r = new Random();
-      while (true) {
-        id = IntegerID.create(r.nextInt());
-
-        if (data.getHotSpot(id) == null) {
-          break;
-        }
-      }
-
-      HotSpot h = MagellanFactory.createHotSpot(id);
-      h.setCenter(region.getID());
+      BookmarkBuilder h = MagellanFactory.createBookmark();
+      h.setObject(region);
       h.setName(region.toString());
-      data.addHotSpot(h);
+      data.addBookmark(h.getBookmark());
     }
 
     dispatcher.fire(new GameDataEvent(this, data));

@@ -461,21 +461,21 @@ public class GameDataMerger {
       }
     }
 
-    /**************************** HOTSPOTS ***************************/
-    // complex object, just add without merging here
-    if (olderGD.hotSpotView() != null) {
-      for (HotSpot h : olderGD.hotSpotView().values()) {
-        resultGD.setHotSpot(MagellanFactory.createHotSpot(h.getID()));
-      }
-    }
-
-    if (newerGD.hotSpotView() != null) {
-      for (HotSpot h : newerGD.hotSpotView().values()) {
-        if (resultGD.getHotSpot(h.getID()) == null) {
-          resultGD.setHotSpot(MagellanFactory.createHotSpot(h.getID()));
-        }
-      }
-    }
+    // /**************************** HOTSPOTS ***************************/
+    // // complex object, just add without merging here
+    // if (olderGD.hotSpotView() != null) {
+    // for (HotSpot h : olderGD.hotSpotView().values()) {
+    // resultGD.setHotSpot(MagellanFactory.createHotSpot(h.getID()));
+    // }
+    // }
+    //
+    // if (newerGD.hotSpotView() != null) {
+    // for (HotSpot h : newerGD.hotSpotView().values()) {
+    // if (resultGD.getHotSpot(h.getID()) == null) {
+    // resultGD.setHotSpot(MagellanFactory.createHotSpot(h.getID()));
+    // }
+    // }
+    // }
 
     /**************************** BUILDINGS ***************************/
     // complex object, just add without merging here
@@ -600,6 +600,16 @@ public class GameDataMerger {
       addOldUnits(newerGD.getOldUnits(), resultGD.units(), resultGD, sortIndex2);
     }
 
+    /**************************** Bookmarks ***************************/
+    for (Bookmark bm : olderGD.getBookmarks()) {
+      resultGD.addBookmark(MagellanFactory.createBookmark(resultGD, bm.getType().toString(), bm
+          .getObject().getID().toString(), bm.getName()));
+    }
+    for (Bookmark bm : newerGD.getBookmarks()) {
+      resultGD.addBookmark(MagellanFactory.createBookmark(resultGD, bm.getType().toString(), bm
+          .getObject().getID().toString(), bm.getName()));
+    }
+
     /***********************************************************************/
     /********************** MERGING PHASE -- FIRST PASS ********************/
     /***********************************************************************/
@@ -639,15 +649,15 @@ public class GameDataMerger {
       }
     }
 
-    /**************************** MERGE HOTSPOTS ***************************/
-    // complex object FIRST PASS
-    if (olderGD.hotSpotView() != null) {
-      for (HotSpot curHotSpot : olderGD.hotSpotView().values()) {
-        HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
-        // first pass
-        GameDataMerger.mergeHotSpot(olderGD, curHotSpot, resultGD, newHotSpot, transformer1);
-      }
-    }
+    // /**************************** MERGE HOTSPOTS ***************************/
+    // // complex object FIRST PASS
+    // if (olderGD.hotSpotView() != null) {
+    // for (HotSpot curHotSpot : olderGD.hotSpotView().values()) {
+    // HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
+    // // first pass
+    // GameDataMerger.mergeHotSpot(olderGD, curHotSpot, resultGD, newHotSpot, transformer1);
+    // }
+    // }
 
     /**************************** MERGE BUILDINGS ***************************/
     // complex object FIRST PASS
@@ -802,14 +812,14 @@ public class GameDataMerger {
       }
     }
 
-    /**************************** MERGE HOTSPOTS, SECOND PASS ***************************/
-    if (newerGD.hotSpotView() != null) {
-      for (HotSpot curHotSpot : newerGD.hotSpotView().values()) {
-        HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
-        // second pass
-        GameDataMerger.mergeHotSpot(newerGD, curHotSpot, resultGD, newHotSpot, transformer2);
-      }
-    }
+    // /**************************** MERGE HOTSPOTS, SECOND PASS ***************************/
+    // if (newerGD.hotSpotView() != null) {
+    // for (HotSpot curHotSpot : newerGD.hotSpotView().values()) {
+    // HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
+    // // second pass
+    // GameDataMerger.mergeHotSpot(newerGD, curHotSpot, resultGD, newHotSpot, transformer2);
+    // }
+    // }
 
     /**************************** MERGE BUILDINGS, SECOND PASS ***************************/
     if (newerGD.buildingView() != null) {
@@ -1471,7 +1481,8 @@ public class GameDataMerger {
   /**
    * Merges potion.
    */
-  public static void mergePotion(GameData curGD, Potion curPotion, GameData newGD, Potion newPotion) {
+  public static void
+      mergePotion(GameData curGD, Potion curPotion, GameData newGD, Potion newPotion) {
     if (curPotion.getName() != null) {
       newPotion.setName(curPotion.getName());
     }
@@ -1566,21 +1577,21 @@ public class GameDataMerger {
     }
   }
 
-  /**
-   * Merges two HotSpot objects.
-   * 
-   * @param transformer
-   */
-  public static void mergeHotSpot(GameData curGD, HotSpot curHS, GameData newGD, HotSpot newHS,
-      ReportTransformer transformer) {
-    if (curHS.getName() != null) {
-      newHS.setName(curHS.getName());
-    }
-
-    if (curHS.getCenter() != null) {
-      newHS.setCenter(transform(transformer, curHS.getCenter()));
-    }
-  }
+  // /**
+  // * Merges two HotSpot objects.
+  // *
+  // * @param transformer
+  // */
+  // public static void mergeHotSpot(GameData curGD, HotSpot curHS, GameData newGD, HotSpot newHS,
+  // ReportTransformer transformer) {
+  // if (curHS.getName() != null) {
+  // newHS.setName(curHS.getName());
+  // }
+  //
+  // if (curHS.getCenter() != null) {
+  // newHS.setCenter(transform(transformer, curHS.getCenter()));
+  // }
+  // }
 
   /**
    * Merges all info from curRegion into newRegion. The result is influenced by the
@@ -1736,8 +1747,8 @@ public class GameDataMerger {
 
       for (LuxuryPrice curPrice : resultRegion.getPrices().values()) {
         final LuxuryPrice newPrice =
-            new LuxuryPrice(resultGD.getRules().getItemType(curPrice.getItemType().getID()), curPrice
-                .getPrice());
+            new LuxuryPrice(resultGD.getRules().getItemType(curPrice.getItemType().getID()),
+                curPrice.getPrice());
         if (newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
           // the current block description
@@ -1754,8 +1765,8 @@ public class GameDataMerger {
 
       for (LuxuryPrice curPrice : curRegion.getOldPrices().values()) {
         final LuxuryPrice newPrice =
-            new LuxuryPrice(resultGD.getRules().getItemType(curPrice.getItemType().getID()), curPrice
-                .getPrice());
+            new LuxuryPrice(resultGD.getRules().getItemType(curPrice.getItemType().getID()),
+                curPrice.getPrice());
 
         if (newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
@@ -1931,8 +1942,8 @@ public class GameDataMerger {
 
       for (LuxuryPrice curPrice : curRegion.getPrices().values()) {
         final LuxuryPrice newPrice =
-            new LuxuryPrice(resultGD.getRules().getItemType(curPrice.getItemType().getID()), curPrice
-                .getPrice());
+            new LuxuryPrice(resultGD.getRules().getItemType(curPrice.getItemType().getID()),
+                curPrice.getPrice());
 
         if (newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
@@ -1965,8 +1976,8 @@ public class GameDataMerger {
         if (newRes == null) {
           // add Resource
           newRes =
-              new RegionResource(curRes.getID(), resultGD.getRules().getItemType(curRes.getType()
-                  .getID(), true));
+              new RegionResource(curRes.getID(), resultGD.getRules().getItemType(
+                  curRes.getType().getID(), true));
           resultRegion.addResource(newRes);
         }
 
@@ -2221,7 +2232,8 @@ public class GameDataMerger {
   /**
    * Merges two Scheme objects.
    */
-  public static void mergeScheme(GameData curGD, Scheme curScheme, GameData newGD, Scheme newScheme) {
+  public static void
+      mergeScheme(GameData curGD, Scheme curScheme, GameData newGD, Scheme newScheme) {
     if (curScheme.getName() != null) {
       newScheme.setName(curScheme.getName());
     }
@@ -2507,8 +2519,8 @@ public class GameDataMerger {
 
         for (Item curItem : curUnit.getItems()) {
           final Item newItem =
-              new Item(resultGD.getRules().getItemType(curItem.getItemType().getID(), true), curItem
-                  .getAmount());
+              new Item(resultGD.getRules().getItemType(curItem.getItemType().getID(), true),
+                  curItem.getAmount());
           resultUnit.addItem(newItem);
         }
       }

@@ -33,6 +33,7 @@ import magellan.library.GameDataMerger;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.utils.MagellanFactory;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -247,4 +248,18 @@ public class GameDataMergerTest extends MagellanTestWithResources {
         || 0 == gd0m.getFaction(faction011.getID()).getAllies().size());
   }
 
+  /**
+   * @throws Exception
+   */
+  @Test
+  public final void testMergeBookmark() throws Exception {
+    create("eressea");
+    gd01.addBookmark(MagellanFactory.createBookmark(unit012));
+    gd02.addBookmark(MagellanFactory.createBookmark(unit021));
+    GameData gdm011 = GameDataMerger.merge(gd01, gd11);
+    GameData gdm012 = GameDataMerger.merge(gd01, gd02);
+    assertEquals(1, gdm011.getBookmarks().size());
+    assertEquals(2, gdm012.getBookmarks().size());
+    assertEquals(unit012.getID(), gdm012.getBookmarks().iterator().next().getObject().getID());
+  }
 }

@@ -252,15 +252,6 @@ public abstract class AbstractReportParser implements ReportParser {
   }
 
   /**
-   * Parses a report provided by aFileType.
-   * 
-   * @param in Reader to cr file
-   * @param data GameData to be filled with informations of given cr file This function is
-   *          synchronized.
-   * @throws IOException If an I/O error occurs
-   * @see magellan.library.io.GameDataIO#read(java.io.Reader, magellan.library.GameData)
-   */
-  /**
    * @see magellan.library.io.ReportParser#read(magellan.library.io.file.FileType,
    *      magellan.library.Rules)
    */

@@ -22,7 +22,7 @@ import magellan.library.utils.SpellSyntax;
 /**
  * Container class for a spell based on its representation in a cr version >= 42.
  */
-public interface Spell extends Described, Localized {
+public interface Spell extends Described, Localized, Selectable {
 
   /**
    * A spell component.

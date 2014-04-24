@@ -439,7 +439,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
         } else {
           chkIslands.setEnabled(true);
-          if (data != null && data.getHotSpots() != null && data.getHotSpots().size() > 0) {
+          if (data != null && data.getBookmarks().size() > 0) {
             chkExportHotspots.setEnabled(true);
           } else {
             chkExportHotspots.setEnabled(false);

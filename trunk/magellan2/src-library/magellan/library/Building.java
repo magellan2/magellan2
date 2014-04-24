@@ -23,7 +23,7 @@ import magellan.library.rules.BuildingType;
  * @author $Author: $
  * @version $Revision: 299 $
  */
-public interface Building extends UnitContainer, HasRegion {
+public interface Building extends UnitContainer, HasRegion, Selectable {
 
   /**
    * DOCUMENT ME!

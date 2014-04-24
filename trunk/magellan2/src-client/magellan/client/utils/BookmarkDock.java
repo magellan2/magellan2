@@ -27,7 +27,6 @@ import java.awt.BorderLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Iterator;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -41,6 +40,7 @@ import magellan.client.desktop.MagellanDesktop;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
+import magellan.library.Bookmark;
 
 /**
  * This is the old bookmark tool - now as a dock. A little dialog showing the bookmarks
@@ -54,7 +54,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
   @Deprecated
   public static final String IDENTIFIER = MagellanDesktop.BOOKMARKS_IDENTIFIER;
   private static BookmarkDock _INSTANCE = null;
-  private JList list;
+  private JList<Bookmark> list;
   private BookmarkManager manager = null;
 
   /**
@@ -73,43 +73,46 @@ public class BookmarkDock extends JPanel implements SelectionListener {
     return BookmarkDock._INSTANCE;
   }
 
-  public void init(final BookmarkManager manager, final EventDispatcher dispatcher) {
+  protected void init(final BookmarkManager manager, final EventDispatcher dispatcher,
+      boolean handleKeys) {
     this.manager = manager;
     dispatcher.addSelectionListener(this);
     setLayout(new BorderLayout());
 
-    list = new JList();
+    list = new JList<Bookmark>();
     updateData();
 
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-          Object selectedValue = list.getSelectedValue();
-
-          if ((selectedValue != null) && (selectedValue != manager.getActiveObject())) {
-            dispatcher.fire(SelectionEvent.create(this, selectedValue, SelectionEvent.ST_DEFAULT));
+          Bookmark selectedValue = list.getSelectedValue();
+          if ((selectedValue != null) && (selectedValue.getObject() != manager.getActiveObject())) {
+            dispatcher.fire(SelectionEvent.create(this, selectedValue.getObject(),
+                SelectionEvent.ST_DEFAULT));
           }
         }
       }
     });
 
-    list.addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_F2) {
-          if (e.getModifiers() == InputEvent.CTRL_MASK) {
+    if (handleKeys) {
+      list.addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+          if (e.getKeyCode() == KeyEvent.VK_F2) {
+            if (e.getModifiers() == InputEvent.CTRL_MASK) {
+              manager.toggleBookmark();
+            } else if (e.getModifiers() == 0) {
+              manager.jumpForward();
+            } else if (e.getModifiers() == InputEvent.SHIFT_MASK) {
+              manager.jumpBackward();
+            }
+          } else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
             manager.toggleBookmark();
-          } else if (e.getModifiers() == 0) {
-            manager.jumpForward();
-          } else if (e.getModifiers() == InputEvent.SHIFT_MASK) {
-            manager.jumpBackward();
           }
-        } else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-          manager.toggleBookmark();
         }
-      }
-    });
+      });
+    }
     add(new JScrollPane(list), BorderLayout.CENTER);
   }
 
@@ -117,10 +120,10 @@ public class BookmarkDock extends JPanel implements SelectionListener {
    * Rebuilds the whole list from the manager.
    */
   public void updateData() {
-    DefaultListModel model = new DefaultListModel();
+    DefaultListModel<Bookmark> model = new DefaultListModel<Bookmark>();
 
-    for (Iterator<?> iter = manager.getBookmarks().listIterator(); iter.hasNext();) {
-      model.addElement(iter.next());
+    for (Bookmark bookmark : manager.getBookmarks()) {
+      model.addElement(bookmark);
     }
 
     list.setModel(model);
@@ -132,7 +135,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
   /**
    * Select an entry in the list.
    */
-  public void setSelectedObject(Object o) {
+  public void setSelectedObject(Bookmark o) {
     list.setSelectedValue(o, true);
     list.repaint();
   }
@@ -150,11 +153,12 @@ public class BookmarkDock extends JPanel implements SelectionListener {
     Object o = se.getActiveObject();
 
     if (o != null) {
-      if (manager.getBookmarks().contains(o)) {
-        list.setSelectedValue(o, true);
-        manager.setActiveBookmark(((DefaultListModel) list.getModel()).indexOf(o));
-      } else {
-        list.clearSelection();
+      list.clearSelection();
+      for (Bookmark bm : manager.getBookmarks()) {
+        if (bm.getObject().equals(o)) {
+          list.setSelectedValue(bm, true);
+          manager.setActiveBookmark(((DefaultListModel<Bookmark>) list.getModel()).indexOf(bm));
+        }
       }
     }
   }

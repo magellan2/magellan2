@@ -399,27 +399,27 @@ public abstract class GameData implements Cloneable, Addeable {
   /** Returns a modifiable view of the islands. */
   public abstract Map<IntegerID, Island> islandView();
 
-  /**
-   * All HotSpots existing for this game data. Hot spots are used to quickly access regions of
-   * interest on the map. The keys are Integer representations of the hot spot id, the values are
-   * Coordinate objects.
-   * 
-   * @deprecated Try using {@link #getHotSpots()}
-   */
-  @Deprecated
-  public Map<IntegerID, HotSpot> hotSpots() {
-    return Collections.unmodifiableMap(hotSpotView());
-  }
-
-  /**
-   * Returns a unmodifiable view of all HotSpots of the data.
-   */
-  public Collection<HotSpot> getHotSpots() {
-    return Collections.unmodifiableCollection(hotSpotView().values());
-  }
-
-  /** Returns a modifiable view of the hot spots. */
-  protected abstract Map<IntegerID, HotSpot> hotSpotView();
+  // /**
+  // * All HotSpots existing for this game data. Hot spots are used to quickly access regions of
+  // * interest on the map. The keys are Integer representations of the hot spot id, the values are
+  // * Coordinate objects.
+  // *
+  // * @deprecated Try using {@link #getHotSpots()}
+  // */
+  // @Deprecated
+  // public Map<IntegerID, HotSpot> hotSpots() {
+  // return Collections.unmodifiableMap(hotSpotView());
+  // }
+  //
+  // /**
+  // * Returns a unmodifiable view of all HotSpots of the data.
+  // */
+  // public Collection<HotSpot> getHotSpots() {
+  // return Collections.unmodifiableCollection(hotSpotView().values());
+  // }
+  //
+  // /** Returns a modifiable view of the hot spots. */
+  // protected abstract Map<IntegerID, HotSpot> hotSpotView();
 
   /**
    * Represents the table of translations from the report.
@@ -674,7 +674,7 @@ public abstract class GameData implements Cloneable, Addeable {
     islandView().put(i.getID(), i);
   }
 
-  public abstract void addHotSpot(HotSpot h);
+  // public abstract void addHotSpot(HotSpot h);
 
   /**
    * Add an AllianceGroup.
@@ -850,16 +850,17 @@ public abstract class GameData implements Cloneable, Addeable {
     return alliancegroups.get(allianceID);
   }
 
-  /**
-   * Retrieve a hot spot from hotSpots() by its id.
-   * 
-   * @param id the id of the hot spot to be retrieved.
-   * @return an instance of class <tt>HotSpot</tt> or <tt>null</tt> if there is no hot spot with the
-   *         specified id or if hotSpots() is <tt>null</tt> .
-   */
-  public HotSpot getHotSpot(IntegerID id) {
-    return (hotSpotView() == null) ? null : (HotSpot) hotSpotView().get(id);
-  }
+  // /**
+  // * Retrieve a hot spot from hotSpots() by its id.
+  // *
+  // * @param id the id of the hot spot to be retrieved.
+  // * @return an instance of class <tt>HotSpot</tt> or <tt>null</tt> if there is no hot spot with
+  // the
+  // * specified id or if hotSpots() is <tt>null</tt> .
+  // */
+  // public HotSpot getHotSpot(IntegerID id) {
+  // return (hotSpotView() == null) ? null : (HotSpot) hotSpotView().get(id);
+  // }
 
   /**
    * Removes unit from the report.
@@ -917,11 +918,11 @@ public abstract class GameData implements Cloneable, Addeable {
         if (buildingView().remove(b) == null) {
           log.warn("could not remove TEMP unit " + b);
         }
-      for (HotSpot h : hotSpotView().values()) {
-        if (h.getCenter().equals(removed.getID())) {
-          removeHotSpot(h.getID());
-        }
-      }
+      // for (HotSpot h : hotSpotView().values()) {
+      // if (h.getCenter().equals(removed.getID())) {
+      // removeHotSpot(h.getID());
+      // }
+      // }
     }
     return removed;
   }
@@ -933,16 +934,16 @@ public abstract class GameData implements Cloneable, Addeable {
     islandView().remove(islandID);
   }
 
-  /**
-   * Remove a hot spot from hotSpots() by its id.
-   * 
-   * @param id the id of the hot spot to be removed.
-   */
-  public void removeHotSpot(IntegerID id) {
-    if (hotSpotView() != null) {
-      hotSpotView().remove(id);
-    }
-  }
+  // /**
+  // * Remove a hot spot from hotSpots() by its id.
+  // *
+  // * @param id the id of the hot spot to be removed.
+  // */
+  // public void removeHotSpot(IntegerID id) {
+  // if (hotSpotView() != null) {
+  // hotSpotView().remove(id);
+  // }
+  // }
 
   /**
    * Sets the new set of islands.
@@ -966,17 +967,17 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   public abstract void setSelectedRegionCoordinates(Map<CoordinateID, Region> regions);
 
-  /**
-   * Add or set a hot spot to the specified game data. If hotSpots() is <tt>null</tt>, this method
-   * has no effect.
-   * 
-   * @param h the hot spot to be added.
-   */
-  public void setHotSpot(HotSpot h) {
-    if (hotSpotView() != null) {
-      hotSpotView().put(h.getID(), h);
-    }
-  }
+  // /**
+  // * Add or set a hot spot to the specified game data. If hotSpots() is <tt>null</tt>, this method
+  // * has no effect.
+  // *
+  // * @param h the hot spot to be added.
+  // */
+  // public void setHotSpot(HotSpot h) {
+  // if (hotSpotView() != null) {
+  // hotSpotView().put(h.getID(), h);
+  // }
+  // }
 
   /**
    * This method sets the current temp id.
@@ -2004,5 +2005,13 @@ public abstract class GameData implements Cloneable, Addeable {
       // log.finest((System.currentTimeMillis() - time) + " " + listener);
     }
   }
+
+  public abstract void addBookmark(Bookmark bookmark);
+
+  public abstract Bookmark getBookmark(Selectable selection);
+
+  public abstract Collection<Bookmark> getBookmarks();
+
+  public abstract void removeBookmark(Selectable selection);
 
 }

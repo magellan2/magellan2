@@ -32,6 +32,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import magellan.library.CoordinateID;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -508,6 +510,52 @@ public class Utils {
       }
     }
     return null;
+  }
+
+  /**
+   * Helper class for spiralPattern
+   */
+  public static interface SpiralVisitor<T> {
+    /**
+     * @param c The current coordinate
+     * @param distance The distance between center and c
+     * @return true if the search should terminate
+     */
+    public boolean visit(CoordinateID c, int distance);
+
+    /**
+     * @return result that is returned by spiralPattern()
+     */
+    public T getResult();
+  }
+
+  private static int[] dxs = new int[] { -1, -1, 0, 1, 1, 0 };
+  private static int[] dys = new int[] { 1, 0, -1, -1, 0, 1 };
+
+  /**
+   * Create hexagonal coordinates in a spiral pattern around center. Call visitor.visit for each
+   * coordinate. Terminate when distance &gt; maxDist or visitor.visit() returns true.
+   * 
+   * @param center
+   * @param maxDist
+   * @param visitor
+   */
+  public static <T> T spiralPattern(CoordinateID center, int maxDist, SpiralVisitor<T> visitor) {
+    visitor.visit(center, 0);
+
+    int cx = center.getX(), cy = center.getY();
+    for (int dist = 1; dist <= (maxDist > 0 ? maxDist : Integer.MAX_VALUE); ++dist) {
+      int dx = dist, dy = 0;
+      for (int delta = 0; delta < 6; ++delta) {
+        for (int step = 0; step < dist; ++step) {
+          if (visitor.visit(CoordinateID.create(cx + dx, cy + dy), dist))
+            return visitor.getResult();
+          dx += dxs[delta];
+          dy += dys[delta];
+        }
+      }
+    }
+    return visitor.getResult();
   }
 
 }

@@ -13,6 +13,7 @@
 
 package magellan.library;
 
+
 /**
  * A general interface to ID objects conveying "uniqueness". IDs should be (but are not required to
  * be) immutable after construction.

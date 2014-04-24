@@ -306,6 +306,43 @@ public class DirectionTest extends MagellanTestWithResources {
     assertArrayEquals(new Direction[] { NW, NE, E, SE, SW, W }, metric.getDirections().toArray());
   }
 
+  /**
+   * 
+   */
+  @Test
+  public void testSpiralPattern() {
+    final StringBuilder builder = new StringBuilder();
+    Utils.spiralPattern(CoordinateID.create(0, 0), 2, new Utils.SpiralVisitor() {
+      public boolean visit(CoordinateID c, int distance) {
+        builder.append(c.toString(",")).append(" ");
+        return false;
+      }
+
+      public Object getResult() {
+        return null;
+      }
+    });
+    assertEquals(
+        "0,0 1,0 0,1 -1,1 -1,0 0,-1 1,-1 2,0 1,1 0,2 -1,2 -2,2 -2,1 -2,0 -1,-1 0,-2 1,-2 2,-2 2,-1 ",
+        builder.toString());
+
+    final StringBuilder builder2 = new StringBuilder();
+    Integer result =
+        Utils.spiralPattern(CoordinateID.create(1, 2), 2, new Utils.SpiralVisitor<Integer>() {
+          public boolean visit(CoordinateID c, int distance) {
+            builder2.append(c.toString(",")).append(" ");
+            return false;
+          }
+
+          public Integer getResult() {
+            return new Integer(42);
+          }
+        });
+    assertEquals("1,2 2,2 1,3 0,3 0,2 1,1 2,1 3,2 2,3 1,4 0,4 -1,4 -1,3 -1,2 0,1 1,0 2,0 3,0 3,1 ",
+        builder2.toString());
+    assertEquals(Integer.valueOf(42), result);
+
+  }
   // /**
   // * Test method for {@link Direction#add(int)}.
   // */

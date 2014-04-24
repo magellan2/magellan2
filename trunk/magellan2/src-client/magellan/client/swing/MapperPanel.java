@@ -80,16 +80,18 @@ import magellan.client.swing.map.RegionImageCellRenderer;
 import magellan.client.swing.map.RegionShapeCellRenderer;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
+import magellan.library.Bookmark;
+import magellan.library.BookmarkBuilder;
 import magellan.library.CoordinateID;
+import magellan.library.GameData;
 import magellan.library.HasRegion;
-import magellan.library.HotSpot;
-import magellan.library.IntegerID;
 import magellan.library.Island;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -116,9 +118,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private JScrollPane scpMapper = null;
   private JLabel lblLevel = null;
   private JLabel lblScaling = null;
-  private JComboBox cmbLevel = null;
+  private JComboBox<Integer> cmbLevel = null;
   private JSlider sldScaling = null;
-  private JComboBox cmbHotSpots = null;
+  private JComboBox<Bookmark> cmbHotSpots = null;
   private Timer timer = null;
   private Point dragStart = null;
   private boolean dragValidated = false;
@@ -154,7 +156,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     lblScaling.setVisible(showNavi);
     sldScaling.setVisible(showNavi);
-    List<?> levels = mapper.getLevels();
+    List<Integer> levels = mapper.getLevels();
     lblLevel.setVisible((levels.size() > 1) && showNavi);
     cmbLevel.setVisible((levels.size() > 1) && showNavi);
     cmbLevel.removeAllItems();
@@ -168,23 +170,27 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     }
 
     // fill hot spot combo
-    cmbHotSpots.removeAllItems();
-
-    if ((getGameData() != null) && (getGameData().getHotSpots() != null)) {
-      List<HotSpot> hotSpots = new LinkedList<HotSpot>(getGameData().getHotSpots());
-      Collections.sort(hotSpots, new Comparator<HotSpot>() {
-        public int compare(HotSpot o1, HotSpot o2) {
-          return o1.getName().compareTo(o2.getName());
-        }
-      });
-      cmbHotSpots.setModel(new DefaultComboBoxModel(hotSpots.toArray()));
-    }
+    fillComboHotSpots();
 
     cmbHotSpots.setVisible((cmbHotSpots.getItemCount() > 0) && showNavi);
 
     rescale();
     minimapPane.doLayout();
     minimapPane.repaint();
+  }
+
+  private void fillComboHotSpots() {
+    cmbHotSpots.removeAllItems();
+
+    if ((getGameData() != null) && (getGameData().getBookmarks() != null)) {
+      List<Bookmark> hotSpots = new LinkedList<Bookmark>(getGameData().getBookmarks());
+      Collections.sort(hotSpots, new Comparator<Bookmark>() {
+        public int compare(Bookmark o1, Bookmark o2) {
+          return o1.toString().compareTo(o2.toString());
+        }
+      });
+      cmbHotSpots.setModel(new DefaultComboBoxModel(hotSpots.toArray()));
+    }
   }
 
   /**
@@ -757,27 +763,17 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
 
     if (center != null) {
-      IntegerID id = getNewHotSpotID();
-
-      if (id == null) {
-        MapperPanel.log
-            .warn("MapperPanel.assignHotSpot(): unable to determine free id for new hot spot!");
-
-        return;
-      }
-
-      HotSpot h = MagellanFactory.createHotSpot(id);
+      BookmarkBuilder h = MagellanFactory.createBookmark();
       h.setName(name);
-      h.setCenter(center);
-      getGameData().setHotSpot(h);
 
-      List<HotSpot> hotSpots = new LinkedList<HotSpot>(getGameData().getHotSpots());
-      Collections.sort(hotSpots, new Comparator<HotSpot>() {
-        public int compare(HotSpot o1, HotSpot o2) {
-          return o1.getName().compareTo(o2.getName());
-        }
-      });
-      cmbHotSpots.setModel(new DefaultComboBoxModel(hotSpots.toArray()));
+      Region r = findRegion(center, 10);
+      if (r == null)
+        return;
+
+      h.setObject(r);
+      getGameData().addBookmark(h.getBookmark());
+
+      fillComboHotSpots();
 
       if (cmbHotSpots.getItemCount() != 0) {
         cmbHotSpots.setVisible(true);
@@ -791,27 +787,50 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     }
   }
 
+  private Region findRegion(CoordinateID center, int maxDist) {
+    final GameData data = getGameData();
+    return Utils.spiralPattern(center, maxDist, new Utils.SpiralVisitor<Region>() {
+      Region result = null;
+
+      public boolean visit(CoordinateID c, int distance) {
+        Region r = data.getRegion(CoordinateID.create(c.getX(), c.getY()));
+        if (r != null) {
+          result = r;
+          return true;
+        }
+        return false;
+      }
+
+      public Region getResult() {
+        return result;
+      }
+    });
+
+  }
+
   /**
    * Center the map on the specified hot spot.
    * 
    * @param h the hot spot to move the map to.
    */
-  public void showHotSpot(HotSpot h) {
-    // switch planes
-    if ((mapper.getActiveRegion() == null)
-        || (mapper.getActiveRegion().getCoordinate().getZ() != ((h.getCenter()).getZ()))) {
-      if (cmbLevel.isVisible()) {
-        cmbLevel.setSelectedItem(Integer.valueOf((h.getCenter()).getZ()));
-      }
-    }
+  public void showHotSpot(Bookmark h) {
+    dispatcher.fire(SelectionEvent.create(this, h.getObject(), SelectionEvent.ST_DEFAULT));
 
-    // re-center mapper
-    Point viewPos = mapper.getCenteredViewPosition(scpMapper.getSize(), h.getCenter());
-
-    if (viewPos != null) {
-      scpMapper.getViewport().setViewPosition(viewPos);
-      mapper.requestFocus();
-    }
+    // // switch planes
+    // if ((mapper.getActiveRegion() == null)
+    // || (mapper.getActiveRegion().getCoordinate().getZ() != ((h.getCenter()).getZ()))) {
+    // if (cmbLevel.isVisible()) {
+    // cmbLevel.setSelectedItem(Integer.valueOf((h.getCenter()).getZ()));
+    // }
+    // }
+    //
+    // // re-center mapper
+    // Point viewPos = mapper.getCenteredViewPosition(scpMapper.getSize(), h.getCenter());
+    //
+    // if (viewPos != null) {
+    // scpMapper.getViewport().setViewPosition(viewPos);
+    // mapper.requestFocus();
+    // }
   }
 
   /**
@@ -819,8 +838,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * 
    * @param h the hot spot to remove.
    */
-  public void removeHotSpot(HotSpot h) {
-    getGameData().removeHotSpot(h.getID());
+  public void removeHotSpot(Bookmark h) {
+    getGameData().removeBookmark(h.getObject());
     cmbHotSpots.removeItem(h);
 
     if (cmbHotSpots.getItemCount() == 0) {
@@ -859,22 +878,22 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     return mapper;
   }
 
-  /**
-   * Creates random integer values until one is not already used as a key in the game data's hot
-   * spot map.
-   * 
-   * @return an integer the Integer representation of which is not already used as a key in the
-   *         current game data's hot spot map.
-   */
-  private IntegerID getNewHotSpotID() {
-    IntegerID i = null;
-
-    do {
-      i = IntegerID.create(random.nextInt());
-    } while (getGameData().getHotSpot(i) != null);
-
-    return i;
-  }
+  // /**
+  // * Creates random integer values until one is not already used as a key in the game data's hot
+  // * spot map.
+  // *
+  // * @return an integer the Integer representation of which is not already used as a key in the
+  // * current game data's hot spot map.
+  // */
+  // private IntegerID getNewHotSpotID() {
+  // IntegerID i = null;
+  //
+  // do {
+  // i = IntegerID.create(random.nextInt());
+  // } while (getGameData().getHotSpot(i) != null);
+  //
+  // return i;
+  // }
 
   private Container getMainPane(Collection<MapCellRenderer> renderers, CellGeometry geo) {
     mapper = new Mapper(context, renderers, geo);
@@ -926,7 +945,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     lblScaling.setLabelFor(sldScaling);
 
     lblLevel = new JLabel(Resources.get("mapperpanel.lbl.level.caption"));
-    cmbLevel = new JComboBox(mapper.getLevels().toArray());
+    cmbLevel = new JComboBox<Integer>(mapper.getLevels().toArray(new Integer[] {}));
 
     if (cmbLevel.getItemCount() > 0) {
       cmbLevel.setSelectedIndex(0);
@@ -935,10 +954,10 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     cmbLevel.setMinimumSize(new Dimension(50, 25));
     cmbLevel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        Integer level = (Integer) ((JComboBox) ae.getSource()).getSelectedItem();
+        Integer level = (Integer) ((JComboBox<?>) ae.getSource()).getSelectedItem();
 
         if (level != null) {
-          setLevel(level.intValue());
+          setLevel(level);
         }
       }
     });
@@ -946,19 +965,15 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     lblLevel.setVisible(cmbLevel.getItemCount() > 1);
     cmbLevel.setVisible(cmbLevel.getItemCount() > 1);
 
-    cmbHotSpots = new JComboBox();
+    cmbHotSpots = new JComboBox<Bookmark>();
 
-    if ((getGameData() != null) && (getGameData().getHotSpots() != null)) {
-      for (HotSpot h : getGameData().getHotSpots()) {
-        cmbHotSpots.addItem(h);
-      }
-    }
+    fillComboHotSpots();
 
     cmbHotSpots.setMinimumSize(new Dimension(50, 25));
     cmbHotSpots.setVisible(cmbHotSpots.getItemCount() != 0);
     cmbHotSpots.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        HotSpot h = (HotSpot) ((JComboBox) ae.getSource()).getSelectedItem();
+        Bookmark h = (Bookmark) ((JComboBox<?>) ae.getSource()).getSelectedItem();
 
         if (h != null) {
           showHotSpot(h);
@@ -1106,7 +1121,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     case 3:
       // remove HotSpot CTRL + ALT + H
-      HotSpot h = (HotSpot) cmbHotSpots.getSelectedItem();
+      Bookmark h = (Bookmark) cmbHotSpots.getSelectedItem();
 
       if (h != null) {
         removeHotSpot(h); // SHIFT + CTRL

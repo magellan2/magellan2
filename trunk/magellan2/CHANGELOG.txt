@@ -1,3 +1,7 @@
+2014-05-05 / Build 587 - stm (stm_@users.sourceforge.net)
+    * more tolerant merging of reports of different games
+    * added Deveron rules (equal to E3)
+
 2014-04-23 / Build 586 - stm (stm_@users.sourceforge.net)
     * disabled Hotspots; hotspot functionality is now fullfilled by bookmarks; added load/save/merge/export of bookmarks
 

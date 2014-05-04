@@ -173,10 +173,10 @@ public abstract class GameData implements Cloneable, Addeable {
   protected long timestamp = System.currentTimeMillis() / 1000;
 
   /** The 'mail' connection this game data belongs to. This may be null */
-  public String mailTo = null;
+  public String mailTo;
 
   /** The 'mail' subject for this game data. This may be null */
-  public String mailSubject = null;
+  public String mailSubject;
 
   private Region activeRegion;
 

@@ -90,9 +90,10 @@ public class GameDataMerger {
   public static GameData merge(GameData gd1, GameData gd2, ReportTransformer transformer1,
       ReportTransformer transformer2) {
     // make sure, the game types are the same.
-    if (!gd1.getGameName().equalsIgnoreCase(gd2.getGameName()))
-      throw new IllegalArgumentException("GameData.merge(): Can't merge different game types. ("
-          + gd1.getGameName() + " via " + gd2.getGameName() + ")");
+    if (!gd1.getGameName().equalsIgnoreCase(gd2.getGameName())) {
+      log.warn("GameData.merge(): Shouldn't merge different game types. (" + gd1.getGameName()
+          + " != " + gd2.getGameName() + ")");
+    }
 
     GameData resultGD;
     if (gd1.getDate().compareTo(gd2.getDate()) > 0) {

@@ -588,30 +588,31 @@ public class ReportMerger extends Object {
    * @return
    */
   private boolean checkGameType(ReportCache newReport) {
-    if (newReport.getData() == null
-        || !globalData.getGameName().equalsIgnoreCase(newReport.getData().getGameName())) {
-      // no report loaded or
-      // game types doesn't match. Make sure, it will not be tried again.
-
+    boolean okay = true;
+    if (newReport.getData() == null) {
+      okay = false;
+      ReportMerger.log.warn("ReportMerger.mergeReport(): got empty data.");
+      if (ui != null) {
+        ui.showMessageDialog(newReport.getFile().getName() + ": "
+            + Resources.get("util.reportmerger.msg.emptydata"));
+      }
+    } else if (!globalData.getGameName().equalsIgnoreCase(newReport.getData().getGameName())) {
+      ReportMerger.log.warn("ReportMerger.mergeReport(): game types don't match.");
+      okay = false;
       if (ui != null) {
         // Fiete 20090105: displayed a yes/no box with error message - bug #348
         // ui.confirm(newReport.getFile().getName() + ": " +
         // Resources.get("util.reportmerger.msg.wronggametype"), newReport.getFile().getName());
         // FIXME (stm) this can be a redundant message
-        ui.showMessageDialog(newReport.getFile().getName() + ": "
-            + Resources.get("util.reportmerger.msg.wronggametype"));
+        okay =
+            ui.confirm(newReport.getFile().getName() + ": "
+                + Resources.get("util.reportmerger.msg.wronggametype"), "");
       }
-      if (newReport.getData() == null) {
-        ReportMerger.log.warn("ReportMerger.mergeReport(): got empty data.");
-      } else {
-        ReportMerger.log.warn("ReportMerger.mergeReport(): game types don't match.");
-      }
-
-      newReport.setMerged(true);
-
-      return false;
     }
-    return true;
-  }
+    if (!okay) {
+      newReport.setMerged(true);
+    }
 
+    return okay;
+  }
 }

@@ -807,6 +807,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     lblMailSender.setLabelFor(txtMailSender);
 
     lblMailSubject = new JLabel(Resources.get("orderwriterdialog.lbl.subject"));
+    lblMailSubject.setLabelFor(txtMailSubject);
     txtMailSubject =
         new JTextField(localSettings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT
             + suffix, DEFAULT_SUBJECT), 20);
@@ -1025,7 +1026,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     return pnlMail;
   }
 
-  private JCheckBox createCheckBox(String name, String resourceKey, String suffix, boolean selected) {
+  private JCheckBox
+      createCheckBox(String name, String resourceKey, String suffix, boolean selected) {
     JCheckBox chkBox =
         new JCheckBox(Resources.get("orderwriterdialog.chk." + name + ".caption"),
             resourceKey == null ? selected : PropertiesHelper.getBoolean(localSettings,
@@ -1091,14 +1093,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
       txtServerPassword.setText(getPassword(localSettings, suffix));
 
-      txtMailRecipient.setText(localSettings
-          .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix));
-
       txtMailSender.setText(localSettings
           .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER + suffix));
-
-      txtMailSubject.setText(localSettings
-          .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT + suffix));
 
       txtMailRecipient2.setText(localSettings
           .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2 + suffix));
@@ -1179,10 +1175,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         || !chkUseSettingsFromCR.isSelected());
     txtMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled()
         || !chkUseSettingsFromCR.isSelected());
-    lblMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled()
-        || !chkUseSettingsFromCR.isSelected());
-    lblMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled()
-        || !chkUseSettingsFromCR.isSelected());
+     lblMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled()
+     || !chkUseSettingsFromCR.isSelected());
+     lblMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled()
+     || !chkUseSettingsFromCR.isSelected());
   }
 
   private void storeSettings() {

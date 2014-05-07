@@ -30,6 +30,9 @@
 	<property name="bin"               location="${basedir}/bin"/>
 	<property name="release"           location="${basedir}/release"/>
 	<property name="sandbox"           location="${basedir}/sandbox"/>
+	<property name="installer"         location="${basedir}/installer"/>
+	<property name="macos"             location="${basedir}/macos"/>
+
 
 	<property name="junit.output.dir" value="${basedir}/test/junit"/>
 
@@ -337,7 +340,7 @@
 				<include name="README.txt"/>
 				<include name="RELEASENOTES.txt"/>
 			</fileset>
-			<fileset dir="${basedir}/installer">
+			<fileset dir="${installer}">
 				<include name="*.bat"/>
 				<include name="*.sh"/>
 			</fileset>
@@ -392,9 +395,7 @@
 	<target name="test_and_distribute" description=" This target compiles, tests and packs the whole magellan application.">
 		<buildnumber file=".build.number"/>
 
-		<antcall target="clear-classes"/>
-		<antcall target="clear-release"/>
-		<mkdir dir="${classes}" />
+		<antcall target="clear-all"/>
 
 		<antcall target="run_tests" />
 
@@ -420,7 +421,13 @@
 
 		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
 
-		<property name="installer" location="${basedir}/installer"/>
+		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
+			<filterset>
+				<filter token="VERSION" value="${VERSION.POINTED}"/>
+				<filter token="BUILD" value="${build.number}"/>
+				<filter token="USER" value="${user.name}"/>
+			</filterset>
+		</copy>
 
 		<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
 			<arg value="${installer}/izpack-install.xml"/>
@@ -448,18 +455,18 @@
 		<echo message="Creating MacOS Distribution"/>
 		<delete file="${basedir}/magellan_v${VERSION.POINTED}_macos.zip" failonerror="false"/>
 
-		<mkdir dir="${basedir}/macos/Magellan.app" />
-		<mkdir dir="${basedir}/macos/Magellan.app" />
-		<mkdir dir="${basedir}/macos/Magellan.app/Contents" />
-		<copy file="${basedir}/installer/macos/PkgInfo" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
-		<copy file="${basedir}/installer/macos/Info.plist" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
-		<mkdir dir="${basedir}/macos/Magellan.app/Contents/MacOS" />
-		<copy file="${basedir}/installer/macos/JavaApplicationStub" todir="${basedir}/macos/Magellan.app/Contents/MacOS/" overwrite="yes"/>
-		<chmod dir="${basedir}/macos/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>
-		<mkdir dir="${basedir}/macos/Magellan.app/Contents/Resources" />
-		<copy file="${basedir}/installer/macos/icon/Magellan.icns" todir="${basedir}/macos/Magellan.app/Contents/Resources/" overwrite="yes"/>
-		<mkdir dir="${basedir}/macos/Magellan.app/Contents/Resources/Java" />
-		<copy todir="${basedir}/macos/Magellan.app/Contents/Resources/Java/" overwrite="true">
+		<mkdir dir="${macos}/Magellan.app" />
+		<mkdir dir="${macos}/Magellan.app" />
+		<mkdir dir="${macos}/Magellan.app/Contents" />
+		<copy file="${installer}/macos/PkgInfo" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
+		<copy file="${installer}/macos/Info.plist" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
+		<mkdir dir="${macos}/Magellan.app/Contents/MacOS" />
+		<copy file="${installer}/macos/JavaApplicationStub" todir="${macos}/Magellan.app/Contents/MacOS/" overwrite="yes"/>
+		<chmod dir="${macos}/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>
+		<mkdir dir="${macos}/Magellan.app/Contents/Resources" />
+		<copy file="${installer}/macos/icon/Magellan.icns" todir="${macos}/Magellan.app/Contents/Resources/" overwrite="yes"/>
+		<mkdir dir="${macos}/Magellan.app/Contents/Resources/Java" />
+		<copy todir="${macos}/Magellan.app/Contents/Resources/Java/" overwrite="true">
 			<fileset dir="${release}/" includes="**"/>
 		</copy>
 
@@ -474,9 +481,7 @@
 	<target name="distribute" description=" This target compiles and packs the whole magellan application.">
 		<buildnumber file=".build.number"/>
 
-		<antcall target="clear-classes"/>
-		<antcall target="clear-release"/>
-		<mkdir dir="${classes}" />
+		<antcall target="clear-all"/>
 
 		<antcall target="build_library" />
 
@@ -506,7 +511,13 @@
 
 		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
 
-		<property name="installer" location="${basedir}/installer"/>
+		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
+			<filterset>
+				<filter token="VERSION" value="${VERSION.POINTED}"/>
+				<filter token="BUILD" value="${build.number}"/>
+				<filter token="USER" value="${user.name}"/>
+			</filterset>
+		</copy>
 
 		<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
 			<arg value="${installer}/izpack-install.xml"/>
@@ -534,23 +545,22 @@
 		<echo message="Creating MacOS Distribution"/>
 		<delete file="${basedir}/magellan_v${VERSION.POINTED}_macos.zip" failonerror="false"/>
 
-		<mkdir dir="${basedir}/macos/Magellan.app" />
-		<mkdir dir="${basedir}/macos/Magellan.app" />
-		<mkdir dir="${basedir}/macos/Magellan.app/Contents" />
-		<copy file="${basedir}/installer/macos/PkgInfo" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
-		<copy file="${basedir}/installer/macos/Info.plist" todir="${basedir}/macos/Magellan.app/Contents/" overwrite="yes"/>
-		<mkdir dir="${basedir}/macos/Magellan.app/Contents/MacOS" />
-		<copy file="${basedir}/installer/macos/JavaApplicationStub" todir="${basedir}/macos/Magellan.app/Contents/MacOS/" overwrite="yes"/>
-		<chmod dir="${basedir}/macos/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>
-		<mkdir dir="${basedir}/macos/Magellan.app/Contents/Resources" />
-		<copy file="${basedir}/installer/macos/icon/Magellan.icns" todir="${basedir}/macos/Magellan.app/Contents/Resources/" overwrite="yes"/>
-		<mkdir dir="${basedir}/macos/Magellan.app/Contents/Resources/Java" />
-		<copy todir="${basedir}/macos/Magellan.app/Contents/Resources/Java/" overwrite="true">
+		<mkdir dir="${macos}/Magellan.app" />
+		<mkdir dir="${macos}/Magellan.app" />
+		<mkdir dir="${macos}/Magellan.app/Contents" />
+		<copy file="${installer}/macos/PkgInfo" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
+		<copy file="${installer}/macos/Info.plist" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
+		<mkdir dir="${macos}/Magellan.app/Contents/MacOS" />
+		<copy file="${installer}/macos/JavaApplicationStub" todir="${macos}/Magellan.app/Contents/MacOS/" overwrite="yes"/>
+		<chmod dir="${macos}/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>
+		<mkdir dir="${macos}/Magellan.app/Contents/Resources" />
+		<copy file="${installer}/macos/icon/Magellan.icns" todir="${macos}/Magellan.app/Contents/Resources/" overwrite="yes"/>
+		<mkdir dir="${macos}/Magellan.app/Contents/Resources/Java" />
+		<copy todir="${macos}/Magellan.app/Contents/Resources/Java/" overwrite="true">
 			<fileset dir="${release}/" includes="**"/>
 		</copy>
 
-		<antcall target="clear-classes"/>
-		<antcall target="clear-release"/>
+		<antcall target="clear-all" />
 
 	</target>
 
@@ -560,11 +570,9 @@
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
 	<target name="distributeNoPack" description=" This target compiles and packs the whole magellan application.">
-		<buildnumber file=".build.number"/>
+		<buildnumber file=".build.number" />
 
-		<antcall target="clear-classes"/>
-		<antcall target="clear-release"/>
-		<mkdir dir="${classes}" />
+		<antcall target="clear-all"/>
 
 		<antcall target="build_library">
 			<param name="build.number" value="${build.number}"/>
@@ -588,7 +596,13 @@
 
 		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
 
-		<property name="installer" location="${basedir}/installer"/>
+		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
+			<filterset>
+				<filter token="VERSION" value="${VERSION.POINTED}"/>
+				<filter token="BUILD" value="${build.number}"/>
+				<filter token="USER" value="${user.name}"/>
+			</filterset>
+		</copy>
 
 		<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
 			<arg value="${installer}/izpack-install.xml"/>
@@ -607,16 +621,15 @@
 			</classpath>
 		</java>
 
-		<antcall target="clear-release"/>
 	</target>
 
 
 	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
+	<!-- *    CREATE JAVADOC                                           * -->
 	<!-- *************************************************************** -->
 	<target name="doc" description="==> Creates the JavaDocs">
 		<echo message="Running JavaDoc" />
-		<javadoc encoding="iso-8859-1" packagenames="magellan.*" destdir="${javadoc.api}" author="true" version="true" use="true" private="false" windowtitle="Magellan ${VERSION.POINTED}" doctitle="Magellan ${VERSION.POINTED}" maxmemory="256M" locale="de_DE">
+		<javadoc encoding="${compile.encoding}" packagenames="magellan.*" destdir="${javadoc.api}" author="true" version="true" use="true" private="false" windowtitle="Magellan ${VERSION.POINTED}" doctitle="Magellan ${VERSION.POINTED}" maxmemory="256M" locale="de_DE">
 			<classpath refid="magellan.class.path" />
 			<link href="http://docs.oracle.com/javase/6/docs/api/" />
 			<fileset dir="${basedir}">
@@ -633,41 +646,32 @@
 	</target>
 
 	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
+	<!-- *    CLEAR CLASSES                                            * -->
 	<!-- *************************************************************** -->
-	<target name="clear-classes">
+	<target name="clear-directory" >
 		<!-- cleaning classes directory by creating&deleting and creating it -->
-		<echo message="Cleaning output folder"/>
-		<mkdir dir="${classes}" />
+		<echo message="Cleaning ${dir} folder"/>
+		<mkdir dir="${dir}" />
 		<delete includeEmptyDirs="true" failonerror="false">
-			<fileset dir="${classes}" includes="**" />
+			<fileset dir="${dir}" includes="**" />
 		</delete>
+		<mkdir dir="${dir}" />
 	</target>
 
 	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="clear-release">
-		<!-- cleaning release directory by creating&deleting and creating it -->
-		<echo message="Cleaning release folder"/>
-		<mkdir dir="${release}" />
-		<delete includeEmptyDirs="true" failonerror="false">
-			<fileset dir="${release}" includes="**"/>
-		</delete>
-		<mkdir dir="${release}" />
-	</target>
-
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
+	<!-- *     CLEAR ALL                                               * -->
 	<!-- *************************************************************** -->
 	<target name="clear-all">
-		<antcall target="clear-release"/>
-		<antcall target="clear-classes"/>
-		<!-- cleaning release directory by creating&deleting and creating it -->
-		<echo message="Cleaning macos folder"/>
-		<delete includeEmptyDirs="true" failonerror="false">
-			<fileset dir="${basedir}/macos" includes="**"/>
-		</delete>
+		<antcall target="clear-directory">
+			<param name="dir" value="${classes}"/>
+		</antcall>
+		<antcall target="clear-directory">
+			<param name="dir" value="${release}"/>
+		</antcall>
+		<antcall target="clear-directory">
+			<param name="dir" value="${macos}"/>
+		</antcall>
+
 		<echo message="Cleaning default"/>
 		<delete includeEmptyDirs="true" failonerror="false">
 			<fileset dir="${basedir}" includes="default-??????*/**"/>

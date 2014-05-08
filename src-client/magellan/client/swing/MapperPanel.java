@@ -114,16 +114,18 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private final float maxScale = 3.3f;
 
   /** The map component in this panel. */
-  private Mapper mapper = null;
-  private JScrollPane scpMapper = null;
-  private JLabel lblLevel = null;
-  private JLabel lblScaling = null;
-  private JComboBox<Integer> cmbLevel = null;
-  private JSlider sldScaling = null;
-  private JComboBox<Bookmark> cmbHotSpots = null;
-  private Timer timer = null;
-  private Point dragStart = null;
-  private boolean dragValidated = false;
+  private Mapper mapper;
+  private JScrollPane scpMapper;
+  private JLabel lblLevel;
+  private JLabel lblScaling;
+  /** contains JComboBox<Integer> */
+  private JComboBox cmbLevel;
+  private JSlider sldScaling;
+  /** JComboBox<Bookmark> */
+  private JComboBox cmbHotSpots;
+  private Timer timer;
+  private Point dragStart;
+  private boolean dragValidated;
 
   // minimap components
   protected Minimapper minimap;
@@ -945,7 +947,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     lblScaling.setLabelFor(sldScaling);
 
     lblLevel = new JLabel(Resources.get("mapperpanel.lbl.level.caption"));
-    cmbLevel = new JComboBox<Integer>(mapper.getLevels().toArray(new Integer[] {}));
+    cmbLevel = new JComboBox(mapper.getLevels().toArray(new Integer[] {}));
 
     if (cmbLevel.getItemCount() > 0) {
       cmbLevel.setSelectedIndex(0);
@@ -954,7 +956,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     cmbLevel.setMinimumSize(new Dimension(50, 25));
     cmbLevel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        Integer level = (Integer) ((JComboBox<?>) ae.getSource()).getSelectedItem();
+        Integer level = (Integer) ((JComboBox) ae.getSource()).getSelectedItem();
 
         if (level != null) {
           setLevel(level);
@@ -965,7 +967,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     lblLevel.setVisible(cmbLevel.getItemCount() > 1);
     cmbLevel.setVisible(cmbLevel.getItemCount() > 1);
 
-    cmbHotSpots = new JComboBox<Bookmark>();
+    cmbHotSpots = new JComboBox();
 
     fillComboHotSpots();
 
@@ -973,7 +975,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     cmbHotSpots.setVisible(cmbHotSpots.getItemCount() != 0);
     cmbHotSpots.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        Bookmark h = (Bookmark) ((JComboBox<?>) ae.getSource()).getSelectedItem();
+        Bookmark h = (Bookmark) ((JComboBox) ae.getSource()).getSelectedItem();
 
         if (h != null) {
           showHotSpot(h);

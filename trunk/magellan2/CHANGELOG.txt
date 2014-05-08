@@ -1,3 +1,6 @@
+2014-05-08 / Build 591 - stm (stm_@users.sourceforge.net)
+	* fixed MapperPanel and BookmarkDock to be compatible with Java 6 again
+
 2014-05-08 / Build 590 - stm (stm_@users.sourceforge.net)
     * upgrade to IzPack 4.3.5
 

@@ -54,7 +54,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
   @Deprecated
   public static final String IDENTIFIER = MagellanDesktop.BOOKMARKS_IDENTIFIER;
   private static BookmarkDock _INSTANCE = null;
-  private JList<Bookmark> list;
+  private JList list;
   private BookmarkManager manager = null;
 
   /**
@@ -79,14 +79,14 @@ public class BookmarkDock extends JPanel implements SelectionListener {
     dispatcher.addSelectionListener(this);
     setLayout(new BorderLayout());
 
-    list = new JList<Bookmark>();
+    list = new JList();
     updateData();
 
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-          Bookmark selectedValue = list.getSelectedValue();
+          Bookmark selectedValue = (Bookmark) list.getSelectedValue();
           if ((selectedValue != null) && (selectedValue.getObject() != manager.getActiveObject())) {
             dispatcher.fire(SelectionEvent.create(this, selectedValue.getObject(),
                 SelectionEvent.ST_DEFAULT));
@@ -120,7 +120,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
    * Rebuilds the whole list from the manager.
    */
   public void updateData() {
-    DefaultListModel<Bookmark> model = new DefaultListModel<Bookmark>();
+    DefaultListModel model = new DefaultListModel();
 
     for (Bookmark bookmark : manager.getBookmarks()) {
       model.addElement(bookmark);
@@ -157,7 +157,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
       for (Bookmark bm : manager.getBookmarks()) {
         if (bm.getObject().equals(o)) {
           list.setSelectedValue(bm, true);
-          manager.setActiveBookmark(((DefaultListModel<Bookmark>) list.getModel()).indexOf(bm));
+          manager.setActiveBookmark(((DefaultListModel) list.getModel()).indexOf(bm));
         }
       }
     }

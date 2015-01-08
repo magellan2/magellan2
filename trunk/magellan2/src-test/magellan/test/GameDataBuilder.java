@@ -42,13 +42,13 @@ import magellan.library.utils.MagellanFactory;
 
 /**
  * A helper class for creating reports for tests.
- * 
+ *
  * @author ...
  * @version 1.0, Sep 26, 2012
  */
 public class GameDataBuilder {
 
-  private static final int BASE_ROUND = 360;
+  private static final int BASE_ROUND = 901;
   private String gameName = ERESSEA;
   private Locale locale = Locale.GERMAN;
 
@@ -57,7 +57,7 @@ public class GameDataBuilder {
 
   /**
    * Creates a report at round {@value #BASE_ROUND}.
-   * 
+   *
    * @see #createSimplestGameData(int)
    */
   public GameData createSimplestGameData() throws Exception {
@@ -201,7 +201,7 @@ public class GameDataBuilder {
 
   /**
    * Add a faction to the given report.
-   * 
+   *
    * @param data
    * @param number
    * @param name
@@ -234,7 +234,7 @@ public class GameDataBuilder {
 
   /**
    * Sets the value of locale.
-   * 
+   *
    * @param locale The value for locale.
    */
   public void setLocale(Locale locale) {
@@ -243,7 +243,7 @@ public class GameDataBuilder {
 
   /**
    * Add an island to the report
-   * 
+   *
    * @param data
    * @param number
    * @param name
@@ -262,7 +262,7 @@ public class GameDataBuilder {
 
   /**
    * Adds or replaces a region to the report.
-   * 
+   *
    * @param data The report
    * @param coordinate as "1 0" or "2,3"
    * @param name
@@ -270,7 +270,8 @@ public class GameDataBuilder {
    * @param sortIndex
    * @return The new region
    */
-  public Region addRegion(GameData data, String coordinate, String name, String type, int sortIndex) {
+  public Region
+  addRegion(GameData data, String coordinate, String name, String type, int sortIndex) {
     CoordinateID c = CoordinateID.parse(coordinate, " ");
     if (c == null) {
       c = CoordinateID.parse(coordinate, ",");
@@ -296,7 +297,7 @@ public class GameDataBuilder {
   /**
    * Calls {@link #addUnit(GameData, String, String, Faction, Region, boolean)} with generated
    * details. "well known" is set to <code>false</code>.
-   * 
+   *
    * @return the new unit
    */
   public Unit addUnit(GameData data, String name, Region region) {
@@ -306,7 +307,7 @@ public class GameDataBuilder {
   /**
    * Calls {@link #addUnit(GameData, String, String, Faction, Region, boolean)} with generated
    * details.
-   * 
+   *
    * @return the new unit
    */
   public Unit addUnit(GameData data, String name, Region region, boolean wellKnown) {
@@ -318,7 +319,7 @@ public class GameDataBuilder {
   /**
    * Calls {@link #addUnit(GameData, String, String, Faction, Region, boolean)} with generated
    * details. "well known" is set to <code>true</code>.
-   * 
+   *
    * @return the new unit
    */
   public Unit addUnit(GameData data, String number, String name, Faction faction, Region region) {
@@ -327,7 +328,7 @@ public class GameDataBuilder {
 
   /**
    * Adds a new unit with the given details to the report
-   * 
+   *
    * @param data
    * @param number
    * @param name
@@ -411,7 +412,7 @@ public class GameDataBuilder {
 
   /**
    * Adds a road to the given region
-   * 
+   *
    * @param region
    * @param id
    * @param direction
@@ -441,7 +442,7 @@ public class GameDataBuilder {
 
   /**
    * Add some default spells to the report.
-   * 
+   *
    * @param data
    */
   public static void addSpells(GameData data) {
@@ -488,7 +489,7 @@ public class GameDataBuilder {
 
   /**
    * Adds a building to the report.
-   * 
+   *
    * @param data
    * @param region
    * @param id
@@ -512,7 +513,7 @@ public class GameDataBuilder {
 
   /**
    * Adds a ship to the report.
-   * 
+   *
    * @param data
    * @param region
    * @param id
@@ -535,7 +536,7 @@ public class GameDataBuilder {
 
   /**
    * Set some default luxury prices.
-   * 
+   *
    * @param region
    * @param buy The buyable luxury good
    */
@@ -578,7 +579,7 @@ public class GameDataBuilder {
 
   /**
    * Returns the value of gameName.
-   * 
+   *
    * @return Returns gameName.
    */
   public String getGameName() {
@@ -587,7 +588,7 @@ public class GameDataBuilder {
 
   /**
    * Sets the value of gameName.
-   * 
+   *
    * @param gameName The value for gameName.
    */
   public void setGameName(String gameName) {
@@ -596,7 +597,7 @@ public class GameDataBuilder {
 
   /**
    * Add the unit to the building. If it is the first unit, make it building owner.
-   * 
+   *
    * @param unit
    * @param building
    */

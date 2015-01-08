@@ -143,7 +143,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
     /**
      * Called when timer fired.
-     * 
+     *
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public synchronized void actionPerformed(ActionEvent e) {
@@ -198,7 +198,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
   /**
    * Recreates all relations in this region. Updater has to be stopped.
-   * 
+   *
    * @param r - the Region to be processed
    */
   public void processRegionNow(Region r) {
@@ -218,7 +218,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
   /**
    * Returns the value of rules.
-   * 
+   *
    * @return Returns rules.
    */
   protected Rules getRules() {
@@ -228,7 +228,7 @@ public class EresseaRelationFactory implements RelationFactory {
   /**
    * Creates a list of com.eressea.util.Relation objects for a unit starting at order position
    * <tt>from</tt>. Note: The parameter <code>from</code> is ignored by this implementation!
-   * 
+   *
    * @param u The unit
    * @param from The line of the <code>unit</code>'s orders where to start. Must be > 0
    * @return null
@@ -295,7 +295,7 @@ public class EresseaRelationFactory implements RelationFactory {
     affected.add(r);
 
     // count orders
-    int count = 2; // two for maintenance orders
+    int count = 3; // two for maintenance orders
     for (Unit u : r.units()) {
       count += u.getOrders2().size();
       if (u.getNewRegion() != null) {
@@ -330,6 +330,7 @@ public class EresseaRelationFactory implements RelationFactory {
         u.getFaction().clearRelations();
       }
     }
+    orders[count++] = new OrderInfo(new ReserveOwnOrder(r), P_RESERVIERE - 1, null, -1);
     orders[count++] = new OrderInfo(new UnitMaintenanceOrder(r), P_UNIT_MAINTENANCE, null, -1);
     orders[count++] =
         new OrderInfo(new BuildingMaintenanceOrder(r), P_BUILDING_MAINTENANCE, null, -1);
@@ -469,7 +470,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
   /**
    * A class that stores state information during the execution of the orders.
-   * 
+   *
    * @author stm
    */
   public static class EresseaExecutionState implements ExecutionState {
@@ -488,7 +489,7 @@ public class EresseaRelationFactory implements RelationFactory {
     /**
      * Tries to reserve a certain amount of an item. This method tries to get it from the material
      * pool if possible and may produce and register additional relations.
-     * 
+     *
      * @param unit The unit that requires the item
      * @param type The required item type
      * @param requiredAmount The required amount
@@ -529,9 +530,9 @@ public class EresseaRelationFactory implements RelationFactory {
                   result.add(giveRelation);
                   reservedAmount += givenAmount;
                 }
-              }
-              if (reservedAmount >= requiredAmount) {
-                break;
+                if (reservedAmount >= requiredAmount) {
+                  break;
+                }
               }
             }
           }
@@ -564,24 +565,14 @@ public class EresseaRelationFactory implements RelationFactory {
           }
         }
       }
-      // for (ItemTransferRelation itr : unit.getRelations(ItemTransferRelation.class)) {
-      // if (itr.itemType == type) {
-      // // remove what we gave
-      // if (itr.source == unit) {
-      // amount -= itr.amount;
-      // }
-      // if (itr.target == unit && includeReserved) {
-      // amount += itr.amount;
-      // }
-      // }
-      // }
+
       return amount;
     }
 
     /**
      * Tries to reserve a certain amount of an item. This method tries to get it from the material
      * pool if possible and may produce and register additional relations.
-     * 
+     *
      * @param type
      * @param requiredAmount
      * @param unit
@@ -638,7 +629,7 @@ public class EresseaRelationFactory implements RelationFactory {
     /**
      * Tries to reserve a certain amount of an item. This method tries to get it from the material
      * pool if possible and may produce and register additional relations.
-     * 
+     *
      * @param source
      * @param target
      * @param all

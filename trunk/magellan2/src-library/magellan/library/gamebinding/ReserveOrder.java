@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import java.util.List;
@@ -31,6 +31,7 @@ import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
+import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemType;
 import magellan.library.tasks.OrderSyntaxInspector;
@@ -42,7 +43,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A RESERVIERE order.
- * 
+ *
  * @author stm
  */
 public class ReserveOrder extends SimpleOrder {
@@ -50,6 +51,7 @@ public class ReserveOrder extends SimpleOrder {
   protected boolean each;
   protected int amount;
   protected StringID itemID;
+  private boolean ownOnly;
 
   /**
    * @param tokens
@@ -61,7 +63,7 @@ public class ReserveOrder extends SimpleOrder {
 
   /**
    * Returns the value of each.
-   * 
+   *
    * @return Returns each.
    */
   public boolean isEach() {
@@ -70,7 +72,7 @@ public class ReserveOrder extends SimpleOrder {
 
   /**
    * Returns the value of amount.
-   * 
+   *
    * @return Returns amount.
    */
   public int getAmount() {
@@ -79,11 +81,15 @@ public class ReserveOrder extends SimpleOrder {
 
   /**
    * Returns the value of itemType.
-   * 
+   *
    * @return Returns itemType.
    */
   public StringID getItemType() {
     return itemID;
+  }
+
+  public void setOwn(boolean ownOnly) {
+    this.ownOnly = ownOnly;
   }
 
   @Override
@@ -97,26 +103,27 @@ public class ReserveOrder extends SimpleOrder {
     }
 
     EresseaExecutionState eState = (EresseaExecutionState) state;
-    if (eState.getReserve(unit, itemID) != null) {
-      setWarning(unit, line, Resources.get("order.reserve.warning.duplicateitem", itemID));
-    }
-    eState.addReserve(unit, itemID, amount);
 
     ItemType itemType = data.getRules().getItemType(itemID);
+
+    for (ReserveRelation rel : unit.getRelations(ReserveRelation.class)) {
+      if (rel.origin == unit && rel.itemType == itemType) {
+        unit.removeRelation(rel);
+      }
+    }
 
     // RESERVE [EACH] <amount> <object><EOC>
     // RESERVIERE [JE] <amount> <object><EOC>
     // RESERVIERE ALLES <object><EOC>
     if (itemType != null) {
+      int hadAmount = unit.getItem(itemType) != null ? unit.getItem(itemType).getAmount() : 0;
+
       String warning = null;
       int realAmount = amount;
       // get the item from the list of modified items
       if (amount == Order.ALL) {
         // if the specified amount is 'all', convert u to a decent number
-        // TODO how exactly does RESERVIERE ALLES <item> work??
-        // realAmount =
-        // unit.getModifiedItem(itemType) != null ? unit.getModifiedItem(itemType).getAmount() : 0;
-        // FIXME warn as long as this feature is broken
+        realAmount = hadAmount;
         warning = Resources.get("order.reserve.warning.all");
       } else {
         if (each) {
@@ -125,8 +132,11 @@ public class ReserveOrder extends SimpleOrder {
           realAmount = amount * unit.getModifiedPersons();
         }
       }
-      // List<UnitRelation> relations =
-      // eState.reserveItem(itemType, amount == Order.ALL, false, realAmount, unit, line, this);
+
+      if (ownOnly) {
+        realAmount = Math.min(realAmount, hadAmount);
+      }
+
       List<UnitRelation> relations =
           eState.acquireItem(unit, itemType, realAmount, amount == Order.ALL, true, false, line,
               this);
@@ -143,6 +153,13 @@ public class ReserveOrder extends SimpleOrder {
       }
     } else {
       setWarning(unit, line, Resources.get("order.reserve.warning.unknownitem", itemID));
+    }
+
+    if (eState.getReserve(unit, itemID) != null) {
+      setWarning(unit, line, Resources.get("order.reserve.warning.duplicateitem", itemID));
+    }
+    if (!ownOnly) {
+      eState.addReserve(unit, itemID, amount);
     }
   }
 

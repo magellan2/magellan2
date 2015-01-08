@@ -21,7 +21,7 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.test.merge;
+package magellan.library.merge;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -41,6 +41,7 @@ import magellan.library.io.GameDataReader;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
+import magellan.test.merge.WriteGameData;
 
 import org.junit.Test;
 

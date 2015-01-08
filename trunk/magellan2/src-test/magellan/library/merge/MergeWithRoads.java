@@ -1,4 +1,4 @@
-package magellan.test.merge;
+package magellan.library.merge;
 
 import junit.framework.Assert;
 import magellan.library.GameData;

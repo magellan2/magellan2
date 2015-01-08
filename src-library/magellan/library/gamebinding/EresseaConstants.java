@@ -455,6 +455,11 @@ public class EresseaConstants extends GameConstants {
   /** Order constant MAKE */
   public static final StringID OC_MAKE = StringID.create("MAKE");
 
+  /** Order constant MAKETEMP */
+  public static final String O_MAKETEMP = "MAKETEMP";
+  /** Order constant MAKETEMP */
+  public static final StringID OC_MAKETEMP = StringID.create("MAKETEMP");
+
   /** Order constant MALLORNSEED */
   public static final String O_MALLORNSEED = "MALLORNSEED";
   /** Order constant MALLORNSEED */
@@ -700,9 +705,19 @@ public class EresseaConstants extends GameConstants {
   /** Order constant TEACH */
   public static final StringID OC_TEACH = StringID.create("TEACH");
 
-  /** Order constant TEMP */
+  /**
+   * Order constant TEMP
+   * 
+   * @deprecated use #OC_MAKETEMP
+   */
+  @Deprecated
   public static final String O_TEMP = "TEMP";
-  /** Order constant TEMP */
+  /**
+   * Order constant TEMP
+   * 
+   * @deprecated use #OC_MAKETEMP
+   */
+  @Deprecated
   public static final StringID OC_TEMP = StringID.create("TEMP");
 
   /** Order constant TEMPLATE */

@@ -34,7 +34,7 @@ public class MagellanOrdersImplementation implements Orders {
   /**
    * Creates a new Orders object. The orders <strong>are backed by <code>list</code></strong>, i.e.
    * changes in the list also change this orders object.
-   * 
+   *
    * @param list
    */
   public MagellanOrdersImplementation(Unit u, List<Order> list) {
@@ -131,7 +131,7 @@ public class MagellanOrdersImplementation implements Orders {
 
   protected String getOrderTranslation(StringID orderId) {
     return unit.getData().getGameSpecificStuff().getOrderChanger().getOrder(unit.getLocale(),
-        orderId);
+        orderId).toString();
   }
 
   /**

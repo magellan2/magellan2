@@ -9,6 +9,7 @@ package magellan.library.gamebinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -37,6 +38,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.rules.OrderType;
 import magellan.library.rules.Race;
 import magellan.library.utils.Locales;
+import magellan.library.utils.OrderToken;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -84,19 +86,23 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected String createNamingOrder(UnitContainer uc, String name, Unit unit) {
-    String order = null;
+    Object order = null;
 
     if (uc instanceof Building) {
-      order = getOrderTranslation(EresseaConstants.OC_CASTLE, unit);
+      order = EresseaConstants.OC_CASTLE;
     } else if (uc instanceof Ship) {
-      order = getOrderTranslation(EresseaConstants.OC_SHIP, unit);
+      order = EresseaConstants.OC_SHIP;
     } else if (uc instanceof Region) {
-      order = getOrderTranslation(EresseaConstants.OC_REGION, unit);
+      order = EresseaConstants.OC_REGION;
     } else if (uc instanceof Faction) {
-      order = getOrderTranslation(EresseaConstants.OC_FACTION, unit);
+      order = EresseaConstants.OC_FACTION;
     }
 
-    return getOrderTranslation(EresseaConstants.OC_NAME, unit) + " " + order + " \"" + name + "\"";
+    return getOrder(
+        unit.getLocale(),
+        EresseaConstants.OC_NAME,
+        order == null ? new Object[] { ("\"" + name + "\"") } : new Object[] { order,
+            ("\"" + name + "\"") }).toString();
   }
 
   /**
@@ -109,7 +115,7 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected String
-      createDescribeUnitContainerOrder(UnitContainer uc, Unit unit, String description) {
+  createDescribeUnitContainerOrder(UnitContainer uc, Unit unit, String description) {
     StringBuilder order = new StringBuilder();
 
     if (uc instanceof Building) {
@@ -389,7 +395,7 @@ public class EresseaOrderChanger implements OrderChanger {
   @Deprecated
   protected boolean isLongButShort(String rOrder, Locale orderLocale) {
     return rOrder.startsWith(getOrder(Locales.getOrderLocale(), EresseaConstants.OC_MAKE,
-        new Object[] { EresseaConstants.OC_TEMP }));
+        new Object[] { EresseaConstants.OC_TEMP }).getText());
   }
 
   /**
@@ -467,7 +473,7 @@ public class EresseaOrderChanger implements OrderChanger {
   private ArrayList<String> translateOrders(ArrayList<StringID> orders, Locale locale) {
     ArrayList<String> result = new ArrayList<String>();
     for (StringID order : orders) {
-      result.add(getOrder(locale, order));
+      result.add(getOrder(locale, order).getText());
     }
     return result;
   }
@@ -505,7 +511,7 @@ public class EresseaOrderChanger implements OrderChanger {
         // there is another order except buy and sell
         boolean firstIsBuySell =
             map.keySet().iterator().next().equals(EresseaConstants.OC_BUY)
-            || map.keySet().iterator().next().equals(EresseaConstants.OC_SELL);
+                || map.keySet().iterator().next().equals(EresseaConstants.OC_SELL);
         for (StringID order : map.keySet()) {
           if (order.equals(EresseaConstants.OC_BUY) || order.equals(EresseaConstants.OC_SELL)) {
             if (!firstIsBuySell)
@@ -587,49 +593,50 @@ public class EresseaOrderChanger implements OrderChanger {
    * @see magellan.library.gamebinding.OrderChanger#addGiveOrder(Unit, Unit, int, StringID, String)
    */
   public void addGiveOrder(Unit source, Unit target, int amount, StringID item, String comment) {
-    String sItem = "";
-    String tmpOrders = null;
+    List<Object> arguments = new LinkedList<Object>();
+
+    arguments.add(target.getID());
+    if (amount < 0) {
+      arguments.add(EresseaConstants.OC_EACH);
+    }
+    if (amount == OrderChanger.ALL) {
+      arguments.add(EresseaConstants.OC_ALL);
+    } else {
+      arguments.add(Math.abs(amount));
+    }
+
+    Order addedOrder = null;
     // FIXME methods like this should throw RulesExceptions if anything goes wrong...
     if (item != null) {
       ItemType itemType = getRules().getItemType(item);
       if (itemType == null)
         if (item.equals(EresseaConstants.I_MEN)) {
-          sItem = getOrderTranslation(EresseaConstants.OC_MEN, source);
+          arguments.add(EresseaConstants.OC_MEN);
         } else {
-          tmpOrders = "; unknown item " + item;
+          addedOrder = source.createOrder("; unknown item " + item);
         }
       else {
-        sItem = itemType.getOrderName();
+        arguments.add(itemType.getOrderName());
       }
     } else {
       if (amount != OrderChanger.ALL) {
-        tmpOrders = "; illegal amount and no item " + amount;
+        addedOrder = source.createOrder("; illegal amount and no item " + amount);
       }
-      sItem = "";
+      // no further argument
     }
-    if (tmpOrders != null) {
-      log.error(tmpOrders);
+    if (addedOrder != null) {
+      log.error(addedOrder);
     } else {
-      tmpOrders =
-          getOrder(source.getLocale(), EresseaConstants.OC_GIVE, new Object[] {
-            target.getID(),
-            (amount < 0 ? (getOrderTranslation(EresseaConstants.OC_EACH, source)) : ""),
-            (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.OC_ALL, source)
-                : Math.abs(amount)), sItem,
-                (comment != null ? (EresseaConstants.O_COMMENT + " " + comment) : "") });
-      // getOrderTranslation(EresseaConstants.OC_GIVE, source)
-      // + " "
-      // + target.getID().toString(getTemp(target.getLocale()))
-      // + (amount < 0 ? (" " + getOrderTranslation(EresseaConstants.OC_EACH, source) + " ")
-      // : " ")
-      // + (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.OC_ALL, source)
-      // : Math.abs(amount)) + sItem + (comment != null ? ("; " + comment) : "");
+      arguments.add(comment != null ? (EresseaConstants.O_COMMENT + " " + comment) : "");
+
+      addedOrder = getOrder(source.getLocale(), EresseaConstants.OC_GIVE, arguments.toArray());
     }
-    source.addOrder(tmpOrders);
+
+    source.addOrder(addedOrder, false);
   }
 
   protected String getTemp(Locale locale) {
-    return getOrder(locale, EresseaConstants.OC_TEMP);
+    return getOrder(locale, EresseaConstants.OC_TEMP).getText();
   }
 
   /**
@@ -637,13 +644,16 @@ public class EresseaOrderChanger implements OrderChanger {
    *      java.lang.String)
    */
   public void addGroupOrder(Unit unit, String name) {
-    String group;
+    Order group;
     if (name != null && name.trim().length() > 0) {
-      group = getOrderTranslation(EresseaConstants.OC_GROUP, unit) + " \"" + name + "\"";
+      group =
+          getOrder(unit.getLocale(), EresseaConstants.OC_GROUP,
+              new Object[] { ("\"" + name + "\"") });
     } else {
-      group = getOrderTranslation(EresseaConstants.OC_GROUP, unit);
+      group = getOrder(unit.getLocale(), EresseaConstants.OC_GROUP);
     }
-    unit.addOrder(group, true, 1);
+    // FIXME replace?
+    unit.addOrder(group, true);
   }
 
   /**
@@ -651,7 +661,7 @@ public class EresseaOrderChanger implements OrderChanger {
    *
    * @see OrderType#getName(Locale)
    */
-  protected String getOrderTranslation(StringID id, Unit unit) {
+  protected Order getOrderTranslation(StringID id, Unit unit) {
     return getOrder(unit.getLocale(), id);
   }
 
@@ -675,11 +685,12 @@ public class EresseaOrderChanger implements OrderChanger {
    * @see magellan.library.gamebinding.OrderChanger#getOrder(java.util.Locale,
    *      magellan.library.StringID)
    */
-  public String getOrder(Locale orderLocale, StringID orderId) {
+  public Order getOrder(Locale orderLocale, StringID orderId) {
     try {
       return getOrder(orderId, orderLocale, EMPTY);
     } catch (RulesException e) {
-      return orderId.toString();
+      return new SimpleOrder(Collections.singletonList(new OrderToken(orderId.toString())), orderId
+          .toString());
     }
   }
 
@@ -687,17 +698,21 @@ public class EresseaOrderChanger implements OrderChanger {
    * @see magellan.library.gamebinding.OrderChanger#getOrder(java.util.Locale,
    *      magellan.library.StringID, java.lang.Object[])
    */
-  public String getOrder(Locale orderLocale, StringID orderId, Object[] args) {
+  public Order getOrder(Locale orderLocale, StringID orderId, Object[] args) {
     try {
       return getOrder(orderId, orderLocale, args);
     } catch (RulesException e) {
       // return orderId.toString();
 
       StringBuilder order = new StringBuilder();
+      List<OrderToken> tokens = new ArrayList<OrderToken>();
       try {
-        order.append(getOrder1(orderId, orderLocale));
+        String text = getOrder1(orderId, orderLocale);
+        order.append(text);
+        tokens.add(new OrderToken(text));
       } catch (RulesException e2) {
         order.append(orderId);
+        tokens.add(new OrderToken(orderId.toString()));
       }
       for (Object arg : args) {
         String tok;
@@ -708,9 +723,10 @@ public class EresseaOrderChanger implements OrderChanger {
         }
         if (tok.length() > 0) {
           order.append(" ").append(tok);
+          tokens.add(new OrderToken(tok));
         }
       }
-      return order.toString();
+      return new SimpleOrder(tokens, order.toString());
 
     }
   }
@@ -719,7 +735,7 @@ public class EresseaOrderChanger implements OrderChanger {
    * @see magellan.library.gamebinding.OrderChanger#getOrder(magellan.library.StringID,
    *      java.util.Locale)
    */
-  public String getOrder(StringID orderId, Locale orderLocale) throws RulesException {
+  public Order getOrder(StringID orderId, Locale orderLocale) throws RulesException {
     return getOrder(orderId, orderLocale, EMPTY);
   }
 
@@ -727,16 +743,20 @@ public class EresseaOrderChanger implements OrderChanger {
    * @see magellan.library.gamebinding.OrderChanger#getOrder(magellan.library.StringID,
    *      java.util.Locale, java.lang.Object[])
    */
-  public String getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException {
+  public Order getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException {
     StringBuilder order = new StringBuilder();
-    order.append(getOrder1(orderId, orderLocale));
+    List<OrderToken> tokens = new ArrayList<OrderToken>();
+
+    String text;
+    order.append(text = getOrder1(orderId, orderLocale));
+    tokens.add(new OrderToken(text));
     for (Object arg : args) {
       String tok = getTokenLocalized(orderLocale, arg);
       if (tok.length() > 0) {
         order.append(" ").append(tok);
       }
     }
-    return order.toString();
+    return new SimpleOrder(tokens, order.toString());
   }
 
   private String getOrder1(StringID orderId, Locale orderLocale) throws RulesException {
@@ -831,7 +851,7 @@ public class EresseaOrderChanger implements OrderChanger {
     if (line.getProblem() == null && !line.isEmpty()
         && ordersObject.isToken(line, 0, EresseaConstants.OC_MAKE)) {
       if (line.getToken(1).getText().toLowerCase().startsWith(
-          getOrder(locale, EresseaConstants.OC_TEMP).toLowerCase()))
+          getOrder(locale, EresseaConstants.OC_TEMP).getText().toLowerCase()))
         return true;
     }
     return false;
@@ -871,14 +891,13 @@ public class EresseaOrderChanger implements OrderChanger {
    * Returns the orders necessary to issue the creation of all the child temp units of this unit.
    */
   public Collection<? extends Order>
-      getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
+  getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
     final OrderParser parser = getRules().getGameSpecificStuff().getOrderParser(unit.getData());
     final List<Order> cmds = new LinkedList<Order>();
     final Locale locale = unit.getLocale();
 
     for (TempUnit u : unit.tempUnits()) {
-      cmds.add(parser.parse(getOrder(locale, EresseaConstants.OC_MAKE, new Object[] { u.getID() }),
-          locale));
+      cmds.add(getOrder(locale, EresseaConstants.OC_MAKE, new Object[] { u.getID() }));
 
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
@@ -895,7 +914,7 @@ public class EresseaOrderChanger implements OrderChanger {
         }
       }
 
-      cmds.add(parser.parse(getOrder(locale, EresseaConstants.OC_END), locale));
+      cmds.add(getOrder(locale, EresseaConstants.OC_END));
     }
 
     return cmds;

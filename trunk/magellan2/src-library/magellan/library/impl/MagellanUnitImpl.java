@@ -1069,7 +1069,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       gdata.addTempUnit(t);
     } else {
       MagellanUnitImpl.log
-      .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
+          .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
     }
 
     // FIXME(stm) fire unitorderschanged?)
@@ -2940,7 +2940,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    */
   public CoordinateID getNewRegion() {
     if (getCache().destination == null)
-      if (getRegion() == null)
+      if (getRegion() != null)
         return getCache().destination = getRegion().getCoordinate();
       else
         return null;

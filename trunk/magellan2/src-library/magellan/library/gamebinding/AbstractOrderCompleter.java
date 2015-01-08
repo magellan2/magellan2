@@ -247,7 +247,7 @@ public abstract class AbstractOrderCompleter implements Completer {
           || ((spell.getIsFar() || !far)
               && (spell.getOnOcean() || !ocean || u.getRace().equals(
                   data.getRules().getRace(EresseaConstants.R_MEERMENSCHEN))) && (!combat ^ (spell
-                      .getType().toLowerCase().indexOf("combat") > -1)))) {
+              .getType().toLowerCase().indexOf("combat") > -1)))) {
         final String spellName = data.getTranslation(spell);
 
         completions.add(new Completion(opening + spellName + closing));
@@ -262,8 +262,8 @@ public abstract class AbstractOrderCompleter implements Completer {
 
     Skill magic = mage.getSkill(data.getRules().getSkillType(EresseaConstants.S_MAGIE));
     if ((magic != null)
-        && (Regions.getDist(mage.getRegion().getCoordinate(), familar.getRegion().getCoordinate()) <= magic
-        .getLevel())) {
+        && (mage.getRegion() == null || familar.getRegion() == null || Regions.getDist(mage
+            .getRegion().getCoordinate(), familar.getRegion().getCoordinate()) <= magic.getLevel())) {
       // familar is in range
       int maxlevel = magic.getLevel() / 2;
       magic = familar.getSkill(data.getRules().getSkillType(EresseaConstants.S_MAGIE));
@@ -521,9 +521,9 @@ public abstract class AbstractOrderCompleter implements Completer {
   public void addFactionItems(int amount, String postfix) {
     for (final Item i : unit.getFaction().getItems()) {
       completions
-      .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
-          (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
-              : Completion.DEFAULT_PRIORITY + 1));
+          .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
+              (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
+                  : Completion.DEFAULT_PRIORITY + 1));
     }
   }
 
@@ -1128,7 +1128,7 @@ public abstract class AbstractOrderCompleter implements Completer {
     // add rest of inner tokens
     for (OrderToken currentToken = innerTokenizer.getNextToken(); currentToken.ttype != OrderToken.TT_EOC
         && (currentToken.ttype != OrderToken.TT_EOC || (currentToken.ttype == OrderToken.TT_EOC && !currentToken
-        .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
+            .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
       if (currentToken.ttype != OrderToken.TT_CLOSING_QUOTE
           || (currentToken.ttype == OrderToken.TT_CLOSING_QUOTE && !currentToken.getText().equals(
               insertedQuote))) {

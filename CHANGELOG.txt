@@ -1,9 +1,10 @@
-2015-01-08 / Build 595 - stm (stm_@users.sourceforge.net)
+2015-01-08 / Build 596 - stm (stm_@users.sourceforge.net)
     * FOLLOW SHIP is short(ish) order now
     * implemented new RESEREVE semantics (Version 3.0, 20.07.2014): 
       - two phase reserve (RESERVing units always keep own stuff)
       - given stuff is always reserved (and not passed on)
-    * choose imperative as new preferred German syntax (ARBEITE, not ARBEITEN)      
+    * choose imperative as new preferred German syntax (ARBEITE, not ARBEITEN)
+    * added a few items      
 
 2014-05-08 / Build 591 - stm (stm_@users.sourceforge.net)
     * fixed MapperPanel and BookmarkDock to be compatible with Java 6 again

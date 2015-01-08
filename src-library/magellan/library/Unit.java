@@ -1353,8 +1353,14 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
    */
   public void reparseOrders();
 
+  /**
+   * Returns the modified region, i.e., the region that the unit will be in next round.
+   */
   public CoordinateID getNewRegion();
 
+  /**
+   * Sets the modified region.
+   */
   public void setNewRegion(CoordinateID destination);
 
   /**
@@ -1363,6 +1369,10 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
    */
   public void detach();
 
+  /**
+   * Returns true iff the all attributes of the unit are known. So it should be true the units of
+   * the owner of a server report and false for all others.
+   */
   public boolean isDetailsKnown();
 
 }

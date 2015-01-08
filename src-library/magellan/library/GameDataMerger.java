@@ -770,11 +770,13 @@ public class GameDataMerger {
       {
         // now get the unit of the first report
         Unit olderUnit;
+        boolean isOld = false;
         if (tempID != null) {
           olderUnit = olderGD.getTempUnit(tempID);
         } else {
           olderUnit = olderGD.getUnit(resultUnit.getID());
           if (olderUnit == null) {
+            isOld = true;
             olderUnit = newerGD.getOldUnit(resultUnit.getID());
             if (sameRound && olderUnit == null) {
               olderUnit = olderGD.getOldUnit(resultUnit.getID());
@@ -783,7 +785,7 @@ public class GameDataMerger {
         }
         // first merge step
         if (olderUnit != null) {
-          if (sameRound) { // full merge
+          if (sameRound && !isOld) { // full merge
             GameDataMerger.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound, true,
                 transformer1);
           } else { // only copy the skills to get change-level base
@@ -2473,7 +2475,7 @@ public class GameDataMerger {
     }
 
     if (curUnit.getFaction() != null) {
-      if ((resultUnit.getFaction() == null) || curWellKnown) {
+      if ((resultUnit.getFaction() == null) || curWellKnown || !newWellKnown) {
         resultUnit.setFaction(resultGD.getFaction(curUnit.getFaction().getID()));
       }
     }

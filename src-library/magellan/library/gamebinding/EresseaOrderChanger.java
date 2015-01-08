@@ -272,7 +272,7 @@ public class EresseaOrderChanger implements OrderChanger {
   /**
    * Adds camouflage orders, for hiding all that could identify the unit and remembering the old
    * values in comments.
-   * 
+   *
    * @param unit The affected unit.
    */
   public void addMultipleHideOrder(Unit unit) {
@@ -390,7 +390,7 @@ public class EresseaOrderChanger implements OrderChanger {
 
   /**
    * List of long orders in the default locale.
-   * 
+   *
    * @deprecated Use {@link #getLongOrdersTranslated()}.
    */
   @Deprecated
@@ -439,7 +439,7 @@ public class EresseaOrderChanger implements OrderChanger {
       longOrderTokens.add(EresseaConstants.OC_STEAL);
       longOrderTokens.add(EresseaConstants.OC_SIEGE);
       longOrderTokens.add(EresseaConstants.OC_RIDE);
-      longOrderTokens.add(EresseaConstants.OC_FOLLOW);
+      // longOrderTokens.add(EresseaConstants.OC_FOLLOW);
       longOrderTokens.add(EresseaConstants.OC_RESEARCH);
       longOrderTokens.add(EresseaConstants.OC_BUY);
       longOrderTokens.add(EresseaConstants.OC_TEACH);
@@ -492,21 +492,6 @@ public class EresseaOrderChanger implements OrderChanger {
       line++;
     }
 
-    StringID follow;
-    if (map.containsKey(follow = EresseaConstants.OC_FOLLOW)) {
-      // ignore FOLGE EINHEIT
-      for (Iterator<Integer> it = map.get(follow).iterator(); it.hasNext();) {
-        Integer occ = it.next();
-        if (orders.isToken(orders.get(occ.intValue()), 1, EresseaConstants.OC_UNIT)) {
-          it.remove();
-          break;
-        }
-      }
-      if (map.get(follow).size() == 0) {
-        map.remove(follow);
-      }
-    }
-
     StringID sell;
     StringID buy;
     if (map.containsKey(buy = EresseaConstants.OC_BUY)
@@ -516,7 +501,7 @@ public class EresseaOrderChanger implements OrderChanger {
         // there is another order except buy and sell
         boolean firstIsBuySell =
             map.keySet().iterator().next().equals(EresseaConstants.OC_BUY)
-                || map.keySet().iterator().next().equals(EresseaConstants.OC_SELL);
+            || map.keySet().iterator().next().equals(EresseaConstants.OC_SELL);
         for (StringID order : map.keySet()) {
           if (order.equals(EresseaConstants.OC_BUY) || order.equals(EresseaConstants.OC_SELL)) {
             if (!firstIsBuySell)
@@ -623,11 +608,11 @@ public class EresseaOrderChanger implements OrderChanger {
     } else {
       tmpOrders =
           getOrder(source.getLocale(), EresseaConstants.OC_GIVE, new Object[] {
-              target.getID(),
-              (amount < 0 ? (getOrderTranslation(EresseaConstants.OC_EACH, source)) : ""),
-              (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.OC_ALL, source)
-                  : Math.abs(amount)), sItem,
-              (comment != null ? (EresseaConstants.O_COMMENT + " " + comment) : "") });
+            target.getID(),
+            (amount < 0 ? (getOrderTranslation(EresseaConstants.OC_EACH, source)) : ""),
+            (amount == OrderChanger.ALL ? getOrderTranslation(EresseaConstants.OC_ALL, source)
+                : Math.abs(amount)), sItem,
+                (comment != null ? (EresseaConstants.O_COMMENT + " " + comment) : "") });
       // getOrderTranslation(EresseaConstants.OC_GIVE, source)
       // + " "
       // + target.getID().toString(getTemp(target.getLocale()))
@@ -659,7 +644,7 @@ public class EresseaOrderChanger implements OrderChanger {
 
   /**
    * Returns the order with the given id, localized for the unit's order locale.
-   * 
+   *
    * @see OrderType#getName(Locale)
    */
   protected String getOrderTranslation(StringID id, Unit unit) {
@@ -749,7 +734,7 @@ public class EresseaOrderChanger implements OrderChanger {
   /**
    * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
    * removes the corresponding orders from this unit.
-   * 
+   *
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
    * @param locale the locale to parse the orders with.
@@ -866,7 +851,8 @@ public class EresseaOrderChanger implements OrderChanger {
   /**
    * Returns the orders necessary to issue the creation of all the child temp units of this unit.
    */
-  public Collection<? extends Order> getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
+  public Collection<? extends Order>
+      getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
     final OrderParser parser = getRules().getGameSpecificStuff().getOrderParser(unit.getData());
     final List<Order> cmds = new LinkedList<Order>();
     final Locale locale = unit.getLocale();

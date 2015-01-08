@@ -294,7 +294,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
       Building tBuilding = getData().getBuilding(target);
 
       return tBuilding != null
-          && getData().getRules().getCastleType(tBuilding.getType().getID()) != null && checkNextFinal();
+          && getData().getRules().getCastleType(tBuilding.getType().getID()) != null
+          && checkNextFinal();
     }
   }
 
@@ -1179,14 +1180,12 @@ public class EresseaOrderParser extends AbstractOrderParser {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
-      getOrder().setLong(true);
       OrderToken t = getNextToken();
 
       if (isID(t.getText(), false) == true) {
         EntityID target = EntityID.createEntityID(t.getText(), getData().base);
         UnitContainer tContainer = getData().getShip(target);
         order = new UCArgumentOrder(getTokens(), text, target, UCArgumentOrder.T_SHIP);
-        getOrder().setLong(true);
         retVal = tContainer != null && readFinalID(t);
       } else {
         unexpected(t);
@@ -1423,7 +1422,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
      * For multiple-line-completion like the creation of give-orders for the resources of an item in
      * OrderCompleter.cmpltGibUIDAmount it is necessary to save the unit's id and the amount to be
      * given. This is done by this method.
-     * 
+     *
      * @param uid the unit's id
      * @param i the amount
      */
@@ -3751,7 +3750,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
   /**
    * Returns the value of completer.
-   * 
+   *
    * @return Returns completer.
    */
   @Override
@@ -3761,7 +3760,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
   /**
    * Sets the value of completer.
-   * 
+   *
    * @param completer The value for completer.
    */
   @Override

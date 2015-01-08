@@ -704,16 +704,18 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
     nextToken = new OrderToken(OrderToken.TT_EOC);
     assertTrue(equals(result[3], nextToken));
 
-    getParser().read(new StringReader("'abc'"));
-    result = getParser().getString(getParser().getLastToken());
-    openingToken = new OrderToken("'", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
-    assertTrue(equals(result[0], openingToken));
-    contentToken = new OrderToken("abc", 1, 4, OrderToken.TT_STRING, false);
-    assertTrue(result[1] != null && equals(result[1], contentToken));
-    closingToken = new OrderToken("'", 4, 5, OrderToken.TT_CLOSING_QUOTE, false);
-    assertTrue(equals(result[2], closingToken));
-    nextToken = new OrderToken(OrderToken.TT_EOC);
-    assertTrue(equals(result[3], nextToken));
+    if (contains(getParser().getQuotes(), '\'')) {
+      getParser().read(new StringReader("'abc'"));
+      result = getParser().getString(getParser().getLastToken());
+      openingToken = new OrderToken("'", 0, 1, OrderToken.TT_OPENING_QUOTE, false);
+      assertTrue(equals(result[0], openingToken));
+      contentToken = new OrderToken("abc", 1, 4, OrderToken.TT_STRING, false);
+      assertTrue(result[1] != null && equals(result[1], contentToken));
+      closingToken = new OrderToken("'", 4, 5, OrderToken.TT_CLOSING_QUOTE, false);
+      assertTrue(equals(result[2], closingToken));
+      nextToken = new OrderToken(OrderToken.TT_EOC);
+      assertTrue(equals(result[3], nextToken));
+    }
 
     getParser().read(new StringReader("\"a"));
     result = getParser().getString(getParser().getLastToken());
@@ -737,6 +739,13 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
     nextToken = new OrderToken(OrderToken.TT_EOC);
     assertTrue(equals(result[3], nextToken));
 
+  }
+
+  private boolean contains(char[] characters, char c) {
+    for (char member : characters)
+      if (member == c)
+        return true;
+    return false;
   }
 
   protected boolean equals(OrderToken orderToken, OrderToken nextToken) {

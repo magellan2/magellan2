@@ -1906,13 +1906,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       cache1.modifiedCombatStatus = getCombatStatus();
       // we only need to check relations for units, we know the
       // the actual combat status - do we?
-      if (cache1.modifiedCombatStatus > -1) {
-        for (CombatStatusRelation rel : getRelations(CombatStatusRelation.class)) {
-          if (!rel.newUnaidedSet) {
-            cache1.modifiedCombatStatus = rel.newCombatStatus;
-          }
+      // if (cache1.modifiedCombatStatus > -1) {
+      for (CombatStatusRelation rel : getRelations(CombatStatusRelation.class)) {
+        if (!rel.newUnaidedSet) {
+          cache1.modifiedCombatStatus = rel.newCombatStatus;
         }
       }
+      // }
     }
 
     return cache1.modifiedCombatStatus;
@@ -2928,6 +2928,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     }
   }
 
+  /**
+   * @see magellan.library.Unit#setNewRegion(magellan.library.CoordinateID)
+   */
   public void setNewRegion(CoordinateID destination) {
     getCache().destination = destination;
   }
@@ -2969,8 +2972,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     clearCache();
   }
 
+  /**
+   * @see magellan.library.Unit#isDetailsKnown()
+   */
   public boolean isDetailsKnown() {
-    return !ordersAreNull() && getCombatStatus() != -1;
+    // this appears to be the only attribute that is always and only defined for your own units
+    return getCombatStatus() != -1;
   }
 
 }

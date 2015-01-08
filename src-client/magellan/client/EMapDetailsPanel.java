@@ -5611,7 +5611,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
      * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String,
      *      magellan.client.swing.tree.NodeWrapperDrawPolicy)
      */
-    public NodeWrapperDrawPolicy init(Properties sett, String prefix, NodeWrapperDrawPolicy adapter) {
+    public NodeWrapperDrawPolicy
+        init(Properties sett, String prefix, NodeWrapperDrawPolicy adapter) {
       return null;
     }
 
@@ -5770,8 +5771,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         int newState = Integer.parseInt(e.getActionCommand());
 
         if (newState != unit.getCombatStatus()) {
-          unit.setCombatStatus(newState);
-
           refresh();
           getGameData().getGameSpecificStuff().getOrderChanger().addCombatOrder(unit, newState);
 
@@ -5873,7 +5872,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
           if (each)
             return getGameSpecificStuff().getOrderChanger().getOrder(
-                locale,                EresseaConstants.OC_RESERVE,
+                locale,
+                EresseaConstants.OC_RESERVE,
                 new Object[] { EresseaConstants.OC_EACH, amount,
                     reserveRelation.itemType.getOrderName() });
           else

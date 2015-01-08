@@ -1884,7 +1884,7 @@ public class E3CommandParser {
     int amount = world.getGameSpecificRules().getRecruitmentLimit(currentUnit, effRace);
 
     if (currentUnit.getPersons() + amount >= max) {
-      addNewWarning("Rekrutierungslimit erreicht");
+      addNewWarning("Rekrutierung fertig");
       amount = Math.min(max - currentUnit.getPersons(), amount);
     }
 
@@ -1892,13 +1892,16 @@ public class E3CommandParser {
       addNewError("Nicht genug Rekruten");
     }
 
-    if (effRace.getRecruitmentCosts() > 0) {
-      int costs = amount * effRace.getRecruitmentCosts();
-      addNeed("Silber", currentUnit, costs, costs, DEFAULT_PRIORITY);
-    } else {
-      addNewWarning("Rekrutierungskosten unbekannt");
-    }
     if (amount > 0) {
+      if (effRace.getRecruitmentCosts() > 0) {
+        int costs = amount * effRace.getRecruitmentCosts();
+        int maxCosts =
+            max == Integer.MAX_VALUE ? costs : (max - currentUnit.getPersons())
+                * effRace.getRecruitmentCosts();
+        addNeed("Silber", currentUnit, costs, maxCosts, DEFAULT_PRIORITY);
+      } else {
+        addNewWarning("Rekrutierungskosten unbekannt");
+      }
       getRecruitOrder(amount, effRace);
       addNewOrder(getRecruitOrder(amount, effRace != currentUnit.getRace() ? effRace : null), true);
     }

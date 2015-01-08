@@ -166,7 +166,7 @@ public class GiveOrder extends UnitArgumentOrder {
               unit.getData().getGameSpecificStuff().getOrderChanger().getTokenLocalized(
                   unit.getLocale(), target);
         } catch (RulesException e) {
-          targetID = "TEMP " + target;
+          targetID = EresseaConstants.O_TEMP + target;
         }
         setProblem(ProblemFactory.createProblem(Severity.WARNING,
             OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_UNKNOWN_TARGET.type, unit, null,

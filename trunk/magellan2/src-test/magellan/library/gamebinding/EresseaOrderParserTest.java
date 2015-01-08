@@ -47,7 +47,7 @@ import org.junit.Test;
 
 /**
  * Tests if valid orders are parsed correctly
- * 
+ *
  * @author stm
  * @version 1.0, Jun 20, 2009
  */
@@ -101,7 +101,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
-   * 
+   *
    */
   @Test
   public void testCommentReader() {
@@ -286,7 +286,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     if (DO_KNOWN_FAILURES) {
       for (String thing : new String[] { "S", "E" }) {
         checkOrder("BENENNEN " + thing + " \"Foo\"", false); // is it SCHIFF or Sägewerk or
-                                                             // Steinbruch??
+        // Steinbruch??
         checkOrder("BENENNE " + thing + " \"Foo\"; comment", false);
       }
     }
@@ -347,7 +347,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testBewacheReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_GUARD));
-    checkOrder("BEWACHE");
+    checkOrder("BEWACHEN");
+    // checkOrder("BEWACHT");
     checkOrder("BEWACHE ; a");
     checkOrder("BEWACHE 2", false);
   }
@@ -669,6 +670,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testMacheReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_MAKE) + " TEMP 123");
+    testLong("MACHE TEMP 123", false);
+    testLong("MACHE BURG", true);
     checkOrder("MACHE BURG");
     checkOrder("MACHE 2 BURG");
     checkOrder("MACHE BURG 123");
@@ -1225,7 +1228,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
 
   /**
    * Returns the value of parser.
-   * 
+   *
    * @return Returns parser.
    */
   @Override
@@ -1235,7 +1238,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
 
   /**
    * Sets the value of parser.
-   * 
+   *
    * @param parser The value for parser.
    */
   @Override
@@ -1245,7 +1248,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
 
   /**
    * Returns the value of completer.
-   * 
+   *
    * @return Returns completer.
    */
   @Override
@@ -1255,7 +1258,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
 
   /**
    * Sets the value of completer.
-   * 
+   *
    * @param completer The value for completer.
    */
   @Override

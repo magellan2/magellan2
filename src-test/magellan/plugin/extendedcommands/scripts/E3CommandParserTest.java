@@ -2273,7 +2273,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("REKRUTIEREN 25", unit, 2);
     assertWarning("braucht 2000 mehr Silber", unit, 3);
 
-    builder.addItem(data, unit, "Silber", 10000);
+    builder.addItem(data, unit, "Silber", 2000);
 
     unit.clearOrders();
     unit.addOrder("// $cript RekrutiereMax");
@@ -2283,13 +2283,24 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.clearOrders();
     unit.addOrder("// $cript RekrutiereMax 0 10");
     parser.execute(unit.getFaction());
-    assertWarning("Rekrutierungslimit erreicht", unit, 2);
+    assertWarning("Rekrutierung fertig", unit, 2);
     assertOrder("REKRUTIEREN 9", unit, 3);
 
     unit.clearOrders();
     unit.addOrder("// $cript RekrutiereMax 0 1");
     parser.execute(unit.getFaction());
-    assertWarning("Rekrutierungslimit erreicht", unit, 2);
+    assertWarning("Rekrutierung fertig", unit, 2);
+
+    // Unit unit2 = builder.addUnit(data, "zwei", unit.getRegion());
+    // builder.addItem(data, unit2, "Silber", 5000);
+    // unit2.addOrder("// $cript Versorge 1");
+
+    unit.clearOrders();
+    unit.addOrder("// $cript RekrutiereMax 10 100");
+    parser.execute(unit.getFaction());
+    assertOrder("REKRUTIEREN 25", unit, 2);
+    assertMessage("braucht 5920 mehr Silber", unit, 3);
+
   }
 
   /**

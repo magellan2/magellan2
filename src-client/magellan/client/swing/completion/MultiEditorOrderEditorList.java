@@ -107,8 +107,8 @@ import magellan.library.utils.logging.Logger;
  * A panel holding one or more {@link OrderEditor}s.
  */
 public class MultiEditorOrderEditorList extends InternationalizedDataPanel implements
-    OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
-    MouseListener, CacheHandler {
+OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
+MouseListener, CacheHandler {
   private static final Logger log = Logger.getInstance(MultiEditorOrderEditorList.class);
 
   private boolean multiEditorLayout = false;
@@ -263,7 +263,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * 
+   *
    */
   private void initContent() {
     clearUnits();
@@ -278,7 +278,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     hideButtons =
         Boolean.valueOf(
             settings
-                .getProperty(PropertiesHelper.ORDEREDITOR_HIDEBUTTONS, Boolean.FALSE.toString()))
+            .getProperty(PropertiesHelper.ORDEREDITOR_HIDEBUTTONS, Boolean.FALSE.toString()))
             .booleanValue();
     editAllFactions =
         Boolean.valueOf(
@@ -338,11 +338,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     // remember if we want to have the focus (see below)
     boolean restoreFocus =
         (getEditor(currentUnit) != null && getEditor(currentUnit).hasFocus()) || content.hasFocus()
-            || hasFocus();
+        || hasFocus();
     // if WE triggered the selection change, the new unit DOES get the focus
     restoreFocus =
         restoreFocus || (se.getSource() == this)
-            || (se.getSource().getClass().equals(OrderEditor.class));
+        || (se.getSource().getClass().equals(OrderEditor.class));
 
     if (multiEditorLayout) {
       deselectEditor(currentUnit);
@@ -363,7 +363,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           currentUnit.setOrderEditor(null);
           deselectEditor(editorSingelton);
           editorSingelton
-              .setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, ""));
+          .setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, ""));
           currentUnit = null;
           editorSingelton.setUnit(null);
           editorSingelton.setEditable(false);
@@ -384,7 +384,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Ensures that the correct editors are loaded and selected for the active object.
-   * 
+   *
    * @param activeObject
    */
   private void loadEditors(SelectionEvent se) {
@@ -419,7 +419,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           && (magellan.library.utils.Units.isPrivilegedAndNoSpy((Unit) activeObject) || isEditAllFactions())) {
         newUnit = (Unit) activeObject;
         newRegion = newUnit.getRegion();
-        newIsland = newRegion.getIsland();
+        newIsland = newRegion == null ? null : newRegion.getIsland();
         newFaction = newUnit.getFaction();
       } else if (activeObject instanceof Region) {
         newRegion = (Region) activeObject;
@@ -440,8 +440,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if ((newUnit == currentUnit && newUnit != null)
         || (newUnit != null && currentUnit != null
-            && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
-            .getFaction())) {
+        && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
+        .getFaction())) {
       // no change necessary
     } else {
       loadEditors(newIsland, newRegion, newFaction, newUnit);
@@ -457,7 +457,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Sets appearance for editor corresponding to <code>newUnit</code> in multieditor mode.
-   * 
+   *
    * @param newUnit If <code>null</code>, no editor is selected.
    */
   private void selectEditor(Unit newUnit) {
@@ -477,7 +477,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Sets appearance of an editor acording to the state of a unit.
-   * 
+   *
    * @param newUnit Must not be <code>null</code>.
    * @param editor
    */
@@ -508,7 +508,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Reset a unit's editor border to normal.
-   * 
+   *
    * @param selectedUnit
    */
   private void deselectEditor(Unit selectedUnit) {
@@ -519,7 +519,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Reset editor border to normal.
-   * 
+   *
    * @param editor Must not be <code>null</code>.
    */
   private void deselectEditor(OrderEditor editor) {
@@ -650,7 +650,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * 
+   *
    */
   public void focusGained(FocusEvent e) {
     // log.info("fcg: "+((OrderEditor)e.getSource()).getUnit());
@@ -671,7 +671,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Show a context menu on right-click.
-   * 
+   *
    * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
    */
   public void mouseClicked(MouseEvent e) {
@@ -694,7 +694,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Selects the editor in multi editor layout.
-   * 
+   *
    * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
    */
   public void mousePressed(MouseEvent e) {
@@ -811,7 +811,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Set Background color of orders with errors.
-   * 
+   *
    * @param c
    */
   public void setErrorBackground(Color c) {
@@ -941,7 +941,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Does initialization (of content resp. editor) for the specified mode.
-   * 
+   *
    * @param multi If <code>true</code> multi editor layout is initialized, else single editor mode.
    */
   public void setMultiEditorLayout(boolean multi) {
@@ -1058,7 +1058,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Load editors belonging to the specified island and faction depending on listMode.
-   * 
+   *
    * @param r
    * @param f
    */
@@ -1084,7 +1084,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Load editors belonging to the specified region and faction depending on listMode.
-   * 
+   *
    * @param r
    * @param f
    */
@@ -1116,7 +1116,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Loads editors for the specified unit depending on <code>listMode</code>.
-   * 
+   *
    * @param u
    */
   private void loadEditors(Unit u) {
@@ -1153,7 +1153,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    *  unit             unit   island  region  unit   region  faction/island  region/faction  faction/region
    *  other             ===  like parent  ===
    * </code>
-   * 
+   *
    * @param newIsland
    * @param newRegion
    * @param newFaction
@@ -1199,7 +1199,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Returns the cached editor for a unit.
-   * 
+   *
    * @param u A unit, may be <code>null</code>.
    * @return The cached editor for <code>u</code> or null if none exists
    */
@@ -1234,7 +1234,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * Removes the specified unit from the content. This includes removing editor and listeners for it
    * and the unit itself from <code>units</code>.
-   * 
+   *
    * @param u
    * @param it An iterator on <code>units</code>. If not <code>null</code>, the unit is removed via
    *          this iterator, if <code>null</code> it is removed via <code>units.remove</code>.
@@ -1266,7 +1266,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * Adds the specified unit to the content. This includes creating and adding a new order editor
    * and updating the internal data structures. If possible, the new editor is inserted at the right
    * position in the unit order, else it is inserted at the end.
-   * 
+   *
    * @param u The unit for the new editor.
    */
   private void addUnit(Unit u) {
@@ -1357,7 +1357,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Attaches a unit to an editor and vice versa.
-   * 
+   *
    * @param u
    * @param editor
    */
@@ -1689,14 +1689,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
       if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
         MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" + viewRect);
+        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" + viewRect);
       }
 
       if (getEditor(currentUnit) != null) {
         OrderEditor editor = getEditor(currentUnit);
         Rectangle bounds = editor.getBounds();
         MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
+        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
 
         while (!viewRect.contains(viewRect.x, bounds.y, viewRect.width, Math.min(viewRect.height,
             bounds.height))) {
@@ -1712,7 +1712,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
           if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
             MultiEditorOrderEditorList.log
-                .debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " + newPos);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " + newPos);
           }
 
           Rectangle newRect = new Rectangle(viewRect);
@@ -1736,10 +1736,10 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         }
 
         MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:"
-                + viewRect);
+        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:"
+            + viewRect);
         MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" + bounds);
+        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" + bounds);
       }
 
       content.validate();
@@ -1884,7 +1884,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     /**
      * Performs the button actions.
-     * 
+     *
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(java.awt.event.ActionEvent p1) {
@@ -1989,11 +1989,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                     int recruits =
                         Math.max(0,
                             (dialog.getRecruit() != null && dialog.getRecruit().length() > 0)
-                                ? Integer.parseInt(dialog.getRecruit()) : 0);
+                            ? Integer.parseInt(dialog.getRecruit()) : 0);
                     int transfers =
                         Math.max(0,
                             (dialog.getTransfer() != null && dialog.getTransfer().length() > 0)
-                                ? Integer.parseInt(dialog.getTransfer()) : 0);
+                            ? Integer.parseInt(dialog.getTransfer()) : 0);
 
                     if (recruits > 0) {
                       getGameData().getGameSpecificStuff().getOrderChanger().addRecruitOrder(
@@ -2010,7 +2010,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                           recruits * parentUnit.getRace().getRecruitmentCosts(),
                           EresseaConstants.I_USILVER,
                           Resources
-                              .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
+                          .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
                     }
                     if (dialog.isGiveMaintainCost() && transfers + recruits > 0) {
                       getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
@@ -2019,7 +2019,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                           parentUnit.getRace().getMaintenance() * (transfers + recruits),
                           EresseaConstants.I_USILVER,
                           Resources
-                              .get("completion.multieditorordereditorlist.tempunit.maintainCost"));
+                          .get("completion.multieditorordereditorlist.tempunit.maintainCost"));
                     }
 
                     dispatcher.fire(new UnitOrdersEvent(this, parentUnit));
@@ -2070,7 +2070,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                 JOptionPane.showMessageDialog(this, Resources
                     .get("completion.multieditorordereditorlist.msg.duplicatetempid.text"),
                     Resources
-                        .get("completion.multieditorordereditorlist.msg.duplicatetempid.title"),
+                    .get("completion.multieditorordereditorlist.msg.duplicatetempid.title"),
                     JOptionPane.ERROR_MESSAGE);
               }
             } catch (NumberFormatException nfe) {
@@ -2127,7 +2127,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     public void currentUnitChanged() {
       boolean enabled =
           (currentUnit != null) && currentUnit.getFaction() != null
-              && currentUnit.getFaction().isPrivileged();
+          && currentUnit.getFaction().isPrivileged();
 
       setConfirmEnabled(enabled);
       setCreationEnabled(enabled);
@@ -2141,7 +2141,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   private class ScrollPanel extends JPanel implements Scrollable {
     /**
      * DOCUMENT-ME
-     * 
+     *
      * @see javax.swing.Scrollable#getPreferredScrollableViewportSize()
      */
     public Dimension getPreferredScrollableViewportSize() {
@@ -2268,7 +2268,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Sets completion as the completion for order auto completion.
-   * 
+   *
    * @param completion
    */
   public void setCompleter(AutoCompletion completion) {

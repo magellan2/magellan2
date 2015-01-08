@@ -89,7 +89,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Game specific and usually fixed data (like races etc.).
-   * 
+   *
    * @deprecated use {@link #getRules()}
    */
   @Deprecated
@@ -178,6 +178,9 @@ public abstract class GameData implements Cloneable, Addeable {
   /** The 'mail' subject for this game data. This may be null */
   public String mailSubject;
 
+  /** The "Build" attribute */
+  public String build;
+
   private Region activeRegion;
 
   private Faction nullFaction;
@@ -190,7 +193,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * A collection of all units. The keys are <tt>Integer</tt> objects containing the unit's ids. The
    * values consist of objects of class <tt>Unit</tt>. TEMP units are not included, they are only
    * stored in the unit collection of their parents and their regions and in the tempUnits map.
-   * 
+   *
    * @return returns the units map
    * @deprecated Try using {@link #getUnits()}
    */
@@ -212,7 +215,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * A collection of tempUnits. The keys are <tt>Integer</tt> objects containinng the unit's ids.
    * The values consist of objects of class <tt>TempUnit</tt>.
-   * 
+   *
    * @return returns the tempunits map
    * @deprecated
    */
@@ -232,7 +235,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * each region. The values consist of objects of class <tt>Region</tt>.<br />
    * <b>Attention</b>: You might not always get what you expect if work based on coordinates in a
    * cylinder- or torus-shaped world! <a>
-   * 
+   *
    * @see Region#getNeighbours()
    * @return returns the regions map
    * @see #getRegion(CoordinateID)
@@ -257,7 +260,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * All factions in this game data. The keys are <tt>Integer</tt> objects containg the id of each
    * faction. The values consist of objects of class <tt>Faction</tt>. One of these factions can be
    * referenced by the ownerFaction attribute.
-   * 
+   *
    * @return returns the factions map
    * @deprecated Try using {@link #getFactions()}
    */
@@ -279,7 +282,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * All buildings in this game data. The keys are <tt>Integer</tt> objects containg the id of each
    * building. The values consist of objects of class <tt>Building</tt>.
-   * 
+   *
    * @return returns the buildings map
    * @deprecated Try using {@link #getBuildings()}
    */
@@ -301,7 +304,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * All ships in this game data. The keys are <tt>Integer</tt> objects containing the id of each
    * ship. The values consist of objects of class <tt>Ship</tt>.
-   * 
+   *
    * @return returns the ships map
    * @deprecated Try using {@link #getShips()}
    */
@@ -323,7 +326,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * All message types in this game data. The keys are <tt>Integer</tt> objects containg the id of
    * each message type. The values consist of <tt>MessageType</tt> objects.
-   * 
+   *
    * @return returns the messageType map
    */
   public Map<IntegerID, MessageType> msgTypes() {
@@ -336,7 +339,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * All magic spells in this game data. The keys are <tt>Integer</tt> objects containing the id of
    * each spell. The values consist of objects of class <tt>Spell</tt>.
-   * 
+   *
    * @return returns the spells map
    * @deprecated Try using {@link #getSpells()}
    */
@@ -358,7 +361,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * All potions in this game data. The keys are <tt>Integer</tt> objects containg the id of each
    * potion. The values consist of objects of class <tt>Potion</tt>.
-   * 
+   *
    * @return returns the potions map
    * @deprecated
    */
@@ -380,7 +383,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * All islands in this game data. The keys are <tt>Integer</tt> objects containing the id of each
    * island. The values consist of objects of class <tt>Island</tt>.
-   * 
+   *
    * @return returns the islands map
    * @deprecated
    */
@@ -456,7 +459,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Creates a new GameData object with the name of "default".
-   * 
+   *
    * @param _rules Valid rules for the game
    */
   public GameData(Rules _rules) {
@@ -468,7 +471,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Creates a new GameData object.
-   * 
+   *
    * @param rules Valid rules for the game
    * @param name The game name (like "Eressea", "E3", ...)
    * @throws NullPointerException if <code>rules==null</code>
@@ -506,7 +509,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Add a unit to the specified game data. If units() is <tt>null</tt>, this method has no effect.
-   * 
+   *
    * @param u the unit to be added.
    */
 
@@ -544,7 +547,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Returns an old unit
-   * 
+   *
    * @param id
    * @return the old unit with the given id, or <code>null</code> if it doesn't exist
    */
@@ -555,7 +558,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Add a region to the specified game data. If regions() is <tt>null</tt>, this method has no
    * effect.
-   * 
+   *
    * @param r the region to be added.
    */
 
@@ -591,7 +594,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Add a faction to the specified game data. If factions() is <tt>null</tt>, this method has no
    * effect.
-   * 
+   *
    * @param f the faction to be added.
    */
 
@@ -602,7 +605,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Add a building to the specified game data. If buildings() is <tt>null</tt>, this method has no
    * effect.
-   * 
+   *
    * @param b the building to be added.
    */
 
@@ -617,7 +620,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Add a ship to the specified game data. If ships() is <tt>null</tt>, this method has no effect.
-   * 
+   *
    * @param s the ship to be added.
    */
 
@@ -633,7 +636,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Add a message type to the specified game data. If msgTypes() is <tt>null</tt>, this method has
    * no effect.
-   * 
+   *
    * @param type the message type to be added.
    */
 
@@ -644,7 +647,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Add a spell to the specified game data. If spells() is <tt>null</tt>, this method has no
    * effect.
-   * 
+   *
    * @param s the spells to be added.
    */
 
@@ -655,7 +658,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Add a potion to the specified game data. If potions() is <tt>null</tt>, this method has no
    * effect.
-   * 
+   *
    * @param p the potion to be added.
    */
 
@@ -666,7 +669,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Add an island to the specified game data. If islands() is <tt>null</tt>, this method has no
    * effect.
-   * 
+   *
    * @param i the island to be added.
    */
 
@@ -716,7 +719,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a unit from units() by id.
-   * 
+   *
    * @param id the id of the unit to be retrieved.
    * @return an instance of class <tt>Unit</tt> or <tt>null</tt> if there is no unit with the
    *         specified id or if units() is <tt>null</tt>.
@@ -736,7 +739,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a region from regions() by id.<br />
    * <b>Attention</b>: You might not always get what you expect if work based on coordinates in a
    * cylinder- or torus-shaped world! <a>
-   * 
+   *
    * @see Region#getNeighbours()
    * @param c region coordinate
    * @return an instance of class <tt>Region</tt> or <tt>null</tt> if there is no region with the
@@ -748,7 +751,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a faction from factions() by id.
-   * 
+   *
    * @param id the id of the faction to be retrieved.
    * @return an instance of class <tt>Faction</tt> or <tt>null</tt> if there is no faction with the
    *         specified id or if factions() is <tt>null</tt>.
@@ -760,7 +763,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a building from buildings() by id.
-   * 
+   *
    * @param id the id of the building to be retrieved.
    * @return an instance of class <tt>Building</tt> or <tt>null</tt> if there is no building with
    *         the specified id or if buildings() is <tt>null</tt>.
@@ -771,7 +774,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a ship from ships() by id.
-   * 
+   *
    * @param id the id of the ship to be retrieved.
    * @return an instance of class <tt>Ship</tt> or <tt>null</tt> if there is no ship with the
    *         specified id or if ships() is <tt>null</tt>.
@@ -782,7 +785,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a message type from msgTypes() by id.
-   * 
+   *
    * @param id the id of the message type to be retrieved.
    * @return an instance of class <tt>MessageType</tt> or <tt>null</tt> if there is no message type
    *         with the specified id or if msgTypes() is <tt>null</tt>.
@@ -793,7 +796,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a spell from spells() by id.
-   * 
+   *
    * @param id the id of the spell to be retrieved.
    * @return an instance of class <tt>Spell</tt> or <tt>null</tt> if there is no spell with the
    *         specified id or if spells() is <tt>null</tt>.
@@ -804,7 +807,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a spell from spells() by Name. used for orderReader / completer
-   * 
+   *
    * @param spellName the name of the spell to be retrieved.
    * @return an instance of class <tt>Spell</tt> or <tt>null</tt> if there is no spell with the
    *         specified id or if spells() is <tt>null</tt>.
@@ -821,7 +824,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a potion from potions() by id.
-   * 
+   *
    * @param id the id of the potion to be retrieved.
    * @return an instance of class <tt>Potion</tt> or <tt>null</tt> if there is no potion with the
    *         specified id or if potions() is <tt>null</tt>.
@@ -832,7 +835,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a island from islands() by id.
-   * 
+   *
    * @param id the id of the island to be retrieved.
    * @return an instance of class <tt>Island</tt> or <tt>null</tt> if there is no island with the
    *         specified id or if islands() is <tt>null</tt>.
@@ -886,7 +889,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Removes a region from the data. Also removes units, buildings, ships, and hot spots.
-   * 
+   *
    * @return The region that was removed, or <code>null</code> if the region wasn't found
    */
   public Region removeRegion(Region r) {
@@ -962,7 +965,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Set a collection of selected regions.
-   * 
+   *
    * @param regions the Map of coordinates of selected regions
    */
   public abstract void setSelectedRegionCoordinates(Map<CoordinateID, Region> regions);
@@ -989,7 +992,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * This method sets the current Temp ID with respect to the possible max value of the current
    * base. The value also has to be >= -1
-   * 
+   *
    * @param newTempID Temp ID
    */
   public void setCurTempID(int newTempID) {
@@ -999,7 +1002,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * This method interprets the string as a number in the {@link #base} and sets the current Temp ID
    * with respect to the possible max value of the current base. The value also has to be >= -1
-   * 
+   *
    * @param s Temp ID
    */
   public void setCurTempID(String s) {
@@ -1008,7 +1011,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a translation from translations().
-   * 
+   *
    * @param key the key of the translation to be retrieved.
    * @return an instance of class <tt>String</tt>. If no translation could be found, the name of the
    *         object is returned.
@@ -1019,7 +1022,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Retrieve a translation from translations().
-   * 
+   *
    * @param key the key of the translation to be retrieved.
    * @return an instance of class <tt>String</tt>. If no translation could be found, the key is
    *         returned.
@@ -1035,7 +1038,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Puts a translation into the translation table.
-   * 
+   *
    * @param from a language independent key.
    * @param to the language dependent translation of key.
    */
@@ -1056,7 +1059,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Set a date, or a 'round', for this game data.
-   * 
+   *
    * @param d the new date.
    */
   public void setDate(Date d) {
@@ -1065,7 +1068,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Get the date associated with this game data.
-   * 
+   *
    * @return rules.Date object
    */
   public Date getDate() {
@@ -1086,7 +1089,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader)
-   * 
+   *
    * @throws CloneNotSupportedException If cloning doesn't succeed
    * @see java.lang.Object#clone()
    */
@@ -1099,7 +1102,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader) and at
    * the same time translates the origin to <code>newOrigin</code>.
-   * 
+   *
    * @throws CloneNotSupportedException If cloning doesn't succeed
    */
   public GameData clone(CoordinateID newOrigin) throws CloneNotSupportedException {
@@ -1109,7 +1112,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Returns a clone of the game data (using CRWriter/CRParser trick encapsulated in Loader) and at
    * the same time translates the new report.
-   * 
+   *
    * @throws CloneNotSupportedException If cloning doesn't succeed
    */
   public GameData clone(ReportTransformer coordinateTranslator) throws CloneNotSupportedException {
@@ -1134,7 +1137,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Returns an estimate of the memory (in bytes) needed to store this game data. This can be a very
    * rough estimate!
-   * 
+   *
    * @return An estimate of the memory needed to store this game data
    */
   public abstract long estimateSize();
@@ -1146,7 +1149,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Provides the encapsulating of game specific stuff
-   * 
+   *
    * @see GameSpecificStuff
    */
   public final GameSpecificStuff getGameSpecificStuff() {
@@ -1155,7 +1158,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Shortcut for getGameSpecificStuff().getGameSpecificRules().
-   * 
+   *
    * @see GameSpecificStuff
    */
   public final GameSpecificRules getGameSpecificRules() {
@@ -1164,7 +1167,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Returns the game's map metric.
-   * 
+   *
    * @see GameSpecificStuff
    */
   public final MapMetric getMapMetric() {
@@ -1173,7 +1176,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Returns an appropriate order parser.
-   * 
+   *
    * @see GameSpecificStuff
    */
   public final OrderParser getOrderParser() {
@@ -1559,7 +1562,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Marks a new region as the active region.
-   * 
+   *
    * @param region
    */
   public void setActiveRegion(Region region) {
@@ -1568,7 +1571,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Returns the relation of two map layers.
-   * 
+   *
    * @return the <code>CoordinateID</code> of the toLevel region which is accessible by the
    *         fromLevel region with CoordinateID <0, 0, fromLevel>.
    */
@@ -1590,7 +1593,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * This method should wrap the mapping information former contained in
    * magellan.client.swing.MapperPanel.setLevel(int)
-   * 
+   *
    * @param level
    * @return Mapped Coordinate
    */
@@ -1614,7 +1617,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Removes all translations for Faction f.
-   * 
+   *
    * @param f
    */
   public void clearTranslations(EntityID f) {
@@ -1628,7 +1631,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * subtract this translation from <code>otherFaction</code>'s coordinates in layer
    * <code>layer</code> to get coordinates of this report. The coordinate translation of the owner
    * faction is <i>not</i> always (0, 0, layer).
-   * 
+   *
    * @param otherFaction
    * @param layer
    * @return The coordinate translation of <code>otherFaction</code> to the owner faction.
@@ -1653,7 +1656,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * <code>otherFaction</code>. In other words, you have to subtract this translation from
    * <code>otherFaction</code>'s coordinates in layer <code>layer</code> to get coordinates of this
    * report. The coordinate translation of the owner faction is <i>not</i> always (0, 0, layer).
-   * 
+   *
    * @return The map of coordinate translations of faction <code>otherFaction</code> or
    *         <code>null</code> if unknown
    * @see #getCoordinateTranslation(EntityID, int)
@@ -1671,7 +1674,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * <code>otherFaction</code>. In other words, you have to subtract this translation from
    * <code>otherFaction</code>'s coordinates in layer <code>layer</code> to get coordinates of this
    * report. The coordinate translation of the owner faction is <i>not</i> always (0, 0, layer).
-   * 
+   *
    * @param otherFaction
    * @param usedTranslation
    */
@@ -1686,7 +1689,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * The faction that this report is for.
-   * 
+   *
    * @return The owner faction. <code>null</code> for unknown is possible.
    */
   public EntityID getOwnerFaction() {
@@ -1695,7 +1698,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Changes the owner faction. Clears all coordinate translations.
-   * 
+   *
    * @param ownerFaction
    */
   public void setOwnerFaction(EntityID ownerFaction) {
@@ -1753,7 +1756,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Adds a "void" region at <code>c</code>.
-   * 
+   *
    * @return the new void region
    * @throws IllegalArgumentException if there was already a region at <code>c</code>.
    */
@@ -1778,7 +1781,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * Makes r a "wraparound" region, removing it as a normal region. A wrapper is a region which is
    * not a real region, but is only a placeholder for a another region (most probably to represent a
    * cylinder- or torus-shaped world.
-   * 
+   *
    * @param wrapper The placeholder region
    * @param original The original region, represented by the wrapper.
    */
@@ -1819,7 +1822,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Returns a view of al "wraparound" regions.
-   * 
+   *
    * @see #makeWrapper(Region, Region)
    */
   public Map<CoordinateID, Region> wrappers() {
@@ -1828,7 +1831,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Gets the real region for a wrapper region.
-   * 
+   *
    * @return The region corresponding to this wrapper, or <code>null</code> if none is known.
    * @see #makeWrapper(Region, Region)
    */
@@ -1887,7 +1890,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Sets the value of outOfMemory.
-   * 
+   *
    * @param outOfMemory The value for outOfMemory.
    */
   public void setOutOfMemory(boolean outOfMemory) {
@@ -1901,7 +1904,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Returns the value of outOfMemory.
-   * 
+   *
    * @return Returns outOfMemory.
    */
   public boolean isOutOfMemory() {
@@ -1910,7 +1913,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * Tries to repair errors in this data and returns the repaired data.
-   * 
+   *
    * @param ui2
    * @return The repaired data (may be <code>this</code>)
    */

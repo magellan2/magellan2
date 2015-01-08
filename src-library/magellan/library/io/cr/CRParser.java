@@ -127,7 +127,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Creates a new parser.
-   * 
+   *
    * @param ui The UserInterface for the progress. Can be NULL. Then no operation is displayed.
    */
   public CRParser(UserInterface ui) {
@@ -148,7 +148,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
    * coordinate read and its level (the z coordinate) equals the new origins level, its x and y
    * coordinates are decreased by origin.x and origin.y, respectively. That means, that the reports
    * origin is transferred to newOrigin.
-   * 
+   *
    * @param translator The coordinates (relative to the origin of the report) of the new origin.
    */
   public CRParser(UserInterface ui, ReportTransformer translator) {
@@ -162,7 +162,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Returns the value of the configuration tag ("Konfiguration") as it has been read from the CR.
-   * 
+   *
    * @return The configuration string or <code>null</code> if the tag hasn't been read (yet)
    */
   public String getConfiguration() {
@@ -171,7 +171,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Print an error message on the standard output channel. Does not produce duplicate messages.
-   * 
+   *
    * @param context The context (usually a block) within the error has been found.
    * @param fetch If this is true, read the next line and skip the line with the error. Otherwise
    *          the line stays still at the front of the input.
@@ -216,7 +216,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * Read the MESSAGETYPES block. Note that message type stubs have already been created by parsing
    * the messages themselves.
-   * 
+   *
    * @return the resulting list of <tt>MessageType</tt> objects.
    * @throws IOException if the scanner throws an IOException
    */
@@ -254,7 +254,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * Read a MESSAGETYPE block. Note that message type stubs have already been created by parsing the
    * messages themselves.
-   * 
+   *
    * @throws IOException if the scanner throws an IOException
    */
   private void parseMessageType(GameData data) throws IOException {
@@ -288,7 +288,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Handle a sequence of quoted strings, interpreting them as messages.
-   * 
+   *
    * @param msgs a list to add the read messages to. May be <code>null</code>.
    * @return the resulting list of <tt>Message</tt> objects.
    */
@@ -322,7 +322,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * Handle a sequence of quoted strings, storing them as <tt>String</tt> objects. String
    * interpretation starts with the next line.
-   * 
+   *
    * @param strings a list to add the read strings to. May be <code>null</code>.
    * @return the resulting list of <tt>String</tt> objects.
    */
@@ -348,7 +348,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse the SPRUECHE sub block of UNIT and add them as <tt>Spell</tt> objects.
-   * 
+   *
    * @param world the game data to get the spells from
    * @param map a map to add the read spells to
    * @return the resulting map of <tt>Spell</tt> objects.
@@ -379,7 +379,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse a KAMPFZAUBER sub block of UNIT and add it as <tt>CombatSpell</tt> object.
-   * 
+   *
    * @param world the game data to get the spells from
    * @param unit the unit that should get the combat spells set
    */
@@ -403,8 +403,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
         if (spell == null) {
           CRParser.log
-              .warn("CRParser.parseUnitCombatSpells(): a combat spell refers to an unknown spell (line "
-                  + sc.lnr + ")");
+          .warn("CRParser.parseUnitCombatSpells(): a combat spell refers to an unknown spell (line "
+              + sc.lnr + ")");
           spell = MagellanFactory.createSpell(spellID, world);
           spell.setName(sc.argv[0]);
           world.addSpell(spell);
@@ -428,7 +428,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
    * special message attributes. These are the ";type" and ";rendered" attributes, which are
    * directly accessible in the <tt>Message</tt> object as type and text. If there is no MessageType
    * object for this type of message, a stub MessageType object is created and added to world.
-   * 
+   *
    * @return a list containing <tt>Message</tt> objects for all messages read.
    * @throws IOException if the scanner throws an IOException
    */
@@ -496,7 +496,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse a battle block sequence. Currently this is a block of message blocks.
-   * 
+   *
    * @return A List of instances of class Battle. May be <code>null</code>.
    * @throws IOException if the scanner throws an IOException
    */
@@ -525,7 +525,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse a battlespec block sequence. Currently this is a block of message blocks.
-   * 
+   *
    * @return A List of instances of class Battle.
    * @throws IOException if the scanner throws an IOException
    */
@@ -553,7 +553,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse a sequence of spell blocks. Do not confuse this with the spells block of a unit!
-   * 
+   *
    * @throws IOException if the scanner throws an IOException
    */
   private void parseSpells() throws IOException {
@@ -634,7 +634,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse a sequence of potion (TRANK) blocks.
-   * 
+   *
    * @throws IOException if the scanner throws an IOException
    */
   private void parsePotions() throws IOException {
@@ -679,7 +679,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse a sequence of island blocks.
-   * 
+   *
    * @throws IOException if the scanner throws an IOException
    */
   private void parseIslands() throws IOException {
@@ -715,7 +715,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Reads the header and stores the tags in a map.
-   * 
+   *
    * @param in The reader, that will read the file for us.
    * @return a map, that maps all found header tags to their values.
    * @throws IOException If an I/O error occurs
@@ -766,7 +766,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
    * 36;Basis
    * 1;Umlaute
    * </code>
-   * 
+   *
    * @throws IOException If an I/O error occurs
    */
   private void parseHeader() throws IOException {
@@ -815,7 +815,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
               && (world.base != 36)) {
             // this should not happen
             CRParser.log
-                .error("BASE ERROR !! read report could have not base36 !! Changed to base36.");
+            .error("BASE ERROR !! read report could have not base36 !! Changed to base36.");
             world.base = 36;
           }
         }
@@ -871,6 +871,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("mailto")) {
         world.mailTo = sc.argv[0];
+        sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Build")) {
+        world.build = sc.argv[0];
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("reportowner")) {
         if (world.getOwnerFaction() == null && !configuration.equals("Standard")) {
@@ -988,7 +991,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseRaceSkillBonuses(): in line " + sc.lnr
             + ": unable to convert skill bonus " + sc.argv[0]
-            + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
+                + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1009,7 +1012,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseRaceTerrainSkillBonuses(): in line " + sc.lnr
             + ": unable to convert skill bonus " + sc.argv[0]
-            + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
+                + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1034,7 +1037,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parses the ITEM and HERB blocks in the game specific rules CR file.
-   * 
+   *
    * @param rules
    * @throws IOException
    */
@@ -1321,7 +1324,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseBuildingSkillBonuses(): in line " + sc.lnr
             + ": unable to convert skill bonus " + sc.argv[0]
-            + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
+                + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1339,7 +1342,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseBuildingRawMaterials(): in line " + sc.lnr
             + ": unable to convert item amount " + sc.argv[0]
-            + " to an integer. Ignoring amount for item " + sc.argv[1]);
+                + " to an integer. Ignoring amount for item " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1357,7 +1360,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseBuildingMaintenance(): in line " + sc.lnr
             + ": unable to convert item amount " + sc.argv[0]
-            + " to an integer. Ignoring amount for item " + sc.argv[1]);
+                + " to an integer. Ignoring amount for item " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1479,7 +1482,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Read a ruleset from a specified file.
-   * 
+   *
    * @throws IOException If an I/O error occurs
    */
   public Rules readRules(FileType filetype) throws IOException {
@@ -1488,7 +1491,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Reads a Rules object from an input Reader.
-   * 
+   *
    * @param in The reader that will read the file for us.
    * @return a Rules object, or <code>null</code>, if the file hasn't been a ruleset.
    * @throws IOException If an I/O error occurs
@@ -1525,7 +1528,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parses a rules file and stores the result in <code>rules</code>.
-   * 
+   *
    * @param rules An existing Rules object
    * @throws IOException If an I/O error occurs
    */
@@ -1674,7 +1677,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * This is the new version, the old is called "ALLIERTE" Heuristic for end of block detection:
    * There are no subblocks in one ALLIANZ block.
-   * 
+   *
    * @param allies A map with existing alliances or <code>null</code>.
    * @return The (modified) <code>allies</code> map
    * @throws IOException If an I/O error occurs
@@ -1760,7 +1763,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * This is the old "ADRESSEN" version. Heuristic for block termination: - Terminate on any other
    * block This method isn't implemented yet. It skips the entire "ADRESSEN" block.
-   * 
+   *
    * @throws IOException If an I/O error occurs
    */
   private void parseAdressen() throws IOException {
@@ -1776,7 +1779,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
    * - Terminate on another PARTEI block (without warning)<br />
    * - Terminate on another id block (without warning)<br />
    * - Terminate on any other unknown block (with warning)
-   * 
+   *
    * @param sortIndex
    * @return The resulting faction
    * @throws IOException If an I/O error occurs
@@ -1916,6 +1919,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           faction.setAlliance(world.getAllianceGroup(alliance));
         }
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("joined")) {
+        CRParser.log.fine("ignoring joined tag" + sc.argv[0]);
       } else if (sc.isBlock && sc.argv[0].equals("ADRESSEN")) {
         parseAdressen();
       } else if (sc.isBlock && sc.argv[0].equals("GEGENSTAENDE")) {
@@ -2015,7 +2020,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * Accesses unit.persons which must be > 0 and just adds new skills, existing skills are not
    * deleted.
-   * 
+   *
    * @throws IOException if the scanner throws an IOException
    */
   private void parseSkills(Unit unit) throws IOException {
@@ -2630,7 +2635,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse consecutive GRENZE sub blocks of the REGION block.
-   * 
+   *
    * @param r a list to add the read borders to
    * @throws IOException if the scanner throws an IOException
    */
@@ -2643,7 +2648,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse consecutive SIGN sub blocks of the REGION block.
-   * 
+   *
    * @param r the actual region
    * @throws IOException if the scanner throws an IOException
    */
@@ -2656,7 +2661,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse one GRENZE sub block of the REGION block.
-   * 
+   *
    * @return the resulting <tt>Border</tt> object.
    * @throws IOException if the scanner throws an IOException
    */
@@ -2678,7 +2683,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           // .getId()));
         } catch (final NumberFormatException e) {
           final String dirNames[] =
-              { "Nordwesten", "Nordosten", "Osten", "Südosten", "Südwesten", "Westen" };
+            { "Nordwesten", "Nordosten", "Osten", "Südosten", "Südwesten", "Westen" };
 
           for (int i = 0; i < dirNames.length; i++) {
             if (sc.argv[0].equalsIgnoreCase(dirNames[i])) {
@@ -2710,7 +2715,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse one SIGN sub block of the REGION block.
-   * 
+   *
    * @return the resulting <tt>SIGN</tt> object.
    * @throws IOException if the scanner throws an IOException
    */
@@ -2846,8 +2851,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         } catch (final IllegalArgumentException e) {
           // can happen in StringID constructor if sc.argv[0] == ""
           CRParser.log
-              .warn("CRParser.parseRegion(): found region without a valid region type in line "
-                  + sc.lnr);
+          .warn("CRParser.parseRegion(): found region without a valid region type in line "
+              + sc.lnr);
         }
 
         // regions doesn't have name if name == type; e.g. "Ozean"=="Ozean"
@@ -2856,13 +2861,13 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
             // could set region name here...
           } else {
             CRParser.log
-                .warn("CRParser.parseRegion(): found region type without a valid name in line "
-                    + sc.lnr);
+            .warn("CRParser.parseRegion(): found region type without a valid name in line "
+                + sc.lnr);
           }
         } else {
           CRParser.log
-              .warn("CRParser.parseRegion(): found region without a valid region type in line "
-                  + sc.lnr);
+          .warn("CRParser.parseRegion(): found region without a valid region type in line "
+              + sc.lnr);
         }
 
         iValidateFlags |= 1;
@@ -3203,7 +3208,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * This function parses the informations found in Reader in and creates a corresponding GameData
    * object tree.
-   * 
+   *
    * @param in Reader to cr file
    * @param data GameData to be filled with informations of given cr file This function is
    *          synchronized.
@@ -3364,7 +3369,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * A state object that is maintained by the parser. Individual handlers should implement their own
    * state.
-   * 
+   *
    * @author stm
    */
   public interface ParseState {
@@ -3373,7 +3378,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * A class that handles individual tags or blocks as they are read by the parser.
-   * 
+   *
    * @author stm
    */
   public static abstract class TagHandler {
@@ -3388,7 +3393,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Initializes the handler.
-     * 
+     *
      * @param parser The parser that uses this handler
      */
     public TagHandler(BlockParser parser) {
@@ -3398,7 +3403,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Handles a tag or block, probably by accessing {@link #sc}.
-     * 
+     *
      * @param state The current state
      * @return true if the tag has been handled.
      * @throws IOException If the scanner throws an exception.
@@ -3409,7 +3414,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * A Parse state that can be used by {@link BeanHandler}.
-   * 
+   *
    * @author stm
    */
   public static interface BeanState extends ParseState {
@@ -3421,7 +3426,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * The bean that is modified by the handler.
-     * 
+     *
      * @return the bean that is modified by the handler.
      */
     public Object getBean();
@@ -3429,7 +3434,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * A ParseState for parsing unit blocks ("EINHEIT").
-   * 
+   *
    * @author stm
    */
   public static class UnitParseState implements BeanState {
@@ -3450,7 +3455,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Initializes the parser.
-     * 
+     *
      * @param unit The new unit
      * @param base The report base, see {@link GameData#base}.
      */
@@ -3471,7 +3476,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * A handler that handles unit tags or blocks.
-   * 
+   *
    * @author stm
    */
   public static abstract class UnitTagHandler extends TagHandler {
@@ -3480,7 +3485,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Creates a new handler
-     * 
+     *
      * @param unitParser The parser calling this handler.
      */
     public UnitTagHandler(BlockParser unitParser) {
@@ -3489,7 +3494,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Handle a unit tag (acces via the Scanner)
-     * 
+     *
      * @param unit The new unit object
      * @throws IOException if the scanner throws an exception
      */
@@ -3505,7 +3510,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * The fallback handler for unit tags.
-   * 
+   *
    * @author stm
    */
   public static class UnitDefaultTagHandler extends TagHandler {
@@ -3555,7 +3560,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * A ParseState for regions.
-   * 
+   *
    * @author stm
    */
   public static class RegionParseState implements BeanState {
@@ -3590,7 +3595,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * A handler that handles tags or blocks in a region block ("REGION").
-   * 
+   *
    * @author stm
    */
   public static abstract class RegionTagHandler extends TagHandler {
@@ -3606,7 +3611,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Handles a tag by accessing the scanner
-     * 
+     *
      * @param region The new region
      * @throws IOException if the scanner throws an exception.
      */
@@ -3622,7 +3627,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * The fallback handler for regions.
-   * 
+   *
    * @author stm
    */
   public static abstract class RegionDefaultTagHandler extends TagHandler {
@@ -3648,7 +3653,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * The bean type
-   * 
+   *
    * @author stm
    */
   public static enum Type {
@@ -3676,7 +3681,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * A handler that accesses java bean properties.
-   * 
+   *
    * @author stm
    */
   public static class BeanHandler extends TagHandler {
@@ -3686,7 +3691,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Creates a bean handler that changes a property of a bean.
-     * 
+     *
      * @param parser The parser calling this handler.
      * @param propertyName The name of the property being modified
      * @param type The property type
@@ -3741,7 +3746,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * A class to parse a block by reading properties and blocks using a scanner.
-   * 
+   *
    * @author stm
    */
   public static class BlockParser {
@@ -3760,7 +3765,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     /**
      * Adds a handler that is called if the specified tag (i.e., a line like "<value>;tagName" is
      * encountered.
-     * 
+     *
      * @param tagName The name of the tag triggering this handler
      * @param handler The handler for the tag
      */
@@ -3776,7 +3781,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Adds a handler that manipulates a bean.
-     * 
+     *
      * @param tagName The name of the tag triggering this handler
      * @param propertyName The property manipulated by the handler
      * @param type The type of the property
@@ -3787,7 +3792,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Adds a handler that does nothing (but doesn't cause an error) for the specified tag.
-     * 
+     *
      * @param tagName The tag triggering this handler
      */
     public void addNullHandler(String tagName) {
@@ -3802,7 +3807,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Add a handler for a block, called if a block line like "NAME ..." is read.
-     * 
+     *
      * @param name the block name, i.e. the first word of the BLOCK line.
      * @param tagHandler The handler that is called upon reading the block.
      */
@@ -3822,7 +3827,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     /**
      * Parses the block by calling {@link Scanner#getNextToken()} and calling appropriate handlers.
      * Terminates if a block is encountered that has no handler or on end of file.
-     * 
+     *
      * @param crParser the CRParser, mainly used for calls to
      *          {@link CRParser#unknown(String, boolean)}.
      * @param state The initial state which is passed to handlers.
@@ -3871,7 +3876,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Returns the value of defaultTagHandler.
-     * 
+     *
      * @return Returns defaultTagHandler.
      */
     public TagHandler getDefaultTagHandler() {
@@ -3880,7 +3885,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Sets the value of defaultTagHandler.
-     * 
+     *
      * @param defaultTagHandler The value for defaultTagHandler.
      */
     public void setDefaultTagHandler(TagHandler defaultTagHandler) {
@@ -3889,7 +3894,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Returns the value of defaultBlockHandler.
-     * 
+     *
      * @return Returns defaultBlockHandler.
      */
     public TagHandler getDefaultBlockHandler() {
@@ -3898,7 +3903,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     /**
      * Sets the value of defaultBlockHandler.
-     * 
+     *
      * @param defaultBlockHandler The value for defaultBlockHandler.
      */
     public void setDefaultBlockHandler(TagHandler defaultBlockHandler) {
@@ -3933,13 +3938,13 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     /**
      * this was created by regexp replacements: <code>
      * if \(\(sc\.argc == 2\) && sc\.argv\[1\]\.equalsIgnoreCase\(("[^"]*")\)\) \{(\R[^#]*)sc\.getNextToken\(\);\R \}#else
-     * 
+     *
      * parser.addTagHandler(\1, new TagHandler() { public void handle(Unit unit){\2}});
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * if \(\(sc\.isBlock\) && sc\.argv\[0\]\.equals\(("[^"]*")\)\) \{(\R[^#]*)\R      \}#else
-     *       
+     *
      * parser.addBlockHandler(\1, new TagHandler() { public void handle(Unit unit) throws IOException {\2}});
      * <code>
      */
@@ -4348,8 +4353,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           } catch (final IllegalArgumentException e) {
             // can happen in StringID constructor if sc.argv[0] == ""
             CRParser.log
-                .warn("CRParser.parseRegion(): found region without a valid region type in line "
-                    + sc.lnr);
+            .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                + sc.lnr);
           }
 
           // regions doesn't have name if name == type; e.g. "Ozean"=="Ozean"
@@ -4358,13 +4363,13 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
               // could set region name here...
             } else {
               CRParser.log
-                  .warn("CRParser.parseRegion(): found region type without a valid name in line "
-                      + sc.lnr);
+              .warn("CRParser.parseRegion(): found region type without a valid name in line "
+                  + sc.lnr);
             }
           } else {
             CRParser.log
-                .warn("CRParser.parseRegion(): found region without a valid region type in line "
-                    + sc.lnr);
+            .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                + sc.lnr);
           }
 
           parseState.iValidateFlags |= 1;

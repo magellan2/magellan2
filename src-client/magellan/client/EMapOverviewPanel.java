@@ -129,7 +129,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A panel containing a tree with all regions units, ships, etc.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 382 $
  */
@@ -219,7 +219,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Creates a new EMapOverviewPanel object.
-   * 
+   *
    * @param d
    * @param p
    */
@@ -371,7 +371,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * GameDataChanged event handler routine updating the tree. Note: It is significant for the
    * valueChanged() method, how deep the different node types are nested.
-   * 
+   *
    * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   @Override
@@ -531,7 +531,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Retrieve a Comparator to sort the units according to the settings.
-   * 
+   *
    * @param settings
    */
   public static Comparator<? super Unit> getUnitSorting(Properties settings) {
@@ -570,7 +570,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Retrieve the structure of the unit tree according to the settings
-   * 
+   *
    * @param settings
    */
   private static int[] getTreeStructure(Properties settings) {
@@ -601,7 +601,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * TreeSelection event handler, notifies event listeners.
-   * 
+   *
    * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
    */
   public void valueChanged(TreeSelectionEvent tse) {
@@ -774,7 +774,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Returns the (Report) object that belongs to this node, for example a region, a unit or a group.
-   * 
+   *
    * @param node
    * @return
    */
@@ -809,7 +809,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Sets the active alliance status that are used to paint the faction or group nodes in the tree.
-   * 
+   *
    * @param allies The alliances map to be used, my be <code>null</code>
    * @param f The faction whose alliances are used
    */
@@ -897,7 +897,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Event handler for TreeExpansionEvents (recenters the tree if necessary)
-   * 
+   *
    * @see javax.swing.event.TreeExpansionListener#treeExpanded(javax.swing.event.TreeExpansionEvent)
    */
   public void treeExpanded(TreeExpansionEvent e) {
@@ -917,7 +917,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Event handler for TreeCollapsedEvents
-   * 
+   *
    * @see javax.swing.event.TreeExpansionListener#treeCollapsed(javax.swing.event.TreeExpansionEvent)
    */
   public void treeCollapsed(TreeExpansionEvent e) {
@@ -927,7 +927,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * Change event handler, change the display status of the tree if an unit orderConfimation Status
    * changed
-   * 
+   *
    * @see magellan.client.event.OrderConfirmListener#orderConfirmationChanged(magellan.client.event.OrderConfirmEvent)
    */
   public void orderConfirmationChanged(OrderConfirmEvent e) {
@@ -1187,7 +1187,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * selection is set to the selected objects (as long as they are contained in the tree anyway).
    * Keep in mind, that this will produce the active object _NOT_ to be selected, if selectedObjects
    * != null && !selectedObjects.contains(activeObject) !!!
-   * 
+   *
    * @param se
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
@@ -1515,7 +1515,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Inserts the temp unit into the tree.
-   * 
+   *
    * @see magellan.client.event.TempUnitListener#tempUnitCreated(magellan.client.event.TempUnitEvent)
    */
   public void tempUnitCreated(TempUnitEvent e) {
@@ -1546,7 +1546,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Removes the temp unit from the tree.
-   * 
+   *
    * @see magellan.client.event.TempUnitListener#tempUnitDeleting(magellan.client.event.TempUnitEvent)
    */
   public void tempUnitDeleting(TempUnitEvent e) {
@@ -1584,7 +1584,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * Should return all short cuts this class want to be informed. The elements should be of type
    * javax.swing.KeyStroke
-   * 
+   *
    * @see magellan.client.desktop.ShortcutListener#getShortCuts()
    */
   public Iterator<KeyStroke> getShortCuts() {
@@ -1593,7 +1593,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * This method is called when a shortcut from getShortCuts() is recognized.
-   * 
+   *
    * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
    */
   public void shortCut(javax.swing.KeyStroke shortcut) {
@@ -1824,7 +1824,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Selects and entry in the selection history by a relative offset.
-   * 
+   *
    * @param i
    */
   private void jumpInSelectionHistory(int i) {
@@ -1903,27 +1903,29 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       }
     }
 
-    // if all factions are in one E3 type alliance,
-    AllianceGroup commonAlliance = privilegedFactions.get(0).getAlliance();
-    for (Faction f : privilegedFactions) {
-      if (f.getAlliance() == null || f.getAlliance() != commonAlliance) {
-        commonAlliance = null;
-        break;
+    if (!privilegedFactions.isEmpty()) {
+      // if all factions are in one E3 type alliance,
+      AllianceGroup commonAlliance = privilegedFactions.get(0).getAlliance();
+      for (Faction f : privilegedFactions) {
+        if (f.getAlliance() == null || f.getAlliance() != commonAlliance) {
+          commonAlliance = null;
+          break;
+        }
       }
-    }
 
-    // ... add all alliance factions with HELP Combat
-    for (Faction f : privilegedFactions) {
-      if (commonAlliance != null) {
-        for (ID allyId : commonAlliance.getFactions()) {
-          Alliance a1 = activeAlliances.get(allyId);
-          Faction f2 = f.getData().getFaction(allyId);
-          if (f2 != null) {
-            if (a1 == null) {
-              activeAlliances.put(f2.getID(), new Alliance(f2, EresseaConstants.A_COMBAT));
-            } else {
-              activeAlliances.put(f2.getID(), new Alliance(f2, a1.getState()
-                  | EresseaConstants.A_COMBAT));
+      // ... add all alliance factions with HELP Combat
+      for (Faction f : privilegedFactions) {
+        if (commonAlliance != null) {
+          for (ID allyId : commonAlliance.getFactions()) {
+            Alliance a1 = activeAlliances.get(allyId);
+            Faction f2 = f.getData().getFaction(allyId);
+            if (f2 != null) {
+              if (a1 == null) {
+                activeAlliances.put(f2.getID(), new Alliance(f2, EresseaConstants.A_COMBAT));
+              } else {
+                activeAlliances.put(f2.getID(), new Alliance(f2, a1.getState()
+                    | EresseaConstants.A_COMBAT));
+              }
             }
           }
         }
@@ -2000,7 +2002,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     /**
      * Creates a new ScrollerRunnable object.
-     * 
+     *
      * @param r
      */
     public ScrollerRunnable(Rectangle r) {
@@ -2108,7 +2110,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * Updates the nodes of this unit and all nodes that are related to this unit indirectly by no
    * more than <code>updateRelationPartersDistance</code>.
-   * 
+   *
    * @param u The updated unit
    */
   protected synchronized void update(Unit u) {
@@ -2191,7 +2193,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Class encapsulating the menu for the Overview.
-   * 
+   *
    * @deprecated Currently unused. (stm)
    */
   @Deprecated
@@ -2200,7 +2202,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     /**
      * Creates a new OverviewMenu object.
-     * 
+     *
      * @param label
      * @param mnemonic
      * @see #setMnemonic(char)
@@ -2256,7 +2258,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Returns the menu for the overview panel that is used by the client.
-   * 
+   *
    * @deprecated I think this is needless.
    */
   @Deprecated
@@ -2282,7 +2284,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * 
+   *
    */
   public SelectionEvent getSelectedObjects() {
     return contextManager.getSelection();

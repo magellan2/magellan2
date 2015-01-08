@@ -1,4 +1,4 @@
-package magellan.test.merge;
+package magellan.library.merge;
 
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;

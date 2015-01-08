@@ -1,5 +1,6 @@
-package magellan.test.merge;
+package magellan.library.merge;
 
+import magellan.test.merge.WriteGameData;
 import junit.framework.TestSuite;
 
 public class MergeTestSuite {

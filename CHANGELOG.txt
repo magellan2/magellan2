@@ -1,8 +1,11 @@
-2014-12-30 / Build 593 - stm (stm_@users.sourceforge.net)
-	* FOLLOW SHIP is short(ish) order now
+2015-01-04 / Build 594 - stm (stm_@users.sourceforge.net)
+    * FOLLOW SHIP is short(ish) order now
+    * implemented new RESEREVE semantics (Version 3.0, 20.07.2014): 
+      - two phase reserve (RESERVing units always keep own stuff)
+      - given stuff is always reserved (and not passed on)      
 
 2014-05-08 / Build 591 - stm (stm_@users.sourceforge.net)
-	* fixed MapperPanel and BookmarkDock to be compatible with Java 6 again
+    * fixed MapperPanel and BookmarkDock to be compatible with Java 6 again
 
 2014-05-08 / Build 590 - stm (stm_@users.sourceforge.net)
     * upgrade to IzPack 4.3.5

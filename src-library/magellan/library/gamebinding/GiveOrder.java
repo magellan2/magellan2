@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import java.util.List;
@@ -50,7 +50,7 @@ import magellan.library.utils.Resources;
 
 /**
  * An order with one or more units as arguments.
- * 
+ *
  * @author stm
  */
 public class GiveOrder extends UnitArgumentOrder {
@@ -73,7 +73,7 @@ public class GiveOrder extends UnitArgumentOrder {
 
   /**
    * Returns the value of type.
-   * 
+   *
    * @return Returns type.
    */
   public StringID getType() {
@@ -82,7 +82,7 @@ public class GiveOrder extends UnitArgumentOrder {
 
   /**
    * Returns the value of each.
-   * 
+   *
    * @return Returns each.
    */
   public boolean isEach() {
@@ -91,7 +91,7 @@ public class GiveOrder extends UnitArgumentOrder {
 
   /**
    * Returns the value of amount.
-   * 
+   *
    * @return Returns amount.
    */
   public int getAmount() {
@@ -100,7 +100,7 @@ public class GiveOrder extends UnitArgumentOrder {
 
   /**
    * Returns the value of itemType.
-   * 
+   *
    * @return Returns itemType.
    */
   public ItemType getItemType() {
@@ -109,7 +109,7 @@ public class GiveOrder extends UnitArgumentOrder {
 
   /**
    * Returns the value of all.
-   * 
+   *
    * @return Returns all.
    */
   public boolean isAll() {
@@ -236,11 +236,6 @@ public class GiveOrder extends UnitArgumentOrder {
                               i, line);
                       targetRelation.add();
                     }
-                    // if (!all && reservedAmount != requiredAmount) {
-                    // ownRelation.setWarning(Resources.get("order.give.warning.insufficient",
-                    // type.toString()),
-                    // OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
-                    // }
                     ownRelation.add();
                   } else {
                     rel.add();
@@ -249,23 +244,16 @@ public class GiveOrder extends UnitArgumentOrder {
               }
             }
           }
-
         } else if (type == EresseaConstants.OC_GIVE) {
-
           if (itemType != null) {
             if (EresseaConstants.I_UPEASANT.equals(itemType.getID())) {
               setWarning(unit, line, Resources.get("order.give.warning.invaliditem", itemType));
             }
-            // List<UnitRelation> relations =
-            // eState.giveItem(unit, tUnit, all, each ? tUnit.getModifiedPersons() * amount
-            // : amount, itemType, line, this);
-            // for (UnitRelation rel : relations) {
-            // rel.add();
-            // }
+
             int requiredAmount =
                 all ? 0 : (each ? zeroOrTarget.getModifiedPersons() * amount : amount);
             List<UnitRelation> relations =
-                eState.acquireItem(unit, itemType, requiredAmount, all, !all, false, line, this);
+                eState.acquireItem(unit, itemType, requiredAmount, all, false, false, line, this);
             for (UnitRelation rel : relations) {
               if (rel instanceof ReserveRelation) {
                 UnitRelation ownRelation =
@@ -288,7 +276,6 @@ public class GiveOrder extends UnitArgumentOrder {
               }
             }
           } else {
-
             // in this case the order looks like:
             // GIVE <unit id> ALLES<EOC>
             if (all) {

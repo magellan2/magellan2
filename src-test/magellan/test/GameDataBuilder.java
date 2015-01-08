@@ -128,6 +128,7 @@ public class GameDataBuilder {
     final Faction faction;
     if (gameName.equals(ATLANTIS)) {
       faction = addFaction(data, "1", "Mooks", "Menschen", 1);
+      faction.setLocale(Locale.ENGLISH);
     } else {
       faction = addFaction(data, "iLja", "Faction_867718", "Meermenschen", 1);
     }
@@ -271,7 +272,7 @@ public class GameDataBuilder {
    * @return The new region
    */
   public Region
-  addRegion(GameData data, String coordinate, String name, String type, int sortIndex) {
+      addRegion(GameData data, String coordinate, String name, String type, int sortIndex) {
     CoordinateID c = CoordinateID.parse(coordinate, " ");
     if (c == null) {
       c = CoordinateID.parse(coordinate, ",");

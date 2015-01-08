@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
@@ -61,7 +61,7 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
+    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId).getText();
   }
 
   /**
@@ -197,8 +197,10 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
     if (list == null)
       return;
     assertTrue(list.size() == 2);
-    assertTrue(list.get(0).getClass().equals(AttackReader.class));
-    assertTrue(list.get(1).getClass().equals(ArbeiteReader.class));
+    for (OrderHandler handler : list) {
+      assertTrue(handler.getClass().equals(AttackReader.class)
+          || handler.getClass().equals(ArbeiteReader.class));
+    }
     list = getParser().getHandlers(new OrderToken("arbei"));
     assertTrue(list != null);
     if (list == null)
@@ -469,11 +471,11 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
     assertTrue(getParser().getErrorMessage().equals("error"));
     getParser().setErrMsg(null);
     assertTrue(getParser().getErrorMessage() == null);
-    getParser().read(new StringReader("ARBEITEN"));
+    getParser().read(new StringReader("ARBEITE"));
     assertTrue(getParser().getErrorMessage() == null);
-    getParser().read(new StringReader("ARBEITEN 2"));
+    getParser().read(new StringReader("ARBEITE 2"));
     assertTrue(getParser().getErrorMessage().equals(
-        "Unexpected token 2: Undefined(9, 10), not followed by Space"));
+        "Unexpected token 2: Undefined(8, 9), not followed by Space"));
   }
 
   /**

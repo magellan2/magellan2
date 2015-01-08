@@ -339,7 +339,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
         getOrder().type = RenameObject.T_UNIT;
         getOrder().name = readDescription(false);
         retVal = getOrder().name != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION))) {
         getOrder().type = RenameObject.T_FACTION;
         getOrder().name = readDescription(false);
         retVal = getOrder().name != null;
@@ -405,7 +405,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
           && t.equalsToken(getOrderTranslation(EresseaConstants.OC_BUILDING))) {
         retVal = readBenenneFremdesGebaeude(t);
       } else if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNFACTION))
-          && t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
+          && t.equalsToken(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION))) {
         retVal = readBenenneFremdePartei(t);
       } else if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNSHIP))
           && t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
@@ -797,7 +797,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
         retVal = readBotschaftEinheit(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION))) {
         retVal = readBotschaftPartei(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
         retVal = readBotschaftRegion(t);
@@ -2300,7 +2300,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
         retVal = readNummerEinheit(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP)) == true) {
         retVal = readNummerSchiff(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION)) == true) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION)) == true) {
         retVal = readNummerPartei(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE)) == true) {
         retVal = readNummerBurg(t);
@@ -3027,7 +3027,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isNumeric(t.getText()) == true) {
         retVal = readFinalNumber(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION))) {
         retVal = readTarnePartei(t);
       } else if (isString(t) && !checkFinal(t)) {
         retVal = new StringChecker(false, false, true, false) {
@@ -3060,7 +3060,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         retVal = readFinalKeyword(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NUMBER))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_STEALTH_NUMBER))) {
         retVal = readTarneParteiNummer(t);
       } else {
         retVal = checkFinal(t);
@@ -3576,7 +3576,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
     //
     // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
     //
-    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
+    // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION))) {
     //
     // } else if(token.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
     //

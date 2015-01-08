@@ -59,7 +59,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   private boolean writeUnitTagsAsVorlageComment = false;
   /**
    * sometimes I don't want the timestamp..
-   * 
+   *
    * @author Fiete
    */
   private boolean writeTimeStamp = true;
@@ -69,7 +69,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * Creates a new OrderWriter object extracting the orders of faction f's units and writing them to
    * the stream w.
-   * 
+   *
    * @param g GameData object ot get orders from.
    * @param f the faction the orders are written for.
    */
@@ -80,7 +80,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * Creates a new OrderWriter object extracting the orders of faction f's units and writing them to
    * the stream w with the specified options for E-Check.
-   * 
+   *
    * @param g GameData object ot get orders from.
    * @param f the faction the orders are written for.
    * @param echeckOpts options for E-Check, default is " -s -l -w4"
@@ -109,7 +109,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * Writes the faction's orders to the stream. World and faction must be set, possibly using
    * {@link #setGameData(GameData)} and {@link #setFaction(Faction)}.
-   * 
+   *
    * @param stream
    * @return The number of written units
    * @throws IOException If an I/O error occurs
@@ -208,7 +208,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return world.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
+    return world.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId).getText();
   }
 
   protected int writeRegions(Collection<? extends Region> writtenRegions, BufferedWriter stream)
@@ -475,7 +475,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
 
   /**
    * Returns the value of syntaxCheckOptions.
-   * 
+   *
    * @return Returns syntaxCheckOptions.
    */
   protected String getSyntaxCheckOptions() {

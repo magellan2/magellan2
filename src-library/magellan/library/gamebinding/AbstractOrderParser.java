@@ -40,6 +40,7 @@ import magellan.library.UnitID;
 import magellan.library.completion.Completion;
 import magellan.library.completion.OrderParser;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.OrderType;
 import magellan.library.utils.Direction;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
@@ -305,7 +306,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * @see Resources#getOrderTranslation(String, Locale)
    */
   protected String getOrderTranslation(StringID key) { // TODO build lookup table
-    return getData().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), key).toString();
+    return getData().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), key).getText();
   }
 
   /**
@@ -405,22 +406,35 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   protected void addCommand(StringID prefix, RadixTree<OrderHandler> commandTrie, Locale loc,
       OrderHandler handler) {
-    String order = normalize(prefix, loc);
-    if (commandTrie.contains(order)) {
-      commandTrie.delete(order);
+    List<String> orders = normalize(prefix, loc);
+    for (String order : orders) {
+      if (commandTrie.contains(order)) {
+        commandTrie.delete(order);
+      }
+      commandTrie.insert(order, handler);
     }
-    commandTrie.insert(order, handler);
-
   }
 
-  private String normalize(StringID prefix, Locale loc) {
-    String order;
+  private List<String> normalize(StringID prefix, Locale loc) {
+    List<String> loNames = Collections.emptyList();
     if (getData() != null) {
-      order = getData().getGameSpecificStuff().getOrderChanger().getOrder(loc, prefix).getText();
+      OrderType order = getData().getRules().getOrder(prefix);
+      if (order != null) {
+        List<String> names = order.getNames(loc);
+        if (names != null) {
+          loNames = new ArrayList<String>(names.size());
+          for (String name : names) {
+            loNames.add(name.toLowerCase());
+          }
+        }
+      } else {
+        loNames = Collections.singletonList(prefix.toString().toLowerCase());
+      }
+
     } else {
-      order = prefix.toString();
+      loNames = Collections.singletonList(prefix.toString().toLowerCase());
     }
-    return order.toLowerCase();
+    return loNames;
   }
 
   /**
@@ -432,9 +446,11 @@ public abstract class AbstractOrderParser implements OrderParser {
     commandMap.remove(prefix);
     for (Locale loc : commandTries.keySet()) {
       RadixTree<OrderHandler> commandTrie = commandTries.get(loc);
-      String order = normalize(prefix, loc);
-      if (commandTrie.contains(order)) {
-        commandTrie.delete(order);
+      List<String> orders = normalize(prefix, loc);
+      for (String order : orders) {
+        if (commandTrie.contains(order)) {
+          commandTrie.delete(order);
+        }
       }
     }
   }
@@ -630,12 +646,17 @@ public abstract class AbstractOrderParser implements OrderParser {
    * @param t
    */
   protected List<OrderHandler> getHandlers(OrderToken t) {
+    ArrayList<OrderHandler> handlers;
     if (!isPrefixMatching()) {
       OrderHandler reader = getCommandTrie().find(t.getText().toLowerCase());
       return reader != null ? Collections.singletonList(reader) : Collections
           .<OrderHandler> emptyList();
-    } else
-      return getCommandTrie().searchPrefix(t.getText().toLowerCase(), Integer.MAX_VALUE);
+    } else {
+      handlers = getCommandTrie().searchPrefix(t.getText().toLowerCase(), Integer.MAX_VALUE);
+      // remove duplicates
+      Set<OrderHandler> handlerSet = new HashSet<OrderHandler>(handlers);
+      return new ArrayList<OrderHandler>(handlerSet);
+    }
   }
 
   // ************* general use
@@ -1051,7 +1072,7 @@ public abstract class AbstractOrderParser implements OrderParser {
       String nr = txt.substring(blankPos + 1);
       retVal =
           (temp.equalsIgnoreCase(getOrderTranslation(getTemp())))
-              && isNumeric(nr, getData().base, 0, AbstractOrderParser.MAX_UID);
+          && isNumeric(nr, getData().base, 0, AbstractOrderParser.MAX_UID);
     }
 
     return retVal;

@@ -173,7 +173,7 @@ ORDER "UNIT"
 1;internal
 "UNIT";locale_en
 
-ORDER "FACTION"
+ORDER "PARAMETER_FACTION"
 1;internal
 "FACTION";locale_en
 

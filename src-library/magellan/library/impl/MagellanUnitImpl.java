@@ -243,7 +243,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Clears the orders
-   * 
+   *
    * @see magellan.library.Unit#clearOrders()
    */
   public void clearOrders() {
@@ -256,7 +256,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Clears the orders and possibly refreshes the relations
-   * 
+   *
    * @param refreshRelations if true also refresh the relations of the unit.
    * @see magellan.library.Unit#clearOrders(boolean)
    * @deprecated relation refreshing is now done event-based
@@ -268,7 +268,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Removes the order at position <tt>i</tt> and refreshes the relations
-   * 
+   *
    * @see magellan.library.Unit#removeOrderAt(int)
    */
   public void removeOrderAt(int i) {
@@ -279,7 +279,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Removes the order at position <tt>i</tt> and possibly refreshes the relations
-   * 
+   *
    * @param refreshRelations if true also refresh the relations of the unit.
    * @see magellan.library.Unit#removeOrderAt(int, boolean)
    * @deprecated relation refreshing is now done event-based
@@ -306,7 +306,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Removes orders that match the given order up to a given length.
-   * 
+   *
    * @param order pattern to remove
    * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
    *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
@@ -324,7 +324,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
    * operation.
-   * 
+   *
    * @return <tt>true</tt> if the order was successfully added.
    * @see magellan.library.Unit#addOrder(java.lang.String)
    */
@@ -341,7 +341,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
    * operation.
-   * 
+   *
    * @return <tt>true</tt> if the order was successfully added.
    * @see magellan.library.Unit#addOrder(java.lang.String, boolean)
    * @deprecated relation refreshing is now done event-based
@@ -354,7 +354,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
    * operation.
-   * 
+   *
    * @param order the order to add.
    * @param replace if <tt>true</tt>, the order replaces any other of the unit's orders of the same
    *          type. If <tt>false</tt> the order is simply added.
@@ -382,7 +382,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Add specified order at the end.
-   * 
+   *
    * @param line
    */
   public void addOrder(Order line) {
@@ -400,7 +400,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Adds the order at position <tt>i</tt> and refreshes the relations
-   * 
+   *
    * @param pos An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
    * @param newOrder
    * @see magellan.library.Unit#addOrderAt(int, java.lang.String)
@@ -411,7 +411,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Adds the order at position <tt>i</tt> and possibly refreshes the relations
-   * 
+   *
    * @param pos An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
    * @param newOrder
    * @param refreshRelations if true also refresh the relations of the unit.
@@ -472,7 +472,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Adds the orders and refreshes the relations
-   * 
+   *
    * @param newOrders
    * @see magellan.library.Unit#addOrders(java.util.Collection)
    */
@@ -487,7 +487,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Adds the orders and possibly refreshes the relations
-   * 
+   *
    * @param newOrders
    * @param refreshRelations If true also refresh the relations of the unit
    * @see magellan.library.Unit#addOrders(java.util.Collection, boolean)
@@ -518,7 +518,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the orders and refreshes the relations
-   * 
+   *
    * @param newOrders my be <code>null</code>
    * @see magellan.library.Unit#setOrders(java.util.Collection)
    */
@@ -535,7 +535,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the orders and possibly refreshes the relations
-   * 
+   *
    * @param newOrders
    * @param refreshRelations if true also refresh the relations of the unit.
    * @see magellan.library.Unit#setOrders(java.util.Collection, boolean)
@@ -594,7 +594,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the group this unit belongs to.
-   * 
+   *
    * @param g the group of the unit
    * @see magellan.library.Unit#setGroup(magellan.library.Group)
    */
@@ -612,7 +612,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the group this unit belongs to.
-   * 
+   *
    * @return the group this unit belongs to
    * @see magellan.library.Unit#getGroup()
    */
@@ -622,7 +622,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets an alias id for this unit.
-   * 
+   *
    * @param id the alias id for this unit
    */
   public void setAlias(UnitID id) {
@@ -632,7 +632,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns the alias, i.e. the id of this unit it had in the last turn (e.g. after a NUMMER
    * order).
-   * 
+   *
    * @return the alias or null, if the id did not change.
    */
   public UnitID getAlias() {
@@ -664,7 +664,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns whether this unit only pretends to belong to its faction. A unit cannot disguise itself
    * as a different faction and at the same time be a spy of another faction.
-   * 
+   *
    * @return true if the unit is identified as spy
    */
   public boolean isSpy() {
@@ -696,7 +696,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Adds an item to the unit. If the unit already has an item of the same type, the item is
    * overwritten with the specified item object.
-   * 
+   *
    * @return the specified item i.
    */
   public Item addItem(Item i) {
@@ -720,7 +720,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns the id the unit had when it was still a temp unit. This id is only set in the turn
    * after the unit turned from a temp unit into to a real unit.
-   * 
+   *
    * @return the temp id or null, if this unit was no temp unit in the previous turn.
    */
   public UnitID getTempID() {
@@ -860,7 +860,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns the name of this unit's race including the prefixes of itself, its faction and group if
    * it has such and those prefixes are set.
-   * 
+   *
    * @param gdata The GameData
    * @return the name or null if this unit's race or its name is not set.
    */
@@ -902,7 +902,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Delivers the info "typ" from CR without any prefixes and translations used for displaying the
    * according race icon
-   * 
+   *
    * @return Name of the race
    */
   public String getSimpleRaceName() {
@@ -991,7 +991,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns all orders including the orders necessary to issue the creation of all the child temp
    * units of this unit.
-   * 
+   *
    * @param writeUnitTagsAsVorlageComment If this is <code>true</code>, unit tags are also added as
    *          Vorlage comments
    */
@@ -1015,7 +1015,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
+    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId).getText();
   }
 
   /**
@@ -1023,7 +1023,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * it is added to the region units collection in the specified game data,it inherits the faction,
    * building or ship, region, faction stealth status, group, race and combat status settings and
    * adds itself to the corresponding unit collections.
-   * 
+   *
    * @throws IllegalArgumentException If <code>key</code> is negative
    */
   public TempUnit createTemp(GameData gdata, UnitID key) {
@@ -1069,7 +1069,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       gdata.addTempUnit(t);
     } else {
       MagellanUnitImpl.log
-          .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
+      .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
     }
 
     // FIXME(stm) fire unitorderschanged?)
@@ -1176,7 +1176,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * deliver all directly related units
-   * 
+   *
    * @see magellan.library.Unit#getRelatedUnits(java.util.Collection)
    */
   public void getRelatedUnits(Collection<Unit> units) {
@@ -1194,7 +1194,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Recursively retrieves all units that are related to this unit via one of the specified
    * relations (exactly, not as subclasses).
-   * 
+   *
    * @param units all units gathered so far to prevent loops.
    * @param relations a set of classes naming the types of relations that are eligible for regarding
    *          a unit as related to some other unit.
@@ -1226,7 +1226,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns a List of the reached coordinates of the unit's movement starting with the current
    * region or an empty list if unit is not moving.
-   * 
+   *
    * @return A list of coordinates, empty list means no movement
    */
   public List<CoordinateID> getModifiedMovement() {
@@ -1533,7 +1533,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the unit container this belongs to. (ship, building or null)
-   * 
+   *
    * @see magellan.library.Unit#getUnitContainer()
    */
   public UnitContainer getUnitContainer() {
@@ -1579,7 +1579,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Adds a skill to unit's collection of skills. If the unit already has a skill of the same type
    * it is overwritten with the the new skill object.
-   * 
+   *
    * @return the specified skill s.
    */
   public Skill addSkill(Skill s) {
@@ -1594,7 +1594,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns all skills this unit has.
-   * 
+   *
    * @return a collection of Skill objects.
    */
   public Collection<Skill> getSkills() {
@@ -1622,7 +1622,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns all the items this unit possesses.
-   * 
+   *
    * @return a collection of Item objects.
    */
   public Collection<Item> getItems() {
@@ -1674,7 +1674,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns a collection of the reserve relations concerning the given Item.
-   * 
+   *
    * @param itemType
    * @return a collection of ReserveRelation objects.
    */
@@ -1692,7 +1692,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns a collection of the item relations concerning the given Item.
-   * 
+   *
    * @return a collection of ItemTransferRelation objects.
    */
   public List<ItemTransferRelation> getItemTransferRelations(ItemType type) {
@@ -1710,7 +1710,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns a collection of the person relations associated with this unit
-   * 
+   *
    * @return a collection of PersonTransferRelation objects.
    */
   public List<PersonTransferRelation> getPersonTransferRelations() {
@@ -1727,7 +1727,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns the items of this unit as they would appear after the orders of this unit have been
    * processed.
-   * 
+   *
    * @return a collection of Item objects.
    */
   public Collection<Item> getModifiedItems() {
@@ -1968,7 +1968,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * Returns the initial overall weight of this unit (persons and items) in silver. If this
    * information is available from the report we use this. Otherwise we call the game specific
    * weight calculation.
-   * 
+   *
    * @return the initial weight of the unit
    * @deprecated use {@link MovementEvaluator#getWeight(Unit)}
    */
@@ -1989,7 +1989,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * persons are taken into account for this calculation. If the unit has a sufficient skill in
    * horse riding but there are too many carts for the horses, the weight of the additional carts
    * are also already considered.
-   * 
+   *
    * @return the payload in silver, CAP_NO_HORSES if the unit does not possess horses or
    *         CAP_UNSKILLED if the unit is not sufficiently skilled in horse riding to travel on
    *         horseback.
@@ -2005,7 +2005,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * persons are taken into account for this calculation. If the unit has a sufficient skill in
    * horse riding but there are too many carts for the horses, the weight of the additional carts
    * are also already considered. The calculation also takes into account that trolls can tow carts.
-   * 
+   *
    * @return the payload in silver, CAP_UNSKILLED if the unit is not sufficiently skilled in horse
    *         riding to travel on horseback.
    * @deprecated use {@link MovementEvaluator#getPayloadOnFoot(Unit)}
@@ -2017,7 +2017,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the weight of all items of this unit that are not horses or carts in silver
-   * 
+   *
    * @deprecated use {@link MovementEvaluator#getLoad(Unit)}
    */
   @Deprecated
@@ -2028,7 +2028,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns the weight of all items of this unit that are not horses or carts in silver based on
    * the modified items.
-   * 
+   *
    * @deprecated use {@link MovementEvaluator#getModifiedLoad(Unit)}
    */
   @Deprecated
@@ -2039,7 +2039,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns the number of regions this unit is able to travel within one turn based on the riding
    * skill, horses, carts and load of this unit.
-   * 
+   *
    * @deprecated use {@link MovementEvaluator#getRadius(Unit)}
    */
   @Deprecated
@@ -2051,7 +2051,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * Returns the overall weight (persons, items) of this unit in silver by calling the game specific
    * calculation for the modified weight. Generally this should take care of modified persons and
    * modified items.
-   * 
+   *
    * @return the modified weight of the unit
    * @deprecated use {@link MovementEvaluator#getModifiedWeight(Unit)}
    */
@@ -2062,7 +2062,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns all units this unit is transporting as passengers.
-   * 
+   *
    * @return A Collection of transported <code>Unit</code>s
    */
   public Collection<Unit> getPassengers() {
@@ -2080,7 +2080,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Returns all units indicating by their orders that they would transport this unit as a passenger
    * (if there is more than one such unit, that is a semantical error of course).
-   * 
+   *
    * @return A Collection of <code>Unit</code>s carrying this one
    */
   public Collection<Unit> getCarriers() {
@@ -2097,7 +2097,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns a Collection of all the units that are taught by this unit.
-   * 
+   *
    * @return A Collection of <code>Unit</code>s taught by this unit
    */
   public Collection<Unit> getPupils() {
@@ -2114,7 +2114,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns a Collection of all the units that are teaching this unit.
-   * 
+   *
    * @return A Collection of <code>Unit</code>s teaching this unit
    */
   public Collection<Unit> getTeachers() {
@@ -2168,7 +2168,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * to be determined, this method has to be called for each unit in the same region. Since
    * relations are defined by unit orders, modified orders may lead to different relations.
    * Therefore refreshRelations() has to be invoked on a unit after its orders were modified.
-   * 
+   *
    * @deprecated relation refreshing is now done event-based
    */
   @Deprecated
@@ -2184,7 +2184,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * to be called for each unit in the same region. Since relations are defined by unit orders,
    * modified orders may lead to different relations. Therefore refreshRelations() has to be invoked
    * on a unit after its orders were modified.
-   * 
+   *
    * @param from Start from this line
    * @deprecated relation refreshing is now done event-based
    */
@@ -2241,7 +2241,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
    * removes the corresponding orders from this unit. Uses the default order locale to parse the
    * orders.
-   * 
+   *
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
    * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
@@ -2254,7 +2254,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
    * removes the corresponding orders from this unit.
-   * 
+   *
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
    * @param locale the locale to parse the orders with.
@@ -2344,7 +2344,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of aura.
-   * 
+   *
    * @return Returns aura.
    */
   public int getAura() {
@@ -2353,7 +2353,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of aura.
-   * 
+   *
    * @param aura The value for aura.
    */
   public void setAura(int aura) {
@@ -2362,7 +2362,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of auraMax.
-   * 
+   *
    * @return Returns auraMax.
    */
   public int getAuraMax() {
@@ -2371,7 +2371,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of auraMax.
-   * 
+   *
    * @param auraMax The value for auraMax.
    */
   public void setAuraMax(int auraMax) {
@@ -2388,7 +2388,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of cache.
-   * 
+   *
    * @return Returns cache.
    */
   public Cache getCache() {
@@ -2408,7 +2408,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of cache.
-   * 
+   *
    * @param cache The value for cache.
    */
   public void setCache(Cache cache) {
@@ -2457,7 +2457,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of combatSpells.
-   * 
+   *
    * @return Returns combatSpells.
    */
   public Map<ID, CombatSpell> getCombatSpells() {
@@ -2466,7 +2466,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of combatSpells.
-   * 
+   *
    * @param combatSpells The value for combatSpells.
    */
   public void setCombatSpells(Map<ID, CombatSpell> combatSpells) {
@@ -2475,7 +2475,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of combatStatus.
-   * 
+   *
    * @return Returns combatStatus.
    */
   public int getCombatStatus() {
@@ -2484,7 +2484,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of combatStatus.
-   * 
+   *
    * @param combatStatus The value for combatStatus.
    */
   public void setCombatStatus(int combatStatus) {
@@ -2493,7 +2493,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of comments.
-   * 
+   *
    * @return Returns comments.
    */
   public List<String> getComments() {
@@ -2502,7 +2502,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of comments.
-   * 
+   *
    * @param comments The value for comments.
    */
   public void setComments(List<String> comments) {
@@ -2511,7 +2511,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of effects.
-   * 
+   *
    * @return Returns effects.
    */
   public List<String> getEffects() {
@@ -2520,7 +2520,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of effects.
-   * 
+   *
    * @param effects The value for effects.
    */
   public void setEffects(List<String> effects) {
@@ -2529,7 +2529,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of familiarmageID.
-   * 
+   *
    * @return Returns familiarmageID.
    */
   public ID getFamiliarmageID() {
@@ -2538,7 +2538,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of familiarmageID.
-   * 
+   *
    * @param familiarmageID The value for familiarmageID.
    */
   public void setFamiliarmageID(ID familiarmageID) {
@@ -2547,7 +2547,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of follows.
-   * 
+   *
    * @return Returns follows.
    */
   public Unit getFollows() {
@@ -2556,7 +2556,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of follows.
-   * 
+   *
    * @param follows The value for follows.
    */
   public void setFollows(Unit follows) {
@@ -2565,7 +2565,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of guard.
-   * 
+   *
    * @return Returns guard.
    */
   public int getGuard() {
@@ -2574,7 +2574,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of guard.
-   * 
+   *
    * @param guard The value for guard.
    */
   public void setGuard(int guard) {
@@ -2583,7 +2583,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of health.
-   * 
+   *
    * @return Returns health.
    */
   public String getHealth() {
@@ -2592,7 +2592,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of health.
-   * 
+   *
    * @param health The value for health.
    */
   public void setHealth(String health) {
@@ -2601,7 +2601,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of hideFaction.
-   * 
+   *
    * @return Returns hideFaction.
    */
   public boolean isHideFaction() {
@@ -2610,7 +2610,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of hideFaction.
-   * 
+   *
    * @param hideFaction The value for hideFaction.
    */
   public void setHideFaction(boolean hideFaction) {
@@ -2619,7 +2619,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of isHero.
-   * 
+   *
    * @return Returns isHero.
    */
   public boolean isHero() {
@@ -2628,7 +2628,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of isHero.
-   * 
+   *
    * @param isHero The value for isHero.
    */
   public void setHero(boolean isHero) {
@@ -2637,7 +2637,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of isStarving.
-   * 
+   *
    * @return Returns isStarving.
    */
   public boolean isStarving() {
@@ -2646,7 +2646,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of isStarving.
-   * 
+   *
    * @param isStarving The value for isStarving.
    */
   public void setStarving(boolean isStarving) {
@@ -2655,7 +2655,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of ordersConfirmed.
-   * 
+   *
    * @return Returns ordersConfirmed.
    */
   public boolean isOrdersConfirmed() {
@@ -2664,7 +2664,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of ordersConfirmed.
-   * 
+   *
    * @param ordersConfirmed The value for ordersConfirmed.
    */
   public void setOrdersConfirmed(boolean ordersConfirmed) {
@@ -2673,7 +2673,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of privDesc.
-   * 
+   *
    * @return Returns privDesc.
    */
   public String getPrivDesc() {
@@ -2682,7 +2682,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of privDesc.
-   * 
+   *
    * @param privDesc The value for privDesc.
    */
   public void setPrivDesc(String privDesc) {
@@ -2701,7 +2701,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of race.
-   * 
+   *
    * @param race The value for race.
    */
   public void setRace(Race race) {
@@ -2720,7 +2720,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of realRace.
-   * 
+   *
    * @param realRace The value for realRace.
    */
   public void setRealRace(Race realRace) {
@@ -2729,7 +2729,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of siege.
-   * 
+   *
    * @return Returns siege.
    */
   public Building getSiege() {
@@ -2738,7 +2738,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of siege.
-   * 
+   *
    * @param siege The value for siege.
    */
   public void setSiege(Building siege) {
@@ -2747,7 +2747,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of spells.
-   * 
+   *
    * @return Returns spells.
    */
   public Map<ID, Spell> getSpells() {
@@ -2756,7 +2756,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of spells.
-   * 
+   *
    * @param spells The value for spells.
    */
   public void setSpells(Map<ID, Spell> spells) {
@@ -2766,7 +2766,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of stealth.
-   * 
+   *
    * @return Returns stealth.
    */
   public int getStealth() {
@@ -2775,7 +2775,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of stealth.
-   * 
+   *
    * @param stealth The value for stealth.
    */
   public void setStealth(int stealth) {
@@ -2784,7 +2784,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of unaided.
-   * 
+   *
    * @return Returns unaided.
    */
   public boolean isUnaided() {
@@ -2793,7 +2793,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of unaided.
-   * 
+   *
    * @param unaided The value for unaided.
    */
   public void setUnaided(boolean unaided) {
@@ -2802,7 +2802,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns the value of unitMessages.
-   * 
+   *
    * @return Returns unitMessages.
    */
   public List<Message> getUnitMessages() {
@@ -2811,7 +2811,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of unitMessages.
-   * 
+   *
    * @param unitMessages The value for unitMessages.
    */
   public void setUnitMessages(List<Message> unitMessages) {
@@ -2820,7 +2820,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of persons.
-   * 
+   *
    * @param persons The value for persons.
    */
   public void setPersons(int persons) {
@@ -2829,7 +2829,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of skills.
-   * 
+   *
    * @param skills The value for skills.
    */
   public void setSkills(Map<StringID, Skill> skills) {
@@ -2838,7 +2838,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Sets the value of weight.
-   * 
+   *
    * @param weight The value for weight.
    */
   public void setWeight(int weight) {
@@ -2854,7 +2854,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * this function inspects travelthru an travelthruship to find the movement in the past
-   * 
+   *
    * @return List of coordinates from start to end region.
    */
   public List<CoordinateID> getPastMovement(GameData gdata) {
@@ -2872,7 +2872,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Checks if the unit's movement was passive (transported or shipped).
-   * 
+   *
    * @return <code>true</code> if the unit's past movement was passive
    * @deprecated Use {@link #isPastMovementPassive(GameSpecificStuff)}
    */

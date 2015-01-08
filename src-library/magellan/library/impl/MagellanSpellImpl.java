@@ -102,7 +102,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
   /**
    * Creates a new Spell object. CR looks as follows:
-   * 
+   *
    * <pre>
    * ZAUBER 1234567
    * "german name";name
@@ -118,9 +118,9 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * TRANSLATION
    * "english name";german name
    * </pre>
-   * 
+   *
    * this means, spells are identified by their german names
-   * 
+   *
    * @param id This should currently be a {@link StringID}
    * @param _data
    */
@@ -254,7 +254,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
   /**
    * Returns the components of this spell as Strings.
-   * 
+   *
    * @see magellan.library.Spell#getComponents()
    */
   public Map<String, String> getComponents() {
@@ -284,7 +284,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   /**
    * Returns a string representation which looks like this: <tt>[N1 F S See ]</tt> denoting the
    * type, the level, and if this is a far, a ship or a sea spell.
-   * 
+   *
    * @see magellan.library.impl.MagellanNamedImpl#toString()
    */
   @Override
@@ -296,15 +296,15 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
     case 'm':
       sb.append(Resources.get("spell.combat.short"));
       break;
-    // spell.normal = Normaler Zauber
+      // spell.normal = Normaler Zauber
     case 'r':
       sb.append(Resources.get("spell.normal.short"));
       break;
-    // spell.postcombat = Postkampfzauber
+      // spell.postcombat = Postkampfzauber
     case 's':
       sb.append(Resources.get("spell.postcombat.short"));
       break;
-    // spell.precombat = Präkampfzauber
+      // spell.precombat = Präkampfzauber
     case 'e':
       sb.append(Resources.get("spell.precombat.short"));
       break;
@@ -352,7 +352,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
   /**
    * A human readable string with information about the syntax of the spell (FF)
-   * 
+   *
    * @see magellan.library.Spell#getSyntaxString()
    */
   public String getSyntaxString() {
@@ -422,14 +422,14 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   private String getOrderTranslation(StringID orderId) {
     // FIXME use correct unit locale
     return data.getGameSpecificStuff().getOrderChanger()
-        .getOrder(Locales.getOrderLocale(), orderId);
+        .getOrder(Locales.getOrderLocale(), orderId).getText();
   }
 
   /**
    * checks, if we have knowledge about the components of the spell and if the auro counts per level
    * or absolute. if it counts per level we assume the aura-cost depends on level and we deliver
    * true, else false
-   * 
+   *
    * @return
    */
   private boolean isAuraLevelDependend() {
@@ -469,7 +469,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
   /**
    * returns the spellsyntax object of this spell
-   * 
+   *
    * @return a SpellSyntax object or <code>null</code>
    */
   public SpellSyntax getSpellSyntax() {
@@ -486,7 +486,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
   /**
    * Only returns the locale of the spell
-   * 
+   *
    * @see magellan.library.Localized#getLocale()
    * @return the locale of the spell or <code>null</code>
    */
@@ -496,7 +496,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
   /**
    * Sets the locale and invalidates the description if required.
-   * 
+   *
    * @see magellan.library.Localized#setLocale(java.util.Locale)
    */
   public void setLocale(Locale locale) {

@@ -95,7 +95,7 @@ public class EresseaOrderChanger implements OrderChanger {
     } else if (uc instanceof Region) {
       order = EresseaConstants.OC_REGION;
     } else if (uc instanceof Faction) {
-      order = EresseaConstants.OC_FACTION;
+      order = EresseaConstants.OC_PARAMETER_FACTION;
     }
 
     return getOrder(
@@ -115,7 +115,7 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   protected String
-  createDescribeUnitContainerOrder(UnitContainer uc, Unit unit, String description) {
+      createDescribeUnitContainerOrder(UnitContainer uc, Unit unit, String description) {
     StringBuilder order = new StringBuilder();
 
     if (uc instanceof Building) {
@@ -179,7 +179,7 @@ public class EresseaOrderChanger implements OrderChanger {
       Order order = iter.next();
 
       if (orders.isToken(order, 0, EresseaConstants.OC_HIDE))
-        if (orders.isToken(order, 1, EresseaConstants.OC_FACTION)) {
+        if (orders.isToken(order, 1, EresseaConstants.OC_PARAMETER_FACTION)) {
           continue;
         } else {
           boolean raceFound = false;
@@ -287,7 +287,7 @@ public class EresseaOrderChanger implements OrderChanger {
     orders.add(getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
         + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"\"");
     orders.add(getOrderTranslation(EresseaConstants.OC_HIDE, unit) + " "
-        + getOrderTranslation(EresseaConstants.OC_FACTION, unit));
+        + getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION, unit));
 
     if (unit.getShip() != null) {
       orders.add(getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
@@ -311,7 +311,7 @@ public class EresseaOrderChanger implements OrderChanger {
 
     if (!unit.isHideFaction()) {
       orders.add(PCOMMENTSTART + getOrderTranslation(EresseaConstants.OC_HIDE, unit) + " "
-          + getOrderTranslation(EresseaConstants.OC_FACTION, unit) + " "
+          + getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION, unit) + " "
           + getOrderTranslation(EresseaConstants.OC_NOT, unit));
     }
 
@@ -511,7 +511,7 @@ public class EresseaOrderChanger implements OrderChanger {
         // there is another order except buy and sell
         boolean firstIsBuySell =
             map.keySet().iterator().next().equals(EresseaConstants.OC_BUY)
-                || map.keySet().iterator().next().equals(EresseaConstants.OC_SELL);
+            || map.keySet().iterator().next().equals(EresseaConstants.OC_SELL);
         for (StringID order : map.keySet()) {
           if (order.equals(EresseaConstants.OC_BUY) || order.equals(EresseaConstants.OC_SELL)) {
             if (!firstIsBuySell)
@@ -891,7 +891,7 @@ public class EresseaOrderChanger implements OrderChanger {
    * Returns the orders necessary to issue the creation of all the child temp units of this unit.
    */
   public Collection<? extends Order>
-  getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
+      getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
     final OrderParser parser = getRules().getGameSpecificStuff().getOrderParser(unit.getData());
     final List<Order> cmds = new LinkedList<Order>();
     final Locale locale = unit.getLocale();

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding.atlantis;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -39,6 +39,9 @@ import magellan.test.MagellanTestWithResources;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author stm
+ */
 public class AtlantisMapMetricTest extends MagellanTestWithResources {
 
   private static final int DIR_M = 0;
@@ -57,6 +60,9 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
 
   private MapMetric metric;
 
+  /**
+   * @throws Exception
+   */
   @Before
   public void setUp() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
@@ -65,13 +71,16 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
     metric = data.getGameSpecificStuff().getMapMetric();
   }
 
+  /**
+   *
+   */
   @Test
   public void test() {
     assertTrue(metric instanceof AtlantisMapMetric);
   }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#getDir()}.
+   * Test method for {@link magellan.library.utils.Direction#getDirCode()}.
    */
   @Test
   public void testGetDir() {
@@ -85,9 +94,7 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for
-   * {@link magellan.library.utils.Direction#toDirection(magellan.library.CoordinateID, magellan.library.CoordinateID)}
-   * .
+   * Test method for {@link AtlantisMapMetric#getDirection(CoordinateID, CoordinateID)} .
    */
   @Test
   public void testToDirectionCoordinateIDCoordinateID() {
@@ -107,9 +114,7 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for
-   * {@link magellan.library.utils.Direction#toDirection(magellan.library.Region, magellan.library.Region)}
-   * .
+   * Test method for {@link AtlantisMapMetric#getDirection(Region, Region)} .
    */
   @Test
   public void testToDirectionRegionRegion() {
@@ -126,7 +131,7 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
       fail();
       return;
     }
-    MapMetric metric = data.getGameSpecificStuff().getMapMetric();
+    MapMetric localMetric = data.getGameSpecificStuff().getMapMetric();
     Region r0 = data.getRegions().iterator().next();
     Region r1 = builder.addRegion(data, "1 0", "Ebene", "Ebene", 2);
     r1.setUID(1234);
@@ -141,38 +146,15 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
     data.postProcess();
     data.postProcessTheVoid();
 
-    assertSame(E, metric.getDirection(r0, r1));
-    assertSame(W, metric.getDirection(r1, r0));
-    assertSame(E, metric.getDirection(r2, r0));
-    assertSame(W, metric.getDirection(r0, r2));
-    assertSame(Direction.INVALID, metric.getDirection(r1, r2));
+    assertSame(E, localMetric.getDirection(r0, r1));
+    assertSame(W, localMetric.getDirection(r1, r0));
+    assertSame(E, localMetric.getDirection(r2, r0));
+    assertSame(W, localMetric.getDirection(r0, r2));
+    assertSame(Direction.INVALID, localMetric.getDirection(r1, r2));
   }
 
-  // /**
-  // * Test method for
-  // * {@link magellan.library.utils.Direction#toDirection(magellan.library.CoordinateID)}.
-  // */
-  // @Test
-  // public void testToDirectionCoordinateID() {
-  // assertSame(E, metric.getDirection(CoordinateID.create(1, 0)));
-  // }
-  //
-  // /**
-  // * Test method for {@link magellan.library.utils.Direction#toDirection(int, int)}.
-  // */
-  // @Test
-  // public void testToDirectionIntInt() {
-  // assertSame(Direction.M, metric.getDirection(-1, 1));
-  // assertSame(Direction.N, metric.getDirection(0, 1));
-  // assertSame(Direction.E, metric.getDirection(1, 0));
-  // assertSame(Direction.Y, metric.getDirection(1, -1));
-  // assertSame(Direction.S, metric.getDirection(0, -1));
-  // assertSame(Direction.W, metric.getDirection(-1, 0));
-  // assertSame(Direction.INVALID, metric.getDirection(1, 1));
-  // }
-
   /**
-   * Test method for {@link magellan.library.utils.Direction#toDirection(int)}.
+   * Test method for {@link AtlantisMapMetric#toDirection(int)}
    */
   @Test
   public void testToDirectionInt() {
@@ -187,7 +169,7 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#toCoordinate()}.
+   * Test method for {@link Direction#toCoordinate()}.
    */
   @Test
   public void testToCoordinate() {
@@ -201,23 +183,12 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for
-   * {@link magellan.library.utils.Direction#toCoordinate(magellan.library.utils.Direction)}.
+   * Test method for {@link Direction#toCoordinate()}.
    */
   @Test
   public void testToCoordinateDirection() {
     assertEquals(E.toCoordinate(), CoordinateID.create(1, 0));
   }
-
-  //
-  // /**
-  // * Test method for {@link magellan.library.utils.Direction#toCoordinate(int)}.
-  // */
-  // @SuppressWarnings("deprecation")
-  // @Test
-  // public void testToCoordinateInt() {
-  // assertEquals(Direction.DIR_E.toCoordinate(), CoordinateID.create(1, 0));
-  // }
 
   /**
    * Test method for {@link magellan.library.utils.Direction#toString()}.
@@ -232,28 +203,8 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
     assertEquals("W", W.getId().toString());
   }
 
-  // /**
-  // * Test method for {@link
-  // magellan.library.utils.Direction#toInt(magellan.library.CoordinateID)}.
-  // */
-  // @SuppressWarnings("deprecation")
-  // @Test
-  // public void testToIntCoordinateID() {
-  // assertSame(Direction.DIR_M, Direction.toInt(CoordinateID.create(-1, 1)));
-  // }
-
-  // /**
-  // * Test method for {@link magellan.library.utils.Direction#toInt(java.lang.String)}.
-  // */
-  // @SuppressWarnings("deprecation")
-  // @Test
-  // public void testToIntString() {
-  // assertSame(Direction.DIR_N, Direction.toInt("NO"));
-  // }
-
   /**
-   * Test method for
-   * {@link magellan.library.utils.Direction#getDifference(magellan.library.utils.Direction)}.
+   * Test method for {@link AtlantisMapMetric#getDifference(Direction, Direction)}.
    */
   @Test
   public void testGetDifferenceDirection() {
@@ -261,7 +212,7 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#getDifference(int)}.
+   * Test method for {@link AtlantisMapMetric#getDifference(Direction, Direction)}.
    */
   @Test
   public void testGetDifferenceInt() {
@@ -305,41 +256,11 @@ public class AtlantisMapMetricTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#getDirections()}.
+   * Test method for {@link AtlantisMapMetric#getDirections()}.
    */
   @Test
   public void testGetDirections() {
     assertArrayEquals(new Direction[] { M, N, E, Y, S, W }, metric.getDirections().toArray());
   }
 
-  // /**
-  // * Test method for {@link Direction#add(int)}.
-  // */
-  // @Test
-  // public void testAdd() throws Exception {
-  // assertSame(E, metric.add(E, 0));
-  // assertSame(Y, metric.add(E, 1));
-  // assertSame(S, metric.add(E, 2));
-  // assertSame(W, metric.add(E, 3));
-  // assertSame(M, metric.add(E, 4));
-  // assertSame(N, metric.add(E, 5));
-  // assertSame(E, metric.add(E, 6));
-  // assertSame(Y, metric.add(E, 7));
-  // assertSame(N, metric.add(E, -1));
-  // assertSame(W, metric.add(E, -9));
-  // assertSame(W, metric.add(Y, 2));
-  // assertSame(M, metric.add(S, 2));
-  // assertSame(N, metric.add(W, 2));
-  // assertSame(E, metric.add(M, 2));
-  // assertSame(Y, metric.add(N, 2));
-  // assertSame(S, metric.add(E, 2));
-  // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 0));
-  // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 1));
-  // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 2));
-  // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 3));
-  // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 4));
-  // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 5));
-  // assertSame(Direction.INVALID, metric.add(Direction.INVALID, 6));
-  // assertSame(Direction.INVALID, metric.add(Direction.INVALID, -2));
-  // }
 }

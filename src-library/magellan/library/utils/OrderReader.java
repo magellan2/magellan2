@@ -72,7 +72,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
 
     if (data == null) {
       OrderReader.log
-          .info("OrderReader.OrderReader(): game data is null! Creating empty game data to proceed.");
+      .info("OrderReader.OrderReader(): game data is null! Creating empty game data to proceed.");
       data = new CompleteData(new GenericRules());
     }
 
@@ -115,7 +115,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
    * Comments starting with a semicolon and containing the literal 'bestaetigt' (case and umlaut
    * insensitive) after an arbitrary number of whitespace characters are never added to a unit's
    * orders, instead they set the order confirmation status of the unit to true.
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   public void read(Reader in) throws IOException {
@@ -396,7 +396,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId);
+    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId).getText();
   }
 
   /**
@@ -439,7 +439,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
 
   /**
    * Returns whether orders of confirmed units should be overwritten.
-   * 
+   *
    * @return Returns doNotOverwriteConfirmedOrders.
    */
   public boolean isDoNotOverwriteConfirmedOrders() {
@@ -449,7 +449,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
   /**
    * Sets whether orders of confirmed units should be overwritten. If set to <code>true</code>,
    * orders of confirmed units will not be changed.
-   * 
+   *
    * @param doNotOverwriteConfirmedOrders The value for doNotOverwriteConfirmedOrders.
    */
   public void setDoNotOverwriteConfirmedOrders(boolean doNotOverwriteConfirmedOrders) {

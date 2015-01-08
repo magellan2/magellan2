@@ -287,10 +287,13 @@ public class EresseaConstants extends GameConstants {
   /** Order constant ERESSEA */
   public static final StringID OC_ERESSEA = StringID.create("ERESSEA");
 
-  /** Order constant FACTION */
-  public static final String O_FACTION = "FACTION";
-  /** Order constant FACTION */
+  /** Order constant for the FACTION order */
+  public static final String O_FACTION = "PARAMETER_FACTION";
+  /** Order constant for the FACTION order */
   public static final StringID OC_FACTION = StringID.create("FACTION");
+
+  /** Order constant FACTION as parameter */
+  public static final StringID OC_PARAMETER_FACTION = StringID.create("PARAMETER_FACTION");
 
   /**
    * @deprecated replaced by HELP_FACTIONSTEALTH
@@ -500,6 +503,9 @@ public class EresseaConstants extends GameConstants {
   /** Order constant NUMBER */
   public static final StringID OC_NUMBER = StringID.create("NUMBER");
 
+  /** Order constant from TARNE PARTEI NUMMER */
+  public static final StringID OC_STEALTH_NUMBER = StringID.create("STEALTH_NUMBER");
+
   /** Order constant OPTION */
   public static final String O_OPTION = "OPTION";
   /** Order constant OPTION */
@@ -707,14 +713,14 @@ public class EresseaConstants extends GameConstants {
 
   /**
    * Order constant TEMP
-   * 
+   *
    * @deprecated use #OC_MAKETEMP
    */
   @Deprecated
   public static final String O_TEMP = "TEMP";
   /**
    * Order constant TEMP
-   * 
+   *
    * @deprecated use #OC_MAKETEMP
    */
   @Deprecated

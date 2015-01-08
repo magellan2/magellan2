@@ -64,7 +64,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   /**
    * Creates a new <tt>EresseaOrderCompleter</tt> taking context information from the specified
    * <tt>GameData</tt> object.
-   * 
+   *
    * @param gd The <tt>GameData</tt> this completer uses as context.
    */
   public EresseaOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
@@ -362,8 +362,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FOREIGNFACTION), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FOREIGNSHIP), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FOREIGNUNIT), " "));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION), spaceQuotes,
-        Completion.DEFAULT_PRIORITY, 1));
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION),
+        spaceQuotes, Completion.DEFAULT_PRIORITY, 1));
 
     // use old owner unit (BENENNE before GIB)
     if ((unit.getBuilding() != null) && unit.equals(unit.getBuilding().getOwnerUnit())) {
@@ -389,7 +389,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CASTLE), " "));
     }
     if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNFACTION))) {
-      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION), " "));
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION),
+          " "));
     }
     if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_FOREIGNSHIP))) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SHIP), " "));
@@ -476,7 +477,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /**
    * Ergänzt alle Items der Faction in der Region, deren Anzahl größer als amount ist
-   * 
+   *
    * @param amount
    */
   /** Add completions for command Benutze. */
@@ -532,8 +533,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /** Add completions for command BetreteBurg. */
   public void cmpltBetreteBurg() {
-    for (final Iterator<Building> iter = region.buildings().iterator(); iter.hasNext();) {
-      final UnitContainer uc = iter.next();
+    for (Building building : region.buildings()) {
+      final UnitContainer uc = building;
 
       if (!uc.equals(unit.getBuilding())) {
         addNamed(uc, "", 0, true);
@@ -543,8 +544,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /** Add completions for command BetreteSchiff. */
   public void cmpltBetreteSchiff() {
-    for (final Iterator<Ship> iter = region.ships().iterator(); iter.hasNext();) {
-      final UnitContainer uc = iter.next();
+    for (Ship ship : region.ships()) {
+      final UnitContainer uc = ship;
 
       if (!uc.equals(unit.getShip())) {
         addNamed(uc, "", 0, true);
@@ -556,7 +557,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   public void cmpltBotschaft() {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CASTLE), " "));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION), " "));
+    completions
+        .add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_REGION), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SHIP), " "));
@@ -726,7 +728,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   /**
    * For multiple-line-completion like the creation of give-orders for the resources of an item it
    * is necessary to get the unit's id and the amount to be given. They are given as parameters:
-   * 
+   *
    * @param uid the unit's id
    * @param i the amount
    * @param persons Whether to add "PERSONEN" or not
@@ -1020,7 +1022,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /**
    * Returns the learn cost for a specific skill.
-   * 
+   *
    * @param skillType the skill to be learned
    * @return the cost to learn a skill for the given unit. If the unit has no persons the cost for
    *         one person is returned.
@@ -1311,7 +1313,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   public void cmpltNummer() {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SHIP), " "));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION), " "));
+    completions
+        .add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CASTLE), " "));
   }
 
@@ -1417,7 +1420,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /**
    * Reserve as much of the item as the unit can carry.
-   * 
+   *
    * @param otherUnit
    */
   private void addMaxReserve(Unit otherUnit) {
@@ -1577,7 +1580,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   /**
    * Adds completions for all units in the container <code>c</code> if they're in the same buildg as
    * <code>u</code>.
-   * 
+   *
    * @param u
    * @param c
    * @param addOwner If true, the container's owner is included if applicable.
@@ -1611,12 +1614,13 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   public void cmpltTarne(boolean quoted) {
     if (!quoted) {
       if (unit.isHideFaction()) {
-        completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION) + " "
-            + getOrderTranslation(EresseaConstants.OC_NOT),
-            getOrderTranslation(EresseaConstants.OC_FACTION), " "
+        completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION)
+            + " " + getOrderTranslation(EresseaConstants.OC_NOT),
+            getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION), " "
                 + getOrderTranslation(EresseaConstants.OC_NOT)));
       } else {
-        completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION), " "));
+        completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION),
+            " "));
       }
       // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_NOT)));
       completions.add(new Completion("0"));
@@ -1641,7 +1645,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_NOT)));
     }
 
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_NUMBER), " "));
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_STEALTH_NUMBER), " "));
   }
 
   /** Add completions for command TarneParteiNummer. */

@@ -52,7 +52,7 @@ public class JECheck extends Reader {
   /**
    * Creates a new JECheck object by executing ECheck with the specified parameters and making its
    * output accessible through the Reader interface.
-   * 
+   *
    * @param eCheckExe a file specifying the ECheck executable. It is assumed that the files
    *          items.txt and zauber.txt are located in same directory as the executable itself.
    * @param orders the file containing the orders to be parsed by ECheck. If orders is null ECheck
@@ -175,7 +175,7 @@ public class JECheck extends Reader {
 
   /**
    * Reads from the output of ECheck.
-   * 
+   *
    * @throws IOException DOCUMENT-ME
    */
   @Override
@@ -188,7 +188,7 @@ public class JECheck extends Reader {
 
   /**
    * Closes the reader on the output of ECheck.
-   * 
+   *
    * @throws IOException DOCUMENT-ME
    */
   @Override
@@ -203,7 +203,7 @@ public class JECheck extends Reader {
   /**
    * Mark the present position in the stream. Subsequent calls to reset() will attempt to reposition
    * the stream to this point. Not all character-input streams support the mark() operation.
-   * 
+   *
    * @param readAheadLimit Limit on the number of characters that may be read while still preserving
    *          the mark. After reading this many characters, attempting to reset the stream may fail.
    * @throws IOException If the stream does not support mark(), or if some other I/O error occurs.
@@ -226,7 +226,7 @@ public class JECheck extends Reader {
 
   /**
    * Tell whether this stream is ready to be read.
-   * 
+   *
    * @return True if the next read() is guaranteed not to block for input, false otherwise. Note
    *         that returning false does not guarantee that the next read will block.
    * @throws IOException If an I/O error occurs
@@ -245,7 +245,7 @@ public class JECheck extends Reader {
    * particular stream, for example by repositioning it to its starting point. Not all
    * character-input streams support the reset() operation, and some support reset() without
    * supporting mark().
-   * 
+   *
    * @throws IOException If the stream has not been marked, or if the mark has been invalidated, or
    *           if the stream does not support reset(), or if some other I/O error occurs
    */
@@ -260,7 +260,7 @@ public class JECheck extends Reader {
   /**
    * Skip characters. This method will block until some characters are available, an I/O error
    * occurs, or the end of the stream is reached.
-   * 
+   *
    * @param n The number of characters to skip
    * @return The number of characters actually skipped
    * @throws IOException If an I/O error occurs
@@ -277,7 +277,7 @@ public class JECheck extends Reader {
    * Runs ECheck with the specified parameters and returns the error and warning messages it
    * reported. For reference for the parameters see the constructor. This method requires that the
    * specified echeck executable not older than the version returned by getRequiredVersion().
-   * 
+   *
    * @return a collection containing JECheck.ECheckMessage objects.
    * @throws IOException DOCUMENT-ME
    * @throws java.text.ParseException DOCUMENT-ME
@@ -291,13 +291,13 @@ public class JECheck extends Reader {
    * Returns a collection containing JECheck.ECheckMessage objects by reading from the specified
    * reader. This method requires that the specified echeck executable not older than the version
    * returned by getRequiredVersion().
-   * 
+   *
    * @return a collection containing JECheck.ECheckMessage objects.
    * @throws IOException DOCUMENT-ME
    * @throws java.text.ParseException DOCUMENT-ME
    */
   public static Collection<ECheckMessage> getMessages(Reader echeckOutput) throws IOException,
-      java.text.ParseException {
+  java.text.ParseException {
     Collection<ECheckMessage> msgs = new LinkedList<ECheckMessage>();
     BufferedReader in = new LineNumberReader(echeckOutput);
     String line = null;
@@ -442,7 +442,7 @@ public class JECheck extends Reader {
   /**
    * Returns the next line from the buffered Reader or null iff the the end of the stream is
    * reached.
-   * 
+   *
    * @throws IOException DOCUMENT-ME
    */
   private static String getLine(BufferedReader in) throws IOException {
@@ -464,7 +464,7 @@ public class JECheck extends Reader {
   /**
    * Determines the Unit or Region referenced in an ECheck message by looking at the orders the
    * ECheck messages were generated from.
-   * 
+   *
    * @param data the game data the orders belong to and from which the Unit or Region can be
    *          retrieved.
    * @param orderFile a file containing the orders that ECheck was run on when it produced the
@@ -501,10 +501,10 @@ public class JECheck extends Reader {
     try {
       unitOrder =
           data.getGameSpecificStuff().getOrderChanger().getOrder(EresseaConstants.OC_UNIT,
-              Locales.getOrderLocale(), new Object[] { true });
+              Locales.getOrderLocale(), new Object[] { true }).getText();
       regionOrder =
           data.getGameSpecificStuff().getOrderChanger().getOrder(EresseaConstants.OC_REGION,
-              Locales.getOrderLocale(), new Object[] { true });
+              Locales.getOrderLocale(), new Object[] { true }).getText();
     } catch (RulesException e) {
       // orrder is null
     }
@@ -570,7 +570,7 @@ public class JECheck extends Reader {
 
   /**
    * Returns what ECheck returns when called with the -h option.
-   * 
+   *
    * @param eCheckExe
    * @param settings
    * @throws IOException
@@ -608,7 +608,7 @@ public class JECheck extends Reader {
 
   /**
    * Returns the version of the specified ECheck executable file.
-   * 
+   *
    * @throws IOException DOCUMENT-ME
    */
   public static Version getVersion(File eCheckExe, Properties settings) throws IOException {
@@ -650,7 +650,7 @@ public class JECheck extends Reader {
   /**
    * Checks whether the version of the specified ECheck executable is valid and its output can be
    * processed.
-   * 
+   *
    * @throws IOException DOCUMENT-ME
    */
   public static boolean checkVersion(File eCheckExe, Properties settings) throws IOException {
@@ -689,7 +689,7 @@ public class JECheck extends Reader {
 
     /**
      * Creates a new ECheckMessage object by parsing the specified String.
-     * 
+     *
      * @throws java.text.ParseException if the rawMessage String cannot be parsed.
      */
     public ECheckMessage(String rawMessage) throws java.text.ParseException {

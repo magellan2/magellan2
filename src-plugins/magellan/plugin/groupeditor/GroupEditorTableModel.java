@@ -49,7 +49,7 @@ import magellan.library.utils.comparator.NameComparator;
 
 /**
  * Represents the list off all possible alliance states
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 25.09.2008
  */
@@ -68,7 +68,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
 
   /**
    * Returns the value of faction.
-   * 
+   *
    * @return Returns faction.
    */
   public Faction getOwner() {
@@ -77,7 +77,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
 
   /**
    * Sets the value of faction.
-   * 
+   *
    * @param owner The value for faction.
    */
   public void setOwner(Faction owner) {
@@ -265,7 +265,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
 
   protected String getOrderTranslation(StringID orderId) {
     return getOwner().getData().getGameSpecificStuff().getOrderChanger().getOrder(
-        getOwner().getLocale(), orderId);
+        getOwner().getLocale(), orderId).getText();
   }
 
   /**

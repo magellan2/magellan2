@@ -194,7 +194,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * Shows details about units, regions or whatever object is currently selected.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 390 $
  */
@@ -545,7 +545,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     tree.setCellEditor(new DefaultTreeCellEditor(tree, delegate) {
       /**
        * Ensures that only comment cells are editable.
-       * 
+       *
        * @see javax.swing.tree.DefaultTreeCellEditor#isCellEditable(java.util.EventObject)
        */
       @Override
@@ -572,7 +572,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       /**
        * Sets the comment of the UnitContainer if a unit container comment node was edited.
-       * 
+       *
        * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
        */
       public void editingStopped(ChangeEvent e) {
@@ -605,7 +605,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       /**
        * Sets the comment of the Unit if a unit comment node was edited.
-       * 
+       *
        * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
        */
       public void editingStopped(ChangeEvent e) {
@@ -919,7 +919,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information about this faction.
-   * 
+   *
    * @param alliance
    * @param allies
    * @param u
@@ -938,7 +938,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * Shows a tree: Terrain : region.type Coordinates : region.coordinates guarding units (Orc
    * Infestination) (resources) (peasants) (luxuries) (schemes) (comments) (tags)
-   * 
+   *
    * @param r
    * @param parent
    * @param expandableNodes
@@ -1043,7 +1043,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * This function adds a node with subnodes to given parent - Luxuries: amount luxury item 1: price
    * 1 ... luxury item n: price n
-   * 
+   *
    * @param r
    * @param parent
    * @param expandableNodes
@@ -1089,7 +1089,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * surplus: surplus<br />
    * wage: <br />
    * entertain:
-   * 
+   *
    * @param r
    * @param parent
    * @param expandableNodes
@@ -1215,7 +1215,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends the resources of the region.
-   * 
+   *
    * @param r
    * @param parent
    * @param expandableNodes
@@ -1634,7 +1634,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends a folder with the (region) resources to the specified parent node.
-   * 
+   *
    * @param r
    * @param parent
    * @param expandableNodes
@@ -1690,7 +1690,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends a folder with the (region) resources to the specified parent node.
-   * 
+   *
    * @param res
    * @param parent
    * @param oldValue
@@ -1760,7 +1760,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends a folder with the schemes in the specified region to the specified parent node.
-   * 
+   *
    * @param region
    * @param parent
    * @param expandableNodes
@@ -1785,7 +1785,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends a folder with the external tags of a unit container to the given node.
-   * 
+   *
    * @param uc
    * @param parent
    * @param expandableNodes
@@ -1797,7 +1797,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends a folder with the external tags of a unit to the given node.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -1809,7 +1809,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends the tags of a taggable.
-   * 
+   *
    * @param taggable
    * @param parent
    * @param expandableNodes
@@ -1840,7 +1840,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information for several selected factions.
-   * 
+   *
    * @param factions
    * @param parent
    * @param expandableNodes
@@ -1873,7 +1873,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Adds all units from input to result that are excepted by filter.
-   * 
+   *
    * @param result Results are appended to this collection
    * @param input Input collections
    * @param filter
@@ -1888,7 +1888,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append summary information for several selected units.
-   * 
+   *
    * @param units
    * @param parent
    * @param expandableNodes
@@ -2083,7 +2083,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information about the specified group.
-   * 
+   *
    * @param g
    * @param parent
    * @param expandableNodes
@@ -2278,7 +2278,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information for the specified unit
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -2530,7 +2530,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information on number of persons (and their race).
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -2646,7 +2646,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information about this unit's faction.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -2661,7 +2661,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information about this faction.
-   * 
+   *
    * @param alliance
    * @param allies
    * @param u
@@ -2717,7 +2717,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information on the unit's race.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -2741,7 +2741,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information on the unit's group.
-   * 
+   *
    * @param u
    */
   private void appendUnitGroupInfo(Unit u, DefaultMutableTreeNode parent,
@@ -2762,7 +2762,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append Information on the stealth level etc. for this unit.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -2889,7 +2889,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information on the unit's weight.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -2964,7 +2964,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information on the possible horses.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -2983,7 +2983,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information on this unit's payload and capacity.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -3119,7 +3119,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information about all things on the ship
-   * 
+   *
    * @param s The ship
    * @param parent Mother-Tree-Node
    * @param expandableNodes
@@ -3178,7 +3178,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information on the skills of this unit.
-   * 
+   *
    * @return <code>true</code> iff <code>u</code> is a trader
    */
   private boolean appendUnitSkillInfo(Unit u, DefaultMutableTreeNode parent,
@@ -3251,7 +3251,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information on this unit's teachers and pupils.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -3463,7 +3463,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information on the unit's spells
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -3568,7 +3568,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information on the potions that this unit can make.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -3617,7 +3617,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information on the region resources if this unit is a maker.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -3659,7 +3659,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * Append information on the containers this unit is in, if it is commanding any and who it is
    * passing command.
-   * 
+   *
    * @param u
    * @param parent
    * @param expandableNodes
@@ -3732,7 +3732,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   private String getTranslation(int shore) {
     return getGameData().getGameSpecificStuff().getOrderChanger().getOrder(
-        Locales.getOrderLocale(), getGameData().getMapMetric().toDirection(shore).getId());
+        Locales.getOrderLocale(), getGameData().getMapMetric().toDirection(shore).getId())
+        .getText();
   }
 
   private void appendUnitCapacityByItems(DefaultMutableTreeNode parent, Unit u, int freeCapacity) {
@@ -3883,7 +3884,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information on a buildig: Type, owner, inmates, maintenance and costs.
-   * 
+   *
    * @param b
    * @param parent
    * @param expandableNodes
@@ -4061,7 +4062,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information on the inmates of this building.
-   * 
+   *
    * @param b
    * @param parent
    * @param expandableNodes
@@ -4139,7 +4140,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information on the owner.
-   * 
+   *
    * @param b
    * @param parent
    * @param expandableNodes
@@ -4170,7 +4171,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append information on the buildings type and true type.
-   * 
+   *
    * @param b
    * @param parent
    * @param expandableNodes
@@ -4287,7 +4288,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Appends information about inmates, modified inmates and their respective weights.
-   * 
+   *
    * @param s
    * @param parent
    * @param expandableNodes
@@ -4390,7 +4391,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append nodes for faction and owner.
-   * 
+   *
    * @param s
    * @param parent
    * @param expandableNodes
@@ -4458,7 +4459,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Append nodes for ship load and overload
-   * 
+   *
    * @param s
    * @param parent
    * @param expandableNodes
@@ -4586,7 +4587,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Creates node for GIB KOMMANDO orders for ships and buildings.
-   * 
+   *
    * @param s
    * @param parent
    * @param expandableNodes
@@ -4921,7 +4922,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Stores the expansion state.
-   * 
+   *
    * @see magellan.client.swing.InternationalizedDataPanel#quit()
    */
   @Override
@@ -4931,7 +4932,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Selection event handler, update all elements in this panel with the appropriate data.
-   * 
+   *
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent se) {
@@ -5039,7 +5040,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Changes to a new object and displays its information depending on the active region.
-   * 
+   *
    * @param dontForceRefresh If <code>true</code>, nothing is done if the new object is the already
    *          displayed object.
    */
@@ -5293,7 +5294,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Called when one of the tag buttons is pressed.
-   * 
+   *
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
@@ -5351,7 +5352,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Returns if the buttons for adding tags are shown.
-   * 
+   *
    * @return <code>true</code> if the buttons for adding tags are shown
    */
   public boolean isShowingTagButtons() {
@@ -5360,7 +5361,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Returns if custom (faction) icons are shown.
-   * 
+   *
    * @return <code>true</code> if custom (faction) icons are shown
    */
   public boolean isAllowingCustomIcons() {
@@ -5369,7 +5370,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Returns if more compact layout is used.
-   * 
+   *
    * @return <code>true</code> if more compact layout is used
    */
   public boolean isCompactLayout() {
@@ -5393,7 +5394,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Returns which items are shown (in capacity nodes).
-   * 
+   *
    * @return which items are shown (in capacity nodes)
    */
   public ShowItems getShowCapacityItems() {
@@ -5697,7 +5698,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       /**
        * Creates a new StealthContextMenu object.
-       * 
+       *
        * @throws IllegalArgumentException if unit's stealth level is 0.
        */
       public StealthContextMenu(Unit u) {
@@ -5875,11 +5876,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 locale,
                 EresseaConstants.OC_RESERVE,
                 new Object[] { EresseaConstants.OC_EACH, amount,
-                    reserveRelation.itemType.getOrderName() });
+                    reserveRelation.itemType.getOrderName() }).getText();
           else
             return getGameSpecificStuff().getOrderChanger().getOrder(locale,
                 EresseaConstants.OC_RESERVE,
-                new Object[] { amount, reserveRelation.itemType.getOrderName() });
+                new Object[] { amount, reserveRelation.itemType.getOrderName() }).getText();
 
         }
       }
@@ -5964,13 +5965,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 locale,
                 EresseaConstants.OC_GIVE,
                 new Object[] { transferRelation.target.getID(), EresseaConstants.OC_EACH, amount,
-                    transferRelation.itemType.getOrderName() });
+                    transferRelation.itemType.getOrderName() }).getText();
           else
             return getGameSpecificStuff().getOrderChanger().getOrder(
                 locale,
                 EresseaConstants.OC_GIVE,
                 new Object[] { transferRelation.target.getID(), amount,
-                    transferRelation.itemType.getOrderName() });
+                    transferRelation.itemType.getOrderName() }).getText();
 
         }
       }
@@ -6506,7 +6507,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-   * 
+   *
    */
   private static class RaceInfo {
     int amount = 0;
@@ -6562,7 +6563,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * outsourced handling of changes in tree-selections updating mySelectedUnits
-   * 
+   *
    * @author Fiete
    * @param tslE the TreeSelectionEvent from The Listener of our Tree
    */
@@ -6617,7 +6618,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     /**
      * Creates a filter that accepts units that are in all regions occuring in context.
-     * 
+     *
      * @param context
      */
     public ContextUnitFilter(List<?> context) {

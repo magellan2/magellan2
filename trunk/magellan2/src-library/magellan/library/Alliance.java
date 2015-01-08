@@ -32,7 +32,7 @@ public class Alliance {
   /**
    * Create a new Alliance object for an alliance with the specified faction and without any
    * alliance status set.
-   * 
+   *
    * @param faction the faction to establish an alliance with.
    */
   public Alliance(Faction faction) {
@@ -42,7 +42,7 @@ public class Alliance {
   /**
    * Create a new Alliance object for an alliance with the specified faction and the specified
    * status.
-   * 
+   *
    * @param faction the faction to establish an alliance with
    * @param state the alliance status, must be one of constants SILVER, FIGHT, GIVE, GUARD, GUISE or
    *          ALL.
@@ -78,7 +78,7 @@ public class Alliance {
 
   /**
    * Returns the faction this alliance refers to. The return value is never null.
-   * 
+   *
    * @return the faction of this alliance
    */
   public Faction getFaction() {
@@ -87,7 +87,7 @@ public class Alliance {
 
   /**
    * Get the state bit-field of this alliance.
-   * 
+   *
    * @return the state bitfield.
    */
   public int getState() {
@@ -96,7 +96,7 @@ public class Alliance {
 
   /**
    * Determine whether a specific state of this alliance is set.
-   * 
+   *
    * @param selector specifying one of the constants in this class.
    * @return true if specific state is set, false if not which state should be evaluated.
    */
@@ -113,7 +113,7 @@ public class Alliance {
 
   /**
    * Get a string representation of the alliance state.
-   * 
+   *
    * @return the alliance state as string.
    */
   public String stateToString() {
@@ -146,10 +146,9 @@ public class Alliance {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    // we could also use Locales.getGUILocale()
     return getFaction().getData().getGameSpecificStuff().getOrderChanger().getOrder(
         getFaction().getLocale() == null ? Locales.getOrderLocale() : getFaction().getLocale(),
-        orderId);
+            orderId).getText();
   }
 
   /**
@@ -181,7 +180,7 @@ public class Alliance {
 
   /**
    * Return a string representation of this alliance object.
-   * 
+   *
    * @return the alliance object as string.
    */
   @Override
@@ -192,7 +191,7 @@ public class Alliance {
   /**
    * A method to convert an alliance into a trustlevel. This method should be uses when Magellan
    * calculates trust levels on its own.
-   * 
+   *
    * @return the trustlevel of this alliance
    */
   public int getTrustLevel() {

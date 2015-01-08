@@ -129,12 +129,11 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   public void testArbeiteReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_WORK));
     checkOrder("ARBEITE");
-    checkOrder("ARBEITEN");
-    checkOrder("arbeiten");
+    checkOrder("arbeite");
     checkOrder("AR");
     checkOrder("ARBEITE ;");
     checkOrder("arbeitene", false);
-    checkOrder("ARBEISEN", false);
+    checkOrder("ARBEISE", false);
     checkOrder("ARBEITE 1", false);
     checkOrder(" ARBEITE ARBEITE", false);
     checkOrder(" ARBEITE");
@@ -254,7 +253,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     checkOrder("BENENNE EINHEIT \"豐葦原千五百秋瑞穂之地\"");
     for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Gebäude", "Sägewerk",
         "SCHIFF", "REGION" }) {
-      checkOrder("BENENNEN " + thing + " \"Foo\"");
+      checkOrder("BENENNE " + thing + " \"Foo\"");
       checkOrder("BENENNE " + thing + " \"Foo\"; comment");
       checkOrder("BENENNE " + thing + " \"\"", false);
       checkOrder("BENENNE " + thing + " abc", false);
@@ -270,7 +269,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
 
     // for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Gebäude", "Sägewerk",
     // "SCHIFF" }) {
-    // checkOrder("BENENNEN FREMDE " + thing + " 123 \"Foo\"");
+    // checkOrder("BENENNE FREMDE " + thing + " 123 \"Foo\"");
     // checkOrder("BENENNE FREMDE " + thing + " abc \"Foo\"; comment");
     // checkOrder("BENENNE FREMDE " + thing + " TEMP xyz \"Foo\""); // this is really allowed (for
     // // units)
@@ -285,7 +284,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     // FIXME: these ambiguous commands shouldn't be accepted (maybe?)
     if (DO_KNOWN_FAILURES) {
       for (String thing : new String[] { "S", "E" }) {
-        checkOrder("BENENNEN " + thing + " \"Foo\"", false); // is it SCHIFF or Sägewerk or
+        checkOrder("BENENNE " + thing + " \"Foo\"", false); // is it SCHIFF or Sägewerk or
         // Steinbruch??
         checkOrder("BENENNE " + thing + " \"Foo\"; comment", false);
       }
@@ -298,15 +297,15 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testBenutzeReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_USE) + " Siebenmeilentee");
-    checkOrder("BENUTZEN Wasser~des~Lebens");
-    checkOrder("BENUTZEN \"Wasser des Lebens\"");
-    checkOrder("BENUTZEN 22 Wasser~des~Lebens");
-    checkOrder("BENUTZEN 22 \"Wasser des Lebens\"");
-    checkOrder("BENUTZEN 22 \"Wasser des Lebens\"; \"123\"");
-    checkOrder("BENUTZEN  11 22 Wasser~des~Lebens", false);
-    checkOrder("BENUTZEN  22 Siebenmeilentee 3", false);
-    checkOrder("BENUTZEN  22 Siebenmeilentee Heiltrank", false);
-    checkOrder("BENUTZEN  BENUTZEN", true);
+    checkOrder("BENUTZE Wasser~des~Lebens");
+    checkOrder("BENUTZE \"Wasser des Lebens\"");
+    checkOrder("BENUTZE 22 Wasser~des~Lebens");
+    checkOrder("BENUTZE 22 \"Wasser des Lebens\"");
+    checkOrder("BENUTZE 22 \"Wasser des Lebens\"; \"123\"");
+    checkOrder("BENUTZE  11 22 Wasser~des~Lebens", false);
+    checkOrder("BENUTZE  22 Siebenmeilentee 3", false);
+    checkOrder("BENUTZE  22 Siebenmeilentee Heiltrank", false);
+    checkOrder("BENUTZE  BENUTZE", true);
   }
 
   /**
@@ -315,9 +314,9 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testBeschreibeReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_DESCRIBE) + " EINHEIT \"Foo\"");
-    checkOrder("BESCHREIBEN EINHEIT \"Ἀχιλλεύς\"");
+    checkOrder("BESCHREIBE EINHEIT \"Ἀχιλλεύς\"");
     for (String thing : new String[] { "EINHEIT", "PRIVAT", "BURG", "Sägewerk", "SCHIFF", "REGION" }) {
-      checkOrder("BESCHREIBEN " + thing + " \"Foo\"");
+      checkOrder("BESCHREIBE " + thing + " \"Foo\"");
       checkOrder("BESCHREIBE " + thing + " \"Foo\"; comment");
       checkOrder("BESCHREIBE " + thing + " \"\"", true);
       checkOrder("BESCHREIBE " + thing + " abc", false);
@@ -333,12 +332,12 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   public void testBetreteReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_ENTER) + " "
         + getOrderTranslation(EresseaConstants.OC_SHIP) + " ship");
-    checkOrder("BetreteN BURG burg");
-    checkOrder("BetreteN BURG burg; ");
-    checkOrder("BetreteN BURG abc", true); // no such building
-    checkOrder("BetreteN BURG TEMP 123", false);
-    checkOrder("BetreteN BURG \"burg\"", false);
-    checkOrder("BetreteN 1 BURG burg", false);
+    checkOrder("BetretE BURG burg");
+    checkOrder("Betrete BURG burg; ");
+    checkOrder("Betrete BURG abc", true); // no such building
+    checkOrder("Betrete BURG TEMP 123", false);
+    checkOrder("Betrete BURG \"burg\"", false);
+    checkOrder("Betrete 1 BURG burg", false);
   }
 
   /**
@@ -347,7 +346,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testBewacheReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_GUARD));
-    checkOrder("BEWACHEN");
+    checkOrder("BEWACHE");
     // checkOrder("BEWACHT");
     checkOrder("BEWACHE ; a");
     checkOrder("BEWACHE 2", false);
@@ -383,16 +382,16 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   public void testDefaultReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_DEFAULT) + " "
         + getOrderTranslation(EresseaConstants.OC_WORK));
-    checkOrder("DEFAULT \"ARBEITEN\"");
-    checkOrder("DEFAULT 'ARBEITEN'");
-    checkOrder("DEFAULT 'LERNEN Ausdauer'");
-    checkOrder("DEFAULT 'LERNEN Alchemie'");
-    checkOrder("DEFAULT 'LERNEN Alchemie 200'");
+    checkOrder("DEFAULT \"ARBEITE\"");
+    checkOrder("DEFAULT 'ARBEITE'");
+    checkOrder("DEFAULT 'LERNE Ausdauer'");
+    checkOrder("DEFAULT 'LERNE Alchemie'");
+    checkOrder("DEFAULT 'LERNE Alchemie 200'");
     checkOrder("DEFAULT 'BANNER \"abc\"'");
     checkOrder("DEFAULT 'BANNER \"abc def\"'");
     checkOrder("DEFAULT 'BANNER 'abc def''", false);
-    checkOrder("DEFAULT 'LERNEN'", false);
-    checkOrder("DEFAULT LERNEN Ausdauer", false);
+    checkOrder("DEFAULT 'LERNE'", false);
+    checkOrder("DEFAULT LERNE Ausdauer", false);
     // TODO more checks
   }
 
@@ -431,11 +430,11 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testFahreReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_RIDE) + " zwei");
-    checkOrder("FAHREN zwei");
-    checkOrder("FAHREN TEMP 456");
-    checkOrder("FAHREN abc"); // invisible unit allowed
-    checkOrder("FAHREN abcde", false);
-    checkOrder("FAHREN zwei zwei", false);
+    checkOrder("FAHRE zwei");
+    checkOrder("FAHRE TEMP 456");
+    checkOrder("FAHRE abc"); // invisible unit allowed
+    checkOrder("FAHRE abcde", false);
+    checkOrder("FAHRE zwei zwei", false);
   }
 
   /**
@@ -445,12 +444,12 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   public void testFolgeReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_FOLLOW) + " "
         + getOrderTranslation(EresseaConstants.OC_UNIT) + " zwei");
-    checkOrder("FOLGEN SCHIFF ship");
-    checkOrder("FOLGEN SCHIFF 123", false);
-    checkOrder("FOLGEN SCHIFF TEMP 123", false);
-    checkOrder("FOLGEN EINHEIT 123 456", false);
-    checkOrder("FOLGEN EINHEIT \"abc\"", false);
-    checkOrder("FOLGEN EINHEIT", false);
+    checkOrder("FOLGE SCHIFF ship");
+    checkOrder("FOLGE SCHIFF 123", false);
+    checkOrder("FOLGE SCHIFF TEMP 123", false);
+    checkOrder("FOLGE EINHEIT 123 456", false);
+    checkOrder("FOLGE EINHEIT \"abc\"", false);
+    checkOrder("FOLGE EINHEIT", false);
   }
 
   /**
@@ -548,10 +547,10 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     checkOrder(getOrderTranslation(EresseaConstants.OC_HELP) + " 123 "
         + getOrderTranslation(EresseaConstants.OC_ALL));
     checkOrder("HELFE 123 ALLES NICHT");
-    checkOrder("HELFEN 123 GIB");
-    checkOrder("HELFEN 123 GIB NICHT");
+    checkOrder("HELFE 123 GIB");
+    checkOrder("HELFE 123 GIB NICHT");
     checkOrder("HELFE 123 KÄMPFE");
-    checkOrder("HELFE 123 BEWACHEN");
+    checkOrder("HELFE 123 BEWACHE");
     checkOrder("HELFE 123 SILBER");
     checkOrder("HELFE 123 PARTEITARNUNG");
     checkOrder("HELFE 123 bla", false);
@@ -560,7 +559,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     checkOrder("HELFE 123 456", false);
     checkOrder("HELFE TEMP 456", false);
     checkOrder("HELFE 123", false);
-    checkOrder("HELFE 123 KÄMPFEN", false);
+    // checkOrder("HELFE 123 KÄMPFE", false);
   }
 
   /**
@@ -875,14 +874,14 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   public void testReserviereReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_RESERVE) + " 1 "
         + data.getRules().getItemType(EresseaConstants.I_USILVER).getName());
-    checkOrder("RESERVIEREN ALLES Holz");
+    checkOrder("RESERVIERE ALLES Holz");
     checkOrder("RESERVIERE 2 Silber");
     checkOrder("RESERVIERE JE 1 Holz");
     checkOrder("RESERVIERE 1 Flabberghast"); // item does not exist
-    checkOrder("RESERVIEREN ALLES", false);
-    checkOrder("RESERVIEREN JE", false);
-    checkOrder("RESERVIEREN JE 2", false);
-    checkOrder("RESERVIEREN JE 2 ALLES", false);
+    checkOrder("RESERVIERE ALLES", false);
+    checkOrder("RESERVIERE JE", false);
+    checkOrder("RESERVIERE JE 2", false);
+    checkOrder("RESERVIERE JE 2 ALLES", false);
     checkOrder("RESERVIERE JE Holz", false);
     checkOrder("RESERVIERE 1.5 Holz", false);
     checkOrder("RESERVIERE 2 1 Holz", false);
@@ -1110,10 +1109,10 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testMergeTempTokensWithoutTemps() {
     TokenBucket bucket = getParser().new TokenBucket();
-    bucket.read(new StringReader("LEHREN 123 456 678"));
+    bucket.read(new StringReader("LEHRE 123 456 678"));
     bucket.mergeTempTokens(36);
     assertThat(bucket.size(), is(5));
-    assertThat(bucket.get(0).getText(), is("LEHREN"));
+    assertThat(bucket.get(0).getText(), is("LEHRE"));
     assertThat(bucket.get(1).getText(), is("123"));
     assertThat(bucket.get(2).getText(), is("456"));
     assertThat(bucket.get(3).getText(), is("678"));
@@ -1124,10 +1123,10 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testMergeTempTokensWithTemp() {
     TokenBucket bucket = getParser().new TokenBucket();
-    bucket.read(new StringReader("LEHREN TEMP 123"));
+    bucket.read(new StringReader("LEHRE TEMP 123"));
     bucket.mergeTempTokens(36);
     assertThat(bucket.size(), is(3));
-    assertThat(bucket.get(0).getText(), is("LEHREN"));
+    assertThat(bucket.get(0).getText(), is("LEHRE"));
     assertThat(bucket.get(1).getText(), is("TEMP 123"));
   }
 
@@ -1135,10 +1134,10 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testMergeTempTokensWithTwoTemps() {
     TokenBucket bucket = getParser().new TokenBucket();
-    bucket.read(new StringReader("LEHREN TEMP 123 TEMP 456"));
+    bucket.read(new StringReader("LEHRE TEMP 123 TEMP 456"));
     bucket.mergeTempTokens(36);
     assertThat(bucket.size(), is(4));
-    assertThat(bucket.get(0).getText(), is("LEHREN"));
+    assertThat(bucket.get(0).getText(), is("LEHRE"));
     assertThat(bucket.get(1).getText(), is("TEMP 123"));
     assertThat(bucket.get(2).getText(), is("TEMP 456"));
   }
@@ -1147,13 +1146,57 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testMergeTempTokensWithMixed() {
     TokenBucket bucket = getParser().new TokenBucket();
-    bucket.read(new StringReader("LEHREN TEMP 123 456 TEMP abc"));
+    bucket.read(new StringReader("LEHRE TEMP 123 456 TEMP abc"));
     bucket.mergeTempTokens(36);
     assertThat(bucket.size(), is(5));
-    assertThat(bucket.get(0).getText(), is("LEHREN"));
+    assertThat(bucket.get(0).getText(), is("LEHRE"));
     assertThat(bucket.get(1).getText(), is("TEMP 123"));
     assertThat(bucket.get(2).getText(), is("456"));
     assertThat(bucket.get(3).getText(), is("TEMP abc"));
+  }
+
+  /**
+   *
+   */
+  @Test
+  public void testInfinitive() {
+    checkOrder("ARBEITEN");
+    checkOrder("ATTACKIEREN bca");
+    checkOrder("BEANSPRUCHEN 1 Stein");
+    checkOrder("BEKLAUEN zwei");
+    checkOrder("BENENNEN REGION 'Meine'");
+    checkOrder("BENUTZEN 1 Bauernblut");
+    checkOrder("BESCHREIBEN BURG 'schön'");
+    checkOrder("BETRETEN BURG 123");
+    checkOrder("BEWACHEN NICHT");
+    checkOrder("FAHREN abc");
+    checkOrder("FOLGEN EINHEIT zwei");
+    checkOrder("FORSCHEN KRÄUTER");
+    checkOrder("HELFEN bla BEWACHE"); // BEWACHEN is deprecated
+    checkOrder("HELFEN bla KÄMPFE"); // KÄMPFEN is deprecated
+    checkOrder("KÄMPFEN HELFE NICHT"); // HELFEN is deprecated
+    checkOrder("KAUFEN 2 Balsam");
+    checkOrder("KONTAKTIEREN def");
+    checkOrder("LEHREN abc");
+    checkOrder("LERNEN Ausdauer");
+    checkOrder("MACHEN 5 Schwert");
+    checkOrder("MACHEN TEMP 123");
+    checkOrder("PFLANZEN 5 Samen");
+    checkOrder("REKRUTIEREN 2");
+    checkOrder("RESERVIEREN 5 Silber");
+    checkOrder("SABOTIEREN SCHIFF");
+    checkOrder("SORTIEREN VOR abc");
+    checkOrder("SPIONIEREN abc");
+    checkOrder("TARNEN 5");
+    checkOrder("TRANSPORTIEREN abc");
+    checkOrder("TREIBEN");
+    checkOrder("UNTERHALTEN");
+    checkOrder("VERGESSEN Ausdauer");
+    checkOrder("VERKAUFEN 5 Balsam");
+    checkOrder("VERLASSEN");
+    checkOrder("ZEIGEN Schwert");
+    checkOrder("ZERSTÖREN");
+    checkOrder("ZÜCHTEN KRÄUTER");
   }
 
   // /**

@@ -12,15 +12,15 @@ package magellan.library.gamebinding.atlantis;
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // package magellan.library.gamebinding;
 
@@ -49,10 +49,12 @@ import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.OrderChanger;
 import magellan.library.gamebinding.RulesException;
+import magellan.library.gamebinding.SimpleOrder;
 import magellan.library.impl.MagellanUnitImpl;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.OrderType;
 import magellan.library.utils.Locales;
+import magellan.library.utils.OrderToken;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -85,25 +87,25 @@ public class AtlantisOrderChanger implements OrderChanger {
   public void addCombatOrder(Unit unit, int newstate) {
     if (newstate > 0) {
       unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_BEHIND,
-          new Object[] { newstate - 1 }));
+          new Object[] { newstate - 1 }).getText());
     }
   }
 
   public void addDescribeUnitContainerOrder(Unit unit, UnitContainer uc, String descr) {
     if (uc instanceof Ship) {
-      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_DISPLAY, new Object[] {
-          AtlantisConstants.OC_SHIP, "\"" + descr + "\"" }));
+      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_DISPLAY,
+          new Object[] { AtlantisConstants.OC_SHIP, "\"" + descr + "\"" }).getText());
     } else if (uc instanceof Building) {
-      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_DISPLAY, new Object[] {
-          AtlantisConstants.OC_BUILDING, "\"" + descr + "\"" }));
+      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_DISPLAY,
+          new Object[] { AtlantisConstants.OC_BUILDING, "\"" + descr + "\"" }).getText());
     } else {
       unit.addOrder(AtlantisConstants.O_COMMENT + "can't describe " + uc);
     }
   }
 
   public void addDescribeUnitOrder(Unit unit, String descr) {
-    unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_DISPLAY, new Object[] {
-        AtlantisConstants.OC_UNIT, "\"" + descr + "\"" }));
+    unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_DISPLAY,
+        new Object[] { AtlantisConstants.OC_UNIT, "\"" + descr + "\"" }).getText());
   }
 
   public void addDescribeUnitPrivateOrder(Unit unit, String descr) {
@@ -119,8 +121,8 @@ public class AtlantisOrderChanger implements OrderChanger {
   }
 
   public void addNamingOrder(Unit unit, String name) {
-    unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_NAME, new Object[] {
-        AtlantisConstants.OC_UNIT, "\"" + name + "\"" }));
+    unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_NAME,
+        new Object[] { AtlantisConstants.OC_UNIT, "\"" + name + "\"" }).getText());
   }
 
   /**
@@ -129,11 +131,11 @@ public class AtlantisOrderChanger implements OrderChanger {
    */
   public void addNamingOrder(Unit unit, UnitContainer uc, String name) {
     if (uc instanceof Ship) {
-      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_NAME, new Object[] {
-          AtlantisConstants.OC_SHIP, "\"" + name + "\"" }));
+      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_NAME,
+          new Object[] { AtlantisConstants.OC_SHIP, "\"" + name + "\"" }).getText());
     } else if (uc instanceof Building) {
-      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_NAME, new Object[] {
-          AtlantisConstants.OC_BUILDING, "\"" + name + "\"" }));
+      unit.addOrder(getOrder(unit.getLocale(), AtlantisConstants.OC_NAME,
+          new Object[] { AtlantisConstants.OC_BUILDING, "\"" + name + "\"" }).getText());
     } else {
       unit.addOrder(AtlantisConstants.O_COMMENT + "can't name " + uc);
     }
@@ -153,7 +155,8 @@ public class AtlantisOrderChanger implements OrderChanger {
     if (item != null) {
       if (item.equals(EresseaConstants.I_MEN)) {
         tmpOrders =
-            getOrder(locale, AtlantisConstants.OC_TRANSFER, new Object[] { target.getID(), amount });
+            getOrder(locale, AtlantisConstants.OC_TRANSFER, new Object[] { target.getID(), amount })
+                .getText();
       } else {
         ItemType itemType = getRules().getItemType(item);
         if (itemType == null) {
@@ -172,28 +175,34 @@ public class AtlantisOrderChanger implements OrderChanger {
     } else {
       if (item.equals(AtlantisConstants.I_USILVER)) {
         tmpOrders =
-            getOrder(locale, AtlantisConstants.OC_PAY, new Object[] {
-                target.getID(),
-                (amount < 0 ? target.getPersons() * amount : (amount == OrderChanger.ALL
-                    ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)),
-                (comment != null ? ("; " + comment) : "") });
+            getOrder(
+                locale,
+                AtlantisConstants.OC_PAY,
+                new Object[] {
+                    target.getID(),
+                    (amount < 0 ? target.getPersons() * amount : (amount == OrderChanger.ALL
+                        ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)),
+                    (comment != null ? ("; " + comment) : "") }).getText();
       } else {
         tmpOrders =
-            getOrder(locale, AtlantisConstants.OC_GIVE, new Object[] {
-                target.getID(),
-                (amount < 0 ? target.getPersons() * amount : (amount == OrderChanger.ALL
-                    ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)), sItem,
-                (comment != null ? ("; " + comment) : "") });
+            getOrder(
+                locale,
+                AtlantisConstants.OC_GIVE,
+                new Object[] {
+                    target.getID(),
+                    (amount < 0 ? target.getPersons() * amount : (amount == OrderChanger.ALL
+                        ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)), sItem,
+                    (comment != null ? ("; " + comment) : "") }).getText();
       }
     }
     source.addOrder(tmpOrders);
   }
 
   public void addMultipleHideOrder(Unit u) {
-    u.addOrder(getOrder(u.getLocale(), AtlantisConstants.OC_NAME, new Object[] {
-        AtlantisConstants.OC_UNIT, "Unit" }));
-    u.addOrder(getOrder(u.getLocale(), AtlantisConstants.OC_DISPLAY, new Object[] {
-        AtlantisConstants.OC_UNIT, "\"\"" }));
+    u.addOrder(getOrder(u.getLocale(), AtlantisConstants.OC_NAME,
+        new Object[] { AtlantisConstants.OC_UNIT, "Unit" }).getText());
+    u.addOrder(getOrder(u.getLocale(), AtlantisConstants.OC_DISPLAY,
+        new Object[] { AtlantisConstants.OC_UNIT, "\"\"" }).getText());
   }
 
   public void disableLongOrders(Unit u) {
@@ -245,10 +254,10 @@ public class AtlantisOrderChanger implements OrderChanger {
 
   /**
    * Returns the order with the given id, localized for the unit's order locale.
-   * 
+   *
    * @see OrderType#getName(Locale)
    */
-  protected String getOrderTranslation(StringID id, Unit unit) {
+  protected Order getOrderTranslation(StringID id, Unit unit) {
     return getOrder(unit.getLocale(), id);
   }
 
@@ -269,36 +278,81 @@ public class AtlantisOrderChanger implements OrderChanger {
   }
 
   protected String getTemp(Locale locale) {
-    return getOrder(locale, AtlantisConstants.OC_NEW);
+    return getOrder(locale, AtlantisConstants.OC_NEW).getText();
   }
 
-  public String getOrder(Locale orderLocale, StringID orderId) {
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#getOrder(java.util.Locale,
+   *      magellan.library.StringID)
+   */
+  public Order getOrder(Locale orderLocale, StringID orderId) {
     try {
       return getOrder(orderId, orderLocale, EMPTY);
     } catch (RulesException e) {
-      return orderId.toString();
+      return new SimpleOrder(Collections.singletonList(new OrderToken(orderId.toString())), orderId
+          .toString());
     }
   }
 
-  public String getOrder(Locale orderLocale, StringID orderId, Object[] args) {
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#getOrder(java.util.Locale,
+   *      magellan.library.StringID, java.lang.Object[])
+   */
+  public Order getOrder(Locale orderLocale, StringID orderId, Object[] args) {
     try {
       return getOrder(orderId, orderLocale, args);
     } catch (RulesException e) {
-      return orderId.toString();
+      // return orderId.toString();
+
+      StringBuilder order = new StringBuilder();
+      List<OrderToken> tokens = new ArrayList<OrderToken>();
+      try {
+        String text = getOrder1(orderId, orderLocale);
+        order.append(text);
+        tokens.add(new OrderToken(text));
+      } catch (RulesException e2) {
+        order.append(orderId);
+        tokens.add(new OrderToken(orderId.toString()));
+      }
+      for (Object arg : args) {
+        String tok;
+        try {
+          tok = getTokenLocalized(orderLocale, arg);
+        } catch (RulesException e2) {
+          tok = arg.toString();
+        }
+        if (tok.length() > 0) {
+          order.append(" ").append(tok);
+          tokens.add(new OrderToken(tok));
+        }
+      }
+      return new SimpleOrder(tokens, order.toString());
+
     }
   }
 
-  public String getOrder(StringID orderId, Locale orderLocale) throws RulesException {
+  public Order getOrder(StringID orderId, Locale orderLocale) throws RulesException {
     return getOrder(orderId, orderLocale, EMPTY);
   }
 
-  public String getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException {
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#getOrder(magellan.library.StringID,
+   *      java.util.Locale, java.lang.Object[])
+   */
+  public Order getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException {
     StringBuilder order = new StringBuilder();
-    order.append(getOrder1(orderId, orderLocale));
+    List<OrderToken> tokens = new ArrayList<OrderToken>();
+
+    String text;
+    order.append(text = getOrder1(orderId, orderLocale));
+    tokens.add(new OrderToken(text));
     for (Object arg : args) {
-      order.append(" ").append(getTokenLocalized(orderLocale, arg));
+      String tok = getTokenLocalized(orderLocale, arg);
+      if (tok.length() > 0) {
+        order.append(" ").append(tok);
+      }
     }
-    return order.toString();
+    return new SimpleOrder(tokens, order.toString());
   }
 
   private String getOrder1(StringID orderId, Locale orderLocale) throws RulesException {
@@ -320,7 +374,7 @@ public class AtlantisOrderChanger implements OrderChanger {
   /**
    * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
    * removes the corresponding orders from this unit.
-   * 
+   *
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
    * @param locale the locale to parse the orders with.
@@ -428,14 +482,14 @@ public class AtlantisOrderChanger implements OrderChanger {
   /**
    * Returns the orders necessary to issue the creation of all the child temp units of this unit.
    */
-  public Collection<? extends Order> getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
+  public Collection<? extends Order>
+  getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
     final OrderParser parser = getRules().getGameSpecificStuff().getOrderParser(unit.getData());
     final List<Order> cmds = new LinkedList<Order>();
     final Locale locale = unit.getLocale();
 
     for (TempUnit u : unit.tempUnits()) {
-      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.OC_FORM, new Object[] { -u.getID()
-          .intValue() }), locale));
+      cmds.add(getOrder(locale, AtlantisConstants.OC_FORM, new Object[] { -u.getID().intValue() }));
 
       cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
@@ -452,9 +506,10 @@ public class AtlantisOrderChanger implements OrderChanger {
         }
       }
 
-      cmds.add(parser.parse(getOrder(locale, AtlantisConstants.OC_END), locale));
+      cmds.add(getOrder(locale, AtlantisConstants.OC_END));
     }
 
     return cmds;
   }
+
 }

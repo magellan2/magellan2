@@ -349,7 +349,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   /**
    * Displays the dialog.
-   * 
+   *
    * @param newID preset for id text box
    * @param newName preset for name box
    */
@@ -363,7 +363,7 @@ public class TempUnitDialog extends InternationalizedDialog {
       order.setText(null);
     } else {
       order.setText(getFaction().getData().getGameSpecificStuff().getOrderChanger().getOrder(
-          getFaction().getLocale(), EresseaConstants.OC_LEARN));
+          getFaction().getLocale(), EresseaConstants.OC_LEARN).getText());
     }
 
     descript.setText(null);
@@ -552,7 +552,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
     /**
      * Always returns false.
-     * 
+     *
      * @see javax.swing.JComponent#isManagingFocus()
      */
     @Override
@@ -563,14 +563,14 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   /**
    * Reacts to events.
-   * 
+   *
    * @author stm
    */
   public class TempUnitDialogListener extends KeyAdapter implements ActionListener, KeyListener {
 
     /**
      * Reacts on buttons and ENTER in text fields.
-     * 
+     *
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(java.awt.event.ActionEvent p1) {
@@ -593,7 +593,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
     /**
      * Quits dialog when user pressed ESC.
-     * 
+     *
      * @see java.awt.event.KeyAdapter#keyReleased(java.awt.event.KeyEvent)
      */
     @Override
@@ -609,7 +609,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   /**
    * Returns the value of faction.
-   * 
+   *
    * @return Returns faction.
    */
   public Faction getFaction() {
@@ -618,7 +618,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   /**
    * Sets the value of faction.
-   * 
+   *
    * @param faction The value for faction.
    */
   public void setFaction(Faction faction) {
@@ -627,7 +627,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   /**
    * Returns the value of parentGroup.
-   * 
+   *
    * @return Returns parentGroup.
    */
   public Group getParentGroup() {
@@ -636,7 +636,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   /**
    * Sets the value of parentGroup.
-   * 
+   *
    * @param parentGroup The value for parentGroup.
    */
   public void setParentGroup(Group parentGroup) {
@@ -665,7 +665,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
   /**
    * Sets the value of combatStatus.
-   * 
+   *
    * @param combatStatus The value for combatStatus.
    */
   public void setCombatState(int combatStatus) {

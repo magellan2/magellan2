@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.plugin.extendedcommands;
 
 import java.lang.reflect.InvocationTargetException;
@@ -68,7 +68,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A Helper class to have some shortcuts.
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
@@ -116,7 +116,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * The SkillType with the given name.
-   * 
+   *
    * @param typeName
    * @return The SkillType or <code>null</code> if no such skill is known.
    */
@@ -126,7 +126,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * The ItemType with the given name.
-   * 
+   *
    * @param typeName
    * @return The ItemType or <code>null</code> if no such Item is known.
    */
@@ -136,7 +136,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * The BuildingType with the given name.
-   * 
+   *
    * @param typeName
    * @return The BuildingType or <code>null</code> if no such Building is known.
    */
@@ -146,7 +146,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * The Race with the given name.
-   * 
+   *
    * @param typeName
    * @return The Race or <code>null</code> if no such race is known.
    */
@@ -156,7 +156,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * The RegionType with the given name.
-   * 
+   *
    * @param typeName
    * @return The RegionType or <code>null</code> if no such Region is known.
    */
@@ -166,7 +166,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the region of the active unit or container.
-   * 
+   *
    * @return the region of the active unit or container or <code>null</code> if there is no active
    *         unit or container
    */
@@ -182,7 +182,7 @@ public class ExtendedCommandsHelper {
   /**
    * Return a region with the given name. <b>Attention:</b> There may be more than one region with
    * the given name. In that case there is no guarantee which of those regions is returned.
-   * 
+   *
    * @param regionName
    * @return A region with the given name or <code>null</code> if no such region exists.
    */
@@ -195,7 +195,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the unit object of the given unit with the given id.
-   * 
+   *
    * @return A unit with the given name or <code>null</code> if no such unit exists.
    * @throws NumberFormatException if unit id is not parseable
    * @throws NullPointerException if unit id is null
@@ -206,7 +206,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the faction object with the given id.
-   * 
+   *
    * @return A faction with the given name or <code>null</code> if no such faction exists.
    */
   public Faction getFaction(String factionID) {
@@ -215,7 +215,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the building object with the given id.
-   * 
+   *
    * @return A building with the given name or <code>null</code> if no such building exists.
    */
   public Building getBuilding(String buildingID) {
@@ -224,7 +224,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the ship object with the given id.
-   * 
+   *
    * @return A ship with the given name or <code>null</code> if no such ship exists.
    */
   public Ship getShip(String shipID) {
@@ -233,7 +233,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the unit with the given Unit ID in the current region.
-   * 
+   *
    * @param unitId non-<code>null</code>
    * @return the unit with the given Unit ID in the current region or <code>null</code> if no such
    *         unit is in the current region.
@@ -248,7 +248,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the unit with the given Unit-ID in the given region.
-   * 
+   *
    * @param region non-<code>null</code>
    * @param unitId non-<code>null</code>
    * @return the unit with the given Unit-ID in the given region or <code>null</code> if no such
@@ -260,7 +260,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns true, if the current unit is in the region with the given name.
-   * 
+   *
    * @param regionName non-<code>null</code>
    * @return <code>true</code>, if the current unit is in the region with the given name,
    *         <code>null</code> if the current unit is <code>null</code>.
@@ -274,7 +274,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns true, if the current unit is in the region with the given name.
-   * 
+   *
    * @param regionName non-<code>null</code>
    * @deprecated use {@link #isUnitInRegion(String)}
    */
@@ -286,7 +286,7 @@ public class ExtendedCommandsHelper {
   /**
    * Returns <code>true</code>, if the unit with unitId is in the same region as the active unit and
    * perception skill of the current unit' faction is greater than the other unit.
-   * 
+   *
    * @return {@link NullPointerException} if there is no active unit.
    */
   public boolean unitPerceivesOtherUnit(String unitId) {
@@ -299,7 +299,7 @@ public class ExtendedCommandsHelper {
       return true;
     return getRegionSkillLevel(currentUnit.getRegion(), currentUnit.getFaction(), world.getRules()
         .getSkillType(EresseaConstants.S_WAHRNEHMUNG)) >= otherunit.getSkill(
-        world.getRules().getSkillType(EresseaConstants.S_TARNUNG)).getLevel();
+            world.getRules().getSkillType(EresseaConstants.S_TARNUNG)).getLevel();
   }
 
   /**
@@ -315,7 +315,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the maximum skill level of any unit of a faction in a region.
-   * 
+   *
    * @param region
    * @param faction
    * @param skill
@@ -407,7 +407,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the available amount for a resource, e.g. getResourceAmount("Bäume").
-   * 
+   *
    * @param resourceName
    * @return the available amount for a resource
    */
@@ -422,7 +422,7 @@ public class ExtendedCommandsHelper {
   /**
    * Returns the current required skill level ("depth") for a resource, e.g.
    * getResourceLevel("Eisen").
-   * 
+   *
    * @param resourceName
    * @return The current skill level for a resource. {@link Integer#MAX_VALUE} if there is no info
    *         about the resource.
@@ -437,7 +437,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns a RegionResource object for the resource with the specified name.
-   * 
+   *
    * @param resourceName
    * @return a RegionResource object for the resource with the specified name or <code>null</code>
    *         if the resource doesn't exist.
@@ -489,7 +489,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns an order in the order locale of the specified unit's faction.
-   * 
+   *
    * @see EresseaConstants
    * @param unit This order will be converted into this unit's faction's order locale
    * @param orderConstant Use one of the EresseaConstants.O_... constants here
@@ -506,7 +506,7 @@ public class ExtendedCommandsHelper {
    * Returns an order in the order locale of the specified unit's faction. If opional arguments are
    * present, they are appended (separated by spaces). If they are of type StringID, they are
    * translated as well.
-   * 
+   *
    * @see EresseaConstants
    * @param unit This order will be converted into this unit's faction's order locale
    * @param orderConstant Use one of the EresseaConstants.OC_... constants here
@@ -516,13 +516,13 @@ public class ExtendedCommandsHelper {
    */
   public String getOrderTranslation(Unit unit, StringID orderConstant, Object... args) {
     return unit.getData().getGameSpecificStuff().getOrderChanger().getOrder(unit.getLocale(),
-        orderConstant, args);
+        orderConstant, args).getText();
   }
 
   /**
    * Returns a line like <code>GIVE receiver [EACH] amount item</code> in the locale of the given
    * unit.
-   * 
+   *
    * @param unit
    * @param receiver
    * @param item
@@ -544,7 +544,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns a line like <code>RESERVE [EACH] amount item</code>.
-   * 
+   *
    * @param unit
    * @param item
    * @param amount
@@ -594,7 +594,7 @@ public class ExtendedCommandsHelper {
   /**
    * This method returns a list of all regions in the given world. It's a workaround for the complex
    * iteration thru the map.
-   * 
+   *
    * @deprecated This method is inefficient. Use world.getRegions();
    */
   @Deprecated
@@ -605,7 +605,7 @@ public class ExtendedCommandsHelper {
   /**
    * Searches the best path from the current position of a unit to the given region. <br/>
    * This method is only useful for persons on land!
-   * 
+   *
    * @param unit The unit that should go to another region
    * @param destination The destination region which should be reached
    * @param speed The desired speed per week. This value is ignored! This method uses no speed.
@@ -620,7 +620,7 @@ public class ExtendedCommandsHelper {
   /**
    * Searches the best path from the current position of an unit to the given region. <br/>
    * This method is only useful for persons on land!
-   * 
+   *
    * @param unit The unit that should go to another region
    * @param destination The destination region which should be reached
    * @param useSpeed If this is <code>true</code>, this method uses the current calculated ship
@@ -631,7 +631,7 @@ public class ExtendedCommandsHelper {
     List<String> orders =
         (new UnitRoutePlanner()).getOrders(unit, world, unit.getRegion().getID(), destination
             .getCoordinate(), null, true, makeRoute ? RoutePlanner.MODE_CONTINUOUS
-            | RoutePlanner.MODE_RETURN : 0, false);
+                | RoutePlanner.MODE_RETURN : 0, false);
     if (orders.size() == 1)
       return orders.get(0);
 
@@ -645,7 +645,7 @@ public class ExtendedCommandsHelper {
   /**
    * Searches the best path from the current position of a ship to the given region. <br/>
    * This method is only useful for ships!
-   * 
+   *
    * @param ship The ship that should go to another region
    * @param destination The destination region which should be reached
    * @param speed The desired speed per week. This value is ignored! This method uses no speed.
@@ -660,7 +660,7 @@ public class ExtendedCommandsHelper {
   /**
    * Searches the best path from the current position of a ship to the given region. <br/>
    * This method is only useful for ships!
-   * 
+   *
    * @param ship The ship that should go to another region
    * @param destination The destination region which should be reached
    * @param useSpeed If this is <code>true</code>, this method uses the current calculated ship
@@ -731,7 +731,7 @@ public class ExtendedCommandsHelper {
    * This method notifies the GUI that the unit's orders have changed. Call it whenever you change
    * orders of a unit from a script. You don't have to call it when you change the unit's orders
    * from the unit's own script.
-   * 
+   *
    * @param u The unit that shall be updated in the GUI.
    */
   public void updateUnit(Unit u) {
@@ -788,7 +788,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Sets the value of the current UserInterface ("progress bar"). This method is not for users.
-   * 
+   *
    * @param ui The value for ui.
    */
   public void setUI(UserInterface ui) {
@@ -797,7 +797,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Returns the current UserInterface ("progress bar").
-   * 
+   *
    * @return the current UserInterface ("progress bar").
    */
   public UserInterface getUI() {
@@ -807,7 +807,7 @@ public class ExtendedCommandsHelper {
   /**
    * Invoke public method called <code>name</code> on object with given parameters.
    * <em>Warning:</em> Only use if you know what you're doing!
-   * 
+   *
    * @param object
    * @param name
    * @param parameterTypes
@@ -832,7 +832,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * Get plugin with given name.
-   * 
+   *
    * @param string The fully qualified plugin class name (e.g. "magellan.plugin.foo.FooPlugin")
    * @return The plugin or <code>null</code> if no such plugin is active
    */

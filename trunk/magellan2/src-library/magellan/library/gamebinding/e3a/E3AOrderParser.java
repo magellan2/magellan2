@@ -180,7 +180,7 @@ public class E3AOrderParser extends EresseaOrderParser {
     /**
      * Returns all categories except KÄMPFE, which is implicit in E3 and cannot be set with the
      * HELFE order, and PARTEITARNUNG.
-     * 
+     *
      * @see magellan.library.gamebinding.EresseaOrderParser.HelfeReader#getCategories()
      */
     @Override
@@ -191,7 +191,7 @@ public class E3AOrderParser extends EresseaOrderParser {
                 // EresseaConstants.OC_HELP_COMBAT,
                 EresseaConstants.OC_HELP_GIVE, EresseaConstants.OC_HELP_GUARD,
                 EresseaConstants.OC_HELP_SILVER
-            // , EresseaConstants.OC_HELP_FACTIONSTEALTH
+                // , EresseaConstants.OC_HELP_FACTIONSTEALTH
                 );
       }
       return categories;
@@ -224,7 +224,7 @@ public class E3AOrderParser extends EresseaOrderParser {
         getOrder().type = RenameObject.T_UNIT;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION))) {
         getOrder().type = RenameObject.T_FACTION;
         getOrder().name = readDescription(false);
         retVal = readDescription(false) != null;
@@ -403,7 +403,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION))) {
         retVal = readTarnePartei(t);
       } else {
         retVal = checkFinal(t);
@@ -417,7 +417,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     /**
      * TARNE PARTEI NUMMER not allowed in E3!
-     * 
+     *
      * @see magellan.library.gamebinding.EresseaOrderParser.TarneReader#readTarnePartei(magellan.library.utils.OrderToken)
      */
     @Override
@@ -441,7 +441,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     /**
      * This is not allowed in E3!
-     * 
+     *
      * @see magellan.library.gamebinding.EresseaOrderParser.TarneReader#readTarneParteiNummer(magellan.library.utils.OrderToken)
      * @throws IllegalStateException always!
      */

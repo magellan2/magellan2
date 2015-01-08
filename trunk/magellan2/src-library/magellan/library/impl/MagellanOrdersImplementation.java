@@ -13,6 +13,7 @@ import magellan.library.Orders;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.rules.OrderType;
 import magellan.library.utils.OrderToken;
 
 /**
@@ -82,12 +83,12 @@ public class MagellanOrdersImplementation implements Orders {
 
       // FIXME game specific!
       if (false == tempBlock) {
-        if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_MAKE))) {
+        if (equalsToken(t, EresseaConstants.OC_MAKE)) {
           t = ct.next();
 
           if (OrderToken.TT_EOC == t.ttype) {
             continue;
-          } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_TEMP))) {
+          } else if (equalsToken(t, EresseaConstants.OC_TEMP)) {
             tempBlock = true;
 
             continue;
@@ -117,7 +118,7 @@ public class MagellanOrdersImplementation implements Orders {
           continue;
         }
       } else {
-        if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_END))) {
+        if (equalsToken(t, EresseaConstants.OC_END)) {
           tempBlock = false;
 
           continue;
@@ -129,9 +130,33 @@ public class MagellanOrdersImplementation implements Orders {
 
   }
 
-  protected String getOrderTranslation(StringID orderId) {
-    return unit.getData().getGameSpecificStuff().getOrderChanger().getOrder(unit.getLocale(),
-        orderId).toString();
+  protected boolean equalsToken(OrderToken token, StringID order) {
+    List<String> translations = getOrderTranslations(order);
+    for (String translation : translations)
+      if (token.equalsToken(translation))
+        return true;
+    return false;
+  }
+
+  protected boolean equalsCompletedToken(OrderToken token, StringID order) {
+    List<String> translations = getOrderTranslations(order);
+    for (String translation : translations)
+      if (token.equalsCompletedToken(translation))
+        return true;
+    return false;
+  }
+
+  protected List<String> getOrderTranslations(StringID orderId) {
+    OrderType order = unit.getData().getRules().getOrder(orderId);
+    if (order != null) {
+      List<String> names = order.getNames(unit.getLocale());
+      if (names != null)
+        return names;
+    }
+    return Collections.singletonList(orderId.toString());
+
+    // return unit.getData().getGameSpecificStuff().getOrderChanger().getOrder(unit.getLocale(),
+    // orderId).toString();
   }
 
   /**
@@ -174,7 +199,7 @@ public class MagellanOrdersImplementation implements Orders {
    * @see magellan.library.Orders#isToken(magellan.library.Order, int, StringID)
    */
   public boolean isToken(Order order, int i, StringID token) {
-    return order.getToken(i).equalsCompletedToken(getOrderTranslation(token));
+    return equalsCompletedToken(order.getToken(i), token);
   }
 
   /**

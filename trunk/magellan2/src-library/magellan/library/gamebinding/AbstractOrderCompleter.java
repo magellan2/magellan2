@@ -78,7 +78,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * Returns the value of completerSettingsProvider.
-   * 
+   *
    * @return Returns completerSettingsProvider.
    */
   protected CompleterSettingsProvider getCompleterSettingsProvider() {
@@ -88,7 +88,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   /**
    * Creates a new <tt>EresseaOrderCompleter</tt> taking context information from the specified
    * <tt>GameData</tt> object.
-   * 
+   *
    * @param gd The <tt>GameData</tt> this completer uses as context.
    */
   public AbstractOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
@@ -104,7 +104,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   /**
    * Parses the String cmd with Unit u as context and returns possible completions if the cmd is an
    * incomplete order.
-   * 
+   *
    * @param u a <tt>Unit</tt> object taken as context information for the completion decisions.
    * @param cmd a <tt>String</tt> containing the (possibly incomplete) order to parse.
    * @return a <tt>List</tt> with possible completions of the given order. If there are no proposed
@@ -234,7 +234,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * adds the given spells if combat, only adds combat-spells and so on
-   * 
+   *
    * @param closing
    * @param opening
    */
@@ -247,7 +247,7 @@ public abstract class AbstractOrderCompleter implements Completer {
           || ((spell.getIsFar() || !far)
               && (spell.getOnOcean() || !ocean || u.getRace().equals(
                   data.getRules().getRace(EresseaConstants.R_MEERMENSCHEN))) && (!combat ^ (spell
-              .getType().toLowerCase().indexOf("combat") > -1)))) {
+                      .getType().toLowerCase().indexOf("combat") > -1)))) {
         final String spellName = data.getTranslation(spell);
 
         completions.add(new Completion(opening + spellName + closing));
@@ -263,7 +263,7 @@ public abstract class AbstractOrderCompleter implements Completer {
     Skill magic = mage.getSkill(data.getRules().getSkillType(EresseaConstants.S_MAGIE));
     if ((magic != null)
         && (Regions.getDist(mage.getRegion().getCoordinate(), familar.getRegion().getCoordinate()) <= magic
-            .getLevel())) {
+        .getLevel())) {
       // familar is in range
       int maxlevel = magic.getLevel() / 2;
       magic = familar.getSkill(data.getRules().getSkillType(EresseaConstants.S_MAGIE));
@@ -367,7 +367,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   /**
    * Add all the buildings in the current region except <code>exclude</code> (which may be
    * <code>null</code>). Prefix them with <code>prefix</code>.
-   * 
+   *
    * @param postfix
    */
   public void addRegionBuildings(String prefix, String postfix, Building exclude, boolean comment) {
@@ -521,15 +521,15 @@ public abstract class AbstractOrderCompleter implements Completer {
   public void addFactionItems(int amount, String postfix) {
     for (final Item i : unit.getFaction().getItems()) {
       completions
-          .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
-              (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
-                  : Completion.DEFAULT_PRIORITY + 1));
+      .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
+          (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
+              : Completion.DEFAULT_PRIORITY + 1));
     }
   }
 
   /**
    * Adds all known factions to the completions with comment
-   * 
+   *
    * @param postfix
    */
   public void addFactions(String postfix) {
@@ -542,7 +542,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * Adds all factions except the current unit's.
-   * 
+   *
    * @param postfix appended to Completion
    * @param cursorOffset used for Completion
    * @param addComment if <code>true</code>, the faction name is appended as a comment. Does not mix
@@ -607,7 +607,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * Adds a completion for the direction specified.
-   * 
+   *
    * @param dir This corresponds to the index of the direction in the Direction enum.
    */
   public void addDirection(String postfix, int dir) {
@@ -706,7 +706,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * Adds a thing to the completions, optionally with comments.
-   * 
+   *
    * @param named This object's name and ID are displayed
    * @param postfix Completion postfix
    * @param offset Completion offset (probably doesn't make sense with comment)
@@ -718,7 +718,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * Adds a thing to the completions, optionally with comments.
-   * 
+   *
    * @param named This object's name and ID are displayed
    * @param postfix Completion postfix
    * @param prio This prio and <code>prio-1</code> are used
@@ -742,7 +742,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   /**
    * Check for the necessary materials to produce an item considering all privileged factions in the
    * current region
-   * 
+   *
    * @param iter An Iterator over the necessary materials (Items)
    * @return true, if the necessary materials are available, false otherwise
    */
@@ -753,7 +753,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   /**
    * Check for the necessary materials to produce an item considering all privileged factions in the
    * current region
-   * 
+   *
    * @param iter An Iterator over the necessary materials (Items)
    * @param amount A multiplicator
    * @return true, if the necessary materials are available, false otherwise
@@ -965,7 +965,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * Returns the value of data.
-   * 
+   *
    * @return Returns data.
    */
   public GameData getData() {
@@ -985,7 +985,8 @@ public abstract class AbstractOrderCompleter implements Completer {
   }
 
   protected String getOrderTranslation(StringID orderKey) {
-    return getData().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderKey);
+    return getData().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderKey)
+        .getText();
   }
 
   protected String getOrderTranslation(SkillType skill) {
@@ -1012,7 +1013,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * Returns the value of completions.
-   * 
+   *
    * @return Returns completions.
    */
   public List<Completion> getCompletions() {
@@ -1021,7 +1022,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * Returns the value of region.
-   * 
+   *
    * @return Returns region.
    */
   public Region getRegion() {
@@ -1030,7 +1031,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * Returns the value of unit.
-   * 
+   *
    * @return Returns unit.
    */
   public Unit getUnit() {
@@ -1058,7 +1059,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * TODO DOCUMENT-ME
-   * 
+   *
    * @param openingToken
    * @param contentToken
    * @param closingToken
@@ -1092,7 +1093,7 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * TODO DOCUMENT-ME
-   * 
+   *
    * @param innerTokenizer
    * @param openingToken
    * @param contentToken
@@ -1127,7 +1128,7 @@ public abstract class AbstractOrderCompleter implements Completer {
     // add rest of inner tokens
     for (OrderToken currentToken = innerTokenizer.getNextToken(); currentToken.ttype != OrderToken.TT_EOC
         && (currentToken.ttype != OrderToken.TT_EOC || (currentToken.ttype == OrderToken.TT_EOC && !currentToken
-            .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
+        .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
       if (currentToken.ttype != OrderToken.TT_CLOSING_QUOTE
           || (currentToken.ttype == OrderToken.TT_CLOSING_QUOTE && !currentToken.getText().equals(
               insertedQuote))) {

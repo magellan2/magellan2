@@ -45,7 +45,7 @@ public class E3AOrderChanger extends EresseaOrderChanger {
 
   /**
    * Just change number and description.
-   * 
+   *
    * @param unit The affected unit.
    */
   @Override
@@ -58,7 +58,7 @@ public class E3AOrderChanger extends EresseaOrderChanger {
     orders.add(getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
         + getOrderTranslation(EresseaConstants.OC_UNIT, unit) + " \"\"");
     orders.add(getOrderTranslation(EresseaConstants.OC_HIDE, unit) + " "
-        + getOrderTranslation(EresseaConstants.OC_FACTION, unit));
+        + getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION, unit));
 
     if (unit.getShip() != null) {
       orders.add(getOrderTranslation(EresseaConstants.OC_NUMBER, unit) + " "
@@ -102,7 +102,7 @@ public class E3AOrderChanger extends EresseaOrderChanger {
 
   /**
    * Returns list of long order tokens in E3.
-   * 
+   *
    * @see magellan.library.gamebinding.EresseaOrderChanger#getLongOrderTokens()
    */
   @Override

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding.atlantis;
 
 import static org.junit.Assert.assertEquals;
@@ -230,32 +230,32 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
 
   @Test
   public final void testGetOrderTranslation() {
-    assertEquals("ALLY", changer.getOrderTranslation(AtlantisConstants.OC_ALLY, unit));
+    assertEquals("ALLY", changer.getOrderTranslation(AtlantisConstants.OC_ALLY, unit).getText());
   }
 
   @Test
   public final void testGetOrderLocaleObject() {
-    assertEquals("ALLY", changer.getOrder(EN_LOCALE, AtlantisConstants.OC_ALLY));
-    assertEquals("ALLY", changer.getOrder(DE_LOCALE, AtlantisConstants.OC_ALLY));
+    assertEquals("ALLY", changer.getOrder(EN_LOCALE, AtlantisConstants.OC_ALLY).toString());
+    assertEquals("ALLY", changer.getOrder(DE_LOCALE, AtlantisConstants.OC_ALLY).getText());
   }
 
   @Test
   public final void testGetOrderLocaleStringIDObjectArray() {
     assertEquals("ALLY UNIT 1 12345", changer.getOrder(EN_LOCALE, AtlantisConstants.OC_ALLY,
-        new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }));
+        new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }).getText());
   }
 
   @Test
   public final void testGetOrderStringIDLocaleObjectArray() {
     try {
       assertEquals("ALLY UNIT 1 12345", changer.getOrder(AtlantisConstants.OC_ALLY, EN_LOCALE,
-          new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }));
+          new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }).getText());
     } catch (RulesException e) {
       fail();
     }
     try {
       assertEquals("ALLY UNIT 1 12345", changer.getOrder(AtlantisConstants.OC_ALLY, DE_LOCALE,
-          new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }));
+          new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }).getText());
       fail();
     } catch (RulesException e) {
       // wrong locale

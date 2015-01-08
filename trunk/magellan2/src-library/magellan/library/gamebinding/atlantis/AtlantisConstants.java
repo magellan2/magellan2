@@ -113,6 +113,9 @@ public class AtlantisConstants extends GameConstants {
   /** Order constant FACTION */
   public static final StringID OC_FACTION = StringID.create("FACTION");
 
+  /** Order constant for orders such as BENENNE PARTEI */
+  public static final StringID OC_PARAMETER_FACTION = StringID.create("PARAMETER_FACTION");
+
   /** Order constant END */
   public static final StringID OC_END = StringID.create("END");
 

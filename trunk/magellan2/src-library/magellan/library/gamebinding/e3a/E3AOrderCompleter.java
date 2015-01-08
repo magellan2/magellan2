@@ -20,14 +20,14 @@ import magellan.library.rules.Race;
 import magellan.library.utils.Units;
 
 /**
- * 
+ *
  */
 public class E3AOrderCompleter extends EresseaOrderCompleter {
 
   /**
    * Creates a new <tt>EresseaOrderCompleter</tt> taking context information from the specified
    * <tt>GameData</tt> object.
-   * 
+   *
    * @param gd The <tt>GameData</tt> this completer uses as context.
    */
   public E3AOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
@@ -195,12 +195,12 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
         .getBuilding().getOwnerUnit().equals(getUnit())))
         || ((getUnit().getShip() != null) && (getUnit().getShip().getOwnerUnit() != null) && (getUnit()
             .getShip().getOwnerUnit().equals(getUnit())))
-        ||
-        // ... vicious warriors destroying other peoples buildings or ships
-        (getUnit().getModifiedBuilding() != null
+            ||
+            // ... vicious warriors destroying other peoples buildings or ships
+            (getUnit().getModifiedBuilding() != null
             && getUnit().getModifiedBuilding().getOwnerUnit() != null && getUnit().getFaction() != getUnit()
             .getModifiedBuilding().getOwnerUnit().getFaction())
-        || (getUnit().getModifiedShip() != null && (getUnit().getModifiedShip().getOwnerUnit() == null || getUnit()
+            || (getUnit().getModifiedShip() != null && (getUnit().getModifiedShip().getOwnerUnit() == null || getUnit()
             .getFaction() != getUnit().getModifiedShip().getOwnerUnit().getFaction()))) {
       addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_DESTROY)));
     } else {
@@ -233,8 +233,8 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     super.cmpltMacheAmount();
     if (hasSkill(getUnit(), EresseaConstants.S_BURGENBAU)
         && (!getCompleterSettingsProvider().getLimitMakeCompletion() || (Units
-            .getContainerPrivilegedUnitItem(getRegion(), getData().getRules()
-                .getItemType(EresseaConstants.I_WOOD)) != null))) {
+            .getContainerPrivilegedUnitItem(getRegion(), getData().getRules().getItemType(
+                EresseaConstants.I_WOOD)) != null))) {
       addCompletion(new Completion(getOrderTranslation(E3AConstants.OC_WATCH), " "));
     }
   }
@@ -270,12 +270,13 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   public void cmpltTarne(boolean quoted) {
     if (!quoted) {
       if (getUnit().isHideFaction()) {
-        addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION) + " "
-            + getOrderTranslation(EresseaConstants.OC_NOT),
-            getOrderTranslation(EresseaConstants.OC_FACTION), " "
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION)
+            + " " + getOrderTranslation(EresseaConstants.OC_NOT),
+            getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION), " "
                 + getOrderTranslation(EresseaConstants.OC_NOT)));
       } else {
-        addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION), " "));
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION),
+            " "));
       }
     }
   }

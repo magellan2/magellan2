@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertSame;
@@ -128,9 +128,9 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
     checkOrder(getOrderTranslation(EresseaConstants.OC_HELP) + " 123 "
         + getOrderTranslation(EresseaConstants.OC_ALL));
     checkOrder("HELFE 123 ALLES NICHT");
-    checkOrder("HELFEN 123 GIB");
-    checkOrder("HELFEN 123 GIB NICHT");
-    checkOrder("HELFE 123 BEWACHEN");
+    checkOrder("HELFE 123 GIB");
+    checkOrder("HELFE 123 GIB NICHT");
+    checkOrder("HELFE 123 BEWACHE");
     checkOrder("HELFE 123 SILBER");
     checkOrder("HELFE 123 PARTEITARNUNG", false);
     checkOrder("HELFE 123 bla", false);
@@ -250,7 +250,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
 
   /**
    * Returns the value of parser.
-   * 
+   *
    * @return Returns parser.
    */
   @Override
@@ -260,7 +260,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
 
   /**
    * Sets the value of parser.
-   * 
+   *
    * @param parser The value for parser.
    */
   @Override
@@ -270,7 +270,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
 
   /**
    * Returns the value of completer.
-   * 
+   *
    * @return Returns completer.
    */
   @Override
@@ -280,7 +280,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
 
   /**
    * Sets the value of completer.
-   * 
+   *
    * @param completer The value for completer.
    */
   @Override
@@ -298,21 +298,23 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   public void testGetHandlers() {
     List<OrderHandler> list = getParser().getHandlers(new OrderToken("a"));
     assertTrue(list != null);
-    if (list == null)
-      return;
     assertTrue(list.size() == 3);
-    assertTrue(list.get(1).getClass().equals(ArbeiteReader.class));
-    assertTrue(list.get(0).getClass().equals(AttackReader.class));
+    for (OrderHandler reader : list) {
+      assertTrue(reader.getClass().equals(ArbeiteReader.class)
+          || reader.getClass().equals(AttackReader.class)
+          || reader.getClass().getName().contains("AllianzReader"));
+    }
     list = getParser().getHandlers(new OrderToken("arbei"));
     assertTrue(list != null);
-    if (list == null)
-      return;
     assertTrue(list.size() == 1);
     list = getParser().getHandlers(new OrderToken("aga"));
     assertTrue(list != null);
-    if (list == null)
-      return;
     assertTrue(list.size() == 0);
+  }
+
+  @Override
+  public void testInfinitive() {
+    // already tested in Eressea
   }
 
 }

@@ -22,11 +22,13 @@ ORDER "ALLIANCE"
 
 ORDER "WORK"
 "ARBEITE";syntax
+"ARBEITE";locale_de
 "ARBEITEN";locale_de
 "WORK";locale_en
 
 ORDER "ATTACK"
 "ATTACKIERE u1";syntax
+"ATTACKIERE";locale_de
 "ATTACKIEREN";locale_de
 "ATTACK";locale_en
 
@@ -37,6 +39,7 @@ ORDER "BANNER"
 
 ORDER "CLAIM"
 "BEANSPRUCHE [1] Ding";syntax
+"BEANSPRUCHE";locale_de
 "BEANSPRUCHEN";locale_de
 "CLAIM";locale_en
 
@@ -52,31 +55,37 @@ ORDER "SIEGE"
 
 ORDER "NAME"
 "BENENNE EINHEIT | PARTEI | GEBÄUDE | BURG | SCHIFF | REGION | ALLIANZ | (FREMDE EINHEIT u1) | (FREMDES SCHIFF s1) | (FREMDES GEBÄUDE b1) | (FREMDE BURG b1) | (FREMDE PARTEI f1) Text";syntax
+"BENENNE";locale_de
 "BENENNEN";locale_de
 "NAME";locale_en
 
 ORDER "USE"
 "BENUTZE [1] Ding";syntax
+"BENUTZE";locale_de
 "BENUTZEN";locale_de
 "USE";locale_en
 
 ORDER "DESCRIBE"
 "BESCHREIBE REGION | SCHIFF | GEBÄUDE | BURG | EINHEIT | PRIVAT  Text";syntax
+"BESCHREIBE";locale_de
 "BESCHREIBEN";locale_de
 "DESCRIBE";locale_en
 
 ORDER "ENTER"
 "BETRETE (BURG b1 | SCHIFF s1 | Ding x1)";syntax
+"BETRETE";locale_de
 "BETRETEN";locale_de
 "ENTER";locale_en
 
 ORDER "GUARD"
 "BEWACHE [NICHT]";syntax
+"BEWACHE";locale_de
 "BEWACHEN";locale_de
 "GUARD";locale_en
 
 ORDER "PAY"
 "BEZAHLE NICHT";syntax
+"BEZAHLE";locale_de
 "BEZAHLEN";locale_de
 "PAY";locale_en
 
@@ -108,11 +117,13 @@ ORDER "END"
 
 ORDER "RIDE"
 "FAHRE u1";syntax
+"FAHRE";locale_de
 "FAHREN";locale_de
 "RIDE";locale_en
 
 ORDER "FOLLOW"
 "FOLGE (EINHEIT u1) | (SCHIFF s2)";syntax
+"FOLGE";locale_de
 "FOLGEN";locale_de
 "FOLLOW";locale_en
 
@@ -128,11 +139,13 @@ ORDER "GROUP"
 
 ORDER "HELP"
 "HELFE f1 ALLES|GIB|BEWACHE|SILBER [NICHT] ";syntax
+"HELFE";locale_de
 "HELFEN";locale_de
 "HELP";locale_en
 
 ORDER "COMBAT"
 "KÄMPFE [AGGRESSIV|HINTEN|DEFENSIV|NICHT|FLIEHE|(HELFE [NICHT])]";syntax
+"KÄMPFE";locale_de
 "KÄMPFEN";locale_de
 "COMBAT";locale_en
 
@@ -143,11 +156,13 @@ ORDER "COMBATSPELL"
 
 ORDER "CONTACT"
 "KONTAKTIERE u1";syntax
+"KONTAKTIERE";locale_de
 "KONTAKTIEREN";locale_de
 "CONTACT";locale_en
 
 ORDER "LEARN"
 "LERNE Talent [1]";syntax
+"LERNE";locale_de
 "LERNEN";locale_de
 "LEARN";locale_en
 
@@ -159,6 +174,7 @@ ORDER "LOCALE"
 
 ORDER "MAKE"
 "MACHE [(TEMP u1 [Name]) | ([1] Ding [s1|b1]) | ([1] STRAßE Richtung)]";syntax
+"MACHE";locale_de
 "MACHEN";locale_de
 "MAKE";locale_en
 
@@ -202,6 +218,7 @@ ORDER "PASSWORD"
 
 ORDER "PLANT"
 "PFLANZE [1] (KRÄUTER) | (BÄUME) | (SAMEN) | (MALLORNSAMEN)";syntax
+"PFLANZE";locale_de
 "PFLANZEN";locale_de
 "PLANT";locale_en
 
@@ -223,11 +240,13 @@ ORDER "REGION"
 
 ORDER "RECRUIT"
 "REKRUTIERE 1 [Race]";syntax
+"REKRUTIERE";locale_de
 "REKRUTIEREN";locale_de
 "RECRUIT";locale_en
 
 ORDER "RESERVE"
 "RESERVIERE (1) | (ALLES) | (JE 2) Gegenstand";syntax
+"RESERVIERE";locale_de
 "RESERVIEREN";locale_de
 "RESERVE";locale_en
 
@@ -238,6 +257,7 @@ ORDER "ROUTE"
 
 ORDER "SORT"
 "SORTIERE (VOR) | (HINTER) u1";syntax
+"SORTIERE";locale_de
 "SORTIEREN";locale_de
 "SORT";locale_en
 
@@ -248,11 +268,13 @@ ORDER "QUIT"
 
 ORDER "HIDE"
 "TARNE ([1]) | (PARTEI [NICHT])";syntax
+"TARNE";locale_de
 "TARNEN";locale_de
 "HIDE";locale_en
 
 ORDER "CARRY"
 "TRANSPORTIERE u1";syntax
+"TRANSPORTIERE";locale_de
 "TRANSPORTIEREN";locale_de
 "CARRY";locale_en
 
@@ -263,11 +285,13 @@ ORDER "ORIGIN"
 
 ORDER "FORGET"
 "VERGESSE Talent";syntax
+"VERGESSE";locale_de
 "VERGESSEN";locale_de
 "FORGET";locale_en
 
 ORDER "LEAVE"
 "VERLASSE";syntax
+"VERLASSE";locale_de
 "VERLASSEN";locale_de
 "LEAVE";locale_en
 
@@ -278,16 +302,19 @@ ORDER "CAST"
 
 ORDER "SHOW"
 "ZEIGE (ding)|(ALLE [ZAUBER|TRÄNKE])";syntax
+"ZEIGE";locale_de
 "ZEIGEN";locale_de
 "SHOW";locale_en
 
 ORDER "DESTROY"
 "ZERSTÖRE [1] [STRASSE richtung]";syntax
+"ZERSTÖRE";locale_de
 "ZERSTÖREN";locale_de
 "DESTROY";locale_en
 
 ORDER "GROW"
 "(ZÜCHTE PFERDE)|(ZÜCHTE [1] KRÄUTER)";syntax
+"ZÜCHTE";locale_de
 "ZÜCHTEN";locale_de
 "GROW";locale_en
 
@@ -372,11 +399,6 @@ ORDER "COMBAT_NOT"
 "NOT";locale_en
 1;internal
 
-ORDER "COMBATSPELL"
-"KAMPFZAUBER";locale_de
-"COMBATSPELL";locale_en
-1;internal
-
 ORDER "CONTROL"
 "KOMMANDO";locale_de
 "CONTROL";locale_en
@@ -392,7 +414,7 @@ ORDER "ERESSEA"
 "ERESSEA";locale_en
 1;internal
 
-ORDER "FACTION"
+ORDER "PARAMETER_FACTION"
 "PARTEI";locale_de
 "FACTION";locale_en
 1;internal
@@ -433,6 +455,7 @@ ORDER "HELP_GIVE"
 1;internal
 
 ORDER "HELP_GUARD"
+"BEWACHE";locale_de
 "BEWACHEN";locale_de
 "GUARD";locale_en
 1;internal
@@ -477,7 +500,7 @@ ORDER "NOT"
 "NOT";locale_en
 1;internal
 
-ORDER "NUMBER"
+ORDER "STEALTH_NUMBER"
 "NUMMER";locale_de
 "NUMBER";locale_en
 1;internal

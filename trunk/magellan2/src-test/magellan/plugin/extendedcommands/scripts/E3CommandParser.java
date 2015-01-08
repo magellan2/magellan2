@@ -4,7 +4,7 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -47,6 +47,7 @@ import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.RulesException;
@@ -72,7 +73,7 @@ import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
  * "
  * <code>(new E3CommandParser(world, helper)).execute(helper.getFaction("drac"), (Region) container);</code>
  * " (for just this region).
- * 
+ *
  * @author stm
  */
 public class E3CommandParser {
@@ -200,7 +201,7 @@ public class E3CommandParser {
 
   /**
    * Creates and initializes the parser.
-   * 
+   *
    * @param world
    * @param helper
    */
@@ -250,11 +251,11 @@ public class E3CommandParser {
   /**
    * Lists of allowed units for Erlaube/Ueberwache
    */
-  protected Map<Faction, Set<Unit>> allowedUnits = new HashMap<Faction, Set<Unit>>();
+  protected Map<Faction, Set<UnitID>> allowedUnits = new HashMap<Faction, Set<UnitID>>();
   /**
    * Lists of required units for Verlange/Ueberwache
    */
-  protected Map<Faction, Set<Unit>> requiredUnits = new HashMap<Faction, Set<Unit>>();
+  protected Map<Faction, Set<UnitID>> requiredUnits = new HashMap<Faction, Set<UnitID>>();
 
   /**
    * Current state for the Loesche command
@@ -268,7 +269,7 @@ public class E3CommandParser {
   /**
    * Parses scripts and confirms units according to the "confirm" tag. Call this for the faction
    * container to execute all unit commands.
-   * 
+   *
    * @param faction scripts for all units of this faction
    * @throws NullPointerException if <code>faction == null</code>
    */
@@ -279,7 +280,7 @@ public class E3CommandParser {
   /**
    * Parses scripts and confirms units according to the "confirm" tag. Call this for the faction
    * container to execute all unit commands.
-   * 
+   *
    * @param factions scripts for all units of all factions in this set
    * @throws NullPointerException if <code>faction == null</code>
    */
@@ -290,7 +291,7 @@ public class E3CommandParser {
   /**
    * Parses scripts and confirms units according to the "confirm" tag. Call this for the faction
    * container to execute all unit commands.
-   * 
+   *
    * @param faction scripts for all units of this faction are executed
    * @param region only commands of unit in this region are executed
    * @throws NullPointerException if <code>faction == null</code>
@@ -305,7 +306,7 @@ public class E3CommandParser {
   /**
    * Parses scripts and confirms units according to the "confirm" tag. Call this for the faction
    * container to execute all unit commands. Ignore regions before first (in the report order).
-   * 
+   *
    * @param faction scripts for all units of this faction are executed
    * @param region only commands of unit in this region are executed, may be <code>null</code> to
    *          execute for all regions.
@@ -319,7 +320,7 @@ public class E3CommandParser {
   /**
    * Parses scripts and confirms units according to the "confirm" tag. Ignore regions before first
    * (in the report order).
-   * 
+   *
    * @param factions scripts for all units of all factions in this set are executed
    * @param region only commands of unit in this region are executed, may be <code>null</code> to
    *          execute for all regions.
@@ -440,7 +441,7 @@ public class E3CommandParser {
 
   /**
    * Adds some statistic information to the orders of the first unit.
-   * 
+   *
    * @param region
    */
   protected void collectStats() {
@@ -511,6 +512,7 @@ public class E3CommandParser {
    * <code>// $cript Sammler [interval]</code> -- collect and research HERBS<br />
    * <code>// $cript KrautKontrolle [route]</code> -- FORSCHE KRÄUTER in several regions<br />
    * <code>// $cript RekrutiereMax</code> -- recruit as much as possible<br />
+   * <code>// $cript Kommentar text</code> -- add ; comment<br />
    */
   protected void parseScripts() {
     newOrders = new ArrayList<String>();
@@ -614,6 +616,8 @@ public class E3CommandParser {
               commandCollector(tokens);
             } else if (command.equals("RekrutiereMax")) {
               commandRecruit(tokens);
+            } else if (command.equals("Kommentar")) {
+              commandComment(tokens);
             } else {
               addNewError("unbekannter Befehl: " + command);
             }
@@ -662,7 +666,7 @@ public class E3CommandParser {
    * <code>// $cript Loeschen [$kurz] [<prefix>]</code><br />
    * Remove orders except comments from here on. If "$kurz", remove all orders, otherwise only long
    * and permanent (@) orders. If prefix is set, remove only orders starting with that prefix.
-   * 
+   *
    * @param tokens
    */
   protected void commandClear(String[] tokens) {
@@ -699,7 +703,7 @@ public class E3CommandParser {
     return !trimmed.startsWith(PCOMMENTOrder)
         && !trimmed.startsWith(COMMENTOrder)
         && (clear == ALLOrder || (clear == LONG && world.getGameSpecificStuff().getOrderChanger()
-            .isLongOrder(order)))
+        .isLongOrder(order)))
         && (clearPrefix == null || clearPrefix.length() == 0 || trimmed.startsWith(clearPrefix));
   }
 
@@ -711,7 +715,7 @@ public class E3CommandParser {
    * of the current order. If <code>rest>1</code>, it is decreased and the modified order added
    * instead of the current one. If length is given, the whole order will be removed after length
    * rounds.
-   * 
+   *
    * @param tokens
    * @return <code>text</code>, if <code>rest==1</code>, otherwise <code>null</code>
    */
@@ -789,7 +793,7 @@ public class E3CommandParser {
    * Autoconfirms a unit (or prevents autoconfirmation if NICHT). If length is given, the unit is
    * autoconfirmed for length rounds (length is decreased each round). If period is given, the unit
    * is <em>not</em> confirmed every period rounds, otherwise confirmed.
-   * 
+   *
    * @param tokens
    */
   protected void commandAuto(String[] tokens) {
@@ -1397,9 +1401,10 @@ public class E3CommandParser {
     for (Unit u : currentRegion.units()) {
       if (u.getFaction() != currentUnit.getFaction()) {
         if (!(allowedUnits.containsKey(u.getFaction()) && (allowedUnits.get(u.getFaction())
-            .contains(u) || allowedUnits.get(u.getFaction()).contains(currentRegion.getZeroUnit())))) {
+            .contains(u.getID()) || allowedUnits.get(u.getFaction()).contains(
+                currentRegion.getZeroUnit().getID())))) {
           if (!(requiredUnits.containsKey(u.getFaction()) && requiredUnits.get(u.getFaction())
-              .contains(u))) {
+              .contains(u.getID()))) {
             List<Unit> list = warnings.get(u.getFaction());
             if (list == null) {
               list = new LinkedList<Unit>();
@@ -1419,6 +1424,9 @@ public class E3CommandParser {
         if (++i < 4) {
           sb.append(" ");
           sb.append(u.toString());
+        } else {
+          sb.append(" ...");
+          break;
         }
       }
       entry.getValue().clear();
@@ -1427,9 +1435,10 @@ public class E3CommandParser {
 
     // check if required units are present
     for (Faction f : requiredUnits.keySet()) {
-      for (Unit u : requiredUnits.get(f)) {
-        if (u.getRegion() != currentUnit.getRegion()) {
-          addNewWarning("Einheit " + u + " der Partei " + f + " nicht mehr da.");
+      for (UnitID id : requiredUnits.get(f)) {
+        Unit u = world.getUnit(id);
+        if (u == null || u.getRegion() != currentUnit.getRegion()) {
+          addNewWarning("Einheit " + id + " der Partei " + f + " nicht mehr da.");
         }
       }
     }
@@ -1442,7 +1451,7 @@ public class E3CommandParser {
     }
 
     Faction faction = helper.getFaction(tokens[1]);
-    Map<Faction, Set<Unit>> map;
+    Map<Faction, Set<UnitID>> map;
     if (tokens[0].equals("Erlaube")) {
       map = allowedUnits;
     } else {
@@ -1451,22 +1460,19 @@ public class E3CommandParser {
     if (faction == null) {
       addNewError("unbekannte Partei");
     } else {
-      Set<Unit> set = map.get(faction);
+      Set<UnitID> set = map.get(faction);
       if (set == null) {
-        set = new HashSet<Unit>();
+        set = new HashSet<UnitID>();
         map.put(faction, set);
       }
       if (ALLOrder.equals(tokens[2])) {
-        set.add(currentRegion.getZeroUnit());
+        set.add(currentRegion.getZeroUnit().getID());
         if (tokens.length > 3) {
           addNewError("zu viele Argumente");
         }
       } else {
         for (int i = 2; i < tokens.length; ++i) {
-          Unit u = helper.getUnit(tokens[i]);
-          if (u != null) {
-            set.add(u);
-          }
+          set.add(UnitID.createUnitID(tokens[i], world.base));
         }
       }
     }
@@ -1503,7 +1509,7 @@ public class E3CommandParser {
     int workers = Math.min(maxWorkers, currentRegion.getPeasants());
     Skill entertaining =
         currentUnit
-            .getModifiedSkill(world.getRules().getSkillType(EresseaConstants.S_UNTERHALTUNG));
+        .getModifiedSkill(world.getRules().getSkillType(EresseaConstants.S_UNTERHALTUNG));
     Skill taxing =
         currentUnit.getModifiedSkill(world.getRules().getSkillType(
             EresseaConstants.S_STEUEREINTREIBEN));
@@ -1562,13 +1568,13 @@ public class E3CommandParser {
 
     int volume = currentRegion.maxLuxuries();
 
-    int amount = -1;
+    int buyAmount = -1;
     try {
       if (tokens[1].substring(0, 1).equalsIgnoreCase("x")) {
-        amount = Integer.parseInt(tokens[1].substring(1));
-        amount = volume * amount;
+        buyAmount = Integer.parseInt(tokens[1].substring(1));
+        buyAmount = volume * buyAmount;
       } else {
-        amount = Integer.parseInt(tokens[1]);
+        buyAmount = Integer.parseInt(tokens[1]);
       }
     } catch (NumberFormatException e) {
       addNewError("ungültige Zahl " + tokens[1]);
@@ -1605,38 +1611,16 @@ public class E3CommandParser {
     removeOrdersLike(BUYOrder + ".*", true);
 
     // Gueterzahl intitialisieren
-    int guetersumme = 0;
+    int totalVolume = 0;
 
-    if (amount > 0 && (volume <= 0 || buyGood == null)) {
+    if (buyAmount > 0 && (volume <= 0 || buyGood == null)) {
       addNewError("Kein Handel möglich");
     }
 
-    // Soll eingekauft werden?
-    if (volume > 0 && amount > 0 && buyGood != null) {
-      // Berechne noetige Geldmenge fuer Einkauf (einfacher: Modulorechnung, aber wegen
-      // Rundungsfehler nicht umsetzbar)
-      int hilfNochUebrig = amount;
-      int hilfFaktor = 1;
-      int geldNoetig = 0;
-      while (hilfNochUebrig > 0) {
-        if (hilfNochUebrig > volume) {
-          hilfNochUebrig -= volume;
-          geldNoetig -= (volume * hilfFaktor * buyGood.getPrice()); // price is negative
-          hilfFaktor++;
-        } else {
-          geldNoetig -= (hilfNochUebrig * hilfFaktor * buyGood.getPrice());
-          hilfNochUebrig = 0;
-        }
-      }
+    LinkedList<String> orders = new LinkedList<String>();
 
-      addNeed("Silber", currentUnit, geldNoetig, geldNoetig, TRADE_PRIORITY);
-
-      // Einkaufsbefehl setzen, wenn notwendig
-      if (amount > 0) {
-        addNewOrder(BUYOrder + " " + amount + " " + buyGood.getItemType().getOrderName(), true);
-        guetersumme += amount;
-      }
-    }
+    int maxAmount = buySkill.getLevel() * currentUnit.getPersons() * 10;
+    int skillNeeded = 0;
 
     if (volume > 0 && buyGood != null) {
       List<String> goods = new LinkedList<String>();
@@ -1658,19 +1642,18 @@ public class E3CommandParser {
         }
       }
 
-      int maxAmount = buySkill.getLevel() * currentUnit.getPersons() * 10;
-
-      boolean skillWarning = false;
       for (String luxury : goods) {
         int goodAmount = volume;
-        if (goodAmount > maxAmount - guetersumme) {
-          goodAmount = maxAmount - guetersumme;
-          skillWarning = true;
-        }
         if (goodAmount > getSupply(luxury))
           if (ALLOrder.equals(tokens[2])) {
             goodAmount = getSupply(luxury);
           }
+
+        skillNeeded += goodAmount;
+
+        if (goodAmount > maxAmount - totalVolume) {
+          goodAmount = maxAmount - totalVolume;
+        }
 
         if (goodAmount > 0) {
           addNeed(luxury, currentUnit, goodAmount, goodAmount, TRADE_PRIORITY, warning);
@@ -1678,21 +1661,58 @@ public class E3CommandParser {
 
         if (goodAmount > 0) {
           if (goodAmount == volume) {
-            addNewOrder(SELLOrder + " " + ALLOrder + " " + luxury, true);
+            orders.add(SELLOrder + " " + ALLOrder + " " + luxury);
           } else {
-            addNewOrder(SELLOrder + " " + goodAmount + " " + luxury, true);
+            orders.add(SELLOrder + " " + goodAmount + " " + luxury);
           }
         }
-        guetersumme += goodAmount;
-        if (skillWarning) {
-          break;
+        totalVolume += goodAmount;
+      }
+
+    }
+
+    // Soll eingekauft werden?
+    if (volume > 0 && buyAmount > 0 && buyGood != null) {
+      int remainingFromSkill = maxAmount - totalVolume + 1 - 1;
+      // Berechne noetige Geldmenge fuer Einkauf (einfacher: Modulorechnung, aber wegen
+      // Rundungsfehler nicht umsetzbar)
+      int remainingToBuy = buyAmount;
+      skillNeeded += buyAmount;
+      if (remainingToBuy > remainingFromSkill) {
+        buyAmount += (remainingFromSkill - remainingToBuy);
+        remainingToBuy = remainingFromSkill;
+      }
+      int priceFactor = 1;
+      int money = 0;
+      while (remainingToBuy > 0) {
+        if (remainingToBuy > volume) {
+          remainingToBuy -= volume;
+          money -= (volume * priceFactor * buyGood.getPrice()); // price is negative
+          priceFactor++;
+        } else {
+          money -= (remainingToBuy * priceFactor * buyGood.getPrice());
+          remainingToBuy = 0;
         }
       }
 
-      // Einheit gut genug?
-      if (skillWarning && warning.contains(C_SKILL)) {
-        addNewError("Einheit hat zu wenig Handelstalent!");
+      addNeed("Silber", currentUnit, money, money, TRADE_PRIORITY);
+
+      // Einkaufsbefehl setzen, wenn notwendig
+      if (buyAmount > 0) {
+        orders.addFirst(BUYOrder + " " + buyAmount + " " + buyGood.getItemType().getOrderName());
+        totalVolume += buyAmount;
       }
+    }
+
+    // add orders (buy orders first)
+    for (String order : orders) {
+      addNewOrder(order, true);
+    }
+
+    // Einheit gut genug?
+    if (skillNeeded > maxAmount && warning.contains(C_SKILL)) {
+      addNewError("Einheit hat zu wenig Handelstalent (min: " + maxAmount / 10 + " < "
+          + (int) Math.ceil(skillNeeded / 10.0) + ")");
     }
 
     setConfirm(currentUnit, true);
@@ -1884,6 +1904,15 @@ public class E3CommandParser {
     }
   }
 
+  /**
+   * <code>// $cript Kommentar text</code>: add text after a semicolon
+   */
+  protected void commandComment(String[] tokens) {
+    String rest = currentOrder.substring(currentOrder.indexOf(tokens[0]) + tokens[0].length());
+    addNewOrder(";" + rest, true);
+
+  }
+
   // ///////////////////////////////////////////////////////
   // HELPER functions
   // ///////////////////////////////////////////////////////
@@ -1940,7 +1969,7 @@ public class E3CommandParser {
 
   /**
    * Adds a supply to the supplyMap
-   * 
+   *
    * @param item
    * @param unit
    * @param amount
@@ -2072,7 +2101,7 @@ public class E3CommandParser {
 
   /**
    * Tries to satisfy (minimum) need by a RESERVE order
-   * 
+   *
    * @param need
    * @param min
    * @param reserves
@@ -2100,7 +2129,7 @@ public class E3CommandParser {
 
   /**
    * Tries to satisfy (minimum) need by a give order from supplyers.
-   * 
+   *
    * @param need
    * @param min
    */
@@ -2132,7 +2161,7 @@ public class E3CommandParser {
 
   /**
    * Returns the total supply for an item.
-   * 
+   *
    * @param item Order name of the supplied item
    * @return The supply or 0, if none has been registered.
    */
@@ -2149,7 +2178,7 @@ public class E3CommandParser {
 
   /**
    * Returns a supply of a unit for an item.
-   * 
+   *
    * @param item Order name of the supplied item
    * @param unit
    * @return The supply or null, if none has been registered.
@@ -2163,7 +2192,7 @@ public class E3CommandParser {
 
   /**
    * Adds the specified amounts to the need of a unit for an item to the needMap.
-   * 
+   *
    * @param item Order name of the required item
    * @param unit
    * @param minAmount
@@ -2175,7 +2204,7 @@ public class E3CommandParser {
 
   /**
    * Adds the specified amounts to the need of a unit for an item to the needMap.
-   * 
+   *
    * @param item Order name of the required item
    * @param unit
    * @param minAmount
@@ -2217,7 +2246,7 @@ public class E3CommandParser {
 
   /**
    * Returns a need of a unit for an item.
-   * 
+   *
    * @param item Order name of the required item
    * @param unit
    * @return The need or <code>null</code> if none has been registered.
@@ -2236,7 +2265,7 @@ public class E3CommandParser {
   /**
    * Marks the unit as soldier. Learns its best weapon skill. Reserves suitable weapon, armor, and
    * shield if available.
-   * 
+   *
    * @param u The unit in question
    * @param sWeaponSkill The desired skill. If <code>null</code>, the unit's best weapon skill is
    *          used. If the unit knows no weapon skill, a warning is issued.
@@ -2340,7 +2369,7 @@ public class E3CommandParser {
 
   /**
    * Tries to learn the skills at the ratio reflected in the skills argument.
-   * 
+   *
    * @param u
    * @param targetSkills
    */
@@ -2500,24 +2529,24 @@ public class E3CommandParser {
     if (currentUnit == null)
       throw new NullPointerException();
 
-    GIVEOrder = getLocalizedOrder(EresseaConstants.OC_GIVE, GIVEOrder);
-    RESERVEOrder = getLocalizedOrder(EresseaConstants.OC_RESERVE, RESERVEOrder);
-    EACHOrder = getLocalizedOrder(EresseaConstants.OC_EACH, EACHOrder);
-    ALLOrder = getLocalizedOrder(EresseaConstants.OC_ALL, ALLOrder);
+    GIVEOrder = getLocalizedOrder(EresseaConstants.OC_GIVE, GIVEOrder).toString();
+    RESERVEOrder = getLocalizedOrder(EresseaConstants.OC_RESERVE, RESERVEOrder).toString();
+    EACHOrder = getLocalizedOrder(EresseaConstants.OC_EACH, EACHOrder).toString();
+    ALLOrder = getLocalizedOrder(EresseaConstants.OC_ALL, ALLOrder).toString();
     PCOMMENTOrder = "//";
-    LEARNOrder = getLocalizedOrder(EresseaConstants.OC_LEARN, LEARNOrder);
-    TEACHOrder = getLocalizedOrder(EresseaConstants.OC_TEACH, TEACHOrder);
-    ENTERTAINOrder = getLocalizedOrder(EresseaConstants.OC_ENTERTAIN, ENTERTAINOrder);
-    TAXOrder = getLocalizedOrder(EresseaConstants.OC_TAX, TAXOrder);
-    WORKOrder = getLocalizedOrder(EresseaConstants.OC_WORK, WORKOrder);
-    BUYOrder = getLocalizedOrder(EresseaConstants.OC_BUY, BUYOrder);
-    SELLOrder = getLocalizedOrder(EresseaConstants.OC_SELL, SELLOrder);
-    MAKEOrder = getLocalizedOrder(EresseaConstants.OC_MAKE, MAKEOrder);
-    MOVEOrder = getLocalizedOrder(EresseaConstants.OC_MOVE, MOVEOrder);
-    ROUTEOrder = getLocalizedOrder(EresseaConstants.OC_ROUTE, ROUTEOrder);
-    PAUSEOrder = getLocalizedOrder(EresseaConstants.OC_PAUSE, PAUSEOrder);
-    RESEARCHOrder = getLocalizedOrder(EresseaConstants.OC_RESEARCH, RESEARCHOrder);
-    RECRUITOrder = getLocalizedOrder(EresseaConstants.OC_RECRUIT, RECRUITOrder);
+    LEARNOrder = getLocalizedOrder(EresseaConstants.OC_LEARN, LEARNOrder).toString();
+    TEACHOrder = getLocalizedOrder(EresseaConstants.OC_TEACH, TEACHOrder).toString();
+    ENTERTAINOrder = getLocalizedOrder(EresseaConstants.OC_ENTERTAIN, ENTERTAINOrder).toString();
+    TAXOrder = getLocalizedOrder(EresseaConstants.OC_TAX, TAXOrder).toString();
+    WORKOrder = getLocalizedOrder(EresseaConstants.OC_WORK, WORKOrder).toString();
+    BUYOrder = getLocalizedOrder(EresseaConstants.OC_BUY, BUYOrder).toString();
+    SELLOrder = getLocalizedOrder(EresseaConstants.OC_SELL, SELLOrder).toString();
+    MAKEOrder = getLocalizedOrder(EresseaConstants.OC_MAKE, MAKEOrder).toString();
+    MOVEOrder = getLocalizedOrder(EresseaConstants.OC_MOVE, MOVEOrder).toString();
+    ROUTEOrder = getLocalizedOrder(EresseaConstants.OC_ROUTE, ROUTEOrder).toString();
+    PAUSEOrder = getLocalizedOrder(EresseaConstants.OC_PAUSE, PAUSEOrder).toString();
+    RESEARCHOrder = getLocalizedOrder(EresseaConstants.OC_RESEARCH, RESEARCHOrder).toString();
+    RECRUITOrder = getLocalizedOrder(EresseaConstants.OC_RECRUIT, RECRUITOrder).toString();
 
     if (currentFactions.keySet().iterator().next().getLocale().getLanguage() != "de") {
       // warning constants
@@ -2563,7 +2592,7 @@ public class E3CommandParser {
 
   /**
    * Adss an order to the current unit's new orders.
-   * 
+   *
    * @param order The new order
    * @param changed Set to true if this is a change (not merely a copy of an old order)
    */
@@ -2582,7 +2611,7 @@ public class E3CommandParser {
   /**
    * Registers a pattern. All lines matching this regular expression (case sensitive!) will be
    * removed from here on. If retroActively, also orders that are already in {@link #newOrders}.
-   * 
+   *
    * @param regEx
    * @param retroActively
    */
@@ -2600,7 +2629,7 @@ public class E3CommandParser {
 
   /**
    * Adds an error line.
-   * 
+   *
    * @param line The current order line
    * @param hint
    */
@@ -2613,7 +2642,7 @@ public class E3CommandParser {
 
   /**
    * Adds a warning message (with a to do tag) to the new orders.
-   * 
+   *
    * @param text
    */
   protected void addNewMessage(String text) {
@@ -2622,7 +2651,7 @@ public class E3CommandParser {
 
   /**
    * Adds an error line to new orders.
-   * 
+   *
    * @param line The current order line
    * @param hint
    */
@@ -2644,7 +2673,7 @@ public class E3CommandParser {
 
   /**
    * Adds a warning message (with a to do tag) directly to the unit's orders.
-   * 
+   *
    * @param unit
    * @param text
    */
@@ -2657,7 +2686,7 @@ public class E3CommandParser {
   /**
    * If confirm is false, mark unit as not confirmable. If confirm is true, mark it as confirmable
    * if it has not been marked as unconfirmable before (unconfirm always overrides confirm).
-   * 
+   *
    * @param u
    * @param confirm
    */
@@ -2674,7 +2703,7 @@ public class E3CommandParser {
 
   /**
    * Add a property (in form of a tag) to the unit.
-   * 
+   *
    * @param u
    * @param tagName
    * @param value
@@ -2687,7 +2716,7 @@ public class E3CommandParser {
 
   /**
    * Returns a property value (from a tag) from the unit.
-   * 
+   *
    * @param u
    * @param tagName
    * @return The value of property <code>tagName</code> or "" if the property has not been set.
@@ -2699,7 +2728,7 @@ public class E3CommandParser {
 
   /**
    * Returns the ItemType in the rules matching <code>name</code>.
-   * 
+   *
    * @param name A item type name, like "Silber"
    * @return The ItemType corresponding to name or <code>null</code> if this ItemType does not
    *         exist.
@@ -2710,7 +2739,7 @@ public class E3CommandParser {
 
   /**
    * Returns the SkillType in the rules matching <code>name</code>.
-   * 
+   *
    * @param name A skill name, like "Ausdauer"
    * @return The SkillType corresponding to name or <code>null</code> if this SkillType does not
    *         exist.
@@ -2721,7 +2750,7 @@ public class E3CommandParser {
 
   /**
    * Returns a skill with the given name and level.
-   * 
+   *
    * @param name
    * @param level
    * @return A skill with the given level or <code>null</code> if this SkillType does not exist.
@@ -2735,7 +2764,7 @@ public class E3CommandParser {
 
   /**
    * Notifies the interface that the unit should be updated.
-   * 
+   *
    * @param u This unit is updated in the UI
    * @deprecated I don't think this is needed any more.
    */
@@ -2746,7 +2775,7 @@ public class E3CommandParser {
 
   /**
    * Adds a GIVE order to the unit's orders, like <code>GIVE receiver [EACH] amount item</code>.
-   * 
+   *
    * @param unit The order is added to this unit's orders
    * @param receiver
    * @param item
@@ -2759,7 +2788,7 @@ public class E3CommandParser {
 
   /**
    * Returns a line like <code>GIVE receiver [EACH] amount item</code>.
-   * 
+   *
    * @param unit
    * @param receiver
    * @param item
@@ -2774,7 +2803,7 @@ public class E3CommandParser {
 
   /**
    * Adds a RESERVE order to the unit's orders, like <code>RESERVE [EACH] amount item</code>.
-   * 
+   *
    * @param unit The order is added to this unit's orders
    * @param item
    * @param amount
@@ -2786,7 +2815,7 @@ public class E3CommandParser {
 
   /**
    * Returns a line like <code>RESERVE [EACH] amount item</code>.
-   * 
+   *
    * @param unit
    * @param item
    * @param amount
@@ -2818,7 +2847,7 @@ public class E3CommandParser {
 
   /**
    * Return the amount of item that a unit has.
-   * 
+   *
    * @param unit
    * @param item
    * @return The amount of item in the unit's items
@@ -2829,7 +2858,7 @@ public class E3CommandParser {
 
   /**
    * Return the amount of silver of the unit.
-   * 
+   *
    * @param unit
    * @return The amount of silver in this unit's items
    */
@@ -2887,7 +2916,7 @@ public class E3CommandParser {
   /**
    * Parses all units in the region for orders like "; $xyz$sl" and adds a tag with name
    * "ejcTaggableComparator5" and value "xyz" for them.
-   * 
+   *
    * @param r
    */
   public static void parseShipLoaderTag(magellan.library.Region r) {
@@ -2912,7 +2941,7 @@ public class E3CommandParser {
   /**
    * Parses all units in the region for orders like "; $xyz$verlassen" and adds a tag with name
    * "ejcTaggableComparator5" and value "xyz" for them.
-   * 
+   *
    * @param r
    */
   public static void parseShipLoaderTag2(magellan.library.Region r) {
@@ -2937,9 +2966,9 @@ public class E3CommandParser {
    * Converts some Vorlage commands to $cript commands. Call from the script of your faction with<br />
    * <code>(new E3CommandParser(world, helper)).convertVorlage((Faction) container, null);</code>
    * (all regions) or from a region with<br />
-   * <code>(new E3CommandParser(world, helper)).convertVorlage(helper.getFaction("1wpy"), 
+   * <code>(new E3CommandParser(world, helper)).convertVorlage(helper.getFaction("1wpy"),
    * (Region) container);</code>.
-   * 
+   *
    * @param faction
    * @param region
    */
@@ -3030,7 +3059,7 @@ public class E3CommandParser {
                 addNewOrder(scriptStart
                     + "Lerne "
                     + world.getRules().getSkillType(EresseaConstants.S_WAHRNEHMUNG.toString())
-                        .getName() + " 10", true);
+                    .getName() + " 10", true);
               } else if (command.equals("Depot")) {
                 addNewOrder(scriptStart + "Benoetige " + ALLOrder, true);
               } else if (command.equals("Versorge")) {
@@ -3197,7 +3226,7 @@ public class E3CommandParser {
   /**
    * Private utility script written to convert some of my faction's orders. Not interesting for the
    * general public.
-   * 
+   *
    * @param faction
    * @param region
    */
@@ -3238,7 +3267,7 @@ public class E3CommandParser {
   /**
    * Private utility script written to convert some of my faction's orders. Not interesting for the
    * general public.
-   * 
+   *
    * @param faction
    * @param region
    */
@@ -3306,7 +3335,7 @@ public class E3CommandParser {
   /**
    * Private utility script written to handle unwanted orders created by the TeachPlugin. Not
    * interesting for the general public.
-   * 
+   *
    * @param faction
    * @param region
    */
@@ -3382,15 +3411,15 @@ public class E3CommandParser {
   }
 
   private void setNamespaces(MagellanPlugIn plugin, String namespaces) throws SecurityException,
-      IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-      InvocationTargetException {
+  IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
+  InvocationTargetException {
     ExtendedCommandsHelper.invoke(plugin, "setNamespaces", new Class[] { String.class },
         new Object[] { namespaces });
   }
 
   private String getNamespaces(MagellanPlugIn plugin) throws SecurityException,
-      IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-      InvocationTargetException {
+  IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
+  InvocationTargetException {
     return (String) ExtendedCommandsHelper.invoke(plugin, "getNamespacesString", new Class[] {},
         new Object[] {});
   }
@@ -3500,7 +3529,7 @@ public class E3CommandParser {
   /**
    * Makes this code usable as input to the CommandParser. Tries to read the source of this file and
    * strip it from generics and other advanced stuff that BeanShell doesn't understand.
-   * 
+   *
    * @param args this is ignored
    */
   public static void main(String[] args) {
@@ -3642,10 +3671,6 @@ class Supply implements Comparable<Supply> {
 }
 
 interface OrderFilter {
-  /**
-   * @return true if the order should be changed or deleted
-   */
-  public boolean changeOrder(String order);
 
   /**
    * @return true if the order should be changed or deleted
@@ -3682,24 +3707,6 @@ class ShortOrderFilter implements OrderFilter {
 
   public ShortOrderFilter(GameData world) {
     this.world = world;
-  }
-
-  public boolean changeOrder(String command) {
-    if (world.getGameSpecificStuff().getOrderChanger().isLongOrder(command))
-      return false;
-    else {
-      if (command.startsWith("@") || command.startsWith("//"))
-        return false;
-      else {
-        if (command.startsWith(";")) {
-          result = null;
-          return true;
-        } else {
-          result = ";" + command;
-          return true;
-        }
-      }
-    }
   }
 
   public boolean changeOrder(Order command) {
@@ -3771,7 +3778,7 @@ class Need extends Supply {
 
   /**
    * Returns the value of warning.
-   * 
+   *
    * @return Returns warning.
    */
   public Warning getWarning() {
@@ -3780,7 +3787,7 @@ class Need extends Supply {
 
   /**
    * Sets the value of warning.
-   * 
+   *
    * @param warning The value for warning.
    */
   public void setWarning(Warning warning) {
@@ -3815,15 +3822,15 @@ class Warning {
   private List<Flag> flags = new ArrayList<Flag>();
 
   public static final Flag[] ALL_FLAGS = {
-      new Flag(true, E3CommandParser.W_AMOUNT, E3CommandParser.C_AMOUNT),
-      new Flag(true, E3CommandParser.W_ARMOR, E3CommandParser.C_ARMOR),
-      new Flag(true, E3CommandParser.W_FOREIGN, E3CommandParser.C_FOREIGN),
-      new Flag(true, E3CommandParser.W_SHIELD, E3CommandParser.C_SHIELD),
-      new Flag(true, E3CommandParser.W_SKILL, E3CommandParser.C_SKILL),
-      new Flag(true, E3CommandParser.W_UNIT, E3CommandParser.C_UNIT),
-      new Flag(true, E3CommandParser.W_WEAPON, E3CommandParser.C_WEAPON),
-      new Flag(false, E3CommandParser.W_FOREIGN, E3CommandParser.C_FOREIGN),
-      new Flag(false, E3CommandParser.W_HIDDEN, E3CommandParser.C_HIDDEN) };
+    new Flag(true, E3CommandParser.W_AMOUNT, E3CommandParser.C_AMOUNT),
+    new Flag(true, E3CommandParser.W_ARMOR, E3CommandParser.C_ARMOR),
+    new Flag(true, E3CommandParser.W_FOREIGN, E3CommandParser.C_FOREIGN),
+    new Flag(true, E3CommandParser.W_SHIELD, E3CommandParser.C_SHIELD),
+    new Flag(true, E3CommandParser.W_SKILL, E3CommandParser.C_SKILL),
+    new Flag(true, E3CommandParser.W_UNIT, E3CommandParser.C_UNIT),
+    new Flag(true, E3CommandParser.W_WEAPON, E3CommandParser.C_WEAPON),
+    new Flag(false, E3CommandParser.W_FOREIGN, E3CommandParser.C_FOREIGN),
+    new Flag(false, E3CommandParser.W_HIDDEN, E3CommandParser.C_HIDDEN) };
 
   public static boolean initialized = false;
   public static Map<String, Flag> NAMES;

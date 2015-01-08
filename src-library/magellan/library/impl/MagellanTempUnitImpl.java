@@ -18,12 +18,13 @@ import java.util.Collections;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.RulesException;
 import magellan.library.rules.Race;
 
 /**
  * DOCUMENT-ME
- * 
+ *
  * @author $Author: $
  * @version $Revision: 256 $
  */
@@ -71,7 +72,7 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
         return getData().getGameSpecificStuff().getOrderChanger().getTokenLocalized(getLocale(),
             getID());
       } catch (RulesException e) {
-        return "TEMP " + getID();
+        return EresseaConstants.O_TEMP + getID();
       }
     }
   }

@@ -9,7 +9,6 @@ package magellan.library.gamebinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -46,8 +45,6 @@ import magellan.library.utils.logging.Logger;
 public class EresseaOrderChanger implements OrderChanger {
   private static final Logger log = Logger.getInstance(EresseaOrderChanger.class);
 
-  public static final String eresseaOrderChangedMarker = ";changed by Magellan";
-
   protected static final String PCOMMENTSTART = EresseaConstants.O_PCOMMENT + " ";
   protected static final String COMMENTSTART = EresseaConstants.O_COMMENT + " ";
 
@@ -59,7 +56,7 @@ public class EresseaOrderChanger implements OrderChanger {
     this.rules = rules;
   }
 
-  public Rules getRules() {
+  protected Rules getRules() {
     return rules;
   }
 
@@ -107,31 +104,31 @@ public class EresseaOrderChanger implements OrderChanger {
    *      magellan.library.UnitContainer, java.lang.String)
    */
   public void addDescribeUnitContainerOrder(Unit unit, UnitContainer uc, String descr) {
-    String suborder = createDescribeUnitContainerOrder(uc, unit);
-    String order = suborder + " \"" + descr + "\"";
-    unit.addOrder(order, true, (suborder.indexOf(" ") >= 0) ? 2 : 1);
+    String order = createDescribeUnitContainerOrder(uc, unit, descr);
+    unit.addOrder(order, true, 2); // FIXME should be 1 for BANNER
   }
 
-  protected String createDescribeUnitContainerOrder(UnitContainer uc, Unit unit) {
-    String order = null;
+  protected String
+      createDescribeUnitContainerOrder(UnitContainer uc, Unit unit, String description) {
+    StringBuilder order = new StringBuilder();
 
     if (uc instanceof Building) {
-      order =
-          getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
-              + getOrderTranslation(EresseaConstants.OC_CASTLE, unit);
+      order.append(getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit)).append(" ").append(
+          getOrderTranslation(EresseaConstants.OC_CASTLE, unit));
     } else if (uc instanceof Ship) {
-      order =
-          getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
-              + getOrderTranslation(EresseaConstants.OC_SHIP, unit);
+      order.append(getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit)).append(" ").append(
+          getOrderTranslation(EresseaConstants.OC_SHIP, unit));
     } else if (uc instanceof Region) {
-      order =
-          getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit) + " "
-              + getOrderTranslation(EresseaConstants.OC_REGION, unit);
+      order.append(getOrderTranslation(EresseaConstants.OC_DESCRIBE, unit)).append(" ").append(
+          getOrderTranslation(EresseaConstants.OC_REGION, unit));
     } else if (uc instanceof Faction) {
-      order = getOrderTranslation(EresseaConstants.OC_BANNER, unit);
-    }
+      order.append(getOrderTranslation(EresseaConstants.OC_BANNER, unit));
+    } else
+      return null;
 
-    return order;
+    order.append(" \"").append(description).append("\"");
+
+    return order.toString();
   }
 
   /**
@@ -383,6 +380,13 @@ public class EresseaOrderChanger implements OrderChanger {
     return !isLongButShort(rOrder, Locales.getOrderLocale());
   }
 
+  /**
+   * @param rOrder
+   * @param orderLocale
+   * @return
+   * @deprecated should use {@link #isLongOrder(Order)}
+   */
+  @Deprecated
   protected boolean isLongButShort(String rOrder, Locale orderLocale) {
     return rOrder.startsWith(getOrder(Locales.getOrderLocale(), EresseaConstants.OC_MAKE,
         new Object[] { EresseaConstants.OC_TEMP }));
@@ -687,7 +691,27 @@ public class EresseaOrderChanger implements OrderChanger {
     try {
       return getOrder(orderId, orderLocale, args);
     } catch (RulesException e) {
-      return orderId.toString();
+      // return orderId.toString();
+
+      StringBuilder order = new StringBuilder();
+      try {
+        order.append(getOrder1(orderId, orderLocale));
+      } catch (RulesException e2) {
+        order.append(orderId);
+      }
+      for (Object arg : args) {
+        String tok;
+        try {
+          tok = getTokenLocalized(orderLocale, arg);
+        } catch (RulesException e2) {
+          tok = arg.toString();
+        }
+        if (tok.length() > 0) {
+          order.append(" ").append(tok);
+        }
+      }
+      return order.toString();
+
     }
   }
 
@@ -774,12 +798,7 @@ public class EresseaOrderChanger implements OrderChanger {
                   tempUnit = unit.createTemp(gdata, orderTempID);
                   tempUnit.setSortIndex(++tempSortIndex);
                   if (line.size() > 4) {
-                    tempUnit.addOrders(Collections.singleton(getOrderTranslation(
-                        EresseaConstants.OC_NAME, unit)
-                        + " "
-                        + getOrderTranslation(EresseaConstants.OC_UNIT, unit)
-                        + " "
-                        + line.getToken(3).getText()), false);
+                    addNamingOrder(tempUnit, line.getToken(3).getText());
                   }
                 } else {
                   log.warn("region " + unit.getRegion()

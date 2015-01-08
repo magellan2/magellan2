@@ -27,7 +27,7 @@ import magellan.library.completion.OrderParser;
 /**
  * This class has methods to change unit orders for various purposes, usually related to higher
  * order user operations.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 305 $
  */
@@ -40,7 +40,7 @@ public interface OrderChanger {
 
   /**
    * Adds a KÄMPFE order.
-   * 
+   *
    * @param unit
    * @param newstate an internal value, as used in {@link Unit#getCombatStatus()}
    * @see GameSpecificStuff#getCombatStates()
@@ -102,7 +102,7 @@ public interface OrderChanger {
 
   /**
    * Adds a GIVE target amount item order.
-   * 
+   *
    * @param amount use ALL for all, negative amount for each
    */
   public void addGiveOrder(Unit source, Unit target, int amount, StringID item, String comment);
@@ -111,21 +111,21 @@ public interface OrderChanger {
   /**
    * Adds command lines for hiding all that could identify this unit, like name, number, description
    * etc.
-   * 
+   *
    * @param u The affected unit.
    */
   public void addMultipleHideOrder(Unit u);
 
   /**
    * searches the orders of the unit for long orders and comments them out
-   * 
+   *
    * @param u
    */
   public void disableLongOrders(Unit u);
 
   /**
    * checks, if the given order is a long order
-   * 
+   *
    * @param order
    * @return true if the given order is a long order
    * @deprecated the results of this order are not very accurate and order is always interpreted in
@@ -137,7 +137,7 @@ public interface OrderChanger {
 
   /**
    * checks, if the given order is a long order
-   * 
+   *
    * @param order
    * @return true if the given order is a long order
    */
@@ -145,7 +145,7 @@ public interface OrderChanger {
 
   /**
    * Determines if the orders in the collection are legal to have at the same time for one unit.
-   * 
+   *
    * @param orders
    * @return The number of the first offending order, -1 if the orders are compatible
    */
@@ -153,7 +153,7 @@ public interface OrderChanger {
 
   /**
    * Returns localized string for given locale and argument.
-   * 
+   *
    * @param orderLocale
    * @param arg can be an order ID, a unit ID or anything else
    * @throws RulesException if argument has no translation
@@ -162,7 +162,7 @@ public interface OrderChanger {
 
   /**
    * Returns localized order for given order id
-   * 
+   *
    * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
    */
   public String getOrder(Locale orderLocale, StringID orderId);
@@ -170,7 +170,7 @@ public interface OrderChanger {
   /**
    * Returns a localized order for given order id concatenated (separated by spaces) with the
    * argument translations.
-   * 
+   *
    * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
    * @param args Additional arguments
    * @return The order
@@ -179,7 +179,7 @@ public interface OrderChanger {
 
   /**
    * Returns localized order for given order id
-   * 
+   *
    * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
    * @throws RulesException if argument has no translation
    */
@@ -188,7 +188,7 @@ public interface OrderChanger {
   /**
    * Returns a localized order for given order id concatenated (separated by spaces) with the
    * argument translations.
-   * 
+   *
    * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
    * @param args Additional arguments
    * @return The order
@@ -199,7 +199,7 @@ public interface OrderChanger {
   /**
    * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
    * removes the corresponding orders from this unit.
-   * 
+   *
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
    * @param locale the locale to parse the orders with.
@@ -211,6 +211,7 @@ public interface OrderChanger {
   /**
    * Returns the orders necessary to issue the creation of all the child temp units of this unit.
    */
-  public Collection<? extends Order> getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit);
+  public Collection<? extends Order>
+  getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit);
 
 }

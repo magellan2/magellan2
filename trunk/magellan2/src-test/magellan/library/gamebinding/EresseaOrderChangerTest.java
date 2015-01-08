@@ -164,31 +164,31 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     Unit unit2 = builder.addUnit(data, "targ", "Target", unit.getFaction(), unit.getRegion());
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, 1, EresseaConstants.I_WOOD, null);
-    assertEquals("GIB targ 1 Holz", unit.getOrders2().get(0).toString());
+    assertEquals("GIB targ 1 Holz", unit.getOrders2().get(0).getText());
 
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, -1, EresseaConstants.I_WOOD, null);
-    assertEquals("GIB targ JE 1 Holz", unit.getOrders2().get(0).toString());
+    assertEquals("GIB targ JE 1 Holz", unit.getOrders2().get(0).getText());
 
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, OrderChanger.ALL, EresseaConstants.I_WOOD, null);
-    assertEquals("GIB targ ALLES Holz", unit.getOrders2().get(0).toString());
+    assertEquals("GIB targ ALLES Holz", unit.getOrders2().get(0).getText());
 
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, OrderChanger.ALL, null, null);
-    assertEquals("GIB targ ALLES", unit.getOrders2().get(0).toString());
+    assertEquals("GIB targ ALLES", unit.getOrders2().get(0).getText());
 
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, 2, EresseaConstants.I_MEN, null);
-    assertEquals("GIB targ 2 PERSONEN", unit.getOrders2().get(0).toString());
+    assertEquals("GIB targ 2 PERSONEN", unit.getOrders2().get(0).getText());
 
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, 1, StringID.create("Foo"), null);
-    assertEquals("; unknown item Foo", unit.getOrders2().get(0).toString());
+    assertEquals("; unknown item Foo", unit.getOrders2().get(0).getText());
 
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, 1, null, null);
-    assertEquals("; illegal amount and no item 1", unit.getOrders2().get(0).toString());
+    assertEquals("; illegal amount and no item 1", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -200,7 +200,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     TempUnit unit2 = unit.createTemp(data, UnitID.createUnitID(-42, data.base));
     unit.clearOrders();
     changer.addGiveOrder(unit, unit2, 4, EresseaConstants.I_UHORSE, "to temp");
-    assertEquals("GIB TEMP 16 4 Pferd ; to temp", unit.getOrders2().get(0).toString());
+    assertEquals("GIB TEMP 16 4 Pferd ; to temp", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -251,7 +251,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testAddNamingOrder() throws Exception {
     changer.addNamingOrder(unit, "Me");
-    assertEquals("BENENNEN EINHEIT \"Me\"", unit.getOrders2().get(0).toString());
+    assertEquals("BENENNEN EINHEIT \"Me\"", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -271,7 +271,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     UnitContainer container =
         builder.addBuilding(data, unit.getRegion(), "foo", "Burg", "Not", 200);
     changer.addNamingOrder(unit, container, "It");
-    assertEquals("BENENNEN BURG \"It\"", unit.getOrders2().get(0).toString());
+    assertEquals("BENENNEN BURG \"It\"", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -292,7 +292,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     UnitContainer container =
         builder.addBuilding(data, unit.getRegion(), "foo", "Burg", "Not", 200);
     changer.addDescribeUnitContainerOrder(unit, container, "It");
-    assertEquals("BESCHREIBEN BURG \"It\"", unit.getOrders2().get(0).toString());
+    assertEquals("BESCHREIBEN BURG \"It\"", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -316,7 +316,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testAddDescribeUnitPrivateOrder() throws Exception {
     changer.addDescribeUnitPrivateOrder(unit, "Me");
-    assertEquals("BESCHREIBEN PRIVAT \"Me\"", unit.getOrders2().get(0).toString());
+    assertEquals("BESCHREIBEN PRIVAT \"Me\"", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -333,7 +333,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testAddDescribeUnitOrder() throws Exception {
     changer.addDescribeUnitOrder(unit, "Me");
-    assertEquals("BESCHREIBEN EINHEIT \"Me\"", unit.getOrders2().get(0).toString());
+    assertEquals("BESCHREIBEN EINHEIT \"Me\"", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -350,7 +350,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testAddHideOrder() throws Exception {
     changer.addHideOrder(unit, "1");
-    assertEquals("TARNEN 1", unit.getOrders2().get(0).toString());
+    assertEquals("TARNEN 1", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -358,7 +358,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testCreateHideOrder() throws Exception {
-    assertEquals("TARNEN 2", changer.createHideOrder(unit, "2").toString());
+    assertEquals("TARNEN 2", changer.createHideOrder(unit, "2").getText());
   }
 
   /**
@@ -381,7 +381,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testAddCombatOrder() throws Exception {
     changer.addCombatOrder(unit, 2);
-    assertEquals("KÄMPFEN HINTEN", unit.getOrders2().get(0).toString());
+    assertEquals("KÄMPFEN HINTEN", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -398,7 +398,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testAddRecruitOrder() throws Exception {
     changer.addRecruitOrder(unit, 15);
-    assertEquals("REKRUTIEREN 15", unit.getOrders2().get(0).toString());
+    assertEquals("REKRUTIEREN 15", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -411,19 +411,19 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
 
     changer.addMultipleHideOrder(unit);
     int line = 0;
-    assertEquals("NUMMER EINHEIT ", unit.getOrders2().get(line++).toString());
-    assertEquals("BENENNEN EINHEIT \"\"", unit.getOrders2().get(line++).toString());
-    assertEquals("BESCHREIBEN EINHEIT \"\"", unit.getOrders2().get(line++).toString());
-    assertEquals("TARNEN PARTEI", unit.getOrders2().get(line++).toString());
-    assertEquals("NUMMER SCHIFF", unit.getOrders2().get(line++).toString());
-    assertEquals("BENENNEN SCHIFF \"\"", unit.getOrders2().get(line++).toString());
-    assertEquals("BESCHREIBEN SCHIFF \"\"", unit.getOrders2().get(line++).toString());
-    assertEquals("// NUMMER EINHEIT " + unit.getID(), unit.getOrders2().get(line++).toString());
+    assertEquals("NUMMER EINHEIT ", unit.getOrders2().get(line++).getText());
+    assertEquals("BENENNEN EINHEIT \"\"", unit.getOrders2().get(line++).getText());
+    assertEquals("BESCHREIBEN EINHEIT \"\"", unit.getOrders2().get(line++).getText());
+    assertEquals("TARNEN PARTEI", unit.getOrders2().get(line++).getText());
+    assertEquals("NUMMER SCHIFF", unit.getOrders2().get(line++).getText());
+    assertEquals("BENENNEN SCHIFF \"\"", unit.getOrders2().get(line++).getText());
+    assertEquals("BESCHREIBEN SCHIFF \"\"", unit.getOrders2().get(line++).getText());
+    assertEquals("// NUMMER EINHEIT " + unit.getID(), unit.getOrders2().get(line++).getText());
     assertEquals("// BENENNEN EINHEIT \"" + unit.getName() + "\"", unit.getOrders2().get(line++)
-        .toString());
-    assertEquals("// TARNEN PARTEI NICHT", unit.getOrders2().get(line++).toString());
-    assertEquals("// NUMMER SCHIFF sh", unit.getOrders2().get(line++).toString());
-    assertEquals("// BENENNEN SCHIFF \"ship\"", unit.getOrders2().get(line++).toString());
+        .getText());
+    assertEquals("// TARNEN PARTEI NICHT", unit.getOrders2().get(line++).getText());
+    assertEquals("// NUMMER SCHIFF sh", unit.getOrders2().get(line++).getText());
+    assertEquals("// BENENNEN SCHIFF \"ship\"", unit.getOrders2().get(line++).getText());
   }
 
   /**
@@ -436,10 +436,10 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     unit.addOrder("VERKAUFE ALLES Balsam");
     unit.addOrder("FOLGE EINHEIT 123");
     changer.disableLongOrders(unit);
-    assertEquals("; ARBEIT", unit.getOrders2().get(0).toString());
-    assertEquals("GIB 123 4 Silber", unit.getOrders2().get(1).toString());
-    assertEquals("; VERKAUFE ALLES Balsam", unit.getOrders2().get(2).toString());
-    assertEquals("; FOLGE EINHEIT 123", unit.getOrders2().get(3).toString());
+    assertEquals("; ARBEIT", unit.getOrders2().get(0).getText());
+    assertEquals("GIB 123 4 Silber", unit.getOrders2().get(1).getText());
+    assertEquals("; VERKAUFE ALLES Balsam", unit.getOrders2().get(2).getText());
+    assertEquals("; FOLGE EINHEIT 123", unit.getOrders2().get(3).getText());
   }
 
   /**
@@ -499,7 +499,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testAddGroupOrder() throws Exception {
     changer.addGroupOrder(unit, "group");
-    assertEquals("GRUPPE \"group\"", unit.getOrders2().get(0).toString());
+    assertEquals("GRUPPE \"group\"", unit.getOrders2().get(0).getText());
   }
 
   /**
@@ -507,7 +507,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetOrderTranslation() throws Exception {
-    assertEquals("LERNEN", changer.getOrderTranslation(EresseaConstants.OC_LEARN, unit));
+    assertEquals("LERNEN", changer.getOrderTranslation(EresseaConstants.OC_LEARN, unit).getText());
   }
 
   /**
@@ -526,7 +526,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetOrderLocaleStringID() throws Exception {
-    assertEquals("BEWACHEN", changer.getOrder(DE_LOCALE, EresseaConstants.OC_GUARD));
+    assertEquals("BEWACHEN", changer.getOrder(DE_LOCALE, EresseaConstants.OC_GUARD).getText());
   }
 
   /**
@@ -534,13 +534,13 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetOrderLocaleStringIDObjects() throws Exception {
-    assertEquals("GIB 0 ALLES", changer.getOrder(DE_LOCALE, EresseaConstants.OC_GIVE, new Object[] {
-        0, EresseaConstants.OC_ALL }));
+    assertEquals("GIB 0 ALLES", changer.getOrder(DE_LOCALE, EresseaConstants.OC_GIVE,
+        new Object[] { 0, EresseaConstants.OC_ALL }).getText());
 
     try {
-      String order =
+      Order order =
           changer.getOrder(DE_LOCALE, StringID.create("BOGUSCOMMAND"), new Object[] { 2 });
-      assertEquals("BOGUSCOMMAND 2", order);
+      assertEquals("BOGUSCOMMAND 2", order.getText());
     } catch (Exception e) {
       fail("unexpected exception " + e);
     }
@@ -552,7 +552,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetOrderStringIDLocale() throws Exception {
-    assertEquals("MACHEN", changer.getOrder(EresseaConstants.OC_MAKE, DE_LOCALE));
+    assertEquals("MACHEN", changer.getOrder(EresseaConstants.OC_MAKE, DE_LOCALE).getText());
   }
 
   /**
@@ -560,8 +560,8 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetOrderStringIDLocaleObjects() throws Exception {
-    assertEquals("GIB 0 ALLES", changer.getOrder(EresseaConstants.OC_GIVE, DE_LOCALE, new Object[] {
-        0, EresseaConstants.OC_ALL }));
+    assertEquals("GIB 0 ALLES", changer.getOrder(EresseaConstants.OC_GIVE, DE_LOCALE,
+        new Object[] { 0, EresseaConstants.OC_ALL }).getText());
     try {
       changer.getOrder(StringID.create("BOGUSCOMMAND"), DE_LOCALE, new Object[] {});
       fail();
@@ -591,8 +591,8 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     assertEquals(1, data.tempUnits().size());
     assertEquals(1, sort);
     assertEquals(2, unit.getOrders2().size());
-    assertEquals("ORDER 1", unit.getOrders2().get(0).toString());
-    assertEquals("ORDER 2", unit.getOrders2().get(1).toString());
+    assertEquals("ORDER 1", unit.getOrders2().get(0).getText());
+    assertEquals("ORDER 2", unit.getOrders2().get(1).getText());
 
     Unit temp = null;
     for (Unit u : data.tempUnits().values()) {
@@ -604,7 +604,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     assertNotNull(temp);
     assertTrue(temp.getID().intValue() < 0);
     assertEquals(1, temp.getOrders2().size());
-    assertEquals("CONTENT", temp.getOrders2().get(0).toString());
+    assertEquals("CONTENT", temp.getOrders2().get(0).getText());
 
   }
 
@@ -630,7 +630,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     }
     assertNotNull(temp);
     assertEquals(1, temp.getOrders2().size());
-    assertEquals("BENENNEN EINHEIT \"He\"", temp.getOrders2().get(0).toString());
+    assertEquals("BENENNEN EINHEIT \"He\"", temp.getOrders2().get(0).getText());
 
   }
 

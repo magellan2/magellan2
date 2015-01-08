@@ -249,7 +249,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Sets the value of prefixMatching.
-   * 
+   *
    * @param prefixMatching The value for prefixMatching.
    */
   public void setPrefixMatching(boolean prefixMatching) {
@@ -258,7 +258,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Returns the value of data.
-   * 
+   *
    * @return Returns data.
    */
   public GameData getData() {
@@ -267,7 +267,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Sets the value of data.
-   * 
+   *
    * @param data The value for data.
    */
   protected void setData(GameData data) {
@@ -280,14 +280,14 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Returns the value of completer.
-   * 
+   *
    * @return Returns completer.
    */
   public abstract AbstractOrderCompleter getCompleter();
 
   /**
    * Sets the value of completer.
-   * 
+   *
    * @param completer The value for completer.
    */
   protected abstract void setCompleter(AbstractOrderCompleter completer);
@@ -301,16 +301,16 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Returns the localized order in the current locale.
-   * 
+   *
    * @see Resources#getOrderTranslation(String, Locale)
    */
   protected String getOrderTranslation(StringID key) { // TODO build lookup table
-    return getData().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), key);
+    return getData().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), key).toString();
   }
 
   /**
    * Returns the localized rule item (skill, race) in the current locale.
-   * 
+   *
    * @see Resources#getRuleItemTranslation(String, Locale)
    */
   protected String getRuleItemTranslation(String key) {
@@ -319,7 +319,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tries to find the unit with the given ID in the data.
-   * 
+   *
    * @param id the target's ID (as text in the report's base)
    * @return The unit if it is in the data, otherwise <code>null</code>
    * @throws NumberFormatException if unit id is not parseable
@@ -331,7 +331,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tries to find the building with the given ID in the data.
-   * 
+   *
    * @param id the target's ID (as text in the report's base)
    * @return The building if it is in the data, otherwise <code>null</code>
    * @throws NumberFormatException if unit id is not parseable
@@ -343,7 +343,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tries to find the ship with the given ID in the data.
-   * 
+   *
    * @param id the target's ID (as text in the report's base)
    * @return The ship if it is in the data, otherwise <code>null</code>
    * @throws NumberFormatException if unit id is not parseable
@@ -355,7 +355,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tries to find the faction with the given ID in the data.
-   * 
+   *
    * @param id the target's ID (as text in the report's base)
    * @return The faction if it is in the data, otherwise <code>null</code>
    * @throws NumberFormatException if unit id is not parseable
@@ -367,7 +367,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Returns the value of commandMap.
-   * 
+   *
    * @return Returns commandMap.
    */
   protected HashMap<StringID, OrderHandler> getCommandMap() {
@@ -375,7 +375,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * 
+   *
    */
   public void clearCommandMap() {
     commandMap = new HashMap<StringID, OrderHandler>();
@@ -391,7 +391,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * Adds the specified handler for the specified command (and removes any previous handler for the
    * command). The caller must make sure that {@link #getOrderTranslation(String)}(prefix, locale)
    * returns the localized command for any order language.
-   * 
+   *
    * @param prefix A command ID
    * @param handler The handler for this command
    */
@@ -416,7 +416,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   private String normalize(StringID prefix, Locale loc) {
     String order;
     if (getData() != null) {
-      order = getData().getGameSpecificStuff().getOrderChanger().getOrder(loc, prefix);
+      order = getData().getGameSpecificStuff().getOrderChanger().getOrder(loc, prefix).getText();
     } else {
       order = prefix.toString();
     }
@@ -425,7 +425,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Removes the handler for the specified command.
-   * 
+   *
    * @param prefix
    */
   protected void removeCommand(StringID prefix) {
@@ -465,7 +465,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Ensures that the commands for the given locale are found by {@link #getHandlers()}.
-   * 
+   *
    * @param loc
    */
   protected void initCommands(Locale loc) {
@@ -479,7 +479,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Returns the tokens read by the parser.
-   * 
+   *
    * @return all <tt>OrderToken</tt> object produced by the underlying <tt>OrderTokenizer</tt> by
    *         reading a order.
    */
@@ -522,7 +522,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Returns the error messages produced by the last invocation of the <tt>read(Reader in)</tt>
    * method.
-   * 
+   *
    * @return an error message if the last <tt>read</tt> returned <tt>false</tt>, <tt>null</tt> else.
    */
   public String getErrorMessage() {
@@ -558,7 +558,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Parses one line of text from the specified stream by tokenizing it and checking the syntax.
-   * 
+   *
    * @param in the stream to read the order from.
    * @return <tt>true</tt> if the syntax of the order read is valid, <tt>false</tt> else.
    * @deprecated Use {@link #parse(String, Locale)}
@@ -584,7 +584,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * handler, it is applied to the <code>t</code> and the result returned. Otherwise this method
    * returns <code>true</code> if <code>t</code> is the final token. Afterwards the completer is
    * applied.
-   * 
+   *
    * @param firstToken
    */
   protected Order readOrder(OrderToken firstToken, String text) {
@@ -626,7 +626,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Returns a set of handlers that match the specified token.
-   * 
+   *
    * @param t
    */
   protected List<OrderHandler> getHandlers(OrderToken t) {
@@ -659,7 +659,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
     /**
      * Creates a StringChecker with default behaviour.
-     * 
+     *
      * @param forceQuotes if this is <code>true</code>, the string must be enclosed in (single or
      *          double) quotes.
      * @param preferQuotes if this is <code>true</code>, quotes are inserted by order completers.
@@ -692,7 +692,7 @@ public abstract class AbstractOrderParser implements OrderParser {
      * clears completions, calls {@link #checkNext()}. If there is a completer and the last token of
      * the string is followed by space, it calls {@link #complete()}. The completions are then
      * garnished with quotes as specified by the do... methods.
-     * 
+     *
      * @return {@link #checkInner()} && {@link #checkNext()}
      * @see AbstractOrderParser#getString(OrderToken)
      * @throws IllegalArgumentException If <code>!isString(token)</code>
@@ -747,7 +747,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     /**
      * Checks the quotes. According to constructor parameters. Subclasses usually don't need to
      * overwrite this method.
-     * 
+     *
      * @return <code>false</code> if there are no quotes but quotes are forced or if the closing
      *         quote doesn't match the opening quote.
      */
@@ -763,7 +763,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     /**
      * Subclasses may override this method if they want to check the content, which is in
      * <code>innerToken</code>.
-     * 
+     *
      * @see AbstractOrderParser#getString(OrderToken)
      */
     protected boolean checkInner() {
@@ -811,7 +811,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tests if the next token is a quoted (possibly empty) string at the end of the order.
-   * 
+   *
    * @return The string (without quotes) if a valid description was found, otherwise
    *         <code>null</code>
    */
@@ -828,7 +828,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tests if the next token is a quoted string at the end of the order.
-   * 
+   *
    * @return The string (without quotes) if a valid description was found, otherwise
    *         <code>null</code>
    */
@@ -839,7 +839,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tests if t is a quoted (possibly empty) string at the end of the order.
-   * 
+   *
    * @return The string (without quotes) if a valid description was found, otherwise
    *         <code>null</code>
    */
@@ -850,7 +850,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * If this a quoted string at the end of the order, it is returned. If <code>allowEmpty</code>, it
    * may also be an empty string.
-   * 
+   *
    * @return The string (without quotes) if a valid description was found, otherwise
    *         <code>null</code>
    */
@@ -987,7 +987,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Tests if <code>txt</code> represents an integer with the given radix between min and max
    * (inclusively).
-   * 
+   *
    * @param txt
    * @param radix
    * @param min
@@ -1020,7 +1020,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Tests if <code>txt</code> represents a valid ID (or TEMP ID) given the <code>data.base</code>
    * and {@link #MAX_UID}.
-   * 
+   *
    * @param txt
    */
   protected boolean isID(String txt, boolean allowTemp) {
@@ -1035,7 +1035,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tests if <code>txt</code> represents a valid TEMP id.
-   * 
+   *
    * @param txt
    */
   protected boolean isTempID(String txt) {
@@ -1093,7 +1093,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tests if <code>txt</code> is surrounded by double quotes.
-   * 
+   *
    * @deprecated nobody needs us
    */
   @Deprecated
@@ -1103,7 +1103,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tests if <code>txt</code> is surrounded by single quotes.
-   * 
+   *
    * @deprecated nobody needs us
    */
   @Deprecated
@@ -1127,7 +1127,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Tests if <code>txt</code> is a nonempty string which is either surrounded by quotes or by
    * double quotes, or is composed solely by the characters [A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:].
-   * 
+   *
    * @param txt
    * @deprecated you should prefer {@link #isString(OrderToken)} and {@link StringChecker}
    */
@@ -1172,7 +1172,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Returns <code>true</code> if token starts a string. That is, it must be either a
    * {@link OrderToken#TT_OPENING_QUOTE} or a string token.
-   * 
+   *
    * @param token the current token
    * @param forceQuotes if this is <code>true</code>, token must be a TT_OPENING_QUOTE
    */
@@ -1187,7 +1187,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Parses token and the following tokens to identify a string.
-   * 
+   *
    * @param token The current token which <em>must</em> be either a TT_OPENING_Quote or a simple
    *          string. You may use {@link #isString(OrderToken)} to test validity of your token.
    * @return <code>result[0]</code> contains the opening quote, <code>result[1]</code> the content,
@@ -1232,7 +1232,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Tests if <code>txt</code> is (syntactically) a valid email address.
-   * 
+   *
    * @param txt
    */
   protected boolean isEmailAddress(String txt) {
@@ -1252,7 +1252,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * Return true if a completions should be added to the completer for the current token. The
    * standard version returns true if there is a OrderCompleter and <code>token</code> is followed
    * by a space and <code>t</code> is not.
-   * 
+   *
    * @param token The last token read
    * @param t The current token.
    */
@@ -1319,7 +1319,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     /**
      * Reads the tokens from <code>in</code> with an {@link OrderTokenizer} and adds them to
      * <code>this</code>.
-     * 
+     *
      * @param in
      * @return The number of tokens <i>after</i> reading
      */
@@ -1339,7 +1339,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
     /**
      * Merges two tokens if the first one contains the string TEMP the second one contains an id.
-     * 
+     *
      * @return the number of remaining tokens.
      */
     public int mergeTempTokens(int base) {

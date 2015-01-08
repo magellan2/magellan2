@@ -66,4 +66,38 @@ public class MergeUnitTransferTest {
 
   }
 
+  @Test
+  public void testMerge2() throws Exception {
+    GameDataBuilder builder = new GameDataBuilder();
+    GameData gd1 = builder.createSimpleGameData(350);
+    Faction f1_1 = gd1.getFactions().iterator().next();
+    Region region1 = gd1.getRegions().iterator().next();
+
+    GameData gd2 = builder.createSimpleGameData(351);
+    // Faction f3_1 = gd3.getFaction(f1_1.getID());
+
+    GameData gd3 = builder.createSimpleGameData(351);
+    Faction f2_2 = builder.addFaction(gd3, "f2", "Other faction", "Menschen", 1);
+    Region region2 = gd3.getRegions().iterator().next();
+
+    Unit unit1_1 = builder.addUnit(gd1, "tran", "Transferred", f1_1, region1, true);
+    Unit unit2_1 = builder.addUnit(gd3, "tran", "Transferred", f2_2, region2, false);
+    unit2_1.setHideFaction(true);
+
+    GameData gdNew1 = GameDataMerger.merge(gd1, gd2);
+    GameData gdNew2 = GameDataMerger.merge(gdNew1, gd3);
+    // WriteGameData.writeCR(gd4, gd4.getDate().getDate()+"_MergeSimpleGameData.cr");
+
+    Unit unit4 = gdNew2.getUnit(unit1_1.getID());
+    assertEquals(unit1_1.getID(), unit4.getID());
+    assertEquals(unit2_1.getID(), unit4.getID());
+
+    assertEquals(f2_2.getID(), unit4.getFaction().getID());
+    Faction f4_1 = gdNew2.getFaction(f1_1.getID());
+    Faction f4_2 = gdNew2.getFaction(f2_2.getID());
+    assertNull(f4_1.getUnit(unit4.getID()));
+    assertEquals(unit4, f4_2.getUnit(unit4.getID()));
+
+  }
+
 }

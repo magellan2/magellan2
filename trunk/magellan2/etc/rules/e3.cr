@@ -45,6 +45,7 @@ ORDER "CLAIM"
 
 ORDER "PROMOTION"
 "BEFÖRDERUNG";syntax
+"BEFÖRDERE";locale_de
 "BEFÖRDERUNG";locale_de
 "PROMOTION";locale_en
 
@@ -285,7 +286,7 @@ ORDER "ORIGIN"
 
 ORDER "FORGET"
 "VERGESSE Talent";syntax
-"VERGESSE";locale_de
+"VERGISS";locale_de
 "VERGESSEN";locale_de
 "FORGET";locale_en
 

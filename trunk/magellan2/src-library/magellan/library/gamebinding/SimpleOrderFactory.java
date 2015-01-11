@@ -1,7 +1,7 @@
-// class magellan.library.gamebinding.AllanonOrderChanger
-// created on 17.04.2008
+// class magellan.library.gamebinding.SimpleOrderFactory
+// created on Jan 10, 2015
 //
-// Copyright 2003-2008 by magellan project team
+// Copyright 2003-2015 by magellan project team
 //
 // Author : $Author: $
 // $Id: $
@@ -23,21 +23,33 @@
 //
 package magellan.library.gamebinding;
 
-import magellan.library.Rules;
+import java.util.List;
+
+import magellan.library.Order;
+import magellan.library.utils.OrderToken;
 
 /**
- * OrderChanger class for the game Allanon.
- *
- * @author Thoralf Rickert
- * @version 1.0, 17.04.2008
+ * @author stm
  */
-public class AllanonOrderChanger extends EresseaOrderChanger {
+public class SimpleOrderFactory {
 
   /**
+   * Creates an order consisting of just one token.
    *
+   * @param text The complete text of the order
    */
-  protected AllanonOrderChanger(Rules rules, SimpleOrderFactory factory) {
-    super(rules, factory);
+  public Order getInstance(String text) {
+    return new SimpleOrder(new OrderToken(text), text);
+  }
+
+  /**
+   * Creates a new order from a list of tokens.
+   *
+   * @param tokens The sequence of order tokens
+   * @param text The complete text of the order
+   */
+  public Order getInstance(List<OrderToken> tokens, String text) {
+    return new SimpleOrder(tokens, text);
   }
 
 }

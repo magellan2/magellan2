@@ -273,6 +273,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    */
   protected void setData(GameData data) {
     this.data = data;
+    translationsMap.clear();
   }
 
   protected Rules getRules() {
@@ -305,8 +306,20 @@ public abstract class AbstractOrderParser implements OrderParser {
    *
    * @see Resources#getOrderTranslation(String, Locale)
    */
-  protected String getOrderTranslation(StringID key) { // TODO build lookup table
-    return getData().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), key).getText();
+  protected String getOrderTranslation(StringID orderId) { 
+    Map<StringID, String> translations = translationsMap.get(getLocale());
+    if (translations == null) {
+      translations = new HashMap<StringID, String>();
+      translationsMap.put(getLocale(), translations);
+    }
+    String token = translations.get(orderId);
+    if (token == null) {
+      token =
+          getData().getGameSpecificStuff().getOrderChanger().getOrderO(getLocale(), orderId)
+              .getText();
+      translations.put(orderId, token);
+    }
+    return token;
   }
 
   /**
@@ -915,8 +928,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     OrderToken t = getNextToken();
 
     // TODO why test for TEMP?
-    if (shallComplete(token, t) && token.getText().equalsIgnoreCase(getOrderTranslation(getTemp()))
-        && tempAllowed) {
+    if (shallComplete(token, t) && isTemp(token.getText()) && tempAllowed) {
       getCompleter().addRegionUnits("", true);
     }
 
@@ -1070,13 +1082,18 @@ public abstract class AbstractOrderParser implements OrderParser {
     if (blankPos > -1) {
       String temp = txt.substring(0, blankPos);
       String nr = txt.substring(blankPos + 1);
-      retVal =
-          (temp.equalsIgnoreCase(getOrderTranslation(getTemp())))
-          && isNumeric(nr, getData().base, 0, AbstractOrderParser.MAX_UID);
+      retVal = (isTemp(temp)) && isNumeric(nr, getData().base, 0, AbstractOrderParser.MAX_UID);
     }
 
     return retVal;
   }
+
+  protected boolean isTemp(String temp) {
+    return temp.equalsIgnoreCase(getOrderTranslation(getTemp()));
+  }
+
+  private Map<Locale, Map<StringID, String>> translationsMap =
+      new HashMap<Locale, Map<StringID, String>>(3);
 
   protected abstract StringID getTemp();
 
@@ -1369,7 +1386,7 @@ public abstract class AbstractOrderParser implements OrderParser {
           OrderToken tempToken = tokenAt(i);
           String tempText = tempToken.getText();
 
-          if (tempText.equalsIgnoreCase(getOrderTranslation(getTemp()))) {
+          if (isTemp(tempText)) {
             try {
               OrderToken nrToken = tokenAt(i + 1);
               String nrText = nrToken.getText();

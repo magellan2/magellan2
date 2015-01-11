@@ -42,7 +42,7 @@ import magellan.library.utils.transformation.TransformerFinder;
 
 /**
  * All the stuff needed for Eressea.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 242 $
  */
@@ -80,7 +80,7 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   /**
    * Returns the value of rules.
-   * 
+   *
    * @return Returns rules.
    */
   public Rules getRules() {
@@ -96,7 +96,7 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   /**
    * This is a callback interface to let the GameSpecificStuff create the GameData object.
-   * 
+   *
    * @see magellan.library.gamebinding.GameSpecificStuff#createGameData(java.lang.String)
    */
   public GameData createGameData(String gameName) {
@@ -125,11 +125,12 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   }
 
   /**
+   * @param factory
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
   public OrderChanger getOrderChanger() {
     if (orderChanger == null) {
-      orderChanger = new EresseaOrderChanger(getRules());
+      orderChanger = new EresseaOrderChanger(getRules(), new SimpleOrderFactory());
     }
     return orderChanger;
   }
@@ -171,7 +172,7 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   /**
    * Delivers the Eressea specific Message Renderer (as of CR VERSION 41)
-   * 
+   *
    * @param data - A GameData object to enrich the messages with names of units, regions ,...
    * @return the new EresseaMessageRenderer for rendering ONE message
    * @see magellan.library.gamebinding.GameSpecificStuff#getMessageRenderer(magellan.library.GameData)

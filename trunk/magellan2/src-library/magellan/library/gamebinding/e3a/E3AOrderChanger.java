@@ -16,14 +16,15 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderChanger;
+import magellan.library.gamebinding.SimpleOrderFactory;
 
 /**
  * OrderChanger class for the game Eressea -- The Third Age.
  */
 public class E3AOrderChanger extends EresseaOrderChanger {
 
-  protected E3AOrderChanger(Rules rules) {
-    super(rules);
+  protected E3AOrderChanger(Rules rules, SimpleOrderFactory factory) {
+    super(rules, factory);
   }
 
   /**

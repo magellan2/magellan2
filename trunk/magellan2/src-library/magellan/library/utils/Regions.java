@@ -262,7 +262,7 @@ public class Regions {
         dir.append(" ");
       }
 
-      dir.append(changer.getOrder(Locales.getOrderLocale(), d.getId()));
+      dir.append(changer.getOrderO(Locales.getOrderLocale(), d.getId()));
     }
 
     return dir.toString();

@@ -235,44 +235,53 @@ public class AtlantisOrderChangerTest extends MagellanTestWithResources {
 
   @Test
   public final void testGetOrderLocaleObject() {
-    assertEquals("ALLY", changer.getOrder(EN_LOCALE, AtlantisConstants.OC_ALLY).toString());
-    assertEquals("ALLY", changer.getOrder(DE_LOCALE, AtlantisConstants.OC_ALLY).getText());
+    assertEquals("ALLY", changer.getOrderO(EN_LOCALE, AtlantisConstants.OC_ALLY).toString());
+    assertEquals("ALLY", changer.getOrderO(DE_LOCALE, AtlantisConstants.OC_ALLY).getText());
   }
 
   @Test
   public final void testGetOrderLocaleStringIDObjectArray() {
-    assertEquals("ALLY UNIT 1 12345", changer.getOrder(EN_LOCALE, AtlantisConstants.OC_ALLY,
+    assertEquals("ALLY UNIT 1 12345", changer.getOrderO(EN_LOCALE, AtlantisConstants.OC_ALLY,
         new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }).getText());
   }
 
   @Test
   public final void testGetOrderStringIDLocaleObjectArray() {
     try {
-      assertEquals("ALLY UNIT 1 12345", changer.getOrder(AtlantisConstants.OC_ALLY, EN_LOCALE,
+      assertEquals("ALLY UNIT 1 12345", changer.getOrderO(AtlantisConstants.OC_ALLY, EN_LOCALE,
           new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }).getText());
     } catch (RulesException e) {
       fail();
     }
     try {
-      assertEquals("ALLY UNIT 1 12345", changer.getOrder(AtlantisConstants.OC_ALLY, DE_LOCALE,
+      assertEquals("ALLY UNIT 1 12345", changer.getOrderO(AtlantisConstants.OC_ALLY, DE_LOCALE,
           new Object[] { AtlantisConstants.OC_UNIT, unit.getID(), "12345" }).getText());
       fail();
     } catch (RulesException e) {
       // wrong locale
     }
     try {
-      changer.getOrder(StringID.create("MAKE"), EN_LOCALE, new Object[] {});
+      changer.getOrderO(StringID.create("MAKE"), EN_LOCALE, new Object[] {});
       fail();
     } catch (RulesException e) {
       // exception expected
     }
     try {
-      changer.getOrder(AtlantisConstants.OC_ADMIT, EN_LOCALE, new Object[] { StringID
+      changer.getOrderO(AtlantisConstants.OC_ADMIT, EN_LOCALE, new Object[] { StringID
           .create("MAKE") });
       fail();
     } catch (RulesException e) {
       // exception expected
     }
+  }
+
+  /**
+   * @throws Exception
+   */
+  @Test
+  public void testGetTemp() throws Exception {
+    assertEquals("NEW 1", changer.getTokenLocalized(EN_LOCALE, UnitID
+        .createTempID(data, null, null)));
   }
 
   @Test

@@ -396,7 +396,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId).getText();
+    return data.getGameSpecificStuff().getOrderChanger().getOrderO(getLocale(), orderId).getText();
   }
 
   /**

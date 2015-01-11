@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding.atlantis;
 
 import java.io.IOException;
@@ -54,6 +54,7 @@ import magellan.library.gamebinding.MessageRenderer;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.gamebinding.OrderChanger;
 import magellan.library.gamebinding.RelationFactory;
+import magellan.library.gamebinding.SimpleOrderFactory;
 import magellan.library.gamebinding.e3a.E3AMapMergeEvaluator;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.ReportParser;
@@ -89,7 +90,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
 
   /**
    * Returns the value of rules.
-   * 
+   *
    * @return Returns rules.
    */
   public Rules getRules() {
@@ -97,7 +98,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
   }
 
   /**
-   * 
+   *
    */
   public AtlantisSpecificStuff() {
     rules = new RulesReader().readRules(getName());
@@ -106,7 +107,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
 
   /**
    * This is a callback interface to let the GameSpecificStuff create the GameData object.
-   * 
+   *
    * @param gameName The game name (like "Eressea", "E3", ...)
    */
   public GameData createGameData(String gameName) {
@@ -222,7 +223,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
   public OrderChanger getOrderChanger() {
-    return new AtlantisOrderChanger(getRules());
+    return new AtlantisOrderChanger(getRules(), new SimpleOrderFactory());
   }
 
   /**
@@ -260,7 +261,7 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
 
   /**
    * Delivers the Eressea specific Message Renderer (as of CR VERSION 41)
-   * 
+   *
    * @param data - A GameData object to enrich the messages with names of units, regions ,...
    * @return the new EresseaMessageRenderer for rendering ONE message
    * @see magellan.library.gamebinding.GameSpecificStuff#getMessageRenderer(magellan.library.GameData)

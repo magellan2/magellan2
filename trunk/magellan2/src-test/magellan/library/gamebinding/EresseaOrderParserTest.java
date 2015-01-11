@@ -206,11 +206,11 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   @Test
   public void testBefoerderungReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_PROMOTION));
-    checkOrder("BEFÖRDERUNG");
+    checkOrder("BEFÖRDERE");
     checkOrder("BEFÖRDER");
-    checkOrder("BEFÖRDERUNG ;");
-    checkOrder("BEFÖRDERE", false);
-    checkOrder("BEFÖRDERUNG 1", false);
+    checkOrder("BEFÖRDERE ;");
+    checkOrder("BEFÖRDERUNG");
+    checkOrder("BEFÖRDERE 1", false);
   }
 
   /**

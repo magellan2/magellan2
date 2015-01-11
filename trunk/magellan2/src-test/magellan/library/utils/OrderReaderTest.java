@@ -216,7 +216,7 @@ public class OrderReaderTest extends MagellanTestWithResources {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return data.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId).getText();
+    return data.getGameSpecificStuff().getOrderChanger().getOrderO(getLocale(), orderId).getText();
   }
 
   protected void addEresseaHeader() {

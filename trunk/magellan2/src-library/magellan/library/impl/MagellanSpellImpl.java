@@ -422,7 +422,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   private String getOrderTranslation(StringID orderId) {
     // FIXME use correct unit locale
     return data.getGameSpecificStuff().getOrderChanger()
-        .getOrder(Locales.getOrderLocale(), orderId).getText();
+        .getOrderO(Locales.getOrderLocale(), orderId).getText();
   }
 
   /**

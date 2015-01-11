@@ -3731,7 +3731,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   private String getTranslation(int shore) {
-    return getGameData().getGameSpecificStuff().getOrderChanger().getOrder(
+    return getGameData().getGameSpecificStuff().getOrderChanger().getOrderO(
         Locales.getOrderLocale(), getGameData().getMapMetric().toDirection(shore).getId())
         .getText();
   }
@@ -5872,13 +5872,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                   .getOrderLocale();
 
           if (each)
-            return getGameSpecificStuff().getOrderChanger().getOrder(
+            return getGameSpecificStuff().getOrderChanger().getOrderO(
                 locale,
                 EresseaConstants.OC_RESERVE,
                 new Object[] { EresseaConstants.OC_EACH, amount,
                     reserveRelation.itemType.getOrderName() }).getText();
           else
-            return getGameSpecificStuff().getOrderChanger().getOrder(locale,
+            return getGameSpecificStuff().getOrderChanger().getOrderO(locale,
                 EresseaConstants.OC_RESERVE,
                 new Object[] { amount, reserveRelation.itemType.getOrderName() }).getText();
 
@@ -5961,13 +5961,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                   .getOrderLocale();
 
           if (each)
-            return getGameSpecificStuff().getOrderChanger().getOrder(
+            return getGameSpecificStuff().getOrderChanger().getOrderO(
                 locale,
                 EresseaConstants.OC_GIVE,
                 new Object[] { transferRelation.target.getID(), EresseaConstants.OC_EACH, amount,
                     transferRelation.itemType.getOrderName() }).getText();
           else
-            return getGameSpecificStuff().getOrderChanger().getOrder(
+            return getGameSpecificStuff().getOrderChanger().getOrderO(
                 locale,
                 EresseaConstants.OC_GIVE,
                 new Object[] { transferRelation.target.getID(), amount,

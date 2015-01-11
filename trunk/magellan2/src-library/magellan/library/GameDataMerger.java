@@ -56,7 +56,7 @@ import magellan.library.utils.transformation.ReportTransformer;
 
 /**
  * Utility class to merge two reports.
- * 
+ *
  * @author stm
  */
 public class GameDataMerger {
@@ -65,7 +65,7 @@ public class GameDataMerger {
 
   /**
    * Merges the specified dataset with this dataset.
-   * 
+   *
    * @param gd1 the first game data object for merging
    * @param gd2 the second game data object for merging
    * @return the new merged game data object
@@ -111,7 +111,7 @@ public class GameDataMerger {
    * Merges the two game data containers yielding a third one. By convention, olderGD must not be
    * newer than newerGD. The resulting game data container inherits the rules and name from
    * <b>newerGD</b>.
-   * 
+   *
    * @param olderGD A GameData object, must be the older one of the two
    * @param newerGD The newer GameData object.
    * @return the merged GameData
@@ -190,6 +190,20 @@ public class GameDataMerger {
       resultGD.base = newerGD.base;
     } else {
       resultGD.base = olderGD.base;
+    }
+
+    /**************************** SERVER BUILD ***************************/
+    if (newerGD.build != null) {
+      resultGD.build = newerGD.build;
+    } else {
+      resultGD.build = olderGD.build;
+    }
+
+    /**************************** UNIT LIMIT ***************************/
+    if (newerGD.maxUnits >= 0) {
+      resultGD.maxUnits = newerGD.maxUnits;
+    } else {
+      resultGD.maxUnits = olderGD.maxUnits;
     }
 
     /**
@@ -996,7 +1010,7 @@ public class GameDataMerger {
 
   /**
    * Transfers all available information from the current group to the new one.
-   * 
+   *
    * @param curGD fully loaded game data
    * @param curGroup a fully initialized and valid group
    * @param newGD the game data to be updated
@@ -1042,7 +1056,7 @@ public class GameDataMerger {
 
   /**
    * Copies the values of curFaction to newFaction.
-   * 
+   *
    * @param adjustTrustLevels Only if this is <code>true</code> will the trust levels of newFaction
    *          be copied.
    * @param transformer
@@ -1315,7 +1329,7 @@ public class GameDataMerger {
    * use it => otherwise take wrong locale msg, to have at least a half localized msg if the msgtype
    * is available in locale => you can notice this half localized msg because msg.locale=gm.locale,
    * also msg.rerender=true
-   * 
+   *
    * @param curGD fully loaded game data
    * @param curMsg a fully initialized and valid message
    * @param newGD the game data to be updated
@@ -1426,7 +1440,7 @@ public class GameDataMerger {
    * special sub to translate coords in ";regions" tags of messages expecting this form
    * <code>"x1 y1 z1, x2 y2 z2";regions</code>.<br />
    * There is also an older variant: <code>"der Sumpf von Rudros (-7,23)";regions</code>
-   * 
+   *
    * @param value
    * @return
    */
@@ -1457,7 +1471,7 @@ public class GameDataMerger {
    * Tries to replace coordinates in string by the translated version. The string is searched for
    * occurrences of the form "(123,123)" or "(123,123,123)" or "(123,123,Astralraum)", transforms
    * them and replaces them. This is not completely fool-proof!
-   * 
+   *
    * @param value Usually a message text which might contain coordinates
    * @see magellan.library.utils.transformation.ReportTransformer#transform(java.lang.String)
    */
@@ -1512,7 +1526,7 @@ public class GameDataMerger {
   /**
    * Merges buildings. The new one get the name, comments etc. from the current one, effects etc.
    * are added, not written over.
-   * 
+   *
    * @param curGD current GameData
    * @param curBuilding the current Building
    * @param newGD new GameData
@@ -1556,7 +1570,7 @@ public class GameDataMerger {
 
   /**
    * Merges two combat spells.
-   * 
+   *
    * @param curGD the current GameData.
    * @param curCS the current CombatSpell.
    * @param newGD the new GameData.
@@ -1602,7 +1616,7 @@ public class GameDataMerger {
    * the <code>firstPass</code> parameter. Merging is usually done in two passes. In the first pass,
    * the old info is copied into an intermediate object. In the second pass, the new object is
    * merged into this intermediate object.
-   * 
+   *
    * @param curGD The GameData of curUnit
    * @param curRegion The region where the info is taken from
    * @param resultGD The GameData of resultRegion
@@ -2244,7 +2258,7 @@ public class GameDataMerger {
 
   /**
    * Merges ships.
-   * 
+   *
    * @param transformer
    */
   public static void mergeShip(GameData curGD, Ship curShip, GameData newGD, Ship newShip,
@@ -2347,7 +2361,7 @@ public class GameDataMerger {
 
   /**
    * Merges two temp units.
-   * 
+   *
    * @param sameRound notifies if both game data objects have been from the same round
    * @param transformer
    */
@@ -2363,7 +2377,7 @@ public class GameDataMerger {
   /**
    * Merges only the comments of <code>curShip</code> to <code>newShip</code>. Use if you don't want
    * to do a full merge.
-   * 
+   *
    * @param curShip
    * @param newShip
    */
@@ -2384,7 +2398,7 @@ public class GameDataMerger {
    * <code>firstPass</code> parameter. Merging is usually done in two passes. In the first pass, the
    * old info is copied into an intermediate object. In the second pass, the new object is merged
    * into this intermediate object.
-   * 
+   *
    * @param curGD The GameData of curUnit
    * @param curUnit The unit where the info is taken from
    * @param resultGD The GameData of newUnit

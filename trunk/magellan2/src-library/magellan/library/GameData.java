@@ -181,6 +181,9 @@ public abstract class GameData implements Cloneable, Addeable {
   /** The "Build" attribute */
   public String build;
 
+  /** The "max_units" attribute */
+  public int maxUnits = -1;
+
   private Region activeRegion;
 
   private Faction nullFaction;
@@ -2016,5 +2019,12 @@ public abstract class GameData implements Cloneable, Addeable {
   public abstract Collection<Bookmark> getBookmarks();
 
   public abstract void removeBookmark(Selectable selection);
+
+  /**
+   * Returns the maximum number of units per faction or -1 if this is unknown
+   */
+  public int getMaxUnits() {
+    return maxUnits;
+  }
 
 }

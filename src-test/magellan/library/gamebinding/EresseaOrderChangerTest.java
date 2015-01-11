@@ -235,6 +235,18 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    * @throws Exception
    */
   @Test
+  public void testExtractTempOrders2() throws Exception {
+    unit.clearOrders();
+    unit.addOrder("MACHE TEMP 1");
+
+    int ret = changer.extractTempUnits(data, 0, getLocale(), unit);
+
+  }
+
+  /**
+   * Test syntax with deprecated MACHEN instead of MACHE
+   */
+  @Test
   public void testDeprecatedExtractTempOrders() throws Exception {
     unit.clearOrders();
     unit.addOrder("LERNE Unterhaltung");
@@ -518,7 +530,8 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetTemp() throws Exception {
-    assertEquals("TEMP", changer.getTemp(DE_LOCALE));
+    assertEquals("TEMP 1", changer.getTokenLocalized(DE_LOCALE, UnitID.createTempID(data, null,
+        null)));
   }
 
   /**
@@ -554,7 +567,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetOrderLocaleStringID() throws Exception {
-    assertEquals("BEWACHE", changer.getOrder(DE_LOCALE, EresseaConstants.OC_GUARD).getText());
+    assertEquals("BEWACHE", changer.getOrderO(DE_LOCALE, EresseaConstants.OC_GUARD).getText());
   }
 
   /**
@@ -562,12 +575,12 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetOrderLocaleStringIDObjects() throws Exception {
-    assertEquals("GIB 0 ALLES", changer.getOrder(DE_LOCALE, EresseaConstants.OC_GIVE,
+    assertEquals("GIB 0 ALLES", changer.getOrderO(DE_LOCALE, EresseaConstants.OC_GIVE,
         new Object[] { 0, EresseaConstants.OC_ALL }).getText());
 
     try {
       Order order =
-          changer.getOrder(DE_LOCALE, StringID.create("BOGUSCOMMAND"), new Object[] { 2 });
+          changer.getOrderO(DE_LOCALE, StringID.create("BOGUSCOMMAND"), new Object[] { 2 });
       assertEquals("BOGUSCOMMAND 2", order.getText());
     } catch (Exception e) {
       fail("unexpected exception " + e);
@@ -580,7 +593,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetOrderStringIDLocale() throws Exception {
-    assertEquals("MACHE", changer.getOrder(EresseaConstants.OC_MAKE, DE_LOCALE).getText());
+    assertEquals("MACHE", changer.getOrderO(EresseaConstants.OC_MAKE, DE_LOCALE).getText());
   }
 
   /**
@@ -588,10 +601,10 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
    */
   @Test
   public void testGetOrderStringIDLocaleObjects() throws Exception {
-    assertEquals("GIB 0 ALLES", changer.getOrder(EresseaConstants.OC_GIVE, DE_LOCALE,
+    assertEquals("GIB 0 ALLES", changer.getOrderO(EresseaConstants.OC_GIVE, DE_LOCALE,
         new Object[] { 0, EresseaConstants.OC_ALL }).getText());
     try {
-      changer.getOrder(StringID.create("BOGUSCOMMAND"), DE_LOCALE, new Object[] {});
+      changer.getOrderO(StringID.create("BOGUSCOMMAND"), DE_LOCALE, new Object[] {});
       fail();
     } catch (RulesException e) {
       // ok

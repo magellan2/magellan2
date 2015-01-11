@@ -2567,7 +2567,7 @@ public class E3CommandParser {
 
   protected String getLocalizedOrder(StringID orderKey, String fallback) {
     try {
-      return world.getGameSpecificStuff().getOrderChanger().getOrder(orderKey,
+      return world.getGameSpecificStuff().getOrderChanger().getOrderO(orderKey,
           currentUnit.getLocale()).getText();
     } catch (RulesException e) {
       return fallback;
@@ -2578,7 +2578,7 @@ public class E3CommandParser {
    * Tries to translate the given order to the current locale.
    */
   protected String getLocalizedOrder(StringID orderKey, Object[] args) {
-    return world.getGameSpecificStuff().getOrderChanger().getOrder(currentUnit.getLocale(),
+    return world.getGameSpecificStuff().getOrderChanger().getOrderO(currentUnit.getLocale(),
         orderKey, args).getText();
   }
 

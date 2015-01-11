@@ -985,7 +985,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   }
 
   protected String getOrderTranslation(StringID orderKey) {
-    return getData().getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderKey)
+    return getData().getGameSpecificStuff().getOrderChanger().getOrderO(getLocale(), orderKey)
         .getText();
   }
 

@@ -65,7 +65,7 @@ public class OrderToken {
   /**
    * Creates a new <tt>OrderToken</tt> object representing the specified string, but with invalid
    * start and end positions and undefined type.
-   * 
+   *
    * @param text the text this order token represents.
    */
   public OrderToken(String text) {
@@ -75,7 +75,7 @@ public class OrderToken {
   /**
    * Creates a new <tt>OrderToken</tt> object representing the specified string and the specified
    * start and end positions.
-   * 
+   *
    * @param text the text this order token represents.
    * @param start the start position of the token in the underlying stream.
    * @param end the end position of the token in the underlying stream.
@@ -94,7 +94,7 @@ public class OrderToken {
   /**
    * Creates a new <tt>OrderToken</tt> object representing the specified string with specific start
    * and end positions and type.
-   * 
+   *
    * @param text the text this order token represents.
    * @param start the start position of the token in the underlying stream.
    * @param end the end position of the token in the underlying stream.
@@ -116,16 +116,6 @@ public class OrderToken {
    */
   public boolean followedBySpace() {
     return followedBySpace;
-  }
-
-  /**
-   * Sets the followedBySpace() value.
-   * 
-   * @deprecated better make this immutable...
-   */
-  @Deprecated
-  public void setFollowedBySpace(boolean b) {
-    followedBySpace = b;
   }
 
   /**
@@ -159,18 +149,6 @@ public class OrderToken {
   }
 
   /**
-   * Sets the token text.
-   * 
-   * @deprecated better make this immutable...
-   */
-  @Deprecated
-  public void setText(String text) {
-    if (text.length() > 0 && Character.isSpace(text.charAt(0)))
-      throw new IllegalArgumentException("Order text starts with space");
-    this.text = text;
-  }
-
-  /**
    * Returns the position of the first character of the token text in the order.
    */
   public int getStart() {
@@ -179,7 +157,7 @@ public class OrderToken {
 
   /**
    * Sets the position of the start of the token text in the order.
-   * 
+   *
    * @deprecated better make this immutable...
    */
   @Deprecated
@@ -193,16 +171,6 @@ public class OrderToken {
    */
   public int getEnd() {
     return end;
-  }
-
-  /**
-   * Sets the position of the end of the token text in the order.
-   * 
-   * @deprecated better make this immutable...
-   */
-  @Deprecated
-  public void setEnd(int end) {
-    this.end = end;
   }
 
   /**
@@ -279,7 +247,7 @@ public class OrderToken {
   /**
    * Compares the token and the translation of the specified keyword with respect to abbreviations
    * as used by the eressea game server.
-   * 
+   *
    * @deprecated use proper unit locale
    * @see Rules#getOrder(String), {@link OrderType#getName()}
    */
@@ -293,7 +261,7 @@ public class OrderToken {
   /**
    * As {@link #equalsToken(String)}, but also accepts prefixes if {@link #followedBySpace} is
    * <code>false</code>.
-   * 
+   *
    * @return true if strKeyword is equal (disregarding case and umlauts) to this token
    */
   public boolean equalsCompletedToken(String strKeyword) {
@@ -310,7 +278,7 @@ public class OrderToken {
    * Compares the token and the specified keyword with respect to abbreviations as used by the
    * eressea game server. Prefixes are accepted <strong>if {@link #followedBySpace()} is
    * <code>true</code></strong>.
-   * 
+   *
    * @return true if strKeyword is equal (disregarding case and umlauts) to this token or <strong>if
    *         {@link #followedBySpace} is <code>true</code></strong> and <code>strKeyWord</code>
    *         starts with this token.
@@ -332,7 +300,7 @@ public class OrderToken {
   /**
    * Returns <code>true</code> if this is a prefix of token or vice versa. <b>Attention</b> This
    * method does not override {@link Object#equals(Object)}!
-   * 
+   *
    * @deprecated Use {@link #equivalentText(OrderToken)}
    */
   @Deprecated
@@ -350,12 +318,17 @@ public class OrderToken {
 
   /**
    * Deep equals.
-   * 
+   *
    * @return <code>true</code> if the token has identical text, start, end, type and
    *         followedBySpace.
    */
   public boolean equalsAll(OrderToken token) {
     return token != null && text.equals(token.text) && start == token.start && end == token.end
         && ttype == token.ttype && followedBySpace == token.followedBySpace;
+  }
+
+  @Override
+  public int hashCode() {
+    return getText().hashCode() + (followedBySpace ? 1 : 0) + 2 * start + 7 * end + 19 * ttype;
   }
 }

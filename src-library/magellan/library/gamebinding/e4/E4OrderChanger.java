@@ -8,6 +8,7 @@
 package magellan.library.gamebinding.e4;
 
 import magellan.library.Rules;
+import magellan.library.gamebinding.SimpleOrderFactory;
 import magellan.library.gamebinding.e3a.E3AOrderChanger;
 
 /**
@@ -15,8 +16,8 @@ import magellan.library.gamebinding.e3a.E3AOrderChanger;
  */
 public class E4OrderChanger extends E3AOrderChanger {
 
-  protected E4OrderChanger(Rules rules) {
-    super(rules);
+  protected E4OrderChanger(Rules rules, SimpleOrderFactory factory) {
+    super(rules, factory);
   }
 
 }

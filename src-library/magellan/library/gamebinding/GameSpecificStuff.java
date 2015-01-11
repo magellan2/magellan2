@@ -34,7 +34,7 @@ public interface GameSpecificStuff {
 
   /**
    * Return a GameData object for the specified game
-   * 
+   *
    * @param name The game name (like "Eressea", "E3", ...)
    * @return A new, empty GameData object
    */
@@ -42,7 +42,7 @@ public interface GameSpecificStuff {
 
   /**
    * DOCUMENT-ME Warning: Not implemented
-   * 
+   *
    * @return A game data reader for this game
    * @deprecated this somehow never got used (or implemented)
    */
@@ -54,14 +54,14 @@ public interface GameSpecificStuff {
    * simplifying the GameData structure, creating temp units as distinct objects etc. Note that this
    * method requires the classes Locales and Translations to be set up properly so the order
    * translations can be found.
-   * 
+   *
    * @param data the GameData object to process.
    */
   public void postProcess(GameData data);
 
   /**
    * For TrustLevels. TODO DOCUMENT ME! Long description.
-   * 
+   *
    * @param data
    */
   public void postProcessAfterTrustlevelChange(GameData data);
@@ -95,7 +95,7 @@ public interface GameSpecificStuff {
 
   /**
    * Delivers a game specific Message Renderer
-   * 
+   *
    * @param data - A GameData object to enrich the messages with names of units, regions ,...
    * @return the MessageRenderer for rendering ONE Message
    */
@@ -125,7 +125,7 @@ public interface GameSpecificStuff {
   /**
    * Returns a pair of transformers that transform coordinates from the global data and the added
    * data to coordinates in the merged report.
-   * 
+   *
    * @param globalData
    * @param addedData
    * @param ui
@@ -140,7 +140,7 @@ public interface GameSpecificStuff {
 
   /**
    * Returns a map of possible combat states.
-   * 
+   *
    * @return A map whose keys are internal values used in {@link Unit#getCombatStatus()} and values
    *         are resource keys.
    */
@@ -191,7 +191,7 @@ public interface GameSpecificStuff {
 
   /**
    * Returns a reader for parsing reports of the given FileType.
-   * 
+   *
    * @return The parser or <code>null</code> if no parser applies to the file type
    * @throws IOException if an I/O exception occurs
    */
@@ -199,7 +199,7 @@ public interface GameSpecificStuff {
 
   /**
    * Returns a reader for parsing order files
-   * 
+   *
    * @return The parser or <code>null</code> if order reading is not supported.
    */
   public GameSpecificOrderReader getOrderReader(GameData data);

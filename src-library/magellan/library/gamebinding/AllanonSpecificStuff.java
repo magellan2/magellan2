@@ -20,7 +20,7 @@ import magellan.library.completion.OrderParser;
 
 /**
  * All the stuff needed for Allanon.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 242 $
  */
@@ -56,12 +56,13 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   }
 
   /**
+   * @param factory
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
   @Override
   public OrderChanger getOrderChanger() {
     if (orderChanger == null) {
-      orderChanger = new AllanonOrderChanger(getRules());
+      orderChanger = new AllanonOrderChanger(getRules(), new SimpleOrderFactory());
     }
     return orderChanger;
   }
@@ -109,7 +110,7 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
 
   /**
    * Delivers the Allanon specific Message Renderer (as of CR VERSION 41)
-   * 
+   *
    * @param data - A GameData object to enrich the messages with names of units, regions ,...
    * @return the new AllanonMessageRenderer for rendering ONE message
    * @see magellan.library.gamebinding.GameSpecificStuff#getMessageRenderer(magellan.library.GameData)

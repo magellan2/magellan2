@@ -259,7 +259,7 @@ class AllianceState {
     StringBuffer buffer = new StringBuffer();
     for (AllianceCategory category : categories) {
       buffer.append(
-          world.getGameSpecificStuff().getOrderChanger().getOrder(Locales.getGUILocale(),
+          world.getGameSpecificStuff().getOrderChanger().getOrderO(Locales.getGUILocale(),
               GameConstants.getAllianceKey(category.getName()))).append(" ");
     }
     return buffer.toString();

@@ -36,6 +36,7 @@ import magellan.library.gamebinding.MessageRenderer;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.gamebinding.OrderChanger;
 import magellan.library.gamebinding.RelationFactory;
+import magellan.library.gamebinding.SimpleOrderFactory;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.ReportParser;
 import magellan.library.io.RulesReader;
@@ -52,7 +53,7 @@ import magellan.library.utils.transformation.TransformerFinder;
 
 /**
  * All the stuff needed for E2K9.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 242 $
  */
@@ -83,7 +84,7 @@ public class E4SpecificStuff implements GameSpecificStuff {
 
   /**
    * Returns the value of rules.
-   * 
+   *
    * @return Returns rules.
    */
   public Rules getRules() {
@@ -91,7 +92,7 @@ public class E4SpecificStuff implements GameSpecificStuff {
   }
 
   /**
-   * 
+   *
    */
   public E4SpecificStuff() {
     rules = new RulesReader().readRules(getName());
@@ -100,7 +101,7 @@ public class E4SpecificStuff implements GameSpecificStuff {
 
   /**
    * This is a callback interface to let the GameSpecificStuff create the GameData object.
-   * 
+   *
    * @param iname The game name (like "Eressea", "E3", ...)
    */
   public GameData createGameData(String iname) {
@@ -133,7 +134,7 @@ public class E4SpecificStuff implements GameSpecificStuff {
    */
   public OrderChanger getOrderChanger() {
     if (orderChanger == null) {
-      orderChanger = new E4OrderChanger(getRules());
+      orderChanger = new E4OrderChanger(getRules(), new SimpleOrderFactory());
     }
     return orderChanger;
   }
@@ -176,7 +177,7 @@ public class E4SpecificStuff implements GameSpecificStuff {
 
   /**
    * Delivers the Eressea specific Message Renderer (as of CR VERSION 41)
-   * 
+   *
    * @param data - A GameData object to enrich the messages with names of units, regions ,...
    * @return the new EresseaMessageRenderer for rendering ONE message
    * @see magellan.library.gamebinding.GameSpecificStuff#getMessageRenderer(magellan.library.GameData)

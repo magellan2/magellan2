@@ -23,30 +23,17 @@
 //
 package magellan.library.gamebinding;
 
-import java.util.Collections;
-
 import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Unit;
-import magellan.library.utils.OrderToken;
 
 /**
  * Virtual order for handling reserve orders
  *
  * @author stm
  */
-public class ReserveOwnOrder extends SimpleOrder {
-
-  protected Region region;
-
-  /**
-   * @param r
-   */
-  public ReserveOwnOrder(Region r) {
-    super(Collections.singletonList(new OrderToken(OrderToken.TT_EOC)), "");
-    region = r;
-  }
+public class ReserveOwnOrder {
 
   /**
    * Every unit with reserve orders reserves its own items.
@@ -54,15 +41,12 @@ public class ReserveOwnOrder extends SimpleOrder {
    * @see magellan.library.gamebinding.SimpleOrder#execute(magellan.library.gamebinding.ExecutionState,
    *      magellan.library.GameData, magellan.library.Unit, int)
    */
-  @Override
-  public void execute(ExecutionState state, GameData data, Unit unit, int line) {
-    if (unit != null)
-      throw new RuntimeException("meta order should not be called with unit");
+  public static void execute(Region region, ExecutionState state, GameData data) {
     for (Unit u : region.units()) {
       for (Order order : u.getOrders2()) {
         if (order instanceof ReserveOrder) {
           ((ReserveOrder) order).setOwn(true);
-          order.execute(state, data, u, line);
+          order.execute(state, data, u, -1);
           ((ReserveOrder) order).setOwn(false);
         }
       }

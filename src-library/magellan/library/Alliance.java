@@ -146,7 +146,7 @@ public class Alliance {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return getFaction().getData().getGameSpecificStuff().getOrderChanger().getOrder(
+    return getFaction().getData().getGameSpecificStuff().getOrderChanger().getOrderO(
         getFaction().getLocale() == null ? Locales.getOrderLocale() : getFaction().getLocale(),
             orderId).getText();
   }

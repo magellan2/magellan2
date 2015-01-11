@@ -295,7 +295,7 @@ public class EresseaRelationFactory implements RelationFactory {
     affected.add(r);
 
     // count orders
-    int count = 3; // two for maintenance orders
+    int count = 0; // two for maintenance orders
     for (Unit u : r.units()) {
       count += u.getOrders2().size();
       if (u.getNewRegion() != null) {
@@ -330,10 +330,6 @@ public class EresseaRelationFactory implements RelationFactory {
         u.getFaction().clearRelations();
       }
     }
-    orders[count++] = new OrderInfo(new ReserveOwnOrder(r), P_RESERVIERE - 1, null, -1);
-    orders[count++] = new OrderInfo(new UnitMaintenanceOrder(r), P_UNIT_MAINTENANCE, null, -1);
-    orders[count++] =
-        new OrderInfo(new BuildingMaintenanceOrder(r), P_BUILDING_MAINTENANCE, null, -1);
 
     r.getZeroUnit().clearRelations();
     for (UnitContainer uc : r.buildings()) {
@@ -344,13 +340,36 @@ public class EresseaRelationFactory implements RelationFactory {
     }
     r.clearRelations();
 
-    // Arrays.sort(orders, getOrderComparator());
     Arrays.sort(orders);
     EresseaExecutionState state = new EresseaExecutionState(r.getData());
+    boolean bmExecuted = false, umExecuted = false, resExecuted = false;
     for (OrderInfo o : orders) {
+      if (!bmExecuted && o.priority > P_BUILDING_MAINTENANCE) {
+        BuildingMaintenanceOrder.execute(r, state, r.getData());
+        bmExecuted = true;
+      }
+      if (!umExecuted && o.priority > P_UNIT_MAINTENANCE) {
+        UnitMaintenanceOrder.execute(r, state, r.getData());
+        umExecuted = true;
+      }
+      if (o.priority == P_RESERVIERE && !resExecuted) {
+        ReserveOwnOrder.execute(r, state, r.getData());
+        resExecuted = true;
+      }
       o.order.execute(state, data, o.unit, o.line);
     }
-    // log.finest("pp" + (System.currentTimeMillis() - time));
+    if (!bmExecuted) {
+      BuildingMaintenanceOrder.execute(r, state, r.getData());
+      bmExecuted = true;
+    }
+    if (!umExecuted) {
+      UnitMaintenanceOrder.execute(r, state, r.getData());
+      umExecuted = true;
+    }
+    if (!resExecuted) {
+      ReserveOwnOrder.execute(r, state, r.getData());
+      resExecuted = true;
+    }
 
     postProcess(r);
   }

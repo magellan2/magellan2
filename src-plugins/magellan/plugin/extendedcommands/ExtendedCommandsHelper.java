@@ -515,7 +515,7 @@ public class ExtendedCommandsHelper {
    *         returned.
    */
   public String getOrderTranslation(Unit unit, StringID orderConstant, Object... args) {
-    return unit.getData().getGameSpecificStuff().getOrderChanger().getOrder(unit.getLocale(),
+    return unit.getData().getGameSpecificStuff().getOrderChanger().getOrderO(unit.getLocale(),
         orderConstant, args).getText();
   }
 

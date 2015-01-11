@@ -208,7 +208,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   }
 
   protected String getOrderTranslation(StringID orderId) {
-    return world.getGameSpecificStuff().getOrderChanger().getOrder(getLocale(), orderId).getText();
+    return world.getGameSpecificStuff().getOrderChanger().getOrderO(getLocale(), orderId).getText();
   }
 
   protected int writeRegions(Collection<? extends Region> writtenRegions, BufferedWriter stream)

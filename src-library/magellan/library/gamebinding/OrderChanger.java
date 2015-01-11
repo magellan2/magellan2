@@ -165,7 +165,7 @@ public interface OrderChanger {
    *
    * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
    */
-  public Order getOrder(Locale orderLocale, StringID orderId);
+  public Order getOrderO(Locale orderLocale, StringID orderId);
 
   /**
    * Returns a localized order for given order id concatenated (separated by spaces) with the
@@ -175,7 +175,7 @@ public interface OrderChanger {
    * @param args Additional arguments
    * @return The order
    */
-  public Order getOrder(Locale orderLocale, StringID orderId, Object[] args);
+  public Order getOrderO(Locale orderLocale, StringID orderId, Object[] args);
 
   /**
    * Returns localized order for given order id
@@ -183,7 +183,7 @@ public interface OrderChanger {
    * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
    * @throws RulesException if argument has no translation
    */
-  public Order getOrder(StringID orderId, Locale orderLocale) throws RulesException;
+  public Order getOrderO(StringID orderId, Locale orderLocale) throws RulesException;
 
   /**
    * Returns a localized order for given order id concatenated (separated by spaces) with the
@@ -194,7 +194,51 @@ public interface OrderChanger {
    * @return The order
    * @throws RulesException if argument has no translation
    */
-  public Order getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException;
+  public Order getOrderO(StringID orderId, Locale orderLocale, Object[] args) throws RulesException;
+
+  /**
+   * Returns localized order for given order id
+   *
+   * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
+   * @deprecated
+   */
+  @Deprecated
+  public String getOrder(Locale orderLocale, StringID orderId);
+
+  /**
+   * Returns a localized order for given order id concatenated (separated by spaces) with the
+   * argument translations.
+   *
+   * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
+   * @param args Additional arguments
+   * @return The order
+   * @deprecated
+   */
+  @Deprecated
+  public String getOrder(Locale orderLocale, StringID orderId, Object[] args);
+
+  /**
+   * Returns localized order for given order id
+   *
+   * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
+   * @throws RulesException if argument has no translation
+   * @deprecated
+   */
+  @Deprecated
+  public String getOrder(StringID orderId, Locale orderLocale) throws RulesException;
+
+  /**
+   * Returns a localized order for given order id concatenated (separated by spaces) with the
+   * argument translations.
+   *
+   * @param orderId an order ID, usually one of the EresseaConstants.OC_... constants.
+   * @param args Additional arguments
+   * @return The order
+   * @throws RulesException if argument has no translation
+   * @deprecated
+   */
+  @Deprecated
+  public String getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException;
 
   /**
    * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects and
@@ -212,6 +256,6 @@ public interface OrderChanger {
    * Returns the orders necessary to issue the creation of all the child temp units of this unit.
    */
   public Collection<? extends Order>
-      getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit);
+  getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit);
 
 }

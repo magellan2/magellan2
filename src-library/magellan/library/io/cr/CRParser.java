@@ -875,6 +875,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Build")) {
         world.build = sc.argv[0];
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("max_units")) {
+        world.maxUnits = Integer.parseInt(sc.argv[0]);
+        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("reportowner")) {
         if (world.getOwnerFaction() == null && !configuration.equals("Standard")) {
           world.setOwnerFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
@@ -1920,7 +1923,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         }
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("joined")) {
-        CRParser.log.fine("ignoring joined tag" + sc.argv[0]);
+        CRParser.log.fine("ignoring joined tag " + sc.argv[0]);
+        sc.getNextToken();
       } else if (sc.isBlock && sc.argv[0].equals("ADRESSEN")) {
         parseAdressen();
       } else if (sc.isBlock && sc.argv[0].equals("GEGENSTAENDE")) {

@@ -1,3 +1,8 @@
+2015-01-11 / Build 599 - stm (stm_@users.sourceforge.net)
+    * (fixed) support for CR tags "Build", max_units, and "joined"
+    * fixed issue with TEMP units
+    * simplified code for EresseaRelationFactory and SimpleOrder
+
 2015-01-08 / Build 596 - stm (stm_@users.sourceforge.net)
     * FOLLOW SHIP is short(ish) order now
     * implemented new RESEREVE semantics (Version 3.0, 20.07.2014): 

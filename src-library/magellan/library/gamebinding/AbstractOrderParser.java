@@ -437,15 +437,15 @@ public abstract class AbstractOrderParser implements OrderParser {
         if (names != null) {
           loNames = new ArrayList<String>(names.size());
           for (String name : names) {
-            loNames.add(name.toLowerCase());
+            loNames.add(normalize(name));
           }
         }
       } else {
-        loNames = Collections.singletonList(prefix.toString().toLowerCase());
+        loNames = Collections.singletonList(normalize(prefix.toString()));
       }
 
     } else {
-      loNames = Collections.singletonList(prefix.toString().toLowerCase());
+      loNames = Collections.singletonList(normalize(prefix.toString()));
     }
     return loNames;
   }
@@ -665,7 +665,7 @@ public abstract class AbstractOrderParser implements OrderParser {
       return reader != null ? Collections.singletonList(reader) : Collections
           .<OrderHandler> emptyList();
     } else {
-      handlers = getCommandTrie().searchPrefix(t.getText().toLowerCase(), Integer.MAX_VALUE);
+      handlers = getCommandTrie().searchPrefix(normalize(t.getText()), Integer.MAX_VALUE);
       // remove duplicates
       Set<OrderHandler> handlerSet = new HashSet<OrderHandler>(handlers);
       return new ArrayList<OrderHandler>(handlerSet);
@@ -1305,6 +1305,10 @@ public abstract class AbstractOrderParser implements OrderParser {
     return Umlaut.convertUmlauts(name.replace('~', ' '));
   }
 
+  protected String normalize(String token) {
+    return Umlaut.normalize(token.trim()).toLowerCase();
+  }
+
   /**
    * Interpret token as direction.
    */
@@ -1315,11 +1319,11 @@ public abstract class AbstractOrderParser implements OrderParser {
       dirTranslations.put(aLocale, directions);
       for (Direction dir : getData().getGameSpecificStuff().getMapMetric().getDirections()) {
         for (String ld : getOrderTranslation(dir)) {
-          directions.insert(Umlaut.normalize(ld.toLowerCase()), dir);
+          directions.insert(normalize(ld.toLowerCase()), dir);
         }
       }
     }
-    ArrayList<Direction> dirs = directions.searchPrefix(Umlaut.normalize(text), 2);
+    ArrayList<Direction> dirs = directions.searchPrefix(normalize(text), 2);
     Set<Direction> dirSet = new HashSet<Direction>(dirs);
     // anomaly: Eressea server accepts "NACH no" although it is a prefix of nordosten and nordwesten
     if (dirSet.size() == 1)
@@ -1327,7 +1331,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     if (dirSet.size() > 0) {
       for (Direction dir : dirSet) {
         for (String ld : getOrderTranslation(dir))
-          if (Umlaut.normalize(ld).equals(Umlaut.normalize(text)))
+          if (normalize(ld).equals(normalize(text)))
             return dir;
       }
     }

@@ -1644,22 +1644,19 @@ public class E3CommandParser {
 
       for (String luxury : goods) {
         int goodAmount = volume;
-        if (goodAmount > getSupply(luxury))
-          if (ALLOrder.equals(tokens[2])) {
-            goodAmount = getSupply(luxury);
-          }
-
+        if (goodAmount > getSupply(luxury)) {
+          goodAmount = getSupply(luxury);
+        }
         skillNeeded += goodAmount;
 
         if (goodAmount > maxAmount - totalVolume) {
           goodAmount = maxAmount - totalVolume;
         }
 
+        addNeed(luxury, currentUnit, ALLOrder.equals(tokens[2]) ? goodAmount : volume, volume,
+            TRADE_PRIORITY, warning);
         if (goodAmount > 0) {
-          addNeed(luxury, currentUnit, goodAmount, goodAmount, TRADE_PRIORITY, warning);
-        }
 
-        if (goodAmount > 0) {
           if (goodAmount == volume) {
             orders.add(SELLOrder + " " + ALLOrder + " " + luxury);
           } else {

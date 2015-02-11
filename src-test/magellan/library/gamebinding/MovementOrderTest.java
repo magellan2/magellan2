@@ -40,6 +40,7 @@ import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.relation.MovementRelation;
 import magellan.library.relation.UnitRelation;
+import magellan.library.tasks.Problem;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -428,6 +429,47 @@ public class MovementOrderTest extends MagellanTestWithResources {
     testExecuteShipPassengerAndTransported(ship, unit2, unit3, unit);
     testExecuteShipPassengerAndTransported(ship, unit3, unit, unit2);
     testExecuteShipPassengerAndTransported(ship, unit3, unit2, unit);
+  }
+
+  /**
+   *
+   */
+  @Test
+  public final void testFollowAndMove() {
+    builder.addUnit(data, "u2", "U2", unit.getFaction(), region0);
+
+    unit.clearOrders();
+    unit.addOrder("NACH o");
+    unit.addOrder("FOLGE EINHEIT u2");
+
+    relationFactory.processOrders(region0);
+    Order order = unit.getOrders2().get(0);
+    Problem warning = order.getProblem();
+
+    assertEquals("FOLGE- und NACH-Befehle", warning.getMessage());
+  }
+
+  /**
+   *
+   */
+  @Test
+  public final void testFollowCycle() {
+    Unit unit2 = builder.addUnit(data, "u2", "U2", unit.getFaction(), region0);
+    Unit unit3 = builder.addUnit(data, "u3", "Unit 3", unit.getFaction(), region0);
+
+    unit.clearOrders();
+    unit.addOrder("NACH o");
+
+    unit2.clearOrders();
+    unit2.addOrder("FOLGE EINHEIT 1");
+    unit2.addOrder("FOLGE EINHEIT u3");
+    unit3.addOrder("FOLGE EINHEIT u2");
+
+    relationFactory.processOrders(region0);
+    Problem warning = unit.getOrders2().get(0).getProblem();
+    assertEquals("Einheit folgt sich selbst", warning.getMessage());
+    warning = unit2.getOrders2().get(1).getProblem();
+    assertEquals("Mehr als ein FOLGE-Befehl", warning.getMessage());
   }
 
   private void

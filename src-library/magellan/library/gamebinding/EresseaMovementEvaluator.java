@@ -85,7 +85,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    * persons are taken into account for this calculation. If the unit has a sufficient skill in
    * horse riding but there are too many carts for the horses, the weight of the additional carts
    * are also already considered.
-   * 
+   *
    * @return the payload in GE 100, CAP_NO_HORSES if the unit does not possess horses or
    *         CAP_UNSKILLED if the unit is not sufficiently skilled in horse riding to travel on
    *         horseback.
@@ -150,7 +150,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    * persons are taken into account for this calculation. If the unit has a sufficient skill in
    * horse riding but there are too many carts for the horses, the weight of the additional carts
    * are also already considered. The calculation also takes into account that trolls can tow carts.
-   * 
+   *
    * @return the payload in GE 100, CAP_UNSKILLED if the unit is not sufficiently skilled in horse
    *         riding to travel on horseback.
    */
@@ -253,7 +253,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   /**
    * Returns the number of regions this unit is able to travel within one turn based on the riding
    * skill, horses, carts and load of this unit.
-   * 
+   *
    * @deprecated Use {@link #getModifiedRadius(Unit, boolean)}.
    */
   @Deprecated
@@ -284,7 +284,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
   /**
    * Returns the weight of all items of this unit that are not horses or carts in silver
-   * 
+   *
    * @see magellan.library.gamebinding.MovementEvaluator#getLoad(magellan.library.Unit)
    */
   public int getLoad(Unit unit) {
@@ -294,7 +294,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   /**
    * Returns the weight of all items of this unit that are not horses or carts in silver based on
    * the modified items plus all passengers modified weight.
-   * 
+   *
    * @see magellan.library.gamebinding.MovementEvaluator#getModifiedLoad(magellan.library.Unit)
    */
   public int getModifiedLoad(Unit unit) {
@@ -340,7 +340,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    * Returns the load in GE 100 of the bag of negative weight (bonw). This might be 0 if nothing can
    * be stored in the bag up to 200 per bag. Items are only considered to be stored in the bonw if
    * this is set in the rules. ItemType returns this in method isStoreableInBonw()
-   * 
+   *
    * @return the load of the bonw in GE 100.
    */
   private int getBonwLoad(Unit unit, Collection<Item> items, Item i_bonw) {
@@ -367,7 +367,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   /**
    * The initial weight of the unit as it appear in the report. This is the eressea version used to
    * calculate the weight if the information is not available in the report.
-   * 
+   *
    * @return the weight of the unit in silver (GE 100).
    */
   public int getWeight(Unit unit) {
@@ -380,7 +380,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   /**
    * The modified weight is calculated from the modified number of persons and the modified items.
    * Due to some eressea dependencies this is done in this class.
-   * 
+   *
    * @return the modified weight of the unit in silver (GE 100).
    */
   public int getModifiedWeight(Unit unit) {
@@ -470,7 +470,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
   /**
    * Returns <code>true</code> if the unit's past movement was passive (transported, shipped...)
-   * 
+   *
    * @param u
    * @return <code>true</code> if there is evidence that the unit's past movement was passive
    *         (transported, shipped...)
@@ -673,7 +673,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
   }
 
-  public MovementRelation getMovement(Unit unit, List<Direction> directions) {
+  public MovementRelation getMovement(Unit unit, List<Direction> directions, int maxLength) {
     GameData data = unit.getData();
     List<CoordinateID> initialMovement = new ArrayList<CoordinateID>(2);
     List<CoordinateID> futureMovement = new ArrayList<CoordinateID>(2);
@@ -718,7 +718,8 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
           nextRegion = unit.getRegion().getData().getRegion(nextCoord);
         }
 
-        if (!metric.update(currentCoord, currentRegion, nextCoord, nextRegion)) {
+        if (!metric.update(currentCoord, currentRegion, nextCoord, nextRegion)
+            || initialMovement.size() + 1 > maxLength) {
           if (invalidRegion == null && stopped < 2) { // two PAUSES -> end of route -> do not warn
             invalidRegion = nextRegion;
           }
@@ -754,7 +755,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   }
 
   public int getModifiedRadius(Unit unit, List<Region> path) {
-    MovementRelation mRel = getMovement(unit, pathToDirections(path));
+    MovementRelation mRel = getMovement(unit, pathToDirections(path), Integer.MAX_VALUE);
     return mRel.getInitialMovement().size() - 1;
   }
 
@@ -777,7 +778,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   }
 
   public CoordinateID getDestination(Unit unit, List<CoordinateID> path) {
-    MovementRelation mRel = getMovement(unit, pathToDirections(path));
+    MovementRelation mRel = getMovement(unit, pathToDirections(path), Integer.MAX_VALUE);
     return mRel.getDestination();
   }
 
@@ -786,7 +787,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    *      java.util.List)
    */
   public int getDistance(Unit unit, List<Region> path) {
-    MovementRelation mRel = getMovement(unit, pathToDirections(path));
+    MovementRelation mRel = getMovement(unit, pathToDirections(path), Integer.MAX_VALUE);
     return mRel.rounds;
   }
 

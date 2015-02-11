@@ -42,7 +42,7 @@ import org.junit.BeforeClass;
 
 /**
  * A template for magellan test classes that need to load resources.
- * 
+ *
  * @author stm
  * @version 1.0, Nov 16, 2010
  */
@@ -75,7 +75,7 @@ public abstract class MagellanTestWithResources {
   }
 
   /**
-   * 
+   *
    */
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
@@ -84,6 +84,7 @@ public abstract class MagellanTestWithResources {
 
   protected static void initResources() {
     Locales.setOrderLocale(locale);
+    Locales.setGUILocale(locale);
     settings = new Properties(); // Client.loadSettings(PARSER_SETTINGS_DIRECTORY,
     // PARSER_SETTINGS_FILE);
     settings.setProperty("locales.orders", locale.getLanguage());

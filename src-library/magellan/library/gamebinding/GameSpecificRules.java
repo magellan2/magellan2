@@ -10,19 +10,20 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
+import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.Ship;
@@ -35,7 +36,7 @@ import magellan.library.rules.UnitContainerType;
 /**
  * This interface must be implemented to create game specific rule informations like maxWorkers,
  * maxEntertainers and so on.
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 19.04.2009
  */
@@ -100,21 +101,21 @@ public interface GameSpecificRules {
 
   /**
    * Returns the maximum number of horses the unit can handle while walking.
-   * 
+   *
    * @param u
    */
   public int getMaxHorsesWalking(Unit u);
 
   /**
    * Returns the maximum number of horses the unit can handle while riding.
-   * 
+   *
    * @param u
    */
   public int getMaxHorsesRiding(Unit u);
 
   /**
    * Returns true if the specified unit can access the pool for the specified item.
-   * 
+   *
    * @param unit
    * @param typeID May be <code>null</code>. In that case, the status of the general material pool
    *          is returned.
@@ -124,7 +125,7 @@ public interface GameSpecificRules {
 
   /**
    * Returns true if the specified unit can access the pool for the specified item.
-   * 
+   *
    * @param unit
    * @param type May be <code>null</code>. In that case, the status of the general material pool is
    *          returned.
@@ -135,7 +136,7 @@ public interface GameSpecificRules {
   /**
    * Returns the maximum possible number of recruits that the specified unit can recruit in the
    * specified race.
-   * 
+   *
    * @param u
    * @param race
    */
@@ -151,9 +152,11 @@ public interface GameSpecificRules {
    */
   public int getMaxTrade(Region region);
 
-  // /**
-  // * Returns true, if the world wraps around at x- or y-coordinates.
-  // */
-  // public boolean isToroidal();
+  /**
+   * Returns the unit that pays maintenance for a building.
+   *
+   * @return if there is no such building or the owner is not paying
+   */
+  public Unit getMaintainer(Building b);
 
 }

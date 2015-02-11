@@ -403,8 +403,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
         if (spell == null) {
           CRParser.log
-          .warn("CRParser.parseUnitCombatSpells(): a combat spell refers to an unknown spell (line "
-              + sc.lnr + ")");
+              .warn("CRParser.parseUnitCombatSpells(): a combat spell refers to an unknown spell (line "
+                  + sc.lnr + ")");
           spell = MagellanFactory.createSpell(spellID, world);
           spell.setName(sc.argv[0]);
           world.addSpell(spell);
@@ -815,7 +815,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
               && (world.base != 36)) {
             // this should not happen
             CRParser.log
-            .error("BASE ERROR !! read report could have not base36 !! Changed to base36.");
+                .error("BASE ERROR !! read report could have not base36 !! Changed to base36.");
             world.base = 36;
           }
         }
@@ -994,7 +994,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseRaceSkillBonuses(): in line " + sc.lnr
             + ": unable to convert skill bonus " + sc.argv[0]
-                + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
+            + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1015,7 +1015,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseRaceTerrainSkillBonuses(): in line " + sc.lnr
             + ": unable to convert skill bonus " + sc.argv[0]
-                + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
+            + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1301,6 +1301,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("iconname")) {
         bType.setIcon(sc.argv[0]);
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("maintainedbyregionowner")) {
+        bType.setMaintendByRegionOwner(Integer.parseInt(sc.argv[0]) != 0);
+        sc.getNextToken();
       } else if (sc.isBlock && sc.argv[0].equals("TALENTBONI")) {
         parseBuildingSkillBonuses(bType, rules);
       } else if (sc.isBlock && sc.argv[0].equals("RAWMATERIALS")) {
@@ -1327,7 +1330,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseBuildingSkillBonuses(): in line " + sc.lnr
             + ": unable to convert skill bonus " + sc.argv[0]
-                + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
+            + " to an integer. Ignoring bonus for skill " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1345,7 +1348,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseBuildingRawMaterials(): in line " + sc.lnr
             + ": unable to convert item amount " + sc.argv[0]
-                + " to an integer. Ignoring amount for item " + sc.argv[1]);
+            + " to an integer. Ignoring amount for item " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -1363,7 +1366,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } catch (final NumberFormatException e) {
         CRParser.log.warn("CRParser.parseBuildingMaintenance(): in line " + sc.lnr
             + ": unable to convert item amount " + sc.argv[0]
-                + " to an integer. Ignoring amount for item " + sc.argv[1]);
+            + " to an integer. Ignoring amount for item " + sc.argv[1]);
       }
 
       sc.getNextToken();
@@ -2687,7 +2690,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           // .getId()));
         } catch (final NumberFormatException e) {
           final String dirNames[] =
-            { "Nordwesten", "Nordosten", "Osten", "Südosten", "Südwesten", "Westen" };
+              { "Nordwesten", "Nordosten", "Osten", "Südosten", "Südwesten", "Westen" };
 
           for (int i = 0; i < dirNames.length; i++) {
             if (sc.argv[0].equalsIgnoreCase(dirNames[i])) {
@@ -2855,8 +2858,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         } catch (final IllegalArgumentException e) {
           // can happen in StringID constructor if sc.argv[0] == ""
           CRParser.log
-          .warn("CRParser.parseRegion(): found region without a valid region type in line "
-              + sc.lnr);
+              .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                  + sc.lnr);
         }
 
         // regions doesn't have name if name == type; e.g. "Ozean"=="Ozean"
@@ -2865,13 +2868,13 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
             // could set region name here...
           } else {
             CRParser.log
-            .warn("CRParser.parseRegion(): found region type without a valid name in line "
-                + sc.lnr);
+                .warn("CRParser.parseRegion(): found region type without a valid name in line "
+                    + sc.lnr);
           }
         } else {
           CRParser.log
-          .warn("CRParser.parseRegion(): found region without a valid region type in line "
-              + sc.lnr);
+              .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                  + sc.lnr);
         }
 
         iValidateFlags |= 1;
@@ -3942,13 +3945,13 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     /**
      * this was created by regexp replacements: <code>
      * if \(\(sc\.argc == 2\) && sc\.argv\[1\]\.equalsIgnoreCase\(("[^"]*")\)\) \{(\R[^#]*)sc\.getNextToken\(\);\R \}#else
-     *
+     * 
      * parser.addTagHandler(\1, new TagHandler() { public void handle(Unit unit){\2}});
-     *
-     *
-     *
+     * 
+     * 
+     * 
      * if \(\(sc\.isBlock\) && sc\.argv\[0\]\.equals\(("[^"]*")\)\) \{(\R[^#]*)\R      \}#else
-     *
+     * 
      * parser.addBlockHandler(\1, new TagHandler() { public void handle(Unit unit) throws IOException {\2}});
      * <code>
      */
@@ -4357,8 +4360,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           } catch (final IllegalArgumentException e) {
             // can happen in StringID constructor if sc.argv[0] == ""
             CRParser.log
-            .warn("CRParser.parseRegion(): found region without a valid region type in line "
-                + sc.lnr);
+                .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                    + sc.lnr);
           }
 
           // regions doesn't have name if name == type; e.g. "Ozean"=="Ozean"
@@ -4367,13 +4370,13 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
               // could set region name here...
             } else {
               CRParser.log
-              .warn("CRParser.parseRegion(): found region type without a valid name in line "
-                  + sc.lnr);
+                  .warn("CRParser.parseRegion(): found region type without a valid name in line "
+                      + sc.lnr);
             }
           } else {
             CRParser.log
-            .warn("CRParser.parseRegion(): found region without a valid region type in line "
-                + sc.lnr);
+                .warn("CRParser.parseRegion(): found region without a valid region type in line "
+                    + sc.lnr);
           }
 
           parseState.iValidateFlags |= 1;

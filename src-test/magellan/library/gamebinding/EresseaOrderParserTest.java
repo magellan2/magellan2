@@ -207,9 +207,11 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   public void testBefoerderungReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_PROMOTION));
     checkOrder("BEFÖRDERE");
+    checkOrder("BEFOERDERE");
     checkOrder("BEFÖRDER");
     checkOrder("BEFÖRDERE ;");
     checkOrder("BEFÖRDERUNG");
+    checkOrder("BEFOERDERUNG");
     checkOrder("BEFÖRDERE 1", false);
   }
 

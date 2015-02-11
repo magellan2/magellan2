@@ -75,6 +75,7 @@ import magellan.library.impl.MagellanSchemeImpl;
 import magellan.library.impl.MagellanShipImpl;
 import magellan.library.impl.MagellanSpellImpl;
 import magellan.library.impl.MagellanTempUnitImpl;
+import magellan.library.impl.MagellanUnitContainerImpl;
 import magellan.library.impl.MagellanUnitImpl;
 import magellan.library.impl.MagellanZeroUnitImpl;
 import magellan.library.rules.MessageType;
@@ -82,7 +83,7 @@ import magellan.library.rules.RegionType;
 
 /**
  * This factory returns all kind of Magellan objects. ....
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 01.05.2007
  */
@@ -152,7 +153,7 @@ public abstract class MagellanFactory {
 
   /**
    * Creates a void Region
-   * 
+   *
    * @see RegionType#theVoid
    * @see GameData#postProcessTheVoid()
    */
@@ -179,7 +180,7 @@ public abstract class MagellanFactory {
 
   /**
    * Creates a new spell.
-   * 
+   *
    * @param id This should currently be a {@link StringID}
    * @param data
    */
@@ -247,9 +248,19 @@ public abstract class MagellanFactory {
     return new MagellanZeroUnitImpl(region);
   }
 
+  /** Returns a null object. */
+  public static UnitContainer createNullContainer(GameData data) {
+    return new MagellanUnitContainerImpl(EntityID.createEntityID(0, data.base), data) {
+      @Override
+      public String toString() {
+        return "";
+      }
+    };
+  }
+
   /**
    * Transfers all available information from the current group to the new one.
-   * 
+   *
    * @param curGD fully loaded game data
    * @param curGroup a fully initialized and valid group
    * @param newGD the game data to be updated
@@ -263,7 +274,7 @@ public abstract class MagellanFactory {
 
   /**
    * Merges factions.
-   * 
+   *
    * @deprecated Use
    *             {@link GameDataMerger#mergeFaction(GameData, Faction, GameData, Faction, boolean, magellan.library.utils.transformation.ReportTransformer)}
    *             instead
@@ -276,7 +287,7 @@ public abstract class MagellanFactory {
 
   /**
    * Merges UnitContainers.
-   * 
+   *
    * @deprecated Use
    *             {@link GameDataMerger#mergeUnitContainer(GameData,UnitContainer,GameData,UnitContainer)}
    *             instead
@@ -294,7 +305,7 @@ public abstract class MagellanFactory {
    * use it => otherwise take wrong locale msg, to have at least a half localized msg if the msgtype
    * is available in locale => you can notice this half localized msg because msg.locale=gm.locale,
    * also msg.rerender=true
-   * 
+   *
    * @param curGD fully loaded game data
    * @param curMsg a fully initialized and valid message
    * @param newGD the game data to be updated
@@ -310,7 +321,7 @@ public abstract class MagellanFactory {
 
   /**
    * Merges potion.
-   * 
+   *
    * @deprecated Use {@link GameDataMerger#mergePotion(GameData,Potion,GameData,Potion)} instead
    */
   @Deprecated
@@ -322,7 +333,7 @@ public abstract class MagellanFactory {
   /**
    * Merges buildings. The new one get the name, comments etc. from the current one, effects etc.
    * are added, not written over.
-   * 
+   *
    * @param curGD current GameData
    * @param curBuilding the current Building
    * @param newGD new GameData
@@ -339,7 +350,7 @@ public abstract class MagellanFactory {
 
   /**
    * Merges two combat spells.
-   * 
+   *
    * @param curGD the current GameData.
    * @param curCS the current CombatSpell.
    * @param newGD the new GameData.
@@ -373,7 +384,7 @@ public abstract class MagellanFactory {
    * the <code>firstPass</code> parameter. Merging is usually done in two passes. In the first pass,
    * the old info is copied into an intermediate object. In the second pass, the new object is
    * merged into this intermediate object.
-   * 
+   *
    * @param curGD The GameData of curUnit
    * @param curRegion The region where the info is taken from
    * @param resultGD The GameData of resultRegion
@@ -392,7 +403,7 @@ public abstract class MagellanFactory {
 
   /**
    * Merges two Scheme objects.
-   * 
+   *
    * @deprecated Use {@link GameDataMerger#mergeScheme(GameData,Scheme,GameData,Scheme)} instead
    */
   @Deprecated
@@ -403,7 +414,7 @@ public abstract class MagellanFactory {
 
   /**
    * Merges ships.
-   * 
+   *
    * @deprecated Use
    *             {@link GameDataMerger#mergeShip(GameData, Ship, GameData, Ship, magellan.library.utils.transformation.ReportTransformer)}
    *             instead
@@ -415,7 +426,7 @@ public abstract class MagellanFactory {
 
   /**
    * Merges spells.
-   * 
+   *
    * @deprecated Use {@link GameDataMerger#mergeSpell(GameData,Spell,GameData,Spell)} instead
    */
   @Deprecated
@@ -425,7 +436,7 @@ public abstract class MagellanFactory {
 
   /**
    * Merges two temp units.
-   * 
+   *
    * @param sameRound notifies if both game data objects have been from the same round
    * @deprecated Use
    *             {@link GameDataMerger#merge(GameData, GameData, magellan.library.utils.transformation.ReportTransformer, magellan.library.utils.transformation.ReportTransformer)}
@@ -440,7 +451,7 @@ public abstract class MagellanFactory {
   /**
    * Merges only the comments of <code>curShip</code> to <code>newShip</code>. Use if you don't want
    * to do a full merge.
-   * 
+   *
    * @param curShip
    * @param newShip
    * @deprecated Use {@link GameDataMerger#mergeComments(UnitContainer,UnitContainer)} instead
@@ -456,7 +467,7 @@ public abstract class MagellanFactory {
    * <code>firstPass</code> parameter. Merging is usually done in two passes. In the first pass, the
    * old info is copied into an intermediate object. In the second pass, the new object is merged
    * into this intermediate object.
-   * 
+   *
    * @param curGD The GameData of curUnit
    * @param curUnit The unit where the info is taken from
    * @param resultGD The GameData of newUnit
@@ -541,7 +552,7 @@ public abstract class MagellanFactory {
 
   /**
    * Returns a locale specific string representation of the specified unit combat status.
-   * 
+   *
    * @deprecated This is Eressea specific. Use {@link GameSpecificStuff#getCombatStates()}.
    */
   @Deprecated

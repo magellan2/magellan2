@@ -22,7 +22,7 @@ import magellan.library.rules.ItemType;
  */
 public class MaintenanceRelation extends UnitContainerRelation {
   /** Maintenance costs */
-  public int costs;
+  private int costs;
 
   /** The required item type */
   public ItemType itemType;
@@ -30,9 +30,13 @@ public class MaintenanceRelation extends UnitContainerRelation {
   /** indicates whether there is some kind of problem with this relation */
   public boolean warning;
 
+  private String reason;
+
+  private String icon;
+
   /**
    * Creates a new MaintenanceRelation object.
-   * 
+   *
    * @param unit The maintaining unit
    * @param container the maintained building
    * @param amount The costs in silver
@@ -40,11 +44,13 @@ public class MaintenanceRelation extends UnitContainerRelation {
    * @param line The line in the source's orders
    * @param warning
    */
-  public MaintenanceRelation(Unit unit, UnitContainer container, int amount, ItemType itemType,
-      int line, boolean warning) {
+  public MaintenanceRelation(Unit unit, UnitContainer container, int amount, ItemType itemType, String reason,
+      String icon, int line, boolean warning) {
     super(unit, container, line);
-    costs = amount;
+    setCosts(amount);
     this.itemType = itemType;
+    this.reason = reason;
+    this.icon = icon;
     this.warning = warning;
   }
 
@@ -55,6 +61,52 @@ public class MaintenanceRelation extends UnitContainerRelation {
   public void add() {
     super.add();
     target.addRelation(this);
+  }
+
+  /**
+   * Returns the value of costs.
+   *
+   * @return Returns costs.
+   */
+  public int getCosts() {
+    return costs;
+  }
+
+  /**
+   * Sets the value of costs.
+   *
+   * @param costs The value for costs.
+   */
+  public void setCosts(int costs) {
+    this.costs = costs;
+  }
+
+  /**
+   * Returns a localized reason for this relation.
+   */
+  public String getReason() {
+    return reason;
+  }
+
+  /**
+   * @param reason
+   */
+  public void setReason(String reason) {
+    this.reason = reason;
+  }
+
+  /**
+   * Returns an icon name associated with this relation.
+   */
+  public String getIcon() {
+    return icon;
+  }
+
+  /**
+   * @param name
+   */
+  public void setIcon(String name) {
+    icon = name;
   }
 
 }

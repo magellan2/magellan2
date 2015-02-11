@@ -306,7 +306,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    *
    * @see Resources#getOrderTranslation(String, Locale)
    */
-  protected String getOrderTranslation(StringID orderId) { 
+  protected String getOrderTranslation(StringID orderId) {
     Map<StringID, String> translations = translationsMap.get(getLocale());
     if (translations == null) {
       translations = new HashMap<StringID, String>();
@@ -1015,6 +1015,10 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   protected static final boolean isEoC(OrderToken t) {
     return t.ttype == OrderToken.TT_EOC;
+  }
+
+  protected static final boolean isFinal(OrderToken t) {
+    return t.ttype == OrderToken.TT_EOC || (t.ttype == OrderToken.TT_COMMENT);
   }
 
   /**

@@ -105,7 +105,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
         || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
             getUnit()))) {
       addCompletion(new Completion(getOrderTranslation(E3AConstants.OC_PAY) + " "
-          + getOrderTranslation(EresseaConstants.OC_NOT)));
+          + getOrderTranslation(EresseaConstants.OC_NOT) + " "));
     }
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_MESSAGE), " "));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_DEFAULT),
@@ -220,7 +220,11 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   }
 
   public void cmpltBezahle() {
-    addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_NOT)));
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_NOT), " "));
+  }
+
+  public void cmpltBezahleNicht() {
+    addRegionBuildings("", "", unit.getBuilding(), true);
   }
 
   @Override

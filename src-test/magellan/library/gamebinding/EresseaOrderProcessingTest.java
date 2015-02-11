@@ -24,14 +24,26 @@
 package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+
+import magellan.library.Building;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.IntegerID;
 import magellan.library.Item;
+import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Unit;
+import magellan.library.gamebinding.e3a.MaintainOrder;
+import magellan.library.relation.MaintenanceRelation;
 import magellan.library.rules.ItemType;
+import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
 
 import org.junit.Before;
@@ -206,6 +218,68 @@ public class EresseaOrderProcessingTest {
     assertEquals(60, unit1.getModifiedItem(silverType).getAmount());
     assertEquals(40, unit2.getModifiedItem(silverType).getAmount());
     assertEquals(0, unit3.getModifiedItem(silverType).getAmount());
+  }
+
+  @Test
+  public final void testBuildingMaintenance() throws Exception {
+    Building building = builder.addBuilding(data, region, "b", "Leuchtturm", "Leuchti", 10);
+    unit1.setBuilding(building);
+    building.setOwner(unit1);
+    unit1.addItem(new Item(silverType, 200));
+
+    executor.processOrders(region);
+    assertEquals(100, unit1.getModifiedItem(silverType).getAmount());
+  }
+
+  @Test
+  public final void testRegionOwnerMaintenance() throws Exception {
+    Building building = builder.addBuilding(data, region, "b", "Leuchtturm", "Leuchti", 10);
+    Building castle = builder.addBuilding(data, region, "cast", "Burg", "Burg", 50);
+    unit1.setBuilding(castle);
+    castle.setOwner(unit1);
+    unit1.addItem(new Item(silverType, 200));
+    building.getBuildingType().setMaintendByRegionOwner(true);
+
+    executor.processOrders(region);
+    assertEquals(100, unit1.getModifiedItem(silverType).getAmount());
+  }
+
+  @Test
+  public final void testRegionOwnerPayNot() throws Exception {
+    Building building = builder.addBuilding(data, region, "b", "Leuchtturm", "Leuchti", 10);
+    Building castle = builder.addBuilding(data, region, "cast", "Burg", "Burg", 50);
+    unit1.setBuilding(castle);
+    castle.setOwner(unit1);
+    unit1.addItem(new Item(silverType, 200));
+    Collection<Order> orders = new LinkedList<Order>();
+    MaintainOrder mOrder;
+    orders.add(mOrder = new MaintainOrder(Collections.<OrderToken> emptyList(), "BEZAHLE NICHT b"));
+    mOrder.setBuilding(EntityID.createEntityID("b", data.base));
+    mOrder.setValid(true);
+    mOrder.setNot(true);
+    unit1.addOrders2(orders);
+
+    building.getBuildingType().setMaintendByRegionOwner(true);
+
+    executor.processOrders(region);
+    assertEquals(200, unit1.getModifiedItem(silverType).getAmount());
+  }
+
+  @Test
+  public final void testPromote() throws Exception {
+    unit1.addOrder("BEFOERDERE");
+    unit1.addItem(new Item(silverType, 200));
+
+    executor.processOrders(region);
+
+    int costs = 0;
+    for (Unit u : unit1.getFaction().getUnits().values()) {
+      costs += u.getPersons();
+    }
+    costs *= unit1.getPersons();
+    assertTrue(costs <= 200);
+    assertEquals(200 - costs, unit1.getModifiedItem(silverType).getAmount());
+    assertEquals(1, unit1.getRelations(MaintenanceRelation.class).size());
   }
 
 }

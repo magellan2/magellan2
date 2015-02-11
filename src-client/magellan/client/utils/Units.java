@@ -94,7 +94,7 @@ public class Units {
   /**
    * Calculates the amounts of all items of all units and records the amount in the
    * itemCategoriesMap.
-   * 
+   *
    * @param units All items of all units in this Collection are accounted for.
    * @return The sorted list of categories.
    */
@@ -160,7 +160,7 @@ public class Units {
    * category. Then it adds the non-empty categories to the specified parent node and puts the
    * corresponding items in each category node. Optionally, the units carrying an item are listed as
    * child nodes of the respective item nodes.
-   * 
+   *
    * @param units a collection of Unit objects carrying items.
    * @param parentNode a tree node to add the new nodes to.
    * @param itemComparator a comparator to sort the items with. If itemComparator is null the items
@@ -185,7 +185,7 @@ public class Units {
    * category. Then it adds the non-empty categories to the specified parent node and puts the
    * corresponding items in each category node. Optionally, the units carrying an item are listed as
    * child nodes of the respective item nodes.
-   * 
+   *
    * @param units a collection of Unit objects carrying items.
    * @param parentNode a tree node to add the new nodes to.
    * @param itemComparator a comparator to sort the items with. If itemComparator is null the items
@@ -316,7 +316,7 @@ public class Units {
           icons.add("reserve");
 
           UnitRelationNodeWrapper reserveNodeWrapper = // factory.createSimpleNodeWrapper(rrel,
-                                                       // text.toString(), icons);
+              // text.toString(), icons);
               factory.createRelationNodeWrapper(u, rrel, factory.createSimpleNodeWrapper(text
                   .toString(), icons));
           itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
@@ -409,12 +409,16 @@ public class Units {
         if ((relation instanceof MaintenanceRelation)
             && (currentItem.getItemType() == ((MaintenanceRelation) relation).itemType)) {
           final MaintenanceRelation rrel = (MaintenanceRelation) relation;
-          final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
+          final StringBuilder text = new StringBuilder().append(rrel.getCosts()).append(" ");
           final List<String> icons = new LinkedList<String>();
-          text.append(Resources.get("util.units.node.maintenance")).append(" ").append(
-              rrel.target);
+          text.append(rrel.getReason());
+          if (rrel.target != null && rrel.target.toString().length() > 0) {
+            text.append(" ").append(rrel.target);
+          }
 
-          icons.add("upkeep");
+          if (rrel.getIcon() != null) {
+            icons.add(rrel.getIcon());
+          }
           if (rrel.problem != null || rrel.warning) {
             itemNodeWrapper.setWarningLevel(CellObject.L_WARNING);
             // text.append("(!!!) ");
@@ -487,7 +491,7 @@ public class Units {
 
     /**
      * Returns the value of unmodifiedAmount.
-     * 
+     *
      * @return Returns unmodifiedAmount.
      */
     public int getUnmodifiedAmount() {
@@ -496,7 +500,7 @@ public class Units {
 
     /**
      * Sets the value of unmodifiedAmount.
-     * 
+     *
      * @param unmodifiedAmount The value for unmodifiedAmount.
      */
     public void setUnmodifiedAmount(int unmodifiedAmount) {
@@ -556,7 +560,7 @@ public class Units {
 
     /**
      * Returns the value of unmodifiedNumber.
-     * 
+     *
      * @return Returns unmodifiedNumber.
      */
     public int getUnmodifiedAmount() {
@@ -565,7 +569,7 @@ public class Units {
 
     /**
      * Sets the value of unmodifiedNumber.
-     * 
+     *
      * @param unmodifiedNumber The value for unmodifiedNumber.
      */
     public void setUnmodifiedAmount(int unmodifiedNumber) {
@@ -657,7 +661,7 @@ public class Units {
 
   /**
    * Returns the Container for the specified items type.
-   * 
+   *
    * @param type The item whose category you want.
    * @return The Container if items of type <code>type</code>.
    */
@@ -676,7 +680,7 @@ public class Units {
 
   /**
    * Modifies <code>u</code>'s orders as specified in <code>s</code>.
-   * 
+   *
    * @see GiveOrderDialog#showGiveOrderDialog()
    * @param s A string array with the following values: <br/>
    *          [0] : The order that was given <br/>
@@ -690,7 +694,7 @@ public class Units {
 
   /**
    * Modifies <code>u</code>'s orders as specified in <code>s</code>.
-   * 
+   *
    * @see GiveOrderDialog#showGiveOrderDialog()
    * @param s A string array with the following values: <br/>
    *          [0] : The order that was given <br/>
@@ -753,7 +757,7 @@ public class Units {
 
   /**
    * Modifies <code>u</code>'s orders as specified in <code>s</code>.
-   * 
+   *
    * @see RemoveOrderDialog#showDialog()
    * @param s A string array with the following values: <br/>
    *          [0] : The order fragment that was given <br/>

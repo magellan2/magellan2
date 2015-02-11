@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.library.gamebinding;
 
 import java.math.BigDecimal;
@@ -30,12 +30,14 @@ import magellan.library.Alliance;
 import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.Faction;
+import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.gamebinding.e3a.MaintainOrder;
 import magellan.library.relation.RecruitmentRelation;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.ItemType;
@@ -46,7 +48,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * This class implements all Eressea specific rule informations.
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 19.04.2009
  */
@@ -60,7 +62,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
 
   /**
    * Returns the value of rules.
-   * 
+   *
    * @return Returns rules.
    */
   public Rules getRules() {
@@ -209,7 +211,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
 
   /**
    * Returns true if the type is a castle (Befestigung, Turm, ...)
-   * 
+   *
    * @see magellan.library.gamebinding.GameSpecificRules#isCastle(magellan.library.rules.UnitContainerType)
    */
   public boolean isCastle(UnitContainerType type) {
@@ -311,5 +313,30 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
       return volume;
     }
     return -1;
+  }
+
+  public Unit getMaintainer(Building b) {
+    Unit owner = b.getModifiedOwnerUnit();
+    if (owner == null && b.getBuildingType().isMaintainedByRegionOwner()) {
+      owner = b.getRegion().getOwnerUnit();
+    }
+    boolean maintain = true;
+    if (owner != null) {
+      for (Order order : owner.getOrders2()) {
+        if (order instanceof MaintainOrder) {
+          MaintainOrder mOrder = (MaintainOrder) order;
+          if (mOrder.isValid() && mOrder.isNot()
+              && (mOrder.getBuilding() == null || b.getID().equals(mOrder.getBuilding()))) {
+            maintain = false;
+            break;
+          }
+        }
+      }
+    }
+
+    if (maintain)
+      return owner;
+    else
+      return null;
   }
 }

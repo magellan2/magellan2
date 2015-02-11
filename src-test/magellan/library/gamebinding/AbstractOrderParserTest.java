@@ -473,6 +473,10 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
     assertTrue(getParser().getErrorMessage() == null);
     getParser().read(new StringReader("ARBEITE"));
     assertTrue(getParser().getErrorMessage() == null);
+    getParser().read(new StringReader("MACHE TEMP 1 \"123\""));
+    assertTrue(getParser().getErrorMessage() == null);
+    getParser().read(new StringReader("NUMMER EINHEIT ; hello"));
+    assertTrue(getParser().getErrorMessage() == null);
     getParser().read(new StringReader("ARBEITE 2"));
     assertTrue(getParser().getErrorMessage().equals(
         "Unexpected token 2: Undefined(8, 9), not followed by Space"));

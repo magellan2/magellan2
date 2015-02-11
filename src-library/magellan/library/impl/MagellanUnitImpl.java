@@ -1069,7 +1069,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       gdata.addTempUnit(t);
     } else {
       MagellanUnitImpl.log
-          .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
+      .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
     }
 
     // FIXME(stm) fire unitorderschanged?)
@@ -1847,9 +1847,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       if (equals(rr.target)) {
         modifiedItem =
             new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER), -rr.costs);
-        // } else {
-        // modifiedItem = new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER),
-        // rr.costs);
         modifiedItem.setChanged(true);
         cache1.modifiedItems.put(EresseaConstants.I_USILVER, modifiedItem);
       }
@@ -1861,9 +1858,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
     if (modifiedItem != null) {
       modifiedItem.setChanged(true);
-      modifiedItem.setAmount(modifiedItem.getAmount() - rr.costs);
+      modifiedItem.setAmount(modifiedItem.getAmount() - rr.getCosts());
     } else {
-      modifiedItem = new Item(rr.itemType, -rr.costs);
+      modifiedItem = new Item(rr.itemType, -rr.getCosts());
       modifiedItem.setChanged(true);
       cache1.modifiedItems.put(rr.itemType.getID(), modifiedItem);
     }

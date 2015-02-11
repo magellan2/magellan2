@@ -78,23 +78,25 @@ public class EresseaRelationFactory implements RelationFactory {
   /** Order priority */
   public static final int P_GIB = 1401;
   /** Order priority */
-  public static final int P_REKRUTIERE = 1501;
+  public static final int P_REKRUTIERE = 1601;
   /** Order priority */
-  public static final int P_LEHRE = 1801;
+  public static final int P_BEFOERDERE = 1701;
   /** Order priority */
-  public static final int P_FAHRE = 2398;
+  public static final int P_LEHRE = 2001;
   /** Order priority */
-  public static final int P_TRANSPORTIERE = 2399;
+  public static final int P_FAHRE = 2598;
   /** Order priority */
-  public static final int P_NACH = 2400;
+  public static final int P_TRANSPORTIERE = 2599;
   /** Order priority */
-  public static final int P_BEWACHE = 2501;
+  public static final int P_NACH = 2600;
+  /** Order priority */
+  public static final int P_BEWACHE = 2701;
 
   /** Order priority */
-  public static final int P_BUILDING_MAINTENANCE = 1601;
+  public static final int P_BUILDING_MAINTENANCE = 1801;
 
   /** Order priority */
-  public static final int P_UNIT_MAINTENANCE = 3001;
+  public static final int P_UNIT_MAINTENANCE = 3201;
 
   protected EresseaRelationFactory(Rules rules) {
     this.rules = rules;
@@ -463,6 +465,8 @@ public class EresseaRelationFactory implements RelationFactory {
       return P_GIB;
     else if (order instanceof RecruitmentOrder)
       return P_REKRUTIERE;
+    else if (order instanceof PromoteOrder)
+      return P_BEFOERDERE;
     else if (order instanceof EnterOrder)
       return P_BETRETE;
     else if (order instanceof CombatOrder)

@@ -28,11 +28,9 @@ import java.util.List;
 import magellan.library.Building;
 import magellan.library.GameData;
 import magellan.library.Item;
-import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
-import magellan.library.gamebinding.e3a.MaintainOrder;
 import magellan.library.relation.MaintenanceRelation;
 import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.UnitRelation;
@@ -68,44 +66,33 @@ public class BuildingMaintenanceOrder {
         }
       }
 
-      Unit owner = b.getModifiedOwnerUnit();
-      if (owner != null) {
-        for (Order order : owner.getOrders2()) {
-          if (order instanceof MaintainOrder)
-            if (((MaintainOrder) order).isNot()) {
-              maintain = false;
-              break;
+      Unit payer = data.getGameSpecificRules().getMaintainer(b);
+      if (payer != null) {
+        for (Item i : b.getBuildingType().getMaintenanceItems()) {
+          // List<UnitRelation> relations =
+          // state.reserveItem(i.getItemType(), false, true, i.getAmount(), owner, -1, null);
+          List<UnitRelation> relations =
+              eState.acquireItem(payer, i.getItemType(), maintain ? i.getAmount() : 0, false, true,
+                  true, -1, null);
+          MaintenanceRelation mRel =
+              new MaintenanceRelation(payer, b, maintain ? i.getAmount() : 0, i.getItemType(),
+                  Resources.get("util.units.node.maintenance"), "upkeep", -1, false);
+          for (UnitRelation rel : relations) {
+            if (rel instanceof ReserveRelation) {
+              // mRel.setReserve((ReserveRelation)rel);
+              mRel.setCosts(((ReserveRelation) rel).amount);
+            } else {
+              rel.add();
             }
-        }
-        if (maintain) {
-          for (Item i : b.getBuildingType().getMaintenanceItems()) {
-            // List<UnitRelation> relations =
-            // state.reserveItem(i.getItemType(), false, true, i.getAmount(), owner, -1, null);
-            List<UnitRelation> relations =
-                eState.acquireItem(owner, i.getItemType(), i.getAmount(), false, true, true, -1,
-                    null);
-            MaintenanceRelation mRel =
-                new MaintenanceRelation(owner, b, i.getAmount(), i.getItemType(), -1, false);
-            for (UnitRelation rel : relations) {
-              if (rel instanceof ReserveRelation) {
-                // mRel.setReserve((ReserveRelation)rel);
-                mRel.costs = ((ReserveRelation) rel).amount;
-              } else {
-                rel.add();
-              }
-              if (rel.problem != null) {
-                mRel.warning = true;
-                mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
-                    MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
-                // mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
-                // OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
-              }
+            if (rel.problem != null) {
+              mRel.warning = true;
+              mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
+                  MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
             }
-            mRel.add();
           }
+          mRel.add();
         }
       }
     }
-
   }
 }

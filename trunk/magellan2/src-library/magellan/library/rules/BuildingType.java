@@ -22,13 +22,14 @@ import magellan.library.StringID;
 
 /**
  * Stores attributes for a type of building.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 203 $
  */
 public class BuildingType extends ConstructibleType {
   private Map<StringID, Integer> skillBonuses = null;
   private Map<StringID, RegionType> regionTypes = null;
+  private boolean maintenedByRegionOwner;
 
   /**
    * Creates a new BuildingType object.
@@ -67,7 +68,7 @@ public class BuildingType extends ConstructibleType {
 
   /**
    * Registers type as allowed region type for this building.
-   * 
+   *
    * @param type
    */
   public void addRegionType(RegionType type) {
@@ -82,7 +83,7 @@ public class BuildingType extends ConstructibleType {
    * Returns <code>true</code> if either no RegionType has been registered by
    * {@link #addRegionType(RegionType)} or if at least one RegionType has been registered and type
    * is one of the allowed types.
-   * 
+   *
    * @param type
    */
   public boolean containsRegionType(RegionType type) {
@@ -104,5 +105,13 @@ public class BuildingType extends ConstructibleType {
   @Override
   public StringID getID() {
     return (StringID) id;
+  }
+
+  public boolean isMaintainedByRegionOwner() {
+    return maintenedByRegionOwner;
+  }
+
+  public void setMaintendByRegionOwner(boolean isMaintained) {
+    maintenedByRegionOwner = isMaintained;
   }
 }

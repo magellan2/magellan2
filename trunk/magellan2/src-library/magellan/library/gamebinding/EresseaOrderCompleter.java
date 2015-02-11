@@ -134,9 +134,9 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
         getOrderTranslation(EresseaConstants.OC_DEFAULT) + " " + oneQuote, "",
         Completion.DEFAULT_PRIORITY, 0));
     completions
-        .add(new Completion(getOrderTranslation(EresseaConstants.OC_EMAIL),
-            getOrderTranslation(EresseaConstants.OC_EMAIL), spaceQuotes,
-            Completion.DEFAULT_PRIORITY, 1));
+    .add(new Completion(getOrderTranslation(EresseaConstants.OC_EMAIL),
+        getOrderTranslation(EresseaConstants.OC_EMAIL), spaceQuotes,
+        Completion.DEFAULT_PRIORITY, 1));
     // we focus auf our temp generation dialog FF
     // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_END)));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_RIDE), " "));
@@ -241,11 +241,11 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
         .getBuilding().getOwnerUnit().equals(unit)))
         || ((unit.getShip() != null) && (unit.getShip().getOwnerUnit() != null) && (unit.getShip()
             .getOwnerUnit().equals(unit)))
-        ||
-        // ... vicious warriors destroying other peoples buildings or ships
-        (unit.getModifiedBuilding() != null && unit.getModifiedBuilding().getOwnerUnit() != null && unit
+            ||
+            // ... vicious warriors destroying other peoples buildings or ships
+            (unit.getModifiedBuilding() != null && unit.getModifiedBuilding().getOwnerUnit() != null && unit
             .getFaction() != unit.getModifiedBuilding().getOwnerUnit().getFaction())
-        || (unit.getModifiedShip() != null && (unit.getModifiedShip().getOwnerUnit() == null || unit
+            || (unit.getModifiedShip() != null && (unit.getModifiedShip().getOwnerUnit() == null || unit
             .getFaction() != unit.getModifiedShip().getOwnerUnit().getFaction()))) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_DESTROY)));
     } else {
@@ -558,7 +558,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CASTLE), " "));
     completions
-        .add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION), " "));
+    .add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_REGION), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SHIP), " "));
@@ -821,8 +821,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
           order.append(resource.getOrderName());
         } else {
           order.append("\n").append(getOrderTranslation(EresseaConstants.OC_GIVE)).append(" ")
-              .append(uid.toString()).append(" ").append(i * resource.getAmount()).append(" ")
-              .append(resource.getOrderName());
+          .append(uid.toString()).append(" ").append(i * resource.getAmount()).append(" ")
+          .append(resource.getOrderName());
         }
         order.append("; ").append(name);
       }
@@ -1203,12 +1203,12 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
           && (region.getLaen() <= 0)) {
         canMake = false;
       } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_WOOD)) &&
-      // bugzilla enhancement 599: also allow completion on sprouts
-      // also take care of mallorn flag
+          // bugzilla enhancement 599: also allow completion on sprouts
+          // also take care of mallorn flag
           (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || region.isMallorn())) {
         canMake = false;
       } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_UMALLORN)) &&
-      // bugzilla enhancement 599: also allow completion on sprouts
+          // bugzilla enhancement 599: also allow completion on sprouts
           (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || !region.isMallorn())) {
         canMake = false;
       } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_UHORSE))
@@ -1314,8 +1314,14 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SHIP), " "));
     completions
-        .add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION), " "));
+    .add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CASTLE), " "));
+  }
+
+  /** add completions for command NUMMER EINHEIT/BUILDING/SHIP ... */
+  public void cmpltNummerId() {
+    completions.add(new Completion(
+        getTranslation("gamebinding.eressea.eresseaordercompleter.newid"), "1", " "));
   }
 
   /** Add completions for command Option. */

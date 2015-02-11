@@ -219,6 +219,17 @@ public class EresseaOrderParser extends AbstractOrderParser {
     }
 
     @Override
+    protected void init(OrderToken token, String text) {
+      order = new PromoteOrder(getTokens(), text);
+    }
+
+    @Override
+    public PromoteOrder getOrder() {
+      PromoteOrder uorder = (PromoteOrder) super.getOrder();
+      return uorder;
+    }
+
+    @Override
     protected boolean readIt(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
@@ -941,7 +952,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isString(t))
         return new DefaultChecker().read(t);
-      else if (!isEoC(t)) {
+      else {
         unexpected(t);
       }
       return false;
@@ -1395,7 +1406,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isEoC(t)) {
+      if (isFinal(t)) {
         retVal = checkFinal(t);
       } else if (isString(t)) {
         getOrder().itemType = checkItem(t);
@@ -1408,8 +1419,6 @@ public class EresseaOrderParser extends AbstractOrderParser {
           getOrder().setValid(false);
         }
         retVal = retVal && checkFinal(getLastToken());
-      } else {
-        retVal = checkFinal(t);
       }
 
       if (shallComplete(token, t)) {
@@ -1470,7 +1479,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isEoC(t)) {
+      if (isFinal(t)) {
         // just "GRUPPE" without explicit group is valid
         retVal = checkFinal(t);
         if (shallComplete(token, t)) {
@@ -1483,14 +1492,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
             getCompleter().cmpltGruppe();
           }
         }.read(t);
-      } else {
-        retVal = checkFinal(t);
       }
-
-      // if (getCompleter() != null) {
-      // if (shallComplete(token, t)) {
-      // getCompleter().cmpltGruppe();
-      // }
 
       return retVal;
     }
@@ -2005,7 +2007,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
         retVal = readFinalKeyword(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_HERBS))) {
         retVal = readFinalKeyword(t);
-      } else if (isEoC(t)) {
+      } else if (isFinal(t)) {
         // this is actually allowed, but may be a bit dangerous...
         retVal = false;
       } else {
@@ -2053,15 +2055,13 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t)) {
+      if (isFinal(t)) {
+        retVal = checkFinal(t);
+        if (shallComplete(token, t)) {
+          getCompleter().cmpltMacheTempID();
+        }
+      } else if (isString(t)) {
         retVal = readDescription(t, false) != null;
-      }
-      if (isEoC(t)) {
-        retVal = true;
-      }
-
-      if (shallComplete(token, t)) {
-        getCompleter().cmpltMacheTempID();
       }
 
       return retVal;
@@ -2322,15 +2322,13 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
-      } else if (isEoC(t)) {
-        retVal = true;
       } else {
-        unexpected(t);
+        retVal = checkFinal(t);
       }
 
-      // if (shallComplet(token, t)){
-      // getCompleter().cmpltNummerEinheit();
-      // }
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltNummerId();
+      }
 
       return retVal;
     }
@@ -2343,10 +2341,12 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
-      } else if (isEoC(t)) {
-        retVal = true;
       } else {
-        unexpected(t);
+        retVal = checkFinal(t);
+      }
+
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltNummerId();
       }
 
       return retVal;
@@ -2360,10 +2360,12 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
-      } else if (isEoC(t)) {
-        retVal = true;
       } else {
-        unexpected(t);
+        retVal = checkFinal(t);
+      }
+
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltNummerId();
       }
 
       return retVal;
@@ -2377,10 +2379,12 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
-      } else if (isEoC(t)) {
-        retVal = true;
       } else {
-        unexpected(t);
+        retVal = checkFinal(t);
+      }
+
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltNummerId();
       }
 
       return retVal;
@@ -2491,9 +2495,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isEoC(t)) {
+      if (isFinal(t)) {
         // PASSWORT without parameters is allowed
-        retVal = true;
+        retVal = checkFinal(t);
       } else if (isString(t)) {
         retVal = readDescription(t, false) != null;
       } else {

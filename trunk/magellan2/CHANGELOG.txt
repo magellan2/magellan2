@@ -1,9 +1,17 @@
-2015-01-11 / Build 599 - stm (stm_@users.sourceforge.net)
+2015-02-10 / Build 600 - stm (stm2@users.sourceforge.net)
+    * implemented PROMOTE order
+    * implemented "region owner pays" and PAY NOT <id> feature
+    * (re-)implemented support for umlaut substitution in German orders
+    * fixed and added completions for NUMBER 
+    * fixed error writing max_units
+    * E3CommandParser: added method to remove duplicate long orders
+
+2015-01-11 / Build 599 - stm (stm2@users.sourceforge.net)
     * (fixed) support for CR tags "Build", max_units, and "joined"
     * fixed issue with TEMP units
     * simplified code for EresseaRelationFactory and SimpleOrder
 
-2015-01-08 / Build 596 - stm (stm_@users.sourceforge.net)
+2015-01-08 / Build 596 - stm (stm2@users.sourceforge.net)
     * FOLLOW SHIP is short(ish) order now
     * implemented new RESEREVE semantics (Version 3.0, 20.07.2014): 
       - two phase reserve (RESERVing units always keep own stuff)
@@ -11,28 +19,28 @@
     * choose imperative as new preferred German syntax (ARBEITE, not ARBEITEN)
     * added a few items      
 
-2014-05-08 / Build 591 - stm (stm_@users.sourceforge.net)
+2014-05-08 / Build 591 - stm (stm2@users.sourceforge.net)
     * fixed MapperPanel and BookmarkDock to be compatible with Java 6 again
 
-2014-05-08 / Build 590 - stm (stm_@users.sourceforge.net)
+2014-05-08 / Build 590 - stm (stm2@users.sourceforge.net)
     * upgrade to IzPack 4.3.5
 
-2014-05-05 / Build 587 - stm (stm_@users.sourceforge.net)
+2014-05-05 / Build 587 - stm (stm2@users.sourceforge.net)
     * more tolerant merging of reports of different games
     * added Deveron rules (equal to E3)
 
-2014-04-23 / Build 586 - stm (stm_@users.sourceforge.net)
+2014-04-23 / Build 586 - stm (stm2@users.sourceforge.net)
     * disabled Hotspots; hotspot functionality is now fullfilled by bookmarks; added load/save/merge/export of bookmarks
 
-2014-04-22 / Build 585 - stm (stm_@users.sourceforge.net)
+2014-04-22 / Build 585 - stm (stm2@users.sourceforge.net)
 	* fixed NPE in EMapOverview; fixed bug that prevented deletion of factions
 	* E3CommandParser: add Benoetige LUXUS
 	* display completeness of roads in EmapOverview 
 	
-2014-02-23 / Build 583 - stm (stm_@users.sourceforge.net)
+2014-02-23 / Build 583 - stm (stm2@users.sourceforge.net)
 	* added confirmation dialog to TaskTable unacknowledge feature 
 	
-2014-02-11 / Build 581 - stm (stm_@users.sourceforge.net)
+2014-02-11 / Build 581 - stm (stm2@users.sourceforge.net)
 	* improvements to TaskTable: empty/abandoned buildings and ships
 	* bugfix: Unit.newRegion() may be null
 	* updated eclipse formatter settings ("version 12")
@@ -40,13 +48,13 @@
 	* bugfix for E3CommandParser repeat command
 	* small useability improvement for order completion
 
-2014-01-05 / Build 580 - stm (stm_@users.sourceforge.net)
+2014-01-05 / Build 580 - stm (stm2@users.sourceforge.net)
 	* remove orders dialog detects invalid patterns
 	* small tweak to MovementInspector
 	* fix modified combat status display
 	* E3CommandParser: added support for multiple faction processing; now with more detailed warning management
 
-2013-07-03 / Build 570-576 - stm (stm_@users.sourceforge.net)
+2013-07-03 / Build 570-576 - stm (stm2@users.sourceforge.net)
 	* added support for Enno's Atlantis game
 	* NR Parser
 	* OrderParser/Completer
@@ -60,7 +68,7 @@
 	* encapsulated GameData.rules
 	* added fall back message type
 	
-2013-07-03 / Build 567 - stm (stm_@users.sourceforge.net)
+2013-07-03 / Build 567 - stm (stm2@users.sourceforge.net)
 	* fix to E3CommandParser because of changed behaviour of Integer.parseInt in Java 1.7
 	* changing global textfield selection behaviour
 	* fixed clone behaviour
@@ -71,17 +79,17 @@
 2013-06-14 / Build 567 - Fiete (sf@fietefietz.de)
 	* Fixed NPE in TempUnitDialog when faction has no groups.
 
-2013-04-25 / Build 566 - stm (stm_@users.sourceforge.net)
+2013-04-25 / Build 566 - stm (stm2@users.sourceforge.net)
 	* minor behaviour tweaks
 	* resource tweak
 
-2013-04-25 / Build 562 - stm (stm_@users.sourceforge.net)
+2013-04-25 / Build 562 - stm (stm2@users.sourceforge.net)
 	* fix for temp unit dialog
 	* tweak to E3CommandParser
 	* make echeck comments in OrderWriterDialog by default
 	* small tweak for OrderCompleter (GRUPPE)
 
-2013-04-12 / Build 551 - stm (stm_@users.sourceforge.net)
+2013-04-12 / Build 551 - stm (stm2@users.sourceforge.net)
 	* introduced http://magellan-client.sourceforge.net/locations.properties as primary register for URLs concerning Magellan
     * fixed typos in about/update/version dialogs
     
@@ -96,21 +104,21 @@
 2013-01-13 / Build 548 - Fiete (sf@fietefietz.de)
     * Avoid NPE in EMapDetailsPanel after DBLClick
 
-2013-01-08 / Build 538 - stm (stm_@users.sourceforge.net)
+2013-01-08 / Build 538 - stm (stm2@users.sourceforge.net)
     * cleaned up Replacer code, behavior should be unchanged
     * fixed bug where Units' outdated ship or building information persisted
     * replaced new Float by Float.valueIf (hopefully) improving performance a tiny bit
     * handle reports where owner faction does not exist
 
-2012-11-04 / Build 538 - stm (stm_@users.sourceforge.net)
+2012-11-04 / Build 538 - stm (stm2@users.sourceforge.net)
     * out-of-date skills (see Build 526 below) get a style in Unit- and SkillNodeWrappers
 
-2012-10-05 / Build 533 - stm (stm_@users.sourceforge.net)
+2012-10-05 / Build 533 - stm (stm2@users.sourceforge.net)
     * fixed a probable cause of incomplete map drawings (see trac bug #23)
     * fixed a memory leak in mapper
     * removed option "draw map before icons are completely loaded"
 
-2012-10-01 / Build 531 - stm (stm_@users.sourceforge.net)
+2012-10-01 / Build 531 - stm (stm2@users.sourceforge.net)
     * fixed trac "bug" #33: GroupEditor 
     * fixed trac bug #12 (I think); saving of ExtendedCommands
     
@@ -124,33 +132,33 @@
     * disabling 1 E3 Extended Command Parser Test
     * added stop + restart to EresseaRelationFactory.Updater (for use in Scripter-PlugIns)
 
-2012-09-28 / Build 527 - stm (stm_@users.sourceforge.net)
+2012-09-28 / Build 527 - stm (stm2@users.sourceforge.net)
     * updating echeck to version 4.3.4
     
-2012-09-27 / Build 526 - stm (stm_@users.sourceforge.net)
+2012-09-27 / Build 526 - stm (stm2@users.sourceforge.net)
     * remembering units from last week in order to be able to remember skills
     * added block ALTEINHEIT to CR
 
-2012-09-26 / Build 524 - stm (stm_@users.sourceforge.net)
+2012-09-26 / Build 524 - stm (stm2@users.sourceforge.net)
     * changed calculation of skill updates; old unit skills now stay until there is definite info that they're not there any more
 
-2012-09-06 / Build 522 - stm (stm_@users.sourceforge.net)
+2012-09-06 / Build 522 - stm (stm2@users.sourceforge.net)
     * improved behavior of "region/politics" renderer for map and minimap, including fix for trac bug #38
     
-2012-09-04 / Build 521 - stm (stm_@users.sourceforge.net)
+2012-09-04 / Build 521 - stm (stm2@users.sourceforge.net)
     * improved History's and Bookmarkmanager's reaction on "fake" GameDataEvents
 
-2012-07-23 / Build 517 - stm (stm_@users.sourceforge.net)
+2012-07-23 / Build 517 - stm (stm2@users.sourceforge.net)
     * FindDialog can now search for resources, herbs and luxuries
 
-2012-07-08 / Build 514 - stm (stm_@users.sourceforge.net)
+2012-07-08 / Build 514 - stm (stm2@users.sourceforge.net)
     * detect races in orders more accurately
     * preparing inclusion of orders in rules files
     
-2012-06-22 / Build 510 - stm (stm_@users.sourceforge.net)
+2012-06-22 / Build 510 - stm (stm2@users.sourceforge.net)
     * improved, unified and more tested implementation of movement orders
 
-2012-06-16 / Build 509 - stm (stm_@users.sourceforge.net)
+2012-06-16 / Build 509 - stm (stm2@users.sourceforge.net)
     * improved exception handling in Client on load report and quit
     * encapsulated InternatioalizedDataPanel.data
     * OrderSyntaxInspector: "two long orders" reported wrong line
@@ -161,60 +169,60 @@
     * HELFE KÄMPFE  no longer accepted by E3OrderParser
     * created test for E3AOrderParser
     
-2012-06-06 / Build 505 - stm (stm_@users.sourceforge.net)
+2012-06-06 / Build 505 - stm (stm2@users.sourceforge.net)
     * fixed some mouselisteners for more compatible popup menu behavior
     * added STOP option to RoutePlanners, changed context route planner to be compatible with RoutePlanners
     * added person transfer option to TempUnitDialog 
 
-2012-06-02 / Build 503 - stm (stm_@users.sourceforge.net)
+2012-06-02 / Build 503 - stm (stm2@users.sourceforge.net)
     * revamped OrderWriterDialog
     * showing changed item amount even if their is no net change or amount zero
 
-2012-03-15 / Build 497 - stm (stm_@users.sourceforge.net)
+2012-03-15 / Build 497 - stm (stm2@users.sourceforge.net)
     * units can besiege buildings and we show that now!
     
-2012-02-08 / Build 494 - stm (stm_@users.sourceforge.net)
+2012-02-08 / Build 494 - stm (stm2@users.sourceforge.net)
     * fixes to EresseaDate and MaintenanceInspector
     * experimental battle plugin
 
-2012-01-26 / Build 492 - stm (stm_@users.sourceforge.net)
+2012-01-26 / Build 492 - stm (stm2@users.sourceforge.net)
     * fix for parsing orders with multiple TEMP units
 
-2012-01-20 / Build 490 - stm (stm_@users.sourceforge.net)
+2012-01-20 / Build 490 - stm (stm2@users.sourceforge.net)
     * fix for island merging
     * made verbose NullUserInterface shut up
   
-2012-01-18 / Build 487 - stm (stm_@users.sourceforge.net)
+2012-01-18 / Build 487 - stm (stm2@users.sourceforge.net)
     * added Pvblivs' patch to GameDataMerger with beanutils
   
-2012-01-02 / Build 485 - stm (stm_@users.sourceforge.net)
+2012-01-02 / Build 485 - stm (stm2@users.sourceforge.net)
     * added calculation of building and unit upkeep
     * added MaintenanceInspector
     * added money transfer relations for give, reserve and recruitment cost
 
-2011-12-31 / Build 482 - stm (stm_@users.sourceforge.net)
+2011-12-31 / Build 482 - stm (stm2@users.sourceforge.net)
     * fixed most of Kildarion's bugs:
     * improved checking ships with VERLASSE orders
     * improved completion, order parsing, and language support for PREFIX, COMBAT, DESCRIBE, and more
     * improved calculation of trade volume with karavansereis 
     * added explanation to ProfileDialog
     
-2011-12-31 / Build 481 - stm (stm_@users.sourceforge.net)
+2011-12-31 / Build 481 - stm (stm2@users.sourceforge.net)
     * fixed TaskTablePanel sorting bug
     * added warning for unknown units in GIVE orders
     * re-activated tooltips in DetailsPanel
     * added tooltips for potion and spell nodes
     * made OrderReader more robust and faster (Erchamion's bug)
 
-2011-12-30 / Build 480 - stm (stm_@users.sourceforge.net)
+2011-12-30 / Build 480 - stm (stm2@users.sourceforge.net)
     * EMapDetailsPanel: testing "compact mode"
     * add option for unit capacity nodes: show only items of own faction
     * fixing unit sorting (trac bug #59)
     
-2011-09-07 / Build 477 - stm (stm_@users.sourceforge.net)
+2011-09-07 / Build 477 - stm (stm2@users.sourceforge.net)
     * ship cargo calculation fix (trac bug #40)
     
-2011-08-24 / Build 475 - stm (stm_@users.sourceforge.net)
+2011-08-24 / Build 475 - stm (stm2@users.sourceforge.net)
     * fixed island renaming (trac bug #37)
     * search for groups in find dialog (trac bug #34)
     * fixed JVorlage, which was defunct for a loong time
@@ -230,12 +238,12 @@
 2011-05-17 / Build 470 - trickert (thoralf@m84.de)
     * Changed some library methods to not use Swing JDialog
           
-2011-04-13 / Build 470 - stm (stm_@users.sourceforge.net)
+2011-04-13 / Build 470 - stm (stm2@users.sourceforge.net)
     * fix item order in unit nodes (trac bug #23)
     * get rid of BATTLESPEC
     * fix (un)suppression of open tasks, enable suppression with //-comments , enable suppression of battle messages
 
-2011-03-21 / Build 468 - stm (stm_@users.sourceforge.net)
+2011-03-21 / Build 468 - stm (stm2@users.sourceforge.net)
     * show person weight, categorize spells
 
 2011-02-20 / Build 465 - trickert (thoralf@m84.de)
@@ -243,22 +251,22 @@
       if there are other plugins that wait for an event. Then the operation over all needs much longer
       then expected. This was fixed by adding a function to avoid such events in specific situations.
 
-2011-03-01 / Build 465 - stm (stm_@users.sourceforge.net)
+2011-03-01 / Build 465 - stm (stm2@users.sourceforge.net)
     * fixed merging of alliances in E3, handling of alliance groups in various areas and a few alliance bugs on the way
     
-2011-02-22 / Build 464 - stm (stm_@users.sourceforge.net)
+2011-02-22 / Build 464 - stm (stm2@users.sourceforge.net)
     * added "open orders as ISO" option
     * added support for region items (non standard-Eressea)
     * TARNE PARTEI [NICHT] allowed again for E3
     * fix to FileNameGenerator (did this ever work?) 
     
-2011-02-22 / Build 462 - stm (stm_@users.sourceforge.net)
+2011-02-22 / Build 462 - stm (stm2@users.sourceforge.net)
     * added Halle and Gang region types
     * fixed old prices merging
     * fixes for item types without category
     * fixes to E3CommandParser
 
-2011-02-08 / Build 461 - stm (stm_@users.sourceforge.net)
+2011-02-08 / Build 461 - stm (stm2@users.sourceforge.net)
     * changes to order processing/relations/tree updates
     * improvements to box finding in wrapping worlds
     * improved saving and processing of ExtCmds
@@ -267,14 +275,14 @@
     * fixed Trac bug #26
     * fixed some warnings
 
-2010-11-23 / Build 454 - stm (stm_@users.sourceforge.net)
+2010-11-23 / Build 454 - stm (stm2@users.sourceforge.net)
     * fixed bug with unknown tags in CRParser
     
-2010-11-23 / Build 446 - stm (stm_@users.sourceforge.net)
+2010-11-23 / Build 446 - stm (stm2@users.sourceforge.net)
     * implemented experimental message inspector
     * tweaked positioning of the various dialogs
     
-2010-11-22 / Build 444 - stm (stm_@users.sourceforge.net)
+2010-11-22 / Build 444 - stm (stm2@users.sourceforge.net)
     * fixed herb display ("keine Kräuter")
     * added misc relations node to EMapDetails (KONTAKTIERE, SPIONIERE etc.)
     * added coast display to unit ship info
@@ -282,27 +290,27 @@
     * fixed order formatting glitch
     * added spell components to GIVE completion
      
-2010-11-22 / Build 442 - stm (stm_@users.sourceforge.net)
+2010-11-22 / Build 442 - stm (stm2@users.sourceforge.net)
     * fixed merging of wrapped reports; should now be able to merge most reports without creating 
       crazy wrapping regions where they're not needed (see Track ticket #11)
     * added GameDataInspector and related errors
     
-2010-11-17 / Build 439 - stm (stm_@users.sourceforge.net)
+2010-11-17 / Build 439 - stm (stm2@users.sourceforge.net)
     * partial fix of unit sorting
     
-2010-11-15 / Build 437 - stm (stm_@users.sourceforge.net)
+2010-11-15 / Build 437 - stm (stm2@users.sourceforge.net)
     * additional layer of order warnings
     * hiding of multiple problems at once in TaskTable
     * better language support for orderparsing/completion
 
-2010-11-13 / Build 436 - stm (stm_@users.sourceforge.net)
+2010-11-13 / Build 436 - stm (stm2@users.sourceforge.net)
     * deprecated data.rules and expanded GameSpecificRules to include Rules's non-modifying methods.
     * general overhaul of order parsing/processing
     * especially: REKRUTIERE, GIB/RESERVIERE (Materialpool!)
     * added Allanon ERKUNDE order
     * changes to relation/orders update behavior
 
-2010-11-12 / Build 434 - stm (stm_@users.sourceforge.net)
+2010-11-12 / Build 434 - stm (stm2@users.sourceforge.net)
     * better update of title caption and report changed state
     * fixed duplicate counting of income in FactionStatsPanel
     * EMapDetailsPanel: improvements to region resource display and (transfer) relation display
@@ -321,42 +329,42 @@
     * some small bugfixes in Resources for a better settingsDir variable checking (NPE)
     * made ExtCmds plugin useful without GUI 
 
-2010-08-10 / Build 431 - stm (stm_@users.sourceforge.net)
+2010-08-10 / Build 431 - stm (stm2@users.sourceforge.net)
     * changed used problem list for OpenTasks from positive to negative list
     * added inspectors for long orders
 
-2010-08-07 / Build 429 - stm (stm_@users.sourceforge.net)
+2010-08-07 / Build 429 - stm (stm2@users.sourceforge.net)
     * fixed Trac bug #16 (temp unit sorting) and a few issues around id comparison on the way
 
-2010-07-27 / Build 428 - stm (stm_@users.sourceforge.net)
+2010-07-27 / Build 428 - stm (stm2@users.sourceforge.net)
     * tweaked a few nodewrappers and unnecessary object allocation issues
 
-2010-07-27 / Build 427 - stm (stm_@users.sourceforge.net)
+2010-07-27 / Build 427 - stm (stm2@users.sourceforge.net)
     * fixed various bugs and quirks found by FindBugs plugin, mainly unnecessary object creation, unclosed readers, static inner classes and StringBuilders
 
-2010-07-20 / Build 425 - stm (stm_@users.sourceforge.net)
+2010-07-20 / Build 425 - stm (stm2@users.sourceforge.net)
     * added convenience methods for movement and fixed a bug in planShipRoute on the way 
     
-2010-07-19 / Build 424 - stm (stm_@users.sourceforge.net)
+2010-07-19 / Build 424 - stm (stm2@users.sourceforge.net)
     * more methods for ExtendedCommandsHelper
     * fixed Track ticket #14 (unit relation update after report load)
     
-2010-07-17 / Build 421 - stm (stm_@users.sourceforge.net)
+2010-07-17 / Build 421 - stm (stm2@users.sourceforge.net)
     * added profile chooser
     * added getModifiedItemCount and hasScript to ExtendedCommandsHelper
 
-2010-07-08 / Build 418 - stm (stm_@users.sourceforge.net)
+2010-07-08 / Build 418 - stm (stm2@users.sourceforge.net)
     * restored calculation of relations after adding orders (Track ticket #14)
     * restored saving of active region
     * added confirmation dialog for "delete all signs" action
     * tweaked TARNE completion
     * fix to E3 ship speed calculation/merging
 
-2010-06-30 / Build 417 - stm (stm_@users.sourceforge.net)
+2010-06-30 / Build 417 - stm (stm2@users.sourceforge.net)
     * fixed small date issues
     * experimental: display of "hidden" ship cargo
 
-2010-04-30 / Build 415 - stm (stm_@users.sourceforge.net)
+2010-04-30 / Build 415 - stm (stm2@users.sourceforge.net)
     * improved auto-girth-detection to no longer insert wrap regions when region coordinates have changed slightly
     * slightly changed user interaction of ReportMerger
     * moved transformation finding code to own class TransformationFinder
@@ -366,13 +374,13 @@
     * changed logic of regexp finding
     * happy new year!
 
-2010-02-26 / Build 410 - stm (stm_@users.sourceforge.net)
+2010-02-26 / Build 410 - stm (stm2@users.sourceforge.net)
     * added SetGirthDialog
     * renamed ReportTranslator to Transformer and moved to own package
     * enabled correct region selection on click on wrapper in map
     * enabled auto-girth-detection in merger
 
-2010-02-25 / Build 409 - stm (stm_@users.sourceforge.net)
+2010-02-25 / Build 409 - stm (stm2@users.sourceforge.net)
     * added RegionType.unknown and RegionType.thevoid
     * changed some HashMaps to the order-preserving LinkedHashMap
     * added Region.hasUID()
@@ -380,10 +388,10 @@
     * ...enable merging of torus-worlds
     * fixed ObiWan bug in JECheck
 
-2010-02-19 / Build 406 - stm (stm_@users.sourceforge.net)
+2010-02-19 / Build 406 - stm (stm2@users.sourceforge.net)
     * added more log levels to Logger
 
-2010-02-13 / Build 405 - stm (stm_@users.sourceforge.net)
+2010-02-13 / Build 405 - stm (stm2@users.sourceforge.net)
     * encapsulated functions of GameData. units(), factions() etc. now return unmodifiable collections
     * added to GameData interface
     * added support for toroidal worlds, therefor:
@@ -393,18 +401,18 @@
 	* fixed Direction.getDifference(int)
 	* added 2 Warnings for IndexOutOfBoundsExceptions to Regions.java
 
-2010-02-03 / Build 403 - stm (stm_@users.sourceforge.net)
+2010-02-03 / Build 403 - stm (stm2@users.sourceforge.net)
     * fixed equals methods
     * converted Direction to Enum
     * made CoordinateID immutable
 
-2010-02-03 / Build 402 - stm (stm_@users.sourceforge.net)
+2010-02-03 / Build 402 - stm (stm2@users.sourceforge.net)
     * Changes SelectionEvent interface and fixed selection history
     * removed many compiler warnings, especially legacy collection code
     * did complete code cleanup (format code, convert loops, etc.)
     * ...I hope that not too many things are broken...
 
-2010-02-02 / Build 401 - stm (stm_@users.sourceforge.net)
+2010-02-02 / Build 401 - stm (stm2@users.sourceforge.net)
     * activated Streitross>=Pferd in movement related code and move it to MovementEvaluator
     * tried to reduce misuse of region.getData()
     * optimized route planners (better routes and more consistent interface) 
@@ -414,30 +422,30 @@
 2010-??-?? / Build 390
     * RELEASE 2.0.5 
 
-2010-02-01 / Build 383 - stm (stm_@users.sourceforge.net)
+2010-02-01 / Build 383 - stm (stm2@users.sourceforge.net)
     * activated Streitross>=Pferd in movement related code and move it to MovementEvaluator
 
-2009-12-27 / Build 382 - stm (stm_@users.sourceforge.net)
+2009-12-27 / Build 382 - stm (stm2@users.sourceforge.net)
     * changed several EresseaConstants to make distinction between resource and item objects
     * fixed MACHE BURG/MACHE Wache completion and cmpltZaubereSpruch
 
-2009-12-27 / Build 379 - stm (stm_@users.sourceforge.net)
+2009-12-27 / Build 379 - stm (stm2@users.sourceforge.net)
     * finished AlchemyPlanner
     * made E3 luxuries luxuries again
     * made implicit ID type of rules objects explicit (e.g. StringID for Region instead of ID)
 
-2009-12-25 / Build 374 - stm (stm_@users.sourceforge.net)
+2009-12-25 / Build 374 - stm (stm2@users.sourceforge.net)
     * added load button to ExtCmds dock, updateUnit to ExtCmdsHelper, shortcuts for ExtCmds
 
-2009-12-23 / Build 373 - stm (stm_@users.sourceforge.net)
+2009-12-23 / Build 373 - stm (stm2@users.sourceforge.net)
     * added BEZAHLE NICHT command
     * added version upgrade dialog and RELEASENOTES.txt 
 
-2009-12-19 / Build 371 - stm (stm_@users.sourceforge.net)
+2009-12-19 / Build 371 - stm (stm2@users.sourceforge.net)
     * fixed small bug in TaskTable, included owner faction in title bar and a lot of cosmetic 
       changes that shouldn't affect program behavior.
 
-2009-12-18 / Build 369 - stm (stm_@users.sourceforge.net)
+2009-12-18 / Build 369 - stm (stm2@users.sourceforge.net)
     * show E3 mourning; overload maxEntertain with E3 tax income
     * made implicit ID type of report objects explicit (e.g. EntityID for Faction instead of ID)
 
@@ -447,12 +455,12 @@
 2009-12-10 / Build 366 - Fiete <sf@fietefietz.de>
 	* added version to gamedata to write correct version in CRWriter
 
-2009-12-10 / Build 365 - stm (stm_@users.sourceforge.net)
+2009-12-10 / Build 365 - stm (stm2@users.sourceforge.net)
     * fixed E3 capacity bug (compare Eressea(!) bug #1645)
     * added "modified owner" to ships
     * added warning to ControlRelations (GIB KOMMANDO) in some cases
 
-2009-12-09 / Build 364 - stm (stm_@users.sourceforge.net)
+2009-12-09 / Build 364 - stm (stm2@users.sourceforge.net)
     * correction to E3 rules (region workers, wages, ship capacity)
     * now writing resources with amount 0 (like trees, peasants)
 
@@ -461,92 +469,92 @@
 	* EresseaRelationFactory, transferRelation, itemname: get next token if current tokentext is "
 	* updated settings in izpack.xlm
 
-2009-09-24 / Build 359 - stm (stm_@users.sourceforge.net)
+2009-09-24 / Build 359 - stm (stm2@users.sourceforge.net)
     * made Trade-Organizer E3-proof (effectively disabling it)
     * added base conversion dialog
     * added alchemy planner dialog
 
-2009-09-06 / Build 356 - stm (stm_@users.sourceforge.net)
+2009-09-06 / Build 356 - stm (stm2@users.sourceforge.net)
     * changed tooltip selection shortcut (now CTRL+ALT+P) and ATR selection behaviour (CTRL+ALT+T, now with pop-up menu)
 
-2009-09-04 / Build 354 - stm (stm_@users.sourceforge.net)
+2009-09-04 / Build 354 - stm (stm2@users.sourceforge.net)
     * fixed bug #130 (results of spy)
     * fixed bug #320 (horse movement inspector)
     * save orders dialog (see #241) 
     * improved context editing of UnitRelations
     * only comment nodes are editable in details panel
     
-2009-09-03 / Build 353 - stm (stm_@users.sourceforge.net)
+2009-09-03 / Build 353 - stm (stm2@users.sourceforge.net)
     * improved on bug #252
 
-2009-09-02 / Build 351 - stm (stm_@users.sourceforge.net)
+2009-09-02 / Build 351 - stm (stm2@users.sourceforge.net)
     * fixed KAMPFZAUBER completion
 
-2009-08-28 / Build 347 - stm (stm_@users.sourceforge.net)
+2009-08-28 / Build 347 - stm (stm2@users.sourceforge.net)
     * changed ocean winter tiles
     * new ship icons for E3
     * fixed bug with display of outdated resources
     * ProgressBarUI no longer shows with delay
     * putting add orders action in background thread
 
-2009-08-28 / Build 347 - stm (stm_@users.sourceforge.net)
+2009-08-28 / Build 347 - stm (stm2@users.sourceforge.net)
     * fixed "OrderWriter-Options-Bug" (from Wiki: Options were taken from last time dialog was 
       opened, not from current faction)
 
-2009-08-25 / Build 344 - stm (stm_@users.sourceforge.net)
+2009-08-25 / Build 344 - stm (stm2@users.sourceforge.net)
     * fixed bug where MiniMap.Scale == 0
     * fixed decimal base bug (#359)
     
-2009-07-21 / Build 342 - stm (stm_@users.sourceforge.net)
+2009-07-21 / Build 342 - stm (stm2@users.sourceforge.net)
     * fixed bug #357 -- gleichzeitiges Lesen und Schreiben
     * CRWriterDialog-Aktionen in den Hintergrund verlegt.
 
-2009-07-19 / Build 340 - stm (stm_@users.sourceforge.net)
+2009-07-19 / Build 340 - stm (stm2@users.sourceforge.net)
     * fixed alliance merging
     * changed icons for wache to wachstube
 
-2009-07-16 / Build 336 - stm (stm_@users.sourceforge.net)
+2009-07-16 / Build 336 - stm (stm2@users.sourceforge.net)
     * changed completion of spells (without quotes now possible again)
     * BENENNE GEBÄUDE etc. now legal
 
-2009-07-15 / Build 335 - stm (stm_@users.sourceforge.net)
+2009-07-15 / Build 335 - stm (stm2@users.sourceforge.net)
     * fixed NPE in E3APostProcessor
     * fixed bug merging English reports with spells (tc008)
 
-2009-07-10 / Build 329 - stm (stm_@users.sourceforge.net)
+2009-07-10 / Build 329 - stm (stm2@users.sourceforge.net)
     * made peasant and unit maintenace game specific
     * added MACHE Wache completion
     * now parsing escaped characters in strings 
 
-2009-07-10 / Build 328 - stm (stm_@users.sourceforge.net)
+2009-07-10 / Build 328 - stm (stm2@users.sourceforge.net)
     * parsing/displaying/writing of E3A region owner and morale
     * parsing/displaying/writing/completion of E3A alliances
 
-2009-07-09 / Build 326 - stm (stm_@users.sourceforge.net)
+2009-07-09 / Build 326 - stm (stm2@users.sourceforge.net)
     * fixed merging of spells with no parameters (empty syntax)
     * fixed E3A recruit parsing/completing
     * added E3A ALLIANZ parsing/completing
 
-2009-07-02 / Build 323 - stm (stm_@users.sourceforge.net)
+2009-07-02 / Build 323 - stm (stm2@users.sourceforge.net)
     * fixed Mantis bug #355
 
-2009-07-01 / Build 319 - stm (stm_@users.sourceforge.net)
+2009-07-01 / Build 319 - stm (stm2@users.sourceforge.net)
     * e3a is know known as e3; images and ship load fix for e3
     * fixes for StringCompleter
 
-2009-06-28 / Build 317 - stm (stm_@users.sourceforge.net)
+2009-06-28 / Build 317 - stm (stm2@users.sourceforge.net)
     * small change to file preferences, fixed GenericRules.getBuildingType...
 
-2009-06-27 / Build 316 - stm (stm_@users.sourceforge.net)
+2009-06-27 / Build 316 - stm (stm2@users.sourceforge.net)
     * small change to semantics of RoutePlanner/RoutingDialog options
     * ship range made game specific
     * added support of E3A ship types
 
-2009-06-21 / Build 314 - stm (stm_@users.sourceforge.net)
+2009-06-21 / Build 314 - stm (stm2@users.sourceforge.net)
     * clean-up of lib, doc; moved licenses to doc, removed metouia and winlaf, updated commons-httpclient, idw
     * upgraded tests to JUnit 4; added EresseaOrderParserTest
     
-2009-06-18 / Build 310 - stm (stm_@users.sourceforge.net)
+2009-06-18 / Build 310 - stm (stm2@users.sourceforge.net)
     * OrderParser/OrderCompleter
     	+ improved string parsing (OrderToken.TT_...
     	+ improved parsing of DEFAULT
@@ -557,29 +565,29 @@
     * improved implementation of GenericRules
     * added icons for stark, unbekannt-detail, portal 
 
-2009-06-11 / Build 301 - stm (stm_@users.sourceforge.net)
+2009-06-11 / Build 301 - stm (stm2@users.sourceforge.net)
     * refactored EresseaOrderParser for easier subclassing 
     * added E3A classes
 
-2009-06-11 / Build 300 - stm (stm_@users.sourceforge.net)
+2009-06-11 / Build 300 - stm (stm2@users.sourceforge.net)
     * improving OrderParser: PFLANZE, OPTION, SABOTIERE, REKRUTIERE, LERNE
     * improved selection of Inspectors (ProblemType)
     * experimental error highlighting in OrderEditor
     * quicker construction of OptionsPanel (esp. IconStyleSetPreferenceAdapter)
     * unified behavior of CRParser on unknown tags
     
-2009-06-05 / Build 298 - stm (stm_@users.sourceforge.net)
+2009-06-05 / Build 298 - stm (stm2@users.sourceforge.net)
     * overhaul of TaskTablePanel etc.
     * removed a bunch of compiler warnings
     * added a few icons
 
-2009-06-05 / Build 296 - stm (stm_@users.sourceforge.net)
+2009-06-05 / Build 296 - stm (stm2@users.sourceforge.net)
     * Removed many warnings, mostly concerning Java generics
     * Most notably SelectionEvent/SelectionListener interface and OrdererdHashtable were slightly changed
     * added class CollectionFilters, especially useful for filtering selections
     * listing persons per race as sub-node of persons in Details
 
-2009-06-04 / Build 295 - stm (stm_@users.sourceforge.net)
+2009-06-04 / Build 295 - stm (stm2@users.sourceforge.net)
     * fixed Rules.skill.Waffenloser Kampf and similar in Resources
 
 2009-06-02 / Build 294 - Thoralf (thoralf@m84.de)
@@ -588,30 +596,30 @@
 2009-06-01 / Build 293 - Thoralf (thoralf@m84.de)
     * Release 2.0.4 published
 
-2009-05-31 / Build 290 - stm (stm_@users.sourceforge.net)
+2009-05-31 / Build 290 - stm (stm2@users.sourceforge.net)
     * added new QuickFindDialog (STRG+G)
 
-2009-05-26 / Build 289 - stm (stm_@users.sourceforge.net)
+2009-05-26 / Build 289 - stm (stm2@users.sourceforge.net)
     * improved progress indicator for orderwriter
 
-2009-05-26 / Build 286 - stm (stm_@users.sourceforge.net)
+2009-05-26 / Build 286 - stm (stm2@users.sourceforge.net)
 	* added regexp and match case option to find dialog
 	* CRWriter: unit skills, orders, items are exported independently of unit details option; added presets for dialog
 
-2009-05-26 / Build 286 - stm (stm_@users.sourceforge.net)
+2009-05-26 / Build 286 - stm (stm2@users.sourceforge.net)
 	* bug  #317,#318 (faction stats panel, income)
 	* bug #234 (multi editor selection)
 	* bug #306 (faction stats selection)
 	* Replacers descriptions
 
-2009-05-25 / Build 283 - stm (stm_@users.sourceforge.net)
+2009-05-25 / Build 283 - stm (stm2@users.sourceforge.net)
 	* tweaked treatment of "edit all" action
 	* tweaked context menu stuff
 
 2009-05-23 / Build 282 - Fiete <sf@fietefietz.de>
 	* changed Interface for MapContextMenuProvider
 
-2009-05-22 / Build 281 - stm (stm_@users.sourceforge.net)
+2009-05-22 / Build 281 - stm (stm2@users.sourceforge.net)
     * adding multiple orders now in right order
     * changed UnitContextMenuProvider Interface
     * fixed #329 (right click works on wrong unit) 
@@ -620,7 +628,7 @@
 	* added comment "path is X regions long" to pathfinderContextMenu
 	* set weight of RdfF from 1 to 0
 
-2009-05-20 / Build 275 - stm (stm_@users.sourceforge.net)
+2009-05-20 / Build 275 - stm (stm2@users.sourceforge.net)
     * refined ShipInspector to check for crew
     * tweaked suppression of problems, especially from ShipInspector
 	* improved SkillInspector
@@ -628,7 +636,7 @@
 2009-05-01 / Build 274 - Fiete <sf@fietefietz.de>
 	* added Drachenblut to items (weight is 1 WU!) in eressea.cr
 	
-2009-04-23 / Build 273 - stm (stm_@users.sourceforge.net)
+2009-04-23 / Build 273 - stm (stm2@users.sourceforge.net)
     * added SkillInspector for decreasing skills
     * fixed EresseaGameSpecificRules to include ocean in landable regions
 
@@ -641,7 +649,7 @@
     * created a GameSpecificRules interface to make it possible to calculate game
       specific data like max workers or max entertain
 
-2009-04-15 / Build 269 - stm (stm_@users.sourceforge.net)
+2009-04-15 / Build 269 - stm (stm2@users.sourceforge.net)
     * fixed a few typos and translations
     * added info dialog to ARR options dialog
 
@@ -653,7 +661,7 @@
 2009-04-07 / Build 267 - Fiete <sf@fietefietz.de>
     * MapContextMenu improved: Paths (NACH, ROUTE)
 
-2009-04-07 / Build 266 - stm (stm_@users.sourceforge.net)
+2009-04-07 / Build 266 - stm (stm2@users.sourceforge.net)
     * added options to cr export dialog
 
 2009-02-26 / Build 265 - Thoralf <thoralf@m84.de>
@@ -671,12 +679,12 @@
     * fixed #0349: unmodified(modified) Ressources in FactionStats and other
     * fixed #0352: real race of demons was not seen in Faction Stats after merge
 
-2008-02-14 / Build 260 - stm (stm_@users.sourceforge.net)
+2008-02-14 / Build 260 - stm (stm2@users.sourceforge.net)
     * fixed broken Resource merging
     * added iceberg icons
     * fixed bug #351
     
-2008-02-14 / Build 257 - stm (stm_@users.sourceforge.net)
+2008-02-14 / Build 257 - stm (stm2@users.sourceforge.net)
     * added Visibility enum
     * fixed visibility merging
     * added Rendering of future paths
@@ -706,7 +714,7 @@
     * added Eisscholle as isOcean type (Allanon specific)
     * added some Allanon specific resource keys
 
-2008-11-17 / Build 247 - stm (stm_@users.sourceforge.net)
+2008-11-17 / Build 247 - stm (stm2@users.sourceforge.net)
     * fixed UnitContainer.getOwner() bug #340 Offene Probleme unvollständig wenn Schiff ohne Besitzer vorhanden
     * fixed small bug concerning syntax of PIRATERIE and HELFE BEWACHE
 
@@ -732,7 +740,7 @@
 2008-09-16 / Build 240 - Fiete  <Fiete@users.sourceforge.net>
     * fixed # 311 + #312
     
-2008-09-14 / Build 239 - stm (stm_@users.sourceforge.net)
+2008-09-14 / Build 239 - stm (stm2@users.sourceforge.net)
     * tweaked behaviour when user tries to add orders of unknown faction
     * removed unused "Zeige Warnhinweis" in icon options
     * added option to show only two highest skill icons in UnitNodeWrapper
@@ -768,7 +776,7 @@
 2008-08-23 / Build 231 - Fiete  <Fiete@users.sourceforge.net>
     * fixed #298: NPE if no peasants in region
 
-2008-08-23 / Build 231 - stm (stm_@users.sourceforge.net)
+2008-08-23 / Build 231 - stm (stm2@users.sourceforge.net)
     * fixed Faction.getAllies NPE bug and NPE bug on ships without owner
     * fixed bug #297  (sort of)
     * added options to TaskTable ("restrict to active region" and "restrict to selection")
@@ -783,7 +791,7 @@
 2008-08-08 / Build 228 - Fiete  <Fiete@users.sourceforge.net>
     * (again) small change in use of "filterProblems" in TaskTablePanel
 
-2008-08-07 / Build 227 - stm (stm_@users.sourceforge.net)
+2008-08-07 / Build 227 - stm (stm2@users.sourceforge.net)
     * added ClosingListener and optional non-modality to ProgressBarUI
     * made Cache (used in Unit, Unitcontainer...) a SoftReference
     * added "ignore problem" feature to TaskTable (context menu)
@@ -809,17 +817,17 @@
 2008-08-04 / Build 225 - Fiete  <Fiete@users.sourceforge.net>
     * fixed UnitContainer.getModifiedUnitContainer (until now only ships recognized)
 
-2008-08-04 / Build 225 - stm (stm_@users.sourceforge.net)
+2008-08-04 / Build 225 - stm (stm2@users.sourceforge.net)
     * replaced some occurences of "Silber" by EresseaConstants.I_SILBER
     
 2008-08-03 / Build 224 - Thoralf (thoralf@m84.de)
     * Added a close button to ExtCmds tabs
     * Some small bugfixes (for ExtCmds)
 
-2008-07-30 / Build 223 - stm (stm_@users.sourceforge.net)
+2008-07-30 / Build 223 - stm (stm2@users.sourceforge.net)
     * done feature #163 (AutoCompletion)
     
-2008-07-30 / Build 222 - stm (stm_@users.sourceforge.net)
+2008-07-30 / Build 222 - stm (stm2@users.sourceforge.net)
     * additional fixes to options dialogs
     * fixed bug #283, floats in ARR
     * fixed #243 (AutoCompletion)
@@ -831,7 +839,7 @@
 2008-07-30 / Build 221 - Fiete  <Fiete@users.sourceforge.net>
     * Rules: Schlangenkopf->Seeschlangenkopf
 
-2008-07-29 / Build 220 - stm (stm_@users.sourceforge.net)
+2008-07-29 / Build 220 - stm (stm2@users.sourceforge.net)
     * added "remove orders" dialog to unit context menu
     * compactified options layout
     * added class AbstractPreferencesAdapter for unified layout of option panels
@@ -878,15 +886,15 @@
     * fixed AstralMergeEvaluator (region.schems() )
     * try to fix Bug #285,#287 mergeNPE when merging regions of buildings
 
-2008-06-28 / Build 213 - stm (stm_@users.sourceforge.net)
+2008-06-28 / Build 213 - stm (stm2@users.sourceforge.net)
     * fixed issue in ARR, see bug #283 and notes to build 146 below
     * fixed issue with order completion of "@"
     
-2008-06-08 / Build 212 - stm (stm_@users.sourceforge.net)
+2008-06-08 / Build 212 - stm (stm2@users.sourceforge.net)
     * fixed #275 (visibility), #273 (runde of RESOURCE)
     * fixed #251
 
-2008-06-08 / Build 211 - stm (stm_@users.sourceforge.net)
+2008-06-08 / Build 211 - stm (stm2@users.sourceforge.net)
     * fixed #160, #162, #178 (order completion)
     * changed shiptypecomparator to sort ships by faction
     * added "guised as" level for unit grouping
@@ -1027,10 +1035,10 @@
     * Bug #165 fixed - Autocomplete: ZAUBERE REGION with faction coordinate translation
     * Bug #164 fixed - Message rendering only done if required
 
-2008-04-06 / Build 182 - stm (stm_@users.sourceforge.net)
+2008-04-06 / Build 182 - stm (stm2@users.sourceforge.net)
     * started fixing #154, #160, #161, #162 
 
-2008-04-02 / Build 181 - stm (stm_@users.sourceforge.net)
+2008-04-02 / Build 181 - stm (stm2@users.sourceforge.net)
     * Tweaked FactionstatsDialog interface, amended help 
     
 2008-04-02 / Build 181 - Thoralf (thoralf@m84.de)
@@ -1039,7 +1047,7 @@
     * fixed some minor bugs
     * new english translations for Magellan help
 
-2008-04-02 / Build 180 - stm (stm_@users.sourceforge.net)
+2008-04-02 / Build 180 - stm (stm2@users.sourceforge.net)
     * Astral merge bug fixed (Feuerwand equivalent to Ozean in OneRegion-Thingy)
     * Translation dialog nicer
 
@@ -1049,7 +1057,7 @@
     * build.xml ready for 2.0 launch.
     * Message Text colors uses now the foreground color instead of background color and notes are bold.
 
-2008-03-31 / Build 178 - stm (stm_@users.sourceforge.net)
+2008-03-31 / Build 178 - stm (stm2@users.sourceforge.net)
     * added PreferencesAdapter for TaskTable
 
 2008-03-25 / Build 177 - Thoralf (thoralf@m84.de)
@@ -1079,13 +1087,13 @@
 2008-03-14 / Build 172 - Thoralf (thoralf@m84.de)
     * About Image has now a texture background
 
-2008-03-04 / Build 171 - stm (stm_@users.sourceforge.net)
+2008-03-04 / Build 171 - stm (stm2@users.sourceforge.net)
     * StartWindow is now a JFrame (#136)
 
 2008-03-03 / Build 167 - Thoralf (thoralf@m84.de)
     * Bugfix for NPE in extcmds (getCData())
 
-2008-03-03 / Build 166 - stm (stm_@users.sourceforge.net)
+2008-03-03 / Build 166 - stm (stm2@users.sourceforge.net)
     * AskForPasswordDialog: owner faction first
     * Added Waffenloser Kampf to rules/eressea.cr
     * changed default mailto to eressea-server@eressea.kn-bremen.de
@@ -1135,15 +1143,15 @@
     * remmoved buildingcellrenderer - preference adapter
     * fixed update of level-cmbBox of mapcontextmenu is used
     
-2008-02-19 / Build 153 - stm (stm_@users.sourceforge.net) 
+2008-02-19 / Build 153 - stm (stm2@users.sourceforge.net) 
     * Fixed auto-detection of plugins
     * modified for external resources preferences adapter and added plugin preferences adapter 
 
-2008-02-18 / Build 151 - stm (stm_@users.sourceforge.net) 
+2008-02-18 / Build 151 - stm (stm2@users.sourceforge.net) 
     * OrderWriter includes Magellan version
     * Simplified ECheck dialog
     
-2008-02-17 / Build 150 - stm (stm_@users.sourceforge.net) 
+2008-02-17 / Build 150 - stm (stm2@users.sourceforge.net) 
     * moved "root handles option"
     
 2008-02-16 / Build 150 - Thoralf (thoralf@m84.de)
@@ -1192,7 +1200,7 @@
     * changed ordering of ships from nameComparator to new ShipTypeComparator (do we need this optional?)
     * added new short cut CTRL +/- for zooming the map
 
-2008-01-28 / Build 144 - stm (stm_@users.sourceforge.net) 
+2008-01-28 / Build 144 - stm (stm2@users.sourceforge.net) 
     * fixed nasty little bug with alliances
     * corrected a few illegal characters
     * fixed bug #144
@@ -1203,7 +1211,7 @@
     * some comments on ReportMerger
     * removed some unused imports
 
-2008-01-23 / Build 143 - stm (stm_@users.sourceforge.net) 
+2008-01-23 / Build 143 - stm (stm2@users.sourceforge.net) 
     * fixed "NPE on save on quit" bug
     * added icons for feuerwand (border) and irrlichter (border)
     * tweaked border sizes of root window
@@ -1220,7 +1228,7 @@
     * fixed Message.Attributes (regions) in CRParser when changing origin
     * changed Message.toString to .getText.
     
-2008-01-21 / Build 139 - stm (stm_@users.sourceforge.net) 
+2008-01-21 / Build 139 - stm (stm2@users.sourceforge.net) 
     * fixed empty backup file bug
     
 2008-01-20 Fiete (sf@fietefietz.de)
@@ -1233,7 +1241,7 @@
   * added magellan-dir/magellan-plugins to searchpaths
   * added magellan-dir/plugins to RessourcePaths
 
-2008-01-16  stm (stm_@users.sourceforge.net)
+2008-01-16  stm (stm2@users.sourceforge.net)
     * added low memory test and dialog after every loading of a report
     * reduced borders sizes of components of root window
     * added "hide tabs" to desktop menu
@@ -1252,11 +1260,11 @@
 2008-01-15 Thoralf (thoralf@m84.de)
     * added setOrder(String) shortcut in Extended Command PlugIn.
     
-2008-01-11  stm (stm_@users.sourceforge.net)
+2008-01-11  stm (stm2@users.sourceforge.net)
     * visibility of LanguageDialog and Version Dialog
     * Alliances in faction stats panel
     
-2008-01-11  stm (stm_@users.sourceforge.net)
+2008-01-11  stm (stm2@users.sourceforge.net)
     * removed src-ext (moved to top-level magellan-ext)
     * changed default of TradeTextCellRenderer to "sell mode"
     * improved start scripts
@@ -1265,14 +1273,14 @@
 2008-01-09 Thoralf (thoralf@m84.de)
     * added more debug informations in Extended Command Plugin, if execution of script fails.
     
-2008-01-08  stm (stm_@users.sourceforge.net)
+2008-01-08  stm (stm2@users.sourceforge.net)
     * replaced a few "return new List()" by return Collections.emptyList() 
 
-2008-01-02  stm (stm_@users.sourceforge.net)
+2008-01-02  stm (stm2@users.sourceforge.net)
     * moved two dialogs to package client.swing
     * added dialog for setting of report owner and translations
 
-2007-12-26  stm (stm_@users.sourceforge.net)
+2007-12-26  stm (stm2@users.sourceforge.net)
     * improved origin translation in Reportmerger, including CR-I/O
 
 2007-12-24 Darcduck (sf.net@duckstein.net)
@@ -1287,7 +1295,7 @@
 2007-12-20 Darcduck (sf.net@duckstein.net)
     * Added BackgroundImageRenderer including properties dialog
 
-2007-12-19  stm (stm_@users.sourceforge.net)
+2007-12-19  stm (stm2@users.sourceforge.net)
     * restructured ReportMerger but only little changes in behaviour
     * (re-)implemented owner faction = first faction in report (affects faction sorting and FactionStatsPanel, too)
     * implemented real space and astral space transformation for owner party to other parties
@@ -1336,7 +1344,7 @@
 2007-12-13 Fiete (sf@fietefietz.de)
     * added copy shiplist to unitcontainermenu
 
-2007-12-13  stm (stm_@users.sourceforge.net)
+2007-12-13  stm (stm2@users.sourceforge.net)
     * improved debugging output
 
 2007-12-13 Fiete (sf@fietefietz.de)
@@ -1361,7 +1369,7 @@
 2007-12-11 Darcduck (sf.net@duckstein.net)
     * fixed merging of unit weight
     
-2007-12-11  stm (stm_@users.sourceforge.net)
+2007-12-11  stm (stm2@users.sourceforge.net)
     * fixed DURCHREISE messages not displaying
     
 2007-12-10 Darcduck (sf.net@duckstein.net)
@@ -1371,7 +1379,7 @@
 2007-12-10 Fiete (sf@fietefietz.de)
     * again reworked merging of borders
 
-2007-12-09  stm (stm_@users.sourceforge.net)
+2007-12-09  stm (stm2@users.sourceforge.net)
     * fixed language dialog
     * fixed problem with 0-length message texts in LineWrapCellRenderer
     * made progress bar more foolproof
@@ -1392,7 +1400,7 @@
 2007-12-03 Darcduck (sf.net@duckstein.net)
     * Fixed some issues with message rendering reported by solthar
 
-2007-12-02  stm (stm_@users.sourceforge.net)
+2007-12-02  stm (stm2@users.sourceforge.net)
     * OrderEditor now always gets focus after click
     * MagellanShipImpl now returns -1 if cargo unknown
     * fixed bug in getModifiedLoad for unknown cargo
@@ -1568,7 +1576,7 @@
     * added a feature to verify and show all faction race
     * added a bugfix for island detection
 
-2007-08-10  stm (stm_@users.sourceforge.net)
+2007-08-10  stm (stm2@users.sourceforge.net)
     * added BOMReader (for reading files with Unicode BOM)
     * added support for SMTP authentication
   
@@ -1583,10 +1591,10 @@
     * Open the Details View of the New Temp Unit dialog by default
     * Removed some code (Frame- and Layout-Mode) and some warnings...
 
-2007-08-10  stm (stm_@users.sourceforge.net)
+2007-08-10  stm (stm2@users.sourceforge.net)
     * deactivated undo
   
-2007-08-08 stm (stm_@users.sourceforge.net)
+2007-08-08 stm (stm2@users.sourceforge.net)
     * redid loading of editors in MultiEditorOrderEditorList (bug #78) and cleaned up code
     * added optional path argument to SelectionEvent for better identification of selections
     * fixed temp unit bug in SelectionHistory
@@ -1598,7 +1606,7 @@
     * changed unit context menu (bug #9)
     * updated build number (66)
     
-2007-08-05 stm (stm_@users.sourceforge.net)
+2007-08-05 stm (stm2@users.sourceforge.net)
     * fixed bug of not disappearing merge progress dialog
     * improved autoexpand/collapse in region overview
     * improved merging of spies
@@ -1606,7 +1614,7 @@
     * added options for RESERVIERE auto completion
     * added faction column and improved refreshing for TaskTablePanel
     
-2007-08-04 stm (stm_@users.sourceforge.net)
+2007-08-04 stm (stm2@users.sourceforge.net)
     * added AttackInspector
     * integrated TaskPanel in docking
     * several spaces added (#83)
@@ -1616,7 +1624,7 @@
     * added carriers.gif
     * updated 3 more icons (Khadar)
     
-2007-07-30 stm (stm_@users.sourceforge.net)
+2007-07-30 stm (stm2@users.sourceforge.net)
     * minor errors in eressea.cr: rusty items, Samen, Nestwürme
     * new item category "silver"
     * minor bug in FactionStatsPanel
@@ -1625,7 +1633,7 @@
     * Added Khadars icons
     * Renamed tobig to toobig in check-panel
 
-2007-07-29 stm (stm_@users.sourceforge.net)
+2007-07-29 stm (stm2@users.sourceforge.net)
     * Added Mallornsamen to eressea.cr and adjusted talent level
     * improved support for echeck as dockable panel
     * added silver as top level item to faction stats

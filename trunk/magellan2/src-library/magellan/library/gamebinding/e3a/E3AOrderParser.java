@@ -283,11 +283,11 @@ public class E3AOrderParser extends EresseaOrderParser {
       OrderToken t = getNextToken();
 
       if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
-        retVal = readBewacheNicht(t);
+        getOrder().setNot(true);
+        retVal = readBezahleNicht(t);
       } else {
         getOrder().setNot(false);
         retVal = false;
-
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
@@ -296,12 +296,25 @@ public class E3AOrderParser extends EresseaOrderParser {
       return retVal;
     }
 
-    protected boolean readBewacheNicht(OrderToken token) {
+    protected boolean readBezahleNicht(OrderToken token) {
+      boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
-      getOrder().setNot(true);
+      OrderToken t = getNextToken();
 
-      return checkNextFinal();
+      if (isID(t.getText(), false)) {
+        t.ttype = OrderToken.TT_ID;
+        EntityID target = EntityID.createEntityID(t.getText(), getData().base);
+        getOrder().setBuilding(target);
+        retVal = readFinalID(t);
+      } else {
+        retVal = checkFinal(t);
+      }
+
+      if (getCompleter() != null && !t.followedBySpace()) {
+        getCompleter().cmpltBezahleNicht();
+      }
+      return retVal;
     }
   }
 

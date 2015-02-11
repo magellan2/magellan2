@@ -85,7 +85,7 @@ ORDER "GUARD"
 "GUARD";locale_en
 
 ORDER "PAY"
-"BEZAHLE NICHT";syntax
+"BEZAHLE NICHT [b1]";syntax
 "BEZAHLE";locale_de
 "BEZAHLEN";locale_de
 "PAY";locale_en
@@ -2328,6 +2328,7 @@ REGIONTYPES
 BUILDINGTYPE "Leuchtturm"
 "Leuchtturm";name
 3;level
+1;maintainedbyregionowner
 MAINTENANCE
 100;Silber
 RAWMATERIALS
@@ -2466,6 +2467,7 @@ BUILDINGTYPE "Hafen"
 "Hafen";name
 3;level
 25;maxsize
+1;maintainedbyregionowner
 MAINTENANCE
 250;Silber
 RAWMATERIALS
@@ -2620,6 +2622,7 @@ BUILDINGTYPE "Marktplatz"
 "Marktplatz";name
 3;level
 10;maxsize
+1;maintainedbyregionowner
 MAINTENANCE
 200;Silber
 RAWMATERIALS

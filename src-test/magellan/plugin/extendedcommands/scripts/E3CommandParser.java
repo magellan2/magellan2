@@ -703,7 +703,7 @@ public class E3CommandParser {
     return !trimmed.startsWith(PCOMMENTOrder)
         && !trimmed.startsWith(COMMENTOrder)
         && (clear == ALLOrder || (clear == LONG && world.getGameSpecificStuff().getOrderChanger()
-        .isLongOrder(order)))
+            .isLongOrder(order)))
         && (clearPrefix == null || clearPrefix.length() == 0 || trimmed.startsWith(clearPrefix));
   }
 
@@ -1402,7 +1402,7 @@ public class E3CommandParser {
       if (u.getFaction() != currentUnit.getFaction()) {
         if (!(allowedUnits.containsKey(u.getFaction()) && (allowedUnits.get(u.getFaction())
             .contains(u.getID()) || allowedUnits.get(u.getFaction()).contains(
-                currentRegion.getZeroUnit().getID())))) {
+            currentRegion.getZeroUnit().getID())))) {
           if (!(requiredUnits.containsKey(u.getFaction()) && requiredUnits.get(u.getFaction())
               .contains(u.getID()))) {
             List<Unit> list = warnings.get(u.getFaction());
@@ -1509,7 +1509,7 @@ public class E3CommandParser {
     int workers = Math.min(maxWorkers, currentRegion.getPeasants());
     Skill entertaining =
         currentUnit
-        .getModifiedSkill(world.getRules().getSkillType(EresseaConstants.S_UNTERHALTUNG));
+            .getModifiedSkill(world.getRules().getSkillType(EresseaConstants.S_UNTERHALTUNG));
     Skill taxing =
         currentUnit.getModifiedSkill(world.getRules().getSkillType(
             EresseaConstants.S_STEUEREINTREIBEN));
@@ -3059,7 +3059,7 @@ public class E3CommandParser {
                 addNewOrder(scriptStart
                     + "Lerne "
                     + world.getRules().getSkillType(EresseaConstants.S_WAHRNEHMUNG.toString())
-                    .getName() + " 10", true);
+                        .getName() + " 10", true);
               } else if (command.equals("Depot")) {
                 addNewOrder(scriptStart + "Benoetige " + ALLOrder, true);
               } else if (command.equals("Versorge")) {
@@ -3399,6 +3399,70 @@ public class E3CommandParser {
   }
 
   /**
+   * Private utility script written to handle unwanted orders. Not interesting for the general
+   * public.
+   *
+   * @param faction
+   * @param region
+   */
+  public void fixTwoLongOrders(Faction faction, Region region) {
+    if (faction == null)
+      throw new NullPointerException();
+    currentFactions = Collections.singletonMap(faction, 1);
+
+    initLocales();
+
+    if (region == null) {
+      // comment out the following line if you don't have the newest nightly build of Magellan
+      helper.getUI().setMaximum(world.getRegions().size());
+
+      // call self for all regions
+      for (Region r : world.getRegions()) {
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(r.toString(), ++progress);
+
+        fixTwoLongOrders(faction, r);
+      }
+      return;
+    }
+
+    // loop for all units of faction
+    for (Unit u : region.units()) {
+      if (faction.getID().equals(u.getFaction().getID())) {
+        // comment out the following line if you don't have the newest nightly build of Magellan
+        helper.getUI().setProgress(region.toString() + " - " + u.toString(), progress);
+
+        currentUnit = u;
+        newOrders = new ArrayList<String>();
+        removedOrderPatterns = new ArrayList<String>();
+        changedOrders = false;
+        error = -1;
+
+        int hasLong = 0;
+        for (Order command : u.getOrders2()) {
+          currentOrder = command.getText();
+          if (command.isLong()) {
+            if (++hasLong > 1) {
+              addNewOrder(COMMENTOrder + " " + currentOrder, true);
+              changedOrders = true;
+            } else {
+              addNewOrder(currentOrder, false);
+            }
+          } else {
+            addNewOrder(currentOrder, false);
+          }
+        }
+        if (changedOrders) {
+          currentUnit.setOrders(newOrders);
+        }
+        notifyMagellan(currentUnit);
+
+        newOrders = null;
+      }
+    }
+  }
+
+  /**
    * Again, a very specialized procedure
    */
   protected void markTRound(int round) {
@@ -3411,15 +3475,15 @@ public class E3CommandParser {
   }
 
   private void setNamespaces(MagellanPlugIn plugin, String namespaces) throws SecurityException,
-  IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-  InvocationTargetException {
+      IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
+      InvocationTargetException {
     ExtendedCommandsHelper.invoke(plugin, "setNamespaces", new Class[] { String.class },
         new Object[] { namespaces });
   }
 
   private String getNamespaces(MagellanPlugIn plugin) throws SecurityException,
-  IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
-  InvocationTargetException {
+      IllegalArgumentException, NoSuchMethodException, IllegalAccessException,
+      InvocationTargetException {
     return (String) ExtendedCommandsHelper.invoke(plugin, "getNamespacesString", new Class[] {},
         new Object[] {});
   }
@@ -3822,15 +3886,15 @@ class Warning {
   private List<Flag> flags = new ArrayList<Flag>();
 
   public static final Flag[] ALL_FLAGS = {
-    new Flag(true, E3CommandParser.W_AMOUNT, E3CommandParser.C_AMOUNT),
-    new Flag(true, E3CommandParser.W_ARMOR, E3CommandParser.C_ARMOR),
-    new Flag(true, E3CommandParser.W_FOREIGN, E3CommandParser.C_FOREIGN),
-    new Flag(true, E3CommandParser.W_SHIELD, E3CommandParser.C_SHIELD),
-    new Flag(true, E3CommandParser.W_SKILL, E3CommandParser.C_SKILL),
-    new Flag(true, E3CommandParser.W_UNIT, E3CommandParser.C_UNIT),
-    new Flag(true, E3CommandParser.W_WEAPON, E3CommandParser.C_WEAPON),
-    new Flag(false, E3CommandParser.W_FOREIGN, E3CommandParser.C_FOREIGN),
-    new Flag(false, E3CommandParser.W_HIDDEN, E3CommandParser.C_HIDDEN) };
+      new Flag(true, E3CommandParser.W_AMOUNT, E3CommandParser.C_AMOUNT),
+      new Flag(true, E3CommandParser.W_ARMOR, E3CommandParser.C_ARMOR),
+      new Flag(true, E3CommandParser.W_FOREIGN, E3CommandParser.C_FOREIGN),
+      new Flag(true, E3CommandParser.W_SHIELD, E3CommandParser.C_SHIELD),
+      new Flag(true, E3CommandParser.W_SKILL, E3CommandParser.C_SKILL),
+      new Flag(true, E3CommandParser.W_UNIT, E3CommandParser.C_UNIT),
+      new Flag(true, E3CommandParser.W_WEAPON, E3CommandParser.C_WEAPON),
+      new Flag(false, E3CommandParser.W_FOREIGN, E3CommandParser.C_FOREIGN),
+      new Flag(false, E3CommandParser.W_HIDDEN, E3CommandParser.C_HIDDEN) };
 
   public static boolean initialized = false;
   public static Map<String, Flag> NAMES;

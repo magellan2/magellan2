@@ -2273,6 +2273,26 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
+   * Test method for {@link E3CommandParser#cleanShortOrders(Faction, magellan.library.Region)}.
+   */
+  @Test
+  public final void testCleanTwoLong() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Loeschen $kurz");
+    unit.addOrder("LERNE Segeln");
+    unit.addOrder("NACH no");
+    unit.addOrder("; NACH no");
+    unit.addOrder("@RESERVIERE 10 Silber");
+    parser.fixTwoLongOrders(unit.getFaction(), null);
+    assertEquals(5, unit.getOrders2().size());
+    assertOrder("// $cript Loeschen $kurz", unit, 0);
+    assertOrder("LERNE Segeln", unit, 1);
+    assertOrder("; NACH no", unit, 2);
+    assertOrder("; NACH no", unit, 3);
+    assertOrder("@RESERVIERE 10 Silber", unit, 4);
+  }
+
+  /**
    * Test method for {@link E3CommandParser#markTRound(int)}.
    */
   @Test
@@ -2370,10 +2390,24 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    */
   @Test
   public final void testCommandCollector() {
-    unit.addOrder("// $cript Sammler 5");
+    data.getDate().setDate(200);
 
+    unit.clearOrders();
+    unit.addOrder("// $cript Sammler 5");
     parser.execute(unit.getFaction());
-    assertOrder("FORSCHE KR훃TER", unit, 3);
+    assertOrder("FORSCHE KR훃TER", unit, 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Sammler 5");
+    parser.execute(unit.getFaction());
+    assertOrder("FORSCHE KR훃TER", unit, 2);
+
+    data.getDate().setDate(201);
+    unit.getRegion().setHerbAmount("viele");
+    unit.clearOrders();
+    unit.addOrder("// $cript Sammler 5");
+    parser.execute(unit.getFaction());
+    assertOrder("MACHE KR훃TER", unit, 2);
 
     unit.clearOrders();
     unit.getRegion().setType(getRules().getRegionType(EresseaConstants.RT_OCEAN));

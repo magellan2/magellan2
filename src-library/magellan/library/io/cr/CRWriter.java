@@ -235,13 +235,13 @@ public class CRWriter extends BufferedWriter {
     if (str.indexOf('\n') != -1) {
       repairString = true;
       CRWriter.log
-      .warn("CRWriter.writeQuotedString(): argument str contains \'\\n\'. Splitting line.");
+          .warn("CRWriter.writeQuotedString(): argument str contains \'\\n\'. Splitting line.");
     }
 
     if (str.indexOf('\r') != -1) {
       repairString = true;
       CRWriter.log
-      .warn("CRWriter.writeQuotedString(): argument str contains \'\\r\'. Splitting line.");
+          .warn("CRWriter.writeQuotedString(): argument str contains \'\\r\'. Splitting line.");
     }
 
     if (repairString) {
@@ -481,8 +481,8 @@ public class CRWriter extends BufferedWriter {
         && (world.base != 36)) {
       // this should not happen
       CRWriter.log
-      .error("BASE ERROR !! report to write could have not base36 !! Changed to base36. (Was "
-          + world.base + ")");
+          .error("BASE ERROR !! report to write could have not base36 !! Changed to base36. (Was "
+              + world.base + ")");
       world.base = 36;
     }
     write(world.base + ";Basis");
@@ -526,7 +526,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (world.maxUnits != -1) {
-      write(world.maxUnits + "max_units");
+      write(world.maxUnits + ";max_units");
       newLine();
     }
   }

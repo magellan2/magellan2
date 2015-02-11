@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.relation.ControlRelation;
+import magellan.library.relation.FollowUnitRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.MovementRelation;
 import magellan.library.relation.TransportRelation;
@@ -44,7 +45,7 @@ import magellan.library.utils.Resources;
 
 /**
  * A movement order (like MOVE, ROUTE)
- * 
+ *
  * @author stm
  */
 public class MovementOrder extends SimpleOrder {
@@ -74,15 +75,22 @@ public class MovementOrder extends SimpleOrder {
     if (!isValid())
       return;
 
+    execute(data, unit, unit, new HashSet<Unit>(), line, Integer.MAX_VALUE);
+  }
+
+  private void execute(GameData data, Unit unit, Unit origin, Set<Unit> followers, int line,
+      int maxLength) {
     MovementRelation mRel =
-        data.getGameSpecificStuff().getMovementEvaluator().getMovement(unit, getDirections());
+        data.getGameSpecificStuff().getMovementEvaluator().getMovement(unit, directions, maxLength);
     mRel.line = line;
 
     if (mRel.invalidRegion != null) {
       mRel.setWarning(Resources.get("order.move.warning.moveinvalid", mRel.invalidRegion),
           MovementInspector.MovementProblemTypes.MOVE_INVALID.getType());
     }
-    removeMovements(unit);
+    if (unit == origin) {
+      removeMovements(unit);
+    }
 
     mRel.add();
 
@@ -101,6 +109,21 @@ public class MovementOrder extends SimpleOrder {
           implicitLeave(transportRel.target, mRel, line);
         }
       }
+
+      for (FollowUnitRelation fRel : unit.getRelations(FollowUnitRelation.class)) {
+        Unit follower = fRel.source;
+
+        if (origin.equals(follower)) {
+          setWarning(origin, line, Resources.get("order.move.warning.follow"));
+        } else if (!unit.equals(follower)) {
+          if (followers.contains(follower)) {
+            setWarning(unit, line, Resources.get("order.move.warning.unitfollowsself"));
+          } else {
+            followers.add(follower);
+            execute(data, follower, origin, followers, fRel.line, mRel.getInitialMovement().size());
+          }
+        }
+      }
     }
     for (Unit passenger : passengers) {
       MovementRelation transportRel =
@@ -110,10 +133,6 @@ public class MovementOrder extends SimpleOrder {
     }
 
     implicitLeave(unit, mRel, line);
-  }
-
-  private List<Direction> getDirections() {
-    return directions;
   }
 
   private void implicitLeave(Unit unit, MovementRelation mRel, int line) {
@@ -163,7 +182,7 @@ public class MovementOrder extends SimpleOrder {
 
   /**
    * Sets the value of permanent.
-   * 
+   *
    * @param permanent The value for permanent.
    */
   public void setPermanent(boolean permanent) {
@@ -172,7 +191,7 @@ public class MovementOrder extends SimpleOrder {
 
   /**
    * Returns the value of permanent.
-   * 
+   *
    * @return Returns permanent.
    */
   public boolean isPermanent() {

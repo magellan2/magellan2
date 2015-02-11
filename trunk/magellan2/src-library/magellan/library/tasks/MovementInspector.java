@@ -35,8 +35,8 @@ public class MovementInspector extends AbstractInspector {
 
   @SuppressWarnings("javadoc")
   public enum MovementProblemTypes {
-    FOOTOVERLOADED, HORSEOVERLOADED, TOOMANYHORSESFOOT, TOOMANYHORSESRIDE, UNITFOLLOWSSELF,
-    MOVE_INVALID, UNKNOWNREGION, MOVEMENTTOOLONG, ROUTETOOLONG, OWNERLEAVES;
+    FOOTOVERLOADED, HORSEOVERLOADED, TOOMANYHORSESFOOT, TOOMANYHORSESRIDE, MOVE_INVALID,
+    UNKNOWNREGION, MOVEMENTTOOLONG, ROUTETOOLONG, OWNERLEAVES;
 
     private ProblemType type;
 
@@ -52,7 +52,7 @@ public class MovementInspector extends AbstractInspector {
 
   /**
    * Returns an instance this inspector.
-   * 
+   *
    * @return The singleton instance of MovementInspector
    */
   public static MovementInspector getInstance(GameData data) {
@@ -67,7 +67,7 @@ public class MovementInspector extends AbstractInspector {
 
   /**
    * Checks the specified movement for overload and too many horses.
-   * 
+   *
    * @see AbstractInspector#findProblems(magellan.library.Unit)
    */
   @Override
@@ -171,35 +171,36 @@ public class MovementInspector extends AbstractInspector {
       return problems;
   }
 
-  private List<Problem> reviewUnitOnFoot(Unit u, int line) {
-    int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(u);
+  private List<Problem> reviewUnitOnFoot(Unit mover, int line) {
+    int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(mover);
 
     if (maxOnFoot == MovementEvaluator.CAP_UNSKILLED)
-      return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-          MovementProblemTypes.TOOMANYHORSESFOOT.getType(), u, this, line)));
+      return createProblem(MovementProblemTypes.TOOMANYHORSESFOOT.getType(), mover, line);
 
-    int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(u);
+    int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(mover);
 
     if ((maxOnFoot - modLoad) < 0)
-      return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-          MovementProblemTypes.FOOTOVERLOADED.getType(), u, this, line)));
+      return createProblem(MovementProblemTypes.FOOTOVERLOADED.getType(), mover, line);
 
     return Collections.emptyList();
   }
 
-  private List<Problem> reviewUnitOnHorse(Unit u, int line) {
-    int maxOnHorse = getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(u);
+  private List<Problem> createProblem(ProblemType type, Unit mover, int line) {
+    return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
+        type, mover.getRegion(), mover, mover.getFaction(), mover, this, type.getMessage(), line)));
+  }
+
+  private List<Problem> reviewUnitOnHorse(Unit mover, int line) {
+    int maxOnHorse = getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(mover);
 
     if (maxOnHorse == MovementEvaluator.CAP_UNSKILLED)
-      return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-          MovementProblemTypes.TOOMANYHORSESRIDE.getType(), u, this, line)));
+      return createProblem(MovementProblemTypes.TOOMANYHORSESRIDE.getType(), mover, line);
 
     if (maxOnHorse != MovementEvaluator.CAP_NO_HORSES) {
-      int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(u);
+      int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(mover);
 
       if ((maxOnHorse - modLoad) < 0)
-        return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-            MovementProblemTypes.HORSEOVERLOADED.getType(), u, this, line)));
+        return createProblem(MovementProblemTypes.HORSEOVERLOADED.getType(), mover, line);
     }
 
     return Collections.emptyList();

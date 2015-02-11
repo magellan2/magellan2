@@ -152,6 +152,7 @@ import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.ControlRelation;
+import magellan.library.relation.FollowUnitRelation;
 import magellan.library.relation.InterUnitRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.PersonTransferRelation;
@@ -2484,7 +2485,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     DefaultMutableTreeNode miscNode = null;
     // add a node for each relation that is an InterUnitRelation (but not a subclass)
     for (UnitRelation relation : u.getRelations()) {
-      if (relation.getClass().equals(InterUnitRelation.class)) {
+      if (relation.getClass().equals(InterUnitRelation.class)
+          || relation.getClass().equals(FollowUnitRelation.class)) {
         InterUnitRelation irel = (InterUnitRelation) relation;
         if (miscNode == null) {
           miscNode =

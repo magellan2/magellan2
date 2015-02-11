@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import java.util.List;
@@ -48,13 +48,16 @@ public class FollowUnitOrder extends UnitArgumentOrder {
   @Override
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
     Unit tUnit = getTargetUnit(data, unit, line, false);
+    if (!unit.getRelations(FollowUnitRelation.class).isEmpty()) {
+      setWarning(unit, line, Resources.get("order.follow.warning.duplicate"));
+    }
     if (tUnit != null && tUnit.getRegion() == unit.getRegion()) {
 
       if (tUnit != unit) {
         FollowUnitRelation rel = new FollowUnitRelation(unit, tUnit, line);
         rel.add();
       } else {
-        setWarning(unit, line, Resources.get("tasks.movementinspector.unitfollowsself.message"));
+        setWarning(unit, line, Resources.get("order.move.warning.unitfollowsself"));
       }
     } else {
       setWarning(unit, line, Resources.get("order.all.warning.unknowntarget", target));

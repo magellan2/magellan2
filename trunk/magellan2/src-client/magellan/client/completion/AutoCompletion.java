@@ -43,6 +43,7 @@ import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.Completion;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.gamebinding.AbstractOrderCompleter;
 import magellan.library.gamebinding.EresseaOrderCompleter;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.OrderToken;
@@ -51,11 +52,11 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * DOCUMENT ME!
- * 
+ *
  * @author Andreas Gampe, Ulrich Küster
  */
 public class AutoCompletion implements SelectionListener, KeyListener, ActionListener,
-    CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
+CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
   private static final Logger log = Logger.getInstance(AutoCompletion.class);
   private OrderEditorList editors;
   private Vector<CompletionGUI> completionGUIs;
@@ -66,7 +67,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   private static final AttributeSet SIMPLEATTRIBUTESET = new SimpleAttributeSet();
   /**
    * Keys for cycling, completing and breaking.
-   * 
+   *
    * <pre>
    * completerKeys[]   completerKeys[][0]  completerKeys[1]
    * cycle forward     modifier            key
@@ -99,10 +100,11 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   private Map<String, String> selfDefinedCompletions = new LinkedHashMap<String, String>();
 
   protected Properties settings;
+  private boolean limitCompletions = true;
 
   /**
    * Creates new AutoCompletion
-   * 
+   *
    * @param context The magellan context holding Client-Global informations
    */
   public AutoCompletion(MagellanContext context) {
@@ -146,7 +148,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     limitMakeCompletion =
         settings.getProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, "true")
-            .equalsIgnoreCase("true");
+        .equalsIgnoreCase("true");
 
     String stubMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, "true");
     emptyStubMode = stubMode.equalsIgnoreCase("true");
@@ -226,7 +228,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * read defined completions from given property file
-   * 
+   *
    * @return Map containing name to
    */
   private Map<String, String> getSelfDefinedCompletions(Properties aSettings) {
@@ -311,7 +313,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Sets <code>cGUI</code> as active GUI.
-   * 
+   *
    * @param cGUI
    */
   public void setCurrentGUI(CompletionGUI cGUI) {
@@ -386,8 +388,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * is only shown if appropriate (i.e. there is something to complete).
    */
   protected void offerCompletion(JTextComponent j, boolean manual) {
-    if (!enableAutoCompletion || (currentGUI == null) || (completer == null) || (j == null)
-        || (completer == null) || !j.isVisible())
+    if (!enableAutoCompletion || currentGUI == null || completer == null || j == null
+        || !j.isVisible())
       return;
 
     // find the piece of text
@@ -485,7 +487,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * If all completions share a common prefix, add the completion "prefix..."
-   * 
+   *
    * @param stub
    */
   private void addCommonCompletion(String stub) {
@@ -541,7 +543,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     if (currentGUI.isOfferingCompletion()) {
       currentGUI
-          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+      .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
@@ -562,7 +564,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     if (currentGUI.isOfferingCompletion()) {
       currentGUI
-          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+      .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
@@ -641,7 +643,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * Returns the line in <code>text</code> that includes <code>offset</code>, that is, the first
    * position of a line break before offset (or 0) and the last position of a line break after
    * offset (or <code>text.length()</code>.
-   * 
+   *
    * @return an array of two ints, the first one is the start position, the second one is (one
    *         character after) the end position.
    */
@@ -672,14 +674,14 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * @see EresseaOrderCompleter#getStub(List)
    */
   public static String getStub(List<OrderToken> txt) {
-    return EresseaOrderCompleter.getStub(txt);
+    return AbstractOrderCompleter.getStub(txt);
   }
 
   /**
    * @see EresseaOrderCompleter#getStub(String)
    */
   public static String getStub(String txt) {
-    return EresseaOrderCompleter.getStub(txt);
+    return AbstractOrderCompleter.getStub(txt);
   }
 
   /**
@@ -762,7 +764,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Offer auto completion when timer has fired.
-   * 
+   *
    * @param e
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
@@ -780,7 +782,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * updates the completion gui when the user clicks inside editor or moves cursor.
-   * 
+   *
    * @param e
    */
   public void caretUpdate(javax.swing.event.CaretEvent e) {
@@ -825,7 +827,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Possibly activates the GUI.
-   * 
+   *
    * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
    */
   public void focusGained(java.awt.event.FocusEvent e) {
@@ -840,7 +842,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Hides the GUI.
-   * 
+   *
    * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
    */
   public void focusLost(java.awt.event.FocusEvent p1) {
@@ -903,13 +905,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Setter for hot key mode
-   * 
+   *
    * @param b
    */
   public void setHotKeyMode(boolean b) {
     hotKeyMode = b;
     settings
-        .setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
+    .setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
   }
 
   /**
@@ -943,7 +945,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Returns keys for cycling, completing and breaking.
-   * 
+   *
    * <pre>
    * completerKeys[]   completerKeys[][0]  completerKeys[1]
    * cycle forward     modifier            key
@@ -959,7 +961,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Sets keys for cycling, completing and breaking.
-   * 
+   *
    * <pre>
    * completerKeys[]   completerKeys[][0]  completerKeys[1]
    * cycle forward     modifier            key
@@ -1002,7 +1004,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Sets the value of completionGUIs.
-   * 
+   *
    * @param completionGUIs The value for completionGUIs.
    */
   public void setCompletionGUIs(Vector<CompletionGUI> completionGUIs) {
@@ -1011,7 +1013,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Returns the value of settings.
-   * 
+   *
    * @return Returns settings.
    */
   public Properties getSettings() {
@@ -1020,7 +1022,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Sets the value of settings.
-   * 
+   *
    * @param settings The value for settings.
    */
   public void setSettings(Properties settings) {
@@ -1029,7 +1031,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Sets the value of selfDefinedCompletions.
-   * 
+   *
    * @param selfDefinedCompletions The value for selfDefinedCompletions.
    */
   public void setSelfDefinedCompletions(Map<String, String> selfDefinedCompletions) {
@@ -1041,5 +1043,23 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   public Map<String, String> getSelfDefinedCompletionsMap() {
     return selfDefinedCompletions;
+  }
+
+  /**
+   * Returns the value of limitCompletions.
+   *
+   * @return Returns limitCompletions.
+   */
+  public boolean isLimitCompletions() {
+    return limitCompletions;
+  }
+
+  /**
+   * Sets the value of limitCompletions.
+   *
+   * @param limitCompletions The value for limitCompletions.
+   */
+  public void setLimitCompletions(boolean limitCompletions) {
+    this.limitCompletions = limitCompletions;
   }
 }

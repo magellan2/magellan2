@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * DOCUMENT-ME
- * 
+ *
  * @author $Author: $
  * @version $Revision: 171 $
  */
@@ -31,4 +31,9 @@ public interface CompleterSettingsProvider {
    * Returns true iff LimitMakeCompletion is turned on
    */
   public boolean getLimitMakeCompletion();
+
+  /**
+   * Returns true if completions should be restricted "intelligently".
+   */
+  public boolean isLimitCompletions();
 }

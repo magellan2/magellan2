@@ -65,8 +65,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     SelectionListener, FocusListener, CacheableOrderEditor, Changeable {
   private static final Logger log = Logger.getInstance(OrderEditor.class);
 
-  // private static int instanceCount = 0;
-
   // Style name constants
 
   /** Text style REGULAR */
@@ -219,7 +217,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   /**
    * DOCUMENT-ME
-   * 
+   *
    * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
    */
   public void insertUpdate(DocumentEvent e) {
@@ -228,7 +226,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   /**
    * DOCUMENT-ME
-   * 
+   *
    * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
    */
   public void removeUpdate(DocumentEvent e) {
@@ -329,7 +327,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   /**
    * Update orders.
-   * 
+   *
    * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
    */
   public void focusLost(FocusEvent e) {
@@ -526,7 +524,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   /**
    * Sets the background color for orders with errors.
-   * 
+   *
    * @param c
    */
   public void setErrorBackround(Color c) {
@@ -804,7 +802,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   /**
    * Returns the start and end of the line denoted by offset.
-   * 
+   *
    * @param text the string to search.
    * @param offset the position from where to look for linebreaks.
    * @return start of line at array index 0, end of line at array index 1.
@@ -864,7 +862,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   /**
    * DOCUMENT-ME
-   * 
+   *
    * @see magellan.library.utils.guiwrapper.CacheableOrderEditor#setKeepVisible(boolean)
    */
   public void setKeepVisible(boolean b) {
@@ -1032,7 +1030,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   /**
    * Returns the unit for this editor.
-   * 
+   *
    * @see magellan.client.swing.tree.Changeable#getArgument()
    */
   public Object getArgument() {
@@ -1041,7 +1039,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   /**
    * Returns {@link magellan.client.swing.tree.Changeable#CONTEXT_MENU}.
-   * 
+   *
    * @see magellan.client.swing.tree.Changeable#getChangeModes()
    */
   public int getChangeModes() {

@@ -59,16 +59,17 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_ATTACK), " "));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_BANNER), spaceQuotes,
         Completion.DEFAULT_PRIORITY, 1));
-    if (getUnit().getFaction() != null && getUnit().getFaction().getItems().size() > 0) {
+    if (!isLimitCompletions() || getUnit().getFaction() != null
+        && getUnit().getFaction().getItems().size() > 0) {
       addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_CLAIM), " "));
     }
-    if (!getUnit().isHero()) {
+    if (!isLimitCompletions() || !getUnit().isHero()) {
       addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PROMOTION)));
     }
 
-    if (!getRegion().buildings().isEmpty()) {
-      addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_SIEGE), " "));
-    }
+    // if (!getRegion().buildings().isEmpty()) {
+    // addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_SIEGE), " "));
+    // }
 
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_NAME), " "));
 
@@ -82,7 +83,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_ENTER), " "));
     }
 
-    if (getUnit().getGuard() == 0) {
+    if (!isLimitCompletions() || getUnit().getGuard() == 0) {
 
       // special request for myself (Darcduck)
       // if an unit should guard the region it must have a combat state better than FLIEHE (5)
@@ -101,7 +102,8 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     }
 
     // the if clause is not always correct, but should usually be okay
-    if (getUnit().getModifiedBuilding() != null
+    if (!isLimitCompletions()
+        || getUnit().getModifiedBuilding() != null
         || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
             getUnit()))) {
       addCompletion(new Completion(getOrderTranslation(E3AConstants.OC_PAY) + " "
@@ -145,9 +147,10 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PLANT), " "));
     }
 
-    if (getUnit().getShip() != null) {
+    if (!isLimitCompletions()) {
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PIRACY), " "));
+    } else if (getUnit().getShip() != null) {
       Unit owner = getUnit().getShip().getModifiedOwnerUnit();
-
       if (owner != null) {
         if (owner.equals(getUnit())) {
           addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PIRACY), " "));
@@ -179,7 +182,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
           Completion.DEFAULT_PRIORITY + 1));
     }
 
-    if ((getUnit().getBuilding() != null) || (getUnit().getShip() != null)) {
+    if (!isLimitCompletions() || (getUnit().getBuilding() != null) || (getUnit().getShip() != null)) {
       addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_LEAVE)));
     }
 

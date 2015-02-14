@@ -49,7 +49,7 @@ import magellan.library.utils.Resources;
 
 /**
  * This class provides a dialog for displaying the "Tips of the Day".
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
@@ -129,8 +129,8 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
    * ++++++++++++++++++++++++++++++
    */
   protected void initUI() {
-    Color foreground = new Color(79, 63, 48);
-    Color background = new Color(213, 169, 131);
+    Color foreground = MagellanImages.FOREGROUND;
+    Color background = MagellanImages.BACKGROUND;
 
     JPanel panel = new JPanel(new BorderLayout(2, 2));
     panel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
@@ -367,7 +367,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
   /**
    * Reacts on button actions.
-   * 
+   *
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
@@ -399,7 +399,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
   /**
    * Close the dialog and save the settings.
-   * 
+   *
    * @see magellan.client.swing.InternationalizedDialog#quit()
    */
   @Override

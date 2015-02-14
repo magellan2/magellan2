@@ -54,7 +54,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A Dialog for informing the user about new versions.
- * 
+ *
  * @author stm
  */
 public class UpdateDialog extends InternationalizedDialog implements HyperlinkListener {
@@ -74,7 +74,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
   /**
    * The constructor of the dialogs sets some variables and initializes the GUI.
-   * 
+   *
    * @param c The Magellan Client instance
    * @param lastVersion latest version
    * @param currentVersion current Magellan version
@@ -115,8 +115,9 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       showFile("RELEASENOTES.txt");
     } else
       throw new IllegalArgumentException("???");
-    text.append(Resources.get("updatedialog.infotext", MagellanUrl.getMagellanUrl("www.download"),
-        MagellanUrl.getMagellanUrl("www.files"), MagellanUrl.getMagellanUrl("www.root")));
+    text.append(Resources.get("updatedialog.infotext", MagellanUrl
+        .getMagellanUrl(MagellanUrl.WWW_DOWNLOAD), MagellanUrl
+        .getMagellanUrl(MagellanUrl.WWW_FILES), MagellanUrl.getRootUrl()));
     text.append(Resources.get("updatedialog.htmlfooter"));
 
     versionInfo.setText(text.toString());
@@ -139,8 +140,8 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     // mainPanel.setForeground(MagellanImages.foreground);
 
     versionInfo = new JEditorPane();
-    versionInfo.setBackground(MagellanImages.background);
-    versionInfo.setForeground(MagellanImages.foreground);
+    versionInfo.setBackground(MagellanImages.BACKGROUND);
+    versionInfo.setForeground(MagellanImages.FOREGROUND);
     versionInfo.setContentType("text/html");
     versionInfo.setEditable(false);
     versionInfo.setCaretPosition(0);
@@ -154,7 +155,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     releaseText.setLineWrap(true);
     releaseText.setWrapStyleWord(true);
 
-    releaseText.setBackground(MagellanImages.background);
+    releaseText.setBackground(MagellanImages.BACKGROUND);
     releaseText.setForeground(Color.BLACK);
     // releaseText.setFont(releaseText.getFont().deriveFont(releaseText.getFont().getSize()*1.2f));
     // Font font = releaseText.getFont();
@@ -281,7 +282,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
   /**
    * Return <code>true</code> if the OK button was pressed.
-   * 
+   *
    * @return <code>true</code> if the OK button was pressed
    */
   public boolean getResult() {

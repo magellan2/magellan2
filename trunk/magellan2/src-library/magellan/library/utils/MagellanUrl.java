@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.utils;
 
 import java.io.ByteArrayInputStream;
@@ -35,7 +35,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * Utility class maintaining important URLs for Magellan.
- * 
+ *
  * @author stm
  */
 public class MagellanUrl {
@@ -55,6 +55,24 @@ public class MagellanUrl {
   /** Time to wait between connection attempts. */
   private static final long HTTP_TIMEOUT = 3600000;
 
+  /** Key for basic Magellan URL */
+  public static final String WWW_ROOT = "www.root";
+
+  /** Key for Magellan bugtracker URL */
+  public static final String WWW_BUGS = "www.bugtracker";
+
+  /** Key for nightly version */
+  public static final String VERSION_NIGHTLY = "version.nightly";
+
+  /** Key for stable version */
+  public static final String VERSION_RELEASE = "version.release";
+
+  /** Key for download URL */
+  public static final String WWW_DOWNLOAD = "www.download";
+
+  /** Key for files URL */
+  public static final String WWW_FILES = "www.files";
+
   private static long lastAccessed = 0;
 
   private static ResourceBundle bundle, defaultBundle;
@@ -67,16 +85,16 @@ public class MagellanUrl {
     defaultBundle = new ListResourceBundle() {
       @Override
       protected Object[][] getContents() {
-        return new Object[][] { { "www.root", "http://magellan-client.sourceforge.net" },
-            { "www.bugtracker", "http://sourceforge.net/bugs" },
+        return new Object[][] { { WWW_ROOT, "http://magellan-client.sourceforge.net" },
+            { WWW_BUGS, "http://magellan-client.sourceforge.net/bugs" },
             { "www.homepage.alt", "http://magellan.narabi.de" },
-            { "www.download", "http://magellan.narabi.de/download_en.php" },
+            { WWW_DOWNLOAD, "http://magellan.narabi.de/download_de.php" },
             { "www.download.de", "http://magellan.narabi.de/download_de.php" },
             { "www.download.en", "http://magellan.narabi.de/download_en.php" },
-            { "www.files", "http://sourceforge.net/projects/magellan-client/files/" },
+            { WWW_FILES, "http://sourceforge.net/projects/magellan-client/files/" },
             { "www.fernando", "http://en.wikipedia.org/wiki/Ferdinand_Magellan" },
-            { "version.release", "http://magellan.narabi.de/release/VERSION" },
-            { "version.nightly", "http://magellan.narabi.de/nightly-build/VERSION" } };
+            { VERSION_RELEASE, "http://magellan.narabi.de/release/VERSION" },
+            { VERSION_NIGHTLY, "http://magellan.narabi.de/nightly-build/VERSION" } };
       }
     };
 
@@ -87,7 +105,7 @@ public class MagellanUrl {
    * Returns a URL, if possible fetched from the remote file at {@link #MAGELLAN_LOCATIONS_URL}.
    * Current url keys include "www.root", "www.bugtracker", "www.download", "version.release",
    * "version.nightly".
-   * 
+   *
    * @param key
    * @return The url for the key, <code>null</code> if it could not be found and isn't one of the
    *         default values.
@@ -111,7 +129,7 @@ public class MagellanUrl {
 
   /**
    * Tries to access the locations file remotely and read the values.
-   * 
+   *
    * @param properties Client settings, see {@link HTTPClient#HTTPClient(Properties)}
    * @see HTTPClient
    */
@@ -121,7 +139,7 @@ public class MagellanUrl {
 
   /**
    * Tries to access the locations file remotely and read the values.
-   * 
+   *
    * @param properties Client settings, see {@link HTTPClient#HTTPClient(Properties)}
    * @param force If this is <code>true</code>, the timeout is ignored.
    * @see HTTPClient
@@ -151,7 +169,7 @@ public class MagellanUrl {
    * Returns Magellan's primary WWW URL.
    */
   public static String getRootUrl() {
-    return getMagellanUrl("www.root");
+    return getMagellanUrl(WWW_ROOT);
   }
 
 }

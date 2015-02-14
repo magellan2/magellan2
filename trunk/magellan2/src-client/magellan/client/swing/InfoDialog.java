@@ -31,6 +31,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import magellan.client.Client;
 import magellan.client.utils.SwingUtils;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.MagellanUrl;
@@ -48,7 +49,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
 
   /**
    * Creates a new InfoDlg object.
-   * 
+   *
    * @param parent modally stucked frame.
    */
   public InfoDialog(JFrame parent) {
@@ -70,10 +71,14 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     magellanImage.setIcon(icon);
     magellanImage.setText("");
     magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
-    jPanel.add(magellanImage);
+    JPanel filler = new JPanel();
+    filler.add(magellanImage);
+    filler.setBackground(MagellanImages.BACKGROUND);
+    jPanel.add(filler);
     String text =
         Resources.get("infodlg.infotext", getVersionString(), MagellanUrl.getRootUrl(), MagellanUrl
-            .getMagellanUrl("www.fernando"));
+            .getMagellanUrl("www.fernando"), MagellanUrl.getMagellanUrl(MagellanUrl.WWW_BUGS),
+            Client.getLogFile().toURI().toASCIIString(), Client.getLogFile().getName());
 
     jTextArea1 = new JEditorPane();
     jTextArea1.setContentType("text/html");
@@ -87,6 +92,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     jTextArea1.setCaretPosition(0);
     jTextArea1.setPreferredSize(new Dimension(400, 400));
     jTextArea1.addHyperlinkListener(this);
+
     JScrollPane scrollPane = new JScrollPane(jTextArea1);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     // scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);

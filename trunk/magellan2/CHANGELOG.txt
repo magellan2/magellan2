@@ -1,6 +1,8 @@
 2015-02-13 / Build 605 - stm (stm2@users.sourceforge.net)
     * izpack installer now asks for administrator privileges and Windows 7 and Vista
     * configuration directory now defaults to $HOME/.magellan
+    * About dialog shows bug reporting info
+    * errors.txt is backed up and truncated if it grows too big
 
 2015-02-12 / Build 603 - stm (stm2@users.sourceforge.net)
     * fixed English race icons (bug #370)

@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 
+import magellan.library.io.file.FileBackup;
 import magellan.library.io.file.FileType;
 
 /**
@@ -30,8 +31,9 @@ import magellan.library.io.file.FileType;
 public class Log {
   private File baseDir = null;
 
-  /** DOCUMENT-ME */
-  public String encoding;
+  private String encoding;
+
+  private File logFile;
 
   /**
    * Creates a new Log object copying the output onto the exported print stream to a file in the
@@ -52,15 +54,21 @@ public class Log {
    * @throws IOException On I/O error
    */
   protected PrintStream getPrintStream() throws IOException {
-    File file = new File(baseDir, "errors.txt");
+    logFile = new File(baseDir, "errors.txt");
 
     if (!baseDir.canWrite())
       throw new IOException("Cannot write to directory " + baseDir);
-    if (file.exists() && !file.canWrite())
-      throw new IOException("Cannot write to file " + file);
+    if (logFile.exists() && !logFile.canWrite())
+      throw new IOException("Cannot write to file " + logFile);
+    if (logFile.length() > 1000000) {
+      File backup = FileBackup.create(logFile, 3);
+      if (backup != null) {
+        logFile.delete();
+      }
+    }
 
     OutputStreamWriter osw =
-        FileType.createEncodingWriter(new FileOutputStream(file.getAbsolutePath(), true),
+        FileType.createEncodingWriter(new FileOutputStream(logFile.getAbsolutePath(), true),
             FileType.DEFAULT_ENCODING.toString());
     encoding = osw.getEncoding();
 
@@ -139,6 +147,22 @@ public class Log {
       System.out.write(b);
       out.write(b);
     }
+  }
+
+  /**
+   * Return the file used for logging or <code>null</code>.
+   */
+  public File getFile() {
+    return logFile;
+  }
+
+  /**
+   * Returns the value of encoding.
+   *
+   * @return Returns encoding.
+   */
+  public String getEncoding() {
+    return encoding;
   }
 
 }

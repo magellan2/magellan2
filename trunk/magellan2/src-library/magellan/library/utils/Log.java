@@ -24,8 +24,6 @@ import java.io.PrintStream;
 import magellan.library.io.file.FileType;
 
 /**
- * DOCUMENT-ME
- * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
@@ -38,20 +36,22 @@ public class Log {
   /**
    * Creates a new Log object copying the output onto the exported print stream to a file in the
    * specified directory.
-   * 
+   *
    * @param baseDir name of the directory for logging output.
+   * @throws IOException On I/O error
    */
-  public Log(File baseDir) {
+  public Log(File baseDir) throws IOException {
     this.baseDir = baseDir;
+    System.setErr(getPrintStream());
   }
 
   /**
    * Create a stream for writing errors to the log.
-   * 
+   *
    * @return output stream to the error log.
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException On I/O error
    */
-  public PrintStream getPrintStream() throws IOException {
+  protected PrintStream getPrintStream() throws IOException {
     File file = new File(baseDir, "errors.txt");
 
     if (!baseDir.canWrite())
@@ -93,11 +93,13 @@ public class Log {
                 StreamWrapper.this.out.flush();
               }
             } catch (IOException e) {
+              e.printStackTrace();
             }
 
             try {
               Thread.sleep(1000 * 60 * 10);
             } catch (InterruptedException e) {
+              // no problem
             }
           }
         }
@@ -112,11 +114,13 @@ public class Log {
             try {
               StreamWrapper.this.out.flush();
             } catch (IOException e) {
+              e.printStackTrace();
             }
 
             try {
               Thread.sleep(1000);
             } catch (InterruptedException e) {
+              // no problem
             }
           }
         }
@@ -127,8 +131,8 @@ public class Log {
 
     /**
      * Write value to the stream and to the console.
-     * 
-     * @throws IOException DOCUMENT-ME
+     *
+     * @throws IOException passed on from delegate streams
      */
     @Override
     public void write(int b) throws IOException {
@@ -136,4 +140,5 @@ public class Log {
       out.write(b);
     }
   }
+
 }

@@ -14,6 +14,7 @@
 package magellan.client.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.zip.ZipFile;
 
@@ -23,7 +24,7 @@ import magellan.library.utils.logging.Logger;
 /**
  * Small class for start-up help. Two search functions: The Magellan directory and the settings
  * file.
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
@@ -34,52 +35,78 @@ public class MagellanFinder {
    * Tries to create/read the settings file in <code>settDir</code> (first), the user's home
    * directory (second), <code>magDirectory</code> (third) or the current directory (last). The
    * first valid location is returned.
-   * 
+   *
    * @param magDirectory The magellan resource directory
    * @param settDir <code>null</code> or the magellan settings directory
    * @return The directory where the configuration files reside.
    */
   public static File findSettingsDirectory(File magDirectory, File settDir) {
+    File[] candidates =
+        new File[] { settDir, new File(System.getProperty("user.home"), ".magellan2"),
+            new File(System.getProperty("user.home")), magDirectory, new File(".") };
     MagellanFinder.log.info("Searching for Magellan configuration:");
-    File settFileDir = settDir;
-    if (settDir == null || !testFile(settFileDir)) {
-      settFileDir = new File(System.getProperty("user.home"), ".magellan2");
-      if (!testFile(settFileDir)) {
-        settFileDir = new File(System.getProperty("user.home"));
-        if (!testFile(settFileDir)) {
-          settFileDir = magDirectory;
-          if (!testFile(settFileDir)) {
-            settFileDir = new File(".");
-            if (!testFile(settFileDir)) {
-              settFileDir = new File(System.getProperty("user.home"), ".magellan2");
-            }
-          }
-        }
+    File settFileDir = null;
+    for (File dir : candidates) {
+      if (dir != null && hasSettings(dir)) {
+        settFileDir = dir;
+        break;
       }
     }
-    File sFile = new File(settFileDir, Client.SETTINGS_FILENAME);
-    File oFile = new File(settFileDir, ProfileManager.INIFILE);
-
-    if (!sFile.exists() && !oFile.exists()) {
-      StringBuilder msg =
-          new StringBuilder("Using default directory ").append(magDirectory.getAbsolutePath())
-              .append(".");
-      MagellanFinder.log.info(msg);
-      settFileDir = magDirectory;
-    } else {
+    if (settFileDir != null) {
       MagellanFinder.log.info("Using directory '" + settFileDir.getAbsolutePath() + "'.");
+    } else {
+      for (File dir : candidates) {
+        if (dir != null && hasOrCreateSettings(dir)) {
+          settFileDir = dir;
+          break;
+        }
+      }
+      if (settFileDir != null) {
+        MagellanFinder.log.info("Creating settings in " + settFileDir.getAbsolutePath());
+      } else {
+        MagellanFinder.log.error("Cannot create settings file");
+      }
     }
 
     return settFileDir;
   }
 
+  private static boolean hasOrCreateSettings(File dir) {
+    File oFile = new File(dir, ProfileManager.INIFILE);
+    if (!dir.exists()) {
+      dir.mkdir();
+    }
+    if (!dir.canWrite() && !dir.setWritable(true))
+      return false;
+
+    if (oFile.exists()) {
+      if (oFile.length() == 0) {
+        if (!oFile.delete())
+          return false;
+      } else if (!oFile.canWrite() && !oFile.setWritable(true))
+        return false;
+
+      return true;
+    }
+    try {
+      if (oFile.createNewFile()) {
+        oFile.delete();
+        return true;
+      } else
+        return false;
+    } catch (IOException e) {
+      return false;
+    }
+
+  }
+
   /**
    * Tries to find either magellan.ini or profiles.ini in settFileDir
-   * 
+   *
    * @param settFileDir
    * @return <code>true</code> if one of the ini files was found
    */
-  private static boolean testFile(File settFileDir) {
+  private static boolean hasSettings(File settFileDir) {
     File magFile = new File(settFileDir, Client.SETTINGS_FILENAME);
 
     StringBuffer msg = new StringBuffer();

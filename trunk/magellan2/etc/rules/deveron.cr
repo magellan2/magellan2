@@ -340,6 +340,36 @@ ORDER "ALL"
 "ALL";locale_en
 1;internal
 
+ORDER "ALLIANCE_COMMAND"
+"KOMMANDO";locale_de
+"COMMAND";locale_de
+1;internal
+
+ORDER "ALLIANCE_KICK"
+"AUSSTOSSEN";locale_de
+"KICK";locale_de
+1;internal
+
+ORDER "ALLIANCE_LEAVE"
+"VERLASSE";locale_de
+"LEAVE";locale_de
+1;internal
+
+ORDER "ALLIANCE_NEW"
+"NEU";locale_de
+"NEW";locale_de
+1;internal
+
+ORDER "ALLIANCE_INVITE"
+"EINLADEN";locale_de
+"INVITE";locale_de
+1;internal
+
+ORDER "ALLIANCE_JOIN"
+"BEITRETEN";locale_de
+"JOIN";locale_de
+1;internal
+
 ORDER "AURA"
 "AURA";locale_de
 "AURA";locale_en

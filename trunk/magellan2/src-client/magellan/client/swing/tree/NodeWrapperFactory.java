@@ -44,12 +44,14 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.impl.MagellanFactionImpl;
 import magellan.library.relation.UnitRelation;
+import magellan.library.rules.ItemCategory;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Units;
 import magellan.library.utils.logging.Logger;
 
 /**
  * DOCUMENT ME!
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
@@ -236,7 +238,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   /**
    * Initialize a CellObject by category index. This makes sure that the CellObject type is
    * registered with the preferences adapter and initializes the context menu.
-   * 
+   *
    * @param co
    * @param policy
    */
@@ -303,7 +305,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   /**
    * Create a node for a region including a number (of persons).
    */
-  public RegionNodeWrapper createRegionNodeWrapper(Region r, int amount) {
+  public RegionNodeWrapper createRegionNodeWrapper(Region r, long amount) {
     RegionNodeWrapper rnw = new RegionNodeWrapper(r, amount);
     init(rnw, NodeWrapperFactory.REGION);
 
@@ -323,7 +325,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates a wrapper node for a unit relation.
-   * 
+   *
    * @param owner
    */
   public UnitRelationNodeWrapper createRelationNodeWrapper(Unit owner, UnitRelation rel,
@@ -336,7 +338,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates a wrapper node for a unit container.
-   * 
+   *
    * @param uc
    * @return The NodeWrapper
    */
@@ -346,7 +348,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates a wrapper node for a unit container.
-   * 
+   *
    * @param uc
    * @return The NodeWrapper
    */
@@ -356,7 +358,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates a wrapper node for a unit container with extended options.
-   * 
+   *
    * @param uc
    * @param showFreeLoad Specifies if the free load should be displayed
    * @param hasCommand If <code>true</code>, it is indicated the the unit has the command
@@ -369,7 +371,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates a wrapper node for a unit container with extended options.
-   * 
+   *
    * @param uc
    * @param showFreeLoad Specifies if the free load should be displayed
    * @param hasCommand If <code>true</code>, it is indicated the the unit has the command
@@ -386,7 +388,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates a wrapper node for a unit. The text will consist only of the unit's name and id
-   * 
+   *
    * @param unit The unit
    * @return The created node wrapper.
    */
@@ -397,39 +399,39 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   /**
    * Creates a wrapper node for a unit. The text is generated from the unit's name and ID, and num
    * without mod or prefix.
-   * 
+   *
    * @param unit The unit
    * @param num The number of persons
    * @return The created node wrapper.
    */
-  public UnitNodeWrapper createUnitNodeWrapper(Unit unit, int num) {
+  public UnitNodeWrapper createUnitNodeWrapper(Unit unit, long num) {
     return createUnitNodeWrapper(unit, null, num, -1);
   }
 
   /**
    * Creates a wrapper node for a unit. The text is generated from the unit's name and ID, and num
    * and mod without prefix.
-   * 
+   *
    * @param unit The unit
    * @param num The number of persons
    * @param mod The modified number of persons.
    * @return The created node wrapper.
    */
-  public UnitNodeWrapper createUnitNodeWrapper(Unit unit, int num, int mod) {
+  public UnitNodeWrapper createUnitNodeWrapper(Unit unit, long num, int mod) {
     return createUnitNodeWrapper(unit, null, num, mod);
   }
 
   /**
    * Creates a wrapper node for a unit. The text is generated from the prefix, the unit's name and
    * ID, and num and mod.
-   * 
+   *
    * @param unit The unit
    * @param prfx A prefix which is displayed in front of the unit's name.
    * @param num The number of persons
    * @param mod The modified number of persons.
    * @return The created node wrapper.
    */
-  public UnitNodeWrapper createUnitNodeWrapper(Unit unit, String prfx, int num, int mod) {
+  public UnitNodeWrapper createUnitNodeWrapper(Unit unit, String prfx, long num, int mod) {
     UnitNodeWrapper unw = new UnitNodeWrapper(unit, prfx, num, mod);
     init(unw, NodeWrapperFactory.UNIT);
 
@@ -438,7 +440,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates a wrapper node for a unit. The text will not be generated but taken from the argument.
-   * 
+   *
    * @param unit The unit
    * @param text The node will use this text.
    * @return The created node wrapper.
@@ -502,13 +504,20 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * Create a node for an item without unit.
    */
   public ItemNodeWrapper createItemNodeWrapper(Item item) {
-    return createItemNodeWrapper(null, item);
+    return createItemNodeWrapper(null, createStatItem(item));
+  }
+
+  /**
+   * Create a StatItem matching an items type and amount
+   */
+  public Units.StatItem createStatItem(Item item) {
+    return new Units.StatItem(item.getItemType(), item.getAmount());
   }
 
   /**
    * Create a node for an item. Unmodified amount is taken from a unit
    */
-  public ItemNodeWrapper createItemNodeWrapper(Unit unit, Item modItem) {
+  public ItemNodeWrapper createItemNodeWrapper(Unit unit, Units.StatItem modItem) {
     ItemNodeWrapper inw = new ItemNodeWrapper(unit, modItem, -1);
     init(inw, NodeWrapperFactory.ITEM);
 
@@ -519,11 +528,23 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * Create a node for an item. The unmodified amount is not taken from the unit but is given
    * explicitly.
    */
-  public ItemNodeWrapper createItemNodeWrapper(Unit unit, Item item, int unmodifiedAmount) {
+  public ItemNodeWrapper
+      createItemNodeWrapper(Unit unit, Units.StatItem item, long unmodifiedAmount) {
     ItemNodeWrapper inw = new ItemNodeWrapper(unit, item, unmodifiedAmount);
     init(inw, NodeWrapperFactory.ITEM);
 
     return inw;
+  }
+
+  /**
+   * @param category
+   * @param amount
+   * @param catName
+   * @return
+   */
+  public ItemCategoryNodeWrapper createItemNodeWrapper(ItemCategory category, int amount,
+      String catName) {
+    return new ItemCategoryNodeWrapper(category, amount, catName);
   }
 
   /**
@@ -548,7 +569,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates new SimpleNodeWrapper with one icon and given text.
-   * 
+   *
    * @param obj
    * @param text
    * @param icon may be <code>null</code>
@@ -562,12 +583,13 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates new SimpleNodeWrapper with several icons and given text.
-   * 
+   *
    * @param obj
    * @param text
    * @param icons may be <code>null</code>
    */
-  public SimpleNodeWrapper createSimpleNodeWrapper(Object obj, String text, Collection<String> icons) {
+  public SimpleNodeWrapper
+  createSimpleNodeWrapper(Object obj, String text, Collection<String> icons) {
     SimpleNodeWrapper snw = new SimpleNodeWrapper(obj, text, icons);
     init(snw, NodeWrapperFactory.SIMPLE);
 
@@ -576,7 +598,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates new SimpleNodeWrapper with one icon and generated text.
-   * 
+   *
    * @param obj
    * @param icons may be <code>null</code>
    */
@@ -589,7 +611,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * Creates new SimpleNodeWrapper with multiple icons and generated text.
-   * 
+   *
    * @param obj
    * @param icons may be <code>null</code>
    */
@@ -611,7 +633,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /**
    * DOCUMENT-ME
-   * 
+   *
    * @see magellan.client.swing.context.ContextObserver#contextDataChanged()
    */
   public void contextDataChanged() {

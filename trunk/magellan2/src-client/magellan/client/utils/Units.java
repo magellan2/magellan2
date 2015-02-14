@@ -111,20 +111,20 @@ public class Units {
     for (Unit u : units) {
       for (Item item : u.getModifiedItems()) {
         // get the container this item is stored in
-        final Map<ID, StatItem> container = getItemContainer(item.getItemType());
+        final Map<ID, magellan.library.utils.Units.StatItem> container =
+            getItemContainer(item.getItemType());
 
         // get the stat item from the category container
-        StatItem stored = container.get(item.getItemType().getID());
+        magellan.library.utils.Units.StatItem stored = container.get(item.getItemType().getID());
 
         if (stored == null) {
-          stored = new StatItem(item.getItemType(), 0);
+          stored = new magellan.library.utils.Units.StatItem(item.getItemType(), 0);
           container.put(stored.getItemType().getID(), stored);
         }
 
         // add up the amount in the stat item
-        // multiply amount with unit.persons if item is
-        // silver
-        int amount = item.getAmount();
+        // multiply amount with unit.persons if item is silver
+        long amount = item.getAmount();
 
         if (item.getItemType().equals(Units.silberbeutel)
             || item.getItemType().equals(Units.silberkassette)) {
@@ -141,7 +141,8 @@ public class Units {
         }
         stored.setUnmodifiedAmount(stored.getUnmodifiedAmount() + unmodifiedAmount);
 
-        final UnitWrapper uW = new UnitWrapper(u, amount);
+        final magellan.library.utils.Units.UnitWrapper uW =
+            new magellan.library.utils.Units.UnitWrapper(u, amount);
         uW.setUnmodifiedAmount(unmodifiedAmount);
         // add the unit owning the item to the stat item
         stored.units.add(uW);
@@ -173,7 +174,8 @@ public class Units {
    *         or null if the categorization of the items failed.
    */
   public Collection<TreeNode> addCategorizedUnitItems(Collection<Unit> units,
-      DefaultMutableTreeNode parentNode, Comparator<Item> itemComparator,
+      DefaultMutableTreeNode parentNode,
+      Comparator<magellan.library.utils.Units.StatItem> itemComparator,
       Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory,
       ContextFactory reserveContextFactory) {
     return addCategorizedUnitItems(units, parentNode, itemComparator, unitComparator, showUnits,
@@ -198,7 +200,8 @@ public class Units {
    *         or null if the categorization of the items failed.
    */
   public Collection<TreeNode> addCategorizedUnitItems(Collection<Unit> units,
-      DefaultMutableTreeNode parentNode, Comparator<Item> itemComparator,
+      DefaultMutableTreeNode parentNode,
+      Comparator<magellan.library.utils.Units.StatItem> itemComparator,
       Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory,
       ContextFactory reserveContextFactory, boolean createCategoryNodes) {
     DefaultMutableTreeNode categoryNode = null;
@@ -221,8 +224,7 @@ public class Units {
               magellan.library.utils.Umlaut.convertUmlauts(currentCategoryMap.getCategory()
                   .getName());
           final String nodeName = Resources.get("util.units." + catIconName);
-          wrapper = // TODO use factory
-              new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
+          wrapper = factory.createItemNodeWrapper(currentCategoryMap.getCategory(), -1, nodeName);
           wrapper.setIcons(catIconName);
           categoryNode = new DefaultMutableTreeNode(wrapper);
           parentNode.add(categoryNode);
@@ -231,7 +233,8 @@ public class Units {
           categoryNode = parentNode;
         }
 
-        final List<StatItem> sortedItems = new LinkedList<StatItem>(currentCategoryMap.values());
+        final List<magellan.library.utils.Units.StatItem> sortedItems =
+            new LinkedList<magellan.library.utils.Units.StatItem>(currentCategoryMap.values());
 
         if (itemComparator != null) {
           Collections.sort(sortedItems, itemComparator);
@@ -246,7 +249,7 @@ public class Units {
         if (units.size() == 1) {
           u = units.iterator().next();
         }
-        for (StatItem currentItem : sortedItems) {
+        for (magellan.library.utils.Units.StatItem currentItem : sortedItems) {
           addItemNode(currentItem, categoryNode, u, units, unitComparator, showUnits, factory,
               reserveContextFactory);
           catNumber += currentItem.getAmount();
@@ -286,9 +289,10 @@ public class Units {
    * @param currentItem
    * @param reserveContextFactory
    */
-  private void addItemNode(StatItem currentItem, DefaultMutableTreeNode categoryNode, Unit u,
-      Collection<Unit> units, Comparator<Unit> unitComparator, boolean showUnits,
-      NodeWrapperFactory factory, ContextFactory reserveContextFactory) {
+  private void addItemNode(magellan.library.utils.Units.StatItem currentItem,
+      DefaultMutableTreeNode categoryNode, Unit u, Collection<Unit> units,
+      Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory,
+      ContextFactory reserveContextFactory) {
 
     final ItemNodeWrapper itemNodeWrapper =
         factory.createItemNodeWrapper(u, currentItem, currentItem.getUnmodifiedAmount());
@@ -388,7 +392,7 @@ public class Units {
             final StringBuilder text = new StringBuilder().append(rrel.costs).append(" ");
             final List<String> icons = new LinkedList<String>();
             text.append(Resources.get("util.units.node.recruit")).append(" ").append(rrel.amount)
-                .append(" ").append(rrel.race);
+            .append(" ").append(rrel.race);
 
             icons.add("rekruten");
             if (rrel.problem != null) {
@@ -446,7 +450,7 @@ public class Units {
     if (showUnits && (currentItem.units != null)) {
       Collections.sort(currentItem.units, new UnitWrapperComparator(unitComparator));
 
-      for (UnitWrapper uw : currentItem.units) {
+      for (magellan.library.utils.Units.UnitWrapper uw : currentItem.units) {
         itemNode.add(new DefaultMutableTreeNode(factory.createUnitNodeWrapper(uw.getUnit(), uw
             .getAmount())));
       }
@@ -456,128 +460,8 @@ public class Units {
 
   }
 
-  private static class StatItem extends Item implements Comparable<StatItem> {
-    /** DOCUMENT-ME */
-    public List<UnitWrapper> units = new LinkedList<UnitWrapper>();
-
-    private int unmodifiedAmount = 0;
-
-    /**
-     * Creates a new StatItem object.
-     */
-    public StatItem(ItemType type, int amount) {
-      super(type, amount);
-    }
-
-    /**
-     * DOCUMENT-ME
-     */
-    public int compareTo(StatItem o) {
-      return getItemType().getName().compareTo((o).getItemType().getName());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (obj instanceof StatItem)
-        return compareTo((StatItem) obj) != 0;
-      else
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-      return getItemType().getName().hashCode();
-    }
-
-    /**
-     * Returns the value of unmodifiedAmount.
-     *
-     * @return Returns unmodifiedAmount.
-     */
-    public int getUnmodifiedAmount() {
-      return unmodifiedAmount;
-    }
-
-    /**
-     * Sets the value of unmodifiedAmount.
-     *
-     * @param unmodifiedAmount The value for unmodifiedAmount.
-     */
-    public void setUnmodifiedAmount(int unmodifiedAmount) {
-      this.unmodifiedAmount = unmodifiedAmount;
-    }
-  }
-
-  private static class UnitWrapper {
-    private Unit unit = null;
-    private int number = -1;
-    private int unmodifiedNumber = -1;
-
-    /**
-     * Creates a new UnitWrapper object.
-     */
-    @SuppressWarnings("unused")
-    public UnitWrapper(Unit u) {
-      this(u, -1);
-    }
-
-    /**
-     * Creates a new UnitWrapper object.
-     */
-    public UnitWrapper(Unit u, int num) {
-      unit = u;
-      number = num;
-    }
-
-    /**
-     * DOCUMENT-ME
-     */
-    public Unit getUnit() {
-      return unit;
-    }
-
-    /**
-     * DOCUMENT-ME
-     */
-    public int getAmount() {
-      return number;
-    }
-
-    /**
-     * DOCUMENT-ME
-     */
-    @Override
-    public String toString() {
-      if (number > -1) {
-        if (unmodifiedNumber > -1 && unmodifiedNumber != number)
-          return unit.toString() + ": " + unmodifiedNumber + " (" + number + ")";
-        else
-          return unit.toString() + ": " + number;
-      }
-
-      return unit.toString();
-    }
-
-    /**
-     * Returns the value of unmodifiedNumber.
-     *
-     * @return Returns unmodifiedNumber.
-     */
-    public int getUnmodifiedAmount() {
-      return unmodifiedNumber;
-    }
-
-    /**
-     * Sets the value of unmodifiedNumber.
-     *
-     * @param unmodifiedNumber The value for unmodifiedNumber.
-     */
-    public void setUnmodifiedAmount(int unmodifiedNumber) {
-      this.unmodifiedNumber = unmodifiedNumber;
-    }
-  }
-
-  private static class UnitWrapperComparator implements Comparator<UnitWrapper> {
+  private static class UnitWrapperComparator implements
+      Comparator<magellan.library.utils.Units.UnitWrapper> {
     private Comparator<? super Unit> unitCmp = null;
 
     /**
@@ -591,32 +475,24 @@ public class Units {
      * If a unit comparator was specified, it is used to compare the arguments, otherwise the
      * getAmout() values are compared.
      */
-    public int compare(UnitWrapper o1, UnitWrapper o2) {
+    public int compare(magellan.library.utils.Units.UnitWrapper o1,
+        magellan.library.utils.Units.UnitWrapper o2) {
       if (unitCmp != null)
         return unitCmp.compare(o1.getUnit(), o2.getUnit());
       else
-        return o2.getAmount() - o1.getAmount();
+        return o2.getAmount() > o1.getAmount() ? 1 : (o2.getAmount() < o1.getAmount() ? -1 : 0);
     }
 
-    // /**
-    // * DOCUMENT-ME
-    // */
-    // @Override
-    // public boolean equals(Object o) {
-    // return false;
-    // }
   }
 
   /**
    * This will be a Map&lt;ItemType.id, StatItem&gt;, which is a Map of items of one category.
    */
-  private static class StatItemContainer extends Hashtable<ID, StatItem> implements
-      Comparable<StatItemContainer> {
+  private static class StatItemContainer extends
+      Hashtable<ID, magellan.library.utils.Units.StatItem> implements Comparable<StatItemContainer> {
     private ItemCategory category = null;
 
-    /**
-     * DOCUMENT-ME
-     */
+    /** */
     public ItemCategory getCategory() {
       return category;
     }
@@ -629,7 +505,7 @@ public class Units {
     }
 
     /**
-     * DOCUMENT-ME
+     * compare by category
      */
     public int compareTo(StatItemContainer o) {
       return category.compareTo(o.getCategory());

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.library.utils;
 
 import java.lang.ref.Reference;
@@ -28,6 +28,8 @@ import java.lang.ref.SoftReference;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import magellan.library.Faction;
@@ -47,6 +49,156 @@ import magellan.library.utils.filters.UnitFilter;
 import magellan.library.utils.logging.Logger;
 
 public class Units {
+  /** a specialized container that behaves much like item */
+  public static class StatItem implements Comparable<StatItem> {
+    /** units having this item */
+    public List<UnitWrapper> units = new LinkedList<UnitWrapper>();
+
+    private ItemType type;
+    private long amount;
+    private long unmodifiedAmount = 0;
+
+    /**
+     * Creates a new StatItem object.
+     */
+    public StatItem(ItemType type, long amount) {
+      this.type = type;
+      this.amount = amount;
+    }
+
+    /**
+     * @param amount
+     */
+    public void setAmount(long amount) {
+      this.amount = amount;
+    }
+
+    /**
+     */
+    public long getAmount() {
+      return amount;
+    }
+
+    /**
+     */
+    public ItemType getItemType() {
+      return type;
+    }
+
+    /**
+     * compare by type name
+     */
+    public int compareTo(StatItem o) {
+      return type.getName().compareTo(o.type.getName());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof StatItem)
+        return compareTo((StatItem) obj) != 0;
+      else
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return type.getName().hashCode();
+    }
+
+    /**
+     * Returns the value of unmodifiedAmount.
+     *
+     * @return Returns unmodifiedAmount.
+     */
+    public long getUnmodifiedAmount() {
+      return unmodifiedAmount;
+    }
+
+    /**
+     * Sets the value of unmodifiedAmount.
+     *
+     * @param unmodifiedAmount The value for unmodifiedAmount.
+     */
+    public void setUnmodifiedAmount(long unmodifiedAmount) {
+      this.unmodifiedAmount = unmodifiedAmount;
+    }
+
+    /**
+     * Returns the type name.
+     */
+    public String getName() {
+      return type.getName();
+    }
+  }
+
+  /**
+   * Contains extended info about a unit.
+   */
+  public static class UnitWrapper {
+    private Unit unit = null;
+    private long number = -1;
+    private long unmodifiedNumber = -1;
+
+    /**
+     * Creates a new UnitWrapper object.
+     */
+    public UnitWrapper(Unit u) {
+      this(u, -1);
+    }
+
+    /**
+     * Creates a new UnitWrapper object.
+     */
+    public UnitWrapper(Unit u, long num) {
+      unit = u;
+      number = num;
+    }
+
+    /**
+     */
+    public Unit getUnit() {
+      return unit;
+    }
+
+    /**
+     */
+    public long getAmount() {
+      return number;
+    }
+
+    /**
+     */
+    @Override
+    public String toString() {
+      if (number > -1) {
+        if (unmodifiedNumber > -1 && unmodifiedNumber != number)
+          return unit.toString() + ": " + unmodifiedNumber + " (" + number + ")";
+        else
+          return unit.toString() + ": " + number;
+      }
+
+      return unit.toString();
+    }
+
+    /**
+     * Returns the value of unmodifiedNumber.
+     *
+     * @return Returns unmodifiedNumber.
+     */
+    public long getUnmodifiedAmount() {
+      return unmodifiedNumber;
+    }
+
+    /**
+     * Sets the value of unmodifiedNumber.
+     *
+     * @param unmodifiedNumber The value for unmodifiedNumber.
+     */
+    public void setUnmodifiedAmount(long unmodifiedNumber) {
+      this.unmodifiedNumber = unmodifiedNumber;
+    }
+  }
+
   private static final Logger log = Logger.getInstance(Units.class);
 
   private static long recount = 0;
@@ -56,7 +208,7 @@ public class Units {
 
     /**
      * Clears the container items map when new game data has been loaded.
-     * 
+     *
      * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
      */
     public void gameDataChanged(GameDataEvent e) {
@@ -81,7 +233,7 @@ public class Units {
 
   /**
    * Returns <code>true</code> iff f is a privileged faction.
-   * 
+   *
    * @see Faction#isPrivileged()
    */
   public static boolean isPrivileged(Faction f) {
@@ -97,7 +249,7 @@ public class Units {
 
   /**
    * Returns true if the help status for aState of the faction includes ally.
-   * 
+   *
    * @param faction The source faction
    * @param ally The potential ally
    * @param aState The help state, e.g. {@link EresseaConstants#A_GUARD}.
@@ -109,7 +261,7 @@ public class Units {
 
   /**
    * Returns true if the help status for aState of the faction includes ally.
-   * 
+   *
    * @param faction The source faction
    * @param ally The potential ally
    * @param aState The help state, e.g. {@link EresseaConstants#A_GUARD}.
@@ -167,11 +319,11 @@ public class Units {
     return sailingSkillAmount;
   }
 
-  private static Map<UnitContainer, Reference<Map<ID, Item>>> containerPrivItems =
-      new HashMap<UnitContainer, Reference<Map<ID, Item>>>();
+  private static Map<UnitContainer, Reference<Map<ID, Units.StatItem>>> containerPrivItems =
+      new HashMap<UnitContainer, Reference<Map<ID, Units.StatItem>>>();
 
-  private static Map<UnitContainer, Reference<Map<ID, Item>>> containerAllItems =
-      new HashMap<UnitContainer, Reference<Map<ID, Item>>>();
+  private static Map<UnitContainer, Reference<Map<ID, Units.StatItem>>> containerAllItems =
+      new HashMap<UnitContainer, Reference<Map<ID, Units.StatItem>>>();
 
   protected static UnitFilter privFilter = new UnitFilter() {
     @Override
@@ -194,7 +346,7 @@ public class Units {
    * The amount of the items of a particular item type are added up, so two units with 5 pieces of
    * silver yield one silver item of amount 10 here.
    */
-  public static Collection<Item> getContainerPrivilegedUnitItems(UnitContainer container) {
+  public static Collection<Units.StatItem> getContainerPrivilegedUnitItems(UnitContainer container) {
     return Units.getContainerUnitItems(container, Units.containerPrivItems, Units.privFilter);
   }
 
@@ -203,7 +355,7 @@ public class Units {
    * particular item type are added up, so two units with 5 pieces of silver yield one silver item
    * of amount 10 here.
    */
-  public static Collection<Item> getContainerAllUnitItems(UnitContainer container) {
+  public static Collection<Units.StatItem> getContainerAllUnitItems(UnitContainer container) {
     return Units.getContainerUnitItems(container, Units.containerAllItems, Units.allFilter);
   }
 
@@ -212,9 +364,9 @@ public class Units {
    * that has at least a privileged trust level. The amount of the items of a particular item type
    * are added up, so two units with 5 pieces of silver yield one silver item of amount 10 here.
    */
-  protected static Collection<Item> getContainerUnitItems(UnitContainer container,
-      Map<UnitContainer, Reference<Map<ID, Item>>> map, UnitFilter filter) {
-    Map<ID, Item> result = null;
+  protected static Collection<Units.StatItem> getContainerUnitItems(UnitContainer container,
+      Map<UnitContainer, Reference<Map<ID, Units.StatItem>>> map, UnitFilter filter) {
+    Map<ID, Units.StatItem> result = null;
     if (map.containsKey(container)) {
       result = map.get(container).get();
       if (result == null) {
@@ -237,18 +389,18 @@ public class Units {
    * The amount of the items of a particular item type are added up, so two units with 5 pieces of
    * silver yield one silver item of amount 10 here.
    */
-  private static Map<ID, Item> calculateItems(UnitContainer container,
-      Map<UnitContainer, Reference<Map<ID, Item>>> map, UnitFilter filter) {
-    Map<ID, Item> result = new HashMap<ID, Item>();
+  private static Map<ID, Units.StatItem> calculateItems(UnitContainer container,
+      Map<UnitContainer, Reference<Map<ID, Units.StatItem>>> map, UnitFilter filter) {
+    Map<ID, Units.StatItem> result = new HashMap<ID, Units.StatItem>();
 
     for (Unit u : container.units()) {
       // if(u.getFaction().isPrivileged()) {
       if (filter.acceptUnit(u)) {
         for (Item item : u.getItems()) {
-          Item i = result.get(item.getItemType().getID());
+          Units.StatItem i = result.get(item.getItemType().getID());
 
           if (i == null) {
-            i = new Item(item.getItemType(), 0);
+            i = new Units.StatItem(item.getItemType(), 0);
             result.put(item.getItemType().getID(), i);
           }
 
@@ -256,7 +408,7 @@ public class Units {
         }
       }
     }
-    map.put(container, new SoftReference<Map<ID, Item>>(result));
+    map.put(container, new SoftReference<Map<ID, Units.StatItem>>(result));
     return result;
   }
 
@@ -265,7 +417,8 @@ public class Units {
    * collection identified by the item type or <code>null</code> if no such item exists in the
    * region.
    */
-  public static Item getContainerPrivilegedUnitItem(UnitContainer container, ItemType type) {
+  public static Units.StatItem
+      getContainerPrivilegedUnitItem(UnitContainer container, ItemType type) {
     return Units.getContainerUnitItem(container, type, Units.containerPrivItems, Units.privFilter);
   }
 
@@ -273,23 +426,43 @@ public class Units {
    * Returns a specific item from the {@link #getContainerAllUnitItems(UnitContainer)} collection
    * identified by the item type or <code>null</code> if no such item exists in the region.
    */
-  public static Item getContainerAllUnitItem(UnitContainer container, ItemType type) {
+  public static Units.StatItem getContainerAllUnitItem(UnitContainer container, ItemType type) {
     return Units.getContainerUnitItem(container, type, Units.containerAllItems, Units.allFilter);
   }
 
-  protected static Item getContainerUnitItem(UnitContainer container, ItemType type,
-      Map<UnitContainer, Reference<Map<ID, Item>>> map, UnitFilter filter) {
+  protected static Units.StatItem getContainerUnitItem(UnitContainer container, ItemType type,
+      Map<UnitContainer, Reference<Map<ID, Units.StatItem>>> map, UnitFilter filter) {
     if (!map.containsKey(container)) {
       Units.calculateItems(container, map, filter);
     }
 
-    Map<ID, Item> resultMap = map.get(container).get();
+    Map<ID, Units.StatItem> resultMap = map.get(container).get();
     if (resultMap == null) {
       resultMap = Units.calculateItems(container, map, filter);
       Units.recount++;
     }
 
     return resultMap.get(type.getID());
+  }
+
+  /**
+   * Returns an item corresponding to unit's faction's total amount of this item in unit's region.
+   * TODO is it worth moving caching it for each faction and region?
+   */
+  public static Units.StatItem getContainerFactionUnitItem(UnitContainer container, Unit unit,
+      ItemType type) {
+    Units.StatItem result = new Units.StatItem(type, 0);
+    long amount = 0;
+    for (Unit u : container.units()) {
+      if (u.getFaction() == unit.getFaction()) {
+        Item uItem = u.getItem(type);
+        if (uItem != null) {
+          amount += uItem.getAmount();
+        }
+      }
+    }
+    result.setAmount(amount);
+    return result;
   }
 
 }

@@ -95,7 +95,7 @@ import magellan.library.utils.logging.Logger;
  * A panel for showing statistics about factions.
  */
 public class FactionStatsPanel extends InternationalizedDataPanel implements SelectionListener,
-TreeSelectionListener {
+    TreeSelectionListener {
   private static final Logger log = Logger.getInstance(FactionStatsPanel.class);
   private Map<ID, Faction> factions = null;
   private Map<CoordinateID, Region> regions = null;
@@ -253,11 +253,11 @@ TreeSelectionListener {
     DefaultMutableTreeNode currentNode = null;
     DefaultMutableTreeNode subNode = null;
     Map<ID, Unit> units = new Hashtable<ID, Unit>();
-    int personCounter = 0;
-    int maintenance = 0;
-    int modifiedUnitsCounter = 0;
-    int tempUnitsCounter = 0;
-    int modifiedPersonCounter = 0;
+    long personCounter = 0;
+    long maintenance = 0;
+    long modifiedUnitsCounter = 0;
+    long tempUnitsCounter = 0;
+    long modifiedPersonCounter = 0;
     rootNode.removeAllChildren();
 
     currentNode =
@@ -273,7 +273,7 @@ TreeSelectionListener {
     Map<String, List<Unit>> specialPersons =
         CollectionFactory.<String, List<Unit>> createSyncOrderedMap();
     Collection<Unit> heroes = new LinkedList<Unit>();
-    int heros_count = 0;
+    long heros_count = 0;
 
     SkillStats skillStats = new SkillStats();
 
@@ -291,7 +291,7 @@ TreeSelectionListener {
           personCounter += u.getPersons();
           maintenance +=
               u.getPersons()
-              * (u.getRace().getMaintenance() >= 0 ? u.getRace().getMaintenance() : 10);
+                  * (u.getRace().getMaintenance() >= 0 ? u.getRace().getMaintenance() : 10);
           skillStats.addUnit(u);
 
           Race race = u.getRace();
@@ -478,8 +478,8 @@ TreeSelectionListener {
           DefaultMutableTreeNode translationNode =
               new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
                   (new java.text.MessageFormat(Resources.get("factionstatspanel.node.layer")))
-                  .format(new Integer[] { i })
-                  + " " + translation, "layer"));
+                      .format(new Integer[] { i })
+                      + " " + translation, "layer"));
           currentNode.add(translationNode);
         }
         rootNode.add(currentNode);
@@ -487,10 +487,6 @@ TreeSelectionListener {
 
       /* score node */
       if (f.getScore() > 0) {
-        /**
-         * n = new DefaultMutableTreeNode(Resources.get("factionstatspanel.node.score") + f.score +
-         * "/" + f.averageScore + " (" + (int) ((100.0 * f.score) / f.averageScore) + "%)");
-         */
         String scoreLabel =
             Resources.get("factionstatspanel.node.score") + f.getScore() + "/"
                 + f.getAverageScore() + " (" + (int) ((100.0 * f.getScore()) / f.getAverageScore())
@@ -570,7 +566,7 @@ TreeSelectionListener {
 
         for (String raceName : specialPersons.keySet()) {
           List<Unit> v = specialPersons.get(raceName);
-          int count = 0;
+          long count = 0;
           String actRealRaceName = v.size() > 0 ? v.get(0).getRace().getIcon() : "";
           for (Unit actU : v) {
             count += actU.getPersons();
@@ -658,25 +654,25 @@ TreeSelectionListener {
     // final int E_THEFT = 5;
     // final int E_MAGIC = 6;
 
-    int earned[] = new int[7];
-    int wanted[] = new int[7];
+    long earned[] = new long[7];
+    long wanted[] = new long[7];
     Arrays.fill(earned, 0);
     Arrays.fill(wanted, 0);
 
-    int totalIncome = 0;
-    int totalWanted = 0;
+    long totalIncome = 0;
+    long totalWanted = 0;
 
     final int EE_ALMS = 0;
     final int EE_TRANSFERS = 1;
-    int extraEarned[] = new int[] { 0, 0 };
+    long extraEarned[] = new long[] { 0, 0 };
     // 7 = Almosen
     // 8 = Übergaben
 
     // Übergaben an andere Parteien
-    Map<ID, Integer> factionGettings = new HashMap<ID, Integer>();
+    Map<ID, Long> factionGettings = new HashMap<ID, Long>();
 
-    Map<ID, Integer> factionAlmsGotten = new HashMap<ID, Integer>();
-    Map<ID, Map<Region, Integer>> almGottenRegions = new HashMap<ID, Map<Region, Integer>>();
+    Map<ID, Long> factionAlmsGotten = new HashMap<ID, Long>();
+    Map<ID, Map<Region, Long>> almGottenRegions = new HashMap<ID, Map<Region, Long>>();
 
     // Ausgaben
     // it is necessary to parse messages to get this information
@@ -697,17 +693,17 @@ TreeSelectionListener {
     final int S_THEFT = 5;
     final int S_ALMS = 6;
     final int S_TRANSFERS = 7;
-    int spent[] = new int[8];
+    long spent[] = new long[8];
     Arrays.fill(spent, 0);
 
-    Map<StringID, Integer> buildingUpkeep = new HashMap<StringID, Integer>();
+    Map<StringID, Long> buildingUpkeep = new HashMap<StringID, Long>();
 
-    Map<ID, Integer> factionGivings = new HashMap<ID, Integer>();
+    Map<ID, Long> factionGivings = new HashMap<ID, Long>();
 
-    Map<ID, Integer> factionAlmsGiven = new HashMap<ID, Integer>();
-    Map<ID, Map<Region, Integer>> almGivenRegions = new HashMap<ID, Map<Region, Integer>>();
+    Map<ID, Long> factionAlmsGiven = new HashMap<ID, Long>();
+    Map<ID, Map<Region, Long>> almGivenRegions = new HashMap<ID, Map<Region, Long>>();
 
-    int totalSpent = 0;
+    long totalSpent = 0;
 
     for (Faction faction : factions.values()) {
       if (faction.getMessages() == null) {
@@ -807,13 +803,7 @@ TreeSelectionListener {
                     if (silverItem != null) {
                       spent[S_UPKEEP] += silverItem.getAmount();
                       // entry in building categories
-                      Integer actV = buildingUpkeep.get(bT.getID());
-                      if (actV == null) {
-                        actV = (silverItem.getAmount());
-                      } else {
-                        actV = (actV.intValue() + silverItem.getAmount());
-                      }
-                      buildingUpkeep.put(bT.getID(), actV);
+                      increase(buildingUpkeep, bT.getID(), silverItem.getAmount());
                     }
                   }
                 }
@@ -856,41 +846,29 @@ TreeSelectionListener {
             String value2 = msg.getAttributes().get("amount");
             if (value != null && value.equalsIgnoreCase(EresseaConstants.I_USILVER.toString())
                 && value2 != null) {
-              int menge = Integer.parseInt(value2);
+              long amount = Integer.parseInt(value2);
               value = msg.getAttributes().get("unit");
               UnitID id = UnitID.createUnitID(value, 10, getGameData().base);
               Unit giver = getGameData().getUnit(id);
               ID giverID =
                   (giver == null || giver.getFaction() == null) ? EntityID.createEntityID(-1,
                       getGameData().base) : giver.getFaction().getID();
-                  value = msg.getAttributes().get("target");
-                  id = UnitID.createUnitID(value, 10, getGameData().base);
-                  Unit target = getGameData().getUnit(id);
-                  ID targetID =
-                      (target == null || target.getFaction() == null) ? EntityID.createEntityID(-1,
-                          getGameData().base) : target.getFaction().getID();
-                      // von factions an andere Parteien
-                      if (giver != null && factions.containsKey(giverID)) {
-                        Integer actV = factionGivings.get(targetID);
-                        if (actV == null) {
-                          actV = Integer.valueOf(menge);
-                        } else {
-                          actV = Integer.valueOf(menge + actV.intValue());
-                        }
-                        factionGivings.put(targetID, actV);
-                        spent[S_TRANSFERS] += menge;
-                      }
-                      // von anderen Parteien an factions
-                      if (target != null && factions.containsKey(target.getFaction().getID())) {
-                        Integer actV = factionGettings.get(giverID);
-                        if (actV == null) {
-                          actV = Integer.valueOf(menge);
-                        } else {
-                          actV = Integer.valueOf(menge + actV.intValue());
-                        }
-                        factionGettings.put(giverID, actV);
-                        extraEarned[EE_TRANSFERS] += menge;
-                      }
+              value = msg.getAttributes().get("target");
+              id = UnitID.createUnitID(value, 10, getGameData().base);
+              Unit target = getGameData().getUnit(id);
+              ID targetID =
+                  (target == null || target.getFaction() == null) ? EntityID.createEntityID(-1,
+                      getGameData().base) : target.getFaction().getID();
+              // von factions an andere Parteien
+              if (giver != null && factions.containsKey(giverID)) {
+                increase(factionGivings, targetID, amount);
+                spent[S_TRANSFERS] += amount;
+              }
+              // von anderen Parteien an factions
+              if (target != null && factions.containsKey(target.getFaction().getID())) {
+                increase(factionGettings, giverID, amount);
+                extraEarned[EE_TRANSFERS] += amount;
+              }
             }
           }
         } catch (NumberFormatException e) {
@@ -901,80 +879,57 @@ TreeSelectionListener {
 
       // search region messages for Almosen
       if (regions != null && regions.size() > 0) {
-        for (Region actR : regions.values()) {
-          if (actR.getMessages() != null && actR.getMessages().size() > 0) {
-            for (Message actM : actR.getMessages()) {
-              if ((actM.getMessageType() != null) && (actM.getMessageType().getID() != null)) {
-                int msgID = (actM.getMessageType().getID()).intValue();
+        for (Region currentRegion : regions.values()) {
+          if (currentRegion.getMessages() != null && currentRegion.getMessages().size() > 0) {
+            for (Message currentMessage : currentRegion.getMessages()) {
+              if ((currentMessage.getMessageType() != null)
+                  && (currentMessage.getMessageType().getID() != null)) {
+                int msgID = (currentMessage.getMessageType().getID()).intValue();
                 if (msgID == 1682429624) {
-                  if (actM.getAttributes() == null) {
-                    log.warn("message without attributes: " + actM.getID());
+                  if (currentMessage.getAttributes() == null) {
+                    log.warn("message without attributes: " + currentMessage.getID());
                     continue;
                   }
                   // Almosen
                   // check, ob from unsere Faction ist
-                  String from = actM.getAttributes().get("from");
+                  String from = currentMessage.getAttributes().get("from");
                   EntityID fromID =
                       EntityID.createEntityID(Integer.parseInt(from), getGameData().base);
                   // Faction beziehen
                   ID fromFactionID =
                       getGameData().getFaction(fromID) == null ? EntityID.createEntityID(-1,
                           getGameData().base) : getGameData().getFaction(fromID).getID();
-                      String to = actM.getAttributes().get("to");
-                      EntityID toID = EntityID.createEntityID(Integer.parseInt(to), getGameData().base);
-                      ID toFactionID =
-                          getGameData().getFaction(toID) == null ? EntityID.createEntityID(-1,
-                              getGameData().base) : getGameData().getFaction(toID).getID();
-                          Integer amount = Integer.parseInt(actM.getAttributes().get("amount"));
-                          if (fromFactionID.equals(faction.getID())) {
-                            // alms from us
-                            spent[S_ALMS] += amount;
-                            // collect data for subnodes
-                            Integer actV = factionAlmsGiven.get(toFactionID);
-                            if (actV == null) {
-                              actV = Integer.valueOf(amount);
-                            } else {
-                              actV = Integer.valueOf(actV.intValue() + amount);
-                            }
-                            factionAlmsGiven.put(toFactionID, actV);
+                  String to = currentMessage.getAttributes().get("to");
+                  EntityID toID = EntityID.createEntityID(Integer.parseInt(to), getGameData().base);
+                  ID toFactionID =
+                      getGameData().getFaction(toID) == null ? EntityID.createEntityID(-1,
+                          getGameData().base) : getGameData().getFaction(toID).getID();
+                  long amount = Integer.parseInt(currentMessage.getAttributes().get("amount"));
+                  if (fromFactionID.equals(faction.getID())) {
+                    // alms from us
+                    spent[S_ALMS] += amount;
+                    // collect data for subnodes
+                    increase(factionAlmsGiven, toFactionID, amount);
 
-                            Map<Region, Integer> actRI = almGivenRegions.get(toFactionID);
-                            if (actRI == null) {
-                              actRI = new HashMap<Region, Integer>();
-                            }
-                            actV = actRI.get(actR);
-                            if (actV == null) {
-                              actV = Integer.valueOf(amount);
-                            } else {
-                              actV = Integer.valueOf(amount + actV.intValue());
-                            }
-                            actRI.put(actR, actV);
-                            almGivenRegions.put(toFactionID, actRI);
-                          } else if (toFactionID.equals(faction.getID())) {
-                            // alms to us
-                            extraEarned[EE_ALMS] += amount;
-                            // collect data for subnodes
-                            Integer actV = factionAlmsGotten.get(fromFactionID);
-                            if (actV == null) {
-                              actV = Integer.valueOf(amount);
-                            } else {
-                              actV = Integer.valueOf(actV.intValue() + amount);
-                            }
-                            factionAlmsGotten.put(fromFactionID, actV);
+                    Map<Region, Long> factionAlms = almGivenRegions.get(toFactionID);
+                    if (factionAlms == null) {
+                      factionAlms = new HashMap<Region, Long>();
+                    }
+                    increase(factionAlms, currentRegion, amount);
+                    almGivenRegions.put(toFactionID, factionAlms);
+                  } else if (toFactionID.equals(faction.getID())) {
+                    // alms to us
+                    extraEarned[EE_ALMS] += amount;
+                    // collect data for subnodes
+                    increase(factionAlmsGotten, fromFactionID, amount);
 
-                            Map<Region, Integer> actRI = almGottenRegions.get(fromFactionID);
-                            if (actRI == null) {
-                              actRI = new HashMap<Region, Integer>();
-                            }
-                            actV = actRI.get(actR);
-                            if (actV == null) {
-                              actV = Integer.valueOf(amount);
-                            } else {
-                              actV = Integer.valueOf(amount + actV.intValue());
-                            }
-                            actRI.put(actR, actV);
-                            almGottenRegions.put(fromFactionID, actRI);
-                          }
+                    Map<Region, Long> factionAlms = almGottenRegions.get(fromFactionID);
+                    if (factionAlms == null) {
+                      factionAlms = new HashMap<Region, Long>();
+                    }
+                    increase(factionAlms, currentRegion, amount);
+                    almGottenRegions.put(fromFactionID, factionAlms);
+                  }
                 }
               }
             }
@@ -988,7 +943,7 @@ TreeSelectionListener {
     // we ignore persons of races which do not need support
     spent[S_SUPPORT] = maintenance;
 
-    for (int element : spent) {
+    for (long element : spent) {
       totalSpent += element;
     }
 
@@ -996,7 +951,7 @@ TreeSelectionListener {
       totalIncome += earned[i];
       totalWanted += wanted[i];
     }
-    for (int element : extraEarned) {
+    for (long element : extraEarned) {
       totalIncome += element;
       totalWanted += element;
     }
@@ -1011,30 +966,30 @@ TreeSelectionListener {
     // 6 = Zauberei
     String incomeGroupIcon[] =
         new String[] { "Arbeiten", "Unterhaltung", "Steuereintreiben", "Handeln", "Handeln",
-        "Tarnung", "Magie" };
+            "Tarnung", "Magie" };
     String incomeGroupIcon2[] = { "Alliance", "Persons" };
 
     if ((totalIncome != 0) || (totalWanted != 0)) {
-      Object msgArgs[] = { Integer.valueOf(totalIncome), Integer.valueOf(totalWanted) };
+      Object msgArgs[] = { Long.valueOf(totalIncome), Long.valueOf(totalWanted) };
       // n = new DefaultMutableTreeNode((new
       // java.text.MessageFormat(Resources.get("factionstatspanel.node.income"))).format(msgArgs));
       currentNode =
           new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
               (new java.text.MessageFormat(Resources.get("factionstatspanel.node.income")))
-              .format(msgArgs), "income"));
+                  .format(msgArgs), "income"));
       rootNode.add(currentNode);
     }
 
     for (int i = 0; i < earned.length; i++) {
       // income by work, entertain, tax, theft, trade
       if ((earned[i] != 0) || (wanted[i] != 0)) {
-        Object msgArgs[] = { Integer.valueOf(earned[i]) };
+        Object msgArgs[] = { Long.valueOf(earned[i]) };
         StringBuffer sb = new StringBuffer();
         sb.append(new java.text.MessageFormat(Resources.get("factionstatspanel.node.income" + i))
-        .format(msgArgs));
+            .format(msgArgs));
 
         if (earned[i] != wanted[i]) {
-          msgArgs = new Object[] { Integer.valueOf(wanted[i]) };
+          msgArgs = new Object[] { Long.valueOf(wanted[i]) };
           sb.append(" ");
           sb.append((new java.text.MessageFormat(Resources
               .get("factionstatspanel.node.incomewanted"))).format(msgArgs));
@@ -1061,7 +1016,7 @@ TreeSelectionListener {
     for (int i = 0; i < extraEarned.length; i++) {
       // income by alms, transfers
       if (extraEarned[i] != 0) {
-        Object msgArgs[] = { Integer.valueOf(extraEarned[i]) };
+        Object msgArgs[] = { Long.valueOf(extraEarned[i]) };
         StringBuffer sb = new StringBuffer();
         sb.append(new java.text.MessageFormat(Resources.get("factionstatspanel.node.income"
             + (earned.length + i))).format(msgArgs));
@@ -1074,27 +1029,27 @@ TreeSelectionListener {
           // Almosen nach Factions UND Regions
           if (factionAlmsGotten.size() > 0) {
             for (ID actFID : factionAlmsGotten.keySet()) {
-              Integer actV = factionAlmsGotten.get(actFID);
-              Faction actThisF = getGameData().getFaction(actFID);
-              if (actV != null) {
+              Long alms = factionAlmsGotten.get(actFID);
+              Faction curFaction = getGameData().getFaction(actFID);
+              if (alms != null) {
                 // node für diese Faction hinzu
                 DefaultMutableTreeNode subSubNode =
                     new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-                        actThisF == null ? Resources.get("emapdetailspanel.node.unknownfaction")
-                            : actThisF.getName() + ": "
-                            + NumberFormat.getNumberInstance().format(actV.intValue()),
+                        curFaction == null ? Resources.get("emapdetailspanel.node.unknownfaction")
+                            : curFaction.getName() + ": "
+                                + NumberFormat.getNumberInstance().format(alms.longValue()),
                         "Silber"));
                 subNode.add(subSubNode);
                 // regions für diese Faction dazu
-                if (actThisF != null) {
-                  Map<Region, Integer> actRM = almGottenRegions.get(actThisF.getID());
-                  if (actRM != null && actRM.size() > 0) {
-                    for (Region actRR : actRM.keySet()) {
-                      actV = actRM.get(actRR);
-                      if (actV != null && actV.intValue() > 0) {
+                if (curFaction != null) {
+                  Map<Region, Long> factionAlms = almGottenRegions.get(curFaction.getID());
+                  if (factionAlms != null && factionAlms.size() > 0) {
+                    for (Region curRegion : factionAlms.keySet()) {
+                      alms = factionAlms.get(curRegion);
+                      if (alms != null && alms.longValue() > 0) {
                         DefaultMutableTreeNode subSubSubNode =
                             new DefaultMutableTreeNode(nodeWrapperFactory.createRegionNodeWrapper(
-                                actRR, actV.intValue()));
+                                curRegion, alms.longValue()));
                         subSubNode.add(subSubSubNode);
                       }
                     }
@@ -1110,14 +1065,14 @@ TreeSelectionListener {
           // Übergaben
           if (factionGettings.size() > 0) {
             for (ID fID : factionGettings.keySet()) {
-              Integer actV = factionGettings.get(fID);
+              Long actV = factionGettings.get(fID);
               Faction actTF = getGameData().getFaction(fID);
-              if (actV != null && actV.intValue() > 0) {
+              if (actV != null && actV.longValue() > 0) {
                 DefaultMutableTreeNode subSubNode =
                     new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
                         actTF == null ? Resources.get("emapdetailspanel.node.unknownfaction")
                             : actTF.getName() + ": "
-                            + NumberFormat.getNumberInstance().format(actV.intValue()),
+                                + NumberFormat.getNumberInstance().format(actV.longValue()),
                         "Silber"));
                 subNode.add(subSubNode);
               }
@@ -1139,7 +1094,7 @@ TreeSelectionListener {
     // 7 = Übergaben an andere Parteien
     String spentGroupIcon[] =
         new String[] { "Persons", "Buildingcost", "Skills", "Magie", "Handeln", "Tarnung",
-        "Alliance", "Persons" };
+            "Alliance", "Persons" };
 
     if (totalSpent != 0) {
       currentNode =
@@ -1159,13 +1114,13 @@ TreeSelectionListener {
             // buildings after Type
             if (buildingUpkeep.size() > 0) {
               for (StringID btID : buildingUpkeep.keySet()) {
-                Integer actV = buildingUpkeep.get(btID);
+                Long upkeep = buildingUpkeep.get(btID);
                 ConstructibleType bT = getGameData().getRules().getBuildingType(btID);
-                if (bT != null && actV != null && actV.intValue() > 0) {
+                if (bT != null && upkeep != null && upkeep.longValue() > 0) {
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(bT
                           .getName()
-                          + ": " + NumberFormat.getNumberInstance().format(actV.intValue()), bT
+                          + ": " + NumberFormat.getNumberInstance().format(upkeep.longValue()), bT
                           .getName()));
                   subNode.add(subSubNode);
                 }
@@ -1175,27 +1130,27 @@ TreeSelectionListener {
             // Almosen nach Factions UND Regions
             if (factionAlmsGiven.size() > 0) {
               for (ID actFID : factionAlmsGiven.keySet()) {
-                Integer actV = factionAlmsGiven.get(actFID);
-                Faction actThisF = getGameData().getFaction(actFID);
-                if (actV != null) {
+                Long alms = factionAlmsGiven.get(actFID);
+                Faction curFaction = getGameData().getFaction(actFID);
+                if (alms != null) {
                   // node für diese Faction hinzu
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-                          actThisF == null ? Resources.get("emapdetailspanel.node.unknownfaction")
-                              : actThisF.getName() + ": "
-                              + NumberFormat.getNumberInstance().format(actV.intValue()),
+                          curFaction == null ? Resources
+                              .get("emapdetailspanel.node.unknownfaction") : curFaction.getName()
+                              + ": " + NumberFormat.getNumberInstance().format(alms.longValue()),
                           "Silber"));
                   subNode.add(subSubNode);
                   // regions für diese Faction dazu
-                  if (actThisF != null) {
-                    Map<Region, Integer> actRM = almGivenRegions.get(actThisF.getID());
+                  if (curFaction != null) {
+                    Map<Region, Long> actRM = almGivenRegions.get(curFaction.getID());
                     if (actRM != null && actRM.size() > 0) {
                       for (Region actRR : actRM.keySet()) {
-                        actV = actRM.get(actRR);
-                        if (actV != null && actV.intValue() > 0) {
+                        alms = actRM.get(actRR);
+                        if (alms != null && alms.longValue() > 0) {
                           DefaultMutableTreeNode subSubSubNode =
                               new DefaultMutableTreeNode(nodeWrapperFactory
-                                  .createRegionNodeWrapper(actRR, actV.intValue()));
+                                  .createRegionNodeWrapper(actRR, alms.longValue()));
                           subSubNode.add(subSubSubNode);
                         }
                       }
@@ -1208,13 +1163,13 @@ TreeSelectionListener {
             // Übergaben
             if (factionGivings.size() > 0) {
               for (ID fID : factionGivings.keySet()) {
-                Integer actV = factionGivings.get(fID);
+                Long givings = factionGivings.get(fID);
                 Faction actTF = getGameData().getFaction(fID);
-                if (actTF != null && actV != null && actV.intValue() > 0) {
+                if (actTF != null && givings != null && givings.longValue() > 0) {
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(actTF
                           .getName()
-                          + ": " + NumberFormat.getNumberInstance().format(actV.intValue()),
+                          + ": " + NumberFormat.getNumberInstance().format(givings.longValue()),
                           "Silber"));
                   subNode.add(subSubNode);
                 }
@@ -1415,7 +1370,7 @@ TreeSelectionListener {
             if ((msg.getMessageType() != null) && (msg.getMessageType().getSection() != null)
                 && msg.getMessageType().getSection().equalsIgnoreCase("production")) {
               String value = msg.getAttributes().get("amount");
-              int amount = 0;
+              long amount = 0;
 
               if (value != null) {
                 amount = Integer.parseInt(value);
@@ -1507,7 +1462,7 @@ TreeSelectionListener {
       String nodeName = Resources.get("factionstatspanel." + catIconName);
 
       Map<String, ProductionStats> h = production.get(iCategory);
-      int totalAmount = 0;
+      long totalAmount = 0;
 
       for (String resource : h.keySet()) {
         ProductionStats stats = h.get(resource);
@@ -1527,7 +1482,7 @@ TreeSelectionListener {
         // subNode.add(o);
         subNodeChildList.add(o);
         for (Unit u : stats.units.keySet()) {
-          int amount = stats.units.get(u).intValue();
+          long amount = stats.units.get(u).longValue();
           o.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, amount)));
         }
       }
@@ -1566,6 +1521,16 @@ TreeSelectionListener {
 
     treeModel.reload();
     setCursor(Cursor.getDefaultCursor());
+  }
+
+  private <ID> void increase(Map<ID, Long> intMap, ID id, long delta) {
+    Long value = intMap.get(id);
+    if (value == null) {
+      intMap.put(id, delta);
+    } else {
+      intMap.put(id, value + delta);
+    }
+
   }
 
   public static void showAlliances(GameData data, Faction owner, Map<EntityID, Alliance> allies,
@@ -1668,10 +1633,10 @@ TreeSelectionListener {
   private static class ProductionStats {
     // mapping units who produced the special resource (Unit) to the according
     // amounts (Integer)
-    private Map<Unit, Integer> units = new Hashtable<Unit, Integer>();
+    private Map<Unit, Long> units = new Hashtable<Unit, Long>();
 
     // total amount produced by all units
-    private int totalAmount;
+    private long totalAmount;
   }
 
 }

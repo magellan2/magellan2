@@ -27,7 +27,7 @@ public class Item {
 
   /**
    * Creates a new item of the specified type and with the specified amount.
-   * 
+   *
    * @throws NullPointerException if <code>type==null</code>
    */
   public Item(ItemType type, int amount) {
@@ -69,7 +69,7 @@ public class Item {
 
   /**
    * Returns the type of this item.
-   * 
+   *
    * @deprecated Use getItemType() instead
    */
   @Deprecated

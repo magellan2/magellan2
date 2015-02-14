@@ -51,6 +51,7 @@ import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.Units;
+import magellan.library.utils.Units.StatItem;
 
 /**
  * A class for offering possible completions on incomplete orders. This class relies on the
@@ -1439,7 +1440,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
         otherUnit.getModifiedShip() == null ? 0 : otherUnit.getModifiedShip().getCapacity()
             - otherUnit.getModifiedShip().getModifiedLoad();
 
-    for (Item item : Units.getContainerAllUnitItems(otherUnit.getRegion())) {
+    for (Units.StatItem item : Units.getContainerAllUnitItems(otherUnit.getRegion())) {
       final ItemType type = item.getItemType();
 
       if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)) {
@@ -1486,7 +1487,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       // }
     }
     if (getMaterialPool()) {
-      for (Item item : Units.getContainerAllUnitItems(region)) {
+      for (Units.StatItem item : Units.getContainerAllUnitItems(region)) {
         if (unit.getItem(item.getItemType()) == null) {
           // silver only if silver pool activated or unit has silver
           if ((item.getItemType() != data.getRules().getItemType(EresseaConstants.I_USILVER))) {

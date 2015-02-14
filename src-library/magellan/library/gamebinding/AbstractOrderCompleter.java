@@ -52,6 +52,7 @@ import magellan.library.utils.OrderTokenizer;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Units;
+import magellan.library.utils.Units.StatItem;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -247,7 +248,7 @@ public abstract class AbstractOrderCompleter implements Completer {
           || ((spell.getIsFar() || !far)
               && (spell.getOnOcean() || !ocean || u.getRace().equals(
                   data.getRules().getRace(EresseaConstants.R_MEERMENSCHEN))) && (!combat ^ (spell
-              .getType().toLowerCase().indexOf("combat") > -1)))) {
+                      .getType().toLowerCase().indexOf("combat") > -1)))) {
         final String spellName = data.getTranslation(spell);
 
         completions.add(new Completion(opening + spellName + closing));
@@ -521,9 +522,9 @@ public abstract class AbstractOrderCompleter implements Completer {
   public void addFactionItems(int amount, String postfix) {
     for (final Item i : unit.getFaction().getItems()) {
       completions
-          .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
-              (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
-                  : Completion.DEFAULT_PRIORITY + 1));
+      .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
+          (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
+              : Completion.DEFAULT_PRIORITY + 1));
     }
   }
 
@@ -772,12 +773,12 @@ public abstract class AbstractOrderCompleter implements Completer {
   protected boolean checkForMaterial(Item ingredient, int amount) {
     // be careful, units cannot own peasants although one is required for the potion "Bauernblut"
     if (ingredient.getItemType() != null) {
-      int availableAmount = 0;
+      long availableAmount = 0;
 
       if (ingredient.getItemType().equals(data.getRules().getItemType(EresseaConstants.I_PEASANTS))) {
         availableAmount = region.getPeasants();
       } else {
-        final Item available =
+        final Units.StatItem available =
             Units.getContainerPrivilegedUnitItem(region, ingredient.getItemType());
         // region.getItem(ingredient.getItemType());
 
@@ -1128,7 +1129,7 @@ public abstract class AbstractOrderCompleter implements Completer {
     // add rest of inner tokens
     for (OrderToken currentToken = innerTokenizer.getNextToken(); currentToken.ttype != OrderToken.TT_EOC
         && (currentToken.ttype != OrderToken.TT_EOC || (currentToken.ttype == OrderToken.TT_EOC && !currentToken
-            .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
+        .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
       if (currentToken.ttype != OrderToken.TT_CLOSING_QUOTE
           || (currentToken.ttype == OrderToken.TT_CLOSING_QUOTE && !currentToken.getText().equals(
               insertedQuote))) {

@@ -27,14 +27,14 @@ import magellan.library.utils.StringFactory;
 
 /**
  * A wrapper for regions.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public class RegionNodeWrapper extends DefaultNodeWrapper implements CellObject2, SupportsClipboard {
   private Region region = null;
   private List<GraphicsElement> graphicElements = null;
-  private int amount = Integer.MIN_VALUE;
+  private long amount = Integer.MIN_VALUE;
 
   /**
    * Creates a new RegionNodeWrapper object.
@@ -47,7 +47,7 @@ public class RegionNodeWrapper extends DefaultNodeWrapper implements CellObject2
    * Creates a new RegionNodeWrapper object with amount (of persons). {@link Integer#MIN_VALUE}
    * disables amount display
    */
-  public RegionNodeWrapper(Region r, int amount) {
+  public RegionNodeWrapper(Region r, long amount) {
     region = r;
     this.amount = amount;
   }
@@ -61,17 +61,17 @@ public class RegionNodeWrapper extends DefaultNodeWrapper implements CellObject2
 
   /**
    * Sets the amount (of persons)
-   * 
+   *
    * @param amount {@link Integer#MIN_VALUE} disables amount display
    */
-  public void setAmount(int amount) {
+  public void setAmount(long amount) {
     this.amount = amount;
   }
 
   /**
    * @return the amount (of persons)
    */
-  public int getAmount() {
+  public long getAmount() {
     return amount;
   }
 
@@ -140,7 +140,7 @@ public class RegionNodeWrapper extends DefaultNodeWrapper implements CellObject2
 
   /**
    * Never reversed
-   * 
+   *
    * @see magellan.client.swing.tree.CellObject2#reverseOrder()
    */
   public boolean reverseOrder() {

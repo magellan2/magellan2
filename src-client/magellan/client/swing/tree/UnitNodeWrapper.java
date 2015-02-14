@@ -48,7 +48,7 @@ import magellan.library.utils.logging.Logger;
  * render. It manages a list of icons and text(s) that are to be displayed. It maintains a
  * {@link UnitNodeWrapper.UnitNodeWrapperDrawPolicy} adapter which governs many of the object's
  * properties.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 288 $
  */
@@ -57,8 +57,8 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   private static Comparator<Skill> rankComparator = null;
 
   private Unit unit = null;
-  private int amount = -1;
-  private int modified = -1;
+  private long amount = -1;
+  private long modified = -1;
   private String prfx = null;
   private String text = null;
   private boolean iconNamesCreated = false;
@@ -71,13 +71,13 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   /**
    * Creates a new UnitNodeWrapper object. The text for the unit is generated from the unit's name
    * and ID and from the arguments.
-   * 
+   *
    * @param u The unit
    * @param prfx A text that is displayed in front of the name
    * @param num The number of persons
    * @param mod The modified number of persons
    */
-  public UnitNodeWrapper(Unit u, String prfx, int num, int mod) {
+  public UnitNodeWrapper(Unit u, String prfx, long num, long mod) {
     unit = u;
     amount = num;
     modified = mod;
@@ -87,7 +87,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   /**
    * Creates a new UnitNodeWrapper with specified text.
-   * 
+   *
    * @param u The unit
    * @param text The text that is displayed for the unit
    */
@@ -125,7 +125,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   /**
    * Returns <code>null</code>.
-   * 
+   *
    * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
@@ -135,7 +135,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   /**
    * Returns <code>true</code> if the unit belongs to a priveleged faction and the unit's orders or
    * one of the subordinate element's orders are unconfirmed.
-   * 
+   *
    * @see magellan.client.swing.tree.CellObject#emphasized()
    */
   @Override
@@ -192,7 +192,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   /**
    * Return <code>true</code> iff skills with level less than one should be shown.
-   * 
+   *
    * @return <code>true</code> iff skills with level less than one should be shown
    */
   public boolean isShowingSkillsLessThanOne() {
@@ -202,7 +202,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   /**
    * Return <code>true</code> iff skills with level less than two should be shown.
-   * 
+   *
    * @return <code>true</code> iff skills with level less than two should be shown
    */
   public boolean isShowingSkillsLessThanTwo() {
@@ -212,7 +212,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   /**
    * Returns the maximum number of skill icons that should be shown.
-   * 
+   *
    * @return The maximum number of skill icons that should be shown.
    */
   public int numberOfShownSkills() {
@@ -274,14 +274,14 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   /**
    * Generates a text which is composed of the prefix, the units name and id, and amount1 and
    * amount2.
-   * 
+   *
    * @param u
    * @param prefix
    * @param amount1
    * @param amount2
    * @return
    */
-  private static String getText(Unit u, String prefix, int amount1, int amount2) {
+  private static String getText(Unit u, String prefix, long amount1, long amount2) {
     StringBuffer sb = new StringBuffer();
 
     if (prefix != null) {
@@ -493,7 +493,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
             ge = new GraphicsElement(null, null, null, "items/" + s.getItemType().getIcon());
 
             Item oldItem = u.getItem(s.getItemType());
-            int oldAmount = 0;
+            long oldAmount = 0;
 
             if (oldItem != null) {
               oldAmount = oldItem.getAmount();
@@ -511,7 +511,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
                 continue;
               }
 
-              ge.setObject(Integer.valueOf(oldAmount));
+              ge.setObject(Long.valueOf(oldAmount));
             }
           } else {
             ge = new GraphicsElement(null, null, "items/" + s.getItemType().getIcon());
@@ -569,10 +569,10 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     return -1;
   }
 
-  private GraphicsElement createGE(int count, String iconName, StringBuilder buffer) {
+  private GraphicsElement createGE(long count, String iconName, StringBuilder buffer) {
     GraphicsElement ge;
     if (isShowingIconText()) {
-      ge = new GraphicsElement(Integer.valueOf(count), null, null, iconName);
+      ge = new GraphicsElement(Long.valueOf(count), null, null, iconName);
     } else {
       ge = new GraphicsElement(null, null, iconName);
     }
@@ -585,7 +585,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   /**
    * Specifies if the icons should be displayed in reverse order. This overrides the settings if the
    * {@link UnitNodeWrapper.UnitNodeWrapperDrawPolicy}.
-   * 
+   *
    * @param bool
    */
   public void setReverseOrder(boolean bool) {
@@ -616,7 +616,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   /**
    * Indicates that the list icons should be re-created
-   * 
+   *
    * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
@@ -654,7 +654,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   /**
    * Returns the list of of {@link GraphicsElement}s that should be displayed.
-   * 
+   *
    * @see magellan.client.swing.tree.CellObject2#getGraphicsElements()
    */
   public List<GraphicsElement> getGraphicsElements() {
@@ -675,7 +675,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   }
 
   private static class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements
-      ContextChangeable, ActionListener {
+  ContextChangeable, ActionListener {
     /** Show additional icons */
     public static final int SHOW_ADDITIONAL = 0;
 
@@ -761,21 +761,21 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
           { "showCategorized.3", "false" }, { "showCategorized.4", "false" },
           { "showCategorized.5", "false" }, { "showCategorized.6", "false" },
 
-      // { "showWarnings", "false" }
-          }, new String[] { "prefs.additional.text", "prefs.container.text", "prefs.skill.text",
-              "prefs.skilllessthanone.text", "prefs.skilllessthantwo.text", "prefs.other.text",
-              "prefs.icontext.text", "prefs.nfirst.text", "prefs.showExpectedOnly",
+          // { "showWarnings", "false" }
+      }, new String[] { "prefs.additional.text", "prefs.container.text", "prefs.skill.text",
+          "prefs.skilllessthanone.text", "prefs.skilllessthantwo.text", "prefs.other.text",
+          "prefs.icontext.text", "prefs.nfirst.text", "prefs.showExpectedOnly",
 
-              "prefs.showhighest.text", "prefs.showhighest.1", "prefs.showhighest.2",
-              "prefs.showhighest.3", "prefs.showhighest.4", "prefs.showhighest.5",
+          "prefs.showhighest.text", "prefs.showhighest.1", "prefs.showhighest.2",
+          "prefs.showhighest.3", "prefs.showhighest.4", "prefs.showhighest.5",
 
-              "prefs.changes.text", "prefs.changes.mode0.text", "prefs.changes.mode1.text",
+          "prefs.changes.text", "prefs.changes.mode0.text", "prefs.changes.mode1.text",
 
-              "prefs.categorized.text", "prefs.categorized.0", "prefs.categorized.1",
-              "prefs.categorized.2", "prefs.categorized.3", "prefs.categorized.4",
-              "prefs.categorized.5", "prefs.categorized.6",
+          "prefs.categorized.text", "prefs.categorized.0", "prefs.categorized.1",
+          "prefs.categorized.2", "prefs.categorized.3", "prefs.categorized.4",
+          "prefs.categorized.5", "prefs.categorized.6",
 
-              "prefs.showWarnings" }, 4, "tree.unitnodewrapper.");
+      "prefs.showWarnings" }, 4, "tree.unitnodewrapper.");
 
       // context menu
       contextMenu = new JMenu(Resources.get("tree.unitnodewrapper.prefs.title"));
@@ -913,8 +913,8 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     }
 
     /**
-		 * 
-		 */
+     *
+     */
     @Override
     public boolean isEmphasized() {
       return emphasized();

@@ -22,25 +22,24 @@ import java.util.Properties;
 import magellan.client.EMapDetailsPanel.ShowItems;
 import magellan.library.Item;
 import magellan.library.Unit;
-import magellan.library.UnitContainer;
-import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.StringFactory;
 import magellan.library.utils.Units;
+import magellan.library.utils.Units.StatItem;
 
 /**
  * A wrapper for items. Created on 16. August 2001, 16:26
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
 public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipboard {
   // Achtung: Das modifizierte Item!
-  protected Item modItem;
+  protected Units.StatItem modItem;
   protected Unit unit;
   protected String text;
 
-  protected int unmodifiedAmount;
+  protected long unmodifiedAmount;
 
   // protected ItemNodeWrapperPreferencesAdapter adapter=null;
   protected ShowItems showRegionItemAmount = ShowItems.SHOW_PRIVILEGED_FACTIONS;
@@ -51,14 +50,14 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
   /**
    * Creates new ItemNodeWrapper
    */
-  public ItemNodeWrapper(Item item) {
+  public ItemNodeWrapper(Units.StatItem item) {
     this(null, item, -1);
   }
 
   /**
    * Creates new ItemNodeWrapper
    */
-  public ItemNodeWrapper(Unit unit, Item modItem, int unmodifiedAmount) {
+  public ItemNodeWrapper(Unit unit, Units.StatItem modItem, long unmodifiedAmount) {
     this.unit = unit;
     this.modItem = modItem;
     this.unmodifiedAmount = unmodifiedAmount;
@@ -108,7 +107,7 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
   /**
    * @return the modified item stored in this node
    */
-  public Item getItem() {
+  public Units.StatItem getItem() {
     return modItem;
   }
 
@@ -139,7 +138,7 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
    * "<amount>[(!!!)] of <regionamount> <itemname>: <weight> GE " for items, the unit already has or
    * "<amount> (<modamount>[,!!!]) of <regionamount> <itemname>: <weight> (<modweight>) GE [(!!!)]"
    * for new items. (!!!) is added if the warning flag is set.
-   * 
+   *
    * @return the string representation of this item node.
    */
   @Override
@@ -171,7 +170,7 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
         // special if unmodifiedAmount is known
         if (unmodifiedAmount > -1 && unmodifiedAmount != modItem.getAmount()) {
           nodeText.append(unmodifiedAmount).append(" (").append(modItem.getAmount()).append(")")
-              .append(' ');
+          .append(' ');
         } else {
           nodeText.append(modItem.getAmount()).append(' ');
         }
@@ -180,13 +179,13 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
           nodeText.append(" (!!!) ");
         }
 
-        Item ri = null;
+        Units.StatItem ri = null;
         if (showRegion == ShowItems.SHOW_PRIVILEGED_FACTIONS) {
           ri = Units.getContainerPrivilegedUnitItem(unit.getRegion(), modItem.getItemType());
         } else if (showRegion == ShowItems.SHOW_ALL_FACTIONS) {
           ri = Units.getContainerAllUnitItem(unit.getRegion(), modItem.getItemType());
         } else if (showRegion == ShowItems.SHOW_MY_FACTION) {
-          ri = getContainerFactionUnitItem(unit.getRegion(), unit, modItem.getItemType());
+          ri = Units.getContainerFactionUnitItem(unit.getRegion(), unit, modItem.getItemType());
         }
         if (ri != null) {
           nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(
@@ -197,12 +196,13 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
 
         if (modItem.getItemType().getWeight() > 0) {
           float weight =
-              (((int) (modItem.getItemType().getWeight() * 100)) * modItem.getAmount()) / 100.0f;
+              (((long) (modItem.getItemType().getWeight() * 100)) * modItem.getAmount()) / 100.0f;
           nodeText.append(": ");
           if (unmodifiedAmount > -1 && unmodifiedAmount != modItem.getAmount()) {
             float unmodifiedWeight =
-                (((int) (modItem.getItemType().getWeight() * 100)) * unmodifiedAmount) / 100.0f;
-            nodeText.append(ItemNodeWrapper.weightNumberFormat.format(Float.valueOf(unmodifiedWeight)));
+                (((long) (modItem.getItemType().getWeight() * 100)) * unmodifiedAmount) / 100.0f;
+            nodeText.append(ItemNodeWrapper.weightNumberFormat.format(Float
+                .valueOf(unmodifiedWeight)));
             nodeText.append(" (").append(
                 ItemNodeWrapper.weightNumberFormat.format(Float.valueOf(weight))).append(")");
           } else {
@@ -227,13 +227,13 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
           }
         }
 
-        Item ri = null;
+        Units.StatItem ri = null;
         if (showRegion == ShowItems.SHOW_PRIVILEGED_FACTIONS) {
           ri = Units.getContainerPrivilegedUnitItem(unit.getRegion(), modItem.getItemType());
         } else if (showRegion == ShowItems.SHOW_ALL_FACTIONS) {
           ri = Units.getContainerAllUnitItem(unit.getRegion(), modItem.getItemType());
         } else if (showRegion == ShowItems.SHOW_MY_FACTION) {
-          ri = getContainerFactionUnitItem(unit.getRegion(), unit, modItem.getItemType());
+          ri = Units.getContainerFactionUnitItem(unit.getRegion(), unit, modItem.getItemType());
         }
         if (ri != null) {
           nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(
@@ -245,13 +245,13 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
         if (modItem.getItemType().getWeight() > 0) {
           if (item.getItemType().getWeight() > 0) {
             float weight =
-                (((int) (item.getItemType().getWeight() * 100)) * item.getAmount()) / 100.0f;
+                (((long) (item.getItemType().getWeight() * 100)) * item.getAmount()) / 100.0f;
             nodeText.append(": ").append(
                 ItemNodeWrapper.weightNumberFormat.format(Float.valueOf(weight)));
 
             if (modItem.getAmount() != item.getAmount()) {
               float modWeight =
-                  (((int) (modItem.getItemType().getWeight() * 100)) * modItem.getAmount()) / 100.0f;
+                  (((long) (modItem.getItemType().getWeight() * 100)) * modItem.getAmount()) / 100.0f;
               nodeText.append(" (").append(
                   ItemNodeWrapper.weightNumberFormat.format(Float.valueOf(modWeight))).append(")");
             }
@@ -264,25 +264,6 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
     }
 
     return text;
-  }
-
-  /**
-   * Returns an item corresponding to unit's faction's total amount of this item in unit's region.
-   * TODO is it worth moving this to Units and caching it for each faction and region?
-   */
-  private static Item getContainerFactionUnitItem(UnitContainer container, Unit unit, ItemType type) {
-    Item result = new Item(type, 0);
-    int amount = 0;
-    for (Unit u : container.units()) {
-      if (u.getFaction() == unit.getFaction()) {
-        Item uItem = u.getItem(type);
-        if (uItem != null) {
-          amount += uItem.getAmount();
-        }
-      }
-    }
-    result.setAmount(amount);
-    return result;
   }
 
   protected NodeWrapperDrawPolicy createItemDrawPolicy(Properties settings, String prefix) {

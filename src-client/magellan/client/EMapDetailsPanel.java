@@ -1925,9 +1925,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       RaceInfo rInfo = races.get(u.getRaceName(getGameData()));
       if (rInfo == null) {
         rInfo = new RaceInfo();
-        // rInfo.raceNoPrefix = com.eressea.util.Umlaut.convertUmlauts(u.getRealRaceName());
         // umlaut check is done late when loading the image
-        rInfo.raceNoPrefix = u.getSimpleRealRaceName();
+        rInfo.raceNoPrefix = u.getRace().getIcon();
       }
 
       rInfo.amount += u.getPersons();
@@ -2138,8 +2137,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendGroupPersons(Group g, int personCount, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     DefaultMutableTreeNode n =
-        new DefaultMutableTreeNode(personCount + " "
-            + Resources.get("emapdetailspanel.node.persons"));
+        new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(personCount + " "
+            + Resources.get("emapdetailspanel.node.persons"), "persons"));
     parent.add(n);
   }
 
@@ -2584,15 +2583,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
     }
     String iconPersonName = "person";
-    /**
-     * Fiete 20061218...was just a first try....not that good, needs always some support.. String
-     * iconNameEN = getString(com.eressea.util.Umlaut.convertUmlauts(u.getRealRaceName())); if
-     * (!iconNameEN.equalsIgnoreCase(com.eressea.util.Umlaut.convertUmlauts(u.getRealRaceName()))) {
-     * iconPersonName = iconNameEN; }
-     */
     // now we check if a specific race icon exists, if true, we use it
-    if (getMagellanContext().getImageFactory().existImageIcon(u.getSimpleRealRaceName())) {
-      iconPersonName = u.getSimpleRealRaceName();
+    if (u.getRace() != null
+        && getMagellanContext().getImageFactory().existImageIcon(u.getRace().getIcon())) {
+      iconPersonName = u.getRace().getIcon();
     }
     DefaultMutableTreeNode personNode = createSimpleNode(strPersons.toString(), iconPersonName);
     parent.add(personNode);

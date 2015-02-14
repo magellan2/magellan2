@@ -568,15 +568,12 @@ TreeSelectionListener {
                 .get("factionstatspanel.node.otherrace"), "persons_of_other_race"));
         rootNode.add(currentNode);
 
-        for (String string : specialPersons.keySet()) {
-          Object obj = string;
-          List<Unit> v = specialPersons.get(obj);
+        for (String raceName : specialPersons.keySet()) {
+          List<Unit> v = specialPersons.get(raceName);
           int count = 0;
-          String actRealRaceName = "";
+          String actRealRaceName = v.size() > 0 ? v.get(0).getRace().getIcon() : "";
           for (Unit actU : v) {
             count += actU.getPersons();
-            actRealRaceName = actU.getSimpleRealRaceName();
-
           }
           String iconPersonName = "person";
           // now we check if a specific race icon exists, if true, we use it
@@ -585,7 +582,7 @@ TreeSelectionListener {
           }
 
           subNode =
-              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj + ": "
+              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(raceName + ": "
                   + count, iconPersonName));
           /**
            * String raceNameLang = com.eressea.util.Umlaut.convertUmlauts(obj.toString()); String

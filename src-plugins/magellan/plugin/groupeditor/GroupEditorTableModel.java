@@ -35,6 +35,7 @@ import javax.swing.table.AbstractTableModel;
 import magellan.library.Alliance;
 import magellan.library.EntityID;
 import magellan.library.Faction;
+import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.Order;
 import magellan.library.StringID;
@@ -277,6 +278,8 @@ public class GroupEditorTableModel extends AbstractTableModel {
     Map<EntityID, Alliance> allies =
         unit.getGroup() != null ? unit.getGroup().allies() : unit.getFaction().getAllies();
 
+    GameData world = unit.getData();
+
     Collection<Order> newOrders = new ArrayList<Order>();
     for (Order order : unit.getOrders2()) {
       if (!order.getText().startsWith(signature)) {
@@ -307,7 +310,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
 
         boolean all = false;
         for (AllianceCategory cat : newState.getCategories()) {
-          if (cat.getName().equals(EresseaConstants.OC_ALL)) {
+          if (cat.getName().equals(EresseaConstants.O_ALL)) {
             unit.addOrder(helpcommand + " " + faction.getID() + " "
                 + getOrderTranslation(EresseaConstants.OC_ALL), !firstAdded, 1);
             all = true;
@@ -317,10 +320,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
 
         if (!all) {
           for (AllianceCategory cat : minus(oldState.getAllianceCategories(), newState
-              .getCategories())) {
-            if (cat.getName().equals(EresseaConstants.OC_ALL)) {
-              continue;
-            }
+                  .getCategories())) {
             unit.addOrder(helpcommand + " " + faction.getID() + " "
                 + getOrderTranslation(GameConstants.getAllianceKey(cat.getName())) + " "
                 + getOrderTranslation(EresseaConstants.OC_NOT), !firstAdded, 1);
@@ -343,18 +343,22 @@ public class GroupEditorTableModel extends AbstractTableModel {
     }
   }
 
-  private <T> List<T> minus(List<T> list1, List<T> list2) {
-    ArrayList<T> difference = new ArrayList<T>();
-    for (T obj : list1) {
-      boolean found = false;
-      for (T obj2 : list2) {
-        if (obj2.equals(obj)) {
-          found = true;
-          break;
+  private Collection<AllianceCategory> minus(Collection<AllianceCategory> list1,
+      Collection<AllianceCategory> list2) {
+    ArrayList<AllianceCategory> difference = new ArrayList<AllianceCategory>();
+    for (AllianceCategory obj0 : list1) {
+      for (AllianceCategory obj1 : obj0.getChildren().isEmpty() ? Collections.singletonList(obj0)
+          : obj0.getChildren()) {
+        boolean found = false;
+        for (AllianceCategory obj2 : list2) {
+          if (obj2.equals(obj1)) {
+            found = true;
+            break;
+          }
         }
-      }
-      if (!found) {
-        difference.add(obj);
+        if (!found) {
+          difference.add(obj1);
+        }
       }
     }
     return difference;
@@ -399,4 +403,5 @@ public class GroupEditorTableModel extends AbstractTableModel {
       return representatives.get(null);
     return representatives.get(columns.get(column - offset));
   }
+
 }

@@ -483,6 +483,11 @@ ORDER "FOREIGNSHIP"
 "FOREIGN";locale_en
 1;internal
 
+ORDER "HELP_ALL"
+"ALLES";locale_de
+"ALL";locale_en
+1;internal
+
 ORDER "HELP_COMBAT"
 "KÄMPFE";locale_de
 "COMBAT";locale_en

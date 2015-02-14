@@ -35,13 +35,14 @@ import javax.swing.JTable;
 
 import magellan.library.Alliance;
 import magellan.library.GameData;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameConstants;
 import magellan.library.rules.AllianceCategory;
 import magellan.library.utils.Locales;
 
 /**
  * Shows a JComboBox as default renderer for the table.
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 25.09.2008
  */
@@ -63,16 +64,7 @@ public class AllianceStateComboBox extends JComboBox {
     max.addCategory(getMaxAllianceCategory());
     states.add(max);
 
-    Iterator<AllianceCategory> categories = world.getRules().getAllianceCategoryIterator();
-
-    while (categories.hasNext()) {
-      AllianceCategory category = categories.next();
-      // deprecated - not nice, but necessary (PERCEPTION is not longer allowed but must be
-      // available in the settings)
-      if (world.getGameName() != null && world.getGameName().equalsIgnoreCase("ERESSEA")
-          && category.getName().equalsIgnoreCase("PERCEPTON")) {
-        continue;
-      }
+    for (AllianceCategory category : getMaxAllianceCategory().getChildren()) {
       addItems(category, states, new ArrayList<AllianceCategory>());
     }
 
@@ -128,16 +120,9 @@ public class AllianceStateComboBox extends JComboBox {
       return;
     cats.add(category);
 
-    Iterator<AllianceCategory> categories = world.getRules().getAllianceCategoryIterator();
-    while (categories.hasNext()) {
-      AllianceCategory nextcat = categories.next();
+    for (AllianceCategory nextcat : world.getRules().getAllianceCategory(EresseaConstants.OC_ALL)
+        .getChildren()) {
       if (nextcat.getParent() == null) {
-        continue;
-      }
-      // deprecated - not nice, but necessary (PERCEPTION is not longer allowed but must be
-      // available in the settings)
-      if (world.getGameName() != null && world.getGameName().equalsIgnoreCase("ERESSEA")
-          && category.getName().equalsIgnoreCase("PERCEPTON")) {
         continue;
       }
       addItems(nextcat, myStates, cats);
@@ -190,7 +175,7 @@ public class AllianceStateComboBox extends JComboBox {
 
 /**
  * Contains a specific possible alliance state which is actually a list of alliance categories
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 25.09.2008
  */

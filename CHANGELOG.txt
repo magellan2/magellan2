@@ -1,3 +1,6 @@
+2015-02-14 / Build 610 - stm (stm2@users.sourceforge.net)
+    * GroupEditor changes: HELFE KAEMPFE not in E3, HELP_ALL should be ALL 
+
 2015-02-13 / Build 605 - stm (stm2@users.sourceforge.net)
     * izpack installer now asks for administrator privileges and Windows 7 and Vista
     * configuration directory now defaults to $HOME/.magellan

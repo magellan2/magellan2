@@ -1,3 +1,8 @@
+2015-02-12 / Build 603 - stm (stm2@users.sourceforge.net)
+    * fixed English race icons (bug #370)
+    * fixed tab spacing in ExtendedCommands dock (bug #184)
+    * added find and goto line feature in ExtendedCommands dock
+
 2015-02-11 / Build 601 - stm (stm2@users.sourceforge.net)
     * implemented FOLLOW order to create movement relations if followed unit moves
 

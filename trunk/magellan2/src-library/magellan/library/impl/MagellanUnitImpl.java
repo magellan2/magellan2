@@ -251,7 +251,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       ordersObject.clear();
     }
 
-    refreshRelations(0);
+    processOrders();
   }
 
   /**
@@ -274,7 +274,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   public void removeOrderAt(int i) {
     ordersObject.remove(i);
 
-    refreshRelations(i);
+    processOrders();
   }
 
   /**
@@ -298,7 +298,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     boolean retVal = getOrdersObject().removeOrder(createOrder(order), length);
 
     if (retVal) {
-      refreshRelations(0);
+      processOrders();
     }
 
     return retVal;
@@ -333,7 +333,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       return false;
     addOrderAt(-1, createOrder(order));
 
-    refreshRelations(-1);
+    processOrders();
 
     return true;
   }
@@ -375,8 +375,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
     addOrderAt(-1, order);
 
-    refreshRelations(removed ? 0 : -1);
-
+    processOrders();
     return true;
   }
 
@@ -433,7 +432,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       getOrdersObject().add(pos, newOrder);
     }
 
-    refreshRelations(pos);
+    processOrders();
   }
 
   /**
@@ -451,7 +450,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   public void replaceOrder(int pos, Order newOrder) {
     ordersObject.set(pos, newOrder);
 
-    refreshRelations(pos);
+    processOrders();
   }
 
   /**
@@ -482,7 +481,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       getOrdersObject().add(createOrder(line));
     }
 
-    refreshRelations(newPos);
+    processOrders();
   }
 
   /**
@@ -513,7 +512,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   public void addOrders2(Collection<Order> newOrders) {
     final int newPos = getOrdersObject().size();
     getOrdersObject().addAll(newOrders);
-    refreshRelations(newPos);
+    processOrders();
   }
 
   /**
@@ -556,7 +555,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       getOrdersObject().clear();
       getOrdersObject().addAll(newOrders);
     }
-    refreshRelations(0);
+    processOrders();
   }
 
   /**
@@ -1069,7 +1068,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       gdata.addTempUnit(t);
     } else {
       MagellanUnitImpl.log
-      .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
+          .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
     }
 
     // FIXME(stm) fire unitorderschanged?)
@@ -1085,7 +1084,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
     if (t != null) {
       t.clearOrders();
-      t.refreshRelations();
 
       t.setPersons(0);
       t.setRace(null);
@@ -1102,7 +1100,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       gdata.removeTemp(key);
       // data.tempUnits().remove(key);
 
-      refreshRelations();
+      processOrders();
 
     }
   }
@@ -2190,15 +2188,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     if (deprecationCounter++ < 10) {
       log.warn("calling deprecated refreshRelations", new Exception());
     }
+    processOrders();
+  }
+
+  private void processOrders() {
     if (ordersAreNull() || (getRegion() == null))
       return;
 
     getData().getGameSpecificStuff().getRelationFactory().createRelations(getRegion());
-    // invalidateCache();
-    // removeRelationsOriginatingFromUs(from);
-    // addAndSpreadRelations(getData().getGameSpecificStuff().getRelationFactory().createRelations(
-    // this, from));
-    // TODO invalidateCache();
   }
 
   /**

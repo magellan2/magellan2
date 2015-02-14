@@ -10,33 +10,36 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
 // This program is distributed in the hope that it will be useful,
+//
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.plugin.extendedcommands;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -51,7 +54,7 @@ import net.infonode.tabbedpanel.titledtab.TitledTab;
 
 /**
  * This is a single panel representing ONE script.
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 28.07.2008
  */
@@ -62,12 +65,15 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
   private GameData world = null;
   private Unit unit = null;
   private UnitContainer container = null;
-  private Script script = null;
+  private Script script;
   private boolean isModified = false;
-  private JLabel elementBox = null;
+  private JTextField findBox = null;
   private ExtendedCommands commands = null;
   private JLabel positionBox = null;
   private TitledTab tab = null;
+  private JTextField gotoBox;
+  private JButton gotoButton;
+  private JButton findButton;
 
   /**
    * This constructor creates a single empty document. If you want to load some settings into the
@@ -115,13 +121,14 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
     center.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
     center.add(Box.createRigidArea(new Dimension(10, 0)));
 
-    label = new JLabel(Resources.get("extended_commands.element.caption"));
-    center.add(label);
-
+    findBox = new JTextField(10);
+    center.add(findBox);
     center.add(Box.createRigidArea(new Dimension(5, 0)));
-    elementBox = new JLabel();
-    elementBox.setFont(elementBox.getFont().deriveFont(Font.BOLD));
-    center.add(elementBox);
+    findButton = new JButton(Resources.get("extended_commands.find.caption"));
+    findButton.setActionCommand("button.find");
+    findButton.addActionListener(this);
+    findButton.setRequestFocusEnabled(false);
+    center.add(findButton);
     center.add(Box.createRigidArea(new Dimension(10, 0)));
 
     // right panel contains the cursor position
@@ -133,9 +140,14 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
     label = new JLabel(Resources.get("extended_commands.position.caption"));
     right.add(label);
     right.add(Box.createRigidArea(new Dimension(5, 0)));
-
     positionBox = new JLabel("0,0");
     right.add(positionBox);
+    right.add(Box.createRigidArea(new Dimension(5, 0)));
+    gotoButton = new JButton(Resources.get("extended_commands.go.caption"));
+    gotoButton.setActionCommand("button.go");
+    gotoButton.addActionListener(this);
+    gotoButton.setRequestFocusEnabled(false);
+    right.add(gotoButton);
     right.add(Box.createRigidArea(new Dimension(10, 0)));
 
     south.add(left, BorderLayout.WEST);
@@ -147,12 +159,41 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * This method is called, if one of the buttons is clicked.
-   * 
+   *
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
 
-    if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
+    if (e.getActionCommand().equalsIgnoreCase("button.go")) {
+      String input = JOptionPane.showInputDialog(Resources.get("extended_commands.go.label"));
+      try {
+        int line = Integer.parseInt(input);
+        scriptingArea.setCaretPosition(getDot(line));
+        scriptingArea.requestFocus();
+      } catch (NumberFormatException e1) {
+        // go nowhere
+      }
+    } else if (e.getActionCommand().equalsIgnoreCase("button.find")) {
+      String search = findBox.getText();
+      int pos = -1;
+      if (search.length() > 0) {
+        int caret = scriptingArea.getCaretPosition();
+        String text = scriptingArea.getText();
+        Matcher matcher =
+            Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE).matcher(text);
+        if (matcher.find(caret)) {
+          pos = matcher.start();
+        }
+        if (pos < 0 && matcher.find()) {
+          pos = matcher.start();
+        }
+        if (pos >= 0) {
+          scriptingArea.setCaretPosition(pos);
+          scriptingArea.moveCaretPosition(pos + search.length());
+        }
+        scriptingArea.requestFocus();
+      }
+    } else if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
       // execute the command, this means, to temporary store the script
       // and execute it. After that, restore the old script.
       Script newScript = (Script) script.clone();
@@ -174,9 +215,23 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
     }
   }
 
+  private int getDot(int line) {
+    String text = scriptingArea.getText();
+    int l = 1;
+    for (int pos = 0; pos < text.length(); ++pos) {
+      char c = text.charAt(pos);
+      if (c == '\n') {
+        l++;
+      }
+      if (line == l)
+        return pos + 1;
+    }
+    return text.length();
+  }
+
   /**
    * Returns the value of world.
-   * 
+   *
    * @return Returns world.
    */
   public GameData getWorld() {
@@ -185,7 +240,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of world.
-   * 
+   *
    * @param world The value for world.
    */
   public void setWorld(GameData world) {
@@ -194,7 +249,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Returns the value of unit.
-   * 
+   *
    * @return Returns unit.
    */
   public Unit getUnit() {
@@ -203,7 +258,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of unit.
-   * 
+   *
    * @param unit The value for unit.
    */
   public void setUnit(Unit unit) {
@@ -212,7 +267,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Returns the value of container.
-   * 
+   *
    * @return Returns container.
    */
   public UnitContainer getUnitContainer() {
@@ -221,7 +276,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of container.
-   * 
+   *
    * @param container The value for container.
    */
   public void setContainer(UnitContainer container) {
@@ -230,7 +285,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Returns the value of script.
-   * 
+   *
    * @return Returns script.
    */
   public Script getScript() {
@@ -239,7 +294,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of script.
-   * 
+   *
    * @param script The value for script.
    */
   public void setScript(Script script) {
@@ -340,7 +395,6 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
       title = Resources.get("extended_commands.element.library") + changed;
     }
 
-    elementBox.setText(title);
     if (tab != null) {
       tab.setText(title);
     }
@@ -353,7 +407,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Returns the value of commands.
-   * 
+   *
    * @return Returns commands.
    */
   public ExtendedCommands getCommands() {
@@ -362,7 +416,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of commands.
-   * 
+   *
    * @param commands The value for commands.
    */
   public void setCommands(ExtendedCommands commands) {
@@ -371,7 +425,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Returns the value of tab.
-   * 
+   *
    * @return Returns tab.
    */
   public TitledTab getTab() {
@@ -380,7 +434,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
 
   /**
    * Sets the value of tab.
-   * 
+   *
    * @param tab The value for tab.
    */
   public void setTab(TitledTab tab) {

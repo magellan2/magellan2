@@ -1,3 +1,7 @@
+2015-02-13 / Build 605 - stm (stm2@users.sourceforge.net)
+    * izpack installer now asks for administrator privileges and Windows 7 and Vista
+    * configuration directory now defaults to $HOME/.magellan
+
 2015-02-12 / Build 603 - stm (stm2@users.sourceforge.net)
     * fixed English race icons (bug #370)
     * fixed tab spacing in ExtendedCommands dock (bug #184)
@@ -10,7 +14,7 @@
     * implemented PROMOTE order
     * implemented "region owner pays" and PAY NOT <id> feature
     * (re-)implemented support for umlaut substitution in German orders
-    * fixed and added completions for NUMBER 
+    * fixed and added completions for NUMBER
     * fixed error writing max_units
     * E3CommandParser: added method to remove duplicate long orders
 
@@ -21,11 +25,11 @@
 
 2015-01-08 / Build 596 - stm (stm2@users.sourceforge.net)
     * FOLLOW SHIP is short(ish) order now
-    * implemented new RESEREVE semantics (Version 3.0, 20.07.2014): 
+    * implemented new RESEREVE semantics (Version 3.0, 20.07.2014):
       - two phase reserve (RESERVing units always keep own stuff)
       - given stuff is always reserved (and not passed on)
     * choose imperative as new preferred German syntax (ARBEITE, not ARBEITEN)
-    * added a few items      
+    * added a few items
 
 2014-05-08 / Build 591 - stm (stm2@users.sourceforge.net)
     * fixed MapperPanel and BookmarkDock to be compatible with Java 6 again
@@ -41,66 +45,66 @@
     * disabled Hotspots; hotspot functionality is now fullfilled by bookmarks; added load/save/merge/export of bookmarks
 
 2014-04-22 / Build 585 - stm (stm2@users.sourceforge.net)
-	* fixed NPE in EMapOverview; fixed bug that prevented deletion of factions
-	* E3CommandParser: add Benoetige LUXUS
-	* display completeness of roads in EmapOverview 
-	
+    * fixed NPE in EMapOverview; fixed bug that prevented deletion of factions
+    * E3CommandParser: add Benoetige LUXUS
+    * display completeness of roads in EmapOverview
+
 2014-02-23 / Build 583 - stm (stm2@users.sourceforge.net)
-	* added confirmation dialog to TaskTable unacknowledge feature 
-	
+    * added confirmation dialog to TaskTable unacknowledge feature
+
 2014-02-11 / Build 581 - stm (stm2@users.sourceforge.net)
-	* improvements to TaskTable: empty/abandoned buildings and ships
-	* bugfix: Unit.newRegion() may be null
-	* updated eclipse formatter settings ("version 12")
-	* bugfix for units without locale
-	* bugfix for E3CommandParser repeat command
-	* small useability improvement for order completion
+    * improvements to TaskTable: empty/abandoned buildings and ships
+    * bugfix: Unit.newRegion() may be null
+    * updated eclipse formatter settings ("version 12")
+    * bugfix for units without locale
+    * bugfix for E3CommandParser repeat command
+    * small useability improvement for order completion
 
 2014-01-05 / Build 580 - stm (stm2@users.sourceforge.net)
-	* remove orders dialog detects invalid patterns
-	* small tweak to MovementInspector
-	* fix modified combat status display
-	* E3CommandParser: added support for multiple faction processing; now with more detailed warning management
+    * remove orders dialog detects invalid patterns
+    * small tweak to MovementInspector
+    * fix modified combat status display
+    * E3CommandParser: added support for multiple faction processing; now with more detailed warning management
 
 2013-07-03 / Build 570-576 - stm (stm2@users.sourceforge.net)
-	* added support for Enno's Atlantis game
-	* NR Parser
-	* OrderParser/Completer
-	* restructured OrderReader/Writer
-	* moving local order handling from resources to rules file
-	* improved recognition of file types
-	* other localization issues
-	* adjustments for Atlantis coordinate system (cellGeometry, game specific MapMetric, map wrap)
-	* improved support for combat states
-	* Preparations for JSON report support
-	* encapsulated GameData.rules
-	* added fall back message type
-	
+    * added support for Enno's Atlantis game
+    * NR Parser
+    * OrderParser/Completer
+    * restructured OrderReader/Writer
+    * moving local order handling from resources to rules file
+    * improved recognition of file types
+    * other localization issues
+    * adjustments for Atlantis coordinate system (cellGeometry, game specific MapMetric, map wrap)
+    * improved support for combat states
+    * Preparations for JSON report support
+    * encapsulated GameData.rules
+    * added fall back message type
+
 2013-07-03 / Build 567 - stm (stm2@users.sourceforge.net)
-	* fix to E3CommandParser because of changed behaviour of Integer.parseInt in Java 1.7
-	* changing global textfield selection behaviour
-	* fixed clone behaviour
-	* NPE fix for E3CommandParser
-	* added clean-all build target
-	* focus for continue
-	
+    * fix to E3CommandParser because of changed behaviour of Integer.parseInt in Java 1.7
+    * changing global textfield selection behaviour
+    * fixed clone behaviour
+    * NPE fix for E3CommandParser
+    * added clean-all build target
+    * focus for continue
+
 2013-06-14 / Build 567 - Fiete (sf@fietefietz.de)
-	* Fixed NPE in TempUnitDialog when faction has no groups.
+    * Fixed NPE in TempUnitDialog when faction has no groups.
 
 2013-04-25 / Build 566 - stm (stm2@users.sourceforge.net)
-	* minor behaviour tweaks
-	* resource tweak
+    * minor behaviour tweaks
+    * resource tweak
 
 2013-04-25 / Build 562 - stm (stm2@users.sourceforge.net)
-	* fix for temp unit dialog
-	* tweak to E3CommandParser
-	* make echeck comments in OrderWriterDialog by default
-	* small tweak for OrderCompleter (GRUPPE)
+    * fix for temp unit dialog
+    * tweak to E3CommandParser
+    * make echeck comments in OrderWriterDialog by default
+    * small tweak for OrderCompleter (GRUPPE)
 
 2013-04-12 / Build 551 - stm (stm2@users.sourceforge.net)
-	* introduced http://magellan-client.sourceforge.net/locations.properties as primary register for URLs concerning Magellan
+    * introduced http://magellan-client.sourceforge.net/locations.properties as primary register for URLs concerning Magellan
     * fixed typos in about/update/version dialogs
-    
+
 2013-03-20 / Build 550 - trickert (thoralf@m84.de)
     * added Combat State Comboxbox to TempUnit dialog to choose combat state for a new unit during creation
 
@@ -127,9 +131,9 @@
     * removed option "draw map before icons are completely loaded"
 
 2012-10-01 / Build 531 - stm (stm2@users.sourceforge.net)
-    * fixed trac "bug" #33: GroupEditor 
+    * fixed trac "bug" #33: GroupEditor
     * fixed trac bug #12 (I think); saving of ExtendedCommands
-    
+
 2012-09-29 / Build 530 - Fiete (sf@fietefietz.de)
     * added ";regionicon" to the known REGION-tags (eliminating log.Warn-Messages)
 
@@ -142,7 +146,7 @@
 
 2012-09-28 / Build 527 - stm (stm2@users.sourceforge.net)
     * updating echeck to version 4.3.4
-    
+
 2012-09-27 / Build 526 - stm (stm2@users.sourceforge.net)
     * remembering units from last week in order to be able to remember skills
     * added block ALTEINHEIT to CR
@@ -152,7 +156,7 @@
 
 2012-09-06 / Build 522 - stm (stm2@users.sourceforge.net)
     * improved behavior of "region/politics" renderer for map and minimap, including fix for trac bug #38
-    
+
 2012-09-04 / Build 521 - stm (stm2@users.sourceforge.net)
     * improved History's and Bookmarkmanager's reaction on "fake" GameDataEvents
 
@@ -162,7 +166,7 @@
 2012-07-08 / Build 514 - stm (stm2@users.sourceforge.net)
     * detect races in orders more accurately
     * preparing inclusion of orders in rules files
-    
+
 2012-06-22 / Build 510 - stm (stm2@users.sourceforge.net)
     * improved, unified and more tested implementation of movement orders
 
@@ -170,17 +174,17 @@
     * improved exception handling in Client on load report and quit
     * encapsulated InternatioalizedDataPanel.data
     * OrderSyntaxInspector: "two long orders" reported wrong line
-    * added testing target to build.xml 
+    * added testing target to build.xml
     * deprecated Unit.addOrder(..., refreshRelations)
-    * order parsing is now not always done after every single unit order change, but automatically after a batch of order changes 
+    * order parsing is now not always done after every single unit order change, but automatically after a batch of order changes
     * introduced UnitChangeListener to react to changes
     * HELFE KÄMPFE  no longer accepted by E3OrderParser
     * created test for E3AOrderParser
-    
+
 2012-06-06 / Build 505 - stm (stm2@users.sourceforge.net)
     * fixed some mouselisteners for more compatible popup menu behavior
     * added STOP option to RoutePlanners, changed context route planner to be compatible with RoutePlanners
-    * added person transfer option to TempUnitDialog 
+    * added person transfer option to TempUnitDialog
 
 2012-06-02 / Build 503 - stm (stm2@users.sourceforge.net)
     * revamped OrderWriterDialog
@@ -188,7 +192,7 @@
 
 2012-03-15 / Build 497 - stm (stm2@users.sourceforge.net)
     * units can besiege buildings and we show that now!
-    
+
 2012-02-08 / Build 494 - stm (stm2@users.sourceforge.net)
     * fixes to EresseaDate and MaintenanceInspector
     * experimental battle plugin
@@ -199,10 +203,10 @@
 2012-01-20 / Build 490 - stm (stm2@users.sourceforge.net)
     * fix for island merging
     * made verbose NullUserInterface shut up
-  
+
 2012-01-18 / Build 487 - stm (stm2@users.sourceforge.net)
     * added Pvblivs' patch to GameDataMerger with beanutils
-  
+
 2012-01-02 / Build 485 - stm (stm2@users.sourceforge.net)
     * added calculation of building and unit upkeep
     * added MaintenanceInspector
@@ -212,9 +216,9 @@
     * fixed most of Kildarion's bugs:
     * improved checking ships with VERLASSE orders
     * improved completion, order parsing, and language support for PREFIX, COMBAT, DESCRIBE, and more
-    * improved calculation of trade volume with karavansereis 
+    * improved calculation of trade volume with karavansereis
     * added explanation to ProfileDialog
-    
+
 2011-12-31 / Build 481 - stm (stm2@users.sourceforge.net)
     * fixed TaskTablePanel sorting bug
     * added warning for unknown units in GIVE orders
@@ -226,10 +230,10 @@
     * EMapDetailsPanel: testing "compact mode"
     * add option for unit capacity nodes: show only items of own faction
     * fixing unit sorting (trac bug #59)
-    
+
 2011-09-07 / Build 477 - stm (stm2@users.sourceforge.net)
     * ship cargo calculation fix (trac bug #40)
-    
+
 2011-08-24 / Build 475 - stm (stm2@users.sourceforge.net)
     * fixed island renaming (trac bug #37)
     * search for groups in find dialog (trac bug #34)
@@ -238,14 +242,14 @@
     * additions to echeck txt files
 
 2011-08-09 / Build 473 - trickert (thoralf@m84.de)
-    * RELEASE 2.0.6 
+    * RELEASE 2.0.6
     * fixed a minor performance bug inside ExtCmds Plugin (concurrent thread operations)
     * fixed a minor bug during report merge process
     * added MAC OS download version for Magellan
-    
+
 2011-05-17 / Build 470 - trickert (thoralf@m84.de)
     * Changed some library methods to not use Swing JDialog
-          
+
 2011-04-13 / Build 470 - stm (stm2@users.sourceforge.net)
     * fix item order in unit nodes (trac bug #23)
     * get rid of BATTLESPEC
@@ -261,13 +265,13 @@
 
 2011-03-01 / Build 465 - stm (stm2@users.sourceforge.net)
     * fixed merging of alliances in E3, handling of alliance groups in various areas and a few alliance bugs on the way
-    
+
 2011-02-22 / Build 464 - stm (stm2@users.sourceforge.net)
     * added "open orders as ISO" option
     * added support for region items (non standard-Eressea)
     * TARNE PARTEI [NICHT] allowed again for E3
-    * fix to FileNameGenerator (did this ever work?) 
-    
+    * fix to FileNameGenerator (did this ever work?)
+
 2011-02-22 / Build 462 - stm (stm2@users.sourceforge.net)
     * added Halle and Gang region types
     * fixed old prices merging
@@ -285,11 +289,11 @@
 
 2010-11-23 / Build 454 - stm (stm2@users.sourceforge.net)
     * fixed bug with unknown tags in CRParser
-    
+
 2010-11-23 / Build 446 - stm (stm2@users.sourceforge.net)
     * implemented experimental message inspector
     * tweaked positioning of the various dialogs
-    
+
 2010-11-22 / Build 444 - stm (stm2@users.sourceforge.net)
     * fixed herb display ("keine Kräuter")
     * added misc relations node to EMapDetails (KONTAKTIERE, SPIONIERE etc.)
@@ -297,15 +301,15 @@
     * faction sorting in AlchemyDialog
     * fixed order formatting glitch
     * added spell components to GIVE completion
-     
+
 2010-11-22 / Build 442 - stm (stm2@users.sourceforge.net)
-    * fixed merging of wrapped reports; should now be able to merge most reports without creating 
+    * fixed merging of wrapped reports; should now be able to merge most reports without creating
       crazy wrapping regions where they're not needed (see Track ticket #11)
     * added GameDataInspector and related errors
-    
+
 2010-11-17 / Build 439 - stm (stm2@users.sourceforge.net)
     * partial fix of unit sorting
-    
+
 2010-11-15 / Build 437 - stm (stm2@users.sourceforge.net)
     * additional layer of order warnings
     * hiding of multiple problems at once in TaskTable
@@ -328,14 +332,14 @@
     * show changed names not only for units
 
 2010-11-05 / Build 433 - Fiete (sf@fietefietz.de)
-	* changed FogOfWar to CR-visibility information.
+    * changed FogOfWar to CR-visibility information.
 
 2010-11-04 / Build 432 - Fiete (sf@fietefietz.de)
-	* fixed FogOfWar through Lighthouses https://sourceforge.net/apps/trac/magellan-client/ticket/1
+    * fixed FogOfWar through Lighthouses https://sourceforge.net/apps/trac/magellan-client/ticket/1
 
 2010-08-10 / Build 431 - thoralf (thoralf@m84.de)
     * some small bugfixes in Resources for a better settingsDir variable checking (NPE)
-    * made ExtCmds plugin useful without GUI 
+    * made ExtCmds plugin useful without GUI
 
 2010-08-10 / Build 431 - stm (stm2@users.sourceforge.net)
     * changed used problem list for OpenTasks from positive to negative list
@@ -351,12 +355,12 @@
     * fixed various bugs and quirks found by FindBugs plugin, mainly unnecessary object creation, unclosed readers, static inner classes and StringBuilders
 
 2010-07-20 / Build 425 - stm (stm2@users.sourceforge.net)
-    * added convenience methods for movement and fixed a bug in planShipRoute on the way 
-    
+    * added convenience methods for movement and fixed a bug in planShipRoute on the way
+
 2010-07-19 / Build 424 - stm (stm2@users.sourceforge.net)
     * more methods for ExtendedCommandsHelper
     * fixed Track ticket #14 (unit relation update after report load)
-    
+
 2010-07-17 / Build 421 - stm (stm2@users.sourceforge.net)
     * added profile chooser
     * added getModifiedItemCount and hasScript to ExtendedCommandsHelper
@@ -406,8 +410,8 @@
     * extended neighborhood functionality. Method of choice is now Region.getNeighbors()
 
 2010-02-09 / Build 404 - Fiete <sf@fietefietz.de>
-	* fixed Direction.getDifference(int)
-	* added 2 Warnings for IndexOutOfBoundsExceptions to Regions.java
+    * fixed Direction.getDifference(int)
+    * added 2 Warnings for IndexOutOfBoundsExceptions to Regions.java
 
 2010-02-03 / Build 403 - stm (stm2@users.sourceforge.net)
     * fixed equals methods
@@ -423,12 +427,12 @@
 2010-02-02 / Build 401 - stm (stm2@users.sourceforge.net)
     * activated Streitross>=Pferd in movement related code and move it to MovementEvaluator
     * tried to reduce misuse of region.getData()
-    * optimized route planners (better routes and more consistent interface) 
+    * optimized route planners (better routes and more consistent interface)
     * removed some unnecessary GameDataListeners
     * added isLand to RegionType and changed coast recognition
 
 2010-??-?? / Build 390
-    * RELEASE 2.0.5 
+    * RELEASE 2.0.5
 
 2010-02-01 / Build 383 - stm (stm2@users.sourceforge.net)
     * activated Streitross>=Pferd in movement related code and move it to MovementEvaluator
@@ -447,10 +451,10 @@
 
 2009-12-23 / Build 373 - stm (stm2@users.sourceforge.net)
     * added BEZAHLE NICHT command
-    * added version upgrade dialog and RELEASENOTES.txt 
+    * added version upgrade dialog and RELEASENOTES.txt
 
 2009-12-19 / Build 371 - stm (stm2@users.sourceforge.net)
-    * fixed small bug in TaskTable, included owner faction in title bar and a lot of cosmetic 
+    * fixed small bug in TaskTable, included owner faction in title bar and a lot of cosmetic
       changes that shouldn't affect program behavior.
 
 2009-12-18 / Build 369 - stm (stm2@users.sourceforge.net)
@@ -458,10 +462,10 @@
     * made implicit ID type of report objects explicit (e.g. EntityID for Faction instead of ID)
 
 2009-12-10 / Build 367 - Fiete <sf@fietefietz.de>
-	* added -1;Waffenbau to e3-rules for goblins (privat bugreport)
+    * added -1;Waffenbau to e3-rules for goblins (privat bugreport)
 
 2009-12-10 / Build 366 - Fiete <sf@fietefietz.de>
-	* added version to gamedata to write correct version in CRWriter
+    * added version to gamedata to write correct version in CRWriter
 
 2009-12-10 / Build 365 - stm (stm2@users.sourceforge.net)
     * fixed E3 capacity bug (compare Eressea(!) bug #1645)
@@ -473,9 +477,9 @@
     * now writing resources with amount 0 (like trees, peasants)
 
 2009-10-16 / Build 360 - Fiete <sf@fietefietz.de>
-	* replaced ResourceBundle.containsKey in check() in Resources.java
-	* EresseaRelationFactory, transferRelation, itemname: get next token if current tokentext is "
-	* updated settings in izpack.xlm
+    * replaced ResourceBundle.containsKey in check() in Resources.java
+    * EresseaRelationFactory, transferRelation, itemname: get next token if current tokentext is "
+    * updated settings in izpack.xlm
 
 2009-09-24 / Build 359 - stm (stm2@users.sourceforge.net)
     * made Trade-Organizer E3-proof (effectively disabling it)
@@ -488,10 +492,10 @@
 2009-09-04 / Build 354 - stm (stm2@users.sourceforge.net)
     * fixed bug #130 (results of spy)
     * fixed bug #320 (horse movement inspector)
-    * save orders dialog (see #241) 
+    * save orders dialog (see #241)
     * improved context editing of UnitRelations
     * only comment nodes are editable in details panel
-    
+
 2009-09-03 / Build 353 - stm (stm2@users.sourceforge.net)
     * improved on bug #252
 
@@ -506,13 +510,13 @@
     * putting add orders action in background thread
 
 2009-08-28 / Build 347 - stm (stm2@users.sourceforge.net)
-    * fixed "OrderWriter-Options-Bug" (from Wiki: Options were taken from last time dialog was 
+    * fixed "OrderWriter-Options-Bug" (from Wiki: Options were taken from last time dialog was
       opened, not from current faction)
 
 2009-08-25 / Build 344 - stm (stm2@users.sourceforge.net)
     * fixed bug where MiniMap.Scale == 0
     * fixed decimal base bug (#359)
-    
+
 2009-07-21 / Build 342 - stm (stm2@users.sourceforge.net)
     * fixed bug #357 -- gleichzeitiges Lesen und Schreiben
     * CRWriterDialog-Aktionen in den Hintergrund verlegt.
@@ -532,7 +536,7 @@
 2009-07-10 / Build 329 - stm (stm2@users.sourceforge.net)
     * made peasant and unit maintenace game specific
     * added MACHE Wache completion
-    * now parsing escaped characters in strings 
+    * now parsing escaped characters in strings
 
 2009-07-10 / Build 328 - stm (stm2@users.sourceforge.net)
     * parsing/displaying/writing of E3A region owner and morale
@@ -561,20 +565,20 @@
 2009-06-21 / Build 314 - stm (stm2@users.sourceforge.net)
     * clean-up of lib, doc; moved licenses to doc, removed metouia and winlaf, updated commons-httpclient, idw
     * upgraded tests to JUnit 4; added EresseaOrderParserTest
-    
+
 2009-06-18 / Build 310 - stm (stm2@users.sourceforge.net)
     * OrderParser/OrderCompleter
-    	+ improved string parsing (OrderToken.TT_...
-    	+ improved parsing of DEFAULT
-    	+ improved parsing of ZAUBERE
-    	+ improved completion of BEANSPRUCHE, EMAIL, BENENNE, BETRETE, HELFE, NEUSTART, TARNE and others
+        + improved string parsing (OrderToken.TT_...
+        + improved parsing of DEFAULT
+        + improved parsing of ZAUBERE
+        + improved completion of BEANSPRUCHE, EMAIL, BENENNE, BETRETE, HELFE, NEUSTART, TARNE and others
     * calculate peasant wage game specifically
-    * use translated names and show types for spells 
+    * use translated names and show types for spells
     * improved implementation of GenericRules
-    * added icons for stark, unbekannt-detail, portal 
+    * added icons for stark, unbekannt-detail, portal
 
 2009-06-11 / Build 301 - stm (stm2@users.sourceforge.net)
-    * refactored EresseaOrderParser for easier subclassing 
+    * refactored EresseaOrderParser for easier subclassing
     * added E3A classes
 
 2009-06-11 / Build 300 - stm (stm2@users.sourceforge.net)
@@ -583,7 +587,7 @@
     * experimental error highlighting in OrderEditor
     * quicker construction of OptionsPanel (esp. IconStyleSetPreferenceAdapter)
     * unified behavior of CRParser on unknown tags
-    
+
 2009-06-05 / Build 298 - stm (stm2@users.sourceforge.net)
     * overhaul of TaskTablePanel etc.
     * removed a bunch of compiler warnings
@@ -611,39 +615,39 @@
     * improved progress indicator for orderwriter
 
 2009-05-26 / Build 286 - stm (stm2@users.sourceforge.net)
-	* added regexp and match case option to find dialog
-	* CRWriter: unit skills, orders, items are exported independently of unit details option; added presets for dialog
+    * added regexp and match case option to find dialog
+    * CRWriter: unit skills, orders, items are exported independently of unit details option; added presets for dialog
 
 2009-05-26 / Build 286 - stm (stm2@users.sourceforge.net)
-	* bug  #317,#318 (faction stats panel, income)
-	* bug #234 (multi editor selection)
-	* bug #306 (faction stats selection)
-	* Replacers descriptions
+    * bug  #317,#318 (faction stats panel, income)
+    * bug #234 (multi editor selection)
+    * bug #306 (faction stats selection)
+    * Replacers descriptions
 
 2009-05-25 / Build 283 - stm (stm2@users.sourceforge.net)
-	* tweaked treatment of "edit all" action
-	* tweaked context menu stuff
+    * tweaked treatment of "edit all" action
+    * tweaked context menu stuff
 
 2009-05-23 / Build 282 - Fiete <sf@fietefietz.de>
-	* changed Interface for MapContextMenuProvider
+    * changed Interface for MapContextMenuProvider
 
 2009-05-22 / Build 281 - stm (stm2@users.sourceforge.net)
     * adding multiple orders now in right order
     * changed UnitContextMenuProvider Interface
-    * fixed #329 (right click works on wrong unit) 
+    * fixed #329 (right click works on wrong unit)
 
 2009-05-20 / Build 279 - Fiete <sf@fietefietz.de>
-	* added comment "path is X regions long" to pathfinderContextMenu
-	* set weight of RdfF from 1 to 0
+    * added comment "path is X regions long" to pathfinderContextMenu
+    * set weight of RdfF from 1 to 0
 
 2009-05-20 / Build 275 - stm (stm2@users.sourceforge.net)
     * refined ShipInspector to check for crew
     * tweaked suppression of problems, especially from ShipInspector
-	* improved SkillInspector
+    * improved SkillInspector
 
 2009-05-01 / Build 274 - Fiete <sf@fietefietz.de>
-	* added Drachenblut to items (weight is 1 WU!) in eressea.cr
-	
+    * added Drachenblut to items (weight is 1 WU!) in eressea.cr
+
 2009-04-23 / Build 273 - stm (stm2@users.sourceforge.net)
     * added SkillInspector for decreasing skills
     * fixed EresseaGameSpecificRules to include ocean in landable regions
@@ -663,9 +667,9 @@
 
 2009-04-12 / Build 268 - Thoralf <thoralf@m84.de>
     * different smaller bugfixes and encoding problems solved
-    * added feature to save & load client specific attributes for: 
+    * added feature to save & load client specific attributes for:
       game data (global), faction, group, island, region, unit, building, ship
-    
+
 2009-04-07 / Build 267 - Fiete <sf@fietefietz.de>
     * MapContextMenu improved: Paths (NACH, ROUTE)
 
@@ -691,7 +695,7 @@
     * fixed broken Resource merging
     * added iceberg icons
     * fixed bug #351
-    
+
 2008-02-14 / Build 257 - stm (stm2@users.sourceforge.net)
     * added Visibility enum
     * fixed visibility merging
@@ -717,7 +721,7 @@
 
 2008-12-27 / Build 252 - Thoralf <thoralf@m84.de>
     * added getConfiguration, setConfiguration to ExtCmds Helper to read and write extra informations to a unit
-    
+
 2008-12-17 / Build 251 - Thoralf <thoralf@m84.de>
     * added Eisscholle as isOcean type (Allanon specific)
     * added some Allanon specific resource keys
@@ -743,16 +747,16 @@
 2008-09-25 / Build 242 - Thoralf <thoralf@m84.de>
     * fixed bug #314 (problems saving extcmds)
     * added feature #315 (new group editor / alliance editor)
-    * made some minor bugfixes (more debug output and more javadoc) 
+    * made some minor bugfixes (more debug output and more javadoc)
 
 2008-09-16 / Build 240 - Fiete  <Fiete@users.sourceforge.net>
     * fixed # 311 + #312
-    
+
 2008-09-14 / Build 239 - stm (stm2@users.sourceforge.net)
     * tweaked behaviour when user tries to add orders of unknown faction
     * removed unused "Zeige Warnhinweis" in icon options
     * added option to show only two highest skill icons in UnitNodeWrapper
-    * added reviewing of units with "FOLGE EINHEIT" to MovementInspector and added "follows self" errror 
+    * added reviewing of units with "FOLGE EINHEIT" to MovementInspector and added "follows self" errror
 
 2008-09-10 / Build 237 - Fiete  <Fiete@users.sourceforge.net>
     * added Peasons and Silver to the skill independent Ressources (mergeRegion)
@@ -827,14 +831,14 @@
 
 2008-08-04 / Build 225 - stm (stm2@users.sourceforge.net)
     * replaced some occurences of "Silber" by EresseaConstants.I_SILBER
-    
+
 2008-08-03 / Build 224 - Thoralf (thoralf@m84.de)
     * Added a close button to ExtCmds tabs
     * Some small bugfixes (for ExtCmds)
 
 2008-07-30 / Build 223 - stm (stm2@users.sourceforge.net)
     * done feature #163 (AutoCompletion)
-    
+
 2008-07-30 / Build 222 - stm (stm2@users.sourceforge.net)
     * additional fixes to options dialogs
     * fixed bug #283, floats in ARR
@@ -875,11 +879,11 @@
     * the debug dock blocked the default log listener (which prints to the error.txt)
     * Bookmark list is now a docking window (#81)
     * added check for JAVA_HOME in magellan.bat (bug #236)
-    * removed a lot of old and unnecessary code 
-    
+    * removed a lot of old and unnecessary code
+
 2008-07-17 / Build 216 - Thoralf (thoralf@m84.de)
-    * added help dock for Extended Commands 
-    
+    * added help dock for Extended Commands
+
 2008-07-16 / Build 216 - Thoralf (thoralf@m84.de)
     * added some more icons and texts for Allanon specific stuff
 
@@ -897,7 +901,7 @@
 2008-06-28 / Build 213 - stm (stm2@users.sourceforge.net)
     * fixed issue in ARR, see bug #283 and notes to build 146 below
     * fixed issue with order completion of "@"
-    
+
 2008-06-08 / Build 212 - stm (stm2@users.sourceforge.net)
     * fixed #275 (visibility), #273 (runde of RESOURCE)
     * fixed #251
@@ -916,7 +920,7 @@
 
 2008-06-03 / Build 206 - Thoralf (thoralf@m84.de)
     * added Allanon icons vom Khadar
-    
+
 2008-06-03 / Build 206 - Fiete (sf@fietefietz.de)
     * changed GIFs outdated and current. changed infotext for ressource info
 
@@ -935,11 +939,11 @@
     * fixed #265: auto completions sorted
     * fixed #167: resources now deleted if depleted
     * added autocompletion COMBAT for GUARD and ATTACK if required
-    
+
 2008-05-23 / Build 201 - Darcduck (sf.net@duckstein.net)
     * restructured all mapping (coordinate translation) code
     * started implementing SSL and TLS for send orders
-    
+
 2008-05-22 / Build 201 - Fiete (sf@fietefietz.de)
     * added editAllFactions to MultiEditorOrderEditorList
 
@@ -971,7 +975,7 @@
 
 2008-05-08 / Build 196 - Thoralf (thoralf@m84.de)
     * replaced ant-1.5.3 with ant-1.7.0 because of a bug in BZIP inputstream
-    
+
 2008-05-6 / Build 195 - Fiete (sf@fietefietz.de)
     * fixed bug #247: fogOfwar not refreshed after AskForPassword
     * added some log.info's to narrow down a startup-delay
@@ -988,7 +992,7 @@
 2008-04-30 / Build 192 - Fiete (sf@fietefietz.de)
     * delStats in CRWriterDialogue now for all factions
     * using herb icon in RegionDetails
-    
+
 2008-04-29 / Build 191 - Fiete (sf@fietefietz.de)
     * parse ID tag in REGION block
     * write ID tag in REGION block (if avail)
@@ -1005,7 +1009,7 @@
     * typing failure in SMTP error dialog
     * CR Writer failure in Schatz
     * added Allanon help to integrated help
-    
+
 2008-04-23 / Build 189 - Fiete (sf@fietefietz.de)
     * changed behaviour of TaskPanel-refreshProblems, only updating, if visible
     * every component added to DockingFrameWork instancing the Listener is registered as listener
@@ -1044,11 +1048,11 @@
     * Bug #164 fixed - Message rendering only done if required
 
 2008-04-06 / Build 182 - stm (stm2@users.sourceforge.net)
-    * started fixing #154, #160, #161, #162 
+    * started fixing #154, #160, #161, #162
 
 2008-04-02 / Build 181 - stm (stm2@users.sourceforge.net)
-    * Tweaked FactionstatsDialog interface, amended help 
-    
+    * Tweaked FactionstatsDialog interface, amended help
+
 2008-04-02 / Build 181 - Thoralf (thoralf@m84.de)
     * Final Release 2.0.0
     * light colors changed because of white background
@@ -1081,7 +1085,7 @@
 
 2008-03-17 / Build 175 - Thoralf (thoralf@m84.de)
     * Fixed a bug in the OrderWriter Dialog (array index out of range)
-    
+
 2008-03-15 / Build 174 - Thoralf (thoralf@m84.de)
     * OrderWriter Dialog saves now faction specific settings
     * Selected order output file is now saved in settings
@@ -1106,7 +1110,7 @@
     * Added Waffenloser Kampf to rules/eressea.cr
     * changed default mailto to eressea-server@eressea.kn-bremen.de
     * EresseaOrderCompletions/EresseaOrderParser improvements for DEFAULT, LERNE and KAMPFZAUBER
-     
+
 2008-03-02 / Build 165 - Thoralf (thoralf@m84.de)
     * ExtCmds help now in files under etc/plugins/extcmds for a better management
     * Removed really all getDefaultTranslations() from source (no longer needed)
@@ -1121,7 +1125,7 @@
 2008-02-29 / Build 163 - Thoralf (thoralf@m84.de)
     * Added library functions to Extended Commands
     * Bugfixes (see Mantis)
-    * Changed release name to 2.0.rc1  
+    * Changed release name to 2.0.rc1
 
 2008-02-28 / Build 161 - Thoralf (thoralf@m84.de)
     * Preferences for Building Renderer to disable specific building types
@@ -1130,12 +1134,12 @@
 2008-02-28 / Build 160 - Thoralf (thoralf@m84.de)
     * Some fixes for missing resources
     * Extended Commands now with help
-    
+
 2008-02-26 / Build 158 - Thoralf (thoralf@m84.de)
     * Made some minor changes (moving properties, removing unused classes, etc.)
     * Made some minor changes to the installer.
     * Plugin loader works now recursive and loads also all 3rd party libraries
-    
+
 2008-02-25 / Build 156 - Thoralf (thoralf@m84.de)
     * Bugfix for load dialog asking for saving the old report
     * Bugfix for wrong URL in new version check dialog
@@ -1150,21 +1154,21 @@
     * Fixed addPeasantInfo for regions with 0 peasants
     * remmoved buildingcellrenderer - preference adapter
     * fixed update of level-cmbBox of mapcontextmenu is used
-    
-2008-02-19 / Build 153 - stm (stm2@users.sourceforge.net) 
-    * Fixed auto-detection of plugins
-    * modified for external resources preferences adapter and added plugin preferences adapter 
 
-2008-02-18 / Build 151 - stm (stm2@users.sourceforge.net) 
+2008-02-19 / Build 153 - stm (stm2@users.sourceforge.net)
+    * Fixed auto-detection of plugins
+    * modified for external resources preferences adapter and added plugin preferences adapter
+
+2008-02-18 / Build 151 - stm (stm2@users.sourceforge.net)
     * OrderWriter includes Magellan version
     * Simplified ECheck dialog
-    
-2008-02-17 / Build 150 - stm (stm2@users.sourceforge.net) 
+
+2008-02-17 / Build 150 - stm (stm2@users.sourceforge.net)
     * moved "root handles option"
-    
+
 2008-02-16 / Build 150 - Thoralf (thoralf@m84.de)
     * Made multiple changes to the settings
-    
+
 2008-02-15 / Build 149 - Fiete (sf@fietefietz.de)
     * switched "GiveOrder" to multiline-orders
 
@@ -1201,30 +1205,30 @@
     * fixed ARR: Float.parse with formatted float ("." - problem)
     * added Option "Layout" to Map -> switch on/off of Navibar
     * added short cuts for 3 level zoom CTRL+PGUP, CTRL+PGDN
-    
+
 2008-01-29 / Build 145 - Fiete (sf@fietefietz.de)
     * added "Export Hot Spots" to export options in CRWriterDialog
     * added Tooltips to Options in CRWriterDialog, en-translation is still poor
     * changed ordering of ships from nameComparator to new ShipTypeComparator (do we need this optional?)
     * added new short cut CTRL +/- for zooming the map
 
-2008-01-28 / Build 144 - stm (stm2@users.sourceforge.net) 
+2008-01-28 / Build 144 - stm (stm2@users.sourceforge.net)
     * fixed nasty little bug with alliances
     * corrected a few illegal characters
     * fixed bug #144
-    
+
 2008-01-23 / Build 143 - Fiete (sf@fietefietz.de)
     * added mallornregion replacer
     * removed FFplugin (Testplugin)
     * some comments on ReportMerger
     * removed some unused imports
 
-2008-01-23 / Build 143 - stm (stm2@users.sourceforge.net) 
+2008-01-23 / Build 143 - stm (stm2@users.sourceforge.net)
     * fixed "NPE on save on quit" bug
     * added icons for feuerwand (border) and irrlichter (border)
     * tweaked border sizes of root window
     * fixed icon for "schwer verwundet"
-    
+
 2008-01-22 / Build 142 - Darcduck (sf.net@duckstein.net)
     * added some test-crs for merging and coordinate translation
     * added scheme cleaning in EresseaPostProcessor
@@ -1235,15 +1239,15 @@
 2008-01-21 / Build 140 - Fiete (sf@fietefietz.de)
     * fixed Message.Attributes (regions) in CRParser when changing origin
     * changed Message.toString to .getText.
-    
-2008-01-21 / Build 139 - stm (stm2@users.sourceforge.net) 
+
+2008-01-21 / Build 139 - stm (stm2@users.sourceforge.net)
     * fixed empty backup file bug
-    
+
 2008-01-20 Fiete (sf@fietefietz.de)
     * CRWriter: Verkleidung->AnderePartei
 
 2008-01-18 Thoralf (thoralf@m84.de)
-  * added plugins directory to install jar 
+  * added plugins directory to install jar
 
 2008-01-17 Fiete (sf@fietefietz.de)
   * added magellan-dir/magellan-plugins to searchpaths
@@ -1261,17 +1265,17 @@
 2008-01-16 Fiete (sf@fietefietz.de)
     * added replacers:ironlevel,laenloevel,stoneslevel
     * fixed call to tooltipinfo
-    * replacers: fixed unit faction filter, fixed Float.fromString (replaced ".", with "")    
+    * replacers: fixed unit faction filter, fixed Float.fromString (replaced ".", with "")
     * changed One_region-AR-RR translation finder to work with CoordinateIDs, not with Regions
     * improved ReportMerger:OneRegion (works now with test report ar003.cr)
 
 2008-01-15 Thoralf (thoralf@m84.de)
     * added setOrder(String) shortcut in Extended Command PlugIn.
-    
+
 2008-01-11  stm (stm2@users.sourceforge.net)
     * visibility of LanguageDialog and Version Dialog
     * Alliances in faction stats panel
-    
+
 2008-01-11  stm (stm2@users.sourceforge.net)
     * removed src-ext (moved to top-level magellan-ext)
     * changed default of TradeTextCellRenderer to "sell mode"
@@ -1280,9 +1284,9 @@
 
 2008-01-09 Thoralf (thoralf@m84.de)
     * added more debug informations in Extended Command Plugin, if execution of script fails.
-    
+
 2008-01-08  stm (stm2@users.sourceforge.net)
-    * replaced a few "return new List()" by return Collections.emptyList() 
+    * replaced a few "return new List()" by return Collections.emptyList()
 
 2008-01-02  stm (stm2@users.sourceforge.net)
     * moved two dialogs to package client.swing
@@ -1299,7 +1303,7 @@
 2007-12-23 Darcduck (sf.net@duckstein.net)
     * Some fixes in OrderCompleter (NPE)
     * changed scroll behavior for MultiEditorLayout==false
-    
+
 2007-12-20 Darcduck (sf.net@duckstein.net)
     * Added BackgroundImageRenderer including properties dialog
 
@@ -1322,11 +1326,11 @@
 2007-12-18 Thoralf (thoralf@m84.de)
     * Small fix to avoid a NPE at startup. The IDF initialization needs an AWT thread, so
       Client.main() uses now a SwingUtils.invokeLater().
-      
+
 2007-12-16 Thoralf (thoralf@m84.de)
     * Small fix for faction deletion, if a faction is in an alliance with one of the deleted faction.
       Fix is that we check that this faction is also deleted.
-    
+
 2007-12-16 Darcduck (sf.net@duckstein.net)
     * Added Astralrenderer (EresseaSchemesCellRenderer) with correct mapping
     * fixed bug #64: Property of Minimapper doesn't overwrite Mapper.Region anymore
@@ -1338,7 +1342,7 @@
 
 2007-12-15 Fiete (sf@fietefietz.de)
     * all image loads, loading of plaf.ini and Cellgeometry using now magellan dir
-    * work on #127: unitcontextmenu for pupils, NPE fixed 
+    * work on #127: unitcontextmenu for pupils, NPE fixed
     * avoid NPE: #0128 in ReportMerger
 
 2007-12-14 Thoralf (thoralf@m84.de)
@@ -1373,13 +1377,13 @@
 2007-12-11 Fiete (sf@fietefietz.de)
     * added 4 GIFs: arbeiten, combatspell, stealth, tarnung (khadar)
     * added nebel-X.gif
-    
+
 2007-12-11 Darcduck (sf.net@duckstein.net)
     * fixed merging of unit weight
-    
+
 2007-12-11  stm (stm2@users.sourceforge.net)
     * fixed DURCHREISE messages not displaying
-    
+
 2007-12-10 Darcduck (sf.net@duckstein.net)
     * Message rendering: added trail() function
     * Message rendering: changed exception behavior
@@ -1392,15 +1396,15 @@
     * fixed problem with 0-length message texts in LineWrapCellRenderer
     * made progress bar more foolproof
     * tried to fix exception in TaskTablePanel by synchronization
-    * prepared improvements to coordinate translation of different reports in GameData   
+    * prepared improvements to coordinate translation of different reports in GameData
     * implemented ownerFaction
-    * fixed bug where Writer was not closed on save on quit 
+    * fixed bug where Writer was not closed on save on quit
 
 2007-12-09 Fiete (sf@fietefietz.de)
     * empty message-lines in Message : "" -> " "
 
 2007-12-06 Darcduck (sf.net@duckstein.net)
-    * Fixed bug #97: Wrong duplicate message elemination 
+    * Fixed bug #97: Wrong duplicate message elemination
 
 2007-12-06 Thoralf (thoralf@m84.de)
     * Groups in Tree now with number of persons.
@@ -1415,7 +1419,7 @@
     * CRWriter: unit weight and ship cargo only written if known
     * ShipInspector: fixed null pointer bug
     * ReportMerger: fixed NoSuchElementException in astral space mapping
-    
+
 2007-12-01 Darcduck (sf.net@duckstein.net)
     * Message rendering implemented if rendered tag not available or locale changed
     * Translation merge changed so that also the objects in gamedata.rules are updated
@@ -1448,9 +1452,9 @@
 
 2007-11-20 Darcduck (sf.net@duckstein.net)
     * added interface Localized
-    * merge respects Locale for messagetypes, messages, translations, potions, 
+    * merge respects Locale for messagetypes, messages, translations, potions,
       spells and effects
-    * enhanced weight and load calculation 
+    * enhanced weight and load calculation
       delta load for ships -> more precise
       unit load and weight recognizes magic bag
 
@@ -1476,7 +1480,7 @@
 2007-11-18 Fiete (sf@fietefietz.de)
     * fixed Bug #69, potions an alchemist can make now with icons
     * added List of potions to show to avoid multiple nodes of same potion
-     
+
 2007-11-18 Fiete (sf@fietefietz.de)
     * fixed Bug #107
     * introduced extra CR Export option: delete empty factions
@@ -1488,7 +1492,7 @@
 
 2007-11-16 Fiete (sf@fietefietz.de)
     * fixed NPE in LineWrapCellRenderer for Messages "Durchreise"
-    
+
 2007-11-16 Thoralf (thoralf@m84.de)
     * Created Release 2.0.b99
     * First steps for multiple docking layouts
@@ -1509,9 +1513,9 @@
     * Made ArmyStatsPanel as Dock (but disabled, because of performance problems).
 
 2007-11-14 Fiete (sf@fietefietz.de)
-    * added rules.cr: TALENTBONI for Schmiede 
+    * added rules.cr: TALENTBONI for Schmiede
     * just put my name on the authors-list. *proud*
-    
+
 2007-11-13 Thoralf (thoralf@m84.de)
     * Now we have an installable JAR file, made with IzPack.
     * Docking Framework saves information in XML file instead of Object Stream.
@@ -1521,9 +1525,9 @@
     * NPE when merging two reports.
     * NPE when exporting map to image.
     * Bug when saving a report during shutdown
-    * Added winter maps for map 
+    * Added winter maps for map
     * Changed behaviour of Version comparison so future version number are working 100>99.
-    
+
 2007-11-08 Thoralf (thoralf@m84.de)
     * Added season specific map images (currently just a copy of the original).
 
@@ -1538,13 +1542,13 @@
 
 2007-09-25 Fiete (sf@fietefietz.de)
     * Renamed TipOfTheDay.show() to TipOfTheDay.showTipDialog to fix Bug #96.
-    
+
 2007-09-23  Thoralf (thoralf@m84.de)
     * Bug 68. Maybe this helps... (do not bring the startwindow to the front, only toBack())
       Actually this bug cannot be resolved at all, because the dialogs are children of
       the Client-Frame and the Startwindow isn't a child of Client. So a simple click
       somewhere on the screen destroys the generated layers (startwindow on top, Client behind
-      it). 
+      it).
 
 2007-09-13  Thoralf (thoralf@m84.de)
     * Changed SMTP-Password-Field in OrderWriterDialog from JTextfield to JPasswordField.
@@ -1561,7 +1565,7 @@
     * Added check for updates feature. This can be disabled in the options.
 
 2007-09-01  Thoralf (thoralf@m84.de)
-    * Try to match UTF8 with UTF-8 by ignoring all "-" (Problems with BOMReader 
+    * Try to match UTF8 with UTF-8 by ignoring all "-" (Problems with BOMReader
       that returns UTF8 instead of UTF-8 from the BOM)
     * Merging two reports with different encodings uses now UTF-8 or the encoding
       of the newer file (if no file uses UTF-8). If both reports use the same
@@ -1577,7 +1581,7 @@
 2007-08-26  Thoralf (thoralf@m84.de)
     * When you select a different renderer for the minimap via the popup, this
       settings will now be saved in the configuration. The problem that all
-      configurations for the minimap isn't saved, is still not corrected. 
+      configurations for the minimap isn't saved, is still not corrected.
       We've to rewrite that code...
 
 2007-08-25  Thoralf (thoralf@m84.de)
@@ -1587,13 +1591,13 @@
 2007-08-10  stm (stm2@users.sourceforge.net)
     * added BOMReader (for reading files with Unicode BOM)
     * added support for SMTP authentication
-  
+
 2007-08-13  Thoralf (thoralf@m84.de)
     * Implementation for Orders Write-Out in UTF-8 (is not activated)
-    
+
 2007-08-12  Thoralf (thoralf@m84.de)
     * pay attention during CR-write-out about loaded-CR encoding.
-    
+
 2007-08-11  Thoralf (thoralf@m84.de)
     * Enlarged the default window size of the faction statistics window
     * Open the Details View of the New Temp Unit dialog by default
@@ -1601,19 +1605,19 @@
 
 2007-08-10  stm (stm2@users.sourceforge.net)
     * deactivated undo
-  
+
 2007-08-08 stm (stm2@users.sourceforge.net)
     * redid loading of editors in MultiEditorOrderEditorList (bug #78) and cleaned up code
     * added optional path argument to SelectionEvent for better identification of selections
     * fixed temp unit bug in SelectionHistory
-    * fixed border (-1%) bug 
+    * fixed border (-1%) bug
     * don't display handle of top level tree nodes in overview (optional, bug #59)
     * "all report files" is now default for open cr/save cr file type selection
     * added order completion for destroy for entering, non-owning units (bug #39)
     * added a tip of the day
     * changed unit context menu (bug #9)
     * updated build number (66)
-    
+
 2007-08-05 stm (stm2@users.sourceforge.net)
     * fixed bug of not disappearing merge progress dialog
     * improved autoexpand/collapse in region overview
@@ -1621,7 +1625,7 @@
     * added option "spies" in order confirmation menu; confirmation of spies now possible
     * added options for RESERVIERE auto completion
     * added faction column and improved refreshing for TaskTablePanel
-    
+
 2007-08-04 stm (stm2@users.sourceforge.net)
     * added AttackInspector
     * integrated TaskPanel in docking
@@ -1631,7 +1635,7 @@
 2007-07-30 Fiete (sf@fietefietz.de)
     * added carriers.gif
     * updated 3 more icons (Khadar)
-    
+
 2007-07-30 stm (stm2@users.sourceforge.net)
     * minor errors in eressea.cr: rusty items, Samen, Nestwürme
     * new item category "silver"
@@ -1699,7 +1703,7 @@
 
 2007-06-22 Thoralf (thoralf@m84.de)
     * Added some more icons for the map (thanks to Mar'ek Khadar)
-    * Removed some unnecessary code 
+    * Removed some unnecessary code
     * Bugfix #58, #61
 
 2007-06-19 Thoralf (thoralf@m84.de)

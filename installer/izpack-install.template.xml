@@ -24,6 +24,7 @@
     <url>http://magellan-client.sourceforge.net/</url>
     <uninstaller write="yes"/>
     <javaversion>1.5</javaversion>
+    <run-privileged condition="izpack.windowsinstall.7|izpack.windowsinstall.vista"/>
   </info>
   
   <guiprefs width="640" height="480" resizable="no"/>

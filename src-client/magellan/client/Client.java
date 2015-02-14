@@ -209,12 +209,12 @@ import org.simplericity.macify.eawt.DefaultApplication;
  * This class is the root of all evil. It represents also the main entry point into the application
  * and also the basic frame the application creates. It is a singleton which is instantiated from
  * {@link #main(String[])} and stored in {@link #INSTANCE}
- * 
+ *
  * @author $Author: $
  * @version $Revision: 388 $
  */
 public class Client extends JFrame implements ShortcutListener, PreferencesFactory,
-    ApplicationListener {
+ApplicationListener {
   private static final Logger log = Logger.getInstance(Client.class);
 
   /** The name of the magellan settings file. */
@@ -222,7 +222,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * The name of the ini file for order completions.
-   * 
+   *
    * @deprecated A separate completion file is no longer actively supported
    */
   @Deprecated
@@ -315,7 +315,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * usually located in the user's home directory, which is the Windows directory in a Microsoft
    * Windows environment.
    * </p>
-   * 
+   *
    * @param gd
    * @param binDir The directory where magellan files are situated
    * @param resourceDir The directory where magellan configuration files are situated
@@ -332,7 +332,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * usually located in the user's home directory, which is the Windows directory in a Microsoft
    * Windows environment.
    * </p>
-   * 
+   *
    * @param gd
    * @param binDir The directory where magellan files are situated
    * @param resourceDir The directory where magellan configuration files are situated
@@ -482,17 +482,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ",Einkaufsgut");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET, "Einkaufsgut");
     settings
-        .setProperty(
-            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-                + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
-            "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
+    .setProperty(
+        PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+            + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
+        "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, "10");
     settings
-        .setProperty(
-            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-                + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
-            "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
+    .setProperty(
+        PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+            + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
+        "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
@@ -612,7 +612,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Returns the application icon
-   * 
+   *
    * @return the application icon
    */
   public static Image getApplicationIcon() {
@@ -696,7 +696,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Initializes the Magellan components. The returned hashtable holds all components with
    * well-known desktop keywords.
-   * 
+   *
    * @param topLevel
    */
   protected Map<String, Component> initComponents(List<Container> topLevel) {
@@ -788,7 +788,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Creates a menu bar to be added to this frame.
-   * 
+   *
    * @param components
    */
   private JMenuBar createMenuBar(Collection<Container> components) {
@@ -1116,7 +1116,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * Changes the active object
-     * 
+     *
      * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
      */
     public void selectionChanged(SelectionEvent se) {
@@ -1132,7 +1132,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * Bookmarks the active object.
-     * 
+     *
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
@@ -1145,7 +1145,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Adds a new menu item to the specify menu associating it with the specified action, setting its
    * mnemonic and registers its accelerator if it has one.
-   * 
+   *
    * @return the menu item created.
    */
   private JMenuItem addMenuItem(JMenu parentMenu, MenuAction action) {
@@ -1334,14 +1334,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Open the log file and log basic information to it.
-   * 
+   *
    * @param parameters
    * @throws IOException if an I/O error occurs
    */
   protected static void startLog(Parameters parameters) throws IOException {
     // now redirect stderr through our log
     Log LOG = new Log(parameters.settingsDir);
-    System.setErr(LOG.getPrintStream());
 
     // logging with level warning to get this information even if user selected low debug level...
     Logger.activateDefaultLogListener(true);
@@ -1410,7 +1409,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * <tt>-pm</tt> -- show profile manager<br />
    * <tt>-s dir</tt> -- set settings (aka profiles) directory<br />
    * <tt>file.[cr|bz2|zip]</tt> -- set report<br />
-   * 
+   *
    * @param args
    */
   protected static Parameters parseCommandLine(String[] args) {
@@ -1488,7 +1487,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Asks the user whether the current report should be saved but does not do it!
-   * 
+   *
    * @return {@link JOptionPane#YES_OPTION} if the user selected to save the report,
    *         {@link JOptionPane#NO_OPTION} if the user selected not to save it,
    *         {@link JOptionPane#CANCEL_OPTION} if saving is not possible or the user selected to
@@ -1504,7 +1503,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           Object msgArgs[] = { getData().getFileType().getFile().getAbsolutePath() };
           msg =
               (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text")))
-                  .format(msgArgs);
+              .format(msgArgs);
         } else {
           msg = Resources.get("client.msg.quit.confirmsavenofile.text");
         }
@@ -1515,12 +1514,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       switch (JOptionPane.showConfirmDialog(this, msg, Resources
           .get("client.msg.quit.confirmsave.title"), JOptionPane.YES_NO_CANCEL_OPTION)) {
-      case JOptionPane.YES_OPTION:
+          case JOptionPane.YES_OPTION:
 
-        return JOptionPane.YES_OPTION;
+            return JOptionPane.YES_OPTION;
 
-      case JOptionPane.CANCEL_OPTION:
-        return JOptionPane.CANCEL_OPTION;
+          case JOptionPane.CANCEL_OPTION:
+            return JOptionPane.CANCEL_OPTION;
       }
     }
 
@@ -1529,7 +1528,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Saves the current data and waits until saving is finished.
-   * 
+   *
    * @return <code>true</code> if data was successfully saved.
    */
   protected boolean saveSynchronously() {
@@ -1550,7 +1549,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Tries to determine the correct file type for the current data and starts saving it, if
    * successful. Saving is done in a new thread.
-   * 
+   *
    * @return The writer that has started saving in another thread. You can check progress with
    *         {@link CRWriter#savingInProgress()}.
    */
@@ -1577,7 +1576,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Starts saving the current data to the given filetype.
-   * 
+   *
    * @param filetype
    * @return The writer that has started saving in another thread. You can check progress with
    *         {@link CRWriter#savingInProgress()}.
@@ -1620,7 +1619,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * This method should be called before the application is terminated in order to store GUI
    * settings etc.
-   * 
+   *
    * @param storeSettings store the settings to magellan.ini if <code>storeSettings</code> is
    *          <code>true</code>.
    */
@@ -1725,7 +1724,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // //////////////////
   /**
    * Loads game data from a file and returns it.
-   * 
+   *
    * @param ui
    * @param fileName
    * @return the game data read or <code>null</code> if something went wrong
@@ -1838,7 +1837,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * This method asynchronously loads a CR into the client. Modality is ensured via a
    * {@link UserInterface}.
-   * 
+   *
    * @param fileName The file name to be loaded.
    */
   public void loadCRThread(final File fileName) {
@@ -1848,7 +1847,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * This method asynchronously loads a CR into the client. Modality is ensured via a
    * {@link UserInterface}.
-   * 
+   *
    * @param saveFirst If <code>true</code>, this method attempts to first save the current data.
    * @param fileName The file name to be loaded.
    */
@@ -1888,7 +1887,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Sets the origin of this client's data to newOrigin.
-   * 
+   *
    * @param newOrigin The region in the GameData that is going to be the new origin
    */
   public void setOrigin(CoordinateID newOrigin) {
@@ -1917,7 +1916,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Sets the girth of the world in all layers.
-   * 
+   *
    * @param newBorders
    */
   public void setGirth(BBoxes newBorders) {
@@ -1954,7 +1953,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * Creates a new ClientFileTypeChooser object.
-     * 
+     *
      * @param client the parent Client object
      */
     public ClientFileTypeChooser(Client client) {
@@ -1963,7 +1962,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * open selection window to choose a zipentry
-     * 
+     *
      * @see magellan.library.io.file.FileTypeFactory.FileTypeChooser#chooseZipEntry(java.util.zip.ZipEntry[])
      */
     @Override
@@ -1994,7 +1993,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Do some additional checks after loading a report.
-   * 
+   *
    * @param aData the currently loaded game data
    */
   private void postProcessLoadedCR(GameData aData) {
@@ -2062,8 +2061,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                     String oTitle =
                         Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.title");
                     String[] oOptions =
-                        { Resources.get("button.yes"), Resources.get("button.no"),
-                            Resources.get("button.yestoall"), Resources.get("button.notoall") };
+                      { Resources.get("button.yes"), Resources.get("button.no"),
+                        Resources.get("button.yestoall"), Resources.get("button.notoall") };
                     boolean usePasswd = yesToAll;
                     if (!noToAll && !yesToAll) {
                       int answer =
@@ -2197,7 +2196,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           title2.append(" - ").append(
               data.getDate().toString(
                   showStatusOverride ? Date.TYPE_SHORT : Date.TYPE_PHRASE_AND_SEASON)).append(" (")
-              .append(data.getDate().getDate()).append(")");
+                  .append(data.getDate().getDate()).append(")");
         }
 
         if (longTitle) {
@@ -2234,9 +2233,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                       BigDecimal.ROUND_DOWN);
               title3.append(" (").append(units).append(" ").append(
                   Resources.get("client.title.unit")).append(", ").append(done).append(" ").append(
-                  Resources.get("client.title.done")).append(", ").append(
-                  Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
-                  .append(Resources.get("client.title.percent")).append(")");
+                      Resources.get("client.title.done")).append(", ").append(
+                          Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
+                          .append(Resources.get("client.title.percent")).append(")");
             }
           }
 
@@ -2246,7 +2245,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // this prevents that the title "flickers" when it changes too often
       if (!title1.toString().equals(oldTitle1)
           || ((data == null || data.getDate() == null) ? date != null : !data.getDate()
-              .equals(date)) || !title3.toString().equals(oldTitle3)) {
+          .equals(date)) || !title3.toString().equals(oldTitle3)) {
         date = data != null ? data.getDate() : null;
         oldTitle1 = title1.toString();
         oldTitle3 = title3.toString();
@@ -2404,7 +2403,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Adds a single file to the file history.
-   * 
+   *
    * @param f
    */
   public void addFileToHistory(File f) {
@@ -2420,7 +2419,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Allows to set the maximum number of files appearing in the file history.
-   * 
+   *
    * @param size
    */
   public void setMaxFileHistorySize(int size) {
@@ -2433,7 +2432,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Changes to the report state can be done here. Normally, a change is recognized by the following
    * events.
-   * 
+   *
    * @param changed
    */
   public void setReportChanged(boolean changed) {
@@ -2483,7 +2482,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Sets a new GameData and notifies all game data listeners.
-   * 
+   *
    * @param newData
    */
   public void setData(GameData newData) {
@@ -2502,7 +2501,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * 
+   *
    */
   public MagellanDesktop getDesktop() {
     return desktop;
@@ -2525,7 +2524,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Returns the directory the local copy of Magellan is inside. Usually identical to binDirectory,
    * but can be used to load texts, images and the like from elsewhere.
-   * 
+   *
    * @deprecated Use {@link #getResourceDirectory()}
    */
   @Deprecated
@@ -2564,7 +2563,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Changes the progress display behaviour.
-   * 
+   *
    * @param bool If <code>true</code>, the progress is shown in the window title
    */
   public void setShowStatus(boolean bool) {
@@ -2621,7 +2620,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Repaints all components.
-   * 
+   *
    * @param millis maximium time in milliseconds before update
    * @see Component#repaint(long)
    */
@@ -2646,7 +2645,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Repaints the client.
-   * 
+   *
    * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
    */
   public void shortCut(javax.swing.KeyStroke shortcut) {
@@ -2682,7 +2681,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * Creates a new MenuActionObserver object.
-     * 
+     *
      * @param item DOCUMENT-ME
      * @param action DOCUMENT-ME
      */
@@ -2693,7 +2692,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * DOCUMENT-ME
-     * 
+     *
      * @param e DOCUMENT-ME
      */
     public void propertyChange(PropertyChangeEvent e) {
@@ -2707,7 +2706,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Simple class to look for events changing the data.
    */
   protected class ReportObserver implements GameDataListener, OrderConfirmListener,
-      TempUnitListener, UnitOrdersListener {
+  TempUnitListener, UnitOrdersListener {
     protected boolean stateChanged = false;
 
     protected long lastClear;
@@ -2746,7 +2745,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * Sets the state to changed if the event occurred after the last clear event.
-     * 
+     *
      * @see magellan.client.event.OrderConfirmListener#orderConfirmationChanged(magellan.client.event.OrderConfirmEvent)
      */
     public void orderConfirmationChanged(OrderConfirmEvent e) {
@@ -2764,7 +2763,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * Sets the state to changed if the event occurred after the last clear event.
-     * 
+     *
      * @see magellan.client.event.TempUnitListener#tempUnitCreated(magellan.client.event.TempUnitEvent)
      */
     public void tempUnitCreated(TempUnitEvent e) {
@@ -2777,7 +2776,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * Sets the state to changed if the event occurred after the last clear event.
-     * 
+     *
      * @see magellan.client.event.TempUnitListener#tempUnitDeleting(magellan.client.event.TempUnitEvent)
      */
     public void tempUnitDeleting(TempUnitEvent e) {
@@ -2791,7 +2790,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     /**
      * Updates the caption and sets changed state if the event occurred after the last call of
      * <code>setChangedState(false)</code>.
-     * 
+     *
      * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
      */
     public void gameDataChanged(GameDataEvent e) {
@@ -2806,7 +2805,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /**
      * Sets the state to changed if the event occurred after the last clear event.
-     * 
+     *
      * @see magellan.client.event.UnitOrdersListener#unitOrdersChanged(magellan.client.event.UnitOrdersEvent)
      */
     public void unitOrdersChanged(UnitOrdersEvent e) {
@@ -2915,7 +2914,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Handles mac specific about menu action event
-   * 
+   *
    * @see org.simplericity.macify.eawt.ApplicationListener#handleAbout(org.simplericity.macify.eawt.ApplicationEvent)
    */
   public void handleAbout(ApplicationEvent event) {
@@ -2926,7 +2925,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Handles mac specific open application event (I think, we don't use it)
-   * 
+   *
    * @see org.simplericity.macify.eawt.ApplicationListener#handleOpenApplication(org.simplericity.macify.eawt.ApplicationEvent)
    */
   public void handleOpenApplication(ApplicationEvent event) {
@@ -2935,7 +2934,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Handles mac specific file open operation (if someone opens a cr in the finder)
-   * 
+   *
    * @see org.simplericity.macify.eawt.ApplicationListener#handleOpenFile(org.simplericity.macify.eawt.ApplicationEvent)
    */
   public void handleOpenFile(ApplicationEvent event) {
@@ -2945,7 +2944,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Handles mac specific preferences menu action event
-   * 
+   *
    * @see org.simplericity.macify.eawt.ApplicationListener#handlePreferences(org.simplericity.macify.eawt.ApplicationEvent)
    */
   public void handlePreferences(ApplicationEvent event) {
@@ -2956,7 +2955,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Handles mac specific print event
-   * 
+   *
    * @see org.simplericity.macify.eawt.ApplicationListener#handlePrintFile(org.simplericity.macify.eawt.ApplicationEvent)
    */
   public void handlePrintFile(ApplicationEvent event) {
@@ -2965,7 +2964,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Handles mac specific quit menu event
-   * 
+   *
    * @see org.simplericity.macify.eawt.ApplicationListener#handleQuit(org.simplericity.macify.eawt.ApplicationEvent)
    */
   public void handleQuit(ApplicationEvent event) {
@@ -2976,7 +2975,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Handles a reopen event - what ever that means
-   * 
+   *
    * @see org.simplericity.macify.eawt.ApplicationListener#handleReOpenApplication(org.simplericity.macify.eawt.ApplicationEvent)
    */
   public void handleReOpenApplication(ApplicationEvent event) {
@@ -2986,7 +2985,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Replaces the application icon in a Mac application with the default mac icon of Magellan. This
    * can be used, when the icon was changed (f.e. with the blue circle)
-   * 
+   *
    * @see #setAdditionalIconInfo(int)
    */
   public void setDefaultIconInfo() {

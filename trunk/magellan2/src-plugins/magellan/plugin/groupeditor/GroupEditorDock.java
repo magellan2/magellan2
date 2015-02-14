@@ -49,6 +49,7 @@ import javax.swing.table.TableColumn;
 
 import magellan.client.Client;
 import magellan.client.event.SelectionEvent;
+import magellan.client.event.UnitOrdersEvent;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Unit;
@@ -63,7 +64,7 @@ import magellan.library.utils.logging.Logger;
  * This plugin allows it to control the state of all faction to a group based on a table layout.
  * This plugin provides a dock which contains a table. The column contains the groups. The rows are
  * the factions. In the cells you can find the help state of a group for a faction.
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 25.09.2008
  */
@@ -218,7 +219,7 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent event) {
-    GroupEditorDock.log.info("ActionEvent '" + event.getActionCommand() + "' retrieved");
+    GroupEditorDock.log.fine("ActionEvent '" + event.getActionCommand() + "' retrieved");
     if (event.getActionCommand().equals("faction.changed")) {
       Faction owner = (Faction) factionBox.getSelectedItem();
       model.setOwner(owner);
@@ -247,13 +248,20 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
               .get("dock.GroupEditor.save.title"), JOptionPane.YES_NO_OPTION,
           JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
         model.save();
+
+        for (int column = 0; column < model.getColumnCount(); ++column) {
+          Unit unit = model.getRepresentative(column);
+          if (unit != null) {
+            client.getDispatcher().fire(new UnitOrdersEvent(this, unit));
+          }
+        }
       }
     }
   }
 
   /**
    * Returns the value of client.
-   * 
+   *
    * @return Returns client.
    */
   public Client getClient() {
@@ -262,7 +270,7 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
 
   /**
    * Sets the value of client.
-   * 
+   *
    * @param client The value for client.
    */
   public void setClient(Client client) {
@@ -271,7 +279,7 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
 
   /**
    * Returns the value of world.
-   * 
+   *
    * @return Returns world.
    */
   public GameData getWorld() {
@@ -280,7 +288,7 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
 
   /**
    * Sets the value of world.
-   * 
+   *
    * @param world The value for world.
    */
   public void setWorld(GameData world) {

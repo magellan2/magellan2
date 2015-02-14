@@ -53,6 +53,7 @@ public class GameDataBuilder {
   private Locale locale = Locale.GERMAN;
 
   public static final String ERESSEA = "Eressea";
+  public static final String E3 = "E3";
   public static final String ATLANTIS = "Atlantis";
 
   /**

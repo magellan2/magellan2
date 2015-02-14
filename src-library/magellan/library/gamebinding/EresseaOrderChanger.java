@@ -344,7 +344,6 @@ public class EresseaOrderChanger implements OrderChanger {
       }
       ++i;
     }
-    u.refreshRelations();
   }
 
   public boolean isLongOrder(Order order) {

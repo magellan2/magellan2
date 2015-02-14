@@ -245,7 +245,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the number of modified persons after "give 0", recruit.
-   * 
+   *
    * @return the number of modified persons after "give 0", recruit
    */
   public int getModifiedPeasants() {
@@ -296,7 +296,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * A string constant indicating why this region is visible.
-   * 
+   *
    * @return the string object or null, if the visibility is unspecified.
    */
   public String getVisibilityString() {
@@ -362,7 +362,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets a string constant indicating why this region is visible.
-   * 
+   *
    * @param vis a String object or null to indicate that the visibility cannot be determined.
    * @see magellan.library.Region#setVisibilityString(java.lang.String)
    */
@@ -377,7 +377,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * 2..lighthouse<br />
    * 3..travel<br />
    * 4..qualified unit in region (->visibility=null)
-   * 
+   *
    * @param vis
    */
   public void setVisibility(Visibility vis) {
@@ -482,7 +482,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Adds a resource to this region.
-   * 
+   *
    * @throws NullPointerException
    */
   public RegionResource addResource(RegionResource resource) {
@@ -516,7 +516,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Removes the resource with the specified numerical id or the id of its item type from this
    * region.
-   * 
+   *
    * @return the removed resource or null if no resource with the specified id exists in this
    *         region.
    */
@@ -599,7 +599,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Adds a scheme to this region.
-   * 
+   *
    * @throws NullPointerException
    */
   public Scheme addScheme(Scheme scheme) {
@@ -632,7 +632,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the scheme with the specified corodinate.
-   * 
+   *
    * @return the scheme object or null if no scheme with the specified ID exists in this region.
    */
   public Scheme getScheme(ID id) {
@@ -667,7 +667,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Adds a border to this region.
-   * 
+   *
    * @throws NullPointerException if border is <code>null</code>
    */
   public Border addBorder(Border border) {
@@ -700,7 +700,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the border with the specified id.
-   * 
+   *
    * @return the border object or null if no border with the specified id exists in this region.
    */
   public Border getBorder(ID key) {
@@ -841,7 +841,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Fiete 20061224: ...and the factions with "GIVE" alliances too. <br>
    * The amount of the items of a particular item type are added up, so two units with 5 pieces of
    * silver yield one silver item of amount 10 here.
-   * 
+   *
    * @deprecated Use {@link Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)}
    *             instead.
    */
@@ -861,7 +861,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns the items of all units that are stationed in this region The amount of the items of a
    * particular item type are added up, so two units with 5 pieces of silver yield one silver item
    * of amount 10 here.
-   * 
+   *
    * @see magellan.library.Region#allItems()
    * @deprecated Use {@link Units#getContainerAllUnitItems(magellan.library.UnitContainer)} instead.
    */
@@ -879,7 +879,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns a specific item from the items() collection identified by the item type.
-   * 
+   *
    * @see magellan.library.Region#getItem(magellan.library.rules.ItemType)
    * @deprecated Use
    *             {@link Units#getContainerPrivilegedUnitItem(magellan.library.UnitContainer, ItemType)}
@@ -898,7 +898,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Updates the cache of items owned by privileged factions in this region. Fiete 20061224: ...and
    * the factions with "GIVE" alliances too.
-   * 
+   *
    * @deprecated
    */
   @Deprecated
@@ -928,7 +928,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Updates the cache of items owned by all factions in this region.
-   * 
+   *
    * @author Fiete
    * @deprecated
    */
@@ -958,7 +958,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Returns the maximum number of persons that can be recruited in this region. If it was manually
    * set, this value is returned, otherwise the value is calculated from the number of peasants.
-   * 
+   *
    * @see #getRecruits()
    * @see #maxRecruit(int)
    */
@@ -980,7 +980,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Returns the maximum number of persons available for recruitment in a region with the specified
    * number of peasants.
-   * 
+   *
    * @see #maxRecruit()
    * @see #getRecruits()
    */
@@ -993,7 +993,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the silver that can be earned through entertainment in this region.
-   * 
+   *
    * @see magellan.library.Region#maxEntertain()
    */
   public int maxEntertain() {
@@ -1095,7 +1095,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * A synomym for {@link #getCoordinate()}.
-   * 
+   *
    * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
    */
   @Override
@@ -1123,7 +1123,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Refreshes all the relations of all units in this region. It is preferable to call this method
    * instead of refreshing the unit relations 'manually'.
-   * 
+   *
    * @param forceRefresh to enforce refreshment, false for one refreshment only
    * @deprecated should be triggered implicitly by UnitOrdersEvents
    */
@@ -1135,19 +1135,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       unitRelationsRefreshed = true;
 
       getData().getGameSpecificStuff().getRelationFactory().createRelations(this);
-
-      // for (Unit u : units()) {
-      // u.clearCache();
-      // }
-      //
-      // for (Unit u : units()) {
-      // // FIXME (stm) too many calls!
-      // u.refreshRelations();
-      // // TODO fire UnitOrdersEvent here to update views??
-      // }
-
-      getZeroUnit().refreshRelations();
-
     }
   }
 
@@ -1235,7 +1222,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Adds a neighbor in the specified direction.
-   * 
+   *
    * @return The previous neighbour at that direction
    */
   public Region addNeighbor(Direction dir, Region newNeighbor) {
@@ -1263,7 +1250,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns a collection of ids for reachable neighbours. This may be set by setNeighbours() if
    * neighbours is null it will be calculated from the game data). This function may be necessary
    * for new xml reports.
-   * 
+   *
    * @deprecated better use {@link #getNeighbors()}.
    */
   @Deprecated
@@ -1296,7 +1283,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * returns 1 if coast is nearby returns 0 if there es no coast
-   * 
+   *
    * @return the ozeanWithCoast
    */
   public int getOceanWithCoast() {
@@ -1309,7 +1296,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * calculates the OzeanWithCoast-value
-   * 
+   *
    * @return 1 if this region is ocean and has neighboring non-ocean regions
    */
   private int calcOceanWithCoast() {
@@ -1378,7 +1365,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of events.
-   * 
+   *
    * @return Returns events.
    */
   public List<Message> getEvents() {
@@ -1387,7 +1374,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of events.
-   * 
+   *
    * @param events The value for events.
    */
   public void setEvents(List<Message> events) {
@@ -1396,7 +1383,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of herb.
-   * 
+   *
    * @return Returns herb.
    */
   public ItemType getHerb() {
@@ -1405,7 +1392,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of herb.
-   * 
+   *
    * @param herb The value for herb.
    */
   public void setHerb(ItemType herb) {
@@ -1414,7 +1401,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of herbAmount.
-   * 
+   *
    * @return Returns herbAmount.
    */
   public String getHerbAmount() {
@@ -1423,7 +1410,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of herbAmount.
-   * 
+   *
    * @param herbAmount The value for herbAmount.
    */
   public void setHerbAmount(String herbAmount) {
@@ -1432,7 +1419,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of horses.
-   * 
+   *
    * @return Returns horses.
    */
   public int getHorses() {
@@ -1447,7 +1434,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of horses.
-   * 
+   *
    * @param horses The value for horses.
    */
   public void setHorses(int horses) {
@@ -1456,7 +1443,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of iron.
-   * 
+   *
    * @return Returns iron.
    */
   public int getIron() {
@@ -1469,7 +1456,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of iron.
-   * 
+   *
    * @param iron The value for iron.
    */
   public void setIron(int iron) {
@@ -1478,7 +1465,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of laen.
-   * 
+   *
    * @return Returns laen.
    */
   public int getLaen() {
@@ -1491,7 +1478,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of laen.
-   * 
+   *
    * @param laen The value for laen.
    */
   public void setLaen(int laen) {
@@ -1500,7 +1487,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of mallorn.
-   * 
+   *
    * @return Returns mallorn.
    */
   public boolean isMallorn() {
@@ -1509,7 +1496,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of mallorn.
-   * 
+   *
    * @param mallorn The value for mallorn.
    */
   public void setMallorn(boolean mallorn) {
@@ -1518,7 +1505,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of messages.
-   * 
+   *
    * @return Returns messages.
    */
   public List<Message> getMessages() {
@@ -1527,7 +1514,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of messages.
-   * 
+   *
    * @param messages The value for messages.
    */
   public void setMessages(List<Message> messages) {
@@ -1536,7 +1523,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldHorses.
-   * 
+   *
    * @return Returns oldHorses.
    */
   public int getOldHorses() {
@@ -1545,7 +1532,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldHorses.
-   * 
+   *
    * @param oldHorses The value for oldHorses.
    */
   public void setOldHorses(int oldHorses) {
@@ -1554,7 +1541,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldIron.
-   * 
+   *
    * @return Returns oldIron.
    */
   public int getOldIron() {
@@ -1563,7 +1550,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldIron.
-   * 
+   *
    * @param oldIron The value for oldIron.
    */
   public void setOldIron(int oldIron) {
@@ -1572,7 +1559,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldLaen.
-   * 
+   *
    * @return Returns oldLaen.
    */
   public int getOldLaen() {
@@ -1581,7 +1568,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldLaen.
-   * 
+   *
    * @param oldLaen The value for oldLaen.
    */
   public void setOldLaen(int oldLaen) {
@@ -1590,7 +1577,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldPeasants.
-   * 
+   *
    * @return Returns oldPeasants.
    */
   public int getOldPeasants() {
@@ -1599,7 +1586,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldPeasants.
-   * 
+   *
    * @param oldPeasants The value for oldPeasants.
    */
   public void setOldPeasants(int oldPeasants) {
@@ -1608,7 +1595,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldPrices.
-   * 
+   *
    * @return Returns oldPrices.
    */
   public Map<StringID, LuxuryPrice> getOldPrices() {
@@ -1617,7 +1604,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldPrices.
-   * 
+   *
    * @param oldPrices The value for oldPrices.
    */
   public void setOldPrices(Map<StringID, LuxuryPrice> oldPrices) {
@@ -1626,7 +1613,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldRecruits.
-   * 
+   *
    * @return Returns oldRecruits.
    */
   public int getOldRecruits() {
@@ -1635,7 +1622,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldRecruits.
-   * 
+   *
    * @param oldRecruits The value for oldRecruits.
    */
   public void setOldRecruits(int oldRecruits) {
@@ -1644,7 +1631,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldSilver.
-   * 
+   *
    * @return Returns oldSilver.
    */
   public int getOldSilver() {
@@ -1653,7 +1640,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldSilver.
-   * 
+   *
    * @param oldSilver The value for oldSilver.
    */
   public void setOldSilver(int oldSilver) {
@@ -1662,7 +1649,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldSprouts.
-   * 
+   *
    * @return Returns oldSprouts.
    */
   public int getOldSprouts() {
@@ -1671,7 +1658,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldSprouts.
-   * 
+   *
    * @param oldSprouts The value for oldSprouts.
    */
   public void setOldSprouts(int oldSprouts) {
@@ -1680,7 +1667,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldStones.
-   * 
+   *
    * @return Returns oldStones.
    */
   public int getOldStones() {
@@ -1689,7 +1676,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldStones.
-   * 
+   *
    * @param oldStones The value for oldStones.
    */
   public void setOldStones(int oldStones) {
@@ -1698,7 +1685,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldTrees.
-   * 
+   *
    * @return Returns oldTrees.
    */
   public int getOldTrees() {
@@ -1707,7 +1694,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldTrees.
-   * 
+   *
    * @param oldTrees The value for oldTrees.
    */
   public void setOldTrees(int oldTrees) {
@@ -1716,7 +1703,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of oldWage.
-   * 
+   *
    * @return Returns oldWage.
    */
   public int getOldWage() {
@@ -1725,7 +1712,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of oldWage.
-   * 
+   *
    * @param oldWage The value for oldWage.
    */
   public void setOldWage(int oldWage) {
@@ -1734,7 +1721,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of orcInfested.
-   * 
+   *
    * @return Returns orcInfested.
    */
   public boolean isOrcInfested() {
@@ -1743,7 +1730,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of orcInfested.
-   * 
+   *
    * @param orcInfested The value for orcInfested.
    */
   public void setOrcInfested(boolean orcInfested) {
@@ -1752,7 +1739,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of peasants.
-   * 
+   *
    * @return Returns peasants.
    */
   public int getPeasants() {
@@ -1765,7 +1752,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of peasants.
-   * 
+   *
    * @param peasants The value for peasants.
    */
   public void setPeasants(int peasants) {
@@ -1774,7 +1761,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of playerMessages.
-   * 
+   *
    * @return Returns playerMessages.
    */
   public List<Message> getPlayerMessages() {
@@ -1783,7 +1770,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of playerMessages.
-   * 
+   *
    * @param playerMessages The value for playerMessages.
    */
   public void setPlayerMessages(List<Message> playerMessages) {
@@ -1792,7 +1779,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of prices.
-   * 
+   *
    * @return Returns prices.
    */
   public Map<StringID, LuxuryPrice> getPrices() {
@@ -1801,7 +1788,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of prices.
-   * 
+   *
    * @param prices The value for prices.
    */
   public void setPrices(Map<StringID, LuxuryPrice> prices) {
@@ -1810,7 +1797,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of recruits if it is in the report, -1 otherwise.
-   * 
+   *
    * @return Returns recruits.
    * @see #maxRecruit()
    * @see #maxRecruit(int)
@@ -1821,7 +1808,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of recruits.
-   * 
+   *
    * @param recruits The value for recruits.
    */
   public void setRecruits(int recruits) {
@@ -1830,7 +1817,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of silver.
-   * 
+   *
    * @return Returns silver.
    */
   public int getSilver() {
@@ -1842,7 +1829,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of silver.
-   * 
+   *
    * @param silver The value for silver.
    */
   public void setSilver(int silver) {
@@ -1851,7 +1838,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of sprouts.
-   * 
+   *
    * @return Returns sprouts.
    */
   public int getSprouts() {
@@ -1864,7 +1851,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of sprouts.
-   * 
+   *
    * @param sprouts The value for sprouts.
    */
   public void setSprouts(int sprouts) {
@@ -1873,7 +1860,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of stones.
-   * 
+   *
    * @return Returns stones.
    */
   public int getStones() {
@@ -1886,7 +1873,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of stones.
-   * 
+   *
    * @param stones The value for stones.
    */
   public void setStones(int stones) {
@@ -1895,7 +1882,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of surroundings.
-   * 
+   *
    * @return Returns surroundings.
    */
   public List<Message> getSurroundings() {
@@ -1904,7 +1891,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of surroundings.
-   * 
+   *
    * @param surroundings The value for surroundings.
    */
   public void setSurroundings(List<Message> surroundings) {
@@ -1913,7 +1900,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of travelThru.
-   * 
+   *
    * @return returns list of DURCHREISE messages or <code>null</code>
    */
   public List<Message> getTravelThru() {
@@ -1922,7 +1909,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of travelThru.
-   * 
+   *
    * @param travelThru The value for travelThru.
    */
   public void setTravelThru(List<Message> travelThru) {
@@ -1931,7 +1918,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of travelThruShips.
-   * 
+   *
    * @return returns list of DURCHSCHIFFUNG messages or <code>null</code>
    */
   public List<Message> getTravelThruShips() {
@@ -1940,7 +1927,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of travelThruShips.
-   * 
+   *
    * @param travelThruShips The value for travelThruShips.
    */
   public void setTravelThruShips(List<Message> travelThruShips) {
@@ -1949,7 +1936,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of trees.
-   * 
+   *
    * @return Returns trees.
    */
   public int getTrees() {
@@ -1962,7 +1949,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of trees.
-   * 
+   *
    * @param trees The value for trees.
    */
   public void setTrees(int trees) {
@@ -1971,7 +1958,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the value of wage.
-   * 
+   *
    * @return Returns wage.
    */
   public int getWage() {
@@ -1980,7 +1967,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Sets the value of wage.
-   * 
+   *
    * @param wage The value for wage.
    */
   public void setWage(int wage) {
@@ -1989,7 +1976,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns <code>true</code> if this region is the active region.
-   * 
+   *
    * @deprecated Use {@link GameData#getActiveRegion()} instead.
    */
   @Deprecated
@@ -1999,7 +1986,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Marks the region as active
-   * 
+   *
    * @deprecated Use {@link GameData#setActiveRegion(Region)} instead.
    */
   @Deprecated
@@ -2028,7 +2015,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Returns the value of uID, the unique regionID generated and sent by the eressea server
    * (starting in turn 570)
-   * 
+   *
    * @return Returns uID.
    */
   public long getUID() {
@@ -2038,7 +2025,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Sets the value of uID, the unique regionID generated and sent by the eressea server (starting
    * in turn 570)
-   * 
+   *
    * @param uid The value for uID.
    */
   public void setUID(long uid) {

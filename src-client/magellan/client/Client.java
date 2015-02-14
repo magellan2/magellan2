@@ -214,7 +214,7 @@ import org.simplericity.macify.eawt.DefaultApplication;
  * @version $Revision: 388 $
  */
 public class Client extends JFrame implements ShortcutListener, PreferencesFactory,
-ApplicationListener {
+    ApplicationListener {
   private static final Logger log = Logger.getInstance(Client.class);
 
   /** The name of the magellan settings file. */
@@ -292,6 +292,8 @@ ApplicationListener {
   /** Directory of "magellan.ini" etc. */
   private static File settingsDirectory;
 
+  public static File logFile;
+
   /** show order status in title */
   protected boolean showStatus = false;
 
@@ -321,8 +323,8 @@ ApplicationListener {
    * @param resourceDir The directory where magellan configuration files are situated
    * @param settingsDir The directory where the settings are situated
    */
-  protected Client(GameData gd, File binDir, File resourceDir, File settingsDir) {
-    this(gd, binDir, resourceDir, settingsDir, true);
+  protected Client(GameData gd, File binDir, File resourceDir, File settingsDir, File logFile) {
+    this(gd, binDir, resourceDir, settingsDir, true, logFile);
   }
 
   /**
@@ -339,11 +341,13 @@ ApplicationListener {
    * @param settingsDir The directory where the settings are situated
    * @param ask show the ask password dialog, used for testing only
    */
-  protected Client(GameData gd, File binDir, File resourceDir, File settingsDir, boolean ask) {
+  protected Client(GameData gd, File binDir, File resourceDir, File settingsDir, boolean ask,
+      File logFile) {
     Client.INSTANCE = this;
     Client.binDirectory = binDir;
     Client.resourceDirectory = resourceDir;
     Client.settingsDirectory = settingsDir;
+    Client.logFile = logFile;
 
     // get new dispatcher
     EventDispatcher dispatcher = new EventDispatcher();
@@ -482,17 +486,17 @@ ApplicationListener {
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ",Einkaufsgut");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET, "Einkaufsgut");
     settings
-    .setProperty(
-        PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-            + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
-        "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
+        .setProperty(
+            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+                + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
+            "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, "10");
     settings
-    .setProperty(
-        PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-            + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
-        "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
+        .setProperty(
+            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+                + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
+            "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
@@ -1215,7 +1219,7 @@ ApplicationListener {
       // tell the user where we expect ini files and errors.txt
       PropertiesHelper.setSettingsDirectory(parameters.settingsDir);
 
-      startLog(parameters);
+      final File logFile = startLog(parameters);
 
       final File tBinDir = parameters.binDir;
       final File tResourceDir = parameters.resourceDir;
@@ -1231,7 +1235,7 @@ ApplicationListener {
             GameData data = new MissingData();
 
             // new CompleteData(new com.eressea.rules.Eressea(), "void");
-            Client c = new Client(data, tBinDir, tResourceDir, tsettFileDir);
+            Client c = new Client(data, tBinDir, tResourceDir, tsettFileDir, logFile);
             // setup a singleton instance of this client
             Client.INSTANCE = c;
 
@@ -1242,9 +1246,15 @@ ApplicationListener {
               Client.log.info("Newest Version on server: " + newestVersion);
               Client.log.info("Current Version: " + currentVersion);
               if (VersionInfo.isNewer(newestVersion, currentVersion)) {
+                String url =
+                    MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD
+                        + Locales.getGUILocale().getLanguage());
+                if (url == null) {
+                  url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+                }
+
                 JOptionPane.showMessageDialog(Client.startWindow, Resources.get(
-                    "client.new_version", new Object[] { newestVersion,
-                        MagellanUrl.getMagellanUrl("www.download") }));
+                    "client.new_version", new Object[] { newestVersion, url }));
               }
             }
 
@@ -1338,13 +1348,13 @@ ApplicationListener {
    * @param parameters
    * @throws IOException if an I/O error occurs
    */
-  protected static void startLog(Parameters parameters) throws IOException {
+  protected static File startLog(Parameters parameters) throws IOException {
     // now redirect stderr through our log
     Log LOG = new Log(parameters.settingsDir);
 
     // logging with level warning to get this information even if user selected low debug level...
     Logger.activateDefaultLogListener(true);
-    Client.log.warn("Start writing error file with encoding " + LOG.encoding + ", log level "
+    Client.log.warn("Start writing error file with encoding " + LOG.getEncoding() + ", log level "
         + Logger.getLevel(Logger.getLevel()));
 
     Client.log.info("resource directory: " + parameters.resourceDir);
@@ -1377,6 +1387,7 @@ ApplicationListener {
     } catch (SecurityException e) {
       Client.log.warn("Unable to retrieve system properties: " + e);
     }
+    return LOG.getFile();
   }
 
   /**
@@ -1503,7 +1514,7 @@ ApplicationListener {
           Object msgArgs[] = { getData().getFileType().getFile().getAbsolutePath() };
           msg =
               (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text")))
-              .format(msgArgs);
+                  .format(msgArgs);
         } else {
           msg = Resources.get("client.msg.quit.confirmsavenofile.text");
         }
@@ -1514,12 +1525,12 @@ ApplicationListener {
 
       switch (JOptionPane.showConfirmDialog(this, msg, Resources
           .get("client.msg.quit.confirmsave.title"), JOptionPane.YES_NO_CANCEL_OPTION)) {
-          case JOptionPane.YES_OPTION:
+      case JOptionPane.YES_OPTION:
 
-            return JOptionPane.YES_OPTION;
+        return JOptionPane.YES_OPTION;
 
-          case JOptionPane.CANCEL_OPTION:
-            return JOptionPane.CANCEL_OPTION;
+      case JOptionPane.CANCEL_OPTION:
+        return JOptionPane.CANCEL_OPTION;
       }
     }
 
@@ -2061,8 +2072,8 @@ ApplicationListener {
                     String oTitle =
                         Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.title");
                     String[] oOptions =
-                      { Resources.get("button.yes"), Resources.get("button.no"),
-                        Resources.get("button.yestoall"), Resources.get("button.notoall") };
+                        { Resources.get("button.yes"), Resources.get("button.no"),
+                            Resources.get("button.yestoall"), Resources.get("button.notoall") };
                     boolean usePasswd = yesToAll;
                     if (!noToAll && !yesToAll) {
                       int answer =
@@ -2196,7 +2207,7 @@ ApplicationListener {
           title2.append(" - ").append(
               data.getDate().toString(
                   showStatusOverride ? Date.TYPE_SHORT : Date.TYPE_PHRASE_AND_SEASON)).append(" (")
-                  .append(data.getDate().getDate()).append(")");
+              .append(data.getDate().getDate()).append(")");
         }
 
         if (longTitle) {
@@ -2233,9 +2244,9 @@ ApplicationListener {
                       BigDecimal.ROUND_DOWN);
               title3.append(" (").append(units).append(" ").append(
                   Resources.get("client.title.unit")).append(", ").append(done).append(" ").append(
-                      Resources.get("client.title.done")).append(", ").append(
-                          Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
-                          .append(Resources.get("client.title.percent")).append(")");
+                  Resources.get("client.title.done")).append(", ").append(
+                  Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
+                  .append(Resources.get("client.title.percent")).append(")");
             }
           }
 
@@ -2245,7 +2256,7 @@ ApplicationListener {
       // this prevents that the title "flickers" when it changes too often
       if (!title1.toString().equals(oldTitle1)
           || ((data == null || data.getDate() == null) ? date != null : !data.getDate()
-          .equals(date)) || !title3.toString().equals(oldTitle3)) {
+              .equals(date)) || !title3.toString().equals(oldTitle3)) {
         date = data != null ? data.getDate() : null;
         oldTitle1 = title1.toString();
         oldTitle3 = title3.toString();
@@ -2548,6 +2559,15 @@ ApplicationListener {
   }
 
   /**
+   * Returns the value of logFile.
+   *
+   * @return Returns logFile.
+   */
+  public static File getLogFile() {
+    return logFile;
+  }
+
+  /**
    * @return the BookmarkManager associated with this Client-Object
    */
   public BookmarkManager getBookmarkManager() {
@@ -2706,7 +2726,7 @@ ApplicationListener {
    * Simple class to look for events changing the data.
    */
   protected class ReportObserver implements GameDataListener, OrderConfirmListener,
-  TempUnitListener, UnitOrdersListener {
+      TempUnitListener, UnitOrdersListener {
     protected boolean stateChanged = false;
 
     protected long lastClear;

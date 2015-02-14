@@ -101,7 +101,7 @@ public class VersionInfo {
             String.valueOf(false)));
 
     MagellanUrl.retrieveLocations(properties);
-    String urlstring = MagellanUrl.getMagellanUrl("version.release");
+    String urlstring = MagellanUrl.getMagellanUrl(MagellanUrl.VERSION_RELEASE);
     if (urlstring == null) {
       urlstring = VersionInfo.DEFAULT_CHECK_URL;
     }
@@ -112,7 +112,7 @@ public class VersionInfo {
     boolean doCheck = check;
 
     if (checkNightly) {
-      urlstring = MagellanUrl.getMagellanUrl("version.nightly");
+      urlstring = MagellanUrl.getMagellanUrl(MagellanUrl.VERSION_NIGHTLY);
       if (urlstring == null) {
         urlstring = VersionInfo.NIGHTLY_CHECK_URL;
       }

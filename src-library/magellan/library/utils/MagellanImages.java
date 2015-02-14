@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.utils;
 
 import java.awt.Color;
@@ -57,9 +57,10 @@ public class MagellanImages {
   private static File magellanDirectory = null;
 
   /** The Magellan foreground color (sepia-like, dark brown) */
-  public static Color foreground = new Color(79, 63, 48);
+  public static final Color FOREGROUND = new Color(79, 63, 48);
+
   /** The Magellan background color (light, reddish brown; tan; tawny) */
-  public static Color background = new Color(213, 169, 131);
+  public static final Color BACKGROUND = new Color(213, 169, 131);
 
   /**
    * @deprecated use {@link Resources#getResourceURL(String)}
@@ -72,7 +73,7 @@ public class MagellanImages {
   /**
    * Creates an image icon, found either at the specified path or in a subdirectory corresponding to
    * path inside the directory set by {@link #setMagellanDirectory(File)}.
-   * 
+   *
    * @param path an absolute or relative path
    * @return the image icon corresponding to path or null if no such file exists.
    */
@@ -92,7 +93,7 @@ public class MagellanImages {
 
   /**
    * Sets the value of magellanDirectory.
-   * 
+   *
    * @param magellanDirectory The value for magellanDirectory.
    */
   public static void setMagellanDirectory(File magellanDirectory) {

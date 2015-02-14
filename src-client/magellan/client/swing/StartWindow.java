@@ -43,12 +43,13 @@ import javax.swing.text.StyledDocument;
 
 import magellan.client.Client;
 import magellan.client.utils.SwingUtils;
+import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Resources;
 import magellan.library.utils.VersionInfo;
 
 /**
  * DOCUMENT ME!
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
@@ -109,8 +110,8 @@ public class StartWindow extends JFrame {
     cont.setLayout(new SimpleLayout());
 
     // use the colors from the default file
-    Color foreground = new Color(79, 63, 48);
-    Color background = new Color(213, 169, 131);
+    Color foreground = MagellanImages.FOREGROUND;
+    Color background = MagellanImages.BACKGROUND;
 
     cont.setBackground(background);
     ((JComponent) cont).setBorder(new LineBorder(background, 2));

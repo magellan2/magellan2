@@ -66,7 +66,7 @@ import magellan.library.utils.UnitRoutePlanner;
 
 /**
  * This is a contextmenu provider for one or more selected units.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 389 $
  */
@@ -89,7 +89,7 @@ public class UnitContextMenu extends JPopupMenu {
 
   /**
    * Creates new UnitContextMenu
-   * 
+   *
    * @param unit last selected unit - is not required to be in selected objects
    * @param selectedObjects null or Collection of selected objects
    * @param dispatcher EventDispatcher
@@ -434,7 +434,7 @@ public class UnitContextMenu extends JPopupMenu {
 
   /**
    * Sets the selected Units as selected Units in Overview
-   * 
+   *
    * @author Fiete
    */
   private void event_selectUnits() {
@@ -451,7 +451,9 @@ public class UnitContextMenu extends JPopupMenu {
    */
   private void event_addOrder() {
     GiveOrderDialog giveOderDialog =
-        new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
+        new GiveOrderDialog(JOptionPane.getFrameForComponent(this), selectedUnits.isEmpty()
+            ? Collections.singletonList(unit) : selectedUnits, data, settings, dispatcher);
+
     String s[] = giveOderDialog.showGiveOrderDialog();
     if (s[0] != null) {
       for (Unit u : selectedUnits) {
@@ -853,7 +855,7 @@ public class UnitContextMenu extends JPopupMenu {
     /**
      * Creates a new RemoveUnitFromTeachersListAction object, which shall remove the student ID from
      * the teacher's TEACHING orders.
-     * 
+     *
      * @param student The affected student Unit
      * @param teacher The affected teacher Unit
      */
@@ -865,7 +867,7 @@ public class UnitContextMenu extends JPopupMenu {
 
     /**
      * Removes student's ID from teacher's teaching orders.
-     * 
+     *
      * @param e
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */

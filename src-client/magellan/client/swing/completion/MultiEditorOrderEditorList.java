@@ -362,8 +362,7 @@ MouseListener, CacheHandler {
         if (currentUnit != null) {
           currentUnit.setOrderEditor(null);
           deselectEditor(editorSingelton);
-          editorSingelton
-          .setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, ""));
+          editorSingelton.setBorder(getBorder(null, false));
           currentUnit = null;
           editorSingelton.setUnit(null);
           editorSingelton.setEditable(false);
@@ -485,8 +484,7 @@ MouseListener, CacheHandler {
     if (newUnit == null)
       throw new NullPointerException();
     if (editor != null) {
-      editor.setBorder(new TitledBorder(MultiEditorOrderEditorList.activeBorder, newUnit.toString()
-          + ": " + newUnit.getPersons()));
+      editor.setBorder(getBorder(newUnit, true));
 
       if (newUnit.isOrdersConfirmed()) {
         editor.setBackground(activeBgColorConfirmed);
@@ -523,9 +521,7 @@ MouseListener, CacheHandler {
    * @param editor Must not be <code>null</code>.
    */
   private void deselectEditor(OrderEditor editor) {
-    editor.setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, currentUnit
-        .toString()
-        + ": " + currentUnit.getPersons()));
+    editor.setBorder(getBorder(currentUnit, false));
 
     if (currentUnit.isOrdersConfirmed()) {
       editor.setBackground(standardBgColorConfirmed);
@@ -1362,8 +1358,7 @@ MouseListener, CacheHandler {
    * @param editor
    */
   private void attachOrderEditor(Unit u, OrderEditor editor) {
-    editor.setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, u.toString()
-        + ": " + u.getPersons()));
+    editor.setBorder(getBorder(u, false));
 
     if (u.isOrdersConfirmed()) {
       editor.setBackground(standardBgColorConfirmed);
@@ -1379,6 +1374,12 @@ MouseListener, CacheHandler {
     editor.setUnit(u);
 
     u.setOrderEditor(editor);
+  }
+
+  protected Border getBorder(Unit u, boolean active) {
+    return new TitledBorder(active ? MultiEditorOrderEditorList.activeBorder
+        : MultiEditorOrderEditorList.standardBorder, u == null ? "" : (u.toString() + ": " + u
+            .getPersons()));
   }
 
   /**

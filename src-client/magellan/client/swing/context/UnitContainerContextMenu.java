@@ -65,7 +65,7 @@ import magellan.library.utils.ShipRoutePlanner;
 
 /**
  * A context menu for UnitContainers like ships or buildings. Providing copy ID and copy ID+name.
- * 
+ *
  * @author Ulrich Küster
  */
 public class UnitContainerContextMenu extends JPopupMenu {
@@ -505,7 +505,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 
   /**
    * Plans a route for a ship (typically over several weeks)
-   * 
+   *
    * @see ShipRoutingDialog
    */
   private void planShipRoute() {
@@ -523,18 +523,24 @@ public class UnitContainerContextMenu extends JPopupMenu {
    * only to actual captns of selected ships
    */
   private void event_addShipOrder() {
-    GiveOrderDialog giveOderDialog =
-        new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
-    String s[] = giveOderDialog.showGiveOrderDialog();
+    Collection<Unit> captains = new ArrayList<Unit>();
     for (Object o : selectedObjects) {
       if (o instanceof Ship) {
-        Ship ship = (Ship) o;
-        Unit u = ship.getModifiedOwnerUnit();
+        Unit u = ((Ship) o).getModifiedOwnerUnit();
 
         if (u != null && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))) {
-          magellan.client.utils.Units.addOrders(u, s, false);
-          dispatcher.fire(new UnitOrdersEvent(this, u));
+          captains.add(u);
         }
+      }
+    }
+    if (captains.size() > 0) {
+      GiveOrderDialog giveOderDialog =
+          new GiveOrderDialog(JOptionPane.getFrameForComponent(this), captains, data, settings,
+              dispatcher);
+      String s[] = giveOderDialog.showGiveOrderDialog();
+      for (Unit u : captains) {
+        magellan.client.utils.Units.addOrders(u, s, false);
+        dispatcher.fire(new UnitOrdersEvent(this, u));
       }
     }
   }

@@ -52,7 +52,6 @@ import magellan.library.utils.OrderTokenizer;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Units;
-import magellan.library.utils.Units.StatItem;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -243,12 +242,12 @@ public abstract class AbstractOrderCompleter implements Completer {
       String closing) {
     final Collection<Spell> spells = u.getSpells().values();
     for (Spell spell : spells) {
-      if ((spell.getDescription() == null) // indicates that no information is available about this
-          // spell
+      if ((spell.getDescription() == null)
+      // indicates that no information is available about this spell
           || ((spell.getIsFar() || !far)
               && (spell.getOnOcean() || !ocean || u.getRace().equals(
                   data.getRules().getRace(EresseaConstants.R_MEERMENSCHEN))) && (!combat ^ (spell
-                      .getType().toLowerCase().indexOf("combat") > -1)))) {
+              .getType().toLowerCase().indexOf("combat") > -1)))) {
         final String spellName = data.getTranslation(spell);
 
         completions.add(new Completion(opening + spellName + closing));
@@ -257,7 +256,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   }
 
   /**
-   * Adds completios for a familiar of the mage, enclosed in opening and closing quotes
+   * Adds completions for a familiar of the mage, enclosed in opening and closing quotes
    */
   public void addFamilarSpells(Unit mage, Unit familar, String opening, String closing) {
 
@@ -320,7 +319,7 @@ public abstract class AbstractOrderCompleter implements Completer {
       if (f == null) {
         addUnit(curUnit, postfix);
       } else if (!f.equals(unit.getFaction())) {
-        if (!Units.isAllied(f, curUnit.getFaction(), alliance.getState())) {
+        if (!Units.isAllied(alliance.getFaction(), curUnit.getFaction(), alliance.getState())) {
           addUnit(curUnit, postfix);
         }
       }
@@ -522,9 +521,9 @@ public abstract class AbstractOrderCompleter implements Completer {
   public void addFactionItems(int amount, String postfix) {
     for (final Item i : unit.getFaction().getItems()) {
       completions
-      .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
-          (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
-              : Completion.DEFAULT_PRIORITY + 1));
+          .add(new Completion(i.getOrderName(), i.getOrderName(), postfix,
+              (i.getAmount() >= amount) ? Completion.DEFAULT_PRIORITY
+                  : Completion.DEFAULT_PRIORITY + 1));
     }
   }
 
@@ -1129,7 +1128,7 @@ public abstract class AbstractOrderCompleter implements Completer {
     // add rest of inner tokens
     for (OrderToken currentToken = innerTokenizer.getNextToken(); currentToken.ttype != OrderToken.TT_EOC
         && (currentToken.ttype != OrderToken.TT_EOC || (currentToken.ttype == OrderToken.TT_EOC && !currentToken
-        .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
+            .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
       if (currentToken.ttype != OrderToken.TT_CLOSING_QUOTE
           || (currentToken.ttype == OrderToken.TT_CLOSING_QUOTE && !currentToken.getText().equals(
               insertedQuote))) {
@@ -1169,30 +1168,5 @@ public abstract class AbstractOrderCompleter implements Completer {
 
     return result.toString();
   }
-
-  // /** Add completions for command FinalQuote. */
-  // public void cmpltFinalQuote(char quote) {
-  // final List<Completion> oldList = new ArrayList<Completion>(completions);
-  // completions.clear();
-  // for (final Completion c : oldList) {
-  // if (c.getValue().length() > 1 && c.getValue().charAt(c.getValue().length() - 1) == quote
-  // && c.getValue().charAt(c.getValue().length() - 2) != '\\') {
-  // completions.add(c);
-  // } else {
-  // completions.add(new Completion(c.getName() + quote, c.getValue().trim() + quote, c
-  // .getPostfix(), c.getPriority(), c.getCursorOffset()));
-  // }
-  // }
-  // }
-  //
-  // /** Add completions for command OpeningQuote. */
-  // public void cmpltOpeningQuote(char quote, boolean cmplName) {
-  // final List<Completion> oldList = new LinkedList<Completion>(completions);
-  // completions.clear();
-  // for (final Completion c : oldList) {
-  // completions.add(new Completion(cmplName ? quote + c.getName() : c.getName(), quote
-  // + c.getValue(), c.getPostfix(), c.getPriority(), c.getCursorOffset()));
-  // }
-  // }
 
 }

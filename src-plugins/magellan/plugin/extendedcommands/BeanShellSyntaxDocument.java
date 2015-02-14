@@ -10,20 +10,21 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.plugin.extendedcommands;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.HashSet;
 
 import javax.swing.text.AttributeSet;
@@ -75,24 +76,28 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     putProperty(DefaultEditorKit.EndOfLineStringProperty, "\n");
 
     normal = new SimpleAttributeSet();
+    StyleConstants.setFontFamily(normal, "monospaced");
     StyleConstants.setFontSize(normal, BeanShellSyntaxDocument.NORMAL_SIZE);
     StyleConstants.setForeground(normal, BeanShellSyntaxDocument.NORMAL_COLOR);
     StyleConstants.setItalic(normal, BeanShellSyntaxDocument.NORMAL_ITALIC);
     StyleConstants.setBold(normal, BeanShellSyntaxDocument.NORMAL_BOLD);
 
     comment = new SimpleAttributeSet();
+    StyleConstants.setFontFamily(normal, "monospaced");
     StyleConstants.setFontSize(comment, BeanShellSyntaxDocument.COMMENT_SIZE);
     StyleConstants.setForeground(comment, BeanShellSyntaxDocument.COMMENT_COLOR);
     StyleConstants.setItalic(comment, BeanShellSyntaxDocument.COMMENT_ITALIC);
     StyleConstants.setBold(comment, BeanShellSyntaxDocument.COMMENT_BOLD);
 
     keyword = new SimpleAttributeSet();
+    StyleConstants.setFontFamily(normal, "monospaced");
     StyleConstants.setFontSize(keyword, BeanShellSyntaxDocument.KEYWORD_SIZE);
     StyleConstants.setForeground(keyword, BeanShellSyntaxDocument.KEYWORD_COLOR);
     StyleConstants.setItalic(keyword, BeanShellSyntaxDocument.KEYWORD_ITALIC);
     StyleConstants.setBold(keyword, BeanShellSyntaxDocument.KEYWORD_BOLD);
 
     quote = new SimpleAttributeSet();
+    StyleConstants.setFontFamily(normal, "monospaced");
     StyleConstants.setFontSize(quote, BeanShellSyntaxDocument.QUOTE_SIZE);
     StyleConstants.setForeground(quote, BeanShellSyntaxDocument.QUOTE_COLOR);
     StyleConstants.setItalic(quote, BeanShellSyntaxDocument.QUOTE_ITALIC);
@@ -161,8 +166,11 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     keywords.add("while");
   }
 
-  public void setTabs(int charWidth, int charactersPerTab) {
+  public Font getNormalFont() {
+    return getFont(normal);
+  }
 
+  public TabSet setTabs(int charWidth, int charactersPerTab) {
     TabStop[] tabStops = new TabStop[10];
     for (int index = 0; index < tabStops.length; index++) {
       tabStops[index] = new TabStop((index + 1) * (charWidth * charactersPerTab));
@@ -173,6 +181,7 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     StyleConstants.setTabSet(comment, tabs);
     StyleConstants.setTabSet(keyword, tabs);
     StyleConstants.setTabSet(quote, tabs);
+    return tabs;
   }
 
   /**
@@ -413,7 +422,7 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
   }
 
   /**
-   * 
+   *
    */
   private int getOtherToken(String content, int startOffset, int endOffset) {
     int endOfToken = startOffset + 1;

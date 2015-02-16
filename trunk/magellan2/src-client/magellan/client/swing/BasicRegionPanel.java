@@ -43,6 +43,7 @@ import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.library.GameData;
 import magellan.library.HasRegion;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
@@ -65,9 +66,11 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Creates a new BasicRegionPanel object.
+   *
+   * @param gameData
    */
-  public BasicRegionPanel(EventDispatcher d, Properties p) {
-    super(d, p);
+  public BasicRegionPanel(EventDispatcher d, GameData data, Properties p) {
+    super(d, data, p);
     dispatcher.addSelectionListener(this);
     init();
   }
@@ -447,7 +450,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
     /**
      * requires: 's' is HTML string.
-     * 
+     *
      * @throws IllegalArgumentException if s is not a valid HTML string.
      */
     public void setText(String s) {

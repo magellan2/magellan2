@@ -77,7 +77,7 @@ public class E3RelationFactoryTest extends MagellanTestWithResources {
     builder.addUnit(data, "zwei", "Zweite", faction, region);
 
     parser = new E3AOrderParser(data);
-    completion = new AutoCompletion(context);
+    completion = new AutoCompletion(context.getProperties(), context.getEventDispatcher());
     completer = new E3AOrderCompleter(data, completion);
   }
 

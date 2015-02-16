@@ -81,7 +81,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     builder.addUnit(data, "zwei", "Zweite", faction, region);
 
     setParser(new EresseaOrderParser(data));
-    completion = new AutoCompletion(context);
+    completion = new AutoCompletion(context.getProperties(), context.getEventDispatcher());
     setCompleter(new EresseaOrderCompleter(data, completion));
   }
 

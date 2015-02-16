@@ -28,7 +28,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.SimpleAttributeSet;
 
-import magellan.client.MagellanContext;
+import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.preferences.DetailsViewAutoCompletionPreferences;
@@ -56,7 +56,7 @@ import magellan.library.utils.logging.Logger;
  * @author Andreas Gampe, Ulrich Küster
  */
 public class AutoCompletion implements SelectionListener, KeyListener, ActionListener,
-CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
+    CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
   private static final Logger log = Logger.getInstance(AutoCompletion.class);
   private OrderEditorList editors;
   private Vector<CompletionGUI> completionGUIs;
@@ -104,13 +104,11 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
 
   /**
    * Creates new AutoCompletion
-   *
-   * @param context The magellan context holding Client-Global informations
    */
-  public AutoCompletion(MagellanContext context) {
-    settings = context.getProperties();
-    context.getEventDispatcher().addSelectionListener(this);
-    context.getEventDispatcher().addGameDataListener(this);
+  public AutoCompletion(Properties settings, EventDispatcher dispatcher) {
+    this.settings = settings;
+    dispatcher.addSelectionListener(this);
+    dispatcher.addGameDataListener(this);
 
     editors = null;
     completionGUIs = new Vector<CompletionGUI>();
@@ -148,7 +146,7 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
 
     limitMakeCompletion =
         settings.getProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, "true")
-        .equalsIgnoreCase("true");
+            .equalsIgnoreCase("true");
 
     String stubMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, "true");
     emptyStubMode = stubMode.equalsIgnoreCase("true");
@@ -543,7 +541,7 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
 
     if (currentGUI.isOfferingCompletion()) {
       currentGUI
-      .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
@@ -564,7 +562,7 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
 
     if (currentGUI.isOfferingCompletion()) {
       currentGUI
-      .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
@@ -911,7 +909,7 @@ CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
   public void setHotKeyMode(boolean b) {
     hotKeyMode = b;
     settings
-    .setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
+        .setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
   }
 
   /**

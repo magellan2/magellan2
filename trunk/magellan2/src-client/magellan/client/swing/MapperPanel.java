@@ -143,7 +143,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Updates components (like hotspot selection etc).
-   * 
+   *
    * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   @Override
@@ -197,7 +197,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Selection event handler, updating the map if a new region is selected.
-   * 
+   *
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent se) {
@@ -300,7 +300,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
           /**
            * Tries to center the given island.
-           * 
+           *
            * @see java.lang.Runnable#run()
            */
           @SuppressWarnings("null")
@@ -348,7 +348,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Action event handler for timer events related to the scaling slider.
-   * 
+   *
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent ae) {
@@ -368,7 +368,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    */
   public MapperPanel(MagellanContext context, Collection<MapCellRenderer> customRenderers,
       CellGeometry geo) {
-    super(context.getEventDispatcher(), context.getProperties());
+    super(context.getEventDispatcher(), context.getGameData(), context.getProperties());
     this.context = context;
 
     // final MapperPanel thisMapperPanel = this;
@@ -538,7 +538,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Change scale of the minimap.
-   * 
+   *
    * @param scale A value greater than 1. Larger scale means larger regions.
    * @throws IllegalArgumentException if scaleFactor <= 0.
    */
@@ -561,7 +561,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Sets the autoscale property.
-   * 
+   *
    * @param bool the new value
    */
   public void setAutoScaling(boolean bool) {
@@ -587,7 +587,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Update the minimap's colors.
-   * 
+   *
    * @see Minimapper#synchronizeColors()
    */
   public void synchronizeMinimap() {
@@ -596,7 +596,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Change the minimap's paint mode.
-   * 
+   *
    * @see RegionShapeCellRenderer#setPaintMode(int)
    */
   public void setMinimapMode(int mode) {
@@ -605,7 +605,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Returns the minimap's paint mode.
-   * 
+   *
    * @see RegionShapeCellRenderer#setPaintMode(int)
    */
   public int getMinimapMode() {
@@ -614,7 +614,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Sets a new scaling factor for the map.
-   * 
+   *
    * @param fScale the new scaling factor, values may range from {@link #minScale} to
    *          {@link #maxScale}
    */
@@ -627,7 +627,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * sets new scale factor for map, centers on same position and repaints
-   * 
+   *
    * @param fScale
    */
   public void setNewScaleFactor(float fScale) {
@@ -647,7 +647,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   /**
    * Set a cell renderer object for its default rendering plane. See com.eressea.swing.map.Mapper
    * for further reference.
-   * 
+   *
    * @param renderer the object responsible for rendering a graphical representation of regions.
    */
   public void setRenderer(HexCellRenderer renderer) {
@@ -657,7 +657,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   /**
    * Set a cell renderer object for a certain plane of the map. See com.eressea.swing.map.Mapper for
    * further reference.
-   * 
+   *
    * @param renderer the object responsible for rendering a graphical representation of regions.
    * @param plane the plane the renderer will draw to. Lower planes are painted over by higher
    *          planes.
@@ -682,7 +682,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Returns the mapper's current level.
-   * 
+   *
    * @see Mapper#getLevel()
    */
   public int getLevel() {
@@ -691,7 +691,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Changes the mappers' map level
-   * 
+   *
    * @param level the new level
    * @see Mapper#setLevel(int)
    */
@@ -719,7 +719,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Centers the map on a certain region.
-   * 
+   *
    * @param center the coordinate of the region to center the map on.
    */
   public void setCenter(CoordinateID center) {
@@ -738,7 +738,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Centers the minimap on a certain region.
-   * 
+   *
    * @param center the coordinate of the region to center the map on.
    */
   public void setMinimapCenter(CoordinateID center) {
@@ -758,7 +758,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   /**
    * Assign the currently visible part of the map (the region at the center), a hot spot, an id and
    * add it to the list of hot spots.
-   * 
+   *
    * @param name the id to assign to the hot spot.
    */
   public void assignHotSpot(String name) {
@@ -812,7 +812,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Center the map on the specified hot spot.
-   * 
+   *
    * @param h the hot spot to move the map to.
    */
   public void showHotSpot(Bookmark h) {
@@ -837,7 +837,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Remove the specified hot spot.
-   * 
+   *
    * @param h the hot spot to remove.
    */
   public void removeHotSpot(Bookmark h) {
@@ -1068,7 +1068,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   /**
    * Called when the viewed rect of the main mapper changes. In further implementations a rect of
    * the visible bounds should be displayed in the minimap.
-   * 
+   *
    * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
    */
   public void stateChanged(javax.swing.event.ChangeEvent p1) {
@@ -1092,7 +1092,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * This method is called when a shortcut from getShortCuts() is recognized.
-   * 
+   *
    * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
    */
   public void shortCut(javax.swing.KeyStroke shortcut) {
@@ -1444,7 +1444,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     /**
      * Sets the x-th tooltip (if defined).
-     * 
+     *
      * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
      */
     public void shortCut(javax.swing.KeyStroke shortcut) {
@@ -1481,7 +1481,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Returns the value of mapper.
-   * 
+   *
    * @return Returns mapper.
    */
   public Mapper getMapper() {
@@ -1490,7 +1490,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Sets the value of mapper.
-   * 
+   *
    * @param mapper The value for mapper.
    */
   public void setMapper(Mapper mapper) {
@@ -1499,7 +1499,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Returns the value of context.
-   * 
+   *
    * @return Returns context.
    */
   public MagellanContext getContext() {
@@ -1508,7 +1508,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Sets the value of context.
-   * 
+   *
    * @param context The value for context.
    */
   public void setContext(MagellanContext context) {
@@ -1524,7 +1524,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Returns the value of showNavi.
-   * 
+   *
    * @return Returns showNavi.
    */
   public boolean isShowNavigation() {
@@ -1533,7 +1533,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * Sets the value of showNavi.
-   * 
+   *
    * @param showNavi The value for showNavi.
    */
   public void setShowNavigation(boolean showNavi) {

@@ -69,7 +69,7 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
     builder.addUnit(data, "zwei", "Zweite", faction, region);
 
     setParser(new E3AOrderParser(data));
-    completion = new AutoCompletion(context);
+    completion = new AutoCompletion(context.getProperties(), context.getEventDispatcher());
     setCompleter(new E3AOrderCompleter(data, completion));
   }
 

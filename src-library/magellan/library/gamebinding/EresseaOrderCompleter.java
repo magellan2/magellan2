@@ -1453,23 +1453,26 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
       if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)) {
         final int weight = (int) (type.getWeight() * 100);
+        int existingWeight =
+            otherUnit.getModifiedItem(type) != null ? otherUnit.getModifiedItem(type).getAmount()
+                * weight : 0;
         if (weight > 0) {
           if (maxOnFoot > 0 && (maxOnFoot - modLoad) >= weight) {
             completions.add(new Completion(type.getName() + " "
                 + getTranslation("gamebinding.eressea.eresseaordercompleter.maxfootamount"),
-                (maxOnFoot - modLoad) / weight + " " + type.getOrderName(), ""));
+                (maxOnFoot - modLoad + existingWeight) / weight + " " + type.getOrderName(), ""));
           }
           // maxOnHorse could be MIN_INT, so check > 0!
           if (maxOnHorse > 0 && (maxOnHorse - modLoad) >= weight) {
             completions.add(new Completion(type.getName() + " "
                 + getTranslation("gamebinding.eressea.eresseaordercompleter.maxhorseamount"),
-                (maxOnHorse - modLoad) / weight + " " + type.getOrderName(), ""));
+                (maxOnHorse - modLoad + existingWeight) / weight + " " + type.getOrderName(), ""));
           }
           // maxOnHorse could be MIN_INT, so check > 0!
           if (maxOnShip >= weight && maxOnShip > 0) {
             completions.add(new Completion(type.getName() + " "
                 + getTranslation("gamebinding.eressea.eresseaordercompleter.maxshipamount"),
-                (maxOnShip / weight) + " " + type.getOrderName(), ""));
+                ((maxOnShip + existingWeight) / weight) + " " + type.getOrderName(), ""));
           }
         }
       }

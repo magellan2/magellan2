@@ -1,5 +1,6 @@
 2015-02-15 / Build 612 - stm (stm2@users.sourceforge.net)
     * fixed a few problems of new GiveOrderDialog
+    * order completion: correct reserve max amount to take present items into account
 
 2015-02-14 / Build 611 - stm (stm2@users.sourceforge.net)
     * GroupEditor changes: HELFE KAEMPFE not in E3, HELP_ALL should be ALL

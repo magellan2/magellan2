@@ -480,7 +480,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
   }
 
-  protected Properties initNewSettings() {
+  protected static Properties initNewSettings() {
     SelfCleaningProperties settings = new SelfCleaningProperties();
     settings.setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, Client.DEFAULT_LAF);
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ",Einkaufsgut");
@@ -1179,7 +1179,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // set finalizer prio to max
       magellan.library.utils.MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
 
-      Parameters parameters = parseCommandLine(args);
+      final Parameters parameters = parseCommandLine(args);
 
       /* determine default value for files directory */
       parameters.binDir = MagellanFinder.findMagellanDirectory();
@@ -1212,8 +1212,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
       parameters.settingsDir = ProfileManager.getProfileDirectory();
       if (parameters.help) {
-        Help.open(Client.loadSettings(parameters.settingsDir, SETTINGS_FILENAME));
-        System.exit(0);
+        Properties settings = Client.loadSettings(parameters.settingsDir, SETTINGS_FILENAME);
+        if (settings == null) {
+          settings = Client.initNewSettings();
+        }
+        new Help(settings).showAndKeepAlive();
+        Client.startWindow.setVisible(false);
+        return;
       }
 
       // tell the user where we expect ini files and errors.txt
@@ -2909,7 +2914,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * on windows-OS tries to locate the included ECheck.exe and if found save the path into
    * properties
    */
-  public void initECheckPath(Properties settings) {
+  public static void initECheckPath(Properties settings) {
     // check if we have a windows os
     String osName = System.getProperty("os.name");
     osName = osName.toLowerCase();

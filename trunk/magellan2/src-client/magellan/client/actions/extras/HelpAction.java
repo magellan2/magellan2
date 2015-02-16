@@ -14,29 +14,21 @@
 package magellan.client.actions.extras;
 
 import java.awt.event.ActionEvent;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.net.URL;
-
-import javax.swing.JOptionPane;
 
 import magellan.client.Client;
+import magellan.client.Help;
 import magellan.client.actions.MenuAction;
-import magellan.library.utils.ResourcePathClassLoader;
 import magellan.library.utils.Resources;
-import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
- * FIXME This class is currenty not working because of reconstruction DOCUMENT-ME
- * 
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public class HelpAction extends MenuAction {
   private static final Logger log = Logger.getInstance(HelpAction.class);
-  private Object helpBroker = null;
-  private Client client = null;
+  private Help help;
+  private Client client;
 
   /**
    * Creates a new HelpAction object.
@@ -46,84 +38,17 @@ public class HelpAction extends MenuAction {
     this.client = client;
   }
 
-  /**
-   * DOCUMENT-ME
-   */
+  /** */
   @Override
   public void menuActionPerformed(ActionEvent e) {
     // SG: had a lot of fun when I implemented this :-)
     try {
-      ClassLoader loader = new ResourcePathClassLoader(client.getProperties());
-      String language = client.getProperties().getProperty("locales.gui", "");
-      if (!Utils.isEmpty(language)) {
-        language = "_" + language;
+      if (help == null) {
+        help = new Help(client.getProperties());
       }
 
-      URL hsURL = loader.getResource("help/magellan" + language + ".hs");
-      if (hsURL == null) {
-        hsURL = loader.getResource("magellan" + language + ".hs");
-      }
-      if (hsURL == null) {
-        hsURL = loader.getResource("help/magellan.hs");
-      }
-      if (hsURL == null) {
-        hsURL = loader.getResource("magellan.hs");
-      }
-      if (hsURL == null) {
-        JOptionPane.showMessageDialog(client, Resources
-            .get("actions.helpaction.msg.helpsetnotfound.text"));
-        return;
-      }
+      help.show();
 
-      HelpAction.log.info("URL: " + hsURL);
-
-      Class<?> helpSetClass = null;
-      Class<?> helpBrokerClass = null;
-
-      if (helpBroker == null) {
-        try {
-          helpSetClass =
-              Class.forName("javax.help.HelpSet", true, ClassLoader.getSystemClassLoader());
-          Class.forName("javax.help.CSH$DisplayHelpFromSource", true, ClassLoader
-              .getSystemClassLoader());
-          helpBrokerClass =
-              Class.forName("javax.help.HelpBroker", true, ClassLoader.getSystemClassLoader());
-        } catch (ClassNotFoundException ex) {
-          JOptionPane.showMessageDialog(client, Resources
-              .get("actions.helpaction.msg.javahelpnotfound.text"));
-
-          return;
-        }
-
-        Class<?> helpSetConstructorSignature[] =
-            { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
-        Constructor<?> helpSetConstructor =
-            helpSetClass.getConstructor(helpSetConstructorSignature);
-        Object helpSetConstructorArgs[] = { loader, hsURL };
-
-        // this calls new javax.help.Helpset(ClassLoader, URL)
-        Object helpSet = helpSetConstructor.newInstance(helpSetConstructorArgs);
-
-        Method helpSetCreateHelpBrokerMethod =
-            helpSetClass.getMethod("createHelpBroker", (Class[]) null);
-
-        // this calls new javax.help.Helpset.createHelpBroker()
-        helpBroker = helpSetCreateHelpBrokerMethod.invoke(helpSet, (Object[]) null);
-
-        Method initPresentationMethod =
-            helpBrokerClass.getMethod("initPresentation", (Class[]) null);
-        // this calls new javax.help.HelpBroker.initPresentation()
-        initPresentationMethod.invoke(helpBroker, (Object[]) null);
-
-      }
-
-      Class<?> setDisplayedMethodSignature[] = { boolean.class };
-      Method setDisplayedMethod =
-          helpBroker.getClass().getMethod("setDisplayed", setDisplayedMethodSignature);
-      Object setDisplayedMethodArgs[] = { Boolean.TRUE };
-
-      // this calls new javax.help.HelpBroker.setDisplayed(true)
-      setDisplayedMethod.invoke(helpBroker, setDisplayedMethodArgs);
     } catch (Exception ex) {
       HelpAction.log.error(ex);
     }

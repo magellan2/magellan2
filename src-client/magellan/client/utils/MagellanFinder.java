@@ -41,10 +41,20 @@ public class MagellanFinder {
    * @return The directory where the configuration files reside.
    */
   public static File findSettingsDirectory(File magDirectory, File settDir) {
-    File[] candidates =
-        new File[] { settDir, new File(System.getProperty("user.home"), ".magellan2"),
-            new File(System.getProperty("user.home")), magDirectory, new File(".") };
     MagellanFinder.log.info("Searching for Magellan configuration:");
+    if (settDir != null) {
+      // explicit directory set: overrides defaults
+      if (hasOrCreateSettings(settDir)) {
+        MagellanFinder.log.info("Using directory '" + settDir.getAbsolutePath() + "'.");
+        return settDir;
+      } else {
+        MagellanFinder.log.error("Cannot find or create settings file.");
+        return null;
+      }
+    }
+    File[] candidates =
+        new File[] { getAppDataDirectory(), new File(System.getProperty("user.home")),
+            magDirectory, new File(".") };
     File settFileDir = null;
     for (File dir : candidates) {
       if (dir != null && hasSettings(dir)) {
@@ -52,6 +62,7 @@ public class MagellanFinder {
         break;
       }
     }
+
     if (settFileDir != null) {
       MagellanFinder.log.info("Using directory '" + settFileDir.getAbsolutePath() + "'.");
     } else {
@@ -64,11 +75,32 @@ public class MagellanFinder {
       if (settFileDir != null) {
         MagellanFinder.log.info("Creating settings in " + settFileDir.getAbsolutePath());
       } else {
-        MagellanFinder.log.error("Cannot create settings file");
+        MagellanFinder.log.error("Cannot create settings file.");
       }
     }
 
     return settFileDir;
+  }
+
+  protected static File getAppDataDirectory() {
+    String os = System.getProperty("os.name");
+    if (os != null) {
+      os = os.toUpperCase();
+      String dir;
+      if (os.contains("WIN")) {
+        dir = System.getenv("APPDATA");
+      } else if (os.contains("MAC")) {
+        dir = System.getProperty("user.home") + "/Library/Application Support";
+      } else {
+        dir = System.getProperty("user.home");
+      }
+      if (dir != null && new File(dir).exists())
+        if (os.contains("WIN") || os.contains("MAC"))
+          return new File(dir, "Magellan");
+        else
+          return new File(dir, ".magellan");
+    }
+    return new File(System.getProperty("user.home"), ".magellan2");
   }
 
   private static boolean hasOrCreateSettings(File dir) {

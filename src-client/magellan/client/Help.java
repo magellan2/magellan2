@@ -10,46 +10,60 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.net.URL;
 import java.util.Properties;
 
-import javax.swing.JOptionPane;
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import javax.help.UnsupportedOperationException;
 
 import magellan.library.utils.ResourcePathClassLoader;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
- * This class is a help tool from outside Magellan. It will be started via a shortcut in the windows
- * start menu, that was created by the installer.
- * 
- * @author Thoralf Rickert
+ * Helper Class for javax.help.HelpBroker.
+ *
+ * @author Thoralf Rickert, stm
  * @version 1.0, 15.11.2007
  */
 public class Help {
+  /**   */
+  public static class HelpException extends Exception {
+
+    /**
+     * @see Exception#Exception(String)
+     */
+    public HelpException(String message) {
+      super(message);
+    }
+
+  }
+
   private static final Logger log = Logger.getInstance(Help.class);
+  private HelpBroker hb;
 
   /**
    * Opens the help dialog.
-   * 
+   *
    * @param settings
    */
-  public static void open(Properties settings) {
+  public Help(Properties settings) throws HelpException {
 
     try {
       ClassLoader loader = new ResourcePathClassLoader(settings);
@@ -69,54 +83,81 @@ public class Help {
         hsURL = loader.getResource("magellan.hs");
       }
       if (hsURL == null) {
-        JOptionPane.showMessageDialog(null, "Could not find the magellan-help.jar");
-        return;
+        Help.log.warn("Could not find magellan-help.jar");
+        throw new HelpException("Could not find the magellan-help.jar");
       }
 
-      Class<?> helpSetClass = null;
-      Class<?> helpBrokerClass = null;
+      HelpSet hs = new HelpSet(loader, hsURL);
 
-      try {
-        helpSetClass =
-            Class.forName("javax.help.HelpSet", true, ClassLoader.getSystemClassLoader());
-        Class.forName("javax.help.CSH$DisplayHelpFromSource", true, ClassLoader
-            .getSystemClassLoader());
-        helpBrokerClass =
-            Class.forName("javax.help.HelpBroker", true, ClassLoader.getSystemClassLoader());
-      } catch (ClassNotFoundException ex) {
-        Help.log.warn(ex);
-        JOptionPane.showMessageDialog(null, "Could not find the Java Help environment.");
-        return;
-      }
+      hb = hs.createHelpBroker();
 
-      Class<?> helpSetConstructorSignature[] =
-          { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
-      Constructor<?> helpSetConstructor = helpSetClass.getConstructor(helpSetConstructorSignature);
-      Object helpSetConstructorArgs[] = { loader, hsURL };
+      hb.initPresentation();
 
-      // this calls new javax.help.Helpset(ClassLoader, URL)
-      Object helpSet = helpSetConstructor.newInstance(helpSetConstructorArgs);
-
-      Method helpSetCreateHelpBrokerMethod =
-          helpSetClass.getMethod("createHelpBroker", (Class[]) null);
-
-      // this calls new javax.help.Helpset.createHelpBroker()
-      Object helpBroker = helpSetCreateHelpBrokerMethod.invoke(helpSet, (Object[]) null);
-
-      Method initPresentationMethod = helpBrokerClass.getMethod("initPresentation", (Class[]) null);
-      // this calls new javax.help.HelpBroker.initPresentation()
-      initPresentationMethod.invoke(helpBroker, (Object[]) null);
-
-      Class<?> setDisplayedMethodSignature[] = { boolean.class };
-      Method setDisplayedMethod =
-          helpBroker.getClass().getMethod("setDisplayed", setDisplayedMethodSignature);
-      Object setDisplayedMethodArgs[] = { Boolean.TRUE };
-
-      // this calls new javax.help.HelpBroker.setDisplayed(true)
-      setDisplayedMethod.invoke(helpBroker, setDisplayedMethodArgs);
     } catch (Exception e) {
-      Help.log.warn(e);
-      JOptionPane.showMessageDialog(null, "Could not initialize the Java Help environment.");
+      throw new HelpException("Could not initialize the Java Help environment.");
     }
   }
+
+  /**
+   *
+   */
+  public void show() {
+    hb.setDisplayed(true);
+  }
+
+  /**
+   * Show the help and start a thread that waits until the help is not displayed any more and then
+   * calls {@link System#exit(int)}.
+   */
+  public void showAndKeepAlive() {
+    hb.setDisplayed(true);
+    new Thread(new Runnable() {
+      public void run() {
+        while (hb.isDisplayed()) {
+          try {
+            Thread.sleep(100);
+          } catch (InterruptedException e) {
+            break;
+          }
+        }
+        System.exit(0);
+      }
+    }).start();
+
+  }
+
+  /**
+   * @see javax.help.HelpBroker#isDisplayed()
+   */
+  public boolean isDisplayed() {
+    return hb.isDisplayed();
+  }
+
+  /**
+   * @param arg0
+   * @throws UnsupportedOperationException
+   * @see javax.help.HelpBroker#setLocation(java.awt.Point)
+   */
+  public void setLocation(Point arg0) throws UnsupportedOperationException {
+    hb.setLocation(arg0);
+  }
+
+  /**
+   * @param arg0
+   * @throws UnsupportedOperationException
+   * @see javax.help.HelpBroker#setScreen(int)
+   */
+  public void setScreen(int arg0) throws UnsupportedOperationException {
+    hb.setScreen(arg0);
+  }
+
+  /**
+   * @param arg0
+   * @throws UnsupportedOperationException
+   * @see javax.help.HelpBroker#setSize(java.awt.Dimension)
+   */
+  public void setSize(Dimension arg0) throws UnsupportedOperationException {
+    hb.setSize(arg0);
+  }
+
 }

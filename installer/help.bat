@@ -7,3 +7,5 @@ goto eof
 :noJavaHome
 start javaw -Xmx400m -Xms400m -jar "magellan-client.jar" --help
 goto eof
+
+:eof

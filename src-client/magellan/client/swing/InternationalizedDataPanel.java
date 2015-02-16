@@ -25,7 +25,7 @@ import magellan.library.event.GameDataListener;
 
 /**
  * Common subclass for use as template for most magellan panel components.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 242 $
  */
@@ -54,28 +54,32 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
    * Creates a new InternationalizedDataPanel object. Adds this object as GameDataListener.
    */
   public InternationalizedDataPanel(EventDispatcher ed, GameData initData, Properties p) {
-    // FIXME hmm...?!?
-    this(ed.getMagellanContext());
-  }
-
-  /**
-   * Creates a new InternationalizedDataPanel object. Adds this object as GameDataListener.
-   */
-  public InternationalizedDataPanel(MagellanContext context) {
-    this.context = context;
-    dispatcher = context.getEventDispatcher();
+    context = ed.getMagellanContext();
+    dispatcher = ed;
 
     if (dispatcher != null) {
       dispatcher.addGameDataListener(this);
     }
 
-    data = context.getGameData();
-    settings = context.getProperties();
+    data = initData;
+    settings = p;
+  }
+
+  /**
+   * Creates a new InternationalizedDataPanel object. Adds this object as GameDataListener.
+   *
+   * @deprecated you shouldn't use global state
+   */
+  @Deprecated
+  public InternationalizedDataPanel(MagellanContext context) {
+    this(context.getEventDispatcher(), context.getGameData(), context.getProperties());
   }
 
   /**
    * @return the current MagellanContext
+   * @deprecated you shouldn't use global state
    */
+  @Deprecated
   public MagellanContext getMagellanContext() {
     return context;
   }
@@ -101,7 +105,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
 
   /**
    * Returns the value of data.
-   * 
+   *
    * @return Returns data.
    */
   public GameData getGameData() {
@@ -110,7 +114,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
 
   /**
    * Sets the value of data.
-   * 
+   *
    * @param data The value for data.
    */
   public void setGameData(GameData data) {

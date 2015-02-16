@@ -750,7 +750,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     topLevel.add(detailsPanel);
 
     // configure and add overview panel
-    overviewPanel = new EMapOverviewPanel(getDispatcher(), getProperties());
+    overviewPanel = new EMapOverviewPanel(getDispatcher(), getData(), getProperties());
     overviewPanel.setMinimumSize(new Dimension(100, 10));
     panels.add(overviewPanel);
     components.put(MagellanDesktop.OVERVIEW_IDENTIFIER, overviewPanel.getOverviewComponent());

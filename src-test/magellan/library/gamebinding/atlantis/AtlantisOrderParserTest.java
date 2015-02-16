@@ -73,7 +73,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
     // builder.addUnit(data, "zwei", "Zweite", faction, region);
 
     setParser(new AtlantisOrderParser(data));
-    completion = new AutoCompletion(context);
+    completion = new AutoCompletion(context.getProperties(), context.getEventDispatcher());
     setCompleter(new AtlantisOrderCompleter(data, completion));
   }
 

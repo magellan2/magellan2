@@ -70,6 +70,7 @@ import javax.swing.undo.UndoManager;
 import magellan.client.EMapOverviewPanel;
 import magellan.client.completion.AutoCompletion;
 import magellan.client.desktop.DesktopEnvironment;
+import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.OrderConfirmEvent;
 import magellan.client.event.OrderConfirmListener;
@@ -107,8 +108,8 @@ import magellan.library.utils.logging.Logger;
  * A panel holding one or more {@link OrderEditor}s.
  */
 public class MultiEditorOrderEditorList extends InternationalizedDataPanel implements
-OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
-MouseListener, CacheHandler {
+    OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
+    MouseListener, CacheHandler {
   private static final Logger log = Logger.getInstance(MultiEditorOrderEditorList.class);
 
   private boolean multiEditorLayout = false;
@@ -126,7 +127,7 @@ MouseListener, CacheHandler {
   private Color standardBgColorConfirmed = null;
   private Color activeBgColorConfirmed = null;
   private OrderEditor editorSingelton = null;
-  private static final Border standardBorder = new LineBorder(Color.lightGray, 2);
+  private static final Border standardBorder = new LineBorder(Color.lightGray, 1);
   private static final Border activeBorder = new LineBorder(Color.darkGray, 2);
   private UpdateThread updateThread = new UpdateThread();
   private SwingGlitchThread swingGlitchThread = new SwingGlitchThread();
@@ -206,8 +207,6 @@ MouseListener, CacheHandler {
     // ClearLook suggests to remove the border
     scpContent.setBorder(null);
 
-    buttons = new ButtonPanel();
-
     redrawPane();
 
     if (!multiEditorLayout) {
@@ -278,7 +277,7 @@ MouseListener, CacheHandler {
     hideButtons =
         Boolean.valueOf(
             settings
-            .getProperty(PropertiesHelper.ORDEREDITOR_HIDEBUTTONS, Boolean.FALSE.toString()))
+                .getProperty(PropertiesHelper.ORDEREDITOR_HIDEBUTTONS, Boolean.FALSE.toString()))
             .booleanValue();
     editAllFactions =
         Boolean.valueOf(
@@ -338,11 +337,11 @@ MouseListener, CacheHandler {
     // remember if we want to have the focus (see below)
     boolean restoreFocus =
         (getEditor(currentUnit) != null && getEditor(currentUnit).hasFocus()) || content.hasFocus()
-        || hasFocus();
+            || hasFocus();
     // if WE triggered the selection change, the new unit DOES get the focus
     restoreFocus =
         restoreFocus || (se.getSource() == this)
-        || (se.getSource().getClass().equals(OrderEditor.class));
+            || (se.getSource().getClass().equals(OrderEditor.class));
 
     if (multiEditorLayout) {
       deselectEditor(currentUnit);
@@ -378,7 +377,7 @@ MouseListener, CacheHandler {
     }
 
     // update button state
-    buttons.currentUnitChanged();
+    getButtonPanel().currentUnitChanged();
   }
 
   /**
@@ -439,8 +438,8 @@ MouseListener, CacheHandler {
 
     if ((newUnit == currentUnit && newUnit != null)
         || (newUnit != null && currentUnit != null
-        && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
-        .getFaction())) {
+            && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
+            .getFaction())) {
       // no change necessary
     } else {
       loadEditors(newIsland, newRegion, newFaction, newUnit);
@@ -992,12 +991,12 @@ MouseListener, CacheHandler {
 
   private void redrawPane() {
     remove(scpContent);
-    remove(buttons);
+    remove(getButtonPanel());
     setLayout(new BorderLayout());
     add(scpContent, BorderLayout.CENTER);
 
     if (!hideButtons) {
-      add(buttons, BorderLayout.SOUTH);
+      add(getButtonPanel(), BorderLayout.SOUTH);
     }
 
     repaint();
@@ -1377,9 +1376,10 @@ MouseListener, CacheHandler {
   }
 
   protected Border getBorder(Unit u, boolean active) {
-    return new TitledBorder(active ? MultiEditorOrderEditorList.activeBorder
-        : MultiEditorOrderEditorList.standardBorder, u == null ? "" : (u.toString() + ": " + u
-            .getPersons()));
+    // return new TitledBorder(new MatteBorder(1, 0, 0, 1, Color.BLUE), u.toString());
+
+    return new TitledBorder(active ? MultiEditorOrderEditorList.activeBorder : new LineBorder(
+        Color.lightGray, 1), u == null ? "" : (u.toString() + ": " + u.getPersons()));
   }
 
   /**
@@ -1690,14 +1690,14 @@ MouseListener, CacheHandler {
 
       if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
         MultiEditorOrderEditorList.log
-        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" + viewRect);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" + viewRect);
       }
 
       if (getEditor(currentUnit) != null) {
         OrderEditor editor = getEditor(currentUnit);
         Rectangle bounds = editor.getBounds();
         MultiEditorOrderEditorList.log
-        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
 
         while (!viewRect.contains(viewRect.x, bounds.y, viewRect.width, Math.min(viewRect.height,
             bounds.height))) {
@@ -1713,7 +1713,7 @@ MouseListener, CacheHandler {
 
           if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
             MultiEditorOrderEditorList.log
-            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " + newPos);
+                .debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " + newPos);
           }
 
           Rectangle newRect = new Rectangle(viewRect);
@@ -1737,10 +1737,10 @@ MouseListener, CacheHandler {
         }
 
         MultiEditorOrderEditorList.log
-        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:"
-            + viewRect);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:"
+                + viewRect);
         MultiEditorOrderEditorList.log
-        .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" + bounds);
+            .debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" + bounds);
       }
 
       content.validate();
@@ -1766,18 +1766,37 @@ MouseListener, CacheHandler {
     }
   }
 
+  protected ButtonPanel getButtonPanel() {
+    if (buttons == null) {
+      buttons = new ButtonPanel();
+      DesktopEnvironment.registerShortcutListener(buttons.getShortCutListener());
+    }
+    return buttons;
+  }
+
   // for "check orders", "create temp unit" and "delete temp unit"
   protected class ButtonPanel extends JPanel implements ActionListener {
     private JCheckBox checkOrderConfirm = null;
     private JButton btnCreateTempUnit = null;
     private JButton btnDeleteTempUnit = null;
     private TempUnitDialog dialog;
+    private ShortcutListener shortCutListener;
+
+    /**
+     * Returns the value of shortCutListener.
+     *
+     * @return Returns shortCutListener.
+     */
+    public ShortcutListener getShortCutListener() {
+      return shortCutListener;
+    }
 
     /**
      * Creates a new ButtonPanel object.
      */
     public ButtonPanel() {
-      DesktopEnvironment.registerShortcutListener(new magellan.client.desktop.ShortcutListener() {
+
+      shortCutListener = new magellan.client.desktop.ShortcutListener() {
         List<KeyStroke> shortcuts = null;
 
         public Iterator<KeyStroke> getShortCuts() {
@@ -1817,7 +1836,7 @@ MouseListener, CacheHandler {
           return Resources.get("completion.multieditorordereditorlist.shortcuts.description."
               + String.valueOf(index));
         }
-      });
+      };
 
       checkOrderConfirm =
           new JCheckBox(Resources
@@ -1990,11 +2009,11 @@ MouseListener, CacheHandler {
                     int recruits =
                         Math.max(0,
                             (dialog.getRecruit() != null && dialog.getRecruit().length() > 0)
-                            ? Integer.parseInt(dialog.getRecruit()) : 0);
+                                ? Integer.parseInt(dialog.getRecruit()) : 0);
                     int transfers =
                         Math.max(0,
                             (dialog.getTransfer() != null && dialog.getTransfer().length() > 0)
-                            ? Integer.parseInt(dialog.getTransfer()) : 0);
+                                ? Integer.parseInt(dialog.getTransfer()) : 0);
 
                     if (recruits > 0) {
                       getGameData().getGameSpecificStuff().getOrderChanger().addRecruitOrder(
@@ -2011,7 +2030,7 @@ MouseListener, CacheHandler {
                           recruits * parentUnit.getRace().getRecruitmentCosts(),
                           EresseaConstants.I_USILVER,
                           Resources
-                          .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
+                              .get("completion.multieditorordereditorlist.tempunit.recruitCost"));
                     }
                     if (dialog.isGiveMaintainCost() && transfers + recruits > 0) {
                       getGameData().getGameSpecificStuff().getOrderChanger().addGiveOrder(
@@ -2020,7 +2039,7 @@ MouseListener, CacheHandler {
                           parentUnit.getRace().getMaintenance() * (transfers + recruits),
                           EresseaConstants.I_USILVER,
                           Resources
-                          .get("completion.multieditorordereditorlist.tempunit.maintainCost"));
+                              .get("completion.multieditorordereditorlist.tempunit.maintainCost"));
                     }
 
                     dispatcher.fire(new UnitOrdersEvent(this, parentUnit));
@@ -2071,7 +2090,7 @@ MouseListener, CacheHandler {
                 JOptionPane.showMessageDialog(this, Resources
                     .get("completion.multieditorordereditorlist.msg.duplicatetempid.text"),
                     Resources
-                    .get("completion.multieditorordereditorlist.msg.duplicatetempid.title"),
+                        .get("completion.multieditorordereditorlist.msg.duplicatetempid.title"),
                     JOptionPane.ERROR_MESSAGE);
               }
             } catch (NumberFormatException nfe) {
@@ -2128,7 +2147,7 @@ MouseListener, CacheHandler {
     public void currentUnitChanged() {
       boolean enabled =
           (currentUnit != null) && currentUnit.getFaction() != null
-          && currentUnit.getFaction().isPrivileged();
+              && currentUnit.getFaction().isPrivileged();
 
       setConfirmEnabled(enabled);
       setCreationEnabled(enabled);

@@ -13,9 +13,9 @@
 
 package magellan.client.swing;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -23,22 +23,23 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EventObject;
+import java.util.Iterator;
 import java.util.Properties;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EmptyBorder;
+import javax.swing.KeyStroke;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 import magellan.client.completion.AutoCompletion;
+import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.UnitOrdersListener;
@@ -82,6 +83,14 @@ public class GiveOrderDialog extends InternationalizedDialog {
 
   private Collection<Unit> selectedUnits;
 
+  private MultiEditorOrderEditorList editors;
+
+  private Properties dummySettings;
+
+  private EventDispatcher dummyDispatcher;
+
+  private Properties settings;
+
   /**
    * Creates a new GiveOrderDialog object.
    *
@@ -93,6 +102,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
       Properties settings, EventDispatcher dispatcher) {
     super(owner, true);
     world = data;
+    this.settings = settings;
     this.selectedUnits = selectedUnits;
     setTitle(Resources.get("giveorderdialog.window.title"));
 
@@ -104,26 +114,16 @@ public class GiveOrderDialog extends InternationalizedDialog {
             new Insets(3, 3, 3, 3), 0, 0);
 
     c.gridwidth = 2;
-    JLabel captionLabel = new JLabel(getCaption());
-    captionLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
-    captionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    captionLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-    cp.add(captionLabel, c);
 
-    JTextArea label = new JTextArea(Resources.get("giveorderdialog.window.message"));
-    label.setEditable(false);
-    label.setLineWrap(true);
-    label.setWrapStyleWord(true);
-    label.setBackground(cp.getBackground());
-    label.setFont(label.getFont().deriveFont(Font.BOLD));
-    label.setColumns(11);
+    JLabel label = new JLabel(Resources.get("giveorderdialog.window.message"));
+    cp.add(label, c);
 
-    MultiEditorOrderEditorList editors = getEditorList(dispatcher, data, settings);
+    editors = getEditorList(getDummyDispatcher(), data, getDummySettings());
     editors.setHideButtons(true);
     editors.setListMode(MultiEditorOrderEditorList.LIST_UNIT);
 
     // build auto completion structure
-    AutoCompletion completion = new AutoCompletion(dispatcher.getMagellanContext()) {
+    AutoCompletion completion = new AutoCompletion(getDummySettings(), getDummyDispatcher()) {
       @Override
       public boolean getLimitMakeCompletion() {
         return false;
@@ -142,22 +142,17 @@ public class GiveOrderDialog extends InternationalizedDialog {
     editors.gameDataChanged(event);
     dummyUnit = getDummyUnit();
     editors.selectionChanged(SelectionEvent.create(this, dummyUnit, SelectionEvent.ST_DEFAULT));
-    editors.setPreferredSize(new Dimension(250, 100));
+    editors.setPreferredSize(new Dimension(300, 100));
     editors.setMinimumSize(new Dimension(100, 100));
 
     JScrollPane helperPane = new JScrollPane(editors);
-    JPanel orderPane = new JPanel(new GridBagLayout());
-    orderPane.add(label, new GridBagConstraints(0, 0, 1, 1, 0, 1, GridBagConstraints.LINE_START,
-        GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-    orderPane.add(helperPane, new GridBagConstraints(1, 0, 1, 1, 1, 1,
-        GridBagConstraints.LINE_START, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
     c.gridx = 0;
     c.gridy++;
     c.weightx = 2;
     c.weighty = 1;
     c.gridwidth = 2;
-    cp.add(orderPane, c);
+    cp.add(helperPane, c);
 
     JRadioButton firstButton = new JRadioButton(Resources.get("giveorderdialog.radio.first.title"));
     firstButton.setActionCommand(GiveOrderDialog.FIRST_POS);
@@ -213,12 +208,65 @@ public class GiveOrderDialog extends InternationalizedDialog {
 
   protected MultiEditorOrderEditorList getEditorList(EventDispatcher dispatcher, GameData data,
       Properties settings) {
-    return new MultiEditorOrderEditorList(dispatcher, data, settings, null) {
+    return new MultiEditorOrderEditorList(getDummyDispatcher(), data, getDummySettings(), null) {
       @Override
       public javax.swing.border.Border getBorder(Unit u, boolean active) {
-        return new EmptyBorder(0, 0, 0, 0);
+        TitledBorder border = new TitledBorder(new LineBorder(Color.DARK_GRAY, 2), getCaption());
+        return border;
+      }
+
+      ButtonPanel buttonPanel;
+
+      @Override
+      protected ButtonPanel getButtonPanel() {
+        if (buttonPanel == null) {
+          buttonPanel = new ButtonPanel() {
+            @Override
+            public ShortcutListener getShortCutListener() {
+              return new ShortcutListener() {
+
+                public void shortCut(KeyStroke shortcut) {
+                  // do nothing
+                }
+
+                public String getShortcutDescription(KeyStroke stroke) {
+                  return "";
+                }
+
+                public Iterator<KeyStroke> getShortCuts() {
+                  return Collections.<KeyStroke> emptyList().iterator();
+                }
+
+                public String getListenerDescription() {
+                  return "";
+                }
+              };
+            }
+          };
+        }
+        return buttonPanel;
       }
     };
+
+  }
+
+  private Properties getDummySettings() {
+    if (dummySettings == null) {
+      dummySettings = new Properties(getSettings());
+    }
+    return dummySettings;
+  }
+
+  private EventDispatcher getDummyDispatcher() {
+    if (dummyDispatcher == null) {
+      dummyDispatcher = new EventDispatcher() {
+      };
+    }
+    return dummyDispatcher;
+  }
+
+  private Properties getSettings() {
+    return settings;
   }
 
   private String getCaption() {
@@ -363,6 +411,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
   protected void quit() {
     super.quit();
     dummyUnit.setRegion(null);
+    editors.quit();
   }
 
   protected String getOrderText() {

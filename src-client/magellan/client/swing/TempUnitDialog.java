@@ -139,8 +139,8 @@ public class TempUnitDialog extends InternationalizedDialog {
       setFocusList(open);
     }
 
-    pack();
     SwingUtils.setBounds(this, settings, TempUnitDialog.BOUNDS_KEY, false);
+    pack();
     // loadBounds();
 
     addWindowListener(new WindowAdapter() {
@@ -384,6 +384,7 @@ public class TempUnitDialog extends InternationalizedDialog {
     checkNameGen();
     updateGroupList();
     updateCombatState();
+    pack();
 
     super.setVisible(true);
     saveCostStates();

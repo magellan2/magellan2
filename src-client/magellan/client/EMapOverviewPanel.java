@@ -223,8 +223,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * @param d
    * @param p
    */
-  public EMapOverviewPanel(EventDispatcher d, Properties p) {
-    super(d, p);
+  public EMapOverviewPanel(EventDispatcher d, GameData data, Properties p) {
+    super(d, data, p);
 
     unitChangeListener = new UnitChangeListener() {
       public void unitChanged(UnitChangeEvent event) {

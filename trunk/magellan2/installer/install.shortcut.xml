@@ -68,6 +68,19 @@
     startup="no">
     <createForPack name="Magellan"/>
   </shortcut>
+    <shortcut 
+    name="Uninstall.jar"
+    target="$INSTALL_PATH/Uninstaller/uninstaller.jar"
+    workingDirectory="$INSTALL_PATH"
+    description="Um Magellan zu deinstallieren"
+    initialState="noShow"
+    programGroup="yes"
+    desktop="no" 
+    applications="no" 
+    startMenu="no" 
+    startup="no">
+    <createForPack name="Magellan"/>
+  </shortcut>
   <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
 </shortcuts>
 

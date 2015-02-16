@@ -16,15 +16,15 @@
       <author name="Ilja Pavkovic" email="illsen@dont-contact.us"/>
       <author name="Thoralf Rickert" email="thoralf@m84.de"/>
       <author name="Fiete Fietz" email="sf@fietefietz.de"/>
-      <author name="Steffen Mecke" email="stm_@users.sourceforge.net"/>
+      <author name="Steffen Mecke" email="stm2@users.sourceforge.net"/>
       <author name="Steve Wagner" email="lanwin@users.sourceforge.net"/>
       <author name="Ralf Duckstein" email="sf.net@duckstein.net"/>
       <author name="Mark Gerritsen" email="regdokhan@gmail.com"/>
     </authors>
     <url>http://magellan-client.sourceforge.net/</url>
-    <uninstaller write="yes"/>
+    <uninstaller write="yes" />
     <javaversion>1.5</javaversion>
-    <run-privileged condition="izpack.windowsinstall.7|izpack.windowsinstall.vista"/>
+    <run-privileged condition="izpack.windowsinstall.7|izpack.windowsinstall.vista" uninstaller="yes"/>
   </info>
   
   <guiprefs width="640" height="480" resizable="no"/>
@@ -57,7 +57,6 @@
   <packs>
     <pack name="Magellan" required="yes">
       <description>This is the main application with all libraries and icons.</description>
-      <file src="release/doc"                               targetdir="$INSTALL_PATH"/>
       <file src="release/etc"                               targetdir="$INSTALL_PATH"/>
       <file src="release/lib"                               targetdir="$INSTALL_PATH"/>
       <file src="release/plugins"                           targetdir="$INSTALL_PATH"/>
@@ -94,6 +93,10 @@
       <description>A tool for order verification</description>
       <file src="installer/echeck"                          targetdir="$INSTALL_PATH"/>
       <executable targetfile="$INSTALL_PATH/echeck/echeck" stage="never"/>
+    </pack>
+    <pack name="Javadoc documentation" required="no" preselected="no">
+      <description>Documentation, especially useful if you'd like to use the Extended Commands plugin</description>
+      <file src="release/doc"                         targetdir="$INSTALL_PATH"/>
     </pack>
   </packs>
   

@@ -33,6 +33,7 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JWindow;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
@@ -49,7 +50,7 @@ import magellan.library.utils.Resources;
  */
 public class ListCompletionGUI extends AbstractCompletionGUI {
   protected ListPane listPane;
-  protected AutoCompletion ac;
+  protected AutoCompletion autoCompletion;
   protected int specialKeys[];
   private Point position;
 
@@ -57,9 +58,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
    * @see magellan.client.swing.completion.CompletionGUI#init(magellan.client.completion.AutoCompletion)
    */
   public void init(AutoCompletion ac) {
-    this.ac = ac;
-    listPane = new ListPane(null);
-    listPane.setAlwaysOnTop(true);
+    autoCompletion = ac;
     specialKeys = new int[2];
     specialKeys[0] = KeyEvent.VK_UP;
     specialKeys[1] = KeyEvent.VK_DOWN;
@@ -71,6 +70,9 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
    */
   public void
       offerCompletion(JTextComponent editor, Collection<Completion> completions, String stub) {
+    if (listPane == null) {
+      listPane = new ListPane(SwingUtilities.windowForComponent(editor));
+    }
 
     listPane.choiceList.setListData(completions.toArray());
     listPane.choiceList.setSelectedIndex(0);
@@ -79,7 +81,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
     // align list pane
     try {
-      // FIXME: this might cause an NPE under certain circumstances, see Mantis bug #297
+      // this might cause an NPE under certain circumstances, see Mantis bug #297
       Rectangle caretBounds = editor.modelToView(editor.getCaretPosition());
       Point p = new Point(editor.getLocationOnScreen());
       p.translate(caretBounds.x, caretBounds.y + caretBounds.height);
@@ -98,18 +100,13 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
       }
       updatePosition(p);
       if (!listPane.isVisible()) {
+        listPane.setLocation(position);
         listPane.setVisible(true);
-        // no effect:
-        // SwingUtilities.invokeLater(new Runnable() {
-        // public void run() {
-        // listPane.toFront();
-        // listPane.repaint();
-        // }
-        // });
+        listPane.toFront();
       }
     } catch (BadLocationException ble) {
       ble.printStackTrace();
-      listPane.setVisible(false);
+      hidePane();
     }
 
   }
@@ -139,8 +136,16 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
    * @see magellan.client.swing.completion.CompletionGUI#stopOffer()
    */
   public void stopOffer() {
-    listPane.setVisible(false);
+    hidePane();
     position = null;
+  }
+
+  private void hidePane() {
+    if (listPane != null) {
+      listPane.setVisible(false);
+      listPane.dispose();
+      listPane = null;
+    }
   }
 
   /**
@@ -148,14 +153,14 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
    * @see magellan.client.swing.completion.CompletionGUI#getSelectedCompletion()
    */
   public Completion getSelectedCompletion() {
-    return (Completion) listPane.choiceList.getSelectedValue();
+    return listPane == null ? null : (Completion) listPane.choiceList.getSelectedValue();
   }
 
   /**
    * Inserts a completion triggered by the Choice list
    */
   protected void insertCompletion() {
-    ac.insertCompletion((Completion) listPane.choiceList.getSelectedValue());
+    autoCompletion.insertCompletion((Completion) listPane.choiceList.getSelectedValue());
   }
 
   /**
@@ -245,17 +250,10 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
     /**
      * Creates a new ListPane object.
      *
-     * @param editor
+     * @param parent
      */
-    public ListPane(Window window) {
-      super(window);
-
-      // super(new JFrame() {
-      // @Override
-      // public boolean isShowing() {
-      // return true;
-      // }
-      // });
+    public ListPane(Window parent) {
+      super(parent);
 
       // call setFocusableWindowState (true) on java 1.4 while staying compatible with Java 1.3
       JVMUtilities.setFocusableWindowState(this, false);
@@ -307,7 +305,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
    * @see magellan.client.swing.completion.CompletionGUI#specialKeyPressed(int)
    */
   public void specialKeyPressed(int key) {
-    if (listPane.isVisible()) {
+    if (listPane != null && listPane.isVisible()) {
       listPane.requestFocusInWindow();
     }
   }
@@ -316,7 +314,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
    * @see magellan.client.swing.completion.CompletionGUI#isOfferingCompletion()
    */
   public boolean isOfferingCompletion() {
-    return listPane.isVisible();
+    return listPane != null && listPane.isVisible();
   }
 
   /**

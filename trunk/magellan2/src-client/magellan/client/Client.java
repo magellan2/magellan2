@@ -1252,7 +1252,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               Client.log.info("Current Version: " + currentVersion);
               if (VersionInfo.isNewer(newestVersion, currentVersion)) {
                 String url =
-                    MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD
+                    MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "."
                         + Locales.getGUILocale().getLanguage());
                 if (url == null) {
                   url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);

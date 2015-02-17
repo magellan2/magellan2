@@ -20,6 +20,7 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
@@ -28,7 +29,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JWindow;
@@ -42,8 +42,8 @@ import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT-ME
- * 
+ * completion GUI that shows a list of entries in a floating window.
+ *
  * @author Andreas
  * @version 1.0
  */
@@ -54,23 +54,24 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
   private Point position;
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.completion.CompletionGUI#init(magellan.client.completion.AutoCompletion)
    */
   public void init(AutoCompletion ac) {
     this.ac = ac;
-    listPane = new ListPane();
+    listPane = new ListPane(null);
+    listPane.setAlwaysOnTop(true);
     specialKeys = new int[2];
     specialKeys[0] = KeyEvent.VK_UP;
     specialKeys[1] = KeyEvent.VK_DOWN;
   }
 
   /**
-   * DOCUMENT-ME
-   * 
    * @see magellan.client.swing.completion.CompletionGUI#offerCompletion(javax.swing.text.JTextComponent,
    *      java.util.Collection, java.lang.String)
    */
-  public void offerCompletion(JTextComponent editor, Collection<Completion> completions, String stub) {
+  public void
+      offerCompletion(JTextComponent editor, Collection<Completion> completions, String stub) {
+
     listPane.choiceList.setListData(completions.toArray());
     listPane.choiceList.setSelectedIndex(0);
     listPane.choiceList.setVisibleRowCount(0);
@@ -98,6 +99,13 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
       updatePosition(p);
       if (!listPane.isVisible()) {
         listPane.setVisible(true);
+        // no effect:
+        // SwingUtilities.invokeLater(new Runnable() {
+        // public void run() {
+        // listPane.toFront();
+        // listPane.repaint();
+        // }
+        // });
       }
     } catch (BadLocationException ble) {
       ble.printStackTrace();
@@ -118,7 +126,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
   /**
    * sets the currently selected index in the list
-   * 
+   *
    * @see magellan.client.swing.completion.CompletionGUI#cycleCompletion(javax.swing.text.JTextComponent,
    *      java.util.Collection, java.lang.String, int)
    */
@@ -128,7 +136,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.completion.CompletionGUI#stopOffer()
    */
   public void stopOffer() {
     listPane.setVisible(false);
@@ -136,9 +144,8 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @return TODO: the currently selected item from the completion list
+   * @return the currently selected item from the completion list
+   * @see magellan.client.swing.completion.CompletionGUI#getSelectedCompletion()
    */
   public Completion getSelectedCompletion() {
     return (Completion) listPane.choiceList.getSelectedValue();
@@ -171,7 +178,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
     /**
      * DOCUMENT-ME
-     * 
+     *
      * @deprecated Deprecated. As of 1.4, replaced by Component.setFocusTraversalKeys(int, Set) and
      *             Container.setFocusCycleRoot(boolean).
      */
@@ -182,8 +189,8 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
     }
 
     /**
-     * We are not interested in KeyPressed events.
-     * 
+     * Manage key Events for the list.
+     *
      * @param e
      */
     public void keyPressed(KeyEvent e) {
@@ -201,18 +208,20 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
     /**
      * We are not interested in KeyReleased events.
-     * 
+     *
      * @param e
      */
     public void keyReleased(KeyEvent e) {
+      // ignored
     }
 
     /**
-     * Manage key Events for the list.
-     * 
+     * We are not interested in KeyReleased events.
+     *
      * @param e The event that just happened.
      */
     public void keyTyped(KeyEvent e) {
+      // ignored
     }
 
     private void mouseClicked(MouseEvent e) {
@@ -225,10 +234,9 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
   }
 
   /**
-   * A floating window that holds a list of choices. Implements FocusListener in order to be
-   * destroyed if the "owning" window loses the focus.
+   * A floating window that holds a list of choices.
    */
-  class ListPane extends JWindow { // implements FocusListener{
+  class ListPane extends JWindow {
     /**
      * The list components that displays the selection.
      */
@@ -236,14 +244,18 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
     /**
      * Creates a new ListPane object.
+     *
+     * @param editor
      */
-    public ListPane() {
-      super(new JFrame() {
-        @Override
-        public boolean isShowing() {
-          return true;
-        }
-      });
+    public ListPane(Window window) {
+      super(window);
+
+      // super(new JFrame() {
+      // @Override
+      // public boolean isShowing() {
+      // return true;
+      // }
+      // });
 
       // call setFocusableWindowState (true) on java 1.4 while staying compatible with Java 1.3
       JVMUtilities.setFocusableWindowState(this, false);
@@ -275,7 +287,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
     /**
      * Set the selected index to <tt>index</tt>.
-     * 
+     *
      * @param index The index we want to select.
      */
     public void setSelectedIndex(int index) {
@@ -285,14 +297,14 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.completion.CompletionGUI#getSpecialKeys()
    */
   public int[] getSpecialKeys() {
     return specialKeys;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.completion.CompletionGUI#specialKeyPressed(int)
    */
   public void specialKeyPressed(int key) {
     if (listPane.isVisible()) {
@@ -301,27 +313,30 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.completion.CompletionGUI#isOfferingCompletion()
    */
   public boolean isOfferingCompletion() {
     return listPane.isVisible();
   }
 
   /**
-   * Since Java 1.4 this cannot happen.
+   * Since Java 1.4 this cannot happen. Returns false.
    */
   public boolean editorMayLoseFocus() {
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns false.
+   *
+   * @see magellan.client.swing.completion.CompletionGUI#editorMayUpdateCaret()
    */
   public boolean editorMayUpdateCaret() {
     return false;
   }
 
   /**
+   * @see magellan.client.swing.completion.AbstractCompletionGUI#getTitle()
    */
   @Override
   public String getTitle() {

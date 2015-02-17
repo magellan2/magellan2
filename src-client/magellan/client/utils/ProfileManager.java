@@ -9,17 +9,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.utils;
 
 import java.awt.Frame;
@@ -47,7 +47,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * Handles multiple profiles for settings.
- * 
+ *
  * @author stm
  */
 public class ProfileManager {
@@ -60,7 +60,7 @@ public class ProfileManager {
 
     /**
      * Creates a new Exception with specified message and cause.
-     * 
+     *
      * @see Exception#Exception(String, Throwable)
      * @param message
      * @param cause
@@ -71,7 +71,7 @@ public class ProfileManager {
 
     /**
      * Creates a new Exception with specified message.
-     * 
+     *
      * @see Exception#Exception(String)
      * @param message
      */
@@ -106,7 +106,7 @@ public class ProfileManager {
   /**
    * Reads the profile information from the {@link #INIFILE}. If there is no inifile in
    * <code>parameters.settingsDir</code>, new settings are created with a default profile.
-   * 
+   *
    * @param parameters
    * @return The name of the current profile. <code>null</code> if there was an I/O error while
    *         reading the inifile
@@ -122,7 +122,7 @@ public class ProfileManager {
     if (settingsFile.exists()) {
       try {
         settings.loadFromXML(new BufferedInputStream(new FileInputStream(settingsFile)));
-        log.info("Found profiles.ini" + settingsFile);
+        log.info("Found profiles.ini: " + settingsFile);
       } catch (IOException e) {
         log.error("Error while loading " + settingsFile, e);
         return null;
@@ -187,7 +187,7 @@ public class ProfileManager {
 
   /**
    * Returns the directory of the current profile.
-   * 
+   *
    * @return The directory of the current profile.
    */
   public static File getProfileDirectory() {
@@ -196,7 +196,7 @@ public class ProfileManager {
 
   /**
    * Returns the directory of the specified profile.
-   * 
+   *
    * @param name A profile name
    * @return The directory of the specified profile.
    */
@@ -208,7 +208,7 @@ public class ProfileManager {
 
   /**
    * Returns the currently active profile.
-   * 
+   *
    * @return The currently active profile.
    */
   public static String getCurrentProfile() {
@@ -217,7 +217,7 @@ public class ProfileManager {
 
   /**
    * Returns <code>true</code> if the "always ask at startup" property is set.
-   * 
+   *
    * @return <code>true</code> if the "always ask at startup" property is set.
    */
   public static boolean isAlwaysAsk() {
@@ -226,7 +226,7 @@ public class ProfileManager {
 
   /**
    * Sets the "always ask at startup" property.
-   * 
+   *
    * @param newValue
    */
   public static void setAlwaysAsk(boolean newValue) {
@@ -235,7 +235,7 @@ public class ProfileManager {
 
   /**
    * Shows a dialog to manage profiles.
-   * 
+   *
    * @param parent The parent frame for the JDialog.
    * @return <code>true</code> if the dialog was confirmed
    */
@@ -247,7 +247,7 @@ public class ProfileManager {
 
   /**
    * Returns a list of known profiles.
-   * 
+   *
    * @return a list of known profiles.
    */
   public static Collection<String> getProfiles() {
@@ -266,7 +266,7 @@ public class ProfileManager {
   /**
    * Removes a profile. Tries to delete the profile directory if <code>removFiles</code> is
    * <code>true</code>.
-   * 
+   *
    * @param name
    * @param removeFiles
    * @return true if there was such a profile and it has been removed.
@@ -294,7 +294,7 @@ public class ProfileManager {
   /**
    * Adds a new profile and creates its directory. If <code>copyFrom</code> is not <code>null</code>
    * , all files from the corresponding directory are copied to the new profile directory.
-   * 
+   *
    * @param name
    * @param copyFrom
    * @throws ProfileException if the profile directory could not be created, or the files could not
@@ -362,7 +362,7 @@ public class ProfileManager {
 
   /**
    * Changes the active profile.
-   * 
+   *
    * @param name
    * @return <code>true</code> if the specified profile exists.
    */
@@ -375,7 +375,7 @@ public class ProfileManager {
 
   /**
    * Returns the settings directory where {@link #INIFILE} is stored.
-   * 
+   *
    * @return the settings directory
    */
   public static File getSettingsDirectory() {
@@ -384,7 +384,7 @@ public class ProfileManager {
 
   /**
    * Writes the settings to the {@link #INIFILE} in the settings directory.
-   * 
+   *
    * @throws IOException if an I/O error occurs
    */
   public static void saveSettings() throws IOException {

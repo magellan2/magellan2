@@ -1329,7 +1329,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     this.getRelatedUnits(relatedUnits, relationTypes);
 
     /* sort related units according to report order */
-    final List<Unit> sortedUnits = new LinkedList<Unit>(relatedUnits);
+    final List<Unit> sortedUnits = new ArrayList<Unit>(relatedUnits);
     Collections.sort(sortedUnits, new LinearUnitTempUnitComparator(new SortIndexComparator<Unit>(
         null)));
 

@@ -13,9 +13,9 @@
 
 package magellan.library.utils.filters;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import magellan.library.Unit;
 import magellan.library.utils.Resources;
@@ -23,7 +23,7 @@ import magellan.library.utils.Resources;
 /**
  * The base class for filtering units. Designed after FileFilter and similar interfaces, but as an
  * abstract class to have a short-cut for Collections implemented. ,
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
@@ -50,15 +50,19 @@ public abstract class UnitFilter {
 
     if (useThis) {
       col2 = col;
+      Iterator<Unit> it = col2.iterator();
+
+      while (it.hasNext()) {
+        if (!acceptUnit(it.next())) {
+          it.remove();
+        }
+      }
     } else {
-      col2 = new LinkedList<Unit>(col);
-    }
-
-    Iterator<Unit> it = col2.iterator();
-
-    while (it.hasNext()) {
-      if (!acceptUnit(it.next())) {
-        it.remove();
+      col2 = new ArrayList<Unit>();
+      for (Unit u : col) {
+        if (acceptUnit(u)) {
+          col2.add(u);
+        }
       }
     }
 

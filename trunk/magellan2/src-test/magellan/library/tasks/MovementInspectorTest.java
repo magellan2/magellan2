@@ -30,7 +30,6 @@ import java.util.List;
 
 import magellan.library.Building;
 import magellan.library.GameData;
-import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory;
 import magellan.test.GameDataBuilder;
@@ -73,7 +72,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
   public final void testReviewUnitUnitSeverity() {
     u.clearOrders();
     u.addOrder("NACH o");
-    refreshOrders();
+    refreshOrders(processor, gd);
 
     MovementInspector mInspector = new MovementInspector(gd);
     List<Problem> problems = mInspector.findProblems(u);
@@ -95,7 +94,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
     u.clearOrders();
     u.addOrder("NACH o");
     u.addOrder("VERLASSE");
-    refreshOrders();
+    refreshOrders(processor, gd);
 
     MovementInspector mInspector = new MovementInspector(gd);
     List<Problem> problems = mInspector.findProblems(u);
@@ -118,7 +117,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
     u.clearOrders();
     u.addOrder("NACH o");
     u.addOrder("GIB 2 KOMMANDO");
-    refreshOrders();
+    refreshOrders(processor, gd);
 
     MovementInspector mInspector = new MovementInspector(gd);
     List<Problem> problems = mInspector.findProblems(u);
@@ -129,13 +128,6 @@ public class MovementInspectorTest extends MagellanTestWithResources {
       }
     }
     assertNull(ownerProblem);
-  }
-
-  protected void refreshOrders() {
-    processor.stopUpdating();
-    for (Region r : gd.getRegions()) {
-      processor.processRegionNow(r);
-    }
   }
 
 }

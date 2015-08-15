@@ -1,3 +1,14 @@
+2015-06-08 / Build 638 - stm (stm2@users.sourceforge.net)
+    * added inspector for lost items
+
+2015-04-28 / Build 636 - stm (stm2@users.sourceforge.net)
+    * fixed NPE in Orders
+    * removed unneccessary warning for spy messages
+    * made message parsing more robust
+
+2015-02-17 / Build 634 - stm (stm2@users.sourceforge.net)
+    * fixed AutoCompletion window appearing in background
+
 2015-02-16 / Build 625 - stm (stm2@users.sourceforge.net)
     * fixed help system
     * fixed uninstaller for Windows 7 and up

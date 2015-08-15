@@ -268,6 +268,9 @@ public class PropertiesHelper {
   public static final String TASKTABLE_INSPECTORS_ATTACK = "TaskTable.inspectors.attack";
 
   /** Property type boolean: */
+  public static final String TASKTABLE_INSPECTORS_TRANSFER = "TaskTable.inspectors.transfer";
+
+  /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_MESSAGE = "TaskTable.inspectors.message";
 
   /** Property type boolean: */
@@ -303,7 +306,7 @@ public class PropertiesHelper {
 
   /**
    * Property type list of names
-   * 
+   *
    * @deprecated we use an ignore list now
    */
   @Deprecated
@@ -396,7 +399,7 @@ public class PropertiesHelper {
   /**
    * Extracts properties by given prefix. If there exists a key called prefix.count this is used as
    * order
-   * 
+   *
    * @return list of strings; empty list if the property is undefined
    */
   public static List<String> getList(Properties p, String prefix) {
@@ -465,7 +468,7 @@ public class PropertiesHelper {
    * Loads a rectangle from the settings using the given key. If <code>r</code> is null, a new
    * object is created. Else the result is stored in <code>r</code>. In either case, the resulting
    * rectangle is returned.
-   * 
+   *
    * @return The loaded rectangle or null if an error occurs.
    */
   public static Rectangle loadRect(Properties settings, Rectangle r, String key) {
@@ -548,7 +551,7 @@ public class PropertiesHelper {
 
   /**
    * Sets the directory for configuration configuration is stored.
-   * 
+   *
    * @param newSettingsDir
    */
   public static void setSettingsDirectory(File newSettingsDir) {
@@ -559,7 +562,7 @@ public class PropertiesHelper {
 
   /**
    * Returns the directory where configuration is stored.
-   * 
+   *
    * @return The directory where configuration is stored
    */
   public static File getSettingsDirectory() {

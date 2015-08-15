@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.library.tasks;
 
 import magellan.library.Battle;
@@ -45,7 +45,7 @@ public class ProblemFactory {
 
   /**
    * Creates a problem with all parameters given;
-   * 
+   *
    * @param severity
    * @param type One of {@link Problem.Severity#INFORMATION}, {@link Problem.Severity#WARNING},
    *          {@link Problem.Severity#ERROR}
@@ -68,7 +68,7 @@ public class ProblemFactory {
   /**
    * Creates a problem. Tries to deduce region and faction from the Unit, and the message from the
    * ProblemType.
-   * 
+   *
    * @param severity
    * @param type
    * @param unit The unit responsible for this problem or <code>null</code>. If
@@ -86,7 +86,7 @@ public class ProblemFactory {
   /**
    * Creates a problem without line. Tries to deduce region and faction from the Unit, and the
    * message from the ProblemType.
-   * 
+   *
    * @param severity
    * @param type
    * @param unit The unit responsible for this problem or <code>null</code>. If
@@ -102,7 +102,7 @@ public class ProblemFactory {
   /**
    * Creates a problem. Tries to deduce unit, region and faction from the UnitContainer, and the
    * message from the ProblemType.
-   * 
+   *
    * @param severity
    * @param type
    * @param container
@@ -120,7 +120,7 @@ public class ProblemFactory {
   /**
    * Creates a problem without line. Tries to deduce unit, region and faction from the
    * UnitContainer, and the message from the ProblemType.
-   * 
+   *
    * @param severity
    * @param type
    * @param container
@@ -142,7 +142,7 @@ public class ProblemFactory {
   /**
    * Creates a problem. Tries to deduce region and faction from the Unit, but uses the given
    * message.
-   * 
+   *
    * @param severity
    * @param type
    * @param unit The unit responsible for this problem or <code>null</code>. If
@@ -160,7 +160,7 @@ public class ProblemFactory {
 
   /**
    * Creates a dummy problem without object, inspector, or line.
-   * 
+   *
    * @param severity
    * @param type
    */
@@ -181,7 +181,12 @@ public class ProblemFactory {
       if (owner == null) {
         String attribute = m.getAttributes().get("unit");
         if (attribute != null) {
-          UnitID id = UnitID.createUnitID(attribute, 10, data.base);
+          UnitID id;
+          try {
+            id = UnitID.createUnitID(attribute, 10, data.base);
+          } catch (NumberFormatException e) {
+            id = null;
+          }
           if (id != null) {
             owner = data.getUnit(id);
           }
@@ -190,7 +195,12 @@ public class ProblemFactory {
       if (object == null) {
         String attribute = m.getAttributes().get("target");
         if (attribute != null) {
-          UnitID id = UnitID.createUnitID(attribute, 10, data.base);
+          UnitID id;
+          try {
+            id = UnitID.createUnitID(attribute, 10, data.base);
+          } catch (NumberFormatException e) {
+            id = null;
+          }
           if (id != null) {
             object = data.getUnit(id);
           }
@@ -199,7 +209,12 @@ public class ProblemFactory {
       if (object == null) {
         String attribute = m.getAttributes().get("mage");
         if (attribute != null) {
-          UnitID id = UnitID.createUnitID(attribute, 10, data.base);
+          UnitID id;
+          try {
+            id = UnitID.createUnitID(attribute, 10, data.base);
+          } catch (NumberFormatException e) {
+            id = null;
+          }
           if (id != null) {
             object = data.getUnit(id);
           }
@@ -233,7 +248,12 @@ public class ProblemFactory {
       if (object == null) {
         String attribute = m.getAttributes().get("ship");
         if (attribute != null) {
-          EntityID id = EntityID.createEntityID(attribute, 10, data.base);
+          EntityID id;
+          try {
+            id = EntityID.createEntityID(attribute, 10, data.base);
+          } catch (NumberFormatException e) {
+            id = null;
+          }
           if (id != null) {
             object = data.getShip(id);
           }
@@ -242,7 +262,12 @@ public class ProblemFactory {
       if (object == null) {
         String attribute = m.getAttributes().get("building");
         if (attribute != null) {
-          EntityID id = EntityID.createEntityID(attribute, 10, data.base);
+          EntityID id;
+          try {
+            id = EntityID.createEntityID(attribute, 10, data.base);
+          } catch (NumberFormatException e) {
+            id = null;
+          }
           if (id != null) {
             object = data.getBuilding(id);
           }
@@ -264,7 +289,7 @@ public class ProblemFactory {
 
   /**
    * Problem implementation tailored for {@link Message}s
-   * 
+   *
    * @author stm
    * @version 1.0, Nov 22, 2010
    */
@@ -348,7 +373,7 @@ public class ProblemFactory {
 
   /**
    * Problem implementation tailored for {@link Message}s
-   * 
+   *
    * @author stm
    * @version 1.0, Nov 22, 2010
    */
@@ -398,7 +423,7 @@ public class ProblemFactory {
 
   /**
    * Problem implementation tailored for {@link Message}s
-   * 
+   *
    * @author stm
    * @version 1.0, Nov 22, 2010
    */

@@ -331,7 +331,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
     while (!sc.eof && (sc.argc == 1) && sc.isString[0]) {
       if (strings == null) {
-        strings = new LinkedList<String>();
+        strings = new ArrayList<String>();
       }
 
       strings.add(sc.argv[0]);
@@ -486,7 +486,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       }
 
       if (list == null) {
-        list = new LinkedList<Message>();
+        list = new ArrayList<Message>();
       }
       list.add(msg);
     }
@@ -512,7 +512,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       final Battle battle = MagellanFactory.createBattle(c);
 
       if (list == null) {
-        list = new LinkedList<Battle>();
+        list = new ArrayList<Battle>();
       }
 
       list.add(battle);
@@ -540,7 +540,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       final Battle battle = MagellanFactory.createBattle(c, true);
 
       if (list == null) {
-        list = new LinkedList<Battle>();
+        list = new ArrayList<Battle>();
       }
 
       list.add(battle);
@@ -3945,13 +3945,13 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     /**
      * this was created by regexp replacements: <code>
      * if \(\(sc\.argc == 2\) && sc\.argv\[1\]\.equalsIgnoreCase\(("[^"]*")\)\) \{(\R[^#]*)sc\.getNextToken\(\);\R \}#else
-     * 
+     *
      * parser.addTagHandler(\1, new TagHandler() { public void handle(Unit unit){\2}});
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * if \(\(sc\.isBlock\) && sc\.argv\[0\]\.equals\(("[^"]*")\)\) \{(\R[^#]*)\R      \}#else
-     * 
+     *
      * parser.addBlockHandler(\1, new TagHandler() { public void handle(Unit unit) throws IOException {\2}});
      * <code>
      */

@@ -13,9 +13,9 @@
 
 package magellan.library.utils.comparator;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -62,8 +62,8 @@ public class TopmostRankedSkillComparator implements Comparator<Map<? extends ID
     final Map<? extends ID, Skill> map2 = o2;
 
     // sort maps according to skill type ranking
-    final List<Skill> list1 = new LinkedList<Skill>(map1.values());
-    final List<Skill> list2 = new LinkedList<Skill>(map2.values());
+    final List<Skill> list1 = new ArrayList<Skill>(map1.values());
+    final List<Skill> list2 = new ArrayList<Skill>(map2.values());
     Collections.sort(list1, rankCmp);
     Collections.sort(list2, rankCmp);
 

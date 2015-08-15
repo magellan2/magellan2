@@ -1211,9 +1211,6 @@ public abstract class GameData implements Cloneable, Addeable {
     // units before the report has been completely read...
     for (Unit u : getUnits()) {
       u.reparseOrders();
-      if (!u.ordersAreNull()) {
-        // u.setOrders(u.getOrders(), false);
-      }
     }
     for (Region r : getRegions()) {
       r.refreshUnitRelations(true);

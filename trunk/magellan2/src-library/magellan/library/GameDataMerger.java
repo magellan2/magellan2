@@ -1170,7 +1170,7 @@ public class GameDataMerger {
 
       if ((curFaction.getMessages() != null) && (curFaction.getMessages().size() > 0)) {
         if (newFaction.getMessages() == null) {
-          newFaction.setMessages(new LinkedList<Message>());
+          newFaction.setMessages(new ArrayList<Message>());
         } else {
           newFaction.getMessages().clear();
         }
@@ -2156,7 +2156,7 @@ public class GameDataMerger {
 
       if ((curRegion.getMessages() != null) && (curRegion.getMessages().size() > 0)) {
         if (resultRegion.getMessages() == null) {
-          resultRegion.setMessages(new LinkedList<Message>());
+          resultRegion.setMessages(new ArrayList<Message>());
         }
 
         for (Message curMsg : curRegion.getMessages()) {
@@ -2171,7 +2171,7 @@ public class GameDataMerger {
 
       if ((curRegion.getPlayerMessages() != null) && (curRegion.getPlayerMessages().size() > 0)) {
         if (resultRegion.getPlayerMessages() == null) {
-          resultRegion.setPlayerMessages(new LinkedList<Message>());
+          resultRegion.setPlayerMessages(new ArrayList<Message>());
         }
 
         for (Message curMsg : curRegion.getPlayerMessages()) {
@@ -2579,7 +2579,7 @@ public class GameDataMerger {
     }
 
     // this block requires newUnit.person to be already set!
-    final Collection<Skill> oldSkills = new LinkedList<Skill>();
+    final Collection<Skill> oldSkills = new ArrayList<Skill>();
 
     final boolean resultWellKnown = resultUnit.getSkillMap() != null;
     if (resultUnit.getSkillMap() != null) {
@@ -2733,7 +2733,7 @@ public class GameDataMerger {
 
     if ((curUnit.getUnitMessages() != null) && (curUnit.getUnitMessages().size() > 0)) {
       if (resultUnit.getUnitMessages() == null) {
-        resultUnit.setUnitMessages(new LinkedList<Message>());
+        resultUnit.setUnitMessages(new ArrayList<Message>());
       }
 
       for (Message curMsg : curUnit.getUnitMessages()) {

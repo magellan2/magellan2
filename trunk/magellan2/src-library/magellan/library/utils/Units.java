@@ -25,10 +25,10 @@ package magellan.library.utils;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public class Units {
   /** a specialized container that behaves much like item */
   public static class StatItem implements Comparable<StatItem> {
     /** units having this item */
-    public List<UnitWrapper> units = new LinkedList<UnitWrapper>();
+    public List<UnitWrapper> units = new ArrayList<UnitWrapper>(5);
 
     private ItemType type;
     private long amount;

@@ -42,7 +42,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * DOCUMENT-ME
- * 
+ *
  * @author $Author: $
  * @version $Revision: 345 $
  */
@@ -66,7 +66,7 @@ public class EresseaPostProcessor {
    * This method tries to fix some issues that arise right after reading a report file. It scans
    * messages for herbs, removes dummy units, creates temp units and tries to detect if resources
    * should be set to zero because they are not in the report.
-   * 
+   *
    * @param data
    */
   public void postProcess(GameData data) {
@@ -120,7 +120,8 @@ public class EresseaPostProcessor {
     if ((data != null) && (data.getRegions() != null)) {
       /* ItemType sproutResourceID = */data.getRules().getItemType("Schößlinge", true);
       /* ItemType treeResourceID = */data.getRules().getItemType("Bäume", true);
-      /* ItemType mallornSproutResourceID = */data.getRules().getItemType("Mallornschößlinge", true);
+      /* ItemType mallornSproutResourceID = */data.getRules()
+          .getItemType("Mallornschößlinge", true);
       /* ItemType mallornTreeResourceID = */data.getRules().getItemType("Mallorn", true);
 
       for (Region region : data.getRegions()) {
@@ -222,34 +223,30 @@ public class EresseaPostProcessor {
                 // fix spy messages which lack the spy attribute (see Magellan bug #333 and Eressea
                 // bug #1604)
                 Unit spy = null;
-                Unit target = null;
                 String spyId = message.getAttributes().get("spy");
-                if (spyId != null) {
+                String targetId = message.getAttributes().get("target");
+                if (spyId == null || targetId == null) {
+                  EresseaPostProcessor.log.warn("spy message without spy or target: " + message);
+                } else {
                   spy = data.getUnit(UnitID.createUnitID(spyId, 10, data.base));
-                  String targetId = message.getAttributes().get("target");
-                  if (targetId != null) {
-                    target = data.getUnit(UnitID.createUnitID(targetId, 10, data.base));
-                    if (spy == null || target == null || spy.getFaction() == null) {
-                      EresseaPostProcessor.log
-                          .warn("spy message without spy or target: " + message);
-                    } else {
-                      for (Message msg2 : spy.getFaction().getMessages()) {
-                        if (targetId.equals(msg2.getAttributes().get("target"))) {
-                          if (msg2.getAttributes().get("spy") != null) {
-                            if (!spyId.equals(msg2.getAttributes().get("spy"))) {
-                              EresseaPostProcessor.log.warn("message " + message.getID()
-                                  + " seems to belong to " + msg2.getAttributes().get("spy")
-                                  + " and " + spyId);
-                            }
-                          } else {
-                            switch (((msg2.getMessageType().getID()).intValue())) {
-                            case 387085007: // Y gehört der Partei F an
-                            case 467205397: // Y beherrscht ...
-                            case 743495578: // Im Gepäck von Y sind ...
-                              msg2.getAttributes().put("spy",
-                                  String.valueOf(((IntegerID) spy.getID()).intValue()));
-                              break;
-                            }
+                  // target = data.getUnit(UnitID.createUnitID(targetId, 10, data.base));
+                  if (spy != null && spy.getFaction() != null) {
+                    for (Message msg2 : spy.getFaction().getMessages()) {
+                      if (targetId.equals(msg2.getAttributes().get("target"))) {
+                        if (msg2.getAttributes().get("spy") != null) {
+                          if (!spyId.equals(msg2.getAttributes().get("spy"))) {
+                            EresseaPostProcessor.log.warn("message " + message.getID()
+                                + " seems to belong to " + msg2.getAttributes().get("spy")
+                                + " and " + spyId);
+                          }
+                        } else {
+                          switch (((msg2.getMessageType().getID()).intValue())) {
+                          case 387085007: // Y gehört der Partei F an
+                          case 467205397: // Y beherrscht ...
+                          case 743495578: // Im Gepäck von Y sind ...
+                            msg2.getAttributes().put("spy",
+                                String.valueOf(((IntegerID) spy.getID()).intValue()));
+                            break;
                           }
                         }
                       }
@@ -385,7 +382,7 @@ public class EresseaPostProcessor {
 
   /**
    * Removes the FoW for regions with visibility greater than lighthouse
-   * 
+   *
    * @param data World
    */
   private void adjustFogOfWar2Visibility(GameData data) {
@@ -413,7 +410,7 @@ public class EresseaPostProcessor {
    * astral region before) -> nearly impossible to determine the wrong schemes<br />
    * 6. different scheme/region name of same coordinate -> may not be an wrong scheme, only outdated
    * name.
-   * 
+   *
    * @param gd
    */
   private void cleanAstralSchemes(GameData gd) {

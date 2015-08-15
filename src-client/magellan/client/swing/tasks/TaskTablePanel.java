@@ -94,6 +94,7 @@ import magellan.library.tasks.ShipInspector;
 import magellan.library.tasks.SkillInspector;
 import magellan.library.tasks.TeachInspector;
 import magellan.library.tasks.ToDoInspector;
+import magellan.library.tasks.TransferInspector;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -160,7 +161,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * Creates a new TaskTablePanel object.
-   * 
+   *
    * @param d
    * @param initData
    * @param p
@@ -285,7 +286,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Create and show context menu.
-     * 
+     *
      * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
      */
     @Override
@@ -623,7 +624,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * Fire selection event for object associated with row
-   * 
+   *
    * @param row row index of the underlying table
    * @param col column index of the underlying table
    */
@@ -692,7 +693,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * Holds information about a necessary update on the task panel.
-   * 
+   *
    * @author stm
    * @version 1.0, Aug 23, 2008
    */
@@ -706,7 +707,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Creates a region update event.
-     * 
+     *
      * @param r This update concerns a region
      * @param add <code>true</code> if this region is added to the watched set, <code>false</code>
      *          if the corresponding problems should be removed.
@@ -718,7 +719,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Creates a unit update event.
-     * 
+     *
      * @param u This update concerns this unit
      * @param add <code>true</code> if this unit is added to the watched set.
      */
@@ -729,7 +730,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Creates a "clear" or "global" event.
-     * 
+     *
      * @param b If <code>false</code> , clear all problems. If <code>true</code> update global
      *          problems.
      */
@@ -741,7 +742,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Returns the value of region.
-     * 
+     *
      * @return Returns region.
      */
     public Region getRegion() {
@@ -750,7 +751,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Returns the value of unit.
-     * 
+     *
      * @return Returns unit.
      */
     public Unit getUnit() {
@@ -759,7 +760,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Returns the value of add.
-     * 
+     *
      * @return Returns add.
      */
     public boolean isAdd() {
@@ -768,7 +769,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Returns either the region or the unit for this event whichever is non- <code>null</code>
-     * 
+     *
      * @return Return the object.
      */
     public Object getObject() {
@@ -786,7 +787,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * Enqueues and polls update events.
-   * 
+   *
    * @author stm
    * @version 1.0, Aug 23, 2008
    */
@@ -845,7 +846,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Wait until an event is enqueued, then return it.
-     * 
+     *
      * @throws InterruptedException
      */
     public synchronized UpdateEvent waitFor() throws InterruptedException {
@@ -914,7 +915,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   /**
    * This class registers and handles events in a separate thread. Events are first enqueued here
    * and than handled one by one in the refreshThread.
-   * 
+   *
    * @author stm
    * @version 1.0, Aug 23, 2008
    */
@@ -945,7 +946,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     /**
      * Return <code>true</code> if there are events in the queue. This is not really thread safe so
      * don't rely too much on it!
-     * 
+     *
      * @return <code>true</code> if there are events in the queue.
      */
     public synchronized boolean isBusy() {
@@ -954,7 +955,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * The event queue.
-     * 
+     *
      * @author stm
      * @version 1.0, Aug 23, 2008
      */
@@ -1031,7 +1032,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Call removeRegion for all regions.
-     * 
+     *
      * @param regions
      */
     public void removeRegions(Collection<Region> regions) {
@@ -1042,7 +1043,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Enqueue an event for removing all problems corresponding to r
-     * 
+     *
      * @param r
      */
     public void removeRegion(Region r) {
@@ -1053,7 +1054,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Call addRegion for all regions.
-     * 
+     *
      * @param regions
      */
     public void addRegions(Collection<? extends Region> regions) {
@@ -1064,7 +1065,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Enqueue an event for adding events corresponding to region.
-     * 
+     *
      * @param region
      */
     public void addRegion(Region region) {
@@ -1082,7 +1083,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     /**
      * Enqueue an event for adding events corresponding to unit. Currently this is pretty much
      * equivalent to calling addRegion(u.getRegion()).
-     * 
+     *
      * @param u
      */
     public void addUnit(Unit u) {
@@ -1100,7 +1101,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     /**
      * Enqueue an event for removing all events corresponding to unit. Currently this is pretty much
      * equivalent to calling removeRegion(u.getRegion()).
-     * 
+     *
      * @param u
      */
     public void removeUnit(Unit u) {
@@ -1129,7 +1130,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * Register all inspectors we know of.
-   * 
+   *
    * @param gameData
    */
   private void initInspectors(GameData gameData) {
@@ -1166,10 +1167,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MESSAGE, true)) {
       inspectors.add(MessageInspector.getInstance(gameData));
     }
-
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MAINTENANCE,
         true)) {
       inspectors.add(MaintenanceInspector.getInstance(gameData));
+    }
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TRANSFER, true)) {
+      inspectors.add(TransferInspector.getInstance(gameData));
     }
 
     for (Inspector i : inspectors) {
@@ -1207,7 +1210,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * clean up
-   * 
+   *
    * @see magellan.client.swing.InternationalizedDataPanel#quit()
    */
   @Override
@@ -1237,7 +1240,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * Clear table and refresh all problems.
-   * 
+   *
    * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   @Override
@@ -1363,7 +1366,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * Updates reviews when orders have changed.
-   * 
+   *
    * @param e
    * @see magellan.client.event.UnitOrdersListener#unitOrdersChanged(magellan.client.event.UnitOrdersEvent)
    */
@@ -1563,7 +1566,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   /**
    * checks, if the specified unit is valid according to the settings restrictToOwner and
    * restrictToPassword
-   * 
+   *
    * @param u
    * @return
    */
@@ -1589,7 +1592,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   /**
    * Specifies which problems to use. Only problems whose <code>ProblemType.getName()</code> matches
    * one in result will be displayed.
-   * 
+   *
    * @param result A list of name. If <code>null</code>, all problems will be displayed.
    * @deprecated We use a negative list now
    * @see #setIgnoredProblems(Set)
@@ -1602,7 +1605,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   /**
    * Specifies which problems to ignore. Only problems whose <code>ProblemType.getName()</code> does
    * not match one in this set will be displayed.
-   * 
+   *
    * @param set A list of names. If <code>null</code>, all problems will be displayed.
    */
   public void setIgnoredProblems(Set<ProblemType> set) {
@@ -1803,7 +1806,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Creates a new TaskTableModel object.
-     * 
+     *
      * @param header
      * @see javax.swing.table.DefaultTableModel#DefaultTableModel(Vector, int)
      */
@@ -1845,7 +1848,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * Add a problem to this model. Should be called in the AWT event dispatch thread!
-     * 
+     *
      * @param p
      */
     public void addProblem(final Problem p) {
@@ -1867,7 +1870,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     /**
      * Remove all problems of the given inspector <i>and</i> the given source. Should be called in
      * the AWT event dispatch thread!
-     * 
+     *
      * @param inspector
      * @param source
      */
@@ -1909,7 +1912,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     /**
      * This method is called when a shortcut from getShortCuts() is recognized.
-     * 
+     *
      * @param shortcut
      */
     public void shortCut(javax.swing.KeyStroke shortcut) {
@@ -1965,7 +1968,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * Sets the value of isShown.
-   * 
+   *
    * @param isShown The value for isShown.
    */
   private void setShown(boolean isShown) {
@@ -1996,7 +1999,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   /**
    * Returns the value of isShown.
-   * 
+   *
    * @return Returns isShown.
    */
   private boolean isShown() {

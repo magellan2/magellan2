@@ -32,6 +32,9 @@ import java.util.Properties;
 
 import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
+import magellan.library.GameData;
+import magellan.library.Region;
+import magellan.library.gamebinding.EresseaRelationFactory;
 import magellan.library.utils.Locales;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
@@ -103,6 +106,13 @@ public abstract class MagellanTestWithResources {
 
   protected static void setResourceDir(String dir) {
     resourceDir = new File(dir);
+  }
+
+  protected void refreshOrders(EresseaRelationFactory processor, GameData gd) {
+    processor.stopUpdating();
+    for (Region r : gd.getRegions()) {
+      processor.processRegionNow(r);
+    }
   }
 
 }

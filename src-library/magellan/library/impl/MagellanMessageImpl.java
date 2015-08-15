@@ -108,7 +108,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   /**
    * Creates a new Message object. If <code>text</code> is not <code>null</code> the text is set
    * directly; if it is null, it is rendered from the type and attributes.
-   * 
+   *
    * @param id id ID of the Message
    * @param text The message text
    * @param type The message type
@@ -151,7 +151,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   /**
    * Gets the rendered message text. 1. If a rendered version of the msg is available use it. 2. If
    * not rendered but msgtype available render the msg.
-   * 
+   *
    * @return The message text
    */
   public String getText() {
@@ -169,7 +169,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 
   /**
    * Sets the text of this message to <code>text</code>.
-   * 
+   *
    * @param text The new text
    */
   public void setText(String text) {
@@ -181,7 +181,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 
   /**
    * Returns the <code>MessageType</code> of this message.
-   * 
+   *
    * @return The message type
    */
   public MessageType getMessageType() {
@@ -190,7 +190,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 
   /**
    * Sets the <code>MessageType</code> of this message.
-   * 
+   *
    * @param type The new message type
    */
   public void setType(MessageType type) {
@@ -215,7 +215,11 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
       Unit unit = null;
 
       if (attribute != null) {
-        unit = data.getUnit(UnitID.createUnitID(attribute, 10, data.base));
+        try {
+          unit = data.getUnit(UnitID.createUnitID(attribute, 10, data.base));
+        } catch (NumberFormatException e) {
+          unit = null;
+        }
       }
 
       return (unit == null) ? null : unit.toString();
@@ -235,7 +239,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    * WARNING! This does not work for the current cr format (41) which expects tokens of the form
    * $unit($unit).
    * </p>
-   * 
+   *
    * @param data The game for replacing unit IDs and region coordinates
    * @param pattern The pattern to render
    * @param attributes A map of (String,Value)-pairs for replacing tokens in the pattern
@@ -275,7 +279,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 
   /**
    * Renders the message and updates the message text.
-   * 
+   *
    * @param data The GameData for replacing unit IDs and region coordinates
    */
   public void render(GameData data) {
@@ -443,7 +447,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   /**
    * Returns an ID for this message. NOTE: This is not always unique, there are messages with
    * {@link #ambiguousID}.
-   * 
+   *
    * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
    */
   @Override

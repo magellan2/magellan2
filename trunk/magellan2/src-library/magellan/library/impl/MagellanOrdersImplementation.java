@@ -14,6 +14,7 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.OrderType;
+import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
 
 /**
@@ -149,7 +150,8 @@ public class MagellanOrdersImplementation implements Orders {
   protected List<String> getOrderTranslations(StringID orderId) {
     OrderType order = unit.getData().getRules().getOrder(orderId);
     if (order != null) {
-      List<String> names = order.getNames(unit.getLocale());
+      List<String> names =
+          order.getNames(unit.getLocale() != null ? unit.getLocale() : Locales.getOrderLocale());
       if (names != null)
         return names;
     }

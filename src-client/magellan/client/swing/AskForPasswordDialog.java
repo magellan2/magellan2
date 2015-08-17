@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.swing;
 
 import java.awt.BorderLayout;
@@ -57,7 +57,7 @@ import magellan.library.utils.TrustLevels;
  * This class is called by the Client if there is a report with factions but without a passwort for
  * one of them. This dialog presents all available factions and a password field. If you press
  * Cancel, none password will be set.
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 15.02.2008
  */
@@ -171,6 +171,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     panel.add(buttonPanel, BorderLayout.SOUTH);
 
     getContentPane().add(panel);
+    pack();
   }
 
   /**
@@ -243,7 +244,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
   /**
    * tries to find some hints if a faction is "owned" by the user...and possible a password may make
    * sense... uses battle-status to identify such factions (-1 by default)
-   * 
+   *
    * @param f
    * @param data
    * @return
@@ -274,7 +275,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
 
   /**
    * Builds a list with factions with </code>isProbablyPriviligedFaction=true</code>
-   * 
+   *
    * @return
    */
   private Vector<FactionItem> getAllFactionItems() {

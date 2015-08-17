@@ -1,3 +1,6 @@
+2015-07-18 / Build 639 - stm (stm2@users.sourceforge.net)
+    * clarifications for password dialog for new factions
+
 2015-06-08 / Build 638 - stm (stm2@users.sourceforge.net)
     * added inspector for lost items
 

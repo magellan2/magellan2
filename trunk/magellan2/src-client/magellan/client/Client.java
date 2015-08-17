@@ -2073,7 +2073,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                     // password from message
                     String oMessage =
                         Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.text",
-                            new Object[] { f.toString() });
+                            new Object[] { f.toString(), password });
                     String oTitle =
                         Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.title");
                     String[] oOptions =

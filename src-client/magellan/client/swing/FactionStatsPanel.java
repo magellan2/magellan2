@@ -653,9 +653,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     final int E_TRADETAX = 4;
     // final int E_THEFT = 5;
     // final int E_MAGIC = 6;
+    final int E_MAX = 7;
 
-    long earned[] = new long[7];
-    long wanted[] = new long[7];
+    long earned[] = new long[E_MAX];
+    long wanted[] = new long[E_MAX];
     Arrays.fill(earned, 0);
     Arrays.fill(wanted, 0);
 
@@ -763,6 +764,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
             if (modeValue != null) {
               int i = Integer.parseInt(modeValue);
+              if (i >= E_MAX) {
+                log.warnOnce("unknwon earn mode " + i);
+                i = E_MAX;
+              }
               value = msg.getAttributes().get("amount");
 
               if (value != null) {
@@ -966,7 +971,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // 6 = Zauberei
     String incomeGroupIcon[] =
         new String[] { "Arbeiten", "Unterhaltung", "Steuereintreiben", "Handeln", "Handeln",
-            "Tarnung", "Magie" };
+            "Tarnung", "Magie", "Sonstiges" };
     String incomeGroupIcon2[] = { "Alliance", "Persons" };
 
     if ((totalIncome != 0) || (totalWanted != 0)) {

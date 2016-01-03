@@ -661,6 +661,10 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(1, unit2.getOrders2().size());
     assertOrder("GIB 1 5 Silber", unit2, 0);
 
+    unit.clearOrders();
+    unit.addOrder("// $cript Benoetige 1 2");
+    parser.execute(unit.getFaction());
+    assertError("falsche Anzahl Argumente", unit, 2);
   }
 
   /**

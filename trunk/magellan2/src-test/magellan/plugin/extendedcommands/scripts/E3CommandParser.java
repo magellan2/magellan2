@@ -1152,8 +1152,8 @@ public class E3CommandParser {
             }
           }
         }
-      } else if (tokens.length > 4) {
-        addNewError("zu viele Parameter");
+      } else if (tokens.length > 4 || tokens.length < 3) {
+        addNewError("falsche Anzahl Argumente");
       } else {
         int minAmount = Integer.parseInt(tokens[1]);
         int maxAmount = tokens.length == 3 ? minAmount : Integer.parseInt(tokens[2]);

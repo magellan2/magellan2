@@ -92,6 +92,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * @param data2 GameData
    * @return The JMenuItem to show in the MapContextMenu
    */
+  @Override
   public JMenuItem createMapContextMenu(EventDispatcher dispatcher, GameData data2) {
     rootTitle = new JMenu(Resources.get("mapedit.menu.title"));
 
@@ -199,6 +200,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.swing.context.MapContextMenuProvider#updateUnknownRegion(magellan.library.CoordinateID)
    */
+  @Override
   public void updateUnknownRegion(CoordinateID c2) {
     if (c2 != null) {
       c = c2;
@@ -227,6 +229,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.swing.context.MapContextMenuProvider#update(magellan.library.Region)
    */
+  @Override
   public void update(Region newRegion) {
     if (newRegion != null) {
       r = newRegion;
@@ -275,6 +278,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.extern.MagellanPlugIn#getMenuItems()
    */
+  @Override
   public List<JMenuItem> getMenuItems() {
     return null;
   }
@@ -284,6 +288,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.extern.MagellanPlugIn#getName()
    */
+  @Override
   public String getName() {
     return "MapEditPlugIn";
   }
@@ -293,6 +298,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.client.Client, java.util.Properties)
    */
+  @Override
   public void init(@SuppressWarnings("hiding") Client client, Properties properties) {
     // init the plugin
     MagellanMapEditPlugIn.log = Logger.getInstance(MagellanMapEditPlugIn.class);
@@ -307,6 +313,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.library.GameData)
    */
+  @Override
   public void init(@SuppressWarnings("hiding") GameData data) {
     MagellanMapEditPlugIn.log.fine("MapEdit initialized...(GameData)");
     this.data = data;
@@ -317,6 +324,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
   /**
    * @see magellan.client.extern.MagellanPlugIn#quit(boolean)
    */
+  @Override
   public void quit(boolean storeSettings) {
     // do nothing
   }
@@ -326,6 +334,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
    * 
    * @param e the event
    */
+  @Override
   public void actionPerformed(ActionEvent e) {
     MagellanMapEditPlugIn.log.info(e.getActionCommand());
     if (e.getActionCommand().equalsIgnoreCase("delName")) {

@@ -1,3 +1,9 @@
+2016-01-07 / Build 642 - trickert (thoralf@m84.de)
+    * switch to Java7 for new nightly build as of security reasons, performance and Java language options
+    * added a hook for plugins to be informed during order writing to a file (for Odyssey Alliance Plugin to ignore specific units)
+    * added a hook for plugins to be informed during task inspection to ignore specific tasks
+    * removing macify MacOS specific Icon Management, because it doesn't work in Java7 or higher (only old unsupported old Java6 can use it)
+
 2015-07-18 / Build 639 - stm (stm2@users.sourceforge.net)
     * clarifications for password dialog for new factions
 

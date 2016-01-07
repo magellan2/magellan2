@@ -32,6 +32,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.Region;
+import magellan.library.plugins.OrderWriterPlugIn;
 
 /**
  * This is an interface for a game specific order writer. At the beginning it is used for changing
@@ -123,4 +124,15 @@ public interface GameSpecificOrderWriter {
    */
   public int write(Writer stream) throws IOException;
 
+  /**
+   * You can use this method to add a OrderWriterPlugIn to the internal list of known
+   * OrderWriterPlugIns.
+   */
+  public void addOrderWriterPlugin(OrderWriterPlugIn plugin);
+
+  /**
+   * You can use this method to rmove a OrderWriterPlugIn from the internal list of known
+   * OrderWriterPlugIns.
+   */
+  public void removeOrderWriterPlugIn(OrderWriterPlugIn plugin);
 }

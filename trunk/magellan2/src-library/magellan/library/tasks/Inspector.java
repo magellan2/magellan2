@@ -47,7 +47,7 @@ public interface Inspector {
 
   /**
    * Reviews a unit and returns the list of <tt>Problem</tt> objects which are of the given type.
-   * 
+   *
    * @param u The unit to review
    */
   public List<Problem> findProblems(Unit u);
@@ -66,7 +66,7 @@ public interface Inspector {
    * Modifies the orders such that this problem is not listed by the inspector in the future, i.e.
    * by adding a comment to the source unit's orders. Note that it is in the responsibility of the
    * caller to fire OrderChangedEvents.
-   * 
+   *
    * @param problem
    * @return Returns a unit whose orders were changed or null if this was not possible
    */
@@ -74,7 +74,7 @@ public interface Inspector {
 
   /**
    * Removes all additions made by suppress of this Inspector to the Unit's orders.
-   * 
+   *
    * @param u
    */
   public void unSuppress(Unit u);
@@ -107,11 +107,16 @@ public interface Inspector {
   /**
    * Tells this inspector whether to ignore certain problems. The inspector may choose to still
    * return problems of the given type even if <code>ignore==true</code>.
-   * 
+   *
    * @param type
    * @param ignore If <code>true</code>, the inspector may choose to not return problems of this
    *          type.
    */
   public void setIgnore(ProblemType type, boolean ignore);
+
+  /**
+   * Adds an interceptor to this Inspector.
+   */
+  public void addInterceptor(InspectorInterceptor interceptor);
 
 }

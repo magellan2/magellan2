@@ -51,6 +51,7 @@ public class EresseaOrderWriter extends OrderWriter implements GameSpecificOrder
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerName()
    */
+  @Override
   public String getCheckerName() {
     return "ECheck";
   }
@@ -58,6 +59,7 @@ public class EresseaOrderWriter extends OrderWriter implements GameSpecificOrder
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#useChecker()
    */
+  @Override
   public boolean useChecker() {
     return true;
   }
@@ -65,6 +67,7 @@ public class EresseaOrderWriter extends OrderWriter implements GameSpecificOrder
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerDefaultParameter()
    */
+  @Override
   public String getCheckerDefaultParameter() {
     return " -s -l -w4 -v" + EresseaOrderWriter.ECHECKVERSION;
   }

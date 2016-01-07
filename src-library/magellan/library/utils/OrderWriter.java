@@ -16,8 +16,10 @@ package magellan.library.utils;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import magellan.library.Faction;
@@ -31,6 +33,7 @@ import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificOrderWriter;
+import magellan.library.plugins.OrderWriterPlugIn;
 import magellan.library.rules.ConstructibleType;
 import magellan.library.utils.logging.Logger;
 
@@ -59,17 +62,19 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   private boolean writeUnitTagsAsVorlageComment = false;
   /**
    * sometimes I don't want the timestamp..
-   *
+   * 
    * @author Fiete
    */
   private boolean writeTimeStamp = true;
 
   protected String commentStart = EresseaConstants.O_COMMENT;
 
+  protected List<OrderWriterPlugIn> plugins = new ArrayList<OrderWriterPlugIn>();
+
   /**
    * Creates a new OrderWriter object extracting the orders of faction f's units and writing them to
    * the stream w.
-   *
+   * 
    * @param g GameData object ot get orders from.
    * @param f the faction the orders are written for.
    */
@@ -80,7 +85,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * Creates a new OrderWriter object extracting the orders of faction f's units and writing them to
    * the stream w with the specified options for E-Check.
-   *
+   * 
    * @param g GameData object ot get orders from.
    * @param f the faction the orders are written for.
    * @param echeckOpts options for E-Check, default is " -s -l -w4"
@@ -102,6 +107,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * As {@link #write(BufferedWriter)}, but using a writer.
    */
+  @Override
   public int write(Writer write) throws IOException {
     return write(new BufferedWriter(write));
   }
@@ -109,11 +115,12 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * Writes the faction's orders to the stream. World and faction must be set, possibly using
    * {@link #setGameData(GameData)} and {@link #setFaction(Faction)}.
-   *
+   * 
    * @param stream
    * @return The number of written units
    * @throws IOException If an I/O error occurs
    */
+  @Override
   public synchronized int write(BufferedWriter stream) throws IOException {
     if (world == null) {
       log.warn("no game data");
@@ -141,6 +148,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
     return units;
   }
 
+  @Override
   public void setWriteUnitTagsAsVorlageComment(boolean bool) {
     writeUnitTagsAsVorlageComment = bool;
   }
@@ -148,6 +156,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * Write comments used by ECheck order checker.
    */
+  @Override
   public void setAddECheckComments(boolean bool) {
     addECheckComments = bool;
   }
@@ -155,6 +164,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * Remove transient (semicolon type) and permanent (// type) comments.
    */
+  @Override
   public void setRemoveComments(boolean semicolon, boolean slashslash) {
     removeSCComments = semicolon;
     removeSSComments = slashslash;
@@ -164,6 +174,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
    * Enforce that only Unix-style linebreaks are used. This is necessary when writing to the
    * clipboard under Windows.
    */
+  @Override
   public void setForceUnixLineBreaks(boolean bool) {
     forceUnixLineBreaks = bool;
   }
@@ -171,6 +182,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * Set a group. Only orders of units in this group are written.
    */
+  @Override
   public void setGroup(Group group) {
     this.group = group;
   }
@@ -256,6 +268,11 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   protected boolean writeUnit(Unit unit, BufferedWriter stream) throws IOException {
     if (unit instanceof TempUnit)
       return false;
+
+    for (OrderWriterPlugIn plugIn : plugins) {
+      if (plugIn.ignoreUnit(unit))
+        return false;
+    }
 
     writeUnitLine(stream, unit);
 
@@ -429,6 +446,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * If true, only confirmed units are written.
    */
+  @Override
   public void setConfirmedOnly(boolean confirmedOnly) {
     this.confirmedOnly = confirmedOnly;
   }
@@ -436,6 +454,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * Sets the set of regions to write.
    */
+  @Override
   public void setRegions(Collection<Region> aRegions) {
     regions = aRegions;
   }
@@ -454,10 +473,12 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
     this.writeTimeStamp = writeTimeStamp;
   }
 
+  @Override
   public void setGameData(GameData gameData) {
     world = gameData;
   }
 
+  @Override
   public void setFaction(Faction selectedFaction) {
     faction = selectedFaction;
   }
@@ -465,6 +486,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#setECheckOptions(java.lang.String)
    */
+  @Override
   public void setECheckOptions(String options) {
     if (options != null) {
       syntaxCheckOptions = options;
@@ -475,7 +497,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
 
   /**
    * Returns the value of syntaxCheckOptions.
-   *
+   * 
    * @return Returns syntaxCheckOptions.
    */
   protected String getSyntaxCheckOptions() {
@@ -485,4 +507,25 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
       return syntaxCheckOptions;
   }
 
+  /**
+   * You can use this method to add a OrderWriterPlugIn to the internal list of known
+   * OrderWriterPlugIns.
+   */
+  @Override
+  public void addOrderWriterPlugin(OrderWriterPlugIn plugin) {
+    if (!plugins.contains(plugin)) {
+      plugins.add(plugin);
+    }
+  }
+
+  /**
+   * You can use this method to rmove a OrderWriterPlugIn from the internal list of known
+   * OrderWriterPlugIns.
+   */
+  @Override
+  public void removeOrderWriterPlugIn(OrderWriterPlugIn plugin) {
+    if (plugins.contains(plugin)) {
+      plugins.remove(plugin);
+    }
+  }
 }

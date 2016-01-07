@@ -82,6 +82,7 @@ import magellan.library.tasks.AttackInspector;
 import magellan.library.tasks.BuildingInspector;
 import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Inspector;
+import magellan.library.tasks.InspectorInterceptor;
 import magellan.library.tasks.MaintenanceInspector;
 import magellan.library.tasks.MessageInspector;
 import magellan.library.tasks.MovementInspector;
@@ -110,8 +111,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   @Deprecated
   public static final String IDENTIFIER = MagellanDesktop.TASKS_IDENTIFIER;
 
-  private static final ProblemType INTERNAL = ProblemType
-      .create("tasks.tasktablepanel", "internal");
+  private static final ProblemType INTERNAL = ProblemType.create("tasks.tasktablepanel",
+      "internal");
 
   private JTable table;
   private TableSorter sorter;
@@ -234,9 +235,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     globalLabel.addItemListener(popupListener);
 
     progressbar = new JProgressBar();
-    GridBagConstraints c =
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START,
-            GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 3, 0);
+    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START,
+        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 3, 0);
     statusBar.add(selectionLabel, c);
     c.gridx++;
     statusBar.add(activeRegionLabel, c);
@@ -455,8 +455,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
       busyMenu.add(resetMenuItem);
 
       activeRegionMenu = new JPopupMenu();
-      JMenuItem arMenuItem =
-          new JMenuItem(Resources.get("tasks.contextmenu.restricttoactiveregion.title"));
+      JMenuItem arMenuItem = new JMenuItem(Resources.get(
+          "tasks.contextmenu.restricttoactiveregion.title"));
       activeRegionMenu.add(arMenuItem);
 
       arMenuItem.addActionListener(new ActionListener() {
@@ -478,8 +478,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
       });
 
       selectionMenu = new JPopupMenu();
-      JMenuItem sMenuItem =
-          new JMenuItem(Resources.get("tasks.contextmenu.restricttoselection.title"));
+      JMenuItem sMenuItem = new JMenuItem(Resources.get(
+          "tasks.contextmenu.restricttoselection.title"));
       selectionMenu.add(sMenuItem);
 
       sMenuItem.addActionListener(new ActionListener() {
@@ -516,7 +516,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   }
 
   protected void unAcknowledge() {
-    if ((JOptionPane.showConfirmDialog(this, Resources.get("tasks.confirmunacknowledge.message"))) != JOptionPane.YES_OPTION)
+    if ((JOptionPane.showConfirmDialog(this, Resources.get(
+        "tasks.confirmunacknowledge.message"))) != JOptionPane.YES_OPTION)
       // cancel
       return;
 
@@ -607,12 +608,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
         desc = p.getMessage();
       }
       if (desc != null && desc.length() > 120) {
-        desc =
-            desc.substring(0, 70) + " ... " + desc.substring(desc.length() - 40, desc.length() - 1);
+        desc = desc.substring(0, 70) + " ... " + desc.substring(desc.length() - 40, desc.length()
+            - 1);
       }
-      if ((option =
-          JOptionPane.showConfirmDialog(this, Resources.get("tasks.confirmremovetype.message", p
-              .getType(), desc))) == JOptionPane.YES_OPTION) {
+      if ((option = JOptionPane.showConfirmDialog(this, Resources.get(
+          "tasks.confirmremovetype.message", p.getType(), desc))) == JOptionPane.YES_OPTION) {
         addIgnoredProblem(p);
       }
       if (option == JOptionPane.CANCEL_OPTION) {
@@ -653,9 +653,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     }
     text.append(Resources.get("tasks.showfull.message", p.getMessage(), p.getObject(), p
         .getRegion(), p.getFaction(), p.getLine(), p.getType(), desc));
-    final TextAreaDialog d =
-        (new TextAreaDialog((JFrame) null, Resources.get("tasks.showfull.dialog.title"), text
-            .toString()));
+    final TextAreaDialog d = (new TextAreaDialog((JFrame) null, Resources.get(
+        "tasks.showfull.dialog.title"), text.toString()));
     d.setPreferredSize(new Dimension(400, 200));
     d.pack();
     d.setVisible(true);
@@ -809,16 +808,16 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
      */
     public synchronized UpdateEvent poll() {
       UpdateEvent event = events.remove(0);
-      Integer rank =
-          event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event.getObject());
+      Integer rank = event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event
+          .getObject());
       // remove obsolete events
       while (rank > 1 || clear) {
         if (rank > 1 || (clear && event.getObject() != UpdateEvent.CLEAR)) {
           // this is not the last event for the object or we are in clear mode
           // and this is not the last clear event
           if (TaskTablePanel.log.isDebugEnabled()) {
-            TaskTablePanel.log
-                .debug("skip " + event.getObject() + " " + event.isAdd() + " " + rank);
+            TaskTablePanel.log.debug("skip " + event.getObject() + " " + event.isAdd() + " "
+                + rank);
           }
           if (event.isAdd()) {
             addObjects.put(event.getObject(), rank - 1);
@@ -826,8 +825,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
             delObjects.put(event.getObject(), rank - 1);
           }
           event = events.remove(0);
-          rank =
-              event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event.getObject());
+          rank = event.isAdd() ? addObjects.get(event.getObject()) : delObjects.get(event
+              .getObject());
         } else {
           // this is the last clear event in the queue
           clear = false;
@@ -1142,13 +1141,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TODO, true)) {
       inspectors.add(ToDoInspector.getInstance(gameData));
     }
-    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, true)) {
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT,
+        true)) {
       inspectors.add(MovementInspector.getInstance(gameData));
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true)) {
       inspectors.add(ShipInspector.getInstance(gameData));
     }
-    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_BUILDING, true)) {
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_BUILDING,
+        true)) {
       inspectors.add(BuildingInspector.getInstance(gameData));
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SKILL, true)) {
@@ -1161,17 +1162,20 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TEACH, true)) {
       inspectors.add(TeachInspector.getInstance(gameData));
     }
-    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_GAMEDATA, true)) {
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_GAMEDATA,
+        true)) {
       inspectors.add(GameDataInspector.getInstance(gameData));
     }
-    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MESSAGE, true)) {
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MESSAGE,
+        true)) {
       inspectors.add(MessageInspector.getInstance(gameData));
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MAINTENANCE,
         true)) {
       inspectors.add(MaintenanceInspector.getInstance(gameData));
     }
-    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TRANSFER, true)) {
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TRANSFER,
+        true)) {
       inspectors.add(TransferInspector.getInstance(gameData));
     }
 
@@ -1180,6 +1184,22 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     }
 
     getIgnoredProblems();
+  }
+
+  /**
+   * Adds a new inspector to the list of insprectors
+   */
+  public void addInspector(Inspector inspector) {
+    inspectors.add(inspector);
+  }
+
+  /**
+   * Adds a new inspector interceptor to the list of inspectors
+   */
+  public void addInspectorInterceptor(InspectorInterceptor interceptor) {
+    for (Inspector i : inspectors) {
+      i.addInterceptor(interceptor);
+    }
   }
 
   /**
@@ -1263,7 +1283,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   protected void error(UpdateEvent event) {
     model.addProblem(ProblemFactory.createProblem(Severity.INFORMATION, INTERNAL, event != null
         ? event.region : null, null, null, event != null ? event.unit : null, null, INTERNAL
-        .getMessage(), -1));
+            .getMessage(), -1));
   }
 
   /**
@@ -1577,13 +1597,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   private boolean isValidFaction(Faction f) {
     // maybe it better to ignore the "restrictToOwner" setting, if there is no
     // faction owner.
-    if (restrictToOwner()
-        && !restrictToPassword()
-        && (getGameData().getOwnerFaction() == null || f == null || !getGameData()
-            .getOwnerFaction().equals(f.getID())))
+    if (restrictToOwner() && !restrictToPassword() && (getGameData().getOwnerFaction() == null
+        || f == null || !getGameData().getOwnerFaction().equals(f.getID())))
       return false;
-    if (restrictToPassword() && f != null
-        && (f.getPassword() == null || f.getPassword().length() == 0))
+    if (restrictToPassword() && f != null && (f.getPassword() == null || f.getPassword()
+        .length() == 0))
       return false;
 
     return true;
@@ -1663,8 +1681,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     String criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
     if (criteria == null) {
-      Logger.getInstance(this.getClass()).warn(
-          "deprecated property " + PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
+      Logger.getInstance(this.getClass()).warn("deprecated property "
+          + PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
       settings.remove(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
     }
 
@@ -1680,8 +1698,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
         String s = tokenizer.nextToken();
         ProblemType p;
         if (!pMap.containsKey(s)) {
-          pMap.put(s, new ProblemType(s, Resources.get("tasks.unknowntype.group"), Resources
-              .get("tasks.unknowntype.description"), null));
+          pMap.put(s, new ProblemType(s, Resources.get("tasks.unknowntype.group"), Resources.get(
+              "tasks.unknowntype.description"), null));
         }
         p = pMap.get(s);
         ignoredProblems.add(p);
@@ -1706,8 +1724,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
       if (lastActiveRegion != null)
         return p.getRegion() == null || p.getRegion() == lastActiveRegion;
     } else if (restrictToSelection())
-      return p.getRegion() == null || lastSelection == null
-          || lastSelection.contains(p.getRegion());
+      return p.getRegion() == null || lastSelection == null || lastSelection.contains(p
+          .getRegion());
 
     return true;
   }
@@ -1716,8 +1734,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
    * Returns <code>true</code> if problems will be restricted to the owner faction.
    */
   public boolean restrictToOwner() {
-    return PropertiesHelper
-        .getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, true);
+    return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER,
+        true);
   }
 
   /**

@@ -68,6 +68,11 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.FontUIResource;
 
+import org.simplericity.macify.eawt.Application;
+import org.simplericity.macify.eawt.ApplicationEvent;
+import org.simplericity.macify.eawt.ApplicationListener;
+import org.simplericity.macify.eawt.DefaultApplication;
+
 import magellan.client.actions.MenuAction;
 import magellan.client.actions.edit.FindAction;
 import magellan.client.actions.edit.QuickFindAction;
@@ -179,6 +184,8 @@ import magellan.library.io.file.FileType.ReadOnlyException;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.rules.Date;
 import magellan.library.tasks.GameDataInspector;
+import magellan.library.tasks.Inspector;
+import magellan.library.tasks.InspectorInterceptor;
 import magellan.library.tasks.Problem;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Locales;
@@ -199,11 +206,6 @@ import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.BoxTransformer;
 import magellan.library.utils.transformation.BoxTransformer.BBox;
 import magellan.library.utils.transformation.BoxTransformer.BBoxes;
-
-import org.simplericity.macify.eawt.Application;
-import org.simplericity.macify.eawt.ApplicationEvent;
-import org.simplericity.macify.eawt.ApplicationListener;
-import org.simplericity.macify.eawt.DefaultApplication;
 
 /**
  * This class is the root of all evil. It represents also the main entry point into the application
@@ -485,18 +487,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     settings.setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, Client.DEFAULT_LAF);
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ",Einkaufsgut");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET, "Einkaufsgut");
-    settings
-        .setProperty(
-            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-                + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
-            "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
+    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+        + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
+        "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, "10");
-    settings
-        .setProperty(
-            PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
-                + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
-            "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
+    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+        + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
+        "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
@@ -569,8 +567,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (ld.languagesFound()) {
         // startWindow.toBack();
         Point p = Client.startWindow.getLocation();
-        ld.setLocation((int) p.getX() + (Client.startWindow.getWidth() - ld.getWidth()) / 2,
-            (int) p.getY() - ld.getHeight() / 2);
+        ld.setLocation((int) p.getX() + (Client.startWindow.getWidth() - ld.getWidth()) / 2, (int) p
+            .getY() - ld.getHeight() / 2);
         Locale locale = ld.show();
         // startWindow.toFront();
         if (locale == null) {
@@ -712,8 +710,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     // load custom renderers
     // ForcedFileClassLoader.directory = filesDirectory;
-    RendererLoader rl =
-        new RendererLoader(Client.getResourceDirectory(), ".", geo, getProperties());
+    RendererLoader rl = new RendererLoader(Client.getResourceDirectory(), ".", geo,
+        getProperties());
     Collection<MapCellRenderer> cR = rl.loadRenderers();
 
     // init mapper
@@ -759,8 +757,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     nodeWrapperFactories.add(overviewPanel.getNodeWrapperFactory());
     topLevel.add(overviewPanel);
 
-    echeckPanel =
-        new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions().values());
+    echeckPanel = new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions()
+        .values());
     components.put(MagellanDesktop.ECHECK_IDENTIFIER, echeckPanel);
 
     taskPanel = new TaskTablePanel(getDispatcher(), getData(), getProperties());
@@ -1187,8 +1185,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (parameters.resourceDir == null) {
         parameters.resourceDir = parameters.binDir;
       }
-      parameters.settingsDir =
-          MagellanFinder.findSettingsDirectory(parameters.resourceDir, parameters.settingsDir);
+      parameters.settingsDir = MagellanFinder.findSettingsDirectory(parameters.resourceDir,
+          parameters.settingsDir);
       Resources.getInstance().initialize(parameters.resourceDir, "");
       MagellanLookAndFeel.setMagellanDirectory(parameters.resourceDir);
       MagellanImages.setMagellanDirectory(parameters.resourceDir);
@@ -1244,16 +1242,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             // setup a singleton instance of this client
             Client.INSTANCE = c;
 
-            String newestVersion =
-                VersionInfo.getNewestVersion(c.getProperties(), Client.startWindow);
+            String newestVersion = VersionInfo.getNewestVersion(c.getProperties(),
+                Client.startWindow);
             String currentVersion = VersionInfo.getVersion(tResourceDir);
             if (!Utils.isEmpty(newestVersion)) {
               Client.log.info("Newest Version on server: " + newestVersion);
               Client.log.info("Current Version: " + currentVersion);
               if (VersionInfo.isNewer(newestVersion, currentVersion)) {
-                String url =
-                    MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "."
-                        + Locales.getGUILocale().getLanguage());
+                String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
+                    .getGUILocale().getLanguage());
                 if (url == null) {
                   url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
                 }
@@ -1281,16 +1278,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
             Client.log.info("Is Mac extension working: " + c.application.isMac());
 
-            c.appIcon = c.application.getApplicationIconImage();
+            // c.appIcon = c.application.getApplicationIconImage();
 
             File crFile = null;
 
             if (tReport == null) {
               // if no report is given on startup, we check if we can load the last
               // loaded report.
-              boolean loadLastReport =
-                  PropertiesHelper.getBoolean(c.getProperties(),
-                      PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true);
+              boolean loadLastReport = PropertiesHelper.getBoolean(c.getProperties(),
+                  PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true);
               if (loadLastReport) {
                 crFile = c.fileHistory.getLastExistingReport();
                 if (crFile == null) {
@@ -1317,8 +1313,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             Client.startWindow = null;
 
             // show tip of the day window
-            if (c.getProperties().getProperty("TipOfTheDay.showTips", "true").equals("true")
-                || c.getProperties().getProperty("TipOfTheDay.firstTime", "true").equals("true")) {
+            if (c.getProperties().getProperty("TipOfTheDay.showTips", "true").equals("true") || c
+                .getProperties().getProperty("TipOfTheDay.firstTime", "true").equals("true")) {
               TipOfTheDay totd = new TipOfTheDay(c, c.getProperties());
 
               if (totd.doShow()) {
@@ -1378,16 +1374,16 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     try {
       Client.log.warn("OS: " + System.getProperty("os.name") + " " + System.getProperty("os.arch")
           + " " + System.getProperty("os.version"));
-      Client.log.warn("Java Version: " + System.getProperty("java.version") + " "
-          + System.getProperty("java.vendor"));
+      Client.log.warn("Java Version: " + System.getProperty("java.version") + " " + System
+          .getProperty("java.vendor"));
       Client.log.warn("Java Spec: " + System.getProperty("java.specification.version") + " "
-          + System.getProperty("java.specification.vendor") + " "
-          + System.getProperty("java.specification.name"));
-      Client.log.warn("VM Version: " + System.getProperty("java.vm.version") + " "
-          + System.getProperty("java.vm.vendor") + " " + System.getProperty("java.vm.name"));
+          + System.getProperty("java.specification.vendor") + " " + System.getProperty(
+              "java.specification.name"));
+      Client.log.warn("VM Version: " + System.getProperty("java.vm.version") + " " + System
+          .getProperty("java.vm.vendor") + " " + System.getProperty("java.vm.name"));
       Client.log.warn("VM Specification: " + System.getProperty("java.vm.specification.version")
-          + " " + System.getProperty("java.vm.specification.vendor") + " "
-          + System.getProperty("java.vm.specification.name"));
+          + " " + System.getProperty("java.vm.specification.vendor") + " " + System.getProperty(
+              "java.vm.specification.name"));
       Client.log.warn("Java Class Version: " + System.getProperty("java.class.version"));
     } catch (SecurityException e) {
       Client.log.warn("Unable to retrieve system properties: " + e);
@@ -1514,12 +1510,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       String msg = null;
 
       try {
-        if (getData() != null && getData().getFileType() != null
-            && getData().getFileType().getFile() != null) {
+        if (getData() != null && getData().getFileType() != null && getData().getFileType()
+            .getFile() != null) {
           Object msgArgs[] = { getData().getFileType().getFile().getAbsolutePath() };
-          msg =
-              (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text")))
-                  .format(msgArgs);
+          msg = (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text"))).format(
+              msgArgs);
         } else {
           msg = Resources.get("client.msg.quit.confirmsavenofile.text");
         }
@@ -1528,8 +1523,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         msg = Resources.get("client.msg.quit.confirmsavenofile.text");
       }
 
-      switch (JOptionPane.showConfirmDialog(this, msg, Resources
-          .get("client.msg.quit.confirmsave.title"), JOptionPane.YES_NO_CANCEL_OPTION)) {
+      switch (JOptionPane.showConfirmDialog(this, msg, Resources.get(
+          "client.msg.quit.confirmsave.title"), JOptionPane.YES_NO_CANCEL_OPTION)) {
       case JOptionPane.YES_OPTION:
 
         return JOptionPane.YES_OPTION;
@@ -1605,10 +1600,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // write cr to file
       Client.log.info("Client.saveReport Using encoding: " + getData().getEncoding());
       ProgressBarUI ui = new ProgressBarUI(this);
-      crw =
-          new CRWriter(getData(), ui, filetype, getData().getEncoding(), Integer
-              .parseInt(getProperties().getProperty("Client.CRBackups.count",
-                  FileBackup.DEFAULT_BACKUP_LEVEL + "")));
+      crw = new CRWriter(getData(), ui, filetype, getData().getEncoding(), Integer.parseInt(
+          getProperties().getProperty("Client.CRBackups.count", FileBackup.DEFAULT_BACKUP_LEVEL
+              + "")));
       crw.writeAsynchronously();
       crw.close();
 
@@ -1622,12 +1616,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     } catch (ReadOnlyException exc) {
       Client.log.error(exc);
       JOptionPane.showMessageDialog(this, Resources.getFormatted(
-          "actions.filesaveasaction.msg.filesave.readonly", filetype.getName()), Resources
-          .get("actions.filesaveasaction.msg.filesave.error.title"), JOptionPane.ERROR_MESSAGE);
+          "actions.filesaveasaction.msg.filesave.readonly", filetype.getName()), Resources.get(
+              "actions.filesaveasaction.msg.filesave.error.title"), JOptionPane.ERROR_MESSAGE);
     } catch (IOException exc) {
       Client.log.error(exc);
-      JOptionPane.showMessageDialog(this, exc.toString(), Resources
-          .get("actions.filesaveasaction.msg.filesave.error.title"), JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, exc.toString(), Resources.get(
+          "actions.filesaveasaction.msg.filesave.error.title"), JOptionPane.ERROR_MESSAGE);
     }
     return crw;
   }
@@ -1732,6 +1726,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Returns the name of the current loaded data file. If the result is null - then this does not
    * mean, that there is no report loaded - but not correctly set...
    */
+
   // public File getDataFile() {
   // return dataFile;
   // }
@@ -1757,29 +1752,26 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       ui.setMaximum(-1);
       ui.show();
       // FIXME(stm) maybe not pass ui to the reader here!?!
-      data =
-          new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName,
-              true, new ClientFileTypeChooser(client)));
+      data = new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(
+          fileName, true, new ClientFileTypeChooser(client)));
       if (data == null)
         throw new NullPointerException();
     } catch (FileTypeFactory.NoValidEntryException e) {
       ui.ready();
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.missingcr.text.1")
-          + fileName + Resources.get("client.msg.loadcr.missingcr.text.2"), Resources
-          .get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
+          + fileName + Resources.get("client.msg.loadcr.missingcr.text.2"), Resources.get(
+              "client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
       return null;
     } catch (FileNotFoundException exc) {
       ui.ready();
-      JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.error.text")
-          + exc.toString(), Resources.get("client.msg.loadcr.error.title"),
-          JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.error.text") + exc
+          .toString(), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
       Client.log.info(exc);
       return null;
     } catch (Exception exc) {
       ui.ready();
-      JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.error.text")
-          + exc.toString(), Resources.get("client.msg.loadcr.error.title"),
-          JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.error.text") + exc
+          .toString(), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
       Client.log.warn(exc);
       return null;
     }
@@ -1790,8 +1782,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Client.log.error(Resources.get("client.msg.outofmemory.text"));
     }
     if (!MemoryManagment.isFreeMemory(data.estimateSize())) {
-      JOptionPane.showMessageDialog(client, Resources.get("client.msg.lowmem.text"), Resources
-          .get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
+      JOptionPane.showMessageDialog(client, Resources.get("client.msg.lowmem.text"), Resources.get(
+          "client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
     }
     @SuppressWarnings("unused")
     int bE = 0, rE = 0, ruE = 0, sE = 0, uE = 0, mE = 0;
@@ -1799,15 +1791,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONID.type) {
         rE++;
         Region c = (Region) p.getObject();
-        log.info("Problem: Duplicate Region ID: '" + p.getRegion().getName() + "' ("
-            + p.getRegion().getID() + ") <> '" + c.getName() + "' (" + c.getID() + ")");
+        log.info("Problem: Duplicate Region ID: '" + p.getRegion().getName() + "' (" + p.getRegion()
+            .getID() + ") <> '" + c.getName() + "' (" + c.getID() + ")");
       }
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEREGIONUID.type) {
         ruE++;
         Region c = (Region) p.getObject();
-        log.info("Problem: Duplicate Region UID: '" + p.getRegion().getName() + "' ("
-            + p.getRegion().getID() + " - " + p.getRegion().getUID() + ") <> '" + c.getName()
-            + "' (" + c.getID() + " - " + c.getUID() + ")");
+        log.info("Problem: Duplicate Region UID: '" + p.getRegion().getName() + "' (" + p
+            .getRegion().getID() + " - " + p.getRegion().getUID() + ") <> '" + c.getName() + "' ("
+            + c.getID() + " - " + c.getUID() + ")");
       }
       if (p.getType() == GameDataInspector.GameDataProblemTypes.DUPLICATEBUILDINGID.type) {
         bE++;
@@ -1825,8 +1817,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (ruE > 0) {
       Client.log.error("report with errors: " + (rE + ruE) + " " + uE + " " + bE + " " + sE);
       if (JOptionPane.showConfirmDialog(client, Resources.get(
-          "client.msg.reporterrors.text.question", fileName, rE + ruE, uE, bE, sE), Resources
-          .get("client.msg.reporterrors.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+          "client.msg.reporterrors.text.question", fileName, rE + ruE, uE, bE, sE), Resources.get(
+              "client.msg.reporterrors.title"),
+          JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 
         // merge report with itself to resolve wrapping
 
@@ -1921,8 +1914,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       throw new IllegalStateException("implementation error");
     }
     if (!MemoryManagment.isFreeMemory(newData.estimateSize())) {
-      JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources
-          .get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
+      JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources.get(
+          "client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
     }
 
     // FIXME(stm) do not change on out of memory!?
@@ -1989,11 +1982,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         stringEntries[i] = entries[i].toString();
       }
 
-      Object selected =
-          JOptionPane.showInputDialog(client.getRootPane(), Resources
-              .get("client.msg.loadcr.multiplezipentries.text"), Resources
-              .get("client.msg.loadcr.multiplezipentries.title"), JOptionPane.QUESTION_MESSAGE,
-              null, stringEntries, stringEntries[0]);
+      Object selected = JOptionPane.showInputDialog(client.getRootPane(), Resources.get(
+          "client.msg.loadcr.multiplezipentries.text"), Resources.get(
+              "client.msg.loadcr.multiplezipentries.title"), JOptionPane.QUESTION_MESSAGE, null,
+          stringEntries, stringEntries[0]);
 
       if (selected == null)
         return null;
@@ -2030,8 +2022,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         if (f.getPassword() == null) {
           // take password from settings but only if it is not an
           // empty string
-          String pwd =
-              getProperties().getProperty("Faction.password." + (f.getID()).intValue(), null);
+          String pwd = getProperties().getProperty("Faction.password." + (f.getID()).intValue(),
+              null);
 
           if ((pwd != null) && !pwd.equals("")) {
             f.setPassword(pwd);
@@ -2053,9 +2045,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           for (Message m : f.getMessages()) {
 
             // check message id (new and old)
-            if ((m.getMessageType() != null)
-                && (((m.getMessageType().getID()).intValue() == 1784377885) || ((m.getMessageType()
-                    .getID()).intValue() == 19735))) {
+            if ((m.getMessageType() != null) && (((m.getMessageType().getID())
+                .intValue() == 1784377885) || ((m.getMessageType().getID()).intValue() == 19735))) {
               // this message indicates that the password has been
               // changed
               if (m.getAttributes() != null) {
@@ -2071,20 +2062,18 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                   if (!password.equals("") && !password.equals(f.getPassword())) {
                     // ask user for confirmation to take new
                     // password from message
-                    String oMessage =
-                        Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.text",
-                            new Object[] { f.toString(), password });
-                    String oTitle =
-                        Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.title");
-                    String[] oOptions =
-                        { Resources.get("button.yes"), Resources.get("button.no"),
-                            Resources.get("button.yestoall"), Resources.get("button.notoall") };
+                    String oMessage = Resources.get(
+                        "client.msg.postprocessloadedcr.acceptnewpassword.text", new Object[] { f
+                            .toString(), password });
+                    String oTitle = Resources.get(
+                        "client.msg.postprocessloadedcr.acceptnewpassword.title");
+                    String[] oOptions = { Resources.get("button.yes"), Resources.get("button.no"),
+                        Resources.get("button.yestoall"), Resources.get("button.notoall") };
                     boolean usePasswd = yesToAll;
                     if (!noToAll && !yesToAll) {
-                      int answer =
-                          JOptionPane.showOptionDialog(getRootPane(), oMessage, oTitle,
-                              JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-                              oOptions, 0);
+                      int answer = JOptionPane.showOptionDialog(getRootPane(), oMessage, oTitle,
+                          JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, oOptions,
+                          0);
                       switch (answer) {
                       case 0:
                         usePasswd = true;
@@ -2116,8 +2105,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                       factionsWithoutPassword = false;
 
                       if (getProperties() != null) {
-                        getProperties().setProperty("Faction.password." + (f.getID()).intValue(),
-                            f.getPassword());
+                        getProperties().setProperty("Faction.password." + (f.getID()).intValue(), f
+                            .getPassword());
                       }
                     }
                   }
@@ -2143,7 +2132,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // postProceddTheVoid moved to GameData.postProcess:
     }
 
-    if (aData != null && !PropertiesHelper.getBoolean(getProperties(), "map.creating.void", false)) {
+    if (aData != null && !PropertiesHelper.getBoolean(getProperties(), "map.creating.void",
+        false)) {
       aData.removeTheVoid();
     }
   }
@@ -2175,8 +2165,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     public String createTitle(GameData data, boolean showStatusOverride, boolean longTitle) {
       // set frame title (date)
-      StringBuilder title1 =
-          new StringBuilder(reportState.isStateChanged() ? "*" : "").append("Magellan");
+      StringBuilder title1 = new StringBuilder(reportState.isStateChanged() ? "*" : "").append(
+          "Magellan");
       StringBuilder title2 = new StringBuilder();
       StringBuilder title3 = new StringBuilder();
 
@@ -2209,10 +2199,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         }
 
         if (data.getDate() != null) {
-          title2.append(" - ").append(
-              data.getDate().toString(
-                  showStatusOverride ? Date.TYPE_SHORT : Date.TYPE_PHRASE_AND_SEASON)).append(" (")
-              .append(data.getDate().getDate()).append(")");
+          title2.append(" - ").append(data.getDate().toString(showStatusOverride ? Date.TYPE_SHORT
+              : Date.TYPE_PHRASE_AND_SEASON)).append(" (").append(data.getDate().getDate()).append(
+                  ")");
         }
 
         if (longTitle) {
@@ -2244,14 +2233,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             }
 
             if (units > 0) {
-              BigDecimal percent =
-                  (new BigDecimal((done * 100) / ((float) units))).setScale(2,
-                      BigDecimal.ROUND_DOWN);
-              title3.append(" (").append(units).append(" ").append(
-                  Resources.get("client.title.unit")).append(", ").append(done).append(" ").append(
-                  Resources.get("client.title.done")).append(", ").append(
-                  Resources.get("client.title.thatare")).append(" ").append(percent).append(" ")
-                  .append(Resources.get("client.title.percent")).append(")");
+              BigDecimal percent = (new BigDecimal((done * 100) / ((float) units))).setScale(2,
+                  BigDecimal.ROUND_DOWN);
+              title3.append(" (").append(units).append(" ").append(Resources.get(
+                  "client.title.unit")).append(", ").append(done).append(" ").append(Resources.get(
+                      "client.title.done")).append(", ").append(Resources.get(
+                          "client.title.thatare")).append(" ").append(percent).append(" ").append(
+                              Resources.get("client.title.percent")).append(")");
             }
           }
 
@@ -2259,9 +2247,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
 
       // this prevents that the title "flickers" when it changes too often
-      if (!title1.toString().equals(oldTitle1)
-          || ((data == null || data.getDate() == null) ? date != null : !data.getDate()
-              .equals(date)) || !title3.toString().equals(oldTitle3)) {
+      if (!title1.toString().equals(oldTitle1) || ((data == null || data.getDate() == null)
+          ? date != null : !data.getDate().equals(date)) || !title3.toString().equals(oldTitle3)) {
         date = data != null ? data.getDate() : null;
         oldTitle1 = title1.toString();
         oldTitle3 = title3.toString();
@@ -2347,8 +2334,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // getDispatcher().fire(new GameDataEvent(this, getData(), true));
     // also inform system about the new selection found in the GameData
     // object
-    getDispatcher().fire(
-        SelectionEvent.create(this, getData().getSelectedRegionCoordinates().values()));
+    getDispatcher().fire(SelectionEvent.create(this, getData().getSelectedRegionCoordinates()
+        .values()));
     // getDispatcher().fire(SelectionEvent.create(this, getData().getActiveRegion()));
 
   }
@@ -2362,8 +2349,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public void setLookAndFeel(String laf) {
     boolean lafSet = true;
 
-    if (MagellanLookAndFeel.equals(laf)
-        && laf.equals(getProperties().getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, ""))) {
+    if (MagellanLookAndFeel.equals(laf) && laf.equals(getProperties().getProperty(
+        PropertiesHelper.CLIENT_LOOK_AND_FEEL, ""))) {
       lafSet = false;
     } else {
       lafSet = MagellanLookAndFeel.setLookAndFeel(laf);
@@ -2502,7 +2489,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param newData
    */
   public void setData(GameData newData) {
-    log.fine("setData " + (newData.getFileType() != null ? newData.getFileType().getName() : "???"));
+    log.fine("setData " + (newData.getFileType() != null ? newData.getFileType().getName()
+        : "???"));
     context.setGameData(newData);
     postProcessLoadedCR(newData);
     log.fine("fire(GameDataEvent)");
@@ -2616,8 +2604,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private void saveExtendedState() {
     if (getProperties() == null)
       return;
-    getProperties().setProperty("Client.extendedState",
-        String.valueOf(JVMUtilities.getExtendedState(this)));
+    getProperties().setProperty("Client.extendedState", String.valueOf(JVMUtilities
+        .getExtendedState(this)));
   }
 
   private void resetExtendedState() {
@@ -2869,8 +2857,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // helper: store Magellan-Dir in properties toBe changed
     properties.setProperty("plugin.helper.bindir", Client.getBinaryDirectory().toString());
     properties.setProperty("plugin.helper.resourcedir", Client.getResourceDirectory().toString());
-    List<Class<MagellanPlugIn>> plugInClasses =
-        new ArrayList<Class<MagellanPlugIn>>(loader.getExternalModuleClasses(properties));
+    List<Class<MagellanPlugIn>> plugInClasses = new ArrayList<Class<MagellanPlugIn>>(loader
+        .getExternalModuleClasses(properties));
     Collections.sort(plugInClasses, new Comparator<Class<MagellanPlugIn>>() {
 
       public int compare(Class<MagellanPlugIn> o1, Class<MagellanPlugIn> o2) {
@@ -3023,9 +3011,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
     BufferedImage originalIcon = appIcon;
 
-    BufferedImage newIcon =
-        new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(),
-            BufferedImage.TYPE_INT_ARGB);
+    BufferedImage newIcon = new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(),
+        BufferedImage.TYPE_INT_ARGB);
 
     Graphics2D graphics = (Graphics2D) newIcon.getGraphics();
     graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -3043,7 +3030,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (application == null)
       return;
     if (appIcon == null) {
-      appIcon = application.getApplicationIconImage();
+      // appIcon = application.getApplicationIconImage();
       if (appIcon == null)
         return;
     }
@@ -3051,9 +3038,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     int width = originalIcon.getWidth() / 4;
 
-    BufferedImage newIcon =
-        new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(),
-            BufferedImage.TYPE_INT_ARGB);
+    BufferedImage newIcon = new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(),
+        BufferedImage.TYPE_INT_ARGB);
 
     Graphics2D graphics = (Graphics2D) newIcon.getGraphics();
 
@@ -3113,6 +3099,24 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       setAdditionalIconInfo(units - done);
     } else {
       setDefaultIconInfo();
+    }
+  }
+
+  /**
+   * Adds a new inspector to the taskpanel
+   */
+  public void addInspector(Inspector inspector) {
+    if (taskPanel != null) {
+      taskPanel.addInspector(inspector);
+    }
+  }
+
+  /**
+   * Adds a new inspector interceptor to the taskpanel inspectors
+   */
+  public void addInspectorInterceptor(InspectorInterceptor interceptor) {
+    if (taskPanel != null) {
+      taskPanel.addInspectorInterceptor(interceptor);
     }
   }
 

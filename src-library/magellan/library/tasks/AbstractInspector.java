@@ -17,6 +17,7 @@ import magellan.library.GameData;
 import magellan.library.Identifiable;
 import magellan.library.Order;
 import magellan.library.Region;
+import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.gamebinding.GameSpecificStuff;
@@ -25,23 +26,25 @@ import magellan.library.utils.logging.Logger;
 /**
  * This is an abstract implementation of an inspector. You can use this as a base for your own
  * implementation.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 171 $
  */
 public abstract class AbstractInspector implements Inspector {
   private static final Logger log = Logger.getInstance(AbstractInspector.class);
 
+  private List<InspectorInterceptor> interceptors = new ArrayList<InspectorInterceptor>();
+
   /**
    * This prefix is prepended to suppress markers.
-   * 
+   *
    * @see #suppress(Problem)
    */
   public static final String SUPPRESS_LINE_PREFIX = Inspector.SUPPRESS_PREFIX + "Line";
 
   /**
    * This prefix is prepended to suppress markers. It is a permanent comment
-   * 
+   *
    * @see #suppress(Problem)
    */
   public static final String SUPPRESS_LINE_PREFIX_PERMANENT = Inspector.SUPPRESS_PREFIX_PERMANENT
@@ -59,7 +62,7 @@ public abstract class AbstractInspector implements Inspector {
   /**
    * Returns the empty list. Inspectors should overwrite this if they need to add problems that
    * don't depend on a certain unit or region.
-   * 
+   *
    * @see magellan.library.tasks.Inspector#reviewGlobal()
    */
   public List<Problem> reviewGlobal() {
@@ -69,7 +72,7 @@ public abstract class AbstractInspector implements Inspector {
   /**
    * Returns the empty list. Inspectors should overwrite this if they need to add problems that only
    * depend on a certain unit or region.
-   * 
+   *
    * @see magellan.library.tasks.Inspector#reviewFaction(Faction)
    */
   public List<Problem> reviewFaction(Faction f) {
@@ -79,7 +82,7 @@ public abstract class AbstractInspector implements Inspector {
   /**
    * Calls reviewUnit(u,Problem.INFO), reviewUnit(u,Problem.WARNING)... etc. and returns the joint
    * list of problems.
-   * 
+   *
    * @see magellan.library.tasks.Inspector#reviewUnit(magellan.library.Unit)
    */
   public List<Problem> reviewUnit(Unit u) {
@@ -98,7 +101,7 @@ public abstract class AbstractInspector implements Inspector {
   /**
    * Returns an empty list. Sub-classes should usually overwrite this method or
    * {@link AbstractInspector#listProblems(magellan.library.Region)} (or both).
-   * 
+   *
    * @see magellan.library.tasks.Inspector#findProblems(magellan.library.Unit)
    */
   public List<Problem> findProblems(Unit u) {
@@ -122,8 +125,8 @@ public abstract class AbstractInspector implements Inspector {
         } else {
           for (int l = p.getLine() - 2; l >= 0; --l) {
             Order line = unit.getOrders2().get(l);
-            if (!(line.getText().startsWith(Inspector.SUPPRESS_PREFIX) || line.getText()
-                .startsWith(Inspector.SUPPRESS_PREFIX_PERMANENT))) {
+            if (!(line.getText().startsWith(Inspector.SUPPRESS_PREFIX) || line.getText().startsWith(
+                Inspector.SUPPRESS_PREFIX_PERMANENT))) {
               break;
             } else if (isSuppressMarkerFor(line, p, true)) {
               it.remove();
@@ -156,8 +159,8 @@ public abstract class AbstractInspector implements Inspector {
       if (p.getFaction().units() != null) {
         responsible = p.getFaction().units().iterator().next();
       }
-    } else if (getData().getOwnerFaction() != null
-        && getData().getFaction(getData().getOwnerFaction()) != null) {
+    } else if (getData().getOwnerFaction() != null && getData().getFaction(getData()
+        .getOwnerFaction()) != null) {
       for (Unit u : getData().getFaction(getData().getOwnerFaction()).units()) {
         responsible = u;
         break;
@@ -167,25 +170,27 @@ public abstract class AbstractInspector implements Inspector {
   }
 
   protected boolean isSuppressMarker(Order order) {
-    return order.getText().startsWith(AbstractInspector.SUPPRESS_LINE_PREFIX_PERMANENT)
-        || order.getText().startsWith(AbstractInspector.SUPPRESS_LINE_PREFIX)
-        || order.getText().startsWith(Inspector.SUPPRESS_PREFIX_PERMANENT)
-        || order.getText().startsWith(Inspector.SUPPRESS_PREFIX);
+    return order.getText().startsWith(AbstractInspector.SUPPRESS_LINE_PREFIX_PERMANENT) || order
+        .getText().startsWith(AbstractInspector.SUPPRESS_LINE_PREFIX) || order.getText().startsWith(
+            Inspector.SUPPRESS_PREFIX_PERMANENT) || order.getText().startsWith(
+                Inspector.SUPPRESS_PREFIX);
   }
 
   protected boolean isSuppressMarkerFor(Order line, Problem p, boolean lineMode) {
     if (lineMode)
-      return line.getText().equals(getSuppressLineComment(p, false))
-          || line.getText().equals(getSuppressLineComment(p, true));
+      return line.getText().equals(getSuppressLineComment(p, false)) || line.getText().equals(
+          getSuppressLineComment(p, true));
     else
-      return line.getText().equals(getSuppressUnitComment(p, false))
-          || line.getText().equals(getSuppressUnitComment(p, true));
+      return line.getText().equals(getSuppressUnitComment(p, false)) || line.getText().equals(
+          getSuppressUnitComment(p, true));
   }
 
   /**
    * Returns false
    */
   protected boolean checkIgnoreUnit(Unit u) {
+    if (intercept(null, null, u, null))
+      return true;
     return false;
   }
 
@@ -193,7 +198,7 @@ public abstract class AbstractInspector implements Inspector {
    * Returns <code>true</code> iff this unit's orders contain
    * {@link AbstractInspector#getSuppressUnitComment(ProblemType)}. Sub-classes should overwrite
    * this to add more sophisticated ignoring of errors.
-   * 
+   *
    * @param u
    */
   protected boolean checkIgnoreUnit(Unit u, Problem p) {
@@ -210,7 +215,7 @@ public abstract class AbstractInspector implements Inspector {
   /**
    * Calls {@link AbstractInspector#checkIgnoreUnit(Unit)} for the container's owner unit.
    * Sub-classes may overwrite this to add more sophisticated ignoring of errors.
-   * 
+   *
    * @param c
    */
   protected boolean checkIgnoreUnitContainer(UnitContainer c) {
@@ -223,7 +228,7 @@ public abstract class AbstractInspector implements Inspector {
   /**
    * Calls reviewUnit(r,Problem.INFO), reviewUnit(r,Problem.WARNING)... etc. and returns the joint
    * list of problems.
-   * 
+   *
    * @see magellan.library.tasks.Inspector#reviewRegion(magellan.library.Region)
    */
   public List<Problem> reviewRegion(Region r) {
@@ -242,18 +247,21 @@ public abstract class AbstractInspector implements Inspector {
   /**
    * Returns <code>false</code>. Sub-classes should overwrite this method to add more sophisticated
    * ignoring of errors.
-   * 
+   *
    * @param r
    * @return <code>true</code> iff this region should be ignored for problems
    */
   protected boolean checkIgnoreRegion(Region r) {
+    if (intercept(null, r, null, null))
+      return true;
+
     return false;
   }
 
   /**
    * Returns an empty list. Sub-classes should usually overwrite this method or
    * {@link Inspector#findProblems(magellan.library.Unit)} (or both).
-   * 
+   *
    * @see magellan.library.tasks.Inspector#listProblems(magellan.library.Region)
    */
   public List<Problem> listProblems(Region r) {
@@ -277,12 +285,11 @@ public abstract class AbstractInspector implements Inspector {
   }
 
   protected String getSuppressUnitComment(Problem p, boolean permanent) {
-    StringBuffer sb =
-        new StringBuffer(permanent ? Inspector.SUPPRESS_PREFIX_PERMANENT
-            : Inspector.SUPPRESS_PREFIX);
+    StringBuffer sb = new StringBuffer(permanent ? Inspector.SUPPRESS_PREFIX_PERMANENT
+        : Inspector.SUPPRESS_PREFIX);
     sb.append(" ").append(p.getType().getName());
-    if (getResponsibleUnit(p) != null && getResponsibleUnit(p) != p.getObject()
-        && (p.getObject() instanceof Identifiable)) {
+    if (getResponsibleUnit(p) != null && getResponsibleUnit(p) != p.getObject() && (p
+        .getObject() instanceof Identifiable)) {
       Identifiable object = (Identifiable) p.getObject();
       sb.append(" ").append(object.getID());
     }
@@ -290,12 +297,11 @@ public abstract class AbstractInspector implements Inspector {
   }
 
   protected String getSuppressLineComment(Problem p, boolean permanent) {
-    StringBuffer sb =
-        new StringBuffer(permanent ? AbstractInspector.SUPPRESS_LINE_PREFIX_PERMANENT
-            : AbstractInspector.SUPPRESS_LINE_PREFIX);
+    StringBuffer sb = new StringBuffer(permanent ? AbstractInspector.SUPPRESS_LINE_PREFIX_PERMANENT
+        : AbstractInspector.SUPPRESS_LINE_PREFIX);
     sb.append(" ").append(p.getType().getName());
-    if (getResponsibleUnit(p) != null && getResponsibleUnit(p) != p.getObject()
-        && (p.getObject() instanceof Identifiable)) {
+    if (getResponsibleUnit(p) != null && getResponsibleUnit(p) != p.getObject() && (p
+        .getObject() instanceof Identifiable)) {
       Identifiable object = (Identifiable) p.getObject();
       sb.append(" ").append(object.getID());
     }
@@ -331,7 +337,7 @@ public abstract class AbstractInspector implements Inspector {
 
   /**
    * Does nothing.
-   * 
+   *
    * @see magellan.library.tasks.Inspector#unSuppress(magellan.library.Region)
    */
   public void unSuppress(Region r) {
@@ -340,7 +346,7 @@ public abstract class AbstractInspector implements Inspector {
 
   /**
    * Does nothing.
-   * 
+   *
    * @see magellan.library.tasks.Inspector#unSuppress(magellan.library.Faction)
    */
   public void unSuppress(Faction f) {
@@ -349,7 +355,7 @@ public abstract class AbstractInspector implements Inspector {
 
   /**
    * Does nothing.
-   * 
+   *
    * @see magellan.library.tasks.Inspector#unSuppressGlobal()
    */
   public void unSuppressGlobal() {
@@ -378,11 +384,29 @@ public abstract class AbstractInspector implements Inspector {
   /**
    * Does not really ignore any problems. Subclasses may want to overwrite this to be more
    * efficient.
-   * 
+   *
    * @see magellan.library.tasks.Inspector#setIgnore(magellan.library.tasks.ProblemType, boolean)
    */
   public void setIgnore(ProblemType type, boolean ignore) {
     // by default don't ignore any
   }
 
+  /**
+   * @see magellan.library.tasks.Inspector#addInterceptor(magellan.library.tasks.InspectorInterceptor)
+   */
+  public void addInterceptor(InspectorInterceptor interceptor) {
+    interceptors.add(interceptor);
+  }
+
+  /**
+   * Calls all interceptors and find an interceptor that matches. If not, return false.
+   */
+  protected boolean intercept(Faction f, Region r, Unit u, Ship s) {
+    for (InspectorInterceptor interceptor : interceptors) {
+      if (interceptor.ignore(f, r, u, s))
+        return true;
+    }
+
+    return false;
+  }
 }

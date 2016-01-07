@@ -43,6 +43,9 @@ public class NullUserInterface implements UserInterface {
   private static NullUserInterface singleton = new NullUserInterface();
   private static int logLevel = Logger.MAX_LEVEL;
 
+  /**
+   * @return a singleton
+   */
   public static UserInterface getInstance() {
     return NullUserInterface.singleton;
   }
@@ -50,6 +53,7 @@ public class NullUserInterface implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#ready()
    */
+  @Override
   public void ready() {
     // do nothing
     if (logLevel >= Logger.INFO) {
@@ -60,6 +64,7 @@ public class NullUserInterface implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#show()
    */
+  @Override
   public void show() {
     // do nothing
     if (logLevel >= Logger.INFO) {
@@ -70,6 +75,7 @@ public class NullUserInterface implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
+  @Override
   public void setProgress(String strMessage, int iProgress) {
     if (logLevel >= Logger.INFO) {
       log.info("Progress: " + strMessage + " (" + getPercent(iProgress) + "%)");
@@ -77,6 +83,7 @@ public class NullUserInterface implements UserInterface {
     progress = iProgress;
   }
 
+  @Override
   public int getProgress() {
     return progress;
   }
@@ -90,6 +97,7 @@ public class NullUserInterface implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#confirm(java.lang.String, java.lang.String)
    */
+  @Override
   public boolean confirm(String strMessage, String strTitle) {
     return true;
   }
@@ -98,6 +106,7 @@ public class NullUserInterface implements UserInterface {
    * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String,
    *      java.lang.Object[], java.lang.Object)
    */
+  @Override
   public Object input(String strMessage, String strTitle, Object[] values, Object initialSelection) {
     return null;
   }
@@ -105,6 +114,7 @@ public class NullUserInterface implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
+  @Override
   public void setMaximum(int maxProgress) {
     max = maxProgress;
   }
@@ -112,16 +122,19 @@ public class NullUserInterface implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#setTitle(java.lang.String)
    */
+  @Override
   public void setTitle(String title) {
     if (logLevel >= Logger.INFO) {
       log.info("Null user interface: '" + title + "'");
     }
   }
 
+  @Override
   public void showException(String message, String description, Exception exception) {
     throw new RuntimeException(exception);
   }
 
+  @Override
   public void showMessageDialog(String message) {
     if (logLevel >= Logger.INFO) {
       NullUserInterface.log.info("Error: " + message + ")");
@@ -137,16 +150,19 @@ public class NullUserInterface implements UserInterface {
     }
   }
 
+  @Override
   public void addClosingListener(ClosingListener listener) {
     // do nothing
   }
 
+  @Override
   public void showDialog(String title, String message, int messageType, int options) {
     if (logLevel >= Logger.WARN) {
       NullUserInterface.log.warn(title + " - " + message);
     }
   }
 
+  @Override
   public BBox askForGirth(BBox best, int layer, MapMetric metric) {
     return best;
   }

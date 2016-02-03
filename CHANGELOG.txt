@@ -1,3 +1,6 @@
+2016-02-03 / Build 644 - trickert (thoralf@m84.de)
+    * added a tab for sending the orders directly to the Eressea Server
+
 2016-01-07 / Build 642 - trickert (thoralf@m84.de)
     * switch to Java7 for new nightly build as of security reasons, performance and Java language options
     * added a hook for plugins to be informed during order writing to a file (for Odyssey Alliance Plugin to ignore specific units)

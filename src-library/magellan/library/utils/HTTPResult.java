@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.utils;
 
 import java.io.ByteArrayOutputStream;
@@ -29,15 +29,16 @@ import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Map;
 
-import magellan.library.utils.logging.Logger;
-
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+
+import magellan.library.utils.logging.Logger;
 
 /**
  * This is a container for HTTP responses.
- * 
+ *
  * @author <a href="mailto:thoralf@m84.de">Thoralf Rickert</a>
  * @version 1.0, erstellt am 02.09.2007
  */
@@ -51,7 +52,10 @@ public class HTTPResult {
 
   protected Hashtable<String, String> header = new Hashtable<String, String>();
 
-  public HTTPResult(GetMethod method, boolean async) {
+  /**
+   * Creates a HTTP Result instance based on the results inside the given method
+   */
+  protected HTTPResult(GetMethod method, boolean async) {
     this.method = method;
     try {
       status = method.getStatusCode();
@@ -60,8 +64,8 @@ public class HTTPResult {
         result = setResult(method.getResponseBodyAsStream());
         Header[] headers = method.getResponseHeaders();
 
-        for (Header header : headers) {
-          this.header.put(header.getName(), header.getValue());
+        for (Header h : headers) {
+          header.put(h.getName(), h.getValue());
         }
       }
     } catch (Exception exception) {
@@ -69,18 +73,39 @@ public class HTTPResult {
     }
   }
 
-  public HTTPResult(PostMethod method) {
+  /**
+   * Creates a HTTP Result instance based on the results inside the given method
+   */
+  protected HTTPResult(PostMethod method) {
     try {
 
       result = setResult(method.getResponseBodyAsStream());
       status = method.getStatusCode();
       Header[] headers = method.getResponseHeaders();
-      for (Header header : headers) {
-        this.header.put(header.getName(), header.getValue());
+      for (Header h : headers) {
+        header.put(h.getName(), h.getValue());
       }
 
     } catch (Exception exception) {
       HTTPResult.log.error("Konnte POST-Result nicht auslesen. " + exception.getMessage());
+    }
+  }
+
+  /**
+   * Creates a HTTP Result instance based on the results inside the given method
+   */
+  protected HTTPResult(PutMethod method) {
+    try {
+
+      result = setResult(method.getResponseBodyAsStream());
+      status = method.getStatusCode();
+      Header[] headers = method.getResponseHeaders();
+      for (Header h : headers) {
+        header.put(h.getName(), h.getValue());
+      }
+
+    } catch (Exception exception) {
+      HTTPResult.log.error("Konnte PUT-Result nicht auslesen. " + exception.getMessage());
     }
   }
 
@@ -100,6 +125,7 @@ public class HTTPResult {
         result = setResult(method.getResponseBodyAsStream());
       }
     } catch (Exception exception) {
+      // do nothing
     }
 
     String encoding = getEncoding();
@@ -107,6 +133,7 @@ public class HTTPResult {
       try {
         return new String(result, encoding);
       } catch (Exception exception) {
+        // do nothing
       }
     }
     return new String(result);
@@ -156,6 +183,9 @@ public class HTTPResult {
     return header;
   }
 
+  /**
+   * Returns the value for the header with the given key name.
+   */
   public String getHeader(String key) {
     if (header.containsKey(key))
       return header.get(key);

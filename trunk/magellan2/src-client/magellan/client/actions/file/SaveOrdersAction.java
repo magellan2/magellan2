@@ -21,47 +21,29 @@ import magellan.library.utils.Resources;
 
 /**
  * With the help of this action it is possible to save the given orders
- * 
+ *
  * @author Andreas
  */
 public class SaveOrdersAction extends MenuAction implements GameDataListener {
   private Mode mode;
 
   public enum Mode {
-    DIALOG, FILE, CLIPBOARD, MAIL
+    /** show a dialog */
+    DIALOG, /** save to given file */
+    FILE, /** save to clipboard */
+    CLIPBOARD, /** send a mail */
+    MAIL, /** send to Eressea Server */
+    PUT_ON_SERVER
   }
 
   /**
    * Creates new OpenCRAction
-   * 
+   *
    * @param client
    */
   public SaveOrdersAction(Client client, Mode mode) {
     super(client);
     this.mode = mode;
-
-    // don't need this, MenuAction takes care of shortcuts
-    // shortCuts = new ArrayList<KeyStroke>(1);
-    // switch (mode) {
-    // case DIALOG:
-    // shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK
-    // | InputEvent.SHIFT_MASK));
-    // break;
-    // case FILE:
-    // shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK
-    // | InputEvent.SHIFT_MASK));
-    // break;
-    // case CLIPBOARD:
-    // shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK
-    // | InputEvent.SHIFT_MASK));
-    // break;
-    // case MAIL:
-    // shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK
-    // | InputEvent.SHIFT_MASK));
-    //
-    // break;
-    // }
-    // DesktopEnvironment.registerShortcutListener(this);
 
     init();
     setEnabled(false);
@@ -90,7 +72,7 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
   }
 
   /**
-   * 
+   *
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
@@ -107,107 +89,55 @@ public class SaveOrdersAction extends MenuAction implements GameDataListener {
     case MAIL:
       execMail();
       break;
+    case PUT_ON_SERVER:
+      execPutOnServer();
+      break;
     }
   }
 
   private void showDialog() {
     if (!OrderWriterDialog.canShow(client.getData())) {
-      JOptionPane.showMessageDialog(client, Resources
-          .get("actions.saveordersaction.dialog.nofaction.message"));
+      JOptionPane.showMessageDialog(client, Resources.get("actions.saveordersaction.dialog.nofaction.message"));
     } else {
-      OrderWriterDialog d =
-          new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
-              .getSelectedRegions().values());
+      OrderWriterDialog d = new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client.getSelectedRegions().values());
       d.setVisible(true);
     }
   }
 
   private void execMail() {
     if (!OrderWriterDialog.canShow(client.getData())) {
-      JOptionPane.showMessageDialog(client, Resources
-          .get("actions.saveordersaction.dialog.nofaction.message"));
-    } else if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(),
-        client.getSelectedRegions().values()).runMail()) {
-      JOptionPane.showMessageDialog(client, Resources
-          .get("actions.saveordersaction.action.error.message"), Resources
-          .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
+      JOptionPane.showMessageDialog(client, Resources.get("actions.saveordersaction.dialog.nofaction.message"));
+    } else if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client.getSelectedRegions().values()).runMail()) {
+      JOptionPane.showMessageDialog(client, Resources.get("actions.saveordersaction.action.error.message"), Resources.get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
     }
   }
 
   private void execSave() {
     if (!OrderWriterDialog.canShow(client.getData())) {
-      JOptionPane.showMessageDialog(client, Resources
-          .get("actions.saveordersaction.dialog.nofaction.message"));
-    } else if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(),
-        client.getSelectedRegions().values()).runSave()) {
-      JOptionPane.showMessageDialog(client, Resources
-          .get("actions.saveordersaction.action.error.message"), Resources
-          .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
+      JOptionPane.showMessageDialog(client, Resources.get("actions.saveordersaction.dialog.nofaction.message"));
+    } else if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client.getSelectedRegions().values()).runSave()) {
+      JOptionPane.showMessageDialog(client, Resources.get("actions.saveordersaction.action.error.message"), Resources.get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
+    }
+  }
+
+  private void execPutOnServer() {
+    if (!OrderWriterDialog.canShow(client.getData())) {
+      JOptionPane.showMessageDialog(client, Resources.get("actions.saveordersaction.dialog.nofaction.message"));
+    } else if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client.getSelectedRegions().values()).runPutOnServer()) {
+      JOptionPane.showMessageDialog(client, Resources.get("actions.saveordersaction.action.error.message"), Resources.get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
     }
   }
 
   private void execClipboard() {
     if (!OrderWriterDialog.canShow(client.getData())) {
-      JOptionPane.showMessageDialog(client, Resources
-          .get("actions.saveordersaction.dialog.nofaction.message"));
+      JOptionPane.showMessageDialog(client, Resources.get("actions.saveordersaction.dialog.nofaction.message"));
     } else {
-      if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client
-          .getSelectedRegions().values()).runClipboard()) {
-        JOptionPane.showMessageDialog(client, Resources
-            .get("actions.saveordersaction.action.error.message"), Resources
-            .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
+      if (!new OrderWriterDialog(client, true, client.getData(), client.getProperties(), client.getSelectedRegions().values()).runClipboard()) {
+        JOptionPane.showMessageDialog(client, Resources.get("actions.saveordersaction.action.error.message"), Resources.get("actions.saveordersaction.action.error.title"),
+            JOptionPane.WARNING_MESSAGE);
       }
     }
   }
-
-  // /**
-  // * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
-  // */
-  // public void shortCut(KeyStroke shortcut) {
-  // if (shortCuts.indexOf(shortcut) < 0)
-  // return;
-  //
-  // switch (mode) {
-  // case DIALOG:
-  // showDialog();
-  // break;
-  // case FILE:
-  // execSave();
-  // break;
-  // case CLIPBOARD:
-  // execClipboard();
-  // break;
-  // case MAIL:
-  // execMail();
-  // break;
-  // }
-  // }
-  //
-  // /**
-  // * Should return all short cuts this class want to be informed. The elements should be of type
-  // * javax.swing.KeyStroke
-  // *
-  // * @see magellan.client.desktop.ShortcutListener#getShortCuts()
-  // */
-  // public Iterator<KeyStroke> getShortCuts() {
-  // return shortCuts.iterator();
-  // }
-  //
-  // /**
-  // * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
-  // */
-  // public String getShortcutDescription(KeyStroke obj) {
-  // if (mode==null) return "default"; // not yet initialized
-  // return Resources.get("actions.saveordersaction.shortcuts.description." + String.valueOf(mode));
-  // }
-  //
-  // /**
-  // *
-  // * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
-  // */
-  // public java.lang.String getListenerDescription() {
-  // return Resources.get("actions.saveordersaction.shortcuts.title." + String.valueOf(mode));
-  // }
 
   /**
    * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)

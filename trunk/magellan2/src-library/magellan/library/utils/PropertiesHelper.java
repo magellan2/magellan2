@@ -93,27 +93,22 @@ public class PropertiesHelper {
   public static final String AUTOCOMPLETION_KEYS_COMPLETE = "AutoCompletion.Keys.Complete";
 
   /** Property type number: */
-  public static final String AUTOCOMPLETION_KEYS_CYCLE_BACKWARD =
-      "AutoCompletion.Keys.Cycle.Backward";
+  public static final String AUTOCOMPLETION_KEYS_CYCLE_BACKWARD = "AutoCompletion.Keys.Cycle.Backward";
 
   /** Property type number: */
-  public static final String AUTOCOMPLETION_KEYS_CYCLE_FORWARD =
-      "AutoCompletion.Keys.Cycle.Forward";
+  public static final String AUTOCOMPLETION_KEYS_CYCLE_FORWARD = "AutoCompletion.Keys.Cycle.Forward";
 
   /** */
-  public static final String AUTOCOMPLETION_LIMIT_MAKE_COMPLETION =
-      "AutoCompletion.limitMakeCompletion";
+  public static final String AUTOCOMPLETION_LIMIT_MAKE_COMPLETION = "AutoCompletion.limitMakeCompletion";
 
   /** Property type number: */
-  public static final String AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT =
-      "AutoCompletion.SelfDefinedCompletions.count";
+  public static final String AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT = "AutoCompletion.SelfDefinedCompletions.count";
 
   /** Property type number: */
   public static final String AUTOCOMPLETION_TIME = "AutoCompletion.ActivationTime";
 
   /** Property type boolean: */
-  public static final String BORDERCELLRENDERER_USE_SEASON_IMAGES =
-      "BoderCellRenderer.useSeasonImages";
+  public static final String BORDERCELLRENDERER_USE_SEASON_IMAGES = "BoderCellRenderer.useSeasonImages";
 
   /** Property type String: */
   public static final String CELLRENDERER_CUSTOM_STYLESETS = "CellRenderer.CustomStylesets";
@@ -125,8 +120,7 @@ public class PropertiesHelper {
   public static final String CELLRENDERER_SHOW_TOOLTIPS = "CellRenderer.ShowToolTips";
 
   /** Property type String: */
-  public static final String CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP =
-      "CellRenderer.SkillIconTextColorMap";
+  public static final String CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP = "CellRenderer.SkillIconTextColorMap";
 
   /** Property type List<String>: */
   public static final String CELLRENDERER_STYLESETS = "CellRenderer.Stylesets.";
@@ -150,12 +144,10 @@ public class PropertiesHelper {
   public static final String MESSAGETYPE_SECTION_EVENTS_COLOR = "messagetype.section.events.color";
 
   /** Property type Color (#RRGGBB): background color for movement messages */
-  public static final String MESSAGETYPE_SECTION_MOVEMENTS_COLOR =
-      "messagetype.section.movement.color";
+  public static final String MESSAGETYPE_SECTION_MOVEMENTS_COLOR = "messagetype.section.movement.color";
 
   /** Property type Color (#RRGGBB): background color for economy messages */
-  public static final String MESSAGETYPE_SECTION_ECONOMY_COLOR =
-      "messagetype.section.economy.color";
+  public static final String MESSAGETYPE_SECTION_ECONOMY_COLOR = "messagetype.section.economy.color";
 
   /** Property type Color (#RRGGBB): background color for magic messages */
   public static final String MESSAGETYPE_SECTION_MAGIC_COLOR = "messagetype.section.magic.color";
@@ -164,8 +156,7 @@ public class PropertiesHelper {
   public static final String MESSAGETYPE_SECTION_STUDY_COLOR = "messagetype.section.study.color";
 
   /** Property type Color (#RRGGBB): background color for production messages */
-  public static final String MESSAGETYPE_SECTION_PRODUCTION_COLOR =
-      "messagetype.section.production.color";
+  public static final String MESSAGETYPE_SECTION_PRODUCTION_COLOR = "messagetype.section.production.color";
 
   /** Property type Color (#RRGGBB): background color for error messages */
   public static final String MESSAGETYPE_SECTION_ERRORS_COLOR = "messagetype.section.errors.color";
@@ -173,22 +164,17 @@ public class PropertiesHelper {
   /** Property type Color (#RRGGBB): background color for battle messages */
   public static final String MESSAGETYPE_SECTION_BATTLE_COLOR = "messagetype.section.battle.color";
 
-  public static final String CLIENTPREFERENCES_LOAD_LAST_REPORT =
-      "ClientPreferences.LoadLastReport";
+  public static final String CLIENTPREFERENCES_LOAD_LAST_REPORT = "ClientPreferences.LoadLastReport";
 
   public static final String CLIENT_LAST_CR_ADDED = "Client.lastCRAdded";
 
-  public static final String CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER =
-      "Client.lastSelectedAddCRFileFilter";
+  public static final String CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER = "Client.lastSelectedAddCRFileFilter";
 
-  public static final String CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER_ID =
-      "Client.lastSelectedAddCRFileFilterId";
+  public static final String CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER_ID = "Client.lastSelectedAddCRFileFilterId";
 
-  public static final String CLIENT_LAST_SELECTED_OPEN_CR_FILEFILTER =
-      "Client.lastSelectedOpenCRFileFilter";
+  public static final String CLIENT_LAST_SELECTED_OPEN_CR_FILEFILTER = "Client.lastSelectedOpenCRFileFilter";
 
-  public static final String CLIENT_LAST_SELECTED_OPEN_CR_FILEFILTER_ID =
-      "Client.lastSelectedOpenCRFileFilterId";
+  public static final String CLIENT_LAST_SELECTED_OPEN_CR_FILEFILTER_ID = "Client.lastSelectedOpenCRFileFilterId";
 
   public static final String BUILDINGRENDERER_RENDER = "BuildingTypeRenderer.Render.";
 
@@ -203,8 +189,7 @@ public class PropertiesHelper {
 
   public static final String ORDERWRITER_MAILSERVER_PASSWORD = "OrderWriter.serverPassword";
 
-  public static final String ORDERWRITER_MAILSERVER_PASSWORD_ENCRYPTED =
-      "OrderWriter.serverPassword.encrypted";
+  public static final String ORDERWRITER_MAILSERVER_PASSWORD_ENCRYPTED = "OrderWriter.serverPassword.encrypted";
 
   public static final String ORDERWRITER_MAILSERVER_ASKPWD = "OrderWriter.askPassword";
 
@@ -218,8 +203,7 @@ public class PropertiesHelper {
 
   public static final String ORDERWRITER_MAILSERVER_SUBJECT = "OrderWriter.mailSubject";
 
-  public static final String ORDERWRITER_MAILSERVER_USE_CR_SETTINGS =
-      "OrderWriter.useSettingsFromCr";
+  public static final String ORDERWRITER_MAILSERVER_USE_CR_SETTINGS = "OrderWriter.useSettingsFromCr";
 
   public static final String ORDERWRITER_MAILSERVER_CC2SENDER = "OrderWriter.CCToSender";
 
@@ -231,8 +215,9 @@ public class PropertiesHelper {
 
   public static String ORDERWRITER_AUTO_FILENAME = "OrderWriter.autoFileName";
 
-  public static final String ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT =
-      "OrderWriter.writeUnitTagsAsVorlageComment";
+  public static String ORDERWRITER_SERVER_URL = "OrderWriter.serverLocation";
+
+  public static final String ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT = "OrderWriter.writeUnitTagsAsVorlageComment";
 
   public static final String ORDERWRITER_SELECTED_REGIONS = "OrderWriter.includeSelRegionsOnly";
 
@@ -258,8 +243,7 @@ public class PropertiesHelper {
   public static final String TASKTABLE_RESTRICT_TO_SELECTION = "TaskTable.restrictToSelection";
 
   /** Property type boolean: */
-  public static final String TASKTABLE_RESTRICT_TO_ACTIVEREGION =
-      "TaskTable.restrictToAvtiveRegion";
+  public static final String TASKTABLE_RESTRICT_TO_ACTIVEREGION = "TaskTable.restrictToAvtiveRegion";
 
   /** Property type boolean: */
   public static final String TASKTABLE_SHOW_GLOBAL = "TaskTable.showGlobal";
@@ -301,8 +285,7 @@ public class PropertiesHelper {
   public static final String TASKTABLE_INSPECTORS_MAINTENANCE = "TaskTable.inspectors.maintenance";
 
   /** Property type list (of strings) **/
-  public static final String HISTORY_ACCESSORY_DIRECTORY_HISTORY =
-      "HistoryAccessory.directoryHistory";
+  public static final String HISTORY_ACCESSORY_DIRECTORY_HISTORY = "HistoryAccessory.directoryHistory";
 
   /**
    * Property type list of names
@@ -328,9 +311,8 @@ public class PropertiesHelper {
   public static final String BOOKMARKMANAGER_LASTFILE = "Bookmarkmanager.lastFile";
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into a
-   * boolean and returns that value. If something goes wrong or the key couldn't be found the
-   * default value def is returned.
+   * Searches the property with the given key and if it exists, it tries to convert it into a boolean and returns that value. If something goes wrong or the key couldn't be found the default value def
+   * is returned.
    */
   public static boolean getBoolean(Properties p, String key, boolean def) {
     String val = p.getProperty(key);
@@ -342,9 +324,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into a Color
-   * and returns that value. If something goes wrong or the key couldn't be found the default value
-   * def is returned.
+   * Searches the property with the given key and if it exists, it tries to convert it into a Color and returns that value. If something goes wrong or the key couldn't be found the default value def
+   * is returned.
    */
   public static Color getColor(Properties p, String key, Color def) {
     String val = p.getProperty(key);
@@ -359,9 +340,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into a float
-   * and returns that value. If something goes wrong or the key couldn't be found the default value
-   * def is returned.
+   * Searches the property with the given key and if it exists, it tries to convert it into a float and returns that value. If something goes wrong or the key couldn't be found the default value def
+   * is returned.
    */
   public static float getFloat(Properties p, String key, float def) {
     String val = p.getProperty(key);
@@ -378,9 +358,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into an
-   * integer and returns that value. If something goes wrong or the key couldn't be found the
-   * default value def is returned.
+   * Searches the property with the given key and if it exists, it tries to convert it into an integer and returns that value. If something goes wrong or the key couldn't be found the default value
+   * def is returned.
    */
   public static int getInteger(Properties p, String key, int def) {
     String val = p.getProperty(key);
@@ -397,8 +376,7 @@ public class PropertiesHelper {
   }
 
   /**
-   * Extracts properties by given prefix. If there exists a key called prefix.count this is used as
-   * order
+   * Extracts properties by given prefix. If there exists a key called prefix.count this is used as order
    *
    * @return list of strings; empty list if the property is undefined
    */
@@ -452,8 +430,7 @@ public class PropertiesHelper {
   }
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into a String
-   * and returns that value. If something goes wrong or the key couldn't be found the default value
+   * Searches the property with the given key and if it exists, it tries to convert it into a String and returns that value. If something goes wrong or the key couldn't be found the default value
    * defaultValue is returned.
    */
   public static String getString(Properties p, String key, String defaultValue) {
@@ -465,9 +442,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Loads a rectangle from the settings using the given key. If <code>r</code> is null, a new
-   * object is created. Else the result is stored in <code>r</code>. In either case, the resulting
-   * rectangle is returned.
+   * Loads a rectangle from the settings using the given key. If <code>r</code> is null, a new object is created. Else the result is stored in <code>r</code>. In either case, the resulting rectangle
+   * is returned.
    *
    * @return The loaded rectangle or null if an error occurs.
    */
@@ -490,8 +466,7 @@ public class PropertiesHelper {
   }
 
   /**
-   * Saves the rectangle r with property-key key to the settings. The rectangle is stored as key.x,
-   * key.y, key.width, key.height.
+   * Saves the rectangle r with property-key key to the settings. The rectangle is stored as key.x, key.y, key.width, key.height.
    */
   public static void saveRectangle(Properties settings, Rectangle r, String key) {
     settings.setProperty(key + ".x", String.valueOf(r.x));
@@ -555,8 +530,7 @@ public class PropertiesHelper {
    * @param newSettingsDir
    */
   public static void setSettingsDirectory(File newSettingsDir) {
-    PropertiesHelper.log.info("PropertiesHelper: directory used for rule files: "
-        + newSettingsDir.toString());
+    PropertiesHelper.log.info("PropertiesHelper: directory used for rule files: " + newSettingsDir.toString());
     PropertiesHelper.settingsDir = newSettingsDir;
   }
 

@@ -1,3 +1,7 @@
+2016-06-13 / Build 646 - stm (stm2@users.sourceforge.net)
+    * fixed bug in GiveOrderDialog
+    * more Java 7
+
 2016-02-03 / Build 644 - trickert (thoralf@m84.de)
     * added a tab for sending the orders directly to the Eressea Server
 

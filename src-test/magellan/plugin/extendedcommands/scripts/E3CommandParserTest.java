@@ -3,6 +3,12 @@
  */
 package magellan.plugin.extendedcommands.scripts;
 
+import static magellan.plugin.extendedcommands.scripts.EAssert.assertComment;
+import static magellan.plugin.extendedcommands.scripts.EAssert.assertError;
+import static magellan.plugin.extendedcommands.scripts.EAssert.assertMessage;
+import static magellan.plugin.extendedcommands.scripts.EAssert.assertOrder;
+import static magellan.plugin.extendedcommands.scripts.EAssert.assertWarning;
+import static magellan.plugin.extendedcommands.scripts.EAssert.containsOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -13,6 +19,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import magellan.client.Client;
 import magellan.client.ClientProvider;
@@ -29,11 +40,6 @@ import magellan.library.utils.logging.Logger;
 import magellan.plugin.extendedcommands.ExtendedCommandsProvider;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * @author stm
@@ -85,65 +91,6 @@ public class E3CommandParserTest extends MagellanTestWithResources {
         ExtendedCommandsProvider.createHelper(client, data, null, null));
 
     E3CommandParser.DEFAULT_SUPPLY_PRIORITY = 1;
-  }
-
-  @SuppressWarnings("deprecation")
-  protected boolean containsOrder(Unit unit2, String string) {
-    return unit2.getOrders().contains(string);
-  }
-
-  protected void assertComment(Unit u, int lineNr, boolean shortComment, boolean longComment) {
-    assertTrue("expected comment, but not enough orders", u.getOrders2().size() > lineNr);
-    String actual = u.getOrders2().get(lineNr).getText();
-    assertTrue("no long comment: " + actual, !longComment || actual.startsWith("// "));
-    assertTrue("no short comment: " + actual, !shortComment || actual.startsWith(";"));
-  }
-
-  protected void assertOrder(String expected, Unit u, int lineNr) {
-    assertTrue("expected " + expected + ", but not enough orders", u.getOrders2().size() > lineNr);
-    String actual = u.getOrders2().get(lineNr).getText();
-    if (!(actual.startsWith(expected) && (actual.length() == expected.length() || actual.substring(
-        expected.length()).trim().startsWith(";")))) {
-      assertEquals(expected, actual);
-    }
-  }
-
-  protected void assertError(String expected, Unit u, int lineNr) {
-    assertError(expected, u, lineNr, "; TODO", "(Fehler");
-  }
-
-  protected void assertWarning(String expected, Unit u, int lineNr) {
-    assertError(expected, u, lineNr, "; TODO", "");
-  }
-
-  protected void assertError(String expected, Unit u, int lineNr, String prefix, String warning) {
-    int min, max;
-    String found = null;
-    if (lineNr > 0) {
-      assertTrue("expected order \"" + expected + "\", but not enough orders", u.getOrders2()
-          .size() > lineNr);
-      min = lineNr;
-      max = lineNr;
-    } else {
-      assertTrue("expected order \"" + expected + "\" but unit has no orders", u.getOrders2()
-          .size() > 0);
-      min = 0;
-      max = u.getOrders2().size() - 1;
-    }
-
-    for (int currentLine = min; currentLine <= max && found == null; ++currentLine) {
-      String actual = u.getOrders2().get(currentLine).getText();
-      if (actual.contains(expected) && actual.startsWith(prefix) && actual.contains(warning)) {
-        found = actual;
-      }
-    }
-    if (found == null) {
-      assertEquals("; TODO: " + expected + " " + warning, found);
-    }
-  }
-
-  protected void assertMessage(String expected, Unit u, int lineNr) {
-    assertError(expected, u, lineNr, "; ", "");
   }
 
   /**
@@ -295,8 +242,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     // assertEquals(E3CommandParser.C_AMOUNT, w.asInt());
     w = new Warning(false);
 
-    tokens =
-        w.parse(new String[] { "Hello", "1", "2", E3CommandParser.W_SKILL, E3CommandParser.W_AMOUNT });
+    tokens = w.parse(new String[] { "Hello", "1", "2", E3CommandParser.W_SKILL,
+        E3CommandParser.W_AMOUNT });
     assertEquals(3, tokens.length);
     assertEquals("2", tokens[2]);
     assertEquals(true, w.contains(E3CommandParser.C_AMOUNT));

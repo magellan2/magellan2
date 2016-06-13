@@ -294,12 +294,19 @@ public class GiveOrderDialog extends InternationalizedDialog {
 
   private Unit getDummyUnit() {
     if (dummyUnit == null) {
-      dummyUnit = MagellanFactory.createUnit(UnitID.createUnitID(0, getData().base), getData());
+      GameData data = getData();
+      int id = 1;
+      for (id = 1; id < Integer.MAX_VALUE; ++id)
+        if (data.getUnit(UnitID.createUnitID(id, data.base)) == null) {
+          break;
+        }
+      dummyUnit = MagellanFactory.createUnit(UnitID.createUnitID(id, getData().base), getData());
       for (Unit u : selectedUnits) {
         for (Skill s : u.getSkills()) {
           Skill oldSkill = dummyUnit.getSkill(s.getSkillType());
           if (oldSkill == null) {
-            dummyUnit.addSkill(s);
+            dummyUnit.addSkill(new Skill(s.getSkillType(), s.getPoints(), s.getLevel(), 1, s
+                .noSkillPoints()));
           } else {
             oldSkill.setLevel(Math.max(s.getLevel(), oldSkill.getLevel()));
           }
@@ -307,7 +314,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
         for (Item i : u.getItems()) {
           Item oldItem = dummyUnit.getItem(i.getItemType());
           if (oldItem == null) {
-            dummyUnit.addItem(i);
+            dummyUnit.addItem(i);//new Item(i.getItemType(), i.getAmount()));
           } else {
             oldItem.setAmount(Math.max(oldItem.getAmount(), i.getAmount()));
           }
@@ -411,6 +418,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
   protected void quit() {
     super.quit();
     dummyUnit.setRegion(null);
+    dummyUnit.setFaction(null);
     editors.quit();
   }
 

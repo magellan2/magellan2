@@ -1,4 +1,4 @@
-2016-06-13 / Build 646 - stm (stm2@users.sourceforge.net)
+2016-06-13 / Build 647 - stm (stm2@users.sourceforge.net)
     * fixed bug in GiveOrderDialog
     * more Java 7
 

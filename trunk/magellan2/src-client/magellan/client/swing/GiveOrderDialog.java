@@ -314,7 +314,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
         for (Item i : u.getItems()) {
           Item oldItem = dummyUnit.getItem(i.getItemType());
           if (oldItem == null) {
-            dummyUnit.addItem(i);//new Item(i.getItemType(), i.getAmount()));
+            dummyUnit.addItem(new Item(i.getItemType(), i.getAmount()));
           } else {
             oldItem.setAmount(Math.max(oldItem.getAmount(), i.getAmount()));
           }

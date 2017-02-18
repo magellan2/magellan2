@@ -1631,23 +1631,27 @@ ITEM "Eisen"
 5;weight
 "Bergbau";makeskill
 "resources";category
+1;storeinbonw
 
 ITEM "Laen"
 "Laen";name
 2;weight
 "Bergbau";makeskill
 "resources";category
+1;storeinbonw
 
 ITEM "Adamantium"
 "Adamantium";name
 2;weight
 "resources";category
+1;storeinbonw
 
 ITEM "Holz"
 "Holz";name
 5;weight
 "Holzfällen";makeskill
 "resources";category
+1;storeinbonw
 
 ITEM "Bäume"
 "Bäume";name
@@ -1666,6 +1670,7 @@ ITEM "Mallorn"
 5;weight
 "Holzfällen";makeskill
 "resources";category
+1;storeinbonw
 
 ITEM "Mallornschößlinge"
 "Mallornschößlinge";name
@@ -1678,6 +1683,7 @@ ITEM "Stein"
 60;weight
 "Steinbau";makeskill
 "resources";category
+1;storeinbonw
 
 ITEM "Steine"
 "Steine";name
@@ -1775,6 +1781,7 @@ ITEM "Runenschwert"
 1;weight
 "Hiebwaffen";useskill
 "weapons";category
+1;storeinbonw
 RESOURCES
 3000;Silber
 
@@ -1871,6 +1878,7 @@ ITEM "Adamantiumaxt"
 "Adamantiumaxt";name
 1;weight
 "weapons";category
+1;storeinbonw
 
 ITEM "Rostige Kriegsaxt"
 "Rostige Kriegsaxt";name
@@ -1996,6 +2004,7 @@ ITEM "Adamantiumrüstung"
 "Adamantiumrüstung";name
 1;weight
 "armour";category
+1;storeinbonw
 
 ITEM "Rostiger Plattenpanzer"
 "Rostiger Plattenpanzer";name
@@ -2333,7 +2342,7 @@ ITEM "Drachenblut"
 "Drachenblut";name
 "misc";category
 1;weight
-0;storeinbonw
+1;storeinbonw
 
 SHIPTYPE "Boot"
 "Boot";name

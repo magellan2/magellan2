@@ -34,6 +34,8 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.junit.Test;
+
 import magellan.client.completion.AutoCompletion;
 import magellan.library.GameData;
 import magellan.library.Order;
@@ -45,8 +47,6 @@ import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
 import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Test;
 
 public abstract class AbstractOrderParserTest extends MagellanTestWithResources {
 
@@ -69,8 +69,8 @@ public abstract class AbstractOrderParserTest extends MagellanTestWithResources 
    */
   @Test
   public void testInitCommands() {
-    assertSame(61, getParser().getCommands().size());
-    assertSame(61, getParser().getHandlers().size());
+    assertSame(62, getParser().getCommands().size());
+    assertSame(62, getParser().getHandlers().size());
     assertTrue(getParser().getCommands().contains(EresseaConstants.OC_WORK));
     assertTrue(getParser().getCommands().contains(EresseaConstants.OC_DESTROY));
     assertTrue(getParser().getCommands().contains(EresseaConstants.OC_SABOTAGE));

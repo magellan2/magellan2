@@ -130,6 +130,15 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
           + getOrderTranslation(EresseaConstants.OC_NOT)));
     }
 
+    // the if clause is not always correct, but should usually be okay
+    if (!isLimitCompletions()
+        || getUnit().getModifiedBuilding() != null
+        || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
+            getUnit()))) {
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY) + " "
+          + getOrderTranslation(EresseaConstants.OC_NOT) + " "));
+    }
+
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_MESSAGE), " "));
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_DEFAULT),
         getOrderTranslation(EresseaConstants.OC_DEFAULT) + " " + oneQuote, "",
@@ -322,7 +331,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   }
 
   private StringBuilder getAttackOrders(Collection<Unit> spies) {
-    StringBuilder enemyUnits = new StringBuilder(); // curUnit.getID().toString()).append(" ;").append(curUnit.getName());
+    StringBuilder enemyUnits = new StringBuilder(); // curUnit.getID().toString()).append("
+                                                    // ;").append(curUnit.getName());
 
     for (Unit curUnit : spies) {
       if (enemyUnits.length() > 0) {
@@ -558,6 +568,14 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     }
   }
 
+  public void cmpltBezahle() {
+    addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_NOT), " "));
+  }
+
+  public void cmpltBezahleNicht() {
+    addRegionBuildings("", "", unit.getBuilding(), true);
+  }
+
   /** Add completions for command Botschaft. */
   public void cmpltBotschaft() {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT), " "));
@@ -748,7 +766,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
         final ItemType iType = iter.next();
 
         if (iType.getResources() != null && iType.getResources().hasNext() // necessary resources
-            // are known
+        // are known
             && checkForMaterials(iType.getResources(), i)) { // necessary resources are available
 
           addMulti(uid, i, iType.getOrderName(), iType.getResources());
@@ -1124,8 +1142,9 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
           if (!isLimitCompletions()
               || ((t instanceof CastleType) && t.containsRegionType(region.getRegionType())
-                  && hasSkill(unit, EresseaConstants.S_BURGENBAU, t.getBuildSkillLevel()) && (!completerSettingsProvider
-                  .getLimitMakeCompletion() || checkForMaterials(t.getRawMaterials().iterator())))) {
+                  && hasSkill(unit, EresseaConstants.S_BURGENBAU, t.getBuildSkillLevel())
+                  && (!completerSettingsProvider
+                      .getLimitMakeCompletion() || checkForMaterials(t.getRawMaterials().iterator())))) {
             String name =
                 Resources.getRuleItemTranslation("building." + t.getID().toString(), getLocale());
             if (name.startsWith("rules.skill")) {
@@ -1419,7 +1438,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       // RESERVE <Item (all)>
       completions.add(new Completion(item.getName() + " "
           + getTranslation("gamebinding.eressea.eresseaordercompleter.allamount"), item.getAmount()
-          + " " + item.getOrderName(), ""));
+              + " " + item.getOrderName(), ""));
     }
 
     // RESERVE <(all remaining items)>

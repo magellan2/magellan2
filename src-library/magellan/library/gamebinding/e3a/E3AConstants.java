@@ -61,10 +61,6 @@ public class E3AConstants extends EresseaConstants {
   public static final String OS_ALLIANCE_JOIN = "ALLIANCE_JOIN";
   /** Order constant ALLIANCE_JOIN */
   public static final StringID OC_ALLIANCE_JOIN = StringID.create("ALLIANCE_JOIN");
-  /** BEZAHLE (NICHT) */
-  public static final String OS_PAY = "PAY";
-  /** Order constant PAY */
-  public static final StringID OC_PAY = StringID.create("PAY");
   /** MACHE Wache */
   public static final String OS_WATCH = "WATCH";
   /** Order constant WATCH */

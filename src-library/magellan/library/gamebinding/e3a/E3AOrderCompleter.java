@@ -106,7 +106,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
         || getUnit().getModifiedBuilding() != null
         || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
             getUnit()))) {
-      addCompletion(new Completion(getOrderTranslation(E3AConstants.OC_PAY) + " "
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY) + " "
           + getOrderTranslation(EresseaConstants.OC_NOT) + " "));
     }
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_MESSAGE), " "));
@@ -198,13 +198,14 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
         .getBuilding().getOwnerUnit().equals(getUnit())))
         || ((getUnit().getShip() != null) && (getUnit().getShip().getOwnerUnit() != null) && (getUnit()
             .getShip().getOwnerUnit().equals(getUnit())))
-            ||
-            // ... vicious warriors destroying other peoples buildings or ships
-            (getUnit().getModifiedBuilding() != null
+        ||
+    // ... vicious warriors destroying other peoples buildings or ships
+        (getUnit().getModifiedBuilding() != null
             && getUnit().getModifiedBuilding().getOwnerUnit() != null && getUnit().getFaction() != getUnit()
-            .getModifiedBuilding().getOwnerUnit().getFaction())
-            || (getUnit().getModifiedShip() != null && (getUnit().getModifiedShip().getOwnerUnit() == null || getUnit()
-            .getFaction() != getUnit().getModifiedShip().getOwnerUnit().getFaction()))) {
+                .getModifiedBuilding().getOwnerUnit().getFaction())
+        || (getUnit().getModifiedShip() != null && (getUnit().getModifiedShip().getOwnerUnit() == null
+            || getUnit()
+                .getFaction() != getUnit().getModifiedShip().getOwnerUnit().getFaction()))) {
       addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_DESTROY)));
     } else {
       if (hasSkill(getUnit(), EresseaConstants.S_STRASSENBAU) && (getRegion() != null)
@@ -220,14 +221,6 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   public void cmpltBenenne() {
     super.cmpltBenenne();
     addCompletion(new Completion(getOrderTranslation(E3AConstants.OC_ALLIANCE), " "));
-  }
-
-  public void cmpltBezahle() {
-    addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_NOT), " "));
-  }
-
-  public void cmpltBezahleNicht() {
-    addRegionBuildings("", "", unit.getBuilding(), true);
   }
 
   @Override

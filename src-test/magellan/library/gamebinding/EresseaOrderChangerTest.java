@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Ship;
@@ -43,9 +46,6 @@ import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Test for EresseaOrderChanger
@@ -510,7 +510,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testGetLongOrdersTranslated() throws Exception {
     ArrayList<String> orders = changer.getLongOrders(DE_LOCALE);
-    assertEquals(21, orders.size());
+    assertEquals(22, orders.size());
     assertEquals("ARBEITE", orders.get(0));
   }
 
@@ -520,7 +520,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testGetLongOrderTokens() throws Exception {
     ArrayList<StringID> tokens = changer.getLongOrderTokens();
-    assertEquals(21, tokens.size());
+    assertEquals(22, tokens.size());
     assertEquals(EresseaConstants.OC_WORK, tokens.get(0));
     assertEquals(EresseaConstants.OC_GROW, tokens.get(20));
   }

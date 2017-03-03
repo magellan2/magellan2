@@ -97,14 +97,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     if (horses <= 0)
       return MovementEvaluator.CAP_NO_HORSES;
 
-    int skillLevel = 0;
-    Skill s = unit.getModifiedSkill(rules.getSkillType(EresseaConstants.S_REITEN, true));
-
-    if (s != null) {
-      skillLevel = s.getLevel();
-    }
-
-    if (horses > (skillLevel * unit.getModifiedPersons() * 2))
+    if (horses > getMaxHorsesRiding(unit))
       return MovementEvaluator.CAP_UNSKILLED;
 
     int carts = 0;
@@ -124,13 +117,22 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       int cartsWithoutHorses = carts - (horses / 2);
       horsesWithoutCarts = horses % 2;
       capacity =
-          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
+          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40))
+              * 100)
               - (getRaceWeight(unit) * unit.getModifiedPersons());
     }
     // Fiete 20070421 (Runde 519)
     // GOTS not active when riding! (tested)
     // return respectGOTS(unit, capacity);
     return capacity;
+  }
+
+  protected int getMaxHorsesRiding(Unit unit) {
+    return getRules().getGameSpecificStuff().getGameSpecificRules().getMaxHorsesRiding(unit);
+  }
+
+  protected int getMaxHorsesWalking(Unit unit) {
+    return getRules().getGameSpecificStuff().getGameSpecificRules().getMaxHorsesWalking(unit);
   }
 
   protected int getHorses(Unit unit) {
@@ -162,14 +164,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       horses = 0;
     }
 
-    int skillLevel = 0;
-    Skill s = unit.getModifiedSkill(rules.getSkillType(EresseaConstants.S_REITEN, true));
-
-    if (s != null) {
-      skillLevel = s.getLevel();
-    }
-
-    if (horses > ((skillLevel * unit.getModifiedPersons() * 4) + unit.getModifiedPersons()))
+    if (horses > getMaxHorsesWalking(unit))
       // too many horses
       return MovementEvaluator.CAP_UNSKILLED;
 
@@ -187,7 +182,15 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     int horsesWithoutCarts = 0;
     int cartsWithoutHorses = 0;
 
-    if (skillLevel == 0) {
+    int ridingSkill = 0;
+    {
+      Skill s = unit.getModifiedSkill(rules.getSkillType(EresseaConstants.S_REITEN, true));
+
+      if (s != null) {
+        ridingSkill = s.getLevel();
+      }
+    }
+    if (ridingSkill == 0) {
       // can't use carts!!!
       horsesWithoutCarts = horses;
       cartsWithoutHorses = carts;
@@ -203,11 +206,12 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
     if ((race == null) || (race.getID().equals(EresseaConstants.R_TROLLE) == false)) {
       capacity =
-          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40)) * 100)
+          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40))
+              * 100)
               + (((int) ((race == null ? 10 : race.getCapacity()) * 100)) * unit
                   .getModifiedPersons());
     } else {
-      int horsesMasteredPerPerson = (skillLevel * 4) + 1;
+      int horsesMasteredPerPerson = getMaxHorsesWalking(unit);
       int trollsMasteringHorses = horses / horsesMasteredPerPerson;
 
       if ((horses % horsesMasteredPerPerson) != 0) {

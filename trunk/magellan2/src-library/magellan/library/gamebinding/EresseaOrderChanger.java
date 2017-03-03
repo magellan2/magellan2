@@ -436,7 +436,7 @@ public class EresseaOrderChanger implements OrderChanger {
    * list of long orders in Eressea. <br />
    * ARBEITE, ATTACKIERE, BEKLAUE, BELAGERE, FAHRE, FOLGE, FORSCHE, KAUFE, LEHRE, LERNE, MACHE
    * (Ausnahme: MACHE TEMP), NACH, PFLANZE, PIRATERIE, ROUTE, SABOTIERE SCHIFF, SPIONIERE, TREIBE,
-   * UNTERHALTE, VERKAUFE, ZAUBERE, ZÜCHTE.
+   * UNTERHALTE, VERKAUFE, ZAUBERE, ZÜCHTE, ZERSTÖRE.
    */
   protected ArrayList<StringID> getLongOrderTokens() {
     if (longOrderTokens == null) {
@@ -463,6 +463,7 @@ public class EresseaOrderChanger implements OrderChanger {
       longOrderTokens.add(EresseaConstants.OC_SELL);
       longOrderTokens.add(EresseaConstants.OC_CAST);
       longOrderTokens.add(EresseaConstants.OC_GROW);
+      longOrderTokens.add(EresseaConstants.OC_DESTROY);
     }
     return longOrderTokens;
   }
@@ -508,7 +509,7 @@ public class EresseaOrderChanger implements OrderChanger {
         // there is another order except buy and sell
         boolean firstIsBuySell =
             map.keySet().iterator().next().equals(EresseaConstants.OC_BUY)
-            || map.keySet().iterator().next().equals(EresseaConstants.OC_SELL);
+                || map.keySet().iterator().next().equals(EresseaConstants.OC_SELL);
         for (StringID order : map.keySet()) {
           if (order.equals(EresseaConstants.OC_BUY) || order.equals(EresseaConstants.OC_SELL)) {
             if (!firstIsBuySell)

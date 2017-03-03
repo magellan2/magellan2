@@ -131,6 +131,7 @@ public class E3AOrderChanger extends EresseaOrderChanger {
       longOrderTokens.add(EresseaConstants.OC_SELL);
       longOrderTokens.add(EresseaConstants.OC_CAST);
       longOrderTokens.add(EresseaConstants.OC_GROW);
+      longOrderTokens.add(EresseaConstants.OC_DESTROY);
     }
     return longOrderTokens;
   }

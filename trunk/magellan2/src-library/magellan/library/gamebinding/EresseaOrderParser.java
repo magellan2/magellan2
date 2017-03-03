@@ -3720,6 +3720,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
+      getOrder().setLong(true);
       OrderToken t = getNextToken();
 
       if (isNumeric(t.getText())) {

@@ -85,6 +85,12 @@ ORDER "GUARD"
 "BEWACHEN";locale_de
 "GUARD";locale_en
 
+ORDER "PAY"
+"BEZAHLE NICHT [b1]";syntax
+"BEZAHLE";locale_de
+"BEZAHLEN";locale_de
+"PAY";locale_en
+
 ORDER "MESSAGE"
 "BOTSCHAFT REGION | (SCHIFF s1) | (GEBÄUDE b2) | (BURG b3) | (EINHEIT u4) | (PARTEI f5)  Text";syntax
 "BOTSCHAFT";locale_de
@@ -1477,10 +1483,12 @@ RACE "Jungdrachen"
 
 RACE "Schattendämonen"
 "Schattendämonen";name
+0;maintenance
 5;weight
 
 RACE "Schattenmeister"
 "Schattenmeister";name
+0;maintenance
 5;weight
 
 RACE "Bauern"
@@ -1497,18 +1505,22 @@ RACE "Schneemänner"
 
 RACE "Untote"
 "Untote";name
+0;maintenance
 10;weight
 
 RACE "Zombies"
 "Zombies";name
+0;maintenance
 10;weight
 
 RACE "Skelette"
 "Skelette";name
+0;maintenance
 5;weight
 
 RACE "Ghoule"
 "Ghoule";name
+0;maintenance
 10;weight
 
 RACE "Kröten"
@@ -1517,18 +1529,22 @@ RACE "Kröten"
 
 RACE "Adler"
 "Adler";name
+0;maintenance
 5;weight
 
 RACE "Delphine"
 "Delphine";name
+0;maintenance
 5;weight
 
 RACE "Einhörner"
 "Einhörner";name
+0;maintenance
 50;weight
 
 RACE "Eulen"
 "Eulen";name
+0;maintenance
 5;weight
 
 RACE "Geister"
@@ -1537,18 +1553,22 @@ RACE "Geister"
 
 RACE "Luchse"
 "Luchse";name
+0;maintenance
 5;weight
 
 RACE "Nymphen"
 "Nymphen";name
+0;maintenance
 10;weight
 
 RACE "Ratten"
 "Ratten";name
+0;maintenance
 1;weight
 
 RACE "Riesenschildkröten"
 "Riesenschildkröten";name
+0;maintenance
 16;weight
 
 RACE "Teufelchen"
@@ -1558,6 +1578,7 @@ RACE "Teufelchen"
 
 RACE "Tunnelwürmer"
 "Tunnelwürmer";name
+0;maintenance
 300;weight
 
 RACE "Wölfe"
@@ -1707,6 +1728,18 @@ ITEM "Pferde"
 "resources";category
 1;ishorse
 
+ITEM "Elfenpferd"
+"Elfenpferd";name
+50;weight
+"resources";category
+1;ishorse
+
+ITEM "Elfenpferde"
+"Elfenpferde";name
+50;weight
+"resources";category
+1;ishorse
+
 ITEM "Kräuter"
 "Kräuter";name
 0;weight
@@ -1720,6 +1753,7 @@ ITEM "Same"
 "Kräuterkunde";makeskill
 3;makeskilllevel
 "resources";category
+1;storeinbonw
 
 ITEM "Mallornsame"
 "Mallornsame";name
@@ -1727,6 +1761,7 @@ ITEM "Mallornsame"
 "Kräuterkunde";makeskill
 4;makeskilllevel
 "resources";category
+1;storeinbonw
 
 ITEM "Wagen"
 "Wagen";name
@@ -1879,6 +1914,9 @@ ITEM "Adamantiumaxt"
 1;weight
 "weapons";category
 1;storeinbonw
+RESOURCES
+1;Adamantium
+1;Holz
 
 ITEM "Rostige Kriegsaxt"
 "Rostige Kriegsaxt";name
@@ -2005,6 +2043,8 @@ ITEM "Adamantiumrüstung"
 1;weight
 "armour";category
 1;storeinbonw
+RESOURCES
+3;Adamantium
 
 ITEM "Rostiger Plattenpanzer"
 "Rostiger Plattenpanzer";name
@@ -2039,6 +2079,7 @@ ITEM "Laenschild"
 "Rüstungsbau";makeskill
 7;makeskilllevel
 "shield";category
+0;weight
 1;storeinbonw
 RESOURCES
 1;Laen
@@ -2046,6 +2087,7 @@ RESOURCES
 ITEM "Mantel der Unverletzlichkeit"
 "Mantel der Unverletzlichkeit";name
 "armour";category
+1;storeinbonw
 RESOURCES
 3000;Silber
 

@@ -1448,23 +1448,27 @@ ITEM "Eisen"
 5;weight
 "Bergbau";makeskill
 "resources";category
+1;storeinbonw
 
 ITEM "Laen"
 "Laen";name
 2;weight
 "Bergbau";makeskill
 "resources";category
+1;storeinbonw
 
 ITEM "Adamantium"
 "Adamantium";name
 2;weight
 "resources";category
+1;storeinbonw
 
 ITEM "Holz"
 "Holz";name
 5;weight
 "Holzfällen";makeskill
 "resources";category
+1;storeinbonw
 
 ITEM "Bäume"
 "Bäume";name
@@ -1483,6 +1487,7 @@ ITEM "Mallorn"
 5;weight
 "Holzfällen";makeskill
 "resources";category
+1;storeinbonw
 
 ITEM "Mallornschößlinge"
 "Mallornschößlinge";name
@@ -1518,6 +1523,18 @@ ITEM "Pferde"
 "resources";category
 1;ishorse
 
+ITEM "Elfenpferd"
+"Elfenpferd";name
+50;weight
+"resources";category
+1;ishorse
+
+ITEM "Elfenpferde"
+"Elfenpferde";name
+50;weight
+"resources";category
+1;ishorse
+
 ITEM "Streitross"
 "Streitross";name
 50;weight
@@ -1536,6 +1553,7 @@ ITEM "Same"
 "Kräuterkunde";makeskill
 3;makeskilllevel
 "resources";category
+1;storeinbonw
 
 ITEM "Mallornsame"
 "Mallornsame";name
@@ -1543,6 +1561,7 @@ ITEM "Mallornsame"
 "Kräuterkunde";makeskill
 4;makeskilllevel
 "resources";category
+1;storeinbonw
 
 ITEM "Wagen"
 "Wagen";name
@@ -1597,6 +1616,7 @@ ITEM "Runenschwert"
 1;weight
 "Hiebwaffen";useskill
 "weapons";category
+1;storeinbonw
 RESOURCES
 3000;Silber
 
@@ -1693,6 +1713,10 @@ ITEM "Adamantiumaxt"
 "Adamantiumaxt";name
 1;weight
 "weapons";category
+1;storeinbonw
+RESOURCES
+1;Adamantium
+1;Holz
 
 ITEM "Rostige Kriegsaxt"
 "Rostige Kriegsaxt";name
@@ -1840,6 +1864,9 @@ ITEM "Adamantiumrüstung"
 "Adamantiumrüstung";name
 1;weight
 "armour";category
+1;storeinbonw
+RESOURCES
+3;Adamantium
 
 ITEM "Rostiger Plattenpanzer"
 "Rostiger Plattenpanzer";name
@@ -1886,6 +1913,7 @@ RESOURCES
 ITEM "Mantel der Unverletzlichkeit"
 "Mantel der Unverletzlichkeit";name
 "armour";category
+1;storeinbonw
 RESOURCES
 3000;Silber
 

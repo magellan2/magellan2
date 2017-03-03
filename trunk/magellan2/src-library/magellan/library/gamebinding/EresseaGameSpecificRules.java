@@ -218,7 +218,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     return type instanceof CastleType;
   }
 
-  public int getMaxHorsesRiding(Unit u) {
+  public int getMaxHorsesWalking(Unit u) {
     int skillLevel = 0;
     Skill s = u.getModifiedSkill(getRules().getSkillType(EresseaConstants.S_REITEN, true));
 
@@ -228,7 +228,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     return ((skillLevel * u.getModifiedPersons() * 4) + u.getModifiedPersons());
   }
 
-  public int getMaxHorsesWalking(Unit u) {
+  public int getMaxHorsesRiding(Unit u) {
     int skillLevel = 0;
     Skill s = u.getModifiedSkill(getRules().getSkillType(EresseaConstants.S_REITEN, true));
 

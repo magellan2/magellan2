@@ -497,7 +497,11 @@ public class MagellanOrdersImplementation implements Orders {
 
   @Override
   public String toString() {
-    return "@Unit:" + unit + "," + orders.toString();
+    StringBuilder result = new StringBuilder("@Unit " + unit + ":\n");
+    for (Order order : orders) {
+      result.append(order.toString()).append("\n");
+    }
+    return result.toString();
   }
 
 }

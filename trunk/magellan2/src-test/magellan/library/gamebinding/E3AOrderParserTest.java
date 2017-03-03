@@ -28,20 +28,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
-import magellan.library.gamebinding.e3a.E3AConstants;
 import magellan.library.gamebinding.e3a.E3AOrderCompleter;
 import magellan.library.gamebinding.e3a.E3AOrderParser;
 import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
-
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Tests for E3 order parser. inherits from EresseaOrderParserTest to ensure functionality of E2
@@ -93,16 +92,6 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   @Test
   public void testBeklaueReader() {
     // no such order in E3
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BewacheReader}.
-   */
-  @Test
-  public void testBezahleReader() {
-    checkOrder(getOrderTranslation(E3AConstants.OC_PAY) + " "
-        + getOrderTranslation(EresseaConstants.OC_NOT));
-    checkOrder("BEZAHLE", false);
   }
 
   /**

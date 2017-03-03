@@ -78,7 +78,6 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     addCommand(E3AConstants.OC_ALLIANCE, new AllianzReader(this));
     addCommand(EresseaConstants.OC_HELP, new HelfeReader(this));
-    addCommand(E3AConstants.OC_PAY, new BezahleReader(this));
     // addCommand(E3AConstants.OC_GIVE, new GibReader(this));
     addCommand(EresseaConstants.OC_MAKE, new E3MacheReader(this));
     addCommand(EresseaConstants.OC_RECRUIT, new RekrutiereReader(this));
@@ -191,8 +190,8 @@ public class E3AOrderParser extends EresseaOrderParser {
                 // EresseaConstants.OC_HELP_COMBAT,
                 EresseaConstants.OC_HELP_GIVE, EresseaConstants.OC_HELP_GUARD,
                 EresseaConstants.OC_HELP_SILVER
-                // , EresseaConstants.OC_HELP_FACTIONSTEALTH
-                );
+            // , EresseaConstants.OC_HELP_FACTIONSTEALTH
+            );
       }
       return categories;
     }
@@ -253,67 +252,6 @@ public class E3AOrderParser extends EresseaOrderParser {
         getCompleter().cmpltBenenne();
       }
 
-      return retVal;
-    }
-  }
-
-  // ************* BEZAHLE
-  protected class BezahleReader extends OrderHandler {
-
-    BezahleReader(OrderParser parser) {
-      super(parser);
-    }
-
-    @Override
-    protected void init(OrderToken token, String text) {
-      order = new MaintainOrder(getTokens(), text);
-    }
-
-    @Override
-    public MaintainOrder getOrder() {
-      MaintainOrder corder = (MaintainOrder) super.getOrder();
-      return corder;
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      boolean retVal = false;
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      OrderToken t = getNextToken();
-
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
-        getOrder().setNot(true);
-        retVal = readBezahleNicht(t);
-      } else {
-        getOrder().setNot(false);
-        retVal = false;
-      }
-
-      if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltBezahle();
-      }
-      return retVal;
-    }
-
-    protected boolean readBezahleNicht(OrderToken token) {
-      boolean retVal = false;
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      OrderToken t = getNextToken();
-
-      if (isID(t.getText(), false)) {
-        t.ttype = OrderToken.TT_ID;
-        EntityID target = EntityID.createEntityID(t.getText(), getData().base);
-        getOrder().setBuilding(target);
-        retVal = readFinalID(t);
-      } else {
-        retVal = checkFinal(t);
-      }
-
-      if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltBezahleNicht();
-      }
       return retVal;
     }
   }

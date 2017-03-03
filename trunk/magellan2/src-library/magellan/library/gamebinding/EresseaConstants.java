@@ -538,6 +538,11 @@ public class EresseaConstants extends GameConstants {
   @Deprecated
   public static final StringID OC_PLAINTEXT = StringID.create("PLAINTEXT");
 
+  /** BEZAHLE (NICHT) */
+  public static final String OS_PAY = "PAY";
+  /** Order constant PAY */
+  public static final StringID OC_PAY = StringID.create("PAY");
+
   /** Order constant PLANT */
   public static final String O_PLANT = "PLANT";
   /** Order constant PLANT */

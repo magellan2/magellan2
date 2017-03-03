@@ -30,6 +30,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.Region;
@@ -40,10 +44,6 @@ import magellan.library.utils.OrderToken;
 import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Tests if valid orders are parsed correctly
@@ -96,8 +96,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
         new EresseaOrderParser(data, (EresseaOrderCompleter) getCompleter());
     assertTrue(localParser.getData() == data);
     assertTrue(localParser.getCompleter() == getCompleter());
-    assertSame(61, localParser.getCommands().size());
-    assertSame(61, localParser.getHandlers().size());
+    assertSame(62, localParser.getCommands().size());
+    assertSame(62, localParser.getHandlers().size());
   }
 
   /**
@@ -352,6 +352,16 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     // checkOrder("BEWACHT");
     checkOrder("BEWACHE ; a");
     checkOrder("BEWACHE 2", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BewacheReader}.
+   */
+  @Test
+  public void testBezahleReader() {
+    checkOrder(getOrderTranslation(EresseaConstants.OC_PAY) + " "
+        + getOrderTranslation(EresseaConstants.OC_NOT));
+    checkOrder("BEZAHLE", false);
   }
 
   /**
@@ -851,8 +861,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     // FIXME read comma'd coordinate
     /*
      * checkOrder(getOrderTranslation(EresseaConstants.OC_REGION) + " 1,1"); checkOrder("REGION",
-     * false); checkOrder("REGION 1 3", false); checkOrder("REGION 123", false);
-     * checkOrder("REGION abc,def", false);
+     * false); checkOrder("REGION 1 3", false); checkOrder("REGION 123", false); checkOrder(
+     * "REGION abc,def", false);
      */
   }
 

@@ -1500,12 +1500,14 @@ ITEM "Stein"
 60;weight
 "Steinbau";makeskill
 "resources";category
+0;storeinbonw
 
 ITEM "Steine"
 "Steine";name
 60;weight
 "Steinbau";makeskill
 "resources";category
+0;storeinbonw
 
 ITEM "Pferd"
 "Pferd";name
@@ -1513,6 +1515,7 @@ ITEM "Pferd"
 "Pferdedressur";makeskill
 1;makeskilllevel
 "resources";category
+0;storeinbonw
 1;ishorse
 
 ITEM "Pferde"
@@ -1521,18 +1524,21 @@ ITEM "Pferde"
 "Pferdedressur";makeskill
 1;makeskilllevel
 "resources";category
+0;storeinbonw
 1;ishorse
 
 ITEM "Elfenpferd"
 "Elfenpferd";name
 50;weight
 "resources";category
+0;storeinbonw
 1;ishorse
 
 ITEM "Elfenpferde"
 "Elfenpferde";name
 50;weight
 "resources";category
+0;storeinbonw
 1;ishorse
 
 ITEM "Streitross"
@@ -1541,6 +1547,7 @@ ITEM "Streitross"
 "Pferdedressur";makeskill
 4;makeskilllevel
 "resources";category
+0;storeinbonw
 1;ishorse
 RESOURCES
 1;Pferd
@@ -1569,6 +1576,7 @@ ITEM "Wagen"
 "Wagenbau";makeskill
 1;makeskilllevel
 "resources";category
+0;storeinbonw
 RESOURCES
 5;Holz
 
@@ -1579,6 +1587,7 @@ ITEM "Katapult"
 "Katapultbedienung";useskill
 5;makeskilllevel
 "distance weapons";category
+0;storeinbonw
 RESOURCES
 10;Holz
 
@@ -2123,7 +2132,7 @@ ITEM "Drachenblut"
 "Drachenblut";name
 "misc";category
 1;weight
-0;storeinbonw
+1;storeinbonw
 
 SHIPTYPE "Einbaum"
 "Einbaum";name

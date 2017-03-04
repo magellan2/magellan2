@@ -1704,13 +1704,14 @@ ITEM "Stein"
 60;weight
 "Steinbau";makeskill
 "resources";category
-1;storeinbonw
+0;storeinbonw
 
 ITEM "Steine"
 "Steine";name
 60;weight
 "Steinbau";makeskill
 "resources";category
+0;storeinbonw
 
 ITEM "Pferd"
 "Pferd";name
@@ -1718,6 +1719,7 @@ ITEM "Pferd"
 "Pferdedressur";makeskill
 1;makeskilllevel
 "resources";category
+0;storeinbonw
 1;ishorse
 
 ITEM "Pferde"
@@ -1726,18 +1728,21 @@ ITEM "Pferde"
 "Pferdedressur";makeskill
 1;makeskilllevel
 "resources";category
+0;storeinbonw
 1;ishorse
 
 ITEM "Elfenpferd"
 "Elfenpferd";name
 50;weight
 "resources";category
+0;storeinbonw
 1;ishorse
 
 ITEM "Elfenpferde"
 "Elfenpferde";name
 50;weight
 "resources";category
+0;storeinbonw
 1;ishorse
 
 ITEM "Kräuter"
@@ -1769,6 +1774,7 @@ ITEM "Wagen"
 "Wagenbau";makeskill
 1;makeskilllevel
 "resources";category
+0;storeinbonw
 RESOURCES
 5;Holz
 
@@ -1779,6 +1785,7 @@ ITEM "Katapult"
 "Katapultbedienung";useskill
 5;makeskilllevel
 "distance weapons";category
+0;storeinbonw
 RESOURCES
 10;Holz
 

@@ -1,8 +1,14 @@
-2017-03-04 / Build 650 - stm (stm2@users.sourceforge.net)
+2017-03-04 / Build 651 - stm (stm2@users.sourceforge.net)
+    * fixed a few more items to fit into magic bag (I swear I got it right this time!)
+
+2017-03-03 / Build 650 - stm (stm2@users.sourceforge.net)
     * fixed a few more items to fit into magic bag
     * fixed maintenance for some magic races, added Elfenpferde as horses
     * added BEZAHLE order to E2
     * made DESTROY a long order
+
+2017-02-18 / Build 647 - Fiete (sf@fietefietz.de)
+    * fixed a few items that should fit into magic bag
 
 2016-06-13 / Build 647 - stm (stm2@users.sourceforge.net)
     * fixed bug in GiveOrderDialog

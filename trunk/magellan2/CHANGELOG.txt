@@ -1,3 +1,6 @@
+2017-03-13 / Build 654 - stm (stm2@users.sourceforge.net)
+    * updated MagellanPluginTargetPanel.jar, needed for izpack plugin installers
+
 2017-03-04 / Build 651 - stm (stm2@users.sourceforge.net)
     * fixed a few more items to fit into magic bag (I swear I got it right this time!)
 

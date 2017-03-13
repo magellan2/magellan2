@@ -1738,13 +1738,6 @@ ITEM "Elfenpferd"
 0;storeinbonw
 1;ishorse
 
-ITEM "Elfenpferde"
-"Elfenpferde";name
-50;weight
-"resources";category
-0;storeinbonw
-1;ishorse
-
 ITEM "Kräuter"
 "Kräuter";name
 0;weight

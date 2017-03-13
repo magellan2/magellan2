@@ -43,6 +43,11 @@
 	<property name="compile.target"    value="1.7"/>
 	<property name="compile.encoding"  value="ISO-8859-1"/>
 
+        <!-- If you choose "true", then at least you know that your build classpath will include the Ant runtime. If you choose "false" then you are accepting the fact that the build behavior will change between older versions and 1.8+. -->
+        <presetdef name="javac">
+          <javac includeantruntime="false" />
+        </presetdef>
+
 	<path id="magellan.class.path">
 		<pathelement path="${java.class.path}/" />
 		<fileset dir="${lib}">
@@ -84,7 +89,6 @@
            encoding="${compile.encoding}"
            optimize="${optimize}"
            fork="true"
-		   includeantruntime="false"
 		   memoryInitialSize="128m"
            memoryMaximumSize="256m"
            debug="${debug}">
@@ -135,7 +139,6 @@
            encoding="${compile.encoding}"
            optimize="${optimize}"
            fork="true"
-           includeantruntime="false"
            memoryInitialSize="128m"
            memoryMaximumSize="256m"
            debug="${debug}">
@@ -190,7 +193,6 @@
            encoding="${compile.encoding}"
            optimize="${optimize}"
            fork="true"
-           includeantruntime="false"
            memoryInitialSize="128m"
            memoryMaximumSize="256m"
            debug="${debug}">
@@ -258,7 +260,6 @@
 	           encoding="${compile.encoding}"
 	           optimize="${optimize}"
 	           fork="true"
-	           includeantruntime="false"
 	           memoryInitialSize="128m"
 	           memoryMaximumSize="256m"
 	           debug="${debug}">
@@ -363,11 +364,11 @@
 
 		<echo message="Running all unit tests" />
 
-		<junit fork="yes" failureProperty="test.failure" includeantruntime="false" printsummary="withOutAndErr">
+		<junit fork="yes" failureProperty="test.failure" printsummary="withOutAndErr">
 			<test name="magellan.test.AFirstTest" todir="${junit.output.dir}" />
 			<classpath refid="magellan.class.path.test" />
 		</junit>
-		<junit fork="yes" failureProperty="test.failure" includeantruntime="false" printsummary="withOutAndErr">
+		<junit fork="yes" failureProperty="test.failure" printsummary="withOutAndErr">
 			<batchtest todir="${junit.output.dir}">
                 <!-- E3CommandParser is not part of the release -->				   
 				<fileset dir="${src.test}" includes="**/*Test.java" excludes="**/E3CommandParserTest.java" />

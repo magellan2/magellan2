@@ -25,6 +25,8 @@ import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -65,7 +67,7 @@ import magellan.library.utils.ShipRoutePlanner;
 
 /**
  * A context menu for UnitContainers like ships or buildings. Providing copy ID and copy ID+name.
- *
+ * 
  * @author Ulrich Küster
  */
 public class UnitContainerContextMenu extends JPopupMenu {
@@ -265,6 +267,13 @@ public class UnitContainerContextMenu extends JPopupMenu {
     private JButton ok;
     private JButton cancel;
 
+    private class IslandComperator implements Comparator<Island>
+    {
+      public int compare(Island o1, Island o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    }
+
     /**
      * Creates a new GiveOrderDialog object.
      */
@@ -294,9 +303,17 @@ public class UnitContainerContextMenu extends JPopupMenu {
       List<Island> islandList = new ArrayList<Island>(data.getIslands().size() + 2);
       newIsland.setName(Resources.get("addtoislanddialog.newisland.caption"));
 
-      islandList.add(newIsland);
       islandList.addAll(data.getIslands());
-      islandBox = new JComboBox(islandList.toArray());
+
+      Collections.sort(islandList, new IslandComperator());
+      // add newIsland at index 0 - if List is populated
+      if (islandList.size() > 0) {
+        islandList.add(0, newIsland);
+      } else {
+        islandList.add(newIsland);
+      }
+
+      islandBox = new JComboBox<Object>(islandList.toArray());
 
       c.gridx = 1;
       cp.add(islandBox, c);
@@ -505,7 +522,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 
   /**
    * Plans a route for a ship (typically over several weeks)
-   *
+   * 
    * @see ShipRoutingDialog
    */
   private void planShipRoute() {

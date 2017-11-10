@@ -1,3 +1,6 @@
+2017-11-06 / Build 664 - stm (stm2@users.sourceforge.net)
+    * improved support for other games including Drachensgrab
+
 2017-09-03 / Build 657 - stm (stm2@users.sourceforge.net)
     * E3CommandParser improved for foreign units
     * E3CommandParser: fixed division by zero bug for capacity

@@ -529,7 +529,6 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB 1 2 Silber", unit2, 0);
     assertEquals(3, unit.getOrders2().size());
     assertEquals(1, unit2.getOrders2().size());
-    assertOrder("GIB 1 2 Silber", unit2, 0);
 
     // test what happens if supplier unit already has a RESERVE order (nothing should change)
     unit.clearOrders();
@@ -564,10 +563,10 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit2.addOrder("// $cript Benoetige 4 Silber");
 
     parser.execute(unit.getFaction());
-    assertWarning("braucht 1 mehr Silber", unit, 2);
-    assertOrder("RESERVIERE JE 1 Silber", unit, 3);
-    assertOrder("GIB 1 1 Silber", unit2, 1);
-    assertOrder("RESERVIERE 4 Silber", unit2, 2);
+    assertWarning("braucht 1 mehr Silber", unit, 3);
+    assertOrder("RESERVIERE JE 1 Silber", unit, 2);
+    assertOrder("GIB 1 1 Silber", unit2, 2);
+    assertOrder("RESERVIERE 4 Silber", unit2, 1);
 
     // test Benoetige ALLES
     unit.clearOrders();
@@ -578,8 +577,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     parser.execute(unit.getFaction());
     // assertOrder("RESERVIERE 2 Silber", unit, 2);
-    assertOrder("GIB 1 3 Silber", unit2, 1);
-    assertOrder("RESERVIERE JE 1 Silber", unit2, 2);
+    assertOrder("GIB 1 3 Silber", unit2, 2);
+    assertOrder("RESERVIERE JE 1 Silber", unit2, 1);
     assertSame(3, unit2.getOrders2().size());
 
     // // test Benoetige ALLES
@@ -677,8 +676,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(3, unit.getOrders2().size());
     assertEquals(3, unit2.getOrders2().size());
     assertWarning("braucht 2 mehr Silber", unit, 2);
-    assertOrder("GIB 1 2 Silber", unit2, 1);
-    assertOrder("RESERVIERE 4 Silber", unit2, 2);
+    assertOrder("GIB 1 2 Silber", unit2, 2);
+    assertOrder("RESERVIERE 4 Silber", unit2, 1);
 
     // test conflicting
     unit.clearOrders();
@@ -689,9 +688,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     assertEquals(2, unit.getOrders2().size());
     assertEquals(4, unit2.getOrders2().size());
-    assertOrder("GIB 1 4 Silber", unit2, 1);
-    assertWarning("braucht 2 mehr Silber", unit2, 2);
-    assertOrder("RESERVIERE 2 Silber", unit2, 3);
+    assertWarning("braucht 2 mehr Silber", unit2, 1);
+    assertOrder("RESERVIERE 2 Silber", unit2, 2);
+    assertOrder("GIB 1 4 Silber", unit2, 3);
   }
 
   /**
@@ -714,8 +713,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(3, unit.getOrders2().size());
     assertEquals(3, unit2.getOrders2().size());
     assertWarning("braucht 2 mehr Silber", unit, 2);
-    assertOrder("GIB 1 2 Silber", unit2, 1);
-    assertOrder("RESERVIERE 4 Silber", unit2, 2);
+    assertOrder("GIB 1 2 Silber", unit2, 2);
+    assertOrder("RESERVIERE 4 Silber", unit2, 1);
 
     // test conflicting
     unit.clearOrders();
@@ -726,9 +725,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     assertEquals(2, unit.getOrders2().size());
     assertEquals(4, unit2.getOrders2().size());
-    assertOrder("GIB 1 4 Silber", unit2, 1);
-    assertWarning("braucht 2 mehr Silber", unit2, 2);
-    assertOrder("RESERVIERE 2 Silber", unit2, 3);
+    assertWarning("braucht 2 mehr Silber", unit2, 1);
+    assertOrder("RESERVIERE 2 Silber", unit2, 2);
+    assertOrder("GIB 1 4 Silber", unit2, 3);
   }
 
   /**
@@ -759,11 +758,11 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit2.clearOrders();
     parser.execute(unit.getFaction());
 
+    assertMessage("braucht 2 mehr Silber", unit2, 2);
+    assertOrder("RESERVIERE 2 Silber", unit2, 0);
+    assertOrder("GIB 1 4 Silber", unit2, 1);
     assertEquals(3, unit.getOrders2().size());
     assertEquals(3, unit2.getOrders2().size());
-    assertOrder("GIB 1 4 Silber", unit2, 0);
-    assertMessage("braucht 2 mehr Silber", unit2, 1);
-    assertOrder("RESERVIERE 2 Silber", unit2, 2);
 
     // test conflicting
     unit.clearOrders();
@@ -774,8 +773,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     assertEquals(3, unit.getOrders2().size());
     assertEquals(2, unit2.getOrders2().size());
-    assertOrder("GIB 1 4 Silber", unit2, 0);
-    assertOrder("RESERVIERE 2 Silber", unit2, 1);
+    assertOrder("GIB 1 4 Silber", unit2, 1);
+    assertOrder("RESERVIERE 2 Silber", unit2, 0);
 
     unit.clearOrders();
     unit.addOrder("// $cript BenoetigeFremd nnnn 4 Silber 99");
@@ -807,9 +806,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(7, unit.getOrders2().size());
     assertEquals(0, unit2.getOrders2().size());
     assertWarning("Einheit v gehört nicht zu uns", unit, 3);
-    assertOrder("GIB v 4 Silber", unit, 4);
-    assertMessage("braucht 2 mehr Silber", unit, 5);
-    assertOrder("RESERVIERE 2 Silber", unit, 6);
+    assertMessage("braucht 2 mehr Silber", unit, 6);
+    assertOrder("RESERVIERE 2 Silber", unit, 4);
+    assertOrder("GIB v 4 Silber", unit, 5);
 
     // Warning should make no difference
     // test conflicting
@@ -821,9 +820,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertEquals(6, unit.getOrders2().size());
     assertEquals(0, unit2.getOrders2().size());
-    assertOrder("GIB v 4 Silber", unit, 3);
-    assertMessage("braucht 2 mehr Silber", unit, 4);
-    assertOrder("RESERVIERE 2 Silber", unit, 5);
+    assertMessage("braucht 2 mehr Silber", unit, 5);
+    assertOrder("RESERVIERE 2 Silber", unit, 3);
+    assertOrder("GIB v 4 Silber", unit, 4);
 
     unit.clearOrders();
     unit.addOrder("// $cript Benoetige 4 Silber");
@@ -836,9 +835,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(factions);
     assertEquals(6, unit.getOrders2().size());
     assertEquals(0, unit2.getOrders2().size());
-    assertOrder("GIB v 4 Silber", unit, 3);
-    assertMessage("braucht 2 mehr Silber", unit, 4);
-    assertOrder("RESERVIERE 2 Silber", unit, 5);
+    assertMessage("braucht 2 mehr Silber", unit, 5);
+    assertOrder("RESERVIERE 2 Silber", unit, 3);
+    assertOrder("GIB v 4 Silber", unit, 4);
 
   }
 
@@ -910,6 +909,118 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     assertEquals(4, unit.getOrders2().size());
     assertOrder("RESERVIERE 8 Silber", unit, 3);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
+   */
+  @Test
+  public final void testCommandBenoetigePferd() {
+    builder.addItem(data, unit, "Pferd", 100);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Benoetige FUSS Pferd");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("RESERVIERE JE 1 Pferd", unit, 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Benoetige FUSS Pferd");
+    builder.addSkill(unit, "Reiten", 1);
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("RESERVIERE 5 Pferd", unit, 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Benoetige PFERD Pferd");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("RESERVIERE 2 Pferd", unit, 2);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
+   */
+  @Test
+  public final void testCommandBenoetigeCap() {
+    builder.addItem(data, unit, "Silber", 5);
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 15000);
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.addOrder("// $cript Kapazitaet FUSS");
+    unit.addOrder("// $cript Benoetige 10000 Silber");
+    parser.execute(unit.getFaction());
+
+    assertEquals(5, unit.getOrders2().size());
+    assertMessage("braucht 9460 mehr Silber", unit, 4);
+    assertOrder("RESERVIERE 5 Silber", unit, 3);
+    assertEquals(1, unit2.getOrders2().size());
+    assertOrder("GIB 1 535 Silber", unit2, 0);
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    builder.addItem(data, unit2, "Schwert", 100);
+    unit.addOrder("// $cript Kapazitaet FUSS");
+    unit.addOrder("// $cript Benoetige 100 Schwert");
+    unit.addOrder("// $cript Benoetige 10000 Silber");
+    parser.execute(unit.getFaction());
+
+    assertEquals(7, unit.getOrders2().size());
+    assertMessage("braucht 95 mehr Schwert", unit, 5);
+    assertMessage("braucht 9960 mehr Silber", unit, 6);
+    assertOrder("RESERVIERE 5 Silber", unit, 4);
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("GIB 1 5 Schwert", unit2, 0);
+    assertOrder("GIB 1 35 Silber", unit2, 1);
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    builder.addItem(data, unit2, "Schwert", 6);
+    unit.addOrder("// $cript Kapazitaet FUSS");
+    unit.addOrder("// $cript Benoetige 100 Schwert");
+    unit.addOrder("// $cript Benoetige 10000 Silber");
+    parser.execute(unit.getFaction());
+
+    assertWarning("braucht 95 mehr Schwert", unit, 4);
+    assertWarning("braucht 9960 mehr Silber", unit, 5);
+    assertOrder("RESERVIERE 5 Silber", unit, 6);
+    assertEquals(7, unit.getOrders2().size());
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("GIB 1 5 Schwert", unit2, 0);
+    assertOrder("GIB 1 35 Silber", unit2, 1);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
+   */
+  @Test
+  public final void testCommandBenoetigeCapCircular() {
+    builder.addItem(data, unit, "Silber", 5);
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 15000);
+
+    // each other
+    unit.clearOrders();
+    unit2.clearOrders();
+    builder.addItem(data, unit, "Silber", 450);
+    builder.addItem(data, unit, "Schwert", 6);
+    unit.addOrder("// $cript Kapazitaet FUSS"); // cap: 540
+    unit.addOrder("// $cript Benoetige 100 Schwert");
+    unit2.addOrder("// $cript Kapazitaet FUSS"); // cap: 540
+    unit2.addOrder("// $cript Benoetige 1000 Silber");
+    parser.execute(unit.getFaction());
+
+    assertWarning("braucht 95 mehr Schwert", unit, 3);
+    assertWarning("braucht 560 mehr Silber", unit2, 2);
+    assertOrder("GIB v 440 Silber", unit, 4);
+    assertOrder("GIB 1 5 Schwert", unit2, 3);
+    assertEquals(5, unit.getOrders2().size());
+    assertEquals(4, unit2.getOrders2().size());
   }
 
   /**
@@ -1036,8 +1147,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     parser.execute(unit.getFaction());
     assertEquals(6, unit2.getOrders2().size());
-    assertOrder("GIB 1 ALLES Würziger~Wagemut", unit2, 1);
-    assertOrder("GIB 1 ALLES Flachwurz", unit2, 2);
+    assertOrder("GIB 1 ALLES Würziger~Wagemut", unit2, 2);
+    assertOrder("GIB 1 ALLES Flachwurz", unit2, 3);
     assertOrder("GIB 1 ALLES Myrrhe", unit2, 4);
     assertOrder("GIB 1 ALLES Seide", unit2, 5);
   }
@@ -1084,7 +1195,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     parser.execute(unit.getFaction());
     assertEquals(5, unit2.getOrders2().size());
-    assertOrder("GIB 1 ALLES Flachwurz", unit2, 1);
+    assertOrder("GIB 1 ALLES Flachwurz", unit2, 2);
     assertOrder("GIB 1 ALLES Myrrhe", unit2, 3);
     assertOrder("GIB 1 ALLES Seide", unit2, 4);
   }
@@ -1202,12 +1313,12 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.clearOrders();
     unit2.clearOrders();
 
-    unit2.addOrder("// $cript GibWenn 2 3 Silber bla");
+    unit2.addOrder("// $cript GibWenn v 3 Silber bla");
     parser.execute(unit.getFaction());
 
     assertEquals(2, unit2.getOrders2().size());
     assertError("zu viele Parameter", unit2, 1);
-    // assertError("2 nicht da", unit2, 2);
+    // assertWarning("2 nicht da", unit2, 1);
     // assertOrder("GIB 2 3 Silber", unit2, 3);
 
     // test receiver unit not there (with nonsense warning)
@@ -1294,8 +1405,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     assertEquals(1, unit.getOrders2().size());
     assertEquals(2, unit2.getOrders2().size());
-    assertOrder("// $cript GibWenn ALLES Silber", unit2, 0);
-    assertError("zu viele Parameter", unit2, 1);
+    assertWarning("ALLES nicht da", unit2, 1);
   }
 
   /**
@@ -1375,9 +1485,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(3, unit.getOrders2().size());
     assertOrder("GIB u2 1 Holz", unit, 2);
     assertEquals(6, unit2.getOrders2().size());
-    assertOrder("GIB 1 120 Silber", unit2, 3);
-    assertOrder("GIB 1 100 Silber", unit2, 4);
-    assertOrder("RESERVIERE 280 Silber", unit2, 5);
+    assertOrder("RESERVIERE 280 Silber", unit2, 3);
+    assertOrder("GIB 1 120 Silber", unit2, 4);
+    assertOrder("GIB 1 100 Silber", unit2, 5);
 
   }
 
@@ -1623,9 +1733,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("// $cript Soldat", unit2, 0);
     // 1 is debug comment
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertOrder("RESERVIERE 5 Schwert", unit2, 3);
-    assertOrder("; braucht 10 mehr Schild", unit2, 4);
-    assertOrder("; braucht 10 mehr Kettenhemd", unit2, 5);
+    assertOrder("; braucht 10 mehr Schild", unit2, 3);
+    assertOrder("; braucht 10 mehr Kettenhemd", unit2, 4);
+    assertOrder("RESERVIERE 5 Schwert", unit2, 5);
 
     // normal operation
     builder.addSkill(unit2, "Hiebwaffen", 2);
@@ -1640,9 +1750,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB s 5 Schwert", unit, 1);
     assertEquals(6, unit2.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertOrder("RESERVIERE 5 Schwert", unit2, 3);
-    assertOrder("; braucht 10 mehr Schild", unit2, 4);
-    assertOrder("; braucht 10 mehr Kettenhemd", unit2, 5);
+    assertOrder("; braucht 10 mehr Schild", unit2, 3);
+    assertOrder("; braucht 10 mehr Kettenhemd", unit2, 4);
+    assertOrder("RESERVIERE 5 Schwert", unit2, 5);
 
     // normal operation
     unit.clearOrders();
@@ -1658,8 +1768,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals("// $cript Soldat Hiebwaffen Schwert Schild null", unit2.getOrders2().get(0)
         .getText());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertOrder("RESERVIERE 5 Schwert", unit2, 3);
-    assertWarning("braucht 10 mehr Schild", unit2, 4);
+    assertWarning("braucht 10 mehr Schild", unit2, 3);
+    assertOrder("RESERVIERE 5 Schwert", unit2, 4);
 
     // normal operation
     unit.clearOrders();
@@ -1672,8 +1782,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB s 5 Schwert", unit, 1);
     assertEquals(5, unit2.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertOrder("RESERVIERE 5 Schwert", unit2, 3);
-    assertWarning("braucht 10 mehr Kettenhemd", unit2, 4);
+    assertWarning("braucht 10 mehr Kettenhemd", unit2, 3);
+    assertOrder("RESERVIERE 5 Schwert", unit2, 4);
 
     // normal operation
     builder.addItem(data, unit2, "Plattenpanzer", 2);
@@ -1688,9 +1798,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB s 5 Schwert", unit, 1);
     assertEquals(6, unit2.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertOrder("RESERVIERE 5 Schwert", unit2, 3);
-    assertWarning("braucht 8 mehr Plattenpanzer", unit2, 4);
-    assertOrder("RESERVIERE 2 Plattenpanzer", unit2, 5);
+    assertWarning("braucht 8 mehr Plattenpanzer", unit2, 3);
+    assertOrder("RESERVIERE 2 Plattenpanzer", unit2, 4);
+    assertOrder("RESERVIERE 5 Schwert", unit2, 5);
 
     // ensure that shields are not armour!
     unit.clearOrders();
@@ -1717,13 +1827,13 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB s 10 Schwert", unit, 1);
     assertEquals(5, unit2.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertOrder("RESERVIERE JE 1 Schild", unit2, 3);
-    assertOrder("; braucht 10 mehr Plattenpanzer", unit2, 4);
+    assertOrder("; braucht 10 mehr Plattenpanzer", unit2, 3);
+    assertOrder("RESERVIERE JE 1 Schild", unit2, 4);
     assertEquals(6, unit3.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit3, 2);
     assertOrder("; braucht 10 mehr Schwert", unit3, 3);
-    assertOrder("RESERVIERE JE 1 Schild", unit3, 4);
-    assertOrder("; braucht 10 mehr Kettenhemd", unit3, 5);
+    assertOrder("; braucht 10 mehr Kettenhemd", unit3, 4);
+    assertOrder("RESERVIERE JE 1 Schild", unit3, 5);
 
   }
 
@@ -1744,8 +1854,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("// $cript Soldat best Hellebarde null Plattenpanzer", unit, 1);
     // 2 is debug comment
     assertOrder("LERNE Hiebwaffen", unit, 3);
-    assertOrder("RESERVIERE JE 1 Hellebarde", unit, 4);
-    assertOrder("RESERVIERE JE 1 Plattenpanzer", unit, 5);
+    assertOrder("RESERVIERE JE 1 Plattenpanzer", unit, 4);
+    assertOrder("RESERVIERE JE 1 Hellebarde", unit, 5);
   }
 
   /**
@@ -1824,11 +1934,11 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertMessage("braucht 10 mehr Juwel", unit, 6);
     assertMessage("braucht 10 mehr Weihrauch", unit, 7);
     assertMessage("braucht 10 mehr Gewürz", unit, 8);
-    assertOrder("RESERVIERE 10 Myrrhe", unit, 9);
-    assertMessage("braucht 8 mehr Öl", unit, 10);
-    assertOrder("RESERVIERE 2 Öl", unit, 11);
-    assertMessage("braucht 10 mehr Seide", unit, 12);
-    assertWarning("braucht 2592 mehr Silber", unit, 13);
+    assertMessage("braucht 8 mehr Öl", unit, 9);
+    assertMessage("braucht 10 mehr Seide", unit, 10);
+    assertWarning("braucht 2592 mehr Silber", unit, 11);
+    assertOrder("RESERVIERE 2 Öl", unit, 12);
+    assertOrder("RESERVIERE 10 Myrrhe", unit, 13);
     assertEquals(14, unit.getOrders2().size());
 
     unit.clearOrders();
@@ -1837,7 +1947,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("// $cript Handel 100 ALLES Menge", unit, 1);
     assertOrder("KAUFE 88 Balsam", unit, 2);
     // one less warning than above
-    assertWarning("braucht 2592 mehr Silber", unit, 12);
+    assertWarning("braucht 2592 mehr Silber", unit, 10);
     assertEquals(13, unit.getOrders2().size());
 
     // test normal operation
@@ -1850,7 +1960,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("VERKAUFE ALLES Myrrhe", unit, 3);
     assertOrder("VERKAUFE 2 Öl", unit, 4);
     // 7 resources
-    assertOrder("RESERVIERE 180 Silber", unit, 12);
+    assertOrder("RESERVIERE 180 Silber", unit, 10);
     assertEquals(13, unit.getOrders2().size());
 
     // test buy amount 0
@@ -1874,11 +1984,11 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertMessage("braucht 10 mehr Juwel", unit, 5);
     assertMessage("braucht 10 mehr Weihrauch", unit, 6);
     assertMessage("braucht 10 mehr Gewürz", unit, 7);
-    assertOrder("RESERVIERE 10 Myrrhe", unit, 8);
-    assertMessage("braucht 8 mehr Öl", unit, 9);
-    assertOrder("RESERVIERE 2 Öl", unit, 10);
-    assertMessage("braucht 10 mehr Seide", unit, 11);
-    assertOrder("RESERVIERE 750 Silber", unit, 12);
+    assertMessage("braucht 8 mehr Öl", unit, 8);
+    assertMessage("braucht 10 mehr Seide", unit, 9);
+    assertOrder("RESERVIERE 750 Silber", unit, 10);
+    assertOrder("RESERVIERE 2 Öl", unit, 11);
+    assertOrder("RESERVIERE 10 Myrrhe", unit, 12);
     assertEquals(13, unit.getOrders2().size());
 
     // test explicit resources given
@@ -1891,11 +2001,11 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("VERKAUFE ALLES Myrrhe", unit, 3);
     assertOrder("VERKAUFE 2 Öl", unit, 4);
     // assertOrder("VERKAUFE ALLES Weihrauch", unit, 5);
-    assertOrder("RESERVIERE 10 Myrrhe", unit, 5);
-    assertWarning("braucht 8 mehr Öl", unit, 6);
-    assertOrder("RESERVIERE 2 Öl", unit, 7);
-    assertWarning("braucht 10 mehr Weihrauch", unit, 8);
-    assertOrder("RESERVIERE 750 Silber", unit, 9);
+    assertWarning("braucht 8 mehr Öl", unit, 5);
+    assertWarning("braucht 10 mehr Weihrauch", unit, 6);
+    assertOrder("RESERVIERE 750 Silber", unit, 7);
+    assertOrder("RESERVIERE 2 Öl", unit, 8);
+    assertOrder("RESERVIERE 10 Myrrhe", unit, 9);
     assertEquals(10, unit.getOrders2().size());
 
     // test explicit resources given
@@ -1908,9 +2018,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("VERKAUFE ALLES Myrrhe", unit, 3);
     assertOrder("VERKAUFE 2 Öl", unit, 4);
     // assertOrder("VERKAUFE ALLES Weihrauch", unit, 5);
-    assertOrder("RESERVIERE 10 Myrrhe", unit, 5);
+    assertOrder("RESERVIERE 750 Silber", unit, 5);
     assertOrder("RESERVIERE 2 Öl", unit, 6);
-    assertOrder("RESERVIERE 750 Silber", unit, 7);
+    assertOrder("RESERVIERE 10 Myrrhe", unit, 7);
     assertEquals(8, unit.getOrders2().size());
 
   }
@@ -1931,8 +2041,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertOrder("KAUFE 20 Balsam", unit, 2);
     assertOrder("VERKAUFE ALLES Weihrauch", unit, 3);
-    assertOrder("RESERVIERE 10 Weihrauch", unit, 4);
-    assertOrder("RESERVIERE 180 Silber", unit, 5);
+    assertOrder("RESERVIERE 180 Silber", unit, 4);
+    assertOrder("RESERVIERE 10 Weihrauch", unit, 5);
     assertEquals(6, unit.getOrders2().size());
 
   }
@@ -1960,10 +2070,10 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertMessage("braucht 19 mehr Juwel", unit, 5);
     assertMessage("braucht 19 mehr Weihrauch", unit, 6);
     assertMessage("braucht 19 mehr Gewürz", unit, 7);
-    assertOrder("RESERVIERE 19 Myrrhe", unit, 8);
-    assertMessage("braucht 19 mehr Öl", unit, 9);
-    assertMessage("braucht 19 mehr Seide", unit, 10);
-    assertOrder("RESERVIERE 6 Silber", unit, 11);
+    assertMessage("braucht 19 mehr Öl", unit, 8);
+    assertMessage("braucht 19 mehr Seide", unit, 9);
+    assertOrder("RESERVIERE 6 Silber", unit, 10);
+    assertOrder("RESERVIERE 19 Myrrhe", unit, 11);
     assertEquals(12, unit.getOrders2().size());
   }
 
@@ -1993,11 +2103,11 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertMessage("braucht 10 mehr Juwel", unit, 5);
     assertMessage("braucht 10 mehr Weihrauch", unit, 6);
     assertMessage("braucht 10 mehr Gewürz", unit, 7);
-    assertOrder("RESERVIERE 10 Myrrhe", unit, 8);
-    assertMessage("braucht 8 mehr Öl", unit, 9);
-    assertOrder("RESERVIERE 2 Öl", unit, 10);
-    assertMessage("braucht 10 mehr Seide", unit, 11);
-    assertOrder("RESERVIERE 360 Silber", unit, 12);
+    assertMessage("braucht 8 mehr Öl", unit, 8);
+    assertMessage("braucht 10 mehr Seide", unit, 9);
+    assertOrder("RESERVIERE 360 Silber", unit, 10);
+    assertOrder("RESERVIERE 2 Öl", unit, 11);
+    assertOrder("RESERVIERE 10 Myrrhe", unit, 12);
     assertEquals(13, unit.getOrders2().size());
   }
 

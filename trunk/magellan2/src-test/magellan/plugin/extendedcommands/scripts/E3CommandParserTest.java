@@ -1050,6 +1050,34 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
   @Test
+  public final void testCommandBenoetigeCapX() {
+    // builder.addItem(data, unit, "Silber", 5);
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 15000);
+    builder.addItem(data, unit, "Pferd", 2);
+    builder.addSkill(unit, "Reiten", 1);
+    
+    unit.clearOrders();
+    unit2.clearOrders();
+    // unit.addOrder("// $cript Benoetige FUSS Pferd");
+    unit.addOrder("// $cript Benoetige PFERD Pferd");
+    unit.addOrder("// $cript Kapazitaet PFERD");
+    // // $cript Versorge 1"
+    // unit.addOrder("// $cript Benoetige 100 Silber");
+    unit2.addOrder("// $cript BenoetigeFremd 1 0 10000 Silber Menge");
+    parser.execute(unit.getFaction());
+
+    assertEquals(5, unit.getOrders2().size());
+    assertOrder("RESERVIERE 2 Pferd", unit, 3);
+    assertMessage("braucht 7000 mehr Silber", unit, 4);
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("GIB 1 3000 Silber", unit2, 1);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
+   */
+  @Test
   public final void testCommandBenoetigeCap() {
     builder.addItem(data, unit, "Silber", 5);
     Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
@@ -1110,18 +1138,17 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB v 100 Elfenlieb", unit, 3);
   }
 
+  @Test
   public final void testCommandCapTooMuch() {
     unit.clearOrders();
-    // unit.addOrder("// $cript Steuermann 600 1200");
     unit.addOrder("// $cript Benoetige 1 Schwert");
-    // unit.addOrder("// $cript Versorge 1");
-    unit.addOrder("// $cript Kapazitaet 101090");
+    unit.addOrder("// $cript Kapazitaet 1000");
 
-    builder.addItem(data, unit, "Schwert", 2000);
+    builder.addItem(data, unit, "Schwert", 20);
     parser.execute(unit.getFaction());
 
     assertOrder("RESERVIERE JE 1 Schwert", unit, 3);
-    assertWarning("Kapazität überschritten um 100000", unit, 4);
+    assertWarning("Kapazität überschritten um 1000", unit, 4);
     assertEquals(5, unit.getOrders2().size());
   }
 

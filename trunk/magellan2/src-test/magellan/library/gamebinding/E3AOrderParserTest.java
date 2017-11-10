@@ -48,9 +48,6 @@ import magellan.test.GameDataBuilder;
  */
 public class E3AOrderParserTest extends EresseaOrderParserTest {
 
-  private E3AOrderParser parser;
-  private E3AOrderCompleter completer;
-
   /**
    * @throws java.lang.Exception
    */
@@ -67,9 +64,18 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
     builder.addShip(data, region, "ship", "Einbaum", "ein Boot", 50);
     builder.addUnit(data, "zwei", "Zweite", faction, region);
 
-    setParser(new E3AOrderParser(data));
+    E3AOrderParser parser = new E3AOrderParser(data);
+    setParser(parser);
     completion = new AutoCompletion(context.getProperties(), context.getEventDispatcher());
-    setCompleter(new E3AOrderCompleter(data, completion));
+    E3AOrderCompleter completer = new E3AOrderCompleter(data, completion);
+    completer.setParser(parser);
+    setCompleter(completer);
+  }
+
+  @Override
+  @Test
+  public void testEresseaOrderParserGameDataEresseaOrderCompleter() {
+    /* nop */
   }
 
   /**
@@ -238,46 +244,6 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   }
 
   /**
-   * Returns the value of parser.
-   *
-   * @return Returns parser.
-   */
-  @Override
-  protected AbstractOrderParser getParser() {
-    return parser;
-  }
-
-  /**
-   * Sets the value of parser.
-   *
-   * @param parser The value for parser.
-   */
-  @Override
-  protected void setParser(OrderParser parser) {
-    this.parser = (E3AOrderParser) parser;
-  }
-
-  /**
-   * Returns the value of completer.
-   *
-   * @return Returns completer.
-   */
-  @Override
-  protected E3AOrderCompleter getCompleter() {
-    return completer;
-  }
-
-  /**
-   * Sets the value of completer.
-   *
-   * @param completer The value for completer.
-   */
-  @Override
-  protected void setCompleter(AbstractOrderCompleter completer) {
-    this.completer = (E3AOrderCompleter) completer;
-  }
-
-  /**
    * Test method for
    * {@link magellan.library.gamebinding.EresseaOrderParser#getHandlers(magellan.library.utils.OrderToken)}
    * .
@@ -304,6 +270,17 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   @Override
   public void testInfinitive() {
     // already tested in Eressea
+  }
+
+  @Test
+  public void testDrachensgrab() throws Exception {
+    builder = new GameDataBuilder();
+    builder.setGameName("Drachensgrab");
+    data = builder.createSimpleGameData();
+
+    E3AOrderParser parser = new E3AOrderParser(data);
+    setParser(parser);
+    checkOrder("UNTERHALTE");
   }
 
 }

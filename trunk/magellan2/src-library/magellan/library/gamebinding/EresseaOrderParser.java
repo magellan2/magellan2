@@ -49,11 +49,12 @@ public class EresseaOrderParser extends AbstractOrderParser {
    * @param completer
    */
   public EresseaOrderParser(GameData data, EresseaOrderCompleter completer) {
-    super(data, completer);
+    super(data);
+    setCompleter(completer);
   }
 
   public EresseaOrderParser(GameData data) {
-    super(data, null);
+    super(data);
   }
 
   /**
@@ -64,83 +65,91 @@ public class EresseaOrderParser extends AbstractOrderParser {
   protected void initCommands() {
     clearCommandMap();
 
-    // addCommand("@", new AtReader());
-    addCommand(EresseaConstants.OC_WORK, new ArbeiteReader(this));
+    // addCheckedCommand("@", new AtReader());
+    addCheckedCommand(EresseaConstants.OC_WORK, new ArbeiteReader(this));
 
-    addCommand(EresseaConstants.OC_ATTACK, new AttackReader(this));
+    addCheckedCommand(EresseaConstants.OC_ATTACK, new AttackReader(this));
 
-    addCommand(EresseaConstants.OC_BANNER, new BannerReader(this));
-    addCommand(EresseaConstants.OC_CLAIM, new BeansprucheReader(this));
-    addCommand(EresseaConstants.OC_PROMOTION, new BefoerderungReader(this));
+    addCheckedCommand(EresseaConstants.OC_BANNER, new BannerReader(this));
+    addCheckedCommand(EresseaConstants.OC_CLAIM, new BeansprucheReader(this));
+    addCheckedCommand(EresseaConstants.OC_PROMOTION, new BefoerderungReader(this));
 
-    addCommand(EresseaConstants.OC_STEAL, new BeklaueReader(this));
-    addCommand(EresseaConstants.OC_SIEGE, new BelagereReader(this));
-    addCommand(EresseaConstants.OC_NAME, new BenenneReader(this));
-    addCommand(EresseaConstants.OC_USE, new BenutzeReader(this));
-    addCommand(EresseaConstants.OC_DESCRIBE, new BeschreibeReader(this));
+    addCheckedCommand(EresseaConstants.OC_STEAL, new BeklaueReader(this));
+    addCheckedCommand(EresseaConstants.OC_SIEGE, new BelagereReader(this));
+    addCheckedCommand(EresseaConstants.OC_NAME, new BenenneReader(this));
+    addCheckedCommand(EresseaConstants.OC_USE, new BenutzeReader(this));
+    addCheckedCommand(EresseaConstants.OC_DESCRIBE, new BeschreibeReader(this));
 
-    addCommand(EresseaConstants.OC_ENTER, new BetreteReader(this));
+    addCheckedCommand(EresseaConstants.OC_ENTER, new BetreteReader(this));
 
-    addCommand(EresseaConstants.OC_GUARD, new BewacheReader(this));
-    addCommand(EresseaConstants.OC_PAY, new BezahleReader(this));
-    addCommand(EresseaConstants.OC_MESSAGE, new BotschaftReader(this));
-    addCommand(EresseaConstants.OC_DEFAULT, new DefaultReader(this));
-    addCommand(EresseaConstants.OC_EMAIL, new EmailReader(this));
-    addCommand(EresseaConstants.OC_END, new EndeReader(this));
-    addCommand(EresseaConstants.OC_RIDE, new FahreReader(this));
-    addCommand(EresseaConstants.OC_FOLLOW, new FolgeReader(this));
-    addCommand(EresseaConstants.OC_RESEARCH, new ForscheReader(this));
-    addCommand(EresseaConstants.OC_GIVE, new GibReader(this));
-    addCommand(EresseaConstants.OC_GROUP, new GruppeReader(this));
-    addCommand(EresseaConstants.OC_HELP, new HelfeReader(this));
-    addCommand(EresseaConstants.OC_COMBAT, new KaempfeReader(this));
-    addCommand(EresseaConstants.OC_COMBATSPELL, new KampfzauberReader(this));
-    addCommand(EresseaConstants.OC_BUY, new KaufeReader(this));
-    addCommand(EresseaConstants.OC_CONTACT, new KontaktiereReader(this));
-    addCommand(EresseaConstants.OC_TEACH, new LehreReader(this));
-    addCommand(EresseaConstants.OC_LEARN, new LerneReader(this));
-    addCommand(EresseaConstants.OC_SUPPLY, new GibReader(this));
+    addCheckedCommand(EresseaConstants.OC_GUARD, new BewacheReader(this));
+    addCheckedCommand(EresseaConstants.OC_PAY, new BezahleReader(this));
+    addCheckedCommand(EresseaConstants.OC_MESSAGE, new BotschaftReader(this));
+    addCheckedCommand(EresseaConstants.OC_DEFAULT, new DefaultReader(this));
+    addCheckedCommand(EresseaConstants.OC_EMAIL, new EmailReader(this));
+    addCheckedCommand(EresseaConstants.OC_END, new EndeReader(this));
+    addCheckedCommand(EresseaConstants.OC_RIDE, new FahreReader(this));
+    addCheckedCommand(EresseaConstants.OC_FOLLOW, new FolgeReader(this));
+    addCheckedCommand(EresseaConstants.OC_RESEARCH, new ForscheReader(this));
+    addCheckedCommand(EresseaConstants.OC_GIVE, new GibReader(this));
+    addCheckedCommand(EresseaConstants.OC_GROUP, new GruppeReader(this));
+    addCheckedCommand(EresseaConstants.OC_HELP, new HelfeReader(this));
+    addCheckedCommand(EresseaConstants.OC_COMBAT, new KaempfeReader(this));
+    addCheckedCommand(EresseaConstants.OC_COMBATSPELL, new KampfzauberReader(this));
+    addCheckedCommand(EresseaConstants.OC_BUY, new KaufeReader(this));
+    addCheckedCommand(EresseaConstants.OC_CONTACT, new KontaktiereReader(this));
+    addCheckedCommand(EresseaConstants.OC_TEACH, new LehreReader(this));
+    addCheckedCommand(EresseaConstants.OC_LEARN, new LerneReader(this));
+    addCheckedCommand(EresseaConstants.OC_SUPPLY, new GibReader(this));
 
-    addCommand(EresseaConstants.OC_LOCALE, new LocaleReader(this));
-    addCommand(EresseaConstants.OC_MAKE, new MacheReader(this));
-    addCommand(EresseaConstants.OC_MOVE, new NachReader(this));
+    addCheckedCommand(EresseaConstants.OC_LOCALE, new LocaleReader(this));
+    addCheckedCommand(EresseaConstants.OC_MAKE, new MacheReader(this));
+    addCheckedCommand(EresseaConstants.OC_MOVE, new NachReader(this));
     // normalerweise nicht erlaubt...
-    addCommand(EresseaConstants.OC_NEXT, new InvalidReader(this));
-    addCommand(EresseaConstants.OC_RESTART, new NeustartReader(this));
+    addCheckedCommand(EresseaConstants.OC_NEXT, new InvalidReader(this));
+    addCheckedCommand(EresseaConstants.OC_RESTART, new NeustartReader(this));
 
-    addCommand(EresseaConstants.OC_NUMBER, new NummerReader(this));
+    addCheckedCommand(EresseaConstants.OC_NUMBER, new NummerReader(this));
 
-    addCommand(EresseaConstants.OC_OPTION, new OptionReader(this));
-    addCommand(EresseaConstants.OC_FACTION, new ParteiReader(this));
-    addCommand(EresseaConstants.OC_PASSWORD, new PasswortReader(this));
+    addCheckedCommand(EresseaConstants.OC_OPTION, new OptionReader(this));
+    addCheckedCommand(EresseaConstants.OC_FACTION, new ParteiReader(this));
+    addCheckedCommand(EresseaConstants.OC_PASSWORD, new PasswortReader(this));
 
-    addCommand(EresseaConstants.OC_PLANT, new PflanzeReader(this));
-    addCommand(EresseaConstants.OC_PIRACY, new PiraterieReader(this));
-    addCommand(EresseaConstants.OC_PREFIX, new PraefixReader(this));
+    addCheckedCommand(EresseaConstants.OC_PLANT, new PflanzeReader(this));
+    addCheckedCommand(EresseaConstants.OC_PIRACY, new PiraterieReader(this));
+    addCheckedCommand(EresseaConstants.OC_PREFIX, new PraefixReader(this));
     // normalerweise nicht erlaubt...
-    addCommand(EresseaConstants.OC_REGION, new InvalidReader(this));
-    addCommand(EresseaConstants.OC_RECRUIT, new RekrutiereReader(this));
-    addCommand(EresseaConstants.OC_RESERVE, new ReserviereReader(this));
-    addCommand(EresseaConstants.OC_ROUTE, new RouteReader(this));
+    addCheckedCommand(EresseaConstants.OC_REGION, new InvalidReader(this));
+    addCheckedCommand(EresseaConstants.OC_RECRUIT, new RekrutiereReader(this));
+    addCheckedCommand(EresseaConstants.OC_RESERVE, new ReserviereReader(this));
+    addCheckedCommand(EresseaConstants.OC_ROUTE, new RouteReader(this));
 
-    addCommand(EresseaConstants.OC_SORT, new SortiereReader(this));
+    addCheckedCommand(EresseaConstants.OC_SORT, new SortiereReader(this));
 
-    addCommand(EresseaConstants.OC_SPY, new SpioniereReader(this));
-    addCommand(EresseaConstants.OC_QUIT, new StirbReader(this));
-    addCommand(EresseaConstants.OC_HIDE, new TarneReader(this));
-    addCommand(EresseaConstants.OC_CARRY, new TransportiereReader(this));
-    addCommand(EresseaConstants.OC_TAX, new TreibeReader(this));
-    addCommand(EresseaConstants.OC_ENTERTAIN, new UnterhalteReader(this));
-    addCommand(EresseaConstants.OC_ORIGIN, new UrsprungReader(this));
-    addCommand(EresseaConstants.OC_FORGET, new VergesseReader(this));
+    addCheckedCommand(EresseaConstants.OC_SPY, new SpioniereReader(this));
+    addCheckedCommand(EresseaConstants.OC_QUIT, new StirbReader(this));
+    addCheckedCommand(EresseaConstants.OC_HIDE, new TarneReader(this));
+    addCheckedCommand(EresseaConstants.OC_CARRY, new TransportiereReader(this));
+    addCheckedCommand(EresseaConstants.OC_TAX, new TreibeReader(this));
+    addCheckedCommand(EresseaConstants.OC_ENTERTAIN, new UnterhalteReader(this));
+    addCheckedCommand(EresseaConstants.OC_ORIGIN, new UrsprungReader(this));
+    addCheckedCommand(EresseaConstants.OC_FORGET, new VergesseReader(this));
 
-    addCommand(EresseaConstants.OC_SELL, new VerkaufeReader(this));
-    addCommand(EresseaConstants.OC_LEAVE, new VerlasseReader(this));
-    addCommand(EresseaConstants.OC_CAST, new ZaubereReader(this));
-    addCommand(EresseaConstants.OC_SHOW, new ZeigeReader(this));
-    addCommand(EresseaConstants.OC_DESTROY, new ZerstoereReader(this));
-    addCommand(EresseaConstants.OC_GROW, new ZuechteReader(this));
-    addCommand(EresseaConstants.OC_SABOTAGE, new SabotiereReader(this));
+    addCheckedCommand(EresseaConstants.OC_SELL, new VerkaufeReader(this));
+    addCheckedCommand(EresseaConstants.OC_LEAVE, new VerlasseReader(this));
+    addCheckedCommand(EresseaConstants.OC_CAST, new ZaubereReader(this));
+    addCheckedCommand(EresseaConstants.OC_SHOW, new ZeigeReader(this));
+    addCheckedCommand(EresseaConstants.OC_DESTROY, new ZerstoereReader(this));
+    addCheckedCommand(EresseaConstants.OC_GROW, new ZuechteReader(this));
+    addCheckedCommand(EresseaConstants.OC_SABOTAGE, new SabotiereReader(this));
+  }
+
+  protected void addCheckedCommand(StringID prefix, OrderHandler reader) {
+    if (getRules().getOrder(prefix) == null) {
+      log.fine("Order " + prefix + " not added.");
+    } else {
+      addCommand(prefix, reader);
+    }
   }
 
   // ************* WORK (ARBEITE)
@@ -3829,9 +3838,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
    *
    * @param completer The value for completer.
    */
-  @Override
-  protected void setCompleter(AbstractOrderCompleter completer) {
-    this.completer = (EresseaOrderCompleter) completer;
+  protected void setCompleter(EresseaOrderCompleter completer) {
+    this.completer = completer;
   }
 
   /**

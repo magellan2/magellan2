@@ -196,20 +196,10 @@ public abstract class AbstractOrderParser implements OrderParser {
    * Creates a new <tt>AbstractOrderParser</tt> object.
    */
   public AbstractOrderParser(GameData data) {
-    this(data, null);
-  }
-
-  /**
-   * Creates a new <tt>AbstractOrderParser</tt> object and registers the specified
-   * <tt>OrderCompleter</tt> object. This constructor should be used only by the
-   * <tt>OrderCompleter</tt> class itself.
-   */
-  public AbstractOrderParser(GameData data, AbstractOrderCompleter cc) {
     if (data == null)
       throw new NullPointerException();
     this.data = data;
     // rules = data.getGameSpecificRules();
-    setCompleter(cc);
     init();
     initCommands();
     emptyReader = new OrderHandler(this) {
@@ -285,13 +275,6 @@ public abstract class AbstractOrderParser implements OrderParser {
    * @return Returns completer.
    */
   public abstract AbstractOrderCompleter getCompleter();
-
-  /**
-   * Sets the value of completer.
-   *
-   * @param completer The value for completer.
-   */
-  protected abstract void setCompleter(AbstractOrderCompleter completer);
 
   /**
    * Return current locale.

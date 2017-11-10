@@ -71,11 +71,6 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     super(gd, ac);
   }
 
-  @Override
-  protected void initParser() {
-    setParser(new EresseaOrderParser(getData(), this));
-  }
-
   // begin of completion methods invoked by OrderParser
   @Override
   protected void cmplt() {

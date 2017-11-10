@@ -95,11 +95,7 @@ public abstract class AbstractOrderCompleter implements Completer {
     completerSettingsProvider = ac;
     completions = new LinkedList<Completion>();
     data = gd;
-
-    initParser();
   }
-
-  protected abstract void initParser();
 
   /**
    * Parses the String cmd with Unit u as context and returns possible completions if the cmd is an
@@ -140,11 +136,11 @@ public abstract class AbstractOrderCompleter implements Completer {
     // return crop(old, tokens);
   }
 
-  protected OrderParser getParser() {
+  public OrderParser getParser() {
     return parser;
   }
 
-  protected void setParser(OrderParser parser) {
+  public void setParser(OrderParser parser) {
     this.parser = parser;
   }
 

@@ -53,8 +53,8 @@ import magellan.test.MagellanTestWithResources;
  */
 public class EresseaOrderParserTest extends AbstractOrderParserTest {
 
-  EresseaOrderParser parser;
-  EresseaOrderCompleter completer;
+  private EresseaOrderParser parser;
+  private EresseaOrderCompleter completer;
 
   /**
    * @throws java.lang.Exception
@@ -80,9 +80,13 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
     builder.addShip(data, region, "ship", "Langboot", "ein Langboot", 50);
     builder.addUnit(data, "zwei", "Zweite", faction, region);
 
-    setParser(new EresseaOrderParser(data));
+    parser = new EresseaOrderParser(data);
+    setParser(parser);
     completion = new AutoCompletion(context.getProperties(), context.getEventDispatcher());
-    setCompleter(new EresseaOrderCompleter(data, completion));
+    completer = new EresseaOrderCompleter(data, completion);
+    completer.setParser(parser);
+    setCompleter(completer);
+
   }
 
   /**

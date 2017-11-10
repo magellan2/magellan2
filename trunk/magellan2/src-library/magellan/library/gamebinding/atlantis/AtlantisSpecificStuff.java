@@ -249,14 +249,25 @@ public class AtlantisSpecificStuff implements GameSpecificStuff {
    *      magellan.library.completion.CompleterSettingsProvider)
    */
   public Completer getCompleter(GameData data, CompleterSettingsProvider csp) {
-    return new AtlantisOrderCompleter(data, csp);
+    AtlantisOrderCompleter completer = new AtlantisOrderCompleter(data, csp);
+    OrderParser parser = getOrderParser(data, completer);
+    completer.setParser(parser);
+    return completer;
+
   }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
    */
   public OrderParser getOrderParser(GameData data) {
-    return new AtlantisOrderParser(data);
+    return getOrderParser(data, null);
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
+   */
+  public OrderParser getOrderParser(GameData data, AtlantisOrderCompleter completer) {
+    return new AtlantisOrderParser(data, completer);
   }
 
   /**

@@ -64,7 +64,8 @@ public class AtlantisOrderParser extends AbstractOrderParser {
    * @param cc
    */
   public AtlantisOrderParser(GameData data, AtlantisOrderCompleter cc) {
-    super(data, cc);
+    super(data);
+    setCompleter(cc);
     setQuotes(new char[] { '"' });
     silverType = data.getRules().getItemType(AtlantisConstants.I_USILVER);
   }
@@ -1008,9 +1009,8 @@ public class AtlantisOrderParser extends AbstractOrderParser {
    *
    * @param completer The value for completer.
    */
-  @Override
-  protected void setCompleter(AbstractOrderCompleter completer) {
-    this.completer = (AtlantisOrderCompleter) completer;
+  protected void setCompleter(AtlantisOrderCompleter completer) {
+    this.completer = completer;
   }
 
   @Override

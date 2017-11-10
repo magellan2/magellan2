@@ -160,14 +160,24 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    *      magellan.library.completion.CompleterSettingsProvider)
    */
   public Completer getCompleter(GameData data, CompleterSettingsProvider csp) {
-    return new EresseaOrderCompleter(data, csp);
+    EresseaOrderCompleter completer = new EresseaOrderCompleter(data, csp);
+    OrderParser parser = getOrderParser(data, completer);
+    completer.setParser(parser);
+    return completer;
   }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
    */
   public OrderParser getOrderParser(GameData data) {
-    return new EresseaOrderParser(data);
+    return getOrderParser(data, null);
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
+   */
+  protected OrderParser getOrderParser(GameData data, EresseaOrderCompleter completer) {
+    return new EresseaOrderParser(data, completer);
   }
 
   /**

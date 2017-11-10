@@ -32,7 +32,6 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
    */
   public E3AOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
     super(gd, ac);
-    setParser(new E3AOrderParser(gd, this));
   }
 
   /**

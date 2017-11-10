@@ -97,7 +97,10 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
    */
   @Override
   public Completer getCompleter(GameData data, CompleterSettingsProvider csp) {
-    return new AllanonOrderCompleter(data, csp);
+    AllanonOrderCompleter completer = new AllanonOrderCompleter(data, csp);
+    OrderParser parser = getOrderParser(data, completer);
+    completer.setParser(parser);
+    return completer;
   }
 
   /**
@@ -105,7 +108,14 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
    */
   @Override
   public OrderParser getOrderParser(GameData data) {
-    return new AllanonOrderParser(data);
+    return getOrderParser(data, null);
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
+   */
+  public OrderParser getOrderParser(GameData data, AllanonOrderCompleter completer) {
+    return new AllanonOrderParser(data, completer);
   }
 
   /**

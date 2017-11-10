@@ -39,6 +39,7 @@ import magellan.library.rules.SimpleDate;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.MagellanFactory;
+import magellan.library.utils.Resources;
 
 /**
  * A helper class for creating reports for tests.
@@ -188,7 +189,7 @@ public class GameDataBuilder {
         addSkill(unit, "sword", 4, 3); // Hiebwaffen 4 (+3)
         // addSkill(unit, "", -1, -3); // Segeln - (-3)
         // addSkill(unit, "Magie", 4, 0, true); // Magie 4
-        addSkill(unit, "quarrying", -1, 9); // Steinbau -
+        addSkill(unit, "quarrying", 0, 9); // Steinbau -
       } else {
         addSkill(unit, "Hiebwaffen", 4, 3); // Hiebwaffen 4 (+3)
         addSkill(unit, "Segeln", 0, -3); // Segeln - (-3)
@@ -609,5 +610,9 @@ public class GameDataBuilder {
       building.setOwner(unit);
       building.setOwnerUnit(unit);
     }
+  }
+
+  public static void setNullResources(boolean setNull) {
+    Resources.setNullResource(setNull);
   }
 }

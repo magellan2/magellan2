@@ -153,11 +153,7 @@ public class AtlantisOrderChanger implements OrderChanger {
     String tmpOrders = null;
     Item sourceItem = new Item(new ItemType(StringID.create("unknown")), 1);
     if (item != null) {
-      if (item.equals(EresseaConstants.I_MEN)) {
-        tmpOrders =
-            getOrderO(locale, AtlantisConstants.OC_TRANSFER,
-                new Object[] { target.getID(), amount }).getText();
-      } else {
+      if (!item.equals(EresseaConstants.I_MEN)) {
         ItemType itemType = getRules().getItemType(item);
         if (itemType == null) {
           tmpOrders = "; unknown item " + item;
@@ -173,7 +169,11 @@ public class AtlantisOrderChanger implements OrderChanger {
     if (tmpOrders != null || item == null) {
       log.error(tmpOrders);
     } else {
-      if (item.equals(AtlantisConstants.I_USILVER)) {
+      if (item.equals(EresseaConstants.I_MEN)) {
+        tmpOrders =
+            getOrderO(locale, AtlantisConstants.OC_TRANSFER,
+                new Object[] { target.getID(), amount }).getText();
+      } else if (item.equals(AtlantisConstants.I_USILVER)) {
         tmpOrders =
             getOrderO(
                 locale,
@@ -181,7 +181,7 @@ public class AtlantisOrderChanger implements OrderChanger {
                 new Object[] {
                     target.getID(),
                     (amount < 0 ? target.getPersons() * amount : (amount == OrderChanger.ALL
-                    ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)),
+                        ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)),
                     (comment != null ? ("; " + comment) : "") }).getText();
       } else {
         tmpOrders =
@@ -191,7 +191,7 @@ public class AtlantisOrderChanger implements OrderChanger {
                 new Object[] {
                     target.getID(),
                     (amount < 0 ? target.getPersons() * amount : (amount == OrderChanger.ALL
-                    ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)), sItem,
+                        ? (sourceItem == null ? 0 : sourceItem.getAmount()) : amount)), sItem,
                     (comment != null ? ("; " + comment) : "") }).getText();
       }
     }

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.utils;
 
 import java.io.File;
@@ -55,7 +55,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * This class loads and holds the resources for Magellan.
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 29.04.2007
  */
@@ -63,6 +63,7 @@ public class Resources {
   private static final Logger log = Logger.getInstance(Resources.class);
   private static final String DEFAULT = "default";
   private static Resources _instance = null;
+  private static Resources _singleton = null;
 
   private Hashtable<String, MyResourceBundle> bundles = new Hashtable<String, MyResourceBundle>();
   private File resourceDirectory;
@@ -88,15 +89,16 @@ public class Resources {
    * This method returns the singleton of this class
    */
   public static synchronized Resources getInstance() {
-    if (Resources._instance == null) {
-      Resources._instance = new Resources();
+    if (Resources._singleton == null) {
+      Resources._singleton = new Resources();
+      Resources._instance = _singleton;
     }
     return Resources._instance;
   }
 
   /**
    * Changes the resource directory.
-   * 
+   *
    * @param resourceDirectory
    */
   public void setResourceDirectory(File resourceDirectory) {
@@ -105,7 +107,7 @@ public class Resources {
 
   /**
    * Returns the current resource directory.
-   * 
+   *
    * @return the current resource directory
    */
   public static File getResourceDirectory() {
@@ -170,7 +172,7 @@ public class Resources {
 
   /**
    * Checks if all resource bundle contain the same set of keys.
-   * 
+   *
    * @return A list of all resources that are not identical
    */
   public StringBuilder check() {
@@ -277,7 +279,7 @@ public class Resources {
    * Returns the resource for the resource key in the default locale of the running machine. If the
    * resource is not available in this locale, this method tries to find the resource in the default
    * resources.
-   * 
+   *
    * @param key should not contain spaces
    * @return the value for the key. If the key could not be found in any resource, the key is
    *         returned.
@@ -290,7 +292,7 @@ public class Resources {
    * Returns the resource for the resource key in the default locale of the running machine. If the
    * resource is not available in this locale, this method tries to find the resource in the default
    * resources.
-   * 
+   *
    * @param key should not contain spaces
    * @param args These arguments are applied to the resource. See
    *          {@link MessageFormat#format(Object)}.
@@ -309,18 +311,18 @@ public class Resources {
    * Returns the resource for the resource key in the default locale of the running machine. If the
    * resource is not available in this locale, this method tries to find the resource in the default
    * resources.
-   * 
+   *
    * @param key should not contain spaces
    * @param returnKey
-   * @return the value for the key. If the key could not be found in any resource, the key is
-   *         returned if <code>returnKey==true</code>, otherwise <code>null</code> is returned.
+   * @return the value for the key. If the key could not be found in any resource, the key is returned
+   *         if <code>returnKey==true</code>, otherwise <code>null</code> is returned.
    */
   public static String get(String key, boolean returnKey) {
     return Resources.get(key, Locale.getDefault(), returnKey);
   }
 
   /**
-   * 
+   *
    */
   public Enumeration<String> getKeys(Locale locale) {
     if (locale == null) {
@@ -342,14 +344,14 @@ public class Resources {
 
   /**
    * Returns the resource for the resource key in the given locale. If the resource is not available
-   * in this locale the method tries to find the resource in the default locale of this machine and
-   * if it is not available in this locale too then it tries the default resource.
-   * 
+   * in this locale the method tries to find the resource in the default locale of this machine and if
+   * it is not available in this locale too then it tries the default resource.
+   *
    * @param key should not contain spaces
    * @param locale This locale is used before default locales
    * @param returnKey
-   * @return the value for the key. If the key could not be found in any resource, the key is
-   *         returned if <code>returnKey==true</code>, otherwise <code>null</code> is returned.
+   * @return the value for the key. If the key could not be found in any resource, the key is returned
+   *         if <code>returnKey==true</code>, otherwise <code>null</code> is returned.
    */
   public static String get(String key, Locale locale, boolean returnKey) {
     if (locale == null) {
@@ -446,7 +448,7 @@ public class Resources {
   /**
    * Attempts to get the translation of the given order key in the current order locale. If no
    * translation is found, the key is returned.
-   * 
+   *
    * @param key An order key
    * @return The translation as found in the Resources or the key if no translation is found
    * @deprecated use {@link Rules#getOrder(String)}, {@link OrderType#getName(Locale)}.
@@ -467,9 +469,9 @@ public class Resources {
   // }
 
   /**
-   * Attempts to get the translation of the given rulesItem (german) key in the current order
-   * locale. If no translation is found, the key is returned.
-   * 
+   * Attempts to get the translation of the given rulesItem (german) key in the current order locale.
+   * If no translation is found, the key is returned.
+   *
    * @param key An string key of a name of an Item in rules.cr
    * @return The translation as found in the Resources or the key if no translation is found
    */
@@ -478,9 +480,9 @@ public class Resources {
   }
 
   /**
-   * Attempts to get the translation of the given order key in the given locale. If no translation
-   * is found, the key is returned.
-   * 
+   * Attempts to get the translation of the given order key in the given locale. If no translation is
+   * found, the key is returned.
+   *
    * @param key An rule item key. May contain spaces, but they will be removed before lookup.
    * @param locale
    * @return The translation as found in the Resources or the key if no translation is found
@@ -520,9 +522,9 @@ public class Resources {
   }
 
   /**
-   * Attempts to get the translation of the given order key in the given locale. If no translation
-   * is found, the key is returned.
-   * 
+   * Attempts to get the translation of the given order key in the given locale. If no translation is
+   * found, the key is returned.
+   *
    * @param key An order key. May contain spaces, but they will be removed before lookup.
    * @param locale If this is <code>null</code>, the {@link #DEFAULT} locale is used.
    * @return The translation as found in the Resources or the key if no translation is found
@@ -568,7 +570,7 @@ public class Resources {
 
   /**
    * Returns the resource paths the static methods of this class operate on.
-   * 
+   *
    * @see ResourcePathClassLoader
    */
   public static Collection<URL> getStaticPaths() {
@@ -589,7 +591,7 @@ public class Resources {
 
   /**
    * loads RessourcePaths(static) from the given settings
-   * 
+   *
    * @param settings
    */
   public static void initStaticPaths(Properties settings) {
@@ -618,13 +620,13 @@ public class Resources {
 
   /**
    * This method tries to find a resource in the set of bundles.
-   * 
+   *
    * @param key should not contain spaces
    * @param locale If this is <code>null</code>, the {@link #DEFAULT} locale is used.
-   * @return The value for this key in the resources or <code>null</code> if the key couldn't be
-   *         found in any of the registered bundles
+   * @return The value for this key in the resources or <code>null</code> if the key couldn't be found
+   *         in any of the registered bundles
    */
-  private String getResource(String key, Locale locale) {
+  protected String getResource(String key, Locale locale) {
     // removed for performance reasons; callers must ensure proper keys
     String trimKey = key;
     if (key.contains(" ")) {
@@ -667,7 +669,7 @@ public class Resources {
   /**
    * Returns an URL pointing to the file indicated by path. If the file does not exist, a
    * corresponding file in the resource directory is tried.
-   * 
+   *
    * @param path
    */
   public static URL getResourceURL(String path) {
@@ -709,6 +711,25 @@ public class Resources {
 
   }
 
+  /**
+   * Switch to trivial mode that always returnes the key.
+   * 
+   * @param setNull
+   */
+  public static void setNullResource(boolean setNull) {
+    getInstance();
+    if (setNull) {
+      _instance = new Resources() {
+        @Override
+        protected String getResource(String key, Locale locale) {
+          return key;
+        }
+      };
+    } else {
+      _instance = _singleton;
+    }
+  }
+
 }
 
 /**
@@ -719,7 +740,7 @@ class MyResourceBundle extends PropertyResourceBundle {
   private List<MyResourceBundle> childResources = new ArrayList<MyResourceBundle>();
 
   /**
-   * 
+   *
    */
   public MyResourceBundle(InputStream stream) throws IOException {
     super(stream);
@@ -727,8 +748,8 @@ class MyResourceBundle extends PropertyResourceBundle {
 
   /**
    * Adds a child resource bundle to this bundle. For example is "mapedit_resources.properties" a
-   * child of "resources.properties". This childs will be used when the master bundle does not
-   * contain the key.
+   * child of "resources.properties". This childs will be used when the master bundle does not contain
+   * the key.
    */
   public void add(MyResourceBundle bundle) {
     childResources.add(bundle);
@@ -755,7 +776,7 @@ class MyResourceBundle extends PropertyResourceBundle {
   /**
    * This method tries to find the resource key in this resource bundle. If it cannot be found it
    * tries all child resource bundles.
-   * 
+   *
    * @see java.util.ResourceBundle#containsKey(java.lang.String)
    */
   // this method exists in ResourceBundle since 1.6

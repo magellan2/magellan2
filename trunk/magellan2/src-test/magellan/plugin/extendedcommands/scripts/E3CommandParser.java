@@ -1746,8 +1746,8 @@ public class E3CommandParser {
 
   /**
    * <code>// $cript Handel Menge [ALLES | Verkaufsgut...] Warnung</code>: trade luxuries, Versorge
-   * {@value #DEFAULT_EARN_PRIORITY}. Menge may be a multipler ("x2" of the region maximum) Warnung
-   * can be "Talent", "Menge", or "nie"<br />
+   * {@value #DEFAULT_EARN_PRIORITY}. Menge may be a multipler ("x2" of the region maximum). xn:
+   * reserve goods for n rounds. Warnung can be "Talent", "Menge", or "nie"<br />
    */
   protected void commandTrade(String[] tokens) {
     if (tokens.length < 2) {
@@ -1816,9 +1816,20 @@ public class E3CommandParser {
     int skillNeeded = 0;
 
     if (volume > 0 && buyGood != null) {
+      int reserveMultiplier = 1, reserveToken = 0;
+      try {
+        if (tokens[2].substring(0, 1).equalsIgnoreCase("x")) {
+          reserveToken = 1;
+          reserveMultiplier = Integer.parseInt(tokens[2].substring(1));
+        }
+      } catch (NumberFormatException e) {
+        addNewError("ungültige Zahl " + tokens[2]);
+        return;
+      }
+
       List<String> goods = new LinkedList<String>();
       // Verkaufsbefehl setzen, wenn notwendig
-      if (tokens.length > 2 && ALLOrder.equals(tokens[2])) {
+      if (tokens.length > 2 + reserveToken && ALLOrder.equals(tokens[2 + reserveToken])) {
         if (world.getRules().getItemCategory("luxuries") == null) {
           addNewError("Spiel kennt keine Luxusgüter");
         } else {
@@ -1830,7 +1841,7 @@ public class E3CommandParser {
           }
         }
       } else {
-        for (int i = 2; i < tokens.length; ++i) {
+        for (int i = 2 + reserveToken; i < tokens.length; ++i) {
           goods.add(tokens[i]);
         }
       }
@@ -1846,7 +1857,8 @@ public class E3CommandParser {
           goodAmount = maxAmount - totalVolume;
         }
 
-        addNeed(luxury, currentUnit, ALLOrder.equals(tokens[2]) ? goodAmount : volume, volume,
+        addNeed(luxury, currentUnit, ALLOrder.equals(tokens[2 + reserveToken]) ? goodAmount : volume, volume
+            * reserveMultiplier,
             TRADE_PRIORITY, warning);
         if (goodAmount > 0) {
 
@@ -2245,7 +2257,9 @@ public class E3CommandParser {
     executeTransferOrders();
     for (Need need : needs) {
       if (need.getMinAmount() > 0 && need.getWarning().contains(C_AMOUNT)) {
-        addWarning(need.getUnit(), "braucht " + need.getMinAmount() + " mehr " + need.getItem());
+        addWarning(need.getUnit(), "braucht " + need.getMinAmount()
+            + (need.getMaxAmount() != need.getMinAmount() ? ("/" + need.getMaxAmount()) : "")
+            + " mehr " + need.getItem());
       }
 
       // add messages for unsatisfied needs
@@ -2319,7 +2333,7 @@ public class E3CommandParser {
         addOrder(t.getUnit(),
             getGiveOrder(t.getUnit(), t.getTarget().getID().toString(), t.getItem(),
                 (t.isAll() ? Integer.MAX_VALUE : t.getAmount()), false)
-                + COMMENTOrder + t.toString(), false);
+                + COMMENTOrder + t.getMessage(), false);
       }
     }
   }
@@ -4143,12 +4157,14 @@ class Need {
   private int minAmount;
   private Warning warning;
   UnitItemPriority uip;
+  private String message;
 
   public Need(Unit unit, String item, int minAmount, int maxAmount, int priority,
       Warning warning, long serial) {
     uip = new UnitItemPriority(unit, item, maxAmount, priority, serial);
     this.minAmount = minAmount;
     this.warning = warning;
+    message = createMessage();
   }
 
   public int compareTo(Need need) {
@@ -4169,6 +4185,7 @@ class Need {
 
   public void setAmount(int i) {
     uip.amount = i;
+    message = createMessage();
   }
 
   public String getItem() {
@@ -4181,6 +4198,7 @@ class Need {
 
   public void setMinAmount(int amount) {
     minAmount = amount;
+    message = createMessage();
   }
 
   public void reduceMinAmount(int change) {
@@ -4193,6 +4211,7 @@ class Need {
 
   public void setMaxAmount(int amount) {
     setAmount(amount);
+    message = createMessage();
   }
 
   public void reduceMaxAmount(int change) {
@@ -4219,7 +4238,15 @@ class Need {
 
   @Override
   public String toString() {
+    return createMessage();
+  }
+
+  private String createMessage() {
     return uip.unit + " needs " + minAmount + "/" + uip.amount + " " + uip.item + " (" + uip.priority + ")";
+  }
+
+  public String getMessage() {
+    return message;
   }
 }
 
@@ -4269,6 +4296,10 @@ class Transfer {
 
   public boolean isAll() {
     return all;
+  }
+
+  public String getMessage() {
+    return need.getMessage();
   }
 
   @Override

@@ -2172,6 +2172,39 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
+   * Test method for {@link E3CommandParser#commandTrade(String[])}.
+   */
+  @Test
+  public final void testCommandTradeXX() {
+    // test reserve multiplier
+
+    builder.addSkill(unit, "Handeln", 10);
+    builder.setPrices(unit.getRegion(), "Balsam");
+    builder.addItem(data, unit, "Öl", 2);
+    builder.addItem(data, unit, "Silber", 20000);
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Myrrhe", 200);
+
+    unit.getRegion().setPeasants(1000);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Handel x3 x2 Öl Myrrhe Seide");
+    parser.execute(unit.getFaction());
+
+    assertOrder("// $cript Handel x3 x2 Öl Myrrhe Seide", unit, 1);
+    assertOrder("KAUFE 30 Balsam", unit, 2);
+    assertOrder("VERKAUFE 2 Öl", unit, 3);
+    assertOrder("VERKAUFE ALLES Myrrhe", unit, 4);
+    assertOrder("RESERVIERE 360 Silber", unit, 5);
+    assertOrder("RESERVIERE 2 Öl", unit, 6);
+    assertMessage("braucht 8/18 mehr Öl", unit, 7);
+    assertMessage("braucht 10/20 mehr Seide", unit, 8);
+    assertEquals(9, unit.getOrders2().size());
+    assertOrder("GIB 1 10 Myrrhe", unit2, 1);
+    assertOrder("GIB 1 10 Myrrhe", unit2, 2);
+  }
+
+  /**
    * Test method for {@link E3CommandParser#commandClear(String[])}.
    */
   @Test

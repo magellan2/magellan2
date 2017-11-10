@@ -30,7 +30,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -49,6 +51,7 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.io.RulesReader;
+import magellan.test.GameDataBuilder;
 
 public class NRParserTest {
 
@@ -56,6 +59,16 @@ public class NRParserTest {
   private NRParser parser;
   private GameData data;
   private Rules rules;
+
+  @BeforeClass
+  public static void setUpBeforeClass() {
+    GameDataBuilder.setNullResources(true);
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    GameDataBuilder.setNullResources(false);
+  }
 
   @Before
   public void setUp() throws Exception {

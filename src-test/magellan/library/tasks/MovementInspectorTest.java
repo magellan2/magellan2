@@ -28,15 +28,17 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import magellan.library.Building;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Tests for MovementInspector
@@ -49,6 +51,16 @@ public class MovementInspectorTest extends MagellanTestWithResources {
   private GameData gd;
   private EresseaRelationFactory processor;
   private Unit u;
+
+  @BeforeClass
+  public static void setUpBeforeClass() {
+    GameDataBuilder.setNullResources(true);
+  }
+
+  @AfterClass
+  public static void afterClass() {
+    GameDataBuilder.setNullResources(false);
+  }
 
   /**
    * @throws Exception

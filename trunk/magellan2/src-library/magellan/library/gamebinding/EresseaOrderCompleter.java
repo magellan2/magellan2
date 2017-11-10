@@ -626,18 +626,6 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     addRegionUnits("", omitTemp);
   }
 
-  /**
-   * Replaces " " by "~" in all completions.
-   */
-  protected void fixWhitespace() {
-    final List<Completion> oldList = new LinkedList<Completion>(completions);
-    completions.clear();
-    for (final Completion c : oldList) {
-      completions.add(new Completion(c.getName().replaceAll(" ", "~"), c.getValue().replaceAll(" ",
-          "~"), c.getPostfix(), c.getPriority(), c.getCursorOffset()));
-    }
-  }
-
   /** Add completions for command Folge. */
   public void cmpltFolge() {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT), " "));

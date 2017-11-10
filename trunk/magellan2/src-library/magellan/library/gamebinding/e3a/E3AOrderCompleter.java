@@ -251,6 +251,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     for (Race r : getData().getRules().getRaces()) {
       if (r.getRecruitmentCosts() > 0) {
         addCompletion(new Completion(getRuleItemTranslation("race.1." + r.getID())));
+        fixWhitespace();
       }
     }
   }

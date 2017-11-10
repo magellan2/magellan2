@@ -330,11 +330,10 @@ public class E3AOrderParser extends EresseaOrderParser {
   }
 
   protected Race getRace(String content) {
-    for (Race r : getRules().getRaces())
-      if (r.getRecruitmentCosts() > 0)
-        if (content.equalsIgnoreCase(getRuleItemTranslation("race." + r.getID()))
-            || content.equalsIgnoreCase(getRuleItemTranslation("race.1." + r.getID())))
-          return r;
+    for (Race race : getRules().getRaces())
+      if (race.getRecruitmentCosts() > 0)
+        if (equalsRace(race, content))
+          return race;
     return null;
   }
 

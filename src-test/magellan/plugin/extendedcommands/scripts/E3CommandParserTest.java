@@ -1110,6 +1110,21 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB v 100 Elfenlieb", unit, 3);
   }
 
+  public final void testCommandCapTooMuch() {
+    unit.clearOrders();
+    // unit.addOrder("// $cript Steuermann 600 1200");
+    unit.addOrder("// $cript Benoetige 1 Schwert");
+    // unit.addOrder("// $cript Versorge 1");
+    unit.addOrder("// $cript Kapazitaet 101090");
+
+    builder.addItem(data, unit, "Schwert", 2000);
+    parser.execute(unit.getFaction());
+
+    assertOrder("RESERVIERE JE 1 Schwert", unit, 3);
+    assertWarning("Kapazität überschritten um 100000", unit, 4);
+    assertEquals(5, unit.getOrders2().size());
+  }
+
   /**
    * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
@@ -1664,6 +1679,17 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertMessage("2 nicht da", unit2, 1);
     assertOrder("GIB 2 ALLES Würziger~Wagemut", unit2, 2);
     assertOrder("GIB 1 5 Silber", unit2, 3);
+  }
+
+  @Test
+  public final void testCommandDepot() {
+    builder.addItem(data, unit, "Silber", 1090);
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufDepotVerwalter 90");
+    parser.execute(unit.getFaction());
+
+    assertOrder("RESERVIERE 100 Silber", unit, 2);
+
   }
 
   /**

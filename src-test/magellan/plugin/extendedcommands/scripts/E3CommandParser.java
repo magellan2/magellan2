@@ -1178,12 +1178,6 @@ public class E3CommandParser {
     }
   }
 
-  interface Filter {
-
-    boolean approve(Item item);
-
-  }
-
   /**
    * <code>// $cript GibWenn receiver [[JE] amount|ALLES|KRAUT|LUXUS|TRANK] [item] [warning...]</code>
    * <br />
@@ -1328,22 +1322,6 @@ public class E3CommandParser {
       }
     }
     return items;
-  }
-
-  private void giveTransfer(String targetId, String item, int amount, boolean all) {
-    Unit targetUnit = findUnit(targetId);
-    Need dummyNeed = new Need(targetUnit, item, amount, amount, GIVE_IF_PRIORITY, new Warning(true),
-        ++supplySerial);
-    Supply supply = getSupply(item, currentUnit);
-    all = all || (supply != null && supply.getAmount() == amount);
-    addTransfer(currentUnit, targetUnit, item, amount, true, all, dummyNeed);
-    transfer(currentUnit, dummyNeed, amount);
-  }
-
-  private void addTransfer(Unit giver, Unit receiver, String item, int amount, boolean min, boolean all,
-      Need need) {
-    transferList.add(new Transfer(giver, receiver, item, amount, min, all, need, ++supplySerial));
-    increaseMulti(transfersMap, receiver, item, amount);
   }
 
   /**
@@ -1509,7 +1487,7 @@ public class E3CommandParser {
         addNewError("Zahl erwartet");
       }
     }
-    addNeed("Silber", currentUnit, costs + zusatz1, costs + zusatz2, DEPOT_SILVER_PRIORITY);
+    addNeed("Silber", currentUnit, costs + zusatz1, costs + zusatz1 + zusatz2, DEPOT_SILVER_PRIORITY);
 
     commandNeed(new String[] { "Benoetige ", ALLOrder, String.valueOf(DEPOT_PRIORITY) });
     commandSupply(new String[] { "Versorge", "100" });
@@ -2464,7 +2442,12 @@ public class E3CommandParser {
 
     executeReserves(reserves);
     executeTransferOrders();
-    for (Need need : needs) {
+    warnNeeds();
+    warnCapacities();
+  }
+
+  private void warnNeeds() {
+    for (Need need : needQueue) {
       if (need.getMinAmount() > 0 && need.getWarning().contains(C_AMOUNT)) {
         addWarning(need.getUnit(), "braucht " + need.getMinAmount()
             + (need.getMaxAmount() != need.getMinAmount() ? ("/" + need.getMaxAmount()) : "")
@@ -2479,8 +2462,14 @@ public class E3CommandParser {
             false);
       }
     }
+  }
 
-    // TODO capacity warnings
+  private void warnCapacities() {
+    for (Entry<Unit, Integer> cap : capacities.entrySet()) {
+      if (cap.getValue() < 0) {
+        addWarning(cap.getKey(), "Kapazität überschritten um " + (-cap.getValue()));
+      }
+    }
   }
 
   private void sort(Need[] sorted) {
@@ -2506,16 +2495,18 @@ public class E3CommandParser {
       Transfer transfer = transferList.get(i);
       Integer cap;
       if ((cap = capacities.get(transfer.getTarget())) != null && cap < 0) {
-        int weight = getWeight(transfer.getItem());
-        if (weight > 0) {
-          int delta = cap / weight;
-          if (delta * weight > cap) {
-            --delta;
-          }
-          delta = Math.max(-transfer.getAmount(), delta);
-          if (delta < 0) {
-            undoTransfer(i, delta);
-            i = transferList.size();
+        if (transfer.getUnit() != transfer.getTarget() && transfer.isMin()) {
+          int weight = getWeight(transfer.getItem());
+          if (weight > 0) {
+            int delta = cap / weight;
+            if (delta * weight > cap) {
+              --delta;
+            }
+            delta = Math.max(-transfer.getAmount(), delta);
+            if (delta < 0) {
+              undoTransfer(i, delta);
+              i = transferList.size();
+            }
           }
         }
       }
@@ -2529,6 +2520,10 @@ public class E3CommandParser {
     } else {
       transferList.remove(index);
     }
+    if (-delta > getMulti(transfersMap, transfer.getTarget(), transfer.getItem())) {
+      addNewError("invalid transfer");
+    }
+    increaseMulti(transfersMap, transfer.getTarget(), transfer.getItem(), delta);
     int weight = delta * getWeight(transfer.getItem());
     changeCapacity(transfer.getTarget(), -weight);
     changeCapacity(transfer.getUnit(), weight);
@@ -2537,6 +2532,12 @@ public class E3CommandParser {
     }
     transfer.getNeed().reduceMaxAmount(delta);
 
+  }
+
+  private void addTransfer(Unit giver, Unit receiver, String item, int amount, boolean min, boolean all,
+      Need need) {
+    transferList.add(new Transfer(giver, receiver, item, amount, min, all, need, ++supplySerial));
+    increaseMulti(transfersMap, receiver, item, amount);
   }
 
   private void executeTransferOrders() {
@@ -2548,6 +2549,32 @@ public class E3CommandParser {
                 + COMMENTOrder + t.getMessage(), false);
       }
     }
+  }
+
+  private void transfer(Unit unit, Need need, int amount) {
+    Supply supply = getSupply(need.getItem(), unit);
+    if (supply.getAmount() < amount) {
+      addWarning(supply.getUnit(), "not enough " + need.getItem());
+    }
+
+    need.reduceMaxAmount(amount);
+    need.reduceMinAmount(amount);
+    supply.reduceAmount(amount);
+    if (unit != need.getUnit()) {
+      int weight = amount * getWeight(need.getItem());
+      changeCapacity(need.getUnit(), -weight);
+      changeCapacity(supply.getUnit(), weight);
+    }
+  }
+
+  private void giveTransfer(String targetId, String item, int amount, boolean all) {
+    Unit targetUnit = findUnit(targetId);
+    Need dummyNeed = new Need(targetUnit, item, amount, amount, GIVE_IF_PRIORITY, new Warning(true),
+        ++supplySerial);
+    Supply supply = getSupply(item, currentUnit);
+    all = all || (supply != null && supply.getAmount() == amount);
+    addTransfer(currentUnit, targetUnit, item, amount, true, all, dummyNeed);
+    transfer(currentUnit, dummyNeed, amount);
   }
 
   public static class MyReserveVisitor implements ReserveVisitor {
@@ -2567,22 +2594,6 @@ public class E3CommandParser {
 
   private void executeReserves(Reserves reserves) {
     reserves.execute(new MyReserveVisitor());
-  }
-
-  private void transfer(Unit unit, Need need, int amount) {
-    Supply supply = getSupply(need.getItem(), unit);
-    if (supply.getAmount() < amount) {
-      addWarning(supply.getUnit(), "not enough " + need.getItem());
-    }
-
-    need.reduceMaxAmount(amount);
-    need.reduceMinAmount(amount);
-    supply.reduceAmount(amount);
-    if (unit != need.getUnit()) {
-      int weight = amount * getWeight(need.getItem());
-      changeCapacity(need.getUnit(), -weight);
-      changeCapacity(supply.getUnit(), weight);
-    }
   }
 
   private Integer changeCapacity(Unit unit, int delta) {
@@ -2623,7 +2634,7 @@ public class E3CommandParser {
   }
 
   /**
-   * Tries to satisfy (minimum) need by a give order from supplyers.
+   * Tries to satisfy (minimum) need by a give order from suppliers.
    *
    * @param need
    * @param min
@@ -2725,6 +2736,10 @@ public class E3CommandParser {
       if (getSupply(item, unit) == null && (count = getItemCount(unit, item)) > 0) {
         putDummySupply(item, unit, count);
       }
+    }
+    if (minAmount > maxAmount) {
+      addNewError("min amount " + minAmount + " > max amount" + maxAmount);
+      maxAmount = minAmount;
     }
     needQueue.add(result = new Need(unit, item, minAmount, maxAmount, priority, w, ++supplySerial));
 

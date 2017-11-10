@@ -23,6 +23,7 @@ import java.util.Locale;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import magellan.client.Client;
@@ -1008,7 +1009,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   /**
    * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
-  public final void disabledTestCommandBenoetigeCap2() {
+  @Ignore("Known limitation")
+  @Test
+  public final void testCommandBenoetigeCap2() {
     builder.addItem(data, unit, "Silber", 5);
     Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
     builder.addItem(data, unit2, "Silber", 15000);

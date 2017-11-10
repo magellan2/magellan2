@@ -1,3 +1,6 @@
+2017-03-13 / Build 655 - stm (stm2@users.sourceforge.net)
+    * E3CommandParser now respects maximum capacity and maximum horses (Kapazitaet and Benoetige FUSS/PFERD)
+
 2017-03-13 / Build 654 - stm (stm2@users.sourceforge.net)
     * updated MagellanPluginTargetPanel.jar, needed for izpack plugin installers
 

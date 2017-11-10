@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.io.nr;
 
 import static org.junit.Assert.assertEquals;
@@ -29,6 +29,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import magellan.library.Building;
 import magellan.library.CombatSpell;
@@ -45,9 +49,6 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.io.RulesReader;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class NRParserTest {
 
@@ -208,6 +209,7 @@ public class NRParserTest {
 
   }
 
+  @Ignore("NR format has limits")
   @Test
   public final void testDescription3() throws IOException {
     NRReader reader = new NRReader();

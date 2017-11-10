@@ -243,11 +243,11 @@ public abstract class AbstractOrderCompleter implements Completer {
     final Collection<Spell> spells = u.getSpells().values();
     for (Spell spell : spells) {
       if ((spell.getDescription() == null)
-      // indicates that no information is available about this spell
+          // indicates that no information is available about this spell
           || ((spell.getIsFar() || !far)
               && (spell.getOnOcean() || !ocean || u.getRace().equals(
                   data.getRules().getRace(EresseaConstants.R_MEERMENSCHEN))) && (!combat ^ (spell
-              .getType().toLowerCase().indexOf("combat") > -1)))) {
+                      .getType().toLowerCase().indexOf("combat") > -1)))) {
         final String spellName = data.getTranslation(spell);
 
         completions.add(new Completion(opening + spellName + closing));
@@ -308,8 +308,8 @@ public abstract class AbstractOrderCompleter implements Completer {
 
   /**
    * adds all units in this region, whose faction does not fit all of the alliances in the given
-   * Alliance-Object. Example: Given Alliance contains help and give: units are added if they are
-   * not allied both: help AND give. The reference-object is the faction of the current unit
+   * Alliance-Object. Example: Given Alliance contains help and give: units are added if they are not
+   * allied both: help AND give. The reference-object is the faction of the current unit
    */
   public void addNotAlliedUnits(Alliance alliance, String postfix) {
     for (Unit curUnit : region.units()) {
@@ -1139,8 +1139,9 @@ public abstract class AbstractOrderCompleter implements Completer {
 
     // add rest of inner tokens
     for (OrderToken currentToken = innerTokenizer.getNextToken(); currentToken.ttype != OrderToken.TT_EOC
-        && (currentToken.ttype != OrderToken.TT_EOC || (currentToken.ttype == OrderToken.TT_EOC && !currentToken
-            .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
+        && (currentToken.ttype != OrderToken.TT_EOC || (currentToken.ttype == OrderToken.TT_EOC
+            && !currentToken
+                .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
       if (currentToken.ttype != OrderToken.TT_CLOSING_QUOTE
           || (currentToken.ttype == OrderToken.TT_CLOSING_QUOTE && !currentToken.getText().equals(
               insertedQuote))) {
@@ -1161,7 +1162,7 @@ public abstract class AbstractOrderCompleter implements Completer {
       if (t.ttype != OrderToken.TT_EOC) {
         for (int i =
             result.length() - lastLength + (innerQuote == null ? 0 : innerQuote.getText().length()); i < t
-            .getStart(); ++i) {
+                .getStart(); ++i) {
           if (preferQuotes) {
             result.append(" ");
           } else {
@@ -1174,7 +1175,8 @@ public abstract class AbstractOrderCompleter implements Completer {
 
     // append closing quote if needed
     if (doClose
-        && (openingToken != null || innerQuote != null || (innerTokens.size() > 2 && preferQuotes) || forceQuotes)) {
+        && (openingToken != null || innerQuote != null || (innerTokens.size() > 2 && preferQuotes)
+            || forceQuotes)) {
       result.append(openingToken != null ? openingToken.getText() : preferredQuote);
     }
 

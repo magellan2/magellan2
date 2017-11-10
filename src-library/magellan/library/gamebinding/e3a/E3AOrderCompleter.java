@@ -199,7 +199,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
         || ((getUnit().getShip() != null) && (getUnit().getShip().getOwnerUnit() != null) && (getUnit()
             .getShip().getOwnerUnit().equals(getUnit())))
         ||
-    // ... vicious warriors destroying other peoples buildings or ships
+        // ... vicious warriors destroying other peoples buildings or ships
         (getUnit().getModifiedBuilding() != null
             && getUnit().getModifiedBuilding().getOwnerUnit() != null && getUnit().getFaction() != getUnit()
                 .getModifiedBuilding().getOwnerUnit().getFaction())

@@ -29,6 +29,9 @@ import static org.junit.Assert.assertSame;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import magellan.client.completion.AutoCompletion;
 import magellan.library.Building;
 import magellan.library.Faction;
@@ -43,9 +46,6 @@ import magellan.library.relation.MaintenanceRelation;
 import magellan.library.rules.ItemType;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Tests for E3 order parser. inherits from EresseaOrderParserTest to ensure functionality of E2
@@ -79,6 +79,7 @@ public class E3RelationFactoryTest extends MagellanTestWithResources {
     parser = new E3AOrderParser(data);
     completion = new AutoCompletion(context.getProperties(), context.getEventDispatcher());
     completer = new E3AOrderCompleter(data, completion);
+    completer.setParser(parser);
   }
 
   /**

@@ -54,9 +54,9 @@ public class AllanonOrderParser extends EresseaOrderParser {
   @Override
   protected void initCommands() {
     super.initCommands();
-    addCommand(AllanonConstants.OC_ANWERBEN, new AnwerbenReader(this));
-    addCommand(AllanonConstants.OC_ERKUNDEN, new ErkundeReader(this));
-    addCommand(AllanonConstants.OC_MEUCHELN, new MeuchelnReader(this));
+    addCheckedCommand(AllanonConstants.OC_ANWERBEN, new AnwerbenReader(this));
+    addCheckedCommand(AllanonConstants.OC_ERKUNDEN, new ErkundeReader(this));
+    addCheckedCommand(AllanonConstants.OC_MEUCHELN, new MeuchelnReader(this));
   }
 
   // ************* ANWERBEN

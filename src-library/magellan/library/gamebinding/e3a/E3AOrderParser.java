@@ -50,41 +50,18 @@ public class E3AOrderParser extends EresseaOrderParser {
   protected void initCommands() {
     super.initCommands();
 
-    removeCommand(EresseaConstants.OC_HELP);
-
-    removeCommand(EresseaConstants.OC_RESEARCH);
-    // removeCommand(EresseaConstants.OC_FACTION);
-    // removeCommand(EresseaConstants.OC_REGION);
-    // removeCommand(EresseaConstants.OC_GROW);
-
-    removeCommand(EresseaConstants.OC_SPY);
-
-    removeCommand(EresseaConstants.OC_STEAL);
-
-    // removeCommand(EresseaConstants.OC_WORK);
-    removeCommand(EresseaConstants.OC_TAX);
-    removeCommand(EresseaConstants.OC_ENTERTAIN);
-
-    removeCommand(EresseaConstants.OC_BUY); // ?
-    removeCommand(EresseaConstants.OC_SELL);
-
-    removeCommand(EresseaConstants.OC_TEACH);
-
-    removeCommand(EresseaConstants.OC_SUPPLY);
-
-    removeCommand(EresseaConstants.OC_SABOTAGE);
-
     // removeCommand(EresseaConstants.OC_SIEGE);
 
-    addCommand(E3AConstants.OC_ALLIANCE, new AllianzReader(this));
-    addCommand(EresseaConstants.OC_HELP, new HelfeReader(this));
-    // addCommand(E3AConstants.OC_GIVE, new GibReader(this));
-    addCommand(EresseaConstants.OC_MAKE, new E3MacheReader(this));
-    addCommand(EresseaConstants.OC_RECRUIT, new RekrutiereReader(this));
+    addCheckedCommand(E3AConstants.OC_ALLIANCE, new AllianzReader(this));
+    removeCommand(EresseaConstants.OC_HELP);
+    addCheckedCommand(EresseaConstants.OC_HELP, new HelfeReader(this));
+    // addCheckedCommand(E3AConstants.OC_GIVE, new GibReader(this));
+    addCheckedCommand(EresseaConstants.OC_MAKE, new E3MacheReader(this));
+    addCheckedCommand(EresseaConstants.OC_RECRUIT, new RekrutiereReader(this));
 
     // only TARNE PARTEI!
     removeCommand(EresseaConstants.OC_HIDE);
-    addCommand(EresseaConstants.OC_HIDE, new TarneReader(this));
+    addCheckedCommand(EresseaConstants.OC_HIDE, new TarneReader(this));
   }
 
   @Override

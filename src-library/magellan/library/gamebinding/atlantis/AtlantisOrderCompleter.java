@@ -46,11 +46,6 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
     super(gd, ac);
   }
 
-  @Override
-  protected void initParser() {
-    setParser(new AtlantisOrderParser(getData(), this));
-  }
-
   // begin of completion methods invoked by OrderParser
   @Override
   protected void cmplt() {

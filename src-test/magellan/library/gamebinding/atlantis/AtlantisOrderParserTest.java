@@ -31,6 +31,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.StringReader;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.Region;
@@ -42,10 +46,6 @@ import magellan.library.gamebinding.OrderHandler;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class AtlantisOrderParserTest extends AbstractOrderParserTest {
 
@@ -72,9 +72,10 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
     // builder.addShip(data, region, "ship", "Einbaum", "ein Boot", 50);
     // builder.addUnit(data, "zwei", "Zweite", faction, region);
 
-    setParser(new AtlantisOrderParser(data));
+    setParser(parser = new AtlantisOrderParser(data));
     completion = new AutoCompletion(context.getProperties(), context.getEventDispatcher());
-    setCompleter(new AtlantisOrderCompleter(data, completion));
+    setCompleter(completer = new AtlantisOrderCompleter(data, completion));
+    completer.setParser(parser);
   }
 
   private AtlantisOrderParser parser;

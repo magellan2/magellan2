@@ -631,8 +631,8 @@ public class E3CommandParser {
    * -- learn skill and reserve equipment<br />
    * <code>// $cript Lerne Talent1 Stufe1 [[Talent2 Stufe2]...]</code> -- learn skills in given
    * ratio <br />
-   * <code>// $cript BerufBotschafter [Talent]</code> -- earn money if necessary, otherwise learn
-   * skill<br />
+   * <code>// $cript BerufBotschafter [minimum money] [Talent]</code> -- earn money if necessary,
+   * otherwise learn skill<br />
    * <code>// $cript Ueberwache</code> -- look out for unknown units<br />
    * <code>// $cript Erlaube faction unit [unit...]</code> -- allow units for Ueberwache<br />
    * <code>// $cript Verlange faction unit [unit...]</code> -- allow and require units for
@@ -1532,13 +1532,23 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript BerufBotschafter [Talent]</code> -- earn money if necessary, otherwise learn
-   * skill<br />
+   * <code>// $cript BerufBotschafter [minimum money] [Talent|command]</code> -- if we have at least
+   * minimum money (default 100), learn skill or execute command<br />
    */
   protected void commandEmbassador(String[] tokens) {
     Skill skill = null;
+    int minimum = 100;
+    int actionToken = 1;
     if (tokens.length > 1) {
-      skill = getSkill(tokens[1], 10);
+      try {
+        minimum = Integer.parseInt(tokens[1]);
+        actionToken = 2;
+      } catch (NumberFormatException e) {
+        actionToken = 1;
+      }
+    }
+    if (tokens.length > actionToken) {
+      skill = getSkill(tokens[actionToken], 10);
     } else {
       skill = getSkill(EresseaConstants.S_WAHRNEHMUNG.toString(), 10);
       if (skill == null) {
@@ -1548,7 +1558,7 @@ public class E3CommandParser {
 
     commandClear(new String[] { "Loeschen" });
 
-    if (helper.getSilver(currentUnit) < 100) {
+    if (helper.getSilver(currentUnit) < minimum) {
       if (hasEntertain() && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG) != null
           && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG).getLevel() > 0) {
         addNewOrder(ENTERTAINOrder, true);
@@ -1559,16 +1569,16 @@ public class E3CommandParser {
       }
     } else if (skill == null) {
       StringBuilder order = new StringBuilder();
-      if (tokens.length > 1) {
-        order.append(tokens[1]);
+      if (tokens.length > actionToken) {
+        order.append(tokens[actionToken]);
       }
-      for (int i = 2; i < tokens.length; ++i) {
+      for (int i = actionToken + 1; i < tokens.length; ++i) {
         order.append(" ").append(tokens[i]);
       }
       addNewOrder(order.toString(), true);
     } else {
       learn(currentUnit, Collections.singleton(skill));
-      if (tokens.length > 2) {
+      if (tokens.length > actionToken + 1) {
         addNewError("zu viele Argumente");
       }
     }

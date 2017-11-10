@@ -984,7 +984,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     @Override
     protected boolean checkInner() {
       for (ItemType type : getRules().getItemTypes()) {
-        if (normalizeName(type.getName()).equalsIgnoreCase(normalizeName(content))) {
+        if (equalsNormalized(type.getName(), content)) {
           itype = type;
           return true;
         }
@@ -1311,6 +1311,10 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   protected String normalize(String token) {
     return Umlaut.normalize(token.trim()).toLowerCase();
+  }
+
+  protected boolean equalsNormalized(String rulesItem, String content) {
+    return normalizeName(rulesItem).equalsIgnoreCase(normalizeName(content));
   }
 
   /**

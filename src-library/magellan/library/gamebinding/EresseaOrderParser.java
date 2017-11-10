@@ -2309,10 +2309,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
           protected boolean checkInner() {
             if (super.checkInner() && (getRules() != null)) {
               for (Race race : getRules().getRaces()) {
-                if (normalizeName(getRuleItemTranslation("race." + race.getID())).equalsIgnoreCase(
-                    normalizeName(content))
-                    || normalizeName(getRuleItemTranslation("race.1." + race.getID()))
-                        .equalsIgnoreCase(normalizeName(content)))
+                if (equalsRace(race, content))
                   return true;
               }
             }
@@ -3843,6 +3840,11 @@ public class EresseaOrderParser extends AbstractOrderParser {
   @Override
   protected StringID getTemp() {
     return EresseaConstants.OC_TEMP;
+  }
+
+  protected boolean equalsRace(Race race, String content) {
+    return equalsNormalized(getRuleItemTranslation("race." + race.getID()), content) ||
+        equalsNormalized(getRuleItemTranslation("race.1." + race.getID()), content);
   }
 
   // private static Map<Locale, String[]> shortNamess = new HashMap<Locale, String[]>();

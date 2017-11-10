@@ -1058,6 +1058,18 @@ public abstract class AbstractOrderCompleter implements Completer {
   }
 
   /**
+   * Replaces " " by "~" in all completions.
+   */
+  protected void fixWhitespace() {
+    final List<Completion> oldList = new LinkedList<Completion>(completions);
+    completions.clear();
+    for (final Completion c : oldList) {
+      completions.add(new Completion(c.getName().replaceAll(" ", "~"), c.getValue().replaceAll(" ",
+          "~"), c.getPostfix(), c.getPriority(), c.getCursorOffset()));
+    }
+  }
+
+  /**
    * TODO DOCUMENT-ME
    *
    * @param openingToken

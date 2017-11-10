@@ -1089,6 +1089,17 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
     assertOrder("UNTERHALTE", unit, 2);
 
+    // with entertain skill and minimum money
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter 200 Segeln");
+    builder.addItem(data, unit, "Silber", 190);
+    builder.addSkill(unit, "Unterhaltung", 1);
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter 200 Segeln", unit, 1);
+    assertOrder("UNTERHALTE", unit, 2);
+
     // other command
     unit.clearOrders();
     unit.addOrder("// $cript BerufBotschafter MACHE Holz");
@@ -1120,6 +1131,16 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     assertEquals(4, unit.getOrders2().size());
     assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertOrder("LERNE Segeln", unit, 3);
+
+    // with minimum money --> learn
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter 200 Segeln");
+    builder.addItem(data, unit, "Silber", 210);
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter 200 Segeln", unit, 1);
     assertOrder("LERNE Segeln", unit, 3);
 
     // with money, other command
@@ -2633,10 +2654,4 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
   }
 
-  /**
-   *
-   */
-  @Test
-  public void testInfinitive() {
-  }
 }

@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import magellan.client.extern.MagellanPlugIn;
@@ -63,12 +62,124 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
-import magellan.plugin.extendedcommands.scripts.E3CommandParser.Reserves.ReserveVisitor;
 
 // ---start uncomment for BeanShell
 // import magellan.library.*;
 // import java.util.*;
 // ---stop uncomment for BeanShell
+
+class SupplyMap {
+  Map<String, Map<Unit, Supply>> supplyMap;
+  private E3CommandParser parser;
+
+  public SupplyMap(E3CommandParser parser) {
+    this.parser = parser;
+    supplyMap = new LinkedHashMap<String, Map<Unit, Supply>>();
+  }
+
+  public Collection<String> items() {
+    return supplyMap.keySet();
+  }
+
+  public int getSupply(String item) {
+    Map<Unit, Supply> map = supplyMap.get(item);
+    int goodAmount = 0;
+    if (map != null) {
+      for (Supply s : map.values()) {
+        goodAmount += s.getAmount();
+      }
+    }
+    return goodAmount;
+  }
+
+  public Supply get(String item, Unit unit) {
+    Map<Unit, Supply> map = supplyMap.get(item);
+    if (map == null)
+      return null;
+    return map.get(unit);
+  }
+
+  public Collection<Supply> get(String item) {
+    Map<Unit, Supply> result = supplyMap.get(item);
+    if (result == null)
+      return Collections.emptyList();
+    return result.values();
+  }
+
+  public void sortByPriority() {
+    for (String item : supplyMap.keySet()) {
+      // sort supplies by priority
+      Map<Unit, Supply> itemSupply = supplyMap.get(item);
+      if (itemSupply == null) {
+        itemSupply = Collections.emptyMap();
+      } else {
+        Supply[] sorted = null;
+        sorted = itemSupply.values().toArray(new Supply[0]);
+
+        // this causes problems in BeansShell; I don't know why
+        // Arrays.sort(sorted);
+        // doing insertion sort instead
+        sort(sorted);
+
+        itemSupply.clear();
+        for (Supply supply : sorted) {
+          itemSupply.put(supply.getUnit(), supply);
+        }
+      }
+    }
+  }
+
+  private void sort(Supply[] sorted) {
+    for (int j = 1; j < sorted.length; ++j) {
+      for (int i = 0; i < j; ++i) {
+        if (sorted[j].compareTo(sorted[i]) < 0) {
+          // if (current.priority > sorted[i].priority) {
+          Supply temp = sorted[i];
+          sorted[i] = sorted[j];
+          sorted[j] = temp;
+        }
+      }
+    }
+  }
+
+  public Supply put(String item, Unit unit, int amount, long serial) {
+    Map<Unit, Supply> itemSupplyMap = supplyMap.get(item);
+    if (itemSupplyMap == null) {
+      itemSupplyMap = new LinkedHashMap<Unit, Supply>();
+      supplyMap.put(item, itemSupplyMap);
+    }
+    Supply result = new Supply(unit, item, amount, serial);
+    itemSupplyMap.put(unit, result);
+    return result;
+  }
+
+  public void clear() {
+    supplyMap.clear();
+  }
+}
+
+interface ReserveVisitor {
+  public void execute(Unit u, String item, int amount);
+}
+
+class Reserves {
+
+  Map<String, Map<Unit, Integer>> reserves = new HashMap<String, Map<Unit, Integer>>();
+
+  public void add(String item, Unit unit, int amount) {
+    E3CommandParser.increaseMultiInv(reserves, item, unit, amount);
+  }
+
+  public void execute(ReserveVisitor reserveVisitor) {
+    for (String item : reserves.keySet()) {
+      Map<Unit, Integer> iMap = reserves.get(item);
+      for (Unit u : iMap.keySet()) {
+        reserveVisitor.execute(u, item, iMap.get(u));
+      }
+
+    }
+  }
+}
 
 /**
  * Call from the script of your faction with<br />
@@ -250,8 +361,7 @@ public class E3CommandParser {
   /**
    * The item/unit/need map. Stores all needed items.
    */
-  // protected Map<String, Map<Integer, Map<Unit, Need>>> needMap;
-  protected Collection<Need> needQueue;
+  protected List<Need> needQueue;
   /**
    * The item/unit/supply map. Stores all available items.
    */
@@ -285,6 +395,7 @@ public class E3CommandParser {
   protected String clearPrefix = "";
 
   private int progress = -1;
+  private long supplySerial = 0;
 
   /**
    * Parses scripts and confirms units according to the "confirm" tag. Call this for the faction
@@ -580,6 +691,7 @@ public class E3CommandParser {
           }
         }
         if (tokens != null) {
+          // System.out.println(o);
           String command = tokens[0];
           if (command.startsWith("+")) {
             commandWarning(tokens);
@@ -1031,15 +1143,17 @@ public class E3CommandParser {
 
   private void giveTransfer(String targetId, String item, int amount, boolean all) {
     Unit targetUnit = findUnit(targetId);
-    Need dummyNeed = new Need(targetUnit, item, amount, amount, GIVE_IF_PRIORITY, null);
+    Need dummyNeed = new Need(targetUnit, item, amount, amount, GIVE_IF_PRIORITY, new Warning(true),
+        ++supplySerial);
     Supply supply = getSupply(item, currentUnit);
-    all = all | supply.getAmount() == amount;
-    addTransfer(currentUnit, targetUnit, item, amount, all, dummyNeed);
+    all = all || (supply != null && supply.getAmount() == amount);
+    addTransfer(currentUnit, targetUnit, item, amount, true, all, dummyNeed);
     transfer(currentUnit, dummyNeed, amount);
   }
 
-  private void addTransfer(Unit giver, Unit receiver, String item, int amount, boolean all, Need need) {
-    transferList.add(new Transfer(giver, receiver, item, amount, all, need));
+  private void addTransfer(Unit giver, Unit receiver, String item, int amount, boolean min, boolean all,
+      Need need) {
+    transferList.add(new Transfer(giver, receiver, item, amount, min, all, need, ++supplySerial));
     increaseMulti(transfersMap, receiver, item, amount);
   }
 
@@ -1254,14 +1368,14 @@ public class E3CommandParser {
       for (Item item : currentUnit.getItems()) {
         Supply supply = getSupply(item.getOrderName(), currentUnit);
         if (supply != null) {
-          supply.priority = priority;
+          supply.setPriority(priority);
         }
       }
     } else {
       for (int i = 1; i < tokens.length - 1; ++i) {
         Supply supply = getSupply(tokens[i], currentUnit);
         if (supply != null) {
-          supply.priority = priority;
+          supply.setPriority(priority);
         }
       }
     }
@@ -1999,13 +2113,13 @@ public class E3CommandParser {
 
   protected void initSupply() {
     if (needQueue == null) {
-      needQueue = new TreeSet<Need>();
+      needQueue = new ArrayList<Need>();
     } else {
       needQueue.clear();
     }
 
     if (supplyMapp == null) {
-      supplyMapp = new SupplyMap();
+      supplyMapp = new SupplyMap(this);
     } else {
       supplyMapp.clear();
     }
@@ -2063,30 +2177,7 @@ public class E3CommandParser {
    * @param amount
    */
   protected Supply putSupply(String item, Unit unit, int amount) {
-    return supplyMapp.put(item, unit, amount);
-  }
-
-  protected static class Reserves {
-
-    public static interface ReserveVisitor {
-      public void execute(Unit u, String item, int amount);
-    }
-
-    Map<String, Map<Unit, Integer>> reserves = new HashMap<String, Map<Unit, Integer>>();
-
-    public void add(String item, Unit unit, int amount) {
-      E3CommandParser.increaseMulti(reserves, item, unit, amount);
-    }
-
-    public void execute(ReserveVisitor reserveVisitor) {
-      for (String item : reserves.keySet()) {
-        Map<Unit, Integer> iMap = reserves.get(item);
-        for (Unit u : iMap.keySet()) {
-          reserveVisitor.execute(u, item, iMap.get(u));
-        }
-
-      }
-    }
+    return supplyMapp.put(item, unit, amount, ++supplySerial);
   }
 
   /**
@@ -2096,13 +2187,13 @@ public class E3CommandParser {
     supplyMapp.sortByPriority();
 
     Need[] needs = needQueue.toArray(new Need[] {});
+    sort(needs);
     adjustAlreadyTransferred(needs);
-
     Reserves reserves = new Reserves();
 
     for (int n = 0, prioStart = 0, state = 0; n < needs.length; ++n) {
       Need need = needs[n];
-      if (need.priority > needs[prioStart].priority)
+      if (need.getPriority() > needs[prioStart].getPriority())
         throw new RuntimeException("needs not sorted");
 
       {
@@ -2128,18 +2219,18 @@ public class E3CommandParser {
         }
       }
 
-      if (n == needs.length - 1 || needs[n + 1].priority < needs[prioStart].priority) {
+      if (n == needs.length - 1 || needs[n + 1].getPriority() < needs[prioStart].getPriority()) {
         if (state == 0) {
           n = prioStart - 1;
           ++state;
         } else {
           state = 0;
           prioStart = n + 1;
+          enforceCapacities();
         }
       }
     }
 
-    enforceCapacities();
     executeReserves(reserves);
     executeTransferOrders();
     for (Need need : needs) {
@@ -2152,6 +2243,20 @@ public class E3CommandParser {
           && need.getMaxAmount() != Integer.MAX_VALUE) {
         addOrder(need.getUnit(), "; braucht " + need.getMaxAmount() + " mehr " + need.getItem(),
             false);
+      }
+    }
+
+    // TODO capacity warnings
+  }
+
+  private void sort(Need[] sorted) {
+    for (int j = 1; j < sorted.length; ++j) {
+      for (int i = 0; i < j; ++i) {
+        if (sorted[j].compareTo(sorted[i]) < 0) {
+          Need temp = sorted[i];
+          sorted[i] = sorted[j];
+          sorted[j] = temp;
+        }
       }
     }
   }
@@ -2188,8 +2293,14 @@ public class E3CommandParser {
     } else {
       transferList.remove(index);
     }
-    changeCapacity(transfer.getTarget(), -delta * getWeight(transfer.getItem()));
+    int weight = delta * getWeight(transfer.getItem());
+    changeCapacity(transfer.getTarget(), -weight);
+    changeCapacity(transfer.getUnit(), weight);
+    if (transfer.isMin()) {
+      transfer.getNeed().reduceMinAmount(delta);
+    }
     transfer.getNeed().reduceMaxAmount(delta);
+
   }
 
   private void executeTransferOrders() {
@@ -2203,21 +2314,23 @@ public class E3CommandParser {
     }
   }
 
-  private void executeReserves(Reserves reserves) {
-    reserves.execute(new ReserveVisitor() {
+  public static class MyReserveVisitor implements ReserveVisitor {
 
-      public void execute(Unit u, String item, int amount) {
-        if (amount > 0) {
-          if (amount == u.getPersons()) {
-            addOrder(u, getReserveOrder(u, item // + COMMENTOrder + need.toString()
-            , 1, true), false);
-          } else {
-            addOrder(u, getReserveOrder(u, item, amount, false), false);
-          }
+    public void execute(Unit u, String item, int amount) {
+      if (amount > 0) {
+        if (amount == u.getPersons()) {
+          addOrder(u, getReserveOrder(u, item // + COMMENTOrder + need.toString()
+              , 1, true), false);
+        } else {
+          addOrder(u, getReserveOrder(u, item, amount, false), false);
         }
       }
-    });
+    }
 
+  }
+
+  private void executeReserves(Reserves reserves) {
+    reserves.execute(new MyReserveVisitor());
   }
 
   private void transfer(Unit unit, Need need, int amount) {
@@ -2230,7 +2343,9 @@ public class E3CommandParser {
     need.reduceMinAmount(amount);
     supply.reduceAmount(amount);
     if (unit != need.getUnit()) {
-      changeCapacity(need.getUnit(), -amount * getWeight(need.getItem()));
+      int weight = amount * getWeight(need.getItem());
+      changeCapacity(need.getUnit(), -weight);
+      changeCapacity(supply.getUnit(), weight);
     }
   }
 
@@ -2262,7 +2377,7 @@ public class E3CommandParser {
     amount = Math.min(amount, supply.getAmount());
     if (amount > 0) {
       if (min) {
-        addTransfer(need.getUnit(), need.getUnit(), need.getItem(), amount, false, need);
+        addTransfer(need.getUnit(), need.getUnit(), need.getItem(), amount, min, false, need);
       }
       transfer(need.getUnit(), need, amount);
       if (min) {
@@ -2282,10 +2397,10 @@ public class E3CommandParser {
     if (amount > 0) {
       // adjustForTransfer(need, amount);
       for (Supply supply : supplyMapp.get(need.getItem())) {
-        if (supply.getUnit() != need.getUnit() && (min || supply.priority > 0)) {
+        if (supply.getUnit() != need.getUnit() && (min || supply.getPriority() > 0)) {
           int giveAmount = Math.min(amount, supply.getAmount());
           if (giveAmount > 0) {
-            addTransfer(supply.getUnit(), need.getUnit(), need.getItem(), giveAmount, false, need);
+            addTransfer(supply.getUnit(), need.getUnit(), need.getItem(), giveAmount, min, false, need);
             transfer(supply.getUnit(), need, giveAmount);
             amount -= giveAmount;
           }
@@ -2321,7 +2436,7 @@ public class E3CommandParser {
     return amount;
   }
 
-  private int getWeight(String item) {
+  protected int getWeight(String item) {
     return Math.round(world.getRules().getItemType(item).getWeight() * 100);
   }
 
@@ -2369,58 +2484,9 @@ public class E3CommandParser {
   protected Need addNeed(String item, Unit unit, int minAmount, int maxAmount, int priority,
       Warning w) {
     Need result;
-    needQueue.add(result = new Need(unit, item, minAmount, maxAmount, priority, w));
+    needQueue.add(result = new Need(unit, item, minAmount, maxAmount, priority, w, ++supplySerial));
     return result;
-
-    // Map<Integer, Map<Unit, Need>> map = needMap.get(item);
-    // if (map == null) {
-    // map = new LinkedHashMap<Integer, Map<Unit, Need>>();
-    // needMap.put(item, map);
-    // }
-    // Map<Unit, Need> pMap = map.get(priority);
-    // if (pMap == null) {
-    // pMap = new LinkedHashMap<Unit, Need>();
-    // map.put(priority, pMap);
-    // }
-    // Need need = pMap.get(unit);
-    // if (need == null) {
-    // need = new Need(unit, item, 0, 0, w);
-    // pMap.put(unit, need);
-    // }
-    //
-    // if (need.getAmount() != Integer.MAX_VALUE) {
-    // if (maxAmount == Integer.MAX_VALUE) {
-    // need.setAmount(maxAmount);
-    // } else {
-    // need.reduceAmount(-maxAmount);
-    // }
-    // }
-    // if (need.getMinAmount() != Integer.MAX_VALUE) {
-    // if (minAmount == Integer.MAX_VALUE) {
-    // need.setMinAmount(minAmount);
-    // } else {
-    // need.reduceMinAmount(-minAmount);
-    // }
-    // }
   }
-
-  // /**
-  // * Returns a need of a unit for an item.
-  // *
-  // * @param item Order name of the required item
-  // * @param unit
-  // * @return The need or <code>null</code> if none has been registered.
-  // */
-  // protected Need getNeed(String item, Unit unit, int priority) {
-  // Map<Integer, Map<Unit, Need>> map = needMap.get(item);
-  // if (map == null)
-  // return null;
-  // Map<Unit, Need> pMap = map.get(priority);
-  // if (pMap == null)
-  // return null;
-  //
-  // return pMap.get(unit);
-  // }
 
   /**
    * Marks the unit as soldier. Learns its best weapon skill. Reserves suitable weapon, armor, and
@@ -2827,19 +2893,18 @@ public class E3CommandParser {
     setConfirm(currentUnit, false);
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  private static <K1, K2, V> V putMulti(Map<K1, Map<K2, V>> map, K1 key1, K2 key2, V value) {
-    Map<K2, V> inner = map.get(key1);
+  private static Integer putMulti(Map<Unit, Map<String, Integer>> map, Unit key1, String key2,
+      Integer value) {
+    Map<String, Integer> inner = map.get(key1);
     if (inner == null) {
       map.put(key1, inner = new HashMap());
     }
-    V old = inner.put(key2, value);
+    Integer old = inner.put(key2, value);
     return old;
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  private static <K1, K2> void increaseMulti(Map<K1, Map<K2, Integer>> map, K1 key1, K2 key2, int value) {
-    Map<K2, Integer> inner = map.get(key1);
+  private static void increaseMulti(Map<Unit, Map<String, Integer>> map, Unit key1, String key2, int value) {
+    Map<String, Integer> inner = map.get(key1);
     if (inner == null) {
       map.put(key1, inner = new HashMap());
     }
@@ -2851,31 +2916,44 @@ public class E3CommandParser {
     }
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  private static <K1, K2, V> void appendMulti(Map<K1, Map<K2, Collection<V>>> map, K1 key1, K2 key2,
-      V value) {
-    Map<K2, Collection<V>> inner = map.get(key1);
+  static void increaseMultiInv(Map<String, Map<Unit, Integer>> map, String key1, Unit key2,
+      int value) {
+    Map<Unit, Integer> inner = map.get(key1);
     if (inner == null) {
       map.put(key1, inner = new HashMap());
     }
-    Collection<V> old = inner.get(key2);
+    Integer old = inner.get(key2);
     if (old == null) {
-      inner.put(key2, old = new ArrayList<V>());
+      inner.put(key2, value);
+    } else {
+      inner.put(key2, old + value);
+    }
+  }
+
+  private static void appendMulti(Map<Object, Map<Object, Collection<Integer>>> map, Object key1, Object key2,
+      Integer value) {
+    Map<Object, Collection<Integer>> inner = map.get(key1);
+    if (inner == null) {
+      map.put(key1, inner = new HashMap());
+    }
+    Collection<Integer> old = inner.get(key2);
+    if (old == null) {
+      inner.put(key2, old = new ArrayList<Integer>());
     }
     old.add(value);
   }
 
-  private static <K1, K2, V> V getMulti(Map<K1, Map<K2, V>> map, K1 key1, K2 key2) {
-    Map<K2, V> inner = map.get(key1);
+  private static Integer getMulti(Map<Unit, Map<String, Integer>> map, Unit key1, String key2) {
+    Map<String, Integer> inner = map.get(key1);
     if (inner != null)
       return inner.get(key2);
     return null;
   }
 
-  private static <K1, K2, V> V removeMulti(Map<K1, Map<K2, V>> map, K1 key1, K2 key2) {
-    Map<K2, V> inner = map.get(key1);
+  private static Integer removeMulti(Map<Unit, Map<String, Integer>> map, Unit key1, String key2) {
+    Map<String, Integer> inner = map.get(key1);
     if (inner != null) {
-      V val = inner.remove(key2);
+      Integer val = inner.remove(key2);
       if (inner.isEmpty()) {
         map.remove(key1);
       }
@@ -3897,155 +3975,94 @@ public class E3CommandParser {
 
 }
 
-class Supply implements Comparable<Supply> {
+class UnitItemPriority {
+  public UnitItemPriority(Unit unit, String item, int amount, int priority, long serial) {
+    this.unit = unit;
+    this.item = item;
+    this.amount = amount;
+    this.priority = priority;
+    this.serial = serial;
+  }
 
   Unit unit;
   /** The order name of the item. */
   String item;
   int amount;
   int priority;
-  static long lastSerial = 0;
   long serial;
 
-  public Supply(Unit unit, String item, int amount) {
-    super();
-    if (unit == null)
-      throw new NullPointerException();
-    this.unit = unit;
-    this.item = item;
-    this.amount = amount;
-    priority = E3CommandParser.DEFAULT_SUPPLY_PRIORITY;
-    serial = ++lastSerial;
-  }
-
-  public Unit getUnit() {
-    return unit;
-  }
-
-  public int getAmount() {
-    return amount;
-  }
-
-  public void setAmount(int i) {
-    amount = i;
-  }
-
-  public String getItem() {
-    return item;
-  }
-
-  public void reduceAmount(int change) {
+  public static int reduceAmount(int amount, int change) {
     if (amount == Integer.MAX_VALUE || amount == Integer.MIN_VALUE)
-      return;
-    long newValue = (long) amount - (long) change;
-    if (newValue > Integer.MAX_VALUE) {
-      amount = Integer.MAX_VALUE;
-    } else if (newValue < Integer.MIN_VALUE) {
-      amount = Integer.MIN_VALUE;
-    } else {
-      amount = (int) newValue;
-    }
+      return amount;
+    long newValue = (long) amount - change;
+    if (newValue > Integer.MAX_VALUE)
+      return Integer.MAX_VALUE;
+    else if (newValue < Integer.MIN_VALUE)
+      return Integer.MIN_VALUE;
+    else
+      return (int) newValue;
+
+  }
+
+  public int compareTo(UnitItemPriority uip) {
+    int diff = uip.priority - priority;
+    if (diff != 0)
+      return diff;
+    return serial > uip.serial ? 1 : serial < uip.serial ? -1 : 0;
   }
 
   @Override
   public String toString() {
-    return unit + " has " + amount + " " + item;
+    return unit + " " + amount + " " + item + " (" + priority + ")";
+  }
+}
+
+class Supply {
+
+  UnitItemPriority uip;
+
+  public Supply(Unit unit, String item, int amount, long serial) {
+    super();
+    if (unit == null)
+      throw new NullPointerException();
+    uip = new UnitItemPriority(unit, item, amount, E3CommandParser.DEFAULT_SUPPLY_PRIORITY, serial);
+  }
+
+  public int getPriority() {
+    return uip.priority;
+  }
+
+  public void setPriority(int priority) {
+    uip.priority = priority;
+  }
+
+  public Unit getUnit() {
+    return uip.unit;
+  }
+
+  public int getAmount() {
+    return uip.amount;
+  }
+
+  public void setAmount(int i) {
+    uip.amount = i;
+  }
+
+  public String getItem() {
+    return uip.item;
+  }
+
+  public void reduceAmount(int change) {
+    uip.amount = UnitItemPriority.reduceAmount(uip.amount, change);
+  }
+
+  @Override
+  public String toString() {
+    return uip.unit + " has " + uip.amount + " " + uip.item;
   }
 
   public int compareTo(Supply o) {
-    int diff = o.priority - priority;
-    if (diff != 0)
-      return diff;
-    // diff = item.compareTo(o.item);
-    // if (diff != 0)
-    // return diff;
-    return serial > o.serial ? 1 : serial < o.serial ? -1 : 0;
-  }
-
-}
-
-class SupplyMap {
-  Map<String, Map<Unit, Supply>> supplyMap;
-
-  public SupplyMap() {
-    supplyMap = new LinkedHashMap<String, Map<Unit, Supply>>();
-  }
-
-  public Collection<String> items() {
-    return supplyMap.keySet();
-  }
-
-  public int getSupply(String item) {
-    Map<Unit, Supply> map = supplyMap.get(item);
-    int goodAmount = 0;
-    if (map != null) {
-      for (Supply s : map.values()) {
-        goodAmount += s.getAmount();
-      }
-    }
-    return goodAmount;
-  }
-
-  public Supply get(String item, Unit unit) {
-    Map<Unit, Supply> map = supplyMap.get(item);
-    if (map == null)
-      return null;
-    return map.get(unit);
-  }
-
-  public Collection<Supply> get(String item) {
-    Map<Unit, Supply> result = supplyMap.get(item);
-    if (result == null)
-      return Collections.emptyList();
-    return result.values();
-  }
-
-  public void sortByPriority() {
-    for (String item : supplyMap.keySet()) {
-      // sort supplies by priority
-      Map<Unit, Supply> itemSupply = supplyMap.get(item);
-      if (itemSupply == null) {
-        itemSupply = Collections.emptyMap();
-      } else {
-        Supply[] sorted = null;
-        sorted = itemSupply.values().toArray(new Supply[0]);
-
-        // this causes problems in BeansShell; I don't know why
-        // Arrays.sort(sorted);
-        // doing insertion sort instead
-        for (int j = 1; j < sorted.length; ++j) {
-          for (int i = 0; i < j; ++i) {
-            if (sorted[j].compareTo(sorted[i]) < 0) {
-              // if (current.priority > sorted[i].priority) {
-              Supply temp = sorted[i];
-              sorted[i] = sorted[j];
-              sorted[j] = temp;
-            }
-          }
-        }
-
-        itemSupply.clear();
-        for (Supply supply : sorted) {
-          itemSupply.put(supply.unit, supply);
-        }
-      }
-    }
-  }
-
-  public Supply put(String item, Unit unit, int amount) {
-    Map<Unit, Supply> itemSupplyMap = supplyMap.get(item);
-    if (itemSupplyMap == null) {
-      itemSupplyMap = new LinkedHashMap<Unit, Supply>();
-      supplyMap.put(item, itemSupplyMap);
-    }
-    Supply result = new Supply(unit, item, amount);
-    itemSupplyMap.put(unit, result);
-    return result;
-  }
-
-  public void clear() {
-    // HIGHTODO Automatisch generierte Methode implementieren
-
+    return uip.compareTo(o.uip);
   }
 }
 
@@ -4111,16 +4128,41 @@ class ShortOrderFilter implements OrderFilter {
   }
 }
 
-class Need extends Supply {
+class Need {
 
   private int minAmount;
   private Warning warning;
+  UnitItemPriority uip;
 
-  public Need(Unit unit, String item, int minAmount, int maxAmount, int priority, Warning warning) {
-    super(unit, item, maxAmount);
+  public Need(Unit unit, String item, int minAmount, int maxAmount, int priority,
+      Warning warning, long serial) {
+    uip = new UnitItemPriority(unit, item, maxAmount, priority, serial);
     this.minAmount = minAmount;
-    this.priority = priority;
     this.warning = warning;
+  }
+
+  public int compareTo(Need need) {
+    return uip.compareTo(need.uip);
+  }
+
+  public int getPriority() {
+    return uip.priority;
+  }
+
+  public Unit getUnit() {
+    return uip.unit;
+  }
+
+  public int getAmount() {
+    return uip.amount;
+  }
+
+  public void setAmount(int i) {
+    uip.amount = i;
+  }
+
+  public String getItem() {
+    return uip.item;
   }
 
   public int getMinAmount() {
@@ -4132,16 +4174,7 @@ class Need extends Supply {
   }
 
   public void reduceMinAmount(int change) {
-    if (minAmount == Integer.MAX_VALUE || minAmount == Integer.MIN_VALUE)
-      return;
-    long newValue = (long) minAmount - change;
-    if (newValue > Integer.MAX_VALUE) {
-      minAmount = Integer.MAX_VALUE;
-    } else if (newValue < Integer.MIN_VALUE) {
-      minAmount = Integer.MIN_VALUE;
-    } else {
-      minAmount = (int) newValue;
-    }
+    minAmount = UnitItemPriority.reduceAmount(minAmount, change);
   }
 
   public int getMaxAmount() {
@@ -4153,7 +4186,7 @@ class Need extends Supply {
   }
 
   public void reduceMaxAmount(int change) {
-    reduceAmount(change);
+    uip.amount = UnitItemPriority.reduceAmount(uip.amount, change);
   }
 
   /**
@@ -4176,20 +4209,48 @@ class Need extends Supply {
 
   @Override
   public String toString() {
-    return unit + " needs " + minAmount + "/" + amount + " " + item + " (" + priority + ")";
+    return uip.unit + " needs " + minAmount + "/" + uip.amount + " " + uip.item + " (" + uip.priority + ")";
   }
 }
 
-class Transfer extends Supply {
+class Transfer {
   private Unit target;
   private boolean all;
   private Need need;
+  private boolean min;
+  private UnitItemPriority uip;
 
-  public Transfer(Unit unit, Unit target, String item, int amount, boolean all, Need need) {
-    super(unit, item, amount);
+  public Transfer(Unit unit, Unit target, String item, int amount, boolean min, boolean all, Need need,
+      long serial) {
+    uip = new UnitItemPriority(unit, item, amount, 0, serial);
     this.target = target;
     this.all = all;
     this.need = need;
+    this.min = min;
+  }
+
+  public void reduceAmount(int change) {
+    uip.amount = UnitItemPriority.reduceAmount(uip.amount, change);
+  }
+
+  public Unit getUnit() {
+    return uip.unit;
+  }
+
+  public int getAmount() {
+    return uip.amount;
+  }
+
+  public void setAmount(int i) {
+    uip.amount = i;
+  }
+
+  public String getItem() {
+    return uip.item;
+  }
+
+  public boolean isMin() {
+    return min;
   }
 
   public Unit getTarget() {
@@ -4202,7 +4263,7 @@ class Transfer extends Supply {
 
   @Override
   public String toString() {
-    return unit + " gives " + target + " " + (all ? "ALL" : amount) + " " + item;
+    return uip.unit + " gives " + target + " " + (all ? "ALL" : uip.amount) + " " + uip.item;
   }
 
   public Need getNeed() {

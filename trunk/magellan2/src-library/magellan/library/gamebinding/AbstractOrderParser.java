@@ -241,8 +241,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * Returns true if prefixes of tokens are matched to the token, i.e., if abbreviations are
-   * possible.
+   * Returns true if prefixes of tokens are matched to the token, i.e., if abbreviations are possible.
    */
   public boolean isPrefixMatching() {
     return prefixMatching;
@@ -602,7 +601,7 @@ public abstract class AbstractOrderParser implements OrderParser {
         buffer.append((char) ch);
       }
     } catch (IOException e) {
-      log.error("error reding order", e);
+      log.error("error reading order", e);
     }
     return parse(buffer.toString(), Locales.getOrderLocale()).isValid();
 
@@ -697,11 +696,11 @@ public abstract class AbstractOrderParser implements OrderParser {
      * @param forceQuotes if this is <code>true</code>, the string must be enclosed in (single or
      *          double) quotes.
      * @param preferQuotes if this is <code>true</code>, quotes are inserted by order completers.
-     * @param allowQuotes if this is <code>true</code>, the string may be enclosed in (single or
-     *          double) quotes.
+     * @param allowQuotes if this is <code>true</code>, the string may be enclosed in (single or double)
+     *          quotes.
      * @param allowEmpty if this is <code>true</code>, the content may be empty.
-     * @throws IllegalArgumentException if <code>forceQuotes</code> but not <code>allowQuote</code>
-     *           or if <code>allowEmpty</code> but not <code>allowQuotes</code>.
+     * @throws IllegalArgumentException if <code>forceQuotes</code> but not <code>allowQuote</code> or
+     *           if <code>allowEmpty</code> but not <code>allowQuotes</code>.
      */
     public StringChecker(boolean forceQuotes, boolean preferQuotes, boolean allowQuotes,
         boolean allowEmpty) {
@@ -720,12 +719,12 @@ public abstract class AbstractOrderParser implements OrderParser {
     }
 
     /**
-     * Tries to parse a string beginning with <code>token</code>. It first splits the following
-     * string tokens into {@link #openingToken}, {@link #innerToken}, {@link #closingToken}, and
+     * Tries to parse a string beginning with <code>token</code>. It first splits the following string
+     * tokens into {@link #openingToken}, {@link #innerToken}, {@link #closingToken}, and
      * {@link #nextToken} (token after the string). Then it checks them with {@link #checkInner()},
-     * clears completions, calls {@link #checkNext()}. If there is a completer and the last token of
-     * the string is followed by space, it calls {@link #complete()}. The completions are then
-     * garnished with quotes as specified by the do... methods.
+     * clears completions, calls {@link #checkNext()}. If there is a completer and the last token of the
+     * string is followed by space, it calls {@link #complete()}. The completions are then garnished
+     * with quotes as specified by the do... methods.
      *
      * @return {@link #checkInner()} && {@link #checkNext()}
      * @see AbstractOrderParser#getString(OrderToken)
@@ -770,8 +769,8 @@ public abstract class AbstractOrderParser implements OrderParser {
     }
 
     /**
-     * If this returns <code>true</code>, the completer is called. In this implementation this is
-     * the case if the last string token is not followed by space and the completer is not
+     * If this returns <code>true</code>, the completer is called. In this implementation this is the
+     * case if the last string token is not followed by space and the completer is not
      * <code>null</code>.
      */
     protected boolean isComplete() {
@@ -782,8 +781,8 @@ public abstract class AbstractOrderParser implements OrderParser {
      * Checks the quotes. According to constructor parameters. Subclasses usually don't need to
      * overwrite this method.
      *
-     * @return <code>false</code> if there are no quotes but quotes are forced or if the closing
-     *         quote doesn't match the opening quote.
+     * @return <code>false</code> if there are no quotes but quotes are forced or if the closing quote
+     *         doesn't match the opening quote.
      */
     protected boolean isQuotesValid() {
       if (forceQuotes && openingToken == null)
@@ -816,8 +815,8 @@ public abstract class AbstractOrderParser implements OrderParser {
     }
 
     /**
-     * Returns {@link AbstractOrderParser#checkFinal(OrderToken)}. Subclasses should overwrite to
-     * check the rest of the order.
+     * Returns {@link AbstractOrderParser#checkFinal(OrderToken)}. Subclasses should overwrite to check
+     * the rest of the order.
      */
     protected boolean checkNext() {
       boolean retVal = true;
@@ -846,8 +845,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Tests if the next token is a quoted (possibly empty) string at the end of the order.
    *
-   * @return The string (without quotes) if a valid description was found, otherwise
-   *         <code>null</code>
+   * @return The string (without quotes) if a valid description was found, otherwise <code>null</code>
    */
   protected String readDescription() {
     return readDescription(true);
@@ -863,8 +861,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Tests if the next token is a quoted string at the end of the order.
    *
-   * @return The string (without quotes) if a valid description was found, otherwise
-   *         <code>null</code>
+   * @return The string (without quotes) if a valid description was found, otherwise <code>null</code>
    */
   protected String readDescription(boolean allowEmpty) {
     OrderToken t = getNextToken();
@@ -874,8 +871,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Tests if t is a quoted (possibly empty) string at the end of the order.
    *
-   * @return The string (without quotes) if a valid description was found, otherwise
-   *         <code>null</code>
+   * @return The string (without quotes) if a valid description was found, otherwise <code>null</code>
    */
   protected String readDescription(OrderToken t) {
     return readDescription(t, true);
@@ -885,8 +881,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * If this a quoted string at the end of the order, it is returned. If <code>allowEmpty</code>, it
    * may also be an empty string.
    *
-   * @return The string (without quotes) if a valid description was found, otherwise
-   *         <code>null</code>
+   * @return The string (without quotes) if a valid description was found, otherwise <code>null</code>
    */
   protected String readDescription(OrderToken t, boolean allowEmpty) {
     if (isString(t)) {
@@ -944,8 +939,8 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * Checks whether the next token is the end of line or a comment, i.e. the indicating a valid end
-   * of the order. Reports an unexpected token if that is not the case.
+   * Checks whether the next token is the end of line or a comment, i.e. the indicating a valid end of
+   * the order. Reports an unexpected token if that is not the case.
    */
   protected boolean checkNextFinal() {
     if (hasNextToken()) {
@@ -1055,8 +1050,8 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * Tests if <code>txt</code> represents a valid ID (or TEMP ID) given the <code>data.base</code>
-   * and {@link #MAX_UID}.
+   * Tests if <code>txt</code> represents a valid ID (or TEMP ID) given the <code>data.base</code> and
+   * {@link #MAX_UID}.
    *
    * @param txt
    */
@@ -1167,8 +1162,8 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * Tests if <code>txt</code> is a nonempty string which is either surrounded by quotes or by
-   * double quotes, or is composed solely by the characters [A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:].
+   * Tests if <code>txt</code> is a nonempty string which is either surrounded by quotes or by double
+   * quotes, or is composed solely by the characters [A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:].
    *
    * @param txt
    * @deprecated you should prefer {@link #isString(OrderToken)} and {@link StringChecker}
@@ -1190,7 +1185,8 @@ public abstract class AbstractOrderParser implements OrderParser {
         // we allow numbers if txt is not numeric
         if (!(((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == 'ƒ') || (c == '÷')
             || (c == '‹') || (c == '‰') || (c == 'ˆ') || (c == '¸') || (c == '~') || (c == 'ﬂ')
-            || (c == ',') || (c == '.') || (c == '_') || (c == ':') || ((!isNumeric) && (c >= '0') && (c <= '9')))) {
+            || (c == ',') || (c == '.') || (c == '_') || (c == ':') || ((!isNumeric) && (c >= '0')
+                && (c <= '9')))) {
           retVal = false;
           break;
         }
@@ -1291,9 +1287,9 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * Return true if a completions should be added to the completer for the current token. The
-   * standard version returns true if there is a OrderCompleter and <code>token</code> is followed
-   * by a space and <code>t</code> is not.
+   * Return true if a completions should be added to the completer for the current token. The standard
+   * version returns true if there is a OrderCompleter and <code>token</code> is followed by a space
+   * and <code>t</code> is not.
    *
    * @param token The last token read
    * @param t The current token.

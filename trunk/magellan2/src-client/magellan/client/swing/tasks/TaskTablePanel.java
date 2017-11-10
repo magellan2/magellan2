@@ -138,11 +138,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
    */
   private boolean shown = true;
 
-  /**
-   * Indicator of a refresh is needed if Panel becomes visible again
-   */
-  private boolean needRefresh = true;
-
   /** list of registered keyboard shortcuts */
   private List<KeyStroke> shortcuts;
 
@@ -669,7 +664,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
    */
   public void refreshProblems() {
     checkShown();
-    if (!isShown() || !needRefresh) {
+    if (!isShown()) {
       TaskTablePanel.log.debug("call to refreshProblems rejected  (panel not visible), reason: "
           + isShown());
       return;
@@ -708,8 +703,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
      * Creates a region update event.
      *
      * @param r This update concerns a region
-     * @param add <code>true</code> if this region is added to the watched set, <code>false</code>
-     *          if the corresponding problems should be removed.
+     * @param add <code>true</code> if this region is added to the watched set, <code>false</code> if
+     *          the corresponding problems should be removed.
      */
     public UpdateEvent(Region r, boolean add) {
       region = r;
@@ -730,8 +725,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     /**
      * Creates a "clear" or "global" event.
      *
-     * @param b If <code>false</code> , clear all problems. If <code>true</code> update global
-     *          problems.
+     * @param b If <code>false</code> , clear all problems. If <code>true</code> update global problems.
      */
     public UpdateEvent(boolean b) {
       region = null;
@@ -803,8 +797,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     }
 
     /**
-     * Take an object out of the queue. Returns the first event that was not inserted again later in
-     * the queue.
+     * Take an object out of the queue. Returns the first event that was not inserted again later in the
+     * queue.
      */
     public synchronized UpdateEvent poll() {
       UpdateEvent event = events.remove(0);
@@ -912,8 +906,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   }
 
   /**
-   * This class registers and handles events in a separate thread. Events are first enqueued here
-   * and than handled one by one in the refreshThread.
+   * This class registers and handles events in a separate thread. Events are first enqueued here and
+   * than handled one by one in the refreshThread.
    *
    * @author stm
    * @version 1.0, Aug 23, 2008
@@ -1886,8 +1880,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     }
 
     /**
-     * Remove all problems of the given inspector <i>and</i> the given source. Should be called in
-     * the AWT event dispatch thread!
+     * Remove all problems of the given inspector <i>and</i> the given source. Should be called in the
+     * AWT event dispatch thread!
      *
      * @param inspector
      * @param source

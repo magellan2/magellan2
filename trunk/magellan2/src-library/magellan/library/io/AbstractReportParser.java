@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.io;
 
 import java.io.IOException;
@@ -108,7 +108,7 @@ public abstract class AbstractReportParser implements ReportParser {
    * special sub to translate coords in ";regions" tags of messages expecting this form
    * <code>"x1 y1 z1, x2 y2 z2";regions</code>.<br />
    * There is also an older variant: <code>"der Sumpf von Rudros (-7,23)";regions</code>
-   * 
+   *
    * @param value
    * @return
    */
@@ -139,9 +139,9 @@ public abstract class AbstractReportParser implements ReportParser {
 
   /**
    * Tries to replace coordinates in string by the translated version. The string is searched for
-   * occurrences of the form "(123,123)" or "(123,123,123)" or "(123,123,Astralraum)", transforms
-   * them and replaces them. This is not completely fool-proof!
-   * 
+   * occurrences of the form "(123,123)" or "(123,123,123)" or "(123,123,Astralraum)", transforms them
+   * and replaces them. This is not completely fool-proof!
+   *
    * @param value Usually a message text which might contain coordinates
    * @see magellan.library.utils.transformation.ReportTransformer#transform(java.lang.String)
    */

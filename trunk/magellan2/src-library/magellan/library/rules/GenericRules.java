@@ -573,7 +573,7 @@ public class GenericRules implements Rules {
 
   /**
    * Shorthand for <code>getSkillType(id, false)</code>.
-   * 
+   *
    * @see magellan.library.Rules#getSkillType(magellan.library.StringID)
    */
   public SkillType getSkillType(StringID id) {
@@ -582,9 +582,9 @@ public class GenericRules implements Rules {
 
   /**
    * Returns the skill type with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
-   * 
+   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code> is
+   * returned.
+   *
    * @see magellan.library.Rules#getSkillType(magellan.library.StringID, boolean)
    */
   public SkillType getSkillType(StringID id, boolean add) {
@@ -600,8 +600,8 @@ public class GenericRules implements Rules {
 
   /**
    * Returns the skill type with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code> is
+   * returned.
    */
   public SkillType getSkillType(String id, boolean add) {
     if ((id == null) || id.equals(""))
@@ -665,7 +665,7 @@ public class GenericRules implements Rules {
   }
 
   /**
-   * Returns all spells.
+   * Returns all orders.
    */
   public Collection<OrderType> getOrders() {
     return getMap(OrderType.class).values();
@@ -679,10 +679,10 @@ public class GenericRules implements Rules {
   }
 
   /**
-   * Changes the name of an object identified by the specified id. This method serves as a
-   * convenience as it relieves the implementor of the arduous task of determining the kind of
-   * object type (ItemType, SkillType etc.) and accessing the corresponding data structures. It also
-   * ensures that the object is also accessible by calling the getXXX methods with the new name.
+   * Changes the name of an object identified by the specified id. This method serves as a convenience
+   * as it relieves the implementor of the arduous task of determining the kind of object type
+   * (ItemType, SkillType etc.) and accessing the corresponding data structures. It also ensures that
+   * the object is also accessible by calling the getXXX methods with the new name.
    */
   protected ObjectType changeName(ID id, String name) {
     ObjectType ot = null;
@@ -774,7 +774,7 @@ public class GenericRules implements Rules {
    * this should also work: protected static <T extends ObjectType> T addObject(T o, Map<String,?
    * super T> mapObjectType, Map<String,? super T> mapObjectTypeNames) { however, it give an error
    * druing build.xml, but not in eclipse:
-   * 
+   *
    * <pre>
    * [javac] /export/home/i11pc226/steffen/workspace/Magellan2/src-library/magellan/library/rules/GenericRules.java:714: <T>addObject(T,java.util.Map<java.lang.String,? super T>,java.util.Map<java.lang.String,? super T>) in magellan.library.rules.GenericRules cannot be applied to (T,java.util.Map<java.lang.String,T>,java.util.Map<java.lang.String,T>)
    * [javac]       addObject(ot, mapObjectType, mapObjectTypeNames);
@@ -802,9 +802,9 @@ public class GenericRules implements Rules {
   }
 
   /**
-   * Tries to retrieve an object type form the specified map by its name. If the name is not used as
-   * a key in the map but an object with the specified name exists, the object is put into the map
-   * with the name as its key for speeding up future look-ups.
+   * Tries to retrieve an object type form the specified map by its name. If the name is not used as a
+   * key in the map but an object with the specified name exists, the object is put into the map with
+   * the name as its key for speeding up future look-ups.
    */
   protected static <T extends Named> T getObjectType(Map<String, T> objects, Map<String, T> names,
       String name) {
@@ -835,7 +835,7 @@ public class GenericRules implements Rules {
 
   /**
    * Sets the name of the class for getGameSpecificStuff()
-   * 
+   *
    * @throws IOException If rules cannot be read
    * @see magellan.library.Rules#setGameSpecificStuffClassName(java.lang.String)
    */
@@ -845,7 +845,7 @@ public class GenericRules implements Rules {
 
   /**
    * Returns the GameSpecificStuff object for the name specified by setGameSpecificClassName.
-   * 
+   *
    * @see magellan.library.Rules#getGameSpecificStuff()
    */
   public GameSpecificStuff getGameSpecificStuff() {

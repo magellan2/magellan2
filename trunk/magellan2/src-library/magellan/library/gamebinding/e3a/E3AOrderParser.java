@@ -177,8 +177,8 @@ public class E3AOrderParser extends EresseaOrderParser {
     private Collection<StringID> categories;
 
     /**
-     * Returns all categories except KÄMPFE, which is implicit in E3 and cannot be set with the
-     * HELFE order, and PARTEITARNUNG.
+     * Returns all categories except KÄMPFE, which is implicit in E3 and cannot be set with the HELFE
+     * order, and PARTEITARNUNG.
      *
      * @see magellan.library.gamebinding.EresseaOrderParser.HelfeReader#getCategories()
      */

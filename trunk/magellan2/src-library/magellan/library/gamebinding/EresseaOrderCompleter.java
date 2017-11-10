@@ -737,8 +737,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   }
 
   /**
-   * For multiple-line-completion like the creation of give-orders for the resources of an item it
-   * is necessary to get the unit's id and the amount to be given. They are given as parameters:
+   * For multiple-line-completion like the creation of give-orders for the resources of an item it is
+   * necessary to get the unit's id and the amount to be given. They are given as parameters:
    *
    * @param uid the unit's id
    * @param i the amount
@@ -773,10 +773,9 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
         }
       }
       /**
-       * Add multiple GIVE orders for if we enter ALL i.e. assume the unit has 200 sword, shild,
-       * plate and 80 horses GIVE abcd 100 [ALL] will complete to GIVE abcd 100 sword GIVE abcd 100
-       * shield GIVE abcd 100 plate as we have not at least 100 horses. This is perfect to split
-       * units
+       * Add multiple GIVE orders for if we enter ALL i.e. assume the unit has 200 sword, shild, plate and
+       * 80 horses GIVE abcd 100 [ALL] will complete to GIVE abcd 100 sword GIVE abcd 100 shield GIVE abcd
+       * 100 plate as we have not at least 100 horses. This is perfect to split units
        */
       String order = "";
       String tounit;
@@ -1040,8 +1039,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
    * Returns the learn cost for a specific skill.
    *
    * @param skillType the skill to be learned
-   * @return the cost to learn a skill for the given unit. If the unit has no persons the cost for
-   *         one person is returned.
+   * @return the cost to learn a skill for the given unit. If the unit has no persons the cost for one
+   *         person is returned.
    */
   @Override
   public int getSkillCost(SkillType skillType, Unit someUnit) {
@@ -1820,10 +1819,9 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   }
 
   /*
-   * Enno in e-client about the syntax: 'c' = Zeichenkette 'k' =
-   * REGION|EINHEIT|STUFE|SCHIFF|GEBAEUDE 'i' = Zahl 's' = Schiffsnummer 'b' = Gebaeudenummer 'r' =
-   * Regionskoordinaten (x, y) 'u' = Einheit '+' = Wiederholung des vorangehenden Parameters '?' =
-   * vorangegangener Parameter
+   * Enno in e-client about the syntax: 'c' = Zeichenkette 'k' = REGION|EINHEIT|STUFE|SCHIFF|GEBAEUDE
+   * 'i' = Zahl 's' = Schiffsnummer 'b' = Gebaeudenummer 'r' = Regionskoordinaten (x, y) 'u' = Einheit
+   * '+' = Wiederholung des vorangehenden Parameters '?' = vorangegangener Parameter
    */
   /** Add completions for command ZaubereSpruch. */
   public void cmpltZaubereSpruch(Spell spell) {

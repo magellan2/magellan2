@@ -56,8 +56,8 @@ import magellan.library.rules.SkillType;
 public interface Rules {
   /**
    * Returns the region type with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code> is
+   * returned.
    */
   public RegionType getRegionType(StringID id, boolean add);
 
@@ -123,9 +123,8 @@ public interface Rules {
   public ShipType getShipType(StringID id);
 
   /**
-   * Returns the ship type with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * Returns the ship type with given id. If there is no such skill type and <code>add == true</code>,
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
    */
   public ShipType getShipType(StringID id, boolean add);
 
@@ -156,8 +155,8 @@ public interface Rules {
 
   /**
    * Returns the building type with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code> is
+   * returned.
    */
   public BuildingType getBuildingType(StringID id, boolean add);
 
@@ -188,8 +187,8 @@ public interface Rules {
 
   /**
    * Returns the castle type with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code> is
+   * returned.
    */
   public CastleType getCastleType(StringID id, boolean add);
 
@@ -219,9 +218,8 @@ public interface Rules {
   public ItemType getItemType(StringID id);
 
   /**
-   * Returns the item type with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * Returns the item type with given id. If there is no such skill type and <code>add == true</code>,
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
    */
   public ItemType getItemType(StringID id, boolean add);
 
@@ -237,7 +235,7 @@ public interface Rules {
 
   /**
    * get ItemType by (possibly localized) name
-   * 
+   *
    * @param id An id, like "Silber".
    * @param add If this is <code>true</code>, a type will be added if it does not exist, yet.
    * @return The item type corresponding to the id or <code>null</code> if the type is unknown or
@@ -247,7 +245,7 @@ public interface Rules {
 
   /**
    * Shorthand for getItemType(id, false).
-   * 
+   *
    * @param id An id, like "Silber".
    * @return The item type corresponding to the id or <code>null</code> if the type is unknown.
    */
@@ -255,15 +253,15 @@ public interface Rules {
 
   /**
    * Returns the skill type with the given id.
-   * 
+   *
    * @return the skill type with the given id or <code>null</code> if there is no such skill type.
    */
   public SkillType getSkillType(StringID id);
 
   /**
    * Returns the skill type with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code> is
+   * returned.
    */
   public SkillType getSkillType(StringID id, boolean add);
 
@@ -294,8 +292,8 @@ public interface Rules {
 
   /**
    * Returns the item category with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code> is
+   * returned.
    */
   public ItemCategory getItemCategory(StringID id, boolean add);
 
@@ -326,8 +324,8 @@ public interface Rules {
 
   /**
    * Returns the skill category with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code> is
+   * returned.
    */
   public SkillCategory getSkillCategory(StringID id, boolean add);
 
@@ -358,8 +356,8 @@ public interface Rules {
 
   /**
    * Returns the option category with given id. If there is no such skill type and
-   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code>
-   * is returned.
+   * <code>add == true</code>, a new skill type is added and returns. Otherwise, <code>null</code> is
+   * returned.
    */
   public OptionCategory getOptionCategory(StringID id, boolean add);
 
@@ -416,15 +414,14 @@ public interface Rules {
 
   /**
    * Changes the name of an object identified by the given old name.
-   * 
-   * @return the modified object type or null, if no object type is registered with the specified
-   *         id.
+   *
+   * @return the modified object type or null, if no object type is registered with the specified id.
    */
   public ObjectType changeName(String from, String to);
 
   /**
    * Returns the GameSpecificStuff object for the name specified by setGameSpecificClassName.
-   * 
+   *
    * @throws IOException If rules are not readable
    */
   public void setGameSpecificStuffClassName(String className) throws IOException;
@@ -436,21 +433,21 @@ public interface Rules {
 
   /**
    * Gets the game specific string with which order files should start.
-   * 
+   *
    * @return the game specific line with which order files should start, not including line break
    */
   public String getOrderfileStartingString();
 
   /**
    * Sets the game specific string with which order files should start.
-   * 
+   *
    * @param startingString
    */
   public void setOrderfileStartingString(String startingString);
 
   /**
    * Shorthand for getOrder(StringID.create(id)).
-   * 
+   *
    * @see #getOrder(StringID)
    */
   public OrderType getOrder(String id);
@@ -461,9 +458,13 @@ public interface Rules {
   public OrderType getOrder(StringID id);
 
   /**
-   * Returns the order type with the given id. If add is true and the id is not available, it will
-   * be added.
+   * Returns the order type with the given id. If add is true and the id is not available, it will be
+   * added.
    */
   public OrderType getOrder(StringID id, boolean add);
 
+  /**
+   * Returns all orders.
+   */
+  public Collection<OrderType> getOrders();
 }

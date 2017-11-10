@@ -88,4 +88,12 @@ public class EAssert {
   public static void assertMessage(String expected, Unit u, int lineNr) {
     assertError(expected, u, lineNr, "; ", "");
   }
+
+  public static void assertWarning(Warning w, boolean amount, boolean skill, boolean hidden,
+      boolean foreign) {
+    assertEquals("amount was not " + amount, amount, w.contains(E3CommandParser.C_AMOUNT));
+    assertEquals("skill was not " + skill, skill, w.contains(E3CommandParser.C_SKILL));
+    assertEquals("hidden was not " + hidden, hidden, w.contains(E3CommandParser.C_HIDDEN));
+    assertEquals("foreign was not " + foreign, foreign, w.contains(E3CommandParser.C_FOREIGN));
+  }
 }

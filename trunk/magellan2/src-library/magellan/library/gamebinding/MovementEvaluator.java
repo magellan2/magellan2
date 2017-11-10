@@ -44,7 +44,7 @@ public interface MovementEvaluator {
    * are also already considered. The calculation also takes into account that trolls can tow carts.
    *
    * @return the payload in GE*100, CAP_UNSKILLED if the unit is not sufficiently skilled in horse
-   *         riding to travel on horseback.
+   *         riding to travel on foot.
    */
   public int getPayloadOnFoot(Unit unit);
 

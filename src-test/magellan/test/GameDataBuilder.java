@@ -66,24 +66,24 @@ public class GameDataBuilder {
   }
 
   /**
-   * Creates a GameData object that is always postProcessed with one faction, one island, one
-   * region, and one unit
+   * Creates a GameData object that is always postProcessed with one faction, one island, one region,
+   * and one unit
    */
   public GameData createSimplestGameData(int round) throws Exception {
     return createSimplestGameData(round, true);
   }
 
   /**
-   * Creates a GameData object that is always postProcessed with one faction, one island, one
-   * region, and (if <code>addUnit</code>) one unit
+   * Creates a GameData object that is always postProcessed with one faction, one island, one region,
+   * and (if <code>addUnit</code>) one unit
    */
   public GameData createSimplestGameData(int round, boolean addUnit) throws Exception {
     return createSimplestGameData(getGameName(), round, addUnit, true);
   }
 
   /**
-   * Creates a GameData object that is always postProcessed with one faction, one island, one
-   * region, and (if <code>addUnit</code>) one unit
+   * Creates a GameData object that is always postProcessed with one faction, one island, one region,
+   * and (if <code>addUnit</code>) one unit
    */
   public GameData createSimplestGameData(String aGameName, int round, boolean addUnit)
       throws Exception {
@@ -91,8 +91,8 @@ public class GameDataBuilder {
   }
 
   /**
-   * Creates a GameData object with one faction, one island, one region, and (if
-   * <code>addUnit</code>) one unit.
+   * Creates a GameData object with one faction, one island, one region, and (if <code>addUnit</code>)
+   * one unit.
    */
   public GameData createSimplestGameData(String aGameName, int round, boolean addUnit,
       boolean postProcess) throws Exception {
@@ -174,8 +174,8 @@ public class GameDataBuilder {
   }
 
   /**
-   * Creates a GameData object of the specified type where all units have Hiebwaffen 4 (+3), Segeln
-   * - (-3), Magie 4, Steinbau -. Add a unit if <code>addUnit</code>.
+   * Creates a GameData object of the specified type where all units have Hiebwaffen 4 (+3), Segeln -
+   * (-3), Magie 4, Steinbau -. Add a unit if <code>addUnit</code>.
    */
   public GameData createSimpleGameData(String aGameName, int round, boolean addUnit)
       throws Exception {
@@ -191,9 +191,9 @@ public class GameDataBuilder {
         addSkill(unit, "quarrying", -1, 9); // Steinbau -
       } else {
         addSkill(unit, "Hiebwaffen", 4, 3); // Hiebwaffen 4 (+3)
-        addSkill(unit, "Segeln", -1, -3); // Segeln - (-3)
+        addSkill(unit, "Segeln", 0, -3); // Segeln - (-3)
         // addSkill(unit, "Magie", 4, 0, true); // Magie 4
-        addSkill(unit, "Steinbau", -1, 9); // Steinbau -
+        addSkill(unit, "Steinbau", 0, 9); // Steinbau -
       }
     }
 

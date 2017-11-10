@@ -50,6 +50,7 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.EresseaRelationFactory;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.gamebinding.RulesException;
 import magellan.library.rules.ItemCategory;
@@ -475,6 +476,10 @@ public class E3CommandParser {
     // comment out the following two lines if you don't have the newest nighthly build of Magellan
     helper.getUI().setProgress("preprocessing", ++progress);
 
+    EresseaRelationFactory relationFactory = ((EresseaRelationFactory) world.getGameSpecificStuff()
+        .getRelationFactory());
+    relationFactory.stopUpdating();
+
     findSomeUnit(currentFactions);
 
     initLocales();
@@ -509,6 +514,8 @@ public class E3CommandParser {
 
     // comment out the following line if you don't have the newest nightly build of Magellan
     helper.getUI().setProgress("postprocessing", ++progress);
+
+    relationFactory.restartUpdating();
 
     for (Faction faction : factions) {
       for (Unit u : faction.units()) {
@@ -1452,7 +1459,7 @@ public class E3CommandParser {
   }
 
   private int getAmountWithHorse(Unit unit, String amount, String item) {
-    if (HORSEItem.equals(item))
+    if (isHorse(item))
       if (HORSEOrder.equals(amount))
         return world.getGameSpecificRules().getMaxHorsesRiding(unit);
       else if (FOOTOrder.equals(amount))
@@ -2495,7 +2502,7 @@ public class E3CommandParser {
       Transfer transfer = transferList.get(i);
       Integer cap;
       if ((cap = capacities.get(transfer.getTarget())) != null && cap < 0) {
-        if (transfer.getUnit() != transfer.getTarget() && transfer.isMin()) {
+        if (transfer.getUnit() != transfer.getTarget()) { // && transfer.isMin()
           int weight = getWeight(transfer.getItem());
           if (weight > 0) {
             int delta = cap / weight;
@@ -2524,9 +2531,7 @@ public class E3CommandParser {
       addNewError("invalid transfer");
     }
     increaseMulti(transfersMap, transfer.getTarget(), transfer.getItem(), delta);
-    int weight = delta * getWeight(transfer.getItem());
-    changeCapacity(transfer.getTarget(), -weight);
-    changeCapacity(transfer.getUnit(), weight);
+    changeCapacity(transfer.getUnit(), transfer.getTarget(), transfer.getItem(), delta);
     if (transfer.isMin()) {
       transfer.getNeed().reduceMinAmount(delta);
     }
@@ -2554,17 +2559,23 @@ public class E3CommandParser {
   private void transfer(Unit unit, Need need, int amount) {
     Supply supply = getSupply(need.getItem(), unit);
     if (supply.getAmount() < amount) {
-      addWarning(supply.getUnit(), "not enough " + need.getItem());
+      if (currentUnit == null) {
+        addWarning(supply.getUnit(), "not enough " + need.getItem());
+      } else {
+        addNewWarning("not enough " + need.getItem() + " for " + supply.getUnit());
+      }
     }
 
     need.reduceMaxAmount(amount);
     need.reduceMinAmount(amount);
     supply.reduceAmount(amount);
     if (unit != need.getUnit()) {
-      int weight = amount * getWeight(need.getItem());
-      changeCapacity(need.getUnit(), -weight);
-      changeCapacity(supply.getUnit(), weight);
+      changeCapacity(supply.getUnit(), need.getUnit(), need.getItem(), amount);
     }
+  }
+
+  private boolean isHorse(String item) {
+    return HORSEItem.equals(item);
   }
 
   private void giveTransfer(String targetId, String item, int amount, boolean all) {
@@ -2594,6 +2605,14 @@ public class E3CommandParser {
 
   private void executeReserves(Reserves reserves) {
     reserves.execute(new MyReserveVisitor());
+  }
+
+  private void changeCapacity(Unit source, Unit target, String item, int amount) {
+    if (!isHorse(item)) {
+      int weight = amount * getWeight(item);
+      changeCapacity(source, weight);
+      changeCapacity(target, -weight);
+    }
   }
 
   private Integer changeCapacity(Unit unit, int delta) {

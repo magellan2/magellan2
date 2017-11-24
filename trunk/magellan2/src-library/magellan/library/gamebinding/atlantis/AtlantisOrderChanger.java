@@ -222,8 +222,7 @@ public class AtlantisOrderChanger implements OrderChanger {
   }
 
   public boolean isLongOrder(String order) {
-    return getRules().getGameSpecificStuff().getOrderParser(getDummyData()).parse(order,
-        Locales.getOrderLocale()).isLong();
+    return getDummyData().getOrderParser().parse(order, Locales.getOrderLocale()).isLong();
   }
 
   protected GameData getDummyData() {
@@ -367,7 +366,7 @@ public class AtlantisOrderChanger implements OrderChanger {
    */
   public Collection<? extends Order>
       getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
-    final OrderParser parser = getRules().getGameSpecificStuff().getOrderParser(unit.getData());
+    final OrderParser parser = unit.getData().getOrderParser();
     final List<Order> cmds = new LinkedList<Order>();
     final Locale locale = unit.getLocale();
 

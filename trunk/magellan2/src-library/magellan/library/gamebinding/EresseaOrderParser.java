@@ -145,9 +145,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
   }
 
   protected void addCheckedCommand(StringID prefix, OrderHandler reader) {
-    if (getRules().getOrder(prefix) == null) {
-      log.fine("Order " + prefix + " not added.");
-    } else {
+    if (getRules().getOrder(prefix) != null) {
       addCommand(prefix, reader);
     }
   }
@@ -1009,8 +1007,11 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
   // ************* DEFAULT
   protected class DefaultReader extends OrderHandler {
+    private DefaultChecker defaultChecker;
+
     public DefaultReader(OrderParser parser) {
       super(parser);
+      defaultChecker = new DefaultChecker();
     }
 
     @Override
@@ -1023,11 +1024,15 @@ public class EresseaOrderParser extends AbstractOrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t))
-        return new DefaultChecker().read(t);
+        return getDefaultChecker().read(t);
       else {
         unexpected(t);
       }
       return false;
+    }
+
+    private DefaultChecker getDefaultChecker() {
+      return defaultChecker;
     }
 
     protected class DefaultChecker extends StringChecker {
@@ -1040,15 +1045,21 @@ public class EresseaOrderParser extends AbstractOrderParser {
         innerDefaultQuote = '"';
       }
 
+      protected EresseaOrderParser getInnerParser() {
+        if (innerParser == null) {
+          innerParser = new EresseaOrderParser(getData(), getCompleter());
+        }
+        return innerParser;
+      }
+
       @Override
       protected boolean checkInner() {
         // parse the string inside the quote(s); this has side-effects on the completer!
-        innerParser = new EresseaOrderParser(getData(), getCompleter());
-        innerParser.setDefaultQuote('\'');
+        getInnerParser().setDefaultQuote('\'');
         if (getCompleter() != null) {
           getCompleter().setQuote('\'');
         }
-        boolean ok = innerParser.parse(content, getLocale()).isValid();
+        boolean ok = getInnerParser().parse(content, getLocale()).isValid();
         if (getCompleter() != null) {
           getCompleter().setQuote('"');
           oldList = new ArrayList<Completion>(getCompleter().getCompletions());
@@ -1060,17 +1071,18 @@ public class EresseaOrderParser extends AbstractOrderParser {
       protected void complete() {
         if (nextToken.ttype != OrderToken.TT_EOC)
           return;
-        if (getCompleter() != null && innerParser.getTokens().size() > 0) {
+
+        if (getCompleter() != null && getInnerParser().getTokens().size() > 0) {
           // OrderToken lastToken = innerParser.getTokens().get(innerParser.getTokens().size() - 1);
-          if (innerParser.getTokens().size() > 1) {
-            lastToken = innerParser.getTokens().get(innerParser.getTokens().size() - 2);
+          if (getInnerParser().getTokens().size() > 1) {
+            lastToken = getInnerParser().getTokens().get(getInnerParser().getTokens().size() - 2);
             String lastW = "";
             if (!lastToken.followedBySpace() && lastToken.ttype != OrderToken.TT_PERSIST) {
               if (lastToken.ttype == OrderToken.TT_CLOSING_QUOTE) {
                 lastW =
                     getLastToken(4).getText() + getLastToken(3).getText()
                         + getLastToken(2).getText();
-              } else if (innerParser.getTokens().size() > 2
+              } else if (getInnerParser().getTokens().size() > 2
                   && getLastToken(3).ttype == OrderToken.TT_OPENING_QUOTE) {
                 lastW = getLastToken(3).getText() + getLastToken(2).getText();
               } else {
@@ -1104,7 +1116,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       }
 
       private OrderToken getLastToken(int i) {
-        return innerParser.getTokens().get(innerParser.getTokens().size() - i);
+        return getInnerParser().getTokens().get(getInnerParser().getTokens().size() - i);
       }
     }
   }

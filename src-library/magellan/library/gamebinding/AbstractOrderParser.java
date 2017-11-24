@@ -215,7 +215,7 @@ public abstract class AbstractOrderParser implements OrderParser {
           OrderToken t = getNextToken();
           tokenValid = checkFinal(t);
         } else {
-          tokenValid = checkFinal(token) && !order.getText().startsWith("@");
+          tokenValid = checkFinal(token) && order.getPrefix().length() == 0;
         }
         return tokenValid;
       }
@@ -600,6 +600,10 @@ public abstract class AbstractOrderParser implements OrderParser {
    */
   protected Order readOrder(OrderToken firstToken, String text) {
     OrderToken t = firstToken;
+    if (t.ttype == OrderToken.TT_EXCLAM) {
+      t = getNextToken();
+      t.setStart(firstToken.getStart());
+    }
     if (t.ttype == OrderToken.TT_PERSIST) {
       t = getNextToken();
       t.setStart(firstToken.getStart());
@@ -620,7 +624,8 @@ public abstract class AbstractOrderParser implements OrderParser {
     }
 
     reader.read(t, text);
-    if (getCompleter() != null && !t.followedBySpace() && t.ttype != OrderToken.TT_PERSIST) {
+    if (getCompleter() != null && !t.followedBySpace() && t.ttype != OrderToken.TT_PERSIST
+        && t.ttype != OrderToken.TT_EXCLAM) {
       getCompleter().cmplt();
     }
 

@@ -161,6 +161,19 @@ public class EresseaOrderParserTest extends AbstractOrderParserTest {
   }
 
   /**
+   * Test method for @ orders.
+   */
+  @Test
+  public void testExclamReader() {
+    checkOrder("!ARBEITE");
+    checkOrder("!@ARBEITE");
+    checkOrder("@!ARBEITE", false);
+    checkOrder("!!ARBEITE", false);
+    checkOrder("!", false);
+    checkOrder("!@", false);
+  }
+
+  /**
    * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.AttackReader}.
    */
   @Test

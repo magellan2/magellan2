@@ -33,28 +33,33 @@ public class OrderTokenizer {
   // private static final Logger log = Logger.getInstance(OrderTokenizer.class);
 
   private MergeLineReader in = null;
-  private boolean isFirstToken = true;
   private OrderToken quotedString;
   private OrderToken closingQuote;
   private OrderToken openingQuote;
   private boolean eos;
   private char quotes[] = new char[] { '"', '\'' };
 
+  enum TYPE {
+    NONE, EXCLAM, AT, MEAT
+  };
+
+  private TYPE prefix;
+
   /**
    * Creates a new <tt>OrderTokenizer</tt> object which will perform its read operations on the
    * specified stream.
-   * 
+   *
    * @param r the stream this <tt>OrderTokenizer</tt> reads from.
    */
   public OrderTokenizer(Reader r) {
     in = new MergeLineReader(r);
-    isFirstToken = true;
+    prefix = TYPE.NONE;
   }
 
   /**
-   * Reads the next chunk of text from the underlying stream. The token types are only recognized
-   * and set partially by this tokenizer. Apart from comments and quoted strings this has to be done
-   * in a semantical context.
+   * Reads the next chunk of text from the underlying stream. The token types are only recognized and
+   * set partially by this tokenizer. Apart from comments and quoted strings this has to be done in a
+   * semantical context.
    */
   public OrderToken getNextToken() {
     OrderToken retVal = null;
@@ -74,20 +79,28 @@ public class OrderTokenizer {
       eatWhiteSpace();
 
       if ((c = in.read()) != -1) {
-        if (isFirstToken && (c == '@')) {
+        if (prefix == TYPE.NONE && (c == '!')) {
+          retVal = new OrderToken("!", in.getPos() - 1, in.getPos(), OrderToken.TT_EXCLAM, false);
+          prefix = TYPE.EXCLAM;
+        } else if ((prefix == TYPE.EXCLAM || prefix == TYPE.NONE) && (c == '@')) {
           retVal = new OrderToken("@", in.getPos() - 1, in.getPos(), OrderToken.TT_PERSIST, false);
+          prefix = TYPE.AT;
         } else if (isQuote(c)) {
           retVal = readQuote(c);
+          prefix = TYPE.MEAT;
         } else if (c == ';') { // FIXME doesn't use EresseaConstants.OC_COMMENT
           retVal = readSCComment();
+          prefix = TYPE.MEAT;
         } else if ((c == '\r') || (c == '\n')) {
           retVal = new OrderToken(OrderToken.TT_EOC);
+          prefix = TYPE.MEAT;
         } else {
           in.unread(c);
           retVal = readWord();
-          if (isFirstToken && retVal.getText().equals(EresseaConstants.O_PCOMMENT)) {
+          if (prefix == TYPE.NONE && retVal.getText().equals(EresseaConstants.O_PCOMMENT)) {
             retVal = readSSComment(retVal);
           }
+          prefix = TYPE.MEAT;
         }
       } else {
         eos = true;
@@ -97,7 +110,6 @@ public class OrderTokenizer {
       Logger.getInstance(this.getClass()).error("Unknonw I/O error", e);
     }
 
-    isFirstToken = false;
     if (retVal == null) {
       retVal = new OrderToken(OrderToken.TT_EOC);
     }
@@ -106,7 +118,7 @@ public class OrderTokenizer {
 
   /**
    * Reads from the underlying stream up to the next quotation mark or line break.
-   * 
+   *
    * @return a <tt>OrderToken</tt> object of type TT_STRING containing the quoted string.
    * @throws IOException DOCUMENT-ME
    */
@@ -173,7 +185,7 @@ public class OrderTokenizer {
 
   /**
    * Reads a one line comment beginning with a semicolon up to the next line break.
-   * 
+   *
    * @return a <tt>OrderToken</tt> object of type TT_COMMENT containing the comment.
    * @throws IOException DOCUMENT-ME
    */
@@ -196,7 +208,7 @@ public class OrderTokenizer {
 
   /**
    * Reads a one line comment beginning with a double slash up to the next line break.
-   * 
+   *
    * @param retVal2
    * @return a <tt>OrderToken</tt> object of type TT_COMMENT containing the comment.
    * @throws IOException DOCUMENT-ME
@@ -242,7 +254,7 @@ public class OrderTokenizer {
 
   /**
    * Reads one word from the underlying stream.
-   * 
+   *
    * @return a <tt>OrderToken</tt> object of type TT_UNDEF containing the word.
    * @throws IOException DOCUMENT-ME
    */
@@ -284,7 +296,7 @@ public class OrderTokenizer {
 
   /**
    * Consumes the stream up the next non-whitespace character.
-   * 
+   *
    * @throws IOException DOCUMENT-ME
    */
   protected void eatWhiteSpace() throws IOException {

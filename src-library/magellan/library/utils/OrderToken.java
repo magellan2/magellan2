@@ -52,6 +52,9 @@ public class OrderToken {
   /** A token that is a quote which matches an opening quote */
   public static final int TT_CLOSING_QUOTE = 9;
 
+  /** A token making the order persistent */
+  public static final int TT_EXCLAM = 10;
+
   private String text = null; // the string representing this order token
   private int start = 0; // the start position of the token in the stream the token was read from,
   // -1 indicates that the position is invalid
@@ -222,6 +225,11 @@ public class OrderToken {
 
       break;
 
+    case TT_EXCLAM:
+      retVal.append("Error marker");
+
+      break;
+
     case TT_OPENING_QUOTE:
       retVal.append("Opening quote");
       break;
@@ -245,8 +253,8 @@ public class OrderToken {
   }
 
   /**
-   * Compares the token and the translation of the specified keyword with respect to abbreviations
-   * as used by the eressea game server.
+   * Compares the token and the translation of the specified keyword with respect to abbreviations as
+   * used by the eressea game server.
    *
    * @deprecated use proper unit locale
    * @see Rules#getOrder(String), {@link OrderType#getName()}
@@ -275,13 +283,13 @@ public class OrderToken {
   }
 
   /**
-   * Compares the token and the specified keyword with respect to abbreviations as used by the
-   * eressea game server. Prefixes are accepted <strong>if {@link #followedBySpace()} is
+   * Compares the token and the specified keyword with respect to abbreviations as used by the eressea
+   * game server. Prefixes are accepted <strong>if {@link #followedBySpace()} is
    * <code>true</code></strong>.
    *
    * @return true if strKeyword is equal (disregarding case and umlauts) to this token or <strong>if
-   *         {@link #followedBySpace} is <code>true</code></strong> and <code>strKeyWord</code>
-   *         starts with this token.
+   *         {@link #followedBySpace} is <code>true</code></strong> and <code>strKeyWord</code> starts
+   *         with this token.
    */
   public boolean equalsToken(String strKeyword) {
     if (text.length() == 0)
@@ -319,8 +327,7 @@ public class OrderToken {
   /**
    * Deep equals.
    *
-   * @return <code>true</code> if the token has identical text, start, end, type and
-   *         followedBySpace.
+   * @return <code>true</code> if the token has identical text, start, end, type and followedBySpace.
    */
   public boolean equalsAll(OrderToken token) {
     return token != null && text.equals(token.text) && start == token.start && end == token.end

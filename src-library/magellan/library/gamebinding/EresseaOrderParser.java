@@ -1077,7 +1077,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
           if (getInnerParser().getTokens().size() > 1) {
             lastToken = getInnerParser().getTokens().get(getInnerParser().getTokens().size() - 2);
             String lastW = "";
-            if (!lastToken.followedBySpace() && lastToken.ttype != OrderToken.TT_PERSIST) {
+            if (!lastToken.followedBySpace() && lastToken.ttype != OrderToken.TT_PERSIST
+                && lastToken.ttype != OrderToken.TT_EXCLAM) {
               if (lastToken.ttype == OrderToken.TT_CLOSING_QUOTE) {
                 lastW =
                     getLastToken(4).getText() + getLastToken(3).getText()

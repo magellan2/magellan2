@@ -177,7 +177,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     // beware: an OrderParser is likely not thread-safe. so we better call it only from the
     // EventDispatchThread...
-    parser = data.getGameSpecificStuff().getOrderParser(data);
+    parser = data.getOrderParser();
 
     loadListProperty();
 
@@ -253,7 +253,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   public void setGameData(GameData data) {
     super.setGameData(data);
     if (guiInitialized) { // might be called from constructor
-      parser = data.getGameSpecificStuff().getOrderParser(data);
+      parser = data.getOrderParser();
       initContent();
       if (!multiEditorLayout) {
         initSingleEditor();
@@ -351,7 +351,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       // single editor mode
       Object activeObject = se.getActiveObject();
       if (activeObject instanceof Unit
-          && (magellan.library.utils.Units.isPrivilegedAndNoSpy((Unit) activeObject) || isEditAllFactions())) {
+          && (magellan.library.utils.Units.isPrivilegedAndNoSpy((Unit) activeObject)
+              || isEditAllFactions())) {
         // update editor
         currentUnit = (Unit) activeObject;
         attachOrderEditor(currentUnit, editorSingelton);
@@ -414,7 +415,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     Unit newUnit = null;
     if (activeObject != null) {
       if (activeObject instanceof Unit
-          && (magellan.library.utils.Units.isPrivilegedAndNoSpy((Unit) activeObject) || isEditAllFactions())) {
+          && (magellan.library.utils.Units.isPrivilegedAndNoSpy((Unit) activeObject)
+              || isEditAllFactions())) {
         newUnit = (Unit) activeObject;
         newRegion = newUnit.getRegion();
         newIsland = newRegion == null ? null : newRegion.getIsland();
@@ -439,7 +441,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     if ((newUnit == currentUnit && newUnit != null)
         || (newUnit != null && currentUnit != null
             && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
-            .getFaction())) {
+                .getFaction())) {
       // no change necessary
     } else {
       loadEditors(newIsland, newRegion, newFaction, newUnit);
@@ -596,9 +598,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           Unit u = getNextUnit();
           if (u != null) {
             /*
-             * refreshing the relations here is necessary because this is the only place where a
-             * different unit is selected and the focusLost event in the order editor does not occur
-             * before the selection event
+             * refreshing the relations here is necessary because this is the only place where a different
+             * unit is selected and the focusLost event in the order editor does not occur before the
+             * selection event
              */
             if (getEditor(currentUnit) != null && getEditor(currentUnit).isModified()) {
               currentUnit.refreshRelations();
@@ -613,9 +615,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           u = getPreviousUnit();
           if (u != null) {
             /*
-             * refreshing the relations here is necessary because this is the only place where a
-             * different unit is selected and the focusLost event in the order editor does not occur
-             * before the selection event
+             * refreshing the relations here is necessary because this is the only place where a different
+             * unit is selected and the focusLost event in the order editor does not occur before the
+             * selection event
              */
             if (getEditor(currentUnit) != null && getEditor(currentUnit).isModified()) {
               currentUnit.refreshRelations();
@@ -1138,8 +1140,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Loads and displays the editors that best correspond to the selected entities. This depends on
-   * the current {@link MultiEditorOrderEditorList#listMode}. <code>
+   * Loads and displays the editors that best correspond to the selected entities. This depends on the
+   * current {@link MultiEditorOrderEditorList#listMode}. <code>
    *                   listMode (ISLAND/REGION/FACTION)
    *  selected:        000    100     010     001    110      101             011            111
    *  island           empty  island  empty   empty  island  island          empty           island
@@ -1174,8 +1176,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Adds editors for all units in privileged factions that are in the specified list to this
-   * component and removes unused ones. OrderEditors are created if necessary, else the cached
-   * version are used.
+   * component and removes unused ones. OrderEditors are created if necessary, else the cached version
+   * are used.
    */
   private void loadEditors(List<Unit> unitsToShow) {
     clearUnits();
@@ -1258,8 +1260,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Adds the specified unit to the content. This includes creating and adding a new order editor
-   * and updating the internal data structures. If possible, the new editor is inserted at the right
+   * Adds the specified unit to the content. This includes creating and adding a new order editor and
+   * updating the internal data structures. If possible, the new editor is inserted at the right
    * position in the unit order, else it is inserted at the end.
    *
    * @param u The unit for the new editor.
@@ -2096,7 +2098,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
             } catch (NumberFormatException nfe) {
               JOptionPane.showMessageDialog(this, Resources
                   .get("completion.multieditorordereditorlist.msg.invalidtempid.text"), Resources
-                  .get("completion.multieditorordereditorlist.msg.invalidtempid.title"),
+                      .get("completion.multieditorordereditorlist.msg.invalidtempid.title"),
                   JOptionPane.ERROR_MESSAGE);
             }
           } else
@@ -2169,8 +2171,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     /**
-     * If the parent of this component is an instance of JViewport this method returns the maximum
-     * of the original preferred size and the viewport size.
+     * If the parent of this component is an instance of JViewport this method returns the maximum of
+     * the original preferred size and the viewport size.
      */
     @Override
     public Dimension getPreferredSize() {

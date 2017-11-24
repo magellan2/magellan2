@@ -51,7 +51,7 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
   protected void cmplt() {
     // add completions, that were defined by the user in the option pane
     // and can be accessed by CompleterSettingsProvider.getSelfDefinedCompletions()
-    completions.addAll(completerSettingsProvider.getSelfDefinedCompletions());
+    completions.addAll(getCompleterSettingsProvider().getSelfDefinedCompletions());
     // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_WORK)));
     // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_ATTACK), " "));
     // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_BANNER), spaceQuotes,
@@ -136,7 +136,7 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
 
   public void cmpltMache() {
     // items
-    for (final Iterator<ItemType> iter = data.getRules().getItemTypeIterator(); iter.hasNext();) {
+    for (final Iterator<ItemType> iter = getData().getRules().getItemTypeIterator(); iter.hasNext();) {
       final ItemType itemType = iter.next();
       boolean canMake = true;
 
@@ -146,28 +146,28 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
       } else if (!hasSkill(unit, itemType.getMakeSkill().getSkillType().getID(), itemType
           .getMakeSkill().getLevel())) {
         canMake = false;
-      } else if (completerSettingsProvider.getLimitMakeCompletion()
+      } else if (getCompleterSettingsProvider().getLimitMakeCompletion()
           && !checkForMaterials(itemType.getResources())) {
         canMake = false;
-      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_UIRON))
+      } else if (itemType.equals(getData().getRules().getItemType(EresseaConstants.I_UIRON))
           && (region.getIron() <= 0)) {
         canMake = false;
-      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_ULAEN))
+      } else if (itemType.equals(getData().getRules().getItemType(EresseaConstants.I_ULAEN))
           && (region.getLaen() <= 0)) {
         canMake = false;
-      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_WOOD)) &&
+      } else if (itemType.equals(getData().getRules().getItemType(EresseaConstants.I_WOOD)) &&
       // bugzilla enhancement 599: also allow completion on sprouts
       // also take care of mallorn flag
           (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || region.isMallorn())) {
         canMake = false;
-      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_UMALLORN)) &&
+      } else if (itemType.equals(getData().getRules().getItemType(EresseaConstants.I_UMALLORN)) &&
       // bugzilla enhancement 599: also allow completion on sprouts
           (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || !region.isMallorn())) {
         canMake = false;
-      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_UHORSE))
+      } else if (itemType.equals(getData().getRules().getItemType(EresseaConstants.I_UHORSE))
           && (region.getHorses() <= 0)) {
         canMake = false;
-      } else if (itemType.equals(data.getRules().getItemType(EresseaConstants.I_USTONE))
+      } else if (itemType.equals(getData().getRules().getItemType(EresseaConstants.I_USTONE))
           && (region.getStones() <= 0)) {
         canMake = false;
       }
@@ -197,8 +197,8 @@ public class AtlantisOrderCompleter extends AbstractOrderCompleter {
    */
   @Override
   public void addSkills() {
-    if ((data != null) && (data.getRules() != null)) {
-      for (SkillType t : data.getRules().getSkillTypes()) {
+    if ((getData() != null) && (getData().getRules() != null)) {
+      for (SkillType t : getData().getRules().getSkillTypes()) {
         // add quotes if needed
         String name = getOrderTranslation(t);
         name = name.replace(' ', '_');

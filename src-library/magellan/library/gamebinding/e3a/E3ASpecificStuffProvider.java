@@ -35,6 +35,7 @@ import magellan.library.gamebinding.MapMetric;
 import magellan.library.gamebinding.MessageRenderer;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.gamebinding.OrderChanger;
+import magellan.library.gamebinding.ParserCache;
 import magellan.library.gamebinding.RelationFactory;
 import magellan.library.gamebinding.SimpleOrderFactory;
 import magellan.library.io.GameDataIO;
@@ -71,6 +72,8 @@ public class E3ASpecificStuffProvider implements GameSpecificStuff {
 
   private EresseaMapMetric metric;
 
+  private ParserCache<E3AOrderParser> parserCache;
+
   private static final SortedMap<Integer, String> combatStates = new TreeMap<Integer, String>();
 
   static {
@@ -86,6 +89,7 @@ public class E3ASpecificStuffProvider implements GameSpecificStuff {
     gameName = name;
     rules = new RulesReader().readRules(getName());
     metric = new EresseaMapMetric(rules);
+    parserCache = new ParserCache<E3AOrderParser>();
   }
 
   /**
@@ -179,8 +183,12 @@ public class E3ASpecificStuffProvider implements GameSpecificStuff {
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
    */
-  protected OrderParser getOrderParser(GameData data, E3AOrderCompleter completer) {
-    return new E3AOrderParser(data, completer);
+  protected OrderParser getOrderParser(final GameData data, final E3AOrderCompleter completer) {
+    return parserCache.getOrderParser(data, completer, new ParserCache.Factory<E3AOrderParser>() {
+      public E3AOrderParser create() {
+        return new E3AOrderParser(data, completer);
+      }
+    });
   }
 
   /**

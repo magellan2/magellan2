@@ -67,6 +67,17 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   private EresseaMapMetric mapMetric;
 
+  private GameData cachedData;
+  private Completer cachedCompleter;
+  private EresseaOrderParser nullParser;
+  private EresseaOrderParser completerParser;
+
+  private EresseaOrderCompleter completer;
+
+  private CompleterSettingsProvider cachedSettings;
+
+  private ParserCache<EresseaOrderParser> parserCache;
+
   private static final SortedMap<Integer, String> combatStates = new TreeMap<Integer, String>();
 
   static {
@@ -92,6 +103,7 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   public EresseaSpecificStuff() {
     rules = new RulesReader().readRules(getName());
     mapMetric = new EresseaMapMetric(rules);
+    parserCache = new ParserCache<EresseaOrderParser>();
   }
 
   /**
@@ -160,7 +172,10 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    *      magellan.library.completion.CompleterSettingsProvider)
    */
   public Completer getCompleter(GameData data, CompleterSettingsProvider csp) {
-    EresseaOrderCompleter completer = new EresseaOrderCompleter(data, csp);
+    if (completer == null || cachedSettings != csp) {
+      completer = new EresseaOrderCompleter(data, csp);
+    }
+    completer.setData(data);
     OrderParser parser = getOrderParser(data, completer);
     completer.setParser(parser);
     return completer;
@@ -176,8 +191,12 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderParser(magellan.library.GameData)
    */
-  protected OrderParser getOrderParser(GameData data, EresseaOrderCompleter completer) {
-    return new EresseaOrderParser(data, completer);
+  protected OrderParser getOrderParser(final GameData data, final EresseaOrderCompleter completer) {
+    return parserCache.getOrderParser(data, completer, new ParserCache.Factory<EresseaOrderParser>() {
+      public EresseaOrderParser create() {
+        return new EresseaOrderParser(data, completer);
+      }
+    });
   }
 
   /**

@@ -67,10 +67,10 @@ public abstract class AbstractOrderCompleter implements Completer {
   private static final Comparator<Completion> prioComp = new PrioComp();
   private OrderParser parser;
   protected List<Completion> completions;
-  protected GameData data;
+  private GameData data;
   protected Region region;
   protected Unit unit;
-  protected CompleterSettingsProvider completerSettingsProvider;
+  private CompleterSettingsProvider completerSettingsProvider;
   protected String oneQuote = "\"";
   protected String twoQuotes = "\"\"";
   protected String spaceQuotes = " \"\"";
@@ -242,9 +242,9 @@ public abstract class AbstractOrderCompleter implements Completer {
           // indicates that no information is available about this spell
           || ((spell.getIsFar() || !far)
               && (spell.getOnOcean() || !ocean || u.getRace().equals(
-                  data.getRules().getRace(EresseaConstants.R_MEERMENSCHEN))) && (!combat ^ (spell
+                  getData().getRules().getRace(EresseaConstants.R_MEERMENSCHEN))) && (!combat ^ (spell
                       .getType().toLowerCase().indexOf("combat") > -1)))) {
-        final String spellName = data.getTranslation(spell);
+        final String spellName = getData().getTranslation(spell);
 
         completions.add(new Completion(opening + spellName + closing));
       }
@@ -256,13 +256,13 @@ public abstract class AbstractOrderCompleter implements Completer {
    */
   public void addFamilarSpells(Unit mage, Unit familar, String opening, String closing) {
 
-    Skill magic = mage.getSkill(data.getRules().getSkillType(EresseaConstants.S_MAGIE));
+    Skill magic = mage.getSkill(getData().getRules().getSkillType(EresseaConstants.S_MAGIE));
     if ((magic != null)
         && (mage.getRegion() == null || familar.getRegion() == null || Regions.getDist(mage
             .getRegion().getCoordinate(), familar.getRegion().getCoordinate()) <= magic.getLevel())) {
       // familar is in range
       int maxlevel = magic.getLevel() / 2;
-      magic = familar.getSkill(data.getRules().getSkillType(EresseaConstants.S_MAGIE));
+      magic = familar.getSkill(getData().getRules().getSkillType(EresseaConstants.S_MAGIE));
       if (magic != null) {
         // maximum possible spelllevel:
         maxlevel = Math.min(maxlevel, magic.getLevel());
@@ -272,7 +272,7 @@ public abstract class AbstractOrderCompleter implements Completer {
               // this spell
               || (spell.getIsFamiliar() && (spell.getLevel() <= maxlevel))) {
             // seems to be a spell usable by a familar
-            final String spellName = data.getTranslation(spell);
+            final String spellName = getData().getTranslation(spell);
 
             completions.add(new Completion(spellName, opening + spellName + closing, " "));
           }
@@ -292,7 +292,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * adds all units in this region whose faction has a trustlevel not greater than zero (TL_DEFAULT)
    */
   public void addEnemyUnits(String postfix) {
-    if ((data != null) && (unit != null) && (region != null)) {
+    if ((getData() != null) && (unit != null) && (region != null)) {
       for (Unit u : region.units()) {
         if ((u.getFaction() == null || u.getFaction().getTrustLevel() <= Faction.TL_DEFAULT)
             || u.isSpy()) {
@@ -529,8 +529,8 @@ public abstract class AbstractOrderCompleter implements Completer {
    * @param postfix
    */
   public void addFactions(String postfix) {
-    if (data != null) {
-      for (Faction f : data.getFactions()) {
+    if (getData() != null) {
+      for (Faction f : getData().getFactions()) {
         addNamed(f, postfix, 0, true);
       }
     }
@@ -546,7 +546,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    */
   public void addOtherFactions(String postfix, int cursorOffset, boolean addComment) {
     final Faction ownerFaction = unit.getFaction();
-    for (Faction f : data.getFactions()) {
+    for (Faction f : getData().getFactions()) {
 
       if ((ownerFaction == null) || (f.equals(ownerFaction) == false)) {
         addNamed(f, postfix, cursorOffset, addComment);
@@ -568,7 +568,7 @@ public abstract class AbstractOrderCompleter implements Completer {
     // no need to exclude oceans, oceans have no name anyway and it'll break getPath(...)
 
     final Map<CoordinateID, Region> neighbours =
-        Regions.getAllNeighbours(data.regions(), region.getID(), radius, excludedRegionTypes);
+        Regions.getAllNeighbours(getData().regions(), region.getID(), radius, excludedRegionTypes);
 
     // do not include the region the unit stays in
     neighbours.remove(region.getID());
@@ -579,7 +579,7 @@ public abstract class AbstractOrderCompleter implements Completer {
         // translate the path of regions into a string of
         // directions to take
         final String dirs =
-            Regions.getDirections(data, region.getID(), r.getID(), excludedRegionTypes, radius);
+            Regions.getDirections(getData(), region.getID(), r.getID(), excludedRegionTypes, radius);
 
         if (dirs != null) {
           completions.add(new Completion(r.getName(), dirs, postfix,
@@ -619,8 +619,8 @@ public abstract class AbstractOrderCompleter implements Completer {
   public void addUnitLuxuries(String postfix) {
     ItemCategory cat = null;
 
-    if ((data != null) && (data.getRules() != null)) {
-      cat = data.getRules().getItemCategory(EresseaConstants.C_LUXURIES);
+    if ((getData() != null) && (getData().getRules() != null)) {
+      cat = getData().getRules().getItemCategory(EresseaConstants.C_LUXURIES);
     }
 
     if ((cat != null) && (unit != null)) {
@@ -637,8 +637,8 @@ public abstract class AbstractOrderCompleter implements Completer {
   }
 
   protected void addSkills() {
-    if ((data != null) && (data.getRules() != null)) {
-      for (SkillType t : data.getRules().getSkillTypes()) {
+    if ((getData() != null) && (getData().getRules() != null)) {
+      for (SkillType t : getData().getRules().getSkillTypes()) {
         final int cost = getSkillCost(t, unit);
         // add quotes if needed
         String name = getOrderTranslation(t);
@@ -770,7 +770,7 @@ public abstract class AbstractOrderCompleter implements Completer {
     if (ingredient.getItemType() != null) {
       long availableAmount = 0;
 
-      if (ingredient.getItemType().equals(data.getRules().getItemType(EresseaConstants.I_PEASANTS))) {
+      if (ingredient.getItemType().equals(getData().getRules().getItemType(EresseaConstants.I_PEASANTS))) {
         availableAmount = region.getPeasants();
       } else {
         final Units.StatItem available =
@@ -861,7 +861,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    */
   protected boolean hasSkill(Unit u, StringID id, int level) {
     boolean retVal = false;
-    final SkillType skillType = data.getRules().getSkillType(id);
+    final SkillType skillType = getData().getRules().getSkillType(id);
 
     if (skillType != null) {
       // Skill e = u.getSkill(skillType);
@@ -888,8 +888,8 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Adds completions for all ship types in the rules.
    */
   public void addShiptypes() {
-    if ((data != null) && (data.getRules() != null)) {
-      for (final Iterator<ShipType> iter = data.getRules().getShipTypeIterator(); iter.hasNext();) {
+    if ((getData() != null) && (getData().getRules() != null)) {
+      for (final Iterator<ShipType> iter = getData().getRules().getShipTypeIterator(); iter.hasNext();) {
         final ShipType t = iter.next();
 
         if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU, t.getBuildSkillLevel())) {
@@ -968,8 +968,12 @@ public abstract class AbstractOrderCompleter implements Completer {
     return data;
   }
 
+  public void setData(GameData data) {
+    this.data = data;
+  }
+
   protected GameSpecificStuff getGameSpecificStuff() {
-    return data.getGameSpecificStuff();
+    return getData().getGameSpecificStuff();
   }
 
   protected Locale getLocale() {

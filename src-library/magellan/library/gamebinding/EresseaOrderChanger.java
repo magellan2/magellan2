@@ -770,7 +770,7 @@ public class EresseaOrderChanger implements OrderChanger {
    */
   public Collection<? extends Order>
       getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit) {
-    final OrderParser parser = getRules().getGameSpecificStuff().getOrderParser(unit.getData());
+    final OrderParser parser = unit.getData().getOrderParser();
     final List<Order> cmds = new LinkedList<Order>();
     final Locale locale = unit.getLocale();
 

@@ -368,8 +368,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   }
 
   /**
-   * Sets the unit for this editor component. If the orders have been modified and there is a
-   * previous unit registered with this component, its orders are updated.
+   * Sets the unit for this editor component. If the orders have been modified and there is a previous
+   * unit registered with this component, its orders are updated.
    */
   public void setUnit(Unit u) {
     setOrdersAndFireEvent();
@@ -388,9 +388,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   }
 
   /**
-   * Returns a list of the orders this text pane is currently containing. A order extending over
-   * more than one line is stripped of the trailing backslashes, concatenated and returned as one
-   * order.
+   * Returns a list of the orders this text pane is currently containing. A order extending over more
+   * than one line is stripped of the trailing backslashes, concatenated and returned as one order.
    */
   public List<String> getOrders() {
     if (!isModified())
@@ -472,8 +471,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   }
 
   /**
-   * Allows to change the modified state of this text pane. Setting it to <tt>true</tt> currently
-   * does not automatically result in an event being fired.
+   * Allows to change the modified state of this text pane. Setting it to <tt>true</tt> currently does
+   * not automatically result in an event being fired.
    */
   private void setModified(boolean isModified) {
     modified = isModified;
@@ -617,6 +616,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
       break;
 
     case OrderToken.TT_PERSIST:
+    case OrderToken.TT_EXCLAM:
     case OrderToken.TT_KEYWORD:
       if (valid) {
         retVal = doc.getStyle(OrderEditor.S_KEYWORD);

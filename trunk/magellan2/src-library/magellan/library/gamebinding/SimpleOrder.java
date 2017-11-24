@@ -49,6 +49,7 @@ public class SimpleOrder implements Order {
   private boolean isLong;
   private Problem problem;
   private boolean valid = true;
+  private String prefix = "";
 
   /**
    * Creates an order consisting of just one token. <code>If finishWithEOC == true</code>, an
@@ -60,9 +61,6 @@ public class SimpleOrder implements Order {
   public SimpleOrder(OrderToken oneToken, String text) {
     tokens = new ArrayList<OrderToken>(2);
     addToken(oneToken);
-    // if (finishWithEOC) {
-    // addToken(new OrderToken(OrderToken.TT_EOC));
-    // }
 
     finish(text);
   }
@@ -82,7 +80,10 @@ public class SimpleOrder implements Order {
   }
 
   private void addToken(OrderToken t) {
-    if (t.ttype == OrderToken.TT_PERSIST) {
+    if (t.ttype == OrderToken.TT_EXCLAM) {
+      prefix = prefix + t.getText();
+    } else if (t.ttype == OrderToken.TT_PERSIST) {
+      prefix = prefix + t.getText();
       setPersistent(true);
     } else {
       tokens.add(t);
@@ -225,5 +226,9 @@ public class SimpleOrder implements Order {
   protected void setError(Unit unit, int line, String string) {
     setProblem(ProblemFactory.createProblem(Severity.ERROR,
         OrderSemanticsProblemTypes.SEMANTIC_ERROR.type, unit, null, string, line));
+  }
+
+  public String getPrefix() {
+    return prefix;
   }
 }

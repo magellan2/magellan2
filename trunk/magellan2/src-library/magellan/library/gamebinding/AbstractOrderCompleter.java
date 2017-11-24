@@ -798,7 +798,7 @@ public abstract class AbstractOrderCompleter implements Completer {
       return "";
     else {
       final OrderToken lastWord = tokens.get(tokens.size() - 2);
-      if (lastWord.followedBySpace() || lastWord.ttype == OrderToken.TT_PERSIST)
+      if (lastWord.followedBySpace())
         return "";
       else if (lastWord.ttype == OrderToken.TT_CLOSING_QUOTE)
         return tokens.get(tokens.size() - 4).getText() + tokens.get(tokens.size() - 3).getText()

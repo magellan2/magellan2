@@ -35,7 +35,6 @@ import org.junit.Test;
 
 import magellan.client.completion.AutoCompletion;
 import magellan.library.GameData;
-import magellan.library.Order;
 import magellan.library.Unit;
 import magellan.library.completion.Completion;
 import magellan.library.utils.logging.Logger;
@@ -81,15 +80,6 @@ public class OrderCompleterTest extends MagellanTestWithResources {
     completer.setParser(getParser());
   }
 
-  protected void checkOrder(String string) {
-    checkOrder(string, true);
-  }
-
-  protected void checkOrder(String string, boolean result) {
-    Order order = getParser().parse(string, getLocale());
-    assertEquals("checking " + string, result, order.isValid());
-  }
-
   /**
    *
    */
@@ -110,6 +100,12 @@ public class OrderCompleterTest extends MagellanTestWithResources {
     completions = completer.getCompletions(unit, "AR");
     assertEquals(1, completions.size());
     assertTrue(completions.contains(new Completion("ARBEITE")));
+
+    completions = completer.getCompletions(unit, "@");
+    assertEquals(40, completions.size());
+
+    completions = completer.getCompletions(unit, "!");
+    assertEquals(40, completions.size());
   }
 
   /**

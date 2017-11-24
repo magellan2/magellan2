@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.utils;
 
 import static org.junit.Assert.assertEquals;
@@ -80,6 +80,12 @@ public class OrderTokenizerTest {
 
   }
 
+  @Test
+  public final void testExclam() {
+    doTest("!ARBEITEN ", new OrderToken("!", 0, 1, OrderToken.TT_EXCLAM, false), new OrderToken("ARBEITEN", 1,
+        9, OrderToken.TT_UNDEF, true), EOC);
+  }
+
   /**
    * Fun with quotes.
    */
@@ -88,7 +94,7 @@ public class OrderTokenizerTest {
     doTest("", EOC);
     doTest("\"\"", new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false), new OrderToken(
         "", 1, 1, OrderToken.TT_STRING, false), new OrderToken("\"", 1, 2,
-        OrderToken.TT_CLOSING_QUOTE, false), new OrderToken("", -1, -1, OrderToken.TT_EOC, false));
+            OrderToken.TT_CLOSING_QUOTE, false), new OrderToken("", -1, -1, OrderToken.TT_EOC, false));
 
     doTest("\"", new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false), new OrderToken("",
         -1, -1, OrderToken.TT_EOC, false));
@@ -96,16 +102,16 @@ public class OrderTokenizerTest {
     doTest("\"abc\"", new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false),
         new OrderToken("abc", 1, 4, OrderToken.TT_STRING, false), new OrderToken("\"", 4, 5,
             OrderToken.TT_CLOSING_QUOTE, false), new OrderToken("", -1, -1, OrderToken.TT_EOC,
-            false));
+                false));
 
     doTest("\"abc", new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false), new OrderToken(
         "abc", 1, 4, OrderToken.TT_STRING, false), new OrderToken("", -1, -1, OrderToken.TT_EOC,
-        false));
+            false));
 
     doTest("DEFAULT 'LERNEN U", new OrderToken("DEFAULT", 0, 7, OrderToken.TT_UNDEF, true),
         new OrderToken("'", 8, 9, OrderToken.TT_OPENING_QUOTE, false), new OrderToken("LERNEN U",
             9, 17, OrderToken.TT_STRING, false), new OrderToken("", -1, -1, OrderToken.TT_EOC,
-            false));
+                false));
 
   }
 
@@ -159,7 +165,7 @@ public class OrderTokenizerTest {
     doTest(tokenizer, string, new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false),
         new OrderToken("", 1, 1, OrderToken.TT_STRING, false), new OrderToken("\"", 1, 2,
             OrderToken.TT_CLOSING_QUOTE, false), new OrderToken("", -1, -1, OrderToken.TT_EOC,
-            false));
+                false));
 
     string = "\"";
     in = new StringReader(string);
@@ -175,7 +181,7 @@ public class OrderTokenizerTest {
     doTest(tokenizer, string, new OrderToken("\"", 0, 1, OrderToken.TT_OPENING_QUOTE, false),
         new OrderToken("abc", 1, 4, OrderToken.TT_STRING, false), new OrderToken("\"", 4, 5,
             OrderToken.TT_CLOSING_QUOTE, false), new OrderToken("", -1, -1, OrderToken.TT_EOC,
-            false));
+                false));
 
     string = "'abc'";
     in = new StringReader(string);

@@ -13,6 +13,7 @@
 
 package magellan.client.swing.map;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -21,11 +22,13 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -59,9 +62,15 @@ public class SignTextCellRenderer extends HexCellRenderer {
   protected int minimumFontSize = 10;
   // protected int fontHeight = 0;
   protected boolean isScalingFont = false;
+  protected boolean drawlines = false;
   protected int hAlign = SignTextCellRenderer.CENTER;
   protected String singleString[] = new String[1];
   String doubleString[] = new String[2];
+
+  /**
+   * Identifier in Region-Tags for MapLines
+   */
+  public static final String LINE_TAG = "mapline";
 
   /** DOCUMENT-ME */
   public static final int LEFT = 0;
@@ -71,6 +80,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
   /** DOCUMENT-ME */
   public static final int RIGHT = 2;
+
+  private boolean LinesOnly = false;
 
   /**
    * Creates new SignTextCellRenderer
@@ -88,6 +99,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
       }
 
       setScalingFont((Boolean.valueOf(settings.getProperty("SignTextCellRenderer.isScalingFont",
+          "false"))).booleanValue());
+      setDrawingLines((Boolean.valueOf(settings.getProperty("SignTextCellRenderer.DrawLines",
           "false"))).booleanValue());
     }
 
@@ -136,7 +149,17 @@ public class SignTextCellRenderer extends HexCellRenderer {
       isScalingFont = b;
       settings.setProperty("SignTextCellRenderer.isScalingFont", String.valueOf(isScalingFont()));
     }
+  }
 
+  protected boolean isDrawingLines() {
+    return drawlines;
+  }
+
+  protected void setDrawingLines(boolean b) {
+    if (b != drawlines) {
+      drawlines = b;
+      settings.setProperty("SignTextCellRenderer.DrawLines", String.valueOf(isDrawingLines()));
+    }
   }
 
   protected int getMinimumFontSize() {
@@ -200,6 +223,53 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
   }
 
+  private void create_Maplines(Region r) {
+    // Linien...Fiete 20170312
+    // Syntax der Tags:
+    // TargetX,TargetY,Color_R,Color_G,Color_B,Line_width,[..(tool-specific-values)..]
+
+    String key = SignTextCellRenderer.LINE_TAG;
+    if (r.containsTag(key)) {
+      CoordinateID c = r.getCoordinate();
+
+      Rectangle rect = cellGeo.getImageRect(c.getX(), c.getY());
+      rect.translate(-offset.x, -offset.y);
+      StringTokenizer st = new StringTokenizer(r.getTag(key), " ");
+
+      while (st.hasMoreTokens()) {
+        String token = st.nextToken();
+        // token besteht aus X,Y
+        String[] coords = token.split(",");
+        int TargetX = Integer.parseInt(coords[0]);
+        int TargetY = Integer.parseInt(coords[1]);
+        Color col = Color.red;
+        if (coords.length > 2) {
+          // die farbe ist als RGB übergeben worden
+          col =
+              new Color(Integer.parseInt(coords[2]), Integer.parseInt(coords[3]), Integer
+                  .parseInt(coords[4]));
+        }
+        int thickness = 5;
+        if (coords.length > 5) {
+          thickness = Integer.parseInt(coords[5]);
+        }
+        thickness = (int) Math.floor(thickness * cellGeo.getScaleFactor());
+        if (thickness < 1) {
+          thickness = 1;
+        }
+        Rectangle targetRect = cellGeo.getImageRect(TargetX, TargetY);
+        targetRect.translate(-offset.x, -offset.y);
+        Stroke savestroke = graphics.getStroke();
+        graphics.setPaint(col);
+        graphics.setStroke(new BasicStroke(thickness));
+        graphics.drawLine(rect.x + (rect.width / 2), rect.y + (rect.height / 2), targetRect.x
+            + (targetRect.width / 2),
+            targetRect.y + (targetRect.height / 2));
+        graphics.setStroke(savestroke);
+      }
+    }
+  }
+
   /**
    * DOCUMENT-ME
    */
@@ -207,6 +277,12 @@ public class SignTextCellRenderer extends HexCellRenderer {
   public void render(Object obj, boolean active, boolean selected) {
     if (obj instanceof Region) {
       Region r = (Region) obj;
+
+      if (LinesOnly && isDrawingLines()) {
+        create_Maplines(r);
+        return;
+      }
+
       CoordinateID c = r.getCoordinate();
       Rectangle rect = cellGeo.getCellRect(c.getX(), c.getY());
 
@@ -348,6 +424,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
     private JComboBox cmbFontSize = null;
     private JComboBox cmbMinimumFontSize = null;
     private JCheckBox chkScaleFont = null;
+    private JCheckBox chkDrawLines = null;
 
     /**
      * Creates a new Preferences object.
@@ -446,6 +523,10 @@ public class SignTextCellRenderer extends HexCellRenderer {
           new JCheckBox(Resources.get("map.signtextcellrenderer.scalefontwithmapzoom"), source
               .isScalingFont());
 
+      chkDrawLines =
+          new JCheckBox(Resources.get("map.signtextcellrenderer.drawinglines"), source
+              .isDrawingLines());
+
       setLayout(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints();
@@ -493,6 +574,11 @@ public class SignTextCellRenderer extends HexCellRenderer {
       c.gridy = 6;
       c.gridwidth = 2;
       this.add(chkScaleFont, c);
+
+      c.gridx = 0;
+      c.gridy = 7;
+      c.gridwidth = 2;
+      this.add(chkDrawLines, c);
     }
 
     public void initPreferences() {
@@ -512,6 +598,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
       source.setFont(new Font(fontName, fontStyle, fontSize));
       source.setMinimumFontSize(Integer.parseInt((String) cmbMinimumFontSize.getSelectedItem()));
       source.setScalingFont(chkScaleFont.isSelected());
+      source.setDrawingLines(chkDrawLines.isSelected());
     }
 
     /**
@@ -550,6 +637,10 @@ public class SignTextCellRenderer extends HexCellRenderer {
   @Override
   public String getName() {
     return Resources.get("map.signtextcellrenderer.name");
+  }
+
+  public void setLinesOnly(boolean linesOnly) {
+    LinesOnly = linesOnly;
   }
 
 }

@@ -997,7 +997,8 @@ public class BattleInfo {
     for (Message m : b.messages()) {
       try {
         switch (m.getMessageType().getID().intValue()) {
-        case 1597436160: // Der Kampf wurde ausgelöst
+        case 1597436160:
+        case 26679501: // Der Kampf wurde ausgelöst
           addStarter(m);
           currentSpellInfo = null;
           break;
@@ -1015,6 +1016,8 @@ public class BattleInfo {
         case 1619294438: // Basilisk
         case 1677670293: // Trugbilder
         case 1402218402: // zaubert
+        case 138727251: // "Rosie Kattun (sppd) zaubert Beschleunigung: 385 Krieger wurden magisch beschleunigt.";rendered
+        case 450463848: // "Die Verzehrenden von Dotetkul (Li8h) zaubert Eisiger Drachenodem: 1 Krieger wurde getötet.";rendered
           currentSpellInfo = addSpell(m, true);
           break;
         case 672044929: // Wölfe
@@ -1058,11 +1061,14 @@ public class BattleInfo {
                   true);
           // 11 27 0;region ignored
           break;
-        case 1281520191: // Flammenschwert
+        case 1281520191: // Flammenschwert //
+                         // "4 Krieger von Meisterfechter (wxon) benutzen ihre Flammenschwerter.";rendered
+        case 646112495: // "4 Krieger von Meisterfechter (wxon) benutzen ihre Flammenschwerter.";rendered
         case 881122508: // Katapult
           currentSpellInfo = addCatapult(m);
           break;
-        case 394859417: // Katapulttote
+        case 394859417:
+        case 2001303749: // Katapulttote // "Meisterfechter (wxon) tötete 0 Krieger.";rendered
           if (currentSpellInfo == null) {
             log.warn("unexpected dead " + m);
           } else {
@@ -1082,21 +1088,26 @@ public class BattleInfo {
           currentSpellInfo = null;
           addMisc(m);
           break;
-        case 1617067165: // Reihe
+        case 1617067165:
+        case 1684814935: // Reihe
           currentSpellInfo = null;
           currentRow = startRow(m);
           break;
-        case 472935109: // Falle
-        case 101630319: // überrascht
+        case 472935109:
+        case 603624501: // Falle
+        case 101630319:
+        case 606685727: // überrascht
           currentSpellInfo = null;
           addTactic(m);
           break;
-        case 1558678477: // Einheiten vor der x. Runde
+        case 1558678477:
+        case 715582328: // Einheiten vor der x. Runde
           currentSpellInfo = null;
           currentRound = startRound(m);
           setMaxRound(currentRound - 1);
           break;
-        case 164793159: // nach dem Kampf
+        case 164793159:
+        case 22298165: // nach dem Kampf
           currentSpellInfo = null;
           setMaxRound(currentRound);
           currentRound++;
@@ -1105,7 +1116,8 @@ public class BattleInfo {
           currentSpellInfo = null;
           addLoss(m);
           break;
-        case 445331753: // "Army 0(isb9): 0 dead, 0 fled, 4 survivors."
+        case 445331753:
+        case 1109807897: // "Army 0(isb9): 0 dead, 0 fled, 4 survivors."
           currentSpellInfo = null;
           addSummary(m);
           break;
@@ -1113,7 +1125,7 @@ public class BattleInfo {
           currentSpellInfo = null;
           addHit(m);
           break;
-        case 1421907893:
+        case 1421907893: // "Mannen (9eu) erbeutet 1 Drachenblut.";rendered
           currentSpellInfo = null;
           addLoot(m);
           break;
@@ -1287,7 +1299,7 @@ public class BattleInfo {
               + " *[0-9]+.*");
       unitPattern =
           Pattern.compile(
-          // 1: name, 2: ID
+              // 1: name, 2: ID
               " *[*+-] (.+) \\(([0-9a-zL]{1,4})\\)"
                   // 3: number 4:race
                   + ", ([0-9]+) ([^,;.()]+)"
@@ -1311,7 +1323,7 @@ public class BattleInfo {
       itemPattern = Pattern.compile(" *(([0-9]+) )*(\\p{L}[^0-9]*[^ ]) *"); // \p{L}: letter
       overviewPattern =
           Pattern.compile(" *" + Resources.get("plugin.battle.host", getLocale(), false)
-          // 1: number, 2: id
+              // 1: number, 2: id
               + " *([0-9]+)\\(([^)]*)\\): "
               // 3: first row, 4: second row?
               + "([0-9]+)(\\+([0-9]+)(\\+([0-9]+)(\\+([0-9]+))*)*)*");

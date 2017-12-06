@@ -46,6 +46,20 @@ public class Regions {
   private static final Logger log = Logger.getInstance(Regions.class);
 
   /**
+   * will be ignored from getAllNeighbours
+   */
+  public static Collection<Region> excludedRegions;
+
+  /**
+   * sets the excluded Regions
+   * 
+   * @param excludedRegions
+   */
+  public static void setExcludedRegions(Collection<Region> excludedRegions) {
+    Regions.excludedRegions = excludedRegions;
+  }
+
+  /**
    * Retrieve the regions within radius around region center.
    * 
    * @param regions a map containing the existing regions.
@@ -127,7 +141,9 @@ public class Regions {
 
     for (Region n : allNeighbors.values()) {
       if ((excludedRegionTypes == null) || !excludedRegionTypes.containsKey(n.getType().getID())) {
-        neighbours.put(n.getID(), n);
+        if (Regions.excludedRegions == null || !Regions.excludedRegions.contains(n)) {
+          neighbours.put(n.getID(), n);
+        }
       }
     }
 

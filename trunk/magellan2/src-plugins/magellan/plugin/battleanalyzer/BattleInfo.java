@@ -62,7 +62,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * Holds parsed info about a battle.
- * 
+ *
  * @author stm
  */
 public class BattleInfo {
@@ -115,7 +115,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of name.
-     * 
+     *
      * @return Returns name.
      */
     public String getName() {
@@ -124,7 +124,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of name.
-     * 
+     *
      * @param name The value for name.
      */
     public void setName(String name) {
@@ -133,7 +133,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of unit.
-     * 
+     *
      * @return Returns unit.
      */
     public UnitID getUnit() {
@@ -142,7 +142,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of unit.
-     * 
+     *
      * @param unit The value for unit.
      */
     public void setUnit(UnitID unit) {
@@ -153,7 +153,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of round.
-     * 
+     *
      * @return Returns round.
      */
     public int getRound() {
@@ -162,7 +162,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of round.
-     * 
+     *
      * @param round The value for round.
      */
     public void setRound(int round) {
@@ -171,7 +171,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of completed.
-     * 
+     *
      * @return Returns completed.
      */
     public boolean isCompleted() {
@@ -180,7 +180,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of completed.
-     * 
+     *
      * @param completed The value for completed.
      */
     public void setCompleted(boolean completed) {
@@ -189,7 +189,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of dead.
-     * 
+     *
      * @return Returns dead.
      */
     public int getDead() {
@@ -198,7 +198,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of dead.
-     * 
+     *
      * @param dead The value for dead.
      */
     public void setDead(int dead) {
@@ -207,7 +207,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of amount.
-     * 
+     *
      * @return Returns amount.
      */
     public int getAmount() {
@@ -216,7 +216,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of amount.
-     * 
+     *
      * @param amount The value for amount.
      */
     public void setAmount(int amount) {
@@ -252,7 +252,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of index.
-     * 
+     *
      * @return Returns index.
      */
     public int getIndex() {
@@ -261,7 +261,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of index.
-     * 
+     *
      * @param index The value for index.
      */
     public void setIndex(int index) {
@@ -270,7 +270,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of name.
-     * 
+     *
      * @return Returns name.
      */
     public String getName() {
@@ -279,7 +279,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of name.
-     * 
+     *
      * @param name The value for name.
      */
     public void setName(String name) {
@@ -288,7 +288,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of id.
-     * 
+     *
      * @return Returns id.
      */
     public EntityID getId() {
@@ -297,7 +297,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of id.
-     * 
+     *
      * @param id The value for id.
      */
     public void setId(EntityID id) {
@@ -306,7 +306,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of dead.
-     * 
+     *
      * @return Returns dead.
      */
     public int getDead() {
@@ -315,7 +315,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of dead.
-     * 
+     *
      * @param dead The value for dead.
      */
     public void setDead(int dead) {
@@ -324,7 +324,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of fled.
-     * 
+     *
      * @return Returns fled.
      */
     public int getFled() {
@@ -333,7 +333,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of fled.
-     * 
+     *
      * @param fled The value for fled.
      */
     public void setFled(int fled) {
@@ -342,7 +342,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of survived.
-     * 
+     *
      * @return Returns survived.
      */
     public int getSurvived() {
@@ -351,7 +351,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of survived.
-     * 
+     *
      * @param survived The value for survived.
      */
     public void setSurvived(int survived) {
@@ -386,7 +386,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of adversaries.
-     * 
+     *
      * @return Returns adversaries.
      */
     public Set<Integer> getAdversaries() {
@@ -395,7 +395,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of attacked.
-     * 
+     *
      * @return Returns attacked.
      */
     public Set<Integer> getAttacked() {
@@ -404,7 +404,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of helped.
-     * 
+     *
      * @return Returns helped.
      */
     public Set<Integer> getHelped() {
@@ -414,8 +414,7 @@ public class BattleInfo {
     /**
      * Returns the row infos. <code>getRows()[0][row]</code> is the number of people in the lineup.
      * <code>getRows()[round][row]</code> is the number of people in the round-1.
-     * <code>getRows()[maxRound+2][row]</code> is the number of people after combat. Front row is
-     * row 0.
+     * <code>getRows()[maxRound+2][row]</code> is the number of people after combat. Front row is row 0.
      */
     public int[][] getRows() {
       if (changed) {
@@ -434,7 +433,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of abbrev.
-     * 
+     *
      * @return Returns abbrev.
      */
     public String getAbbrev() {
@@ -443,7 +442,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of abbrev.
-     * 
+     *
      * @param abbrev The value for abbrev.
      */
     public void setAbbrev(String abbrev) {
@@ -496,7 +495,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of unit.
-     * 
+     *
      * @return Returns unit.
      */
     public UnitID getUnit() {
@@ -505,7 +504,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of unit.
-     * 
+     *
      * @param unit The value for unit.
      */
     public void setUnit(UnitID unit) {
@@ -514,7 +513,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of fallen.
-     * 
+     *
      * @return Returns fallen.
      */
     public int getFallen() {
@@ -523,7 +522,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of fallen.
-     * 
+     *
      * @param fallen The value for fallen.
      */
     public void setFallen(int fallen) {
@@ -532,7 +531,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of alive.
-     * 
+     *
      * @return Returns alive.
      */
     public int getAlive() {
@@ -541,7 +540,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of alive.
-     * 
+     *
      * @param alive The value for alive.
      */
     public void setAlive(int alive) {
@@ -550,7 +549,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of run.
-     * 
+     *
      * @return Returns run.
      */
     public int getRun() {
@@ -559,7 +558,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of run.
-     * 
+     *
      * @param run The value for run.
      */
     public void setRun(int run) {
@@ -568,7 +567,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of host.
-     * 
+     *
      * @return Returns host.
      */
     public int getHost() {
@@ -577,7 +576,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of host.
-     * 
+     *
      * @param host The value for host.
      */
     public void setHost(int host) {
@@ -586,7 +585,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of hits.
-     * 
+     *
      * @return Returns hits.
      */
     public int getHits() {
@@ -595,7 +594,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of hits.
-     * 
+     *
      * @param hits The value for hits.
      */
     public void setHits(int hits) {
@@ -604,7 +603,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of kills.
-     * 
+     *
      * @return Returns kills.
      */
     public int getKills() {
@@ -613,7 +612,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of kills.
-     * 
+     *
      * @param kills The value for kills.
      */
     public void setKills(int kills) {
@@ -630,7 +629,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of name.
-     * 
+     *
      * @return Returns name.
      */
     public String getName() {
@@ -639,7 +638,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of name.
-     * 
+     *
      * @param name The value for name.
      */
     public void setName(String name) {
@@ -648,7 +647,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of persons.
-     * 
+     *
      * @return Returns persons.
      */
     public int getPersons() {
@@ -657,7 +656,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of persons.
-     * 
+     *
      * @param persons The value for persons.
      */
     public void setPersons(int persons) {
@@ -666,7 +665,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of race.
-     * 
+     *
      * @return Returns race.
      */
     public String getRace() {
@@ -675,7 +674,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of race.
-     * 
+     *
      * @param race The value for race.
      */
     public void setRace(String race) {
@@ -684,7 +683,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of hero.
-     * 
+     *
      * @return Returns hero.
      */
     public boolean isHero() {
@@ -693,7 +692,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of hero.
-     * 
+     *
      * @param hero The value for hero.
      */
     public void setHero(boolean hero) {
@@ -702,7 +701,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of combatStatus.
-     * 
+     *
      * @return Returns combatStatus.
      */
     public String getCombatStatus() {
@@ -711,7 +710,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of combatStatus.
-     * 
+     *
      * @param combatStatus The value for combatStatus.
      */
     public void setCombatStatus(String combatStatus) {
@@ -720,7 +719,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of health.
-     * 
+     *
      * @return Returns health.
      */
     public String getHealth() {
@@ -729,7 +728,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of health.
-     * 
+     *
      * @param health The value for health.
      */
     public void setHealth(String health) {
@@ -738,7 +737,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of starving.
-     * 
+     *
      * @return Returns starving.
      */
     public boolean isStarving() {
@@ -747,7 +746,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of starving.
-     * 
+     *
      * @param starving The value for starving.
      */
     public void setStarving(boolean starving) {
@@ -756,7 +755,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of guarding.
-     * 
+     *
      * @return Returns guarding.
      */
     public boolean isGuarding() {
@@ -765,7 +764,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of guarding.
-     * 
+     *
      * @param guarding The value for guarding.
      */
     public void setGuarding(boolean guarding) {
@@ -823,14 +822,14 @@ public class BattleInfo {
       } else if (type.getCategory() != null
           && (type.getCategory().isDescendant(
               world.getRules().getItemCategory(EresseaConstants.C_WEAPONS)) || type.getCategory()
-              .isDescendant(world.getRules().getItemCategory(EresseaConstants.C_ARMOUR)))) {
+                  .isDescendant(world.getRules().getItemCategory(EresseaConstants.C_ARMOUR)))) {
         addItem(item);
       }
     }
 
     /**
      * Returns the value of row. Front row is row 1.
-     * 
+     *
      * @return Returns row.
      */
     public int getRow() {
@@ -839,7 +838,7 @@ public class BattleInfo {
 
     /**
      * Sets the value of row. Front row is row 1.
-     * 
+     *
      * @param row The value for row.
      */
     public void setRow(int row) {
@@ -848,7 +847,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of skills.
-     * 
+     *
      * @return Returns skills.
      */
     public Collection<Skill> getSkills() {
@@ -860,7 +859,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of items.
-     * 
+     *
      * @return Returns items.
      */
     public Collection<Item> getItems() {
@@ -872,7 +871,7 @@ public class BattleInfo {
 
     /**
      * Returns the value of loot.
-     * 
+     *
      * @return Returns loot.
      */
     public List<Item> getLoot() {
@@ -913,7 +912,7 @@ public class BattleInfo {
 
   /**
    * Initializes an empty battle info.
-   * 
+   *
    * @param id Coordinate of the battle
    * @param world
    */
@@ -979,7 +978,7 @@ public class BattleInfo {
 
   /**
    * Adds information from a battle to this info.
-   * 
+   *
    * @param b A battle
    * @param locale_ locale of the battle report (which usually equals the faction's locale)
    */
@@ -1003,6 +1002,8 @@ public class BattleInfo {
           currentSpellInfo = null;
           break;
         case 132674556: // Zauber schlägt fehl
+        case 1670085741: // "\"$unit($unit) versucht $spell($spell) zu zaubern, doch der Zauber schlägt
+                         // fehl!\"";text
           addSpell(m, false);
           currentSpellInfo = null;
           break;
@@ -1016,8 +1017,10 @@ public class BattleInfo {
         case 1619294438: // Basilisk
         case 1677670293: // Trugbilder
         case 1402218402: // zaubert
-        case 138727251: // "Rosie Kattun (sppd) zaubert Beschleunigung: 385 Krieger wurden magisch beschleunigt.";rendered
-        case 450463848: // "Die Verzehrenden von Dotetkul (Li8h) zaubert Eisiger Drachenodem: 1 Krieger wurde getötet.";rendered
+        case 138727251: // "Rosie Kattun (sppd) zaubert Beschleunigung: 385 Krieger wurden magisch
+                        // beschleunigt.";rendered
+        case 450463848: // "Die Verzehrenden von Dotetkul (Li8h) zaubert Eisiger Drachenodem: 1 Krieger wurde
+                        // getötet.";rendered
           currentSpellInfo = addSpell(m, true);
           break;
         case 672044929: // Wölfe
@@ -1166,7 +1169,7 @@ public class BattleInfo {
               Resources.get("plugin.battle.helps", getLocale(), false))) {
             addMisc(m);
           } else if (unitPattern.matcher(m.getText()).matches()) {
-            // "  + Ed MacDonald's Trupp (cw9v), 8 Menschen, vorne, hat: 8 Speere.";string
+            // " + Ed MacDonald's Trupp (cw9v), 8 Menschen, vorne, hat: 8 Speere.";string
             addMisc(m);
           } else if (m.getText().matches(
               Resources.get("plugin.battle.pattern.loot", getLocale(), false))) {
@@ -1323,7 +1326,7 @@ public class BattleInfo {
       itemPattern = Pattern.compile(" *(([0-9]+) )*(\\p{L}[^0-9]*[^ ]) *"); // \p{L}: letter
       overviewPattern =
           Pattern.compile(" *" + Resources.get("plugin.battle.host", getLocale(), false)
-              // 1: number, 2: id
+          // 1: number, 2: id
               + " *([0-9]+)\\(([^)]*)\\): "
               // 3: first row, 4: second row?
               + "([0-9]+)(\\+([0-9]+)(\\+([0-9]+)(\\+([0-9]+))*)*)*");
@@ -1336,7 +1339,8 @@ public class BattleInfo {
     String string = m.getAttributes().get("string");
     if (string.startsWith(Resources.get("plugin.battle.fights", getLocale(), false))) {
       // "Kämpft gegen: Heer 1(orks)";string
-      // "Kämpft gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust), Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
+      // "Kämpft gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust),
+      // Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
       for (String hostPart : string.substring(string.indexOf(":") + 1).split(",")) {
         Matcher matcher = hostPattern1.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1349,7 +1353,9 @@ public class BattleInfo {
       }
     } else if (string.startsWith(Resources.get("plugin.battle.helps", getLocale(), false))) {
       // "Hilft: Heer 0(phos)";string
-      // "Hilft: Heer 0(-?-), Heer 13(-?-), Heer 14(-?-), Heer 15(haLb), Heer 16(stds), Heer 17(-?-), Heer 18(-?-), Heer 19(drac), Heer 20(ouLe), Heer 21(yjap), Heer 22(-?-), Heer 23(tata), Heer 24(-?-), Heer 25(cat), Heer 26(pt6f), Heer 27(fLos), Heer 28(1akL), Heer 29(phos), Heer 30(isb9)";string
+      // "Hilft: Heer 0(-?-), Heer 13(-?-), Heer 14(-?-), Heer 15(haLb), Heer 16(stds), Heer 17(-?-), Heer
+      // 18(-?-), Heer 19(drac), Heer 20(ouLe), Heer 21(yjap), Heer 22(-?-), Heer 23(tata), Heer 24(-?-),
+      // Heer 25(cat), Heer 26(pt6f), Heer 27(fLos), Heer 28(1akL), Heer 29(phos), Heer 30(isb9)";string
       for (String hostPart : string.substring(string.indexOf(":") + 1).split(",")) {
         Matcher matcher = hostPattern1.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1362,7 +1368,8 @@ public class BattleInfo {
       }
     } else if (string.startsWith(Resources.get("plugin.battle.attacks", getLocale(), false))) {
       // "Attacke gegen: Heer 1(orks)";string
-      // "Attacke gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust), Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
+      // "Attacke gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust),
+      // Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
       for (String hostPart : string.substring(string.indexOf(":") + 1).split(",")) {
         Matcher matcher = hostPattern1.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1374,15 +1381,21 @@ public class BattleInfo {
         }
       }
     } else if (unitPattern.matcher(string).matches()) {
-      // "  + Tatarische Fremdenlegion (t7z9), 17 Dämonen, vorne (erschöpft), hat: 17 Schilde, 24 Schwerter.";string
-      // "  - Wowukh (ru8y), 2 Trolle, flieht (schwer verwundet, hungert), hat: 2 Bihänder.";string
-      // "  + Tatarische Fremdenlegion (zyju), 30 Goblins, vorne, bewacht die Region, hat: 2 Bögen, Weihrauch, Myrrhe, 4 Speere, 32 Schwerter.";string
-      // "  - Hellebardiere der Flaumfußens (m01j), 1 Bluthalbling, flieht (verwundet, hungert), hat: Streitross, Hellebarde, Schuppenpanzer.";string
-      // "  * Tatarische Fremdenlegion (t1f1), 44 Goblins, vorne, bewacht die Region, Talente: Hiebwaffen 9, Ausdauer 5, Reiten 1, hat: 35 Kettenhemden, 2044 Silber, 44 Schilde, 46 Schwerter, Turmschild.";string
-      // "  - Rächer des Bösen (7qqu), 7 Skelette, defensiv (schwer verwundet)."
-      // "  + Tatarische Fremdenlegion (bdjd), 5 Orks, vorne, bewacht die Region, hat: 5 Kriegsäxte, 2 Kettenhemden, 5 Schilde, Schwert."
-      // "  - Delok (o1), 1 Ork, vorne, hat: Pferd, Speer, 2 Phiolen."
-      // "  - Mogotk (ut3t), 1 Ork, hinten (schwer verwundet), hat: Bogen."
+      // " + Tatarische Fremdenlegion (t7z9), 17 Dämonen, vorne (erschöpft), hat: 17 Schilde, 24
+      // Schwerter.";string
+      // " - Wowukh (ru8y), 2 Trolle, flieht (schwer verwundet, hungert), hat: 2 Bihänder.";string
+      // " + Tatarische Fremdenlegion (zyju), 30 Goblins, vorne, bewacht die Region, hat: 2 Bögen,
+      // Weihrauch, Myrrhe, 4 Speere, 32 Schwerter.";string
+      // " - Hellebardiere der Flaumfußens (m01j), 1 Bluthalbling, flieht (verwundet, hungert), hat:
+      // Streitross, Hellebarde, Schuppenpanzer.";string
+      // " * Tatarische Fremdenlegion (t1f1), 44 Goblins, vorne, bewacht die Region, Talente: Hiebwaffen
+      // 9, Ausdauer 5, Reiten 1, hat: 35 Kettenhemden, 2044 Silber, 44 Schilde, 46 Schwerter,
+      // Turmschild.";string
+      // " - Rächer des Bösen (7qqu), 7 Skelette, defensiv (schwer verwundet)."
+      // " + Tatarische Fremdenlegion (bdjd), 5 Orks, vorne, bewacht die Region, hat: 5 Kriegsäxte, 2
+      // Kettenhemden, 5 Schilde, Schwert."
+      // " - Delok (o1), 1 Ork, vorne, hat: Pferd, Speer, 2 Phiolen."
+      // " - Mogotk (ut3t), 1 Ork, hinten (schwer verwundet), hat: Bogen."
       Matcher matcher = unitPattern.matcher(string);
       boolean matched = matcher.matches();
       if (!matched) {
@@ -1438,8 +1451,15 @@ public class BattleInfo {
         currentHost.addUnit(unitInfo.getUnit(), unitInfo);
       }
     } else if (hostPattern2.matcher(string).matches()) {
-      // "Heer  0(phos): 17, Heer  1(orks): 0+0+0+2";string
-      // "Heer  0(-?-): 2, Heer  1(orks): 335+233+10+10, Heer  2(x): 295+155+10, Heer  3(2j4e): 0+412+0+25, Heer  4(das): 496+19+113+11, Heer  5(przp): 106+91, Heer  6(fust): 46+32, Heer  7(Lord): 202+100, Heer  8(Luft): 79+4+1, Heer  9(va2z): 179+1, Heer 10(-?-): 0+0+0+1, Heer 11(mu47): 54+1, Heer 12(bart): 275+74+40, Heer 13(-?-): 1, Heer 14(-?-): 1, Heer 15(haLb): 250+63, Heer 16(stds): 573+18+3+3, Heer 17(-?-): 219+53+0+1, Heer 18(-?-): 20+100, Heer 19(drac): 157+249+1, Heer 20(ouLe): 268+348+0+5, Heer 21(yjap): 163+86+20+2, Heer 22(-?-): 34+0+0+2, Heer 23(tata): 400+102, Heer 24(-?-): 703+83, Heer 25(cat): 0+1, Heer 26(pt6f): 44, Heer 27(fLos): 0+21, Heer 28(1akL): 13, Heer 29(phos): 0+20, Heer 30(isb9): 33";string
+      // "Heer 0(phos): 17, Heer 1(orks): 0+0+0+2";string
+      // "Heer 0(-?-): 2, Heer 1(orks): 335+233+10+10, Heer 2(x): 295+155+10, Heer 3(2j4e): 0+412+0+25,
+      // Heer 4(das): 496+19+113+11, Heer 5(przp): 106+91, Heer 6(fust): 46+32, Heer 7(Lord): 202+100,
+      // Heer 8(Luft): 79+4+1, Heer 9(va2z): 179+1, Heer 10(-?-): 0+0+0+1, Heer 11(mu47): 54+1, Heer
+      // 12(bart): 275+74+40, Heer 13(-?-): 1, Heer 14(-?-): 1, Heer 15(haLb): 250+63, Heer 16(stds):
+      // 573+18+3+3, Heer 17(-?-): 219+53+0+1, Heer 18(-?-): 20+100, Heer 19(drac): 157+249+1, Heer
+      // 20(ouLe): 268+348+0+5, Heer 21(yjap): 163+86+20+2, Heer 22(-?-): 34+0+0+2, Heer 23(tata):
+      // 400+102, Heer 24(-?-): 703+83, Heer 25(cat): 0+1, Heer 26(pt6f): 44, Heer 27(fLos): 0+21, Heer
+      // 28(1akL): 13, Heer 29(phos): 0+20, Heer 30(isb9): 33";string
       for (String hostPart : string.split(",")) {
         Matcher matcher = overviewPattern.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1510,7 +1530,7 @@ public class BattleInfo {
         if (und > 0
             && (faction.substring(0, und).matches(".*\\(([^)]{1,4})\\) ") || faction.substring(0,
                 und).matches(
-                Resources.get("plugin.battle.pattern.anunknownfaction", getLocale(), false)))) {
+                    Resources.get("plugin.battle.pattern.anunknownfaction", getLocale(), false)))) {
           addStarter(faction.substring(0, und));
           addStarter(faction.substring(und + 4));
         } else {
@@ -1634,7 +1654,7 @@ public class BattleInfo {
 
   /**
    * Returns the value of coordinate.
-   * 
+   *
    * @return Returns coordinate.
    */
   public CoordinateID getCoordinate() {
@@ -1643,7 +1663,7 @@ public class BattleInfo {
 
   /**
    * Sets the value of coordinate.
-   * 
+   *
    * @param coordinate The value for coordinate.
    */
   public void setCoordinate(CoordinateID coordinate) {
@@ -1652,7 +1672,7 @@ public class BattleInfo {
 
   /**
    * Returns the value of maxRound.
-   * 
+   *
    * @return Returns maxRound.
    */
   public int getMaxRound() {
@@ -1661,7 +1681,7 @@ public class BattleInfo {
 
   /**
    * Sets the value of maxRound.
-   * 
+   *
    * @param maxRound The value for maxRound.
    */
   public void setMaxRound(int maxRound) {
@@ -1670,7 +1690,7 @@ public class BattleInfo {
 
   /**
    * Returns the value of locale.
-   * 
+   *
    * @return Returns locale.
    */
   public Locale getLocale() {
@@ -1679,7 +1699,7 @@ public class BattleInfo {
 
   /**
    * Sets the value of locale.
-   * 
+   *
    * @param locale The value for locale.
    */
   public void setLocale(Locale locale) {
@@ -1997,7 +2017,7 @@ public class BattleInfo {
 
     /**
      * Computes the information about a battle.
-     * 
+     *
      * @return this object
      */
     public Evaluator evaluate() {
@@ -2018,7 +2038,7 @@ public class BattleInfo {
             if (info.getName() != null
                 && (info.getName().equals(Resources.get("plugin.battle.spell.catapult"))
                     || info.getName().equals(Resources.get("plugin.battle.spell.sword")) || info
-                    .getName().equals(Resources.get("plugin.battle.spell.specialweapon")))) {
+                        .getName().equals(Resources.get("plugin.battle.spell.specialweapon")))) {
               catapultVictims[sideNum] += info.getDead();
             } else {
               mages[sideNum].add(unitInfo);
@@ -2511,7 +2531,7 @@ public class BattleInfo {
         for (int hostNum : side) {
           builder.append(
               Resources.get("plugin.battle.tostring.host", String.format("%2d", hostNum))).append(
-              ": ");
+                  ": ");
           builder.append(dead[sideNum][hostNum + 1]).append(" ").append(
               Resources.get("plugin.battle.tostring.dead"));
           builder.append(", ").append(fled[sideNum][hostNum + 1]).append(" ").append(
@@ -2783,7 +2803,7 @@ public class BattleInfo {
 
   /**
    * Creates an HTML string with aggregated data of this battle.
-   * 
+   *
    * @return A string with HTML formatting (without surrounding <html> or <body> tags).
    */
   public String toHtml() {
@@ -2792,7 +2812,7 @@ public class BattleInfo {
 
   /**
    * Creates a tree with aggregated data of thsi battle.
-   * 
+   *
    * @param parent all nodes are appended to this node
    */
   public void toTree(DefaultMutableTreeNode parent) {

@@ -144,10 +144,10 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Creates a new parser. This new parser translates coordinates according to newOrigin. All
-   * coordinates which are read from the report are translated by newOrigin. That is, if a
-   * coordinate read and its level (the z coordinate) equals the new origins level, its x and y
-   * coordinates are decreased by origin.x and origin.y, respectively. That means, that the reports
-   * origin is transferred to newOrigin.
+   * coordinates which are read from the report are translated by newOrigin. That is, if a coordinate
+   * read and its level (the z coordinate) equals the new origins level, its x and y coordinates are
+   * decreased by origin.x and origin.y, respectively. That means, that the reports origin is
+   * transferred to newOrigin.
    *
    * @param translator The coordinates (relative to the origin of the report) of the new origin.
    */
@@ -173,8 +173,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
    * Print an error message on the standard output channel. Does not produce duplicate messages.
    *
    * @param context The context (usually a block) within the error has been found.
-   * @param fetch If this is true, read the next line and skip the line with the error. Otherwise
-   *          the line stays still at the front of the input.
+   * @param fetch If this is true, read the next line and skip the line with the error. Otherwise the
+   *          line stays still at the front of the input.
    */
   protected void unknown(String context, boolean fetch) throws IOException {
     unknown(context, fetch, Logger.WARN);
@@ -425,9 +425,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   /**
    * Parse message blocks as can be found in cr versions >= 41. This function evaluates only two
-   * special message attributes. These are the ";type" and ";rendered" attributes, which are
-   * directly accessible in the <tt>Message</tt> object as type and text. If there is no MessageType
-   * object for this type of message, a stub MessageType object is created and added to world.
+   * special message attributes. These are the ";type" and ";rendered" attributes, which are directly
+   * accessible in the <tt>Message</tt> object as type and text. If there is no MessageType object for
+   * this type of message, a stub MessageType object is created and added to world.
    *
    * @return a list containing <tt>Message</tt> objects for all messages read.
    * @throws IOException if the scanner throws an IOException
@@ -806,8 +806,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           world.base = 10;
         }
         /**
-         * assuming we have already the gamename we can make an additional check Buck Tracking wrong
-         * base...
+         * assuming we have already the gamename we can make an additional check Buck Tracking wrong base...
          */
         if (world.getGameName() != null) {
           final String actGameName = world.getGameName().toLowerCase();
@@ -1524,8 +1523,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
 
     /*
-     * The desired header has been parsed. Continue parsing the subsequent rule blocks until the
-     * file ends.
+     * The desired header has been parsed. Continue parsing the subsequent rule blocks until the file
+     * ends.
      */
     parseRules(rules);
 
@@ -1681,8 +1680,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   /**
-   * This is the new version, the old is called "ALLIERTE" Heuristic for end of block detection:
-   * There are no subblocks in one ALLIANZ block.
+   * This is the new version, the old is called "ALLIERTE" Heuristic for end of block detection: There
+   * are no subblocks in one ALLIANZ block.
    *
    * @param allies A map with existing alliances or <code>null</code>.
    * @return The (modified) <code>allies</code> map
@@ -1722,8 +1721,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   /*
-   * This is the new version, the old is called "ALLIERTE" Heuristic for end of block detection:
-   * There are no subblocks in one ALLIANZ block.
+   * This is the new version, the old is called "ALLIERTE" Heuristic for end of block detection: There
+   * are no subblocks in one ALLIANZ block.
    */
   private AllianceGroup parseAlliance2() throws IOException {
     final EntityID id =
@@ -2138,7 +2137,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     final Unit unit =
         getAddUnit(UnitID
             .createUnitID(sc.argv[0].substring(blockName.length() + 1), 10, world.base), oldUnit =
-            blockName.equals("ALTEINHEIT"));
+                blockName.equals("ALTEINHEIT"));
     EntityID factionID = EntityID.createEntityID(-1, world.base);
     ID groupID = null;
 
@@ -2292,8 +2291,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         sc.getNextToken();
 
         /*
-         * currently, verkleidung was announced but it seems that anderepartei is used. Please
-         * remove one as soon as it is clear which one can be discarded
+         * currently, verkleidung was announced but it seems that anderepartei is used. Please remove one as
+         * soon as it is clear which one can be discarded
          */
       } else if ((sc.argc == 2)
           && (sc.argv[1].equalsIgnoreCase("verkleidung") || sc.argv[1]
@@ -2421,9 +2420,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
 
     /*
-     * a missing combat status can have two meanings: 1. this is a unit we know everything about and
-     * the combat status is AGGRESSIVE 2. this is a unit we just see but does not belong to us so we
-     * do not know its combat status.
+     * a missing combat status can have two meanings: 1. this is a unit we know everything about and the
+     * combat status is AGGRESSIVE 2. this is a unit we just see but does not belong to us so we do not
+     * know its combat status.
      */
     if (!unit.ordersAreNull() && (unit.getCombatStatus() < 0)) {
       unit.setCombatStatus(0);
@@ -2841,6 +2840,10 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
               + " with region " + region + " in line " + sc.lnr);
         }
 
+        sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("prepared_mapline")) {
+        // FFTools2-Region-Tag
+        region.putTag(sc.argv[1], sc.argv[0]);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Lohn")) {
         region.setWage(Integer.parseInt(sc.argv[0]));
@@ -3835,8 +3838,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
      * Parses the block by calling {@link Scanner#getNextToken()} and calling appropriate handlers.
      * Terminates if a block is encountered that has no handler or on end of file.
      *
-     * @param crParser the CRParser, mainly used for calls to
-     *          {@link CRParser#unknown(String, boolean)}.
+     * @param crParser the CRParser, mainly used for calls to {@link CRParser#unknown(String, boolean)}.
      * @param state The initial state which is passed to handlers.
      * @throws IOException If the scanner throws an exception
      */
@@ -3932,7 +3934,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     final Unit newUnit =
         getAddUnit(UnitID
             .createUnitID(sc.argv[0].substring(blockName.length() + 1), 10, world.base), oldUnit =
-            blockName.equals("ALTEINHEIT"));
+                blockName.equals("ALTEINHEIT"));
 
     if (region != newUnit.getRegion()) {
       if (newUnit.getRegion() != null) {
@@ -4103,8 +4105,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       unitParser.addBeanHandler("verraeter", "spy", Type.ZERO_ONE);
 
       /*
-       * currently, verkleidung was announced but it seems that anderepartei is used. Please remove
-       * one as soon as it is clear which one can be discarded
+       * currently, verkleidung was announced but it seems that anderepartei is used. Please remove one as
+       * soon as it is clear which one can be discarded
        */
       TagHandler verkleidungHandler;
       unitParser.addTagHandler("verkleidung", verkleidungHandler = new UnitTagHandler(unitParser) {
@@ -4114,8 +4116,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
           /*
            * currently (2004-02) the cr is inconsistent with nr. There may be a situation where the
-           * corresponding faction of this tag does not exist in the game data so add it
-           * automagically (bugzilla bug 794).
+           * corresponding faction of this tag does not exist in the game data so add it automagically
+           * (bugzilla bug 794).
            */
           Faction faction = world.getFaction(fid);
 
@@ -4248,9 +4250,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
 
     /*
-     * a missing combat status can have two meanings: 1. this is a unit we know everything about and
-     * the combat status is AGGRESSIVE 2. this is a unit we just see but does not belong to us so we
-     * do not know its combat status.
+     * a missing combat status can have two meanings: 1. this is a unit we know everything about and the
+     * combat status is AGGRESSIVE 2. this is a unit we just see but does not belong to us so we do not
+     * know its combat status.
      */
     if (!newUnit.ordersAreNull() && (newUnit.getCombatStatus() < 0)) {
       newUnit.setCombatStatus(0);

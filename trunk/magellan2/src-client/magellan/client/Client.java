@@ -103,6 +103,7 @@ import magellan.client.actions.file.SaveOrdersAction;
 import magellan.client.actions.map.AddSelectionAction;
 import magellan.client.actions.map.ExpandSelectionAction;
 import magellan.client.actions.map.FillSelectionAction;
+import magellan.client.actions.map.FillSelectionAction2;
 import magellan.client.actions.map.InvertSelectionAction;
 import magellan.client.actions.map.IslandAction;
 import magellan.client.actions.map.MapSaveAction;
@@ -286,8 +287,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private static File binDirectory;
 
   /**
-   * Directory for resources. Usually identical to binDirectory, but can be used to load texts,
-   * images and the like from elsewhere
+   * Directory for resources. Usually identical to binDirectory, but can be used to load texts, images
+   * and the like from elsewhere
    */
   private static File resourceDirectory;
 
@@ -315,9 +316,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Creates a new Client object taking its data from <tt>gd</tt>.
    * <p>
-   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is
-   * usually located in the user's home directory, which is the Windows directory in a Microsoft
-   * Windows environment.
+   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is usually
+   * located in the user's home directory, which is the Windows directory in a Microsoft Windows
+   * environment.
    * </p>
    *
    * @param gd
@@ -332,9 +333,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Creates a new Client object taking its data from <tt>gd</tt>.
    * <p>
-   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is
-   * usually located in the user's home directory, which is the Windows directory in a Microsoft
-   * Windows environment.
+   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is usually
+   * located in the user's home directory, which is the Windows directory in a Microsoft Windows
+   * environment.
    * </p>
    *
    * @param gd
@@ -696,8 +697,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // ////////////////////////////
 
   /**
-   * Initializes the Magellan components. The returned hashtable holds all components with
-   * well-known desktop keywords.
+   * Initializes the Magellan components. The returned hashtable holds all components with well-known
+   * desktop keywords.
    *
    * @param topLevel
    */
@@ -988,6 +989,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     addMenuItem(map, new InvertSelectionAction(this));
     addMenuItem(map, new SelectIslandsAction(this));
     addMenuItem(map, new FillSelectionAction(this));
+    addMenuItem(map, new FillSelectionAction2(this));
     addMenuItem(map, new ExpandSelectionAction(this));
     map.addSeparator();
     addMenuItem(map, new OpenSelectionAction(this));
@@ -1630,8 +1632,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * This method should be called before the application is terminated in order to store GUI
-   * settings etc.
+   * This method should be called before the application is terminated in order to store GUI settings
+   * etc.
    *
    * @param storeSettings store the settings to magellan.ini if <code>storeSettings</code> is
    *          <code>true</code>.
@@ -1957,8 +1959,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Callbacks of FileTypeFactory are handled by this object. Right now it returns the first
-   * ZipEntry to mimic old cr loading behaviour for zip files.
+   * Callbacks of FileTypeFactory are handled by this object. Right now it returns the first ZipEntry
+   * to mimic old cr loading behaviour for zip files.
    */
   private static class ClientFileTypeChooser extends FileTypeFactory.FileTypeChooser {
     Client client;
@@ -2291,8 +2293,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Called after GameData changes. Also called via EventDispatcher thread to ensure graphical
-   * changes do occur.
+   * Called after GameData changes. Also called via EventDispatcher thread to ensure graphical changes
+   * do occur.
    */
   private void updatedGameData() {
     updateTitleCaption();
@@ -2902,8 +2904,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * on windows-OS tries to locate the included ECheck.exe and if found save the path into
-   * properties
+   * on windows-OS tries to locate the included ECheck.exe and if found save the path into properties
    */
   public static void initECheckPath(Properties settings) {
     // check if we have a windows os

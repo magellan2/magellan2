@@ -1,3 +1,6 @@
+2018-05-14 / Build 669 - Fiete (sf@fietefietz.de)
+	* added Map - Selection - Fill 2
+
 2017-12-06 / Build 668 - Fiete (sf@fietefietz.de)
 	* added another new MessageTypeID in BattleAnalyzer
 

@@ -1021,6 +1021,10 @@ public class BattleInfo {
                         // beschleunigt.";rendered
         case 450463848: // "Die Verzehrenden von Dotetkul (Li8h) zaubert Eisiger Drachenodem: 1 Krieger wurde
                         // getötet.";rendered
+        case 1878259751: // Die Wissenden von Vosgosíbut (dfpo) zaubert Feuriger Drachenodem, aber niemand
+                         // war in Reichweite.
+        case 1385719261: // Marie-Louise von Dunkelbier (mLvd) zaubert Tod des Geistes. 130 Krieger verloren
+                         // kurzzeitig ihr Gedächtnis.
           currentSpellInfo = addSpell(m, true);
           break;
         case 672044929: // Wölfe
@@ -1068,6 +1072,8 @@ public class BattleInfo {
                          // "4 Krieger von Meisterfechter (wxon) benutzen ihre Flammenschwerter.";rendered
         case 646112495: // "4 Krieger von Meisterfechter (wxon) benutzen ihre Flammenschwerter.";rendered
         case 881122508: // Katapult
+        case 1399004700: // Katapult: 50 Krieger von Polterstein Aue der Ruhe, I. bis V. Dutzend (psar) feuern
+                         // ihre Katapulte ab.
           currentSpellInfo = addCatapult(m);
           break;
         case 394859417:
@@ -1567,6 +1573,8 @@ public class BattleInfo {
     if (m.getMessageType().getID().intValue() == 1281520191) {
       spell.setName(Resources.get("plugin.battle.spell.sword"));
     } else if (m.getMessageType().getID().intValue() == 881122508) {
+      spell.setName(Resources.get("plugin.battle.spell.catapult"));
+    } else if (m.getMessageType().getID().intValue() == 1399004700) {
       spell.setName(Resources.get("plugin.battle.spell.catapult"));
     } else {
       spell.setName(Resources.get("plugin.battle.spell.specialweapon"));

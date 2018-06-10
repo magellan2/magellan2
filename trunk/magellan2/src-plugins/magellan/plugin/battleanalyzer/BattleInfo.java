@@ -1087,6 +1087,7 @@ public class BattleInfo {
         case 1612582557: // empty
           currentSpellInfo = null;
           break;
+        case 1801908756: // neu in 1080
         case 1964885468: // "Army 0: Urgos wilder Haufen (isb9)";rendered
           currentSpellInfo = null;
           currentHost = addHost(m);
@@ -1104,12 +1105,15 @@ public class BattleInfo {
           break;
         case 472935109:
         case 603624501: // Falle
+        case 1818018183: // Falle neu 1080
         case 101630319:
+        case 583524665: // überrascht neu 1080
         case 606685727: // überrascht
           currentSpellInfo = null;
           addTactic(m);
           break;
         case 1558678477:
+        case 564544796: // neu Runde 1080
         case 715582328: // Einheiten vor der x. Runde
           currentSpellInfo = null;
           currentRound = startRound(m);
@@ -1117,6 +1121,7 @@ public class BattleInfo {
           break;
         case 164793159:
         case 22298165: // nach dem Kampf
+        case 1264406109: // nach dem Kampf neu 1080
           currentSpellInfo = null;
           setMaxRound(currentRound);
           currentRound++;

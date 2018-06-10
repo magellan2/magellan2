@@ -1,3 +1,6 @@
+2018-06-10 / Build 671 - Fiete (sf@fietefietz.de)
+	* added another 5 new MessageTypeIDs in BattleAnalyzer
+
 2018-05-28 / Build 670 - Fiete (sf@fietefietz.de)
 	* added another 3 new MessageTypeIDs in BattleAnalyzer
 

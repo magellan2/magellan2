@@ -170,6 +170,7 @@ import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
+import magellan.library.HasRegion;
 import magellan.library.Message;
 import magellan.library.MissingData;
 import magellan.library.Region;
@@ -1131,6 +1132,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
       if (se.getActiveObject() instanceof Region) {
         getData().setActiveRegion((Region) se.getActiveObject());
+      } else if (se.getActiveObject() instanceof HasRegion) {
+        Region r = ((HasRegion) se.getActiveObject()).getRegion();
+        if (r != null && r != getData().getNullRegion()) {
+          getData().setActiveRegion(r);
+        }
       }
     }
 

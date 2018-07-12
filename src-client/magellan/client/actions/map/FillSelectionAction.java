@@ -7,19 +7,30 @@
 
 package magellan.client.actions.map;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import magellan.client.Client;
 import magellan.library.CoordinateID;
+import magellan.library.ID;
+import magellan.library.Region;
+import magellan.library.rules.RegionType;
+import magellan.library.utils.Regions;
+import magellan.library.utils.Regions.Metric;
+import magellan.library.utils.Regions.UnitMetric;
 
 /**
  * Adds all regions between the extreme points of the current selection.
- * 
+ *
  * @author Ulrich Küster
  */
 public class FillSelectionAction extends AbstractSelectionAction {
 
   /**
    * Creates a new FillSelectionAction object.
-   * 
+   *
    * @param client
    */
   public FillSelectionAction(Client client) {
@@ -28,11 +39,51 @@ public class FillSelectionAction extends AbstractSelectionAction {
 
   /**
    * Performs the fill operation and fires a SelectionEvent.
-   * 
+   *
    * @see magellan.client.actions.MenuAction#menuActionPerformed(java.awt.event.ActionEvent)
    */
   @Override
   public void menuActionPerformed(java.awt.event.ActionEvent e) {
+
+    fillConvexHull();
+  }
+
+  private void fillConvexHull() {
+    List<CoordinateID> hull = Regions.convexHull(getSelectedRegions().keySet());
+
+    List<CoordinateID> toAdd = new ArrayList<CoordinateID>();
+    CoordinateID lastC = null;
+    for (CoordinateID c : hull) {
+      if (lastC == null) {
+        lastC = hull.get(hull.size() - 1);
+      }
+
+      Map<CoordinateID, Region> regions = client.getData().regions();
+      Map<ID, RegionType> excludedRegionTypes = Collections.<ID, RegionType> emptyMap();
+      Metric innerMetric;
+      Regions.getDistances(regions, lastC, c, Integer.MAX_VALUE, innerMetric =
+          new UnitMetric(regions, excludedRegionTypes, lastC, c));
+      List<Region> p =
+          Regions.getPath(regions, lastC, c, innerMetric.getDistances());
+      if (p != null) {
+        for (Region r : p) {
+          toAdd.add(r.getCoordinate());
+        }
+      }
+    }
+    hull.addAll(toAdd);
+    hull = Regions.convexHull(hull);
+
+    for (Region r : client.getData().getRegions()) {
+      if (Regions.inside(r.getCoordinate(), hull) >= 0) {
+        getSelectedRegions().put(r.getCoordinate(), r);
+      }
+    }
+    updateClientSelection();
+
+  }
+
+  private void fillBoundingBox() {
     int minX = Integer.MAX_VALUE;
     int maxX = Integer.MIN_VALUE;
     int minY = Integer.MAX_VALUE;

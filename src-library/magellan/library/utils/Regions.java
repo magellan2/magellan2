@@ -10,7 +10,9 @@ package magellan.library.utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +45,7 @@ import magellan.library.utils.logging.Logger;
  * A class offering common operations on regions.
  */
 public class Regions {
+
   private static final Logger log = Logger.getInstance(Regions.class);
 
   /**
@@ -52,7 +55,7 @@ public class Regions {
 
   /**
    * sets the excluded Regions
-   * 
+   *
    * @param excludedRegions
    */
   public static void setExcludedRegions(Collection<Region> excludedRegions) {
@@ -61,7 +64,7 @@ public class Regions {
 
   /**
    * Retrieve the regions within radius around region center.
-   * 
+   *
    * @param regions a map containing the existing regions.
    * @param center the region the neighbours of which are retrieved.
    * @param radius the maximum distance between center and any region to be regarded as a neighbour
@@ -85,15 +88,15 @@ public class Regions {
 
   /**
    * Retrieve the regions within radius around region center.
-   * 
+   *
    * @param regions a map containing the existing regions.
    * @param center the region the neighbours of which are retrieved.
    * @param radius the maximum distance between center and any region to be regarded as a neighbour
    *          within radius.
    * @param excludedRegionTypes region types that disqualify regions as valid neighbours.
    * @return a map with all neighbours that were found, including region center. The keys are
-   *         instances of class Coordinate, values are objects of class Region. This map is created
-   *         in this method.
+   *         instances of class Coordinate, values are objects of class Region. This map is created in
+   *         this method.
    */
   public static Map<CoordinateID, Region> getAllNeighbours(Map<CoordinateID, Region> regions,
       CoordinateID center, int radius, Map<ID, RegionType> excludedRegionTypes) {
@@ -117,13 +120,13 @@ public class Regions {
 
   /**
    * Retrieve the regions directly connected with the center region (including itself).
-   * 
+   *
    * @param regions a map containing the existing regions.
    * @param center the region the neighbours of which are retrieved.
    * @param excludedRegionTypes region types that disqualify regions as valid neighbours.
    * @return a map with all neighbours that were found, including region center. The keys are
-   *         instances of class Coordinate, values are objects of class Region. This map is created
-   *         in this method.
+   *         instances of class Coordinate, values are objects of class Region. This map is created in
+   *         this method.
    * @see Region#getNeighbors()
    */
   public static Map<CoordinateID, Region> getAllNeighbours(Map<CoordinateID, Region> regions,
@@ -155,7 +158,7 @@ public class Regions {
   /**
    * Calculates the neighbors of a region based on coordinates, i.e., it tests all neighboring
    * coordinates and adds them if the region exists in the data. It follows wrappers if necessary.
-   * 
+   *
    * @return A map with Direction/Region entries of existing neighbors. This map is created in this
    *         method.
    * @see Region#getNeighbors()
@@ -199,7 +202,7 @@ public class Regions {
   /**
    * Calculates the neighbors of a region based on coordinates, i.e., it tests all neighboring
    * coordinates and adds them if the region exists in the data.
-   * 
+   *
    * @return A map with Direction/Region entries of existing neighbors. This map is created in this
    *         method.
    * @see Region#getNeighbors()
@@ -235,13 +238,13 @@ public class Regions {
   }
 
   /**
-   * Find a way from one region to another region and get the directions in which to move to follow
-   * a sequence of regions. This is virtually the same as
-   * 
+   * Find a way from one region to another region and get the directions in which to move to follow a
+   * sequence of regions. This is virtually the same as
+   *
    * <pre>
    * getDirections(getPath(regions, start, dest, excludedRegionTypes, radius));
    * </pre>
-   * 
+   *
    * @see #getPath(Map, CoordinateID, CoordinateID, Map)
    * @return a String telling the direction statements necessary to follow the sequence of regions
    *         contained in regions.
@@ -254,7 +257,7 @@ public class Regions {
 
   /**
    * Get the directions in which to move to follow a sequence of regions.
-   * 
+   *
    * @param regions an ordered consecutive sequence of regions.
    * @return a String telling the direction statements necessary to follow the sequence of regions
    *         contained in regions.
@@ -287,7 +290,7 @@ public class Regions {
   /**
    * Converts a list of coordinate into a list of Directions between them. If successive coordinates
    * are not direct neighbors, those directions will be omitted!
-   * 
+   *
    * @see #getDirectionObjectsOfCoordinates(Collection)
    */
   // FIXME convert to List, not Collection
@@ -327,8 +330,8 @@ public class Regions {
 
   /**
    * Converts a list of coordinate into a list of Directions between them. If successive coordinates
-   * are not direct neighbors, those directions will be omitted! Note also, that this cannot
-   * consider wrapping paths!
+   * are not direct neighbors, those directions will be omitted! Note also, that this cannot consider
+   * wrapping paths!
    */
   public static List<Direction> getDirectionObjectsOfCoordinates(
       Collection<CoordinateID> coordinates) {
@@ -383,7 +386,7 @@ public class Regions {
 
   /**
    * Holds shortest-path relevant information for a region.
-   * 
+   *
    * @author stm
    */
   public interface RegionInfo {
@@ -441,7 +444,7 @@ public class Regions {
 
   /**
    * A metric on Coordinates.
-   * 
+   *
    * @author stm
    */
   public interface Metric {
@@ -466,9 +469,9 @@ public class Regions {
     public Map<CoordinateID, Region> getNeighbours(CoordinateID id);
 
     /**
-     * Changes the distance of <code>nextRecord</code> according to the distance of
-     * <code>current</code> and the distance between the two regions.
-     * 
+     * Changes the distance of <code>nextRecord</code> according to the distance of <code>current</code>
+     * and the distance between the two regions.
+     *
      * @return <code>true</code> if <code>nextRecord</code>'s distance was decreased
      */
     public boolean relax(RegionInfo current, RegionInfo nextRecord);
@@ -480,14 +483,14 @@ public class Regions {
   }
 
   /**
-   * Returns distance information about all Coordinates in regions that are at most as far as dest
-   * or as far as maxDist away from start. The result is stored in the metric information.
-   * 
+   * Returns distance information about all Coordinates in regions that are at most as far as dest or
+   * as far as maxDist away from start. The result is stored in the metric information.
+   *
    * @param regions Regions will be looked up in this map.
    * @param start The origin of the search.
    * @param dest The coordinate that must be reached, or <code>null</code>
-   * @param maxDist The maximum distance to search. The search stops if all regions with at most
-   *          this distance have been visited.
+   * @param maxDist The maximum distance to search. The search stops if all regions with at most this
+   *          distance have been visited.
    * @param metric A metric for computing distances.
    */
   public static void getDistances(Map<CoordinateID, Region> regions, CoordinateID start,
@@ -569,7 +572,7 @@ public class Regions {
   /**
    * Returns a path from start to dest based on the predecessor information in records. Accounts for
    * skipped regions.
-   * 
+   *
    * @param outerMetric The metric for predecessor information
    * @param radius This method applies a RoadMetric with this minimal...
    * @param streetRadius ...and this maximal speed
@@ -603,10 +606,10 @@ public class Regions {
   /**
    * A distance value that uses a tuple of distance components. <code>dist</code> is the primary
    * distance value. <code>plus</code> is a bonus value for regions with the same distance but some
-   * additional bonus. <code>realDist</code> is a tertiary value, usually the number of regions on
-   * the shortest path. <code>pot</code> is an additional potential that can be used to speed up the
+   * additional bonus. <code>realDist</code> is a tertiary value, usually the number of regions on the
+   * shortest path. <code>pot</code> is an additional potential that can be used to speed up the
    * search ("goal-directed search").
-   * 
+   *
    * @author stm
    */
   public static class MultidimensionalDistance implements Comparable<MultidimensionalDistance> {
@@ -697,7 +700,7 @@ public class Regions {
    * distance in regions, that has been modified if harbours have been encountered on the path.
    * <code>plus</code> is the number of oceans near the coast or land regions on the path.
    * <code>realDist</code> is the actual length of the path.
-   * 
+   *
    * @author stm
    */
   public static class MultiDimensionalInfo implements RegionInfo, Comparable<MultiDimensionalInfo> {
@@ -843,7 +846,7 @@ public class Regions {
 
   /**
    * A superclass for metrics that use {@link MultiDimensionalInfo}.
-   * 
+   *
    * @author stm
    */
   public static abstract class MultidimensionalMetric implements Metric {
@@ -910,9 +913,9 @@ public class Regions {
 
     /**
      * Should be called by
-     * {@link Regions.MultidimensionalMetric#relax(Regions.RegionInfo, Regions.RegionInfo)} to
-     * exclude some special cases.
-     * 
+     * {@link Regions.MultidimensionalMetric#relax(Regions.RegionInfo, Regions.RegionInfo)} to exclude
+     * some special cases.
+     *
      * @return <code>true</code> if a special case occurred
      */
     public boolean checkDistArguments(Region r1, Region r2, RegionInfo d1, RegionInfo d2) {
@@ -939,7 +942,7 @@ public class Regions {
      * is smaller than the old one. Subclasses should usually not overwrite this method, but
      * {@link Regions.MultidimensionalMetric#getNewValue(Region, Region, Regions.MultiDimensionalInfo, Regions.MultiDimensionalInfo, int[])}
      * .
-     * 
+     *
      * @see magellan.library.utils.Regions.Metric#relax(magellan.library.utils.Regions.RegionInfo,
      *      magellan.library.utils.Regions.RegionInfo)
      */
@@ -983,8 +986,8 @@ public class Regions {
     }
 
     /**
-     * Returns a potential based on the distance from the destination that should heuristically
-     * speed-up search.
+     * Returns a potential based on the distance from the destination that should heuristically speed-up
+     * search.
      */
     protected int getPotential(Region r1, Region r2) {
       if (dest == null)
@@ -997,9 +1000,9 @@ public class Regions {
     }
 
     /**
-     * Subclasses should implement this method and return their new distance value encoded in
-     * newValues. <code>newValue[3]</code> is pre-initialized with the potential.
-     * 
+     * Subclasses should implement this method and return their new distance value encoded in newValues.
+     * <code>newValue[3]</code> is pre-initialized with the potential.
+     *
      * @param newValues An array with four elements that should hold the result like {dist, plus,
      *          realDist, pot}.
      * @return <code>false</code> if the distance of next should not be decreased
@@ -1099,7 +1102,7 @@ public class Regions {
 
     /**
      * Returns the direct neighbors of a coordinate.
-     * 
+     *
      * @see magellan.library.utils.Regions.Metric#getNeighbours(magellan.library.CoordinateID)
      */
     public Map<CoordinateID, Region> getNeighbours(CoordinateID id) {
@@ -1118,12 +1121,11 @@ public class Regions {
   /**
    * Returns the distance on a shortest path over land from start to dest, excluding certain region
    * types and considering streets.
-   * 
+   *
    * @param data
    * @param start
    * @param dest
-   * @param excludedRegionTypes regions with these types will be ignored (not entered) in the
-   *          search.
+   * @param excludedRegionTypes regions with these types will be ignored (not entered) in the search.
    * @param radius The number of regions that can be travelled per turn without streets
    * @param streetRadius The number of regions that can be travelled per turn on streets
    * @return The distance in turns from start to dest. Integer.MAX_VALUE if there is no connection
@@ -1148,12 +1150,11 @@ public class Regions {
   /**
    * Returns a shortest path over land from start to dest, excluding certain region types and
    * considering streets.
-   * 
+   *
    * @param data
    * @param start
    * @param dest
-   * @param excludedRegionTypes regions with these types will be ignored (not entered) in the
-   *          search.
+   * @param excludedRegionTypes regions with these types will be ignored (not entered) in the search.
    * @param radius The number of regions that can be travelled per turn without streets
    * @param streetRadius The number of regions that can be travelled per turn on streets
    */
@@ -1193,7 +1194,7 @@ public class Regions {
 
     /**
      * Adds the movement costs considering roads to current's distance.
-     * 
+     *
      * @see magellan.library.utils.Regions.MultidimensionalMetric#getNewValue(magellan.library.Region,
      *      magellan.library.Region, magellan.library.utils.Regions.MultiDimensionalInfo,
      *      magellan.library.utils.Regions.MultiDimensionalInfo, int[])
@@ -1218,7 +1219,7 @@ public class Regions {
 
     /**
      * Returns all regions that can be reached in one week from id
-     * 
+     *
      * @see magellan.library.utils.Regions.Metric#getNeighbours(magellan.library.CoordinateID)
      */
     public Map<CoordinateID, Region> getNeighbours(CoordinateID id) {
@@ -1317,7 +1318,7 @@ public class Regions {
 
   /**
    * Find a way from one region to another region.
-   * 
+   *
    * @return a Collection of regions that have to be trespassed in order to get from the one to the
    *         other specified region, including both of them.
    * @deprecated {@link Regions#getPath(Map, CoordinateID, CoordinateID, Map)} is better...
@@ -1407,8 +1408,8 @@ public class Regions {
       neighbours.remove(curCoord);
 
       /*
-       * now determine the distance from the start region to the current region taken from the
-       * backlog list by checking its neighbour's distances to the start region
+       * now determine the distance from the start region to the current region taken from the backlog
+       * list by checking its neighbour's distances to the start region
        */
       for (Region curNb : neighbours.values()) {
         CoordinateID curNbCoord = curNb.getCoordinate();
@@ -1416,8 +1417,8 @@ public class Regions {
         Double dist = distances.get(curNbCoord);
         if (dist != null) {
           /*
-           * we know the distance from the start region to this neighbour, so we can determine the
-           * distance from the start region to the current region taken from the backlog list
+           * we know the distance from the start region to this neighbour, so we can determine the distance
+           * from the start region to the current region taken from the backlog list
            */
           // float curDistance = getDistance(curNb, curRegion) + dist.floatValue();
           // double curDistance = Regions.getDistance(curNb, curRegion,true) + dist.floatValue();
@@ -1428,8 +1429,8 @@ public class Regions {
           }
         } else {
           /*
-           * we do not know the distance from the start region to this neighbour, so we store this
-           * neighbour in the backlog list
+           * we do not know the distance from the start region to this neighbour, so we store this neighbour
+           * in the backlog list
            */
           if (!backlogMap.containsKey(curNbCoord)) {
             backlogList.add(curNb);
@@ -1439,8 +1440,8 @@ public class Regions {
       }
 
       /*
-       * If we could determine the distance from the start region to the current region taken from
-       * the backlog list, we can remove it from that list and record the distance
+       * If we could determine the distance from the start region to the current region taken from the
+       * backlog list, we can remove it from that list and record the distance
        */
       if (minDistance < Double.MAX_VALUE) {
         consecutiveReenlistings = 0;
@@ -1469,10 +1470,10 @@ public class Regions {
 
     // backtracking
     /*
-     * now we know the distance of each region to the start region but we do not know a shortest
-     * path. We can find one simply by starting at the destination region, looking at its neighbours
-     * and choosing the one with the smallest distance to the start region until we reach the start
-     * region. This sequence of regions is the reverse shortest path.
+     * now we know the distance of each region to the start region but we do not know a shortest path.
+     * We can find one simply by starting at the destination region, looking at its neighbours and
+     * choosing the one with the smallest distance to the start region until we reach the start region.
+     * This sequence of regions is the reverse shortest path.
      */
     curRegion = regions.get(dest);
     curCoord = dest;
@@ -1563,7 +1564,7 @@ public class Regions {
 
   /**
    * Returns the distance on a shortest path for a ship from start to dest.
-   * 
+   *
    * @param data
    * @param start
    * @param returnDirection The ship's shore or {@link Direction#INVALID}
@@ -1583,7 +1584,7 @@ public class Regions {
   public static List<Region> planShipRoute(Ship ship, GameData data, CoordinateID destination) {
     return Regions.planShipRoute(data, ship.getRegion().getCoordinate(), getMapMetric(data)
         .toDirection(ship.getShoreId()), destination, data.getGameSpecificRules()
-        .getShipRange(ship));
+            .getShipRange(ship));
   }
 
   static class PathWithLength {
@@ -1598,7 +1599,7 @@ public class Regions {
 
   /**
    * Finds a shortest path for a ship from start to destination.
-   * 
+   *
    * @param data
    * @param start
    * @param returnDirection The ship's shore or {@link Direction#INVALID}
@@ -1615,7 +1616,7 @@ public class Regions {
 
   /**
    * Finds a shortest path for a ship from start to destination.
-   * 
+   *
    * @param data
    * @param start
    * @param returnDirection The ship's shore or {@link Direction#INVALID}
@@ -1743,7 +1744,7 @@ public class Regions {
    * delivers a distance between 2 regions. We assume that both regions are neighbours, so trivial
    * distance is 1 for oceans, we deliver for regions near land a significantly smaller value. For
    * landregions we calculate a new distance...as like moveoints with propper roads: 2, without: 3
-   * 
+   *
    * @param r1
    * @param r2
    * @param useExtendedVersion
@@ -1783,7 +1784,7 @@ public class Regions {
 
   /**
    * Retrieve the coordinates the unit passes from the messages of the regions.
-   * 
+   *
    * @param data the unit
    * @return a List of Coordinate objects of the path the unit used (although evaluated via
    *         backtracking) from start to end.
@@ -1811,8 +1812,8 @@ public class Regions {
   }
 
   /**
-   * Tries to reconstruct the path from travel through messages. This does not always yield a
-   * correct path...
+   * Tries to reconstruct the path from travel through messages. This does not always yield a correct
+   * path...
    */
   private static CoordinateID getMovement(String id, Region end, List<CoordinateID> travelledRegions) {
 
@@ -1846,7 +1847,7 @@ public class Regions {
 
   /**
    * Returns a map of all RegionTypes that are <em>not</em> flagged as <tt>ocean</tt>.
-   * 
+   *
    * @param rules Rules of the game
    * @return map of all non-ocean RegionTypes
    */
@@ -1870,7 +1871,7 @@ public class Regions {
 
   /**
    * Returns a map of all RegionTypes that are flagged as <tt>ocean</tt>.
-   * 
+   *
    * @param rules Rules of the game
    * @return map of all ocean RegionTypes
    */
@@ -1893,7 +1894,7 @@ public class Regions {
 
   /**
    * Returns a map of all RegionTypes that are flagged as <tt>land</tt>.
-   * 
+   *
    * @param rules Rules of the game
    * @return map of all land RegionTypes
    */
@@ -1914,7 +1915,7 @@ public class Regions {
 
   /**
    * Returns a map of all RegionTypes that are <em>not</em> flagged as <tt>land</tt>.
-   * 
+   *
    * @param rules Rules of the game
    * @return map of all non-land RegionTypes
    */
@@ -1944,7 +1945,7 @@ public class Regions {
 
   /**
    * Returns the RegionType that is named as <tt>Feuerwand</tt>.
-   * 
+   *
    * @param data needed for correct rules
    * @return RegionType Feuerwand
    */
@@ -1957,7 +1958,7 @@ public class Regions {
   /**
    * returns true, if a working road connection is established between r1 and r2 we assume, both
    * regions are neighbours
-   * 
+   *
    * @param r1 a region
    * @param r2 another region
    */
@@ -2070,7 +2071,7 @@ public class Regions {
 
   /**
    * Returns an ID for an new Border to be add
-   * 
+   *
    * @param r
    * @param border
    */
@@ -2094,7 +2095,7 @@ public class Regions {
 
   /**
    * Checks all regions and recalculates the BitMap for the borders, where is ocean and where not
-   * 
+   *
    * @param data GameData
    */
   public static void calculateCoastBorders(GameData data) {
@@ -2147,6 +2148,122 @@ public class Regions {
       currentRegion.setCoastBitMap(coastBitmap);
     }
     Regions.log.finer("finished calculation of coasts, found " + cnt + " coasts.");
+  }
+
+  public static class AngleSorter implements Comparator<CoordinateID> {
+
+    private CoordinateID min;
+
+    public AngleSorter(List<CoordinateID> result) {
+      for (CoordinateID c : result) {
+        if (min == null || getY(c) < getY(min) || (getY(c) == getY(min) && getX(c) > getX(min))) {
+          min = c;
+        }
+      }
+    }
+
+    public int compare(CoordinateID o1, CoordinateID o2) {
+      if (o1.equals(o2))
+        return 0;
+      if (o1.equals(min))
+        return -1;
+      if (o2.equals(min))
+        return 1;
+      int dot1 = crossProduct(o1, o2);
+      if (dot1 == 0)
+        return dist2(min, o1) - dist2(min, o2);
+
+      return -dot1;
+    }
+
+    private int dist2(CoordinateID c1, CoordinateID c2) {
+      return (getX(c2) - getX(c1)) * (getX(c2) - getX(c1)) + (getY(c2) - getY(c1)) * (getY(c2) - getY(c1));
+    }
+
+    private int crossProduct(CoordinateID c1, CoordinateID c2) {
+      int p1X = getX(c1) - getX(min);
+      int p1Y = getY(c1) - getY(min);
+      int p2X = getX(c2) - getX(min);
+      int p2Y = getY(c2) - getY(min);
+
+      return (p1X * p2Y) - (p2X * p1Y); // formula for cross product
+    }
+
+  }
+
+  public static List<CoordinateID> convexHull(Collection<CoordinateID> points) {
+    if (points == null || points.isEmpty())
+      throw new RuntimeException("no points");
+
+    List<CoordinateID> result = new ArrayList<CoordinateID>(new HashSet<CoordinateID>(points));
+    result.sort(new AngleSorter(result));
+
+    int hullLength = 2;
+    for (int i = 2; i < result.size(); ++i) {
+      while (hullLength >= 2 && ccw(result.get(hullLength - 2), result.get(hullLength - 1), result.get(i)) <= 0) {
+        hullLength--;
+      }
+      result.set(hullLength++, result.get(i));
+    }
+    for (int i = result.size() - 1; i >= hullLength; --i) {
+      result.remove(i);
+    }
+    return result;
+  }
+
+  private static int ccw(CoordinateID c1, CoordinateID c2, CoordinateID c3) {
+    return (getX(c2) - getX(c1)) * (getY(c3) - getY(c1)) - (getY(c2) - getY(c1)) * (getX(c3) - getX(c1));
+  }
+
+  /**
+   * Tests if the given point is inside the given convex hull. The points of hull must be sorted
+   * counterclockwise.
+   *
+   * @param point
+   * @param hull
+   * @return 1 if the point is inside, -1 if it is outside and 0 if it lies on the perimeter of the
+   *         hull.
+   */
+  public static int inside(CoordinateID point, List<CoordinateID> hull) {
+    int size = hull.size();
+    if (size == 1)
+      return point.equals(hull.get(0)) ? 0 : -1;
+
+    // int intersection = 0;
+    for (int i = 0; i < size; ++i) {
+      CoordinateID currentPoint = hull.get(i), lastPoint = hull.get((i + size - 1) % size);
+      // , nextPoint = hull.get((i + 1) % size);
+      // if (getY(currentPoint) - getY(point) >= 0) { // current above
+      // if (getY(lastPoint) - getY(point) <= 0) {
+      // ++intersection;
+      // }
+      // } else if (getY(lastPoint) - getY(point) >= 0) {
+      // ++intersection;
+      // }
+      int angle = ccw(lastPoint, point, currentPoint);
+      if (angle == 0) {
+        int sgnx1 = getX(point) - getX(lastPoint), sgnx2 = getX(point) - getX(currentPoint), sgny1 = getY(point)
+            - getY(lastPoint), sgny2 = getY(point) - getY(currentPoint);
+        if (((sgnx1 >= 0 && -sgnx2 >= 0) || (sgnx1 <= 0 && -sgnx2 <= 0) || (sgnx1 == 0 && sgnx2 == 0)) && //
+            ((sgny1 >= 0 && -sgny2 >= 0) || (sgny1 <= 0 && -sgny2 <= 0) || (sgny1 == 0 && sgny2 == 0)))
+          return 0;
+        else
+          return -1;
+      }
+      if (angle > 0)
+        return -1;
+    }
+    return 1;
+    // return intersection == 2 ? 1 : -1;
+  }
+
+  private static int getX(CoordinateID point) {
+    return point.getX(); // 4 * point.getX() + 2 * point.getY();
+
+  }
+
+  private static int getY(CoordinateID point) {
+    return point.getY(); // 3 * point.getY(); // 1,5 <- 1; ,75 <- 1
   }
 
 }

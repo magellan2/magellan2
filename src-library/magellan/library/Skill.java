@@ -1,14 +1,8 @@
 /*
- *  Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe,
- *                          Stefan Goetz, Sebastian Pappert,
- *                          Klaas Prause, Enno Rehling,
- *                          Sebastian Tusk, Ulrich Kuester,
- *                          Ilja Pavkovic
- *
- * This file is part of the Eressea Java Code Base, see the
- * file LICENSING for the licensing information applying to
- * this file.
- *
+ * Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe, Stefan Goetz, Sebastian Pappert, Klaas
+ * Prause, Enno Rehling, Sebastian Tusk, Ulrich Kuester, Ilja Pavkovic This file is part of the
+ * Eressea Java Code Base, see the file LICENSING for the licensing information applying to this
+ * file.
  */
 
 package magellan.library;
@@ -34,15 +28,15 @@ public class Skill {
 
   /**
    * The total of points_per_person persons as it is found in the report. Note, that the report can
-   * contain skill point values that are not dividable by the unit's number of persons (e.g. 65
-   * skill point with a unit of 2 persons)
+   * contain skill point values that are not dividable by the unit's number of persons (e.g. 65 skill
+   * point with a unit of 2 persons)
    */
   private int points;
   private int level;
 
   /**
    * The number of persons in the unit this skill belongs to.
-   * 
+   *
    * @deprecated (stm) This seems to be obsolete.
    */
   @Deprecated
@@ -56,13 +50,12 @@ public class Skill {
 
   /**
    * Creates a new Skill object.
-   * 
+   *
    * @param type
    * @param points
    * @param level
    * @param persons
-   * @param noSkillPoints Indicated whether the skill points value of this Skill object has
-   *          relevance
+   * @param noSkillPoints Indicated whether the skill points value of this Skill object has relevance
    */
   public Skill(SkillType type, int points, int level, int persons, boolean noSkillPoints) {
     this.type = type;
@@ -72,7 +65,7 @@ public class Skill {
     this.noSkillPoints = noSkillPoints;
 
     if (level < 0 && level != SPECIAL_LEVEL) {
-      magellan.library.utils.logging.Logger.getInstance(this.getClass()).warn(
+      magellan.library.utils.logging.Logger.getInstance(this.getClass()).warnOnce(
           "negative skill level " + this + " " + level);
     }
   }
@@ -102,7 +95,7 @@ public class Skill {
   /**
    * Calculate the skill level from skill points according to the formula
    * {@link #getLevelAtPoints(int)} including given bonuses.
-   * 
+   *
    * @param pointsPerPerson
    * @param raceBonus
    * @param terrainBonus
@@ -133,7 +126,7 @@ public class Skill {
    * Re-calculate the skill level from the skillPoints including race bonus, terrain bonus and (if
    * includeBuilding==true) building bonus of the given unit. This skill is not changed by this
    * method.
-   * 
+   *
    * @param unit
    * @param includeBuilding
    * @return The changed skill level.
@@ -167,7 +160,7 @@ public class Skill {
   /**
    * Calculates the skill level for the given modified number of persons in the unit and the skill
    * points of this skill.
-   * 
+   *
    * @deprecated (stm) This is not used by anyone and I'm not sure if it's correct any more.
    */
   @Deprecated
@@ -198,9 +191,8 @@ public class Skill {
   }
 
   /**
-   * Returns the modifier that the specified race has on the specified skill in the specified
-   * terrain.
-   * 
+   * Returns the modifier that the specified race has on the specified skill in the specified terrain.
+   *
    * @param skillType
    * @param race
    * @param terrain
@@ -220,9 +212,9 @@ public class Skill {
   }
 
   /**
-   * Returns the modifier that the specified unit's race has on the specified skill in the terrain
-   * the specified unit resides in.
-   * 
+   * Returns the modifier that the specified unit's race has on the specified skill in the terrain the
+   * specified unit resides in.
+   *
    * @param skillType
    * @param unit
    */
@@ -236,7 +228,7 @@ public class Skill {
   /**
    * Returns the modifier that the specified unit's race has on this skill in the terrain the
    * specified unit resides in.
-   * 
+   *
    * @param unit
    */
   public int getModifier(Unit unit) {
@@ -244,8 +236,8 @@ public class Skill {
   }
 
   /**
-   * Indicated whether the skill points value of this Skill object has relevance, i.e. was either
-   * read from a report or calculated as there can be reports with only skill levels and no points.
+   * Indicated whether the skill points value of this Skill object has relevance, i.e. was either read
+   * from a report or calculated as there can be reports with only skill levels and no points.
    */
   public boolean noSkillPoints() {
     return noSkillPoints;
@@ -266,22 +258,22 @@ public class Skill {
   }
 
   /**
-   * Sets the level of the skill to <code>l</code>. A level < 0 indicates a skill that was present
-   * in the last round but is lost now.
-   * 
+   * Sets the level of the skill to <code>l</code>. A level < 0 indicates a skill that was present in
+   * the last round but is lost now.
+   *
    * @param l
    */
   public void setLevel(int l) {
     level = l;
     if (level < 0 && level != SPECIAL_LEVEL) {
-      magellan.library.utils.logging.Logger.getInstance(this.getClass()).warn(
+      magellan.library.utils.logging.Logger.getInstance(this.getClass()).warnOnce(
           "negative skill level " + this + " " + l);
     }
   }
 
   /**
    * Indicates a lost skill. -{@link #getChangeLevel()} is the old level.
-   * 
+   *
    * @param oldLevel
    */
   public void setLostLevel(int oldLevel) {
@@ -319,7 +311,7 @@ public class Skill {
 
   /**
    * The number of persons in the unit this skill belongs to.
-   * 
+   *
    * @param p
    * @deprecated (stm) This information seems to be obsolete.
    */
@@ -371,7 +363,7 @@ public class Skill {
 
   /**
    * Getter for property levelChanged.
-   * 
+   *
    * @return Value of property levelChanged.
    */
   public boolean isLevelChanged() {
@@ -380,7 +372,7 @@ public class Skill {
 
   /**
    * Setter for property levelChanged.
-   * 
+   *
    * @param levelChanged New value of property levelChanged.
    * @deprecated just use {@link #setChangeLevel(int)}
    */

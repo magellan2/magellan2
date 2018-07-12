@@ -300,7 +300,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
         if (data.getUnit(UnitID.createUnitID(id, data.base)) == null) {
           break;
         }
-      dummyUnit = MagellanFactory.createUnit(UnitID.createUnitID(id, getData().base), getData());
+      dummyUnit = MagellanFactory.createUnit(UnitID.createUnitID(id, data.base), data);
       for (Unit u : selectedUnits) {
         for (Skill s : u.getSkills()) {
           Skill oldSkill = dummyUnit.getSkill(s.getSkillType());

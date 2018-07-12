@@ -8,22 +8,20 @@
 package magellan.library.utils;
 
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 import javax.swing.JOptionPane;
 
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
-import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.OrderChanger;
 import magellan.library.rules.BuildingType;
 import magellan.library.utils.guiwrapper.RoutingDialogData;
 import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
@@ -117,55 +115,16 @@ public class ShipRoutePlanner extends RoutePlanner {
               .useRange(), options.getMode(), options.useVorlage());
       if (orders.size() == 0)
         return null;
-      addOrdersToUnit(shipOwner, orders, options.replaceOrders());
+      getOrderChanger(shipOwner).setLongOrders(shipOwner, orders, options.replaceOrders());
+
       return shipOwner;
     }
 
     return null;
   }
 
-  public static void addOrdersToUnit(Unit unit, List<String> orders, boolean replace) {
-    // add orders to captain
-    if (replace) {
-      unit.setOrders(orders);
-    } else {
-      List<Integer> toDisable = new ArrayList<Integer>();
-      List<String> oldOrders = unit.getOrders();
-      unit.setOrders(orders);
-      if (compatible(unit)) {
-        for (int i = 0; i < oldOrders.size(); ++i) {
-          String checkedOrder = oldOrders.get(i);
-          orders.add(checkedOrder);
-          unit.setOrders(orders);
-          if (!compatible(unit)) {
-            toDisable.add(i);
-          }
-          orders.remove(orders.size() - 1);
-        }
-      }
-      unit.setOrders(oldOrders);
-      for (Integer i : toDisable) {
-        unit.replaceOrder(i, createOrder(unit, EresseaConstants.O_COMMENT + " "
-            + oldOrders.get(i)));
-      }
-      // data.getGameSpecificStuff().getOrderChanger().disableLongOrders(shipOwner);
-
-      for (ListIterator<String> iter = orders.listIterator(); iter.hasNext();) {
-        unit.addOrder(iter.next());
-      }
-    }
-    // shipOwner.addOrder("; path is " + (regionList.size() - 1) + " regions long.", true, 1);
-
-  }
-
-  private static Order createOrder(Unit u, String order) {
-    GameData data = u.getData();
-    return data.getGameSpecificStuff().getOrderChanger().createOrder(u, order);
-  }
-
-  private static boolean compatible(Unit u) {
-    GameData data = u.getData();
-    return data.getGameSpecificStuff().getOrderChanger().areCompatibleLongOrders(u.getOrders2()) < 0;
+  private OrderChanger getOrderChanger(Unit u) {
+    return u.getData().getGameSpecificStuff().getOrderChanger();
   }
 
   /**

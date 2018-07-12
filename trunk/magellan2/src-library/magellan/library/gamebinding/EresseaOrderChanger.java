@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -36,6 +37,7 @@ import magellan.library.impl.MagellanUnitImpl;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.utils.Locales;
+import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -840,6 +842,48 @@ public class EresseaOrderChanger implements OrderChanger {
   @Deprecated
   public String getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException {
     return getOrderO(orderId, orderLocale, args).getText();
+  }
+
+  /**
+   * implements {@link OrderChanger#setLongOrders(Unit, List, boolean)}
+   */
+  public void setLongOrders(Unit unit, List<String> orders, boolean replace) {
+    // add orders to captain
+    if (replace) {
+      unit.setOrders(orders);
+    } else {
+      List<Integer> toDisable = new ArrayList<Integer>();
+
+      GameData data = unit.getData();
+      int id = 1;
+      for (id = 1; id < Integer.MAX_VALUE; ++id)
+        if (data.getUnit(UnitID.createUnitID(id, data.base)) == null) {
+          break;
+        }
+      Unit dummyUnit = MagellanFactory.createUnit(UnitID.createUnitID(id, data.base), data);
+
+      Orders oldOrders = unit.getOrders2();
+      dummyUnit.setOrders(orders);
+      if (areCompatibleLongOrders(dummyUnit.getOrders2()) < 0) {
+        for (int i = 0; i < oldOrders.size(); ++i) {
+          Order checkedOrder = oldOrders.get(i);
+          orders.add(checkedOrder.toString());
+          dummyUnit.setOrders(orders);
+          if (areCompatibleLongOrders(dummyUnit.getOrders2()) >= 0) {
+            toDisable.add(i);
+          }
+          orders.remove(orders.size() - 1);
+        }
+      }
+      for (Integer i : toDisable) {
+        unit.replaceOrder(i, createOrder(unit, EresseaConstants.O_COMMENT + " "
+            + oldOrders.get(i)));
+      }
+
+      for (ListIterator<String> iter = orders.listIterator(); iter.hasNext();) {
+        unit.addOrder(iter.next());
+      }
+    }
   }
 
 }

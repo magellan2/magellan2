@@ -20,6 +20,7 @@ import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Region;
 import magellan.library.Unit;
+import magellan.library.gamebinding.OrderChanger;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.RoutePlanner.Costs;
 import magellan.library.utils.guiwrapper.RoutingDialogData;
@@ -95,13 +96,14 @@ public class UnitRoutePlanner {
           getOrders(unit, data, start.getCoordinate(), options.getDestination(), ui, options
               .useRange(), options.getMode(), options.useVorlage());
 
-      ShipRoutePlanner.addOrdersToUnit(unit, orders, options.replaceOrders());
+      OrderChanger changer = getOrderChanger(unit);
+      changer.setLongOrders(unit, orders, options.replaceOrders());
 
       // change other units' orders
       if (otherUnits != null) {
         for (Unit u : otherUnits) {
           if (!u.equals(unit)) {
-            ShipRoutePlanner.addOrdersToUnit(u, orders, options.replaceOrders());
+            changer.setLongOrders(u, orders, options.replaceOrders());
           }
         }
       }
@@ -109,6 +111,10 @@ public class UnitRoutePlanner {
     }
 
     return false;
+  }
+
+  private OrderChanger getOrderChanger(Unit u) {
+    return u.getData().getGameSpecificStuff().getOrderChanger();
   }
 
   /**

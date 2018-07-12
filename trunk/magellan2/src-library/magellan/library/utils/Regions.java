@@ -7,6 +7,7 @@
 
 package magellan.library.utils;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -2293,21 +2294,109 @@ public class Regions {
    * @return 1, 0, or -1 if the point is inside, on an edge, or outside the polygon, respectively
    */
   public static int insidePolygon(CoordinateID point, List<CoordinateID> vertices) {
-    int layer = point.getZ();
+    double[] xx = new double[vertices.size()], yy = new double[vertices.size()];
+    coords2Points(vertices, xx, yy);
 
-    List<Double> x = new ArrayList<Double>(), y = new ArrayList<Double>();
+    return insidePolygon(getX(point), getY(point), xx, yy);
+  }
 
+  /**
+   * Converts the given coordinates to lists of map coordinates
+   *
+   * @param vertices A collection of coordinates
+   * @param xx An array with at least the same size as the collection of coordinates. The
+   *          x-coordinates of the corresponding points will be stored in this array.
+   * @param yy An array with at least the same size as the collection of coordinates. The
+   *          y-coordinates of the corresponding points will be stored in this array.
+   */
+  public static void coords2Points(List<CoordinateID> vertices, double[] xx, double[] yy) {
     int i = 0;
     for (CoordinateID c : vertices) {
-      if (c.getZ() == layer) {
-        x.add((double) getX(c));
-        y.add((double) getY(c));
-      }
+      xx[i] = getX(c);
+      yy[i++] = getY(c);
     }
-    if (x.size() == 1)
-      return (point.getX() == x.get(0) && point.getY() == y.get(0)) ? 0 : -1;
+  }
 
-    return insidePolygon(getX(point), getY(point), x.toArray(new Double[] {}), y.toArray(new Double[] {}));
+  /**
+   * Return true if the hexagon with inner radius RADIUS intersects the borders of the polygon given
+   * by the xx and yy coordinates.
+   *
+   * @param point
+   * @param xx
+   * @param yy
+   * @return <code>true</code> if the hexagon intersects the polygon.
+   */
+  public static boolean hexagonIntersects(CoordinateID point, double[] xx, double[] yy) {
+    double minx = Double.POSITIVE_INFINITY, miny = Double.POSITIVE_INFINITY, maxx = Double.NEGATIVE_INFINITY, maxy =
+        Double.NEGATIVE_INFINITY;
+    for (int i = 0; i < xx.length; ++i) {
+      minx = Math.min(minx, xx[i]);
+      miny = Math.min(miny, yy[i]);
+      maxx = Math.max(minx, xx[i]);
+      maxy = Math.max(miny, yy[i]);
+    }
+
+    if (getX(point) < minx - RADIUS && getX(point) > maxx + RADIUS
+        && getY(point) < miny - RADIUS && getY(point) > maxy + RADIUS)
+      return false;
+    List<Point2D> corners = getVertices(point);
+    Point2D lastCorner = corners.get(corners.size() - 1);
+    for (Point2D p : corners) {
+      for (int j = 0; j < xx.length; ++j) {
+        if (almostIntersects(lastCorner.getX(), lastCorner.getY(), p.getX(), p.getY(), xx[j], yy[j], xx[(j + 1)
+            % xx.length], yy[(j + 1) % yy.length]))
+          return true;
+      }
+
+      lastCorner = p;
+    }
+    return false;
+  }
+
+  /**
+   * Returns true if the line segment (x1,y1)->(x2,y2) "almost" intersects (x3,y3)->(x4,y4). This
+   * method may report line segments as intersecting that are just very close (closer than EPSILON).
+   *
+   * @param x1
+   * @param y1
+   * @param x2
+   * @param y2
+   * @param x3
+   * @param y3
+   * @param x4
+   * @param y4
+   * @return <code>true</code> iff the line segments intersect.
+   */
+  public static boolean almostIntersects(double x1, double y1, double x2, double y2, double x3, double y3,
+      double x4, double y4) {
+    double det = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    if (det < EPSILON && det > -EPSILON)
+      return (Math.min(x1, x2) <= Math.max(x3, x4) && Math.max(x1, x2) >= Math.min(x3, x4)) &&
+          (Math.min(y1, y2) <= Math.max(y3, y4) && Math.max(y1, y2) >= Math.min(y3, y4));
+
+    double t = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4);
+    t /= det;
+    double u = (y1 - y2) * (x1 - x3) - (x1 - x2) * (y1 - y3);
+    u /= det;
+    return (-EPSILON < t && t < 1 + EPSILON) && (-EPSILON < u && u < 1 + EPSILON);
+  }
+
+  /**
+   * Inner radius (or half distance) of hexagons.
+   */
+  public static final int RADIUS = 2;
+
+  private static List<Point2D> getVertices(CoordinateID point) {
+    List<Point2D> vertices = new ArrayList<Point2D>(6);
+    int x = getX(point), y = getY(point);
+    double bigR = 2 * RADIUS / Math.sqrt(3), r = RADIUS;
+    vertices.add(new Point2D.Double(x + r, y + bigR / 2));
+    vertices.add(new Point2D.Double(x, y + bigR));
+    vertices.add(new Point2D.Double(x - r, y + bigR / 2));
+    vertices.add(new Point2D.Double(x - r, y - bigR / 2));
+    vertices.add(new Point2D.Double(x, y - bigR));
+    vertices.add(new Point2D.Double(x + r, y - bigR / 2));
+    return vertices;
   }
 
   /**
@@ -2318,32 +2407,35 @@ public class Regions {
    *
    * @param px
    * @param py
-   * @param x
-   * @param y
+   * @param xx
+   * @param yy
    * @return 1, 0, or -1 if the point is inside, on an edge, or outside the polygon, respectively
    */
-  public static int insidePolygon(int px, int py, Double[] x, Double[] y) {
+  public static int insidePolygon(double px, double py, double[] xx, double[] yy) {
+    if (xx.length == 1)
+      return (px == xx[0] && py == yy[0]) ? 0 : -1;
+
     int intersection = 0;
-    for (int i = 0; i < y.length; ++i) {
-      int i0 = (i + y.length - 1) % y.length;
-      double angle = crossProduct(px, py, x[i0], y[i0], x[i], y[i]);
-      double dy1 = py - y[i0], dy2 = y[i] - py;
+    for (int i = 0; i < yy.length; ++i) {
+      int i0 = (i + yy.length - 1) % yy.length;
+      double angle = crossProduct(px, py, xx[i0], yy[i0], xx[i], yy[i]);
+      double dy1 = py - yy[i0], dy2 = yy[i] - py;
 
       if (Math.abs(angle) < EPSILON) {
-        double dx1 = px - x[i0], dx2 = x[i] - px;
+        double dx1 = px - xx[i0], dx2 = xx[i] - px;
         if (dx1 * dx2 >= 0 && dy1 * dy2 >= 0)
           return 0;
       }
       if (dy2 == 0 || dy1 == 0) {
-        angle = crossProduct(px, py + 100 * EPSILON, x[i0], y[i0], x[i], y[i]);
-        dy1 = py + 100 * EPSILON - y[i0];
-        dy2 = y[i] - py - 100 * EPSILON;
+        angle = crossProduct(px, py + 100 * EPSILON, xx[i0], yy[i0], xx[i], yy[i]);
+        dy1 = py + 100 * EPSILON - yy[i0];
+        dy2 = yy[i] - py - 100 * EPSILON;
       }
 
       if (dy1 * dy2 > 0) {
-        if (crossProduct(px, py, x[i0], y[i0], x[i], y[i]) * dy1 >= -EPSILON) {
+        if (crossProduct(px, py, xx[i0], yy[i0], xx[i], yy[i]) * dy1 >= -EPSILON) {
           intersection++;
-          if (crossProduct(px, py, x[i0], y[i0], x[i], y[i]) * dy1 < EPSILON)
+          if (crossProduct(px, py, xx[i0], yy[i0], xx[i], yy[i]) * dy1 < EPSILON)
             return 0;
         }
       }
@@ -2352,12 +2444,63 @@ public class Regions {
   }
 
   private static int getX(CoordinateID point) {
-    return 4 * point.getX() + 2 * point.getY();
+    return 2 * RADIUS * point.getX() + RADIUS * point.getY();
 
   }
 
   private static int getY(CoordinateID point) {
-    return 3 * point.getY(); // 1,5 <- 1; ,75 <- 1
+    return 3 * RADIUS / 2 * point.getY(); // 1,5 <- 1; ,75 <- 1
+  }
+
+  /**
+   * Returns a list that consists of the coordinates in points whose z-coordinates are in the given
+   * layer.
+   *
+   * @param layer
+   * @param points
+   * @return New list of coordinates.
+   */
+  public static List<CoordinateID> filter(int layer, Collection<CoordinateID> points) {
+    List<CoordinateID> filtered = new ArrayList<CoordinateID>();
+
+    for (CoordinateID c : points) {
+      if (c.getZ() == layer) {
+        filtered.add(c);
+      }
+    }
+    return filtered;
+  }
+
+  public static Collection<? extends Collection<Region>> getComponents(Map<CoordinateID, Region> regions) {
+    ArrayList<ArrayList<Region>> components = new ArrayList<ArrayList<Region>>();
+    Map<Region, Integer> visited = new HashMap<Region, Integer>();
+    for (Region r : regions.values()) {
+      if (!visited.containsKey(r)) {
+        components.add(getComponent(r, regions, visited));
+      }
+    }
+
+    return components;
+  }
+
+  private static ArrayList<Region> getComponent(Region start, Map<CoordinateID, Region> regions,
+      Map<Region, Integer> visited) {
+    ArrayList<Region> comp = new ArrayList<Region>();
+    Set<Region> bag = new HashSet<Region>();
+    bag.add(start);
+    while (!bag.isEmpty()) {
+      Region r = bag.iterator().next();
+      bag.remove(r);
+      visited.put(r, 1);
+      comp.add(r);
+
+      for (Region n : r.getNeighbors().values()) {
+        if (!visited.containsKey(n) && regions.containsKey(n.getCoordinate())) {
+          bag.add(n);
+        }
+      }
+    }
+    return comp;
   }
 
 }

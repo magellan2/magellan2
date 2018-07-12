@@ -8,6 +8,7 @@
 package magellan.client.actions.map;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class FillSelectionAction extends AbstractSelectionAction {
       }
     }
 
-    Regions.convexHull(hull);
+    hull = Regions.convexHull(hull);
     if (hull.isEmpty())
       return;
 
@@ -85,9 +86,34 @@ public class FillSelectionAction extends AbstractSelectionAction {
       }
     }
 
+    hull = Regions.filter(client.getLevel(), hull);
+    double[] xx = new double[hull.size()], yy = new double[hull.size()];
+    Regions.coords2Points(hull, xx, yy);
     for (Region r : client.getData().getRegions()) {
-      if (Regions.insidePolygon(r.getCoordinate(), hull2) >= 0) {
-        getSelectedRegions().put(r.getCoordinate(), r);
+      CoordinateID c = r.getCoordinate();
+      if (Regions.insidePolygon(c, hull) >= 0) {
+        getSelectedRegions().put(c, r);
+      }
+    }
+    Collection<? extends Collection<Region>> comps = Regions.getComponents(getSelectedRegions());
+
+    Collection<Region> firstComp = null;
+    for (Iterator<? extends Collection<Region>> iterator = comps.iterator(); iterator.hasNext();) {
+      if (firstComp == null) {
+        firstComp = iterator.next();
+      }
+      while (iterator.hasNext()) {
+        Collection<Region> currentComp = iterator.next();
+        List<CoordinateID> line = new ArrayList<CoordinateID>();
+        line.add(firstComp.iterator().next().getCoordinate());
+        line.add(currentComp.iterator().next().getCoordinate());
+        Regions.coords2Points(line, xx, yy);
+        for (Region r : client.getData().getRegions()) {
+          CoordinateID c = r.getCoordinate();
+          if (Regions.hexagonIntersects(c, xx, yy)) {
+            getSelectedRegions().put(c, r);
+          }
+        }
       }
     }
     updateClientSelection();

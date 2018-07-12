@@ -48,6 +48,8 @@ public class Regions {
 
   private static final Logger log = Logger.getInstance(Regions.class);
 
+  private static final double EPSILON = 1e-10;
+
   /**
    * will be ignored from getAllNeighbours
    */
@@ -2150,14 +2152,27 @@ public class Regions {
     Regions.log.finer("finished calculation of coasts, found " + cnt + " coasts.");
   }
 
+  /**
+   * A comparator the sorts coordinates with respect to the angle to the coordinate at the lower right
+   * of a set of coordinates.
+   *
+   * @author stm
+   */
   public static class AngleSorter implements Comparator<CoordinateID> {
 
-    private CoordinateID min;
+    private CoordinateID minY;
 
+    /**
+     * Initializes the comparator. The sort order will be: The point at the lower right (w.r.t. the
+     * geometric position on the Eressea map) lowest, then the other coordinates in increasing order of
+     * their angle to the lower right point.
+     *
+     * @param result
+     */
     public AngleSorter(List<CoordinateID> result) {
       for (CoordinateID c : result) {
-        if (min == null || getY(c) < getY(min) || (getY(c) == getY(min) && getX(c) > getX(min))) {
-          min = c;
+        if (minY == null || getY(c) < getY(minY) || (getY(c) == getY(minY) && getX(c) > getX(minY))) {
+          minY = c;
         }
       }
     }
@@ -2165,32 +2180,47 @@ public class Regions {
     public int compare(CoordinateID o1, CoordinateID o2) {
       if (o1.equals(o2))
         return 0;
-      if (o1.equals(min))
+      if (o1.equals(minY)) // lowest point goes first
         return -1;
-      if (o2.equals(min))
+      if (o2.equals(minY))
         return 1;
-      int dot1 = crossProduct(o1, o2);
-      if (dot1 == 0)
-        return dist2(min, o1) - dist2(min, o2);
+      int dot1 = crossProduct(minY, o1, o2);
+      if (dot1 == 0) // same angle
+        return dist2(minY, o1) - dist2(minY, o2); // closer point first
 
-      return -dot1;
+      return -dot1; // lower angle first
     }
 
     private int dist2(CoordinateID c1, CoordinateID c2) {
       return (getX(c2) - getX(c1)) * (getX(c2) - getX(c1)) + (getY(c2) - getY(c1)) * (getY(c2) - getY(c1));
     }
 
-    private int crossProduct(CoordinateID c1, CoordinateID c2) {
-      int p1X = getX(c1) - getX(min);
-      int p1Y = getY(c1) - getY(min);
-      int p2X = getX(c2) - getX(min);
-      int p2Y = getY(c2) - getY(min);
-
-      return (p1X * p2Y) - (p2X * p1Y); // formula for cross product
-    }
-
   }
 
+  private static int crossProduct(CoordinateID center, CoordinateID c1, CoordinateID c2) {
+    int p1X = getX(c1) - getX(center);
+    int p1Y = getY(c1) - getY(center);
+    int p2X = getX(c2) - getX(center);
+    int p2Y = getY(c2) - getY(center);
+
+    return (p1X * p2Y) - (p2X * p1Y);
+  }
+
+  private static double crossProduct(double cx, double cy, double x1, double y1, double x2, double y2) {
+    double p1X = x1 - cx;
+    double p1Y = y1 - cy;
+    double p2X = x2 - cx;
+    double p2Y = y2 - cy;
+
+    return (p1X * p2Y) - (p2X * p1Y);
+  }
+
+  /**
+   * Computes the convex hull of a given set of coordinates.
+   *
+   * @param points
+   * @return A list of vertices of the convex hull in counter-clockwise order.
+   */
   public static List<CoordinateID> convexHull(Collection<CoordinateID> points) {
     if (points == null || points.isEmpty())
       throw new RuntimeException("no points");
@@ -2217,33 +2247,28 @@ public class Regions {
 
   /**
    * Tests if the given point is inside the given convex hull. The points of hull must be sorted
-   * counterclockwise.
+   * counterclockwise and in the same layer. Attention: The points that are inside and on the edges do
+   * not necessarily form a connected region.
    *
    * @param point
    * @param hull
    * @return 1 if the point is inside, -1 if it is outside and 0 if it lies on the perimeter of the
    *         hull.
    */
-  public static int inside(CoordinateID point, List<CoordinateID> hull) {
+  public static int insideConvex(CoordinateID point, List<CoordinateID> hull) {
     int size = hull.size();
     if (size == 1)
       return point.equals(hull.get(0)) ? 0 : -1;
 
-    // int intersection = 0;
     for (int i = 0; i < size; ++i) {
       CoordinateID currentPoint = hull.get(i), lastPoint = hull.get((i + size - 1) % size);
-      // , nextPoint = hull.get((i + 1) % size);
-      // if (getY(currentPoint) - getY(point) >= 0) { // current above
-      // if (getY(lastPoint) - getY(point) <= 0) {
-      // ++intersection;
-      // }
-      // } else if (getY(lastPoint) - getY(point) >= 0) {
-      // ++intersection;
-      // }
+
       int angle = ccw(lastPoint, point, currentPoint);
       if (angle == 0) {
-        int sgnx1 = getX(point) - getX(lastPoint), sgnx2 = getX(point) - getX(currentPoint), sgny1 = getY(point)
-            - getY(lastPoint), sgny2 = getY(point) - getY(currentPoint);
+        int sgnx1 = getX(point) - getX(lastPoint),
+            sgnx2 = getX(point) - getX(currentPoint),
+            sgny1 = getY(point) - getY(lastPoint),
+            sgny2 = getY(point) - getY(currentPoint);
         if (((sgnx1 >= 0 && -sgnx2 >= 0) || (sgnx1 <= 0 && -sgnx2 <= 0) || (sgnx1 == 0 && sgnx2 == 0)) && //
             ((sgny1 >= 0 && -sgny2 >= 0) || (sgny1 <= 0 && -sgny2 <= 0) || (sgny1 == 0 && sgny2 == 0)))
           return 0;
@@ -2254,16 +2279,85 @@ public class Regions {
         return -1;
     }
     return 1;
-    // return intersection == 2 ? 1 : -1;
+
+  }
+
+  /**
+   * Returns 1 if the point is inside the polygon described by the given vertices, 0 if it is on an
+   * edge of the polygon, or -1 if it is outside. The vertices must be given in clockwise or
+   * counter-clockwise order. Attention: The points that are inside and on the edges do not
+   * necessarily form a connected region.
+   *
+   * @param point
+   * @param vertices
+   * @return 1, 0, or -1 if the point is inside, on an edge, or outside the polygon, respectively
+   */
+  public static int insidePolygon(CoordinateID point, List<CoordinateID> vertices) {
+    int layer = point.getZ();
+
+    List<Double> x = new ArrayList<Double>(), y = new ArrayList<Double>();
+
+    int i = 0;
+    for (CoordinateID c : vertices) {
+      if (c.getZ() == layer) {
+        x.add((double) getX(c));
+        y.add((double) getY(c));
+      }
+    }
+    if (x.size() == 1)
+      return (point.getX() == x.get(0) && point.getY() == y.get(0)) ? 0 : -1;
+
+    return insidePolygon(getX(point), getY(point), x.toArray(new Double[] {}), y.toArray(new Double[] {}));
+  }
+
+  /**
+   * Returns 1 if the point px, py is inside the polygon described by the given x and y coordinates, 0
+   * if it is on an edge of the polygon, or -1 if it is outside. The vertices must be given in
+   * clockwise or counter-clockwise order. Attention: The set of points that are inside and on the
+   * edges do not necessarily form a connected region.
+   *
+   * @param px
+   * @param py
+   * @param x
+   * @param y
+   * @return 1, 0, or -1 if the point is inside, on an edge, or outside the polygon, respectively
+   */
+  public static int insidePolygon(int px, int py, Double[] x, Double[] y) {
+    int intersection = 0;
+    for (int i = 0; i < y.length; ++i) {
+      int i0 = (i + y.length - 1) % y.length;
+      double angle = crossProduct(px, py, x[i0], y[i0], x[i], y[i]);
+      double dy1 = py - y[i0], dy2 = y[i] - py;
+
+      if (Math.abs(angle) < EPSILON) {
+        double dx1 = px - x[i0], dx2 = x[i] - px;
+        if (dx1 * dx2 >= 0 && dy1 * dy2 >= 0)
+          return 0;
+      }
+      if (dy2 == 0 || dy1 == 0) {
+        angle = crossProduct(px, py + 100 * EPSILON, x[i0], y[i0], x[i], y[i]);
+        dy1 = py + 100 * EPSILON - y[i0];
+        dy2 = y[i] - py - 100 * EPSILON;
+      }
+
+      if (dy1 * dy2 > 0) {
+        if (crossProduct(px, py, x[i0], y[i0], x[i], y[i]) * dy1 >= -EPSILON) {
+          intersection++;
+          if (crossProduct(px, py, x[i0], y[i0], x[i], y[i]) * dy1 < EPSILON)
+            return 0;
+        }
+      }
+    }
+    return (intersection % 2 == 0) ? -1 : 1;
   }
 
   private static int getX(CoordinateID point) {
-    return point.getX(); // 4 * point.getX() + 2 * point.getY();
+    return 4 * point.getX() + 2 * point.getY();
 
   }
 
   private static int getY(CoordinateID point) {
-    return point.getY(); // 3 * point.getY(); // 1,5 <- 1; ,75 <- 1
+    return 3 * point.getY(); // 1,5 <- 1; ,75 <- 1
   }
 
 }

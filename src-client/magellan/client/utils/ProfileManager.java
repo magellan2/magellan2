@@ -274,6 +274,7 @@ public class ProfileManager {
   public static boolean remove(String name, boolean removeFiles) {
     String prefix = PROFILE_PREFIX + name;
     if (settings.getProperty(prefix + NAME) != null) {
+      File dir = getProfileDirectory(name);
       for (Iterator<?> iterator = settings.keySet().iterator(); iterator.hasNext();) {
         String key = (String) iterator.next();
         if (key.startsWith(prefix)) {
@@ -281,10 +282,10 @@ public class ProfileManager {
         }
       }
       if (removeFiles) {
-        for (File f : getProfileDirectory(name).listFiles()) {
+        for (File f : dir.listFiles()) {
           f.delete();
         }
-        getProfileDirectory(name).delete();
+        dir.delete();
       }
       return true;
     } else

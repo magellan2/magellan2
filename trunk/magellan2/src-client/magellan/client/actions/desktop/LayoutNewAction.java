@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.actions.desktop;
 
 import java.awt.event.ActionEvent;
@@ -31,29 +31,31 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.tools.ant.filters.StringInputStream;
+import org.xml.sax.SAXException;
+
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.desktop.DockingFrameworkBuilder;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-import org.apache.tools.ant.filters.StringInputStream;
-import org.xml.sax.SAXException;
-
 /**
  * With the help of the action it is possible to create new docking layouts.
- * 
+ *
  * @author ...
  * @version 1.0, 19.11.2007
  */
 public class LayoutNewAction extends MenuAction {
   private static final Logger log = Logger.getInstance(LayoutNewAction.class);
+  private DockingFrameworkBuilder dfBuilder;
 
   /**
-   * 
+   *
    */
-  public LayoutNewAction() {
+  public LayoutNewAction(DockingFrameworkBuilder builder) {
     super(Client.INSTANCE);
+    dfBuilder = builder;
   }
 
   /**
@@ -100,12 +102,12 @@ public class LayoutNewAction extends MenuAction {
       result =
           JOptionPane.showInputDialog(Client.INSTANCE, Resources
               .get("desktop.magellandesktop.msg.layout.new.caption"), Resources
-              .get("desktop.magellandesktop.msg.layout.new.title"), JOptionPane.PLAIN_MESSAGE,
+                  .get("desktop.magellandesktop.msg.layout.new.title"), JOptionPane.PLAIN_MESSAGE,
               null, null, Resources.get("desktop.magellandesktop.msg.layout.new.default"));
       if (result != null) {
         String newLayoutName = result.toString();
 
-        if (DockingFrameworkBuilder.getInstance().getLayout(newLayoutName) != null) {
+        if (dfBuilder.getLayout(newLayoutName) != null) {
           JOptionPane.showMessageDialog(Client.INSTANCE, Resources
               .get("desktop.magellandesktop.msg.layout.new.exists"));
         } else {
@@ -125,7 +127,7 @@ public class LayoutNewAction extends MenuAction {
             result = null;
           }
           if (result != null) {
-            DockingFrameworkBuilder.getInstance().createNewLayout(newLayoutName);
+            dfBuilder.createNewLayout(newLayoutName);
           }
         }
       }

@@ -13,13 +13,13 @@
 //
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 package magellan.library;
 
@@ -385,7 +385,8 @@ public class GameDataMerger {
         CoordinateID resultTranslation = transformTranslation(transformer2, newerTranslation);
         if (olderGD.getCoordinateTranslation(factionID, layer) != null) {
           CoordinateID oldTranslation =
-              transformTranslation(transformer1, olderGD.getCoordinateTranslation(factionID, layer));
+              transformTranslation(transformer1, olderGD.getCoordinateTranslation(factionID,
+                  layer));
           if (!oldTranslation.equals(resultTranslation)) {
             log.warn("coordinate translations do not match " + factionID + "," + layer + ":"
                 + oldTranslation + "!=" + resultTranslation);
@@ -528,7 +529,8 @@ public class GameDataMerger {
               curRegion =
                   resultGD.getRegion(transform(transformer1, oldBuilding.getRegion().getID()));
 
-              if ((curRegion == null) || !curRegion.getVisibility().greaterEqual(Visibility.TRAVEL)) {
+              if ((curRegion == null) || !curRegion.getVisibility().greaterEqual(
+                  Visibility.TRAVEL)) {
                 resultGD.addBuilding(MagellanFactory.createBuilding(oldBuilding.getID(), resultGD));
               } else {
                 // skip this building
@@ -939,14 +941,14 @@ public class GameDataMerger {
       GameDataMerger.joinSortedMaps(olderGD.getRegion(r.getCoordinate()).getUnits(), newerGD
           .getRegion(r.getCoordinate()).getUnits(), new Assigner<Unit>() {
 
-        private int index = 0;
+            private int index = 0;
 
-        public void add(Unit element) {
-          Unit unit = MagellanFactory.createUnit(element.getID(), resultGD);
-          resultGD.addUnit(unit);
-          unit.setSortIndex(index++);
-        }
-      });
+            public void add(Unit element) {
+              Unit unit = MagellanFactory.createUnit(element.getID(), resultGD);
+              resultGD.addUnit(unit);
+              unit.setSortIndex(index++);
+            }
+          });
     }
   }
 
@@ -1068,7 +1070,8 @@ public class GameDataMerger {
     // tricky: keep alliance only if from the same round and either curFaction is owner faction or
     // alliance is known
     if (curGD.isSameRound(newGD)
-        && (curFaction.getAlliance() != null || curFaction.getID().equals(curGD.getOwnerFaction()))) {
+        && (curFaction.getAlliance() != null || curFaction.getID().equals(curGD
+            .getOwnerFaction()))) {
       newFaction.setAlliance(curFaction.getAlliance());
     }
 
@@ -2419,6 +2422,11 @@ public class GameDataMerger {
      * This is only meaningful in the second pass.
      */
     final boolean newWellKnown = resultUnit.isDetailsKnown();
+
+    // do not overwrite with dummy units
+    if (!firstPass && sameRound && curUnit.getRegion().equals(curGD.getNullRegion()) && !resultUnit
+        .getRegion().equals(resultGD.getNullRegion()))
+      return;
 
     if (curUnit.getName() != null) {
       resultUnit.setName(curUnit.getName());

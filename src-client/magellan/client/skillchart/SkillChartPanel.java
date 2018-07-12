@@ -29,7 +29,15 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+
+import com.jrefinery.chart.AxisNotCompatibleException;
+import com.jrefinery.chart.DefaultCategoryDataSource;
+import com.jrefinery.chart.HorizontalCategoryAxis;
+import com.jrefinery.chart.JFreeChart;
+import com.jrefinery.chart.Plot;
+import com.jrefinery.chart.VerticalNumberAxis;
 
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
@@ -46,17 +54,10 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.SkillStats;
 import magellan.library.utils.logging.Logger;
 
-import com.jrefinery.chart.AxisNotCompatibleException;
-import com.jrefinery.chart.DefaultCategoryDataSource;
-import com.jrefinery.chart.HorizontalCategoryAxis;
-import com.jrefinery.chart.JFreeChart;
-import com.jrefinery.chart.Plot;
-import com.jrefinery.chart.VerticalNumberAxis;
-
 /**
  * A class painting barcharts out of skills of eressea units. The data with the units to be
  * considered is received solely by SelectionEvents.
- * 
+ *
  * @author Ulrich Küster
  */
 public class SkillChartPanel extends InternationalizedDataPanel implements SelectionListener {
@@ -69,11 +70,12 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
   private SkillStats skillStats = new SkillStats();
   private Set<Region> regions;
   private Map<ID, Faction> factions = new Hashtable<ID, Faction>();
+  private JCheckBox cumulative;
 
   /**
    * Creates a new SkillChartPanel. The data is received by SelectionEvents (where factions and
-   * regions are considered). Despite of that an GameData-reference is necessary to set all regions
-   * as data, if no region is selected
+   * regions are considered). Despite of that an GameData-reference is necessary to set all regions as
+   * data, if no region is selected
    */
   public SkillChartPanel(EventDispatcher ed, GameData data, Properties settings) {
     super(ed, data, settings);
@@ -123,16 +125,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
     skills = new JComboBox();
     skills.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        SkillType skillType = (SkillType) skills.getSelectedItem();
-
-        if (skillType != null) {
-          chartPanel.getChart().setTitle(skillType.getName());
-        } else {
-          chartPanel.getChart().setTitle("");
-        }
-
-        setComboBoxes(skillType);
-        chartPanel.getChart().setDataSource(createDataSource(skillType));
+        setSkillType();
       }
     });
     add(skills, c);
@@ -164,6 +157,30 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
         new GridBagConstraints(1, 2, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
             GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
     add(totalSkillLevel, c);
+
+    cumulative = new JCheckBox(Resources
+        .get("skillchart.skillchartpanel.labeltext.cumulative"));
+    cumulative.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        setSkillType();
+      }
+    });
+    c.gridx = 0;
+    c.gridy = 3;
+    add(cumulative, c);
+  }
+
+  protected void setSkillType() {
+    SkillType skillType = (SkillType) skills.getSelectedItem();
+
+    if (skillType != null) {
+      chartPanel.getChart().setTitle(skillType.getName());
+    } else {
+      chartPanel.getChart().setTitle("");
+    }
+
+    setComboBoxes(skillType);
+    chartPanel.getChart().setDataSource(createDataSource(skillType));
   }
 
   /**
@@ -181,11 +198,31 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
       vTotalSkillPoints.add(Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints")
           + skillStats.getSkillPointsNumber(skillType));
 
+      boolean isCumulative = cumulative.isSelected();
+      String preLabel = isCumulative ? "T>=" : "T";
+      int cumulativePersons = 0, cumulativeLevel = 0, cumulativePoints = 0;
       for (Skill skill : skillStats.getKnownSkills(skillType)) {
-        vPersons.add("T" + skill.getLevel() + ": " + skillStats.getPersonNumber(skill));
-        vTotalSkillLevel.add("T" + skill.getLevel() + ": " + skillStats.getSkillLevelNumber(skill));
-        vTotalSkillPoints.add("T" + skill.getLevel() + ": "
-            + skillStats.getSkillPointsNumber(skill));
+        int pNumber = skillStats.getPersonNumber(skill);
+        if (isCumulative) {
+          cumulativePersons += pNumber;
+          pNumber = cumulativePersons;
+        }
+        vPersons.add(preLabel + skill.getLevel() + ": " + pNumber);
+
+        int level = skillStats.getSkillLevelNumber(skill);
+        if (isCumulative) {
+          cumulativeLevel += level;
+          level = cumulativeLevel;
+        }
+        vTotalSkillLevel.add(preLabel + skill.getLevel() + ": " + level);
+
+        int points = skillStats.getSkillPointsNumber(skill);
+        if (isCumulative) {
+          cumulativePoints += points;
+          points = cumulativePoints;
+        }
+        vTotalSkillPoints.add(preLabel + skill.getLevel() + ": "
+            + points);
       }
 
       persons.setModel(new DefaultComboBoxModel(vPersons));
@@ -202,8 +239,8 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
   }
 
   /**
-   * creates a DefaultCategoryDataSource as basis of a skillchart out of the SkillStats-Object of
-   * this class and the specified skillType. If skillType is null, an empty datasource is created,
+   * creates a DefaultCategoryDataSource as basis of a skillchart out of the SkillStats-Object of this
+   * class and the specified skillType. If skillType is null, an empty datasource is created,
    * containing the single value (0,0)
    */
   private DefaultCategoryDataSource createDataSource(SkillType skillType) {
@@ -230,11 +267,19 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
       names = new Vector<Object>();
 
       int loopCounter = 0;
+      int cumulativeLevel = 0;
 
       for (int level = lowLevel; level <= highLevel; loopCounter++, level++) {
-        Skill skill = new Skill(skillType, 1, level, 1, false);
-        dataArray[0][loopCounter] = Integer.valueOf(skillStats.getPersonNumber(skill));
         names.add(Integer.valueOf(level));
+      }
+      for (int level = highLevel; level >= lowLevel; loopCounter++, level--) {
+        Skill skill = new Skill(skillType, 1, level, 1, false);
+        int skillLevel = skillStats.getPersonNumber(skill);
+        if (cumulative.isSelected()) {
+          cumulativeLevel += skillLevel;
+          skillLevel = cumulativeLevel;
+        }
+        dataArray[0][level - lowLevel] = Integer.valueOf(skillLevel);
       }
     }
 
@@ -243,7 +288,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 
   /**
    * Displays skill information only for selected objects (Factions or Regions).
-   * 
+   *
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent e) {

@@ -138,7 +138,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   /**
    * Default tooltip
-   * 
+   *
    * @deprecated use {@link #DEFAULT_TOOLTIP}
    */
   @Deprecated
@@ -509,7 +509,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Add a cell renderer object to the mapper. Each cell renderer has a rendering plane associated
    * with it, so if there is already a renderer in the rendering plane of the added renderer the old
    * renderer is removed.
-   * 
+   *
    * @param renderer the object responsible for rendering a graphical representation of regions.
    */
   public void setRenderer(MapCellRenderer renderer) {
@@ -517,14 +517,15 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       setRenderer(renderer, renderer.getPlaneIndex());
     } else {
       Mapper.log
-          .warn("Mapper.setRenderer(): null renderer set has been set for unknown rendering plane!");
+          .warn(
+              "Mapper.setRenderer(): null renderer set has been set for unknown rendering plane!");
     }
   }
 
   /**
    * Set a cell renderer object for a certain plane of the map. This function can be used to
    * override the renderes default rendering plane.
-   * 
+   *
    * @param renderer the object responsible for rendering a graphical representation of regions.
    * @param plane the plane the renderer will draw to. Lower planes are painted over by higher
    *          planes. See the constants in com.eressea.swing.map.Mapper for possible values or
@@ -559,7 +560,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * Get the cell renderer objects that are available for a certain rendering plane. It is suggested
    * that these objects are used for calling one of the setRenderer() methods.
-   * 
+   *
    * @param plane the plane the renderer will draw to. Lower planes are painted over by higher
    *          planes. See the constants in com.eressea.swing.map.Mapper for possible values.
    * @return the renderer object associated with the specified rendering plane or null if no such
@@ -594,7 +595,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * Set a path - a list of consecutive regions - to be rendered by the renderer registered to the
    * path rendering plane.
-   * 
+   *
    * @param path a list of <tt>Region</tt> objects to be rendered as a path on the map.
    * @param isPersistent if <tt>true</tt>, always render the path, else render the path only until a
    *          different region is selected.
@@ -692,7 +693,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     }
 
     if ((activeObject != null)
-        || ((se.getSelectedObjects() != null) && (se.getSelectionType() == SelectionEvent.ST_REGIONS))) {
+        || ((se.getSelectedObjects() != null) && (se
+            .getSelectionType() == SelectionEvent.ST_REGIONS))) {
       repaint();
     }
   }
@@ -991,7 +993,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       bg.setColor(getBackground());
       bg.fillRect(0, 0, clipBounds.width, clipBounds.height);
 
-      for (int planeIndex = 0; (planeIndex < Mapper.PLANE_PATH) && (planeIndex < planes.length); planeIndex++) {
+      for (int planeIndex = 0; (planeIndex < Mapper.PLANE_PATH)
+          && (planeIndex < planes.length); planeIndex++) {
         if (planes[planeIndex] == null) {
           continue;
         }
@@ -1258,7 +1261,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * Sets the scale or zoom factor. This value is a real factor, i.e. 1.0 means that the components
    * are painted according to the values supplied by the underlying CellGeometry object.
-   * 
+   *
    * @param scaleFactor The new factor. Must be > 0.
    * @throws IllegalArgumentException if scaleFactor <= 0.
    */
@@ -1358,7 +1361,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   /**
    * Returns the bounds of the specified region on this component.
-   * 
+   *
    * @param cell the coordinate of the region to be evaluated.
    * @return the bounds (the upper left corner and the size) of the region cell in component
    *         coordinates.
@@ -1378,7 +1381,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   /**
    * Returns the coordinate of the region that is at the center of the currently displayed area.
-   * 
+   *
    * @param clipBounds the bounds indicating which part of the mappers drawing area is actually
    *          visible.
    */
@@ -1403,7 +1406,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * Returns the location (upper left corner) of the drawing area so that a certain region is at the
    * center of the view port.
-   * 
+   *
    * @param viewSize the size of the mappers viewport, i.e. the size of the part of the mappers
    *          drawing area that is actually visible.
    * @param center the coordinate to center on.
@@ -1514,6 +1517,11 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         lowerRight.y = Math.max(y, lowerRight.y);
       }
     }
+    if (lowerRight.x == Integer.MIN_VALUE || lowerRight.y == Integer.MIN_VALUE
+        || upperLeft.x == Integer.MAX_VALUE || upperLeft.y == Integer.MAX_VALUE) {
+      lowerRight = new Point(-1, 1);
+      upperLeft = new Point(-1, 1);
+    }
 
     // provide a small border...
     int bordersize = 10;
@@ -1581,7 +1589,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     p[Mapper.PLANE_HIGHLIGHT]
         .setRenderer(getRenderer(settings.getProperty("Mapper.Planes."
             + Mapper.PLANE_STRINGS[Mapper.PLANE_HIGHLIGHT], HighlightImageCellRenderer.class
-            .getName())));
+                .getName())));
 
     p[Mapper.PLANE_MARKINGS] =
         new RenderingPlane(Mapper.PLANE_MARKINGS, Resources.get("map.mapper.plane.markings.name"),
@@ -1664,7 +1672,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   /**
    * Getter for property cellGeometry.
-   * 
+   *
    * @return Value of property cellGeometry.
    */
   public CellGeometry getCellGeometry() {
@@ -1673,7 +1681,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   /**
    * Getter for property renderContextChanged.
-   * 
+   *
    * @return Value of property renderContextChanged.
    */
   public boolean isRenderContextChanged() {
@@ -1682,7 +1690,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   /**
    * Setter for property renderContextChanged.
-   * 
+   *
    * @param r New value of property renderContextChanged.
    */
   public static void setRenderContextChanged(boolean r) {
@@ -1843,7 +1851,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   /**
    * Implemented for interface {@link Initializable} to set configuration data to this component.
-   * 
+   *
    * @param p1 the configuration string from magellan_desktop.ini
    */
   public void initComponent(String p1) {
@@ -1926,7 +1934,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   /**
    * Returns the value of useSeasonImages.
-   * 
+   *
    * @return Returns useSeasonImages.
    */
   public boolean isUseSeasonImages() {

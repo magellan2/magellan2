@@ -2709,6 +2709,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("prozent")) {
         b.setBuildRatio(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("opaque")) {
+        // ignored
+        sc.getNextToken();
       } else if (sc.isBlock) {
         break;
       } else {

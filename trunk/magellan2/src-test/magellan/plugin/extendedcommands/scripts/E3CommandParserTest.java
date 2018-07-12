@@ -126,7 +126,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
   /**
    * Test method for
-   * {@link E3CommandParser#setProperty(magellan.library.Unit, java.lang.String, java.lang.String)} .
+   * {@link E3CommandParser#setProperty(magellan.library.Unit, java.lang.String, java.lang.String)}
+   * .
    */
   @Test
   public final void testSetProperty() {
@@ -185,7 +186,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
   /**
    * Test method for
-   * {@link E3CommandParser#addReserveOrder(magellan.library.Unit, java.lang.String, int, boolean)} .
+   * {@link E3CommandParser#addReserveOrder(magellan.library.Unit, java.lang.String, int, boolean)}
+   * .
    */
   @Test
   public final void testAddReserveOrder() {
@@ -267,8 +269,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     E3CommandParser.ADD_NOT_THERE_INFO = true;
     Warning warning = new Warning(true);
     Unit unitV = builder.addUnit(data, "v", "Other", unit.getFaction(), unit.getRegion());
-    Unit unitF = builder.addUnit(data, "f", "Foreign", builder.addFaction(data, "f2", "F2", "Mensch", 1), unit
-        .getRegion());
+    Unit unitF = builder.addUnit(data, "f", "Foreign", builder.addFaction(data, "f2", "F2",
+        "Mensch", 1), unit
+            .getRegion());
     parser.setCurrentUnit(unit);
     assertTrue("warning for exisiting unit", parser.testUnit("v", unitV, warning));
     assertFalse("no warning for missing unit", parser.testUnit("v", null, warning));
@@ -1056,7 +1059,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     builder.addItem(data, unit2, "Silber", 15000);
     builder.addItem(data, unit, "Pferd", 2);
     builder.addSkill(unit, "Reiten", 1);
-    
+
     unit.clearOrders();
     unit2.clearOrders();
     // unit.addOrder("// $cript Benoetige FUSS Pferd");
@@ -1206,6 +1209,28 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB 1 5 Schwert", unit2, 2);
     assertEquals(5, unit.getOrders2().size());
     assertEquals(4, unit2.getOrders2().size());
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
+   */
+  @Test
+  public final void testCommandBenoetigeCapGive() {
+    builder.addItem(data, unit, "Silber", 50);
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Schwert", 2);
+
+    unit.addOrder("// $cript Kapazitaet 200");
+    unit.addOrder("// $cript Versorge 1");
+    unit2.addOrder("// $cript BenoetigeFremd 1 2 Schwert");
+    // unit2.addOrder("// $cript Benoetige 0 2147483647 Silber");
+    unit2.addOrder("// $cript Benoetige ALLES 1");
+    unit2.addOrder("// $cript Versorge 1");
+
+    parser.execute(unit.getFaction());
+
+    assertOrder("GIB v 50 Silber", unit, 4);
+    assertOrder("GIB 1 2 Schwert", unit2, 4);
   }
 
   /**
@@ -2026,7 +2051,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB s 5 Schwert", unit, 1);
     assertEquals(6, unit2.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertWarning("braucht 8 mehr Plattenpanzer, Soldat (s) needs 10/10 Plattenpanzer (100)", unit2, 5);
+    assertWarning("braucht 8 mehr Plattenpanzer, Soldat (s) needs 10/10 Plattenpanzer (100)", unit2,
+        5);
     assertOrder("RESERVIERE 2 Plattenpanzer", unit2, 3);
     assertOrder("RESERVIERE 5 Schwert", unit2, 4);
 
@@ -2055,12 +2081,14 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB s 10 Schwert", unit, 1);
     assertEquals(5, unit2.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertOrder("; braucht 10 mehr Plattenpanzer, Soldat (s) needs 0/10 Plattenpanzer (100)", unit2, 4);
+    assertOrder("; braucht 10 mehr Plattenpanzer, Soldat (s) needs 0/10 Plattenpanzer (100)", unit2,
+        4);
     assertOrder("RESERVIERE JE 1 Schild", unit2, 3);
     assertEquals(6, unit3.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit3, 2);
     assertOrder("; braucht 10 mehr Schwert, Soldat 2 (s2) needs 0/10 Schwert (100)", unit3, 4);
-    assertOrder("; braucht 10 mehr Kettenhemd, Soldat 2 (s2) needs 0/10 Kettenhemd (100)", unit3, 5);
+    assertOrder("; braucht 10 mehr Kettenhemd, Soldat 2 (s2) needs 0/10 Kettenhemd (100)", unit3,
+        5);
     assertOrder("RESERVIERE JE 1 Schild", unit3, 3);
   }
 

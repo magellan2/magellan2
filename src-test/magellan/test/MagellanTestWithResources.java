@@ -30,6 +30,9 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+
 import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
 import magellan.library.GameData;
@@ -39,9 +42,6 @@ import magellan.library.utils.Locales;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.logging.Logger;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 /**
  * A template for magellan test classes that need to load resources.
@@ -82,7 +82,9 @@ public abstract class MagellanTestWithResources {
    */
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
-    context.getEventDispatcher().quit();
+    if (context != null) {
+      context.getEventDispatcher().quit();
+    }
   }
 
   protected static void initResources() {

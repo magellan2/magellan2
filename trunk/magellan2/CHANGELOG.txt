@@ -10,10 +10,13 @@
 2017-12-06 / Build 668 - Fiete (sf@fietefietz.de)
 	* added another new MessageTypeID in BattleAnalyzer
 
+2017-12-21 / Build 669 - stm (stm2@users.sourceforge.net)
+    * cumulative skill chart
+
 2017-12-06 / Build 667 - Fiete (sf@fietefietz.de)
-	* added (some) new MessageTypeIDs in BattleAnalyzer
-	* SignTextCell-Renderer: added Line (MapLine) inkl ON/OFF in options-panel (default: off)
-	* Regions: added excluded regions for getNeighbours - to avoid regions while pathfinding (used in FFTools2)
+    * added (some) new MessageTypeIDs in BattleAnalyzer
+    * SignTextCell-Renderer: added Line (MapLine) inkl ON/OFF in options-panel (default: off)
+    * Regions: added excluded regions for getNeighbours - to avoid regions while pathfinding (used in FFTools2)
 
 2017-11-24 / Build 665 - stm (stm2@users.sourceforge.net)
     * more efficient OrderParser

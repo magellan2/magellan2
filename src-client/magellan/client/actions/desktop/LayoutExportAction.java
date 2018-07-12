@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.actions.desktop;
 
 import java.awt.event.ActionEvent;
@@ -37,11 +37,14 @@ import magellan.library.utils.Resources;
 
 public class LayoutExportAction extends MenuAction {
 
+  private DockingFrameworkBuilder dfBuilder;
+
   /**
-   * 
+   *
    */
-  public LayoutExportAction() {
+  public LayoutExportAction(DockingFrameworkBuilder builder) {
     super(Client.INSTANCE);
+    dfBuilder = builder;
   }
 
   /**
@@ -90,12 +93,13 @@ public class LayoutExportAction extends MenuAction {
         int result =
             JOptionPane.showConfirmDialog(Client.INSTANCE, Resources
                 .get("desktop.magellandesktop.msg.layout.export.caption"), Resources
-                .get("desktop.magellandesktop.msg.layout.export.title"), JOptionPane.YES_NO_OPTION);
+                    .get("desktop.magellandesktop.msg.layout.export.title"),
+                JOptionPane.YES_NO_OPTION);
         if (result != JOptionPane.YES_OPTION)
           return;
       }
       try {
-        DockingFrameworkBuilder.getInstance().write(fileChooser.getSelectedFile());
+        dfBuilder.write(fileChooser.getSelectedFile());
       } catch (Exception exception) {
         throw new RuntimeException(exception);
       }

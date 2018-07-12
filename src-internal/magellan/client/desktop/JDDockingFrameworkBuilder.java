@@ -29,20 +29,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 
-import magellan.client.Client;
-import magellan.client.actions.desktop.LayoutCheckboxMenuItem;
-import magellan.client.actions.desktop.LayoutDeleteAction;
-import magellan.client.actions.desktop.LayoutExportAction;
-import magellan.client.actions.desktop.LayoutImportAction;
-import magellan.client.actions.desktop.LayoutNewAction;
-import magellan.client.actions.desktop.LayoutSaveAction;
-import magellan.client.desktop.JDMagellanDesktop.RootWindow;
-import magellan.client.utils.ErrorWindow;
-import magellan.library.utils.Encoding;
-import magellan.library.utils.PropertiesHelper;
-import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
-
 import org.w3c.dom.Element;
 
 import com.javadocking.DockingManager;
@@ -63,9 +49,23 @@ import com.javadocking.visualizer.DockingMinimizer;
 import com.javadocking.visualizer.FloatExternalizer;
 import com.javadocking.visualizer.SingleMaximizer;
 
+import magellan.client.Client;
+import magellan.client.actions.desktop.LayoutCheckboxMenuItem;
+import magellan.client.actions.desktop.LayoutDeleteAction;
+import magellan.client.actions.desktop.LayoutExportAction;
+import magellan.client.actions.desktop.LayoutImportAction;
+import magellan.client.actions.desktop.LayoutNewAction;
+import magellan.client.actions.desktop.LayoutSaveAction;
+import magellan.client.desktop.JDMagellanDesktop.RootWindow;
+import magellan.client.utils.ErrorWindow;
+import magellan.library.utils.Encoding;
+import magellan.library.utils.PropertiesHelper;
+import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
+
 /**
  * This is a factory for working with the Sanaware Java Docking Framework.
- * 
+ *
  * @author Thoralf
  * @author stm
  * @version 1.0
@@ -105,7 +105,7 @@ public class JDDockingFrameworkBuilder {
   /**
    * This method builds the desktop. This is the main component inside Magellan It contains a IDF
    * RootWindow with multiple Docks.
-   * 
+   *
    * @param ownerWindow
    */
   public RootWindow buildDesktop(Map<String, Component> components, File serializedView,
@@ -121,7 +121,7 @@ public class JDDockingFrameworkBuilder {
 
   /**
    * This method tries to setup the infonode docking framework.
-   * 
+   *
    * @param ownerWindow
    */
   protected RootWindow createRootWindow(Map<String, Component> components, File serializedViewData,
@@ -248,7 +248,7 @@ public class JDDockingFrameworkBuilder {
 
   /**
    * Decorates the given dockable with a state actions.
-   * 
+   *
    * @param dockable The dockable to decorate.
    * @return The wrapper around the given dockable, with actions.
    */
@@ -420,15 +420,15 @@ public class JDDockingFrameworkBuilder {
       JDDockingFrameworkBuilder.layoutMenu.add(item);
     }
 
-    JDDockingFrameworkBuilder.deleteMenu = new LayoutDeleteAction();
+    JDDockingFrameworkBuilder.deleteMenu = new LayoutDeleteAction(null); // FIXME
     JDDockingFrameworkBuilder.deleteMenu.setEnabled(JDDockingFrameworkBuilder.layouts.size() > 1);
 
     JDDockingFrameworkBuilder.layoutMenu.addSeparator();
-    JDDockingFrameworkBuilder.layoutMenu.add(new LayoutExportAction());
-    JDDockingFrameworkBuilder.layoutMenu.add(new LayoutImportAction());
+    JDDockingFrameworkBuilder.layoutMenu.add(new LayoutExportAction(null)); // FIXME
+    JDDockingFrameworkBuilder.layoutMenu.add(new LayoutImportAction(null)); // FIXME
     JDDockingFrameworkBuilder.layoutMenu.addSeparator();
-    JDDockingFrameworkBuilder.layoutMenu.add(new LayoutNewAction());
-    JDDockingFrameworkBuilder.layoutMenu.add(new LayoutSaveAction());
+    JDDockingFrameworkBuilder.layoutMenu.add(new LayoutNewAction(null)); // FIXME
+    JDDockingFrameworkBuilder.layoutMenu.add(new LayoutSaveAction(null)); // FIXME
     JDDockingFrameworkBuilder.layoutMenu.add(JDDockingFrameworkBuilder.deleteMenu);
 
     desktopMenu.add(JDDockingFrameworkBuilder.layoutMenu);
@@ -436,7 +436,7 @@ public class JDDockingFrameworkBuilder {
     JDDockingFrameworkBuilder.hideTabs =
         new JCheckBoxMenuItem(Resources
             .get("desktop.magellandesktop.menu.desktop.hidetabs.caption"), PropertiesHelper
-            .getBoolean(settings, PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
+                .getBoolean(settings, PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
     JDDockingFrameworkBuilder.hideTabs.setActionCommand("hideTabs");
     desktopMenu.add(JDDockingFrameworkBuilder.hideTabs);
     JDDockingFrameworkBuilder.hideTabs.addActionListener(listener);
@@ -507,7 +507,7 @@ public class JDDockingFrameworkBuilder {
   }
 
   /**
-   * 
+   *
    */
   public void setTabVisibility(boolean showTabs) {
     if (JDDockingFrameworkBuilder.hideTabs != null) {
@@ -608,7 +608,7 @@ public class JDDockingFrameworkBuilder {
   }
 
   /**
-   * 
+   *
    */
   public void setProperties(Properties settings) {
     this.settings = settings;

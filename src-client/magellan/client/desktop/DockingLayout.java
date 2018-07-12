@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.desktop;
 
 import java.awt.Dimension;
@@ -41,6 +41,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.tools.ant.filters.StringInputStream;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
 import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Utils;
@@ -57,14 +62,9 @@ import net.infonode.docking.util.StringViewMap;
 import net.infonode.tabbedpanel.TabAreaVisiblePolicy;
 import net.infonode.util.Direction;
 
-import org.apache.tools.ant.filters.StringInputStream;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
 /**
- * This class holds alle informations about a Docking Layout.
- * 
+ * This class holds all information about a Docking Layout.
+ *
  * @author Thoralf Rickert
  * @version 1.0, 17.11.2007
  */
@@ -76,21 +76,29 @@ public class DockingLayout {
   private RootWindow window = null;
   private StringViewMap viewMap = null;
   private Map<String, View> views = null;
+  private DockingFrameworkBuilder dfBuilder;
 
   /**
    * Creates a new Docking Framework Layout Container.
+   *
+   * @param dfBuilder
    */
-  public DockingLayout(String name, Element root, StringViewMap viewMap, Map<String, View> views) {
+  public DockingLayout(String name, Element root, StringViewMap viewMap, Map<String, View> views,
+      DockingFrameworkBuilder dfBuilder) {
     setName(name);
     setRoot(root);
     this.viewMap = viewMap;
     this.views = views;
+    this.dfBuilder = dfBuilder;
   }
 
   /**
    * Loads a List of docking layouts from the given File.
+   *
+   * @param dfBuilder
    */
-  public static List<DockingLayout> load(File file, StringViewMap viewMap, Map<String, View> views) {
+  public static List<DockingLayout> load(File file, StringViewMap viewMap,
+      Map<String, View> views, DockingFrameworkBuilder dfBuilder) {
     List<DockingLayout> layouts = new ArrayList<DockingLayout>();
     try {
       DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -101,7 +109,7 @@ public class DockingLayout {
         return null;
       }
 
-      DockingLayout.load(layouts, document.getDocumentElement(), viewMap, views);
+      DockingLayout.load(layouts, document.getDocumentElement(), viewMap, views, dfBuilder);
     } catch (Exception exception) {
       DockingLayout.log.error(exception);
       ErrorWindow errorWindow = new ErrorWindow("Could not load docking layouts.", exception);
@@ -112,15 +120,17 @@ public class DockingLayout {
 
   /**
    * Loads a Docking Layout from the XML file.
+   *
+   * @param dfBuilder
    */
   protected static synchronized void load(List<DockingLayout> layouts, Element root,
-      StringViewMap viewMap, Map<String, View> views) {
+      StringViewMap viewMap, Map<String, View> views, DockingFrameworkBuilder dfBuilder) {
     if (root.getNodeName().equalsIgnoreCase("dock")) {
       List<Element> subnodes = Utils.getChildNodes(root);
       DockingLayout.log.info("Found " + subnodes.size() + " Docking layouts.");
       for (int i = 0; i < subnodes.size(); i++) {
         Element node = subnodes.get(i);
-        DockingLayout.load(layouts, node, viewMap, views);
+        DockingLayout.load(layouts, node, viewMap, views, dfBuilder);
       }
     } else if (root.getNodeName().equalsIgnoreCase("rootwindow")) {
       String layoutName = root.getAttribute("name");
@@ -130,7 +140,7 @@ public class DockingLayout {
       boolean isActive = Utils.getBoolValue(root.getAttribute("isActive"), true);
 
       DockingLayout.log.warn("Lade Layout " + layoutName);
-      DockingLayout layout = new DockingLayout(layoutName, root, viewMap, views);
+      DockingLayout layout = new DockingLayout(layoutName, root, viewMap, views, dfBuilder);
       layout.setActive(isActive);
       layouts.add(layout);
     }
@@ -153,7 +163,7 @@ public class DockingLayout {
     if (views != null) {
       for (View view : views.values()) {
         DockingLayout.log.info("Remove View " + view.getName());
-        DockingFrameworkBuilder.getInstance().setInActive(view);
+        dfBuilder.setInActive(view);
         window.removeView(view);
       }
     }
@@ -307,7 +317,7 @@ public class DockingLayout {
     View view = null;
     try {
       view = views.get(key);
-      DockingFrameworkBuilder.getInstance().setActive(view);
+      dfBuilder.setActive(view);
     } catch (Throwable t) {
       DockingLayout.log.error(t);
     }
@@ -547,7 +557,7 @@ public class DockingLayout {
 
   /**
    * Creates the default layout.
-   * 
+   *
    * @throws LayoutException on internal error
    */
   public static Element createDefaultLayout(String name, boolean isActive) throws LayoutException {
@@ -666,7 +676,7 @@ public class DockingLayout {
 
   /**
    * Returns the value of name.
-   * 
+   *
    * @return Returns name.
    */
   public String getName() {
@@ -675,7 +685,7 @@ public class DockingLayout {
 
   /**
    * Sets the value of name.
-   * 
+   *
    * @param name The value for name.
    */
   public void setName(String name) {
@@ -684,7 +694,7 @@ public class DockingLayout {
 
   /**
    * Returns the value of root.
-   * 
+   *
    * @return Returns root.
    */
   public Element getRoot() {
@@ -693,7 +703,7 @@ public class DockingLayout {
 
   /**
    * Sets the value of root.
-   * 
+   *
    * @param root The value for root.
    */
   public void setRoot(Element root) {
@@ -702,7 +712,7 @@ public class DockingLayout {
 
   /**
    * Returns the value of isActive.
-   * 
+   *
    * @return Returns isActive.
    */
   public boolean isActive() {
@@ -711,7 +721,7 @@ public class DockingLayout {
 
   /**
    * Sets the value of isActive.
-   * 
+   *
    * @param isActive The value for isActive.
    */
   public void setActive(boolean isActive) {
@@ -720,7 +730,7 @@ public class DockingLayout {
 
   /**
    * Returns the value of viewMap.
-   * 
+   *
    * @return Returns viewMap.
    */
   public StringViewMap getViewMap() {
@@ -729,7 +739,7 @@ public class DockingLayout {
 
   /**
    * Sets the value of viewMap.
-   * 
+   *
    * @param viewMap The value for viewMap.
    */
   public void setViewMap(StringViewMap viewMap) {
@@ -738,7 +748,7 @@ public class DockingLayout {
 
   /**
    * Returns the value of views.
-   * 
+   *
    * @return Returns views.
    */
   public Map<String, View> getViews() {
@@ -747,7 +757,7 @@ public class DockingLayout {
 
   /**
    * Sets the value of views.
-   * 
+   *
    * @param views The value for views.
    */
   public void setViews(Map<String, View> views) {
@@ -756,7 +766,7 @@ public class DockingLayout {
 
   /**
    * Returns the value of window.
-   * 
+   *
    * @return Returns window.
    */
   public RootWindow getRootWindow() {
@@ -765,7 +775,7 @@ public class DockingLayout {
 
   /**
    * Sets the value of window.
-   * 
+   *
    * @param window The value for window.
    */
   public void setRootWindow(RootWindow window) {

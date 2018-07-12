@@ -103,7 +103,7 @@ import magellan.client.actions.file.SaveOrdersAction;
 import magellan.client.actions.map.AddSelectionAction;
 import magellan.client.actions.map.ExpandSelectionAction;
 import magellan.client.actions.map.FillSelectionAction;
-import magellan.client.actions.map.FillSelectionAction2;
+import magellan.client.actions.map.FillInsideAction;
 import magellan.client.actions.map.InvertSelectionAction;
 import magellan.client.actions.map.IslandAction;
 import magellan.client.actions.map.MapSaveAction;
@@ -990,7 +990,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     addMenuItem(map, new InvertSelectionAction(this));
     addMenuItem(map, new SelectIslandsAction(this));
     addMenuItem(map, new FillSelectionAction(this));
-    addMenuItem(map, new FillSelectionAction2(this));
+    addMenuItem(map, new FillInsideAction(this));
     addMenuItem(map, new ExpandSelectionAction(this));
     map.addSeparator();
     addMenuItem(map, new OpenSelectionAction(this));

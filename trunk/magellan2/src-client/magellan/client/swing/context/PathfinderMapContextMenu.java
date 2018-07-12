@@ -49,7 +49,7 @@ import magellan.library.utils.UnitRoutePlanner;
 
 /**
  * A context menu for Islands.
- * 
+ *
  * @author fiete
  */
 public class PathfinderMapContextMenu extends JMenu implements SelectionListener, GameDataListener {
@@ -65,8 +65,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
   private GameData data;
 
   /**
-   * nicht die selektierten Regionen, sondern die angewählten Objekte im Tree (mehrere units
-   * z.B....)
+   * nicht die selektierten Regionen, sondern die angewählten Objekte im Tree (mehrere units z.B....)
    */
   private Collection<?> selectedObjects;
 
@@ -159,7 +158,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   /**
    * versucht, Aktion umzusetzen: Landbewegung
-   * 
+   *
    * @param mode
    */
   private void doNachLand(int mode) {
@@ -193,7 +192,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
           int speedRoad =
               Math.max(1, u.getData().getGameSpecificStuff().getMovementEvaluator()
                   .getModifiedRadius(u, false));
-          setOrders(u, Regions.getLandDistance(data, start, dest, excludeMap, speed, speedRoad),
+          setOrders(planner, u, Regions.getLandDistance(data, start, dest, excludeMap, speed, speedRoad),
               orders);
         }
       }
@@ -202,7 +201,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   /**
    * versucht, Aktion umzusetzen: Seebewegung
-   * 
+   *
    * @param mode
    */
   private void doNachSea(int mode) {
@@ -229,7 +228,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
                 mode == MOVE_NACH, mode2, false);
         if (orders != null) {
           // Pfad gefunden
-          setOrders(u, Regions.planShipRoute(data, start,
+          setOrders(planner, u, Regions.planShipRoute(data, start,
               data.getGameSpecificStuff().getMapMetric().toDirection(ship.getShoreId()), dest,
               Math.max(1, data.getGameSpecificRules().getShipRange(ship))).size() - 1, orders);
         }
@@ -239,13 +238,14 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   /**
    * Setzt den gefundenen path als order
-   * 
+   *
+   * @param planner
    * @param u
    * @param distance
    * @param mode
    * @param orders
    */
-  private void setOrders(Unit u, int distance, List<String> orders) {
+  private void setOrders(UnitRoutePlanner planner, Unit u, int distance, List<String> orders) {
     // Order setzen, anderes NACH ersetzen
     data.getGameSpecificStuff().getOrderChanger().disableLongOrders(u);
     u.addOrders(orders);
@@ -254,8 +254,26 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
   }
 
   /**
+   * Setzt den gefundenen path als order
+   *
+   * @param planner
+   * @param u
+   * @param distance
+   * @param mode
+   * @param orders
+   */
+  private void setOrders(ShipRoutePlanner planner, Unit u, int distance, List<String> orders) {
+    // Order setzen, anderes NACH ersetzen
+    planner.addOrdersToUnit(u, orders, false);
+    // data.getGameSpecificStuff().getOrderChanger().disableLongOrders(u);
+    // u.addOrders(orders);
+    u.addOrder("; path is " + distance + " regions long.", true, 1);
+    dispatcher.fire(new UnitOrdersEvent(this, u));
+  }
+
+  /**
    * enables / disables according to selectedObjects and given Region
-   * 
+   *
    * @param r
    */
   public void updateMenu(Region r) {
@@ -344,7 +362,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   /**
    * Prüfen, für wieviele Units eine Landverbindung möglich ist
-   * 
+   *
    * @param c
    * @return
    */
@@ -360,7 +378,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   /**
    * Prüfen, für wieviele Units eine Landverbindung möglich ist
-   * 
+   *
    * @param c
    * @return
    */
@@ -442,7 +460,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   /**
    * liefert nur die Units in den selectedObjects
-   * 
+   *
    * @return
    */
   private List<Unit> getSelectedUnits() {
@@ -498,7 +516,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   /**
    * Returns the value of destRegion.
-   * 
+   *
    * @return Returns destRegion.
    */
   public Region getDestRegion() {
@@ -507,7 +525,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   /**
    * Sets the value of destRegion. Calculates isShipableRegion
-   * 
+   *
    * @param destRegion The value for destRegion.
    */
   public void setDestRegion(Region destRegion) {

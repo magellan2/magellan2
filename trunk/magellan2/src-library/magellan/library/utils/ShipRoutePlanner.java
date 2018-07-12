@@ -8,6 +8,7 @@
 package magellan.library.utils;
 
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,6 +19,7 @@ import javax.swing.JOptionPane;
 
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
+import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
@@ -29,7 +31,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * Works together with com.eressea.swing.RoutingDialog to calculate the route for a ship.
- * 
+ *
  * @author Ulrich Küster
  * @author Andreas
  * @author stm
@@ -52,7 +54,7 @@ public class ShipRoutePlanner extends RoutePlanner {
   /**
    * Creates a route for a ship. It is configured by the given dialog. The orders are added to the
    * responsible unit that is then returned.
-   * 
+   *
    * @param ship The ship for which a route is planned
    * @param data GameData containing the units
    * @param ui The parent component for message panes
@@ -67,7 +69,7 @@ public class ShipRoutePlanner extends RoutePlanner {
       // Ship has no captain. No orders will be given.
       JOptionPane.showMessageDialog(ui, Resources
           .get("util.shiprouteplanner.msg.captainnotfound.text"), Resources
-          .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+              .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
       return null;
     } else {
       if ((shipOwner.getFaction() == null) || !shipOwner.getFaction().isPrivileged()) {
@@ -75,7 +77,7 @@ public class ShipRoutePlanner extends RoutePlanner {
         // No orders can be given.
         JOptionPane.showMessageDialog(ui, Resources
             .get("util.shiprouteplanner.msg.captainnotprivileged.text"), Resources
-            .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+                .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
       }
     }
 
@@ -115,34 +117,67 @@ public class ShipRoutePlanner extends RoutePlanner {
               .useRange(), options.getMode(), options.useVorlage());
       if (orders.size() == 0)
         return null;
-
-      // add orders to captain
-      if (options.replaceOrders()) {
-        shipOwner.setOrders(orders);
-      } else {
-        data.getGameSpecificStuff().getOrderChanger().disableLongOrders(shipOwner);
-        for (ListIterator<String> iter = orders.listIterator(); iter.hasNext();) {
-          shipOwner.addOrder(iter.next());
-        }
-      }
-      // shipOwner.addOrder("; path is " + (regionList.size() - 1) + " regions long.", true, 1);
-
+      addOrdersToUnit(shipOwner, orders, options.replaceOrders());
       return shipOwner;
     }
 
     return null;
   }
 
+  public static void addOrdersToUnit(Unit unit, List<String> orders, boolean replace) {
+    // add orders to captain
+    if (replace) {
+      unit.setOrders(orders);
+    } else {
+      List<Integer> toDisable = new ArrayList<Integer>();
+      List<String> oldOrders = unit.getOrders();
+      unit.setOrders(orders);
+      if (compatible(unit)) {
+        for (int i = 0; i < oldOrders.size(); ++i) {
+          String checkedOrder = oldOrders.get(i);
+          orders.add(checkedOrder);
+          unit.setOrders(orders);
+          if (!compatible(unit)) {
+            toDisable.add(i);
+          }
+          orders.remove(orders.size() - 1);
+        }
+      }
+      unit.setOrders(oldOrders);
+      for (Integer i : toDisable) {
+        unit.replaceOrder(i, createOrder(unit, EresseaConstants.O_COMMENT + " "
+            + oldOrders.get(i)));
+      }
+      // data.getGameSpecificStuff().getOrderChanger().disableLongOrders(shipOwner);
+
+      for (ListIterator<String> iter = orders.listIterator(); iter.hasNext();) {
+        unit.addOrder(iter.next());
+      }
+    }
+    // shipOwner.addOrder("; path is " + (regionList.size() - 1) + " regions long.", true, 1);
+
+  }
+
+  private static Order createOrder(Unit u, String order) {
+    GameData data = u.getData();
+    return data.getGameSpecificStuff().getOrderChanger().createOrder(u, order);
+  }
+
+  private static boolean compatible(Unit u) {
+    GameData data = u.getData();
+    return data.getGameSpecificStuff().getOrderChanger().areCompatibleLongOrders(u.getOrders2()) < 0;
+  }
+
   /**
    * Creates movement orders for a ship.
-   * 
+   *
    * @param ship The ship for which a route is planned
    * @param data GameData containing the units
    * @param start The region where to start, not necessarily equal to the ship's region
    * @param destination The target region
    * @param ui The parent component for message panes
-   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so
-   *          that the ship's range is not exceeded.
+   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so that
+   *          the ship's range is not exceeded.
    * @param mode a combination of {@link RoutePlanner#MODE_CONTINUOUS},
    *          {@link RoutePlanner#MODE_RETURN}, {@link RoutePlanner#MODE_STOP}
    * @param useVorlage If this is <code>true</code>, <em>Vorlage</em> meta commands are produced.
@@ -160,7 +195,7 @@ public class ShipRoutePlanner extends RoutePlanner {
         // No path could be found from start to destination region.
         JOptionPane.showMessageDialog(ui, Resources
             .get("util.shiprouteplanner.msg.nopathfound.text"), Resources
-            .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+                .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
       }
       return Collections.emptyList();
     }
@@ -190,7 +225,7 @@ public class ShipRoutePlanner extends RoutePlanner {
       // couldn't determine ship range
       JOptionPane.showMessageDialog(ui, Resources
           .get("util.shiprouteplanner.msg.shiprangeiszero.text"), Resources
-          .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+              .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
       shipCosts = RoutePlanner.ZERO_COSTS;
     }
 
@@ -203,7 +238,7 @@ public class ShipRoutePlanner extends RoutePlanner {
   /**
    * A cost function that accounts ship movement, considering harbours and the ship given in the
    * constructor.
-   * 
+   *
    * @author stm
    */
   protected static class ShipCosts implements RoutePlanner.Costs {

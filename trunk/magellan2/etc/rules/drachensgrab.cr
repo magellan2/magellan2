@@ -1294,7 +1294,7 @@ TALENTBONI
 RACE "Wiedergänger"
 "Wiedergänger";name
 100;recruitmentcosts
-6;maintenance
+5;maintenance
 10;weight
 5.4;capacity
 TALENTBONI

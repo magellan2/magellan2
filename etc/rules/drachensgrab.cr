@@ -1337,105 +1337,127 @@ RACE "Schattendämonen"
 "Schattendämonen";name
 0;maintenance
 5;weight
+5.4;capacity
 
 RACE "Schattenmeister"
 "Schattenmeister";name
 0;maintenance
 5;weight
+5.4;capacity
 
 RACE "Bauern"
 "Bauern";name
 10;weight
+5.4;capacity
 
 RACE "Ents"
 "Ents";name
 50;weight
+25;capacity
 
 RACE "Schneemänner"
 "Schneemänner";name
 5;weight
+2;capacity
 
 RACE "Untote"
 "Untote";name
 0;maintenance
 10;weight
+5.4;capacity
 
 RACE "Zombies"
 "Zombies";name
 0;maintenance
 10;weight
+5.4;capacity
 
 RACE "Skelette"
 "Skelette";name
 0;maintenance
 5;weight
+5.4;capacity
 
 RACE "Ghoule"
 "Ghoule";name
 0;maintenance
 10;weight
+5.4;capacity
 
 RACE "Kröten"
 "Kröten";name
 1;weight
+5.4;capacity
 
 RACE "Adler"
 "Adler";name
 0;maintenance
 5;weight
+5.4;capacity
 
 RACE "Delphine"
 "Delphine";name
 0;maintenance
 5;weight
+5.4;capacity
 
 RACE "Einhörner"
 "Einhörner";name
 0;maintenance
 50;weight
+20;capacity
 
 RACE "Eulen"
 "Eulen";name
 0;maintenance
 5;weight
+5.4;capacity
 
 RACE "Geister"
 "Geister";name
 5;weight
+5.4;capacity
 
 RACE "Luchse"
 "Luchse";name
 0;maintenance
 5;weight
+5.4;capacity
 
 RACE "Nymphen"
 "Nymphen";name
 0;maintenance
 10;weight
+5.4;capacity
 
 RACE "Ratten"
 "Ratten";name
 0;maintenance
 1;weight
+5.4;capacity
 
 RACE "Riesenschildkröten"
 "Riesenschildkröten";name
 0;maintenance
 16;weight
+6;capacity
 
 RACE "Teufelchen"
 "Teufelchen";name
 5;weight
 2;capacity
+5.4;capacity
 
 RACE "Tunnelwürmer"
 "Tunnelwürmer";name
 0;maintenance
 300;weight
+100;capacity
 
 RACE "Wölfe"
 "Wölfe";name
 5;weight
+5.4;capacity
 
 ITEM "Silber"
 "Silber";name

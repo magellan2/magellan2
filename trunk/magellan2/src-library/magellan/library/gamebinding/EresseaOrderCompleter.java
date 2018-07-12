@@ -126,12 +126,16 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     }
 
     // the if clause is not always correct, but should usually be okay
-    if (!isLimitCompletions()
-        || getUnit().getModifiedBuilding() != null
-        || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
-            getUnit()))) {
-      addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY) + " "
-          + getOrderTranslation(EresseaConstants.OC_NOT) + " "));
+    if (!isLimitCompletions()) {
+      Building building = getUnit().getModifiedBuilding();
+      if (building == null) {
+        building = getUnit().getBuilding();
+      }
+      Unit owner = building == null ? null : building.getOwnerUnit();
+      if (getUnit().equals(owner)) {
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY) + " "
+            + getOrderTranslation(EresseaConstants.OC_NOT) + " "));
+      }
     }
 
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_MESSAGE), " "));
@@ -710,7 +714,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
      * unit.getShip() != null && unit.equals(unit.getShip().getOwnerUnit())) {
      */
     // if we do not move into or stay in a ship or building we can't give control to another unit
-    if ((unit.getModifiedShip() != null) || (unit.getModifiedBuilding() != null)) {
+    if (unit.getShip() != null || unit.getModifiedShip() != null || unit.getBuilding() != null || unit
+        .getModifiedBuilding() != null) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CONTROL)));
     }
 

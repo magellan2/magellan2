@@ -9,6 +9,7 @@ package magellan.library.gamebinding.e3a;
 
 import java.util.List;
 
+import magellan.library.Building;
 import magellan.library.GameData;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
@@ -101,12 +102,16 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     }
 
     // the if clause is not always correct, but should usually be okay
-    if (!isLimitCompletions()
-        || getUnit().getModifiedBuilding() != null
-        || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
-            getUnit()))) {
-      addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY) + " "
-          + getOrderTranslation(EresseaConstants.OC_NOT) + " "));
+    if (!isLimitCompletions()) {
+      Building building = getUnit().getModifiedBuilding();
+      if (building == null) {
+        building = getUnit().getBuilding();
+      }
+      Unit owner = building == null ? null : building.getOwnerUnit();
+      if (getUnit().equals(owner)) {
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY) + " "
+            + getOrderTranslation(EresseaConstants.OC_NOT) + " "));
+      }
     }
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_MESSAGE), " "));
     addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_DEFAULT),

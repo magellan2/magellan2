@@ -437,4 +437,15 @@ public class AtlantisOrderChanger implements OrderChanger {
   public String getOrder(StringID orderId, Locale orderLocale, Object[] args) throws RulesException {
     return getOrderO(orderId, orderLocale, args).getText();
   }
+
+  /**
+   * implements {@link OrderChanger#setLongOrders(Unit, List, boolean)}
+   */
+  public void setLongOrders(Unit u, List<String> orders, boolean replace) {
+    if (replace) {
+      u.setOrders(orders);
+    } else {
+      u.addOrders(orders);
+    }
+  }
 }

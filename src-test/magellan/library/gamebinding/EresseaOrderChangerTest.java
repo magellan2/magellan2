@@ -475,11 +475,13 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
     unit.addOrder("GIB 123 4 Silber");
     unit.addOrder("VERKAUFEN ALLES Balsam");
     unit.addOrder("FOLGEN EINHEIT 123");
+    unit.addOrder("ATTACKIERE 234");
     changer.disableLongOrders(unit);
     assertEquals("; ARBEIT", unit.getOrders2().get(0).getText());
     assertEquals("GIB 123 4 Silber", unit.getOrders2().get(1).getText());
     assertEquals("; VERKAUFEN ALLES Balsam", unit.getOrders2().get(2).getText());
     assertEquals("FOLGEN EINHEIT 123", unit.getOrders2().get(3).getText());
+    // assertEquals("ATTACKIERE 234", unit.getOrders2().get(4).getText());
   }
 
   /**

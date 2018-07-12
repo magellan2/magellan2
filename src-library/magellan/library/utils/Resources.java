@@ -67,7 +67,6 @@ public class Resources {
 
   private Hashtable<String, MyResourceBundle> bundles = new Hashtable<String, MyResourceBundle>();
   private File resourceDirectory;
-  // private static int callCount = 0;
 
   /**
    * Returns the translated string for the specified class and string using the order locale. The
@@ -713,7 +712,7 @@ public class Resources {
 
   /**
    * Switch to trivial mode that always returnes the key.
-   * 
+   *
    * @param setNull
    */
   public static void setNullResource(boolean setNull) {

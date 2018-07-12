@@ -14,6 +14,7 @@
 package magellan.library.gamebinding;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import magellan.library.GameData;
@@ -55,9 +56,9 @@ public interface OrderChanger {
   public void addDescribeUnitContainerOrder(Unit unit, UnitContainer uc, String descr);
 
   /**
-   * Adds a command line "DESCRIBE UNIT \"descr\"" ("BESCHREIBE EINHEIT \"descr\"") , e.g.
-   * "DESCRIBE UNIT \"A wonderful sailor.\"" ("BESCHREIBE EINHEIT \"Ein wundervoller Segler.\"") to
-   * the given unit. See EMapDetailsPanel.
+   * Adds a command line "DESCRIBE UNIT \"descr\"" ("BESCHREIBE EINHEIT \"descr\"") , e.g. "DESCRIBE
+   * UNIT \"A wonderful sailor.\"" ("BESCHREIBE EINHEIT \"Ein wundervoller Segler.\"") to the given
+   * unit. See EMapDetailsPanel.
    */
   public void addDescribeUnitOrder(Unit unit, String descr);
 
@@ -75,8 +76,8 @@ public interface OrderChanger {
   public void addHideOrder(Unit unit, String level);
 
   /**
-   * Adds a command line "GROUP \"name\"" ("GRUPPE \"name\"") , e.g. "GROUP \"Magellan.\""
-   * ("GRUPPE \"Magellan.\"") to the given unit. See EMapDetailsPanel.
+   * Adds a command line "GROUP \"name\"" ("GRUPPE \"name\"") , e.g. "GROUP \"Magellan.\"" ("GRUPPE
+   * \"Magellan.\"") to the given unit. See EMapDetailsPanel.
    */
   public void addGroupOrder(Unit unit, String name);
 
@@ -256,6 +257,17 @@ public interface OrderChanger {
    * Returns the orders necessary to issue the creation of all the child temp units of this unit.
    */
   public Collection<? extends Order>
-  getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit);
+      getTempOrders(boolean writeUnitTagsAsVorlageComment, Unit unit);
+
+  /**
+   * Replace incompatible long orders of unit with new long orders. All orders that are not
+   * compatible with new orders are removed. If the new orders are already not compatible, no old
+   * orders are removed.
+   *
+   * @param u the unit
+   * @param orders new orders
+   * @param replaceAll If <code>true</code>, all the unit's orders are replaced
+   */
+  public void setLongOrders(Unit u, List<String> orders, boolean replaceAll);
 
 }

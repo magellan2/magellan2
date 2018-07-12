@@ -39,6 +39,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.gamebinding.OrderChanger;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Islands;
 import magellan.library.utils.Regions;
@@ -247,10 +248,13 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
    */
   private void setOrders(UnitRoutePlanner planner, Unit u, int distance, List<String> orders) {
     // Order setzen, anderes NACH ersetzen
-    data.getGameSpecificStuff().getOrderChanger().disableLongOrders(u);
-    u.addOrders(orders);
+    getOrderChanger(u).setLongOrders(u, orders, false);
     u.addOrder("; path is " + distance + " regions long.", true, 1);
     dispatcher.fire(new UnitOrdersEvent(this, u));
+  }
+
+  private OrderChanger getOrderChanger(Unit u) {
+    return u.getData().getGameSpecificStuff().getOrderChanger();
   }
 
   /**
@@ -262,11 +266,9 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
    * @param mode
    * @param orders
    */
-  private void setOrders(ShipRoutePlanner planner, Unit u, int distance, List<String> orders) {
+  private void setOrders(RoutePlanner planner, Unit u, int distance, List<String> orders) {
     // Order setzen, anderes NACH ersetzen
-    planner.addOrdersToUnit(u, orders, false);
-    // data.getGameSpecificStuff().getOrderChanger().disableLongOrders(u);
-    // u.addOrders(orders);
+    getOrderChanger(u).setLongOrders(u, orders, false);
     u.addOrder("; path is " + distance + " regions long.", true, 1);
     dispatcher.fire(new UnitOrdersEvent(this, u));
   }

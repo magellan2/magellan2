@@ -9,7 +9,6 @@ package magellan.library.utils;
 
 import java.awt.Component;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
 
 /**
  * Handles user input for changing unit movement orders.
- * 
+ *
  * @author Andreas
  * @author stm
  */
@@ -58,14 +57,13 @@ public class UnitRoutePlanner {
   /**
    * Shows a dialog that lets the user select a destination for the unit and adds according movement
    * orders to all provided units.
-   * 
+   *
    * @param unit This unit is used as a reference for determining speed
    * @param data GameData containing the units
    * @param ui The Component that is used as parent for the Dialog.
    * @param otherUnits The created orders will also be added to these units.
    * @param picker The user dialog that will be displayed
-   * @return <code>true</code> if orders were changed (i.e., the user didn't abort and a path
-   *         existed)
+   * @return <code>true</code> if orders were changed (i.e., the user didn't abort and a path existed)
    */
   public boolean planUnitRoute(Unit unit, GameData data, Component ui, Collection<Unit> otherUnits,
       RoutingDialogDataPicker picker) {
@@ -97,31 +95,13 @@ public class UnitRoutePlanner {
           getOrders(unit, data, start.getCoordinate(), options.getDestination(), ui, options
               .useRange(), options.getMode(), options.useVorlage());
 
-      // change unit's orders
-      if (options.replaceOrders()) {
-        unit.setOrders(orders);
-      } else {
-        data.getGameSpecificStuff().getOrderChanger().disableLongOrders(unit);
-        for (String string : orders) {
-          unit.addOrder(string);
-        }
-      }
+      ShipRoutePlanner.addOrdersToUnit(unit, orders, options.replaceOrders());
 
       // change other units' orders
-      if ((otherUnits != null) && (otherUnits.size() > 0)) {
-        Iterator<Unit> it = otherUnits.iterator();
-
-        while (it.hasNext()) {
-          Unit u = it.next();
-
+      if (otherUnits != null) {
+        for (Unit u : otherUnits) {
           if (!u.equals(unit)) {
-            if (options.replaceOrders()) {
-              u.setOrders(orders);
-            } else {
-              for (String string : orders) {
-                u.addOrder(string, false, 0);
-              }
-            }
+            ShipRoutePlanner.addOrdersToUnit(u, orders, options.replaceOrders());
           }
         }
       }
@@ -133,14 +113,14 @@ public class UnitRoutePlanner {
 
   /**
    * Creates movement orders for a unit.
-   * 
+   *
    * @param unit The unit for which a route is planned
    * @param data GameData containing the units
    * @param start The region where to start, not necessarily equal to the ship's region
    * @param destination The target region
    * @param ui The parent component for message panes
-   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so
-   *          that the ship's range is not exceeded.
+   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so that
+   *          the ship's range is not exceeded.
    * @param mode a combination of {@link RoutePlanner#MODE_CONTINUOUS},
    *          {@link RoutePlanner#MODE_RETURN}, {@link RoutePlanner#MODE_STOP}
    * @param useVorlage If this is <code>true</code>, Vorlage meta commands are produced.
@@ -160,7 +140,7 @@ public class UnitRoutePlanner {
         // No path could be found from start to destination region.
         JOptionPane.showMessageDialog(ui, Resources
             .get("util.unitrouteplanner.msg.nopathfound.text"), Resources
-            .get("util.unitrouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+                .get("util.unitrouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
       }
       return null;
     }
@@ -180,7 +160,7 @@ public class UnitRoutePlanner {
       // couldn't determine shiprange
       JOptionPane.showMessageDialog(ui, Resources
           .get("util.unitrouteplanner.msg.unitrangeiszero.text"), Resources
-          .get("util.unitrouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+              .get("util.unitrouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
       costs = RoutePlanner.ZERO_COSTS;
     }
 
@@ -194,7 +174,7 @@ public class UnitRoutePlanner {
   /**
    * Cost function for overland movement. Accounts for roads and the movement range of the unit
    * provided in the constructor.
-   * 
+   *
    * @author stm
    */
   public static class LandCosts implements RoutePlanner.Costs {
@@ -205,7 +185,7 @@ public class UnitRoutePlanner {
 
     /**
      * Creates costs for a unit on land.
-     * 
+     *
      * @param unit
      */
     public LandCosts(Unit unit) {

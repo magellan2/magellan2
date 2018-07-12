@@ -13,13 +13,13 @@
 // This program is distributed in the hope that it will be useful,
 //
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 package magellan.plugin.extendedcommands;
 
@@ -27,6 +27,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,6 +76,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
   private JTextField gotoBox;
   private JButton gotoButton;
   private JButton findButton;
+  private Map<String, String> resourceCache;
 
   /**
    * This constructor creates a single empty document. If you want to load some settings into the
@@ -244,6 +247,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
    * @param world The value for world.
    */
   public void setWorld(GameData world) {
+    resourceCache = null;
     this.world = world;
   }
 
@@ -262,6 +266,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
    * @param unit The value for unit.
    */
   public void setUnit(Unit unit) {
+    resourceCache = null;
     this.unit = unit;
   }
 
@@ -280,6 +285,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
    * @param container The value for container.
    */
   public void setContainer(UnitContainer container) {
+    resourceCache = null;
     this.container = container;
   }
 
@@ -298,12 +304,14 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
    * @param script The value for script.
    */
   public void setScript(Script script) {
+    resourceCache = null;
     if (isModified) {
       // ask if it is okay to load the new file
       int result =
-          JOptionPane.showConfirmDialog(this, Resources
-              .get("extended_commands.questions.not_saved"), Resources
-              .get("extended_commands.questions.not_saved_title"), JOptionPane.OK_CANCEL_OPTION);
+          JOptionPane.showConfirmDialog(this,
+              Resources.get("extended_commands.questions.not_saved"),
+              Resources.get("extended_commands.questions.not_saved_title"),
+              JOptionPane.OK_CANCEL_OPTION);
       if (result != JOptionPane.OK_OPTION)
         return;
     }
@@ -392,13 +400,25 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
               .getID())
               + changed;
     } else {
-      title = Resources.get("extended_commands.element.library") + changed;
+      title = getResource("extended_commands.element.library") + changed;
     }
 
     if (tab != null) {
       tab.setText(title);
     }
 
+  }
+
+  private String getResource(String key) {
+    if (resourceCache == null) {
+      resourceCache = new HashMap<String, String>();
+    }
+    String result = resourceCache.get(key);
+    if (result == null) {
+      result = Resources.get(key);
+      resourceCache.put(key, result);
+    }
+    return result;
   }
 
   public boolean isModified() {
@@ -420,6 +440,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
    * @param commands The value for commands.
    */
   public void setCommands(ExtendedCommands commands) {
+    resourceCache = null;
     this.commands = commands;
   }
 

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.plugin.extendedcommands;
 
 import java.awt.BorderLayout;
@@ -62,7 +62,7 @@ import net.infonode.tabbedpanel.titledtab.TitledTab;
 /**
  * This is a dialog to edit the script/commands for a given unit. <br />
  * TODO Save dialog positions (size, location, slider position)
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
@@ -147,7 +147,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
   /**
    * This method is called, if one of the buttons is clicked.
-   * 
+   *
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
@@ -195,7 +195,8 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     if (selection.getSelectedObjects().size() > 5) {
       if (JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.loadmany.question",
           selection.getSelectedObjects().size()),
-          Resources.get("extended_commands.loadmany.title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
+          Resources.get("extended_commands.loadmany.title"),
+          JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
         return;
     }
 
@@ -237,8 +238,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
   /**
    * Saves the content of a tab inside the Extended Commands List. Attention: This is NOT a
-   * save-to-disc Operation. It clones the content of the tab and set's it inside the Commands
-   * object.
+   * save-to-disc Operation. It clones the content of the tab and set's it inside the Commands object.
    */
   protected void saveTab(TitledTab tab) {
     if (tab == null)
@@ -340,7 +340,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
   /**
    * Returns the value of world.
-   * 
+   *
    * @return Returns world.
    */
   public GameData getWorld() {
@@ -349,7 +349,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
   /**
    * Sets the value of world.
-   * 
+   *
    * @param world The value for world.
    */
   public void setWorld(GameData world) {
@@ -364,9 +364,10 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     }
     if (modified) {
       int answer =
-          JOptionPane.showConfirmDialog(Client.INSTANCE, Resources
-              .get("extended_commands.questions.gamedata_save"), Resources
-              .get("extended_commands.questions.gamedata_save_title"), JOptionPane.YES_NO_OPTION);
+          JOptionPane.showConfirmDialog(Client.INSTANCE,
+              Resources.get("extended_commands.questions.gamedata_save"),
+              Resources.get("extended_commands.questions.gamedata_save_title"),
+              JOptionPane.YES_NO_OPTION);
       if (answer == JOptionPane.YES_OPTION) {
         for (Tab tab : tabMap.values()) {
           if (tab instanceof TitledTab) {
@@ -519,28 +520,29 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
   /**
    * Creates a close tab button that closes the given tab when the button is selected
-   * 
+   *
    * @param tab the tab what will be closed when the button is pressed
    * @return the close button
    */
   private JButton createCloseTabButton(final String key, final TitledTab tab) {
     return ButtonFactory.createFlatHighlightButton(new CloseIcon(), Resources
         .get("extended_commands.button.close.tooltip"), 0, new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ExtendedCommandsDocument doc = (ExtendedCommandsDocument) tab.getContentComponent();
-        if (doc.isModified()) {
-          int answer =
-              JOptionPane.showConfirmDialog(Client.INSTANCE, Resources
-                  .get("extended_commands.questions.not_saved"), Resources
-                  .get("extended_commands.questions.not_saved_title"), JOptionPane.YES_NO_OPTION);
-          if (answer == JOptionPane.YES_OPTION) {
-            closeTab(key, tab);
+          public void actionPerformed(ActionEvent e) {
+            ExtendedCommandsDocument doc = (ExtendedCommandsDocument) tab.getContentComponent();
+            if (doc.isModified()) {
+              int answer =
+                  JOptionPane.showConfirmDialog(Client.INSTANCE,
+                      Resources.get("extended_commands.questions.not_saved"),
+                      Resources.get("extended_commands.questions.not_saved_title"),
+                      JOptionPane.YES_NO_OPTION);
+              if (answer == JOptionPane.YES_OPTION) {
+                closeTab(key, tab);
+              }
+            } else {
+              closeTab(key, tab);
+            }
           }
-        } else {
-          closeTab(key, tab);
-        }
-      }
-    });
+        });
   }
 
   public void closeTab(String key, Tab tab) {

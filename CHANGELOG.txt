@@ -1,3 +1,11 @@
+2018-07-12 / Build 676 - stm (stm2@users.sourceforge.net)
+	* corrected last visited region
+	* RoutePlanner doesn't overwrite ATTACK
+	* work-around and stability fix for eressea bug #2457
+	* delete directory of deleted profiles
+	* fixed FillInsideAction (alias FillSelectionAction2)
+	* replaced deprecated registerKeyboardAction by getInputMap/getActionMap
+
 2018-06-10 / Build 671 - Fiete (sf@fietefietz.de)
 	* added another 5 new MessageTypeIDs in BattleAnalyzer
 

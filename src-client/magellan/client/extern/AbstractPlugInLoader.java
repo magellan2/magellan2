@@ -34,7 +34,7 @@ import magellan.library.utils.logging.Logger;
 /**
  * Loads all external modules that can be found. Please see com.eressea.extern.ExternalModule for
  * documentation.
- * 
+ *
  * @author Ulrich Küster
  * @author Thoralf Rickert
  */
@@ -48,7 +48,7 @@ public abstract class AbstractPlugInLoader<T> {
   public abstract Collection<Class<T>> getExternalModuleClasses(Properties settings);
 
   /**
-   * 
+   *
    */
   protected Collection<String> getPathsFromResourcePathClassLoader(
       ResourcePathClassLoader resLoader, Properties settings) {
@@ -81,7 +81,7 @@ public abstract class AbstractPlugInLoader<T> {
   }
 
   /**
-   * 
+   *
    */
   protected Collection<String> getPathsFromClassPath() {
     Collection<String> paths = new ArrayList<String>();
@@ -100,7 +100,7 @@ public abstract class AbstractPlugInLoader<T> {
   }
 
   /**
-   * 
+   *
    */
   protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader,
       Class<T> externalModuleClass, String path) {
@@ -110,7 +110,7 @@ public abstract class AbstractPlugInLoader<T> {
   }
 
   /**
-   * 
+   *
    */
   protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader,
       Class<T> externalModuleClass, String path, String packagePrefix, String postfix) {
@@ -231,7 +231,7 @@ public abstract class AbstractPlugInLoader<T> {
   }
 
   /**
-   * 
+   *
    */
   protected Collection<Class<T>> getExternalModuleClasses(Properties settings,
       Class<T> externalModuleClass) {
@@ -274,8 +274,9 @@ public abstract class AbstractPlugInLoader<T> {
   protected String getLastCapitalizedString(String aString) {
     StringCharacterIterator iter = new StringCharacterIterator(aString);
 
-    for (char c = iter.last(); c != CharacterIterator.DONE; c = iter.previous()) {
-      if ((c >= 'A') && (c <= 'Z')) {
+    int length = 1;
+    for (char c = iter.last(); c != CharacterIterator.DONE; c = iter.previous(), ++length) {
+      if ((c >= 'A') && (c <= 'Z') && length > 2) {
         if (AbstractPlugInLoader.log.isDebugEnabled()) {
           AbstractPlugInLoader.log.debug("ExternalModuleLoader.getLastCapitalizedString(" + aString
               + "): " + aString.substring(iter.getIndex()));

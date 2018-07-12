@@ -1001,9 +1001,8 @@ public class BattleInfo {
           addStarter(m);
           currentSpellInfo = null;
           break;
-        case 132674556: // Zauber schlägt fehl
-        case 1670085741: // "\"$unit($unit) versucht $spell($spell) zu zaubern, doch der Zauber schlägt
-                         // fehl!\"";text
+        case 132674556:
+        case 1670085741: // Zauber schlägt fehl
           addSpell(m, false);
           currentSpellInfo = null;
           break;
@@ -1017,14 +1016,10 @@ public class BattleInfo {
         case 1619294438: // Basilisk
         case 1677670293: // Trugbilder
         case 1402218402: // zaubert
-        case 138727251: // "Rosie Kattun (sppd) zaubert Beschleunigung: 385 Krieger wurden magisch
-                        // beschleunigt.";rendered
-        case 450463848: // "Die Verzehrenden von Dotetkul (Li8h) zaubert Eisiger Drachenodem: 1 Krieger wurde
-                        // getötet.";rendered
-        case 1878259751: // Die Wissenden von Vosgosíbut (dfpo) zaubert Feuriger Drachenodem, aber niemand
-                         // war in Reichweite.
-        case 1385719261: // Marie-Louise von Dunkelbier (mLvd) zaubert Tod des Geistes. 130 Krieger verloren
-                         // kurzzeitig ihr Gedächtnis.
+        case 138727251: // "Rosie Kattun (sppd) zaubert Beschleunigung: 385 Krieger wurden magisch beschleunigt.";rendered
+        case 450463848: // "Die Verzehrenden von Dotetkul (Li8h) zaubert Eisiger Drachenodem: 1 Krieger wurde getötet.";rendered
+        case 1878259751: // niemand in Reichweite
+        case 1385719261: // Tod des Geistes
           currentSpellInfo = addSpell(m, true);
           break;
         case 672044929: // Wölfe
@@ -1071,9 +1066,8 @@ public class BattleInfo {
         case 1281520191: // Flammenschwert //
                          // "4 Krieger von Meisterfechter (wxon) benutzen ihre Flammenschwerter.";rendered
         case 646112495: // "4 Krieger von Meisterfechter (wxon) benutzen ihre Flammenschwerter.";rendered
-        case 881122508: // Katapult
-        case 1399004700: // Katapult: 50 Krieger von Polterstein Aue der Ruhe, I. bis V. Dutzend (psar) feuern
-                         // ihre Katapulte ab.
+        case 881122508:
+        case 1399004700: // Katapult
           currentSpellInfo = addCatapult(m);
           break;
         case 394859417:
@@ -1350,8 +1344,7 @@ public class BattleInfo {
     String string = m.getAttributes().get("string");
     if (string.startsWith(Resources.get("plugin.battle.fights", getLocale(), false))) {
       // "Kämpft gegen: Heer 1(orks)";string
-      // "Kämpft gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust),
-      // Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
+      // "Kämpft gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust), Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
       for (String hostPart : string.substring(string.indexOf(":") + 1).split(",")) {
         Matcher matcher = hostPattern1.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1364,9 +1357,7 @@ public class BattleInfo {
       }
     } else if (string.startsWith(Resources.get("plugin.battle.helps", getLocale(), false))) {
       // "Hilft: Heer 0(phos)";string
-      // "Hilft: Heer 0(-?-), Heer 13(-?-), Heer 14(-?-), Heer 15(haLb), Heer 16(stds), Heer 17(-?-), Heer
-      // 18(-?-), Heer 19(drac), Heer 20(ouLe), Heer 21(yjap), Heer 22(-?-), Heer 23(tata), Heer 24(-?-),
-      // Heer 25(cat), Heer 26(pt6f), Heer 27(fLos), Heer 28(1akL), Heer 29(phos), Heer 30(isb9)";string
+      // "Hilft: Heer 0(-?-), Heer 13(-?-), Heer 14(-?-), Heer 15(haLb), Heer 16(stds), Heer 17(-?-), Heer 18(-?-), Heer 19(drac), Heer 20(ouLe), Heer 21(yjap), Heer 22(-?-), Heer 23(tata), Heer 24(-?-), Heer 25(cat), Heer 26(pt6f), Heer 27(fLos), Heer 28(1akL), Heer 29(phos), Heer 30(isb9)";string
       for (String hostPart : string.substring(string.indexOf(":") + 1).split(",")) {
         Matcher matcher = hostPattern1.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1379,8 +1370,7 @@ public class BattleInfo {
       }
     } else if (string.startsWith(Resources.get("plugin.battle.attacks", getLocale(), false))) {
       // "Attacke gegen: Heer 1(orks)";string
-      // "Attacke gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust),
-      // Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
+      // "Attacke gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust), Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
       for (String hostPart : string.substring(string.indexOf(":") + 1).split(",")) {
         Matcher matcher = hostPattern1.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1392,21 +1382,15 @@ public class BattleInfo {
         }
       }
     } else if (unitPattern.matcher(string).matches()) {
-      // " + Tatarische Fremdenlegion (t7z9), 17 Dämonen, vorne (erschöpft), hat: 17 Schilde, 24
-      // Schwerter.";string
-      // " - Wowukh (ru8y), 2 Trolle, flieht (schwer verwundet, hungert), hat: 2 Bihänder.";string
-      // " + Tatarische Fremdenlegion (zyju), 30 Goblins, vorne, bewacht die Region, hat: 2 Bögen,
-      // Weihrauch, Myrrhe, 4 Speere, 32 Schwerter.";string
-      // " - Hellebardiere der Flaumfußens (m01j), 1 Bluthalbling, flieht (verwundet, hungert), hat:
-      // Streitross, Hellebarde, Schuppenpanzer.";string
-      // " * Tatarische Fremdenlegion (t1f1), 44 Goblins, vorne, bewacht die Region, Talente: Hiebwaffen
-      // 9, Ausdauer 5, Reiten 1, hat: 35 Kettenhemden, 2044 Silber, 44 Schilde, 46 Schwerter,
-      // Turmschild.";string
-      // " - Rächer des Bösen (7qqu), 7 Skelette, defensiv (schwer verwundet)."
-      // " + Tatarische Fremdenlegion (bdjd), 5 Orks, vorne, bewacht die Region, hat: 5 Kriegsäxte, 2
-      // Kettenhemden, 5 Schilde, Schwert."
-      // " - Delok (o1), 1 Ork, vorne, hat: Pferd, Speer, 2 Phiolen."
-      // " - Mogotk (ut3t), 1 Ork, hinten (schwer verwundet), hat: Bogen."
+      // "  + Tatarische Fremdenlegion (t7z9), 17 Dämonen, vorne (erschöpft), hat: 17 Schilde, 24 Schwerter.";string
+      // "  - Wowukh (ru8y), 2 Trolle, flieht (schwer verwundet, hungert), hat: 2 Bihänder.";string
+      // "  + Tatarische Fremdenlegion (zyju), 30 Goblins, vorne, bewacht die Region, hat: 2 Bögen, Weihrauch, Myrrhe, 4 Speere, 32 Schwerter.";string
+      // "  - Hellebardiere der Flaumfußens (m01j), 1 Bluthalbling, flieht (verwundet, hungert), hat: Streitross, Hellebarde, Schuppenpanzer.";string
+      // "  * Tatarische Fremdenlegion (t1f1), 44 Goblins, vorne, bewacht die Region, Talente: Hiebwaffen 9, Ausdauer 5, Reiten 1, hat: 35 Kettenhemden, 2044 Silber, 44 Schilde, 46 Schwerter, Turmschild.";string
+      // "  - Rächer des Bösen (7qqu), 7 Skelette, defensiv (schwer verwundet)."
+      // "  + Tatarische Fremdenlegion (bdjd), 5 Orks, vorne, bewacht die Region, hat: 5 Kriegsäxte, 2 Kettenhemden, 5 Schilde, Schwert."
+      // "  - Delok (o1), 1 Ork, vorne, hat: Pferd, Speer, 2 Phiolen."
+      // "  - Mogotk (ut3t), 1 Ork, hinten (schwer verwundet), hat: Bogen."
       Matcher matcher = unitPattern.matcher(string);
       boolean matched = matcher.matches();
       if (!matched) {
@@ -1462,15 +1446,8 @@ public class BattleInfo {
         currentHost.addUnit(unitInfo.getUnit(), unitInfo);
       }
     } else if (hostPattern2.matcher(string).matches()) {
-      // "Heer 0(phos): 17, Heer 1(orks): 0+0+0+2";string
-      // "Heer 0(-?-): 2, Heer 1(orks): 335+233+10+10, Heer 2(x): 295+155+10, Heer 3(2j4e): 0+412+0+25,
-      // Heer 4(das): 496+19+113+11, Heer 5(przp): 106+91, Heer 6(fust): 46+32, Heer 7(Lord): 202+100,
-      // Heer 8(Luft): 79+4+1, Heer 9(va2z): 179+1, Heer 10(-?-): 0+0+0+1, Heer 11(mu47): 54+1, Heer
-      // 12(bart): 275+74+40, Heer 13(-?-): 1, Heer 14(-?-): 1, Heer 15(haLb): 250+63, Heer 16(stds):
-      // 573+18+3+3, Heer 17(-?-): 219+53+0+1, Heer 18(-?-): 20+100, Heer 19(drac): 157+249+1, Heer
-      // 20(ouLe): 268+348+0+5, Heer 21(yjap): 163+86+20+2, Heer 22(-?-): 34+0+0+2, Heer 23(tata):
-      // 400+102, Heer 24(-?-): 703+83, Heer 25(cat): 0+1, Heer 26(pt6f): 44, Heer 27(fLos): 0+21, Heer
-      // 28(1akL): 13, Heer 29(phos): 0+20, Heer 30(isb9): 33";string
+      // "Heer  0(phos): 17, Heer  1(orks): 0+0+0+2";string
+      // "Heer  0(-?-): 2, Heer  1(orks): 335+233+10+10, Heer  2(x): 295+155+10, Heer  3(2j4e): 0+412+0+25, Heer  4(das): 496+19+113+11, Heer  5(przp): 106+91, Heer  6(fust): 46+32, Heer  7(Lord): 202+100, Heer  8(Luft): 79+4+1, Heer  9(va2z): 179+1, Heer 10(-?-): 0+0+0+1, Heer 11(mu47): 54+1, Heer 12(bart): 275+74+40, Heer 13(-?-): 1, Heer 14(-?-): 1, Heer 15(haLb): 250+63, Heer 16(stds): 573+18+3+3, Heer 17(-?-): 219+53+0+1, Heer 18(-?-): 20+100, Heer 19(drac): 157+249+1, Heer 20(ouLe): 268+348+0+5, Heer 21(yjap): 163+86+20+2, Heer 22(-?-): 34+0+0+2, Heer 23(tata): 400+102, Heer 24(-?-): 703+83, Heer 25(cat): 0+1, Heer 26(pt6f): 44, Heer 27(fLos): 0+21, Heer 28(1akL): 13, Heer 29(phos): 0+20, Heer 30(isb9): 33";string
       for (String hostPart : string.split(",")) {
         Matcher matcher = overviewPattern.matcher(hostPart);
         boolean matched = matcher.matches();

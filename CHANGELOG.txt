@@ -1,3 +1,7 @@
+2018-07-19 / Build 677 - Fiete (sf@fietefietz.de)
+	* fixed NPE in SignTextCellRenderer
+	* added region tag "mapline" to CR parser
+
 2018-07-12 / Build 676 - stm (stm2@users.sourceforge.net)
 	* corrected last visited region
 	* RoutePlanner doesn't overwrite ATTACK

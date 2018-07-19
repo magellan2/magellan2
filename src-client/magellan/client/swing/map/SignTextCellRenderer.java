@@ -48,7 +48,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * Basic class to draw Signs: a string within a box a first try
- * 
+ *
  * @author Fiete
  * @version 1.0
  */
@@ -106,7 +106,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
     setFont(new Font(settings.getProperty("SignTextCellRenderer.fontName", "SansSerif"), Integer
         .parseInt(settings.getProperty("SignTextCellRenderer.fontStyle", Font.PLAIN + "")), Integer
-        .parseInt(settings.getProperty("SignTextCellRenderer.fontSize", 11 + ""))));
+            .parseInt(settings.getProperty("SignTextCellRenderer.fontSize", 11 + ""))));
     setMinimumFontSize(Integer.parseInt(settings.getProperty(
         "SignTextCellRenderer.minimumFontSize", "10")));
   }
@@ -199,7 +199,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
   /**
    * Returns the Lines which should be on the sign max 2 Lines allowed
-   * 
+   *
    * @param r the region
    * @param rect a rectangle of region-hex - not needed here
    * @return Collection of Strings to put on the sign
@@ -278,11 +278,12 @@ public class SignTextCellRenderer extends HexCellRenderer {
     if (obj instanceof Region) {
       Region r = (Region) obj;
 
-      if (LinesOnly && isDrawingLines()) {
+      if (LinesOnly && isDrawingLines() && offset != null) {
         create_Maplines(r);
         return;
       }
-
+      if (graphics == null || font == null)
+        return;
       CoordinateID c = r.getCoordinate();
       Rectangle rect = cellGeo.getCellRect(c.getX(), c.getY());
 
@@ -479,7 +480,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
         fontNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
       } catch (NullPointerException e) {
         // FIXME(pavkovic) 2003.03.17: This is bad!
-        log.error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
+        log.error(
+            "Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
         fontNames = new String[0];
       }
 

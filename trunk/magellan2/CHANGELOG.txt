@@ -1,7 +1,10 @@
-2018-07-19 / Build 680 - Fiete (sf@fietefietz.de)
+2018-08-17 / Build 681 - Fiete (sf@fietefietz.de)
+	* http://eressea.dracones.de/magellanbugs/view.php?id=402 | Kapitänswechsel
+
+2018-08-17 / Build 680 - Fiete (sf@fietefietz.de)
 	* http://eressea.dracones.de/magellanbugs/view.php?id=405 | Temp-Button mehrfach benutzen
 
-2018-07-19 / Build 679 - Fiete (sf@fietefietz.de)
+2018-08-17 / Build 679 - Fiete (sf@fietefietz.de)
 	* http://eressea.dracones.de/magellanbugs/view.php?id=404 | Max. Einkommen replaced by "Unterhaltung", en-Version too
 
 2018-07-19 / Build 677 - Fiete (sf@fietefietz.de)

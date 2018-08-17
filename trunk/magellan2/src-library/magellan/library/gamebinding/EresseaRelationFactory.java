@@ -39,6 +39,7 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.relation.ControlRelation;
+import magellan.library.relation.EnterRelation;
 import magellan.library.relation.FollowUnitRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.LeaveRelation;
@@ -411,8 +412,20 @@ public class EresseaRelationFactory implements RelationFactory {
           List<LeaveRelation> leaveRelations = u.getRelations(LeaveRelation.class);
           for (LeaveRelation lrel : leaveRelations)
             if (lrel.origin == u && lrel.line > 0 && !lrel.isImplicit()) {
-              cRel.setWarning(Resources.get("order.leave.warning.control"),
-                  OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
+              // 2018-08-17: Warnung ist nur berechtigt, wenn target nicht das Gebäude betritt...
+              boolean showWarning = true;
+              List<EnterRelation> enterRelations = cRel.target.getRelations(EnterRelation.class);
+              for (EnterRelation erel : enterRelations) {
+                if (lrel.target.equals(erel.target)) {
+                  // Das Gebäude, welches verlassen wird, wird von der Kommandoempfangenen Einheit
+                  // betreten
+                  showWarning = false;
+                }
+              }
+              if (showWarning) {
+                cRel.setWarning(Resources.get("order.leave.warning.control"),
+                    OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
+              }
             }
         }
       }

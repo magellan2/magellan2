@@ -598,9 +598,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           Unit u = getNextUnit();
           if (u != null) {
             /*
-             * refreshing the relations here is necessary because this is the only place where a different
-             * unit is selected and the focusLost event in the order editor does not occur before the
-             * selection event
+             * refreshing the relations here is necessary because this is the only place where a
+             * different unit is selected and the focusLost event in the order editor does not occur
+             * before the selection event
              */
             if (getEditor(currentUnit) != null && getEditor(currentUnit).isModified()) {
               currentUnit.refreshRelations();
@@ -615,9 +615,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           u = getPreviousUnit();
           if (u != null) {
             /*
-             * refreshing the relations here is necessary because this is the only place where a different
-             * unit is selected and the focusLost event in the order editor does not occur before the
-             * selection event
+             * refreshing the relations here is necessary because this is the only place where a
+             * different unit is selected and the focusLost event in the order editor does not occur
+             * before the selection event
              */
             if (getEditor(currentUnit) != null && getEditor(currentUnit).isModified()) {
               currentUnit.refreshRelations();
@@ -1140,8 +1140,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Loads and displays the editors that best correspond to the selected entities. This depends on the
-   * current {@link MultiEditorOrderEditorList#listMode}. <code>
+   * Loads and displays the editors that best correspond to the selected entities. This depends on
+   * the current {@link MultiEditorOrderEditorList#listMode}. <code>
    *                   listMode (ISLAND/REGION/FACTION)
    *  selected:        000    100     010     001    110      101             011            111
    *  island           empty  island  empty   empty  island  island          empty           island
@@ -1176,8 +1176,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   /**
    * Adds editors for all units in privileged factions that are in the specified list to this
-   * component and removes unused ones. OrderEditors are created if necessary, else the cached version
-   * are used.
+   * component and removes unused ones. OrderEditors are created if necessary, else the cached
+   * version are used.
    */
   private void loadEditors(List<Unit> unitsToShow) {
     clearUnits();
@@ -1260,8 +1260,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Adds the specified unit to the content. This includes creating and adding a new order editor and
-   * updating the internal data structures. If possible, the new editor is inserted at the right
+   * Adds the specified unit to the content. This includes creating and adding a new order editor
+   * and updating the internal data structures. If possible, the new editor is inserted at the right
    * position in the unit order, else it is inserted at the end.
    *
    * @param u The unit for the new editor.
@@ -1954,7 +1954,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           .equalsIgnoreCase("true")) {
         // don't show any dialogs, simply create the tempunit and finish.
         TempUnit tempUnit = parentUnit.createTemp(getGameData(), id);
-        dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.CREATED));
+        dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.CREATED), true);
+        selectEditor(tempUnit);
+        if (getEditor(tempUnit) != null) {
+          getEditor(tempUnit).requestFocus();
+        }
         dispatcher.fire(SelectionEvent.create(this, tempUnit));
       } else {
         // do all the tempunit-dialog-stuff
@@ -2171,8 +2175,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     /**
-     * If the parent of this component is an instance of JViewport this method returns the maximum of
-     * the original preferred size and the viewport size.
+     * If the parent of this component is an instance of JViewport this method returns the maximum
+     * of the original preferred size and the viewport size.
      */
     @Override
     public Dimension getPreferredSize() {
@@ -2228,8 +2232,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
               this.getComponentAt(visibleRect.x, visibleRect.y + visibleRect.height);
 
           if (lastVisibleComponent != null) {
-            if ((visibleRect.y + visibleRect.height) < (lastVisibleComponent.getY() + lastVisibleComponent
-                .getHeight()))
+            if ((visibleRect.y + visibleRect.height) < (lastVisibleComponent.getY()
+                + lastVisibleComponent
+                    .getHeight()))
               // component is not fully visible
               return (lastVisibleComponent.getY() + lastVisibleComponent.getHeight())
                   - visibleRect.y - visibleRect.height;

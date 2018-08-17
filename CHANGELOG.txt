@@ -1,3 +1,5 @@
+2018-07-19 / Build 680 - Fiete (sf@fietefietz.de)
+	* http://eressea.dracones.de/magellanbugs/view.php?id=405 | Temp-Button mehrfach benutzen
 
 2018-07-19 / Build 679 - Fiete (sf@fietefietz.de)
 	* http://eressea.dracones.de/magellanbugs/view.php?id=404 | Max. Einkommen replaced by "Unterhaltung", en-Version too

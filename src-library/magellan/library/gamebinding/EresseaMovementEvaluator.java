@@ -117,7 +117,8 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       int cartsWithoutHorses = carts - (horses / 2);
       horsesWithoutCarts = horses % 2;
       capacity =
-          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40))
+          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses
+              * 40))
               * 100)
               - (getRaceWeight(unit) * unit.getModifiedPersons());
     }
@@ -206,25 +207,32 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
     if ((race == null) || (race.getID().equals(EresseaConstants.R_TROLLE) == false)) {
       capacity =
-          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses * 40))
+          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses
+              * 40))
               * 100)
               + (((int) ((race == null ? 10 : race.getCapacity()) * 100)) * unit
                   .getModifiedPersons());
     } else {
-      int horsesMasteredPerPerson = getMaxHorsesWalking(unit);
-      int trollsMasteringHorses = horses / horsesMasteredPerPerson;
+      if (unit.getModifiedPersons() != 0) {
+        int horsesMasteredPerPerson = getMaxHorsesWalking(unit);
+        int trollsMasteringHorses = horses / horsesMasteredPerPerson;
 
-      if ((horses % horsesMasteredPerPerson) != 0) {
-        trollsMasteringHorses++;
+        if ((horses % horsesMasteredPerPerson) != 0) {
+          trollsMasteringHorses++;
+        }
+
+        int cartsTowedByTrolls =
+            Math.min((unit.getModifiedPersons() - trollsMasteringHorses) / 4, cartsWithoutHorses);
+        int trollsTowingCarts = cartsTowedByTrolls * 4;
+        int untowedCarts = cartsWithoutHorses - cartsTowedByTrolls;
+        capacity =
+            (((((carts - untowedCarts) * 140) + (horsesWithoutCarts * 20)) - (untowedCarts * 40))
+                * 100)
+                + (((int) (race.getCapacity() * 100)) * (unit.getModifiedPersons()
+                    - trollsTowingCarts));
+      } else {
+        capacity = 0;
       }
-
-      int cartsTowedByTrolls =
-          Math.min((unit.getModifiedPersons() - trollsMasteringHorses) / 4, cartsWithoutHorses);
-      int trollsTowingCarts = cartsTowedByTrolls * 4;
-      int untowedCarts = cartsWithoutHorses - cartsTowedByTrolls;
-      capacity =
-          (((((carts - untowedCarts) * 140) + (horsesWithoutCarts * 20)) - (untowedCarts * 40)) * 100)
-              + (((int) (race.getCapacity() * 100)) * (unit.getModifiedPersons() - trollsTowingCarts));
     }
 
     return respectGOTS(unit, capacity);

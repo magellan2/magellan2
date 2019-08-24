@@ -44,6 +44,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.filters.UnitFilter;
 import magellan.library.utils.logging.Logger;
@@ -304,6 +305,9 @@ public class Units {
    */
   public static int getSailingSkillAmount(Ship s) {
     SkillType sailingSkillType = s.getData().getRules().getSkillType(EresseaConstants.S_SEGELN);
+    // Fiete 20190824: neue Galeone hat einen mindestLevel...auf diesen prüfen
+    ShipType sT = s.getShipType();
+    int minSailorLevel = sT.getMinSailorLevel(); // not set = -1
     int sailingSkillAmount = 0;
     // pavkovic 2003.10.03: use modifiedUnits to reflect FUTURE value?
     Collection<Unit> modUnits = s.modifiedUnits(); // the collection of units on the ship in the
@@ -313,7 +317,9 @@ public class Units {
       Skill sailingSkill = u.getModifiedSkill(sailingSkillType);
 
       if (sailingSkill != null) {
-        sailingSkillAmount += (sailingSkill.getLevel() * u.getModifiedPersons());
+        if (sailingSkill.getLevel() > minSailorLevel) {
+          sailingSkillAmount += (sailingSkill.getLevel() * u.getModifiedPersons());
+        }
       }
     }
     return sailingSkillAmount;
@@ -346,7 +352,8 @@ public class Units {
    * The amount of the items of a particular item type are added up, so two units with 5 pieces of
    * silver yield one silver item of amount 10 here.
    */
-  public static Collection<Units.StatItem> getContainerPrivilegedUnitItems(UnitContainer container) {
+  public static Collection<Units.StatItem> getContainerPrivilegedUnitItems(
+      UnitContainer container) {
     return Units.getContainerUnitItems(container, Units.containerPrivItems, Units.privFilter);
   }
 

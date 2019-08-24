@@ -2431,6 +2431,16 @@ SHIPTYPE "Trireme"
 4;captainlevel
 120;sailorlevel
 
+SHIPTYPE "Galeone"
+"Galeone";name
+2000;size
+5;level
+5;range
+20000;capacity
+5;captainlevel
+250;sailorlevel
+2;minSailorlevel
+
 CASTLETYPE "Grundmauern"
 "Grundmauern";name
 1;level

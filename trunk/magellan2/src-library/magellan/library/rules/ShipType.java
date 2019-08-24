@@ -16,7 +16,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * Members of this class contain information about a type of ship.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 203 $
  */
@@ -27,6 +27,8 @@ public class ShipType extends ConstructibleType {
   private int capacity = -1;
   private int captainLevel = -1;
   private int sailorLevel = -1;
+  private int minSailorLevel = -1;
+
   private int persons = -1;
   private ItemType wood;
 
@@ -109,6 +111,20 @@ public class ShipType extends ConstructibleType {
    */
   public int getSailorSkillLevel() {
     return sailorLevel;
+  }
+
+  /**
+   * Returns the minimum number of skill level of each unit to sail the ship.
+   */
+  public int getMinSailorLevel() {
+    return minSailorLevel;
+  }
+
+  /**
+   * Sets the minimum number of skill level of each unit to sail the ship.
+   */
+  public void setMinSailorLevel(int minSailorLevel) {
+    this.minSailorLevel = minSailorLevel;
   }
 
   protected boolean fallBackMaterial = true;

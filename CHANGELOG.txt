@@ -1,4 +1,7 @@
-2018-08-17 / Build 682 - Fiete (sf@fietefietz.de)
+2019-08-24 / Build 683 - Fiete (sf@fietefietz.de)
+	* introduced new ShipType Galeone to E2 (EmapDetails), new rule-entry: minSailorLevel
+
+2019-08-17 / Build 682 - Fiete (sf@fietefietz.de)
 	* BugFix in EresseaMovementEvaluator.getPayLoadOnFood for Trolls with units with 0 persons
 
 2018-08-17 / Build 681 - Fiete (sf@fietefietz.de)

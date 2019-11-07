@@ -2,11 +2,13 @@ language: java
 
 jobs:
   include:
-    - state: build
-      name: Calling Ant to create distribution
-      script: ant distribute
+#    - state: test
+#      name: Calling Ant to create distribution
+#      script: ant run_tests
     - stage: deploy
       name: GitHub Release
+      script:
+        - ant distribute
       before_deploy:
         # Set up git user name and tag this commit
         - git config --local user.name "$GITHUB_USER"

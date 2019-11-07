@@ -5,8 +5,8 @@ jobs:
     - state: build
       name: Calling Ant to create distribution
       script: ant distribute
-    - stage: GitHub Release
-      script: echo "Deploying to GitHub releases ..."
+    - stage: deploy
+      name: GitHub Release
       before_deploy:
         # Set up git user name and tag this commit
         - git config --local user.name "$GITHUB_USER"
@@ -16,9 +16,10 @@ jobs:
       deploy:
         provider: releases
         api_key: $GITHUB_OAUTH_TOKEN
+        override: true
         file: 
           - magellan_v2.0.6.jar
           - magellan_v2.0.6.zip
         skip_cleanup: true
-        on:
-          tags: true
+ #       on:
+ #         tags: true

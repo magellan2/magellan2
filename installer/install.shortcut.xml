@@ -31,7 +31,7 @@
   </shortcut>
   <shortcut 
     name="Read Me"
-    target="$INSTALL_PATH/README.txt"
+    target="$INSTALL_PATH/README.md"
     workingDirectory="$INSTALL_PATH"
     description="An introduction to Magellan"
     initialState="noShow"

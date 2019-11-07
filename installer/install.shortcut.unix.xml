@@ -37,7 +37,7 @@
   </shortcut>
   <shortcut 
     name="Read Me"
-    target="$INSTALL_PATH/README.txt"
+    target="$INSTALL_PATH/README.md"
     workingDirectory="$INSTALL_PATH"
     description="An introduction to Magellan"
     initialState="noShow"
@@ -75,7 +75,7 @@
     startMenu="no" 
     startup="no"
     type="Application"
-    encoding="UTF-8"
+    encoding="UTF-8">
     <createForPack name="Magellan"/>
   </shortcut>
   <!-- +++++++++++++++++++++++++++++++++++++++++++ -->

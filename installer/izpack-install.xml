@@ -35,8 +35,8 @@
   </locale>
   
   <resources>
-    <res id="InfoPanel.info"   src="release/README.txt"/>
-    <res id="useNativeLAF"     src="release/README.txt"/>
+    <res id="InfoPanel.info"   src="release/README.MD"/>
+    <res id="useNativeLAF"     src="release/README.MD"/>
     <!--<res id="Installer.image" src="...."/>-->
     <res id="shortcutSpec.xml" src="installer/install.shortcut.xml"/>
     <res id="Unix_shortcutSpec.xml" src="installer/install.shortcut.unix.xml"/>
@@ -67,7 +67,7 @@
       <file src="release/CHANGELOG.txt"                     targetdir="$INSTALL_PATH"/>
       <file src="release/COPYING.txt"                       targetdir="$INSTALL_PATH"/>
       <file src="release/LICENSE.txt"                       targetdir="$INSTALL_PATH"/>
-      <file src="release/README.txt"                        targetdir="$INSTALL_PATH"/>
+      <file src="release/README.MD"                         targetdir="$INSTALL_PATH"/>
       <file src="release/RELEASENOTES.txt"                  targetdir="$INSTALL_PATH"/>
       <file src="release/UnInstall.bat"                     targetdir="$INSTALL_PATH"/>
       <file src="release/UnInstall.sh"                      targetdir="$INSTALL_PATH"/>

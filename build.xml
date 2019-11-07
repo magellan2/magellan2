@@ -338,7 +338,7 @@
 				<include name="CHANGELOG.txt"/>
 				<include name="COPYING.txt"/>
 				<include name="LICENSE.txt"/>
-				<include name="README.MD"/>
+				<include name="README.md"/>
 				<include name="RELEASENOTES.txt"/>
 			</fileset>
 			<fileset dir="${installer}">

@@ -2,7 +2,7 @@
 <installation version="1.0">
   <info>
     <appname>Magellan</appname>
-    <appversion>2.0.6 (build 683)</appversion>
+    <appversion>2.0.6 (build 684)</appversion>
     <authors>
       <author name="Enno Rehling" email="enno@eressea.de"/>
       <author name="Stefan Götz" email=""/>
@@ -35,8 +35,8 @@
   </locale>
   
   <resources>
-    <res id="InfoPanel.info"   src="release/README.MD"/>
-    <res id="useNativeLAF"     src="release/README.MD"/>
+    <res id="InfoPanel.info"   src="release/README.md"/>
+    <res id="useNativeLAF"     src="release/README.md"/>
     <!--<res id="Installer.image" src="...."/>-->
     <res id="shortcutSpec.xml" src="installer/install.shortcut.xml"/>
     <res id="Unix_shortcutSpec.xml" src="installer/install.shortcut.unix.xml"/>
@@ -67,7 +67,7 @@
       <file src="release/CHANGELOG.txt"                     targetdir="$INSTALL_PATH"/>
       <file src="release/COPYING.txt"                       targetdir="$INSTALL_PATH"/>
       <file src="release/LICENSE.txt"                       targetdir="$INSTALL_PATH"/>
-      <file src="release/README.MD"                         targetdir="$INSTALL_PATH"/>
+      <file src="release/README.md"                         targetdir="$INSTALL_PATH"/>
       <file src="release/RELEASENOTES.txt"                  targetdir="$INSTALL_PATH"/>
       <file src="release/UnInstall.bat"                     targetdir="$INSTALL_PATH"/>
       <file src="release/UnInstall.sh"                      targetdir="$INSTALL_PATH"/>

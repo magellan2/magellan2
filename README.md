@@ -1,4 +1,4 @@
-Welcome to Magellan!
+# Welcome to Magellan!
 
 Magellan is a full-featured client tool for the play-by-e-mail
 game Eressea. It displays a map of your part of the Eressea

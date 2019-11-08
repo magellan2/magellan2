@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/magellan2/magellan2.svg?branch=master)]
+
 # Welcome to Magellan!
 
 Magellan is a full-featured client tool for the play-by-e-mail

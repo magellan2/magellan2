@@ -253,8 +253,9 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
             .getOwnerUnit().equals(unit)))
         ||
         // ... vicious warriors destroying other peoples buildings or ships
-        (unit.getModifiedBuilding() != null && unit.getModifiedBuilding().getOwnerUnit() != null && unit
-            .getFaction() != unit.getModifiedBuilding().getOwnerUnit().getFaction())
+        (unit.getModifiedBuilding() != null && unit.getModifiedBuilding().getOwnerUnit() != null
+            && unit
+                .getFaction() != unit.getModifiedBuilding().getOwnerUnit().getFaction())
         || (unit.getModifiedShip() != null && (unit.getModifiedShip().getOwnerUnit() == null || unit
             .getFaction() != unit.getModifiedShip().getOwnerUnit().getFaction()))) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_DESTROY)));
@@ -322,9 +323,11 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     for (ID fID : unitList.keySet()) {
       StringBuilder enemyUnits = getAttackOrders(unitList.get(fID));
       enemyUnits.append(battleStateOrder);
-      completions.add(new Completion(getData().getFaction(fID).getName() + " (" + fID.toString() + ")",
+      completions.add(new Completion(getData().getFaction(fID).getName() + " (" + fID.toString()
+          + ")",
           enemyUnits.toString(), "", 6, 0));
-      completions.add(new Completion(fID.toString() + " (" + getData().getFaction(fID).getName() + ")",
+      completions.add(new Completion(fID.toString() + " (" + getData().getFaction(fID).getName()
+          + ")",
           enemyUnits.toString(), "", 7, 0));
     }
   }
@@ -714,8 +717,9 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
      * unit.getShip() != null && unit.equals(unit.getShip().getOwnerUnit())) {
      */
     // if we do not move into or stay in a ship or building we can't give control to another unit
-    if (unit.getShip() != null || unit.getModifiedShip() != null || unit.getBuilding() != null || unit
-        .getModifiedBuilding() != null) {
+    if (unit.getShip() != null || unit.getModifiedShip() != null || unit.getBuilding() != null
+        || unit
+            .getModifiedBuilding() != null) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CONTROL)));
     }
 
@@ -737,8 +741,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   }
 
   /**
-   * For multiple-line-completion like the creation of give-orders for the resources of an item it is
-   * necessary to get the unit's id and the amount to be given. They are given as parameters:
+   * For multiple-line-completion like the creation of give-orders for the resources of an item it
+   * is necessary to get the unit's id and the amount to be given. They are given as parameters:
    *
    * @param uid the unit's id
    * @param i the amount
@@ -750,7 +754,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
     if ((i != 0) && (uid != null)) {
       // add completions, that create multiple Give-Orders for the resources of an item
-      for (final Iterator<ItemType> iter = getData().getRules().getItemTypeIterator(); iter.hasNext();) {
+      for (final Iterator<ItemType> iter = getData().getRules().getItemTypeIterator(); iter
+          .hasNext();) {
         final ItemType iType = iter.next();
 
         if (iType.getResources() != null && iType.getResources().hasNext() // necessary resources
@@ -773,9 +778,10 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
         }
       }
       /**
-       * Add multiple GIVE orders for if we enter ALL i.e. assume the unit has 200 sword, shild, plate and
-       * 80 horses GIVE abcd 100 [ALL] will complete to GIVE abcd 100 sword GIVE abcd 100 shield GIVE abcd
-       * 100 plate as we have not at least 100 horses. This is perfect to split units
+       * Add multiple GIVE orders for if we enter ALL i.e. assume the unit has 200 sword, shild,
+       * plate and 80 horses GIVE abcd 100 [ALL] will complete to GIVE abcd 100 sword GIVE abcd 100
+       * shield GIVE abcd 100 plate as we have not at least 100 horses. This is perfect to split
+       * units
        */
       String order = "";
       String tounit;
@@ -809,6 +815,30 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     if (persons) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_MEN), (unit
           .getPersons() >= i) ? 0 : Completion.DEFAULT_PRIORITY + 1));
+    }
+
+    // if captn, and target is captn, offer GIVE target X SHIP
+    if (unit.getShip() != null) {
+      Ship s = unit.getShip();
+      if (s.getModifiedOwnerUnit().equals(unit)) {
+        // is the amount <= number of ships in the fleet?
+        if (i <= s.getAmount()) {
+          // is target also a captn of a ship - of the same ShipType and of the same faction
+          Unit target = getData().getUnit(uid);
+          if (target != null) {
+            // same faction
+            if (target.getFaction() != null && target.getFaction().equals(unit.getFaction())) {
+              Ship targetShip = target.getShip();
+              // same shipType
+              if (targetShip != null && targetShip.getModifiedOwnerUnit().equals(target)
+                  && targetShip.getShipType().equals(s.getShipType())) {
+                completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SHIP),
+                    Completion.DEFAULT_PRIORITY + 1));
+              }
+            }
+          }
+        }
+      }
     }
 
   }
@@ -862,8 +892,9 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /** Add completions for command HelfeFID. */
   public void cmpltHelfeFID() {
-    for (final Iterator<AllianceCategory> it = getData().getRules().getAllianceCategoryIterator(); it
-        .hasNext();) {
+    for (final Iterator<AllianceCategory> it = getData().getRules()
+        .getAllianceCategoryIterator(); it
+            .hasNext();) {
       final AllianceCategory all = it.next();
       completions.add(new Completion(getOrderTranslation(StringID
           .create(GameConstants.ORDER_KEY_PREFIX + all.getName()))));
@@ -891,7 +922,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
     if (!isLimitCompletions()
         || (unit == null)
-        || ((unit.getCombatStatus() != EresseaConstants.CS_AGGRESSIVE) && (unit.getCombatStatus() != -1))) {
+        || ((unit.getCombatStatus() != EresseaConstants.CS_AGGRESSIVE) && (unit
+            .getCombatStatus() != -1))) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_COMBAT_AGGRESSIVE),
           "", unit.getCombatStatus()));
     }
@@ -959,7 +991,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
     if (item == null) {
       if ((getData() != null) && (getData().getRules() != null)) {
-        final ItemCategory luxCat = getData().getRules().getItemCategory(EresseaConstants.C_LUXURIES);
+        final ItemCategory luxCat = getData().getRules().getItemCategory(
+            EresseaConstants.C_LUXURIES);
 
         if (luxCat != null) {
           for (final Iterator<ItemType> iter = getData().getRules().getItemTypeIterator(); iter
@@ -1039,8 +1072,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
    * Returns the learn cost for a specific skill.
    *
    * @param skillType the skill to be learned
-   * @return the cost to learn a skill for the given unit. If the unit has no persons the cost for one
-   *         person is returned.
+   * @return the cost to learn a skill for the given unit. If the unit has no persons the cost for
+   *         one person is returned.
    */
   @Override
   public int getSkillCost(SkillType skillType, Unit someUnit) {
@@ -1123,14 +1156,16 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     // buildings
     if (hasSkill(unit, EresseaConstants.S_BURGENBAU)) {
       if ((getData() != null) && (getData().getRules() != null)) {
-        for (final Iterator<BuildingType> iter = getData().getRules().getBuildingTypeIterator(); iter
-            .hasNext();) {
+        for (final Iterator<BuildingType> iter = getData().getRules()
+            .getBuildingTypeIterator(); iter
+                .hasNext();) {
           final BuildingType t = iter.next();
 
           if (!isLimitCompletions()
               || ((t instanceof CastleType) && t.containsRegionType(region.getRegionType())
                   && hasSkill(unit, EresseaConstants.S_BURGENBAU, t.getBuildSkillLevel())
-                  && (!isLimitCompletions() || checkForMaterials(t.getRawMaterials().iterator())))) {
+                  && (!isLimitCompletions() || checkForMaterials(t.getRawMaterials()
+                      .iterator())))) {
             String name =
                 Resources.getRuleItemTranslation("building." + t.getID().toString(), getLocale());
             if (name.startsWith("rules.skill")) {
@@ -1157,7 +1192,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
             .getContainerPrivilegedUnitItem(region, getData().getRules().getItemType(
                 EresseaConstants.I_WOOD)) != null))) {
       if ((getData() != null) && (getData().getRules() != null)) {
-        for (final Iterator<ShipType> iter = getData().getRules().getShipTypeIterator(); iter.hasNext();) {
+        for (final Iterator<ShipType> iter = getData().getRules().getShipTypeIterator(); iter
+            .hasNext();) {
           final ShipType t = iter.next();
 
           if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU, t.getBuildSkillLevel())) {
@@ -1197,7 +1233,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     }
 
     // items
-    for (final Iterator<ItemType> iter = getData().getRules().getItemTypeIterator(); iter.hasNext();) {
+    for (final Iterator<ItemType> iter = getData().getRules().getItemTypeIterator(); iter
+        .hasNext();) {
       final ItemType itemType = iter.next();
       canMake = true;
 
@@ -1506,7 +1543,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       for (Units.StatItem item : Units.getContainerAllUnitItems(region)) {
         if (unit.getItem(item.getItemType()) == null) {
           // silver only if silver pool activated or unit has silver
-          if ((item.getItemType() != getData().getRules().getItemType(EresseaConstants.I_USILVER))) {
+          if ((item.getItemType() != getData().getRules().getItemType(
+              EresseaConstants.I_USILVER))) {
             final String name = item.getName();
             String quotedName = name;
 
@@ -1718,7 +1756,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       }
       if (unit.getSpells() != null) {
         addFilteredSpells(unit, far, region.getType().equals(
-            getData().getRules().getRegionType(EresseaConstants.RT_OCEAN)), combat, opening, closing);
+            getData().getRules().getRegionType(EresseaConstants.RT_OCEAN)), combat, opening,
+            closing);
       }
     }
 
@@ -1759,7 +1798,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
         Regions.getAllNeighbours(getData().regions(), region.getID(), 2, null);
 
     CoordinateID trans =
-        getData().getCoordinateTranslation(unit.getFaction().getID(), region.getCoordinate().getZ());
+        getData().getCoordinateTranslation(unit.getFaction().getID(), region.getCoordinate()
+            .getZ());
     if (trans != null) {
       trans = CoordinateID.create(0 - trans.getX(), 0 - trans.getY(), trans.getZ() - trans.getZ());
     }
@@ -1818,9 +1858,10 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   }
 
   /*
-   * Enno in e-client about the syntax: 'c' = Zeichenkette 'k' = REGION|EINHEIT|STUFE|SCHIFF|GEBAEUDE
-   * 'i' = Zahl 's' = Schiffsnummer 'b' = Gebaeudenummer 'r' = Regionskoordinaten (x, y) 'u' = Einheit
-   * '+' = Wiederholung des vorangehenden Parameters '?' = vorangegangener Parameter
+   * Enno in e-client about the syntax: 'c' = Zeichenkette 'k' =
+   * REGION|EINHEIT|STUFE|SCHIFF|GEBAEUDE 'i' = Zahl 's' = Schiffsnummer 'b' = Gebaeudenummer 'r' =
+   * Regionskoordinaten (x, y) 'u' = Einheit '+' = Wiederholung des vorangehenden Parameters '?' =
+   * vorangegangener Parameter
    */
   /** Add completions for command ZaubereSpruch. */
   public void cmpltZaubereSpruch(Spell spell) {

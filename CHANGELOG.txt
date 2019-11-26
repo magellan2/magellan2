@@ -1,3 +1,6 @@
+2019-11-26 / Build 686 - Fiete (sf@fietefietz.de)
+	* simple support for fleets: GIVE abcd X SHIP (OrderParser, OrderCompletion, CRReader, CRWriter, DetailsPanel)
+
 2019-08-24 / Build 683 - Fiete (sf@fietefietz.de)
 	* introduced new ShipType Galeone to E2 (EmapDetails), new rule-entry: minSailorLevel
 

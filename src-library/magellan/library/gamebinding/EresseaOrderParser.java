@@ -1534,6 +1534,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
         } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_MEN))) {
           getOrder().type = EresseaConstants.OC_MEN;
           retVal = true;
+        } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
+          getOrder().type = EresseaConstants.OC_SHIP;
+          retVal = true;
         } else {
           getOrder().setValid(false);
         }
@@ -2382,7 +2385,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
         retVal = readNummerEinheit(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP)) == true) {
         retVal = readNummerSchiff(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION)) == true) {
+      } else if (t.equalsToken(getOrderTranslation(
+          EresseaConstants.OC_PARAMETER_FACTION)) == true) {
         retVal = readNummerPartei(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE)) == true) {
         retVal = readNummerBurg(t);
@@ -2858,7 +2862,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
       }
 
       OrderToken t = getNextToken();
-      if (!isEoC(t) && isString(t) && !t.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
+      if (!isEoC(t) && isString(t) && !t.equalsToken(getOrderTranslation(
+          EresseaConstants.OC_ALL))) {
         // retVal = checkItem(t) != null && checkFinal(getLastToken());
         OrderToken[] result = getString(t);
         if (result[1] != null) {
@@ -3565,7 +3570,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
       private boolean addRegion;
       private boolean addLevel;
 
-      public ZaubereSpruchChecker(boolean far, boolean combat, boolean addRegion, boolean addLevel) {
+      public ZaubereSpruchChecker(boolean far, boolean combat, boolean addRegion,
+          boolean addLevel) {
         super(false, true, true, false);
         this.far = far;
         this.combat = combat;
@@ -3587,7 +3593,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
             // here we return just true
             // toDo: get Spell Syntax, check, if more tokens expected and
             // do next checks
-            if (s.getType() == null || (!combat ^ s.getType().toLowerCase().indexOf("combat") > -1)) {
+            if (s.getType() == null || (!combat ^ s.getType().toLowerCase().indexOf(
+                "combat") > -1)) {
               foundSpell = s;
               break;
             }

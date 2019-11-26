@@ -375,7 +375,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         if (getDisplayedObject() instanceof Unit) {
           Unit u = (Unit) getDisplayedObject();
 
-          if ((((u.getName() == null) && (name.getText().equals("") == false)) || ((u.getName() != null)
+          if ((((u.getName() == null) && (name.getText().equals("") == false)) || ((u
+              .getName() != null)
               && (name
                   .getText().equals(u.getName()) == false)))
               && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))
@@ -443,7 +444,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           Unit u = (Unit) getDisplayedObject();
 
           if ((((u.getDescription() == null) && (description.getText().equals("") == false)) || ((u
-              .getDescription() != null) && (description.getText().equals(u.getDescription()) == false)))
+              .getDescription() != null) && (description.getText().equals(u
+                  .getDescription()) == false)))
               && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))
               && !u.ordersAreNull()) {
             String descr = getDescriptionPart(description.getText());
@@ -558,8 +560,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
         if ((selectedNode != null)
-            && (selectedNode.getUserObject() instanceof UnitContainerCommentNodeWrapper || selectedNode
-                .getUserObject() instanceof UnitCommentNodeWrapper))
+            && (selectedNode.getUserObject() instanceof UnitContainerCommentNodeWrapper
+                || selectedNode
+                    .getUserObject() instanceof UnitCommentNodeWrapper))
           return super.isCellEditable(anEvent);
         return false;
       }
@@ -4217,11 +4220,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     // Schiffstyp
     if ((s.getName() != null) && (s.getType().getName() != null)) {
-      parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": "
-          + s.getType().getName(), s.getType().getIcon()));
+      if (s.getAmount() == 1) {
+        parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": "
+            + s.getType().getName(), s.getType().getIcon()));
+      } else {
+        parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": "
+            + s.getType().getName() + " (" + s.getAmount() + "x)", s.getType().getIcon()));
+      }
     }
 
-    int nominalShipSize = s.getShipType().getMaxSize();
+    int nominalShipSize = s.getShipType().getMaxSize() * s.getAmount();
 
     if (s.getSize() != nominalShipSize) {
       // nominal size and damage
@@ -4437,22 +4445,39 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     String text =
         Resources.get("emapdetailspanel.node.sailingskill") + ": "
             + Resources.get("emapdetailspanel.node.captain") + " " + captainSkillAmount + " / "
-            + s.getShipType().getCaptainSkillLevel() + ", ";
-    // n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-    // Resources.get("emapdetailspanel.node.captainskill") + ": " + sailingSkillAmount + " / "
-    // + s.getShipType().getCaptainSkillLevel(), "captain"));
-    // parent.add(n);
+            + s.getShipType().getCaptainSkillLevel();
+
+    if (captainSkillAmount < s.getShipType().getCaptainSkillLevel()) {
+      text += " (!!!)";
+    }
+    text += ", ";
 
     // Matrosen
     int sailingSkillAmount = magellan.library.utils.Units.getSailingSkillAmount(s);
 
     text +=
         Resources.get("emapdetailspanel.node.crew") + " " + sailingSkillAmount + " / "
-            + s.getShipType().getSailorSkillLevel();
+            + (s.getShipType().getSailorSkillLevel() * s.getAmount());
+    if (sailingSkillAmount < s.getShipType().getSailorSkillLevel() * s.getAmount()) {
+      text += " (!!!)";
+    }
 
     DefaultMutableTreeNode n =
         new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
     parent.add(n);
+
+    // Bei Flotten: Anzahl der Personen beim Kapitän >= Anzahl der Schiffe
+    if (s.getAmount() > 1) {
+      int captainPersons = magellan.library.utils.Units.getCaptainPersons(s);
+      text = Resources.get("emapdetailspanel.node.captainAmount") + ": "
+          + captainPersons + " / "
+          + s.getAmount();
+      if (captainPersons < s.getAmount()) {
+        text += " (!!!)";
+      }
+      n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
+      parent.add(n);
+    }
 
   }
 

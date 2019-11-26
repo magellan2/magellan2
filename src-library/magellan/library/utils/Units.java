@@ -301,6 +301,19 @@ public class Units {
   }
 
   /**
+   * Returns the number of persons of the ship's owner
+   */
+  public static int getCaptainPersons(Ship s) {
+    // FIXME shouldn't access getData() from here, maybe move to GameSpecific
+    Unit owner = s.getModifiedOwnerUnit();
+    int captainPersons = 0;
+    if (owner != null) {
+      captainPersons = owner.getModifiedPersons();
+    }
+    return captainPersons;
+  }
+
+  /**
    * Returns the sailing skill sum of the ship's crew.
    */
   public static int getSailingSkillAmount(Ship s) {

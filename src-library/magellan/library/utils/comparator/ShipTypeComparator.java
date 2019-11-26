@@ -35,7 +35,7 @@ public class ShipTypeComparator implements Comparator<Ship> {
 
   /**
    * Creates a new ShipTypeComparator object.
-   * 
+   *
    * @param aSubCmp if two ships having the same type are compared, this sub-comparator is applied
    *          if it is not<tt>null</tt>.
    */
@@ -45,7 +45,7 @@ public class ShipTypeComparator implements Comparator<Ship> {
 
   /**
    * Compares its two arguments for order according to their types. ' *
-   * 
+   *
    * @return the natural ordering of <tt>o1</tt>'s and <tt>o2</tt>'s types as returned by
    *         BuildingType.compareTo(). If the types are equal and a sub-comparator was specified,
    *         the result of that sub-comparator's comparison is returned.
@@ -55,6 +55,10 @@ public class ShipTypeComparator implements Comparator<Ship> {
     ShipType t2 = (ShipType) o2.getType();
 
     int retVal = t1.compareTo(t2);
+    if (retVal == 0) {
+      // big fleets to top
+      retVal = o2.getAmount() - o1.getAmount();
+    }
 
     return ((retVal == 0) && (subCmp != null)) ? subCmp.compare(o1, o2) : retVal;
   }

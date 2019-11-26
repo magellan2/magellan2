@@ -29,7 +29,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A class for representing a ship.
- * 
+ *
  * @author $Author: $
  * @version $Revision: 389 $
  */
@@ -57,7 +57,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * The weight of the units and items on this ship in GE.
-   * 
+   *
    * @deprecated replaced by cargo
    */
   @Deprecated
@@ -66,7 +66,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   /**
    * The maximum payload of this ship in GE. 0 &lt;= capacity &lt;= getType().getCapacity() if the
    * ship is damaged.
-   * 
+   *
    * @deprecated replaced by capacity
    */
   @Deprecated
@@ -84,9 +84,12 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   /** The maximum capacity for persons &lt;=getType().getMaxPersons() */
   protected int maxPersons = -1;
 
+  /** number of ships in a fleet (Eressea since CR - Version 67 (ca 12/2019) */
+  protected int amount = 1;
+
   /**
    * Creates a new Ship object.
-   * 
+   *
    * @param id
    * @param data
    */
@@ -101,7 +104,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the region this ship is in and notifies region about it.
-   * 
+   *
    * @param region
    */
   public void setRegion(Region region) {
@@ -118,7 +121,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Returns the region this ship is in.
-   * 
+   *
    * @return The region the ship is in, possibly null
    */
   public Region getRegion() {
@@ -127,7 +130,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * The type of this ship.
-   * 
+   *
    * @return The type of this ship
    */
   public ShipType getShipType() {
@@ -136,20 +139,20 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Returns the maximum capacity with respect to damages of the ship in silver.
-   * 
+   *
    * @return Returns the maximum capacity with respect to damages of the ship in silver
    */
   public int getMaxCapacity() {
     if (capacity != -1)
       return capacity;
     return (deprecatedCapacity != -1) ? deprecatedCapacity * 100 : getMaxCapacity(getShipType()
-        .getCapacity() * 100);
+        .getCapacity() * 100 * amount);
   }
 
   /**
    * Returns the maximimum capacity with respect to damages of the ship in GE if the undamaged
    * capacity was <code>maxCapacity</code>.
-   * 
+   *
    * @param maxCapacity The capacity is calculated relative to this capacity
    * @return The max damaged capacity
    */
@@ -161,7 +164,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Returns the cargo load of this ship.
-   * 
+   *
    * @return Returns the cargo load of this ship
    */
   public int getCargo() {
@@ -176,7 +179,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   /**
    * Calculates the weight of all units of this ship. This is usually less precise than
    * {@link #getCargo()}.
-   * 
+   *
    * @return The load of the ship
    */
   public int getLoad() {
@@ -196,7 +199,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * Returns the (modified) weight of all (modified) units of this ship . The method does some delta
    * calculation to be more precise. The initial load is subtracted by the initial weight of the
    * initial units and added by the modified weight of the modified units.
-   * 
+   *
    * @return The modified load of the ship TODO: move to {@link MovementEvaluator}
    */
   public int getModifiedLoad() {
@@ -232,7 +235,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * This is a helper function for showing inner object state.
-   * 
+   *
    * @return A debug message
    */
   public String toDebugString() {
@@ -243,7 +246,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * A string representation of this ship.
-   * 
+   *
    * @return A string representation of this ship
    */
   @Override
@@ -254,7 +257,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   /**
    * Returns the string representation of this ship. If <code>printExtended</code> is true, type,
    * damage and remaing capacity are shown, too.
-   * 
+   *
    * @param printExtended Whether to return a more detailed description
    * @return A strig representation of this ship
    */
@@ -271,9 +274,13 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     sb.append(myName).append(" (").append(getID().toString()).append(")");
 
     if (printExtended) {
-      sb.append(", ").append(getType());
+      sb.append(", ");
+      if (amount > 1) {
+        sb.append(amount + "x ");
+      }
+      sb.append(getType());
 
-      final int nominalShipSize = getShipType().getMaxSize();
+      final int nominalShipSize = getShipType().getMaxSize() * amount;
 
       if (size != nominalShipSize) {
         sb.append(" (").append(size).append("/").append(nominalShipSize).append(")");
@@ -293,7 +300,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Returns the value of capacity.
-   * 
+   *
    * @return Returns capacity.
    */
   public int getCapacity() {
@@ -302,7 +309,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of capacity.
-   * 
+   *
    * @param capacity The value for capacity.
    */
   public void setCapacity(int capacity) {
@@ -311,7 +318,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Returns the value of damageRatio.
-   * 
+   *
    * @return Returns damageRatio.
    */
   public int getDamageRatio() {
@@ -320,7 +327,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of damageRatio.
-   * 
+   *
    * @param damageRatio The value for damageRatio.
    */
   public void setDamageRatio(int damageRatio) {
@@ -329,7 +336,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Returns the value of deprecatedCapacity.
-   * 
+   *
    * @return Returns deprecatedCapacity.
    */
   public int getDeprecatedCapacity() {
@@ -338,7 +345,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of deprecatedCapacity.
-   * 
+   *
    * @param deprecatedCapacity The value for deprecatedCapacity.
    */
   public void setDeprecatedCapacity(int deprecatedCapacity) {
@@ -347,7 +354,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Returns the value of deprecatedLoad.
-   * 
+   *
    * @return Returns deprecatedLoad.
    */
   public int getDeprecatedLoad() {
@@ -356,7 +363,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of deprecatedLoad.
-   * 
+   *
    * @param deprecatedLoad The value for deprecatedLoad.
    */
   public void setDeprecatedLoad(int deprecatedLoad) {
@@ -365,7 +372,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Returns the value of shoreId.
-   * 
+   *
    * @return Returns shoreId.
    */
   public int getShoreId() {
@@ -374,7 +381,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of shoreId.
-   * 
+   *
    * @param shoreId The value for shoreId.
    */
   public void setShoreId(int shoreId) {
@@ -383,7 +390,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Returns the value of size.
-   * 
+   *
    * @return Returns size.
    */
   public int getSize() {
@@ -392,7 +399,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of size.
-   * 
+   *
    * @param size The value for size.
    */
   public void setSize(int size) {
@@ -401,7 +408,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of cargo.
-   * 
+   *
    * @param cargo The value for cargo.
    */
   public void setCargo(int cargo) {
@@ -422,6 +429,20 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     /* max persons are not modified by damage */
     /* return (maxPersons != -1) ? maxPersons : getMaxCapacity(getShipType().getMaxPersons()); */
     return (maxPersons != -1) ? maxPersons : getShipType().getMaxPersons();
+  }
+
+  /**
+   * @see magellan.library.Ship#setAmount(int)
+   */
+  public void setAmount(int _amount) {
+    amount = _amount;
+  }
+
+  /**
+   * @see magellan.library.Ship#getAmount()
+   */
+  public int getAmount() {
+    return amount;
   }
 
   /**

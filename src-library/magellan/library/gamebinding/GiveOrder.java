@@ -37,6 +37,7 @@ import magellan.library.relation.ControlRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.ReserveRelation;
+import magellan.library.relation.ShipTransferRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.relation.UnitTransferRelation;
 import magellan.library.rules.ItemCategory;
@@ -142,6 +143,7 @@ public class GiveOrder extends UnitArgumentOrder {
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
     // GIB 0|<enr> (ALLES|EINHEIT|KRaeUTER|KOMMANDO|((([JE] <amount>)|ALLES)
     // (SILBER|PERSONEN|<gegenstand>)))
+    // GIB EINHEIT <amount> SHIFF
     if (!isValid())
       return;
 
@@ -211,6 +213,14 @@ public class GiveOrder extends UnitArgumentOrder {
           }
 
           rel.add();
+        } else if (type == EresseaConstants.OC_SHIP) {
+          if (unit.getShip() != null) {
+            ShipTransferRelation rel =
+                new ShipTransferRelation(unit, zeroOrTarget, -1, unit.getShip(), line);
+            rel.amount = Math.min(unit.getShip().getModifiedAmount(), amount);
+            rel.add();
+          }
+
         } else if (type == EresseaConstants.OC_HERBS) {
           // create relations for all herbs the unit carries
           ItemCategory herbCategory = data.getRules().getItemCategory(StringID.create(("HERBS")));
@@ -244,6 +254,7 @@ public class GiveOrder extends UnitArgumentOrder {
               }
             }
           }
+
         } else if (type == EresseaConstants.OC_GIVE) {
           if (itemType != null) {
             if (EresseaConstants.I_UPEASANT.equals(itemType.getID())) {

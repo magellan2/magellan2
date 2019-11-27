@@ -14,6 +14,8 @@
 package magellan.library.impl;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
 
 import magellan.library.EntityID;
 import magellan.library.GameData;
@@ -23,7 +25,9 @@ import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MovementEvaluator;
+import magellan.library.relation.ShipTransferRelation;
 import magellan.library.rules.ShipType;
+import magellan.library.utils.Cache;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -147,6 +151,16 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
       return capacity;
     return (deprecatedCapacity != -1) ? deprecatedCapacity * 100 : getMaxCapacity(getShipType()
         .getCapacity() * 100 * amount);
+  }
+
+  /**
+   * Returns the expected / prjected maximum capacity with respect to damages of the ship in silver.
+   *
+   * @return Returns the expected / projected maximum capacity with respect to damages of the ship
+   *         in silver
+   */
+  public int getModifiedMaxCapacity() {
+    return (getMaxCapacity(getShipType().getCapacity() * 100 * getModifiedAmount()));
   }
 
   /**
@@ -278,12 +292,22 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
       if (amount > 1) {
         sb.append(amount + "x ");
       }
+      if (getModifiedAmount() != amount) {
+        sb.append("(" + getModifiedAmount() + "x) ");
+      }
       sb.append(getType());
 
       final int nominalShipSize = getShipType().getMaxSize() * amount;
+      final int modifiedNominalShipSize = getShipType().getMaxSize() * getModifiedAmount();
 
       if (size != nominalShipSize) {
         sb.append(" (").append(size).append("/").append(nominalShipSize).append(")");
+      }
+
+      if (getModifiedSize() != modifiedNominalShipSize && (getModifiedSize() != size
+          || modifiedNominalShipSize != nominalShipSize)) {
+        sb.append(" (-> ").append(getModifiedSize()).append("/").append(modifiedNominalShipSize)
+            .append(")");
       }
 
       if (damageRatio != 0) {
@@ -488,4 +512,72 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   public void setSpeed(int newSpeed) {
     speed = newSpeed;
   }
+
+  /**
+   * Returns the number of Ships in this fleet as it would be after the orders of this and other
+   * units have been processed since it may be modified by transfer orders.
+   */
+  public int getModifiedAmount() {
+
+    if (getOwner() == null)
+      return getAmount();
+
+    final Cache cache1 = getOwner().getCache();
+    if (cache1.modifiedAmount == -1) {
+      cache1.modifiedAmount = getAmount();
+      for (ShipTransferRelation tr : getShipTransferRelations()) {
+        if (getOwner().equals(tr.source)) {
+          cache1.modifiedAmount -= tr.amount;
+        } else {
+          cache1.modifiedAmount += tr.amount;
+        }
+      }
+
+    }
+
+    return cache1.modifiedAmount;
+  }
+
+  /**
+   * Returns the number of Ships in this fleet as it would be after the orders of this and other
+   * units have been processed since it may be modified by transfer orders.
+   */
+  public int getModifiedSize() {
+
+    if (getOwner() == null)
+      return getSize();
+
+    final Cache cache1 = getOwner().getCache();
+    if (cache1.modifiedSize == -1) {
+      cache1.modifiedSize = getSize();
+      for (ShipTransferRelation tr : getShipTransferRelations()) {
+        int sizeAmount = Math.round((tr.amount * tr.ship.getSize() / tr.ship.getAmount()));
+        if (getOwner().equals(tr.source)) {
+          cache1.modifiedSize -= sizeAmount;
+        } else {
+          cache1.modifiedSize += sizeAmount;
+        }
+      }
+    }
+    return cache1.modifiedSize;
+  }
+
+  /**
+   * Returns a collection of the ship transfer relations associated with the owner of this
+   * ship/fleet
+   *
+   * @return a collection of ShipTransferRelation objects.
+   */
+  public List<ShipTransferRelation> getShipTransferRelations() {
+    if (getOwner() == null) {
+
+      final List<ShipTransferRelation> ret2 = new LinkedList<ShipTransferRelation>();
+      return ret2;
+    } else {
+      final List<ShipTransferRelation> ret = getOwner().getRelations(ShipTransferRelation.class);
+      return ret;
+    }
+
+  }
+
 }

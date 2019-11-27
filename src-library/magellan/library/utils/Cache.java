@@ -71,6 +71,12 @@ public class Cache {
   /** number of persons after orders */
   public int modifiedPersons = -1;
 
+  /** used for amount of ships in a fleet */
+  public int modifiedAmount = -1;
+
+  /** used for size ships in a fleet */
+  public int modifiedSize = -1;
+
   /**
    * The expected combat status at beginning next turn acording to actual orders If cache is not
    * calculated, status is EresseaConstants.CS_INIT;
@@ -100,7 +106,7 @@ public class Cache {
 
   /**
    * Used in Region for creating a list of Items of priviliged factions in the region
-   * 
+   *
    * @deprecated replaced by method in Units
    */
   @Deprecated
@@ -108,7 +114,7 @@ public class Cache {
 
   /**
    * Used in Region for creating a list of Items of all factions in the region
-   * 
+   *
    * @deprecated replaced by method in Units
    */
   @Deprecated
@@ -132,7 +138,7 @@ public class Cache {
 
   /**
    * Register a CacheHandler.
-   * 
+   *
    * @param h
    */
   public void addHandler(CacheHandler h) {
@@ -145,7 +151,7 @@ public class Cache {
 
   /**
    * Un-register a CacheHandler.
-   * 
+   *
    * @param h
    */
   public void removeHandler(CacheHandler h) {
@@ -182,6 +188,8 @@ public class Cache {
     unitWeight = -1;
     modifiedUnitWeight = -1;
     modifiedPersons = -1;
+    modifiedAmount = -1;
+    modifiedSize = -1;
     modifiedContainerUnits = null;
     modifiedCombatStatus = EresseaConstants.CS_INIT;
     modifiedUnaidedValidated = false;

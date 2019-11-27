@@ -4220,12 +4220,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     // Schiffstyp
     if ((s.getName() != null) && (s.getType().getName() != null)) {
-      if (s.getAmount() == 1) {
+      if (s.getAmount() == 1 && s.getModifiedAmount() == 1) {
         parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": "
             + s.getType().getName(), s.getType().getIcon()));
       } else {
+        String text = s.getAmount() + "x";
+        if (s.getAmount() != s.getModifiedAmount()) {
+          text += " -> " + s.getModifiedAmount() + "x";
+        }
         parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": "
-            + s.getType().getName() + " (" + s.getAmount() + "x)", s.getType().getIcon()));
+            + s.getType().getName() + " (" + text + ")", s.getType().getIcon()));
       }
     }
 
@@ -4235,8 +4239,19 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       // nominal size and damage
       int ratio = nominalShipSize != 0 ? ratio = (s.getSize() * 100) / nominalShipSize : 0;
 
-      parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.completion") + ": " + ratio
-          + "% (" + s.getSize() + "/" + nominalShipSize + ")", "sonstiges"));
+      String text = Resources.get("emapdetailspanel.node.completion") + ": " + ratio
+          + "% (" + s.getSize() + "/" + nominalShipSize + ")";
+
+      final int modifiedNominalShipSize = s.getShipType().getMaxSize() * s.getModifiedAmount();
+
+      if (s.getModifiedSize() != modifiedNominalShipSize && (s.getModifiedSize() != s.getSize()
+          || modifiedNominalShipSize != nominalShipSize)) {
+        ratio = modifiedNominalShipSize != 0 ? ratio = (s.getModifiedSize() * 100)
+            / modifiedNominalShipSize : 0;
+        text += " (-> " + ratio + "% :" + s.getModifiedSize() + "/" + modifiedNominalShipSize + ")";
+      }
+
+      parent.add(createSimpleNode(text, "sonstiges"));
 
       appendShipDamageInfo(s, parent, expandableNodes);
     } else {
@@ -4517,6 +4532,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     loadText.append(" / ");
 
     loadText.append(strCap).append(" ");
+
+    if (s.getModifiedMaxCapacity() != s.getMaxCapacity()) {
+      loadText.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(Float.valueOf(s
+          .getModifiedMaxCapacity() / 100.0F))).append(") ");
+    }
+
     loadText.append(Resources.get("emapdetailspanel.node.weightunits"));
 
     boolean warning = false;
@@ -4546,7 +4567,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
     }
 
-    if (warning || s.getModifiedLoad() > s.getMaxCapacity()) {
+    if (warning || s.getModifiedLoad() > s.getModifiedMaxCapacity()) {
       loadText.append(" (!!!)");
     }
 
@@ -4556,13 +4577,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     parent.add(n);
 
     // explizit node for overloading a ship
-    if (s.getModifiedLoad() > s.getMaxCapacity()) {
+    if (s.getModifiedLoad() > s.getModifiedMaxCapacity()) {
       loadText.delete(0, loadText.length());
       loadText.append(Resources.get("emapdetailspanel.node.load")).append(": ");
       loadText.append(Resources.get("emapdetailspanel.node.overloadedby")).append(" ");
       loadText.append(
           EMapDetailsPanel.weightNumberFormat.format(Float.valueOf((s.getModifiedLoad() - s
-              .getMaxCapacity()) / 100.0F))).append(" ");
+              .getModifiedMaxCapacity()) / 100.0F))).append(" ");
       loadText.append(Resources.get("emapdetailspanel.node.weightunits"));
 
       n =

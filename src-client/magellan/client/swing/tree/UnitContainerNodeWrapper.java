@@ -28,7 +28,7 @@ import magellan.library.utils.StringFactory;
 
 /**
  * DOCUMENT-ME
- * 
+ *
  * @author $Author: $
  * @version $Revision: 393 $
  */
@@ -48,7 +48,7 @@ public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements Supp
 
   /**
    * Creates a new UnitContainerNodeWrapper object.
-   * 
+   *
    * @param uc
    * @param showFreeLoad If this is true, the free space is returned in the text
    */
@@ -58,7 +58,7 @@ public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements Supp
 
   /**
    * Creates a new UnitContainerNodeWrapper object.
-   * 
+   *
    * @param uc
    * @param showFreeLoad If this is true, the free space is returned in the text
    * @param hasOwner if <code>true</code>, the text indicates that the node is displayed for the
@@ -101,12 +101,18 @@ public class UnitContainerNodeWrapper extends DefaultNodeWrapper implements Supp
       float free = (s.getMaxCapacity() - s.getModifiedLoad()) / 100F;
       text.append(weightNumberFormat.format(free));
 
+      if (s.getModifiedMaxCapacity() != s.getMaxCapacity()) {
+        free = (s.getModifiedMaxCapacity() - s.getModifiedLoad()) / 100F;
+        text.append(" (" + weightNumberFormat.format(free) + ")");
+      }
+
       float pFree = 0;
       if (s.getShipType().getMaxPersons() >= 0) {
         int personWeight = 10;
         int silverPerWeightUnit = 100;
         pFree =
-            (s.getMaxPersons() * personWeight * silverPerWeightUnit - s.getModifiedPersonLoad()) / 100F;
+            (s.getMaxPersons() * personWeight * silverPerWeightUnit - s.getModifiedPersonLoad())
+                / 100F;
         text.append("; ");
         text.append(weightNumberFormat.format(pFree));
       }

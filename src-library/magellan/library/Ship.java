@@ -52,6 +52,13 @@ public interface Ship extends UnitContainer, HasRegion, Selectable {
   public int getMaxCapacity();
 
   /**
+   * Returns the projected maximum capacity with respect to damages of the ship in silver.
+   *
+   * @return Returns the projected maximum capacity with respect to damages of the ship in silver
+   */
+  public int getModifiedMaxCapacity();
+
+  /**
    * Returns the cargo load of this ship.
    *
    * @return Returns the cargo load of this ship or -1 if unknown
@@ -229,5 +236,15 @@ public interface Ship extends UnitContainer, HasRegion, Selectable {
    * @return The amount of ships in a fleet, or 1
    */
   public int getAmount();
+
+  /**
+   * @return The projected amount of ships in a fleet, or 1
+   */
+  public int getModifiedAmount();
+
+  /**
+   * @return The projected size of ships in a fleet
+   */
+  public int getModifiedSize();
 
 }

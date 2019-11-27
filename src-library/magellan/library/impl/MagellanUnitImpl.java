@@ -1068,7 +1068,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       gdata.addTempUnit(t);
     } else {
       MagellanUnitImpl.log
-          .warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
+          .warn(
+              "Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
     }
 
     // FIXME(stm) fire unitorderschanged?)
@@ -1118,6 +1119,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
       cache1.unitWeight = -1;
       cache1.modifiedUnitWeight = -1;
       cache1.modifiedPersons = -1;
+      cache1.modifiedAmount = -1;
+      cache1.modifiedSize = -1;
       cache1.modifiedCombatStatus = EresseaConstants.CS_INIT;
       cache1.modifiedUnaidedValidated = false;
       cache1.modifiedGuard = -1;
@@ -1416,8 +1419,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
             final int targetSkillFactor =
                 Math.max(0, targetSkill.getLevel() - skillModifier) * targetClone.getPersons();
             final int newSkillLevel =
-                (int) (((float) (transferredSkillFactor + targetSkillFactor)) / (float) (transferredPersons + targetClone
-                    .getPersons()));
+                (int) (((float) (transferredSkillFactor + targetSkillFactor))
+                    / (float) (transferredPersons + targetClone
+                        .getPersons()));
 
             /*
              * newSkillLevel == 0 means that that the skill is lost by this transfer but we may not
@@ -1460,8 +1464,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
               final int transferredSkillFactor =
                   Math.max(0, srcSkill.getLevel() - skillModifier) * transferredPersons;
               final int newSkillLevel =
-                  (int) (((float) transferredSkillFactor) / (float) (transferredPersons + targetClone
-                      .getPersons()));
+                  (int) (((float) transferredSkillFactor) / (float) (transferredPersons
+                      + targetClone
+                          .getPersons()));
 
               /*
                * newSkillLevel == 0 means that that the skill is lost by this transfer but we may
@@ -1473,7 +1478,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
                   : lostSkillLevel);
             } else {
               final int newSkillPoints =
-                  (int) (srcSkill.getPoints() * (transferredPersons / (float) srcClone.getPersons()));
+                  (int) (srcSkill.getPoints() * (transferredPersons / (float) srcClone
+                      .getPersons()));
               targetSkill.setPoints(newSkillPoints);
             }
           }

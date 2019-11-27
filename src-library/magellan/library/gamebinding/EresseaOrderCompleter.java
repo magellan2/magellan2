@@ -830,8 +830,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
             if (target.getFaction() != null && target.getFaction().equals(unit.getFaction())) {
               Ship targetShip = target.getShip();
               // same shipType
-              if (targetShip != null && targetShip.getModifiedOwnerUnit().equals(target)
-                  && targetShip.getShipType().equals(s.getShipType())) {
+              if (targetShip == null || (targetShip.getModifiedOwnerUnit().equals(target)
+                  && targetShip.getShipType().equals(s.getShipType()))) {
                 completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SHIP),
                     Completion.DEFAULT_PRIORITY + 1));
               }

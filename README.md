@@ -1,5 +1,5 @@
-[Build Status](https://travis-ci.org/magellan2/magellan2.svg?branch=master)
-[Language Java](https://img.shields.io/badge/language-java-success)
+[(https://travis-ci.org/magellan2/magellan2.svg?branch=master)]
+[(https://img.shields.io/badge/language-java-success)]
 
 # Welcome to Magellan!
 

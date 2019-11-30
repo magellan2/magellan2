@@ -15,8 +15,8 @@ jobs:
         - git config --local user.email "$GITHUB_MAIL"
 #        - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
         - export TRAVIS_TAG="v2.0.6"
-        - git push --delete origin $TRAVIS_TAG
-        - git tag -d $TRAVIS_TAG
+#        - git push --delete origin $TRAVIS_TAG
+#        - git tag -d $TRAVIS_TAG
       deploy:
         provider: releases
         api_key: $GITHUB_OAUTH_TOKEN

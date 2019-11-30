@@ -14,8 +14,9 @@ jobs:
         - git config --local user.name "$GITHUB_USER"
         - git config --local user.email "$GITHUB_MAIL"
 #        - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-        - export TRAVIS_TAG="v2.0.6-$(date +'%Y%m%d%H%M%S')"
-        - git tag $TRAVIS_TAG
+#        - export TRAVIS_TAG="v2.0.6-$(date +'%Y%m%d%H%M%S')"
+        - export TRAVIS_TAG="v2.0.7-alpha"
+        - git tag -f $TRAVIS_TAG
       deploy:
         provider: releases
         api_key: $GITHUB_OAUTH_TOKEN

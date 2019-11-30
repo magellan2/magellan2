@@ -19,6 +19,6 @@ jobs:
         overwrite: true
         override: true
         file: 
-          - magellan_v2.0.6.jar
-          - magellan_v2.0.6.zip
+          - magellan_v2.0.7.jar
+          - magellan_v2.0.7.zip
         skip_cleanup: true

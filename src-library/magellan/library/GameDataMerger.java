@@ -2305,6 +2305,10 @@ public class GameDataMerger {
     if (curShip.getSpeed() != -1) {
       newShip.setSpeed(curShip.getSpeed());
     }
+    // fleet support
+    if (curShip.getAmount() != 1) {
+      newShip.setAmount(curShip.getAmount());
+    }
   }
 
   /**

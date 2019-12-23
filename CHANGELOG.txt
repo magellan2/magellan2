@@ -1,3 +1,6 @@
+2019-12-24 / Build 687 - Fiete (sf@fietefietz.de)
+	* simple support for fleets: BugFix in MergeGameData (forgot the ship.Amount there)
+
 2019-11-26 / Build 686 - Fiete (sf@fietefietz.de)
 	* simple support for fleets: GIVE abcd X SHIP (OrderParser, OrderCompletion, CRReader, CRWriter, DetailsPanel)
 

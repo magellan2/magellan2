@@ -1788,7 +1788,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_NOT))) {
         token.ttype = OrderToken.TT_KEYWORD;
         return checkNextFinal();
-      } else if (isEoC(token)) {
+      } else if (isFinal(token)) {
         if (getCompleter() != null) {
           getCompleter().cmpltKampfzauberSpell();
         }
@@ -3628,7 +3628,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       if (s == null || s.getSyntax() == null)
         // FIXME this is not /syntactically/ incorrect...
         return false;
-      return !isEoC(t) ^ s.getSyntax().length() == 0;
+      return !isFinal(t) ^ s.getSyntax().length() == 0;
     }
 
     /**

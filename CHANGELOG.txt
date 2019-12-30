@@ -1,3 +1,6 @@
+2019-12-31 / Build 688 - Fiete (sf@fietefietz.de)
+	* BugFix: comments ending mage spell orders rising errors
+
 2019-12-24 / Build 687 - Fiete (sf@fietefietz.de)
 	* simple support for fleets: BugFix in MergeGameData (forgot the ship.Amount there)
 

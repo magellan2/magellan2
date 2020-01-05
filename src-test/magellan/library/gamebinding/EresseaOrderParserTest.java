@@ -627,6 +627,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder(getOrderTranslation(EresseaConstants.OC_COMBATSPELL) + " Hagel");
     checkOrder("KAMPFZAUBER STUFE 2 Hagel");
     checkOrder("KAMPFZAUBER Hagel NICHT");
+    checkOrder("KAMPFZAUBE Hagel; gut");
     checkOrder("KAMPFZAUBER STUFE 2 \"Groﬂes Fest\"", false); // no combat spell
     checkOrder("KAMPFZAUBER STUFE Hagel", false);
     checkOrder("KAMPFZAUBER Magisches Geschoﬂ", false);
@@ -681,12 +682,15 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder(getOrderTranslation(EresseaConstants.OC_LEARN) + " Ausdauer");
     checkOrder("LERNE Hiebwaffen");
     checkOrder("LERNE \"Hiebwaffen\"");
+    checkOrder("LERNE Hiebwaffen 500"); // costs
+    checkOrder("LERNE Magie \"Gwyrrd\"");
     checkOrder("LERNE Waffenloser~Kampf");
     checkOrder("LERNE", false);
     checkOrder("LERNE foo", false);
     checkOrder("LERNE Waffenloser Kampf", false);
     checkOrder("LERNE 123 456", false);
     checkOrder("LERNE Magie 1234#", false);
+    checkOrder("LERNE Hiebwaffen \"Gwyrrd\"", false);
   }
 
   /**
@@ -1086,6 +1090,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
 
     checkOrder("ZAUBERE STUFE 2 Schild zwei");
     checkOrder("ZAUBERE STUFE 2 \"Groﬂes Fest\"");
+    checkOrder("ZAUBERE \"Groﬂes Fest\"; Comment");
     checkOrder("ZAUBERE Schild NICHT", true); // TODO cave: NICHT is read as spell parameter
     checkOrder("ZAUBERE \"Groﬂes Fest\" NICHT", false);
     checkOrder("ZAUBERE Hagel", false); // combat spell

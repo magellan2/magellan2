@@ -10,27 +10,24 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.library.gamebinding.e3a;
-
-import java.math.BigDecimal;
 
 import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
-import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
@@ -42,7 +39,7 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * This class implements all Eressea specific rule informations.
- * 
+ *
  * @author Thoralf Rickert
  * @version 1.0, 19.04.2009
  */
@@ -54,7 +51,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
 
   /**
    * Returns the tax income
-   * 
+   *
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxEntertain(magellan.library.Region)
    */
   @Override
@@ -102,7 +99,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
 
   /**
    * Returns 0.
-   * 
+   *
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxOldEntertain(magellan.library.Region)
    *      FIXME maybe return something depending on morale (and biggest castle or watch)
    */
@@ -171,48 +168,9 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
       return -1;
   }
 
-  @Override
-  public int getShipRange(Ship s) {
-    if (s.getSpeed() != -1 && s.getModifiedOwnerUnit() == s.getOwnerUnit())
-      return s.getSpeed();
-
-    // Reichweite (bei Schaden aufrunden)
-    int rad = s.getShipType().getRange();
-
-    if (s.getModifiedOwnerUnit() != null) {
-      if (s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
-        rad += s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus();
-      }
-
-      // add +1 to speed for every six levels over half (rounded up!) minimum captain speed
-      Skill sailing =
-          s.getModifiedOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
-      if (sailing != null) {
-        rad +=
-            Math.max(0, (sailing.getLevel() - (1 + s.getShipType().getCaptainSkillLevel()) / 2) / 6);
-      }
-    }
-
-    // rad = rad*(100.0-damageRatio)/100.0
-    rad =
-        new BigDecimal(rad).multiply(new BigDecimal(100 - s.getDamageRatio())).divide(
-            new BigDecimal(100), BigDecimal.ROUND_UP).intValue();
-
-    return rad;
-  }
-
-  /**
-   * @see magellan.library.gamebinding.EresseaGameSpecificRules#isToroidal()
-   *      // * @see magellan.library.gamebinding.GameSpecificRules#isToroidal()
-   */
-  @Override
-  public boolean isToroidal() {
-    return true;
-  }
-
   /**
    * Returns true. Material and silver pools are always active in E3.
-   * 
+   *
    * @see magellan.library.gamebinding.EresseaGameSpecificRules#isPooled(magellan.library.Unit,
    *      magellan.library.StringID)
    */
@@ -223,7 +181,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
 
   /**
    * Returns true. Material and silver pools are always active in E3.
-   * 
+   *
    * @see magellan.library.gamebinding.EresseaGameSpecificRules#isPooled(magellan.library.Unit,
    *      magellan.library.rules.ItemType)
    */
@@ -234,7 +192,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
 
   /**
    * Interprets Alliance as HELp COMBAT.
-   * 
+   *
    * @see magellan.library.gamebinding.EresseaGameSpecificRules#isAllied(magellan.library.Faction,
    *      magellan.library.Faction, int)
    */
@@ -243,7 +201,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
     return super.isAllied(faction, ally, aState)
         || ((aState | EresseaConstants.A_COMBAT) != 0 && faction.getAlliance() != null
             && faction.getAlliance().getFactions().contains(ally.getID()) && super.isAllied(
-            faction, ally, aState ^ EresseaConstants.A_COMBAT));
+                faction, ally, aState ^ EresseaConstants.A_COMBAT));
   }
 
   @Override

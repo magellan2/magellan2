@@ -1218,6 +1218,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("range")) {
         shipType.setRange(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("rangeformula")) {
+        shipType.setRangeFormula(sc.argv[0]);
+        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("captainlevel")) {
         shipType.setCaptainSkillLevel(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();

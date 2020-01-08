@@ -54,6 +54,8 @@ import magellan.library.utils.logging.Logger;
  */
 public class EresseaGameSpecificRules implements GameSpecificRules {
 
+  private static Logger log = Logger.getInstance(EresseaGameSpecificRules.class);
+
   private Rules rules;
 
   protected EresseaGameSpecificRules(Rules rules) {
@@ -178,6 +180,39 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     // Reichweite (bei Schaden aufrunden)
     int rad = s.getShipType().getRange();
 
+    if (s.getShipType().getRangeFormula() != null) {
+      if (s.getShipType().getRangeFormula().equals(
+          "$range + max(0, log_3(($currentcaptainlevel / $captainlevel)))")) {
+        if (s.getModifiedOwnerUnit() != null) {
+          Skill sailing =
+              s.getModifiedOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
+          if (sailing != null) {
+            for (int sail = Math.max(0, (sailing.getLevel() / s.getShipType()
+                .getCaptainSkillLevel())); sail >= 3; sail /= 3) {
+              ++rad;
+            }
+          }
+        }
+      } else if (s.getShipType().getRangeFormula().equals(
+          "$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)")) {
+        if (s.getModifiedOwnerUnit() != null) {
+          // Kapitäne erhalten einen Bonus von +1 auf die Reichweite ihrer Schiffe für je 6 Stufen
+          // Segeln-Talent über dem halben Mindest-Kapitänstalent (aufgerundet, siehe Tabelle).
+          // add +1 to speed for every six levels over half (rounded up!) minimum captain speed
+          Skill sailing =
+              s.getModifiedOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
+          if (sailing != null) {
+            rad +=
+                Math.max(0, (sailing.getLevel() - (1 + s.getShipType().getCaptainSkillLevel()) / 2)
+                    / 6);
+          }
+        }
+      } else {
+        log.fine("unknown ship type formula " + s.getShipType().getRangeFormula() + " in " + s
+            .getShipType().getName());
+      }
+    }
+
     if ((s.getModifiedOwnerUnit() != null) && (s.getModifiedOwnerUnit().getRace() != null)
         && s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
       rad += s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus();
@@ -239,14 +274,6 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   }
 
   /**
-   * FIXME (stm) implement or not? // * @see
-   * magellan.library.gamebinding.GameSpecificRules#isToroidal()
-   */
-  public boolean isToroidal() {
-    return false;
-  }
-
-  /**
    * @see magellan.library.gamebinding.GameSpecificRules#isPooled(magellan.library.Unit,
    *      magellan.library.StringID)
    */
@@ -256,7 +283,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
       // the pools were activated in Eressea starting from report no. 559
       return true;
     if (unit.getFaction() == null || unit.getFaction().getOptions() == null) {
-      Logger.getInstance(getClass()).fine("Don't know if pool is active for " + unit);
+      log.fine("Don't know if pool is active for " + unit);
       return false;
     }
     if (EresseaConstants.I_USILVER.equals(type))

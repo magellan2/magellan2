@@ -240,8 +240,7 @@ public class TableSorter extends AbstractTableModel {
   }
 
   private Directive getDirective(int column) {
-    for (int i = 0; i < sortingColumns.size(); i++) {
-      Directive directive = sortingColumns.get(i);
+    for (Directive directive : sortingColumns) {
       if (directive.column == column)
         return directive;
     }
@@ -597,7 +596,7 @@ public class TableSorter extends AbstractTableModel {
       if (c instanceof JLabel) {
         JLabel l = (JLabel) c;
         l.setHorizontalTextPosition(SwingConstants.LEFT);
-        int modelColumn = table.convertColumnIndexToModel(column);
+        int modelColumn = table == null ? column : table.convertColumnIndexToModel(column);
         l.setIcon(getHeaderRendererIcon(modelColumn, l.getFont().getSize()));
       }
       return c;

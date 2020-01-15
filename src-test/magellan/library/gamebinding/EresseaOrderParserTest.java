@@ -51,7 +51,7 @@ import magellan.test.MagellanTestWithResources;
  * @author stm
  * @version 1.0, Jun 20, 2009
  */
-public class EresseaOrderParserTest extends AbstractOrderParserTest {
+public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
 
   private EresseaOrderParser parser;
   private EresseaOrderCompleter completer;

@@ -34,7 +34,7 @@ import magellan.library.gamebinding.EresseaSpecificStuff;
 import org.junit.Before;
 import org.junit.Test;
 
-public class EresseaOrderWriterTest extends OrderWriterTest {
+public class EresseaOrderWriterTest extends OrderWriterTestUtil {
 
   @Before
   public void setUp() throws Exception {

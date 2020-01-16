@@ -40,14 +40,14 @@ import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.AbstractOrderCompleter;
-import magellan.library.gamebinding.AbstractOrderParserTest;
+import magellan.library.gamebinding.AbstractOrderParserTestUtil;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.OrderHandler;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.logging.Logger;
 import magellan.test.GameDataBuilder;
 
-public class AtlantisOrderParserTest extends AbstractOrderParserTest {
+public class AtlantisOrderParserTest extends AbstractOrderParserTestUtil {
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
@@ -682,7 +682,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTest {
    * Test method for {@link magellan.library.gamebinding.EresseaOrderParser#isID(java.lang.String)}.
    */
   /**
-   * @see magellan.library.gamebinding.AbstractOrderParserTest#testIsID()
+   * @see magellan.library.gamebinding.AbstractOrderParserTestUtil#testIsID()
    */
   @Override
   @Test

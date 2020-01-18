@@ -3626,7 +3626,6 @@ public class EresseaOrderParser extends AbstractOrderParser {
         getCompleter().cmpltZaubereSpruch(s);
       }
       if (s == null || s.getSyntax() == null)
-        // FIXME this is not /syntactically/ incorrect...
         return false;
       return !isFinal(t) ^ s.getSyntax().length() == 0;
     }

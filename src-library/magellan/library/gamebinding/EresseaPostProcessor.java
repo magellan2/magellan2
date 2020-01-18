@@ -232,21 +232,24 @@ public class EresseaPostProcessor {
                   // target = data.getUnit(UnitID.createUnitID(targetId, 10, data.base));
                   if (spy != null && spy.getFaction() != null) {
                     for (Message msg2 : spy.getFaction().getMessages()) {
-                      if (targetId.equals(msg2.getAttributes().get("target"))) {
-                        if (msg2.getAttributes().get("spy") != null) {
-                          if (!spyId.equals(msg2.getAttributes().get("spy"))) {
-                            EresseaPostProcessor.log.warn("message " + message.getID()
-                                + " seems to belong to " + msg2.getAttributes().get("spy")
-                                + " and " + spyId);
-                          }
-                        } else {
-                          switch (((msg2.getMessageType().getID()).intValue())) {
-                          case 387085007: // Y gehört der Partei F an
-                          case 467205397: // Y beherrscht ...
-                          case 743495578: // Im Gepäck von Y sind ...
-                            msg2.getAttributes().put("spy",
-                                String.valueOf(((IntegerID) spy.getID()).intValue()));
-                            break;
+                      if (msg2.getAttributes() != null && msg2.getAttributes().get(
+                          "target") != null) {
+                        if (targetId.equals(msg2.getAttributes().get("target"))) {
+                          if (msg2.getAttributes().get("spy") != null) {
+                            if (!spyId.equals(msg2.getAttributes().get("spy"))) {
+                              EresseaPostProcessor.log.warn("message " + message.getID()
+                                  + " seems to belong to " + msg2.getAttributes().get("spy")
+                                  + " and " + spyId);
+                            }
+                          } else {
+                            switch (((msg2.getMessageType().getID()).intValue())) {
+                            case 387085007: // Y gehört der Partei F an
+                            case 467205397: // Y beherrscht ...
+                            case 743495578: // Im Gepäck von Y sind ...
+                              msg2.getAttributes().put("spy",
+                                  String.valueOf(((IntegerID) spy.getID()).intValue()));
+                              break;
+                            }
                           }
                         }
                       }

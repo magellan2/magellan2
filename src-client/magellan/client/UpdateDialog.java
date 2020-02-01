@@ -104,7 +104,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     } else if (lastVersion == null) {
       text.append(Resources.get("updatedialog.firstrunwarning", new Object[] { lastVersion,
           currentVersion }));
-      showFile("README.txt");
+      showFile("README.md");
     } else if (lastVersion.equals("null") || VersionInfo.isNewer(currentVersion, lastVersion)) {
       text.append(Resources.get("updatedialog.updatewarning", new Object[] { lastVersion,
           currentVersion }));
@@ -117,7 +117,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       throw new IllegalArgumentException("???");
     text.append(Resources.get("updatedialog.infotext", MagellanUrl
         .getMagellanUrl(MagellanUrl.WWW_DOWNLOAD), MagellanUrl
-        .getMagellanUrl(MagellanUrl.WWW_FILES), MagellanUrl.getRootUrl()));
+            .getMagellanUrl(MagellanUrl.WWW_FILES), MagellanUrl.getRootUrl()));
     text.append(Resources.get("updatedialog.htmlfooter"));
 
     versionInfo.setText(text.toString());
@@ -194,7 +194,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     final JButton btn_README = new JButton(Resources.get("updatedialog.btn.README.caption"));
     btn_README.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-        showFile("README.txt");
+        showFile("README.md");
       }
     });
 

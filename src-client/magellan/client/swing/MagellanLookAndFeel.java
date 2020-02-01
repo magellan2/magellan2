@@ -203,8 +203,14 @@ public class MagellanLookAndFeel {
         Class<?> c = Class.forName(clazz);
         Constructor<?> constructor;
         constructor = c.getConstructor();
+
+        try {
         if (!constructor.trySetAccessible())
-          return;
+         return;
+        } catch (NoSuchMethodError e) {
+          // must be pre java 9, this is fine
+        }
+        
         Object lafO = constructor.newInstance();
 
         if (lafO instanceof LookAndFeel) {

@@ -4274,8 +4274,9 @@ class E3CommandParser {
   public static void main(String[] args) {
     File file =
         new File("./src-test/magellan/plugin/extendedcommands/scripts/E3CommandParser.java");
+    LineNumberReader reader = null;
     try {
-      LineNumberReader reader = new LineNumberReader(new FileReader(file));
+      reader = new LineNumberReader(new FileReader(file));
 
       System.out.println("// created by E3CommandParser.main() at "
           + Calendar.getInstance().getTime());
@@ -4341,6 +4342,14 @@ class E3CommandParser {
       e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 

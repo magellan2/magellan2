@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -2248,7 +2249,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
             if (units > 0) {
               BigDecimal percent = (new BigDecimal((done * 100) / ((float) units))).setScale(2,
-                  BigDecimal.ROUND_DOWN);
+                  RoundingMode.DOWN);
               title3.append(" (").append(units).append(" ").append(Resources.get(
                   "client.title.unit")).append(", ").append(done).append(" ").append(Resources.get(
                       "client.title.done")).append(", ").append(Resources.get(

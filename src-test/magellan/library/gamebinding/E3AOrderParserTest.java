@@ -34,7 +34,6 @@ import org.junit.Test;
 import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.Region;
-import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
 import magellan.library.gamebinding.e3a.E3AOrderCompleter;

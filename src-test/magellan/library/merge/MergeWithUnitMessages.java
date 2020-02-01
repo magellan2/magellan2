@@ -1,16 +1,18 @@
 package magellan.library.merge;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.LinkedList;
 
-import junit.framework.Assert;
+import org.junit.Test;
+
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Message;
 import magellan.library.Unit;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Test;
 
 /**
  * 
@@ -42,11 +44,9 @@ public class MergeWithUnitMessages extends MagellanTestWithResources {
 
     Unit u4 = gd4.getUnit(u1.getID());
 
-    Assert.assertTrue(u4 != null);
-    if (u4 != null) {
-      Assert.assertTrue(u4.getUnitMessages() != null);
-      Assert.assertEquals(1, u4.getUnitMessages().size());
-    }
+    assertTrue(u4 != null);
+    assertTrue(u4.getUnitMessages() != null);
+    assertEquals(1, u4.getUnitMessages().size());
   }
 
   /**
@@ -72,11 +72,9 @@ public class MergeWithUnitMessages extends MagellanTestWithResources {
 
     Unit u4 = gd4.getUnit(u1.getID());
 
-    Assert.assertTrue(u4 != null);
-    if (u4 != null) {
-      Assert.assertTrue(u4.getUnitMessages() != null);
-      Assert.assertEquals(2, u4.getUnitMessages().size());
-    }
+    assertTrue(u4 != null);
+    assertTrue(u4.getUnitMessages() != null);
+    assertEquals(2, u4.getUnitMessages().size());
   }
 
 }

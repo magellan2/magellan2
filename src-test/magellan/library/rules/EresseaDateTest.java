@@ -23,17 +23,19 @@
 // 
 package magellan.library.rules;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-import magellan.test.MagellanTestWithResources;
-
 import org.junit.Test;
+
+import magellan.test.MagellanTestWithResources;
 
 /**
  * Tests for class EresseaDate
- * 
+ *
  * @author stm
  * @version 1.0, Feb 21, 2010
  */
@@ -45,33 +47,33 @@ public class EresseaDateTest extends MagellanTestWithResources {
   @Test
   public void testGet() {
     EresseaDate date = new EresseaDate(1);
-    Assert.assertEquals(1, date.getWeekFromStart());
+    assertEquals(1, date.getWeekFromStart());
     date = new EresseaDate(1);
     date.setEpoch(1);
-    Assert.assertEquals(1, date.getWeekFromStart());
+    assertEquals(1, date.getWeekFromStart());
     date = new EresseaDate(184);
     date.setEpoch(2);
-    Assert.assertEquals(0, date.getWeekFromStart());
+    assertEquals(0, date.getWeekFromStart());
     date = new EresseaDate(1);
     date.setEpoch(3);
-    Assert.assertEquals(0, date.getWeekFromStart());
+    assertEquals(0, date.getWeekFromStart());
 
     date = new EresseaDate(1, 1, 1, 1);
-    Assert.assertEquals(0, date.getWeekFromStart());
+    assertEquals(0, date.getWeekFromStart());
     date.setEpoch(2);
-    Assert.assertEquals(-183, date.getWeekFromStart());
+    assertEquals(-183, date.getWeekFromStart());
     date.setEpoch(3);
-    Assert.assertEquals(0, date.getWeekFromStart());
+    assertEquals(0, date.getWeekFromStart());
 
     date = new EresseaDate(184, -6, 3, 1);
-    Assert.assertEquals(0, date.getWeekFromStart());
+    assertEquals(0, date.getWeekFromStart());
     date.setEpoch(2);
-    Assert.assertEquals(0, date.getWeekFromStart());
+    assertEquals(0, date.getWeekFromStart());
     date.setEpoch(3);
-    Assert.assertEquals(183, date.getWeekFromStart());
+    assertEquals(183, date.getWeekFromStart());
 
     date = new EresseaDate(1, 0, 0, 0);
-    Assert.assertEquals(-29, date.getWeekFromStart());
+    assertEquals(-29, date.getWeekFromStart());
 
   }
 
@@ -82,123 +84,123 @@ public class EresseaDateTest extends MagellanTestWithResources {
   public final void testGetSeason() {
     EresseaDate date = new EresseaDate(1);
     date.setEpoch(1);
-    Assert.assertEquals(Date.UNKNOWN, date.getSeason());
+    assertEquals(Date.UNKNOWN, date.getSeason());
 
     date.setEpoch(2);
     for (int d = 185; d < 187; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 2, Date.SUMMER, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 2, Date.SUMMER, date.getSeason());
     }
     for (int d = 187; d < 193; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 2, Date.AUTUMN, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 2, Date.AUTUMN, date.getSeason());
     }
     for (int d = 193; d < 202; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 2, Date.WINTER, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 2, Date.WINTER, date.getSeason());
     }
     for (int d = 202; d < 208; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 2, Date.SPRING, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 2, Date.SPRING, date.getSeason());
     }
     for (int d = 208; d < 214; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 2, Date.SUMMER, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 2, Date.SUMMER, date.getSeason());
     }
     date.setDate(214);
-    Assert.assertEquals("Date " + 214 + " epoch " + 2, Date.AUTUMN, date.getSeason());
+    assertEquals("Date " + 214 + " epoch " + 2, Date.AUTUMN, date.getSeason());
 
     date.setEpoch(3);
     for (int d = 1; d < 4; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 3, Date.SUMMER, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 3, Date.SUMMER, date.getSeason());
     }
     for (int d = 4; d < 10; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 3, Date.AUTUMN, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 3, Date.AUTUMN, date.getSeason());
     }
     for (int d = 10; d < 19; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 3, Date.WINTER, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 3, Date.WINTER, date.getSeason());
     }
     for (int d = 19; d < 25; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 3, Date.SPRING, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 3, Date.SPRING, date.getSeason());
     }
     for (int d = 25; d < 31; ++d) {
       date.setDate(d);
-      Assert.assertEquals("Date " + d + " epoch " + 3, Date.SUMMER, date.getSeason());
+      assertEquals("Date " + d + " epoch " + 3, Date.SUMMER, date.getSeason());
     }
 
     // second age -6, 2, 3);
     date = new EresseaDate(616, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    assertEquals(Date.SUMMER, date.getSeason());
     date = new EresseaDate(618, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    assertEquals(Date.SUMMER, date.getSeason());
     date = new EresseaDate(619, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    assertEquals(Date.AUTUMN, date.getSeason());
     date = new EresseaDate(624, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    assertEquals(Date.AUTUMN, date.getSeason());
     date = new EresseaDate(625, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.WINTER, date.getSeason());
+    assertEquals(Date.WINTER, date.getSeason());
     date = new EresseaDate(633, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.WINTER, date.getSeason());
+    assertEquals(Date.WINTER, date.getSeason());
     date = new EresseaDate(634, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.SPRING, date.getSeason());
+    assertEquals(Date.SPRING, date.getSeason());
     date = new EresseaDate(639, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.SPRING, date.getSeason());
+    assertEquals(Date.SPRING, date.getSeason());
     date = new EresseaDate(640, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    assertEquals(Date.SUMMER, date.getSeason());
     date = new EresseaDate(645, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    assertEquals(Date.SUMMER, date.getSeason());
     date = new EresseaDate(646, -6, 2, 3);
     date.setEpoch(2);
-    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    assertEquals(Date.AUTUMN, date.getSeason());
 
     // third age
     date = new EresseaDate(1, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    assertEquals(Date.SUMMER, date.getSeason());
     date = new EresseaDate(3, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    assertEquals(Date.SUMMER, date.getSeason());
     date = new EresseaDate(4, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    assertEquals(Date.AUTUMN, date.getSeason());
     date = new EresseaDate(9, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    assertEquals(Date.AUTUMN, date.getSeason());
     date = new EresseaDate(10, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.WINTER, date.getSeason());
+    assertEquals(Date.WINTER, date.getSeason());
     date = new EresseaDate(18, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.WINTER, date.getSeason());
+    assertEquals(Date.WINTER, date.getSeason());
     date = new EresseaDate(19, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.SPRING, date.getSeason());
+    assertEquals(Date.SPRING, date.getSeason());
     date = new EresseaDate(24, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.SPRING, date.getSeason());
+    assertEquals(Date.SPRING, date.getSeason());
     date = new EresseaDate(25, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    assertEquals(Date.SUMMER, date.getSeason());
     date = new EresseaDate(30, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.SUMMER, date.getSeason());
+    assertEquals(Date.SUMMER, date.getSeason());
     date = new EresseaDate(31, 1, 1, 1);
     date.setEpoch(3);
-    Assert.assertEquals(Date.AUTUMN, date.getSeason());
+    assertEquals(Date.AUTUMN, date.getSeason());
 
   }
 
@@ -238,11 +240,11 @@ public class EresseaDateTest extends MagellanTestWithResources {
   @Test
   public final void testGetEpoch() {
     EresseaDate date = new EresseaDate(1);
-    Assert.assertEquals(1, date.getEpoch());
+    assertEquals(1, date.getEpoch());
     date.setEpoch(1);
-    Assert.assertEquals(1, date.getEpoch());
+    assertEquals(1, date.getEpoch());
     date.setEpoch(2);
-    Assert.assertEquals(2, date.getEpoch());
+    assertEquals(2, date.getEpoch());
   }
 
   /**
@@ -252,26 +254,26 @@ public class EresseaDateTest extends MagellanTestWithResources {
   public final void testCopy() {
     EresseaDate date = new EresseaDate(1);
     EresseaDate newDate = date.copy();
-    Assert.assertNotSame(date, newDate);
-    Assert.assertEquals(newDate.getDate(), date.getDate());
-    Assert.assertEquals(newDate.getEpoch(), date.getEpoch());
-    Assert.assertEquals(newDate.getSeason(), date.getSeason());
+    assertNotSame(date, newDate);
+    assertEquals(newDate.getDate(), date.getDate());
+    assertEquals(newDate.getEpoch(), date.getEpoch());
+    assertEquals(newDate.getSeason(), date.getSeason());
 
     date = new EresseaDate(42);
     date.setEpoch(2);
     newDate = date.copy();
-    Assert.assertNotSame(date, newDate);
-    Assert.assertEquals(newDate.getDate(), date.getDate());
-    Assert.assertEquals(newDate.getEpoch(), date.getEpoch());
-    Assert.assertEquals(newDate.getSeason(), date.getSeason());
+    assertNotSame(date, newDate);
+    assertEquals(newDate.getDate(), date.getDate());
+    assertEquals(newDate.getEpoch(), date.getEpoch());
+    assertEquals(newDate.getSeason(), date.getSeason());
 
     date = new EresseaDate(242);
     date.setEpoch(3);
     newDate = date.copy();
-    Assert.assertNotSame(date, newDate);
-    Assert.assertEquals(newDate.getDate(), date.getDate());
-    Assert.assertEquals(newDate.getEpoch(), date.getEpoch());
-    Assert.assertEquals(newDate.getSeason(), date.getSeason());
+    assertNotSame(date, newDate);
+    assertEquals(newDate.getDate(), date.getDate());
+    assertEquals(newDate.getEpoch(), date.getEpoch());
+    assertEquals(newDate.getSeason(), date.getSeason());
   }
 
   /**
@@ -280,9 +282,9 @@ public class EresseaDateTest extends MagellanTestWithResources {
   @Test
   public final void testGetDate() {
     EresseaDate date = new EresseaDate(242);
-    Assert.assertEquals(242, date.getDate());
+    assertEquals(242, date.getDate());
     date.setDate(42);
-    Assert.assertEquals(42, date.getDate());
+    assertEquals(42, date.getDate());
   }
 
 }

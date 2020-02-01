@@ -43,7 +43,6 @@ import magellan.library.Group;
 import magellan.library.IntegerID;
 import magellan.library.Island;
 import magellan.library.Message;
-import magellan.library.Named;
 import magellan.library.Potion;
 import magellan.library.Region;
 import magellan.library.Region.Visibility;
@@ -662,9 +661,7 @@ public abstract class MagellanFactory {
 
   public static Bookmark createBookmark(Selectable o) {
     String name = null;
-    if (o instanceof Named) {
-      name = ((Named) o).getName();
-    }
+    name = o.getName();
     return new MagellanBookmarkBuilder.BookmarkImpl(o, name);
   }
 

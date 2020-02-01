@@ -30,6 +30,9 @@ import javax.swing.KeyStroke;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import magellan.client.Client;
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.ShortcutListener;
@@ -40,7 +43,6 @@ import magellan.client.swing.EresseaFileFilter;
 import magellan.library.Bookmark;
 import magellan.library.BookmarkBuilder;
 import magellan.library.GameData;
-import magellan.library.Named;
 import magellan.library.Selectable;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
@@ -52,9 +54,6 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Manages setting an getting of Bookmarks.<br/>
@@ -162,9 +161,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 
       BookmarkBuilder bb = MagellanFactory.createBookmark();
       bb.setObject(sel);
-      if (sel instanceof Named) {
-        bb.setName(((Named) sel).getName());
-      }
+      bb.setName(sel.getName());
       bookmarks.put(sel, bb.getBookmark());
       data.addBookmark(bb.getBookmark());
 
@@ -453,8 +450,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
     if (root.getNodeName().equalsIgnoreCase("bookmarks")) {
       List<Element> subnodes = Utils.getChildNodes(root);
       log.info("Found " + subnodes.size() + " bookmarks.");
-      for (int i = 0; i < subnodes.size(); i++) {
-        Element node = subnodes.get(i);
+      for (Element node : subnodes) {
         load(bookmarks2, node);
       }
     } else if (root.getNodeName().equalsIgnoreCase("bookmark")) {

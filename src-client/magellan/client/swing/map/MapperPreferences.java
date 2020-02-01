@@ -388,6 +388,8 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
                 } catch (Exception inner) {
                   // bad data
                   log.warn("bad data: " + s1 + "/" + s2);
+                } finally {
+                  br.close();
                 }
 
                 if (data.size() > 0) {

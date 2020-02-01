@@ -24,7 +24,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EventObject;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -42,7 +41,6 @@ import magellan.client.completion.AutoCompletion;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
-import magellan.client.event.UnitOrdersListener;
 import magellan.client.swing.completion.MultiEditorOrderEditorList;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
@@ -53,10 +51,8 @@ import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.event.GameDataEvent;
-import magellan.library.event.GameDataListener;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
-import magellan.library.utils.guiwrapper.EventDispatcherInterface;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -336,51 +332,6 @@ public class GiveOrderDialog extends InternationalizedDialog {
 
   private GameData getData() {
     return world;
-  }
-
-  private EventDispatcherInterface getNullDispatcher() {
-    return new EventDispatcherInterface() {
-
-      public boolean removeGameDataListener(GameDataListener l) {
-        return false;
-      }
-
-      public boolean removeAllListeners(Object o) {
-        return false;
-      }
-
-      public int getEventsFired() {
-        return 0;
-      }
-
-      public int getEventsDispatched() {
-        return 0;
-      }
-
-      public void fire(EventObject e) {
-        // ignore
-      }
-
-      public void fire(EventObject e, boolean synchronous) {
-        // ignore
-      }
-
-      public void addPriorityGameDataListener(GameDataListener l) {
-        // ignore
-      }
-
-      public void addGameDataListener(GameDataListener l) {
-        // ignore
-      }
-
-      public void addUnitOrdersListener(UnitOrdersListener orderListener) {
-        // ignore
-      }
-
-      public boolean removeUnitOrdersListener(UnitOrdersListener orderListener) {
-        return false;
-      }
-    };
   }
 
   /**

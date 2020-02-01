@@ -1,6 +1,10 @@
 package magellan.library.merge;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Region;
@@ -8,10 +12,8 @@ import magellan.library.Unit;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
-import org.junit.Test;
-
 /**
- * 
+ *
  */
 public class MergeWithRoads extends MagellanTestWithResources {
 
@@ -40,8 +42,8 @@ public class MergeWithRoads extends MagellanTestWithResources {
     Region region_1_1_gd4 = gd4.getRegion(region_1_1_gd1.getID());
     Region region_1_0_gd4 = gd4.getRegion(region_1_0_gd2.getID());
 
-    Assert.assertEquals(0, region_1_1_gd4.borders().size());
-    Assert.assertEquals(1, region_1_0_gd4.borders().size());
+    assertEquals(0, region_1_1_gd4.borders().size());
+    assertEquals(1, region_1_0_gd4.borders().size());
   }
 
   /**
@@ -62,10 +64,8 @@ public class MergeWithRoads extends MagellanTestWithResources {
 
     Region r4 = gd4.getRegion(r2.getID());
 
-    Assert.assertTrue(r4 != null);
-    if (r4 != null) {
-      Assert.assertEquals(1, r4.borders().size());
-    }
+    assertTrue(r4 != null);
+    assertEquals(1, r4.borders().size());
   }
 
   /** bugzilla bug #819 */
@@ -83,10 +83,8 @@ public class MergeWithRoads extends MagellanTestWithResources {
     // WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
 
     Region r4 = gd4.getRegion(r1.getID());
-    Assert.assertTrue(r4 != null);
-    if (r4 != null) {
-      Assert.assertEquals(1, r4.borders().size());
-    }
+    assertTrue(r4 != null);
+    assertEquals(1, r4.borders().size());
   }
 
   /** bugzilla bug #819 */
@@ -107,7 +105,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
     GameData gd4 = GameDataMerger.merge(gd1, gd2);
 
     Region region_1_0_gd4 = gd4.getRegion(region_1_0_gd1.getID());
-    Assert.assertEquals(1, region_1_0_gd4.borders().size());
+    assertEquals(1, region_1_0_gd4.borders().size());
   }
 
   /** bugzilla bug #819 */
@@ -127,8 +125,8 @@ public class MergeWithRoads extends MagellanTestWithResources {
     GameData gd4 = GameDataMerger.merge(gd1, gd2);
 
     Region region_1_1_gd4 = gd4.getRegion(region_1_1_gd1.getID());
-    Assert.assertEquals(1, region_1_1_gd4.units().size());
-    Assert.assertEquals(1, region_1_1_gd4.borders().size());
+    assertEquals(1, region_1_1_gd4.units().size());
+    assertEquals(1, region_1_1_gd4.borders().size());
   }
 
   /** bugzilla bug #819 */
@@ -150,8 +148,8 @@ public class MergeWithRoads extends MagellanTestWithResources {
     GameData gd4 = GameDataMerger.merge(gd1, gd2);
 
     Region region_1_1_gd4 = gd4.getRegion(region_1_1_gd1.getID());
-    Assert.assertEquals(1, region_1_1_gd4.units().size());
-    Assert.assertEquals(0, region_1_1_gd4.borders().size());
+    assertEquals(1, region_1_1_gd4.units().size());
+    assertEquals(0, region_1_1_gd4.borders().size());
   }
 
 }

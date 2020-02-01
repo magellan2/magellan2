@@ -643,9 +643,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
     StringBuilder text = new StringBuilder();
     String desc = " (" + p.getType().getDescription() + ")";
-    if (desc == null) {
-      desc = "";
-    }
     text.append(Resources.get("tasks.showfull.message", p.getMessage(), p.getObject(), p
         .getRegion(), p.getFaction(), p.getLine(), p.getType(), desc));
     final TextAreaDialog d = (new TextAreaDialog((JFrame) null, Resources.get(

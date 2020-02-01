@@ -580,7 +580,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
     boolean found = false;
 
     for (Bookmark h : data.getBookmarks()) {
-      if (h.getObject() == region || h.getObject().equals(region.getCoordinate())) {
+      if (h.getObject() == region || h.getObject().equals(region)) {
         found = true;
         data.removeBookmark(h.getObject());
         break;

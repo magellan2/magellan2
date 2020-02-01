@@ -1,14 +1,17 @@
 package magellan.library.merge;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Test;
 
 public class MergeSimpleGameData extends MagellanTestWithResources {
 
@@ -46,14 +49,14 @@ public class MergeSimpleGameData extends MagellanTestWithResources {
 
     Unit unit4 = gd4.getUnit(unit1.getID());
     Skill skill4 = unit4.getSkill(gd4.getRules().getSkillType(ausdauer));
-    Assert.assertNotNull(skill4);
+    assertNotNull(skill4);
     // System.out.println("Skill4 :"+skill4+" "+skill4.getChangeLevel());
-    Assert.assertTrue(skill4.isLostSkill());
+    assertTrue(skill4.isLostSkill());
 
     Unit unit5 = gd5.getUnit(unit1.getID());
     Skill skill5 = unit5.getSkill(gd5.getRules().getSkillType(ausdauer));
     // System.out.println("Skill5 :"+skill5+" "+skill5.getChangeLevel());
-    Assert.assertNull(skill5);
+    assertNull(skill5);
 
   }
 }

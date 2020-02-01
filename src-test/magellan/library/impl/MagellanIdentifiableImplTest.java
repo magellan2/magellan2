@@ -25,14 +25,15 @@ package magellan.library.impl;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import magellan.library.GameData;
 import magellan.library.IntegerID;
 import magellan.library.UnitID;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Test class for {@link MagellanIdentifiableImpl} (mainly compare/equals).
@@ -77,6 +78,7 @@ public class MagellanIdentifiableImplTest extends MagellanTestWithResources {
    * Test method for {@link magellan.library.impl.MagellanIdentifiableImpl#equals(java.lang.Object)}
    * .
    */
+  @SuppressWarnings("unlikely-arg-type")
   @Test
   public final void testEqualsObject() {
     assertTrue(unit1.equals(unit1));

@@ -81,7 +81,7 @@ public class TransportOrder extends UnitArgumentOrder {
         }
       }
     } else {
-      setWarning(unit, line, Resources.get("order.all.unknownunit", target));
+      setWarning(unit, line, Resources.get("order.all.warning.unknownunit", target));
     }
   }
 }

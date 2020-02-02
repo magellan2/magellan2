@@ -75,7 +75,7 @@ public class TeachOrder extends SimpleOrder {
       } else {
         setProblem(ProblemFactory.createProblem(Severity.WARNING,
             TeachInspector.TeachProblemTypes.UNKNOWN_TARGET.type, unit, null, Resources.get(
-                "order.all.unknownunit", targetID), line));
+                "order.all.warning.unknownunit", targetID), line));
       }
     }
   }

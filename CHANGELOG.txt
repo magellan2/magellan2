@@ -1,3 +1,6 @@
+2019-05-06 / Build 697 - stm (stm2@users.sourceforge.net)
+	* implemented convoys
+
 2019-02-08 / Build 696 - stm (stm2@users.sourceforge.net)
 	* ExtendedCommands: switched from BeanShell to JShell, improving performance and reducing dependencies
 

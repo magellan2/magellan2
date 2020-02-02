@@ -31,6 +31,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.Rules;
+import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
@@ -1111,6 +1112,31 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertMessage("braucht 7000 mehr Silber", unit, 4);
     assertEquals(2, unit2.getOrders2().size());
     assertOrder("GIB 1 3000 Silber", unit2, 1);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
+   */
+  @Test
+  public final void testCommandBenoetigeCapShip() {
+    // builder.addItem(data, unit, "Silber", 5);
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 999999);
+    Ship sh = builder.addShip(data, unit.getRegion(), "sh", "trireme", "Tri", 200);
+    builder.addSkill(unit, "Reiten", 1);
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.setShip(sh);
+    sh.setOwner(unit);
+    unit.addOrder("// $cript Kapazitaet SCHIFF");
+    unit2.addOrder("// $cript BenoetigeFremd 1 0 1000000 Silber Menge");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertMessage("; braucht 801000 mehr Silber, Unit_1 (1) needs 0/1000000 Silber (100)", unit, 2);
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("GIB 1 199000 Silber", unit2, 1);
   }
 
   /**
@@ -2809,7 +2835,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     // normal entertain
     unit.clearOrders();
     unit.addOrder("// $cript Ernaehre");
-    unit.getRegion().setSilver(50000);
+    unit.getRegion().setSilver(60000);
 
     parser.execute(unit.getFaction());
     assertEquals(3, unit.getOrders2().size());
@@ -2818,7 +2844,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     // tax too high
     unit.clearOrders();
     unit.addOrder("// $cript Ernaehre");
-    unit.getRegion().setSilver(9999);
+    unit.getRegion().setSilver(12999);
     builder.addSkill(unit, "Steuereintreiben", 9);
     builder.addItem(data, unit, "Schwert", 100);
 

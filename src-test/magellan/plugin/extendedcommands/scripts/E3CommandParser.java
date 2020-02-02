@@ -249,8 +249,10 @@ public class E3CommandParser {
   public static String TRANKOrder = "TRANK";
   /** The "on foot" order */
   public static String FOOTOrder = "FUSS";
-  /** The "on foot" order */
+  /** The "on horse" order */
   public static String HORSEOrder = "PFERD";
+  /** The "on ship" order */
+  public static String SHIPOrder = "SCHIFF";
   /** The item "horses" */
   public static String HORSEItem = "Pferd";
   /** The persistent comment order */
@@ -400,6 +402,15 @@ public class E3CommandParser {
 
   private int progress = -1;
   private long supplySerial = 0;
+  private int showStats = 1;
+
+  public int getShowStats() {
+    return showStats;
+  }
+
+  public void setShowStats(int showStats) {
+    this.showStats = showStats;
+  }
 
   /**
    * Parses scripts and confirms units according to the "confirm" tag. Call this for the faction
@@ -826,9 +837,11 @@ public class E3CommandParser {
       }
     }
 
-    someUnit.addOrderAt(0, "; " + unitScripts + " unit scripts, " + buildingScripts
-        + " building scripts, " + shipScripts + " ship scripts, " + regionScripts
-        + " region scripts", true);
+    if (showStats > 0) {
+      someUnit.addOrderAt(0, "; " + unitScripts + " unit scripts, " + buildingScripts
+          + " building scripts, " + shipScripts + " ship scripts, " + regionScripts
+          + " region scripts", true);
+    }
   }
 
   /**
@@ -898,7 +911,7 @@ public class E3CommandParser {
           if (!tokens[0].startsWith("+")) {
             try {
               Integer.parseInt(tokens[0]);
-              String nextOrders[] = commandRepeat(tokens);
+              String[] nextOrders = commandRepeat(tokens);
               if (nextOrders == null) {
                 currentOrder = null;
                 tokens = null;
@@ -1591,7 +1604,7 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>Kapazitaet FUSS|PFERD|amount</code> -- ensure that a unit's capacity is not exceeded
+   * <code>Kapazitaet FUSS|PFERD|SCHIFF|amount</code> -- ensure that a unit's capacity is not exceeded
    */
   protected void commandCapacity(String[] tokens) {
     int capacity = 0;
@@ -1602,6 +1615,7 @@ public class E3CommandParser {
       addNewError("zu viele Argumente");
     }
     MovementEvaluator movement = world.getGameSpecificStuff().getMovementEvaluator();
+    int load = movement.getModifiedLoad(currentUnit);
     try {
       capacity = Integer.parseInt(tokens[1]);
     } catch (NumberFormatException e) {
@@ -1609,16 +1623,24 @@ public class E3CommandParser {
         capacity = movement.getPayloadOnHorse(currentUnit);
       } else if (FOOTOrder.equals(tokens[1])) {
         capacity = movement.getPayloadOnFoot(currentUnit);
+      } else if (SHIPOrder.equals(tokens[1])) {
+        Ship ship = currentUnit.getModifiedShip();
+        if (ship == null || ship.getOwnerUnit() != currentUnit) {
+          capacity = Integer.MAX_VALUE;
+          addNewWarning("Einheit ist nicht Kapitän.");
+        } else {
+          capacity = ship.getMaxCapacity() - ship.getModifiedLoad() + load;
+        }
       } else {
         addNewError("Zahl erwartet");
         return;
       }
       if (isCapacityError(capacity)) {
         addNewWarning("Zu viele Pferde.");
-        capacity = 0;
+        capacity = load;
       }
     }
-    int load = movement.getModifiedLoad(currentUnit);
+    // int load = movement.getModifiedLoad(currentUnit);
     capacities.put(currentUnit, capacity - load);
   }
 
@@ -1934,16 +1956,16 @@ public class E3CommandParser {
       if (tax >= currentRegion.getSilver() + workers * 10 - currentRegion.getPeasants() * 10) {
         addNewWarning("Bauern verhungern");
       }
-      if (tax2 > tax * 2) {
+      if (tax2 * 2 > tax * 3) {
         addNewWarning("Treiber unterbeschäftigt " + tax2 + ">" + tax);
         entertain = currentRegion.maxEntertain();
       }
     } else if (entertain > 0) {
       addNewOrder(ENTERTAINOrder + " " + (amount > 0 ? amount : "") + COMMENTOrder + " "
           + entertain + ">" + tax, true);
-      if (amount > currentRegion.maxEntertain()) {
+      if (amount > currentRegion.maxEntertain() * 1.1) {
         addNewWarning("zu viele Arbeiter");
-      } else if (entertain2 > entertain * 2) {
+      } else if (entertain2 * 2 > entertain * 3) {
         addNewWarning("Unterhalter unterbeschäftigt " + entertain2 + ">" + entertain);
         entertain = currentRegion.maxEntertain();
       }
@@ -1957,13 +1979,14 @@ public class E3CommandParser {
   }
 
   /**
-   * <code>// $cript Handel Menge|xM [xN] [ALLES | Verkaufsgut...] Warnung</code>: trade luxuries,
-   * Versorge {@value #DEFAULT_EARN_PRIORITY}. Menge may be a multipler ("x2" of the region maximum).
-   * xN: reserve goods for N rounds. Warnung can be "Talent", "Menge", or "nie"<br />
+   * <code>// $cript Handel Menge|xM [xR] [ALLES | Verkaufsgut...] Warnung</code>: trade luxuries,
+   * Versorge {@value #DEFAULT_EARN_PRIORITY}. Menge M may be a multipler ("x2" of the region
+   * maximum). xR: reserve goods for R rounds. Warnung can be "Talent", "Menge", or "nie"<br />
    */
   protected void commandTrade(String[] tokens) {
     if (tokens.length < 2) {
       addNewError("zu wenige Argumente");
+      return;
     }
 
     commandSupply(new String[] { "Versorge", String.valueOf(DEFAULT_EARN_PRIORITY) });
@@ -2194,6 +2217,7 @@ public class E3CommandParser {
     } else {
       addNewOrder(MAKEOrder + " " + getLocalizedOrder(EresseaConstants.OC_HERBS, "KRÄUTER"), true);
     }
+    commandSupply(new String[] { "Versorge", KRAUTOrder, "100" });
   }
 
   /**
@@ -2436,6 +2460,17 @@ public class E3CommandParser {
     adjustAlreadyTransferred(needs);
     Reserves reserves = new Reserves();
 
+    pack(needs, reserves, false);
+    enforceCapacities();
+    pack(needs, reserves, true);
+
+    executeReserves(reserves);
+    executeTransferOrders();
+    warnNeeds();
+    warnCapacities();
+  }
+
+  private void pack(Need[] needs, Reserves reserves, boolean enforce) {
     for (int n = 0, prioStart = 0, state = 0; n < needs.length; ++n) {
       Need need = needs[n];
       if (need.getPriority() > needs[prioStart].getPriority())
@@ -2471,15 +2506,12 @@ public class E3CommandParser {
         } else {
           state = 0;
           prioStart = n + 1;
-          enforceCapacities();
+          if (enforce) {
+            enforceCapacities();
+          }
         }
       }
     }
-
-    executeReserves(reserves);
-    executeTransferOrders();
-    warnNeeds();
-    warnCapacities();
   }
 
   private void warnNeeds() {
@@ -2561,6 +2593,8 @@ public class E3CommandParser {
     }
     increaseMulti(transfersMap, transfer.getTarget(), transfer.getItem(), delta);
     changeCapacity(transfer.getUnit(), transfer.getTarget(), transfer.getItem(), delta);
+
+    getSupply(transfer.getItem(), transfer.getUnit()).reduceAmount(delta);
     if (transfer.isMin()) {
       transfer.getNeed().reduceMinAmount(delta);
     }
@@ -4571,18 +4605,4 @@ class Warning {
 
 }
 
-// ---start uncomment for BeanShell
-// void soldier(Unit unit) {
-// E3CommandParser.soldier(unit);
-// }
-//
-// void cleanOcean() {
-// for (Region r : world.regions().values()) {
-// if (r.getName() != null && r.getType().toString().contains("Ozean")
-// && r.getName().contains("Leere")) {
-// r.setName(null);
-// r.setDescription(null);
-// }
-// }
-// }
-// ---stop uncomment for BeanShell
+

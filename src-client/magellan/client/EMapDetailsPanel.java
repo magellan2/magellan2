@@ -2505,9 +2505,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         } catch (Exception e) {
           prefix = "???";
         }
+        Unit object = irel.source == u || irel.source == null ? irel.target : irel.source;
         UnitNodeWrapper w =
-            nodeWrapperFactory.createUnitNodeWrapper(irel.target, prefix + ": ", irel.target
-                .getPersons(), irel.target.getModifiedPersons());
+            nodeWrapperFactory.createUnitNodeWrapper(object, prefix + ": ", object
+                .getPersons(), object.getModifiedPersons());
         w.setReverseOrder(true);
         miscNode.add(new DefaultMutableTreeNode(w));
       }

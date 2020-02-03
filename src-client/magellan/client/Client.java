@@ -34,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -102,8 +103,8 @@ import magellan.client.actions.file.QuitAction;
 import magellan.client.actions.file.SaveOrdersAction;
 import magellan.client.actions.map.AddSelectionAction;
 import magellan.client.actions.map.ExpandSelectionAction;
-import magellan.client.actions.map.FillSelectionAction;
 import magellan.client.actions.map.FillInsideAction;
+import magellan.client.actions.map.FillSelectionAction;
 import magellan.client.actions.map.InvertSelectionAction;
 import magellan.client.actions.map.IslandAction;
 import magellan.client.actions.map.MapSaveAction;
@@ -2879,7 +2880,16 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     for (Class<MagellanPlugIn> plugInClass : plugInClasses) {
       try {
-        MagellanPlugIn plugIn = plugInClass.newInstance();
+        Constructor<MagellanPlugIn> constructor = plugInClass.getConstructor();
+        try {
+          if (!constructor.trySetAccessible())
+            return;
+        } catch (NoSuchMethodError e) {
+          // must be pre java 9, this is fine
+        }
+
+        MagellanPlugIn plugIn = constructor.newInstance();
+
         plugIn.init(this, properties);
         plugIns.add(plugIn);
       } catch (Throwable t) {

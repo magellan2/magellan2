@@ -107,6 +107,14 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   }
 
   /**
+   */
+  public EresseaSpecificStuff(Rules rules) {
+    this.rules = rules;
+    mapMetric = new EresseaMapMetric(rules);
+    parserCache = new ParserCache<EresseaOrderParser>();
+  }
+
+  /**
    * This is a callback interface to let the GameSpecificStuff create the GameData object.
    *
    * @see magellan.library.gamebinding.GameSpecificStuff#createGameData(java.lang.String)
@@ -238,6 +246,8 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   }
 
   public String getName() {
+    if (rules != null && rules.getGameName() != null)
+      return rules.getGameName();
     return EresseaSpecificStuff.name;
   }
 

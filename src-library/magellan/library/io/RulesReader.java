@@ -77,21 +77,23 @@ public class RulesReader {
 
     RulesReader.log.fine("loading rules for \"" + name + "\" (ending: " + ending + ")");
 
-    File rules = new File(Resources.getResourceDirectory(), "etc/rules/" + name + ending);
+    File ruleFile = new File(Resources.getResourceDirectory(), "etc/rules/" + name + ending);
     // workaround for working with eclipse...
-    if (!rules.exists()) {
-      RulesReader.log.warn("Rule file '" + rules.getAbsolutePath()
+    if (!ruleFile.exists()) {
+      RulesReader.log.warn("Rule file '" + ruleFile.getAbsolutePath()
           + "' could not be found. Switching to local.");
-      rules = new File("etc/rules/" + name + ending);
+      ruleFile = new File("etc/rules/" + name + ending);
 
-      if (!rules.exists()) {
-        RulesReader.log.error("Cannot find rule files in '" + rules.getAbsolutePath()
+      if (!ruleFile.exists()) {
+        RulesReader.log.error("Cannot find rule files in '" + ruleFile.getAbsolutePath()
             + "'...that might be a problem...");
       }
     }
 
-    FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(rules);
+    FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(ruleFile);
 
-    return new CRParser(null).readRules(filetype);
+    Rules rules = new CRParser(null).readRules(filetype);
+    rules.setGameName(name);
+    return rules;
   }
 }

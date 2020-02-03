@@ -13,6 +13,9 @@
 
 package magellan.library.gamebinding;
 
+import java.lang.reflect.Constructor;
+
+import magellan.library.Rules;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -30,8 +33,8 @@ public class GameSpecificStuffProvider {
    * @param className the classname of the game to load
    * @return a GameSpecificStuff object based on the given game name
    */
-  public GameSpecificStuff getGameSpecificStuff(String className) {
-    GameSpecificStuff gameSpecificStuff = loadGameSpecificStuff(className);
+  public GameSpecificStuff getGameSpecificStuff(String className, Rules rules) {
+    GameSpecificStuff gameSpecificStuff = loadGameSpecificStuff(className, rules);
 
     if (gameSpecificStuff == null) {
       gameSpecificStuff = new EresseaSpecificStuff();
@@ -52,17 +55,38 @@ public class GameSpecificStuffProvider {
     return new EresseaSpecificStuff();
   }
 
-  private GameSpecificStuff loadGameSpecificStuff(String className) {
+  private GameSpecificStuff loadGameSpecificStuff(String className, Rules rules) {
     if (className == null)
       return null;
 
     try {
       // TODO: perhaps use ResourcePathClassLoader instead?
       Class<?> clazz = Class.forName(className);
-      Object result = clazz.newInstance();
+      Constructor<?> constructor;
+      Object stuff;
+      try {
+        constructor = clazz.getConstructor(Rules.class);
+        try {
+          if (!constructor.trySetAccessible())
+            return null;
+        } catch (NoSuchMethodError e) {
+          // must be pre java 9, this is fine
+        }
 
-      if (result instanceof GameSpecificStuff)
-        return (GameSpecificStuff) result;
+        stuff = constructor.newInstance(rules);
+      } catch (NoSuchMethodException e) {
+        constructor = clazz.getConstructor();
+        try {
+          if (!constructor.trySetAccessible())
+            return null;
+        } catch (NoSuchMethodError nsme) {
+          // must be pre java 9, this is fine
+        }
+        stuff = constructor.newInstance();
+      }
+
+      if (stuff instanceof GameSpecificStuff)
+        return (GameSpecificStuff) stuff;
     } catch (ClassNotFoundException e) {
       GameSpecificStuffProvider.log.warn("Class '" + className + "' not found.", e);
     } catch (Exception e) {

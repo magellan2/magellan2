@@ -97,7 +97,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 
     try {
       if (repInfo.args == null)
-        return (Replacer) repInfo.replacerClass.newInstance();
+        return (Replacer) repInfo.replacerClass.getConstructor().newInstance();
 
       return (Replacer) repInfo.replacerClass.getConstructor(repInfo.argClasses).newInstance(
           repInfo.args);

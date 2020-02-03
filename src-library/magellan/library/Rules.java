@@ -467,4 +467,8 @@ public interface Rules {
    * Returns all orders.
    */
   public Collection<OrderType> getOrders();
+
+  public void setGameName(String name);
+
+  public String getGameName();
 }

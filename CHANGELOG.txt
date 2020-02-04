@@ -1,3 +1,6 @@
+2019-02-03 / Build 694 - stm (stm2@users.sourceforge.net)
+	* fixed bugs 409 and 415 (unit sorting preferences and rules for other games)
+
 2019-02-01 / Build 691 - stm (stm2@users.sourceforge.net)
 	* new L&F default (Nimbus)
 

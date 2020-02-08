@@ -1522,7 +1522,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
         listModel.add(element);
       }
 
-      protected <T> void loadElements(Map<T, Color> source) {
+      protected void loadElements(Map<?, Color> source) {
         listModel.removeAll();
         if (politicsMode) { // add ocean and unknown
           addGUIPair(oceanLabel, oceanColor);
@@ -1530,32 +1530,27 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
         }
 
         // if we get IDs we have to get the object behind
-        Iterator<T> it = source.keySet().iterator();
+        Iterator<?> it = source.keySet().iterator();
 
         while (it.hasNext()) {
-          Object name;
-          T key = it.next();
+          Object key = it.next();
 
-          if (politicsMode) {
-            // we work with factionColors, so key is a String
-            name = key;
-          } else {
+          if (!politicsMode) {
             // we work with regionColors, so key is a StringID
             StringID id = (StringID) key;
-            name = id;
 
             if ((data != null) && (data.getRules() != null)) {
               RegionType rt = data.getRules().getRegionType(id);
 
               if (rt != null) {
-                name = rt;
+                key = rt;
               }
             }
           }
 
           Color c = source.get(key);
-          addGUIPair(name, c);
-          myColors.add(name);
+          addGUIPair(key, c);
+          myColors.add(key);
         }
 
         if (nameBox != null) {

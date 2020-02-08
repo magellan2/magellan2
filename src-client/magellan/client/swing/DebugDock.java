@@ -159,7 +159,7 @@ public class DebugDock extends JPanel implements LogListener {
         }
 
         logArea.setText(buffer.toString());
-        logArea.setCaretPosition(buffer.length() - message.length() + 2);
+        logArea.setCaretPosition(Math.max(0, buffer.length() - message.length()) + 2);
       }
     }
   }

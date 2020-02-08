@@ -3027,16 +3027,17 @@ public class E3CommandParser {
       Integer value) {
     Map<String, Integer> inner = map.get(key1);
     if (inner == null) {
-      map.put(key1, inner = new HashMap());
+      map.put(key1, inner = new HashMap<String, Integer>());
     }
     Integer old = inner.put(key2, value);
     return old;
   }
 
-  private static void increaseMulti(Map<Unit, Map<String, Integer>> map, Unit key1, String key2, int value) {
+  private static void increaseMulti(Map<Unit, Map<String, Integer>> map, Unit key1, String key2,
+      int value) {
     Map<String, Integer> inner = map.get(key1);
     if (inner == null) {
-      map.put(key1, inner = new HashMap());
+      map.put(key1, inner = new HashMap<String, Integer>());
     }
     Integer old = inner.get(key2);
     if (old == null) {
@@ -3050,7 +3051,7 @@ public class E3CommandParser {
       int value) {
     Map<Unit, Integer> inner = map.get(key1);
     if (inner == null) {
-      map.put(key1, inner = new HashMap());
+      map.put(key1, inner = new HashMap<Unit, Integer>());
     }
     Integer old = inner.get(key2);
     if (old == null) {
@@ -3060,11 +3061,12 @@ public class E3CommandParser {
     }
   }
 
-  private static void appendMulti(Map<Object, Map<Object, Collection<Integer>>> map, Object key1, Object key2,
+  private static void appendMulti(Map<Object, Map<Object, Collection<Integer>>> map, Object key1,
+      Object key2,
       Integer value) {
     Map<Object, Collection<Integer>> inner = map.get(key1);
     if (inner == null) {
-      map.put(key1, inner = new HashMap());
+      map.put(key1, inner = new HashMap<Object, Collection<Integer>>());
     }
     Collection<Integer> old = inner.get(key2);
     if (old == null) {

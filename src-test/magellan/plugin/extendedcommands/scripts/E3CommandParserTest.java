@@ -206,9 +206,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     // no warning
     Warning w = new Warning(false);
-    int[] allOfThem = new int[] { E3CommandParser.C_AMOUNT, E3CommandParser.C_ARMOR,
-        E3CommandParser.C_FOREIGN, E3CommandParser.C_SHIELD, E3CommandParser.C_SKILL,
-        E3CommandParser.C_UNIT, E3CommandParser.C_WEAPON, E3CommandParser.C_HIDDEN };
+    int[] allOfThem = new int[] { Warning.C_AMOUNT, Warning.C_ARMOR,
+        Warning.C_FOREIGN, Warning.C_SHIELD, Warning.C_SKILL,
+        Warning.C_UNIT, Warning.C_WEAPON, Warning.C_HIDDEN };
     for (int individual : allOfThem) {
       assertFalse(individual + " set", w.contains(individual));
     }
@@ -231,31 +231,30 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     // parse one positive
     w = new Warning(false);
-    tokens = w.parse(new String[] { E3CommandParser.W_AMOUNT });
+    tokens = w.parse(new String[] { Warning.W_AMOUNT });
     assertWarning(w, true, false, true, true);
 
     // full parse two warnings
     w = new Warning(false);
-    tokens = w.parse(new String[] { "Hello", "1", "2", E3CommandParser.W_SKILL,
-        E3CommandParser.W_AMOUNT });
+    tokens = w.parse(new String[] { "Hello", "1", "2", Warning.W_SKILL, Warning.W_AMOUNT });
     assertEquals(3, tokens.length);
     assertEquals("2", tokens[2]);
     assertWarning(w, true, true, true, true);
 
     // parse never
     w = new Warning(false);
-    tokens = w.parse(new String[] { E3CommandParser.W_NEVER });
+    tokens = w.parse(new String[] { Warning.W_NEVER });
     assertEquals(0, tokens.length);
     assertWarning(w, false, false, false, false);
 
     // parse one negative
     w = new Warning(false);
-    tokens = w.parse(new String[] { E3CommandParser.W_HIDDEN });
+    tokens = w.parse(new String[] { Warning.W_HIDDEN });
     assertEquals(0, tokens.length);
     assertWarning(w, true, true, false, true);
 
     w = new Warning(false);
-    tokens = w.parse(new String[] { E3CommandParser.W_FOREIGN });
+    tokens = w.parse(new String[] { Warning.W_FOREIGN });
     assertEquals(0, tokens.length);
     assertWarning(w, true, true, true, false);
   }

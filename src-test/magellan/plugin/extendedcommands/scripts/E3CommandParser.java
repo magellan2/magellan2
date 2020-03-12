@@ -70,6 +70,185 @@ import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
 // import java.util.*;
 // ---stop uncomment for BeanShell
 
+class Flag {
+  boolean positive;
+  String name;
+  int value;
+
+  public Flag(boolean positive, String name, int value) {
+    this.positive = positive;
+    this.name = name;
+    this.value = value;
+  }
+
+  @Override
+  public String toString() {
+    return name + "(" + positive + "," + value + ")";
+  }
+
+}
+
+class Warning {
+  // warning constants
+  /** The NEVER warning type token */
+  public static String W_NEVER = "nie";
+  /** The SKILL warning type token */
+  public static String W_SKILL = "Talent";
+  /** The WEAPON warning type token */
+  public static String W_WEAPON = "Waffe";
+  /** The SHIELD warning type token */
+  public static String W_SHIELD = "Schild";
+  /** The ARMOR warning type token */
+  public static String W_ARMOR = "Rüstung";
+  /** The UNIT warning type token */
+  public static final String W_UNIT = "Einheit";
+  /** The AMOUNT warning type token */
+  public static final String W_AMOUNT = "Menge";
+  /** The HIDDEN warning type token */
+  public static String W_HIDDEN = "versteckt";
+  /** The ALWAYS warning type token */
+  public static final String W_ALWAYS = "immer";
+  /** The ALWAYS warning type token */
+  public static final String W_FOREIGN = "fremd";
+
+  /** warning constants */
+  protected static final int C_AMOUNT = 1, C_UNIT = 1 << 1, C_HIDDEN = 1 << 2, C_FOREIGN = 1 << 3,
+      C_WEAPON = 1 << 5, C_ARMOR = 1 << 6, C_SHIELD = 1 << 7, C_SKILL = 1 << 8;
+
+  private List<Flag> flags = new ArrayList<Flag>();
+
+  public static final Flag[] ALL_FLAGS = new Flag[8];
+
+  private static void initFlags() {
+    ALL_FLAGS[0] = new Flag(true, W_AMOUNT, C_AMOUNT);
+    ALL_FLAGS[1] = new Flag(true, W_ARMOR, C_ARMOR);
+    ALL_FLAGS[2] = new Flag(false, W_FOREIGN, C_FOREIGN);
+    ALL_FLAGS[3] = new Flag(false, W_HIDDEN, C_HIDDEN);
+    ALL_FLAGS[4] = new Flag(true, W_SHIELD, C_SHIELD);
+    ALL_FLAGS[5] = new Flag(true, W_SKILL, C_SKILL);
+    ALL_FLAGS[6] = new Flag(true, W_UNIT, C_UNIT);
+    ALL_FLAGS[7] = new Flag(true, W_WEAPON, C_WEAPON);
+  }
+
+  public static boolean initialized = false;
+  public static Map<String, Flag> NAMES;
+
+  public Warning(boolean all) {
+    this(new String[] { W_NEVER });
+    if (all) {
+      setAll();
+    }
+  }
+
+  public Warning(String[] tokens) {
+    /** Bean Shell does not know static initializers, so this is a bit awkward */
+    if (!initialized) {
+      initStatic();
+    }
+    parse(tokens);
+  }
+
+  protected void initStatic() {
+    initialized = true;
+    initFlags();
+    NAMES = new HashMap<String, Flag>();
+    for (Flag f : ALL_FLAGS) {
+      NAMES.put(f.name, f);
+    }
+  }
+
+  protected void setAll() {
+    for (Flag f : ALL_FLAGS) {
+      add(f);
+    }
+  }
+
+  private void setAll(boolean positive) {
+    for (Flag f : ALL_FLAGS) {
+      if (f.positive == positive) {
+        add(f);
+      }
+    }
+  }
+
+  protected String[] parse(String[] tokens) {
+    flags = new ArrayList<Flag>();
+    if (tokens == null)
+      return null;
+
+    if (tokens.length == 0) {
+      for (Flag f : ALL_FLAGS) {
+        add(f);
+      }
+    }
+
+    int i = tokens.length - 1;
+    boolean hasPositive = false;
+    setAll(false);
+    for (; i >= 0; --i)
+      if (NAMES.containsKey(tokens[i])) {
+        Flag f = NAMES.get(tokens[i]);
+        if (f.positive) {
+          hasPositive = true;
+          add(f);
+        } else {
+          remove(f);
+        }
+      } else if (W_ALWAYS.equals(tokens[i])) {
+        flags = new ArrayList<Flag>();
+        setAll();
+      } else if (W_NEVER.equals(tokens[i])) {
+        flags = new ArrayList<Flag>();
+        hasPositive = true;
+      } else {
+        break;
+      }
+    if (!hasPositive) {
+      setAll(true);
+    }
+
+    if (i == tokens.length - 1)
+      return tokens;
+    return Arrays.copyOf(tokens, i + 1);
+  }
+
+  public void add(String name) {
+    if (NAMES.containsKey(name)) {
+      add(NAMES.get(name));
+    }
+  }
+
+  public void add(Flag f) {
+    if (!flags.contains(f)) {
+      flags.add(f);
+    }
+  }
+
+  public void remove(Flag f) {
+    flags.remove(f);
+  }
+
+  public boolean contains(String w) {
+    for (Flag f : flags)
+      if (f.name.equals(w))
+        return true;
+    return false;
+  }
+
+  public boolean contains(int flag) {
+    for (Flag f : flags)
+      if (f.value == flag)
+        return true;
+    return false;
+  }
+
+  @Override
+  public String toString() {
+    return flags.toString();
+  }
+
+}
+
 class SupplyMap {
   Map<String, Map<Unit, Supply>> supplyMap;
   private E3CommandParser parser;
@@ -195,7 +374,7 @@ class Reserves {
  *
  * @author stm
  */
-public class E3CommandParser {
+class E3CommandParser {
 
   /**
    * A standard soldier's endurance skill should be this fraction of his (first row) weapon skill
@@ -286,27 +465,6 @@ public class E3CommandParser {
   /** The RECRUIT order */
   private static String RECRUITOrder = "REKRUTIERE";
 
-  // warning constants
-  /** The NEVER warning type token */
-  public static String W_NEVER = "nie";
-  /** The SKILL warning type token */
-  public static String W_SKILL = "Talent";
-  /** The WEAPON warning type token */
-  public static String W_WEAPON = "Waffe";
-  /** The SHIELD warning type token */
-  public static String W_SHIELD = "Schild";
-  /** The ARMOR warning type token */
-  public static String W_ARMOR = "Rüstung";
-  /** The UNIT warning type token */
-  public static final String W_UNIT = "Einheit";
-  /** The AMOUNT warning type token */
-  public static final String W_AMOUNT = "Menge";
-  /** The HIDDEN warning type token */
-  public static String W_HIDDEN = "versteckt";
-  /** The ALWAYS warning type token */
-  public static final String W_ALWAYS = "immer";
-  /** The ALWAYS warning type token */
-  public static final String W_FOREIGN = "fremd";
   /** The BEST token (for soldier) */
   public static String BEST = "best";
   /** The NULL token (for soldier) */
@@ -322,10 +480,6 @@ public class E3CommandParser {
   public static String COMMENT = "$kommentar";
 
   private static String S_ENDURANCE = EresseaConstants.S_AUSDAUER.toString();
-
-  /** warning constants */
-  protected static final int C_AMOUNT = 1, C_UNIT = 1 << 1, C_HIDDEN = 1 << 2, C_FOREIGN = 1 << 3,
-      C_WEAPON = 1 << 5, C_ARMOR = 1 << 6, C_SHIELD = 1 << 7, C_SKILL = 1 << 8;
 
   private OrderParser parser;
   private Logger log;
@@ -464,8 +618,8 @@ public class E3CommandParser {
   }
 
   /**
-   * Parses scripts and confirms units according to the "confirm" tag. Ignore regions before first (in
-   * the report order).
+   * Parses scripts and confirms units according to the "confirm" tag. Ignore regions before first
+   * (in the report order).
    *
    * @param factions scripts for all units of all factions in this set are executed
    * @param region only commands of unit in this region are executed, may be <code>null</code> to
@@ -639,14 +793,14 @@ public class E3CommandParser {
 
   protected boolean testUnit(String sOther, Unit other, Warning w, boolean testFaction) {
     if (other == null || other.getRegion() != currentUnit.getRegion()) {
-      if (w.contains(C_UNIT) && w.contains(C_HIDDEN)) {
+      if (w.contains(Warning.C_UNIT) && w.contains(Warning.C_HIDDEN)) {
         addNewWarning(sOther + " nicht da");
         return false;
       } else if (ADD_NOT_THERE_INFO) {
         addNewOrder("; " + sOther + " nicht da", true);
       }
-      return !w.contains(C_HIDDEN);
-    } else if (testFaction && w.contains(C_FOREIGN)
+      return !w.contains(Warning.C_HIDDEN);
+    } else if (testFaction && w.contains(Warning.C_FOREIGN)
         && !currentFactions.containsKey(other.getFaction())) {
       addNewWarning("Einheit " + sOther + " gehört nicht zu uns");
     }
@@ -686,11 +840,11 @@ public class E3CommandParser {
 
     if (currentFactions.keySet().iterator().next().getLocale().getLanguage() != "de") {
       // warning constants
-      W_NEVER = "never";
-      W_SKILL = "skill";
-      W_WEAPON = "weapon";
-      W_SHIELD = "shield";
-      W_ARMOR = "armor";
+      Warning.W_NEVER = "never";
+      Warning.W_SKILL = "skill";
+      Warning.W_WEAPON = "weapon";
+      Warning.W_SHIELD = "shield";
+      Warning.W_ARMOR = "armor";
       BEST = "best";
       NULL = "null";
       LUXUSOrder = "LUXURY";
@@ -746,8 +900,8 @@ public class E3CommandParser {
   }
 
   /**
-   * Registers a pattern. All lines matching this regular expression (case sensitive!) will be removed
-   * from here on. If retroActively, also orders that are already in {@link #newOrders}.
+   * Registers a pattern. All lines matching this regular expression (case sensitive!) will be
+   * removed from here on. If retroActively, also orders that are already in {@link #newOrders}.
    *
    * @param regEx
    * @param retroActively
@@ -1335,7 +1489,7 @@ public class E3CommandParser {
 
     // check availibility
     if (getItemCount(currentUnit, item) < fullAmount) {
-      if (w.contains(C_AMOUNT)) {
+      if (w.contains(Warning.C_AMOUNT)) {
         addNewWarning("zu wenig " + item);
       } else {
         addNewMessage("zu wenig " + item);
@@ -1407,8 +1561,8 @@ public class E3CommandParser {
       // only benoetigefremd can have warnings!
       tokens = w.parse(tokens);
       // foreign implies amount
-      if (w.contains(C_FOREIGN)) { // FIXME test
-        w.add(W_AMOUNT);
+      if (w.contains(Warning.C_FOREIGN)) { // FIXME test
+        w.add(Warning.W_AMOUNT);
       }
     }
 
@@ -1452,7 +1606,7 @@ public class E3CommandParser {
           addNewError("ungültige Argumente für Benoetige JE x Ding");
         } else {
           if (unit.getPersons() <= 0)
-            if (w.contains(C_AMOUNT)) {
+            if (w.contains(Warning.C_AMOUNT)) {
               addNewWarning("Benoetige JE für leere Einheit");
             } else {
               addNewMessage("Benoetige JE für leere Einheit");
@@ -1724,8 +1878,9 @@ public class E3CommandParser {
    */
   protected void commandSoldier(String[] tokens) {
     String warning = tokens[tokens.length - 1];
-    if (!(W_NEVER.equals(warning) || W_SKILL.equals(warning) || W_WEAPON.equals(warning)
-        || W_SHIELD.equals(warning) || W_ARMOR.equals(warning))) {
+    if (!(Warning.W_NEVER.equals(warning) || Warning.W_SKILL.equals(warning) || Warning.W_WEAPON
+        .equals(warning)
+        || Warning.W_SHIELD.equals(warning) || Warning.W_ARMOR.equals(warning))) {
       warning = null;
     }
     String skill = null;
@@ -1746,7 +1901,7 @@ public class E3CommandParser {
     }
 
     if (warning == null) {
-      warning = W_WEAPON;
+      warning = Warning.W_WEAPON;
     }
 
     if (BEST.equals(skill)) {
@@ -2147,7 +2302,7 @@ public class E3CommandParser {
     }
 
     // Einheit gut genug?
-    if (skillNeeded > maxAmount && warning.contains(C_SKILL)) {
+    if (skillNeeded > maxAmount && warning.contains(Warning.C_SKILL)) {
       addNewError("Einheit hat zu wenig Handelstalent (min: " + maxAmount / 10 + " < "
           + (int) Math.ceil(skillNeeded / 10.0) + ")");
     }
@@ -2516,7 +2671,7 @@ public class E3CommandParser {
 
   private void warnNeeds() {
     for (Need need : needQueue) {
-      if (need.getMinAmount() > 0 && need.getWarning().contains(C_AMOUNT)) {
+      if (need.getMinAmount() > 0 && need.getWarning().contains(Warning.C_AMOUNT)) {
         addWarning(need.getUnit(), "braucht " + need.getMinAmount()
             + (need.getMaxAmount() != need.getMinAmount() ? ("/" + need.getMaxAmount()) : "")
             + " mehr " + need.getItem() + ", " + need.getMessage());
@@ -2863,7 +3018,7 @@ public class E3CommandParser {
           weaponSkill = skill.getSkillType();
         }
       }
-      if (weaponSkill == null && !W_NEVER.equals(warning)) {
+      if (weaponSkill == null && !Warning.W_NEVER.equals(warning)) {
         addNewWarning("kein Kampftalent");
         return;
       }
@@ -2921,14 +3076,16 @@ public class E3CommandParser {
     }
 
     if (!NULL.equals(sWeapon)
-        && !reserveEquipment(weapon, weapons, !W_NEVER.equals(warning) && !W_SKILL.equals(warning))) {
+        && !reserveEquipment(weapon, weapons, !Warning.W_NEVER.equals(warning) && !Warning.W_SKILL
+            .equals(warning))) {
       addNewError("konnte Waffe nicht reservieren");
     }
     if (!NULL.equals(sShield)
-        && !reserveEquipment(shield, shields, W_ARMOR.equals(warning) || W_SHIELD.equals(warning))) {
+        && !reserveEquipment(shield, shields, Warning.W_ARMOR.equals(warning) || Warning.W_SHIELD
+            .equals(warning))) {
       addNewError("konnte Schilde nicht reservieren");
     }
-    if (!NULL.equals(sArmor) && !reserveEquipment(armor, armors, W_ARMOR.equals(warning))) {
+    if (!NULL.equals(sArmor) && !reserveEquipment(armor, armors, Warning.W_ARMOR.equals(warning))) {
       addNewError("konnte Rüstung nicht reservieren");
     }
   }
@@ -4454,155 +4611,3 @@ class Transfer {
   }
 
 }
-
-class Flag {
-  boolean positive;
-  String name;
-  int value;
-
-  public Flag(boolean positive, String name, int value) {
-    this.positive = positive;
-    this.name = name;
-    this.value = value;
-  }
-
-  @Override
-  public String toString() {
-    return name + "(" + positive + "," + value + ")";
-  }
-
-}
-
-class Warning {
-  private List<Flag> flags = new ArrayList<Flag>();
-
-  public static final Flag[] ALL_FLAGS = {
-      new Flag(true, E3CommandParser.W_AMOUNT, E3CommandParser.C_AMOUNT),
-      new Flag(true, E3CommandParser.W_ARMOR, E3CommandParser.C_ARMOR),
-      new Flag(false, E3CommandParser.W_FOREIGN, E3CommandParser.C_FOREIGN),
-      new Flag(false, E3CommandParser.W_HIDDEN, E3CommandParser.C_HIDDEN),
-      new Flag(true, E3CommandParser.W_SHIELD, E3CommandParser.C_SHIELD),
-      new Flag(true, E3CommandParser.W_SKILL, E3CommandParser.C_SKILL),
-      new Flag(true, E3CommandParser.W_UNIT, E3CommandParser.C_UNIT),
-      new Flag(true, E3CommandParser.W_WEAPON, E3CommandParser.C_WEAPON)
-  };
-
-  public static boolean initialized = false;
-  public static Map<String, Flag> NAMES;
-
-  public Warning(boolean all) {
-    this(new String[] { E3CommandParser.W_NEVER });
-    if (all) {
-      setAll();
-    }
-  }
-
-  public Warning(String[] tokens) {
-    /** Bean Shell does not know static initializers, so this is a bit awkward */
-    if (!initialized) {
-      initStatic();
-    }
-    parse(tokens);
-  }
-
-  protected void initStatic() {
-    initialized = true;
-    NAMES = new HashMap<String, Flag>();
-    for (Flag f : ALL_FLAGS) {
-      NAMES.put(f.name, f);
-    }
-  }
-
-  protected void setAll() {
-    for (Flag f : ALL_FLAGS) {
-      add(f);
-    }
-  }
-
-  private void setAll(boolean positive) {
-    for (Flag f : ALL_FLAGS) {
-      if (f.positive == positive) {
-        add(f);
-      }
-    }
-  }
-
-  protected String[] parse(String[] tokens) {
-    flags = new ArrayList<Flag>();
-    if (tokens == null)
-      return null;
-
-    if (tokens.length == 0) {
-      for (Flag f : ALL_FLAGS) {
-        add(f);
-      }
-    }
-
-    int i = tokens.length - 1;
-    boolean hasPositive = false;
-    setAll(false);
-    for (; i >= 0; --i)
-      if (NAMES.containsKey(tokens[i])) {
-        Flag f = NAMES.get(tokens[i]);
-        if (f.positive) {
-          hasPositive = true;
-          add(f);
-        } else {
-          remove(f);
-        }
-      } else if (E3CommandParser.W_ALWAYS.equals(tokens[i])) {
-        flags = new ArrayList<Flag>();
-        setAll();
-      } else if (E3CommandParser.W_NEVER.equals(tokens[i])) {
-        flags = new ArrayList<Flag>();
-        hasPositive = true;
-      } else {
-        break;
-      }
-    if (!hasPositive) {
-      setAll(true);
-    }
-
-    if (i == tokens.length - 1)
-      return tokens;
-    return Arrays.copyOf(tokens, i + 1);
-  }
-
-  public void add(String name) {
-    if (NAMES.containsKey(name)) {
-      add(NAMES.get(name));
-    }
-  }
-
-  public void add(Flag f) {
-    if (!flags.contains(f)) {
-      flags.add(f);
-    }
-  }
-
-  public void remove(Flag f) {
-    flags.remove(f);
-  }
-
-  public boolean contains(String w) {
-    for (Flag f : flags)
-      if (f.name.equals(w))
-        return true;
-    return false;
-  }
-
-  public boolean contains(int flag) {
-    for (Flag f : flags)
-      if (f.value == flag)
-        return true;
-    return false;
-  }
-
-  @Override
-  public String toString() {
-    return flags.toString();
-  }
-
-}
-
-

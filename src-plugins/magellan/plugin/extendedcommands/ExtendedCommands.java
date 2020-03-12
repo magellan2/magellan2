@@ -130,7 +130,7 @@ public class ExtendedCommands {
       if (diagnostics != null) {
         diagnostics.forEach(new Consumer<Diag>() {
           public void accept(Diag t) {
-            sb.append(t.toString());
+            sb.append(t.toString()).append("\n");
           }
         });
         if (sb.length() > 0) {

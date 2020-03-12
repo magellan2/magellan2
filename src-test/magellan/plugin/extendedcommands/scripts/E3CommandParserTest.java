@@ -1408,6 +1408,75 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
+   * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
+   */
+  @Test
+  public final void testCommandEmbassadorTax() {
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    unit.addOrder("LERNE Segeln");
+    builder.addSkill(unit, "Steuereintreiben", 1);
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertOrder("TREIBE", unit, 2);
+    assertOrder("; LERNE Segeln", unit, 3);
+
+    Faction otherFaction;
+    Unit guard = builder.addUnit(data, "gua", "Guard", otherFaction = builder.addFaction(data, "f2",
+        "F2",
+        "Mensch", 1), unit.getRegion());
+    unit.getRegion().addGuard(guard);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    unit.addOrder("LERNE Segeln");
+    parser.execute(unit.getFaction());
+
+    assertEquals(5, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertOrder("TREIBE", unit, 2);
+    assertWarning("Region wird bewacht", unit, 3);
+    assertOrder("; LERNE Segeln", unit, 4);
+
+    builder.addAlliance(otherFaction, unit.getFaction(), EresseaConstants.A_GUARD);
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    unit.addOrder("LERNE Segeln");
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertOrder("TREIBE", unit, 2);
+    assertOrder("; LERNE Segeln", unit, 3);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
+   */
+  @Test
+  public final void testCommandEmbassadorComplex() {
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter // $cript +1 Hulloh!");
+    builder.addItem(data, unit, "Silber", 200);
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter // $cript +1 Hulloh!", unit, 1);
+    assertWarning("Hulloh!", unit, 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter // $cript 1 $cript +1 Hulloh!");
+    builder.addItem(data, unit, "Silber", 200);
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter // $cript 1 $cript +1 Hulloh!", unit, 1);
+    assertWarning("Hulloh!", unit, 2);
+  }
+
+  /**
    * Test method for {@link E3CommandParser#commandGiveIf(String[])}.
    */
   @Test
@@ -2433,6 +2502,43 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(9, unit.getOrders2().size());
     assertOrder("GIB 1 10 Myrrhe", unit2, 1);
     assertOrder("GIB 1 10 Myrrhe", unit2, 2);
+  }
+
+  @Test
+  public final void testCommandTradeXX2() {
+    builder.addSkill(unit, "Handeln", 10);
+    builder.setPrices(unit.getRegion(), "Balsam");
+    builder.addItem(data, unit, "Silber", 20000);
+    builder.addItem(data, unit, "Balsam", 1000);
+    builder.addItem(data, unit, "Myrrhe", 1000);
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Öl", 999);
+    Unit unit3 = builder.addUnit(data, "p", "Pferde", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit3, "Pferd", 100);
+    builder.addSkill(unit2, "Reiten", 1);
+
+    unit.getRegion().setPeasants(1000);
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.addOrder("// $cript Handel x3 x2 ALLES");
+    unit.addOrder("// $cript BenoetigeFremd v LUXUS 99 Menge");
+    unit2.addOrder("// $cript Benoetige PFERD Pferd");
+    unit3.addOrder("// $cript Versorge 1");
+    parser.execute(unit.getFaction());
+
+    assertOrder("KAUFE 30 Balsam", unit, 2);
+    assertOrder("VERKAUFE ALLES Myrrhe", unit, 3);
+    assertOrder("VERKAUFE ALLES Öl", unit, 4);
+    // BenoetigeFremd
+    assertOrder("RESERVIERE 360 Silber", unit, 6);
+    assertOrder("RESERVIERE 10 Myrrhe", unit, 7);
+    assertOrder("GIB v 1000 Balsam", unit, 8);
+    assertOrder("GIB v 980 Myrrhe", unit, 9);
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("GIB 1 10 Öl", unit2, 0);
+    assertOrder("GIB 1 10 Öl", unit2, 1);
+    assertEquals(2, unit3.getOrders2().size());
   }
 
   /**

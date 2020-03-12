@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Queue;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
@@ -61,6 +61,7 @@ import magellan.library.rules.SkillType;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Units;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 import magellan.plugin.extendedcommands.ExtendedCommandsHelper;
@@ -1045,7 +1046,7 @@ class E3CommandParser {
     clear = null;
 
     // NOTE: must not change currentUnit's orders directly! Always change newOrders!
-    Queue<String> queue = new LinkedList<String>();
+    Deque<String> queue = new LinkedList<String>();
     for (Order o : currentUnit.getOrders2()) {
       ++line;
       queue.add(o.getText());
@@ -1116,7 +1117,12 @@ class E3CommandParser {
               } else if (command.equals("Lerne")) {
                 commandLearn(tokens);
               } else if (command.equals("BerufBotschafter")) {
-                commandEmbassador(tokens);
+                Collection<String> commands = commandEmbassador(tokens);
+                Collections.reverse((List<?>) commands);
+                for (String newOrder : commands) {
+                  queue.addFirst(newOrder);
+                }
+                setChangedOrders(true);
               } else if (command.equals("Ueberwache")) {
                 commandMonitor(tokens);
               } else if (command.equals("Erlaube") || command.equals("Verlange")) {
@@ -1923,8 +1929,10 @@ class E3CommandParser {
   /**
    * <code>// $cript BerufBotschafter [minimum money] [Talent|command]</code> -- if we have at least
    * minimum money (default 100), learn skill or execute command<br />
+   *
+   * @return
    */
-  protected void commandEmbassador(String[] tokens) {
+  protected Collection<String> commandEmbassador(String[] tokens) {
     Skill skill = null;
     int minimum = 100;
     int actionToken = 1;
@@ -1951,12 +1959,23 @@ class E3CommandParser {
       if (hasEntertain() && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG) != null
           && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG).getLevel() > 0) {
         addNewOrder(ENTERTAINOrder, true);
+      } else if (hasTax() && currentUnit.getSkill(EresseaConstants.S_STEUEREINTREIBEN) != null
+          && currentUnit.getSkill(EresseaConstants.S_STEUEREINTREIBEN).getLevel() > 0) {
+        addNewOrder(TAXOrder, true);
+        for (Unit guard : currentRegion.getGuards()) {
+          if (!Units.isAllied(guard.getFaction(), currentUnit.getFaction(),
+              EresseaConstants.A_GUARD)) {
+            addNewWarning("Region wird bewacht");
+            break;
+          }
+        }
       } else if (hasWork()) {
         addNewOrder(WORKOrder, true);
       } else {
         addNewWarning("Einheit verhungert");
       }
     } else if (skill == null) {
+      // other order
       StringBuilder order = new StringBuilder();
       if (tokens.length > actionToken) {
         order.append(tokens[actionToken]);
@@ -1964,13 +1983,15 @@ class E3CommandParser {
       for (int i = actionToken + 1; i < tokens.length; ++i) {
         order.append(" ").append(tokens[i]);
       }
-      addNewOrder(order.toString(), true);
+      return Collections.singletonList(order.toString());
+      // addNewOrder(order.toString(), true);
     } else {
       learn(currentUnit, Collections.singleton(skill));
       if (tokens.length > actionToken + 1) {
         addNewError("zu viele Argumente");
       }
     }
+    return Collections.emptyList();
   }
 
   protected void commandMonitor(String[] tokens) {
@@ -2517,6 +2538,11 @@ class E3CommandParser {
   protected boolean hasEntertain() {
     return world.getGameSpecificStuff().getOrderChanger().isLongOrder(
         getLocalizedOrder(EresseaConstants.OC_ENTERTAIN, ENTERTAINOrder));
+  }
+
+  protected boolean hasTax() {
+    return world.getGameSpecificStuff().getOrderChanger().isLongOrder(
+        getLocalizedOrder(EresseaConstants.OC_TAX, TAXOrder));
   }
 
   protected boolean hasWork() {

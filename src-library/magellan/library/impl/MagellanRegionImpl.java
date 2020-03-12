@@ -1038,6 +1038,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * get The List of guarding Units
    */
   public List<Unit> getGuards() {
+    if (guards == null)
+      return Collections.emptyList();
     return guards;
   }
 
